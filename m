@@ -1,41 +1,41 @@
-Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B8613C8F4
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9130140E4D
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 Nov 2024 05:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731907595; cv=none; b=SNzYc54XwCFaEtp4zgDaQbQcuIdhmWpw1BlU/vD2RDf/DbJ1d8ANrk1fiHtlni3w0KDX4Jfz38QBQ6PzbubotS6YWfw0CLL1ZLPh66PL4SOdmEf0huN93xQnjoPe4Z0qNPlWo925OVZ574mD9rky4Xk2srBhs4mvyxJYvMBrwm8=
+	t=1731907612; cv=none; b=fm/bfpZnpTqJuwGrGOluXMRMM/lZ/pybnR5DJ5w5d6MpngOZk5pIebI2uIAwBfKKxCrKDiMrcn0wMiIpZmMNKauoqOsRLZKCTRRftenud+BglNhviuH1JMt0ciM4EpydrsK6rbVvDnqI3BxmThMM1ZXkYgcVGTmjIw75Xso78oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731907595; c=relaxed/simple;
+	s=arc-20240116; t=1731907612; c=relaxed/simple;
 	bh=PBw+2l4k/U/8zjU5cemT5owgK8Rdjbs+7eB+L9/Ycbc=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=J/h56Gwc0bRknVl1p/wBWP+E0CDPKqI3Cvfpu35BzaMwmwWDobld1ZIIF85AeihR5GTW2yMDloUnFfDsNNkj2yp7aMeXfJ50+ElwfN6u2rlKumOXn6UBUYEuWbMG0dWChYj+bPqJ6l3A9fqHFZpjpnTDWNAZlrwvaqhWdOuQefw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SC/iYJx+; arc=none smtp.client-ip=202.12.124.154
+	h=Date:Message-ID:From:To:Cc:Subject; b=YLWsvJhInSiYUv7IoXtToHpyNnrnrN6NvPitwj1VM6q26pUF3ccP/gy8ASlKT6/WRHf2sKLx2EE9h2ceVqgSc1KPAhunDuuiCdlXfjyXj3ZlmlefUtxg1DLFb+7FTBDjZ26UedfMwEhKLqAg1G4F8Qf3tNWo8vfAirbGjs7wObA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=X/78JwZe; arc=none smtp.client-ip=202.12.124.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SC/iYJx+"
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id A45A82540099;
-	Mon, 18 Nov 2024 00:26:33 -0500 (EST)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X/78JwZe"
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfout.stl.internal (Postfix) with ESMTP id C57421140108;
+	Mon, 18 Nov 2024 00:26:49 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Mon, 18 Nov 2024 00:26:33 -0500
+  by phl-compute-02.internal (MEProxy); Mon, 18 Nov 2024 00:26:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
 	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
 	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1731907593; x=1731993993; bh=r29dMPQRv+Gn3SilhPT9HklbBYac
-	hEKIULVz8FVwt98=; b=SC/iYJx+sKpMleDE+xAoZhBhE/3Mnusj5JjlquJ2nNxo
-	aGdk/YyMFID9FPszZaZWI/7PnZUG+23PMAjhoZR2UOGeothdF0YOG6dou44ab2NH
-	1CbaLvGoxA0jIPF/SZ0+FPHkfkZmy6XRElfDwR+QKJ+3mWMCP6+x2Vz017uEp7Lz
-	J8grHWFPTNbE4ypPMs1U7oCQ3FsKBl3J1X56L7wTo7uXG4J4TMn/rNJSLDX26qmJ
-	P06+A9u1+nE1dfMp9j0387k+tAhTwuUmWs+ejw4sJBnxzFnYDhfApwKwkB/Ef37F
-	TDGIDsxh8O6suOhaBhn0Ziec0a0wWrW+37eM3wQu2g==
-X-ME-Sender: <xms:CdA6ZzwpsTcUiNLU2Ah7gf5v1jYFrpd0EA8OT3UlSG6TgbbJy0zSuQ>
-    <xme:CdA6Z7SSwDQiDk4rGGw5FzuH811YOY1AXV-MiApsGj8Ise-gtbkXwnR_0qay_xfPS
-    HoRaZrybo7mM_Wtank>
-X-ME-Received: <xmr:CdA6Z9WGHMd0RNRJpqLudIoPl5pjdY58QlRH9vnxJ9ZgxMpu84DCY5lmRL7oaVMxbdtBCQARlPTLZrqn7jPjz1drDOlXDTWoQvo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekfecutefuodetggdotefrodftvf
+	fm3; t=1731907609; x=1731994009; bh=r29dMPQRv+Gn3SilhPT9HklbBYac
+	hEKIULVz8FVwt98=; b=X/78JwZeD2SJfi1qUtKfQXBGPt5jy7gAu69wk2BoKPEz
+	IIfQ62mKx0NagwKkC8n75f6HU6O63NF71Jm4SxUNwEt1xKytubbhc945jhzFCCbq
+	xUdlQKd2LuhVZDF2cjVa2iP7THjYr582gw6F+d62mS1PEhCO85GkC0ASoKEblD6F
+	GCD4KcZxYtWgX1Q1arSN77qaxpq2PWKbmMltIUbxtQLdGzROT1S+2yln4WHtU8z9
+	F6qSK5d7WyCMlM4oPUSDls0m2X3P52XjxGBr4WjlFZecVySQ2+ftUrrpZlVABMyH
+	2eP+UcwI8cBKMYtLsNyTrax57fkFPrjuD80G3f72iQ==
+X-ME-Sender: <xms:GdA6Z-gFyvmxUHZxxeHtVE91VLuyJzCdoUd3VUWCSqlkHlBpgS3icQ>
+    <xme:GdA6Z_APKcYLg5CPB9632RM32C6x6_0ER4rvH6K3crAyZTa5kMi21hnZduhJWYUPl
+    QbWh7Lx2qGTFhaT-k8>
+X-ME-Received: <xmr:GdA6Z2HBbQwRFM9n2Y7aXIwYXwyU8SvSUQxTcyTY-KHAi2fk9riiejhTyDLXkvQdPJJZrJeukRlqW2e1pXfPXMROEUZYkU6uBO8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
     tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
     hsucdlqddutddtmdenucfjughrpeffkffhvfevufestddtjhdttddttdenucfhrhhomhep
@@ -49,20 +49,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrvdelgdekfecutefuodetggdote
     hvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpdhrtghpthhtoheplhhinhhu
     gidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhope
     hlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:CdA6Z9gyiK-uybv89e-UnMjKKSyShYW8bYHHkMfhUl9kFSs-LarbjA>
-    <xmx:CdA6Z1B6D4ZmtrCmJ3rbM3TRO3-Edt6Vt2W4a-X1DL-jhYTbDPH6Ug>
-    <xmx:CdA6Z2KQIZ_54T-8Q4lWF41eMV9dVohLksLxjF9k5NsuzI1aS2Miwg>
-    <xmx:CdA6Z0AX-HGbl7K8IvhikAPzOARtzXXA-GNj_q6F9i6nzS3HNCxoiQ>
-    <xmx:CdA6Zw9OnTiTE3LwE-DMvPIeLtuahOJb0GjVFAfhBFVvmr48RU8hLhXs>
+X-ME-Proxy: <xmx:GdA6Z3Tox476_PvVHqJAwIbe4PFe6NyrokN1LalWPkYsk652tc7Ikg>
+    <xmx:GdA6Z7z1KYWCoJZcriL_0ZGl1CrZussotL4aNtrKRQMTwS1Z2KW9fw>
+    <xmx:GdA6Z14l23fJfT6bTwQYFWJipGzw61TxwMUuMVGBGroDlhoJfKU_XQ>
+    <xmx:GdA6Z4zuJlX3gz1OBSOPNC9Dp69w5lM7C5AMrfTpwpWeqc7I4_ZXcA>
+    <xmx:GdA6Z9tCW-trumHpJRtiiSjYgOdVjZPnpwkp35WsURfhW7UY3jabFBI8>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Nov 2024 00:26:31 -0500 (EST)
-Date: Mon, 18 Nov 2024 16:27:03 +1100
-Message-ID: <8ed2db60211f05173e66de2b084dc3f7@linux-m68k.org>
+ 18 Nov 2024 00:26:47 -0500 (EST)
+Date: Mon, 18 Nov 2024 16:27:18 +1100
+Message-ID: <b2d405a9b410211f27e87f8a0de4b10a@linux-m68k.org>
 From: Finn Thain <fthain@linux-m68k.org>
 To: stable@kernel.org
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Al Viro <viro@zeniv.linux.org.uk>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.4.y] m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
+Subject: [PATCH 5.10.y] m68k: Update ->thread.esp0 before calling syscall_trace() in ret_from_signal
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
