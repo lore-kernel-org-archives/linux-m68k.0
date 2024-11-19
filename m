@@ -1,59 +1,59 @@
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43C31D0F7D
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 19:44:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115021448F2
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 19:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732045480; cv=none; b=NtOT7Osumv4HbboJi0tCS4no7oYFDBg2XN2hmpH/BRDTOVlaf9OsEdYcyqqzs6YuLTozrvSG6QJL4cfl/XL+RQgTIrRNYihiy/Kuz9Ypl++MBHWQikTHFndVLwLhnvSC+gfFcXmnK8EIfKv4rxweqvNTC3YNe7j+de8FsfXAEMY=
+	t=1732045786; cv=none; b=jkE+M8GhM7+ZMSAejn+mr3pMZR66J9sJs2NlhdMG11yzbR2zTKtmEugikUO62lNpxVwBx1GsM5bXb1Z7wMN5c4U9SE1rMT80yFDcF4BwDt9MzPHgK97NQKzviEyXz3lfhGpmMk92AJzDpyj1eOY7Xq6lu4XTT3K60sOc+2pyFEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732045480; c=relaxed/simple;
-	bh=tj+VdWmrFzdYkJ8fWULgwTj/ZC44SQGfuaeljLRm4qM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WjzjFjv/TSY3IQ/qs2AO+b0qUBHU7vN9S8pd1G6iQ8bVd7UoAvaaCLJeXkO5/ctwXEKsCGGke+FndSPlk8jb+g8Z34JkAh9/WQ+w76rpzTRZH0u63QaQ8ZiHXxQyUiKVIKhujylCCd56kIStQMyCV4D95+otHNIJTIUdnfSk9bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=R/ecGyJ6; arc=none smtp.client-ip=209.85.167.169
+	s=arc-20240116; t=1732045786; c=relaxed/simple;
+	bh=O5WDavnKQo7oVhtIrYXjb1Riie4CgzKzJU3ELBqJOiM=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=NBCt0uYAqfkXidtLbJKis7lEGp2vI6sP0vpsC1r8Q6rhrqYyFHok6heYEPiAe1bSEHfPF0Y736WMjtHMnQCdzgJZyPwMP/1EpeweTQBkhNqZ6AsIYJcXm8gNWGVQMIOkA7qKtyra3VdfKTqPuhdJt32IB0+FFOIYjR948kNNeQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=bxcyrdPb; arc=none smtp.client-ip=209.85.167.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="R/ecGyJ6"
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3e602994635so2727943b6e.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 11:44:38 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="bxcyrdPb"
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3e604425aa0so779878b6e.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 11:49:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1732045477; x=1732650277; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hVGEj3gE9Ku9ypPkSDexwqskuu1SWZ35drjWvRWuIwQ=;
-        b=R/ecGyJ6VkRpzGdlY9YHf5tsBQHFLMJDymTHDiDbj1ZnthoxZ3k3w+w1UcGIE7AyZm
-         xxCzxlHIEcnkbLpwWXuCLbmM/332ac9vgo3xqSoWtwrxGagEYK/qEL5NNtl9pIlXcDkY
-         k46UFAEHpW0RQHADYBikspbxvPatecvcBgumynfVjRKtZWDtqmYoiYnAJKsYML6QnteU
-         YVpEWjbTzod4tELzXxeXyn5l7iVSKzmDotI5pfEoi47yxEGFe7wnlWi3sXMLBW71XpXk
-         iboycfWup7YkdsjuBCNsiWgDYKNc0VIJsGrQrefWpoCr8O+21jZy+K3l2HMk0dTxj0NB
-         I0oA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1732045783; x=1732650583; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3/WyKpGsSpzv1RlEB3hP1YXQxeSgJb33FL5GBntxVXU=;
+        b=bxcyrdPbdqnpJI5BAwaSo78W6rk1B1W1tcmp1LQVWTQXJrhHbQhraJ3nRCpYG3SSrL
+         Ih05mlg+C2kmRnXKrBsfhrExmKpFl6GwPpwUbJTmVwsi8s8YGCjYWzyOyubkiW/90sIH
+         rQyVS3c31mMQI0Mo7Fw1weokgNoeITOjhk0y6RAp3wVvOTjB1YIEysgFCPiAX+S5IOgf
+         I0HApEDUOQeRoKXlusRX2/l9QFtshVcZDTFGopu+I5+XVqpkEf2vYdH+4STtiK+XE7Z5
+         GB6J3h+UsAne0f6Oq8No3UH6ufOLwQw5EvxNIrcvnNKwk4vCcR8RJUTmKyQM5bWUOjpc
+         lATA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732045477; x=1732650277;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1732045783; x=1732650583;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hVGEj3gE9Ku9ypPkSDexwqskuu1SWZ35drjWvRWuIwQ=;
-        b=tRHjsEKdAAAw0ZKh2r69s5m1S1WGsSm4k97HeafugYKuOgm2VZXrITy4TPei4rzVLX
-         z+GjA2Ebu9m+LRnL5/SSH/mzOnj8IN1Km23kHbbeF0Ti00wVdciSeXWzzr98kPuACaRC
-         03ZCgJGgDR01QE50D4gGX14JGJogEVsTQ8nc8QR8TRs/o5jGM4eEyQd/dOBnyWzJcugA
-         NnSFujupzrn754U1v/38qIqbVeSJZ/dj7T0Jbls9QtHlHH0ne+vRtFOBSxRL14smBexV
-         0fBLCu4B9pzo6nvWrUSLadfEkvPl75uDEWH4AP8Zza60aBVn5XpJzu8HyjnddnM+7FUL
-         58DA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxrEt0fNOOQn/llxzwjss6TaIdP1ZHJF0SBtqp60ORn7u2bGIU8gPBQBC+XEQ8Zey/PCGmG/F1WgjM@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyWzwMxIdppN4QrgO1gECaKAkx3SiCjx0T9/U6cv0wr+gr8AtJd
-	eJLVB9gjKXyXDkJeNd4T1DqCGmCDAtbKaF0uZ+hXoXRxzd2ekN1B0AdpJQtAr5w=
-X-Google-Smtp-Source: AGHT+IFA4zIaglMOt04iSAx08C1pvne/1q0N+3qBzIoJzmPHcqHdxozXTBewhpiJfBytL9pcPOIMuw==
-X-Received: by 2002:a05:6808:1b86:b0:3e7:a290:5a8f with SMTP id 5614622812f47-3e7eb6e5a25mr5590b6e.16.1732045472578;
-        Tue, 19 Nov 2024 11:44:32 -0800 (PST)
+        bh=3/WyKpGsSpzv1RlEB3hP1YXQxeSgJb33FL5GBntxVXU=;
+        b=fvBkz1o8YsoW9dAzFycvGNPhvig41H/F4heWHh8NjElah3mwPPiIlRYXVvpwB019Uq
+         8S1yr8Y8HD/7BFyCBAJjGb/MLuOMhoxLjZLfJgHaTsd2spznj41sL4Kkvzr7+YMIO5+w
+         uqVmYFTKY5whUo9JouMdPu92V+mbE9p3rFU6yC2vOGSWCYI735K1lPpOFd6+U+kqBp+w
+         +vwY5MygRWgobpSwWIDXESaltZhD6+Rn2Q0dCEOBv77voRia8i3ojhMuERom7stDTGYc
+         aIRARJaKU63tasZivEFx9zb8I1VXc4CXj1ak1XNKkIxsFueyPMCmr9Sxn4ztd66txQ/j
+         PemQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVBDA/mly3uo7NmFLowYlHJN72N1E7dnTKqy5NESJbw1IATuMLTEFtpZzxxheuhaPwy4VwuAjvikKCx@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxWV9QDGUc8dIoyIdbKsGZEmTHtLPPG2jhpqui3ZToq8XJzfKMb
+	Q+TapbHhUkyVoqp9ZRLP+qxlTujLl3lxcYjvTvbTlk75Il6kgdttPPyLPsU8Yms=
+X-Google-Smtp-Source: AGHT+IGlkZoSdacKRwMBCPwu+oadwRMyd+omSJX1tkekw6KxtHncGAOGqqfp6AbhtyF/uDBFym987Q==
+X-Received: by 2002:a05:6808:14cc:b0:3e7:a494:ae6d with SMTP id 5614622812f47-3e7bc88240bmr14923056b6e.42.1732045783009;
+        Tue, 19 Nov 2024 11:49:43 -0800 (PST)
 Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e7bcd82ad7sm3845537b6e.40.2024.11.19.11.44.31
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e7bcd829afsm3847825b6e.43.2024.11.19.11.49.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Nov 2024 11:44:31 -0800 (PST)
-Message-ID: <82b97543-ad01-4e42-b79c-12d97c1df194@kernel.dk>
-Date: Tue, 19 Nov 2024 12:44:30 -0700
+        Tue, 19 Nov 2024 11:49:42 -0800 (PST)
+Message-ID: <4623f30c-a12e-4ba6-ad99-835764611c67@kernel.dk>
+Date: Tue, 19 Nov 2024 12:49:41 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -63,6 +63,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 03/14] io_uring: specify freeptr usage for
  SLAB_TYPESAFE_BY_RCU io_kiocb cache
+From: Jens Axboe <axboe@kernel.dk>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Guenter Roeck <linux@roeck-us.net>, io-uring@vger.kernel.org,
  linux-m68k <linux-m68k@lists.linux-m68k.org>
@@ -78,136 +79,171 @@ References: <20241029152249.667290-1-axboe@kernel.dk>
  <CAMuHMdX3iOVLN-rJSqvKSjrjTTf++PJ4e-wPsEX-3QJR3=eWOA@mail.gmail.com>
  <358710e8-a826-46df-9846-5a9e0f7c6851@kernel.dk>
  <CAMuHMdUsj9FsX=_rHwYjiXT8RehP6HW5hUL9LMvE0pt7Z8kc8w@mail.gmail.com>
+ <82b97543-ad01-4e42-b79c-12d97c1df194@kernel.dk>
 Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CAMuHMdUsj9FsX=_rHwYjiXT8RehP6HW5hUL9LMvE0pt7Z8kc8w@mail.gmail.com>
+In-Reply-To: <82b97543-ad01-4e42-b79c-12d97c1df194@kernel.dk>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 11/19/24 12:41 PM, Geert Uytterhoeven wrote:
-> Hi Jens,
-> 
-> On Tue, Nov 19, 2024 at 8:30?PM Jens Axboe <axboe@kernel.dk> wrote:
->> On 11/19/24 12:25 PM, Geert Uytterhoeven wrote:
->>> On Tue, Nov 19, 2024 at 8:10?PM Jens Axboe <axboe@kernel.dk> wrote:
->>>> On 11/19/24 12:02 PM, Geert Uytterhoeven wrote:
->>>>> On Tue, Nov 19, 2024 at 8:00?PM Jens Axboe <axboe@kernel.dk> wrote:
->>>>>> On 11/19/24 10:49 AM, Geert Uytterhoeven wrote:
->>>>>>> On Tue, Nov 19, 2024 at 5:21?PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>>>>>> On 11/19/24 08:02, Jens Axboe wrote:
->>>>>>>>> On 11/19/24 8:36 AM, Guenter Roeck wrote:
->>>>>>>>>> On Tue, Oct 29, 2024 at 09:16:32AM -0600, Jens Axboe wrote:
->>>>>>>>>>> Doesn't matter right now as there's still some bytes left for it, but
->>>>>>>>>>> let's prepare for the io_kiocb potentially growing and add a specific
->>>>>>>>>>> freeptr offset for it.
+On 11/19/24 12:44 PM, Jens Axboe wrote:
+> On 11/19/24 12:41 PM, Geert Uytterhoeven wrote:
+>> Hi Jens,
+>>
+>> On Tue, Nov 19, 2024 at 8:30?PM Jens Axboe <axboe@kernel.dk> wrote:
+>>> On 11/19/24 12:25 PM, Geert Uytterhoeven wrote:
+>>>> On Tue, Nov 19, 2024 at 8:10?PM Jens Axboe <axboe@kernel.dk> wrote:
+>>>>> On 11/19/24 12:02 PM, Geert Uytterhoeven wrote:
+>>>>>> On Tue, Nov 19, 2024 at 8:00?PM Jens Axboe <axboe@kernel.dk> wrote:
+>>>>>>> On 11/19/24 10:49 AM, Geert Uytterhoeven wrote:
+>>>>>>>> On Tue, Nov 19, 2024 at 5:21?PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>>>>>>>> On 11/19/24 08:02, Jens Axboe wrote:
+>>>>>>>>>> On 11/19/24 8:36 AM, Guenter Roeck wrote:
+>>>>>>>>>>> On Tue, Oct 29, 2024 at 09:16:32AM -0600, Jens Axboe wrote:
+>>>>>>>>>>>> Doesn't matter right now as there's still some bytes left for it, but
+>>>>>>>>>>>> let's prepare for the io_kiocb potentially growing and add a specific
+>>>>>>>>>>>> freeptr offset for it.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 >>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>>>>>>>>> This patch triggers:
+>>>>>>>>>>>
+>>>>>>>>>>> Kernel panic - not syncing: __kmem_cache_create_args: Failed to create slab 'io_kiocb'. Error -22
+>>>>>>>>>>> CPU: 0 UID: 0 PID: 1 Comm: swapper Not tainted 6.12.0-mac-00971-g158f238aa69d #1
+>>>>>>>>>>> Stack from 00c63e5c:
+>>>>>>>>>>>          00c63e5c 00612c1c 00612c1c 00000300 00000001 005f3ce6 004b9044 00612c1c
+>>>>>>>>>>>          004ae21e 00000310 000000b6 005f3ce6 005f3ce6 ffffffea ffffffea 00797244
+>>>>>>>>>>>          00c63f20 000c6974 005ee588 004c9051 005f3ce6 ffffffea 000000a5 00c614a0
+>>>>>>>>>>>          004a72c2 0002cb62 000c675e 004adb58 0076f28a 005f3ce6 000000b6 00c63ef4
+>>>>>>>>>>>          00000310 00c63ef4 00000000 00000016 0076f23e 00c63f4c 00000010 00000004
+>>>>>>>>>>>          00000038 0000009a 01000000 00000000 00000000 00000000 000020e0 0076f23e
+>>>>>>>>>>> Call Trace: [<004b9044>] dump_stack+0xc/0x10
+>>>>>>>>>>>   [<004ae21e>] panic+0xc4/0x252
+>>>>>>>>>>>   [<000c6974>] __kmem_cache_create_args+0x216/0x26c
+>>>>>>>>>>>   [<004a72c2>] strcpy+0x0/0x1c
+>>>>>>>>>>>   [<0002cb62>] parse_args+0x0/0x1f2
+>>>>>>>>>>>   [<000c675e>] __kmem_cache_create_args+0x0/0x26c
+>>>>>>>>>>>   [<004adb58>] memset+0x0/0x8c
+>>>>>>>>>>>   [<0076f28a>] io_uring_init+0x4c/0xca
+>>>>>>>>>>>   [<0076f23e>] io_uring_init+0x0/0xca
+>>>>>>>>>>>   [<000020e0>] do_one_initcall+0x32/0x192
+>>>>>>>>>>>   [<0076f23e>] io_uring_init+0x0/0xca
+>>>>>>>>>>>   [<0000211c>] do_one_initcall+0x6e/0x192
+>>>>>>>>>>>   [<004a72c2>] strcpy+0x0/0x1c
+>>>>>>>>>>>   [<0002cb62>] parse_args+0x0/0x1f2
+>>>>>>>>>>>   [<000020ae>] do_one_initcall+0x0/0x192
+>>>>>>>>>>>   [<0075c4e2>] kernel_init_freeable+0x1a0/0x1a4
+>>>>>>>>>>>   [<0076f23e>] io_uring_init+0x0/0xca
+>>>>>>>>>>>   [<004b911a>] kernel_init+0x0/0xec
+>>>>>>>>>>>   [<004b912e>] kernel_init+0x14/0xec
+>>>>>>>>>>>   [<004b911a>] kernel_init+0x0/0xec
+>>>>>>>>>>>   [<0000252c>] ret_from_kernel_thread+0xc/0x14
+>>>>>>>>>>>
+>>>>>>>>>>> when trying to boot the m68k:q800 machine in qemu.
+>>>>>>>>>>>
+>>>>>>>>>>> An added debug message in create_cache() shows the reason:
+>>>>>>>>>>>
+>>>>>>>>>>> #### freeptr_offset=154 object_size=182 flags=0x310 aligned=0 sizeof(freeptr_t)=4
+>>>>>>>>>>>
+>>>>>>>>>>> freeptr_offset would need to be 4-byte aligned but that is not the
+>>>>>>>>>>> case on m68k.
 >>>>>>>>>>
->>>>>>>>>> This patch triggers:
->>>>>>>>>>
->>>>>>>>>> Kernel panic - not syncing: __kmem_cache_create_args: Failed to create slab 'io_kiocb'. Error -22
->>>>>>>>>> CPU: 0 UID: 0 PID: 1 Comm: swapper Not tainted 6.12.0-mac-00971-g158f238aa69d #1
->>>>>>>>>> Stack from 00c63e5c:
->>>>>>>>>>          00c63e5c 00612c1c 00612c1c 00000300 00000001 005f3ce6 004b9044 00612c1c
->>>>>>>>>>          004ae21e 00000310 000000b6 005f3ce6 005f3ce6 ffffffea ffffffea 00797244
->>>>>>>>>>          00c63f20 000c6974 005ee588 004c9051 005f3ce6 ffffffea 000000a5 00c614a0
->>>>>>>>>>          004a72c2 0002cb62 000c675e 004adb58 0076f28a 005f3ce6 000000b6 00c63ef4
->>>>>>>>>>          00000310 00c63ef4 00000000 00000016 0076f23e 00c63f4c 00000010 00000004
->>>>>>>>>>          00000038 0000009a 01000000 00000000 00000000 00000000 000020e0 0076f23e
->>>>>>>>>> Call Trace: [<004b9044>] dump_stack+0xc/0x10
->>>>>>>>>>   [<004ae21e>] panic+0xc4/0x252
->>>>>>>>>>   [<000c6974>] __kmem_cache_create_args+0x216/0x26c
->>>>>>>>>>   [<004a72c2>] strcpy+0x0/0x1c
->>>>>>>>>>   [<0002cb62>] parse_args+0x0/0x1f2
->>>>>>>>>>   [<000c675e>] __kmem_cache_create_args+0x0/0x26c
->>>>>>>>>>   [<004adb58>] memset+0x0/0x8c
->>>>>>>>>>   [<0076f28a>] io_uring_init+0x4c/0xca
->>>>>>>>>>   [<0076f23e>] io_uring_init+0x0/0xca
->>>>>>>>>>   [<000020e0>] do_one_initcall+0x32/0x192
->>>>>>>>>>   [<0076f23e>] io_uring_init+0x0/0xca
->>>>>>>>>>   [<0000211c>] do_one_initcall+0x6e/0x192
->>>>>>>>>>   [<004a72c2>] strcpy+0x0/0x1c
->>>>>>>>>>   [<0002cb62>] parse_args+0x0/0x1f2
->>>>>>>>>>   [<000020ae>] do_one_initcall+0x0/0x192
->>>>>>>>>>   [<0075c4e2>] kernel_init_freeable+0x1a0/0x1a4
->>>>>>>>>>   [<0076f23e>] io_uring_init+0x0/0xca
->>>>>>>>>>   [<004b911a>] kernel_init+0x0/0xec
->>>>>>>>>>   [<004b912e>] kernel_init+0x14/0xec
->>>>>>>>>>   [<004b911a>] kernel_init+0x0/0xec
->>>>>>>>>>   [<0000252c>] ret_from_kernel_thread+0xc/0x14
->>>>>>>>>>
->>>>>>>>>> when trying to boot the m68k:q800 machine in qemu.
->>>>>>>>>>
->>>>>>>>>> An added debug message in create_cache() shows the reason:
->>>>>>>>>>
->>>>>>>>>> #### freeptr_offset=154 object_size=182 flags=0x310 aligned=0 sizeof(freeptr_t)=4
->>>>>>>>>>
->>>>>>>>>> freeptr_offset would need to be 4-byte aligned but that is not the
->>>>>>>>>> case on m68k.
+>>>>>>>>>> Why is ->work 2-byte aligned to begin with on m68k?!
 >>>>>>>>>
->>>>>>>>> Why is ->work 2-byte aligned to begin with on m68k?!
+>>>>>>>>> My understanding is that m68k does not align pointers.
 >>>>>>>>
->>>>>>>> My understanding is that m68k does not align pointers.
+>>>>>>>> The minimum alignment for multi-byte integral values on m68k is
+>>>>>>>> 2 bytes.
+>>>>>>>>
+>>>>>>>> See also the comment at
+>>>>>>>> https://elixir.bootlin.com/linux/v6.12/source/include/linux/maple_tree.h#L46
 >>>>>>>
->>>>>>> The minimum alignment for multi-byte integral values on m68k is
->>>>>>> 2 bytes.
+>>>>>>> Maybe it's time we put m68k to bed? :-)
 >>>>>>>
->>>>>>> See also the comment at
->>>>>>> https://elixir.bootlin.com/linux/v6.12/source/include/linux/maple_tree.h#L46
+>>>>>>> We can add a forced alignment ->work to be 4 bytes, won't change
+>>>>>>> anything on anything remotely current. But does feel pretty hacky to
+>>>>>>> need to align based on some ancient thing.
 >>>>>>
->>>>>> Maybe it's time we put m68k to bed? :-)
->>>>>>
->>>>>> We can add a forced alignment ->work to be 4 bytes, won't change
->>>>>> anything on anything remotely current. But does feel pretty hacky to
->>>>>> need to align based on some ancient thing.
+>>>>>> Why does freeptr_offset need to be 4-byte aligned?
 >>>>>
->>>>> Why does freeptr_offset need to be 4-byte aligned?
+>>>>> Didn't check, but it's slab/slub complaining using a 2-byte aligned
+>>>>> address for the free pointer offset. It's explicitly checking:
+>>>>>
+>>>>>         /* If a custom freelist pointer is requested make sure it's sane. */
+>>>>>         err = -EINVAL;
+>>>>>         if (args->use_freeptr_offset &&
+>>>>>             (args->freeptr_offset >= object_size ||
+>>>>>              !(flags & SLAB_TYPESAFE_BY_RCU) ||
+>>>>>              !IS_ALIGNED(args->freeptr_offset, sizeof(freeptr_t))))
+>>>>>                 goto out;
 >>>>
->>>> Didn't check, but it's slab/slub complaining using a 2-byte aligned
->>>> address for the free pointer offset. It's explicitly checking:
+>>>> It is not guaranteed that alignof(freeptr_t) >= sizeof(freeptr_t)
+>>>> (free_ptr is sort of a long). If freeptr_offset must be a multiple of
+>>>> 4 or 8 bytes,
+>>>> the code that assigns it must make sure that is true.
+>>>
+>>> Right, this is what the email is about...
+>>>
+>>>> I guess this is the code in fs/file_table.c:
 >>>>
->>>>         /* If a custom freelist pointer is requested make sure it's sane. */
->>>>         err = -EINVAL;
->>>>         if (args->use_freeptr_offset &&
->>>>             (args->freeptr_offset >= object_size ||
->>>>              !(flags & SLAB_TYPESAFE_BY_RCU) ||
->>>>              !IS_ALIGNED(args->freeptr_offset, sizeof(freeptr_t))))
->>>>                 goto out;
+>>>>     .freeptr_offset = offsetof(struct file, f_freeptr),
+>>>>
+>>>> which references:
+>>>>
+>>>>     include/linux/fs.h:           freeptr_t               f_freeptr;
+>>>>
+>>>> I guess the simplest solution is to add an __aligned(sizeof(freeptr_t))
+>>>> (or __aligned(sizeof(long)) to the definition of freeptr_t:
+>>>>
+>>>>     include/linux/slab.h:typedef struct { unsigned long v; } freeptr_t;
 >>>
->>> It is not guaranteed that alignof(freeptr_t) >= sizeof(freeptr_t)
->>> (free_ptr is sort of a long). If freeptr_offset must be a multiple of
->>> 4 or 8 bytes,
->>> the code that assigns it must make sure that is true.
+>>> It's not, it's struct io_kiocb->work, as per the stack trace in this
+>>> email.
 >>
->> Right, this is what the email is about...
+>> Sorry, I was falling out of thin air into this thread...
 >>
->>> I guess this is the code in fs/file_table.c:
->>>
->>>     .freeptr_offset = offsetof(struct file, f_freeptr),
->>>
->>> which references:
->>>
->>>     include/linux/fs.h:           freeptr_t               f_freeptr;
->>>
->>> I guess the simplest solution is to add an __aligned(sizeof(freeptr_t))
->>> (or __aligned(sizeof(long)) to the definition of freeptr_t:
->>>
->>>     include/linux/slab.h:typedef struct { unsigned long v; } freeptr_t;
+>> linux-next/master:io_uring/io_uring.c:          .freeptr_offset =
+>> offsetof(struct io_kiocb, work),
+>> linux-next/master:io_uring/io_uring.c:          .use_freeptr_offset = true,
 >>
->> It's not, it's struct io_kiocb->work, as per the stack trace in this
->> email.
+>> Apparently io_kiocb.work is of type struct io_wq_work, not freeptr_t?
+>> Isn't that a bit error-prone, as the slab core code expects a freeptr_t?
 > 
-> Sorry, I was falling out of thin air into this thread...
-> 
-> linux-next/master:io_uring/io_uring.c:          .freeptr_offset =
-> offsetof(struct io_kiocb, work),
-> linux-next/master:io_uring/io_uring.c:          .use_freeptr_offset = true,
-> 
-> Apparently io_kiocb.work is of type struct io_wq_work, not freeptr_t?
-> Isn't that a bit error-prone, as the slab core code expects a freeptr_t?
+> It just needs the space, should not matter otherwise. But may as well
+> just add the union and align the freeptr so it stop complaining on m68k.
 
-It just needs the space, should not matter otherwise. But may as well
-just add the union and align the freeptr so it stop complaining on m68k.
+Ala the below, perhaps alignment takes care of itself then?
+
+
+diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
+index 593c10a02144..a83ec7f7849d 100644
+--- a/include/linux/io_uring_types.h
++++ b/include/linux/io_uring_types.h
+@@ -674,7 +674,11 @@ struct io_kiocb {
+ 	struct io_kiocb			*link;
+ 	/* custom credentials, valid IFF REQ_F_CREDS is set */
+ 	const struct cred		*creds;
+-	struct io_wq_work		work;
++
++	union {
++		struct io_wq_work	work;
++		freeptr_t		freeptr;
++	};
+ 
+ 	struct {
+ 		u64			extra1;
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index 73af59863300..86ac7df2a601 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -3812,7 +3812,7 @@ static int __init io_uring_init(void)
+ 	struct kmem_cache_args kmem_args = {
+ 		.useroffset = offsetof(struct io_kiocb, cmd.data),
+ 		.usersize = sizeof_field(struct io_kiocb, cmd.data),
+-		.freeptr_offset = offsetof(struct io_kiocb, work),
++		.freeptr_offset = offsetof(struct io_kiocb, freeptr),
+ 		.use_freeptr_offset = true,
+ 	};
+ 
 
 -- 
 Jens Axboe
