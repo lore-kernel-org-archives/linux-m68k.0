@@ -1,68 +1,208 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E4E15574E
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 02:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FBD41CC14A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 14:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731983055; cv=none; b=mDf6wm1miWyVWb1saFrMVFaEPgyGn53bXVllXaluecpJ1iYy3UQCJBR5PZRXziIronFdgJOt4gVYasVcd1xGMrxdGTUG6c4VlugBcVMsYZSS29xSzogD6yvrWKDuACsuggJyk8/2M9x+OrDUhXORy7WaZeSlZ7AgtxXN+DqDAxQ=
+	t=1732026247; cv=none; b=lnUu8IRnKz3tfIzdk/P23s/W8tcPkfcHswiYn8luJB0p1tj0LbvRonOqq06ma5+VRZfvB6hEMXRmVEx2Ouyc3V6hTeRaWtvGlw+oY5TU7+dIJOIbOmchreX6tzJjxD33RFKGzHLGYgNmS0Qp7b6t0TF8GY0zwmWe5yr/dS8S2hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731983055; c=relaxed/simple;
-	bh=2LCm+Gv9jLMfZnu1AsE4d9eDlR1SWa6hzle0WXfv1jw=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=SAnvfH1FydOs0ze8fwHYwL0qMctu5R/TPVs/eDb4viZ40Pg6Ka+DH4niGf8l0q2khBM0wR8wEbmpIWBgWvPa+QTbmAAUW2/kY/2MJl8Eh5eGJmlxUpNDWXhkNG0q213FcjTVVh89IbOLYVTBBj/hTRN5rNCc7tbQHPtIgHAws7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CMju4Mnd; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1732026247; c=relaxed/simple;
+	bh=I+RQjzCvAy5yXICFQwsvOhcvUC8jzz/PiP41uPebjxI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E9X5MW8Xf7bwfaip1JaMBlujlFTiv8LiSGFbfetKBJzR6wBrOi7g8xvPj8Qny+kU9zmBoWbCingaAPrGUMGnEdflVjqzXMfcHzEVHzNhL4Ty2NTm6burVFZSVQoThPUNCBVq+6stC797DzonSEKAR8SfUfmwl4m+K9BWgEkvY44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=bM7T+Jw7; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CMju4Mnd"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id C0C07A42168;
-	Tue, 19 Nov 2024 02:22:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06D7DC4CECC;
-	Tue, 19 Nov 2024 02:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731983053;
-	bh=2LCm+Gv9jLMfZnu1AsE4d9eDlR1SWa6hzle0WXfv1jw=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=CMju4MndrdymIMMbDLwc5LSWtLfn9q+UKNqu5W/Jo5/75cEGtOUyRUyyhsEMNHAht
-	 ENUD5pz16WU60dT9fv8C2zIk094cny4NISHYe5IEzf5F7e8o57Eqx6f1IhpeZT6Ff8
-	 EYOw2x56PtHuTHgKyzsvFhNX1cSHH6dBHav1CQrIFyCesG07XtrAmB1gQTVYkbe5Mh
-	 LYCO43czBcEJ0n/pDMml6R0TS/6rHVkdV7q64FkYf3GPY5xEIrc8PwMrFXPCjTWH8I
-	 f67iMsyPRg97fQqtp3kwq8/zB7o3jGQwFQtaMcS6120OMEAg8XVg3VS3BUrnEwvdIk
-	 Xs2nS4DN0QBkw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AE10F3809A80;
-	Tue, 19 Nov 2024 02:24:25 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k updates for v6.13
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20241118124720.3341025-1-geert@linux-m68k.org>
-References: <20241118124720.3341025-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20241118124720.3341025-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.13-tag1
-X-PR-Tracked-Commit-Id: 647619b6bd27d2b7c3c6055f3f0d996e61884202
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9aa4c37f71b9a0a4f51692fbb874888c139805ce
-Message-Id: <173198306422.73657.16490470946970522059.pr-tracker-bot@kernel.org>
-Date: Tue, 19 Nov 2024 02:24:24 +0000
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="bM7T+Jw7"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B3D7FF814;
+	Tue, 19 Nov 2024 14:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1732026242;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fOrBNdpqCu63uMjsBgXZUlLowF58/yilyYWntoqR9TE=;
+	b=bM7T+Jw7G5jEjq1oBNJiIIUZFcOdKVsJJ+zsYoDUFfk+tXPsdO8x+EmtkMM5nKoObR3POG
+	udpd0kMb0WbaLBsvheO8PPmlZRPtv9sNHf+Q6mv209rkY8BpHPgiy8ycs75g0gcqlIAoDG
+	BgcalUR4v1WuUtdV6GxYfDZigAuZpUTbh07Qu/3yO17+554yKWr2uyCK0whfGRbxYpjseG
+	RVpmW+d39h5bnfHXmtl6ss2qwsDgB0UZTaTJQm9it/DwXFzX2bCt5N3IgCPOKQWVoH+apT
+	sW//2uLM/kVHdxWPlxyhy+radnFLWr31HFrFil3N24LEr4ISxnXB1r1oZ4xnOg==
+Message-ID: <22856ed6-b9d0-4206-b88d-4226534c8675@yoseli.org>
+Date: Tue, 19 Nov 2024 15:24:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>,
+ Tomas Glozar <tglozar@redhat.com>
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+ <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
+ <20241115102554.29232d34@gandalf.local.home>
+ <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
+ <20241115145502.631c9a2c@gandalf.local.home>
+ <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+ <20241118152057.13042840@gandalf.local.home>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <20241118152057.13042840@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-The pull request you sent on Mon, 18 Nov 2024 13:47:20 +0100:
+Hi Steve !
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.13-tag1
+On 18/11/2024 21:20, Steven Rostedt wrote:
+> 
+> [ Added Tomas as he knows this code better than I do ]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9aa4c37f71b9a0a4f51692fbb874888c139805ce
+Thanks !
 
-Thank you!
+> 
+> On Mon, 18 Nov 2024 11:11:48 +0100
+> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+> 
+>> Hi Steve,
+>>
+>> On 15/11/2024 20:55, Steven Rostedt wrote:
+>>> On Fri, 15 Nov 2024 16:33:06 +0100
+>>> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+>>>    
+>>>> Hi Steve,
+>>>>
+>>>> On 15/11/2024 16:25, Steven Rostedt wrote:
+>>>>> On Fri, 15 Nov 2024 09:26:07 +0100
+>>>>> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
+>>>>>       
+>>>>>> Nevertheless it sounds like a really high latency for wake_up().
+>>>>>>
+>>>>>> I have a custom driver which basically gets an IRQ, and calls wake_up on
+>>>>>> a read() call. This wake_up() on a high cpu usage can be more than 1ms !
+>>>>>> Even with a fifo/99 priority for my kernel thread !
+>>>>>>
+>>>>>> I don't know if it rings any bell ?
+>>>>>> I can obviously do more tests if it can help getting down to the issue :-).
+>>>>>
+>>>>> Try running timerlat.
+>>>>
+>>>> Thanks !
+>>>> Here is what I get:
+>>>> # echo timerlat > current_tracer
+>>>> # echo 1 > events/osnoise/enable
+>>>> # echo 25 > osnoise/stop_tracing_total_us
+>>>> # tail -10 trace
+>>>>                bash-224     [000] d.h..   153.268917: #77645 context  irq timer_latency     45056 ns
+>>>>                bash-224     [000] dnh..   153.268987: irq_noise: timer:206  start 153.268879083 duration 93957 ns
+>>>>                bash-224     [000] d....   153.269056: thread_noise:  bash:224 start 153.268905324 duration 71045 ns
+>>>>          timerlat/0-271     [000] .....   153.269103: #77645 context thread timer_latency    230656 ns
+>>>>                bash-224     [000] d.h..   153.269735: irq_noise: timer:206 start 153.269613847 duration 103558 ns
+>>>>                bash-224     [000] d.h..   153.269911: #77646 context irq timer_latency     40640 ns
+>>>>                bash-224     [000] dnh..   153.269982: irq_noise: timer:206 start 153.269875367 duration 93190 ns
+>>>>                bash-224     [000] d....   153.270053: thread_noise: bash:224 start 153.269900969 duration 72709 ns
+>>>>          timerlat/0-271     [000] .....   153.270100: #77646 context thread timer_latency    227008 ns
+>>>>          timerlat/0-271     [000] .....   153.270155: timerlat_main: stop tracing hit on cpu 0
+>>>>
+>>>> It looks awful, right ?
+>>>
+>>> awful is relative ;-) If that was on x86, I would say it was bad.
+>>>
+>>> Also check out rtla (in tools/trace/rtla).
+>>
+>> Thanks ! I knew it only by name, so I watched a presentation recorded
+>> during OSS summit given by Daniel Bristot de Oliveira who wrote it and
+>> it is really impressive !
+>>
+>> I had to modify the source code a bit, as it does not compile with my
+>> uclibc toolchain:
+>> diff --git a/tools/tracing/rtla/Makefile.rtla
+>> b/tools/tracing/rtla/Makefile.rtla
+>> index cc1d6b615475..b22016a88d09 100644
+>> --- a/tools/tracing/rtla/Makefile.rtla
+>> +++ b/tools/tracing/rtla/Makefile.rtla
+>> @@ -15,7 +15,7 @@ $(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
+>>    $(call allow-override,LDCONFIG,ldconfig)
+>>    export CC AR STRIP PKG_CONFIG LD_SO_CONF_PATH LDCONFIG
+>>
+>> -FOPTS          := -flto=auto -ffat-lto-objects -fexceptions
+>> -fstack-protector-strong   \
+>> +FOPTS          := -flto=auto -ffat-lto-objects -fexceptions \
+>>                   -fasynchronous-unwind-tables -fstack-clash-protection
+>>    WOPTS          := -O -Wall -Werror=format-security
+>> -Wp,-D_FORTIFY_SOURCE=2             \
+>>                   -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
+> 
+> I'm not sure what the consequence of the above would be. Perhaps Daniel
+> just copied this from other code?
+> 
+>> diff --git a/tools/tracing/rtla/src/timerlat_u.c
+>> b/tools/tracing/rtla/src/timerlat_u.c
+>> index 01dbf9a6b5a5..92ad2388b123 100644
+>> --- a/tools/tracing/rtla/src/timerlat_u.c
+>> +++ b/tools/tracing/rtla/src/timerlat_u.c
+>> @@ -15,10 +15,16 @@
+>>    #include <pthread.h>
+>>    #include <sys/wait.h>
+>>    #include <sys/prctl.h>
+>> +#include <sys/syscall.h>
+>>
+>>    #include "utils.h"
+>>    #include "timerlat_u.h"
+>>
+>> +static inline pid_t gettid(void)
+>> +{
+>> +       return syscall(SYS_gettid);
+>> +}
+>> +
+>>    /*
+>>     * This is the user-space main for the tool timerlatu/ threads.
+>>     *
+>> diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+>> index 9ac71a66840c..b754dc1016a4 100644
+>> --- a/tools/tracing/rtla/src/utils.c
+>> +++ b/tools/tracing/rtla/src/utils.c
+>> @@ -229,6 +229,9 @@ long parse_ns_duration(char *val)
+>>    #elif __s390x__
+>>    # define __NR_sched_setattr    345
+>>    # define __NR_sched_getattr    346
+>> +#elif __m68k__
+>> +# define __NR_sched_setattr    349
+>> +# define __NR_sched_getattr    350
+>>    #endif
+>>
+>>    #define SCHED_DEADLINE         6
+>>
+>> But it is not enough, as executing rtla fails with a segfault.
+>> I can dump a core, but I could not manage to build gdb for my board so I
+>> can't debug it (I don't know how to debug a coredump without gdb !).
+> 
+> printf()!  That's how I debug things without gdb ;-)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Indeed printf gave me clues !
+It appears to be a bug in libtracefs (v1.8.1). rtla segfaults when 
+calling tracefs_local_events() in trace_instance_init().
+
+Debugging libtracefs pointed me to the load_events() function, and the 
+segfault happens after tep_parse_event() is called for 
+"/sys/kernel/debug/tracing/events/vmscan/mm_vmscan_write_folio/format".
+
+Going through the calls I get to event_read_print_args().
+I changed libtraceevent log level to get the warnings, and it says:
+libtraceevent: Resource temporarily unavailable
+   unknown op '.'
+Segmentation fault
+
+JM
+
+
+
+
+
