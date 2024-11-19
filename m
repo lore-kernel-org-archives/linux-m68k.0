@@ -1,25 +1,25 @@
 Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D6A41D0E0A
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 16:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 356981D271A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 19 Nov 2024 16:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732033701; cv=none; b=Q4sLLniiwShTL9G7vpDsXN2DMbGtdVf4yPjGPaykGPWL6nXMkB1ldSnEsK4EdWP2Ot6tCCH6SqNXEsv7ATOlu4o956bu1RPkPGiMDCQ6ZSje94+1ipFioNh5fcwS8BDiYk6s0+FHPB5hpYzxDBL8qe8ahHcAFuX2Kog7cJ992Ak=
+	t=1732034618; cv=none; b=HxkrhZ1NkDUM81b3MQN6IxRhOJIyytSNFlm9yCS6bI/18stv3K+3nJDXrtO8mQTz+XMbc/9myh+BEdB/qsclxNxn6GdmmraU+6sX3oCDPxIZO5tM3+J8W6URQF4PhjcsYauasg2G2C4Wb7Mtff71F7tilrFMdflGZreI01atmyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732033701; c=relaxed/simple;
-	bh=7AiN7C9rSciZFzuI2C0MhdiS8jvBluuatf3HrOrbI8g=;
+	s=arc-20240116; t=1732034618; c=relaxed/simple;
+	bh=C9mHD0gHCQv2Bn7YxHs4Zu5S+fUFQt+SkrQfU84oGnk=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g0X4+Qa5Fxmlbd0aEXofwi6QHjeccM4cxw6v+lIVdYBsCFGMppVRa2V4J/tM1oHTJavIZxHF6mdI5ZZ/pWg+au/TVQQQ8Qcs8qoHc3CcmeUgp72CIs0dRzsvwxP7CkQ3s1vBXEF2gYHRqlDEwQPYnx9VtnE8i0KU9mEcsM5ncpI=
+	 MIME-Version:Content-Type; b=mEypfhvXAzJ1MqsTUo0buPeCDIJotKN2X+cSLLe+GSS6tBQo9pvq6ooSou+9b80qQBjb5Gw2M5NUBg789+5cxrq3/TtriX7ZEH5h1A/zMNgP1fYVrd7NXwYm0UqYgNVOKjoSzt9b3GP7EzKg40NpmRCnxaGJrBlCtGWsIObhp78=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 98D03A41343;
-	Tue, 19 Nov 2024 16:26:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E10D9C4CECF;
-	Tue, 19 Nov 2024 16:28:16 +0000 (UTC)
-Date: Tue, 19 Nov 2024 11:28:50 -0500
+	by nyc.source.kernel.org (Postfix) with ESMTP id CA2D8A42C17;
+	Tue, 19 Nov 2024 16:41:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EDFFC4CECF;
+	Tue, 19 Nov 2024 16:43:34 +0000 (UTC)
+Date: Tue, 19 Nov 2024 11:44:07 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
@@ -27,8 +27,8 @@ Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
  <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, Tomas Glozar
  <tglozar@redhat.com>
 Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-Message-ID: <20241119112850.219834f5@gandalf.local.home>
-In-Reply-To: <20241119102631.76363f2a@gandalf.local.home>
+Message-ID: <20241119114407.762b7ff6@gandalf.local.home>
+In-Reply-To: <20241119112850.219834f5@gandalf.local.home>
 References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
 	<3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
 	<20241115102554.29232d34@gandalf.local.home>
@@ -38,6 +38,7 @@ References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
 	<20241118152057.13042840@gandalf.local.home>
 	<22856ed6-b9d0-4206-b88d-4226534c8675@yoseli.org>
 	<20241119102631.76363f2a@gandalf.local.home>
+	<20241119112850.219834f5@gandalf.local.home>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -48,58 +49,30 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Nov 2024 10:26:31 -0500
+On Tue, 19 Nov 2024 11:28:50 -0500
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> Can you do me a favor and send me privately a tarball of:
-> 
->  # cp -r /sys/kernel/tracing/events /tmp/events
->  # cd /tmp
->  # tar -cvjf events.tar.bz2 events
-> 
-> You can't call tar on the /sys/kernel/tracing files as those are pseudo
-> files with size of zero, and tar will just record empty files :-p
+> print fmt: "page=%p pfn=0x%lx flags=%s", (mem_map + ((REC->pfn) - (m68k_memory[0].addr >> 13))), REC->pfn, (REC->reclaim_flags) ? __print_flags(REC->reclaim_flags, "|", {0x0001u, "RECLAIM_WB_ANON"}, {0x0002u, "RECLAIM_WB_FILE"}, {0x0010u, "RECLAIM_WB_MIXED"}, {0x0004u, "RECLAIM_WB_SYNC"}, {0x0008u, "RECLAIM_WB_ASYNC"} ) : "RECLAIM_WB_NONE"
 
-It crashes on parsing this:
+Running gdb on this, I found that it crashed on the "m68k_memory[0].addr"
+because it failed to fail on the '.' that it doesn't know how to parse.
 
-name: mm_vmscan_write_folio
-ID: 198
-format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-
-	field:unsigned long pfn;	offset:8;	size:4;	signed:0;
-	field:int reclaim_flags;	offset:12;	size:4;	signed:1;
-
-print fmt: "page=%p pfn=0x%lx flags=%s", (mem_map + ((REC->pfn) - (m68k_memory[0].addr >> 13))), REC->pfn, (REC->reclaim_flags) ? __print_flags(REC->reclaim_flags, "|", {0x0001u, "RECLAIM_WB_ANON"}, {0x0002u, "RECLAIM_WB_FILE"}, {0x0010u, "RECLAIM_WB_MIXED"}, {0x0004u, "RECLAIM_WB_SYNC"}, {0x0008u, "RECLAIM_WB_ASYNC"} ) : "RECLAIM_WB_NONE"
-
-
-It shouldn't crash, but it also found a bug in your code ;-)
-
-You reference two variables that are not part of the event:
-
- "mem_map" and "m68k_memory[0].addr"
-
-Do these variables ever change? Because the TP_printk() part of the
-TRACE_EVENT() macro is called a long time after the event is recorded. It
-could be seconds, minutes, days or even months (and unlikely possibly
-years) later.
-
-The event takes place and runs the TP_fast_assign() to record the event in
-the ring buffer. Then some time later, when you read the "trace" file, the
-TP_printk() portion gets run. If you wait months before reading that, it is
-executed months later.
-
-Now you have "mem_map" and "m68k_memory[0].addr" in that output that gets
-run months after the fact. Are they constant throughout the boot?
-
-Now another issue is that user space has no idea what those values are. Now
-user space can not print the values. Currently the code crashes because you
-are the first one to reference a global value from a trace event print fmt.
-That should probably be fixed to simply fail to parse the event and ignore
-the print format logic (which defaults to just printing the raw fields).
+This patch should stop the crash (against libtraceevent)
 
 -- Steve
 
+diff --git a/src/event-parse.c b/src/event-parse.c
+index 0427061603db..a6da8f04cbf3 100644
+--- a/src/event-parse.c
++++ b/src/event-parse.c
+@@ -2498,6 +2498,10 @@ process_op(struct tep_event *event, struct tep_print_arg *arg, char **tok)
+ 
+ 		/* higher prios need to be closer to the root */
+ 		prio = get_op_prio(*tok);
++		if (prio < 0) {
++			token = *tok;
++			goto out_free;
++		}
+ 
+ 		if (prio > arg->op.prio)
+ 			return process_op(event, arg, tok);
