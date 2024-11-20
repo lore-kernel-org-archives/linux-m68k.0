@@ -1,147 +1,111 @@
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [195.130.137.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890621A08A0
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Nov 2024 11:47:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2811A304A
+	for <linux-m68k@vger.kernel.org>; Wed, 20 Nov 2024 12:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732103251; cv=none; b=jztL7xjq1jQQ8eUDtOblPKeyO8MDQEnhZpkg4Ar98+Kiy9Puzfcp8CfjCM9vmgci3ibdqjiv4Sf8mnjRXgEulVWTP39ta3DA4BdiotgVhA8cUK5DXFXHXIET9hArgY5mDPbR6CgKL24SqwEQoA1v7zyBP1Fz5ORe6tcB+rNikic=
+	t=1732106799; cv=none; b=dxY/hjrFSnbw9krR5zNu2Zds4brzZVgSA1BDPu1mmHqDrcsmuGXL8MCLqh65ZwgZFfqOp2ROPIPDgiBG6m0ZuhrforLLuNelP9uHWuOeo5buk1lcTAgmLLGRCnqhOpSMYMRyBMIlSHqumrAqVkt9auqXJDPASYlxAjUZm+XMzBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732103251; c=relaxed/simple;
-	bh=XkEffpyIqiEsba7l9Vf6CNWXjkxxfYCKnu1NCVW/Z7A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=icRuxS7HxQKAwxfySNkUYMTn6qROmmhXuazijhEyoX8vir/1QutIRHDSsP/iAeICFBuufNeEUOJSU/Dy7wjCZzExBKWjD3LAtjKkCZ/+WvUxh4mOUhi1nNIPGOBZj2jHdYtE+aLLk1xE9ht356B/M1hmYe2kB/0fuT5y5jAXml0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=ns0pgN0l; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="ns0pgN0l"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5844DE0004;
-	Wed, 20 Nov 2024 11:47:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1732103241;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UFUtohqITXGudof2VJAlVLHl8l/Ydbd2GzYsCg1X3UM=;
-	b=ns0pgN0lI6nONYq3+O5ZeUIDeerQHw+aKmBsEXYZpve99uHnIzKXdwVzAxvyfnxF/uuZV9
-	jD1a8tSwZDJ5mj9CTisrRC2Yp6Ym6RwqqyF+TJvTw0ssRl28PvDaeu1P/baTsin1qGz6o0
-	H9TNVLD6vXN/mLEXLs3V230dp71PpNOVsbdyb3s+D+JSywYVlR3CSxbgSLfXTsd7M3j2tQ
-	Fno2aZPRcT9Ul7auBsm1daCM1d7fgW0fkch5/teA/7ZQ8uhtDZL6ZANLzQZyB8kjp97Apn
-	jOtffHutE1eBFnwwmsetOqO6X03/GH8wbxXNRMMhctlvPQKJ2+xRqh3LxMp9kg==
-Message-ID: <66e2b7cd-4a4f-4f60-9846-a14c476bd050@yoseli.org>
-Date: Wed, 20 Nov 2024 12:47:19 +0100
+	s=arc-20240116; t=1732106799; c=relaxed/simple;
+	bh=jS7aMpa63T45yjLrS+R35Cy/TD0V6z13wR4ZGFUUcdQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kZmQO/ewJTgFJNza6ESunVQ6B5/SVCFm8oOgFa+kaqNIiTOxcWKIs+5GSqg27j7nJOx9PX9c0tsaFfvTuWuuIppyzvgjvOW/auyHONJQ+7NdSwXP/RhSAGMM7DPy4OBnjn+H3qZAwOHXqQVTGtQGdmmukjfQBuii3yS46CKBSA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:35da:ab43:467b:7991])
+	by michel.telenet-ops.be with cmsmtp
+	id f0mP2D00H3gUftr060mPnS; Wed, 20 Nov 2024 13:46:34 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1tDk5o-007c0T-5O;
+	Wed, 20 Nov 2024 13:46:23 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1tDk6B-009N9j-E0;
+	Wed, 20 Nov 2024 13:46:23 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Mike@rox.of.borg,
+	Rapoport@rox.of.borg,
+	Christian Brauner <brauner@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Kees Cook <keescook@chromium.org>,
+	Jann Horn <jannh@google.com>
+Cc: linux-mm@kvack.org,
+	io-uring@vger.kernel.org,
+	linux-m68k@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] slab: Fix too strict alignment check in create_cache()
+Date: Wed, 20 Nov 2024 13:46:21 +0100
+Message-Id: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
- <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>,
- Tomas Glozar <tglozar@redhat.com>
-References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
- <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
- <20241115102554.29232d34@gandalf.local.home>
- <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
- <20241115145502.631c9a2c@gandalf.local.home>
- <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
- <20241118152057.13042840@gandalf.local.home>
- <22856ed6-b9d0-4206-b88d-4226534c8675@yoseli.org>
- <20241119102631.76363f2a@gandalf.local.home>
- <20241119112850.219834f5@gandalf.local.home>
- <e4456cb1-b1bc-453b-b3b5-3ee4f03995be@yoseli.org>
- <20241119131035.3c42a533@gandalf.local.home>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20241119131035.3c42a533@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Transfer-Encoding: 8bit
 
-Hi Steve,
+On m68k, where the minimum alignment of unsigned long is 2 bytes:
 
-On 19/11/2024 19:10, Steven Rostedt wrote:
-> On Tue, 19 Nov 2024 19:06:45 +0100
-> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
->>>
->>> It shouldn't crash, but it also found a bug in your code ;-)
->>
->> In my code is a really big assumption :-).
-> 
-> Well, not your personally, but I meant "your" as in m68k code.
-> 
->>
->>> You reference two variables that are not part of the event:
->>>
->>>    "mem_map" and "m68k_memory[0].addr"
->>>
->>> Do these variables ever change? Because the TP_printk() part of the
->>> TRACE_EVENT() macro is called a long time after the event is recorded. It
->>> could be seconds, minutes, days or even months (and unlikely possibly
->>> years) later.
->>
->> I am really not the best placed to answer.
->> AFAIK, it sounds like those are never changing.
-> 
-> That would mean they are OK and will not corrupt the trace, but it will be
-> meaningless for tools like perf and trace-cmd.
-> 
->>
->>>
->>> The event takes place and runs the TP_fast_assign() to record the event in
->>> the ring buffer. Then some time later, when you read the "trace" file, the
->>> TP_printk() portion gets run. If you wait months before reading that, it is
->>> executed months later.
->>>
->>> Now you have "mem_map" and "m68k_memory[0].addr" in that output that gets
->>> run months after the fact. Are they constant throughout the boot?
->>
->> I don't know.
->>
->>> Now another issue is that user space has no idea what those values are. Now
->>> user space can not print the values. Currently the code crashes because you
->>> are the first one to reference a global value from a trace event print fmt.
->>> That should probably be fixed to simply fail to parse the event and ignore
->>> the print format logic (which defaults to just printing the raw fields).
->>
->> The patch you sent works...
->> But, it fails a bit later:
->> Dispatching timerlat u procs
->> starting loop
->> User-space timerlat pid 230 on cpu 0
->> Segmentation fault
->>
-> 
-> More printk? ;-)
+    Kernel panic - not syncing: __kmem_cache_create_args: Failed to create slab 'io_kiocb'. Error -22
+    CPU: 0 UID: 0 PID: 1 Comm: swapper Not tainted 6.12.0-atari-03776-g7eaa1f99261a #1783
+    Stack from 0102fe5c:
+	    0102fe5c 00514a2b 00514a2b ffffff00 00000001 0051f5ed 00425e78 00514a2b
+	    0041eb74 ffffffea 00000310 0051f5ed ffffffea ffffffea 00601f60 00000044
+	    0102ff20 000e7a68 0051ab8e 004383b8 0051f5ed ffffffea 000000b8 00000007
+	    01020c00 00000000 000e77f0 0041e5f0 005f67c0 0051f5ed 000000b6 0102fef4
+	    00000310 0102fef4 00000000 00000016 005f676c 0060a34c 00000010 00000004
+	    00000038 0000009a 01000000 000000b8 005f668e 0102e000 00001372 0102ff88
+    Call Trace: [<00425e78>] dump_stack+0xc/0x10
+     [<0041eb74>] panic+0xd8/0x26c
+     [<000e7a68>] __kmem_cache_create_args+0x278/0x2e8
+     [<000e77f0>] __kmem_cache_create_args+0x0/0x2e8
+     [<0041e5f0>] memset+0x0/0x8c
+     [<005f67c0>] io_uring_init+0x54/0xd2
 
-Indeed, but the result is not straightforward this time :-(.
+The minimal alignment of an integral type may differ from its size,
+hence is not safe to assume that an arbitrary freeptr_t (which is
+basically an unsigned long) is always aligned to 4 or 8 bytes.
 
-Long story short: it fails at kbuffer_load_subbuffer() call in
-read_cpu_pages().
+As nothing seems to require the additional alignment, it is safe to fix
+this by relaxing the check to the actual minimum alignment of freeptr_t.
 
-I added printf in the kbuffer helpers in libevent, and it finishes at:
-__read_long_4: call read_4 at 0x600230c2
-__read_4_sw: ptr=0x8044e2ac
+Fixes: aaa736b186239b7d ("io_uring: specify freeptr usage for SLAB_TYPESAFE_BY_RCU io_kiocb cache")
+Fixes: d345bd2e9834e2da ("mm: add kmem_cache_create_rcu()")
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Closes: https://lore.kernel.org/37c588d4-2c32-4aad-a19e-642961f200d7@roeck-us.net
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ mm/slab_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-static unsigned int __read_4_sw(void *ptr)
-{
-	printf("%s: ptr=%p, value: %08x\n", __func__, ptr, *(unsigned int *)ptr);
-	unsigned int data = *(unsigned int *)ptr;
-	printf("%s: data=%08x\n", __func__, data);
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 893d320599151845..f2f201d865c108bd 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -230,7 +230,7 @@ static struct kmem_cache *create_cache(const char *name,
+ 	if (args->use_freeptr_offset &&
+ 	    (args->freeptr_offset >= object_size ||
+ 	     !(flags & SLAB_TYPESAFE_BY_RCU) ||
+-	     !IS_ALIGNED(args->freeptr_offset, sizeof(freeptr_t))))
++	     !IS_ALIGNED(args->freeptr_offset, __alignof(freeptr_t))))
+ 		goto out;
+ 
+ 	err = -ENOMEM;
+-- 
+2.34.1
 
-	return swap_4(data);
-}
-
-As soon as ptr is dereferenced, the segfault appears.
-ptr should be ok though, as the address is valid afaik...
-
-I must say that now I am stuck :-(.
-
-Thanks,
-JM
