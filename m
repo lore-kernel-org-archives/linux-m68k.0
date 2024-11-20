@@ -1,104 +1,74 @@
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D122314EC55
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Nov 2024 16:51:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A1012FF69;
+	Wed, 20 Nov 2024 18:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732121473; cv=none; b=kFAvriyfPta+vUJT10lyllkM8KHLBAo62HAkPPdLX+BRugupHZSWPRHGvPsQ8dnBooKYt4QZWyrC/HBWEOPHaAVnjsHP0sp2BklGw6SNqRSAF3F6ygo0nAoBEHOggRY/pBSFrl//RZ/wZtG2BPftYN4y1bCTLDhwITzAXg6zdiU=
+	t=1732125771; cv=none; b=bEgsAvpu03CUNaU3fuKlLHnkRxR/QLHE9qSPkgh1813SPAmFOA2SHmUfy2UCiAj3LlWDFwdw16OYCbknwZJKoIML+bCZ/aIHPc/gZDX9PtDBc4PeegE3ERuwn1SLb7wU+fmVykvq/5eOxJRX4/SS0ZoibA8VkOjo3ozQyfycGrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732121473; c=relaxed/simple;
-	bh=FCp62Nk3R/z7mBK/KJriUMZ/kO6zaz8UQdOXrf4Pskk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ud1TwSuDp3NINhwoA0T47D2bThpWRiAKqdbPCds9d0Oot9gHcwmQHm+yrdZbRLvqXMKBpSkqiSZnHF8SRilfqdMiqHre6i12zNbB1M8fU0atbX33B3ybbK3QNeOOrXCgsEkL8LmuNcViV3YOEVOlJVudKyx2iSuGQVtXCmQYNvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=WhPD/xyf; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1732125771; c=relaxed/simple;
+	bh=sdW1ywqzef0DiPcYn4D+cJXKXJdd8fJAVTgMxJQcrok=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=rWdHfNCXv42ngtgEqYK6L3rjT2XNSArkW1G6AyvwNtXZ6M4BDkv+a2Y0oWj4E6aPwZemb7Nsvb1Q8UK+WcjW8FbulDXGlpjZwrv/8feCyxTR5H/SOCVbdow4ytBklBLDZFFV+OBFPB7qdno5/ZFlng6s030V1d5e9Mz5O2HOhSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=kP6se4X/; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="WhPD/xyf"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1930F20008;
-	Wed, 20 Nov 2024 16:51:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1732121464;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3FTjxfBZmWQS65GNRmIHMoS/Ljz1h55cLCa9PWWBBNM=;
-	b=WhPD/xyfefmpMjmQi5CDiU8Zbm3LjvbpQUp4fbzCuPb4QXUyeeLJA0TSo482hwjRjrRDci
-	/DaU+tQmhcYymoM7npAwTFS4Sr7F3rR5FgCncLQ1GzPCxF0lV60xhcpQhOdlMj8s3iqdd7
-	5If9tOV1/yyqSeFPhWbIqKJE61UOpg0bghsIX5D+TDetUeYXvD/qmb6YAPbev41suTMHkS
-	bGq7sjK2n95W0x6FANodsBxO0T/WVYenCK2vNLAXSyQPXk46pBBRkUBaHhI4s5PTsx9xOW
-	JYnPWXZiztmNrYtWo49PrnKrSP2UvA925fflYzofzSYD+GWe1CJKAth4jJ8dOg==
-Message-ID: <6da6dfe4-f5f7-4802-902e-47ec89364b35@yoseli.org>
-Date: Wed, 20 Nov 2024 17:51:03 +0100
+	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="kP6se4X/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
+	s=default; t=1732125047;
+	bh=sdW1ywqzef0DiPcYn4D+cJXKXJdd8fJAVTgMxJQcrok=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=kP6se4X/MYCnWvDfI3TBNLuGUC0edJq/nYQAEvTwAxtQOOEXff8ECn4CNZ4tXvSDY
+	 1e9yiTxjsq9nVY4YzrGh46I+1gi/MHw5FrC7LM4ZUxJzDPPX/Xz0q/iLRD844O3jc7
+	 sNfWtNhYjQjhIMmav/JFtu13pDSeya9rbWlRgh2s=
+Received: by gentwo.org (Postfix, from userid 1003)
+	id 650B1401F3; Wed, 20 Nov 2024 09:50:47 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id 62C9C401F0;
+	Wed, 20 Nov 2024 09:50:47 -0800 (PST)
+Date: Wed, 20 Nov 2024 09:50:47 -0800 (PST)
+From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Roman Gushchin <roman.gushchin@linux.dev>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, Jens Axboe <axboe@kernel.dk>, 
+    Pavel Begunkov <asml.silence@gmail.com>, Mike Rapoport <rppt@kernel.org>, 
+    Christian Brauner <brauner@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
+    Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, 
+    linux-mm@kvack.org, io-uring@vger.kernel.org, linux-m68k@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] slab: Fix too strict alignment check in create_cache()
+In-Reply-To: <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz>
+Message-ID: <2e704ffc-2e79-27f7-159e-8fe167d5a450@gentwo.org>
+References: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org> <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
- <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>,
- Tomas Glozar <tglozar@redhat.com>
-References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
- <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
- <20241115102554.29232d34@gandalf.local.home>
- <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
- <20241115145502.631c9a2c@gandalf.local.home>
- <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
- <20241118152057.13042840@gandalf.local.home>
- <22856ed6-b9d0-4206-b88d-4226534c8675@yoseli.org>
- <20241119102631.76363f2a@gandalf.local.home>
- <20241119112850.219834f5@gandalf.local.home>
- <e4456cb1-b1bc-453b-b3b5-3ee4f03995be@yoseli.org>
- <20241119131035.3c42a533@gandalf.local.home>
- <66e2b7cd-4a4f-4f60-9846-a14c476bd050@yoseli.org>
- <20241120103150.3442d658@gandalf.local.home>
- <2dc1cdfa-d33a-48b6-ab77-d04b06a3efe8@yoseli.org>
- <20241120114341.30ac73c6@gandalf.local.home>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20241120114341.30ac73c6@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Type: text/plain; charset=US-ASCII
 
+On Wed, 20 Nov 2024, Vlastimil Babka wrote:
 
+> >
+> > Fixes: aaa736b186239b7d ("io_uring: specify freeptr usage for SLAB_TYPESAFE_BY_RCU io_kiocb cache")
+> > Fixes: d345bd2e9834e2da ("mm: add kmem_cache_create_rcu()")
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Closes: https://lore.kernel.org/37c588d4-2c32-4aad-a19e-642961f200d7@roeck-us.net
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> Thanks, will add it to slab pull for 6.13.
 
-On 20/11/2024 17:43, Steven Rostedt wrote:
-> On Wed, 20 Nov 2024 16:59:55 +0100
-> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
-> 
->>> And that way you will see what 'ptr' is before the crash. Or did you do
->>> that already?
->>
->> Yes, I did, sorry I thought it was in the previous dump :-(.
-> 
-> Can you see if this makes a difference?
-> 
-> Patch libtracefs:
-> 
-> diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-> index 77d1ba89b038..19ea3b3f8d36 100644
-> --- a/src/tracefs-events.c
-> +++ b/src/tracefs-events.c
-> @@ -274,7 +274,7 @@ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
->   		if (snapshot)
->   			tcpu = tracefs_cpu_snapshot_open(instance, cpu, true);
->   		else
-> -			tcpu = tracefs_cpu_open_mapped(instance, cpu, true);
-> +			tcpu = tracefs_cpu_open(instance, cpu, true);
->   		if (!tcpu)
->   			goto error;
->   
+Note that there are widespread assumptions in kernel code that the
+alignment of scalars is the "natural alignment". Other portions of the
+kernel may break. The compiler actually goes along with this??
 
-Nope. Nice try :-) !
+How do you deal with torn reads/writes in such a scenario? Is this UP
+only?
 
-If you need me to add a few specific printfs I can run it.
-
-JM
