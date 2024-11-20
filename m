@@ -1,83 +1,104 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C56155300
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Nov 2024 16:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D122314EC55
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Nov 2024 16:51:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732120990; cv=none; b=N/t6GoxMTNRvsIOLZozzqeicFh+BK0BxMN84JWpXM1xVbGJ22Kr3DPXBax5WmMHuYj9t+8meDYb4skEndjXmtvKYM0V0+8VAv+65gya35bsh7/Wp0+xp87zv2mun8gkrzV3z1E/RCYC/ATRQDBVHi2L0muK2L3u3zkMnfMRqBp8=
+	t=1732121473; cv=none; b=kFAvriyfPta+vUJT10lyllkM8KHLBAo62HAkPPdLX+BRugupHZSWPRHGvPsQ8dnBooKYt4QZWyrC/HBWEOPHaAVnjsHP0sp2BklGw6SNqRSAF3F6ygo0nAoBEHOggRY/pBSFrl//RZ/wZtG2BPftYN4y1bCTLDhwITzAXg6zdiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732120990; c=relaxed/simple;
-	bh=VoKLmbRrI7wCnPyJA/0lO81/9Rgx94RGC1msUcc1qss=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hQig19X3KuDEnCuLPZGiALsPd23rcpz9HEwH3DJ5qfogeBGSsV9ahkQzQqjx/uQEzVd0rBtaKWZhZeJfqre2I/r6OsJ9jWENsvfuR7i3UtmYKJnFZCJbr1AHjLyZH2vrv/SQHKjDqNgZGLT/VQNwbddvwes2OLzlRS9RS2Zbgc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2D58C5C53CE;
-	Wed, 20 Nov 2024 16:42:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF736C4CECD;
-	Wed, 20 Nov 2024 16:43:05 +0000 (UTC)
-Date: Wed, 20 Nov 2024 11:43:41 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
- <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, Tomas Glozar
- <tglozar@redhat.com>
-Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-Message-ID: <20241120114341.30ac73c6@gandalf.local.home>
-In-Reply-To: <2dc1cdfa-d33a-48b6-ab77-d04b06a3efe8@yoseli.org>
-References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
-	<3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
-	<20241115102554.29232d34@gandalf.local.home>
-	<cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
-	<20241115145502.631c9a2c@gandalf.local.home>
-	<2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
-	<20241118152057.13042840@gandalf.local.home>
-	<22856ed6-b9d0-4206-b88d-4226534c8675@yoseli.org>
-	<20241119102631.76363f2a@gandalf.local.home>
-	<20241119112850.219834f5@gandalf.local.home>
-	<e4456cb1-b1bc-453b-b3b5-3ee4f03995be@yoseli.org>
-	<20241119131035.3c42a533@gandalf.local.home>
-	<66e2b7cd-4a4f-4f60-9846-a14c476bd050@yoseli.org>
-	<20241120103150.3442d658@gandalf.local.home>
-	<2dc1cdfa-d33a-48b6-ab77-d04b06a3efe8@yoseli.org>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1732121473; c=relaxed/simple;
+	bh=FCp62Nk3R/z7mBK/KJriUMZ/kO6zaz8UQdOXrf4Pskk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ud1TwSuDp3NINhwoA0T47D2bThpWRiAKqdbPCds9d0Oot9gHcwmQHm+yrdZbRLvqXMKBpSkqiSZnHF8SRilfqdMiqHre6i12zNbB1M8fU0atbX33B3ybbK3QNeOOrXCgsEkL8LmuNcViV3YOEVOlJVudKyx2iSuGQVtXCmQYNvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=WhPD/xyf; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="WhPD/xyf"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1930F20008;
+	Wed, 20 Nov 2024 16:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1732121464;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3FTjxfBZmWQS65GNRmIHMoS/Ljz1h55cLCa9PWWBBNM=;
+	b=WhPD/xyfefmpMjmQi5CDiU8Zbm3LjvbpQUp4fbzCuPb4QXUyeeLJA0TSo482hwjRjrRDci
+	/DaU+tQmhcYymoM7npAwTFS4Sr7F3rR5FgCncLQ1GzPCxF0lV60xhcpQhOdlMj8s3iqdd7
+	5If9tOV1/yyqSeFPhWbIqKJE61UOpg0bghsIX5D+TDetUeYXvD/qmb6YAPbev41suTMHkS
+	bGq7sjK2n95W0x6FANodsBxO0T/WVYenCK2vNLAXSyQPXk46pBBRkUBaHhI4s5PTsx9xOW
+	JYnPWXZiztmNrYtWo49PrnKrSP2UvA925fflYzofzSYD+GWe1CJKAth4jJ8dOg==
+Message-ID: <6da6dfe4-f5f7-4802-902e-47ec89364b35@yoseli.org>
+Date: Wed, 20 Nov 2024 17:51:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>,
+ Tomas Glozar <tglozar@redhat.com>
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+ <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
+ <20241115102554.29232d34@gandalf.local.home>
+ <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
+ <20241115145502.631c9a2c@gandalf.local.home>
+ <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+ <20241118152057.13042840@gandalf.local.home>
+ <22856ed6-b9d0-4206-b88d-4226534c8675@yoseli.org>
+ <20241119102631.76363f2a@gandalf.local.home>
+ <20241119112850.219834f5@gandalf.local.home>
+ <e4456cb1-b1bc-453b-b3b5-3ee4f03995be@yoseli.org>
+ <20241119131035.3c42a533@gandalf.local.home>
+ <66e2b7cd-4a4f-4f60-9846-a14c476bd050@yoseli.org>
+ <20241120103150.3442d658@gandalf.local.home>
+ <2dc1cdfa-d33a-48b6-ab77-d04b06a3efe8@yoseli.org>
+ <20241120114341.30ac73c6@gandalf.local.home>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <20241120114341.30ac73c6@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-On Wed, 20 Nov 2024 16:59:55 +0100
-Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
 
-> > And that way you will see what 'ptr' is before the crash. Or did you do
-> > that already?  
+
+On 20/11/2024 17:43, Steven Rostedt wrote:
+> On Wed, 20 Nov 2024 16:59:55 +0100
+> Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org> wrote:
 > 
-> Yes, I did, sorry I thought it was in the previous dump :-(.
+>>> And that way you will see what 'ptr' is before the crash. Or did you do
+>>> that already?
+>>
+>> Yes, I did, sorry I thought it was in the previous dump :-(.
+> 
+> Can you see if this makes a difference?
+> 
+> Patch libtracefs:
+> 
+> diff --git a/src/tracefs-events.c b/src/tracefs-events.c
+> index 77d1ba89b038..19ea3b3f8d36 100644
+> --- a/src/tracefs-events.c
+> +++ b/src/tracefs-events.c
+> @@ -274,7 +274,7 @@ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
+>   		if (snapshot)
+>   			tcpu = tracefs_cpu_snapshot_open(instance, cpu, true);
+>   		else
+> -			tcpu = tracefs_cpu_open_mapped(instance, cpu, true);
+> +			tcpu = tracefs_cpu_open(instance, cpu, true);
+>   		if (!tcpu)
+>   			goto error;
+>   
 
-Can you see if this makes a difference?
+Nope. Nice try :-) !
 
-Patch libtracefs:
+If you need me to add a few specific printfs I can run it.
 
-diff --git a/src/tracefs-events.c b/src/tracefs-events.c
-index 77d1ba89b038..19ea3b3f8d36 100644
---- a/src/tracefs-events.c
-+++ b/src/tracefs-events.c
-@@ -274,7 +274,7 @@ static int open_cpu_files(struct tracefs_instance *instance, cpu_set_t *cpus,
- 		if (snapshot)
- 			tcpu = tracefs_cpu_snapshot_open(instance, cpu, true);
- 		else
--			tcpu = tracefs_cpu_open_mapped(instance, cpu, true);
-+			tcpu = tracefs_cpu_open(instance, cpu, true);
- 		if (!tcpu)
- 			goto error;
- 
-
--- Steve
+JM
