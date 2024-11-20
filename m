@@ -1,51 +1,82 @@
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A1012FF69;
-	Wed, 20 Nov 2024 18:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF01156F4C
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 20 Nov 2024 22:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732125771; cv=none; b=bEgsAvpu03CUNaU3fuKlLHnkRxR/QLHE9qSPkgh1813SPAmFOA2SHmUfy2UCiAj3LlWDFwdw16OYCbknwZJKoIML+bCZ/aIHPc/gZDX9PtDBc4PeegE3ERuwn1SLb7wU+fmVykvq/5eOxJRX4/SS0ZoibA8VkOjo3ozQyfycGrQ=
+	t=1732140791; cv=none; b=qS7py6i1PaSvR1uAT8w3GHfnru7ULTFjK6kj5Ytde/Wube4j/LGHdYYULPB1zPdEV9dBGg0yX/ZZ8raqKJEOQjbt2NvjiasxMa1mYrwaHEwN5FoTh9iwGtM5yAcWV1NoOHxBinUBs/gx7ESWrrslf6B17yIdRl5t7Bl1k+F0rSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732125771; c=relaxed/simple;
-	bh=sdW1ywqzef0DiPcYn4D+cJXKXJdd8fJAVTgMxJQcrok=;
+	s=arc-20240116; t=1732140791; c=relaxed/simple;
+	bh=+jYr99kgIwGKAChE/kXX2oMx4HkeCBcqe3sYX6Nq9+U=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=rWdHfNCXv42ngtgEqYK6L3rjT2XNSArkW1G6AyvwNtXZ6M4BDkv+a2Y0oWj4E6aPwZemb7Nsvb1Q8UK+WcjW8FbulDXGlpjZwrv/8feCyxTR5H/SOCVbdow4ytBklBLDZFFV+OBFPB7qdno5/ZFlng6s030V1d5e9Mz5O2HOhSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=kP6se4X/; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
+	 MIME-Version:Content-Type; b=QGOJLjfdh5NTcFYN3hU6JyQn1N2Ils7g5nSD2g/3h/He26WTMMBeI9jWaAXMbi3KgLugjvp3Dilp+xTpE1v06wJpyX2lNCSNntISey+w/dsikcA7hRHiOwwWipi/rYXVZgmZjGVFNUnbEJUM3jFatCblNrDLJs61LpMSzDTL2T4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kBThlPvy; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="kP6se4X/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
-	s=default; t=1732125047;
-	bh=sdW1ywqzef0DiPcYn4D+cJXKXJdd8fJAVTgMxJQcrok=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=kP6se4X/MYCnWvDfI3TBNLuGUC0edJq/nYQAEvTwAxtQOOEXff8ECn4CNZ4tXvSDY
-	 1e9yiTxjsq9nVY4YzrGh46I+1gi/MHw5FrC7LM4ZUxJzDPPX/Xz0q/iLRD844O3jc7
-	 sNfWtNhYjQjhIMmav/JFtu13pDSeya9rbWlRgh2s=
-Received: by gentwo.org (Postfix, from userid 1003)
-	id 650B1401F3; Wed, 20 Nov 2024 09:50:47 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id 62C9C401F0;
-	Wed, 20 Nov 2024 09:50:47 -0800 (PST)
-Date: Wed, 20 Nov 2024 09:50:47 -0800 (PST)
-From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To: Vlastimil Babka <vbabka@suse.cz>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kBThlPvy"
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfout.stl.internal (Postfix) with ESMTP id 4149C1140160;
+	Wed, 20 Nov 2024 17:13:08 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Wed, 20 Nov 2024 17:13:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1732140788; x=1732227188; bh=uMjFyXdDEF2OdP6Uyzjv1RKYNI4wBqQvwHY
+	YDfBysQQ=; b=kBThlPvylNJYa27uj4TOOWP7UE/8wI5QU6//4j1CHg7u0S3Aqu4
+	sbCEyNV+oZ3vvS12vPR+Me3obJz23+soRW7AXG/H/zicHOEyLS+jT1XLLNyAsMp/
+	iaPVNciKXpMMeXLfrcbWqwJWIPahtVwpwIpO4T2eKW77qDk3HWBFb/k7tfomI1K8
+	h3C0CymQaEHW6knt6womlnsaMF9hVn5w0aVqZEegrMaD3Ji4SGx55AvxtcJBKoYn
+	h2rWL9yPqukFztfv61tf/UG/YrckePXSCmFsnhbQqUvbKxlxAmj0FnkBLNqQgT3V
+	zadnWOKg1zOY66MFB4DdbLe5/OBNYCwV2oA==
+X-ME-Sender: <xms:8l4-ZzNv0sMNKc6x0cqErTjqsIYtKmXagStViS2taDzyB4agwd4V0Q>
+    <xme:8l4-Z99Ge3X3wWFv1CE5BLwGkRtI3I9kelpFDqdxKCutY6LggNeM8CTPQhWJGHiqc
+    lJs2i_KVwo06OZZdrs>
+X-ME-Received: <xmr:8l4-ZyTfHXaUhLVjsg8rY1r2C32kqvKEeozM8B_HRi09OMnuKNbgURpB4rZiGK7GxZDfRjWWi9dm6x5Utrs_vjP3SnA_EIdY2I4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrfeeggdduheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
+    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
+    horhhgqeenucggtffrrghtthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefg
+    vddtkeekvdekhefftdekvedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhn
+    sehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepuddtpdhmohguvgepsh
+    hmthhpohhuthdprhgtphhtthhopegrlhgvgigrnhgurhgvrdgsvghllhhonhhisegsohho
+    thhlihhnrdgtohhmpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorh
+    hgpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthho
+    pegrnhgurhgvrghssehgrghishhlvghrrdgtohhmpdhrtghpthhtohepuggrnhhivghlse
+    dtgidtfhdrtghomhdprhgtphhtthhopehprghvohhnvgesrhgvthhrohguvghvrdgtohhm
+    pdhrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkh
+    drohhrghdprhgtphhtthhopehlihhnuhigqdhrthgtsehvghgvrhdrkhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohepshhprghrtghlihhnuhigsehvghgvrhdrkhgvrhhnvghlrdhorh
+    hg
+X-ME-Proxy: <xmx:8l4-Z3vGRVPUIUZs1s6-mKlVOQJnjgylWywUZUqJv4glC3Cy_Cvwnw>
+    <xmx:8l4-Z7fIrwT7Deirs53qPYdiJL-a1QSkOcPOoo1C3OtbCQxG2IeXZA>
+    <xmx:8l4-Zz18xyg1rI4rGxF7nyMyxDbGtfgN4OxPzgHVgaqVpRs1jNuZvg>
+    <xmx:8l4-Z39FaHe2v4QzSL9y1JcIDXsREXS65HboVgBOX6hpCidQKHJCAA>
+    <xmx:9F4-Z_57Fd1vKEmimFSHMSs4kESqvvfmVWrgZC5wMYWjvjs1rdO0AM12>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 20 Nov 2024 17:13:03 -0500 (EST)
+Date: Thu, 21 Nov 2024 09:13:32 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
 cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
-    Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    Hyeonggon Yoo <42.hyeyoo@gmail.com>, Jens Axboe <axboe@kernel.dk>, 
-    Pavel Begunkov <asml.silence@gmail.com>, Mike Rapoport <rppt@kernel.org>, 
-    Christian Brauner <brauner@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
-    Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, 
-    linux-mm@kvack.org, io-uring@vger.kernel.org, linux-m68k@vger.kernel.org, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Andreas Larsson <andreas@gaisler.com>, Daniel Palmer <daniel@0x0f.com>, 
+    Michael Pavone <pavone@retrodev.com>, linux-m68k@lists.linux-m68k.org, 
+    linux-rtc@vger.kernel.org, sparclinux@vger.kernel.org, 
     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] slab: Fix too strict alignment check in create_cache()
-In-Reply-To: <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz>
-Message-ID: <2e704ffc-2e79-27f7-159e-8fe167d5a450@gentwo.org>
-References: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org> <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz>
+Subject: Re: (subset) [PATCH v4 1/2] rtc: m48t59: Use platform_data struct
+ for year offset value
+In-Reply-To: <173193673970.37302.12055966881506116157.b4-ty@bootlin.com>
+Message-ID: <8140c873-3456-1469-8bc5-2e94d409cf8a@linux-m68k.org>
+References: <cover.1731450735.git.fthain@linux-m68k.org> <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org> <173193673970.37302.12055966881506116157.b4-ty@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -54,21 +85,20 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 
-On Wed, 20 Nov 2024, Vlastimil Babka wrote:
 
-> >
-> > Fixes: aaa736b186239b7d ("io_uring: specify freeptr usage for SLAB_TYPESAFE_BY_RCU io_kiocb cache")
-> > Fixes: d345bd2e9834e2da ("mm: add kmem_cache_create_rcu()")
-> > Reported-by: Guenter Roeck <linux@roeck-us.net>
-> > Closes: https://lore.kernel.org/37c588d4-2c32-4aad-a19e-642961f200d7@roeck-us.net
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Thanks, will add it to slab pull for 6.13.
+On Mon, 18 Nov 2024, Alexandre Belloni wrote:
 
-Note that there are widespread assumptions in kernel code that the
-alignment of scalars is the "natural alignment". Other portions of the
-kernel may break. The compiler actually goes along with this??
+> On Wed, 13 Nov 2024 09:32:15 +1100, Finn Thain wrote:
+> > Instead of hard-coded values and ifdefs, store the year offset in the
+> > platform_data struct.
+> > 
+> > 
+> 
+> Applied, thanks!
+> 
+> [1/2] rtc: m48t59: Use platform_data struct for year offset value
+>       https://git.kernel.org/abelloni/c/a06e4a93067c
+> 
 
-How do you deal with torn reads/writes in such a scenario? Is this UP
-only?
-
+Thanks, Alexandre. Would you also take patch 2/2, please? Geert has sent a 
+reviewed-by tag for that one too.
