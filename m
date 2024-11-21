@@ -1,79 +1,84 @@
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F94188907;
-	Thu, 21 Nov 2024 17:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6350E13C67E
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Nov 2024 17:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732210366; cv=none; b=Sjx4EV0AO6wogk6W3r/SoMXA5lf2fMQRGouQngRLkaCxmQmAN23ALYIzdk8Q4cXSAql0EFGRUYFP3X7XbX02SGPtfRzjCKC+t5SwBlrRyovyjVqh28xFuc7LnOAFPxUu2KKnsUGD2BwESPhyL1hdkzLUD38Q+0cPWuL+TCX3780=
+	t=1732211201; cv=none; b=tu2k2LUiFdVwyZdreFOPj/3dsM28IafSdnoM0JnoTwxlRGcymGkexE+hzcOss0PkpjL4eQgoEwQz5SNizMR0lMu+Doqz7b5xum2dPiIpxhRak5rE8MH7i1Rmx1o8eMau1EjTVZSeDfaoVxn5fZd5FO754xL3NQOyk88PZklrQic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732210366; c=relaxed/simple;
-	bh=dGIvAVVhr1XQ+IBWwKJiytD8adIRDF3znbGFVaI1CE8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=apVXiSAF1WJu/gUMm3EeG/y1LLbn+RchCNEV1Bu+XWLGgX192h3xaQKUjZmpcIfD3h+/5zYnmIuAAOHefH/Ym0h68/K8pnjM7u1gGCsrT++gp1eWC5iuu6u5GwrEDMAkpZMu548Nw9/SkzePDORA4wjV/CLylG5QbvDsTh2BH+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=AUZeXvlh; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
+	s=arc-20240116; t=1732211201; c=relaxed/simple;
+	bh=S43Mq/gZ58PAeUpK3Kr5oIpsndIsTPDPFJ68onZvPuI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MdCLqjeC9De106HvGTdkpqLtGTvNkL/LTyYAV8r8p25KeG+JBqDKVdS5rLPbttYpbNtvjmfEU7lnt0pyUm7u/uzJlV4/T4g+knR7KKxLNDyPwACHIht1dQB/BEvqqCnaD/n9MItyAmn25kZV/fa7FztE21gbLEfrXw+9sKYQVbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Chu2yLaY; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="AUZeXvlh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
-	s=default; t=1732209808;
-	bh=dGIvAVVhr1XQ+IBWwKJiytD8adIRDF3znbGFVaI1CE8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=AUZeXvlhRTQXOreYKQ5tM6otggSm6Vmlfpnt6jWROdE8oB9IViP6vwvSzWiBSxH3B
-	 m+s13vkh7TkgT+a+wMGPI53H4oy4UB4eV3H+LH5QLoKAJvLaR/fxnklp+9E6qBAh5i
-	 SHbp4BMgosdGgvJTZj/UC6b9OP4roggPYEssKGzs=
-Received: by gentwo.org (Postfix, from userid 1003)
-	id 8CC9B401F4; Thu, 21 Nov 2024 09:23:28 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id 89830401EE;
-	Thu, 21 Nov 2024 09:23:28 -0800 (PST)
-Date: Thu, 21 Nov 2024 09:23:28 -0800 (PST)
-From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: Vlastimil Babka <vbabka@suse.cz>, Pekka Enberg <penberg@kernel.org>, 
-    David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    Hyeonggon Yoo <42.hyeyoo@gmail.com>, Jens Axboe <axboe@kernel.dk>, 
-    Pavel Begunkov <asml.silence@gmail.com>, Mike Rapoport <rppt@kernel.org>, 
-    Christian Brauner <brauner@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
-    Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, 
-    linux-mm@kvack.org, io-uring@vger.kernel.org, linux-m68k@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] slab: Fix too strict alignment check in create_cache()
-In-Reply-To: <CAMuHMdWQisrjqaPPd0xLgtSAxRwnxCPdsqnWSncMiPYLnre2MA@mail.gmail.com>
-Message-ID: <693a6243-b2bd-7f2b-2b69-c7e2308d0f58@gentwo.org>
-References: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org> <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz> <2e704ffc-2e79-27f7-159e-8fe167d5a450@gentwo.org> <CAMuHMdWQisrjqaPPd0xLgtSAxRwnxCPdsqnWSncMiPYLnre2MA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Chu2yLaY"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 38DC160011;
+	Thu, 21 Nov 2024 17:46:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1732211192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L3SwyqwafSAOqsWPPRTD47TFcNVAitnw7DSiwOQ868Q=;
+	b=Chu2yLaYwK3bT1H75qjMKmKgMUMryBXxDJunSuyzQbW385w2epw4RgTZkJZoq7z/og9g2U
+	35k6LcjYgbvEY0PnBEyQbBPXvAS0ll2cqeBhCym2H0y/ypO3ywybt12M2h4cAM+ETUhcmy
+	3TZDAAAvFb/fHidf+GNbp5DUlFDcMD7HS2Fn0rNEzMfOOiqbVaLE2oncbehuS9g/fE98ok
+	xExKWWkEOMgBi0Kkh6iBsHeDR+cNuibreglV4Lm4jrZ61lPD+eFtD2rHJp/t9A9wSieQJE
+	2qK9TiQvKWKvyjVm/efCRbVaP1qm7Jmi2pOriiuMFnNnUQW6yaF/KZC+WcAfjg==
+Date: Thu, 21 Nov 2024 18:46:30 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Daniel Palmer <daniel@0x0f.com>,
+	Michael Pavone <pavone@retrodev.com>,
+	linux-m68k@lists.linux-m68k.org, linux-rtc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH v4 1/2] rtc: m48t59: Use platform_data struct
+ for year offset value
+Message-ID: <20241121174630cbc6cfa6@mail.local>
+References: <cover.1731450735.git.fthain@linux-m68k.org>
+ <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org>
+ <173193673970.37302.12055966881506116157.b4-ty@bootlin.com>
+ <8140c873-3456-1469-8bc5-2e94d409cf8a@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8140c873-3456-1469-8bc5-2e94d409cf8a@linux-m68k.org>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Thu, 21 Nov 2024, Geert Uytterhoeven wrote:
+On 21/11/2024 09:13:32+1100, Finn Thain wrote:
+> 
+> On Mon, 18 Nov 2024, Alexandre Belloni wrote:
+> 
+> > On Wed, 13 Nov 2024 09:32:15 +1100, Finn Thain wrote:
+> > > Instead of hard-coded values and ifdefs, store the year offset in the
+> > > platform_data struct.
+> > > 
+> > > 
+> > 
+> > Applied, thanks!
+> > 
+> > [1/2] rtc: m48t59: Use platform_data struct for year offset value
+> >       https://git.kernel.org/abelloni/c/a06e4a93067c
+> > 
+> 
+> Thanks, Alexandre. Would you also take patch 2/2, please? Geert has sent a 
+> reviewed-by tag for that one too.
 
-> Linux has supported m68k since last century.
+I thought Geert would take it as this only touches arch/m68k
 
-Yeah I fondly remember the 80s where 68K systems were always out of reach
-for me to have. The dream system that I never could get my hands on. The
-creme de la creme du jour. I just had to be content with the 6800 and
-6502 processors. Then IBM started the sick road down the 8088, 8086
-that led from crap to more crap. Sigh.
-
-> Any new such assumptions are fixed quickly (at least in the kernel).
-> If you need a specific alignment, make sure to use __aligned and/or
-> appropriate padding in structures.
-> And yes, the compiler knows, and provides __alignof__.
->
-> > How do you deal with torn reads/writes in such a scenario? Is this UP
-> > only?
->
-> Linux does not support (rate) SMP m68k machines.
-
-Ah. Ok that explains it.
-
-Do we really need to maintain support for a platform that has been
-obsolete for decade and does not even support SMP?
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
