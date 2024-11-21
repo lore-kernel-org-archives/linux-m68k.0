@@ -1,87 +1,79 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB2A1CB322;
-	Thu, 21 Nov 2024 10:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F94188907;
+	Thu, 21 Nov 2024 17:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732184355; cv=none; b=qIlWwEP2jpRnfX6F4Iirk3LsCgPszsxQwvE3FbFhGJYHCFctGBv/uPwG94eiwYv6l/sCmA576zx5u3AYhNFvNjueBtGbu7xi+4ee30BUgCtl7gHGzSiiJBOLwf8qyEX9JuwcmVSYue23M5cYoxparRtL2JeGRzl8TM3X0UcI3vo=
+	t=1732210366; cv=none; b=Sjx4EV0AO6wogk6W3r/SoMXA5lf2fMQRGouQngRLkaCxmQmAN23ALYIzdk8Q4cXSAql0EFGRUYFP3X7XbX02SGPtfRzjCKC+t5SwBlrRyovyjVqh28xFuc7LnOAFPxUu2KKnsUGD2BwESPhyL1hdkzLUD38Q+0cPWuL+TCX3780=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732184355; c=relaxed/simple;
-	bh=vdU01yydMwwx3sSdNOgVdvAm97pz89kQ5OB0TAdlmVI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ifN0dU2FuQpCAIHpkAFC8tkbUK//HBI0aO2oUwUrPq+l1Rtm0jYOg+jld6N+aHQWety9kdVo2Irf2HWygwji0y++wHFTci0NGp9gCjoZ+dvAN+6riFqZifZRtfst5yX4iPPel3x5VQcTRcoURjx7jgl24WiUTpB7CwtSGnDSjMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WqOtcATb; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1732210366; c=relaxed/simple;
+	bh=dGIvAVVhr1XQ+IBWwKJiytD8adIRDF3znbGFVaI1CE8=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=apVXiSAF1WJu/gUMm3EeG/y1LLbn+RchCNEV1Bu+XWLGgX192h3xaQKUjZmpcIfD3h+/5zYnmIuAAOHefH/Ym0h68/K8pnjM7u1gGCsrT++gp1eWC5iuu6u5GwrEDMAkpZMu548Nw9/SkzePDORA4wjV/CLylG5QbvDsTh2BH+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=AUZeXvlh; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gentwo.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WqOtcATb"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7484C4CECC;
-	Thu, 21 Nov 2024 10:19:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732184355;
-	bh=vdU01yydMwwx3sSdNOgVdvAm97pz89kQ5OB0TAdlmVI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WqOtcATb1VkKmyUI/NcRWkuA09JLY/gsuhqTD+gzFS/qKpmoOPMzMk0ePxX4ocACb
-	 4EB2TRDNyFEsdXY/NDfvGyD/DDcn+EWCl0wSIVE237WWygYuKiQmzyjvaAdawtPcnW
-	 GIXmpkzJ/DAw+y1awNeD3VlflRD6cofwoz7W1h1+UyRUcTCG8lU0j7Tle69F7M/9f0
-	 6BprUazlD8s8yrLdQo3ENUYufgH+duQqZkYYO+/J1Md3k5fPj0JJTU42PR2X4Bt23u
-	 M0pR0eGQLP+bRB/bTXbueKJPYPptDJ1eT1a9lN0cWG8VG8GFCFIGs1UNwyZYIYYF1Q
-	 wFsfNy8pTVlhw==
-Date: Thu, 21 Nov 2024 11:19:07 +0100
-From: Christian Brauner <brauner@kernel.org>
+	dkim=pass (1024-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="AUZeXvlh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
+	s=default; t=1732209808;
+	bh=dGIvAVVhr1XQ+IBWwKJiytD8adIRDF3znbGFVaI1CE8=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=AUZeXvlhRTQXOreYKQ5tM6otggSm6Vmlfpnt6jWROdE8oB9IViP6vwvSzWiBSxH3B
+	 m+s13vkh7TkgT+a+wMGPI53H4oy4UB4eV3H+LH5QLoKAJvLaR/fxnklp+9E6qBAh5i
+	 SHbp4BMgosdGgvJTZj/UC6b9OP4roggPYEssKGzs=
+Received: by gentwo.org (Postfix, from userid 1003)
+	id 8CC9B401F4; Thu, 21 Nov 2024 09:23:28 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id 89830401EE;
+	Thu, 21 Nov 2024 09:23:28 -0800 (PST)
+Date: Thu, 21 Nov 2024 09:23:28 -0800 (PST)
+From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
-	David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>, Mike@rox.of.borg, 
-	Rapoport@rox.of.borg, Guenter Roeck <linux@roeck-us.net>, 
-	Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-mm@kvack.org, 
-	io-uring@vger.kernel.org, linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+cc: Vlastimil Babka <vbabka@suse.cz>, Pekka Enberg <penberg@kernel.org>, 
+    David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Roman Gushchin <roman.gushchin@linux.dev>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, Jens Axboe <axboe@kernel.dk>, 
+    Pavel Begunkov <asml.silence@gmail.com>, Mike Rapoport <rppt@kernel.org>, 
+    Christian Brauner <brauner@kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
+    Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, 
+    linux-mm@kvack.org, io-uring@vger.kernel.org, linux-m68k@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] slab: Fix too strict alignment check in create_cache()
-Message-ID: <20241121-zwietracht-klugheit-4acf0bb07f2b@brauner>
-References: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org>
+In-Reply-To: <CAMuHMdWQisrjqaPPd0xLgtSAxRwnxCPdsqnWSncMiPYLnre2MA@mail.gmail.com>
+Message-ID: <693a6243-b2bd-7f2b-2b69-c7e2308d0f58@gentwo.org>
+References: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org> <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz> <2e704ffc-2e79-27f7-159e-8fe167d5a450@gentwo.org> <CAMuHMdWQisrjqaPPd0xLgtSAxRwnxCPdsqnWSncMiPYLnre2MA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Nov 20, 2024 at 01:46:21PM +0100, Geert Uytterhoeven wrote:
-> On m68k, where the minimum alignment of unsigned long is 2 bytes:
-> 
->     Kernel panic - not syncing: __kmem_cache_create_args: Failed to create slab 'io_kiocb'. Error -22
->     CPU: 0 UID: 0 PID: 1 Comm: swapper Not tainted 6.12.0-atari-03776-g7eaa1f99261a #1783
->     Stack from 0102fe5c:
-> 	    0102fe5c 00514a2b 00514a2b ffffff00 00000001 0051f5ed 00425e78 00514a2b
-> 	    0041eb74 ffffffea 00000310 0051f5ed ffffffea ffffffea 00601f60 00000044
-> 	    0102ff20 000e7a68 0051ab8e 004383b8 0051f5ed ffffffea 000000b8 00000007
-> 	    01020c00 00000000 000e77f0 0041e5f0 005f67c0 0051f5ed 000000b6 0102fef4
-> 	    00000310 0102fef4 00000000 00000016 005f676c 0060a34c 00000010 00000004
-> 	    00000038 0000009a 01000000 000000b8 005f668e 0102e000 00001372 0102ff88
->     Call Trace: [<00425e78>] dump_stack+0xc/0x10
->      [<0041eb74>] panic+0xd8/0x26c
->      [<000e7a68>] __kmem_cache_create_args+0x278/0x2e8
->      [<000e77f0>] __kmem_cache_create_args+0x0/0x2e8
->      [<0041e5f0>] memset+0x0/0x8c
->      [<005f67c0>] io_uring_init+0x54/0xd2
-> 
-> The minimal alignment of an integral type may differ from its size,
-> hence is not safe to assume that an arbitrary freeptr_t (which is
-> basically an unsigned long) is always aligned to 4 or 8 bytes.
-> 
-> As nothing seems to require the additional alignment, it is safe to fix
-> this by relaxing the check to the actual minimum alignment of freeptr_t.
-> 
-> Fixes: aaa736b186239b7d ("io_uring: specify freeptr usage for SLAB_TYPESAFE_BY_RCU io_kiocb cache")
-> Fixes: d345bd2e9834e2da ("mm: add kmem_cache_create_rcu()")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Closes: https://lore.kernel.org/37c588d4-2c32-4aad-a19e-642961f200d7@roeck-us.net
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
+On Thu, 21 Nov 2024, Geert Uytterhoeven wrote:
 
-Looks good to me,
-Reviewed-by: Christian Brauner <brauner@kernel.org>
+> Linux has supported m68k since last century.
+
+Yeah I fondly remember the 80s where 68K systems were always out of reach
+for me to have. The dream system that I never could get my hands on. The
+creme de la creme du jour. I just had to be content with the 6800 and
+6502 processors. Then IBM started the sick road down the 8088, 8086
+that led from crap to more crap. Sigh.
+
+> Any new such assumptions are fixed quickly (at least in the kernel).
+> If you need a specific alignment, make sure to use __aligned and/or
+> appropriate padding in structures.
+> And yes, the compiler knows, and provides __alignof__.
+>
+> > How do you deal with torn reads/writes in such a scenario? Is this UP
+> > only?
+>
+> Linux does not support (rate) SMP m68k machines.
+
+Ah. Ok that explains it.
+
+Do we really need to maintain support for a platform that has been
+obsolete for decade and does not even support SMP?
