@@ -1,86 +1,119 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4D31A4F20;
-	Thu, 21 Nov 2024 22:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64871BD031
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Nov 2024 22:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732226550; cv=none; b=PoGOZJ/z6O9vMRb8uuWCg+29xN4o6OJD2CmZiWMz6E0yAvrN6x55ocRZjsW7oSbIyTQEB/jThEu13483Zvz3RCIK64zXEofEssCrwDKLn9wPHlNLpA11RVtzzFtclvNH1xN8GCG9qHkQwz2xrx9UJUlrViAqbsB7c0ETiWbe+wk=
+	t=1732227855; cv=none; b=t+IgFd96xTuG+Fl8EN9oWfxRxjpmLM5qFM/6SqB5TcJUpG3NTT7Wued23gKXQhVXH1R/T99eFg+BOzV5P2Jj5tWcNGs6w1e+d/4/BuphS0syBsP6wQzaQgW6f63U+1vMiS/gmLzaWFoaTHXsAQzPXYPkmqTkGFXvUCS7Q+d3Q1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732226550; c=relaxed/simple;
-	bh=oaON3TQHvbhvp5NiT5tAyPyIpSYNjJS8Ed01fZqfTkQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AltEtD3cSSBJeTL0X8b9IFcpFWkqoxuTvVDJpasJ6waMZ6UibuelPmmWDImUhagUj7RFQ+1KaeUzykb4BQHLwxd+/Y9Z9PR37vpnhgnOQTYbwPMVpzcYVEZV1I9BOWZUOyEIQG7XsX7z0yCoBbrCoYSDbs3dmZI7AF33kw2G3FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=m6dPLELz; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1732227855; c=relaxed/simple;
+	bh=LbRgVvQZxj7aaCo9OJqHQ/d5TAe2/ZIQDNFZtvSaUYw=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=h8elCvETyQNOHC9BdvdTb1waTT/XshyMOciBS8kwDH0PW97N40vxFsGfvovi0idt4jr2C4MhtJMlxwvuKSsk4LsDmym2NOzwpf63/IP88V+MOpfT3l7XWM6wyUCOz3FkcRptIU/64+q65Ff+turoCpHaFETCmXosSsj38eCAnnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WrrsqeW7; arc=none smtp.client-ip=202.12.124.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="m6dPLELz"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=rfNI/i+YSTQUMN5oUVqKU2Gc86BnFPrR7NkR/sTSzuE=; t=1732226547; x=1732831347; 
-	b=m6dPLELz6cw5UqDORk/71vXVkzNUP2GKuf6imsM9Lp45ztbW6g6oQfocJYGtEE3f7U57bAQD1F0
-	E0SeiMzUG7e8PDk40b5xnUT+G7BtPyPnwDkYVh+Z8qDgC6P7E9ohIVNuukVWLAbrlH9TTuQUXp/y7
-	93RfY/XorciAHMERIoJiG8SZu9x9DAxOL3uevqyldpL+GQoQ77JJ5zgdobwmOapcVuF+o2ic+PXeZ
-	698u3KndRbSialBrWDlH72zMw8gBYtZGduaoP5Ls5R7RdTgv/Fma2Tx+Ja9EdwnFU/u1z2gox1bQ+
-	J5UME4amF0UIcRY8JeVyddLvmBn4euT8repg==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1tEFFc-00000000dHE-23Pt; Thu, 21 Nov 2024 23:02:12 +0100
-Received: from p57bd904e.dip0.t-ipconnect.de ([87.189.144.78] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1tEFFc-00000000hrq-0sIZ; Thu, 21 Nov 2024 23:02:12 +0100
-Message-ID: <d0d818bb9635d43bde2331864733504f6f7a3635.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] slab: Fix too strict alignment check in create_cache()
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Christoph Lameter
- <cl@linux.com>,  Pekka Enberg <penberg@kernel.org>, David Rientjes
- <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,  Andrew Morton
- <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>, Roman
- Gushchin	 <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Jens Axboe	 <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>,
- Mike@rox.of.borg, 	Rapoport@rox.of.borg, Christian Brauner
- <brauner@kernel.org>, Guenter Roeck	 <linux@roeck-us.net>, Kees Cook
- <keescook@chromium.org>, Jann Horn	 <jannh@google.com>
-Cc: linux-mm@kvack.org, io-uring@vger.kernel.org,
- linux-m68k@vger.kernel.org, 	linux-kernel@vger.kernel.org
-Date: Thu, 21 Nov 2024 23:02:11 +0100
-In-Reply-To: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org>
-References: 
-	<80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WrrsqeW7"
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfout.stl.internal (Postfix) with ESMTP id 9FF6511401BA;
+	Thu, 21 Nov 2024 17:24:11 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Thu, 21 Nov 2024 17:24:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1732227851; x=1732314251; bh=MCnFKlB3Mx4i+GXy8Rv7vHneTCChY5/z+QA
+	XzxW/ABY=; b=WrrsqeW7OWsHAoyf2UXMusNTBhrmKPtFCxTW+5HrJr+hljCj0qj
+	n+Dk5yDtBgzrkwtRx0Lqb0XBT8TcNGRF+sNB1fWqZhjbfA/eCXhW4ZoXvwYsPX39
+	lBpfdaRrOaunp/JwpUAWnU8ohZ4FHa6Vt5obsL+hThfCjIVYkAgBnrBwD7RS+FQ1
+	wZOL0smneA1AgubhBWmKOdQd0F3gWwxc58VPVh8dLDmXgFwKxD+J6gbAEDL3QlE3
+	zAJyZsg/SfwneZU5pzR5EJJmzNU2Z7W1X/l3LNU2etP0/SSDLgnTlTaV6bCwsQng
+	t8DP45ioC4DEqXxAvsQIJ5TP0sohPqKVf1A==
+X-ME-Sender: <xms:CbM_Z1dJchh0Jm26t8yK9bfDLcbItsqVnK5ItKXrn90wZpn2rOGY_A>
+    <xme:CbM_ZzOAt2y9CXYORirjhzT9FIYXVATpRb49nGFL-XPcQcPHygvbjWkMBIwnF-6uo
+    P0QjBsr1IRitnKnqyA>
+X-ME-Received: <xmr:CbM_Z-i_s4eDrggCfVub5KWzPkbGlaIuN4WGf_htexFCdN96q_3FmGAXf39d0fYM7BAFPHD-CWQOmEvHZget1Evbbyu2OBRNxmI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrfeeigdduheekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
+    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
+    horhhgqeenucggtffrrghtthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefg
+    vddtkeekvdekhefftdekvedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhn
+    sehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepuddtpdhmohguvgepsh
+    hmthhpohhuthdprhgtphhtthhopegrlhgvgigrnhgurhgvrdgsvghllhhonhhisegsohho
+    thhlihhnrdgtohhmpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorh
+    hgpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthho
+    pegrnhgurhgvrghssehgrghishhlvghrrdgtohhmpdhrtghpthhtohepuggrnhhivghlse
+    dtgidtfhdrtghomhdprhgtphhtthhopehprghvohhnvgesrhgvthhrohguvghvrdgtohhm
+    pdhrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkh
+    drohhrghdprhgtphhtthhopehlihhnuhigqdhrthgtsehvghgvrhdrkhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtohepshhprghrtghlihhnuhigsehvghgvrhdrkhgvrhhnvghlrdhorh
+    hg
+X-ME-Proxy: <xmx:CbM_Z--RtqQ1Y4Uj7-OYeVidoaJ8EnZwYBEoJTTe27Bzfpl9L_ARTA>
+    <xmx:CbM_ZxuhcC9y9rO-XjiY3EfJldGI6Em_uXpgXyakzMpH-l5VK69Kwg>
+    <xmx:CbM_Z9F2fdMJtSosO7BxLX6tIzwtlSP7jb-Rgu7lT6B3Pi8sS7ScFg>
+    <xmx:CbM_Z4PudP6kHaJ2TCC8f7ZmWNJsMWDbInLA6qd6BSJJeF5uu3OxJg>
+    <xmx:C7M_Z3IM4BwQDYJakFmKQCQBUVNYyi8P3uMVyeMa1mjfvOX10unwvr8X>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 21 Nov 2024 17:24:06 -0500 (EST)
+Date: Fri, 22 Nov 2024 09:24:36 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Andreas Larsson <andreas@gaisler.com>, Daniel Palmer <daniel@0x0f.com>, 
+    Michael Pavone <pavone@retrodev.com>, linux-m68k@lists.linux-m68k.org, 
+    linux-rtc@vger.kernel.org, sparclinux@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH v4 1/2] rtc: m48t59: Use platform_data struct
+ for year offset value
+In-Reply-To: <20241121174630cbc6cfa6@mail.local>
+Message-ID: <e6dbc3e6-5305-7c00-90e7-3d06b1b5e459@linux-m68k.org>
+References: <cover.1731450735.git.fthain@linux-m68k.org> <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org> <173193673970.37302.12055966881506116157.b4-ty@bootlin.com> <8140c873-3456-1469-8bc5-2e94d409cf8a@linux-m68k.org>
+ <20241121174630cbc6cfa6@mail.local>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, 2024-11-20 at 13:46 +0100, Geert Uytterhoeven wrote:
-> On m68k, where the minimum alignment of unsigned long is 2 bytes:
 
-Well, well, well, my old friend strikes again ;-).
+On Thu, 21 Nov 2024, Alexandre Belloni wrote:
 
-These will always come up until we fix the alignment issue on m68k.
+> On 21/11/2024 09:13:32+1100, Finn Thain wrote:
+> > 
+> > On Mon, 18 Nov 2024, Alexandre Belloni wrote:
+> > 
+> > > On Wed, 13 Nov 2024 09:32:15 +1100, Finn Thain wrote:
+> > > > Instead of hard-coded values and ifdefs, store the year offset in the
+> > > > platform_data struct.
+> > > > 
+> > > > 
+> > > 
+> > > Applied, thanks!
+> > > 
+> > > [1/2] rtc: m48t59: Use platform_data struct for year offset value
+> > >       https://git.kernel.org/abelloni/c/a06e4a93067c
+> > > 
+> > 
+> > Thanks, Alexandre. Would you also take patch 2/2, please? Geert has sent a 
+> > reviewed-by tag for that one too.
+> 
+> I thought Geert would take it as this only touches arch/m68k
+> 
 
-Adrian
+That's quite understandable -- I accidentally addressed it "To: Geert". 
+Sorry for any confusion caused.
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Anyway, would you please pick up patch 2/2 also? After all, patch 2/2 is 
+the reason why patch 1/2 exists. Indeed, 1/2 was written several years 
+after 2/2, in response to your recent review of 2/2.
