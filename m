@@ -1,115 +1,135 @@
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD2C1AAE1B
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Nov 2024 18:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B582F200A3;
+	Thu, 21 Nov 2024 19:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732215159; cv=none; b=gIrNK/ps/VbPHcpI49+qQadWuohVGJrTsM25cAC7L/OzoO0yA/JldkS/d/Hv+LLvhjM7fhpcMZGlSMMbymKtadQZxJHZ3GESHL00699PY75nc+egHzApr8RwJZDb7fdZqyZFI7rzVd7pj5B0y2Ke+MX4HQiyzP1w3a7MnfzFfgY=
+	t=1732216136; cv=none; b=QsJg7zXnOXso1ea39217WJd9Z5xKNoI2ltrO9e2jH/9F7VYNy5GXNCCWWxWUh+HlmomM00Isn9WWi8L+tjdZeto/yxTVEcQieGtyf5kByafJds9Ou2vx0yKCrXItNPWdasuXncmybH9PtF8zA3vW6iuKeGoQcennqi4MzqNqlUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732215159; c=relaxed/simple;
-	bh=oqqondy23S74aGu5BrVkzbnRTmFRm6XLzCNLrVkrraE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I4VwwUrLifEkGl1MKFBQpm1fxV/EjcpYmv6APJOorjXHDxKAEpb6RvqW7P1TiOP5rvEdO0wK2cg6T4qptTDWR8MhbroE1gPeIyUwz5YTLQL1ZcCL2O1p3jG1EKbYKnOqJKlDXTmZzCXEQSlaqkFzpDo6+8EvQ54CJ6wQ32di1qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1732216136; c=relaxed/simple;
+	bh=aSnyh00fIsUC5ZDX5nHjI5fGwmj5u7jg46YIvqUp1x8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o397lgmQK+zTaMGsof+KdU/+2x8RLBWs/mhrOqzvIx5W0O1tnMcYxmAG1xjlrpQfoaG50m+TyB8OztKX3zSIf6DKqsZuR2vCVc7RRm8u1zfw3SNKxdQVKOkc8h6Cz8sB2qv7fP075AjfSv3ZzSP2nmVcggJVvRLys0lIpK5ysGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aKl5eeRb; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e2bd7d8aaf8so1214204276.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Nov 2024 10:52:37 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aKl5eeRb"
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2126408cf52so10770565ad.1;
+        Thu, 21 Nov 2024 11:08:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732216134; x=1732820934; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nbWq6dIR0dmg1klEoLZJOX63cY+RzZOanD3EV08YCvA=;
+        b=aKl5eeRbqmO1z1/FLAAkQtwcm+i58dZdPqVBzBHgws/Vbsr+qjeBxcG8a2SHW4OAWv
+         C4Q+Hf3wOu6NwAB4XRizSEasLPpiq/dTJYQKf4XvspSJ7SaXlF7Ei/2/5KFtBLTCfYkb
+         v9uflF6x13xalCT/sDpK4mUMA9seCwlImuJDdeb9yKQaKsMUgTRWaF2vIVWh7RKLZJD4
+         ICN7VNLZN3dqSQ8drxoT6AU4PNXkrr3NKCbtQtGF2lzdI+jiad4TnwON9UZBhAf0m3Js
+         z2l1KlSG6HSHoJ1XstZ45I8y88Tzg2DWIzaZQlavVIL1ylE3qqOler8m/d/g8gWSXoJE
+         YAeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732215156; x=1732819956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wiKmU47CtbBGWKBpE0HqbPui0PwogHusuDbrIOQ4p9Y=;
-        b=PWE9kF9kBd9zEhxKSuc8ZoRUtb+waBFeewu38JbkKg2GET3clklsIs1zyV05F/zMAr
-         bH91+WKPUw6gs1YrlIo6WprA4eeAVnQEPg1yq/RlsKNj+NiPlrfGY0q7Fc+hGGkgg4iG
-         EcVfkQx7ojLLHxCSLZhgktq3PSFJRwLflYa8DL70h3FuywofvbXF6//uV5eaFoXJr33/
-         xRPWxnNqdRJtx7pxTq0yXl/h0V2CtENjtFmBKsaad7jFOMV/pBZ9WMGqINqRDS6aaSxl
-         Dsz1kzLcoN/osw7NxTWCHC7AhPHf5E8bVzFYTtJIdNgaSlxUNFd12hVbAN1wsc92p2QL
-         7Erw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMv7C5LJ/SfsEWQMb9viHEdqQh+n0/QjeOongNE2mSeKhoyxSI7K/uicyuU5z2zuU7FP+gEeiSXzQ0@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yx5ZhZdlzPoj6q8CY33PhyeQe1TP1UzWJOE/i518KmgtsLL+GEQ
-	Rux/Wc81qR4VgcfYhy2A6vSX7y5iOvekSeGNATXChaPbvhhRgfH2Vaq1TbkI
-X-Gm-Gg: ASbGnct/WCXTqsDp1FR4arV9hNt+gu/mgI4qW1eJVYOFKTSNFM8BX3FTPizJSMO7p50
-	xlknytcKNCZ1b9b8hs8KK/R+N/HmnVwA0hUyPuDyiaHOzdj0SKxbnghqruu99q99CWOl+9YgiMk
-	a/C90MAYKMiXd4AoPOpoog2DoUTlyn/WhftTKEd9b9rThKtsxqLTaeQ1CmZPfwEjXs6BsAY6tjX
-	KXDXLsqv+lFk/dIQBlFIEBM1Z7x7M+hw/l3jTM/xEj0JUee4OJuazRuXYzkkILUvxbfx3XadMS2
-	+leps6hNLYdirI2H
-X-Google-Smtp-Source: AGHT+IHyMFT3nOyTDDhQZNxTnCl0xxhPHSof6FKsO44HNRyM3nDFIlQUAj002IX0FpNXYVvyuwH/Ww==
-X-Received: by 2002:a05:6902:2011:b0:e30:e0ab:8eed with SMTP id 3f1490d57ef6-e38cb56edf3mr7557895276.17.1732215155910;
-        Thu, 21 Nov 2024 10:52:35 -0800 (PST)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e38f601c8f5sm87531276.10.2024.11.21.10.52.35
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Nov 2024 10:52:35 -0800 (PST)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6e9ed5e57a7so10197737b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Nov 2024 10:52:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWJSxpj8s7b+VtkWJjd6xEWhFNuy7GZjpPPrkWqpiT0hPAq+4lU5OAz5K8BvWChOQXtcpYNv56PTU+0@lists.linux-m68k.org
-X-Received: by 2002:a05:690c:7406:b0:6e2:1a56:bff8 with SMTP id
- 00721157ae682-6eee0b7584emr3584917b3.36.1732215155155; Thu, 21 Nov 2024
- 10:52:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732216134; x=1732820934;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nbWq6dIR0dmg1klEoLZJOX63cY+RzZOanD3EV08YCvA=;
+        b=iQS0b9BnPxPgXpgF0SbMjR52wcPxvgCEd0TW8a7FNpV2rIbWU1iC3IcBYUT7GImm4F
+         q2FnAyoVzZJHdlhkfRrxk8wfQCUDQtWdR8brCViJ55teogwxYCziLllWRrJeOB15HtWD
+         klqAwng31e6U+oCvg6s2dN0aSJof+jmGXs4Yeu0LK+hkvlH9G9e/edwUky0iwFuueav+
+         gbOovsI5BOJ2WY52pWN6V6MgxqdbYLP/JsqzrvsbIQaWVjNNBvbStmJJIoQ80nl0J9zc
+         mpHhLtUht+uDNnumOumLmGuSPDOlp3Ib3A6aC3N9wLYYe5icjYPMdaS2Ls4fr+tCxo6E
+         sIVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSSNEZkuYqoI3A3S3qrPemuRx4BdyKPQoj+5rRMCjU8aZ5B6tEyp244FEXYhQW5+JD7I0BZtSMtUet+g==@vger.kernel.org, AJvYcCWYNX+axLbTyrGE17F3pVIoWrAmzCHpuZjg3MGcXe5bsanRbfVPkpdmXZSs5bcbCNu5DBMK6DrkrDo6XBX6@vger.kernel.org, AJvYcCXQLfw93NuliezF3NymagUKaszP1gwoFgsN3pnGYQvluBNjrJVUuLMEXPuWY6DnSyH4YX0U+qD2wg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YybDcf5MO8d29edzS3AGkrFfsKBUGZsHyWpDPoDgQzk0Q9gpwds
+	PT97vI3OSgCaZpYh9jmkpe3hLCpiCR/VACGguYwB/E/Y10j4GH7T
+X-Gm-Gg: ASbGnctWfq92DSOO9kgo34KfOYzC3ImFQKg4KDBjV25eiqxmFIEfUnfnwIw+Ap7Of/L
+	1YZFasQznQitkprH2Jhmu8UKSCRV3p45ZkNLhFajDKhYehEF7uKrkGB1MJMuzUXMsw9uFzTW8R2
+	js8eZGIfbmzQH1cV+Hy5USOIol5yRTuUeqXDdpMOiLAGQlVsBpGkG76lG0mMdk9Hk8xxs1CfSPt
+	ivGaN/V+1AePHRvgsdBkOwJjxN1bORh3OseKt8qakRAb6XRpZDna1XWd90kBXk=
+X-Google-Smtp-Source: AGHT+IFp1nsvaBxxBP2+yKyPHL6/9xKZ1ZMDef8nNNgh7X2q36YFA4vEpFb89L6mjd+kNgwZJ1m9+A==
+X-Received: by 2002:a17:902:dad1:b0:20c:ee48:94f3 with SMTP id d9443c01a7336-2129f433d4fmr1047445ad.14.1732216133794;
+        Thu, 21 Nov 2024 11:08:53 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2129dbf979csm1685255ad.129.2024.11.21.11.08.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2024 11:08:52 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Thu, 21 Nov 2024 11:08:51 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Christoph Lameter (Ampere)" <cl@gentwo.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Mike Rapoport <rppt@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+	linux-mm@kvack.org, io-uring@vger.kernel.org,
+	linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] slab: Fix too strict alignment check in create_cache()
+Message-ID: <508aa9c4-4176-4336-8948-a31f9791dd39@roeck-us.net>
+References: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org>
+ <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz>
+ <2e704ffc-2e79-27f7-159e-8fe167d5a450@gentwo.org>
+ <CAMuHMdWQisrjqaPPd0xLgtSAxRwnxCPdsqnWSncMiPYLnre2MA@mail.gmail.com>
+ <693a6243-b2bd-7f2b-2b69-c7e2308d0f58@gentwo.org>
+ <f602e322-af21-4bb3-86d4-52795a581354@roeck-us.net>
+ <CAMuHMdXDmLoNAcKHpjp2O4D05nAd5SOZ=Xqdbb2O_3B09yU1Gw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731450735.git.fthain@linux-m68k.org> <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org>
- <173193673970.37302.12055966881506116157.b4-ty@bootlin.com>
- <8140c873-3456-1469-8bc5-2e94d409cf8a@linux-m68k.org> <20241121174630cbc6cfa6@mail.local>
-In-Reply-To: <20241121174630cbc6cfa6@mail.local>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 21 Nov 2024 19:52:23 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWCjC92DUxNiMQufaoaR4mzH+gshYnFayjka9-hH6DhFg@mail.gmail.com>
-Message-ID: <CAMuHMdWCjC92DUxNiMQufaoaR4mzH+gshYnFayjka9-hH6DhFg@mail.gmail.com>
-Subject: Re: (subset) [PATCH v4 1/2] rtc: m48t59: Use platform_data struct for
- year offset value
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Finn Thain <fthain@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Daniel Palmer <daniel@0x0f.com>, 
-	Michael Pavone <pavone@retrodev.com>, linux-m68k@lists.linux-m68k.org, 
-	linux-rtc@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXDmLoNAcKHpjp2O4D05nAd5SOZ=Xqdbb2O_3B09yU1Gw@mail.gmail.com>
 
-Hi Alexandre,
-
-On Thu, Nov 21, 2024 at 6:46=E2=80=AFPM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
-> On 21/11/2024 09:13:32+1100, Finn Thain wrote:
-> > On Mon, 18 Nov 2024, Alexandre Belloni wrote:
-> > > On Wed, 13 Nov 2024 09:32:15 +1100, Finn Thain wrote:
-> > > > Instead of hard-coded values and ifdefs, store the year offset in t=
-he
-> > > > platform_data struct.
+On Thu, Nov 21, 2024 at 07:50:33PM +0100, Geert Uytterhoeven wrote:
+> On Thu, Nov 21, 2024 at 7:30 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > On Thu, Nov 21, 2024 at 09:23:28AM -0800, Christoph Lameter (Ampere) wrote:
+> > > On Thu, 21 Nov 2024, Geert Uytterhoeven wrote:
+> > > > Linux has supported m68k since last century.
 > > >
-> > > Applied, thanks!
+> > > Yeah I fondly remember the 80s where 68K systems were always out of reach
+> > > for me to have. The dream system that I never could get my hands on. The
+> > > creme de la creme du jour. I just had to be content with the 6800 and
+> > > 6502 processors. Then IBM started the sick road down the 8088, 8086
+> > > that led from crap to more crap. Sigh.
 > > >
-> > > [1/2] rtc: m48t59: Use platform_data struct for year offset value
-> > >       https://git.kernel.org/abelloni/c/a06e4a93067c
+> > > > Any new such assumptions are fixed quickly (at least in the kernel).
+> > > > If you need a specific alignment, make sure to use __aligned and/or
+> > > > appropriate padding in structures.
+> > > > And yes, the compiler knows, and provides __alignof__.
+> > > >
+> > > > > How do you deal with torn reads/writes in such a scenario? Is this UP
+> > > > > only?
+> > > >
+> > > > Linux does not support (rate) SMP m68k machines.
+> 
+> s/rate/rare/
+> 
+> > > Ah. Ok that explains it.
+> > >
+> > > Do we really need to maintain support for a platform that has been
+> > > obsolete for decade and does not even support SMP?
 > >
-> > Thanks, Alexandre. Would you also take patch 2/2, please? Geert has sen=
-t a
-> > reviewed-by tag for that one too.
->
-> I thought Geert would take it as this only touches arch/m68k
+> > Since this keeps coming up, I think there is a much more important
+> > question to ask:
+> >
+> > Do we really need to continue supporting nommu machines ? Is anyone
+> > but me even boot testing those ?
+> 
+> Not all m68k platform are nommu.
+> 
+Yes, I wasn't trying to point to m68k, but to nommu in general.
 
-I can do that only after v6.13-rc1 has been released, due to the hard
-dependency on the new m48t59_plat_data.yy_offset member.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Guenter
