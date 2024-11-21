@@ -1,51 +1,85 @@
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6350E13C67E
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 21 Nov 2024 17:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAFA81C5799;
+	Thu, 21 Nov 2024 18:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732211201; cv=none; b=tu2k2LUiFdVwyZdreFOPj/3dsM28IafSdnoM0JnoTwxlRGcymGkexE+hzcOss0PkpjL4eQgoEwQz5SNizMR0lMu+Doqz7b5xum2dPiIpxhRak5rE8MH7i1Rmx1o8eMau1EjTVZSeDfaoVxn5fZd5FO754xL3NQOyk88PZklrQic=
+	t=1732213804; cv=none; b=T/MNTfyx5lJy0B4gVSEaA4pVYu0Ln+P4btuGHK0Tnn+CCMZDUBX61huSuNTneVF73mRfL/FAu7vUntwPwmDDGejxqRD2q6xweM70vOW3MUBN3AEnvzbKUMsqeN1TWXdpE910GByJdZxuY0MKNGGXD7wZn17k3KolCkRhH58Htus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732211201; c=relaxed/simple;
-	bh=S43Mq/gZ58PAeUpK3Kr5oIpsndIsTPDPFJ68onZvPuI=;
+	s=arc-20240116; t=1732213804; c=relaxed/simple;
+	bh=fzBMHyBPmOcnPSKvdX8ScUW0W9JnhS02LVLMWZ4aCts=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MdCLqjeC9De106HvGTdkpqLtGTvNkL/LTyYAV8r8p25KeG+JBqDKVdS5rLPbttYpbNtvjmfEU7lnt0pyUm7u/uzJlV4/T4g+knR7KKxLNDyPwACHIht1dQB/BEvqqCnaD/n9MItyAmn25kZV/fa7FztE21gbLEfrXw+9sKYQVbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Chu2yLaY; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=MAvhYG739rTjnTJp4WGJz71QhAgVqWPro4M4UYJeP460GbxAWcfTMOEaG4AdTyHuDYSHMiwsozULey7uUHwSVgavxGJCL/XZS0yY2xjIm9kSCb6Xayw6+XxQdRdAoz78KPeSFjFrWPmzREmE3BRHvLtbOD/XslKHb+26ee38TZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SKtjep3O; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Chu2yLaY"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 38DC160011;
-	Thu, 21 Nov 2024 17:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1732211192;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L3SwyqwafSAOqsWPPRTD47TFcNVAitnw7DSiwOQ868Q=;
-	b=Chu2yLaYwK3bT1H75qjMKmKgMUMryBXxDJunSuyzQbW385w2epw4RgTZkJZoq7z/og9g2U
-	35k6LcjYgbvEY0PnBEyQbBPXvAS0ll2cqeBhCym2H0y/ypO3ywybt12M2h4cAM+ETUhcmy
-	3TZDAAAvFb/fHidf+GNbp5DUlFDcMD7HS2Fn0rNEzMfOOiqbVaLE2oncbehuS9g/fE98ok
-	xExKWWkEOMgBi0Kkh6iBsHeDR+cNuibreglV4Lm4jrZ61lPD+eFtD2rHJp/t9A9wSieQJE
-	2qK9TiQvKWKvyjVm/efCRbVaP1qm7Jmi2pOriiuMFnNnUQW6yaF/KZC+WcAfjg==
-Date: Thu, 21 Nov 2024 18:46:30 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Finn Thain <fthain@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SKtjep3O"
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20cdb889222so12559735ad.3;
+        Thu, 21 Nov 2024 10:30:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732213802; x=1732818602; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YhmbgbKDuSc1xVxpykJYeJe5ug61FuTdvle5K3IjcWg=;
+        b=SKtjep3OY7MBgJXRexqKQmpg+7X5jyTbhqGa6StEGCmIt4fC8UwER8Gpe8hyWYqtOZ
+         63U+BwFUcjZbamJDoy3BWhQpCpeDNAydWl5sCOvUW/bsqwA3xQds94zHzhAdXYacuqTt
+         JhLyNS27KM0XjDZhB4eAYLzgh2Tp5RIOQ3FM5p5yYiucFOv3m+f3B7M+Pzy+XroIBRyx
+         WO/0I5aqsDzrSfkCEOGp7DqVcaHWD++KE1+HLJ+UtLO3L3s8m+bZDfVOi5+8KEnRqCBi
+         91x1aAoHrGMm6h4fq7tlj3K6+2yZaza9O06CMCH7RH+s349uvEKHlrtgH33I9Re0PC0K
+         8ZNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732213802; x=1732818602;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YhmbgbKDuSc1xVxpykJYeJe5ug61FuTdvle5K3IjcWg=;
+        b=Wu8MwWi/0JdAEjTXZqyFlVmG3Z8kOcM1GDl0ZUwEFixB33hnJfw2Y6YucXZnuLPhK8
+         Znlmj/jOD8yh4zqwxmIULIuSA8uaAd2jzSFjb5ZI2Jo/YPfgM/3Xs5T1x4n1ylR65yK8
+         l6VS6CB2LHS7mGGdDENgGg43+1pEJry6MdaEczIU/chzrVLXP/OrURrcn9AfPLLfHWy9
+         ninmtVSICE9BNKyB3Ima7y1FE1GSKxO88ew68HH9bg5kYTwoO71IS1hT1G7D6uUwSJ2s
+         d/arHGSr0F2349RP6/sByG8dCHdRtVN4JGnLi13DXEJp2KfcQ8Wd82cgEbn3EKXK5IYx
+         I9QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVVhme4z0Km7HUEM98jsGtSvEpoovpgXf0LAbFNWCUkNxZnAyBF6U7TgA8zboWp4vP8Q8xiR/yF7Bxw+w==@vger.kernel.org, AJvYcCX19+kv/+bPEXpkhdzsGwljZEcd0tuyAULowtl6tGt9nzSQL9YRDuS11biYuRLNEHpqTJJkLQGrAg==@vger.kernel.org, AJvYcCX5Bnsmxgi9ztP3BIg1ksJDRVwIn/9wgTcDfb0UXvbOuUIlQNYrc/7MfWZ1nxgJc5F76sQWpDJaZ45aH2SE@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3yNUEeHzDXouvzKWOlShjd6fOjg+yCRHsJoQ7fcQeszWo4tk8
+	9Z63MoKXzgSveEjfWtitd5KTX81gWB+l+tj32IGKMyXdbUXQwxPS
+X-Gm-Gg: ASbGnctHcyxhkjV+0qJ3OwqrmKAz1QxnOgjkpDkc7Gcoj6WejqgCy8U4h0Nsgh9j2g/
+	5NinQ8OVoHbl4Hb4LFsKRrjz0nHrK5pIG8AH0sFo0M+ErwGoKUzWOVQid8kykJ0K3MWK9KLiQGs
+	fDFX9nXZAwPv9hUBe7+S8p9/RsxJV5eNwHE/64MWJKF8sxPmdI266A6WL3IQwI91VjP5yrZ95x5
+	K4FZ+u+D+rMMPZvOaHXFEbuvCvkPTaAmMizMhhf3m/vP2IfdjwasVFvv96BZlo=
+X-Google-Smtp-Source: AGHT+IHs0C5RMruMnzg4VLJfmLHCfX9KqLLttit2qp3jnsKRaWQ2sRHsg4Ye0SOzyMU+ihT6ZLzkaA==
+X-Received: by 2002:a17:903:22ca:b0:20b:ce30:878d with SMTP id d9443c01a7336-2129f426cecmr49455ad.23.1732213801735;
+        Thu, 21 Nov 2024 10:30:01 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2129dc2aad7sm1310415ad.279.2024.11.21.10.30.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2024 10:30:01 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Thu, 21 Nov 2024 10:30:00 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: "Christoph Lameter (Ampere)" <cl@gentwo.org>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Daniel Palmer <daniel@0x0f.com>,
-	Michael Pavone <pavone@retrodev.com>,
-	linux-m68k@lists.linux-m68k.org, linux-rtc@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v4 1/2] rtc: m48t59: Use platform_data struct
- for year offset value
-Message-ID: <20241121174630cbc6cfa6@mail.local>
-References: <cover.1731450735.git.fthain@linux-m68k.org>
- <665c3526184a8d0c4a6373297d8e7d9a12591d8b.1731450735.git.fthain@linux-m68k.org>
- <173193673970.37302.12055966881506116157.b4-ty@bootlin.com>
- <8140c873-3456-1469-8bc5-2e94d409cf8a@linux-m68k.org>
+	Vlastimil Babka <vbabka@suse.cz>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Mike Rapoport <rppt@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+	linux-mm@kvack.org, io-uring@vger.kernel.org,
+	linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] slab: Fix too strict alignment check in create_cache()
+Message-ID: <f602e322-af21-4bb3-86d4-52795a581354@roeck-us.net>
+References: <80c767a5d5927c099aea5178fbf2c897b459fa90.1732106544.git.geert@linux-m68k.org>
+ <4f70f8d3-4ba5-43dc-af1c-f8e207d27e9f@suse.cz>
+ <2e704ffc-2e79-27f7-159e-8fe167d5a450@gentwo.org>
+ <CAMuHMdWQisrjqaPPd0xLgtSAxRwnxCPdsqnWSncMiPYLnre2MA@mail.gmail.com>
+ <693a6243-b2bd-7f2b-2b69-c7e2308d0f58@gentwo.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -54,31 +88,38 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8140c873-3456-1469-8bc5-2e94d409cf8a@linux-m68k.org>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+In-Reply-To: <693a6243-b2bd-7f2b-2b69-c7e2308d0f58@gentwo.org>
 
-On 21/11/2024 09:13:32+1100, Finn Thain wrote:
+On Thu, Nov 21, 2024 at 09:23:28AM -0800, Christoph Lameter (Ampere) wrote:
+> On Thu, 21 Nov 2024, Geert Uytterhoeven wrote:
 > 
-> On Mon, 18 Nov 2024, Alexandre Belloni wrote:
+> > Linux has supported m68k since last century.
 > 
-> > On Wed, 13 Nov 2024 09:32:15 +1100, Finn Thain wrote:
-> > > Instead of hard-coded values and ifdefs, store the year offset in the
-> > > platform_data struct.
-> > > 
-> > > 
-> > 
-> > Applied, thanks!
-> > 
-> > [1/2] rtc: m48t59: Use platform_data struct for year offset value
-> >       https://git.kernel.org/abelloni/c/a06e4a93067c
-> > 
+> Yeah I fondly remember the 80s where 68K systems were always out of reach
+> for me to have. The dream system that I never could get my hands on. The
+> creme de la creme du jour. I just had to be content with the 6800 and
+> 6502 processors. Then IBM started the sick road down the 8088, 8086
+> that led from crap to more crap. Sigh.
 > 
-> Thanks, Alexandre. Would you also take patch 2/2, please? Geert has sent a 
-> reviewed-by tag for that one too.
+> > Any new such assumptions are fixed quickly (at least in the kernel).
+> > If you need a specific alignment, make sure to use __aligned and/or
+> > appropriate padding in structures.
+> > And yes, the compiler knows, and provides __alignof__.
+> >
+> > > How do you deal with torn reads/writes in such a scenario? Is this UP
+> > > only?
+> >
+> > Linux does not support (rate) SMP m68k machines.
+> 
+> Ah. Ok that explains it.
+> 
+> Do we really need to maintain support for a platform that has been
+> obsolete for decade and does not even support SMP?
 
-I thought Geert would take it as this only touches arch/m68k
+Since this keeps coming up, I think there is a much more important
+question to ask:
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Do we really need to continue supporting nommu machines ? Is anyone
+but me even boot testing those ?
+
+Guenter
