@@ -1,197 +1,357 @@
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BBE17C219
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Nov 2024 08:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB501BD9E4;
+	Tue, 26 Nov 2024 09:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732610339; cv=none; b=etP22sGES0T1d3r/njiZRitbwmeIMY54edDxwgnpFtEnFq6VLQ6Rv0RqjU7p25q5X4FCTXSQT4ALa6qV1AaMqMoJWZHZwxSlJRbXJLf31lEXyY8UFsCEbvtogyR7kusz9uWTDEifPCazKRgZdHd2csm0luBskXNhCJHXqThXr6I=
+	t=1732613843; cv=none; b=hUI5BLQ93nE+nX/3Iy5VANsOcqKSU/QlzTy17a6zQXID64MmNPjA/n0tK8rPNDxrfha/5iKX6YcQBHD5+yhQ9wGgHOrkY+cAYSDWHczF22US1Y937s6haelwBgbrVjPUh9HNRQcLf08riRW5e6BoZZyFg2qJExUJkJCje5NIwos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732610339; c=relaxed/simple;
-	bh=YUKKRY7A2nE2FhB3ESXaNOsgnyAfymvw5W7zwhIFgMs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kUBqDN/JIUbiJrXdXk0kqDpqexrq8kxpoe0/IDN9UMD5tRnOI5aB/MjTY/Rgy1eRK3YYbkJJqK69JrtJe7yVaRW47MzFUkp+U5DHSjwDuwNtvy2/8CzSwkY/hBcoeeI7MFBZd/MlTw5pW9N0MbUA+WIver5kwjYKo7QmEZA7Ktc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e333af0f528so4793848276.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Nov 2024 00:38:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732610336; x=1733215136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SjBErQLBEug3e9Mj9PlNyLOsB+0cCc+2zRG7fLFw9Bk=;
-        b=dtBfZC6kSJNmxGCgTQRepaU7aG40YQaFgiej8Uyv74yWHG/MNpYnz44Jhgq3VUoJ2S
-         /MtHBJ2EdGpQz2QyZR1lEjSj4k6lGpCwJc+3pX6Z1t5n8SVBBMQ2rFodCoyEKZcpjJqq
-         ZOXNytbaifoUBke/okF7B+jbeRzOQN13A3NIaXT/JEATg2zKibuF8VelVuniNudHJI3M
-         KShmKsx7AcF1mR8naRqquTqq+DKfEB/vYQZqd+NgEfQD3h4apTbljBAeSubGu2kOgccK
-         4EffsGiucpLNqGqo/YRASUozmGah10Lp00+YHwoqt6utzjJhW35gFBlvpbzeCssNU2ml
-         eKYw==
-X-Forwarded-Encrypted: i=1; AJvYcCUsIB0zL15zn80j4nA2VpeKik6de08igfqFz40umuvx07l/CSS4KCmdgjE5PXFpjYBIG1/ApJl9Gcqt@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyK7siLFYziHlhtc4GeKQ2utE1FU2LkalEpmbFbOZMr5y4FakgC
-	FByfnz4+rnLJmtjhtuwblEaWtvvHiDfkFK62zZm/qGErUlo/o35FWQUU7DX5
-X-Gm-Gg: ASbGncvl+c7LK36SQpDm3yPv8jxZSdGxOsiJY88wz7XKVmxCtVrTKU022E0zcW4R56j
-	zy72ElqUEBAStT+Rjt+tOCegDxJgWHNyKpfqLuLdtonexEpZPVHxz2db9gJLcPf5pdCsyrsBj2m
-	ynmyxRIcPVj/mYIZIFLwltV6VgPVjZXEmTLqpKwzrfD+OfjJ4RDBySlY/XSrLBQ/YDZmT6j5Kur
-	BBGi85nxnW/0PuhfCD3pFYFzprc5dMldQKU20M/Wle0A4pxVBfQq+4JQVTdlz/wwH+O1u3/Q9j7
-	dnXKvDHJWgiqorfl
-X-Google-Smtp-Source: AGHT+IHoF85lIW94y2w0z4RtKco0NbKrsz29I/02y/6XjJodP3QK71SgbiqS+SXLtdNnU5tgkO36Zw==
-X-Received: by 2002:a05:6902:110c:b0:e38:8042:460b with SMTP id 3f1490d57ef6-e38f8b0a5c1mr15329259276.13.1732610335867;
-        Tue, 26 Nov 2024 00:38:55 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e38f5e5b218sm2962528276.0.2024.11.26.00.38.55
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Nov 2024 00:38:55 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6eee6874ef8so38102807b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Nov 2024 00:38:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXPRPoA54I4c/FSUvEsUU/EX8GmBccOwqKWNK3urCpsBk/sUnDgSlp1Vcjobuasgns0baSGhu4JH52f@lists.linux-m68k.org
-X-Received: by 2002:a05:690c:62ca:b0:6ee:b43b:62f4 with SMTP id
- 00721157ae682-6eee09e9dc5mr153772817b3.19.1732610335371; Tue, 26 Nov 2024
- 00:38:55 -0800 (PST)
+	s=arc-20240116; t=1732613843; c=relaxed/simple;
+	bh=tbveivKbjBUlwd0ZIm4rNMYc5LDl6YnFN/B9E2H4n4Y=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=asyTbfd1DxPEDZRqZGQJ+abmZkSpLDf/u4ukRGygfGsypNf3m1XR3k+YCsN/9qtXcLhu/Hs7dp1amLv6QmQr3HUWmRhbjoeMpUfEHrD/hDyMkC+UmVImMJWgVHNdGYpSI0AtKCObIjoqOar0YilJC1A1DKHnrEZWPiSA4J+t9a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=b4JSrjOU; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="b4JSrjOU"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=pEIC/1sU0bmKvDPDkz1AyCvYOPTjdcdXDMTr4GlORKM=;
+	t=1732613841; x=1733823441; b=b4JSrjOUhxhvfseeL4fQDGWThGfy7bw1gPsiY0j7/PQWV9r
+	T/J6TpoCrGRR2KipsMgxAuEhlnt7e4IrE0E050hgCN4rdY5I1uv2URQvoiHNPpqzqUN0UHtklVsJ4
+	UzI0ksbaiI4otVbhKDHQoDgRJOVNuegxw4xfg59pgO21dRi0TxyE1UitRYouR4mGBkos7q8ovpf5o
+	ab/s7nGOs+7gDOuRWdwnVKFPy1ljF5q5YkdhkdBP8jWlsHZ7a4CczB7pd35u02l4Vm8PJ/i6anH1x
+	fEm7HpjTye3DVNG66F9HwL2GKQnqmbyp/fOF97k6XLssKPndoNp+ujVfO44niwXw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1tFs0P-0000000FJLz-0VWR;
+	Tue, 26 Nov 2024 10:37:13 +0100
+Message-ID: <8221a4a01cb838159828961b6d8d99753ecc31b9.camel@sipsolutions.net>
+Subject: Re: [PATCH 1/2] debugfs: add small file operations for most files
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>
+Date: Tue, 26 Nov 2024 10:37:12 +0100
+In-Reply-To: <CAMuHMdXbnZc7rYc7ibRNWY6EfRLh-7g0yDeZ3Zk5OXCQ9Cr=cA@mail.gmail.com>
+References: 
+	<20241022151838.26f9925fb959.Ia80b55e934bbfc45ce0df42a3233d34b35508046@changeid>
+	 <CAMuHMdWu_9-L2Te101w8hU7H_2yobJFPXSwwUmGHSJfaPWDKiQ@mail.gmail.com>
+	 <CAMuHMdXbnZc7rYc7ibRNWY6EfRLh-7g0yDeZ3Zk5OXCQ9Cr=cA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241022151838.26f9925fb959.Ia80b55e934bbfc45ce0df42a3233d34b35508046@changeid>
- <CAMuHMdWu_9-L2Te101w8hU7H_2yobJFPXSwwUmGHSJfaPWDKiQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWu_9-L2Te101w8hU7H_2yobJFPXSwwUmGHSJfaPWDKiQ@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 26 Nov 2024 09:38:43 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXbnZc7rYc7ibRNWY6EfRLh-7g0yDeZ3Zk5OXCQ9Cr=cA@mail.gmail.com>
-Message-ID: <CAMuHMdXbnZc7rYc7ibRNWY6EfRLh-7g0yDeZ3Zk5OXCQ9Cr=cA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] debugfs: add small file operations for most files
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Johannes Berg <johannes.berg@intel.com>, 
-	linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-malware-bazaar: not-scanned
 
-Hi Johannes,
+On Tue, 2024-11-26 at 09:38 +0100, Geert Uytterhoeven wrote:
+> >=20
+> > Thanks for your patch, which is now commit 8dc6d81c6b2acc43 ("debugfs:
+> > add small file operations for most files") upstream.
 
-On Mon, Nov 25, 2024 at 1:37=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Tue, Oct 22, 2024 at 3:19=E2=80=AFPM Johannes Berg <johannes@sipsoluti=
-ons.net> wrote:
-> > From: Johannes Berg <johannes.berg@intel.com>
-> >
-> > As struct file_operations is really big, but (most) debugfs
-> > files only use simple_open, read, write and perhaps seek, and
-> > don't need anything else, this wastes a lot of space for NULL
-> > pointers.
-> >
-> > Add a struct debugfs_short_fops and some bookkeeping code in
-> > debugfs so that users can use that with debugfs_create_file()
-> > using _Generic to figure out which function to use.
-> >
-> > Converting mac80211 to use it where possible saves quite a
-> > bit of space:
-> >
-> > 1010127  205064    1220 1216411  128f9b net/mac80211/mac80211.ko (befor=
-e)
-> >  981199  205064    1220 1187483  121e9b net/mac80211/mac80211.ko (after=
-)
-> > -------
-> >  -28928 =3D ~28KiB
-> >
-> > With a marginal space cost in debugfs:
-> >
-> >    8701     550      16    9267    2433 fs/debugfs/inode.o (before)
-> >   25233     325      32   25590    63f6 fs/debugfs/file.o  (before)
-> >    8914     558      16    9488    2510 fs/debugfs/inode.o (after)
-> >   25380     325      32   25737    6489 fs/debugfs/file.o  (after)
-> > ---------------
-> >    +360      +8
-> >
-> > (All on x86-64)
-> >
-> > A simple spatch suggests there are more than 300 instances,
-> > not even counting the ones hidden in macros like in mac80211,
-> > that could be trivially converted, for additional savings of
-> > about 240 bytes for each.
-> >
-> > Signed-off-by: Johannes Berg <johannes.berg@intel.com>
->
-> Thanks for your patch, which is now commit 8dc6d81c6b2acc43 ("debugfs:
-> add small file operations for most files") upstream.
->
-> > --- a/fs/debugfs/inode.c
-> > +++ b/fs/debugfs/inode.c
->
-> > -struct dentry *debugfs_create_file(const char *name, umode_t mode,
-> > -                                  struct dentry *parent, void *data,
-> > -                                  const struct file_operations *fops)
-> > +struct dentry *debugfs_create_file_full(const char *name, umode_t mode=
-,
-> > +                                       struct dentry *parent, void *da=
-ta,
-> > +                                       const struct file_operations *f=
-ops)
-> >  {
-> > +       if (WARN_ON((unsigned long)fops &
-> > +                   (DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT |
-> > +                    DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)))
-> > +               return ERR_PTR(-EINVAL);
-> >
->
-> This warning is triggered during boot on m68k:
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 1 at fs/debugfs/inode.c:457
+Or rather "no thanks" ;-)
 
-> > --- a/fs/debugfs/internal.h
-> > +++ b/fs/debugfs/internal.h
-> > @@ -18,6 +18,7 @@ extern const struct file_operations debugfs_full_prox=
-y_file_operations;
-> >
-> >  struct debugfs_fsdata {
-> >         const struct file_operations *real_fops;
-> > +       const struct debugfs_short_fops *short_fops;
-> >         union {
-> >                 /* automount_fn is used when real_fops is NULL */
-> >                 debugfs_automount_t automount;
-> > @@ -39,6 +40,11 @@ struct debugfs_fsdata {
-> >   * pointer gets its lowest bit set.
-> >   */
-> >  #define DEBUGFS_FSDATA_IS_REAL_FOPS_BIT BIT(0)
-> > +/*
-> > + * A dentry's ->d_fsdata, when pointing to real fops, is with
-> > + * short fops instead of full fops.
-> > + */
-> > +#define DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT BIT(1)
->
-> As the minimum alignment is 2 on m68k, you cannot use bit 1 in pointers
-> for your own private use.  See also the comment at
-> https://elixir.bootlin.com/linux/v6.12.1/source/include/linux/maple_tree.=
-h#L44
+> > > +#define DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT BIT(1)
+> >=20
+> > As the minimum alignment is 2 on m68k, you cannot use bit 1 in pointers
+> > for your own private use.
 
-If you want to support truncated debugfs_fops structures, I am
-afraid there is no other option than storing a flag, structure type,
-or structure size inside the structure. The latter would allow us
-to support not just full and short structures, but also arbitrary
-truncation, given even more opportunities for size reduction.
+D'oh. Sorry about that. Though honestly even if I _had_ seen such a
+comment deep in maple tree code, on that struct I'd probably have
+assumed it's because there's no pointer in it and thus no alignment
+anyway...
 
-E.g. something like
+But sounds like you're pointers don't need to be naturally aligned, and
+so 2-byte alignment is sufficient.
 
-    #define get_method(_ops, _op, _op_fallback) \
-            ((_ops->size > offsetof(struct debugfs_fops, _op)) ?
-_ops->_op : _op_fallback)
+I guess we _could_ solve that by __aligned(4) on the fops structs, but
+... I'm not sure that makes sense.
 
-Gr{oetje,eeting}s,
+> Reverting commit 8dc6d81c6b2acc43 fixes the issue,=C2=A0
 
-                        Geert
+Clearly. Though have to also revert the related patch in wireless :)
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+> and reduces the
+> atari_defconfig kernel size by 447 bytes, according to bloat-o-meter.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Well, fair point, but if we care about size then we can win back more
+than this by converting about a handful of debugfs files to short ops,
+and if there are no debugfs files then we wouldn't need debugfs either,
+I'd think.
+
+So I think in a way the size argument goes the other way (with a little
+bit of extra work), if that was meant to be an argument at all? :-)
+
+Anyway, that doesn't help now ...
+
+> If you want to support truncated debugfs_fops structures, I am
+> afraid there is no other option than storing a flag, structure type,
+> or structure size inside the structure. The latter would allow us
+> to support not just full and short structures, but also arbitrary
+> truncation, given even more opportunities for size reduction.
+>=20
+> E.g. something like
+>=20
+>     #define get_method(_ops, _op, _op_fallback) \
+>             ((_ops->size > offsetof(struct debugfs_fops, _op)) ?
+> _ops->_op : _op_fallback)
+
+Yeah I thought about something like that originally, but first of all
+I'd have to reorder the fields in struct file_operations I think (which
+may or may not have a design to it), but also that doesn't really help
+here since I'd still need a way to know the kind of struct that it was
+for sizeof? And store that somewhere along the way.
+
+But we can fix this differently, by just having different ops. We really
+need to only have this bit of information for the very first open, after
+that we've already allocated the structures. So duplicating the full
+proxy struct (as as big as that may be, need to convert one more debugfs
+file to win it back), we should be able to remove the need for the
+pointer tag.
+
+Below changes should fix the issue, but is only lightly tested so far
+(with regular and short ops files). Perhaps you'd like to give it a
+spin?
+
+johannes
+
+
+From: Johannes Berg <johannes.berg@intel.com>
+Date: Tue, 26 Nov 2024 10:29:23 +0100
+Subject: [PATCH] fs: debugfs: differentiate short fops with proxy ops
+
+Geert reported that my previous short fops debugfs changes
+broke m68k, because it only has mandatory alignement of two,
+so we can't stash the "is it short" information into the
+pointer (as we already did with the "is it real" bit.)
+
+Instead, exploit the fact that debugfs_file_get() called on
+an already open file will already find that the fsdata is
+no longer the real fops but rather the allocated data that
+already distinguishes full/short ops, so only open() needs
+to be able to distinguish. We can achieve that by using two
+different open functions.
+
+Unfortunately this requires another set of full file ops,
+increasing the size by 536 bytes (x86-64), but that's still
+a reasonable trade-off given that only converting some of
+the wireless stack gained over 28k. This brings the total
+cost of this to around 1k, for wins of 28k (all x86-64).
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Link: https://lore.kernel.org/CAMuHMdWu_9-L2Te101w8hU7H_2yobJFPXSwwUmGHSJfa=
+PWDKiQ@mail.gmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ fs/debugfs/file.c     | 72 ++++++++++++++++++++++++++++++-------------
+ fs/debugfs/inode.c    | 11 +++----
+ fs/debugfs/internal.h |  6 +---
+ 3 files changed, 55 insertions(+), 34 deletions(-)
+
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index 47dc96dfe386..bdb4f2ca0506 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -64,22 +64,13 @@ const struct file_operations *debugfs_real_fops(const s=
+truct file *filp)
+ }
+ EXPORT_SYMBOL_GPL(debugfs_real_fops);
+=20
+-/**
+- * debugfs_file_get - mark the beginning of file data access
+- * @dentry: the dentry object whose data is being accessed.
+- *
+- * Up to a matching call to debugfs_file_put(), any successive call
+- * into the file removing functions debugfs_remove() and
+- * debugfs_remove_recursive() will block. Since associated private
+- * file data may only get freed after a successful return of any of
+- * the removal functions, you may safely access it after a successful
+- * call to debugfs_file_get() without worrying about lifetime issues.
+- *
+- * If -%EIO is returned, the file has already been removed and thus,
+- * it is not safe to access any of its data. If, on the other hand,
+- * it is allowed to access the file data, zero is returned.
+- */
+-int debugfs_file_get(struct dentry *dentry)
++enum dbgfs_get_mode {
++	DBGFS_GET_ALREADY,
++	DBGFS_GET_REGULAR,
++	DBGFS_GET_SHORT,
++};
++
++static int __debugfs_file_get(struct dentry *dentry, enum dbgfs_get_mode m=
+ode)
+ {
+ 	struct debugfs_fsdata *fsd;
+ 	void *d_fsd;
+@@ -96,15 +87,17 @@ int debugfs_file_get(struct dentry *dentry)
+ 	if (!((unsigned long)d_fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)) {
+ 		fsd =3D d_fsd;
+ 	} else {
++		if (WARN_ON(mode =3D=3D DBGFS_GET_ALREADY))
++			return -EINVAL;
++
+ 		fsd =3D kmalloc(sizeof(*fsd), GFP_KERNEL);
+ 		if (!fsd)
+ 			return -ENOMEM;
+=20
+-		if ((unsigned long)d_fsd & DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT) {
++		if (mode =3D=3D DBGFS_GET_SHORT) {
+ 			fsd->real_fops =3D NULL;
+ 			fsd->short_fops =3D (void *)((unsigned long)d_fsd &
+-						~(DEBUGFS_FSDATA_IS_REAL_FOPS_BIT |
+-						  DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT));
++						~DEBUGFS_FSDATA_IS_REAL_FOPS_BIT);
+ 		} else {
+ 			fsd->real_fops =3D (void *)((unsigned long)d_fsd &
+ 						~DEBUGFS_FSDATA_IS_REAL_FOPS_BIT);
+@@ -138,6 +131,26 @@ int debugfs_file_get(struct dentry *dentry)
+=20
+ 	return 0;
+ }
++
++/**
++ * debugfs_file_get - mark the beginning of file data access
++ * @dentry: the dentry object whose data is being accessed.
++ *
++ * Up to a matching call to debugfs_file_put(), any successive call
++ * into the file removing functions debugfs_remove() and
++ * debugfs_remove_recursive() will block. Since associated private
++ * file data may only get freed after a successful return of any of
++ * the removal functions, you may safely access it after a successful
++ * call to debugfs_file_get() without worrying about lifetime issues.
++ *
++ * If -%EIO is returned, the file has already been removed and thus,
++ * it is not safe to access any of its data. If, on the other hand,
++ * it is allowed to access the file data, zero is returned.
++ */
++int debugfs_file_get(struct dentry *dentry)
++{
++	return __debugfs_file_get(dentry, DBGFS_GET_ALREADY);
++}
+ EXPORT_SYMBOL_GPL(debugfs_file_get);
+=20
+ /**
+@@ -424,7 +437,8 @@ static void __full_proxy_fops_init(struct file_operatio=
+ns *proxy_fops,
+ 		proxy_fops->unlocked_ioctl =3D full_proxy_unlocked_ioctl;
+ }
+=20
+-static int full_proxy_open(struct inode *inode, struct file *filp)
++static int full_proxy_open(struct inode *inode, struct file *filp,
++			   enum dbgfs_get_mode mode)
+ {
+ 	struct dentry *dentry =3D F_DENTRY(filp);
+ 	const struct file_operations *real_fops;
+@@ -432,7 +446,7 @@ static int full_proxy_open(struct inode *inode, struct =
+file *filp)
+ 	struct debugfs_fsdata *fsd;
+ 	int r;
+=20
+-	r =3D debugfs_file_get(dentry);
++	r =3D __debugfs_file_get(dentry, mode);
+ 	if (r)
+ 		return r =3D=3D -EIO ? -ENOENT : r;
+=20
+@@ -491,8 +505,22 @@ static int full_proxy_open(struct inode *inode, struct=
+ file *filp)
+ 	return r;
+ }
+=20
++static int full_proxy_open_regular(struct inode *inode, struct file *filp)
++{
++	return full_proxy_open(inode, filp, DBGFS_GET_REGULAR);
++}
++
+ const struct file_operations debugfs_full_proxy_file_operations =3D {
+-	.open =3D full_proxy_open,
++	.open =3D full_proxy_open_regular,
++};
++
++static int full_proxy_open_short(struct inode *inode, struct file *filp)
++{
++	return full_proxy_open(inode, filp, DBGFS_GET_SHORT);
++}
++
++const struct file_operations debugfs_full_short_proxy_file_operations =3D =
+{
++	.open =3D full_proxy_open_short,
+ };
+=20
+ ssize_t debugfs_attr_read(struct file *file, char __user *buf,
+diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+index 38a9c7eb97e6..65e46c7b6bf1 100644
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -455,8 +455,7 @@ struct dentry *debugfs_create_file_full(const char *nam=
+e, umode_t mode,
+ 					const struct file_operations *fops)
+ {
+ 	if (WARN_ON((unsigned long)fops &
+-		    (DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT |
+-		     DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)))
++		    DEBUGFS_FSDATA_IS_REAL_FOPS_BIT))
+ 		return ERR_PTR(-EINVAL);
+=20
+ 	return __debugfs_create_file(name, mode, parent, data,
+@@ -471,15 +470,13 @@ struct dentry *debugfs_create_file_short(const char *=
+name, umode_t mode,
+ 					 const struct debugfs_short_fops *fops)
+ {
+ 	if (WARN_ON((unsigned long)fops &
+-		    (DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT |
+-		     DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)))
++		    DEBUGFS_FSDATA_IS_REAL_FOPS_BIT))
+ 		return ERR_PTR(-EINVAL);
+=20
+ 	return __debugfs_create_file(name, mode, parent, data,
+-				fops ? &debugfs_full_proxy_file_operations :
++				fops ? &debugfs_full_short_proxy_file_operations :
+ 					&debugfs_noop_file_operations,
+-				(const void *)((unsigned long)fops |
+-					       DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT));
++				fops);
+ }
+ EXPORT_SYMBOL_GPL(debugfs_create_file_short);
+=20
+diff --git a/fs/debugfs/internal.h b/fs/debugfs/internal.h
+index a3edfa4f0d8e..bbae4a228ef4 100644
+--- a/fs/debugfs/internal.h
++++ b/fs/debugfs/internal.h
+@@ -15,6 +15,7 @@ struct file_operations;
+ extern const struct file_operations debugfs_noop_file_operations;
+ extern const struct file_operations debugfs_open_proxy_file_operations;
+ extern const struct file_operations debugfs_full_proxy_file_operations;
++extern const struct file_operations debugfs_full_short_proxy_file_operatio=
+ns;
+=20
+ struct debugfs_fsdata {
+ 	const struct file_operations *real_fops;
+@@ -40,11 +41,6 @@ struct debugfs_fsdata {
+  * pointer gets its lowest bit set.
+  */
+ #define DEBUGFS_FSDATA_IS_REAL_FOPS_BIT BIT(0)
+-/*
+- * A dentry's ->d_fsdata, when pointing to real fops, is with
+- * short fops instead of full fops.
+- */
+-#define DEBUGFS_FSDATA_IS_SHORT_FOPS_BIT BIT(1)
+=20
+ /* Access BITS */
+ #define DEBUGFS_ALLOW_API	BIT(0)
+--=20
+2.47.0
+
+
