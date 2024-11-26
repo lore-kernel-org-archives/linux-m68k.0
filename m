@@ -1,85 +1,63 @@
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961242EAE6;
-	Tue, 26 Nov 2024 14:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B1F1DFE06;
+	Tue, 26 Nov 2024 23:40:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732630941; cv=none; b=r79GTqAJF5X3Vga6Xb+DFu0DsdQ/nAfrkDaqjYcNqzhXRY4FIricV4jeEYlgdIcS8xivTkiP+fOcr0YfatjBG3fb8AeKNBtLPfACSjxfrgAESpqaLPnMl2h8mV/VfjvYNxkmur6h/eKQRE8oGjSxrrhbM8nw3BvvUmujPNJFVc8=
+	t=1732664454; cv=none; b=KA2Sga9IRypy//laLkpWT0fkUtVmfshNqviWTfs6uKztwlF3E7s6W/sF8VS4Yfyi3QC4Qtf5bzl0wPr2KC1WR0xNQ4TX1+UPskAz+CG4dMDg6H9RFk2EiXlGHFJOXlfX+KAVvFgjrnyYow8/b475XzlfMw0IPNluv7bR03we+JY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732630941; c=relaxed/simple;
-	bh=2EzVIagoNzYPxG998YphblSLiqLt7DInCuQ63KCa+5c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=s5BS462VPm+zowtAtB2wb8TC0caoVgfENOVTyfXbYKVZr3CIfdm8XJWm//sJyXaMnqyUQW+jgebFbvPys3ELGYOobP7eoTPaTgNcnxIm1GUxW8vwBhT9OimsVD0KGISJwyaY+Ec2T+KTPnnOIQd798y1t3hCgVw/cGcYeE4n3GI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=mteriEdY; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+	s=arc-20240116; t=1732664454; c=relaxed/simple;
+	bh=fDXuP3gX7xBANZnL+Lz2U88o6VTOCMHwpTMez5Qogn4=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=N58fXZPPnDItmUj+UfNu5wdDcO40vs3S7o6QjmvH1dvjJDavGYpwml7Qf/ynY5AF4Py6e4dtcOnjxV+vLXmYoYw7Ia1EuYs67IUYGpxx4d6yts0j2XBNuRlVi50k4yEHi6Wv26zwyKVyuYU6Bc1tbkTEe+o+EFHwy3mzsg6WllY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WiVrumhB; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="mteriEdY"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=BU5JzRRyTpmAAxlTSDnePcgW44HdWNZdgnFK5O4fnAs=;
-	t=1732630939; x=1733840539; b=mteriEdYfF+uyoN5TUK1DgPRr8ypFC0pWaOjfFLdJ69MNV3
-	dc8Zodz1i7GrWNedid9KzAg6A0S4MMiFMNz6iRpK7b9Nwf5e3VfBRHDl0YHTPqEJzC3dCe40c0gwT
-	nSCjVAX7KenawSX3lz18omHnGED4nAuJ82sCjUttniAh8/CHKaJAS2/+a7BpdC/sRYIqUkslnIppa
-	MzWGPg12KsgSA8MogCWEWK2Mt3SUuhMIJrjZ241eLdHhetOpwSrS2IheUYuFJ/AQo6nud0gcXzAhf
-	AohRyplogs6sszzpGe4r0tIHMFUQ1NrhCqCu1Pz11yjxhMymAUH9ST2MREVjta7Q==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1tFwSG-0000000FUBG-0mB2;
-	Tue, 26 Nov 2024 15:22:16 +0100
-Message-ID: <41242bd65b27736f6dc0115d2ad2422d5b157d23.camel@sipsolutions.net>
-Subject: Re: [PATCH 1/2] debugfs: add small file operations for most files
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>,
- linux-m68k <linux-m68k@lists.linux-m68k.org>
-Date: Tue, 26 Nov 2024 15:22:15 +0100
-In-Reply-To: <CAMuHMdXbCaMBwjrb+ZJj+MMQvOm8Y=xKfaxVhYVb79WyO4Z-4Q@mail.gmail.com>
-References: 
-	<20241022151838.26f9925fb959.Ia80b55e934bbfc45ce0df42a3233d34b35508046@changeid>
-	 <CAMuHMdWu_9-L2Te101w8hU7H_2yobJFPXSwwUmGHSJfaPWDKiQ@mail.gmail.com>
-	 <CAMuHMdXbnZc7rYc7ibRNWY6EfRLh-7g0yDeZ3Zk5OXCQ9Cr=cA@mail.gmail.com>
-	 <8221a4a01cb838159828961b6d8d99753ecc31b9.camel@sipsolutions.net>
-	 <CAMuHMdXbCaMBwjrb+ZJj+MMQvOm8Y=xKfaxVhYVb79WyO4Z-4Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WiVrumhB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C81C8C4CECF;
+	Tue, 26 Nov 2024 23:40:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732664453;
+	bh=fDXuP3gX7xBANZnL+Lz2U88o6VTOCMHwpTMez5Qogn4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=WiVrumhB1gaefuPSu6kNTI3RDKwD9xem84D6DkOw238elCimgOq+E/RwicnMo9/8i
+	 RZXZIIWKN8oSz4qIwj2/WqJkgZJUwsH811pnA8EltJRm3YqFWxCAGZbV7YPQFV6ORh
+	 DWlu2E+O/GJjsVbu/sA2Gae6rguQhR+vbGJUGuvEbPu67EIIoVizHBLpG6fAa95dPn
+	 6LM87aNpEZ3z6VcnlHru0RGYveJfWyHxovgy98uOrOe7mVDtHlsHVqxBG5EYzculAb
+	 BfkxEpuuzVz3RMEgfWsDhMYKyH0lajTxZO2SdfKe+ruTp7Mi6N+eVcOVcuKjxM8gHL
+	 602LPiuWNFrdw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB11E3809A00;
+	Tue, 26 Nov 2024 23:41:07 +0000 (UTC)
+Subject: Re: [git pull] m68knommu changes for v6.13
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <81259608-5796-41ab-9832-0c8312e05b46@linux-m68k.org>
+References: <81259608-5796-41ab-9832-0c8312e05b46@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <81259608-5796-41ab-9832-0c8312e05b46@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.13
+X-PR-Tracked-Commit-Id: 63a24cf8cc330e5a68ebd2e20ae200096974c475
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7ebe7afed716391a9831de8adc910fff65001ef2
+Message-Id: <173266446660.577215.6136881598523084447.pr-tracker-bot@kernel.org>
+Date: Tue, 26 Nov 2024 23:41:06 +0000
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: torvalds@linux-foundation.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
 
-On Tue, 2024-11-26 at 15:16 +0100, Geert Uytterhoeven wrote:
->=20
-> Assuming non-wireless drivers can be converted, too?  As none of the
-> classical m68k machines support wireless, so far nothing is gained...
+The pull request you sent on Tue, 26 Nov 2024 10:18:01 +1000:
 
-Oh, most debugfs files can be converted, since most don't do anything
-beyond simple_open/read/write/seek and those are covered.
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.13
 
-> > Unfortunately this requires another set of full file ops,
-> > increasing the size by 536 bytes (x86-64), but that's still
->=20
-> 226 on m68k.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7ebe7afed716391a9831de8adc910fff65001ef2
 
-Not that bad, I guess. So if that's 226 bytes and before you had 447
-we'd probably only need to convert 4 instances to have a net win :)
+Thank you!
 
-> Thanks, that fixed the issue!
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Great, thanks for testing!
-
-I'll do some more testing of my own and then figure out how to get it
-into the tree. Greg, any thoughts on that?
-
-johannes
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
