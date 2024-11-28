@@ -1,232 +1,124 @@
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AAC71F7579
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 Nov 2024 11:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B731BBBC4
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Nov 2024 15:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732706815; cv=none; b=tud7YF7Ta3c1cu8S56fftYn+GBA4N3aZ7WS4zLdXC0EW/q81dgAeN35U/tNCHeM4PRLqmrJyzP0KEUk6bECm1SUuaoXodqVK072ys71G6liESHaouVBX8OrjciTPJ7OQxbfOCgd9u6Nqee/Pb2FHTxL9yiNaWy/Zx10hP66nfZI=
+	t=1732807564; cv=none; b=d/rdpRKB+EBbMTthczu70bt01Bd4X30KPzE5WvHdL92RzvrDbPtakzgfq1n1uT2lvSImyupLquNte9vkE06bzBx6AtieVEfGtTkf4J4/nQumo2VO/mON8a+Wr54sVg5gx38IUrEaSrDla+V21H9jkIBCsygjdOXlHDiPhpLIe7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732706815; c=relaxed/simple;
-	bh=28dQTrG3He6iFEKXXDoA7pxzEaS5Xh5bp7DgOEMy9QI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QWKdlm3sO2x/rCrxnxIZO7nJA8XXpHh+VQuKI8HaJVc7kU2smrP7uDCI42Zkj1GjYKr9XUb9qS7KGQNA/ysJ7pvr/7kFJkpX/wTKe6uoubbmuqB0BTT7kAUtp4dt1OQAzvM8H2waFscSDUHzY9d4m8v5jZKOYAqClzAyti2XWtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=ZTdRLNIW; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1732807564; c=relaxed/simple;
+	bh=MXd4l6+iQmQnfD3BLnMGFSdnuuNa/etFN+OYpi5oBN0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=T0oIPhczf7Wl0uJz0Ox90EIACFrlWrdH6t8F1HTFu9KIIwt9pLpb3X5Fk/Dm64XkeI8DQe62edw7gn1xW8C3EgGRbyymfwQweOM/NXScShd9kKwfCDe4qW3IF35s0aMrmnLdGxhBeKEwxNTrJcwj4eEoWpZt2KHZPw2llFsamOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aGEaqMA+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="ZTdRLNIW"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C266324000B;
-	Wed, 27 Nov 2024 11:26:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1732706804;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aGEaqMA+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1732807561;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lwU4mXYYTdimQrB6vSMf2Y5tX570CcargndAnexCjxE=;
-	b=ZTdRLNIWRKx+BEau5xXr5cOhELhrhLPO7QwX8nOxq5xJ0We9L4Un05XWBcumeHRc0huJ93
-	jGKe9CI7ifTLyy7PHDpmDuSgAxr4wbWcWnUzYv1gDQmBqaudE7IThZuH18Sc37Cx52Zpdi
-	97gzRYLVrmYiqYnpAdhf3xKeKx0Xzx3GWSOa8m/ZqOEAhvRJ89TEV+s1nn/kW3X7BYLjTG
-	RaXz/eC6oOIHwv4WzZWIz9eKKNcpnxpW2b/0GrwH9inxtVewdOLTOh3EdzdygG7shwkIhc
-	T4I4o7Er3cuNHbVCpc9phdjjJEvJL2aTWm+WSCjCKY9cBMm8Xh9zmaXuy77UtQ==
-Message-ID: <501c04d7-1a7d-4000-a948-e9effb281a05@yoseli.org>
-Date: Wed, 27 Nov 2024 12:26:43 +0100
+	bh=MXd4l6+iQmQnfD3BLnMGFSdnuuNa/etFN+OYpi5oBN0=;
+	b=aGEaqMA+QA4wwA3W8lDxOKQLlYl22bjx0GySmUaFZBUkn0rH/g6Pi8fPJ1GaN52IbT2YbZ
+	jAHXWnyBs+DAOjQcnPIzkO8eRgJSn/f8LNeeqIxcl10o9lnvOvlnDYhVtyM3/PYP2y/Rpz
+	i+oY3FJ08MwtTx2tl9MatqiGagRKMI8=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-554-YETsq3q9MbKgctW2U4w0Xw-1; Thu, 28 Nov 2024 10:25:57 -0500
+X-MC-Unique: YETsq3q9MbKgctW2U4w0Xw-1
+X-Mimecast-MFC-AGG-ID: YETsq3q9MbKgctW2U4w0Xw
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-53de4ded14bso737494e87.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Nov 2024 07:25:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732807556; x=1733412356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MXd4l6+iQmQnfD3BLnMGFSdnuuNa/etFN+OYpi5oBN0=;
+        b=idC0DSTlATHAwP+ki0Q3MgNK+mHJGgJxPmDw95MTgKWINvx/AE6LsXobGAtcRzvfm0
+         G28XjLXDPp+gPVPe31WHE+Olrrt0I4D3fzblSEjxzH066P7b5CIcEc2IjvZFLABIXj2a
+         KCF2+6k4rHetSkEJ1EfSdzeftF1mDRnN2J592L7FrpLMQU74jHFOSZETWzD5niUt7Wxm
+         Dc7kk+fMhYCBoULC436VOI6T3DDccfdD58+53ZaIG9+sVfnrqaoGaA5H6SPcRuVIY0XG
+         Hx897hiFPEYfoVbrCMh0qu+qvlLyAoHHm4YSE6wjLK9Vx4/RNAJpb1P6IpkPYx7w5FYF
+         E1/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVcTlRV+bn6+AMIRb+U3jGiXKG0nnojukLsBM4/EFtsHVVzrjA6X9tB6CndnV1edM8sZHG1xqTs0l/W@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwHZinPCvFeT5OJlRQM0/i+FeRz9AP3RmqUUmlV+yalwAZ3xyrc
+	CBE7ry9NiZvUVpTdLTk/ilc6PoC+jAh/QyP1NfTMRAuBP+Eq5GjanmkyJx4XWVZjdl4ZC6x2wXf
+	fvoeCcUSnHN58V8fWD+ofTc0dgU5EwO1FMim65J/VSNynsRvo+Vh4eEUJFme1f/arhW79TkIE99
+	GgYh34L+BOx8QyscunGUh/u2Kns1PpepVYeNQxyXsM
+X-Gm-Gg: ASbGnct267LeYEocE5RxvZKQ25tUcg7zRoBhk4ii3UVyse1XovbOXm90H7nflh0uBtb
+	U3t2UL2kPLGgBhtjzK6GXkOWQHEp+i7Y=
+X-Received: by 2002:a05:6512:32c9:b0:53d:eef7:a017 with SMTP id 2adb3069b0e04-53df00cf65emr5725106e87.15.1732807556119;
+        Thu, 28 Nov 2024 07:25:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGUDRgJvQYM+JdFcJ++bS15Z0GZU2YBr+5bjatsFWQinG+yirtbrqloo2N19HWJZBdciblzJX3Lg8Gg/26Guhk=
+X-Received: by 2002:a05:6512:32c9:b0:53d:eef7:a017 with SMTP id
+ 2adb3069b0e04-53df00cf65emr5725087e87.15.1732807555727; Thu, 28 Nov 2024
+ 07:25:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 2/2] arch: m68k: Add STACKTRACE support
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- rostedt@goodmis.org, Greg Ungerer <gerg@linux-m68k.org>,
- Michael Schmitz <schmitzmic@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>
 References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
- <20241021-add-m68k-tracing-support-v1-2-0883d704525b@yoseli.org>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20241021-add-m68k-tracing-support-v1-2-0883d704525b@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+ <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org> <20241115102554.29232d34@gandalf.local.home>
+ <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org> <20241115145502.631c9a2c@gandalf.local.home>
+ <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+In-Reply-To: <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+From: Tomas Glozar <tglozar@redhat.com>
+Date: Thu, 28 Nov 2024 16:25:45 +0100
+Message-ID: <CAP4=nvTjdZRfWtpvM+gThPv6SghW96i9YykA88vAFH5x39GZqw@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: vFgyMTF1lhYSqOObNjqzgLwfmBtswBqmN1yO1U2AMEg_1732807556
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi there,
+po 18. 11. 2024 v 11:13 odes=C3=ADlatel Jean-Michel Hautbois
+<jeanmichel.hautbois@yoseli.org> napsal:
+>
+> I had to modify the source code a bit, as it does not compile with my
+> uclibc toolchain:
+> ...
 
-On 21/10/2024 11:44, Jean-Michel Hautbois wrote:
-> In order to use tracing, implement a basic arch_stack_walk() based on
-> the one in PowerPC.
-> Tested on a M54418 coldfire.
+glibc added a gettid() wrapper with version 2.30; earlier glibc and
+uclibc do not have it. That can be fixed by conditionally including
+the inline function if on glibc lower than 2.30 or another libc; for
+reference on how to detect that, see how kernel self tests do it [1].
 
-Well, I said it was tested, but it was only compile tested basically.
-AFAICT now, I think it is not working as when I use wakeup_rt as a 
-tracer, I don't have the stack trace:
+As of the FOPTS changes: are those necessary for rtla to build, or
+were you just using them for easier debugging? AFAIK rtla shouldn't
+depend on unwind tables or stack protection for functionality.
 
-# wakeup_rt latency trace v1.1.5 on 6.12.0-10380-gb66f06337b66-dirty
-# --------------------------------------------------------------------
-# latency: 2000 us, #18/18, CPU#0 | (M:preempt VP:0, KP:0, SP:0 HP:0)
-#    -----------------
-#    | task: irq/100-enet-fe-118 (uid:0 nice:0 policy:1 rt_prio:50)
-#    -----------------
-#
-#                    _------=> CPU#
-#                   / _-----=> irqs-off/BH-disabled
-#                  | / _----=> need-resched
-#                  || / _---=> hardirq/softirq
-#                  ||| / _--=> preempt-depth
-#                  |||| / _-=> migrate-disable
-#                  ||||| /     delay
-#  cmd     pid     |||||| time  |   caller
-#     \   /        ||||||  \    |    /
-kworker/-11        0dnh5.    0us :       11:120:R   + [000]      22: 
-98:R irq_work/0
-kworker/-11        0dnh5.    0us : <stack trace>
-kworker/-11        0dnh5.    0us : 0
-kworker/-11        0d..3.    0us : __schedule
-kworker/-11        0d..3.    0us :       11:120:R ==> [000]      22: 
-98:R irq_work/0
-kworker/-11        0d..3.    0us : <stack trace>
-  telnetd-229       0Dnh4.    0us :      229:120:R   + [000]     118: 
-49:R irq/100-enet-fe
-  telnetd-229       0Dnh4.    0us : <stack trace>
-  telnetd-229       0Dnh4.    0us : 0
-  telnetd-229       0D..3.    0us : __schedule
-  telnetd-229       0D..3.    0us :      229:120:R ==> [000]     118: 
-49:R irq/100-enet-fe
-  telnetd-229       0D..3.    0us : <stack trace>
-  telnetd-229       0dn.5.    0us :      229:120:R   + [000]     118: 
-49:R irq/100-enet-fe
-  telnetd-229       0dn.5.    0us : <stack trace>
-  telnetd-229       0dn.5.    0us#: 0
-  telnetd-229       0d..3. 2000us : __schedule
-  telnetd-229       0d..3. 2000us :      229:120:R ==> [000]     118: 
-49:R irq/100-enet-fe
-  telnetd-229       0d..3. 2000us : <stack trace>
+>
+> But it is not enough, as executing rtla fails with a segfault.
+> I can dump a core, but I could not manage to build gdb for my board so I
+> can't debug it (I don't know how to debug a coredump without gdb !).
+>
+> JM
+>
 
-Geert, Greg, and maybe other highly skilled m68k people, could you 
-please help me with this particular function :-) ?
+I have seen a similar libtraceevent-related rtla segfault recently on
+ARM64, which was fixed by updating libtraceevent to a version that
+includes the fix. Such issues are caused by the files for kernel
+tracepoint tracefs having different contents on different
+architectures, exposing bugs. I see Steven has already fixed one of
+the issues on m68k [2].
 
-Thanks !
-JM
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/tools/testing/selftests/nolibc/nolibc-test.c#n1008
+[2] https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/commit/?=
+id=3D45a9b0647c904b7bf1240da5a11fe3a1ffd1006d
 
-> 
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> ---
->   arch/m68k/Kconfig             |  5 ++++
->   arch/m68k/kernel/Makefile     |  1 +
->   arch/m68k/kernel/stacktrace.c | 70 +++++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 76 insertions(+)
-> 
-> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-> index ab3375475721fa63418c40d4ba6ac76679ebc77d..7142f9759181a90269ae1ba9e682d331ee2ddbf6 100644
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -40,6 +40,7 @@ config M68K
->   	select UACCESS_MEMCPY if !MMU
->   	select ZONE_DMA
->   	select TRACE_IRQFLAGS_SUPPORT
-> +	select ARCH_STACKWALK
->   
->   config CPU_BIG_ENDIAN
->   	def_bool y
-> @@ -107,6 +108,10 @@ config BOOTINFO_PROC
->   	  Say Y to export the bootinfo used to boot the kernel in a
->   	  "bootinfo" file in procfs.  This is useful with kexec.
->   
-> +config STACKTRACE_SUPPORT
-> +	bool
-> +	default y
-> +
->   menu "Platform setup"
->   
->   source "arch/m68k/Kconfig.cpu"
-> diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
-> index f335bf3268a108a45bab079fbf0a1c8ead9beb71..4efe92af0b711b19cb1d5129f74e67a739e289b1 100644
-> --- a/arch/m68k/kernel/Makefile
-> +++ b/arch/m68k/kernel/Makefile
-> @@ -31,3 +31,4 @@ obj-$(CONFIG_UBOOT)		+= uboot.o
->   
->   obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
->   
-> +obj-y	+= stacktrace.o
-> diff --git a/arch/m68k/kernel/stacktrace.c b/arch/m68k/kernel/stacktrace.c
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..06c7459373bd25b3bb3540cfe2a909259c1db3ce
-> --- /dev/null
-> +++ b/arch/m68k/kernel/stacktrace.c
-> @@ -0,0 +1,70 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +/*
-> + * Stack trace utility functions etc.
-> + *
-> + * Copyright 2024 Jean-Michel Hautbois, Yoseli SAS.
-> + */
-> +
-> +#include <asm/current.h>
-> +#include <asm/ptrace.h>
-> +#include <linux/sched.h>
-> +#include <linux/sched/task_stack.h>
-> +#include <linux/stacktrace.h>
-> +
-> +static inline unsigned long current_stack_frame(void)
-> +{
-> +	unsigned long sp;
-> +
-> +	asm volatile("movl %%sp, %0" : "=r"(sp));
-> +	return sp;
-> +}
-> +
-> +static inline int validate_sp(unsigned long sp, struct task_struct *task)
-> +{
-> +	unsigned long stack_start, stack_end;
-> +
-> +	if (task == current)
-> +		stack_start = (unsigned long)task_stack_page(task);
-> +	else
-> +		stack_start = (unsigned long)task->thread.esp0;
-> +
-> +	stack_end = stack_start + THREAD_SIZE;
-> +
-> +	if (sp < stack_start || sp >= stack_end)
-> +		return 0;
-> +
-> +	return 1;
-> +}
-> +
-> +void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-> +					   struct task_struct *task, struct pt_regs *regs)
-> +{
-> +	unsigned long sp;
-> +
-> +	if (regs && !consume_entry(cookie, regs->pc))
-> +		return;
-> +
-> +	if (regs)
-> +		sp = (unsigned long) regs;
-> +	else if (task == current)
-> +		sp = current_stack_frame();
-> +	else
-> +		sp = task->thread.ksp;
-> +
-> +	for (;;) {
-> +		unsigned long *stack = (unsigned long *) sp;
-> +		unsigned long newsp, ip;
-> +
-> +		if (!validate_sp(sp, task))
-> +			return;
-> +
-> +		newsp = stack[0];
-> +		ip = stack[1];
-> +
-> +		if (!consume_entry(cookie, ip))
-> +			return;
-> +
-> +		sp = newsp;
-> +	}
-> +}
-> 
+Tomas
 
