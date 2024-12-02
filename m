@@ -1,160 +1,263 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF8720D505
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 14:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518B7207A35
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 14:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733150739; cv=none; b=Hm6C+zyHJnTZqo1B0gffard4o9wZMK636OKXLV3Y6dPf89R0mey/cObbffhwFpQ/K6wnF17UU+S/ilWV32GRo2fk2y+Di7yehsgQ7LQ4TW2gYWIf1UvB5iENiKoifBx/DMgQ1IzMkKV6JaWav0ywmTTHHECmlBaBScmCP8zCKOw=
+	t=1733151094; cv=none; b=cB4HzYpMbMKQN+Q6tHpThKytkP42lLJqkEkJy8B3D+6hCo7x6/QS21/9jAWsBgxTqjzBxTa0MZsMFQqV+z9isn3s4na4wHPPgbp9Xt/ABUiKO/vvzalNHqR3pBlCq5W7gJ/CRitZM21dNaKsQWH4Vyfm5BShrq3Nf5Me9bquFvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733150739; c=relaxed/simple;
-	bh=n70OEj1mC+cdL0WdOAR5oKz8bYnGJfdRI3Edu7mnlh0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TSNq0Tg+6d/Uz3sYU3TR8xyO82HX/AV/IKlVR5JjSZUqCv8GmpLMN0fGxYRrcwqN7zU1PP3XCe8dDqqWiwpfff8NmaxuAEs8Lazrd9iJS7nrQk0EIbVje35qBLFVt5I+swqnYhFp7Xs1n7DaVZnLE+J4eFtiDH1u3nqYz8RzhS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hx6/WCps; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1733151094; c=relaxed/simple;
+	bh=fYVA75+QIWZ9avuk8cg5K4ABDRdncf1y9HWL9Cd47jA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MdVfi3Mf1PBuUBOd22bFe/TW9QtxG6lON7XfxC0UMNDAm+byISYfJl1L43xf+YIPjGgFq0Vi1EmK1/W0SnGIU1PNwpjVT7avINma9DV2dlp6jmIwHlQ4UJWLJhPIFxzPkAN/SQ52I194hAStZYqTzWjuuEbh1MquezXlLuXqFsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=HtKgSdgl; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hx6/WCps"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1733150736;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="HtKgSdgl"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E0A1C240004;
+	Mon,  2 Dec 2024 14:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1733151090;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=W10UJR/Z3Y1g/9yP+6tAwUQlbmi/1LL8javKNMvmKDs=;
-	b=hx6/WCpswS6AzSijjuOcC1boRtYqwc1/sxS2mlQfcJX8vt/Us3t7ravaqtrW2BGfQO1OGZ
-	8VaAxLxJXGKmX+mhabH1xSrWRqJSapag3apyNoNw2xrSWmdA0Cx1VDJvuodIqn2rfoR6YX
-	2r/JjUUsWcxs0G1u98n928J9KuYWeSo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-36-VuqvwJdsMQuzTpGXblLteg-1; Mon, 02 Dec 2024 09:45:35 -0500
-X-MC-Unique: VuqvwJdsMQuzTpGXblLteg-1
-X-Mimecast-MFC-AGG-ID: VuqvwJdsMQuzTpGXblLteg
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5d0bde5e90fso2659562a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Dec 2024 06:45:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733150734; x=1733755534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W10UJR/Z3Y1g/9yP+6tAwUQlbmi/1LL8javKNMvmKDs=;
-        b=wxhOpPW8K5sI74dmZ5TMlKOCYGORDFa6XhDQVuLDEUO7/PyDaBMO49p8WX30iR414G
-         jUiScJP2DU3Xecbuk8YA0aVsCj2uE+UaQZfy3gEmwtL9qS2aKZ1jNV+L9lNrVlUyeZ36
-         quidXef9PbxmsD6ALRjd1NsPbOZ9eXrMgCKuBwYyRR0ii63FiElICqSxVQUmUrBEtJCQ
-         R0jfPZ/uoAYSoRvZgotXXP/1YEoMEU3nWPmM5c7hGLA4s8haNBjPr4m7YX7KxhOCY+fJ
-         RuKZGgGJs/+N90I/wo6wKpRw3KfVguFJxposkRpzvoauB61xdBtvleAfYDeBWoLiNJ1B
-         bVuw==
-X-Forwarded-Encrypted: i=1; AJvYcCVJyh5F90TIfTsi0KcVKtlLZkzRgaryEu20mcZR2Ej0A1qSLgUXWOP4lvP+Jw34ArndjHiLylrAbMVe@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwybKdDnPNbPAIYpGy088Gq/pFXjJSv8PxlacAKMdW9NJefLlQn
-	fPVIXLLlLRDqH5kyu9hPQTxfDH3Nmn51F1UrPgl1wSMW5UgoHtwHlo4BstZw7bKx7TS7gzA7Kba
-	NlivMeCFAW2sXFFPR+NIGVD+xsVS0SyvEdp1wdxGB8xbGk1DsB/MbOIw/SWevrikg1pxB2UQFdk
-	zz7KItGzOSMbZICKY2ZVI2uSPRrkGDeCaNTk4zRsnB
-X-Gm-Gg: ASbGncs/rQBes/S8iCTv8MiArkSmDY6vaKI2pIS257OMxDnIoRlaaf3Olq0V/odbnFf
-	5aQyWxm3428O0Pnk9Xxyk6bFSsPX+iY0E4lhMe3NLzeMo6mYCvstviYdWKQ2C1nw=
-X-Received: by 2002:a17:906:9c2:b0:aa5:225f:1902 with SMTP id a640c23a62f3a-aa580ee048cmr1817439366b.8.1733150733921;
-        Mon, 02 Dec 2024 06:45:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFcA/wDe0r3wh7CcYqSoBDkWCwoa5A7JE11X7DdWa0YQ127gdehXm4o9jBtj0pJi92GpZIL1+glwSsQzVTNRV8=
-X-Received: by 2002:a17:906:9c2:b0:aa5:225f:1902 with SMTP id
- a640c23a62f3a-aa580ee048cmr1817436966b.8.1733150733572; Mon, 02 Dec 2024
- 06:45:33 -0800 (PST)
+	bh=PFsFZ/LC1ywDQQ48I+F5Vf/kI0MXA9IAqdb786Sr6sg=;
+	b=HtKgSdgld/sMAU0TMWUVxXmACiP7N9GfW0Of1BRbGbzSS34g7jK7v3IRmCtuyNJee1/5HZ
+	gss0bFi710U8ue5UMMbMVH9oTlIPtwa+D2lwSLa/iUnMvj7COzb/aHgMzgTBn9musCQYwB
+	IqigDcYsGj4ZSkMSDijic+gT4Lv1CYvOCnDi9J58b5Qbu+RPsvO+W09ygTXq/tzVEL8go1
+	FC9jk5pS2G2q1RBN8FrdW7F0+yowMY0U53HJwT8P3Qu+v2oYZPv4e2BY79PBw91WMQrBJS
+	+991f5x2FfBDHgCvlKbSvj9Z1TlSkWgNEY2VT0Bu6aNLP9uHGQ47T3ntEhlcvQ==
+Message-ID: <9dc5b470-fd98-4ce0-9196-089635c8852a@yoseli.org>
+Date: Mon, 2 Dec 2024 15:51:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 2/2] arch: m68k: Add STACKTRACE support
+To: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ rostedt@goodmis.org, Michael Schmitz <schmitzmic@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
 References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
- <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org> <20241115102554.29232d34@gandalf.local.home>
- <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org> <20241115145502.631c9a2c@gandalf.local.home>
- <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org> <CAP4=nvTjdZRfWtpvM+gThPv6SghW96i9YykA88vAFH5x39GZqw@mail.gmail.com>
- <c2d5cfd5-8bdb-4060-a974-18f9c2b9a2d0@yoseli.org>
-In-Reply-To: <c2d5cfd5-8bdb-4060-a974-18f9c2b9a2d0@yoseli.org>
-From: Tomas Glozar <tglozar@redhat.com>
-Date: Mon, 2 Dec 2024 15:45:21 +0100
-Message-ID: <CAP4=nvQe0KGxUAQSers9GbvZS0sVptbFzXufgGhuxAzVOyicHA@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: _Wjscma57_MfcMpXDZgTVe3o2Ldq7b74w4CLkH44iPI_1733150734
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+ <20241021-add-m68k-tracing-support-v1-2-0883d704525b@yoseli.org>
+ <501c04d7-1a7d-4000-a948-e9effb281a05@yoseli.org>
+ <a2efe6f7-4bfe-468b-9512-c60f646281b1@linux-m68k.org>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <a2efe6f7-4bfe-468b-9512-c60f646281b1@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Jean-Michel,
+Hi Greg,
 
-po 2. 12. 2024 v 13:53 odes=C3=ADlatel Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> napsal:
->
-> Thanks, I will cook a patch !
->
+On 02/12/2024 15:41, Greg Ungerer wrote:
+> Hi JM,
+> 
+> On 27/11/24 21:26, Jean-Michel Hautbois wrote:
+>> Hi there,
+>>
+>> On 21/10/2024 11:44, Jean-Michel Hautbois wrote:
+>>> In order to use tracing, implement a basic arch_stack_walk() based on
+>>> the one in PowerPC.
+>>> Tested on a M54418 coldfire.
+>>
+>> Well, I said it was tested, but it was only compile tested basically.
+>> AFAICT now, I think it is not working as when I use wakeup_rt as a 
+>> tracer, I don't have the stack trace:
+>>
+>> # wakeup_rt latency trace v1.1.5 on 6.12.0-10380-gb66f06337b66-dirty
+>> # --------------------------------------------------------------------
+>> # latency: 2000 us, #18/18, CPU#0 | (M:preempt VP:0, KP:0, SP:0 HP:0)
+>> #    -----------------
+>> #    | task: irq/100-enet-fe-118 (uid:0 nice:0 policy:1 rt_prio:50)
+>> #    -----------------
+>> #
+>> #                    _------=> CPU#
+>> #                   / _-----=> irqs-off/BH-disabled
+>> #                  | / _----=> need-resched
+>> #                  || / _---=> hardirq/softirq
+>> #                  ||| / _--=> preempt-depth
+>> #                  |||| / _-=> migrate-disable
+>> #                  ||||| /     delay
+>> #  cmd     pid     |||||| time  |   caller
+>> #     \   /        ||||||  \    |    /
+>> kworker/-11        0dnh5.    0us :       11:120:R   + [000]      22: 
+>> 98:R irq_work/0
+>> kworker/-11        0dnh5.    0us : <stack trace>
+>> kworker/-11        0dnh5.    0us : 0
+>> kworker/-11        0d..3.    0us : __schedule
+>> kworker/-11        0d..3.    0us :       11:120:R ==> [000]      22: 
+>> 98:R irq_work/0
+>> kworker/-11        0d..3.    0us : <stack trace>
+>>   telnetd-229       0Dnh4.    0us :      229:120:R   + [000]     118: 
+>> 49:R irq/100-enet-fe
+>>   telnetd-229       0Dnh4.    0us : <stack trace>
+>>   telnetd-229       0Dnh4.    0us : 0
+>>   telnetd-229       0D..3.    0us : __schedule
+>>   telnetd-229       0D..3.    0us :      229:120:R ==> [000]     118: 
+>> 49:R irq/100-enet-fe
+>>   telnetd-229       0D..3.    0us : <stack trace>
+>>   telnetd-229       0dn.5.    0us :      229:120:R   + [000]     118: 
+>> 49:R irq/100-enet-fe
+>>   telnetd-229       0dn.5.    0us : <stack trace>
+>>   telnetd-229       0dn.5.    0us#: 0
+>>   telnetd-229       0d..3. 2000us : __schedule
+>>   telnetd-229       0d..3. 2000us :      229:120:R ==> [000]     118: 
+>> 49:R irq/100-enet-fe
+>>   telnetd-229       0d..3. 2000us : <stack trace>
+>>
+>> Geert, Greg, and maybe other highly skilled m68k people, could you 
+>> please help me with this particular function :-) ?
+>>
+>> Thanks !
+>> JM
+>>
+>>>
+>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+>>> ---
+>>>   arch/m68k/Kconfig             |  5 ++++
+>>>   arch/m68k/kernel/Makefile     |  1 +
+>>>   arch/m68k/kernel/stacktrace.c | 70 ++++++++++++++++++++++++++++++++ 
+>>> +++++++++++
+>>>   3 files changed, 76 insertions(+)
+>>>
+>>> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+>>> index 
+>>> ab3375475721fa63418c40d4ba6ac76679ebc77d..7142f9759181a90269ae1ba9e682d331ee2ddbf6 100644
+>>> --- a/arch/m68k/Kconfig
+>>> +++ b/arch/m68k/Kconfig
+>>> @@ -40,6 +40,7 @@ config M68K
+>>>       select UACCESS_MEMCPY if !MMU
+>>>       select ZONE_DMA
+>>>       select TRACE_IRQFLAGS_SUPPORT
+>>> +    select ARCH_STACKWALK
+>>>   config CPU_BIG_ENDIAN
+>>>       def_bool y
+>>> @@ -107,6 +108,10 @@ config BOOTINFO_PROC
+>>>         Say Y to export the bootinfo used to boot the kernel in a
+>>>         "bootinfo" file in procfs.  This is useful with kexec.
+>>> +config STACKTRACE_SUPPORT
+>>> +    bool
+>>> +    default y
+>>> +
+>>>   menu "Platform setup"
+>>>   source "arch/m68k/Kconfig.cpu"
+>>> diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
+>>> index 
+>>> f335bf3268a108a45bab079fbf0a1c8ead9beb71..4efe92af0b711b19cb1d5129f74e67a739e289b1 100644
+>>> --- a/arch/m68k/kernel/Makefile
+>>> +++ b/arch/m68k/kernel/Makefile
+>>> @@ -31,3 +31,4 @@ obj-$(CONFIG_UBOOT)        += uboot.o
+>>>   obj-$(CONFIG_EARLY_PRINTK)    += early_printk.o
+>>> +obj-y    += stacktrace.o
+>>> diff --git a/arch/m68k/kernel/stacktrace.c b/arch/m68k/kernel/ 
+>>> stacktrace.c
+>>> new file mode 100644
+>>> index 
+>>> 0000000000000000000000000000000000000000..06c7459373bd25b3bb3540cfe2a909259c1db3ce
+>>> --- /dev/null
+>>> +++ b/arch/m68k/kernel/stacktrace.c
+>>> @@ -0,0 +1,70 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +/*
+>>> + * Stack trace utility functions etc.
+>>> + *
+>>> + * Copyright 2024 Jean-Michel Hautbois, Yoseli SAS.
+>>> + */
+>>> +
+>>> +#include <asm/current.h>
+>>> +#include <asm/ptrace.h>
+>>> +#include <linux/sched.h>
+>>> +#include <linux/sched/task_stack.h>
+>>> +#include <linux/stacktrace.h>
+>>> +
+>>> +static inline unsigned long current_stack_frame(void)
+>>> +{
+>>> +    unsigned long sp;
+>>> +
+>>> +    asm volatile("movl %%sp, %0" : "=r"(sp));
+>>> +    return sp;
+>>> +}
+> 
+> If I am understanding what this is intended to do then this is probably 
+> not right.
+> This will be returning the current stack pointer, which will almost 
+> certainly not
+> be the current stack frame pointer. This will be the top of stack at the 
+> call site,
+> which will be after the pushed locals and saved registers at the very 
+> least for m68k.
+> 
+> Does your kernel config have CONFIG_FRAME_POINTER enabled?
+> The default for m68k is usually disabled. Without this there won't be a
+> chain of frame pointers to follow like the code is trying to do below in
+> arch_stack_walk().
 
-Thanks!
+Thanks, I added the frame pointers support (select 
+ARCH_WANT_FRAME_POINTERS) but this is not better.
 
-> > As of the FOPTS changes: are those necessary for rtla to build, or
-> > were you just using them for easier debugging? AFAIK rtla shouldn't
-> > depend on unwind tables or stack protection for functionality.
->
-> Well, my toolchain does not support it, so it fails at link time:
->    LINK    /home/yocto/Projects/wabtec/linux/tools/tracing/rtla/rtla
-> /opt/m68k-buildroot-linux-uclibc_sdk-buildroot/bin/../lib/gcc/m68k-buildr=
-oot-linux-uclibc/13.3.0/../../../../m68k-buildroot-linux-uclibc/bin/ld:
-> /tmp/ccih6k6Z.ltrans0.ltrans.o: in function `err_msg':
-> /home/yocto/Projects/wabtec/linux/tools/tracing/rtla/src/utils.c:30:(.tex=
-t+0x1a0):
-> undefined reference to `__stack_chk_guard'
-> /opt/m68k-buildroot-linux-uclibc_sdk-buildroot/bin/../lib/gcc/m68k-buildr=
-oot-linux-uclibc/13.3.0/../../../../m68k-buildroot-linux-uclibc/bin/ld:
-> /home/yocto/Projects/wabtec/linux/tools/tracing/rtla/src/utils.c:39:(.tex=
-t+0x1e0):
-> undefined reference to `__stack_chk_guard'
->   <snip>
->
-> That's why I removed this option.
->
-
-Sorry, I misread the diff. I thought you were adding options, but you
-are just removing  -fstack-protector-strong, right? I believe rtla
-should check for the feature first before adding
--fstack-protector-strong, like perf does in
-tools/perf/Makefile.config:
-
-ifeq ($(feature-stackprotector-all), 1)
- CORE_CFLAGS +=3D -fstack-protector-all
-endif
-
-The feature-stackprotector-all does a test build, if you have a
-toolchain where building with -fstack-protector-all is broken for any
-reason, it will return 0. You can try doing something similar for
-rtla.
-
-Tomas
-
-
-> >>
-> >> But it is not enough, as executing rtla fails with a segfault.
-> >> I can dump a core, but I could not manage to build gdb for my board so=
- I
-> >> can't debug it (I don't know how to debug a coredump without gdb !).
-> >>
-> >> JM
-> >>
-> >
-> > I have seen a similar libtraceevent-related rtla segfault recently on
-> > ARM64, which was fixed by updating libtraceevent to a version that
-> > includes the fix. Such issues are caused by the files for kernel
-> > tracepoint tracefs having different contents on different
-> > architectures, exposing bugs. I see Steven has already fixed one of
-> > the issues on m68k [2].
->
-> I will try to use the very last versions of both libtracefs and
-> libtracevent and see if it is still happening !
->
-> Thanks !
-> JM
->
+> Regards
+> Greg
+> 
+> 
+>>> +static inline int validate_sp(unsigned long sp, struct task_struct 
+>>> *task)
+>>> +{
+>>> +    unsigned long stack_start, stack_end;
+>>> +
+>>> +    if (task == current)
+>>> +        stack_start = (unsigned long)task_stack_page(task);
+>>> +    else
+>>> +        stack_start = (unsigned long)task->thread.esp0;
+>>> +
+>>> +    stack_end = stack_start + THREAD_SIZE;
+>>> +
+>>> +    if (sp < stack_start || sp >= stack_end)
+>>> +        return 0;
+>>> +
+>>> +    return 1;
+>>> +}
+>>> +
+>>> +void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn 
+>>> consume_entry, void *cookie,
+>>> +                       struct task_struct *task, struct pt_regs *regs)
+>>> +{
+>>> +    unsigned long sp;
+>>> +
+>>> +    if (regs && !consume_entry(cookie, regs->pc))
+>>> +        return;
+>>> +
+>>> +    if (regs)
+>>> +        sp = (unsigned long) regs;
+>>> +    else if (task == current)
+>>> +        sp = current_stack_frame();
+>>> +    else
+>>> +        sp = task->thread.ksp;
+>>> +
+>>> +    for (;;) {
+>>> +        unsigned long *stack = (unsigned long *) sp;
+>>> +        unsigned long newsp, ip;
+>>> +
+>>> +        if (!validate_sp(sp, task))
+>>> +            return;
+>>> +
+>>> +        newsp = stack[0];
+>>> +        ip = stack[1];
+>>> +
+>>> +        if (!consume_entry(cookie, ip))
+>>> +            return;
+>>> +
+>>> +        sp = newsp;
+>>> +    }
+>>> +}
+>>>
+>>
 
