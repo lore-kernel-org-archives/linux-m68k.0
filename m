@@ -1,116 +1,130 @@
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EF61FA169;
-	Mon,  2 Dec 2024 09:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA751FDE24;
+	Mon,  2 Dec 2024 10:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733132014; cv=none; b=LXh2vD1MJiMTcprVJjDruftUhObYgIc73Hmv/01FrOYWP/Q0voxIMDoh//Hipo6ca/rXyLTUwZPthB/8ZsY1Mq5Pu5uO+RY6eOuFqwdJ9WHVLObXJmx70omBAq2l8z7rVlmIcZNx11HfGC1iV1AR3BntQoUg3A9meBwJrefXPW8=
+	t=1733134477; cv=none; b=GSk38bufZ2tyuCrhmXSZ2xqEecny+23ne42+j7Oxxi6GiQra/RRD61hNdGchJAsMy/HXgWA3qaGQ+r485Xe6bunuyBU5nth1ECjLBQyVVpuhPpsK98o+IIElj4Xi06PUxpS0yZy62OF1d8NfwcNDA3KWlNIxGtIh9ppn2Jb2SrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733132014; c=relaxed/simple;
-	bh=dXv9UMNqu6BeT3cBWgSYEHVcvEIHnjdQA4VyGo4K/QM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YV8wWNU3+UN1zZGkohM5NqSypb+2mcayR3+XWmGlhagexbexHYnKobCrhFu27t2tXy+WMlgn53bmtGfKu4fREyTjS5cYxyD+FMhuRaZWhfihI1yA4yWVTzfdA1rwiX95jGoAhmNOX0nBYqbBba7VF0Z4xixi5Ro7Ij+sfS43HjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=WLHmGzy6; arc=none smtp.client-ip=217.70.178.240
+	s=arc-20240116; t=1733134477; c=relaxed/simple;
+	bh=hzca0Vd/8ffGWVMELyMaSjK5OkJnubC9vL/FhBJgcMg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RQO8hMQGz+F2oJOjPvZFFw1KBK/CPDidhWgP2WlfSmB9Zq5lLUw29KM+ZaCfOXk2w8wI09Lfa1uLZ0shobQCYNb1kxV0WDt5xKth3Eiie9Gkp70tCHLq6Q47HgzblXriIbXjR+1xYUc2HbNM/D3ougC1m2aYtM6WcZk4j+Eolzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=eR7L0Bwo; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="WLHmGzy6"
-Received: from relay3-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::223])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id A9CDCC1ECD;
-	Mon,  2 Dec 2024 09:29:55 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6DF8D60011;
-	Mon,  2 Dec 2024 09:29:47 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="eR7L0Bwo"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 13131240003;
+	Mon,  2 Dec 2024 10:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1733131788;
+	t=1733134473;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GWb82E0b51yZQ/7U153TCkyyUUcuJzNrMgO0GHxp80M=;
-	b=WLHmGzy6DDgGxfCi3dDRmltNajmNXNF8XX+3wL3fG4yWQHuE9b12QH3NRYvXkI9h7PMm4l
-	0HPnbKWQx9r7Xiedqx3f4QTYwCCNwVGsh3hh6tbBVgd7R+ry2Iq4Vz9LBzqx70rHR1jUca
-	a1MxB4vR9kHAU7NL6jeStQo2HSIYKxJFetptHD831RZJRuVh3/xsIZnl64iJhVunmsY6xP
-	4PmV5Bkk2zbCnddWP/DV/coZS7SIi2dH31wp9YFQ+sC3+f2CB/ZWKguA/TNgrBV9sAI100
-	/I193IrRf1ixBSs2OOTFFMp7QPc9q+8PhMHgAgptqLVJzO1BCfM5GD/NkNH7hw==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Mon, 02 Dec 2024 10:29:26 +0100
-Subject: [PATCH 1/2] m68k: coldfire: Use proper clock rate for timers
+	bh=No/NWeHkarpWPPlisVqL/gSD6YvfOp1acQ+zd9+j7Wc=;
+	b=eR7L0BwogaZWS7Hk8Zh9PMxYCxlvqynfJIOSBrYqBVx2rb+gPoFtvjQ7PKZi/2+Qy0pBjJ
+	6+jB6SP+sUar5PBUuE/8tiKt9HUmR3+CukMrMHKLv4vToN7zzzPsvwIIK+OTyLd2XiLTT/
+	GFSUOq7BJvr3/zQ3ltj6EU6zEK1xZqWIJdCCTU/15pPg8cWZsTSWspOLOS/XnE0YgqtQNO
+	TBaOgiOy4ALLs7mDrpfUyz4vQsd1JeLWP76XQuXW3Gg19INLREN/ovkBM6AFmBToyULu+H
+	bQYfkuCAjSFx0bkqqhyLLtss6hIdLB8+Ulu5DaWkgaQWBPeWxGev5pNjmuPDEA==
+Message-ID: <2aefbd79-17c8-4190-bf4b-4e6b7d667065@yoseli.org>
+Date: Mon, 2 Dec 2024 11:14:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241202-m5441x_dma_tmr-v1-1-94087efe4243@yoseli.org>
-References: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
-In-Reply-To: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
-To: Greg Ungerer <gerg@linux-m68k.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Daniel Lezcano <daniel.lezcano@linaro.org>, 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] m68k: Add DMA timers support for M5441x
+To: Greg Ungerer <gerg@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
  Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- linux-m68k@vger.kernel.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1733131786; l=1954;
- i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=dXv9UMNqu6BeT3cBWgSYEHVcvEIHnjdQA4VyGo4K/QM=;
- b=2HRLiRSME9ccAR7IXB7i8hOJLioXAr9aGqqIkrdNbDkL4o1JSHBRnTTjqJoBss1EjaH8KYhB/
- jeYoxkY8TYTCaj1+TzClPiAtiD64DmVDkxj6f/LXNJ1ugGpSVl/aebq
-X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
- pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-m68k@vger.kernel.org
+References: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-The DMA and PIT timers are clocked at fsys/2. Fix it.
-While at it, fix the comment naming for DMA timers (duplicated tmr.2).
+On 02/12/2024 10:29, Jean-Michel Hautbois wrote:
+> This patch series adds support for DMA timers for the M5441x coldfire
+> family. The aim is to provide finer scheduler resolution and support for
+> high-resolution timers.
+> 
+> The first patch fixes the clocks and a typo. The second one is the
+> timers support addition. As there is no device tree, I did not use
+> TIMER_OF_DECLARE().
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
----
- arch/m68k/coldfire/m5441x.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+I forgot to mention the result on a real M544118 board !
+With PIT timer:
+bash-5.2# cyclictest -p 80 -m -q -l 10000
+WARN: stat /dev/cpu_dma_latency failed: No such file or directory
+WARN: High resolution timers not available
+T: 0 (  231) P:80 I:1000 C:  10000 Min:    277 Act: 1965 Avg: 1437 Max: 
+   2023
 
-diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-index 405e9d5c832c0d41978615a646de21f2fce61afb..7a25cfc7ac07570ff15da3c55d080a717cf93a06 100644
---- a/arch/m68k/coldfire/m5441x.c
-+++ b/arch/m68k/coldfire/m5441x.c
-@@ -33,14 +33,14 @@ DEFINE_CLK(0, "mcfuart.0", 24, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfuart.1", 25, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfuart.2", 26, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfuart.3", 27, MCF_BUSCLK);
--DEFINE_CLK(0, "mcftmr.0", 28, MCF_CLK);
--DEFINE_CLK(0, "mcftmr.1", 29, MCF_CLK);
--DEFINE_CLK(0, "mcftmr.2", 30, MCF_CLK);
--DEFINE_CLK(0, "mcftmr.3", 31, MCF_CLK);
--DEFINE_CLK(0, "mcfpit.0", 32, MCF_CLK);
--DEFINE_CLK(0, "mcfpit.1", 33, MCF_CLK);
--DEFINE_CLK(0, "mcfpit.2", 34, MCF_CLK);
--DEFINE_CLK(0, "mcfpit.3", 35, MCF_CLK);
-+DEFINE_CLK(0, "mcftmr.0", 28, MCF_BUSCLK);
-+DEFINE_CLK(0, "mcftmr.1", 29, MCF_BUSCLK);
-+DEFINE_CLK(0, "mcftmr.2", 30, MCF_BUSCLK);
-+DEFINE_CLK(0, "mcftmr.3", 31, MCF_BUSCLK);
-+DEFINE_CLK(0, "mcfpit.0", 32, MCF_BUSCLK);
-+DEFINE_CLK(0, "mcfpit.1", 33, MCF_BUSCLK);
-+DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
-+DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfeport.0", 37, MCF_CLK);
- DEFINE_CLK(0, "mcfadc.0", 38, MCF_CLK);
- DEFINE_CLK(0, "mcfdac.0", 39, MCF_CLK);
-@@ -167,8 +167,8 @@ static struct clk * const disable_clks[] __initconst = {
- 	&__clk_0_14, /* i2c.1 */
- 	&__clk_0_22, /* i2c.0 */
- 	&__clk_0_23, /* dspi.0 */
--	&__clk_0_28, /* tmr.1 */
--	&__clk_0_29, /* tmr.2 */
-+	&__clk_0_28, /* tmr.0 */
-+	&__clk_0_29, /* tmr.1 */
- 	&__clk_0_30, /* tmr.2 */
- 	&__clk_0_31, /* tmr.3 */
- 	&__clk_0_32, /* pit.0 */
+With this driver and the following declaration in m5441x.c:
+static struct resource mcf_dmatmr2_resource[] = {
+	[0] = {
+		.start = MCFDMATIMER_BASE2,
+		.end   = MCFDMATIMER_BASE2 + 0xf,
+		.flags = IORESOURCE_MEM,
+	},
+	[1] = {
+		.start = MCFDMATIMER_IRQ_DTIM2,
+		.end   = MCFDMATIMER_IRQ_DTIM2,
+		.flags = IORESOURCE_IRQ,
+	},
+	[2] = {
+		.start = MCFDMATIMER_IRQ_PRIO2,
+		.end   = MCFDMATIMER_IRQ_PRIO2,
+		.flags = IORESOURCE_REG,
+		.name = "prio_reg",
+	}
+};
 
--- 
-2.39.5
+static struct platform_device mcf_dmatmr2 = {
+	.name			= "mcftmr",
+	.id			= 2,
+	.num_resources = ARRAY_SIZE(mcf_dmatmr2_resource),
+	.resource = mcf_dmatmr2_resource,
+};
+
+bash-5.2# cyclictest -p 80 -m -q -l 10000 -R
+WARN: stat /dev/cpu_dma_latency failed: No such file or directory
+WARN: reported clock resolution: 1 nsec
+WARN: measured clock resolution approximately: 2376 nsec
+T: 0 (  243) P:80 I:1000 C:  10000 Min:    104 Act:  125 Avg:  129 Max: 
+    239
+
+I don't know why the reported resolution is 1ns and not 8ns but it is 
+not a big issue I suppose :-) ?
+
+> 
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> ---
+> Jean-Michel Hautbois (2):
+>        m68k: coldfire: Use proper clock rate for timers
+>        m68k: m5441x: Add DMA timer support
+> 
+>   MAINTAINERS                         |   6 +
+>   arch/m68k/coldfire/m5441x.c         |  20 +--
+>   arch/m68k/include/asm/m5441xsim.h   |  18 +++
+>   drivers/clocksource/Kconfig         |   9 ++
+>   drivers/clocksource/Makefile        |   1 +
+>   drivers/clocksource/mcf_dma_timer.c | 240 ++++++++++++++++++++++++++++++++++++
+>   6 files changed, 284 insertions(+), 10 deletions(-)
+> ---
+> base-commit: e3f432391d55ec21274bd16a04659b4a24678535
+> change-id: 20241202-m5441x_dma_tmr-d969f4cc30a8
+> 
+> Best regards,
 
