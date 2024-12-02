@@ -1,309 +1,122 @@
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE46E1F9411
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 10:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4A31FE46A
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 12:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733135993; cv=none; b=qTxEto9qZg0o5PrPfez0NeljZvGSZjT0xv8LvOXbPKuZvCn9KIqE+ks/SRan7cV00X09J4CrrkE8RaFgSKE9iUmtjwGIB6EPF/dqcpaYAhApn4IO1lHAYoKFm4Y0wBFwN/gQgs1I1nWHoO4BclTfzcteMO8uyS5WoDyKU2i2Apc=
+	t=1733143996; cv=none; b=Vfr2rWf0DTsDYWomZimwHtvLhfsiDigF+zKAKaUMqXTL+QA1CURBEvjUEplMJB+NOwDuoezWHSiI0XAbRScv95I3ovx7r7aiT9VTNDG6jZy925t+4cJsbdrWVOOPfrUGoGD9wGVnukljQQBI8nbWdek8QptPX39XnVLnc8lbySI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733135993; c=relaxed/simple;
-	bh=eK6yjxsDp6WwhycvLzAI+Os6thQ0t/rKpZCVkatl/kk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=jtLIWP69DnoEnJfc1TTQSIrS3AhZ1jVBKIfekhNNOF5s0OCOW/PEkLwc2T709PVwaDy9OJkyIC7IFzZOhpxHwEAjMn2QlqCbngy8Xhlha0CVspH9ScYNBYN7HI/H+a1ZqpYbvcMm2ydssRlTlamdo+nX+RqmECyT9/l0lLZiJuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=WA6WwHq2; arc=none smtp.client-ip=217.70.178.240
+	s=arc-20240116; t=1733143996; c=relaxed/simple;
+	bh=Dcf1mBDnyMc8unddg5GNv+kcRpzPFQKquzmJIg3OBco=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KW7ScDYwm5Cdk/HuTTcavkq5p7U+ZkFdx3QmVQkd49G9OxP3l7T4+lQdfJ+2d6orSWFe4fWnhcpgc0o32Uq23sPIKO7XyHk6YeEa/5dJwcH08glpwyBoK3tdw1fhbYQoH8/xM8FfZeKDmu8UpJdu5F28WK0KLrtz0ONpvcDWWZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=l/BojXVr; arc=none smtp.client-ip=217.70.183.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="WA6WwHq2"
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id 929C6C2162
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 10:34:31 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 66A5FFF806;
-	Mon,  2 Dec 2024 10:34:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="l/BojXVr"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8222540008;
+	Mon,  2 Dec 2024 12:53:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1733135663;
+	t=1733143986;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ztHX/ZoXirD5Kwovsqs5OlEVZDsoMYIef909rL/emsY=;
-	b=WA6WwHq2Mm8ChwQDDMNvUQ7sRyt0VyTLOPMiu0PMpEifDUXMlX3vpD4XL18kFry79JEP8G
-	g2QOPe5+8IV2hqunDDkxLPW7vt8QmZlZkWfs5isiURY10+476/cM3gynYiCo5ptuPOoQRo
-	DVuli/nhCV3waV5kgn5sc8rBGdE7ER/FE6Q8/ZvT4yEs2xKT3AarbBRvZ8Ftq5Y77qEd6s
-	dHlnj2ad8wqPK08FoKc1atxakoyGhVaGdkAWLAvaYM14T7BXC6aztKDMoGhKSEB5e8zlaF
-	OUvjYvKYoQm8jriJrZgafjxjNvOmLd0/OVdjfGaINrEZ3TOr1XRfED1bQlmuIg==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Mon, 02 Dec 2024 11:34:18 +0100
-Subject: [PATCH] m68k: coldfire: Support resources for UART
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HF06qhv15YyjsEs1KTqYjzgSe0v0sSFbfiFa7jg8+lc=;
+	b=l/BojXVrEtKh8e1cL6rF3kGY72seZV66sXSvmIvNxEtFa/UwO30RELZJxSctzE3ziXngoQ
+	zGHI7pOkrS8wN30eGwD3FTgywGLJinLzAWEXa3Z2++/EbsQtRGrXBMFoTZFNXpUw+HkZte
+	IsT6jSLM7eHC2nJTJn2jNnbRLR8SNdCRTJoHDKLx24cQpZ2PM+3Jn7Sv3ucmA8qq4AynEv
+	l/RDsITBKECtWsSxXTnkUDLta1rmloKDD5DwsTpxDF0gIeckFaRK33UWEMK05TfhtyJCp/
+	mmxxjJ6tt7bvE9q5yQ56pbPSb98EWsR8L0VqJbaDnqMVrpcmqCXJ8c1zzZ2+Jw==
+Message-ID: <c2d5cfd5-8bdb-4060-a974-18f9c2b9a2d0@yoseli.org>
+Date: Mon, 2 Dec 2024 13:53:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241202-m5441x_uart_resource-v1-1-6b28cb295fb5@yoseli.org>
-X-B4-Tracking: v=1; b=H4sIACmNTWcC/x2MSQqAMBDAviJztmAXFf2KSNE66hxcmKoIpX+3e
- AnkkATwyIQe2iwA40Oejj2JzDNw67AvKGhKDqpQRiaIrTRGvvYe+LKM/rjZoahVM+rCyVJXGlJ
- 6Ms70/tuuj/ED3Tcxj2YAAAA=
-X-Change-ID: 20241202-m5441x_uart_resource-729b30c15363
-To: Greg Ungerer <gerg@linux-m68k.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- linux-serial@vger.kernel.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1733135661; l=6941;
- i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=eK6yjxsDp6WwhycvLzAI+Os6thQ0t/rKpZCVkatl/kk=;
- b=gEPFeyR1Efxg+G/L3sujYuDGlqvtW69oVm91xDeG5DM4gcJgE7bG5Sh1qC0o8UljZX/QdSXEX
- Vhi81Ak/Fm0Dkrjf+DxLMRJQmQx7fK0ujm8RkPm+48FNPczDJKAfAkx
-X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
- pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 0/2] Add basic tracing support for m68k
+To: Tomas Glozar <tglozar@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>
+References: <20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org>
+ <3a8f6faa-62c6-4d32-b544-3fb7c00730d7@yoseli.org>
+ <20241115102554.29232d34@gandalf.local.home>
+ <cbb67ee2-8b37-4a4d-b542-f89ddae90e94@yoseli.org>
+ <20241115145502.631c9a2c@gandalf.local.home>
+ <2c43288a-517d-4220-ad31-f84dda8c1805@yoseli.org>
+ <CAP4=nvTjdZRfWtpvM+gThPv6SghW96i9YykA88vAFH5x39GZqw@mail.gmail.com>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <CAP4=nvTjdZRfWtpvM+gThPv6SghW96i9YykA88vAFH5x39GZqw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-In order to use the eDMA channels for UART, the mcf_platform_uart needs
-to be changed. Instead of adding another custom member for the
-structure, use a resource tree in a platform_device per UART. It then
-makes it possible to have a device named like "mcfuart.N" with N the
-UART number.
+Hi Tomas !
 
-Later, adding the dma channel in the mcf tty driver will also be more
-straightfoward.
+On 28/11/2024 16:25, Tomas Glozar wrote:
+> po 18. 11. 2024 v 11:13 odesílatel Jean-Michel Hautbois
+> <jeanmichel.hautbois@yoseli.org> napsal:
+>>
+>> I had to modify the source code a bit, as it does not compile with my
+>> uclibc toolchain:
+>> ...
+> 
+> glibc added a gettid() wrapper with version 2.30; earlier glibc and
+> uclibc do not have it. That can be fixed by conditionally including
+> the inline function if on glibc lower than 2.30 or another libc; for
+> reference on how to detect that, see how kernel self tests do it [1].
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
----
- arch/m68k/coldfire/device.c | 96 ++++++++++++++-------------------------------
- drivers/tty/serial/mcf.c    | 69 +++++++++++++++++++-------------
- 2 files changed, 70 insertions(+), 95 deletions(-)
+Thanks, I will cook a patch !
 
-diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-index b6958ec2a220cf91a78a14fc7fa18749451412f7..fd7d0b0ce7eb2970cb8ffe33589fe8d7e88c268d 100644
---- a/arch/m68k/coldfire/device.c
-+++ b/arch/m68k/coldfire/device.c
-@@ -24,73 +24,35 @@
- #include <linux/platform_data/dma-mcf-edma.h>
- #include <linux/platform_data/mmc-esdhc-mcf.h>
- 
--/*
-- *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
-- */
--static struct mcf_platform_uart mcf_uart_platform_data[] = {
--	{
--		.mapbase	= MCFUART_BASE0,
--		.irq		= MCF_IRQ_UART0,
--	},
--	{
--		.mapbase	= MCFUART_BASE1,
--		.irq		= MCF_IRQ_UART1,
--	},
--#ifdef MCFUART_BASE2
--	{
--		.mapbase	= MCFUART_BASE2,
--		.irq		= MCF_IRQ_UART2,
--	},
--#endif
--#ifdef MCFUART_BASE3
--	{
--		.mapbase	= MCFUART_BASE3,
--		.irq		= MCF_IRQ_UART3,
--	},
--#endif
--#ifdef MCFUART_BASE4
--	{
--		.mapbase	= MCFUART_BASE4,
--		.irq		= MCF_IRQ_UART4,
--	},
--#endif
--#ifdef MCFUART_BASE5
--	{
--		.mapbase	= MCFUART_BASE5,
--		.irq		= MCF_IRQ_UART5,
--	},
--#endif
--#ifdef MCFUART_BASE6
--	{
--		.mapbase	= MCFUART_BASE6,
--		.irq		= MCF_IRQ_UART6,
--	},
--#endif
--#ifdef MCFUART_BASE7
--	{
--		.mapbase	= MCFUART_BASE7,
--		.irq		= MCF_IRQ_UART7,
-+static u64 mcf_uart_mask = DMA_BIT_MASK(32);
-+
-+static struct resource mcf_uart0_resource[] = {
-+	[0] = {
-+		.start = MCFUART_BASE0,
-+		.end   = MCFUART_BASE0 + 0x3fff,
-+		.flags = IORESOURCE_MEM,
- 	},
--#endif
--#ifdef MCFUART_BASE8
--	{
--		.mapbase	= MCFUART_BASE8,
--		.irq		= MCF_IRQ_UART8,
-+	[1] = {
-+		.start = 2,
-+		.end   = 3,
-+		.flags = IORESOURCE_DMA,
- 	},
--#endif
--#ifdef MCFUART_BASE9
--	{
--		.mapbase	= MCFUART_BASE9,
--		.irq		= MCF_IRQ_UART9,
-+	[2] = {
-+		.start = MCF_IRQ_UART0,
-+		.end   = MCF_IRQ_UART0,
-+		.flags = IORESOURCE_IRQ,
- 	},
--#endif
--	{ },
- };
- 
--static struct platform_device mcf_uart = {
-+static struct platform_device mcf_uart0 = {
- 	.name			= "mcfuart",
- 	.id			= 0,
--	.dev.platform_data	= mcf_uart_platform_data,
-+	.num_resources = ARRAY_SIZE(mcf_uart0_resource),
-+	.resource = mcf_uart0_resource,
-+	.dev = {
-+		.dma_mask = &mcf_uart_mask,
-+		.coherent_dma_mask = DMA_BIT_MASK(32),
-+	},
- };
- 
- #ifdef MCFFEC_BASE0
-@@ -485,12 +447,12 @@ static struct platform_device mcf_i2c5 = {
- static const struct dma_slave_map mcf_edma_map[] = {
- 	{ "dreq0", "rx-tx", MCF_EDMA_FILTER_PARAM(0) },
- 	{ "dreq1", "rx-tx", MCF_EDMA_FILTER_PARAM(1) },
--	{ "uart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
--	{ "uart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
--	{ "uart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
--	{ "uart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
--	{ "uart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
--	{ "uart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
-+	{ "mcfuart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
-+	{ "mcfuart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
-+	{ "mcfuart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
-+	{ "mcfuart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
-+	{ "mcfuart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
-+	{ "mcfuart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
- 	{ "timer0", "rx-tx", MCF_EDMA_FILTER_PARAM(8) },
- 	{ "timer1", "rx-tx", MCF_EDMA_FILTER_PARAM(9) },
- 	{ "timer2", "rx-tx", MCF_EDMA_FILTER_PARAM(10) },
-@@ -623,7 +585,7 @@ static struct platform_device mcf_flexcan0 = {
- #endif /* MCFFLEXCAN_SIZE */
- 
- static struct platform_device *mcf_devices[] __initdata = {
--	&mcf_uart,
-+	&mcf_uart0,
- #ifdef MCFFEC_BASE0
- 	&mcf_fec0,
- #endif
-diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
-index 93e7dda4d39acd23daf8c0d4c29ac8d666f263c5..07b8decfdb6005f0265dd130765e45c3fd1715eb 100644
---- a/drivers/tty/serial/mcf.c
-+++ b/drivers/tty/serial/mcf.c
-@@ -570,31 +570,46 @@ static struct uart_driver mcf_driver = {
- 
- static int mcf_probe(struct platform_device *pdev)
- {
--	struct mcf_platform_uart *platp = dev_get_platdata(&pdev->dev);
- 	struct uart_port *port;
--	int i;
--
--	for (i = 0; ((i < MCF_MAXPORTS) && (platp[i].mapbase)); i++) {
--		port = &mcf_ports[i].port;
--
--		port->line = i;
--		port->type = PORT_MCF;
--		port->mapbase = platp[i].mapbase;
--		port->membase = (platp[i].membase) ? platp[i].membase :
--			(unsigned char __iomem *) platp[i].mapbase;
--		port->dev = &pdev->dev;
--		port->iotype = SERIAL_IO_MEM;
--		port->irq = platp[i].irq;
--		port->uartclk = MCF_BUSCLK;
--		port->ops = &mcf_uart_ops;
--		port->flags = UPF_BOOT_AUTOCONF;
--		port->rs485_config = mcf_config_rs485;
--		port->rs485_supported = mcf_rs485_supported;
--		port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
--
--		uart_add_one_port(&mcf_driver, port);
-+	struct mcf_uart *pp;
-+	struct resource *res;
-+	void __iomem *base;
-+	int id = pdev->id;
-+
-+	if (id == -1 || id >= MCF_MAXPORTS) {
-+		dev_err(&pdev->dev, "uart%d out of range\n",
-+			id);
-+		return -EINVAL;
- 	}
- 
-+	port = &mcf_ports[id].port;
-+	port->line = id;
-+
-+	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	port->mapbase = res->start;
-+	port->membase = base;
-+
-+	port->irq = platform_get_irq(pdev, 0);
-+	if (port->irq < 0)
-+		return port->irq;
-+
-+	port->type = PORT_MCF;
-+	port->dev = &pdev->dev;
-+	port->iotype = SERIAL_IO_MEM;
-+	port->uartclk = MCF_BUSCLK;
-+	port->ops = &mcf_uart_ops;
-+	port->flags = UPF_BOOT_AUTOCONF;
-+	port->rs485_config = mcf_config_rs485;
-+	port->rs485_supported = mcf_rs485_supported;
-+	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
-+
-+	pp = container_of(port, struct mcf_uart, port);
-+
-+	uart_add_one_port(&mcf_driver, port);
-+
- 	return 0;
- }
- 
-@@ -603,13 +618,11 @@ static int mcf_probe(struct platform_device *pdev)
- static void mcf_remove(struct platform_device *pdev)
- {
- 	struct uart_port *port;
--	int i;
-+	int id = pdev->id;
- 
--	for (i = 0; (i < MCF_MAXPORTS); i++) {
--		port = &mcf_ports[i].port;
--		if (port)
--			uart_remove_one_port(&mcf_driver, port);
--	}
-+	port = &mcf_ports[id].port;
-+	if (port)
-+		uart_remove_one_port(&mcf_driver, port);
- }
- 
- /****************************************************************************/
+> As of the FOPTS changes: are those necessary for rtla to build, or
+> were you just using them for easier debugging? AFAIK rtla shouldn't
+> depend on unwind tables or stack protection for functionality.
 
----
-base-commit: e457f18d7f25288d143c1fe024a620d0b15caec1
-change-id: 20241202-m5441x_uart_resource-729b30c15363
+Well, my toolchain does not support it, so it fails at link time:
+   LINK    /home/yocto/Projects/wabtec/linux/tools/tracing/rtla/rtla
+/opt/m68k-buildroot-linux-uclibc_sdk-buildroot/bin/../lib/gcc/m68k-buildroot-linux-uclibc/13.3.0/../../../../m68k-buildroot-linux-uclibc/bin/ld: 
+/tmp/ccih6k6Z.ltrans0.ltrans.o: in function `err_msg':
+/home/yocto/Projects/wabtec/linux/tools/tracing/rtla/src/utils.c:30:(.text+0x1a0): 
+undefined reference to `__stack_chk_guard'
+/opt/m68k-buildroot-linux-uclibc_sdk-buildroot/bin/../lib/gcc/m68k-buildroot-linux-uclibc/13.3.0/../../../../m68k-buildroot-linux-uclibc/bin/ld: 
+/home/yocto/Projects/wabtec/linux/tools/tracing/rtla/src/utils.c:39:(.text+0x1e0): 
+undefined reference to `__stack_chk_guard'
+  <snip>
 
-Best regards,
--- 
-Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+That's why I removed this option.
+
+>>
+>> But it is not enough, as executing rtla fails with a segfault.
+>> I can dump a core, but I could not manage to build gdb for my board so I
+>> can't debug it (I don't know how to debug a coredump without gdb !).
+>>
+>> JM
+>>
+> 
+> I have seen a similar libtraceevent-related rtla segfault recently on
+> ARM64, which was fixed by updating libtraceevent to a version that
+> includes the fix. Such issues are caused by the files for kernel
+> tracepoint tracefs having different contents on different
+> architectures, exposing bugs. I see Steven has already fixed one of
+> the issues on m68k [2].
+
+I will try to use the very last versions of both libtracefs and 
+libtracevent and see if it is still happening !
+
+Thanks !
+JM
+
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/nolibc/nolibc-test.c#n1008
+> [2] https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/commit/?id=45a9b0647c904b7bf1240da5a11fe3a1ffd1006d
+> 
+> Tomas
+> 
 
