@@ -1,245 +1,166 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from fout-b2-smtp.messagingengine.com (fout-b2-smtp.messagingengine.com [202.12.124.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741BB18641
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 01:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4041FA178
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 09:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733103260; cv=none; b=Y2MyYw84YDWCPUKkse7aAswmawObgb3fThnYxtgHXGrqJ7fh4D0AhZ0+17zw40tQ3fkAecWVvO9Ruv6yAfrGeLIRjimy2IuedOBkkmfgloF9Zc1ZFkdUAVCyk40P1omlzlyPabLW0ir/ENPBq+eHZghjyQDfZGR8X6nAcVqdF40=
+	t=1733131703; cv=none; b=B/3E4Qjue70QPo7t10r4sa14Vj+FAxKXUfeyO2II2KA/C+kltDVB2UhDuvpDKHZpncVb38XKZyalnHlYRp+tOhW8EazQzbEOmMdE5CYOX5va8H+thz1IJ1qMyxiGmHThxtM/XCyrR4+rB8OjH3gP7ApcgreXbuT3kVQcNNBrykw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733103260; c=relaxed/simple;
-	bh=v6NROj98Vt+JIRGzm0rhzypGFT/dMaASTdyeGqf+F30=;
-	h=Content-Type:Message-ID:Date:MIME-Version:Subject:From:To:Cc:
-	 References:In-Reply-To; b=fxlyJFTJAChHgGCjsg9SvKn1E4ZGrjlTq1W7DRrvphevKYP/2EfuRjG2r1522VYizEh16OBYAPrXeL4ygabCUiUzy+awMw4n6ajR2NYvzITUmUOPtEeFJcFiCVIjupq+kDAQvcelTel7zDJcVsgBExDdrqBBA4B26alQ42pBXrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3C6DA5C632A;
-	Mon,  2 Dec 2024 01:33:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB8C0C4CECF;
-	Mon,  2 Dec 2024 01:34:13 +0000 (UTC)
-Content-Type: multipart/mixed; boundary="------------ynBQ5orTojtKmtqZQOw1ViC4"
-Message-ID: <7bb57485-c08c-4121-ade5-8c76bc48e615@linux-m68k.org>
-Date: Mon, 2 Dec 2024 11:34:11 +1000
+	s=arc-20240116; t=1733131703; c=relaxed/simple;
+	bh=YCKKHOkYcjU3eVZLXY4GlyGAzwYDGeB7zy/3/G0VBbY=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=lnSHUkQKVGsAqaGsu9qs97WrYnuVhX6PPjzmJz5gnLyNKXXeqHbTNF+2ozNH/6QiJoY5Z1Idx1AxgwYLBGs34U8hfV4Dv2zeCkd+cGmfDZFSqw5iFEtVG/CPP88uyXmilMUc7CgnjnabhHXLhR4cm39mOrZvUn89PR4MK/CeJUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=ROviGzmA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=k3LcCnBv; arc=none smtp.client-ip=202.12.124.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="ROviGzmA";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="k3LcCnBv"
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfout.stl.internal (Postfix) with ESMTP id C0838114013C;
+	Mon,  2 Dec 2024 04:28:19 -0500 (EST)
+Received: from phl-imap-11 ([10.202.2.101])
+  by phl-compute-10.internal (MEProxy); Mon, 02 Dec 2024 04:28:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1733131699;
+	 x=1733218099; bh=0vtW7zcy28E3VWtcQ0tZtRDJt36nwZn3YMYcW1ufa64=; b=
+	ROviGzmAG0HSz8q4qvRQB4L2vxZ0gTUFxFgbbqjP3qFHSXFOZA3VThUmc+unP1Cc
+	uZEnvOXKZIzAKVX41xrDZqjAQxv7PJHyydGH/hoVNUCAKSrh+p0dtZPrEnZ3IJVS
+	YSF/FCZAdcrFvD6pcwsve73p8u0mH7wn8LCxPDP2K3Ixzqvbwl2Blew/wKIeYP4c
+	JaF7ghNbysxlP6oiXnb4g+Gm0aqbZP0smCJLoXl9MwZPYiOINoROiaIdtq2YXmOC
+	Sr8VW6tGWZbKTeGftLb8qGFNeUGyBTPQMIVXasnp+4H6uEvGd6ibN6n9LopN8I7e
+	aWJXEbONiw/rbzZQtY98uQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1733131699; x=
+	1733218099; bh=0vtW7zcy28E3VWtcQ0tZtRDJt36nwZn3YMYcW1ufa64=; b=k
+	3LcCnBvV+X2jdZd9wdvp80HUJMJstHohn95DFYLVckzEfQ1X3XkHIzZpIjkPTE3X
+	wkxxXuUnGaBw356eMjbJTkqx97ilpYxO2DL8R0Pc6nZeLXUBDej4eMOFnCiNhMnh
+	sPzstBlgjLd+LOw4fLOm82nJI4rl2smO3nglB5ZXEgHfuskt66lvuWTLtSf7GXSy
+	8ky4EzFjihMQdQiv/R9R1cULK6/9sKgdc35ny1pFJB7Yny1dHtl57hCXgOKTLoKf
+	7tGSrq2IIVVd1s2NHBGycl65p2IfGoUJiD33IVS9DBl2nixeDc2w6nzfPHAZ6Avq
+	BJsnDOy7lZMhDosErilOw==
+X-ME-Sender: <xms:s31NZ-nRfQMJS-BUHk1nRmAY9WzRgll4-zivZuUGtw27GDXLpH26MA>
+    <xme:s31NZ13S61_8340ydO8o2jhozBFFBG2915JBF_Q8YfwIIu-sR4-LyqBhvAfV9Khp5
+    XtZtUFrr7ivSN2eRIc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrheelgddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
+    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
+    hsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthhqredtredtjeen
+    ucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdrug
+    gvqeenucggtffrrghtthgvrhhnpedvhfdvkeeuudevfffftefgvdevfedvleehvddvgeej
+    vdefhedtgeegveehfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggvpdhnsggprhgtphhtthhopeegpdhm
+    ohguvgepshhmthhpohhuthdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkh
+    drohhrghdprhgtphhtthhopehgvghrgheslhhinhhugidqmheikehkrdhorhhgpdhrtghp
+    thhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
+    dprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhr
+    gh
+X-ME-Proxy: <xmx:s31NZ8p3hEEM0UIl_wlTiFIuMGNbmCtkflOhpeB93BoD0s94Zuw1Wg>
+    <xmx:s31NZynpIciuFdAJhdNVZYVBmyLhp2IF_SFyhGB8o8Os9FlZqF3A5A>
+    <xmx:s31NZ83g-mk8H2OnybF7i1ix-WzVzHOBPjySl8-e9M_qjtcjhgPVLw>
+    <xmx:s31NZ5uBrAmmmDNdBxVKqpHZ0f8ZjlXQt3XX6QJPi4KzRRDzpvOjhw>
+    <xmx:s31NZ5xfy0l0R9U0OTyXSS99k9jvvwFUCiGFrKpAjUqokXnycc2d7I0_>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 427592220071; Mon,  2 Dec 2024 04:28:19 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] m68k: use kernel's generic muldi3 libgcc function
-From: Greg Ungerer <gerg@linux-m68k.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, arnd@arndb.de
+Date: Mon, 02 Dec 2024 10:27:48 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Greg Ungerer" <gerg@linux-m68k.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <992c4d62-380d-4908-a688-77197d9c4cbd@app.fastmail.com>
+In-Reply-To: <7bb57485-c08c-4121-ade5-8c76bc48e615@linux-m68k.org>
 References: <20231113133209.1367286-1-gerg@linux-m68k.org>
  <CAMuHMdVZh6-64hfx1jgOijBEG6cTftinqf+4fZvqjJtV1hO95g@mail.gmail.com>
  <1dd8be4b-d5c3-4074-a91e-3ce998ce3050@linux-m68k.org>
-Content-Language: en-US
-In-Reply-To: <1dd8be4b-d5c3-4074-a91e-3ce998ce3050@linux-m68k.org>
+ <7bb57485-c08c-4121-ade5-8c76bc48e615@linux-m68k.org>
+Subject: Re: [PATCH v2] m68k: use kernel's generic muldi3 libgcc function
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-This is a multi-part message in MIME format.
---------------ynBQ5orTojtKmtqZQOw1ViC4
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+On Mon, Dec 2, 2024, at 02:34, Greg Ungerer wrote:
+> Arnd, ping...
 
-Arnd, ping...
+Sorry I hadn't realized you were waiting for me.
 
-
-On 6/11/24 08:04, Greg Ungerer wrote:
-> Hi Geert,
-> 
-> On 5/11/24 21:46, Geert Uytterhoeven wrote:
->> Hi Greg, Arnd,
->>
->> On Mon, Nov 13, 2023 at 2:32 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
->>> Use the kernels own generic lib/muldi3.c implementation of muldi3 for
->>> 68K machines. Some 68K CPUs support 64bit multiplies so move the arch
->>> specific umul_ppmm() macro into a header file that is included by
->>> lib/muldi3.c. That way it can take advantage of the single instruction
->>> when available.
+> On 6/11/24 08:04, Greg Ungerer wrote:
+>> On 5/11/24 21:46, Geert Uytterhoeven wrote:
+>>> On Mon, Nov 13, 2023 at 2:32=E2=80=AFPM Greg Ungerer <gerg@linux-m68=
+k.org> wrote:
+>>>> Use the kernels own generic lib/muldi3.c implementation of muldi3 f=
+or
+>>>> 68K machines. Some 68K CPUs support 64bit multiplies so move the ar=
+ch
+>>>> specific umul_ppmm() macro into a header file that is included by
+>>>> lib/muldi3.c. That way it can take advantage of the single instruct=
+ion
+>>>> when available.
+>>>>
+>>>> There does not appear to be any existing mechanism for the generic
+>>>> lib/muldi3.c code to pick up an external arch definition of umul_pp=
+mm().
+>>>> Create an arch specific libgcc.h that can optionally be included by
+>>>> the system include/linux/libgcc.h to allow for this.
+>>>>
+>>>> Somewhat oddly there is also a similar definition of umul_ppmm() in
+>>>> the non-architecture code in lib/crypto/mpi/longlong.h for a wide r=
+ange
+>>>> or machines. Its presence ends up complicating the include setup and
+>>>> means not being able to use something like compiler.h instead. Actu=
+ally
+>>>> there is a few other defines of umul_ppmm() macros spread around in
+>>>> various architectures, but not directly usable for the m68k case.
+>>>>
+>>>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 >>>
->>> There does not appear to be any existing mechanism for the generic
->>> lib/muldi3.c code to pick up an external arch definition of umul_ppmm().
->>> Create an arch specific libgcc.h that can optionally be included by
->>> the system include/linux/libgcc.h to allow for this.
+>>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 >>>
->>> Somewhat oddly there is also a similar definition of umul_ppmm() in
->>> the non-architecture code in lib/crypto/mpi/longlong.h for a wide range
->>> or machines. Its presence ends up complicating the include setup and
->>> means not being able to use something like compiler.h instead. Actually
->>> there is a few other defines of umul_ppmm() macros spread around in
->>> various architectures, but not directly usable for the m68k case.
+>>>> =C2=A0 arch/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 8 +=
+++
+>>>> =C2=A0 arch/m68k/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +
+>>>> =C2=A0 arch/m68k/include/asm/libgcc.h | 20 +++++++
+>>>> =C2=A0 arch/m68k/lib/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 |=C2=A0 2 +-
+>>>> =C2=A0 arch/m68k/lib/muldi3.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 | 97 ----------------------------------
+>>>> =C2=A0 include/linux/libgcc.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 |=C2=A0 4 ++
+>>>> =C2=A0 6 files changed, 35 insertions(+), 98 deletions(-)
+>>>> =C2=A0 create mode 100644 arch/m68k/include/asm/libgcc.h
+>>>> =C2=A0 delete mode 100644 arch/m68k/lib/muldi3.c
 >>>
->>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
->>
->> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>
->>>   arch/Kconfig                   |  8 +++
->>>   arch/m68k/Kconfig              |  2 +
->>>   arch/m68k/include/asm/libgcc.h | 20 +++++++
->>>   arch/m68k/lib/Makefile         |  2 +-
->>>   arch/m68k/lib/muldi3.c         | 97 ----------------------------------
->>>   include/linux/libgcc.h         |  4 ++
->>>   6 files changed, 35 insertions(+), 98 deletions(-)
->>>   create mode 100644 arch/m68k/include/asm/libgcc.h
->>>   delete mode 100644 arch/m68k/lib/muldi3.c
->>
->> I had this in my local tree for about a year.
->> Is it fine to queue this in the m68k tree, or does this need a broader
->> coverage?
-> 
-> I am still in favor of it :-)
-> Would be good to get some feedback on the common code changes, like the change
-> to libgcc.h.
-> 
-> Regards
-> Greg
-> 
-> 
---------------ynBQ5orTojtKmtqZQOw1ViC4
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-m68k-use-kernel-s-generic-muldi3-libgcc-function.patch"
-Content-Disposition: attachment;
- filename*0="0001-m68k-use-kernel-s-generic-muldi3-libgcc-function.patch"
-Content-Transfer-Encoding: base64
+>>> I had this in my local tree for about a year.
+>>> Is it fine to queue this in the m68k tree, or does this need a broad=
+er
+>>> coverage?
+>>=20
+>> I am still in favor of it :-)
+>> Would be good to get some feedback on the common code changes, like t=
+he change
+>> to libgcc.h.
 
-RnJvbSAxZmUzYWE0MmU0MmZjNzNiOWNlODc1NDUxNjY5OWIxYmU3YWVjN2JiIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBHcmVnIFVuZ2VyZXIgPGdlcmdAbGludXgtbTY4ay5v
-cmc+CkRhdGU6IE1vbiwgMTMgTm92IDIwMjMgMTM6NTk6NTAgKzEwMDAKU3ViamVjdDogW1BB
-VENIXSBtNjhrOiB1c2Uga2VybmVsJ3MgZ2VuZXJpYyBtdWxkaTMgbGliZ2NjIGZ1bmN0aW9u
-CgpVc2UgdGhlIGtlcm5lbHMgb3duIGdlbmVyaWMgbGliL211bGRpMy5jIGltcGxlbWVudGF0
-aW9uIG9mIG11bGRpMyBmb3IKNjhLIG1hY2hpbmVzLiBTb21lIDY4SyBDUFVzIHN1cHBvcnQg
-NjRiaXQgbXVsdGlwbGllcyBzbyBtb3ZlIHRoZSBhcmNoCnNwZWNpZmljIHVtdWxfcHBtbSgp
-IG1hY3JvIGludG8gYSBoZWFkZXIgZmlsZSB0aGF0IGlzIGluY2x1ZGVkIGJ5CmxpYi9tdWxk
-aTMuYy4gVGhhdCB3YXkgaXQgY2FuIHRha2UgYWR2YW50YWdlIG9mIHRoZSBzaW5nbGUgaW5z
-dHJ1Y3Rpb24Kd2hlbiBhdmFpbGFibGUuCgpUaGVyZSBkb2VzIG5vdCBhcHBlYXIgdG8gYmUg
-YW55IGV4aXN0aW5nIG1lY2hhbmlzbSBmb3IgdGhlIGdlbmVyaWMKbGliL211bGRpMy5jIGNv
-ZGUgdG8gcGljayB1cCBhbiBleHRlcm5hbCBhcmNoIGRlZmluaXRpb24gb2YgdW11bF9wcG1t
-KCkuCkNyZWF0ZSBhbiBhcmNoIHNwZWNpZmljIGxpYmdjYy5oIHRoYXQgY2FuIG9wdGlvbmFs
-bHkgYmUgaW5jbHVkZWQgYnkKdGhlIHN5c3RlbSBpbmNsdWRlL2xpbnV4L2xpYmdjYy5oIHRv
-IGFsbG93IGZvciB0aGlzLgoKU29tZXdoYXQgb2RkbHkgdGhlcmUgaXMgYWxzbyBhIHNpbWls
-YXIgZGVmaW5pdGlvbiBvZiB1bXVsX3BwbW0oKSBpbgp0aGUgbm9uLWFyY2hpdGVjdHVyZSBj
-b2RlIGluIGxpYi9jcnlwdG8vbXBpL2xvbmdsb25nLmggZm9yIGEgd2lkZSByYW5nZQpvciBt
-YWNoaW5lcy4gSXRzIHByZXNlbmNlIGVuZHMgdXAgY29tcGxpY2F0aW5nIHRoZSBpbmNsdWRl
-IHNldHVwIGFuZAptZWFucyBub3QgYmVpbmcgYWJsZSB0byB1c2Ugc29tZXRoaW5nIGxpa2Ug
-Y29tcGlsZXIuaCBpbnN0ZWFkLgoKU2lnbmVkLW9mZi1ieTogR3JlZyBVbmdlcmVyIDxnZXJn
-QGxpbnV4LW02OGsub3JnPgotLS0KIGFyY2gvS2NvbmZpZyAgICAgICAgICAgICAgICAgICB8
-ICA4ICsrKwogYXJjaC9tNjhrL0tjb25maWcgICAgICAgICAgICAgIHwgIDIgKwogYXJjaC9t
-NjhrL2luY2x1ZGUvYXNtL2xpYmdjYy5oIHwgMjAgKysrKysrKwogYXJjaC9tNjhrL2xpYi9N
-YWtlZmlsZSAgICAgICAgIHwgIDIgKy0KIGFyY2gvbTY4ay9saWIvbXVsZGkzLmMgICAgICAg
-ICB8IDk3IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGluY2x1ZGUvbGlu
-dXgvbGliZ2NjLmggICAgICAgICB8ICA0ICsrCiA2IGZpbGVzIGNoYW5nZWQsIDM1IGluc2Vy
-dGlvbnMoKyksIDk4IGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvbTY4
-ay9pbmNsdWRlL2FzbS9saWJnY2MuaAogZGVsZXRlIG1vZGUgMTAwNjQ0IGFyY2gvbTY4ay9s
-aWIvbXVsZGkzLmMKCmRpZmYgLS1naXQgYS9hcmNoL0tjb25maWcgYi9hcmNoL0tjb25maWcK
-aW5kZXggNjY4MmIyYTUzZTM0Li5iOGE0ZmYzNjU1ODIgMTAwNjQ0Ci0tLSBhL2FyY2gvS2Nv
-bmZpZworKysgYi9hcmNoL0tjb25maWcKQEAgLTE1MjYsNiArMTUyNiwxNCBAQCBjb25maWcg
-SEFWRV9BUkNIX0NPTVBJTEVSX0gKIAkgIGxpbnV4L2NvbXBpbGVyLSouaCBpbiBvcmRlciB0
-byBvdmVycmlkZSBtYWNybyBkZWZpbml0aW9ucyB0aGF0IHRob3NlCiAJICBoZWFkZXJzIGdl
-bmVyYWxseSBwcm92aWRlLgogCitjb25maWcgSEFWRV9BUkNIX0xJQkdDQ19ICisJYm9vbAor
-CWhlbHAKKwkgIEFuIGFyY2hpdGVjdHVyZSBjYW4gc2VsZWN0IHRoaXMgaWYgaXQgcHJvdmlk
-ZXMgYW4KKwkgIGFzbS9saWJnY2MuaCBoZWFkZXIgdGhhdCBzaG91bGQgYmUgaW5jbHVkZWQg
-YWZ0ZXIKKwkgIGxpbnV4L2xpYmdjYy5oIGluIG9yZGVyIHRvIG92ZXJyaWRlIG1hY3JvIGRl
-ZmluaXRpb25zIHRoYXQKKwkgIGhlYWRlciBnZW5lcmFsbHkgcHJvdmlkZXMuCisKIGNvbmZp
-ZyBIQVZFX0FSQ0hfUFJFTDMyX1JFTE9DQVRJT05TCiAJYm9vbAogCWhlbHAKZGlmZiAtLWdp
-dCBhL2FyY2gvbTY4ay9LY29uZmlnIGIvYXJjaC9tNjhrL0tjb25maWcKaW5kZXggN2M0Zjdi
-Y2M4OWQ3Li5iMmVkMDMwOGMwZWEgMTAwNjQ0Ci0tLSBhL2FyY2gvbTY4ay9LY29uZmlnCisr
-KyBiL2FyY2gvbTY4ay9LY29uZmlnCkBAIC0yMyw3ICsyMyw5IEBAIGNvbmZpZyBNNjhLCiAJ
-c2VsZWN0IEdFTkVSSUNfTElCX0FTSExESTMKIAlzZWxlY3QgR0VORVJJQ19MSUJfQVNIUkRJ
-MwogCXNlbGVjdCBHRU5FUklDX0xJQl9MU0hSREkzCisJc2VsZWN0IEdFTkVSSUNfTElCX01V
-TERJMwogCXNlbGVjdCBIQVNfSU9QT1JUIGlmIFBDSSB8fCBJU0EgfHwgQVRBUklfUk9NX0lT
-QQorCXNlbGVjdCBIQVZFX0FSQ0hfTElCR0NDX0gKIAlzZWxlY3QgSEFWRV9BUkNIX1NFQ0NP
-TVAKIAlzZWxlY3QgSEFWRV9BUkNIX1NFQ0NPTVBfRklMVEVSCiAJc2VsZWN0IEhBVkVfQVNN
-X01PRFZFUlNJT05TCmRpZmYgLS1naXQgYS9hcmNoL202OGsvaW5jbHVkZS9hc20vbGliZ2Nj
-LmggYi9hcmNoL202OGsvaW5jbHVkZS9hc20vbGliZ2NjLmgKbmV3IGZpbGUgbW9kZSAxMDA2
-NDQKaW5kZXggMDAwMDAwMDAwMDAwLi4xY2NlNmQxMzBkODAKLS0tIC9kZXYvbnVsbAorKysg
-Yi9hcmNoL202OGsvaW5jbHVkZS9hc20vbGliZ2NjLmgKQEAgLTAsMCArMSwyMCBAQAorLyog
-U1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgKi8KKyNpZm5kZWYgX19BU01fTTY4
-S19MSUJHQ0NfSAorI2RlZmluZSBfX0FTTV9NNjhLX0xJQkdDQ19ICisKKyNpZm5kZWYgQ09O
-RklHX0NQVV9IQVNfTk9fTVVMRElWNjQKKy8qCisgKiBGb3IgdGhvc2UgNjhLIENQVXMgdGhh
-dCBzdXBwb3J0IDY0Yml0IG11bHRpcGx5IGRlZmluZSB1bXVsX3BwbSgpCisgKiBmb3IgdGhl
-IGNvbW1vbiBtdWxkaTMgbGliZ2NjIGhlbHBlciBmdW5jdGlvbiAoaW4gbGliL211bGRpMy5j
-KS4KKyAqIENQVXMgdGhhdCBkb24ndCBoYXZlIGl0IChsaWtlIHRoZSBvcmlnaW5hbCA2ODAw
-MCBhbmQgQ29sZEZpcmUpCisgKiB3aWxsIGZhbGxiYWNrIHRvIHVzaW5nIHRoZSBDLWNvZGVk
-IHZlcnNpb24gb2YgdW11bF9wcG1tKCkuCisgKi8KKyNkZWZpbmUgdW11bF9wcG1tKHcxLCB3
-MCwgdSwgdikJCQkJXAorCV9fYXNtX18gKCJtdWx1JS5sICUzLCUxOiUwIgkJCVwKKwkJIDog
-Ij1kIiAoKHVuc2lnbmVkIGxvbmcpKHcwKSksCQlcCisJCSAgICI9ZCIgKCh1bnNpZ25lZCBs
-b25nKSh3MSkpCQlcCisJCSA6ICIlMCIgKCh1bnNpZ25lZCBsb25nKSh1KSksCQlcCisJCSAg
-ICJkbWkiICgodW5zaWduZWQgbG9uZykodikpKQorI2VuZGlmIC8qICFDT05GSUdfQ1BVX0hB
-U19OT19NVUxESVY2NCAqLworCisjZW5kaWYgLyogX19BU01fTTY4S19MSUJHQ0NfSCAqLwpk
-aWZmIC0tZ2l0IGEvYXJjaC9tNjhrL2xpYi9NYWtlZmlsZSBiL2FyY2gvbTY4ay9saWIvTWFr
-ZWZpbGUKaW5kZXggOTE1ODY4OGU2Y2M2Li4xNTI3OGE5NTI1OWUgMTAwNjQ0Ci0tLSBhL2Fy
-Y2gvbTY4ay9saWIvTWFrZWZpbGUKKysrIGIvYXJjaC9tNjhrL2xpYi9NYWtlZmlsZQpAQCAt
-NCw3ICs0LDcgQEAKICMgTWFrZWZpbGUgZm9yIG02OGstc3BlY2lmaWMgbGlicmFyeSBmaWxl
-cy4uCiAjCiAKLWxpYi15CTo9IG11bGRpMy5vIG1lbWNweS5vIG1lbXNldC5vIG1lbW1vdmUu
-bworbGliLXkJOj0gbWVtY3B5Lm8gbWVtc2V0Lm8gbWVtbW92ZS5vCiAKIGxpYi0kKENPTkZJ
-R19NTVUpICs9IHVhY2Nlc3MubwogbGliLSQoQ09ORklHX0NQVV9IQVNfTk9fTVVMRElWNjQp
-ICs9IG11bHNpMy5vIGRpdnNpMy5vIHVkaXZzaTMubwpkaWZmIC0tZ2l0IGEvYXJjaC9tNjhr
-L2xpYi9tdWxkaTMuYyBiL2FyY2gvbTY4ay9saWIvbXVsZGkzLmMKZGVsZXRlZCBmaWxlIG1v
-ZGUgMTAwNjQ0CmluZGV4IDUwMTJhOWIyMThjNy4uMDAwMDAwMDAwMDAwCi0tLSBhL2FyY2gv
-bTY4ay9saWIvbXVsZGkzLmMKKysrIC9kZXYvbnVsbApAQCAtMSw5NyArMCwwIEBACi0vKiBt
-dWxkaTMuYyBleHRyYWN0ZWQgZnJvbSBnY2MtMi43LjIuMy9saWJnY2MyLmMgYW5kIAotCQkJ
-ICAgZ2NjLTIuNy4yLjMvbG9uZ2xvbmcuaCB3aGljaCBpczogKi8KLS8qIENvcHlyaWdodCAo
-QykgMTk4OSwgMTk5MiwgMTk5MywgMTk5NCwgMTk5NSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRp
-b24sIEluYy4KLQotVGhpcyBmaWxlIGlzIHBhcnQgb2YgR05VIENDLgotCi1HTlUgQ0MgaXMg
-ZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeQot
-aXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBh
-cyBwdWJsaXNoZWQgYnkKLXRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2
-ZXJzaW9uIDIsIG9yIChhdCB5b3VyIG9wdGlvbikKLWFueSBsYXRlciB2ZXJzaW9uLgotCi1H
-TlUgQ0MgaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1
-bCwKLWJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVk
-IHdhcnJhbnR5IG9mCi1NRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNV
-TEFSIFBVUlBPU0UuICBTZWUgdGhlCi1HTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3Ig
-bW9yZSBkZXRhaWxzLiAqLwotCi0jaW5jbHVkZSA8bGludXgvY29tcGlsZXIuaD4KLSNpbmNs
-dWRlIDxsaW51eC9leHBvcnQuaD4KLSNpbmNsdWRlIDxsaW51eC9saWJnY2MuaD4KLQotI2lm
-ZGVmIENPTkZJR19DUFVfSEFTX05PX01VTERJVjY0Ci0KLSNkZWZpbmUgU0lfVFlQRV9TSVpF
-IDMyCi0jZGVmaW5lIF9fQklUUzQgKFNJX1RZUEVfU0laRSAvIDQpCi0jZGVmaW5lIF9fbGxf
-QiAoMUwgPDwgKFNJX1RZUEVfU0laRSAvIDIpKQotI2RlZmluZSBfX2xsX2xvd3BhcnQodCkg
-KChVU0l0eXBlKSAodCkgJSBfX2xsX0IpCi0jZGVmaW5lIF9fbGxfaGlnaHBhcnQodCkgKChV
-U0l0eXBlKSAodCkgLyBfX2xsX0IpCi0KLSNkZWZpbmUgdW11bF9wcG1tKHcxLCB3MCwgdSwg
-dikJCQkJCQlcCi0gIGRvIHsJCQkJCQkJCQlcCi0gICAgVVNJdHlwZSBfX3gwLCBfX3gxLCBf
-X3gyLCBfX3gzOwkJCQkJXAotICAgIFVTSXR5cGUgX191bCwgX192bCwgX191aCwgX192aDsJ
-CQkJCVwKLQkJCQkJCQkJCVwKLSAgICBfX3VsID0gX19sbF9sb3dwYXJ0ICh1KTsJCQkJCQlc
-Ci0gICAgX191aCA9IF9fbGxfaGlnaHBhcnQgKHUpOwkJCQkJCVwKLSAgICBfX3ZsID0gX19s
-bF9sb3dwYXJ0ICh2KTsJCQkJCQlcCi0gICAgX192aCA9IF9fbGxfaGlnaHBhcnQgKHYpOwkJ
-CQkJCVwKLQkJCQkJCQkJCVwKLSAgICBfX3gwID0gKFVTSXR5cGUpIF9fdWwgKiBfX3ZsOwkJ
-CQkJXAotICAgIF9feDEgPSAoVVNJdHlwZSkgX191bCAqIF9fdmg7CQkJCQlcCi0gICAgX194
-MiA9IChVU0l0eXBlKSBfX3VoICogX192bDsJCQkJCVwKLSAgICBfX3gzID0gKFVTSXR5cGUp
-IF9fdWggKiBfX3ZoOwkJCQkJXAotCQkJCQkJCQkJXAotICAgIF9feDEgKz0gX19sbF9oaWdo
-cGFydCAoX194MCk7LyogdGhpcyBjYW4ndCBnaXZlIGNhcnJ5ICovCQlcCi0gICAgX194MSAr
-PSBfX3gyOwkJLyogYnV0IHRoaXMgaW5kZWVkIGNhbiAqLwkJXAotICAgIGlmIChfX3gxIDwg
-X194MikJCS8qIGRpZCB3ZSBnZXQgaXQ/ICovCQkJXAotICAgICAgX194MyArPSBfX2xsX0I7
-CQkvKiB5ZXMsIGFkZCBpdCBpbiB0aGUgcHJvcGVyIHBvcy4gKi8JXAotCQkJCQkJCQkJXAot
-ICAgICh3MSkgPSBfX3gzICsgX19sbF9oaWdocGFydCAoX194MSk7CQkJCQlcCi0gICAgKHcw
-KSA9IF9fbGxfbG93cGFydCAoX194MSkgKiBfX2xsX0IgKyBfX2xsX2xvd3BhcnQgKF9feDAp
-OwkJXAotICB9IHdoaWxlICgwKQotCi0jZWxzZQotCi0jZGVmaW5lIHVtdWxfcHBtbSh3MSwg
-dzAsIHUsIHYpIFwKLSAgX19hc21fXyAoIm11bHUlLmwgJTMsJTE6JTAiCQkJCQkJXAotICAg
-ICAgICAgICA6ICI9ZCIgKChVU0l0eXBlKSh3MCkpLAkJCQkJXAotICAgICAgICAgICAgICI9
-ZCIgKChVU0l0eXBlKSh3MSkpCQkJCQlcCi0gICAgICAgICAgIDogIiUwIiAoKFVTSXR5cGUp
-KHUpKSwJCQkJCVwKLSAgICAgICAgICAgICAiZG1pIiAoKFVTSXR5cGUpKHYpKSkKLQotI2Vu
-ZGlmCi0KLSNkZWZpbmUgX191bXVsc2lkaTModSwgdikgXAotICAoe0RJdW5pb24gX193OwkJ
-CQkJCQlcCi0gICAgdW11bF9wcG1tIChfX3cucy5oaWdoLCBfX3cucy5sb3csIHUsIHYpOwkJ
-CQlcCi0gICAgX193LmxsOyB9KQotCi10eXBlZGVmIAkgaW50IFNJdHlwZQlfX21vZGUoU0kp
-OwotdHlwZWRlZiB1bnNpZ25lZCBpbnQgVVNJdHlwZQlfX21vZGUoU0kpOwotdHlwZWRlZgkJ
-IGludCBESXR5cGUJX19tb2RlKERJKTsKLXR5cGVkZWYgaW50IHdvcmRfdHlwZSAgICAgICAg
-ICAgX19tb2RlKF9fd29yZF9fKTsKLQotc3RydWN0IERJc3RydWN0IHtTSXR5cGUgaGlnaCwg
-bG93O307Ci0KLXR5cGVkZWYgdW5pb24KLXsKLSAgc3RydWN0IERJc3RydWN0IHM7Ci0gIERJ
-dHlwZSBsbDsKLX0gREl1bmlvbjsKLQotREl0eXBlCi1fX211bGRpMyAoREl0eXBlIHUsIERJ
-dHlwZSB2KQotewotICBESXVuaW9uIHc7Ci0gIERJdW5pb24gdXUsIHZ2OwotCi0gIHV1Lmxs
-ID0gdTsKLSAgdnYubGwgPSB2OwotCi0gIHcubGwgPSBfX3VtdWxzaWRpMyAodXUucy5sb3cs
-IHZ2LnMubG93KTsKLSAgdy5zLmhpZ2ggKz0gKChVU0l0eXBlKSB1dS5zLmxvdyAqIChVU0l0
-eXBlKSB2di5zLmhpZ2gKLQkgICAgICAgKyAoVVNJdHlwZSkgdXUucy5oaWdoICogKFVTSXR5
-cGUpIHZ2LnMubG93KTsKLQotICByZXR1cm4gdy5sbDsKLX0KLUVYUE9SVF9TWU1CT0woX19t
-dWxkaTMpOwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9saWJnY2MuaCBiL2luY2x1ZGUv
-bGludXgvbGliZ2NjLmgKaW5kZXggZmMzODhkYTZhMDI3Li4wZDY4ZjlkNmE2YTcgMTAwNjQ0
-Ci0tLSBhL2luY2x1ZGUvbGludXgvbGliZ2NjLmgKKysrIGIvaW5jbHVkZS9saW51eC9saWJn
-Y2MuaApAQCAtMzQsNCArMzQsOCBAQCBsb25nIGxvbmcgbm90cmFjZSBfX2xzaHJkaTMobG9u
-ZyBsb25nIHUsIHdvcmRfdHlwZSBiKTsKIGxvbmcgbG9uZyBub3RyYWNlIF9fbXVsZGkzKGxv
-bmcgbG9uZyB1LCBsb25nIGxvbmcgdik7CiB3b3JkX3R5cGUgbm90cmFjZSBfX3VjbXBkaTIo
-dW5zaWduZWQgbG9uZyBsb25nIGEsIHVuc2lnbmVkIGxvbmcgbG9uZyBiKTsKIAorI2lmZGVm
-IENPTkZJR19IQVZFX0FSQ0hfTElCR0NDX0gKKyNpbmNsdWRlIDxhc20vbGliZ2NjLmg+Cisj
-ZW5kaWYKKwogI2VuZGlmIC8qIF9fQVNNX0xJQkdDQ19IICovCi0tIAoyLjI1LjEKCg==
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
---------------ynBQ5orTojtKmtqZQOw1ViC4--
+This looks fine to me, nice cleanup. My instinct at first was
+to add an asm-generic/libgcc.h as a fallback in place of
+the Kconfig symbol and move the common macro there, but there
+really isn't much benefit to that over your version. Either way,
+please merge this through the m68k tree.
+
+      Arnd
