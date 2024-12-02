@@ -1,37 +1,37 @@
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4494C20ADDA
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 14:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5239E1DB922
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 17:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733151176; cv=none; b=Sdjly7PzeavGiKn/iAUsNfLVfF00AGM5HShczKcwwvk3wpEiI84zY+Je2ORqWVsotiHCbbR7bAsumXKkOOXjTtb94D1aTcjwwKpWLQiwnoFMOySlMmxBg8ILZu/RPwLV6VDYWeUQNv2suBs2rK7B8t19VzIAg/8HGfa1nJzcgUY=
+	t=1733162010; cv=none; b=QaAqmJTDo/gqhvjRGW2IpkcpED+zgOU9XEUA2tK0cCVAwgOIXvT5NoBTp5bhbcxl9lcR6JYkzYnx/Xs/K6fIkfrC47S4XK3MUG/KOdDQV/zvxXb7iOWQFO5dZp5lxdbKjesvbcRuLz4Dptcp4VcUWZf1nNgj5J4wGhOH3+r1x+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733151176; c=relaxed/simple;
-	bh=JNAutYvvRsU3z28k3MKoS0K4sWzEbVp3JENNeTXHgD8=;
+	s=arc-20240116; t=1733162010; c=relaxed/simple;
+	bh=lc6WgeExQ+hWB9ZfwfnAcabToLH2FzedHtL2FERcLRY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cUkhET1VZlDWwmzDjgPpwjkLeOq68xAcRKO/5ErNcTh+72BuiHXSWBaiU3Y97gYM6ZH7D6162ebWtrQValCPVQJ0uLeCA5fPmyBcb3/kTcpCMBQXVgiIJLvnmV+m0iI3KG8sU0yh1RLKFhatRWfyfaUF4BsdoHdD2ZYgvHKAEH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=YfUqlpug; arc=none smtp.client-ip=217.70.183.197
+	 In-Reply-To:Content-Type; b=FRaQ5Wno3PZT771FusbqLZpLusurSkjIjKuHloRPHVAPFl9yxzOrn4LWGDfpLyevBlDaySO3JB+zwxO8w0MZny+hNR7c8AE7DDV+6fhUWKhlfKN8T6OtYg+Gv4YGTsMskBn0RjkdwJdF4nW4nbE97UOK0TEEPDIHNiJScmsJUfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=VCeTD+rZ; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="YfUqlpug"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9DA0B1C000C;
-	Mon,  2 Dec 2024 14:52:50 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="VCeTD+rZ"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9EC65C0009;
+	Mon,  2 Dec 2024 17:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1733151171;
+	t=1733162006;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=llabfjTSfzGZra+dtmKNVF6kqf6OUjNm/Zx+/J9c3Zk=;
-	b=YfUqlpugAtwT9fBiRC2CV9fHNqM7XRuNuSGb68HGkHrVPhLd5QIF95w0oDCyCu2nqd0pcK
-	1GJwUhpWnp9U9/BwbmIId3kblsVRKAa4LZKualY1B0kA8J13nVdu93cjgmTiXxlVzb3ZIa
-	+kgKVTuNEu6rzb5TOitdLDTuBLgGIBCx+xW7yrFIQgFOy/Egvh2d2SzJVGqtqgtbRl9hmH
-	NJ3u4okEQyrMY/hWQqfRBNnCjSDHPR5pMHIvUAIhA4SadT1/EJ1Y3K6LZLnFF7ak+VBe1K
-	PxP6Z+OOHh/cWW9g09kABXW3Nr0FIQGQZs38UxyMm0PyNrDbm8mlvUe65utqDw==
-Message-ID: <7fef0321-5a24-4d8d-9717-8fe02f80b8c2@yoseli.org>
-Date: Mon, 2 Dec 2024 15:52:49 +0100
+	bh=SOG1NlpvLRlcxi8vGnjnlAA8v4MMzXA9kbAwPiLSGD4=;
+	b=VCeTD+rZ2aeUuLZ6X32xzZE9GFd+kn19pWlOzX4NBEKnWEAFGIz0Qipvrigs+lb8/QbNKD
+	C7X1nogQWqF8GDZL6Is7S+zwD9C6A0XkZFIMOAjC1HOoysr6fVeYNg3NK3mmLluI7Gh6SV
+	nVZSXJE3Yv9sL5B1Ty+AzaEVt+ddNy0BG1A94VMSfhWFQc8SvICjuVAIg+l7FKTdv6701J
+	Zm8k5McyXj+EbWeSH95Ub9O05QLihd9RNKPXHiGP7MitK5RBRv8dBNPFPXN6mMoR0IRHR/
+	IgTJO5hs55wO+DnR7LRZY3yo6yX0F2wUox7mkSyJAHeqZ1V6B1O12+a4/W/ifA==
+Message-ID: <1d0e141c-1afe-4646-8e6f-584e2a0706e2@yoseli.org>
+Date: Mon, 2 Dec 2024 18:53:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -55,7 +55,7 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Re-hi !
+Hi Greg,
 
 On 02/12/2024 15:41, Greg Ungerer wrote:
 > Hi JM,
@@ -200,79 +200,62 @@ On 02/12/2024 15:41, Greg Ungerer wrote:
 > The default for m68k is usually disabled. Without this there won't be a
 > chain of frame pointers to follow like the code is trying to do below in
 > arch_stack_walk().
+> 
 
-Sorry for my preceding mail, it *is* better:
-# tail -10 trace
-#                  |||| / _-=> migrate-disable
-#                  ||||| /     delay
-#  cmd     pid     |||||| time  |   caller
-#     \   /        ||||||  \    |    /
-   <idle>-0         0dnh5.   11us+:        0:120:R   + [000]     119: 
-49:R irq/104-enet-fe
-   <idle>-0         0dnh5.   42us+: <stack trace>
-   <idle>-0         0dnh5.   57us!: wake_up_process 
-<-__handle_irq_event_percpu
-   <idle>-0         0d..3.  282us+: __schedule <-schedule_idle
-   <idle>-0         0d..3.  302us+:        0:120:R ==> [000]     119: 
-49:R irq/104-enet-fe
-   <idle>-0         0d..3.  325us : <stack trace>
+It gives me a few things when I use wakeup_rt but timerlat is not giving 
+me any stack:
 
+# cd /sys/kernel/debug/tracing/
+# echo 500 > osnoise/stop_tracing_total_us
+# echo 500 > osnoise/print_stack
+# echo timerlat > current_tracer
+# echo 1 > tracing_on
+# tail -21 trace
+# tail -21 trace
+       timerlat/0-299     [000] .....   635.167643: #59035 context 
+thread timer_latency    202352 ns
+     kworker/u5:1-242     [000] d.h1.   635.168494: #59036 context 
+irq timer_latency     51504 ns
+       timerlat/0-299     [000] .....   635.168714: #59036 context 
+thread timer_latency    272032 ns
+             bash-230     [000] d.h..   635.169496: #59037 context 
+irq timer_latency     54592 ns
+       timerlat/0-299     [000] .....   635.169693: #59037 context 
+thread timer_latency    250448 ns
+             bash-230     [000] d.h..   635.170491: #59038 context 
+irq timer_latency     48784 ns
+       timerlat/0-299     [000] .....   635.170717: #59038 context 
+thread timer_latency    275960 ns
+             bash-230     [000] d.h..   635.171497: #59039 context 
+irq timer_latency     54472 ns
+       timerlat/0-299     [000] .....   635.171695: #59039 context 
+thread timer_latency    252936 ns
+             bash-230     [000] d.h1.   635.172495: #59040 context 
+irq timer_latency     53064 ns
+       timerlat/0-299     [000] .....   635.172696: #59040 context 
+thread timer_latency    253144 ns
+             bash-230     [000] d.h1.   635.173491: #59041 context 
+irq timer_latency     49864 ns
+       timerlat/0-299     [000] .....   635.173683: #59041 context 
+thread timer_latency    241248 ns
+             bash-230     [000] d.h1.   635.174495: #59042 context 
+irq timer_latency     52648 ns
+       timerlat/0-299     [000] .....   635.174691: #59042 context 
+thread timer_latency    249216 ns
+             bash-230     [000] d.h..   635.175536: #59043 context 
+irq timer_latency     94496 ns
+       timerlat/0-299     [000] .....   635.175762: #59043 context 
+thread timer_latency    321592 ns
+             bash-324     [000] d.h..   635.176825: #59044 context 
+irq timer_latency    383560 ns
+       timerlat/0-299     [000] .....   635.177044: #59044 context 
+thread timer_latency    603280 ns
+       timerlat/0-299     [000] ...1.   635.177091: <stack trace>
+       timerlat/0-299     [000] .....   635.177141: timerlat_main: stop 
+tracing hit on cpu 0
+
+As you can see, stack_trace appears, but nothing is displayed so I 
+suppose it does not walk at all...
+
+Thanks,
 JM
-
-> Regards
-> Greg
-> 
-> 
->>> +static inline int validate_sp(unsigned long sp, struct task_struct 
->>> *task)
->>> +{
->>> +    unsigned long stack_start, stack_end;
->>> +
->>> +    if (task == current)
->>> +        stack_start = (unsigned long)task_stack_page(task);
->>> +    else
->>> +        stack_start = (unsigned long)task->thread.esp0;
->>> +
->>> +    stack_end = stack_start + THREAD_SIZE;
->>> +
->>> +    if (sp < stack_start || sp >= stack_end)
->>> +        return 0;
->>> +
->>> +    return 1;
->>> +}
->>> +
->>> +void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn 
->>> consume_entry, void *cookie,
->>> +                       struct task_struct *task, struct pt_regs *regs)
->>> +{
->>> +    unsigned long sp;
->>> +
->>> +    if (regs && !consume_entry(cookie, regs->pc))
->>> +        return;
->>> +
->>> +    if (regs)
->>> +        sp = (unsigned long) regs;
->>> +    else if (task == current)
->>> +        sp = current_stack_frame();
->>> +    else
->>> +        sp = task->thread.ksp;
->>> +
->>> +    for (;;) {
->>> +        unsigned long *stack = (unsigned long *) sp;
->>> +        unsigned long newsp, ip;
->>> +
->>> +        if (!validate_sp(sp, task))
->>> +            return;
->>> +
->>> +        newsp = stack[0];
->>> +        ip = stack[1];
->>> +
->>> +        if (!consume_entry(cookie, ip))
->>> +            return;
->>> +
->>> +        sp = newsp;
->>> +    }
->>> +}
->>>
->>
-
