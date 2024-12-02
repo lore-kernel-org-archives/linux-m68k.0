@@ -1,130 +1,309 @@
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA751FDE24;
-	Mon,  2 Dec 2024 10:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE46E1F9411
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 10:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733134477; cv=none; b=GSk38bufZ2tyuCrhmXSZ2xqEecny+23ne42+j7Oxxi6GiQra/RRD61hNdGchJAsMy/HXgWA3qaGQ+r485Xe6bunuyBU5nth1ECjLBQyVVpuhPpsK98o+IIElj4Xi06PUxpS0yZy62OF1d8NfwcNDA3KWlNIxGtIh9ppn2Jb2SrU=
+	t=1733135993; cv=none; b=qTxEto9qZg0o5PrPfez0NeljZvGSZjT0xv8LvOXbPKuZvCn9KIqE+ks/SRan7cV00X09J4CrrkE8RaFgSKE9iUmtjwGIB6EPF/dqcpaYAhApn4IO1lHAYoKFm4Y0wBFwN/gQgs1I1nWHoO4BclTfzcteMO8uyS5WoDyKU2i2Apc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733134477; c=relaxed/simple;
-	bh=hzca0Vd/8ffGWVMELyMaSjK5OkJnubC9vL/FhBJgcMg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RQO8hMQGz+F2oJOjPvZFFw1KBK/CPDidhWgP2WlfSmB9Zq5lLUw29KM+ZaCfOXk2w8wI09Lfa1uLZ0shobQCYNb1kxV0WDt5xKth3Eiie9Gkp70tCHLq6Q47HgzblXriIbXjR+1xYUc2HbNM/D3ougC1m2aYtM6WcZk4j+Eolzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=eR7L0Bwo; arc=none smtp.client-ip=217.70.183.193
+	s=arc-20240116; t=1733135993; c=relaxed/simple;
+	bh=eK6yjxsDp6WwhycvLzAI+Os6thQ0t/rKpZCVkatl/kk=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=jtLIWP69DnoEnJfc1TTQSIrS3AhZ1jVBKIfekhNNOF5s0OCOW/PEkLwc2T709PVwaDy9OJkyIC7IFzZOhpxHwEAjMn2QlqCbngy8Xhlha0CVspH9ScYNBYN7HI/H+a1ZqpYbvcMm2ydssRlTlamdo+nX+RqmECyT9/l0lLZiJuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=WA6WwHq2; arc=none smtp.client-ip=217.70.178.240
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="eR7L0Bwo"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 13131240003;
-	Mon,  2 Dec 2024 10:14:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="WA6WwHq2"
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+	by mslow1.mail.gandi.net (Postfix) with ESMTP id 929C6C2162
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Dec 2024 10:34:31 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 66A5FFF806;
+	Mon,  2 Dec 2024 10:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1733134473;
+	t=1733135663;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=No/NWeHkarpWPPlisVqL/gSD6YvfOp1acQ+zd9+j7Wc=;
-	b=eR7L0BwogaZWS7Hk8Zh9PMxYCxlvqynfJIOSBrYqBVx2rb+gPoFtvjQ7PKZi/2+Qy0pBjJ
-	6+jB6SP+sUar5PBUuE/8tiKt9HUmR3+CukMrMHKLv4vToN7zzzPsvwIIK+OTyLd2XiLTT/
-	GFSUOq7BJvr3/zQ3ltj6EU6zEK1xZqWIJdCCTU/15pPg8cWZsTSWspOLOS/XnE0YgqtQNO
-	TBaOgiOy4ALLs7mDrpfUyz4vQsd1JeLWP76XQuXW3Gg19INLREN/ovkBM6AFmBToyULu+H
-	bQYfkuCAjSFx0bkqqhyLLtss6hIdLB8+Ulu5DaWkgaQWBPeWxGev5pNjmuPDEA==
-Message-ID: <2aefbd79-17c8-4190-bf4b-4e6b7d667065@yoseli.org>
-Date: Mon, 2 Dec 2024 11:14:32 +0100
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ztHX/ZoXirD5Kwovsqs5OlEVZDsoMYIef909rL/emsY=;
+	b=WA6WwHq2Mm8ChwQDDMNvUQ7sRyt0VyTLOPMiu0PMpEifDUXMlX3vpD4XL18kFry79JEP8G
+	g2QOPe5+8IV2hqunDDkxLPW7vt8QmZlZkWfs5isiURY10+476/cM3gynYiCo5ptuPOoQRo
+	DVuli/nhCV3waV5kgn5sc8rBGdE7ER/FE6Q8/ZvT4yEs2xKT3AarbBRvZ8Ftq5Y77qEd6s
+	dHlnj2ad8wqPK08FoKc1atxakoyGhVaGdkAWLAvaYM14T7BXC6aztKDMoGhKSEB5e8zlaF
+	OUvjYvKYoQm8jriJrZgafjxjNvOmLd0/OVdjfGaINrEZ3TOr1XRfED1bQlmuIg==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Mon, 02 Dec 2024 11:34:18 +0100
+Subject: [PATCH] m68k: coldfire: Support resources for UART
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] m68k: Add DMA timers support for M5441x
-To: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-m68k@vger.kernel.org
-References: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20241202-m5441x_uart_resource-v1-1-6b28cb295fb5@yoseli.org>
+X-B4-Tracking: v=1; b=H4sIACmNTWcC/x2MSQqAMBDAviJztmAXFf2KSNE66hxcmKoIpX+3e
+ AnkkATwyIQe2iwA40Oejj2JzDNw67AvKGhKDqpQRiaIrTRGvvYe+LKM/rjZoahVM+rCyVJXGlJ
+ 6Ms70/tuuj/ED3Tcxj2YAAAA=
+X-Change-ID: 20241202-m5441x_uart_resource-729b30c15363
+To: Greg Ungerer <gerg@linux-m68k.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-serial@vger.kernel.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1733135661; l=6941;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=eK6yjxsDp6WwhycvLzAI+Os6thQ0t/rKpZCVkatl/kk=;
+ b=gEPFeyR1Efxg+G/L3sujYuDGlqvtW69oVm91xDeG5DM4gcJgE7bG5Sh1qC0o8UljZX/QdSXEX
+ Vhi81Ak/Fm0Dkrjf+DxLMRJQmQx7fK0ujm8RkPm+48FNPczDJKAfAkx
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-On 02/12/2024 10:29, Jean-Michel Hautbois wrote:
-> This patch series adds support for DMA timers for the M5441x coldfire
-> family. The aim is to provide finer scheduler resolution and support for
-> high-resolution timers.
-> 
-> The first patch fixes the clocks and a typo. The second one is the
-> timers support addition. As there is no device tree, I did not use
-> TIMER_OF_DECLARE().
+In order to use the eDMA channels for UART, the mcf_platform_uart needs
+to be changed. Instead of adding another custom member for the
+structure, use a resource tree in a platform_device per UART. It then
+makes it possible to have a device named like "mcfuart.N" with N the
+UART number.
 
-I forgot to mention the result on a real M544118 board !
-With PIT timer:
-bash-5.2# cyclictest -p 80 -m -q -l 10000
-WARN: stat /dev/cpu_dma_latency failed: No such file or directory
-WARN: High resolution timers not available
-T: 0 (  231) P:80 I:1000 C:  10000 Min:    277 Act: 1965 Avg: 1437 Max: 
-   2023
+Later, adding the dma channel in the mcf tty driver will also be more
+straightfoward.
 
-With this driver and the following declaration in m5441x.c:
-static struct resource mcf_dmatmr2_resource[] = {
-	[0] = {
-		.start = MCFDMATIMER_BASE2,
-		.end   = MCFDMATIMER_BASE2 + 0xf,
-		.flags = IORESOURCE_MEM,
-	},
-	[1] = {
-		.start = MCFDMATIMER_IRQ_DTIM2,
-		.end   = MCFDMATIMER_IRQ_DTIM2,
-		.flags = IORESOURCE_IRQ,
-	},
-	[2] = {
-		.start = MCFDMATIMER_IRQ_PRIO2,
-		.end   = MCFDMATIMER_IRQ_PRIO2,
-		.flags = IORESOURCE_REG,
-		.name = "prio_reg",
-	}
-};
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ arch/m68k/coldfire/device.c | 96 ++++++++++++++-------------------------------
+ drivers/tty/serial/mcf.c    | 69 +++++++++++++++++++-------------
+ 2 files changed, 70 insertions(+), 95 deletions(-)
 
-static struct platform_device mcf_dmatmr2 = {
-	.name			= "mcftmr",
-	.id			= 2,
-	.num_resources = ARRAY_SIZE(mcf_dmatmr2_resource),
-	.resource = mcf_dmatmr2_resource,
-};
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index b6958ec2a220cf91a78a14fc7fa18749451412f7..fd7d0b0ce7eb2970cb8ffe33589fe8d7e88c268d 100644
+--- a/arch/m68k/coldfire/device.c
++++ b/arch/m68k/coldfire/device.c
+@@ -24,73 +24,35 @@
+ #include <linux/platform_data/dma-mcf-edma.h>
+ #include <linux/platform_data/mmc-esdhc-mcf.h>
+ 
+-/*
+- *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
+- */
+-static struct mcf_platform_uart mcf_uart_platform_data[] = {
+-	{
+-		.mapbase	= MCFUART_BASE0,
+-		.irq		= MCF_IRQ_UART0,
+-	},
+-	{
+-		.mapbase	= MCFUART_BASE1,
+-		.irq		= MCF_IRQ_UART1,
+-	},
+-#ifdef MCFUART_BASE2
+-	{
+-		.mapbase	= MCFUART_BASE2,
+-		.irq		= MCF_IRQ_UART2,
+-	},
+-#endif
+-#ifdef MCFUART_BASE3
+-	{
+-		.mapbase	= MCFUART_BASE3,
+-		.irq		= MCF_IRQ_UART3,
+-	},
+-#endif
+-#ifdef MCFUART_BASE4
+-	{
+-		.mapbase	= MCFUART_BASE4,
+-		.irq		= MCF_IRQ_UART4,
+-	},
+-#endif
+-#ifdef MCFUART_BASE5
+-	{
+-		.mapbase	= MCFUART_BASE5,
+-		.irq		= MCF_IRQ_UART5,
+-	},
+-#endif
+-#ifdef MCFUART_BASE6
+-	{
+-		.mapbase	= MCFUART_BASE6,
+-		.irq		= MCF_IRQ_UART6,
+-	},
+-#endif
+-#ifdef MCFUART_BASE7
+-	{
+-		.mapbase	= MCFUART_BASE7,
+-		.irq		= MCF_IRQ_UART7,
++static u64 mcf_uart_mask = DMA_BIT_MASK(32);
++
++static struct resource mcf_uart0_resource[] = {
++	[0] = {
++		.start = MCFUART_BASE0,
++		.end   = MCFUART_BASE0 + 0x3fff,
++		.flags = IORESOURCE_MEM,
+ 	},
+-#endif
+-#ifdef MCFUART_BASE8
+-	{
+-		.mapbase	= MCFUART_BASE8,
+-		.irq		= MCF_IRQ_UART8,
++	[1] = {
++		.start = 2,
++		.end   = 3,
++		.flags = IORESOURCE_DMA,
+ 	},
+-#endif
+-#ifdef MCFUART_BASE9
+-	{
+-		.mapbase	= MCFUART_BASE9,
+-		.irq		= MCF_IRQ_UART9,
++	[2] = {
++		.start = MCF_IRQ_UART0,
++		.end   = MCF_IRQ_UART0,
++		.flags = IORESOURCE_IRQ,
+ 	},
+-#endif
+-	{ },
+ };
+ 
+-static struct platform_device mcf_uart = {
++static struct platform_device mcf_uart0 = {
+ 	.name			= "mcfuart",
+ 	.id			= 0,
+-	.dev.platform_data	= mcf_uart_platform_data,
++	.num_resources = ARRAY_SIZE(mcf_uart0_resource),
++	.resource = mcf_uart0_resource,
++	.dev = {
++		.dma_mask = &mcf_uart_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
+ };
+ 
+ #ifdef MCFFEC_BASE0
+@@ -485,12 +447,12 @@ static struct platform_device mcf_i2c5 = {
+ static const struct dma_slave_map mcf_edma_map[] = {
+ 	{ "dreq0", "rx-tx", MCF_EDMA_FILTER_PARAM(0) },
+ 	{ "dreq1", "rx-tx", MCF_EDMA_FILTER_PARAM(1) },
+-	{ "uart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
+-	{ "uart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
+-	{ "uart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
+-	{ "uart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
+-	{ "uart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
+-	{ "uart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
++	{ "mcfuart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
++	{ "mcfuart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
++	{ "mcfuart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
++	{ "mcfuart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
++	{ "mcfuart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
++	{ "mcfuart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
+ 	{ "timer0", "rx-tx", MCF_EDMA_FILTER_PARAM(8) },
+ 	{ "timer1", "rx-tx", MCF_EDMA_FILTER_PARAM(9) },
+ 	{ "timer2", "rx-tx", MCF_EDMA_FILTER_PARAM(10) },
+@@ -623,7 +585,7 @@ static struct platform_device mcf_flexcan0 = {
+ #endif /* MCFFLEXCAN_SIZE */
+ 
+ static struct platform_device *mcf_devices[] __initdata = {
+-	&mcf_uart,
++	&mcf_uart0,
+ #ifdef MCFFEC_BASE0
+ 	&mcf_fec0,
+ #endif
+diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
+index 93e7dda4d39acd23daf8c0d4c29ac8d666f263c5..07b8decfdb6005f0265dd130765e45c3fd1715eb 100644
+--- a/drivers/tty/serial/mcf.c
++++ b/drivers/tty/serial/mcf.c
+@@ -570,31 +570,46 @@ static struct uart_driver mcf_driver = {
+ 
+ static int mcf_probe(struct platform_device *pdev)
+ {
+-	struct mcf_platform_uart *platp = dev_get_platdata(&pdev->dev);
+ 	struct uart_port *port;
+-	int i;
+-
+-	for (i = 0; ((i < MCF_MAXPORTS) && (platp[i].mapbase)); i++) {
+-		port = &mcf_ports[i].port;
+-
+-		port->line = i;
+-		port->type = PORT_MCF;
+-		port->mapbase = platp[i].mapbase;
+-		port->membase = (platp[i].membase) ? platp[i].membase :
+-			(unsigned char __iomem *) platp[i].mapbase;
+-		port->dev = &pdev->dev;
+-		port->iotype = SERIAL_IO_MEM;
+-		port->irq = platp[i].irq;
+-		port->uartclk = MCF_BUSCLK;
+-		port->ops = &mcf_uart_ops;
+-		port->flags = UPF_BOOT_AUTOCONF;
+-		port->rs485_config = mcf_config_rs485;
+-		port->rs485_supported = mcf_rs485_supported;
+-		port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
+-
+-		uart_add_one_port(&mcf_driver, port);
++	struct mcf_uart *pp;
++	struct resource *res;
++	void __iomem *base;
++	int id = pdev->id;
++
++	if (id == -1 || id >= MCF_MAXPORTS) {
++		dev_err(&pdev->dev, "uart%d out of range\n",
++			id);
++		return -EINVAL;
+ 	}
+ 
++	port = &mcf_ports[id].port;
++	port->line = id;
++
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	port->mapbase = res->start;
++	port->membase = base;
++
++	port->irq = platform_get_irq(pdev, 0);
++	if (port->irq < 0)
++		return port->irq;
++
++	port->type = PORT_MCF;
++	port->dev = &pdev->dev;
++	port->iotype = SERIAL_IO_MEM;
++	port->uartclk = MCF_BUSCLK;
++	port->ops = &mcf_uart_ops;
++	port->flags = UPF_BOOT_AUTOCONF;
++	port->rs485_config = mcf_config_rs485;
++	port->rs485_supported = mcf_rs485_supported;
++	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
++
++	pp = container_of(port, struct mcf_uart, port);
++
++	uart_add_one_port(&mcf_driver, port);
++
+ 	return 0;
+ }
+ 
+@@ -603,13 +618,11 @@ static int mcf_probe(struct platform_device *pdev)
+ static void mcf_remove(struct platform_device *pdev)
+ {
+ 	struct uart_port *port;
+-	int i;
++	int id = pdev->id;
+ 
+-	for (i = 0; (i < MCF_MAXPORTS); i++) {
+-		port = &mcf_ports[i].port;
+-		if (port)
+-			uart_remove_one_port(&mcf_driver, port);
+-	}
++	port = &mcf_ports[id].port;
++	if (port)
++		uart_remove_one_port(&mcf_driver, port);
+ }
+ 
+ /****************************************************************************/
 
-bash-5.2# cyclictest -p 80 -m -q -l 10000 -R
-WARN: stat /dev/cpu_dma_latency failed: No such file or directory
-WARN: reported clock resolution: 1 nsec
-WARN: measured clock resolution approximately: 2376 nsec
-T: 0 (  243) P:80 I:1000 C:  10000 Min:    104 Act:  125 Avg:  129 Max: 
-    239
+---
+base-commit: e457f18d7f25288d143c1fe024a620d0b15caec1
+change-id: 20241202-m5441x_uart_resource-729b30c15363
 
-I don't know why the reported resolution is 1ns and not 8ns but it is 
-not a big issue I suppose :-) ?
-
-> 
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> ---
-> Jean-Michel Hautbois (2):
->        m68k: coldfire: Use proper clock rate for timers
->        m68k: m5441x: Add DMA timer support
-> 
->   MAINTAINERS                         |   6 +
->   arch/m68k/coldfire/m5441x.c         |  20 +--
->   arch/m68k/include/asm/m5441xsim.h   |  18 +++
->   drivers/clocksource/Kconfig         |   9 ++
->   drivers/clocksource/Makefile        |   1 +
->   drivers/clocksource/mcf_dma_timer.c | 240 ++++++++++++++++++++++++++++++++++++
->   6 files changed, 284 insertions(+), 10 deletions(-)
-> ---
-> base-commit: e3f432391d55ec21274bd16a04659b4a24678535
-> change-id: 20241202-m5441x_dma_tmr-d969f4cc30a8
-> 
-> Best regards,
+Best regards,
+-- 
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
