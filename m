@@ -1,136 +1,173 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF081F76D9
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Dec 2024 16:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01DC1FA240
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Dec 2024 17:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733241866; cv=none; b=qhPgNX/Lnk8Y+nCckWSfKhr6IJePhu8GC48G/jQqZ7YJG2wIT/M+OspSiSCU45XJmjf3ntU3wcaGZBKTCI8RYZkjiRdIRRQL9Bldj02KkInhkyKKmUmaBciOFFg8P+zjKnWugGxPlZp29YfASWkKrzZwsfaE+npSzC9T0nBd2bU=
+	t=1733246513; cv=none; b=Qpcp5awxxYF+UGa7gef4EEjvgmNO8491AQx6Iad6LJRRcAS/FEzUd3woDiaKjiweUMZw8AaT9UkxDV4EWvL4g4KbpYRCVos1LUFGKaf+X5YCefpwFn5lxinNdDp6iL57P2HTV0cec+Y38LByjO0L/JYGZDsDczz6IBuqg0Ogiq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733241866; c=relaxed/simple;
-	bh=kPBA1uGXckS3skb4j5MBMZfRIEk4RHoHqbIXz3T9tqA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TuRi2rexjDUCa4n5OcHoQxxE4h2/m9Q9tU+ckRcVIWsp4lgSdUej7jDIF3db4KDm1NNhixGGZ4H0Fzv2u4Ls76kGoLq8k608q/HlK4SSuBXOkHJ2yoSIkAe6h/arUY9eEramAAcdUD78NvbKVTluZSIPE5IIIxI8TsDwM+7cPX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=o1gKWlRH; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1733246513; c=relaxed/simple;
+	bh=xy6Tvlpd9L1+hVrAsSZEgFC+sDEa9jTQGFW09O89aIM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Wp2FtmE4cBflur6cylv8NZcBDNsc8HBXvOYFgLZbOhasDcqMiYrHnCRHE1UujY/D/ahH1E1jV3evA2ojKM8mQ861xViRyIuyM8lV87Bmvfd5669UyBxYl3spApPVKlaa3CVqwHMJAmLuz+7IasUYCwwKGMO+ZVpnkExiStbOsV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=dO2woW4y; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="o1gKWlRH"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 9EAD25C6ACA;
-	Tue,  3 Dec 2024 16:03:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD4E0C4CECF;
-	Tue,  3 Dec 2024 16:04:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1733241863;
-	bh=kPBA1uGXckS3skb4j5MBMZfRIEk4RHoHqbIXz3T9tqA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=o1gKWlRHBZYBenWn5blUhI8iJOfNaD749znasEqofWKF7H0esKt7j2XvV0F4PU5tY
-	 506bdcyggB3ZKJ7tJ7yv5mxdWMC1x155CileYr2IqdQSrcTP487nVwJkHpLZYc2gTO
-	 esw/kNdOk6UbiEWsVtEWikNpsCCLNArE65AIP6ak=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Antonio Quartulli <antonio@mandelbit.com>,
-	Greg Ungerer <gerg@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.12 512/826] m68k: coldfire/device.c: only build FEC when HW macros are defined
-Date: Tue,  3 Dec 2024 15:43:59 +0100
-Message-ID: <20241203144803.729180619@linuxfoundation.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241203144743.428732212@linuxfoundation.org>
-References: <20241203144743.428732212@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="dO2woW4y"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 75265240006;
+	Tue,  3 Dec 2024 17:21:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1733246503;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WtJeg2U2iP69o6t1Gwg7RiKNYXTEb2gTKKysOkdqUKs=;
+	b=dO2woW4y1AZj9r8gNdbG0r4WuQPaj15d/6RpcSOsYWZgDJujwiOIVh7rc3DsvKNj3R3411
+	EJU4uV0zWuDQvQj9REHt/zWuS1YtKbycLy9Uk6nuTPT9g+Qw0Zlx2L/Ex1dk2dXGVmjX+Y
+	75BWr8YMPXfVtTcITgMmxYQo8S2iFfnqi8gWD0ukeK+Jghx3C19q/yc3I1tCgAY9KzUOIk
+	Aha6z0JU3G1qkNaoDs8EezOAHWtulk5jnEhP/KrwAe34B2wXjzPbdGiClKO+HpRJmVZE2m
+	uZnFkBuMoiYAm9X0fK1rF6oYRRy4pnJ8wv+LQdMuc8xxUyYU7d1dX2B0k7/7Ug==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: [PATCH v2 0/2] Add basic tracing support for m68k
+Date: Tue, 03 Dec 2024 18:21:37 +0100
+Message-Id: <20241203-add-m68k-tracing-support-v2-0-77302097a9f4@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-6.12-stable review patch.  If anyone has any objections, please let me know.
-
-------------------
-
-From: Antonio Quartulli <antonio@mandelbit.com>
-
-[ Upstream commit 63a24cf8cc330e5a68ebd2e20ae200096974c475 ]
-
-When CONFIG_FEC is set (due to COMPILE_TEST) along with
-CONFIG_M54xx, coldfire/device.c has compile errors due to
-missing MCFEC_* and MCF_IRQ_FEC_* symbols.
-
-Make the whole FEC blocks dependent on having the HW macros
-defined, rather than on CONFIG_FEC itself.
-
-This fix is very similar to commit e6e1e7b19fa1 ("m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined")
-
-Fixes: b7ce7f0d0efc ("m68knommu: merge common ColdFire FEC platform setup code")
-To: Greg Ungerer <gerg@linux-m68k.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACE+T2cC/42NQQ6CMBBFr0Jm7Zh2Cti48h6GBdIKE5U2UyQSw
+ t2tnMDle8l/f4XkhX2Cc7GC+JkThzEDHQrohnbsPbLLDKSo1Io0ts7hq7YPnKTteOwxvWMMMqG
+ pO20dkTHOQp5H8Xf+7Olrk3ngNAVZ9qdZ/+wf0VmjQmWtcSdVVlTdLktI/snHID0027Z9AZKyN
+ xHBAAAA
+X-Change-ID: 20241021-add-m68k-tracing-support-36c18d2233d8
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Antonio Quartulli <antonio@mandelbit.com>
-Signed-off-by: Greg Ungerer <gerg@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1733246503; l=3859;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=xy6Tvlpd9L1+hVrAsSZEgFC+sDEa9jTQGFW09O89aIM=;
+ b=N/j2K5z9l5huXlI9GzLXNeT2fsNS8bKC2jRHQXhWrmIrfFPtpNVWDSCOiVGau995daaKnQbk4
+ BscNATXkn/8CGVGBhjfGslCMqGyD9nNp5fw1qiUyHpihJZ9OaX1yNJX
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+
+In order to debug latency issues, I wanted to use ftrace on my M54418
+coldfire. Sadly, it is not supported yet.
+Thanks to Steven [1] it does not sound too difficult.
+
+This small series adds basic functions to make it work, and for the few
+tests I could do, it seems to be working well.
+
+Here is a simple output I get:
+
+```
+
+            bash-232     [000] d..3.   947.629000: thread_noise:     bash:232 start 947.629000000 duration 0 ns
+      timerlat/0-274     [000] .....   947.629000: #51598 context thread timer_latency    409280 ns
+            bash-232     [000] d.h..   947.630000: #51599 context    irq timer_latency    110720 ns
+            bash-232     [000] dnh1.   947.630000: irq_noise: timer:206 start 947.629000000 duration 1000000 ns
+            bash-232     [000] d..3.   947.630000: thread_noise:     bash:232 start 947.630000000 duration 0 ns
+      timerlat/0-274     [000] .....   947.630000: #51599 context thread timer_latency    407168 ns
+            bash-232     [000] d.h..   947.631000: #51600 context    irq timer_latency    108608 ns
+            bash-232     [000] dnh1.   947.631000: irq_noise: timer:206 start 947.630000000 duration 1000000 ns
+            bash-232     [000] d..3.   947.631000: thread_noise:     bash:232 start 947.631000000 duration 0 ns
+      timerlat/0-274     [000] .....   947.631000: #51600 context thread timer_latency    401472 ns
+```
+
+I used this on my board and afaik, it works quite well.
+
+```
+
+ telnetd-229       0Dnh4.   13us+:      229:120:R   + [000]     118: 49:R irq/100-enet-fe
+ telnetd-229       0Dnh4.   53us+: <stack trace>
+ => __trace_stack
+ => probe_wakeup
+ => try_to_wake_up
+ => wake_up_process
+ => __handle_irq_event_percpu
+ => handle_irq_event
+ => handle_level_irq
+ => generic_handle_irq
+ => do_IRQ
+ => inthandler
+ => ip_finish_output2
+ => __ip_finish_output
+ => ip_output
+ => __ip_queue_xmit
+ => ip_queue_xmit
+ => __tcp_transmit_skb
+ => tcp_write_xmit
+ => __tcp_push_pending_frames
+ => tcp_push
+ => tcp_sendmsg_locked
+ => tcp_sendmsg
+ => inet_sendmsg
+ => sock_write_iter
+ => vfs_write
+ => ksys_write
+ => sys_write
+ => system_call
+ telnetd-229       0Dnh4.   68us!: wake_up_process <-__handle_irq_event_percpu
+ telnetd-229       0D..3.  348us+: __schedule <-preempt_schedule_irq
+ telnetd-229       0D..3.  368us+:      229:120:R ==> [000]     118: 49:R irq/100-enet-fe
+ telnetd-229       0D..3.  395us : <stack trace>
+ => __trace_stack
+ => probe_wakeup_sched_switch
+ => __schedule
+ => preempt_schedule_irq
+ => Lkernel_return
+ => ip_finish_output2
+ => __ip_finish_output
+ => ip_output
+ => __ip_queue_xmit
+ => ip_queue_xmit
+ => __tcp_transmit_skb
+ => tcp_write_xmit
+ => __tcp_push_pending_frames
+ => tcp_push
+ => tcp_sendmsg_locked
+ => tcp_sendmsg
+ => inet_sendmsg
+ => sock_write_iter
+ => vfs_write
+ => ksys_write
+ => sys_write
+ => system_call
+```
+
+[1]: https://lore.kernel.org/linux-m68k/20241018124511.70d29198@gandalf.local.home
+
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- arch/m68k/coldfire/device.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changes in v2:
+- Use the frame pointer and declare it
+- Comments on trace_irq have been tested, but adding the trace_on/off in
+  entry.S fails badly
+- Link to v1: https://lore.kernel.org/r/20241021-add-m68k-tracing-support-v1-0-0883d704525b@yoseli.org
 
-diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-index 7dab46728aeda..b6958ec2a220c 100644
---- a/arch/m68k/coldfire/device.c
-+++ b/arch/m68k/coldfire/device.c
-@@ -93,7 +93,7 @@ static struct platform_device mcf_uart = {
- 	.dev.platform_data	= mcf_uart_platform_data,
- };
- 
--#if IS_ENABLED(CONFIG_FEC)
-+#ifdef MCFFEC_BASE0
- 
- #ifdef CONFIG_M5441x
- #define FEC_NAME	"enet-fec"
-@@ -145,6 +145,7 @@ static struct platform_device mcf_fec0 = {
- 		.platform_data		= FEC_PDATA,
- 	}
- };
-+#endif /* MCFFEC_BASE0 */
- 
- #ifdef MCFFEC_BASE1
- static struct resource mcf_fec1_resources[] = {
-@@ -182,7 +183,6 @@ static struct platform_device mcf_fec1 = {
- 	}
- };
- #endif /* MCFFEC_BASE1 */
--#endif /* CONFIG_FEC */
- 
- #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
- /*
-@@ -624,12 +624,12 @@ static struct platform_device mcf_flexcan0 = {
- 
- static struct platform_device *mcf_devices[] __initdata = {
- 	&mcf_uart,
--#if IS_ENABLED(CONFIG_FEC)
-+#ifdef MCFFEC_BASE0
- 	&mcf_fec0,
-+#endif
- #ifdef MCFFEC_BASE1
- 	&mcf_fec1,
- #endif
--#endif
- #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
- 	&mcf_qspi,
- #endif
+---
+Jean-Michel Hautbois (2):
+      m68k: Add tracirqs
+      arch: m68k: Add STACKTRACE support
+
+ arch/m68k/Kconfig             |  7 +++++
+ arch/m68k/kernel/Makefile     |  1 +
+ arch/m68k/kernel/irq.c        |  2 ++
+ arch/m68k/kernel/stacktrace.c | 70 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 80 insertions(+)
+---
+base-commit: e70140ba0d2b1a30467d4af6bcfe761327b9ec95
+change-id: 20241021-add-m68k-tracing-support-36c18d2233d8
+
+Best regards,
 -- 
-2.43.0
-
-
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
