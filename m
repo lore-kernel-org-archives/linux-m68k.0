@@ -1,104 +1,296 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4869E1B0103
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Dec 2024 10:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3861B0F2E
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Dec 2024 10:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733309451; cv=none; b=DPT9Itg3dyWrsELqMa3bXKkfvuueiXHkCT/3DywH7yTYteAS20SBzFluMVNpbnOZyplI7EAB6pn+qkVqJ/KyXnJ5o2G20Bd8v6yspfGQx1kiUvBv4NSdFqKkcGcg10ffO182HxINvnD75mbpRxb6kr/bvNNvV7BKy7I/VXQ1spY=
+	t=1733309693; cv=none; b=q+Fce6RZwZk2u5SunlOAgxiOZldI5TN0K8R1IXghdCUqK4I7E4bpq043OJjbv1pwtgCgctwSVCvoZ2j03FqnVQ+qkvz+XZTV+/giEt9St/n6lGZHW/2cOD0pZbTWztxfbga67X/kzEqp5a3jsmZkdEFggSP+tTceF7gJemI7hq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733309451; c=relaxed/simple;
-	bh=D5OnpVRS3SoGY0Tsf0LDlllwyF9hqDzqXBR3lfpMU3c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QL7/vWoGjqnY5vKjCRSB7KaO/KNxwGre3v0jn8Y64/cbuP+yep9FM+PavRHqloOUx2RQFTkcdMVX73HdrhnVmkGPBXWd/wiEwwL6LKSGccvtGcIbdR3r3Xvj1DAwdc8zNwVO0NUQqXWQ746RzVg7CNKTGcC/OsojgehN1N5h3Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HvcE0N7i; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HvcE0N7i"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1733309449; x=1764845449;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=D5OnpVRS3SoGY0Tsf0LDlllwyF9hqDzqXBR3lfpMU3c=;
-  b=HvcE0N7iH1dIHbF530z0NedkSttBv3yHCaURqkXqvz+3T8kf9qpQfjhi
-   vSX602SrD4WoR5trlOfJL8dESDEHYm5jP8cZpvSjg6tEAcKlmggioQErA
-   0eBN1QpwRsmKGmU4E7d8lXPufPJhe7YYBxI4/GP3mzB03TFC4uzqzTxRa
-   w9xstqfbdI4EhqhOVs2KF2+cX09yfD7GteNumOzg+YfX4kyE/j/TXKAvl
-   NZ30iSsTWXDVbc3S4NZ+MJslSF9ZHcrYWKtAK3Qn4cfN9GZLHDVIUH6hz
-   M5UbwD6c6mnmmgU1PSh7Jr/fp9DxhHZIRsr+3h/iH48W/rTFZZbuW9pek
-   w==;
-X-CSE-ConnectionGUID: qawYfhghQHSVWVgfLWBf5Q==
-X-CSE-MsgGUID: kWcbHJIrSc2femT9tVo61g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11275"; a="58973721"
-X-IronPort-AV: E=Sophos;i="6.12,207,1728975600"; 
-   d="scan'208";a="58973721"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2024 02:50:47 -0800
-X-CSE-ConnectionGUID: R/BCqj1nTRSojydC6w45jw==
-X-CSE-MsgGUID: Lwn72vJCQq2UN8E1p1qzGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,207,1728975600"; 
-   d="scan'208";a="93623169"
-Received: from lkp-server02.sh.intel.com (HELO 1f5a171d57e2) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 04 Dec 2024 02:50:45 -0800
-Received: from kbuild by 1f5a171d57e2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tImxZ-0002tl-2R;
-	Wed, 04 Dec 2024 10:50:28 +0000
-Date: Wed, 4 Dec 2024 18:48:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Subject: Re: [PATCH v3 2/2] arch: m68k: Add STACKTRACE support
-Message-ID: <202412041842.wqwewnMc-lkp@intel.com>
-References: <20241203-add-m68k-tracing-support-v3-2-4de93f6cae55@yoseli.org>
+	s=arc-20240116; t=1733309693; c=relaxed/simple;
+	bh=9qOOMVRLj24dF0G+B7UhakX9K+6dsnNX3VJMCg1sBQE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rrGsJw3Tj7yfAX5wVqKYl7Zt/oTkWe4oIl5wdQlybxc7GUV+N/gKG6Xaad8UJHIqNu9y5gxevscAJC5J2iEVKwRSqcQxYapx7kNuh2cyd5d7p5lLVJAeJGcUUNu/F0cBYQNJKDug6HZj/0KMxjxH7bqO+VQcWd9TgTKziV41y1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5CB0B5C6C7D;
+	Wed,  4 Dec 2024 10:54:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F8C2C4CED1;
+	Wed,  4 Dec 2024 10:54:48 +0000 (UTC)
+Message-ID: <52517849-48ed-4fe8-8638-ec2a4dc2bcbd@linux-m68k.org>
+Date: Wed, 4 Dec 2024 20:54:45 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241203-add-m68k-tracing-support-v3-2-4de93f6cae55@yoseli.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: coldfire: Support resources for UART
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org
+References: <20241202-m5441x_uart_resource-v1-1-6b28cb295fb5@yoseli.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20241202-m5441x_uart_resource-v1-1-6b28cb295fb5@yoseli.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Jean-Michel,
+Hi JM,
 
-kernel test robot noticed the following build errors:
+On 2/12/24 20:34, Jean-Michel Hautbois wrote:
+> In order to use the eDMA channels for UART, the mcf_platform_uart needs
+> to be changed. Instead of adding another custom member for the
+> structure, use a resource tree in a platform_device per UART. It then
+> makes it possible to have a device named like "mcfuart.N" with N the
+> UART number.
+> 
+> Later, adding the dma channel in the mcf tty driver will also be more
+> straightfoward.
+> 
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> ---
+>   arch/m68k/coldfire/device.c | 96 ++++++++++++++-------------------------------
+>   drivers/tty/serial/mcf.c    | 69 +++++++++++++++++++-------------
+>   2 files changed, 70 insertions(+), 95 deletions(-)
+> 
+> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+> index b6958ec2a220cf91a78a14fc7fa18749451412f7..fd7d0b0ce7eb2970cb8ffe33589fe8d7e88c268d 100644
+> --- a/arch/m68k/coldfire/device.c
+> +++ b/arch/m68k/coldfire/device.c
+> @@ -24,73 +24,35 @@
+>   #include <linux/platform_data/dma-mcf-edma.h>
+>   #include <linux/platform_data/mmc-esdhc-mcf.h>
+>   
+> -/*
+> - *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
+> - */
+> -static struct mcf_platform_uart mcf_uart_platform_data[] = {
+> -	{
+> -		.mapbase	= MCFUART_BASE0,
+> -		.irq		= MCF_IRQ_UART0,
+> -	},
+> -	{
+> -		.mapbase	= MCFUART_BASE1,
+> -		.irq		= MCF_IRQ_UART1,
+> -	},
+> -#ifdef MCFUART_BASE2
+> -	{
+> -		.mapbase	= MCFUART_BASE2,
+> -		.irq		= MCF_IRQ_UART2,
+> -	},
+> -#endif
+> -#ifdef MCFUART_BASE3
+> -	{
+> -		.mapbase	= MCFUART_BASE3,
+> -		.irq		= MCF_IRQ_UART3,
+> -	},
+> -#endif
+> -#ifdef MCFUART_BASE4
+> -	{
+> -		.mapbase	= MCFUART_BASE4,
+> -		.irq		= MCF_IRQ_UART4,
+> -	},
+> -#endif
+> -#ifdef MCFUART_BASE5
+> -	{
+> -		.mapbase	= MCFUART_BASE5,
+> -		.irq		= MCF_IRQ_UART5,
+> -	},
+> -#endif
+> -#ifdef MCFUART_BASE6
+> -	{
+> -		.mapbase	= MCFUART_BASE6,
+> -		.irq		= MCF_IRQ_UART6,
+> -	},
+> -#endif
+> -#ifdef MCFUART_BASE7
+> -	{
+> -		.mapbase	= MCFUART_BASE7,
+> -		.irq		= MCF_IRQ_UART7,
+> +static u64 mcf_uart_mask = DMA_BIT_MASK(32);
+> +
+> +static struct resource mcf_uart0_resource[] = {
+> +	[0] = {
+> +		.start = MCFUART_BASE0,
+> +		.end   = MCFUART_BASE0 + 0x3fff,
+> +		.flags = IORESOURCE_MEM,
+>   	},
+> -#endif
+> -#ifdef MCFUART_BASE8
+> -	{
+> -		.mapbase	= MCFUART_BASE8,
+> -		.irq		= MCF_IRQ_UART8,
+> +	[1] = {
+> +		.start = 2,
+> +		.end   = 3,
+> +		.flags = IORESOURCE_DMA,
+>   	},
+> -#endif
+> -#ifdef MCFUART_BASE9
+> -	{
+> -		.mapbase	= MCFUART_BASE9,
+> -		.irq		= MCF_IRQ_UART9,
+> +	[2] = {
+> +		.start = MCF_IRQ_UART0,
+> +		.end   = MCF_IRQ_UART0,
+> +		.flags = IORESOURCE_IRQ,
+>   	},
+> -#endif
+> -	{ },
+>   };
+>   
+> -static struct platform_device mcf_uart = {
+> +static struct platform_device mcf_uart0 = {
+>   	.name			= "mcfuart",
+>   	.id			= 0,
+> -	.dev.platform_data	= mcf_uart_platform_data,
+> +	.num_resources = ARRAY_SIZE(mcf_uart0_resource),
+> +	.resource = mcf_uart0_resource,
+> +	.dev = {
+> +		.dma_mask = &mcf_uart_mask,
+> +		.coherent_dma_mask = DMA_BIT_MASK(32),
+> +	},
+>   };
+>   
+>   #ifdef MCFFEC_BASE0
+> @@ -485,12 +447,12 @@ static struct platform_device mcf_i2c5 = {
+>   static const struct dma_slave_map mcf_edma_map[] = {
+>   	{ "dreq0", "rx-tx", MCF_EDMA_FILTER_PARAM(0) },
+>   	{ "dreq1", "rx-tx", MCF_EDMA_FILTER_PARAM(1) },
+> -	{ "uart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
+> -	{ "uart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
+> -	{ "uart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
+> -	{ "uart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
+> -	{ "uart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
+> -	{ "uart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
+> +	{ "mcfuart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
+> +	{ "mcfuart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
+> +	{ "mcfuart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
+> +	{ "mcfuart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
+> +	{ "mcfuart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
+> +	{ "mcfuart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
+>   	{ "timer0", "rx-tx", MCF_EDMA_FILTER_PARAM(8) },
+>   	{ "timer1", "rx-tx", MCF_EDMA_FILTER_PARAM(9) },
+>   	{ "timer2", "rx-tx", MCF_EDMA_FILTER_PARAM(10) },
+> @@ -623,7 +585,7 @@ static struct platform_device mcf_flexcan0 = {
+>   #endif /* MCFFLEXCAN_SIZE */
+>   
+>   static struct platform_device *mcf_devices[] __initdata = {
+> -	&mcf_uart,
+> +	&mcf_uart0,
+>   #ifdef MCFFEC_BASE0
+>   	&mcf_fec0,
+>   #endif
+> diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
+> index 93e7dda4d39acd23daf8c0d4c29ac8d666f263c5..07b8decfdb6005f0265dd130765e45c3fd1715eb 100644
+> --- a/drivers/tty/serial/mcf.c
+> +++ b/drivers/tty/serial/mcf.c
+> @@ -570,31 +570,46 @@ static struct uart_driver mcf_driver = {
+>   
+>   static int mcf_probe(struct platform_device *pdev)
+>   {
+> -	struct mcf_platform_uart *platp = dev_get_platdata(&pdev->dev);
+>   	struct uart_port *port;
+> -	int i;
+> -
+> -	for (i = 0; ((i < MCF_MAXPORTS) && (platp[i].mapbase)); i++) {
+> -		port = &mcf_ports[i].port;
+> -
+> -		port->line = i;
+> -		port->type = PORT_MCF;
+> -		port->mapbase = platp[i].mapbase;
+> -		port->membase = (platp[i].membase) ? platp[i].membase :
+> -			(unsigned char __iomem *) platp[i].mapbase;
+> -		port->dev = &pdev->dev;
+> -		port->iotype = SERIAL_IO_MEM;
+> -		port->irq = platp[i].irq;
+> -		port->uartclk = MCF_BUSCLK;
+> -		port->ops = &mcf_uart_ops;
+> -		port->flags = UPF_BOOT_AUTOCONF;
+> -		port->rs485_config = mcf_config_rs485;
+> -		port->rs485_supported = mcf_rs485_supported;
+> -		port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
+> -
+> -		uart_add_one_port(&mcf_driver, port);
+> +	struct mcf_uart *pp;
+> +	struct resource *res;
+> +	void __iomem *base;
+> +	int id = pdev->id;
+> +
+> +	if (id == -1 || id >= MCF_MAXPORTS) {
+> +		dev_err(&pdev->dev, "uart%d out of range\n",
+> +			id);
+> +		return -EINVAL;
+>   	}
+>   
+> +	port = &mcf_ports[id].port;
+> +	port->line = id;
+> +
+> +	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+> +	port->mapbase = res->start;
+> +	port->membase = base;
+> +
+> +	port->irq = platform_get_irq(pdev, 0);
+> +	if (port->irq < 0)
+> +		return port->irq;
+> +
+> +	port->type = PORT_MCF;
+> +	port->dev = &pdev->dev;
+> +	port->iotype = SERIAL_IO_MEM;
+> +	port->uartclk = MCF_BUSCLK;
+> +	port->ops = &mcf_uart_ops;
+> +	port->flags = UPF_BOOT_AUTOCONF;
+> +	port->rs485_config = mcf_config_rs485;
+> +	port->rs485_supported = mcf_rs485_supported;
+> +	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
+> +
+> +	pp = container_of(port, struct mcf_uart, port);
+> +
+> +	uart_add_one_port(&mcf_driver, port);
+> +
 
-[auto build test ERROR on e70140ba0d2b1a30467d4af6bcfe761327b9ec95]
+This breaks platforms with more than one UART - which is quite a few of
+the ColdFire platforms. Numerous boards bring and use more than one UART.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jean-Michel-Hautbois/m68k-Add-tracirqs/20241204-121927
-base:   e70140ba0d2b1a30467d4af6bcfe761327b9ec95
-patch link:    https://lore.kernel.org/r/20241203-add-m68k-tracing-support-v3-2-4de93f6cae55%40yoseli.org
-patch subject: [PATCH v3 2/2] arch: m68k: Add STACKTRACE support
-config: m68k-allnoconfig (https://download.01.org/0day-ci/archive/20241204/202412041842.wqwewnMc-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241204/202412041842.wqwewnMc-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202412041842.wqwewnMc-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> arch/m68k/kernel/stacktrace.c:40:44: error: unknown type name 'stack_trace_consume_fn'
-      40 | void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-         |                                            ^~~~~~~~~~~~~~~~~~~~~~
+Regards
+Greg
 
 
-vim +/stack_trace_consume_fn +40 arch/m68k/kernel/stacktrace.c
 
-    39	
-  > 40	void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>   	return 0;
+>   }
+>   
+> @@ -603,13 +618,11 @@ static int mcf_probe(struct platform_device *pdev)
+>   static void mcf_remove(struct platform_device *pdev)
+>   {
+>   	struct uart_port *port;
+> -	int i;
+> +	int id = pdev->id;
+>   
+> -	for (i = 0; (i < MCF_MAXPORTS); i++) {
+> -		port = &mcf_ports[i].port;
+> -		if (port)
+> -			uart_remove_one_port(&mcf_driver, port);
+> -	}
+> +	port = &mcf_ports[id].port;
+> +	if (port)
+> +		uart_remove_one_port(&mcf_driver, port);
+>   }
+>   
+>   /****************************************************************************/
+> 
+> ---
+> base-commit: e457f18d7f25288d143c1fe024a620d0b15caec1
+> change-id: 20241202-m5441x_uart_resource-729b30c15363
+> 
+> Best regards,
