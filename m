@@ -1,176 +1,104 @@
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D054184
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Dec 2024 07:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4869E1B0103
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Dec 2024 10:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733296493; cv=none; b=hZO7JxQBctmciqjTHQNa74jX08YZaYMqGE24ot0E5AV0KWIQgtu7d3FOJDvACpklQcQlEpdomNnf6ENJQ97rXKpTiYtcPRJs5zUbIGAf3h/M9/AtqItoFUOapKMaqw26/bHEUIDd9bXaye+dkP77xbJzOpSD/WwlhM2JGU3Qr34=
+	t=1733309451; cv=none; b=DPT9Itg3dyWrsELqMa3bXKkfvuueiXHkCT/3DywH7yTYteAS20SBzFluMVNpbnOZyplI7EAB6pn+qkVqJ/KyXnJ5o2G20Bd8v6yspfGQx1kiUvBv4NSdFqKkcGcg10ffO182HxINvnD75mbpRxb6kr/bvNNvV7BKy7I/VXQ1spY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733296493; c=relaxed/simple;
-	bh=lATQn35Lh/b3dk+WEOeuwOuK+UJNMeapYBTnIVg3ZVs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NR8Doa1sAYdFodFAmu6m7X7UUu9FoE6uA3HcwUIJyPl89sZhunXxv0KjZ9bXENBJCEpVG1eh23ETi1EHCfsr5eypzxtkMQAP2i2rdI0vEhgL8y+tDK4b26rQftziMRmbcG7Ram1/nTC55ILxavwidhdQM+fxpGNmIHiVCEvFRYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=Pm0A72fO; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1733309451; c=relaxed/simple;
+	bh=D5OnpVRS3SoGY0Tsf0LDlllwyF9hqDzqXBR3lfpMU3c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QL7/vWoGjqnY5vKjCRSB7KaO/KNxwGre3v0jn8Y64/cbuP+yep9FM+PavRHqloOUx2RQFTkcdMVX73HdrhnVmkGPBXWd/wiEwwL6LKSGccvtGcIbdR3r3Xvj1DAwdc8zNwVO0NUQqXWQ746RzVg7CNKTGcC/OsojgehN1N5h3Rg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HvcE0N7i; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="Pm0A72fO"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5343AE0002;
-	Wed,  4 Dec 2024 07:14:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1733296483;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BFmvl4A54RbX2d0A+Hcc5Q1dzADd/mmBQrsMzEB+NMM=;
-	b=Pm0A72fOex7Xpk4AWwY2C3hkBHOP0yvZSFQ/vreKK8rP+GfP5FHA+ehs6b7f85EAOncn64
-	eBF+VLkQgiudnnk1p3SHfql0+x6eSjbyuGprVND0Wqa1KkAgeCKtFs2vBl/ZYVN+lwjJsM
-	pQ/03AlpCtwUAVQtk6auSkIwtYj/tO6bg1nwAtYecpox44mNlSC4Z5mum6lUolsW1X5NNq
-	NOhX5MTJV8oxmvntUuqWHV6h4cQCbm6IkzXeP9CDG3XwwtvfmUrj9yk+umeI67BJgSJC5m
-	S+3zyF2RPPlWZ7W3AwFSeTxoxhhY01F4nwgRJRqCKfGCVBK+tms7rPbDcVLe4Q==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Wed, 04 Dec 2024 08:14:40 +0100
-Subject: [PATCH v4 2/2] arch: m68k: Add STACKTRACE support
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HvcE0N7i"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1733309449; x=1764845449;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=D5OnpVRS3SoGY0Tsf0LDlllwyF9hqDzqXBR3lfpMU3c=;
+  b=HvcE0N7iH1dIHbF530z0NedkSttBv3yHCaURqkXqvz+3T8kf9qpQfjhi
+   vSX602SrD4WoR5trlOfJL8dESDEHYm5jP8cZpvSjg6tEAcKlmggioQErA
+   0eBN1QpwRsmKGmU4E7d8lXPufPJhe7YYBxI4/GP3mzB03TFC4uzqzTxRa
+   w9xstqfbdI4EhqhOVs2KF2+cX09yfD7GteNumOzg+YfX4kyE/j/TXKAvl
+   NZ30iSsTWXDVbc3S4NZ+MJslSF9ZHcrYWKtAK3Qn4cfN9GZLHDVIUH6hz
+   M5UbwD6c6mnmmgU1PSh7Jr/fp9DxhHZIRsr+3h/iH48W/rTFZZbuW9pek
+   w==;
+X-CSE-ConnectionGUID: qawYfhghQHSVWVgfLWBf5Q==
+X-CSE-MsgGUID: kWcbHJIrSc2femT9tVo61g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11275"; a="58973721"
+X-IronPort-AV: E=Sophos;i="6.12,207,1728975600"; 
+   d="scan'208";a="58973721"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2024 02:50:47 -0800
+X-CSE-ConnectionGUID: R/BCqj1nTRSojydC6w45jw==
+X-CSE-MsgGUID: Lwn72vJCQq2UN8E1p1qzGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,207,1728975600"; 
+   d="scan'208";a="93623169"
+Received: from lkp-server02.sh.intel.com (HELO 1f5a171d57e2) ([10.239.97.151])
+  by orviesa009.jf.intel.com with ESMTP; 04 Dec 2024 02:50:45 -0800
+Received: from kbuild by 1f5a171d57e2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tImxZ-0002tl-2R;
+	Wed, 04 Dec 2024 10:50:28 +0000
+Date: Wed, 4 Dec 2024 18:48:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	rostedt@goodmis.org,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: Re: [PATCH v3 2/2] arch: m68k: Add STACKTRACE support
+Message-ID: <202412041842.wqwewnMc-lkp@intel.com>
+References: <20241203-add-m68k-tracing-support-v3-2-4de93f6cae55@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241204-add-m68k-tracing-support-v4-2-e24fe5ef3b6b@yoseli.org>
-References: <20241204-add-m68k-tracing-support-v4-0-e24fe5ef3b6b@yoseli.org>
-In-Reply-To: <20241204-add-m68k-tracing-support-v4-0-e24fe5ef3b6b@yoseli.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1733296481; l=3079;
- i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=lATQn35Lh/b3dk+WEOeuwOuK+UJNMeapYBTnIVg3ZVs=;
- b=N+MC+nVTnN0sMIPNUDszQzACCuIkYM4+P3jwOIkKdVlqpOnChOhLEWY6IO5dO17tbBzB9JHjp
- 5vILhAjbQ9MD3pQ8LpXrOAAgOiI3nwfmgqR9w5eKNz/mjv7Y9O090hw
-X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
- pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241203-add-m68k-tracing-support-v3-2-4de93f6cae55@yoseli.org>
 
-In order to use tracing, implement a basic arch_stack_walk() based on
-the one in PowerPC.
-Tested on a M54418 coldfire.
+Hi Jean-Michel,
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
----
- arch/m68k/Kconfig             |  5 ++++
- arch/m68k/kernel/Makefile     |  1 +
- arch/m68k/kernel/stacktrace.c | 70 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 76 insertions(+)
+kernel test robot noticed the following build errors:
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 793ab1e2762609725bbf793f6dffecfa3ecfff0f..3ad8596aab71190807f8c11dd5876aa1198760f3 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -106,6 +106,11 @@ config BOOTINFO_PROC
- 	  Say Y to export the bootinfo used to boot the kernel in a
- 	  "bootinfo" file in procfs.  This is useful with kexec.
- 
-+config STACKTRACE_SUPPORT
-+	def_bool MMU_COLDFIRE
-+	select ARCH_STACKWALK
-+	select ARCH_WANT_FRAME_POINTERS
-+
- menu "Platform setup"
- 
- source "arch/m68k/Kconfig.cpu"
-diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
-index 6c732ed3998b714a4842ee29c977550a61979779..cb02bcfe04c6b265fa97db9237395a262e649989 100644
---- a/arch/m68k/kernel/Makefile
-+++ b/arch/m68k/kernel/Makefile
-@@ -23,3 +23,4 @@ obj-$(CONFIG_UBOOT)		+= uboot.o
- 
- obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
- 
-+obj-y	+= stacktrace.o
-diff --git a/arch/m68k/kernel/stacktrace.c b/arch/m68k/kernel/stacktrace.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..4c2fb6b0cf675ee5a3a21393a50603fea98a1b03
---- /dev/null
-+++ b/arch/m68k/kernel/stacktrace.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Stack trace utility functions etc.
-+ *
-+ * Copyright 2024 Jean-Michel Hautbois, Yoseli SAS.
-+ */
-+
-+#include <asm/current.h>
-+#include <asm/ptrace.h>
-+#include <linux/sched.h>
-+#include <linux/sched/task_stack.h>
-+#include <linux/stacktrace.h>
-+
-+static inline unsigned long current_stack_frame(void)
-+{
-+	unsigned long sp;
-+
-+	asm volatile("movl %%fp, %0" : "=r"(sp));
-+	return sp;
-+}
-+
-+static inline int validate_sp(unsigned long sp, struct task_struct *task)
-+{
-+	unsigned long stack_start, stack_end;
-+
-+	if (task == current)
-+		stack_start = (unsigned long)task_stack_page(task);
-+	else
-+		stack_start = (unsigned long)task->thread.esp0;
-+
-+	stack_end = stack_start + THREAD_SIZE;
-+
-+	if (sp < stack_start || sp >= stack_end)
-+		return 0;
-+
-+	return 1;
-+}
-+
-+void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-+					   struct task_struct *task, struct pt_regs *regs)
-+{
-+	unsigned long sp;
-+
-+	if (regs && !consume_entry(cookie, regs->pc))
-+		return;
-+
-+	if (regs)
-+		sp = (unsigned long) regs;
-+	else if (task == current)
-+		sp = current_stack_frame();
-+	else
-+		sp = task->thread.ksp;
-+
-+	for (;;) {
-+		unsigned long *stack = (unsigned long *) sp;
-+		unsigned long newsp, ip;
-+
-+		if (!validate_sp(sp, task))
-+			return;
-+
-+		newsp = stack[0];
-+		ip = stack[1];
-+
-+		if (!consume_entry(cookie, ip))
-+			return;
-+
-+		sp = newsp;
-+	}
-+}
+[auto build test ERROR on e70140ba0d2b1a30467d4af6bcfe761327b9ec95]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Jean-Michel-Hautbois/m68k-Add-tracirqs/20241204-121927
+base:   e70140ba0d2b1a30467d4af6bcfe761327b9ec95
+patch link:    https://lore.kernel.org/r/20241203-add-m68k-tracing-support-v3-2-4de93f6cae55%40yoseli.org
+patch subject: [PATCH v3 2/2] arch: m68k: Add STACKTRACE support
+config: m68k-allnoconfig (https://download.01.org/0day-ci/archive/20241204/202412041842.wqwewnMc-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241204/202412041842.wqwewnMc-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202412041842.wqwewnMc-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> arch/m68k/kernel/stacktrace.c:40:44: error: unknown type name 'stack_trace_consume_fn'
+      40 | void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+         |                                            ^~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/stack_trace_consume_fn +40 arch/m68k/kernel/stacktrace.c
+
+    39	
+  > 40	void __no_sanitize_address arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
 
 -- 
-2.39.5
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
