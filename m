@@ -1,472 +1,1884 @@
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168CC481DD
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Dec 2024 13:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4257C21C9EF
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Dec 2024 15:11:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733404013; cv=none; b=mQgy59U2W7sejYM8iAo0okoGl1/ectZ0aHycnb3DZt83GA2CuQ8yuk1DHla3XN34Y73/ePJpCGt8CyXM0ta1zkqKcKvpRc6eJOjh6gdKr4821LRWhWZVDPGFGenel4I7AVDn52/Azz8/xXfOt/OWYofgMIvPsWA09vuiUWaqFtQ=
+	t=1733411502; cv=none; b=inoSOATlvRS/v+CmjrcK5sYSnhld3PX8eomH1iwaMgkiES4W3wehm4RG0bxWpev+0tKr4OdpSryWtdCT6Dz42WfefiPgtqua2pzViITBF+WmU+b4igOYzB7Mzah6n+ab31OsW9kYQlmhbV6caXt44JaetyzrXsSjwma5qCbYESM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733404013; c=relaxed/simple;
-	bh=87rVpJ+7crXNcE0Rc3A36FZpRmtUymyEf3EkG/r0jyA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pTaG8DpaZR37wWhHmOoaBeckJCb6Mch/JVp+oVS1TsY9jRyC3jmq56QTaYITg6drodhJ1i3HvX1C1XBpIXQ3ou/MT56PG0o+i/XWu2S+ydJ8dgFfFJyJSpDzY5JAGedjdsZoWCf4idH6Wy6zi0RSScoAt+TtPRA888NnSNvYuv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=jjM2QOER; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1733411502; c=relaxed/simple;
+	bh=kOtiDDs8wAiyTq7GVxhqroXyYHX5Nj1fUFNYpY60emQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=qV2oZsgEH6u+dKsoaUTvmAm7WDXpkmknE4wOqMjuyJCpnITenlJ7pSXID3zkZwP7Ik7SuM+KAzQWoWszjkSqcw2tpfa+vkqpPvoKv7hCDc9mpffJRmPZtnaQ7QtWs120S2srJETgt7e6v0N2jfCfn9inleijKRWUt5p6Z3YzaQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RNONTg2l; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="jjM2QOER"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5D29FFF804;
-	Thu,  5 Dec 2024 13:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1733404008;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gbzDX00t4ZWfX7rXsYjeqDZpg+p0PbSRkgzckBj4cR0=;
-	b=jjM2QOERoMYXKWiwMj6rX23FkidlhbKv4Jhk7DQ8ZparwH30CN+Lqg3WM1CrNLfVde9L/l
-	Sv1PGgJNrQMzKM8me1HbON8VCqfyZ+oHs44zCLWi3v10OTOL9VfnbmsMSH41gDpYJNWntM
-	sz7fjcROTN7N+iH45pVpvXYm0BpWP3fMCLaRoQFlJ7vxyp4KxgtMEatvprKWLl5dFfQTDy
-	JMJmtI+kmfxppWtrD+vcE+ZVdDQ6vyQJi4JNqyj1pbUe9IkGciYzChU6D7eNQTFRiKZULX
-	n/fov0OQ655VopUgf+sb/ha66FXhjiyODSJtPFEuGz4qpRIty8kntKfVvM10jQ==
-Message-ID: <8c5ca84d-9a22-4cfa-8267-3d898dac13f4@yoseli.org>
-Date: Thu, 5 Dec 2024 14:06:46 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RNONTg2l"
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6d896be3992so5544056d6.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Dec 2024 07:11:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733411497; x=1734016297; darn=lists.linux-m68k.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U4tAJ6TV8DxPggrWRYBcrXQOjbfDnhgaB/464F8x+Is=;
+        b=RNONTg2lpcWJHL7URpiUuEFoNniFbo6o07A/EwB7Yw3CdhluPErkNbqTDNePMpNmVJ
+         IiqqumMLNT8JLR4YNk0NAkYi0dNIKJBgvlSsqGSLzGKFXlTeP9dM7QoiW8resnlpzszv
+         u+vumtSbLoZqPuQ06G+XZYjZhCUONwEIqdo+NP4sqt2Jn8Faq4Wk65/fxMEPWR+g5ZXm
+         0/WNrPzZDNDfmYH4DFxfmOrnnZyArYeJNNaI3wMFEsFYIvJXN2otk1QF9doQjXoBqF72
+         LhywBsE+owr7lel4FjrPPhBbF0cYNZilhw7MRc+6coHwS4s8VpoZFlgi/vRsidQzkW5g
+         m+9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733411497; x=1734016297;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U4tAJ6TV8DxPggrWRYBcrXQOjbfDnhgaB/464F8x+Is=;
+        b=DJ7K0qVWFF48jzZYOGl5lEEni7/AtBNGz4HlUDA1V2bnrKCsaIgbbWccucsqph+S4l
+         lBOqwKm2Cl50D24hP3gkznMbK5j3GnUe4E6pSyKqjqXmRapThDyzVfh8dyO3H4DcVydE
+         6+vbxghgvjW+m8Si2eLDboIO5KvX9MbkusnV9MNoj2YwGT3f88c7fRIyLiqM1oihYHzh
+         269CeSIa8GIZHZplC722J5q3g4+PCoyT5pQfcRaL+Q4aVX17JRkX4tVXpCUVR/yECMpe
+         IZwJWFLyrb5eisYs2mmiYpTYFqkwdjCFxce2Qe6eFubg6Tn5ePVoEegMyL+56yo8YLGM
+         mbXQ==
+X-Gm-Message-State: AOJu0YwA3sHHx+msaJWJGodKeyFawB2VcyTl5MCy/v4kWxgD8kv7LUEQ
+	RsKTGz/7otN5SoBJjXCFX9VxG57PZm3Nn9JilRnD6WQnE7uLbrIv
+X-Gm-Gg: ASbGnctScWP7BIsmb7LYdoivAKYNYexYPQ5er6CRVTxWEPOvfrhfHp0FCYYiyX7Awgv
+	AduRTSnmPkjV7Jz/raS8pMMuKkYXWuwOfbEo+FOQHx5o9LortXd6Oj+1fgXMaOpC/dcWiLKd5Ka
+	Lml0Uc5dkZRQumusBOxfCMbkqmICnaarO1OLKZaA5ojesBZcXdFCFFeCAIdRNrXfHrX5Rwlqnnc
+	9EP5+e1lj8r1Aq182iJthhKjWxJWPzbPtcDIQOGVowhdH5GrBTugWCxh2AGYfz1+to9FuEMwCKl
+	bFXU/8TH9tkQg3ix+RTHrdE5uP2sHWGe1HpW3rpnTplOzmzFZIctMJwYpj4=
+X-Google-Smtp-Source: AGHT+IFNrhhhVcTpiz9Py7yKSuTNiAlk+9kay/zY7LCAOBh9ULkOxxBOYwJX8Q38AOY6Bf47d1lRmg==
+X-Received: by 2002:ad4:5c4a:0:b0:6d3:f8a0:5d8f with SMTP id 6a1803df08f44-6d8b745724dmr225981326d6.45.1733411496530;
+        Thu, 05 Dec 2024 07:11:36 -0800 (PST)
+Received: from 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa ([2620:10d:c091:600::1:37ce])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d8da6b2bd5sm7294646d6.57.2024.12.05.07.11.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Dec 2024 07:11:35 -0800 (PST)
+From: Tamir Duberstein <tamird@gmail.com>
+Date: Thu, 05 Dec 2024 10:11:26 -0500
+Subject: [PATCH] xarray: port tests to kunit
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: coldfire: Support resources for UART
-To: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org
-References: <20241202-m5441x_uart_resource-v1-1-6b28cb295fb5@yoseli.org>
- <52517849-48ed-4fe8-8638-ec2a4dc2bcbd@linux-m68k.org>
- <a06e4806-8b5a-4073-96d5-2a37103e572f@yoseli.org>
- <cf9cd17a-30d6-43e7-ae59-2f34d6f2dc00@linux-m68k.org>
- <014e09e3-f311-46f8-b159-6913bd6bba2f@yoseli.org>
- <d9e9c6a8-8619-4461-a385-5952f50c50ff@linux-m68k.org>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <d9e9c6a8-8619-4461-a385-5952f50c50ff@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241205-xarray-kunit-port-v1-1-ee44bc7aa201@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAJ7CUWcC/x3MwQpAQBCA4VfRnE3tbEJeRQ6LwaSWZhFp393m+
+ B3+/4XAKhygyV5QviTI5hMoz2BYnJ8ZZUwGa2xB1hR4O1X34Hp6OXDf9MC64pJK6gdyPaRuV57
+ k/p9tF+MHncqtGmMAAAA=
+X-Change-ID: 20241204-xarray-kunit-port-87e6161bc1ab
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Naveen N Rao <naveen@kernel.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Nathan Chancellor <nathan@kernel.org>, 
+ Nick Desaulniers <ndesaulniers@google.com>, 
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, llvm@lists.linux.dev, 
+ Tamir Duberstein <tamird@gmail.com>
+X-Mailer: b4 0.15-dev
 
-Hi Greg,
+Minimally rewrite the XArray unit tests to use kunit. This integrates
+nicely with existing kunit tools which produce nicer human-readable
+output compared to the existing machinery.
 
-On 05/12/2024 14:01, Greg Ungerer wrote:
-> Hi JM,
-> 
-> On 4/12/24 21:32, Jean-Michel Hautbois wrote:
->> On 04/12/2024 12:15, Greg Ungerer wrote:
->>> On 4/12/24 20:58, Jean-Michel Hautbois wrote:
->>>> On 04/12/2024 11:54, Greg Ungerer wrote:
->>>>> On 2/12/24 20:34, Jean-Michel Hautbois wrote:
->>>>>> In order to use the eDMA channels for UART, the mcf_platform_uart 
->>>>>> needs
->>>>>> to be changed. Instead of adding another custom member for the
->>>>>> structure, use a resource tree in a platform_device per UART. It then
->>>>>> makes it possible to have a device named like "mcfuart.N" with N the
->>>>>> UART number.
->>>>>>
->>>>>> Later, adding the dma channel in the mcf tty driver will also be more
->>>>>> straightfoward.
->>>>>>
->>>>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>>>>> ---
->>>>>>   arch/m68k/coldfire/device.c | 96 +++++++++++++ 
->>>>>> +-------------------------------
->>>>>>   drivers/tty/serial/mcf.c    | 69 +++++++++++++++++++-------------
->>>>>>   2 files changed, 70 insertions(+), 95 deletions(-)
->>>>>>
->>>>>> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/ 
->>>>>> device.c
->>>>>> index 
->>>>>> b6958ec2a220cf91a78a14fc7fa18749451412f7..fd7d0b0ce7eb2970cb8ffe33589fe8d7e88c268d 100644
->>>>>> --- a/arch/m68k/coldfire/device.c
->>>>>> +++ b/arch/m68k/coldfire/device.c
->>>>>> @@ -24,73 +24,35 @@
->>>>>>   #include <linux/platform_data/dma-mcf-edma.h>
->>>>>>   #include <linux/platform_data/mmc-esdhc-mcf.h>
->>>>>> -/*
->>>>>> - *    All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
->>>>>> - */
->>>>>> -static struct mcf_platform_uart mcf_uart_platform_data[] = {
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE0,
->>>>>> -        .irq        = MCF_IRQ_UART0,
->>>>>> -    },
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE1,
->>>>>> -        .irq        = MCF_IRQ_UART1,
->>>>>> -    },
->>>>>> -#ifdef MCFUART_BASE2
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE2,
->>>>>> -        .irq        = MCF_IRQ_UART2,
->>>>>> -    },
->>>>>> -#endif
->>>>>> -#ifdef MCFUART_BASE3
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE3,
->>>>>> -        .irq        = MCF_IRQ_UART3,
->>>>>> -    },
->>>>>> -#endif
->>>>>> -#ifdef MCFUART_BASE4
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE4,
->>>>>> -        .irq        = MCF_IRQ_UART4,
->>>>>> -    },
->>>>>> -#endif
->>>>>> -#ifdef MCFUART_BASE5
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE5,
->>>>>> -        .irq        = MCF_IRQ_UART5,
->>>>>> -    },
->>>>>> -#endif
->>>>>> -#ifdef MCFUART_BASE6
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE6,
->>>>>> -        .irq        = MCF_IRQ_UART6,
->>>>>> -    },
->>>>>> -#endif
->>>>>> -#ifdef MCFUART_BASE7
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE7,
->>>>>> -        .irq        = MCF_IRQ_UART7,
->>>>>> +static u64 mcf_uart_mask = DMA_BIT_MASK(32);
->>>>>> +
->>>>>> +static struct resource mcf_uart0_resource[] = {
->>>>>> +    [0] = {
->>>>>> +        .start = MCFUART_BASE0,
->>>>>> +        .end   = MCFUART_BASE0 + 0x3fff,
->>>>>> +        .flags = IORESOURCE_MEM,
->>>>>>       },
->>>>>> -#endif
->>>>>> -#ifdef MCFUART_BASE8
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE8,
->>>>>> -        .irq        = MCF_IRQ_UART8,
->>>>>> +    [1] = {
->>>>>> +        .start = 2,
->>>>>> +        .end   = 3,
->>>>>> +        .flags = IORESOURCE_DMA,
->>>>>>       },
->>>>>> -#endif
->>>>>> -#ifdef MCFUART_BASE9
->>>>>> -    {
->>>>>> -        .mapbase    = MCFUART_BASE9,
->>>>>> -        .irq        = MCF_IRQ_UART9,
->>>>>> +    [2] = {
->>>>>> +        .start = MCF_IRQ_UART0,
->>>>>> +        .end   = MCF_IRQ_UART0,
->>>>>> +        .flags = IORESOURCE_IRQ,
->>>>>>       },
->>>>>> -#endif
->>>>>> -    { },
->>>>>>   };
->>>>>> -static struct platform_device mcf_uart = {
->>>>>> +static struct platform_device mcf_uart0 = {
->>>>>>       .name            = "mcfuart",
->>>>>>       .id            = 0,
->>>>>> -    .dev.platform_data    = mcf_uart_platform_data,
->>>>>> +    .num_resources = ARRAY_SIZE(mcf_uart0_resource),
->>>>>> +    .resource = mcf_uart0_resource,
->>>>>> +    .dev = {
->>>>>> +        .dma_mask = &mcf_uart_mask,
->>>>>> +        .coherent_dma_mask = DMA_BIT_MASK(32),
->>>>>> +    },
->>>>>>   };
->>>>>>   #ifdef MCFFEC_BASE0
->>>>>> @@ -485,12 +447,12 @@ static struct platform_device mcf_i2c5 = {
->>>>>>   static const struct dma_slave_map mcf_edma_map[] = {
->>>>>>       { "dreq0", "rx-tx", MCF_EDMA_FILTER_PARAM(0) },
->>>>>>       { "dreq1", "rx-tx", MCF_EDMA_FILTER_PARAM(1) },
->>>>>> -    { "uart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
->>>>>> -    { "uart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
->>>>>> -    { "uart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
->>>>>> -    { "uart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
->>>>>> -    { "uart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
->>>>>> -    { "uart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
->>>>>> +    { "mcfuart.0", "rx", MCF_EDMA_FILTER_PARAM(2) },
->>>>>> +    { "mcfuart.0", "tx", MCF_EDMA_FILTER_PARAM(3) },
->>>>>> +    { "mcfuart.1", "rx", MCF_EDMA_FILTER_PARAM(4) },
->>>>>> +    { "mcfuart.1", "tx", MCF_EDMA_FILTER_PARAM(5) },
->>>>>> +    { "mcfuart.2", "rx", MCF_EDMA_FILTER_PARAM(6) },
->>>>>> +    { "mcfuart.2", "tx", MCF_EDMA_FILTER_PARAM(7) },
->>>>>>       { "timer0", "rx-tx", MCF_EDMA_FILTER_PARAM(8) },
->>>>>>       { "timer1", "rx-tx", MCF_EDMA_FILTER_PARAM(9) },
->>>>>>       { "timer2", "rx-tx", MCF_EDMA_FILTER_PARAM(10) },
->>>>>> @@ -623,7 +585,7 @@ static struct platform_device mcf_flexcan0 = {
->>>>>>   #endif /* MCFFLEXCAN_SIZE */
->>>>>>   static struct platform_device *mcf_devices[] __initdata = {
->>>>>> -    &mcf_uart,
->>>>>> +    &mcf_uart0,
->>>>>>   #ifdef MCFFEC_BASE0
->>>>>>       &mcf_fec0,
->>>>>>   #endif
->>>>>> diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
->>>>>> index 
->>>>>> 93e7dda4d39acd23daf8c0d4c29ac8d666f263c5..07b8decfdb6005f0265dd130765e45c3fd1715eb 100644
->>>>>> --- a/drivers/tty/serial/mcf.c
->>>>>> +++ b/drivers/tty/serial/mcf.c
->>>>>> @@ -570,31 +570,46 @@ static struct uart_driver mcf_driver = {
->>>>>>   static int mcf_probe(struct platform_device *pdev)
->>>>>>   {
->>>>>> -    struct mcf_platform_uart *platp = dev_get_platdata(&pdev->dev);
->>>>>>       struct uart_port *port;
->>>>>> -    int i;
->>>>>> -
->>>>>> -    for (i = 0; ((i < MCF_MAXPORTS) && (platp[i].mapbase)); i++) {
->>>>>> -        port = &mcf_ports[i].port;
->>>>>> -
->>>>>> -        port->line = i;
->>>>>> -        port->type = PORT_MCF;
->>>>>> -        port->mapbase = platp[i].mapbase;
->>>>>> -        port->membase = (platp[i].membase) ? platp[i].membase :
->>>>>> -            (unsigned char __iomem *) platp[i].mapbase;
->>>>>> -        port->dev = &pdev->dev;
->>>>>> -        port->iotype = SERIAL_IO_MEM;
->>>>>> -        port->irq = platp[i].irq;
->>>>>> -        port->uartclk = MCF_BUSCLK;
->>>>>> -        port->ops = &mcf_uart_ops;
->>>>>> -        port->flags = UPF_BOOT_AUTOCONF;
->>>>>> -        port->rs485_config = mcf_config_rs485;
->>>>>> -        port->rs485_supported = mcf_rs485_supported;
->>>>>> -        port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
->>>>>> -
->>>>>> -        uart_add_one_port(&mcf_driver, port);
->>>>>> +    struct mcf_uart *pp;
->>>>>> +    struct resource *res;
->>>>>> +    void __iomem *base;
->>>>>> +    int id = pdev->id;
->>>>>> +
->>>>>> +    if (id == -1 || id >= MCF_MAXPORTS) {
->>>>>> +        dev_err(&pdev->dev, "uart%d out of range\n",
->>>>>> +            id);
->>>>>> +        return -EINVAL;
->>>>>>       }
->>>>>> +    port = &mcf_ports[id].port;
->>>>>> +    port->line = id;
->>>>>> +
->>>>>> +    base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
->>>>>> +    if (IS_ERR(base))
->>>>>> +        return PTR_ERR(base);
->>>>>> +
->>>>>> +    port->mapbase = res->start;
->>>>>> +    port->membase = base;
->>>>>> +
->>>>>> +    port->irq = platform_get_irq(pdev, 0);
->>>>>> +    if (port->irq < 0)
->>>>>> +        return port->irq;
->>>>>> +
->>>>>> +    port->type = PORT_MCF;
->>>>>> +    port->dev = &pdev->dev;
->>>>>> +    port->iotype = SERIAL_IO_MEM;
->>>>>> +    port->uartclk = MCF_BUSCLK;
->>>>>> +    port->ops = &mcf_uart_ops;
->>>>>> +    port->flags = UPF_BOOT_AUTOCONF;
->>>>>> +    port->rs485_config = mcf_config_rs485;
->>>>>> +    port->rs485_supported = mcf_rs485_supported;
->>>>>> +    port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
->>>>>> +
->>>>>> +    pp = container_of(port, struct mcf_uart, port);
->>>>>> +
->>>>>> +    uart_add_one_port(&mcf_driver, port);
->>>>>> +
->>>>>
->>>>> This breaks platforms with more than one UART - which is quite a 
->>>>> few of
->>>>> the ColdFire platforms. Numerous boards bring and use more than one 
->>>>> UART.
->>>>
->>>> I don't get why, as I have two uarts here, and each is detected 
->>>> properly when declaring those in my platform ? I get that it breaks 
->>>> existing detection (we are parsing all uarts even when only one or 
->>>> two is used) but it does not prevent it to work ?
->>>
->>> Building and testing on an M5208EVB platform.
->>> With original un-modified code boot console shows:
->>>
->>> ...
->>> [    0.110000] romfs: ROMFS MTD (C) 2007 Red Hat, Inc.
->>> [    0.110000] ColdFire internal UART serial driver
->>> [    0.110000] mcfuart.0: ttyS0 at MMIO 0xfc060000 (irq = 90, 
->>> base_baud = 5208333) is a ColdFire UART
->>> [    0.120000] printk: legacy console [ttyS0] enabled
->>> [    0.120000] mcfuart.0: ttyS1 at MMIO 0xfc064000 (irq = 91, 
->>> base_baud = 5208333) is a ColdFire UART
->>> [    0.120000] mcfuart.0: ttyS2 at MMIO 0xfc068000 (irq = 92, 
->>> base_baud = 5208333) is a ColdFire UART
->>> [    0.130000] brd: module loaded
->>> ...
->>>
->>>
->>> But with this change applied only the first port is probed:
->>>
->>> ...
->>> [    0.120000] romfs: ROMFS MTD (C) 2007 Red Hat, Inc.
->>> [    0.120000] ColdFire internal UART serial driver
->>> [    0.130000] mcfuart.0: ttyS0 at MMIO 0xfc060000 (irq = 90, 
->>> base_baud = 5208333) is a ColdFire UART
->>> [    0.130000] printk: legacy console [ttyS0] enabled
->>> [    0.130000] brd: module loaded
->>> ...
->>
->> OK, I see what you mean. Let me try to explain why I did it :-).
->>
->> The idea is to avoid probing a UART device which may exist as such on 
->> the core, but not be used as UART at all (on my board, for instance, I 
->> have uart2 and uart6, I don't need any other UART to be probed).
->>
->> So, based on what I think is the dts philosophy, you declare the 
->> devices you really need to probe ?
-> 
-> You can do this too, with the old style platform setups.
-> 
-> What you want is to have a separate board file just for your board.
-> There is a few examples already in arch/m68k/coldfire/ like amcore.c,
-> firebee.c, nettel.c and stmark2.c. None currently specifically extract
-> out UARTS - no one really seemed to have a need for that in the past.
-> Most ColdFire parts have 2 or 3 UARTS, the 5441x family is an out-lier
-> here with 10.
-> 
-> Anyway, the device.c entries are really just a catch-all for the most
-> common devices and their most commonly used configurations.
+Running the xarray tests before this change requires an obscure
+invocation
 
-Thanks for answering !
+```
+tools/testing/kunit/kunit.py run --arch arm64 --make_options LLVM=1 \
+  --kconfig_add CONFIG_TEST_XARRAY=y --raw_output=all nothing
+```
 
-I know I can have a dedicated file for my board (which i have tbh) but 
-device.c is always built when you select CONFIG_COLDFIRE so, I would end 
-up with 10 UARTs probed anyways ?
+which on failure produces
 
-Is there no way for this patch to find a path ? I mean, I can keep the 
-existing behavior, and have everything probed in device.c if the BASE 
-address is declared. But I don't want my board to have all 10 UARTs and 
-I don't want to locally patch the Makefile to remove the device.c from 
-the built-in ?
+```
+BUG at check_reserve:513
+...
+XArray: 6782340 of 6782364 tests passed
+```
 
-Thanks,
-JM
+and exits 0.
 
-> 
-> Regards
-> Greg
-> 
-> 
-> 
->> I can add all the uarts as resources with the ifdefs like before, but 
->> on the M54418 it will always probe 10 devices, which sounds like a bit 
->> overkill ?
->>
->> Thanks !
->> JM
->>
->>>
->>> Regards
->>> Greg
->>>
->>>
->>>
->>>> static struct resource mcf_uart2_resource[] = {
->>>>      [0] = {
->>>>          .start = MCFUART_BASE2,
->>>>          .end   = MCFUART_BASE2 + 0x3fff,
->>>>          .flags = IORESOURCE_MEM,
->>>>      },
->>>>      [1] = {
->>>>          .start = 6,
->>>>          .end   = 7,
->>>>          .flags = IORESOURCE_DMA,
->>>>      },
->>>>      [2] = {
->>>>          .start = MCF_IRQ_UART2,
->>>>          .end   = MCF_IRQ_UART2,
->>>>          .flags = IORESOURCE_IRQ,
->>>>      },
->>>> };
->>>>
->>>> static struct platform_device mcf_uart2 = {
->>>>      .name            = "mcfuart",
->>>>      .id            = 2,
->>>>      .num_resources = ARRAY_SIZE(mcf_uart2_resource),
->>>>      .resource = mcf_uart2_resource,
->>>>      .dev = {
->>>>          .dma_mask = &mcf_uart_mask,
->>>>          .coherent_dma_mask = DMA_BIT_MASK(32),
->>>>      },
->>>> };
->>>>
->>>> static struct resource mcf_uart6_resource[] = {
->>>>      [0] = {
->>>>          .start = MCFUART_BASE6,
->>>>          .end   = MCFUART_BASE6 + 0x3fff,
->>>>          .flags = IORESOURCE_MEM,
->>>>      },
->>>>      [1] = {
->>>>          .start = 22,
->>>>          .end   = 23,
->>>>          .flags = IORESOURCE_DMA,
->>>>      },
->>>>      [2] = {
->>>>          .start = MCF_IRQ_UART6,
->>>>          .end   = MCF_IRQ_UART6,
->>>>          .flags = IORESOURCE_IRQ,
->>>>      },
->>>> };
->>>>
->>>> static struct platform_device mcf_uart6 = {
->>>>      .name            = "mcfuart",
->>>>      .id            = 6,
->>>>      .num_resources = ARRAY_SIZE(mcf_uart6_resource),
->>>>      .resource = mcf_uart6_resource,
->>>>      .dev = {
->>>>          .dma_mask = &mcf_uart_mask,
->>>>          .coherent_dma_mask = DMA_BIT_MASK(32),
->>>>      },
->>>> };
->>>>
->>>> JM
->>>>
->>>>>
->>>>> Regards
->>>>> Greg
->>>>>
->>>>>
->>>>>
->>>>>>       return 0;
->>>>>>   }
->>>>>> @@ -603,13 +618,11 @@ static int mcf_probe(struct platform_device 
->>>>>> *pdev)
->>>>>>   static void mcf_remove(struct platform_device *pdev)
->>>>>>   {
->>>>>>       struct uart_port *port;
->>>>>> -    int i;
->>>>>> +    int id = pdev->id;
->>>>>> -    for (i = 0; (i < MCF_MAXPORTS); i++) {
->>>>>> -        port = &mcf_ports[i].port;
->>>>>> -        if (port)
->>>>>> -            uart_remove_one_port(&mcf_driver, port);
->>>>>> -    }
->>>>>> +    port = &mcf_ports[id].port;
->>>>>> +    if (port)
->>>>>> +        uart_remove_one_port(&mcf_driver, port);
->>>>>>   }
->>>>>>   / 
->>>>>> ****************************************************************************/
->>>>>>
->>>>>> ---
->>>>>> base-commit: e457f18d7f25288d143c1fe024a620d0b15caec1
->>>>>> change-id: 20241202-m5441x_uart_resource-729b30c15363
->>>>>>
->>>>>> Best regards,
->>>>
->>
+Running the xarray tests after this change requires a simpler invocation
+
+```
+tools/testing/kunit/kunit.py run --arch arm64 --make_options LLVM=1 \
+  xarray
+```
+
+which on failure produces (colors omitted)
+
+```
+[09:50:53] ====================== check_reserve  ======================
+[09:50:53] [FAILED] param-0
+[09:50:53]     # check_reserve: EXPECTATION FAILED at lib/test_xarray.c:536
+[09:50:53] xa_erase(xa, 12345678) != NULL
+...
+[09:50:53]     # module: test_xarray
+[09:50:53] # xarray: pass:26 fail:3 skip:0 total:29
+[09:50:53] # Totals: pass:28 fail:3 skip:0 total:31
+[09:50:53] ===================== [FAILED] xarray ======================
+```
+
+and exits 1.
+
+Use of richer kunit assertions is intentionally omitted to reduce the
+scope of the change.
+
+Signed-off-by: Tamir Duberstein <tamird@gmail.com>
+---
+ arch/m68k/configs/amiga_defconfig    |   1 -
+ arch/m68k/configs/apollo_defconfig   |   1 -
+ arch/m68k/configs/atari_defconfig    |   1 -
+ arch/m68k/configs/bvme6000_defconfig |   1 -
+ arch/m68k/configs/hp300_defconfig    |   1 -
+ arch/m68k/configs/mac_defconfig      |   1 -
+ arch/m68k/configs/multi_defconfig    |   1 -
+ arch/m68k/configs/mvme147_defconfig  |   1 -
+ arch/m68k/configs/mvme16x_defconfig  |   1 -
+ arch/m68k/configs/q40_defconfig      |   1 -
+ arch/m68k/configs/sun3_defconfig     |   1 -
+ arch/m68k/configs/sun3x_defconfig    |   1 -
+ arch/powerpc/configs/ppc64_defconfig |   1 -
+ lib/Kconfig.debug                    |  18 +-
+ lib/Makefile                         |   2 +-
+ lib/test_xarray.c                    | 669 ++++++++++++++++++++---------------
+ 16 files changed, 409 insertions(+), 293 deletions(-)
+
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index c705247e7b5b3d67a9e0c2152f479a208d1acd44..581f0080814e92289610463f86abd9b38dab3d3f 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -629,7 +629,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 6d62b9187a58afc079cbefe126d0e2230bbc887c..25628a1e8fa1ccbc8d44398caf4d303fedf50807 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -586,7 +586,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index c3c644df852d280139828fce66e55f61eadbeca6..503a9ea526b56ae755b6e74dc02e37177a1a3886 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -606,7 +606,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 20261f8196918f0315fd29c82c97da0d581a4100..3358349898eff72b250a410940495fb55b597dfa 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -578,7 +578,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index ce4fe93a0f701958b5ec79c5d24e9e004e21f076..a5e933a7fdf9dfe16d8943032cf5da062c4c67d0 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -588,7 +588,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index 040ae75f47c3957f2e5c93e19ef397fc23e3dfbd..a90676c04da6d03700a8273b16d22d65630633a7 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -605,7 +605,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 20d877cb4e308b10e48bfd872c45af795feed098..f28f7783b090e79ed6840df8e052fe43308d1302 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -692,7 +692,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 5e1c8d0d3da57de9397220b9544e0f883c4c2c30..61308c2cd96cfbf035b47ca7ac3d9366c61e1740 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -578,7 +578,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 5d1409e6a13773b43236ebe6d9a442348ac624a6..9ec8eb9ea6147c22dbeba8c90ea211404ed2dfc8 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -579,7 +579,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index e4c30e2b9bbb8753a2fec9422ab5770ecd38d8bc..5fd094391b9ecf3a7dd73f49432f8e64856f1887 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -595,7 +595,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 980843a9ea1eeda6d1d692e5772d5ad62adbeeec..5e9c9d704c2ee8df7e9fe1d73fcaef3f0ae2aa37 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -575,7 +575,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 38681cc6b598c5b433f04998d9af58ec6c2c58f2..b2f5f398fe42ae150049424e26f988cffa33062f 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -576,7 +576,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/arch/powerpc/configs/ppc64_defconfig b/arch/powerpc/configs/ppc64_defconfig
+index f39c0d000c4386dc77fe36965e38a96f5f11daac..bc48063fd860627fdf24ee8dbe18cdedcec79078 100644
+--- a/arch/powerpc/configs/ppc64_defconfig
++++ b/arch/powerpc/configs/ppc64_defconfig
+@@ -451,7 +451,6 @@ CONFIG_TEST_PRINTF=m
+ CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+-CONFIG_TEST_XARRAY=m
+ CONFIG_TEST_MAPLE_TREE=m
+ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index e968f083d356a53a87aa73d08caeb8471ea3603a..b53f5da22e4053dee79860c9a10d8dd26a7080d6 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -2456,8 +2456,22 @@ config TEST_BITMAP
+ config TEST_UUID
+ 	tristate "Test functions located in the uuid module at runtime"
+ 
+-config TEST_XARRAY
+-	tristate "Test the XArray code at runtime"
++config XARRAY_KUNIT
++	tristate "KUnit test XArray code at runtime" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  Enable this option to test the Xarray code at boot.
++
++	  KUnit tests run during boot and output the results to the debug log
++	  in TAP format (http://testanything.org/). Only useful for kernel devs
++	  running the KUnit test harness, and not intended for inclusion into a
++	  production build.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
+ 
+ config TEST_MAPLE_TREE
+ 	tristate "Test the Maple Tree code at runtime or module load"
+diff --git a/lib/Makefile b/lib/Makefile
+index a8155c972f02856fcc61ee949ddda436cfe211ff..c0458ff841fe8feff840c77bb652adb2aae48678 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -94,7 +94,6 @@ GCOV_PROFILE_test_bitmap.o := n
+ endif
+ 
+ obj-$(CONFIG_TEST_UUID) += test_uuid.o
+-obj-$(CONFIG_TEST_XARRAY) += test_xarray.o
+ obj-$(CONFIG_TEST_MAPLE_TREE) += test_maple_tree.o
+ obj-$(CONFIG_TEST_PARMAN) += test_parman.o
+ obj-$(CONFIG_TEST_KMOD) += test_kmod.o
+@@ -375,6 +374,7 @@ CFLAGS_bitfield_kunit.o := $(DISABLE_STRUCTLEAK_PLUGIN)
+ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
+ obj-$(CONFIG_CHECKSUM_KUNIT) += checksum_kunit.o
+ obj-$(CONFIG_UTIL_MACROS_KUNIT) += util_macros_kunit.o
++obj-$(CONFIG_XARRAY_KUNIT) += test_xarray.o
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+ obj-$(CONFIG_HASHTABLE_KUNIT_TEST) += hashtable_test.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+diff --git a/lib/test_xarray.c b/lib/test_xarray.c
+index d5c5cbba33edf30104e9bed40ec4298638e7a9e5..9d0e797b825fe308ffa3b68904e708e32d9b7857 100644
+--- a/lib/test_xarray.c
++++ b/lib/test_xarray.c
+@@ -6,11 +6,10 @@
+  * Author: Matthew Wilcox <willy@infradead.org>
+  */
+ 
+-#include <linux/xarray.h>
+-#include <linux/module.h>
++#include <kunit/test.h>
+ 
+-static unsigned int tests_run;
+-static unsigned int tests_passed;
++#include <linux/module.h>
++#include <linux/xarray.h>
+ 
+ static const unsigned int order_limit =
+ 		IS_ENABLED(CONFIG_XARRAY_MULTI) ? BITS_PER_LONG : 1;
+@@ -20,15 +19,12 @@ static const unsigned int order_limit =
+ void xa_dump(const struct xarray *xa) { }
+ # endif
+ #undef XA_BUG_ON
+-#define XA_BUG_ON(xa, x) do {					\
+-	tests_run++;						\
+-	if (x) {						\
+-		printk("BUG at %s:%d\n", __func__, __LINE__);	\
+-		xa_dump(xa);					\
+-		dump_stack();					\
+-	} else {						\
+-		tests_passed++;					\
+-	}							\
++#define XA_BUG_ON(xa, x) do {		\
++	if (x) {			\
++		KUNIT_FAIL(test, #x);	\
++		xa_dump(xa);		\
++		dump_stack();		\
++	}				\
+ } while (0)
+ #endif
+ 
+@@ -42,13 +38,13 @@ static void *xa_store_index(struct xarray *xa, unsigned long index, gfp_t gfp)
+ 	return xa_store(xa, index, xa_mk_index(index), gfp);
+ }
+ 
+-static void xa_insert_index(struct xarray *xa, unsigned long index)
++static void xa_insert_index(struct kunit *test, struct xarray *xa, unsigned long index)
+ {
+ 	XA_BUG_ON(xa, xa_insert(xa, index, xa_mk_index(index),
+ 				GFP_KERNEL) != 0);
+ }
+ 
+-static void xa_alloc_index(struct xarray *xa, unsigned long index, gfp_t gfp)
++static void xa_alloc_index(struct kunit *test, struct xarray *xa, unsigned long index, gfp_t gfp)
+ {
+ 	u32 id;
+ 
+@@ -57,7 +53,7 @@ static void xa_alloc_index(struct xarray *xa, unsigned long index, gfp_t gfp)
+ 	XA_BUG_ON(xa, id != index);
+ }
+ 
+-static void xa_erase_index(struct xarray *xa, unsigned long index)
++static void xa_erase_index(struct kunit *test, struct xarray *xa, unsigned long index)
+ {
+ 	XA_BUG_ON(xa, xa_erase(xa, index) != xa_mk_index(index));
+ 	XA_BUG_ON(xa, xa_load(xa, index) != NULL);
+@@ -83,8 +79,15 @@ static void *xa_store_order(struct xarray *xa, unsigned long index,
+ 	return curr;
+ }
+ 
+-static noinline void check_xa_err(struct xarray *xa)
++static inline struct xarray *xa_param(struct kunit *test)
+ {
++	return *(struct xarray **)test->param_value;
++}
++
++static noinline void check_xa_err(struct kunit *test)
++{
++	struct xarray *xa = xa_param(test);
++
+ 	XA_BUG_ON(xa, xa_err(xa_store_index(xa, 0, GFP_NOWAIT)) != 0);
+ 	XA_BUG_ON(xa, xa_err(xa_erase(xa, 0)) != 0);
+ #ifndef __KERNEL__
+@@ -99,8 +102,10 @@ static noinline void check_xa_err(struct xarray *xa)
+ //	XA_BUG_ON(xa, xa_err(xa_store(xa, 0, xa_mk_internal(0), 0)) != -EINVAL);
+ }
+ 
+-static noinline void check_xas_retry(struct xarray *xa)
++static noinline void check_xas_retry(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 	void *entry;
+ 
+@@ -109,7 +114,7 @@ static noinline void check_xas_retry(struct xarray *xa)
+ 
+ 	rcu_read_lock();
+ 	XA_BUG_ON(xa, xas_find(&xas, ULONG_MAX) != xa_mk_value(0));
+-	xa_erase_index(xa, 1);
++	xa_erase_index(test, xa, 1);
+ 	XA_BUG_ON(xa, !xa_is_retry(xas_reload(&xas)));
+ 	XA_BUG_ON(xa, xas_retry(&xas, NULL));
+ 	XA_BUG_ON(xa, xas_retry(&xas, xa_mk_value(0)));
+@@ -140,12 +145,14 @@ static noinline void check_xas_retry(struct xarray *xa)
+ 	}
+ 	xas_unlock(&xas);
+ 
+-	xa_erase_index(xa, 0);
+-	xa_erase_index(xa, 1);
++	xa_erase_index(test, xa, 0);
++	xa_erase_index(test, xa, 1);
+ }
+ 
+-static noinline void check_xa_load(struct xarray *xa)
++static noinline void check_xa_load(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long i, j;
+ 
+ 	for (i = 0; i < 1024; i++) {
+@@ -167,13 +174,15 @@ static noinline void check_xa_load(struct xarray *xa)
+ 			else
+ 				XA_BUG_ON(xa, entry);
+ 		}
+-		xa_erase_index(xa, i);
++		xa_erase_index(test, xa, i);
+ 	}
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_xa_mark_1(struct xarray *xa, unsigned long index)
++static noinline void check_xa_mark_1(struct kunit *test, unsigned long index)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int order;
+ 	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 8 : 1;
+ 
+@@ -193,7 +202,7 @@ static noinline void check_xa_mark_1(struct xarray *xa, unsigned long index)
+ 	XA_BUG_ON(xa, xa_get_mark(xa, index, XA_MARK_1));
+ 
+ 	/* Storing NULL clears marks, and they can't be set again */
+-	xa_erase_index(xa, index);
++	xa_erase_index(test, xa, index);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 	XA_BUG_ON(xa, xa_get_mark(xa, index, XA_MARK_0));
+ 	xa_set_mark(xa, index, XA_MARK_0);
+@@ -244,15 +253,17 @@ static noinline void check_xa_mark_1(struct xarray *xa, unsigned long index)
+ 		XA_BUG_ON(xa, xa_get_mark(xa, next, XA_MARK_0));
+ 		XA_BUG_ON(xa, xa_get_mark(xa, next, XA_MARK_1));
+ 		XA_BUG_ON(xa, xa_get_mark(xa, next, XA_MARK_2));
+-		xa_erase_index(xa, index);
+-		xa_erase_index(xa, next);
++		xa_erase_index(test, xa, index);
++		xa_erase_index(test, xa, next);
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+ 	}
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_xa_mark_2(struct xarray *xa)
++static noinline void check_xa_mark_2(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 	unsigned long index;
+ 	unsigned int count = 0;
+@@ -289,9 +300,11 @@ static noinline void check_xa_mark_2(struct xarray *xa)
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_xa_mark_3(struct xarray *xa)
++static noinline void check_xa_mark_3(struct kunit *test)
+ {
+ #ifdef CONFIG_XARRAY_MULTI
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0x41);
+ 	void *entry;
+ 	int count = 0;
+@@ -310,19 +323,21 @@ static noinline void check_xa_mark_3(struct xarray *xa)
+ #endif
+ }
+ 
+-static noinline void check_xa_mark(struct xarray *xa)
++static noinline void check_xa_mark(struct kunit *test)
+ {
+ 	unsigned long index;
+ 
+ 	for (index = 0; index < 16384; index += 4)
+-		check_xa_mark_1(xa, index);
++		check_xa_mark_1(test, index);
+ 
+-	check_xa_mark_2(xa);
+-	check_xa_mark_3(xa);
++	check_xa_mark_2(test);
++	check_xa_mark_3(test);
+ }
+ 
+-static noinline void check_xa_shrink(struct xarray *xa)
++static noinline void check_xa_shrink(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 1);
+ 	struct xa_node *node;
+ 	unsigned int order;
+@@ -347,7 +362,7 @@ static noinline void check_xa_shrink(struct xarray *xa)
+ 	XA_BUG_ON(xa, xas_load(&xas) != NULL);
+ 	xas_unlock(&xas);
+ 	XA_BUG_ON(xa, xa_load(xa, 0) != xa_mk_value(0));
+-	xa_erase_index(xa, 0);
++	xa_erase_index(test, xa, 0);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	for (order = 0; order < max_order; order++) {
+@@ -364,45 +379,49 @@ static noinline void check_xa_shrink(struct xarray *xa)
+ 		XA_BUG_ON(xa, xa_head(xa) == node);
+ 		rcu_read_unlock();
+ 		XA_BUG_ON(xa, xa_load(xa, max + 1) != NULL);
+-		xa_erase_index(xa, ULONG_MAX);
++		xa_erase_index(test, xa, ULONG_MAX);
+ 		XA_BUG_ON(xa, xa->xa_head != node);
+-		xa_erase_index(xa, 0);
++		xa_erase_index(test, xa, 0);
+ 	}
+ }
+ 
+-static noinline void check_insert(struct xarray *xa)
++static noinline void check_insert(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long i;
+ 
+ 	for (i = 0; i < 1024; i++) {
+-		xa_insert_index(xa, i);
++		xa_insert_index(test, xa, i);
+ 		XA_BUG_ON(xa, xa_load(xa, i - 1) != NULL);
+ 		XA_BUG_ON(xa, xa_load(xa, i + 1) != NULL);
+-		xa_erase_index(xa, i);
++		xa_erase_index(test, xa, i);
+ 	}
+ 
+ 	for (i = 10; i < BITS_PER_LONG; i++) {
+-		xa_insert_index(xa, 1UL << i);
++		xa_insert_index(test, xa, 1UL << i);
+ 		XA_BUG_ON(xa, xa_load(xa, (1UL << i) - 1) != NULL);
+ 		XA_BUG_ON(xa, xa_load(xa, (1UL << i) + 1) != NULL);
+-		xa_erase_index(xa, 1UL << i);
++		xa_erase_index(test, xa, 1UL << i);
+ 
+-		xa_insert_index(xa, (1UL << i) - 1);
++		xa_insert_index(test, xa, (1UL << i) - 1);
+ 		XA_BUG_ON(xa, xa_load(xa, (1UL << i) - 2) != NULL);
+ 		XA_BUG_ON(xa, xa_load(xa, 1UL << i) != NULL);
+-		xa_erase_index(xa, (1UL << i) - 1);
++		xa_erase_index(test, xa, (1UL << i) - 1);
+ 	}
+ 
+-	xa_insert_index(xa, ~0UL);
++	xa_insert_index(test, xa, ~0UL);
+ 	XA_BUG_ON(xa, xa_load(xa, 0UL) != NULL);
+ 	XA_BUG_ON(xa, xa_load(xa, ~1UL) != NULL);
+-	xa_erase_index(xa, ~0UL);
++	xa_erase_index(test, xa, ~0UL);
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_cmpxchg(struct xarray *xa)
++static noinline void check_cmpxchg(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	void *FIVE = xa_mk_value(5);
+ 	void *SIX = xa_mk_value(6);
+ 	void *LOTS = xa_mk_value(12345678);
+@@ -418,14 +437,16 @@ static noinline void check_cmpxchg(struct xarray *xa)
+ 	XA_BUG_ON(xa, xa_insert(xa, 5, FIVE, GFP_KERNEL) != -EBUSY);
+ 	XA_BUG_ON(xa, xa_cmpxchg(xa, 5, FIVE, NULL, GFP_KERNEL) != FIVE);
+ 	XA_BUG_ON(xa, xa_insert(xa, 5, FIVE, GFP_KERNEL) == -EBUSY);
+-	xa_erase_index(xa, 12345678);
+-	xa_erase_index(xa, 5);
++	xa_erase_index(test, xa, 12345678);
++	xa_erase_index(test, xa, 5);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_cmpxchg_order(struct xarray *xa)
++static noinline void check_cmpxchg_order(struct kunit *test)
+ {
+ #ifdef CONFIG_XARRAY_MULTI
++	struct xarray *xa = xa_param(test);
++
+ 	void *FIVE = xa_mk_value(5);
+ 	unsigned int i, order = 3;
+ 
+@@ -476,8 +497,10 @@ static noinline void check_cmpxchg_order(struct xarray *xa)
+ #endif
+ }
+ 
+-static noinline void check_reserve(struct xarray *xa)
++static noinline void check_reserve(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	void *entry;
+ 	unsigned long index;
+ 	int count;
+@@ -494,7 +517,7 @@ static noinline void check_reserve(struct xarray *xa)
+ 	XA_BUG_ON(xa, xa_reserve(xa, 12345678, GFP_KERNEL) != 0);
+ 	XA_BUG_ON(xa, xa_store_index(xa, 12345678, GFP_NOWAIT) != NULL);
+ 	xa_release(xa, 12345678);
+-	xa_erase_index(xa, 12345678);
++	xa_erase_index(test, xa, 12345678);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	/* cmpxchg sees a reserved entry as ZERO */
+@@ -502,7 +525,7 @@ static noinline void check_reserve(struct xarray *xa)
+ 	XA_BUG_ON(xa, xa_cmpxchg(xa, 12345678, XA_ZERO_ENTRY,
+ 				xa_mk_value(12345678), GFP_NOWAIT) != NULL);
+ 	xa_release(xa, 12345678);
+-	xa_erase_index(xa, 12345678);
++	xa_erase_index(test, xa, 12345678);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	/* xa_insert treats it as busy */
+@@ -542,8 +565,10 @@ static noinline void check_reserve(struct xarray *xa)
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_xas_erase(struct xarray *xa)
++static noinline void check_xas_erase(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 	void *entry;
+ 	unsigned long i, j;
+@@ -581,9 +606,11 @@ static noinline void check_xas_erase(struct xarray *xa)
+ }
+ 
+ #ifdef CONFIG_XARRAY_MULTI
+-static noinline void check_multi_store_1(struct xarray *xa, unsigned long index,
++static noinline void check_multi_store_1(struct kunit *test, unsigned long index,
+ 		unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, index);
+ 	unsigned long min = index & ~((1UL << order) - 1);
+ 	unsigned long max = min + (1UL << order);
+@@ -602,13 +629,15 @@ static noinline void check_multi_store_1(struct xarray *xa, unsigned long index,
+ 	XA_BUG_ON(xa, xa_load(xa, max) != NULL);
+ 	XA_BUG_ON(xa, xa_load(xa, min - 1) != NULL);
+ 
+-	xa_erase_index(xa, min);
++	xa_erase_index(test, xa, min);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_multi_store_2(struct xarray *xa, unsigned long index,
++static noinline void check_multi_store_2(struct kunit *test, unsigned long index,
+ 		unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, index);
+ 	xa_store_order(xa, index, order, xa_mk_value(0), GFP_KERNEL);
+ 
+@@ -620,9 +649,11 @@ static noinline void check_multi_store_2(struct xarray *xa, unsigned long index,
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_multi_store_3(struct xarray *xa, unsigned long index,
++static noinline void check_multi_store_3(struct kunit *test, unsigned long index,
+ 		unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 	void *entry;
+ 	int n = 0;
+@@ -647,9 +678,11 @@ static noinline void check_multi_store_3(struct xarray *xa, unsigned long index,
+ }
+ #endif
+ 
+-static noinline void check_multi_store(struct xarray *xa)
++static noinline void check_multi_store(struct kunit *test)
+ {
+ #ifdef CONFIG_XARRAY_MULTI
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long i, j, k;
+ 	unsigned int max_order = (sizeof(long) == 4) ? 30 : 60;
+ 
+@@ -714,26 +747,28 @@ static noinline void check_multi_store(struct xarray *xa)
+ 	}
+ 
+ 	for (i = 0; i < 20; i++) {
+-		check_multi_store_1(xa, 200, i);
+-		check_multi_store_1(xa, 0, i);
+-		check_multi_store_1(xa, (1UL << i) + 1, i);
++		check_multi_store_1(test, 200, i);
++		check_multi_store_1(test, 0, i);
++		check_multi_store_1(test, (1UL << i) + 1, i);
+ 	}
+-	check_multi_store_2(xa, 4095, 9);
++	check_multi_store_2(test, 4095, 9);
+ 
+ 	for (i = 1; i < 20; i++) {
+-		check_multi_store_3(xa, 0, i);
+-		check_multi_store_3(xa, 1UL << i, i);
++		check_multi_store_3(test, 0, i);
++		check_multi_store_3(test, 1UL << i, i);
+ 	}
+ #endif
+ }
+ 
+ #ifdef CONFIG_XARRAY_MULTI
+ /* mimics page cache __filemap_add_folio() */
+-static noinline void check_xa_multi_store_adv_add(struct xarray *xa,
++static noinline void check_xa_multi_store_adv_add(struct kunit *test,
+ 						  unsigned long index,
+ 						  unsigned int order,
+ 						  void *p)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, index);
+ 	unsigned int nrpages = 1UL << order;
+ 
+@@ -761,10 +796,12 @@ static noinline void check_xa_multi_store_adv_add(struct xarray *xa,
+ }
+ 
+ /* mimics page_cache_delete() */
+-static noinline void check_xa_multi_store_adv_del_entry(struct xarray *xa,
++static noinline void check_xa_multi_store_adv_del_entry(struct kunit *test,
+ 							unsigned long index,
+ 							unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, index);
+ 
+ 	xas_set_order(&xas, index, order);
+@@ -772,12 +809,14 @@ static noinline void check_xa_multi_store_adv_del_entry(struct xarray *xa,
+ 	xas_init_marks(&xas);
+ }
+ 
+-static noinline void check_xa_multi_store_adv_delete(struct xarray *xa,
++static noinline void check_xa_multi_store_adv_delete(struct kunit *test,
+ 						     unsigned long index,
+ 						     unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	xa_lock_irq(xa);
+-	check_xa_multi_store_adv_del_entry(xa, index, order);
++	check_xa_multi_store_adv_del_entry(test, index, order);
+ 	xa_unlock_irq(xa);
+ }
+ 
+@@ -814,10 +853,12 @@ static unsigned long some_val = 0xdeadbeef;
+ static unsigned long some_val_2 = 0xdeaddead;
+ 
+ /* mimics the page cache usage */
+-static noinline void check_xa_multi_store_adv(struct xarray *xa,
++static noinline void check_xa_multi_store_adv(struct kunit *test,
+ 					      unsigned long pos,
+ 					      unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int nrpages = 1UL << order;
+ 	unsigned long index, base, next_index, next_next_index;
+ 	unsigned int i;
+@@ -827,7 +868,7 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	next_index = round_down(base + nrpages, nrpages);
+ 	next_next_index = round_down(next_index + nrpages, nrpages);
+ 
+-	check_xa_multi_store_adv_add(xa, base, order, &some_val);
++	check_xa_multi_store_adv_add(test, base, order, &some_val);
+ 
+ 	for (i = 0; i < nrpages; i++)
+ 		XA_BUG_ON(xa, test_get_entry(xa, base + i) != &some_val);
+@@ -835,20 +876,20 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	XA_BUG_ON(xa, test_get_entry(xa, next_index) != NULL);
+ 
+ 	/* Use order 0 for the next item */
+-	check_xa_multi_store_adv_add(xa, next_index, 0, &some_val_2);
++	check_xa_multi_store_adv_add(test, next_index, 0, &some_val_2);
+ 	XA_BUG_ON(xa, test_get_entry(xa, next_index) != &some_val_2);
+ 
+ 	/* Remove the next item */
+-	check_xa_multi_store_adv_delete(xa, next_index, 0);
++	check_xa_multi_store_adv_delete(test, next_index, 0);
+ 
+ 	/* Now use order for a new pointer */
+-	check_xa_multi_store_adv_add(xa, next_index, order, &some_val_2);
++	check_xa_multi_store_adv_add(test, next_index, order, &some_val_2);
+ 
+ 	for (i = 0; i < nrpages; i++)
+ 		XA_BUG_ON(xa, test_get_entry(xa, next_index + i) != &some_val_2);
+ 
+-	check_xa_multi_store_adv_delete(xa, next_index, order);
+-	check_xa_multi_store_adv_delete(xa, base, order);
++	check_xa_multi_store_adv_delete(test, next_index, order);
++	check_xa_multi_store_adv_delete(test, base, order);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	/* starting fresh again */
+@@ -856,7 +897,7 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	/* let's test some holes now */
+ 
+ 	/* hole at base and next_next */
+-	check_xa_multi_store_adv_add(xa, next_index, order, &some_val_2);
++	check_xa_multi_store_adv_add(test, next_index, order, &some_val_2);
+ 
+ 	for (i = 0; i < nrpages; i++)
+ 		XA_BUG_ON(xa, test_get_entry(xa, base + i) != NULL);
+@@ -867,12 +908,12 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	for (i = 0; i < nrpages; i++)
+ 		XA_BUG_ON(xa, test_get_entry(xa, next_next_index + i) != NULL);
+ 
+-	check_xa_multi_store_adv_delete(xa, next_index, order);
++	check_xa_multi_store_adv_delete(test, next_index, order);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	/* hole at base and next */
+ 
+-	check_xa_multi_store_adv_add(xa, next_next_index, order, &some_val_2);
++	check_xa_multi_store_adv_add(test, next_next_index, order, &some_val_2);
+ 
+ 	for (i = 0; i < nrpages; i++)
+ 		XA_BUG_ON(xa, test_get_entry(xa, base + i) != NULL);
+@@ -883,12 +924,12 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	for (i = 0; i < nrpages; i++)
+ 		XA_BUG_ON(xa, test_get_entry(xa, next_next_index + i) != &some_val_2);
+ 
+-	check_xa_multi_store_adv_delete(xa, next_next_index, order);
++	check_xa_multi_store_adv_delete(test, next_next_index, order);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ #endif
+ 
+-static noinline void check_multi_store_advanced(struct xarray *xa)
++static noinline void check_multi_store_advanced(struct kunit *test)
+ {
+ #ifdef CONFIG_XARRAY_MULTI
+ 	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 20 : 1;
+@@ -900,59 +941,59 @@ static noinline void check_multi_store_advanced(struct xarray *xa)
+ 	 */
+ 	for (pos = 7; pos < end; pos = (pos * pos) + 564) {
+ 		for (i = 0; i < max_order; i++) {
+-			check_xa_multi_store_adv(xa, pos, i);
+-			check_xa_multi_store_adv(xa, pos + 157, i);
++			check_xa_multi_store_adv(test, pos, i);
++			check_xa_multi_store_adv(test, pos + 157, i);
+ 		}
+ 	}
+ #endif
+ }
+ 
+-static noinline void check_xa_alloc_1(struct xarray *xa, unsigned int base)
++static noinline void check_xa_alloc_1(struct kunit *test, struct xarray *xa, unsigned int base)
+ {
+ 	int i;
+ 	u32 id;
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 	/* An empty array should assign %base to the first alloc */
+-	xa_alloc_index(xa, base, GFP_KERNEL);
++	xa_alloc_index(test, xa, base, GFP_KERNEL);
+ 
+ 	/* Erasing it should make the array empty again */
+-	xa_erase_index(xa, base);
++	xa_erase_index(test, xa, base);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	/* And it should assign %base again */
+-	xa_alloc_index(xa, base, GFP_KERNEL);
++	xa_alloc_index(test, xa, base, GFP_KERNEL);
+ 
+ 	/* Allocating and then erasing a lot should not lose base */
+ 	for (i = base + 1; i < 2 * XA_CHUNK_SIZE; i++)
+-		xa_alloc_index(xa, i, GFP_KERNEL);
++		xa_alloc_index(test, xa, i, GFP_KERNEL);
+ 	for (i = base; i < 2 * XA_CHUNK_SIZE; i++)
+-		xa_erase_index(xa, i);
+-	xa_alloc_index(xa, base, GFP_KERNEL);
++		xa_erase_index(test, xa, i);
++	xa_alloc_index(test, xa, base, GFP_KERNEL);
+ 
+ 	/* Destroying the array should do the same as erasing */
+ 	xa_destroy(xa);
+ 
+ 	/* And it should assign %base again */
+-	xa_alloc_index(xa, base, GFP_KERNEL);
++	xa_alloc_index(test, xa, base, GFP_KERNEL);
+ 
+ 	/* The next assigned ID should be base+1 */
+-	xa_alloc_index(xa, base + 1, GFP_KERNEL);
+-	xa_erase_index(xa, base + 1);
++	xa_alloc_index(test, xa, base + 1, GFP_KERNEL);
++	xa_erase_index(test, xa, base + 1);
+ 
+ 	/* Storing a value should mark it used */
+ 	xa_store_index(xa, base + 1, GFP_KERNEL);
+-	xa_alloc_index(xa, base + 2, GFP_KERNEL);
++	xa_alloc_index(test, xa, base + 2, GFP_KERNEL);
+ 
+ 	/* If we then erase base, it should be free */
+-	xa_erase_index(xa, base);
+-	xa_alloc_index(xa, base, GFP_KERNEL);
++	xa_erase_index(test, xa, base);
++	xa_alloc_index(test, xa, base, GFP_KERNEL);
+ 
+-	xa_erase_index(xa, base + 1);
+-	xa_erase_index(xa, base + 2);
++	xa_erase_index(test, xa, base + 1);
++	xa_erase_index(test, xa, base + 2);
+ 
+ 	for (i = 1; i < 5000; i++) {
+-		xa_alloc_index(xa, base + i, GFP_KERNEL);
++		xa_alloc_index(test, xa, base + i, GFP_KERNEL);
+ 	}
+ 
+ 	xa_destroy(xa);
+@@ -978,11 +1019,11 @@ static noinline void check_xa_alloc_1(struct xarray *xa, unsigned int base)
+ 	XA_BUG_ON(xa, xa_store_index(xa, 3, GFP_KERNEL) != 0);
+ 	XA_BUG_ON(xa, xa_alloc(xa, &id, xa_mk_index(10), XA_LIMIT(10, 5),
+ 				GFP_KERNEL) != -EBUSY);
+-	xa_erase_index(xa, 3);
++	xa_erase_index(test, xa, 3);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_xa_alloc_2(struct xarray *xa, unsigned int base)
++static noinline void check_xa_alloc_2(struct kunit *test, struct xarray *xa, unsigned int base)
+ {
+ 	unsigned int i, id;
+ 	unsigned long index;
+@@ -1018,7 +1059,7 @@ static noinline void check_xa_alloc_2(struct xarray *xa, unsigned int base)
+ 	XA_BUG_ON(xa, id != 5);
+ 
+ 	xa_for_each(xa, index, entry) {
+-		xa_erase_index(xa, index);
++		xa_erase_index(test, xa, index);
+ 	}
+ 
+ 	for (i = base; i < base + 9; i++) {
+@@ -1033,7 +1074,7 @@ static noinline void check_xa_alloc_2(struct xarray *xa, unsigned int base)
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_xa_alloc_3(struct xarray *xa, unsigned int base)
++static noinline void check_xa_alloc_3(struct kunit *test, struct xarray *xa, unsigned int base)
+ {
+ 	struct xa_limit limit = XA_LIMIT(1, 0x3fff);
+ 	u32 next = 0;
+@@ -1049,8 +1090,8 @@ static noinline void check_xa_alloc_3(struct xarray *xa, unsigned int base)
+ 	XA_BUG_ON(xa, xa_alloc_cyclic(xa, &id, xa_mk_index(0x3ffd), limit,
+ 				&next, GFP_KERNEL) != 0);
+ 	XA_BUG_ON(xa, id != 0x3ffd);
+-	xa_erase_index(xa, 0x3ffd);
+-	xa_erase_index(xa, 1);
++	xa_erase_index(test, xa, 0x3ffd);
++	xa_erase_index(test, xa, 1);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	for (i = 0x3ffe; i < 0x4003; i++) {
+@@ -1065,8 +1106,8 @@ static noinline void check_xa_alloc_3(struct xarray *xa, unsigned int base)
+ 
+ 	/* Check wrap-around is handled correctly */
+ 	if (base != 0)
+-		xa_erase_index(xa, base);
+-	xa_erase_index(xa, base + 1);
++		xa_erase_index(test, xa, base);
++	xa_erase_index(test, xa, base + 1);
+ 	next = UINT_MAX;
+ 	XA_BUG_ON(xa, xa_alloc_cyclic(xa, &id, xa_mk_index(UINT_MAX),
+ 				xa_limit_32b, &next, GFP_KERNEL) != 0);
+@@ -1079,7 +1120,7 @@ static noinline void check_xa_alloc_3(struct xarray *xa, unsigned int base)
+ 	XA_BUG_ON(xa, id != base + 1);
+ 
+ 	xa_for_each(xa, index, entry)
+-		xa_erase_index(xa, index);
++		xa_erase_index(test, xa, index);
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+@@ -1087,19 +1128,21 @@ static noinline void check_xa_alloc_3(struct xarray *xa, unsigned int base)
+ static DEFINE_XARRAY_ALLOC(xa0);
+ static DEFINE_XARRAY_ALLOC1(xa1);
+ 
+-static noinline void check_xa_alloc(void)
++static noinline void check_xa_alloc(struct kunit *test)
+ {
+-	check_xa_alloc_1(&xa0, 0);
+-	check_xa_alloc_1(&xa1, 1);
+-	check_xa_alloc_2(&xa0, 0);
+-	check_xa_alloc_2(&xa1, 1);
+-	check_xa_alloc_3(&xa0, 0);
+-	check_xa_alloc_3(&xa1, 1);
++	check_xa_alloc_1(test, &xa0, 0);
++	check_xa_alloc_1(test, &xa1, 1);
++	check_xa_alloc_2(test, &xa0, 0);
++	check_xa_alloc_2(test, &xa1, 1);
++	check_xa_alloc_3(test, &xa0, 0);
++	check_xa_alloc_3(test, &xa1, 1);
+ }
+ 
+-static noinline void __check_store_iter(struct xarray *xa, unsigned long start,
++static noinline void __check_store_iter(struct kunit *test, unsigned long start,
+ 			unsigned int order, unsigned int present)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE_ORDER(xas, xa, start, order);
+ 	void *entry;
+ 	unsigned int count = 0;
+@@ -1123,50 +1166,54 @@ static noinline void __check_store_iter(struct xarray *xa, unsigned long start,
+ 	XA_BUG_ON(xa, xa_load(xa, start) != xa_mk_index(start));
+ 	XA_BUG_ON(xa, xa_load(xa, start + (1UL << order) - 1) !=
+ 			xa_mk_index(start));
+-	xa_erase_index(xa, start);
++	xa_erase_index(test, xa, start);
+ }
+ 
+-static noinline void check_store_iter(struct xarray *xa)
++static noinline void check_store_iter(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int i, j;
+ 	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 20 : 1;
+ 
+ 	for (i = 0; i < max_order; i++) {
+ 		unsigned int min = 1 << i;
+ 		unsigned int max = (2 << i) - 1;
+-		__check_store_iter(xa, 0, i, 0);
++		__check_store_iter(test, 0, i, 0);
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+-		__check_store_iter(xa, min, i, 0);
++		__check_store_iter(test, min, i, 0);
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 		xa_store_index(xa, min, GFP_KERNEL);
+-		__check_store_iter(xa, min, i, 1);
++		__check_store_iter(test, min, i, 1);
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+ 		xa_store_index(xa, max, GFP_KERNEL);
+-		__check_store_iter(xa, min, i, 1);
++		__check_store_iter(test, min, i, 1);
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 		for (j = 0; j < min; j++)
+ 			xa_store_index(xa, j, GFP_KERNEL);
+-		__check_store_iter(xa, 0, i, min);
++		__check_store_iter(test, 0, i, min);
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+ 		for (j = 0; j < min; j++)
+ 			xa_store_index(xa, min + j, GFP_KERNEL);
+-		__check_store_iter(xa, min, i, min);
++		__check_store_iter(test, min, i, min);
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+ 	}
+ #ifdef CONFIG_XARRAY_MULTI
+ 	xa_store_index(xa, 63, GFP_KERNEL);
+ 	xa_store_index(xa, 65, GFP_KERNEL);
+-	__check_store_iter(xa, 64, 2, 1);
+-	xa_erase_index(xa, 63);
++	__check_store_iter(test, 64, 2, 1);
++	xa_erase_index(test, xa, 63);
+ #endif
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_multi_find_1(struct xarray *xa, unsigned order)
++static noinline void check_multi_find_1(struct kunit *test, unsigned int order)
+ {
+ #ifdef CONFIG_XARRAY_MULTI
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long multi = 3 << order;
+ 	unsigned long next = 4 << order;
+ 	unsigned long index;
+@@ -1189,15 +1236,17 @@ static noinline void check_multi_find_1(struct xarray *xa, unsigned order)
+ 	XA_BUG_ON(xa, xa_find_after(xa, &index, next, XA_PRESENT) != NULL);
+ 	XA_BUG_ON(xa, index != next);
+ 
+-	xa_erase_index(xa, multi);
+-	xa_erase_index(xa, next);
+-	xa_erase_index(xa, next + 1);
++	xa_erase_index(test, xa, multi);
++	xa_erase_index(test, xa, next);
++	xa_erase_index(test, xa, next + 1);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ #endif
+ }
+ 
+-static noinline void check_multi_find_2(struct xarray *xa)
++static noinline void check_multi_find_2(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 10 : 1;
+ 	unsigned int i, j;
+ 	void *entry;
+@@ -1211,17 +1260,19 @@ static noinline void check_multi_find_2(struct xarray *xa)
+ 					GFP_KERNEL);
+ 			rcu_read_lock();
+ 			xas_for_each(&xas, entry, ULONG_MAX) {
+-				xa_erase_index(xa, index);
++				xa_erase_index(test, xa, index);
+ 			}
+ 			rcu_read_unlock();
+-			xa_erase_index(xa, index - 1);
++			xa_erase_index(test, xa, index - 1);
+ 			XA_BUG_ON(xa, !xa_empty(xa));
+ 		}
+ 	}
+ }
+ 
+-static noinline void check_multi_find_3(struct xarray *xa)
++static noinline void check_multi_find_3(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int order;
+ 
+ 	for (order = 5; order < order_limit; order++) {
+@@ -1230,12 +1281,14 @@ static noinline void check_multi_find_3(struct xarray *xa)
+ 		XA_BUG_ON(xa, !xa_empty(xa));
+ 		xa_store_order(xa, 0, order - 4, xa_mk_index(0), GFP_KERNEL);
+ 		XA_BUG_ON(xa, xa_find_after(xa, &index, ULONG_MAX, XA_PRESENT));
+-		xa_erase_index(xa, 0);
++		xa_erase_index(test, xa, 0);
+ 	}
+ }
+ 
+-static noinline void check_find_1(struct xarray *xa)
++static noinline void check_find_1(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long i, j, k;
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+@@ -1272,18 +1325,20 @@ static noinline void check_find_1(struct xarray *xa)
+ 				else
+ 					XA_BUG_ON(xa, entry != NULL);
+ 			}
+-			xa_erase_index(xa, j);
++			xa_erase_index(test, xa, j);
+ 			XA_BUG_ON(xa, xa_get_mark(xa, j, XA_MARK_0));
+ 			XA_BUG_ON(xa, !xa_get_mark(xa, i, XA_MARK_0));
+ 		}
+-		xa_erase_index(xa, i);
++		xa_erase_index(test, xa, i);
+ 		XA_BUG_ON(xa, xa_get_mark(xa, i, XA_MARK_0));
+ 	}
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_find_2(struct xarray *xa)
++static noinline void check_find_2(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	void *entry;
+ 	unsigned long i, j, index;
+ 
+@@ -1303,8 +1358,10 @@ static noinline void check_find_2(struct xarray *xa)
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_find_3(struct xarray *xa)
++static noinline void check_find_3(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 	unsigned long i, j, k;
+ 	void *entry;
+@@ -1328,8 +1385,10 @@ static noinline void check_find_3(struct xarray *xa)
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_find_4(struct xarray *xa)
++static noinline void check_find_4(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long index = 0;
+ 	void *entry;
+ 
+@@ -1341,22 +1400,22 @@ static noinline void check_find_4(struct xarray *xa)
+ 	entry = xa_find_after(xa, &index, ULONG_MAX, XA_PRESENT);
+ 	XA_BUG_ON(xa, entry);
+ 
+-	xa_erase_index(xa, ULONG_MAX);
++	xa_erase_index(test, xa, ULONG_MAX);
+ }
+ 
+-static noinline void check_find(struct xarray *xa)
++static noinline void check_find(struct kunit *test)
+ {
+ 	unsigned i;
+ 
+-	check_find_1(xa);
+-	check_find_2(xa);
+-	check_find_3(xa);
+-	check_find_4(xa);
++	check_find_1(test);
++	check_find_2(test);
++	check_find_3(test);
++	check_find_4(test);
+ 
+ 	for (i = 2; i < 10; i++)
+-		check_multi_find_1(xa, i);
+-	check_multi_find_2(xa);
+-	check_multi_find_3(xa);
++		check_multi_find_1(test, i);
++	check_multi_find_2(test);
++	check_multi_find_3(test);
+ }
+ 
+ /* See find_swap_entry() in mm/shmem.c */
+@@ -1382,8 +1441,10 @@ static noinline unsigned long xa_find_entry(struct xarray *xa, void *item)
+ 	return entry ? xas.xa_index : -1;
+ }
+ 
+-static noinline void check_find_entry(struct xarray *xa)
++static noinline void check_find_entry(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ #ifdef CONFIG_XARRAY_MULTI
+ 	unsigned int order;
+ 	unsigned long offset, index;
+@@ -1410,12 +1471,14 @@ static noinline void check_find_entry(struct xarray *xa)
+ 	xa_store_index(xa, ULONG_MAX, GFP_KERNEL);
+ 	XA_BUG_ON(xa, xa_find_entry(xa, xa) != -1);
+ 	XA_BUG_ON(xa, xa_find_entry(xa, xa_mk_index(ULONG_MAX)) != -1);
+-	xa_erase_index(xa, ULONG_MAX);
++	xa_erase_index(test, xa, ULONG_MAX);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_pause(struct xarray *xa)
++static noinline void check_pause(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 	void *entry;
+ 	unsigned int order;
+@@ -1450,8 +1513,10 @@ static noinline void check_pause(struct xarray *xa)
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_move_tiny(struct xarray *xa)
++static noinline void check_move_tiny(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+@@ -1468,12 +1533,14 @@ static noinline void check_move_tiny(struct xarray *xa)
+ 	XA_BUG_ON(xa, xas_prev(&xas) != xa_mk_index(0));
+ 	XA_BUG_ON(xa, xas_prev(&xas) != NULL);
+ 	rcu_read_unlock();
+-	xa_erase_index(xa, 0);
++	xa_erase_index(test, xa, 0);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_move_max(struct xarray *xa)
++static noinline void check_move_max(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 
+ 	xa_store_index(xa, ULONG_MAX, GFP_KERNEL);
+@@ -1489,12 +1556,14 @@ static noinline void check_move_max(struct xarray *xa)
+ 	XA_BUG_ON(xa, xas_find(&xas, ULONG_MAX) != NULL);
+ 	rcu_read_unlock();
+ 
+-	xa_erase_index(xa, ULONG_MAX);
++	xa_erase_index(test, xa, ULONG_MAX);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_move_small(struct xarray *xa, unsigned long idx)
++static noinline void check_move_small(struct kunit *test, unsigned long idx)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 	unsigned long i;
+ 
+@@ -1536,13 +1605,15 @@ static noinline void check_move_small(struct xarray *xa, unsigned long idx)
+ 	XA_BUG_ON(xa, xas.xa_index != ULONG_MAX);
+ 	rcu_read_unlock();
+ 
+-	xa_erase_index(xa, 0);
+-	xa_erase_index(xa, idx);
++	xa_erase_index(test, xa, 0);
++	xa_erase_index(test, xa, idx);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_move(struct xarray *xa)
++static noinline void check_move(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, (1 << 16) - 1);
+ 	unsigned long i;
+ 
+@@ -1569,7 +1640,7 @@ static noinline void check_move(struct xarray *xa)
+ 	rcu_read_unlock();
+ 
+ 	for (i = (1 << 8); i < (1 << 15); i++)
+-		xa_erase_index(xa, i);
++		xa_erase_index(test, xa, i);
+ 
+ 	i = xas.xa_index;
+ 
+@@ -1600,17 +1671,17 @@ static noinline void check_move(struct xarray *xa)
+ 
+ 	xa_destroy(xa);
+ 
+-	check_move_tiny(xa);
+-	check_move_max(xa);
++	check_move_tiny(test);
++	check_move_max(test);
+ 
+ 	for (i = 0; i < 16; i++)
+-		check_move_small(xa, 1UL << i);
++		check_move_small(test, 1UL << i);
+ 
+ 	for (i = 2; i < 16; i++)
+-		check_move_small(xa, (1UL << i) - 1);
++		check_move_small(test, (1UL << i) - 1);
+ }
+ 
+-static noinline void xa_store_many_order(struct xarray *xa,
++static noinline void xa_store_many_order(struct kunit *test, struct xarray *xa,
+ 		unsigned long index, unsigned order)
+ {
+ 	XA_STATE_ORDER(xas, xa, index, order);
+@@ -1633,30 +1704,34 @@ static noinline void xa_store_many_order(struct xarray *xa,
+ 	XA_BUG_ON(xa, xas_error(&xas));
+ }
+ 
+-static noinline void check_create_range_1(struct xarray *xa,
++static noinline void check_create_range_1(struct kunit *test,
+ 		unsigned long index, unsigned order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long i;
+ 
+-	xa_store_many_order(xa, index, order);
++	xa_store_many_order(test, xa, index, order);
+ 	for (i = index; i < index + (1UL << order); i++)
+-		xa_erase_index(xa, i);
++		xa_erase_index(test, xa, i);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_create_range_2(struct xarray *xa, unsigned order)
++static noinline void check_create_range_2(struct kunit *test, unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long i;
+ 	unsigned long nr = 1UL << order;
+ 
+ 	for (i = 0; i < nr * nr; i += nr)
+-		xa_store_many_order(xa, i, order);
++		xa_store_many_order(test, xa, i, order);
+ 	for (i = 0; i < nr * nr; i++)
+-		xa_erase_index(xa, i);
++		xa_erase_index(test, xa, i);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_create_range_3(void)
++static noinline void check_create_range_3(struct kunit *test)
+ {
+ 	XA_STATE(xas, NULL, 0);
+ 	xas_set_err(&xas, -EEXIST);
+@@ -1664,9 +1739,11 @@ static noinline void check_create_range_3(void)
+ 	XA_BUG_ON(NULL, xas_error(&xas) != -EEXIST);
+ }
+ 
+-static noinline void check_create_range_4(struct xarray *xa,
++static noinline void check_create_range_4(struct kunit *test,
+ 		unsigned long index, unsigned order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE_ORDER(xas, xa, index, order);
+ 	unsigned long base = xas.xa_index;
+ 	unsigned long i = 0;
+@@ -1692,13 +1769,15 @@ static noinline void check_create_range_4(struct xarray *xa,
+ 	XA_BUG_ON(xa, xas_error(&xas));
+ 
+ 	for (i = base; i < base + (1UL << order); i++)
+-		xa_erase_index(xa, i);
++		xa_erase_index(test, xa, i);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_create_range_5(struct xarray *xa,
++static noinline void check_create_range_5(struct kunit *test,
+ 		unsigned long index, unsigned int order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE_ORDER(xas, xa, index, order);
+ 	unsigned int i;
+ 
+@@ -1715,44 +1794,46 @@ static noinline void check_create_range_5(struct xarray *xa,
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_create_range(struct xarray *xa)
++static noinline void check_create_range(struct kunit *test)
+ {
+ 	unsigned int order;
+ 	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 12 : 1;
+ 
+ 	for (order = 0; order < max_order; order++) {
+-		check_create_range_1(xa, 0, order);
+-		check_create_range_1(xa, 1U << order, order);
+-		check_create_range_1(xa, 2U << order, order);
+-		check_create_range_1(xa, 3U << order, order);
+-		check_create_range_1(xa, 1U << 24, order);
++		check_create_range_1(test, 0, order);
++		check_create_range_1(test, 1U << order, order);
++		check_create_range_1(test, 2U << order, order);
++		check_create_range_1(test, 3U << order, order);
++		check_create_range_1(test, 1U << 24, order);
+ 		if (order < 10)
+-			check_create_range_2(xa, order);
+-
+-		check_create_range_4(xa, 0, order);
+-		check_create_range_4(xa, 1U << order, order);
+-		check_create_range_4(xa, 2U << order, order);
+-		check_create_range_4(xa, 3U << order, order);
+-		check_create_range_4(xa, 1U << 24, order);
+-
+-		check_create_range_4(xa, 1, order);
+-		check_create_range_4(xa, (1U << order) + 1, order);
+-		check_create_range_4(xa, (2U << order) + 1, order);
+-		check_create_range_4(xa, (2U << order) - 1, order);
+-		check_create_range_4(xa, (3U << order) + 1, order);
+-		check_create_range_4(xa, (3U << order) - 1, order);
+-		check_create_range_4(xa, (1U << 24) + 1, order);
+-
+-		check_create_range_5(xa, 0, order);
+-		check_create_range_5(xa, (1U << order), order);
++			check_create_range_2(test, order);
++
++		check_create_range_4(test, 0, order);
++		check_create_range_4(test, 1U << order, order);
++		check_create_range_4(test, 2U << order, order);
++		check_create_range_4(test, 3U << order, order);
++		check_create_range_4(test, 1U << 24, order);
++
++		check_create_range_4(test, 1, order);
++		check_create_range_4(test, (1U << order) + 1, order);
++		check_create_range_4(test, (2U << order) + 1, order);
++		check_create_range_4(test, (2U << order) - 1, order);
++		check_create_range_4(test, (3U << order) + 1, order);
++		check_create_range_4(test, (3U << order) - 1, order);
++		check_create_range_4(test, (1U << 24) + 1, order);
++
++		check_create_range_5(test, 0, order);
++		check_create_range_5(test, (1U << order), order);
+ 	}
+ 
+-	check_create_range_3();
++	check_create_range_3(test);
+ }
+ 
+-static noinline void __check_store_range(struct xarray *xa, unsigned long first,
++static noinline void __check_store_range(struct kunit *test, unsigned long first,
+ 		unsigned long last)
+ {
++	struct xarray *xa = xa_param(test);
++
+ #ifdef CONFIG_XARRAY_MULTI
+ 	xa_store_range(xa, first, last, xa_mk_index(first), GFP_KERNEL);
+ 
+@@ -1767,26 +1848,28 @@ static noinline void __check_store_range(struct xarray *xa, unsigned long first,
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_store_range(struct xarray *xa)
++static noinline void check_store_range(struct kunit *test)
+ {
+ 	unsigned long i, j;
+ 
+ 	for (i = 0; i < 128; i++) {
+ 		for (j = i; j < 128; j++) {
+-			__check_store_range(xa, i, j);
+-			__check_store_range(xa, 128 + i, 128 + j);
+-			__check_store_range(xa, 4095 + i, 4095 + j);
+-			__check_store_range(xa, 4096 + i, 4096 + j);
+-			__check_store_range(xa, 123456 + i, 123456 + j);
+-			__check_store_range(xa, (1 << 24) + i, (1 << 24) + j);
++			__check_store_range(test, i, j);
++			__check_store_range(test, 128 + i, 128 + j);
++			__check_store_range(test, 4095 + i, 4095 + j);
++			__check_store_range(test, 4096 + i, 4096 + j);
++			__check_store_range(test, 123456 + i, 123456 + j);
++			__check_store_range(test, (1 << 24) + i, (1 << 24) + j);
+ 		}
+ 	}
+ }
+ 
+ #ifdef CONFIG_XARRAY_MULTI
+-static void check_split_1(struct xarray *xa, unsigned long index,
++static void check_split_1(struct kunit *test, unsigned long index,
+ 				unsigned int order, unsigned int new_order)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE_ORDER(xas, xa, index, new_order);
+ 	unsigned int i, found;
+ 	void *entry;
+@@ -1822,26 +1905,30 @@ static void check_split_1(struct xarray *xa, unsigned long index,
+ 	xa_destroy(xa);
+ }
+ 
+-static noinline void check_split(struct xarray *xa)
++static noinline void check_split(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int order, new_order;
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ 
+ 	for (order = 1; order < 2 * XA_CHUNK_SHIFT; order++) {
+ 		for (new_order = 0; new_order < order; new_order++) {
+-			check_split_1(xa, 0, order, new_order);
+-			check_split_1(xa, 1UL << order, order, new_order);
+-			check_split_1(xa, 3UL << order, order, new_order);
++			check_split_1(test, 0, order, new_order);
++			check_split_1(test, 1UL << order, order, new_order);
++			check_split_1(test, 3UL << order, order, new_order);
+ 		}
+ 	}
+ }
+ #else
+-static void check_split(struct xarray *xa) { }
++static void check_split(struct kunit *test) { }
+ #endif
+ 
+-static void check_align_1(struct xarray *xa, char *name)
++static void check_align_1(struct kunit *test, char *name)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	int i;
+ 	unsigned int id;
+ 	unsigned long index;
+@@ -1861,8 +1948,10 @@ static void check_align_1(struct xarray *xa, char *name)
+  * We should always be able to store without allocating memory after
+  * reserving a slot.
+  */
+-static void check_align_2(struct xarray *xa, char *name)
++static void check_align_2(struct kunit *test, char *name)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	int i;
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+@@ -1881,15 +1970,15 @@ static void check_align_2(struct xarray *xa, char *name)
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+ 
+-static noinline void check_align(struct xarray *xa)
++static noinline void check_align(struct kunit *test)
+ {
+ 	char name[] = "Motorola 68000";
+ 
+-	check_align_1(xa, name);
+-	check_align_1(xa, name + 1);
+-	check_align_1(xa, name + 2);
+-	check_align_1(xa, name + 3);
+-	check_align_2(xa, name);
++	check_align_1(test, name);
++	check_align_1(test, name + 1);
++	check_align_1(test, name + 2);
++	check_align_1(test, name + 3);
++	check_align_2(test, name);
+ }
+ 
+ static LIST_HEAD(shadow_nodes);
+@@ -1905,7 +1994,7 @@ static void test_update_node(struct xa_node *node)
+ 	}
+ }
+ 
+-static noinline void shadow_remove(struct xarray *xa)
++static noinline void shadow_remove(struct kunit *test, struct xarray *xa)
+ {
+ 	struct xa_node *node;
+ 
+@@ -1919,8 +2008,17 @@ static noinline void shadow_remove(struct xarray *xa)
+ 	xa_unlock(xa);
+ }
+ 
+-static noinline void check_workingset(struct xarray *xa, unsigned long index)
++struct workingset_testcase {
++	struct xarray *xa;
++	unsigned long index;
++};
++
++static noinline void check_workingset(struct kunit *test)
+ {
++	struct workingset_testcase tc = *(struct workingset_testcase *)test->param_value;
++	struct xarray *xa = tc.xa;
++	unsigned long index = tc.index;
++
+ 	XA_STATE(xas, xa, index);
+ 	xas_set_update(&xas, test_update_node);
+ 
+@@ -1943,7 +2041,7 @@ static noinline void check_workingset(struct xarray *xa, unsigned long index)
+ 	xas_unlock(&xas);
+ 	XA_BUG_ON(xa, list_empty(&shadow_nodes));
+ 
+-	shadow_remove(xa);
++	shadow_remove(test, xa);
+ 	XA_BUG_ON(xa, !list_empty(&shadow_nodes));
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+ }
+@@ -1952,9 +2050,11 @@ static noinline void check_workingset(struct xarray *xa, unsigned long index)
+  * Check that the pointer / value / sibling entries are accounted the
+  * way we expect them to be.
+  */
+-static noinline void check_account(struct xarray *xa)
++static noinline void check_account(struct kunit *test)
+ {
+ #ifdef CONFIG_XARRAY_MULTI
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int order;
+ 
+ 	for (order = 1; order < 12; order++) {
+@@ -1981,8 +2081,10 @@ static noinline void check_account(struct xarray *xa)
+ #endif
+ }
+ 
+-static noinline void check_get_order(struct xarray *xa)
++static noinline void check_get_order(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 20 : 1;
+ 	unsigned int order;
+ 	unsigned long i, j;
+@@ -2001,8 +2103,10 @@ static noinline void check_get_order(struct xarray *xa)
+ 	}
+ }
+ 
+-static noinline void check_xas_get_order(struct xarray *xa)
++static noinline void check_xas_get_order(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 
+ 	unsigned int max_order = IS_ENABLED(CONFIG_XARRAY_MULTI) ? 20 : 1;
+@@ -2034,8 +2138,10 @@ static noinline void check_xas_get_order(struct xarray *xa)
+ 	}
+ }
+ 
+-static noinline void check_xas_conflict_get_order(struct xarray *xa)
++static noinline void check_xas_conflict_get_order(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	XA_STATE(xas, xa, 0);
+ 
+ 	void *entry;
+@@ -2092,8 +2198,10 @@ static noinline void check_xas_conflict_get_order(struct xarray *xa)
+ }
+ 
+ 
+-static noinline void check_destroy(struct xarray *xa)
++static noinline void check_destroy(struct kunit *test)
+ {
++	struct xarray *xa = xa_param(test);
++
+ 	unsigned long index;
+ 
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+@@ -2126,52 +2234,59 @@ static noinline void check_destroy(struct xarray *xa)
+ }
+ 
+ static DEFINE_XARRAY(array);
++static struct xarray *arrays[] = { &array };
++KUNIT_ARRAY_PARAM(array, arrays, NULL);
++
++static struct xarray *xa0s[] = { &xa0 };
++KUNIT_ARRAY_PARAM(xa0, xa0s, NULL);
++
++static struct workingset_testcase workingset_testcases[] = {
++	{ &array, 0 },
++	{ &array, 64 },
++	{ &array, 4096 },
++};
++KUNIT_ARRAY_PARAM(workingset, workingset_testcases, NULL);
++
++static struct kunit_case xarray_cases[] = {
++	KUNIT_CASE_PARAM(check_xa_err, array_gen_params),
++	KUNIT_CASE_PARAM(check_xas_retry, array_gen_params),
++	KUNIT_CASE_PARAM(check_xa_load, array_gen_params),
++	KUNIT_CASE_PARAM(check_xa_mark, array_gen_params),
++	KUNIT_CASE_PARAM(check_xa_shrink, array_gen_params),
++	KUNIT_CASE_PARAM(check_xas_erase, array_gen_params),
++	KUNIT_CASE_PARAM(check_insert, array_gen_params),
++	KUNIT_CASE_PARAM(check_cmpxchg, array_gen_params),
++	KUNIT_CASE_PARAM(check_cmpxchg_order, array_gen_params),
++	KUNIT_CASE_PARAM(check_reserve, array_gen_params),
++	KUNIT_CASE_PARAM(check_reserve, xa0_gen_params),
++	KUNIT_CASE_PARAM(check_multi_store, array_gen_params),
++	KUNIT_CASE_PARAM(check_multi_store_advanced, array_gen_params),
++	KUNIT_CASE_PARAM(check_get_order, array_gen_params),
++	KUNIT_CASE_PARAM(check_xas_get_order, array_gen_params),
++	KUNIT_CASE_PARAM(check_xas_conflict_get_order, array_gen_params),
++	KUNIT_CASE(check_xa_alloc),
++	KUNIT_CASE_PARAM(check_find, array_gen_params),
++	KUNIT_CASE_PARAM(check_find_entry, array_gen_params),
++	KUNIT_CASE_PARAM(check_pause, array_gen_params),
++	KUNIT_CASE_PARAM(check_account, array_gen_params),
++	KUNIT_CASE_PARAM(check_destroy, array_gen_params),
++	KUNIT_CASE_PARAM(check_move, array_gen_params),
++	KUNIT_CASE_PARAM(check_create_range, array_gen_params),
++	KUNIT_CASE_PARAM(check_store_range, array_gen_params),
++	KUNIT_CASE_PARAM(check_store_iter, array_gen_params),
++	KUNIT_CASE_PARAM(check_align, xa0_gen_params),
++	KUNIT_CASE_PARAM(check_split, array_gen_params),
++	KUNIT_CASE_PARAM(check_workingset, workingset_gen_params),
++	{},
++};
++
++static struct kunit_suite xarray_suite = {
++	.name = "xarray",
++	.test_cases = xarray_cases,
++};
++
++kunit_test_suite(xarray_suite);
+ 
+-static int xarray_checks(void)
+-{
+-	check_xa_err(&array);
+-	check_xas_retry(&array);
+-	check_xa_load(&array);
+-	check_xa_mark(&array);
+-	check_xa_shrink(&array);
+-	check_xas_erase(&array);
+-	check_insert(&array);
+-	check_cmpxchg(&array);
+-	check_cmpxchg_order(&array);
+-	check_reserve(&array);
+-	check_reserve(&xa0);
+-	check_multi_store(&array);
+-	check_multi_store_advanced(&array);
+-	check_get_order(&array);
+-	check_xas_get_order(&array);
+-	check_xas_conflict_get_order(&array);
+-	check_xa_alloc();
+-	check_find(&array);
+-	check_find_entry(&array);
+-	check_pause(&array);
+-	check_account(&array);
+-	check_destroy(&array);
+-	check_move(&array);
+-	check_create_range(&array);
+-	check_store_range(&array);
+-	check_store_iter(&array);
+-	check_align(&xa0);
+-	check_split(&array);
+-
+-	check_workingset(&array, 0);
+-	check_workingset(&array, 64);
+-	check_workingset(&array, 4096);
+-
+-	printk("XArray: %u of %u tests passed\n", tests_passed, tests_run);
+-	return (tests_run == tests_passed) ? 0 : -EINVAL;
+-}
+-
+-static void xarray_exit(void)
+-{
+-}
+-
+-module_init(xarray_checks);
+-module_exit(xarray_exit);
+ MODULE_AUTHOR("Matthew Wilcox <willy@infradead.org>");
+ MODULE_DESCRIPTION("XArray API test module");
+ MODULE_LICENSE("GPL");
+
+---
+base-commit: ac0019f46558a127f874d0c602686af7ae498773
+change-id: 20241204-xarray-kunit-port-87e6161bc1ab
+
+Best regards,
+-- 
+Tamir Duberstein <tamird@gmail.com>
 
