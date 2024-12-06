@@ -1,38 +1,53 @@
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D820200114
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Dec 2024 11:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7DD2066D6
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Dec 2024 15:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733486241; cv=none; b=tESbrqHBDvHDWxj1JVAqUCjVhOYrjo554PAElUmEEQJD/4fpjUgvG2EHNZi3JPmLvesB584fRlnUfqOx3kR+1nGGGtzyPUKGkJyuLXEroBOIF2lc7tG04v37vZvBl3briT8DLz6/fjEe8XpI7yMQlk8CdHgH/JRl2thCadycVF4=
+	t=1733497716; cv=none; b=hJde/F2uXjj/ysVs6zm7OmWutdhW45gmUj85IFMo8nuvUGLtdhsqwlX4WhqWgWjtY/u7c+Ko9GD1gDTodfZvs0UdODYp1TCdYASbCVHikwmk5y+I9xlDa6RYmrcyeOBx6ka6u6eoHloEwNieVUyAFIAGqthFsT2LNezDQVBO79E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733486241; c=relaxed/simple;
-	bh=Accix36M+AxTmcfmBGlQ59iJFKXYFsUKU86Dgc5lV1w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OIITFT7lAadyUn3v6QclZCdj2FQLSjGyKxBSux7UZdULCsv2sFITxOjV3DTglhThVqbeq5Dz5NVqDZib3gsjZ8ncSXjIv7J6/eUk/80X1vvxV8m3fyLDrebItrEatgNU4CV6WS6kbQIQTN1fe+z8D0CG64ZK053+TCy3c7/jeqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fU6MsdnZ; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1733497716; c=relaxed/simple;
+	bh=NRSDyXZgV9WTvzCp7VTZn5fdOOlRl6xDaTch61+Q8f8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=DQ2X+YWVb0KO4zFLzA9CDsfJhEf8RAHsKcH4RDVsg20ob8F5MItXmrAoKX/kW3E+mX3Y0fjPGhdIoV0ygn2W8rh0Z/NHt6DpUxRboOJYci2HWvebIEFZOS31B8mMDKEvEqEaliOSIhJHvIZFwQmaJb/YVjZkgm1WxRCKFP1iq54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WXXu3nD6; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fU6MsdnZ"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733486225;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ZZpO9SIbEhiQV9ViJKVsnJwYEYoj5NMepZbe4iuQWaQ=;
-	b=fU6MsdnZvR4aMHp9fxO9v9vE6eBn46NYZkQ1G+A9BDovLLykjjRRqNEgs20IKiSO5ylf5R
-	5PMgSsqLv6q3u8sKno0abgTqs358QeYcje1b3CMMvS31hsUqnIDFBKa6ekupqjciYjX5uG
-	jBd+P8N71Ev3xDGNWBgmZO6CW4P3v7s=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WXXu3nD6"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4E3B15C5BA6;
+	Fri,  6 Dec 2024 15:07:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 621DFC4CED1;
+	Fri,  6 Dec 2024 15:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1733497713;
+	bh=NRSDyXZgV9WTvzCp7VTZn5fdOOlRl6xDaTch61+Q8f8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=WXXu3nD62pPu2A3LlnQmdhlmNW5uRsHbhp1OaqeyOA1uG7TSrbnMPIjLozr5ffBGX
+	 AdFtEiNbdYf16oICg0zCJBIHSCn5CMPPZ1kemGoUg/vaguRQD8b0Fldrg/waNI7Qex
+	 Qt2g3V5nmvvvwoE7LXoRX48LZ7spSMP9Qn9+tm5U=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
 	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k/atari: Use str_on_off() helper in atari_nvram_proc_read()
-Date: Fri,  6 Dec 2024 12:56:32 +0100
-Message-ID: <20241206115634.47332-2-thorsten.blum@linux.dev>
+	linux-kernel@vger.kernel.org,
+	Antonio Quartulli <antonio@mandelbit.com>,
+	Greg Ungerer <gerg@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.6 371/676] m68k: coldfire/device.c: only build FEC when HW macros are defined
+Date: Fri,  6 Dec 2024 15:33:10 +0100
+Message-ID: <20241206143707.838070352@linuxfoundation.org>
+X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20241206143653.344873888@linuxfoundation.org>
+References: <20241206143653.344873888@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -40,37 +55,82 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-Remove hard-coded strings by using the str_on_off() helper function.
+6.6-stable review patch.  If anyone has any objections, please let me know.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+------------------
+
+From: Antonio Quartulli <antonio@mandelbit.com>
+
+[ Upstream commit 63a24cf8cc330e5a68ebd2e20ae200096974c475 ]
+
+When CONFIG_FEC is set (due to COMPILE_TEST) along with
+CONFIG_M54xx, coldfire/device.c has compile errors due to
+missing MCFEC_* and MCF_IRQ_FEC_* symbols.
+
+Make the whole FEC blocks dependent on having the HW macros
+defined, rather than on CONFIG_FEC itself.
+
+This fix is very similar to commit e6e1e7b19fa1 ("m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined")
+
+Fixes: b7ce7f0d0efc ("m68knommu: merge common ColdFire FEC platform setup code")
+To: Greg Ungerer <gerg@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Antonio Quartulli <antonio@mandelbit.com>
+Signed-off-by: Greg Ungerer <gerg@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/atari/nvram.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/m68k/coldfire/device.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/m68k/atari/nvram.c b/arch/m68k/atari/nvram.c
-index 7000d2443aa3..da490392e994 100644
---- a/arch/m68k/atari/nvram.c
-+++ b/arch/m68k/atari/nvram.c
-@@ -198,7 +198,7 @@ static void atari_nvram_proc_read(unsigned char *nvram, struct seq_file *seq,
- 		seq_printf(seq, "0x%02x (undefined)\n", nvram[1]);
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index 7dab46728aeda..b6958ec2a220c 100644
+--- a/arch/m68k/coldfire/device.c
++++ b/arch/m68k/coldfire/device.c
+@@ -93,7 +93,7 @@ static struct platform_device mcf_uart = {
+ 	.dev.platform_data	= mcf_uart_platform_data,
+ };
  
- 	seq_printf(seq, "SCSI arbitration : %s\n",
--		   (nvram[16] & 0x80) ? "on" : "off");
-+		   str_on_off(nvram[16] & 0x80));
- 	seq_puts(seq, "SCSI host ID     : ");
- 	if (nvram[16] & 0x80)
- 		seq_printf(seq, "%d\n", nvram[16] & 7);
-@@ -236,7 +236,7 @@ static void atari_nvram_proc_read(unsigned char *nvram, struct seq_file *seq,
- 		   vmode & 16 ? "VGA" : "TV", vmode & 32 ? "PAL" : "NTSC");
- 	seq_printf(seq,
- 		   "                   %soverscan, compat. mode %s%s\n",
--		   vmode & 64 ? "" : "no ", vmode & 128 ? "on" : "off",
-+		   vmode & 64 ? "" : "no ", str_on_off(vmode & 128),
- 		   vmode & 256 ?
- 		   (vmode & 16 ? ", line doubling" : ", half screen") : "");
- }
+-#if IS_ENABLED(CONFIG_FEC)
++#ifdef MCFFEC_BASE0
+ 
+ #ifdef CONFIG_M5441x
+ #define FEC_NAME	"enet-fec"
+@@ -145,6 +145,7 @@ static struct platform_device mcf_fec0 = {
+ 		.platform_data		= FEC_PDATA,
+ 	}
+ };
++#endif /* MCFFEC_BASE0 */
+ 
+ #ifdef MCFFEC_BASE1
+ static struct resource mcf_fec1_resources[] = {
+@@ -182,7 +183,6 @@ static struct platform_device mcf_fec1 = {
+ 	}
+ };
+ #endif /* MCFFEC_BASE1 */
+-#endif /* CONFIG_FEC */
+ 
+ #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+ /*
+@@ -624,12 +624,12 @@ static struct platform_device mcf_flexcan0 = {
+ 
+ static struct platform_device *mcf_devices[] __initdata = {
+ 	&mcf_uart,
+-#if IS_ENABLED(CONFIG_FEC)
++#ifdef MCFFEC_BASE0
+ 	&mcf_fec0,
++#endif
+ #ifdef MCFFEC_BASE1
+ 	&mcf_fec1,
+ #endif
+-#endif
+ #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+ 	&mcf_qspi,
+ #endif
 -- 
-2.47.1
+2.43.0
+
+
 
