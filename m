@@ -1,33 +1,33 @@
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95433235C40
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Dec 2024 16:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41EA2288F5
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Dec 2024 16:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734019729; cv=none; b=svr6Z3dk+hm9AqnAyFd7EkmgEJZsivqwSwTOWi8aDPE7+ObYv1PXwqeYDTZ29PnDY+5L55ITb4usMubhkuLfMyGYNLD8GIm8i7rhQHD7ynZMTyIlUIwYrZ1fLG435uWm3qBUqY4HSUXguqNOAMxijJzeJ73HUpwpHim0vSbTeq8=
+	t=1734022552; cv=none; b=ReUvq5l+HH5RQtZrdinRxED3Oyv8dUmz9lN3azWkzM344kGEBz2Qd5kU/eNRi1syArGRv4iY+39wjxeqkXwjsOgJfmie7pJdzezinqrlim1OW6znESMmDxempPuisjp9a5/7q7/wellKlSC7EmDVHSzxhLDJY5OsRZrxmBc4hus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734019729; c=relaxed/simple;
-	bh=BcTRtceJDSa7c0Xcd5scNYOtmrwN5l0NHuxQ/Fw42v8=;
+	s=arc-20240116; t=1734022552; c=relaxed/simple;
+	bh=EuF73JpuGa4joHiIDPtq+kIJCbgzBVIHkVkJLZtsLD8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ovuRLK5iqNV7HOV3nrJ4JkOIOfpGky4xpZ2uotEcbXTFlh8hJiXk/FsRRw93RlcofR08bbEPmEWhuW9zlQ9irp+p+4PhzU8VCDgNfBKCrJiU4NGp3i6h42ULgWLWgqEDUqTnogT+s1bMaMbOEE9LmTDZ8BtwSgNbW72SpdTyDPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=k4eFrUYG; arc=none smtp.client-ip=139.178.84.217
+	 MIME-Version; b=PuNMJDk4lGe+JMll6vw54d8Rpo6RvlGF+lCG4yLtbEy4Excrk9imER9snNlegPwg7uVovdsnKmZZkDvAbnwd7clGqXNlP2QsppXY3RHRW69VJzCZKqmEbrjBmQO0yKhjp7UcMyq0hNzbjubS7iul8HhiTIGBuCL6yFu0Lo7fboE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cdtjMhCC; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="k4eFrUYG"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cdtjMhCC"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 6576F5C6996;
-	Thu, 12 Dec 2024 16:08:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AF51C4CECE;
-	Thu, 12 Dec 2024 16:08:45 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1E82B5C6727;
+	Thu, 12 Dec 2024 16:55:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B544CC4CECE;
+	Thu, 12 Dec 2024 16:55:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1734019726;
-	bh=BcTRtceJDSa7c0Xcd5scNYOtmrwN5l0NHuxQ/Fw42v8=;
+	s=korg; t=1734022549;
+	bh=EuF73JpuGa4joHiIDPtq+kIJCbgzBVIHkVkJLZtsLD8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=k4eFrUYGJcDsY4PLyz5Cmt0g+ufZPdA9yX0WKe0pFD5CAXWfdvLFhPzIsVQgwDOZZ
-	 qtT49/gXySSw6L/WxmxPn4pMBuawEM+lVvYBLAzkzHxWm5WQU4/vec/r9dkiwRb5FS
-	 2hycClFFhjMZC582+rnHF9Zw0pVLBOQeg3xXW5eU=
+	b=cdtjMhCCF73vpU8aR8OacwH3PgbZ9Zk6JLfjowSQ5WGtOKyicTtcqQAlK1xE1XSoG
+	 5Al6QjEIqa0lihecLSjMLlrJw+artEYiZv4IE/1xObq5pggThdzpaqi4BbvEUok6ac
+	 Cx108lZeglBHUFYJfBpte58RKQ7r+gtccTg2f6lo=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org,
 	Greg Ungerer <gerg@linux-m68k.org>,
@@ -39,12 +39,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Antonio Quartulli <antonio@mandelbit.com>,
 	Greg Ungerer <gerg@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 281/772] m68k: coldfire/device.c: only build FEC when HW macros are defined
-Date: Thu, 12 Dec 2024 15:53:46 +0100
-Message-ID: <20241212144401.515562534@linuxfoundation.org>
+Subject: [PATCH 5.15 254/565] m68k: coldfire/device.c: only build FEC when HW macros are defined
+Date: Thu, 12 Dec 2024 15:57:29 +0100
+Message-ID: <20241212144321.515709571@linuxfoundation.org>
 X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241212144349.797589255@linuxfoundation.org>
-References: <20241212144349.797589255@linuxfoundation.org>
+In-Reply-To: <20241212144311.432886635@linuxfoundation.org>
+References: <20241212144311.432886635@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+5.15-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
