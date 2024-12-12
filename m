@@ -1,93 +1,116 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E592F1FCD0F
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Dec 2024 22:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6469420FA8A
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Dec 2024 10:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733956351; cv=none; b=t5X/3T6lvs38NZWQmNHuCFWNsi+ew3dmFcB0HF58WZZltxudBY09g6or9Su7CTgWx9M/+90M1jIaK7Bpatwg/tCS1zJ5jaQuf+ndUQ+XLXDyghIpjhVNYYDGOvqE6TZL9vQ+6d13cO6sldAd97/6xzaRwKVnVi1v+nC6OQNvGNg=
+	t=1733999960; cv=none; b=Hj3/i6DNMy84QRqAsa34EhFERWRoL430K/xXSq9zO4by1wNY0Z40WMYtl0xPeCVb6wSPlyC1OT1HS0vy8bVNtvfx/YmsiNxB8oE4Fshl/bKMH3Wx6RE065bauECq2BLQiqR6U50iLpRNLRL9xtF9H2GyGDKk6qsfqqCsmD67UUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733956351; c=relaxed/simple;
-	bh=BsLL13WVfc3NzEKIjd52mjnoMrC/Et1GCt0kRWiLCQo=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=YMN8xYASXxqlXufG2tGONmt5RYuIQgs6x73ohB0WGoT8iAZVDZlVQljYgs7mJ7w2SYpjZ8PsMzOhrD0pg45X3q0cidvqc/Z9YsNKq2MxzUyifowuNAmYalHwp/z0m1E2gGak7AlyuGy2b9/Xk8o+lzSFVXSsNR4sfQwUlRJRiBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qv6gvZPd; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1733999960; c=relaxed/simple;
+	bh=EP8PlCbz0QSKg8XArxoMShxg90NERyMwJn9YVjfEVl4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PUycSfKuY/pLZxntocp7l2X++kYl9u0f5bLQT1vmCFxjgAHZrpGcdffQxlWOTdl6WWInpXn56bTT0Lb4AUBppwDcdFRHaEFFQW+IDUk3442VwzUyd+eQcoFDziYUeSm75AebJPNxhRcPFCV4wdq1eiQrxM5M1KdMdm6hOCeifi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=MXi/rNhV; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qv6gvZPd"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7FB125C67E6;
-	Wed, 11 Dec 2024 22:31:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2AB6C4CED2;
-	Wed, 11 Dec 2024 22:32:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733956348;
-	bh=BsLL13WVfc3NzEKIjd52mjnoMrC/Et1GCt0kRWiLCQo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qv6gvZPdDzbdVPybtFSPx8+F0xql/LHjAUoa61PxHbq7BiNILQmSVN3xV/Fk+jm3l
-	 eRj2euKpGQwhzha10D0yvWpJ5jdjr8+V1iYsps4/RL/90xpWyAoPlqxLTgT8H2p1Qr
-	 znxHE8HzGGVb3bxCyQgvVT/2hoGKZW56OU+GylgAoSP4eq7TpXB3MZRt3VoyD522af
-	 qGwcNNMDDsGqYKHkYodSX7oguHOLk4TTwi/8Q8fATZ6k5VUR9Dw7CkfxIhk8aSQAz0
-	 q46lv24Cq5nGqzFQZkxa8IXK7+L/Hgf8e5dM0N1jW5ubxUNiav+to559ZbObo4j7v8
-	 24oLtA9z8Jf7w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAFBE380A965;
-	Wed, 11 Dec 2024 22:32:45 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="MXi/rNhV"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A656C1C0008;
+	Thu, 12 Dec 2024 10:39:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1733999951;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qE2flIbPdyam8x8lpnGZoOPxbCF9EqnYLhFNl13jOlU=;
+	b=MXi/rNhVRgzZRA0qd6zfw3SBKXnMt5UIlim7Tst/grFWKZ4EP4qCwu1+Xc7lbnb2YbC2fI
+	0NMi8NzdGWF9N4RB9SUXFYJBOg0ByUpXNO0IefFSGcg6Dn3NOvmjUezGqjP7Z4/a9IX86X
+	Tpyuu+vnzAELdoZMziosAkgewnST9d7TJHrVw3JjBcfbYvky43qziozsntJ/B2m27wRoFZ
+	WU/OzgQr4td46M/1XuL1UsY7/on8NwAfjVyQJeZY22Q/QLX9d2Iiu8LQYOKqkbo2twG53F
+	kx57PhlvM6jv9X3jxE/SpAItsqtRKqwVt9U0hUM+DgS7cf3QIcxn4ux+vxP51Q==
+Message-ID: <125431ab-e486-43a7-a903-76c831da4985@yoseli.org>
+Date: Thu, 12 Dec 2024 11:39:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 1/2] asm-generic: provide generic page_to_phys and
- phys_to_page implementations
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <173395636448.1729195.13128530873311699126.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Dec 2024 22:32:44 +0000
-References: <20241023053644.311692-2-hch@lst.de>
-In-Reply-To: <20241023053644.311692-2-hch@lst.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-riscv@lists.infradead.org, arnd@arndb.de,
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-arch@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] m68k: Add DMA timers support for M5441x
+To: Greg Ungerer <gerg@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-m68k@vger.kernel.org
+References: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
+Content-Language: en-US
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+In-Reply-To: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hello:
+Hi !
 
-This series was applied to riscv/linux.git (fixes)
-by Arnd Bergmann <arnd@arndb.de>:
-
-On Wed, 23 Oct 2024 07:36:36 +0200 you wrote:
-> page_to_phys is duplicated by all architectures, and from some strange
-> reason placed in <asm/io.h> where it doesn't fit at all.
+On 02/12/2024 10:29, Jean-Michel Hautbois wrote:
+> This patch series adds support for DMA timers for the M5441x coldfire
+> family. The aim is to provide finer scheduler resolution and support for
+> high-resolution timers.
 > 
-> phys_to_page is only provided by a few architectures despite having a lot
-> of open coded users.
+> The first patch fixes the clocks and a typo. The second one is the
+> timers support addition. As there is no device tree, I did not use
+> TIMER_OF_DECLARE().
 > 
-> Provide generic versions in <asm-generic/memory_model.h> to make these
-> helpers more easily usable.
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> ---
+> Jean-Michel Hautbois (2):
+>        m68k: coldfire: Use proper clock rate for timers
+>        m68k: m5441x: Add DMA timer support
 > 
-> [...]
+>   MAINTAINERS                         |   6 +
+>   arch/m68k/coldfire/m5441x.c         |  20 +--
+>   arch/m68k/include/asm/m5441xsim.h   |  18 +++
+>   drivers/clocksource/Kconfig         |   9 ++
+>   drivers/clocksource/Makefile        |   1 +
+>   drivers/clocksource/mcf_dma_timer.c | 240 ++++++++++++++++++++++++++++++++++++
+>   6 files changed, 284 insertions(+), 10 deletions(-)
+> ---
+> base-commit: e3f432391d55ec21274bd16a04659b4a24678535
+> change-id: 20241202-m5441x_dma_tmr-d969f4cc30a8
+> 
+> Best regards,
 
-Here is the summary with links:
-  - [1/2] asm-generic: provide generic page_to_phys and phys_to_page implementations
-    https://git.kernel.org/riscv/c/c5c3238d9b8c
-  - [2/2] asm-generic: add an optional pfn_valid check to page_to_phys
-    https://git.kernel.org/riscv/c/3e25d5a49f99
+Gentle ping, as I don't know if anyone is interested by this patch :-) ?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I think it makes coldfire really better but it certainly has issues !
 
+On my kernel, m54418, I observed a few things.
 
+First, when launching cyclictest I get sometimes a bad irq handle:
+[  720.442175] irq 24, desc: 6b62142b, depth: 1, count: 0, unhandled: 0
+[  720.442329] ->handle_irq():  e4232a91, handle_bad_irq+0x0/0x1e6
+[  720.442498] ->irq_data.chip(): 66a62b77, 0x4183e868
+[  720.442613] ->action(): 00000000
+[  720.442667] unexpected IRQ trap at vector 18
+
+These IRQ numbers are a bit weird, I suppose it is a spurious IRQ, but 
+not sure ?
+
+Next, cyclictest might experience *very* long delay if the CPU is very 
+busy and a ping flood burst comes in:
+# cyclictest -m -p 98 --secaligned
+WARN: stat /dev/cpu_dma_latency failed: No such file or directory
+policy: fifo: loadavg: 2.24 1.94 1.03 1/127 252
+
+T: 0 (  251) P:98 I:1000 C:  53113 Min:    116 Act:  327 Avg:  209 Max: 
+  60353
+
+Any review would be appreciated, at least to know if it is totally off 
+or not that bad and needs a few fixes ?
+
+Thanks,
+JM
