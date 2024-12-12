@@ -1,116 +1,136 @@
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6469420FA8A
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Dec 2024 10:39:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95433235C40
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Dec 2024 16:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733999960; cv=none; b=Hj3/i6DNMy84QRqAsa34EhFERWRoL430K/xXSq9zO4by1wNY0Z40WMYtl0xPeCVb6wSPlyC1OT1HS0vy8bVNtvfx/YmsiNxB8oE4Fshl/bKMH3Wx6RE065bauECq2BLQiqR6U50iLpRNLRL9xtF9H2GyGDKk6qsfqqCsmD67UUs=
+	t=1734019729; cv=none; b=svr6Z3dk+hm9AqnAyFd7EkmgEJZsivqwSwTOWi8aDPE7+ObYv1PXwqeYDTZ29PnDY+5L55ITb4usMubhkuLfMyGYNLD8GIm8i7rhQHD7ynZMTyIlUIwYrZ1fLG435uWm3qBUqY4HSUXguqNOAMxijJzeJ73HUpwpHim0vSbTeq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733999960; c=relaxed/simple;
-	bh=EP8PlCbz0QSKg8XArxoMShxg90NERyMwJn9YVjfEVl4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PUycSfKuY/pLZxntocp7l2X++kYl9u0f5bLQT1vmCFxjgAHZrpGcdffQxlWOTdl6WWInpXn56bTT0Lb4AUBppwDcdFRHaEFFQW+IDUk3442VwzUyd+eQcoFDziYUeSm75AebJPNxhRcPFCV4wdq1eiQrxM5M1KdMdm6hOCeifi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=MXi/rNhV; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1734019729; c=relaxed/simple;
+	bh=BcTRtceJDSa7c0Xcd5scNYOtmrwN5l0NHuxQ/Fw42v8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ovuRLK5iqNV7HOV3nrJ4JkOIOfpGky4xpZ2uotEcbXTFlh8hJiXk/FsRRw93RlcofR08bbEPmEWhuW9zlQ9irp+p+4PhzU8VCDgNfBKCrJiU4NGp3i6h42ULgWLWgqEDUqTnogT+s1bMaMbOEE9LmTDZ8BtwSgNbW72SpdTyDPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=k4eFrUYG; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="MXi/rNhV"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A656C1C0008;
-	Thu, 12 Dec 2024 10:39:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1733999951;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qE2flIbPdyam8x8lpnGZoOPxbCF9EqnYLhFNl13jOlU=;
-	b=MXi/rNhVRgzZRA0qd6zfw3SBKXnMt5UIlim7Tst/grFWKZ4EP4qCwu1+Xc7lbnb2YbC2fI
-	0NMi8NzdGWF9N4RB9SUXFYJBOg0ByUpXNO0IefFSGcg6Dn3NOvmjUezGqjP7Z4/a9IX86X
-	Tpyuu+vnzAELdoZMziosAkgewnST9d7TJHrVw3JjBcfbYvky43qziozsntJ/B2m27wRoFZ
-	WU/OzgQr4td46M/1XuL1UsY7/on8NwAfjVyQJeZY22Q/QLX9d2Iiu8LQYOKqkbo2twG53F
-	kx57PhlvM6jv9X3jxE/SpAItsqtRKqwVt9U0hUM+DgS7cf3QIcxn4ux+vxP51Q==
-Message-ID: <125431ab-e486-43a7-a903-76c831da4985@yoseli.org>
-Date: Thu, 12 Dec 2024 11:39:10 +0100
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="k4eFrUYG"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6576F5C6996;
+	Thu, 12 Dec 2024 16:08:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AF51C4CECE;
+	Thu, 12 Dec 2024 16:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1734019726;
+	bh=BcTRtceJDSa7c0Xcd5scNYOtmrwN5l0NHuxQ/Fw42v8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=k4eFrUYGJcDsY4PLyz5Cmt0g+ufZPdA9yX0WKe0pFD5CAXWfdvLFhPzIsVQgwDOZZ
+	 qtT49/gXySSw6L/WxmxPn4pMBuawEM+lVvYBLAzkzHxWm5WQU4/vec/r9dkiwRb5FS
+	 2hycClFFhjMZC582+rnHF9Zw0pVLBOQeg3xXW5eU=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Antonio Quartulli <antonio@mandelbit.com>,
+	Greg Ungerer <gerg@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.1 281/772] m68k: coldfire/device.c: only build FEC when HW macros are defined
+Date: Thu, 12 Dec 2024 15:53:46 +0100
+Message-ID: <20241212144401.515562534@linuxfoundation.org>
+X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20241212144349.797589255@linuxfoundation.org>
+References: <20241212144349.797589255@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] m68k: Add DMA timers support for M5441x
-To: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-m68k@vger.kernel.org
-References: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Transfer-Encoding: 8bit
 
-Hi !
+6.1-stable review patch.  If anyone has any objections, please let me know.
 
-On 02/12/2024 10:29, Jean-Michel Hautbois wrote:
-> This patch series adds support for DMA timers for the M5441x coldfire
-> family. The aim is to provide finer scheduler resolution and support for
-> high-resolution timers.
-> 
-> The first patch fixes the clocks and a typo. The second one is the
-> timers support addition. As there is no device tree, I did not use
-> TIMER_OF_DECLARE().
-> 
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> ---
-> Jean-Michel Hautbois (2):
->        m68k: coldfire: Use proper clock rate for timers
->        m68k: m5441x: Add DMA timer support
-> 
->   MAINTAINERS                         |   6 +
->   arch/m68k/coldfire/m5441x.c         |  20 +--
->   arch/m68k/include/asm/m5441xsim.h   |  18 +++
->   drivers/clocksource/Kconfig         |   9 ++
->   drivers/clocksource/Makefile        |   1 +
->   drivers/clocksource/mcf_dma_timer.c | 240 ++++++++++++++++++++++++++++++++++++
->   6 files changed, 284 insertions(+), 10 deletions(-)
-> ---
-> base-commit: e3f432391d55ec21274bd16a04659b4a24678535
-> change-id: 20241202-m5441x_dma_tmr-d969f4cc30a8
-> 
-> Best regards,
+------------------
 
-Gentle ping, as I don't know if anyone is interested by this patch :-) ?
+From: Antonio Quartulli <antonio@mandelbit.com>
 
-I think it makes coldfire really better but it certainly has issues !
+[ Upstream commit 63a24cf8cc330e5a68ebd2e20ae200096974c475 ]
 
-On my kernel, m54418, I observed a few things.
+When CONFIG_FEC is set (due to COMPILE_TEST) along with
+CONFIG_M54xx, coldfire/device.c has compile errors due to
+missing MCFEC_* and MCF_IRQ_FEC_* symbols.
 
-First, when launching cyclictest I get sometimes a bad irq handle:
-[  720.442175] irq 24, desc: 6b62142b, depth: 1, count: 0, unhandled: 0
-[  720.442329] ->handle_irq():  e4232a91, handle_bad_irq+0x0/0x1e6
-[  720.442498] ->irq_data.chip(): 66a62b77, 0x4183e868
-[  720.442613] ->action(): 00000000
-[  720.442667] unexpected IRQ trap at vector 18
+Make the whole FEC blocks dependent on having the HW macros
+defined, rather than on CONFIG_FEC itself.
 
-These IRQ numbers are a bit weird, I suppose it is a spurious IRQ, but 
-not sure ?
+This fix is very similar to commit e6e1e7b19fa1 ("m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined")
 
-Next, cyclictest might experience *very* long delay if the CPU is very 
-busy and a ping flood burst comes in:
-# cyclictest -m -p 98 --secaligned
-WARN: stat /dev/cpu_dma_latency failed: No such file or directory
-policy: fifo: loadavg: 2.24 1.94 1.03 1/127 252
+Fixes: b7ce7f0d0efc ("m68knommu: merge common ColdFire FEC platform setup code")
+To: Greg Ungerer <gerg@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Antonio Quartulli <antonio@mandelbit.com>
+Signed-off-by: Greg Ungerer <gerg@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/m68k/coldfire/device.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-T: 0 (  251) P:98 I:1000 C:  53113 Min:    116 Act:  327 Avg:  209 Max: 
-  60353
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index 7dab46728aeda..b6958ec2a220c 100644
+--- a/arch/m68k/coldfire/device.c
++++ b/arch/m68k/coldfire/device.c
+@@ -93,7 +93,7 @@ static struct platform_device mcf_uart = {
+ 	.dev.platform_data	= mcf_uart_platform_data,
+ };
+ 
+-#if IS_ENABLED(CONFIG_FEC)
++#ifdef MCFFEC_BASE0
+ 
+ #ifdef CONFIG_M5441x
+ #define FEC_NAME	"enet-fec"
+@@ -145,6 +145,7 @@ static struct platform_device mcf_fec0 = {
+ 		.platform_data		= FEC_PDATA,
+ 	}
+ };
++#endif /* MCFFEC_BASE0 */
+ 
+ #ifdef MCFFEC_BASE1
+ static struct resource mcf_fec1_resources[] = {
+@@ -182,7 +183,6 @@ static struct platform_device mcf_fec1 = {
+ 	}
+ };
+ #endif /* MCFFEC_BASE1 */
+-#endif /* CONFIG_FEC */
+ 
+ #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+ /*
+@@ -624,12 +624,12 @@ static struct platform_device mcf_flexcan0 = {
+ 
+ static struct platform_device *mcf_devices[] __initdata = {
+ 	&mcf_uart,
+-#if IS_ENABLED(CONFIG_FEC)
++#ifdef MCFFEC_BASE0
+ 	&mcf_fec0,
++#endif
+ #ifdef MCFFEC_BASE1
+ 	&mcf_fec1,
+ #endif
+-#endif
+ #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+ 	&mcf_qspi,
+ #endif
+-- 
+2.43.0
 
-Any review would be appreciated, at least to know if it is totally off 
-or not that bad and needs a few fixes ?
 
-Thanks,
-JM
+
