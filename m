@@ -1,136 +1,73 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from arara2.ipen.br (arara2.ipen.br [200.136.52.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D79D223313
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Dec 2024 17:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F46189B8D
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Dec 2024 08:57:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=200.136.52.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734025367; cv=none; b=vArbvJydrK1xBSTO5TYJhRNGSsWw7z61UjQkpHicMVQ4f7GupYQSSVoxDrmA8+Y0VpeD/UP4rDn+7ntKOEPYrAifnm+puwXSK1LhG1A6KDt+momw63Q3ahqh9PsSRqHyAULCScOgXDi8VKaLhUCXr8K3FKCTgPddde9XIWCpJHI=
+	t=1734080268; cv=none; b=IOpAZlvVlRGyZvxCUkJrybYUMZSPqvKSvzveKsvAP5svk7yhmGLBj/wk3KTvA8Hd/B1sZ+squof35+f86PAsMnM95U5kJpA+TC1DNB+KBY8DeSG1X/gYoY2dAq0qwBusr/99Q//42FNKRmIpTQHom/3jabVF6/l3Ss7SkXMqLgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734025367; c=relaxed/simple;
-	bh=2yrqFAHmR5ADfFhpjc73IVMjazkT07/zF0cVb67vR1U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ffF+cNn6lW6bddjByU+b1CoQD8YR3Iw5TjSj+qxsgV0a19ELo8IcQ6xv3geswJ4iFjGzZHB6WvwKyLyVrtSidi7IGH/qnn9573LeK6LcAKbGSaeFxFYgMeOkRsHJ0immaDjC/xRnUxPxMURMVudD02XuRx88VU0ajwlSxFDwA3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=o9q5WaEG; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="o9q5WaEG"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id C3C54A41D69;
-	Thu, 12 Dec 2024 17:40:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54012C4CED3;
-	Thu, 12 Dec 2024 17:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1734025363;
-	bh=2yrqFAHmR5ADfFhpjc73IVMjazkT07/zF0cVb67vR1U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=o9q5WaEG+ochLOt7FiHShHUjrBRVlJSNnOsje3ODHcMTQKvl5a1rbL0VatbJAnFAZ
-	 oPEnGcxYgen6LVDoln5/GpVjvOpxHf/r1TKmmV6byW5KIqp7eIPucjOuAM/GfWv0+9
-	 OeCQywokGgN7rza/bkUWLG4aDH/EJNsCdMu5ZkHM=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Antonio Quartulli <antonio@mandelbit.com>,
-	Greg Ungerer <gerg@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 115/321] m68k: coldfire/device.c: only build FEC when HW macros are defined
-Date: Thu, 12 Dec 2024 16:00:33 +0100
-Message-ID: <20241212144234.525717733@linuxfoundation.org>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241212144229.291682835@linuxfoundation.org>
-References: <20241212144229.291682835@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	s=arc-20240116; t=1734080268; c=relaxed/simple;
+	bh=Cgr97JBiSX1QIcd2ZZZsKVChGTY1ZlWJ/4AhaVFA7Wc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nH0/xYAUXg+k75z8hT6P0Ht6baFO6L5uKIE1F878h3lAVr/znDyT0+Mgn7YdpEJChpD4wFaE++72KBK03K3X9XGGnzeFrpMePLlK8H8IEiF8JoacDyTnj1y2j4caTkKN/HcAzaa+jTSP8flCs0QHx1mCaL+vS8BEEx2ZB3V5ubo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ipen.br; spf=pass smtp.mailfrom=ipen.br; arc=none smtp.client-ip=200.136.52.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ipen.br
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ipen.br
+X-ASG-Debug-ID: 1734080257-055fc729eb149e4f0001-a3InNf
+Received: from arara.ipen.br (webmail.ipen.br [10.0.10.11]) by arara2.ipen.br with ESMTP id VVE6Yx7cKRgrMebi for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Dec 2024 05:57:37 -0300 (BRT)
+X-Barracuda-Envelope-From: TCWM179552@ipen.br
+X-Barracuda-RBL-Trusted-Forwarder: 10.0.10.11
+Received: from ipen.br (unknown [102.129.145.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by arara.ipen.br (Postfix) with ESMTPSA id 3ADC4FA591A
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Dec 2024 01:25:45 -0300 (-03)
+Reply-To: t.mazowieckie@mazowieckie.org
+X-Barracuda-Effective-Source-IP: UNKNOWN[102.129.145.191]
+X-Barracuda-Apparent-Source-IP: 102.129.145.191
+X-Barracuda-RBL-IP: 102.129.145.191
+From: <TCWM179552@ipen.br>
+To: linux-m68k@lists.linux-m68k.org
+Subject:  I urge you to understand my viewpoint accurately.
+Date: 13 Dec 2024 12:25:45 +0800
+X-ASG-Orig-Subj: I urge you to understand my viewpoint accurately.
+Message-ID: <20241213122545.81B6FAF74B3FF8DA@ipen.br>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Barracuda-Connect: webmail.ipen.br[10.0.10.11]
+X-Barracuda-Start-Time: 1734080257
+X-Barracuda-URL: https://10.40.40.18:443/cgi-mod/mark.cgi
+X-Barracuda-Scan-Msg-Size: 512
+X-Virus-Scanned: by bsmtpd at ipen.br
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-BRTS-Evidence: 34fbb5788938ad5710ad28835fd12206-499-txt
+X-Barracuda-Spam-Score: 1.09
+X-Barracuda-Spam-Status: No, SCORE=1.09 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=1000.0 tests=DATE_IN_PAST_03_06, DATE_IN_PAST_03_06_2, NO_REAL_NAME
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.45577
+	Rule breakdown below
+	 pts rule name              description
+	---- ---------------------- --------------------------------------------------
+	0.00 NO_REAL_NAME           From: does not include a real name
+	0.01 DATE_IN_PAST_03_06     Date: is 3 to 6 hours before Received: date
+	1.08 DATE_IN_PAST_03_06_2   DATE_IN_PAST_03_06_2
 
-5.4-stable review patch.  If anyone has any objections, please let me know.
+I am Tomasz Chmielewski, a Portfolio Manager and Chartered=20
+Financial Analyst affiliated with Iwoca Poland Sp. Z OO in=20
+Poland. I have the privilege of working with distinguished=20
+investors who are eager to support your company's current=20
+initiatives, thereby broadening their investment portfolios. If=20
+this proposal aligns with your interests, I invite you to=20
+respond, and I will gladly share more information to assist you.
 
-------------------
-
-From: Antonio Quartulli <antonio@mandelbit.com>
-
-[ Upstream commit 63a24cf8cc330e5a68ebd2e20ae200096974c475 ]
-
-When CONFIG_FEC is set (due to COMPILE_TEST) along with
-CONFIG_M54xx, coldfire/device.c has compile errors due to
-missing MCFEC_* and MCF_IRQ_FEC_* symbols.
-
-Make the whole FEC blocks dependent on having the HW macros
-defined, rather than on CONFIG_FEC itself.
-
-This fix is very similar to commit e6e1e7b19fa1 ("m68k: coldfire/device.c: only build for MCF_EDMA when h/w macros are defined")
-
-Fixes: b7ce7f0d0efc ("m68knommu: merge common ColdFire FEC platform setup code")
-To: Greg Ungerer <gerg@linux-m68k.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Antonio Quartulli <antonio@mandelbit.com>
-Signed-off-by: Greg Ungerer <gerg@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/m68k/coldfire/device.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-index b4103b6bfdeb6..6b676965495fa 100644
---- a/arch/m68k/coldfire/device.c
-+++ b/arch/m68k/coldfire/device.c
-@@ -92,7 +92,7 @@ static struct platform_device mcf_uart = {
- 	.dev.platform_data	= mcf_uart_platform_data,
- };
- 
--#if IS_ENABLED(CONFIG_FEC)
-+#ifdef MCFFEC_BASE0
- 
- #ifdef CONFIG_M5441x
- #define FEC_NAME	"enet-fec"
-@@ -144,6 +144,7 @@ static struct platform_device mcf_fec0 = {
- 		.platform_data		= FEC_PDATA,
- 	}
- };
-+#endif /* MCFFEC_BASE0 */
- 
- #ifdef MCFFEC_BASE1
- static struct resource mcf_fec1_resources[] = {
-@@ -181,7 +182,6 @@ static struct platform_device mcf_fec1 = {
- 	}
- };
- #endif /* MCFFEC_BASE1 */
--#endif /* CONFIG_FEC */
- 
- #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
- /*
-@@ -556,12 +556,12 @@ static struct platform_device mcf_edma = {
- 
- static struct platform_device *mcf_devices[] __initdata = {
- 	&mcf_uart,
--#if IS_ENABLED(CONFIG_FEC)
-+#ifdef MCFFEC_BASE0
- 	&mcf_fec0,
-+#endif
- #ifdef MCFFEC_BASE1
- 	&mcf_fec1,
- #endif
--#endif
- #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
- 	&mcf_qspi,
- #endif
--- 
-2.43.0
-
-
-
+=20
+Yours sincerely,=20
+Tomasz Chmielewski Warsaw, Mazowieckie,
+=20
+Poland.
