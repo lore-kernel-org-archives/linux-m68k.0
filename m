@@ -1,198 +1,98 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B351F709A
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Dec 2024 15:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4882C19D07B;
+	Wed, 18 Dec 2024 12:36:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734448180; cv=none; b=XcBBbu1x5kVBvv46zr0oG7uGPppoyIGG0Keuk7CnLkYjlbZLstJYS/yEsp7A2PAH4E32fXbYez9qJbu/lnERNMKFQabJCHm9XOFgVWgTcFR8mdWmr4ij4w8NukgJaGOPLd4MaS2SwBrBognr7JGSF0zMZjqcVDEFP9PazFFJYeM=
+	t=1734525373; cv=none; b=rpH1WwsgUI6iyOeZTYqbFDbtvEaIk2JHLn0bvy5zgBH8z53wIfSW30ZRx1BPQbZZ4Ijmg9vSuN5y0h+XT6tALvCJFLbkt1jRbq6+xFo3ZjYaTny7vD+eLVAv+3tFf4pKHrQxxF08wYCVYrdFAkAX2eaGUXavOBRD4pmdexA1ftU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734448180; c=relaxed/simple;
-	bh=AlbWxCQoWudMw3WIqZNzcPFcL+q8H+uoSdu6HZSKpG8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=OGlRqXuJqbSM8/NqO86f/s19GzD7PnWBcyK2iWqnBVfDCenq8UMWDzeAGyhBZWT6GsMwRNd++9JRiGROIAU9NhUxwdS7ZLybQTEwXTNqJpH6YNYuFzhHntEHAD3yo33f6UUCs9s8HcD7u7E7EQq65VXR+cLPP31D4G7FhkW0YyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FOO2nZpu; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FOO2nZpu"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1734448178; x=1765984178;
-  h=date:from:to:cc:subject:message-id;
-  bh=AlbWxCQoWudMw3WIqZNzcPFcL+q8H+uoSdu6HZSKpG8=;
-  b=FOO2nZpuZQP/C/bPsnyqSu8W1pupMjF9FehGHCKWNbDxfAMWTzQQvp0E
-   ab26d3vrWhchQELm9aDEHE53fmC8BVX4J69QPIH3P/opa4eWtYgcpYIS3
-   j0fPq8PJ5yRAtmjIUkc2gEG+OhQbvu6zeNDJ1lgDzTarZAzhkmsGEr26D
-   ZlQ+fLSPObceoaqsqOSMqLZQouOSCh6wuQycW/mhZqup8WBUIMua/qP7e
-   f9Wj7S/tnFZLCj+jpzRm5gVCNQ9fVgA5A2un10APwDyRo+0uviP/rdbGm
-   X6l2lY3KtH5V1IHY8suxi+5BVW7OYUSMnm9hSchQFbiwp2791OCw+QEnv
-   A==;
-X-CSE-ConnectionGUID: QGd6Tj/LSVeQhHTMOJf/ww==
-X-CSE-MsgGUID: OV5RhwUESK+ybgkSB/KWhg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11282"; a="46289611"
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="46289611"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2024 07:09:37 -0800
-X-CSE-ConnectionGUID: XJchHJN6Tz25N1lS7TUO1A==
-X-CSE-MsgGUID: JHs94GyqSo6F+YQ3d6xbmA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="128541302"
-Received: from lkp-server01.sh.intel.com (HELO 82a3f569d0cb) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 17 Dec 2024 07:09:36 -0800
-Received: from kbuild by 82a3f569d0cb with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tNZCY-000F5g-1F;
-	Tue, 17 Dec 2024 15:09:34 +0000
-Date: Tue, 17 Dec 2024 23:09:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 2ffd9f92a816ffb574ee9b2fc521ce89a405a610
-Message-ID: <202412172319.pU8v3o6y-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1734525373; c=relaxed/simple;
+	bh=S5dLyWJhla56q1ymX0qm5fJRqHSk+2Y50QxbQIRstnc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P3bW3+1kCrXgTNo+TEj85EpWe6TOIPIKFGqx7O0aAkYdEfzWo88+fP3FkiakKs2lNFL8gwsvqIxbAOgITt7zQDjW2iImFscS6ALm56bA7bhwuqvKiorXGtLvrbO/9H2YBiib0f6lTW4dCJwRJynumFaEpmdfKS1/IARi2O3qnY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34B1AC4CECE;
+	Wed, 18 Dec 2024 12:36:11 +0000 (UTC)
+Message-ID: <cbb9070e-5756-4208-8a46-b26d2dfce3c3@linux-m68k.org>
+Date: Wed, 18 Dec 2024 22:36:08 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] m68k: coldfire: Use proper clock rate for timers
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-m68k@vger.kernel.org
+References: <20241202-m5441x_dma_tmr-v1-0-94087efe4243@yoseli.org>
+ <20241202-m5441x_dma_tmr-v1-1-94087efe4243@yoseli.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20241202-m5441x_dma_tmr-v1-1-94087efe4243@yoseli.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 2ffd9f92a816ffb574ee9b2fc521ce89a405a610  Merge tag 'v6.13-rc3'
+Hi JM,
 
-elapsed time: 1447m
+On 2/12/24 19:29, Jean-Michel Hautbois wrote:
+> The DMA and PIT timers are clocked at fsys/2. Fix it.
+> While at it, fix the comment naming for DMA timers (duplicated tmr.2).
 
-configs tested: 121
-configs skipped: 5
+This looks like a stand alone fix in its own right, so I have pushed
+this into the m68knommu git tree, for-next branch.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks
+Greg
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    gcc-14.2.0
-alpha                               defconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-13.2.0
-arc                               allnoconfig    gcc-13.2.0
-arc                              allyesconfig    gcc-13.2.0
-arc                                 defconfig    gcc-13.2.0
-arc                   randconfig-001-20241216    gcc-13.2.0
-arc                   randconfig-002-20241216    gcc-13.2.0
-arm                              allmodconfig    gcc-14.2.0
-arm                               allnoconfig    clang-17
-arm                              allyesconfig    gcc-14.2.0
-arm                          pxa168_defconfig    clang-16
-arm                   randconfig-001-20241216    clang-15
-arm                   randconfig-002-20241216    gcc-14.2.0
-arm                   randconfig-003-20241216    clang-20
-arm                   randconfig-004-20241216    clang-17
-arm                         s5pv210_defconfig    gcc-14.2.0
-arm                        spear6xx_defconfig    clang-19
-arm                           u8500_defconfig    gcc-14.2.0
-arm64                            allmodconfig    clang-18
-arm64                             allnoconfig    gcc-14.2.0
-arm64                 randconfig-001-20241216    gcc-14.2.0
-arm64                 randconfig-002-20241216    clang-20
-arm64                 randconfig-003-20241216    gcc-14.2.0
-arm64                 randconfig-004-20241216    clang-15
-csky                              allnoconfig    gcc-14.2.0
-csky                                defconfig    gcc-14.2.0
-csky                  randconfig-001-20241216    gcc-14.2.0
-csky                  randconfig-002-20241216    gcc-14.2.0
-hexagon                          allmodconfig    clang-20
-hexagon                           allnoconfig    clang-20
-hexagon               randconfig-001-20241216    clang-20
-hexagon               randconfig-002-20241216    clang-20
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20241217    clang-19
-i386        buildonly-randconfig-002-20241217    gcc-12
-i386        buildonly-randconfig-003-20241217    gcc-12
-i386        buildonly-randconfig-004-20241217    clang-19
-i386        buildonly-randconfig-005-20241217    clang-19
-i386        buildonly-randconfig-006-20241217    gcc-11
-i386                                defconfig    clang-19
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch             randconfig-001-20241216    gcc-14.2.0
-loongarch             randconfig-002-20241216    gcc-14.2.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-mips                          ath79_defconfig    gcc-14.2.0
-mips                         bigsur_defconfig    gcc-14.2.0
-mips                       rbtx49xx_defconfig    gcc-14.2.0
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20241216    gcc-14.2.0
-nios2                 randconfig-002-20241216    gcc-14.2.0
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-openrisc                            defconfig    gcc-14.2.0
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                              defconfig    gcc-14.2.0
-parisc                randconfig-001-20241216    gcc-14.2.0
-parisc                randconfig-002-20241216    gcc-14.2.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                          allyesconfig    clang-16
-powerpc                    amigaone_defconfig    gcc-14.2.0
-powerpc                      ep88xc_defconfig    gcc-14.2.0
-powerpc               randconfig-001-20241216    clang-20
-powerpc               randconfig-002-20241216    clang-20
-powerpc               randconfig-003-20241216    gcc-14.2.0
-powerpc                        warp_defconfig    gcc-14.2.0
-powerpc64             randconfig-001-20241216    clang-20
-powerpc64             randconfig-002-20241216    clang-15
-powerpc64             randconfig-003-20241216    gcc-14.2.0
-riscv                            allmodconfig    clang-20
-riscv                             allnoconfig    gcc-14.2.0
-riscv                            allyesconfig    clang-20
-riscv                    nommu_virt_defconfig    clang-20
-riscv                 randconfig-001-20241217    gcc-14.2.0
-riscv                 randconfig-002-20241217    gcc-14.2.0
-s390                             allmodconfig    clang-19
-s390                              allnoconfig    clang-20
-s390                             allyesconfig    gcc-14.2.0
-s390                  randconfig-001-20241217    gcc-14.2.0
-s390                  randconfig-002-20241217    gcc-14.2.0
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                    randconfig-001-20241217    gcc-14.2.0
-sh                    randconfig-002-20241217    gcc-14.2.0
-sh                           se7750_defconfig    gcc-14.2.0
-sh                   sh7770_generic_defconfig    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                             allnoconfig    gcc-14.2.0
-sparc                 randconfig-001-20241217    gcc-14.2.0
-sparc                 randconfig-002-20241217    gcc-14.2.0
-sparc64               randconfig-001-20241217    gcc-14.2.0
-sparc64               randconfig-002-20241217    gcc-14.2.0
-um                                allnoconfig    clang-18
-um                    randconfig-001-20241217    clang-20
-um                    randconfig-002-20241217    gcc-12
-x86_64                            allnoconfig    clang-19
-x86_64                           allyesconfig    clang-19
-x86_64      buildonly-randconfig-001-20241217    clang-19
-x86_64      buildonly-randconfig-002-20241217    gcc-12
-x86_64      buildonly-randconfig-003-20241217    gcc-12
-x86_64      buildonly-randconfig-004-20241217    clang-19
-x86_64      buildonly-randconfig-005-20241217    gcc-12
-x86_64      buildonly-randconfig-006-20241217    clang-19
-x86_64                              defconfig    gcc-11
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                randconfig-001-20241217    gcc-14.2.0
-xtensa                randconfig-002-20241217    gcc-14.2.0
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> ---
+>   arch/m68k/coldfire/m5441x.c | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+> index 405e9d5c832c0d41978615a646de21f2fce61afb..7a25cfc7ac07570ff15da3c55d080a717cf93a06 100644
+> --- a/arch/m68k/coldfire/m5441x.c
+> +++ b/arch/m68k/coldfire/m5441x.c
+> @@ -33,14 +33,14 @@ DEFINE_CLK(0, "mcfuart.0", 24, MCF_BUSCLK);
+>   DEFINE_CLK(0, "mcfuart.1", 25, MCF_BUSCLK);
+>   DEFINE_CLK(0, "mcfuart.2", 26, MCF_BUSCLK);
+>   DEFINE_CLK(0, "mcfuart.3", 27, MCF_BUSCLK);
+> -DEFINE_CLK(0, "mcftmr.0", 28, MCF_CLK);
+> -DEFINE_CLK(0, "mcftmr.1", 29, MCF_CLK);
+> -DEFINE_CLK(0, "mcftmr.2", 30, MCF_CLK);
+> -DEFINE_CLK(0, "mcftmr.3", 31, MCF_CLK);
+> -DEFINE_CLK(0, "mcfpit.0", 32, MCF_CLK);
+> -DEFINE_CLK(0, "mcfpit.1", 33, MCF_CLK);
+> -DEFINE_CLK(0, "mcfpit.2", 34, MCF_CLK);
+> -DEFINE_CLK(0, "mcfpit.3", 35, MCF_CLK);
+> +DEFINE_CLK(0, "mcftmr.0", 28, MCF_BUSCLK);
+> +DEFINE_CLK(0, "mcftmr.1", 29, MCF_BUSCLK);
+> +DEFINE_CLK(0, "mcftmr.2", 30, MCF_BUSCLK);
+> +DEFINE_CLK(0, "mcftmr.3", 31, MCF_BUSCLK);
+> +DEFINE_CLK(0, "mcfpit.0", 32, MCF_BUSCLK);
+> +DEFINE_CLK(0, "mcfpit.1", 33, MCF_BUSCLK);
+> +DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
+> +DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
+>   DEFINE_CLK(0, "mcfeport.0", 37, MCF_CLK);
+>   DEFINE_CLK(0, "mcfadc.0", 38, MCF_CLK);
+>   DEFINE_CLK(0, "mcfdac.0", 39, MCF_CLK);
+> @@ -167,8 +167,8 @@ static struct clk * const disable_clks[] __initconst = {
+>   	&__clk_0_14, /* i2c.1 */
+>   	&__clk_0_22, /* i2c.0 */
+>   	&__clk_0_23, /* dspi.0 */
+> -	&__clk_0_28, /* tmr.1 */
+> -	&__clk_0_29, /* tmr.2 */
+> +	&__clk_0_28, /* tmr.0 */
+> +	&__clk_0_29, /* tmr.1 */
+>   	&__clk_0_30, /* tmr.2 */
+>   	&__clk_0_31, /* tmr.3 */
+>   	&__clk_0_32, /* pit.0 */
+> 
