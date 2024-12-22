@@ -1,60 +1,60 @@
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15CF7485
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Dec 2024 03:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F66E7E0E8
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Dec 2024 05:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734836650; cv=none; b=lwwZQE2m/W7Pg/KUGyDDKUO6DV05kV4sQ13a+Xd4fqWHijQejT4zTz9NfoEGNPoVG4/nhstVs5oWb1URyowqli31N6cRTKKt2syTA/YjKxpaGRXQdeSMuulOfWlJS/pHi7G7oSTs3p1BcMIyt5Q8/hYIZAZQYdZwZ3XG4BMkmr0=
+	t=1734846243; cv=none; b=gq+rEtlaOy1Gfz+sdemjtqLPoANhOhwDrccD31MYUAFX9Vxv5sX6zFMgGiusNFP7cn21UDtZxR+JK9g+FHYpIj0lKXbIKdkBj6cJOWlvIsscqppSAfQTJK57mYlCaPubEdJPN23Xb7ttLOeLIA8VTNymfX0uLJyFaran7zPzLQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734836650; c=relaxed/simple;
-	bh=3gv9TvzAh5qh0j2pTh/AnnmFN2rcTk+rLMfocZwny6Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ScbKOO4UOioyCn8atfKiY2sJlC3iL3WtgQXvG/xyc8d+cQ9PPG4cXPFOHZoyPHGacKMxs1uqGE2+dFw4yUITqTMHYKnMY1eRy1hYI99eRp78Uz6ZHcykwWUbzmXgi9mTZNquy19Mv7GcxldjsGBdFxL1gOg5ZPB6Mw8ItC70VbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T8byLda6; arc=none smtp.client-ip=209.85.210.177
+	s=arc-20240116; t=1734846243; c=relaxed/simple;
+	bh=z/I8bfD98+jd+n0Mmu+eOeBiY/R3JGJ9Kgb1HKksGnc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pOs2XJX/AaxjRo0UjuQIA5FfRI2RaB+DdVOl/spb8FUiFsA0DUKWECUruWSrtHe00EWbPyWkyITWQJicy8VI5h3ipP3VUGn+CYaLGruOfIi1gLyNoU3adEry6kwzbl4bgDVvJYt1Fu2y8fdhmIb+pp9mRiwNZi8y1YCYxEm35JM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XZZSYlYX; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T8byLda6"
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-725dbdf380aso2569350b3a.3
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 21 Dec 2024 19:04:06 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XZZSYlYX"
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2f44353649aso2407376a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 21 Dec 2024 21:43:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734836646; x=1735441446; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1734846239; x=1735451039; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bLwIVhlTf1b/URUp5p09XK9G7aK+ploAUOErazD1ENw=;
-        b=T8byLda6FEcRuzfTXH8nuv3hq6K/q5WHUpnZTvtRY4EB519sxcWBAW+JHz6Gz6HM+1
-         lcFVmkA/lj+iXXX0yx+MFOAhiCusUo85ESIblkDvLWD65OUamZ0pVI77RXMUZaeaucdM
-         OrrZ+Vz2g0OtcjQFWPGF2Wc30gr8koml8GPvCYx8NS/BLnx73QuqB40uG+ehv85kkuqj
-         WNXOVsamzWUpWtZhti+ttz/q7DLWfLG2HvY38zL2cH40Qp+QXwFqhw5DwGQxcpTItzIB
-         TEvvVjNhI3wn59mcwTn06jjMLRDgcXlQ8V5wfk+l7boAH0qX4U0fvlUuoK95ZE0nXYnl
-         1oxQ==
+        bh=NxCBSVvegpL4AXRrmCU+1dMPv/7znzdJDLKT63dDMTk=;
+        b=XZZSYlYX2QIqbgMswRP2/zUU59INwZSzZW2uKks8xF5Oi37Gia07q3K6MZMDmplHEr
+         ZfQZTKTVFyjclocQOlzI6fKYyON6k/WPp+yI0dXJHkqszeCHWz6PUMe4vd+NUNtvOPeg
+         qUOH5mDQasA4sEQ23SJFRNqKMhn8QgYNZXUw5FBRCFVqvSr8wZqXpZQTvqayPFzsTTj4
+         Yaw5G5P7szZKoCt6fgU6Icqr3VHeMxEmOEt3byQ1X81YlUgQ7ce1eGFteGl3QKeFjJaa
+         nL9ihsAjV7H9qEAVnOqsnuBt/NsbMIXlhfvuKoaS5gomEOHbog7aQ47NuonzMCRsybmc
+         pd6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734836646; x=1735441446;
+        d=1e100.net; s=20230601; t=1734846239; x=1735451039;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bLwIVhlTf1b/URUp5p09XK9G7aK+ploAUOErazD1ENw=;
-        b=REZPgtlV1fc7pGY1Uy2Whf6M0lgnbq1oSHjPDzr9d+37dd7k5cmqvJWvjytf5S/Df1
-         uVtFhAXEVEcrdQ4IjxUZ870PHVPbWfYetuuNKO2BCUUgZjtcG6SbHJFbGX3Dxw/G+1RY
-         UqwqBP4xDQEuQobyVIZx2lVkSnbeg99vFDz0CasaUhRGtOcoQsgPIcyOGtumLczFejT4
-         9cXEGLM5gS3GnN7W9X/BSL/5q4Jlxqa81Y+4pC3y/4OgN3/2hh8G9f2lrCIpFCAvBjdM
-         6UpofoZKX3IWu/G3b81mTeEHA8Hv59hcxMKMCLVGPFI8QjmXPJPMwCGsi2+LqnVQ80ZJ
-         pHuA==
-X-Forwarded-Encrypted: i=1; AJvYcCUfmg6/GOxbNjK2I0aaU5p9QaQWhvHKGixJWKEFlsXQ2cBzyeHplMl/lGqUGZ8QvAhva960M0GyQEV6@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwIBfuGK4YTusECXnFt8WBta3g2eq0PvWFa8HAvhjkHeppOQGCV
-	qItX4LavWqwULNHNDj7gd4bHvvNy8hgT/y67YV+nqEPmeXH3Ec8E
-X-Gm-Gg: ASbGncuvnkbGb4fW/WJJ41qRTcikBISI0m3ykAgNV14jz/MX73TW1zZ7HDeJPy5s38x
-	dJCM9qosIILbMJHQSG4L//JSj78VtEPdcbUpqW3SvXQogXREGLMUApmwnrDIAL2Hkbdrrpzi84N
-	CmLbc3/BEi7CIbDUoWj5swFD05yoMUXAgs6KasVb1zNrWYEYC0xAcP57UT2WCyoovy62bgqtzPm
-	Qn9dHrbwZQTf0aVKplMVAeK66BMo/ySh9YZ9ee/AvAaRNzH51/TJu+GS0yX/YMrcyTxrd/bhPRt
-	5omQ
-X-Google-Smtp-Source: AGHT+IGEIrG1JtXc5z5cMox7Uha9/g1RZbcpsJzVDo5QUHRN78eE18poKknQIYmVHIO9ksCE0JNJKQ==
-X-Received: by 2002:a05:6a20:2443:b0:1e1:ace6:c98 with SMTP id adf61e73a8af0-1e5e081cb7dmr14215452637.43.1734836645740;
-        Sat, 21 Dec 2024 19:04:05 -0800 (PST)
+        bh=NxCBSVvegpL4AXRrmCU+1dMPv/7znzdJDLKT63dDMTk=;
+        b=KXmnXZLTtRVsx9RnvHTyFS6eT5YkRvmX65L+v4zcWYiqfVKIHug6OfXKRL/k7SUZlV
+         cJZYLIPsj7JW9br7nn8DjelICkFUpzhBZhk3jO32m3/I6DJLO6hvP14NX4yTFuXAqOyP
+         aw1FGqYva4y1kLDDpio8kf/UC5gBmOewuZIdNGqVcyAFXP8UaUXPLrWFQ0h1oXnNHzLW
+         K/r527Fhc9CpgnlKoGqNvEzdoRTbcyn65ppHNmtijBycmJPWnOmHSlWPgRz37yyawZL4
+         OI5hiq+9LP/6GxXJvXxWErfoZo57YKk4tvLBJZN6p9XruMYm5BfvQx/N5/oW+IK6xIez
+         QEOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfiHJv6WiH2BlIBR4LnZczT6FsM8Uu0LU8W/lQbBeokA1XGf9Xj2M7OofBhmrV8V3hqlI3iKnMuzPx@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwuTgzV1os083UoGhQKKUhdPq8dylYWX1Zs+g5VmB0mTHiKFnSt
+	OnDJdlPlgcS1YhcNuqwcdFaw/hba4aHwoQ3+ncx6bvDhrJAK+8Ku
+X-Gm-Gg: ASbGnct6xv5HFb5OJJXUNgXQLN0pwtWH4Zo8eg+6DZjnJz52BndflROiX1iSlh465AK
+	lS44ffrh0BkyuPxhOC/ITqKgpniyYw4ZCHiTLO2+EmHTMMkeBfqi7PlGByr4RYN4YbZFrUl5X6L
+	rigmgDyv7qBQk+dxqTq2ql2jWtaTZt2nazzpZk8hsXGpiFzXXDlL2NuEifUqjDiKouxZ86XKP4+
+	AUq4P5yjruLE0TBQp+SX5X85ymj0U41jyRapLOTL2TUGDGXBVc9MOj1nlnL0MkD8tSMoxKA+rl1
+	ArzJ
+X-Google-Smtp-Source: AGHT+IE+f2wCNJicI2gTq3QVgpOdJtxfo8EYzaCZmYJXjsha0SzX5BS7lYqO8XSYzVbjevSjja++gA==
+X-Received: by 2002:a17:90b:1b47:b0:2ee:bbd8:2b9d with SMTP id 98e67ed59e1d1-2f452eeb6c0mr11427615a91.34.1734846238978;
+        Sat, 21 Dec 2024 21:43:58 -0800 (PST)
 Received: from localhost.localdomain ([36.110.106.149])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad90c112sm5415064b3a.198.2024.12.21.19.03.38
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f454f58087sm4443412a91.11.2024.12.21.21.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Dec 2024 19:04:05 -0800 (PST)
+        Sat, 21 Dec 2024 21:43:57 -0800 (PST)
 From: Guo Weikang <guoweikang.kernel@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Mike Rapoport <rppt@kernel.org>,
@@ -138,9 +138,9 @@ Cc: Dennis Zhou <dennis@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH v5] mm/memblock: Add memblock_alloc_or_panic interface
-Date: Sun, 22 Dec 2024 11:03:31 +0800
-Message-Id: <20241222030331.2704579-1-guoweikang.kernel@gmail.com>
+Subject: [PATCH v6] mm/memblock: Add memblock_alloc_or_panic interface
+Date: Sun, 22 Dec 2024 13:43:31 +0800
+Message-Id: <20241222054331.2705948-1-guoweikang.kernel@gmail.com>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -1584,7 +1584,7 @@ index 9c58f081d84f..1bb505a08415 100644
  	for (u64 addr = 0; addr < size; addr += PAGE_SIZE) {
  		page = virt_to_page_or_null((char *)start + addr);
 diff --git a/mm/memblock.c b/mm/memblock.c
-index 095c18b5c430..762eadd07d88 100644
+index 095c18b5c430..95af35fd1389 100644
 --- a/mm/memblock.c
 +++ b/mm/memblock.c
 @@ -1691,6 +1691,26 @@ void * __init memblock_alloc_try_nid(
@@ -1595,7 +1595,7 @@ index 095c18b5c430..762eadd07d88 100644
 + * __memblock_alloc_or_panic - Try to allocate memory and panic on failure
 + * @size: size of memory block to be allocated in bytes
 + * @align: alignment of the region and block's size
-+ * @fuc: caller func name
++ * @func: caller func name
 + *
 + * This function attempts to allocate memory using memblock_alloc,
 + * and in case of failure, it calls panic with the formatted message.
