@@ -1,166 +1,161 @@
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1623E18C924
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 07:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10ED053804
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 08:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734939136; cv=none; b=eJJAxHd/kJb2Jrw/jvAm9wGMa95SQsT9f89ucbTxTifKQvNz9cuAzIzx2Gq5dFHdl651yHO1mCo3pYe3eeA75FJ/vUYwtqbt1WUzIlBif+56OR7au58929Eg+kzo3ZHQIKjkjn4w3vPryc2kqSTpPQwHKwjlNMho15EHVz5r6Gs=
+	t=1734941163; cv=none; b=qN6RfHA8K/PSWaxMFptJiV2ikEisMlo2ShCzP6zowwhLrJXPgTvMecKvkqv5ck+77z7PA1vN7aP88DUWCG2pJPsOXY4oazN0iWxowOpzqfLCqAzu5g+N5/7rbDQnBTfuiaMPzkT6UD5gOHPPbPrwNq56d0m4DV7uWO+psSLaxRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734939136; c=relaxed/simple;
-	bh=OHoKVoEfq+gvl63nyXxm0Fs3Th2pjhxHONc5vMgjP0s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IIYiD3pE4C3t/ygl3PtXBwsGH062dT7Wb8GLdGxjfR3Bb6M2y6pOWiE/VnD95KGrrvoftLHcr3GDF2w4uOvcRdrbqNWzTEYCNqy5zVtLz0fB0IVtfu41wM9cc4+UFm9ygNG88SP3amVwNJ5pqfYUZ69H3G95kAUoZtFPrH9Mih4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Eg3x/ZGh; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1734941163; c=relaxed/simple;
+	bh=oLAFDpVTm28rpp13OPocO6rqDyE1uCgUFmuvPbVrLjw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j7XhrutxkwThO2+UJhxIgzSXY5GjLjThZMNE16+NZSrhEbJnt992Tm+LvR0FE6DZjHodE9w5VR5+yub8M4Lghw1kQfsbHg8QXZwZsk12T4HiJHnv7m0AfuM3oTZt4S8mGPnDSsdhvGu1FOAgCbRc02QtXf+c8/g/LJdPFWw6c4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=NwAS/XG2 reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eg3x/ZGh"
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6eff4f0d627so33673097b3.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Dec 2024 23:32:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734939132; x=1735543932; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0v6aG1YFkKVxPZgrKFkppCnD7setaclMAdKcShBz7Ms=;
-        b=Eg3x/ZGhA7MaKCEQYPSrl4rsaXfHU8c9RiJvN9OxR3ibKBvcyYEx5lDCS7Gw4DdUuu
-         kG6PyKPXfBhMwM3j8K7/XJI9VY78DlCUYdcRFl/fqS0kU9IHZ7b6bNSFuhl7OoWdqcKL
-         YuMORGg1TflTbO4K955J0yryuCTTYVfDScAx3avf1iZb2uO1+lRyCfntgYiLBtMystm8
-         A0J3bKv9FkX/wrVng6MXFq+uD3jAYaybHBnU4omx1WsQjhsiG0sOJxUn24t35VBiF68C
-         VdxpHsR2zUPsosit2olTIbj/AnCRYqJjkZJSmVMA36v0mquLacOo8WzzbshdpnE9mp8V
-         ogbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734939132; x=1735543932;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0v6aG1YFkKVxPZgrKFkppCnD7setaclMAdKcShBz7Ms=;
-        b=HvvfNfmhDi3gt6H2vYFnIiUiTLXhonQ2fVsLPRR1RXyQzqT4BSBnxctAJtCJVZ0RqZ
-         aex6+X79+hGcgAMiM62nr1oJJDPG9OuO6CuS9fRStxAdYgcQQWv+0CO/uGCJunnLAASm
-         L2atI65WTuUV6AujiXb+KT+NSYOZd1p9yIDq0wGQM8ac35ROVhx6YhOJG5cj5gWoCs8L
-         lf/2up0E0di3lc4jzEP99tMpTXX804+BIS1Dkt3rAHtTQGxARQAH3R1ZJYrDxqhGODCa
-         fgdgX40cfUG2YyXSLdbFBZ4ZhtO9DAT8tQclwLhNVdbczdhAci99AvTJ/FhdURToOO0c
-         2WbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUE9mYBbPIqkoEIjqejEXrdj7z9Z2YGcGZljsdVqKW98zjb/0A92zU1S5Nzgi8JDe2JwzRfvVxWAC0s@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwWNviojy+O7GJrpZRbOaI6DIaB4hk/JXHHMPpy+itwwwHVpQkn
-	8Xnv3rr2TRjFWk4gZ+UGUbXaq9d8nlGpFzkWKGintAWWqmhmgARY/7teyfBxUf7eQqeK7aJhwvB
-	q3CvnnIDjIR+jKdIw5snqlUL3Vuw=
-X-Gm-Gg: ASbGncv1iCtF4KpWk0dnJ2UafrghaV/g5ze+ZsxD4LZyynt6zQOVWnMv+Pp8TV0IIQa
-	OJwbLC44Q4v7aXgVWeZYi8Btbk8xAt+c30dD+rDQ=
-X-Google-Smtp-Source: AGHT+IE9Zx6rrSxmo/TfVMJEMfCSEvv5kTOAJj2WU/ZWv6yREWR2EgA4NDWJv08ZAUMMHtBOTiCxaj5H+lZ0CIJRFqw=
-X-Received: by 2002:a05:690c:6e0c:b0:6ef:6b56:fb46 with SMTP id
- 00721157ae682-6f3f824cb08mr87351047b3.40.1734939131915; Sun, 22 Dec 2024
- 23:32:11 -0800 (PST)
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NwAS/XG2"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D012140E0288;
+	Mon, 23 Dec 2024 07:59:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id IM0pXPZd7px8; Mon, 23 Dec 2024 07:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1734940795; bh=oLmiO6e1v7+WwnKur2gbXxPFrWqAvAvJYXOalhGYmh0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NwAS/XG2uaILqi2tnPoMceO1SFvcdwgB2eUP+lF0E3qtxPsrkKvNIAdwvcYOwYLbg
+	 VvqRX9HbNopYUz0E8WqlR4+hwS4evjJxGuAOGasHGtlugkVJp9ywpiKC8EbDZ422zm
+	 muU9ukFK3vu7hlaK35oICq0nKKtYMvBJQy2OPsR+mvKsFD61IL8Mw2MAlMJkEryItZ
+	 Tzude+wGqe0Sw9wWIR9qCEh9iQ+cGYRJHeuycqd23zgYmnzkMpT5N1DW0p6NrAgCYf
+	 olFh8rx2BkdY5or8KF6raR/v2Ni/IFGcDQKB5uSqrYJiXVWNpgp+jX4ZxJgjDbURJ4
+	 cSrvSAzFi4ZxrvHZ1a2k5YfgSAP6AQYRPi9NLJBbrvSRcSIni8b7sSzt4BURfuxCE2
+	 r4sJGrTU/6kz8jXjqNQu+e5JVOpZaEHuyoW5vdTmIKsc1KmSM8jxmKbimkXbQrlsIH
+	 90+POUXhp51ZscIRGQuA125qI7jngipHuMx2xQIaDiLgkkm892NzJLWoWCASuUcIjP
+	 t7xw06sq/JRCWhb65oG60xkW3rPq6o8p+BSEtePeDRS1FBXX3NANrTP8cZLWwcZ34D
+	 4b4E4Fx232+BRVdx65v4LFgXYODS/oGKPtkkdO7V+2SrY5pMunLK7ADoymYz7xZnXg
+	 ml+quzLMltF9PXnz4EArbLUs=
+Received: from nazgul.tnic (2-228-221-6.ip193.fastwebnet.it [2.228.221.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C580D40E0286;
+	Mon, 23 Dec 2024 07:58:32 +0000 (UTC)
+Date: Mon, 23 Dec 2024 08:58:11 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Weikang Guo <guoweikang.kernel@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@linux.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Sam Creasey <sammy@sammy.net>, Huacai Chen <chenhuacai@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Oreoluwa Babatunde <quic_obabatun@quicinc.com>,
+	rafael.j.wysocki@intel.com, Palmer Dabbelt <palmer@rivosinc.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Easwar Hariharan <eahariha@linux.microsoft.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Ingo Molnar <mingo@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
+	Christian Brauner <brauner@kernel.org>,
+	KP Singh <kpsingh@kernel.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Stafford Horne <shorne@gmail.com>, Helge Deller <deller@gmx.de>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Geoff Levand <geoff@infradead.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	kasan-dev@googlegroups.com, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-omap@vger.kernel.org,
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-mm@kvack.org, linux-pm@vger.kernel.org,
+	Xi Ruoyao <xry111@xry111.site>
+Subject: Re: [PATCH v7] mm/memblock: Add memblock_alloc_or_panic interface
+Message-ID: <20241223075811.GAZ2kYEwZ93CYkatrD@fat_crate.local>
+References: <20241222111537.2720303-1-guoweikang.kernel@gmail.com>
+ <Z2kNTjO8hXzN66bX@kernel.org>
+ <CAOm6qnkRUMnVGj7tnem822nRpJ8R6kFVf6B4W9MhMSBQY8X7Kg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241222111537.2720303-1-guoweikang.kernel@gmail.com> <Z2kNTjO8hXzN66bX@kernel.org>
-In-Reply-To: <Z2kNTjO8hXzN66bX@kernel.org>
-From: Weikang Guo <guoweikang.kernel@gmail.com>
-Date: Mon, 23 Dec 2024 15:32:01 +0800
-Message-ID: <CAOm6qnkRUMnVGj7tnem822nRpJ8R6kFVf6B4W9MhMSBQY8X7Kg@mail.gmail.com>
-Subject: Re: [PATCH v7] mm/memblock: Add memblock_alloc_or_panic interface
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Sam Creasey <sammy@sammy.net>, 
-	Huacai Chen <chenhuacai@kernel.org>, Will Deacon <will@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Oreoluwa Babatunde <quic_obabatun@quicinc.com>, 
-	rafael.j.wysocki@intel.com, Palmer Dabbelt <palmer@rivosinc.com>, 
-	Hanjun Guo <guohanjun@huawei.com>, Easwar Hariharan <eahariha@linux.microsoft.com>, 
-	Johannes Berg <johannes.berg@intel.com>, Ingo Molnar <mingo@kernel.org>, 
-	Dave Hansen <dave.hansen@intel.com>, Christian Brauner <brauner@kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	WANG Xuerui <kernel@xen0n.name>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	Helge Deller <deller@gmx.de>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Geoff Levand <geoff@infradead.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
-	Alexander Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, linux-alpha@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, kasan-dev@googlegroups.com, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
-	linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org, 
-	linux-omap@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-mm@kvack.org, linux-pm@vger.kernel.org, 
-	Xi Ruoyao <xry111@xry111.site>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAOm6qnkRUMnVGj7tnem822nRpJ8R6kFVf6B4W9MhMSBQY8X7Kg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-Mike Rapoport <rppt@kernel.org> wrote on Monday 23 December 2024 at 15:12
->
-> On Sun, Dec 22, 2024 at 07:15:37PM +0800, Guo Weikang wrote:
-> > Before SLUB initialization, various subsystems used memblock_alloc to
-> > allocate memory. In most cases, when memory allocation fails, an immediate
-> > panic is required. To simplify this behavior and reduce repetitive checks,
-> > introduce `memblock_alloc_or_panic`. This function ensures that memory
-> > allocation failures result in a panic automatically, improving code
-> > readability and consistency across subsystems that require this behavior.
-> >
-> > Changelog:
-> > ----------
-> > v1: initial version
-> > v2: add __memblock_alloc_or_panic support panic output caller
-> > v3: panic output phys_addr_t use printk's %pap
-> > v4: make __memblock_alloc_or_panic out-of-line, move to memblock.c
-> > v6: Fix CI compile error
-> > Links to CI: https://lore.kernel.org/oe-kbuild-all/202412221000.r1NzXJUO-lkp@intel.com/
-> > v6: Fix CI compile warinigs
-> > Links to CI: https://lore.kernel.org/oe-kbuild-all/202412221259.JuGNAUCq-lkp@intel.com/
-> > v7: add chagelog and adjust function declaration alignment format
-> > ----------
-> >
-> > Signed-off-by: Guo Weikang <guoweikang.kernel@gmail.com>
-> > Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Reviewed-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> > Acked-by: Xi Ruoyao <xry111@xry111.site>
->
-> If people commented on your patch it does not mean you should add
-> Reviewed-by or Acked-by tags for them. Wait for explicit tags from the
-> reviewers.
+On Mon, Dec 23, 2024 at 03:32:01PM +0800, Weikang Guo wrote:
+> First of all, thank you for your reminder and patience. In fact, this
+> is the first time I received a patch discussion when submitting a
+> patch.
+> About Reviewed-by or Acked-by tags, I will not add it myself in the
+> future. Regarding this patch, do I need to provide a new patch to
+> update it? Or will you modify it?  Looking forward to your reply
 
-First of all, thank you for your reminder and patience. In fact, this
-is the first time I received a patch discussion when submitting a
-patch.
-About Reviewed-by or Acked-by tags, I will not add it myself in the
-future. Regarding this patch, do I need to provide a new patch to
-update it? Or will you modify it?  Looking forward to your reply
+It is all explained here:
 
->
-> And don't respin that often, "Reviewers are busy people and may not get to
-> your patch right away" [1].
->
+https://kernel.org/doc/html/latest/process/development-process.html
 
-OK, I will be more patient and update after confirming that there are
-no more comments.
+Go read it while waiting instead of spamming everyone.
 
-> [1] https://docs.kernel.org/process/submitting-patches.html
->
->
-> --
-> Sincerely yours,
-> Mike.
+Lemme get your started on that reading:
 
+"Don=E2=80=99t get discouraged - or impatient
 
---
-Best regards,
-Guo
+After you have submitted your change, be patient and wait. Reviewers are
+busy people and may not get to your patch right away.
+
+Once upon a time, patches used to disappear into the void without
+comment, but the development process works more smoothly than that now.
+You should receive comments within a few weeks (typically 2-3); if that
+does not happen, make sure that you have sent your patches to the right
+place. Wait for a minimum of one week before resubmitting or pinging
+reviewers - possibly longer during busy times like merge windows."
+
+--=20
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
