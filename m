@@ -1,62 +1,62 @@
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A19F198A29
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 09:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE931A0AF0
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 09:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734947166; cv=none; b=JGO79A0gt+0skqxE57ISpntGf4G6YFrv8DjE+DnIaQ16z0FLokTbh0HykhlSA9Qw6kKcWZM4c8xJtspqFNHATjVlm56QRlU/trn/WVj//6J2hI4AAKK6R9VOxFlGEra3VUepNuSXa8vc5t+3L6MDDsILQmm3++U2nHtgRPzkvg4=
+	t=1734947178; cv=none; b=in7npyYCnb6kFBKDvXL8++aeBuuZbJMFup6dDQANi7zaSsCG/F6S8hHgAFKANGRjeftJ0hYls1EVsw+aSXi3Mo7iP+t7/MGJ3BteNr0XUhkirH5vJa88kj8nrPhEGFW6XEYHnvBs62lXW7atHm2Bl8y3gx9OGK3YPzqZ3aUGd9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734947166; c=relaxed/simple;
-	bh=AOHzYz3e0W68bypaywk5PqwWiTbsh7X+wa84FHfFzTo=;
+	s=arc-20240116; t=1734947178; c=relaxed/simple;
+	bh=+1lVb/czrpvckRjrC7+7Dr3aDdUG0igbcjvcBWUZaCE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KtyUibiQfAsyBRL7YFYarVwUUiVLco/Q7b6HQhUdkHMK3vgaKWiLAmgPH5aL8hWWsWblMAk0E7Xdz5vn7A6+Wree/tbmZWjtBe7SF83b/t/f+ZtUVw/r3eajyNPLVkYcoygmlzMmqczE4YI8VD2W3a0PeUSVWkgbr4iKPJsoUQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=aEKiZcJH; arc=none smtp.client-ip=209.85.210.172
+	 MIME-Version; b=bCM4GtRPhrQkCzjxfdVjLSbatTB5WokiNqoMxnigvrdTjdjTbMQbiFvK/xkoLuC/nHxNByc5MoMvT2crLLWcIehhSJpm0XKt9KDbhvFYFtjD5hxu4Wlwc0QuL5WiRYqjr1jkkTUsJTgKdswUaCddtmzVnEu7YPXyQfPLr4qU62A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=C2KeHkzD; arc=none smtp.client-ip=209.85.215.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="aEKiZcJH"
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-72909c459c4so3086425b3a.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 01:46:02 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="C2KeHkzD"
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-825c6570a80so2373540a12.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 01:46:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1734947162; x=1735551962; darn=lists.linux-m68k.org;
+        d=bytedance.com; s=google; t=1734947175; x=1735551975; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VAJKsDdGNb+ALwQvMYs9Oz9Vq8VGrLJsA8GxB+kZmZc=;
-        b=aEKiZcJHNCcd+GfdMAO+JO6hEmsIJmOaEjogAaeGunoFubPF24Bm+rTzCyMRMy4f7W
-         wizluZ9ZjQz5H7cUqiZcvTrNY1bUJlLVcGzkT7YIYZ09xp736ctnksaSa22evU9S2pEa
-         +hOnX9fNRbhedKnuLRhhGtzqNEhbctXmwm8mQkjXGbAC/B7glFSF9UfLAMqVo2ECMzlE
-         47LaJCvYGRF+65zTyKzlAEl4y194+Xg45z/tq+SOFZkD/uT5z2clmZygKJseyybFHI85
-         HbqSQhiP03SWUYTGv9Bu3sluBjkG79iP+1W8zw+NyxrhWYliFPrjFDiAUKi31ZtWce6v
-         dS6A==
+        bh=FItpERzyh1wDMphf2PSqriZlspFkmpQlPhA2jGTCtDU=;
+        b=C2KeHkzDpbqNjZoAh16vvRiAav0CL2hLFR2Jz5fW3oEr9DW1u0VH7KdGw8jPifoOgA
+         LQ+wyiMf5C75X4/1ZhVFM+9DN6MdNONmGfN1JoSozGUwr0As3qc2c5v4jKLYeahYe4qC
+         SC5HKObPbcZhlSeRFJMox6yeDMaWu9/ZHMpdkyp8JVaMJZsujsn4+6GwoOU9P82NUpL5
+         X9WY2SSQdPCVCJITL0X0ygcVVXmPP/L1kgOOLJoxIe+UJ7ez0LXty0+OAVsCd7a9V52B
+         tBGcVu2KdViFH8naHvhzTskKg22bhLZghYLTryppY6HDOXqDUF/dNkCjvJ9rMlsXmhnK
+         vLPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734947162; x=1735551962;
+        d=1e100.net; s=20230601; t=1734947175; x=1735551975;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VAJKsDdGNb+ALwQvMYs9Oz9Vq8VGrLJsA8GxB+kZmZc=;
-        b=rPxC3UGSZ0b6nKOI8gNg8t+dD8d8r5lhFaIjhg7Og9865WC/Pr0qmEoE/GKXAjREBx
-         p9x17oLP+BMWMOwfY2wsXvBLd7P4q9P8yB50u4nAICTZXQ8yuAg9YC2z5gypJ0tud4g+
-         JK440KaSHallwXd1D+Jwd0JiYuEIh0M4oNPaEJeEYM4/NGh9Dzra7HE3UI3bPoSujcXD
-         9TR7xrRvNVInvIeLUFFcgo9PJDMs8WW9Ier8YPvsdi0QkjXhrAlh1tcqYzc3KpHJEscn
-         ABz22QU/4j7q2k1SnLrXgBr9G8onvOe5NpnCqst7I/69CIbE0RdisX9pQphK6MHS5U/G
-         M9kA==
-X-Forwarded-Encrypted: i=1; AJvYcCWcWjShAY6V5j1da84xOoC80Jr0tHrDO0MNakIbMP8g+LlJchyZw92NbUMfGU48AhHIz8hDFt2u2pxE@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzqSuY/xbJCNHREw1ILw2+Wn20Sn5n3RhvKJPHvDM3IfWFQSj7z
-	kC31VDQ/t5FNXKgd7t60jItKPxuUXJsw4aKh4JjeiE/+Q43ehSBl/VLgyZQiO0Q=
-X-Gm-Gg: ASbGncsij8nbv+OciTmKRXc0xHA+JPd/loF6tTxFzIHZ4jzLOWvBAzXOCd3uLesOb1j
-	AgXntBhMo8o0YKL3rWMpWE4XkyqaGxt3htu3xl325KKLTDTRJ5PdFIl4p/46V/DEyi2+nLKFo2a
-	iCcOqtf3VgZtubhDDZVCEo8uwYp9gJZ1J5CzNGbOUFikc00DKMBwPRgkPflN3yTWsMmjgsme8pc
-	XKgBXFS/qFuXpY8d7RC39S1Pifd7ZaUO9Y7souUcC+aGDIT1Q680Ahbaw4GXaoZku15fuiLJvHZ
-	AUw9eyDsxryjwsFCMt4CEw==
-X-Google-Smtp-Source: AGHT+IEiKQiNoCztX+vEmXJ78+SVJHcoRjQcReSYKDpgexw8hG6RQW+fGx0o5GN+OmUz8JwpFgmgkg==
-X-Received: by 2002:a05:6a20:c88f:b0:1d5:10d6:92b9 with SMTP id adf61e73a8af0-1e5e07f88demr18787949637.30.1734947161832;
-        Mon, 23 Dec 2024 01:46:01 -0800 (PST)
+        bh=FItpERzyh1wDMphf2PSqriZlspFkmpQlPhA2jGTCtDU=;
+        b=ih0wmJhaEuxDppxWgrTUDhQnXEHzXf4Wqdj+Vj/r9RMl1GDoneKAkG04P0xgjHFw1x
+         L4XJs6gG5eJbcunLXmez6oJNRR5ZPSPzQJHckqV7Lz0G/ZCMveM0/VUi38FCv4GGa1f6
+         CzW7YabZmMzzslXD4u5VbiATDHFqYHb1lEB5kStuCletm/83iyKBLww6POv5+oS1PfnG
+         sZ9MW9BX9Rt3fhnm4weKtcm0qzrscXHum+8RyjSJQ9cKYb52v9rrwSGC68z3Fi98U4mY
+         qge2SHHZjeAZUj8mmQKRkbo0zWQcd4d3JRTeRuGkUNICtXS/oIfPb/QOX4Ru/rSJ59i6
+         LV1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUkfK4Ova81wYme1fCvbxJdX1MSIddgJ+O+VUKGW7NKuC31AIJLhz1S7UlI+pqSgXsWybC9+g0z2I37@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Ywp3p8cFox7PeOJ3MQbXyFmhvkw+18ZwFeZhy1OR7Lcb8RK3a8k
+	R4qaKb2WFPyLn16mqdTf4LMJDofBwgmfmzbba7lCW6YbuAYWP7fF89+CdLHlPoo=
+X-Gm-Gg: ASbGncsDHQnLCFgR/jdrvrqKfkl1iysnIMOl/Dkqu2RRHoHcxnzi4mwNbg60EVmbRJr
+	cl5eaOE3biqpF1Y306Rc2lbOfKqMW+5WZOjfVgMlaks/ZbCWkvMO8o5QdrR0GqFDizCPKd11oRm
+	V1KGV/IUK8mo9ujIJr7cDaGesFvAHDbWj5WbC3qA/6XoCjpk7r8QE7AJXyNR9Lycqyw3+Fl12GH
+	SZFEAeruW9ZiTBWko+W8eqMEZ5ZUPOvpAHwipGSksdHf3UkJi8/dCQHwY5YGQ7mXmgrPaWY214u
+	YwuNLqmmCtEsRq6kBp7IEQ==
+X-Google-Smtp-Source: AGHT+IF9RJvbCaq38Te31r1RKGqLS5POHI3EPqaSbNpVA67C9keEJqX0jQ2rnqy+EikMhfv/vLwTVQ==
+X-Received: by 2002:a05:6a20:12d2:b0:1e0:c0fa:e088 with SMTP id adf61e73a8af0-1e5e059b19cmr20289317637.18.1734947175103;
+        Mon, 23 Dec 2024 01:46:15 -0800 (PST)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.150])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8486c6sm7468309b3a.85.2024.12.23.01.45.49
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8486c6sm7468309b3a.85.2024.12.23.01.46.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Dec 2024 01:46:01 -0800 (PST)
+        Mon, 23 Dec 2024 01:46:14 -0800 (PST)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: peterz@infradead.org,
 	agordeev@linux.ibm.com,
@@ -98,9 +98,9 @@ Cc: linux-mm@kvack.org,
 	linux-sh@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 14/17] mm: pgtable: move __tlb_remove_table_one() in x86 to generic file
-Date: Mon, 23 Dec 2024 17:41:00 +0800
-Message-Id: <286e9777dd266dc610de20120fae453b84d3a868.1734945104.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 15/17] mm: pgtable: remove tlb_remove_page_ptdesc()
+Date: Mon, 23 Dec 2024 17:41:01 +0800
+Message-Id: <b37435768345e0fcf7ea358f69b4a71767f0f530.1734945104.git.zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <cover.1734945104.git.zhengqi.arch@bytedance.com>
 References: <cover.1734945104.git.zhengqi.arch@bytedance.com>
@@ -112,80 +112,198 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The __tlb_remove_table_one() in x86 does not contain architecture-specific
-content, so move it to the generic file.
+Here we are explicitly dealing with struct page, and the following logic
+semms strange:
+
+tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));
+
+tlb_remove_page_ptdesc
+--> tlb_remove_page(tlb, ptdesc_page(pt));
+
+So remove tlb_remove_page_ptdesc() and make callers call tlb_remove_page()
+directly.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Originally-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/tlb.h | 19 -------------------
- mm/mmu_gather.c            | 20 ++++++++++++++++++--
- 2 files changed, 18 insertions(+), 21 deletions(-)
+ arch/csky/include/asm/pgalloc.h      | 2 +-
+ arch/hexagon/include/asm/pgalloc.h   | 2 +-
+ arch/loongarch/include/asm/pgalloc.h | 2 +-
+ arch/m68k/include/asm/sun3_pgalloc.h | 2 +-
+ arch/mips/include/asm/pgalloc.h      | 2 +-
+ arch/nios2/include/asm/pgalloc.h     | 2 +-
+ arch/openrisc/include/asm/pgalloc.h  | 2 +-
+ arch/riscv/include/asm/pgalloc.h     | 2 +-
+ arch/sh/include/asm/pgalloc.h        | 2 +-
+ arch/um/include/asm/pgalloc.h        | 8 ++++----
+ include/asm-generic/tlb.h            | 6 ------
+ 11 files changed, 13 insertions(+), 19 deletions(-)
 
-diff --git a/arch/x86/include/asm/tlb.h b/arch/x86/include/asm/tlb.h
-index 3858dbf75880e..77f52bc1578a7 100644
---- a/arch/x86/include/asm/tlb.h
-+++ b/arch/x86/include/asm/tlb.h
-@@ -20,25 +20,6 @@ static inline void tlb_flush(struct mmu_gather *tlb)
- 	flush_tlb_mm_range(tlb->mm, start, end, stride_shift, tlb->freed_tables);
- }
+diff --git a/arch/csky/include/asm/pgalloc.h b/arch/csky/include/asm/pgalloc.h
+index f1ce5b7b28f22..936a43a49e704 100644
+--- a/arch/csky/include/asm/pgalloc.h
++++ b/arch/csky/include/asm/pgalloc.h
+@@ -64,7 +64,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+ #define __pte_free_tlb(tlb, pte, address)		\
+ do {							\
+ 	pagetable_dtor(page_ptdesc(pte));		\
+-	tlb_remove_page_ptdesc(tlb, page_ptdesc(pte));	\
++	tlb_remove_page(tlb, (pte));			\
+ } while (0)
  
--#ifdef CONFIG_PT_RECLAIM
--static inline void __tlb_remove_table_one_rcu(struct rcu_head *head)
--{
--	struct ptdesc *ptdesc;
--
--	ptdesc = container_of(head, struct ptdesc, pt_rcu_head);
--	__tlb_remove_table(ptdesc);
--}
--
--static inline void __tlb_remove_table_one(void *table)
--{
--	struct ptdesc *ptdesc;
--
--	ptdesc = table;
--	call_rcu(&ptdesc->pt_rcu_head, __tlb_remove_table_one_rcu);
--}
--#define __tlb_remove_table_one __tlb_remove_table_one
--#endif /* CONFIG_PT_RECLAIM */
--
- static inline void invlpg(unsigned long addr)
- {
- 	asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
-diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-index 1e21022bcf339..7aa6f18c500b2 100644
---- a/mm/mmu_gather.c
-+++ b/mm/mmu_gather.c
-@@ -311,13 +311,29 @@ static inline void tlb_table_invalidate(struct mmu_gather *tlb)
+ extern void pagetable_init(void);
+diff --git a/arch/hexagon/include/asm/pgalloc.h b/arch/hexagon/include/asm/pgalloc.h
+index 40e42a0e71673..8b1550498f1bf 100644
+--- a/arch/hexagon/include/asm/pgalloc.h
++++ b/arch/hexagon/include/asm/pgalloc.h
+@@ -90,7 +90,7 @@ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
+ #define __pte_free_tlb(tlb, pte, addr)				\
+ do {								\
+ 	pagetable_dtor((page_ptdesc(pte)));			\
+-	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
++	tlb_remove_page((tlb), (pte));				\
+ } while (0)
+ 
+ #endif
+diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
+index 7211dff8c969e..5a4f22aeb6189 100644
+--- a/arch/loongarch/include/asm/pgalloc.h
++++ b/arch/loongarch/include/asm/pgalloc.h
+@@ -58,7 +58,7 @@ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+ #define __pte_free_tlb(tlb, pte, address)			\
+ do {								\
+ 	pagetable_dtor(page_ptdesc(pte));			\
+-	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
++	tlb_remove_page((tlb), (pte));				\
+ } while (0)
+ 
+ #ifndef __PAGETABLE_PMD_FOLDED
+diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
+index 2b626cb3ad0ae..63d9f95f5e3dd 100644
+--- a/arch/m68k/include/asm/sun3_pgalloc.h
++++ b/arch/m68k/include/asm/sun3_pgalloc.h
+@@ -20,7 +20,7 @@ extern const char bad_pmd_string[];
+ #define __pte_free_tlb(tlb, pte, addr)				\
+ do {								\
+ 	pagetable_dtor(page_ptdesc(pte));			\
+-	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
++	tlb_remove_page((tlb), (pte));				\
+ } while (0)
+ 
+ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 36d9805033c4b..bbee21345154b 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -57,7 +57,7 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ #define __pte_free_tlb(tlb, pte, address)			\
+ do {								\
+ 	pagetable_dtor(page_ptdesc(pte));			\
+-	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
++	tlb_remove_page((tlb), (pte));				\
+ } while (0)
+ 
+ #ifndef __PAGETABLE_PMD_FOLDED
+diff --git a/arch/nios2/include/asm/pgalloc.h b/arch/nios2/include/asm/pgalloc.h
+index 12a536b7bfbd4..641cec8fb2a22 100644
+--- a/arch/nios2/include/asm/pgalloc.h
++++ b/arch/nios2/include/asm/pgalloc.h
+@@ -31,7 +31,7 @@ extern pgd_t *pgd_alloc(struct mm_struct *mm);
+ #define __pte_free_tlb(tlb, pte, addr)					\
+ 	do {								\
+ 		pagetable_dtor(page_ptdesc(pte));			\
+-		tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
++		tlb_remove_page((tlb), (pte));				\
+ 	} while (0)
+ 
+ #endif /* _ASM_NIOS2_PGALLOC_H */
+diff --git a/arch/openrisc/include/asm/pgalloc.h b/arch/openrisc/include/asm/pgalloc.h
+index 596e2355824e3..e9b9bc53ece0b 100644
+--- a/arch/openrisc/include/asm/pgalloc.h
++++ b/arch/openrisc/include/asm/pgalloc.h
+@@ -69,7 +69,7 @@ extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm);
+ #define __pte_free_tlb(tlb, pte, addr)				\
+ do {								\
+ 	pagetable_dtor(page_ptdesc(pte));			\
+-	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
++	tlb_remove_page((tlb), (pte));				\
+ } while (0)
+ 
+ #endif
+diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
+index c8907b8317115..ab4f9b2cf9e11 100644
+--- a/arch/riscv/include/asm/pgalloc.h
++++ b/arch/riscv/include/asm/pgalloc.h
+@@ -29,7 +29,7 @@ static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
+ 		tlb_remove_ptdesc(tlb, pt);
+ 	} else {
+ 		pagetable_dtor(pt);
+-		tlb_remove_page_ptdesc(tlb, pt);
++		tlb_remove_page(tlb, ptdesc_page((struct ptdesc *)pt));
  	}
  }
  
--#ifndef __tlb_remove_table_one
-+#ifdef CONFIG_PT_RECLAIM
-+static inline void __tlb_remove_table_one_rcu(struct rcu_head *head)
-+{
-+	struct ptdesc *ptdesc;
-+
-+	ptdesc = container_of(head, struct ptdesc, pt_rcu_head);
-+	__tlb_remove_table(ptdesc);
-+}
-+
-+static inline void __tlb_remove_table_one(void *table)
-+{
-+	struct ptdesc *ptdesc;
-+
-+	ptdesc = table;
-+	call_rcu(&ptdesc->pt_rcu_head, __tlb_remove_table_one_rcu);
-+}
-+#else
- static inline void __tlb_remove_table_one(void *table)
- {
- 	tlb_remove_table_sync_one();
- 	__tlb_remove_table(table);
- }
--#endif
-+#endif /* CONFIG_PT_RECLAIM */
+diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
+index 96d938fdf2244..43812b2363efd 100644
+--- a/arch/sh/include/asm/pgalloc.h
++++ b/arch/sh/include/asm/pgalloc.h
+@@ -35,7 +35,7 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
+ #define __pte_free_tlb(tlb, pte, addr)				\
+ do {								\
+ 	pagetable_dtor(page_ptdesc(pte));			\
+-	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
++	tlb_remove_page((tlb), (pte));				\
+ } while (0)
  
- static void tlb_remove_table_one(void *table)
+ #endif /* __ASM_SH_PGALLOC_H */
+diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
+index f0af23c3aeb2b..98190c318a8e9 100644
+--- a/arch/um/include/asm/pgalloc.h
++++ b/arch/um/include/asm/pgalloc.h
+@@ -28,7 +28,7 @@ extern pgd_t *pgd_alloc(struct mm_struct *);
+ #define __pte_free_tlb(tlb, pte, address)			\
+ do {								\
+ 	pagetable_dtor(page_ptdesc(pte));			\
+-	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
++	tlb_remove_page((tlb), (pte));				\
+ } while (0)
+ 
+ #if CONFIG_PGTABLE_LEVELS > 2
+@@ -36,15 +36,15 @@ do {								\
+ #define __pmd_free_tlb(tlb, pmd, address)			\
+ do {								\
+ 	pagetable_dtor(virt_to_ptdesc(pmd));			\
+-	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));	\
++	tlb_remove_page((tlb), virt_to_page(pmd));		\
+ } while (0)
+ 
+ #if CONFIG_PGTABLE_LEVELS > 3
+ 
+ #define __pud_free_tlb(tlb, pud, address)			\
+ do {								\
+-	pagetable_dtor(virt_to_ptdesc(pud));		\
+-	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));	\
++	pagetable_dtor(virt_to_ptdesc(pud));			\
++	tlb_remove_page((tlb), virt_to_page(pud));		\
+ } while (0)
+ 
+ #endif
+diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+index 69de47c7ef3c5..8d6cfe5058543 100644
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -504,12 +504,6 @@ static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
+ 	tlb_remove_table(tlb, pt);
+ }
+ 
+-/* Like tlb_remove_ptdesc, but for page-like page directories. */
+-static inline void tlb_remove_page_ptdesc(struct mmu_gather *tlb, struct ptdesc *pt)
+-{
+-	tlb_remove_page(tlb, ptdesc_page(pt));
+-}
+-
+ static inline void tlb_change_page_size(struct mmu_gather *tlb,
+ 						     unsigned int page_size)
  {
 -- 
 2.20.1
