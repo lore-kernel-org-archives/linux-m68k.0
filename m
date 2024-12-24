@@ -1,266 +1,187 @@
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28ADA1A3BD7
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 09:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA7DEC0
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Dec 2024 09:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734947203; cv=none; b=cunNuywiAiGRYqBSNA/+VHQ0Z0EgHrUuQMSbgPcBQFrxgsZCPC/2SMuc8dzVRvoZ8vS2qDHv1ItLsw7FZRwqdg9olfO4MhoFhEeyiXMeelbhBhd/yEYotXWVzTksKmUlMwvc2nUMjCoiUKcXUrxEaB2KOXbCrEQbZeobrScfdRk=
+	t=1735031023; cv=none; b=bb5e/a7rUdiNbSRpU2HHHZcjbdjDvsq/fh7ga4DsUkfGj1p4i3bO1VjRZT0NOTtwdR48NseXo1B5bH647wgjDyH6O1kSjcXT89ZFw9FtPPExWHO3gzV+wTqhPky1S4yw3mVKvX8pMcIrUM9xhw9RfbetGMvD+cazBBlY2BKzogo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734947203; c=relaxed/simple;
-	bh=z7CWl7O3eullh1F2ul6vkw9nxR1R7juWYomvqNSqC4Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IEBewRxMutOB4mOCnjTGmLsHIdwNcSTZr2yGhYX5w7Ze4y/SJJW5LlshzZxveWVrnSVu7BtAxNJm8ecBKuo+Xjx+WMtbNPFA4xBQl9kJXdovv1hkCyFazQxLZ9jkNUay+Py9ZWtKx4fBHjVW25F5ktaTTEYY/+YZuOnMHNUeahY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=dDh/afF1; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1735031023; c=relaxed/simple;
+	bh=JY2iZgAgeG8k051Hgj0tSbNJAlBgvRfhcqy8vob3y0o=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=c/5Hkz1yv8LrXn8bj5/6Lwmd+4ETELgeKe2+8jFQuElNpTmhk6e+zlP0boavslpobJQheG49HPlRT5pUPm4eJtH2ZZYmnPNkdeOFZ6fKoyd6g0fVlNNILXS7UgZK9KrXsb17c5J2vqLdy45CGgSWIx4k5/Rr9ZO0LsrAkBr3IzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Mu/zN4p6; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="dDh/afF1"
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-725dac69699so3489297b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Dec 2024 01:46:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1734947200; x=1735552000; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Vy7m3PQdTp9s3cHn2TFUEZi29ZbV6wwwxQw/bfJltk=;
-        b=dDh/afF1ebhl1QjOXiqjkwoBTRUmPTG2OxGyvQ1hufBFW5hfPM8qMMAfVb7rUamjSF
-         EW8hxOX4pQkSodSkNhqyCSKmxyWNpMXyHTcIHw/kImzAz0wNS0dWnYD9oNy9CAZBic2Y
-         8cSkEssykn5S1Q8fCsERLTzbIRPru5U8FsZsumDw5dnPVI1ZvmOvSARCQveLLM3+2aFu
-         x2/xPocMaDu9Ssop1R0MzyAK4Aa4monZD0xSvQ0Wv4lSdKUa+9El9F35RKgRdnr/pWVN
-         WavkWZ5qboHAu9MxPFtMwSHVB0iyRUQ01b1jrDZtikoG8sv2EtlOuwFHMFh2MA3LDyBx
-         vSPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734947200; x=1735552000;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Vy7m3PQdTp9s3cHn2TFUEZi29ZbV6wwwxQw/bfJltk=;
-        b=KfXELPLZkKLMfwoHWbQnNc/XmSQQb/Nj8BpKWelkPB8uLOEDQVkHDWNYkVBEc4zAHY
-         SjBinM55lZvNY4ND16aEbX8Ve8YY5KQcH7Q2rcYtvww0nJD0Bawmih2b/NIYEVYWjyYo
-         ZdA38UvEjDMiaAnR7nEhFu93k9LMCb57ZAdxfznUHtVF2skRZ4uxYnGg5YJIf69IbbvQ
-         GzdKYAhW8MWT6BJ511PdMsv/La1vxdOsiozQFUr4E0jGlg7nhKERHHkmHoE+GRtQkWHB
-         ZP3VUhXafk3E5rvEX1NCZBAiC8mcKNqLts+mAv4mejuSS8X2Y0UJ5qlLVfVx3XrxDk5f
-         xLwA==
-X-Forwarded-Encrypted: i=1; AJvYcCWfNu0cYanRMiMQ/B8DvZtG4mbCiiSMEaQdzW/SZka2hzOWqSLqo2mDiaEGSkXWWJmNPST/rVs9R0pV@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxpPfb+X5eegAbhidcE7hqx5HO7GqPXzqCjbETKLEX/pVDusSjU
-	yOOAyvcnnvYfjgJ6llp0jdFWd4q/RGunmatE29gy0+RAkMpOS9wFnZ8YepNUYZQ=
-X-Gm-Gg: ASbGncu76275Vcza6ptzci4ptOhzYJGoLfLJ/QVUupEWyj0mgGfDs20h2yZLkfrycuF
-	TApdg6bHFUh8oxAuomv6FdkHT2/QfkfGTmket1URxSQtTIFH86RHDv6D8bVnjrmkKVs1V2ZgGo0
-	U6MC085jwjATZKe4DJpBf8K8ILo0DPt8AbCFjAdFs3CHXjOcicous50o6LtFN4YL8zvGYttz9B9
-	+N/BOwBnNc1DnQ2td8INenT+EKFVbREfWaDhzuWZ2P6P4JLKyn7ZDWULdP1kuG/bwau6dOzfveh
-	3emBPxueK6upsJpWPOLo1Q==
-X-Google-Smtp-Source: AGHT+IHTlP+hesMysY/dnyw4k1T/aSGpJ0FSxzWG+ektln9VxnC2FaHlf9zeRwOgabkwOIXU2HSkPg==
-X-Received: by 2002:a05:6a00:2407:b0:729:597:4faa with SMTP id d2e1a72fcca58-72abde9c004mr15027146b3a.16.1734947200520;
-        Mon, 23 Dec 2024 01:46:40 -0800 (PST)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.150])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8486c6sm7468309b3a.85.2024.12.23.01.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Dec 2024 01:46:40 -0800 (PST)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: peterz@infradead.org,
-	agordeev@linux.ibm.com,
-	kevin.brodsky@arm.com,
-	tglx@linutronix.de,
-	david@redhat.com,
-	jannh@google.com,
-	hughd@google.com,
-	yuzhao@google.com,
-	willy@infradead.org,
-	muchun.song@linux.dev,
-	vbabka@kernel.org,
-	lorenzo.stoakes@oracle.com,
-	akpm@linux-foundation.org,
-	rientjes@google.com,
-	vishal.moola@gmail.com,
-	arnd@arndb.de,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	dave.hansen@linux.intel.com,
-	rppt@kernel.org,
-	ryan.roberts@arm.com
-Cc: linux-mm@kvack.org,
-	linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	x86@kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 17/17] mm: pgtable: introduce generic pagetable_dtor_free()
-Date: Mon, 23 Dec 2024 17:41:03 +0800
-Message-Id: <3ade33c5049f465dc2f0b95edc2d68c80f2048c9.1734945104.git.zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <cover.1734945104.git.zhengqi.arch@bytedance.com>
-References: <cover.1734945104.git.zhengqi.arch@bytedance.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Mu/zN4p6"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1735031021; x=1766567021;
+  h=date:from:to:cc:subject:message-id;
+  bh=JY2iZgAgeG8k051Hgj0tSbNJAlBgvRfhcqy8vob3y0o=;
+  b=Mu/zN4p6WTFXj0LnS36iqHWPc/HB8w/ZyZ23JoS92Sf2AXHLiap/sZu1
+   apQ8rEVsgS3zcuQa7fFNrUe3cAqNZZq2lZeGFkFvI4WdsJ334nIidlVDW
+   lGXqnCT6u6+fmm0BPcvG53vuyXJa1E7VzangjaseGZDev2o0EQTh9i0Uq
+   /MJ7oI0L5fRpPAWfWrz0NZlmWH7ijoPuvzC+K/YrTN5gGGUfG28sjC1EI
+   FXE0Ha9xETSoYipTmY1SzFr77ceqfqyGA30WvulRoByl+Q3VY+qXs6TTY
+   zirzOO3IwFhk40Y0iSonFQOuj3Bg/4Mqh2Cy0Hfz/XQC9uxJJ5JYdz4a1
+   w==;
+X-CSE-ConnectionGUID: l6PJ76KLSei+/A4vOx03vA==
+X-CSE-MsgGUID: ySZJ8qBVQbqL0qrYPir5gQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11295"; a="46874678"
+X-IronPort-AV: E=Sophos;i="6.12,259,1728975600"; 
+   d="scan'208";a="46874678"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2024 01:03:40 -0800
+X-CSE-ConnectionGUID: SICq7AO7T6O5+uf7CZT5ow==
+X-CSE-MsgGUID: ByRTkky9TZSTo5UEgtgLxg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,259,1728975600"; 
+   d="scan'208";a="104293628"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 24 Dec 2024 01:03:39 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tQ0pF-0000zL-1F;
+	Tue, 24 Dec 2024 09:03:37 +0000
+Date: Tue, 24 Dec 2024 17:02:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 523da2cae9f513b9e639df475fb1ebbdeff58a39
+Message-ID: <202412241737.Z8lSW2fB-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The pte_free(), pmd_free(), __pud_free() and __p4d_free() in
-asm-generic/pgalloc.h and the generic __tlb_remove_table() are basically
-the same, so let's introduce pagetable_dtor_free() to deduplicate them.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 523da2cae9f513b9e639df475fb1ebbdeff58a39  Merge tag 'v6.13-rc4'
 
-In addition, the pagetable_dtor_free() in s390 actually does the same
-thing, so let's s390 also calls generic pagetable_dtor_free().
+elapsed time: 1003m
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/s390/mm/pgalloc.c        | 18 ++++++------------
- include/asm-generic/pgalloc.h | 23 ++++-------------------
- include/asm-generic/tlb.h     |  5 +----
- include/linux/mm.h            |  8 ++++++++
- 4 files changed, 19 insertions(+), 35 deletions(-)
+configs tested: 110
+configs skipped: 5
 
-diff --git a/arch/s390/mm/pgalloc.c b/arch/s390/mm/pgalloc.c
-index 3e002dea6278f..1e0727be48eaf 100644
---- a/arch/s390/mm/pgalloc.c
-+++ b/arch/s390/mm/pgalloc.c
-@@ -180,32 +180,26 @@ unsigned long *page_table_alloc(struct mm_struct *mm)
- 	return table;
- }
- 
--static void pagetable_dtor_free(struct ptdesc *ptdesc)
--{
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
--}
--
- void page_table_free(struct mm_struct *mm, unsigned long *table)
- {
--	struct ptdesc *ptdesc = virt_to_ptdesc(table);
-+	struct page *page = virt_to_page(table);
- 
--	pagetable_dtor_free(ptdesc);
-+	pagetable_dtor_free(page);
- }
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- static void pte_free_now(struct rcu_head *head)
- {
--	struct ptdesc *ptdesc = container_of(head, struct ptdesc, pt_rcu_head);
-+	struct page *page = container_of(head, struct page, rcu_head);
- 
--	pagetable_dtor_free(ptdesc);
-+	pagetable_dtor_free(page);
- }
- 
- void pte_free_defer(struct mm_struct *mm, pgtable_t pgtable)
- {
--	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
-+	struct page *page = virt_to_page(pgtable);
- 
--	call_rcu(&ptdesc->pt_rcu_head, pte_free_now);
-+	call_rcu(&page->rcu_head, pte_free_now);
- 	/*
- 	 * THPs are not allowed for KVM guests. Warn if pgste ever reaches here.
- 	 * Turn to the generic pte_free_defer() version once gmap is removed.
-diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-index 4afb346eae255..7d327889df306 100644
---- a/include/asm-generic/pgalloc.h
-+++ b/include/asm-generic/pgalloc.h
-@@ -107,10 +107,7 @@ static inline pgtable_t pte_alloc_one_noprof(struct mm_struct *mm)
-  */
- static inline void pte_free(struct mm_struct *mm, struct page *pte_page)
- {
--	struct ptdesc *ptdesc = page_ptdesc(pte_page);
--
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(pte_page);
- }
- 
- 
-@@ -150,11 +147,7 @@ static inline pmd_t *pmd_alloc_one_noprof(struct mm_struct *mm, unsigned long ad
- #ifndef __HAVE_ARCH_PMD_FREE
- static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
- {
--	struct ptdesc *ptdesc = virt_to_ptdesc(pmd);
--
--	BUG_ON((unsigned long)pmd & (PAGE_SIZE-1));
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(virt_to_page(pmd));
- }
- #endif
- 
-@@ -199,11 +192,7 @@ static inline pud_t *pud_alloc_one_noprof(struct mm_struct *mm, unsigned long ad
- 
- static inline void __pud_free(struct mm_struct *mm, pud_t *pud)
- {
--	struct ptdesc *ptdesc = virt_to_ptdesc(pud);
--
--	BUG_ON((unsigned long)pud & (PAGE_SIZE-1));
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(virt_to_page(pud));
- }
- 
- #ifndef __HAVE_ARCH_PUD_FREE
-@@ -245,11 +234,7 @@ static inline p4d_t *p4d_alloc_one_noprof(struct mm_struct *mm, unsigned long ad
- 
- static inline void __p4d_free(struct mm_struct *mm, p4d_t *p4d)
- {
--	struct ptdesc *ptdesc = virt_to_ptdesc(p4d);
--
--	BUG_ON((unsigned long)p4d & (PAGE_SIZE-1));
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(virt_to_page(p4d));
- }
- 
- #ifndef __HAVE_ARCH_P4D_FREE
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 583e95568f52b..ef25169523602 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -211,10 +211,7 @@ struct mmu_table_batch {
- #ifndef __HAVE_ARCH_TLB_REMOVE_TABLE
- static inline void __tlb_remove_table(void *table)
- {
--	struct ptdesc *ptdesc = page_ptdesc((struct page *)table);
--
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(table);
- }
- #endif
- 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index cad11fa10c192..cd078d51f47c7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3001,6 +3001,14 @@ static inline void pagetable_dtor(struct ptdesc *ptdesc)
- 	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
- }
- 
-+static inline void pagetable_dtor_free(void *table)
-+{
-+	struct ptdesc *ptdesc = page_ptdesc((struct page *)table);
-+
-+	pagetable_dtor(ptdesc);
-+	pagetable_free(ptdesc);
-+}
-+
- static inline bool pagetable_pte_ctor(struct ptdesc *ptdesc)
- {
- 	struct folio *folio = ptdesc_folio(ptdesc);
--- 
-2.20.1
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                   randconfig-001-20241224    gcc-13.2.0
+arc                   randconfig-002-20241224    gcc-13.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                             pxa_defconfig    gcc-14.2.0
+arm                   randconfig-001-20241224    gcc-14.2.0
+arm                   randconfig-002-20241224    gcc-14.2.0
+arm                   randconfig-003-20241224    clang-19
+arm                   randconfig-004-20241224    gcc-14.2.0
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20241224    gcc-14.2.0
+arm64                 randconfig-002-20241224    clang-20
+arm64                 randconfig-003-20241224    gcc-14.2.0
+arm64                 randconfig-004-20241224    gcc-14.2.0
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20241224    gcc-14.2.0
+csky                  randconfig-002-20241224    gcc-14.2.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20241224    clang-20
+hexagon               randconfig-002-20241224    clang-20
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20241224    clang-19
+i386        buildonly-randconfig-002-20241224    gcc-12
+i386        buildonly-randconfig-003-20241224    clang-19
+i386        buildonly-randconfig-004-20241224    clang-19
+i386        buildonly-randconfig-005-20241224    clang-19
+i386                                defconfig    clang-19
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20241224    gcc-14.2.0
+loongarch             randconfig-002-20241224    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+mips                        bcm63xx_defconfig    clang-20
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20241224    gcc-14.2.0
+nios2                 randconfig-002-20241224    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                randconfig-001-20241224    gcc-14.2.0
+parisc                randconfig-002-20241224    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc                     kmeter1_defconfig    gcc-14.2.0
+powerpc               randconfig-001-20241224    clang-15
+powerpc               randconfig-002-20241224    clang-20
+powerpc               randconfig-003-20241224    gcc-14.2.0
+powerpc                  storcenter_defconfig    gcc-14.2.0
+powerpc                     tqm8540_defconfig    gcc-14.2.0
+powerpc64             randconfig-001-20241224    clang-20
+powerpc64             randconfig-002-20241224    clang-20
+powerpc64             randconfig-003-20241224    clang-20
+riscv                            allmodconfig    clang-20
+riscv                             allnoconfig    gcc-14.2.0
+riscv                 randconfig-001-20241224    clang-17
+riscv                 randconfig-002-20241224    gcc-14.2.0
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20241224    gcc-14.2.0
+s390                  randconfig-002-20241224    gcc-14.2.0
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20241224    gcc-14.2.0
+sh                    randconfig-002-20241224    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20241224    gcc-14.2.0
+sparc                 randconfig-002-20241224    gcc-14.2.0
+sparc64               randconfig-001-20241224    gcc-14.2.0
+sparc64               randconfig-002-20241224    gcc-14.2.0
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20241224    gcc-12
+um                    randconfig-002-20241224    clang-15
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20241224    clang-19
+x86_64      buildonly-randconfig-002-20241224    gcc-12
+x86_64      buildonly-randconfig-003-20241224    gcc-12
+x86_64      buildonly-randconfig-004-20241224    clang-19
+x86_64      buildonly-randconfig-005-20241224    gcc-11
+x86_64      buildonly-randconfig-006-20241224    gcc-11
+x86_64                              defconfig    gcc-11
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20241224    gcc-14.2.0
+xtensa                randconfig-002-20241224    gcc-14.2.0
+xtensa                         virt_defconfig    gcc-14.2.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
