@@ -1,119 +1,123 @@
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA435139CE3
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 12:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D247158524
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 14:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735476539; cv=none; b=Vxd9yBGi1/0sve6Q0a4Zw2x1Qdg9t/xTBicaV88q1Vt3LXunY058urr9JYvxFXq0vBz+OevYW8+v+E9/pdN2mJ6yRcKKxvfoivn2xNAg+MmZW2LGqFPO2sfe47aXC8qUQjX1tOZP6DZ6aQ3xqtr7Rm0vpB9sCwS7W7t9kEMOiC4=
+	t=1735482216; cv=none; b=Y9YqLdV9dPhDzwD/qitQ5E7/QHJ3ahjsmmx23nkQBkewO4lMMrWL3lMQAqFJL4cA0nX5lHvmXQjicAVaMhkYfcmomq20LaL03up14wLS5fNZwew0cyDi5z/UJM28goyjQxrZ/tkO6COdGTNYdm53QixaLV4AQMD0Jz/k5MtUku4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735476539; c=relaxed/simple;
-	bh=ixN+hOaBvIW+elMaTd184kqbR7SSPxC/FpKVOrKf2kQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=duTKvCaSZdtDmz1XAfLY6MU26KxOtwHaZK/zD5x62A+EQnY2zfOjfynVcfq1pRIbVYTqLYr5zXAhHu/EjCb21MEt14XEZCexw1MskqBRYR6jmrOW0YEfqZn0SOc3d0aeRKrm4XwJM7AhAlAnEq3fA+1k7DjUY+5D7ZmahMluvsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cRTssVhg; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cRTssVhg"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 104AD1BF203;
-	Sun, 29 Dec 2024 12:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1735476529;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=KorW1186MzLDPPPF2ikeoa3nLOcgLvBZg6wPbUIJ5Q4=;
-	b=cRTssVhgHejgAB1HtHoJSSlniA9+IQ3KaJzGziMv8R+U9tcXlqFw90j72RUfp3PjzVfap+
-	cM1ZkUy1AD+/iqDo728RiJTwPcFAkSFnTcTVHdXQ+LF3WdpW4+qnFYDcqiHo4gmR1ZwkZM
-	WBMqW2WP8bqPmKFDxLQCJgJhy/q7w8PyrRLzfbi3Pr0VJVYd6LBBzyZNAt1iKZZGGawHbw
-	7J7QcAla4+0Nek+YBQ6u6mpA2ljdUfj3gAhyckHSI5lr+PVm5E4Mv5WqWTBYz2+ggd2d3k
-	D6LThQZ4us1r8/I6x6TWbMxDSus+QdEHTYAQCZwKzbeOXvzRzrObHACfG+yNog==
-Date: Sun, 29 Dec 2024 13:48:48 +0100
-From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: Build issue "Error: operands mismatch -- statement `movec
- %d2,%caar' ignored" on m68k
-Message-ID: <20241229134848.0a1d9719@windsurf>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1735482216; c=relaxed/simple;
+	bh=HpKtBxUC1C/IPpF8E897GeSso7+foGT5V+tFHTA6ABI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MV/aPcjVQO/ZcjslesRcipYMqLeSFrI+PAdSiXJVmByxqVxPpGQs5iHwQcnIWJDz0EeBmxXtL2cYv19dGHu6MEy6jycdV57NUz2pKgWvlZbUQk0CdPbeqwHST/6JwFSeR5Ce0K/Ti1Y7iFhlEY7oRyxWRGnmZjC2GNpkRfJexWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-5187aa2c97dso2864279e0c.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 06:23:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735482212; x=1736087012;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aJkgEJT8WcoDk1SIxMtxhW8aZb2FiOHku/9KGruRMlA=;
+        b=sa3DUvaHLu3AoKsKQr1hoxq2pcKbH0Ne0+YdkQnT+JA6PN9opB+EQ+VJrL6kaB+m16
+         PVLHPEtWH66Ja4Aw4jQ1psHrdXjo+vlv0+lf2k2DYa1ekxCkIBtqSAaIToGRxr+LOpij
+         cCmm0cUGD4S4QJlPvGATCOXjxjPyy4L75S85X1wYkDVRvQ/C4ukxDPWsaS/X6GBt2d0r
+         zu3jU2CEM3LxD3+ueDfk/DMZfEcXT74kSElbtLC7+41ibLZ6jD0xcq/TA7ycLNL0aEH1
+         yNaGEZMJduRs50PWCvxmxmbymuAXgdajSUGKPwSuGeX58AVOiwpTZlGEa/kZpiRb7lga
+         J03g==
+X-Gm-Message-State: AOJu0YyIuxJbVosTOejMTTkKbiIP7gYvmLVo4kkVLUnMxpS9EZx3S3aY
+	Q+USSftxV8hluLanZm2raSNZPARRjGNbFi1piJKq9KDk1kBk0ggnS73RMMWJ
+X-Gm-Gg: ASbGncvbMSKKQlu3dadI/QVFzPcH1rdUNZkhbQR97qtRMcz32WWdJam8uKCg2AU9Nx4
+	gB/mbm369RGBgpphwiVp9INllcMrBAm9rod0vqawoinClOnw+SEfzsPfBA3enYv6uYAh/KDkGJs
+	WK0WlamuVcy2jAZMGqECAwqCtYpBUIZc6i/v9LAJrDD3I2cvlAUemOVsdFn6WudAy/gOpQkFQfk
+	4MbNgahjGvhkUvt+p82jY8SEfVbXZEUUFJduAPPb/kDHQ+JYm9clZTRZbMt4hs+emAAH0SGWdlj
+	OqvyJqBrh614ALcRTNSdz6A=
+X-Google-Smtp-Source: AGHT+IHVcKGSgGGyCvzwBLZUzKKHWxTK8sRNQ2QFjfBYf4j30hnE5ttx2W1G/sfZOj2KLziBIRH5pQ==
+X-Received: by 2002:a05:6122:1b0b:b0:50d:5e21:ef39 with SMTP id 71dfb90a1353d-51b75c46950mr24442083e0c.1.1735482212042;
+        Sun, 29 Dec 2024 06:23:32 -0800 (PST)
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-51b68bb4751sm2210754e0c.18.2024.12.29.06.23.31
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 29 Dec 2024 06:23:31 -0800 (PST)
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-518957b0533so2697487e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 06:23:31 -0800 (PST)
+X-Received: by 2002:a05:6102:c12:b0:4b2:485b:e151 with SMTP id
+ ada2fe7eead31-4b2cc360159mr27416916137.10.1735482211372; Sun, 29 Dec 2024
+ 06:23:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.petazzoni@bootlin.com
+References: <20241229134848.0a1d9719@windsurf>
+In-Reply-To: <20241229134848.0a1d9719@windsurf>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 29 Dec 2024 15:23:19 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU-DB1kOymg3-E4nRN_8R8N_R3wVZq7MNYUGsQWLa3hrg@mail.gmail.com>
+Message-ID: <CAMuHMdU-DB1kOymg3-E4nRN_8R8N_R3wVZq7MNYUGsQWLa3hrg@mail.gmail.com>
+Subject: Re: Build issue "Error: operands mismatch -- statement `movec
+ %d2,%caar' ignored" on m68k
+To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi Thomas,
 
-While trying to build the multi_defconfig, from Linux 6.12.5, for a
-68040 system, the build fails with:
+On Sun, Dec 29, 2024 at 1:48=E2=80=AFPM Thomas Petazzoni
+<thomas.petazzoni@bootlin.com> wrote:
+> While trying to build the multi_defconfig, from Linux 6.12.5, for a
+> 68040 system, the build fails with:
+>
+> {standard input}: Assembler messages:
+> {standard input}:104: Error: operands mismatch -- statement `movec %d2,%c=
+aar' ignored
+> make[5]: *** [scripts/Makefile.build:229: arch/m68k/kernel/sys_m68k.o] Er=
+ror 1
+
+That's not the only error:
 
 {standard input}: Assembler messages:
-{standard input}:104: Error: operands mismatch -- statement `movec %d2,%caar' ignored
-make[5]: *** [scripts/Makefile.build:229: arch/m68k/kernel/sys_m68k.o] Error 1
+{standard input}:17: Error: invalid instruction for this architecture;
+needs M68K mmu (68020 [68k, 68ec020], 68030 [68ec030], 68040
+[68ec040], 68060 [68ec060]) -- statement `pflusha' ignored
+make[5]: *** [scripts/Makefile.build:229: arch/m68k/mm/kmap.o] Error 1
 
-It seems like the 68020/68030 code:
+There are more like the above, but at least these tell you what's the
+underlying problem: the cross-compiler does not seem to support real
+m68k CPUs. Interestingly, it was built with --with-cpu=3D68040...
 
-        if (CPU_IS_020_OR_030) {
-                if (scope == FLUSH_SCOPE_LINE && len < 256) {
-                        unsigned long cacr;
-                        __asm__ ("movec %%cacr, %0" : "=r" (cacr));
-                        if (cache & FLUSH_CACHE_INSN)
-                                cacr |= 4;
-                        if (cache & FLUSH_CACHE_DATA)
-                                cacr |= 0x400;
-                        len >>= 2;
-                        while (len--) {
-                                __asm__ __volatile__ ("movec %1, %%caar\n\t"
-                                                      "movec %0, %%cacr"
-                                                      : /* no outputs */
-                                                      : "r" (cacr), "r" (addr));
-                                addr += 4;
-                        }
-                } else {
-                        /* Flush the whole cache, even if page granularity requested. */
-                        unsigned long cacr;
-                        __asm__ ("movec %%cacr, %0" : "=r" (cacr));
-                        if (cache & FLUSH_CACHE_INSN)
-                                cacr |= 8;
-                        if (cache & FLUSH_CACHE_DATA)
-                                cacr |= 0x800;
-                        __asm__ __volatile__ ("movec %0, %%cacr" : : "r" (cacr));
-                }
-                ret = 0;
-                goto out_unlock;
+Also:
 
-gets compiled in, and binutils isn't happy about it.
+    cat > /tmp/a.s <<EOF
+    movec %d2,%caar
+    EOF
+    output/host/bin/m68k-buildroot-linux-gnu-as /tmp/a.s
 
-The issue can trivially be reproduced by building the following
-Buildroot configuration:
+does build.
 
-BR2_m68k=y
-BR2_LINUX_KERNEL=y
-BR2_LINUX_KERNEL_USE_ARCH_DEFAULT_CONFIG=y
+    output/host/bin/m68k-buildroot-linux-gnu-gcc -c /tmp/a.s
 
-Quick recipe:
+does not.
 
-$ git clone https://gitlab.com/buildroot.org/buildroot.git
-$ cd buildroot/
-$ cat >.config <<EOF
-BR2_m68k=y
-BR2_LINUX_KERNEL=y
-BR2_LINUX_KERNEL_USE_ARCH_DEFAULT_CONFIG=y
-EOF
-$ make olddefconfig
-$ make
+With plain m68k-linux-gnu-{as,gcc} (Ubuntu 13.3.0-6ubuntu2~24.04,
+which is also 13.3.0, just like the buildroot toolchain), both work.
 
-Is this expected?
+Gr{oetje,eeting}s,
 
-Best regards,
+                        Geert
 
-Thomas
--- 
-Thomas Petazzoni, co-owner and CEO, Bootlin
-Embedded Linux and Kernel engineering and training
-https://bootlin.com
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
