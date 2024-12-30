@@ -1,123 +1,131 @@
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D247158524
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 14:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1121B14F104
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Dec 2024 03:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735482216; cv=none; b=Y9YqLdV9dPhDzwD/qitQ5E7/QHJ3ahjsmmx23nkQBkewO4lMMrWL3lMQAqFJL4cA0nX5lHvmXQjicAVaMhkYfcmomq20LaL03up14wLS5fNZwew0cyDi5z/UJM28goyjQxrZ/tkO6COdGTNYdm53QixaLV4AQMD0Jz/k5MtUku4=
+	t=1735528337; cv=none; b=hKGZKJQ6sP7iURBSocwtCFz9xn7qUPdKBK5E/vvhJaTFta1o/2RlRJ2K/Da3ir9kbqzHoB6/nWCnbGqrHHB6LzfWDnDfZ5CJuN3UGOdnmUeA30kO89vFDdRDd6GcXwfzsNfJ6Z/uLIt3RKybkmDkv5dwo2GOdUZuH+C13FVtLn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735482216; c=relaxed/simple;
-	bh=HpKtBxUC1C/IPpF8E897GeSso7+foGT5V+tFHTA6ABI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MV/aPcjVQO/ZcjslesRcipYMqLeSFrI+PAdSiXJVmByxqVxPpGQs5iHwQcnIWJDz0EeBmxXtL2cYv19dGHu6MEy6jycdV57NUz2pKgWvlZbUQk0CdPbeqwHST/6JwFSeR5Ce0K/Ti1Y7iFhlEY7oRyxWRGnmZjC2GNpkRfJexWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-5187aa2c97dso2864279e0c.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 06:23:33 -0800 (PST)
+	s=arc-20240116; t=1735528337; c=relaxed/simple;
+	bh=RByHVD3bvwf9OBgmvjYl7zmyuddvG3+m7GzmELh8Ojk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BsCwKjsXLpGGkDYJ5gq8uLy4xJBoxzFTeN7NPwAioKmxD+QZUtzN1Y6s8GmMVlXV4JLQrUjJoABv8SgSbbTuFnTRKjAh8KtivgTKZwxNJYmRiY+Aw/MxB3iwmUhw7zsif05MLHyGrORRd4nrm9VaNyULb89Bfr9iVE6SMvePiZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=amsiYaOw; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="amsiYaOw"
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21634338cfdso163101055ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 19:12:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1735528335; x=1736133135; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=00MV44O/wLuPQ/RpQp8S/rpHXiOskq9DnLB00pReqmw=;
+        b=amsiYaOweXS3VpBERR/NEA2y9RMxsRxG+lozacyVtM+QfxTEL4AimSbt7+URDkYoNX
+         eEK/CZb29FGz2OvMlL1xA+kUwXmtrEQ3hhj/dKfBr+kzpcvZna8XkA3gD93/20zt4Bd6
+         D5CKsRGyFgKrhdZIuIMT3kE101gNJOe0Oqz8BfLVVHG8h73QHeL8mn06OEzWDyM03DQl
+         EMmau2jGvH4eAa7AfNoRuPGPI4zrnQtdjvHorix/LVaa0wPWY96WaMLfBPRePekoM1iU
+         OQqsmhbhW0mRLtriSlXjdNyC/nnhcr/B9N764PGkeOADSjiCcIRwQfjEb1WIuOR+SB/W
+         VIjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735482212; x=1736087012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aJkgEJT8WcoDk1SIxMtxhW8aZb2FiOHku/9KGruRMlA=;
-        b=sa3DUvaHLu3AoKsKQr1hoxq2pcKbH0Ne0+YdkQnT+JA6PN9opB+EQ+VJrL6kaB+m16
-         PVLHPEtWH66Ja4Aw4jQ1psHrdXjo+vlv0+lf2k2DYa1ekxCkIBtqSAaIToGRxr+LOpij
-         cCmm0cUGD4S4QJlPvGATCOXjxjPyy4L75S85X1wYkDVRvQ/C4ukxDPWsaS/X6GBt2d0r
-         zu3jU2CEM3LxD3+ueDfk/DMZfEcXT74kSElbtLC7+41ibLZ6jD0xcq/TA7ycLNL0aEH1
-         yNaGEZMJduRs50PWCvxmxmbymuAXgdajSUGKPwSuGeX58AVOiwpTZlGEa/kZpiRb7lga
-         J03g==
-X-Gm-Message-State: AOJu0YyIuxJbVosTOejMTTkKbiIP7gYvmLVo4kkVLUnMxpS9EZx3S3aY
-	Q+USSftxV8hluLanZm2raSNZPARRjGNbFi1piJKq9KDk1kBk0ggnS73RMMWJ
-X-Gm-Gg: ASbGncvbMSKKQlu3dadI/QVFzPcH1rdUNZkhbQR97qtRMcz32WWdJam8uKCg2AU9Nx4
-	gB/mbm369RGBgpphwiVp9INllcMrBAm9rod0vqawoinClOnw+SEfzsPfBA3enYv6uYAh/KDkGJs
-	WK0WlamuVcy2jAZMGqECAwqCtYpBUIZc6i/v9LAJrDD3I2cvlAUemOVsdFn6WudAy/gOpQkFQfk
-	4MbNgahjGvhkUvt+p82jY8SEfVbXZEUUFJduAPPb/kDHQ+JYm9clZTRZbMt4hs+emAAH0SGWdlj
-	OqvyJqBrh614ALcRTNSdz6A=
-X-Google-Smtp-Source: AGHT+IHVcKGSgGGyCvzwBLZUzKKHWxTK8sRNQ2QFjfBYf4j30hnE5ttx2W1G/sfZOj2KLziBIRH5pQ==
-X-Received: by 2002:a05:6122:1b0b:b0:50d:5e21:ef39 with SMTP id 71dfb90a1353d-51b75c46950mr24442083e0c.1.1735482212042;
-        Sun, 29 Dec 2024 06:23:32 -0800 (PST)
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-51b68bb4751sm2210754e0c.18.2024.12.29.06.23.31
-        for <linux-m68k@lists.linux-m68k.org>
+        d=1e100.net; s=20230601; t=1735528335; x=1736133135;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=00MV44O/wLuPQ/RpQp8S/rpHXiOskq9DnLB00pReqmw=;
+        b=pSKcJM1GXnPOEE6O2a3Qx4hKPDJTwzGqifKZotvtL2P8KHPNcGr5uzTcGHHsH9f/m8
+         VzZDa2xe29dz1VyJ2PIXHvZBKBFfBBTpQ6p7R882TS/WUOwGcKzDb7cz8rew2wjrInIR
+         kt6WpbPj82i3BWngMrA9YSCtRnA+lCmBoW48fkYaRd6VM8xQflNZqtcLoq+Xn8lofQ3q
+         8Ohvz1iuMxxiN1HV8KnHIvpVw0zf6dmhNFDracpSE6J+W7KcsAWSr82dvI7WG62pUCIK
+         HV/stmBHOf5p0WsrqAuPS5al7/saAAe7XKDKIUuvhDPCix8tTljXzMNohk09VPiVTlPU
+         ckyA==
+X-Forwarded-Encrypted: i=1; AJvYcCVcyyTYaBv1mAW8T7J80s2GTg2irFVae2oErStmwCsSGTJN/tWrKsjE4ndUHb+nhxfsEwjFzVA/8mJd@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxT6w37KYFPoIcTCh78zOwEJrW/wFY4TQfwoQuINCfpsdycxHIw
+	thAKeisTAutCeKeDZx8lSNx4qGyVeH4eA+CUW//7FIBU5FXR/voun68iF0XUMww=
+X-Gm-Gg: ASbGncsriXwErDeUzX7AKl99qNOR7eub45nQFZovYcqLK7kM038Ay/e9zMzMMFReRmr
+	rqBMj2GxdX5k/gynEsqIfrJQRb4JPVdHI8B2oamlXke5nPqEILRHrUKu5wV18UW86QfpVlddw8t
+	foDwf/74sZRXIYnEbiJs2umbJd25uXiZXt6KHqbCV+42pN2jdgHA5Nbj1Q20rjbThvBLK1cFUOO
+	T8D5Wl81SfXor1RusoRy/UpuVanXYnw0xR4A5GMFo2+TgZfuoGyXquugoB2Z51U48T3zObrkOkm
+	Di5LVw==
+X-Google-Smtp-Source: AGHT+IHVtuGTDJKnXgo1JS5AtVrvj0I/cg1dyieo6seko5BYBtWvsXqnYPIAVAFKhaTndzKmWg8VgQ==
+X-Received: by 2002:a05:6a20:9185:b0:1e5:7db5:d6e7 with SMTP id adf61e73a8af0-1e5e083f019mr66304616637.46.1735528334820;
+        Sun, 29 Dec 2024 19:12:14 -0800 (PST)
+Received: from [10.84.148.23] ([203.208.167.148])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad84eb45sm18191842b3a.88.2024.12.29.19.12.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Dec 2024 06:23:31 -0800 (PST)
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-518957b0533so2697487e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 29 Dec 2024 06:23:31 -0800 (PST)
-X-Received: by 2002:a05:6102:c12:b0:4b2:485b:e151 with SMTP id
- ada2fe7eead31-4b2cc360159mr27416916137.10.1735482211372; Sun, 29 Dec 2024
- 06:23:31 -0800 (PST)
+        Sun, 29 Dec 2024 19:12:14 -0800 (PST)
+Message-ID: <9cac5690-c570-4d43-a6bc-2b59b85497ae@bytedance.com>
+Date: Mon, 30 Dec 2024 11:12:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241229134848.0a1d9719@windsurf>
-In-Reply-To: <20241229134848.0a1d9719@windsurf>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 29 Dec 2024 15:23:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU-DB1kOymg3-E4nRN_8R8N_R3wVZq7MNYUGsQWLa3hrg@mail.gmail.com>
-Message-ID: <CAMuHMdU-DB1kOymg3-E4nRN_8R8N_R3wVZq7MNYUGsQWLa3hrg@mail.gmail.com>
-Subject: Re: Build issue "Error: operands mismatch -- statement `movec
- %d2,%caar' ignored" on m68k
-To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 15/17] mm: pgtable: remove tlb_remove_page_ptdesc()
+Content-Language: en-US
+To: Mike Rapoport <rppt@kernel.org>, akpm@linux-foundation.org,
+ kevin.brodsky@arm.com, peterz@infradead.org
+Cc: agordeev@linux.ibm.com, tglx@linutronix.de, david@redhat.com,
+ jannh@google.com, hughd@google.com, yuzhao@google.com, willy@infradead.org,
+ muchun.song@linux.dev, vbabka@kernel.org, lorenzo.stoakes@oracle.com,
+ rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
+ aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
+ ryan.roberts@arm.com, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+ linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org
+References: <cover.1734945104.git.zhengqi.arch@bytedance.com>
+ <b37435768345e0fcf7ea358f69b4a71767f0f530.1734945104.git.zhengqi.arch@bytedance.com>
+ <Z2_EPmOTUHhcBegW@kernel.org>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <Z2_EPmOTUHhcBegW@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Thomas,
+Hi Mike,
 
-On Sun, Dec 29, 2024 at 1:48=E2=80=AFPM Thomas Petazzoni
-<thomas.petazzoni@bootlin.com> wrote:
-> While trying to build the multi_defconfig, from Linux 6.12.5, for a
-> 68040 system, the build fails with:
->
-> {standard input}: Assembler messages:
-> {standard input}:104: Error: operands mismatch -- statement `movec %d2,%c=
-aar' ignored
-> make[5]: *** [scripts/Makefile.build:229: arch/m68k/kernel/sys_m68k.o] Er=
-ror 1
+On 2024/12/28 17:26, Mike Rapoport wrote:
+> On Mon, Dec 23, 2024 at 05:41:01PM +0800, Qi Zheng wrote:
+>> Here we are explicitly dealing with struct page, and the following logic
+>> semms strange:
+>>
+>> tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));
+>>
+>> tlb_remove_page_ptdesc
+>> --> tlb_remove_page(tlb, ptdesc_page(pt));
+>>
+>> So remove tlb_remove_page_ptdesc() and make callers call tlb_remove_page()
+>> directly.
+> 
+> Please don't. The ptdesc wrappers are there as a part of reducing the size
+> of struct page project [1].
+> 
+> For now struct ptdesc overlaps struct page, but the goal is to have them
+> separate and always operate on struct ptdesc when working with page tables.
 
-That's not the only error:
+OK, so tlb_remove_page_ptdesc() and tlb_remove_ptdesc() are somewhat
+intermediate products of the project.
 
-{standard input}: Assembler messages:
-{standard input}:17: Error: invalid instruction for this architecture;
-needs M68K mmu (68020 [68k, 68ec020], 68030 [68ec030], 68040
-[68ec040], 68060 [68ec060]) -- statement `pflusha' ignored
-make[5]: *** [scripts/Makefile.build:229: arch/m68k/mm/kmap.o] Error 1
+Hi Andrew, can you help remove [PATCH v3 15/17], [PATCH v3 16/17] and
+[PATCH v3 17/17] from the mm-unstable branch?
 
-There are more like the above, but at least these tell you what's the
-underlying problem: the cross-compiler does not seem to support real
-m68k CPUs. Interestingly, it was built with --with-cpu=3D68040...
+For [PATCH v3 17/17], I can send it separately later, or Kevin Brodsky
+can help do this in his patch series. ;)
 
-Also:
+Thanks,
+Qi
 
-    cat > /tmp/a.s <<EOF
-    movec %d2,%caar
-    EOF
-    output/host/bin/m68k-buildroot-linux-gnu-as /tmp/a.s
+> 
+> [1] https://kernelnewbies.org/MatthewWilcox/Memdescs
+>   
 
-does build.
-
-    output/host/bin/m68k-buildroot-linux-gnu-gcc -c /tmp/a.s
-
-does not.
-
-With plain m68k-linux-gnu-{as,gcc} (Ubuntu 13.3.0-6ubuntu2~24.04,
-which is also 13.3.0, just like the buildroot toolchain), both work.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
