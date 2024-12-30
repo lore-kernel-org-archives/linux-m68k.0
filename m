@@ -1,226 +1,89 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4601A83F3
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Dec 2024 09:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9B91A00D1
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Dec 2024 09:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735549909; cv=none; b=YWsqJVAYrRTPEyca2T+vGCPnfFZ9GOTYfVlBtayveWgylXDwBXpMlKOH0eEsN06a1zPteC1htA6+J6lhIj8lKEsTBGZHT4jy+Zh+Yuwma2hkGN33ocUkyJsfQ2hVGXS3ri3fvWRBxqsO50SLpD3x57ZfejrtMuexkKc4XRnUtj4=
+	t=1735551359; cv=none; b=StT20nv3qE8yscpaLSXs8Ezjn44nB3JtW/WI4+ODd9MHo8gWgMw0YyCMvYhVjS0szY2Jspoil7964xGUSLxsXOT57rYxnAJC9derfhEYiFD24LptI4imN7ZAWLifoq5bCdZStDotMCKoNPc0xlJ1SP1S3IMjI4UpNCQDMyC2OqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735549909; c=relaxed/simple;
-	bh=q1hWJFvFfNeFAOErQnfZb6jq/jCJy3LyoYOS1Q4McDs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n5KQRljMKNAUr9XEg7owzET3W8fvK2y0A9Ajyb+//4WF5L9/xNza2zU2r1GC50S8NTVBAQOdV8sE2I6AJziPPjRV/ZqR24aVWB4F+OOJThEUYmU9H81Mf0NOVM/GdxkqTLx9cwZTQG/mM+fEyNR6q86xlNkz5AQXTrUX6YByn+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=gPhPo7eI; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1735551359; c=relaxed/simple;
+	bh=HK07lib9IrjfXhXr31u/Uy9AoaqWsgQbDPVcxxUfTOM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K5VIRVNEK8RTruoPNoQduZClhoA5XHHXYAh2rbrSgZHDGk/VL8bD5sV0bS85pSM81fhG4sJGXecTUenvXNmT6cZBBO83hE+IRj9uusVHWIFoH3+v4VZ5gWGFNUhhmhxQ3e02CwYKFdroFj2zF9GAJYXpRsEIxead1XGqwQRRrag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=et8JEbEj; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="gPhPo7eI"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-21644aca3a0so17758865ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Dec 2024 01:11:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1735549907; x=1736154707; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uxx1VFA8X6F1Vml9+szJuo78n9B3sJITH2LTRfnVDm8=;
-        b=gPhPo7eIFwo3nUyQF1hodHokQoMpL1RoDpnHWld1jGIoVteb3nP7m/LP8/Lps/h7FH
-         sXLqoVGNx5x6gXq3jLQ9IS0/8Gk324dPEv2XLdZ3zhOBMCoblfx8f9SqvRs7GwuPWB6/
-         KHPRdwKcj+FHeJaeOhVjYtQLqu6nqPgVi21vXyXzN0jkD46wVT7d4YeyFjyJ8yFS8XvY
-         XrlK6/A53rQbQCwyShtmcL5AdVRJTf8NeAwt+qEO9Cf6H8SWPZx04RlLfNgiNjlWgEE8
-         aHXLo2PPqeJeCsTckd9uK/X0rgOmF+gT49twTUSLXH4CIv+/MZ9BwzOHxKdFxsKE3Zzg
-         NsFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735549907; x=1736154707;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uxx1VFA8X6F1Vml9+szJuo78n9B3sJITH2LTRfnVDm8=;
-        b=CfN0g7XGQfyVLftOPGOBVLOiW1Hgzg9eaGzgn4sH5ZGdcvYfmCStlgKZm3CDOjooE2
-         jxcqLwM+HpvAFHCd15RlBsfEhQONwZVyyiXFUfFtj5LD82sDTlqFw5R4YJ3mkaS+RHzp
-         4pcsob1yMyUwWUtvqVfWUMyUdjF3sb9klVz9TAQbcb/np7w6E9VjvA2Qlj67z4JnME8N
-         L+igHthagTVClTSCmih/JToGqgBvEboEFHYve9wHokgrqxl1guroom+PqkvfLfcE0ZJ8
-         SJ/MpYUKGyivKejIadGMLCnVB/kdIznF1l7og4H/GpiT9XsFEIbz/4z7aXYeXq1kQXFM
-         fNiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWbXzVETQ27Ei1dUVbTmfwAUG0vmjT8cyQtUCLc3ow5L0GmlieEtZekg6euGTyt4OpCpebaM0cO5M+I@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwPaJbYT6QFAFJcJzZhVuBg6ukBhlgmvuyuk3zOlYokAH/PQme+
-	4mesE9gIfwv7SJqCkb5lJ1QEHxvLg+u4StZjIZKni8DurJpkGMIgUfW0zD8YpxQ=
-X-Gm-Gg: ASbGnct/NG48JnaZ5kKBsyGz1Yubld0xyHWSPl6TysernCj9mn/V5b2T27cCDexxBUZ
-	fngMD55d3pY3/GuTFwEBkyXqmXKJ8Fq4zFQZCzmXH6GFLs6bd3Dzmt285gDa3wzvMl5p78D5CH8
-	MymFSEJbGvwHg/qYxs4QZ63kisppKj+4qr5ssahy0cRxBTEwxfTmoHRoKilnXOTphNqqiueGT2S
-	k2PA099PH7pP9JemUEc6hi6x0GjVxhzyIQRwlQbYlBBow8K9JKeKjcNSkfkQdvuhVowO9sbi2DG
-	JpMpQCYGfGPhc8YAAKL93A==
-X-Google-Smtp-Source: AGHT+IH6enLQBRxhPiyC+b4rbFoH6ZPXIb+9j2XLkfNoZdfNkkGtY/WgMqtF7HfldrPWQopcc9iyNw==
-X-Received: by 2002:a05:6a20:4308:b0:1e0:c8d9:3382 with SMTP id adf61e73a8af0-1e5e0847084mr55644198637.45.1735549906952;
-        Mon, 30 Dec 2024 01:11:46 -0800 (PST)
-Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.150])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842aba72f7csm17057841a12.4.2024.12.30.01.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Dec 2024 01:11:46 -0800 (PST)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: peterz@infradead.org,
-	agordeev@linux.ibm.com,
-	kevin.brodsky@arm.com,
-	palmer@dabbelt.com,
-	tglx@linutronix.de,
-	david@redhat.com,
-	jannh@google.com,
-	hughd@google.com,
-	yuzhao@google.com,
-	willy@infradead.org,
-	muchun.song@linux.dev,
-	vbabka@kernel.org,
-	lorenzo.stoakes@oracle.com,
-	akpm@linux-foundation.org,
-	rientjes@google.com,
-	vishal.moola@gmail.com,
-	arnd@arndb.de,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	dave.hansen@linux.intel.com,
-	rppt@kernel.org,
-	ryan.roberts@arm.com
-Cc: linux-mm@kvack.org,
-	linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	x86@kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v4 15/15] mm: pgtable: introduce generic pagetable_dtor_free()
-Date: Mon, 30 Dec 2024 17:07:50 +0800
-Message-Id: <cb5700c21d0eed9eb50bac385be1fb6cdef7e530.1735549103.git.zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <cover.1735549103.git.zhengqi.arch@bytedance.com>
-References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="et8JEbEj"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 750F3E0006;
+	Mon, 30 Dec 2024 09:35:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1735551354;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kDDwSEWRuTnnEKDijAYbBy7b9BN7WlcLeOk/mbixFS0=;
+	b=et8JEbEj0lVsb7PBDd6I5uBsEtmCq2/Ns23AfVNKEcLlnZ9TpNHidd99R54CdOAqtZRdbW
+	mCkwWBoXoSejoPrUwOGz4Qn/pt+ZgXc8EDsBNMYmcYnKAbyEUXgwcXNLBR+7m8EbG0NeaF
+	FzOP+cHtVubw5GgiiW/vMi/wMJDSl01td6dd/j+XjWtMUuzr1qJO6Rn5o2Ice0s1K/smzH
+	s3pPW3qhgolwZsq7+t/hGjf5IVfIvY2I35DoL+Ripask7pMVXVdkSeVZVGEaVHWxHK9PGA
+	euh5gdGC21u2bbHcwrMNJz9CQys1beJZHdvEmLh03JtaJEIJpOZxP1Mh0NcChw==
+Date: Mon, 30 Dec 2024 10:35:52 +0100
+From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Subject: Re: Build issue "Error: operands mismatch -- statement `movec
+ %d2,%caar' ignored" on m68k
+Message-ID: <20241230103552.61b67498@windsurf>
+In-Reply-To: <CAMuHMdWmYc4=-ZbFoNrD=2CjucxdUSqhfufJZ_UkL+wvun_jcg@mail.gmail.com>
+References: <20241229134848.0a1d9719@windsurf>
+	<CAMuHMdU-DB1kOymg3-E4nRN_8R8N_R3wVZq7MNYUGsQWLa3hrg@mail.gmail.com>
+	<e30ab951-bdb6-09f1-0d3b-9a09220babe7@linux-m68k.org>
+	<CAMuHMdWmYc4=-ZbFoNrD=2CjucxdUSqhfufJZ_UkL+wvun_jcg@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: thomas.petazzoni@bootlin.com
 
-The pte_free(), pmd_free(), __pud_free() and __p4d_free() in
-asm-generic/pgalloc.h and the generic __tlb_remove_table() are basically
-the same, so let's introduce pagetable_dtor_free() to deduplicate them.
+Hello Geert,
 
-In addition, the pagetable_dtor_free() in s390 does the same thing, so
-let's s390 also calls generic pagetable_dtor_free().
+On Mon, 30 Dec 2024 09:53:29 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/s390/mm/pgalloc.c        |  6 ------
- include/asm-generic/pgalloc.h | 12 ++++--------
- include/asm-generic/tlb.h     |  3 +--
- include/linux/mm.h            |  6 ++++++
- 4 files changed, 11 insertions(+), 16 deletions(-)
+> > /usr/libexec/gcc/m68k-unknown-linux-musl/as -v -mcpu=68020 --pcrel -o a.o a.s  
+> 
+> Thanks, so it fails when -mcpu=68040 is passed to the assembler.
+> 
+> Oh, I misread "caar" as "cacr". The latter exists on MC68040, the
+> former does not. However, that doesn't explain the failures for pflusha,
+> which is supported on 68040.
+> 
+> After disabling CONFIG_680[236]0 in the kernel config, I can build
+> it fine using the buildroot toolchain.
+> 
+> Conclusion: make sure your toolchain supports (a superset of) the
+> CPUs supported by your kernel config.
 
-diff --git a/arch/s390/mm/pgalloc.c b/arch/s390/mm/pgalloc.c
-index 3e002dea6278f..a4e7619020931 100644
---- a/arch/s390/mm/pgalloc.c
-+++ b/arch/s390/mm/pgalloc.c
-@@ -180,12 +180,6 @@ unsigned long *page_table_alloc(struct mm_struct *mm)
- 	return table;
- }
- 
--static void pagetable_dtor_free(struct ptdesc *ptdesc)
--{
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
--}
--
- void page_table_free(struct mm_struct *mm, unsigned long *table)
- {
- 	struct ptdesc *ptdesc = virt_to_ptdesc(table);
-diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-index 4afb346eae255..e3977ddca15e4 100644
---- a/include/asm-generic/pgalloc.h
-+++ b/include/asm-generic/pgalloc.h
-@@ -109,8 +109,7 @@ static inline void pte_free(struct mm_struct *mm, struct page *pte_page)
- {
- 	struct ptdesc *ptdesc = page_ptdesc(pte_page);
- 
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(ptdesc);
- }
- 
- 
-@@ -153,8 +152,7 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
- 	struct ptdesc *ptdesc = virt_to_ptdesc(pmd);
- 
- 	BUG_ON((unsigned long)pmd & (PAGE_SIZE-1));
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(ptdesc);
- }
- #endif
- 
-@@ -202,8 +200,7 @@ static inline void __pud_free(struct mm_struct *mm, pud_t *pud)
- 	struct ptdesc *ptdesc = virt_to_ptdesc(pud);
- 
- 	BUG_ON((unsigned long)pud & (PAGE_SIZE-1));
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(ptdesc);
- }
- 
- #ifndef __HAVE_ARCH_PUD_FREE
-@@ -248,8 +245,7 @@ static inline void __p4d_free(struct mm_struct *mm, p4d_t *p4d)
- 	struct ptdesc *ptdesc = virt_to_ptdesc(p4d);
- 
- 	BUG_ON((unsigned long)p4d & (PAGE_SIZE-1));
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(ptdesc);
- }
- 
- #ifndef __HAVE_ARCH_P4D_FREE
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 69de47c7ef3c5..a96d4b440f3da 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -213,8 +213,7 @@ static inline void __tlb_remove_table(void *table)
- {
- 	struct ptdesc *ptdesc = (struct ptdesc *)table;
- 
--	pagetable_dtor(ptdesc);
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(ptdesc);
- }
- #endif
- 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index cad11fa10c192..94078c488e904 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3001,6 +3001,12 @@ static inline void pagetable_dtor(struct ptdesc *ptdesc)
- 	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
- }
- 
-+static inline void pagetable_dtor_free(struct ptdesc *ptdesc)
-+{
-+	pagetable_dtor(ptdesc);
-+	pagetable_free(ptdesc);
-+}
-+
- static inline bool pagetable_pte_ctor(struct ptdesc *ptdesc)
- {
- 	struct folio *folio = ptdesc_folio(ptdesc);
+Thanks for the investigation. How should the toolchain be configured to
+s upport multiple m68k CPUs? My understanding was that when you
+configure gcc with --with-cpu=<something>, it means gcc will by default
+emit code for <something>, but it can always be overridden when running
+gcc using -mcpu=<somethingelse>.
+
+How can one build this kernel/sys_m68k.c file if it uses instructions
+that are mutually incompatible on different m68k cores?
+
+Thomas
 -- 
-2.20.1
-
+Thomas Petazzoni, co-owner and CEO, Bootlin
+Embedded Linux and Kernel engineering and training
+https://bootlin.com
