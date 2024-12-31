@@ -1,71 +1,73 @@
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AAB2594BB
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Dec 2024 11:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0B6748F
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 31 Dec 2024 00:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735557754; cv=none; b=QjaqOVdfyX9l1t0T5NO5BF/Dz6kentVe5FPHygLjXsG+Ap0HmpTCI6bWdmUDHPRXddiOMtvz13W12R1lG14Ai9X6X2ckYfjJVOIvlgdKWfcmgxXVVy0Q8zzxik6MU3KUKRzDQ3G2Ug488FmLo4dN0AMLGsyd3t6cQPHsM5OkiKI=
+	t=1735604661; cv=none; b=VX3sXxT4m/aUM2BBGshXPF37ef0Swh8L7uYbipdoduAvaAtZXTxJkR9yanAUwcm3KxC4JrcFVUO/VZwVf2vkqkxcmImgkmGVsCXZc11J0wHr3VT9xMAd+xnfYfKmw8BUHTdjM8BQ90ZsosG/7Jgxtl7DZyJUv1TlL2aji0gFICY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735557754; c=relaxed/simple;
-	bh=3OiodtWbncpCsJQW8Ba8mzo+dqtfKLaeQOBzANxL8+c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=O+KmjQOERniiN/T01nTnKHS3vmY0+UC2+gwRB2eRQbK5zPjgZQUb7gh9ni+hhlhq4pq3pGRvROHp3gAfvPrgzMIfMvYhf5md3wYdES3G0f0h3d4UQZlnTkZQA5UNZASJ5UNFVNVT1+tX9n08pJoBy1ORJK0lrawk52qU1gLM200=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-	by mail-out.m-online.net (Postfix) with ESMTP id 4YMDGQ189lz1r1sY;
-	Mon, 30 Dec 2024 12:22:22 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
-	by mail.m-online.net (Postfix) with ESMTP id 4YMDGQ04QTz1qqlS;
-	Mon, 30 Dec 2024 12:22:21 +0100 (CET)
-X-Virus-Scanned: amavis at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
- with ESMTP id T6GW-CNCLYp3; Mon, 30 Dec 2024 12:22:21 +0100 (CET)
-X-Auth-Info: vx3HGq6m/ZbPvGgQhxfc3ohYn2VwzZnYS0I+obIyfSM6K4b/wKbDgN+bMk8Q20fI
-Received: from igel.home (aftr-82-135-83-167.dynamic.mnet-online.de [82.135.83.167])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.mnet-online.de (Postfix) with ESMTPSA;
-	Mon, 30 Dec 2024 12:22:21 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-	id 0F6D82C2205; Mon, 30 Dec 2024 12:22:21 +0100 (CET)
-From: Andreas Schwab <schwab@linux-m68k.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Finn Thain <fthain@linux-m68k.org>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  linux-m68k@lists.linux-m68k.org
-Subject: Re: Build issue "Error: operands mismatch -- statement `movec
- %d2,%caar' ignored" on m68k
-In-Reply-To: <CAMuHMdWmYc4=-ZbFoNrD=2CjucxdUSqhfufJZ_UkL+wvun_jcg@mail.gmail.com>
-	(Geert Uytterhoeven's message of "Mon, 30 Dec 2024 09:53:29 +0100")
-References: <20241229134848.0a1d9719@windsurf>
-	<CAMuHMdU-DB1kOymg3-E4nRN_8R8N_R3wVZq7MNYUGsQWLa3hrg@mail.gmail.com>
-	<e30ab951-bdb6-09f1-0d3b-9a09220babe7@linux-m68k.org>
-	<CAMuHMdWmYc4=-ZbFoNrD=2CjucxdUSqhfufJZ_UkL+wvun_jcg@mail.gmail.com>
-X-Yow: I haven't been married in over six years, but we had sexual counseling
- every day from Oral Roberts!!
-Date: Mon, 30 Dec 2024 12:22:21 +0100
-Message-ID: <877c7hjtzm.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1735604661; c=relaxed/simple;
+	bh=2Z/3V1q46cErKadoV3y8VtC0UOopLVjvmzLFmpjI5ZE=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=pDyUOWeNqC0G07Vm/x10aDiZxS/UWrExkeygROvJ289e8e1ewjN+KbNSBHQVceKR5Yrx539PVxN7pMawFA/TCUspB+dcsN5RSi+Tk6cz9N6vFD8532pCYZl3BVOin8JKewZ1/aDjHifNydoXmQzdMj6j35+KW+6nmdrC9g2QMpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linux-foundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=e1svhMQU; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="e1svhMQU"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 222ECA40FC4;
+	Tue, 31 Dec 2024 00:22:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97495C4CED0;
+	Tue, 31 Dec 2024 00:24:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1735604657;
+	bh=2Z/3V1q46cErKadoV3y8VtC0UOopLVjvmzLFmpjI5ZE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=e1svhMQUmdhMgcQjt88gUZcpq5ze2FpENDmeroTm5j525bnUbXasg93NeBqNAKuwX
+	 4zTZ6tN5Yr2qdY61qOZxnyRQ1159nEMzAQ1YQfsHm2DW8ARwWXBuvfim5detOnI3XI
+	 EB0PhrLFTgZnLoKq75DG+Xuc3x8ekQPiOw33OnkY=
+Date: Mon, 30 Dec 2024 16:24:16 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: peterz@infradead.org, agordeev@linux.ibm.com, kevin.brodsky@arm.com,
+ palmer@dabbelt.com, tglx@linutronix.de, david@redhat.com, jannh@google.com,
+ hughd@google.com, yuzhao@google.com, willy@infradead.org,
+ muchun.song@linux.dev, vbabka@kernel.org, lorenzo.stoakes@oracle.com,
+ rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de,
+ will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com,
+ dave.hansen@linux.intel.com, rppt@kernel.org, ryan.roberts@arm.com,
+ linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, x86@kernel.org, linux-arch@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH v4 00/15] move pagetable_*_dtor() to
+ __tlb_remove_table()
+Message-Id: <20241230162416.da83460318c4726f65fb4e3b@linux-foundation.org>
+In-Reply-To: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Dez 30 2024, Geert Uytterhoeven wrote:
+On Mon, 30 Dec 2024 17:07:35 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 
-> Conclusion: make sure your toolchain supports (a superset of) the
-> CPUs supported by your kernel config.
+> Changes in v4:
+>  - remove [PATCH v3 15/17] and [PATCH v3 16/17] (Mike Rapoport)
+>    (the tlb_remove_page_ptdesc() and tlb_remove_ptdesc() are intermediate
+>     products of the project: https://kernelnewbies.org/MatthewWilcox/Memdescs,
+>     so keep them)
+>  - collect Acked-by
 
-Conclusion: always use .chip directives.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Thanks, I've updated mm.git to v5.
