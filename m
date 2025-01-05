@@ -1,67 +1,68 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89ECD3596E
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Jan 2025 07:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCFF813BC39
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Jan 2025 07:15:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736061302; cv=none; b=ifCrHbc8/WX0fT8notQkZ3X/hYEQ4e0T8Wk1fZBPRwOFcVKpwfvtrBQN/S1YpLVk2N6V6YQIAJ75T1tPy301ys2cU6X+z8jQ/bepVjZReJvhMhXzVi5zIPxytLJmBbFgBNrQqIjCrjw+HseJA0BWqs7yvBfdo/bM1VTRqoLNPII=
+	t=1736061305; cv=none; b=WsJz6Nie7p0oOEGYhzYkB2nwZz4cizGQJ5HtmJNDWx7+RDu1/H1zqqUQczzP8JXXBCoXn5nQG12qW9q6DmwPp7GBrb2hT0+FMcteMzYZGdO1AwmiynwEZE7vP7V6AH6Fh1eIHRR1UypdPU5uZcwUW/GAAqQGWgIuU5qG/wmY6QA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736061302; c=relaxed/simple;
-	bh=NtIPh46BeBBRavGAIlzmNcOKuXgtwLSH38m5dpJNAys=;
+	s=arc-20240116; t=1736061305; c=relaxed/simple;
+	bh=bAVYeRTyH9it2XS91sWRwPnXF5Iq5evkQGxyxsDaqC4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KOsW81UQ6cp9DreOwG0MDue+fco+0L72M6qwfHMIhU/WxolE0roPQy3XMYCQcuVoj+kDii8PRQpVsmUvttJb8tXwSIG6Its9MzxCjqw6QuTlmUeQNhwPqD3wbSaYaGRRSQswSSjztgwKH/TblYclyIfmNq4vufjSEiUrVjeDYtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=OaZuD/aX; arc=none smtp.client-ip=209.85.214.177
+	 MIME-Version; b=bGWwp0LG5tp9UyN6MtQZeAWsoewv5ZlrkEsXZYKWGSht0F+COkPcn1EW3Ok4DjTvArgCU8Xgend2k6S/EXM2nNo8DdsDL+oDUfju1VgfzbTvn3v2nRGVJ+9gaOro6P4B/Yfg0B9hoLcxr7q74u0aZRyrLkBNY8dK13XkT3ZGIAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=llx2vxRc; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="OaZuD/aX"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2165448243fso226525555ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 04 Jan 2025 23:15:00 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="llx2vxRc"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2166651f752so221932665ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 04 Jan 2025 23:15:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1736061300; x=1736666100; darn=lists.linux-m68k.org;
+        d=0x0f.com; s=google; t=1736061302; x=1736666102; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h1UM9YxumSC7m8fCEV77dLpbLIfMqY7kUCOGI+oWymc=;
-        b=OaZuD/aXGRVmRGJ42HTbTXUKC9jB5ltFMDo97e5XOVz5DPIagahPNryszVuEgkBYrQ
-         JlPyk33kSoNPo6b9D5jQa7HaTD2T0PFxQH/UQnk8id4IB7BpqWLZGIIlXwe8PRfmta/S
-         YatEe+HZm4u+cdHWVngNX/s2XKeCl9/l3ycwM=
+        bh=PpFvK9eU/t8hNYDP9XQWnc8bXb3AgTnRlyt0Rp6Wxv0=;
+        b=llx2vxRck+1DYWu6hpJaGtmmSDqWdkwGEeS3+3SK/Ur77DWeKiku7OtMka67XiUSZu
+         nzpvLNtDjlZv9I5kwyqWLgWSfWFaryHsb5DYFKJhIQ76710Nn2pc2JnMiXUoaTvKhMbX
+         O5nYEkJwk05jqRRmpKN+fkCEnkXcRzbpsMybs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736061300; x=1736666100;
+        d=1e100.net; s=20230601; t=1736061302; x=1736666102;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h1UM9YxumSC7m8fCEV77dLpbLIfMqY7kUCOGI+oWymc=;
-        b=PnyPtBIpx5brLWzlaeZCdtrj4YYEAyzvTsgWBH8TSBhJvj/9pog6MVH5H612+o+3f6
-         tBKzmSIMPIMgsvwKZOy0Goc6ogC1MA380oBTXn283rx08ueo5B74h9X6v6XZUWrHn6+e
-         RodiEYumk23EVD8TBuj0NszPchS6jCWOmB15H2PodkidOS9yfcBqjtevmyKV1J/mRhZG
-         CWlBs+fC1uLXEzESdEYUMa7jwbOMsv8bsYbWqCsJ7O6zKzV/Gw1SuRiw09CiawBrHhm1
-         C/Kk9hYu7RzLafv0TuPnq3iyjiAP3tnP/tWOzYkoUpCePmDRyFQ2Eo7Nt13+IZaoIK5A
-         Cu3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWiU8NZoTCMSJ2gDBGHxOeGG0UumBzeCjGLTiTCajDabl7P6do2b5XJdrEOHntcPUQoZ3GkkhEJ1Eul@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy1WXKiOK6tA/SdBxsv/i5imMWSfGGroR2/P+EygxZ0vIX/8Miu
-	MI5OWR+J6ntD2qZHltyJJ1IP6qfIORb3Ejzx3nwNjIzaTJZfXUuOWubfmvnYH7U=
-X-Gm-Gg: ASbGnctDEJ63LnRD4A3ee+W1YSZBW658U9/yQB4KwTF65ni8Qoyerhpjyz5TKls7yEn
-	XHwiPtIDrRVZZb7tWOUs1Ljr/VCUu19vRpQhyHM3RTa/Gtnrxhi+pc7hHCKOkaTXApwbMQXR36o
-	hj0uYS0xOBQxuWMLpcTds+lMFaJkJ0+Aon65LRX7e92IrKBQxLFMJLki9bDZf/TAT/zjsM0p+K1
-	ueaxJkE2Yt2bv7RmQooIkx/nvzJeVrIRlx/lagwKANcRD/zUJcHc4TKKaHngIqCtG8Z
-X-Google-Smtp-Source: AGHT+IGcMNkP197o6owDLgc02j2lkk8bugUjCIOVPjuJglq0i5lpZO+GOfRIhTciQjmqE9Uo63QlRg==
-X-Received: by 2002:a17:903:98e:b0:212:63db:bb15 with SMTP id d9443c01a7336-219e6f14f81mr858741595ad.38.1736061299988;
-        Sat, 04 Jan 2025 23:14:59 -0800 (PST)
+        bh=PpFvK9eU/t8hNYDP9XQWnc8bXb3AgTnRlyt0Rp6Wxv0=;
+        b=g/aktP39aqeiqItGnvA/NthqQRtA5L8FyQf9FuHwEbhONV8yJicGSUlRAFuVALG70M
+         3i6fTdtwsOWQTaUoRMsncYBcVyupN2otoTksxNsI6ofs65+ELwUd15qVBKNL25l28h5z
+         q4+1yauVJyGpSaTGgHtHJGMUR6PI/sOBQoDqcr+jkW8AdgMPTzqMdFTEYx6tiCDBMtPM
+         H+ydosprgz1lFcRNW/KiA73J+lxkJalYBtcmBoSR+iEs7uXpHrr3DZpB+MCR39AJowQS
+         kZfluu/X/IxoeXd9djuOygomOQzCplVyFZGMqB6KYZVEjVnPiqKUuZQgsdNKsKt6K4Js
+         ZKeA==
+X-Forwarded-Encrypted: i=1; AJvYcCV+P+ObTcWS+Wvygt5+Dv/349HDrggbQsNUicBYr3sYiYrg60vFn9/jH8rcvNC+gzXoEMuFFaTvyvqA@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwEeH5JYdDYHpZb2dLGNs7/NukwRwxqb6Oz9LPvCFx762FSmLNM
+	3E5lYCOtbLPlaTGvyj+dPRUo88KWAVoFZ63fh8qAqdp/CY2F0/VOaLk51ebCM1qzpfl2cjqWeFt
+	m
+X-Gm-Gg: ASbGncvP4uW2nl8AtvyNADQdJWZpnJVhPjIw0Sn4K4uxLUDEoU3K3RQP770m/q81ggC
+	FecRjMN7JHmWmc9SaZVHOhfSlks9kpOruB7Yb3Qy05VqQzGtBCx9TS+fEIwLtAx5rF8aj82I8v4
+	KZipX1zhADu2aR1BTCZabJiHcpdMbmgKx+VW7wRTmse7CQU+C697J7pwOJCiubqXlGTjKd6icIY
+	/fCFgH8HeMKVPwW+WiuGLeKNz5njxcVizZ5eWGM3dhAqEXiii8oKLK9CcTBOxHnz+Ci
+X-Google-Smtp-Source: AGHT+IFwrFNGCjXvHA5ahmFCVR5GMznwulJmCjkk5vSaS+IUbcw2meg9QsPp5xP+vRjtp/TJRqFUTQ==
+X-Received: by 2002:a17:902:da81:b0:216:61d2:46b8 with SMTP id d9443c01a7336-219e6ea1c0cmr799287015ad.23.1736061302129;
+        Sat, 04 Jan 2025 23:15:02 -0800 (PST)
 Received: from shiro.work.home.arpa. ([2400:4162:2428:2ffe:e94c:e5d:106e:3582])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-219dc9cdef7sm270007125ad.133.2025.01.04.23.14.58
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-219dc9cdef7sm270007125ad.133.2025.01.04.23.15.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jan 2025 23:14:59 -0800 (PST)
+        Sat, 04 Jan 2025 23:15:01 -0800 (PST)
 From: Daniel Palmer <daniel@0x0f.com>
 To: geert@linux-m68k.org,
 	fthain@linux-m68k.org,
 	linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org,
 	Daniel Palmer <daniel@0x0f.com>
-Subject: [RFC PATCH 1/3] m68k: bootinfo: Add tag for FDT address
-Date: Sun,  5 Jan 2025 16:14:31 +0900
-Message-ID: <20250105071433.3943289-2-daniel@0x0f.com>
+Subject: [RFC PATCH 2/3] m68k: bootinfo: Add generic machine type
+Date: Sun,  5 Jan 2025 16:14:32 +0900
+Message-ID: <20250105071433.3943289-3-daniel@0x0f.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250105071433.3943289-1-daniel@0x0f.com>
 References: <20250105071433.3943289-1-daniel@0x0f.com>
@@ -73,31 +74,31 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Allow bootinfo to carry a pointer to an FDT so that the
-bootloader can pass us one.
+Add a generic machine type that will use an FDT instead
+of board setup code.
 
-This allows for devicetree support without changing the
-boot protocol too much and breaking unmaintained bootloaders.
+This will allow the bootloader to just pass the generic
+machine type, some memory info for the head.S code and
+a pointer to a FDT blob instead of a specific machine
+type and make adding new machines simpler.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- arch/m68k/include/uapi/asm/bootinfo.h | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/m68k/include/uapi/asm/bootinfo.h | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/m68k/include/uapi/asm/bootinfo.h b/arch/m68k/include/uapi/asm/bootinfo.h
-index 024e87d7095f..326f20e82769 100644
+index 326f20e82769..e885bbc462d3 100644
 --- a/arch/m68k/include/uapi/asm/bootinfo.h
 +++ b/arch/m68k/include/uapi/asm/bootinfo.h
-@@ -73,6 +73,9 @@ struct mem_info {
- #define BI_RNG_SEED		0x0008
+@@ -94,6 +94,7 @@ struct mem_info {
+ #define MACH_M54XX		12
+ #define MACH_M5441X		13
+ #define MACH_VIRT		14
++#define MACH_GENERIC		15
  
  
-+/* Pointer to FDT if there is one */
-+#define BI_FDT			0x0009
-+
      /*
-      *  Linux/m68k Architectures (BI_MACHTYPE)
-      */
 -- 
 2.45.2
 
