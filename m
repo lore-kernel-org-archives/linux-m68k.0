@@ -1,66 +1,70 @@
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68CE184F
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Jan 2025 07:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89ECD3596E
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  5 Jan 2025 07:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736061301; cv=none; b=hP0P5E/m+vCRwpBKDH5Nfue6jtlKhcyJoVphhK3E1VAYA8URNFI9ZMGjO9Xk+PSoOnY3QN3kw/pY1kkqr6yz3Awc9lZqMAcjizVF/+DiBwPj9cUeSvf1aKquP6gbANiyi3PHt9Hg2+DcjPvQWTnbITl5s8Rk8brqOeTa8rUg8Ms=
+	t=1736061302; cv=none; b=ifCrHbc8/WX0fT8notQkZ3X/hYEQ4e0T8Wk1fZBPRwOFcVKpwfvtrBQN/S1YpLVk2N6V6YQIAJ75T1tPy301ys2cU6X+z8jQ/bepVjZReJvhMhXzVi5zIPxytLJmBbFgBNrQqIjCrjw+HseJA0BWqs7yvBfdo/bM1VTRqoLNPII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736061301; c=relaxed/simple;
-	bh=mtXvMVwNI5RTcPWx9YRrRRyl1ar3NOHKGMcmnxAAfKI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EsjXbgr0t//V9EL6EDMvf4ITfoVarIKzDtzwypYB5prdi6CjbXLCU+M+ps4bEBqBkVZs7dKT39KZ5Gxe5LYVliaNlIxv9+ylX4sgKZ6vN+vlAALeOSa+oOb6chUXkgdZQgnsrq1yTfPupPuXVit9zi8tzlOD5ywwlmGlqMFdccs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=J2e0gltH; arc=none smtp.client-ip=209.85.214.181
+	s=arc-20240116; t=1736061302; c=relaxed/simple;
+	bh=NtIPh46BeBBRavGAIlzmNcOKuXgtwLSH38m5dpJNAys=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KOsW81UQ6cp9DreOwG0MDue+fco+0L72M6qwfHMIhU/WxolE0roPQy3XMYCQcuVoj+kDii8PRQpVsmUvttJb8tXwSIG6Its9MzxCjqw6QuTlmUeQNhwPqD3wbSaYaGRRSQswSSjztgwKH/TblYclyIfmNq4vufjSEiUrVjeDYtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=OaZuD/aX; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="J2e0gltH"
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2163dc5155fso185667545ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 04 Jan 2025 23:14:58 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="OaZuD/aX"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2165448243fso226525555ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 04 Jan 2025 23:15:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1736061298; x=1736666098; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9TP/RC1+W7op7tLb9boh41q09LHWGrqC5AT8VNbl2SE=;
-        b=J2e0gltHNYydT2kD0uFGpBJ4O9FPckz5CcvvYAIUgtfSPlFFxVTw926Bkrcri3leta
-         5diQaaI9/Bfm3wY8nb2IfpU4MIuGDQQ9ethGQ5yg66+fpP/SJt7hiYColjUXj3l7iRid
-         7irALwtyHiL5mL8n7KoywXavWUR8LAgIIAm5s=
+        d=0x0f.com; s=google; t=1736061300; x=1736666100; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h1UM9YxumSC7m8fCEV77dLpbLIfMqY7kUCOGI+oWymc=;
+        b=OaZuD/aXGRVmRGJ42HTbTXUKC9jB5ltFMDo97e5XOVz5DPIagahPNryszVuEgkBYrQ
+         JlPyk33kSoNPo6b9D5jQa7HaTD2T0PFxQH/UQnk8id4IB7BpqWLZGIIlXwe8PRfmta/S
+         YatEe+HZm4u+cdHWVngNX/s2XKeCl9/l3ycwM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736061298; x=1736666098;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9TP/RC1+W7op7tLb9boh41q09LHWGrqC5AT8VNbl2SE=;
-        b=FZ83BhyQnxpossjhIJmkiaoD0ZLwOsEtFQhW50jInghzxaC56qG7zcaYd7a6zvjaPJ
-         u2hvRQsPvre9XRINBLuOQEDygnu8WkvvRr7tS9fSBgdkBJeWNMEpTQ1o5T5pCsSF7trm
-         54vH8t9x8fRCpgkPLiWwEDGu6CbhqgaUAWNaeN8rbTCGcUOFuMreoTaZNVmxhqaDKrYD
-         xCe20TaBjf/4zyb5GMzfh/hZnxz8nMQU8eyOn5XEfr24jEol4P803ZkwmqlzXVgbaiUu
-         Eor6mB20DjBzkMct4P3uUUwr44sdPAo9W8BklJki+DnO5fXXTGQuQuvfglhY2qwhrhxG
-         x3Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCUfWTZRqti/sq2Nvvi/3FBZVYbHT2OzfNSwUoV9fa3I6JTWIwQ2Bzvmtej0WGYj/9zgW8lJ+UTYFBsQ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yxj0XlODfnAq0P4PT82JvN+tASKlaFTxDdQfju5aJB9c0Qq4GW5
-	hlhHRU4bS7i6/JHqIQHo4DypkT8amj9g91w/uTBJhhnEEA3klbNQtrZ/pbz9xm0=
-X-Gm-Gg: ASbGncuK4uqEA8/uP3i4mdhFKshvDI2vn1zon4JjCFlZWtZRrmpQKZVg7+yVGAU6We/
-	5AlkSTFRrHi6/l/epHAa7d1uVuq8yuLYY7IlBHagbCP2dVEZRNyMxjJE7lJujqpKVDWOERFmB9i
-	eZhWbnapHZbjb0SW8ZlP0TR3D245ckLdEkIja/vySAVGwJSQdfh8DfYKjrpaRYk6gkEARpPrwtE
-	jDK63VvH47vthKlZupGEbPeP/V9eXwAL1OeVa9/yHNqX9DUV7i6LOXB+KSaMxYcfd3+
-X-Google-Smtp-Source: AGHT+IENsXvhSOkS/QMbySg181yJ5uh/Yt/RGgynZvVEQoc9I7ZJHIIlUGh4nluzeOlxiWDdcIxobw==
-X-Received: by 2002:a17:903:2449:b0:216:50fb:5dfc with SMTP id d9443c01a7336-219e6e8c3admr825594315ad.9.1736061297878;
-        Sat, 04 Jan 2025 23:14:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736061300; x=1736666100;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h1UM9YxumSC7m8fCEV77dLpbLIfMqY7kUCOGI+oWymc=;
+        b=PnyPtBIpx5brLWzlaeZCdtrj4YYEAyzvTsgWBH8TSBhJvj/9pog6MVH5H612+o+3f6
+         tBKzmSIMPIMgsvwKZOy0Goc6ogC1MA380oBTXn283rx08ueo5B74h9X6v6XZUWrHn6+e
+         RodiEYumk23EVD8TBuj0NszPchS6jCWOmB15H2PodkidOS9yfcBqjtevmyKV1J/mRhZG
+         CWlBs+fC1uLXEzESdEYUMa7jwbOMsv8bsYbWqCsJ7O6zKzV/Gw1SuRiw09CiawBrHhm1
+         C/Kk9hYu7RzLafv0TuPnq3iyjiAP3tnP/tWOzYkoUpCePmDRyFQ2Eo7Nt13+IZaoIK5A
+         Cu3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWiU8NZoTCMSJ2gDBGHxOeGG0UumBzeCjGLTiTCajDabl7P6do2b5XJdrEOHntcPUQoZ3GkkhEJ1Eul@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy1WXKiOK6tA/SdBxsv/i5imMWSfGGroR2/P+EygxZ0vIX/8Miu
+	MI5OWR+J6ntD2qZHltyJJ1IP6qfIORb3Ejzx3nwNjIzaTJZfXUuOWubfmvnYH7U=
+X-Gm-Gg: ASbGnctDEJ63LnRD4A3ee+W1YSZBW658U9/yQB4KwTF65ni8Qoyerhpjyz5TKls7yEn
+	XHwiPtIDrRVZZb7tWOUs1Ljr/VCUu19vRpQhyHM3RTa/Gtnrxhi+pc7hHCKOkaTXApwbMQXR36o
+	hj0uYS0xOBQxuWMLpcTds+lMFaJkJ0+Aon65LRX7e92IrKBQxLFMJLki9bDZf/TAT/zjsM0p+K1
+	ueaxJkE2Yt2bv7RmQooIkx/nvzJeVrIRlx/lagwKANcRD/zUJcHc4TKKaHngIqCtG8Z
+X-Google-Smtp-Source: AGHT+IGcMNkP197o6owDLgc02j2lkk8bugUjCIOVPjuJglq0i5lpZO+GOfRIhTciQjmqE9Uo63QlRg==
+X-Received: by 2002:a17:903:98e:b0:212:63db:bb15 with SMTP id d9443c01a7336-219e6f14f81mr858741595ad.38.1736061299988;
+        Sat, 04 Jan 2025 23:14:59 -0800 (PST)
 Received: from shiro.work.home.arpa. ([2400:4162:2428:2ffe:e94c:e5d:106e:3582])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-219dc9cdef7sm270007125ad.133.2025.01.04.23.14.56
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-219dc9cdef7sm270007125ad.133.2025.01.04.23.14.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Jan 2025 23:14:57 -0800 (PST)
+        Sat, 04 Jan 2025 23:14:59 -0800 (PST)
 From: Daniel Palmer <daniel@0x0f.com>
 To: geert@linux-m68k.org,
 	fthain@linux-m68k.org,
 	linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org,
 	Daniel Palmer <daniel@0x0f.com>
-Subject: [RFC PATCH 0/3] m68k goes DT
-Date: Sun,  5 Jan 2025 16:14:30 +0900
-Message-ID: <20250105071433.3943289-1-daniel@0x0f.com>
+Subject: [RFC PATCH 1/3] m68k: bootinfo: Add tag for FDT address
+Date: Sun,  5 Jan 2025 16:14:31 +0900
+Message-ID: <20250105071433.3943289-2-daniel@0x0f.com>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20250105071433.3943289-1-daniel@0x0f.com>
+References: <20250105071433.3943289-1-daniel@0x0f.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -69,77 +73,31 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Short version:
-I want to start converting m68k (including nommu) to use DT for booting
-so I can add few cool boards I have (e.g. dual 040/060 VME board..).
-I need ideas, help etc. Maybe if someone converted an m68k machine they
-are using to DT alongside me this would have some hope of actually happening?
+Allow bootinfo to carry a pointer to an FDT so that the
+bootloader can pass us one.
 
-All of my WIP in-progress very messy code etc is here:
-https://github.com/fifteenhex/m68kjunk
+This allows for devicetree support without changing the
+boot protocol too much and breaking unmaintained bootloaders.
 
-Longer version:
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+---
+ arch/m68k/include/uapi/asm/bootinfo.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-As of today I have:
-- Modern (2024.07) u-boot fork that works on 000/030/040 real hardware/QEMU
-  that supports booting a Linux ELF image. For nommu a FDT blob address
-  is passed via a regiser, for mmu the normal bootinfo is created and
-  the FDT is passed via a bootinfo tag. nommu never used bootinfo and doesn't
-  need to.
-
-- A Linux branch for nommu that removes most of the current DragonBall
-  code, makes it into a devicetree based machine and adds a bunch of
-  drivers etc. This works in a fork of QEMU I have and on the real hardware.
-  The DragonBall even has a working 1bpp framebuffer. The nommu branch also
-  works on 010 and better.
-
-- A Linux branch for mmu that uses the crappy patches in this series and some
-  other bits to start moving the MVME147 board over to using DT.
-
-- A buildroot fork that can build a 000 nommu userland etc. A patch to add
-  support for building for 030 is already in buildroot, I plan to send one
-  for 060 later.
-
-- A bunch of DragonBall machines, an MVME147 030 machine, an Eltec E27 dual
-  socket VME board with one 040 at the moment but I have 060s to go in it once
-  I work out the need jumper changes, some other 060 VME boards, Amigas...
-
-What I'm thinking:
-
-- We initially add passing of an FDT via bootinfo for mmu
-- Add support for a generic machine that can boot almost anything so I can
-  bring up my new (to Linux) machines.
-- I will migrate MVME147 to device tree.
-- Some like minded person migrates a machine they have to device tree. :)
-- Maybe embed a FDT for machines that'll never get a bootloader that
-  supports this and use the machine type to select the embedded FDT
-  and move all of that stuff over without needing to mess with bootloaders.
-
-Issues I have:
-
-- The head.S code is real confusing, I'm not sure how I make this support
-  a generic machine right now.
-- The head.S code sometimes gets stuck setting up the mmu on my MVME147 when
-  the kernel binary layout changes. I thought for a long time my new code was
-  wrong but then discovered just making the kernel bigger by adding some printk()s
-  also caused it.
-
-Sorry for the wall of text.
-
-Cheers,
-
-Daniel
-
-Daniel Palmer (3):
-  m68k: bootinfo: Add tag for FDT address
-  m68k: bootinfo: Add generic machine type
-  m68k: Add dt support (proof of concept)
-
- arch/m68k/Kconfig                     |  2 +
- arch/m68k/include/uapi/asm/bootinfo.h |  4 ++
- arch/m68k/kernel/setup_mm.c           | 63 ++++++++++++++++++++++++++-
- 3 files changed, 68 insertions(+), 1 deletion(-)
-
+diff --git a/arch/m68k/include/uapi/asm/bootinfo.h b/arch/m68k/include/uapi/asm/bootinfo.h
+index 024e87d7095f..326f20e82769 100644
+--- a/arch/m68k/include/uapi/asm/bootinfo.h
++++ b/arch/m68k/include/uapi/asm/bootinfo.h
+@@ -73,6 +73,9 @@ struct mem_info {
+ #define BI_RNG_SEED		0x0008
+ 
+ 
++/* Pointer to FDT if there is one */
++#define BI_FDT			0x0009
++
+     /*
+      *  Linux/m68k Architectures (BI_MACHTYPE)
+      */
 -- 
 2.45.2
 
