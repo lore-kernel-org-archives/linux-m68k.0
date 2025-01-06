@@ -1,135 +1,64 @@
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cynthia.allandria.com (cynthia.allandria.com [50.242.82.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C38126BF9
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jan 2025 11:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0337C1DC9B8;
+	Mon,  6 Jan 2025 12:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.242.82.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736162421; cv=none; b=IMpNSYnDbQpjESojXt6n9EdSpe+ASXH06mQiq9BjNTifO0gzA1tB1Fw6QLyqz+xmYIMOzMtzEoniquH6VvuOEyDaG7kurxg9Vlsrj0jIiOpGVuu1VdqjY4Kn5BOKzjGeX/+V2akN5r0dV/hiBOC3xuSbFpn7uyxEZzSt3Yw1k+k=
+	t=1736165189; cv=none; b=VZHYmAr+N/OtuEWMykEa+2qtYbbBuuKdJthiBpMrt3VBl264fBDhQvPsxDUXLzMnCE5/iLI9/uni3yrtiYcQEKhXqdNi131KWaT3St3s/gwPn2P1gwIYJ1SfUjSf5QvH3abMSulHTO0weQQ/1hmUT3A7KSUJqCprc9zU45RDUes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736162421; c=relaxed/simple;
-	bh=nYya+SzPPH1ua03EEGLutRh2bSy4pxfW8ZND+qi5nGE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nXl2Ek6CPEhXUrYdFeh1i3wpKD6QCQ4vjdwebB/KmKeULiPxUJhikU7XmfdXsgTAXMVTrbYVFMWnAVfr3l9/7kDClJiSsgHDlpONnWT0WaaiCt1QY692X/boIIzX9UZf48OahKPJMms1f5EMiD49ufkzcAl6pctw5qSlOJ9AfPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3C7924000A;
-	Mon,  6 Jan 2025 11:20:09 +0000 (UTC)
-Message-ID: <1e4e1d6c-671a-4c62-a8ca-597689395cf7@ghiti.fr>
-Date: Mon, 6 Jan 2025 12:20:09 +0100
+	s=arc-20240116; t=1736165189; c=relaxed/simple;
+	bh=iJ8+j0jbHGpal1c3V0yHY7/aDlFw/fqX42G5Xbps/+M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zw9/6M1WoPKKiQ6e0v13918/ZQpdfhwHOUusPsEcIxugWY2U19eh5EY4/lJ2HizOxPvrjr+GTY/ypM/gWzPMi+h14zbht6wt9OiD4fYmrbasPv9nMp8osiFe+SrqTPOQoAUHArfdU1nJDt0/f0uijSRIeCrGwvHmn6HrZaOsGdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=allandria.com; spf=none smtp.mailfrom=allandria.com; arc=none smtp.client-ip=50.242.82.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=allandria.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=allandria.com
+Received: from flar by cynthia.allandria.com with local (Exim 4.84_2)
+	(envelope-from <flar@allandria.com>)
+	id 1tUlQb-0000Hi-HI; Mon, 06 Jan 2025 03:37:49 -0800
+Date: Mon, 6 Jan 2025 03:37:49 -0800
+From: Brad Boyer <flar@allandria.com>
+To: Greg Ungerer <gerg@kernel.org>
+Cc: Daniel Palmer <daniel@0x0f.com>, geert@linux-m68k.org,
+	fthain@linux-m68k.org, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] m68k goes DT
+Message-ID: <20250106113749.GA32654@allandria.com>
+References: <20250105071433.3943289-1-daniel@0x0f.com>
+ <c0428d69-2f18-45d3-8024-a9fe4170b23e@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/15] riscv: mm: Skip pgtable level check in
- {pud,p4d}_alloc_one
-Content-Language: en-US
-To: Qi Zheng <zhengqi.arch@bytedance.com>, peterz@infradead.org,
- agordeev@linux.ibm.com, kevin.brodsky@arm.com, palmer@dabbelt.com,
- tglx@linutronix.de, david@redhat.com, jannh@google.com, hughd@google.com,
- yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
- vbabka@kernel.org, lorenzo.stoakes@oracle.com, akpm@linux-foundation.org,
- rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
- rppt@kernel.org, ryan.roberts@arm.com
-Cc: linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-kernel@vger.kernel.org, x86@kernel.org, linux-arch@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
- Palmer Dabbelt <palmer@rivosinc.com>
-References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
- <84ddf857508b98a195a790bc6ff6ab8849b44633.1735549103.git.zhengqi.arch@bytedance.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <84ddf857508b98a195a790bc6ff6ab8849b44633.1735549103.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0428d69-2f18-45d3-8024-a9fe4170b23e@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 
-Hi Qi,
+On Mon, Jan 06, 2025 at 12:59:04AM +1000, Greg Ungerer wrote:
+> On 5/1/25 17:14, Daniel Palmer wrote:
+> >Short version:
+> >I want to start converting m68k (including nommu) to use DT for booting
+> >so I can add few cool boards I have (e.g. dual 040/060 VME board..).
+> >I need ideas, help etc. Maybe if someone converted an m68k machine they
+> >are using to DT alongside me this would have some hope of actually happening?
+> 
+> I have been thinking about this for a while for the ColdFire targets.
+> In a few cases the drivers its uses are already devicetree enabled,
+> since they are used on some of the NXP/Freescale ARM SoC devices.
+> So this is interesting work to me.
 
-On 30/12/2024 10:07, Qi Zheng wrote:
-> From: Kevin Brodsky <kevin.brodsky@arm.com>
->
-> {pmd,pud,p4d}_alloc_one() is never called if the corresponding page
-> table level is folded, as {pmd,pud,p4d}_alloc() already does the
-> required check. We can therefore remove the runtime page table level
-> checks in {pud,p4d}_alloc_one. The PUD helper becomes equivalent to
-> the generic version, so we remove it altogether.
->
-> This is consistent with the way arm64 and x86 handle this situation
-> (runtime check in p4d_free() only).
->
-> Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-> ---
->   arch/riscv/include/asm/pgalloc.h | 22 ++++------------------
->   1 file changed, 4 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
-> index f52264304f772..8ad0bbe838a24 100644
-> --- a/arch/riscv/include/asm/pgalloc.h
-> +++ b/arch/riscv/include/asm/pgalloc.h
-> @@ -12,7 +12,6 @@
->   #include <asm/tlb.h>
->   
->   #ifdef CONFIG_MMU
-> -#define __HAVE_ARCH_PUD_ALLOC_ONE
->   #define __HAVE_ARCH_PUD_FREE
->   #include <asm-generic/pgalloc.h>
->   
-> @@ -88,15 +87,6 @@ static inline void pgd_populate_safe(struct mm_struct *mm, pgd_t *pgd,
->   	}
->   }
->   
-> -#define pud_alloc_one pud_alloc_one
-> -static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
-> -{
-> -	if (pgtable_l4_enabled)
-> -		return __pud_alloc_one(mm, addr);
-> -
-> -	return NULL;
-> -}
-> -
->   #define pud_free pud_free
->   static inline void pud_free(struct mm_struct *mm, pud_t *pud)
->   {
-> @@ -118,15 +108,11 @@ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
->   #define p4d_alloc_one p4d_alloc_one
->   static inline p4d_t *p4d_alloc_one(struct mm_struct *mm, unsigned long addr)
->   {
-> -	if (pgtable_l5_enabled) {
-> -		gfp_t gfp = GFP_PGTABLE_USER;
-> -
-> -		if (mm == &init_mm)
-> -			gfp = GFP_PGTABLE_KERNEL;
-> -		return (p4d_t *)get_zeroed_page(gfp);
-> -	}
-> +	gfp_t gfp = GFP_PGTABLE_USER;
->   
-> -	return NULL;
-> +	if (mm == &init_mm)
-> +		gfp = GFP_PGTABLE_KERNEL;
-> +	return (p4d_t *)get_zeroed_page(gfp);
->   }
->   
->   static inline void __p4d_free(struct mm_struct *mm, p4d_t *p4d)
+The m68k mac platform is similar in this due to sharing some drivers
+with ppc macs using Open Firmware. There are a few drivers where we
+could eliminate complexity and #ifdef trickery if it was all
+device tree based. For example, pmac_zilog.c relies on the data from
+OF on a powermac but is getting platform data from the tables in
+config.c on m68k. The code in via-cuda.c similarly looks up the
+hardware info from OF on a powermac but has hard-coded data on m68k.
 
-
-You can add:
-
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks,
-
-Alex
+	Brad Boyer
+	flar@allandria.com
 
