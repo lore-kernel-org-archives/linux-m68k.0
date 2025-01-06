@@ -1,147 +1,146 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8FE41DC988
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jan 2025 10:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6561DD0C7
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jan 2025 11:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736161158; cv=none; b=Yo1RixWUPqKoNzD9SETtQ020A1cStY2O1FSKI9K1mzNl9TGGvZgMvzDU3dD/EIk9VlfMdzWb5/ltRJTyQwRWVrGjZ+JRWw8v+8+wQpkwCid325q4RnHYyeO1R9BlkgvmeXTN8rkVnspP8lMzIGi20vlk481aNsvPC+nwCD1PxW0=
+	t=1736161358; cv=none; b=U36akokOtOYuGne4ed0CI7l2Fnq/cvNHT5wXFXcEovIVRO+sEEG5aGGmohMU9RJZsVpbhCSHFlERXw2LqmQQAlJ4XdWVxLio/X4Fvlt2u2gJ1q/wRV+7vvkNGCmY8yN7gA7Co/XdzkkFhDDwVj/fKCX+ZM/HcY2Mj+Dgynf5RLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736161158; c=relaxed/simple;
-	bh=ErVrTjQTnrcJ4QgCkFLOVLncHkcN82/+t7EHdJX6nj8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=TXi1sqLVPDblOXXTwo5MPI6slfZ3vqCne9HnPu4NxAES6zpmeouSzD9j/Y8dj8KuAAGCIpxosjWGEygVCyggzOQh3FMvbF8dVQARqbSdP0bFFiDxd2ZXxcuRzD4vtKXsPkar9ukYjrRCpxoaBIG4tgrUlQjmfBV8fzOQgJ0Mz0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mwq/epXA; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1736161358; c=relaxed/simple;
+	bh=30+xZQfb9yDuTIOe+TrzSZCg5DGlryILzZEnHJoiL0s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HotLhuJ++OluDy8eyetOYgD5mfTBxR8n7ZuS1tefOQkWy8/tAAToFZ7UUSP/OdfmvyWcdBaz0aMd0egKNhotRD635NA2yoaiBK7sykQnsVE21bzo4I+N08LZo+Tw7kp5s986e38n8f4Cpijv3wjzpQAVtp6G31Jw1wNG2tn6Z9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=WmJz38cH; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mwq/epXA"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4361c705434so102687705e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Jan 2025 02:59:16 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="WmJz38cH"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2161eb95317so209058835ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Jan 2025 03:02:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1736161155; x=1736765955; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rGHpVK1pgwjXUnuBrtM7o2RIlNaOXIumSPhdbcQwh8w=;
-        b=mwq/epXAU8sjeyW2tXnZZnxKxAV54PTn9THqBpAcfqdQr/P/q3galCanaLNWyzur+0
-         dExeI4AQ9fBzSBjlWT/9NEg2X+FcjWdJY81LrY+R4Fd9BwB0fX+YivMPy5rchQ0ezFSy
-         7IlLWpvBIL9jm1yoJGZ+TGi/Q1dIDMcpNNlrL32GRUjwvERmeC2WUUUFFmislQOf8sq+
-         8BeA3XcXB9CibdsxhHrYZa3K3cJ+lyaT6/9IiUfNrIShAMVnVjniGVVkWfE0+r9KN3tP
-         E5Wn8knDkoJf0MLrye2fUyPwEwD24LnynCPL8KPgtGO74uN8pLqM7qAv6IkNRb6uXSin
-         F9lw==
+        d=bytedance.com; s=google; t=1736161353; x=1736766153; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PtS7kKDFbbWBE6dlgb91yolih02/BD7li/VWMu2pf+Q=;
+        b=WmJz38cHzBze/nqD4qTLLCHLDZt8hF9JdEoknsZZunJv+JiwIFk9aIq1a++jpQmXuS
+         7SXUyFh1X09KZDdt+3gq+JKvoZJ9VQ3V7ISZHQptyeeVw1JNiHuIWXPLqP4Lx45oY5Vm
+         n0mp3K2gt+DM42HA9hN9ku8Hc8u6AYIfGm6B7zkyYUdYpgtV/jS45mKSMz7sRcIAwN4v
+         qqvBX6N8XGRkNYD3Z7Efy7X6qxA/pJ2M+n4sKY2a2HsLmffygvpCFLyGkj4gTFqLKW8x
+         yw/mvpnkIApjIUz8Z082X/BD/bIFungCf1YmoQ6cljv55iBKp4P/1609Ycw+zorhAb4z
+         F/Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736161155; x=1736765955;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rGHpVK1pgwjXUnuBrtM7o2RIlNaOXIumSPhdbcQwh8w=;
-        b=nPwTnazFYhoWRXH6WWxlbhxHLISX7NhmqFDMCE4gcGyMRg1eKtqL3oDypYT/1V867l
-         FogS3adEDcQQUr1ls+wz5aJ5opCxhn1oU4SvJaERbkrW8i25HuyafdL9/s1k78rpGNUP
-         hU7zK6T6dk0Ki077zKwIuDZLDD2HWPSXlWPPn/6J8zuTqVh8Stmki0XZLc6han4E0TKE
-         mR7rMklwdlBEG6UCPJTOHrm6t7Z6upRtvHo6S2KdwnJGpkZQD+4Cnq95vmeiuJeZRe5+
-         cDUWol4PI399hKUZ3MSNEzxxQVb2rXVy5Rk3KKBdIxbbZj9bquRShZGb6FHQkWzOmq0C
-         w1mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGbhS9cbHxuuBX7LIIGS34dLvKCQeOP2VO3oDIrcu8ILl9OUDJzZsLYsv2hjhbr3xJNk1/6nvVZdka@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yz/y+XjDTyos9I5HyAF6T2gx+2JhYtcEBtLpZ0Hu0adYURoO78K
-	/fjKkw3iLIAOO7jnYumRQOpA4xdJM0dZVblbhZb1ErePq5zEo9rqobVhwZT86ec=
-X-Gm-Gg: ASbGncsxAO4s4ZF5C8kTQy2JGbSquaQBKF8m1lgzwabgVRPIuIJcyFtl5lI7McR2eiE
-	tL2lzauQTQgUTqwmKtO4YhUTttGpUCLP2fx9H6Pozr58USYxWZ3gMH6fqDxOGbDY3+ajS7+kwCQ
-	FM+50hGsFacH/Vj2y9Iffmb1VH9cQu7aMU9PSdFXlLFxuMEnXlGmo3/g5VKuqad9pRp9MtBbqBR
-	mCpCu+j71HqgdzVxc/UWbqekmBMUVanxNJC8BcndRqjExZiyLZzLO/VfieaEg==
-X-Google-Smtp-Source: AGHT+IHjGCBAHYcrmzbtuFGrX2DIGSLhoBn+LUgUMGhredPFuHNSJWEpV6FO9CkvBHijZu0wjs3jTw==
-X-Received: by 2002:a05:6000:2ad:b0:385:e8f9:e839 with SMTP id ffacd0b85a97d-38a224063b2mr43747658f8f.56.1736161155021;
-        Mon, 06 Jan 2025 02:59:15 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436604e9c2csm565202195e9.43.2025.01.06.02.59.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 02:59:14 -0800 (PST)
-Date: Mon, 6 Jan 2025 13:59:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Greg Ungerer <gerg@uclinux.org>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:armnommu 3/3] drivers/mtd/maps/pismo.c:243
- pismo_probe() error: we previously assumed 'pdata' could be null (see line
- 226)
-Message-ID: <c25c37d3-eb4c-42de-b961-7eca78ab6a8d@stanley.mountain>
+        d=1e100.net; s=20230601; t=1736161353; x=1736766153;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PtS7kKDFbbWBE6dlgb91yolih02/BD7li/VWMu2pf+Q=;
+        b=vf3xnNGJqDN4nFOhPvFmSxbSK72+hMDJsQdwuaO5f9L1X6kUWKXTxHSBVP3nROmh/w
+         z3BM/W88eQnAhDsf2dMDyTd/gIWJZ7k/aec/pWssRIFghLkKoTKmcKCShYaxbqr3QZwn
+         RlEDf2pR3K7WaCvbKFcC9iXIlR8co3L6Kcfvu3JLWR+mB1rWRqdalqROZ3UR7BtdjXSH
+         xr9r62OdsYql4UblZqrB1aqkDWPH5Alz0XRr7TGvEaDgjYPWJdb7FruFEuCYfOq+F5D4
+         INK+tRtbz9dIET/1SQl+c9HqiIHFOBdBL4TteymQOmKS0i1ysFnw9Ym1UPpL0Up/2oMJ
+         HNRA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ1bINTN62j1G8KTjPoTGzhwpcSSwr/03J2aoMAuqRNLd+Gn4H5P3HUwFz5JxXghOKMB+TW7XgY0+r@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxwGvCK1VPVEDwlUPcZBdyGmVvpqqMi5H6gy1Mj03JDkJimhLKG
+	RN2xjdxaRcj28f7huVL5LAW+HU9KlMfKV0wENOUvjg0YHeL54kk6VsSTD8kY3Rg=
+X-Gm-Gg: ASbGncu/FStFeWnkADZkB4+nSdHiT5XFxjJRObJ52WHE9vlf0TxOf9qgy5jre9Cm99B
+	myqYS3p4hrftY8RjIGn9GeqP99HtI9A7HiofE8R3qiZFnxPngr5kS+ES/P5cI49T55AJI8rjvh7
+	B3YXGjzXLqM90FqklMaiisoPtFS0kaLjd9U+UiW0BgcPxTArBj87XKIzXch8BgisPfhLXb5SM9/
+	PICR5mPlbr5nuAykvMJOSDv1I4vaH2ky0WIT7B6v/iWfkql0K2X/a1P4VJMDWH8rVieo9p33ERc
+	2MhUoA==
+X-Google-Smtp-Source: AGHT+IFCeOw2arXEHpOUWAGun1CKXf9/XTpPQ1dFbIMLlKInW35U2LjXZ6DtTEzjdru/7w1/tbEHpw==
+X-Received: by 2002:a05:6a00:4644:b0:725:b347:c3cc with SMTP id d2e1a72fcca58-72abdeb9c33mr83929136b3a.23.1736161353534;
+        Mon, 06 Jan 2025 03:02:33 -0800 (PST)
+Received: from [10.84.148.23] ([203.208.167.150])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad816464sm31123318b3a.40.2025.01.06.03.02.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jan 2025 03:02:33 -0800 (PST)
+Message-ID: <2d16f0fe-9c7f-4229-b7b5-ffa3ab1b1143@bytedance.com>
+Date: Mon, 6 Jan 2025 19:02:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 12/15] s390: pgtable: also move pagetable_dtor() of PxD
+ to __tlb_remove_table()
+Content-Language: en-US
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: peterz@infradead.org, kevin.brodsky@arm.com, palmer@dabbelt.com,
+ tglx@linutronix.de, david@redhat.com, jannh@google.com, hughd@google.com,
+ yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
+ vbabka@kernel.org, lorenzo.stoakes@oracle.com, akpm@linux-foundation.org,
+ rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
+ aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
+ rppt@kernel.org, ryan.roberts@arm.com, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+ linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org
+References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+ <ad21b9392096336cf15aee46f68f9989a9cf877e.1735549103.git.zhengqi.arch@bytedance.com>
+ <Z3uyJ2BjslzsjkZI@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <Z3uyJ2BjslzsjkZI@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   d03e292d5f72c15f004a13503f4a5cca0a26bec0
-commit: d03e292d5f72c15f004a13503f4a5cca0a26bec0 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-r073-20241230 (https://download.01.org/0day-ci/archive/20241231/202412310053.VgXsTpPO-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 14.2.0
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202412310053.VgXsTpPO-lkp@intel.com/
 
-smatch warnings:
-drivers/mtd/maps/pismo.c:243 pismo_probe() error: we previously assumed 'pdata' could be null (see line 226)
+On 2025/1/6 18:36, Alexander Gordeev wrote:
+> On Mon, Dec 30, 2024 at 05:07:47PM +0800, Qi Zheng wrote:
+>> To unify the PxD and PTE TLB free path, also move the pagetable_dtor() of
+>> PMD|PUD|P4D to __tlb_remove_table().
+> 
+> The above and Subject are still incorrect: pagetable_dtor() is
+> called from pagetable_dtor_free(), not from __tlb_remove_table().
 
-vim +/pdata +243 drivers/mtd/maps/pismo.c
+Hmm, __tlb_remove_table() calls pagetable_dtor_free(), so moving to
+pagetable_dtor_free() means moving to __tlb_remove_table(). Right?
+And the main purpose of this patch is also to move pagetable_dtor()
+to __tlb_remove_table(). So I think this description makes sense?
 
-0b79d5d1e5982b Uwe Kleine-König         2023-02-26  209  static int pismo_probe(struct i2c_client *client)
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  210  {
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  211  	struct pismo_pdata *pdata = client->dev.platform_data;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  212  	struct pismo_eeprom eeprom;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  213  	struct pismo_data *pismo;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  214  	int ret, i;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  215  
-752031210ca145 Wolfram Sang             2019-07-22  216  	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  217  		dev_err(&client->dev, "functionality mismatch\n");
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  218  		return -EIO;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  219  	}
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  220  
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  221  	pismo = kzalloc(sizeof(*pismo), GFP_KERNEL);
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  222  	if (!pismo)
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  223  		return -ENOMEM;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  224  
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  225  	pismo->client = client;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29 @226  	if (pdata) {
-                                                                    ^^^^^
-This code assumes pdata can be NULL
-
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  227  		pismo->vpp = pdata->set_vpp;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  228  		pismo->vpp_data = pdata->vpp_data;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  229  	}
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  230  	i2c_set_clientdata(client, pismo);
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  231  
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  232  	ret = pismo_eeprom_read(client, &eeprom, 0, sizeof(eeprom));
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  233  	if (ret < 0) {
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  234  		dev_err(&client->dev, "error reading EEPROM: %d\n", ret);
-395b228858778d Wolfram Sang             2010-03-20  235  		goto exit_free;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  236  	}
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  237  
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  238  	dev_info(&client->dev, "%.15s board found\n", eeprom.board);
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  239  
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  240  	for (i = 0; i < ARRAY_SIZE(eeprom.cs); i++)
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  241  		if (eeprom.cs[i].type != 0xff)
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  242  			pismo_add_one(pismo, i, &eeprom.cs[i],
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29 @243  				      pdata->cs_addrs[i]);
-                                                                                              ^^^^^^^
-Unchecked dereference
-
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  244  
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  245  	return 0;
-395b228858778d Wolfram Sang             2010-03-20  246  
-395b228858778d Wolfram Sang             2010-03-20  247   exit_free:
-395b228858778d Wolfram Sang             2010-03-20  248  	kfree(pismo);
-395b228858778d Wolfram Sang             2010-03-20  249  	return ret;
-f6a8c60960bbea Russell King - ARM Linux 2009-11-29  250  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+> 
+> ...
+>> diff --git a/arch/s390/mm/pgalloc.c b/arch/s390/mm/pgalloc.c
+>> index 569de24d33761..c73b89811a264 100644
+>> --- a/arch/s390/mm/pgalloc.c
+>> +++ b/arch/s390/mm/pgalloc.c
+>> @@ -180,7 +180,7 @@ unsigned long *page_table_alloc(struct mm_struct *mm)
+>>   	return table;
+>>   }
+>>   
+>> -static void pagetable_pte_dtor_free(struct ptdesc *ptdesc)
+>> +static void pagetable_dtor_free(struct ptdesc *ptdesc)
+>>   {
+>>   	pagetable_dtor(ptdesc);
+>>   	pagetable_free(ptdesc);
+>> @@ -190,20 +190,14 @@ void page_table_free(struct mm_struct *mm, unsigned long *table)
+>>   {
+>>   	struct ptdesc *ptdesc = virt_to_ptdesc(table);
+>>   
+>> -	pagetable_pte_dtor_free(ptdesc);
+>> +	pagetable_dtor_free(ptdesc);
+>>   }
+>>   
+>>   void __tlb_remove_table(void *table)
+>>   {
+>>   	struct ptdesc *ptdesc = virt_to_ptdesc(table);
+>> -	struct page *page = ptdesc_page(ptdesc);
+>>   
+>> -	if (compound_order(page) == CRST_ALLOC_ORDER) {
+>> -		/* pmd, pud, or p4d */
+>> -		pagetable_free(ptdesc);
+>> -		return;
+>> -	}
+>> -	pagetable_pte_dtor_free(ptdesc);
+>> +	pagetable_dtor_free(ptdesc);
+>>   }
