@@ -1,130 +1,107 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F216A1DFE39
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jan 2025 14:44:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2429286333
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  6 Jan 2025 15:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736174677; cv=none; b=kb5Nsn8Pypb8H8CgcqyQchbetcJtIS9aVxZUlke90YeS4uqYm2ib/LZD5ltpk1iBzFPZc/Wmt4z6O5YcHEqNUEZqE7ehWV0itK9Kw1bdDQlL6WLF9ndZlCTILCd3gGcQ6KyNIp+uXSgM2rq3D+bVdJufUxrojgHCqxW0nzW4VWA=
+	t=1736178709; cv=none; b=RO5PvBXpeWCy8lfTTFOUpOelhkTmCkzz/Z9/J5rFPeRh6+GD/wCM70pIWMP80cVOLhmoXZTs5rpZOAupZ/CvgLH91D0VMe3TwKq/ODXQB7bkYS0VnUSahY1CDZGfveTjaoOT1TGO4lcmC5NsEI4F2grAJ08Ys+HGxLrZVg8coPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736174677; c=relaxed/simple;
-	bh=FT+GsbrHFNytgmVw9pS4MWUyG9GELMc2aWIALV4R5HM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WVXUXSLT44ffKVDNr3iIfc5EHWytLRBybuAXgaMMXefGNniuBeECSKIUTS+EIwhcVvXpQ7wKGPF87AND4ZbuB5pXLwhoOX6GgHhKiElbqyJqUj/OFyXPdkm+eAVVuLZ1/D59rfpfzfCttxglFEN8ToPHSPE7fauTeEV9HaSsxcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=U8nFrto6; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1736178709; c=relaxed/simple;
+	bh=j6/63r2h9KWpkhgTaeTyfLc0JiKry9wPjGgkywCR41g=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=a/Lf9d8i2orYQEAQE1ZR65Ory3eYpkGAIZjm18wHc1sibM1vxNFsksGOpmraJIcWZ3O9PhgxmO59ooiCLKaIJZo4lKx5XbEI3YGo6uz2fpGQ5AUbf+arJGvA7qSRT5TTkkUvg2ewXSw+LrIM7Lgy5cs65KvyGO5haeyFrfyMsHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tp7nMufK; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="U8nFrto6"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-216634dd574so137625705ad.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Jan 2025 06:44:34 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tp7nMufK"
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-46769b34cbfso37480101cf.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 06 Jan 2025 07:51:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1736174674; x=1736779474; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NViglkR77PlL2AqsFJ9M2rA8vsy0VBtzEibmSHACi+I=;
-        b=U8nFrto600AvoZeDlVB4QIOI38dppJ45ZsTL+Dx4+7Lj3n348JNCtKnMnPxuLnawjz
-         WNhD08uwb2zbtwIO5zppRkiXfT+tZmhk9yy2VfXWnKTZrfmzmlFbxsI3tFmGls8oSILz
-         9wCb6FRoW+odybqYI/Xb6ZKWhRUfsz3DSn0ZudRAviJXwqedlX29BfT2Kg0mjfOdPdBf
-         8B+UAMzQUfyiPR8pyOlSQaQRmhxlHexfyPHFuLnYs8Jm6wLfBn3p7J3HdL+lLpAjsKSu
-         8aiJSzMN60oqJ6txLoET8kGaE9BRracUQs6rJpOnSQjVSutetHTEKpSzViZEgVjt2M7r
-         hJhQ==
+        d=gmail.com; s=20230601; t=1736178707; x=1736783507; darn=lists.linux-m68k.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WHDluD7r4ZCMvjPqMA7yz16uaks4UJvI0wD0/N0YwM8=;
+        b=Tp7nMufKGovpSRlGbLAI+nv2ZT57PWCe9S72PCOGzN/WooCsCMA/nqhIuaL95CRQBO
+         DcLbizdpvq+9kE9wTju9o5yDq3zHG5ImnGm6JTSetjKR6zuLt3gkybC/gVQqx8tsDOcw
+         +IcacHApJ1UsZtGaUb2XIM7VN1tMRVwdnzjBksRdZBSBd6Y7oc1PHmfixGH5KoXGccLh
+         DKWMhscoQN3XyH8KkIi9eZ8RObTq3SYSwUox4NjJaDBu4h9VD43oxr+e3lNwPi1CbZkK
+         YAbMr7tBp1N6pgyNagXPTTVsCAzrxTkmFgZr1PZlJJdqghCRNgqcxiKakISI+97qukJ2
+         GBpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736174674; x=1736779474;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NViglkR77PlL2AqsFJ9M2rA8vsy0VBtzEibmSHACi+I=;
-        b=MY4PDqNaoJbDLAKZ6/A5VXlvNqoPlYTOZwxw8b51x78zqMgbtSITgImko0Bw1fsiKG
-         GyXomCYvrLHAazvzb7ag6KZPma0d3qhBOQDoFi71CCLevU5diCfWq7Bf4nfRCSXW6sVM
-         rH0DUxLm+ucBgzFIgSkn5yXCgpeTvxXqW/D4r/p65suetV4zW2PTG0oY9zKy7oCrIaco
-         jBxDY8KORsBJDnbCkHQ7tOJ4edX4bWGTVi6mQT4/FM3YW3rn/RfdX8Ahs1ZKxG7hyFXB
-         bPVgRL4uIKEvTgJXw14PzxW9eUbCMO2qC2OadA6TM4vd2fUiHaM706dJiq0cEn3CbYav
-         UwUg==
-X-Forwarded-Encrypted: i=1; AJvYcCWMcOYEanI0YdeUVIdA5QgHeoqfvR/btgfwKTK7l1Pe3CcivtTV3pZkcg5I3hmn+hxlgUHGxL2C6CX4@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yx3ec+TtRmoLCkxZC51FTW/Se9uo62qdFP1G+poM5lWihzhrX8y
-	vZIe59cVZ1+jL4m6LU0YfUbflOcWAZ+mFaXShEoxevcn2cnqZMY0QpUKEsMxfhk=
-X-Gm-Gg: ASbGncuYOif3ReoLRkubNZaSak11lsPocEfuYpPx5UGZEDbsPyRajHOZtzAip33xO2/
-	UcX621PDZ5fCjdnVz01mY8kutm99ugZt7n30zJyrqXqj016k2cdlBZyExUoM2xxTVVyHcyOQTvI
-	d9e86eSrMAMKieOlCkACFU5vfwZm9B4k4EgbEF0A3uCG5pvdZj0KkCzpbPfgSI4FxkmlWz4pZoo
-	RHg0yaO8AtpacsSwXq1rB5iZvDFoQSWWQMzyKnclQET327COkbXQUp5ArRTtRVVVN/aO6wIN6LC
-	VYy0iInWQrzfmvPv9+InVUICMG1FXmnNG6Dbapycilf38Ag/qFpn
-X-Google-Smtp-Source: AGHT+IHfRKlSBRBXUw7mHIW0SQFNESOEWbBrtQcBXd7/ffhetsdlBCZHRjeTrMJdIBfoDiMG7l+wRg==
-X-Received: by 2002:a05:6a00:ac3:b0:726:f7c9:7b1e with SMTP id d2e1a72fcca58-72abddcadd6mr82367083b3a.13.1736174674262;
-        Mon, 06 Jan 2025 06:44:34 -0800 (PST)
-Received: from ?IPV6:2409:8a28:f44:d64:296c:a8f3:f81e:f88b? ([2409:8a28:f44:d64:296c:a8f3:f81e:f88b])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad815804sm31532588b3a.32.2025.01.06.06.44.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jan 2025 06:44:33 -0800 (PST)
-Message-ID: <dbcbf4c3-f86a-4414-be52-8ac02dae5b6b@bytedance.com>
-Date: Mon, 6 Jan 2025 22:44:21 +0800
+        d=1e100.net; s=20230601; t=1736178707; x=1736783507;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WHDluD7r4ZCMvjPqMA7yz16uaks4UJvI0wD0/N0YwM8=;
+        b=FahDlYaDaJh5hjDTGsYtZKYpAQtwZAjVOXlrLoWBfVgnwyfLhQ0rYIQtgE9Gt0/Yic
+         n1J2JH+Qarkugbyr+QBa3RHNhSYc3FFxjcgrFBwvd+AWvjLz8ZdH7LBqJIxKIsyT+ZUi
+         7zwwH0dQmhPMC1W2NqK9CdEFBjPTmNdxsoerKDPpJCj3TNtToyYjM1vTad+kIGE+uOPP
+         +rlUDtta6p4cTGMmMBhlHPRyNgrcfFnyx4khnHFjcjTxAizVFv0JZQqXTghQB0Dv4NHB
+         GFxCFM3W4rFbEZLtV9QGs0LAn6sdl5EglD6CXNL9XiLgrWFOnCkQafx2UyF2NDRjg0S0
+         av3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXSn8PxsB29K3dQWUG04FSvoRwNwPdnOz85wARfSVwo9LhLzvSjy556cBSVXYbFTC99ujUtWezqGbJq@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yw1TTmzryFKbPBmoxaiBYwhMGilKJGQrekCsZ/P4kE26o6BvPGb
+	yEY7WMdYvahvEpD7YHWanyIt6IEtSfni8ZYeT2DcemFynIYl/ZnF
+X-Gm-Gg: ASbGncuFlRSaJGlK26kZhNJX600TjJtDOf1Gj5j70OAETSWH7xd1XkfJzPFUsw+KhAG
+	jQKa1bdtOOXDbjQIg86k0wasJ/2cp1bFIDW3E4wOUvrc3cfPRFSw+GuWhZ8TGBWhpb1TvIwiDWi
+	alUAoR/Y5vA3lxlu5P0ffZomZPc+jvSN19pz0L9eE/5p+D+wO+MSZw4zhzLhmJu5qZSDonoAwh1
+	KY39nZEbhp4Ow2i206w29CG/azPhNpXhDXxnyTtv64z4bTnnEdAg0pJ5JXZWcD3JVXoJMVfDF8L
+	AtM=
+X-Google-Smtp-Source: AGHT+IEQ4MCZqc3QlMYuN7AWoHzyWfjdDwgWkOjJGH7CdvTAF0HOXSePb7EdFz7pyA5xoP+QeGRPtw==
+X-Received: by 2002:ac8:5916:0:b0:466:a41a:6448 with SMTP id d75a77b69052e-46a4a8dcc66mr856844201cf.18.1736178707125;
+        Mon, 06 Jan 2025 07:51:47 -0800 (PST)
+Received: from smtpclient.apple ([2601:152:4d00:9f50:304c:a44c:5040:a009])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46afc4597d3sm59810761cf.50.2025.01.06.07.51.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Jan 2025 07:51:46 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 12/15] s390: pgtable: also move pagetable_dtor() of PxD
- to __tlb_remove_table()
-Content-Language: en-US
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: peterz@infradead.org, kevin.brodsky@arm.com, palmer@dabbelt.com,
- tglx@linutronix.de, david@redhat.com, jannh@google.com, hughd@google.com,
- yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
- vbabka@kernel.org, lorenzo.stoakes@oracle.com, akpm@linux-foundation.org,
- rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
- rppt@kernel.org, ryan.roberts@arm.com, linux-mm@kvack.org,
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
- linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-um@lists.infradead.org
-References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
- <ad21b9392096336cf15aee46f68f9989a9cf877e.1735549103.git.zhengqi.arch@bytedance.com>
- <Z3uyJ2BjslzsjkZI@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <2d16f0fe-9c7f-4229-b7b5-ffa3ab1b1143@bytedance.com>
- <Z3vQHplZqtHf6Td8@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <57ea8193-2fd9-41a9-85b4-7af924f900f4@bytedance.com>
- <Z3vqHXdwIMBVQ2GT@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <Z3vqHXdwIMBVQ2GT@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.15\))
+Subject: Re: [RFC PATCH 0/3] m68k goes DT
+From: Josh Juran <jjuran@gmail.com>
+In-Reply-To: <4eb796cc-b178-8394-0149-03600f1caaed@linux-m68k.org>
+Date: Mon, 6 Jan 2025 10:51:44 -0500
+Cc: Daniel Palmer <daniel@0x0f.com>,
+ geert@linux-m68k.org,
+ linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B5B5D58B-D111-431F-9701-44FCBB67D11E@gmail.com>
+References: <20250105071433.3943289-1-daniel@0x0f.com>
+ <291d1541-e026-cc50-6a55-42c11c64b6eb@linux-m68k.org>
+ <CAFr9PXm4kTWF27GPMNDb5=W8vZRQia418xOQDF_X1yo0vwn6hA@mail.gmail.com>
+ <4eb796cc-b178-8394-0149-03600f1caaed@linux-m68k.org>
+To: Finn Thain <fthain@linux-m68k.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.15)
 
+On Jan 5, 2025, at 10:28 PM, Finn Thain <fthain@linux-m68k.org> wrote:
 
+> In the case of Penguin, you also need to know MacOS internals.
+>=20
+> But these bootloaders have bugs, like any other program, and someone =
+has=20
+> to maintain them=E2=80=A6
 
-On 2025/1/6 22:35, Alexander Gordeev wrote:
-> On Mon, Jan 06, 2025 at 09:34:55PM +0800, Qi Zheng wrote:
->> OK, will change the subject and description to:
->>
->> s390: pgtable: also move pagetable_dtor() of PxD to pagetable_dtor_free()
->>
->> To unify the PxD and PTE TLB free path, also move the pagetable_dtor() of
->> PMD|PUD|P4D to pagetable_dtor_free().
->>
->> But pagetable_dtor_free() is newly introduced in this patch, should it
->> be changed to 'move ... to pagetable_pte_dtor_free()'? But this seems
->> strange. :(
-> 
-> s390: pgtable: consolidate PxD and PTE TLB free paths
-> 
-> Call pagetable_dtor() for PMD|PUD|P4D tables just before ptdesc is
-> freed - same as it is done for PTE tables. That allows consolidating
-> TLB free paths for all table types.
-> 
-> Makes sense?
+If Penguin needs maintenance, I=E2=80=99m still here and I still develop =
+for classic Mac OS.  I=E2=80=99ve ditched CodeWarrior=E2=80=99s =
+proprietary project files, though I still use the non-free Metrowerks =
+compiler and linker (but now in MPW=E2=80=99s ToolServer, driven by my =
+own build tool running in MacRelix).  Lately I=E2=80=99ve been using =
+custom post-linkers to improve startup code compatibility with older OS =
+versions.
 
-Ah, make sense. Many thanks to you!
+I=E2=80=99m not in a position to do testing on hardware or development =
+relating to Linux bootup, but as before, I can maintain and build Mac OS =
+programs.
 
-Will do it in v5.
+Cheers,
+Josh
 
-> 
->> Thanks!
-> 
-> Thank you!
