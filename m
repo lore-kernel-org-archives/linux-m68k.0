@@ -1,135 +1,151 @@
-Received: from flow-a8-smtp.messagingengine.com (flow-a8-smtp.messagingengine.com [103.168.172.143])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D85A1EE031
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jan 2025 11:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.143
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB8A8F6B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jan 2025 14:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736334219; cv=none; b=tG3f25AIrc2Aoi7FfmM3cCHrqIDzP5nDgI+jt3+qSD6+ctiyC5NFOsm5c0h2By7yD28mV3RW4uKWHZjScy+OHeERiyIOl3VwBNgH9xTi0Hd9dAURILt0Uc5kfA02yTafM3uzqMMOmzmD5PP2+SX8gI0mcqsIe+0qfuDYz74h8Gw=
+	t=1736345994; cv=none; b=pK+prv6tjuyhLI1sTIhxxELb9FpDS4HVxi3J9NCQa/FX5kH4Kd3apDUcnKHwmHL1FbTFAHcx0aopqEk9UFx4loCI1CdOoBGXXCxPWYbApz7Ft2uKdeDToWx/6HHC2tctDXMMnTaEjl17bQbBJ86y7vlEeHgVHmpYJduLGU1m33c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736334219; c=relaxed/simple;
-	bh=USnfbtjdzJEK9gukpGljvTqxb7I/7Fqgvuzbz7iTWaM=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=WtEWtY9nHHEdAvSe67PvvAjoiiNdtC0Fc/25FUD2v8oL/FVet3AEporD2iDCobXFPp9xiH43jeQu51hYVE7VzkVUC6GP57IcIwDz/VuRVeEYyQCeencNIxKT2pr/aNGXrTaxeP46M6jjw5tefvkE3zEC/hkQxeKieA7iV2Qvm8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=WtLL9WZ2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=J/vtRZnO; arc=none smtp.client-ip=103.168.172.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="WtLL9WZ2";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="J/vtRZnO"
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailflow.phl.internal (Postfix) with ESMTP id 9F498200F91;
-	Wed,  8 Jan 2025 06:03:36 -0500 (EST)
-Received: from phl-imap-11 ([10.202.2.101])
-  by phl-compute-10.internal (MEProxy); Wed, 08 Jan 2025 06:03:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1736334216;
-	 x=1736341416; bh=USnfbtjdzJEK9gukpGljvTqxb7I/7Fqgvuzbz7iTWaM=; b=
-	WtLL9WZ2meLEVZxmli00VbYv11fhuBGMZp6eU19+LeFOehXBLGesRZh6foqHtbE0
-	V/ZqVr7QGvKNjvIMaFOQQl8fHSHaAhWG2taHOBszb/Sq7XFaSAS+D+pLnhXcVEEG
-	9uyMw7CSg+NAiw+pzvO8CUfpXLlE91al0J72AFbo+shTsoaTlWzfYiYt52iZtCKH
-	nmg1mZoSHgDk3xnOd214hOZwMr6vTagL9xQJIQro8s2DanAm9Tm63iTfM6HbNZuz
-	uvBZuyu1aKoZY4Uun5qOYSYCCWF8j7+i6EXN0AHyCHvZTaUYT731+4yKtq/aCUfm
-	vzKDj0eDWfWNK9Xi1Q5X1Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1736334216; x=
-	1736341416; bh=USnfbtjdzJEK9gukpGljvTqxb7I/7Fqgvuzbz7iTWaM=; b=J
-	/vtRZnOn2Upyqb3fRTIONUj6WwtelA9l+iJ/3kKR44BHYQB+0BEXpQDFHZyObWkP
-	WAI69mXSkRadmsk3gdtGfGutrxvwKpm7uTeYZ8OfHgEZmNiAr20tkfybv2hbmcMp
-	aGCFu/i+Ze/nNBT79BvaUZG5iO8ATI+xCjkaIojCFJEUB/7yV9OHAgWXIR4vHoyv
-	svnP73yQR2D5DdJaECwwSduJJlJgwyl/c0Zm0q7/p4v9C+QOc0wDTt3BMFKIhm5o
-	n6C8ZNGXDcfQcxNUDnSJGxVA5j4AZN+g3Y0WW5RuLPEuRofwDLvI0w4bNYthI1rB
-	XcXmK6Drrgsa42Eogsk9g==
-X-ME-Sender: <xms:h1t-Z__aAxWAhva-MdllhQ4BYUgmBfsyRApbSzOtiprXyT60uQomkg>
-    <xme:h1t-Z7t0b7azrzS4uz3CDbALYqcojYJUUGAsBpI_lmF6nYqjDu3CEvB0twds3feyy
-    SsqYy99WQypcV1T2Hc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudeggedgvdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddt
-    necuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrd
-    guvgeqnecuggftrfgrthhtvghrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefg
-    gfevudegudevledvkefhvdeinecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpe
-    hmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepgedv
-    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehkvghvihhnrdgsrhhoughskhihse
-    grrhhmrdgtohhmpdhrtghpthhtoheprhihrghnrdhrohgsvghrthhssegrrhhmrdgtohhm
-    pdhrtghpthhtohepiihhvghnghhqihdrrghrtghhsegshihtvggurghntggvrdgtohhmpd
-    hrtghpthhtohepphgrlhhmvghrsegurggssggvlhhtrdgtohhmpdhrtghpthhtoheprghn
-    ughrvggrshesghgrihhslhgvrhdrtghomhdprhgtphhtthhopegrlhgvgiesghhhihhtih
-    drfhhrpdhrtghpthhtohepnhhpihhgghhinhesghhmrghilhdrtghomhdprhgtphhtthho
-    pehvihhshhgrlhdrmhhoohhlrgesghhmrghilhdrtghomhdprhgtphhtthhopehhuhhghh
-    gusehgohhoghhlvgdrtghomh
-X-ME-Proxy: <xmx:iFt-Z9ANGY5phHCQP5q9aptFJBex2r8tUUEtjidE_xfb4AaP55hNrg>
-    <xmx:iFt-Z7ctt2NWtfyYsEgjYqKKIrHn67L1tyZAg4XMHhOyiTzOECL22Q>
-    <xmx:iFt-Z0OlCBsb26nhU66OvTEdGpRVGIW5IfVb2Uu5QIznryJY6Y1lyw>
-    <xmx:iFt-Z9kr0zvBfse9P3OqsbaaksL8J3gNd0JxqpmXi6zyClNfGpiDVw>
-    <xmx:iFt-Z8U-rzqfWoWAKZ4Q8n6ifXS3RNJxGRb6sdxgxo5Zg4md0Aao1UvA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id D26632220072; Wed,  8 Jan 2025 06:03:35 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1736345994; c=relaxed/simple;
+	bh=ez3+HrLfVutu5Mm5304q+PpzenkT3+5qXxkhnae7xTM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ajMk6/gG46Mu8pf5jco+Q5a5ERJJ+4wf3fri1mue7+pb5d/iQz4BV8tYkczhskZzcWwHoD4/oTXvEAt/+wmt42H9fKg/hSmnbI3GmjRWcRYK57eQVZh308jWi/kMWqob+wLHnKi8PqmX/jogGHkPpWugPcYn3RfG+O3/tme3rHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4aff5b3845eso6169116137.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 06:19:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736345991; x=1736950791;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sLqxPrKY1TOV+euKVeE/94FdmePkGlHZLqqcrwE2XJg=;
+        b=wqWMeZEyRTaexU0/hCCmxqFV6807l7lyDkdFJ/lRG+yRZhKjhfmmIvQ/MknRn07vlH
+         R9DzMSMWp+i9i/ZpXNoDJHGGd19EEMSVIZcyebx3WQENWUekT95HBngCj0sxmMLgL6fd
+         SKvIWIUSlCZi9yo6z2hNCMvlmNVMevdunkeX8sXNIZWPNhgzbccT6aWfAz4fXM7vPODl
+         aD9lVsUL5OZCKpM9H/X+YSyV+uFJ8CszNRKKFFbtbANpdqznV2U9PgXN9N+L1uGd/FTe
+         bn7db48eU+5nvDgwD26xS7/yDYdL8XnpsmWuwpjhjfg6Gk7RoYNfz/aFGZy2Xfja+wJq
+         SeiA==
+X-Forwarded-Encrypted: i=1; AJvYcCU2yS3EdaFbRVfbAEHT4AIYqBMrzmEuDnfuZDZ/3pXlFFhqpZMtI6/4wF/f/z5WkZauOZ7BFOLsmhfQ@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy2OUIHfxzKQXCSIUf/8tT4DuPe/b5S0oC4sF7MDQchQPSDDWex
+	0oiUKhkXluA3o6VDFj8mhoa07eNs/UTGLPL2FMFRYPs2F8IH0XBqeJTztdeS
+X-Gm-Gg: ASbGncsCbM2S7T7C4b6xk+PxZTZYxsL0WUCqx8COGrnO+ajQRASooeQbkvSkJuOD+AC
+	br7buuxS8HLh+4nz2WYeQPgwoAZVQUlfPqveoQKVnNc/RSI8vNd21yIKiJn95D6pc4MHh4Y76Df
+	ZI68BAGcTrcpPOU4gj+o4SEhshOi53zmXjkClQ36w3vjvKb0uB+fJBwm10A60+lWwZj0hCsOO+Q
+	u/wRzrivTG7wvsMYo22nv16mRPXftvbWcerRe4F9QGyBBPc4BXUBmM/bklhq+DhGCRWv9bDiOuf
+	MzNULENz2Xi7MwQtjIQ=
+X-Google-Smtp-Source: AGHT+IHmNLb5K/xghFUZ/HNhUea7eXuax5SdxliYF/P+EVtHcZkSmDQrQhI53+lY7/kJTY92p+JwbA==
+X-Received: by 2002:a05:6102:370f:b0:4b2:5d10:29db with SMTP id ada2fe7eead31-4b3d0f91911mr2054913137.7.1736345991031;
+        Wed, 08 Jan 2025 06:19:51 -0800 (PST)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-8610ac1f8a8sm8448171241.7.2025.01.08.06.19.50
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jan 2025 06:19:50 -0800 (PST)
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4aff78a39e1so4853296137.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 06:19:50 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXFouacJ31simljb+3rDnClBIgc/ZZmAhIfba87skS+YYnbc0DvkwqX5lWPa1E7tG2AofZOfoMhPQN2@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:548d:b0:4b2:73f7:5adf with SMTP id
+ ada2fe7eead31-4b3d0f947f5mr1699824137.9.1736345990519; Wed, 08 Jan 2025
+ 06:19:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 08 Jan 2025 12:03:15 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Qi Zheng" <zhengqi.arch@bytedance.com>,
- "Peter Zijlstra" <peterz@infradead.org>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Kevin Brodsky" <kevin.brodsky@arm.com>, "Alexandre Ghiti" <alex@ghiti.fr>,
- "Andreas Larsson" <andreas@gaisler.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "David Hildenbrand" <david@redhat.com>, "Jann Horn" <jannh@google.com>,
- "Hugh Dickins" <hughd@google.com>, "Yu Zhao" <yuzhao@google.com>,
- "Matthew Wilcox" <willy@infradead.org>,
- "Muchun Song" <muchun.song@linux.dev>, vbabka@kernel.org,
- "Lorenzo Stoakes" <lorenzo.stoakes@oracle.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "David Rientjes" <rientjes@google.com>, vishal.moola@gmail.com,
- "Will Deacon" <will@kernel.org>, aneesh.kumar@kernel.org,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- "Mike Rapoport" <rppt@kernel.org>, "Ryan Roberts" <ryan.roberts@arm.com>
-Cc: linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-kernel@vger.kernel.org, x86@kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org
-Message-Id: <2f93708c-9816-4214-ae61-1e6b9f68cdc4@app.fastmail.com>
-In-Reply-To: 
- <ea372633d94f4d3f9f56a7ec5994bf050bf77e39.1736317725.git.zhengqi.arch@bytedance.com>
-References: <cover.1736317725.git.zhengqi.arch@bytedance.com>
- <ea372633d94f4d3f9f56a7ec5994bf050bf77e39.1736317725.git.zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v5 14/17] mm: pgtable: introduce generic __tlb_remove_table()
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+References: <202501030516.uZrwnuQQ-lkp@intel.com> <CAMuHMdW-DYPp_2nAaBdvgoa6Yr9et2cNS_260H-9H_CT4yEasw@mail.gmail.com>
+ <CAHk-=wj4tYCytRshQGkWSNmZS=59PtKEUpG7f4Sy_46n+WYtXw@mail.gmail.com>
+In-Reply-To: <CAHk-=wj4tYCytRshQGkWSNmZS=59PtKEUpG7f4Sy_46n+WYtXw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 8 Jan 2025 15:19:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVLQ2z=U1YJ18GsnJcej2mwGg02GVtKQLQKr0yNtA-7Hg@mail.gmail.com>
+X-Gm-Features: AbW1kvaeBuWDdo2Mkx6lDOn6aHMKd182W90s65hQ52N3Jihquiz5sh0YRuRezHU
+Message-ID: <CAMuHMdVLQ2z=U1YJ18GsnJcej2mwGg02GVtKQLQKr0yNtA-7Hg@mail.gmail.com>
+Subject: Re: [geert-m68k:master 2/2] lib/muldi3.c:53:28: sparse: sparse: asm
+ output is not an lvalue
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel test robot <lkp@intel.com>, Greg Ungerer <gerg@linux-m68k.org>, oe-kbuild-all@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>, 
+	linux-sparse@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 8, 2025, at 07:57, Qi Zheng wrote:
-> Several architectures (arm, arm64, riscv and x86) define exactly the
-> same __tlb_remove_table(), just introduce generic __tlb_remove_table() to
-> eliminate these duplications.
->
-> The s390 __tlb_remove_table() is nearly the same, so also make s390
-> __tlb_remove_table() version generic.
->
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
-> Acked-by: Andreas Larsson <andreas@gaisler.com> # sparc
-> Acked-by: Alexander Gordeev <agordeev@linux.ibm.com> # s390
+Hi Linus,
 
-Acked-by: Arnd Bergmann <arnd@arndb.de> # asm-generic
+On Sun, Jan 5, 2025 at 10:51=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Fri, 3 Jan 2025 at 01:22, Geert Uytterhoeven <geert@linux-m68k.org> wr=
+ote:
+> > Perhaps this is an issue with sparse?
+>
+> No, this is just m68k doing disgusting things that happen to work with
+> gcc, because gcc considers casts to be lvalues (which in turn is comes
+> from some horrid C++ thing, since in C++ casting is a whole magical
+> extra complexity).
+>
+> IOW, this m68k pattern is horrendous, and sparse quite reasonably
+> complains about it:
+>
+>   #define umul_ppmm(w1, w0, u, v) \
+>     __asm__ ("mulu%.l %3,%1:%0"                                          =
+ \
+>              : "=3Dd" ((USItype)(w0)),                                   =
+   \
+>                "=3Dd" ((USItype)(w1))                                    =
+   \
+>              : "%0" ((USItype)(u)),                                      =
+ \
+>                "dmi" ((USItype)(v)))
+>
+> notice how it has two register outputs (the "=3Dd"), and the destination
+> of said output is not a proper lvalue, but a cast expression.
+>
+> I think you could just remove the cast. Afaik the w0/w1 arguments come fr=
+om
+>
+> #define __umulsidi3(u, v) \
+>   ({DIunion __w;                                                        \
+>     umul_ppmm (__w.s.high, __w.s.low, u, v);                            \
+>     __w.ll; })
+>
+> and __w.s.high and __w.s.low are from struct DIstruct, which uses
+> "SItype". So all the cast does is to change the signedness of the
+> variable, but that has no *meaning* when you assign to it and the
+> sizes match.
+>
+> Alternatively, you could just use the right types explicitly and write
+> the umul_ppmm() macro something like
+>
+> #define umul_ppmm(w1, w0, u, v) do {            \
+>         USItype __w0, __w1;                     \
+>         __asm__ ("mulu%.l %3,%1:%0"             \
+>                 : "=3Dd" (__w0)                   \
+>                   "=3Dd" (__w1)                   \
+>                 : "%0" ((USItype)(u)),          \
+>                   "dmi" ((USItype)(v)));        \
+>         w0 =3D __w0; w1 =3D __w1; } while (0)
+>
+> NOTE! UNTESTED! Treat the above as a "something like this, perhaps".
+
+Thank you, using intermediate variables instead of casts for the output
+operands gets rid of the lvalue-related sparse warnings.
+That leaves us with the "not addressable" sparse error.  Apparently
+that goes away by dropping the cast on the last input operand,
+so I will introduce intermediate variables for all input operands, too.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
