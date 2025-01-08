@@ -1,199 +1,172 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4795E17E900;
-	Wed,  8 Jan 2025 16:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCC71FE46F
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jan 2025 16:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736352816; cv=none; b=l5658ehJIsIU1Qgmomrn39+FYbcM2vwPwWS9PtLZabu/wpFCcwf/4dneYOJF/z/mjvVcBE90FtkK+w3X2YrXe1LHaApnIwD8IMYF4ajHdaHabIS0jOHNRF7MAI3VXaaeDR3vDpFcXycKPnGQAUzgNv2Eukl5kfvXXnCEimKMVRA=
+	t=1736353438; cv=none; b=ML1Yow+nJFCVqVjK83e4hlqVEtrF2kB9SuE848+lK6wDGv2YFWtr6se1uG/6aQHx07Oip4OAfuNaquxbHfIsUXlOWnsxMJczyB6JOVOdG9yZnOh3Za3f+p4JK8i71LdYD7ajuVBdFxL6VHg8kMx92qyRhFTuf6aGMvuPtLYeU2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736352816; c=relaxed/simple;
-	bh=ZVFqFMhIUaIyHR1ntHU0QNWhp55G1M8JaiO4HLQZLH8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oaQmhwOq14mqj0UkTyd/lU5tQIAmN4wLrMtRzFMP/rLYHe4s2BiUmhesi2LdtWgyQ5c6YuOmJCbtnlRmKmMKOzrevcHnb+xOUW4B81DSwMiABjAKFugIy4AygF8eODq8QYunjvfF+aJrNRvt26AQRyW/mgkggVEfxZvtgXAbV3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Qc2i4Tp0; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Qc2i4Tp0"
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 508Ew0Hd008979;
-	Wed, 8 Jan 2025 16:13:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=/0pEosJAtrrq7+AZfl2ID181pVMDXx
-	vqRB1iDHPru/M=; b=Qc2i4Tp0uvBRyl+jGtaMLwYGZKKaztQUee3zrazLkmkths
-	BKjfeh5hc4DNF+FovJkBB/fHbU/DPDjRCbIEh/eMZyHyvXxayMqu9FBQFJOug4QH
-	iQGB7QT793mBW00g/2e5RWsTUnIRvzEqsPYZoZ1xrycOjY77mjmhxD3Tr58vKYfh
-	i5WI1PseA+GU3nr66lZ1WH05bULNRioNAgJgAm9VNeTRLQ4pRSeX+RYdvIB2cetS
-	GTBBs7NBz+M3Z6MiU02DQX/J9dzcrcbfHP6qZ8C6ajXXZ6zofEYRDTTx4bda1nof
-	mnWd9f4JhtWC7wiQ3TFYDev/txCoPQl/rsnDG/uQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 441hupu905-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 08 Jan 2025 16:13:02 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 508GD1K1025958;
-	Wed, 8 Jan 2025 16:13:01 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 441hupu901-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 08 Jan 2025 16:13:01 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 508CW5fH003630;
-	Wed, 8 Jan 2025 16:13:00 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 43yfat8qq7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 08 Jan 2025 16:13:00 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 508GCwru8061280
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 8 Jan 2025 16:12:58 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B38D720040;
-	Wed,  8 Jan 2025 16:12:58 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1575720043;
-	Wed,  8 Jan 2025 16:12:58 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed,  8 Jan 2025 16:12:58 +0000 (GMT)
-Date: Wed, 8 Jan 2025 17:12:56 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: peterz@infradead.org, kevin.brodsky@arm.com, alex@ghiti.fr,
-        andreas@gaisler.com, palmer@dabbelt.com, tglx@linutronix.de,
-        david@redhat.com, jannh@google.com, hughd@google.com,
-        yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
-        vbabka@kernel.org, lorenzo.stoakes@oracle.com,
-        akpm@linux-foundation.org, rientjes@google.com, vishal.moola@gmail.com,
-        arnd@arndb.de, will@kernel.org, aneesh.kumar@kernel.org,
-        npiggin@gmail.com, dave.hansen@linux.intel.com, rppt@kernel.org,
-        ryan.roberts@arm.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH v5 06/17] s390: pgtable: add statistics for PUD and P4D
- level page table
-Message-ID: <Z36kCF6tgnzkIRDM@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <cover.1736317725.git.zhengqi.arch@bytedance.com>
- <4707dffce228ccec5c6662810566dd12b5741c4b.1736317725.git.zhengqi.arch@bytedance.com>
+	s=arc-20240116; t=1736353438; c=relaxed/simple;
+	bh=6CJG+MljdJ4odyTsRX1HY7g1SI8IaFyVX5WxqVxooCM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DUGe//0HuTMBFdY4mV7pWsUqGxHUOEt9DiBuulOAkkzOkg5vhNlaPQsbkcL7sEalv+dO2l2yzaYad1rj7DXFrPLAemy61OxQgh72V/scdFFSYV+aZjGn5IG/SeRXTLmBU7S8PC0fhXUD7OG24hOu292tEdqaJjcbLlFX05yVO5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-85c559ed230so3099493241.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 08:23:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736353435; x=1736958235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CWaN/8ptyC2cYFUazZR9DiU44cT/Ebl32OM7k/AY7UI=;
+        b=RwhyINPvJ2G7NRBdycdAshC9ZlCJYGNj0CY0MrPgIVT0bWYa5WpFASJPfMOSD6wr/6
+         EzWapuawF0LRg+zVjoNuw/RvtZ0o3zopNCIx/SHz8NbuRNG6vf3QUbap3auFp3l6PfqK
+         FYQH14WoI6FKdl9GhcegYjN6Pj7B/GwKems38VajDDgLrCxyGN9aYW7QFZt24VhQ3pxk
+         UMGmr0rW5YsR1xvxI9Zk2j8dDU8U12JAjkeUKH4dYZxpyLJpiS6mWE5quz5HaJ8Rq0CF
+         xIOrqzklDfqMIGq3uiQPJK3cXfRpC3oIvBlF9g5AU8ijufBBD7q3Gf+ssLMSZWbVSLu5
+         DYsQ==
+X-Gm-Message-State: AOJu0Yw6Tx/7x73gwmfIICnGW0VmIWr+72e0Q1T0qEsU5EtwYPXVDf7D
+	f+N+w22TJEIM99ePsDfLmctINwP20Ss7ODtqJQqO1+N4l24vUUmuOUYGAwN4
+X-Gm-Gg: ASbGnctZ1fhpoTVBu3cz6eFC4bWDKKUJZLyHBOE0hPE/r/XAt4HZAeImC+26TgbWmKk
+	g22/N/zaKkMVOWyMVtfLi3KAcFibGmqfpocbDtmem3oSloOjt9XjfyADRsFn4XoJy6571RRS5J5
+	hFxf+jdomBJD+dstuCHdAXGnPEtJp1vycNlBRNLBuARLX8IzsouroLTzL57gNem/PRKCXx55jA1
+	u46A/OISE84Yx1YHNbFAJuWGFx31uRnmsJnY07NWxS6LZuIMBOYcrnb8xcR01wFDawUlrcAHN3H
+	wrJJ5BaozRiSDsmedJA=
+X-Google-Smtp-Source: AGHT+IEBcz9sqiEfIQmXnoCvdlKR2rl0NN+qdQ8Mz08BknTD9jOQvOVa9zhZXgNYpEsS4caqXjAj9A==
+X-Received: by 2002:a05:6102:1629:b0:4b1:130f:9fbb with SMTP id ada2fe7eead31-4b3d106f647mr2897813137.26.1736353433920;
+        Wed, 08 Jan 2025 08:23:53 -0800 (PST)
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com. [209.85.217.45])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4b2bf98d1c9sm8468885137.4.2025.01.08.08.23.53
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Jan 2025 08:23:53 -0800 (PST)
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-4afe7429d37so701137.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 08:23:53 -0800 (PST)
+X-Received: by 2002:a05:6102:26d4:b0:4b2:5d63:ff72 with SMTP id
+ ada2fe7eead31-4b3d0fc1ca8mr2837377137.13.1736353432987; Wed, 08 Jan 2025
+ 08:23:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4707dffce228ccec5c6662810566dd12b5741c4b.1736317725.git.zhengqi.arch@bytedance.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: KUhXNS6aArO_tUV9i1PAsm9yGShhoIw3
-X-Proofpoint-GUID: AEhKKtU-rxWzLnMSxQ4AI9AzMP3tXlSR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 bulkscore=0 impostorscore=0 mlxlogscore=890
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501080133
+References: <20250107095912.130530-1-tzimmermann@suse.de>
+In-Reply-To: <20250107095912.130530-1-tzimmermann@suse.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 8 Jan 2025 17:23:41 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXKNq2PAef0tF_AJv7zgmXQpPgYs5Rwokjo=1M+2n2EBQ@mail.gmail.com>
+X-Gm-Features: AbW1kvZp0cV5Of05CmFxR0NTT0IyghMVuM7nBAA7tF5qwUX0JfhnOOwbtasx9h8
+Message-ID: <CAMuHMdXKNq2PAef0tF_AJv7zgmXQpPgYs5Rwokjo=1M+2n2EBQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix VGA I/O defines
+To: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	kernel test robot <lkp@intel.com>, linux-fbdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Helge Deller <deller@gmx.de>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 08, 2025 at 02:57:22PM +0800, Qi Zheng wrote:
-> Like PMD and PTE level page table, also add statistics for PUD and P4D
-> page table.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
-> Cc: linux-s390@vger.kernel.org
-> ---
->  arch/s390/include/asm/pgalloc.h | 29 +++++++++++++++++++++--------
->  arch/s390/include/asm/tlb.h     |  2 ++
->  2 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/pgalloc.h b/arch/s390/include/asm/pgalloc.h
-> index 7b84ef6dc4b6d..a0c1ca5d8423c 100644
-> --- a/arch/s390/include/asm/pgalloc.h
-> +++ b/arch/s390/include/asm/pgalloc.h
-> @@ -53,29 +53,42 @@ static inline p4d_t *p4d_alloc_one(struct mm_struct *mm, unsigned long address)
->  {
->  	unsigned long *table = crst_table_alloc(mm);
->  
-> -	if (table)
-> -		crst_table_init(table, _REGION2_ENTRY_EMPTY);
-> +	if (!table)
-> +		return NULL;
-> +	crst_table_init(table, _REGION2_ENTRY_EMPTY);
-> +	pagetable_p4d_ctor(virt_to_ptdesc(table));
-> +
->  	return (p4d_t *) table;
->  }
->  
->  static inline void p4d_free(struct mm_struct *mm, p4d_t *p4d)
->  {
-> -	if (!mm_p4d_folded(mm))
-> -		crst_table_free(mm, (unsigned long *) p4d);
-> +	if (mm_p4d_folded(mm))
-> +		return;
-> +
-> +	pagetable_p4d_dtor(virt_to_ptdesc(p4d));
-> +	crst_table_free(mm, (unsigned long *) p4d);
->  }
->  
->  static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
->  {
->  	unsigned long *table = crst_table_alloc(mm);
-> -	if (table)
-> -		crst_table_init(table, _REGION3_ENTRY_EMPTY);
-> +
-> +	if (!table)
-> +		return NULL;
-> +	crst_table_init(table, _REGION3_ENTRY_EMPTY);
-> +	pagetable_pud_ctor(virt_to_ptdesc(table));
-> +
->  	return (pud_t *) table;
->  }
->  
->  static inline void pud_free(struct mm_struct *mm, pud_t *pud)
->  {
-> -	if (!mm_pud_folded(mm))
-> -		crst_table_free(mm, (unsigned long *) pud);
-> +	if (mm_pud_folded(mm))
-> +		return;
-> +
-> +	pagetable_pud_dtor(virt_to_ptdesc(pud));
-> +	crst_table_free(mm, (unsigned long *) pud);
->  }
->  
->  static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long vmaddr)
-> diff --git a/arch/s390/include/asm/tlb.h b/arch/s390/include/asm/tlb.h
-> index e95b2c8081eb8..907d57a68145c 100644
-> --- a/arch/s390/include/asm/tlb.h
-> +++ b/arch/s390/include/asm/tlb.h
-> @@ -122,6 +122,7 @@ static inline void p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
->  {
->  	if (mm_p4d_folded(tlb->mm))
->  		return;
-> +	pagetable_p4d_dtor(virt_to_ptdesc(p4d));
->  	__tlb_adjust_range(tlb, address, PAGE_SIZE);
->  	tlb->mm->context.flush_mm = 1;
->  	tlb->freed_tables = 1;
-> @@ -140,6 +141,7 @@ static inline void pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
->  {
->  	if (mm_pud_folded(tlb->mm))
->  		return;
-> +	pagetable_pud_dtor(virt_to_ptdesc(pud));
->  	tlb->mm->context.flush_mm = 1;
->  	tlb->freed_tables = 1;
->  	tlb->cleared_p4ds = 1;
+Hi Thomas,
 
-Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
+On Tue, Jan 7, 2025 at 10:59=E2=80=AFAM Thomas Zimmermann <tzimmermann@suse=
+.de> wrote:
+> Including m86k's <asm/raw_io.h> in vga.h on nommu platforms results
+> in conflicting defines with io_no.h for various I/O macros from the
+> __raw_read and __raw_write families. An example error is
+>
+>    In file included from arch/m68k/include/asm/vga.h:12,
+>                  from include/video/vga.h:22,
+>                  from include/linux/vgaarb.h:34,
+>                  from drivers/video/aperture.c:12:
+> >> arch/m68k/include/asm/raw_io.h:39: warning: "__raw_readb" redefined
+>       39 | #define __raw_readb in_8
+>          |
+>    In file included from arch/m68k/include/asm/io.h:6,
+>                     from include/linux/io.h:13,
+>                     from include/linux/irq.h:20,
+>                     from include/asm-generic/hardirq.h:17,
+>                     from ./arch/m68k/include/generated/asm/hardirq.h:1,
+>                     from include/linux/hardirq.h:11,
+>                     from include/linux/interrupt.h:11,
+>                     from include/linux/trace_recursion.h:5,
+>                     from include/linux/ftrace.h:10,
+>                     from include/linux/kprobes.h:28,
+>                     from include/linux/kgdb.h:19,
+>                     from include/linux/fb.h:6,
+>                     from drivers/video/aperture.c:5:
+>    arch/m68k/include/asm/io_no.h:16: note: this is the location of the pr=
+evious definition
+>       16 | #define __raw_readb(addr) \
+>          |
+>
+> Include <asm/io.h>, which avoid raw_io.h on nommu platforms. Also change
+> the defined values of some of the read/write symbols in vga.h to
+> __raw_read/__raw_write as the raw_in/raw_out symbols are not generally
+> available.
+>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202501071629.DNEswlm8-lkp@i=
+ntel.com/
+> Fixes: 5c3f968712ce ("m68k/video: Create <asm/vga.h>")
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: <stable@vger.kernel.org> # v3.5+
 
-Thanks!
+Thanks for your patch!
+
+> --- a/arch/m68k/include/asm/vga.h
+> +++ b/arch/m68k/include/asm/vga.h
+> @@ -9,7 +9,7 @@
+>   */
+>  #ifndef CONFIG_PCI
+>
+> -#include <asm/raw_io.h>
+> +#include <asm/io.h>
+
+It definitely makes sense to include <asm/io.h> instead of
+<asm/raw_io.h> in this file.
+
+>  #include <asm/kmap.h>
+>
+>  /*
+> @@ -29,9 +29,9 @@
+>  #define inw_p(port)            0
+>  #define outb_p(port, val)      do { } while (0)
+>  #define outw(port, val)                do { } while (0)
+> -#define readb                  raw_inb
+> -#define writeb                 raw_outb
+> -#define writew                 raw_outw
+> +#define readb                  __raw_readb
+> +#define writeb                 __raw_writeb
+> +#define writew                 __raw_writew
+
+OK
+
+>
+>  #endif /* CONFIG_PCI */
+>  #endif /* _ASM_M68K_VGA_H */
+
+I gave it a try on various configs, and inspected the impact
+(none, except for killing the warnings), so
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.14.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
