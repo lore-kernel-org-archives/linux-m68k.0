@@ -1,151 +1,137 @@
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB8A8F6B
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jan 2025 14:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C13A1FDE2A;
+	Wed,  8 Jan 2025 15:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736345994; cv=none; b=pK+prv6tjuyhLI1sTIhxxELb9FpDS4HVxi3J9NCQa/FX5kH4Kd3apDUcnKHwmHL1FbTFAHcx0aopqEk9UFx4loCI1CdOoBGXXCxPWYbApz7Ft2uKdeDToWx/6HHC2tctDXMMnTaEjl17bQbBJ86y7vlEeHgVHmpYJduLGU1m33c=
+	t=1736351925; cv=none; b=L6AgFxnFqV1FOXfe67t5PHxiwdszdHFDvPRDhQa2dWPbGggJOw+8RFiUgKXovVyUj22g/XI5Hk591BbXWbRLkipIZ1oEUiyNmDGYR8IA7tWztmlSMBWQRQIdIif1/gf1Zatyh16cbewsOuzqExABhB7/x3E+YoquYnDs9QnHTsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736345994; c=relaxed/simple;
-	bh=ez3+HrLfVutu5Mm5304q+PpzenkT3+5qXxkhnae7xTM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ajMk6/gG46Mu8pf5jco+Q5a5ERJJ+4wf3fri1mue7+pb5d/iQz4BV8tYkczhskZzcWwHoD4/oTXvEAt/+wmt42H9fKg/hSmnbI3GmjRWcRYK57eQVZh308jWi/kMWqob+wLHnKi8PqmX/jogGHkPpWugPcYn3RfG+O3/tme3rHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4aff5b3845eso6169116137.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 06:19:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736345991; x=1736950791;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sLqxPrKY1TOV+euKVeE/94FdmePkGlHZLqqcrwE2XJg=;
-        b=wqWMeZEyRTaexU0/hCCmxqFV6807l7lyDkdFJ/lRG+yRZhKjhfmmIvQ/MknRn07vlH
-         R9DzMSMWp+i9i/ZpXNoDJHGGd19EEMSVIZcyebx3WQENWUekT95HBngCj0sxmMLgL6fd
-         SKvIWIUSlCZi9yo6z2hNCMvlmNVMevdunkeX8sXNIZWPNhgzbccT6aWfAz4fXM7vPODl
-         aD9lVsUL5OZCKpM9H/X+YSyV+uFJ8CszNRKKFFbtbANpdqznV2U9PgXN9N+L1uGd/FTe
-         bn7db48eU+5nvDgwD26xS7/yDYdL8XnpsmWuwpjhjfg6Gk7RoYNfz/aFGZy2Xfja+wJq
-         SeiA==
-X-Forwarded-Encrypted: i=1; AJvYcCU2yS3EdaFbRVfbAEHT4AIYqBMrzmEuDnfuZDZ/3pXlFFhqpZMtI6/4wF/f/z5WkZauOZ7BFOLsmhfQ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy2OUIHfxzKQXCSIUf/8tT4DuPe/b5S0oC4sF7MDQchQPSDDWex
-	0oiUKhkXluA3o6VDFj8mhoa07eNs/UTGLPL2FMFRYPs2F8IH0XBqeJTztdeS
-X-Gm-Gg: ASbGncsCbM2S7T7C4b6xk+PxZTZYxsL0WUCqx8COGrnO+ajQRASooeQbkvSkJuOD+AC
-	br7buuxS8HLh+4nz2WYeQPgwoAZVQUlfPqveoQKVnNc/RSI8vNd21yIKiJn95D6pc4MHh4Y76Df
-	ZI68BAGcTrcpPOU4gj+o4SEhshOi53zmXjkClQ36w3vjvKb0uB+fJBwm10A60+lWwZj0hCsOO+Q
-	u/wRzrivTG7wvsMYo22nv16mRPXftvbWcerRe4F9QGyBBPc4BXUBmM/bklhq+DhGCRWv9bDiOuf
-	MzNULENz2Xi7MwQtjIQ=
-X-Google-Smtp-Source: AGHT+IHmNLb5K/xghFUZ/HNhUea7eXuax5SdxliYF/P+EVtHcZkSmDQrQhI53+lY7/kJTY92p+JwbA==
-X-Received: by 2002:a05:6102:370f:b0:4b2:5d10:29db with SMTP id ada2fe7eead31-4b3d0f91911mr2054913137.7.1736345991031;
-        Wed, 08 Jan 2025 06:19:51 -0800 (PST)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-8610ac1f8a8sm8448171241.7.2025.01.08.06.19.50
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jan 2025 06:19:50 -0800 (PST)
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4aff78a39e1so4853296137.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 06:19:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXFouacJ31simljb+3rDnClBIgc/ZZmAhIfba87skS+YYnbc0DvkwqX5lWPa1E7tG2AofZOfoMhPQN2@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:548d:b0:4b2:73f7:5adf with SMTP id
- ada2fe7eead31-4b3d0f947f5mr1699824137.9.1736345990519; Wed, 08 Jan 2025
- 06:19:50 -0800 (PST)
+	s=arc-20240116; t=1736351925; c=relaxed/simple;
+	bh=yZ84W1dpC12PZBNHbBBR3qHgkYhlLts1OxLuI8wtZig=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GhSTErHBk+0TnJ1xtxI4He4g7OD3NlWk4WH2Z3paE9GghkxrXOGW5We0EvYKD3wts5LoB9QJ/nb8PSu/V7kQG34fCnB+uTED1ZDTl9Nf+QuTvngQBHzLCa+fJm/KqNu6bTtZPefjBYt9JxgndmNC63vce2aKLjI82b/vP5WlyEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dshx/WuZ; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dshx/WuZ"
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 508E6Jqq032725;
+	Wed, 8 Jan 2025 15:57:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=MY+iiPye8+N17txRsEvkwvzUmMz0DV
+	07GQ1GbnTJG4c=; b=dshx/WuZ0Qv/bc4mqlSJYaiOkN7jL0FodFWBDrBRH8iVF8
+	WAI9eK0nOPSGi4Ue0KDd+kgkKDTntcs4bUutgiouUjDX4BlPvF1UbzvRZEeb3Yw6
+	EYTqt4W5bBOGMNO5lCOURgKWnE2+9zAe6O/Oi7PzYz1zsunM//DdAAdZ5CSYAoym
+	I1KKvecZW9WoTLLd5M4scUQzNpw16OKZOLo8aIO+e1US2KI25lwksMICBEo9VsrG
+	Mx/KdyakeC0LBfanBnRQnFUaCc0X15p84Er7Ocmg2Dwx7xXczkSnHguQxll55fap
+	bPfOIn5luAQOagl71oTApOOe3UjCBq+fJjBvpx5A==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 441tu5ggka-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 08 Jan 2025 15:57:57 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 508Fnvql003022;
+	Wed, 8 Jan 2025 15:57:57 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 441tu5ggk6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 08 Jan 2025 15:57:57 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 508DgGTv013576;
+	Wed, 8 Jan 2025 15:57:56 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43ygap0dkx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 08 Jan 2025 15:57:56 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 508FvsnU36372768
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 8 Jan 2025 15:57:54 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 14B4C20043;
+	Wed,  8 Jan 2025 15:57:54 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4553720040;
+	Wed,  8 Jan 2025 15:57:53 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed,  8 Jan 2025 15:57:53 +0000 (GMT)
+Date: Wed, 8 Jan 2025 16:57:51 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: peterz@infradead.org, kevin.brodsky@arm.com, alex@ghiti.fr,
+        andreas@gaisler.com, palmer@dabbelt.com, tglx@linutronix.de,
+        david@redhat.com, jannh@google.com, hughd@google.com,
+        yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
+        vbabka@kernel.org, lorenzo.stoakes@oracle.com,
+        akpm@linux-foundation.org, rientjes@google.com, vishal.moola@gmail.com,
+        arnd@arndb.de, will@kernel.org, aneesh.kumar@kernel.org,
+        npiggin@gmail.com, dave.hansen@linux.intel.com, rppt@kernel.org,
+        ryan.roberts@arm.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org
+Subject: Re: [PATCH v5 07/17] mm: pgtable: introduce pagetable_dtor()
+Message-ID: <Z36gfzNyKLuldFvE@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <cover.1736317725.git.zhengqi.arch@bytedance.com>
+ <47f44fff9dc68d9d9e9a0d6c036df275f820598a.1736317725.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202501030516.uZrwnuQQ-lkp@intel.com> <CAMuHMdW-DYPp_2nAaBdvgoa6Yr9et2cNS_260H-9H_CT4yEasw@mail.gmail.com>
- <CAHk-=wj4tYCytRshQGkWSNmZS=59PtKEUpG7f4Sy_46n+WYtXw@mail.gmail.com>
-In-Reply-To: <CAHk-=wj4tYCytRshQGkWSNmZS=59PtKEUpG7f4Sy_46n+WYtXw@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 8 Jan 2025 15:19:38 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVLQ2z=U1YJ18GsnJcej2mwGg02GVtKQLQKr0yNtA-7Hg@mail.gmail.com>
-X-Gm-Features: AbW1kvaeBuWDdo2Mkx6lDOn6aHMKd182W90s65hQ52N3Jihquiz5sh0YRuRezHU
-Message-ID: <CAMuHMdVLQ2z=U1YJ18GsnJcej2mwGg02GVtKQLQKr0yNtA-7Hg@mail.gmail.com>
-Subject: Re: [geert-m68k:master 2/2] lib/muldi3.c:53:28: sparse: sparse: asm
- output is not an lvalue
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: kernel test robot <lkp@intel.com>, Greg Ungerer <gerg@linux-m68k.org>, oe-kbuild-all@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>, 
-	linux-sparse@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <47f44fff9dc68d9d9e9a0d6c036df275f820598a.1736317725.git.zhengqi.arch@bytedance.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: idHm2yZqvsjSn96DmI6ivvBkTbSLnUtC
+X-Proofpoint-ORIG-GUID: RLWMWP920gTrXASiDmVZwB5jZaufsLsY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=337 adultscore=0 bulkscore=0 impostorscore=0 clxscore=1011
+ suspectscore=0 phishscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
+ definitions=main-2501080129
 
-Hi Linus,
+On Wed, Jan 08, 2025 at 02:57:23PM +0800, Qi Zheng wrote:
+> The pagetable_p*_dtor() are exactly the same except for the handling of
+> ptlock. If we make ptlock_free() handle the case where ptdesc->ptl is
+> NULL and remove VM_BUG_ON_PAGE() from pmd_ptlock_free(), we can unify
+> pagetable_p*_dtor() into one function. Let's introduce pagetable_dtor()
+> to do this.
+> 
+> Later, pagetable_dtor() will be moved to tlb_remove_ptdesc(), so that
+> ptlock and page table pages can be freed together (regardless of whether
+> RCU is used). This prevents the use-after-free problem where the ptlock
+> is freed immediately but the page table pages is freed later via RCU.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Originally-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
+> ---
+...
+>  arch/s390/include/asm/pgalloc.h            |  6 +--
+>  arch/s390/include/asm/tlb.h                |  6 +--
+>  arch/s390/mm/pgalloc.c                     |  2 +-
+...
+>  include/asm-generic/pgalloc.h              |  8 ++--
+>  include/linux/mm.h                         | 52 ++++------------------
+>  mm/memory.c                                |  3 +-
+>  28 files changed, 62 insertions(+), 95 deletions(-)
+...
+For s390:
 
-On Sun, Jan 5, 2025 at 10:51=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Fri, 3 Jan 2025 at 01:22, Geert Uytterhoeven <geert@linux-m68k.org> wr=
-ote:
-> > Perhaps this is an issue with sparse?
->
-> No, this is just m68k doing disgusting things that happen to work with
-> gcc, because gcc considers casts to be lvalues (which in turn is comes
-> from some horrid C++ thing, since in C++ casting is a whole magical
-> extra complexity).
->
-> IOW, this m68k pattern is horrendous, and sparse quite reasonably
-> complains about it:
->
->   #define umul_ppmm(w1, w0, u, v) \
->     __asm__ ("mulu%.l %3,%1:%0"                                          =
- \
->              : "=3Dd" ((USItype)(w0)),                                   =
-   \
->                "=3Dd" ((USItype)(w1))                                    =
-   \
->              : "%0" ((USItype)(u)),                                      =
- \
->                "dmi" ((USItype)(v)))
->
-> notice how it has two register outputs (the "=3Dd"), and the destination
-> of said output is not a proper lvalue, but a cast expression.
->
-> I think you could just remove the cast. Afaik the w0/w1 arguments come fr=
-om
->
-> #define __umulsidi3(u, v) \
->   ({DIunion __w;                                                        \
->     umul_ppmm (__w.s.high, __w.s.low, u, v);                            \
->     __w.ll; })
->
-> and __w.s.high and __w.s.low are from struct DIstruct, which uses
-> "SItype". So all the cast does is to change the signedness of the
-> variable, but that has no *meaning* when you assign to it and the
-> sizes match.
->
-> Alternatively, you could just use the right types explicitly and write
-> the umul_ppmm() macro something like
->
-> #define umul_ppmm(w1, w0, u, v) do {            \
->         USItype __w0, __w1;                     \
->         __asm__ ("mulu%.l %3,%1:%0"             \
->                 : "=3Dd" (__w0)                   \
->                   "=3Dd" (__w1)                   \
->                 : "%0" ((USItype)(u)),          \
->                   "dmi" ((USItype)(v)));        \
->         w0 =3D __w0; w1 =3D __w1; } while (0)
->
-> NOTE! UNTESTED! Treat the above as a "something like this, perhaps".
+Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
 
-Thank you, using intermediate variables instead of casts for the output
-operands gets rid of the lvalue-related sparse warnings.
-That leaves us with the "not addressable" sparse error.  Apparently
-that goes away by dropping the cast on the last input operand,
-so I will introduce intermediate variables for all input operands, too.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Thanks!
