@@ -1,172 +1,106 @@
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from riemann.telenet-ops.be (riemann.telenet-ops.be [195.130.137.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCC71FE46F
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jan 2025 16:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972F620100E
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Jan 2025 17:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736353438; cv=none; b=ML1Yow+nJFCVqVjK83e4hlqVEtrF2kB9SuE848+lK6wDGv2YFWtr6se1uG/6aQHx07Oip4OAfuNaquxbHfIsUXlOWnsxMJczyB6JOVOdG9yZnOh3Za3f+p4JK8i71LdYD7ajuVBdFxL6VHg8kMx92qyRhFTuf6aGMvuPtLYeU2o=
+	t=1736357456; cv=none; b=hnOJcuaw+HFg+6Y4hMzoV0Njmvz1y/VzWdngDNSZnVeuuviAhuto26NwfXY4IlMzBqiCc+QvZnx0MUJgiUDIWT/zK+itFAt8UkcrSKvJWMoIA+jGR7MWldNFTQfyboOILm5zHGzzeinB24iGSSJU3TjEdoR5lUvqK81t3v+TUYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736353438; c=relaxed/simple;
-	bh=6CJG+MljdJ4odyTsRX1HY7g1SI8IaFyVX5WxqVxooCM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DUGe//0HuTMBFdY4mV7pWsUqGxHUOEt9DiBuulOAkkzOkg5vhNlaPQsbkcL7sEalv+dO2l2yzaYad1rj7DXFrPLAemy61OxQgh72V/scdFFSYV+aZjGn5IG/SeRXTLmBU7S8PC0fhXUD7OG24hOu292tEdqaJjcbLlFX05yVO5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.50
+	s=arc-20240116; t=1736357456; c=relaxed/simple;
+	bh=ZPp8uUNauXJUjWAZygZIv/4grCqKvflFKgL30dDkoZs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o0wKSqd9b4PDUEiTc5nStmXj+ROtdtGjkyhVWhzoByjecG+jaRMo1o+YYiTiqIscBX/hI8VIlld1SNweAW+XE9WKMDPl31tP46VfSdHIYL4xWutqNoRMC84ASp5OKJyf4wkhTP/LlNOTCgid3EeqhR9REruDZzjEVbH1rws0QhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-85c559ed230so3099493241.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 08:23:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736353435; x=1736958235;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CWaN/8ptyC2cYFUazZR9DiU44cT/Ebl32OM7k/AY7UI=;
-        b=RwhyINPvJ2G7NRBdycdAshC9ZlCJYGNj0CY0MrPgIVT0bWYa5WpFASJPfMOSD6wr/6
-         EzWapuawF0LRg+zVjoNuw/RvtZ0o3zopNCIx/SHz8NbuRNG6vf3QUbap3auFp3l6PfqK
-         FYQH14WoI6FKdl9GhcegYjN6Pj7B/GwKems38VajDDgLrCxyGN9aYW7QFZt24VhQ3pxk
-         UMGmr0rW5YsR1xvxI9Zk2j8dDU8U12JAjkeUKH4dYZxpyLJpiS6mWE5quz5HaJ8Rq0CF
-         xIOrqzklDfqMIGq3uiQPJK3cXfRpC3oIvBlF9g5AU8ijufBBD7q3Gf+ssLMSZWbVSLu5
-         DYsQ==
-X-Gm-Message-State: AOJu0Yw6Tx/7x73gwmfIICnGW0VmIWr+72e0Q1T0qEsU5EtwYPXVDf7D
-	f+N+w22TJEIM99ePsDfLmctINwP20Ss7ODtqJQqO1+N4l24vUUmuOUYGAwN4
-X-Gm-Gg: ASbGnctZ1fhpoTVBu3cz6eFC4bWDKKUJZLyHBOE0hPE/r/XAt4HZAeImC+26TgbWmKk
-	g22/N/zaKkMVOWyMVtfLi3KAcFibGmqfpocbDtmem3oSloOjt9XjfyADRsFn4XoJy6571RRS5J5
-	hFxf+jdomBJD+dstuCHdAXGnPEtJp1vycNlBRNLBuARLX8IzsouroLTzL57gNem/PRKCXx55jA1
-	u46A/OISE84Yx1YHNbFAJuWGFx31uRnmsJnY07NWxS6LZuIMBOYcrnb8xcR01wFDawUlrcAHN3H
-	wrJJ5BaozRiSDsmedJA=
-X-Google-Smtp-Source: AGHT+IEBcz9sqiEfIQmXnoCvdlKR2rl0NN+qdQ8Mz08BknTD9jOQvOVa9zhZXgNYpEsS4caqXjAj9A==
-X-Received: by 2002:a05:6102:1629:b0:4b1:130f:9fbb with SMTP id ada2fe7eead31-4b3d106f647mr2897813137.26.1736353433920;
-        Wed, 08 Jan 2025 08:23:53 -0800 (PST)
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com. [209.85.217.45])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4b2bf98d1c9sm8468885137.4.2025.01.08.08.23.53
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jan 2025 08:23:53 -0800 (PST)
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-4afe7429d37so701137.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 08:23:53 -0800 (PST)
-X-Received: by 2002:a05:6102:26d4:b0:4b2:5d63:ff72 with SMTP id
- ada2fe7eead31-4b3d0fc1ca8mr2837377137.13.1736353432987; Wed, 08 Jan 2025
- 08:23:52 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+	by riemann.telenet-ops.be (Postfix) with ESMTPS id 4YSvqQ6tl1z4xf5k
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Jan 2025 18:22:10 +0100 (CET)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:36eb:83e8:32a9:43e2])
+	by michel.telenet-ops.be with cmsmtp
+	id yhN12D00A4LMxBm06hN1lk; Wed, 08 Jan 2025 18:22:01 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1tVZkj-00000009McN-1gOk;
+	Wed, 08 Jan 2025 18:22:01 +0100
+Received: from geert by rox.of.borg with local (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1tVZkm-00000009yHU-3nDE;
+	Wed, 08 Jan 2025 18:22:00 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] m68k: libgcc: Fix lvalue abuse in umul_ppmm()
+Date: Wed,  8 Jan 2025 18:22:00 +0100
+Message-ID: <c408cfb85bfde8929dcaa4ebea29ade4e1452d8e.1736356696.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250107095912.130530-1-tzimmermann@suse.de>
-In-Reply-To: <20250107095912.130530-1-tzimmermann@suse.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 8 Jan 2025 17:23:41 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXKNq2PAef0tF_AJv7zgmXQpPgYs5Rwokjo=1M+2n2EBQ@mail.gmail.com>
-X-Gm-Features: AbW1kvZp0cV5Of05CmFxR0NTT0IyghMVuM7nBAA7tF5qwUX0JfhnOOwbtasx9h8
-Message-ID: <CAMuHMdXKNq2PAef0tF_AJv7zgmXQpPgYs5Rwokjo=1M+2n2EBQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Fix VGA I/O defines
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	kernel test robot <lkp@intel.com>, linux-fbdev@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Helge Deller <deller@gmx.de>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Thomas,
+    lib/muldi3.c:53:28: warning: asm output is not an lvalue
+    lib/muldi3.c:53:28: warning: asm output is not an lvalue
+    lib/muldi3.c:53:28: error: not addressable
+    lib/muldi3.c:53:28: warning: generating address of non-lvalue (11)
+    lib/muldi3.c:53:28: warning: generating address of non-lvalue (11)
 
-On Tue, Jan 7, 2025 at 10:59=E2=80=AFAM Thomas Zimmermann <tzimmermann@suse=
-.de> wrote:
-> Including m86k's <asm/raw_io.h> in vga.h on nommu platforms results
-> in conflicting defines with io_no.h for various I/O macros from the
-> __raw_read and __raw_write families. An example error is
->
->    In file included from arch/m68k/include/asm/vga.h:12,
->                  from include/video/vga.h:22,
->                  from include/linux/vgaarb.h:34,
->                  from drivers/video/aperture.c:12:
-> >> arch/m68k/include/asm/raw_io.h:39: warning: "__raw_readb" redefined
->       39 | #define __raw_readb in_8
->          |
->    In file included from arch/m68k/include/asm/io.h:6,
->                     from include/linux/io.h:13,
->                     from include/linux/irq.h:20,
->                     from include/asm-generic/hardirq.h:17,
->                     from ./arch/m68k/include/generated/asm/hardirq.h:1,
->                     from include/linux/hardirq.h:11,
->                     from include/linux/interrupt.h:11,
->                     from include/linux/trace_recursion.h:5,
->                     from include/linux/ftrace.h:10,
->                     from include/linux/kprobes.h:28,
->                     from include/linux/kgdb.h:19,
->                     from include/linux/fb.h:6,
->                     from drivers/video/aperture.c:5:
->    arch/m68k/include/asm/io_no.h:16: note: this is the location of the pr=
-evious definition
->       16 | #define __raw_readb(addr) \
->          |
->
-> Include <asm/io.h>, which avoid raw_io.h on nommu platforms. Also change
-> the defined values of some of the read/write symbols in vga.h to
-> __raw_read/__raw_write as the raw_in/raw_out symbols are not generally
-> available.
->
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202501071629.DNEswlm8-lkp@i=
-ntel.com/
-> Fixes: 5c3f968712ce ("m68k/video: Create <asm/vga.h>")
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: <stable@vger.kernel.org> # v3.5+
+Fix the lvalue warnings by replacing the casts on the output operands by
+intermediate variables of the right type.
 
-Thanks for your patch!
+Fix the "not addressable" error by replacing the cast on the second
+input operand by an intermediate variable, too.  Treat the other input
+operand the same for consistency.
 
-> --- a/arch/m68k/include/asm/vga.h
-> +++ b/arch/m68k/include/asm/vga.h
-> @@ -9,7 +9,7 @@
->   */
->  #ifndef CONFIG_PCI
->
-> -#include <asm/raw_io.h>
-> +#include <asm/io.h>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202501030516.uZrwnuQQ-lkp@intel.com/
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k for-v6.14 branch.
+Not folding into commit e96424b86d5098f4 ("m68k: Use kernel's generic
+muldi3 libgcc function"), as the issue was pre-existing.
+---
+ arch/m68k/include/asm/libgcc.h | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-It definitely makes sense to include <asm/io.h> instead of
-<asm/raw_io.h> in this file.
+diff --git a/arch/m68k/include/asm/libgcc.h b/arch/m68k/include/asm/libgcc.h
+index 1cce6d130d805368..27e17195bd7be41c 100644
+--- a/arch/m68k/include/asm/libgcc.h
++++ b/arch/m68k/include/asm/libgcc.h
+@@ -10,11 +10,18 @@
+  * will fallback to using the C-coded version of umul_ppmm().
+  */
+ #define umul_ppmm(w1, w0, u, v)				\
+-	__asm__ ("mulu%.l %3,%1:%0"			\
+-		 : "=d" ((unsigned long)(w0)),		\
+-		   "=d" ((unsigned long)(w1))		\
+-		 : "%0" ((unsigned long)(u)),		\
+-		   "dmi" ((unsigned long)(v)))
++	do {						\
++		unsigned long __u = (u), __v = (v);	\
++		unsigned long __w0, __w1;		\
++							\
++		__asm__ ("mulu%.l %3,%1:%0"		\
++			 : "=d" (__w0),			\
++			   "=d" (__w1)			\
++			 : "%0" (__u),			\
++			   "dmi" (__v));		\
++							\
++		(w0) = __w0; (w1) = __w1;		\
++	} while (0)
+ #endif /* !CONFIG_CPU_HAS_NO_MULDIV64 */
+ 
+ #endif /* __ASM_M68K_LIBGCC_H */
+-- 
+2.43.0
 
->  #include <asm/kmap.h>
->
->  /*
-> @@ -29,9 +29,9 @@
->  #define inw_p(port)            0
->  #define outb_p(port, val)      do { } while (0)
->  #define outw(port, val)                do { } while (0)
-> -#define readb                  raw_inb
-> -#define writeb                 raw_outb
-> -#define writew                 raw_outw
-> +#define readb                  __raw_readb
-> +#define writeb                 __raw_writeb
-> +#define writew                 __raw_writew
-
-OK
-
->
->  #endif /* CONFIG_PCI */
->  #endif /* _ASM_M68K_VGA_H */
-
-I gave it a try on various configs, and inspected the impact
-(none, except for killing the warnings), so
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.14.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
