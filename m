@@ -1,103 +1,113 @@
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66B72153E1
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jan 2025 10:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B086221B183
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jan 2025 14:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736418691; cv=none; b=ij9bCZvYxSqolKEXDeG49Vl3tGrTDJa+Jq5txBxiW7meaFE0nTkXRlLISJOt7GZnzUJ9tJ6jiThl1QybyxomrYC+g84Vf0Vt4J18ATFVwA/D1tGWtIiv97k/+fpwr4o/9+jwVHgevZ1yqpLAvD40n37yPzHvrHw7RQEhlopOi+4=
+	t=1736431717; cv=none; b=DDmasw9RjHr9ujOUidRiAazRBN9HA9kjtRyqwUOG6pwyGhJZK9NXkR+fHySzxxR+2/3a2ds+M6l9rUfam+4dF7k6IyjvtbZOTl6ZV4LhI/LuVgVF9Mm+BUlKdikhfHW7aWx0zhTMq6m4HTg7YhXb3pkhDldQadeJHJCTdNBzhXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736418691; c=relaxed/simple;
-	bh=Du+UkIZ02/lK2kwgvoUzvj9u/YsH5BI8Xq5+KUNfwc4=;
+	s=arc-20240116; t=1736431717; c=relaxed/simple;
+	bh=B6qG5ELju29P09aeWtg//nkuVWu7cmeEXIci6vguGoQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JU9DQdrjVd5hicL16wqmWDMQ+0GI79DdjMBOjtKI0rP+wpwN/c/0qcvS9QE/DuJUense76WgZCmSBfJe2pH2kCDeIo3riOJg+1nU/l7HaANwlYCbFgDm9OfuRQAM1+GG1S0kBt6dXJQeY6rK622UheEiGkbOk8uUZ7n9PwvyXSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-51878d9511bso262003e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 02:31:26 -0800 (PST)
+	 To:Cc:Content-Type; b=BsaPJRHhe8QtEwDemqqu8dI9vGIEF3INc1f1hKNmqleLLbdIcA+Hoe8/bQUChikQ4sR02QUoN5wHWspkHRPyJacsfVK0CcyeripkNlvouXO7BXROiUwVJUSGOqUArJLufkNsHigJLy8imzrkNkkd2+gBlXAMV5BmkBiBPqwaQSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=Xp6I3ez6; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Xp6I3ez6"
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2ee67e9287fso1664945a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 06:08:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1736431715; x=1737036515; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pyjaTzJ8SKrXkH1eLLJkEAmVYkqhG9zIzTl5FgUSnDI=;
+        b=Xp6I3ez6NiSfi95iObUdv3v3FyWm+pSOcp4ALfmoRLBx+50ML9V3bPL3Ny2sF+XsnR
+         JJsbKrLj5HAlhVIwJj2BDCltgFqZ4iJwO+esfVGGq0fAoSpbbU5q+Y4lShzESnKsSljJ
+         puN2p4OGuKoA3zY2LPMqmgZU7Gop0G2fKjaTk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736418684; x=1737023484;
+        d=1e100.net; s=20230601; t=1736431715; x=1737036515;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1VkU4smXBtM5h2Z5OhgLwEq4xeNydXQUkbjhGGCTU1o=;
-        b=ZPyxKUOSMR3PnR3jGtylT3KZWodZam3KXmzWkLYONRJdBUtFWtJWG8AIYz/ZpL19uE
-         K8SXTKqjMz81wUHdqjd31W+dmjt06e41mkwUpHiTfaRfymkrsd8ssLiUwQ3cwN1Nua21
-         //tw+J2CaVv3Z5KeWJhRpmmo676RSGu5W/M3/rTbb1sAmxUN7bkLmBhMUfq8Bgaj7Nvz
-         pSsfmIX9KYN0Bjr1rKnaZn8ToIDB/QFf5hR/ZcbYCchT+x6cGJ1NHSG0IkHpYbQOf5qM
-         exZKwSsdAT1upB6Fz9E1+/JXslyZYfih25pVYk0cJ5DzgutjaKOeGAAlmThIZ4JgNE+X
-         w3WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWFjvD1eN/ix9DXjYJVgyKZWcihKNtbDXguUsytcf5ZQhZLXfsthu4fv88JqpJSTJ0NvhqX5jE6N0Nt@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwAOFSTN67HEJJ4+xTIy8dG9F/quKAXXXjWFUW2yKeyP9O4O5Pk
-	U5KjdGCfdGLO3FGJGJE/9SOmuzlgn+C52sVxNiUiH1J0yS5SW9Aik6+mMsi+
-X-Gm-Gg: ASbGncuJlPpyn2jZcQn54Q1WWIqxCmI5FvbHi23CSbRtvBGb4OPQBjkq4tAPoexonI5
-	FuLFVsPqTNGNOrAw4mOtXTU3SHK3Ct/m13cDZFk8kLfJEXgMbp4sIbBwBeaUlOTDg2ArcuHIO+f
-	Ku+zpHNtaGdQ3Yeuch977T+VC1ivtktrxEC6hF/uiUIR/pZUCNeOFKaL2vk6xVCm4v9EJ2x9hNq
-	Ijq2Dr+CEcTcr7sw2n9WOx12ZrsqTYBzifS5prCB2YR6rzZ4rR8QeZJQhXzuSRKC7FxKWW0vf3J
-	sKJdt/OJ7JIJmLzfvWigqSM=
-X-Google-Smtp-Source: AGHT+IG5qKOwO44c4+Ji8IEFN+ApvYfy7mtWhENMTmpSbVP2Z17CS3nTaJuagCaVxlNa2JBivQgjkQ==
-X-Received: by 2002:a05:6122:3c43:b0:516:157c:a72e with SMTP id 71dfb90a1353d-51c6c4303camr4226940e0c.3.1736418684052;
-        Thu, 09 Jan 2025 02:31:24 -0800 (PST)
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-51c7fd03b23sm517753e0c.40.2025.01.09.02.31.23
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jan 2025 02:31:23 -0800 (PST)
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-51878d9511bso261976e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 02:31:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVpanqv80Ga2yXPglqGCGB7t9uhtN6zB15LS5in0oL+MQub0D8q+m7M+TGJFDQ2LZincSWKymwcqL+7@lists.linux-m68k.org
-X-Received: by 2002:a05:6122:2a08:b0:516:18cd:c1fc with SMTP id
- 71dfb90a1353d-51c6c5259aemr3812740e0c.8.1736418683284; Thu, 09 Jan 2025
- 02:31:23 -0800 (PST)
+        bh=pyjaTzJ8SKrXkH1eLLJkEAmVYkqhG9zIzTl5FgUSnDI=;
+        b=NTvlcta/zKqMlrPTwEMWnDF42+sLPm2gCLOiCYSpFDKYLBCJzWIOl1g/ACwSScst1o
+         rK0ZcvgQqAUc2RbUXnwk4VfJyDurCIgCk/v4O4Pn2dUTfxpDcnBAu0qyJXo4FBcLtT49
+         BEpu2ibLT8KoxBrdtYMdULaNXbR1Z2G0BAiw3bUmSa3njJFyFBP2EBSJXMoiV27kzDtK
+         UpcQ2dj+Q9IbBc0YnD2Mk1DD6hHgWLQjMww5XCcyjWsV50OUH4OhTGCYI/Fct/C2jWKI
+         Vbp6P5COEr6ajAiDfyVlT63PQhmGIoHxleeb3QzuO3fCPwn/5m/VKC75GWTNh5GsHboz
+         kQtg==
+X-Forwarded-Encrypted: i=1; AJvYcCXg6VNAk16pPnB06/2AswrQIJYoB47RtsjaZcqDx3GcT5O3hA9/v4Z2seZQMWPTlwQR7DzZmcMD9uhQ@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy2k2/uVBVtYPA9iBOC+/z0R+NKPT4R88csKw1hhdJJG789SlNi
+	I9pYeUxbs8XxP/y9/a+6XmQjY2lrLmXMGeHnSCooGtCwUWcOt5FKk9y2rfYX+QjYV5YG/x5BbBv
+	uQOIvAKB4w4pX6P1qOOLfTHQn0oSaylaJ/q3DdQ==
+X-Gm-Gg: ASbGncuwFvfz0UE0kphXR4w4CKRYwwdGv1HNI2PayTOUXwksA7Dx5aDe2hYZaGcbrS3
+	RPzGoKd9pufSuwRTjEHskDD7rSKX6d0autf1YU2p9qGAPMAgM5tH6xS1i4TPla3EY6DWIruR/
+X-Google-Smtp-Source: AGHT+IEJwIC3/E06ibCe+s7Mr2CMOxJfYubKHCDirA8GlHhcCcr5MZrobeqWk/PkNcjBaQcZxNfKvSlJHbeEfzufQQw=
+X-Received: by 2002:a17:90b:2dc6:b0:2ee:53b3:3f1c with SMTP id
+ 98e67ed59e1d1-2f548e9f9ecmr10163051a91.5.1736431714907; Thu, 09 Jan 2025
+ 06:08:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250105071433.3943289-1-daniel@0x0f.com>
-In-Reply-To: <20250105071433.3943289-1-daniel@0x0f.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 9 Jan 2025 11:31:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXU=nhd=fQLSmZQPey=uwD11w=mm=Q25ZWwbNQC1Ys=Cw@mail.gmail.com>
-X-Gm-Features: AbW1kvY713J0WZt3O6Kdv9-9baAxtni_SKE_zWUi7GCBY6Vu7wE-b-Ik4RUlgd4
-Message-ID: <CAMuHMdXU=nhd=fQLSmZQPey=uwD11w=mm=Q25ZWwbNQC1Ys=Cw@mail.gmail.com>
+References: <20250105071433.3943289-1-daniel@0x0f.com> <CAMuHMdXU=nhd=fQLSmZQPey=uwD11w=mm=Q25ZWwbNQC1Ys=Cw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXU=nhd=fQLSmZQPey=uwD11w=mm=Q25ZWwbNQC1Ys=Cw@mail.gmail.com>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Thu, 9 Jan 2025 23:08:23 +0900
+X-Gm-Features: AbW1kva0lLZL39vw4aEg4rMAnnLyk26Sc0e9cGUp2mr0DB12x0I5le3lCQw7UOQ
+Message-ID: <CAFr9PXm5v8K9K0V474kNBnNfF8dK25-MA2PDZns0CbxcUkU8EA@mail.gmail.com>
 Subject: Re: [RFC PATCH 0/3] m68k goes DT
-To: Daniel Palmer <daniel@0x0f.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: fthain@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Daniel,
+Hi Geert,
 
-On Sun, Jan 5, 2025 at 8:15=E2=80=AFAM Daniel Palmer <daniel@0x0f.com> wrot=
+On Thu, 9 Jan 2025 at 19:31, Geert Uytterhoeven <geert@linux-m68k.org> wrot=
 e:
-> - The head.S code sometimes gets stuck setting up the mmu on my MVME147 w=
-hen
->   the kernel binary layout changes. I thought for a long time my new code=
- was
->   wrong but then discovered just making the kernel bigger by adding some =
-printk()s
->   also caused it.
+>
+> Hi Daniel,
+>
+> On Sun, Jan 5, 2025 at 8:15=E2=80=AFAM Daniel Palmer <daniel@0x0f.com> wr=
+ote:
+> > - The head.S code sometimes gets stuck setting up the mmu on my MVME147=
+ when
+> >   the kernel binary layout changes. I thought for a long time my new co=
+de was
+> >   wrong but then discovered just making the kernel bigger by adding som=
+e printk()s
+> >   also caused it.
+>
+> What is your kernel size?  Perhaps the code to map 8 or 16 MiB of
+> the first memory chunk doesn't work on 68030?
 
-What is your kernel size?  Perhaps the code to map 8 or 16 MiB of
-the first memory chunk doesn't work on 68030?
+Kernel is 3.something MiB
 
-There could also be some alignment issues.  IIRC, there is code that
-expects the FDT to be 8-byte aligned.
+> There could also be some alignment issues.  IIRC, there is code that
+> expects the FDT to be 8-byte aligned.
 
-Gr{oetje,eeting}s,
+I thought that too but it seems to be something else. I worked out
+that for some reason head.S writes values to memory but reads back the
+old value in some cases. The MMU code was not working correctly
+because it was constantly clearing the page where it was putting the
+data.
 
-                        Geert
+I then realised I wasn't disabling the I/D caches in u-boot so I added
+that and it started working more reliably but it only boots every time
+if I disable the caches before doing the stuff to load the ELF into
+memory. So there is something funky going on in my u-boot I think and
+head.S might be fine.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Anyhow,.. I have everything including the timer and interrupts setup
+via DT on the MVME147 now.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Cheers,
+
+Daniel
