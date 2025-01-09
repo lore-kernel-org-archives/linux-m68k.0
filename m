@@ -1,113 +1,501 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B086221B183
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jan 2025 14:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 832C518B484
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jan 2025 17:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736431717; cv=none; b=DDmasw9RjHr9ujOUidRiAazRBN9HA9kjtRyqwUOG6pwyGhJZK9NXkR+fHySzxxR+2/3a2ds+M6l9rUfam+4dF7k6IyjvtbZOTl6ZV4LhI/LuVgVF9Mm+BUlKdikhfHW7aWx0zhTMq6m4HTg7YhXb3pkhDldQadeJHJCTdNBzhXI=
+	t=1736444753; cv=none; b=lt9l8XcjVmoayxry+ckg7mAtPXQmFGKyuJfqevUzb76UeDX2Q0H0Nhy2KvrldW3Zl2wQljIUSYPexLHVARZi/A2yMoAWeLUNAp0WaM4wiEsvn2AG8PvrxeYFgcuxbN9y9GxkypQPAOcGLlBtutbIaz78JXSZ2WIbVkH3iqxjDjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736431717; c=relaxed/simple;
-	bh=B6qG5ELju29P09aeWtg//nkuVWu7cmeEXIci6vguGoQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BsaPJRHhe8QtEwDemqqu8dI9vGIEF3INc1f1hKNmqleLLbdIcA+Hoe8/bQUChikQ4sR02QUoN5wHWspkHRPyJacsfVK0CcyeripkNlvouXO7BXROiUwVJUSGOqUArJLufkNsHigJLy8imzrkNkkd2+gBlXAMV5BmkBiBPqwaQSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=Xp6I3ez6; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1736444753; c=relaxed/simple;
+	bh=2O5jydmuf0klFJQtScyDPWkBNOYlD+ByU8JDOFky7QU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:content-type; b=Cuv9L80jF2Qtw0x/TDr4wBrewIxOuODmCr2k2YFSqB+S9mgoFFt1MC0JHiJIS5c9dhcWHSRqVxJFu53Np7lMBeobbDeE607HZZ+Ls+SaPfdv3nmy7xtKWFTn2YUsvHMtFyo/vOwkGvupxmQ1xs4Aulmw/NbO18Tw/GC7Ria0zMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g5zy1+FR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Xp6I3ez6"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2ee67e9287fso1664945a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 06:08:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1736431715; x=1737036515; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pyjaTzJ8SKrXkH1eLLJkEAmVYkqhG9zIzTl5FgUSnDI=;
-        b=Xp6I3ez6NiSfi95iObUdv3v3FyWm+pSOcp4ALfmoRLBx+50ML9V3bPL3Ny2sF+XsnR
-         JJsbKrLj5HAlhVIwJj2BDCltgFqZ4iJwO+esfVGGq0fAoSpbbU5q+Y4lShzESnKsSljJ
-         puN2p4OGuKoA3zY2LPMqmgZU7Gop0G2fKjaTk=
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g5zy1+FR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1736444749;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=hoYGkkFh/k/CpmxVYHzrGNTXoQJcfW//siB/lJA0dnE=;
+	b=g5zy1+FRBtQNhAdRyR2Pt++CjYwWRYZTOHkFJRrct50Cz+otzqrwv+Jzql5VW5uKHxhA12
+	iKf6pFBVMxrrc0R2BFed/BNzIpQ2EPEeKZDXrLeoAuS3s+8M1QZrih3pHpv5YFNPWfBubA
+	RGNbdwJSGWkqkxMdukh/b24yJQ6H9jI=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-692-AZ8C_5YZOeW4kWY7fD7zCw-1; Thu, 09 Jan 2025 12:45:46 -0500
+X-MC-Unique: AZ8C_5YZOeW4kWY7fD7zCw-1
+X-Mimecast-MFC-AGG-ID: AZ8C_5YZOeW4kWY7fD7zCw
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-388d1f6f3b2so481153f8f.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 09:45:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736431715; x=1737036515;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pyjaTzJ8SKrXkH1eLLJkEAmVYkqhG9zIzTl5FgUSnDI=;
-        b=NTvlcta/zKqMlrPTwEMWnDF42+sLPm2gCLOiCYSpFDKYLBCJzWIOl1g/ACwSScst1o
-         rK0ZcvgQqAUc2RbUXnwk4VfJyDurCIgCk/v4O4Pn2dUTfxpDcnBAu0qyJXo4FBcLtT49
-         BEpu2ibLT8KoxBrdtYMdULaNXbR1Z2G0BAiw3bUmSa3njJFyFBP2EBSJXMoiV27kzDtK
-         UpcQ2dj+Q9IbBc0YnD2Mk1DD6hHgWLQjMww5XCcyjWsV50OUH4OhTGCYI/Fct/C2jWKI
-         Vbp6P5COEr6ajAiDfyVlT63PQhmGIoHxleeb3QzuO3fCPwn/5m/VKC75GWTNh5GsHboz
-         kQtg==
-X-Forwarded-Encrypted: i=1; AJvYcCXg6VNAk16pPnB06/2AswrQIJYoB47RtsjaZcqDx3GcT5O3hA9/v4Z2seZQMWPTlwQR7DzZmcMD9uhQ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy2k2/uVBVtYPA9iBOC+/z0R+NKPT4R88csKw1hhdJJG789SlNi
-	I9pYeUxbs8XxP/y9/a+6XmQjY2lrLmXMGeHnSCooGtCwUWcOt5FKk9y2rfYX+QjYV5YG/x5BbBv
-	uQOIvAKB4w4pX6P1qOOLfTHQn0oSaylaJ/q3DdQ==
-X-Gm-Gg: ASbGncuwFvfz0UE0kphXR4w4CKRYwwdGv1HNI2PayTOUXwksA7Dx5aDe2hYZaGcbrS3
-	RPzGoKd9pufSuwRTjEHskDD7rSKX6d0autf1YU2p9qGAPMAgM5tH6xS1i4TPla3EY6DWIruR/
-X-Google-Smtp-Source: AGHT+IEJwIC3/E06ibCe+s7Mr2CMOxJfYubKHCDirA8GlHhcCcr5MZrobeqWk/PkNcjBaQcZxNfKvSlJHbeEfzufQQw=
-X-Received: by 2002:a17:90b:2dc6:b0:2ee:53b3:3f1c with SMTP id
- 98e67ed59e1d1-2f548e9f9ecmr10163051a91.5.1736431714907; Thu, 09 Jan 2025
- 06:08:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736444745; x=1737049545;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hoYGkkFh/k/CpmxVYHzrGNTXoQJcfW//siB/lJA0dnE=;
+        b=lAtXxDr+lXk5zKo8ee60wlQxHCRu+SCAvqSUExdg4zybTXT8E816n99qUrbuAtJnSh
+         db36zYcdKM9R+wPUzofutlsqn+Bya5h5bkAS7lszs6BvNpKjRf72x4Qnov03Typ4kDUW
+         QjTuXX4YqGeMIvJgcO4e4tkgjKk/yeVJl3H92XVOHgvUDicUIz86PvEh7y+Nx0UnfT8q
+         ZO/vu+n/telFuNkGgJ0HBHIwJdEJoNmgC6H5RGIa/GnSLj9vE7aEfObmWmtDaP93Kt9a
+         2vKjHI0MKW3VJ0tRgCmJdA79aC1F2mZLsTG27F8/tVYgEoIIff8+5VrUcaeiqMM+vFyp
+         Wa9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWIssIbIHmuPshyFMqwsZ5m4gvhifBnboGreNPDRh9pFMK2ucbD3EXOCwut7iAp6hNEzstqKB18QpsV@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxjhYj0y158623ipSTZt4Vhf7OL9O4E/P03i71h9G9p2zGulxsp
+	eGQGq7nshqO443lnpOJ9jASNSCzdYecpR+zroWF7gsNAvgAui8AhbLuosEraWP7p7JnEyZ4wzxj
+	TDj8PONvWlhwXwBEuR+ndy2YYUE/rboNhIK9nYFBKhXxSqLRPovGcnaSSiw/ywC5M
+X-Gm-Gg: ASbGnctgCjPh3kqRISrMymfq7AG9dLskdtCElPSpW0n6JCm/2sAWYMJZI2wccmjg6Mk
+	o9EJIXGGdrHIbnRXGbSCLIiDSCxkks3bYfzJVp7JJhF6N7yxVYu3Fj+xOJu7Gx9yvRfUKGKkVOj
+	AC9HCWogy14QLzS8l0EezpTfRkTDdp2Pexv98hJVHjD4ADBJJ/WHPOQfU/ceOvMFrHTHEKRfwBw
+	r3CulGIPZBEbgx5PgT4R/JpAxcYadcn48AxkfwSe3BQ9yO+6ZJSHD47RENBFRz0Ggiz2biCSjPH
+	V5ggVafwC5MSdXs=
+X-Received: by 2002:adf:a2c4:0:b0:386:2a3b:8aa with SMTP id ffacd0b85a97d-38a8733a3c9mr5464297f8f.37.1736444744619;
+        Thu, 09 Jan 2025 09:45:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHYn0dV7FSAAgSs+K9CwmOcADtTAtqrsBUMyckTD1hTf5pvDI6r/gTBa7WiYQz6cQqzZ2WLxQ==
+X-Received: by 2002:adf:a2c4:0:b0:386:2a3b:8aa with SMTP id ffacd0b85a97d-38a8733a3c9mr5464241f8f.37.1736444744147;
+        Thu, 09 Jan 2025 09:45:44 -0800 (PST)
+Received: from thinky.redhat.com (ip-217-030-074-039.aim-net.cz. [217.30.74.39])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-436e2dc14ebsm61288865e9.17.2025.01.09.09.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jan 2025 09:45:43 -0800 (PST)
+From: Andrey Albershteyn <aalbersh@redhat.com>
+X-Google-Original-From: Andrey Albershteyn <aalbersh@kernel.org>
+To: linux-fsdevel@vger.kernel.org
+Cc: Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-api@vger.kernel.org,
+	monstr@monstr.eu,
+	mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	naveen@kernel.org,
+	maddy@linux.ibm.com,
+	luto@kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	chris@zankel.net,
+	jcmvbkbc@gmail.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	arnd@arndb.de,
+	linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: [PATCH] fs: introduce getfsxattrat and setfsxattrat syscalls
+Date: Thu,  9 Jan 2025 18:45:40 +0100
+Message-ID: <20250109174540.893098-1-aalbersh@kernel.org>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250105071433.3943289-1-daniel@0x0f.com> <CAMuHMdXU=nhd=fQLSmZQPey=uwD11w=mm=Q25ZWwbNQC1Ys=Cw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXU=nhd=fQLSmZQPey=uwD11w=mm=Q25ZWwbNQC1Ys=Cw@mail.gmail.com>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Thu, 9 Jan 2025 23:08:23 +0900
-X-Gm-Features: AbW1kva0lLZL39vw4aEg4rMAnnLyk26Sc0e9cGUp2mr0DB12x0I5le3lCQw7UOQ
-Message-ID: <CAFr9PXm5v8K9K0V474kNBnNfF8dK25-MA2PDZns0CbxcUkU8EA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] m68k goes DT
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: fthain@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: f2ftlYJTqsOyF6_hucnVa6ZoAOOz9QMFY_ciULX6TpE_1736444745
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+content-type: text/plain; charset="US-ASCII"; x-default=true
 
-Hi Geert,
+From: Andrey Albershteyn <aalbersh@redhat.com>
 
-On Thu, 9 Jan 2025 at 19:31, Geert Uytterhoeven <geert@linux-m68k.org> wrot=
-e:
->
-> Hi Daniel,
->
-> On Sun, Jan 5, 2025 at 8:15=E2=80=AFAM Daniel Palmer <daniel@0x0f.com> wr=
-ote:
-> > - The head.S code sometimes gets stuck setting up the mmu on my MVME147=
- when
-> >   the kernel binary layout changes. I thought for a long time my new co=
-de was
-> >   wrong but then discovered just making the kernel bigger by adding som=
-e printk()s
-> >   also caused it.
->
-> What is your kernel size?  Perhaps the code to map 8 or 16 MiB of
-> the first memory chunk doesn't work on 68030?
+Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
+extended attributes/flags. The syscalls take parent directory FD and
+path to the child together with struct fsxattr.
 
-Kernel is 3.something MiB
+This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
+that file don't need to be open. By having this we can manipulated
+inode extended attributes not only on normal files but also on
+special ones. This is not possible with FS_IOC_FSSETXATTR ioctl as
+opening special files returns VFS special inode instead of
+underlying filesystem one.
 
-> There could also be some alignment issues.  IIRC, there is code that
-> expects the FDT to be 8-byte aligned.
+This patch adds two new syscalls which allows userspace to set
+extended inode attributes on special files by using parent directory
+to open FS inode.
 
-I thought that too but it seems to be something else. I worked out
-that for some reason head.S writes values to memory but reads back the
-old value in some cases. The MMU code was not working correctly
-because it was constantly clearing the page where it was putting the
-data.
+Also, as vfs_fileattr_set() is now will be called on special files
+too, let's forbid any other attributes except projid and nextents
+(symlink can have an extent).
 
-I then realised I wasn't disabling the I/D caches in u-boot so I added
-that and it started working more reliably but it only boots every time
-if I disable the caches before doing the stuff to load the ELF into
-memory. So there is something funky going on in my u-boot I think and
-head.S might be fine.
+CC: linux-api@vger.kernel.org
+Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+---
 
-Anyhow,.. I have everything including the timer and interrupts setup
-via DT on the MVME147 now.
+Notes:
+    Previous discussion:
+    https://lore.kernel.org/linux-xfs/20240520164624.665269-2-aalbersh@redhat.com/
+    
+    XFS has project quotas which could be attached to a directory. All
+    new inodes in these directories inherit project ID set on parent
+    directory.
+    
+    The project is created from userspace by opening and calling
+    FS_IOC_FSSETXATTR on each inode. This is not possible for special
+    files such as FIFO, SOCK, BLK etc. Therefore, some inodes are left
+    with empty project ID. Those inodes then are not shown in the quota
+    accounting but still exist in the directory. Moreover, in the case
+    when special files are created in the directory with already
+    existing project quota, these inode inherit extended attributes.
+    This than leaves them with these attributes without the possibility
+    to clear them out. This, in turn, prevents userspace from
+    re-creating quota project on these existing files.
 
-Cheers,
+ arch/alpha/kernel/syscalls/syscall.tbl      |   2 +
+ arch/m68k/kernel/syscalls/syscall.tbl       |   2 +
+ arch/microblaze/kernel/syscalls/syscall.tbl |   2 +
+ arch/parisc/kernel/syscalls/syscall.tbl     |   2 +
+ arch/powerpc/kernel/syscalls/syscall.tbl    |   2 +
+ arch/s390/kernel/syscalls/syscall.tbl       |   2 +
+ arch/sh/kernel/syscalls/syscall.tbl         |   2 +
+ arch/sparc/kernel/syscalls/syscall.tbl      |   2 +
+ arch/x86/entry/syscalls/syscall_32.tbl      |   2 +
+ arch/x86/entry/syscalls/syscall_64.tbl      |   2 +
+ arch/xtensa/kernel/syscalls/syscall.tbl     |   2 +
+ fs/inode.c                                  | 105 ++++++++++++++++++++
+ fs/ioctl.c                                  |  17 +++-
+ include/linux/fileattr.h                    |   1 +
+ include/linux/syscalls.h                    |   4 +
+ include/uapi/asm-generic/unistd.h           |   8 +-
+ 16 files changed, 154 insertions(+), 3 deletions(-)
 
-Daniel
+diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
+index c59d53d6d3f3..4b9e687494c1 100644
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@ -506,3 +506,5 @@
+ 574	common	getxattrat			sys_getxattrat
+ 575	common	listxattrat			sys_listxattrat
+ 576	common	removexattrat			sys_removexattrat
++577	common	getfsxattrat			sys_getfsxattrat
++578	common	setfsxattrat			sys_setfsxattrat
+diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+index f5ed71f1910d..159476387f39 100644
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@ -466,3 +466,5 @@
+ 464	common	getxattrat			sys_getxattrat
+ 465	common	listxattrat			sys_listxattrat
+ 466	common	removexattrat			sys_removexattrat
++467	common	getfsxattrat			sys_getfsxattrat
++468	common	setfsxattrat			sys_setfsxattrat
+diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
+index 680f568b77f2..a6d59ee740b5 100644
+--- a/arch/microblaze/kernel/syscalls/syscall.tbl
++++ b/arch/microblaze/kernel/syscalls/syscall.tbl
+@@ -472,3 +472,5 @@
+ 464	common	getxattrat			sys_getxattrat
+ 465	common	listxattrat			sys_listxattrat
+ 466	common	removexattrat			sys_removexattrat
++467	common	getfsxattrat			sys_getfsxattrat
++468	common	setfsxattrat			sys_setfsxattrat
+diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
+index d9fc94c86965..b3578fac43d6 100644
+--- a/arch/parisc/kernel/syscalls/syscall.tbl
++++ b/arch/parisc/kernel/syscalls/syscall.tbl
+@@ -465,3 +465,5 @@
+ 464	common	getxattrat			sys_getxattrat
+ 465	common	listxattrat			sys_listxattrat
+ 466	common	removexattrat			sys_removexattrat
++467	common	getfsxattrat			sys_getfsxattrat
++468	common	setfsxattrat			sys_setfsxattrat
+diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
+index d8b4ab78bef0..808045d82c94 100644
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@ -557,3 +557,5 @@
+ 464	common	getxattrat			sys_getxattrat
+ 465	common	listxattrat			sys_listxattrat
+ 466	common	removexattrat			sys_removexattrat
++467	common	getfsxattrat			sys_getfsxattrat
++468	common	setfsxattrat			sys_setfsxattrat
+diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
+index e9115b4d8b63..78dfc2c184d4 100644
+--- a/arch/s390/kernel/syscalls/syscall.tbl
++++ b/arch/s390/kernel/syscalls/syscall.tbl
+@@ -469,3 +469,5 @@
+ 464  common	getxattrat		sys_getxattrat			sys_getxattrat
+ 465  common	listxattrat		sys_listxattrat			sys_listxattrat
+ 466  common	removexattrat		sys_removexattrat		sys_removexattrat
++467  common	getfsxattrat		sys_getfsxattrat		sys_getfsxattrat
++468  common	setfsxattrat		sys_setfsxattrat		sys_setfsxattrat
+diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
+index c8cad33bf250..d5a5c8339f0e 100644
+--- a/arch/sh/kernel/syscalls/syscall.tbl
++++ b/arch/sh/kernel/syscalls/syscall.tbl
+@@ -470,3 +470,5 @@
+ 464	common	getxattrat			sys_getxattrat
+ 465	common	listxattrat			sys_listxattrat
+ 466	common	removexattrat			sys_removexattrat
++467	common	getfsxattrat			sys_getfsxattrat
++468	common	setfsxattrat			sys_setfsxattrat
+diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
+index 727f99d333b3..817dcd8603bc 100644
+--- a/arch/sparc/kernel/syscalls/syscall.tbl
++++ b/arch/sparc/kernel/syscalls/syscall.tbl
+@@ -512,3 +512,5 @@
+ 464	common	getxattrat			sys_getxattrat
+ 465	common	listxattrat			sys_listxattrat
+ 466	common	removexattrat			sys_removexattrat
++467	common	getfsxattrat			sys_getfsxattrat
++468	common	setfsxattrat			sys_setfsxattrat
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index 4d0fb2fba7e2..b4842c027c5d 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -472,3 +472,5 @@
+ 464	i386	getxattrat		sys_getxattrat
+ 465	i386	listxattrat		sys_listxattrat
+ 466	i386	removexattrat		sys_removexattrat
++467	i386	getfsxattrat		sys_getfsxattrat
++468	i386	setfsxattrat		sys_setfsxattrat
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 5eb708bff1c7..b6f0a7236aae 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -390,6 +390,8 @@
+ 464	common	getxattrat		sys_getxattrat
+ 465	common	listxattrat		sys_listxattrat
+ 466	common	removexattrat		sys_removexattrat
++467	common	getfsxattrat		sys_getfsxattrat
++468	common	setfsxattrat		sys_setfsxattrat
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
+index 37effc1b134e..425d56be337d 100644
+--- a/arch/xtensa/kernel/syscalls/syscall.tbl
++++ b/arch/xtensa/kernel/syscalls/syscall.tbl
+@@ -437,3 +437,5 @@
+ 464	common	getxattrat			sys_getxattrat
+ 465	common	listxattrat			sys_listxattrat
+ 466	common	removexattrat			sys_removexattrat
++467	common	getfsxattrat			sys_getfsxattrat
++468	common	setfsxattrat			sys_setfsxattrat
+diff --git a/fs/inode.c b/fs/inode.c
+index 6b4c77268fc0..fc8939c6c8a7 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -23,6 +23,9 @@
+ #include <linux/rw_hint.h>
+ #include <linux/seq_file.h>
+ #include <linux/debugfs.h>
++#include <linux/syscalls.h>
++#include <linux/fileattr.h>
++#include <linux/namei.h>
+ #include <trace/events/writeback.h>
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/timestamp.h>
+@@ -2953,3 +2956,105 @@ umode_t mode_strip_sgid(struct mnt_idmap *idmap,
+ 	return mode & ~S_ISGID;
+ }
+ EXPORT_SYMBOL(mode_strip_sgid);
++
++SYSCALL_DEFINE4(getfsxattrat, int, dfd, const char __user *, filename,
++		struct fsxattr *, fsx, int, at_flags)
++{
++	struct fd dir;
++	struct fileattr fa;
++	struct path filepath;
++	struct inode *inode;
++	int error;
++
++	if (at_flags)
++		return -EINVAL;
++
++	if (!capable(CAP_FOWNER))
++		return -EPERM;
++
++	dir = fdget(dfd);
++	if (!fd_file(dir))
++		return -EBADF;
++
++	if (!S_ISDIR(file_inode(fd_file(dir))->i_mode)) {
++		error = -EBADF;
++		goto out;
++	}
++
++	error = user_path_at(dfd, filename, at_flags, &filepath);
++	if (error)
++		goto out;
++
++	inode = filepath.dentry->d_inode;
++	if (file_inode(fd_file(dir))->i_sb->s_magic != inode->i_sb->s_magic) {
++		error = -EBADF;
++		goto out_path;
++	}
++
++	error = vfs_fileattr_get(filepath.dentry, &fa);
++	if (error)
++		goto out_path;
++
++	if (copy_fsxattr_to_user(&fa, fsx))
++		error = -EFAULT;
++
++out_path:
++	path_put(&filepath);
++out:
++	fdput(dir);
++	return error;
++}
++
++SYSCALL_DEFINE4(setfsxattrat, int, dfd, const char __user *, filename,
++		struct fsxattr *, fsx, int, at_flags)
++{
++	struct fd dir;
++	struct fileattr fa;
++	struct inode *inode;
++	struct path filepath;
++	int error;
++
++	if (at_flags)
++		return -EINVAL;
++
++	if (!capable(CAP_FOWNER))
++		return -EPERM;
++
++	dir = fdget(dfd);
++	if (!fd_file(dir))
++		return -EBADF;
++
++	if (!S_ISDIR(file_inode(fd_file(dir))->i_mode)) {
++		error = -EBADF;
++		goto out;
++	}
++
++	if (copy_fsxattr_from_user(&fa, fsx)) {
++		error = -EFAULT;
++		goto out;
++	}
++
++	error = user_path_at(dfd, filename, at_flags, &filepath);
++	if (error)
++		goto out;
++
++	inode = filepath.dentry->d_inode;
++	if (file_inode(fd_file(dir))->i_sb->s_magic != inode->i_sb->s_magic) {
++		error = -EBADF;
++		goto out_path;
++	}
++
++	error = mnt_want_write(filepath.mnt);
++	if (error)
++		goto out_path;
++
++	error = vfs_fileattr_set(file_mnt_idmap(fd_file(dir)), filepath.dentry,
++				 &fa);
++	mnt_drop_write(filepath.mnt);
++
++out_path:
++	path_put(&filepath);
++out:
++	fdput(dir);
++	return error;
++}
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 638a36be31c1..df14f1868165 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -558,8 +558,7 @@ int copy_fsxattr_to_user(const struct fileattr *fa, struct fsxattr __user *ufa)
+ }
+ EXPORT_SYMBOL(copy_fsxattr_to_user);
+ 
+-static int copy_fsxattr_from_user(struct fileattr *fa,
+-				  struct fsxattr __user *ufa)
++int copy_fsxattr_from_user(struct fileattr *fa, struct fsxattr __user *ufa)
+ {
+ 	struct fsxattr xfa;
+ 
+@@ -574,6 +573,7 @@ static int copy_fsxattr_from_user(struct fileattr *fa,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL(copy_fsxattr_from_user);
+ 
+ /*
+  * Generic function to check FS_IOC_FSSETXATTR/FS_IOC_SETFLAGS values and reject
+@@ -646,6 +646,19 @@ static int fileattr_set_prepare(struct inode *inode,
+ 	if (fa->fsx_cowextsize == 0)
+ 		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
+ 
++	/*
++	 * The only use case for special files is to set project ID, forbid any
++	 * other attributes
++	 */
++	if (!(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode))) {
++		if (fa->fsx_xflags & ~FS_XFLAG_PROJINHERIT)
++			return -EINVAL;
++		if (!S_ISLNK(inode->i_mode) && fa->fsx_nextents)
++			return -EINVAL;
++		if (fa->fsx_extsize || fa->fsx_cowextsize)
++			return -EINVAL;
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/fileattr.h b/include/linux/fileattr.h
+index 47c05a9851d0..8598e94b530b 100644
+--- a/include/linux/fileattr.h
++++ b/include/linux/fileattr.h
+@@ -34,6 +34,7 @@ struct fileattr {
+ };
+ 
+ int copy_fsxattr_to_user(const struct fileattr *fa, struct fsxattr __user *ufa);
++int copy_fsxattr_from_user(struct fileattr *fa, struct fsxattr __user *ufa);
+ 
+ void fileattr_fill_xflags(struct fileattr *fa, u32 xflags);
+ void fileattr_fill_flags(struct fileattr *fa, u32 flags);
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index c6333204d451..a983023d21ab 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -371,6 +371,10 @@ asmlinkage long sys_removexattrat(int dfd, const char __user *path,
+ asmlinkage long sys_lremovexattr(const char __user *path,
+ 				 const char __user *name);
+ asmlinkage long sys_fremovexattr(int fd, const char __user *name);
++asmlinkage long sys_getfsxattrat(int dfd, const char __user *filename,
++				 struct fsxattr *fsx, int at_flags);
++asmlinkage long sys_setfsxattrat(int dfd, const char __user *filename,
++				 struct fsxattr *fsx, int at_flags);
+ asmlinkage long sys_getcwd(char __user *buf, unsigned long size);
+ asmlinkage long sys_eventfd2(unsigned int count, int flags);
+ asmlinkage long sys_epoll_create1(int flags);
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+index 88dc393c2bca..50be2e1007bc 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -850,8 +850,14 @@ __SYSCALL(__NR_listxattrat, sys_listxattrat)
+ #define __NR_removexattrat 466
+ __SYSCALL(__NR_removexattrat, sys_removexattrat)
+ 
++/* fs/inode.c */
++#define __NR_getfsxattrat 467
++__SYSCALL(__NR_getfsxattrat, sys_getfsxattrat)
++#define __NR_setfsxattrat 468
++__SYSCALL(__NR_setfsxattrat, sys_setfsxattrat)
++
+ #undef __NR_syscalls
+-#define __NR_syscalls 467
++#define __NR_syscalls 469
+ 
+ /*
+  * 32 bit systems traditionally used different
+-- 
+2.47.0
+
