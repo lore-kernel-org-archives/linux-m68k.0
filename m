@@ -1,121 +1,124 @@
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1936219E965
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jan 2025 10:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725841EBA19
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jan 2025 10:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736417191; cv=none; b=j8fNbQrBbc0YUQigtKZTnWKdsi6tCm2C7AHs2855MRiwAJzv7H2km10B3NAWbgbktgt8NOsA1JEBr9lul3A+ZDtyoFly4X2t++v3XYpYO5LRWaoM/kBxKTrz618ZICzz4G82zJeWkVM53l9dDJO89dsxFOVgiJbAilgUyT5DFmw=
+	t=1736418577; cv=none; b=pKqeWRTxhfcZVF4xPZoMjd5ahsU+EM8FwMeb2/7EXHNuuKIoPCZcl64ouvsdHOKAYTrRumdEIBKPkxkFEFJNMzPekBCpow0hYVNXMnsRHJV14TB3/gbqsnr0l5XMZrYZ2gfeaxk7ZuBGEd1CqZXlnxDWTiRdyTgmtuyNLs8mF+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736417191; c=relaxed/simple;
-	bh=kxWLN1ezIKNM4o7u7dYo4ic8fn7oQgsYtAZjJRFAmlI=;
+	s=arc-20240116; t=1736418577; c=relaxed/simple;
+	bh=j/0sZSjmPyS3G7SQkkptKFmiIcCpnTvkU+BUq2If5+o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OIeRUjebgGedmuxvPBIyQJkwRGB6dSQWPjVLfYd07H/tVRZIi3Na+xqjOJuJoud5Q8yYEjLz8i949aJr2BxzLZ7lUy4+7pRm27Px8P/gVc+UJu7vOmN7fDP+HoPZyx6HLen+ImTqTeoDAXAcSw7w/JgNxzY5tn6vUvYm2ON+RLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.51
+	 To:Cc:Content-Type; b=eXhoiGeS9ZJjE7coP9pvNTDb+zHUDbrLOahQdJxLNQs1IUeqrqVU4NcWjcRCRsyji6fXEJpjbYLc0YRZcwxJ3xidW9kmnZnSZd05xY4rsLb+VLVMfsbLzhg4hTjrbRig8GGJYK5Mu0D3djsSTt5/69UmownMZ9yM04dCwpH4pMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-4affbc4dc74so453948137.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 02:06:27 -0800 (PST)
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-51619b06a1cso383112e0c.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 02:29:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736417186; x=1737021986;
+        d=1e100.net; s=20230601; t=1736418574; x=1737023374;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=waS6OXMNfxWM8sfBY1M9xO3bF1AiL+GfxiTq+msEDRI=;
-        b=YK6mJ3QUUHALUjHWTxLpoJmvNIE1OvkCTn/qTim8K9jgINOMK6B1DWaF9AOPiLelQw
-         Eg6Zonr6WsGr7MC6qKRnvnxYwEE80OIJ52hzpRxKBhcA9ppS6hlfH1IV2GR+m1lDr+4O
-         cEHNwR6roKBskvSav2TMpmQtagWl9u2yaBELIncAZwUDwgpBcINxbVWxKeuXrkZMajsU
-         9CT9D5rumy7ziquOPfkvo0eMqWiS+Vl7ojzR9Y/EJx9QU22903v7Wr/7bSBMa3icW7e2
-         hgnCtjQGissvWR+S1JE/OA1tpcvkmM1p2qo0X0MQEdl0UdU8KCQkYPisaeveUm0vnWT/
-         fGNw==
-X-Forwarded-Encrypted: i=1; AJvYcCWJghywWRLQmrodsSC2O9CLlHUn1gfH+0pCMOHmhT6Rg48Hk7O/3CQ5ITy6ohZycPRbCpy9suPxehyt@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxhNk0lBabsn7hdj0lWQdT0rvqO0cc6WegfFkJiHc23O05UMWBK
-	+mpfa+zWeMBskLabmgZ5dk3tkUamPIrfrYgaeV9BWn0b6udC2uzCaUEc7C8e
-X-Gm-Gg: ASbGncu8lU30FBTenKoF2h/4cN5w5XvyzFaHAIFPwl2U/lPyc4IY8TnRdqmZaavo1ls
-	yD3EleybyZOYEz38NX41GPDkI7ccKimUoWU19IsLTTnzBozG8bRiQH66e6u+k7haOqrBqWRr3lE
-	6C/1zkBoFLSo5I/HIdwpMokU3HldQ9zemMPh2aWzSq9j50mMHxn/HKhcmOb3PaV/X/NjbZSM310
-	bMs+AAp0m2Ij8P9vG+YJE9aVXvN1AedbXpRuO62k6shdWfMAkI3eGPydfQeF2ruUixmTtLDijrQ
-	i0R6t9jANPKV5WhNizw=
-X-Google-Smtp-Source: AGHT+IG8KLLcTPS+8CnFjEDqQUSKdY6hxsbPhbC3a3ajBOm2d8xVwomHAQ5TNLWFgg8A7USBhBesvg==
-X-Received: by 2002:a05:6102:2923:b0:4b2:4877:2de4 with SMTP id ada2fe7eead31-4b3d0e10229mr4869117137.15.1736417185618;
-        Thu, 09 Jan 2025 02:06:25 -0800 (PST)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4b6091dab0asm604371137.27.2025.01.09.02.06.25
+        bh=452u71ufwl0Y/2rOKFBZrpBLlPe+WGBNJviber7abW8=;
+        b=qQCaVbHvpBzIMlqIpO+rCyPApSTeKso0+RhrFyzVkASSOCCFYe6j0hPJnIHMhXbaIM
+         dCziV1kj3AeIkIf4J6VWsHrYTZq5GR1A90G38BAbZoSL6l9lPnWVFM4aQG2hrZL471Ef
+         /pu8zw13Een2pBLHA1JNfOobJQn2ouUKqka9yBWx0C5HCjXcE0n9ByCVICZAQrsFoZne
+         MskqV5wKa5WeAuqEn9xY1jzYwZ953t61TVAzquBhhB9Kf8cP5hYRQVIHoX6XmZz4o8pD
+         AtUHBpipvymm92kQDDF8XR3ORMtB5XYpMr/kvk2D+zLUNE8fl7bQnCnBzLJoGbESmJJn
+         wIjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXAVdl4Je+heTfbNCrePD8ojOnWYDdbuUQ+KY3KHLyJz64B2VeaDT3AngWTF5kFNQrpdxGrY5OMCdOj@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxxJ4z1WIP/HYBhonrwMvxV/fwx0olO5k5kpjihhUqmRL17wO9Q
+	12h849zgSGWhfTFQ3cmhv1P3FANoEQgSE6oLbmHNKpGFVfFxlkU5ekLwvfPo
+X-Gm-Gg: ASbGncuOAAkUOo8eUo52U5pZICyv3ArOPNdn5wdfr8expM7pXtqAZFmGrqkHstg4p67
+	8WLDPsWDrk4Lp0BZarpRAKwiCR4njLwRM5wANeiOizpFM9Ye/RuFTS1UFDHc74uU7icwt1K9gvZ
+	GWLyLc/hz8SHUZzW01Wwxg9alA914nytvmHPxPALTckhJiKXJiOcHvygo5mwEuEmfzfcjFfYnYN
+	+LYi2BcZYWzHUQ+fcacvtKORe8kBn+w+C65+mDy5o2z/zp7pYY7F5chQjlOg5WAglAyF1W4u58S
+	1heE3CEF9GI5XrUv7xQ=
+X-Google-Smtp-Source: AGHT+IG7NKCxbp+TxAo35x2dKgeZfrxngjcUpXYnYAZ5WgeWmFJUfvR2frq0B8oIrP8WpwUOu+unfw==
+X-Received: by 2002:a05:6122:318c:b0:518:a287:56e3 with SMTP id 71dfb90a1353d-51c6c304a09mr3688863e0c.7.1736418573750;
+        Thu, 09 Jan 2025 02:29:33 -0800 (PST)
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-51c7fd2d9c5sm517277e0c.46.2025.01.09.02.29.33
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Jan 2025 02:06:25 -0800 (PST)
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-4b2c0a7ef74so467275137.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 02:06:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCULNNLlt1s/9zZm3+FrquIsTrivVbQ63ia9IywTLgBlXmLMbavHON+HuvfRQNYNpDDCU7Nzmw33NCZU@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:2923:b0:4b2:4877:2de4 with SMTP id
- ada2fe7eead31-4b3d0e10229mr4869108137.15.1736417185043; Thu, 09 Jan 2025
- 02:06:25 -0800 (PST)
+        Thu, 09 Jan 2025 02:29:33 -0800 (PST)
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-4affbc4dc74so464581137.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jan 2025 02:29:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUFO4H6AbhrfTf9vDRnqbgEsDWPa7tUlgTpkKknfgAdlkinHsXatpYuzb2lVMJ2Pt33nuNAc1AylmGe@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:6e88:b0:4b4:27dc:ffe3 with SMTP id
+ ada2fe7eead31-4b427dd0152mr3686760137.0.1736418573158; Thu, 09 Jan 2025
+ 02:29:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250105071433.3943289-1-daniel@0x0f.com> <291d1541-e026-cc50-6a55-42c11c64b6eb@linux-m68k.org>
- <CAFr9PXm4kTWF27GPMNDb5=W8vZRQia418xOQDF_X1yo0vwn6hA@mail.gmail.com> <4eb796cc-b178-8394-0149-03600f1caaed@linux-m68k.org>
-In-Reply-To: <4eb796cc-b178-8394-0149-03600f1caaed@linux-m68k.org>
+References: <20250105071433.3943289-1-daniel@0x0f.com> <c0428d69-2f18-45d3-8024-a9fe4170b23e@kernel.org>
+ <20250106113749.GA32654@allandria.com> <980f40b3-fd1c-74c7-c651-b85040bbd3fc@linux-m68k.org>
+In-Reply-To: <980f40b3-fd1c-74c7-c651-b85040bbd3fc@linux-m68k.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 9 Jan 2025 11:06:13 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVa932fBaJ-sc-38g5n95TepLt+a2RhxucVrfBD0xDF2w@mail.gmail.com>
-X-Gm-Features: AbW1kvZIF1R2ptluPy8IPTrvMHoXNg70Bu95qhy_D3vaq9yb4bAjp3Dqr1Um4KQ
-Message-ID: <CAMuHMdVa932fBaJ-sc-38g5n95TepLt+a2RhxucVrfBD0xDF2w@mail.gmail.com>
+Date: Thu, 9 Jan 2025 11:29:21 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVSGQNpsy7wtPVDksq01jW3QVRBR=zwmvOYddb1wdfAYw@mail.gmail.com>
+X-Gm-Features: AbW1kvapaCtkyObFOD3mVm9HrVRRHFOeveCyQHVeo-jk7DZTmBs9C4ElYqGGal4
+Message-ID: <CAMuHMdVSGQNpsy7wtPVDksq01jW3QVRBR=zwmvOYddb1wdfAYw@mail.gmail.com>
 Subject: Re: [RFC PATCH 0/3] m68k goes DT
 To: Finn Thain <fthain@linux-m68k.org>
-Cc: Daniel Palmer <daniel@0x0f.com>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
+Cc: Brad Boyer <flar@allandria.com>, Greg Ungerer <gerg@kernel.org>, Daniel Palmer <daniel@0x0f.com>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 6, 2025 at 4:28=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> w=
-rote:
-> On Sun, 5 Jan 2025, Daniel Palmer wrote:
-> > I have u-boot working on DragonBall (68000), my MVME147, QEMU Virt etc.
-> > So the u-boot could be made to work for almost anything as long as
-> > there is a serial port and a timer driver.
-> > On virt I take the bootinfo QEMU creates, turn that into a devicetree
-> > in u-boot and then pass the bootinfo and FDT into the kernel. :)
+Hi Finn,
+
+On Mon, Jan 6, 2025 at 11:14=E2=80=AFPM Finn Thain <fthain@linux-m68k.org> =
+wrote:
+> On Mon, 6 Jan 2025, Brad Boyer wrote:
+> > There are a few drivers where we could eliminate complexity and #ifdef
+> > trickery if it was all device tree based.
 >
-> I suppose the benefit of integrating FDT into bootinfo is that you can
-> have a new bootloader that's backwards compatible with existing binaries.
+> Ideally, yes. But how would we get there from here?
 >
-> I think the embedded FDT option brings a similar result for old
-> bootloaders, but can't support a multi-platform vmlinux.
->
-> So I see some benefit to keeping bootinfo support and device tree support
-> independent. A minimal kernel build is going to omit bootinfo support. In
-> the long run, I'm not sure you'd want the FDT stored in a bootinfo record=
-.
+> Should the kernel synthesize a device tree from the bootinfo data, so tha=
+t
+> an ideal no-ifdef pmac_zilog could work? (This seems like a maximum bloat
+> solution.)
 
-That was indeed my first thought, too: do not store a pointer to the
-FDT in a bootinfo record.  Else you end up with a situation similar
-to ARM(32), which supports the can of worms of mixing FDT and ATAGS.
+We can add a wrapper that starts from a basic Amiga/Atari/Mac/... FDT
+and extends/modifies that, based on the bootinfo.
+Modification can be done using libfdt, even from assembler.
+See e.g. arch/arm/boot/compressed/*fdt*.
 
-Instead, replace bootinfo by FDT, and differentiate by checking for
-the FDT magic value. That way you can have a kernel that supports both
-bootinfo and FDT.
+> Or should the mac platform abandon bootinfo, and require a new bootloader
+> for all kernel releases after device tree adoption? (This seems maximally
+> difficult, since it requires simultaneously merging many patches to many
+> subsystems, even if the bootloader changes could be done in advance...)
 
-Passing FDT using a register is also an option, but might be harder to
-auto-detect: when using bootinfo, there may be garbage in the register,
-when booting FDT, there may be garbage in memory where bootinfo is
-usually stored.
+Drivers can easily support both DT and non-DT, assuming they use proper
+platform devices.  That means no more MACH_IS_* and *HW_PRESENT()
+checks in the drivers themselves, but proper platform data setup
+in arch/m68k/<mach>/*.
 
-> > I think adding FDT support to some old crusty bootloader for the Amiga
-> > or something might be a lot of hassle.
-> > Like I'm not sure if I'd even be able to setup a system that could
-> > build it if it needs some old Amiga C compiler.
+> I wonder whether any other architectures have attempted to retrofit devic=
+e
+> tree support (?)
 
-Yes, this complicates things.
+ARM is the classical example.
+Until recently, there was code under drivers/staging/board/ to support
+mixed DT/non-DT systems, but I don't suggest going that way.
+Conversion of SH to DT is still WIP (except for J-Core, which is
+DT-only).
 
-> > That's why I think embedded FDTs might be needed in some places and
-> > leaving the bootinfo part as-is.
+The largest initial step is usually irqchip, clocksource, and clock
+drivers and DT bindings.  Existing drivers "just" need DT bindings
+and DT support.
 
-For "simple" (fixed hardware) machines, that is indeed an option,
-and already supported on various other architectures.
+For e.g. Amiga, the clock driver would be rather simple.
+Clocksource is much more complicated, as the timers are provided by
+the CIAs, which are really multi-function-devices (MFD), providing
+timer, gpio,spi, and irqchip functionalities.
 
 Gr{oetje,eeting}s,
 
