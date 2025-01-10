@@ -1,55 +1,55 @@
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0826C222597
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0D62253EA
 	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jan 2025 18:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736534519; cv=none; b=LG4SYAWjSsXw1CvN6qPQg2OJGfSQZXMytLyIPyg4GAPrfBwEBh0EG/V00kKfRhL6MXm5F22dBE6ZpPnp1Dcm+7OnKi4Hbsr6AZAPoQXNJxAv4VIV93yw9xICbnvidk7iQJZ6HFNlrNX9ip/7AEEr7tUUT4vGiykleL7VxwgZ8DE=
+	t=1736534515; cv=none; b=PqeLiODHBLevyMMrUsmvGSN+SMp/X2SnX5BY9IfbPwud5E8zlBsaiyZMiGJSmjGjyspjbwu6/gZR0D8f3QPs4336gaZeKV7uGUQOB2qUZcDx9xKUWHi1l3sFLntzt+jZf5k2KsEgUuaTpyHxAr4MYH+8BmyoU/i8q2zfuXIFrtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736534519; c=relaxed/simple;
-	bh=grUiPSYSTM6ChkvRHUtI259QuAZLs69ifkTxsxb8DH0=;
+	s=arc-20240116; t=1736534515; c=relaxed/simple;
+	bh=4d7pidGbvdIp8iHsT7YACeXpM+11EgA5LY+ovyRSffk=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=raHfMfVUxEfNNbKwcu4JXJZCIKAf+L4F6fSAZLhM6EBATM2m24Fb0OOvbjdnGM9qyjiHnVZlrCoMf0EwOnSOvHO2fPaWu3kfwmbChMkmGcWDTvhsbI3nj7kGEH9kkHALxeTbkw5by2+WechnL662vYeTqRi8fM+9/s9m2TrO+kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1pyHqykk; arc=none smtp.client-ip=209.85.128.74
+	 To:Cc:Content-Type; b=UbUvawhBwMfu7STBO05QINUSONUzRg+38YhBX/woSPblDraDDO1I4RkFiTiHXYdyk5f+iRcevP5n3FQc9/rwp3ZFFWa2dbEfp74TZh3VeqgibApKvJ4wMAiizUxRF+cxIFYnAWXd8JSG8Hk+y60MYMTvwmw0X7vfE0zAJ25mpgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VGMM3ujN; arc=none smtp.client-ip=209.85.221.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1pyHqykk"
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-43625ceae52so12794095e9.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jan 2025 10:41:32 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VGMM3ujN"
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-38a684a096eso995695f8f.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jan 2025 10:41:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534489; x=1737139289; darn=lists.linux-m68k.org;
+        d=google.com; s=20230601; t=1736534486; x=1737139286; darn=lists.linux-m68k.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lgAtsH7tF25YqHAENGvYLMvhBopdecMcg5W9s6t9Qm4=;
-        b=1pyHqykkXcMSSTNL7Y06LoG7N082EeqCVqkinVklVd52eiimEWPMhOjitIn598oPrK
-         cSdLnZotXdAIwDnXzTjtnBKT362gFI7EdZjSSzHhk3ysGfIqo2ZOronZm8xsSwbHaWNn
-         EDJULJx5ekLnV/xF9jcOMmEpoxJZLpmxZPVLVxnB24DydFgMbXRpW7Wc2/5NIXrllT03
-         ni+4gBOWVZpgWmQJWFo8+pCZml4ySVupStB70VJdNcCLqBfDJzscE9+34V95Vi+wOLJP
-         sBo74LAd5uTyOUtyHllsdblVtf6iFTsCAwwDQRkEoECCp+Vs+Jv6JwDDtc7Cp52JpeUB
-         lxeA==
+        bh=+fqV4f6s/Eo+EZ+PE2OCyE0kBm/vfnsLcFKRz+1otrE=;
+        b=VGMM3ujNq6x+t47LUUow65/MJRHGSNY+brKWAKyLwbfYaclKNEUwrJx3pb4NVnruuC
+         VCitzB4PB+LBKQHd7EaVRNvggpKCYnKeZZyxBbzWTNiwzSn1GmraHSd/mIOZb1sfU2vZ
+         +CwrQp7Qmw0FY8va1AcZOmutKzSytFh5k4wmyIuPQ0icSWnY7D5AfL+NKaThByUsmfBl
+         RNmOYKmI1qYfyj4j73i4M/YMJfBNaqSLu0RTrVHCN8dCzHVmq/9shtWSPlGp/jKaTTQF
+         ijRFxIZbHm4fnUGQhq3CgTbOYlBXVwJBJVPKhPA1SZ4ToaQxJllPe2xdGuy8dpylqNys
+         D1iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534489; x=1737139289;
+        d=1e100.net; s=20230601; t=1736534486; x=1737139286;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lgAtsH7tF25YqHAENGvYLMvhBopdecMcg5W9s6t9Qm4=;
-        b=jocWfzdOz2SA3bSjy5BmRSF6tn3v2324dj5IKLoXhx+ZNb1TZfQU4xUAkCXtMdAkQe
-         WPt+3F3EB23+R/TMKrF01LKuljeINe6iWWnEF1K/6fJ80SImi7GSVZ7p0r522EtjX5oK
-         bnGw68gBT4Z2G1oMsZZ2lkYL3iXxtahwJNrpZM6VpHeYnr9renuJ2yiT1j1Q4HS04wNE
-         /odGa5rMt0Z1aEgYz477zVrOxhyj2uIX6z5JfysFT3juPWjylSRuqcHKwEOVMVmpP+lE
-         VZGnmji8U8O0nEkPpMLhb71e7HZr839nyWbSV8LoY0istjfuBuBa4tooeXSQC/hK+R2Y
-         NxPw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6bm4FlVoeqBAT7zhWYvGKrvVktYADy0jt6QkMXCTAFCTibvZ2+KWrOVNDcGz1jpFkULihmEgnvHTJ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyXyb3PcJ5CiRQblUim96z5bPTicAwOj2kRB79jV9LU9NKVdvaI
-	c2AfAYDzPL01SHSizqnwaloRjepCEFzjgY7kCUqO8rFAUKPUI9Rkm8LJC98qYqjVi1b28LAyX5n
-	xOtwacBnFHQ==
-X-Google-Smtp-Source: AGHT+IFeKlzdEnxlsx468YN6J+lzj2fJ2REIK9m1LE7fZOV2UV2JrR/PAzf48/PWmJ/jsXO7ZyblIN12CqtAPQ==
-X-Received: from wmqa17.prod.google.com ([2002:a05:600c:3491:b0:434:fa72:f1bf])
+        bh=+fqV4f6s/Eo+EZ+PE2OCyE0kBm/vfnsLcFKRz+1otrE=;
+        b=NKEz3WMvJuZ2skVn2TAxWVgwOm7LSMA/DOClV7EL4TZ4vfPUGLHy9iRRDac1x2v6Sw
+         rOMTEuMgWSHjWcEJzZDHq9kMZTPbO/CkVUIFApcMpCGDQt8R3vB02L0+uV65+HqUfL+V
+         9wzhfbZFHCe6mXaWYrZuXaqVg5nGxhT8VIHEcn8h3D2XxgkwSAhUG7OwnqO4avMafJgD
+         4yJxJvRmM+xY8Ja7hBZ2vHeIClw9farePBQgx7JbqZDXPj9sWy7R1+UFD/XXM1qVN3mx
+         Wv4V6JyGGjlJua+oS2Iu3+XzhtaRdCchm5YmVqgVrJBVTs2y56wti21bRii0KJdHLxJ/
+         EtJA==
+X-Forwarded-Encrypted: i=1; AJvYcCWlv6pL+NaXSDL1obxu71r+hGzxyVTQUX9istkAJrlG3jpkzgaHO7W4m2bJ6ljgfoEnpqZt/sAbrM/a@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Ywa8+AWYMdDcxOT67yYB3xT4S+9AUr2vXdS5P2/KmYPGf+io3Ma
+	pmWZS7SGWIP33shlqRg/eOcRhb9V4rxgm6TUZk5wDMnrf/M3scShe8smCGhaJJ63kubRdkYa5Kr
+	ZTq2QuJE5SQ==
+X-Google-Smtp-Source: AGHT+IFgJUpClA++DtJe4xQ45Yc9kKsVSyJCXKqF0cxpPlCBfuMButRzIe/JLM7ynzshFcOsnG5hhjluySNsEA==
+X-Received: from wrbeh5.prod.google.com ([2002:a05:6000:4105:b0:382:4235:c487])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:4586:b0:434:9e1d:7626 with SMTP id 5b1f17b1804b1-436e26f4b91mr97248925e9.25.1736534488470;
- Fri, 10 Jan 2025 10:41:28 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:45 +0000
+ 2002:adf:8b5b:0:b0:38a:88bc:aea4 with SMTP id ffacd0b85a97d-38a88bcaebfmr7355114f8f.30.1736534486264;
+ Fri, 10 Jan 2025 10:41:26 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:44 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-19-8419288bc805@google.com>
-Subject: [PATCH RFC v2 19/29] mm: asi: Stabilize CR3 in switch_mm_irqs_off()
+Message-ID: <20250110-asi-rfc-v2-v2-18-8419288bc805@google.com>
+Subject: [PATCH RFC v2 18/29] mm: asi: Map dynamic percpu memory as nonsensitive
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -111,34 +111,160 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
 	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
 	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
-	Brendan Jackman <jackmanb@google.com>
+	Brendan Jackman <jackmanb@google.com>, Reiji Watanabe <reijiw@google.com>, 
+	Junaid Shahid <junaids@google.com>
 Content-Type: text/plain; charset="utf-8"
 
-An ASI-restricted CR3 is unstable as interrupts can cause ASI-exits.
-Although we already unconditionally ASI-exit during context-switch, and
-before returning from the VM-run path, it's still possible to reach
-switch_mm_irqs_off() in a restricted context, because KVM code updates
-static keys, which requires using a temporary mm.
+From: Reiji Watanabe <reijiw@google.com>
 
+Currently, all dynamic percpu memory is implicitly (and
+unintentionally) treated as sensitive memory.
+
+Unconditionally map pages for dynamically allocated percpu
+memory as global nonsensitive memory, other than pages that
+are allocated for pcpu_{first,reserved}_chunk during early
+boot via memblock allocator (these will be taken care by the
+following patch).
+
+We don't support sensitive percpu memory allocation yet.
+
+Co-developed-by: Junaid Shahid <junaids@google.com>
+Signed-off-by: Junaid Shahid <junaids@google.com>
+Signed-off-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- arch/x86/mm/tlb.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index c55733e144c7538ce7f97b74ea2b1b9c22497c32..ce5598f96ea7a84dc0e8623022ab5bfbba401b48 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -546,6 +546,9 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
- 	bool need_flush;
- 	u16 new_asid;
+WIP: Drop VM_SENSITIVE checks from percpu code
+---
+ mm/percpu-vm.c | 50 ++++++++++++++++++++++++++++++++++++++++++++------
+ mm/percpu.c    |  4 ++--
+ 2 files changed, 46 insertions(+), 8 deletions(-)
+
+diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
+index cd69caf6aa8d8eded2395eb4bc4051b78ec6aa33..2935d7fbac41548819a94dcc60566bd18cde819a 100644
+--- a/mm/percpu-vm.c
++++ b/mm/percpu-vm.c
+@@ -132,11 +132,20 @@ static void pcpu_pre_unmap_flush(struct pcpu_chunk *chunk,
+ 		pcpu_chunk_addr(chunk, pcpu_high_unit_cpu, page_end));
+ }
  
-+	/* Stabilize CR3, before reading or writing CR3 */
-+	asi_exit();
+-static void __pcpu_unmap_pages(unsigned long addr, int nr_pages)
++static void ___pcpu_unmap_pages(unsigned long addr, int nr_pages)
+ {
+ 	vunmap_range_noflush(addr, addr + (nr_pages << PAGE_SHIFT));
+ }
+ 
++static void __pcpu_unmap_pages(unsigned long addr, int nr_pages,
++			       unsigned long vm_flags)
++{
++	unsigned long size = nr_pages << PAGE_SHIFT;
 +
- 	/* We don't want flush_tlb_func() to run concurrently with us. */
- 	if (IS_ENABLED(CONFIG_PROVE_LOCKING))
- 		WARN_ON_ONCE(!irqs_disabled());
++	asi_unmap(ASI_GLOBAL_NONSENSITIVE, (void *)addr, size);
++	___pcpu_unmap_pages(addr, nr_pages);
++}
++
+ /**
+  * pcpu_unmap_pages - unmap pages out of a pcpu_chunk
+  * @chunk: chunk of interest
+@@ -153,6 +162,8 @@ static void __pcpu_unmap_pages(unsigned long addr, int nr_pages)
+ static void pcpu_unmap_pages(struct pcpu_chunk *chunk,
+ 			     struct page **pages, int page_start, int page_end)
+ {
++	struct vm_struct **vms = (struct vm_struct **)chunk->data;
++	unsigned long vm_flags = vms ? vms[0]->flags : VM_ALLOC;
+ 	unsigned int cpu;
+ 	int i;
+ 
+@@ -165,7 +176,7 @@ static void pcpu_unmap_pages(struct pcpu_chunk *chunk,
+ 			pages[pcpu_page_idx(cpu, i)] = page;
+ 		}
+ 		__pcpu_unmap_pages(pcpu_chunk_addr(chunk, cpu, page_start),
+-				   page_end - page_start);
++				   page_end - page_start, vm_flags);
+ 	}
+ }
+ 
+@@ -190,13 +201,38 @@ static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
+ 		pcpu_chunk_addr(chunk, pcpu_high_unit_cpu, page_end));
+ }
+ 
+-static int __pcpu_map_pages(unsigned long addr, struct page **pages,
+-			    int nr_pages)
++/*
++ * __pcpu_map_pages() should not be called during the percpu initialization,
++ * as asi_map() depends on the page allocator (which isn't available yet
++ * during percpu initialization).  Instead, ___pcpu_map_pages() can be used
++ * during the percpu initialization. But, any pages that are mapped with
++ * ___pcpu_map_pages() will be treated as sensitive memory, unless
++ * they are explicitly mapped with asi_map() later.
++ */
++static int ___pcpu_map_pages(unsigned long addr, struct page **pages,
++			     int nr_pages)
+ {
+ 	return vmap_pages_range_noflush(addr, addr + (nr_pages << PAGE_SHIFT),
+ 					PAGE_KERNEL, pages, PAGE_SHIFT);
+ }
+ 
++static int __pcpu_map_pages(unsigned long addr, struct page **pages,
++			    int nr_pages, unsigned long vm_flags)
++{
++	unsigned long size = nr_pages << PAGE_SHIFT;
++	int err;
++
++	err = ___pcpu_map_pages(addr, pages, nr_pages);
++	if (err)
++		return err;
++
++	/*
++	 * If this fails, pcpu_map_pages()->__pcpu_unmap_pages() will call
++	 * asi_unmap() and clean up any partial mappings.
++	 */
++	return asi_map(ASI_GLOBAL_NONSENSITIVE, (void *)addr, size);
++}
++
+ /**
+  * pcpu_map_pages - map pages into a pcpu_chunk
+  * @chunk: chunk of interest
+@@ -214,13 +250,15 @@ static int __pcpu_map_pages(unsigned long addr, struct page **pages,
+ static int pcpu_map_pages(struct pcpu_chunk *chunk,
+ 			  struct page **pages, int page_start, int page_end)
+ {
++	struct vm_struct **vms = (struct vm_struct **)chunk->data;
++	unsigned long vm_flags = vms ? vms[0]->flags : VM_ALLOC;
+ 	unsigned int cpu, tcpu;
+ 	int i, err;
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		err = __pcpu_map_pages(pcpu_chunk_addr(chunk, cpu, page_start),
+ 				       &pages[pcpu_page_idx(cpu, page_start)],
+-				       page_end - page_start);
++				       page_end - page_start, vm_flags);
+ 		if (err < 0)
+ 			goto err;
+ 
+@@ -232,7 +270,7 @@ static int pcpu_map_pages(struct pcpu_chunk *chunk,
+ err:
+ 	for_each_possible_cpu(tcpu) {
+ 		__pcpu_unmap_pages(pcpu_chunk_addr(chunk, tcpu, page_start),
+-				   page_end - page_start);
++				   page_end - page_start, vm_flags);
+ 		if (tcpu == cpu)
+ 			break;
+ 	}
+diff --git a/mm/percpu.c b/mm/percpu.c
+index da21680ff294cb53dfb42bf0d3b3bbd2654d2cfa..c2d913c579bf07892957ac7f601a6a71defadc4b 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -3273,8 +3273,8 @@ int __init pcpu_page_first_chunk(size_t reserved_size, pcpu_fc_cpu_to_node_fn_t
+ 			pcpu_populate_pte(unit_addr + (i << PAGE_SHIFT));
+ 
+ 		/* pte already populated, the following shouldn't fail */
+-		rc = __pcpu_map_pages(unit_addr, &pages[unit * unit_pages],
+-				      unit_pages);
++		rc = ___pcpu_map_pages(unit_addr, &pages[unit * unit_pages],
++				       unit_pages);
+ 		if (rc < 0)
+ 			panic("failed to map percpu area, err=%d\n", rc);
+ 
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
