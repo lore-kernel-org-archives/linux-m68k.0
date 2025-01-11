@@ -1,145 +1,176 @@
-Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196A533FD
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 11 Jan 2025 01:16:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4B114E2C2
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 11 Jan 2025 10:56:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736558201; cv=none; b=H4XhUnXAFdTPj9Azb1xOQHQ1+bvOUSXSmi3b9Isl5v53gxRo6tW9EgpfBQb+UToeAFv3Nd6muRRP70kiG7l5llciW0YGEDUPXWcgFxyjFuRS2sztCw/X4AU0Ak2QXAtAheg49FcDa0PQLfo+gORS06XGJ7AIfR3omnr5otksU9Y=
+	t=1736592997; cv=none; b=BSBv0YsHJTVd7c6sp2iI7awmF2RIkAF+xFnmyTgvIZWOyLnahuLRX5SiC/D+/uC9Xg/UG0geU8pYsjHuf6SWmnESE0Jm2odJK4RUvXyxN38D5dPjT0h67xb6zGIJZSXXcQyjaK8i/p7AeUSQalKMPcPvNnfaattLfru6TcfMsng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736558201; c=relaxed/simple;
-	bh=sQ0hKscqgkFbQlYbywE8EkWkGZ06l86yKwob99Aviyk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SUR2hGFDLTEiNTvLBamVMhQScwC1jkMv6ZS/+BGzNawd6+eb1mK1L7TtZzVWcY6vSEyToM/Yz8zNpBIhC5JR9K4ZzBxg7iNABGmymxVx2MCOcggFDcr2K37NQZUbpCtIO5aPKoqoPnJJtR/kIGLEhOiapCddIRbptKuO41VJQls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-	by vmicros1.altlinux.org (Postfix) with ESMTP id 3D21472C8FB;
-	Sat, 11 Jan 2025 04:16:32 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-	id 2736C7CCB3A; Sat, 11 Jan 2025 03:16:32 +0200 (IST)
-Date: Sat, 11 Jan 2025 03:16:32 +0200
-From: "Dmitry V. Levin" <ldv@strace.io>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Oleg Nesterov <oleg@redhat.com>,
-	Eugene Syromyatnikov <evgsyr@gmail.com>,
-	Mike Frysinger <vapier@gentoo.org>,
-	Renzo Davoli <renzo@cs.unibo.it>,
-	Davide Berardi <berardi.dav@gmail.com>,
-	strace-devel@lists.strace.io, Vineet Gupta <vgupta@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@quicinc.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-	Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-	linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 3/6] syscall.h: introduce syscall_set_nr()
-Message-ID: <20250111011632.GA1724@strace.io>
-References: <20250107230438.GC30633@strace.io>
- <yt9dzfjz6rw5.fsf@linux.ibm.com>
+	s=arc-20240116; t=1736592997; c=relaxed/simple;
+	bh=SKoHWKxqVJ2nCaESofeRUqmK/Mu5psnuWBgHqePforU=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=j0R70iCd/qrhv2piHizS+EBaG9MnXMjnVRoQ9Julc7sUhPBHXSjROkFty64/B8nf/KtjO92mk7r/MoUFD4jl0AhCmC5o9v4Z8h0klSeXyciLsE+naUKsHIyMtB7nVli28hPRNf9ijnHWD9mdlEc3zdNO5yjgcYKn79ceJSJUka0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ELYhsWGn; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ELYhsWGn"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736592996; x=1768128996;
+  h=date:from:to:cc:subject:message-id;
+  bh=SKoHWKxqVJ2nCaESofeRUqmK/Mu5psnuWBgHqePforU=;
+  b=ELYhsWGn1/yuNCMkPZLvUm8jWcouZlWl3kIwCQGfp0jFrMIAT4tjSEoD
+   87bMkyMNZZVMGAkZcze2FxXuXWqW35UopXapkD/ZCyn12RxtQ6oPFTvSj
+   V+vtC7zVbUXNiTz8EcK/skERZd/UiRXSxK33HokpbNE0A55uiNQPJSUpA
+   6busKx1rdxBdQJq7eLEan4mAoyEVcmsfasrOAUV2kknWpJYCSACN4SSKr
+   MkJE+njMWbwBlyo/a6PeFPDqCDvt2FIjTbahRJzOa7mnxZ4bVF0hdFYLd
+   v/ugDigWKk/zeoIUXv5keamr6kck/ESrw72qZ4WwwoWmKxblQghF3ROfn
+   Q==;
+X-CSE-ConnectionGUID: +9qBJdiPSN2qzobFs39lrg==
+X-CSE-MsgGUID: ravlV8oRTDuw2DYhvroNdg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11311"; a="47457732"
+X-IronPort-AV: E=Sophos;i="6.12,307,1728975600"; 
+   d="scan'208";a="47457732"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2025 02:56:35 -0800
+X-CSE-ConnectionGUID: ZULtWkVSRUaw3KDWvwJwUw==
+X-CSE-MsgGUID: qjcQfrG5SgiKJZldPw6bEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="127249649"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 11 Jan 2025 02:56:34 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tWZAN-000KVz-34;
+	Sat, 11 Jan 2025 10:56:31 +0000
+Date: Sat, 11 Jan 2025 18:55:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 01bc77a362abae2d4ddd82a27d1aa17f6e338383
+Message-ID: <202501111829.x9lBanXl-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yt9dzfjz6rw5.fsf@linux.ibm.com>
 
-On Fri, Jan 10, 2025 at 08:37:46AM +0100, Sven Schnelle wrote:
-> "Dmitry V. Levin" <ldv@strace.io> writes:
-> 
-> > Similar to syscall_set_arguments() that complements
-> > syscall_get_arguments(), introduce syscall_set_nr()
-> > that complements syscall_get_nr().
-> >
-> > syscall_set_nr() is going to be needed along with
-> > syscall_set_arguments() on all HAVE_ARCH_TRACEHOOK
-> > architectures to implement PTRACE_SET_SYSCALL_INFO API.
-[...]
-> > diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
-> > index b3dd883699e7..1c0e349fd5c9 100644
-> > --- a/arch/s390/include/asm/syscall.h
-> > +++ b/arch/s390/include/asm/syscall.h
-> > @@ -24,6 +24,13 @@ static inline long syscall_get_nr(struct task_struct *task,
-> >  		(regs->int_code & 0xffff) : -1;
-> >  }
-> >  
-> > +static inline void syscall_set_nr(struct task_struct *task,
-> > +				  struct pt_regs *regs,
-> > +				  int nr)
-> > +{
-> 
-> I think there should be a
-> 
-> 	if (!test_pt_regs_flags(regs, PIF_SYSCALL))
-> 		return;
-> 
-> before the modification so a user can't accidentally change int_code
-> when ptrace stopped in a non-syscall path.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 01bc77a362abae2d4ddd82a27d1aa17f6e338383  m68k: libgcc: Fix lvalue abuse in umul_ppmm()
 
-The reason why syscall_get_nr() has this check on s390 (and similar checks
-on arc, powerpc, and sparc) is that syscall_get_nr() can be called while
-the target task is not in syscall.
+elapsed time: 1455m
 
-Unlike syscall_get_nr(), syscall_set_nr() can be called only when the
-target task is stopped for tracing on entering syscall: the description in
-include/asm-generic/syscall.h explicitly states that, and the follow-up
-patch that introduces PTRACE_SET_SYSCALL_INFO adds a syscall_set_nr() call
-when the tracee is stopped on entering syscall in either
-PTRACE_SYSCALL_INFO_ENTRY or PTRACE_SYSCALL_INFO_SECCOMP state.
+configs tested: 99
+configs skipped: 1
 
-I don't mind adding a check, but syscall_set_nr() invocation while the
-target task is not in syscall wouldn't be a result of user actions but
-a kernel programing error, and in that case WARN_ON_ONCE() would be more
-appropriate.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-If calling syscall_set_nr() while the target task is not in syscall was
-legal, then syscall_set_nr() would have been designed to return a value
-indicating the status of operation.
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                   randconfig-001-20250110    gcc-13.2.0
+arc                   randconfig-002-20250110    gcc-13.2.0
+arm                               allnoconfig    clang-17
+arm                         assabet_defconfig    clang-20
+arm                            hisi_defconfig    gcc-14.2.0
+arm                      integrator_defconfig    clang-15
+arm                   randconfig-001-20250110    clang-20
+arm                   randconfig-002-20250110    gcc-14.2.0
+arm                   randconfig-003-20250110    clang-19
+arm                   randconfig-004-20250110    gcc-14.2.0
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250110    gcc-14.2.0
+arm64                 randconfig-002-20250110    gcc-14.2.0
+arm64                 randconfig-003-20250110    clang-17
+arm64                 randconfig-004-20250110    gcc-14.2.0
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250110    gcc-14.2.0
+csky                  randconfig-002-20250110    gcc-14.2.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    clang-20
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20250110    clang-20
+hexagon               randconfig-002-20250110    clang-20
+i386        buildonly-randconfig-001-20250110    clang-19
+i386        buildonly-randconfig-002-20250110    clang-19
+i386        buildonly-randconfig-003-20250110    clang-19
+i386        buildonly-randconfig-004-20250110    gcc-12
+i386        buildonly-randconfig-005-20250110    gcc-12
+i386        buildonly-randconfig-006-20250110    clang-19
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250110    gcc-14.2.0
+loongarch             randconfig-002-20250110    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                          multi_defconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+mips                  cavium_octeon_defconfig    gcc-14.2.0
+mips                           ci20_defconfig    clang-19
+mips                        vocore2_defconfig    clang-15
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250110    gcc-14.2.0
+nios2                 randconfig-002-20250110    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+openrisc                 simple_smp_defconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                randconfig-001-20250110    gcc-14.2.0
+parisc                randconfig-002-20250110    gcc-14.2.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc                      bamboo_defconfig    clang-20
+powerpc                      ppc6xx_defconfig    gcc-14.2.0
+powerpc               randconfig-001-20250110    clang-20
+powerpc               randconfig-002-20250110    clang-20
+powerpc               randconfig-003-20250110    clang-20
+powerpc64             randconfig-001-20250110    clang-17
+powerpc64             randconfig-002-20250110    clang-19
+powerpc64             randconfig-003-20250110    clang-17
+riscv                            allmodconfig    clang-20
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-20
+riscv                 randconfig-001-20250110    clang-17
+riscv                 randconfig-002-20250110    clang-20
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20250110    gcc-14.2.0
+s390                  randconfig-002-20250110    gcc-14.2.0
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20250110    gcc-14.2.0
+sh                    randconfig-002-20250110    gcc-14.2.0
+sh                          rsk7201_defconfig    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250110    gcc-14.2.0
+sparc                 randconfig-002-20250110    gcc-14.2.0
+sparc64               randconfig-001-20250110    gcc-14.2.0
+sparc64               randconfig-002-20250110    gcc-14.2.0
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250110    clang-20
+um                    randconfig-002-20250110    gcc-12
+x86_64      buildonly-randconfig-001-20250110    gcc-12
+x86_64      buildonly-randconfig-002-20250110    clang-19
+x86_64      buildonly-randconfig-003-20250110    clang-19
+x86_64      buildonly-randconfig-004-20250110    gcc-12
+x86_64      buildonly-randconfig-005-20250110    clang-19
+x86_64      buildonly-randconfig-006-20250110    clang-19
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250110    gcc-14.2.0
+xtensa                randconfig-002-20250110    gcc-14.2.0
 
-Anyway, I'll add an explanatory comment to syscall_set_nr() on all
-architectures where syscall_get_nr() has a check.
-
-
--- 
-ldv
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
