@@ -1,130 +1,171 @@
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DF471BD017
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Jan 2025 19:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD71013DBA0
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Jan 2025 03:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736708951; cv=none; b=Ni7mbiec0BJ/BDhUuX8+rRNMndqmToK9ChSrt60iSFdpUx0l2wiohclNDuRDCgMZ++wMfX9peeZQ5ocg2qZkOSETEjDqPagJx+n3Q0C7AIJsnVtRTKItS9Rhj+33qnFKKEtBKWYtS7OF0AUxw9gKMvyP8OxA8O58sO5YBU1RGVY=
+	t=1736738745; cv=none; b=F1tBafFDnPjooNyA2ksmV8m9d42EODN2edZxNP7BVz66/xEZRR/9QNZWr73FFID8V1QnoJYBDYQMJZfJHDkHbJWPKe6YaMUiZoOOE/5x5Q5Gs2++L9C/Jt82jM6yW8L49MwpR0lsKLgvA0+rUFvygL1A871R1HmSK/sBPY0jbKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736708951; c=relaxed/simple;
-	bh=uU+fWbBPYakP3S/IJj7SvmN49d/K9LmqXINmzlkX728=;
+	s=arc-20240116; t=1736738745; c=relaxed/simple;
+	bh=kDvnC74Lo6EZ1n3L3aZwXkWsD4GwjpMEPT/wHL2YzN4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LMrhH+DrvoD0aVFYu59CgmPEPEwwcxbC/his3HjB/K4iPNHdsRrclS+zSYQP7j2V9xfpJuu8xa7X7grnnA+IFkl/Li0DjzJmclaeNNiIuyxFYjH+t3O+77VZoiPcR1bzJtCiRu8iBeEvOiVlCjpa+8iLLUg5heQNBtHmaNcEza8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=lLayJPA/ reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+	 Content-Type:Content-Disposition:In-Reply-To; b=Polb2I9JXmwgvdRR0sZs8qULzCINJuQHOPCD0EzeQJCt1GPpFn4q/90VCq2rHjCVCRVUjIymjEEj7uyGnAQWN8SsvZsplb9IUCWsWZoS/sHpAFVleCxsuhw8Xj9SunIVHIuhwn+Ndup3hcKNKB/Xti+h6Gr4w8RZ3RQQs45qQPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VwH2R74V; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="lLayJPA/"
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 209C740E02C4;
-	Sun, 12 Jan 2025 19:09:06 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-	reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Ra0A8l4pz-bW; Sun, 12 Jan 2025 19:08:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1736708938; bh=aLAfkjw74RRvWtCHgEL4sAt3h2Wr05yapxhTRn2aLsM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lLayJPA/rT4foGXRe+yvpsShqvoq+dPGmKurefnXwDIubIdBYwiiMqfLOuXZiVGgc
-	 MF9WFxHHRygWF98WRYLe84/Q+hZa78mxEY2n+5NNT0ozk1XbnQP0xZTbKM25XQz4eW
-	 +yqV5JvIbcszJ7/oE+Y4P2mhYF5WjSSw2EcbomAxk+ljrnjLEPf5GiAndVSB2FgyTH
-	 +Te+dEinRxl6FpNLbjrOtlLNwfW6datkFkRfzCm8l1Z006ad2yauMO8gRvkPs9bB1G
-	 63z9Dv5qq3jYZzuyCpMdv/nDg8UB8lQtTj+Nr8GySo8f/75Ekn2P5bFNiLbx+wB8n/
-	 f14QaGx9WBCa/ac7O2I49pxsA3+DlPkTj0GLNIQ/rxjmvIQadhI5WI8YzpmDxHbr0p
-	 OnpCPhEA2DxR2y05U+xswnyukBd/vcEbPAgYEGcKT4dSvCMc4/0nJzlGUeIJJ8PKv7
-	 SCPVP23T7BxaRXiEOCyvmXdZdtnXrXlFmo9xfgY3LkNy41KBoebZfSy3hXf9eZfMnf
-	 BIEDs9gA2+RRZd1euWwMQD0bQZR6U0AvSaiSfqZ7U/XsMJedES1t8NGD6RqCJ6s0a4
-	 ZgnwvfTXZQUanL3UL3v6qqKF2nJ9bsCq8XP2crFGgo67EQSdd9+64USArbQi/zgCnM
-	 Wa6XaNFBMbnkkVL6C4szOaCE=
-Received: from zn.tnic (pd953008e.dip0.t-ipconnect.de [217.83.0.142])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B34C040E02BF;
-	Sun, 12 Jan 2025 19:08:01 +0000 (UTC)
-Date: Sun, 12 Jan 2025 20:07:55 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc: Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VwH2R74V"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736738744; x=1768274744;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kDvnC74Lo6EZ1n3L3aZwXkWsD4GwjpMEPT/wHL2YzN4=;
+  b=VwH2R74V4HqfhlzDC6ezsHxFrdPkr0wRwsUenKaJV5QLq4feYEsf6nAU
+   SpR4NZk63DJyWLDsiSWZEogxE5h9boSjjD6R+Vi4vpcEZy1RrcHKJBEsJ
+   hJiy0EQehWecx3Si8NEECRDWdDfHCRNCBVvhZILcdARNyZYOeMfsmVk80
+   xt6kzET7vYiniMTUCXxEFbymgJDMf5/eAXdT6mLDT8I8kXDxZUr59I+Ed
+   GgodJrsqdwuPuA+uBqfn8olr8hmYkkvFNU7xVvSOTBjJJyMNB71p9b8b9
+   cR1hiQ8oxEgfjpmRj20H1RyAeKlFMbc4bCxMbi85loMdyAvj0l4JsEXe4
+   w==;
+X-CSE-ConnectionGUID: l7PUAci7TouQJU5DpBXfjg==
+X-CSE-MsgGUID: x4A9z7pCRqmvEyOrnmt5wA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11313"; a="48399190"
+X-IronPort-AV: E=Sophos;i="6.12,310,1728975600"; 
+   d="scan'208";a="48399190"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2025 19:25:42 -0800
+X-CSE-ConnectionGUID: pGeiW06QRgC2unHlctenaQ==
+X-CSE-MsgGUID: cNe1mltgTL6TwFBhawgDIA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,310,1728975600"; 
+   d="scan'208";a="104496936"
+Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 12 Jan 2025 19:25:35 -0800
+Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tXB53-000Mfv-1I;
+	Mon, 13 Jan 2025 03:25:33 +0000
+Date: Mon, 13 Jan 2025 11:25:27 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrey Albershteyn <aalbersh@redhat.com>, linux-fsdevel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-api@vger.kernel.org, monstr@monstr.eu, mpe@ellerman.id.au,
+	npiggin@gmail.com, christophe.leroy@csgroup.eu, naveen@kernel.org,
+	maddy@linux.ibm.com, luto@kernel.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	arnd@arndb.de, linux-alpha@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.or
-Subject: Re: [REGRESSION] Re: [PATCH v7 8/8] x86/module: enable ROX caches
- for module text on 64 bit
-Message-ID: <20250112190755.GCZ4QTC01KzoZkxel9@fat_crate.local>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241023162711.2579610-9-rppt@kernel.org>
- <Z4QM_RFfhNX_li_C@intel.com>
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org
+Subject: Re: [PATCH] fs: introduce getfsxattrat and setfsxattrat syscalls
+Message-ID: <202501131033.KKMmoHBV-lkp@intel.com>
+References: <20250109174540.893098-1-aalbersh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z4QM_RFfhNX_li_C@intel.com>
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20250109174540.893098-1-aalbersh@kernel.org>
 
-On Sun, Jan 12, 2025 at 08:42:05PM +0200, Ville Syrj=C3=A4l=C3=A4 wrote:
-> On Wed, Oct 23, 2024 at 07:27:11PM +0300, Mike Rapoport wrote:
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> >=20
-> > Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
-> > text allocations on 64 bit.
->=20
-> Hi,
->=20
-> This breaks resume from hibernation on my Alderlake laptop.
->=20
-> Fortunately this still reverts cleanly.
+Hi Andrey,
 
-Does that hunk in the mail here fix it?
+kernel test robot noticed the following build warnings:
 
-https://lore.kernel.org/all/Z4DwPkcYyZ-tDKwY@kernel.org/
+[auto build test WARNING on brauner-vfs/vfs.all]
+[also build test WARNING on geert-m68k/for-next powerpc/next powerpc/fixes s390/features linus/master v6.13-rc6 next-20250110]
+[cannot apply to geert-m68k/for-linus deller-parisc/for-next jcmvbkbc-xtensa/xtensa-for-next arnd-asm-generic/master tip/x86/asm]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
---=20
-Regards/Gruss,
-    Boris.
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrey-Albershteyn/fs-introduce-getfsxattrat-and-setfsxattrat-syscalls/20250110-014739
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
+patch link:    https://lore.kernel.org/r/20250109174540.893098-1-aalbersh%40kernel.org
+patch subject: [PATCH] fs: introduce getfsxattrat and setfsxattrat syscalls
+config: m68k-randconfig-r122-20250111 (https://download.01.org/0day-ci/archive/20250113/202501131033.KKMmoHBV-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20250113/202501131033.KKMmoHBV-lkp@intel.com/reproduce)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202501131033.KKMmoHBV-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   fs/inode.c:957:24: sparse: sparse: context imbalance in 'inode_lru_isolate' - wrong count at exit
+   fs/inode.c:1058:9: sparse: sparse: context imbalance in 'find_inode' - different lock contexts for basic block
+   fs/inode.c:1099:9: sparse: sparse: context imbalance in 'find_inode_fast' - different lock contexts for basic block
+   fs/inode.c:1829:5: sparse: sparse: context imbalance in 'insert_inode_locked' - wrong count at exit
+   fs/inode.c:1947:20: sparse: sparse: context imbalance in 'iput_final' - unexpected unlock
+   fs/inode.c:1961:6: sparse: sparse: context imbalance in 'iput' - wrong count at exit
+   fs/inode.c:2494:17: sparse: sparse: context imbalance in '__wait_on_freeing_inode' - unexpected unlock
+>> fs/inode.c:2998:39: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct fsxattr [noderef] __user *ufa @@     got struct fsxattr *fsx @@
+   fs/inode.c:2998:39: sparse:     expected struct fsxattr [noderef] __user *ufa
+   fs/inode.c:2998:39: sparse:     got struct fsxattr *fsx
+   fs/inode.c:3032:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct fsxattr [noderef] __user *ufa @@     got struct fsxattr *fsx @@
+   fs/inode.c:3032:41: sparse:     expected struct fsxattr [noderef] __user *ufa
+   fs/inode.c:3032:41: sparse:     got struct fsxattr *fsx
+
+vim +2998 fs/inode.c
+
+  2959	
+  2960	SYSCALL_DEFINE4(getfsxattrat, int, dfd, const char __user *, filename,
+  2961			struct fsxattr *, fsx, int, at_flags)
+  2962	{
+  2963		struct fd dir;
+  2964		struct fileattr fa;
+  2965		struct path filepath;
+  2966		struct inode *inode;
+  2967		int error;
+  2968	
+  2969		if (at_flags)
+  2970			return -EINVAL;
+  2971	
+  2972		if (!capable(CAP_FOWNER))
+  2973			return -EPERM;
+  2974	
+  2975		dir = fdget(dfd);
+  2976		if (!fd_file(dir))
+  2977			return -EBADF;
+  2978	
+  2979		if (!S_ISDIR(file_inode(fd_file(dir))->i_mode)) {
+  2980			error = -EBADF;
+  2981			goto out;
+  2982		}
+  2983	
+  2984		error = user_path_at(dfd, filename, at_flags, &filepath);
+  2985		if (error)
+  2986			goto out;
+  2987	
+  2988		inode = filepath.dentry->d_inode;
+  2989		if (file_inode(fd_file(dir))->i_sb->s_magic != inode->i_sb->s_magic) {
+  2990			error = -EBADF;
+  2991			goto out_path;
+  2992		}
+  2993	
+  2994		error = vfs_fileattr_get(filepath.dentry, &fa);
+  2995		if (error)
+  2996			goto out_path;
+  2997	
+> 2998		if (copy_fsxattr_to_user(&fa, fsx))
+  2999			error = -EFAULT;
+  3000	
+  3001	out_path:
+  3002		path_put(&filepath);
+  3003	out:
+  3004		fdput(dir);
+  3005		return error;
+  3006	}
+  3007	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
