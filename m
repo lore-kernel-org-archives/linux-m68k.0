@@ -1,104 +1,122 @@
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9D614A629
-	for <linux-m68k@vger.kernel.org>; Mon, 13 Jan 2025 08:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B1B22F146;
+	Mon, 13 Jan 2025 11:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736755457; cv=none; b=kVCKmLn8SmCkO0LhIWNylx4+HMXT3Ch7pT25mCgrADfof9v6iH6P/aKTKjpsb/ue8ELFAevXAwGqhz7L+13/XZ2Lo3Gj/WSCMVJTYMgQLB9b/06P20OIEZ8gHJxg4NmyugpHHobuWPdG/cvT6OMKPSZuw3ZpmRhvaXtm2Z8zWPk=
+	t=1736766707; cv=none; b=K+gxSk4gzh26FkoieoZE4nKc1M7CaO1ULb25sUeCEAuLsuV/uR5QOVbecwF5wDYLgzFVnJoTLz/WsSWv+2GvY6cSEw2YctnySdWl2hbF6QKgy2RG3kRJOA1Sxf3D/4ESkxOAC0qP51Em0ViDYVX1h31t6VwMJh/WritZfZITga0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736755457; c=relaxed/simple;
-	bh=XvYCPyEzJQm8CHuu9SlXHb7+4PBmW6OMLPv0GgbSVng=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=myK6zPdpm8X+nvaBP2zsJVuf/+wqZGjUEGaapXP5r4pD+mF1OkcZ01UpZ2OSJBW8jSduw/8pQPEgZ7m/B6UCMRbP/vozxnPoGwPatbftjUtVQ8EWMHm6fR3hUDyGXBb9PRJUnqSSCYIRBapfd+ggJYB/Bl7lRWFFEo9BMYSaK8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-85c662ebbc3so782965241.0
-        for <linux-m68k@vger.kernel.org>; Mon, 13 Jan 2025 00:04:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736755453; x=1737360253;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CgLZQ8ZRsbKB6w0MMdJqZ7TQlIoclyWoCr9cq7YJc5g=;
-        b=bpN+Td41cWox6b2lbkNF1qf5uNfD3Qv6keW+IRe06o7ebwj35FiWFodZDHwS3X1Thq
-         J+SX0cplqDvejGCIQ6bxJ++z7al/YNhb3lJJclfdDcCFxMORRqTQA5xjqq4UJKAdmYH+
-         daELdFGx4VuYm777bRRQ1HSMrJBUM1P/RS9LnO2cjlaeRy6EvjH5uXZjQSFkO+9enafQ
-         1hPy4QOVBhX4helDgVHdHV3lSsOe7X6jJP58rxJ8INNPuTIU2Z10Mv+zbj4SMj5nX4+Q
-         mo0F/KAfKDxS/kOO6RkBUTaygocILSlT+fmxu6utDpm/b9+FYGHjoK8wnB+pKqpGpJTH
-         dKhQ==
-X-Gm-Message-State: AOJu0YxKHVfUqi1UFg/m8ckiuBASyMfzb09ltuAK9dO8Wzf6tk8GrPIy
-	DxkkWJUfoB4o+5NV8CJ1Stys0s8N2Rm6kN8aKpEoHv+QUmorAsz1iFTFlmCv
-X-Gm-Gg: ASbGncuH4+FgeWHtzPGQ2xlcgkBllyevDVAs7jw11n9QpWpFK3Us16SGetmWB+v+zua
-	NCUzyqcWqV2EYW2V5CvsupsqEVg9KvSkDFwDmbA6xEhi7QFLaMZ32BYdnqw4w32p57MsyW4OCfP
-	zp1rHEQHbtWk7ssjBF11gG6b04WhmltbuIvjBjkLHA4LWPijtq42FWsHK7OWMU/WXEoe41wOdCx
-	rIyUQB420FhKgZP4vk3AqlDJ5cjepMl+nbImsjuVNIhhkh1dmn4tzQip5HlESdKbH5WS3DKAGNq
-	Axp3UB/ffXQg7zXSqAo=
-X-Google-Smtp-Source: AGHT+IFLc/9DsMHb9jec3v2oMETi+orUlxHof6JWLMxHjIzF8uKh1qPkBD1Bjybm5j2KsJ7kPQRoEw==
-X-Received: by 2002:a05:6102:6f08:b0:4b2:4950:16fe with SMTP id ada2fe7eead31-4b3d0dbf862mr14568331137.14.1736755453055;
-        Mon, 13 Jan 2025 00:04:13 -0800 (PST)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4b608f04e3esm4124895137.5.2025.01.13.00.04.12
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jan 2025 00:04:12 -0800 (PST)
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-4afefc876c6so1439875137.2
-        for <linux-m68k@vger.kernel.org>; Mon, 13 Jan 2025 00:04:12 -0800 (PST)
-X-Received: by 2002:a05:6102:b11:b0:4b2:cc94:1877 with SMTP id
- ada2fe7eead31-4b3d0dbf23dmr16614342137.13.1736755452667; Mon, 13 Jan 2025
- 00:04:12 -0800 (PST)
+	s=arc-20240116; t=1736766707; c=relaxed/simple;
+	bh=ONKN8fq0iP0VC62UEpQtN5Nmm165/LMTCyM9flI8nJA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JZ3D7BxZTyKXBg8OKKvibPLRgMEIAT2HzPQ36cUEqHVfDT9ArM62VJwWahEuO4jFpQuMI1rdyBH8q9WOugBiuNf3lmXnyUnEjniWhfPqm5bD4yPaHAxRfwUXuhIk5QCCneM51R/ro/w//FL6S2+oKUt2UxhKGYrhcKSzx7FV7bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RBeZjvjr; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RBeZjvjr"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=qj0XqtoExeVFzH/0zurjfq7xU6GfRici48V+bRozJOU=; b=RBeZjvjrDPcsThTXhXoukPjSAI
+	NG77K2p71MbOxH6Hr5qVrPuCWPczlMw+Usz4bokWjI0fBdjtehyDAXTrQGWaT9i4QacSF10hny/fl
+	f6+45RSS8YPaU1che58qLXvB808/OeemMrr+OxMrGlNDnXQB7b2TpPPhfKpDgTIF6FwQkbgsaHHv/
+	qWH8aMQaiLuDAwhO0wSyT9a/pEjhwF0eMyVTrcyQr7iWrcVB87HGjIDgYEa6Sc/aXZ3Fypjv84r22
+	BH1K2nUM+QDVXKQYksJjlCJihDeuyCAinjzkix2Z02HSasZ+qUs94+8Oaj8TFlpsejHZLSf1hn/do
+	soSqXYVA==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tXILk-00000000a7O-2KHM;
+	Mon, 13 Jan 2025 11:11:16 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 27A6730057A; Mon, 13 Jan 2025 12:11:16 +0100 (CET)
+Date: Mon, 13 Jan 2025 12:11:16 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.or
+Subject: Re: [REGRESSION] Re: [PATCH v7 8/8] x86/module: enable ROX caches
+ for module text on 64 bit
+Message-ID: <20250113111116.GF5388@noisy.programming.kicks-ass.net>
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-9-rppt@kernel.org>
+ <Z4QM_RFfhNX_li_C@intel.com>
+ <20250112190755.GCZ4QTC01KzoZkxel9@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250112150542.413179-1-p.pisati@gmail.com>
-In-Reply-To: <20250112150542.413179-1-p.pisati@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 13 Jan 2025 09:04:01 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUO0qms43yzQMA8hh1wd6VaDYV_0TYpggxE9S5ZVeoLVg@mail.gmail.com>
-X-Gm-Features: AbW1kvYOjw-2VGmKOXzs6aJ-NifeViF6jK8s4x_n2wqyFjwBUEAZpCNmUjr1JbQ
-Message-ID: <CAMuHMdUO0qms43yzQMA8hh1wd6VaDYV_0TYpggxE9S5ZVeoLVg@mail.gmail.com>
-Subject: Re: [PATCH 0/1] [RFC] Commodore's Gayle pcmcia driver
-To: Paolo Pisati <p.pisati@gmail.com>
-Cc: linux-m68k <linux-m68k@vger.kernel.org>, Kars de Jong <jongk@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250112190755.GCZ4QTC01KzoZkxel9@fat_crate.local>
 
-Hi Paolo,
+On Sun, Jan 12, 2025 at 08:07:55PM +0100, Borislav Petkov wrote:
+> On Sun, Jan 12, 2025 at 08:42:05PM +0200, Ville Syrjälä wrote:
+> > On Wed, Oct 23, 2024 at 07:27:11PM +0300, Mike Rapoport wrote:
+> > > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> > > 
+> > > Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
+> > > text allocations on 64 bit.
+> > 
+> > Hi,
+> > 
+> > This breaks resume from hibernation on my Alderlake laptop.
+> > 
+> > Fortunately this still reverts cleanly.
+> 
+> Does that hunk in the mail here fix it?
+> 
+> https://lore.kernel.org/all/Z4DwPkcYyZ-tDKwY@kernel.org/
 
-On Sun, Jan 12, 2025 at 4:05=E2=80=AFPM Paolo Pisati <p.pisati@gmail.com> w=
-rote:
-> Here is a second attempt to get the PCMCIA side of Gayle's to work: it me=
-rges my
-> previous attempt[1], some historical (e.g. v2.6.10 era) work from Kars de
-> Jong[2](the set_io_map() and set_mem_map() are a blatant cut&paste), and =
-it
-> follows the NetBSD code[3] (when it made sense) - credit goes where credi=
-t is due.
+There's definiltely breakage with that module_writable_address()
+nonsense in alternative.c that will not be fixed by that patch.
 
-Thanks for your series!
+The very simplest thing at this point is to remove:
 
-> And, finally, the extremly sad part:
->
-> 1) i've forced the word and long I/O helpers to be little endian, and thi=
-s is
-> clearly a big no (see io_mm.h).
+     select ARCH_HAS_EXECMEM_ROX             if X86_64
 
-Can't that be avoided by setting ISA_SEX/isa_sex appropriately?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+and try again next cycle.
