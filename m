@@ -1,148 +1,156 @@
-Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 384913594D
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jan 2025 00:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400A823098A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jan 2025 02:27:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736815305; cv=none; b=CI9zVOlaYdnth9XxPwCbBfcyb/yNZU3Y7V3OVo42bnxjdrmRbjoLATsqLFxG6NBXBjzMYIwCrB2vLL31AwrQqXeZjMAbSYb/u9zm2CDvzYwaLmCoWf/UwOPXD//3TMomPTaxxwzRtZrtH09sZKp7SxMUOZ8Cyv38KJY17I+f+l8=
+	t=1736821635; cv=none; b=qO4tNE4H1ZBSf2eDnwmg+Mc8jCLKit76xGm6gHZiz089bYOnVz2hq/fFIqM4nfZf7UDh0OMDriyInx8z1vzpgNjP+iS/DAwWTYznpSB8jaYf8I4t3XbH6ibigdtNder3FmG/ZQTXHGqjQQLA76o4S1xXY29EZ+EuDKBWceE15no=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736815305; c=relaxed/simple;
-	bh=mh6UdizLULcZTP86znfURZkjsDvHUOZ+yO+j7JAC/Eo=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=bXgiwdSaF0m4L2uZn/SnqBGGq3p2WvK0lvxYqAI3IN3NhW983C1r2FBV8LIr3IQ1NjWZrLpV1cWUZWsi9lm2Dn19YGuXx1NbReEPhE0FDoiMiaScDO1Q2S0AU5iaY4XTmoO9gUx6u+66b3FwQiI+dT1mgMSKZJIUVuxQdXZ5eDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gTdiAsLr; arc=none smtp.client-ip=202.12.124.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1736821635; c=relaxed/simple;
+	bh=Hom/cNZrW7mjFJzUlYAAyuZtoR84A5mWMLCiREKQDso=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZBHqVh5TVUIGRI0V+pnLwSiZxKDwXvyKYATlRJNxGqvuTDmilIJltu+QVyhyk9kIiEf5V8Z0kNHTwIAlG9joKwTEFagsUax11JpBNdYPBjzMrwG/C9jEyVT1QmQDVl+N+ei6IppHzlgxbdWRG6+K6v62ra7ix5ffJtzN6w9rpkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=kUzwOAOT; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gTdiAsLr"
-Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 0C8A12540196;
-	Mon, 13 Jan 2025 19:41:42 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Mon, 13 Jan 2025 19:41:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1736815301; x=1736901701; bh=585LXSppkdzMqz7O7C9YiXg60hoCg67yb88
-	6jWwsdpU=; b=gTdiAsLr1IpjFSySueBzNZLk4a+iehQZttwOiPbgDvCMAix+RbN
-	hBwU26gRG6myz9J/IeGNfkO8nzfjEYDYqsS9c9u8PCNVXn4Pn0/BQjcTnFbcz+tX
-	PiEVnG8UyHLbmILJeoEJ6rLKLrEOl6J0aylTpwes4SjMm6XqDLTePqFB3K4ByOtd
-	pDyDYQ5SO90SGCESSo9Pfsr8zZFvlw3BZH31aC9Kh1S6rGDBG6SB6ADdcTVkE03R
-	mlvaHXYLxFOWRIqhx+PFefWs9+JibUV6HdUZZ8DY9UwBiM1kPdM0mRe02x/cuzdQ
-	bE+zVlvA3eCt638Ci6RvcdrEe7Qm7lYNQ/g==
-X-ME-Sender: <xms:xLKFZ3oPKwDO2UbDaagVvt4tu9nzvSV8rZF3YdyxmcVChZBVKkxWlA>
-    <xme:xLKFZxpPqxpeFYKPvWRbEKUQg7iszzstfYHIJBOJAOL6Y_MNgUGD3k4VtBlOepVoU
-    FpAMehTcQVffW4tpJ0>
-X-ME-Received: <xmr:xLKFZ0NiWrOb_kgEAAxFPHhDGVL2owT1km76kdvnjVijTqqvK9D2oD5P9foJ7AknBm0awcvXtjY57jCmyFGCjNs2O11XwVsxris>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudehhedgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeff
-    ffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
-    rhgtphhtthhopeeipdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgvggvrhhtse
-    hlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehflhgrrhesrghllhgrnhgurhhi
-    rgdrtghomhdprhgtphhtthhopehgvghrgheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    epuggrnhhivghlsedtgidtfhdrtghomhdprhgtphhtthhopehlihhnuhigqdhmieekkhes
-    lhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkh
-    gvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:xLKFZ650a4Y-Vy5jjqiPOsQUOmCEryxQRN3AEGg_jCftuLXzxv4xag>
-    <xmx:xLKFZ27GQHcgT7TuJHIUzN9bBMTsg2b-LtDcsQIG7E4zmwwQoS6efw>
-    <xmx:xLKFZyjtKcvXHzhrNJGC2s-cmxykx6rxvdSv9FsjVEmPmyRVqYz4Qw>
-    <xmx:xLKFZ457ae_ZEQTwVfWOUp0JHgZn7EoO8MWZFQCqzVhZs633o0epaQ>
-    <xmx:xbKFZ4QmBpm4S9mmJnq0dBHThxDeEBJre0ZlL4NVd2D983G8LHvSdQeZ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 13 Jan 2025 19:41:37 -0500 (EST)
-Date: Tue, 14 Jan 2025 11:42:00 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: Brad Boyer <flar@allandria.com>, Greg Ungerer <gerg@kernel.org>, 
-    Daniel Palmer <daniel@0x0f.com>, linux-m68k@lists.linux-m68k.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] m68k goes DT
-In-Reply-To: <CAMuHMdVSGQNpsy7wtPVDksq01jW3QVRBR=zwmvOYddb1wdfAYw@mail.gmail.com>
-Message-ID: <9cdb0b92-2bd5-6e0e-9a37-571538d79735@linux-m68k.org>
-References: <20250105071433.3943289-1-daniel@0x0f.com> <c0428d69-2f18-45d3-8024-a9fe4170b23e@kernel.org> <20250106113749.GA32654@allandria.com> <980f40b3-fd1c-74c7-c651-b85040bbd3fc@linux-m68k.org>
- <CAMuHMdVSGQNpsy7wtPVDksq01jW3QVRBR=zwmvOYddb1wdfAYw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="kUzwOAOT"
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-21680814d42so72595105ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Jan 2025 18:27:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1736821632; x=1737426432; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q3uCzTDF/NUXWi9pKun3Q1ZeVpbVlQmIUTgvJ2reRXQ=;
+        b=kUzwOAOTCmR79mYBydYx54ukI/LUayMug0gtx54P8WBL4yzWi9iK3oVmHDYir7JDGT
+         LinYKdZL2amSW5Xqf/Lx4qP5JUvtRvFUrd0/MIzcNVcibYe4bZUhBfBHeFiUSneeIY9/
+         2RZ4Zod8y+2/oNCibsB2yygY22e+GwxNE9OTmZ3KW7TnK67DcJ2rqx8bk41M3yqa7+0i
+         U14inGz1Mj5nBUSRn2cnJ41CfKGTe7yTMyfV8LHeFymaPVRa++R0HmO1kA8nXBM+yNaH
+         lct1PcWC9RyUp5qWOuFztmyPyutCu/52tg1j2zCxHrFc+7CUGAX16Rg+WQSInBCOfXhO
+         2IKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736821632; x=1737426432;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q3uCzTDF/NUXWi9pKun3Q1ZeVpbVlQmIUTgvJ2reRXQ=;
+        b=spM+3n55MiRWmLvSJwTpQOU6QEWcL/x18qvho1v4PI80qj9TL78NNQzkUmH3nY0Urz
+         Csn2IMZoKmOXKaMFrbX7lcLwjbIK7zFnwQzwWJUSt0AcO/hQba+JEMndpLWsZSPMVYpe
+         JYjW1Kt87DpCPFbdMvPL0p/BOA35yHArGs3uJAdjhfKXTwkFlEYKzr77lP/V9TKS3Xcy
+         2baj4zJysOC344HNfuYwg3bPFo8kmt3+xWFRif/dVX+KhGgTPvMO76WCzrH5DUt6AQX7
+         Re3RFSFCluv04oBszxEwPQtWJR8oxZK/nQ/hFdJ+Eu2hBx7yxcpbVL3mRfOU17SxaInU
+         bw2g==
+X-Forwarded-Encrypted: i=1; AJvYcCWd9ZNQIqBgayOmaSz5fAzTe5Xyt5PIhI7ggbNF0TrgeMihlgncpbG5Z8k9jFQW3dn48hGeVwFLqYzJ@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yw6I0kr2+mhViNvrLfO+CV5qVXkVNGCrO0/wClmHUTpmlxi1Gam
+	dkAfcM8TwZy+fPqb5mWvNv03MtMMQVOTo34XA2epbwYFmaI0hr1RPntHz0iuuOg=
+X-Gm-Gg: ASbGnct7f/zmNNZphT0E1WFUeztBSOZhp5NxEpKqbOHgtMCauQFKTGa/5Lmy8uvxJFz
+	OjqMY+YvPP6qvW47giVE3dJs9a+qMqtgBqEyJK3WFwfZv7vehV+XVr7jmk9g9vAbTUpyGRy+2Mp
+	/e/8BI8MHVO964J+hPafO0dOdDxvIaLLc5GhEPrisnNHKkp9zI1kB4j/PKIPnhL/vX51xvqFKSa
+	9+5NefgQym1iyb9LwtRtZRVGxQAR77GMcexChqUQV0aI9FxOOggI9T2g63+DF/a4R3d03Pf5SdZ
+	hYWG
+X-Google-Smtp-Source: AGHT+IFszANM2ttg3bHXqwu4kokOxCLHcRwKXlC7FRtBmzrGdqYoySfArdJur+xTrJx3xY86w59zAA==
+X-Received: by 2002:a05:6a20:7f8a:b0:1db:de38:294b with SMTP id adf61e73a8af0-1e88d2f6820mr38362107637.38.1736821632027;
+        Mon, 13 Jan 2025 18:27:12 -0800 (PST)
+Received: from [10.84.148.23] ([63.216.146.178])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d4056a5e8sm6847007b3a.53.2025.01.13.18.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jan 2025 18:27:11 -0800 (PST)
+Message-ID: <a017d072-943f-4008-bb1d-7be438804a44@bytedance.com>
+Date: Tue, 14 Jan 2025 10:26:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 05/17] arm64: pgtable: use mmu gather to free p4d level
+ page table
+To: Will Deacon <will@kernel.org>
+Cc: peterz@infradead.org, agordeev@linux.ibm.com, kevin.brodsky@arm.com,
+ alex@ghiti.fr, andreas@gaisler.com, palmer@dabbelt.com, tglx@linutronix.de,
+ david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
+ willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
+ lorenzo.stoakes@oracle.com, akpm@linux-foundation.org, rientjes@google.com,
+ vishal.moola@gmail.com, arnd@arndb.de, aneesh.kumar@kernel.org,
+ npiggin@gmail.com, dave.hansen@linux.intel.com, rppt@kernel.org,
+ ryan.roberts@arm.com, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+ linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org
+References: <cover.1736317725.git.zhengqi.arch@bytedance.com>
+ <3fd48525397b34a64f7c0eb76746da30814dc941.1736317725.git.zhengqi.arch@bytedance.com>
+ <20250113162600.GA14101@willie-the-truck>
+Content-Language: en-US
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20250113162600.GA14101@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Will,
 
-On Thu, 9 Jan 2025, Geert Uytterhoeven wrote:
-
-> On Mon, Jan 6, 2025,Finn Thain wrote:
-> > On Mon, 6 Jan 2025, Brad Boyer wrote:
-> > > There are a few drivers where we could eliminate complexity and 
-> > > #ifdef trickery if it was all device tree based.
-> >
-> > Ideally, yes. But how would we get there from here?
-> >
-> > Should the kernel synthesize a device tree from the bootinfo data, so 
-> > that an ideal no-ifdef pmac_zilog could work? (This seems like a 
-> > maximum bloat solution.)
+On 2025/1/14 00:26, Will Deacon wrote:
+> On Wed, Jan 08, 2025 at 02:57:21PM +0800, Qi Zheng wrote:
+>> Like other levels of page tables, also use mmu gather mechanism to free
+>> p4d level page table.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Originally-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> ---
+>>   arch/arm64/include/asm/pgalloc.h |  1 -
+>>   arch/arm64/include/asm/tlb.h     | 14 ++++++++++++++
+>>   2 files changed, 14 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
+>> index 2965f5a7e39e3..1b4509d3382c6 100644
+>> --- a/arch/arm64/include/asm/pgalloc.h
+>> +++ b/arch/arm64/include/asm/pgalloc.h
+>> @@ -85,7 +85,6 @@ static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgdp, p4d_t *p4dp)
+>>   	__pgd_populate(pgdp, __pa(p4dp), pgdval);
+>>   }
+>>   
+>> -#define __p4d_free_tlb(tlb, p4d, addr)  p4d_free((tlb)->mm, p4d)
+>>   #else
+>>   static inline void __pgd_populate(pgd_t *pgdp, phys_addr_t p4dp, pgdval_t prot)
+>>   {
+>> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
+>> index a947c6e784ed2..445282cde9afb 100644
+>> --- a/arch/arm64/include/asm/tlb.h
+>> +++ b/arch/arm64/include/asm/tlb.h
+>> @@ -111,4 +111,18 @@ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pudp,
+>>   }
+>>   #endif
+>>   
+>> +#if CONFIG_PGTABLE_LEVELS > 4
+>> +static inline void __p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4dp,
+>> +				  unsigned long addr)
+>> +{
+>> +	struct ptdesc *ptdesc = virt_to_ptdesc(p4dp);
+>> +
+>> +	if (!pgtable_l5_enabled())
+>> +		return;
+>> +
+>> +	pagetable_p4d_dtor(ptdesc);
+>> +	tlb_remove_ptdesc(tlb, ptdesc);
+>> +}
 > 
-> We can add a wrapper that starts from a basic Amiga/Atari/Mac/... FDT
-> and extends/modifies that, based on the bootinfo.
-> Modification can be done using libfdt, even from assembler.
-> See e.g. arch/arm/boot/compressed/*fdt*.
-> 
-> > Or should the mac platform abandon bootinfo, and require a new 
-> > bootloader for all kernel releases after device tree adoption? (This 
-> > seems maximally difficult, since it requires simultaneously merging 
-> > many patches to many subsystems, even if the bootloader changes could 
-> > be done in advance...)
-> 
-> Drivers can easily support both DT and non-DT, assuming they use proper 
-> platform devices.  That means no more MACH_IS_* and *HW_PRESENT() checks 
-> in the drivers themselves, but proper platform data setup in 
-> arch/m68k/<mach>/*.
-> 
+> Should we update p4d_free() to call the destructor, too? It looks like
+> it just does free_page() atm.
 
-In the case of pmac_zilog, we still have to avoid pmac_call_feature() and 
-the macio_dev stuff, so many ifdefs would remain.
+The patch #3 introduces the generic p4d_free() and lets arm64 to use it.
+The patch #4 adds the destructor to generic p4d_free(). So IIUC, there
+is no problem here.
 
-If DT compatibility was needed in pmac_zilog in order to port Linux/m68k 
-to new hardware (e.g. Mac Classic II) then I'd be in favour of such a 
-driver patch. I don't have time to write it though.
+Thanks!
 
-> > I wonder whether any other architectures have attempted to retrofit 
-> > device tree support (?)
 > 
-> ARM is the classical example.
-> Until recently, there was code under drivers/staging/board/ to support
-> mixed DT/non-DT systems, but I don't suggest going that way.
-> Conversion of SH to DT is still WIP (except for J-Core, which is
-> DT-only).
-> 
-> The largest initial step is usually irqchip, clocksource, and clock
-> drivers and DT bindings.  Existing drivers "just" need DT bindings
-> and DT support.
-> 
-> For e.g. Amiga, the clock driver would be rather simple.
-> Clocksource is much more complicated, as the timers are provided by
-> the CIAs, which are really multi-function-devices (MFD), providing
-> timer, gpio,spi, and irqchip functionalities.
-> 
-
-That's a lot of work. The old drivers would end up being more portable 
-when converted to DT, but is there a need for those drivers on new 
-platforms?
-
-MVME147 is different in that Daniel is proposing new drivers to support 
-boards that are presently unsupported. (Not unlike the hypothetical Mac 
-Classic II example I gave.)
-
-Supporting new hardware is good, but any benefit from retro-fitting DT 
-onto existing drivers is dubious, if those drivers will only end up being 
-used on systems on which they are already being used...
+> Will
