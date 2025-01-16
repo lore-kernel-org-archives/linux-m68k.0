@@ -1,105 +1,167 @@
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDE519539F
-	for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2025 10:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849E122A7E7
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Jan 2025 13:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737023857; cv=none; b=US52P9hWI9Xp0xzNiUjE7RsI5EXhC31dRzQggU/UfDbvccpOeZXBY/LYOdCkKqiZJdith9R5pHAocp2YPrH4L8s543pRSppXTJ9RxrE6mTQFqX3nC/fVoqggrMZrVMfJnmJG9Z90TSzLDOPzkd7zCwXdrH8FfjuUBZjJiJo3MDQ=
+	t=1737033778; cv=none; b=PTrSHj9A1u/uBnuzDnMYX7vc9190jaHkAs4Ah3CPaMAj/zW8/RcfEsZD7INRt+/7U5rC9F1YqKn2uRRUKQiZBq/xxUH9RFsfXvk15YuSLDSwJYgSgQ+c/JU7TXjvVdIqo+ShYPEA77AIRl/hhynTz5hf9d8pEQ01CljrIEdKZD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737023857; c=relaxed/simple;
-	bh=w49PujCISYLsVCllEIukPwVPPIiY06HwC/CFGkmDhxU=;
+	s=arc-20240116; t=1737033778; c=relaxed/simple;
+	bh=SixtGEHyx0Ll20sNHrYW42AzL6XqkNRKNahYOvra4Ow=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JSyZ8yfnvVVE7KVXkC0WzrnHIAnM5pzl8TnzQvsQIE7aH8Mfn1dngXt/35QZkeoYojSCYJ5W23FU6qKSMJFY9aNuhbJbt34qSrb6CYejH0By8Uj5X1TQJNP5fulpb37YQM2p9zemmymsYprZIkG3QtmSaMPYuKWhUHUQ/2bFB+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4afefc876c6so138679137.2
-        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2025 02:37:35 -0800 (PST)
+	 To:Cc:Content-Type; b=Ap4GrN0MRyFvGjBY/kS/shoOvfRmC2YEcyMS3xS7GRk+owQskE/uNpfoatJdq7hbMRkbwBUVfrPMNpnqknu7bmYanRPELDqWrTqwFyiy7QLJkhGvUceGwFwaeP5E1R9tDiYWjIHI5ZexEISQtzt7j+Tqv4pimlJg4RLtuvVo+ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ST51e5Vt; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ST51e5Vt"
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4679b5c66d0so194791cf.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Jan 2025 05:22:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1737033774; x=1737638574; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SixtGEHyx0Ll20sNHrYW42AzL6XqkNRKNahYOvra4Ow=;
+        b=ST51e5VtsdfECUN4YKwmKuJ9LUfYDx//pIZXP2AF7KVJOsa7asgX9hUHhJPKn+66be
+         zNNl5p4INtkBa/vU3Cl1wfkVCWrcCXdCcwJ421sGml2oe3mblwgY9LZUp+ZqtBanIkG2
+         Ufmo274ZLfZJp8kjFU4Zo2K9nfZE+sDL8YU5phFeE+QcrtEAIyBEzw1bQrZugM6ICcn6
+         nFCdFwQkvSnkpvlmP0QTnIi/9MGaibd2EPY61xnoaDfF+U32HHs2rDE5AXC1rqCnrEFU
+         vVXAzShJRx0oIsOb36jXbxO/N8diXwJlf+tvBQqRULgh0ctHIEo1tCbyywzJNNrwnQiO
+         z6oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737023854; x=1737628654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YpcFtcYJ7C3AaS5KMQShKadwUo3SZdmB2xiSRkabbPc=;
-        b=VY6dvXgi3aCO869T7ofmZEBqBicUYu3RTl1rcy09H5QtkzXHA/8Yn48Rre7QTm/H1n
-         r5Hj0e1asci9lWftluRt0uW9tME1ovIrgGXB388mtGXhr3WZhM7dgLJVGMjlIvyKdAzQ
-         9WQejINiCEpQZHMzAYrl9hS0qzqSm+w4PGMBNr8gYdHOQ+Lj47l+Ouvk6paatLNg8pBg
-         YggcinsFGx5RSZPaXk14JrdiM8bBku/p2/EvBL8LvPFdkcMQUl7V9DO4bovdmOFzDdGQ
-         PPZj/KzFMpb/oihpao16yF3g0pXOjtolbSeBYfSi6BRIH7stsMXO9b5RqmtGBMHTyxZ5
-         PgBA==
-X-Gm-Message-State: AOJu0Yxfsdq5RCCCzWi4kPeEDGyLH1LzX1JMBK0GujzCt820QT8TfSJo
-	ngElcbyic7gas3p6cw6+9LeMhU+WEV0effcU2VeH5VO6wigqZMD15bOcKip1whA=
-X-Gm-Gg: ASbGncs52lyvfbhAT/BotNPt0coklTWtA15bM2/i5PzkZDjdpRVlMn1+93JL1gxT0VR
-	pTs+ISw0hrnoQ1S4kpfsO1uFci6qhJSe/DCdYKy6KRKbwjOZJLXgQcLGfPq1g2A1mcQTKApaGe4
-	3oqBRXoL4brq4kR3H0wJtdcSdTLFbASRPeA8ZFH+X2e1kZ11Snlb8w90iR+kXX3gu+3ohSfHARA
-	My9uBwnDD3hMvy5NwLBzzg45/OVS1EABtkh/v/XeRe5yqPFZx3p8DBtur8GJXd6SZPYzSOmu/rD
-	pjlDAonA9eqOcPenSAw=
-X-Google-Smtp-Source: AGHT+IESDtt8Zk2DQFxq9zXfckQXGyz/xs3ppx6uFFLwHZy50INDTxT+vf9uA6S7GeE1TjbmAJ5vMQ==
-X-Received: by 2002:a05:6102:f9e:b0:4b2:5ce4:2b4f with SMTP id ada2fe7eead31-4b3d0d7611dmr31168089137.2.1737023854234;
-        Thu, 16 Jan 2025 02:37:34 -0800 (PST)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4b608f44f53sm5511073137.8.2025.01.16.02.37.34
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jan 2025 02:37:34 -0800 (PST)
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-85b95896cefso92294241.2
-        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2025 02:37:34 -0800 (PST)
-X-Received: by 2002:a67:e708:0:b0:4af:c58f:4550 with SMTP id
- ada2fe7eead31-4b3d0d9fb16mr30013673137.7.1737023853763; Thu, 16 Jan 2025
- 02:37:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1737033774; x=1737638574;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SixtGEHyx0Ll20sNHrYW42AzL6XqkNRKNahYOvra4Ow=;
+        b=fix8jPBvkqrj6aaTyJMMZL17GA6Mvu3vVeFoTqgfWJRr92G11AHNh/LyZkjZtcS1Um
+         u25k4u2OcajcegdBChWNHVEl23kVb25+801PmdRBZdN6YhsaV8X4Y6xJQBYyz/01kAFX
+         a1gx4TG0k1IqAyX3yXyY0jjJUny8l94hMlV2nji0ZnGzzHbZhyD/GG1xRgZPivA+k9CE
+         AGbHOYUjeiceW8HtcBc0BLJgXpbjZF0ZLnHDl3FRLYojFmu0/pYz0M+ZJiFwQIsVnA5z
+         FhSTD/nWDe8m+AmdcfKKq8TH3eTPJkWkijuXcRuKmmMMxl9M4Jk9f9ucWNHOBMXoWoWs
+         HPVw==
+X-Forwarded-Encrypted: i=1; AJvYcCXrT0zUq4usRimvWohhEO/YdMbewbl72D4ajE32g/GKIPtwEoYgK3xGoMg9cv1M2bLmEl/7SuRdA7MR@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yzf74gz3qlBrTflw89pB5CqZF9zyxhOJ6A1B9DjwsYM9ofixjCA
+	QQ0UBDESEjc2nMsa2/EHtNdADJaZtUVWPYB+4InOzUsiD3yGrR+hLNVZw/ZPKs8W7kfMUuLFGWO
+	VhLxyzQtKITEg4a4PPXic6jxdlQi+SjITPxCW
+X-Gm-Gg: ASbGnctTHcwpQ9sYKxNG/RnrA3AwP0iWF3emZ72vLGHHkM2GuppnSku0pE4pcCCg46z
+	3uGq3MGfZdynuG2Low3c+0kmZ4pZmdiAYAFgZEIjxEJS/7pvuo+Sft5RUF89DO4A0RDA=
+X-Google-Smtp-Source: AGHT+IGgdmm3+dKyYphBOJrkDF9RqCEL6Tsx6LZHIZIcfENKNOrXYM9LEzERENIX0F6hf0/LX3P/eN8RFihp6QDk6j4=
+X-Received: by 2002:ac8:5f11:0:b0:466:7a06:2d03 with SMTP id
+ d75a77b69052e-46e0545796amr2768561cf.1.1737033773706; Thu, 16 Jan 2025
+ 05:22:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250112150542.413179-1-p.pisati@gmail.com> <CAMuHMdUO0qms43yzQMA8hh1wd6VaDYV_0TYpggxE9S5ZVeoLVg@mail.gmail.com>
- <Z4je7T0zx0QmF9Dk@amaterasu.local>
-In-Reply-To: <Z4je7T0zx0QmF9Dk@amaterasu.local>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 16 Jan 2025 11:37:22 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUi62FctEsB+k5m7Ue+WZtU_iQ=ppEhBmM1hSAAZJc2SA@mail.gmail.com>
-X-Gm-Features: AbW1kvZUQu9GFp7tXii8RbDzbRUWSWQPGPdHyOZmk5VCYLLi-X2YRO6OoKnkmD8
-Message-ID: <CAMuHMdUi62FctEsB+k5m7Ue+WZtU_iQ=ppEhBmM1hSAAZJc2SA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] [RFC] Commodore's Gayle pcmcia driver
-To: Paolo Pisati <p.pisati@gmail.com>
-Cc: linux-m68k <linux-m68k@vger.kernel.org>, Kars de Jong <jongk@linux-m68k.org>
+References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
+ <20250110-asi-rfc-v2-v2-1-8419288bc805@google.com> <20250116001858.GDZ4hQctZe_PFvJ0AJ@fat_crate.local>
+ <20250116102747.GAZ4jfI9HG3K-PW7nf@fat_crate.local>
+In-Reply-To: <20250116102747.GAZ4jfI9HG3K-PW7nf@fat_crate.local>
+From: Brendan Jackman <jackmanb@google.com>
+Date: Thu, 16 Jan 2025 14:22:42 +0100
+X-Gm-Features: AbW1kvbCtSg9vNMeYe9Cs6fkL4An-kckhSPmCiLhYkfVvSqDDbiTwg4NAXTmVUM
+Message-ID: <CA+i-1C1sXC1tbo9ytuex0eBD3gUbQwnNP8rvOhCv=JV+oSHo1g@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 01/29] mm: asi: Make some utility functions noinstr compatible
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
+	Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Chris Zankel <chris@zankel.net>, 
+	Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mike Rapoport <rppt@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Ard Biesheuvel <ardb@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-efi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Paolo,
-
-On Thu, Jan 16, 2025 at 11:26=E2=80=AFAM Paolo Pisati <p.pisati@gmail.com> =
-wrote:
-> On Mon, Jan 13, 2025 at 09:04:01AM +0100, Geert Uytterhoeven wrote:
-> > > 1) i've forced the word and long I/O helpers to be little endian, and=
- this is
-> > > clearly a big no (see io_mm.h).
+On Thu, 16 Jan 2025 at 01:21, Borislav Petkov <bp@alien8.de> wrote:
+> > Unfortunately Thomas pointed out this will prevent the function from
+> > being inlined at call sites in .text.
 > >
-> > Can't that be avoided by setting ISA_SEX/isa_sex appropriately?
+> > So far I haven't been able[1] to find a formulation that lets us :
+> > 1. avoid calls from .noinstr.text -> .text,
+> > 2. while also letting the compiler freely decide what to inline.
+> >
+> > 1 is a functional requirement so here I'm just giving up on 2. Existing
+> > callsites of this code are just forced inline. For the incoming code
+> > that needs to call it from noinstr, they will be out-of-line calls.
 >
-> i tried ISA_SEX to do the be->le flipping but it broke all drivers: it se=
-ems
-> like isa_insw()/isa_outsw()/isa_insl()/isa_outsl() must retain the host
-> endianess.
+> I'm not sure some of that belongs in the commit message - if you want to have
+> it in the submission, you should put it under the --- line below, right above
+> the diffstat.
 
-Oh, I missed you're only overriding the non-repeating variants.
+Sure. I'm actually not even sure that for a [PATCH]-quality thing this
+cross-cutting commit even makes sense - once we've decided on the
+general way to solve this problem, perhaps the changes should just be
+part of the commit that needs them?
 
-So ISA I/O registers are little endian, while ISA FIFO registers are
-native endian, as they operate on the raw data stored somewhere else
-(network, disk, ...)?
+It feels messy to have a patch that "does multiple things", but on the
+other hand it might be annoying to review a patch that says "make a
+load of random changes across the kernel, which are needed at various
+points in various upcoming patches, trust me".
 
-Gr{oetje,eeting}s,
+Do you have any opinion on that?
 
-                        Geert
+(BTW, since a comment you made on another series (can't find it on
+Lore...), I've changed my writing style to avoid stuff like this in
+comments & commit messages in general, but this text all predates
+that. I'll do my best to sort all that stuff out before I send
+anything as a [PATCH].)
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+On Thu, 16 Jan 2025 at 11:29, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Thu, Jan 16, 2025 at 01:18:58AM +0100, Borislav Petkov wrote:
+> > Long story short, lemme try to poke around tomorrow to try to figure out what
+> > actually happens. It could be caused by the part of Rik's patches and this one
+> > inlining things. We'll see...
+>
+> Looks transient... The very similar guest boots fine on another machine. Let's
+> watch this...
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Oh, I didn't notice your update until now. But yeah I also couldn't
+reproduce it on a Sapphire Rapids machine and on QEMU with this patch
+applied on top of tip/master (37bc915c6ad0f).
