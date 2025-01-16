@@ -1,156 +1,105 @@
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84E71DDC22
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Jan 2025 10:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDE519539F
+	for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2025 10:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737023385; cv=none; b=agSBLT+6oyqthOf3t6+tZdbqOuoHzwN6v4P/qQhQb34fIuJMXBfA9+tsrPLSwRxj9zWoM0q95gpRy38porpWEYVVkh+JhM5D5PBtk/L/sXNatVioczg0h54fNa7dA4F6nHkE4p009e5bxrmKsiRSqhlJNyNuAtGBndJq8+ilFac=
+	t=1737023857; cv=none; b=US52P9hWI9Xp0xzNiUjE7RsI5EXhC31dRzQggU/UfDbvccpOeZXBY/LYOdCkKqiZJdith9R5pHAocp2YPrH4L8s543pRSppXTJ9RxrE6mTQFqX3nC/fVoqggrMZrVMfJnmJG9Z90TSzLDOPzkd7zCwXdrH8FfjuUBZjJiJo3MDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737023385; c=relaxed/simple;
-	bh=jP/wVz8lrlZOPBRiVe05XfWlnjrVaTJVXBj2co85OLg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c0wBY1E84I7LlWZptanAOuSdDfa/3kqbw5kGw0xzR4pHW8rBxFUmPvF+KfCZ4xdoNdpPDn7xRhxtAb1sLcGgfoQkfNHMNICCOSN60V7KTGTtuPFS/r0gvKRTokZ0T5unretKrbHSq9NwVEjr2B2Dw5AdGdQ2KMTRuGYbom/tyxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=FM40lE/0; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="FM40lE/0"
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C3C7840E02BE;
-	Thu, 16 Jan 2025 10:29:39 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id MFOmT_gDX9aa; Thu, 16 Jan 2025 10:29:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1737023375; bh=GQBvA11kyxIGOlMc4gw5ALfkgQqX/TyrIH9O3oAvLFA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FM40lE/0clitssFsEKe5JK0a143dAnkAItQNq6yMfahZmpGeSTt09D5HGf0pFLbt8
-	 ulpp29oYaFstDERke8ThqjtXoN04wo6eTBNIkCpJpYEXzS9U9b6shsRrnjlVJY+eKW
-	 TBn1/+CZ9ngMH08pwT66FQz7AXQy6uCPmHYlis0QOsac6iB9mWKsXjQbzbnmjnFYRL
-	 rZuO8syduQMjrFLSjkGi0HDUyE5i/fs8xiEFxdQfkwB7MgmrqT5n5XzifvkD8pCoqz
-	 5X1jUm0gItWfUGbyRkcvKB+w0NCTaoWmvE8UGl8msx3A8F9pgsooW7AjKtjxpPd8Lg
-	 Fb16TJfn+gMvgYR9ZsMlvBBT0VyKZ8xqAHFUwbZBUJJBetncTrqjjppvD9l7XGyf4m
-	 juTTN1zpyhjrfd7TJsAviRyvUSFuCvbml3Dt2L9NGpEIVm/zwFrWYVYuT654H8gFk2
-	 2Yj2R3th9hwTaGTH/t/mjjo+AyzreQe3eFBzv5ejybagmNkRrbkC3tIXtHARl+Igxz
-	 KDg7YnAEPlNEP63WkcD8y4HxsuP37idpXVeYFeL/U5iPMx4eRF2w1AcbW6UgXuHjtO
-	 b3RYhp+4K4Ia7A1PVcGG9NkyVI2JCvCFPMGn35tDMiM9QmJ3MEVxqzNgvDl6r7hKMW
-	 MGq/1HBafOJLETwhOQ5EmCKY=
-Received: from zn.tnic (p200300ea971f93c3329c23fFFEa6a903.dip0.t-ipconnect.de [IPv6:2003:ea:971f:93c3:329c:23ff:fea6:a903])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9F55140E028B;
-	Thu, 16 Jan 2025 10:27:52 +0000 (UTC)
-Date: Thu, 16 Jan 2025 11:27:47 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Brendan Jackman <jackmanb@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@linux.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org,
-	linux-efi@vger.kernel.org
-Subject: Re: [PATCH RFC v2 01/29] mm: asi: Make some utility functions
- noinstr compatible
-Message-ID: <20250116102747.GAZ4jfI9HG3K-PW7nf@fat_crate.local>
-References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
- <20250110-asi-rfc-v2-v2-1-8419288bc805@google.com>
- <20250116001858.GDZ4hQctZe_PFvJ0AJ@fat_crate.local>
+	s=arc-20240116; t=1737023857; c=relaxed/simple;
+	bh=w49PujCISYLsVCllEIukPwVPPIiY06HwC/CFGkmDhxU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JSyZ8yfnvVVE7KVXkC0WzrnHIAnM5pzl8TnzQvsQIE7aH8Mfn1dngXt/35QZkeoYojSCYJ5W23FU6qKSMJFY9aNuhbJbt34qSrb6CYejH0By8Uj5X1TQJNP5fulpb37YQM2p9zemmymsYprZIkG3QtmSaMPYuKWhUHUQ/2bFB+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4afefc876c6so138679137.2
+        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2025 02:37:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737023854; x=1737628654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YpcFtcYJ7C3AaS5KMQShKadwUo3SZdmB2xiSRkabbPc=;
+        b=VY6dvXgi3aCO869T7ofmZEBqBicUYu3RTl1rcy09H5QtkzXHA/8Yn48Rre7QTm/H1n
+         r5Hj0e1asci9lWftluRt0uW9tME1ovIrgGXB388mtGXhr3WZhM7dgLJVGMjlIvyKdAzQ
+         9WQejINiCEpQZHMzAYrl9hS0qzqSm+w4PGMBNr8gYdHOQ+Lj47l+Ouvk6paatLNg8pBg
+         YggcinsFGx5RSZPaXk14JrdiM8bBku/p2/EvBL8LvPFdkcMQUl7V9DO4bovdmOFzDdGQ
+         PPZj/KzFMpb/oihpao16yF3g0pXOjtolbSeBYfSi6BRIH7stsMXO9b5RqmtGBMHTyxZ5
+         PgBA==
+X-Gm-Message-State: AOJu0Yxfsdq5RCCCzWi4kPeEDGyLH1LzX1JMBK0GujzCt820QT8TfSJo
+	ngElcbyic7gas3p6cw6+9LeMhU+WEV0effcU2VeH5VO6wigqZMD15bOcKip1whA=
+X-Gm-Gg: ASbGncs52lyvfbhAT/BotNPt0coklTWtA15bM2/i5PzkZDjdpRVlMn1+93JL1gxT0VR
+	pTs+ISw0hrnoQ1S4kpfsO1uFci6qhJSe/DCdYKy6KRKbwjOZJLXgQcLGfPq1g2A1mcQTKApaGe4
+	3oqBRXoL4brq4kR3H0wJtdcSdTLFbASRPeA8ZFH+X2e1kZ11Snlb8w90iR+kXX3gu+3ohSfHARA
+	My9uBwnDD3hMvy5NwLBzzg45/OVS1EABtkh/v/XeRe5yqPFZx3p8DBtur8GJXd6SZPYzSOmu/rD
+	pjlDAonA9eqOcPenSAw=
+X-Google-Smtp-Source: AGHT+IESDtt8Zk2DQFxq9zXfckQXGyz/xs3ppx6uFFLwHZy50INDTxT+vf9uA6S7GeE1TjbmAJ5vMQ==
+X-Received: by 2002:a05:6102:f9e:b0:4b2:5ce4:2b4f with SMTP id ada2fe7eead31-4b3d0d7611dmr31168089137.2.1737023854234;
+        Thu, 16 Jan 2025 02:37:34 -0800 (PST)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4b608f44f53sm5511073137.8.2025.01.16.02.37.34
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jan 2025 02:37:34 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-85b95896cefso92294241.2
+        for <linux-m68k@vger.kernel.org>; Thu, 16 Jan 2025 02:37:34 -0800 (PST)
+X-Received: by 2002:a67:e708:0:b0:4af:c58f:4550 with SMTP id
+ ada2fe7eead31-4b3d0d9fb16mr30013673137.7.1737023853763; Thu, 16 Jan 2025
+ 02:37:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250116001858.GDZ4hQctZe_PFvJ0AJ@fat_crate.local>
+References: <20250112150542.413179-1-p.pisati@gmail.com> <CAMuHMdUO0qms43yzQMA8hh1wd6VaDYV_0TYpggxE9S5ZVeoLVg@mail.gmail.com>
+ <Z4je7T0zx0QmF9Dk@amaterasu.local>
+In-Reply-To: <Z4je7T0zx0QmF9Dk@amaterasu.local>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 16 Jan 2025 11:37:22 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUi62FctEsB+k5m7Ue+WZtU_iQ=ppEhBmM1hSAAZJc2SA@mail.gmail.com>
+X-Gm-Features: AbW1kvZUQu9GFp7tXii8RbDzbRUWSWQPGPdHyOZmk5VCYLLi-X2YRO6OoKnkmD8
+Message-ID: <CAMuHMdUi62FctEsB+k5m7Ue+WZtU_iQ=ppEhBmM1hSAAZJc2SA@mail.gmail.com>
+Subject: Re: [PATCH 0/1] [RFC] Commodore's Gayle pcmcia driver
+To: Paolo Pisati <p.pisati@gmail.com>
+Cc: linux-m68k <linux-m68k@vger.kernel.org>, Kars de Jong <jongk@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 16, 2025 at 01:18:58AM +0100, Borislav Petkov wrote:
-> Long story short, lemme try to poke around tomorrow to try to figure out what
-> actually happens. It could be caused by the part of Rik's patches and this one
-> inlining things. We'll see...
+Hi Paolo,
 
-Looks transient... The very similar guest boots fine on another machine. Let's
-watch this...
+On Thu, Jan 16, 2025 at 11:26=E2=80=AFAM Paolo Pisati <p.pisati@gmail.com> =
+wrote:
+> On Mon, Jan 13, 2025 at 09:04:01AM +0100, Geert Uytterhoeven wrote:
+> > > 1) i've forced the word and long I/O helpers to be little endian, and=
+ this is
+> > > clearly a big no (see io_mm.h).
+> >
+> > Can't that be avoided by setting ISA_SEX/isa_sex appropriately?
+>
+> i tried ISA_SEX to do the be->le flipping but it broke all drivers: it se=
+ems
+> like isa_insw()/isa_outsw()/isa_insl()/isa_outsl() must retain the host
+> endianess.
 
--- 
-Regards/Gruss,
-    Boris.
+Oh, I missed you're only overriding the non-repeating variants.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+So ISA I/O registers are little endian, while ISA FIFO registers are
+native endian, as they operate on the raw data stored somewhere else
+(network, disk, ...)?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
