@@ -1,102 +1,176 @@
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDC0D1F0E2D
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jan 2025 10:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431E91F0E44
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jan 2025 10:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737456433; cv=none; b=nsIX90SKfSprDORNvIvQ3ZMYQ0tQhfEg1+xc1OYcl724hGPHQauf/1X7BJUu5XW8dWwSaxyiWkpHRaQKZtWhdkovOHtinf1e7TwWRKX0x49Y+aOTXTKwrqxGusbENTj1dhgoM5QGmlPznCOfedC+27FP9jOUJ62Euks+zSlLNYY=
+	t=1737456864; cv=none; b=pvgkICmy9V5Ak9tFMJFZCpOPqMkx7D29mVtIqB0lxH3X3escMmxoz4gU5JXuu1FiJTwK+9Yd/gT/YSq+4xlFNcN6zxCLv2fUhgKcIyxMNeE5xR1AdXA4+8Q5HNlXxumOVfo7XBStWbO/jTiMvJ92T3mU4PJC5g+T+SCouwp/l6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737456433; c=relaxed/simple;
-	bh=4AHIzGFGSWv5yLyrVUBdtKebdazMfTxzandkjF9liOc=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=KOOzSYZPzTRA5aPp2KHfrFPzCVsOfPXRe/j9cqtBzroq/M6fRd/P05zPhRNi/CwdVQqAqVyAXKoL3IuCr0GFQ4oWwm6TpUAOvQdDOtkikW1BhXAICCLrterQ0bPct4mneh2asfqvDjXyxPKWKRAZV3bdVZ6e0nfsncpdyuqhD5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-518954032b2so1748904e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jan 2025 02:47:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737456429; x=1738061229;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EOt2TgFppnsnxLd3UE6C9YfpxR9Om80R0SFKRWm8pBw=;
-        b=Fa2Z0GAGJkjLUOutujsbQm9Nw3VNEkqEAWVwd5mc2QFOlBfrpn22AjqqP/1GOQ+lGO
-         N8tp4O9o0HGLxReRGAbDReC3cWDC5mgOZpabk7bKRqSWNwrngToT9FXe2osHR05YQsKh
-         xVRAIv5r/9hcJGG2hc39dJeM1K+yQVYt6XdRrhD52IatIUeZu9G2GLTh3ME4EMyLV1a3
-         Cz1h2atLmmqoMJNKUJiyGj9fw9vyzec1/NN8DWOnuHkdejk9RcJNtoEbIp+lzi6usYEx
-         ALbIWdwm2u74oToONYhWxORGObJ72YETyn4O1TL9y2wAsX021pzSpYSYjR1COnKh9zWJ
-         4CCA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/zCkIaF/qB8UIaPooCwun1/FBOlBZuKeqDK3USUQGJRiA5JmuNDlqeiqyGGTH3s/SG4Za0B9mOX4d@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yxyt2/R5rOzgiRygeLGa0lXcbGW+IzUHJHP3vq1hXM3YVwSgKem
-	IKNbwvyyAZxf+olNoZ1BGo2RFBnZrQuPibPTk17r8A83hhLYhm29iWzfYL1C
-X-Gm-Gg: ASbGnctObFUWQYR3ny5LqZLCaGeE08ivH6U237edEvLqBe0VjlMIGAlZ0yFJUcLg4vH
-	Kq7EAYotKuC9wDeg6g3zTLbTFRKs5Tz42BnUVn3Q7RaneknwDntJqt+ENR9s97iFQTSi9BksHZk
-	6SzvPeUi8aUhjiKrRo3dV8XORrNgP/T/VWVymZOF1zJC/HBKYdh9pleH8PzcbMed/5lU8C5E91r
-	pkHgSNjME3GhHhtkpGl6bfgb4pQOE4Wx2olM6rdg9SJlhgczbwgrhOZ44k6zit/sX+PmEL8aTDY
-	Fw7p3SsjwCiEZrTqmewKbrLuERgmaRxKrj5B
-X-Google-Smtp-Source: AGHT+IHuFAKFPgi/O7KW5XiTNOhs7o2OTBlyZ3VYdOEXswgt3fmCW9FVMnxYgX7tuTRT2Tjotu1ChQ==
-X-Received: by 2002:a05:6122:d88:b0:515:4b68:c37f with SMTP id 71dfb90a1353d-51d5b2e7e9amr11717760e0c.6.1737456428978;
-        Tue, 21 Jan 2025 02:47:08 -0800 (PST)
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-51cf557759fsm1715266e0c.2.2025.01.21.02.47.08
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Jan 2025 02:47:08 -0800 (PST)
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-518954032b2so1748898e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jan 2025 02:47:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUed6/y8H69qK5TI8y/ZEuEEWJc7eqC93d25H25r1CuLVsvYJyVUQZh7X2nAfnmUeh8b1QmgndfUUCY@lists.linux-m68k.org
-X-Received: by 2002:a05:6122:6581:b0:517:4fb0:749c with SMTP id
- 71dfb90a1353d-51d592ba751mr12112958e0c.3.1737456428466; Tue, 21 Jan 2025
- 02:47:08 -0800 (PST)
+	s=arc-20240116; t=1737456864; c=relaxed/simple;
+	bh=xNvHGxwSfSqDIZKXejaLr+KpTGqLiTZ/e712/smvfnY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=c/U7u2Q2R5nBIaX41kuf87ZgYTSmeSQ54LazcXq6lUNBWXfjkMNYbO5Qw7w1XCnj0s2sbop09OUIvCyeyJeGEN/+vN/CY3uFHGZJtARUG6nTGtRXWsQIAUYKjuEQIBL4eXZEmqjVCMx3SWit3SD8T+Pf0oD6a7vQdRBHCGq8UcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=dE0lHmcb; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="dE0lHmcb"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B8571C0007;
+	Tue, 21 Jan 2025 10:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1737456860;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eoMWLhM3iDGuRQ9oMTFZDDvzAMlU+XpxLw3TWq5QhN4=;
+	b=dE0lHmcbtfZe5mwY3wShXH5UeUfeC/0/OdCy2t05qMiSz2ITVMYxa6Ys3x7lnF8ggtBFM0
+	xOC821jCR28jrSVEO7pJBbBLWJL2+mhrfVB9fHrtOhasbpDQncNgYSIyqc1CYsKtWRO5nY
+	0o6Q5u3bS8/MNrQ/dvn14cL8cOfwHMcYaQNPkKH8Qzrn29tYiHMz72wkowxpMxbrOFU+lq
+	W6uUaEl4hEeAIFv4OUny05FPQGu4UrsAD7I5KUAj/2z+rsuzjfTSz+BCQOgi7wQ0sgrP5x
+	KoStuRbm3TNQrE+OOXx3r6joUt7kZZh96dpRVX8H8eeE0IOfidJEwpv+MHBpPA==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Tue, 21 Jan 2025 11:54:13 +0100
+Subject: [PATCH 1/2] m68k: Enable DMA support for Coldfire M5441x
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 21 Jan 2025 11:46:57 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVurFmEkjGE4h7nzHLorNaRwkW=UfVEBsDR58D535FQig@mail.gmail.com>
-X-Gm-Features: AbW1kvYqO4h_4QvUFNJQ3hsroP72whsBW3sqoNUPrIoZBxlO0jY1AZuLNj_mU20
-Message-ID: <CAMuHMdVurFmEkjGE4h7nzHLorNaRwkW=UfVEBsDR58D535FQig@mail.gmail.com>
-Subject: ARAnyM pauses until pressing pause
-To: Petr Stehlik <pstehlik@sophics.cz>
-Cc: aranym@googlegroups.com, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20250121-coldfire-global-pool-v1-1-382a7235c2aa@yoseli.org>
+References: <20250121-coldfire-global-pool-v1-0-382a7235c2aa@yoseli.org>
+In-Reply-To: <20250121-coldfire-global-pool-v1-0-382a7235c2aa@yoseli.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1737456859; l=4153;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=xNvHGxwSfSqDIZKXejaLr+KpTGqLiTZ/e712/smvfnY=;
+ b=wFvFmmNWbvdyBHT2gzGXTtoAZz2qV0zcme93k3z1zySlBLUmqEDxvt0C5B8TNF+lHt2XvE4cK
+ FFIWV20G6mcCsnRPWDrFVHZRIFN4N7r5wJIYGB+GpgDRGbx+SA4e/wQ
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi all,
+Add DMA support for the Coldfire M5441x platform with a global DMA pool
+and coherent DMA operations.
 
-Recently (after upgrading to Ubuntu 24.04LTS?) ARAnyM started hanging
-when booting Linux on a Debian nfsroot.
+Reserve a configurable DRAM pool (default 16MB with CONFIG_DMASIZE) and
+initialize it with the dedicated helper.
 
-When I press "Pause" to bring up the ARAnyM config screen, the system
-continues booting.  If I was pinging the target, suddenly all replies
-lost before arrive.  Pressing "Pause" again to make the config screen
-disappear may suspend network operation again, or it may keep on
-working.  Until after a while I have to press "Pause" again to kick
-it...
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ arch/m68k/Kconfig.cpu       |  2 ++
+ arch/m68k/Kconfig.machine   |  8 ++++++++
+ arch/m68k/coldfire/Makefile |  2 ++
+ arch/m68k/include/asm/dma.h |  1 +
+ arch/m68k/kernel/dma.c      | 10 ++++++++++
+ arch/m68k/mm/mcfmmu.c       |  5 +++++
+ 6 files changed, 28 insertions(+)
 
-I did manage to do an apt-upgrade while pinging the VM, and no packet
-was lost.  Perhaps it's just the systemd startup scripts that trigger
-the issue? ;-)
-
-Apparently I can reproduce the issue with my old Debian on a disk image,
-too.  The issue is just less likely to happen when relying less on the
-network.
-
-Perhaps this is the same issue as Mark reported in [1]?
-
-I am using ARAnyM 1.1.0-2 from Ubuntu 24.04LTS.
-
-[1] https://groups.google.com/g/aranym/c/8RpvCY49dF8
-
-Gr{oetje,eeting}s,
-
-                        Geert
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index c9a7e602d8a4da8e5094762e90c7b1a1ab1acfdf..66e5f62a0eb280f6029e7501f4fa152f422b76b4 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -303,6 +303,8 @@ config M5441x
+ 	select COLDFIRE_PIT_TIMER
+ 	select MMU_COLDFIRE if MMU
+ 	select HAVE_CACHE_CB
++	select DMA_GLOBAL_POOL
++	select ARCH_HAS_DMA_OPS
+ 	help
+ 	  Freescale Coldfire 54410/54415/54416/54417/54418 processor support.
+ 
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index de39f23b180ee21d3d3a028ad46f815f3690b1ad..1467d1ff349bb26714a3c99f593a2a71c9ad273d 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -405,6 +405,14 @@ config KERNELBASE
+ 	  a system with the RAM based at address 0, and leaving enough room
+ 	  for the theoretical maximum number of 256 vectors.
+ 
++config DMASIZE
++       hex "Size of DRAM (in bytes) reserved pool"
++       default "0x1000000"
++       depends on DMA_GLOBAL_POOL
++       help
++         Define the DMA pool size, allocated at init time, which can then
++         be used by DMA engine. Defaults to 16MB.
++
+ comment "ROM configuration"
+ 
+ config ROM
+diff --git a/arch/m68k/coldfire/Makefile b/arch/m68k/coldfire/Makefile
+index c56bc0dc7f2e338c8275cfd15656f80e78825254..b30c55ec722401822651cb329a9910cfc2d1d788 100644
+--- a/arch/m68k/coldfire/Makefile
++++ b/arch/m68k/coldfire/Makefile
+@@ -31,6 +31,8 @@ obj-$(CONFIG_M5407)	+= m5407.o intc.o reset.o
+ obj-$(CONFIG_M54xx)	+= m54xx.o intc-2.o
+ obj-$(CONFIG_M5441x)	+= m5441x.o intc-simr.o reset.o
+ 
++obj-$(CONFIG_ARCH_HAS_DMA_OPS) += dma_ops.o
++
+ obj-$(CONFIG_COLDFIRE_PIT_TIMER) += pit.o
+ obj-$(CONFIG_COLDFIRE_TIMERS)	 += timers.o
+ obj-$(CONFIG_COLDFIRE_SLTIMERS)	 += sltimers.o
+diff --git a/arch/m68k/include/asm/dma.h b/arch/m68k/include/asm/dma.h
+index 1c8d9c5bc2fadeb425965974bdfb497577ebcc3b..53f9c1570ce62ddaa521d85d9ef64523e8ad0919 100644
+--- a/arch/m68k/include/asm/dma.h
++++ b/arch/m68k/include/asm/dma.h
+@@ -6,4 +6,5 @@
+    bootmem allocator (but this should do it for this) */
+ #define MAX_DMA_ADDRESS PAGE_OFFSET
+ 
++extern size_t dma_coldfire_base;
+ #endif /* _M68K_DMA_H */
+diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
+index 16063783aa80c6ef200567543f98f011a2ac4dd2..bc66b012de79be842b55f3d82726a00c929416b9 100644
+--- a/arch/m68k/kernel/dma.c
++++ b/arch/m68k/kernel/dma.c
+@@ -43,3 +43,13 @@ void arch_sync_dma_for_device(phys_addr_t handle, size_t size,
+ 		break;
+ 	}
+ }
++
++#ifdef CONFIG_DMA_GLOBAL_POOL
++static int __init coldfire_dma_init(void)
++{
++	return dma_init_global_coherent(PFN_PHYS(PFN_DOWN(coldfire_dma_base)),
++					CONFIG_DMASIZE);
++}
++
++core_initcall(coldfire_dma_init);
++#endif
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 9a6fa342e872e32ca9566ebfe247531c808f49d6..f6c560ea17a68ff6546b0683461b6b9ffb587db7 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -156,6 +156,8 @@ int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
+ 	return ret;
+ }
+ 
++size_t coldfire_dma_base = _ramend - CONFIG_DMASIZE;
++
+ void __init cf_bootmem_alloc(void)
+ {
+ 	unsigned long memstart;
+@@ -179,6 +181,9 @@ void __init cf_bootmem_alloc(void)
+ 	/* Reserve kernel text/data/bss */
+ 	memblock_reserve(_rambase, memstart - _rambase);
+ 
++	/* Reserve DMA */
++	memblock_reserve(coldfire_dma_base, CONFIG_DMASIZE);
++
+ 	m68k_virt_to_node_shift = fls(_ramend - 1) - 6;
+ 	module_fixup(NULL, __start_fixup, __stop_fixup);
+ 
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.39.5
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
