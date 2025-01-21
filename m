@@ -1,38 +1,37 @@
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431E91F0E44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB2D1F0E48
 	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jan 2025 10:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737456864; cv=none; b=pvgkICmy9V5Ak9tFMJFZCpOPqMkx7D29mVtIqB0lxH3X3escMmxoz4gU5JXuu1FiJTwK+9Yd/gT/YSq+4xlFNcN6zxCLv2fUhgKcIyxMNeE5xR1AdXA4+8Q5HNlXxumOVfo7XBStWbO/jTiMvJ92T3mU4PJC5g+T+SCouwp/l6I=
+	t=1737456865; cv=none; b=a2IHCpz7BezgxcO4GQ50/yzkaKBv/n/h8dWUS4L8iO0x75bE4iD/e5gD07AeAe1rOESX/SJtoBp44OHrGpJ9b8Fu+CziUxZiJMg4Xras+vG45VXvdfINYf7R+qAwj4Z8zUff49P3oZBifeg2sklXERNjiJA0Aefl1UjLYlzTP68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737456864; c=relaxed/simple;
-	bh=xNvHGxwSfSqDIZKXejaLr+KpTGqLiTZ/e712/smvfnY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=c/U7u2Q2R5nBIaX41kuf87ZgYTSmeSQ54LazcXq6lUNBWXfjkMNYbO5Qw7w1XCnj0s2sbop09OUIvCyeyJeGEN/+vN/CY3uFHGZJtARUG6nTGtRXWsQIAUYKjuEQIBL4eXZEmqjVCMx3SWit3SD8T+Pf0oD6a7vQdRBHCGq8UcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=dE0lHmcb; arc=none smtp.client-ip=217.70.183.197
+	s=arc-20240116; t=1737456865; c=relaxed/simple;
+	bh=g7vLI+NjvgO1yU0awWGKoIU6t2+0okrAGXE4XzhJMuA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=nLhwFFgNV+hGpUJa833G1O9kOHiXCn1rlW9V0Llwaeg+Q2jYJ2c5mkglCG3oWmwv0Lop2/d260GLzbQpmUj7+qIK7QuG98nDp2nWTfCsnpmu2WBFk104R7acyXK5LCyAGm1W7gr8JliA3b5l4Zk/gd4XXFH7NR0HOxXbu0++siA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=mHH5BM1s; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="dE0lHmcb"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B8571C0007;
-	Tue, 21 Jan 2025 10:54:20 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="mHH5BM1s"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 856DA1C000B;
+	Tue, 21 Jan 2025 10:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1737456860;
+	t=1737456859;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eoMWLhM3iDGuRQ9oMTFZDDvzAMlU+XpxLw3TWq5QhN4=;
-	b=dE0lHmcbtfZe5mwY3wShXH5UeUfeC/0/OdCy2t05qMiSz2ITVMYxa6Ys3x7lnF8ggtBFM0
-	xOC821jCR28jrSVEO7pJBbBLWJL2+mhrfVB9fHrtOhasbpDQncNgYSIyqc1CYsKtWRO5nY
-	0o6Q5u3bS8/MNrQ/dvn14cL8cOfwHMcYaQNPkKH8Qzrn29tYiHMz72wkowxpMxbrOFU+lq
-	W6uUaEl4hEeAIFv4OUny05FPQGu4UrsAD7I5KUAj/2z+rsuzjfTSz+BCQOgi7wQ0sgrP5x
-	KoStuRbm3TNQrE+OOXx3r6joUt7kZZh96dpRVX8H8eeE0IOfidJEwpv+MHBpPA==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=bw4KYBNqEviPu+MiEZxX/VQPUdl7tMYgs7nmkisDWUI=;
+	b=mHH5BM1swXn6fIeL7+1CHiRbbtW8/49yGFq71szb1XG5uAfHwZtOvNFNHwKHlVUcboPPYx
+	/bzCOoWIA7YUPFm+Xzk/GpFS+YgcAGdNW9kTlUeL8kkTgEPJLIWDucLjw+E/5V2zVpYJEh
+	Z6pf/5HoipgLPH4CCWytzuA4/UFvspYIKnRx0jP5/wsIXKziLmerJvrR/Siv2IBDsTZkj0
+	5JWgRYDpADu36d+k37loG4eO+e/82ncXVcl42PPv9j/CLmqGMk70YOOpAf58/iorE2n6Je
+	mHKP0saGwhfTWhPbdFe4lE7YJKKUHKCneqbgO86kwJxw4g2RA7Bw2jGr/Q3ydg==
 From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Tue, 21 Jan 2025 11:54:13 +0100
-Subject: [PATCH 1/2] m68k: Enable DMA support for Coldfire M5441x
+Subject: [PATCH 0/2] m68k: Add basic support for DMA global coherent pool
+Date: Tue, 21 Jan 2025 11:54:12 +0100
+Message-Id: <20250121-coldfire-global-pool-v1-0-382a7235c2aa@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -41,136 +40,80 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250121-coldfire-global-pool-v1-1-382a7235c2aa@yoseli.org>
-References: <20250121-coldfire-global-pool-v1-0-382a7235c2aa@yoseli.org>
-In-Reply-To: <20250121-coldfire-global-pool-v1-0-382a7235c2aa@yoseli.org>
+X-B4-Tracking: v=1; b=H4sIANR8j2cC/x3MTQqAIBBA4avErBtI+xG6SrSwHG1AmlCIQLp70
+ vJbvFcgU2LKMDcFEt2cWc4K1TawH/YMhOyqQXd67JQyuEt0nhNhiLLZiJdIRG2NcaqfBrNNUNM
+ rkefn3y7r+35ZXuMYZgAAAA==
+X-Change-ID: 20250117-coldfire-global-pool-2a77d13647b6
 To: Geert Uytterhoeven <geert@linux-m68k.org>, 
  Greg Ungerer <gerg@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
  Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1737456859; l=4153;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1737456859; l=2425;
  i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=xNvHGxwSfSqDIZKXejaLr+KpTGqLiTZ/e712/smvfnY=;
- b=wFvFmmNWbvdyBHT2gzGXTtoAZz2qV0zcme93k3z1zySlBLUmqEDxvt0C5B8TNF+lHt2XvE4cK
- FFIWV20G6mcCsnRPWDrFVHZRIFN4N7r5wJIYGB+GpgDRGbx+SA4e/wQ
+ bh=g7vLI+NjvgO1yU0awWGKoIU6t2+0okrAGXE4XzhJMuA=;
+ b=gmdzbr/cxHsyLWsmfX9ZXLC1g5rTWTSezfa8db9GWRfS8tWfXwT66JULaS9vNnU+AY2T4WYIf
+ F/fQHESirnKD/35cik9ZGEPtGPg2bN5W+tuLg5yoeRHG1Jp0hlX5Z4b
 X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
  pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Add DMA support for the Coldfire M5441x platform with a global DMA pool
-and coherent DMA operations.
+The coldfire M5441x family can't use coherent allocations, because the
+cache does not support snooping (cache coherency is not supported while
+external or DMA masters use the bus).
 
-Reserve a configurable DRAM pool (default 16MB with CONFIG_DMASIZE) and
-initialize it with the dedicated helper.
+In order to make it possible to use coherent memory, the only way is to
+disable the cache for specific adresses. This patch series introduces
+the global coherent pool allocation along with a different cache
+configuration. This is tested on M54418 only.
+
+The CONFIG_DMABASE is fixed to 0x4f000000 in my configuration file.
+When booting with memblock=debug, we can see:
+memblock_reserve: [0x4f000000-0x4fffffff] cf_bootmem_alloc+0x9a/0x11c
+
+Which corresponds to the memblock_reserve call in cf_bootmem_alloc().
+
+Later, I have a SPI NOR, which is detected, and the dma_alloc_coherent
+is successful:
+[    3.940000] fsl-dspi fsl-dspi.0: registered host spi0
+[    3.940000] spi spi0.0: DSPI controller timing params: CS-to-SCK delay 100 ns, SCK-to-CS delay 100 ns
+[    3.940000] spi spi0.0: setup mode 0, 8 bits/w, 31250000 Hz max --> 0
+[    3.970000] Creating 1 MTD partitions on "Micron mt25ql01G SPI Flash chip":
+[    3.970000] 0x000000000000-0x000008000000 : "w25q01"
+[    4.010000] fsl-dspi fsl-dspi.0: registered child spi0.0
+[    4.020000] DSPI: Coldfire DSPI Slave driver
+
+The FEC driver is not modified and still uses the hack cache flush,
+because I have an issue when DMA is used intensively:
+fec enet-fec.0 eth0: rcv is not +last
+
+I could not figure out why it appears, so some help on this would be
+great :-).
+
+I also could not modify the ACRs successfully, and I am not sure if it is
+needed or not.
+
+Thanks !
 
 Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- arch/m68k/Kconfig.cpu       |  2 ++
- arch/m68k/Kconfig.machine   |  8 ++++++++
- arch/m68k/coldfire/Makefile |  2 ++
- arch/m68k/include/asm/dma.h |  1 +
- arch/m68k/kernel/dma.c      | 10 ++++++++++
- arch/m68k/mm/mcfmmu.c       |  5 +++++
- 6 files changed, 28 insertions(+)
+Jean-Michel Hautbois (2):
+      m68k: Enable DMA support for Coldfire M5441x
+      arch: m68k: Add DMA mapping operations for Coldfire M5441x
 
-diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-index c9a7e602d8a4da8e5094762e90c7b1a1ab1acfdf..66e5f62a0eb280f6029e7501f4fa152f422b76b4 100644
---- a/arch/m68k/Kconfig.cpu
-+++ b/arch/m68k/Kconfig.cpu
-@@ -303,6 +303,8 @@ config M5441x
- 	select COLDFIRE_PIT_TIMER
- 	select MMU_COLDFIRE if MMU
- 	select HAVE_CACHE_CB
-+	select DMA_GLOBAL_POOL
-+	select ARCH_HAS_DMA_OPS
- 	help
- 	  Freescale Coldfire 54410/54415/54416/54417/54418 processor support.
- 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index de39f23b180ee21d3d3a028ad46f815f3690b1ad..1467d1ff349bb26714a3c99f593a2a71c9ad273d 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -405,6 +405,14 @@ config KERNELBASE
- 	  a system with the RAM based at address 0, and leaving enough room
- 	  for the theoretical maximum number of 256 vectors.
- 
-+config DMASIZE
-+       hex "Size of DRAM (in bytes) reserved pool"
-+       default "0x1000000"
-+       depends on DMA_GLOBAL_POOL
-+       help
-+         Define the DMA pool size, allocated at init time, which can then
-+         be used by DMA engine. Defaults to 16MB.
-+
- comment "ROM configuration"
- 
- config ROM
-diff --git a/arch/m68k/coldfire/Makefile b/arch/m68k/coldfire/Makefile
-index c56bc0dc7f2e338c8275cfd15656f80e78825254..b30c55ec722401822651cb329a9910cfc2d1d788 100644
---- a/arch/m68k/coldfire/Makefile
-+++ b/arch/m68k/coldfire/Makefile
-@@ -31,6 +31,8 @@ obj-$(CONFIG_M5407)	+= m5407.o intc.o reset.o
- obj-$(CONFIG_M54xx)	+= m54xx.o intc-2.o
- obj-$(CONFIG_M5441x)	+= m5441x.o intc-simr.o reset.o
- 
-+obj-$(CONFIG_ARCH_HAS_DMA_OPS) += dma_ops.o
-+
- obj-$(CONFIG_COLDFIRE_PIT_TIMER) += pit.o
- obj-$(CONFIG_COLDFIRE_TIMERS)	 += timers.o
- obj-$(CONFIG_COLDFIRE_SLTIMERS)	 += sltimers.o
-diff --git a/arch/m68k/include/asm/dma.h b/arch/m68k/include/asm/dma.h
-index 1c8d9c5bc2fadeb425965974bdfb497577ebcc3b..53f9c1570ce62ddaa521d85d9ef64523e8ad0919 100644
---- a/arch/m68k/include/asm/dma.h
-+++ b/arch/m68k/include/asm/dma.h
-@@ -6,4 +6,5 @@
-    bootmem allocator (but this should do it for this) */
- #define MAX_DMA_ADDRESS PAGE_OFFSET
- 
-+extern size_t dma_coldfire_base;
- #endif /* _M68K_DMA_H */
-diff --git a/arch/m68k/kernel/dma.c b/arch/m68k/kernel/dma.c
-index 16063783aa80c6ef200567543f98f011a2ac4dd2..bc66b012de79be842b55f3d82726a00c929416b9 100644
---- a/arch/m68k/kernel/dma.c
-+++ b/arch/m68k/kernel/dma.c
-@@ -43,3 +43,13 @@ void arch_sync_dma_for_device(phys_addr_t handle, size_t size,
- 		break;
- 	}
- }
-+
-+#ifdef CONFIG_DMA_GLOBAL_POOL
-+static int __init coldfire_dma_init(void)
-+{
-+	return dma_init_global_coherent(PFN_PHYS(PFN_DOWN(coldfire_dma_base)),
-+					CONFIG_DMASIZE);
-+}
-+
-+core_initcall(coldfire_dma_init);
-+#endif
-diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-index 9a6fa342e872e32ca9566ebfe247531c808f49d6..f6c560ea17a68ff6546b0683461b6b9ffb587db7 100644
---- a/arch/m68k/mm/mcfmmu.c
-+++ b/arch/m68k/mm/mcfmmu.c
-@@ -156,6 +156,8 @@ int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
- 	return ret;
- }
- 
-+size_t coldfire_dma_base = _ramend - CONFIG_DMASIZE;
-+
- void __init cf_bootmem_alloc(void)
- {
- 	unsigned long memstart;
-@@ -179,6 +181,9 @@ void __init cf_bootmem_alloc(void)
- 	/* Reserve kernel text/data/bss */
- 	memblock_reserve(_rambase, memstart - _rambase);
- 
-+	/* Reserve DMA */
-+	memblock_reserve(coldfire_dma_base, CONFIG_DMASIZE);
-+
- 	m68k_virt_to_node_shift = fls(_ramend - 1) - 6;
- 	module_fixup(NULL, __start_fixup, __stop_fixup);
- 
+ arch/m68k/Kconfig.cpu        |   2 +
+ arch/m68k/Kconfig.machine    |  15 +++++
+ arch/m68k/coldfire/Makefile  |   2 +
+ arch/m68k/coldfire/dma_ops.c | 131 +++++++++++++++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/dma.h  |   1 -
+ arch/m68k/kernel/dma.c       |  10 ++++
+ arch/m68k/mm/mcfmmu.c        |   5 ++
+ 7 files changed, 165 insertions(+), 1 deletion(-)
+---
+base-commit: ffd294d346d185b70e28b1a28abe367bbfe53c04
+change-id: 20250117-coldfire-global-pool-2a77d13647b6
 
+Best regards,
 -- 
-2.39.5
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
