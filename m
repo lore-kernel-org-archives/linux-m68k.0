@@ -1,140 +1,103 @@
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765BD28EC;
-	Wed, 22 Jan 2025 07:50:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED5F1537D4
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 22 Jan 2025 08:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737532240; cv=none; b=ZQx/9NafyJYtlK+MBl6X/ya6Du8vH/i33X0TFCpLXG+oRbgQuHxgSAyWEYp8RrwSk0iZ4pfZmJyHn0+QFuFdDdRbU40kzs8KZHMnFtyBXLqwK8VLMG8bpVj2coU7jR4BmZuuEDh2X4GS+92RtAPzah+zR8b6dYlOYoo/V3gGUuY=
+	t=1737535672; cv=none; b=OZpYAXDMbVDY3BdwCUWAw6sH5l0SDTsKXymzBwWuHpvShp8FiIwl6KnXRJnv5yge73TNl1THgKPtrS93P+uAVnXjSXerBbNGaRqJZ5Qy0Bq1xeSTWpVdQGue8EYwv2idTsrQHko6V7v84XvK91IO/FdgvMrYOp/ZfkiPKUV49Gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737532240; c=relaxed/simple;
-	bh=IEhcvheF4V81iZY+p0ALVQuZPTmOS4DOoc5c5f3Go8g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Weh6X46oLsD8r7CM037wijSYWke/zVmZ3jBLT9dw6IlBUEh+0r+1cLXU0sfzWSByIFcjXUUF0pC2BEy8HZyaBNwUhWyfg/MFTm5IH57HTKsSIySMMQtTkZz6eG9eAJ40WOoNgSXqD4jDhRXVqIEucsNlC52UMdVzmOxMtmBtZ7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WKfRRI1l; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+	s=arc-20240116; t=1737535672; c=relaxed/simple;
+	bh=KelfrUEDKn1STr/uyl6Wn/gXFShtj7LS2NXx40teaXU=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=HQdOyY6rNg+bXSF+kFExKrDTgWxYE9+94dOvTf4TxvSasdd7VKc9eunWsbZ1YhRGyRVkO3/bsOf8XHE2+c22dQ1vtkilEuYj1vRn62VXobw97flJrxEwz8U+JM1BSNDYYfsD1ePHjxsl76wTk65fGK0pDaPmSNg/5IhoAwPXXw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YfdHtXRU; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WKfRRI1l"
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50M2A4Je009705;
-	Wed, 22 Jan 2025 07:49:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=YOmEKaCYp7BVYdSA921evwSGcBIDRQ
-	EOB9Qf7IL5hrk=; b=WKfRRI1lHye/PfeRq0CM+invZscqmJxiyfMJj6RqKDo+k0
-	oHw8bxFR10u4InxfkGzbtPQRnmjjRIxYD+e4Hdc6VNWvxRNBhElChMEKYTQww/ne
-	kooQLVgHcJbjlXo8YwFiHbBQ8lYIn1j20/tkdmwE9rGrifbH6of2GaRERifgPxvN
-	e6jGjgMPTSpOWNSK//eRAMpTyDt03PLcgP0/2Qj42QpNbLO975g3w4J/8kekr9qF
-	dPd8DDCPlAQUGXVLnf/2L8EUh+BlP8RuxoA5walvWUcYL4qLgoLMxpcBdMKwAzI/
-	K9cmGJQE5Hsas24CZr5x5+mJxBXMWUxPL2+9HvXg==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44aee1bs75-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 22 Jan 2025 07:49:59 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50M4kx3X019330;
-	Wed, 22 Jan 2025 07:49:58 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 448pmsfk01-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 22 Jan 2025 07:49:58 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50M7nu1d48300472
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 22 Jan 2025 07:49:56 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B223620040;
-	Wed, 22 Jan 2025 07:49:56 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4B9362004B;
-	Wed, 22 Jan 2025 07:49:56 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.60])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 22 Jan 2025 07:49:56 +0000 (GMT)
-Date: Wed, 22 Jan 2025 08:49:54 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Kevin Brodsky <kevin.brodsky@arm.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, loongarch@lists.linux.dev,
-        x86@kernel.org
-Subject: Re: [PATCH v2 6/6] mm: Introduce ctor/dtor at PGD level
-Message-ID: <20250122074954.8685-A-hca@linux.ibm.com>
-References: <20250103184415.2744423-1-kevin.brodsky@arm.com>
- <20250103184415.2744423-7-kevin.brodsky@arm.com>
- <Z4/NTRDBXEEimdvc@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YfdHtXRU"
+Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 37CF3114019B;
+	Wed, 22 Jan 2025 03:47:49 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Wed, 22 Jan 2025 03:47:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1737535669; x=1737622069; bh=2pmDU7e3MlYtu8haZn4roILPX83I
+	3ITd6BRmfCF1ljE=; b=YfdHtXRU+jyvX7GcTCQWf5LMspthLFNhMghZjDqBYaJm
+	YvwkP3qzvwQ8ER1QfGkkSk+gf0uDs1Seqh5ALCwJeYMlUCpYg70bEPidRFmkOhPY
+	LFYExlHWlVyKJ7wyyzYKpHOuTJk6e50jx4VF6L5yQVIllqtqi7DH3rFyu0jNx8Rc
+	WvWeqQCwEYO27gGCnR2VcQiIkV7lB9D0z+s1p0wzVy81zYvF39/eozkWIijw7rt0
+	1/nmCqTzWM+VL+r8Tl1xyGXceh7nBL0Punod+doxeEG96qfJfKpGORRFYBUkQ/zD
+	NdBF/2A2460lhvPl0BEmfol0GzIZIW3PLanCd/W6+A==
+X-ME-Sender: <xms:tLCQZ5hlNQRRu9x6rNXlZl6uPi5-HJbmfMnoB41pmVxrTTrTfneFSg>
+    <xme:tLCQZ-DtGIRE4Mpc9pUyfvN7lx_3P8U8kiJd8-cGYgSbKC4eFEwzUu6vPy1fr3jH7
+    7s5PLm-FSpF7gkUUzo>
+X-ME-Received: <xmr:tLCQZ5HgNCaUZzYzcj8T8TlhjLnEaWvYeS3cxyO90BJrtrYD0gCUlY9K6DM5O5mjLn_v32kV-pZp6vQGRAGxV2SgyBK6wnIkFSk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudejfedguddvudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffkffhvfevufestddtjhdttddttdenucfhrhho
+    mhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+    eqnecuggftrfgrthhtvghrnhepiedugfduhffgheekjeekffduueejudevffehiedtledt
+    tdekveekuefhvdfftedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhi
+    nhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeehpdhmohguvgepshhmthhpoh
+    huthdprhgtphhtthhopehsthgrsghlvgesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
+    phhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlih
+    grmhdrhhhofihlvghtthesohhrrggtlhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidq
+    mheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlih
+    hnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:tLCQZ-RP1c7KnAhjY3Lofn-Uq3W6g1r6tA7swNZc3si3giHxISrcjA>
+    <xmx:tLCQZ2ygDVEKnJdMDkpKy6v4NpdGkXRe14NR3BWwyWbojjiAYiS9nw>
+    <xmx:tLCQZ07yZM33NyldeKN5uwwVWKEmxQsMKWtVjZaQMjBJ_fPu9wUUrw>
+    <xmx:tLCQZ7zQMpxE9NiKgfI6mCiQq8R6jKxBe6Iaw5pNfOLY8GTcNhz4UQ>
+    <xmx:tbCQZws7T_YGAUiGnxDewSbPTLVXtDnHztONFL7nFdeeWXv5yRbPva0Z>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Jan 2025 03:47:44 -0500 (EST)
+Date: Wed, 22 Jan 2025 19:47:35 +1100
+Message-ID: <d0c39a02fd50c3ac2fc187d08b942c69@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+To: stable@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Liam Howlett <liam.howlett@oracle.com>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 5.4.y] m68k: Add missing mmap_read_lock() to sys_cacheflush()
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z4/NTRDBXEEimdvc@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qTola2ylJwUaTSt4IdPRfZSdT02Tio3Q
-X-Proofpoint-GUID: qTola2ylJwUaTSt4IdPRfZSdT02Tio3Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-22_03,2025-01-22_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=674 priorityscore=1501 bulkscore=0
- spamscore=0 malwarescore=0 phishscore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501220053
 
-On Tue, Jan 21, 2025 at 05:37:33PM +0100, Alexander Gordeev wrote:
-> On Fri, Jan 03, 2025 at 06:44:15PM +0000, Kevin Brodsky wrote:
-> 
-> Hi Kevin,
-> ...
-> > diff --git a/arch/s390/include/asm/pgalloc.h b/arch/s390/include/asm/pgalloc.h
-> > index 5fced6d3c36b..b19b6ed2ab53 100644
-> > --- a/arch/s390/include/asm/pgalloc.h
-> > +++ b/arch/s390/include/asm/pgalloc.h
-> > @@ -130,11 +130,18 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
-> >  
-> >  static inline pgd_t *pgd_alloc(struct mm_struct *mm)
-> >  {
-> > -	return (pgd_t *) crst_table_alloc(mm);
-> > +	unsigned long *table = crst_table_alloc(mm);
-> > +
-> > +	if (!table)
-> > +		return NULL;
-> 
-> I do not know status of this series, but FWIW, this call is missed:
-> 
-> 	crst_table_init(table, _REGION1_ENTRY_EMPTY); 
+From: Liam Howlett <liam.howlett@oracle.com>
 
-Why is that missing?
+[ Upstream commit f829b4b212a315b912cb23fd10aaf30534bb5ce9 ]
 
-A pgd table can be a Region1, Region2, or Region3 table. The only caller of
-this function is mm_init() via mm_alloc_pgd(); and right after mm_alloc_pgd()
-there is a call to init_new_context() which will initialize the pgd correctly.
+When the superuser flushes the entire cache, the mmap_read_lock() is not
+taken, but mmap_read_unlock() is called.  Add the missing
+mmap_read_lock() call.
 
-I guess what really gets odd, and might be broken (haven't checked yet) is
-what happens on dynamic upgrade of page table levels (->crst_table_upgrade()).
+Fixes: cd2567b6850b1648 ("m68k: call find_vma with the mmap_sem held in sys_cacheflush()")
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lore.kernel.org/r/20210407200032.764445-1-Liam.Howlett@Oracle.com
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+[ mmap_read_lock() open-coded using down_read() as was done prior to v5.8 ]
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+ arch/m68k/kernel/sys_m68k.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-With that a pgd may become a pud, and with that we get an imbalance with
-the ctor/dtor calls for the various page table levels when they get freed
-again. Plus, at first glance, it looks also broken that we have open-coded
-crst_alloc() calls instead of using the "proper" page table allocation API
-within crst_table_upgrade(), which again would cause an imbalance.
+diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+index 6363ec83a290..38dcc1a2097d 100644
+--- a/arch/m68k/kernel/sys_m68k.c
++++ b/arch/m68k/kernel/sys_m68k.c
+@@ -388,6 +388,8 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+ 		ret = -EPERM;
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			goto out;
++
++		down_read(&current->mm->mmap_sem);
+ 	} else {
+ 		struct vm_area_struct *vma;
+ 
