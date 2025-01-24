@@ -1,65 +1,65 @@
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A811DFEF
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jan 2025 13:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570F4524F
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jan 2025 13:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737723672; cv=none; b=qtuXHIFwrAVWZ6RPyLW9pb/ySfHNMgb9DQIGzN7CQ6Em/4Thj5tW+TD/ORCAMH5l1eb2FZAggsTG755yrBX8RvmC1gDpKz+FkwoIf+Odg2el4fIq+gWm7ha9yD2i5JtmUjaCwTbjfSL7u5z9xcvcDvvggSlT5tPs6NvV+VNxUg8=
+	t=1737723856; cv=none; b=d8FGPyHP8+te5bRsovU7MLc35YnHObW5OzdDwPHyIRWQyAb9CrfwM2GZEf08+yh3sO0ZBVqju3G9YLuzx592nIOQs5mzXlbeYJPelVV4Dyl/umX9QTPcPVva50klAzqURMfULvClhs7xTbj8kjd3Ijc0vcHiOjXnfbg6SvF+908=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737723672; c=relaxed/simple;
-	bh=oAWP2ZKP4Y5sj6STdC+hjwQqWYac1Xm7fWrKlGE+1QE=;
+	s=arc-20240116; t=1737723856; c=relaxed/simple;
+	bh=6DUwB+hCjWKh6+gmJpLDb9ZpCQfqoZDHN+wZTg6VGKo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eyj2Np4qZqV6nYQcuUHcl9Bd32I2ju2/Q6dXIds+OdkzGXb5D3eeosvPxZaxZQ04D5tVirutaKPHEOiCSvJrI2j5m0N1VvQCoPISAzhDOTWs6oZW88xjcql9qoLevGwTqvTwnYmano9N7tIVGCvPymq7LRzewlFAAjERGa9bGVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=WzW7oWOB; arc=none smtp.client-ip=209.85.216.51
+	 In-Reply-To:Content-Type; b=Ktnr7oJHFcLWo2VjvLqh0lRwJXxdcZG2Q/uu+WHxgrl6Ibtb3/A2Dy1Srz4ypNMj1MepS4gnI+ue7lf61PgkVIUm/tQEFRoA/+gQU5oB0C0/QDncKzZki2dS/REkvNUs/SZzfTzcBs1FXSQ7YDbcFeUEWoJvylhJy92QmdHsGcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=YJzP4Vwc; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="WzW7oWOB"
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ee786b3277so2856748a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jan 2025 05:01:10 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="YJzP4Vwc"
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2ee67e9287fso3755020a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Jan 2025 05:04:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1737723670; x=1738328470; darn=lists.linux-m68k.org;
+        d=bytedance.com; s=google; t=1737723855; x=1738328655; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=J9XmywjVHeUTjwcf5l2PXOWSUMffMYwpksAkrprwOHU=;
-        b=WzW7oWOBVyUZA1aGLpvAlX4Gtmqn9B5UV7lkT7Mq9nDlw0+dniDmbkf8qjRV38/sNV
-         RfFivvpcHv77hd+29rySf8tGiCdUvn0Fd8dZcaAaQzO2lFuWNgJJqd5eGg4oMxIl+XIu
-         lb8kieBn8ktgUstdz4AEwL79gQJe3LxtXRXoSKHMtdFjuUYo8ngpl177CvoiZ6+AItOP
-         CcdZpLEab4+jihgwpjzWfMRcdqSPR98etwkvdn/nlKSIwNiqxf07QXj6x/N+zlwEpDXf
-         uXLVsHI66j/qwLNPRfda3WVvp+8vKP77sTN0t0AYyBXSG+W8u38o6gOjwwKnr0+4422t
-         dg9Q==
+        bh=dId7b4yz8t9ytNzoIMZDzDyU9S5trP6VQ+ykZ7MFw3k=;
+        b=YJzP4Vwcf4HfGYF5U/hbtvc1UrDAceJ/WdhPIFtVseWFw6dvYObSdh1TVAK1IfITYy
+         m/xbyL7wzKDCkHdITpu3OSLhFiPa55Q2e1bvjZQa7iA3Fk6sjtJObXOYJi9UMJD1YZ1S
+         YBks8diZXvF9nKQc9NX9wQQQ1wbX4GX/Nam3qCRosSu34ciFc5dtrqswL8c3xKqPcbEP
+         b+hWC3z98GgiZOiJaW5zQKD6rJboTiO4M72p9fHDdBrQj/1F+RdfIyCQm4/ekBzRg1Q/
+         KbIBVZAA1A1PwpsG//XT91W1JFkffdQBUPLN4oMb+drntTdZS6KeLZZgdRdik51zgLof
+         q8kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737723670; x=1738328470;
+        d=1e100.net; s=20230601; t=1737723855; x=1738328655;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J9XmywjVHeUTjwcf5l2PXOWSUMffMYwpksAkrprwOHU=;
-        b=LhwxSNOk03IIcchxHgeAaZRXmoSJBdnccH8X7sTuFltnw/5AT5x5hRYlLXa/9fNZJj
-         DTQJeaIDeUv0DXbfWtBT+Ahs+eCFfAPZ4V7a1SUyK7MjkB5Xb3iB2k6My7Su05jq/rqv
-         YtGlzLN8tXNFiB5Q6M9ukurr0lUGWHgUOcvC9wCnc/5N4oeJUW0yWEEaE6gFvaBu08zp
-         CglbhuK5FzSfA75aMuqAn7N/i8MZVJ2lwTQdlTrH0SZPfV0PW9L090YWVX+PH+8XukQZ
-         piVG+tHJLH1oLmzKoTsvUe0s93zC3WI2Mo+7D2dq3g/LQ9TMlhM/sVqiYeUdStHMVIVB
-         IkZg==
-X-Forwarded-Encrypted: i=1; AJvYcCVOoE954WEFgZuMFgAFvE4CmMIOWtijLLmeVO3Y1cTrv649JoVvKrvmY852nMxCLWcQPQEmkZ0m7ZD5@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YymViFfvB2JYiiBHjAB10LxhSJv5gix0jsBy0OqKbeiv6Fwn8OQ
-	+zZ7Jri57g5vwJdYX/7vyz07U9tLSdi5Hs5VqZ/NFloMOHapfEE/6FBVOXcIOEg=
-X-Gm-Gg: ASbGncsCOG5fq4+sVD3uWtAayNXb/FGvAJRnqpiCu0p2SZm3kFZ4CGbn1mvkXaNO4NB
-	SmwtmyU4/AaydjPC2NUFetE67TCubPhz3Yb5NsRz6/kmaQCzFHTIDQUtT/OD8AjCNiDq4xnXdNS
-	Z0ndu8+VZ8ljeURepfoS2XrRXnK3ov7W1J5JS5vA8/OTHf/fdEcFaDpzwM2+otgdduexR2fzbr0
-	+vFVSronnTZZ5o5xKEDZyMyA3bxkAHWJr6L51fc8gVpcQ8fQ9ViOVObBl2rp1bXPDU6cQSwPnHp
-	Yo30y1tabhdung/8BS+0YiuQf1X4RYOt6IguUyqH1+Ga0QngVGOYCsHrMO/Z6BWg+TdTDjRldc0
-	QPUkm
-X-Google-Smtp-Source: AGHT+IErpp3kusfvXhlhlaUEnTbjj0q85I8IgEHut5MJR7L8i7tS+ZolAw1OFFdRR3HhDghe0oVaNg==
-X-Received: by 2002:a17:90b:2e41:b0:2ee:b875:6d30 with SMTP id 98e67ed59e1d1-2f782c779d1mr44385106a91.9.1737723669817;
-        Fri, 24 Jan 2025 05:01:09 -0800 (PST)
+        bh=dId7b4yz8t9ytNzoIMZDzDyU9S5trP6VQ+ykZ7MFw3k=;
+        b=bVuCa4oYgDn5PasAMFuy9ck6R8+TT+d/HMV4f2a0FZT0EBnJtLxP4LZvt8GkfWGSvM
+         MLsIubuck6VaFInM9Ii7ZNW9vhOw+nRbd5k0nWnv3PEZv4BaH7KWdD5wVi1CX1dF74el
+         R4hjCLxUJvkyw/eMByEYGZOO3M/x5atQ5rx+p9bjgaOjXmdMsEgpWH6fbeXWG13VUCY6
+         ji31hCTmmxt5xh6ozNsfeEbZbNmYnepiiOyIGuTfdmMZzPq9oEuaSs9MhSBV2bq0uZsW
+         9JoU0+JyvZmF4xWVFJtgyTog6SaIyPLOOEy6QuVRpAYE25aDrbSHd+KfmtQMWV1DlcQR
+         VIow==
+X-Forwarded-Encrypted: i=1; AJvYcCUuTeYAiQ6f2FwbfvgBej+XF/J4hrRGDojmjo7S0Vms9H17pRiK4adyMz9Mn7Gk5XfLY0biq2xAS66h@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwesU9O3L7dx/8oziF3Y3cQeGBC9dPnc/jnG3W3/TYgETGLltlQ
+	DlfFMmvYb8N72xFKVUcapRAVoxRFCmHpB3YAXdd78BX0N/sLw28vu/rhnUmdhYI=
+X-Gm-Gg: ASbGncsQHLn6fPupBot0Lkm87GPEvHfGaEF4si7vp+3mkXVDCwTKrbWbBJztGjPZeW7
+	X0F5MQvMdNXL2D786Vrry0WhZhNq5hEtZaDEEuQ4Z+1Ez0Z7tHPZoOpz5PvYzKYA4fNKIi0qnFk
+	arE40R1yvhaGRczpXHhtjFJs3DZ0YpQJSJRW8zIziCXznACHENH+mIByNgIB4k1aJYS4qUnbVdm
+	P8iFQu9eAIFAZVD3KZNgIM5a6X0ghzylT9O0dYEC/wlxigIhYZ6ZAwzX6X3G9akKAj9aW7rI1HY
+	E/kobspceAOFIvYXtNlu9bdgsbg0YbPnZsSuv0iBSafCLNRFQTtNagmDxhJV3F3DwtfM08yu9gR
+	Y8NZh
+X-Google-Smtp-Source: AGHT+IGZTgGY31e/1k/dTmcJmo/YDWxdXL7RglCap7bUypXHuwXLFHjK5+LGZw2OAN+HVTY4hEX3Xw==
+X-Received: by 2002:a17:90b:2d88:b0:2f2:a664:df1a with SMTP id 98e67ed59e1d1-2f782c628bbmr47170073a91.2.1737723854887;
+        Fri, 24 Jan 2025 05:04:14 -0800 (PST)
 Received: from ?IPV6:240e:370:8b13:5250:f0b9:2326:6cb0:b423? ([240e:370:8b13:5250:f0b9:2326:6cb0:b423])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffa6b269sm1606110a91.24.2025.01.24.05.01.01
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f7ffa5a975sm1776638a91.15.2025.01.24.05.04.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jan 2025 05:01:09 -0800 (PST)
-Message-ID: <45651097-c056-49e3-9cc8-c289c1c0030d@bytedance.com>
-Date: Fri, 24 Jan 2025 21:00:58 +0800
+        Fri, 24 Jan 2025 05:04:13 -0800 (PST)
+Message-ID: <65710478-4ee0-499e-9f66-dff81e226042@bytedance.com>
+Date: Fri, 24 Jan 2025 21:04:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -67,7 +67,7 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] x86: pgtable: unconditionally use tlb_remove_table()
+Subject: Re: [PATCH 0/5] remove tlb_remove_page_ptdesc()
 Content-Language: en-US
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: kevin.brodsky@arm.com, riel@surriel.com, vishal.moola@gmail.com,
@@ -82,162 +82,55 @@ Cc: kevin.brodsky@arm.com, riel@surriel.com, vishal.moola@gmail.com,
  linux-sh@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org,
  linux-riscv@lists.infradead.org
 References: <cover.1737637631.git.zhengqi.arch@bytedance.com>
- <00bf7935d65826eee547ac195d7854b1c946dbc5.1737637631.git.zhengqi.arch@bytedance.com>
- <20250124113854.GA15996@noisy.programming.kicks-ass.net>
+ <20250124114759.GB15996@noisy.programming.kicks-ass.net>
 From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20250124113854.GA15996@noisy.programming.kicks-ass.net>
+In-Reply-To: <20250124114759.GB15996@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 2025/1/24 19:38, Peter Zijlstra wrote:
-> On Thu, Jan 23, 2025 at 09:26:17PM +0800, Qi Zheng wrote:
->> If the CONFIG_MMU_GATHER_TABLE_FREE is disabled, the tlb_remove_table()
->> will fall back to pagetable_dtor() + tlb_remove_page(). So let's use
->> tlb_remove_table() unconditionally to free page table pages.
+On 2025/1/24 19:47, Peter Zijlstra wrote:
+> On Thu, Jan 23, 2025 at 09:26:13PM +0800, Qi Zheng wrote:
+>> Hi all,
 >>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> As suggested by Peter Zijlstra below [1], this series aims to remove
+>> tlb_remove_page_ptdesc().
+>>
+>> : Fundamentally tlb_remove_page() is about removing *pages* as from a PTE,
+>> : there should not be a page-table anywhere near here *ever*.
+>> :
+>> : Yes, some architectures use tlb_remove_page() for page-tables too, but
+>> : that is more or less an implementation detail that can be fixed.
+>>
+>> After this series, all architectures use tlb_remove_table() or tlb_remove_ptdesc()
+>> to remove the page table pages. In the future, once all architectures using
+>> tlb_remove_table() have also converted to using struct ptdesc (eg. powerpc), it
+>> may be possible to use only tlb_remove_ptdesc().
 > 
-> I think we can clean up more :-)
+> Right, so I don't think Sparc and Power care to use ptdesc, they're
+> using non page page-tables.
+> 
+> At the very least we should do something like this, the only point of
+> having tlb_remove_ptdesc() is type safety, there really is no benefit
+> from it in any other way.
+> 
+> ---
+> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> index dec030cb1210..a6731328db6f 100644
+> --- a/include/asm-generic/tlb.h
+> +++ b/include/asm-generic/tlb.h
+> @@ -504,7 +504,7 @@ static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
+>   	return tlb_remove_page_size(tlb, page, PAGE_SIZE);
+>   }
+>   
+> -static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
+> +static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, struct ptdesc *pt)
+>   {
+>   	tlb_remove_table(tlb, pt);
+>   }
 
-Yes, but Rik van Riel has already done the same thing in his patch 
-series [1], so I was originally planning to wait for his patch to be
-merged into the linux-next branch, and then rebase this series onto his
-patch.
-
-[1]. https://lore.kernel.org/lkml/20250120024104.1924753-1-riel@surriel.com/
+Ah, make sense. I think this can be added to the patch #1.
 
 Thanks!
 
-> 
-> 
-> diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
-> index cc8c3bd0e7c2..1f7c3082a36d 100644
-> --- a/arch/x86/hyperv/mmu.c
-> +++ b/arch/x86/hyperv/mmu.c
-> @@ -239,5 +239,4 @@ void hyperv_setup_mmu_ops(void)
->   
->   	pr_info("Using hypercall for remote TLB flush\n");
->   	pv_ops.mmu.flush_tlb_multi = hyperv_flush_tlb_multi;
-> -	pv_ops.mmu.tlb_remove_table = tlb_remove_table;
->   }
-> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-> index 041aff51eb50..38a632a282d4 100644
-> --- a/arch/x86/include/asm/paravirt.h
-> +++ b/arch/x86/include/asm/paravirt.h
-> @@ -91,11 +91,6 @@ static inline void __flush_tlb_multi(const struct cpumask *cpumask,
->   	PVOP_VCALL2(mmu.flush_tlb_multi, cpumask, info);
->   }
->   
-> -static inline void paravirt_tlb_remove_table(struct mmu_gather *tlb, void *table)
-> -{
-> -	PVOP_VCALL2(mmu.tlb_remove_table, tlb, table);
-> -}
-> -
->   static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->   {
->   	PVOP_VCALL1(mmu.exit_mmap, mm);
-> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-> index fea56b04f436..e26633c00455 100644
-> --- a/arch/x86/include/asm/paravirt_types.h
-> +++ b/arch/x86/include/asm/paravirt_types.h
-> @@ -134,8 +134,6 @@ struct pv_mmu_ops {
->   	void (*flush_tlb_multi)(const struct cpumask *cpus,
->   				const struct flush_tlb_info *info);
->   
-> -	void (*tlb_remove_table)(struct mmu_gather *tlb, void *table);
-> -
->   	/* Hook for intercepting the destruction of an mm_struct. */
->   	void (*exit_mmap)(struct mm_struct *mm);
->   	void (*notify_page_enc_status_changed)(unsigned long pfn, int npages, bool enc);
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 7a422a6c5983..3be9b3342c67 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -838,7 +838,6 @@ static void __init kvm_guest_init(void)
->   #ifdef CONFIG_SMP
->   	if (pv_tlb_flush_supported()) {
->   		pv_ops.mmu.flush_tlb_multi = kvm_flush_tlb_multi;
-> -		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
->   		pr_info("KVM setup pv remote TLB flush\n");
->   	}
->   
-> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-> index 527f5605aa3e..2aa251d0b308 100644
-> --- a/arch/x86/kernel/paravirt.c
-> +++ b/arch/x86/kernel/paravirt.c
-> @@ -180,7 +180,6 @@ struct paravirt_patch_template pv_ops = {
->   	.mmu.flush_tlb_kernel	= native_flush_tlb_global,
->   	.mmu.flush_tlb_one_user	= native_flush_tlb_one_user,
->   	.mmu.flush_tlb_multi	= native_flush_tlb_multi,
-> -	.mmu.tlb_remove_table	= tlb_remove_table,
->   
->   	.mmu.exit_mmap		= paravirt_nop,
->   	.mmu.notify_page_enc_status_changed	= paravirt_nop,
-> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-> index 3bc8ad282b27..b1c1f72c1fd1 100644
-> --- a/arch/x86/mm/pgtable.c
-> +++ b/arch/x86/mm/pgtable.c
-> @@ -18,14 +18,6 @@ EXPORT_SYMBOL(physical_mask);
->   #define PGTABLE_HIGHMEM 0
->   #endif
->   
-> -#ifndef CONFIG_PARAVIRT
-> -static inline
-> -void paravirt_tlb_remove_table(struct mmu_gather *tlb, void *table)
-> -{
-> -	tlb_remove_table(tlb, table);
-> -}
-> -#endif /* !CONFIG_PARAVIRT */
-> -
->   gfp_t __userpte_alloc_gfp = GFP_PGTABLE_USER | PGTABLE_HIGHMEM;
->   
->   pgtable_t pte_alloc_one(struct mm_struct *mm)
-> @@ -53,7 +45,7 @@ early_param("userpte", setup_userpte);
->   void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
->   {
->   	paravirt_release_pte(page_to_pfn(pte));
-> -	paravirt_tlb_remove_table(tlb, page_ptdesc(pte));
-> +	tlb_remove_table(tlb, page_ptdesc(pte));
->   }
->   
->   #if CONFIG_PGTABLE_LEVELS > 2
-> @@ -67,21 +59,21 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
->   #ifdef CONFIG_X86_PAE
->   	tlb->need_flush_all = 1;
->   #endif
-> -	paravirt_tlb_remove_table(tlb, virt_to_ptdesc(pmd));
-> +	tlb_remove_table(tlb, virt_to_ptdesc(pmd));
->   }
->   
->   #if CONFIG_PGTABLE_LEVELS > 3
->   void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
->   {
->   	paravirt_release_pud(__pa(pud) >> PAGE_SHIFT);
-> -	paravirt_tlb_remove_table(tlb, virt_to_ptdesc(pud));
-> +	tlb_remove_table(tlb, virt_to_ptdesc(pud));
->   }
->   
->   #if CONFIG_PGTABLE_LEVELS > 4
->   void ___p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d)
->   {
->   	paravirt_release_p4d(__pa(p4d) >> PAGE_SHIFT);
-> -	paravirt_tlb_remove_table(tlb, virt_to_ptdesc(p4d));
-> +	tlb_remove_table(tlb, virt_to_ptdesc(p4d));
->   }
->   #endif	/* CONFIG_PGTABLE_LEVELS > 4 */
->   #endif	/* CONFIG_PGTABLE_LEVELS > 3 */
-> diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-> index 2c70cd35e72c..a0b371557125 100644
-> --- a/arch/x86/xen/mmu_pv.c
-> +++ b/arch/x86/xen/mmu_pv.c
-> @@ -2141,7 +2141,6 @@ static const typeof(pv_ops) xen_mmu_ops __initconst = {
->   		.flush_tlb_kernel = xen_flush_tlb,
->   		.flush_tlb_one_user = xen_flush_tlb_one_user,
->   		.flush_tlb_multi = xen_flush_tlb_multi,
-> -		.tlb_remove_table = tlb_remove_table,
->   
->   		.pgd_alloc = xen_pgd_alloc,
->   		.pgd_free = xen_pgd_free,
