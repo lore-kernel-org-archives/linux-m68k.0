@@ -1,131 +1,313 @@
-Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637E7201005
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Feb 2025 10:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [195.130.132.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF051205AC4
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Feb 2025 13:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738578946; cv=none; b=m7UY05zweRptcIADuBAOER0P5qmwATFM6irugu/jttJkpdv1VJuvgG602Wv0KSmt8jmaXHS65f4kqisI19NJS0yzh6Lt46NqBMdIsspqRPh+yvhf1bQIju4ng5jw0jhuozDrzZIPAo0ohUgrI3tNXxHVIegVw3zQrpJjELc70kY=
+	t=1738589922; cv=none; b=EF4QGAUI4RohiH9AN8H1Bsupo1V4DOobYvFPTpWDh99U7z1SGg946IAuBejqRjcyGI7woFWGd6kSIZPa85/iMnG1XLYOONElCsgzg8AraHfndwouFWZnQ2XAu2a+yLgu+GHLoa9PYnNZ1+FBW3jP7QkYEHmEcdbtlouQ9mneOGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738578946; c=relaxed/simple;
-	bh=D5Jv3FPUdrdfdsx4anIJHNUlSFE+deaFBpMQvm/GgIE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RCgF66EDFeJqSh0HHe4Yz/PdcAnb7/12EcJtOr2TntGtyaesDN/fKDItSBa2Ws8omv0vbiN/VSPCTmmKwSYy2Zti7IrfTfi/feNZ+BlrYNMCgb2WFyy8ze5CwiSmlVauMq0MtK0zClhexqRqjWwSboGh5bic43t+GHiq/RP+In8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strace.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
-	by vmicros1.altlinux.org (Postfix) with ESMTP id 33C4872C8CC;
-	Mon,  3 Feb 2025 13:35:43 +0300 (MSK)
-Received: by mua.local.altlinux.org (Postfix, from userid 508)
-	id 1956F7CCB3A; Mon,  3 Feb 2025 12:35:43 +0200 (IST)
-Date: Mon, 3 Feb 2025 12:35:43 +0200
-From: "Dmitry V. Levin" <ldv@strace.io>
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: linux-snps-arc@lists.infradead.org, Rich Felker <dalias@libc.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andreas Larsson <andreas@gaisler.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	x86@kernel.org, linux-kernel@vger.kernel.org,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-	sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	WANG Xuerui <kernel@xen0n.name>, linux-api@vger.kernel.org,
-	Will Deacon <will@kernel.org>,
-	Eugene Syromyatnikov <evgsyr@gmail.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	linux-sh@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>, Albert Ou <aou@eecs.berkeley.edu>,
-	Mike Frysinger <vapier@gentoo.org>,
-	Davide Berardi <berardi.dav@gmail.com>,
-	Renzo Davoli <renzo@cs.unibo.it>, linux-um@lists.infradead.org,
-	Heiko Carstens <hca@linux.ibm.com>, strace-devel@lists.strace.io,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Naveen N Rao <naveen@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	linux-m68k@lists.linux-m68k.org, Borislav Petkov <bp@alien8.de>,
-	loongarch@lists.linux.dev, Paul Walmsley <paul.walmsley@sifive.com>,
-	Stafford Horne <shorne@gmail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-arm-kernel@lists.infradead.org,
-	Brian Cain <bcain@quicinc.com>, Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-parisc@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	Oleg Nesterov <oleg@redhat.com>, Dinh Nguyen <dinguyen@kernel.org>,
-	linux-riscv@lists.infradead.org,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Richard Weinberger <richard@nod.at>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Gladkov <legion@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v4 0/7] ptrace: introduce PTRACE_SET_SYSCALL_INFO API
-Message-ID: <20250203103542.GA16165@strace.io>
-References: <20250203065849.GA14120@strace.io>
- <Z6CMgVm8QKEMRf8L@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+	s=arc-20240116; t=1738589922; c=relaxed/simple;
+	bh=t4UMeabOUKxzvLuOSc6k1xPgb0/5QTRcn63YibAF5e8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Cvj0lfwEiYqPevpqzw5HX+LiAexQwxaWuDllj2qra3FwiFgcOkK5juKJS/5bem1AePtKRl1hnx3CAXOfYMqzrIDFYXcF5KYKIUs6qPa/ACnu/32CpQN0PIk7JPv05j+xNLYLPJqsY2jR/S4TiIcWsU82+2FuF3dtWcagaigLecg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+	by cantor.telenet-ops.be (Postfix) with ESMTPS id 4YmndN4JcPz4wxlK
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Feb 2025 14:38:32 +0100 (CET)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:d465:743d:7f2:30d8])
+	by albert.telenet-ops.be with cmsmtp
+	id 91eQ2E00K4UDnen061eQsP; Mon, 03 Feb 2025 14:38:25 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1teweT-0000000Fclo-1MEK;
+	Mon, 03 Feb 2025 14:38:24 +0100
+Received: from geert by rox.of.borg with local (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1tewee-00000003Lba-31IT;
+	Mon, 03 Feb 2025 14:38:24 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.14-rc1
+Date: Mon,  3 Feb 2025 14:38:23 +0100
+Message-ID: <be6ac546f7b98eae352584daacc42a58577dc224.1738589762.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z6CMgVm8QKEMRf8L@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 03, 2025 at 10:29:37AM +0100, Alexander Gordeev wrote:
-> On Mon, Feb 03, 2025 at 08:58:49AM +0200, Dmitry V. Levin wrote:
-> 
-> Hi Dmitry,
-> 
-> > PTRACE_SET_SYSCALL_INFO is a generic ptrace API that complements
-> > PTRACE_GET_SYSCALL_INFO by letting the ptracer modify details of
-> > system calls the tracee is blocked in.
-> ...
-> 
-> FWIW, I am getting these on s390:
-> 
-> # ./tools/testing/selftests/ptrace/set_syscall_info 
-> TAP version 13
-> 1..1
-> # Starting 1 tests from 1 test cases.
-> #  RUN           global.set_syscall_info ...
-> # set_syscall_info.c:87:set_syscall_info:Expected exp_entry->nr (-1) == info->entry.nr (65535)
-> # set_syscall_info.c:88:set_syscall_info:wait #3: PTRACE_GET_SYSCALL_INFO #2: syscall nr mismatch
-> # set_syscall_info: Test terminated by assertion
-> #          FAIL  global.set_syscall_info
-> not ok 1 global.set_syscall_info
-> # FAILED: 0 / 1 tests passed.
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> 
-> I remember one of the earlier versions (v1 or v2) was working for me.
-> 
-> Thanks!
+  - Drop CONFIG_DM_KUNIT_TEST=m (auto-modular since commit
+    55b7aee990ef7862 ("drivers: base: test: Enable device model tests
+    with KUNIT_ALL_TESTS")),
+  - Re-enable modular build of MD Linear (append) mode (revived in
+    commit 127186cfb184eacc ("md: reintroduce md-linear").
 
-In v3, this test was extended to check whether PTRACE_GET_SYSCALL_INFO
-called immediately after PTRACE_SET_SYSCALL_INFO returns the same syscall
-number, and on s390 it apparently doesn't, thanks to its implementation
-of syscall_get_nr() that returns 0xffff in this case.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k tree for v6.13.
 
-To workaround this, we could either change syscall_get_nr() to return -1
-in this case, or add an #ifdef __s390x__ exception to the test.
+ arch/m68k/configs/amiga_defconfig    | 2 +-
+ arch/m68k/configs/apollo_defconfig   | 2 +-
+ arch/m68k/configs/atari_defconfig    | 2 +-
+ arch/m68k/configs/bvme6000_defconfig | 2 +-
+ arch/m68k/configs/hp300_defconfig    | 2 +-
+ arch/m68k/configs/mac_defconfig      | 2 +-
+ arch/m68k/configs/multi_defconfig    | 2 +-
+ arch/m68k/configs/mvme147_defconfig  | 2 +-
+ arch/m68k/configs/mvme16x_defconfig  | 2 +-
+ arch/m68k/configs/q40_defconfig      | 2 +-
+ arch/m68k/configs/sun3_defconfig     | 2 +-
+ arch/m68k/configs/sun3x_defconfig    | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-What would you prefer?
-
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index dbf2ea561c855130..f2e5e12cc1d03c3b 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -299,7 +299,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+ CONFIG_PARPORT_AMIGA=m
+@@ -336,6 +335,7 @@ CONFIG_ATA=y
+ CONFIG_PATA_GAYLE=y
+ CONFIG_PATA_BUDDHA=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index b0fd199cc0a4e7b8..1180f137443f31bb 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -295,7 +295,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_ZRAM=m
+ CONFIG_BLK_DEV_LOOP=y
+@@ -316,6 +315,7 @@ CONFIG_SCSI_SAS_ATTRS=m
+ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 51d8e9cecf40f699..5afe7d08b703da23 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -302,7 +302,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+ CONFIG_PARPORT_ATARI=m
+@@ -331,6 +330,7 @@ CONFIG_ATA=y
+ # CONFIG_ATA_BMDMA is not set
+ CONFIG_PATA_FALCON=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 8315a13bab73baa1..3e629428fd6607d3 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -292,7 +292,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_ZRAM=m
+ CONFIG_BLK_DEV_LOOP=y
+@@ -314,6 +313,7 @@ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_BVME6000_SCSI=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 350370657e5fe94d..62722d7746aacf8d 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -294,7 +294,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_ZRAM=m
+ CONFIG_BLK_DEV_LOOP=y
+@@ -315,6 +314,7 @@ CONFIG_SCSI_SAS_ATTRS=m
+ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index f942b4755702656f..c1dadb797cc646e9 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -293,7 +293,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_BLK_DEV_SWIM=m
+ CONFIG_ZRAM=m
+@@ -320,6 +319,7 @@ CONFIG_ATA=y
+ # CONFIG_ATA_BMDMA is not set
+ CONFIG_PATA_PLATFORM=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index b1eaad02efab92dc..3934e101a4abdfd8 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -313,7 +313,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+ CONFIG_PARPORT_PC=m
+@@ -363,6 +362,7 @@ CONFIG_PATA_GAYLE=y
+ CONFIG_PATA_BUDDHA=y
+ CONFIG_PATA_PLATFORM=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 6309a4442bb3f962..f7b5c669b789644a 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -291,7 +291,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_ZRAM=m
+ CONFIG_BLK_DEV_LOOP=y
+@@ -313,6 +312,7 @@ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_MVME147_SCSI=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 3feb0731f8142d0c..82d6fb7cc6842cd8 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -292,7 +292,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_ZRAM=m
+ CONFIG_BLK_DEV_LOOP=y
+@@ -314,6 +313,7 @@ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_MVME16x_SCSI=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index ea04b1b0da7d4661..17421379e4b114bd 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -293,7 +293,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_PARPORT=m
+ CONFIG_PARPORT_PC=m
+@@ -320,6 +319,7 @@ CONFIG_ATA=y
+ # CONFIG_ATA_BMDMA is not set
+ CONFIG_PATA_FALCON=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index f52d9af92153dbd3..906cb3e18d265294 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -288,7 +288,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_ZRAM=m
+ CONFIG_BLK_DEV_LOOP=y
+@@ -310,6 +309,7 @@ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_SUN3_SCSI=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index f348447824da930f..b15b807600383c95 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -289,7 +289,6 @@ CONFIG_NET_IFE=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEST_ASYNC_DRIVER_PROBE=m
+-CONFIG_DM_KUNIT_TEST=m
+ CONFIG_CONNECTOR=m
+ CONFIG_ZRAM=m
+ CONFIG_BLK_DEV_LOOP=y
+@@ -311,6 +310,7 @@ CONFIG_ISCSI_TCP=m
+ CONFIG_ISCSI_BOOT_SYSFS=m
+ CONFIG_SUN3X_ESP=y
+ CONFIG_MD=y
++CONFIG_MD_LINEAR=m
+ CONFIG_BLK_DEV_DM=m
+ CONFIG_DM_UNSTRIPED=m
+ CONFIG_DM_CRYPT=m
 -- 
-ldv
+2.43.0
+
