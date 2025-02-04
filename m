@@ -1,37 +1,40 @@
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from mslow3.mail.gandi.net (mslow3.mail.gandi.net [217.70.178.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A892046B1
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Feb 2025 20:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44727219E8D
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Feb 2025 20:48:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738700095; cv=none; b=eW/E2T5TYuG+5B5/YeoLfWt4FceeYh3Vaq2wQ0RbQ0+2Tj14sMuGDyGrzyNfF5V6JI9lPGL/i0qjTI4tPDBTz6jzcfyVdcWiyoXS7rcYcPpNT01Z3KE8edAkX2A4ZGb3C9bQP3XafX+AiX+421B3Kq2yqjaFo+qIboKTHHbeYTE=
+	t=1738702100; cv=none; b=FiINC9CbOC1/+9sAdgFGzRVoQsTXe4kUwXOsQDS+iQsDTJ80kIFSj2hIaDCV8EVAXwvObKNJ8Nr36AuSYjyZspDc/rEdkjWXdEYpc+GkPB/32g2tQUgcINicK4YSlfe8ixovhBYxdk+pj465gfEGdpHp5KDbQucvFSnlAckvUV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738700095; c=relaxed/simple;
-	bh=+oJGs6XOd5gMyjbz5e+PDQWbz2BD1eskaWdRY+7MsAA=;
+	s=arc-20240116; t=1738702100; c=relaxed/simple;
+	bh=cqNFdRo7JWvDWMI0Jiucy/HHSiw/Mm4U2HDtidBUTqs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PKmd4gCwc+tUN8bwDDCB8LLNvrlK5NshbfNVTcwykH9h7t09wsI/yczpUM2WAC/OQzxyhJomiUn6gbYNAM1NVz26mCtG3FO7H1Sa0X6eqKCUbNEcTbShb+BzOFTT2v+SiZHCiXlqW26NGr4SWyApdM+ev1+ZyGO9IdK/ZLka+x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=oFehoeXE; arc=none smtp.client-ip=217.70.183.199
+	 In-Reply-To:Content-Type; b=Vgs2NWr4mwnZK7hJQa6tvjXrYXevpfZG3ShYpH8JtcZmw7+/MxO90utIA9W3Y1A+AiwoHl+u/3WlbMbKTEEPl49tcWrd5CWh/50uVqa0wMEg13QZSHIC3rZoB88o0GbGbU9wKfG561W29BvaUaQasAQ252NyQ7+zjOUxO/3F4nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=eCPHrmh9; arc=none smtp.client-ip=217.70.178.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="oFehoeXE"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 61BCB4326D;
-	Tue,  4 Feb 2025 20:14:50 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="eCPHrmh9"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	by mslow3.mail.gandi.net (Postfix) with ESMTP id E0C42581A77
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Feb 2025 20:22:12 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CF384442CA;
+	Tue,  4 Feb 2025 20:17:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1738700090;
+	t=1738700223;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4Y1WsaU6B4su065G93hoVWK2vPmqBPz+HpBQhZqYElY=;
-	b=oFehoeXEWg4pBPHhA3IPoYyRJ1C/wYbXHhy9fMk+KfCtx+Henknx+0TwliCjj+rVHVysKK
-	73vggQlU3sqhA+WqqCmabrG5O82s3yn7XS2O6K/wvBDmuYBIksQdFjUFv4N+v3obIHloAu
-	p6Y7QpP1pzPPTUVcIkH6umvALopeQo/uD0g6qMdgSdkNHjNbkqll9cYBzgtm8yjFQduF6p
-	kBFNCoikqlvSm1ABU5qCe+QtfeksmQmGw/ihHkfYF0o6vACjkDXnqPQsub3UtC1VwwyonL
-	2BwxwkmhWGJu2o+GNs1P4l2IAltViWq2nuTbL/T7K0EDamZMZNojonoXzVRUIg==
-Message-ID: <56cd8c0c-2cdf-47a5-8ee3-cb338acdc374@yoseli.org>
-Date: Tue, 4 Feb 2025 21:14:49 +0100
+	bh=Gr8DClel7ZTedbngqGf/lQ7u2+pT/4V4s//m4zfK1rg=;
+	b=eCPHrmh9LW1AhFE6sJYj+QqZFMWkuOxrjSU91wNWsAqq9B9phUh+KJSkodvESL1rBwajkp
+	lrAw8GS3SNWltrC/uNw3m4HqaTAupzkSNr3QT9obhTkOMPLlbJw/3wlUGt8FRwsvSnUklH
+	vybEHhpAe95LSPcevPFfbkuKN6JI5f6QUW//7EqzkeqCy34Mnx2jekeS1b07UyYNvLwOeh
+	PxyqEDPdvkvQ3tm+99hLDpdO+4Ucm7iJteUznLEdHSMP05YUVjFkXEQDQgkMhbpvKJFSab
+	dqfhgUF2Wjf3Sk/MS4utBNnL46F41v+Eev9sDwa6npNJ9jkf6w4gUPZ28y3v7w==
+Message-ID: <d6f4e8b7-2626-4fed-b46d-80a9cdb54a50@yoseli.org>
+Date: Tue, 4 Feb 2025 21:17:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -53,7 +56,7 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvudegiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnhepheeugfefudejieeiueffudelfeegveejhedvfeeggefhffelkeehjeekhfegffejnecukfhppeeluddrudeihedrudeihedrudeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeluddrudeihedrudeihedrudeljedphhgvlhhopegludelvddrudeikedruddriegnpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeegpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhor
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvudegjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnhepheeugfefudejieeiueffudelfeegveejhedvfeeggefhffelkeehjeekhfegffejnecukfhppeeluddrudeihedrudeihedrudeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeluddrudeihedrudeihedrudeljedphhgvlhhopegludelvddrudeikedruddriegnpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeegpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhor
  hhg
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
@@ -125,12 +128,16 @@ On 04/02/2025 20:27, Geert Uytterhoeven wrote:
 >      unsigned long flags = arch_local_irq_save();
 > 
 
-Thanks for reviewing.
-You are right, it should be (very) similar...
+I will check it again, but it seems a bit different. Now I get:
+[   97.919407] hrtimer: interrupt took 203520 ns
+[  161.757921] irq 24, desc: 24ef8971, depth: 1, count: 0, unhandled: 0
+[  161.758074] ->handle_irq():  60d6a158, handle_bad_irq+0x0/0x1e0
+[  161.758241] ->irq_data.chip(): 93aaf7a5, 0x4164e544
+[  161.758359] ->action(): 00000000
+[  161.758415] unexpected IRQ trap at vector 18
 
-Testing it, and if it works, I will send a v2.
+So, maybe isn't it exactly the same after all ?
 
-Thanks !
 JM
 
 >>          if (MCFINTC2_SIMR && (irq > 127))
