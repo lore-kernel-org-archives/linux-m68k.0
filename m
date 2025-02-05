@@ -1,40 +1,37 @@
-Received: from mslow3.mail.gandi.net (mslow3.mail.gandi.net [217.70.178.249])
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44727219E8D
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Feb 2025 20:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F2879FE
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Feb 2025 07:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738702100; cv=none; b=FiINC9CbOC1/+9sAdgFGzRVoQsTXe4kUwXOsQDS+iQsDTJ80kIFSj2hIaDCV8EVAXwvObKNJ8Nr36AuSYjyZspDc/rEdkjWXdEYpc+GkPB/32g2tQUgcINicK4YSlfe8ixovhBYxdk+pj465gfEGdpHp5KDbQucvFSnlAckvUV8=
+	t=1738739231; cv=none; b=HAcS+GoBENYl9eD1J77k/TLRo02v/vmKsG0RhKlr6EL1rw7dTZrdriCb8cIssWLFG+OJv5QQqwxFbNZqykzIB4mRDZjlT2Z99cvyhXUHgYtGuj+Tm9eVN+ePCLj/RC3phgcgnXoUj0LVIxG00gkwqSKiT/nxX/6Prr6Q9L+nitg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738702100; c=relaxed/simple;
-	bh=cqNFdRo7JWvDWMI0Jiucy/HHSiw/Mm4U2HDtidBUTqs=;
+	s=arc-20240116; t=1738739231; c=relaxed/simple;
+	bh=nQd6usJsvwVhoEPf5AmSTBAup55zRcMYQ394ji0nGiQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Vgs2NWr4mwnZK7hJQa6tvjXrYXevpfZG3ShYpH8JtcZmw7+/MxO90utIA9W3Y1A+AiwoHl+u/3WlbMbKTEEPl49tcWrd5CWh/50uVqa0wMEg13QZSHIC3rZoB88o0GbGbU9wKfG561W29BvaUaQasAQ252NyQ7+zjOUxO/3F4nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=eCPHrmh9; arc=none smtp.client-ip=217.70.178.249
+	 In-Reply-To:Content-Type; b=uGh0MF+rWZPsIqF3U8qIlq9h4ZDAx7CXYXeh2usXBrdmJiJJ/8abBI3EfqoL/p4B7SCnehP8LPgkQOZRhDPjELW4sxeWu5TXANHvP75Z+30AXn/ZP5QOKU8mJmdNtqhWvsJNAD9r+SMZ6setp0uE26PgqLBw4tMMmMNOIDX89vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=cQk2ETrd; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="eCPHrmh9"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	by mslow3.mail.gandi.net (Postfix) with ESMTP id E0C42581A77
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Feb 2025 20:22:12 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CF384442CA;
-	Tue,  4 Feb 2025 20:17:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="cQk2ETrd"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B6FA5442C9;
+	Wed,  5 Feb 2025 07:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1738700223;
+	t=1738739227;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Gr8DClel7ZTedbngqGf/lQ7u2+pT/4V4s//m4zfK1rg=;
-	b=eCPHrmh9LW1AhFE6sJYj+QqZFMWkuOxrjSU91wNWsAqq9B9phUh+KJSkodvESL1rBwajkp
-	lrAw8GS3SNWltrC/uNw3m4HqaTAupzkSNr3QT9obhTkOMPLlbJw/3wlUGt8FRwsvSnUklH
-	vybEHhpAe95LSPcevPFfbkuKN6JI5f6QUW//7EqzkeqCy34Mnx2jekeS1b07UyYNvLwOeh
-	PxyqEDPdvkvQ3tm+99hLDpdO+4Ucm7iJteUznLEdHSMP05YUVjFkXEQDQgkMhbpvKJFSab
-	dqfhgUF2Wjf3Sk/MS4utBNnL46F41v+Eev9sDwa6npNJ9jkf6w4gUPZ28y3v7w==
-Message-ID: <d6f4e8b7-2626-4fed-b46d-80a9cdb54a50@yoseli.org>
-Date: Tue, 4 Feb 2025 21:17:02 +0100
+	bh=W0VtT32gYLV6F3SgoDwUDv0XaYjZqDJeK1pWum/LuLk=;
+	b=cQk2ETrdYBwy8UBWKe0j9YLkql+9R9/FCSGxh1/McdaHpPaPZlc37uY4mUnsjVSu3X7+VY
+	peF3kR/Jo0RlBh+j3yK9eH3TcAFCq1YwymaY69qJ7JPx1hhK4tx7sK5D7LuZ+1hnFLzPJx
+	bIG4XdCvM2hm/hqdACgWWEJtMDGWk+d84TvS37WTtLMIgrKtx+AwooftAbJCnJ8aPyCPDk
+	fKhZ0zp1u1FLXiczcxKiUI96wO7b06kXGSUVjBRUY6N+SHv3aO98jywg3MM0xnZ8gjaHAO
+	V2tKiPNxw6vc43IpKzP09HFwyNS+2brW8+dyTZBx+Uus+7HsItEifuILdwKFQw==
+Message-ID: <770e02b6-d9c5-4a2c-8516-63e08bdc4358@yoseli.org>
+Date: Wed, 5 Feb 2025 08:07:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -56,7 +53,7 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvudegjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnhepheeugfefudejieeiueffudelfeegveejhedvfeeggefhffelkeehjeekhfegffejnecukfhppeeluddrudeihedrudeihedrudeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeluddrudeihedrudeihedrudeljedphhgvlhhopegludelvddrudeikedruddriegnpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeegpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhor
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvvdektdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnhepheeugfefudejieeiueffudelfeegveejhedvfeeggefhffelkeehjeekhfegffejnecukfhppeeluddrudeihedrudeihedrudeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeluddrudeihedrudeihedrudeljedphhgvlhhopegludelvddrudeikedruddriegnpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeegpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhor
  hhg
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
@@ -126,20 +123,21 @@ On 04/02/2025 20:27, Geert Uytterhoeven wrote:
 > Can't all of the above just be replaced by
 > 
 >      unsigned long flags = arch_local_irq_save();
-> 
 
-I will check it again, but it seems a bit different. Now I get:
-[   97.919407] hrtimer: interrupt took 203520 ns
-[  161.757921] irq 24, desc: 24ef8971, depth: 1, count: 0, unhandled: 0
-[  161.758074] ->handle_irq():  60d6a158, handle_bad_irq+0x0/0x1e0
-[  161.758241] ->irq_data.chip(): 93aaf7a5, 0x4164e544
-[  161.758359] ->action(): 00000000
-[  161.758415] unexpected IRQ trap at vector 18
+The only change is the Supervisor bit in SR which is not changed in
+arch_local_irq_disable() while it is forced to 1 in my function (setting 
+it to 0x2700 AFAICT).
 
-So, maybe isn't it exactly the same after all ?
+But I can confirm I couldn't see the issue with this code, while using 
+the existing arch_local_irq_save() it still appears (less frequently 
+than without it at all, but still).
 
+Any suggestion :-) ?
+
+Thanks,
 JM
 
+> 
 >>          if (MCFINTC2_SIMR && (irq > 127))
 >>                  __raw_writeb(irq - 128, MCFINTC2_SIMR);
 >>          else if (MCFINTC1_SIMR && (irq > 63))
