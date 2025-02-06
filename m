@@ -1,161 +1,200 @@
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBB715198E
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Feb 2025 11:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083E822332C
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Feb 2025 06:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738754823; cv=none; b=VUIMTB5GSuKfnAReD+7P2q73F0/Zllax9h+mmmqNOYD/t77jq4pVZYivPQFMOh/VBnWqwE+G/VVfGCxKAHSKE++Rv/3KCe70N+lX1H9XURjEFyMJtlCu0/UuzI92ZJ6fwX84DohblJS9GzAN+03Re9wouH89/GTm4d97VfBqIgc=
+	t=1738822402; cv=none; b=oBMyZO+YJfMPUhOA5gAZHwo9kkO33AdGMq396byDLgmfiEI9nkS6u2OJTzC4qCNj2ACRfytjtxWCCKQXlpvhFWJElOJ72Hc3y2Or1TAOBTJVm/fiBwwkiccTpvRUhn337rreQDahO99or9MWSBqHjA5DsEnbuWxh7qAdE6viGD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738754823; c=relaxed/simple;
-	bh=vAjOelsLhgE7cTbajS/rLoP4/dBuyc7KpYJdvzKzjjc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d9QavVqpBgd6kwW6MtF7Mx2diigYQXEGyCTz2MF6gijyPbUb0dl0q2QKeQoy/VlfW1osQNKIrYFwnS9uG6LeiTS1rmyypdK2qu8fU8YRBKzZY+INk93W1RIvSeUyv3UyvhptwfknXNt2ktZsqFttn8yg63L/Nh8GikU6joKJc1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=PNdxbj8i; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="PNdxbj8i"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C9FEC431F3;
-	Wed,  5 Feb 2025 11:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1738754819;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sq5Wl3VpxfteH7yDU0FYkqu7z1ZPKnw3eIciZDN0ybk=;
-	b=PNdxbj8im98MeQerosXAQ6X/mIgTqYZqaoe0HGa2e6w7B3za+PwmGO3R5YPbHWSad44ZfI
-	k6OG0KIJIJLsIAkyH92N7T8P6PRcX8M7dRbzgxVXXVMn2zgLF//66O2AoBzuz1g2ovtClH
-	aEoVcy3CeFQkBm6dK+5uMpDiPwkQU0wBj+KSEHG17wj1pXXm8a/DN1lfoQb17SaAwRVEIO
-	MFV7CAUsFZH7+LEQZREj4yPlLPpptVTVTjbL9eQVP0zZf/u7velVSXxwUSkk+puh5X+x+A
-	NTVEFcLAaIcj+kAZ7UF4ipPirmqxwTol7Wsx6Prqgg6kmgjL5c+Actbfo8xIqQ==
-Message-ID: <f13b40d7-4a67-4de8-8d25-1a56be164dbe@yoseli.org>
-Date: Wed, 5 Feb 2025 12:26:58 +0100
+	s=arc-20240116; t=1738822402; c=relaxed/simple;
+	bh=QPSFVvim1khGndp9G0sS+Fqd4kfhnsgI0vmM66bRMGI=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=BalM7r/t75sqEBxsVFCSmxEzU1fy+N7rI5oz51vTF4U0cN5yAzfIj++G2MVdQdZNASgJpGv8sBSxO445sfUhA0RTCQ2xhApJiPX7LZpn+UZHirbW8b46wkqB0y4MYd8jTPwgI6nRuOS0QyTszOxngHmsSONgUt+KQLwAvuTn0cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YpRbm3s9vz4f3jMf
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Feb 2025 14:12:52 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id AA64C1A1465
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Feb 2025 14:13:13 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgCnCF34UqRnpFU0DA--.34331S2;
+	Thu, 06 Feb 2025 14:13:13 +0800 (CST)
+Subject: Re: [PATCH v4 2/5] Xarray: move forward index correctly in
+ xas_pause()
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: akpm@linux-foundation.org, willy@infradead.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20241218154613.58754-1-shikemeng@huaweicloud.com>
+ <20241218154613.58754-3-shikemeng@huaweicloud.com>
+ <CAMuHMdU_bfadUO=0OZ=AoQ9EAmQPA4wsLCBqohXR+QCeCKRn4A@mail.gmail.com>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <82014768-2ea7-2a28-cade-99d5d8ebe59e@huaweicloud.com>
+Date: Thu, 6 Feb 2025 14:13:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: coldfire: Prevent spurious interrupts when masking
- IMR
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org
-References: <20250204-coldfire-spurious-irq-v1-1-b8f28855f690@yoseli.org>
- <CAMuHMdXkq57WjUPeg3kTsgi-YSw23qV-gK4gVxymOSKGGTDuQQ@mail.gmail.com>
- <770e02b6-d9c5-4a2c-8516-63e08bdc4358@yoseli.org>
- <CAMuHMdXtzGFr2iE7py2fQPMegJTnfKe_NtW25g=h+sohfEhmAA@mail.gmail.com>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <CAMuHMdXtzGFr2iE7py2fQPMegJTnfKe_NtW25g=h+sohfEhmAA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvfeeffecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnhepheeugfefudejieeiueffudelfeegveejhedvfeeggefhffelkeehjeekhfegffejnecukfhppeeluddrudeihedrudeihedrudeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeluddrudeihedrudeihedrudeljedphhgvlhhopegludelvddrudeikedruddriegnpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeegpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhor
- hhg
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+In-Reply-To: <CAMuHMdU_bfadUO=0OZ=AoQ9EAmQPA4wsLCBqohXR+QCeCKRn4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCnCF34UqRnpFU0DA--.34331S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJFW7Ww15Kw18XryUAF17GFg_yoWrCFWDpF
+	WDJa4xKFW8Jr1Ikr18ta10q3409w1Yka13KrW5GF10yrsrCrnaya1jgrZ8uFyDuF4qvry2
+	yF4vgw1qgw4DJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
+	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2N
+	tUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
+
+
+on 1/28/2025 12:21 AM, Geert Uytterhoeven wrote:
+> Hi Kemeng,
+> 
+> On Wed, 18 Dec 2024 at 07:58, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
+>> After xas_load(), xas->index could point to mid of found multi-index entry
+>> and xas->index's bits under node->shift maybe non-zero. The afterward
+>> xas_pause() will move forward xas->index with xa->node->shift with bits
+>> under node->shift un-masked and thus skip some index unexpectedly.
+>>
+>> Consider following case:
+>> Assume XA_CHUNK_SHIFT is 4.
+>> xa_store_range(xa, 16, 31, ...)
+>> xa_store(xa, 32, ...)
+>> XA_STATE(xas, xa, 17);
+>> xas_for_each(&xas,...)
+>> xas_load(&xas)
+>> /* xas->index = 17, xas->xa_offset = 1, xas->xa_node->xa_shift = 4 */
+>> xas_pause()
+>> /* xas->index = 33, xas->xa_offset = 2, xas->xa_node->xa_shift = 4 */
+>> As we can see, index of 32 is skipped unexpectedly.
+>>
+>> Fix this by mask bit under node->xa_shift when move forward index in
+>> xas_pause().
+>>
+>> For now, this will not cause serious problems. Only minor problem
+>> like cachestat return less number of page status could happen.
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> 
+> Thanks for your patch, which is now commit c9ba5249ef8b080c ("Xarray:
+> move forward index correctly in xas_pause()") upstream.
+> 
+>> --- a/lib/test_xarray.c
+>> +++ b/lib/test_xarray.c
+>> @@ -1448,6 +1448,41 @@ static noinline void check_pause(struct xarray *xa)
+>>         XA_BUG_ON(xa, count != order_limit);
+>>
+>>         xa_destroy(xa);
+>> +
+>> +       index = 0;
+>> +       for (order = XA_CHUNK_SHIFT; order > 0; order--) {
+>> +               XA_BUG_ON(xa, xa_store_order(xa, index, order,
+>> +                                       xa_mk_index(index), GFP_KERNEL));
+>> +               index += 1UL << order;
+>> +       }
+>> +
+>> +       index = 0;
+>> +       count = 0;
+>> +       xas_set(&xas, 0);
+>> +       rcu_read_lock();
+>> +       xas_for_each(&xas, entry, ULONG_MAX) {
+>> +               XA_BUG_ON(xa, entry != xa_mk_index(index));
+>> +               index += 1UL << (XA_CHUNK_SHIFT - count);
+>> +               count++;
+>> +       }
+>> +       rcu_read_unlock();
+>> +       XA_BUG_ON(xa, count != XA_CHUNK_SHIFT);
+>> +
+>> +       index = 0;
+>> +       count = 0;
+>> +       xas_set(&xas, XA_CHUNK_SIZE / 2 + 1);
+>> +       rcu_read_lock();
+>> +       xas_for_each(&xas, entry, ULONG_MAX) {
+>> +               XA_BUG_ON(xa, entry != xa_mk_index(index));
+>> +               index += 1UL << (XA_CHUNK_SHIFT - count);
+>> +               count++;
+>> +               xas_pause(&xas);
+>> +       }
+>> +       rcu_read_unlock();
+>> +       XA_BUG_ON(xa, count != XA_CHUNK_SHIFT);
+>> +
+>> +       xa_destroy(xa);
+>> +
+>>  }
+> 
+> On m68k, the last four XA_BUG_ON() checks above are triggered when
+> running the test.  With extra debug prints added:
+> 
+>     entry = 00000002 xa_mk_index(index) = 000000c1
+>     entry = 00000002 xa_mk_index(index) = 000000e1
+>     entry = 00000002 xa_mk_index(index) = 000000f1
+>     ...
+>     entry = 000000e2 xa_mk_index(index) = fffff0ff
+>     entry = 000000f9 xa_mk_index(index) = fffff8ff
+>     entry = 000000f2 xa_mk_index(index) = fffffcff
+>     count = 63 XA_CHUNK_SHIFT = 6
+>     entry = 00000081 xa_mk_index(index) = 00000001
+>     entry = 00000002 xa_mk_index(index) = 00000081
+>     entry = 00000002 xa_mk_index(index) = 000000c1
+>     ...
+>     entry = 000000e2 xa_mk_index(index) = ffffe0ff
+>     entry = 000000f9 xa_mk_index(index) = fffff0ff
+>     entry = 000000f2 xa_mk_index(index) = fffff8ff
+>      count = 62 XA_CHUNK_SHIFT = 6
+> 
+> On arm32, the test succeeds, so it's probably not a 32-vs-64-bit issue.
+> Perhaps a big-endian or alignment issue (alignof(int/long) = 2)?
 Hi Geert,
+Sorry for late reply. After check the debug info and the code, I think
+the test is failed because CONFIG_XARRAY_MULTI is off. I guess
+CONFIG_XARRAY_MULTI is on arm32 and is off on m68k so the test result
+diffs. Luckly it's only a problem of of test code.
+I will send patch to correct the test code soon. Thanks!
 
-On 05/02/2025 09:14, Geert Uytterhoeven wrote:
-> Hi Jean-Michel,
+Kemeng
+
 > 
-> On Wed, 5 Feb 2025 at 08:07, Jean-Michel Hautbois
-> <jeanmichel.hautbois@yoseli.org> wrote:
->> On 04/02/2025 20:27, Geert Uytterhoeven wrote:
->>> On Tue, 4 Feb 2025 at 19:38, Jean-Michel Hautbois
->>> <jeanmichel.hautbois@yoseli.org> wrote:
->>>> The ColdFire interrupt controller can generate spurious interrupts if an
->>>> interrupt source is masked in the IMR while the CPU interrupt priority
->>>> mask (SR[I]) is set lower than the interrupt level.
->>>>
->>>> The reference manual states:
->>>>
->>>> To avoid this situation for interrupts sources with levels 1-6, first
->>>> write a higher level interrupt mask to the status register, before
->>>> setting the mask in the IMR or the module’s interrupt mask register.
->>>> After the mask is set, return the interrupt mask in the status register
->>>> to its previous value.
->>>>
->>>> It can be tested like this:
->>>> - Prepare a iperf3 server on the coldfire target (iperf3 -s -D)
->>>> - Start a high priority cyclictest:
->>>>       cyclictest --secaligned -m -p 99 -i 2500 -q
->>>> - Start iperf3 -c $COLDFIRE_IP -t 0
->>>>
->>>> After a few seconds the dmesg may display:
->>>> [   84.784301] irq 24, desc: dbc502da, depth: 1, count: 0, unhandled: 0
->>>> [   84.784455] ->handle_irq():  0ba0aca3, handle_bad_irq+0x0/0x1e0
->>>> [   84.784610] ->irq_data.chip(): c6779d4f, 0x41652544
->>>> [   84.784719] ->action(): 00000000
->>>> [   84.784770] unexpected IRQ trap at vector 18
->>>>
->>>> With this patch, I never saw it in a few hours testing.
->>>>
->>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>>
->>> Thanks for your patch!
->>>
->>>> --- a/arch/m68k/coldfire/intc-simr.c
->>>> +++ b/arch/m68k/coldfire/intc-simr.c
->>>> @@ -58,6 +58,14 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>>>
->>>>    #endif
->>>>
->>>> +static inline void intc_irq_setlevel(unsigned long level)
->>>> +{
->>>> +       asm volatile ("move.w %0,%%sr"
->>>> +                     : /* no outputs */
->>>> +                     : "d" (0x2000 | ((level) << 8))
->>>> +                     : "memory");
->>>> +}
->>>> +
->>>>    /*
->>>>     *     There maybe one, two or three interrupt control units, each has 64
->>>>     *     interrupts. If there is no second or third unit then MCFINTC1_* or
->>>> @@ -67,13 +75,17 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>>>    static void intc_irq_mask(struct irq_data *d)
->>>>    {
->>>>           unsigned int irq = d->irq - MCFINT_VECBASE;
->>>> +       unsigned long flags = arch_local_save_flags();
->>>>
->>>> +       intc_irq_setlevel(7);
->>>
->>> Can't all of the above just be replaced by
->>>
->>>       unsigned long flags = arch_local_irq_save();
->>
->> The only change is the Supervisor bit in SR which is not changed in
->> arch_local_irq_disable() while it is forced to 1 in my function (setting
->> it to 0x2700 AFAICT).
->>
->> But I can confirm I couldn't see the issue with this code, while using
->> the existing arch_local_irq_save() it still appears (less frequently
->> than without it at all, but still).
->>
->> Any suggestion :-) ?
+>> --- a/lib/xarray.c
+>> +++ b/lib/xarray.c
+>> @@ -1147,6 +1147,7 @@ void xas_pause(struct xa_state *xas)
+>>                         if (!xa_is_sibling(xa_entry(xas->xa, node, offset)))
+>>                                 break;
+>>                 }
+>> +               xas->xa_index &= ~0UL << node->shift;
+>>                 xas->xa_index += (offset - xas->xa_offset) << node->shift;
+>>                 if (xas->xa_index == 0)
+>>                         xas->xa_node = XAS_BOUNDS;
 > 
-> There are other differences: your version clears all other bits, incl.
-> condition codes and master/interrupt state.
-> 
-> Can you save the flags above in a global, and print it in the
-> unexpected IRQ handler, to see which other bits are set when
-> it happens?
-
-An interesting side effect is... that only saving the flags makes it *a 
-lot* harder to reproduce -_-.
-Which is coherent with a race condition though :p.
-
-Each time I got the message, the flags saved where 0x2711.
-
-JM
-
 > Gr{oetje,eeting}s,
 > 
->                          Geert
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 > 
 
