@@ -1,193 +1,219 @@
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A034E153808
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Feb 2025 07:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95D619E98B
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Feb 2025 20:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738827274; cv=none; b=IswQqJ+iqNP/Lzgg2Uai1H+vzPRdtQ0WgnRhhN6WRCEfYdSPLHdZp08iYwCwyFBZ6wXcr3lPBaGfjUAQWP6Vi4uuD3x2wTTLededX1nQ5R8g4Ldv5BYtQCQXOVDOVbSwcA6wAaubOa6/NbRKh4ZodgW5o43QBpmmo+2Xk3q1z+4=
+	t=1738959252; cv=none; b=qMEyNWQArlw8a/i2Dy9S12Q+kuWvP5js+ZbD+zckM5+9JXuyk5/ZZVRLaRsKNtjENSK81ylR8cvz9pjT0igJ+3+i7A6VsfUeN6AG0rzi5ZdboFcmuZx/knlLQ2dLSo+rhsbu9A7ZW35EpgMbecrBNaq8u9SfegpELRC3IZwH+gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738827274; c=relaxed/simple;
-	bh=ZqC215pGfYAb7flXSAc08+IrFcFj62WGS6CVa6R7k4E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dRj70tATdZNtogNYh83igyOMIjqstO+CqiMwmYGLfLUkmYvPbWz7PC0/RxAVANmpS/W1V4i74gGUJFbXBVHZxFL1lg7aw6ga4DN/ds6xLtWRg6GUj6w9Iv3ZtwEjQIkYALtZ9ome381aH4UT1IIRPuhz2LGezTQIBw6wtH1v7Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1738959252; c=relaxed/simple;
+	bh=OIee8Zv7FJW8dLrmsyqrHqhnUwTu0qSp/jU2rKhNy7E=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=OrL0C84Ibx1oN/4IzLAbvCghJKIzSWR0iaOJafKxPZaQSludzSqWoKCHYqsSmLmI9obWrX8gNQ6q0TRMjDZc2uYyFmgtZwGLGtuh60I1y38GKxsOd01XlC3PyYSbiNpVMvgIywMlJ+N7a55YJ7NabOjut+twJUDdDxvtvp9A+9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=THl9d69w; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4ba7d7aa995so8113137.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 05 Feb 2025 23:34:32 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="THl9d69w"
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7b6e9586b82so225297685a.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Feb 2025 12:14:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738959248; x=1739564048; darn=lists.linux-m68k.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=InMP3iob4ePV8GF0GnOu+F67bMQE3/48J3tUdjgvoYQ=;
+        b=THl9d69wR2+UzsPGcx2kT3Lxj2aeL9xZ6nW9QDTu/9NfgOIjZ9LM4//fZorqnozhQq
+         uI3USomTP3DnTjWyOs6GuzSBYzBuWxnlKw0RnC+5wcDSlL4De4gvk+4fbxO2Gr2qL9Sw
+         AjVOLN1nb5AJTPV4h/Z6HcgZDRoJ25vDlWXdgVNx7CWslyFNLAUAsq99UEM8SworK8TQ
+         1DXnXSBQY5WOyzzZYcwLK0or/isTj2dQtsBnS2rVAOnt8sn2SaF2SKGY8e9IAEcBNA7Z
+         owfsy3vb4GGckIH/+wZJV5uRpglBP39BZIbNGvpr1+RfskxautVWpGcKTenChnUSiUQK
+         Mnyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738827270; x=1739432070;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1738959248; x=1739564048;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kYqxjen2ckyh6AMFJqNUH79gwyV2vSuAN69CefkfgXQ=;
-        b=OXRUbhhQ5XAoXheAeUUsbrSzZ3OA1e0kjt2MWo4gzEN216MRDUNVQpzwoQnVGz5Z9O
-         fOkwUD9zE8Q8i+V4J8P1RPHWctuuVj9VkZ30abpR1hCT7Z//yekeLkNSqs7FVa+VGJxs
-         Cu/lkALHQaD6yJEKZsaaPP/qf8LX1vCPdkHEb/+SCKaiMktydlUvtDZfPZhcCJbxmWoi
-         A/jXg3R2XhuYH3nu3uU4RA0Gmdml1E3vvLl3Js7vU+dkcY19FX7+hGsxbK9d/YtAG0Xe
-         4d3JiQr2douF1UzmaQxvHBjQMN2oGfNMR28QH15YT1oHTuOHmXSlSBxqqF3/yFOK+EGd
-         0WFA==
-X-Forwarded-Encrypted: i=1; AJvYcCX++Zwv4ZL1J8Bob/H2ngs9IB5E3oJc43Rl+sA3zdskoPOQNA5nrecSFzyhu1NdzGBpYHn9vWKvHvW7@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy191KQBvsRmoqQt9GxDsFaC2cZkEZIm9KaEWT/KjByGlcZZ8PT
-	MifTIJ9rxawxQInfiKqNEfwkgM0df0qVG+I4DrgEY4TToMLPRcg6A01DjueR
-X-Gm-Gg: ASbGncuzVBTM3HJEah1zTqK233A7JOC+yYRTT807ipylQdiJWrtUoey2sZ78EUNXhhh
-	Gl03RHYKQDN7NgQkPmaXHj3E+mcz+kD/aVxoVN0g15z+jeXpkiSEbKgTwl6H+z2OCVjvdszrwri
-	ePfk3EudLOy7ZJj53MBqu6h+vgYvJKKDkpUHKuAIm2c30TAT4UCL8eGQ3sTz4t2t+4zQbi8V8Cr
-	MCsVMZAfgPEjbGIY+yEAW9u9ukPUd5HRqYPQ0pWIr8uUDScjq2JbJ/haFB1j7wBzj3C+/LnjnWR
-	lGDYR0qDbVuBKhIBT/dzPqetRlqyeNNVRhx+qsvRO38LbnZMUnp9pw==
-X-Google-Smtp-Source: AGHT+IH/Z1OGLnSZzn+Tpruvd4PnuAvi9f/YTdFoWTIT93KznMy1APhtYbJHUJPtupvV3VNV7vt5QA==
-X-Received: by 2002:a05:6102:2ac2:b0:4af:ea3b:7b31 with SMTP id ada2fe7eead31-4ba478e7ae1mr2785131137.14.1738827269701;
-        Wed, 05 Feb 2025 23:34:29 -0800 (PST)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-866f97d8c6asm108616241.21.2025.02.05.23.34.29
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 Feb 2025 23:34:29 -0800 (PST)
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-866f61c01e5so160101241.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 05 Feb 2025 23:34:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXH/zkljAli0cLwOoeGEnQsEW0p9ynV12zH5B9W5w5G01JHa4EK9KMnOEJAfa9Uoqc3z9X78ts3a1ZT@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:cd3:b0:4b2:5c4b:b0aa with SMTP id
- ada2fe7eead31-4ba47a69fd7mr3852490137.17.1738827268953; Wed, 05 Feb 2025
- 23:34:28 -0800 (PST)
+        bh=InMP3iob4ePV8GF0GnOu+F67bMQE3/48J3tUdjgvoYQ=;
+        b=ELvg1UAtG9fS7bqOQ9+fvGeOvCC1XFEIFcRLb1tSeifnqwShlurVxQk0Esgwdz2JLC
+         1ppnJRPkU7uMwgFOlqDrqsh9Ak8oJFE5BT2s0z/mIotW7KS29plwcO1cHkM5gyxyMl1Z
+         ctr7BAJawb+FAByMT/1+JeUsyAX0lqs6Mp/rRn1ntSr0D/CsAscnSUdK2nCEo6vz925P
+         kwC/qgMbtxJzujnPmvyVvOEVjjS3oog6zZRMo/mxS2mJcR3p6DG/LuyRqyllb7aI5Rrf
+         LUTBNiptyMJ4YBJc8f/LhsgDxu1OEq+L62qmqiAvOaU0UJzFRd26RUd62zvb3QJe99GI
+         FUog==
+X-Forwarded-Encrypted: i=1; AJvYcCXEgCtb5tLxWr2QawCO3sQtQ2cPA9v9fJxpE6Olk1wOv6SyNic+9IAg3g63y7g2HaJKAwhYhN02qw3C@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Ywa7uo+8iZjEKSV/k502gZOIM4MIcMx4MF32dDtfEbEHqXfTogy
+	jplfGi8yKHw9trIda6634cfV/svIrq1YijdCdVj2GFR/9ZG5C/Sd
+X-Gm-Gg: ASbGncvlWJojw0WBJVGYQ9S8zu23GOJjJYxoFSvzoFjn1y+6s3RlcNH7i1Cx245jBiP
+	UGIisplsQXA1NdOKAnvrH2eQGS6HazAWN2lI8chnvJKxdiao24NdM7Cv8OWUhxS3HETWERltSMd
+	bAjUuZWQajCKlbHU/Q1x5O1KFAMpHnqtCrR4BUpuahr4EqUGn4LMrV3TuMWFWF+E9VskOJJvnjb
+	e3pLIdHstshWaba9KPq5yaHoQUpsFzS9rPvanXK88Uu/oebr2BtTpfv01OMo7FUFgKKnBAMd3bx
+	0Z5S+FHq21mw54++yDFBtqsa7pOG1ZqP0xIaAVx+HyEfIZ9iCTn4/rSkfpl5zxl2U0wM3kCRVGp
+	0bcbhzli5XMr8Nf/vJRrxWMlDomoftZcVbzJ6cA==
+X-Google-Smtp-Source: AGHT+IF9/EZlG7CYstG/RAX4Cebsc2v6V7/CwkGisOAz02Bj/HKRkvBl3RnAIQYOfaIOw465jlPEvA==
+X-Received: by 2002:a05:620a:40cc:b0:7b6:e9db:3b21 with SMTP id af79cd13be357-7c047bba9afmr576565385a.14.1738959248476;
+        Fri, 07 Feb 2025 12:14:08 -0800 (PST)
+Received: from 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa ([2600:4041:5be7:7c00:c58e:ed03:1b60:c56d])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c041e13895sm228851285a.58.2025.02.07.12.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Feb 2025 12:14:08 -0800 (PST)
+From: Tamir Duberstein <tamird@gmail.com>
+Subject: [PATCH 0/3] bitmap: convert self-test to KUnit
+Date: Fri, 07 Feb 2025 15:14:01 -0500
+Message-Id: <20250207-bitmap-kunit-convert-v1-0-c520675343b6@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241218154613.58754-1-shikemeng@huaweicloud.com>
- <20241218154613.58754-3-shikemeng@huaweicloud.com> <CAMuHMdU_bfadUO=0OZ=AoQ9EAmQPA4wsLCBqohXR+QCeCKRn4A@mail.gmail.com>
- <82014768-2ea7-2a28-cade-99d5d8ebe59e@huaweicloud.com>
-In-Reply-To: <82014768-2ea7-2a28-cade-99d5d8ebe59e@huaweicloud.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 6 Feb 2025 08:34:17 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWT05uMjEassapuFr7podb_eH=T14SOyS4yW4Wh7DUcTQ@mail.gmail.com>
-X-Gm-Features: AWEUYZlF1WKVp8XKeZEs4N8gBdQGzZtMTGkdvJadBBpYovB0_UlZtliJmtMLsz0
-Message-ID: <CAMuHMdWT05uMjEassapuFr7podb_eH=T14SOyS4yW4Wh7DUcTQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] Xarray: move forward index correctly in xas_pause()
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-nfs@vger.kernel.org, 
-	linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIlppmcC/x3MQQqEMBAF0atIr6chtoo4VxlmEfWrjRgliSKId
+ ze4fIuqiwK8ItA3u8jj0KCrS8g/GXWTdSNY+2QSI5URU3OrcbEbz7vTyN3qDvjIjfRFXtatAKC
+ Ubh6Dnu/297/vByCSwpNmAAAA
+X-Change-ID: 20250207-bitmap-kunit-convert-92d3147b2eee
+To: David Gow <davidgow@google.com>, John Hubbard <jhubbard@nvidia.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Naveen N Rao <naveen@kernel.org>, Yury Norov <yury.norov@gmail.com>, 
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, Shuah Khan <shuah@kernel.org>, 
+ Kees Cook <kees@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, 
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org, 
+ Tamir Duberstein <tamird@gmail.com>
+X-Mailer: b4 0.15-dev
 
-Hi Kemeng,
+This is one of just 3 remaining "Test Module" kselftests (the others
+being printf and scanf), the rest having been converted to KUnit.
 
-On Thu, 6 Feb 2025 at 07:13, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
-> on 1/28/2025 12:21 AM, Geert Uytterhoeven wrote:
-> > On Wed, 18 Dec 2024 at 07:58, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
-> >> After xas_load(), xas->index could point to mid of found multi-index entry
-> >> and xas->index's bits under node->shift maybe non-zero. The afterward
-> >> xas_pause() will move forward xas->index with xa->node->shift with bits
-> >> under node->shift un-masked and thus skip some index unexpectedly.
-> >>
-> >> Consider following case:
-> >> Assume XA_CHUNK_SHIFT is 4.
-> >> xa_store_range(xa, 16, 31, ...)
-> >> xa_store(xa, 32, ...)
-> >> XA_STATE(xas, xa, 17);
-> >> xas_for_each(&xas,...)
-> >> xas_load(&xas)
-> >> /* xas->index = 17, xas->xa_offset = 1, xas->xa_node->xa_shift = 4 */
-> >> xas_pause()
-> >> /* xas->index = 33, xas->xa_offset = 2, xas->xa_node->xa_shift = 4 */
-> >> As we can see, index of 32 is skipped unexpectedly.
-> >>
-> >> Fix this by mask bit under node->xa_shift when move forward index in
-> >> xas_pause().
-> >>
-> >> For now, this will not cause serious problems. Only minor problem
-> >> like cachestat return less number of page status could happen.
-> >>
-> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> >
-> > Thanks for your patch, which is now commit c9ba5249ef8b080c ("Xarray:
-> > move forward index correctly in xas_pause()") upstream.
-> >
-> >> --- a/lib/test_xarray.c
-> >> +++ b/lib/test_xarray.c
-> >> @@ -1448,6 +1448,41 @@ static noinline void check_pause(struct xarray *xa)
-> >>         XA_BUG_ON(xa, count != order_limit);
-> >>
-> >>         xa_destroy(xa);
-> >> +
-> >> +       index = 0;
-> >> +       for (order = XA_CHUNK_SHIFT; order > 0; order--) {
-> >> +               XA_BUG_ON(xa, xa_store_order(xa, index, order,
-> >> +                                       xa_mk_index(index), GFP_KERNEL));
-> >> +               index += 1UL << order;
-> >> +       }
-> >> +
-> >> +       index = 0;
-> >> +       count = 0;
-> >> +       xas_set(&xas, 0);
-> >> +       rcu_read_lock();
-> >> +       xas_for_each(&xas, entry, ULONG_MAX) {
-> >> +               XA_BUG_ON(xa, entry != xa_mk_index(index));
-> >> +               index += 1UL << (XA_CHUNK_SHIFT - count);
-> >> +               count++;
-> >> +       }
-> >> +       rcu_read_unlock();
-> >> +       XA_BUG_ON(xa, count != XA_CHUNK_SHIFT);
-> >> +
-> >> +       index = 0;
-> >> +       count = 0;
-> >> +       xas_set(&xas, XA_CHUNK_SIZE / 2 + 1);
-> >> +       rcu_read_lock();
-> >> +       xas_for_each(&xas, entry, ULONG_MAX) {
-> >> +               XA_BUG_ON(xa, entry != xa_mk_index(index));
-> >> +               index += 1UL << (XA_CHUNK_SHIFT - count);
-> >> +               count++;
-> >> +               xas_pause(&xas);
-> >> +       }
-> >> +       rcu_read_unlock();
-> >> +       XA_BUG_ON(xa, count != XA_CHUNK_SHIFT);
-> >> +
-> >> +       xa_destroy(xa);
-> >> +
-> >>  }
-> >
-> > On m68k, the last four XA_BUG_ON() checks above are triggered when
-> > running the test.  With extra debug prints added:
-> >
-> >     entry = 00000002 xa_mk_index(index) = 000000c1
-> >     entry = 00000002 xa_mk_index(index) = 000000e1
-> >     entry = 00000002 xa_mk_index(index) = 000000f1
-> >     ...
-> >     entry = 000000e2 xa_mk_index(index) = fffff0ff
-> >     entry = 000000f9 xa_mk_index(index) = fffff8ff
-> >     entry = 000000f2 xa_mk_index(index) = fffffcff
-> >     count = 63 XA_CHUNK_SHIFT = 6
-> >     entry = 00000081 xa_mk_index(index) = 00000001
-> >     entry = 00000002 xa_mk_index(index) = 00000081
-> >     entry = 00000002 xa_mk_index(index) = 000000c1
-> >     ...
-> >     entry = 000000e2 xa_mk_index(index) = ffffe0ff
-> >     entry = 000000f9 xa_mk_index(index) = fffff0ff
-> >     entry = 000000f2 xa_mk_index(index) = fffff8ff
-> >      count = 62 XA_CHUNK_SHIFT = 6
-> >
-> > On arm32, the test succeeds, so it's probably not a 32-vs-64-bit issue.
-> > Perhaps a big-endian or alignment issue (alignof(int/long) = 2)?
-> Hi Geert,
-> Sorry for late reply. After check the debug info and the code, I think
-> the test is failed because CONFIG_XARRAY_MULTI is off. I guess
-> CONFIG_XARRAY_MULTI is on arm32 and is off on m68k so the test result
-> diffs. Luckly it's only a problem of of test code.
-> I will send patch to correct the test code soon. Thanks!
+I tested this using:
 
-You are right: CONFIG_XARRAY_MULTI is enabled in my arm32 build,
-but not in my m68k build.
+$ tools/testing/kunit/kunit.py run --arch arm64 --make_options LLVM=1 bitmap.
 
-Gr{oetje,eeting}s,
+I've already sent out a conversion series for each of printf[0] and scanf[1].
 
-                        Geert
+There was a previous attempt[2] to do this in July 2024. Please bear
+with me as I try to understand and address the objections from that
+time. I've spoken with Muhammad Usama Anjum, the author of that series,
+and received their approval to "take over" this work. Here we go...
 
+On 7/26/24 11:45 PM, John Hubbard wrote:
+> 
+> This changes the situation from "works for Linus' tab completion
+> case", to "causes a tab completion problem"! :)
+> 
+> I think a tests/ subdir is how we eventually decided to do this [1],
+> right?
+> 
+> So:
+> 
+>     lib/tests/bitmap_kunit.c
+> 
+> [1] https://lore.kernel.org/20240724201354.make.730-kees@kernel.org
+
+This is true and unfortunate, but not trivial to fix because new
+kallsyms tests were placed in lib/tests in commit 84b4a51fce4c
+("selftests: add new kallsyms selftests")  *after* the KUnit filename
+best practices were adopted.
+
+I propose that the KUnit maintainers blaze this trail using
+`string_kunit.c` which currently still lives in lib/ despite the KUnit
+docs giving it as an example at lib/tests/.
+
+On 7/27/24 12:24 AM, Shuah Khan wrote:
+> 
+> This change will take away the ability to run bitmap tests during
+> boot on a non-kunit kernel.
+> 
+> Nack on this change. I wan to see all tests that are being removed
+> from lib because they have been converted - also it doesn't make
+> sense to convert some tests like this one that add the ability test
+> during boot.
+
+This point was also discussed in another thread[3] in which:
+
+On 7/27/24 12:35 AM, Shuah Khan wrote:
+> 
+> Please make sure you aren't taking away the ability to run these tests during
+> boot. 
+>
+> It doesn't make sense to convert every single test especially when it
+> is intended to be run during boot without dependencies - not as a kunit test
+> but a regression test during boot.
+> 
+> bitmap is one example - pay attention to the config help test - bitmap
+> one clearly states it runs regression testing during boot. Any test that
+> says that isn't a candidate for conversion.
+> 
+> I am going to nack any such conversions.
+
+The crux of the argument seems to be that the config help text is taken
+to describe the author's intent with the fragment "at boot". I think
+this may be a case of confirmation bias: I see at least the following
+KUnit tests with "at boot" in their help text:
+- CPUMASK_KUNIT_TEST
+- BITFIELD_KUNIT
+- CHECKSUM_KUNIT
+- UTIL_MACROS_KUNIT
+
+It seems to me that the inference being made is that any test that runs
+"at boot" is intended to be run by both developers and users, but I find
+no evidence that bitmap in particular would ever provide additional
+value when run by users.
+
+There's further discussion about KUnit not being "ideal for cases where
+people would want to check a subsystem on a running kernel", but I find
+no evidence that bitmap in particular is actually testing the running
+kernel; it is a unit test of the bitmap functions, which is also stated
+in the config help text.
+
+David Gow made many of the same points in his final reply[4], which was
+never replied to.
+
+Link: https://lore.kernel.org/all/20250207-printf-kunit-convert-v2-0-057b23860823@gmail.com/T/#u [0]
+Link: https://lore.kernel.org/all/20250207-scanf-kunit-convert-v4-0-a23e2afaede8@gmail.com/T/#u [1]
+Link: https://lore.kernel.org/all/20240726110658.2281070-1-usama.anjum@collabora.com/T/#u [2]
+Link: https://lore.kernel.org/all/327831fb-47ab-4555-8f0b-19a8dbcaacd7@collabora.com/T/#u [3]
+Link: https://lore.kernel.org/all/CABVgOSmMoPD3JfzVd4VTkzGL2fZCo8LfwzaVSzeFimPrhgLa5w@mail.gmail.com/ [4]
+
+Thanks for your attention.
+
+Signed-off-by: Tamir Duberstein <tamird@gmail.com>
+---
+Tamir Duberstein (3):
+      bitmap: remove _check_eq_u32_array
+      bitmap: convert self-test to KUnit
+      bitmap: break kunit into test cases
+
+ MAINTAINERS                           |   2 +-
+ arch/m68k/configs/amiga_defconfig     |   1 -
+ arch/m68k/configs/apollo_defconfig    |   1 -
+ arch/m68k/configs/atari_defconfig     |   1 -
+ arch/m68k/configs/bvme6000_defconfig  |   1 -
+ arch/m68k/configs/hp300_defconfig     |   1 -
+ arch/m68k/configs/mac_defconfig       |   1 -
+ arch/m68k/configs/multi_defconfig     |   1 -
+ arch/m68k/configs/mvme147_defconfig   |   1 -
+ arch/m68k/configs/mvme16x_defconfig   |   1 -
+ arch/m68k/configs/q40_defconfig       |   1 -
+ arch/m68k/configs/sun3_defconfig      |   1 -
+ arch/m68k/configs/sun3x_defconfig     |   1 -
+ arch/powerpc/configs/ppc64_defconfig  |   1 -
+ lib/Kconfig.debug                     |  24 +-
+ lib/Makefile                          |   2 +-
+ lib/{test_bitmap.c => bitmap_kunit.c} | 454 +++++++++++++---------------------
+ tools/testing/selftests/lib/bitmap.sh |   3 -
+ tools/testing/selftests/lib/config    |   1 -
+ 19 files changed, 195 insertions(+), 304 deletions(-)
+---
+base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
+change-id: 20250207-bitmap-kunit-convert-92d3147b2eee
+
+Best regards,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Tamir Duberstein <tamird@gmail.com>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
