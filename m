@@ -1,71 +1,369 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D3A3BBE5;
-	Sat,  8 Feb 2025 07:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43EB1A5B80
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  8 Feb 2025 09:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738999398; cv=none; b=Rv5xVJX8fb3KfwduZh8Tayjpr7Y0lVU7tHfcIr5VspCK+BxNmV+9bU7PySAlW6rMThzLWyxRgM4fLKqq5DXbCAdw3D9fC3/BlHOJaDl/TfNx4bGyZK3xreB1ApyOv5dmJ4aJZhiKXuYnHQY4PK7AH3eKzK69J+5unGa7icPYmno=
+	t=1739005637; cv=none; b=AtMu3AcggI8I/9PobV0nnIvdC42Ohb1ff9IEFT9ZvTmsRgMiFNRAVZlmdNT7NhrR2FIowu6pzOimRKNQoSm/FdDGEDjWCmZzZn6N5rSCftWv5r/VuIfV9ywwa3y47mx9YO+UKWY7qpYS6qDsXoUf5Vh4K8e84u0GPfUJCYzueTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738999398; c=relaxed/simple;
-	bh=SQVJlEx2V/RSeXfcXkikh7h+w57xN8e7Hv78bAbfxJY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mAsU82JLsGAXeXtM1dbdf6ixpS3mm0t5vzUuNKioJT5CjUVKmfkHodNjqbfnmrP90qeeJZ5Vsr1L5ynBrEBd0kNZ+Oe1fK5n/s8oswBkZFpHw8d8VLaYMdmyZC7HFV9tF6IPHDt+2g5TLHErnsMRRUR8xa3SJ2HtEbdhFdOVTJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Aq7ElquE; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1739005637; c=relaxed/simple;
+	bh=xC/4yCpP7vpHKGvZQmhZ0YsULuUa5XHqCSAGxi0hSIo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F+EuUedN0mpDl8gfnRF/xxrU3547yh6UdxYYLeehO6b0sYA4Z6ZccithdBEziII17wFGAKWB/EwzQ/ZzBDGD123z82JULErrEAJ+/GjYRAUPIGOM6b3SYntG/iOT6t3GxYNdHGVV1uoTXLQPnPCy8oLOf9OuOiItA2tXkUSAqYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RQgj8bVd; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Aq7ElquE"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=dIUTnKlqptBhVh4FHbYoQplL5I5DQEoGc3UGevcbKYc=; b=Aq7ElquEb4PU458vaoh2BURefq
-	0XGupeL+Ea5a1zbTs9mHs4isuqu4YDjsFkA4psNsUKV2IVtFGihdFzB3J4BlS1lx6yz2RbyKBPzLQ
-	q5ug1G3UoBjgjdjZJ8pDtcbs+0u9J4m2W1Iyo6sUbB6qG+Wy0ywQUlWoMnSn8OmDM2h3cb8/NuufT
-	bw6tV0V3F/oz2+8ixkTFko2xzqDuL2B9JR1G1aO/JW0eMEN6zXuMA2HAuspE0AAPA0iEyLWFwxwXY
-	h9ZeDE/095r6pBz9fJ78gD+4ccGeRpRxZN3tn2b/eY9RppD2xLfz/F6OIiBJtZ6ZGQIYD7hJA/Ade
-	hnrUUgrg==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tgfAx-00000009uJj-3bg7;
-	Sat, 08 Feb 2025 07:22:51 +0000
-Date: Sat, 8 Feb 2025 07:22:51 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Qi Zheng <zhengqi.arch@bytedance.com>, kevin.brodsky@arm.com,
-	riel@surriel.com, vishal.moola@gmail.com, david@redhat.com,
-	jannh@google.com, hughd@google.com, yuzhao@google.com,
-	muchun.song@linux.dev, akpm@linux-foundation.org, will@kernel.org,
-	aneesh.kumar@kernel.org, npiggin@gmail.com, arnd@arndb.de,
-	dave.hansen@linux.intel.com, rppt@kernel.org,
-	alexghiti@rivosinc.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org, x86@kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 0/5] remove tlb_remove_page_ptdesc()
-Message-ID: <Z6cGS__8VRQdzAYA@casper.infradead.org>
-References: <cover.1737637631.git.zhengqi.arch@bytedance.com>
- <20250124114759.GB15996@noisy.programming.kicks-ass.net>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RQgj8bVd"
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6e1a41935c3so39248256d6.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 08 Feb 2025 01:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1739005634; x=1739610434; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vAJ/SX74b9sNa38IfRBSHnkfpAyrbgYYt//LZEv3DAk=;
+        b=RQgj8bVdYThqxSVMkfwln0UNop6lWQlkEY2eKwJzKNLolgZpVIIVbxZ4SkClCqn9GK
+         P+MRT9XjkpEoIFy11jEQwMTonv4GNJk3fNNS/0wvsuQL6XP7mTZBltoXCzvJfOsrsxpW
+         /zL6+Pg0BpGMVMyOYxqm/WmaumX5BaVvTijXC6uzTHwWxU8J9nhw4g/nJJCbl7WJW2R4
+         o6hQTl8WwFahHmQjEsXcmiW7LRih2Ez0mwAATqbIjGRw94avIlF9zAM9Goj6GBLtY2Zq
+         pc7uvTz96/UPvIFO4oyU4zptY0Ic/vtgj6gBHfteboXRaMSQgzQSEJFUD7m187BtDkK6
+         O0dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739005634; x=1739610434;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vAJ/SX74b9sNa38IfRBSHnkfpAyrbgYYt//LZEv3DAk=;
+        b=ZaZNcoqZI26GbNGVqI1rrI5qZ9BqjsG/WXGugr1ullBigyilQtmqmK+SnKkG0D89sl
+         Ojoa7ohO6W66SgOZ9nRQHvpDCFwx64Xs2ZUB/B3zoMWjCAhmIwvSwfWHvU8L/tLpc0ir
+         xdJNq4b95qQGIb5KiuMStERZhi4JoOKZJZBZqjvLRf1/Q3/ZUtZkp7uGR59aA3YAHX6A
+         WSehhFafRazO7t4Q677Tck4/3LyoGWRVe1dNyJDYcyJ+a1ZhcHOPGEN+XlYiaGT3DScG
+         XWhLxtCBKeTBZyBqOw6z2t6wQQfb1nGLHa3lXGUkJfk3O4x36htKM+Z73mWycbK5uek0
+         Othw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXcopGc4OOafPHQi0L4VlWP2j6ADLtJMtSjKwwrHzR/dYEFyOtiBH3ewrl+qJoy2l0myu2yxbcRWBg@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwflZtRW12V96tvlhdmSTDSjVtZ0kU7gf4p+KRTITx0sBtiEepX
+	OZv1/+w0wmvHBHmIK7ngnB3FfrCH56VO9Q7HeL+6c6iMI6iQ/5lH+aCcSykQY4MqChidAVJTpba
+	FXxSKBZhuIcD0Q6wMe222d3+XeOaPqiiKXzkF
+X-Gm-Gg: ASbGncusjG61zdoigdJ3JnhoVYRYLC4Rap/OH9N+QOsQlEEBTpCFNS+6qE+pcYVmv0A
+	kmAuOozdRWmoIU1Vle5SAqFMHUt35rD6b+6MtlIQDHTHQbMv7V3RrDfuaTvAW2/IqfeSS0+7RLQ
+	==
+X-Google-Smtp-Source: AGHT+IGGjm1BHv1q6DcYSZtFg+gX1FR5xb9+FmO8FSPRQtOAIi7uPzK0/ylPOU8sUfAgv1roarF5FKBmLy1fCvExlKw=
+X-Received: by 2002:a05:6214:f61:b0:6d8:8874:2127 with SMTP id
+ 6a1803df08f44-6e4455d2f1dmr99888976d6.5.1739005634150; Sat, 08 Feb 2025
+ 01:07:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250124114759.GB15996@noisy.programming.kicks-ass.net>
+References: <20250207-bitmap-kunit-convert-v1-0-c520675343b6@gmail.com>
+In-Reply-To: <20250207-bitmap-kunit-convert-v1-0-c520675343b6@gmail.com>
+From: David Gow <davidgow@google.com>
+Date: Sat, 8 Feb 2025 17:07:01 +0800
+X-Gm-Features: AWEUYZmlRH8tdcpeDGrA0LEyt2sjTXuwo1DU6Q_ufDIrKVWTu9PqwaiwfRNtQsw
+Message-ID: <CABVgOSne6yfQ7NmSPkYSci6Ej1tKsijqKaZxR7NsLfPcDEq99g@mail.gmail.com>
+Subject: Re: [PATCH 0/3] bitmap: convert self-test to KUnit
+To: Tamir Duberstein <tamird@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Yury Norov <yury.norov@gmail.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, 
+	Shuah Khan <shuah@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000001ee9be062d9dcd11"
 
-On Fri, Jan 24, 2025 at 12:47:59PM +0100, Peter Zijlstra wrote:
-> Right, so I don't think Sparc and Power care to use ptdesc, they're
-> using non page page-tables.
+--0000000000001ee9be062d9dcd11
+Content-Type: text/plain; charset="UTF-8"
 
-i think you mean s390, not sparc.  all architectures _use_ ptdescs,
-it's just that s390  and ppc use fractional ptdescs rather than an
-entire ptdesc for an individual page table.
+On Sat, 8 Feb 2025 at 04:14, Tamir Duberstein <tamird@gmail.com> wrote:
+>
+> This is one of just 3 remaining "Test Module" kselftests (the others
+> being printf and scanf), the rest having been converted to KUnit.
 
-eventually we can change that, but we're looking out perhaps five years
-before we can allocate a ptdesc for a sub-PAGE_SIZE quantity.
+Thanks a lot, Tamir: these are great!
+
+>
+> I tested this using:
+>
+> $ tools/testing/kunit/kunit.py run --arch arm64 --make_options LLVM=1 bitmap.
+
+I have also tested this across several architectures, including arm,
+m68k, i386, x86_64, powerpc64, and UML, and it works well here.
+
+For anyone put off by the long command, testing it under UML is
+$ ./tools/testing/kunit/kunit.py run bitmap
+
+It should also automatically run on boot for any kernel with it
+built-in, and run when the module is loaded if it's enabled as a
+module.
+
+>
+> I've already sent out a conversion series for each of printf[0] and scanf[1].
+>
+> There was a previous attempt[2] to do this in July 2024. Please bear
+> with me as I try to understand and address the objections from that
+> time. I've spoken with Muhammad Usama Anjum, the author of that series,
+> and received their approval to "take over" this work. Here we go...
+>
+> On 7/26/24 11:45 PM, John Hubbard wrote:
+> >
+> > This changes the situation from "works for Linus' tab completion
+> > case", to "causes a tab completion problem"! :)
+> >
+> > I think a tests/ subdir is how we eventually decided to do this [1],
+> > right?
+> >
+> > So:
+> >
+> >     lib/tests/bitmap_kunit.c
+> >
+> > [1] https://lore.kernel.org/20240724201354.make.730-kees@kernel.org
+>
+> This is true and unfortunate, but not trivial to fix because new
+> kallsyms tests were placed in lib/tests in commit 84b4a51fce4c
+> ("selftests: add new kallsyms selftests")  *after* the KUnit filename
+> best practices were adopted.
+>
+> I propose that the KUnit maintainers blaze this trail using
+> `string_kunit.c` which currently still lives in lib/ despite the KUnit
+> docs giving it as an example at lib/tests/.
+>
+> On 7/27/24 12:24 AM, Shuah Khan wrote:
+> >
+> > This change will take away the ability to run bitmap tests during
+> > boot on a non-kunit kernel.
+> >
+> > Nack on this change. I wan to see all tests that are being removed
+> > from lib because they have been converted - also it doesn't make
+> > sense to convert some tests like this one that add the ability test
+> > during boot.
+>
+> This point was also discussed in another thread[3] in which:
+>
+> On 7/27/24 12:35 AM, Shuah Khan wrote:
+> >
+> > Please make sure you aren't taking away the ability to run these tests during
+> > boot.
+> >
+> > It doesn't make sense to convert every single test especially when it
+> > is intended to be run during boot without dependencies - not as a kunit test
+> > but a regression test during boot.
+> >
+> > bitmap is one example - pay attention to the config help test - bitmap
+> > one clearly states it runs regression testing during boot. Any test that
+> > says that isn't a candidate for conversion.
+> >
+> > I am going to nack any such conversions.
+>
+> The crux of the argument seems to be that the config help text is taken
+> to describe the author's intent with the fragment "at boot". I think
+> this may be a case of confirmation bias: I see at least the following
+> KUnit tests with "at boot" in their help text:
+> - CPUMASK_KUNIT_TEST
+> - BITFIELD_KUNIT
+> - CHECKSUM_KUNIT
+> - UTIL_MACROS_KUNIT
+>
+> It seems to me that the inference being made is that any test that runs
+> "at boot" is intended to be run by both developers and users, but I find
+> no evidence that bitmap in particular would ever provide additional
+> value when run by users.
+
+I admit to never quite understanding the "at boot" wording as an
+objection here, as KUnit tests can run at boot (and do by default),
+and are often regression tests. I'd not object if anyone wanted this
+stated more clearly in the new config option's help text, though.
+
+The line between 'developers' and 'users' in the kernel world is
+necessarily thin, but I equally think users who would want to be able
+to run test modules are unlikely to be unable to run KUnit tests if
+they so desire. The only difficulty (which I admit could be annoying)
+is that it's not possible to run the test against a kernel built with
+CONFIG_KUNIT=n. Personally, I have my doubts that anyone is deriving
+value from running test_bitmap against a system which was not compiled
+for testing -- particularly since it's now quite common for distros to
+ship kernels to users with CONFIG_KUNIT=m (IIRC, Red Hat is doing
+this, and Android at least were considering it).
+
+> There's further discussion about KUnit not being "ideal for cases where
+> people would want to check a subsystem on a running kernel", but I find
+> no evidence that bitmap in particular is actually testing the running
+> kernel; it is a unit test of the bitmap functions, which is also stated
+> in the config help text.
+
+Again, I think the only issue here is the CONFIG_KUNIT=n argument
+above. This is a real issue, but I can't imagine a case where someone
+has a running system which has broken due to an issue in the bitmap
+code which can't easily be reproduced on a fresh kernel with
+CONFIG_KUNIT enabled. (Though that could just be a limitation of my
+imagination, so if that has happened to someone, I'd love to hear the
+story!)
+
+>
+> David Gow made many of the same points in his final reply[4], which was
+> never replied to.
+>
+> Link: https://lore.kernel.org/all/20250207-printf-kunit-convert-v2-0-057b23860823@gmail.com/T/#u [0]
+> Link: https://lore.kernel.org/all/20250207-scanf-kunit-convert-v4-0-a23e2afaede8@gmail.com/T/#u [1]
+> Link: https://lore.kernel.org/all/20240726110658.2281070-1-usama.anjum@collabora.com/T/#u [2]
+> Link: https://lore.kernel.org/all/327831fb-47ab-4555-8f0b-19a8dbcaacd7@collabora.com/T/#u [3]
+> Link: https://lore.kernel.org/all/CABVgOSmMoPD3JfzVd4VTkzGL2fZCo8LfwzaVSzeFimPrhgLa5w@mail.gmail.com/ [4]
+>
+> Thanks for your attention.
+>
+> Signed-off-by: Tamir Duberstein <tamird@gmail.com>
+> ---
+
+My only remaining concerns are that:
+- We've not misinterpreted any of the objections to the previous
+versions (and ideally that everyone's happy, or at least contentedly
+resigned, for this to go through),
+- This goes upstream in a way that minimises the conflicts in the
+various defconfigs. Given the number of these ports, it'd be great to
+either get them to all go through in the same tree or otherwise make
+sure the resolutions (while trivial) are as non-annoying as possible.
+
+Cheers,
+-- David
+
+
+> Tamir Duberstein (3):
+>       bitmap: remove _check_eq_u32_array
+>       bitmap: convert self-test to KUnit
+>       bitmap: break kunit into test cases
+>
+>  MAINTAINERS                           |   2 +-
+>  arch/m68k/configs/amiga_defconfig     |   1 -
+>  arch/m68k/configs/apollo_defconfig    |   1 -
+>  arch/m68k/configs/atari_defconfig     |   1 -
+>  arch/m68k/configs/bvme6000_defconfig  |   1 -
+>  arch/m68k/configs/hp300_defconfig     |   1 -
+>  arch/m68k/configs/mac_defconfig       |   1 -
+>  arch/m68k/configs/multi_defconfig     |   1 -
+>  arch/m68k/configs/mvme147_defconfig   |   1 -
+>  arch/m68k/configs/mvme16x_defconfig   |   1 -
+>  arch/m68k/configs/q40_defconfig       |   1 -
+>  arch/m68k/configs/sun3_defconfig      |   1 -
+>  arch/m68k/configs/sun3x_defconfig     |   1 -
+>  arch/powerpc/configs/ppc64_defconfig  |   1 -
+>  lib/Kconfig.debug                     |  24 +-
+>  lib/Makefile                          |   2 +-
+>  lib/{test_bitmap.c => bitmap_kunit.c} | 454 +++++++++++++---------------------
+>  tools/testing/selftests/lib/bitmap.sh |   3 -
+>  tools/testing/selftests/lib/config    |   1 -
+>  19 files changed, 195 insertions(+), 304 deletions(-)
+> ---
+> base-commit: 2014c95afecee3e76ca4a56956a936e23283f05b
+> change-id: 20250207-bitmap-kunit-convert-92d3147b2eee
+>
+> Best regards,
+> --
+> Tamir Duberstein <tamird@gmail.com>
+>
+
+--0000000000001ee9be062d9dcd11
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIUqgYJKoZIhvcNAQcCoIIUmzCCFJcCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ghIEMIIGkTCCBHmgAwIBAgIQfofDAVIq0iZG5Ok+mZCT2TANBgkqhkiG9w0BAQwFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSNjETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMzA0MTkwMzUzNDdaFw0zMjA0MTkwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFI2IFNNSU1FIENBIDIwMjMwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDYydcdmKyg
+4IBqVjT4XMf6SR2Ix+1ChW2efX6LpapgGIl63csmTdJQw8EcbwU9C691spkltzTASK2Ayi4aeosB
+mk63SPrdVjJNNTkSbTowej3xVVGnYwAjZ6/qcrIgRUNtd/mbtG7j9W80JoP6o2Szu6/mdjb/yxRM
+KaCDlloE9vID2jSNB5qOGkKKvN0x6I5e/B1Y6tidYDHemkW4Qv9mfE3xtDAoe5ygUvKA4KHQTOIy
+VQEFpd/ZAu1yvrEeA/egkcmdJs6o47sxfo9p/fGNsLm/TOOZg5aj5RHJbZlc0zQ3yZt1wh+NEe3x
+ewU5ZoFnETCjjTKz16eJ5RE21EmnCtLb3kU1s+t/L0RUU3XUAzMeBVYBEsEmNnbo1UiiuwUZBWiJ
+vMBxd9LeIodDzz3ULIN5Q84oYBOeWGI2ILvplRe9Fx/WBjHhl9rJgAXs2h9dAMVeEYIYkvW+9mpt
+BIU9cXUiO0bky1lumSRRg11fOgRzIJQsphStaOq5OPTb3pBiNpwWvYpvv5kCG2X58GfdR8SWA+fm
+OLXHcb5lRljrS4rT9MROG/QkZgNtoFLBo/r7qANrtlyAwPx5zPsQSwG9r8SFdgMTHnA2eWCZPOmN
+1Tt4xU4v9mQIHNqQBuNJLjlxvalUOdTRgw21OJAFt6Ncx5j/20Qw9FECnP+B3EPVmQIDAQABo4IB
+ZTCCAWEwDgYDVR0PAQH/BAQDAgGGMDMGA1UdJQQsMCoGCCsGAQUFBwMCBggrBgEFBQcDBAYJKwYB
+BAGCNxUGBgkrBgEEAYI3FQUwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQUM7q+o9Q5TSoZ
+18hmkmiB/cHGycYwHwYDVR0jBBgwFoAUrmwFo5MT4qLn4tcc1sfwf8hnU6AwewYIKwYBBQUHAQEE
+bzBtMC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vcm9vdHI2MDsGCCsG
+AQUFBzAChi9odHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9yb290LXI2LmNydDA2
+BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL3Jvb3QtcjYuY3JsMBEG
+A1UdIAQKMAgwBgYEVR0gADANBgkqhkiG9w0BAQwFAAOCAgEAVc4mpSLg9A6QpSq1JNO6tURZ4rBI
+MkwhqdLrEsKs8z40RyxMURo+B2ZljZmFLcEVxyNt7zwpZ2IDfk4URESmfDTiy95jf856Hcwzdxfy
+jdwx0k7n4/0WK9ElybN4J95sgeGRcqd4pji6171bREVt0UlHrIRkftIMFK1bzU0dgpgLMu+ykJSE
+0Bog41D9T6Swl2RTuKYYO4UAl9nSjWN6CVP8rZQotJv8Kl2llpe83n6ULzNfe2QT67IB5sJdsrNk
+jIxSwaWjOUNddWvCk/b5qsVUROOuctPyYnAFTU5KY5qhyuiFTvvVlOMArFkStNlVKIufop5EQh6p
+jqDGT6rp4ANDoEWbHKd4mwrMtvrh51/8UzaJrLzj3GjdkJ/sPWkDbn+AIt6lrO8hbYSD8L7RQDqK
+C28FheVr4ynpkrWkT7Rl6npWhyumaCbjR+8bo9gs7rto9SPDhWhgPSR9R1//WF3mdHt8SKERhvtd
+NFkE3zf36V9Vnu0EO1ay2n5imrOfLkOVF3vtAjleJnesM/R7v5tMS0tWoIr39KaQNURwI//WVuR+
+zjqIQVx5s7Ta1GgEL56z0C5GJoNE1LvGXnQDyvDO6QeJVThFNgwkossyvmMAaPOJYnYCrYXiXXle
+A6TpL63Gu8foNftUO0T83JbV/e6J8iCOnGZwZDrubOtYn1QwggWDMIIDa6ADAgECAg5F5rsDgzPD
+hWVI5v9FUTANBgkqhkiG9w0BAQwFADBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBS
+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
+YE9NAgMBAAGjggHgMIIB3DAeBgNVHREEFzAVgRNkYXZpZGdvd0Bnb29nbGUuY29tMA4GA1UdDwEB
+/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwHQYDVR0OBBYEFHgsCGkO2Hex
+N6ybc+GeQEb6790qMFgGA1UdIARRME8wCQYHZ4EMAQUBAjBCBgorBgEEAaAyCgMDMDQwMgYIKwYB
+BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQC
+MAAwgZoGCCsGAQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWdu
+LmNvbS9jYS9nc2F0bGFzcjZzbWltZWNhMjAyMzBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5n
+bG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NhdGxhc3I2c21pbWVjYTIwMjMuY3J0MB8GA1UdIwQYMBaA
+FDO6vqPUOU0qGdfIZpJogf3BxsnGMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vY2EvZ3NhdGxhc3I2c21pbWVjYTIwMjMuY3JsMA0GCSqGSIb3DQEBCwUAA4ICAQAs
+exV05yVDmPhHRqOq9lAbfWOUvEf8zydxabZUHna6bayb83jD2eb9nMGGEprfuNBRmFg35sgF1TyN
++ieuQakvQYmY8tzK49hhHa2Y3qhGCTqYTHO3ypHvhHsZiGbL0gmdgB9P8ssVIws//34ae99GUOxo
+XKTxPwwsQ5Arq42besv3/HXAW+4nRAT8d3ht5ZWCHc5rjL/vdGzu7PaYo3u0da69AZ8Sh4Gf5yoc
+QANr2ZkMrxXbLmSmnRvbkQrzlZp2YbTFnczx46429D6q75/FNFOL1vAjxtRAPzkyACvW0eKvchza
+TMvvD3IWERLlcBL5yXpENc3rI8/wVjqgAWYxlFg1b/4b/TCgYe2MZC0rx4Uh3zTIbmPNiHdN6QZ9
+oDiYzWUcqWZ5jCO4bMKNlVJXeCvdANLHuhcC8FONj5VzNgYXs6gWkp9/Wt6XnQPX4dF4JBa8JdL/
+cT46RJIzoiJHEx/8syO5FparZHIKbkunoq6niPsRaQUGeqWc56H4Z1sQXuBJN9fhqkIkG0Ywfrwt
+uFrCoYIRlx4rSVHpBIKgnsgdm0SFQK72MPmIkfhfq9Fh0h8AjhF73sLO7K5BfwWkx1gwMySyNY0e
+PCRYr6WEVOkUJS0a0fui693ymMPFLQAimmz8EpyFok4Ju066StkYO1dIgUIla4x61auxkWHwnzGC
+AmowggJmAgEBMGgwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExKjAo
+BgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjYgU01JTUUgQ0EgMjAyMwIQAcDMKctW1GQKDKqEUSh4
+pjANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgAPPLJ3cgSDlsglGRO6tCCmaeYIvi
+FY8hA9kqiR0HAiUwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUw
+MjA4MDkwNzE0WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
+YIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUD
+BAIBMA0GCSqGSIb3DQEBAQUABIIBAGUb2ckzlUVED4IMJDbMwD/GLsokpW5tlQYRB1mKq9TpYGQ+
+31IUsQH1TqjSgBGRwtvgki8DQ0zbgLJmUbup3+3MYrQT5g7FhL/t0PSkTzdRxYO3T7FiYCU/IQmt
+o+LPDiHSGdPmnb6KJhPPo/BDmFL67n88+AF2YXv6w80R2l7hz8u9nQ5/U7dwGmElw9MF5W+in6m5
+pdNvmzgGYFu8nnHijwfPmLq460q5w9IEa1NA+sSOeIn8Xq63lTulYYV/XsnS3jStCUCuDtOvm7wC
+ziaxaliS5iVMjEzzkN0Vng7dG+UlfPeCXqp6d4yELH5hmBnKs+RkQ0msMzL4YFcAkus=
+--0000000000001ee9be062d9dcd11--
