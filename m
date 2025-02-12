@@ -1,128 +1,218 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152E05474C
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Feb 2025 05:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5780A20CCC2
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Feb 2025 12:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739337183; cv=none; b=LWI0YJbLdnzkmu21al+Z66RxGF7bifxvvO5ST5bQpdQWHIjjq1pDqXU4Qr7fHoW0O9FvKUnmCNB+k4zkoFnABkSkfZoD6rPIRBUbD7Ygw5Cp0BxN0t82hqagJYCQ6RzSAHt0TVg+Ufsq/p0E1DDFmxol/PhQLsZ8cfhnWPmHnuY=
+	t=1739364467; cv=none; b=uQ1vrK5dzYCIMS5/+j+j4qXbqctDR8PCt5dbEXj2rvLigSGy0/NQ/vBtZ4l/xoyqOXZqgTdxTDuSOfgFPQ87q1dh0dI4T8gQErAqyFkusnkHi0+EoIzqO5VPZv21Rmc1wag2fOW4P6m9tWkiRhV/1JNdnP8mOw3Gd883iLtTrJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739337183; c=relaxed/simple;
-	bh=oe0fTsNo8bMqAheJ3gGJq1II43oIue87Q/ngNEh4mR4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ji4dObfldQrAnwaeDpY6J8OaEz52XHfTfnV8P/cmu3ug3Z6suSRCCw/Bzf71Q+pNndDG4iBBM7tx9yzDi/paAHy3HVL2ni9IMJ2OL1HWUn2oBC/gU18hE17Dh98pxM/LHzYfyujrij6MU44SkVMBBbsOIGLmPtEX2LhoshoEK4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QP+jlPvd; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QP+jlPvd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1739337182; x=1770873182;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=oe0fTsNo8bMqAheJ3gGJq1II43oIue87Q/ngNEh4mR4=;
-  b=QP+jlPvdp3n7U5L7T7NK9ZIV8Zc/9AQ8hR7yk5vUqtDXc83rYsdZLMEV
-   ZchtFo+n1weu+pp5EUPTo1Vr6nWY3b0BWn9A0IAR3wXSGUSSVaex3XY3x
-   sP0c4M8ES37pkQnnJ06r1dcO6OS+UOII7fca6MNg3QaCd6wEgOQTIs/us
-   YwhBK3Md7fKQk+8mGX99Bzt6Ztnk41LiMrHkCd1eEM3vCsdWcaIDJoRQn
-   u+XcHGqZ18QHD84w5rQn7AALhMxVDRjZ1MgPufMzrxBme9BN97JEYdQ2z
-   7huPZMtOajXSV6wV2hGjAHjcTYV3jp8VplEE+dZr2PA8mxWefN9o1yDne
-   Q==;
-X-CSE-ConnectionGUID: 8x5PqtK9RBK52ZfCMCUxKw==
-X-CSE-MsgGUID: Dtu4BWzPQQe5KV6SfOV5Ew==
-X-IronPort-AV: E=McAfee;i="6700,10204,11342"; a="39866101"
-X-IronPort-AV: E=Sophos;i="6.13,279,1732608000"; 
-   d="scan'208";a="39866101"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2025 21:13:01 -0800
-X-CSE-ConnectionGUID: 9+8kwOnhTK23iKDdJdGKAg==
-X-CSE-MsgGUID: gd7idGn3QTGJWW2YvEqNSw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.13,279,1732608000"; 
-   d="scan'208";a="112672215"
-Received: from lkp-server01.sh.intel.com (HELO d63d4d77d921) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 11 Feb 2025 21:12:59 -0800
-Received: from kbuild by d63d4d77d921 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ti53Q-001599-1s;
-	Wed, 12 Feb 2025 05:12:56 +0000
-Date: Wed, 12 Feb 2025 13:12:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:armnommu 3/3] arch/arm/mm/alignment.c:775:25:
- sparse: sparse: incorrect type in argument 1 (different address spaces)
-Message-ID: <202502121313.XQkyuSmD-lkp@intel.com>
+	s=arc-20240116; t=1739364467; c=relaxed/simple;
+	bh=qf2XVtjD2O8QbZySrsW6MiFYSaLsYYB8piB3kroBKGA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Drij4fvgAc7c2RBR6thdvp4w5ZKT/xlfDC0xyqKqhBB7m876cTm3t0OPRVh6oDBZnPwPE+LyCDRTLZS6PsCl92LDvQ8gnODIIJiEYTx9NjyoxTSB13ZFXHl3crm01anJEkWyebuHqXx9BM30Iapea3TjYsHYS30oWjHYt4qEzGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 9936F5C48A7;
+	Wed, 12 Feb 2025 12:47:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0126C4CEDF;
+	Wed, 12 Feb 2025 12:47:42 +0000 (UTC)
+Message-ID: <32193858-3ca9-4192-a4cb-f35eea22819e@linux-m68k.org>
+Date: Wed, 12 Feb 2025 22:47:40 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: coldfire: Prevent spurious interrupts when masking
+ IMR
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20250204-coldfire-spurious-irq-v1-1-b8f28855f690@yoseli.org>
+ <CAMuHMdXkq57WjUPeg3kTsgi-YSw23qV-gK4gVxymOSKGGTDuQQ@mail.gmail.com>
+ <770e02b6-d9c5-4a2c-8516-63e08bdc4358@yoseli.org>
+ <CAMuHMdXtzGFr2iE7py2fQPMegJTnfKe_NtW25g=h+sohfEhmAA@mail.gmail.com>
+ <f13b40d7-4a67-4de8-8d25-1a56be164dbe@yoseli.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <f13b40d7-4a67-4de8-8d25-1a56be164dbe@yoseli.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   282a7ed48056574071566c6f9a3f4edea6601cf1
-commit: 282a7ed48056574071566c6f9a3f4edea6601cf1 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-r122-20250212 (https://download.01.org/0day-ci/archive/20250212/202502121313.XQkyuSmD-lkp@intel.com/config)
-compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
-reproduce: (https://download.01.org/0day-ci/archive/20250212/202502121313.XQkyuSmD-lkp@intel.com/reproduce)
+Hi JM,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202502121313.XQkyuSmD-lkp@intel.com/
+On 5/2/25 21:26, Jean-Michel Hautbois wrote:
+> Hi Geert,
+> 
+> On 05/02/2025 09:14, Geert Uytterhoeven wrote:
+>> Hi Jean-Michel,
+>>
+>> On Wed, 5 Feb 2025 at 08:07, Jean-Michel Hautbois
+>> <jeanmichel.hautbois@yoseli.org> wrote:
+>>> On 04/02/2025 20:27, Geert Uytterhoeven wrote:
+>>>> On Tue, 4 Feb 2025 at 19:38, Jean-Michel Hautbois
+>>>> <jeanmichel.hautbois@yoseli.org> wrote:
+>>>>> The ColdFire interrupt controller can generate spurious interrupts if an
+>>>>> interrupt source is masked in the IMR while the CPU interrupt priority
+>>>>> mask (SR[I]) is set lower than the interrupt level.
+>>>>>
+>>>>> The reference manual states:
+>>>>>
+>>>>> To avoid this situation for interrupts sources with levels 1-6, first
+>>>>> write a higher level interrupt mask to the status register, before
+>>>>> setting the mask in the IMR or the module’s interrupt mask register.
+>>>>> After the mask is set, return the interrupt mask in the status register
+>>>>> to its previous value.
+>>>>>
+>>>>> It can be tested like this:
+>>>>> - Prepare a iperf3 server on the coldfire target (iperf3 -s -D)
+>>>>> - Start a high priority cyclictest:
+>>>>>       cyclictest --secaligned -m -p 99 -i 2500 -q
+>>>>> - Start iperf3 -c $COLDFIRE_IP -t 0
+>>>>>
+>>>>> After a few seconds the dmesg may display:
+>>>>> [   84.784301] irq 24, desc: dbc502da, depth: 1, count: 0, unhandled: 0
+>>>>> [   84.784455] ->handle_irq():  0ba0aca3, handle_bad_irq+0x0/0x1e0
+>>>>> [   84.784610] ->irq_data.chip(): c6779d4f, 0x41652544
+>>>>> [   84.784719] ->action(): 00000000
+>>>>> [   84.784770] unexpected IRQ trap at vector 18
+>>>>>
+>>>>> With this patch, I never saw it in a few hours testing.
+>>>>>
+>>>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+>>>>
+>>>> Thanks for your patch!
+>>>>
+>>>>> --- a/arch/m68k/coldfire/intc-simr.c
+>>>>> +++ b/arch/m68k/coldfire/intc-simr.c
+>>>>> @@ -58,6 +58,14 @@ static inline unsigned int irq2ebit(unsigned int irq)
+>>>>>
+>>>>>    #endif
+>>>>>
+>>>>> +static inline void intc_irq_setlevel(unsigned long level)
+>>>>> +{
+>>>>> +       asm volatile ("move.w %0,%%sr"
+>>>>> +                     : /* no outputs */
+>>>>> +                     : "d" (0x2000 | ((level) << 8))
+>>>>> +                     : "memory");
+>>>>> +}
+>>>>> +
+>>>>>    /*
+>>>>>     *     There maybe one, two or three interrupt control units, each has 64
+>>>>>     *     interrupts. If there is no second or third unit then MCFINTC1_* or
+>>>>> @@ -67,13 +75,17 @@ static inline unsigned int irq2ebit(unsigned int irq)
+>>>>>    static void intc_irq_mask(struct irq_data *d)
+>>>>>    {
+>>>>>           unsigned int irq = d->irq - MCFINT_VECBASE;
+>>>>> +       unsigned long flags = arch_local_save_flags();
+>>>>>
+>>>>> +       intc_irq_setlevel(7);
+>>>>
+>>>> Can't all of the above just be replaced by
+>>>>
+>>>>       unsigned long flags = arch_local_irq_save();
+>>>
+>>> The only change is the Supervisor bit in SR which is not changed in
+>>> arch_local_irq_disable() while it is forced to 1 in my function (setting
+>>> it to 0x2700 AFAICT).
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm/mm/alignment.c:775:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int [usertype] *ip @@
-   arch/arm/mm/alignment.c:775:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:775:25: sparse:     got unsigned int [usertype] *ip
->> arch/arm/mm/alignment.c:790:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short [usertype] *ip @@
-   arch/arm/mm/alignment.c:790:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:790:25: sparse:     got unsigned short [usertype] *ip
+I would expect that it will always be set here - since we must be running
+in kernel mode to be executing this code.
 
-vim +775 arch/arm/mm/alignment.c
 
-c2860d43f5dfab George G. Davis   2009-06-04  768  
-1bb9fb0a147f9d Russell King      2019-09-06  769  static int alignment_get_arm(struct pt_regs *regs, u32 *ip, u32 *inst)
-67e15fa5b487ad Russell King      2019-08-31  770  {
-67e15fa5b487ad Russell King      2019-08-31  771  	u32 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  772  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  773  
-67e15fa5b487ad Russell King      2019-08-31  774  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @775  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  776  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  777  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  778  
-67e15fa5b487ad Russell King      2019-08-31  779  	*inst = __mem_to_opcode_arm(instr);
-67e15fa5b487ad Russell King      2019-08-31  780  
-67e15fa5b487ad Russell King      2019-08-31  781  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  782  }
-67e15fa5b487ad Russell King      2019-08-31  783  
-67e15fa5b487ad Russell King      2019-08-31  784  static int alignment_get_thumb(struct pt_regs *regs, u16 *ip, u16 *inst)
-67e15fa5b487ad Russell King      2019-08-31  785  {
-67e15fa5b487ad Russell King      2019-08-31  786  	u16 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  787  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  788  
-67e15fa5b487ad Russell King      2019-08-31  789  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @790  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  791  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  792  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  793  
-67e15fa5b487ad Russell King      2019-08-31  794  	*inst = __mem_to_opcode_thumb16(instr);
-67e15fa5b487ad Russell King      2019-08-31  795  
-67e15fa5b487ad Russell King      2019-08-31  796  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  797  }
-67e15fa5b487ad Russell King      2019-08-31  798  
+>>> But I can confirm I couldn't see the issue with this code, while using
+>>> the existing arch_local_irq_save() it still appears (less frequently
+>>> than without it at all, but still).
+>>>
+>>> Any suggestion :-) ?
+>>
+>> There are other differences: your version clears all other bits, incl.
+>> condition codes and master/interrupt state.
 
-:::::: The code at line 775 was first introduced by commit
-:::::: 67e15fa5b487adb9b78a92789eeff2d6ec8f5cee ARM: mm: fix alignment handler faults under memory pressure
+Clearing of the interrupt mask seems like it might be an important
+difference here. I don't see any of the CCR bits having an effect here.
 
-:::::: TO: Russell King <rmk+kernel@armlinux.org.uk>
-:::::: CC: Russell King <rmk+kernel@armlinux.org.uk>
+It is surprising that the existing arch_local_irq_disable() code doesn't
+satisfy the Reference Manual description of the spurious interrupt
+problem. It is exactly raising the IRQ level to 7.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+>> Can you save the flags above in a global, and print it in the
+>> unexpected IRQ handler, to see which other bits are set when
+>> it happens?
+> 
+> An interesting side effect is... that only saving the flags makes it *a lot* harder to reproduce -_-.
+> Which is coherent with a race condition though :p.
+> 
+> Each time I got the message, the flags saved where 0x2711.
+
+Couple of further suggestions.
+
+It might be worth putting an actual comment in the code about the issue.
+It will probably not be obvious in the future why this is needed here.
+Just something brief about stopping spurious interrupts should be good enough.
+
+With a couple of tweaks to the code I could get tighter asm code generated.
+I dunno, maybe it is not worth it.
+
+Regards
+Greg
+
+
+
+
+diff --git a/arch/m68k/coldfire/intc-simr.c b/arch/m68k/coldfire/intc-simr.c
+index f7c2c41b3156..11deeb6f1048 100644
+--- a/arch/m68k/coldfire/intc-simr.c
++++ b/arch/m68k/coldfire/intc-simr.c
+@@ -58,6 +58,20 @@ static inline unsigned int irq2ebit(unsigned int irq)
+  
+  #endif
+  
++/*
++ * Avoid spurious interrupts by raising level before modifying mask.
++ */
++static inline unsigned long intc_irq_save_and_mask(void)
++{
++       unsigned long flags;
++       asm volatile ("move.w %%sr,%0\n\t"
++                     "move.w %1,%%sr"
++                     : "=&d" (flags)
++                     : "d" (0x2700)
++                     : "memory");
++       return flags;
++}
++
+  /*
+   *     There maybe one, two or three interrupt control units, each has 64
+   *     interrupts. If there is no second or third unit then MCFINTC1_* or
+@@ -66,14 +80,20 @@ static inline unsigned int irq2ebit(unsigned int irq)
+  
+  static void intc_irq_mask(struct irq_data *d)
+  {
+-       unsigned int irq = d->irq - MCFINT_VECBASE;
++       unsigned long flags;
++       unsigned int irq;
+  
++       flags = intc_irq_save_and_mask();
++
++       irq = d->irq - MCFINT_VECBASE;
+         if (MCFINTC2_SIMR && (irq > 127))
+                 __raw_writeb(irq - 128, MCFINTC2_SIMR);
+         else if (MCFINTC1_SIMR && (irq > 63))
+                 __raw_writeb(irq - 64, MCFINTC1_SIMR);
+         else
+                 __raw_writeb(irq, MCFINTC0_SIMR);
++
++       arch_local_irq_restore(flags);
+  }
+  
+  static void intc_irq_unmask(struct irq_data *d)
+
+
+
