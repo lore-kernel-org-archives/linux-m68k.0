@@ -1,218 +1,103 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5780A20CCC2
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Feb 2025 12:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF9420766B
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Feb 2025 07:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739364467; cv=none; b=uQ1vrK5dzYCIMS5/+j+j4qXbqctDR8PCt5dbEXj2rvLigSGy0/NQ/vBtZ4l/xoyqOXZqgTdxTDuSOfgFPQ87q1dh0dI4T8gQErAqyFkusnkHi0+EoIzqO5VPZv21Rmc1wag2fOW4P6m9tWkiRhV/1JNdnP8mOw3Gd883iLtTrJ0=
+	t=1739431331; cv=none; b=ss9PV3qV4Dz6iJuLH3PnUpahTS/Q/XxNXK2j1d1vpl2tjJ6eJ2iiM/b3lJhoXRn3aB+HlQMx+QpDGWePjDaLPYWe7zI+y3VNGz3j3Dnns80a1MMyneWjiUQ0w9YA9Vrlrr0z40xN8MwnKUKzQ5xFfZa/sClv4RAcI/aNk/FzOf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739364467; c=relaxed/simple;
-	bh=qf2XVtjD2O8QbZySrsW6MiFYSaLsYYB8piB3kroBKGA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Drij4fvgAc7c2RBR6thdvp4w5ZKT/xlfDC0xyqKqhBB7m876cTm3t0OPRVh6oDBZnPwPE+LyCDRTLZS6PsCl92LDvQ8gnODIIJiEYTx9NjyoxTSB13ZFXHl3crm01anJEkWyebuHqXx9BM30Iapea3TjYsHYS30oWjHYt4qEzGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
+	s=arc-20240116; t=1739431331; c=relaxed/simple;
+	bh=KelfrUEDKn1STr/uyl6Wn/gXFShtj7LS2NXx40teaXU=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=aLB8QSwiBc4sMzS3CCKEGNA0TUqzCSuuoGegZLGTDLz/GdUCYWj588DoI56Y5MlbRrmroUxjxoUt0t4p9IYgO2Xg6nDhFSjlUxp3amL0Etzy8npIE/nAbffSpwmQMZ5wZhMj4u5K+zR5pyeYLqjLsiQzMU86piNwVyI4G9b9olc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NCnPkeyW; arc=none smtp.client-ip=202.12.124.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 9936F5C48A7;
-	Wed, 12 Feb 2025 12:47:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0126C4CEDF;
-	Wed, 12 Feb 2025 12:47:42 +0000 (UTC)
-Message-ID: <32193858-3ca9-4192-a4cb-f35eea22819e@linux-m68k.org>
-Date: Wed, 12 Feb 2025 22:47:40 +1000
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NCnPkeyW"
+Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
+	by mailfout.stl.internal (Postfix) with ESMTP id 50DA81140117;
+	Thu, 13 Feb 2025 02:22:07 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-07.internal (MEProxy); Thu, 13 Feb 2025 02:22:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1739431327; x=1739517727; bh=2pmDU7e3MlYtu8haZn4roILPX83I
+	3ITd6BRmfCF1ljE=; b=NCnPkeyWuYqnLUVRRM/2BjjO/aut3wdSYbvmE/bmQayy
+	37FdRgRAigoARZJ7xuAsS62jXaSBezF08C7lg1BzXU1pnlW+fzGqVV7XZP9FGI0d
+	f96YrvtplKc1v0u1OlvS2v/KhHLcxwFHtPjJnxyfazy7maYDMxBI/d3N+nI3Stry
+	wNCB+OBBLIj7tFmvXhAcBKCYJr0BkDiQ6wbG2G8oOIdZhJ6HpTZBMdrstTh2TItE
+	B0Uzmany2dUSvAmv46dLWfhbheutJnnLy8eHpDtmOwoQQMBtlBMn+E1d+zs2/fsZ
+	YhEfa7vW1kDPncNuov1rYsRB5onE7nr8TqUC/KBojw==
+X-ME-Sender: <xms:np2tZ7VE47isYrzIy1xBw6QGGEG9Tq2IRZDOlaLOkf9JipiW7sRLGQ>
+    <xme:np2tZzn7UH0l30jd-1MfXNMAK5wwzniH2Y38BmCXNMl3wOFbvLtNV_xVPGW-s-idh
+    DpiobeQoMBEfjmAuIk>
+X-ME-Received: <xmr:np2tZ3aFHBsnU7qT4IFT6IgDMoNny0sP62BJiPO8ih9oNsbReD0CPVe2MLuz7ue_a6e3ioOn98csoepz7X3_a1-ifz7tI2XjhZw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdegieduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffkffhvfevufestddtjhdttddttdenucfhrhho
+    mhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+    eqnecuggftrfgrthhtvghrnhepiedugfduhffgheekjeekffduueejudevffehiedtledt
+    tdekveekuefhvdfftedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhi
+    nhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeehpdhmohguvgepshhmthhpoh
+    huthdprhgtphhtthhopehulhhisehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihgr
+    mhdrhhhofihlvghtthesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepshgthhhmihhtii
+    hmihgtsehgmhgrihhlrdgtohhmpdhrtghpthhtoheptghiphdquggvvheslhhishhtshdr
+    tghiphdqphhrohhjvggtthdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslh
+    hishhtshdrlhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:np2tZ2VDuMwqO1as86tX1RYcLSYdV9s3IkjTUrSOeK-WlQoWGS643A>
+    <xmx:np2tZ1k0YaoaaF_oWg9h7zQHTdivaPeSTTMacQhMl1inKJM_omimgw>
+    <xmx:np2tZzfcXdECzgE-XeZxZkWqk-RfBZHRfJmdJWlOsgD8awvOL9HHrA>
+    <xmx:np2tZ_G-IaB2s41_gRrgNti2BExqHuWS_DmJRFo5bkS7FKnGZNUzxA>
+    <xmx:n52tZ-DatzZz6JgrFXekduxMVD5a2kLeUJaZ1zBEeoC1Iugn9jz1HQuh>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 13 Feb 2025 02:22:03 -0500 (EST)
+Date: Thu, 13 Feb 2025 18:21:56 +1100
+Message-ID: <9a7bb5ad805dbb1c8a67186f04500474@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+To: Ulrich Hecht <uli@kernel.org>
+Cc: Liam Howlett <liam.howlett@oracle.com>, Michael Schmitz <schmitzmic@gmail.com>, cip-dev@lists.cip-project.org, linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 4.4.y-cip] m68k: Add missing mmap_read_lock() to sys_cacheflush()
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: coldfire: Prevent spurious interrupts when masking
- IMR
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20250204-coldfire-spurious-irq-v1-1-b8f28855f690@yoseli.org>
- <CAMuHMdXkq57WjUPeg3kTsgi-YSw23qV-gK4gVxymOSKGGTDuQQ@mail.gmail.com>
- <770e02b6-d9c5-4a2c-8516-63e08bdc4358@yoseli.org>
- <CAMuHMdXtzGFr2iE7py2fQPMegJTnfKe_NtW25g=h+sohfEhmAA@mail.gmail.com>
- <f13b40d7-4a67-4de8-8d25-1a56be164dbe@yoseli.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <f13b40d7-4a67-4de8-8d25-1a56be164dbe@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Hi JM,
+From: Liam Howlett <liam.howlett@oracle.com>
 
-On 5/2/25 21:26, Jean-Michel Hautbois wrote:
-> Hi Geert,
-> 
-> On 05/02/2025 09:14, Geert Uytterhoeven wrote:
->> Hi Jean-Michel,
->>
->> On Wed, 5 Feb 2025 at 08:07, Jean-Michel Hautbois
->> <jeanmichel.hautbois@yoseli.org> wrote:
->>> On 04/02/2025 20:27, Geert Uytterhoeven wrote:
->>>> On Tue, 4 Feb 2025 at 19:38, Jean-Michel Hautbois
->>>> <jeanmichel.hautbois@yoseli.org> wrote:
->>>>> The ColdFire interrupt controller can generate spurious interrupts if an
->>>>> interrupt source is masked in the IMR while the CPU interrupt priority
->>>>> mask (SR[I]) is set lower than the interrupt level.
->>>>>
->>>>> The reference manual states:
->>>>>
->>>>> To avoid this situation for interrupts sources with levels 1-6, first
->>>>> write a higher level interrupt mask to the status register, before
->>>>> setting the mask in the IMR or the module’s interrupt mask register.
->>>>> After the mask is set, return the interrupt mask in the status register
->>>>> to its previous value.
->>>>>
->>>>> It can be tested like this:
->>>>> - Prepare a iperf3 server on the coldfire target (iperf3 -s -D)
->>>>> - Start a high priority cyclictest:
->>>>>       cyclictest --secaligned -m -p 99 -i 2500 -q
->>>>> - Start iperf3 -c $COLDFIRE_IP -t 0
->>>>>
->>>>> After a few seconds the dmesg may display:
->>>>> [   84.784301] irq 24, desc: dbc502da, depth: 1, count: 0, unhandled: 0
->>>>> [   84.784455] ->handle_irq():  0ba0aca3, handle_bad_irq+0x0/0x1e0
->>>>> [   84.784610] ->irq_data.chip(): c6779d4f, 0x41652544
->>>>> [   84.784719] ->action(): 00000000
->>>>> [   84.784770] unexpected IRQ trap at vector 18
->>>>>
->>>>> With this patch, I never saw it in a few hours testing.
->>>>>
->>>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>>>
->>>> Thanks for your patch!
->>>>
->>>>> --- a/arch/m68k/coldfire/intc-simr.c
->>>>> +++ b/arch/m68k/coldfire/intc-simr.c
->>>>> @@ -58,6 +58,14 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>>>>
->>>>>    #endif
->>>>>
->>>>> +static inline void intc_irq_setlevel(unsigned long level)
->>>>> +{
->>>>> +       asm volatile ("move.w %0,%%sr"
->>>>> +                     : /* no outputs */
->>>>> +                     : "d" (0x2000 | ((level) << 8))
->>>>> +                     : "memory");
->>>>> +}
->>>>> +
->>>>>    /*
->>>>>     *     There maybe one, two or three interrupt control units, each has 64
->>>>>     *     interrupts. If there is no second or third unit then MCFINTC1_* or
->>>>> @@ -67,13 +75,17 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>>>>    static void intc_irq_mask(struct irq_data *d)
->>>>>    {
->>>>>           unsigned int irq = d->irq - MCFINT_VECBASE;
->>>>> +       unsigned long flags = arch_local_save_flags();
->>>>>
->>>>> +       intc_irq_setlevel(7);
->>>>
->>>> Can't all of the above just be replaced by
->>>>
->>>>       unsigned long flags = arch_local_irq_save();
->>>
->>> The only change is the Supervisor bit in SR which is not changed in
->>> arch_local_irq_disable() while it is forced to 1 in my function (setting
->>> it to 0x2700 AFAICT).
+[ Upstream commit f829b4b212a315b912cb23fd10aaf30534bb5ce9 ]
 
-I would expect that it will always be set here - since we must be running
-in kernel mode to be executing this code.
+When the superuser flushes the entire cache, the mmap_read_lock() is not
+taken, but mmap_read_unlock() is called.  Add the missing
+mmap_read_lock() call.
 
+Fixes: cd2567b6850b1648 ("m68k: call find_vma with the mmap_sem held in sys_cacheflush()")
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lore.kernel.org/r/20210407200032.764445-1-Liam.Howlett@Oracle.com
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+[ mmap_read_lock() open-coded using down_read() as was done prior to v5.8 ]
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+ arch/m68k/kernel/sys_m68k.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->>> But I can confirm I couldn't see the issue with this code, while using
->>> the existing arch_local_irq_save() it still appears (less frequently
->>> than without it at all, but still).
->>>
->>> Any suggestion :-) ?
->>
->> There are other differences: your version clears all other bits, incl.
->> condition codes and master/interrupt state.
-
-Clearing of the interrupt mask seems like it might be an important
-difference here. I don't see any of the CCR bits having an effect here.
-
-It is surprising that the existing arch_local_irq_disable() code doesn't
-satisfy the Reference Manual description of the spurious interrupt
-problem. It is exactly raising the IRQ level to 7.
-
-
->> Can you save the flags above in a global, and print it in the
->> unexpected IRQ handler, to see which other bits are set when
->> it happens?
-> 
-> An interesting side effect is... that only saving the flags makes it *a lot* harder to reproduce -_-.
-> Which is coherent with a race condition though :p.
-> 
-> Each time I got the message, the flags saved where 0x2711.
-
-Couple of further suggestions.
-
-It might be worth putting an actual comment in the code about the issue.
-It will probably not be obvious in the future why this is needed here.
-Just something brief about stopping spurious interrupts should be good enough.
-
-With a couple of tweaks to the code I could get tighter asm code generated.
-I dunno, maybe it is not worth it.
-
-Regards
-Greg
-
-
-
-
-diff --git a/arch/m68k/coldfire/intc-simr.c b/arch/m68k/coldfire/intc-simr.c
-index f7c2c41b3156..11deeb6f1048 100644
---- a/arch/m68k/coldfire/intc-simr.c
-+++ b/arch/m68k/coldfire/intc-simr.c
-@@ -58,6 +58,20 @@ static inline unsigned int irq2ebit(unsigned int irq)
-  
-  #endif
-  
-+/*
-+ * Avoid spurious interrupts by raising level before modifying mask.
-+ */
-+static inline unsigned long intc_irq_save_and_mask(void)
-+{
-+       unsigned long flags;
-+       asm volatile ("move.w %%sr,%0\n\t"
-+                     "move.w %1,%%sr"
-+                     : "=&d" (flags)
-+                     : "d" (0x2700)
-+                     : "memory");
-+       return flags;
-+}
+diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+index 6363ec83a290..38dcc1a2097d 100644
+--- a/arch/m68k/kernel/sys_m68k.c
++++ b/arch/m68k/kernel/sys_m68k.c
+@@ -388,6 +388,8 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+ 		ret = -EPERM;
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			goto out;
 +
-  /*
-   *     There maybe one, two or three interrupt control units, each has 64
-   *     interrupts. If there is no second or third unit then MCFINTC1_* or
-@@ -66,14 +80,20 @@ static inline unsigned int irq2ebit(unsigned int irq)
-  
-  static void intc_irq_mask(struct irq_data *d)
-  {
--       unsigned int irq = d->irq - MCFINT_VECBASE;
-+       unsigned long flags;
-+       unsigned int irq;
-  
-+       flags = intc_irq_save_and_mask();
-+
-+       irq = d->irq - MCFINT_VECBASE;
-         if (MCFINTC2_SIMR && (irq > 127))
-                 __raw_writeb(irq - 128, MCFINTC2_SIMR);
-         else if (MCFINTC1_SIMR && (irq > 63))
-                 __raw_writeb(irq - 64, MCFINTC1_SIMR);
-         else
-                 __raw_writeb(irq, MCFINTC0_SIMR);
-+
-+       arch_local_irq_restore(flags);
-  }
-  
-  static void intc_irq_unmask(struct irq_data *d)
-
-
-
++		down_read(&current->mm->mmap_sem);
+ 	} else {
+ 		struct vm_area_struct *vma;
+ 
