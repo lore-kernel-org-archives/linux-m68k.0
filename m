@@ -1,132 +1,148 @@
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A11471C8623
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Feb 2025 21:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FCE1940A1
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Feb 2025 21:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739569943; cv=none; b=ga2CtL4Q32kIfpHeakctLlqza7rE4/gg8pM+M9bcgkGFOpElGBGAbwTrGfapQhCs/P2b52TCt7nwHCQ864l1wFvuFQ9Ir0u4YykVG658vAhNDPlSdNTxykDxqGvJ32Q4gan4nJlhPQ7V9Km032y6gBtw3bky3Q5TImYum1Oxbk0=
+	t=1739569976; cv=none; b=cquowxHxIXxw6aOnhhT1HfAVwCy1vUQxj65udV495oz6IJGo0vRmhEvyKpEKlyn7BQt6WvGbXVf+HXTfqeovykdbVKbEC2NZ5Dxt4WOJ7nY2jEHuai0P9peoDoejNwrVeEWxVMKxqegC8ceMwBSsgGl3x/X1QIjBLW9wTw6JNR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739569943; c=relaxed/simple;
-	bh=/KKHLAaMFAEPJleSikTB6lnzt8UjdnvqiBRPZj74hNw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mrpMd7CjmS7O9muZixpkBmx42v2syDbbBas54+i5O9h3r+qMjaaiCBdqJtJEx3v8+n/k4E9S3ChDiBDB45QqWzc3OgeB/jm07WmCILlzwv6JEXxdKrThg7zdaZgyb0hLD95Qc45gAZZBi/OH+vO+4k0zP0vD5SVk13MJFCU65kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EYUlagPM; arc=none smtp.client-ip=209.85.208.177
+	s=arc-20240116; t=1739569976; c=relaxed/simple;
+	bh=cYHXN4WirskhlsZE2ge7GTpevcXDyiKQeYIflIaEL8I=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=fuSQ+8DpLHCsNg8bhFyHaxk5UA85J3gR7M3yh7VtFI7k2VrGlWOY2W55JnZXM13fBbBOBb/V5G+ewMICzeV51CSPAbs04ztMwjxKIrUHZC5Q2LHcd8wE/JzCP1utrPkM/Uz6pcXn0JGoOkUILflNktvNGC/QPtrJeVavpRrcRG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sya8oPU+; arc=none smtp.client-ip=209.85.219.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYUlagPM"
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-30613802a59so25879771fa.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Feb 2025 13:52:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sya8oPU+"
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6dcdf23b4edso22430086d6.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Feb 2025 13:52:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1739569940; x=1740174740; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JRqlyd6oGO0KdHznSNNqTI/AEXRx3zHfr08E+Px4USU=;
-        b=EYUlagPM12ZdrHM8uK5Coen2btRUdRrU9bpmLuw02kh0ikQOX6QP8f9hhL9nbHylIG
-         3qKKoHIjYp9HYBsNYmh8kYourLvkMZ1wjspI0h37ZLQsHqYcli+ZodtsTuencCbkAtDC
-         OdGDclB4Ezt+M+12psfgnMa0IY4okZNpb2dAJ6Mvy1ds/BPtw/lmK/ToFVa1BrK+fMUJ
-         +1esoUWdQtnhou9P2QTfRTpdO2pNghjGHO/+P8Kn5TQ6joqUJJwIjM8z1zdkxfxvGq4W
-         sOP0j6YUDmEFxULikdzHB7eBKQkDZ5wSzxvHSUMW2OuMaHXck8ygtFkmMM4Dd48uJn12
-         q7oA==
+        d=gmail.com; s=20230601; t=1739569974; x=1740174774; darn=lists.linux-m68k.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oelTRyiq2uUQLScUvm+yzvdL+C/sBoOcsl6Ykq5dg44=;
+        b=Sya8oPU+H3eU1ckvcSh+bD5Dx2zFozCTtFwOpMsWgXkDaIY1OahM3J5JIhKZwgWUMh
+         g2yryap/9XbMmqyQfv8E3uXzmoq8lLIGss6WY0NcBEz5nyG1tTI+c3zRFAKUbXJp0ZdZ
+         rofPz7h+12N/kbncOEJ0XhszMEhPDUBqhtAIBvpAQ6gonC7h7AnPCv/i2yW9qDmlvoRw
+         j5aBn8lInls27v6YC2aRtwCTfZsfgaW1ITqnL9ksme0Tsp5ZtTFK7OoYFuAD6xElYbXh
+         zOJOVlst7EQK+Ik0bdcww2PBCuY9oBEasTFpLrSs132mbP3CgrLZxgdRWirBJcSoZRZz
+         fW3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739569940; x=1740174740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JRqlyd6oGO0KdHznSNNqTI/AEXRx3zHfr08E+Px4USU=;
-        b=EnDG/5fAYX+ZB3FR9F4jdVqs9c9thgIL/jrgELHh1i8i6ykOfDfbNQZcpW9KUqxedN
-         +o0Gz8XkKLGBwx5XZL+EN7JIB1Th/sNfrvoZvHirv62WgVn7XyjY9t+OFvwjkN0jQdnD
-         nsXxRu8bcT/QzR576HuRfs07b37WVYnaEorJOoE++HfSe8XzQ3//mp2oAFLLdpxMsMi4
-         arOHGTuYLvex13ZR7mf102TMHzpV5P5+V2gChgvc+1ROgcCbtoCxbGrOZhD75Vp82324
-         0/tj0RHRDTnoR5cudkd7MVKIP61/FMgaJTzAuflrRzy7TGNaUs3yKZeXLd0BoQmd4DD4
-         c5iw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjGKKdoqYuzgkLDXKIGBrC8bHOmOCBW8Nv7do7nr0WeHbyAvmIEJjj64eP7jX/APLboseb/I3QzqYg@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzA+pK9C5J39i5gu0qGbvz20foKN8wqLJkyItNfOxFfb6Huddsk
-	of4QpNoXEvVZ0CFdbtVCYaRLSwpmhLIEj3ITMkVgya4r7uJyTDKwPR/8peYc1EWseufMuduQzZW
-	aTRnlWdLHrgz3hzJjqzw9uTNEZuE=
-X-Gm-Gg: ASbGncuzd/iXly3MsZZVHDTK61/t0W4cWiniGkgIwcv2XZarlwJsR3VCnEzS0QjCYo+
-	hbOS2IV2XiIHSi8RhTnGqKk7eMZ1f01OAbgCYY6lZr5ZhtxMbia2Z8Ym6e22iD6NK1BkhAdJNfz
-	fLEPHc/72KEX6a/9WMKvwNagQxXN9lrYs=
-X-Google-Smtp-Source: AGHT+IHSpHMu+d9yxfeM9fhEh2exQCFb02zAuHKSY+JxD0Uew6ExTEbIBTjpVBPP5XMmM53Pc3kzV0IcmY9YkC9NKA4=
-X-Received: by 2002:a2e:95c4:0:b0:308:ee65:7f4e with SMTP id
- 38308e7fff4ca-309279505ddmr4289291fa.0.1739569939469; Fri, 14 Feb 2025
- 13:52:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1739569974; x=1740174774;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oelTRyiq2uUQLScUvm+yzvdL+C/sBoOcsl6Ykq5dg44=;
+        b=UqyZPTkC4y1d8agDXOjV6Y0nqlpCYozo5SOzAZYtAQ1x0u9BoioMP8EqtQIdZYFpBw
+         MPaOr1PZgBuNoRh0XACOiliIpKwQ1YnmrJMFVWYXafaMmsE6/gBIoCgoniZA8ohpCRZC
+         GX81JOtSVjhHRdxadPffiYVv8pEFAV1fWahoDuFx57E8OVV+pzO04CxgCV50kU4Z91La
+         wet14+B3EzaKO7qrTMl0IwFwVSDtje2RlBAfxzfCfK9d71Ian78/vBzlym8i6f+U3bN9
+         wQnPD3c+xhbN/yBg3ACctNi+1wzHmrkQCY2uqvbU+xD0l9d6RUwzT7uqSdtqe4HIPKFX
+         d0vw==
+X-Forwarded-Encrypted: i=1; AJvYcCVw/9ufUQ2/qMf9T7oHrathkenmtqG0XTvK+fdscMLWQAJIg/4K7ApIbvc15Chr5JzfntFNgpK/YEFl@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwFwgih0mDntolG3MknaT7rOm7tX/zuAcDCNhYvW6K3mDc0YpA5
+	aLa+XcD9xWXyq/ItR1DaWNWwvRpD7LrZ+QevrxbaJ7nmIhbTZj8n
+X-Gm-Gg: ASbGncu9ODT0AeII6P7QA8MTNLLbxcRirkGf7t8SD2KVqbpQ/2GhhsKX/v2kcK9aC/R
+	pFd3tRS0qSWsgejqAVEJQ4Z7Qaz92iDAGz2iW4l8/dOz0I68iAnqdR32rMtiG78QCZMLoxg6uwk
+	NS8BkH4B0SRQCgs9X3FPAYPq819iL2jYIEdVmNhh6c4kK9yjwaKQGQvkICtaUaLUpQ31SJNh8er
+	ra36GfvlcFo+0T1Z1pWtBFkMZTOMRC32NGEOA0Mi0bg0bZRpg6+ZN1iJitYoCFzFzRCmvPNMXhG
+	RcnR1t7Xa33RC94r8QXI4RXvO+tqUhlmIJOouw==
+X-Google-Smtp-Source: AGHT+IF4uKo/kzj1TcgrhYbwG/5VYUbRGcDZFwUtTMQKwOkAQIIBdKv6vbbSZxzo9Ggb97riNE72Rw==
+X-Received: by 2002:a05:6214:5190:b0:6e6:617c:abb6 with SMTP id 6a1803df08f44-6e66cc7febdmr16020726d6.6.1739569973947;
+        Fri, 14 Feb 2025 13:52:53 -0800 (PST)
+Received: from [192.168.1.159] ([2600:4041:5be7:7c00:d4df:402c:65f0:87da])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-471c2af3367sm21844451cf.59.2025.02.14.13.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Feb 2025 13:52:52 -0800 (PST)
+From: Tamir Duberstein <tamird@gmail.com>
+Subject: [PATCH v4 0/3] printf: convert self-test to KUnit
+Date: Fri, 14 Feb 2025 16:52:38 -0500
+Message-Id: <20250214-printf-kunit-convert-v4-0-c254572f1565@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250210-printf-kunit-convert-v3-0-ee6ac5500f5e@gmail.com>
- <Z69isDf_6Vy8gGcS@pathway.suse.cz> <Z69oxhkUzTfJ6YKi@smile.fi.intel.com>
- <CAJ-ks9mck4DzX+WANxKSmcN=mP9ztgwWETXLmX_F-gy=EhmLNg@mail.gmail.com> <CAKwiHFjnY-c01rvkzNRz=h=L-AxRMyUtp2G0b17akF82tAOHQg@mail.gmail.com>
-In-Reply-To: <CAKwiHFjnY-c01rvkzNRz=h=L-AxRMyUtp2G0b17akF82tAOHQg@mail.gmail.com>
-From: Tamir Duberstein <tamird@gmail.com>
-Date: Fri, 14 Feb 2025 16:51:43 -0500
-X-Gm-Features: AWEUYZlIzjGDNjdcMbGasiSVuX4TBnRVStLmaQbB724z7yxjnP4i1AoyHu0JSSg
-Message-ID: <CAJ-ks9=T7JJ2W4+fDKeysQ9QOtquMHoGwYU3g8a-A2OJrgL9Sg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] printf: convert self-test to KUnit
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Petr Mladek <pmladek@suse.com>, 
-	Arpitha Raghunandan <98.arpi@gmail.com>, David Gow <davidgow@google.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Brendan Higgins <brendan.higgins@linux.dev>, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACa7r2cC/3XOQQ7CIBAF0KsY1mKGAWrjynsYF0gHnai0oZVoT
+ O8u1Y0aXf5J5v1/Fz0lpl6sZneRKHPPbSzBzGfCH1zck+SmZIGAFpRWskschyCPl8iD9G3MlAY
+ ZGgMKnUPylSivXaLA1ye72ZZ84H5o0+3ZktV0fYEI5jeYlQRJPqhdbSpnGlrvz45PC9+exQRmf
+ EeWfxAsCNjlDnVdQY36G9FviII/iJ6WUOW8tQDBfiwZx/EBRqyiUEIBAAA=
+X-Change-ID: 20250131-printf-kunit-convert-fd4012aa2ec6
+To: Arpitha Raghunandan <98.arpi@gmail.com>, 
+ David Gow <davidgow@google.com>, Petr Mladek <pmladek@suse.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, 
+ Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, 
+ Jonathan Corbet <corbet@lwn.net>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Naveen N Rao <naveen@kernel.org>, 
+ Brendan Higgins <brendan.higgins@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+ linuxppc-dev@lists.ozlabs.org, Tamir Duberstein <tamird@gmail.com>
+X-Mailer: b4 0.15-dev
 
-On Fri, Feb 14, 2025 at 4:47=E2=80=AFPM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On Fri, 14 Feb 2025 at 17:53, Tamir Duberstein <tamird@gmail.com> wrote:
-> >
-> > On Fri, Feb 14, 2025 at 11:02=E2=80=AFAM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Fri, Feb 14, 2025 at 04:35:12PM +0100, Petr Mladek wrote:
->
-> > > > I have just quickly tested this before leaving for a week.
-> > > > And I am fine with the result.
-> > >
->
-> Thanks, Petr, for demonstrating how it looks in a failure case.
->
-> > > Seems reasonable to me. But I want a consensus with Rasmus.
-> >
-> > I have a local v4 where I've added the same enhancement as the scanf
-> > patches so that assertions log the line in the top-level test.
-> >
-> > I'll wait for Rasmus' reply before sending.
->
-> I think all my concerns are addressed, with the lines printed in case
-> of error telling what is wrong and not that memcmp() evaluating to 1
-> instead of 0, and with the final free-form comment including that "ran
-> 448 tests". If you feel that word is confusing when there's
-> "obviously" only 28 "test" being done, feel free to change that to
-> "did 448 checks" or "did 448 individual checks" any other better
-> wording.
->
-> Rasmus
+This is one of just 3 remaining "Test Module" kselftests (the others
+being bitmap and scanf), the rest having been converted to KUnit.
 
-Personally, I don't feel strongly about this wording, so I'm hewing
-close to the original:
+I tested this using:
 
-    ....
-    ok 25 flags
-    ok 26 errptr
-    ok 27 fwnode_pointer
-    ok 28 fourcc_pointer
-    # printf: ran 448 tests
-# printf: pass:28 fail:0 skip:0 total:28
-# Totals: pass:28 fail:0 skip:0 total:28
-ok 1 printf
+$ tools/testing/kunit/kunit.py run --arch arm64 --make_options LLVM=1 printf
 
-I'll send v4 momentarily. Thanks, all!
+I have also sent out a series converting scanf[0].
+
+Link: https://lore.kernel.org/all/20250204-scanf-kunit-convert-v3-0-386d7c3ee714@gmail.com/T/#u [0]
+
+Signed-off-by: Tamir Duberstein <tamird@gmail.com>
+---
+Changes in v4:
+- Add patch "implicate test line in failure messages".
+- Rebase on linux-next, move scanf_kunit.c into lib/tests/.
+- Link to v3: https://lore.kernel.org/r/20250210-printf-kunit-convert-v3-0-ee6ac5500f5e@gmail.com
+
+Changes in v3:
+- Remove extraneous trailing newlines from failure messages.
+- Replace `pr_warn` with `kunit_warn`.
+- Drop arch changes.
+- Remove KUnit boilerplate from CONFIG_PRINTF_KUNIT_TEST help text.
+- Restore `total_tests` counting.
+- Remove tc_fail macro in last patch.
+- Link to v2: https://lore.kernel.org/r/20250207-printf-kunit-convert-v2-0-057b23860823@gmail.com
+
+Changes in v2:
+- Incorporate code review from prior work[0] by Arpitha Raghunandan.
+- Link to v1: https://lore.kernel.org/r/20250204-printf-kunit-convert-v1-0-ecf1b846a4de@gmail.com
+
+Link: https://lore.kernel.org/lkml/20200817043028.76502-1-98.arpi@gmail.com/t/#u [0]
+
+---
+Tamir Duberstein (3):
+      printf: convert self-test to KUnit
+      printf: break kunit into test cases
+      printf: implicate test line in failure messages
+
+ Documentation/core-api/printk-formats.rst   |   4 +-
+ MAINTAINERS                                 |   2 +-
+ lib/Kconfig.debug                           |  12 +-
+ lib/Makefile                                |   1 -
+ lib/tests/Makefile                          |   1 +
+ lib/{test_printf.c => tests/printf_kunit.c} | 437 ++++++++++++----------------
+ tools/testing/selftests/lib/config          |   1 -
+ tools/testing/selftests/lib/printf.sh       |   4 -
+ 8 files changed, 200 insertions(+), 262 deletions(-)
+---
+base-commit: 7b7a883c7f4de1ee5040bd1c32aabaafde54d209
+change-id: 20250131-printf-kunit-convert-fd4012aa2ec6
+
+Best regards,
+-- 
+Tamir Duberstein <tamird@gmail.com>
+
