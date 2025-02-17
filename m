@@ -1,93 +1,83 @@
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A81FB193084
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Feb 2025 13:01:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E01224AFB
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Feb 2025 16:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739797295; cv=none; b=RcT0SCWjcDdXasVgKeqWzXRoSh2wmm4tmuMINdnTiZPlxJrxjcYK64C3SPUFSNytPiP0qD8VbyCB3XEX1Y4DNiM6zHMAsOZ8l5ZBIGHPqyJH5gSp4qRscXzLxtwTZ+eM0cf5+tNLTSFV3bLUI3KJb7Nb/sC9hywAQEEjLO4upjE=
+	t=1739808059; cv=none; b=MpOhX0h1eLZCm8a9nCzekFti6mZHiVslHWUxnnpewSSJyxWMgyzafPWZUv9JemNAoaAQUFJe8UPQrSduV3pSkiigA2y5Qt+2T5xC/fgwnm3lWIewEt752JdSOODYBM9kLYCEyFUtoXKjYD+o7uiwII5eSQCM9puaXAJDbWhEzrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739797295; c=relaxed/simple;
-	bh=Hk9O6kgZtW5HBAPWDi1ubXQtnoQYa4K3Vipj/XLrz20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rLhUjimsb5HiVjdvLx2GPp/efjB71D7Fph6/3IwRnKVEYMHlmCoTQPPAYuaxJI74pwmmDNKUxwZezk/v9vmLkzPIA1PBX+dQ96f2P2tmNHB8DmMZMwkKG1CvDPXDc5hus6XigFlLOie/G3wQpGBC6cl8WotOL0FABlCGfy/z/wQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=bO6ALWhb; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1739808059; c=relaxed/simple;
+	bh=a9L1iRTJAGeYLsPNdHi5448kzMlviGufO4uA3zEzNmU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P32pHwTsI0EEgRG4IMW04D7hANxnoSMNJUVYoP9puAwXD/4CKnNR1CzcFI1CYDpzTJd86tlD459UrI5QFW2crgJyH79wNSU8UJokkcD/ZExpy5OqbXtIoVi/emzrHYOLhnjLnxXJKFXNdWAn+OQA1Gv6EY2g53cwqKEg4/HMmMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ARlezlZR; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="bO6ALWhb"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 21E8D442EC;
-	Mon, 17 Feb 2025 13:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1739797291;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bOL9mfk/9v5FRO1VfirUKFrE/whi9WWcvzNJX8maZI0=;
-	b=bO6ALWhbXToInNzAwugYrepTD3C+fePro0peaMuYKAJEE3qz90F7zY7uftSaSeTkdCswHs
-	MrTrpDJ1FZM57Tzm8SVabRsLlTnl94kLbVKIH7NDR8ZyawZLlbBqpMXWIjnOoC5rvsbO68
-	GVO3qzIBDclhusXUotVYOinhVZOKqGBIcM3yad8MBNN61YqEt6ndtV62AqmdJu/xjfqmZa
-	7ntQ0wH9q87y8WbWy42Rd38CRgyNvaWCJn0iHeHqSL5InCKdkX7ipQUADuueouPSgSXyhO
-	nadEqh1vOOr6Dzy/itC1ersATHYxw+UUccV8/Ita2PvLOxTv+ntMJzQHctCuPQ==
-Message-ID: <b5ed8cc5-ae78-42f7-bbb8-8f9d286ed7b6@yoseli.org>
-Date: Mon, 17 Feb 2025 14:01:29 +0100
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ARlezlZR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=g3on1
+	gNZIaw9/zrdoIKx6bUBSXJCPFOMbC1oZWieC3w=; b=ARlezlZRDBcAG68jLlqBH
+	jMYMDZL1JvwefdvBPA4EvS2X1hafuT/nwjaLf8Ik5JHDoGm6cFdDhJ/TnWdjAY3N
+	vX3l4WENt5erU51REra/Spv94i8YEDNZWnvJdmm2WJzuOy8X7vZWZTWhzsBmn5LP
+	qrgXr/SDpEmfc7EXIbnRdY=
+Received: from icess-ProLiant-DL380-Gen10.. (unknown [])
+	by gzsmtp1 (Coremail) with SMTP id PCgvCgCHjVcTXbNnyxM4EQ--.1900S4;
+	Tue, 18 Feb 2025 00:00:20 +0800 (CST)
+From: Haoxiang Li <haoxiang_li2024@163.com>
+To: sammy@sammy.net,
+	geert@linux-m68k.org,
+	zhengqi.arch@bytedance.com,
+	akpm@linux-foundation.org,
+	dave.hansen@linux.intel.com,
+	kevin.brodsky@arm.com
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Haoxiang Li <haoxiang_li2024@163.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] m68k: sun3: Add check for __pgd_alloc()
+Date: Tue, 18 Feb 2025 00:00:17 +0800
+Message-Id: <20250217160017.2375536-1-haoxiang_li2024@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: mm: Replace deprecated strncpy() with strscpy()
-To: Thorsten Blum <thorsten.blum@linux.dev>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-hardening@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org
-References: <20250213141037.50394-2-thorsten.blum@linux.dev>
-Content-Language: en-US, fr
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20250213141037.50394-2-thorsten.blum@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdehkeegiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfitefpfffkpdcuggftfghnshhusghstghrihgsvgenuceurghilhhouhhtmecufedtudenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnheptdehkedtieetudeiffekhfeghfdtheetfeeftddvleekgeelieduveetueehgeefnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepfeejrdduieelrdduvdeirddvgeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepfeejrdduieelrdduvdeirddvgeekpdhhvghloheplgduledvrdduieekrddvtddrudeijegnpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeehpdhrtghpthhtohepthhhohhrshhtvghnrdgslhhumheslhhinhhugidruggvvhdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepl
- hhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PCgvCgCHjVcTXbNnyxM4EQ--.1900S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7JF43uw4kurWktr4fKw18AFb_yoWDCFcEk3
+	Z2kws3CrykXrW8Jr18Aa13WF90gw1kWr95Zr1Svw43Ar98Xrs5Zw4DKr1rAr429anxZrWk
+	uFZ0yrW5trnFqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRRAwI3UUUUU==
+X-CM-SenderInfo: xkdr5xpdqjszblsqjki6rwjhhfrp/1tbiqBr2bmezPf2FDwADs3
 
-Hi Thorsten,
+Add check for the return value of __pgd_alloc() in
+pgd_alloc() to prevent null pointer dereference.
 
-On 2/13/25 3:10 PM, Thorsten Blum wrote:
-> strncpy() is deprecated for NUL-terminated destination buffers. Use
-> strscpy() instead and remove the manual NUL-termination.
-> 
-> Compile-tested only.
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+Fixes: a9b3c355c2e6 ("asm-generic: pgalloc: provide generic __pgd_{alloc,free}")
+Cc: stable@vger.kernel.org
+Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
+---
+ arch/m68k/include/asm/sun3_pgalloc.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks for the patch !
-It works fine for me:
-
-Tested-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> ---
->   arch/m68k/kernel/setup_mm.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> index 15c1a595a1de..48ce67947678 100644
-> --- a/arch/m68k/kernel/setup_mm.c
-> +++ b/arch/m68k/kernel/setup_mm.c
-> @@ -243,8 +243,7 @@ void __init setup_arch(char **cmdline_p)
->   	setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _end);
->   
->   #if defined(CONFIG_BOOTPARAM)
-> -	strncpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
-> -	m68k_command_line[CL_SIZE - 1] = 0;
-> +	strscpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
->   #endif /* CONFIG_BOOTPARAM */
->   	process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
->   	*cmdline_p = m68k_command_line;
+diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
+index f1ae4ed890db..80afc3a18724 100644
+--- a/arch/m68k/include/asm/sun3_pgalloc.h
++++ b/arch/m68k/include/asm/sun3_pgalloc.h
+@@ -44,8 +44,10 @@ static inline pgd_t * pgd_alloc(struct mm_struct *mm)
+ 	pgd_t *new_pgd;
+ 
+ 	new_pgd = __pgd_alloc(mm, 0);
+-	memcpy(new_pgd, swapper_pg_dir, PAGE_SIZE);
+-	memset(new_pgd, 0, (PAGE_OFFSET >> PGDIR_SHIFT));
++	if (likely(new_pgd != NULL)) {
++		memcpy(new_pgd, swapper_pg_dir, PAGE_SIZE);
++		memset(new_pgd, 0, (PAGE_OFFSET >> PGDIR_SHIFT));
++	}
+ 	return new_pgd;
+ }
+ 
+-- 
+2.25.1
 
