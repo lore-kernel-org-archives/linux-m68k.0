@@ -1,251 +1,197 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A385D269AE3
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 13:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41B2175BF
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 13:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739885455; cv=none; b=uHlrYWZGyIO5rse5btrQf+iUQMOc/r+ODmS4uIwIbTc9y2jZPFDFfMAfOfZM/Ab8lI2rpJttxqDdfMpLyrNMwbw9dKCTGAHF7ozg1AasWIDZfqRDpZsXt2u+35oEAu2PQ36zD4UM6iupbiLA92rrFbvvJehRmxUSAIqnwc/PDqo=
+	t=1739886037; cv=none; b=NLBm3vjv5q2qWCEXKn5zyzjn7gnsrntbsrUNl2M22x/Xz0cHeMoCfyE0IOORdWTeIi2eiM55ucYa60BCN9g84iLthD2e5IFerJZvRqGhLIxcEL+grVbbweNYX75RlHK6S6QvoMncS21/7C0LrGUZZIV0M6urYFCDAcdVT4Mdaos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739885455; c=relaxed/simple;
-	bh=xHoEFsrUX4ZYAcuanQoYOQWYo35pcW4Y7Kb/gERHaT4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ElDaszq/8AUMS6IzsjgJ9mc6OSo3g4L6Gtum5+7sQdP8i1gpii1iwxT7D4qiCXf+jWZ3nh2n0snzzxjX/SxhRlhlUY8kMRYZRwe0KzHNm4nQoMVsx0mB6pYAM9P8lluOK9jUGGQIImvQEdznZh/YoeFmlt9ClczgyblpdOvZd4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A1D225C5E99;
-	Tue, 18 Feb 2025 13:30:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F5FDC4CEE8;
-	Tue, 18 Feb 2025 13:30:51 +0000 (UTC)
-Message-ID: <c5c4197c-dc19-430c-a9d4-262db63fc43d@linux-m68k.org>
-Date: Tue, 18 Feb 2025 23:30:49 +1000
+	s=arc-20240116; t=1739886037; c=relaxed/simple;
+	bh=LB0A+Yz9Tt2nNtojC7MO3VFLOTaY/FBiTphWxNhxNQA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=OZ7RPrIrAiX0qJwJpwMdR4Mi0pV4B3G4d7o8crt2i99PY7i3nYh5EmmbPSJc2duOV2Jh5w38N1rqeY759nDPxLAb+RJuSyvrapkYoL+k+Dt93gBJmFWa4EMDnoCO9yydjL1XRia/HbwrpSOnL/IfRki3FBQ5DC3tcfLYm93T93E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EZ8ILifK; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EZ8ILifK"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1739886035; x=1771422035;
+  h=date:from:to:cc:subject:message-id;
+  bh=LB0A+Yz9Tt2nNtojC7MO3VFLOTaY/FBiTphWxNhxNQA=;
+  b=EZ8ILifKbnaJS2AfnLLVZLg+KVGUoywyDDtyFFump1NcOTF1BpurCfHt
+   G5pYkv4177pIXQIQsUee7/7Nx8hbYhaojS8KU166MU8XwrZsIyc65BSGK
+   V9pbPyFEwYlWDmPmQBqFHDR1ChhVwIqkUIH71URYarv4oatxsoQhX4n6I
+   xJiuMDSusz3ai7vCNHpEGZNS8SXrunS6Ea4L48Lz/YWeVbFyvFURG4AAb
+   1adEv2/bGFeT0CivcCSH9VlGNNrch1r1PZveM/h5rhcEc9/q16KNKVRcx
+   GGTCyEz1IOKJznceclPM6nCZCMOhltr0UjN+OLtBYsUYiDsnbFhYzS/b4
+   Q==;
+X-CSE-ConnectionGUID: SNOsktdBR6Wks0QXQox6Aw==
+X-CSE-MsgGUID: lby8oCgsQuGO6NfgUnjv3w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11348"; a="39815962"
+X-IronPort-AV: E=Sophos;i="6.13,296,1732608000"; 
+   d="scan'208";a="39815962"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2025 05:40:35 -0800
+X-CSE-ConnectionGUID: q9gvwmczTeGtehrZE2AZPA==
+X-CSE-MsgGUID: Ct263/6KSv6PhrVk9Wbl9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
+   d="scan'208";a="114868163"
+Received: from lkp-server02.sh.intel.com (HELO 76cde6cc1f07) ([10.239.97.151])
+  by orviesa007.jf.intel.com with ESMTP; 18 Feb 2025 05:40:34 -0800
+Received: from kbuild by 76cde6cc1f07 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tkNpq-0000aR-0M;
+	Tue, 18 Feb 2025 13:40:27 +0000
+Date: Tue, 18 Feb 2025 21:39:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 5c6757054552b73c7996b7a4f2a76c99d297e71d
+Message-ID: <202502182116.utr3CoAN-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: coldfire: Prevent spurious interrupts when masking
- IMR
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20250204-coldfire-spurious-irq-v1-1-b8f28855f690@yoseli.org>
- <CAMuHMdXkq57WjUPeg3kTsgi-YSw23qV-gK4gVxymOSKGGTDuQQ@mail.gmail.com>
- <770e02b6-d9c5-4a2c-8516-63e08bdc4358@yoseli.org>
- <CAMuHMdXtzGFr2iE7py2fQPMegJTnfKe_NtW25g=h+sohfEhmAA@mail.gmail.com>
- <f13b40d7-4a67-4de8-8d25-1a56be164dbe@yoseli.org>
- <32193858-3ca9-4192-a4cb-f35eea22819e@linux-m68k.org>
- <dc8de6db-b2d9-4cd1-9ee0-646045199c9b@yoseli.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <dc8de6db-b2d9-4cd1-9ee0-646045199c9b@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Hi JM,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 5c6757054552b73c7996b7a4f2a76c99d297e71d  Merge tag 'v6.14-rc3'
 
-On 18/2/25 23:17, Jean-Michel Hautbois wrote:
-> Hi Greg,
-> 
-> On 2/12/25 1:47 PM, Greg Ungerer wrote:
->> Hi JM,
->>
->> On 5/2/25 21:26, Jean-Michel Hautbois wrote:
->>> Hi Geert,
->>>
->>> On 05/02/2025 09:14, Geert Uytterhoeven wrote:
->>>> Hi Jean-Michel,
->>>>
->>>> On Wed, 5 Feb 2025 at 08:07, Jean-Michel Hautbois
->>>> <jeanmichel.hautbois@yoseli.org> wrote:
->>>>> On 04/02/2025 20:27, Geert Uytterhoeven wrote:
->>>>>> On Tue, 4 Feb 2025 at 19:38, Jean-Michel Hautbois
->>>>>> <jeanmichel.hautbois@yoseli.org> wrote:
->>>>>>> The ColdFire interrupt controller can generate spurious interrupts if an
->>>>>>> interrupt source is masked in the IMR while the CPU interrupt priority
->>>>>>> mask (SR[I]) is set lower than the interrupt level.
->>>>>>>
->>>>>>> The reference manual states:
->>>>>>>
->>>>>>> To avoid this situation for interrupts sources with levels 1-6, first
->>>>>>> write a higher level interrupt mask to the status register, before
->>>>>>> setting the mask in the IMR or the module’s interrupt mask register.
->>>>>>> After the mask is set, return the interrupt mask in the status register
->>>>>>> to its previous value.
->>>>>>>
->>>>>>> It can be tested like this:
->>>>>>> - Prepare a iperf3 server on the coldfire target (iperf3 -s -D)
->>>>>>> - Start a high priority cyclictest:
->>>>>>>       cyclictest --secaligned -m -p 99 -i 2500 -q
->>>>>>> - Start iperf3 -c $COLDFIRE_IP -t 0
->>>>>>>
->>>>>>> After a few seconds the dmesg may display:
->>>>>>> [   84.784301] irq 24, desc: dbc502da, depth: 1, count: 0, unhandled: 0
->>>>>>> [   84.784455] ->handle_irq():  0ba0aca3, handle_bad_irq+0x0/0x1e0
->>>>>>> [   84.784610] ->irq_data.chip(): c6779d4f, 0x41652544
->>>>>>> [   84.784719] ->action(): 00000000
->>>>>>> [   84.784770] unexpected IRQ trap at vector 18
->>>>>>>
->>>>>>> With this patch, I never saw it in a few hours testing.
->>>>>>>
->>>>>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>>>>>
->>>>>> Thanks for your patch!
->>>>>>
->>>>>>> --- a/arch/m68k/coldfire/intc-simr.c
->>>>>>> +++ b/arch/m68k/coldfire/intc-simr.c
->>>>>>> @@ -58,6 +58,14 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>>>>>>
->>>>>>>    #endif
->>>>>>>
->>>>>>> +static inline void intc_irq_setlevel(unsigned long level)
->>>>>>> +{
->>>>>>> +       asm volatile ("move.w %0,%%sr"
->>>>>>> +                     : /* no outputs */
->>>>>>> +                     : "d" (0x2000 | ((level) << 8))
->>>>>>> +                     : "memory");
->>>>>>> +}
->>>>>>> +
->>>>>>>    /*
->>>>>>>     *     There maybe one, two or three interrupt control units, each has 64
->>>>>>>     *     interrupts. If there is no second or third unit then MCFINTC1_* or
->>>>>>> @@ -67,13 +75,17 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>>>>>>    static void intc_irq_mask(struct irq_data *d)
->>>>>>>    {
->>>>>>>           unsigned int irq = d->irq - MCFINT_VECBASE;
->>>>>>> +       unsigned long flags = arch_local_save_flags();
->>>>>>>
->>>>>>> +       intc_irq_setlevel(7);
->>>>>>
->>>>>> Can't all of the above just be replaced by
->>>>>>
->>>>>>       unsigned long flags = arch_local_irq_save();
->>>>>
->>>>> The only change is the Supervisor bit in SR which is not changed in
->>>>> arch_local_irq_disable() while it is forced to 1 in my function (setting
->>>>> it to 0x2700 AFAICT).
->>
->> I would expect that it will always be set here - since we must be running
->> in kernel mode to be executing this code.
->>
->>
->>>>> But I can confirm I couldn't see the issue with this code, while using
->>>>> the existing arch_local_irq_save() it still appears (less frequently
->>>>> than without it at all, but still).
->>>>>
->>>>> Any suggestion :-) ?
->>>>
->>>> There are other differences: your version clears all other bits, incl.
->>>> condition codes and master/interrupt state.
->>
->> Clearing of the interrupt mask seems like it might be an important
->> difference here. I don't see any of the CCR bits having an effect here.
->>
->> It is surprising that the existing arch_local_irq_disable() code doesn't
->> satisfy the Reference Manual description of the spurious interrupt
->> problem. It is exactly raising the IRQ level to 7.
->>
->>
->>>> Can you save the flags above in a global, and print it in the
->>>> unexpected IRQ handler, to see which other bits are set when
->>>> it happens?
->>>
->>> An interesting side effect is... that only saving the flags makes it *a lot* harder to reproduce -_-.
->>> Which is coherent with a race condition though :p.
->>>
->>> Each time I got the message, the flags saved where 0x2711.
->>
->> Couple of further suggestions.
->>
->> It might be worth putting an actual comment in the code about the issue.
->> It will probably not be obvious in the future why this is needed here.
->> Just something brief about stopping spurious interrupts should be good enough.
-> 
-> Thanks for the modifications, it is indeed a better naming, and the comment might help future reviewers :-).
-> 
-> FWIW, I added the same in the intc_irq_unmask() because I think it might also occurs in this path. Dunno if it is needed or not (it is very hard to reproduce :-/).
+elapsed time: 1448m
 
-Ok, yeah, good point.
-My reading of that documentation indicates that it is the interrupt mask
-setting that is the issue ("A spurious interrupt may occur if an interrupt
-source is being masked in the interrupt controller mask register (IMR)".
-That makes me think it should only be needed when setting the mask.
-The unmask step is clearing it.
+configs tested: 120
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Do you need a v2 with the patch you did below ?
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-13.2.0
+arc                               allnoconfig    gcc-13.2.0
+arc                              allyesconfig    gcc-13.2.0
+arc                   randconfig-001-20250217    gcc-13.2.0
+arc                   randconfig-002-20250217    gcc-13.2.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-17
+arm                              allyesconfig    gcc-14.2.0
+arm                            dove_defconfig    gcc-14.2.0
+arm                          ep93xx_defconfig    clang-21
+arm                   randconfig-001-20250217    gcc-14.2.0
+arm                   randconfig-002-20250217    gcc-14.2.0
+arm                   randconfig-003-20250217    gcc-14.2.0
+arm                   randconfig-004-20250217    clang-19
+arm64                            allmodconfig    clang-18
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250217    gcc-14.2.0
+arm64                 randconfig-002-20250217    clang-21
+arm64                 randconfig-003-20250217    clang-15
+arm64                 randconfig-004-20250217    gcc-14.2.0
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250218    gcc-14.2.0
+csky                  randconfig-002-20250218    gcc-14.2.0
+hexagon                          allmodconfig    clang-21
+hexagon                           allnoconfig    clang-21
+hexagon                          allyesconfig    clang-18
+hexagon               randconfig-001-20250218    clang-17
+hexagon               randconfig-002-20250218    clang-21
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250217    clang-19
+i386        buildonly-randconfig-002-20250217    gcc-12
+i386        buildonly-randconfig-003-20250217    clang-19
+i386        buildonly-randconfig-004-20250217    gcc-12
+i386        buildonly-randconfig-005-20250217    gcc-12
+i386        buildonly-randconfig-006-20250217    clang-19
+i386                                defconfig    clang-19
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250218    gcc-14.2.0
+loongarch             randconfig-002-20250218    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+m68k                       m5249evb_defconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250218    gcc-14.2.0
+nios2                 randconfig-002-20250218    gcc-14.2.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+openrisc                            defconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                              defconfig    gcc-14.2.0
+parisc                randconfig-001-20250218    gcc-14.2.0
+parisc                randconfig-002-20250218    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-16
+powerpc               randconfig-001-20250218    gcc-14.2.0
+powerpc               randconfig-002-20250218    gcc-14.2.0
+powerpc               randconfig-003-20250218    clang-21
+powerpc64             randconfig-001-20250218    gcc-14.2.0
+powerpc64             randconfig-002-20250218    clang-16
+powerpc64             randconfig-003-20250218    clang-18
+riscv                            allmodconfig    clang-21
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-21
+riscv                               defconfig    clang-19
+riscv                    nommu_virt_defconfig    clang-21
+riscv                 randconfig-001-20250217    gcc-14.2.0
+riscv                 randconfig-002-20250217    gcc-14.2.0
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-21
+s390                             allyesconfig    gcc-14.2.0
+s390                                defconfig    clang-15
+s390                  randconfig-001-20250217    gcc-14.2.0
+s390                  randconfig-002-20250217    clang-18
+s390                       zfcpdump_defconfig    clang-19
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                                  defconfig    gcc-14.2.0
+sh                    randconfig-001-20250217    gcc-14.2.0
+sh                    randconfig-002-20250217    gcc-14.2.0
+sh                     sh7710voipgw_defconfig    gcc-14.2.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250217    gcc-14.2.0
+sparc                 randconfig-002-20250217    gcc-14.2.0
+sparc64                             defconfig    gcc-14.2.0
+sparc64               randconfig-001-20250217    gcc-14.2.0
+sparc64               randconfig-002-20250217    gcc-14.2.0
+um                               allmodconfig    clang-21
+um                                allnoconfig    clang-18
+um                               allyesconfig    gcc-12
+um                                  defconfig    clang-21
+um                             i386_defconfig    gcc-12
+um                    randconfig-001-20250217    clang-19
+um                    randconfig-002-20250217    clang-17
+um                           x86_64_defconfig    clang-15
+x86_64                            allnoconfig    clang-19
+x86_64                           allyesconfig    clang-19
+x86_64      buildonly-randconfig-001-20250217    gcc-12
+x86_64      buildonly-randconfig-002-20250217    clang-19
+x86_64      buildonly-randconfig-003-20250217    clang-19
+x86_64      buildonly-randconfig-004-20250217    gcc-12
+x86_64      buildonly-randconfig-005-20250217    gcc-12
+x86_64      buildonly-randconfig-006-20250217    clang-19
+x86_64                              defconfig    gcc-11
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250217    gcc-14.2.0
+xtensa                randconfig-002-20250217    gcc-14.2.0
 
-Yes please.
-
-Thanks
-Greg
-
-
-> JM
-> 
->>
->> With a couple of tweaks to the code I could get tighter asm code generated.
->> I dunno, maybe it is not worth it.
->>
->> Regards
->> Greg
->>
->>
->>
->>
->> diff --git a/arch/m68k/coldfire/intc-simr.c b/arch/m68k/coldfire/intc- simr.c
->> index f7c2c41b3156..11deeb6f1048 100644
->> --- a/arch/m68k/coldfire/intc-simr.c
->> +++ b/arch/m68k/coldfire/intc-simr.c
->> @@ -58,6 +58,20 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>
->>   #endif
->>
->> +/*
->> + * Avoid spurious interrupts by raising level before modifying mask.
->> + */
->> +static inline unsigned long intc_irq_save_and_mask(void)
->> +{
->> +       unsigned long flags;
->> +       asm volatile ("move.w %%sr,%0\n\t"
->> +                     "move.w %1,%%sr"
->> +                     : "=&d" (flags)
->> +                     : "d" (0x2700)
->> +                     : "memory");
->> +       return flags;
->> +}
->> +
->>   /*
->>    *     There maybe one, two or three interrupt control units, each has 64
->>    *     interrupts. If there is no second or third unit then MCFINTC1_* or
->> @@ -66,14 +80,20 @@ static inline unsigned int irq2ebit(unsigned int irq)
->>
->>   static void intc_irq_mask(struct irq_data *d)
->>   {
->> -       unsigned int irq = d->irq - MCFINT_VECBASE;
->> +       unsigned long flags;
->> +       unsigned int irq;
->>
->> +       flags = intc_irq_save_and_mask();
->> +
->> +       irq = d->irq - MCFINT_VECBASE;
->>          if (MCFINTC2_SIMR && (irq > 127))
->>                  __raw_writeb(irq - 128, MCFINTC2_SIMR);
->>          else if (MCFINTC1_SIMR && (irq > 63))
->>                  __raw_writeb(irq - 64, MCFINTC1_SIMR);
->>          else
->>                  __raw_writeb(irq, MCFINTC0_SIMR);
->> +
->> +       arch_local_irq_restore(flags);
->>   }
->>
->>   static void intc_irq_unmask(struct irq_data *d)
->>
->>
->>
-> 
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
