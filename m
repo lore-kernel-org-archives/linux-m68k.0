@@ -1,30 +1,30 @@
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6E31ABEA5
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 12:53:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF311ABEA5
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 12:53:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739883187; cv=none; b=i7a8rEGQzmjMt/mDAPmPnd8WLMOwX/U13BhsIqnbi4+Lu3taM0ut934coGZw2vAb7OTYBo16Li8hC1UmjC1JwQPwhPxGs588F2NohDETiOSBg54D9Sn6mRbvnC1eT4YyS6YYqHbGQPL7OtSIJPFfBBVUFim3lLLG3io0VrkGLdk=
+	t=1739883189; cv=none; b=IoxCMaYKaNEIxgFOZJSwhPnD9ASwyORFRD73iD71+U8vNbAf+P8wNXXmc5jJGuJP5/gaE17fZGyJpEWqrPITgXfhm7mJ3q/Ceo5t/Xrfm37tkpeAUI2HtxqNbi4+Fzd4jvWEIqiX90H6vTNmqewepx/nYhnIIXB79dQUvjVHKuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739883187; c=relaxed/simple;
-	bh=EHHCrd6N/ZCzEoPoVUvCCH3zYEixB5Szlqel7tSyVxk=;
+	s=arc-20240116; t=1739883189; c=relaxed/simple;
+	bh=AWCtufLKZ6okAh7zNdnTbu6J3EIL/3fhzh9LJaik6DI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TE1lRKujL7VXfl09+96yT1scCZNnilKnpw4J4IoXK1ERQQ+0d51ZRry+IDwJANTXH770jUHRu6OJzfqAs0YzXGj2fHCPoGjkRqyw+RqDDR9Nj/MBY52BzcTUzJZj5GgiZnB7sm9EzjauYOgSCJ+FBALyLg4F03uyltwglfe2g9g=
+	 MIME-Version; b=IadeeKeKL1mQI0aNMr3xbGb04eseqqu3pa2Pht99PEvyRqzRiitxIptAFflFkypk1LbUPNILUEnVhrH09Px0OP9Ia8hB99LGfUjIAhCtRlRcwYGfG941aezVBLEWPJe5uZe9Vw+YIDX7IAvcUVsYQXrwIYxVCxc+dVG3YrIZq4o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 596B85C549C;
-	Tue, 18 Feb 2025 12:52:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8DFC4CEE2;
-	Tue, 18 Feb 2025 12:53:04 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 140F95C5DC6;
+	Tue, 18 Feb 2025 12:52:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57FE2C4CEE6;
+	Tue, 18 Feb 2025 12:53:06 +0000 (UTC)
 From: Greg Ungerer <gerg@linux-m68k.org>
 To: linux-m68k@lists.linux-m68k.org
 Cc: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 12/13] m68k: coldfire: disable platform device tree entries
-Date: Tue, 18 Feb 2025 22:46:32 +1000
-Message-ID: <20250218125124.2692982-13-gerg@linux-m68k.org>
+Subject: [PATCH 13/13] m68k: coldfire: enable devicetree use
+Date: Tue, 18 Feb 2025 22:46:33 +1000
+Message-ID: <20250218125124.2692982-14-gerg@linux-m68k.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250218125124.2692982-1-gerg@linux-m68k.org>
 References: <20250218125124.2692982-1-gerg@linux-m68k.org>
@@ -36,54 +36,43 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If devicetree is enabled for ColdFire platforms then remove the devices
-that are supported by a devicetree from the platform device table.
+With minimal devicetree support in place enable the devicetree kernel
+configuration options to use it on ColdFire platforms.
 
-This is done conditionally for now, until a full conversion to use of
-devicetree has been completed. Specifically the ColdFire UART and the
-FEC ethernet module can currently be supported by devicetree entries.
+This is purely a proof-of-concept change. It is enough to use basic
+devicetrees on the MCF5208EVB and M5475EVB platforms.
 
 Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- arch/m68k/coldfire/device.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/m68k/Kconfig     | 2 ++
+ arch/m68k/Kconfig.cpu | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-index 8d7cec28f4d9..e802496d9852 100644
---- a/arch/m68k/coldfire/device.c
-+++ b/arch/m68k/coldfire/device.c
-@@ -24,6 +24,7 @@
- #include <linux/platform_data/dma-mcf-edma.h>
- #include <linux/platform_data/mmc-esdhc-mcf.h>
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index b2ed0308c0ea..be87aef84373 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -41,6 +41,8 @@ config M68K
+ 	select OLD_SIGSUSPEND3
+ 	select UACCESS_MEMCPY if !MMU
+ 	select ZONE_DMA
++	select OF if COLDFIRE
++	select OF_EARLY_FLATTREE if COLDFIRE
  
-+#ifndef CONFIG_OF
- /*
-  *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
-  */
-@@ -317,6 +318,7 @@ static struct platform_device mcf_fec1 = {
- 	}
- };
- #endif /* MCFFEC_BASE1 */
-+#endif /* !CONFIG_OF */
+ config CPU_BIG_ENDIAN
+ 	def_bool y
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index 50ecb16d0a1f..e2dce38607cf 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -31,6 +31,7 @@ config COLDFIRE
+ 	select GENERIC_CSUM
+ 	select GPIOLIB
+ 	select COMMON_CLK
++	select IRQ_DOMAIN
+ 	select HAVE_PAGE_SIZE_8KB if !MMU
  
- #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
- /*
-@@ -757,6 +759,7 @@ static struct platform_device mcf_flexcan0 = {
- #endif /* MCFFLEXCAN_SIZE */
- 
- static struct platform_device *mcf_devices[] __initdata = {
-+#ifndef CONFIG_OF
- 	&mcf_uart0,
- #ifdef MCFUART_BASE1
- 	&mcf_uart1,
-@@ -791,6 +794,7 @@ static struct platform_device *mcf_devices[] __initdata = {
- #ifdef MCFFEC_BASE1
- 	&mcf_fec1,
- #endif
-+#endif /* !CONFIG_OF */
- #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
- 	&mcf_qspi,
- #endif
+ config SUN3
 -- 
 2.43.0
 
