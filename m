@@ -1,30 +1,30 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B492B1ABEA5
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 12:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6E31ABEA5
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 12:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739883186; cv=none; b=qVKQlMPoXOE/25ouPZxOIBovX5uMnzQPVfxH4U6eCcWfOxk2jxYpaA9ALyyO+1astSmPF8xvWvBHvBv3S2pUcH4QVcHKTaHRA2cAXLgURdV/JD8VEPWEt+81pBFqdtXXdzIXwtLCkv/V1K7CHC55YBDWu9JyxEX4BbQ1nwURx1M=
+	t=1739883187; cv=none; b=i7a8rEGQzmjMt/mDAPmPnd8WLMOwX/U13BhsIqnbi4+Lu3taM0ut934coGZw2vAb7OTYBo16Li8hC1UmjC1JwQPwhPxGs588F2NohDETiOSBg54D9Sn6mRbvnC1eT4YyS6YYqHbGQPL7OtSIJPFfBBVUFim3lLLG3io0VrkGLdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739883186; c=relaxed/simple;
-	bh=LeuvJWnSjh6SamjA+sG3hzTlZR7ebX/ksLFDWPpkPKo=;
+	s=arc-20240116; t=1739883187; c=relaxed/simple;
+	bh=EHHCrd6N/ZCzEoPoVUvCCH3zYEixB5Szlqel7tSyVxk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RNdBxppDBHjiLNRiAs8newfSsfEQIwqLWsaut754ilbW3nUtfpizjMEQnIigdCri3Ez0YLXyh7hB2VfU7dDjztwgAFKa4VupBS8qoQvZaEKayxbZS02dF01AntvI1MeXucEIJEdYRFUl4zvORQNd/i5Rra6KwrhJ0r0PRhLvGm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
+	 MIME-Version; b=TE1lRKujL7VXfl09+96yT1scCZNnilKnpw4J4IoXK1ERQQ+0d51ZRry+IDwJANTXH770jUHRu6OJzfqAs0YzXGj2fHCPoGjkRqyw+RqDDR9Nj/MBY52BzcTUzJZj5GgiZnB7sm9EzjauYOgSCJ+FBALyLg4F03uyltwglfe2g9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id F1838A40BA4;
-	Tue, 18 Feb 2025 12:51:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC6B8C4CEE7;
-	Tue, 18 Feb 2025 12:53:02 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 596B85C549C;
+	Tue, 18 Feb 2025 12:52:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C8DFC4CEE2;
+	Tue, 18 Feb 2025 12:53:04 +0000 (UTC)
 From: Greg Ungerer <gerg@linux-m68k.org>
 To: linux-m68k@lists.linux-m68k.org
 Cc: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 11/13] m68k: implement an embedded devicetree for mm targets
-Date: Tue, 18 Feb 2025 22:46:31 +1000
-Message-ID: <20250218125124.2692982-12-gerg@linux-m68k.org>
+Subject: [PATCH 12/13] m68k: coldfire: disable platform device tree entries
+Date: Tue, 18 Feb 2025 22:46:32 +1000
+Message-ID: <20250218125124.2692982-13-gerg@linux-m68k.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250218125124.2692982-1-gerg@linux-m68k.org>
 References: <20250218125124.2692982-1-gerg@linux-m68k.org>
@@ -36,94 +36,54 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add code to support using an embedded DTB for all m68k mm targets as well
-as the nommu ones.
+If devicetree is enabled for ColdFire platforms then remove the devices
+that are supported by a devicetree from the platform device table.
+
+This is done conditionally for now, until a full conversion to use of
+devicetree has been completed. Specifically the ColdFire UART and the
+FEC ethernet module can currently be supported by devicetree entries.
 
 Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- arch/m68k/kernel/setup_mm.c      | 33 ++++++++++++++++++++++++++++++++
- arch/m68k/kernel/vmlinux-std.lds | 10 ++++++++++
- 2 files changed, 43 insertions(+)
+ arch/m68k/coldfire/device.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index 15c1a595a1de..ef871a78eb78 100644
---- a/arch/m68k/kernel/setup_mm.c
-+++ b/arch/m68k/kernel/setup_mm.c
-@@ -27,6 +27,8 @@
- #include <linux/nvram.h>
- #include <linux/initrd.h>
- #include <linux/random.h>
-+#include <linux/of.h>
-+#include <linux/of_fdt.h>
+diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+index 8d7cec28f4d9..e802496d9852 100644
+--- a/arch/m68k/coldfire/device.c
++++ b/arch/m68k/coldfire/device.c
+@@ -24,6 +24,7 @@
+ #include <linux/platform_data/dma-mcf-edma.h>
+ #include <linux/platform_data/mmc-esdhc-mcf.h>
  
- #include <asm/bootinfo.h>
- #include <asm/byteorder.h>
-@@ -204,6 +206,32 @@ static void __init m68k_parse_bootinfo(const struct bi_record *record)
++#ifndef CONFIG_OF
+ /*
+  *	All current ColdFire parts contain from 2, 3, 4 or 10 UARTS.
+  */
+@@ -317,6 +318,7 @@ static struct platform_device mcf_fec1 = {
+ 	}
+ };
+ #endif /* MCFFEC_BASE1 */
++#endif /* !CONFIG_OF */
+ 
+ #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+ /*
+@@ -757,6 +759,7 @@ static struct platform_device mcf_flexcan0 = {
+ #endif /* MCFFLEXCAN_SIZE */
+ 
+ static struct platform_device *mcf_devices[] __initdata = {
++#ifndef CONFIG_OF
+ 	&mcf_uart0,
+ #ifdef MCFUART_BASE1
+ 	&mcf_uart1,
+@@ -791,6 +794,7 @@ static struct platform_device *mcf_devices[] __initdata = {
+ #ifdef MCFFEC_BASE1
+ 	&mcf_fec1,
  #endif
- }
- 
-+#ifdef CONFIG_EMBEDDED_DTB
-+static void __init m68k_setup_fdt(void)
-+{
-+	extern void *embedded_dtb;
-+	phys_addr_t fdt = (phys_addr_t) &embedded_dtb;
-+
-+	pr_info("m68k generic DT machine support, FDT blob at 0x%08x\n", fdt);
-+	if (!early_init_dt_verify(__va(fdt), fdt)) {
-+		pr_err("FDT blob is bad?!\n");
-+		return;
-+	}
-+	early_init_dt_scan_nodes();
-+	unflatten_device_tree();
-+}
-+
-+static void __init m68k_dtb_model(void)
-+{
-+	const char *model;
-+	model = of_flat_dt_get_machine_name();
-+	if (model)
-+		pr_info("DTB reports model \"%s\"\n", model);
-+	else
-+		pr_warn("DTB has no model type?\n");
-+}
-+#endif /* CONFIG_EMBEDDED_DTB */
-+
- void __init setup_arch(char **cmdline_p)
- {
- 	/* The bootinfo is located right after the kernel */
-@@ -334,6 +362,11 @@ void __init setup_arch(char **cmdline_p)
- 
- 	paging_init();
- 
-+#ifdef CONFIG_EMBEDDED_DTB
-+	m68k_setup_fdt();
-+	m68k_dtb_model();
-+#endif
-+
- 	if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && m68k_ramdisk.size) {
- 		initrd_start = (unsigned long)phys_to_virt(m68k_ramdisk.addr);
- 		initrd_end = initrd_start + m68k_ramdisk.size;
-diff --git a/arch/m68k/kernel/vmlinux-std.lds b/arch/m68k/kernel/vmlinux-std.lds
-index 1ccdd04ae462..45389a9a2356 100644
---- a/arch/m68k/kernel/vmlinux-std.lds
-+++ b/arch/m68k/kernel/vmlinux-std.lds
-@@ -43,6 +43,16 @@ SECTIONS
-   __init_begin = .;
-   INIT_TEXT_SECTION(PAGE_SIZE) :data
-   INIT_DATA_SECTION(16)
-+
-+#ifdef CONFIG_EMBEDDED_DTB
-+  STRUCT_ALIGN();
-+  .embedded_dtb : {
-+	embedded_dtb = .;
-+	*(.embedded_dtb)
-+	KEEP(*(.embedded_dtb))
-+  }
-+#endif
-+
-   .m68k_fixup : {
- 	__start_fixup = .;
- 	*(.m68k_fixup)
++#endif /* !CONFIG_OF */
+ #if IS_ENABLED(CONFIG_SPI_COLDFIRE_QSPI)
+ 	&mcf_qspi,
+ #endif
 -- 
 2.43.0
 
