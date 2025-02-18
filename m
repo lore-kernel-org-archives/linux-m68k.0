@@ -1,30 +1,30 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E1F26138A
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 12:52:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2FB1ABEA5
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Feb 2025 12:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739883164; cv=none; b=CL2O9O5/9NHOK4lWqH0uVk9IbG4q6l83OTO0pUx7qlCHaPK9IDynUF0fesNvs8q8pUdszZeAln7WJi5l39n1aC5JXEBdmQ00oqRlFU+tYnpDQF1y5RtUxgyAi7aQvPC7+tEmGG5MQVSI5S+i+fQwTb64QcMWHRdOj5+BdnW1lRE=
+	t=1739883172; cv=none; b=J53yiiy/DnyOTqvBY964jd9sN/3SdX0X51zomUOWjV/ds39CQYw2O4dEVTw7u0Pq2ayU9HolYxAviwkPLZPCQpnhR+EA9oLIQmTxTqOcLQ+4UHsuU5JIJwAG6EujJJOZ9ehPF7wmkeyLBQBjeP2T+16UlzrcZbaxapsUjEriCr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739883164; c=relaxed/simple;
-	bh=KDMz52UVzD/xe5/dxCC6Ir1DqA6mQkxOOtKDhTsqtyo=;
+	s=arc-20240116; t=1739883172; c=relaxed/simple;
+	bh=2q/NTJg++1mk0x81CbM7tpQJRn1ynuVSGwwkHdblquQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uQvCIZ+ccGG1+9N5spbFhhlZPZy/bKH+refJQ0XoJGQYwWqdVXFzOt8ZoDo6SZ4JBS9+FWsHJ/hA7v+ZzvFDx2pH097TuavW0/WbsRJ2s+iJvhET5PjJDiDnPpz8cHXAI5lSTyz7fVo+hDNSL0tzWhphf1FiHcuhf1ej1z12J7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=147.75.193.91
+	 MIME-Version; b=mGdpH2K0DmNnuJf61SID+KWSpCn//RBVVbOiriOc6xXCHKYq9wA3wdw56Zs/VbzY/ELc+NL7pA3MyTlS7nWkzjIuGOjyTSDllt4ZqPQlsrTZ+b+KRBvfDdVw8ZNCrvWw+YjnuagRgpAmvzyyCttV2iuWDTVgG2OFJJJX6UJ2/sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id DE7FFA40B42;
-	Tue, 18 Feb 2025 12:50:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B957AC4CEE2;
-	Tue, 18 Feb 2025 12:52:40 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6D5005C0324;
+	Tue, 18 Feb 2025 12:52:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFAAFC4CEE2;
+	Tue, 18 Feb 2025 12:52:49 +0000 (UTC)
 From: Greg Ungerer <gerg@linux-m68k.org>
 To: linux-m68k@lists.linux-m68k.org
 Cc: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 02/13] serial: mcf: add devicetree support
-Date: Tue, 18 Feb 2025 22:46:22 +1000
-Message-ID: <20250218125124.2692982-3-gerg@linux-m68k.org>
+Subject: [PATCH 03/13] net: fec: add device tree support for ColdFire FEC
+Date: Tue, 18 Feb 2025 22:46:23 +1000
+Message-ID: <20250218125124.2692982-4-gerg@linux-m68k.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250218125124.2692982-1-gerg@linux-m68k.org>
 References: <20250218125124.2692982-1-gerg@linux-m68k.org>
@@ -36,69 +36,51 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add basic support for probing the ColdFire UARTS via a devicetree.
+The FEC hardware module used in most Freescale ColdFire SoC parts is a
+simpler version of that used on the iMX family of parts. Add a devicetree
+compatible entry they can use.
 
 Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- drivers/tty/serial/mcf.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ Documentation/devicetree/bindings/net/fsl,fec.yaml | 1 +
+ drivers/net/ethernet/freescale/fec_main.c          | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/tty/serial/mcf.c b/drivers/tty/serial/mcf.c
-index fd8cf3399855..d83f05d9e150 100644
---- a/drivers/tty/serial/mcf.c
-+++ b/drivers/tty/serial/mcf.c
-@@ -21,6 +21,7 @@
- #include <linux/io.h>
- #include <linux/uaccess.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
- #include <asm/coldfire.h>
- #include <asm/mcfsim.h>
- #include <asm/mcfuart.h>
-@@ -463,6 +464,7 @@ static const struct uart_ops mcf_uart_ops = {
+diff --git a/Documentation/devicetree/bindings/net/fsl,fec.yaml b/Documentation/devicetree/bindings/net/fsl,fec.yaml
+index 24e863fdbdab..33f73057903a 100644
+--- a/Documentation/devicetree/bindings/net/fsl,fec.yaml
++++ b/Documentation/devicetree/bindings/net/fsl,fec.yaml
+@@ -24,6 +24,7 @@ properties:
+           - fsl,imx6q-fec
+           - fsl,mvf600-fec
+           - fsl,s32v234-fec
++          - fsl,m5208-fec
+       - items:
+           - enum:
+               - fsl,imx53-fec
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index f7c4ce8e9a26..a0a13afe5b7c 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -179,6 +179,10 @@ static const struct fec_devinfo fec_s32v234_info = {
+ 		  FEC_QUIRK_HAS_MDIO_C45,
  };
  
- static struct mcf_uart mcf_ports[10];
-+static int mcf_numports;
- 
- #define	MCF_MAXPORTS	ARRAY_SIZE(mcf_ports)
- 
-@@ -573,6 +575,8 @@ static int mcf_probe(struct platform_device *pdev)
- 	struct uart_port *port;
- 	struct resource *res;
- 
-+	if (pdev->id == -1)
-+		pdev->id = mcf_numports;
- 	if (pdev->id >= MCF_MAXPORTS)
- 		return -ENODEV;
- 	port = &mcf_ports[pdev->id].port;
-@@ -598,6 +602,8 @@ static int mcf_probe(struct platform_device *pdev)
- 	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
- 
- 	uart_add_one_port(&mcf_driver, port);
-+
-+	mcf_numports++;
- 	return 0;
- }
- 
-@@ -617,11 +623,17 @@ static void mcf_remove(struct platform_device *pdev)
- 
- /****************************************************************************/
- 
-+static const struct of_device_id mcf_uart_dt_ids[] = {
-+	{ .compatible = "fsl,mcfuart", },
-+	{ }
++static const struct fec_devinfo fec_m5208_info = {
++	.quirks = FEC_QUIRK_MIB_CLEAR | FEC_QUIRK_HAS_FRREG,
 +};
 +
- static struct platform_driver mcf_platform_driver = {
- 	.probe		= mcf_probe,
- 	.remove		= mcf_remove,
- 	.driver		= {
- 		.name	= "mcfuart",
-+		.of_match_table = mcf_uart_dt_ids,
- 	},
+ static struct platform_device_id fec_devtype[] = {
+ 	{
+ 		/* keep it for coldfire */
+@@ -201,6 +205,7 @@ static const struct of_device_id fec_dt_ids[] = {
+ 	{ .compatible = "fsl,imx8mq-fec", .data = &fec_imx8mq_info, },
+ 	{ .compatible = "fsl,imx8qm-fec", .data = &fec_imx8qm_info, },
+ 	{ .compatible = "fsl,s32v234-fec", .data = &fec_s32v234_info, },
++	{ .compatible = "fsl,m5208-fec", .data = &fec_m5208_info, },
+ 	{ /* sentinel */ }
  };
- 
+ MODULE_DEVICE_TABLE(of, fec_dt_ids);
 -- 
 2.43.0
 
