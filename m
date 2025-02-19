@@ -1,38 +1,38 @@
 Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 027381C07DD
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 07:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA1C1B6D0F
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 07:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739948757; cv=none; b=uuHl37u7pcRn1AHyvxl9DBxxPQwuF3MKqlx8m+rGPSO7Qewyg089MxbWNO4DzjonmVSrQEFWYQV5zFTfzp5TGGA272HvNpUJZgclQqE3NXmdfyI7grakNJIzrPsoaTzW8896Bjh0VBVgghvLMtCimPTFHNZXd6J/Ybxwyx6XLoQ=
+	t=1739948808; cv=none; b=CbwzWbGzC5zuChIMhiOroWqiPd8pvMctVc9YTm6zvLF3EPQ6FmoOk8CQrvrvyD2CIOe43BrEKQ3hWK2gt8aalYc2T2vLh4oUZk/ACoG66VJRF/jPJouXwWhSy4ipDVKgbvew34SQXIpPjdNmvIIa1Pt6rJLf+2hrMdsL4OiEbo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739948757; c=relaxed/simple;
-	bh=2cUEnuGQHv9ozvPkEkIpEFX9bk58/iAuGbeCEVd9iDQ=;
+	s=arc-20240116; t=1739948808; c=relaxed/simple;
+	bh=Qip9wD+qFqA+YVnpWg6iHqxWJTQUNY/Bf9DR9tX986Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=f5iVwJLeS2w4lR46maIs4YFjzXHFr6A302P2Fqj0si1hWs26kykYlM+h9F0h27cfq9EuLUaToeNRdaGoQSvm+Rb2u6nNfiiumFSohiG0IpXNCnZMimdLjjnRarEz9RlsbqHrYT6rqxt88GUIzzGwAqe5E7S4k2bNhggiWnoK7Zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYnDEB5H; arc=none smtp.client-ip=147.75.193.91
+	 In-Reply-To:Content-Type; b=pa7UgmVzAUo4NqhVX7HUvYA6xN1AscemZWptOTf4Wpfxak4TQzQt4L4MN9ztT/XWyeYFVLESM8KQk4YM2eny2rOl9LAiKwgJJBbkxY7RB401u7b1fnCTUqQ0xPtsRvfRN8ZiKxlPfjjJhd10aHWuzFK1SZeC/G5JRm/5eDi/v6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJJkDZed; arc=none smtp.client-ip=147.75.193.91
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYnDEB5H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nJJkDZed"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 27F4FA4044C;
-	Wed, 19 Feb 2025 07:04:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F409C4CED1;
-	Wed, 19 Feb 2025 07:05:53 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 6DD75A41F1D;
+	Wed, 19 Feb 2025 07:05:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CEF1C4CED1;
+	Wed, 19 Feb 2025 07:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739948754;
-	bh=2cUEnuGQHv9ozvPkEkIpEFX9bk58/iAuGbeCEVd9iDQ=;
+	s=k20201202; t=1739948805;
+	bh=Qip9wD+qFqA+YVnpWg6iHqxWJTQUNY/Bf9DR9tX986Q=;
 	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=KYnDEB5HTZ7h5Gocaq+M4PMMS8qgoGB/k+3bnUMbGbAI6yvyR88iOpN8ly91XBIk0
-	 rH3ZCSRsgDsQ8jiNdAFKhWL3D3KfdoMdFdA5JykoX4fvcBpqu6qqn6GCbcr7aUdOst
-	 jGqTMJ3ID7rCTcLrq5nZk92/8Gs55MotcjozOhF5CNHtFRe7UKTl1PRePEcl8U0eCp
-	 ETeznsM+l9HZdJaXL2aQbAzezloaolC7jlm75ZTrcR1sNp/ZGa4WRejmB0moJZtPQf
-	 qkzX2fbo4JcfMQqqbtQtSO4UWrQDrI6qJfrUnR9q3kW3vsLvr7VKBd5CTPnSjrTyiu
-	 OG8bwE8JgKNow==
-Message-ID: <624f666f-6b97-4afe-821a-8fbc57a408c4@kernel.org>
-Date: Wed, 19 Feb 2025 08:05:50 +0100
+	b=nJJkDZed9oos8uSU47g3SofBF5y4IsKHy+X1ifj9qcCy1mNa6E5PA53RYX4Vod9Da
+	 f4nfgC1Z04gt4r/xVnHOkcIgw9mmDt/yWOIIpsNPfmyncfgSioB2UD/H2pk1iGFLVU
+	 35ypYYYRLB0KMZvFbGoWDW2cOz921yLtjB29j79BksW2JdbPeSAGn8/xFEaNY4BRdS
+	 +LeFRCWkiLRB0vPA4xiSZmABDJWpV3n7goBE/1EqLy6teP4ZaKJ1mFxNvMD7d722SC
+	 8dz8rgDrP3QpwXo+Ttk01Pz0TfjH/o2yOdn4DjQZZR2eQnJ3/BG3zVu76L/07xjuej
+	 J78WR21yr4ong==
+Message-ID: <a98f49e8-3e42-432d-8614-d9b217974a2c@kernel.org>
+Date: Wed, 19 Feb 2025 08:06:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -40,12 +40,13 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/13] net: fec: add device tree support for ColdFire FEC
+Subject: Re: [PATCH 09/13] m68k: coldfire: add devicetree for mcf5475-evb
+ platform
 To: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
 References: <20250218125124.2692982-1-gerg@linux-m68k.org>
- <20250218125124.2692982-4-gerg@linux-m68k.org>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+ <20250218125124.2692982-10-gerg@linux-m68k.org>
 Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -89,18 +90,44 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20250218125124.2692982-4-gerg@linux-m68k.org>
+In-Reply-To: <20250218125124.2692982-10-gerg@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 18/02/2025 13:46, Greg Ungerer wrote:
-> The FEC hardware module used in most Freescale ColdFire SoC parts is a
-> simpler version of that used on the iMX family of parts. Add a devicetree
-> compatible entry they can use.
+> Add a simple devicetree to support the Freescale MCF5475-EVB platform.
 > 
 > Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 > ---
->  Documentation/devicetree/bindings/net/fsl,fec.yaml | 1 +
+>  arch/m68k/boot/dts/Makefile       |  1 +
+>  arch/m68k/boot/dts/mcf5475evb.dts | 55 +++++++++++++++++++++++++++++++
+>  2 files changed, 56 insertions(+)
+>  create mode 100644 arch/m68k/boot/dts/mcf5475evb.dts
+> 
+> diff --git a/arch/m68k/boot/dts/Makefile b/arch/m68k/boot/dts/Makefile
+> index d69e37b48558..f0e9643e6b71 100644
+> --- a/arch/m68k/boot/dts/Makefile
+> +++ b/arch/m68k/boot/dts/Makefile
+> @@ -1,4 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+>  dtb-y += mcf5208evb.dtb
+> +dtb-y += mcf5475evb.dtb
+>  
+> diff --git a/arch/m68k/boot/dts/mcf5475evb.dts b/arch/m68k/boot/dts/mcf5475evb.dts
+> new file mode 100644
+> index 000000000000..247a938bfafd
+> --- /dev/null
+> +++ b/arch/m68k/boot/dts/mcf5475evb.dts
+> @@ -0,0 +1,55 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/dts-v1/;
+> +
+> +/ {
+> +	model = "Freescale MCF5475EVB";
+> +	compatible = "mcf5475evb";
+
+Incorrect format.
 
 Please run scripts/checkpatch.pl and fix reported warnings. After that,
 run also `scripts/checkpatch.pl --strict` and (probably) fix more
@@ -109,25 +136,33 @@ but the code here looks like it needs a fix. Feel free to get in touch
 if the warning is not clear.
 
 
-<form letter>
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
 
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline) or work on fork of kernel
-(don't, instead use mainline). Just use b4 and everything should be
-fine, although remember about `b4 prep --auto-to-cc` if you added new
-patches to the patchset.
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	interrupt-parent = <&intc>;
+> +
+> +	coreclk: clock-266000000 {
+> +		#clock-cells = <0>;
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <266000000>;
+> +	};
+> +
+> +	intc: interrupt-controller@ff000700 {
+> +		compatible = "fsl,intc-2";
+> +		interrupt-controller;
+> +		#interrupt-cells = <1>;
+> +		reg = <0xff000700 0x80>;
+> +	};
+> +
+> +	uart0: serial@ff008600 {
+> +		compatible = "fsl,mcfuart";
+> +		reg = <0xff008600 0x80>;
+> +		interrupts = <99>;
+> +		clocks = <&coreclk>;
+> +		status = "okay";
 
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time.
+Did you disable it anywhere?
 
-Please kindly resend and include all necessary To/Cc entries.
-</form letter>
 
 Best regards,
 Krzysztof
