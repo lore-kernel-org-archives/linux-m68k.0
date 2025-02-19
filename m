@@ -1,120 +1,104 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643131DE2CD
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 17:16:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA36523F295
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 20:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739985368; cv=none; b=ZsXURLcP01yG782DM514f6OtvM8vz04uNmpDnuDCi0qAbwnpBxs28oOI9tZhkPS52hYeZSYPGAid9Yp4rC2doCKPOQXzKGYEchVtl9h6C3WH4OVn++TqoiFmXJ8B+JDAYtit/HPjorAX2q9+37GYj2dHc38Pbxhe87va/NTC4Ug=
+	t=1739997686; cv=none; b=CyZBikV9lcv/CozGAtHyysba0nrEojCRzcyS6qdYXYrIkFSPFy+QxdiC2txagK4ONZr93ZML0KLXUUCfk8Ki7kxI3J3rHEgUAdXH+qM2PXniHQJ5su2QZwEl+6ME09rnO8Pd/4ir8g20nXq+F32lB8DZdG2T+Im3Jtxtg7gySbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739985368; c=relaxed/simple;
-	bh=7QI0wT4+63qh/XUmz07BMZkRninTpYvjv4idET9mc5E=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=EeoKwkDoiuqkVws/peZWoQR4G4vxfLjIos7nUrbWYOymatWtUs8xmrwi8IDwQJs1wZ7BjqW7cUV9E35cyjt2UO+knXQXxVygshZbsg5ElhdSdQPN2T8aOTjjNBM33NnzZM5BfoR/+/Hy9Vrrt2jdOTudOCDuE6mIY8GKP7GnOAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 247399200B3; Wed, 19 Feb 2025 18:16:05 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 1E09592009E;
-	Wed, 19 Feb 2025 17:16:05 +0000 (GMT)
-Date: Wed, 19 Feb 2025 17:16:05 +0000 (GMT)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: "Dmitry V. Levin" <ldv@strace.io>
-cc: Andrew Morton <akpm@linux-foundation.org>, Oleg Nesterov <oleg@redhat.com>, 
-    Alexey Gladkov <legion@kernel.org>, 
-    Eugene Syromyatnikov <evgsyr@gmail.com>, 
-    Charlie Jenkins <charlie@rivosinc.com>, Helge Deller <deller@gmx.de>, 
-    Mike Frysinger <vapier@gentoo.org>, Renzo Davoli <renzo@cs.unibo.it>, 
-    Davide Berardi <berardi.dav@gmail.com>, Vineet Gupta <vgupta@kernel.org>, 
-    Russell King <linux@armlinux.org.uk>, 
-    Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-    Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, 
-    WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Michal Simek <monstr@monstr.eu>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
-    Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
-    Stafford Horne <shorne@gmail.com>, 
-    "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
-    Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-    Christophe Leroy <christophe.leroy@csgroup.eu>, 
-    Naveen N Rao <naveen@kernel.org>, 
-    Madhavan Srinivasan <maddy@linux.ibm.com>, 
-    Paul Walmsley <paul.walmsley@sifive.com>, 
-    Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-    Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-    Alexander Gordeev <agordeev@linux.ibm.com>, 
-    Christian Borntraeger <borntraeger@linux.ibm.com>, 
-    Sven Schnelle <svens@linux.ibm.com>, 
-    Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, 
-    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-    Johannes Berg <johannes@sipsolutions.net>, 
-    Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-    x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-    Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-    Arnd Bergmann <arnd@arndb.de>, strace-devel@lists.strace.io, 
-    linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org, 
-    linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, 
-    loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-    linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-    linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-    linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-    linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-    linux-um@lists.infradead.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH v6 3/6] syscall.h: introduce syscall_set_nr()
-In-Reply-To: <20250217091034.GD18175@strace.io>
-Message-ID: <alpine.DEB.2.21.2502191658530.65342@angie.orcam.me.uk>
-References: <20250217091034.GD18175@strace.io>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1739997686; c=relaxed/simple;
+	bh=yraqLzxeh3b7rHBkfWikDJTuU2Al31V4abfQMTxxX+8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p4hwefdXyonCyIVjwrVlq/1URmPsEJ0MJ6OPsHmc7eJIyQSfHOckOeZ7PmqrclSsV2Sfn/bmfdrVg8u+D7d9esjRrk+X5llUuXIEoHPm4+wcEz/G5bmRt//vaKHmGW6Z7715Yg0gz51hEm/XvMgrQUmFkFYBtE91Oe/l5qhRLZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=ZTczbz4V; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="ZTczbz4V"
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5452efeb87aso242999e87.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 12:41:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google; t=1739997683; x=1740602483; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uQWKjia1YEhq+PMd/nXG3fmWx8U4DeTtcDG7C2yzBs0=;
+        b=ZTczbz4VKdT0H4frQqU/a2Mk6LYhF2ixsYyl3PKr4jK8P2XYnSGv3Zjq/1nbmeK/DE
+         2zoti/hp/jGSwuHvcdPxPcebQLBMmIKoGUM+B7mhV9eZiwTUrLNOboyYsP2tZ902z3dO
+         QYRav4Um3m39xCCGIUtVdSuKCtjBMoxBYWlJA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739997683; x=1740602483;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uQWKjia1YEhq+PMd/nXG3fmWx8U4DeTtcDG7C2yzBs0=;
+        b=drh9tRJR7OOQgSQCyGOxIszxer0Tgv3iF7rLhv16tDwN8Lez7ABx8mLNDJ7zzVJpyk
+         ZEVJ6Nr/QGsbFt4aw+t/AkL+D1nm7QaUlOPxr6Wx9MT0PUvejs928Q0YOv6D0EJArPgp
+         GPsQV6Z4psULo7fECCRo8TABrKUOMvl5JUiISLUvrTktLr6xxRVPci80gLcWmc3/IoCT
+         4vm0Xu9q7E7xEhhfafL+a/+HbQ5Yv7Jsn/sF/W+sIbop/S6rfr2a0Uk3M6xL2f/VyfHG
+         5VHateLyCW+R9q0jqKT09v7DwSDSnAtpASzzkiR/uj7RJlUayYoMcCDcRasUu3xD+Jk+
+         3pog==
+X-Forwarded-Encrypted: i=1; AJvYcCUGKiidcVMscYKyv/HmYc+X2dleHfZiRER3etVlMpXZyedC/7VU9sAk2ZVF37ebrn7EZzKUHJNZDB9H@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxXGMZJjcz+VyBnTO3OhgEV5GQIczUHaeCeLm7Vv8srpeuQX/6+
+	EgGMW5Fq1q+wJ5BwuMDLq28fmtgFKD8LWCCfs2xkgIz2Jt/vv3pMwT/q37+XUWcd2RdO8EglDAS
+	yd9p1alXZ2/JkTxEpeM4gerszJR6nF7dfqDaQrA==
+X-Gm-Gg: ASbGncshIXMimn/4SvEQjua6y6vj/UVsiQ8WHAFOUNpZhrRAzFdqfMT0N57OSUXbumu
+	80HjkKhos7lmVJTV37xgx+gUDCBa1j+taQ38hDswo2zidBI4p9wQ3x4GCRy4P41ZhfCgYSOUf
+X-Google-Smtp-Source: AGHT+IENNNpeaMlkD/fiQQAYZ6iJNFdOYrpRNg7fkEna3OdCDK3VAQtFcLuzSuMXXgumt+4ZaeEHehD2gwq2A0TLKZo=
+X-Received: by 2002:a05:6512:2398:b0:545:ee3:f3c7 with SMTP id
+ 2adb3069b0e04-5462eef4e56mr2154420e87.30.1739997682815; Wed, 19 Feb 2025
+ 12:41:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20250214-printf-kunit-convert-v4-0-c254572f1565@gmail.com> <20250214-printf-kunit-convert-v4-3-c254572f1565@gmail.com>
+In-Reply-To: <20250214-printf-kunit-convert-v4-3-c254572f1565@gmail.com>
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date: Wed, 19 Feb 2025 21:41:11 +0100
+X-Gm-Features: AWEUYZnPvEz-Qu0Q_eOs4K3mND8N5X48foEj8aBLKco5JWWCbd2AeY_UnbAb5oM
+Message-ID: <CAKwiHFh52-_ssWjC3wdtZ=92AHAw7grnDugZpmf7T962VQrEbQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] printf: implicate test line in failure messages
+To: Tamir Duberstein <tamird@gmail.com>
+Cc: Arpitha Raghunandan <98.arpi@gmail.com>, David Gow <davidgow@google.com>, 
+	Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Brendan Higgins <brendan.higgins@linux.dev>, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 17 Feb 2025, Dmitry V. Levin wrote:
+On Fri, 14 Feb 2025 at 22:53, Tamir Duberstein <tamird@gmail.com> wrote:
+>
+> This improves the failure output by pointing to the failing line at the
+> top level of the test, e.g.:
+>       # test_number: EXPECTATION FAILED at lib/printf_kunit.c:103
+>   lib/printf_kunit.c:167: vsnprintf(buf, 256, "%#-12x", ...) wrote '0x1234abcd  ', expected '0x1234abce  '
+>       # test_number: EXPECTATION FAILED at lib/printf_kunit.c:142
+>   lib/printf_kunit.c:167: kvasprintf(..., "%#-12x", ...) returned '0x1234abcd  ', expected '0x1234abce  '
+>
 
-> diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
-> index ea050b23d428..b956b015641c 100644
-> --- a/arch/mips/include/asm/syscall.h
-> +++ b/arch/mips/include/asm/syscall.h
-> @@ -41,6 +41,20 @@ static inline long syscall_get_nr(struct task_struct *task,
->  	return task_thread_info(task)->syscall;
->  }
->  
-> +static inline void syscall_set_nr(struct task_struct *task,
-> +				  struct pt_regs *regs,
-> +				  int nr)
-> +{
-> +	/*
-> +	 * New syscall number has to be assigned to regs[2] because
-> +	 * syscall_trace_entry() loads it from there unconditionally.
+Actually, I'm not sure that is an improvement as-is, with the two
+different line numbers being printed. It takes some thought to
+recognize which one is relevant and which one is not.
 
- That label is called `trace_a_syscall' in arch/mips/kernel/scall64-o32.S 
-instead.  To bring some order and avoid an inaccuracy here should the odd 
-one be matched to the other three?
+Can't we have a variant of KUNIT_FAIL that allows one to pass the
+file/line info when the caller has better info than the location of
+the KUNIT_FAIL itself?
 
-> +	 *
-> +	 * Consequently, if the syscall was indirect and nr != __NR_syscall,
-> +	 * then after this assignment the syscall will cease to be indirect.
-> +	 */
-> +	task_thread_info(task)->syscall = regs->regs[2] = nr;
-> +}
-> +
->  static inline void mips_syscall_update_nr(struct task_struct *task,
->  					  struct pt_regs *regs)
->  {
+>  static void __printf(5, 0)
+> -do_test(struct kunit *kunittest, int bufsize, const char *expect, int elen,
+> -       const char *fmt, va_list ap)
+> +do_test(struct kunit *kunittest, const char *file, const int line, int bufsize, const char *expect,
+> +       int elen, const char *fmt, va_list ap)
 
- Otherwise:
+This can't be right, the __printf attribute must be updated accordingly.
 
-Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
-
-for this part, thank you!
-
-  Maciej
+Rasmus
