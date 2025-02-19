@@ -1,90 +1,314 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E1C1E25EB
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 13:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019A01E25EB
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 13:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739971528; cv=none; b=OACDTQ2yMR1sbfU66Q9OSRxpTJ93aEg9FkICvbiqpmHLCwfkh0UIhP3lTsoLh7UW9CD7HGdBriCxjppTqSSSUqs1gH9FSSgm6bkJgz0crgMqNv/lxVRUNSjPQuoLhVVAfZtUEd6DWSB1G6/RBEFI4PrWkWX8EcI90Of+n38/TOo=
+	t=1739973200; cv=none; b=JpHz4Q0p7FcXlE4YMm36P9axwj6FYgt2X8Q4zxv8d7NVP2dSeHq4pRorRsFbgYmxtF9Al+f945znx9/kK7l1sEv8Qwl50kZaHCbxPnT6ZoMH/s7AVBmcW3WNheps7vkCyb3kUo5eGTEzVgOjBTbNRZ6A7LJJzXrsghig1C9fHiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739971528; c=relaxed/simple;
-	bh=G+Ivr72+J1uzW2BzvUPfwTtnFdKFHX7x+87gCeaMp2E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=g1W67nrgmcLtiQqfVlu7YZ6z7L0sY/vVg1OQwXxmWeTKJ7+XvKAk4/xG3QEXgwBY5M0IX37A47C2Mj/IgbX7D6cv8lBUJh2SRFXgTj9mtTWh7vt6U/KPIU6Y+MXAPLLwXoEhV1H/RnOtG4KrYZbw3ZYZ0zNCLpTGvNlF6kt5Xjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 87A2B5C57CA
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 13:24:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF6CAC4CED1;
-	Wed, 19 Feb 2025 13:25:24 +0000 (UTC)
-Message-ID: <611a4c02-5200-410b-98c0-a4c586ba67bd@linux-m68k.org>
-Date: Wed, 19 Feb 2025 23:25:22 +1000
+	s=arc-20240116; t=1739973200; c=relaxed/simple;
+	bh=+yGgqqM6m67SHcWQ5C/LyqeoOn2NxRwpbuq8bb0rr8I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LcY9TJL2k/IFn0VXPoCQYT81ERF+BUUXNfD9B+PN1aNtKANVn+MgpW/v9UXdXLOjn/IeGNwfd5hPj3aVFE3+nKuMDavVU3E666I5b45bG5MXdJKEJDEDV8CVU0TLNe23g73GNrtVbMRcGG9sDlYsr7lkdJ4GE+wTpzIENu2/UsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FLnloWZA; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FLnloWZA"
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-472098e6e75so310941cf.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 05:53:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1739973195; x=1740577995; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UdmAiMEeKrPEDg3p+jo+2xFKJGKxXYyTYb14zoBH7Bo=;
+        b=FLnloWZAG2kCs6J0zHP5gJuTIZ6SkLj/uvFkEbyUylKOuD4jPRvLryCKt4W9Ede5FW
+         Nk5UFQSkiDOPmAEndnpKKoZz23DWZ2/XugZ93sOZoJ7ThEhYdIjUVoMrOTebFQ3lafXJ
+         PK3XFhumQfT/OiT1geEFRjXcJb5tq0BnO/iDkTcAemnWqUL87ju7xejQ3rY+lmPTsmhy
+         RX2DQGQOaVtBvGpKskjcm29hlsMTEsMUzBUo2PVPU9FwxC+tbx5GENiu/SmS+wibwLwH
+         JmVkdIQWeot5neuVWEwv8TWM5x7GOWwpIa3/VoXbl6sdcAzOF+5zziaiemmXciQVrPko
+         ZcZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739973195; x=1740577995;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UdmAiMEeKrPEDg3p+jo+2xFKJGKxXYyTYb14zoBH7Bo=;
+        b=Ltwy9iUglpjK4xR0CxUlwBwz1d/QknThC/xst4pIwSZdhppT4U/W/4LIjB5sljUS5w
+         bUR7Ls8lF/XyEjPGVrt8yY+fWo+PVO2pYEv4J10gyhpFA9BIkaBUACodeEpOuRBxNJri
+         4v3Pw2lEC/rIh2VfRtmP59vC9D5gOh+eZtYVFZqSWjaX5f0AnmyydRwrFSbBnebTJhjJ
+         Cer0MvbLJbawudX58tJwJXoXcn09o80EoA5SBh4bE460nH9Vwg9uiHxDjrH/AV6YaTgq
+         9bhplWTQZiPcrTvYtCSNARjqGrAJMw8djZhcCMKpboy118fq/T/GT+ZINuETY+mMSUL2
+         P1KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU13h3mS2nQP7F3tCMuEfNt0yvpBLOBP54oS8MC9og2hc1as0TrJKyVfK+f34iTDOCN6D3eIixmupsb@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyduwC9zQIrLTruQiGV2wkiGYqTAts/fMn5Z80wv9yPf1e1/tQo
+	rwrRiYGWsdUW8lNE70KMEpxAw3+zgUnIJ1murzJryXIz1htzfnzAdhtdts8TB0E/w8+avbLTVq+
+	18oFchegGFSOkUPhHCE2wnHSgoUb7d23X5YT1
+X-Gm-Gg: ASbGncsR8AhoDJyQh2jqu1gpYzY2OprcivvQPbr79/+p3kjhT/RwNujrrxWjb+ahDQw
+	OwKOh5fjF4uVfi2Lz6NLV4QD+d56ErOJW8wqDyk3NWjq1n5zqCo5R5q8Rx6pKd2dVxX5OzRJfMz
+	HliaNzqs5mCe5OckQjacBYbQyT0w8=
+X-Google-Smtp-Source: AGHT+IENNUmIuZuxSQylUApjIg4cKkgEiog4c3mRT0+zySA3cwktAnc8eGuiyh3/xKClKXO5dwBsFhWfn2uiV/6urfI=
+X-Received: by 2002:a05:622a:85:b0:471:b772:c717 with SMTP id
+ d75a77b69052e-472097c2b32mr3540781cf.26.1739973194577; Wed, 19 Feb 2025
+ 05:53:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/13] net: fec: add device tree support for ColdFire FEC
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-m68k@lists.linux-m68k.org
-References: <20250218125124.2692982-1-gerg@linux-m68k.org>
- <20250218125124.2692982-4-gerg@linux-m68k.org>
- <624f666f-6b97-4afe-821a-8fbc57a408c4@kernel.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <624f666f-6b97-4afe-821a-8fbc57a408c4@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
+ <20250110-asi-rfc-v2-v2-3-8419288bc805@google.com> <20250219105503.GKZ7W4h6QW1CNj48U9@fat_crate.local>
+In-Reply-To: <20250219105503.GKZ7W4h6QW1CNj48U9@fat_crate.local>
+From: Brendan Jackman <jackmanb@google.com>
+Date: Wed, 19 Feb 2025 14:53:03 +0100
+X-Gm-Features: AWEUYZnAiIsbh62TRn4xLoxaltzDiT1dCIBY-Pnf2HWy-DCtrTT9-DxdH-ccpBo
+Message-ID: <CA+i-1C2xK8hzMQ8Y-=-7iYy+27nnouQZu1NdWG0qa35t+OQLqw@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 03/29] mm: asi: Introduce ASI core API
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
+	Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Chris Zankel <chris@zankel.net>, 
+	Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mike Rapoport <rppt@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Ard Biesheuvel <ardb@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
+	Ofir Weisse <oweisse@google.com>, Junaid Shahid <junaids@google.com>
+Content-Type: text/plain; charset="UTF-8"
+
+Argh, sorry, GMail switched back to HTML mode somehow. Maybe I have to
+get a proper mail client after all.
+
+Here's the clean version.
+
+On Wed, 19 Feb 2025 at 11:57, Borislav Petkov <bp@alien8.de> wrote:
+>
+> > + * Runtime usage:
+> > + *
+> > + * 1. Call asi_enter() to switch to the restricted address space. This can't be
+> > + *    from an interrupt or exception handler and preemption must be disabled.
+> > + *
+> > + * 2. Execute untrusted code.
+> > + *
+> > + * 3. Call asi_relax() to inform the ASI subsystem that untrusted code execution
+> > + *    is finished. This doesn't cause any address space change. This can't be
+> > + *    from an interrupt or exception handler and preemption must be disabled.
+> > + *
+> > + * 4. Either:
+> > + *
+> > + *    a. Go back to 1.
+> > + *
+> > + *    b. Call asi_exit() before returning to userspace. This immediately
+> > + *       switches to the unrestricted address space.
+>
+> So only from reading this, it does sound weird. Maybe the code does it
+> differently - I'll see soon - but this basically says:
+>
+> I asi_enter(), do something, asi_relax() and then I decide to do something
+> more and to asi_enter() again!? And then I can end it all with a *single*
+> asi_exit() call?
+>
+> Hm, definitely weird API. Why?
 
 
-On 19/2/25 17:05, Krzysztof Kozlowski wrote:
-> On 18/02/2025 13:46, Greg Ungerer wrote:
->> The FEC hardware module used in most Freescale ColdFire SoC parts is a
->> simpler version of that used on the iMX family of parts. Add a devicetree
->> compatible entry they can use.
->>
->> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
->> ---
->>   Documentation/devicetree/bindings/net/fsl,fec.yaml | 1 +
-> 
-> Please run scripts/checkpatch.pl and fix reported warnings. After that,
-> run also `scripts/checkpatch.pl --strict` and (probably) fix more
+OK, sounds like I need to rewrite this explanation! It's only been
+read before by people who already knew how this thing worked so this
+might take a few attempts to make it clear.
 
-I did. I chose to ignore the documentation and frivolous formatting
-warnings for now. See cover letter for reasoning.
+Maybe the best way to make it clear is to explain this with reference
+to KVM. At a super high level, That looks like:
 
-Regards
-Greg
+ioctl(KVM_RUN) {
+    enter_from_user_mode()
+    while !need_userspace_handling() {
+        asi_enter();  // part 1
+        vmenter();  // part 2
+        asi_relax(); // part 3
+    }
+    asi _exit(); // part 4b
+    exit_to_user_mode()
+}
+
+So part 4a is just referring to continuation of the loop.
+
+This explanation was written when that was the only user of this API
+so it was probably clearer, now we have userspace it seems a bit odd.
+
+With my pseudocode above, does it make more sense? If so I'll try to
+think of a better way to explain it.
+
+> /*
+>  * Leave the "tense" state if we are in it, i.e. end the critical section. We
+>  * will stay relaxed until the next asi_enter.
+>  */
+> void asi_relax(void);
+>
+> Yeah, so there's no API functions balance between enter() and relax()...
 
 
-> warnings. Some warnings can be ignored, especially from --strict run,
-> but the code here looks like it needs a fix. Feel free to get in touch
-> if the warning is not clear.
-> 
-> 
-> <form letter>
-> Please use scripts/get_maintainers.pl to get a list of necessary people
-> and lists to CC. It might happen, that command when run on an older
-> kernel, gives you outdated entries. Therefore please be sure you base
-> your patches on recent Linux kernel.
-> 
-> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-> people, so fix your workflow. Tools might also fail if you work on some
-> ancient tree (don't, instead use mainline) or work on fork of kernel
-> (don't, instead use mainline). Just use b4 and everything should be
-> fine, although remember about `b4 prep --auto-to-cc` if you added new
-> patches to the patchset.
-> 
-> You missed at least devicetree list (maybe more), so this won't be
-> tested by automated tooling. Performing review on untested code might be
-> a waste of time.
-> 
-> Please kindly resend and include all necessary To/Cc entries.
-> </form letter>
-> 
-> Best regards,
-> Krzysztof
+asi_enter() is actually balanced with asi_relax(). The comment says
+"if we are in it" because technically if you call this asi_relax()
+outside of the critical section, it's a nop. But, there's no reason to
+do that, so we could definitely change the comment and WARN if that
+happens.
 
+>
+> > +#define ASI_TAINT_OTHER_MM_CONTROL   ((asi_taints_t)BIT(6))
+> > +#define ASI_NUM_TAINTS                       6
+> > +static_assert(BITS_PER_BYTE * sizeof(asi_taints_t) >= ASI_NUM_TAINTS);
+>
+> Why is this a typedef at all to make the code more unreadable than it needs to
+> be? Why not a simple unsigned int or char or whatever you need?
+
+
+My thinking was just that it's nicer to see asi_taints_t and know that
+it means "it holds taint flags and it's big enough" instead of having
+to remember the space needed for these flags. But yeah I'm fine with
+making it a raw integer type.
+
+> > +#define ASI_TAINTS_CONTROL_MASK \
+> > +     (ASI_TAINT_USER_CONTROL | ASI_TAINT_GUEST_CONTROL | ASI_TAINT_OTHER_MM_CONTROL)
+> > +
+> > +#define ASI_TAINTS_DATA_MASK \
+> > +     (ASI_TAINT_KERNEL_DATA | ASI_TAINT_USER_DATA | ASI_TAINT_OTHER_MM_DATA)
+> > +
+> > +#define ASI_TAINTS_GUEST_MASK (ASI_TAINT_GUEST_DATA | ASI_TAINT_GUEST_CONTROL)
+> > +#define ASI_TAINTS_USER_MASK (ASI_TAINT_USER_DATA | ASI_TAINT_USER_CONTROL)
+> > +
+> > +/* The taint policy tells ASI how a class interacts with the CPU taints */
+> > +struct asi_taint_policy {
+> > +     /*
+> > +      * What taints would necessitate a flush when entering the domain, to
+> > +      * protect it from attack by prior domains?
+> > +      */
+> > +     asi_taints_t prevent_control;
+>
+> So if those necessitate a flush, why isn't this var called "taints_to_flush"
+> or whatever which exactly explains what it is?
+
+
+Well it needs to be disambiguated from the field below (currently
+protect_data) but it could be control_to_flush (and data_to_flush).
+
+The downside of that is that having one say "prevent" and one say
+"protect" is quite meaningful. prevent_control is describing things we
+need to do to protect the system from this domain, protect_data is
+about protecting the domain from the system. However, while that
+difference is meaningful it might not actually be helpful for the
+reader of the code so I'm not wed to it.
+
+Also worth noting that we could just combine these fields. At present
+they should have disjoint bits set. But, they're used in separate
+contexts and have separate (although conceptually very similar)
+meanings, so I think that would reduce clarity.
+
+>
+> Spellchecker please. Go over your whole set.
+
+
+Ack, I've set up a local thingy to spellcheck all my commits so
+hopefully you should encounter less of that noise in future.
+
+For the pronouns stuff I will do my best but you might still spot
+violations in older text, sorry about that.
+
+> > +     /* What taints should be set when entering the domain? */
+> > +     asi_taints_t set;
+>
+>
+> So "required_taints" or so... hm?
+
+
+What this field is describing is: when we run the untrusted code, what
+happens? I don't mean "what does the kernel do" but what physically
+happens on the CPU from an exploit point of view.
+
+For example setting ASI_TAINT_USER_DATA in this field means "when we
+run the untrusted code (i.e. userspace), userspace data gets left
+behind in sidechannels".
+
+"Should be set" in the comment means "this field should be set to
+record that a thing has happened" not "this field being set is a
+requirement for some API" or something. So I don't think "required" is
+right but this is hard to name.
+
+That commentary should also be expanded I think, since "should be set"
+is pretty ambiguous. And maybe if we called it "to_set" it would be
+more obvious that "set" is a verb? I'm very open to suggestions.
+
+>
+> > +
+> > +void asi_init_mm_state(struct mm_struct *mm);
+> > +
+> > +int asi_init_class(enum asi_class_id class_id, struct asi_taint_policy *taint_policy);
+> > +void asi_uninit_class(enum asi_class_id class_id);
+>
+> "uninit", meh. "exit" perhaps? or "destroy"
+
+
+>
+> And you have "asi_destroy" already so I guess you can do:
+>
+> asi_class_init()
+> asi_class_destroy()
+>
+> to have the namespace correct.
+
+
+Yeah, not sure what I was thinking here!
+
+>
+> > +static __always_inline bool asi_is_tense(void)
+> > +{
+> > +     return !asi_is_relaxed();
+> > +}
+>
+> So can we tone down the silly helpers above? You don't really need
+> asi_is_tense() for example. It is still very intuitive if I read
+>
+>         if (!asi_is_relaxed())
+>
+Yep that sounds good.
