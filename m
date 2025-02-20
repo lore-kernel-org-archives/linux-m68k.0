@@ -1,151 +1,90 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6832580E2
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 21:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F441C3C14
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 02:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740002336; cv=none; b=MzyK00XcVUjaSTLehU/V0wORbcxPuQF0roGCApEScpIG/4Jny8tqLrGvVeQll8YMRYkqRVGB0LYgHOBsj26xuC7pepeiVxddjTKCmC5PGctUDKl+TAktr403YEKcsku+yR3nhGu+vBJf1ZO7NlgHRrDRu84sgCp4X8NyIXFV6GM=
+	t=1740018122; cv=none; b=LHB9B4IL4Txd1FiIBVG10+CVMfs8QXc7eT72F/3lstzANillRU/M4JKJ983OzNbYLTwEkMjm5/i1/WjT0Gtek7cz0u45YZHV7BaUy/iYVcok74PqihspsrKIWr+KELe05GfHBjwXWYb/lo8Eq3zvKGIxw5pSPLX5HNeDUr7tRLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740002336; c=relaxed/simple;
-	bh=CLbMtW5tsKEFh2zuG4iubeHLHmyTYeg3kVyBTjMQ9M8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=OqTOxfR8Bmv+wTTQj92JPkZq3DcTYbZ4Z6l08edWXS+N/30Tug9NuxbCMzQmi1VPWg2xT4yXdL3k098eaXdBvTzkAB6+14QxiWzKFG5AWy2g6RTuLGCN5zHi1z/orYjXx3cXxL6a7el9GkjUzKQ33LXJ4sr3zgAHdRSfD+OgZis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1740018122; c=relaxed/simple;
+	bh=CsKE1O38t52KiDz42xjoVchy3XbzTa/Ox6cYeUTmN2o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k14NwjBsJj/oPkkDT3cbmD04McQKeDTXuEjGx81G8t3jUz/luAtqCj30fOsXjWlfNz3AkLBXPorWEQBGNGEjsEHJBdLUqaFaFQAV4A81lb6Rw+VqwWJigtewP0inT+VRKviDK1SAt1yNahIQ4fKEa6eofGD33OfCfg5pOFIhHLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPWAverB; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPWAverB"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7D608611EC
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Feb 2025 21:58:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E11C4CED1;
-	Wed, 19 Feb 2025 21:58:51 +0000 (UTC)
-Message-ID: <21d14a49-2c82-4c97-b78e-1761f29f24f7@linux-m68k.org>
-Date: Thu, 20 Feb 2025 07:58:49 +1000
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2666A5C598F;
+	Thu, 20 Feb 2025 02:21:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03670C4CED1;
+	Thu, 20 Feb 2025 02:21:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740018119;
+	bh=CsKE1O38t52KiDz42xjoVchy3XbzTa/Ox6cYeUTmN2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iPWAverBseQNUwurQ+ue9mcQ3yObYrdhiPCoGRhbnZFL/cAjTpWfe1AmIt50Pl7lZ
+	 rHt4QfEOkJ41lkhLfitj8NZYkWNtH2ZXBm/blLk4moFU6g8thv/kw3CSft4749/mqU
+	 N+YC6M74gTPmrQw2W5fOW1zzUUAtvLxUNDA4BH7FoycgihzdlYH9qJ2yP2PJ5Js7Lp
+	 YkHapP5/qyvdD61ksSS79UvIqpWwxFWyIYXseDXmnFFGovm2HryPsVc9TA3bTshn+Q
+	 b9n+jl89FoHDmeqrzJE5wqdL8RmidlxWBJV1LtmlBHx8xxFW81/Qa2KnbTTps5yGez
+	 3T9I+P5eP+0CQ==
+Date: Wed, 19 Feb 2025 18:21:54 -0800
+From: Kees Cook <kees@kernel.org>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	linux-hardening@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: mm: Replace deprecated strncpy() with strscpy()
+Message-ID: <202502191820.DA875C6@keescook>
+References: <20250213141037.50394-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/13] m68k: coldfire: add devicetree for mcf5475-evb
- platform
-To: Krzysztof Kozlowski <krzk@kernel.org>, linux-m68k@lists.linux-m68k.org
-References: <20250218125124.2692982-1-gerg@linux-m68k.org>
- <20250218125124.2692982-10-gerg@linux-m68k.org>
- <a98f49e8-3e42-432d-8614-d9b217974a2c@kernel.org>
- <f509221c-1b56-4c43-8f60-86c419bc9c4d@linux-m68k.org>
- <4155980d-cee8-4d60-8ca2-51be1d351282@kernel.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <4155980d-cee8-4d60-8ca2-51be1d351282@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250213141037.50394-2-thorsten.blum@linux.dev>
 
+On Thu, Feb 13, 2025 at 03:10:36PM +0100, Thorsten Blum wrote:
+> strncpy() is deprecated for NUL-terminated destination buffers. Use
+> strscpy() instead and remove the manual NUL-termination.
+> 
+> Compile-tested only.
+> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> ---
+>  arch/m68k/kernel/setup_mm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+> index 15c1a595a1de..48ce67947678 100644
+> --- a/arch/m68k/kernel/setup_mm.c
+> +++ b/arch/m68k/kernel/setup_mm.c
+> @@ -243,8 +243,7 @@ void __init setup_arch(char **cmdline_p)
+>  	setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _end);
+>  
+>  #if defined(CONFIG_BOOTPARAM)
+> -	strncpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
+> -	m68k_command_line[CL_SIZE - 1] = 0;
+> +	strscpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
+>  #endif /* CONFIG_BOOTPARAM */
+>  	process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
+>  	*cmdline_p = m68k_command_line;
 
-On 19/2/25 18:26, Krzysztof Kozlowski wrote:
-> On 19/02/2025 09:23, Greg Ungerer wrote:
->> Hi Krzysztof,
->>
->> On 19/2/25 17:06, Krzysztof Kozlowski wrote:
->>> On 18/02/2025 13:46, Greg Ungerer wrote:
->>>> Add a simple devicetree to support the Freescale MCF5475-EVB platform.
->>>>
->>>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
->>>> ---
->>>>    arch/m68k/boot/dts/Makefile       |  1 +
->>>>    arch/m68k/boot/dts/mcf5475evb.dts | 55 +++++++++++++++++++++++++++++++
->>>>    2 files changed, 56 insertions(+)
->>>>    create mode 100644 arch/m68k/boot/dts/mcf5475evb.dts
->>>>
->>>> diff --git a/arch/m68k/boot/dts/Makefile b/arch/m68k/boot/dts/Makefile
->>>> index d69e37b48558..f0e9643e6b71 100644
->>>> --- a/arch/m68k/boot/dts/Makefile
->>>> +++ b/arch/m68k/boot/dts/Makefile
->>>> @@ -1,4 +1,5 @@
->>>>    # SPDX-License-Identifier: GPL-2.0
->>>>    
->>>>    dtb-y += mcf5208evb.dtb
->>>> +dtb-y += mcf5475evb.dtb
->>>>    
->>>> diff --git a/arch/m68k/boot/dts/mcf5475evb.dts b/arch/m68k/boot/dts/mcf5475evb.dts
->>>> new file mode 100644
->>>> index 000000000000..247a938bfafd
->>>> --- /dev/null
->>>> +++ b/arch/m68k/boot/dts/mcf5475evb.dts
->>>> @@ -0,0 +1,55 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +/dts-v1/;
->>>> +
->>>> +/ {
->>>> +	model = "Freescale MCF5475EVB";
->>>> +	compatible = "mcf5475evb";
->>>
->>> Incorrect format.
->>>
->>> Please run scripts/checkpatch.pl and fix reported warnings. After that,
->>> run also `scripts/checkpatch.pl --strict` and (probably) fix more
->>> warnings. Some warnings can be ignored, especially from --strict run,
->>> but the code here looks like it needs a fix. Feel free to get in touch
->>> if the warning is not clear.
->>
->> If that is an incorrect format then checkpatch is not reporting it.
-> 
-> There are two issues here.
-> 1. Incorrect format: see DT spec or any other example.
-> 2. Below checkpatch warning.
+m68k_command_line lives in rwdata, so it should be 0-initialized by
+default, so there should be no behavioral difference here (i.e. it will
+be zero-padded), and it is used as a C String, so there was unlikely to
+be anything depending on the NUL-padding.
 
-Fixed in next version.
+Reviewed-by: Kees Cook <kees@kernel.org>
 
-Thanks
-Greg
-
-
->>
->> Checkpatch here (even --strict) only reports that it is undocumented:
->>
->>       WARNING: DT compatible string "mcf5475evb" appears un-documented -- check ./Documentation/devicetree/bindings/
->>       #36: FILE: arch/m68k/boot/dts/mcf5475evb.dts:6:
->>       +	compatible = "mcf5475evb";
->>
->> Which I totally expect at this point. As pointed out in the cover letter this
->> work is very much an incomplete proof-of-concept still. Much work still to do here.
-> 
-> 
-> Patch should be marked as RFC with that explanation in cover letter, so
-> you won't get such review comments.
-> 
->>>> +	#address-cells = <1>;
->>>> +	#size-cells = <1>;
->>>> +	interrupt-parent = <&intc>;
->>>> +
->>>> +	coreclk: clock-266000000 {
->>>> +		#clock-cells = <0>;
->>>> +		compatible = "fixed-clock";
->>>> +		clock-frequency = <266000000>;
->>>> +	};
->>>> +
->>>> +	intc: interrupt-controller@ff000700 {
->>>> +		compatible = "fsl,intc-2";
->>>> +		interrupt-controller;
->>>> +		#interrupt-cells = <1>;
->>>> +		reg = <0xff000700 0x80>;
->>>> +	};
->>>> +
->>>> +	uart0: serial@ff008600 {
->>>> +		compatible = "fsl,mcfuart";
->>>> +		reg = <0xff008600 0x80>;
->>>> +		interrupts = <99>;
->>>> +		clocks = <&coreclk>;
->>>> +		status = "okay";
->>>
->>> Did you disable it anywhere?
->>
->> No.
-> 
-> 
-> So no need for that status.
-> 
-> Best regards,
-> Krzysztof
-
+-- 
+Kees Cook
