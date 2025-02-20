@@ -1,90 +1,135 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F441C3C14
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 02:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90891BC4E
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 14:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740018122; cv=none; b=LHB9B4IL4Txd1FiIBVG10+CVMfs8QXc7eT72F/3lstzANillRU/M4JKJ983OzNbYLTwEkMjm5/i1/WjT0Gtek7cz0u45YZHV7BaUy/iYVcok74PqihspsrKIWr+KELe05GfHBjwXWYb/lo8Eq3zvKGIxw5pSPLX5HNeDUr7tRLU=
+	t=1740060387; cv=none; b=i9EMjAwnJQnquLZiPCxj2vt6ecfBwUuR57+QM7lmH1ztxp1BXhM/vFA8m2sPWSh6LygmhvLoFxruLW6wrqpgg8WFFpwqJGk/IajeuA3C5KeV25oHiwUYP8jIf4uysSicpVn+u7if5dE9zaarvHkTQVC+CSriWSDmFetuW5omvao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740018122; c=relaxed/simple;
-	bh=CsKE1O38t52KiDz42xjoVchy3XbzTa/Ox6cYeUTmN2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k14NwjBsJj/oPkkDT3cbmD04McQKeDTXuEjGx81G8t3jUz/luAtqCj30fOsXjWlfNz3AkLBXPorWEQBGNGEjsEHJBdLUqaFaFQAV4A81lb6Rw+VqwWJigtewP0inT+VRKviDK1SAt1yNahIQ4fKEa6eofGD33OfCfg5pOFIhHLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPWAverB; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPWAverB"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2666A5C598F;
-	Thu, 20 Feb 2025 02:21:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03670C4CED1;
-	Thu, 20 Feb 2025 02:21:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740018119;
-	bh=CsKE1O38t52KiDz42xjoVchy3XbzTa/Ox6cYeUTmN2o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iPWAverBseQNUwurQ+ue9mcQ3yObYrdhiPCoGRhbnZFL/cAjTpWfe1AmIt50Pl7lZ
-	 rHt4QfEOkJ41lkhLfitj8NZYkWNtH2ZXBm/blLk4moFU6g8thv/kw3CSft4749/mqU
-	 N+YC6M74gTPmrQw2W5fOW1zzUUAtvLxUNDA4BH7FoycgihzdlYH9qJ2yP2PJ5Js7Lp
-	 YkHapP5/qyvdD61ksSS79UvIqpWwxFWyIYXseDXmnFFGovm2HryPsVc9TA3bTshn+Q
-	 b9n+jl89FoHDmeqrzJE5wqdL8RmidlxWBJV1LtmlBHx8xxFW81/Qa2KnbTTps5yGez
-	 3T9I+P5eP+0CQ==
-Date: Wed, 19 Feb 2025 18:21:54 -0800
-From: Kees Cook <kees@kernel.org>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
-	linux-hardening@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: mm: Replace deprecated strncpy() with strscpy()
-Message-ID: <202502191820.DA875C6@keescook>
-References: <20250213141037.50394-2-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1740060387; c=relaxed/simple;
+	bh=5c+g4u99J+/DT0zZQT+jeFTwZIFzJSrGs8U0qBmmCA4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nm7rSR9ZglvYk7Pc+pXqn8dfU2mJpJGWcVdVdzzLADwHaYIYfE3QWbfAagsLfgJc6+SAtNUzjuw81Rf7o+1pir+3kneQ41b42qaineDPcRzCMduW8HjymHqYZTWK0wCaUBpJB/MqBLYn3mvznyaIUKmCwwqD+NQ0GiuzuObgeDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7c08f9d0ef3so54655785a.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 06:06:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740060383; x=1740665183;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X1q9+Em+6K7sYpmivjEGUccl0krgxXYO57gX0Wza+y0=;
+        b=tDEZESxmry2iFj5YlQrbCUzBKxV4x0YXEk5I4TAV4DsZO8EolEMxnWzHJw4dyNn9si
+         DQY2OxZo5gw/bf/v8HPqef7m5lMVUiaNolY3wXDucNPPlXe6iD3pB+3Hs3zrV6SUdZzc
+         G0iNX6JtrkBlzbbhwaGpD0Mdgvgn6ZxU5skB5BIpcsNOm7nXou/MMTLzw4WZuW7TxWNc
+         8t/pIv/VqqUaUY+Anlu/v4eNS4r3WrrncOea2YSCva9QAuV8XwfgbAdD280VKW5rMpTo
+         yhjXK5R6dbUeftyq/yXMz8RBlULU8i6NrdNIvWVwp7nRZZONyzNRL6nE4kgPXVIH6Y6s
+         DL9Q==
+X-Gm-Message-State: AOJu0YxKkCQZUAmTX7Smlz6nEFDP7+V5DU1XI88siOBf0oD2lbM56plf
+	CEo/LCsWSfgLTiMmz178Uh+kqcYv73WAG9f9lSysJInNrCwnv3PN7+AZDur+
+X-Gm-Gg: ASbGncsJcRE069MQdWHaEPvCWfYPEAV1PRFvWaTvKKmA1H8h+ZHQhtDctof4OA2cYB1
+	BDK6xSJQiiW5zMpaJ7FJaFxUfayrcb1hencm1GsGif7hFKEYb5my8ZjNLvZQvxZDofC0qmZRDEw
+	XnvcVxLXgtsxq2PWmKRyQn5QAsoyREEqG5RdDlnjMRp+raxA6riJKToDNo4y1O52O+eI45dp3iW
+	HKJRH42Y0vrV+Jux10dg1xtFAhPze1tQ0bd000yqGg1SM+W2hSWQjfNB2vR7FQyo1LAMwmHkMGp
+	xTj6Mj94eYS/RD+2WtDjJfm4BHUM8noEJEKJVwViFGBBtClPhJ0jiRX2hw==
+X-Google-Smtp-Source: AGHT+IE4gbhK7jyUEbo17UpXCpbyo+982THqBMmpu+zl9uD9v/WA927gPBXSXuOkGGepGVVPFCkbgg==
+X-Received: by 2002:a05:620a:4628:b0:7c0:b3cd:9bc7 with SMTP id af79cd13be357-7c0b51d5296mr848438685a.3.1740060382673;
+        Thu, 20 Feb 2025 06:06:22 -0800 (PST)
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com. [209.85.222.181])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65daffd66sm86276126d6.107.2025.02.20.06.06.22
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Feb 2025 06:06:22 -0800 (PST)
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7be8f28172dso57137185a.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 06:06:22 -0800 (PST)
+X-Received: by 2002:a05:620a:298c:b0:7c0:aa35:c3b7 with SMTP id
+ af79cd13be357-7c0b51d5234mr973515985a.12.1740060382037; Thu, 20 Feb 2025
+ 06:06:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250213141037.50394-2-thorsten.blum@linux.dev>
+References: <20250218125124.2692982-1-gerg@linux-m68k.org> <20250218125124.2692982-11-gerg@linux-m68k.org>
+In-Reply-To: <20250218125124.2692982-11-gerg@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 20 Feb 2025 15:06:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUYKyv9rrFgoik3Rc9YGsKtRizxPq5K35_-YLOYOszp-Q@mail.gmail.com>
+X-Gm-Features: AWEUYZlhheKYnd9ywIWe12n0QjcLls_xBVqEm4M6AijViMJDzguXAfjCAE0WG3U
+Message-ID: <CAMuHMdUYKyv9rrFgoik3Rc9YGsKtRizxPq5K35_-YLOYOszp-Q@mail.gmail.com>
+Subject: Re: [PATCH 10/13] m68k: implement an embedded devicetree for nonmmu
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 13, 2025 at 03:10:36PM +0100, Thorsten Blum wrote:
-> strncpy() is deprecated for NUL-terminated destination buffers. Use
-> strscpy() instead and remove the manual NUL-termination.
-> 
-> Compile-tested only.
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->  arch/m68k/kernel/setup_mm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> index 15c1a595a1de..48ce67947678 100644
-> --- a/arch/m68k/kernel/setup_mm.c
-> +++ b/arch/m68k/kernel/setup_mm.c
-> @@ -243,8 +243,7 @@ void __init setup_arch(char **cmdline_p)
->  	setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _end);
->  
->  #if defined(CONFIG_BOOTPARAM)
-> -	strncpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
-> -	m68k_command_line[CL_SIZE - 1] = 0;
-> +	strscpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
->  #endif /* CONFIG_BOOTPARAM */
->  	process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
->  	*cmdline_p = m68k_command_line;
+Hi Greg,
 
-m68k_command_line lives in rwdata, so it should be 0-initialized by
-default, so there should be no behavioral difference here (i.e. it will
-be zero-padded), and it is used as a C String, so there was unlikely to
-be anything depending on the NUL-padding.
+On Tue, 18 Feb 2025 at 13:54, Greg Ungerer <gerg@linux-m68k.org> wrote:
+> If there is no capability for the boot loader to specify a devicetree
+> blob then this option allows for it to be embedded within the linux
+> kernel binary itself. This change specifically adds this embedding
+> support for the m68knommu targets.
+>
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Reviewed-by: Kees Cook <kees@kernel.org>
+Thanks for your patch!
+
+> --- a/arch/m68k/Kconfig.devices
+> +++ b/arch/m68k/Kconfig.devices
+> @@ -144,3 +144,14 @@ config SERIAL_CONSOLE
+>  endmenu
+>
+>  endif
+> +
+> +config EMBEDDED_DTB
+
+BUILTIN_DTB
+
+> +       bool "Embedded devicetree ELF section"
+
+select GENERIC_BUILTIN_DTB
+
+> +       help
+> +         If there is no capability for the boot loader to specify a
+> +         devicetree (DTB) then this option allows for it to be embedbed
+> +         within the linux binary itself. Typically you can do this with
+> +         something like this:
+> +
+> +               objcopy --update-section .embedded_dtb=<filename>.dtb vmlinux
+> +
+
+> --- a/arch/m68k/kernel/vmlinux-nommu.lds
+> +++ b/arch/m68k/kernel/vmlinux-nommu.lds
+> @@ -70,6 +70,15 @@ SECTIONS {
+>         INIT_TEXT_SECTION(PAGE_SIZE)
+>         INIT_DATA_SECTION(16)
+>         PERCPU_SECTION(16)
+> +
+> +#ifdef CONFIG_EMBEDDED_DTB
+> +       STRUCT_ALIGN();
+> +       .embedded_dtb : {
+> +               embedded_dtb = .;
+> +               *(.embedded_dtb)
+> +               KEEP(*(.embedded_dtb))
+> +       }
+> +#endif
+>         .m68k_fixup : {
+>                 __start_fixup = .;
+>                 *(.m68k_fixup)
+
+Please use the existing DTB support in include/asm-generic/vmlinux.lds.h.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Kees Cook
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
