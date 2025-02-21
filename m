@@ -1,135 +1,291 @@
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [83.166.143.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90891BC4E
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 14:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D9320F09A
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Feb 2025 15:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740060387; cv=none; b=i9EMjAwnJQnquLZiPCxj2vt6ecfBwUuR57+QM7lmH1ztxp1BXhM/vFA8m2sPWSh6LygmhvLoFxruLW6wrqpgg8WFFpwqJGk/IajeuA3C5KeV25oHiwUYP8jIf4uysSicpVn+u7if5dE9zaarvHkTQVC+CSriWSDmFetuW5omvao=
+	t=1740150529; cv=none; b=IyoeSIv4CYXi5NnCxpBP1oZstIJFtvTePoOjEH/zQqxW8D0uiBx1CmGgzCJf51S1UpzoyAQnwoWfYBvlHvcZ45lJb2Buu0wzYMzBLHPSREJ0nKR2JoZQewnPDNDMz9p2fyvSH5QXWUVggQO8Qe4UPlIOXMy9tYizJBPF3bvEwco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740060387; c=relaxed/simple;
-	bh=5c+g4u99J+/DT0zZQT+jeFTwZIFzJSrGs8U0qBmmCA4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nm7rSR9ZglvYk7Pc+pXqn8dfU2mJpJGWcVdVdzzLADwHaYIYfE3QWbfAagsLfgJc6+SAtNUzjuw81Rf7o+1pir+3kneQ41b42qaineDPcRzCMduW8HjymHqYZTWK0wCaUBpJB/MqBLYn3mvznyaIUKmCwwqD+NQ0GiuzuObgeDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7c08f9d0ef3so54655785a.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 06:06:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740060383; x=1740665183;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X1q9+Em+6K7sYpmivjEGUccl0krgxXYO57gX0Wza+y0=;
-        b=tDEZESxmry2iFj5YlQrbCUzBKxV4x0YXEk5I4TAV4DsZO8EolEMxnWzHJw4dyNn9si
-         DQY2OxZo5gw/bf/v8HPqef7m5lMVUiaNolY3wXDucNPPlXe6iD3pB+3Hs3zrV6SUdZzc
-         G0iNX6JtrkBlzbbhwaGpD0Mdgvgn6ZxU5skB5BIpcsNOm7nXou/MMTLzw4WZuW7TxWNc
-         8t/pIv/VqqUaUY+Anlu/v4eNS4r3WrrncOea2YSCva9QAuV8XwfgbAdD280VKW5rMpTo
-         yhjXK5R6dbUeftyq/yXMz8RBlULU8i6NrdNIvWVwp7nRZZONyzNRL6nE4kgPXVIH6Y6s
-         DL9Q==
-X-Gm-Message-State: AOJu0YxKkCQZUAmTX7Smlz6nEFDP7+V5DU1XI88siOBf0oD2lbM56plf
-	CEo/LCsWSfgLTiMmz178Uh+kqcYv73WAG9f9lSysJInNrCwnv3PN7+AZDur+
-X-Gm-Gg: ASbGncsJcRE069MQdWHaEPvCWfYPEAV1PRFvWaTvKKmA1H8h+ZHQhtDctof4OA2cYB1
-	BDK6xSJQiiW5zMpaJ7FJaFxUfayrcb1hencm1GsGif7hFKEYb5my8ZjNLvZQvxZDofC0qmZRDEw
-	XnvcVxLXgtsxq2PWmKRyQn5QAsoyREEqG5RdDlnjMRp+raxA6riJKToDNo4y1O52O+eI45dp3iW
-	HKJRH42Y0vrV+Jux10dg1xtFAhPze1tQ0bd000yqGg1SM+W2hSWQjfNB2vR7FQyo1LAMwmHkMGp
-	xTj6Mj94eYS/RD+2WtDjJfm4BHUM8noEJEKJVwViFGBBtClPhJ0jiRX2hw==
-X-Google-Smtp-Source: AGHT+IE4gbhK7jyUEbo17UpXCpbyo+982THqBMmpu+zl9uD9v/WA927gPBXSXuOkGGepGVVPFCkbgg==
-X-Received: by 2002:a05:620a:4628:b0:7c0:b3cd:9bc7 with SMTP id af79cd13be357-7c0b51d5296mr848438685a.3.1740060382673;
-        Thu, 20 Feb 2025 06:06:22 -0800 (PST)
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com. [209.85.222.181])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65daffd66sm86276126d6.107.2025.02.20.06.06.22
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Feb 2025 06:06:22 -0800 (PST)
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7be8f28172dso57137185a.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Feb 2025 06:06:22 -0800 (PST)
-X-Received: by 2002:a05:620a:298c:b0:7c0:aa35:c3b7 with SMTP id
- af79cd13be357-7c0b51d5234mr973515985a.12.1740060382037; Thu, 20 Feb 2025
- 06:06:22 -0800 (PST)
+	s=arc-20240116; t=1740150529; c=relaxed/simple;
+	bh=wOUwuoMFBlbf4VclPsw4Y8bvqcLAlISZ+OpN2COxUT0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z/nZQXRTdKNHbGiaI6466srdtdhNvEOi1gz7xkzqakBzHhvab2RYxMoaNKYvHKf9OjFOc8DN89azDRbrFVtvjvRyFuOChQOvWfbvgIr3bpi7WfglqaOYypsxOnptYaV/cumxmYDwXllzTBvMkMKn+G8SnUor+H2otWEIQi9mr04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=gNAhgefJ; arc=none smtp.client-ip=83.166.143.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="gNAhgefJ"
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [IPv6:2001:1600:4:17::246c])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Yztn21Cvqzp7v;
+	Fri, 21 Feb 2025 16:08:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1740150518;
+	bh=HAdXvLK8vfW//A0RH2Z8Vgvri1ljkOe8we8oEw/BRJo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gNAhgefJNSQqmpn1R7GjmCDcL8sBVj9Jy8ELxGlJDuSkOcQnFPususm4DJtyM7z3K
+	 N5uOW38hzFreoU0UXhfBHpXriYHLasoIWkBI7w0rFt5bmnCxNP0I8oGntObZgmF0Jy
+	 3Dxnzo71DVTvLCBMWTvR36ekCTxZrE3oQm+YSPuM=
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Yztmx6Tb2zB0s;
+	Fri, 21 Feb 2025 16:08:33 +0100 (CET)
+Date: Fri, 21 Feb 2025 16:08:33 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Andrey Albershteyn <aalbersh@redhat.com>, 
+	Paul Moore <paul@paul-moore.com>
+Cc: Richard Henderson <richard.henderson@linaro.org>, 
+	Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v3] fs: introduce getfsxattrat and setfsxattrat syscalls
+Message-ID: <20250221.ahB8jei2Chie@digikod.net>
+References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250218125124.2692982-1-gerg@linux-m68k.org> <20250218125124.2692982-11-gerg@linux-m68k.org>
-In-Reply-To: <20250218125124.2692982-11-gerg@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 20 Feb 2025 15:06:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUYKyv9rrFgoik3Rc9YGsKtRizxPq5K35_-YLOYOszp-Q@mail.gmail.com>
-X-Gm-Features: AWEUYZlhheKYnd9ywIWe12n0QjcLls_xBVqEm4M6AijViMJDzguXAfjCAE0WG3U
-Message-ID: <CAMuHMdUYKyv9rrFgoik3Rc9YGsKtRizxPq5K35_-YLOYOszp-Q@mail.gmail.com>
-Subject: Re: [PATCH 10/13] m68k: implement an embedded devicetree for nonmmu
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org>
+X-Infomaniak-Routing: alpha
 
-Hi Greg,
+It looks security checks are missing.  With IOCTL commands, file
+permissions are checked at open time, but with these syscalls the path
+is only resolved but no specific access seems to be checked (except
+inode_owner_or_capable via vfs_fileattr_set).
 
-On Tue, 18 Feb 2025 at 13:54, Greg Ungerer <gerg@linux-m68k.org> wrote:
-> If there is no capability for the boot loader to specify a devicetree
-> blob then this option allows for it to be embedded within the linux
-> kernel binary itself. This change specifically adds this embedding
-> support for the m68knommu targets.
->
-> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+On Tue, Feb 11, 2025 at 06:22:47PM +0100, Andrey Albershteyn wrote:
+> From: Andrey Albershteyn <aalbersh@redhat.com>
+> 
+> Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
+> extended attributes/flags. The syscalls take parent directory fd and
+> path to the child together with struct fsxattr.
+> 
+> This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
+> that file don't need to be open as we can reference it with a path
+> instead of fd. By having this we can manipulated inode extended
+> attributes not only on regular files but also on special ones. This
+> is not possible with FS_IOC_FSSETXATTR ioctl as with special files
+> we can not call ioctl() directly on the filesystem inode using fd.
+> 
+> This patch adds two new syscalls which allows userspace to get/set
+> extended inode attributes on special files by using parent directory
+> and a path - *at() like syscall.
+> 
+> Also, as vfs_fileattr_set() is now will be called on special files
+> too, let's forbid any other attributes except projid and nextents
+> (symlink can have an extent).
+> 
+> CC: linux-api@vger.kernel.org
+> CC: linux-fsdevel@vger.kernel.org
+> CC: linux-xfs@vger.kernel.org
+> Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> ---
+> v1:
+> https://lore.kernel.org/linuxppc-dev/20250109174540.893098-1-aalbersh@kernel.org/
+> 
+> Previous discussion:
+> https://lore.kernel.org/linux-xfs/20240520164624.665269-2-aalbersh@redhat.com/
+> 
+> XFS has project quotas which could be attached to a directory. All
+> new inodes in these directories inherit project ID set on parent
+> directory.
+> 
+> The project is created from userspace by opening and calling
+> FS_IOC_FSSETXATTR on each inode. This is not possible for special
+> files such as FIFO, SOCK, BLK etc. Therefore, some inodes are left
+> with empty project ID. Those inodes then are not shown in the quota
+> accounting but still exist in the directory. Moreover, in the case
+> when special files are created in the directory with already
+> existing project quota, these inode inherit extended attributes.
+> This than leaves them with these attributes without the possibility
+> to clear them out. This, in turn, prevents userspace from
+> re-creating quota project on these existing files.
+> ---
+> Changes in v3:
+> - Remove unnecessary "dfd is dir" check as it checked in user_path_at()
+> - Remove unnecessary "same filesystem" check
+> - Use CLASS() instead of directly calling fdget/fdput
+> - Link to v2: https://lore.kernel.org/r/20250122-xattrat-syscall-v2-1-5b360d4fbcb2@kernel.org
+> ---
+>  arch/alpha/kernel/syscalls/syscall.tbl      |  2 +
+>  arch/arm/tools/syscall.tbl                  |  2 +
+>  arch/arm64/tools/syscall_32.tbl             |  2 +
+>  arch/m68k/kernel/syscalls/syscall.tbl       |  2 +
+>  arch/microblaze/kernel/syscalls/syscall.tbl |  2 +
+>  arch/mips/kernel/syscalls/syscall_n32.tbl   |  2 +
+>  arch/mips/kernel/syscalls/syscall_n64.tbl   |  2 +
+>  arch/mips/kernel/syscalls/syscall_o32.tbl   |  2 +
+>  arch/parisc/kernel/syscalls/syscall.tbl     |  2 +
+>  arch/powerpc/kernel/syscalls/syscall.tbl    |  2 +
+>  arch/s390/kernel/syscalls/syscall.tbl       |  2 +
+>  arch/sh/kernel/syscalls/syscall.tbl         |  2 +
+>  arch/sparc/kernel/syscalls/syscall.tbl      |  2 +
+>  arch/x86/entry/syscalls/syscall_32.tbl      |  2 +
+>  arch/x86/entry/syscalls/syscall_64.tbl      |  2 +
+>  arch/xtensa/kernel/syscalls/syscall.tbl     |  2 +
+>  fs/inode.c                                  | 75 +++++++++++++++++++++++++++++
+>  fs/ioctl.c                                  | 16 +++++-
+>  include/linux/fileattr.h                    |  1 +
+>  include/linux/syscalls.h                    |  4 ++
+>  include/uapi/asm-generic/unistd.h           |  8 ++-
+>  21 files changed, 133 insertions(+), 3 deletions(-)
+> 
 
-Thanks for your patch!
+[...]
 
-> --- a/arch/m68k/Kconfig.devices
-> +++ b/arch/m68k/Kconfig.devices
-> @@ -144,3 +144,14 @@ config SERIAL_CONSOLE
->  endmenu
->
->  endif
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 6b4c77268fc0ecace4ac78a9ca777fbffc277f4a..b2dddd9db4fabaf67a6cbf541a86978b290411ec 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -23,6 +23,9 @@
+>  #include <linux/rw_hint.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/debugfs.h>
+> +#include <linux/syscalls.h>
+> +#include <linux/fileattr.h>
+> +#include <linux/namei.h>
+>  #include <trace/events/writeback.h>
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/timestamp.h>
+> @@ -2953,3 +2956,75 @@ umode_t mode_strip_sgid(struct mnt_idmap *idmap,
+>  	return mode & ~S_ISGID;
+>  }
+>  EXPORT_SYMBOL(mode_strip_sgid);
 > +
-> +config EMBEDDED_DTB
-
-BUILTIN_DTB
-
-> +       bool "Embedded devicetree ELF section"
-
-select GENERIC_BUILTIN_DTB
-
-> +       help
-> +         If there is no capability for the boot loader to specify a
-> +         devicetree (DTB) then this option allows for it to be embedbed
-> +         within the linux binary itself. Typically you can do this with
-> +         something like this:
+> +SYSCALL_DEFINE4(getfsxattrat, int, dfd, const char __user *, filename,
+> +		struct fsxattr __user *, fsx, unsigned int, at_flags)
+> +{
+> +	CLASS(fd, dir)(dfd);
+> +	struct fileattr fa;
+> +	struct path filepath;
+> +	int error;
+> +	unsigned int lookup_flags = 0;
 > +
-> +               objcopy --update-section .embedded_dtb=<filename>.dtb vmlinux
+> +	if ((at_flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
+> +		return -EINVAL;
 > +
-
-> --- a/arch/m68k/kernel/vmlinux-nommu.lds
-> +++ b/arch/m68k/kernel/vmlinux-nommu.lds
-> @@ -70,6 +70,15 @@ SECTIONS {
->         INIT_TEXT_SECTION(PAGE_SIZE)
->         INIT_DATA_SECTION(16)
->         PERCPU_SECTION(16)
+> +	if (at_flags & AT_SYMLINK_FOLLOW)
+> +		lookup_flags |= LOOKUP_FOLLOW;
 > +
-> +#ifdef CONFIG_EMBEDDED_DTB
-> +       STRUCT_ALIGN();
-> +       .embedded_dtb : {
-> +               embedded_dtb = .;
-> +               *(.embedded_dtb)
-> +               KEEP(*(.embedded_dtb))
-> +       }
-> +#endif
->         .m68k_fixup : {
->                 __start_fixup = .;
->                 *(.m68k_fixup)
+> +	if (at_flags & AT_EMPTY_PATH)
+> +		lookup_flags |= LOOKUP_EMPTY;
+> +
+> +	if (fd_empty(dir))
+> +		return -EBADF;
+> +
+> +	error = user_path_at(dfd, filename, lookup_flags, &filepath);
+> +	if (error)
+> +		return error;
 
-Please use the existing DTB support in include/asm-generic/vmlinux.lds.h.
+security_inode_getattr() should probably be called here.
 
-Gr{oetje,eeting}s,
+> +
+> +	error = vfs_fileattr_get(filepath.dentry, &fa);
+> +	if (!error)
+> +		error = copy_fsxattr_to_user(&fa, fsx);
+> +
+> +	path_put(&filepath);
+> +	return error;
+> +}
+> +
+> +SYSCALL_DEFINE4(setfsxattrat, int, dfd, const char __user *, filename,
+> +		struct fsxattr __user *, fsx, unsigned int, at_flags)
+> +{
+> +	CLASS(fd, dir)(dfd);
+> +	struct fileattr fa;
+> +	struct path filepath;
+> +	int error;
+> +	unsigned int lookup_flags = 0;
+> +
+> +	if ((at_flags & ~(AT_SYMLINK_FOLLOW | AT_EMPTY_PATH)) != 0)
+> +		return -EINVAL;
+> +
+> +	if (at_flags & AT_SYMLINK_FOLLOW)
+> +		lookup_flags |= LOOKUP_FOLLOW;
+> +
+> +	if (at_flags & AT_EMPTY_PATH)
+> +		lookup_flags |= LOOKUP_EMPTY;
+> +
+> +	if (fd_empty(dir))
+> +		return -EBADF;
+> +
+> +	if (copy_fsxattr_from_user(&fa, fsx))
+> +		return -EFAULT;
+> +
+> +	error = user_path_at(dfd, filename, lookup_flags, &filepath);
+> +	if (error)
+> +		return error;
+> +
+> +	error = mnt_want_write(filepath.mnt);
+> +	if (!error) {
 
-                        Geert
+security_inode_setattr() should probably be called too.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> +		error = vfs_fileattr_set(file_mnt_idmap(fd_file(dir)),
+> +					 filepath.dentry, &fa);
+> +		mnt_drop_write(filepath.mnt);
+> +	}
+> +
+> +	path_put(&filepath);
+> +	return error;
+> +}
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 638a36be31c14afc66a7fd6eb237d9545e8ad997..dc160c2ef145e4931d625f1f93c2a8ae7f87abf3 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -558,8 +558,7 @@ int copy_fsxattr_to_user(const struct fileattr *fa, struct fsxattr __user *ufa)
+>  }
+>  EXPORT_SYMBOL(copy_fsxattr_to_user);
+>  
+> -static int copy_fsxattr_from_user(struct fileattr *fa,
+> -				  struct fsxattr __user *ufa)
+> +int copy_fsxattr_from_user(struct fileattr *fa, struct fsxattr __user *ufa)
+>  {
+>  	struct fsxattr xfa;
+>  
+> @@ -646,6 +645,19 @@ static int fileattr_set_prepare(struct inode *inode,
+>  	if (fa->fsx_cowextsize == 0)
+>  		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
+>  
+> +	/*
+> +	 * The only use case for special files is to set project ID, forbid any
+> +	 * other attributes
+> +	 */
+> +	if (!(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode))) {
+> +		if (fa->fsx_xflags & ~FS_XFLAG_PROJINHERIT)
+> +			return -EINVAL;
+> +		if (!S_ISLNK(inode->i_mode) && fa->fsx_nextents)
+> +			return -EINVAL;
+> +		if (fa->fsx_extsize || fa->fsx_cowextsize)
+> +			return -EINVAL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/include/linux/fileattr.h b/include/linux/fileattr.h
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+[...]
