@@ -1,256 +1,111 @@
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63355253F05
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Feb 2025 20:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DF5381AA
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 22 Feb 2025 00:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740170084; cv=none; b=Xl2UDYSjySCDbiFdkMDGXjFAhxgpoxrp/KLOm0MLq6eII9uiYuJNMFUPivWQkVM6R3Z0Xox+mydOdAM7of0N4eKUrBgIa3ghjz+NHHIVprwNAd4kfMggDB/fIEf253TRMsB1jb22f0INQTb/icYEbSosuPlSv5APcsvlD6QMK9Q=
+	t=1740184453; cv=none; b=iB5lQPZHSjaOKppflMeSRgRr4SKsLCz+wJ3tV6T1QBWBkaXQ+ma0c0lF7hwNp0jj1oaQ20287qLPjoWVMSIciFJn1Ei3R4ZoVKbU9TECP56TSAAqx1pDlh5mjpqsyfhEqugvVtNqVw+0Lr3otJh88q53n1NMeYafhyImT1Kx5Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740170084; c=relaxed/simple;
-	bh=rviAPBtUobspkNDwfOwDylqUb3/l41NbO4AFds2nZuY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=etFj4UKxJjvma7kT1g41dVYWdLEAJIBnWf6ZI6Tqxz6pFlXtIbuXtLrptLYpe7L0TuCeu81HH4V6wzqcgvqFeRl793uy8gun+c/P6RT4cLGKYw6LbO2AArrvX2aEkC4jzLWa1RELM1bYm78ffBbdKL1q2TKwJTgM8Ktt5aJ00lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M8fQ+1Dy; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1740184453; c=relaxed/simple;
+	bh=VBQHljTSYFVCaj1bbqPfTOtZckZuFzfefk82naOnO1A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pgB9Aa4MFSsxZeqNhYj0iBUIDZhM2RzE1ofgaLq4R6oTi0LjKXv+lbz2sKffcyVEGuqNNKy5YrvworrcjBuiPfmeZZ6VmLeXaVtBt2y9pQ41xw0sCDQQwPDtx2fN2D1/tLjHXekd3WIb7PVwupz5Ba2Fq4bJTr47/QIE1qkcplE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=XdiwAy00; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8fQ+1Dy"
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6e66b4607d2so11546816d6.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Feb 2025 12:34:42 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="XdiwAy00"
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6f6ca9a3425so23550697b3.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Feb 2025 16:34:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1740170081; x=1740774881; darn=lists.linux-m68k.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Eoi45DrFExaeO8JTjw8qgTrj/TOzu6Gqxn36YdKMoVM=;
-        b=M8fQ+1Dypslea4RdyEgP+nsPocmhFLqxnjQiXHsIJvb553qqa38v6Oew3Hu1+iLXMQ
-         mi9IhVIeMQ4q57ASFG9ZqYbihSDGHUS5vatXmMfWeP1sqbWKJA1BMpWyQMgrPds4VQJh
-         74LvlYxc8a/UgEurqa3fNHVoBoOVtN09my3aiCCzo6RQXVjsWJcTm30smIjF2FiysHit
-         /ZZ+iUdoNpI4F5Nz/EXh6upHIdE8+DaEBCIWHQYBzCAj5SU+GLQjW1l2vLk7V/i2ngf3
-         KMR0PfPzBfHSxa7xU601LWIJ/YxuGhMMtYB5GzVDTxO69fRWxOMN4cXeVDcU1q32Vk9d
-         jsHA==
+        d=paul-moore.com; s=google; t=1740184450; x=1740789250; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vwm1CmURc5ve7fRU7CIVjr3XJe8XTIamKjt5b8I2oxA=;
+        b=XdiwAy00ajxoIfm+F1RfTmJFIX7q9iKUnZXKi2Rkp999z/67df9ycuFNbNcioJcc0U
+         XWI1R3u9eCV2WY3wgPEso4RFCaXuknR7KU3ygKuxEPoUJNT2qCqexQbiqlLKuSDF4nKr
+         UDR8fv7L2gV97bn/CYTIks8FnB2BFwXFvn5EZKOTvry18RVKnjcHAe26mfvO+dZhWvwc
+         Wbfu0PZUP58vDD/l3AHbJbU/YlSS8O7HYvLFaBrKGYMg5pTWjyBS5DCDeOeLHlwzSmVg
+         fu/749+hFb0FPHDA5WQJBfXrjwgdJikNKdhDOo82gbBzp7KubcOCUoqIX6xssg8JO4WT
+         uglQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740170081; x=1740774881;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1740184450; x=1740789250;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Eoi45DrFExaeO8JTjw8qgTrj/TOzu6Gqxn36YdKMoVM=;
-        b=VoLsUiT7dKJ1Zv8SPLmuivsUWv5k/cnOhn8JHcQw+zfF7jBM2cO6MAmmJjYjqwqPtN
-         u+7GMgp2xqa7RyzafnzrbGjWyO25/4QGeztPevvvYJksaJolcLr0tSK7wAEP9hX3l6bw
-         snDmi4/gJtQUAV0qzKxs3kOPZnY/sPlB/OOjHDKDvYvAkZhY60MKvaYIw7UjZX7K42D4
-         z+JRT0HewUBd2/5tSJhQ7X4dOQ0TznmQ8lys3Z6TJhMraTBEMWX4xXCRWs5kN+ApPrzr
-         wo1OBdrB5oIET77l3YfEjCbQ57dzyue4vuR18TTskTh+25Jsl9PEVNpQ9kgGVqkW3KRh
-         ceEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVe7s13zM1q4UvOSXwrTA1Rl9UhZkh4WEDWXMS3jVF0JMDtzlM4RckALqS1Z2wk443HShmrWEVYYr2z@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzgyhKd1SQaVeK6t74v6PcBMzNX1R/3cKOcpzQN5iLcT79tXlMq
-	pgABcOoeqYoVqeaLzz1p7fFEeQvSPO1MiZhpqOF4VEtVCGqp14Qi
-X-Gm-Gg: ASbGncvw1jR3HXcSfMcgQcL21a5hMiPriBUXEgPlszfQckdOCotfoHrhagER5njfZbQ
-	MIn30hgvBL9RVxF0hZeOTEkbPIhSxx7WOjJMP+gAe8iVsY2R5VlizF7FUIcZMx5IvGtIgW79f2z
-	3J+vRHvAnsR6Qg0OSRYaftBnFrJMZMJ+xlvr6YYAX1FQkXv889PJXIoyr6o9SIIkduZpiHLtti+
-	4iGZMz0FjHhlo9s7q4YLWDuLwG+tKldemaQTRDPv5HpiD/Mmr3n0UIQlXsMIBz/oeg9xxNRQkJ0
-	ppI9xSYuAulIfw2ZIaPHPeExdk/VQPLuT6tthfEG8lS5xbSpGw==
-X-Google-Smtp-Source: AGHT+IHZk626/PCbkUmvjSlL6T9hQUoiEhcd/cjugAXTLDwX+GAde7Djl8OMDd5sudOZWoO2zG+F+w==
-X-Received: by 2002:a05:6214:2422:b0:6d8:9a85:5b44 with SMTP id 6a1803df08f44-6e6ae9959bdmr52539466d6.29.1740170081234;
-        Fri, 21 Feb 2025 12:34:41 -0800 (PST)
-Received: from tamird-mac.local ([2600:4041:5be7:7c00:880f:47d4:56c6:b852])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e65d9f36easm101677546d6.74.2025.02.21.12.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Feb 2025 12:34:40 -0800 (PST)
-From: Tamir Duberstein <tamird@gmail.com>
-Date: Fri, 21 Feb 2025 15:34:32 -0500
-Subject: [PATCH v5 3/3] printf: implicate test line in failure messages
+        bh=vwm1CmURc5ve7fRU7CIVjr3XJe8XTIamKjt5b8I2oxA=;
+        b=ZvF0OvFdawHpIy27DDXxoveMUNlzSPac8L/hz0yJTOYAia8xf1t2pFcr/Av5v0zXNp
+         UNrK2sE1kAzdW/BCmT/QHSyMusaqbjulx9o+CAOdN/bOu5U2mtKw6OBxjQPIYtlSVefZ
+         amaRCRDku9gQfIKW36uhZLCGyDB3DTNPThgzBsYS7WVvU1aECzrXHWLgFiTVCn6Yrdze
+         4ebSGY4DANr0JzWrXvJz1+kLpqMKyeyEHFOn5KKGhbh0Mcb68sHbRY8tniIENKAjN5OE
+         BCFGjfZ4o7Tyz2ScCsPhzPVvtuYI5k8fXbAurXioKp2oLUrHipNX5Per+lH+BwYOtmCb
+         vqcA==
+X-Forwarded-Encrypted: i=1; AJvYcCWMgzLp84uQFMjUy3q2t2AE17RUeCdZkisrm79CtJDmD6nFSmNxEdh7+LU6S29i08gO3K6zBhAVjBuM@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yz8v00EO5zBQ5e1zzRlGHyG02iYiph+QWlrPmOCJ58kBxesN6y9
+	9UKSX/TWaUOolyvHmQATJxVw9qBNvZIVtOuuhEfYgUazMgTeefHEQer+6Zy56L1GQf3pjEkOSmL
+	4g8Evoycxt3/f3vph7zIKpbD6NSXnQ4XU3tMo
+X-Gm-Gg: ASbGncuM9RY0J1NacyDC+u1lsXfDBrmKK+1c+xYOWaHNAynCRshymrJABkGuSS5vYPn
+	syBbDPp7FRioaGk4Ba1f7ZNRFQrHIoPs0zc1GFVPoTZ8ZPmOQHK45Ezv9b0meG7UBS55Qp62+ZG
+	0dojZfb7Q=
+X-Google-Smtp-Source: AGHT+IHU8mqrXQveakYlLhZ7AQnDt8Huldya+naR0jPDiYuZo2FksnUyR3yBLKwefOB052PduAKRpiO/vKqO0ObiYCs=
+X-Received: by 2002:a05:690c:3506:b0:6f6:c937:2cf4 with SMTP id
+ 00721157ae682-6fbcc81835dmr37934927b3.23.1740184450404; Fri, 21 Feb 2025
+ 16:34:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250221-printf-kunit-convert-v5-3-5db840301730@gmail.com>
-References: <20250221-printf-kunit-convert-v5-0-5db840301730@gmail.com>
-In-Reply-To: <20250221-printf-kunit-convert-v5-0-5db840301730@gmail.com>
-To: Arpitha Raghunandan <98.arpi@gmail.com>, 
- David Gow <davidgow@google.com>, Petr Mladek <pmladek@suse.com>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Rasmus Villemoes <linux@rasmusvillemoes.dk>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, Geert Uytterhoeven <geert@linux-m68k.org>, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- Naveen N Rao <naveen@kernel.org>, 
- Brendan Higgins <brendan.higgins@linux.dev>
-Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
- linuxppc-dev@lists.ozlabs.org, Tamir Duberstein <tamird@gmail.com>
-X-Mailer: b4 0.15-dev
+References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org> <20250221.ahB8jei2Chie@digikod.net>
+In-Reply-To: <20250221.ahB8jei2Chie@digikod.net>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 21 Feb 2025 19:33:59 -0500
+X-Gm-Features: AWEUYZkJvdf7eQZPTJrwhKnqZP-Y8wnVSUpipQ3Me6WvrrB1wQej040Y9lsHrww
+Message-ID: <CAHC9VhSnP=j_T30ctVmzQ8TwhD6YFcrWhLbqa_oG3WSAPUPOaA@mail.gmail.com>
+Subject: Re: [PATCH v3] fs: introduce getfsxattrat and setfsxattrat syscalls
+To: Andrey Albershteyn <aalbersh@redhat.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This improves the failure output by pointing to the failing line at the
-top level of the test, e.g.:
-      # test_number: EXPECTATION FAILED at lib/printf_kunit.c:103
-  lib/printf_kunit.c:167: vsnprintf(buf, 256, "%#-12x", ...) wrote '0x1234abcd  ', expected '0x1234abce  '
-      # test_number: EXPECTATION FAILED at lib/printf_kunit.c:142
-  lib/printf_kunit.c:167: kvasprintf(..., "%#-12x", ...) returned '0x1234abcd  ', expected '0x1234abce  '
+On Fri, Feb 21, 2025 at 10:08=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digi=
+kod.net> wrote:
+>
+> It looks security checks are missing.  With IOCTL commands, file
+> permissions are checked at open time, but with these syscalls the path
+> is only resolved but no specific access seems to be checked (except
+> inode_owner_or_capable via vfs_fileattr_set).
 
-Signed-off-by: Tamir Duberstein <tamird@gmail.com>
----
- lib/tests/printf_kunit.c | 62 ++++++++++++++++++++++++++----------------------
- 1 file changed, 34 insertions(+), 28 deletions(-)
+Thanks for reviewing the patch and catching this Micka=C3=ABl.  I agree
+with the hooks identified and their placement; it should be fairly
+straightforward with only a few lines added in each case.
 
-diff --git a/lib/tests/printf_kunit.c b/lib/tests/printf_kunit.c
-index 013df6f6dd49..ed6e708ddb61 100644
---- a/lib/tests/printf_kunit.c
-+++ b/lib/tests/printf_kunit.c
-@@ -38,9 +38,9 @@ static unsigned int total_tests;
- static char *test_buffer;
- static char *alloced_buffer;
- 
--static void __printf(5, 0)
--do_test(struct kunit *kunittest, int bufsize, const char *expect, int elen,
--	const char *fmt, va_list ap)
-+static void __printf(7, 0)
-+do_test(struct kunit *kunittest, const char *file, const int line, int bufsize, const char *expect,
-+	int elen, const char *fmt, va_list ap)
- {
- 	va_list aq;
- 	int ret, written;
-@@ -53,21 +53,24 @@ do_test(struct kunit *kunittest, int bufsize, const char *expect, int elen,
- 	va_end(aq);
- 
- 	if (ret != elen) {
--		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d",
--			   bufsize, fmt, ret, elen);
-+		KUNIT_FAIL(kunittest,
-+			   "%s:%d: vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d",
-+			   file, line, bufsize, fmt, ret, elen);
- 		return;
- 	}
- 
- 	if (memchr_inv(alloced_buffer, FILL_CHAR, PAD_SIZE)) {
--		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote before buffer",
--			   bufsize, fmt);
-+		KUNIT_FAIL(kunittest,
-+			   "%s:%d: vsnprintf(buf, %d, \"%s\", ...) wrote before buffer",
-+			   file, line, bufsize, fmt);
- 		return;
- 	}
- 
- 	if (!bufsize) {
- 		if (memchr_inv(test_buffer, FILL_CHAR, BUF_SIZE + PAD_SIZE)) {
--			KUNIT_FAIL(kunittest, "vsnprintf(buf, 0, \"%s\", ...) wrote to buffer",
--				   fmt);
-+			KUNIT_FAIL(kunittest,
-+				   "%s:%d: vsnprintf(buf, 0, \"%s\", ...) wrote to buffer",
-+				   file, line, fmt);
- 		}
- 		return;
- 	}
-@@ -75,33 +78,36 @@ do_test(struct kunit *kunittest, int bufsize, const char *expect, int elen,
- 	written = min(bufsize-1, elen);
- 	if (test_buffer[written]) {
- 		KUNIT_FAIL(kunittest,
--			   "vsnprintf(buf, %d, \"%s\", ...) did not nul-terminate buffer",
--			   bufsize, fmt);
-+			   "%s:%d: vsnprintf(buf, %d, \"%s\", ...) did not nul-terminate buffer",
-+			   file, line, bufsize, fmt);
- 		return;
- 	}
- 
- 	if (memchr_inv(test_buffer + written + 1, FILL_CHAR, bufsize - (written + 1))) {
- 		KUNIT_FAIL(kunittest,
--			   "vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator",
--			   bufsize, fmt);
-+			   "%s:%d: vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator",
-+			   file, line, bufsize, fmt);
- 		return;
- 	}
- 
- 	if (memchr_inv(test_buffer + bufsize, FILL_CHAR, BUF_SIZE + PAD_SIZE - bufsize)) {
--		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote beyond buffer",
--			   bufsize, fmt);
-+		KUNIT_FAIL(kunittest,
-+			   "%s:%d: vsnprintf(buf, %d, \"%s\", ...) wrote beyond buffer",
-+			   file, line, bufsize, fmt);
- 		return;
- 	}
- 
- 	if (memcmp(test_buffer, expect, written)) {
--		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote '%s', expected '%.*s'",
--			   bufsize, fmt, test_buffer, written, expect);
-+		KUNIT_FAIL(kunittest,
-+			   "%s:%d: vsnprintf(buf, %d, \"%s\", ...) wrote '%s', expected '%.*s'",
-+			   file, line, bufsize, fmt, test_buffer, written, expect);
- 		return;
- 	}
- }
- 
--static void __printf(4, 0)
--__test(struct kunit *kunittest, const char *expect, int elen, const char *fmt, ...)
-+static void __printf(6, 0)
-+__test(struct kunit *kunittest, const char *file, const int line, const char *expect, int elen,
-+	const char *fmt, ...)
- {
- 	va_list ap;
- 	int rand;
-@@ -109,8 +115,8 @@ __test(struct kunit *kunittest, const char *expect, int elen, const char *fmt, .
- 
- 	if (elen >= BUF_SIZE) {
- 		KUNIT_FAIL(kunittest,
--			   "error in test suite: expected length (%d) >= BUF_SIZE (%d). fmt=\"%s\"",
--			   elen, BUF_SIZE, fmt);
-+			   "%s:%d: error in test suite: expected length (%d) >= BUF_SIZE (%d). fmt=\"%s\"",
-+			   file, line, elen, BUF_SIZE, fmt);
- 		return;
- 	}
- 
-@@ -122,19 +128,19 @@ __test(struct kunit *kunittest, const char *expect, int elen, const char *fmt, .
- 	 * enough and 0), and then we also test that kvasprintf would
- 	 * be able to print it as expected.
- 	 */
--	do_test(kunittest, BUF_SIZE, expect, elen, fmt, ap);
-+	do_test(kunittest, file, line, BUF_SIZE, expect, elen, fmt, ap);
- 	rand = get_random_u32_inclusive(1, elen + 1);
- 	/* Since elen < BUF_SIZE, we have 1 <= rand <= BUF_SIZE. */
--	do_test(kunittest, rand, expect, elen, fmt, ap);
--	do_test(kunittest, 0, expect, elen, fmt, ap);
-+	do_test(kunittest, file, line, rand, expect, elen, fmt, ap);
-+	do_test(kunittest, file, line, 0, expect, elen, fmt, ap);
- 
- 	p = kvasprintf(GFP_KERNEL, fmt, ap);
- 	if (p) {
- 		total_tests++;
- 		if (memcmp(p, expect, elen+1)) {
- 			KUNIT_FAIL(kunittest,
--				   "kvasprintf(..., \"%s\", ...) returned '%s', expected '%s'",
--				   fmt, p, expect);
-+				   "%s:%d: kvasprintf(..., \"%s\", ...) returned '%s', expected '%s'",
-+				   file, line, fmt, p, expect);
- 		}
- 		kfree(p);
- 	}
-@@ -142,7 +148,7 @@ __test(struct kunit *kunittest, const char *expect, int elen, const char *fmt, .
- }
- 
- #define test(expect, fmt, ...)					\
--	__test(kunittest, expect, strlen(expect), fmt, ##__VA_ARGS__)
-+	__test(kunittest, __FILE__, __LINE__, expect, strlen(expect), fmt, ##__VA_ARGS__)
- 
- static void
- test_basic(struct kunit *kunittest)
-@@ -153,7 +159,7 @@ test_basic(struct kunit *kunittest)
- 	test("", &nul);
- 	test("100%", "100%%");
- 	test("xxx%yyy", "xxx%cyyy", '%');
--	__test(kunittest, "xxx\0yyy", 7, "xxx%cyyy", '\0');
-+	__test(kunittest, __FILE__, __LINE__, "xxx\0yyy", 7, "xxx%cyyy", '\0');
- }
- 
- static void
-
--- 
-2.48.1
-
+--=20
+paul-moore.com
