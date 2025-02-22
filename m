@@ -1,111 +1,97 @@
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx.denx.de (mx.denx.de [89.58.32.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DF5381AA
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 22 Feb 2025 00:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC5F20458A
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 22 Feb 2025 09:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.58.32.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740184453; cv=none; b=iB5lQPZHSjaOKppflMeSRgRr4SKsLCz+wJ3tV6T1QBWBkaXQ+ma0c0lF7hwNp0jj1oaQ20287qLPjoWVMSIciFJn1Ei3R4ZoVKbU9TECP56TSAAqx1pDlh5mjpqsyfhEqugvVtNqVw+0Lr3otJh88q53n1NMeYafhyImT1Kx5Ts=
+	t=1740217070; cv=none; b=KJoyOnUrr5/+F4DbQ0qYRzFlrvp/nuEM3Ovl2qv5Aahmfnu4r2K1FMIv4CINLGFm3xztpKfw/jbJFDw/2L44nXi/tpYEcdmGjxIsb9Cxs+IduoGWc2PIBsapsZdGVrX8J7OSvC7wtZgI6iLGN3vN9A7IoTRp2dd6qnt9zXLcjDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740184453; c=relaxed/simple;
-	bh=VBQHljTSYFVCaj1bbqPfTOtZckZuFzfefk82naOnO1A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pgB9Aa4MFSsxZeqNhYj0iBUIDZhM2RzE1ofgaLq4R6oTi0LjKXv+lbz2sKffcyVEGuqNNKy5YrvworrcjBuiPfmeZZ6VmLeXaVtBt2y9pQ41xw0sCDQQwPDtx2fN2D1/tLjHXekd3WIb7PVwupz5Ba2Fq4bJTr47/QIE1qkcplE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=XdiwAy00; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+	s=arc-20240116; t=1740217070; c=relaxed/simple;
+	bh=xE6IWtnvbgmMUxaJzUTcPKccPw5EFib/pxhONPCtAW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WEcWwgQ09RG2hPs7NzSDPi9n84/oR2ES5KdR891SmQE0mR2ka2d1FeqVFLAlVbn9+WftJOK+T/s02C2+Hfja+Yb0l1lwV0jYg3kNZBrgHjVip7SKo5GEeEQazOi+3cGLFWrimITNz6WeeK1RBlHjov26KRyc++joDRWpmELEgu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=EW+Nd508; arc=none smtp.client-ip=89.58.32.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="XdiwAy00"
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6f6ca9a3425so23550697b3.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Feb 2025 16:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1740184450; x=1740789250; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vwm1CmURc5ve7fRU7CIVjr3XJe8XTIamKjt5b8I2oxA=;
-        b=XdiwAy00ajxoIfm+F1RfTmJFIX7q9iKUnZXKi2Rkp999z/67df9ycuFNbNcioJcc0U
-         XWI1R3u9eCV2WY3wgPEso4RFCaXuknR7KU3ygKuxEPoUJNT2qCqexQbiqlLKuSDF4nKr
-         UDR8fv7L2gV97bn/CYTIks8FnB2BFwXFvn5EZKOTvry18RVKnjcHAe26mfvO+dZhWvwc
-         Wbfu0PZUP58vDD/l3AHbJbU/YlSS8O7HYvLFaBrKGYMg5pTWjyBS5DCDeOeLHlwzSmVg
-         fu/749+hFb0FPHDA5WQJBfXrjwgdJikNKdhDOo82gbBzp7KubcOCUoqIX6xssg8JO4WT
-         uglQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740184450; x=1740789250;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vwm1CmURc5ve7fRU7CIVjr3XJe8XTIamKjt5b8I2oxA=;
-        b=ZvF0OvFdawHpIy27DDXxoveMUNlzSPac8L/hz0yJTOYAia8xf1t2pFcr/Av5v0zXNp
-         UNrK2sE1kAzdW/BCmT/QHSyMusaqbjulx9o+CAOdN/bOu5U2mtKw6OBxjQPIYtlSVefZ
-         amaRCRDku9gQfIKW36uhZLCGyDB3DTNPThgzBsYS7WVvU1aECzrXHWLgFiTVCn6Yrdze
-         4ebSGY4DANr0JzWrXvJz1+kLpqMKyeyEHFOn5KKGhbh0Mcb68sHbRY8tniIENKAjN5OE
-         BCFGjfZ4o7Tyz2ScCsPhzPVvtuYI5k8fXbAurXioKp2oLUrHipNX5Per+lH+BwYOtmCb
-         vqcA==
-X-Forwarded-Encrypted: i=1; AJvYcCWMgzLp84uQFMjUy3q2t2AE17RUeCdZkisrm79CtJDmD6nFSmNxEdh7+LU6S29i08gO3K6zBhAVjBuM@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yz8v00EO5zBQ5e1zzRlGHyG02iYiph+QWlrPmOCJ58kBxesN6y9
-	9UKSX/TWaUOolyvHmQATJxVw9qBNvZIVtOuuhEfYgUazMgTeefHEQer+6Zy56L1GQf3pjEkOSmL
-	4g8Evoycxt3/f3vph7zIKpbD6NSXnQ4XU3tMo
-X-Gm-Gg: ASbGncuM9RY0J1NacyDC+u1lsXfDBrmKK+1c+xYOWaHNAynCRshymrJABkGuSS5vYPn
-	syBbDPp7FRioaGk4Ba1f7ZNRFQrHIoPs0zc1GFVPoTZ8ZPmOQHK45Ezv9b0meG7UBS55Qp62+ZG
-	0dojZfb7Q=
-X-Google-Smtp-Source: AGHT+IHU8mqrXQveakYlLhZ7AQnDt8Huldya+naR0jPDiYuZo2FksnUyR3yBLKwefOB052PduAKRpiO/vKqO0ObiYCs=
-X-Received: by 2002:a05:690c:3506:b0:6f6:c937:2cf4 with SMTP id
- 00721157ae682-6fbcc81835dmr37934927b3.23.1740184450404; Fri, 21 Feb 2025
- 16:34:10 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="EW+Nd508"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CFC9A10382D37;
+	Sat, 22 Feb 2025 10:37:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de; s=mx-20241105;
+	t=1740217066;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3ncCIJ5VXDlpkWW1QpHLzM4JOwCVY1jtpgSZIC0TSSk=;
+	b=EW+Nd508+gG4QA41rdQhxui0odCFIA7NlUdm8NVUq9BFXHpOv5Lfowhf7Fd2tsomteUVkr
+	3/UguWgm67O80RMZHUC+vnI8ygws+peRimHMm1UMzRwMdKwSCHaXDjQSztXx8Oe3uqYDYv
+	WoqxjnCo9KYlS1/ZBShDRtqFsgV32khe3j4n1GKk/Y682GP1Ig6jXNEZcLvRDyyCnpyBRT
+	/rgjAYES9zxBnkh/nz87o/Xvp1sCdN6jlL/O0V3ZFDjwihMLUsepUW97g1RSM3Qn42GgC6
+	ujDCnjpi/OBt+GWL+I6uvpkpwYl64CEfOEOc0zbiVqICel+A2iG5b5PSbpvpaA==
+Date: Sat, 22 Feb 2025 10:37:41 +0100
+From: Pavel Machek <pavel@denx.de>
+To: cip-dev@lists.cip-project.org
+Cc: Ulrich Hecht <uli@kernel.org>, Liam Howlett <liam.howlett@oracle.com>,
+	Michael Schmitz <schmitzmic@gmail.com>,
+	linux-m68k@lists.linux-m68k.org
+Subject: Re: [cip-dev] [PATCH 4.4.y-cip] m68k: Add missing mmap_read_lock()
+ to sys_cacheflush()
+Message-ID: <Z7ma5eOlH/k0fgRg@duo.ucw.cz>
+References: <9a7bb5ad805dbb1c8a67186f04500474@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org> <20250221.ahB8jei2Chie@digikod.net>
-In-Reply-To: <20250221.ahB8jei2Chie@digikod.net>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 21 Feb 2025 19:33:59 -0500
-X-Gm-Features: AWEUYZkJvdf7eQZPTJrwhKnqZP-Y8wnVSUpipQ3Me6WvrrB1wQej040Y9lsHrww
-Message-ID: <CAHC9VhSnP=j_T30ctVmzQ8TwhD6YFcrWhLbqa_oG3WSAPUPOaA@mail.gmail.com>
-Subject: Re: [PATCH v3] fs: introduce getfsxattrat and setfsxattrat syscalls
-To: Andrey Albershteyn <aalbersh@redhat.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-xfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ji6PU0ROc6dS4AYz"
+Content-Disposition: inline
+In-Reply-To: <9a7bb5ad805dbb1c8a67186f04500474@linux-m68k.org>
+X-Last-TLS-Session-Version: TLSv1.3
+
+
+--ji6PU0ROc6dS4AYz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 21, 2025 at 10:08=E2=80=AFAM Micka=C3=ABl Sala=C3=BCn <mic@digi=
-kod.net> wrote:
->
-> It looks security checks are missing.  With IOCTL commands, file
-> permissions are checked at open time, but with these syscalls the path
-> is only resolved but no specific access seems to be checked (except
-> inode_owner_or_capable via vfs_fileattr_set).
+Hi!
 
-Thanks for reviewing the patch and catching this Micka=C3=ABl.  I agree
-with the hooks identified and their placement; it should be fairly
-straightforward with only a few lines added in each case.
+> From: Liam Howlett <liam.howlett@oracle.com>
+>=20
+> [ Upstream commit f829b4b212a315b912cb23fd10aaf30534bb5ce9 ]
+>=20
+> When the superuser flushes the entire cache, the mmap_read_lock() is not
+> taken, but mmap_read_unlock() is called.  Add the missing
+> mmap_read_lock() call.
+>=20
+> Fixes: cd2567b6850b1648 ("m68k: call find_vma with the mmap_sem held in s=
+ys_cacheflush()")
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Link: https://lore.kernel.org/r/20210407200032.764445-1-Liam.Howlett@Orac=
+le.com
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> [ mmap_read_lock() open-coded using down_read() as was done prior to v5.8=
+ ]
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+
+Reviewed-by: Pavel Machek <pavel@denx.de>
 
 --=20
-paul-moore.com
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--ji6PU0ROc6dS4AYz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZ7ma5QAKCRAw5/Bqldv6
+8u/vAJ9qOVJI0MPfFxAt62PyEU0K070FDACfadxlw8QUGUAdS0eLF3gN6HYg2sk=
+=FutO
+-----END PGP SIGNATURE-----
+
+--ji6PU0ROc6dS4AYz--
