@@ -1,136 +1,205 @@
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-b6-smtp.messagingengine.com (flow-b6-smtp.messagingengine.com [202.12.124.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259CB2837B
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Feb 2025 03:47:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3795C2561C7
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Feb 2025 08:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740455240; cv=none; b=ns5sndvQUfgkMf3A0GA136rBDdoOm2dGduMYOA6CO/TQcYAtucg1pd0OjfjKudwas8iPsSUtD4B5tS4Fz2Gv+i3vhpIZgznDlGOCG9YWy83tfzdgLmhrbEuw1h8xr2312wVtX4fOlziIWgCNzMgfnsynZmuwoBFNkalXJ8rk8Qo=
+	t=1740470553; cv=none; b=uCWBc33p7U3TpiWi/mH5p2IidpH+BOrpZ/uAoLuxVcdGPeMXLs8I0H41f8b0Ei5jjuXj12gicaQqhPXnJIwKVx9LaZzu3U0J9Zffvb4ff7Jzy3PxXkinF/DjTg/nWT5z0YGBovBgVPCN4eX9wHxwbr4OZtfUkBdsLBsS/Ar1vXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740455240; c=relaxed/simple;
-	bh=007QVVVFe489JDQoxvXq6IPNtqGHUmY/RQmaczrx98Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=S0GIYp1csFIJQyO7jVxOjXqifyVJDjGzN4gTVAywy4FNbTlmYR2X0znx7bCRYeTGcrz+jGHJ3N6IMJg/xVYetgNQJR01t1bwVbasr6dd2f3GUeU9vx+Vi8IwtF6WbXIYroUNTm94CkWjO6wnfp5srs+dtp7/Ua7Zvzakja3oKNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=XkXYpYce; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1740470553; c=relaxed/simple;
+	bh=k1leRad2ojzsetmQP/1iyqy9qsl2R22cOQijt9+MijA=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=ZIO+a0t8+4dHXOU7mjcv7QyHPdgtZKX1FpkrkNC0LBzUVhawRnYcTR0ukxKvazFjY6YmyefvQg4FtdH+rtcZjcgtirMGOhaDYAbtXJ03XcdPM+/5QAck6tahL/q5HHE/ipStWgfuZ9b+AfPNN++j3296gDXza+a3QrMa6MHkPmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=nuB/bCA9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YPoIMkvS; arc=none smtp.client-ip=202.12.124.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="XkXYpYce"
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-220dc3831e3so95477845ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Feb 2025 19:47:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740455238; x=1741060038; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y+AOLMBHyoEBsAHQDRMLfrp+DU3rIi9C1hjH+u4umGY=;
-        b=XkXYpYceEYDdaLGZz1jYXdZjFMltlp1NNOlmOGrdQ0dfK+RNxEcZD7ntMcgHpXd98A
-         llPofUj4W3h7iylTdSIfdGC//Cw1QyucMoFi8Zz9Ju8oEJRVNMcgKmiASVLl5MGTtQoy
-         u35eek2YYtxKkH7pFzjEfbGv3tsbMdn6QEcm0t0vl78cCmidopuQVMjqNjvPVPbmByAA
-         7LEws+RyjN7eN3OFd6KcRW4f9HVMDei7zDN4dOSiKY1Jv5Ghmr3rOHEkuQeoMsqpH0Bp
-         W0fmOEvauP18EyKs0iOWaHeUNGm8He+Mm1jRsAmcNNMtLOcHE/2DKnkwtx7ZB1BJUT2/
-         Lxbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740455238; x=1741060038;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y+AOLMBHyoEBsAHQDRMLfrp+DU3rIi9C1hjH+u4umGY=;
-        b=JC8bVQR6Xe7jWV+QVZov/Zq7vpbuS0AZTl8Ng7MdY3T2/xnoAM20Ig6hqPaD+tWahm
-         T/5tIPcRoMJV1Q4BVNKKsL6T5AHnSfTnZt7Zz7kz2h5yYWIitUMzGwPcURO52F66urFb
-         V+hvhT4jXQ8wuozMHzN8RoJ/ns/cIcB94HOx/6I1YzbEuyS2Mmdon/cFmwlnhjEOTaNx
-         t2DjC1qQWafm5BMi+g4SrnxIcW3tKlZsRpKRxE87Om0kuNRPbjUYil41B7RF7Ckmwx0L
-         nP+IT/uP/XLu8HDkh+C8jQ5MndVs2ve6xtfNe5+Tf/Kj9tJEnhJCAxiTk3OFOxk/VsPd
-         YQkw==
-X-Forwarded-Encrypted: i=1; AJvYcCUVPhZboLQCeSH4F+wuuqE0adExumj7iVNFM/h8Oxr9AuOKWys1iv+rRhRFKLuaT5iGQqqLNX8+M1bD@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yyes5rV+B/2KjlKZlXSuVDSq5VjSWydP5zvn8DrRazDE1T76BsY
-	uca7th4RPU6itmYwz/tFS+jTQqNY41zr8CKK0UlYUI8mRUQryorlD6Kq9ZFCRj0=
-X-Gm-Gg: ASbGncsycfNuTIYH+vEqdkl1lqdCHzNvBj5b4RD81MTed/6EdZ6u+W7DWt2BaPpzdE8
-	oqmjoAKzrw0ebGlDyxVKWqpR8P1JG0EfmgKEUXUMTKc3s4w43EyL3MY80WFbieHWugkQNBIqXHh
-	10js27fcMY82XRUj4KWgkmnFD9RyurPefMGYKUUfEXnV1o2kwbB+JR0u2OJAr1E1ZWlVvUBrtF2
-	i/3XOXjLfJq8o3dNMKC0Uh/8UTovv8zgEMgPOOhYJmdI9ZTdccEe0atQGHytiVyp1qoMCpSfVxG
-	4wCutBkMQnGjewq/yI3XEuuNIG9po+yUYpsXhchTK6LoNM0U8Hodan/fZ9j/L5H8og==
-X-Google-Smtp-Source: AGHT+IHDwvQZzbKv24vEjKNvLJNI+R1iJ4OqsIlmXN9p1d6u9OWq0+ZfVfD6gOTuv6xGQ3OntwSRRg==
-X-Received: by 2002:a05:6a00:6f0e:b0:734:26c6:26d3 with SMTP id d2e1a72fcca58-73426c62969mr26062579b3a.5.1740455238550;
-        Mon, 24 Feb 2025 19:47:18 -0800 (PST)
-Received: from C02DW0BEMD6R.bytedance.net ([63.216.146.179])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7347a81f014sm409429b3a.156.2025.02.24.19.47.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 19:47:18 -0800 (PST)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: peterz@infradead.org,
-	kevin.brodsky@arm.com,
-	riel@surriel.com,
-	vishal.moola@gmail.com,
-	david@redhat.com,
-	jannh@google.com,
-	hughd@google.com,
-	willy@infradead.org,
-	yuzhao@google.com,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	arnd@arndb.de,
-	dave.hansen@linux.intel.com,
-	rppt@kernel.org,
-	alexghiti@rivosinc.com
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org,
-	linux-riscv@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 6/6] mm: pgtable: remove tlb_remove_page_ptdesc()
-Date: Tue, 25 Feb 2025 11:45:56 +0800
-Message-Id: <3df04c8494339073b71be4acb2d92e108ecd1b60.1740454179.git.zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <cover.1740454179.git.zhengqi.arch@bytedance.com>
-References: <cover.1740454179.git.zhengqi.arch@bytedance.com>
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="nuB/bCA9";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YPoIMkvS"
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailflow.stl.internal (Postfix) with ESMTP id BC32C1D40DC7;
+	Tue, 25 Feb 2025 03:02:28 -0500 (EST)
+Received: from phl-imap-11 ([10.202.2.101])
+  by phl-compute-11.internal (MEProxy); Tue, 25 Feb 2025 03:02:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1740470548;
+	 x=1740477748; bh=QLBFywS7XyTxwPOejQif6z/28yCPC+NOlxqp7jJivgU=; b=
+	nuB/bCA9S1ItHoQccv5Gpf2mwvDce7RRcNcpwlxjDxO1holF+tGByrAapeP7OrFr
+	HAk3aSlywo6BQ3aIq3YD97bpYimQZCmCJzQVQ4J7/FjQNoffpOdztKN3jNMkLAsm
+	9VGEaeHYbe7aA1pwEwTc5Ly3uUaA5trnjhjeblm3R3qCmYh5gobnjqpCGnSMaJxH
+	Q4rT9xQzPWGhTDWs9MOLPKEFr4nLKLYdEEplecb0+f886EV6VW5atz2MXrJXfgSa
+	8nO2s+I0QTs8G0bnVObE2Z5vC+C/ADHfqNq9PLbtRtoWaqB9bL1p64n0kbx/qUFh
+	GI6t/ArRTPIDtTrox5TXCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1740470548; x=
+	1740477748; bh=QLBFywS7XyTxwPOejQif6z/28yCPC+NOlxqp7jJivgU=; b=Y
+	PoIMkvS6Pmv9DRNik2ZIAlOAGJxA128xi+2AFbN1p4mZSMpWJvjWRKHZs4PLFfc6
+	1+aHv049YnYKEfVZEN+sir1Y3b3y0M5hJe6zr9DGoS6Mofb56X+snvlPvlUK0F+4
+	mXCUv/SVSH9ziGwDTAMYmz7Q5CpBKdy6teD7hFBcWYrwRSOU7VayJcaFf2MNpoPY
+	RwMyBak80wphhNQM/ZbdE2tRPYWKp2xSTpvayyVo+xrq2jkqVAoOaz4M/GmpQhDQ
+	GoohNCukP3A1YcdSedH7Ka31l79hVrCqcvm9Qig3waOu8sHkFMFBcxErO5OHkgJx
+	1CybiPzK73IGpPLVmfvxA==
+X-ME-Sender: <xms:EHm9Z5ksovKix4IxAYOa6NPEsSLcphOoyOjz8HC-1Dt-R6Vx9U_HmQ>
+    <xme:EHm9Z02PIBag6kVjBAxYukVUJEdGe04NJq4rDChWSx6WsgtBg87p-_V2omgoWP2jZ
+    _7Dx_WXLOJSuAYYKgM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdekuddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthhqredtredt
+    jeenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusg
+    druggvqeenucggtffrrghtthgvrhhnpedvhfdvkeeuudevfffftefgvdevfedvleehvddv
+    geejvdefhedtgeegveehfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggvpdhnsggprhgtphhtthhopeeh
+    tddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepsghpsegrlhhivghnkedruggvpd
+    hrtghpthhtohepthhssghoghgvnhgusegrlhhphhgrrdhfrhgrnhhkvghnrdguvgdprhgt
+    phhtthhopegtrghtrghlihhnrdhmrghrihhnrghssegrrhhmrdgtohhmpdhrtghpthhtoh
+    eplhhinhhugiesrghrmhhlihhnuhigrdhorhhgrdhukhdprhgtphhtthhopegthhhrihhs
+    thhophhhvgdrlhgvrhhohiestghsghhrohhuphdrvghupdhrtghpthhtohepuggrvhgvmh
+    esuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopehmihgtseguihhgihhkohgurdhn
+    vghtpdhrtghpthhtohepmhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghpthhtoh
+    eprghnughrvggrshesghgrihhslhgvrhdrtghomh
+X-ME-Proxy: <xmx:EHm9Z_qJ-ITA7HBjaqdXvk3f-nqGrbsu3fDpFPFh2RmK-q6S1Rh3pg>
+    <xmx:EHm9Z5nHJC0k8dToMBJ4l8OzwQT8BBLHg391079G2HLzyfUZiOWn0A>
+    <xmx:EHm9Z302TC_YPcv_Alc8uVIbhcs_m4NaqklpywGUw6d3uwcpJgO6qQ>
+    <xmx:EHm9Z4sdir4sphaNBGTPw7csAyqyoGjyjpv2MyJVBqSCdS8S2iGxGQ>
+    <xmx:FHm9Z9FhQ4LWTtKGSN8SQ9W8XolOVrCxrHfKpOz3hrDt-C_9ux6zE9sc>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id A3F4B2220072; Tue, 25 Feb 2025 03:02:24 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date: Tue, 25 Feb 2025 09:02:04 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Christian Brauner" <brauner@kernel.org>
+Cc: "Amir Goldstein" <amir73il@gmail.com>,
+ "Andrey Albershteyn" <aalbersh@redhat.com>,
+ "Darrick J. Wong" <djwong@kernel.org>,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ "Matt Turner" <mattst88@gmail.com>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Will Deacon" <will@kernel.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Michal Simek" <monstr@monstr.eu>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ "Helge Deller" <deller@gmx.de>,
+ "Madhavan Srinivasan" <maddy@linux.ibm.com>,
+ "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Nicholas Piggin" <npiggin@gmail.com>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Naveen N Rao" <naveen@kernel.org>, "Heiko Carstens" <hca@linux.ibm.com>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+ "Sven Schnelle" <svens@linux.ibm.com>,
+ "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+ "Rich Felker" <dalias@libc.org>,
+ "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Andreas Larsson" <andreas@gaisler.com>,
+ "Andy Lutomirski" <luto@kernel.org>,
+ "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, "Chris Zankel" <chris@zankel.net>,
+ "Max Filippov" <jcmvbkbc@gmail.com>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>,
+ =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>,
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-xfs@vger.kernel.org, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+ "Theodore Ts'o" <tytso@mit.edu>
+Message-Id: <6b51ffa2-9d67-4466-865e-e703c1243352@app.fastmail.com>
+In-Reply-To: <20250224-klinke-hochdekoriert-3f6be89005a8@brauner>
+References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org>
+ <20250221181135.GW21808@frogsfrogsfrogs>
+ <CAOQ4uxgyYBFqkq6cQsso4LxJsPJ4uECOdskXmz-nmGhhV5BQWg@mail.gmail.com>
+ <20250224-klinke-hochdekoriert-3f6be89005a8@brauner>
+Subject: Re: [PATCH v3] fs: introduce getfsxattrat and setfsxattrat syscalls
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The tlb_remove_ptdesc()/tlb_remove_table() is specially designed for page
-table pages, and now all architectures have been converted to use it to
-remove page table pages. So let's remove tlb_remove_page_ptdesc(), it
-currently has no users and should not be used for page table pages.
+On Mon, Feb 24, 2025, at 12:32, Christian Brauner wrote:
+> On Fri, Feb 21, 2025 at 08:15:24PM +0100, Amir Goldstein wrote:
+>> On Fri, Feb 21, 2025 at 7:13=E2=80=AFPM Darrick J. Wong <djwong@kerne=
+l.org> wrote:
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/asm-generic/tlb.h | 6 ------
- 1 file changed, 6 deletions(-)
+>> > > @@ -23,6 +23,9 @@
+>> > >  #include <linux/rw_hint.h>
+>> > >  #include <linux/seq_file.h>
+>> > >  #include <linux/debugfs.h>
+>> > > +#include <linux/syscalls.h>
+>> > > +#include <linux/fileattr.h>
+>> > > +#include <linux/namei.h>
+>> > >  #include <trace/events/writeback.h>
+>> > >  #define CREATE_TRACE_POINTS
+>> > >  #include <trace/events/timestamp.h>
+>> > > @@ -2953,3 +2956,75 @@ umode_t mode_strip_sgid(struct mnt_idmap *=
+idmap,
+>> > >       return mode & ~S_ISGID;
+>> > >  }
+>> > >  EXPORT_SYMBOL(mode_strip_sgid);
+>> > > +
+>> > > +SYSCALL_DEFINE4(getfsxattrat, int, dfd, const char __user *, fil=
+ename,
+>> > > +             struct fsxattr __user *, fsx, unsigned int, at_flag=
+s)
+>> >
+>> > Should the kernel require userspace to pass the size of the fsx buf=
+fer?
+>> > That way we avoid needing to rev the interface when we decide to gr=
+ow
+>> > the structure.
+>
+> Please version the struct by size as we do for clone3(),
+> mount_setattr(), listmount()'s struct mnt_id_req, sched_setattr(), all
+> the new xattrat*() system calls and a host of others. So laying out the
+> struct 64bit and passing a size alongside it.
+>
+> This is all handled by copy_struct_from_user() and copy_struct_to_user=
+()
+> so nothing to reinvent. And it's easy to copy from existing system
+> calls.
 
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 18bf499ef8801..dd292c6d3ce88 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -511,12 +511,6 @@ static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, struct ptdesc *pt)
- 	tlb_remove_table(tlb, pt);
- }
- 
--/* Like tlb_remove_ptdesc, but for page-like page directories. */
--static inline void tlb_remove_page_ptdesc(struct mmu_gather *tlb, struct ptdesc *pt)
--{
--	tlb_remove_page(tlb, ptdesc_page(pt));
--}
--
- static inline void tlb_change_page_size(struct mmu_gather *tlb,
- 						     unsigned int page_size)
- {
--- 
-2.20.1
+I don't think that works in this case, because 'struct fsxattr'
+is an existing structure that is defined with a fixed size of
+28 bytes. If we ever need more than 8 extra bytes, then the
+existing ioctl commands are also broken.
 
+Replacing fsxattr with an extensible structure of the same contents
+would work, but I feel that just adds more complication for little
+gain.
+
+On the other hand, there is an open question about how unknown
+flags and fields in this structure. FS_IOC_FSSETXATTR/FS_IOC_FSGETXATTR
+treats them as optional and just ignores anything it doesn't
+understand, while copy_struct_from_user() would treat any unknown
+but set bytes as -E2BIG.
+
+The ioctl interface relies on the existing behavior, see
+0a6eab8bd4e0 ("vfs: support FS_XFLAG_COWEXTSIZE and get/set of
+CoW extent size hint") for how it was previously extended
+with an optional flag/word. I think that is fine for the syscall
+as well, but should be properly documented since it is different
+from how most syscalls work.
+
+    Arnd
