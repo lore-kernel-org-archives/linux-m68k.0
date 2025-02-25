@@ -1,40 +1,43 @@
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D6118B463
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Feb 2025 15:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3368D21019A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Feb 2025 20:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740499171; cv=none; b=H+zNHrSGDwkHTcrXBflhIVdvr5MPwpNtXuIbpKIWp+2hcjkRjU5/XNwa1Y9DXlQV0siT+plmR10dRLwS2P1pq8NSRiOyi4Ujbpjh+S8lY1nI9CEssun/Ony1OrFrVZ3M7Fl6ImcA6fLUW3zFOjWJtyO6QAPOQLzlP6fGeQT3v2U=
+	t=1740515688; cv=none; b=UMu7EeZ+/AaCpqCvJqywlmY/edvRncxh0mbjADiunxJKFx4CfDZSYidgOTRPu+WQxxZhdpo0vL0mZaToDpbUUqu1jTyozuNvc1Y9GM5sinjiD/L+e8pexBYj3VycW6F7rlM2mVUtSPVrfuObucjBte6wFKxS8dwOTj607N9+giY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740499171; c=relaxed/simple;
-	bh=5BKzhjbCX0A+Ckqb9LCw0vp1xrvfcOr/debaeQvehd8=;
+	s=arc-20240116; t=1740515688; c=relaxed/simple;
+	bh=BRDE49GDK1WZQtOVWzMxOTVjKgnZs4mLJeGOsJR4KcY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZcrjPCZeYDNjEa5w0ElDTsbMws5Cl7gqI3XZ+S2nY5SD6f34k1GtczssJAFaRDzhXZTdnwjuQ9LtYHqDV6ZrfxH42ybYiZTCqTVMkCiU2oRSuOBMJw34304sZA11CM0kTzUPkMw+qO3Q3ErBsXeVzOOBPfGOZB3oIeG953k1WBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hcOfCPg6; arc=none smtp.client-ip=139.178.84.217
+	 Content-Type:Content-Disposition:In-Reply-To; b=cVqSW+GIQjLNqQ+C5NqiQjQB4bimU2ev+CClWvYbk0StaR4o0zh64twuUlLknvROFXdmhU+/o05gw7x+CgTC7HKNPwFxX9TGf3+x831bc/Sll70lkGFY4zneoj/cHyPmflnoUapL4ok5KF12phxwgohZZnZdG79yR5LLrPQj9Ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GCTyihQ/; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hcOfCPg6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GCTyihQ/"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 0B5725C722A;
-	Tue, 25 Feb 2025 15:58:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 377C2C4CEDD;
-	Tue, 25 Feb 2025 15:59:27 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 2B1FC5C72F5;
+	Tue, 25 Feb 2025 20:34:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A12C4CEDD;
+	Tue, 25 Feb 2025 20:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740499167;
-	bh=5BKzhjbCX0A+Ckqb9LCw0vp1xrvfcOr/debaeQvehd8=;
+	s=k20201202; t=1740515685;
+	bh=BRDE49GDK1WZQtOVWzMxOTVjKgnZs4mLJeGOsJR4KcY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hcOfCPg62Mp6p/gGtsnSxwqeC+vKxdWbUHnaP0lhK9+JD4bU00iwT2OXd68fSYasS
-	 cMGHk14Swd2/bs18Mw+XCs/M5g9hO4nFPN0Ad0v9g1xE2A9OCjxI2KFldk5FNdIDjn
-	 6E9m81StJWl7+TqHJObUe/YJwJ7lmLNHRT9OGwEAOMO9UjBY3ljMeb+SDLleZcmrad
-	 7KNBAlXezxSZE8YKAYBXGYKCx63g46BsIA9/Ts0WWq6vzlXJCD9vHcwme0PfK8ESP6
-	 08LqrVwRicdu/SNhfCpUvJXkehDRbEwBSi3DKCbLms+TjzZu3gFvEovMZrnaatKyJs
-	 GmUKFT+3vHHCw==
-Date: Tue, 25 Feb 2025 07:59:26 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Amir Goldstein <amir73il@gmail.com>,
+	b=GCTyihQ/b2fTjWjL/w3eMUhECoP7pQUVh6qE6TXIEJ1BjHjigwTdvaXZ8aa1oOZW9
+	 oKgOEDdFkHlCFZJGO4qmPSlQfmqTMdR4q6AaRRkwLGJ3tn5IsA6CVTfZngMu04uwvU
+	 USQQvX2Ui2Py5GmeTon0UPIp4jb3Kllog7qTR84ZVlGPWnNhBglvmgANXSDfz/nF8C
+	 fe6Ei8S+wY4QXqwkmTNtltifZ28vYDexOBzcB6Jx/JDAMQqYWr6bIziStGJLhdUGBs
+	 KFr35I0nEjHgGeGnYKE+sCz27ig69d53549TBv6xK6RZKoaFrkcXukrE4yB0TGFtgY
+	 hJMWUKlbR87Lg==
+Received: by pali.im (Postfix)
+	id 5A20189B; Tue, 25 Feb 2025 21:34:32 +0100 (CET)
+Date: Tue, 25 Feb 2025 21:34:32 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Amir Goldstein <amir73il@gmail.com>,
 	Andrey Albershteyn <aalbersh@redhat.com>,
 	Richard Henderson <richard.henderson@linaro.org>,
 	Matt Turner <mattst88@gmail.com>,
@@ -68,8 +71,8 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Amir Goldstein <amir73il@gmail.com>,
 	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
 	Max Filippov <jcmvbkbc@gmail.com>,
 	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
 	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
@@ -78,10 +81,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Amir Goldstein <amir73il@gmail.com>,
 	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
 	Linux-Arch <linux-arch@vger.kernel.org>, linux-xfs@vger.kernel.org,
-	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
 	Theodore Ts'o <tytso@mit.edu>
 Subject: Re: [PATCH v3] fs: introduce getfsxattrat and setfsxattrat syscalls
-Message-ID: <20250225155926.GD6265@frogsfrogsfrogs>
+Message-ID: <20250225203432.o2lxjbimka4jldrx@pali>
 References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org>
  <20250221181135.GW21808@frogsfrogsfrogs>
  <CAOQ4uxgyYBFqkq6cQsso4LxJsPJ4uECOdskXmz-nmGhhV5BQWg@mail.gmail.com>
@@ -90,6 +92,7 @@ References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org>
  <20250225-strom-kopflos-32062347cd13@brauner>
  <3c860dc0-ba8d-4324-b286-c160b7d8d2c4@app.fastmail.com>
  <20250225-testfahrt-seilwinde-64e6f44c01ce@brauner>
+ <20250225155926.GD6265@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -98,57 +101,87 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250225-testfahrt-seilwinde-64e6f44c01ce@brauner>
+In-Reply-To: <20250225155926.GD6265@frogsfrogsfrogs>
+User-Agent: NeoMutt/20180716
 
-On Tue, Feb 25, 2025 at 12:24:08PM +0100, Christian Brauner wrote:
-> On Tue, Feb 25, 2025 at 11:40:51AM +0100, Arnd Bergmann wrote:
-> > On Tue, Feb 25, 2025, at 11:22, Christian Brauner wrote:
-> > > On Tue, Feb 25, 2025 at 09:02:04AM +0100, Arnd Bergmann wrote:
-> > >> On Mon, Feb 24, 2025, at 12:32, Christian Brauner wrote:
-> > >> 
-> > >> The ioctl interface relies on the existing behavior, see
-> > >> 0a6eab8bd4e0 ("vfs: support FS_XFLAG_COWEXTSIZE and get/set of
-> > >> CoW extent size hint") for how it was previously extended
-> > >> with an optional flag/word. I think that is fine for the syscall
-> > >> as well, but should be properly documented since it is different
-> > >> from how most syscalls work.
-> > >
-> > > If we're doing a new system call I see no reason to limit us to a
-> > > pre-existing structure or structure layout.
+On Tuesday 25 February 2025 07:59:26 Darrick J. Wong wrote:
+> On Tue, Feb 25, 2025 at 12:24:08PM +0100, Christian Brauner wrote:
+> > On Tue, Feb 25, 2025 at 11:40:51AM +0100, Arnd Bergmann wrote:
+> > > On Tue, Feb 25, 2025, at 11:22, Christian Brauner wrote:
+> > > > On Tue, Feb 25, 2025 at 09:02:04AM +0100, Arnd Bergmann wrote:
+> > > >> On Mon, Feb 24, 2025, at 12:32, Christian Brauner wrote:
+> > > >> 
+> > > >> The ioctl interface relies on the existing behavior, see
+> > > >> 0a6eab8bd4e0 ("vfs: support FS_XFLAG_COWEXTSIZE and get/set of
+> > > >> CoW extent size hint") for how it was previously extended
+> > > >> with an optional flag/word. I think that is fine for the syscall
+> > > >> as well, but should be properly documented since it is different
+> > > >> from how most syscalls work.
+> > > >
+> > > > If we're doing a new system call I see no reason to limit us to a
+> > > > pre-existing structure or structure layout.
+> > > 
+> > > Obviously we could create a new structure, but I also see no
+> > > reason to do so. The existing ioctl interface was added in
+> > > in 2002 as part of linux-2.5.35 with 16 bytes of padding, half
+> > > of which have been used so far.
+> > > 
+> > > If this structure works for another 23 years before we run out
+> > > of spare bytes, I think that's good enough. Building in an
+> > > incompatible way to handle potential future contents would
+> > > just make it harder to use for any userspace that wants to
+> > > use the new syscalls but still needs a fallback to the
+> > > ioctl version.
 > > 
-> > Obviously we could create a new structure, but I also see no
-> > reason to do so. The existing ioctl interface was added in
-> > in 2002 as part of linux-2.5.35 with 16 bytes of padding, half
-> > of which have been used so far.
+> > The fact that this structure has existed since the dawn of time doesn't
+> > mean it needs to be retained when adding a completely new system call.
 > > 
-> > If this structure works for another 23 years before we run out
-> > of spare bytes, I think that's good enough. Building in an
-> > incompatible way to handle potential future contents would
-> > just make it harder to use for any userspace that wants to
-> > use the new syscalls but still needs a fallback to the
-> > ioctl version.
+> > People won't mix both. They either switch to the new interface because
+> > they want to get around the limitations of the old interface or they
+> > keep using the old interface and the associated workarounds.
+> > 
+> > In another thread they keep arguing about new extensions for Windows
+> > that are going to be added to the ioctl interface and how to make it fit
+> > into this. That just shows that it's very hard to predict from the
+> > amount of past changes how many future changes are going to happen. And
+> > if an interface is easy to extend it might well invite new changes that
+> > people didn't want to or couldn't make using the old interface.
 > 
-> The fact that this structure has existed since the dawn of time doesn't
-> mean it needs to be retained when adding a completely new system call.
+> Agreed, I don't think it's hard to enlarge struct fsxattr in the
+> existing ioctl interface; either we figure out how to make the kernel
+> fill out the "missing" bytes with an internal getfsxattr call, or we
+> make it return some errno if we would be truncating real output due to
+> struct size limits and leave a note in the manpage that "EL3HLT means
+> use a bigger structure definition"
 > 
-> People won't mix both. They either switch to the new interface because
-> they want to get around the limitations of the old interface or they
-> keep using the old interface and the associated workarounds.
+> Then both interfaces can plod along for another 30 years. :)
 > 
-> In another thread they keep arguing about new extensions for Windows
-> that are going to be added to the ioctl interface and how to make it fit
-> into this. That just shows that it's very hard to predict from the
-> amount of past changes how many future changes are going to happen. And
-> if an interface is easy to extend it might well invite new changes that
-> people didn't want to or couldn't make using the old interface.
+> --D
 
-Agreed, I don't think it's hard to enlarge struct fsxattr in the
-existing ioctl interface; either we figure out how to make the kernel
-fill out the "missing" bytes with an internal getfsxattr call, or we
-make it return some errno if we would be truncating real output due to
-struct size limits and leave a note in the manpage that "EL3HLT means
-use a bigger structure definition"
+For Windows attributes, there are for sure needed new 11 bits for
+attributes which can be both get and set, additional 4 bits for get-only
+attributes, and plus there are 9 reserved bits (which Windows can start
+using it and exporting over NTFS or SMB). And it is possible that
+Windows can reuse some bits which were previously assigned for things
+which today does not appear on NTFS.
 
-Then both interfaces can plod along for another 30 years. :)
+I think that fsx_xflags does not have enough free bits for all these
+attributes. So it would be really nice to design API/ABI in away which
+can be extended for new fields.
 
---D
+Also another two points, for this new syscalls. I have not looked at the
+current changes (I was added to CC just recently), but it would be nice:
+
+1) If syscall API allows to operate on the symlink itself. This is
+   because NTFS and also SMB symlink also contains attributes. ioctl
+   interface currently does not support to get/set these symlink
+   attributes.
+
+2) If syscall API contains ability to just change subset of attributes.
+   And provide an error reporting to userspace if userspace application
+   is trying to set attribute which is not supported by the filesystem.
+   This error reporting is needed for possible "cp -a" or possible
+   "rsync" implementation which informs when some metadata cannot be
+   backup/restored. There are more filesystems which supports only
+   subset of attributes, this applies also for windows attributes.
+   For example UDF fs supports only "hidden" attribute.
