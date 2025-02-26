@@ -1,187 +1,70 @@
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3368D21019A
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Feb 2025 20:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCE021C9EC
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Feb 2025 02:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740515688; cv=none; b=UMu7EeZ+/AaCpqCvJqywlmY/edvRncxh0mbjADiunxJKFx4CfDZSYidgOTRPu+WQxxZhdpo0vL0mZaToDpbUUqu1jTyozuNvc1Y9GM5sinjiD/L+e8pexBYj3VycW6F7rlM2mVUtSPVrfuObucjBte6wFKxS8dwOTj607N9+giY=
+	t=1740537323; cv=none; b=UOzi9MlOwE9BOJ2tCtyMSwsfian7vpeYb+HZLIv1Bcidg1CDPobXvxfrDjEvYasiFGq9owks5rwNyzunM/tAMtscOF/Sr7+bf6C+vvmbu7GGv4KR6mSxZWpjKvpx3NAR/uvCTJKoI3ueI1LAwBe7xshfC6JKbjvfMswipVxlk8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740515688; c=relaxed/simple;
-	bh=BRDE49GDK1WZQtOVWzMxOTVjKgnZs4mLJeGOsJR4KcY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cVqSW+GIQjLNqQ+C5NqiQjQB4bimU2ev+CClWvYbk0StaR4o0zh64twuUlLknvROFXdmhU+/o05gw7x+CgTC7HKNPwFxX9TGf3+x831bc/Sll70lkGFY4zneoj/cHyPmflnoUapL4ok5KF12phxwgohZZnZdG79yR5LLrPQj9Ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GCTyihQ/; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1740537323; c=relaxed/simple;
+	bh=D1D8rS483Kvk10lvdoELGqdaSPPJ8+RwRwWrcJv/f3I=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=mCLbxAocDRansCgeTUFkLvHbPmsYj95hZ1nukhrLOUq+ucVD4czegncbXtN4NZ4ZfZgSvUx3GAF+H6XNDokQuA6qzI8i0c08JZDQ1AxtRB/Y8B1sVpSPxOQL64v34jgZIcxi2ZbnXAaGSIisiuzsvOKZn64+uSvc1KJyiCXhQnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linux-foundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=S1gwcxb1; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GCTyihQ/"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="S1gwcxb1"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 2B1FC5C72F5;
-	Tue, 25 Feb 2025 20:34:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A12C4CEDD;
-	Tue, 25 Feb 2025 20:34:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740515685;
-	bh=BRDE49GDK1WZQtOVWzMxOTVjKgnZs4mLJeGOsJR4KcY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GCTyihQ/b2fTjWjL/w3eMUhECoP7pQUVh6qE6TXIEJ1BjHjigwTdvaXZ8aa1oOZW9
-	 oKgOEDdFkHlCFZJGO4qmPSlQfmqTMdR4q6AaRRkwLGJ3tn5IsA6CVTfZngMu04uwvU
-	 USQQvX2Ui2Py5GmeTon0UPIp4jb3Kllog7qTR84ZVlGPWnNhBglvmgANXSDfz/nF8C
-	 fe6Ei8S+wY4QXqwkmTNtltifZ28vYDexOBzcB6Jx/JDAMQqYWr6bIziStGJLhdUGBs
-	 KFr35I0nEjHgGeGnYKE+sCz27ig69d53549TBv6xK6RZKoaFrkcXukrE4yB0TGFtgY
-	 hJMWUKlbR87Lg==
-Received: by pali.im (Postfix)
-	id 5A20189B; Tue, 25 Feb 2025 21:34:32 +0100 (CET)
-Date: Tue, 25 Feb 2025 21:34:32 +0100
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Naveen N Rao <naveen@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
-	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
-	Linux-Arch <linux-arch@vger.kernel.org>, linux-xfs@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH v3] fs: introduce getfsxattrat and setfsxattrat syscalls
-Message-ID: <20250225203432.o2lxjbimka4jldrx@pali>
-References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org>
- <20250221181135.GW21808@frogsfrogsfrogs>
- <CAOQ4uxgyYBFqkq6cQsso4LxJsPJ4uECOdskXmz-nmGhhV5BQWg@mail.gmail.com>
- <20250224-klinke-hochdekoriert-3f6be89005a8@brauner>
- <6b51ffa2-9d67-4466-865e-e703c1243352@app.fastmail.com>
- <20250225-strom-kopflos-32062347cd13@brauner>
- <3c860dc0-ba8d-4324-b286-c160b7d8d2c4@app.fastmail.com>
- <20250225-testfahrt-seilwinde-64e6f44c01ce@brauner>
- <20250225155926.GD6265@frogsfrogsfrogs>
+	by dfw.source.kernel.org (Postfix) with ESMTP id E1B905C42C6;
+	Wed, 26 Feb 2025 02:34:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C1C5C4CEDD;
+	Wed, 26 Feb 2025 02:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1740537320;
+	bh=D1D8rS483Kvk10lvdoELGqdaSPPJ8+RwRwWrcJv/f3I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=S1gwcxb1U5NetK3xMsHF5vM6u60LvjvD37R2V7WH6p4gYsrCTXOx/Tm8FgtAbjivR
+	 qz+7qiIisTFHmeHWl5R9WetoFdsZhGC4DSBkZuJtQrrOYkeMmMmZLGVAL4e/QXKk4q
+	 rWdAk6qG/KIo4K2Hgo8x/4gNeZ32aVYhEb8keWT8=
+Date: Tue, 25 Feb 2025 18:35:19 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: peterz@infradead.org, kevin.brodsky@arm.com, riel@surriel.com,
+ vishal.moola@gmail.com, david@redhat.com, jannh@google.com,
+ hughd@google.com, willy@infradead.org, yuzhao@google.com,
+ muchun.song@linux.dev, will@kernel.org, aneesh.kumar@kernel.org,
+ npiggin@gmail.com, arnd@arndb.de, dave.hansen@linux.intel.com,
+ rppt@kernel.org, alexghiti@rivosinc.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org, x86@kernel.org,
+ linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 5/6] x86: pgtable: convert to use tlb_remove_ptdesc()
+Message-Id: <20250225183519.91a5b75b13c0df6954c68576@linux-foundation.org>
+In-Reply-To: <36ad56b7e06fa4b17fb23c4fc650e8e0d72bb3cd.1740454179.git.zhengqi.arch@bytedance.com>
+References: <cover.1740454179.git.zhengqi.arch@bytedance.com>
+	<36ad56b7e06fa4b17fb23c4fc650e8e0d72bb3cd.1740454179.git.zhengqi.arch@bytedance.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250225155926.GD6265@frogsfrogsfrogs>
-User-Agent: NeoMutt/20180716
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tuesday 25 February 2025 07:59:26 Darrick J. Wong wrote:
-> On Tue, Feb 25, 2025 at 12:24:08PM +0100, Christian Brauner wrote:
-> > On Tue, Feb 25, 2025 at 11:40:51AM +0100, Arnd Bergmann wrote:
-> > > On Tue, Feb 25, 2025, at 11:22, Christian Brauner wrote:
-> > > > On Tue, Feb 25, 2025 at 09:02:04AM +0100, Arnd Bergmann wrote:
-> > > >> On Mon, Feb 24, 2025, at 12:32, Christian Brauner wrote:
-> > > >> 
-> > > >> The ioctl interface relies on the existing behavior, see
-> > > >> 0a6eab8bd4e0 ("vfs: support FS_XFLAG_COWEXTSIZE and get/set of
-> > > >> CoW extent size hint") for how it was previously extended
-> > > >> with an optional flag/word. I think that is fine for the syscall
-> > > >> as well, but should be properly documented since it is different
-> > > >> from how most syscalls work.
-> > > >
-> > > > If we're doing a new system call I see no reason to limit us to a
-> > > > pre-existing structure or structure layout.
-> > > 
-> > > Obviously we could create a new structure, but I also see no
-> > > reason to do so. The existing ioctl interface was added in
-> > > in 2002 as part of linux-2.5.35 with 16 bytes of padding, half
-> > > of which have been used so far.
-> > > 
-> > > If this structure works for another 23 years before we run out
-> > > of spare bytes, I think that's good enough. Building in an
-> > > incompatible way to handle potential future contents would
-> > > just make it harder to use for any userspace that wants to
-> > > use the new syscalls but still needs a fallback to the
-> > > ioctl version.
-> > 
-> > The fact that this structure has existed since the dawn of time doesn't
-> > mean it needs to be retained when adding a completely new system call.
-> > 
-> > People won't mix both. They either switch to the new interface because
-> > they want to get around the limitations of the old interface or they
-> > keep using the old interface and the associated workarounds.
-> > 
-> > In another thread they keep arguing about new extensions for Windows
-> > that are going to be added to the ioctl interface and how to make it fit
-> > into this. That just shows that it's very hard to predict from the
-> > amount of past changes how many future changes are going to happen. And
-> > if an interface is easy to extend it might well invite new changes that
-> > people didn't want to or couldn't make using the old interface.
+On Tue, 25 Feb 2025 11:45:55 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+
+> The x86 has already been converted to use struct ptdesc, so convert it to
+> use tlb_remove_ptdesc() instead of tlb_remove_table().
 > 
-> Agreed, I don't think it's hard to enlarge struct fsxattr in the
-> existing ioctl interface; either we figure out how to make the kernel
-> fill out the "missing" bytes with an internal getfsxattr call, or we
-> make it return some errno if we would be truncating real output due to
-> struct size limits and leave a note in the manpage that "EL3HLT means
-> use a bigger structure definition"
-> 
-> Then both interfaces can plod along for another 30 years. :)
-> 
-> --D
 
-For Windows attributes, there are for sure needed new 11 bits for
-attributes which can be both get and set, additional 4 bits for get-only
-attributes, and plus there are 9 reserved bits (which Windows can start
-using it and exporting over NTFS or SMB). And it is possible that
-Windows can reuse some bits which were previously assigned for things
-which today does not appear on NTFS.
-
-I think that fsx_xflags does not have enough free bits for all these
-attributes. So it would be really nice to design API/ABI in away which
-can be extended for new fields.
-
-Also another two points, for this new syscalls. I have not looked at the
-current changes (I was added to CC just recently), but it would be nice:
-
-1) If syscall API allows to operate on the symlink itself. This is
-   because NTFS and also SMB symlink also contains attributes. ioctl
-   interface currently does not support to get/set these symlink
-   attributes.
-
-2) If syscall API contains ability to just change subset of attributes.
-   And provide an error reporting to userspace if userspace application
-   is trying to set attribute which is not supported by the filesystem.
-   This error reporting is needed for possible "cp -a" or possible
-   "rsync" implementation which informs when some metadata cannot be
-   backup/restored. There are more filesystems which supports only
-   subset of attributes, this applies also for windows attributes.
-   For example UDF fs supports only "hidden" attribute.
+This is dependent upon Rik's a37259732a7dc ("x86/mm: Make
+MMU_GATHER_RCU_TABLE_FREE unconditional") from the x86 tree.  I'll add
+Rik's patch to mm-unstable also and shall figure it out during the
+merge window.
