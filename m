@@ -1,123 +1,176 @@
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4DE22CBFE
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 11:05:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1DE22B8D1
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 11:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740654343; cv=none; b=Y46DAOkPWUe0+L2OQQLNBLuGAK890Dbe2iM9N8HFRupCxzY2+dwPCichNpPV0OWXPZ01jiNV3q7/I7VKoiavDyhHN47GYkllgszxYi9j7Hbm/MdelA0VWOuQxo12c16TttN/jGqgRh7Z3riYoIpW0/K50jzGiIT45zoos/CxkVY=
+	t=1740654824; cv=none; b=VIVOXYND1nEfsweTaMpS7fWCMIBoMyp9mCSvEgvhfPueLlb/SKf36zLsyxMNhuqlPD6LC4KM6WOMNcLM6fy/v2Q9WxM9cEHeveL7PlFU7RM3uQ27w9A2ixpcYUsP71GW5JqW4qa+6rNaLOujrArKTplLaxqDI3OeVkpJY/IWoxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740654343; c=relaxed/simple;
-	bh=MhZ8GViVcNwezLnWisT12m9Ev684ayMaSWy/I8zydqc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bybi/zPz6WEjFPzvDi4EjPkhO8gdPzvik7fJoYb3i8+Dt16aAH20fOqLMfTGvYWzck/ikbOV9WUdMWuWxSuWLvss9HQ/ESJl+9mlzbI+/QiT8UhkLAL9TY4dLAMir3JIyYhEIhgdsIUNUqy6F1mraSCaDLc6+M9+R6aidJU9MWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-51eb1818d4fso868613e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 03:05:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740654339; x=1741259139;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YOYklwSkIF61N5d7gWtZ1gNcm4VTd2AmRb5PcLCTllw=;
-        b=XmAgRKgR4s5xSLAdZx8jrw7hFosHiFj1rShyOY2VGVKUhfaBrhF+wjEm5jItupvVkd
-         y+i1xmibSJv0vXKRiXSZALIcepeSYK9morpxR1VN3n3bdYxmqU3L58ZSGwYfhawcvPtq
-         hk2iL0tMVTSFtPkrb8AxMQe/eOJqr/r2/5lz5wBeiGd9TBt0KM1GHy0afDsZDrae120x
-         rMol3PIu6fQTGVNMdrkcKXtrIDlbFKTc5Ln+yEgpa4ycEqkU71ZAlJL8U6JsHNz2N5kM
-         Ootm09vXwwcvJJ4BQ1/bkF3ldh4rf+g0TyzIGR7I/myuJLCo/whVsRY974+ddIWBqKF/
-         Q9IQ==
-X-Gm-Message-State: AOJu0Yx8Lj6+78OPnHgmFHx93IaL05SdXNRcbgfcmBXDyv7jC2tCrSkC
-	jP6T5K+8FdCcX+F1kyELv6Xy9k0hJ0+WIRefuVFy/6Z0VLb/o0cT3YS/QAky
-X-Gm-Gg: ASbGncsMmMRNPP6+BFWXIxIqsxcLOR7i2G0Gtb29GT94OXPV/wM588ISK4Gc8ngYfE8
-	cxpmc841bb0uztSZQX7iC1ss0dIuvVSHwbPG5lFMUGAhTL6oijyQkk3jb7wZmEckrRbGXJybnQG
-	TU+20wh1v8CZc2xq0s8qMeJFuIm0R6EGuL7ihQ/f/BecZkODjApykwWwwdC6UjyETy6lKuBDlHY
-	P52uaFYwAtHZsEwHC9Szv7Yfq3EG8WpmGJPNitDfwaKDSHf8JFfDTqQIBjmmqhIeesYPpTHA2sJ
-	ktUt38aVMLNjBNZt/2EgE3iElkSEZoIe4I1b/cqDqt5UI2q0huBLLuiYyCY24One
-X-Google-Smtp-Source: AGHT+IGLMdYM600uw1Tl4tQJoqu0EgCTPHfIrHsbV6VGq9TeIKPFRgGujbiNyXnNNcn3b1gvFKL00A==
-X-Received: by 2002:a05:6122:32d5:b0:516:1ab2:9955 with SMTP id 71dfb90a1353d-5224cced0b6mr4056974e0c.6.1740654339165;
-        Thu, 27 Feb 2025 03:05:39 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5234c08c73dsm173396e0c.33.2025.02.27.03.05.38
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2025 03:05:38 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-86929964ed3so653049241.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 03:05:38 -0800 (PST)
-X-Received: by 2002:a05:6102:508f:b0:4bc:82f:b4bc with SMTP id
- ada2fe7eead31-4c01e30be50mr4589548137.22.1740654338310; Thu, 27 Feb 2025
- 03:05:38 -0800 (PST)
+	s=arc-20240116; t=1740654824; c=relaxed/simple;
+	bh=SAqzx+hkCBMFjSaW75HdRmriaQmgXA3UpjpZK1/xZLI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tu745y2kDl59xrUoWXUN6+k0DPh6cwJdP5ux8sKxES4mCuxZ2TuoCKUh6ObSoRPd8+JkSiQXozrPFilX33OQMxRPa92HC4blu/PLNiWwTOMbnd3MbjRYZs0Q+4fpKa6Chs4mY3EqTncvKWRGeflgK5omYN29K2Spm/DkWeOhEFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B356E2C1C;
+	Thu, 27 Feb 2025 03:13:56 -0800 (PST)
+Received: from [10.57.85.134] (unknown [10.57.85.134])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FF103F6A8;
+	Thu, 27 Feb 2025 03:13:31 -0800 (PST)
+Message-ID: <16863478-2195-435e-a899-559df097bc59@arm.com>
+Date: Thu, 27 Feb 2025 11:13:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250226-m68k-rtc-v1-0-404641ec62e6@igalia.com> <20250226-m68k-rtc-v1-2-404641ec62e6@igalia.com>
-In-Reply-To: <20250226-m68k-rtc-v1-2-404641ec62e6@igalia.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 27 Feb 2025 12:05:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW_13wOxD0Q0PVCUXBwC9y8iKXTcwH=m5tvX856S9ZU1w@mail.gmail.com>
-X-Gm-Features: AQ5f1Jo7H3mkaD1WVTZTrun2RLr9xWvAG0froFsy3cqeS4yVfaaDlHw2vtfEAEI
-Message-ID: <CAMuHMdW_13wOxD0Q0PVCUXBwC9y8iKXTcwH=m5tvX856S9ZU1w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] m68k: rtc: dp8570a: make it a proper RTC class driver
-To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-rtc@vger.kernel.org, 
-	kernel-dev@igalia.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 7/8] execmem: add support for cache of large ROX pages
+Content-Language: en-GB
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Luis Chamberlain <mcgrof@kernel.org>,
+ Dev Jain <dev.jain@arm.com>
+Cc: Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>,
+ Oleg Nesterov <oleg@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+ Stafford Horne <shorne@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
+ Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ sparclinux@vger.kernel.org, x86@kernel.org
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-8-rppt@kernel.org>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20241023162711.2579610-8-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Thadeu,
+Hi Mike,
 
-On Wed, 26 Feb 2025 at 13:27, Thadeu Lima de Souza Cascardo
-<cascardo@igalia.com> wrote:
-> In the past, each rtc implementation had to rewrite the same ioctls in
-> order to be compatible. But since 2006, a common RTC interface has been
-> introduced. Use it for the last user of RTC_MINOR.
->
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+Drive by review comments below...
 
-Thanks for your patch!
 
-> --- a/arch/m68k/bvme6000/rtc.c
-> +++ b/arch/m68k/bvme6000/rtc.c
+On 23/10/2024 17:27, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> 
+> Using large pages to map text areas reduces iTLB pressure and improves
+> performance.
+> 
+> Extend execmem_alloc() with an ability to use huge pages with ROX
+> permissions as a cache for smaller allocations.
+> 
+> To populate the cache, a writable large page is allocated from vmalloc with
+> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
+> ROX.
+> 
+> The direct map alias of that large page is exculded from the direct map.
+> 
+> Portions of that large page are handed out to execmem_alloc() callers
+> without any changes to the permissions.
+> 
+> When the memory is freed with execmem_free() it is invalidated again so
+> that it won't contain stale instructions.
+> 
+> An architecture has to implement execmem_fill_trapping_insns() callback
+> and select ARCH_HAS_EXECMEM_ROX configuration option to be able to use
+> the ROX cache.
+> 
+> The cache is enabled on per-range basis when an architecture sets
+> EXECMEM_ROX_CACHE flag in definition of an execmem_range.
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> Tested-by: kdevops <kdevops@lists.linux.dev>
+> ---
 
->
->  static int __init rtc_DP8570A_init(void)
->  {
-> +       struct platform_device *pdev;
+[...]
+
 > +
->         if (!MACH_IS_BVME6000)
->                 return -ENODEV;
->
->         pr_info("DP8570A Real Time Clock Driver v%s\n", RTC_VERSION);
-> -       return misc_register(&rtc_dev);
+> +static int execmem_cache_populate(struct execmem_range *range, size_t size)
+> +{
+> +	unsigned long vm_flags = VM_ALLOW_HUGE_VMAP;
+> +	unsigned long start, end;
+> +	struct vm_struct *vm;
+> +	size_t alloc_size;
+> +	int err = -ENOMEM;
+> +	void *p;
 > +
-> +       pdev = platform_device_register_data(NULL, "rtc-generic", -1,
-> +                                            &dp8570a_rtc_ops,
-> +                                            sizeof(dp8570a_rtc_ops));
+> +	alloc_size = round_up(size, PMD_SIZE);
+> +	p = execmem_vmalloc(range, alloc_size, PAGE_KERNEL, vm_flags);
 
-Doesn't this conflict with the creation of the same device in rtc_init()[1]?
+Shouldn't this be passing PAGE_KERNEL_ROX? Otherwise I don't see how the
+allocated memory is ROX? I don't see any call below where you change the permission.
 
-On BVME6000, mach_hwclk is set:
+Given the range has the pgprot in it, you could just drop passing the pgprot
+explicitly here and have execmem_vmalloc() use range->pgprot directly?
 
-    arch/m68k/bvme6000/config.c:    mach_hwclk           = bvme6000_hwclk;
+Thanks,
+Ryan
 
+> +	if (!p)
+> +		return err;
 > +
-> +       return PTR_ERR_OR_ZERO(pdev);
->  }
->  module_init(rtc_DP8570A_init);
+> +	vm = find_vm_area(p);
+> +	if (!vm)
+> +		goto err_free_mem;
+> +
+> +	/* fill memory with instructions that will trap */
+> +	execmem_fill_trapping_insns(p, alloc_size, /* writable = */ true);
+> +
+> +	start = (unsigned long)p;
+> +	end = start + alloc_size;
+> +
+> +	vunmap_range(start, end);
+> +
+> +	err = execmem_set_direct_map_valid(vm, false);
+> +	if (err)
+> +		goto err_free_mem;
+> +
+> +	err = vmap_pages_range_noflush(start, end, range->pgprot, vm->pages,
+> +				       PMD_SHIFT);
+> +	if (err)
+> +		goto err_free_mem;
+> +
+> +	err = execmem_cache_add(p, alloc_size);
+> +	if (err)
+> +		goto err_free_mem;
+> +
+> +	return 0;
+> +
+> +err_free_mem:
+> +	vfree(p);
+> +	return err;
+> +}
 
-[1] https://elixir.bootlin.com/linux/v6.13.4/source/arch/m68k/kernel/time.c#L144
+[...]
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
