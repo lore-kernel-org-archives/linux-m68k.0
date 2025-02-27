@@ -1,201 +1,123 @@
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC09221DA7;
-	Wed, 26 Feb 2025 12:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4DE22CBFE
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 11:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740572827; cv=none; b=BiJ3iLuMd3svn5Qc0PoepcYlSo6sqtKS7EjZqH7Gpn8Ny15S34P7uVbT6pzSv2Frz8t5Scw5tjEk5KyLCZqOydwratvt7kU09gv7g+d508YLG5sWt4nMYdhD/YkmOfftDZHzr4t6kn8TO+laPcKSbetGEoQ/4D9TcSpHdsNqFqE=
+	t=1740654343; cv=none; b=Y46DAOkPWUe0+L2OQQLNBLuGAK890Dbe2iM9N8HFRupCxzY2+dwPCichNpPV0OWXPZ01jiNV3q7/I7VKoiavDyhHN47GYkllgszxYi9j7Hbm/MdelA0VWOuQxo12c16TttN/jGqgRh7Z3riYoIpW0/K50jzGiIT45zoos/CxkVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740572827; c=relaxed/simple;
-	bh=vMbVgXuk9HmZXPgEYqNY35eo3taAR49F2PRIL20ghAc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=uxY9IP0Ye7bUcdbXeam9l6TBmgBxfly3RhraBP2cUqb35vXskU/f0YdDITPbFxol4t5XYZRwLe3dm29w5qpxcBez+/WcbWenc1Ws/6kiU0OJqm51eKIICOzGoTL1aPIiNrvxcuzMKnjcPlkwQH1Ug5iqdgphZHjeBDKx75blhK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=USc2OQBm; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="USc2OQBm"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=eYvstlbF5OwC2qe4RHz/86oxp99siT+rbZMDS0NJQxM=; b=USc2OQBmgTrwv5C9Qjsqmeu/oH
-	C3VRIVYodwtzQolezyBKdMXFtebBw34XZ5xGdvzdxkO/GWnCH2DKLxpKvorEQkU8wXqrRCqtv150y
-	9beuOl8xsajF2YA67HgLfysBDXsIn4GWie2+3xhRZ9ZxeKP4vcXxk2ohJ+5DHnDSHpEaIGPByk8Wt
-	oBvYZt8mn4m4/bEz8tB6IDuGxoutLhM+e97XsQTJ5m3Vnf0pLA7b34w1RAAj0EQ5xAj6wtzlZe0h0
-	1M6u5I3yVEKxDLI36mZMTvRkHYa4lysBYktSpOuny5xrglfFiOFQCjr9ecFa4N2RRMpmjsDRSQooZ
-	G6Wk5ahQ==;
-Received: from [179.125.94.240] (helo=[192.168.67.187])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1tnGV7-000xB7-10; Wed, 26 Feb 2025 13:27:03 +0100
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Date: Wed, 26 Feb 2025 09:26:28 -0300
-Subject: [PATCH 2/2] m68k: rtc: dp8570a: make it a proper RTC class driver
+	s=arc-20240116; t=1740654343; c=relaxed/simple;
+	bh=MhZ8GViVcNwezLnWisT12m9Ev684ayMaSWy/I8zydqc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bybi/zPz6WEjFPzvDi4EjPkhO8gdPzvik7fJoYb3i8+Dt16aAH20fOqLMfTGvYWzck/ikbOV9WUdMWuWxSuWLvss9HQ/ESJl+9mlzbI+/QiT8UhkLAL9TY4dLAMir3JIyYhEIhgdsIUNUqy6F1mraSCaDLc6+M9+R6aidJU9MWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-51eb1818d4fso868613e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 03:05:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740654339; x=1741259139;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YOYklwSkIF61N5d7gWtZ1gNcm4VTd2AmRb5PcLCTllw=;
+        b=XmAgRKgR4s5xSLAdZx8jrw7hFosHiFj1rShyOY2VGVKUhfaBrhF+wjEm5jItupvVkd
+         y+i1xmibSJv0vXKRiXSZALIcepeSYK9morpxR1VN3n3bdYxmqU3L58ZSGwYfhawcvPtq
+         hk2iL0tMVTSFtPkrb8AxMQe/eOJqr/r2/5lz5wBeiGd9TBt0KM1GHy0afDsZDrae120x
+         rMol3PIu6fQTGVNMdrkcKXtrIDlbFKTc5Ln+yEgpa4ycEqkU71ZAlJL8U6JsHNz2N5kM
+         Ootm09vXwwcvJJ4BQ1/bkF3ldh4rf+g0TyzIGR7I/myuJLCo/whVsRY974+ddIWBqKF/
+         Q9IQ==
+X-Gm-Message-State: AOJu0Yx8Lj6+78OPnHgmFHx93IaL05SdXNRcbgfcmBXDyv7jC2tCrSkC
+	jP6T5K+8FdCcX+F1kyELv6Xy9k0hJ0+WIRefuVFy/6Z0VLb/o0cT3YS/QAky
+X-Gm-Gg: ASbGncsMmMRNPP6+BFWXIxIqsxcLOR7i2G0Gtb29GT94OXPV/wM588ISK4Gc8ngYfE8
+	cxpmc841bb0uztSZQX7iC1ss0dIuvVSHwbPG5lFMUGAhTL6oijyQkk3jb7wZmEckrRbGXJybnQG
+	TU+20wh1v8CZc2xq0s8qMeJFuIm0R6EGuL7ihQ/f/BecZkODjApykwWwwdC6UjyETy6lKuBDlHY
+	P52uaFYwAtHZsEwHC9Szv7Yfq3EG8WpmGJPNitDfwaKDSHf8JFfDTqQIBjmmqhIeesYPpTHA2sJ
+	ktUt38aVMLNjBNZt/2EgE3iElkSEZoIe4I1b/cqDqt5UI2q0huBLLuiYyCY24One
+X-Google-Smtp-Source: AGHT+IGLMdYM600uw1Tl4tQJoqu0EgCTPHfIrHsbV6VGq9TeIKPFRgGujbiNyXnNNcn3b1gvFKL00A==
+X-Received: by 2002:a05:6122:32d5:b0:516:1ab2:9955 with SMTP id 71dfb90a1353d-5224cced0b6mr4056974e0c.6.1740654339165;
+        Thu, 27 Feb 2025 03:05:39 -0800 (PST)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5234c08c73dsm173396e0c.33.2025.02.27.03.05.38
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Feb 2025 03:05:38 -0800 (PST)
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-86929964ed3so653049241.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 03:05:38 -0800 (PST)
+X-Received: by 2002:a05:6102:508f:b0:4bc:82f:b4bc with SMTP id
+ ada2fe7eead31-4c01e30be50mr4589548137.22.1740654338310; Thu, 27 Feb 2025
+ 03:05:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250226-m68k-rtc-v1-2-404641ec62e6@igalia.com>
-References: <20250226-m68k-rtc-v1-0-404641ec62e6@igalia.com>
-In-Reply-To: <20250226-m68k-rtc-v1-0-404641ec62e6@igalia.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20250226-m68k-rtc-v1-0-404641ec62e6@igalia.com> <20250226-m68k-rtc-v1-2-404641ec62e6@igalia.com>
+In-Reply-To: <20250226-m68k-rtc-v1-2-404641ec62e6@igalia.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 27 Feb 2025 12:05:26 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW_13wOxD0Q0PVCUXBwC9y8iKXTcwH=m5tvX856S9ZU1w@mail.gmail.com>
+X-Gm-Features: AQ5f1Jo7H3mkaD1WVTZTrun2RLr9xWvAG0froFsy3cqeS4yVfaaDlHw2vtfEAEI
+Message-ID: <CAMuHMdW_13wOxD0Q0PVCUXBwC9y8iKXTcwH=m5tvX856S9ZU1w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] m68k: rtc: dp8570a: make it a proper RTC class driver
+To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- linux-rtc@vger.kernel.org, 
- Thadeu Lima de Souza Cascardo <cascardo@igalia.com>, kernel-dev@igalia.com
-X-Mailer: b4 0.14.2
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-rtc@vger.kernel.org, 
+	kernel-dev@igalia.com
+Content-Type: text/plain; charset="UTF-8"
 
-In the past, each rtc implementation had to rewrite the same ioctls in
-order to be compatible. But since 2006, a common RTC interface has been
-introduced. Use it for the last user of RTC_MINOR.
+Hi Thadeu,
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
----
- arch/m68k/bvme6000/rtc.c | 91 ++++++++----------------------------------------
- 1 file changed, 15 insertions(+), 76 deletions(-)
+On Wed, 26 Feb 2025 at 13:27, Thadeu Lima de Souza Cascardo
+<cascardo@igalia.com> wrote:
+> In the past, each rtc implementation had to rewrite the same ioctls in
+> order to be compatible. But since 2006, a common RTC interface has been
+> introduced. Use it for the last user of RTC_MINOR.
+>
+> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
 
-diff --git a/arch/m68k/bvme6000/rtc.c b/arch/m68k/bvme6000/rtc.c
-index a84996bd1491da3c1d9bd8dae7e1a92805c735e0..7e7b40863e5eb3423c53b44c2d63c8806e7a1bbe 100644
---- a/arch/m68k/bvme6000/rtc.c
-+++ b/arch/m68k/bvme6000/rtc.c
-@@ -16,7 +16,8 @@
- #include <linux/init.h>
- #include <linux/poll.h>
- #include <linux/module.h>
--#include <linux/rtc.h>	/* For struct rtc_time and ioctls, etc */
-+#include <linux/rtc.h>	/* For struct rtc_time and etc */
-+#include <linux/platform_device.h>
- #include <linux/bcd.h>
- #include <asm/bvme6000hw.h>
- 
-@@ -24,19 +25,10 @@
- #include <linux/uaccess.h>
- #include <asm/setup.h>
- 
--/*
-- *	We sponge a minor off of the misc major. No need slurping
-- *	up another valuable major dev number for this. If you add
-- *	an ioctl, make sure you don't conflict with SPARC's RTC
-- *	ioctls.
-- */
--
- static unsigned char days_in_mo[] =
- {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
- 
--static atomic_t rtc_status = ATOMIC_INIT(1);
--
--static int dp8570a_rtc_read_time(struct rtc_time *wtime)
-+static int dp8570a_rtc_read_time(struct device *dev, struct rtc_time *wtime)
- {
- 	volatile RtcPtr_t rtc = (RtcPtr_t)BVME_RTC_BASE;
- 	unsigned char msr;
-@@ -63,7 +55,7 @@ static int dp8570a_rtc_read_time(struct rtc_time *wtime)
- 	return 0;
- }
- 
--static int dp8570a_rtc_set_time(struct rtc_time *rtc_tm)
-+static int dp8570a_rtc_set_time(struct device *dev, struct rtc_time *rtc_tm)
- {
- 	volatile RtcPtr_t rtc = (RtcPtr_t)BVME_RTC_BASE;
- 	unsigned char msr;
-@@ -117,77 +109,24 @@ static int dp8570a_rtc_set_time(struct rtc_time *rtc_tm)
- 	return 0;
- }
- 
--static long rtc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
--{
--	void __user *argp = (void __user *)arg;
--
--	switch (cmd) {
--	case RTC_RD_TIME:	/* Read the time/date from RTC	*/
--	{
--		struct rtc_time wtime;
--
--		dp8570a_rtc_read_time(&wtime);
--		return copy_to_user(argp, &wtime, sizeof wtime) ?
--								-EFAULT : 0;
--	}
--	case RTC_SET_TIME:	/* Set the RTC */
--	{
--		struct rtc_time rtc_tm;
--
--		if (!capable(CAP_SYS_ADMIN))
--			return -EACCES;
--
--		if (copy_from_user(&rtc_tm, argp, sizeof(struct rtc_time)))
--			return -EFAULT;
--
--		return dp8570a_rtc_set_time(&rtc_tm);
--	}
--	default:
--		return -EINVAL;
--	}
--}
--
--/*
-- * We enforce only one user at a time here with the open/close.
-- */
--static int rtc_open(struct inode *inode, struct file *file)
--{
--	if (!atomic_dec_and_test(&rtc_status)) {
--		atomic_inc(&rtc_status);
--		return -EBUSY;
--	}
--	return 0;
--}
--
--static int rtc_release(struct inode *inode, struct file *file)
--{
--	atomic_inc(&rtc_status);
--	return 0;
--}
--
--/*
-- *	The various file operations we support.
-- */
--
--static const struct file_operations rtc_fops = {
--	.unlocked_ioctl	= rtc_ioctl,
--	.open		= rtc_open,
--	.release	= rtc_release,
--	.llseek		= noop_llseek,
--};
--
--static struct miscdevice rtc_dev = {
--	.minor =	RTC_MINOR,
--	.name =		"rtc",
--	.fops =		&rtc_fops
-+static const struct rtc_class_ops dp8570a_rtc_ops = {
-+	.read_time	= dp8570a_rtc_read_time,
-+	.set_time	= dp8570a_rtc_set_time,
- };
- 
- static int __init rtc_DP8570A_init(void)
- {
-+	struct platform_device *pdev;
-+
- 	if (!MACH_IS_BVME6000)
- 		return -ENODEV;
- 
- 	pr_info("DP8570A Real Time Clock Driver v%s\n", RTC_VERSION);
--	return misc_register(&rtc_dev);
-+
-+	pdev = platform_device_register_data(NULL, "rtc-generic", -1,
-+					     &dp8570a_rtc_ops,
-+					     sizeof(dp8570a_rtc_ops));
-+
-+	return PTR_ERR_OR_ZERO(pdev);
- }
- module_init(rtc_DP8570A_init);
+Thanks for your patch!
+
+> --- a/arch/m68k/bvme6000/rtc.c
+> +++ b/arch/m68k/bvme6000/rtc.c
+
+>
+>  static int __init rtc_DP8570A_init(void)
+>  {
+> +       struct platform_device *pdev;
+> +
+>         if (!MACH_IS_BVME6000)
+>                 return -ENODEV;
+>
+>         pr_info("DP8570A Real Time Clock Driver v%s\n", RTC_VERSION);
+> -       return misc_register(&rtc_dev);
+> +
+> +       pdev = platform_device_register_data(NULL, "rtc-generic", -1,
+> +                                            &dp8570a_rtc_ops,
+> +                                            sizeof(dp8570a_rtc_ops));
+
+Doesn't this conflict with the creation of the same device in rtc_init()[1]?
+
+On BVME6000, mach_hwclk is set:
+
+    arch/m68k/bvme6000/config.c:    mach_hwclk           = bvme6000_hwclk;
+
+> +
+> +       return PTR_ERR_OR_ZERO(pdev);
+>  }
+>  module_init(rtc_DP8570A_init);
+
+[1] https://elixir.bootlin.com/linux/v6.13.4/source/arch/m68k/kernel/time.c#L144
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-2.47.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
