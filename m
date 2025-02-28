@@ -1,48 +1,89 @@
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2AC25DD1F;
-	Fri, 28 Feb 2025 12:05:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F392226E63C
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Feb 2025 13:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740744368; cv=none; b=DCpUMS5ZqYTJCKpgz+vKmVieU7xl9wx2O56Qc00pxLtx2BGCSSV2qizo1WST77bHGWtINe7tFEdhswuaf71sNRBuc7z8809IpLbHdHAzB9Me5CdRQ8/vEXMIPboTmnn9hmeZZRqq9THBbZTRnP+e+0l/vaG2OIAeNpA9/eUw3Hc=
+	t=1740750972; cv=none; b=NNVN3HySF9UTlm1WtZrqelC45SCihv1Dr5Gq8oawQ0uU8GyJflSBixfPiYiQoWSQ514eAVA3hCwKjM7Dxg5q41AvwbJbwnM6tvulroEMb5k9ohyBMESTB0bQb1y7UZkYpBgXpd+4FL0S1VYUIWkP/GusYbb5WnbxD3yx5jLgOLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740744368; c=relaxed/simple;
-	bh=vjrFCSFkFDUoYvXeLkML1Pi5eNOA5Upz4StAF9CujbM=;
+	s=arc-20240116; t=1740750972; c=relaxed/simple;
+	bh=1IRowyiOxlD3aJXg1mzDgOLSKDvuTpO5rwTj3G6RUt0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VHxTiWsqGLykoj9HazgI6oCAklsRy/xpJLfTsEIjjIQLmy4S743mPtnApsFifhLyiBra848hZ/yey8bLeEZvFMUjMI056v5/XJ6xlBiUh6vrqDhH8ElQO62gVxVHWFQ9fGmflrrHLUSYVruvWUpXBvPjdIZTYBQK6fwlpuwBZgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=NEWcRiId; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=slLIniht9rHVd6e6AJSjKhrQUEp/8xjaGi8XvZNqIFfOx1h8cAFbZEA2AhjE0ZxqMQGpfNs/HbLWuTiP94Ejr61PAQqApsCvNSzoK5Uc3lI3Fvr0g9kNNBVlHkOc/xPaySUOw6hPG/fHRu4FAbEykKfavu4k+lHzTwwrSpJ5TNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NnH7vM73; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="NEWcRiId"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=vcftivxhuNL7EZgR4bopDnaiJhWUWXb/o3lnz2PgoJk=; b=NEWcRiIdSE6aiCAiUGqb7TAZpW
-	1ltGKJMjg347KdnBEAF8j5GOZ8nurdthlGEfNStgBQPWpWb4xf0LAGAcECPZ6G9Oi1JbWQX8SqOP/
-	uUA+GktLBcDkywUjud8eLbVrRAlzdR+qHNjkaOSao5tf0n2tUm6EG9/JImjZ2OM/ZrHQXi2TJt0OX
-	SyXnHB51Go31S2MLRNUfJh3oqnCzAKOAa2pRX91hEQZ97E7x0BMlzuKOi6R4TRK/EGBG8PRMr+ggW
-	kk/jznJc+hhs+AhVoS1orGei0pRO96Yo8HrW6MNFzHI0CV/HS7bg97VTs+37wJsANaqjj+dL7Ka53
-	4UiXXsuw==;
-Received: from [179.125.94.240] (helo=quatroqueijos)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1tnz7m-002182-AB; Fri, 28 Feb 2025 13:05:56 +0100
-Date: Fri, 28 Feb 2025 09:05:48 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	linux-rtc@vger.kernel.org, kernel-dev@igalia.com
-Subject: Re: [PATCH 2/2] m68k: rtc: dp8570a: make it a proper RTC class driver
-Message-ID: <Z8GmnLgCndvht-th@quatroqueijos>
-References: <20250226-m68k-rtc-v1-0-404641ec62e6@igalia.com>
- <20250226-m68k-rtc-v1-2-404641ec62e6@igalia.com>
- <CAMuHMdW_13wOxD0Q0PVCUXBwC9y8iKXTcwH=m5tvX856S9ZU1w@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NnH7vM73"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 05E9A61F51;
+	Fri, 28 Feb 2025 13:56:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EA8C4CEE2;
+	Fri, 28 Feb 2025 13:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1740750968;
+	bh=1IRowyiOxlD3aJXg1mzDgOLSKDvuTpO5rwTj3G6RUt0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NnH7vM73Zjpr8yZOH5QgfgQiSw0pmBWJwyV6oH4lnUx6KcNNLgBYYJulfb/SOKw4i
+	 Zkm3msW661FidfCoi/ar4s+MKouda8UuOKQJVozVEXvAvSibmI7k9WxUPFNYkImrpm
+	 nMJqrfmWsggXRbny/dSvcLd6O/w5mYI7U35gabE5OMAnP119A+B9Z9gcS1udwYaPDT
+	 haSivt5w98I2lC6hpiCjEl3HQRzpovHqj3M+6AQ/d9NOf1QW57gfgkHOWFS4Y8Iwt4
+	 dVExS2M99VzccMzDPnxcN2Fshmin/V/WHUi6c8awMapcLOMc4QlOWwdQMyM3HZ2OR4
+	 n0uklzJCb+JTQ==
+Date: Fri, 28 Feb 2025 15:55:38 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>, Dev Jain <dev.jain@arm.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v7 7/8] execmem: add support for cache of large ROX pages
+Message-ID: <Z8HAWu4zQFeg19KR@kernel.org>
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-8-rppt@kernel.org>
+ <16863478-2195-435e-a899-559df097bc59@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -51,77 +92,117 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdW_13wOxD0Q0PVCUXBwC9y8iKXTcwH=m5tvX856S9ZU1w@mail.gmail.com>
+In-Reply-To: <16863478-2195-435e-a899-559df097bc59@arm.com>
 
-On Thu, Feb 27, 2025 at 12:05:26PM +0100, Geert Uytterhoeven wrote:
-> Hi Thadeu,
+Hi Ryan,
+
+On Thu, Feb 27, 2025 at 11:13:29AM +0000, Ryan Roberts wrote:
+> Hi Mike,
 > 
-> On Wed, 26 Feb 2025 at 13:27, Thadeu Lima de Souza Cascardo
-> <cascardo@igalia.com> wrote:
-> > In the past, each rtc implementation had to rewrite the same ioctls in
-> > order to be compatible. But since 2006, a common RTC interface has been
-> > introduced. Use it for the last user of RTC_MINOR.
-> >
-> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+> Drive by review comments below...
 > 
-> Thanks for your patch!
 > 
-> > --- a/arch/m68k/bvme6000/rtc.c
-> > +++ b/arch/m68k/bvme6000/rtc.c
+> On 23/10/2024 17:27, Mike Rapoport wrote:
+> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> > 
+> > Using large pages to map text areas reduces iTLB pressure and improves
+> > performance.
+> > 
+> > Extend execmem_alloc() with an ability to use huge pages with ROX
+> > permissions as a cache for smaller allocations.
+> > 
+> > To populate the cache, a writable large page is allocated from vmalloc with
+> > VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
+> > ROX.
+> > 
+> > The direct map alias of that large page is exculded from the direct map.
+> > 
+> > Portions of that large page are handed out to execmem_alloc() callers
+> > without any changes to the permissions.
+> > 
+> > When the memory is freed with execmem_free() it is invalidated again so
+> > that it won't contain stale instructions.
+> > 
+> > An architecture has to implement execmem_fill_trapping_insns() callback
+> > and select ARCH_HAS_EXECMEM_ROX configuration option to be able to use
+> > the ROX cache.
+> > 
+> > The cache is enabled on per-range basis when an architecture sets
+> > EXECMEM_ROX_CACHE flag in definition of an execmem_range.
+> > 
+> > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> > Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> > Tested-by: kdevops <kdevops@lists.linux.dev>
+> > ---
 > 
-> >
-> >  static int __init rtc_DP8570A_init(void)
-> >  {
-> > +       struct platform_device *pdev;
-> > +
-> >         if (!MACH_IS_BVME6000)
-> >                 return -ENODEV;
-> >
-> >         pr_info("DP8570A Real Time Clock Driver v%s\n", RTC_VERSION);
-> > -       return misc_register(&rtc_dev);
-> > +
-> > +       pdev = platform_device_register_data(NULL, "rtc-generic", -1,
-> > +                                            &dp8570a_rtc_ops,
-> > +                                            sizeof(dp8570a_rtc_ops));
-> 
-> Doesn't this conflict with the creation of the same device in rtc_init()[1]?
-> 
-
-I didn't look too deep and just assumed that this would be one of those
-cases where this was set for machines other than BVME6000.
-
-Ah, right, that is because of this check around it.
-
-#if defined(CONFIG_M68KCLASSIC) || defined(CONFIG_SUN3).
-
-But CONFIG_M68KCLASSIC is set for BVME6000.
-
-On the other hand, mach_hwclk is accessing the same registers as the rtc.c
-code, so they are redundant. One thing that is missing is
-local_irq_save/local_irq_restore around it. I can add that and remove
-rtc.c, which would make more sense here.
-
-Thanks.
-Cascardo.
-
-> On BVME6000, mach_hwclk is set:
-> 
->     arch/m68k/bvme6000/config.c:    mach_hwclk           = bvme6000_hwclk;
+> [...]
 > 
 > > +
-> > +       return PTR_ERR_OR_ZERO(pdev);
-> >  }
-> >  module_init(rtc_DP8570A_init);
+> > +static int execmem_cache_populate(struct execmem_range *range, size_t size)
+> > +{
+> > +	unsigned long vm_flags = VM_ALLOW_HUGE_VMAP;
+> > +	unsigned long start, end;
+> > +	struct vm_struct *vm;
+> > +	size_t alloc_size;
+> > +	int err = -ENOMEM;
+> > +	void *p;
+> > +
+> > +	alloc_size = round_up(size, PMD_SIZE);
+> > +	p = execmem_vmalloc(range, alloc_size, PAGE_KERNEL, vm_flags);
 > 
-> [1] https://elixir.bootlin.com/linux/v6.13.4/source/arch/m68k/kernel/time.c#L144
+> Shouldn't this be passing PAGE_KERNEL_ROX? Otherwise I don't see how the
+> allocated memory is ROX? I don't see any call below where you change the permission.
+
+The memory is allocated RW, filled with invalid instructions, unammped in
+vmalloc space, removed from the direct map and then mapped as ROX in
+vmalloc address space.
+ 
+> Given the range has the pgprot in it, you could just drop passing the pgprot
+> explicitly here and have execmem_vmalloc() use range->pgprot directly?
+
+Here range->prprot and the prot passed to vmalloc are different.
+ 
+> Thanks,
+> Ryan
 > 
-> Gr{oetje,eeting}s,
+> > +	if (!p)
+> > +		return err;
+> > +
+> > +	vm = find_vm_area(p);
+> > +	if (!vm)
+> > +		goto err_free_mem;
+> > +
+> > +	/* fill memory with instructions that will trap */
+> > +	execmem_fill_trapping_insns(p, alloc_size, /* writable = */ true);
+> > +
+> > +	start = (unsigned long)p;
+> > +	end = start + alloc_size;
+> > +
+> > +	vunmap_range(start, end);
+> > +
+> > +	err = execmem_set_direct_map_valid(vm, false);
+> > +	if (err)
+> > +		goto err_free_mem;
+> > +
+> > +	err = vmap_pages_range_noflush(start, end, range->pgprot, vm->pages,
+> > +				       PMD_SHIFT);
+> > +	if (err)
+> > +		goto err_free_mem;
+> > +
+> > +	err = execmem_cache_add(p, alloc_size);
+> > +	if (err)
+> > +		goto err_free_mem;
+> > +
+> > +	return 0;
+> > +
+> > +err_free_mem:
+> > +	vfree(p);
+> > +	return err;
+> > +}
 > 
->                         Geert
+> [...]
 > 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+
+-- 
+Sincerely yours,
+Mike.
