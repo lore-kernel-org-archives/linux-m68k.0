@@ -1,144 +1,270 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84C614B08E
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Feb 2025 02:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92FE18870C
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Feb 2025 08:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740710675; cv=none; b=Dg3UtIUaUYGMD15bRCGET22+p2BN7PbekY1U9dZsQaiXrhS5ga6Q52pRTLjFhYoPokDxNSzOnOBKKrkfyKAKZa2JGPF2ShVUkFdwYt5+89ZUOyNCepaaxXJoWzCYIyZbXqU4+c17Ox66bKpjxEUhuHZoUsEhn4SvZLdSVsz9278=
+	t=1740731449; cv=none; b=dB2pDHkWzvN9xkDRa18hq2w7fuV1Z8T3icYLaE7rNtzxD4fOGE6lZBPb7sHXE8bRIZbfPyGJC49kLKUf+BVOdOPVu5XZOZAgglYplFYfD5hLHGlAG0quA95S2obQ+DxYHySYVzYCKpW1SUsUkn08Wux9GJpyYhUc5L6ZblORyXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740710675; c=relaxed/simple;
-	bh=0fz6H8dlUgf8ko9N18YypQHlBg79eNoT5rDDE25IBq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d2eK1gOFczSOb6fn/hqV4bs6BW1qH5O7DwlDk1ypbI7HxPGEneimOwoCHy3KP2xEweib0TvvraN+uANKgTIelmZa5tZ40FTd/ZXZU/dx6NBFKr0Er+S7Y9rbZE3ZDJDPHmDmdFrC87I47jmX9CWEqtbKbZGKq0GmKZhQumhE0RE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=YsFUMWSk; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1740731449; c=relaxed/simple;
+	bh=9JRh0vQu00gcGDgHvqANg3ZiBZ1ZNLJx8nUj+BWm9B0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 In-Reply-To:Content-Type:Content-Disposition; b=rFXghrT0gJV4gfke2H3KRULTIq826VMboO2YU4KVzu4xBxbgcfvMaqr9BGYmMCgZIaAQP3j9bn3rDrjrZULaqBrCOtG4QAaVHSM44Qo1jwCOAy586r/oYTI8QWkw9vTh9Ou73c+bBwTpfI6dP7wg3+LmQqEwHqUHhIrz18pT8B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dui1sz6N; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="YsFUMWSk"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2fe96dd93b4so3639688a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Feb 2025 18:44:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740710673; x=1741315473; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KrHEppDznEYNt+aFJHMFnsD9ySUlfKEU8kXo3t7+HP0=;
-        b=YsFUMWSkLNhG1qmoElQ8FLu59uGNrqxyb+Hh7Ly6/3eMrTN4bHf8quKS//BJGXtfSr
-         RySUKR4vdS+PsvjKXsOfh38sqrupNuROpdkwuZDM0A0FnCDYr8C9RvMYxezQ67HzObk4
-         6yjK+eZSxmd9YjxrYKFAjkdtl6nnHssQNPXLkFr/6cYJPu5IGDZSd+x9jwVWz0cBH0L4
-         /qjpUpMLHJBELnnj3SA+maz7jWJu6wtBLIDSgV6oAruIMUOXLgyL2W6U4rLo8Ye6rBb1
-         kUhqLJKUX1HkZGnhrIOZCbgPoJCe7kxfvXHbtj7HC/DfFhRfLWdM7D9bKQaGiN8kgJZY
-         04ug==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dui1sz6N"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1740731445;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IAk7T/agbjQFnKEBQSUNnzMrHpjZ/FADtSxLOMcXTqc=;
+	b=Dui1sz6NBA52u2gWpD/Jv+g8u440V4PvsD6EoEGuq/Ll7p0AYhpNTwHGVZ96KDS+MCI+BG
+	nmnAyQoBXTSDiRxAIUUEvXikd9FOA3L2GXJvbWFiKg9SGqjwySmg1KmYFUCquaqftV+Poi
+	qhHzNfOdmnFIGCJUrXcO88GNm+YxEdg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-401-tI1ZnsNJP0-yoHnoEv8XBw-1; Fri, 28 Feb 2025 03:30:43 -0500
+X-MC-Unique: tI1ZnsNJP0-yoHnoEv8XBw-1
+X-Mimecast-MFC-AGG-ID: tI1ZnsNJP0-yoHnoEv8XBw_1740731442
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-abbba16956bso232693366b.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 28 Feb 2025 00:30:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740710673; x=1741315473;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KrHEppDznEYNt+aFJHMFnsD9ySUlfKEU8kXo3t7+HP0=;
-        b=Sri0DG2NtCm/R+nufAXnZQnNWRySNXD3T2l1/ri0W54/IvIWNbs0VSRMQ5SlQ92pOA
-         2/YGgx0LipQOVdkrCRR1zH5tfrzcOkpMbDavm5ZV/BMPs4hWb/XMg31Ncf/5hOHu4OnL
-         R8ZgyEaJLH5JIZvRxAkA0dBTffT9U2nhi8rDJWufQiFskgPLbvpM5ATZhHSgfU6MXgWN
-         QLgLatbNdauGdbGwGQFgzYZRfX84MqFjIO+N6GSjQkLxZfh/T1UZuITfXAiq8m781yX+
-         P1bV79bt0UhxT6Hfz94t4iEjWpctsul16R9MEYXNWGDvOVVDt1ADngv6Ik9EKmeFyN+9
-         sbaA==
-X-Forwarded-Encrypted: i=1; AJvYcCXPKEiAmD5IRRr32rlQXphsnDTYbjowdFFI0ZVXJz27wlMLVFgAq1GHj3vuc0BXndFe3/MYfFXY7o71@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yxk/kKb8WHxzi504axjzTVUwuJpQfyjY//w2QTWgf8EjnI3rGRg
-	IRfsX6pgoTE9NaxS4GZo6SWtEjS/q+pnbADmHJCCi5QS0ODwHXptfcRc6pnY7sc=
-X-Gm-Gg: ASbGncsgvOuU5gBq/JMbppk6TKPQBc2pm8JSiHwyfMHmvDZLxdVMXT5V30Oe6sFcf9N
-	ZObXdoOVooxZdQ+QfpPB+v6gUyfRsE9vrqwHt/3aEuPWrolFw4rOjVNDQS45A2cGGKRyxfGwaiD
-	dIHtYe8bZLgHCmz4VGTf9AYZq1/i6hA7t4Jrprkp7D8JHlWGTXx7rjgSL2TsVhxf4bbrEURDp9N
-	T4m2ZFo1UpHnp2cqNNSFFfFEZda6shEJCTk4i5I74wOTEIGuXxmooP8BYHUl7zc5ukhcUKcfCsP
-	hdBc9q0OFPZHOC2YAUcsQT879zojYeIdx7dbqnMTobXMwtiYSw==
-X-Google-Smtp-Source: AGHT+IF4hsdZRiz/aSbemK655CZrsY9ZUuvu4Xu2ENST8y9hxHTSO7PJo35OmCgDgimYWycuvOakGg==
-X-Received: by 2002:a05:6a20:1591:b0:1ee:d19c:45f9 with SMTP id adf61e73a8af0-1f2f3e11f86mr2902815637.19.1740710672736;
-        Thu, 27 Feb 2025 18:44:32 -0800 (PST)
-Received: from [10.68.122.90] ([63.216.146.179])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe514besm2559832b3a.71.2025.02.27.18.44.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2025 18:44:32 -0800 (PST)
-Message-ID: <e5f4e310-5bcd-4901-8ec3-757cf55dfa64@bytedance.com>
-Date: Fri, 28 Feb 2025 10:44:21 +0800
+        d=1e100.net; s=20230601; t=1740731442; x=1741336242;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IAk7T/agbjQFnKEBQSUNnzMrHpjZ/FADtSxLOMcXTqc=;
+        b=WOZvGyV/13ALSxWAywZHHk51JadNzF3IFouBIxxIxEeJRZ2T0dwR7/k/h34v6mTJQ8
+         AUQo9SAEybdIJaP76CYGwgb/SS2YPvwp/HT8S4DMi7wvJV6qRCaABtju1Sduuu2Yuvf3
+         6rWoiWDzZHMrCgqCQ22oanfllEzPKC6EiKDb1ISL1yS8uV/YCBZTk5nXjSULw2C93oIk
+         Hty7zLB0l+gAv4pgQGaODdMGfeqPATHnr9rK8wYpkr9WZCycbDdzf92/8kCqruuJfKiG
+         7nJIV/Q0Rl9iOtWOgWEut29ZHiagP+IusVmf9gQu7cyNCZN/TE6yHWC0aY6NT0K6z2P4
+         0mag==
+X-Forwarded-Encrypted: i=1; AJvYcCX++nZ5EZnbloY8xnPOPzbzkr2lOZwIMOLAIUxCuyyBgDpnrxGw07ujN4Jb9hMmJJ7wJ+qEZ/epdObC@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yz/ZdAZUUCl32eI77vIZOXOOIrHF4U1BDhF81DxGPB/ipmlX/NV
+	1smYADAqPCxc49w13PkCCT047QmdnkPyiJy1m+fdqHOg8IzzWXF7lmv6B3+Bm9zFPVBTyXdRumF
+	SZdybpd/AmaCELHCjnjd1TuXmceFG+/Cx8hw85KA46ZwBSzxsMAlB8tS6fbUkxOYN
+X-Gm-Gg: ASbGncu2hLvTtQpqSIaTQPC18IkdKS0bBD5ohPrAuVdhCXFBH4KCXJ0Bp1IGf4aqWPi
+	2rj6L4xoOZU/iPSlfbACRaeYnBowPr7YaCUb3RFqGYodZDLAlmQiv1L1c1Q1ySZtXyKdFcC218m
+	XZLlsCdjsZpGeBDW5+441xDhm21XahdQzCbX3lk23pJx322t6GR+p7eztfS9BoXHeXhQvLAbShM
+	cORrBKHqTyOqw208OZWcd53gV1ylzzye+D+BdrKb10Vy5IHTr1d8RASfmHPgQ7/O9crgdcdLW+v
+	W+B6aoC8KXD1Tpm6NNv4/yB6rj6xf9TpJtk=
+X-Received: by 2002:a17:907:2d08:b0:abf:22cd:9a7e with SMTP id a640c23a62f3a-abf261f5471mr234892966b.30.1740731441925;
+        Fri, 28 Feb 2025 00:30:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGZIWf4Mi/ez8uccBE3ejxNf0ox83n9Aynget7e7VbyIxs4sY20lz/2ANqi9H9OCRURVdUpFw==
+X-Received: by 2002:a17:907:2d08:b0:abf:22cd:9a7e with SMTP id a640c23a62f3a-abf261f5471mr234884766b.30.1740731441289;
+        Fri, 28 Feb 2025 00:30:41 -0800 (PST)
+Received: from thinky (ip-217-030-074-039.aim-net.cz. [217.30.74.39])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abf0c74c714sm254400566b.124.2025.02.28.00.30.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Feb 2025 00:30:40 -0800 (PST)
+Date: Fri, 28 Feb 2025 09:30:38 +0100
+From: Andrey Albershteyn <aalbersh@redhat.com>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
+	Theodore Tso <tytso@mit.edu>
+Subject: Re: [PATCH v3] fs: introduce getfsxattrat and setfsxattrat syscalls
+Message-ID: <ihkez5xfcuocis7cmipvts2vxnfan2ub5kcpvsrnzm37glwnax@nxp72byvetye>
+References: <20250211-xattrat-syscall-v3-1-a07d15f898b2@kernel.org>
+ <20250221181135.GW21808@frogsfrogsfrogs>
+ <CAOQ4uxgyYBFqkq6cQsso4LxJsPJ4uECOdskXmz-nmGhhV5BQWg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] mm: pgtable: convert some architectures to use
- tlb_remove_ptdesc()
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: peterz@infradead.org, kevin.brodsky@arm.com, riel@surriel.com,
- vishal.moola@gmail.com, david@redhat.com, jannh@google.com,
- hughd@google.com, willy@infradead.org, yuzhao@google.com,
- muchun.song@linux.dev, akpm@linux-foundation.org, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, arnd@arndb.de,
- dave.hansen@linux.intel.com, rppt@kernel.org, alexghiti@rivosinc.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org,
- linux-riscv@lists.infradead.org
-References: <cover.1740454179.git.zhengqi.arch@bytedance.com>
- <19db3e8673b67bad2f1df1ab37f1c89d99eacfea.1740454179.git.zhengqi.arch@bytedance.com>
- <CAMuHMdU8ttibKCiUPxSNBpJyrtBbrt1CqLa++jq6CpJFbFCwAg@mail.gmail.com>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <CAMuHMdU8ttibKCiUPxSNBpJyrtBbrt1CqLa++jq6CpJFbFCwAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAOQ4uxgyYBFqkq6cQsso4LxJsPJ4uECOdskXmz-nmGhhV5BQWg@mail.gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: vhxfftVUeKd9YX3AdkUMYIlU8gDamVI2xZLw1fdALWI_1740731442
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
+On 2025-02-21 20:15:24, Amir Goldstein wrote:
+> On Fri, Feb 21, 2025 at 7:13 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> >
+> > On Tue, Feb 11, 2025 at 06:22:47PM +0100, Andrey Albershteyn wrote:
+> > > From: Andrey Albershteyn <aalbersh@redhat.com>
+> > >
+> > > Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
+> > > extended attributes/flags. The syscalls take parent directory fd and
+> > > path to the child together with struct fsxattr.
+> > >
+> > > This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
+> > > that file don't need to be open as we can reference it with a path
+> > > instead of fd. By having this we can manipulated inode extended
+> > > attributes not only on regular files but also on special ones. This
+> > > is not possible with FS_IOC_FSSETXATTR ioctl as with special files
+> > > we can not call ioctl() directly on the filesystem inode using fd.
+> > >
+> > > This patch adds two new syscalls which allows userspace to get/set
+> > > extended inode attributes on special files by using parent directory
+> > > and a path - *at() like syscall.
+> > >
+> > > Also, as vfs_fileattr_set() is now will be called on special files
+> > > too, let's forbid any other attributes except projid and nextents
+> > > (symlink can have an extent).
+> > >
+> > > CC: linux-api@vger.kernel.org
+> > > CC: linux-fsdevel@vger.kernel.org
+> > > CC: linux-xfs@vger.kernel.org
+> > > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> > > ---
+> > > v1:
+> > > https://lore.kernel.org/linuxppc-dev/20250109174540.893098-1-aalbersh@kernel.org/
+> > >
+> > > Previous discussion:
+> > > https://lore.kernel.org/linux-xfs/20240520164624.665269-2-aalbersh@redhat.com/
+> > >
+> > > XFS has project quotas which could be attached to a directory. All
+> > > new inodes in these directories inherit project ID set on parent
+> > > directory.
+> > >
+> > > The project is created from userspace by opening and calling
+> > > FS_IOC_FSSETXATTR on each inode. This is not possible for special
+> > > files such as FIFO, SOCK, BLK etc. Therefore, some inodes are left
+> > > with empty project ID. Those inodes then are not shown in the quota
+> > > accounting but still exist in the directory. Moreover, in the case
+> > > when special files are created in the directory with already
+> > > existing project quota, these inode inherit extended attributes.
+> > > This than leaves them with these attributes without the possibility
+> > > to clear them out. This, in turn, prevents userspace from
+> > > re-creating quota project on these existing files.
+> > > ---
+> > > Changes in v3:
+> > > - Remove unnecessary "dfd is dir" check as it checked in user_path_at()
+> > > - Remove unnecessary "same filesystem" check
+> > > - Use CLASS() instead of directly calling fdget/fdput
+> > > - Link to v2: https://lore.kernel.org/r/20250122-xattrat-syscall-v2-1-5b360d4fbcb2@kernel.org
+> > > ---
+> > >  arch/alpha/kernel/syscalls/syscall.tbl      |  2 +
+> > >  arch/arm/tools/syscall.tbl                  |  2 +
+> > >  arch/arm64/tools/syscall_32.tbl             |  2 +
+> > >  arch/m68k/kernel/syscalls/syscall.tbl       |  2 +
+> > >  arch/microblaze/kernel/syscalls/syscall.tbl |  2 +
+> > >  arch/mips/kernel/syscalls/syscall_n32.tbl   |  2 +
+> > >  arch/mips/kernel/syscalls/syscall_n64.tbl   |  2 +
+> > >  arch/mips/kernel/syscalls/syscall_o32.tbl   |  2 +
+> > >  arch/parisc/kernel/syscalls/syscall.tbl     |  2 +
+> > >  arch/powerpc/kernel/syscalls/syscall.tbl    |  2 +
+> > >  arch/s390/kernel/syscalls/syscall.tbl       |  2 +
+> > >  arch/sh/kernel/syscalls/syscall.tbl         |  2 +
+> > >  arch/sparc/kernel/syscalls/syscall.tbl      |  2 +
+> > >  arch/x86/entry/syscalls/syscall_32.tbl      |  2 +
+> > >  arch/x86/entry/syscalls/syscall_64.tbl      |  2 +
+> > >  arch/xtensa/kernel/syscalls/syscall.tbl     |  2 +
+> > >  fs/inode.c                                  | 75 +++++++++++++++++++++++++++++
+> > >  fs/ioctl.c                                  | 16 +++++-
+> > >  include/linux/fileattr.h                    |  1 +
+> > >  include/linux/syscalls.h                    |  4 ++
+> > >  include/uapi/asm-generic/unistd.h           |  8 ++-
+> > >  21 files changed, 133 insertions(+), 3 deletions(-)
+> > >
+> >
+> > <cut to the syscall definitions>
+> >
+> > > diff --git a/fs/inode.c b/fs/inode.c
+> > > index 6b4c77268fc0ecace4ac78a9ca777fbffc277f4a..b2dddd9db4fabaf67a6cbf541a86978b290411ec 100644
+> > > --- a/fs/inode.c
+> > > +++ b/fs/inode.c
+> > > @@ -23,6 +23,9 @@
+> > >  #include <linux/rw_hint.h>
+> > >  #include <linux/seq_file.h>
+> > >  #include <linux/debugfs.h>
+> > > +#include <linux/syscalls.h>
+> > > +#include <linux/fileattr.h>
+> > > +#include <linux/namei.h>
+> > >  #include <trace/events/writeback.h>
+> > >  #define CREATE_TRACE_POINTS
+> > >  #include <trace/events/timestamp.h>
+> > > @@ -2953,3 +2956,75 @@ umode_t mode_strip_sgid(struct mnt_idmap *idmap,
+> > >       return mode & ~S_ISGID;
+> > >  }
+> > >  EXPORT_SYMBOL(mode_strip_sgid);
+> > > +
+> > > +SYSCALL_DEFINE4(getfsxattrat, int, dfd, const char __user *, filename,
+> > > +             struct fsxattr __user *, fsx, unsigned int, at_flags)
+> >
+> > Should the kernel require userspace to pass the size of the fsx buffer?
+> > That way we avoid needing to rev the interface when we decide to grow
+> > the structure.
+> >
+> 
+> This makes sense to me, but I see that Andreas proposed other ways,
+> as long as we have a plan on how to extend the struct if we need more space.
+> 
+> Andrey, I am sorry to bring this up in v3, but I would like to request
+> two small changes before merging this API.
+> 
+> This patch by Pali [1] adds fsx_xflags_mask for the filesystem to
+> report the supported set of xflags.
+> 
+> It was argued that we can make this change with the existing ioctl,
+> because it is not going to break xfs_io -c lsattr/chattr, which is fine,
+> but I think that we should merge the fsx_xflags_mask change along
+> with getfsxattrat() which is a new UAPI.
+> 
+> The second request is related to setfsxattrat().
+> With current FS_IOC_FSSETXATTR, IIUC, xfs ignores unsupported
+> fsx_xflags. I think this needs to be fixed before merging setfsxattrat().
+> It's ok that a program calling FS_IOC_FSSETXATTR will not know
+> if unsupported flags will be ignored, because that's the way it is,
+> but I think that setfsxattrat() must return -EINVAL for trying to
+> set unsupported xflags.
+> 
+> As I explained in [2] I think it is fine if FS_IOC_FSSETXATTR
+> will also start returning -EINVAL for unsupported flags, but I would
+> like setfsxattrat() to make that a guarantee.
+> 
+> There was an open question, what does fsx_xflags_mask mean
+> for setfsxattrat() - it is a mask like in inode_set_flags() as Andreas
+> suggested? I think that would be a good idea.
+> 
+> Thanks,
+> Amir.
+> 
+> [1] https://lore.kernel.org/linux-fsdevel/20250216164029.20673-4-pali@kernel.org/
+> [2] https://lore.kernel.org/linux-fsdevel/CAOQ4uxjwQJiKAqyjEmKUnq-VihyeSsxyEy2F+J38NXwrAXurFQ@mail.gmail.com/
+> 
 
+I'm fine with making Pali's patchset a dependency for this syscall,
+as if vfs_fileattr_set() will start returning EINVAL on unsupported
+flags this syscall will pass it through (ioctls will need to ignore
+it). And as these syscalls use fsxattr anyway the fsx_xflags_mask
+field will be here.
 
-On 2/27/25 9:21 PM, Geert Uytterhoeven wrote:
-> Hi Qi,
-> 
-> On Tue, 25 Feb 2025 at 04:46, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->> Now, the nine architectures of csky, hexagon, loongarch, m68k, mips,
->> nios2, openrisc, sh and um do not select CONFIG_MMU_GATHER_RCU_TABLE_FREE,
->> and just call pagetable_dtor() + tlb_remove_page_ptdesc() (the wrapper of
->> tlb_remove_page()). This is the same as the implementation of
->> tlb_remove_{ptdesc|table}() under !CONFIG_MMU_GATHER_TABLE_FREE, so
->> convert these architectures to use tlb_remove_ptdesc().
->>
->> The ultimate goal is to make the architecture only use tlb_remove_ptdesc()
->> or tlb_remove_table() for page table pages.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> 
-> Thanks for your patch!
-> 
->>   arch/m68k/include/asm/sun3_pgalloc.h | 3 +--
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-
-Thanks for your review.
-
-> 
->> --- a/arch/m68k/include/asm/sun3_pgalloc.h
->> +++ b/arch/m68k/include/asm/sun3_pgalloc.h
->> @@ -19,8 +19,7 @@ extern const char bad_pmd_string[];
->>
->>   #define __pte_free_tlb(tlb, pte, addr)                         \
->>   do {                                                           \
->> -       pagetable_dtor(page_ptdesc(pte));                       \
->> -       tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));        \
->> +       tlb_remove_ptdesc((tlb), page_ptdesc(pte));             \
->>   } while (0)
->>
-> 
-> With only a single statement remaining, you can remove the do { ... }
-> while construct, too.
-
-Ah, right. Will do in the next version.
-
-Thanks!
-
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+-- 
+- Andrey
 
