@@ -1,106 +1,104 @@
-Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+Received: from server43.webgo24.de (server43.webgo24.de [185.30.32.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67721225D6
-	for <linux-m68k@vger.kernel.org>; Tue,  4 Mar 2025 04:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691491DBB13
+	for <linux-m68k@vger.kernel.org>; Tue,  4 Mar 2025 05:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.30.32.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741063454; cv=none; b=cuHrbFGiGurj+Gho2LNXwJlleAMWJM6nIFciRbhGXw1P26N1dovGCcTdRYYUQtLTZvtVFGW5r4U8lnwiZqDQPnBdu8A4YI4FHZtHV0vTImEJxEItxCqQCscpYafZkwjQ+8IrOaE1NTlIje8OKLHvos1KQNitoZRO1P26YGt6EDw=
+	t=1741065887; cv=none; b=L6guR6ac8duIuGzSGFm2cdBl5Q/PzRjVv1OGBz7t9uMSDwAhwd8hePmDV2MgNraoIiyYsvVB2E06zBJ2NLZM40EnXoWVzVL56RSFtx+HQW2OPIylktDk/pJ/L6jQLuiJzBScWYaaDDxee9dMcs5NTcN2i6EJ6x6riSy8TpNuI2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741063454; c=relaxed/simple;
-	bh=HmbhDM9nWZ5XZ08btFJgAqVcaGX9H7tGv6t+2xz9DPE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ModLILiGqPUvT9t6/YU47f2T4XNETsbk1wxdHTR8UDWiWy3phF7ifysoab5QfMqzP5w5xM9a0oR8e5vujWRGdS426egNcAMDrcF2Dcnnl546RS79Qd++4h0cVCU8/9w2DiwTBUW0OPouE6yKKID/c6bPXLYyJcrp7X1Ee/YmpeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FuUMLlwm; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1741065887; c=relaxed/simple;
+	bh=ZTzLpcaBRxBs99GqeNaW20Q0asKylpgUynf5whPfr8k=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rzVq9GWwd3hCtjZIK0tLYelVDPlqrQS7gw1gdz8J4Lj6QE2VSac/Fh8s5qCBVgilAhsp+vX5uuaqrxGFsoFY2U0HU/W8u9bd+eHdPmjVlvuA5H2ZGp2M6h6u/RNTHskL1XYbYhbNZ8cDhltLTqAngHOG++bxjk0SbSHFpNMjzv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tho-otto.de; spf=pass smtp.mailfrom=tho-otto.de; dkim=pass (2048-bit key) header.d=tho-otto.de header.i=@tho-otto.de header.b=XTO56G4L; arc=none smtp.client-ip=185.30.32.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tho-otto.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tho-otto.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FuUMLlwm"
-Received: from phl-compute-13.internal (phl-compute-13.phl.internal [10.202.2.53])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 2C44B11401CA;
-	Mon,  3 Mar 2025 23:44:09 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-13.internal (MEProxy); Mon, 03 Mar 2025 23:44:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1741063449; x=1741149849; bh=rUIHurE51T7slETUj2HRlpAH0AZ2jgMky6J
-	9zZhCg2I=; b=FuUMLlwmd5AYUcRKWngYaik4O9XRjIsqWjxZaCUt+gmcSTlTlg8
-	3l/EVURIm+ZPsw72+5XNniptXn/h3c9OnvFxhbpMIZL9VCnojwkVjMspUaXmTGXA
-	CwAuGWfycVkoRiK1b6b9kQWaTIFEmon4axZ5HqkWxPHaRMwnnJXlIFGaiKjh9eMk
-	Wn6B+P2nxMsV8Cfyop9fOEfWRkGMcLuIG4TRF2181CZGUhAP5skOdH1cPHGF7+pC
-	90ynXneiMxqADJmdHGDb+C5SLlYTTmP15FBHdhuF2LiCp9+5sm6vZPnuAcpCkFWt
-	OBOUoXiIuLlvfkgnIvH/gDpx+mITyjCiIpA==
-X-ME-Sender: <xms:GIXGZ2lsiMdLx97v-KKRLOytWiTrkYGM9oA5HM2glZ7RjYf5CJHjfQ>
-    <xme:GIXGZ92aPs0k85erSQ0gqeSRIb2pr32mbxQ8e7-Bc-VntVcph9lvv_FBqS6kwFGq2
-    mD4bCN5APvE5RKdUkc>
-X-ME-Received: <xmr:GIXGZ0rW5gMIfk8defAbwTJt-rtcyTiZv91H5imeq3RO8AtsuhR7f2xOM4qJDq3hIk2d3gZ1uUQgVt9YuXeeN66JZbW4BQZ6RQY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutddutdekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddv
-    necuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheike
-    hkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffek
-    feffffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhn
-    sggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegrughmih
-    hnsehthhhoqdhothhtohdruggvpdhrtghpthhtohepshgthhhmihhtiihmihgtsehgmhgr
-    ihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqmheikehksehvghgvrhdrkhgvrhhnvg
-    hlrdhorhhg
-X-ME-Proxy: <xmx:GIXGZ6kl6wolxc5Mc2KX_G0-jPYaFBUqPa4NTi7E0OLAA5FN1ncMdA>
-    <xmx:GIXGZ02jBGzmMCzLI3OCJabTJknes3mlkUDPcIgu47Pvh0d2txnoRA>
-    <xmx:GIXGZxtSk_rThi1DdGDmn0uj97bCQJNXYtl5tDyMA1IU0VWDA2mSrA>
-    <xmx:GIXGZwXJ_5m6TpGs7F-rG1tXa1Rk9BcMqviIqPjaW-_Sh6ZMla2Mxg>
-    <xmx:GYXGZyDt8fcqgOIzoM1pW9tJX7lWc7iyLZ76o-QDRw-TzYLNDIHoXQ16>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 3 Mar 2025 23:44:05 -0500 (EST)
-Date: Tue, 4 Mar 2025 15:44:00 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Thorsten Otto <admin@tho-otto.de>, Michael Schmitz <schmitzmic@gmail.com>
-cc: linux-m68k@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=tho-otto.de header.i=@tho-otto.de header.b="XTO56G4L"
+Received: from earendil.localnet (dynamic-080-171-054-098.80.171.pool.telefonica.de [80.171.54.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by server43.webgo24.de (Postfix) with ESMTPSA id BE9B64110ED7;
+	Tue,  4 Mar 2025 06:24:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tho-otto.de; s=dkim;
+	t=1741065880;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZTzLpcaBRxBs99GqeNaW20Q0asKylpgUynf5whPfr8k=;
+	b=XTO56G4L/+xGusUCPt+qoxa3QppTylPoIbxfej5UEo6oKl5IPAGYfFD0ve2lu9bgnXA4Fc
+	pJMtikQjRqao0HK2hUluXKt1nPNhRQoQ6TzuLCoJFFlXPlKbHCh4ReHvLMgbYDdvj6Wsoh
+	cNwz6EE0+bUAbLu379QI09OJYooBMCmuDORasrMszWP+7RcCqAUQ/TwsSkk0XGeuW+PZ2a
+	pmG8jZIh4N8zP0WJQwnvPxWc8Ixg3iOa5fdH21dDVqMAh1+t2fwNkPZkt/56gDRPGOcMs2
+	HWBz1Zory1a312l/7OZwBTIQKBdUpCKc3TdFUJa3t+lrz8f4P6KrmRTByXBD6A==
+From: Thorsten Otto <admin@tho-otto.de>
+To: Brad Boyer <flar@allandria.com>
+Cc: linux-m68k@vger.kernel.org
 Subject: Re: Software FPU emulation in linux kernel
-In-Reply-To: <091d25fa-6a79-4685-a920-075611e79626@gmail.com>
-Message-ID: <df800264-ca0f-4d49-77fd-520c2224bce7@linux-m68k.org>
-References: <3374772.VqM8IeB0Os@earendil> <091d25fa-6a79-4685-a920-075611e79626@gmail.com>
+Date: Tue, 04 Mar 2025 06:24:30 +0100
+Message-ID: <49758471.MN2xkq1pzW@earendil>
+In-Reply-To: <20250303221012.GA7422@allandria.com>
+References:
+ <3374772.VqM8IeB0Os@earendil> <20250303221012.GA7422@allandria.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+
+On Montag, 3. M=E4rz 2025 23:10:12 CET Brad Boyer wrote:
+> On the variants without the built-in FPU, it's
+> expected that the FPU emulator handles all of it since that's faster
+> than triggering the emulator for each FPU instruction used in FPSP.
+
+Yes, that's why i was wondering that a lot of functions are not implemented.
+
+> Well, most programs that use FPU instructions aren't going to use anything
+> beyond the basics.
+
+Thats true. But if they do, wouldn't it be better to just abort the program=
+ so=20
+the user will notice it, rather than continuing with totally bogus values?=
+=20
+Currently, uprint will just use the kernels printk. I guess that will just =
+end=20
+up in the syslog for most cases, and not even seen by the user.
+
+> The 68881/68882 are kind of unusual in implementing
+> all of that in hardware.
+
+Its not really unusual. The x87 FPU has almost the same instructions.
+
+> In practice, no. There's a lot of other issues as well. I seem to
+> recall that it only supports the 020/030 and not the versions of
+> the 040/060 without FPU.
+
+Thats mostly a matter how it is integrated in the system. That will obvious=
+ly=20
+be totally different in my case.
+
+> The advice
+> has always been to use a full 68040/68060 or add a real 68881/68882
+> chip to the 020/030 systems.
+
+Sure. But obviously this is not always possible, otherwise we would not nee=
+d=20
+an emulator. Nowadays, 68EC040 are much easier to find than full 68040.
+
+> Most existing 68LC040 chips also have the bug that causes missed
+> page faults after software-emulated instructions as well
+
+Oh, i didn't know that. But handling pagefaults is another thing. But freem=
+int=20
+does not manage virtual memory, so that should not be a problem here.
 
 
-On Tue, 4 Mar 2025, Michael Schmitz wrote:
 
-> > However, almost all trigonometric functions are not implemented... 
-> > What sense does it then make to use an emulation, when only basic 
-> > instructions like fadd/fmul etc. are implemented? 
 
-A good way to answer that question is to disable it and see what breaks 
-(assuming you have suitable hardware available).
 
-> > Programs are not even aborted when using one of those functions, 
-> > uprint just prints an error message, and the functions just return 
-> > with their input arguments as result instead of calculating the 
-> > expected value.
-> 
-> As I recall it, the main purpose was to keep kernel and a few important 
-> system utilities from blowing up on 030 machines with no FPU. User space 
-> programs that need to use trig functions or other FPU implemented 
-> functions can be compiled with -m soft_float (or something along those 
-> lines) on those systems.
-> 
-
-Back in 2019, when I needed to get 'fio' to work on a 680x0 system with no 
-FPU, I had to make a few small changes to the program to avoid floating 
-point logarithms. That was sufficient to get it to work. The FPU emulator 
-took care of the rest.
-
-From the notes I made at the time: "I tried to build fio with -msoft-float 
-but the build failed with a compiler error in the libc header 
-mathinline.h. I hacked around that and got it to build but the executable 
-didn't work correctly. I don't know why. I gave up on that approach."
