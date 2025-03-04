@@ -1,74 +1,36 @@
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E3214F104
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Mar 2025 02:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21671F0E55
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Mar 2025 04:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741055481; cv=none; b=tZ7T2y/s/HzVcJFWsdD8coPsckIDmsIfp81vsVzBpgL5f2LFSiGx5ugpDlgk1Bqi08AABd7uk8//Bns7M24QmVhl0Mhtc0AbWS7QYdZUkJWLBqwa/HFGV8qn0MIwta/XFwR67YNlKwUQekOItzoEnLKDag0oQTEUccR98EUN/ig=
+	t=1741061301; cv=none; b=Y+aqnem1+YTfKbsUSenxQrqH3zoZyD1kYVvYR9rz9bqity2CAvPVV5R1sWQ77PMxBAK/X1ygKyR7L7B8RoxReBBI7pjJd6a3OTjtdYH0fnTGI84Ew0HQIDQ/G4OSDdfQ2+81RdPhAmNFSx0ApYExy/UoWLbZVI54sxZYE+CUmXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741055481; c=relaxed/simple;
-	bh=+LwpYhqMa0YBvdBDiDqcdY8NesTszK/ILIT1IDZ1qek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SbXy7Cw5pOQHn4aPVUqwZek2PkypoQjpoa0OU3Lqs8t+491fTElww0p2e7UbifQRZaEiqfKgJBEHa9Wi0VRUBsbOP6dsOYbxJ+p2qUif7eEJEOdqS/ELgW2CZe1eaC9BO2+yFJg3/uc0o4L7G9GSS21no3UDb4rrYp+te8+Wrpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=EHd0y40O; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1741061301; c=relaxed/simple;
+	bh=OJc+K+BY2l6V5qT9+IgOwiKvV4q44ADIwUlWFtnBRCQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=nIMxVe6FkgaUS5UfK3mzZBVOWQLyUIN73S8PJgZllye3oNJycMfAREmUqvpFU4rzbuhb8JboW+7zlUn8S6nck5wWD0Q6Pyueh3Bn2tI/N/CvRZk84uCnsEyWgRj3AjnI++kx/e6PiduC5ReYi992qEv+626lTLme6jdmydTHdG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linux-foundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SvBh6xKu; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="EHd0y40O"
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-22334203781so97092085ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Mar 2025 18:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1741055479; x=1741660279; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A6T+mpuirUlxFXXDmZQp4DlzJljahRMUsKAZ4wXM54o=;
-        b=EHd0y40OG5Re4dPx7QIHIW/cbkUZ0w8PtYgfxsqB31DYEnYMUZ8ldNb8m6Egq122ej
-         wL0C7GNgS7U89tANovxnk+ohyZz8bgtZ8nFxz2HftZczWwmXQzc6nrOQruqgeiO4WTLx
-         LwHRHtyOttrkgl+Wzt/bubB6VstR3NZoZtrBEdkDyJ5nERM4uB68hAVodNKVyMlG9D4h
-         s4203HwcHVoQKz7SKTR+5M0+REIO7dSsgnFpPSvDBK6x1fzz5OGKbQj1BAE3wmkDahDZ
-         y808uUozKW7TwoIdE4jA3iQLb+conRKQHzFqXvjH2kdur7mjUHHqCrIzRA1ojUNLPrwi
-         y36Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741055479; x=1741660279;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=A6T+mpuirUlxFXXDmZQp4DlzJljahRMUsKAZ4wXM54o=;
-        b=aeJKUKX2qxKonzyZWPG8cTjDULRojFqOOSG7SMq+9NDrHev9DdtL37RyOjY9mWvXPD
-         jaGlZyEp/FJQrzEuS1tGbIIj/DGOAv5zn49RIQwe5Bl7XB+5w4B//katZOj80F6zRW3s
-         xN94VNUx9ppWka6tqbdMZRg7St1mrrOv6BBphhcGYhWgkf4BQP48Na4maXa2Eb0NbNNo
-         Bl0cP+VtfevV6uT9+TAaofD3CVM3ZoUbEhK3jJieph3320M6PYFn22NCZAv9bivEH2V8
-         nTwB5ySuW7ZblRY7r0MaMuTolE9qjCZAw3IsRhzM1fXyGFJ9pdFSaM9Qeg7MWPIf6DoK
-         FElA==
-X-Forwarded-Encrypted: i=1; AJvYcCWsHv36j3rYCnpTT+X8Vl0J3x60N8taWXAJzcpXy+k7cP387Rj6jUVct3WJpHf43eoZ9RLKXJNKmKWy@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwNAtQBQdQIWfqDXrqykQD/QtRkctAOCeLXnUV4d/lOVi+WcGXV
-	ijbNadNwcLB1c1ZoVj8rQMSVusG+gvMtl4AFWKNMZhM1Zs1G2wRZMcGSnYdBCx0=
-X-Gm-Gg: ASbGnct3hzg2J9CmvgY4mIh30Y797a/az2y8nSF+OQZfU5vR1JXcKjhjD/RqcKB2d2Y
-	bVifyycT6VoNImPRoYeWx3WS7Vo6ZdOmEAQA8bhqC9tVjAFzk5kO/HLcLkeUsvFmS52SiKJTkkV
-	wMHDmhx/F2R/we/MRRIJZCer4hxWhhIO0D/sIVD9QUCIM3EJlPo4BsdJSbJTTYaPzaICsY8ZeJ6
-	cFHFSjsvJD72jBZZlJKID4r9T4w0IRH7D7OeN4T/ocgTY4XJhzxIxOKRoTNm0/D/WMRM/qcR4BR
-	Nd/JlBa6sP/FeJfPB9qJRMAr21bb6iPiJZYUMx9svc3aSqwW7WCyxsLquYAOxfDyEpgg
-X-Google-Smtp-Source: AGHT+IGfyVS9QzXp3fDXv9OSff0zyYBlNLrDj9vPIT6lOO0LqcIFLuDQltej9EU6VX3nefPaL9P2pQ==
-X-Received: by 2002:a05:6a21:6b18:b0:1f3:383e:7739 with SMTP id adf61e73a8af0-1f3391176eamr2284458637.7.1741055478523;
-        Mon, 03 Mar 2025 18:31:18 -0800 (PST)
-Received: from [10.68.122.90] ([63.216.146.178])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-aee7ddf242bsm8911768a12.13.2025.03.03.18.31.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Mar 2025 18:31:18 -0800 (PST)
-Message-ID: <c48715aa-8c1f-41bf-92a0-bacf401c2f7c@bytedance.com>
-Date: Tue, 4 Mar 2025 10:31:07 +0800
-Precedence: bulk
-X-Mailing-List: linux-m68k@vger.kernel.org
-List-Id: <linux-m68k.vger.kernel.org>
-List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6 update] mm: pgtable: convert some architectures to
- use tlb_remove_ptdesc()
-To: Andrew Morton <akpm@linux-foundation.org>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SvBh6xKu"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id A050B5C546A;
+	Tue,  4 Mar 2025 04:06:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 356E8C4CEE7;
+	Tue,  4 Mar 2025 04:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1741061297;
+	bh=OJc+K+BY2l6V5qT9+IgOwiKvV4q44ADIwUlWFtnBRCQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=SvBh6xKua0O4rbGl5Th2h893FxX7s75aMSK/CI6eO1DqDbPVeGxH+L5gTK/tJ4vje
+	 QLYaFB944eCWG2oj9FNuFYy6/4EahBL+GAxWOzP5wMTbXrh24P5KHR5JL+N97R06cN
+	 9W9X6UKdyRcG1D0ubqQLtWnF+VBx6UkJKFwVkdEY=
+Date: Mon, 3 Mar 2025 20:08:15 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Qi Zheng <zhengqi.arch@bytedance.com>
 Cc: peterz@infradead.org, kevin.brodsky@arm.com, riel@surriel.com,
  vishal.moola@gmail.com, david@redhat.com, jannh@google.com,
  hughd@google.com, willy@infradead.org, yuzhao@google.com,
@@ -80,111 +42,48 @@ Cc: peterz@infradead.org, kevin.brodsky@arm.com, riel@surriel.com,
  linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
  linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
  linux-um@lists.infradead.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v2 3/6 update] mm: pgtable: convert some architectures
+ to use tlb_remove_ptdesc()
+Message-Id: <20250303200815.53007fb79e5049a99f24c999@linux-foundation.org>
+In-Reply-To: <c48715aa-8c1f-41bf-92a0-bacf401c2f7c@bytedance.com>
 References: <19db3e8673b67bad2f1df1ab37f1c89d99eacfea.1740454179.git.zhengqi.arch@bytedance.com>
- <20250303072603.45423-1-zhengqi.arch@bytedance.com>
- <20250303155331.de9b2fff9b04984a255a7bc2@linux-foundation.org>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20250303155331.de9b2fff9b04984a255a7bc2@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+	<20250303072603.45423-1-zhengqi.arch@bytedance.com>
+	<20250303155331.de9b2fff9b04984a255a7bc2@linux-foundation.org>
+	<c48715aa-8c1f-41bf-92a0-bacf401c2f7c@bytedance.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Precedence: bulk
+X-Mailing-List: linux-m68k@vger.kernel.org
+List-Id: <linux-m68k.vger.kernel.org>
+List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-
-
-On 3/4/25 7:53 AM, Andrew Morton wrote:
-> On Mon,  3 Mar 2025 15:26:03 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
-> 
->> Now, the nine architectures of csky, hexagon, loongarch, m68k, mips,
->> nios2, openrisc, sh and um do not select CONFIG_MMU_GATHER_RCU_TABLE_FREE,
->> and just call pagetable_dtor() + tlb_remove_page_ptdesc() (the wrapper of
->> tlb_remove_page()). This is the same as the implementation of
->> tlb_remove_{ptdesc|table}() under !CONFIG_MMU_GATHER_TABLE_FREE, so
->> convert these architectures to use tlb_remove_ptdesc().
->>
-> 
-> checkpatch warns.
-> 
-> Do these things have to be macros?  Switching to static inline fixes
-> the unused-arg warning in a nice fashion.
-
-This can be switched to static inline. In addition, I found that alpha,
-arc, microblaze, parisc, sparc32 and xtensa also have the unused-arg
-issue. Do I need to add a new patch to fix all of them, or just fix the
-newly added 11 warnings?
+On Tue, 4 Mar 2025 10:31:07 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
 
 > 
-> I'll fix the trailing-semicolon issue locally.
+> 
+> On 3/4/25 7:53 AM, Andrew Morton wrote:
+> > On Mon,  3 Mar 2025 15:26:03 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+> > 
+> >> Now, the nine architectures of csky, hexagon, loongarch, m68k, mips,
+> >> nios2, openrisc, sh and um do not select CONFIG_MMU_GATHER_RCU_TABLE_FREE,
+> >> and just call pagetable_dtor() + tlb_remove_page_ptdesc() (the wrapper of
+> >> tlb_remove_page()). This is the same as the implementation of
+> >> tlb_remove_{ptdesc|table}() under !CONFIG_MMU_GATHER_TABLE_FREE, so
+> >> convert these architectures to use tlb_remove_ptdesc().
+> >>
+> > 
+> > checkpatch warns.
+> > 
+> > Do these things have to be macros?  Switching to static inline fixes
+> > the unused-arg warning in a nice fashion.
+> 
+> This can be switched to static inline. In addition, I found that alpha,
+> arc, microblaze, parisc, sparc32 and xtensa also have the unused-arg
+> issue. Do I need to add a new patch to fix all of them, or just fix the
+> newly added 11 warnings?
 
-Thanks!
-
-> 
-> WARNING: Argument 'address' is not used in function-like macro
-> #51: FILE: arch/csky/include/asm/pgalloc.h:64:
-> +#define __pte_free_tlb(tlb, pte, address)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'addr' is not used in function-like macro
-> #66: FILE: arch/hexagon/include/asm/pgalloc.h:90:
-> +#define __pte_free_tlb(tlb, pte, addr)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'address' is not used in function-like macro
-> #80: FILE: arch/loongarch/include/asm/pgalloc.h:58:
-> +#define __pte_free_tlb(tlb, pte, address)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte));
-> 
-> WARNING: macros should not use a trailing semicolon
-> #80: FILE: arch/loongarch/include/asm/pgalloc.h:58:
-> +#define __pte_free_tlb(tlb, pte, address)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte));
-> 
-> WARNING: Argument 'addr' is not used in function-like macro
-> #95: FILE: arch/m68k/include/asm/sun3_pgalloc.h:20:
-> +#define __pte_free_tlb(tlb, pte, addr)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'address' is not used in function-like macro
-> #110: FILE: arch/mips/include/asm/pgalloc.h:51:
-> +#define __pte_free_tlb(tlb, pte, address)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'addr' is not used in function-like macro
-> #125: FILE: arch/nios2/include/asm/pgalloc.h:31:
-> +#define __pte_free_tlb(tlb, pte, addr)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'addr' is not used in function-like macro
-> #139: FILE: arch/openrisc/include/asm/pgalloc.h:67:
-> +#define __pte_free_tlb(tlb, pte, addr)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'addr' is not used in function-like macro
-> #153: FILE: arch/sh/include/asm/pgalloc.h:35:
-> +#define __pte_free_tlb(tlb, pte, addr)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'address' is not used in function-like macro
-> #167: FILE: arch/um/include/asm/pgalloc.h:28:
-> +#define __pte_free_tlb(tlb, pte, address)	\
-> +	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
-> 
-> WARNING: Argument 'address' is not used in function-like macro
-> #176: FILE: arch/um/include/asm/pgalloc.h:33:
-> +#define __pmd_free_tlb(tlb, pmd, address)	\
-> +	tlb_remove_ptdesc((tlb), virt_to_ptdesc(pmd))
-> 
-> WARNING: Argument 'address' is not used in function-like macro
-> #185: FILE: arch/um/include/asm/pgalloc.h:38:
-> +#define __pud_free_tlb(tlb, pud, address)	\
-> +	tlb_remove_ptdesc((tlb), virt_to_ptdesc(pud))
-> 
-> total: 0 errors, 12 warnings, 122 lines checked
-> 
-> NOTE: For some of the reported defects, checkpatch may be able to
->        mechanically convert to the typical style using --fix or --fix-inplace.
-> 
-> ./patches/mm-pgtable-convert-some-architectures-to-use-tlb_remove_ptdesc-v2.patch has style problems, please review.
-> 
-> NOTE: If any of the errors are false positives, please report
->        them to the maintainer, see CHECKPATCH in MAINTAINERS.
-> 
-
+I guess leave things as they are now.  Switching all these to C
+functions can be addressed at a later time?
