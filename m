@@ -1,118 +1,198 @@
-Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92E62E3388
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Mar 2025 03:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F294524BC1A
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  5 Mar 2025 13:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741146131; cv=none; b=a2vYIMaJ+Pqu7NUpbjyFQmGFHlSdYRatKbHgCoSjuDgoKoJ/HpWMXEmHLrA33aFgciMmGwK44vkzswOy9iPwddMWBZhuWWDvNGGTIifBfolg12R8nOpH+mT1hoqV4R2KVnkCtCrsxXS/15inNBSv1MZSNDkBVTL1HRaP4MNLCX4=
+	t=1741180361; cv=none; b=evYT0rNyYSuEsVAE9WRP6XHr3K2pp2buMl1Hq6GX3vE+0SJQ/T6A2MihGi4Ks2YpjDvWHKpkne5LvdnC+pXkmCB0xdOxROvbRt0ZLBYo4gy9fXwOFNRQ07g03Rj2lQnq9U97oDK0wUPZBy8PVxwZs8uCmBaKQuL8jx/blDiW57U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741146131; c=relaxed/simple;
-	bh=QZ4lWkRttzinBC0AHtaGogoBVkKE6Fr+UE0tadSUJYM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=to1/v50cHSfSlzkMKKfX0VepXd/uOTpKs3Mt5CaDutaDm0DEl4BjK63AhfksqjwlZOz+6+Z216wUllwm4czen0idEhW6szOn5dbwuREFiiMkofCIsMtF3JcfyAxH8mE8YqtOOz6/TKPez6KKXXz25Sm1/XKKBS4lblauGVfzk5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GQb90o3s; arc=none smtp.client-ip=202.12.124.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1741180361; c=relaxed/simple;
+	bh=niOkZ3yknjy6O15SgZEu1bTRkBCDN86QkzY45J5nUU4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LPY9N4XtNzh7UgsHN/NLgFG0EVRX8ZG6KaSUCdpkLLL8D/eiGUmvFm5gl6jUblTuEyxOxGqqPA+TgvyndugQRX9e6/PV1FboC4O8gBYeoAwwizyZ4Tw+6+xzC5WHwXeu6Rm9p3tLmUXnTyaQDNi+aXO8XhPdLDCGgAj80nfXrvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XS3kgNSh; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GQb90o3s"
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfout.stl.internal (Postfix) with ESMTP id B3B89114009D;
-	Tue,  4 Mar 2025 22:42:07 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Tue, 04 Mar 2025 22:42:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1741146127; x=1741232527; bh=tz0GmYq+BExKvK4136gHJad7G7TbjBEd2Ek
-	cgzIuImk=; b=GQb90o3sM+84OL/1ng3GSlG5DiG1ydWAH6S5CvP/1I20x30e3jr
-	kF9ikNvI4PjTkAtpXclbZ3uI96SxWXpi3YZG0jYyFIr4Y9uFKsLlMcpUktY/3336
-	IChOv6cszsld3SzsXEzK1XxoXnLGYsc+14BDVXfhCkC26GW1XFzROUkS39G6/nrv
-	z7sMnFSozIcKZ/acH+jQpGv2mGXIYFP3qGZaDxBfPZH4PSLvFBGsJLCOWWK72VMk
-	TI5M5QZSaXDqf95HVVonMD6o5u0oaZPJE5TSfCzsNpN13pk/Nn4jD26D4pQ3QqYa
-	OliRfJUss8kiY+4l2Qr0VLxMOPESvFsOd8w==
-X-ME-Sender: <xms:DsjHZz7YXbuPo4wAWMMnHKDWWAFq_1EW-etKql8a-sYsm03XusoBog>
-    <xme:DsjHZ47iWnwJcdX4tI3B7Exm86Nfmebxsh4NUyy8zQOkGyXCmk2q2BsTnk_351Xy9
-    j1fQOEZMorgTW5TJXA>
-X-ME-Received: <xmr:DsjHZ6dihpBVNb-10CZIyt0oDgBg8pRvje4cYxAW0AY1e3O5LdoxQUuCQ36Y-SGCqRuRP84gtTVhxED_KQRJP4SafVban-jh8Rg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddutdefjeehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddv
-    necuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheike
-    hkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffek
-    feffffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhn
-    sggprhgtphhtthhopeehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegurghnih
-    gvlhestdigtdhfrdgtohhmpdhrtghpthhtohepjhhjuhhrrghnsehgmhgrihhlrdgtohhm
-    pdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoh
-    eplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgt
-    phhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:DsjHZ0J3sU5gd_NsBXEKd4wKI2TYl78BVuJC0aDppv9Ya2gLdQ6G4Q>
-    <xmx:DsjHZ3LX0FsYY5R5G_SblUR6LDSFsx_NnURLjUsc3FARg_RgMku8zg>
-    <xmx:DsjHZ9zDerMzveL45_U04ycf1a88iSuhMp5sicKidNyedhHCSnW8jQ>
-    <xmx:DsjHZzKeqoAUfOh4ozzGKEcgF2HjdxyWXzQNFT9NbPoPZYm1IwlBkQ>
-    <xmx:D8jHZ0EBa87QptBOZ8o_5cPlCFxRJg0IbufXXU7ZJlYbIrUvS8ChiUBq>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 4 Mar 2025 22:42:03 -0500 (EST)
-Date: Wed, 5 Mar 2025 14:42:02 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Daniel Palmer <daniel@0x0f.com>
-cc: Josh Juran <jjuran@gmail.com>, geert@linux-m68k.org, 
-    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: Bootloaders, was Re: [RFC PATCH 0/3] m68k goes DT
-In-Reply-To: <CAFr9PXmXsW=RqJsWPCUDvQO+vst-wSj__Fi3nuxCo7ZRAi0wOA@mail.gmail.com>
-Message-ID: <3893637a-0a03-5782-a61d-18fbaf9938d3@linux-m68k.org>
-References: <20250105071433.3943289-1-daniel@0x0f.com> <291d1541-e026-cc50-6a55-42c11c64b6eb@linux-m68k.org> <CAFr9PXm4kTWF27GPMNDb5=W8vZRQia418xOQDF_X1yo0vwn6hA@mail.gmail.com> <4eb796cc-b178-8394-0149-03600f1caaed@linux-m68k.org> <B5B5D58B-D111-431F-9701-44FCBB67D11E@gmail.com>
- <b33b072e-f44a-9450-cbe9-52300ab971a3@linux-m68k.org> <CAFr9PXmXsW=RqJsWPCUDvQO+vst-wSj__Fi3nuxCo7ZRAi0wOA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XS3kgNSh"
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4750a85a0ddso210891cf.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 05 Mar 2025 05:12:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1741180358; x=1741785158; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=iOdrgfnKDo0adnIeWCzGbGdt+czcdG3OGWY151PLQj4=;
+        b=XS3kgNShkIqmowd3IEkHrzema2nQKoca4yKvYGWyu4SIF63UmQkm+8MOcxPfKtE32i
+         oD863eclwQK8grQCdvDURUsAexhdlDbmm59/rAscuy+c1gR1WRPHFevEL+h8RMBgX0XS
+         DO3cdEZGSao4tRh3PXz656IZ86Epce3YGERwYrv/57rFhlb5Flw9AdA6JAXtXtZi5W2k
+         vehVdPaR+5PpIL99z0tS+2FcfC5muBspOQRDNmCzSNhbfXmANEV6Mu2cSu3YiZzxR3/L
+         1bqx2SUqRYI5V84qHJB99gNQ17rRyWFWnGBC9qNfADP4KGP0I8RdUGgm7TZHCIqxtH3o
+         fFpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741180358; x=1741785158;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iOdrgfnKDo0adnIeWCzGbGdt+czcdG3OGWY151PLQj4=;
+        b=oukFbUhp8agNKLOBBJmLL6D8OFsTkLmQTTjKtrzucB8SpsWcbu3PEGg0RZ/NgpyCR0
+         kAiKbSwXm8WXr4tEOvNptCUqG7vRm0FaGuNnzgGiAKvP8rVYYuBS8mQupfkpI8Z64x1E
+         tOiTn9f+1LaWJ42bQXvXXTqgpuac/+xk8L3M/jiScCrclRP/8chFuVn0wdiiha/MWsPw
+         4HZFEHMMMpbBEFvYXgs6QP651iUKtjbKdJHQ4LxIFFTwzoHu3yeiMzlWrCBHB1w5Udvf
+         mkP3PbJrpIYj018jL2RuwFZo+7slglTgVb77IKWmJvw8uk10l/5snCAqu7cIKmQQot/6
+         ptqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2XKDwFFNy8XN5sCatY/duDZ5nHurMPO32S+2mjIiTlzSuLOEKUMi5f5fxEBk7r4niVEeHwZ57pYpT@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YysEX1OT90+3YmqqnkI89QmzK9bT8Cb3HGukFG8DKk1YNhiiHzg
+	mAZl+IXgk6ekEZqc6vJGjYvAPPpIFPQs5wzyjllFGPt7+JBf9Z6/jPUB81Z9NYiqN76dhBZeii1
+	kqsPa7W6xg2cgDujDOZqi0MtmT0BdSdyTFB6a
+X-Gm-Gg: ASbGncuMB1G4BBRQzIL9zUBqA+XDP0iNh0E271Cn2dtMHEYv8JT4rf2Dx7Mqvhv5gZz
+	qhj0+EY0hp0iAUyHQR/eVKwrUsvSkFDj/ZqrNMH+dlQvLlI+tZq9zNj0wVbAKeONZOKjjL4yNi3
+	U0OnhEeb08bGVhh1hIQw4vfE+m2HWpw7qGi0HnYfib1V1H2wExmozSg9SV
+X-Google-Smtp-Source: AGHT+IFIn6b7M1PNu9NZZ9KBzOuRO4deZPOixhL9M73rMvQkDHUtfUtYPha+8DdwHlmaLHcT+urAybKKpNAnQK1YFdU=
+X-Received: by 2002:a05:622a:110b:b0:471:f560:27dc with SMTP id
+ d75a77b69052e-4750cae2127mr2406081cf.27.1741180357471; Wed, 05 Mar 2025
+ 05:12:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
+ <20250110-asi-rfc-v2-v2-2-8419288bc805@google.com> <Z8K2B3WJoICVbDj3@kernel.org>
+In-Reply-To: <Z8K2B3WJoICVbDj3@kernel.org>
+From: Brendan Jackman <jackmanb@google.com>
+Date: Wed, 5 Mar 2025 14:12:25 +0100
+X-Gm-Features: AQ5f1JrEWoe__i5J-gwzMxiuWZ9pJYk4XLPMWAQuPYUSu5vOhjZQNejm22RSyYE
+Message-ID: <CA+i-1C06Sunj0BmFON=MbWBK6ZDt_=K4P3BHChRBYyxXqEkQ2g@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 02/29] x86: Create CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
+	Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Chris Zankel <chris@zankel.net>, 
+	Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Uladzislau Rezki <urezki@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Ard Biesheuvel <ardb@kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
+	Junaid Shahid <junaids@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Sat, Mar 01, 2025 at 09:23:51AM +0200, Mike Rapoport wrote:
+> Hi Brendan,
+>
+> On Fri, Jan 10, 2025 at 06:40:28PM +0000, Brendan Jackman wrote:
+> > Currently a nop config. Keeping as a separate commit for easy review of
+> > the boring bits. Later commits will use and enable this new config.
+> >
+> > This config is only added for non-UML x86_64 as other architectures do
+> > not yet have pending implementations. It also has somewhat artificial
+> > dependencies on !PARAVIRT and !KASAN which are explained in the Kconfig
+> > file.
+> >
+> > Co-developed-by: Junaid Shahid <junaids@google.com>
+> > Signed-off-by: Junaid Shahid <junaids@google.com>
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
+> >  arch/alpha/include/asm/Kbuild      |  1 +
+> >  arch/arc/include/asm/Kbuild        |  1 +
+> >  arch/arm/include/asm/Kbuild        |  1 +
+> >  arch/arm64/include/asm/Kbuild      |  1 +
+> >  arch/csky/include/asm/Kbuild       |  1 +
+> >  arch/hexagon/include/asm/Kbuild    |  1 +
+> >  arch/loongarch/include/asm/Kbuild  |  3 +++
+> >  arch/m68k/include/asm/Kbuild       |  1 +
+> >  arch/microblaze/include/asm/Kbuild |  1 +
+> >  arch/mips/include/asm/Kbuild       |  1 +
+> >  arch/nios2/include/asm/Kbuild      |  1 +
+> >  arch/openrisc/include/asm/Kbuild   |  1 +
+> >  arch/parisc/include/asm/Kbuild     |  1 +
+> >  arch/powerpc/include/asm/Kbuild    |  1 +
+> >  arch/riscv/include/asm/Kbuild      |  1 +
+> >  arch/s390/include/asm/Kbuild       |  1 +
+> >  arch/sh/include/asm/Kbuild         |  1 +
+> >  arch/sparc/include/asm/Kbuild      |  1 +
+> >  arch/um/include/asm/Kbuild         |  2 +-
+> >  arch/x86/Kconfig                   | 14 ++++++++++++++
+> >  arch/xtensa/include/asm/Kbuild     |  1 +
+> >  include/asm-generic/asi.h          |  5 +++++
+> >  22 files changed, 41 insertions(+), 1 deletion(-)
+>
+> I don't think this all is needed. You can put asi.h with stubs used outside
+> of arch/x86 in include/linux and save you the hassle of updating every
+> architecture.
 
-On Tue, 4 Mar 2025, Daniel Palmer wrote:
+...
 
-> FWIW I have started to move EMILE over to using meson to build (so
-> it's easier to build on modern systems) and fixing up some of the
-> issues it has with building with recent GCC.
+> If you expect other architectures might implement ASI the config would better
+> fit into init/Kconfig or mm/Kconfig and in arch/x86/Kconfig will define
+> ARCH_HAS_MITIGATION_ADDRESS_SPACE_ISOLATION.
 
-Thanks for doing that.
+...
 
-> I have it working enough to boot HEAD on a LC475 and on QEMUs Q800
-> machine. While the penguin ui is nice EMILE seems to work well enough
-> and it can be used to generate bootable CDs.
+> > +++ b/include/asm-generic/asi.h
+> > @@ -0,0 +1,5 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __ASM_GENERIC_ASI_H
+> > +#define __ASM_GENERIC_ASI_H
+> > +
+> > +#endif
+>
+> IMHO it should be include/linux/asi.h, with something like
+>
+> #infdef __LINUX_ASI_H
+> #define __LINUX_ASI_H
+>
+> #ifdef CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
+>
+> #include <asm/asi.h>
+>
+> #else /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
+>
+> /* stubs for functions used outside arch/ */
+>
+> #endif /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
+>
+> #endif /* __LINUX_ASI_H */
 
-That's good news -- I've long wondered whether QEMU's emulated q800 had 
-reached a point where it could run EMILE. That will make development 
-easier.
-
-> I have a setup now that can generate a bootable CD with the kernel and a 
-> buildroot based userland that I can drop on the SD card for my bluescsi 
-> and boot into Linux without any macos intervention.
-> 
-
-I guess it's only a matter of time before someone puts EMILE into EEPROM. 
-(Many of these systems have a ROM SIMM slot.)
-
-> So basically, for 68k mac I think EMILE is the way to go.
-> 
-
-And there is a way to go...
-
-Penguin 19 works on every 68k Mac model. That's hard to achieve and 
-running under MacOS helps a lot. EMILE doesn't have that advantage so it 
-isn't expected to enjoy the same level of hardware compatibility without 
-further work.
-
-For systems that have the standard ROM, booting MacOS is an easy first 
-step for system recovery purposes or just experimentation. So I think 
-EMILE needs a MacOS UI which, though it might not boot Linux, could do the 
-bootloader installation and config (a bit like what XPostFacto did for Mac 
-OS X) so the ROM could then boot into EMILE (and Linux).
+Thanks Mike! That does indeed look way tidier. I'll try to adopt it.
