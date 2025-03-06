@@ -1,91 +1,192 @@
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B86932147FD
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Mar 2025 17:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC7D26BDB6
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Mar 2025 18:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741283091; cv=none; b=TnNK3/TnNhF8A9JaTeJ96SZhEk5dg3pS4YJGYKqpFmhsEod9sNi2vfmhSdzhb4KINLcO/X6pBn+go7LIgI7KYTDYJYyDNffRB4XF1JJKiT41bhPhhXaK02hUrrrqnc83e3zpW1N3zk6SLxJ606B9I+I/52voaYvw2zW3zOpoMHo=
+	t=1741287108; cv=none; b=iCNHhrPTuCmpOh/EYABHyCNyeTokHt5ubkdBfK/wG2XlP7UIx8fpyYa86HHUUk3hnHtQS+Dg8RkWPgBWWbEOaU0zDz3JX2HOdvkuXnBDXKf9Pse4se6NB7mmSrc3ZR7F5kjxu6wajw3bxvZKbLbOf4pJ9FKNt0gh8sEQgdQUq7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741283091; c=relaxed/simple;
-	bh=QJmXhhJ268S5pczIrEFQ2Jqo3REkMiMrSCn11pdmkFg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c166sgXkEnZUvif4aZaYeL0FgAw+bzprYm+ceMNQQFoGoGb3kRqiHgHSW2uTpjJm+sQxiaXUVz681thLzdUCvs+J8BIiopufJI1j6UidokZz2B2/Q2PinQIJq1DyxGFyP4gi//Gt7J6qF7YL0dOBSFKaVehiTjVgniHhDTSKSCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-523a6fbf025so393517e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 06 Mar 2025 09:44:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741283087; x=1741887887;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L6UG0BoDjq+wII57XehpuikrAnqg7CYhLzQIRn+82n4=;
-        b=j+VqAd7elbgbKtnjQQZMFQ5d+wajT814xTMXcWM+bYZB/u3FFlOFn+PdFOLd/gaEYP
-         Q4xouEKukgXaijiiuV8hld3HI7CH5vZrt6VCkIIc8YsbiRFpvRe+op8Sl9l4oKP26WjE
-         bq6nH1dxeuYnlzAqlluclg1fow/jwV3Iq08PagiMesPxQV2C52BGKp+jnm9msR+Etbnj
-         kJ2nHM+Jbvp1Bp052bK5zJNBfZ0SiV7Xikk/JerZJFAgMb05CsBxAA5/19woaCaUWzni
-         1mefFVFF6jWIfemlOwNE9rdJ1HUuEQIGyJGoSFlMxBff/bV33bga9u9S3YBaEB71IrA1
-         sL6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVgJHHU9iyfD1N0piVZA5bKW2Kz5W86liYzMoAr1QcKRGw0rTVeteOk2FbLqMXHPAkoCKf1SAPLQpns@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxDtSMgzbNFat0QO5iuRpSgTYxijWu5fpQUJVQmPv2uWfenINxR
-	ZSmJpDQppxCscMkxDqUpde1yzh4IrDTAJyctoWoAgp9/FXXVOyoJoN6pfxw2jpY=
-X-Gm-Gg: ASbGncvIxUImCp+WHEWySxJY2QfctQ0qt5PbGqzBTXTkU63OMprnB5UAExMdkQ8Mnmg
-	M1xNmbHM3VAuoa5d8vnsFcQ9v2+sNKUuZlXvAzzfiE+Zns4uOow7/FEmCvmswIUehalGkn6H/gt
-	Ys70fMYdS2U5mFq0WS8XXa28B2xPVA1r75nnDdkGUYZLHCozCi69WIgbxEJvqLRZLM7+6+TsjAM
-	IXnPSxRWjxT5KR7OktUjlhGfD3mjBqlojXK+EM1JQB//q5TpTbaul1EsbcJJi1Hidi2OaQQJXVN
-	+1QDvmF0XrcUuc/Mq39CqhA4ont6LnsZp+7ecy8fIp7y1d57SOpTMGQdQkuJJAWb4hyCiZwB4qA
-	k8UkZqTM=
-X-Google-Smtp-Source: AGHT+IGPp2MeSBp8iluygs3Ouff0IkaP1HBRGsFjCpFOJy5+DAByCxmJA3WRcgGvSkyK3e5XMRHkjw==
-X-Received: by 2002:a05:6122:1696:b0:520:af9c:c058 with SMTP id 71dfb90a1353d-523e414a6bcmr652124e0c.5.1741283087283;
-        Thu, 06 Mar 2025 09:44:47 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-523d8c83664sm238895e0c.37.2025.03.06.09.44.46
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Mar 2025 09:44:46 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-86c29c0acdfso410389241.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 06 Mar 2025 09:44:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXpHUV31R08FstKMhwfS12cSGHg6GE/FT1lHIC8TqZ/AspseTqqN/jHYv5l+PI3+CFleV9qjZTtzVBg@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:38c7:b0:4c1:a448:ac7d with SMTP id
- ada2fe7eead31-4c2e27b3179mr5846045137.10.1741283086657; Thu, 06 Mar 2025
- 09:44:46 -0800 (PST)
+	s=arc-20240116; t=1741287108; c=relaxed/simple;
+	bh=/wpX+rodiPgNkc2E/+2EOJ8vtAUtpxXz9ICTWI7pMKs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i2Rbykw5XuE43KHYGEnOMIlU7wfcs794yJElwNCw7FM/pCgJb3/rj/47i3OnXwelzMea27BLdoPOybdjo542EU9RqYb1Vj6pDUxl+BC8NBDN521DQknNA+ko7rI/wyswB0/IRMQnxjhxxCsXRGAHxLtV4hCQJKtijVuzkFCv4SQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P80r7Rsa; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P80r7Rsa"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id D37E4A45015;
+	Thu,  6 Mar 2025 18:46:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E1BC4CEE0;
+	Thu,  6 Mar 2025 18:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741287105;
+	bh=/wpX+rodiPgNkc2E/+2EOJ8vtAUtpxXz9ICTWI7pMKs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=P80r7Rsa2pkCu11363Fa/SyYTsTL5K11aoIfGVkUhXZXMZF9ghtejyVAEAn/9gYin
+	 1wjIQSDGLefP2aOn0lF4nfOFQWYeL481ld2xteJKdOm4N0DyD3FCaFsp8v0/3LF+Zj
+	 A1q//tTu1zIkAikd8Mvn+6NSXoOT1YkxG40QhglljaBoNvOzWHiF8i1U7IHFop/QuY
+	 5qG0votPJ3w9ptEMTqOjG9ejudqVaGGqjAr6pLD9gnSTU97J4z2wTm+bpnENlPeeCa
+	 JlGFrkz4pFB5qBl+yf6kzfEB+qI0NhdVqEy7aOxbZiiRw30qg1qYZpVJ1ch4THxRCE
+	 TD35zfcbQZ4wA==
+From: Mike Rapoport <rppt@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Matt Turner <mattst88@gmail.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Mike Rapoport <rppt@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	linux-mm@kvack.org,
+	x86@kernel.org
+Subject: [PATCH 00/13] arch, mm: reduce code duplication in mem_init()
+Date: Thu,  6 Mar 2025 20:51:10 +0200
+Message-ID: <20250306185124.3147510-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250302230532.245884-2-thorsten.blum@linux.dev>
-In-Reply-To: <20250302230532.245884-2-thorsten.blum@linux.dev>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 6 Mar 2025 18:44:34 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUonC54g-XSt-EkNbEGxhkOWMxBc87Qtw0MyeXoPqDD4A@mail.gmail.com>
-X-Gm-Features: AQ5f1Jq7R80tfvK5LT7usBpSLmMBfHezUmZK5I3xKCRPWw4P2MZ3-jt2tl-G-PQ
-Message-ID: <CAMuHMdUonC54g-XSt-EkNbEGxhkOWMxBc87Qtw0MyeXoPqDD4A@mail.gmail.com>
-Subject: Re: [PATCH] m68k: mm: Remove size argument when calling strscpy()
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 3 Mar 2025 at 00:07, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> The size parameter of strscpy() is optional and specifying the size of
-> the destination buffer is unnecessary. Remove it to simplify the code.
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.15.
+Hi,
 
-Gr{oetje,eeting}s,
+Every architecture has implementation of mem_init() function and some
+even more than one. All these release free memory to the buddy
+allocator, most of them set high_memory to the end of directly
+addressable memory and many of them set max_mapnr for FLATMEM case.
 
-                        Geert
+These patches pull the commonalities into the generic code and refactor
+some of the mem_init() implementations so that many of them can be just
+dropped.
 
+Mike Rapoport (Microsoft) (13):
+  arm: mem_init: use memblock_phys_free() to free DMA memory on SA1111
+  csky: move setup_initrd() to setup.c
+  hexagon: move initialization of init_mm.context init to paging_init()
+  MIPS: consolidate mem_init() for NUMA machines
+  MIPS: make setup_zero_pages() use memblock
+  nios2: move pr_debug() about memory start and end to setup_arch()
+  s390: make setup_zero_pages() use memblock
+  xtensa: split out printing of virtual memory layout to a function
+  arch, mm: set max_mapnr when allocating memory map for FLATMEM
+  arch, mm: set high_memory in free_area_init()
+  arch, mm: streamline HIGHMEM freeing
+  arch, mm: introduce arch_mm_preinit
+  arch, mm: make releasing of memory to page allocator more explicit
+
+ arch/alpha/mm/init.c               |  8 ----
+ arch/arc/mm/init.c                 | 25 +----------
+ arch/arm/mm/init.c                 | 43 +------------------
+ arch/arm/mm/mmu.c                  |  2 -
+ arch/arm/mm/nommu.c                |  1 -
+ arch/arm64/mm/init.c               | 12 +-----
+ arch/csky/kernel/setup.c           | 43 +++++++++++++++++++
+ arch/csky/mm/init.c                | 67 ------------------------------
+ arch/hexagon/mm/init.c             | 32 ++------------
+ arch/loongarch/kernel/numa.c       |  6 ---
+ arch/loongarch/mm/init.c           |  8 ----
+ arch/m68k/mm/init.c                |  4 --
+ arch/m68k/mm/mcfmmu.c              |  1 -
+ arch/m68k/mm/motorola.c            |  2 -
+ arch/m68k/sun3/config.c            |  1 -
+ arch/microblaze/mm/init.c          | 25 -----------
+ arch/mips/include/asm/mmzone.h     |  2 -
+ arch/mips/loongson64/numa.c        |  7 ----
+ arch/mips/mm/init.c                | 49 ++++------------------
+ arch/mips/sgi-ip27/ip27-memory.c   |  9 ----
+ arch/nios2/kernel/setup.c          |  3 +-
+ arch/nios2/mm/init.c               | 16 +------
+ arch/openrisc/mm/init.c            |  6 ---
+ arch/parisc/mm/init.c              |  4 --
+ arch/powerpc/kernel/setup-common.c |  3 --
+ arch/powerpc/mm/mem.c              | 18 +-------
+ arch/riscv/mm/init.c               |  5 +--
+ arch/s390/mm/init.c                | 18 +-------
+ arch/sh/mm/init.c                  | 10 -----
+ arch/sparc/mm/init_32.c            | 31 +-------------
+ arch/sparc/mm/init_64.c            |  4 --
+ arch/um/include/shared/mem_user.h  |  1 -
+ arch/um/kernel/mem.c               |  9 ++--
+ arch/um/kernel/physmem.c           | 12 ------
+ arch/um/kernel/um_arch.c           |  2 -
+ arch/x86/include/asm/highmem.h     |  3 --
+ arch/x86/include/asm/numa.h        |  4 --
+ arch/x86/include/asm/numa_32.h     | 13 ------
+ arch/x86/kernel/setup.c            |  2 -
+ arch/x86/mm/Makefile               |  2 -
+ arch/x86/mm/highmem_32.c           | 34 ---------------
+ arch/x86/mm/init_32.c              | 41 ++----------------
+ arch/x86/mm/init_64.c              |  7 ++--
+ arch/x86/mm/numa_32.c              |  3 --
+ arch/xtensa/mm/init.c              | 66 +++++++----------------------
+ include/asm-generic/memory_model.h |  5 ++-
+ include/linux/memblock.h           |  1 -
+ include/linux/mm.h                 | 13 +-----
+ mm/internal.h                      |  3 +-
+ mm/memblock.c                      |  3 +-
+ mm/memory.c                        | 16 -------
+ mm/mm_init.c                       | 58 ++++++++++++++++++++++----
+ mm/nommu.c                         |  6 ---
+ 53 files changed, 151 insertions(+), 618 deletions(-)
+ delete mode 100644 arch/x86/include/asm/numa_32.h
+ delete mode 100644 arch/x86/mm/highmem_32.c
+
+
+base-commit: d082ecbc71e9e0bf49883ee4afd435a77a5101b6
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.47.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
