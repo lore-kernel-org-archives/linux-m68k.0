@@ -1,36 +1,36 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6443B26E655
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Mar 2025 18:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0F426D5B6
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Mar 2025 18:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741287186; cv=none; b=jajyWlSLTpTFFxw1BWJgBkalhKSg8nl3+qRSccB2N9SC9ZpPVel2GwhCDxGc03ADg+98O1QlIfSC8c75HFinlLb5l31v0SCcoi06ae+tEo26qA8DTiZz6D4H1JIv8g4HJ5VudVJ5OXcs2HBwfSFq++cnlxZCPpGLyf7AiiL29qk=
+	t=1741287201; cv=none; b=YnwgkZxHR4AV9ZgFSvo9qSv1ycuNbTDN0xblPLl1+sHjmTlNaERVHoKv5i6CaY836kU9oQAjUl/zWQEXnFvNx8iyC2FduvZo2+kGNTSX2fM+J+exlHLCoVrzRx8jUwAisymkzY0S1G+lPjBcm8pYCjVMOp9Epye7QIihj9KpB58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741287186; c=relaxed/simple;
-	bh=uD5faVqJ7G6OTY8H5Svd8uEX7wWQ143lrl+QSf2xljc=;
+	s=arc-20240116; t=1741287201; c=relaxed/simple;
+	bh=BkE0IFJXSKU77+xC0N2TBlUULdAjqoteouUfp8/gZ9o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E6+zYbN7+XAa6i8QevIrGN/rGhpx9Z7XpHBYH/yX3oxtAe3rJmzMSn8mfzOb3vL8oOuCUWfNzXk7e2IVdE8EZUJy+TmPaNBM0gV1fmKXVWRLMe47QJGCRoAB+v8GLiTaSGpKPxZkhOiTOwODotU6ptittLwQiDap/tRdz1blAgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Giroq7hT; arc=none smtp.client-ip=139.178.84.217
+	 MIME-Version; b=okfFnMrKpmnyuUjwDbXqk1IpuCO254qeSzvymXVSBuW+8sL1pfifuUjYjM0ccEU2xt5AFA8XNOey/54yALwZFuYXPstK7VfSCrkqbCb/k0J6gMxoh+swzSP+fZn+cxieV+ftgJZqQhcV0EhYiI7teF6UX+5zV2tc7V5uZGK2CW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H78DLSl+; arc=none smtp.client-ip=147.75.193.91
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Giroq7hT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H78DLSl+"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 867595C58B7;
-	Thu,  6 Mar 2025 18:50:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BFD1C4CEEB;
-	Thu,  6 Mar 2025 18:52:51 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id D0F5CA44F0F;
+	Thu,  6 Mar 2025 18:47:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8163DC4CEE8;
+	Thu,  6 Mar 2025 18:53:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741287184;
-	bh=uD5faVqJ7G6OTY8H5Svd8uEX7wWQ143lrl+QSf2xljc=;
+	s=k20201202; t=1741287197;
+	bh=BkE0IFJXSKU77+xC0N2TBlUULdAjqoteouUfp8/gZ9o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Giroq7hT2g3vsvEZ2g+QDA6pleXlCgJ831y/Fi3Wjhg80Qvyzg+4WeJi56qeahcuZ
-	 BnB/BJAkrOWMctvhyQiwDEOKAODheMIY8JlcVpXK5m/bif8P0mWEql2C7GcEAP8YDq
-	 y5I3KMdkU9l7AIEqGFvXGvfoPMAU64jJ7mxxyGtY4aMTIFjIzONPRhlRs09lt/nZQC
-	 Dfy3fEyUNo74jl61ggLHzXPiXbsdY95YwK3QPmGVyWMPsISrjHbonWwydEU9fwsHjj
-	 Cokp3+w/v07caKL3v7HrEl6YuLcjwgCcPlwVGGWzrWhcdLmjUmXtBEydZY3rL4XdE2
-	 sLgtFWbfjejNg==
+	b=H78DLSl+IjdnXrOdxgT+/xt6JTBU4euW24C/yDa5I+IadYyC+HEIKf8v9/STSql0w
+	 8Ci9p73t1w+Xz+YHbbWW0NqRvPAsTTGgkup9RJxFt3IWYCiwU8KzktKs78WPfgstEp
+	 r3TBxtlGs5W73C+QSyCEERn1fqDTHnrNMca8jScShJM1AOJsNrVThziirlU9DWuCQI
+	 NxI/6QapAZIvA0iPZvBo0oljP9L1r5qcoH4ZPCXNbth214GQA4i6M5RW8Tday7NHzb
+	 PgoPccIN87hXyD3eA9w781HCQ9lk9kdOFTozIS7Gy/SywY4wv8FVfsBzQ613ahQ7F+
+	 9OZnlgrDMKwRQ==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -89,9 +89,9 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
 	linux-arch@vger.kernel.org,
 	linux-mm@kvack.org,
 	x86@kernel.org
-Subject: [PATCH 06/13] nios2: move pr_debug() about memory start and end to setup_arch()
-Date: Thu,  6 Mar 2025 20:51:16 +0200
-Message-ID: <20250306185124.3147510-7-rppt@kernel.org>
+Subject: [PATCH 07/13] s390: make setup_zero_pages() use memblock
+Date: Thu,  6 Mar 2025 20:51:17 +0200
+Message-ID: <20250306185124.3147510-8-rppt@kernel.org>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250306185124.3147510-1-rppt@kernel.org>
 References: <20250306185124.3147510-1-rppt@kernel.org>
@@ -105,41 +105,61 @@ Content-Transfer-Encoding: 8bit
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-This will help with pulling out memblock_free_all() to the generic
+Allocating the zero pages from memblock is simpler because the memory is
+already reserved.
+
+This will also help with pulling out memblock_free_all() to the generic
 code and reducing code duplication in arch::mem_init().
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/nios2/kernel/setup.c | 2 ++
- arch/nios2/mm/init.c      | 2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/s390/mm/init.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
-index da122a5fa43b..a4cffbfc1399 100644
---- a/arch/nios2/kernel/setup.c
-+++ b/arch/nios2/kernel/setup.c
-@@ -149,6 +149,8 @@ void __init setup_arch(char **cmdline_p)
- 	memory_start = memblock_start_of_DRAM();
- 	memory_end = memblock_end_of_DRAM();
+diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+index f2298f7a3f21..020aa2f78d01 100644
+--- a/arch/s390/mm/init.c
++++ b/arch/s390/mm/init.c
+@@ -73,8 +73,6 @@ static void __init setup_zero_pages(void)
+ {
+ 	unsigned long total_pages = memblock_estimated_nr_free_pages();
+ 	unsigned int order;
+-	struct page *page;
+-	int i;
  
-+	pr_debug("%s: start=%lx, end=%lx\n", __func__, memory_start, memory_end);
-+
- 	setup_initial_init_mm(_stext, _etext, _edata, _end);
- 	init_task.thread.kregs = &fake_regs;
+ 	/* Latest machines require a mapping granularity of 512KB */
+ 	order = 7;
+@@ -83,17 +81,10 @@ static void __init setup_zero_pages(void)
+ 	while (order > 2 && (total_pages >> 10) < (1UL << order))
+ 		order--;
  
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index a2278485de19..aa692ad30044 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -65,8 +65,6 @@ void __init mem_init(void)
- 	unsigned long end_mem   = memory_end; /* this must not include
- 						kernel stack at top */
+-	empty_zero_page = __get_free_pages(GFP_KERNEL | __GFP_ZERO, order);
++	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE << order, order);
+ 	if (!empty_zero_page)
+ 		panic("Out of memory in setup_zero_pages");
  
--	pr_debug("mem_init: start=%lx, end=%lx\n", memory_start, memory_end);
+-	page = virt_to_page((void *) empty_zero_page);
+-	split_page(page, order);
+-	for (i = 1 << order; i > 0; i--) {
+-		mark_page_reserved(page);
+-		page++;
+-	}
 -
- 	end_mem &= PAGE_MASK;
- 	high_memory = __va(end_mem);
+ 	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
+ }
  
+@@ -176,9 +167,10 @@ void __init mem_init(void)
+ 	pv_init();
+ 	kfence_split_mapping();
+ 
++	setup_zero_pages();	/* Setup zeroed pages. */
++
+ 	/* this will put all low memory onto the freelists */
+ 	memblock_free_all();
+-	setup_zero_pages();	/* Setup zeroed pages. */
+ }
+ 
+ unsigned long memory_block_size_bytes(void)
 -- 
 2.47.2
 
