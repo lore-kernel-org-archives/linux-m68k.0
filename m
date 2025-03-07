@@ -1,63 +1,63 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86EF21D3E9
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 15:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A760721D3ED
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 16:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741362907; cv=none; b=ukVAzdY8uuwiRDdVv0zLz5/tiYlBkVNB/cisyoGPHr0ydlouSJz8KWcD8QF64DucMVBwkrUQHCwuAgx4WGaHHWsNmxYsWQNvv+nh2lGih1KLEJoLcfE43aMdnmZJ7euMiJxpgcA0JoKygi2ff0q8Emha5c1G/LkfgE+cANKL7lk=
+	t=1741363266; cv=none; b=uW1lkRM/EBwK3ncbBUdkJOuQNXJYp2m8uMae/Y1QwEYIyHsJ+wS56MUAXxcndZhOpzybCfcJ+lsbUx6rMYoWwrWR5fKFrg4e9mLW9oFse10rkQVVmmIqS3aT/P2H8v+9ZXhS1rhcdBIfUjgVtWNKNngk2ZwUkeItRfzkv4CeJOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741362907; c=relaxed/simple;
-	bh=BqAgNNhHmr48CV5Lby7avsDCaaonSWHfakhBkcS8Gdg=;
+	s=arc-20240116; t=1741363266; c=relaxed/simple;
+	bh=nfaBHRI0nmgDdOpIx0FIBplOt0pS/eaTFzN7nuHrHao=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lVQtHu0mNsc+UrO46/WiLEASP6qhLBWiust4H/Qcv7J9evZ91LE1MVXK+BmJI4qv4eXFVyd/J48cQoJ7EavEjOcc3Prk2NMkCLEzj7xPYlr7wSvJ6ONC9dtKT4Fn6KWtR9yQymAYLTAQAHs2i4KZlhWeaxaB39GMfJSxlzQm1MM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bHeV11dP; arc=none smtp.client-ip=209.85.128.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=sMbeU2HMyQiZa6rTbsnE+uDLyCQ9QcSh6P3YeIZRio/hij3zgYB2nEjwTNhO9IYpvwvussodtwQOK4CKp5+I9djPwUVzVS2gs47NQ6pEi5rgkTFdk91gpfLjmcpRqb74G2bFsJ9zE+8VrlR60naQGgye4rdPR5mj9+3dkn9RN8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RIOcWkUW; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bHeV11dP"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-43bc0b8520cso12617645e9.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Mar 2025 07:55:05 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RIOcWkUW"
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3913958ebf2so252275f8f.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Mar 2025 08:01:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1741362904; x=1741967704; darn=lists.linux-m68k.org;
+        d=suse.com; s=google; t=1741363262; x=1741968062; darn=lists.linux-m68k.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=KTIxiohPLNVVB9YfiDexvU2RO8Xj7BqvYc16wsDl4Q4=;
-        b=bHeV11dPYTuZjYTylK69mBslgMq3RHEY182ZYS92k+yauLlQG2Eh/4iMmy4MSEgkY3
-         kM2EwP/Ard97HO3Rw3RXoJn84DrR6caiwDx0PKaoxXLdrFksaS5AvrbZQUBF4cxWAoOn
-         scp0hkt+SxLlxAzSBrEuW3cX/6JY3uffnDhvOgsxc3ojSXYpHQ7WKrbCHVqHgD6g7tD1
-         LAfYm/xUQRo7bZ0R9mr4P8v4pIDGZg+pb0AN8TuujjvZ0W0a2V2xqcHughNQdzFi8QJ2
-         Em3VmDyRzPkqa3JflhZbtK8zsnyYRpt2PiFtNHCz3Ll4eNF10IORAMY9AsWCIPZ+UQcu
-         ffKQ==
+        bh=B0Iktfq0DR02GmBsXbOGq/r2zfQq6D1ECaT1ooK1s1o=;
+        b=RIOcWkUWAsimmigjSVTt7YQ/FzzD9SIhR8WTdyayiPy5VyLnPSV3z2Xfmmmq3/C+zL
+         WA73m6MFDnbaHjcQT8KU+duisxD743oALQq2od47uVzpNVLxNF7lhJ3sC4xMn2abruvB
+         FidhuUJ/dX5gZU2+KZtmeMHGCTTIt2s6pgDai1sZ27tOsubcq6ZMTIuXUjReVgdV4Enn
+         uCezWsc7PMNzWCSEaM3RWY9J/vEiOlIzpdLeMclPq2VG9LpcDwS9OtdL7Lr5EpRRzqm5
+         +RWxlJ+cY/9T08jtAOjmgxEDUnxl2bmUVAWlzVemhFWVsKpgxcNwCKJqnz+nh+q+BYbG
+         5BeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741362904; x=1741967704;
+        d=1e100.net; s=20230601; t=1741363262; x=1741968062;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KTIxiohPLNVVB9YfiDexvU2RO8Xj7BqvYc16wsDl4Q4=;
-        b=GbbvaxJ58+4ozRfUcvHZbMIFMPvhPq2ebC0+o1mFUPOxxAg4VqETkcAb+FnpZ7K1Jn
-         Jqbc75B5z6s0xOKmxnwUM9yEXFSDdGKxNG/zmxEuZOJ5ej3iIQg8MnapXJqxgNcpnsy5
-         BtJ+8RM//rWN/CPIj2eCw/zXVZ638XqJbEkydB80hnulnfO4ZNjVKi6mMW8MoaRp8JTW
-         r6TAfiJvUDY/YS3Hvrj8Vbv6bPBNEQr5sEk0whfzkkbGD3DHjACUEApb96MVZjZaQFSO
-         Gi3Mku2/2qwFR7IzkZfEDd63bvW5PtT4UOhxLOdvc4gGJqWnUFnB2EgRPlkUI2WMblpR
-         qt/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWD7VCeOpftkH7WTFUcsyh+VJRURm7k9mw41h/dfoJT+IVK75GQ7Ih3338x/LRXZImp7LXuPB8l7eSY@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyRcuOH3NCwCjSh1kkZkFRj524JN21cpmtkC44ffUJcv/HgiaYy
-	PoY9B+4GhhHGHFpr849QcGi3Ja4Wkc2sMvo+NJkT3I1NgOWRCpLkkr9IHK8S3Ik=
-X-Gm-Gg: ASbGncvbvupncCI7U8wrmCQvXu9kKRPjGlFypmbMUIQqaO3vxV4dkP6rQI10O4lS7Ih
-	aF/C7No7MuL33LLDLgBws9lyNT8M4G0fWnFVLL/Me/H1qAKrxva6lOdp1hSP2G+mkOFO6w2rXtS
-	/dvchS5HpVQjZ6GFz5vw9L6CKsQzzjrVb31YLWCODvzlqfDLGN1MqCir5CV1ffVpcujBX9wewDk
-	ginFLX+TZ7ARmKCV5/W0OfkZt5RWky4grddu3HBAyFZgRIMfdBDj832m69wu3C/A14Odgxtbo3Z
-	XmqPSmftHYOjC/N+Z6INaZsz06XkqxCINFKq4BZAX9bC2Qs=
-X-Google-Smtp-Source: AGHT+IF1iPA/Ntx7JECcdwpFF2+Wr14YZrGvchT9BSUSo4BM6xsm3uEkcR6M6E/FoWaOSUozXYVFDA==
-X-Received: by 2002:a05:600c:c6:b0:43b:c1ac:aeeb with SMTP id 5b1f17b1804b1-43cb91c58abmr23566485e9.2.1741362904110;
-        Fri, 07 Mar 2025 07:55:04 -0800 (PST)
+        bh=B0Iktfq0DR02GmBsXbOGq/r2zfQq6D1ECaT1ooK1s1o=;
+        b=j48UQzcUwaHb/jZn0yVm5tb5FFpqcl9U0+ZjRecmB8g6dM0wYKjMlKIg8EHHlCesjE
+         M6EQsAO9f8kvE7PE3N7mLSk4XK3OP9OOQ+Mn8lNaaI0WHaUuEbk+OUYjtd61D2JZS4Hy
+         zmflXhelBzRe+HAoxZ1hUPr92QyDxKlFXiKGwc5KsMz66Cx0nHyOrQTpdUDeHbAIydT6
+         8DjYreOFdgIQiFJySbqBZghc3PA82aKbu7xn9eRRxY7CGqjekTORi3gvDr6Q74M3NTck
+         7eWJvtX5bzo+2mv6/WQZ1TARvUa0032MkeQXLIN4xlxsAKepeK15FA8mduYzM+znORsd
+         gPeg==
+X-Forwarded-Encrypted: i=1; AJvYcCXtw1jFWM5JWTipzWpWscQxQX7QBpV4GxPl0kh7nCPkcQzmjvbpenUEzdZ0VD5Z84KfItKy919vjkjb@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxlnauOgLXkmB7WAB8UBp+m4BDu160kNnTYMryTm1xCJCuY012p
+	ESEo05CDIo09/ca5YteANw6cA9mba7aftfjSuvVJGBmGypo9y/oROEwT0xDy/7A=
+X-Gm-Gg: ASbGncty/MYV3fFWeBiKmKrdOzNFn82MbRgYt3/QY1huxmvJxDS0vxL44xKa+x8Vvzf
+	oH2y923mAFNK5/dCEe00w/5pNrFjCbuEH3rp9nI31qlDHQTLEf2LZuFU4qXvxJ2TS48tn9RidRD
+	IanHxryQRyTzIzI5kEy4nrJG1biAozKOqgaKx5trXLm+Fto/5ZggK/GHuqSjCU1K/I9FIK4X2sF
+	ITzx7mzioDE0vsU+uO8HVOeCqpeu9tPp8txq7PQE6P4qEDGsz0tjF6SNbVrAQD9viZOrsIv4uH4
+	60chq3G6275h4vljMfAHeTLn6noncPyXjLtkWpu9Tchn2+s=
+X-Google-Smtp-Source: AGHT+IGwC5RdI2D2x8Mf/1yhLk8SnYyj3NhjKRRM+PHR4SpMZigqBSsZD7IJQFmATNxMAv0Q3Kbu9Q==
+X-Received: by 2002:a05:6000:4185:b0:38d:e572:4dc2 with SMTP id ffacd0b85a97d-39132d98d2cmr2269618f8f.40.1741363260299;
+        Fri, 07 Mar 2025 08:01:00 -0800 (PST)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bdd8dad73sm56612925e9.19.2025.03.07.07.55.03
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43bdd8da473sm54801455e9.18.2025.03.07.08.00.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Mar 2025 07:55:03 -0800 (PST)
-Date: Fri, 7 Mar 2025 16:55:01 +0100
+        Fri, 07 Mar 2025 08:00:59 -0800 (PST)
+Date: Fri, 7 Mar 2025 17:00:58 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: Tamir Duberstein <tamird@gmail.com>
 Cc: Arpitha Raghunandan <98.arpi@gmail.com>,
@@ -79,12 +79,11 @@ Cc: Arpitha Raghunandan <98.arpi@gmail.com>,
 	linux-doc@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
 	linuxppc-dev@lists.ozlabs.org
 Subject: Re: [PATCH v5 1/3] printf: convert self-test to KUnit
-Message-ID: <Z8sW1QBgPVUmEzUd@pathway.suse.cz>
+Message-ID: <Z8sYOm4qovtdOSI7@pathway.suse.cz>
 References: <20250221-printf-kunit-convert-v5-0-5db840301730@gmail.com>
  <20250221-printf-kunit-convert-v5-1-5db840301730@gmail.com>
  <Z8mUH0comOCpycpK@pathway.suse.cz>
  <CAJ-ks9nFSzRXFauavzSWhvhr2Rou7qqkWi_LZ=4e1Tyr4_bn3g@mail.gmail.com>
- <CAJ-ks9nDLGvzZ+NDAJsk2Hy1=hsCzayg4-65gk60T_WJZzOUzA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -94,62 +93,85 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ-ks9nDLGvzZ+NDAJsk2Hy1=hsCzayg4-65gk60T_WJZzOUzA@mail.gmail.com>
+In-Reply-To: <CAJ-ks9nFSzRXFauavzSWhvhr2Rou7qqkWi_LZ=4e1Tyr4_bn3g@mail.gmail.com>
 
-On Thu 2025-03-06 09:41:44, Tamir Duberstein wrote:
-> On Thu, Mar 6, 2025 at 9:25 AM Tamir Duberstein <tamird@gmail.com> wrote:
+On Thu 2025-03-06 09:25:43, Tamir Duberstein wrote:
+> On Thu, Mar 6, 2025 at 7:25 AM Petr Mladek <pmladek@suse.com> wrote:
 > >
-> > On Thu, Mar 6, 2025 at 7:25 AM Petr Mladek <pmladek@suse.com> wrote:
+> > On Fri 2025-02-21 15:34:30, Tamir Duberstein wrote:
+> > > Convert the printf() self-test to a KUnit test.
 > > >
-> > > On Fri 2025-02-21 15:34:30, Tamir Duberstein wrote:
-> > > > Convert the printf() self-test to a KUnit test.
-> > > >
-> > > > [...]
-> > > >
+> > > In the interest of keeping the patch reasonably-sized this doesn't
+> > > refactor the tests into proper parameterized tests - it's all one big
+> > > test case.
+> > >
+> > > --- a/lib/test_printf.c
+> > > +++ b/lib/tests/printf_kunit.c
+> > > @@ -57,52 +58,50 @@ do_test(int bufsize, const char *expect, int elen,
+> > >       va_end(aq);
+> > >
+> > >       if (ret != elen) {
+> > > -             pr_warn("vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d\n",
+> > > +             tc_fail("vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d",
 > >
-> > > 2. What was the motivation to remove the trailing '\n', please?
-> > >
-> > >    It actually makes a difference from the printk() POV. Messages without
-> > >    the trailing '\n' are _not_ flushed to the console until another
-> > >    message is added. The reason is that they might still be appended
-> > >    by pr_cont(). And printk() emits only complete lines to the
-> > >    console.
-> > >
-> > >    In general, messages should include the trailing '\n' unless the
-> > >    code wants to append something later or the trailing '\n' is
-> > >    added by another layer of the code. It does not seem to be this case.
-> > >
-> > >
-> > > >                       bufsize, fmt, ret, elen);
-> > > > -             return 1;
-> > > > +             return;
-> > > >       }
-> > >
-> > > [...]
+> > 1. It looks a bit strange that the 1st patch replaces pr_warn() with
+> >    tc_fail() which hides KUNIT_FAIL().
 > >
-> > I noticed in my testing that the trailing \n didn't change the test
-> > output, but I didn't know the details you shared about the trailing
-> > \n. I'll restore them, unless we jump straight to the KUNIT macros per
-> > the discussion above.
+> >    And the 2nd patch replaces tc_fail() with KUNIT_FAIL().
+> >
+> >    It looks like a non-necessary churn.
+> >
+> >    It would be better to avoid the temporary "tc_fail" and swith to
+> >    KUNIT_FAIL() already in this patch.
+> >
+> >    I did not find any comment about this in the earier versions of the
+> >    patchset.
+> >
+> >    Is it just a result of the evolution of the patchset or
+> >    is there any motivation for this?
+> 
+> The motivation was to keep the width of the macro the same in this
+> first patch for ease of review, particularly in the 7 instances where
+> the invocation wraps to a second line. If you prefer I go straight to
+> KUNIT_FAIL, I can make that change.
 
-> Ah, I forgot that `tc_fail` already delegates to KUNIT_FAIL. This was
-> the reason I removed the trailing newlines -- there is a mix of
-> present and absent trailing newlines in KUNIT_* macros, and it's not
-> clear to me what the correct thing is. For instance, the examples in
-> Documentation/dev-tools/kunit/{start,usage}.rst omit the trailing newlines.
+I see. It might have been useful when the patch removed the trailing '\n'.
+But you are going to add it back. So there won't be any hidden change.
+So I would prefer to go straight to KUNIT_FAIL().
 
-Honestly, I am not able to find how the KUNIT_FAIL() actually prints
-the message. I can't find how assert_format() is defined.
+> > > @@ -842,13 +836,15 @@ test_pointer(void)
+> > >       fourcc_pointer();
+> > >  }
+> > >
+> > > -static void __init selftest(void)
+> > > +static void printf_test(struct kunit *test)
+> > >  {
+> > >       alloced_buffer = kmalloc(BUF_SIZE + 2*PAD_SIZE, GFP_KERNEL);
+> > >       if (!alloced_buffer)
+> > >               return;
+> >
+> > I would use here:
+> >
+> >         KUNIT_ASSERT_NOT_NULL(test, alloced_buffer);
+> >
+> > And move the same change for the other kmalloc() location from
+> > the 2nd patch.
+> 
+> I didn't do that here because I was trying to keep this patch as small
+> as possible, and I wrote that in the commit message.
+> 
+> As for using KUNIT_ASSERT_NOT_NULL here, that would have to change
+> back to an error return in the 2nd patch because this code moves into
+> `suite_init`, which is called with `struct kunit_suite` rather than
+> `struct kunit_test`, and KUnit assertion macros do not work with the
+> former (and for good reason, because failures in suite setup cannot be
+> attributed to a particular test case).
 
-Anyway, it seems that for example, kunit_warn() prints the messages
-as is in kunit_log(). It does not add the trailing '\n' on its own.
+I see. KUNIT_ASSERT_NOT_NULL() can't be used in the .suite_exit() callback.
 
-Also I do not see any empty lines when I add back the trailing '\n'
-to KUNIT_FAIL() message. This suggests that even KUNIT_FAIL()
-prints the messages as is and does not add any extra trailing '\n'.
+> So I'd prefer to leave this as is.
 
-In my opinion, using the trailing '\n' is the right thing to do
-from the printk() POV. Please, add it back.
+I agree to leave this as is.
 
 Best Regards,
 Petr
