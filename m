@@ -1,124 +1,141 @@
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E3A1A314C
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 08:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9CB199E94
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 08:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741336105; cv=none; b=uzVil+xjs+LC3cqZilEOjwXI69tPqvkgWqZth9cGe3AXT/L+nzhx9pqVdgf3AS+xymrT3OWzLa95bR38RUFzMKz7Hg4heciA2slFtrt2XDYBFJOHmPBILrWWoanR9HiwrKTCrrD9df1+wmADsz+o/k7z47V5K3FMas9mEqu9+HI=
+	t=1741337926; cv=none; b=Xcv1xQCVa/PEXI8QBiqsihz0Zk+b9oTIoFDjmpS6IFsH7q8FVQwNW5ZNxrp0m4NbSlm7cFclwGNRskd26MUPRYPTwjqTSYcg56cFPaklo3+VD19FaSfXaL+oFJixuduodv3UQepCfht9NfQH6bfb833Q7uqhpltWb+KurP7Wplk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741336105; c=relaxed/simple;
-	bh=RLW5W7vE6eKHVXzzEER3TJZBcheFUauQWYUYHYGJdj0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h+2lnzCdHkYtMOaDyez1sItP/Pz+6jmtfvZSKG5EaAfm0y0Nb7ftuydOpEa4uFrYX+agwAEMlKWb9SEmXlE2uA+KCvVxuIob/DNGXZ0k4G0YRyNgOcvIgpjIUWx/DzbrUE9DED6ZQUCenQJFQmSLYM1O9mrLl/tyTX9ExuzN+fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.48
+	s=arc-20240116; t=1741337926; c=relaxed/simple;
+	bh=ZjIQfWG83oRMyHUQO4OLqSgSMHEWjUJSojUPoWkoC0c=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=dh4QIZDaDonKJANvDXPH1NrhOY/DqTXu8fJ/lyCWVT+5fK2CDU23M+Jmdy6gsu83e22pPAxFq+IXsDDWGvmFpMkXRB1303+97Y+MAAk38ScRL+GQRSX2nw7zU9vALFzun9RRYzgz/8KZ8yptfLXqRZw+EktJzGITqVX5JpitHFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=tQ7yE1Eg; arc=none smtp.client-ip=103.168.172.158
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-86712bc0508so683893241.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Mar 2025 00:28:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741336101; x=1741940901;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xum+DVk/hz2H5siGnkfuO3VHERgZhJbJ0D0R2U7DBis=;
-        b=aVRjC1l4F4YeZsjOKWjBqln8UFihHNi5MmAXG/Sui7OXxWFNh0mnpN95aV5wD6Xw6e
-         mSZJ+lSc6leH27aZgPlwZboUCh12/cpqLnrYSQSu1zEoD7S5VZJBwXf3RmmVeJ0H9Mgz
-         x8NMZpKtiz1H8iZtmEc/Ew75rMH40SH7nodahdbRm7tTTLtMrafPjzcgR3OvNuOzudyL
-         mBIEvexd/nLEepNtwpI6fprkZRq4n1wGo5CFrOuhmsoHLAxAuUmHcZtd533nuXQ3//bT
-         xwZ/SF9E1Q6PDWUuejx/Dm2joyYmUG3pz+wKI79YO9NcFj9ugt0p0VXptOsvNR/8bn/v
-         dVKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQeRmYw6mUMMTd0Fzu/MnmZ0+3YTIkFTwBHUIW8BLum+P5P1vpHzm7D79UGZsk+rsttNjg1ZWj2dU1@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxSE+7fOZkN3raLVB1MivNLKQp6MbtWjNnilsiXI9IfyVzxn4wF
-	gWLlQjUPWh+MZ9mf+SS9hf0Nym+u8u7LqYVv8z5a2+58G5FbZMe/fG3W7aqOEV4=
-X-Gm-Gg: ASbGncsyFhwDNyWifFG8AiijMWaQS3f2/EWD36UvNOTkWm3TCwTIMKhgxbNWva+tUnd
-	t87b+gy/YKg63mjpMUMHvE5nYE6MSDNDmRkdM+DA7ZPNJKTnVnyRwOkf82+36Qsau8Iu2p/Bwg3
-	puAUoKX5nTpjXcjZjP3LLw06Lubu3kX/eir0PhJmvD4ksLB4wvb240MDmrY7fsLfTc+gMITAneB
-	gadYe26nheubNO15uraLTrrvACnV6zu4ALO+A8pibnzyQtPgf3Pur0JAOAkyl0e06ok/rESE6nB
-	D14NrbdiD4HWqvHOqeyMkey58ozXR9U6Qd3zgwpwvrtb300tBR2He5uxECaCpoqHsAb/hiWMZah
-	lvozdmCg=
-X-Google-Smtp-Source: AGHT+IHMT+2jQ1m4dRvE+tK4VgSaS+Yc1fedSC90uPC2kpue1ptuRZzCgwQ/4RwpZyFl7Q9D0kVkow==
-X-Received: by 2002:a05:6102:3fa7:b0:4c1:9e13:8283 with SMTP id ada2fe7eead31-4c30a731103mr1313941137.25.1741336101216;
-        Fri, 07 Mar 2025 00:28:21 -0800 (PST)
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4c2fbca5238sm612003137.24.2025.03.07.00.28.21
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Mar 2025 00:28:21 -0800 (PST)
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-866de72bb82so711662241.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Mar 2025 00:28:21 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVVp8YkWeBNoe2zzDFt9MkrfrcZ5YrFnOmxRoaKuibmybZo5Wf9ln1KG3LC9Cm9qZGTTnAW8x7lPsqo@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:38cf:b0:4bc:82f:b4e0 with SMTP id
- ada2fe7eead31-4c30a6d240emr1447532137.22.1741336100864; Fri, 07 Mar 2025
- 00:28:20 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tQ7yE1Eg"
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id C62CB11401BE;
+	Fri,  7 Mar 2025 03:58:42 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Fri, 07 Mar 2025 03:58:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1741337922; x=1741424322; bh=QPeVGTBd43rKn7LkcJDA/FXYNYp2iIcX4WE
+	UvEUfYNM=; b=tQ7yE1EgJ60/UNnooVX4mQmvkVu0xuEswZPUEIJNovrTsWDaOeV
+	+pxZQlK85pyoGpROjrehmBJPfQN80xCqPyan4mGrhB/0ELwTVei5pVUhIQGnN8Z/
+	n8ZA6Bl72ujJt7nM+GAAcPWGaPFst0Uoc0fjskdktQyEnkyDydJklOF8vljQI5DH
+	HTCqstREL9Nd3jLw7iNhFzsCJH8a5mzO8a2N3VMJLrijeFc5sBnDleWM7cpZ5kTE
+	A0rsTUZhZnLfqBIV673rUZF2ErQsf8o4Vk8eiFrFS2OQUTgo8WJys66QRlX8VYEb
+	YGzHlpTPymXoMMR4dTILW+UV8gFPsbVuTlA==
+X-ME-Sender: <xms:QrXKZ_bL6_1JjNNoqg07-tNIduz_4sz4BhuJdZ6x5CRYd3w2QmU_ug>
+    <xme:QrXKZ-b3YpkWD31NY68_lYhQv_OxuBoQWYIInuMJ2nEbRcwLbjkLBgmS2eb41DUh-
+    AqOkdQdQmrYGvVhCEw>
+X-ME-Received: <xmr:QrXKZx-JRC0zqwfGDZbBRL1QMmY2FZ75W_Au-IZDXf4yTzkoapA76XTBtdIKDtVm3mAURAy4fY9n8AYG_VklA7NamLcMZTOqiKE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddtvdehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddv
+    necuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheike
+    hkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffek
+    feffffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhn
+    sggprhgtphhtthhopeeipdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgvggvrh
+    htsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehthhhorhhsthgvnhdrsghl
+    uhhmsehlihhnuhigrdguvghvpdhrtghpthhtohepjhgvrghnmhhitghhvghlrdhhrghuth
+    gsohhisheshihoshgvlhhirdhorhhgpdhrtghpthhtoheplhhinhhugidqmheikehksehl
+    ihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvg
+    hrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvggvsheskhgv
+    rhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:QrXKZ1qo12hFO_G5ANML-5eSLqQZ_-jAS_CAgdLxIiNJ2pT1dN-uWg>
+    <xmx:QrXKZ6pOT-BJZUIgzVRiTJoBOzUDbY-tzlso8su4Arks7Yp-sX2twQ>
+    <xmx:QrXKZ7TWDzRKX1eKCJ7SHp2hpKvpA76HycKw0VtLMBx_d53G6g6eAQ>
+    <xmx:QrXKZyq0Md45kuKrjVGXSpyl-ONSB_VO1xrjgrYHl704P_7gy50MeA>
+    <xmx:QrXKZ3DKV8ffoweirEjSVDm1TLFWHjSeF5CNp-ecBzUmAvu1TW14NZLE>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 7 Mar 2025 03:58:40 -0500 (EST)
+Date: Fri, 7 Mar 2025 19:58:39 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+cc: Thorsten Blum <thorsten.blum@linux.dev>, 
+    Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
+    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+    Kees Cook <kees@kernel.org>
+Subject: Re: [PATCH] m68k: mm: Remove size argument when calling strscpy()
+In-Reply-To: <CAMuHMdWjOkUXy+jf0yghs2_SQM3UWY3e8or3T11=fXYYD-VJEw@mail.gmail.com>
+Message-ID: <dd1425d0-6d46-86a7-b508-ff0a646d61c0@linux-m68k.org>
+References: <20250302230532.245884-2-thorsten.blum@linux.dev> <CAMuHMdUonC54g-XSt-EkNbEGxhkOWMxBc87Qtw0MyeXoPqDD4A@mail.gmail.com> <e5e10808-5cca-243b-304f-4aa8db1d30b6@linux-m68k.org> <CAMuHMdWjOkUXy+jf0yghs2_SQM3UWY3e8or3T11=fXYYD-VJEw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250302230532.245884-2-thorsten.blum@linux.dev>
- <CAMuHMdUonC54g-XSt-EkNbEGxhkOWMxBc87Qtw0MyeXoPqDD4A@mail.gmail.com> <e5e10808-5cca-243b-304f-4aa8db1d30b6@linux-m68k.org>
-In-Reply-To: <e5e10808-5cca-243b-304f-4aa8db1d30b6@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 7 Mar 2025 09:28:09 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWjOkUXy+jf0yghs2_SQM3UWY3e8or3T11=fXYYD-VJEw@mail.gmail.com>
-X-Gm-Features: AQ5f1Jr2qcPxvP5d5iuyyv-KmQbBRQb47zOza6WWuoy8m5L3ptAnJ84hV5gOB4E
-Message-ID: <CAMuHMdWjOkUXy+jf0yghs2_SQM3UWY3e8or3T11=fXYYD-VJEw@mail.gmail.com>
-Subject: Re: [PATCH] m68k: mm: Remove size argument when calling strscpy()
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>, 
-	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, Kees Cook <kees@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Finn,
 
-CC Kees
+On Fri, 7 Mar 2025, Geert Uytterhoeven wrote:
 
-On Fri, 7 Mar 2025 at 00:24, Finn Thain <fthain@linux-m68k.org> wrote:
-> On Thu, 6 Mar 2025, Geert Uytterhoeven wrote:
-> > On Mon, 3 Mar 2025 at 00:07, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> > > The size parameter of strscpy() is optional and specifying the size of
-> > > the destination buffer is unnecessary. Remove it to simplify the code.
+> On Fri, 7 Mar 2025 at 00:24, Finn Thain <fthain@linux-m68k.org> wrote:
+> > On Thu, 6 Mar 2025, Geert Uytterhoeven wrote:
+> > > On Mon, 3 Mar 2025 at 00:07, Thorsten Blum <thorsten.blum@linux.dev> wrote:
+> > > > The size parameter of strscpy() is optional and specifying the 
+> > > > size of the destination buffer is unnecessary. Remove it to 
+> > > > simplify the code.
+> > > >
+> > > > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > > >
-> > > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> > > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org> i.e. will 
+> > > queue in the m68k tree for v6.15.
 > >
-> > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > i.e. will queue in the m68k tree for v6.15.
->
-> The commit message says "simplify the code" which is only true if you
-> never scratch the surface (i.e. it's simple code if the reader is simple
-> too...)
+> > The commit message says "simplify the code" which is only true if you 
+> > never scratch the surface (i.e. it's simple code if the reader is 
+> > simple too...)
+> 
+> The code is simpler in the sense that the API is simpler to use, and 
+> harder to abuse (i.e. to get it wrong).
+> 
+> > Commit 30035e45753b ("string: provide strscpy()") was a good idea. It 
+> > was easily auditable. But that's not what we have now.
+> >
+> > Patches like this one (which appear across the whole tree) need 
+> > reviewers (lots of them) that know what kind of a bounds check you end 
+> > up with when you ask an arbitary compiler to evaluate this:
+> >
+> > sizeof(dst) + __must_be_array(dst) + __must_be_cstr(dst) + 
+> > __must_be_cstr(src)
+> >
+> > Frankly, I can't be sure. But it's a serious question, and not what 
+> > I'd call a "simple" one.
+> 
+> All the __must_be_*() macros evaluate to zero when true, and cause a 
+> build failure when false.
+> 
 
-The code is simpler in the sense that the API is simpler to use,
-and harder to abuse (i.e. to get it wrong).
+It seems to me that the code review problem could be solved either by not 
+churning the whole tree, or if we must have the churn, by short-circuiting 
+the recursive search by reviewers for macro definitions.
 
-> Commit 30035e45753b ("string: provide strscpy()") was a good idea. It was
-> easily auditable. But that's not what we have now.
->
-> Patches like this one (which appear across the whole tree) need reviewers
-> (lots of them) that know what kind of a bounds check you end up with when
-> you ask an arbitary compiler to evaluate this:
->
-> sizeof(dst) + __must_be_array(dst) + __must_be_cstr(dst) + __must_be_cstr(src)
->
-> Frankly, I can't be sure. But it's a serious question, and not what I'd
-> call a "simple" one.
+Can we do something like this?
 
-All the __must_be_*() macros evaluate to zero when true, and cause a
-build failure when false.
+sizeof(dst) * !!__must_be_array(dst) * !!__must_be_cstr(dst) * !!__must_be_cstr(src)
 
-BTW, Linux does not support being built by an "arbitrary compiler":
-only gcc and clang are supported.
+At first glance multiplication appears to be safe (unlike all the addition 
+terms that we have) because the limit of the string copy is either 
+unchanged or zeroed.
 
-Gr{oetje,eeting}s,
+Yes, I know you said "zero when true". That looks like another design flaw 
+to me. But maybe I'm missing something that's more important than 
+readability and ease of review.
 
-                        Geert
+> BTW, Linux does not support being built by an "arbitrary compiler": only 
+> gcc and clang are supported.
+> 
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+So only gcc and clang must agree about all of the details...
