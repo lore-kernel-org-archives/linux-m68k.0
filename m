@@ -1,114 +1,106 @@
-Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22111A841E
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 09:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414E91EDA19
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 09:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741338772; cv=none; b=cLtf+odUj8YVaKzllzrgjnvvn9KT4Ia//GGcujQ+aJ1SEcTVOTy4mW1MoZ19TY9l87MYAFnhtmUSkgYeQKB4UmHIbfphTJiaopOqu1JmI3K1HrtGLwQ8HkKTuKws0V2b20pB3KY+NUX0/2F4eqsxD+v3ruIA+8JK4Efr0mVyDHQ=
+	t=1741338919; cv=none; b=padl8SPzf5oBz/W9YNXUL0i594bPXqlwTRPoQTFSDZdubIIuWytItWp66xVXEPhInVfAB8dEEqIJ3JdnvFO26ADzkZfm4YijnF7oJt9yWhjqWBr+BqCKThWx3kjajZQGnIWuM9H7Y/6kZ7kz1Eyi4TMhtcMoFt3C4fT3V65S5cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741338772; c=relaxed/simple;
-	bh=SI7/zfo5ZeW1S7cwDCksy4BuoO+WtxO6HWfPQp20Qec=;
-	h=To:Cc:Message-ID:From:Subject:Date; b=t9iRtJCxK4aWpnuWxN3dmnRckqGhNGpZ0VwgkOi7eSfxxuqV02V8fNAlYyw8jauQFYIrif+Vk0DWK6lHhYWWFD/LKJaZabchbKiP5T9w0zBgo6+XvCybB7L3NnqyaZHrUukhPfqleo+gGgTqU0UB0J0lj4mD2VQviloRUuWp2P8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PrZzu2Tm; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1741338919; c=relaxed/simple;
+	bh=oV+Zmq3swvvGTbNPzuFOkRVQV5N1AJGr7hewufWRdkQ=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=f6LUBYl+LGbwmDG8XtyM9ApK2DM93vaiCd7y761b16vjzYLp+3nzfcps/hhM8QxpCixCQ23pXL9x/DdurQShgQ+jrMf6Y4ZcJ/ceJS2ql7NeThisKM2euvkqDvQHxv5RCMKcyG8poxpBva+Mb4wIh8t1n9WaB2HdnR6EpXjZc98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HZGOpmwZ; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PrZzu2Tm"
-Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id E6162114010A;
-	Fri,  7 Mar 2025 04:12:49 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Fri, 07 Mar 2025 04:12:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1741338769; x=1741425169; bh=hg3PLU/0C0HunaKuqzKlrTLma1Fo
-	k3lK/tApVH6mYfQ=; b=PrZzu2TmVZzHwRZMKfKbOy3jtmB7DIBbdVm7Jsv/BwOp
-	FjXDLjWijBZG65WRlzfKdX7mjWuHZaMNHVVo51d5LLV3gclEK0EfcL6IhYhz7mcb
-	bY1KZ/wC0R4wqZg2HGh+lIgSDHwQ9ygfMznmKB9hAIDjn1ZLssGrvn59IzOZNMOh
-	jfymPWlunWBvmD7i6fhlXeBUoIZ1t3Owfn4YPwEr+2Ek5xnPz2ujN5MD3bmXEd7I
-	79Gf8Cuk/1r4qsr+URN9aZRNsj0JtC5uhg1oc+vx4Zmlcp6Ce+y21ANsoOgM4VSF
-	yKq3FbSHovCbMpX5c0DeCnSI6kF4HluVn9JJqXdSWA==
-X-ME-Sender: <xms:kbjKZ0laZAw_DfXw_Ax4hIsjzEO52Bnwseiuxp_lTgBtPO5Nv2jcTA>
-    <xme:kbjKZz0jGkHdTKwA83nx7E9kubZae_B87dyfPZa3qtcALPU--pfot3YjXxieAw5Ec
-    BUawVDnxsxjBW7KT5k>
-X-ME-Received: <xmr:kbjKZyonZo1gpzJyhz4G7p3KXiJtlvWpqwVvljS-kKdZ3goc_WBdiUtDbOUQDjbXFaiBzJqwrIYUFvnkHaX1RP2D20TlijMULLU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddtvdekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhr
-    ohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorh
-    hgqeenucggtffrrghtthgvrhhnpefgheduvdegffektdehjeejhfekieelleffgffgjeff
-    hfffueefgefhvdevudegtdenucffohhmrghinhephhgvrggurdhssgenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhu
-    gidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuth
-    dprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthho
-    pehsthgrsghlvgesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
-    igqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohep
-    lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:kbjKZwnVSccfYx3he3o3jtcVXBtcm2thVSsuO5s4g_kZsjLSFSgTuw>
-    <xmx:kbjKZy2PZZ7PJyGMCTuOvfFLc4M8EMtqQPMK1__XSOV79-T5HlqlWw>
-    <xmx:kbjKZ3sAQzQtC8j8bufK7unYyfLDpgUtquNswau4ngPrNqsTtEGsHQ>
-    <xmx:kbjKZ-VH9wCx1M5z1vfAByKu-xJPVNqqwv4pkXy4mk4L4AyjAbQTBQ>
-    <xmx:kbjKZ3zaXrYUoLoP5FKU-TJZwYd3_CdtSvCrplvW5y9l83P8-5YdHu0Q>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Mar 2025 04:12:47 -0500 (EST)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: stable@vger.kernel.org,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <c03e60ce451e4ccdf12830192080be4262b31b89.1741338535.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] m68k: Fix lost column on framebuffer debug console
-Date: Fri, 07 Mar 2025 20:08:55 +1100
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HZGOpmwZ"
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1741338903;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oV+Zmq3swvvGTbNPzuFOkRVQV5N1AJGr7hewufWRdkQ=;
+	b=HZGOpmwZeDtvBshXRH9pxbogeLnwo9LSdNDNaB+0LJENivrNNg0mfNorlL+UckmbPPm4WL
+	5yKXdzkJlGY3CES+E6SyFmkWFtig0/Am+TEBKh645jko0SqRYUq0xs+szA1neQP+ZPKUvZ
+	mznBiNcRTnW88pPqVxZHjI81RAJJC1E=
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51.11.1\))
+Subject: Re: [PATCH] m68k: mm: Remove size argument when calling strscpy()
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Thorsten Blum <thorsten.blum@linux.dev>
+In-Reply-To: <e5e10808-5cca-243b-304f-4aa8db1d30b6@linux-m68k.org>
+Date: Fri, 7 Mar 2025 10:15:00 +0100
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5216B227-6174-4C0A-9126-B8861473A0D3@linux.dev>
+References: <20250302230532.245884-2-thorsten.blum@linux.dev>
+ <CAMuHMdUonC54g-XSt-EkNbEGxhkOWMxBc87Qtw0MyeXoPqDD4A@mail.gmail.com>
+ <e5e10808-5cca-243b-304f-4aa8db1d30b6@linux-m68k.org>
+To: Finn Thain <fthain@linux-m68k.org>
+X-Migadu-Flow: FLOW_OUT
 
-When long lines are sent to the debug console on the framebuffer, the
-right-most column is lost. Fix this by subtracting 1 from the column
-count before comparing it with console_struct_cur_column, as the latter
-counts from zero.
+Hi Finn,
 
-Linewrap is handled with a recursive call to console_putc, but this
-alters the console_struct_cur_row global. Store the old value before
-calling console_putc, so the right-most character gets rendered on the
-correct line.
+On 7. Mar 2025, at 00:24, Finn Thain wrote:
+> On Thu, 6 Mar 2025, Geert Uytterhoeven wrote:
+>> On Mon, 3 Mar 2025 at 00:07, Thorsten Blum wrote:
+>>> The size parameter of strscpy() is optional and specifying the size =
+of
+>>> the destination buffer is unnecessary. Remove it to simplify the =
+code.
+>>>=20
+>>> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+>>=20
+>> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> i.e. will queue in the m68k tree for v6.15.
+>>=20
+> The commit message says "simplify the code" which is only true if you=20=
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- arch/m68k/kernel/head.S | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> never scratch the surface (i.e. it's simple code if the reader is =
+simple=20
+> too...)
 
-diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-index 852255cf60de..9c60047764d0 100644
---- a/arch/m68k/kernel/head.S
-+++ b/arch/m68k/kernel/head.S
-@@ -3583,11 +3583,16 @@ L(console_not_home):
- 	movel	%a0@(Lconsole_struct_cur_column),%d0
- 	addql	#1,%a0@(Lconsole_struct_cur_column)
- 	movel	%a0@(Lconsole_struct_num_columns),%d1
-+	subil	#1,%d1
- 	cmpl	%d1,%d0
- 	jcs	1f
--	console_putc	#'\n'	/* recursion is OK! */
-+	/*	recursion will alter console_struct so load d1 register first */
-+	movel	%a0@(Lconsole_struct_cur_row),%d1
-+	console_putc	#'\n'
-+	jmp	2f
- 1:
- 	movel	%a0@(Lconsole_struct_cur_row),%d1
-+2:
- 
- 	/*
- 	 *	At this point we make a shift in register usage
--- 
-2.45.3
+strscpy() automatically determines the length of the destination buffer
+using sizeof() if the size argument is omitted. This makes the explicit
+sizeof(m68k_command_line) unnecessary, so removing it shortens the code
+without changing its behavior.
+
+Both macro calls expand to the same code, and I find the shorter version
+simpler to read (this doesn't mean that strscpy() itself is simple).
+
+> Commit 30035e45753b ("string: provide strscpy()") was a good idea. It =
+was=20
+> easily auditable. But that's not what we have now.
+>=20
+> Patches like this one (which appear across the whole tree) need =
+reviewers=20
+> (lots of them) that know what kind of a bounds check you end up with =
+when=20
+> you ask an arbitary compiler to evaluate this:
+>=20
+> sizeof(dst) + __must_be_array(dst) + __must_be_cstr(dst) + =
+__must_be_cstr(src)
+>=20
+> Frankly, I can't be sure. But it's a serious question, and not what =
+I'd=20
+> call a "simple" one.
+
+I'm not sure I fully understand this part or how it's related to this
+change. This patch doesn't change bounds checking, it just removes an
+unnecessary macro argument.
+
+Thanks,
+Thorsten
 
