@@ -1,141 +1,114 @@
 Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9CB199E94
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 08:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22111A841E
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 09:12:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741337926; cv=none; b=Xcv1xQCVa/PEXI8QBiqsihz0Zk+b9oTIoFDjmpS6IFsH7q8FVQwNW5ZNxrp0m4NbSlm7cFclwGNRskd26MUPRYPTwjqTSYcg56cFPaklo3+VD19FaSfXaL+oFJixuduodv3UQepCfht9NfQH6bfb833Q7uqhpltWb+KurP7Wplk=
+	t=1741338772; cv=none; b=cLtf+odUj8YVaKzllzrgjnvvn9KT4Ia//GGcujQ+aJ1SEcTVOTy4mW1MoZ19TY9l87MYAFnhtmUSkgYeQKB4UmHIbfphTJiaopOqu1JmI3K1HrtGLwQ8HkKTuKws0V2b20pB3KY+NUX0/2F4eqsxD+v3ruIA+8JK4Efr0mVyDHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741337926; c=relaxed/simple;
-	bh=ZjIQfWG83oRMyHUQO4OLqSgSMHEWjUJSojUPoWkoC0c=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=dh4QIZDaDonKJANvDXPH1NrhOY/DqTXu8fJ/lyCWVT+5fK2CDU23M+Jmdy6gsu83e22pPAxFq+IXsDDWGvmFpMkXRB1303+97Y+MAAk38ScRL+GQRSX2nw7zU9vALFzun9RRYzgz/8KZ8yptfLXqRZw+EktJzGITqVX5JpitHFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=tQ7yE1Eg; arc=none smtp.client-ip=103.168.172.158
+	s=arc-20240116; t=1741338772; c=relaxed/simple;
+	bh=SI7/zfo5ZeW1S7cwDCksy4BuoO+WtxO6HWfPQp20Qec=;
+	h=To:Cc:Message-ID:From:Subject:Date; b=t9iRtJCxK4aWpnuWxN3dmnRckqGhNGpZ0VwgkOi7eSfxxuqV02V8fNAlYyw8jauQFYIrif+Vk0DWK6lHhYWWFD/LKJaZabchbKiP5T9w0zBgo6+XvCybB7L3NnqyaZHrUukhPfqleo+gGgTqU0UB0J0lj4mD2VQviloRUuWp2P8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PrZzu2Tm; arc=none smtp.client-ip=103.168.172.158
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="tQ7yE1Eg"
-Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id C62CB11401BE;
-	Fri,  7 Mar 2025 03:58:42 -0500 (EST)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PrZzu2Tm"
+Received: from phl-compute-12.internal (phl-compute-12.phl.internal [10.202.2.52])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id E6162114010A;
+	Fri,  7 Mar 2025 04:12:49 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-09.internal (MEProxy); Fri, 07 Mar 2025 03:58:42 -0500
+  by phl-compute-12.internal (MEProxy); Fri, 07 Mar 2025 04:12:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1741337922; x=1741424322; bh=QPeVGTBd43rKn7LkcJDA/FXYNYp2iIcX4WE
-	UvEUfYNM=; b=tQ7yE1EgJ60/UNnooVX4mQmvkVu0xuEswZPUEIJNovrTsWDaOeV
-	+pxZQlK85pyoGpROjrehmBJPfQN80xCqPyan4mGrhB/0ELwTVei5pVUhIQGnN8Z/
-	n8ZA6Bl72ujJt7nM+GAAcPWGaPFst0Uoc0fjskdktQyEnkyDydJklOF8vljQI5DH
-	HTCqstREL9Nd3jLw7iNhFzsCJH8a5mzO8a2N3VMJLrijeFc5sBnDleWM7cpZ5kTE
-	A0rsTUZhZnLfqBIV673rUZF2ErQsf8o4Vk8eiFrFS2OQUTgo8WJys66QRlX8VYEb
-	YGzHlpTPymXoMMR4dTILW+UV8gFPsbVuTlA==
-X-ME-Sender: <xms:QrXKZ_bL6_1JjNNoqg07-tNIduz_4sz4BhuJdZ6x5CRYd3w2QmU_ug>
-    <xme:QrXKZ-b3YpkWD31NY68_lYhQv_OxuBoQWYIInuMJ2nEbRcwLbjkLBgmS2eb41DUh-
-    AqOkdQdQmrYGvVhCEw>
-X-ME-Received: <xmr:QrXKZx-JRC0zqwfGDZbBRL1QMmY2FZ75W_Au-IZDXf4yTzkoapA76XTBtdIKDtVm3mAURAy4fY9n8AYG_VklA7NamLcMZTOqiKE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddtvdehucetufdoteggodetrf
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1741338769; x=1741425169; bh=hg3PLU/0C0HunaKuqzKlrTLma1Fo
+	k3lK/tApVH6mYfQ=; b=PrZzu2TmVZzHwRZMKfKbOy3jtmB7DIBbdVm7Jsv/BwOp
+	FjXDLjWijBZG65WRlzfKdX7mjWuHZaMNHVVo51d5LLV3gclEK0EfcL6IhYhz7mcb
+	bY1KZ/wC0R4wqZg2HGh+lIgSDHwQ9ygfMznmKB9hAIDjn1ZLssGrvn59IzOZNMOh
+	jfymPWlunWBvmD7i6fhlXeBUoIZ1t3Owfn4YPwEr+2Ek5xnPz2ujN5MD3bmXEd7I
+	79Gf8Cuk/1r4qsr+URN9aZRNsj0JtC5uhg1oc+vx4Zmlcp6Ce+y21ANsoOgM4VSF
+	yKq3FbSHovCbMpX5c0DeCnSI6kF4HluVn9JJqXdSWA==
+X-ME-Sender: <xms:kbjKZ0laZAw_DfXw_Ax4hIsjzEO52Bnwseiuxp_lTgBtPO5Nv2jcTA>
+    <xme:kbjKZz0jGkHdTKwA83nx7E9kubZae_B87dyfPZa3qtcALPU--pfot3YjXxieAw5Ec
+    BUawVDnxsxjBW7KT5k>
+X-ME-Received: <xmr:kbjKZyonZo1gpzJyhz4G7p3KXiJtlvWpqwVvljS-kKdZ3goc_WBdiUtDbOUQDjbXFaiBzJqwrIYUFvnkHaX1RP2D20TlijMULLU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduuddtvdekucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddv
-    necuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheike
-    hkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffek
-    feffffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhn
-    sggprhgtphhtthhopeeipdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgvggvrh
-    htsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehthhhorhhsthgvnhdrsghl
-    uhhmsehlihhnuhigrdguvghvpdhrtghpthhtohepjhgvrghnmhhitghhvghlrdhhrghuth
-    gsohhisheshihoshgvlhhirdhorhhgpdhrtghpthhtoheplhhinhhugidqmheikehksehl
-    ihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvg
-    hrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvggvsheskhgv
-    rhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:QrXKZ1qo12hFO_G5ANML-5eSLqQZ_-jAS_CAgdLxIiNJ2pT1dN-uWg>
-    <xmx:QrXKZ6pOT-BJZUIgzVRiTJoBOzUDbY-tzlso8su4Arks7Yp-sX2twQ>
-    <xmx:QrXKZ7TWDzRKX1eKCJ7SHp2hpKvpA76HycKw0VtLMBx_d53G6g6eAQ>
-    <xmx:QrXKZyq0Md45kuKrjVGXSpyl-ONSB_VO1xrjgrYHl704P_7gy50MeA>
-    <xmx:QrXKZ3DKV8ffoweirEjSVDm1TLFWHjSeF5CNp-ecBzUmAvu1TW14NZLE>
+    gvnhhtshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhr
+    ohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorh
+    hgqeenucggtffrrghtthgvrhhnpefgheduvdegffektdehjeejhfekieelleffgffgjeff
+    hfffueefgefhvdevudegtdenucffohhmrghinhephhgvrggurdhssgenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhu
+    gidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuth
+    dprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthho
+    pehsthgrsghlvgesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuh
+    igqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:kbjKZwnVSccfYx3he3o3jtcVXBtcm2thVSsuO5s4g_kZsjLSFSgTuw>
+    <xmx:kbjKZy2PZZ7PJyGMCTuOvfFLc4M8EMtqQPMK1__XSOV79-T5HlqlWw>
+    <xmx:kbjKZ3sAQzQtC8j8bufK7unYyfLDpgUtquNswau4ngPrNqsTtEGsHQ>
+    <xmx:kbjKZ-VH9wCx1M5z1vfAByKu-xJPVNqqwv4pkXy4mk4L4AyjAbQTBQ>
+    <xmx:kbjKZ3zaXrYUoLoP5FKU-TJZwYd3_CdtSvCrplvW5y9l83P8-5YdHu0Q>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 7 Mar 2025 03:58:40 -0500 (EST)
-Date: Fri, 7 Mar 2025 19:58:39 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
+ 7 Mar 2025 04:12:47 -0500 (EST)
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: Thorsten Blum <thorsten.blum@linux.dev>, 
-    Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
-    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-    Kees Cook <kees@kernel.org>
-Subject: Re: [PATCH] m68k: mm: Remove size argument when calling strscpy()
-In-Reply-To: <CAMuHMdWjOkUXy+jf0yghs2_SQM3UWY3e8or3T11=fXYYD-VJEw@mail.gmail.com>
-Message-ID: <dd1425d0-6d46-86a7-b508-ff0a646d61c0@linux-m68k.org>
-References: <20250302230532.245884-2-thorsten.blum@linux.dev> <CAMuHMdUonC54g-XSt-EkNbEGxhkOWMxBc87Qtw0MyeXoPqDD4A@mail.gmail.com> <e5e10808-5cca-243b-304f-4aa8db1d30b6@linux-m68k.org> <CAMuHMdWjOkUXy+jf0yghs2_SQM3UWY3e8or3T11=fXYYD-VJEw@mail.gmail.com>
+Cc: stable@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    linux-kernel@vger.kernel.org
+Message-ID: <c03e60ce451e4ccdf12830192080be4262b31b89.1741338535.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] m68k: Fix lost column on framebuffer debug console
+Date: Fri, 07 Mar 2025 20:08:55 +1100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 
+When long lines are sent to the debug console on the framebuffer, the
+right-most column is lost. Fix this by subtracting 1 from the column
+count before comparing it with console_struct_cur_column, as the latter
+counts from zero.
 
-On Fri, 7 Mar 2025, Geert Uytterhoeven wrote:
+Linewrap is handled with a recursive call to console_putc, but this
+alters the console_struct_cur_row global. Store the old value before
+calling console_putc, so the right-most character gets rendered on the
+correct line.
 
-> On Fri, 7 Mar 2025 at 00:24, Finn Thain <fthain@linux-m68k.org> wrote:
-> > On Thu, 6 Mar 2025, Geert Uytterhoeven wrote:
-> > > On Mon, 3 Mar 2025 at 00:07, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> > > > The size parameter of strscpy() is optional and specifying the 
-> > > > size of the destination buffer is unnecessary. Remove it to 
-> > > > simplify the code.
-> > > >
-> > > > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> > >
-> > > Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org> i.e. will 
-> > > queue in the m68k tree for v6.15.
-> >
-> > The commit message says "simplify the code" which is only true if you 
-> > never scratch the surface (i.e. it's simple code if the reader is 
-> > simple too...)
-> 
-> The code is simpler in the sense that the API is simpler to use, and 
-> harder to abuse (i.e. to get it wrong).
-> 
-> > Commit 30035e45753b ("string: provide strscpy()") was a good idea. It 
-> > was easily auditable. But that's not what we have now.
-> >
-> > Patches like this one (which appear across the whole tree) need 
-> > reviewers (lots of them) that know what kind of a bounds check you end 
-> > up with when you ask an arbitary compiler to evaluate this:
-> >
-> > sizeof(dst) + __must_be_array(dst) + __must_be_cstr(dst) + 
-> > __must_be_cstr(src)
-> >
-> > Frankly, I can't be sure. But it's a serious question, and not what 
-> > I'd call a "simple" one.
-> 
-> All the __must_be_*() macros evaluate to zero when true, and cause a 
-> build failure when false.
-> 
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+ arch/m68k/kernel/head.S | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-It seems to me that the code review problem could be solved either by not 
-churning the whole tree, or if we must have the churn, by short-circuiting 
-the recursive search by reviewers for macro definitions.
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index 852255cf60de..9c60047764d0 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -3583,11 +3583,16 @@ L(console_not_home):
+ 	movel	%a0@(Lconsole_struct_cur_column),%d0
+ 	addql	#1,%a0@(Lconsole_struct_cur_column)
+ 	movel	%a0@(Lconsole_struct_num_columns),%d1
++	subil	#1,%d1
+ 	cmpl	%d1,%d0
+ 	jcs	1f
+-	console_putc	#'\n'	/* recursion is OK! */
++	/*	recursion will alter console_struct so load d1 register first */
++	movel	%a0@(Lconsole_struct_cur_row),%d1
++	console_putc	#'\n'
++	jmp	2f
+ 1:
+ 	movel	%a0@(Lconsole_struct_cur_row),%d1
++2:
+ 
+ 	/*
+ 	 *	At this point we make a shift in register usage
+-- 
+2.45.3
 
-Can we do something like this?
-
-sizeof(dst) * !!__must_be_array(dst) * !!__must_be_cstr(dst) * !!__must_be_cstr(src)
-
-At first glance multiplication appears to be safe (unlike all the addition 
-terms that we have) because the limit of the string copy is either 
-unchanged or zeroed.
-
-Yes, I know you said "zero when true". That looks like another design flaw 
-to me. But maybe I'm missing something that's more important than 
-readability and ease of review.
-
-> BTW, Linux does not support being built by an "arbitrary compiler": only 
-> gcc and clang are supported.
-> 
-
-So only gcc and clang must agree about all of the details...
