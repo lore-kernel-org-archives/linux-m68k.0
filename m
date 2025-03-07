@@ -1,58 +1,58 @@
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6C321ABDD
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 16:25:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEF321CC69
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  7 Mar 2025 16:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741364744; cv=none; b=GQ6aeKieHNkSZ4RLTpI4eZcKQEK0QBcoDT2+bgHaCKV6WaasF/HhifL1W6FSTuXyu+dqgekEmbMGG4w8oPTeYYglGqIcX3wpQL59ezigQZSYNs3rZhpp2h8HEn95Xq+yIBaR7E6jKs2dyB1ojlqu4cDk9JlwNLEnckdUO8ohpHQ=
+	t=1741364904; cv=none; b=IlCnmF4LKgtYADKpCF8Fwy3nw8HtDmcjJZNLrvnoZSC/cx2ft/t2g3bpOGrpU82sp1tOFNMnHjGFBnXhtBvwnzJI0Rg/nsOXpQFr9IYpUWdmh1REeG9mym1L1mTsVcGZf8m19C7fHJhv62Vidj2NmH5n8CNXzgfrmhJ0+dwot2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741364744; c=relaxed/simple;
-	bh=giPxlOl7TDridoBWV8RecilAZ2Za0fOPCa3TpMO7LiY=;
+	s=arc-20240116; t=1741364904; c=relaxed/simple;
+	bh=VxcHd1H17cUMYI5rNpPX51cxBoA6PriWVOZUqZM5llk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KPC49r5V/7pSDronRtiSMxMfO3rBeGcUvo7rUfnJ8DeqwNQP8KoA+c64kow+qITuo9hXfP4Abyr4b5BUvRINOJPhpsRIL2KM6kVpIBk9ce5eDvSWTOHpuEpItDrk4R12v2acT6duZle30dum+vmX4SSrsqhZptLomBwaTBIyqiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZ2PJe1z; arc=none smtp.client-ip=209.85.208.179
+	 To:Cc:Content-Type; b=kmrovpGzNUJtwZySqlUB2HtLZTjEmwt2UiTFJOEVRB75D5u0rcJJt5wxIKN8669iTakJUkhtDMXd8SgKO+nJKHuuPVENh79G4V3BkL/LCvlpBXV9Tshqej6H/pIHIImtlsEGsuUEGJyXlh3bDtPQb+HW2rdleeU/GeL5jyQvhMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LlxdAss/; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZ2PJe1z"
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-30bf7d0c15eso7386101fa.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Mar 2025 08:25:42 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LlxdAss/"
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-30615661f98so21120671fa.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 07 Mar 2025 08:28:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741364741; x=1741969541; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1741364901; x=1741969701; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GniiXwrf8dME3pfrOSLg2j3Gf/5JWPlw9dqX608bhBE=;
-        b=bZ2PJe1zh/VeNRQ6JDOgpL0pzNlGF09dLWUMak2sw6Rklk1J2zfzyz4g5ZetuQx726
-         Kb07345SozBU2leY26VZhbCacBy6csKzHq1QiOSbshEg/6PYaEvH3RL+922edIMAekVq
-         Q4e7X67rc3kWoAEfNMMAC3S6XUPklT4YSNvqKfUUFsOPRkq5PvmuOWAXR5CCHYkFC/cN
-         7d+XSpE18c98cBbo7QtcaXbyCrbK7l4TxL1/xoDfQ1PWLVWecd6ki6hhX9BLPi7laQ2t
-         CoHjSgaaAC0atyMdAx/2k6y8TbwYCG1dP+d6DE7un3zOiYDL1eGaAbNu3Tr6UeWKE6Pd
-         lYmA==
+        bh=9LDrfNP0P1DLF6th+Id2FgZJU1V1LRDhdOalVdghfLk=;
+        b=LlxdAss/IzTBqd83Q694Xwy+9fcFZEnluN3xHl7UbX5y6DA+dOWE7B+9Y1LUqwe+lr
+         xyU3TlnBwFCa5orjNvPw1+1RScmbL1O9aCpWpoZm+dFD+7W8fxUl2GyI9NxedcSa3m32
+         luuy1RKLanjNgHKL0LX09GmCQG0/DN6Qi5FqFK8LmLEDYF7KollL3yQA6dFajwZTpvLD
+         jG+k5ms8cWYaRpC0RSi5guZ8FczPPj10c2TEFl2Y44rc7VZACJRuYSUI/ZMgNvsqQHqh
+         2TwLK7piPK6hk4EB334E4/+5x0JfkT8krZWGgAdwE2xWZxsa3RGxvkCzNsnrZPUPF/28
+         lA3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741364741; x=1741969541;
+        d=1e100.net; s=20230601; t=1741364901; x=1741969701;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GniiXwrf8dME3pfrOSLg2j3Gf/5JWPlw9dqX608bhBE=;
-        b=vWObDE6mSs1eN6Jc7ypr8ZPXjRktu29GSCJKdYp/KDzIYZLnaTdCpfYA0z9uPTvIlM
-         Os3dl0n4rV9nxwIiFaKby3nQ+QdtNbn34Tau9Jjc649uLbn32BwCf+tLIe3OMH+qruR9
-         9cvCji3zHekVPUBlHxdHMPzqAiFj6nkrtQmlyezLZRg5kMTDZLbftHcNeOqrW5zxomh0
-         qWEEkltbVSx6fepJvwXgqTXClcEXTxUjtGwseF4wZntjn3+iwItzY5SHgKoXdDX45Ysh
-         Nlta37Gb/g3XeAT471uv5/WHoxhdZ6S2LaPoGizrXiTxk2Hbl+lfqSGJ2JAAR+Ikpuvh
-         eAkw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+siBPQp+E13MzircIHdN4BUHLCQkEEnkPqxMVixRZZPPzQ/lrNimkT7o591p+yIkHtlJ7x5njM1tH@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yz2EV/rhu3DysyLO8BdQSX2xWdQ3gi/dqyzgTWFhhUjWnVgLx8Z
-	tjYjY1G+GOVoAjipCYEi4edOYHRs7FOxKKKsXGOC2FXfvU+BWDO2sjVupmuuZA+hxmWR3+blGoB
-	aL4e1pdzZEd8yoHXHTd84fmY7UTQ=
-X-Gm-Gg: ASbGncvHWEt+ZMqNJ5iKpmQ5VPsk0meN/umYb9UzsPWGb1EOoQtBfI5Qd7QKORcZe6/
-	ja6Dn0vUTAKwmze9VXoEHI1sFsPQNNC7GSSECtRTeaVKwN4VxG3MFJ4PBP+YxtDOV7s2gzwgisH
-	zo4uMW6caX9Y6UFh4alndIcTBuQpqWKVp5dyXw13ZR2gGY9XC/2N1CwSEv8TNc
-X-Google-Smtp-Source: AGHT+IEVB3KglQh/9Sn2MMnIIn4pSiWyREt2/PrZgQihsBRdaIE1s+RXe6lakVpGzZy3kRntdwBmJuURZ+hTf4hVYmI=
-X-Received: by 2002:a2e:bc16:0:b0:30b:ca48:1089 with SMTP id
- 38308e7fff4ca-30bf44ed6f9mr12793991fa.2.1741364740761; Fri, 07 Mar 2025
- 08:25:40 -0800 (PST)
+        bh=9LDrfNP0P1DLF6th+Id2FgZJU1V1LRDhdOalVdghfLk=;
+        b=p8k+fwLcy83YMsXpjDTCTKD7/9HOf+/8COOu+6KVsqD5vgTrIVfc0JnVuClPk8DWEs
+         a4jB8jyTMQdz3XKFYvhyyOzgXJMdE1+VoaQB6ewoEW8etEFk+ghtjrGjK/WNaZDqIADk
+         yd0/uIVGSJJ1Z0v8XBKWkv2ChRX0LHPtXTF50vdRKQFQif+9yKB5TSgfrz8AKKMr+fhX
+         5BKpyHQUVj5fG0e3qAX2CqqHGnF2I1YgoxFDhQcTQhuc5Ps2q16EKuDfhaajF0jsifZb
+         eo03947nccS0dpVDo6EBurZTKoAsjuJRIOEiFXvbkjaxbM+JCtE5o9RX1afHOUlFi1bV
+         eNBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVaiOAbkCQbBNe7T3iq1+8tLd6qLJT8e9Bt+zpqsa55OBI2G2Nv4w59R/1nzHQRpLzlFE6U09fdbLuR@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy1zFg2lLBynYRF/Ymz/un9GhU45V294kMmtblopNlJy71Ewqv7
+	6tnR2U7i+vRS8bpLzuJLRvPgbJ0vfcRln/sFX4kZXovnl93Zp48Ekn+w6y2xJx3QXgWJ+xoudcL
+	L3mGgS+0SagyJuCI+S1SNWY1f85w=
+X-Gm-Gg: ASbGncsxyJBTnbNeYshUKsScbKLffTsWf5fPTSKTuMG4UE+LigRrZJV8BnHGV/iQ7ua
+	xFwDbyy/0L85hDgizHpGdFhaTtoj5jMwhqNdFgxc9oKMjKYDo3RNbZATNF3lN6FLXfV1V8z49et
+	8AYMA5x9mRrcrRHabGjB2+nHpdGLsGFNZL+6lpKVvE0P2MhEQZg1RtkCDR9yLq
+X-Google-Smtp-Source: AGHT+IHx1kUvjF00AHJ9J3L5ITEytbdRfQvXtFGFxoLSrqiRjEGD72zbGCOCsERKFlZxWvUyGiVWpVwdMG0d68/WjgE=
+X-Received: by 2002:a05:651c:1502:b0:30b:d187:622b with SMTP id
+ 38308e7fff4ca-30bf452957cmr18814461fa.18.1741364900897; Fri, 07 Mar 2025
+ 08:28:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -60,13 +60,15 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250221-printf-kunit-convert-v5-0-5db840301730@gmail.com>
- <20250221-printf-kunit-convert-v5-2-5db840301730@gmail.com> <Z8scO-LsAWxdYIfJ@pathway.suse.cz>
-In-Reply-To: <Z8scO-LsAWxdYIfJ@pathway.suse.cz>
+ <20250221-printf-kunit-convert-v5-1-5db840301730@gmail.com>
+ <Z8mUH0comOCpycpK@pathway.suse.cz> <CAJ-ks9nFSzRXFauavzSWhvhr2Rou7qqkWi_LZ=4e1Tyr4_bn3g@mail.gmail.com>
+ <Z8sYOm4qovtdOSI7@pathway.suse.cz>
+In-Reply-To: <Z8sYOm4qovtdOSI7@pathway.suse.cz>
 From: Tamir Duberstein <tamird@gmail.com>
-Date: Fri, 7 Mar 2025 11:25:04 -0500
-X-Gm-Features: AQ5f1JpnB54iyHb2NlPpIPbsEeQBbd1J-Q5YzDRd9TuRGbggczJShE8KVb5vftU
-Message-ID: <CAJ-ks9mb5pz4KWN_N-wd0k932bfhSjQuFEsXDrBxj9+RHSNWGA@mail.gmail.com>
-Subject: Re: crng init: was: Re: [PATCH v5 2/3] printf: break kunit into test cases
+Date: Fri, 7 Mar 2025 11:27:44 -0500
+X-Gm-Features: AQ5f1JqgJJnekMi4RiL3kK2pqFYWGaUWb_12GtlPRw-AyLWVF2WVbXCe9PmZGXQ
+Message-ID: <CAJ-ks9k5wLpeg7JFL-T6SYN62y7FWeQDbS9Q34TC-zY-dyM3HQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] printf: convert self-test to KUnit
 To: Petr Mladek <pmladek@suse.com>
 Cc: Arpitha Raghunandan <98.arpi@gmail.com>, David Gow <davidgow@google.com>, 
 	Steven Rostedt <rostedt@goodmis.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
@@ -82,216 +84,97 @@ Cc: Arpitha Raghunandan <98.arpi@gmail.com>, David Gow <davidgow@google.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 7, 2025 at 11:18=E2=80=AFAM Petr Mladek <pmladek@suse.com> wrot=
+On Fri, Mar 7, 2025 at 11:01=E2=80=AFAM Petr Mladek <pmladek@suse.com> wrot=
 e:
 >
-> On Fri 2025-02-21 15:34:31, Tamir Duberstein wrote:
-> > Move all tests into `printf_test_cases`. This gives us nicer output in
-> > the event of a failure.
+> On Thu 2025-03-06 09:25:43, Tamir Duberstein wrote:
+> > On Thu, Mar 6, 2025 at 7:25=E2=80=AFAM Petr Mladek <pmladek@suse.com> w=
+rote:
+> > >
+> > > On Fri 2025-02-21 15:34:30, Tamir Duberstein wrote:
+> > > > Convert the printf() self-test to a KUnit test.
+> > > >
+> > > > In the interest of keeping the patch reasonably-sized this doesn't
+> > > > refactor the tests into proper parameterized tests - it's all one b=
+ig
+> > > > test case.
+> > > >
+> > > > --- a/lib/test_printf.c
+> > > > +++ b/lib/tests/printf_kunit.c
+> > > > @@ -57,52 +58,50 @@ do_test(int bufsize, const char *expect, int el=
+en,
+> > > >       va_end(aq);
+> > > >
+> > > >       if (ret !=3D elen) {
+> > > > -             pr_warn("vsnprintf(buf, %d, \"%s\", ...) returned %d,=
+ expected %d\n",
+> > > > +             tc_fail("vsnprintf(buf, %d, \"%s\", ...) returned %d,=
+ expected %d",
+> > >
+> > > 1. It looks a bit strange that the 1st patch replaces pr_warn() with
+> > >    tc_fail() which hides KUNIT_FAIL().
+> > >
+> > >    And the 2nd patch replaces tc_fail() with KUNIT_FAIL().
+> > >
+> > >    It looks like a non-necessary churn.
+> > >
+> > >    It would be better to avoid the temporary "tc_fail" and swith to
+> > >    KUNIT_FAIL() already in this patch.
+> > >
+> > >    I did not find any comment about this in the earier versions of th=
+e
+> > >    patchset.
+> > >
+> > >    Is it just a result of the evolution of the patchset or
+> > >    is there any motivation for this?
 > >
-> > Combine `plain_format` and `plain_hash` into `hash_pointer` since
-> > they're testing the same scenario.
-> >
-> > --- a/lib/tests/printf_kunit.c
-> > +++ b/lib/tests/printf_kunit.c
-> > @@ -178,7 +179,7 @@ test_number(void)
-> >  }
-> >
-> >  static void
-> > -test_string(void)
-> > +test_string(struct kunit *kunittest)
-> >  {
-> >       test("", "%s%.0s", "", "123");
-> >       test("ABCD|abc|123", "%s|%.3s|%.*s", "ABCD", "abcdef", 3, "123456=
-");
-> > @@ -215,29 +216,6 @@ test_string(void)
-> >  #define ZEROS "00000000"     /* hex 32 zero bits */
-> >  #define ONES "ffffffff"              /* hex 32 one bits */
-> >
-> > -static int
-> > -plain_format(void)
-> > -{
-> > -     char buf[PLAIN_BUF_SIZE];
-> > -     int nchars;
-> > -
-> > -     nchars =3D snprintf(buf, PLAIN_BUF_SIZE, "%p", PTR);
-> > -
-> > -     if (nchars !=3D PTR_WIDTH)
-> > -             return -1;
-> > -
-> > -     if (strncmp(buf, PTR_VAL_NO_CRNG, PTR_WIDTH) =3D=3D 0) {
-> > -             kunit_warn(kunittest, "crng possibly not yet initialized.=
- plain 'p' buffer contains \"%s\"",
-> > -                     PTR_VAL_NO_CRNG);
-> > -             return 0;
-> > -     }
-> > -
-> > -     if (strncmp(buf, ZEROS, strlen(ZEROS)) !=3D 0)
-> > -             return -1;
-> > -
-> > -     return 0;
-> > -}
-> > -
-> >  #else
-> >
-> >  #define PTR_WIDTH 8
-> > @@ -247,89 +225,44 @@ plain_format(void)
-> >  #define ZEROS ""
-> >  #define ONES ""
-> >
-> > -static int
-> > -plain_format(void)
-> > -{
-> > -     /* Format is implicitly tested for 32 bit machines by plain_hash(=
-) */
-> > -     return 0;
-> > -}
-> > -
-> >  #endif       /* BITS_PER_LONG =3D=3D 64 */
-> >
-> > -static int
-> > -plain_hash_to_buffer(const void *p, char *buf, size_t len)
-> > +static void
-> > +plain_hash_to_buffer(struct kunit *kunittest, const void *p, char *buf=
-, size_t len)
-> >  {
-> > -     int nchars;
-> > -
-> > -     nchars =3D snprintf(buf, len, "%p", p);
-> > -
-> > -     if (nchars !=3D PTR_WIDTH)
-> > -             return -1;
-> > +     KUNIT_ASSERT_EQ(kunittest, snprintf(buf, len, "%p", p), PTR_WIDTH=
-);
-> >
-> >       if (strncmp(buf, PTR_VAL_NO_CRNG, PTR_WIDTH) =3D=3D 0) {
-> >               kunit_warn(kunittest, "crng possibly not yet initialized.=
- plain 'p' buffer contains \"%s\"",
-> >                       PTR_VAL_NO_CRNG);
-> > -             return 0;
+> > The motivation was to keep the width of the macro the same in this
+> > first patch for ease of review, particularly in the 7 instances where
+> > the invocation wraps to a second line. If you prefer I go straight to
+> > KUNIT_FAIL, I can make that change.
 >
-> I have simulated the not-yet-initialized crng and got:
->
-> [   80.109760] printf_kunit: module verification failed: signature and/or=
- required key missing - tainting kernel
-> [   80.114218] KTAP version 1
-> [   80.114743] 1..1
-> [   80.116124]     KTAP version 1
-> [   80.116752]     # Subtest: printf
-> [   80.117239]     # module: printf_kunit
-> [   80.117256]     1..28
-> [   80.120924]     ok 1 test_basic
-> [   80.121495]     ok 2 test_number
-> [   80.122741]     ok 3 test_string
-> [   80.123498]     # hash_pointer: crng possibly not yet initialized. pla=
-in 'p' buffer contains "(____ptrval____)"
-> [   80.124044]     # hash_pointer: EXPECTATION FAILED at lib/tests/printf=
-_kunit.c:256
->                    Expected buf =3D=3D "00000000", but
->                        buf =3D=3D
->                        <28><5f><5f><5f><5f><70><74><72>
->                        "00000000" =3D=3D
->                        <30><30><30><30><30><30><30><30>
-> [   80.125888]     not ok 4 hash_pointer
-> [   80.129831]     ok 5 null_pointer
-> [   80.130253]     ok 6 error_pointer
-> [   80.131221]     # invalid_pointer: crng possibly not yet initialized. =
-plain 'p' buffer contains "(____ptrval____)"
-> [   80.132168]     ok 7 invalid_pointer
-> [   80.135149]     ok 8 symbol_ptr
-> [   80.136016]     ok 9 kernel_ptr
-> [   80.136868]     ok 10 struct_resource
-> [   80.137768]     ok 11 struct_range
-> [   80.138613]     ok 12 addr
-> [   80.139370]     ok 13 escaped_str
-> [   80.140054]     ok 14 hex_string
-> [   80.140601]     ok 15 mac
-> [   80.141162]     ok 16 ip4
-> [   80.141670]     ok 17 ip6
-> [   80.142221]     ok 18 uuid
-> [   80.143090]     ok 19 dentry
-> [   80.143963]     ok 20 struct_va_format
-> [   80.144523]     ok 21 time_and_date
-> [   80.145043]     ok 22 struct_clk
-> [   80.145589]     ok 23 bitmap
-> [   80.146087]     ok 24 netdev_features
-> [   80.146572]     ok 25 flags
-> [   80.146980]     # errptr: crng possibly not yet initialized. plain 'p'=
- buffer contains "(____ptrval____)"
-> [   80.147412]     ok 26 errptr
-> [   80.148548]     ok 27 fwnode_pointer
-> [   80.149086]     ok 28 fourcc_pointer
-> [   80.149090]     # printf: ran 448 tests
-> [   80.149099] # printf: pass:27 fail:1 skip:0 total:28
-> [   80.149102] # Totals: pass:27 fail:1 skip:0 total:28
-> [   80.149106] not ok 1 printf
->
-> =3D> One test failed even though vspritf() worked as expected.
->
->    The "EXPECTATION FAILED" message was a bit tricky because
->    it printed "<28><5f><5f><5f><5f><70><74><72>" instead of "(____ptrval_=
-___)".
->
->    Two tests succeeded even after a warning message which would make peop=
-le
->    to investigate it.
->
-> I suggest to rather skip the test in this case. Something like:
->
->         if (strncmp(buf, PTR_VAL_NO_CRNG, PTR_WIDTH) =3D=3D 0) {
->                 kunit_skip(kunittest,
->                            "crng possibly not yet initialized. plain 'p' =
-buffer contains \"%s\"\n",
->                            PTR_VAL_NO_CRNG);
->         }
->
->
-> It produces:
->
-> [  140.555055] KTAP version 1
-> [  140.555413] 1..1
-> [  140.555796]     KTAP version 1
-> [  140.556115]     # Subtest: printf
-> [  140.556450]     # module: printf_kunit
-> [  140.556459]     1..28
-> [  140.557757]     ok 1 test_basic
-> [  140.558072]     ok 2 test_number
-> [  140.558693]     ok 3 test_string
-> [  140.559278]     ok 4 hash_pointer # SKIP crng possibly not yet initial=
-ized. plain 'p' buffer contains "(____ptrval____)"
-> [  140.560949]     ok 5 null_pointer
-> [  140.561257]     ok 6 error_pointer
-> [  140.561880]     ok 7 invalid_pointer # SKIP crng possibly not yet init=
-ialized. plain 'p' buffer contains "(____ptrval____)"
-> [  140.564159]     ok 8 symbol_ptr
-> [  140.565248]     ok 9 kernel_ptr
-> [  140.566346]     ok 10 struct_resource
-> [  140.567642]     ok 11 struct_range
-> [  140.569141]     ok 12 addr
-> [  140.570395]     ok 13 escaped_str
-> [  140.571407]     ok 14 hex_string
-> [  140.572337]     ok 15 mac
-> [  140.573572]     ok 16 ip4
-> [  140.574712]     ok 17 ip6
-> [  140.575743]     ok 18 uuid
-> [  140.577164]     ok 19 dentry
-> [  140.578248]     ok 20 struct_va_format
-> [  140.579400]     ok 21 time_and_date
-> [  140.580507]     ok 22 struct_clk
-> [  140.581706]     ok 23 bitmap
-> [  140.582739]     ok 24 netdev_features
-> [  140.583808]     ok 25 flags
-> [  140.585274]     ok 26 errptr # SKIP crng possibly not yet initialized.=
- plain 'p' buffer contains "(____ptrval____)"
-> [  140.588403]     ok 27 fwnode_pointer
-> [  140.592141]     ok 28 fourcc_pointer
-> [  140.592758]     # printf: ran 408 tests
-> [  140.593219] # printf: pass:25 fail:0 skip:3 total:28
-> [  140.593706] # Totals: pass:25 fail:0 skip:3 total:28
-> [  140.594280] ok 1 printf
->
-> Best Regards,
-> Petr
+> I see. It might have been useful when the patch removed the trailing '\n'=
+.
+> But you are going to add it back. So there won't be any hidden change.
+> So I would prefer to go straight to KUNIT_FAIL().
 
-Thanks for testing! I didn't know how to do that. Changed to
-kunit_skip as you suggested.
+=F0=9F=91=8D I've restored all the newlines and added a few previously miss=
+ing ones.
+
+> > > > @@ -842,13 +836,15 @@ test_pointer(void)
+> > > >       fourcc_pointer();
+> > > >  }
+> > > >
+> > > > -static void __init selftest(void)
+> > > > +static void printf_test(struct kunit *test)
+> > > >  {
+> > > >       alloced_buffer =3D kmalloc(BUF_SIZE + 2*PAD_SIZE, GFP_KERNEL)=
+;
+> > > >       if (!alloced_buffer)
+> > > >               return;
+> > >
+> > > I would use here:
+> > >
+> > >         KUNIT_ASSERT_NOT_NULL(test, alloced_buffer);
+> > >
+> > > And move the same change for the other kmalloc() location from
+> > > the 2nd patch.
+> >
+> > I didn't do that here because I was trying to keep this patch as small
+> > as possible, and I wrote that in the commit message.
+> >
+> > As for using KUNIT_ASSERT_NOT_NULL here, that would have to change
+> > back to an error return in the 2nd patch because this code moves into
+> > `suite_init`, which is called with `struct kunit_suite` rather than
+> > `struct kunit_test`, and KUnit assertion macros do not work with the
+> > former (and for good reason, because failures in suite setup cannot be
+> > attributed to a particular test case).
+>
+> I see. KUNIT_ASSERT_NOT_NULL() can't be used in the .suite_exit() callbac=
+k.
+>
+> > So I'd prefer to leave this as is.
+>
+> I agree to leave this as is.
+
+=F0=9F=91=8D
