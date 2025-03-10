@@ -1,92 +1,242 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA6121D5A8
-	for <linux-m68k@vger.kernel.org>; Sun,  9 Mar 2025 21:07:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E305D477
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Mar 2025 00:44:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741554451; cv=none; b=XhgFhJlH2JoAo+oPYI2iOCkRfgQk1h1llVetw2mNpaJW9vRj99Gk4VSMg+rSiLZUqwuHhxhokx09nXti40+Tiz/RMEqo/Q+Gh9QRm7gD5Yd6YvnS0difbjSDRKbMbBpTGV0FTVmTpJ8yFfK01m4i7lj8LX3NobcwziCQxCmTH4A=
+	t=1741567455; cv=none; b=rG3mR1ZYgo28bWDnawcsbMdGEDvo2VE6kmL/J5h66px60VSlljHVvkRysVdHzCJgYfsiLDWp+n3buwogBI9DHbZ5oSH5mVE1IOuPweJFGDBjdBt9Kk+RgQ6fXoMB1KS9Djie9Ew4U7Thtceqbehn3Y612BZEjdIRyMRn0L5JlbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741554451; c=relaxed/simple;
-	bh=YecjUkemH3OWCfHSt26E4DlTZR8+Il1mrh0FK3Eiu5Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HTt0ofPL8ebXhpKzDXHY6+VQ6vmT/5q6gPLqy58Gm06iUrmP3Jgu3l+ssPSHWn8a3/8V/sR4OewcZrsExw74X63Toln564UqBxM9xDvkvK7mSVQ1D8B5Z4hsEPe5XnZfxsRrPFe5kDVOODjXfw+6I6w71cmQLOFtrmgos2P5/KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=Rjkukfoa; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1741567455; c=relaxed/simple;
+	bh=tXY/sDLcuj92SaFYz0hFOsAFXofDkFw5jSfwl2CB2dY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gVcT1VM4ndbY2N72DF17LIxbCm9ouqqMgHHO2RqUW7BKKqvIeAQiKE7fjikmp/Zhq+wDlntep3qTQ2o4ImDmpMKT+o1UFrB5NlanCMS+gJpkmmiynKs1UOX9MTniNNBPob9Z1vOEk+HGGfJjzxmtu0nUS8MqC7YHnOqjNWdzt9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BVSocaYZ; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="Rjkukfoa"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=6japSLvTQnlOCS2BO0KTtkZI8Q8/EDQDLCLBk3KHBGQ=; t=1741554447; x=1742159247; 
-	b=Rjkukfoaif/Kz01LJ3tXgQ4eID0IJgG+Cb49SFAowOq8eIsrnpLlZfUo55Kwd3VBs1TZhd3NDG1
-	7h4zXt0og9fXK2i/wK3Q0AHg+SoBCWPZ4kIFS3dKiXJv20GDlOf7lzIdE6swer3KhCZZwM5jTJvZl
-	xEj5fkTASN0KVuVCtHGVEISazAEOGKjYqR3ROCJ/J+smU+AcWAaEJxKQhxpkchZKDjBQ3lu7jUkaz
-	9NIh78OXv1V3/Eq7W8GhqMHB03kDtXY0OzMQdpimkn+013MSsI/E81BZd70IKIoEP08YGdRqOXsvw
-	ai8jkh7+0w1nGjSTkHZ4ikFpF08BUQ1D1t0g==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1trNro-00000000yb1-3hVU; Sun, 09 Mar 2025 22:07:24 +0100
-Received: from dynamic-078-054-178-139.78.54.pool.telefonica.de ([78.54.178.139] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1trNro-00000000Quh-2s0o; Sun, 09 Mar 2025 22:07:24 +0100
-Message-ID: <437ae0d348933268cbd80553e27f38d1464d0c06.camel@physik.fu-berlin.de>
-Subject: Re: Alignment discussion wiki page
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: debian-68k <debian-68k@lists.debian.org>, linux-m68k
-	 <linux-m68k@vger.kernel.org>
-Date: Sun, 09 Mar 2025 22:07:24 +0100
-In-Reply-To: <CAMuHMdVGKPxWVz-Cpz=28wDOQNfdx_=qWjeMJuD8timHeEzkMg@mail.gmail.com>
-References: 
-	<10be3c697f6702a63a20219160e671b1920b3d6c.camel@physik.fu-berlin.de>
-	 <CAMuHMdVGKPxWVz-Cpz=28wDOQNfdx_=qWjeMJuD8timHeEzkMg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BVSocaYZ"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 7D540A45D9E
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Mar 2025 00:38:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C95B1C4CEF8
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Mar 2025 00:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741567451;
+	bh=tXY/sDLcuj92SaFYz0hFOsAFXofDkFw5jSfwl2CB2dY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=BVSocaYZc2rAS9DmzOR25Py/nYQDKd36w67O/0f9ylpFUIWrKw00/eEyMdMxUmEnT
+	 NCXedm8BdKAPb2DDHW/gVC70TSdEV2tqTRDbyeVdnS0x5i7l3qBINrQb5+yrFjV2nL
+	 yJlPfiMabW5EhD/hEm2DYm0W3dPpC5LvZoTr7ApvT8Ju7gY1RegDx5zL1A0z9PwyXG
+	 3yRjPZw573XVubRbjFOXqpAoQhLdKtK714p3+ESSV5Xi9sNjr5uTPAsxaHljEkBrNR
+	 8s92NP6QLtWXH4QXEwGK53QDFSH2XRVYuup0zGWIcKuguSpfx56dz9btSD3K/PGaKw
+	 AQmLlaIjyhUCw==
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-391342fc1f6so2681087f8f.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 09 Mar 2025 17:44:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXyi7lOcVqMuxn4u3ycZZ0sN3oOYZLSs29tyJFSHSY9VZRmQhlQHEXKX5getvXQdsnpQLw9BYjfCDY6@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwTQ15uWiKb//UXGOGQbefFAJdc7kX/PYAq9Hbf1zBKnNTO2eej
+	8sr80IbgIBOdMmlmWP4yegskpXUzrjEktB0KP4icMU6obN77gyXt/rb+fGGl57zVDqV0MOFM4kj
+	H/LELG9iY++NyF/4jemFn4SSuX5c=
+X-Google-Smtp-Source: AGHT+IHp0xTG1Ng23HFO+vDoVdsoufkarKG1pMLa2Hgf32UrExuCoU7QvtsFi3JnHOAx4U/X+f6ME+7JOCYs321ZM0M=
+X-Received: by 2002:a5d:6d8a:0:b0:391:1218:d5f7 with SMTP id
+ ffacd0b85a97d-39132dacbd3mr7997015f8f.40.1741567450112; Sun, 09 Mar 2025
+ 17:44:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+References: <20250306185124.3147510-1-rppt@kernel.org> <20250306185124.3147510-3-rppt@kernel.org>
+In-Reply-To: <20250306185124.3147510-3-rppt@kernel.org>
+From: Guo Ren <guoren@kernel.org>
+Date: Mon, 10 Mar 2025 08:43:58 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQBLMt01QjnhX1tCgHs6HJm1hZXQXgVjNkNS5Yt5t4UCQ@mail.gmail.com>
+X-Gm-Features: AQ5f1JpCBLojM2w9P1ED3pCe1VmP9TPz-dzItajSIbNDMlmKYLEeMGoNaHpCAZk
+Message-ID: <CAJF2gTQBLMt01QjnhX1tCgHs6HJm1hZXQXgVjNkNS5Yt5t4UCQ@mail.gmail.com>
+Subject: Re: [PATCH 02/13] csky: move setup_initrd() to setup.c
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, 
+	Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>, 
+	Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
+	x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+Move setup_initrd from mem_init into memblock_init, that LGTM.
 
-On Sun, 2025-03-09 at 11:43 +0100, Geert Uytterhoeven wrote:
-> On Sun, 9 Mar 2025 at 11:38, John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> > I have started a page on the Debian wiki for discussing the alignment i=
-ssue:
-> >=20
-> > =3D> https://wiki.debian.org/M68k/Alignment
-> >=20
-> > I will add more information over the coming days.
->=20
-> I am positively surprised by the old SunOS's cc being able to fix
-> typoes in printed messages (sturct -> struct ;-)
+Acked by: Guo Ren (csky) <guoren@kernel.org>
 
-That typo is a result of the output being manually copied over from
-an emulator screenshot, see the discussion in [1].
+On Fri, Mar 7, 2025 at 2:52=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wrot=
+e:
+>
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+>
+> Memory used by initrd should be reserved as soon as possible before
+> there any memblock allocations that might overwrite that memory.
+>
+> This will also help with pulling out memblock_free_all() to the generic
+> code and reducing code duplication in arch::mem_init().
+>
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> ---
+>  arch/csky/kernel/setup.c | 43 ++++++++++++++++++++++++++++++++++++++++
+>  arch/csky/mm/init.c      | 43 ----------------------------------------
+>  2 files changed, 43 insertions(+), 43 deletions(-)
+>
+> diff --git a/arch/csky/kernel/setup.c b/arch/csky/kernel/setup.c
+> index fe715b707fd0..e0d6ca86ea8c 100644
+> --- a/arch/csky/kernel/setup.c
+> +++ b/arch/csky/kernel/setup.c
+> @@ -12,6 +12,45 @@
+>  #include <asm/mmu_context.h>
+>  #include <asm/pgalloc.h>
+>
+> +#ifdef CONFIG_BLK_DEV_INITRD
+> +static void __init setup_initrd(void)
+> +{
+> +       unsigned long size;
+> +
+> +       if (initrd_start >=3D initrd_end) {
+> +               pr_err("initrd not found or empty");
+> +               goto disable;
+> +       }
+> +
+> +       if (__pa(initrd_end) > PFN_PHYS(max_low_pfn)) {
+> +               pr_err("initrd extends beyond end of memory");
+> +               goto disable;
+> +       }
+> +
+> +       size =3D initrd_end - initrd_start;
+> +
+> +       if (memblock_is_region_reserved(__pa(initrd_start), size)) {
+> +               pr_err("INITRD: 0x%08lx+0x%08lx overlaps in-use memory re=
+gion",
+> +                      __pa(initrd_start), size);
+> +               goto disable;
+> +       }
+> +
+> +       memblock_reserve(__pa(initrd_start), size);
+> +
+> +       pr_info("Initial ramdisk at: 0x%p (%lu bytes)\n",
+> +               (void *)(initrd_start), size);
+> +
+> +       initrd_below_start_ok =3D 1;
+> +
+> +       return;
+> +
+> +disable:
+> +       initrd_start =3D initrd_end =3D 0;
+> +
+> +       pr_err(" - disabling initrd\n");
+> +}
+> +#endif
+> +
+>  static void __init csky_memblock_init(void)
+>  {
+>         unsigned long lowmem_size =3D PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET=
+_OFFSET);
+> @@ -40,6 +79,10 @@ static void __init csky_memblock_init(void)
+>                 max_low_pfn =3D min_low_pfn + sseg_size;
+>         }
+>
+> +#ifdef CONFIG_BLK_DEV_INITRD
+> +       setup_initrd();
+> +#endif
+> +
+>         max_zone_pfn[ZONE_NORMAL] =3D max_low_pfn;
+>
+>         mmu_init(min_low_pfn, max_low_pfn);
+> diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+> index bde7cabd23df..ab51acbc19b2 100644
+> --- a/arch/csky/mm/init.c
+> +++ b/arch/csky/mm/init.c
+> @@ -42,45 +42,6 @@ unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsig=
+ned long)]
+>                                                 __page_aligned_bss;
+>  EXPORT_SYMBOL(empty_zero_page);
+>
+> -#ifdef CONFIG_BLK_DEV_INITRD
+> -static void __init setup_initrd(void)
+> -{
+> -       unsigned long size;
+> -
+> -       if (initrd_start >=3D initrd_end) {
+> -               pr_err("initrd not found or empty");
+> -               goto disable;
+> -       }
+> -
+> -       if (__pa(initrd_end) > PFN_PHYS(max_low_pfn)) {
+> -               pr_err("initrd extends beyond end of memory");
+> -               goto disable;
+> -       }
+> -
+> -       size =3D initrd_end - initrd_start;
+> -
+> -       if (memblock_is_region_reserved(__pa(initrd_start), size)) {
+> -               pr_err("INITRD: 0x%08lx+0x%08lx overlaps in-use memory re=
+gion",
+> -                      __pa(initrd_start), size);
+> -               goto disable;
+> -       }
+> -
+> -       memblock_reserve(__pa(initrd_start), size);
+> -
+> -       pr_info("Initial ramdisk at: 0x%p (%lu bytes)\n",
+> -               (void *)(initrd_start), size);
+> -
+> -       initrd_below_start_ok =3D 1;
+> -
+> -       return;
+> -
+> -disable:
+> -       initrd_start =3D initrd_end =3D 0;
+> -
+> -       pr_err(" - disabling initrd\n");
+> -}
+> -#endif
+> -
+>  void __init mem_init(void)
+>  {
+>  #ifdef CONFIG_HIGHMEM
+> @@ -92,10 +53,6 @@ void __init mem_init(void)
+>  #endif
+>         high_memory =3D (void *) __va(max_low_pfn << PAGE_SHIFT);
+>
+> -#ifdef CONFIG_BLK_DEV_INITRD
+> -       setup_initrd();
+> -#endif
+> -
+>         memblock_free_all();
+>
+>  #ifdef CONFIG_HIGHMEM
+> --
+> 2.47.2
+>
 
-Adrian
-
-> [1] https://mail-index.netbsd.org/port-m68k/2025/02/15/msg000925.html
 
 --=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Best Regards
+ Guo Ren
