@@ -1,41 +1,40 @@
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2881E51F1
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Mar 2025 06:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B760625179D
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Mar 2025 15:26:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741761322; cv=none; b=UQgMBvHmDPzhgaxCV4Sxb0eAu0odxrJgMoxGlGN4nN7VIbRIdQ5Dn053NpQbdNxT0GwXHuA5/M7fhcKv/LuYFegFrnd9kmInWWbuT3jLI7MDahi7pcC+8GBD96iy8uADqGWNcsJLpAU/oXpuHzEEbMUWWNC+5vIX2kXRIJrlqv0=
+	t=1741793182; cv=none; b=bK/dCs6JC2RkfB1Qrxbqu10TRiQzYilMZ0tAyj0H+Rl4THUTULhv8aVCR0u3Bcej1WisFcnrlWq55HatKp21NjD+B7WUoiyM1Oiq1OojJns0fQu2f3h3Tm4HdJmdunxzTVhblhoAR/OayyEim92n9sWVK338ijS1uhnUkbBjXYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741761322; c=relaxed/simple;
-	bh=5mdaPZVI9H0/LV5hmobVgKrUIL2iuMSKhSTxPs81fPU=;
+	s=arc-20240116; t=1741793182; c=relaxed/simple;
+	bh=Q7awIL7HKUND4G5BgT8sxgfvPYxZ5dldw9MgDhs69ls=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DU1XbMGkd2zoyPQEHnkrXxtPkTVmGkq828KkJJ8np3M0MP5fOKyRuGGB4mErU4MGg69NnuGK76g4LEOtMgEsMYLZ1guvzgsWFq+vu0+zq1g276pa1alAbx9i7oomjQxgXZRPRwLEHndLwdo/fuUln5DJMNNNf5oU2fYLOIbjtgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s5OTgyGp; arc=none smtp.client-ip=139.178.84.217
+	 Content-Type:Content-Disposition:In-Reply-To; b=hDRlD6hMZVzCARGepM3lmoFbRww1ciPiud+TO9p3awo0PEex8IDxNDF1t0xZnsSw3+dxuAy1LNk1dmJ9J+0YhrlLIB216yRzTIJpVz3eNunS+mHyqhJ1dJdr1RYBlKfDZWIXZdbW49pEy7HsVyckEuVnuAjeVo6xyWhaXjEe7/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ky/BCax3; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s5OTgyGp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ky/BCax3"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A9EFC5C47AF;
-	Wed, 12 Mar 2025 06:33:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 407D8C4CEE3;
-	Wed, 12 Mar 2025 06:35:05 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id D5E355C5AEC;
+	Wed, 12 Mar 2025 15:24:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E2A9C4CEDD;
+	Wed, 12 Mar 2025 15:26:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741761319;
-	bh=5mdaPZVI9H0/LV5hmobVgKrUIL2iuMSKhSTxPs81fPU=;
+	s=k20201202; t=1741793179;
+	bh=Q7awIL7HKUND4G5BgT8sxgfvPYxZ5dldw9MgDhs69ls=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s5OTgyGpaumshikTp+iDDuLZlaDN5ZFNt0xhyxhEjxDoGdrRr5fCFJqupGsQ1e9mc
-	 x5+ujh1N69RbM6sMUkTLS3DxQMtFw4J494229H1wYU5SpwxEIdYz9MdPy8mIFSl7pw
-	 l37VuFqhXXoOyw7aw+nwsTVBrmtEviGrZHfYnDThjgKfYUlSm8F0VvgI37TsJEXPQg
-	 Z/TS0S2P3vKV4E8YK2hLZIT0IUPWeSPBaDZrgP63fW1/ioeooSw+E437KEQCfrER7m
-	 3bE2KZoye8/AcR9u24hQHDyQiTnD+Psif0K5SR2GQnCkTLYx0lBk09w8YpbQLP/phf
-	 PvVxVGjqV5khg==
-Date: Wed, 12 Mar 2025 08:34:56 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Mark Brown <broonie@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
+	b=ky/BCax3DFeowvZEZBaSvHz/FRjz1Ff2w3mZvorveefBQ9QItq7spH+9lPk04kMHc
+	 XFcWV+q8BLDxTsMg3kWEEMrJvLlM02Ov9qT4y5J6eushhPAVsWOV5ed7v5on6xpI5H
+	 t1Jida96hvmMXnQmaaYU62DS/XhHnkqgw1xy5aAbcXTY7h92ihBZ7RpuPzMnvvZIID
+	 4Llux6n6amMPvoDVic/J1BHmAr19Dq0COPgBWULz9Gberd6x0wlqoRfavURfSg5lJv
+	 0Xm3eB6wpryKJveHw8pu/I7JXnt8N5CGgjBp/ANgLyo/AFa/GXs+sbZv0RiHoWV9rf
+	 Q6NAbrOOruTNw==
+Date: Wed, 12 Mar 2025 15:26:05 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Andreas Larsson <andreas@gaisler.com>,
 	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
@@ -44,7 +43,6 @@ Cc: Mark Brown <broonie@kernel.org>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
 	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
 	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
 	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
@@ -59,6 +57,7 @@ Cc: Mark Brown <broonie@kernel.org>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
 	Stafford Horne <shorne@gmail.com>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -72,143 +71,102 @@ Cc: Mark Brown <broonie@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
 	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+	Mike Rapoport <rppt@kernel.org>
 Subject: Re: [PATCH 10/13] arch, mm: set high_memory in free_area_init()
-Message-ID: <Z9ErEBuMMvd6i2n9@kernel.org>
+Message-ID: <6d3be692-3dc3-400c-8eeb-3d378adc8dbe@sirena.org.uk>
+Mail-Followup-To: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+	Mike Rapoport <rppt@kernel.org>
 References: <20250306185124.3147510-1-rppt@kernel.org>
  <20250306185124.3147510-11-rppt@kernel.org>
  <cee346ec-5fa5-4d0b-987b-413ee585dbaa@sirena.org.uk>
- <Z9CyRHewqfZlmgIo@shell.armlinux.org.uk>
+ <Z9Cl8JKkRGhaRrgM@kernel.org>
+ <5e40219b-f149-4e0f-aa10-c09fa183945e@sirena.org.uk>
+ <CAMuHMdUGnBeo69NkYsv35YHp6H9GJSu-hoES2A8_0WhpX1zFhQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="auPMsTU3HApbt9PI"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUGnBeo69NkYsv35YHp6H9GJSu-hoES2A8_0WhpX1zFhQ@mail.gmail.com>
+X-Cookie: You will outgrow your usefulness.
+
+
+--auPMsTU3HApbt9PI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Z9CyRHewqfZlmgIo@shell.armlinux.org.uk>
 
-On Tue, Mar 11, 2025 at 09:59:32PM +0000, Russell King (Oracle) wrote:
-> On Tue, Mar 11, 2025 at 05:51:06PM +0000, Mark Brown wrote:
-> > On Thu, Mar 06, 2025 at 08:51:20PM +0200, Mike Rapoport wrote:
-> > > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > > 
-> > > high_memory defines upper bound on the directly mapped memory.
-> > > This bound is defined by the beginning of ZONE_HIGHMEM when a system has
-> > > high memory and by the end of memory otherwise.
-> > > 
-> > > All this is known to generic memory management initialization code that
-> > > can set high_memory while initializing core mm structures.
-> > > 
-> > > Remove per-architecture calculation of high_memory and add a generic
-> > > version to free_area_init().
-> > 
-> > This patch appears to be causing breakage on a number of 32 bit arm
-> > platforms, including qemu's virt-2.11,gic-version=3.  Affected platforms
-> > die on boot with no output, a bisect with qemu points at this commit and
-> > those for physical platforms appear to be converging on the same place.
-> 
-> I'm not convinced that the old and the new code is doing the same
-> thing.
-> 
-> The new code:
-> 
-> +       phys_addr_t highmem = memblock_end_of_DRAM();
-> +
-> +#ifdef CONFIG_HIGHMEM
-> +       unsigned long pfn = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
-> +
-> +       if (arch_has_descending_max_zone_pfns() || highmem > PFN_PHYS(pfn))
-> +               highmem = PFN_PHYS(pfn);
-> +#endif
-> +
-> +       high_memory = phys_to_virt(highmem - 1) + 1;
-> 
-> First, when CONFIG_HIGHMEM is disabled, this code assumes that the last
-> byte of DRAM declared to memblock is the highmem limit. This _could_
-> overflow phys_to_virt() and lead to an invalid value for high_memory.
-> 
-> Second, arch_zone_lowest_possible_pfn[ZONE_HIGHMEM] is the _start_ of
-> highmem. This is not what arch code sets high_memory to - because
-> the start of highmem may not contiguously follow on from lowmem.
-> 
-> In arch/arm/mm/mmu.c, lowmem_limit is computed to be the highest + 1
-> physical address that lowmem can possibly be, taking into account the
-> amount of vmalloc memory that is required. This is used to set
-> high_memory.
-> 
-> We also limit the amount of usable RAM via memblock_set_current_limit()
-> which memblock_end_of_DRAM() doesn't respect.
-> 
-> I don't think the proposed generic version is suitable for 32-bit arm.
+On Tue, Mar 11, 2025 at 10:41:28PM +0100, Geert Uytterhoeven wrote:
+> On Tue, 11 Mar 2025 at 22:33, Mark Brown <broonie@kernel.org> wrote:
 
-Unless I'm missing something, both memblock.current_limit and start of
-ZONE_HIGHMEM are set to arm_lowmem_limit which will be different from
-memblock_end_of_DRAM() only for machines with more than nearly 4GiB of RAM
-and those will supposedly use HIGHMEM anyway.
+> > [    0.000000] efi: UEFI not found.
+> > [    0.000000] cma: Reserved 64 MiB at 0x00000000
 
-But this does not matter anyway because failures Mark reported happen
-because 32-bit arm uses high_memory before mem_init() and that what causes
-the hangs. 
+> > - I'd only been sampling the logs for the physical platforms, none of
+> > which had shown anything.
 
-Here's the fix I have, I'll send v2 shortly.
+> Hangs that early need "earlycon", which the qemu boot above does have.
 
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index e492d58a0386..f02f872ea8a9 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -1250,6 +1250,8 @@ void __init adjust_lowmem_bounds(void)
- 
- 	arm_lowmem_limit = lowmem_limit;
- 
-+	high_memory = __va(arm_lowmem_limit - 1) + 1;
-+
- 	if (!memblock_limit)
- 		memblock_limit = arm_lowmem_limit;
- 
-diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
-index 65903ed5e80d..1a8f6914ee59 100644
---- a/arch/arm/mm/nommu.c
-+++ b/arch/arm/mm/nommu.c
-@@ -146,6 +146,7 @@ void __init adjust_lowmem_bounds(void)
- 	phys_addr_t end;
- 	adjust_lowmem_bounds_mpu();
- 	end = memblock_end_of_DRAM();
-+	high_memory = __va(end - 1) + 1;
- 	memblock_set_current_limit(end);
- }
- 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 545e11f1a3ba..0aef4bef93c4 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -1765,14 +1765,20 @@ static bool arch_has_descending_max_zone_pfns(void)
- 
- static void set_high_memory(void)
- {
-+	unsigned long pfn = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
- 	phys_addr_t highmem = memblock_end_of_DRAM();
- 
--#ifdef CONFIG_HIGHMEM
--	unsigned long pfn = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
-+	/*
-+	 * Some architectures (e.g. ARM) set high_memory very early and
-+	 * use it in arch setup code.
-+	 * If an architecture already set high_memory don't overwrite it
-+	 */
-+	if (high_memory)
-+		return;
- 
--	if (arch_has_descending_max_zone_pfns() || highmem > PFN_PHYS(pfn))
-+	if (IS_ENABLED(CONFIG_HIGHMEM) &&
-+	    (arch_has_descending_max_zone_pfns() || highmem > PFN_PHYS(pfn)))
- 		highmem = PFN_PHYS(pfn);
--#endif
- 
- 	high_memory = phys_to_virt(highmem - 1) + 1;
- }
+Indeed, the physical platforms either don't support earlycon or I just
+don't wire it up as standard in my CI.  I see a fix should already be on
+the way, but FWIW the physical platforms do seem to have bisected to the
+same commit.
 
--- 
-Sincerely yours,
-Mike.
+--auPMsTU3HApbt9PI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmfRp40ACgkQJNaLcl1U
+h9ClrAf9FHrCQNmJXN4iyTK9lTj/btaMWsS34HTwQo5atjLix3MlaM4Oe1X8wWdQ
+rSJgppPAE2cv7YjUDvJGyXeNJEiBsMtnourIYIcXwHIlSknwUTW93aLuOShlc+KF
+iC2gJoynMVm1M0mcCvUSxVXjQXN1rxY3pcXLx99UJqFnR+uWkHqfKq18AdWJzzrD
+MwKz6EmBguL6eE0EstxjYPLlpJ3iYWORVdj2/2h3DYrRMLDlV+dm/xW9xGlq5sxJ
+c/3bxdgHyKWQqTxjQsPQKSz99U2Amjx1VloV+6yG9htGbdo+yNQv+tUP20dHw9c8
+ECZ91Jtf4LTcMPjk/IfIVIr0Hu3V3w==
+=0Ulf
+-----END PGP SIGNATURE-----
+
+--auPMsTU3HApbt9PI--
