@@ -1,36 +1,36 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1C6267B62
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Mar 2025 13:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A603267F67
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Mar 2025 13:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741873865; cv=none; b=IDD1UWqqjfmyxcZx7hiecJuYyDDQQoEVi93wDEehnlVBaW17eSoLEcmk85tB3Wg3u9J9+FbFY1gAhKnVcVXPZSsyefz3beZ1RAIBNmE6V2Pfva2gMKyODJawtI4sitL6aHoeobp+kFAMKhWtanloSB5S19gjcWtBXYNtvqytMyI=
+	t=1741873879; cv=none; b=DewgK1KzvXLr7iGyEZnNYS8I17w2ZOrOWWU56VryMPIcp2LXaMFxnspt+CqtpXlOZ1ZjAEGIRw5HlbwXJSjwyMhhzccZe8cIhOmxUwev9OLqOhfL5/89RihQK2k9q2j69qgFTUmpsI5TJlA2HXsvQ8ydT4u7Bwo+R2X9GyY6Z7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741873865; c=relaxed/simple;
-	bh=3f2PL8+tvQz4kqOX8BsTM2Qrh30qjoJp6oFsaw3/420=;
+	s=arc-20240116; t=1741873879; c=relaxed/simple;
+	bh=nkBe6+9DINra8ChNyXeYcesTu6mPwjeTN1yq3Y1szbM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y0lw3NoEbctrYWKLbB/drLCCZ1a/QPOPwWOac7pTNVjbTQG/jwMiq9KaxnfrpQjKutyKj4F+mD0wmvD5NSkt9dIL9hXRNxajNxI/mHVfQUhpQFBIBGVD4KMUJiYmqyXWUhf3eVOs5DxKISHLNKyb42ct7EcVmdHBU+/pv4eIsRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rfg04cX8; arc=none smtp.client-ip=139.178.84.217
+	 MIME-Version; b=crXbkXuFPRt8183CAGEsAKI/1cQ01lGvJIl4TZHjlvcc3aL6Lbdez1G7i2hGrPZgyl7/yK8TAJplCiSkOHXcx8RmumAlZjx19EG7C550VGYzIpOsSZskhycss1ouHREUcC1eTQh572ghEuxLdkf5oFUIaZGpi//C8D+TZpn9PTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DUZeqivF; arc=none smtp.client-ip=147.75.193.91
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rfg04cX8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DUZeqivF"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8E6815C5E36;
-	Thu, 13 Mar 2025 13:48:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233FDC4CEEB;
-	Thu, 13 Mar 2025 13:50:49 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id ECF71A474BF;
+	Thu, 13 Mar 2025 13:45:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BA2EC4CEF2;
+	Thu, 13 Mar 2025 13:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741873863;
-	bh=3f2PL8+tvQz4kqOX8BsTM2Qrh30qjoJp6oFsaw3/420=;
+	s=k20201202; t=1741873876;
+	bh=nkBe6+9DINra8ChNyXeYcesTu6mPwjeTN1yq3Y1szbM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rfg04cX8uRvlfnBvZ49PtoBxznACelq74wTMIN8qaGJSvGheiS5WY6EK6llc1XTtF
-	 6gfjK8h75FHHUhNF68dOsS/oFtjdkjJ/UdR0JOkjjNhf5t/t1YN6tT6GfUQu20OxSn
-	 sbuSoNpq+VCYRnQZPmaeVNtJCUjqNbpq4ZSW1ecITC7ukkhURcBZHswtmqwfq9PUxP
-	 RWxubMbulZgriXyglKo2XBY7VMr6SwCl2LDKXrjFYY2eYuzUNOABYWueIt6T5V5EjL
-	 Sgo45wepOzt0oGbaLtKllAiqkUdgwedzAj+a3s0rcnt1uUTdhMjbsGZmC+q9b9/wNZ
-	 UK2vqcKRO6tkw==
+	b=DUZeqivFJ9EYP9Zy5Yb5dJalUE7Sb9X9atTVUnHZ/8j5kxTnIcryI91Lg+eLahCch
+	 +4/sfT0f6PJUfGIy2IFanNG6A/SLgSjazaFTA527QDMKz4pRayRywROhwmKdm3JxlH
+	 Uaj0ch2Iv70h6kezQtFA/9UBiPtXqykcVjOMdYtmACBIyWki5ZD6vyT7Dwybtv0ic7
+	 n9LWmVF+6qTkSWN3/DV0+azu4ZrNZg6SffekFyWnjGKFnrFNUttXXpQq00r7GYSixQ
+	 2oLgogEMVsNX2bHppECFrGmjyvZM4fH0hNySDtDwvQnL1mRuqs8UADBKrepv0pyUKk
+	 bQ1hkzIwD6VDQ==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -91,9 +91,9 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
 	linux-arch@vger.kernel.org,
 	linux-mm@kvack.org,
 	x86@kernel.org
-Subject: [PATCH v2 03/13] hexagon: move initialization of init_mm.context init to paging_init()
-Date: Thu, 13 Mar 2025 15:49:53 +0200
-Message-ID: <20250313135003.836600-4-rppt@kernel.org>
+Subject: [PATCH v2 04/13] MIPS: consolidate mem_init() for NUMA machines
+Date: Thu, 13 Mar 2025 15:49:54 +0200
+Message-ID: <20250313135003.836600-5-rppt@kernel.org>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250313135003.836600-1-rppt@kernel.org>
 References: <20250313135003.836600-1-rppt@kernel.org>
@@ -107,46 +107,79 @@ Content-Transfer-Encoding: 8bit
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-This will help with pulling out memblock_free_all() to the generic
-code and reducing code duplication in arch::mem_init().
+Both MIPS systems that support numa (loongsoon3 and sgi-ip27) have
+identical mem_init() for NUMA case.
+
+Move that into arch/mips/mm/init.c and drop duplicate per-machine
+definitions.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/hexagon/mm/init.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ arch/mips/loongson64/numa.c      | 7 -------
+ arch/mips/mm/init.c              | 7 +++++++
+ arch/mips/sgi-ip27/ip27-memory.c | 9 ---------
+ 3 files changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index 3458f39ca2ac..508bb6a8dcc9 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -59,14 +59,6 @@ void __init mem_init(void)
- 	 *  To-Do:  someone somewhere should wipe out the bootmem map
- 	 *  after we're done?
- 	 */
--
--	/*
--	 * This can be moved to some more virtual-memory-specific
--	 * initialization hook at some point.  Set the init_mm
--	 * descriptors "context" value to point to the initial
--	 * kernel segment table's physical address.
--	 */
--	init_mm.context.ptbase = __pa(init_mm.pgd);
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index 8388400d052f..95d5f553ce19 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -164,13 +164,6 @@ void __init paging_init(void)
+ 	free_area_init(zones_size);
  }
  
- void sync_icache_dcache(pte_t pte)
-@@ -103,6 +95,12 @@ static void __init paging_init(void)
+-void __init mem_init(void)
+-{
+-	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
+-	memblock_free_all();
+-	setup_zero_pages();	/* This comes from node 0 */
+-}
+-
+ /* All PCI device belongs to logical Node-0 */
+ int pcibus_to_node(struct pci_bus *bus)
+ {
+diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+index 4583d1a2a73e..3db6082c611e 100644
+--- a/arch/mips/mm/init.c
++++ b/arch/mips/mm/init.c
+@@ -482,6 +482,13 @@ void __init mem_init(void)
+ 				0x80000000 - 4, KCORE_TEXT);
+ #endif
+ }
++#else  /* CONFIG_NUMA */
++void __init mem_init(void)
++{
++	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
++	memblock_free_all();
++	setup_zero_pages();	/* This comes from node 0 */
++}
+ #endif /* !CONFIG_NUMA */
  
- 	free_area_init(max_zone_pfn);  /*  sets up the zonelists and mem_map  */
+ void free_init_pages(const char *what, unsigned long begin, unsigned long end)
+diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
+index 1963313f55d8..2b3e46e2e607 100644
+--- a/arch/mips/sgi-ip27/ip27-memory.c
++++ b/arch/mips/sgi-ip27/ip27-memory.c
+@@ -406,8 +406,6 @@ void __init prom_meminit(void)
+ 	}
+ }
  
-+	/*
-+	 * Set the init_mm descriptors "context" value to point to the
-+	 * initial kernel segment table's physical address.
-+	 */
-+	init_mm.context.ptbase = __pa(init_mm.pgd);
-+
- 	/*
- 	 * Start of high memory area.  Will probably need something more
- 	 * fancy if we...  get more fancy.
+-extern void setup_zero_pages(void);
+-
+ void __init paging_init(void)
+ {
+ 	unsigned long zones_size[MAX_NR_ZONES] = {0, };
+@@ -416,10 +414,3 @@ void __init paging_init(void)
+ 	zones_size[ZONE_NORMAL] = max_low_pfn;
+ 	free_area_init(zones_size);
+ }
+-
+-void __init mem_init(void)
+-{
+-	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
+-	memblock_free_all();
+-	setup_zero_pages();	/* This comes from node 0 */
+-}
 -- 
 2.47.2
 
