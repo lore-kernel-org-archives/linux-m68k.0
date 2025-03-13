@@ -1,36 +1,36 @@
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DA9267F64
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Mar 2025 13:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C56268685
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Mar 2025 13:50:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741873839; cv=none; b=JNAlx7yHItQqtdH3pzfaw81footSmedPHwYJq5drCAtjA6BdhWJpkZ4jKkfqpD0fnO/q+1fDk7FI+kQo1Rbpeh1N4wEHHlsOaX2MOeeVZqjGgviRKUfesDj2657elOqHLqsPNGAbyFzNbPQkYDd4cnLdWgq2F01+NQ2fIX3hpss=
+	t=1741873852; cv=none; b=nYXM1IUS1uH118EWMESJ2ROVn0Sr0ajD9kYjLzjOiP6uBmfZtVwoINwBqz/FpeHdqKFbomMiyI3+cuR4Z8+d6+Jt+1gUCo5GNSO4WJC7t83n6bQ19t/MyLqFSzRGEd+cOD+jhxuBvZfSAobgbFiUj1SFHQ4GzFmFwtkt69dJ/ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741873839; c=relaxed/simple;
-	bh=xXhNVtoRAjb56OLfL+MIUyuiC6fNrGdmFypg4AHZHss=;
+	s=arc-20240116; t=1741873852; c=relaxed/simple;
+	bh=XIr08FortiFXYgvy+0ilxZfO/dI5xt5VoYYHY8PPi6U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sv4FOwFoneo2pgYX57Ip0/W75hUBV1PsPshechsTjyQTy3RiajeZWuJptylnb1JBckaabxp8bGM4vyUGbwmGfdDrSwj5YWHGZ+T2sJiqyzICrowMrBCqxR9PUH5ReF0QzXYA74Rxreb16TbCdn5dcgf0biLMBco3psM9EDPGGUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vM8kjhfl; arc=none smtp.client-ip=139.178.84.217
+	 MIME-Version; b=RZ+IFLsXgT/d+soP7sz/rNrjBAcaOWkLwtc+0wwU36sXOR8ADRiGl0Z8126cShqoS8+m4sFozzRujZTdYAHy4hJRc1NHXUT1xYvQjpoSfYjm/HIXi8orAEE6c8x6BNxF+b1gsDz5dHCy8voAJGj9K+8IGCsZNnnYeK1H3qXNhV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RGAoZ9Bv; arc=none smtp.client-ip=139.178.84.217
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vM8kjhfl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RGAoZ9Bv"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B00B25C5DAE;
-	Thu, 13 Mar 2025 13:48:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46EA7C4CEEB;
-	Thu, 13 Mar 2025 13:50:23 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 22FA95C55F4;
+	Thu, 13 Mar 2025 13:48:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF707C4AF0C;
+	Thu, 13 Mar 2025 13:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741873836;
-	bh=xXhNVtoRAjb56OLfL+MIUyuiC6fNrGdmFypg4AHZHss=;
+	s=k20201202; t=1741873849;
+	bh=XIr08FortiFXYgvy+0ilxZfO/dI5xt5VoYYHY8PPi6U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vM8kjhflpGv3ifczYRBjucOLjPNbTjYEFQMj1aEp0KsLhRKStFJlWIGjAEJLt2da+
-	 HjtiQkCtGzrOP1Lfase8Tm5L6D5Mn8i2K2X8xlpqdSbVd+khSOen+r9N4+2Ckwctvl
-	 vd45q3fsT5VFequdtDMR6RGd84DUAVt5h+T7EQZSGqGj3wc9JcT8Kf80HGB1m/4qV/
-	 YmMUDr49NOXjSCqI/uf+x2MqyPp4kBxltU4mmCjCvwKgvY2LEte6vnTXfX463yflwU
-	 D9m/XyUzL5ubJawlpBJuZyq0tgbiYauzm+IdYU+m35MKZ0/I3YkEYIrUzw4+S42UjY
-	 9rlNZpu0kjehA==
+	b=RGAoZ9Bv6t2SSbQIAmvfk2jcoGAYo67odXJQH4I/ojEZbm/bm80r5mMCH3HqOTqxP
+	 iEZpCsT3i67pyvVHb2yzKWbGZdZItWV2Ob4FFoey9K3/aEHHq8giXuNiumJO7DmCve
+	 4eHUz/CEruq5Di7XV6/wke3HQWVq7E0atmm7IkJdrFuZ4qYFw3TQ9EOIhb1g+we9g4
+	 9Hqp5mqUVK6+lA5SzALUuWJtjGkTzvZsWBVyO01BMp72OTgxynma6l2j5xAvRQ/lS9
+	 IVRmBa6Xj3JWKUq1hEOzK9uv2OFR3tfR/4HK06dHKYPgIsu9Am8T7kbNr4q9/Gwpoe
+	 NNdSNeFMp0c7w==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -91,9 +91,9 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
 	linux-arch@vger.kernel.org,
 	linux-mm@kvack.org,
 	x86@kernel.org
-Subject: [PATCH v2 01/13] arm: mem_init: use memblock_phys_free() to free DMA memory on SA1111
-Date: Thu, 13 Mar 2025 15:49:51 +0200
-Message-ID: <20250313135003.836600-2-rppt@kernel.org>
+Subject: [PATCH v2 02/13] csky: move setup_initrd() to setup.c
+Date: Thu, 13 Mar 2025 15:49:52 +0200
+Message-ID: <20250313135003.836600-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250313135003.836600-1-rppt@kernel.org>
 References: <20250313135003.836600-1-rppt@kernel.org>
@@ -107,36 +107,141 @@ Content-Transfer-Encoding: 8bit
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-This will help to pull out memblock_free_all() to generic code.
+Memory used by initrd should be reserved as soon as possible before
+there any memblock allocations that might overwrite that memory.
 
+This will also help with pulling out memblock_free_all() to the generic
+code and reducing code duplication in arch::mem_init().
+
+Acked by: Guo Ren (csky) <guoren@kernel.org>
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/arm/mm/init.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/csky/kernel/setup.c | 43 ++++++++++++++++++++++++++++++++++++++++
+ arch/csky/mm/init.c      | 43 ----------------------------------------
+ 2 files changed, 43 insertions(+), 43 deletions(-)
 
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 5345d218899a..9aec1cb2386f 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -277,14 +277,14 @@ void __init mem_init(void)
+diff --git a/arch/csky/kernel/setup.c b/arch/csky/kernel/setup.c
+index fe715b707fd0..e0d6ca86ea8c 100644
+--- a/arch/csky/kernel/setup.c
++++ b/arch/csky/kernel/setup.c
+@@ -12,6 +12,45 @@
+ #include <asm/mmu_context.h>
+ #include <asm/pgalloc.h>
  
- 	set_max_mapnr(pfn_to_page(max_pfn) - mem_map);
- 
--	/* this will put all unused low memory onto the freelists */
--	memblock_free_all();
--
- #ifdef CONFIG_SA1111
- 	/* now that our DMA memory is actually so designated, we can free it */
--	free_reserved_area(__va(PHYS_OFFSET), swapper_pg_dir, -1, NULL);
-+	memblock_phys_free(PHYS_OFFSET, __pa(swapper_pg_dir) - PHYS_OFFSET);
- #endif
- 
-+	/* this will put all unused low memory onto the freelists */
-+	memblock_free_all();
++#ifdef CONFIG_BLK_DEV_INITRD
++static void __init setup_initrd(void)
++{
++	unsigned long size;
 +
- 	free_highpages();
++	if (initrd_start >= initrd_end) {
++		pr_err("initrd not found or empty");
++		goto disable;
++	}
++
++	if (__pa(initrd_end) > PFN_PHYS(max_low_pfn)) {
++		pr_err("initrd extends beyond end of memory");
++		goto disable;
++	}
++
++	size = initrd_end - initrd_start;
++
++	if (memblock_is_region_reserved(__pa(initrd_start), size)) {
++		pr_err("INITRD: 0x%08lx+0x%08lx overlaps in-use memory region",
++		       __pa(initrd_start), size);
++		goto disable;
++	}
++
++	memblock_reserve(__pa(initrd_start), size);
++
++	pr_info("Initial ramdisk at: 0x%p (%lu bytes)\n",
++		(void *)(initrd_start), size);
++
++	initrd_below_start_ok = 1;
++
++	return;
++
++disable:
++	initrd_start = initrd_end = 0;
++
++	pr_err(" - disabling initrd\n");
++}
++#endif
++
+ static void __init csky_memblock_init(void)
+ {
+ 	unsigned long lowmem_size = PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET_OFFSET);
+@@ -40,6 +79,10 @@ static void __init csky_memblock_init(void)
+ 		max_low_pfn = min_low_pfn + sseg_size;
+ 	}
  
- 	/*
++#ifdef CONFIG_BLK_DEV_INITRD
++	setup_initrd();
++#endif
++
+ 	max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
+ 
+ 	mmu_init(min_low_pfn, max_low_pfn);
+diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+index bde7cabd23df..ab51acbc19b2 100644
+--- a/arch/csky/mm/init.c
++++ b/arch/csky/mm/init.c
+@@ -42,45 +42,6 @@ unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)]
+ 						__page_aligned_bss;
+ EXPORT_SYMBOL(empty_zero_page);
+ 
+-#ifdef CONFIG_BLK_DEV_INITRD
+-static void __init setup_initrd(void)
+-{
+-	unsigned long size;
+-
+-	if (initrd_start >= initrd_end) {
+-		pr_err("initrd not found or empty");
+-		goto disable;
+-	}
+-
+-	if (__pa(initrd_end) > PFN_PHYS(max_low_pfn)) {
+-		pr_err("initrd extends beyond end of memory");
+-		goto disable;
+-	}
+-
+-	size = initrd_end - initrd_start;
+-
+-	if (memblock_is_region_reserved(__pa(initrd_start), size)) {
+-		pr_err("INITRD: 0x%08lx+0x%08lx overlaps in-use memory region",
+-		       __pa(initrd_start), size);
+-		goto disable;
+-	}
+-
+-	memblock_reserve(__pa(initrd_start), size);
+-
+-	pr_info("Initial ramdisk at: 0x%p (%lu bytes)\n",
+-		(void *)(initrd_start), size);
+-
+-	initrd_below_start_ok = 1;
+-
+-	return;
+-
+-disable:
+-	initrd_start = initrd_end = 0;
+-
+-	pr_err(" - disabling initrd\n");
+-}
+-#endif
+-
+ void __init mem_init(void)
+ {
+ #ifdef CONFIG_HIGHMEM
+@@ -92,10 +53,6 @@ void __init mem_init(void)
+ #endif
+ 	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
+ 
+-#ifdef CONFIG_BLK_DEV_INITRD
+-	setup_initrd();
+-#endif
+-
+ 	memblock_free_all();
+ 
+ #ifdef CONFIG_HIGHMEM
 -- 
 2.47.2
 
