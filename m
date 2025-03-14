@@ -1,168 +1,139 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54CE1E5B94
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Mar 2025 07:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0BE91D5159
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Mar 2025 08:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741936317; cv=none; b=DFEL36hyBfRT/QyFAZRj+POesTt/Wq5elQvAUfAvOP4OI+NE4SzXKBlXqGUmxAw7iGJcPEzOGWC19SI7Hl0k0e43IN+cQp21ShWdzy3SJ+z9EmzZhC00YIlFKThh2nZwm3yE6Rti683dBkYfp1Nzbsdv6oT/RZd9iA2jBKYozR8=
+	t=1741942334; cv=none; b=Cqh370yM7eK9lBnNrsNxubg0lf+pIjkXZ+aavYpZOJyZagU+hKCjZ52pdy1NAUHLkci4baU1ISIEYEF/DESVgfPxZQdIbJjvou0yuYRkcYe8Blo+i8YbMIgWG7IXh7eF03D7dTqOGlb7e2qEviVsMijqigDlNgTxRGR/2gRG2Rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741936317; c=relaxed/simple;
-	bh=carqj/K7BRYMlmHgCtRn+i/kZk9+307GqgbsoigQqw0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fznXniqH6e9dbjxnLMuFJKTgDP+pqrHo/GYtWsga97od191+86mN6IT1jyNGFsliQZWuD2eSHCATaQFDMW+CQYS6sOhvNq2bonsSZGGMNQl+a3DnjlkWrlcegEkPZF5cas05sHG500TzKsGlJl5iTGRER+dtpf/UZF/wZoGCmu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KKddVnfE; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KKddVnfE"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1741936314;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zu7kWQRIHaiQZGQh0A3QzrqgDB6jslhiNlrZVStUqb8=;
-	b=KKddVnfEmUeR31qlTiajEb3b3xlpPGpr9mh3KgWtnycHj9eZxR75Rscgj8xbqdNLNH7ONu
-	+PzFwJfItH/YvZuLEcME8VtbromYCHEVOW3+GjUHvz1iWS5BBHffmyBNuiSCy6OAiyfmt8
-	Ufr1n+Hpi7S72x33AIziIQxdFmsfJdM=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-307-CFh-pJvvNWmIKBlnrEbcPw-1; Fri,
- 14 Mar 2025 03:11:35 -0400
-X-MC-Unique: CFh-pJvvNWmIKBlnrEbcPw-1
-X-Mimecast-MFC-AGG-ID: CFh-pJvvNWmIKBlnrEbcPw_1741936292
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5A67B180025E;
-	Fri, 14 Mar 2025 07:11:32 +0000 (UTC)
-Received: from thuth-p1g4.redhat.com (unknown [10.44.32.82])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 1462C18001DE;
-	Fri, 14 Mar 2025 07:11:28 +0000 (UTC)
-From: Thomas Huth <thuth@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org,
-	Thomas Huth <thuth@redhat.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 15/41] m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in uapi headers
-Date: Fri, 14 Mar 2025 08:09:46 +0100
-Message-ID: <20250314071013.1575167-16-thuth@redhat.com>
-In-Reply-To: <20250314071013.1575167-1-thuth@redhat.com>
-References: <20250314071013.1575167-1-thuth@redhat.com>
+	s=arc-20240116; t=1741942334; c=relaxed/simple;
+	bh=nZo14K+zik6B80Tft8b3SLB4YTJ7bbTGqGrs47Aq+bs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZR30wJw7bD3fTTZCLGLHkcS99E4R3j9lPQHl3/gwQKwr5A4ogO2ZOdYTYdV1qXxYrHSXipJ1tF9dhW1ICMYQUuSrQ5+Hqo94hu1UPgPdurfx+a5t0Iq0jf2fpY9kQK+z4JoI3fwao5qtBD7h2+zVyh8TWoEP/GU7P2javkK+npE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-86d42f08219so755877241.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Mar 2025 01:52:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741942330; x=1742547130;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ly+7SXzCFZ+0lYCTkH0QFO9dHfRUs+9whilmhgwp5Ss=;
+        b=GgogOpe5VqTpLqe1ndAdJqmCVIs9Y+HbyWv562cfi9ygRiKmic/7e2bm6co7zwmNZ9
+         lgRJywYikn7Cedyel9jbeCFzlzUS4H6i9zho6aZM0kyPO06GrmP7olPeADYixRkfZ/Ca
+         pPBh+NbkOCHZl/jHsL3Vvh2mQEaOKhP5MzYxJelYl/VlhuaLVPBX2N1IDLyKdl6TKqhC
+         Xk1ow2tz8c5P2KJ8Dnh3kTKbt96EgZG9pcgImy81zFOfNLglA9j4daL5gEuZloM9rX8P
+         2VTLhKFJd+2dHGz5XL7fEvFpNpk6XqjQ3w5Fehl3QLlc2qIkK2xRk7n9Sq8GZx+gOcEu
+         97nw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpspIiswlwzDtnEYJZJSTIvKKIm96+A3mbrhosYb/kOgPrBGh8V4/RNWmhZ+lEZBofFq6cSz4TAke7@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzsX3WgfM4ujIq04rPifHTRoqcJAVe5JXxt7gmL57aWvcISbuIt
+	J9QdrHP7dRFNJ3xYknnz1WT14HfIXdmzhWJcUTVu9MeRNT1ZzwNLzVXoB359y+c=
+X-Gm-Gg: ASbGnctwlLw5sTjJKal0Qs9go7wK0/K/pnVm9ebTcYPr6TVLYE2npQLC36gjL1V2n2f
+	DMRc7aLBADeTfYj02Ib8ATcXpHWbl1kg1BWHlvzbctH/+KhhoPtCMPbNEi3sOlkH9AxvjFUZo5E
+	gJvD23C2qKMBZPMQyV970t0qBYGCd4VmQMo9BwZ1vDwAxtUa9VZmJSfw7eCl+ISTn7PwmAmk7TG
+	jbpZok1y0rRJX7q8jW5GxPziNGmKhAVwhQlhgo278bwMwWl68p1Et+7wbVNoqo+Y/6ZJhjA5MhP
+	c6HynMIPonxSr9cCE0mzPaR4pPvTnGfBkgxsaLIN6hOzxacl9FKnBJEnRd7m9Dbc0lWt4hQz/Da
+	zwXl0nE0=
+X-Google-Smtp-Source: AGHT+IFD53jgpBcVvkiNu9JkhjbzxKGF/kCFp0wRvxabF8lr25U9vOBNDxg6FeAD1RbM5kIvx0VC9Q==
+X-Received: by 2002:a05:6102:41a8:b0:4bd:22d5:fbd7 with SMTP id ada2fe7eead31-4c383163676mr871807137.11.1741942329606;
+        Fri, 14 Mar 2025 01:52:09 -0700 (PDT)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4c374edd74asm424738137.5.2025.03.14.01.52.09
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Mar 2025 01:52:09 -0700 (PDT)
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-86d42f08219so755874241.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Mar 2025 01:52:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXDJeGoV/CXB7uFtXKuYUu5b022yOK4NMsAG4IAEFUqYjTTUgXEbNNfy1Su107v3/z/jwgUw4yrKljI@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:3583:b0:4c1:924e:1a2a with SMTP id
+ ada2fe7eead31-4c38322cb9bmr608747137.25.1741942329234; Fri, 14 Mar 2025
+ 01:52:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+References: <20250313135003.836600-1-rppt@kernel.org> <20250313135003.836600-14-rppt@kernel.org>
+ <CAMuHMdWCBL_cg1NgbHCA3e9GTob_P9mTuN_Tepvigci6rxDmbg@mail.gmail.com>
+ <Z9L7H2uugWRNCDVL@kernel.org> <CAMuHMdWtHqpPHQV+qnEpPe-7pE9uw9tD+qypRVeXYGiXNfhBjA@mail.gmail.com>
+ <ea797cf9-99b7-434a-91e2-41dc1aa4c131@gmail.com>
+In-Reply-To: <ea797cf9-99b7-434a-91e2-41dc1aa4c131@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 14 Mar 2025 09:51:57 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV8kBcxjy7TUKDR-yxhk79umhrRp+L8wrk8BO6N2F4iyw@mail.gmail.com>
+X-Gm-Features: AQ5f1JpsoRH0xrvchxQVpc4oBCNkF9vLAcdnz5W1SJ1zWmV2a6gG-1YP-z6terU
+Message-ID: <CAMuHMdV8kBcxjy7TUKDR-yxhk79umhrRp+L8wrk8BO6N2F4iyw@mail.gmail.com>
+Subject: Re: [PATCH v2 13/13] arch, mm: make releasing of memory to page
+ allocator more explicit
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>, linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 
-__ASSEMBLY__ is only defined by the Makefile of the kernel, so
-this is not really useful for uapi headers (unless the userspace
-Makefile defines it, too). Let's switch to __ASSEMBLER__ which
-gets set automatically by the compiler when compiling assembly
-code.
+Hi Michael,
 
-This is a completely mechanical patch (done with a simple "sed -i"
-statement).
+On Thu, 13 Mar 2025 at 19:32, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 14/03/25 04:51, Geert Uytterhoeven wrote:
+> > On Thu, 13 Mar 2025 at 16:35, Mike Rapoport <rppt@kernel.org> wrote:
+> >> On Thu, Mar 13, 2025 at 04:19:10PM +0100, Geert Uytterhoeven wrote:
+> >>> On Thu, 13 Mar 2025 at 14:53, Mike Rapoport <rppt@kernel.org> wrote:
+> >>>> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> >>>>
+> >>>> The point where the memory is released from memblock to the buddy allocator
+> >>>> is hidden inside arch-specific mem_init()s and the call to
+> >>>> memblock_free_all() is needlessly duplicated in every artiste cure and
+> >>>> after introduction of arch_mm_preinit() hook, mem_init() implementation on
+> >>>> many architecture only contains the call to memblock_free_all().
+> >>>>
+> >>>> Pull memblock_free_all() call into mm_core_init() and drop mem_init() on
+> >>>> relevant architectures to make it more explicit where the free memory is
+> >>>> released from memblock to the buddy allocator and to reduce code
+> >>>> duplication in architecture specific code.
+> >>>>
+> >>>> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>     # x86
+> >>>> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> >>>>   arch/m68k/mm/init.c          |  2 --
+> >>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+> >> Thanks :)
+> >>
+> >> While working on this I was wondering if init_pointer_tables() can be moved
+> >> from mem_init() to motorola::paging_init(). It seems to me that it can, but
+> >> I wasn't sure enough so I left it there for now.
+> > Oh, that would be nice, as it would allow us to get rid of the ugly
+> > #ifdef, and (in the context of this series) of our own mem_init().
+> > It looked promising at first, but crashed later (on ARAnyM):
+> >
+> > VFS: Mounted root (ext3 filesystem) readonly on device 8:1.
+> > devtmpfs: mounted
+> > Unable to handle kernel access at virtual address (ptrval)
+> > Oops: 00000000
+> > Modules linked in:
+> > PC: [<0001273b>] xdnrm_dn+0xf/0x10
+> > SR: 2208  SP: (ptrval)  a2: 01030000
+> > d0: 00000097    d1: ffffffff    d2: 00000001    d3: 00563000
+> > d4: 0055f924    d5: 00421b56    a0: 0102e000    a1: 0102e000
+> > Process swapper (pid: 1, task=(ptrval))
+> > Frame format=7 eff addr=00ffee01 ssw=0545 faddr=00ffee01
+>
+> What's at that address? The 14 MB ST-RAM ought to end at 0xe00000 (which
+> would have been left unmapped if FastRAM is in use). MMIO area starts at
+> 0xff0000 but base addresses there are 0xff8xxx, 0xffaxxx or 0xfffxxx
+> from what I've found.
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Thomas Huth <thuth@redhat.com>
----
- arch/m68k/include/uapi/asm/bootinfo-vme.h | 4 ++--
- arch/m68k/include/uapi/asm/bootinfo.h     | 8 ++++----
- arch/m68k/include/uapi/asm/ptrace.h       | 4 ++--
- 3 files changed, 8 insertions(+), 8 deletions(-)
+As paging_init() is done much earlier than mem_int(), I guess it just
+failed to mark the initial pointer table as reserved, and scribbled over
+it later, so I wouldn't trust anything in that backtrace...
 
-diff --git a/arch/m68k/include/uapi/asm/bootinfo-vme.h b/arch/m68k/include/uapi/asm/bootinfo-vme.h
-index f36a09ab5e79b..b8139eb393524 100644
---- a/arch/m68k/include/uapi/asm/bootinfo-vme.h
-+++ b/arch/m68k/include/uapi/asm/bootinfo-vme.h
-@@ -33,7 +33,7 @@
- #define VME_TYPE_BVME6000	0x6000	/* BVM Ltd. BVME6000 */
- 
- 
--#ifndef __ASSEMBLY__
-+#ifndef __ASSEMBLER__
- 
- /*
-  * Board ID data structure - pointer to this retrieved from Bug by head.S
-@@ -56,7 +56,7 @@ typedef struct {
- 	__be32	option2;
- } t_bdid, *p_bdid;
- 
--#endif /* __ASSEMBLY__ */
-+#endif /* __ASSEMBLER__ */
- 
- 
-     /*
-diff --git a/arch/m68k/include/uapi/asm/bootinfo.h b/arch/m68k/include/uapi/asm/bootinfo.h
-index 024e87d7095f8..28d2d44c08d06 100644
---- a/arch/m68k/include/uapi/asm/bootinfo.h
-+++ b/arch/m68k/include/uapi/asm/bootinfo.h
-@@ -16,7 +16,7 @@
- #include <linux/types.h>
- 
- 
--#ifndef __ASSEMBLY__
-+#ifndef __ASSEMBLER__
- 
-     /*
-      *  Bootinfo definitions
-@@ -43,7 +43,7 @@ struct mem_info {
- 	__be32 size;			/* length of memory chunk (in bytes) */
- };
- 
--#endif /* __ASSEMBLY__ */
-+#endif /* __ASSEMBLER__ */
- 
- 
-     /*
-@@ -167,7 +167,7 @@ struct mem_info {
- #define BI_VERSION_MAJOR(v)		(((v) >> 16) & 0xffff)
- #define BI_VERSION_MINOR(v)		((v) & 0xffff)
- 
--#ifndef __ASSEMBLY__
-+#ifndef __ASSEMBLER__
- 
- struct bootversion {
- 	__be16 branch;
-@@ -178,7 +178,7 @@ struct bootversion {
- 	} machversions[];
- } __packed;
- 
--#endif /* __ASSEMBLY__ */
-+#endif /* __ASSEMBLER__ */
- 
- 
- #endif /* _UAPI_ASM_M68K_BOOTINFO_H */
-diff --git a/arch/m68k/include/uapi/asm/ptrace.h b/arch/m68k/include/uapi/asm/ptrace.h
-index ebd9fccb3d11f..d70f771399b40 100644
---- a/arch/m68k/include/uapi/asm/ptrace.h
-+++ b/arch/m68k/include/uapi/asm/ptrace.h
-@@ -22,7 +22,7 @@
- #define PT_SR	   17
- #define PT_PC	   18
- 
--#ifndef __ASSEMBLY__
-+#ifndef __ASSEMBLER__
- 
- /* this struct defines the way the registers are stored on the
-    stack during a system call. */
-@@ -81,5 +81,5 @@ struct switch_stack {
- #define PTRACE_GETFDPIC_EXEC	0
- #define PTRACE_GETFDPIC_INTERP	1
- 
--#endif /* __ASSEMBLY__ */
-+#endif /* __ASSEMBLER__ */
- #endif /* _UAPI_M68K_PTRACE_H */
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.48.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
