@@ -1,159 +1,122 @@
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749DE1DB154
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Mar 2025 18:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912B8144304
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 14 Mar 2025 06:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741890719; cv=none; b=GvKP+lQL1m/UkA6RL1oWJ5zYCxOj7uWy2x1/0AdQwWLFSQyV1HUIAqP7e1YjLiS+cvXSdeC0CSKqsEuV7MpvcvPlnoAngXBP8CjD15b4rsDAXU0gtu0NsrwYcrhxllnrBE4UC0dtPLLe38zCYfBPzdB4bvvlAJb7asl6ObH2nl0=
+	t=1741933728; cv=none; b=AosmqCLPXqP8W2tat6wZByObzt4QJBQqMtrrYPosfbSKdPN/bZzLaH8NDti4dAFvBRvsPCtP7PYmZcZxDRNOCeMUZL4tSiC+0X5nBCzCiXkE7FhZs8H6wGpQOJy+cnnihSVn95MOly3pxJw3YMsIN7tmuTs5k5eGkOlNuVC0XlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741890719; c=relaxed/simple;
-	bh=QDNrUCuuo1sh+JvAhQusOn9G4cRba+JaGJFfamPNlFo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GaMHjcENNa+xQOjMIiXNqXvLScSujFSw2PBP+AAb12aj80qTlAZfh4HcbBtv7aqFMMxURDN40XWYZIngswnX+Z3tp2kGjPOC5YMdUtQXXVJW6bgkDpUDZ7n3g0Q862eEeTKBEmnc1lRxiN7bGjQ6MeRfLtRTtEEzcvHw3vScxY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l8WBVonH; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1741933728; c=relaxed/simple;
+	bh=s1M66vKWTgbRTSkxE/ZCDxRXrnq7Ha/dwselkuexWrg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=HhB+hBrFxyFXSfVWBtvVfoXd1opI2V/JSa1WSVd1/f1Wc0YmnqR7Dv0z6+QDq8QtKqq0la5PQP5T0EvtD0zFYkkPXHRFmFwKO9l4FVZbBGrlPGhwv1hS/DWWVB8PdOx+KLAiW8OGHolun1lG/fNTT2B/R4ynWrP78l7PmkHOCd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZPF5iKVV; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l8WBVonH"
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-22548a28d0cso39445965ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Mar 2025 11:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741890717; x=1742495517; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AvioiASfLNo7ypfSRCMauM2m9J3yZYec7min/CjZqEI=;
-        b=l8WBVonHQYnUHyrmThjU4OnvYWUOFR4a6QrlPg2nAAnInGDWelcmiVy/DIAe6O4c4n
-         8RMWpK9oJTfx8iVh7lh4h2hoYivGODewA3oFGVLtyH3YfltSWcwKmoryDGXvZ80MCYjW
-         u2TGndknUbRb01xtM4iujCIbVkgK/Q1nqO8/knt2DctyJJd+S2O2QDREVg7qdOaLRfGA
-         6PaSnCEvPOP2OJoqjTTc0zRJfewKmPPznnGIdil7ahVSRi2jQC0vX6rAD8YwuPT2d8ig
-         /Ea8APQCytNPqkS94ni7U4MXLPxkgJdgNyNaaNUHfcN0EsDymcnMd5UGaK9P5t4YNfoL
-         JcVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741890717; x=1742495517;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AvioiASfLNo7ypfSRCMauM2m9J3yZYec7min/CjZqEI=;
-        b=K9G7OT6HpX0dPkrsdhjyY+VyTPvGdnPRj8xBaTfrlCOe19l5t1AWJg6ftrHR7g/TUn
-         P+oEc9sD0I2uK8XWpuiU/3QCXLhtWCn2yIN7o930vqyNvt+xH408wJ/iW3oJ7RaJB2E2
-         6qkBTSZZ/C5CkHHzeZ/cFXhR/L54PY34YyfAgbY1Kg0imDnm2Ne9ThP3KoW77tTQ7gnP
-         nhKuNKppQUXC22cPpN7Cifbhikeg7EYbvkOojkPJE0vYe5+ZcVB5KOx6hE0mp4yoTHV1
-         M6EpPCL8oPYxeINiYsspbko8ZpsgCEkGjSHPMNYmxEVhn6tx7FLHFTlkcBkmL/Ka4iKb
-         W35Q==
-X-Gm-Message-State: AOJu0Yymh3B4dzyFbuUczhkyznVXU4jCc/T6aNkTXIO4a4a/j5ZPj2XZ
-	lG0LBUmGETnZzTL07+b1RyYyptpBK2fs1EJ6Q60oJTHa64kUOOy/
-X-Gm-Gg: ASbGncsWCjbcWO4WrKJOl1DFrVfuMy1Db9iuKZ1Bu0vYDav18PFdJwT32uCxxhkrY3d
-	JeOZOQug9V3qtnVZIhla7QNvL5NaMFUhIkqbJaHvXf1NlSG0USa4KLA3DYlpi/kpTVbwzPcqu/y
-	tI7qV5RO9D5NSjelP4k64N53npIVMIOO5ucXHs5p4EgzdEH/qjTcvTZWqMZ/pNoL8MOdoSjkUmu
-	NO2+ElkNoTb2f+BOuSZGztTR5/2m8aXjWKYZ/Hmi6iail/icdH0bs9rx9uOLA01VsYn0YuYH5eX
-	KhKVYYEvfP8Mh3XdlUWW5kzie9CBY5r0WYM6LxltPoryA1CN3eWk6cwkWDHjVQrg6cKhSTdLXoR
-	w5WQH0u1f9N2KCGR/APhc0UAntPt0nEDosrkhRDU6UduXFC4oT7iAypZzHFI=
-X-Google-Smtp-Source: AGHT+IG9GdBbgNkdtLuMp2u0NM3LHgg0e7hRVT7B3QoybMrdPZBYyJ6IAS0pxD4PC2ehvue37wCslA==
-X-Received: by 2002:a17:903:2405:b0:224:13a4:d61e with SMTP id d9443c01a7336-225dd8eb331mr7227775ad.51.1741890717451;
-        Thu, 13 Mar 2025 11:31:57 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:acbe:70b0:48fd:9dc0? ([2001:df0:0:200c:acbe:70b0:48fd:9dc0])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73711529531sm1673946b3a.2.2025.03.13.11.31.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Mar 2025 11:31:56 -0700 (PDT)
-Message-ID: <ea797cf9-99b7-434a-91e2-41dc1aa4c131@gmail.com>
-Date: Fri, 14 Mar 2025 07:31:52 +1300
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZPF5iKVV"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741933727; x=1773469727;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=s1M66vKWTgbRTSkxE/ZCDxRXrnq7Ha/dwselkuexWrg=;
+  b=ZPF5iKVV62n+BXud3hheh4uGLwxeBGbx55o83ghDHO6v0adV/gFTFKPl
+   iTkaQiuUtmiX1CKj/9KNZaiY+B3bLNFILkv0feyxx0ifyORTKO3rAq8pQ
+   1248NT0ItvbIDW/2qFVmIlOzCWcvVbaL4l4rccEtdgavnbO93dMOgqrh6
+   bGtRi12tqAHUDx217GXXvPQS0+ishTX4eSheu8gspoYNr7qCaJxLQ/9uc
+   R5ctuz1pKarEr5yBAmiTqIjBfxGbiV9uikc5xyMOlSvy3F+zWR0FdRLv4
+   YWUgSRdYQeHdQfkZMkv4Fwv2JZQSvAQ5TlcHFmFI/i7VNtoTPUVm7fwuL
+   A==;
+X-CSE-ConnectionGUID: +fEkPY2ZS+W6/DzK5hWPMw==
+X-CSE-MsgGUID: ad4TvTVHS22zFYErAmlrFg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11372"; a="54455199"
+X-IronPort-AV: E=Sophos;i="6.14,246,1736841600"; 
+   d="scan'208";a="54455199"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2025 23:28:45 -0700
+X-CSE-ConnectionGUID: YisgfRewReeJP4xK5eVXLA==
+X-CSE-MsgGUID: Hu7xDrTAQz6SiTwVdpayBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,246,1736841600"; 
+   d="scan'208";a="152119239"
+Received: from lkp-server02.sh.intel.com (HELO a4747d147074) ([10.239.97.151])
+  by fmviesa001.fm.intel.com with ESMTP; 13 Mar 2025 23:28:43 -0700
+Received: from kbuild by a4747d147074 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1tsyXB-000AAU-1l;
+	Fri, 14 Mar 2025 06:28:41 +0000
+Date: Fri, 14 Mar 2025 14:27:42 +0800
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:dt 5/14] drivers/gpu/drm/tegra/hdmi.h:122:9:
+ warning: "ACR_ENABLE" redefined
+Message-ID: <202503141417.1McpE8Mn-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/13] arch, mm: make releasing of memory to page
- allocator more explicit
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Mike Rapoport <rppt@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org
-References: <20250313135003.836600-1-rppt@kernel.org>
- <20250313135003.836600-14-rppt@kernel.org>
- <CAMuHMdWCBL_cg1NgbHCA3e9GTob_P9mTuN_Tepvigci6rxDmbg@mail.gmail.com>
- <Z9L7H2uugWRNCDVL@kernel.org>
- <CAMuHMdWtHqpPHQV+qnEpPe-7pE9uw9tD+qypRVeXYGiXNfhBjA@mail.gmail.com>
-Content-Language: en-US
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <CAMuHMdWtHqpPHQV+qnEpPe-7pE9uw9tD+qypRVeXYGiXNfhBjA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Geert,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
+head:   91b4bcf6b8709da81124749743327c60b904fef8
+commit: 0cc1fe544a742bcb4a96a404bab84d5cd4d789c4 [5/14] m68k: coldfire: enable common clock framework
+config: m68k-randconfig-r123-20250314 (https://download.01.org/0day-ci/archive/20250314/202503141417.1McpE8Mn-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20250314/202503141417.1McpE8Mn-lkp@intel.com/reproduce)
 
-On 14/03/25 04:51, Geert Uytterhoeven wrote:
-> Hi Mike,
->
-> On Thu, 13 Mar 2025 at 16:35, Mike Rapoport <rppt@kernel.org> wrote:
->> On Thu, Mar 13, 2025 at 04:19:10PM +0100, Geert Uytterhoeven wrote:
->>> On Thu, 13 Mar 2025 at 14:53, Mike Rapoport <rppt@kernel.org> wrote:
->>>> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
->>>>
->>>> The point where the memory is released from memblock to the buddy allocator
->>>> is hidden inside arch-specific mem_init()s and the call to
->>>> memblock_free_all() is needlessly duplicated in every artiste cure and
->>>> after introduction of arch_mm_preinit() hook, mem_init() implementation on
->>>> many architecture only contains the call to memblock_free_all().
->>>>
->>>> Pull memblock_free_all() call into mm_core_init() and drop mem_init() on
->>>> relevant architectures to make it more explicit where the free memory is
->>>> released from memblock to the buddy allocator and to reduce code
->>>> duplication in architecture specific code.
->>>>
->>>> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>     # x86
->>>> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
->>>>   arch/m68k/mm/init.c          |  2 --
->>> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
->> Thanks :)
->>
->> While working on this I was wondering if init_pointer_tables() can be moved
->> from mem_init() to motorola::paging_init(). It seems to me that it can, but
->> I wasn't sure enough so I left it there for now.
-> Oh, that would be nice, as it would allow us to get rid of the ugly
-> #ifdef, and (in the context of this series) of our own mem_init().
-> It looked promising at first, but crashed later (on ARAnyM):
->
-> VFS: Mounted root (ext3 filesystem) readonly on device 8:1.
-> devtmpfs: mounted
-> Unable to handle kernel access at virtual address (ptrval)
-> Oops: 00000000
-> Modules linked in:
-> PC: [<0001273b>] xdnrm_dn+0xf/0x10
-> SR: 2208  SP: (ptrval)  a2: 01030000
-> d0: 00000097    d1: ffffffff    d2: 00000001    d3: 00563000
-> d4: 0055f924    d5: 00421b56    a0: 0102e000    a1: 0102e000
-> Process swapper (pid: 1, task=(ptrval))
-> Frame format=7 eff addr=00ffee01 ssw=0545 faddr=00ffee01
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202503141417.1McpE8Mn-lkp@intel.com/
 
-What's at that address? The 14 MB ST-RAM ought to end at 0xe00000 (which 
-would have been left unmapped if FastRAM is in use). MMIO area starts at 
-0xff0000 but base addresses there are 0xff8xxx, 0xffaxxx or 0xfffxxx 
-from what I've found.
+All warnings (new ones prefixed by >>):
 
-Cheers,
+   In file included from drivers/gpu/drm/tegra/hdmi.c:35:
+>> drivers/gpu/drm/tegra/hdmi.h:122:9: warning: "ACR_ENABLE" redefined
+     122 | #define ACR_ENABLE         (1 << 31)
+         |         ^~~~~~~~~~
+   In file included from arch/m68k/include/asm/m5441xsim.h:19,
+                    from arch/m68k/include/asm/mcfsim.h:48,
+                    from arch/m68k/include/asm/io_no.h:35,
+                    from arch/m68k/include/asm/io.h:6,
+                    from include/linux/io.h:14,
+                    from include/linux/irq.h:20,
+                    from include/asm-generic/hardirq.h:17,
+                    from ./arch/m68k/include/generated/asm/hardirq.h:1,
+                    from include/linux/hardirq.h:11,
+                    from include/linux/interrupt.h:11,
+                    from include/linux/kernel_stat.h:8,
+                    from include/linux/cgroup.h:26,
+                    from include/linux/memcontrol.h:13,
+                    from include/linux/swap.h:9,
+                    from include/linux/suspend.h:5,
+                    from include/linux/regulator/consumer.h:35,
+                    from drivers/gpu/drm/tegra/hdmi.c:17:
+   arch/m68k/include/asm/m54xxacr.h:34:9: note: this is the location of the previous definition
+      34 | #define ACR_ENABLE      0x00008000      /* Enable address */
+         |         ^~~~~~~~~~
 
-     Michael
 
-> wb 1 stat/addr/data: 0000 00000000 00000000
-> wb 2 stat/addr/data: 0000 00000000 00000000
-> wb 3 stat/addr/data: 0000 00ffee01 00000000
-> push data: 00000000 00000000 00000000 00000000
-> Stack from 0102ffb6:
->          00000042 4e9a005f 4bd80042 4e720000 a5240000 00000000 00000000 00000000
->          00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->          00002000 00000000
-> Call Trace: [<00002000>] _start+0x0/0x6
->
-> Code: ac08 9000 07ec e800 0800 0267 0408 d000 <07ec> ee01 43ff 1808
-> ee00 04ff 2108 ae00 07ff 1908 ae00 02ff 2420 5fe9 ee00 02ff
-> Disabling lock debugging due to kernel taint
-> Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> ---[ end Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x0000000b ]---
->
-> Gr{oetje,eeting}s,
->
->                          Geert
->
+vim +/ACR_ENABLE +122 drivers/gpu/drm/tegra/hdmi.h
+
+edec4af4c3d6d22 Thierry Reding 2012-11-15  119  
+edec4af4c3d6d22 Thierry Reding 2012-11-15  120  #define ACR_SUBPACK_CTS(x) (((x) & 0xffffff) << 8)
+edec4af4c3d6d22 Thierry Reding 2012-11-15  121  #define ACR_SUBPACK_N(x)   (((x) & 0xffffff) << 0)
+edec4af4c3d6d22 Thierry Reding 2012-11-15 @122  #define ACR_ENABLE         (1 << 31)
+edec4af4c3d6d22 Thierry Reding 2012-11-15  123  
+
+:::::: The code at line 122 was first introduced by commit
+:::::: edec4af4c3d6d225578290a9acc38c78147df55b drm: tegra: Add HDMI support
+
+:::::: TO: Thierry Reding <thierry.reding@avionic-design.de>
+:::::: CC: Dave Airlie <airlied@redhat.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
