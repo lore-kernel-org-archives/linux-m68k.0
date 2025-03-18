@@ -1,125 +1,91 @@
-Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76BF71CEAB2
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Mar 2025 22:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC9F1DD0C7
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Mar 2025 12:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742251728; cv=none; b=SEV4fNtKIY5yZdvtorsma5Kk85WCYCsB4kmKy/7eeBA0bt9kMgZxjuzFm2wIyHiFr0AlHivLPDfUOT0RMfuBgC283q+8SKMnyBcdLRFaFz4sbw/aqCbNAABWnCMl3xUqtL8l5E9g6wvjpQPF1/3fOVWY32UfbQmLAjRczZGiBqo=
+	t=1742300073; cv=none; b=kBpIEWGjSdIkvYRQZ46U/b//DpKHXPUPr6sY11l6+2tARXnpnOKpj2OQDItps4RnkMceiGLfi8XV71E2Y2L5JeZCMFTeCGNrXMc9r7km3J4gsAlAlOHsGULaK7L/p+SUcoaxUJtF6HtLNeR9Ubw+pJ26YpjYhPthrZwsFvJzekI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742251728; c=relaxed/simple;
-	bh=ioTnEAuhr3Pub8Z9EfYIwul2H8ShlzATvu1Td70qjTk=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=qcdHazaFMiDiVRKxaTiOgwIQvdo1Zbi0PjGHApDJQlO4oJ6RcqS0zNKoAvGkfQBjvCJj9tOsJn9beMWBVu6IvloLOiS28X4ERjqFglfTwOIyjPF308C+9dyTkWxdT6V8pM+C238oKkrpmgiHXiamSQjN/iGWqyvpYTR+ZB6qEkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=145oZ/59; arc=none smtp.client-ip=202.12.124.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="145oZ/59"
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfout.stl.internal (Postfix) with ESMTP id 61DE711401FD;
-	Mon, 17 Mar 2025 18:48:43 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Mon, 17 Mar 2025 18:48:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1742251723; x=1742338123; bh=R1vaJFtFdJW8YWR8qMo2bNDCNqTwTcZARad
-	vxpaOfME=; b=145oZ/59WJ4ni4RaK4uhJiEFFhRV97I0tCa4ETLMCzlrpl91Qpf
-	6sc3fVJSZ7qC6/VBO9zSSvJ5pNolKGVb09S0VD/cZb8gtuuDvBPXb4BlM43xA3AQ
-	Djl4+TvoIu9gtpm+c3dmk4nKcA4LKxIuTE7IQFaYl288/m1H3MlnTiQeRf1jeBP6
-	mXR3CjF398r/EJ4iL6nF1WwW0AAo36beFvPDUn74vYsrL2k8KY7Xvs7dS+xB6xsT
-	69+SsGMxzVn9qbzU1Px37wxCk7ctdgrBuElPBoAHX2+wWEX0ghaN6hls3MwAUn7e
-	HPM+9m5P9r2QFRUKl1XCfRTrHAGBxpLOUsg==
-X-ME-Sender: <xms:yqbYZxsJPxNzqKZpqXms7lnnXCN1fCLivLdSG4yzyL5i1ycQJaQybg>
-    <xme:yqbYZ6c-3-r3PrPjZZLuxg-C2SomgvjLyBTpNbk6N7SV1CtC_YGSwiniDDx6qFA9l
-    1GuRL2SjP9iFDx2kXU>
-X-ME-Received: <xmr:yqbYZ0wPrB7rEHw0qsS_EDx2ZtIUwLFjgz1ykBB3uIGn8mlAeJexsG2mc2KpFe9UyQYIQFcR60dFC7JZQmvL3SjbnFni4YfAMkM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugedtjeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddv
-    necuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheike
-    hkrdhorhhgqeenucggtffrrghtthgvrhhnpeffiefhudeggfefgeejleekfedtkefgudev
-    ueeguedvffeukeetvdfffeefledvkeenucffohhmrghinhephhgvrggurdhssgenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinhes
-    lhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmth
-    hpohhuthdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgt
-    phhtthhopehsthgrsghlvgesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhope
-    hlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghp
-    thhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:yqbYZ4M39OseBdSKpG9v-NWHlMNAru5VXKg4SyRSlaItdx3MtFQP2Q>
-    <xmx:yqbYZx8Z4-PfwZmDanSIyXKRU5VXqfPFx9Bq6eoFqFLcjGvZCtrNEg>
-    <xmx:yqbYZ4UovpuNJ65Sh8FU-sZ81ltzpXa3fD01tN8wdGokbbn1fInVFQ>
-    <xmx:yqbYZydQmEvtCkg9EfqNARPQRqEQZpeB5xXf4PVxcR2w-80RTjMOfg>
-    <xmx:y6bYZ8Y5j4pQXfEeSuNUqwnvw7TF6YsaRTa8TcnJ_bhiHpLNCb0Tg0X0>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 17 Mar 2025 18:48:41 -0400 (EDT)
-Date: Tue, 18 Mar 2025 09:48:40 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-cc: stable@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Fix lost column on framebuffer debug console
-In-Reply-To: <c03e60ce451e4ccdf12830192080be4262b31b89.1741338535.git.fthain@linux-m68k.org>
-Message-ID: <b504b718-0ffb-ff28-0c91-badf92282b32@linux-m68k.org>
-References: <c03e60ce451e4ccdf12830192080be4262b31b89.1741338535.git.fthain@linux-m68k.org>
+	s=arc-20240116; t=1742300073; c=relaxed/simple;
+	bh=64IIiCxSmb90ZQ6fmueb4xJ3WQaFIC2OATzJjR0a98k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lb4bg8Lxm72ZgZtTw1mAFX4wKq72MKdllVCyRi7AmvchSybPt4cmKJ4nOWyn0aLFzFfxwcrQzSsPrTI6/8fBSUVVrgeNDoBAWEaLupA7aaqf8QJMFRhzFoQujRU1VRtJLTdfwIRriEl4n/7+r9g5pcWt7HAzIaVdrq550gRlJCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E278013D5;
+	Tue, 18 Mar 2025 05:14:38 -0700 (PDT)
+Received: from [10.57.85.104] (unknown [10.57.85.104])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AF4D3F673;
+	Tue, 18 Mar 2025 05:14:22 -0700 (PDT)
+Message-ID: <e79f9aa9-ce1b-4d42-8a61-aebaae1744fc@arm.com>
+Date: Tue, 18 Mar 2025 13:14:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/11] Always call constructor for kernel page tables
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+ Andreas Larsson <andreas@gaisler.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Mark Rutland <mark.rutland@arm.com>, Matthew Wilcox <willy@infradead.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, "Mike Rapoport (IBM)"
+ <rppt@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Peter Zijlstra <peterz@infradead.org>, Qi Zheng
+ <zhengqi.arch@bytedance.com>, Will Deacon <will@kernel.org>,
+ Yang Shi <yang@os.amperecomputing.com>, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
+References: <20250317141700.3701581-1-kevin.brodsky@arm.com>
+ <70349335-84ee-4bca-a3d6-d7cf3c05b92b@arm.com>
+Content-Language: en-GB
+From: Kevin Brodsky <kevin.brodsky@arm.com>
+In-Reply-To: <70349335-84ee-4bca-a3d6-d7cf3c05b92b@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 17/03/2025 16:30, Ryan Roberts wrote:
+> On 17/03/2025 14:16, Kevin Brodsky wrote:
+>> The complications in those special pgtable allocators beg the question:
+>> does it really make sense to treat efi_mm and init_mm differently in
+>> e.g. apply_to_pte_range()? Maybe what we really need is a way to tell if
+>> an mm corresponds to user memory or not, and never use split locks for
+>> non-user mm's. Feedback and suggestions welcome!
+> The difference in treatment is whether or not the ptl is taken, right? So the
+> real question is when calling apply_to_pte_range() for efi_mm, is there already
+> a higher level serialization mechanism that prevents racy accesses? For init_mm,
+> I think this is handled implicitly because there is no way for user space to
+> cause apply_to_pte_range() for an arbitrary piece of kernel memory. Although I
+> can't even see where apply_to_page_range() is called for efi_mm.
 
-Please disregard the patch below. Further testing shows that it does not 
-completely solve the problem. In particular, when line-wrap also produces 
-vertical scrolling. I think the recursive console_putc call may have to 
-go.
+The commit I mentioned above, 61444cde9170 ("ARM: 8591/1: mm: use fully
+constructed struct pages for EFI pgd allocations"), shows that
+apply_to_page_range() is called from efi_set_mapping_permissions(), and
+this indeed hasn't changed. It is itself called from efi_virtmap_init().
+I would expect that no locking at all is necessary here, since the
+mapping has just been created and surely isn't used yet. Now the
+question is where exactly init_mm is special-cased in this manner. I can
+see that walk_page_range() does something similar, there may be more
+cases. And the other question is whether those functions are ever used
+on special mm's, aside from efi_set_mapping_permissions().
+> FWIW, contpte.c has mm_is_user() which is used by arm64.
 
-On Fri, 7 Mar 2025, Finn Thain wrote:
+Interesting! But not pretty, that's basically checking that the mm is
+not &init_mm or &efi_mm... which wouldn't work for a generic
+implementation. It feels like adding some attribute to mm_struct
+wouldn't hurt. It looks like we've run out of MMF_* flags though :/
 
-> When long lines are sent to the debug console on the framebuffer, the
-> right-most column is lost. Fix this by subtracting 1 from the column
-> count before comparing it with console_struct_cur_column, as the latter
-> counts from zero.
-> 
-> Linewrap is handled with a recursive call to console_putc, but this
-> alters the console_struct_cur_row global. Store the old value before
-> calling console_putc, so the right-most character gets rendered on the
-> correct line.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> ---
->  arch/m68k/kernel/head.S | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-> index 852255cf60de..9c60047764d0 100644
-> --- a/arch/m68k/kernel/head.S
-> +++ b/arch/m68k/kernel/head.S
-> @@ -3583,11 +3583,16 @@ L(console_not_home):
->  	movel	%a0@(Lconsole_struct_cur_column),%d0
->  	addql	#1,%a0@(Lconsole_struct_cur_column)
->  	movel	%a0@(Lconsole_struct_num_columns),%d1
-> +	subil	#1,%d1
->  	cmpl	%d1,%d0
->  	jcs	1f
-> -	console_putc	#'\n'	/* recursion is OK! */
-> +	/*	recursion will alter console_struct so load d1 register first */
-> +	movel	%a0@(Lconsole_struct_cur_row),%d1
-> +	console_putc	#'\n'
-> +	jmp	2f
->  1:
->  	movel	%a0@(Lconsole_struct_cur_row),%d1
-> +2:
->  
->  	/*
->  	 *	At this point we make a shift in register usage
-> 
+- Kevin
