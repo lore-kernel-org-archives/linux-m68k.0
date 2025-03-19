@@ -1,41 +1,41 @@
 Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF835253342
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Mar 2025 09:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8A325335D
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Mar 2025 09:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742376883; cv=none; b=h753dqijQc/CcSR155y481frYMaHE/gxT1ffIkHmznWwFi/jkZ8HVAVEiV/yl2W056ylIDPDuJHI3M2S7o4Gr8tK8b+y2wuDyxFcSucEBUdQGOalcJbkPn4z3z2NuHBdQgvkR4Q6JqhTDuI3ocfShtqHyA9QTrWiALxavSkhvYU=
+	t=1742376900; cv=none; b=uD92jQ6o1z9YIEIK4WdArz+V0bScHrQvayJp45st5tOMP0cpbtj8/nmJ7EJORZ+3aUOnroUy4c+k/xkAtkLirDU7wvnDVNQGKs41Uop/0pGWLNgJrDJ/PWIg7o6elnKX/oioV3IJrZmdRR1uGO8UEAO7xf/KbI5la4aUhEA/6fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742376883; c=relaxed/simple;
-	bh=bLO6XOp8X8pawLmoD4gDaJghedPjUsU+TO9ppKoTi0I=;
-	h=To:Cc:Message-ID:In-Reply-To:References:From:Subject:Date; b=WOK+jHirms5skZQTt4NmERmIX0NnrxSYWb1RkQYdGDdX64+S6uFOKxNsdc5fm/euful8SEHpccDtuH3IKjRkGlMOzGCkN/4VOszJrWhQb4aP4fMYBcNqAgMt0ns1mwVSXhY3dlTBURUyLPCHLozcXEG60Xp+UR5Jxtfw/2Xg7fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=3TPKg3yr; arc=none smtp.client-ip=202.12.124.149
+	s=arc-20240116; t=1742376900; c=relaxed/simple;
+	bh=xxRiEguAyeGL9D+NNtgql1i2rcqNGXFBjQJxh1bi3rU=;
+	h=To:Cc:Message-ID:In-Reply-To:References:From:Subject:Date; b=qL7NS8OXF57keGoCdg8RqKoqHYxpI+/eH0xzfCWZ6Wr0Lb2Xy+xBwXAcZpX2Y4VDiHJhK40irhqEHkkcXvGvXsDH6Gm/ikXZVjWI5DJOBleRUKlGFZknYxAMiLYvsIw+rXp5MuwXfnMBUli0A4Deqa6aatU1Sa3HEXq6oK5V+jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Zmq/6zbQ; arc=none smtp.client-ip=202.12.124.149
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="3TPKg3yr"
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 2B56C114012B;
-	Wed, 19 Mar 2025 05:34:41 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Zmq/6zbQ"
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfout.stl.internal (Postfix) with ESMTP id 2BF3911400D1;
+	Wed, 19 Mar 2025 05:34:58 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Wed, 19 Mar 2025 05:34:41 -0400
+  by phl-compute-01.internal (MEProxy); Wed, 19 Mar 2025 05:34:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
 	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1742376881; x=
-	1742463281; bh=lGSaLW/V66TyHrIDzxOJWZo2UgRsz1f9XhClXGMzdJM=; b=3
-	TPKg3yrwe6Vx3Mu77wwfP5CFEWCBkCstIIU4qMBKeEQykPhr+9mWGIlnWEtsVAEd
-	cqWLk2/syU2ZKGpisMQ/Gi412m8FNF0z6P+5sCdi5oSIPCi9ILAcUUc9+Q/YUjr/
-	gLfr16IFOLpCaj39jzo8X+EH7+7X7VVs5qOENMrq2b+aUgsSAyjPfACMxLVZK71U
-	PtqA8hnPYY5PUc69E9KfzkUHGixpTZEtzS2zFe81ktrVn7oSyA/yCDirQ6foXad5
-	NVmO1bbz4WdWogXjZQzRBfLBAb7h7sadOqgU4ygiVnPzrR/9LpVEHvnlBf+0OiNO
-	gtfROcNkyAMoc8pWCdTnA==
-X-ME-Sender: <xms:sI_aZw3tfrtNw6JCRdmSB7EQ8X-PamCfCKCVFXUlfszPC17SCLNW9Q>
-    <xme:sI_aZ7G49vPgOn68pKeMijHHLErAUuRQ1S63Imfk7OuOG-lxhArluxC1I7dbwo0KA
-    h5YiwTzLLbV9ZreJm8>
-X-ME-Received: <xmr:sI_aZ44BiEJEBWFCSDCDr_0FDSW2IQwjF_5RQvx6zyvAmi1GWFpSk4xQrpGRswJuOmYvMU9Qn1SgS48xSSkaBpEmv8m-cu1tssk>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1742376898; x=
+	1742463298; bh=6vGTjqhrImDW99O46cZMgZcsLhmTGwXSWmZI+UM/MXc=; b=Z
+	mq/6zbQe1Lks5FWz5nNgEQRZd1H9RoycpJgBUOACnOsIJPOjcNDWYzwwIsvgH8Vy
+	RxjUgnHk/6S0//75Z3iDxt3XFyFicZwzi1QTjN6bW4vhUkU6NrTw3Rel+AI4F9c/
+	mqzd8qPEZeVFPPaX038gyO33ketUDWbbjHFF+rv/sXXEW4dUtRYUFGebvZGMPhZK
+	WAqFi1LSLSezQhZ2J7/wzpLXVnQb7EIdjhE1fL4ufh7sU8OUEKQFMKWStR94LvmS
+	J6mA4ZJfHV26R9P+2sY/+uyeAKZ6Tc1Fy9zg6Aptks9dnx/qGGEQ81WFvr62Wemm
+	HO8cU2PVzON0uTqUrESRA==
+X-ME-Sender: <xms:wY_aZ86PDbRhlvmW_qcRP9Bw1ki4s-cOwpt8jWPyMD9WxY2x53DMTQ>
+    <xme:wY_aZ95q11YYFQSjHpTIpDBZ_DlqbKycTLw169eaa_r64_Y5mrVxyO2hMSeoRLeBm
+    iWHmaeaJ0oXeQ3FaS4>
+X-ME-Received: <xmr:wY_aZ7dMxIOcJTJ-cE7FpZsAoeXrieWthf9leAE-2Heh_lUq9nOWqVfBhczL6GriSMTrkL-wwLc9tEcSqR2ZN2RCQWBk-Jk6qNw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugeegleekucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
     pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
@@ -48,23 +48,23 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddugeegleekucetufdote
     huthdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphht
     thhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpd
     hrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:sI_aZ52pGV3aRLFbMLzWBSyG9ZeU0I5x3AZl9cLGxm6cL5RJgY3vIw>
-    <xmx:sI_aZzEKUHHiF51RkXHRXkvKa6uSPsKnmuKUpS6M4uqwvCD6XEVXhw>
-    <xmx:sI_aZy_5ToyBDhPn1BIps4CxtnwwxITiWzwij8y-XVYb9jk12GsYNg>
-    <xmx:sI_aZ4nkcZ1ZngtE9-Zyj5X4Kn4CnGqE0XVNfCWAJVtp-L4Dmv9ugQ>
-    <xmx:sY_aZ4TMhfZ5uNGyWM1XzDcusNl41DF-xuC-XX2CFnARHiOtzyumZIlr>
+X-ME-Proxy: <xmx:wY_aZxKAGCc6tFjexY4f34b2H4SIs1Ql8TyDyrHavBchg19edjr1-w>
+    <xmx:wY_aZwJ4WpHBoAn6CdsQ7-GHV0omF_XQFu9MpIKGuFf_wMEHRvcPUA>
+    <xmx:wY_aZyyBFQqr6ePkBmogijYUBmATHk7M9ZhlemJ4elQEFD_l3J2G8g>
+    <xmx:wY_aZ0IZY0xcDvw1exKCMGtcpVNMR9kk-DyFvV-bdMVY9ddZkZVHCw>
+    <xmx:wo_aZ3XDR0AgpLiQRzfEU8jjf-qoX6sUTRGaJpMxZngd5WDkiG-09Pol>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 19 Mar 2025 05:34:38 -0400 (EDT)
+ 19 Mar 2025 05:34:55 -0400 (EDT)
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org,
     linux-kernel@vger.kernel.org
-Message-ID: <d3d11a43cb597936d325344e93defa0c1e80d6c7.1742376675.git.fthain@linux-m68k.org>
+Message-ID: <1f27682893bba60572dfed728386a0f76044b17b.1742376675.git.fthain@linux-m68k.org>
 In-Reply-To: <cover.1742376675.git.fthain@linux-m68k.org>
 References: <cover.1742376675.git.fthain@linux-m68k.org>
 From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v2 2/3] m68k: Avoid pointless recursion in debug console
- rendering
+Subject: [PATCH v2 3/3] m68k: Remove unused "cursor home" code from debug
+ console
 Date: Wed, 19 Mar 2025 20:31:15 +1100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -72,43 +72,62 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-The recursive call to console_putc to effect a carriage return is
-needlessly slow and complicated. Instead, just clear the column counter
-directly. Setup %a0 earlier to avoid a repeated comparison.
+The cursor home operation is unused and seems undesirable for logging.
+Remove it. The console_not_cr label actually means "not line feed and
+not carriage return either" so take the opportunity to replace it with
+something less confusing. Rectify some inconsistent whitespace while
+we're here.
 
 Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 ---
- arch/m68k/kernel/head.S | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ arch/m68k/kernel/head.S | 31 ++++++++++++-------------------
+ 1 file changed, 12 insertions(+), 19 deletions(-)
 
 diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-index d0d77b1adbde..bf7fa344cd3a 100644
+index bf7fa344cd3a..48ef74e45535 100644
 --- a/arch/m68k/kernel/head.S
 +++ b/arch/m68k/kernel/head.S
-@@ -3533,19 +3533,16 @@ func_start	console_putc,%a0/%a1/%d0-%d7
- 	tstl	%pc@(L(console_font))
- 	jeq	L(console_exit)
+@@ -3555,28 +3555,21 @@ func_start	console_putc,%a0/%a1/%d0-%d7
+ 	jra	L(console_exit)
  
-+	lea	%pc@(L(console_globals)),%a0
-+
- 	/* Output character in d7 on console.
- 	 */
- 	movel	ARG1,%d7
- 	cmpib	#'\n',%d7
--	jbne	1f
-+	jne	L(console_not_lf)
+ L(console_not_lf):
+-	cmpib	#13,%d7
+-	jne	L(console_not_cr)
++	cmpib	#'\r',%d7
++	jne	L(console_not_lf_not_cr)
+ 	clrl	%a0@(Lconsole_struct_cur_column)
+ 	jra	L(console_exit)
  
--	/* A little safe recursion is good for the soul */
--	console_putc	#'\r'
--1:
--	lea	%pc@(L(console_globals)),%a0
-+	clrl	%a0@(Lconsole_struct_cur_column)	/* implicit \r */
+-L(console_not_cr):
+-	cmpib	#1,%d7
+-	jne	L(console_not_home)
+-	clrl	%a0@(Lconsole_struct_cur_row)
+-	clrl	%a0@(Lconsole_struct_cur_column)
+-	jra	L(console_exit)
+-
+-/*
+- *	At this point we know that the %d7 character is going to be
+- *	rendered on the screen.  Register usage is -
+- *		a0 = pointer to console globals
+- *		a1 = font data
+- *		d0 = cursor column
+- *		d1 = cursor row to draw the character
+- *		d7 = character number
+- */
+-L(console_not_home):
++	/*
++	 *	At this point we know that the %d7 character is going to be
++	 *	rendered on the screen.  Register usage is -
++	 *	a0 = pointer to console globals
++	 *	a1 = font data
++	 *	d0 = cursor column
++	 *	d1 = cursor row to draw the character
++	 *	d7 = character number
++	 */
++L(console_not_lf_not_cr):
+ 	movel	%a0@(Lconsole_struct_cur_column),%d0
+ 	movel	%a0@(Lconsole_struct_cur_row),%d1
  
--	cmpib	#10,%d7
--	jne	L(console_not_lf)
- 	movel	%a0@(Lconsole_struct_cur_row),%d0
- 	movel	%a0@(Lconsole_struct_num_rows),%d1
- 	cmpl	%d1,%d0
 -- 
 2.45.3
 
