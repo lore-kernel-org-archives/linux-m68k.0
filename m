@@ -1,179 +1,272 @@
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B66B41C64
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Mar 2025 19:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827B322D7BE
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Mar 2025 19:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742586497; cv=none; b=t9TcXXdOBUoMX8bmOKLw5tMaFtEMlgy8UgLDx0RbWOzaDiwlg20WJ3bqzhmWuO6ac0mLlHmtSLlzqsGwYYqI/yO8ycs7r1rEVAWaMsaAIGxkVy5xCBP4bb51VeAnqqLt8ZZzbrM7NuLPl9ZQ2F0JgQDpg7hpukb43w8EnXYPwoA=
+	t=1742586559; cv=none; b=V/c1+zVcFdTDzAE9Mcl2e7tjnQU35UNwuH6icdjnoI8Gk4RMEB/nk8sMzMl4bZuSjZYGMF/nUw8VV0jl77KdnvCPO/HtX7TSwRmEaQcvP1VNcfhxVxD9UZIWOpTZusiHKnVaQfnX0qVFpQQYkxWNCSGIrDM2vSSM/ay+k+Bjzo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742586497; c=relaxed/simple;
-	bh=Ly0rkqyd4u96pt3sfW6/+4RipbpAyl94DbrB3bUCuwk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZwQ2BtplOvsCTm3akg8EghZgjy96IiPIybo1cFQec+Ns6ck1jfn4N+clD/1q+ztxTWvX7wuMyk0bZo1sbOCwSHij8xseCF0uLH7XCUfEG4kkOr8OxmqQIVKAZZEK1z5q8J1D7ZZrXSFdHKiafxM8nliIfV0DgEh/SoghBj65SA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kRKxbLgl; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1742586559; c=relaxed/simple;
+	bh=+3PgL9e4pv3f6MCfYCBirhxZEuafw6SW80EvQcMyAKc=;
+	h=From:Date:Subject:MIME-Version:Message-Id:References:In-Reply-To:
+	 To:Cc:Content-Type; b=O1GmneeaUc97p6ViOEY+h1XXubGLaA/+0NXe/yCTivd9OP0GyaHFDf4kKr6WkvfaevxIaO+OBrBTxGICPdccMiHdPYKDrYRyEJv2WgHWjge+F2zblpFKBJDIxoXDmMgtpXaMeA9hSYDzLUPP0XnTcztrJl9x+vNe6EDNwNMU+tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y0IkaepE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kRKxbLgl"
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5497e7bf2e0so2628945e87.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Mar 2025 12:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742586492; x=1743191292; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ly0rkqyd4u96pt3sfW6/+4RipbpAyl94DbrB3bUCuwk=;
-        b=kRKxbLglY2La0XOrp4wKS/RJgbBGRRbEwHbscArxyniSAII3o9D89nYGexN3SFv8SJ
-         Zlm3KMsB/1rVdE0yL3btAncEspJHlLlEXWw9CrEnAUX74XfJ/CzNczL0JZetoos33vFt
-         4f/E31KiCmzdCbfPE/pPMAPtbyoyNB9KHMtxfxmdWqQdjhdih+N0Zq9LVQ/jbvXfIGo5
-         0pVxHox/qj/AUVoXISlDPQ8b4kDcs1LAdV+TMLuDsnYx+1Npsj8cmt291SVyj7n/uDWj
-         XN73Pgf/yU5UCWl5xLSlHOE1rNk1HFv6A+b/eDi+U/BZ7a/pv5aXEm1ZyTV+51C8KV1R
-         cQEg==
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y0IkaepE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1742586556;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sKu7K/L6aAgGXW9lSjE2s1++uZO1hHM3Uy8OChu+Qg0=;
+	b=Y0IkaepEinUwV2mhwAcVUhyHJrpmGJoEZYK+5i04JjMmuAZB8A96KqpHc7LsnFm6F5JyPh
+	oSRcC9gmuqlEpHkUMXfsjyD0JYT7JsCogIJhVDXEX2Pcg8yluy0+2mV1Y8fu1kVf06b2Dc
+	DIDBII9KfaR7dTUmsJSzR9gqYv6suuM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-130-qTOzqp8IMvm-2O_k2-xu-Q-1; Fri, 21 Mar 2025 15:49:14 -0400
+X-MC-Unique: qTOzqp8IMvm-2O_k2-xu-Q-1
+X-Mimecast-MFC-AGG-ID: qTOzqp8IMvm-2O_k2-xu-Q_1742586553
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-ac3d89cc4f3so176282766b.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Mar 2025 12:49:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742586492; x=1743191292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1742586553; x=1743191353;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ly0rkqyd4u96pt3sfW6/+4RipbpAyl94DbrB3bUCuwk=;
-        b=KhvAAZYioYzAy3qM9q4d3gsCrCYCwPjZZKGvfU3ZPNof9/HiUsjJWXI4afoYvcq2gB
-         7SExDpmWfFtKTl47EPzwh0j5m0N/6tKfmwP8K9UZf+9ZmtkQFB2Mpn1eXvS8SN34pZxs
-         Ilr2mWWas8az/Q1GXfuLdcWPFPzBHX4MFVanMjpK5BO8mFBAJ5cAackvXsLGq6gO4yAO
-         MGQxrZzBcVvxsK7cxS8qlX7yVokXtI5SZEPnjOXDtskIqQwLCQVoq0JgcoM9ZZZKU4zN
-         IOSCteNO+KJHsj0LfTJgnQIYRfKFoV5G9x0lHXcgQsztMc7h0V/e1B3dNCY2c1cW9XIF
-         3h6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVAKwRgEV0Y8bSdf7ehrehdS6/AHGy3zpn6HkUa3OdtUXvhZUVll+w1gOoOUt12axCYLbWA9OvGdkyE@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwzK2giCzv/9P1hO4xs/g3vEHjLcsnrqHrQJ+bMo+vVYBD5bVBO
-	DrXkrr+x1Bu1cVqRFjE8R3vM81BY8pKFpE5qIKv0xlh+iW2P616duW2knxS89CeVDX4qoFs3JnQ
-	gDc8HIIZnWn2izNeA0VZZK3sdl78=
-X-Gm-Gg: ASbGncsRIBPcM7tr9ZWRhNB7y76OtMIgLPlQ74zpm8s1r1LTpXQzR/HtTkNNSRORalh
-	RVYPbYPIv03rVCWFw5Oii+7/xR3rvaU7wCedQMKls23FnP3dKNy/8t7sjMVlaNNojRl9ribqivS
-	5JZTeh9VBZSv3K1GhRsAGKrHWDpG2SjoTTp4kgNCzQ+w==
-X-Google-Smtp-Source: AGHT+IFBFgrCJ/bchlWOwIv9rI77Cq+9FheTeIgSI10PI3pRLX14sLGNW1KkGbOtKsmpfb5BqidS5A6BsnbPgS9nwoo=
-X-Received: by 2002:a05:6512:ea2:b0:544:ffbe:cd22 with SMTP id
- 2adb3069b0e04-54ad6500d8fmr1778451e87.46.1742586492037; Fri, 21 Mar 2025
- 12:48:12 -0700 (PDT)
+        bh=sKu7K/L6aAgGXW9lSjE2s1++uZO1hHM3Uy8OChu+Qg0=;
+        b=YQ6xmNSOvReZzCyV3DSK+OSSijU1JVYMt8aOE92FSKw6EMzwbYpy5QwlzVTRN2HxbF
+         Z+Y1WxLDPmdWrDxKSceEHPoBFDHunAA5lOKr0y7mzYkxkK8nHNHSouYN3aRa7j415HBy
+         B60/G0KjMjPHJi/3HZTfRe86nn8nLd9Tm2w3Md1GkBsBnoyGjzo3NuwfXZzJ5w9VMrf/
+         RUXWdHWulxpmB3QiqRoaQ2y5WvxV2aHJjsQ2tOEY3F9/jjs9oC9zOVPSW/KP8oE33NFo
+         I5GzE8Q7B+Bn37Vuq9IVogDx3NMDzo2nWUDYqSDMdkivejDjslSuxBiWuBtbMJPH8u60
+         fgBg==
+X-Forwarded-Encrypted: i=1; AJvYcCUB84sWwUc3x6PH+jyDG8WZ2UWq14/rcemTd3u2iWEaskQQ1pY+znPOIAYeW3O4/mWXV7sMtPSeDQrO@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxfDAPyWWqGklq/wQz0HGffElcU6vk39CuxWGSZs4Lzrhi2L+eR
+	569RWldA2FOYb/Aw0HBnNNwOkoBWPoNJwbAoAZgmc7jC3ur8X+mb9TKpz+WdHNVCoh6LH2Niqta
+	sAqFq9uFzdG31Z3vXOc1iDIBsFEJ5kx/bhohRkazDkZyWld64oYmdYRd3yhpHvbs1
+X-Gm-Gg: ASbGnctdEWLdZ2y+OvT1sJdb2TqvrwtmSvab83yvTt//aVhI4kxhM+XWKGtREelRNpT
+	AzHS599IPv0JIASppE0ypo4IbdZ4fTrQWYGrlcN11Gpg+2fzDUsdecytIRBs5t5SuunXYc0etAi
+	bX/g9CQGe/9137qrndKf2PDNG3FW9dvSFMmlNPvxNgddDvaIQPGQEyZUkl2aOI3LIoziz7fZdO2
+	ZlBKxzahT8FC8lGCRXCa8s4WihIErapbqUbiwyHEU+NwxLCsGy0J/+1Rh/VzkDWrzeeJAFN16sB
+	Osm6SddI9XNN4+TsjmYL6NOvswQwXKZen0QJdLxGGw==
+X-Received: by 2002:a17:906:c111:b0:ac3:17d3:eba1 with SMTP id a640c23a62f3a-ac3f20b04d9mr442074866b.9.1742586552982;
+        Fri, 21 Mar 2025 12:49:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFTcWGXZFGLvLNSApjQmfZCT80qQ9P9pa9GSOScyG8GRTDGLhsdL5pTYdHkyK/vdXMP8DguIA==
+X-Received: by 2002:a17:906:c111:b0:ac3:17d3:eba1 with SMTP id a640c23a62f3a-ac3f20b04d9mr442069766b.9.1742586552438;
+        Fri, 21 Mar 2025 12:49:12 -0700 (PDT)
+Received: from [127.0.0.2] (ip-217-030-074-039.aim-net.cz. [217.30.74.39])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ac3ef8d3d38sm204412266b.39.2025.03.21.12.49.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Mar 2025 12:49:08 -0700 (PDT)
+From: Andrey Albershteyn <aalbersh@redhat.com>
+X-Google-Original-From: Andrey Albershteyn <aalbersh@kernel.org>
+Date: Fri, 21 Mar 2025 20:48:40 +0100
+Subject: [PATCH v4 1/3] lsm: introduce new hooks for setting/getting inode
+ fsxattr
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250207-bitmap-kunit-convert-v1-0-c520675343b6@gmail.com>
- <Z6eaDuXnT_rjVSNS@thinkpad> <CAMuHMdUsq_39kgBa8oanXeTzv44HuhS1e5MK7K2jxkVXQ7uWdw@mail.gmail.com>
- <bd71c705-5f57-4067-b200-fd80b98ddbc9@nvidia.com> <Z6pfomw-3LuWoQQo@thinkpad>
- <CABVgOS=KZrM2dWyp1HzVS0zh7vquLxmTY2T2Ti53DQADrW+sJg@mail.gmail.com>
- <CAJ-ks9mevv68v1Mh0GdGd9Y2EEp3_kdV6FygOiAenYG0=e4=Tw@mail.gmail.com> <Z92w13L8v1MvPC8_@thinkpad>
-In-Reply-To: <Z92w13L8v1MvPC8_@thinkpad>
-From: Tamir Duberstein <tamird@gmail.com>
-Date: Fri, 21 Mar 2025 15:47:36 -0400
-X-Gm-Features: AQ5f1Jqo7tJbB2wPNw7jN7SKqpquKkjt9eOhuuAS5_i6zceZK37QYCYbQ3pr-GM
-Message-ID: <CAJ-ks9ktTpUaBPk9rEp8UX9P5dZPeDuuGWfuSiR+dL3jXVb1+g@mail.gmail.com>
-Subject: Re: distro support for CONFIG_KUNIT: [PATCH 0/3] bitmap: convert
- self-test to KUnit
-To: Yury Norov <yury.norov@gmail.com>
-Cc: David Gow <davidgow@google.com>, John Hubbard <jhubbard@nvidia.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, 
-	Shuah Khan <shuah@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-kselftest@vger.kernel.org, Brad Figg <bfigg@nvidia.com>, 
-	David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <20250321-xattrat-syscall-v4-1-3e82e6fb3264@kernel.org>
+References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
+In-Reply-To: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
+To: Richard Henderson <richard.henderson@linaro.org>, 
+ Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+ Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, 
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, 
+ =?utf-8?q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+ Arnd Bergmann <arnd@arndb.de>, 
+ =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
+ Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+ "Serge E. Hallyn" <serge@hallyn.com>
+Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, 
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+ linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+ linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+ selinux@vger.kernel.org, Andrey Albershteyn <aalbersh@kernel.org>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5252; i=aalbersh@kernel.org;
+ h=from:subject:message-id; bh=+3PgL9e4pv3f6MCfYCBirhxZEuafw6SW80EvQcMyAKc=;
+ b=owJ4nJvAy8zAJea2/JXEGuOHHIyn1ZIY0u8e2mDyP3iXzIzGyzyvts0333f0+anqT8z+Zx9d2
+ 93ObXZz4Sv2jlIWBjEuBlkxRZZ10lpTk4qk8o8Y1MjDzGFlAhnCwMUpABPhyGL477dAsfnKfw52
+ rX2BV01C9n1oPuplfSp/RlXO7GNcbLIv0hkZrsSafJ+9Wc1t76Ty8u6CijnM972f5zPMuZ6mnXI
+ teNdtXgA8MUuQ
+X-Developer-Key: i=aalbersh@kernel.org; a=openpgp;
+ fpr=AE1B2A9562721A6FC4307C1F46A7EA18AC33E108
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: VPg8Ay-__CyqB3cTC0KTp6HZk1HwigduvRzJLB2WZ4g_1742586553
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 21, 2025 at 2:32=E2=80=AFPM Yury Norov <yury.norov@gmail.com> w=
-rote:
->
-> On Fri, Mar 21, 2025 at 12:53:36PM -0400, Tamir Duberstein wrote:
-> > Hi all, now that the printf and scanf series have been taken via kees'
-> > tree[0] and sent in for v6.15-rc1[1], I wonder if we'd like to revisit
-> > this discussion.
-> >
-> > As I understand it, the primary objections to moving bitmap to KUnit we=
-re:
-> > - Unclear benefits.
-> > - Source churn.
-> > - Extra dependencies for benchmarks.
-> >
-> > Hopefully David's enumeration of the benefits of KUnit was compelling.
-> > Regarding source churn: it is inevitable, but I did pay attention to
-> > this and minimized the diff where possible.
-> >
-> > The last point is trickiest, because KUnit doesn't have first-class
-> > benchmark support, but nor is there a blessed benchmark facility in
-> > the kernel generally. I'd prefer not to tie this series to distros
-> > enabling KUNIT_CONFIG by default, which will take $time.
-> >
-> > I think the most sensible thing we can do - if we accept that KUnit
-> > has benefits to offer - is to split test_bitmap.c into
-> > benchmark_bitmap.c and bitmap_kunit.c.
-> >
-> > Please let me know your thoughts.
->
-> Sure, no problem.
->
-> I asked you to answer to 4 very simple and specific questions. You
-> didn't answer any of them. David sent a lengthy email that doesn't
-> address them, either.
+Introduce new hooks for setting and getting filesystem extended
+attributes on inode (FS_IOC_FSGETXATTR).
 
-OK, that's fair I suppose. Let me try and address them now:
+Cc: selinux@vger.kernel.org
+Cc: Paul Moore <paul@paul-moore.com>
 
-> - What do the tests miss now?
+Signed-off-by: Andrey Albershteyn <aalbersh@kernel.org>
+---
+ fs/ioctl.c                    |  7 ++++++-
+ include/linux/lsm_hook_defs.h |  4 ++++
+ include/linux/security.h      | 16 ++++++++++++++++
+ security/security.c           | 32 ++++++++++++++++++++++++++++++++
+ 4 files changed, 58 insertions(+), 1 deletion(-)
 
-The tests do not _miss_ anything. They are just inconvenient to run,
-particularly from automation, because they do not report success in a
-way that is trivially understood by automation. In other words, I'm
-not aware of something trivial I can run that will exit 0 if and only
-if the bitmap tests pass.
+diff --git a/fs/ioctl.c b/fs/ioctl.c
+index 638a36be31c14afc66a7fd6eb237d9545e8ad997..4434c97bc5dff5a3e8635e28745cd99404ff353e 100644
+--- a/fs/ioctl.c
++++ b/fs/ioctl.c
+@@ -525,10 +525,15 @@ EXPORT_SYMBOL(fileattr_fill_flags);
+ int vfs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
+ {
+ 	struct inode *inode = d_inode(dentry);
++	int error;
+ 
+ 	if (!inode->i_op->fileattr_get)
+ 		return -ENOIOCTLCMD;
+ 
++	error = security_inode_getfsxattr(inode, fa);
++	if (error)
++		return error;
++
+ 	return inode->i_op->fileattr_get(dentry, fa);
+ }
+ EXPORT_SYMBOL(vfs_fileattr_get);
+@@ -692,7 +697,7 @@ int vfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
+ 			fa->flags |= old_ma.flags & ~FS_COMMON_FL;
+ 		}
+ 		err = fileattr_set_prepare(inode, &old_ma, fa);
+-		if (!err)
++		if (!err && !security_inode_setfsxattr(inode, fa))
+ 			err = inode->i_op->fileattr_set(idmap, dentry, fa);
+ 	}
+ 	inode_unlock(inode);
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index eb2937599cb029004f491012b3bf5a3d6d2731df..49e64d23e9049568af133bf3f30ca719c9ec5f25 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -157,6 +157,10 @@ LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
+ 	 struct dentry *dentry, const char *name)
+ LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
+ 	 const char *name)
++LSM_HOOK(int, 0, inode_setfsxattr, const struct inode *inode,
++	 const struct fileattr *fa)
++LSM_HOOK(int, 0, inode_getfsxattr, const struct inode *inode,
++	 const struct fileattr *fa)
+ LSM_HOOK(int, 0, inode_set_acl, struct mnt_idmap *idmap,
+ 	 struct dentry *dentry, const char *acl_name, struct posix_acl *kacl)
+ LSM_HOOK(void, LSM_RET_VOID, inode_post_set_acl, struct dentry *dentry,
+diff --git a/include/linux/security.h b/include/linux/security.h
+index cbdba435b798660130779d6919388779edd41d54..dd58ace29c6e325ee49470596d0abb6ecc38ba07 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -439,6 +439,10 @@ int security_inode_listxattr(struct dentry *dentry);
+ int security_inode_removexattr(struct mnt_idmap *idmap,
+ 			       struct dentry *dentry, const char *name);
+ void security_inode_post_removexattr(struct dentry *dentry, const char *name);
++int security_inode_setfsxattr(const struct inode *inode,
++			      const struct fileattr *fa);
++int security_inode_getfsxattr(const struct inode *inode,
++			      const struct fileattr *fa);
+ int security_inode_need_killpriv(struct dentry *dentry);
+ int security_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry);
+ int security_inode_getsecurity(struct mnt_idmap *idmap,
+@@ -1042,6 +1046,18 @@ static inline void security_inode_post_removexattr(struct dentry *dentry,
+ 						   const char *name)
+ { }
+ 
++static inline int security_inode_setfsxattr(const struct inode *inode,
++					    const struct fileattr *fa)
++{
++	return 0;
++}
++
++static inline int security_inode_getfsxattr(const struct inode *inode,
++					    const struct fileattr *fa)
++{
++	return 0;
++}
++
+ static inline int security_inode_need_killpriv(struct dentry *dentry)
+ {
+ 	return cap_inode_need_killpriv(dentry);
+diff --git a/security/security.c b/security/security.c
+index 09664e09fec9a1d502a23847aa2e87a6d19837db..d3b527f55ed52209d8e22c05adf278b164374d35 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2617,6 +2617,38 @@ void security_inode_post_removexattr(struct dentry *dentry, const char *name)
+ 	call_void_hook(inode_post_removexattr, dentry, name);
+ }
+ 
++/**
++ * security_inode_setfsxattr() - check if setting fsxattr is allowed
++ * @inode: inode to set filesystem extended attributes on
++ * @fa: extended attributes to set on the inode
++ *
++ * Called when setfsxattrat() syscall or FS_IOC_FSSETXATTR ioctl() is called on
++ * inode
++ *
++ * Return: Returns 0 if permission is granted.
++ */
++int security_inode_setfsxattr(const struct inode *inode,
++			      const struct fileattr *fa)
++{
++	return call_int_hook(inode_setfsxattr, inode, fa);
++}
++
++/**
++ * security_inode_getfsxattr() - check if retrieving fsxattr is allowed
++ * @inode: inode to retrieve filesystem extended attributes from
++ * @fa: extended attributes to get
++ *
++ * Called when getfsxattrat() syscall or FS_IOC_FSGETXATTR ioctl() is called on
++ * inode
++ *
++ * Return: Returns 0 if permission is granted.
++ */
++int security_inode_getfsxattr(const struct inode *inode,
++			      const struct fileattr *fa)
++{
++	return call_int_hook(inode_getfsxattr, inode, fa);
++}
++
+ /**
+  * security_inode_need_killpriv() - Check if security_inode_killpriv() required
+  * @dentry: associated dentry
 
-> - What do _you_ need from the tests? Describe your test scenario.
+-- 
+2.47.2
 
-I want kernel tests to be easier to run, and for more of them to be
-run by existing automation such as LKP[0]. I know for sure that KUnit
-tests are automatically run by LKP because other tests I converted to
-KUnit subsequently had warnings reported by LKP.
-
-> - How exactly KUNIT helps you testing bitmaps and friends better?
-
-KUnit reports test results in a standard protocol (KTAP) that is
-machine-friendly. It comes with userspace tools that understand this
-protocol and produce useful exit codes, as well as human-friendly
-output.
-
-> - Is there a way to meet your needs with a less invasive approach,
-> particularly without run-time dependencies?
-
-I'm not aware of such a way, but if you know of one, I would be very
-interested to learn.
-
-> None of you guys submitted anything to bitmaps - neither in library,
-> nor in tests. Your opinion about what is good for bitmap development
-> and what's not is purely theoretical.
->
-> Real contributors never concerned about current testing model.
->
-> I think that you don't care about bitmaps. If bitmaps testing will get
-> broken one day, or more complicated, you will not come to help. If I'm
-> wrong and you are willing to contribute, you're warmly welcome! I always
-> encourage people to increase testing coverage.
->
-> If you'd like to add new cases to existing tests - I'll be happy. If
-> you'd like to add completely new tests based on KUNITs or whatever
-> else - I'll be happy just as well.
-
-I can't speak for David, but you are right about me; I do not have an
-interest in bitmap in particular. My interest is in kernel testing
-generally, which I hope I have adequately explained above. As for my
-willingness to help people obtain and keep good workflows, well,
-you're welcome to examine my history in OSS. I've contributed to
-dozens of projects, many for far longer than my professional goals
-required.
-
-Let's keep talking.
-Tamir
-
-[0] https://github.com/intel/lkp-tests
