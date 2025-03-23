@@ -1,394 +1,330 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D8551FF1A6
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 22 Mar 2025 13:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13AF347C7
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Mar 2025 08:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742650909; cv=none; b=DP0MqmCbW2qHrQW5bPJ0R8LQWAHSNyx7SeuTXiPOA5fwRhrWzBsDKXxiJhiqVCM367nYBfX3o3F+daegjM60wxLfcu9E9WN1ijRfu1FTF2VonCC/FEKtXrFlN51MQGVDusc/t65wwv/IU34KB+t4pard1h4g7D1Z2vWvVEaVHpM=
+	t=1742719520; cv=none; b=uZCwdHgBUQ5Qd5WAlYyq2C6qgM61vaA/PRnmjm822c8oTIwVPN34u0Sv88vBwe64kpZmm0Kyn10ybecCGC52OuiqgsxAz8Er6BplqNH5Ba5tzuMmakyVMpyBWgkq9rNv/wB1bnSqrAch8UmpiCa92lTnRPsXS0SXwhSBdH0rJ44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742650909; c=relaxed/simple;
-	bh=5aL8SrG+x4rQKrmwLxnlmPG5cozMRSGfXtiDopezcIQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dBOij7eYOA12ziee8W1Ikk/UHHnlU8WMNw3GvdD4OyIMdiOKZCToIMI5q5/1KoQqTkyZDgVhPmXB6g8wRarIwtxGVFrSL817RfNuhaggr8HNWKHUSekuCUDv66eWgcN8R4Nl0n7KynWy9EGQsSa10QDzRIy+G3f9r9lL8RpQJBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VysgTe+R; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1742719520; c=relaxed/simple;
+	bh=b7msV9pgJYlhEyRge9PfEcB6ipwT555t51j3Jg4i4JU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=COQWMcARqT6UVn10MHCcjF20rveoVYnA+17s5doYjkFoUFfnlCLWxC+xmYKIGyI5WIHqkM7j0A3vgd6xXm1wh2Fv17Hz1VO4VT3kcMyXBi3aOGL/yvG5fevx0PRyoAduqFAuj94Z1fa+24P05HM6x4qZAZk9rYsw4cTG2OxEYKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nKN9Yet1; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VysgTe+R"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7DF14615F3;
-	Sat, 22 Mar 2025 13:41:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7816BC4CEDD;
-	Sat, 22 Mar 2025 13:41:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742650906;
-	bh=5aL8SrG+x4rQKrmwLxnlmPG5cozMRSGfXtiDopezcIQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VysgTe+R5jZLILcSOM2aE1nm+lgswkhNavaL5zUhcSse7Iecv65l1xaEoobu5lFye
-	 myVLvRHb2yXI58rjvJEDF3HBzSRdgSa2ediP+xbV+1L1y8l0ocensSN/HMvLuneN9M
-	 OCs0U6V4Bm9Qn58INBSQTd42TlaGmCLbu63Kv1wDxAqZ5kgYzIq5z0/D6hmYKFH5L2
-	 4QATby3CJKIN7JglT+RvWiDiFGtMCq2NlQesxuMajSL7UeAqedper60CqkUhMTMib7
-	 t91W/IhSSsF55ZnT6gVQBoSo8dmqsCo3GRxkeaA3aFOaQnbLqzEsztWeTJVj0x5TjQ
-	 vtjghhW6976iQ==
-Message-ID: <f9d2da13-1179-483f-a685-fa67d7abd367@kernel.org>
-Date: Sat, 22 Mar 2025 09:41:44 -0400
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nKN9Yet1"
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5ec9d24acfbso246470a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 23 Mar 2025 01:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1742719517; x=1743324317; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3jxIP2TIUbDJlhhIEkW541D6lu1Z7/8FzD6NZfb9i/w=;
+        b=nKN9Yet1tCxQAzYqFyH7PCx0grI7s6J9056UyGUcoVFWNAisaxu+BeD6st+pg0yXoW
+         qBfdBuS/qXAtDNMIchx3/HeFvfndYx8gDDD/BZ/yKi1ATjTvvIxXZo8ppZpZgK7AE76v
+         fY8cSdGFTdf6azboS0W5su9/yGrTUxhakxLLpei0jlPQL9W6WZ00AyFBgO/aYpB8g1w6
+         xba352p8DFkQY8qBtwvwXWV3cwlIIlMAzgJ8WpoxTck2plFCNS6qIa/r3DZ/yzw5h2/f
+         jzwV5DrEZ7Z0RnmaEZldr8QgLQ8+By9oRYIOU6m/EoC+NUls8ylWbAzLcb8msEq7pdG9
+         5fGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742719517; x=1743324317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3jxIP2TIUbDJlhhIEkW541D6lu1Z7/8FzD6NZfb9i/w=;
+        b=HdchKWugjJ8N4EOr9QITVE2hzZH826Xaj/8nTz/KisMjDSymjDVuUXD3gNgT7h6RId
+         XmIpNxV409vlL81dHlyQR5G0AsvFEFRnAnFoqmJExbMT0qY8zdFRQs0nBlM/bmiqhOXk
+         U8I7EPg2jO91+kLU1pX9oWkDUpVoL1SjIXlB2QhCmFGDhrJx16ggzABoMAjebMu5A42r
+         qoXUzSjSE8yTuoSZP/GiTKEaILnhGFJNow2nAjmBr21gUBT/R4mOpV7DTFYEG5W2RbeY
+         V/cbNDXoCFMGuV/LyqqnuEu9eJkGKkdQveIprf1LW5UAlf6rEJ1w70D5h4ZqphVWJsDz
+         oEkA==
+X-Forwarded-Encrypted: i=1; AJvYcCUbJs11JwnZNFwWHcEVzYeb6RHUGANnDHI4/4cCOhahp0GI4hV8F6tB6QBsUfl2q6FQhEYqKZ9Foqn0@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxGXqWX//NeRZcvTFuH267fxQhOkHdsrjCZPESBX4ATuixeDstR
+	7BhIfcDV/5l48f+CAr5f2owVonb9B+X9t6fyi33wHBteIjlhvnbFWomlFslz5o98I2hMsREvs6V
+	4j2sMpUMRtsbSjsxZ5uWV3wiA5P8=
+X-Gm-Gg: ASbGncvBzrtw16bv/6Vi8oGDepef99Ez7crWTUZPcfyUfwbc/zr3nRpRPfGYJFHWiMy
+	p8Vr9Eups2TZJnRRw8qNO/KcSFURcMse3oQzg3yK1zUTebQAOXw7J5ye4mdypjSNXYQCkG0WtbT
+	7CO1ZJAj3Nsh96QQawqLy92b+csBMAgyeYMryHvE2yPr5PCfmYIk/I8LYebAk=
+X-Google-Smtp-Source: AGHT+IGKn4NZALUSEG+rHMaGWglZZduHpRclHK5w+Kv4NN031fphTZKyVC6h710/5c6HAafbvHO3fjsZw2YzDAeWHLw=
+X-Received: by 2002:a05:6402:42c9:b0:5e5:854d:4d17 with SMTP id
+ 4fb4d7f45d1cf-5eb9a017821mr12555025a12.11.1742719516454; Sun, 23 Mar 2025
+ 01:45:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] amiga: cslab ata support
-To: Paolo Pisati <p.pisati@gmail.com>, Niklas Cassel <cassel@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-References: <20250321151416.338756-1-p.pisati@gmail.com>
- <20250321151416.338756-3-p.pisati@gmail.com>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20250321151416.338756-3-p.pisati@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
+In-Reply-To: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sun, 23 Mar 2025 09:45:06 +0100
+X-Gm-Features: AQ5f1JqljvGQqYT8xQtG-jZ8bGx-mNtzX8tKytu1uegIaEXtua4XQMAbrGMEflk
+Message-ID: <CAOQ4uxjQDUg8HFG+mSxMkR54zen7nC2jttzOKqh13Bx-uosh3Q@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] fs: introduce getfsxattrat and setfsxattrat syscalls
+To: Andrey Albershteyn <aalbersh@redhat.com>
+Cc: Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-alpha@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-arch@vger.kernel.org, selinux@vger.kernel.org, 
+	Andrey Albershteyn <aalbersh@kernel.org>, linux-xfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/03/21 11:14, Paolo Pisati wrote:
-> Driver for the on-board IDE interface on CS-Lab Warp Expansion Card
-> (NOTE that idemode=native has to be set in Warp Configuration)
-> 
-> Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
+On Fri, Mar 21, 2025 at 8:50=E2=80=AFPM Andrey Albershteyn <aalbersh@redhat=
+.com> wrote:
+>
+> This patchset introduced two new syscalls getfsxattrat() and
+> setfsxattrat(). These syscalls are similar to FS_IOC_FSSETXATTR ioctl()
+> except they use *at() semantics. Therefore, there's no need to open the
+> file to get an fd.
+>
+> These syscalls allow userspace to set filesystem inode attributes on
+> special files. One of the usage examples is XFS quota projects.
+>
+> XFS has project quotas which could be attached to a directory. All
+> new inodes in these directories inherit project ID set on parent
+> directory.
+>
+> The project is created from userspace by opening and calling
+> FS_IOC_FSSETXATTR on each inode. This is not possible for special
+> files such as FIFO, SOCK, BLK etc. Therefore, some inodes are left
+> with empty project ID. Those inodes then are not shown in the quota
+> accounting but still exist in the directory. This is not critical but in
+> the case when special files are created in the directory with already
+> existing project quota, these new inodes inherit extended attributes.
+> This creates a mix of special files with and without attributes.
+> Moreover, special files with attributes don't have a possibility to
+> become clear or change the attributes. This, in turn, prevents userspace
+> from re-creating quota project on these existing files.
+>
+> Christian, if this get in some mergeable state, please don't merge it
+> yet. Amir suggested these syscalls better to use updated struct fsxattr
+> with masking from Pali Roh=C3=A1r patchset, so, let's see how it goes.
 
+Andrey,
 
-Please change the commit title to something like:
+To be honest I don't think it would be fair to delay your syscalls more
+than needed.
 
-ata: pata_cswarp: Add Amiga cslab ata support
+If Pali can follow through and post patches on top of your syscalls for
+next merge window that would be great, but otherwise, I think the
+minimum requirement is that the syscalls return EINVAL if fsx_pad
+is not zero. we can take it from there later.
 
+We can always also increase the size of struct fsxattr, but let's first
+use the padding space already available.
+
+Thanks,
+Amir.
+
+>
+> NAME
+>
+>         getfsxattrat/setfsxattrat - get/set filesystem inode attributes
+>
+> SYNOPSIS
+>
+>         #include <sys/syscall.h>    /* Definition of SYS_* constants */
+>         #include <unistd.h>
+>
+>         long syscall(SYS_getfsxattrat, int dirfd, const char *pathname,
+>                 struct fsxattr *fsx, size_t size,
+>                 unsigned int at_flags);
+>         long syscall(SYS_setfsxattrat, int dirfd, const char *pathname,
+>                 struct fsxattr *fsx, size_t size,
+>                 unsigned int at_flags);
+>
+>         Note: glibc doesn't provide for getfsxattrat()/setfsxattrat(),
+>         use syscall(2) instead.
+>
+> DESCRIPTION
+>
+>         The syscalls take fd and path to the child together with struct
+>         fsxattr. If path is absolute, fd is not used. If path is empty,
+>         inode under fd is used to get/set attributes on.
+>
+>         This is an alternative to FS_IOC_FSGETXATTR/FS_IOC_FSSETXATTR
+>         ioctl with a difference that file don't need to be open as we
+>         can reference it with a path instead of fd. By having this we
+>         can manipulated filesystem inode attributes not only on regular
+>         files but also on special ones. This is not possible with
+>         FS_IOC_FSSETXATTR ioctl as with special files we can not call
+>         ioctl() directly on the filesystem inode using file descriptor.
+>
+> RETURN VALUE
+>
+>         On success, 0 is returned.  On error, -1 is returned, and errno
+>         is set to indicate the error.
+>
+> ERRORS
+>
+>         EINVAL          Invalid at_flag specified (only
+>                         AT_SYMLINK_NOFOLLOW and AT_EMPTY_PATH is
+>                         supported).
+>
+>         EINVAL          Size was smaller than any known version of
+>                         struct fsxattr.
+>
+>         EINVAL          Invalid combination of parameters provided in
+>                         fsxattr for this type of file.
+>
+>         E2BIG           Size of input argument **struct fsxattr** is too
+>                         big.
+>
+>         EBADF           Invalid file descriptor was provided.
+>
+>         EPERM           No permission to change this file.
+>
+>         EOPNOTSUPP      Filesystem does not support setting attributes
+>                         on this type of inode
+>
+> HISTORY
+>
+>         Added in Linux 6.14.
+>
+> EXAMPLE
+>
+> Create directory and file "mkdir ./dir && touch ./dir/foo" and then
+> execute the following program:
+>
+>         #include <fcntl.h>
+>         #include <errno.h>
+>         #include <string.h>
+>         #include <linux/fs.h>
+>         #include <stdio.h>
+>         #include <sys/syscall.h>
+>         #include <unistd.h>
+>
+>         int
+>         main(int argc, char **argv) {
+>                 int dfd;
+>                 int error;
+>                 struct fsxattr fsx;
+>
+>                 dfd =3D open("./dir", O_RDONLY);
+>                 if (dfd =3D=3D -1) {
+>                         printf("can not open ./dir");
+>                         return dfd;
+>                 }
+>
+>                 error =3D syscall(467, dfd, "./foo", &fsx, 0);
+>                 if (error) {
+>                         printf("can not call 467: %s", strerror(errno));
+>                         return error;
+>                 }
+>
+>                 printf("dir/foo flags: %d\n", fsx.fsx_xflags);
+>
+>                 fsx.fsx_xflags |=3D FS_XFLAG_NODUMP;
+>                 error =3D syscall(468, dfd, "./foo", &fsx, 0);
+>                 if (error) {
+>                         printf("can not call 468: %s", strerror(errno));
+>                         return error;
+>                 }
+>
+>                 printf("dir/foo flags: %d\n", fsx.fsx_xflags);
+>
+>                 return error;
+>         }
+>
+> SEE ALSO
+>
+>         ioctl(2), ioctl_iflags(2), ioctl_xfs_fsgetxattr(2)
+>
 > ---
->  drivers/ata/Kconfig            |  12 ++
->  drivers/ata/Makefile           |   1 +
->  drivers/ata/pata_cswarp.c      | 210 +++++++++++++++++++++++++++++++++
->  drivers/zorro/zorro.ids        |   5 +
->  include/uapi/linux/zorro_ids.h |   6 +
->  5 files changed, 234 insertions(+)
->  create mode 100644 drivers/ata/pata_cswarp.c
-> 
-> diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
-> index e00536b49552..9ec4d3a7ec1e 100644
-> --- a/drivers/ata/Kconfig
-> +++ b/drivers/ata/Kconfig
-> @@ -1025,6 +1025,18 @@ config PATA_GAYLE
->  
->  	  If unsure, say N.
->  
-> +config PATA_CSWARP
-> +	tristate "Amiga CS Warp PATA support"
-> +	depends on M68K && AMIGA
-> +	help
-> +	  This option enables support for the on-board IDE
-> +	  interface on CS-Lab Warp Expansion Card
-> +	  (NOTE that idemode=native has to be set in Warp
-> +	  Configuration)
-
-Looks like the lines are short. Please use up to 80 chars per line here.
-
-> +
-> +	  If unsure, say N.
-> +
-> +
->  config PATA_BUDDHA
->  	tristate "Buddha/Catweasel/X-Surf PATA support"
->  	depends on ZORRO
-> diff --git a/drivers/ata/Makefile b/drivers/ata/Makefile
-> index 20e6645ab737..7b9b87ebacea 100644
-> --- a/drivers/ata/Makefile
-> +++ b/drivers/ata/Makefile
-> @@ -98,6 +98,7 @@ obj-$(CONFIG_PATA_WINBOND)	+= pata_sl82c105.o
->  obj-$(CONFIG_PATA_CMD640_PCI)	+= pata_cmd640.o
->  obj-$(CONFIG_PATA_FALCON)	+= pata_falcon.o
->  obj-$(CONFIG_PATA_GAYLE)	+= pata_gayle.o
-> +obj-$(CONFIG_PATA_CSWARP)	+= pata_cswarp.o
->  obj-$(CONFIG_PATA_BUDDHA)	+= pata_buddha.o
->  obj-$(CONFIG_PATA_ISAPNP)	+= pata_isapnp.o
->  obj-$(CONFIG_PATA_IXP4XX_CF)	+= pata_ixp4xx_cf.o
-> diff --git a/drivers/ata/pata_cswarp.c b/drivers/ata/pata_cswarp.c
-> new file mode 100644
-> index 000000000000..29d76b22f1b2
-> --- /dev/null
-> +++ b/drivers/ata/pata_cswarp.c
-> @@ -0,0 +1,210 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +/*
-> + * Amiga CS Warp PATA controller driver
-> + *
-> + * Copyright (c) 2024 CS-Lab s.c.
-> + *		http://www.cs-lab.eu
-> + *
-> + * Based on pata_gayle.c, pata_buddha.c and warpATA.device:
-> + *
-> + *     Created 2 Jun 2024 by Andrzej Rogozynski
-> + */
-> +
-> +#include <linux/ata.h>
-> +#include <linux/blkdev.h>
-> +#include <linux/delay.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/kernel.h>
-> +#include <linux/libata.h>
-> +#include <linux/mm.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/zorro.h>
-> +#include <scsi/scsi_cmnd.h>
-> +#include <scsi/scsi_host.h>
-> +
-> +#include <asm/amigahw.h>
-> +#include <asm/amigaints.h>
-> +#include <asm/amigayle.h>
-> +#include <asm/setup.h>
-> +
-> +#define DRV_NAME "pata_cswarp"
-> +#define DRV_VERSION "0.1.0"
-
-There is no need for a driver version. The driver comes with the kernel, it is
-not external.
-
-> +
-> +#define WARP_OFFSET_ATA         0x6000
-> +#define REV16(x) ((uint16_t)((x << 8) | (x >> 8)))
-
-Very generic macrom name... And that is just a byte swap. We have functions for
-that already, so why define this ?
-
-> +
-> +static const struct scsi_host_template pata_cswarp_sht = {
-> +	ATA_PIO_SHT(DRV_NAME),
-> +};
-> +
-> +/* FIXME: is this needed? */
-
-If you need to fix it, then please do it. Otherwise, remove this comment please.
-
-> +static unsigned int pata_cswarp_data_xfer(struct ata_queued_cmd *qc,
-> +					 unsigned char *buf,
-> +					 unsigned int buflen, int rw)
-> +{
-> +	struct ata_device *dev = qc->dev;
-> +	struct ata_port *ap = dev->link->ap;
-> +	void __iomem *data_addr = ap->ioaddr.data_addr;
-> +	unsigned int words = buflen >> 1;
-> +
-> +	/* Transfer multiple of 2 bytes */
-> +	if (rw == READ)
-> +		raw_insw((u16 *)data_addr, (u16 *)buf, words);
-> +	else
-> +		raw_outsw((u16 *)data_addr, (u16 *)buf, words);
-> +
-> +	/* Transfer trailing byte, if any. */
-> +	if (unlikely(buflen & 0x01)) {
-> +		unsigned char pad[2] = { };
-> +
-> +		/* Point buf to the tail of buffer */
-> +		buf += buflen - 1;
-> +
-> +		if (rw == READ) {
-> +			raw_insw((u16 *)data_addr, (u16 *)pad, 1);
-> +			*buf = pad[0];
-> +		} else {
-> +			pad[0] = *buf;
-> +			raw_outsw((u16 *)data_addr, (u16 *)pad, 1);
-> +		}
-> +		words++;
-> +	}
-> +
-> +	return words << 1;
-> +}
-> +
-> +/*
-> + * Provide our own set_mode() as we don't want to change anything that has
-> + * already been configured..
-> + */
-> +static int pata_cswarp_set_mode(struct ata_link *link,
-> +			       struct ata_device **unused)
-> +{
-> +	struct ata_device *dev;
-> +
-> +	ata_for_each_dev(dev, link, ENABLED) {
-> +		/* We don't really care */
-> +		dev->pio_mode = dev->xfer_mode = XFER_PIO_0;
-> +		dev->xfer_shift = ATA_SHIFT_PIO;
-> +		dev->flags |= ATA_DFLAG_PIO;
-> +		ata_dev_info(dev, "configured for PIO\n");
-> +	}
-> +	return 0;
-> +}
-> +
-> +static struct ata_port_operations pata_cswarp_ops = {
-> +	.inherits	= &ata_sff_port_ops,
-> +	.sff_data_xfer	= pata_cswarp_data_xfer,
-> +	.cable_detect	= ata_cable_unknown,
-> +	.set_mode	= pata_cswarp_set_mode,
-> +};
-> +
-> +static int pata_cswarp_probe(struct zorro_dev *z,
-> +			     const struct zorro_device_id *ent)
-> +{
-> +	static const char board_name[] = "csWarp";
-> +	struct ata_host *host;
-> +	void __iomem *cswarp_ctrl_board;
-> +	unsigned long board;
-> +
-> +	board = z->resource.start;
-
-Please fold this above with the declaration:
-
-	unsigned long board = z->resource.start;
-
-> +
-> +	dev_info(&z->dev, "%s IDE controller (board: 0x%lx)\n", board_name,
-> +		 board);
-> +
-> +	if (!devm_request_mem_region(&z->dev, board + WARP_OFFSET_ATA, 0x1800,
-> +				     DRV_NAME))
-> +		return -ENXIO;
-> +
-> +	/* allocate host */
-> +	host = ata_host_alloc(&z->dev, 1);
-> +	if (!host)
-> +		return -ENXIO;
-> +
-> +	cswarp_ctrl_board = (void *)board;
-> +
-> +	struct ata_port *ap = host->ports[0];
-> +	void __iomem *base = cswarp_ctrl_board + WARP_OFFSET_ATA;
-
-Please do not mix code and declarations. Move the declarations at the top of the
-functions. (yes, C allows this, but we do not use this style in the kernel).
-
-> +
-> +	ap->ops = &pata_cswarp_ops;
-> +
-> +	ap->pio_mask = ATA_PIO4;
-> +	ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY |
-> +		ATA_FLAG_PIO_POLLING;
-> +
-> +	ap->ioaddr.data_addr		= base;
-> +	ap->ioaddr.error_addr		= base + 1 * 4;
-> +	ap->ioaddr.feature_addr		= base + 1 * 4;
-> +	ap->ioaddr.nsect_addr		= base + 2 * 4;
-> +	ap->ioaddr.lbal_addr		= base + 3 * 4;
-> +	ap->ioaddr.lbam_addr		= base + 4 * 4;
-> +	ap->ioaddr.lbah_addr		= base + 5 * 4;
-> +	ap->ioaddr.device_addr		= base + 6 * 4;
-> +	ap->ioaddr.status_addr		= base + 7 * 4;
-> +	ap->ioaddr.command_addr		= base + 7 * 4;
-> +
-> +	ap->ioaddr.altstatus_addr	= base + (0x1000 | (6UL << 2));
-> +	ap->ioaddr.ctl_addr			= base + (0x1000 | (6UL << 2));
-
-It would be nice to have macro definitions for all the magic numbers you use for
-offsets into base, to document these values.
-
-> +
-> +	ap->private_data = (void *)0;
-
-= NULL please. And that should not be needed as this is the inital value anyway.
-
-> +
-> +	ata_port_desc(ap, "  cmd 0x%lx ctl 0x%lx", (unsigned long)base,
-> +		      (unsigned long)ap->ioaddr.ctl_addr);
-> +
-> +	ata_host_activate(host, 0, NULL,
-> +			  IRQF_SHARED, &pata_cswarp_sht);
-> +
-> +	return 0;
-> +}
-> +
-> +static void pata_cswarp_remove(struct zorro_dev *z)
-> +{
-> +	struct ata_host *host = dev_get_drvdata(&z->dev);
-> +
-> +	ata_host_detach(host);
-> +}
-> +
-> +static const struct zorro_device_id pata_cswarp_zorro_tbl[] = {
-> +	{ ZORRO_PROD_CSLAB_WARP_CTRL, 0},
-> +	{ 0 }
-> +};
-> +MODULE_DEVICE_TABLE(zorro, pata_cswarp_zorro_tbl);
-> +
-> +static struct zorro_driver pata_cswarp_driver = {
-> +	.name           = "pata_cswarp",
-> +	.id_table       = pata_cswarp_zorro_tbl,
-> +	.probe          = pata_cswarp_probe,
-> +	.remove         = pata_cswarp_remove,
-> +};
-> +
-> +/*
-> + * We cannot have a modalias for X-Surf boards, as it competes with the
-> + * zorro8390 network driver. As a stopgap measure until we have proper
-> + * MFD support for this board, we manually attach to it late after Zorro
-> + * has enumerated its boards.
-> + */
-> +static int __init pata_cswarp_late_init(void)
-> +{
-> +	struct zorro_dev *z = NULL;
-> +
-> +	/* Auto-bind to regular boards */
-> +	zorro_register_driver(&pata_cswarp_driver);
-> +
-> +	/* Manually bind to all boards */
-> +	while ((z = zorro_find_device(ZORRO_PROD_CSLAB_WARP_CTRL, z))) {
-> +		static struct zorro_device_id cswarp_ent = {
-> +			ZORRO_PROD_CSLAB_WARP_CTRL, 0
-> +		};
-> +
-> +		pata_cswarp_probe(z, &cswarp_ent);
-> +	}
-> +	return 0;
-> +}
-> +late_initcall(pata_cswarp_late_init);
-> +
-> +MODULE_AUTHOR("Andrzej Rogozynski");
-> +MODULE_DESCRIPTION("low-level driver for CSWarp PATA");
-> +MODULE_LICENSE("GPL");
-> +MODULE_VERSION(DRV_VERSION);
-> diff --git a/drivers/zorro/zorro.ids b/drivers/zorro/zorro.ids
-> index 119abea8c6cb..33418af7488a 100644
-> --- a/drivers/zorro/zorro.ids
-> +++ b/drivers/zorro/zorro.ids
-> @@ -400,6 +400,11 @@
->  	0100  ISDN Blaster Z2 [ISDN Interface]
->  	0200  HyperCom 4 [Multi I/O]
->  	0600  HyperCom 4+ [Multi I/O]
-> +1400 CSLab
-> +	6000  Warp DDR3 Memory
-> +	0001  Warp Video Memory
-> +	0101  Warp Control Registers
-> +	0201  Warp Flash ROM
->  157c  Information
->  	6400  ISDN Engine I [ISDN Interface]
->  2017  Vortex
-> diff --git a/include/uapi/linux/zorro_ids.h b/include/uapi/linux/zorro_ids.h
-> index 0be1fb0c3915..5736d2bf0295 100644
-> --- a/include/uapi/linux/zorro_ids.h
-> +++ b/include/uapi/linux/zorro_ids.h
-> @@ -455,6 +455,12 @@
->  #define ZORRO_PROD_CSLAB_WARP_CTRL				ZORRO_ID(CSLAB, 0x65, 0)
->  #define ZORRO_PROD_CSLAB_WARP_XROM				ZORRO_ID(CSLAB, 0x66, 1)
->  
-> +#define ZORRO_MANUF_CSLAB                   0x1400
-> +#define ZORRO_PROD_CSLAB_WARP_DDR3          ZORRO_ID(CSLAB, 0x3c, 0)
-> +#define ZORRO_PROD_CSLAB_WARP_VRAM          ZORRO_ID(CSLAB, 0x64, 0)
-> +#define ZORRO_PROD_CSLAB_WARP_CTRL          ZORRO_ID(CSLAB, 0x65, 0)
-> +#define ZORRO_PROD_CSLAB_WARP_XROM          ZORRO_ID(CSLAB, 0x66, 1)
-> +
->  #define ZORRO_MANUF_INFORMATION					0x157C
->  #define  ZORRO_PROD_INFORMATION_ISDN_ENGINE_I			ZORRO_ID(INFORMATION, 0x64, 0)
->  
-
-
--- 
-Damien Le Moal
-Western Digital Research
+> Changes in v4:
+> - Use getname_maybe_null() for correct handling of dfd + path semantic
+> - Remove restriction for special files on which flags are allowed
+> - Utilize copy_struct_from_user() for better future compatibility
+> - Add draft man page to cover letter
+> - Convert -ENOIOCTLCMD to -EOPNOSUPP as more appropriate for syscall
+> - Add missing __user to header declaration of syscalls
+> - Link to v3: https://lore.kernel.org/r/20250211-xattrat-syscall-v3-1-a07=
+d15f898b2@kernel.org
+>
+> Changes in v3:
+> - Remove unnecessary "dfd is dir" check as it checked in user_path_at()
+> - Remove unnecessary "same filesystem" check
+> - Use CLASS() instead of directly calling fdget/fdput
+> - Link to v2: https://lore.kernel.org/r/20250122-xattrat-syscall-v2-1-5b3=
+60d4fbcb2@kernel.org
+>
+> v1:
+> https://lore.kernel.org/linuxppc-dev/20250109174540.893098-1-aalbersh@ker=
+nel.org/
+>
+> Previous discussion:
+> https://lore.kernel.org/linux-xfs/20240520164624.665269-2-aalbersh@redhat=
+.com/
+>
+> ---
+> Andrey Albershteyn (3):
+>       lsm: introduce new hooks for setting/getting inode fsxattr
+>       fs: split fileattr/fsxattr converters into helpers
+>       fs: introduce getfsxattrat and setfsxattrat syscalls
+>
+>  arch/alpha/kernel/syscalls/syscall.tbl      |   2 +
+>  arch/arm/tools/syscall.tbl                  |   2 +
+>  arch/arm64/tools/syscall_32.tbl             |   2 +
+>  arch/m68k/kernel/syscalls/syscall.tbl       |   2 +
+>  arch/microblaze/kernel/syscalls/syscall.tbl |   2 +
+>  arch/mips/kernel/syscalls/syscall_n32.tbl   |   2 +
+>  arch/mips/kernel/syscalls/syscall_n64.tbl   |   2 +
+>  arch/mips/kernel/syscalls/syscall_o32.tbl   |   2 +
+>  arch/parisc/kernel/syscalls/syscall.tbl     |   2 +
+>  arch/powerpc/kernel/syscalls/syscall.tbl    |   2 +
+>  arch/s390/kernel/syscalls/syscall.tbl       |   2 +
+>  arch/sh/kernel/syscalls/syscall.tbl         |   2 +
+>  arch/sparc/kernel/syscalls/syscall.tbl      |   2 +
+>  arch/x86/entry/syscalls/syscall_32.tbl      |   2 +
+>  arch/x86/entry/syscalls/syscall_64.tbl      |   2 +
+>  arch/xtensa/kernel/syscalls/syscall.tbl     |   2 +
+>  fs/inode.c                                  | 130 ++++++++++++++++++++++=
+++++++
+>  fs/ioctl.c                                  |  39 ++++++---
+>  include/linux/fileattr.h                    |   2 +
+>  include/linux/lsm_hook_defs.h               |   4 +
+>  include/linux/security.h                    |  16 ++++
+>  include/linux/syscalls.h                    |   6 ++
+>  include/uapi/asm-generic/unistd.h           |   8 +-
+>  include/uapi/linux/fs.h                     |   3 +
+>  security/security.c                         |  32 +++++++
+>  25 files changed, 259 insertions(+), 13 deletions(-)
+> ---
+> base-commit: ffd294d346d185b70e28b1a28abe367bbfe53c04
+> change-id: 20250114-xattrat-syscall-6a1136d2db59
+>
+> Best regards,
+> --
+> Andrey Albershteyn <aalbersh@kernel.org>
+>
+>
