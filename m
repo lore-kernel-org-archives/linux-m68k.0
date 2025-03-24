@@ -1,204 +1,111 @@
-Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58EA4EEAB
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 08:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153C118B470
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 08:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742803375; cv=none; b=lIfZzphuMCdbu2L77OJWdRsJmAf4cdFT8UGZgSoTMAzFVdlewPf4bnsU4e0C7bSM7nicSVjtfa6Ur/R+GgDpca5iu+nGdCoBJ7GdEUjhiBI3Els/MXKq5sh8fEcWlgmqWIGI3ITjR9ai78Oi2obcDi8Hd0KKzLQ/Jjvyj3SGA/w=
+	t=1742803453; cv=none; b=YOC3oYGit+B1TlkhcJWt754SoYxsc7iqfqBEj7cKovbvmVBbSb6nxmLWk6Kw7iOGH55h+7oizXO0dGMGM4Eq30vKPlquACSvXXn6DoOu3cEWv4QaDQECbqtC3K+Qn/MOFUS6LzM+ljKCrX4IOd4wcGhUi7+hPpWXBpbGSlBlexE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742803375; c=relaxed/simple;
-	bh=WnEWpX2LEQgbBaMp8eYL6YPucjJVn5f6DVzd6dzKvos=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=u43WQEeBK5+xNgnBYEOyuYTUV+zzfedDi0DPq5rdY21DMpxYd83E+VKKymxE0Y0dZx4zoIAlmCcDnfRH86m2YdFQXf5r/ovL0v6prfVYDHMycKi3C590dMWeENikq6TZZRi438lUOGgkqsYbfYcR20BUm08rG15KlxpJBjXJ+sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=jQ02LsMk; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JU2xrRaX; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jQ02LsMk";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JU2xrRaX"
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfout.phl.internal (Postfix) with ESMTP id 3D00E1382CB7;
-	Mon, 24 Mar 2025 04:02:52 -0400 (EDT)
-Received: from phl-imap-11 ([10.202.2.101])
-  by phl-compute-07.internal (MEProxy); Mon, 24 Mar 2025 04:02:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1742803372;
-	 x=1742889772; bh=adzYBEKh/yqg4YHIRxasSNX+4SOl9DvVZEEHKyF6Ds8=; b=
-	jQ02LsMkYJca5oAbaoAVP9lOqKesMFcf3kY1L6937OmT0RIMP+pgHl3L1dJmtUZ8
-	k/oIPSTiyQ63s1qafFQcIgJXOkEbpOEkyaeRaLFkKhMuTpd2ME/ehnGtpsZq2LIa
-	lpXEtmbFSyOUzqSiGPeg73gqBUgXtcSonD1R3oxGhMyfFs8reSVN3ADa/cs0UxKe
-	hHhGQBg2Q7y9RA+D9FFyTHXaKxZqmWb7X8+bHjpTuBuzrSQXYWUXziOyqusCCB4Y
-	/tuOVhPSnytMqzpEhYM0RiZc3Vt/xDu56HS/aG+GjGl7Ri+BfUg8IAszXw8zFtHM
-	ZQxdQh4FTxF3iidupy0y6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1742803372; x=
-	1742889772; bh=adzYBEKh/yqg4YHIRxasSNX+4SOl9DvVZEEHKyF6Ds8=; b=J
-	U2xrRaX/2LY9S62Ap4tyti7bpdYWu0788m1xv1Us5AaoSlmFtSZV7NG0KkHcL850
-	NSIGgD4FiBjJjEe/JcbULMR/iPeuzj7WF1BpZnjwJQBBibEGIhDfh62ARqhPryuH
-	8biIOKbipOqu/tWA6bMysxa/KaMd2yGqyqP/F6XRwI3wY5AUJWE73/mf57kWJQB0
-	C7aXariz+LeW6Grl9nOvLiCsU2Wh87i/eFPfl9aJGty1Ln4CPQegQeRwwJZRb5VW
-	8bUzUnJJErGClA1KJkUhWhQjENriuRIYIhYOFnNQx9gUX41bwanzHuUfNldnR/+r
-	yi93+pyZPYrSlPDFdR1Hw==
-X-ME-Sender: <xms:qhHhZ5nZTPn4CkOVtKO4if16jD0npIjwWI7yBFV-Iz-38wrU7BOfPQ>
-    <xme:qhHhZ004OsA2BUHO9qMmzdirvPjc7MWwko5173S1rvweRDQsG4L5GO_itGAGnl9_R
-    q9SSvL7-OXbP3s4E0I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduheelvdegucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertder
-    tddtnecuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnug
-    gsrdguvgeqnecuggftrfgrthhtvghrnhephfdthfdvtdefhedukeetgefggffhjeeggeet
-    fefggfevudegudevledvkefhvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohep
-    vdeipdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehtshgsohhgvghnugesrghlph
-    hhrgdrfhhrrghnkhgvnhdruggvpdhrtghpthhtoheptghhrhhishhtohhphhgvrdhlvghr
-    ohihsegtshhgrhhouhhprdgvuhdprhgtphhtthhopehmphgvsegvlhhlvghrmhgrnhdrih
-    gurdgruhdprhgtphhtthhopehmrghtthhsthekkeesghhmrghilhdrtghomhdprhgtphht
-    thhopehnphhighhgihhnsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuggvlhhlvghrse
-    hgmhigrdguvgdprhgtphhtthhopegshhgvlhhgrggrshesghhoohhglhgvrdgtohhmpdhr
-    tghpthhtohepjhgrmhgvshdrsghothhtohhmlhgvhieshhgrnhhsvghnphgrrhhtnhgvrh
-    hshhhiphdrtghomhdprhgtphhtthhopegrrhhnugeskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:qhHhZ_p-u8s5pl3YM_1-PsEN9wBfKfwXvrHdL61Q-nhZDSolr_K7Mw>
-    <xmx:qhHhZ5kYRVJdV1MObn5MTFlxn9WLq1qINYV8-8l2m2E4SAKKl83-Ww>
-    <xmx:qhHhZ32z1LJiorBkFoyg-aZNO0xESpHo-jDwSf5gWXDLEZ3-2Qp6VA>
-    <xmx:qhHhZ4tW9ZugFEiuVqPqdmmqi1kNe-aZmABnfDMdIQSnpAO8aZjmsw>
-    <xmx:rBHhZwffwYjZf1CcOqvx81hevZ9WxdyiSnJ2x_cAQyFRDDuaiwyi10Yb>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id E60322220073; Mon, 24 Mar 2025 04:02:49 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1742803453; c=relaxed/simple;
+	bh=waIDTzfJeGprf0IJDgI4ophvCidcyEBtX1rhBS0R948=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ma3QH216lXT7Q71Ld8bxvCPS7Zy0wib+Qsp6UhiAetneEgoV1v6TDT0NBt6OWbrxhzXlzZhlhnqBJn99admvdkhP4SjYr16DzIW21dC24oskfRuOE3CoCUc3jyCxcMJgUgYO/XqdLugMl/FBJu3P/1B8ic6f6kLuUS3Uwmibha4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-86d5e42c924so4174620241.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 01:04:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1742803450; x=1743408250;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LW8fSp8pDr8IytbOKxU9Ce5slmJtka15/u9Kms9+eGM=;
+        b=ZMKvtDBS1gtvhCj4HeLw75A9b8crFqBUtwHMcS5S5SNd3Bpv7FdwjJjHfqjt0667Qm
+         YIObw13NY9rIT47+RE22UXRnH/j4WuV6QTBCXbow6eVATNv+jjV5NgvVKOpThtMEEWYD
+         +lgA8tRdav26cpbuD5pT+wmTisINJdRuTprZ1b8b2wbf0ZHBOF9XgtmWgvBGdeSmLTtS
+         uoRLcVj/FOERQrJmVQvgWSuQdzExQCngl9WvZclXPi6T+rlIJ4n7ycVqRwg3FHo+fSOc
+         Gk7QWsA/o1VETk1QlpVCZw9dCrdfw8qw1DwzIWRX+o9mtBKIIJDb0gOqwP/l9EbkCoSP
+         YknA==
+X-Forwarded-Encrypted: i=1; AJvYcCX3ioLia9tMlKore8sKSYMHSFcKO2B//o4hi0UIjmdwbEWHrmLl1vrV22C3q8vRBy1qWrKpKNr0C/Rq@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwgH9uy6Q17pVxHGEfju+5Jtna3DSuNMIw4RRJqQT0873IjQfh+
+	0e09lNPLeIDQ1iR4aTaUKHKMjPw1RcJlq3l3GE59rdHuNOus04PptOBAY6Po
+X-Gm-Gg: ASbGncs2Dxm4himJPQhOg/6KBdyuJ8G5Vg3JOgE4VRYytaDWv42TU91OMrZ30jr+FqM
+	gvhB5bheBDrwbZgc5RPh15a7DwGoYOdYdnI7GIc3IN9EpUDm/pCTnlP4S2aAAfjH2tdjD2OaDnI
+	EGZPsQ6OxpEus5rcMey1VrZyUXMkPc4BqJVURI+CsAf8h34iP1zrWgCMEcg9VG7mZe/ILAYtkvS
+	Xa84QP0q1cjwYe/RxxZUnR7g0dJrjr1on0XceWB3XgUP2774UoIrAsqs7rdGOOfLUhgim5bo9gK
+	D/2E1SuRvcSAyeIYpqld100nWe4x/neiS5n4AAdEvGmCkngDHI9b7rBxovgzjDMQKRyDCHji3zs
+	yO2HZXWY=
+X-Google-Smtp-Source: AGHT+IHsrMwn92ibt0KzcIkjVcmjWbrLMkuRdaFdgt1KGbXDWweZwdu1kxtL/9vJkh2wENef9RrXlQ==
+X-Received: by 2002:a05:6102:f11:b0:4bb:c24b:b61a with SMTP id ada2fe7eead31-4c50d5e0ff4mr7917620137.19.1742803449750;
+        Mon, 24 Mar 2025 01:04:09 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-86f9f3c4833sm1496297241.15.2025.03.24.01.04.09
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Mar 2025 01:04:09 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-86d5e42c924so4174601241.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 01:04:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXwdW/V4VEozHnOZFShspyZVHab9elGwVe0qYwmo2mPJpeMbYN/gI5tI9c7IBTnAHdmUe2aGVUrbFEf@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:3f0d:b0:4c3:6979:2ef with SMTP id
+ ada2fe7eead31-4c50d620e46mr5828890137.21.1742803449228; Mon, 24 Mar 2025
+ 01:04:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: T53f4a10e7512c522
-Date: Mon, 24 Mar 2025 09:02:28 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Greg Ungerer" <gerg@linux-m68k.org>, "Arnd Bergmann" <arnd@kernel.org>,
- Linux-Arch <linux-arch@vger.kernel.org>
-Cc: "Richard Henderson" <richard.henderson@linaro.org>,
- "Matt Turner" <mattst88@gmail.com>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
- "Helge Deller" <deller@gmx.de>, "Madhavan Srinivasan" <maddy@linux.ibm.com>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Naveen N Rao" <naveen@kernel.org>,
- "Yoshinori Sato" <ysato@users.sourceforge.jp>,
- "Rich Felker" <dalias@libc.org>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Julian Vetter" <julian@outer-limits.org>,
- "Bjorn Helgaas" <bhelgaas@google.com>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org
-Message-Id: <4a31c6a8-7c99-4d8f-8248-92e0e52b8db6@app.fastmail.com>
-In-Reply-To: <64f226e5-7931-40ba-878a-a28688da82fd@linux-m68k.org>
-References: <20250315105907.1275012-1-arnd@kernel.org>
- <20250315105907.1275012-7-arnd@kernel.org>
- <64f226e5-7931-40ba-878a-a28688da82fd@linux-m68k.org>
-Subject: Re: [PATCH 6/6] m68k/nommu: stop using GENERIC_IOMAP
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+References: <20250321151416.338756-1-p.pisati@gmail.com> <20250321151416.338756-2-p.pisati@gmail.com>
+In-Reply-To: <20250321151416.338756-2-p.pisati@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 24 Mar 2025 09:03:57 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWzNdJesbKeWBrJ88rHBWP36k23EQo80TjYbe4V6vprhQ@mail.gmail.com>
+X-Gm-Features: AQ5f1JqPior9Jo9Nzr-fOs-iHqTJa_bcQoKsPvZY5OyLpkGT1K3mjUiFtrnvQgA
+Message-ID: <CAMuHMdWzNdJesbKeWBrJ88rHBWP36k23EQo80TjYbe4V6vprhQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] include/uapi/linux/zorro_ids.h: add more cslab warp id
+To: Paolo Pisati <p.pisati@gmail.com>
+Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 24, 2025, at 02:33, Greg Ungerer wrote:
-> Hi Arnd,
+Hi Paolo,
+
+On Fri, 21 Mar 2025 at 16:14, Paolo Pisati <p.pisati@gmail.com> wrote:
+> Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
+
+Thanks for your patch!
+
+> --- a/include/uapi/linux/zorro_ids.h
+> +++ b/include/uapi/linux/zorro_ids.h
+> @@ -450,7 +450,10 @@
+>  #define  ZORRO_PROD_VMC_HYPERCOM_4                             ZORRO_ID(VMC, 0x02, 0)
 >
-> On 15/3/25 20:59, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> There is no need to go through the GENERIC_IOMAP wrapper for PIO on
->> nommu platforms, since these always come from PCI I/O space that is
->> itself memory mapped.
->> 
->> Instead, the generic ioport_map() can just return the MMIO location
->> of the ports directly by applying the PCI_IO_PA offset, while
->> ioread32/iowrite32 trivially turn into readl/writel as they do
->> on most other architectures.
->> 
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>  #define ZORRO_MANUF_CSLAB                                      0x1400
+> -#define  ZORRO_PROD_CSLAB_WARP_1260                            ZORRO_ID(CSLAB, 0x65, 0)
+
+This removes a definition; was it incorrect? Please explain in the
+patch description, especially as this is a uapi header file.
+
+> +#define ZORRO_PROD_CSLAB_WARP_DDR3                             ZORRO_ID(CSLAB, 0x3c, 0)
+> +#define ZORRO_PROD_CSLAB_WARP_VRAM                             ZORRO_ID(CSLAB, 0x64, 0)
+> +#define ZORRO_PROD_CSLAB_WARP_CTRL                             ZORRO_ID(CSLAB, 0x65, 0)
+> +#define ZORRO_PROD_CSLAB_WARP_XROM                             ZORRO_ID(CSLAB, 0x66, 1)
+
+What do these represent? Please explain in the patch description.
+
 >
-> With this applied this fails to build for me:
->
->    UPD     include/generated/utsversion.h
->    CC      init/version-timestamp.o
->    LD      vmlinux
-> m68k-linux-uclibc-ld: drivers/pci/quirks.o: in function 
-> `quirk_switchtec_ntb_dma_alias':
-> quirks.c:(.text+0x23e4): undefined reference to `pci_iomap'
-> m68k-linux-uclibc-ld: quirks.c:(.text+0x24fe): undefined reference to 
-> `pci_iounmap'
-> m68k-linux-uclibc-ld: drivers/pci/quirks.o: in function 
-> `disable_igfx_irq':
-> quirks.c:(.text+0x32f4): undefined reference to `pci_iomap'
-> m68k-linux-uclibc-ld: quirks.c:(.text+0x3348): undefined reference to 
-> `pci_iounmap'
+>  #define ZORRO_MANUF_INFORMATION                                        0x157C
+>  #define  ZORRO_PROD_INFORMATION_ISDN_ENGINE_I                  ZORRO_ID(INFORMATION, 0x64, 0)
 
-Thanks for the report, I was able to reproduce the problem now
-and applied the fixup below. I had tested m5475evb_defconfig earlier,
-and that built cleanly with PCI enabled, but I had missed how
-that still used GENERIC_IOMAP because it has CONFIG_MMU enabled.
+Gr{oetje,eeting}s,
 
-Does this fixup work for you?
+                        Geert
 
-On a related note, I'm curious about how the MCF54xx chips are
-used in practice, as I see that they are the only coldfire chips
-with PCI and they all have an MMU. Are there actual users of these
-chips that have PCI but choose not to use the MMU? 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-      Arnd
-
-8<-----
-From a36995e2a64711556c6773797367d165828f6705 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 24 Mar 2025 07:53:47 +0100
-Subject: [PATCH] m68k: coldfire: select PCI_IOMAP for PCI
-
-After I dropped CONFIG_GENERIC_IOMAP, some PCI drivers started failing
-to link when CONFIG_MMU is disabled:
-
-ERROR: modpost: "pci_iounmap" [drivers/video/fbdev/i740fb.ko] undefined!
-ERROR: modpost: "pci_iounmap" [drivers/video/fbdev/vt8623fb.ko] undefined!
-ERROR: modpost: "pci_iomap_wc" [drivers/video/fbdev/vt8623fb.ko] undefined!
-ERROR: modpost: "pci_iomap" [drivers/video/fbdev/vt8623fb.ko] undefined!
-ERROR: modpost: "pci_iounmap" [drivers/video/fbdev/s3fb.ko] undefined!
-...
-
-It turns out that there were two mistakes in my patch: on !MMU I forgot
-to enable CONFIG_GENERIC_PCI_IOMAP, and for Coldfire with MMU enabled,
-teh GENERIC_IOMAP was left in place but incorrectly configured.
-
-Fixes: 9d48cc07d0d7 ("m68k/nommu: stop using GENERIC_IOMAP")
-Reported-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index b50c275fa94d..eb5bb6d36899 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -18,12 +18,13 @@ config M68K
- 	select DMA_DIRECT_REMAP if M68K_NONCOHERENT_DMA && !COLDFIRE
- 	select GENERIC_ATOMIC64
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_IOMAP if HAS_IOPORT && MMU
-+	select GENERIC_IOMAP if HAS_IOPORT && MMU && !COLDFIRE
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_LIB_ASHLDI3
- 	select GENERIC_LIB_ASHRDI3
- 	select GENERIC_LIB_LSHRDI3
- 	select GENERIC_LIB_MULDI3
-+	select GENERIC_PCI_IOMAP if PCI
- 	select HAS_IOPORT if PCI || ISA || ATARI_ROM_ISA
- 	select HAVE_ARCH_LIBGCC_H
- 	select HAVE_ARCH_SECCOMP
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
