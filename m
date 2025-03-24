@@ -1,279 +1,169 @@
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9045E38DE9
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 13:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B500A25E476
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 13:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742822534; cv=none; b=uunfPuLxRSI7MFivf0Y5XHvhuuluQC1gOjOZM7SmGKuBRf87B89JVebc0zbXftsKFf2skL9ToYRkTwIsU91GkaeWw9kWKCGNPS1XDlyFXU5lXWdFsEVqV5NZdjZglyvq/EabLxyxL/g9bTxCp4KbgYunlrxtwxZKMGz0MSU3Pf8=
+	t=1742824229; cv=none; b=NAXW2NoTLez3D6FnIxJ1UfhtD/6O9npLckJ5U+GYo3F5HKPd96ZAypJ52vxRF2RPcyFJtj9QSd3j2GuxX7lWcMaoPI/UgXYonTvjhM190fwHCaRMAnQLwTZKpLz3Ydnhr9Rtqrxlbks3AgsCCifMKQ/BN+KRqjrJaGx62eX3OG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742822534; c=relaxed/simple;
-	bh=i1XKwX+9HeRav3Y+xuPOHeamNCFkO9DYG+SjERgnylM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XswyNCqVTvFowU4nTxvMTUHwkhjySSWEOAV85jzeP3fD0EvV7FSDU7UBHmE+sSwh/UancuW1RbW72vOE+2JzuzB6CQWpU9uYsE66hptf8rPxFWwidLy9GBtyLs3k2cfqKEeseQ62XXgj7XktyxT1iKWtWHYqdpbTj6oAWenw3Fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+	s=arc-20240116; t=1742824229; c=relaxed/simple;
+	bh=5DWVH+PYF6T7L8669uq6zv4/kb1H6dDU0ckc3N5uPHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PpjjUgfY+EXFt48gaSgtdZcM1zXPcZeWIH75BLKYZSV4lq7pEk9IHVCaFM3DGXfIGs1iVFzldf9Aq08z9P4JmQmJb7slaOa1mI2C1qPrtJ+BYK3bRpvbDeyCV/VKEjxg8sGNSuTlqttqYkk5Fo4GL/BWY6HVtp+QVZ9X1wQVAR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-523ee30e0d4so2105260e0c.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 06:22:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742822530; x=1743427330;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T3vM1FQGsYOgCMm5GZoL9ZjRBchcaCoOlh/TAPpEk4Y=;
-        b=sRSrpws9STdSqVFrzGop9RyAkSy5uscYPxVJOzMo5JA026Minarh+u66ffGk3jR3I+
-         ihJFGk/irQOkFzejXrZhVEDsRVtrh9+f6NweHI0w30znG/1WE/w9UceOxmbxP/XRUvmE
-         O2B8628cNEDB9aW3TZtOWQ4QIXRllJTaE6xdPRDk8B6sFJxXSrJlhwSs91uLGybXSqqW
-         mPGNorWxYmN4uL+zMTmaJ9UnhvB1Ddk+WhGo32wGM6LLQX27+Cl4p5aSGTXn/sgxCVaa
-         zey6yeN5vpi59x2WM07l9Rgg6/q28QDG9P/JcmcrbKX8TW1iqSr/4+yrQyQy1gSXDCaD
-         vEZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXtAYOPMgpVyHeq2tBjgAfIRUfy7XkrhTlkIhjWJwSsfQvWFDqGzlBzHaVpitebUfD2D0nwPKsDXWnx@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yxd5alkseenv8pJnO3VEJf6bgjQsDcTiohVbO1+OZ84L11koYG+
-	TsfAx5WYRrM989KkX+37CsgedVhTMtwqdpHioiQacBAoLjCvD6/HwegCgB+N
-X-Gm-Gg: ASbGncvR+4FrtwzJ/WxP9p4FgPlgNgyKKq3iVfuZWGSgVKbRuzeGr1C4VG7JzFFPOPx
-	Cz27JHb2tQHZR1IJ6wFW8AlRPjzO1B7zMvTxZvyw0TFI9DkPTVNDJ3u9gsYj2Ll/gEIdmYKbJfF
-	rVgc6WZOxqu55lc+Q+hEQDpRDdqo/741xfiy1mJceNx28+xYnlYI/MedepZ92IYn4MvXw0lHiwR
-	aiZtGBeftQGwAqcUZ2dYsA1w1O4k3pt2Pe0yo5OB2/R4RS5z5BpNefesGSUGm8qP7C7JqAmJ/n9
-	YMekE6+QV/REB5YudecDAIPkqfAz3gFvLLnOmpSg03CWD2rn/sQwUTaSB5wygRprTUILu5upVMt
-	w68UTmXc=
-X-Google-Smtp-Source: AGHT+IEgGfxE00iHbyASjPzt2ltXHCw58uTmpqFH8VsOGmMuFfWQpVoZ5JerBdei20uXKtE4fbZ8Sw==
-X-Received: by 2002:a05:6102:1612:b0:4c1:8e07:40b8 with SMTP id ada2fe7eead31-4c50d4cafc7mr8133259137.6.1742822530130;
-        Mon, 24 Mar 2025 06:22:10 -0700 (PDT)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4c50bdb958fsm1576392137.28.2025.03.24.06.22.09
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Mar 2025 06:22:09 -0700 (PDT)
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-86715793b1fso1847676241.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 06:22:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUNPJSuSID0vnFk+jymBk5zrQVoedyOASRroqgvbBR+epqvtmTqp2ATh1ZwLHv6X+/b9tMb4KrcVZ+X@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:32c5:b0:4bb:e36f:6a30 with SMTP id
- ada2fe7eead31-4c50d5471femr6234904137.15.1742822529274; Mon, 24 Mar 2025
- 06:22:09 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id C950B437A7;
+	Mon, 24 Mar 2025 13:50:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0AE6C4CEDD;
+	Mon, 24 Mar 2025 13:50:21 +0000 (UTC)
+Message-ID: <9076d00e-c469-4a05-a686-94e3e55c8389@linux-m68k.org>
+Date: Mon, 24 Mar 2025 23:50:19 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250324121645.208368-1-p.pisati@gmail.com> <20250324121645.208368-2-p.pisati@gmail.com>
-In-Reply-To: <20250324121645.208368-2-p.pisati@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 24 Mar 2025 14:21:57 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW8WUyUsjG4FaT4nP82pZYVFsUpYNOg2vsPPOthf-O49A@mail.gmail.com>
-X-Gm-Features: AQ5f1JossREYSfwY4h6KKaFrE0JTJJQ8uMnSZiWGXPrBjpzoTjpi3VGEJ_Yivrw
-Message-ID: <CAMuHMdW8WUyUsjG4FaT4nP82pZYVFsUpYNOg2vsPPOthf-O49A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] ata: pata_cswarp: Add Amiga cslab ata support
-To: Paolo Pisati <p.pisati@gmail.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/6] m68k/nommu: stop using GENERIC_IOMAP
+To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
+ Linux-Arch <linux-arch@vger.kernel.org>
+Cc: Richard Henderson <richard.henderson@linaro.org>,
+ Matt Turner <mattst88@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Naveen N Rao <naveen@kernel.org>, Yoshinori Sato
+ <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Julian Vetter <julian@outer-limits.org>, Bjorn Helgaas
+ <bhelgaas@google.com>, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org
+References: <20250315105907.1275012-1-arnd@kernel.org>
+ <20250315105907.1275012-7-arnd@kernel.org>
+ <64f226e5-7931-40ba-878a-a28688da82fd@linux-m68k.org>
+ <4a31c6a8-7c99-4d8f-8248-92e0e52b8db6@app.fastmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <4a31c6a8-7c99-4d8f-8248-92e0e52b8db6@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Paolo,
+Hi Arnd,
 
-On Mon, 24 Mar 2025 at 13:16, Paolo Pisati <p.pisati@gmail.com> wrote:
-> Driver for the on-board IDE interface on CS-Lab Warp Expansion Card
-> (NOTE that idemode=native has to be set in Warp Configuration)
->
-> Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
+On 24/3/25 18:02, Arnd Bergmann wrote:
+> On Mon, Mar 24, 2025, at 02:33, Greg Ungerer wrote:
+>> Hi Arnd,
+>>
+>> On 15/3/25 20:59, Arnd Bergmann wrote:
+>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>
+>>> There is no need to go through the GENERIC_IOMAP wrapper for PIO on
+>>> nommu platforms, since these always come from PCI I/O space that is
+>>> itself memory mapped.
+>>>
+>>> Instead, the generic ioport_map() can just return the MMIO location
+>>> of the ports directly by applying the PCI_IO_PA offset, while
+>>> ioread32/iowrite32 trivially turn into readl/writel as they do
+>>> on most other architectures.
+>>>
+>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>
+>> With this applied this fails to build for me:
+>>
+>>     UPD     include/generated/utsversion.h
+>>     CC      init/version-timestamp.o
+>>     LD      vmlinux
+>> m68k-linux-uclibc-ld: drivers/pci/quirks.o: in function
+>> `quirk_switchtec_ntb_dma_alias':
+>> quirks.c:(.text+0x23e4): undefined reference to `pci_iomap'
+>> m68k-linux-uclibc-ld: quirks.c:(.text+0x24fe): undefined reference to
+>> `pci_iounmap'
+>> m68k-linux-uclibc-ld: drivers/pci/quirks.o: in function
+>> `disable_igfx_irq':
+>> quirks.c:(.text+0x32f4): undefined reference to `pci_iomap'
+>> m68k-linux-uclibc-ld: quirks.c:(.text+0x3348): undefined reference to
+>> `pci_iounmap'
+> 
+> Thanks for the report, I was able to reproduce the problem now
+> and applied the fixup below. I had tested m5475evb_defconfig earlier,
+> and that built cleanly with PCI enabled, but I had missed how
+> that still used GENERIC_IOMAP because it has CONFIG_MMU enabled.
+> 
+> Does this fixup work for you?
 
-Thanks for your patch!
+Yes, this looks good, works for me.
+Feel free to add this if you like:
 
-> --- a/drivers/ata/Kconfig
-> +++ b/drivers/ata/Kconfig
-> @@ -1025,6 +1025,17 @@ config PATA_GAYLE
->
->           If unsure, say N.
->
-> +config PATA_CSWARP
-> +       tristate "Amiga CS Warp PATA support"
-> +       depends on M68K && AMIGA
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 
-&& ZORRO?
 
-> +       help
-> +         This option enables support for the on-board IDE interface on
-> +         CS-Lab Warp Expansion Card (NOTE that idemode=native has to be
-> +         set in Warp Configuration)
-> +
-> +         If unsure, say N.
-> +
-> +
->  config PATA_BUDDHA
->         tristate "Buddha/Catweasel/X-Surf PATA support"
->         depends on ZORRO
+> On a related note, I'm curious about how the MCF54xx chips are
+> used in practice, as I see that they are the only coldfire chips
+> with PCI and they all have an MMU. Are there actual users of these
+> chips that have PCI but choose not to use the MMU?
 
-> --- /dev/null
-> +++ b/drivers/ata/pata_cswarp.c
-> @@ -0,0 +1,186 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +/*
-> + * Amiga CS Warp PATA controller driver
-> + *
-> + * Copyright (c) 2024 CS-Lab s.c.
-> + *             http://www.cs-lab.eu
-> + *
-> + * Based on pata_gayle.c, pata_buddha.c and warpATA.device:
-> + *
-> + *     Created 2 Jun 2024 by Andrzej Rogozynski
-> + */
-> +
-> +#include <linux/ata.h>
-> +#include <linux/blkdev.h>
-> +#include <linux/delay.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/kernel.h>
-> +#include <linux/libata.h>
-> +#include <linux/mm.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/zorro.h>
-> +#include <scsi/scsi_cmnd.h>
-> +#include <scsi/scsi_host.h>
-> +
-> +#include <asm/amigahw.h>
-> +#include <asm/amigaints.h>
-> +#include <asm/amigayle.h>
-> +#include <asm/setup.h>
-> +
-> +#define DRV_NAME "pata_cswarp"
-> +
-> +#define WARP_OFFSET_ATA         0x6000
-> +
-> +static const struct scsi_host_template pata_cswarp_sht = {
-> +       ATA_PIO_SHT(DRV_NAME),
-> +};
-> +
-> +static unsigned int pata_cswarp_data_xfer(struct ata_queued_cmd *qc,
-> +                                        unsigned char *buf,
-> +                                        unsigned int buflen, int rw)
+No, I think everyone with these uses them with MMU enabled.
 
-It is a pity ata_port_operations.sff_data_xfer() doesn't take a void *buf,
-else the casts below can be dropped.
+It is probably more of an historical curiosity to use them with
+the MMU disabled. That supported pre-dated mainline kernels having
+full ColdFire MMU support by a good few years.
 
-Until that has changed, I think it is worthwhile to do the cast only once,
-by introducing a temporary variable:
+Regards
+Greg
 
-    u16 *buf16 = (u16 *)buf;
 
-> +{
-> +       struct ata_device *dev = qc->dev;
-> +       struct ata_port *ap = dev->link->ap;
-> +       void __iomem *data_addr = ap->ioaddr.data_addr;
 
-"volatile void __iomem *data_addr ...", so you can drop the casts below.
+>        Arnd
+> 
+> 8<-----
+>  From a36995e2a64711556c6773797367d165828f6705 Mon Sep 17 00:00:00 2001
+> From: Arnd Bergmann <arnd@arndb.de>
+> Date: Mon, 24 Mar 2025 07:53:47 +0100
+> Subject: [PATCH] m68k: coldfire: select PCI_IOMAP for PCI
+> 
+> After I dropped CONFIG_GENERIC_IOMAP, some PCI drivers started failing
+> to link when CONFIG_MMU is disabled:
+> 
+> ERROR: modpost: "pci_iounmap" [drivers/video/fbdev/i740fb.ko] undefined!
+> ERROR: modpost: "pci_iounmap" [drivers/video/fbdev/vt8623fb.ko] undefined!
+> ERROR: modpost: "pci_iomap_wc" [drivers/video/fbdev/vt8623fb.ko] undefined!
+> ERROR: modpost: "pci_iomap" [drivers/video/fbdev/vt8623fb.ko] undefined!
+> ERROR: modpost: "pci_iounmap" [drivers/video/fbdev/s3fb.ko] undefined!
+> ...
+> 
+> It turns out that there were two mistakes in my patch: on !MMU I forgot
+> to enable CONFIG_GENERIC_PCI_IOMAP, and for Coldfire with MMU enabled,
+> teh GENERIC_IOMAP was left in place but incorrectly configured.
+> 
+> Fixes: 9d48cc07d0d7 ("m68k/nommu: stop using GENERIC_IOMAP")
+> Reported-by: Greg Ungerer <gerg@linux-m68k.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index b50c275fa94d..eb5bb6d36899 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -18,12 +18,13 @@ config M68K
+>   	select DMA_DIRECT_REMAP if M68K_NONCOHERENT_DMA && !COLDFIRE
+>   	select GENERIC_ATOMIC64
+>   	select GENERIC_CPU_DEVICES
+> -	select GENERIC_IOMAP if HAS_IOPORT && MMU
+> +	select GENERIC_IOMAP if HAS_IOPORT && MMU && !COLDFIRE
+>   	select GENERIC_IRQ_SHOW
+>   	select GENERIC_LIB_ASHLDI3
+>   	select GENERIC_LIB_ASHRDI3
+>   	select GENERIC_LIB_LSHRDI3
+>   	select GENERIC_LIB_MULDI3
+> +	select GENERIC_PCI_IOMAP if PCI
+>   	select HAS_IOPORT if PCI || ISA || ATARI_ROM_ISA
+>   	select HAVE_ARCH_LIBGCC_H
+>   	select HAVE_ARCH_SECCOMP
 
-> +       unsigned int words = buflen >> 1;
-> +
-> +       /* Transfer multiple of 2 bytes */
-> +       if (rw == READ)
-> +               raw_insw((u16 *)data_addr, (u16 *)buf, words);
-> +       else
-> +               raw_outsw((u16 *)data_addr, (u16 *)buf, words);
-> +
-> +       /* Transfer trailing byte, if any. */
-> +       if (unlikely(buflen & 0x01)) {
-> +               unsigned char pad[2] = { };
-> +
-> +               /* Point buf to the tail of buffer */
-> +               buf += buflen - 1;
-
-buf16 += words;
-
-> +
-> +               if (rw == READ) {
-> +                       raw_insw((u16 *)data_addr, (u16 *)pad, 1);
-
-No need to loop, just use raw_inw() for a single word.
-
-> +                       *buf = pad[0];
-> +               } else {
-> +                       pad[0] = *buf;
-> +                       raw_outsw((u16 *)data_addr, (u16 *)pad, 1);
-
-likewise, raw_outw().
-
-> +               }
-> +               words++;
-> +       }
-> +
-> +       return words << 1;
-
-This can be one more than buflen, when the latter is odd.
-Why not just return buflen instead?
-
-> +}
-
-> +static int pata_cswarp_probe(struct zorro_dev *z,
-> +                            const struct zorro_device_id *ent)
-> +{
-> +       static const char board_name[] = "csWarp";
-> +       struct ata_host *host;
-> +       struct ata_port *ap;
-> +       void __iomem *cswarp_ctrl_board, *base;
-> +       unsigned long board = z->resource.start;
-> +
-> +       dev_info(&z->dev, "%s IDE controller (board: 0x%lx)\n", board_name,
-> +                board);
-> +
-> +       if (!devm_request_mem_region(&z->dev, board + WARP_OFFSET_ATA, 0x1800,
-> +                                    DRV_NAME))
-> +               return -ENXIO;
-> +
-> +       host = ata_host_alloc(&z->dev, 1);
-> +       if (!host)
-> +               return -ENXIO;
-> +
-> +       cswarp_ctrl_board = (void *)board;
-
-ioremap(board + WARP_OFFSET_ATA, ...)?
-
-> +
-> +       ap = host->ports[0];
-> +       base = cswarp_ctrl_board + WARP_OFFSET_ATA;
-> +
-> +       ap->ops = &pata_cswarp_ops;
-> +
-> +       ap->pio_mask = ATA_PIO4;
-> +       ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY |
-> +               ATA_FLAG_PIO_POLLING;
-> +
-> +       ap->ioaddr.data_addr            = base;
-> +       ap->ioaddr.error_addr           = base + 1 * 4;
-> +       ap->ioaddr.feature_addr         = base + 1 * 4;
-> +       ap->ioaddr.nsect_addr           = base + 2 * 4;
-> +       ap->ioaddr.lbal_addr            = base + 3 * 4;
-> +       ap->ioaddr.lbam_addr            = base + 4 * 4;
-> +       ap->ioaddr.lbah_addr            = base + 5 * 4;
-> +       ap->ioaddr.device_addr          = base + 6 * 4;
-> +       ap->ioaddr.status_addr          = base + 7 * 4;
-> +       ap->ioaddr.command_addr         = base + 7 * 4;
-> +
-> +       ap->ioaddr.altstatus_addr       = base + (0x1000 | (6UL << 2));
-> +       ap->ioaddr.ctl_addr             = base + (0x1000 | (6UL << 2));
-> +
-> +       ata_port_desc(ap, "  cmd 0x%lx ctl 0x%lx", (unsigned long)base,
-> +                     (unsigned long)ap->ioaddr.ctl_addr);
-
-These two printed addresses are virtual addresses.
-However, due to the use of a cast instead of ioremap(), they are identical.
-Still, I think it is better to print board + WARP_OFFSET_ATA and
-board + WARP_OFFSET_ATA + 0x1000 | (6UL << 2) instead.
-
-> +
-> +       return ata_host_activate(host, 0, NULL,
-> +                         IRQF_SHARED, &pata_cswarp_sht);
-> +}
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
