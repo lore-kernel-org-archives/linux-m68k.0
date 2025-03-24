@@ -1,152 +1,104 @@
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [195.130.132.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01DC25E83E
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 14:40:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D8D263F47
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 18:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742827238; cv=none; b=YMViJuVDsXxYOcgOP9mB288xHk9RdstSjSOkJQKhhZ7Do2cVgJe7vWRlDUdYEg6Yn4YHh2Q1CXlIwsvFdxUVHWsFDwBZpTNRdQVLrTtshrt7HY/dYSdQHTu4JmCRD88NowVvb7Not9b51dma0DBABXZAHPBjvx4OV0hjT8cuEks=
+	t=1742842330; cv=none; b=hmmK9iKY59sJKmrLGFceZxodlD1rh3eNNJ5/w1U3VdbUQQzi57173PUaaAtLNkWOS8Voc+6pOisiePZIaSnHB042op2kcAEtkOcOcQmVZ+navUja75rVYK9cZJMN9Y9ByjVnBgIZMdimvL91BgKIoauDq728vmnzgQhJRnbZPsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742827238; c=relaxed/simple;
-	bh=OETh/t0TuaywTDU7ioRsqi5fw0soxg7OWwoPE2zMDuQ=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=frxRQu6Uu92M37YbV6WgRyFkr7PgHFxk8YqsY6WFyI4wlCERaoszcVjkhqNJE22WH6GmFoLKJFQgeDI4a/vq5+h1Lwka2iS2iGVRVxVQ7fYi0H9XQ8+ctExoWF0XSE3nVMZWnDXlNfDtU2xUFZ82OhRdxvpX7gLAUtPCP1ETEhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=TXDFYQ66; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Kn0Coouh; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="TXDFYQ66";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Kn0Coouh"
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfout.phl.internal (Postfix) with ESMTP id EBAE61383B18;
-	Mon, 24 Mar 2025 10:40:34 -0400 (EDT)
-Received: from phl-imap-11 ([10.202.2.101])
-  by phl-compute-07.internal (MEProxy); Mon, 24 Mar 2025 10:40:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1742827234;
-	 x=1742913634; bh=n76Uj10bdEPtDvI3mHeDGPdivbBmYZRpkA5AZkl/TEg=; b=
-	TXDFYQ66pGiemkLg+N3hVLyohz+9d+K45Q1eRTdvfkgO+rZDNmva/hGeG7jbCR9t
-	h6fVyNu7MLfDa1oAAdoMTqAuX9nSyGjxbtX3K9/Qfi/DzcqE0A3aiOBpy4SvPCsu
-	V4CL0TsnpGQBniyn8bss3zfMnHZ/CM6u5kcgpRgx48efo6u9npGwJEb4TyQR82Qf
-	zrRzYO2ydN9+1R3hcPHPnI/blDwXDPTksUPiGZEa64bDmu+bED8k4UADMmFIMnjI
-	D2TyEyC6jESUgnTE3vMxv41UlB5KoqdTRlfrw6+Uip9AZCVe6lIrKMU9xwln/V2G
-	CGG0gXCBudPVHTTt4pWgiQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1742827234; x=
-	1742913634; bh=n76Uj10bdEPtDvI3mHeDGPdivbBmYZRpkA5AZkl/TEg=; b=K
-	n0Coouh6co6nnWuJMZEo5y1Ha2vMNqs3vbOZUWJswU90Hopfj3MG6rB6FnB2Vli7
-	RRZsv8R0TdK713T0/WcXihtphM5LKKeIAw9Wnhe3rXW5OshdOT6HMSoinEFlJV3J
-	RXl4QRjCf1k4i0pUEahU7mCpGnmbY1AhwkizG0mvPIw4F49X5V3M/6l3TsX8qFjZ
-	Hv8UPukyzgBRnXuSfhwuGKn6oklz1SuYf8nfGIczO3OXo9c7A1k+fn7eVDno2Aj+
-	Uav/zqIcpdOPc+KjeDMiNerZDw5Xvjozcla7KSOdFboJy2wu1HUBy6w83YFSiDwT
-	8HOTCBWoguGOKQg1Nc8Kg==
-X-ME-Sender: <xms:4G7hZ9opzXWYYMMLprNdNZhWR3VnkTXZ5cjbLNjAz-xGqD_KJy2Iew>
-    <xme:4G7hZ_rJ4mSpPBo57ulAbHucCMzRBu1qWRrxposD98WEVrCffJOVspkHdvORW_UwU
-    SdDQxL4fBBAp4EFuxQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduiedttdefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertder
-    tddtnecuhfhrohhmpedftehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnug
-    gsrdguvgeqnecuggftrfgrthhtvghrnhephfdthfdvtdefhedukeetgefggffhjeeggeet
-    fefggfevudegudevledvkefhvdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohep
-    vdeipdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehtshgsohhgvghnugesrghlph
-    hhrgdrfhhrrghnkhgvnhdruggvpdhrtghpthhtoheptghhrhhishhtohhphhgvrdhlvghr
-    ohihsegtshhgrhhouhhprdgvuhdprhgtphhtthhopehmphgvsegvlhhlvghrmhgrnhdrih
-    gurdgruhdprhgtphhtthhopehmrghtthhsthekkeesghhmrghilhdrtghomhdprhgtphht
-    thhopehnphhighhgihhnsehgmhgrihhlrdgtohhmpdhrtghpthhtohepuggvlhhlvghrse
-    hgmhigrdguvgdprhgtphhtthhopegshhgvlhhgrggrshesghhoohhglhgvrdgtohhmpdhr
-    tghpthhtohepjhgrmhgvshdrsghothhtohhmlhgvhieshhgrnhhsvghnphgrrhhtnhgvrh
-    hshhhiphdrtghomhdprhgtphhtthhopegrrhhnugeskhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:4G7hZ6Pz3qtnB2guwtcbIMy5BnBXoH5jmsWnq3qulB4EBStql0deXQ>
-    <xmx:4G7hZ46a-bVZ0ZEb6b97EFB1c_OoktumAMPu0aFS8LZeRT_m9ZN2Zw>
-    <xmx:4G7hZ84mTpfuxjXkjyc9KUpZL_eJTar_uNkNoB9HVp8_V6P9Z9vH1g>
-    <xmx:4G7hZwg28o1A40L-m7WKyS3nxEgQr-4Uy9U6SqjG2z0lhXoYf2xJlQ>
-    <xmx:4m7hZ3x_r4JGE8fZpLpxh3gan8DRthDVv3ooEN5rzbh5pW5q6SnxmMEt>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id BC8B02220073; Mon, 24 Mar 2025 10:40:32 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1742842330; c=relaxed/simple;
+	bh=c3aKlu7+7ehGOVtkRnzGy3jinX6zgOcsCNdKmeosbz8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IZGwpt3dT1PI5CtsXOWckVvP68YpV/zwj9MJEGdEWgGPkrezwH77BsV0kpo6PN66W3d2rOtOKVCfuWIIBrDKAYuiOacZuuZ+SAqjToXHSgaMlOKZhOgkblzEpUMze90mtxLc0MnYUCGNGzfX/LeEb7SEkRI5xFhMA9c+xMk4YBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:3869:6636:1af3:7cec])
+	by baptiste.telenet-ops.be with cmsmtp
+	id Uis32E00G0LH2Jv01is3tA; Mon, 24 Mar 2025 19:52:04 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1twmta-0000000FRgv-2c4g;
+	Mon, 24 Mar 2025 19:52:03 +0100
+Received: from geert by rox.of.borg with local (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1twmu3-000000018CO-2FUh;
+	Mon, 24 Mar 2025 19:52:03 +0100
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.15
+Date: Mon, 24 Mar 2025 19:51:45 +0100
+Message-ID: <20250324185145.269783-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: T53f4a10e7512c522
-Date: Mon, 24 Mar 2025 15:40:12 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Greg Ungerer" <gerg@linux-m68k.org>, "Arnd Bergmann" <arnd@kernel.org>,
- Linux-Arch <linux-arch@vger.kernel.org>
-Cc: "Richard Henderson" <richard.henderson@linaro.org>,
- "Matt Turner" <mattst88@gmail.com>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
- "Helge Deller" <deller@gmx.de>, "Madhavan Srinivasan" <maddy@linux.ibm.com>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Naveen N Rao" <naveen@kernel.org>,
- "Yoshinori Sato" <ysato@users.sourceforge.jp>,
- "Rich Felker" <dalias@libc.org>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "Julian Vetter" <julian@outer-limits.org>,
- "Bjorn Helgaas" <bhelgaas@google.com>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org
-Message-Id: <a41f1b20-a76c-43d8-8c36-f12744327a54@app.fastmail.com>
-In-Reply-To: <9076d00e-c469-4a05-a686-94e3e55c8389@linux-m68k.org>
-References: <20250315105907.1275012-1-arnd@kernel.org>
- <20250315105907.1275012-7-arnd@kernel.org>
- <64f226e5-7931-40ba-878a-a28688da82fd@linux-m68k.org>
- <4a31c6a8-7c99-4d8f-8248-92e0e52b8db6@app.fastmail.com>
- <9076d00e-c469-4a05-a686-94e3e55c8389@linux-m68k.org>
-Subject: Re: [PATCH 6/6] m68k/nommu: stop using GENERIC_IOMAP
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 24, 2025, at 14:50, Greg Ungerer wrote:
-> On 24/3/25 18:02, Arnd Bergmann wrote:
->> On Mon, Mar 24, 2025, at 02:33, Greg Ungerer wrote:
->>> On 15/3/25 20:59, Arnd Bergmann wrote:
->> 
->> Does this fixup work for you?
->
-> Yes, this looks good, works for me.
-> Feel free to add this if you like:
->
-> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+	Hi Linus,
 
-Added now, thanks!
+The following changes since commit 2014c95afecee3e76ca4a56956a936e23283f05b:
 
->> On a related note, I'm curious about how the MCF54xx chips are
->> used in practice, as I see that they are the only coldfire chips
->> with PCI and they all have an MMU. Are there actual users of these
->> chips that have PCI but choose not to use the MMU?
->
-> No, I think everyone with these uses them with MMU enabled.
->
-> It is probably more of an historical curiosity to use them with
-> the MMU disabled. That supported pre-dated mainline kernels having
-> full ColdFire MMU support by a good few years.
+  Linux 6.14-rc1 (2025-02-02 15:39:26 -0800)
 
-Ok, good to know. Given that there are no other chips that allow
-PCI on !MMU kernels, I wonder if we should just make PCI itself
-depend on MMU, and remove the "depends on MMU" for any PCI
-drivers that currently have it.
+are available in the Git repository at:
 
-There is no fundamental dependency here, but it is something that
-breaks occasionally because of in-kernel interfaces that don't
-work as expected on !MMU configurations, and with an extra
-dependency we could stop fixing those.
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.15-tag1
 
-      Arnd
+for you to fetch changes up to c94cf023dce30d5f28323a9f28ee2912f248a68f:
+
+  m68k: defconfig: Update defconfigs for v6.14-rc1 (2025-03-17 14:25:57 +0100)
+
+----------------------------------------------------------------
+m68k updates for v6.15
+
+  - Miscellaneous fixes and improvements,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Geert Uytterhoeven (2):
+      m68k: sun3: Fix DEBUG_MMU_EMU build
+      m68k: defconfig: Update defconfigs for v6.14-rc1
+
+Thorsten Blum (2):
+      m68k: sun3: Use str_read_write() helper in mmu_emu_handle_fault()
+      m68k: setup: Remove size argument when calling strscpy()
+
+ arch/m68k/configs/amiga_defconfig    |  2 +-
+ arch/m68k/configs/apollo_defconfig   |  2 +-
+ arch/m68k/configs/atari_defconfig    |  2 +-
+ arch/m68k/configs/bvme6000_defconfig |  2 +-
+ arch/m68k/configs/hp300_defconfig    |  2 +-
+ arch/m68k/configs/mac_defconfig      |  2 +-
+ arch/m68k/configs/multi_defconfig    |  2 +-
+ arch/m68k/configs/mvme147_defconfig  |  2 +-
+ arch/m68k/configs/mvme16x_defconfig  |  2 +-
+ arch/m68k/configs/q40_defconfig      |  2 +-
+ arch/m68k/configs/sun3_defconfig     |  2 +-
+ arch/m68k/configs/sun3x_defconfig    |  2 +-
+ arch/m68k/include/asm/processor.h    | 14 ++++++++++++++
+ arch/m68k/kernel/setup_mm.c          |  3 +--
+ arch/m68k/sun3/mmu_emu.c             |  7 ++++---
+ 15 files changed, 31 insertions(+), 17 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
