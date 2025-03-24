@@ -1,99 +1,116 @@
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D72418A6C1
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 12:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E789825E445
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 12:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1742818613; cv=none; b=aYXhdB2fosi/0CmopWBmwsPFCKdOTeqEv6cDuL/VGFOffEWCDDqEIGnCQPcGf68SltymVec/LvVVsFmXecwGJ86Q/lA+dbzbEV+GpRuVTiQyC7SPMBxyXEis6bgdFVQUubdovKNNx0AzOZpYaFZN0nYrvRBx+gcaDMsI6BXkCkg=
+	t=1742821104; cv=none; b=rEJYhna+/cVhvHnWsKRmMfoUzITv+NphlbT6vJ1cyfjFX50jcnKHArnxoGk+HHUCY5jDBd04WTZfX7ZQ1wdmIZhxRrhjAPOjpE++7Hs1iqZ2t5ur31Szr7UVPxYQ/Xie683EAD6PEfCIW76SyiAkwezaEyy/qNCiPXS5egpW6GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1742818613; c=relaxed/simple;
-	bh=kuvEtbfkl6Ezkk+GzK431w6+dJv4gwMnjWAsjS7JUro=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T25AoGg1KSbkhHsmJDcUTGR0Q6T0gLXezPM7qpeJeBbnIabZvHSEnPpbyonfkZPM0+DnaEHeVFfGC4TsSWtxhnW1Blu+Z0yHFPJyCj0WFYtmZKU4uNEPyumAu4MyzY8yz+w167dYW6XdGkHGN6YIG12W/DzbP6PYqoshFGlNV6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kR+jeOpA; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1742821104; c=relaxed/simple;
+	bh=TNp1OPkGqBU1QA4npSv/D4DILYmbk00gq8bA84JoTuc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XHYU/DgcTUOCWNA5uldeKWWipDQ8pahnU9yM/azjfaAYYc0Lq/T9ZuIsj2KD6cxMjHpF9Wa2b1/Sxg/ixHmvGNmeGMz7BDAeDoSGl0vinNskMn2gQ2YE9l/UGPT3iJt2KQ6IHNAp6/GBehTnaytbu4g72c+EXIgg3XddBIjWdPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kR+jeOpA"
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-39130ee05b0so4083568f8f.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 05:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1742818611; x=1743423411; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s6YiPFHtVVCD1GlwrwHfTYc90+3I8KRnjgLcn6s+bxU=;
-        b=kR+jeOpA97mTpATAZ1gYrYiT5efDEz/gMptKPAcxPkJg2zW7DEi2/37xY3zWPJrBtN
-         n6801iua86CHaew/a8WMp2tG6WPrfNx8zcLd9U+G3QiuOebJ9TVmqb5uWtj44PCmxTKx
-         KCWcmdEj8owegm55syN+i4Jwxx9QHy+li+b0ntF+PbMRuIPJCr+Bo6N6y6LzHn2QhOAu
-         P8o8tP9/9siK28TOYuxHDBoR4KtAKrsA7DaBcfFV0i37dAI9VbfBy3LtPBYBDCBx5szE
-         S+7SqkwDlglGPfK6NyIbwuzYa4EJNvS2jreODTYJ0UrMLaml7/0dMDgZJ03b/1MyvKF7
-         f9RA==
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-86d3ac0fec0so3979750241.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 05:58:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1742818611; x=1743423411;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s6YiPFHtVVCD1GlwrwHfTYc90+3I8KRnjgLcn6s+bxU=;
-        b=i/BAR3x4YuihnMezRLJuR878LPzo/UnU+w9uICDk1Qn5j83n7+rTDy6wuB6R28eN3i
-         oLHBSUbCzHIhxhIGZP8tWnpkW9PeaDM6u2TTySVT3TFPLFVGdHzKJY8bQM0iRqwXKSu5
-         eP0BIv6kDl8wmiuZ67sU8EnilKM3GdJmkPt5lz4CJIZCQ9FKRpZaFkaigLxkmtDliPEK
-         Znl3zDM6aaYIjfGcYghAcM8aq51i9fnQ5HK5QiUdo8GtoGc2XBYwYtLWV+j4b4Xxgj8l
-         Dx0y+kPC8GKtcmqb2mBlzu4DKu+5UWPI+IZA9KsUYAhYuEEb7nYJhRu9brU20AHS1kXc
-         478w==
-X-Forwarded-Encrypted: i=1; AJvYcCW2dvbDolsFoKiJenPIMt6mdNfExbC+ANXYJej6FWILHY8gV+8+ZVLEc1cp05bC7o0HUX+2vZ7jCZz1@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzLMGx0jg5LXgCO8FVujKDPeHPTWxK793VliqIFj1kClGu+U9jo
-	lkGzn1k3wUsUWgLdcZTTNMN0R0oqcN6KxX/2Z4wGTmlLhnL0+zEu
-X-Gm-Gg: ASbGncvXCY+jjyf3djZMtKll8h8rFB1zPtAoUUW1Xe4frXuBALicHeCUNrvhltvY+zQ
-	kjagEvUBvKPWZti3PwRlFrnYtAzgMaTNVYYIAJFGZ1lMRcPBgyDx0aIeaBr26r5jMMG8stfdp82
-	Y/JL6pUgzT4QY0YjJ9JYFjwutPRXVP1EkwzQXRwLwxL4YAMVnt+6x6+ctvk3e/pt+YvhZzeTm+c
-	cqsBash7lbKpyjErXfSDXQrKkmShUseiMNUMU+tdk5pRhr/KKVk7f6Qml9Ljj41FyHzMzlGsfU7
-	yBYvNq22R1nONx/Ysw1Nsr4nJ6JIuQOKnvFu1o35AFQ=
-X-Google-Smtp-Source: AGHT+IFrbLF4MB7E5uF3pvUrcTFBxHW+1xGCe23DUKwj2zEx+ZxX9VyDqp731FjRRoxle/7Rv33lhg==
-X-Received: by 2002:a05:6000:1ac7:b0:38d:d666:5448 with SMTP id ffacd0b85a97d-3997f93874cmr11994033f8f.40.1742818610454;
-        Mon, 24 Mar 2025 05:16:50 -0700 (PDT)
-Received: from gmail.com ([2a01:e11:1403:8620:fd58:9303:2c1b:4279])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3997f9b55cdsm10875824f8f.52.2025.03.24.05.16.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Mar 2025 05:16:49 -0700 (PDT)
-From: Paolo Pisati <p.pisati@gmail.com>
-To: Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-ide@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org
-Subject: [PATCH v3 2/2] m68k: amiga_defconfig: enable PATA_CSWARP
-Date: Mon, 24 Mar 2025 13:16:45 +0100
-Message-Id: <20250324121645.208368-3-p.pisati@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250324121645.208368-1-p.pisati@gmail.com>
-References: <20250324121645.208368-1-p.pisati@gmail.com>
+        d=1e100.net; s=20230601; t=1742821100; x=1743425900;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+hMaW+j0ix8yucAj8zHWEI7223vtN8mVOwYO+GlnwwM=;
+        b=R4huGF585+/rLcaB2kUBnalJLDMv9Cp/HlZ4Xf6N5vaw84xvWg3x76sM02v3eIGVFz
+         Y8ovkobwvUfWDKCVd50o+KldoyS6HEH/6Z0KaY1XoOPWAddF9X4vFblWL0e3yDnTwO4a
+         BUD4O08E8XHY8aFl8p8nRVChvCW4nHD8QpJad4W8ORes7lyFOuZ3A/QVpB6CMTt6tnQR
+         GwPBKWODG6jjmEuyoKuAvl55obED62RUuDSBJIT/VmeILXglGZyG4tQ9BHAlGSBtZAHf
+         pEdt30Ixdn39M0SGZOJkH5Zhy/RHiOJOLYYNZsjQM6zn0a6uDNxux2VZ8Xiu5V+MLkuh
+         2LcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW9H3/ueipeL1IQOTUTasXeTaymrCPhiv4hLm02/qC/sc3qVhUoHVt7p0wOV5ONmKfX2vZCXZodRKPH@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yx+0M9gp/8SINz173okKEgbdcss43EQ3LPJWwi6TBnpLDPBagXA
+	f+pAVy2pMDnBBHibsf8dnIDr+7xLUOxZIcTiKx1/yjRSDhL5/TjmG7BbTBw7
+X-Gm-Gg: ASbGncvvzZdcvtzK4sL9MpvmwXp8+XJszrZMK/EcdYNG+w/ok0bQ9FsDUQb7a1E3wEL
+	xfhlfhLYH5wUIkSYEjD/3YwaWsfVIcWGgmRm+rnrZXb5KICNsNXWuTZ3iqIW+z50oqcdFqvA+GP
+	PysyBO+tv1xJohi9bFFyz+kHklGIvVxLsce9qIislpGlqmyHcjKwRQOVbJOkODFlgmu6vI72F5e
+	/GFM8nlbVIph73rl3YGPxwJ6UyNlBfiHJNKZ6DAIBmE4VcAm61kDanHiZVRrLFUc8m/bry3+AfJ
+	Zrpic64xWCYa8Ujvt9tsVq4khu1hEObhgn9st+TP7TWTdRmeQ2fUAA5RH4NQnTWFVIqxNox60xH
+	01I//hqlPGClC3zVvkw==
+X-Google-Smtp-Source: AGHT+IHN5gv9n859upem/eDO0bJF0DGVqVKGQ1xZWj7jJJMdIuiFmodOdf4HDH8EEf61owj+lhNLeA==
+X-Received: by 2002:a05:6102:54a4:b0:4c1:83c4:8562 with SMTP id ada2fe7eead31-4c50d4f79d0mr8626961137.13.1742821099202;
+        Mon, 24 Mar 2025 05:58:19 -0700 (PDT)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-525a73ecd29sm1370896e0c.25.2025.03.24.05.58.18
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Mar 2025 05:58:18 -0700 (PDT)
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-86ba07fe7a4so3787535241.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Mar 2025 05:58:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVXvdFTFMYJ/gp+VB6QQy6/3It2IWo0nBiehiWzv0nmMVOwoqPmQp9I6SEjjDBzbXW2sEUkKha4jyn3@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:f11:b0:4bb:c24b:b61a with SMTP id
+ ada2fe7eead31-4c50d5e0ff4mr8374313137.19.1742821098713; Mon, 24 Mar 2025
+ 05:58:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250324092409.99430-1-p.pisati@gmail.com> <20250324092409.99430-2-p.pisati@gmail.com>
+ <c874f648-8583-4c6c-9ce5-5ba369ccc731@kernel.org>
+In-Reply-To: <c874f648-8583-4c6c-9ce5-5ba369ccc731@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 24 Mar 2025 13:58:06 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU4iLKT2edVs-LpyXULe_ENktiM_C=ypgM=_WPrLLA8bg@mail.gmail.com>
+X-Gm-Features: AQ5f1JreT1hxEEiWCWU_4i_Py2L_6BPEWUHCH-0XYi7YhGWmcI9OlIw2TX7_VgM
+Message-ID: <CAMuHMdU4iLKT2edVs-LpyXULe_ENktiM_C=ypgM=_WPrLLA8bg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] m68k: amiga_defconfig: enable PATA_CSWARP
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Paolo Pisati <p.pisati@gmail.com>, Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
----
- arch/m68k/configs/amiga_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Hi Damien,
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index c705247e7b5b..feed92c95394 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -334,6 +334,7 @@ CONFIG_ATA=y
- # CONFIG_ATA_VERBOSE_ERROR is not set
- # CONFIG_ATA_BMDMA is not set
- CONFIG_PATA_GAYLE=y
-+CONFIG_PATA_CSWARP=y
- CONFIG_PATA_BUDDHA=y
- CONFIG_MD=y
- CONFIG_BLK_DEV_DM=m
+On Mon, 24 Mar 2025 at 11:53, Damien Le Moal <dlemoal@kernel.org> wrote:
+> On 2025/03/24 5:24, Paolo Pisati wrote:
+> > Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
+> > ---
+> >  arch/m68k/configs/amiga_defconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+> > index c705247e7b5b..feed92c95394 100644
+> > --- a/arch/m68k/configs/amiga_defconfig
+> > +++ b/arch/m68k/configs/amiga_defconfig
+> > @@ -334,6 +334,7 @@ CONFIG_ATA=y
+> >  # CONFIG_ATA_VERBOSE_ERROR is not set
+> >  # CONFIG_ATA_BMDMA is not set
+> >  CONFIG_PATA_GAYLE=y
+> > +CONFIG_PATA_CSWARP=y
+>
+> This needs to be patch 2, otherwise there will be some bisectability issues.
+> Unless Geert wants to take this patch and we queue patch 1 (the driver) through
+> libata tree.
+>
+> Geert,
+>
+> How do yu want to proceed ? We can take everything through libata, or you can
+> take both patches through your tree. I do not have a strong preference either way.
+
+Me neither. We don't get to see new hardware support a lot ;-)
+
+Paolo:
+Please enable the driver in arch/m68k/configs/multi_defconfig, too.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
