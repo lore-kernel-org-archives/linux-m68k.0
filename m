@@ -1,181 +1,79 @@
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2161F94A
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Mar 2025 11:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A8B207E19;
+	Thu, 27 Mar 2025 11:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743076038; cv=none; b=ZPYsm1KOjl6yU6LWS7uf2AB9NvNmPmurXcd5D2bhCPqtywfvd36zCS9HEVxqdG0HMnReqlBRDg2B5UTVA2PVUPjLj2Xl94E8FFnNJ4DKxFH+8Z8r2UKHatdd6uLQ62itn2nqRbxlbJ2VNQgye/eLNiTKCCWKQBr1IqhBr94GXrM=
+	t=1743076378; cv=none; b=qGngsgEM6wTR1jV6cqgInEHgexygvqjCZw1SXmAnBIKkMgB335Z+Gklv+a1t61Z2RRvhyXSH6YnR3PZRWmnlBIGcU7KzJhBJEzZ5I6JAfKCKh2OhG3UJEvmPn9abVNwaSWBRq2Xl1R1IkSZE4lF9K3iWa5NFu5qZppG5ZwMSvKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743076038; c=relaxed/simple;
-	bh=n1qijx/OKy6vODUrZhMc5X8x/a/woXnDRx8es3Z+U2Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tIRkesvJcHx3ib3xqaC6Pqxb1iT3D6vpC1SkPoZOjiXJDw7WFmKkcJF5xB6xJoJQZaBus8AUMIZsQVjlvDbRtKALJdRw8vCR5YkITA7zT+bcYsRUuPn3V6tORE6ZdZOhwVDE73eXQtypPgLLBCPHYCg/QjmGUbq2X0wa1b/hBSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j2T6UjZ+; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j2T6UjZ+"
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ac2af2f15d1so114860466b.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Mar 2025 04:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743076034; x=1743680834; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=is9+y2X85jwUJpC2vpoBI5XsOCH7hq1X1nDpdTQ6gJo=;
-        b=j2T6UjZ+EmhEdoi36qxxhIqszFjwHAETKdBAoYq107oEPEd3MpHKSU11ms3yAh3slu
-         MN6o+QyV9jHPOENP5rm1zu+nqeq5ZtsO8J1tHC5+eUYOBd/TGE1OOXnNvj2izCTGauNm
-         wTS0bmPS8iU1wN2RtsRKi+VPnNaEOUe7Thyazessq8KPJaAu6MR8dXapZo7fcoq7sCrw
-         YUOje0Go+ehf0W7imPjJP+ucB5IomCKUdyq0Y2qHKyTL62hHqbDZrSYnP56nDu6PuPni
-         s3MgswVhaHj7iNtXspewVf4tcDAE6ulUQ2pyQdQEQG11TV6VSo0uADtFHil8swA9GR5T
-         WMwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743076034; x=1743680834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=is9+y2X85jwUJpC2vpoBI5XsOCH7hq1X1nDpdTQ6gJo=;
-        b=L0YGndmEvd1NuCbRyl4x+WfzMMWmkOQo3/m5CDiV0UsFMdYyjgiHGk9ONoCGTovLQh
-         dkiEClv5sLiEg4CnvrMb+kD/+shVfSH6AkZ2r5OjTUYKXMY2ZEuZsXL7sYeDnQ3LRZSM
-         xVrK5XqlNemJSd4WGzT8GX+9Ad5lr3eYUdUxvHdjCFjKSlReAE6rPN3RXD7RfcG8NP60
-         cz3sDrRV5fletDCAA6mg40AAbMx5BNOC6qDXE7EAH/99HoOt9hk+vBThVqnSbQ+OWK1+
-         EVBxmmEM6G9VOwQeNe2Edpfh6WsuMlXb0oxlxnWYPVD4Ibv3+zdWoQkZdt/BMUfJQUWX
-         z4Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCXS/WJ8foN+tqCVMhQzM76HcBt9tcTcAwmaRbRYcqh/2MK1QtYRhJ+MJ63Uv6FeaxwXnIMSp6axN+Gl@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyUqvAiFEYIZ0hMbdnntDyY3Mp7oVYcCIeDgZRoqbQvBzqb/K3N
-	YVmJ4BZzL6NoVFuyqFtu7ceRbx9/XnIcINCKUB3rcwdtUnG0ALPHu0MsFmhq4JqaMzOXBtVHW9/
-	4iMqtM+R+DrS7vV2OhLt6H5q5i6k=
-X-Gm-Gg: ASbGncuV5djdzzgUo8Fpg0HOkzWosxo1ePVToFh6L/iCYwQpXhUL0prWWpylMl+s4Qg
-	Er9Uf+zP/tcIhVAzD3ZQY0niE5Y7SEh6FC+SUaE52kOMcTjN9xFo5i9nT9XXsc6yhLtULlL6lkf
-	ux3D3QrGzW6/tziwGGQ7EbJoYmrw==
-X-Google-Smtp-Source: AGHT+IFDMEzXsY+VZjpd0kG58wjWGn9FeNWYrZGZgOC4akNvRiDgmmjaMJcSLaslSRq0Qq/XBA95rVTpeV7+0zkMjwY=
-X-Received: by 2002:a17:907:7292:b0:ac2:9683:ad25 with SMTP id
- a640c23a62f3a-ac6faf46d6dmr291188966b.34.1743076033463; Thu, 27 Mar 2025
- 04:47:13 -0700 (PDT)
+	s=arc-20240116; t=1743076378; c=relaxed/simple;
+	bh=q/+eS0lV2+uoQw6R2o+PvLuP3Cd4G8Ov8M9fLC48ZGM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=QymTzFM3JA9Qx9YB+9znqGnxXgtwW7mZHYRXTCHAwtFr59G/N4R7JALxzTH1ZS0QGfCgKSnpTwUeVXDkRx1lA5bwTilzSB+XkrcWWYVflg/AtCB7qgHUOu4tmElszZxVanZAb5YBVwpvdvvS5jWC7IfcYkJqz+rg96JKAB9AfnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FBF5C4CEDD;
+	Thu, 27 Mar 2025 11:52:56 +0000 (UTC)
+Message-ID: <85317154-c8a9-432d-b43c-34dc5e511890@linux-m68k.org>
+Date: Thu, 27 Mar 2025 21:52:53 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
- <CAOQ4uxjQDUg8HFG+mSxMkR54zen7nC2jttzOKqh13Bx-uosh3Q@mail.gmail.com> <20250323103234.2mwhpsbigpwtiby4@pali>
-In-Reply-To: <20250323103234.2mwhpsbigpwtiby4@pali>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 27 Mar 2025 12:47:02 +0100
-X-Gm-Features: AQ5f1Jpi0M5N9RWSGdapIu4-VZrbOc2LlwCzBFz2QmmwPCZLH_QgJtaO5jSCIs8
-Message-ID: <CAOQ4uxiTKhGs1H-w1Hv-+MqY284m92Pvxfem0iWO+8THdzGvuA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] fs: introduce getfsxattrat and setfsxattrat syscalls
-To: =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc: Andrey Albershteyn <aalbersh@redhat.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-alpha@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-arch@vger.kernel.org, selinux@vger.kernel.org, 
-	Andrey Albershteyn <aalbersh@kernel.org>, linux-xfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v6.15
+To: torvalds@linux-foundation.org
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux/m68k <linux-m68k@vger.kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sun, Mar 23, 2025 at 11:32=E2=80=AFAM Pali Roh=C3=A1r <pali@kernel.org> =
-wrote:
->
-> On Sunday 23 March 2025 09:45:06 Amir Goldstein wrote:
-> > On Fri, Mar 21, 2025 at 8:50=E2=80=AFPM Andrey Albershteyn <aalbersh@re=
-dhat.com> wrote:
-> > >
-> > > This patchset introduced two new syscalls getfsxattrat() and
-> > > setfsxattrat(). These syscalls are similar to FS_IOC_FSSETXATTR ioctl=
-()
-> > > except they use *at() semantics. Therefore, there's no need to open t=
-he
-> > > file to get an fd.
-> > >
-> > > These syscalls allow userspace to set filesystem inode attributes on
-> > > special files. One of the usage examples is XFS quota projects.
-> > >
-> > > XFS has project quotas which could be attached to a directory. All
-> > > new inodes in these directories inherit project ID set on parent
-> > > directory.
-> > >
-> > > The project is created from userspace by opening and calling
-> > > FS_IOC_FSSETXATTR on each inode. This is not possible for special
-> > > files such as FIFO, SOCK, BLK etc. Therefore, some inodes are left
-> > > with empty project ID. Those inodes then are not shown in the quota
-> > > accounting but still exist in the directory. This is not critical but=
- in
-> > > the case when special files are created in the directory with already
-> > > existing project quota, these new inodes inherit extended attributes.
-> > > This creates a mix of special files with and without attributes.
-> > > Moreover, special files with attributes don't have a possibility to
-> > > become clear or change the attributes. This, in turn, prevents usersp=
-ace
-> > > from re-creating quota project on these existing files.
-> > >
-> > > Christian, if this get in some mergeable state, please don't merge it
-> > > yet. Amir suggested these syscalls better to use updated struct fsxat=
-tr
-> > > with masking from Pali Roh=C3=A1r patchset, so, let's see how it goes=
-.
-> >
-> > Andrey,
-> >
-> > To be honest I don't think it would be fair to delay your syscalls more
-> > than needed.
->
-> I agree.
->
-> > If Pali can follow through and post patches on top of your syscalls for
-> > next merge window that would be great, but otherwise, I think the
-> > minimum requirement is that the syscalls return EINVAL if fsx_pad
-> > is not zero. we can take it from there later.
->
-> IMHO SYS_getfsxattrat is fine in this form.
->
-> For SYS_setfsxattrat I think there are needed some modifications
-> otherwise we would have problem again with backward compatibility as
-> is with ioctl if the syscall wants to be extended in future.
->
-> I would suggest for following modifications for SYS_setfsxattrat:
->
-> - return EINVAL if fsx_xflags contains some reserved or unsupported flag
->
-> - add some flag to completely ignore fsx_extsize, fsx_projid, and
->   fsx_cowextsize fields, so SYS_setfsxattrat could be used just to
->   change fsx_xflags, and so could be used without the preceding
->   SYS_getfsxattrat call.
->
-> What do you think about it?
+Hi Linus,
 
-I think all Andrey needs to do now is return -EINVAL if fsx_pad is not zero=
-.
+Please pull the m68knommu git tree changes for v6.15.
 
-You can use this later to extend for the semantics of flags/fields mask
-and we can have a long discussion later on what this semantics should be.
+A couple of simple changes for v6.15. One removes unnecessary includes
+of linux/fb.h, and the other improves hardening by replacing use of
+strncpy() with strscpy().
 
-Right?
+Regards
+Greg
 
-Amir.
+
+
+
+
+The following changes since commit 4701f33a10702d5fc577c32434eb62adde0a1ae1:
+   
+   Linux 6.14-rc7 (2025-03-16 12:55:17 -1000)
+
+are available in the Git repository at:
+   
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.15
+
+for you to fetch changes up to a7130910b80753d52ff8a493cf787bd1c9473404:
+   
+   m68k: mm: Replace deprecated strncpy() with strscpy() (2025-03-17 09:27:59 +1000)
+
+----------------------------------------------------------------
+m68knommu: updates and fixes for v6.15
+
+Fixes include:
+. remove unused include of linux/fb.h
+. use strscpy() instead of strncpy()
+
+----------------------------------------------------------------
+Thomas Zimmermann (1):
+       m68k: Do not include <linux/fb.h>
+
+Thorsten Blum (1):
+       m68k: mm: Replace deprecated strncpy() with strscpy()
+  
+  arch/m68k/kernel/setup_mm.c | 3 +--
+  arch/m68k/kernel/setup_no.c | 1 -
+  arch/m68k/kernel/uboot.c    | 1 -
+  3 files changed, 1 insertion(+), 4 deletions(-)
