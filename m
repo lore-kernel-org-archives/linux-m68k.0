@@ -1,201 +1,100 @@
-Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298DC59B71
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Apr 2025 00:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986D6BA36
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Apr 2025 00:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743468025; cv=none; b=lDKCJujo+VfSNoX+JIaRJeFhJgPvHx/vpfNS3jLNHHYT9gAd7bntbODeI0ZCEFRBDND4IlQO6Zbw5mXgS8X2ro2aWXt7GEI55XRnv6d6lpWT3Yc+MmTsluMPOMKZgNeKlP/n7HJVM87lI8/7daaQP+suZWfYQ5mxeDEr5Rw1yTs=
+	t=1743639474; cv=none; b=baNRdFqtI5YdzTH6OiaP37M/EVprQRpeb7U6KzPpmQwfqcCsX/zrWyHI8kmb+ZPWGQuMERlRjfCR9fRmJUa0UpCKrl+jg7YaFiA8PpPBQ4Gse+4PLIU8kIffWxBlPI6gNgioBGwOMqD8UDlpMiY2MxySogt3tZvOc05tk9SK82c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743468025; c=relaxed/simple;
-	bh=G2S+kADUjNDXPGSvJ2lFXkUK8jl7yc+Lr/8e1wxVTn0=;
-	h=To:Cc:Message-ID:From:Subject:Date; b=LoAtrZhT1AT2tJgiG8QPLjtykTh0kV9kLLWtDczw7hmL/XZGaZHoJfvbrbChR3J1+l57q0wQLPIkCKokPL7XN4zUa0XadPLmVxKOFGnqhJuzkuLQR8Pid71SJ7B5He6D5c0Ro1gIkUdnEdsD7cdrQ8CoiqAwYNla9I5oh6AdH5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IhVgbG6h; arc=none smtp.client-ip=103.168.172.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1743639474; c=relaxed/simple;
+	bh=lQS4ILMHudgZnoFkuuWQtzQru9rvUMdKZa7T9T4nCE0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=grIY7T7Jk+RX1u+21YB1mEqCZcphgkOraVel811OeqVSbbRSRcXwA17nc26LeaeEVR7OgMoqUO2PbxoYFAeXlG5Vm+DC1qXqwzeuLYshkOiybc5Dy/igc1J+UN4lARXnspxlX7q9JVfCdBGjBsIrj4SVi5/8qYubPO/4sOs0G1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jb3Fi/2v; arc=none smtp.client-ip=209.85.221.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IhVgbG6h"
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfout.phl.internal (Postfix) with ESMTP id CFADC13845BE;
-	Mon, 31 Mar 2025 20:40:21 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Mon, 31 Mar 2025 20:40:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1743468021; x=1743554421; bh=Iciseiak7nvInZNQZRPG5m8A9WfB
-	Z0Xuz2aSe/2RWgA=; b=IhVgbG6hmqM2YwWCUvejjYBsEkbnATFByylWy8dGh2nv
-	3DaRzQ9InLxDfK+AAWir/UdO1G/nIEXDtv3ffVPyie8pB1Xj+EZeXhNeV9iqa26+
-	SYm8s2HvCBc4HTGBG4Z6QyhVre3hPTk28etTgq77a+uR3xC/HrWC3LfLwWBbpeFn
-	VLF8X+blntvRcUy3+dzZIzEDZsDifVgDJ5BUQTMgDYze9cWZ+vIdgY87Zpn8QYGc
-	ZpM0KQYX0rFSrENjTU0AdCrJAEfoW6c/wdDfLXSfR+ip6LyYHoLz6Re5P8Kqg15y
-	FyqVJYZbGLzfGWHWXEP0Bv5sqhzZw55e46jC/SS4Qw==
-X-ME-Sender: <xms:9DXrZx9ApF1ZgyTvM7CBr2SXRIxf8iFillkI7JK5Twmz2S0TuI58ig>
-    <xme:9DXrZ1tDFbchlciW1Dn8VKjtAeNFjaVXP2avtqN-VwDv3MEskvq_C9ph3iJSV6cuO
-    FjFNJUYvohnJktP96Q>
-X-ME-Received: <xmr:9DXrZ_DH1QeAqYSreN2RY7sRBCRfVMW7IAkajnHH-JFlMf0bj_kVUcHk8VOZQeEmBaosblysF5Wiqzo77sQXT7YVpM6SjGX98wA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddukedufeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhr
-    ohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorh
-    hgqeenucggtffrrghtthgvrhhnpefgheduvdegffektdehjeejhfekieelleffgffgjeff
-    hfffueefgefhvdevudegtdenucffohhmrghinhephhgvrggurdhssgenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhu
-    gidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuth
-    dprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthho
-    pegurghnihgvlhestdigtdhfrdgtohhmpdhrtghpthhtoheplhhinhhugidqmheikehkse
-    hlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhk
-    vghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:9DXrZ1ctyx2kcqd6NzNMqZyljqfIrSA3zRsMoEZDryl8AKiEOyVAfQ>
-    <xmx:9DXrZ2M8trSyU1sIZqfqqZgX-IJDomnVx3aYt5gofZVFYmjXEYI08g>
-    <xmx:9DXrZ3lEA7KH5wByeKB2Jr_rCuGGj4T5aEkAO5mh_z5uzdQYbYKE8w>
-    <xmx:9DXrZwtvEjula_5SnJv8LVOK_5FO8fO76Zr5jOR3RvkR7D17KJoJNQ>
-    <xmx:9TXrZzpgGOyDwGbDRET18PBL1scHXkwbEBMD07lwEBI9WTZlcsxF4lEW>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 31 Mar 2025 20:40:17 -0400 (EDT)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "Daniel Palmer" <daniel@0x0f.com>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <d1d4328e5aa9a87bd8352529ce62b767731c0530.1743467205.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v2] m68k/mvme147: Don't unregister boot console needlessly
-Date: Tue, 01 Apr 2025 11:26:44 +1100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jb3Fi/2v"
+Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-391342fc0b5so244806f8f.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Apr 2025 17:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1743639471; x=1744244271; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WaNe1THj7jAMauZ+XWm1kJQFr9+oN7TD1YulnniykuU=;
+        b=Jb3Fi/2v/vqpQBeqZ6agtjXqT+9QoB4Wn5P/bau42L1AFWKsWD4Yt/XlyF32VmC+EA
+         rHX+oSnDk5WCszIJyfmQzFcrIEIO2ibYIOLyfDwKNXcBRtblIBxBboj8L4+8vIeHqly6
+         FuVs2jcOGHrICUc2C+BvuPZlNU/CZ82g9djTdyBxEf+DQNyuZrapu206o0eSUEQWmp06
+         2EufS1RxFhUWbdurWKew1SxdjpUYTjH+/zY6BxTp/FMPRaoxNq+xdqi3+DKwfxmqdH6M
+         LQd47YtbWbuACghAvDLcaTXC5gVpeKwPIOhJ06R6YztQxmblJkXDyZX2goXXtxjarwzc
+         f+mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1743639471; x=1744244271;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WaNe1THj7jAMauZ+XWm1kJQFr9+oN7TD1YulnniykuU=;
+        b=rnJwbRnjq+vQhlFCXR6e4eviZjzAAf5bPNAbMBREjkjqNZ3JoSv5VpjXJ0S+S65vvg
+         yT66W/9qU4xYYNrIM9N6ZsbTHo1zKSd9IcwfX+sPMW2lFEEk2qUWsK3AV4Okwv0A9UpW
+         PJa/iGcQOsIu4qfRGig9WWed0VWhB72stSQrf/uKLfIBjHl42879Agcrj/e0cvKyY2iG
+         rCGwiiWwTFdIQP+9iUzfK2imMqULUVdxd/l9UuS8cnOhenU9PO2NadLXt0MyAnB1hjUf
+         V0qtfvacl0P40W687O7RAndaA9Jt1pce7Zk8BFueOeqBFbicd7SzIOZAHEfcHnaQEbCI
+         fRNw==
+X-Gm-Message-State: AOJu0YydhGoJQZQzJLr90Unzz3tgh1rfj3tDeW83v0rgW4PLObdj62+6
+	i9oq0/6fqP0ya1ouXtkKIWpt3g/hO/nKyshp34xsFO3v0kYm12U2
+X-Gm-Gg: ASbGncupW7P8NEjYZyD8ZpsukEASupWeD5NOuvQZ7oiu8XeAVWnef5H+R1c0+nUI42n
+	KrgGkIga2HtBiI0CjBEO6hrqn3v8UltButpSU1DLNK34hb+/gnBJGY1ogzp5acFmfVd2dMjZxGV
+	GGbOT277QdoU9DFjtOrh4W31esUZ+aw6I12xAwfHEEElNQhp2TImGyKIfdFryf5MMvG79b5Mb5l
+	pm3X0SJohpEjSyG3L9bPbWDXWUSsOM9lxPMftqsIRq/W+y20ZyQr3Ky1XJmT3H1+2NNtcc70qSx
+	m36Fw6TtAeeA8gZyymQwk70x7ydgycUgXY1UTCxHFmcN2yILsmUXLsamhIjagpKD
+X-Google-Smtp-Source: AGHT+IFX4EGKGwjZ/B7B0Z2W502N718VlfIqEydxIIY5HkliydHgTiZt+B1VkjYzzhgyehCuq4Wlcg==
+X-Received: by 2002:a05:6000:220d:b0:39c:16a0:fef4 with SMTP id ffacd0b85a97d-39c2f8e0dabmr418220f8f.24.1743639470690;
+        Wed, 02 Apr 2025 17:17:50 -0700 (PDT)
+Received: from localhost.localdomain ([109.72.196.54])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c301a0a90sm255250f8f.21.2025.04.02.17.17.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Apr 2025 17:17:49 -0700 (PDT)
+From: Mohammad Mahdi Anbaraki <m.mahdianbaraki@gmail.com>
+To: geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Mohammad Mahdi Anbaraki <m.mahdianbaraki@gmail.com>
+Subject: [PATCH] m64k/kernel: replace strncpy() with strscpy()
+Date: Thu,  3 Apr 2025 03:46:27 +0330
+Message-ID: <20250403001628.29920-1-m.mahdianbaraki@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-When MACH_IS_MVME147, the boot console calls mvme147_scc_write() to
-generate console output. That will continue to work even after
-debug_cons_nputs() becomes unavailable so there's no need to
-unregister the boot console.
+Swapped out strncpy() for strscpy() in parse_uboot_commandline() while
+copying to commandp. strscpy() makes sure the string is properly null-
+terminated and gives a more useful return value so it's just a safer 
+choice overall.
 
-Take the opportunity to remove a repeated MACH_IS_* test. Use the
-actual .write method (instead of a wrapper) and test that pointer
-instead. This means adding an unused parameter to debug_cons_nputs() for
-consistency with the struct console API.
-
-early_printk.c is only built when CONFIG_EARLY_PRINTK=y. As of late,
-head.S is only built when CONFIG_MMU_MOTOROLA=y. So let the former symbol
-depend on the latter, to obviate some ifdef conditionals.
-
-Cc: Daniel Palmer <daniel@0x0f.com>
-Fixes: 077b33b9e283 ("m68k: mvme147: Reinstate early console")
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+Link: https://github.com/KSPP/linux/issues/90
+Signed-off-by: Mohammad Mahdi Anbaraki <m.mahdianbaraki@gmail.com>
 ---
- arch/m68k/Kconfig.debug         |  2 +-
- arch/m68k/kernel/early_printk.c | 33 ++++++++++-----------------------
- arch/m68k/kernel/head.S         |  8 ++++----
- 3 files changed, 15 insertions(+), 28 deletions(-)
+ arch/m68k/kernel/uboot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/Kconfig.debug b/arch/m68k/Kconfig.debug
-index 30638a6e8edc..d036f903864c 100644
---- a/arch/m68k/Kconfig.debug
-+++ b/arch/m68k/Kconfig.debug
-@@ -10,7 +10,7 @@ config BOOTPARAM_STRING
+diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
+index 5e52ea150..fa7c279ea 100644
+--- a/arch/m68k/kernel/uboot.c
++++ b/arch/m68k/kernel/uboot.c
+@@ -73,7 +73,7 @@ static void __init parse_uboot_commandline(char *commandp, int size)
+ 	uboot_cmd_end = sp[5];
  
- config EARLY_PRINTK
- 	bool "Early printk"
--	depends on !(SUN3 || M68000 || COLDFIRE)
-+	depends on MMU_MOTOROLA
- 	help
- 	  Write kernel log output directly to a serial port.
- 	  Where implemented, output goes to the framebuffer as well.
-diff --git a/arch/m68k/kernel/early_printk.c b/arch/m68k/kernel/early_printk.c
-index f11ef9f1f56f..1f85517fbc0d 100644
---- a/arch/m68k/kernel/early_printk.c
-+++ b/arch/m68k/kernel/early_printk.c
-@@ -16,25 +16,10 @@
- #include "../mvme147/mvme147.h"
- #include "../mvme16x/mvme16x.h"
+ 	if (uboot_cmd_start && uboot_cmd_end)
+-		strncpy(commandp, (const char *)uboot_cmd_start, size);
++		strscpy(commandp, (const char *)uboot_cmd_start, size);
  
--asmlinkage void __init debug_cons_nputs(const char *s, unsigned n);
--
--static void __ref debug_cons_write(struct console *c,
--				   const char *s, unsigned n)
--{
--#if !(defined(CONFIG_SUN3) || defined(CONFIG_M68000) || \
--      defined(CONFIG_COLDFIRE))
--	if (MACH_IS_MVME147)
--		mvme147_scc_write(c, s, n);
--	else if (MACH_IS_MVME16x)
--		mvme16x_cons_write(c, s, n);
--	else
--		debug_cons_nputs(s, n);
--#endif
--}
-+asmlinkage void __init debug_cons_nputs(struct console *c, const char *s, unsigned int n);
- 
- static struct console early_console_instance = {
- 	.name  = "debug",
--	.write = debug_cons_write,
- 	.flags = CON_PRINTBUFFER | CON_BOOT,
- 	.index = -1
- };
-@@ -44,6 +29,12 @@ static int __init setup_early_printk(char *buf)
- 	if (early_console || buf)
- 		return 0;
- 
-+	if (MACH_IS_MVME147)
-+		early_console_instance.write = mvme147_scc_write;
-+	else if (MACH_IS_MVME16x)
-+		early_console_instance.write = mvme16x_cons_write;
-+	else
-+		early_console_instance.write = debug_cons_nputs;
- 	early_console = &early_console_instance;
- 	register_console(early_console);
- 
-@@ -55,16 +46,12 @@ early_param("earlyprintk", setup_early_printk);
-  * debug_cons_nputs() defined in arch/m68k/kernel/head.S cannot be called
-  * after init sections are discarded (for platforms that use it).
-  */
--#if !(defined(CONFIG_SUN3) || defined(CONFIG_M68000) || \
--      defined(CONFIG_COLDFIRE))
- 
- static int __init unregister_early_console(void)
- {
--	if (!early_console || MACH_IS_MVME16x)
--		return 0;
-+	if (early_console && early_console->write == debug_cons_nputs)
-+		return unregister_console(early_console);
- 
--	return unregister_console(early_console);
-+	return 0;
- }
- late_initcall(unregister_early_console);
--
--#endif
-diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
-index 6465333d5f7c..2e4ef0358887 100644
---- a/arch/m68k/kernel/head.S
-+++ b/arch/m68k/kernel/head.S
-@@ -3263,8 +3263,8 @@ func_return	putn
-  *	turns around and calls the internal routines.  This routine
-  *	is used by the boot console.
-  *
-- *	The calling parameters are:
-- *		void debug_cons_nputs(const char *str, unsigned length)
-+ *	The function signature is -
-+ *		void debug_cons_nputs(struct console *c, const char *s, unsigned int n)
-  *
-  *	This routine does NOT understand variable arguments only
-  *	simple strings!
-@@ -3273,8 +3273,8 @@ ENTRY(debug_cons_nputs)
- 	moveml	%d0/%d1/%a0,%sp@-
- 	movew	%sr,%sp@-
- 	ori	#0x0700,%sr
--	movel	%sp@(18),%a0		/* fetch parameter */
--	movel	%sp@(22),%d1		/* fetch parameter */
-+	movel	%sp@(22),%a0		/* char *s */
-+	movel	%sp@(26),%d1		/* unsigned int n */
- 	jra	2f
- 1:
- #ifdef CONSOLE_DEBUG
+ #if defined(CONFIG_BLK_DEV_INITRD)
+ 	uboot_initrd_start = sp[2];
 -- 
-2.45.3
+2.43.0
 
