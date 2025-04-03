@@ -1,100 +1,60 @@
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986D6BA36
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Apr 2025 00:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8F22512D0
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  3 Apr 2025 16:22:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743639474; cv=none; b=baNRdFqtI5YdzTH6OiaP37M/EVprQRpeb7U6KzPpmQwfqcCsX/zrWyHI8kmb+ZPWGQuMERlRjfCR9fRmJUa0UpCKrl+jg7YaFiA8PpPBQ4Gse+4PLIU8kIffWxBlPI6gNgioBGwOMqD8UDlpMiY2MxySogt3tZvOc05tk9SK82c=
+	t=1743697344; cv=none; b=nlaw15JhXaGcOIaX6QJ4r4eMPOo0eFFUkuL/4BxAPzyr8iElBp/ha+KKscnG7h9yHgsgUFt0Dg7o2Cp00GLqIba+7g3E1mj4vAJmqahH0V08mAuNSEcoofeIA+jJ/kYhmXwrPlgD+CorprIMGdwUAZGCpzV2I0Ftr2UwcF2fwtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743639474; c=relaxed/simple;
-	bh=lQS4ILMHudgZnoFkuuWQtzQru9rvUMdKZa7T9T4nCE0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=grIY7T7Jk+RX1u+21YB1mEqCZcphgkOraVel811OeqVSbbRSRcXwA17nc26LeaeEVR7OgMoqUO2PbxoYFAeXlG5Vm+DC1qXqwzeuLYshkOiybc5Dy/igc1J+UN4lARXnspxlX7q9JVfCdBGjBsIrj4SVi5/8qYubPO/4sOs0G1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jb3Fi/2v; arc=none smtp.client-ip=209.85.221.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jb3Fi/2v"
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-391342fc0b5so244806f8f.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 02 Apr 2025 17:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743639471; x=1744244271; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WaNe1THj7jAMauZ+XWm1kJQFr9+oN7TD1YulnniykuU=;
-        b=Jb3Fi/2v/vqpQBeqZ6agtjXqT+9QoB4Wn5P/bau42L1AFWKsWD4Yt/XlyF32VmC+EA
-         rHX+oSnDk5WCszIJyfmQzFcrIEIO2ibYIOLyfDwKNXcBRtblIBxBboj8L4+8vIeHqly6
-         FuVs2jcOGHrICUc2C+BvuPZlNU/CZ82g9djTdyBxEf+DQNyuZrapu206o0eSUEQWmp06
-         2EufS1RxFhUWbdurWKew1SxdjpUYTjH+/zY6BxTp/FMPRaoxNq+xdqi3+DKwfxmqdH6M
-         LQd47YtbWbuACghAvDLcaTXC5gVpeKwPIOhJ06R6YztQxmblJkXDyZX2goXXtxjarwzc
-         f+mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743639471; x=1744244271;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WaNe1THj7jAMauZ+XWm1kJQFr9+oN7TD1YulnniykuU=;
-        b=rnJwbRnjq+vQhlFCXR6e4eviZjzAAf5bPNAbMBREjkjqNZ3JoSv5VpjXJ0S+S65vvg
-         yT66W/9qU4xYYNrIM9N6ZsbTHo1zKSd9IcwfX+sPMW2lFEEk2qUWsK3AV4Okwv0A9UpW
-         PJa/iGcQOsIu4qfRGig9WWed0VWhB72stSQrf/uKLfIBjHl42879Agcrj/e0cvKyY2iG
-         rCGwiiWwTFdIQP+9iUzfK2imMqULUVdxd/l9UuS8cnOhenU9PO2NadLXt0MyAnB1hjUf
-         V0qtfvacl0P40W687O7RAndaA9Jt1pce7Zk8BFueOeqBFbicd7SzIOZAHEfcHnaQEbCI
-         fRNw==
-X-Gm-Message-State: AOJu0YydhGoJQZQzJLr90Unzz3tgh1rfj3tDeW83v0rgW4PLObdj62+6
-	i9oq0/6fqP0ya1ouXtkKIWpt3g/hO/nKyshp34xsFO3v0kYm12U2
-X-Gm-Gg: ASbGncupW7P8NEjYZyD8ZpsukEASupWeD5NOuvQZ7oiu8XeAVWnef5H+R1c0+nUI42n
-	KrgGkIga2HtBiI0CjBEO6hrqn3v8UltButpSU1DLNK34hb+/gnBJGY1ogzp5acFmfVd2dMjZxGV
-	GGbOT277QdoU9DFjtOrh4W31esUZ+aw6I12xAwfHEEElNQhp2TImGyKIfdFryf5MMvG79b5Mb5l
-	pm3X0SJohpEjSyG3L9bPbWDXWUSsOM9lxPMftqsIRq/W+y20ZyQr3Ky1XJmT3H1+2NNtcc70qSx
-	m36Fw6TtAeeA8gZyymQwk70x7ydgycUgXY1UTCxHFmcN2yILsmUXLsamhIjagpKD
-X-Google-Smtp-Source: AGHT+IFX4EGKGwjZ/B7B0Z2W502N718VlfIqEydxIIY5HkliydHgTiZt+B1VkjYzzhgyehCuq4Wlcg==
-X-Received: by 2002:a05:6000:220d:b0:39c:16a0:fef4 with SMTP id ffacd0b85a97d-39c2f8e0dabmr418220f8f.24.1743639470690;
-        Wed, 02 Apr 2025 17:17:50 -0700 (PDT)
-Received: from localhost.localdomain ([109.72.196.54])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-39c301a0a90sm255250f8f.21.2025.04.02.17.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Apr 2025 17:17:49 -0700 (PDT)
-From: Mohammad Mahdi Anbaraki <m.mahdianbaraki@gmail.com>
-To: geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Mohammad Mahdi Anbaraki <m.mahdianbaraki@gmail.com>
-Subject: [PATCH] m64k/kernel: replace strncpy() with strscpy()
-Date: Thu,  3 Apr 2025 03:46:27 +0330
-Message-ID: <20250403001628.29920-1-m.mahdianbaraki@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1743697344; c=relaxed/simple;
+	bh=GyQ8uYRIGMH1Vrej6aG6DaJbjgDDARm2DUt2mtJuKAY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LVjzZ9YHCkZDde8UbeQ6DrY/m9whFBGfJfE7e/p1s09f72/MvcqiLhRsxB8bBWulN/bEhccm0s3BY4Are8PZQV/t10z/K7q3C0lcDCPaG+T6Bnsrj/IeCKHgYLaZJ3PIZ7+X69JAHqIIEXrvpkocSw6p8JNQG73ZlokXiU0XC84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4ZT6T13PPMz1r4pQ;
+	Thu,  3 Apr 2025 18:22:13 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4ZT6T131KYz1qqlS;
+	Thu,  3 Apr 2025 18:22:13 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id N82m0NHgvFGx; Thu,  3 Apr 2025 18:22:04 +0200 (CEST)
+X-Auth-Info: SeZKiRxMTJuM4zhgdDaQi9nX5qHokru4xgHgdPYsc/EstArBurARwS9Ut1eYZYIH
+Received: from igel.home (aftr-82-135-83-202.dynamic.mnet-online.de [82.135.83.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Thu,  3 Apr 2025 18:22:04 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+	id 610C22C19C8; Thu,  3 Apr 2025 18:22:04 +0200 (CEST)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: Mohammad Mahdi Anbaraki <m.mahdianbaraki@gmail.com>
+Cc: geert@linux-m68k.org,  linux-m68k@lists.linux-m68k.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m64k/kernel: replace strncpy() with strscpy()
+In-Reply-To: <20250403001628.29920-1-m.mahdianbaraki@gmail.com> (Mohammad
+	Mahdi Anbaraki's message of "Thu, 3 Apr 2025 03:46:27 +0330")
+References: <20250403001628.29920-1-m.mahdianbaraki@gmail.com>
+Date: Thu, 03 Apr 2025 18:22:04 +0200
+Message-ID: <87plht43mb.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Swapped out strncpy() for strscpy() in parse_uboot_commandline() while
-copying to commandp. strscpy() makes sure the string is properly null-
-terminated and gives a more useful return value so it's just a safer 
-choice overall.
+s/m64k/m68k/
 
-Link: https://github.com/KSPP/linux/issues/90
-Signed-off-by: Mohammad Mahdi Anbaraki <m.mahdianbaraki@gmail.com>
----
- arch/m68k/kernel/uboot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/m68k/kernel/uboot.c b/arch/m68k/kernel/uboot.c
-index 5e52ea150..fa7c279ea 100644
---- a/arch/m68k/kernel/uboot.c
-+++ b/arch/m68k/kernel/uboot.c
-@@ -73,7 +73,7 @@ static void __init parse_uboot_commandline(char *commandp, int size)
- 	uboot_cmd_end = sp[5];
- 
- 	if (uboot_cmd_start && uboot_cmd_end)
--		strncpy(commandp, (const char *)uboot_cmd_start, size);
-+		strscpy(commandp, (const char *)uboot_cmd_start, size);
- 
- #if defined(CONFIG_BLK_DEV_INITRD)
- 	uboot_initrd_start = sp[2];
 -- 
-2.43.0
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
