@@ -1,151 +1,147 @@
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C71CB22687A
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Apr 2025 07:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F208220686
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Apr 2025 08:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744010421; cv=none; b=sxsPVZoupBugSerI6yEO3YlVKvbtoxlquJ5N/yGHnjOjpDp4Sj/7a3YCCH4ZoFkL8IlinP4XdXAk7ljFKMwGQ61itTVSxTknHg3sjdUmIwfHuo2YtxAQNKZELfMvZld9+mmoCi2BarLeT6z4D6ZWqHo/9FgvVj+r8Jezp/iBhZc=
+	t=1744013182; cv=none; b=F5PJzG09HtWWcbyfO5OV4z0Bqq4+ygMiiqHmixif0ZlGVPGk4h+J9VLDNSCNV61pCbZGqRYY8tgywHfQGy7UxDZjATxtI/IQP2LIqj9/5ZfTYaKfGrAnuG/0R+5ZmgY/UOw6fzasHoRNRiA3Rj/MQZLOu41eRLni90pLr1NFG4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744010421; c=relaxed/simple;
-	bh=vB97Q1YPbq16AwOxn+yN6Er1uY//wlkJ2Wtv7a3Qbug=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fc/awIBzmqPWa9iSTFYsnBNLtdBQIqHs7fb5xpCJ7Ie4dOXdrVUKOsz9JwGTmdL40VgH+ca3/tXv6a/Aa53ez5FE/jnStiCnmLdEFYBZV4g7pp6eztAEHe5+8Zkn1apzPk1mWexhnPjxM2zn/171QnC+f72Ws6a3qTi3TPOtOvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=iP/GlRll; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="iP/GlRll"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-43cf58eea0fso20140055e9.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Apr 2025 00:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1744010417; x=1744615217; darn=lists.linux-m68k.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NZkA1+Q3u+jEfVBi0l7ljj4vwe6IMZ6cjm27iXV9wpo=;
-        b=iP/GlRll3bEr0d2l5mf2cIMYQY212TOWvPdJbjQn9s8xxfq0lbbn4ZY+NF6bFr+g6o
-         FxZ2itsSM4TLYTJbwXP8qsMlrrOkYJOSD5EunGr3Mm1/pFG81iP3gH4cwvS5s7dYuR4s
-         TQxfGQ5Ztk1PJcynXinDGxdpqNDPpW86BVyKegm0e/hHmOJ90rJcKW/SQ5+cbKsppH5a
-         8X3hQhwGpkeMyFLtVfNym2KELWejhfF/Z36xUM+PJrb8zNicdVFVbJWyORJOSQ1VklAs
-         1zhQ5xTdY2NkLFpJfHniZYfEKqZIqFUWD/wmRnIniUk/i9gFuaWuDqxvMeBGbBBeXv96
-         agTw==
+	s=arc-20240116; t=1744013182; c=relaxed/simple;
+	bh=Jv1axMlTH1d7Bc5hi8tVqQgcr6gs+9TX6BEWYeJwdVQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CKQ957o1MSkafX5pwI7Gf9clj6PbObqcZLcQY1jcfJNOJzNpwIDpAxt1QdNKrNj/R3+XmyblYmIphZlmKkyxHL6zGP32AsswlkQglnUGDjIvB0RazXGFp36Ie39qgdJyu1oZFXS/v42rZ8J86fhpmgqfN1qi5G/gSU+BgIlDHns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-523de5611a3so1808889e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Apr 2025 01:06:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744010417; x=1744615217;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1744013177; x=1744617977;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NZkA1+Q3u+jEfVBi0l7ljj4vwe6IMZ6cjm27iXV9wpo=;
-        b=IJvZryig9r+B7uDGWvQbq41r2An9tEXWGpmeWTIXFdigGXviL7jhrzVfgXlm1t/nmD
-         1rqaFXjQr2/iIppewCUmnsTbnqIsKJLyzzF3Pq6zyAow/hv7U6+fgq8k2s2sNRI/9QK6
-         wH677Rsgj1bt3epFcYL9MGuAHzklwrl2xzDFF1giwYBhxTf5oIOPYUg41+26DiQvkf6B
-         3z/n4/NMM67oW0GoYqXMnli3Xfjz/1q728FqwpzalKs6q9+kZ+r/iv1WluPXpCOO+uxv
-         8MXLP53rrvHJXKerdpD8vph5lQgyO9zJXkc21WOlpjAdapUv1s7wEnGz/iDHblaBLQ44
-         YpFQ==
-X-Gm-Message-State: AOJu0YwWHA5T2iE+3cung9I4HJYmrCFTJVkg6blN9OL1u86HexZnNqMB
-	HioUKMw+iBf/tIqi2zNa4NsIbYx65DRZS25Dpg8bb9KhmrvBKEiogOUM5jcW80UlEoI8w2r5Dmf
-	RccA=
-X-Gm-Gg: ASbGnct0HgO+ypnGdPOQnGPBJZo0RSoe05VTPuRtpQyFB4BBYqAShBvDEjyeTGtucUK
-	zLN5pLL0bTsyp4+d1Vs9uFJ+aEB/FHq5HP36rMvPADrxVGvqMucpPRiHAqQk/4+ru4C/Us/GH03
-	WXWU6hAtyI8kgBXmdb/83RXc1laVC28Lmxih0y+sV+yNEc318WxmNpjYSDQjOGqA4OIQUwYH4Zt
-	ZrSmoC7kTeSeS9IlYx5UVAn37N4Ah1ZS4uI2O+YAcFivGb9DV6hz9qZQH43iXaXsN9B7JEKWajv
-	cvBodsBsI2B/pyfDTvaVFTjd5nBjQAaFSORz5A==
-X-Google-Smtp-Source: AGHT+IHpPjFFlJDSkBPgrO6I41uexMOHig1BRBPlRgzV6SsR14UibMi/3rCWV6DQ/1uJeGXoDG6rTg==
-X-Received: by 2002:a05:600c:4ecc:b0:43d:2313:7b49 with SMTP id 5b1f17b1804b1-43ecf85f4d2mr100415065e9.12.1744010416824;
-        Mon, 07 Apr 2025 00:20:16 -0700 (PDT)
-Received: from [127.0.1.1] ([2a01:cb1d:dc:7e00:8c64:734d:705a:39a7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43ec3669002sm121751175e9.33.2025.04.07.00.20.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Apr 2025 00:20:16 -0700 (PDT)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 07 Apr 2025 09:20:15 +0200
-Subject: [PATCH] m68k: coldfire: gpio: use new line value setter callbacks
+        bh=em0yD0kIpDtyZFKdGXKgNdHuMfrDjAXLZIWfYU3VNv0=;
+        b=qKTZ36fQkmG29YiR6uh5hNPM9s6aErLadF5lQQwIlqp9q6TBwGUFZAtAr3t9n18gqU
+         hK8BW1eIiK8qT5XVznBd9eCUgnMRK7bsTqQjLo+nMjyCTSiLBucjuYb/iS2q5BXDCbZd
+         hz1mzVZyFB+3AeTeWl/gqGBumgDTR70qm0K6NvdstT796JzT4chvOE44BgBhRX33Cv8+
+         leT9HQGJd9vIPqWuHRz7UUnDDPJVuGVbQ2HVz7wIX7D/BvDOKSJ4GkYF/wAkCP1/a8PR
+         u+dOAhWKEPaL9Jf8kBPlXJWNbyYAlAxVbAWpzTFJ9HOeeCV+P4SsbuXpcG7S0Xbgl3jG
+         OrmA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWtehnLD/H+aQs+jR7I3EKb/HvZR5ZHP7qzhClmtn6mBOwXJ6Zy1/BAlBejIVbQPvhdtwXY/dKXLPP@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxNw4aIv7mP4N2JHYfLotGH9DIcF70hK0Z1pRhU4UspWyzuOtEh
+	JiH1EZPrNe938qngjwPX+S+d3HDaZ+3dreM+buanht7MuzmcJonpFU0/KY7l
+X-Gm-Gg: ASbGncuBxaw78J3ORtyYhj9+BprQgXZCneqQ1OAtZm2aSBjPNgEYLLbz4+4cZdtfszL
+	8ibGRW/IxWwtDZ8MtW8p063ztzFOPzEk5eVTfATZx/6+AvWJSB5+w/dj+aBl1CsjZmFDonZ+y9o
+	UdQhugXKpK9OUs+TqMHM5TlLeRCWFMWwfFAnuXSqqetkP62pS7dBiAPitcMzf9ZPh1cJ+h0byBU
+	u7WSARgm/OTcXKJ+e2eZHQ9IWdHvPVuefG6TgYyjid85sG29hqX6czMNON22JfjWGrgZAXQFwUT
+	IuOytjazVShLCFrHv3D+Ik7GWR2gwl6RuOMjA5tPCUoJVvxUQBDkoWbpbpU+0yeXXnBrIXr41e5
+	xizGg/LE=
+X-Google-Smtp-Source: AGHT+IGPvv6jeblEH76NmMCzIZgoiY5vqTh6CMyHl0hOUai74ZngRgG/B4KoHS99SMEdb0qHCdxe8g==
+X-Received: by 2002:a05:6122:1ac3:b0:524:2fe2:46ba with SMTP id 71dfb90a1353d-52764599dabmr8148059e0c.11.1744013177228;
+        Mon, 07 Apr 2025 01:06:17 -0700 (PDT)
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5275afa8dcasm1767121e0c.46.2025.04.07.01.06.16
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Apr 2025 01:06:16 -0700 (PDT)
+Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-86d5a786c7cso1786373241.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Apr 2025 01:06:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXpFjozs9SZv723HBzuog5AZBlfMFQtgZhJdaFlXn9CSTyH9DdPOqOHXSwDbj0Tt+a54pyl6ke596Uc@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:1622:b0:4c3:221:8f47 with SMTP id
+ ada2fe7eead31-4c8553d0fafmr8533368137.13.1744013176401; Mon, 07 Apr 2025
+ 01:06:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250407-gpiochip-set-rv-m68k-v1-1-7fdc9132b6e8@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAK5882cC/x3MQQqAIBBA0avErBswpbSuEi2ixhoikzEiiO6et
- HyL/x9IJEwJuuIBoYsTHyGjKguY1jEshDxng1a6VkY3uEQ+ppUjJjpRLtwbt6F1rbdWO+Otg5x
- GIc/3v+2H9/0A+d+MBmYAAAA=
-To: Greg Ungerer <gerg@linux-m68k.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- linux-gpio@vger.kernel.org, 
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1765;
- i=bartosz.golaszewski@linaro.org; h=from:subject:message-id;
- bh=xpjlcs0Z+gAlZJFbn5AlXbcR6QRO7s3gx9jjA4Yf1Zg=;
- b=owEBbQKS/ZANAwAKARGnLqAUcddyAcsmYgBn83ywLwPBxfPzoX+y2laB9IHxbDRLfAaKx6afO
- m3U3MGsITSJAjMEAAEKAB0WIQQWnetsC8PEYBPSx58Rpy6gFHHXcgUCZ/N8sAAKCRARpy6gFHHX
- chzFD/9187tA+35Bnp9Rx8W4LxG/AeuKg9A73cy0c8KWQhWSdM7ri1UlLP1a9NbaUQtyH0By9oC
- 2APZ0yRzXqSfFYP9fK9ZpYEkio/d8gepkwbFdcq1RTKbdManuCywpeHrTFSgCeRle93oLeV2ofV
- 4Fnaam5T5+Zc9A7UFqUOqM7xd0fJ+Ra9pfRuZSYTKPp3vf1mfRPSsjePo629D3APbon9HuQV8rn
- eLMrSdZXM8UcgnJE2V60b/O3ANrlia6TT69eCm/giNkX+WCMV05mE/keSk+H7TUea4EH+efyZtR
- 5Ycvv0s4Bi/+hI+/0Nh5gygp7khgI07qS9KZd3ygckstGgN/MirZNmYDK0OAZclCtRBGonphGOC
- TbXVVwoU81g20JSUbSMLZyC48lU7atrB9mUelvCzhINdJ8MkFHsG+aPRNuZiyAX2BVWjCDy5OSe
- ttX7s70dOMQVlCvDk1hogR1MYfXblwVVsk/2oQ1REV+JpRFaR0HnJRpklfVNFfkdGvPfJ6XdFxV
- x8GqV+b5JdJCeOxqkRt1lmXLxPXSl+AA29VwFzNiTcGgMY0ZO/LZ+8lLv6g45e6D6azdn/HQjz2
- z70FQNuZ99Uzf0Uo0Nb8qLBv03mX+x4EP1Cu8gH06P23VusZFg0pK4/dFo+xSeZbDhkMg5ikjT/
- d0J+f7HA6IKvfxw==
-X-Developer-Key: i=bartosz.golaszewski@linaro.org; a=openpgp;
- fpr=169DEB6C0BC3C46013D2C79F11A72EA01471D772
+References: <20250218175735.19882-1-linmag7@gmail.com> <20250218175735.19882-2-linmag7@gmail.com>
+ <4209b9816551367f8e5670cc5a08e139f0f2c215.camel@physik.fu-berlin.de>
+In-Reply-To: <4209b9816551367f8e5670cc5a08e139f0f2c215.camel@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 7 Apr 2025 10:06:03 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWLVw8aUY8aCowgOz+puxjrDqcbUXUAoVXGi8=FpTHwrA@mail.gmail.com>
+X-Gm-Features: ATxdqUEtUaFZruSQ19joR0gbmVyVokHgxasQdxoPHK2-UPmtdbKL5noyYxpgMcc
+Message-ID: <CAMuHMdWLVw8aUY8aCowgOz+puxjrDqcbUXUAoVXGi8=FpTHwrA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm: pgtable: fix pte_swp_exclusive
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Magnus Lindholm <linmag7@gmail.com>, richard.henderson@linaro.org, mattst88@gmail.com, 
+	ink@unseen.parts, kees@kernel.org, arnd@arndb.de, 
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, chris@zankel.net, 
+	dinguyen@kernel.org, jcmvbkbc@gmail.com, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
+	loongarch@lists.linux.dev, monstr@monstr.eu, sparclinux@vger.kernel.org, 
+	x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hi Adrian,
 
-struct gpio_chip now has callbacks for setting line values that return
-an integer, allowing to indicate failures. Convert the driver to using
-them.
+On Sat, 5 Apr 2025 at 19:22, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Tue, 2025-02-18 at 18:55 +0100, Magnus Lindholm wrote:
+> > Make pte_swp_exclusive return bool instead of int. This will better reflect
+> > how pte_swp_exclusive is actually used in the code. This fixes swap/swapoff
+> > problems on Alpha due pte_swp_exclusive not returning correct values when
+> > _PAGE_SWP_EXCLUSIVE bit resides in upper 32-bits of PTE (like on alpha).
+>
+> Minor nitpick:
+>
+> "when _PAGE_SWP_EXCLUSIVE" => "when the _PAGE_SWP_EXCLUSIVE"
+>
+> >
+> > Signed-off-by: Magnus Lindholm <linmag7@gmail.com>
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
-struct gpio_chip now has callbacks for setting line values that return
-an integer, allowing to indicate failures. We're in the process of
-converting all GPIO drivers to using the new API. This series converts
-all m68k board-file level controllers.
----
- arch/m68k/coldfire/gpio.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> > --- a/arch/alpha/include/asm/pgtable.h
+> > +++ b/arch/alpha/include/asm/pgtable.h
+> > @@ -334,7 +334,7 @@ extern inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
+> >  #define __pte_to_swp_entry(pte)      ((swp_entry_t) { pte_val(pte) })
+> >  #define __swp_entry_to_pte(x)        ((pte_t) { (x).val })
+> >
+> > -static inline int pte_swp_exclusive(pte_t pte)
+> > +static inline bool pte_swp_exclusive(pte_t pte)
+> >  {
+> >       return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
+> >  }
 
-diff --git a/arch/m68k/coldfire/gpio.c b/arch/m68k/coldfire/gpio.c
-index ca26de257871..30e5a4ed799d 100644
---- a/arch/m68k/coldfire/gpio.c
-+++ b/arch/m68k/coldfire/gpio.c
-@@ -123,10 +123,12 @@ static int mcfgpio_direction_output(struct gpio_chip *chip, unsigned offset,
- 	return __mcfgpio_direction_output(offset, value);
- }
- 
--static void mcfgpio_set_value(struct gpio_chip *chip, unsigned offset,
--			      int value)
-+static int mcfgpio_set_value(struct gpio_chip *chip, unsigned int offset,
-+			     int value)
- {
- 	__mcfgpio_set_value(offset, value);
-+
-+	return 0;
- }
- 
- static int mcfgpio_request(struct gpio_chip *chip, unsigned offset)
-@@ -158,7 +160,7 @@ static struct gpio_chip mcfgpio_chip = {
- 	.direction_input	= mcfgpio_direction_input,
- 	.direction_output	= mcfgpio_direction_output,
- 	.get			= mcfgpio_get_value,
--	.set			= mcfgpio_set_value,
-+	.set_rv			= mcfgpio_set_value,
- 	.to_irq			= mcfgpio_to_irq,
- 	.base			= 0,
- 	.ngpio			= MCFGPIO_PIN_MAX,
+> > --- a/arch/xtensa/include/asm/pgtable.h
+> > +++ b/arch/xtensa/include/asm/pgtable.h
+> > @@ -355,7 +355,7 @@ ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
+> >  #define __pte_to_swp_entry(pte)      ((swp_entry_t) { pte_val(pte) })
+> >  #define __swp_entry_to_pte(x)        ((pte_t) { (x).val })
+> >
+> > -static inline int pte_swp_exclusive(pte_t pte)
+> > +static inline bool pte_swp_exclusive(pte_t pte)
+> >  {
+> >       return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
+> >  }
+>
+> I'm not so sure about this implicit cast from unsigned long to bool though.
+>
+> Is this verified to work correctly on all architectures? I wonder why this
 
----
-base-commit: 0af2f6be1b4281385b618cb86ad946eded089ac8
-change-id: 20250326-gpiochip-set-rv-m68k-789f77283f78
+Should work fine: any non-zero value is mapped to one.
 
-Best regards,
+> bug was not caught earlier on alpha on the other hand.
+
+On Alpha, "pte_val(pte) & _PAGE_SWP_EXCLUSIVE" is either
+_PAGE_SWP_EXCLUSIVE == 0x8000000000UL or zero.  Due to the return
+type being int, the return value was truncated, and the function always
+returned zero.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
