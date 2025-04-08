@@ -1,147 +1,118 @@
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F208220686
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Apr 2025 08:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B72C148
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Apr 2025 06:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744013182; cv=none; b=F5PJzG09HtWWcbyfO5OV4z0Bqq4+ygMiiqHmixif0ZlGVPGk4h+J9VLDNSCNV61pCbZGqRYY8tgywHfQGy7UxDZjATxtI/IQP2LIqj9/5ZfTYaKfGrAnuG/0R+5ZmgY/UOw6fzasHoRNRiA3Rj/MQZLOu41eRLni90pLr1NFG4U=
+	t=1744093239; cv=none; b=fUUh/j89koGTJmAWcuycghvZ0kYLrJsnshVm9xXwSzjm/Ine88x7rA1Rz/vU95yjvmVJ3hAco4arxKULg4uyI0m76y2g93WegPBJpV7lIYtwOR6ZU5reNG9+bOYH1qNLk1GY1/WwWOZ7rQYUNBo9DmK6dMt89b49YU2JEJmuB/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744013182; c=relaxed/simple;
-	bh=Jv1axMlTH1d7Bc5hi8tVqQgcr6gs+9TX6BEWYeJwdVQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CKQ957o1MSkafX5pwI7Gf9clj6PbObqcZLcQY1jcfJNOJzNpwIDpAxt1QdNKrNj/R3+XmyblYmIphZlmKkyxHL6zGP32AsswlkQglnUGDjIvB0RazXGFp36Ie39qgdJyu1oZFXS/v42rZ8J86fhpmgqfN1qi5G/gSU+BgIlDHns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-523de5611a3so1808889e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Apr 2025 01:06:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744013177; x=1744617977;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=em0yD0kIpDtyZFKdGXKgNdHuMfrDjAXLZIWfYU3VNv0=;
-        b=qKTZ36fQkmG29YiR6uh5hNPM9s6aErLadF5lQQwIlqp9q6TBwGUFZAtAr3t9n18gqU
-         hK8BW1eIiK8qT5XVznBd9eCUgnMRK7bsTqQjLo+nMjyCTSiLBucjuYb/iS2q5BXDCbZd
-         hz1mzVZyFB+3AeTeWl/gqGBumgDTR70qm0K6NvdstT796JzT4chvOE44BgBhRX33Cv8+
-         leT9HQGJd9vIPqWuHRz7UUnDDPJVuGVbQ2HVz7wIX7D/BvDOKSJ4GkYF/wAkCP1/a8PR
-         u+dOAhWKEPaL9Jf8kBPlXJWNbyYAlAxVbAWpzTFJ9HOeeCV+P4SsbuXpcG7S0Xbgl3jG
-         OrmA==
-X-Forwarded-Encrypted: i=1; AJvYcCUWtehnLD/H+aQs+jR7I3EKb/HvZR5ZHP7qzhClmtn6mBOwXJ6Zy1/BAlBejIVbQPvhdtwXY/dKXLPP@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxNw4aIv7mP4N2JHYfLotGH9DIcF70hK0Z1pRhU4UspWyzuOtEh
-	JiH1EZPrNe938qngjwPX+S+d3HDaZ+3dreM+buanht7MuzmcJonpFU0/KY7l
-X-Gm-Gg: ASbGncuBxaw78J3ORtyYhj9+BprQgXZCneqQ1OAtZm2aSBjPNgEYLLbz4+4cZdtfszL
-	8ibGRW/IxWwtDZ8MtW8p063ztzFOPzEk5eVTfATZx/6+AvWJSB5+w/dj+aBl1CsjZmFDonZ+y9o
-	UdQhugXKpK9OUs+TqMHM5TlLeRCWFMWwfFAnuXSqqetkP62pS7dBiAPitcMzf9ZPh1cJ+h0byBU
-	u7WSARgm/OTcXKJ+e2eZHQ9IWdHvPVuefG6TgYyjid85sG29hqX6czMNON22JfjWGrgZAXQFwUT
-	IuOytjazVShLCFrHv3D+Ik7GWR2gwl6RuOMjA5tPCUoJVvxUQBDkoWbpbpU+0yeXXnBrIXr41e5
-	xizGg/LE=
-X-Google-Smtp-Source: AGHT+IGPvv6jeblEH76NmMCzIZgoiY5vqTh6CMyHl0hOUai74ZngRgG/B4KoHS99SMEdb0qHCdxe8g==
-X-Received: by 2002:a05:6122:1ac3:b0:524:2fe2:46ba with SMTP id 71dfb90a1353d-52764599dabmr8148059e0c.11.1744013177228;
-        Mon, 07 Apr 2025 01:06:17 -0700 (PDT)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5275afa8dcasm1767121e0c.46.2025.04.07.01.06.16
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Apr 2025 01:06:16 -0700 (PDT)
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-86d5a786c7cso1786373241.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Apr 2025 01:06:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXpFjozs9SZv723HBzuog5AZBlfMFQtgZhJdaFlXn9CSTyH9DdPOqOHXSwDbj0Tt+a54pyl6ke596Uc@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:1622:b0:4c3:221:8f47 with SMTP id
- ada2fe7eead31-4c8553d0fafmr8533368137.13.1744013176401; Mon, 07 Apr 2025
- 01:06:16 -0700 (PDT)
+	s=arc-20240116; t=1744093239; c=relaxed/simple;
+	bh=leAZBUvTDieNUCTCUQ6Z093axNVZ+MVhp4DKPjyWQPA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=esekI8s5hU53clpGdQlKwkBEbHFQaBm4vlfeZEvwToVM6h/PSUzFu7qqN588fsVu8gAnd4293Nj2DXupuBDTLiAB6K1WqMGZLJmZM/zDdLpBHfKx0CwJ3BpGi7w2cZxLYN9gWm6P3hzxe0E/XWo0zgIJAADY681rAvxF2zjObSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4ZWw9P60QFz9vkm;
+	Tue,  8 Apr 2025 07:48:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 42ojJD_HJEii; Tue,  8 Apr 2025 07:48:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4ZWw9N2JlBz9vkp;
+	Tue,  8 Apr 2025 07:48:24 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 369B28B76C;
+	Tue,  8 Apr 2025 07:48:24 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id aUNb9W1lbxmx; Tue,  8 Apr 2025 07:48:24 +0200 (CEST)
+Received: from [192.168.235.99] (unknown [192.168.235.99])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id DC9078B767;
+	Tue,  8 Apr 2025 07:48:21 +0200 (CEST)
+Message-ID: <ff31c2ff-55be-452e-b94a-6a84c4583258@csgroup.eu>
+Date: Tue, 8 Apr 2025 07:48:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250218175735.19882-1-linmag7@gmail.com> <20250218175735.19882-2-linmag7@gmail.com>
- <4209b9816551367f8e5670cc5a08e139f0f2c215.camel@physik.fu-berlin.de>
-In-Reply-To: <4209b9816551367f8e5670cc5a08e139f0f2c215.camel@physik.fu-berlin.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 7 Apr 2025 10:06:03 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWLVw8aUY8aCowgOz+puxjrDqcbUXUAoVXGi8=FpTHwrA@mail.gmail.com>
-X-Gm-Features: ATxdqUEtUaFZruSQ19joR0gbmVyVokHgxasQdxoPHK2-UPmtdbKL5noyYxpgMcc
-Message-ID: <CAMuHMdWLVw8aUY8aCowgOz+puxjrDqcbUXUAoVXGi8=FpTHwrA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm: pgtable: fix pte_swp_exclusive
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Magnus Lindholm <linmag7@gmail.com>, richard.henderson@linaro.org, mattst88@gmail.com, 
-	ink@unseen.parts, kees@kernel.org, arnd@arndb.de, 
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, chris@zankel.net, 
-	dinguyen@kernel.org, jcmvbkbc@gmail.com, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
-	loongarch@lists.linux.dev, monstr@monstr.eu, sparclinux@vger.kernel.org, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 09/13] arch, mm: set max_mapnr when allocating memory
+ map for FLATMEM
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+ Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Guo Ren
+ <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>, Mark Brown <broonie@kernel.org>,
+ Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Stafford Horne <shorne@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+ linux-mm@kvack.org, x86@kernel.org
+References: <20250313135003.836600-1-rppt@kernel.org>
+ <20250313135003.836600-10-rppt@kernel.org>
+ <4b9627f2-65ff-4baf-931f-4e23b5732e6b@csgroup.eu>
+Content-Language: fr-FR
+In-Reply-To: <4b9627f2-65ff-4baf-931f-4e23b5732e6b@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Adrian,
+Hi Mike,
 
-On Sat, 5 Apr 2025 at 19:22, John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
-> On Tue, 2025-02-18 at 18:55 +0100, Magnus Lindholm wrote:
-> > Make pte_swp_exclusive return bool instead of int. This will better reflect
-> > how pte_swp_exclusive is actually used in the code. This fixes swap/swapoff
-> > problems on Alpha due pte_swp_exclusive not returning correct values when
-> > _PAGE_SWP_EXCLUSIVE bit resides in upper 32-bits of PTE (like on alpha).
->
-> Minor nitpick:
->
-> "when _PAGE_SWP_EXCLUSIVE" => "when the _PAGE_SWP_EXCLUSIVE"
->
-> >
-> > Signed-off-by: Magnus Lindholm <linmag7@gmail.com>
+Le 14/03/2025 à 10:25, Christophe Leroy a écrit :
+> 
+> 
+> Le 13/03/2025 à 14:49, Mike Rapoport a écrit :
+>> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+>>
+>> max_mapnr is essentially the size of the memory map for systems that use
+>> FLATMEM. There is no reason to calculate it in each and every 
+>> architecture
+>> when it's anyway calculated in alloc_node_mem_map().
+>>
+>> Drop setting of max_mapnr from architecture code and set it once in
+>> alloc_node_mem_map().
+> 
+> As far as I can see alloc_node_mem_map() is called quite late.
+> 
+> I fear that it will regress commit daa9ada2093e ("powerpc/mm: Fix boot 
+> crash with FLATMEM")
+> 
+> Can you check ?
 
-> > --- a/arch/alpha/include/asm/pgtable.h
-> > +++ b/arch/alpha/include/asm/pgtable.h
-> > @@ -334,7 +334,7 @@ extern inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
-> >  #define __pte_to_swp_entry(pte)      ((swp_entry_t) { pte_val(pte) })
-> >  #define __swp_entry_to_pte(x)        ((pte_t) { (x).val })
-> >
-> > -static inline int pte_swp_exclusive(pte_t pte)
-> > +static inline bool pte_swp_exclusive(pte_t pte)
-> >  {
-> >       return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
-> >  }
+I see this patch is now merged into mainline (v6.15-rc1). Have you been 
+able to check and/or analyse whether it doesn't regress the fix in 
+commit daa9ada2093e ("powerpc/mm: Fix boot crash with FLATMEM") ?
 
-> > --- a/arch/xtensa/include/asm/pgtable.h
-> > +++ b/arch/xtensa/include/asm/pgtable.h
-> > @@ -355,7 +355,7 @@ ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
-> >  #define __pte_to_swp_entry(pte)      ((swp_entry_t) { pte_val(pte) })
-> >  #define __swp_entry_to_pte(x)        ((pte_t) { (x).val })
-> >
-> > -static inline int pte_swp_exclusive(pte_t pte)
-> > +static inline bool pte_swp_exclusive(pte_t pte)
-> >  {
-> >       return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
-> >  }
->
-> I'm not so sure about this implicit cast from unsigned long to bool though.
->
-> Is this verified to work correctly on all architectures? I wonder why this
+Thanks
+Christophe
 
-Should work fine: any non-zero value is mapped to one.
-
-> bug was not caught earlier on alpha on the other hand.
-
-On Alpha, "pte_val(pte) & _PAGE_SWP_EXCLUSIVE" is either
-_PAGE_SWP_EXCLUSIVE == 0x8000000000UL or zero.  Due to the return
-type being int, the return value was truncated, and the function always
-returned zero.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
