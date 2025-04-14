@@ -1,100 +1,424 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA71267F70
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Apr 2025 14:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E120378F4C
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Apr 2025 08:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744210216; cv=none; b=qTwplMtUnZLobha8kJ1PmVEzhPyepG158UQl/3Cf4ho7Gvs+iOgFNNCm+Dd+Ai6glvHThWRZspMBu06fs/96Pf92zXPB8kkEUBYEG4BIbVKaQpNqCToxBT74hkFQSEeK46yiAGjmNOmw/MblswHPVmjARybfipXj7gj5wyqBomU=
+	t=1744620615; cv=none; b=hmrnKsQ92qMDu1DWgTYzqcLYVfYLEqvs9pKs+vSoT7e6vG90nrv3vAJJy4SmnrHU0keP2bjhUMblhK1MawxkpACain0aQdmeNAiHTToNsobNSc3NuUyHXO0pTAv+/MbQkYZUXC4xV8YHUQEm5maRZNB10D5QzUzh4VEg2A31nBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744210216; c=relaxed/simple;
-	bh=4pLTv0zekgYPNEgwM2RuMiOZmFr4+wJ4i/oOyh8hrvI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mzk/mwPJJT0jaK4hDCWlvWXwjlyO+eduEe8A0jVD9l+Gw1OQZ8Nw53l4L8W+cXME4lr7Bpj8Ls8iKGPNbBBM3ZAxKWBZPcotXqSgpQi0zSXLA7GM+gY1QnSv65Q8ILHd5GR2/r8JQa1HLCc+dxJK2chYOWccbUuDHEtviqjN3eI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52F3115A1;
-	Wed,  9 Apr 2025 07:50:13 -0700 (PDT)
-Received: from [10.57.67.254] (unknown [10.57.67.254])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 58A653F59E;
-	Wed,  9 Apr 2025 07:50:07 -0700 (PDT)
-Message-ID: <99771f33-8ad8-4ba5-9cf0-f504588d99a0@arm.com>
-Date: Wed, 9 Apr 2025 16:50:04 +0200
+	s=arc-20240116; t=1744620615; c=relaxed/simple;
+	bh=AOkbPHtX8IFfKVeAHn39ClWma+HMT8hyNfwCAeAz3FY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QNv/mGXNZx+Hr2h/9noyKc1+RTYW1xgRXr4Mq7JPTBDp3wyrXV+AvedfYWTSY74jPA3lj0GDDkgeOjaLkaRgBFDl2B8hLPt3zqvLIsKCO+qnwewh9RN++G0gydJuDwjKzOJ9QWbIliNL1Upxi13yB0/k44z6sPLyFOZDE2TIlyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:1dc6:8b60:8242:85de])
+	by xavier.telenet-ops.be with cmsmtp
+	id cwq42E0084wS71s01wq4mu; Mon, 14 Apr 2025 10:50:04 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1u4FVx-00000000YBx-0zUR;
+	Mon, 14 Apr 2025 10:50:04 +0200
+Received: from geert by rox.of.borg with local (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1u4EB8-0000000AoSL-3emS;
+	Mon, 14 Apr 2025 09:24:26 +0200
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.15-rc1
+Date: Mon, 14 Apr 2025 09:24:25 +0200
+Message-ID: <e7d9ff0ef58efaa3e0adcb7207e6b44d948caa25.1744615371.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/12] x86: pgtable: Always use pte_free_kernel()
-To: Matthew Wilcox <willy@infradead.org>, Dave Hansen <dave.hansen@intel.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Albert Ou <aou@eecs.berkeley.edu>, Andreas Larsson <andreas@gaisler.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "David S. Miller" <davem@davemloft.net>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>,
- "Mike Rapoport (IBM)" <rppt@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Peter Zijlstra <peterz@infradead.org>, Qi Zheng
- <zhengqi.arch@bytedance.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Will Deacon <will@kernel.org>, Yang Shi <yang@os.amperecomputing.com>,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-openrisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- sparclinux@vger.kernel.org, x86@kernel.org
-References: <20250408095222.860601-1-kevin.brodsky@arm.com>
- <20250408095222.860601-3-kevin.brodsky@arm.com>
- <409d2019-a409-4e97-a16f-6b345b0f5a38@intel.com>
- <Z_VQxyqkU8DV7QGy@casper.infradead.org>
- <9247436d-ae01-4eb8-bd5d-370b2fb2eebc@intel.com>
- <Z_VfeFgrj23Oa0fX@casper.infradead.org>
-Content-Language: en-GB
-From: Kevin Brodsky <kevin.brodsky@arm.com>
-In-Reply-To: <Z_VfeFgrj23Oa0fX@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 08/04/2025 19:40, Matthew Wilcox wrote:
-> On Tue, Apr 08, 2025 at 09:54:42AM -0700, Dave Hansen wrote:
->> On 4/8/25 09:37, Matthew Wilcox wrote:
->>> On Tue, Apr 08, 2025 at 08:22:47AM -0700, Dave Hansen wrote:
->>>> Are there any tests for folio_test_pgtable() at free_page() time? If we
->>>> had that, it would make it less likely that another free_page() user
->>>> could sneak in without calling the destructor.
->>> It's hidden, but yes:
->>>
->>> static inline bool page_expected_state(struct page *page,
->>>                                         unsigned long check_flags)
->>> {
->>>         if (unlikely(atomic_read(&page->_mapcount) != -1))
->>>                 return false;
->>>
->>> PageTable uses page_type which aliases with mapcount, so this check
->>> covers "PageTable is still set when the last refcount to it is put".
->> Huh, so shouldn't we have ended up in bad_page() for these, other than:
->>
->>         pagetable_dtor(virt_to_ptdesc(pmd));
->>         free_page((unsigned long)pmd);
-> I think at this point in Kevin's series, we don't call the ctor for
-> these pages, so we never set PageTable() on them. I could be wrong;
+  - Drop CONFIG_PRIME_NUMBERS=m (auto-modular since commit
+    313b38a6ecb46db4 ("lib/prime_numbers: convert self-test to KUnit")),
+  - Drop CONFIG_TEST_PRINTF=m (Replaced by auto-modular
+    CONFIG_PRINTF_KUNIT_TEST in commit 7a79e7daa84e2302 ("printf:
+    convert self-test to KUnit")),
+  - Drop CONFIG_TEST_SCANF=m (Replaced by auto-modular
+    CONFIG_SCANF_KUNIT_TEST in commit 97c1f302f2bc318e ("scanf: convert
+    self-test to KUnit")),
+  - Drop CONFIG_TEST_BLACKHOLE_DEV=m (replaced by auto-modular
+    CONFIG_BLACKHOLE_DEV_KUNIT_TEST in commit b341f6fd45abb188
+    ("blackhole_dev: convert self-test to KUnit")).
 
-Correct, that's why I added this patch early in the series (the next
-patch adds the ctor call in pte_alloc_one_kernel()).
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k tree for v6.16.
 
-The BUG() in v1 was indeed triggered by a page_expected_state() check [1].
+ arch/m68k/configs/amiga_defconfig    | 4 ----
+ arch/m68k/configs/apollo_defconfig   | 4 ----
+ arch/m68k/configs/atari_defconfig    | 4 ----
+ arch/m68k/configs/bvme6000_defconfig | 4 ----
+ arch/m68k/configs/hp300_defconfig    | 4 ----
+ arch/m68k/configs/mac_defconfig      | 4 ----
+ arch/m68k/configs/multi_defconfig    | 4 ----
+ arch/m68k/configs/mvme147_defconfig  | 4 ----
+ arch/m68k/configs/mvme16x_defconfig  | 4 ----
+ arch/m68k/configs/q40_defconfig      | 4 ----
+ arch/m68k/configs/sun3_defconfig     | 4 ----
+ arch/m68k/configs/sun3x_defconfig    | 4 ----
+ 12 files changed, 48 deletions(-)
 
-> as Kevin says, this is all very twisty and confusing with exceptions and
-> exceptions to exceptions.  This series should reduce the confusion.
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 31ecb8b7b9f1e734..44c8182ebdaa368f 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -602,7 +602,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -621,8 +620,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -632,7 +629,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 1f57514624d515d3..730e7bc98cacd3b0 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -559,7 +559,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -578,8 +577,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -589,7 +586,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index c38d2819aebe9954..efee64ffcc072e99 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -590,7 +590,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -609,8 +608,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -620,7 +617,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index f0e673cb17eb7c67..20b2b16f6921f26d 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -551,7 +551,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -570,8 +569,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -581,7 +578,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index e8ca5a50b86dad62..46a20a7f3582899c 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -561,7 +561,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -580,8 +579,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -591,7 +588,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index b3a270441bb17755..6de38f254ef7b3d2 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -578,7 +578,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -597,8 +596,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -608,7 +605,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index d215dba006ced779..5141a4660748009f 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -665,7 +665,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -684,8 +683,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -695,7 +692,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index a888ed93ff829033..8c8b3b4bfa7fc794 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -551,7 +551,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -570,8 +569,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -581,7 +578,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index b481782375f689ea..2897ecb29fbf71ed 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -552,7 +552,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -571,8 +570,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -582,7 +579,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index 6eba743d8eb5c94e..a612cfc21cd8b5d7 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -568,7 +568,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -587,8 +586,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -598,7 +595,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 9bdbb418ffa88c63..dd262ee392f5fdcb 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -549,7 +549,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -567,8 +566,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -578,7 +575,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index e1cf20fa534319e6..a4fe34bc23527fd4 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -549,7 +549,6 @@ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+-CONFIG_PRIME_NUMBERS=m
+ CONFIG_XZ_DEC_TEST=m
+ CONFIG_GLOB_SELFTEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -568,8 +567,6 @@ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
+ CONFIG_TEST_KSTRTOX=m
+-CONFIG_TEST_PRINTF=m
+-CONFIG_TEST_SCANF=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_UUID=m
+ CONFIG_TEST_XARRAY=m
+@@ -579,7 +576,6 @@ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
+ CONFIG_TEST_BPF=m
+-CONFIG_TEST_BLACKHOLE_DEV=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+-- 
+2.43.0
 
-I hope so!
-
-- Kevin
-
-[1] https://lore.kernel.org/oe-lkp/202503211612.e11bd73f-lkp@intel.com/
