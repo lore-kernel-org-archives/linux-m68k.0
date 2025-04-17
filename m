@@ -1,66 +1,68 @@
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E23E23E33C
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Apr 2025 11:42:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99C91DDA2F
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Apr 2025 20:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744803769; cv=none; b=R94Afu3+wDYbYSn6NLowhbi2+7KzkRrUsnbjSgWPhHyBe0TMEzXQPAb1s3nG8iuHR+av7DRWL+zxIlx5oBj//eHjAiWQt6+foGGlaWzoXOXjB+f9fZxpaZBi3g2amAG0PqIne6OFG5LEBY0j31hyzTRqBoUFil0EkcdbKvNDUBs=
+	t=1744920628; cv=none; b=LvLfxCh6FEjf+evd5sxFNmIEhGjqIIChbSMlkH9hOmN6rds70X2Mo5+sv2pob5yP6s0WpK3hz73FHC0DOWC3o8NzWdHmRwC0Hnz1Q79hdbYTWEyq4hCZ3Npm5jGtjxx/DAHnQlWHd6riWBaZvv7bH/oBqDzTG73jFz37k59ZwNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744803769; c=relaxed/simple;
-	bh=2LhwZRPX3le1pcDWgaebmjYcBMNO+zwSm1AT5T+GXjQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cSpudYhHr1dv3UwKlm3pZ5o8sjbfsaGhN8wYi17AbGACGBps+pgTgqoGz6H3J5o7P/LCM3ZaZ96DHM+WkW9A1UjDwfkN34mINaRRm/FqHIH+K1EHqlDEcV/X+0yNrekpySurlw6DLj+F1r0XCPOJ+4y2bJQz30iGz+q+g8ogsv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=tVUBOzfJ; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1744920628; c=relaxed/simple;
+	bh=vZmMqwCoPGEpbjlYgVrbWq7PQvmeQqOpFND4sSyhKNI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ka9JkTPmABJqpATwH7DrBnjy08yvcpHtYhqhiUQk4UlwDYIikoBDscJZYdNxwbr3jIjIJjzVN1XmyBC4d7AwOyu/05FNhRkawF1FTkIbXCPUJRi/WN6LLXyN2+x+pGZFk8oUh6fFHvHDAWaH6FLagEG/sMysxEGsNVK9x30fhzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m5VSkVYx; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="tVUBOzfJ"
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7398d65476eso479200b3a.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 16 Apr 2025 04:42:46 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m5VSkVYx"
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso1664436b3a.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 17 Apr 2025 13:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1744803766; x=1745408566; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1744920626; x=1745525426; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QZ1kKIALmvRJch4ZVaRl0p94OzYXnQT7EpkhRUXULZI=;
-        b=tVUBOzfJEKzi/2b+l7otqKE4ad3CniycHnq/WsQW7zcqHjQDjXjGkpZ3wBH97sdLp3
-         ucqbQFSrRLHWTGxGnwUci85hJB/rr6jPrEM1enjSOSCZtPiy1JlBcCxcgF3AfKq5lRPh
-         dM3myhiX1gu2ckPWPgGQrMyjjkn1JC9BAxYuA=
+        bh=00U42ZzUOxNRO4D8XKQxhoyIsJ3n5fks4Eku3muMMVM=;
+        b=m5VSkVYxVT0IRcCfg2MIX/KQJ6HxIgQaJSELYuA/C4yQhJM0SeLK0LGhf6pQHZKz6m
+         OSCEKcnMCMKtDqD5Kz/J0ifxvcQHNHQEuF4jQ7cg0Vu7EXf/0+fd6d0SQtaF4CjkjCsa
+         hdfHWH1S+BupAmkpRumMoBo0HJqD858Y05H9c5QhPhpi16Yhws3O3vOCG28rp8G/mmBE
+         IPPXvihCMFzYKx/m+LFnkhIXwmdXgDlemdg1UzWJggzWHuUWNZPZMpKcpLVLd/bjxh3L
+         Rj1ZRjoU+yNRrKT0ephLWqWKJ5sUSxmFiFSQ1TneB5D3rVjvJ5t08zkqJOQHiMU4VbsK
+         u+cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1744803766; x=1745408566;
+        d=1e100.net; s=20230601; t=1744920626; x=1745525426;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QZ1kKIALmvRJch4ZVaRl0p94OzYXnQT7EpkhRUXULZI=;
-        b=WTav9O/S8kENEsxbmDqeOIBleLLB4bqKTI5hMVoplHfApA0yMw1Z/uObBmB11c2g1u
-         Dg0wp0pgl7oHkWYzKFYOo3Vus/px7Fbv/iUZIQjozMx/NUtFS85RoY10qTWB6Pa/pLGA
-         Njte+6bN1YJgf0y3ZKaodHk63jExejPOwfj+ZTAZJaCbbk9SnOliSGTHUi7dRRknuocv
-         s3F7JQMfz84yZeTxYXXNlhZDejCCTqCmIP/fPjaprZOVmXSvHOWogRtynciFu8SMLdEg
-         h67P5WpS1nFg4XFIugS2MQaDWwMhn3kepMMYPbiAMy/uiIzq01C3AXCowupG/oF3jS7a
-         P1VA==
-X-Forwarded-Encrypted: i=1; AJvYcCU0vh+wb77dOlGFYWvs7nAQOoJpFw3HmNhN9NtPyw3ArHP3TBbDv3hq+HpvKY59BzgFzDrFRVe6fmCe@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy/QGecIDv/6KHXI3DWcYRfmhAblapylDfEfFSWdAWQyJ6DUIwk
-	cPjhFAOebFwHDVBQ4Di4Kr1UhWXTEMi/MmeDRVBEw8ojOi7qj+eC/BDhWvtVBZQ=
-X-Gm-Gg: ASbGncs98cx0HSmXJY1iG4DMY+DSGPf/Idq4FNcE43jbzUOmgYWYdycfKzl/FEuqscc
-	chfGAat5UmMOb/gHW+04BCHu3bPdgGUhjE85eTo+YXVPUuexCZafldGe/lxB2jsL8y+KGpUf41S
-	0AJ78iRpxwPHd0dJa/XtmGPZhWMqTR9KPSz4R61tS0G0RGn0E1ZPNi/bfqkR9UHMWzQLaF/Ff9W
-	VvTJAujBYMBJBlYEXaGKHxU7yPXQZa9wgM9meHyk7PleBv3m7lWve3Movma7lgDmiGLMMfR2ltN
-	e9cq5zIEi9cxILLu+wUV/NS8AXIHmFglVZjCe8BmbajDdcGx/x+OoowrKfcc4u6w
-X-Google-Smtp-Source: AGHT+IESZmQwnLlyeDHw9qMDSKTCYjAyPNnhbiBsQon2uT22cUwcOGjEHw6IbbM4+RMjOBEJeKwL7A==
-X-Received: by 2002:a05:6a00:3b8b:b0:732:56a7:a935 with SMTP id d2e1a72fcca58-73c26e42522mr1976219b3a.12.1744803765956;
-        Wed, 16 Apr 2025 04:42:45 -0700 (PDT)
-Received: from shiro.work.home.arpa. ([2400:4162:2428:2ffe:79a9:b58a:259c:e1fa])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-73bd21e14e9sm10171722b3a.77.2025.04.16.04.42.44
+        bh=00U42ZzUOxNRO4D8XKQxhoyIsJ3n5fks4Eku3muMMVM=;
+        b=dZlxAfJLgOtybjBCJ8HOjYKkzwjGAJvelXSZmHtpgRCMXFUfNOxRDnQavYI43Q4Agu
+         2UkURqlLV69W/xiMFRYprH+6v+V6pTTzDcYjRAwDkbFCWcpnA+/cu3QJ/fjGZwto7Omk
+         lFgFYUK9AiNte+gQYr9X07FyYhOMm9rYBy6Q5K48cLih7/IM8jpeAr+v93G+T1Nut5EM
+         wBXUFTwlkng1XJso5EfPfKL83r2PrqEaC11xbf6RilUZN10YuY7NTP8V6gDf1TTbvp8N
+         cDs7qnGQ+EhGH6YVEh97Iu9tHr13rvdSNBRrCItQUWcG/uVLFp30JN6C3XAURvl9pkO8
+         EZmA==
+X-Gm-Message-State: AOJu0YybOTVw8eS1D716phgl/DMFvVM424SpEtz+9nEwL0pJfgEUU0h3
+	fdLToim9ihRZ0grpecY+cNn3uFK1ezxDcWj6tIhlkAxzMJZaiWuE/KpPBpvE
+X-Gm-Gg: ASbGncsuu+bgyNwwe1TMOJ0SyBovhZHACZ62GEkCrXr0v5WB2UZg0Xfzk9LM8VHEI8/
+	aYL5Q3+8ozEiA0hfXxn0AlfTxRwi6z1GfDpA18QMIP504XiIjTNM/1qrsWezUOmXYGrb28UYir2
+	ppF0nvSYKIGNcyL131LTnKZPc6MRoUW2233DEKt9tM3QxqZ4phX2SXjBBrj201AuXpJsmKtjIuj
+	9fjX4WAssAasoWbPn5nA0+Up3i279UC4woaKL78ipRVt45M1uDWRbFsc03njGxlvRWiQ3UpTOMi
+	kK9QJv0qd99b2EhbnUFET+aq0EKs7ElvaEZbCy7fGNjt5tLHK0w97USU
+X-Google-Smtp-Source: AGHT+IHTIeTqkv2kU0/IWAaXMHgtiz8AgY4S3VtE/Cqb3w1Cv+7qFDcHszvpDKiqbnqxIyPaTdCMzw==
+X-Received: by 2002:a05:6a00:1d9d:b0:737:e73:f64b with SMTP id d2e1a72fcca58-73dc1452c12mr228516b3a.1.1744920625544;
+        Thu, 17 Apr 2025 13:10:25 -0700 (PDT)
+Received: from shankari-IdeaPad.. ([103.24.60.250])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-73dbfa5885bsm279915b3a.108.2025.04.17.13.10.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Apr 2025 04:42:45 -0700 (PDT)
-From: Daniel Palmer <daniel@0x0f.com>
-To: geert@linux-m68k.org,
-	linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH] m68k: Enable dead code elimination
-Date: Wed, 16 Apr 2025 20:42:40 +0900
-Message-ID: <20250416114240.2929832-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.49.0
+        Thu, 17 Apr 2025 13:10:25 -0700 (PDT)
+From: Shankari02 <shankari.ak0208@gmail.com>
+To: linux-m68k@lists.linux-m68k.org
+Cc: geert@linux-m68k.org,
+	jeanmichel.hautbois@yoseli.org,
+	Shankari02 <shankari.ak0208@gmail.com>
+Subject: [PATCH] m68k: replace deprecated strncpy with strscpy
+Date: Fri, 18 Apr 2025 01:40:13 +0530
+Message-Id: <20250417201013.46384-1-shankari.ak0208@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -69,38 +71,31 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Allow the experimental dead code elimination config to be enabled.
+The use of strncpy() does not guarantee NUL-termination and is deprecated
+in the Linux kernel. This code manually terminates the buffer afterward,
+but using strscpy() is simpler and safer.
 
-For my 68000 nommu config this frees up a few hundred K of memory
-so seems worth while.
+This change replaces the strncpy() + NUL termination pattern with strscpy().
 
-Boot and build tested on nommu and mmu enabled configs.
-
-Before:
-Memory: 5388K/8192K available (1986K kernel code, 114K rwdata,
-244K rodata, 92K init, 41K bss, 2624K reserved, 0K cma-reserved)
-
-After
-Memory: 5684K/8192K available (1714K kernel code, 112K rwdata,
-228K rodata, 92K init, 37K bss, 2328K reserved, 0K cma-reserved)
-
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+Signed-off-by: Shankari Anand <shankari.ak0208@gmail.com>
 ---
- arch/m68k/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/m68k/kernel/setup_mm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index eb5bb6d36899..11835eb59d94 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -32,6 +32,7 @@ config M68K
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
-+	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_UID16
- 	select MMU_GATHER_NO_RANGE if MMU
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index 15c1a595a1de..48ce67947678 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -243,8 +243,7 @@ void __init setup_arch(char **cmdline_p)
+ 	setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _end);
+ 
+ #if defined(CONFIG_BOOTPARAM)
+-	strncpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
+-	m68k_command_line[CL_SIZE - 1] = 0;
++	strscpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
+ #endif /* CONFIG_BOOTPARAM */
+ 	process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
+ 	*cmdline_p = m68k_command_line;
 -- 
-2.47.2
+2.34.1
 
