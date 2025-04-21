@@ -1,89 +1,97 @@
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591B81C862B
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Apr 2025 13:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EF184037
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Apr 2025 20:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745240543; cv=none; b=buEhTpnNgCtVe8IE7eyR4hnBn3ALfFJhE6mSOt0B/3QteWj9G7QrSVusFFh10jUWJCbZgb/zs8Z8dVZcowmq37faeTsONd/nnSA3pGB96ybS5fSdE8E7zMVYExgKZF0okq8u37HD/ldYD6kIl1xbyVPyaqNScPYaTHFkSmc55gw=
+	t=1745267739; cv=none; b=ntzuTyL/jrX8UPQLRjnh7sOv2ND9tJ21rvr66ljesoC4GB8KvepAMK7CXHC87BKenfF6qsRazGjHa1KdHT8E49LZUD7sW36pgBhvcBqmKWf5drc3rH8vnUsR/YIP+bflpGVZKYfD0m1R0FGhs6BUap0YE2R0one3K/b9ykmv/eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745240543; c=relaxed/simple;
-	bh=bq9TctTgx5UnhHGLToD1nmTyePEW6dO6CqXllYYZThY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q4fzyCwDNnwfr9ld0zIkuLSoXZ6CGdT1JJJzYBaCrZkECEWnbAhS1uKrs82aevO+RFYxhKBwie84U1Xof7r+SSnvO5+uU5UBdO37tTJjCrvJLbhNcRnjELz8BmbPufxyJTpVFm/6E04973kILYndaEEFd46jXfzygWZSEbzNmZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=kTgSATTt; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1745267739; c=relaxed/simple;
+	bh=T/W9KQS81inxas0xsmVFegBaEcdCxywpWc1GlB8uzqU=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=fk/zeFV7NHxB2geLz9QF3r3YUodTeFh0A2GLNgd42JNjqrTywYqvmU1btYnX8fF3uMRhCNpzIiJ1Jz9hT4PCFxJEmoAjw9hDMLCF4zvBgUHkqFFMR1fp3441Hnd81T1xdUHGO27u41fcBbC8QHUZy/wZuJI7MeP66r7jSdUbtn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G+fejLOS; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="kTgSATTt"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E54843B19;
-	Mon, 21 Apr 2025 13:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1745240534;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J2FNTsgyF2aQ6QtjVQqKA5pPx+bVu/5KrAYYRX8T8Nk=;
-	b=kTgSATTt2fIeg8A3cuasn62oe9ZgF4H9IEOs08m4l3Phu6pXJF+iKtNYR1CqIip5/iTubO
-	loxnQjilptQJW19uKGlI3EcFzAEaQwzLwCh11PzqQ2immM6OB8IVExWH18vabuWxtgCarM
-	J0h7tlX/XZBqBDADD7wq1E3OXAOba3F42A1rbo5h+8zXt+A3n/HwrM1x5pdDvcaKDX9ECg
-	pO66sTKCCOqp6olk98qKsUFBtJLbBhlDSF2LrpPJMp662M8E6qq+c3qQoowFZwvaCwkY8R
-	5EV/xWxt4RhyfL4cZFPc+GgFpKhVYlbOSuW5wegKWNlHvt08mp+SugICgxFpFw==
-Message-ID: <f178cc44-1b97-4e72-94ae-cffa08173a99@yoseli.org>
-Date: Mon, 21 Apr 2025 15:02:13 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G+fejLOS"
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-739b3fe7ce8so3569602b3a.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Apr 2025 13:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745267737; x=1745872537; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j0oXblymDxIujUQXMC+xQDbXJycOB56NoZ5MoEc/+A8=;
+        b=G+fejLOSouR+cmPUkpZ6THm8kzPJhBtL54u9C3ILzWQALWxXaR60ao+92RwrXl9xVZ
+         rfPIZOjSnyT0uc6YJ4XEEi7/QcaXLWEqpk2mWa17gHlH6Ud9KmOSyBUrLewmGTgVwSyT
+         9Vw2qTZyir5lUx9PxdoOQQzS1gqLANkgVowi2vzS/0Z3Z3N2e8KaAE1azW3IquzjzUU3
+         wtXAmvWAqXrYD95UWs0/n4Wf4K1l9IAmaPmtAlJd8QuGLmwohT3McAByzGT/a0yv7Xgk
+         xHcOcSHriRA+da+UJ8sMcIaVk+0UGeGshDFf8mpPlfC2inhpNiPRPBdTVuYf6QfkTnEl
+         8jIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745267737; x=1745872537;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:cc:references:to:subject:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=j0oXblymDxIujUQXMC+xQDbXJycOB56NoZ5MoEc/+A8=;
+        b=fnizgNdTN9g4WNrCtBfTFA1zu4RALFcmTCYeEPMCYnU9DbrO3PbYp1h3IRV9tBrXHM
+         xZhma2nIVdkZqzZx0oV8LXx/sZdxrpfyRs6juR8PIWtBkCsmGBRxw74Dw5XawsRR8iuA
+         oQ5zsZUepLWG91Ly/5DpHuhWmEYbGHYzC1ON0L5np+5VqbVWUEojTMJqDQu5rEkHYlKB
+         /n1VWxRAdOUdWRzYUExo3ssr71zBAffRERFZci3RxqU+K4e7UOHeDU7LMtQVIyORon6d
+         mRJkS3CbTQdsK96tf8Gu5LxcuutLVXA33cr/8wirVKAqSILFykhgXOXb/usuETmFpdw2
+         EeNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXRyPp+xr4soek3qoaevzNwJ5l6WNR2rMV0oc5mbJl1Amqg7jfMgL4SnevyIHz0UGTYYQBXsr3RrXAz@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy5dFrZphh2z7XWNCm+38T7k0rylGdMb+kU3Lt33rnm0sUltIm0
+	15jp8dtuOHdYURZblwp0iR+Hs7vU6GS63eV9z595F5L6EOLyuos7AOKcGA==
+X-Gm-Gg: ASbGncvrLqjAng5B5EHodwLxG8ZQSsQHicPgopW5eDqIqnH6y1ebKb3ae9k+bv5lUec
+	bjnsskSkFLtDd8XJ6BeV6+/AqzDgbEs6lyd9Ez3jZT2l9OWGcD9L++oJGFI2JnSZcTmKfIcV0VM
+	ZMvuInmPNmlsG1OMDMggjIIsfq6jSx0Kbg6yoiVGsfkHaeH3UziRbyD4GNsk43qOaDSKlinHgEv
+	HiCtEKHNOgb1fIbBmBVH2IUZqo3ig/8g6xAZ5yB6ylaQ1MqklqSB7OK1oVpx9tk6uB8CYr/Kifs
+	LxT9RYvvhEPwj+DrJWmKWSNmvYpldEtVkbGxAKVBwzyAVvk48LntIbC22e8dPvU+t0OohR95Xes
+	KTA==
+X-Google-Smtp-Source: AGHT+IHrBfZALqt7jEjrxFUFAZ43YB+VIl2zqaQ2rET37hDd40vcJ+vBHOxM09XRPziV8UO7wJr+Rg==
+X-Received: by 2002:a05:6a21:1585:b0:1f5:52fe:dcf8 with SMTP id adf61e73a8af0-203cbd3392emr16964164637.26.1745267736674;
+        Mon, 21 Apr 2025 13:35:36 -0700 (PDT)
+Received: from [10.1.1.24] (222-155-154-210-fibre.sparkbb.co.nz. [222.155.154.210])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b0db157bb7dsm5990280a12.69.2025.04.21.13.35.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Apr 2025 13:35:36 -0700 (PDT)
+Subject: Re: [PATCH] m68k: mm: Replace strcpy() with strscpy() in
+ hardware_proc_show()
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+References: <20250421122839.363619-1-thorsten.blum@linux.dev>
+ <f178cc44-1b97-4e72-94ae-cffa08173a99@yoseli.org>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <1637cf38-da51-eb86-432f-aa6ad9628f2c@gmail.com>
+Date: Tue, 22 Apr 2025 08:35:30 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: mm: Replace strcpy() with strscpy() in
- hardware_proc_show()
-To: Thorsten Blum <thorsten.blum@linux.dev>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook <kees@kernel.org>,
- Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-hardening@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org
-References: <20250421122839.363619-1-thorsten.blum@linux.dev>
-Content-Language: en-US
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <20250421122839.363619-1-thorsten.blum@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <f178cc44-1b97-4e72-94ae-cffa08173a99@yoseli.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgedtledvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheplfgvrghnqdfoihgthhgvlhcujfgruhhtsghoihhsuceojhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgqeenucggtffrrghtthgvrhhnpedtheektdeiteduieffkefhgefhtdehteeffedtvdelkeegleeiudevteeuheegfeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeluddrudeihedrudeihedrudeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeeluddrudeihedrudeihedrudeljedphhgvlhhopegludelvddrudeikedruddriegnpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeejpdhrtghpthhtohepthhhohhrshhtvghnrdgslhhumheslhhinhhugidruggvvhdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehkvggvsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrg
- hdprhgtphhtthhopehlihhnuhigqdhhrghruggvnhhinhhgsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Thorsten,
+Jean-Michel,
 
-On 21/04/2025 14:28, Thorsten Blum wrote:
-> strcpy() is deprecated; use strscpy() instead.
-> 
-> Link: https://github.com/KSPP/linux/issues/88
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
->   arch/m68k/kernel/setup_mm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> index 0fba32552836..c7e8de0d34bb 100644
-> --- a/arch/m68k/kernel/setup_mm.c
-> +++ b/arch/m68k/kernel/setup_mm.c
-> @@ -484,7 +484,7 @@ static int hardware_proc_show(struct seq_file *m, void *v)
->   	if (mach_get_model)
->   		mach_get_model(model);
->   	else
-> -		strcpy(model, "Unknown m68k");
-> +		strscpy(model, "Unknown m68k");
->   
->   	seq_printf(m, "Model:\t\t%s\n", model);
->   	for (mem = 0, i = 0; i < m68k_num_memory; i++)
+Am 22.04.2025 um 01:02 schrieb Jean-Michel Hautbois:
 
-As we are not using the return value, I think it is a safe replacement.
+> As we are not using the return value, I think it is a safe replacement.
+>
+> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Would not 'Reviewed-by' be more appropriate here?
+
+Cheers,
+
+	Michael
+
+
