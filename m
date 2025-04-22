@@ -1,120 +1,214 @@
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFEE2D7BF
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Apr 2025 07:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D588A28CF4A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Apr 2025 14:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745305436; cv=none; b=KgBMJM0BIIJs+x+tnW0B7x9X3CgIIea0a2T10WEar1IQitgs8ipfYVwyaDSVeGoeq9wNaHfrqvfn4gapZS42V5WjUy5tVYUZD/9DqEX/Y2T5yPRNske66/UlRFbqLPa54lGhPubP1dvWoxb3igv3Q56gptw9gDUaiCG37rCcLUQ=
+	t=1745332308; cv=none; b=U5X6zIIQP4GkraZe4a++PT1bN6LLn74tviMWbJD7GmNMslPMYnjYuxDtrKqWKNrgOx3SFO+clZ1Z/viKdx7L63Vo4s1Wpnszxn1QZxN5ghDINCfBjHhBo/0tZX685+S+qFBPTv+3QJo4j1VQdEvGKLPsTe1UUB5hM8mXM09ebUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745305436; c=relaxed/simple;
-	bh=tYbMWgCVMGf6YZWOsnPA1SsgNuLrNVou12YJYKuZRmo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hcxKKkwwwUYaDL6F3viAmErW73Jcz+xxlYP9Far6YlpC/+cRSylUhrJLBUDx+MOR0T1dUIOFlT2KN0u9he8kOOkTpzbaKWvm2rHBgS1jTV6mlhAFDki74ecZfq3LtrDPYbaDrTSHXPqhJ/NxZwSW4SbLHTLgmJLB6UVwkM9isxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-523f1b31cf8so1655485e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Apr 2025 00:03:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745305431; x=1745910231;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jjQ6P7xPHpYA5hR0NBtg5+glzAqNpKTB4hO/66i0slM=;
-        b=UGE8ZKdGIUNlknYRPZzSGp/5jbdYoMs9RcDgy4JF9AO6hAWneBKCBy/VFq1DG6zQjI
-         4Pxol6zbbfErRZd/Dj22bAd6mHOurSJd6qxPBqOrYSjTneKaZcihhHZd9pPI7bsOHjqf
-         5zzrMcX5JJtVFqLIMIFpBYEKTpqp5O2aexzKGACdetHvK0pp0mBXyBvtFmE58jvDiUqz
-         X7up1WlpCabO9tWcepyJPeuyY5uDdIihyn7tuuxtJtP2d558dELZ4MUqh6y4Vt0c8uGN
-         C6bFQLO3dKe1H+ZuFu5/EAJfHPhlbTKLjWUebKgONjV5BeklaggDceJQtebZzL8D6ujU
-         nnNA==
-X-Forwarded-Encrypted: i=1; AJvYcCWkSUs5WPlAM4U0o0KHDbDxiIsstLV2Gjiuj1DsfLKfzVYeu6Y/VYf8leBniIR+F9Ia5Wo/BegbCYoI@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwrQ53lXjz6G5IIkofXqJFgPiPEDdTyKx9oWCk1Z/+fD7l2dSEa
-	vthxeMe+NS8poK04jqRPI5tf8QA1cA2CD81JWCr6Cl1tRygjnuLo0IFlbBSf
-X-Gm-Gg: ASbGncu3cXr4nEmFkb2DuTYKQlkcNiH8FPTMPD+hM9l/1NKybuWfF9Jl9QMQh9VU1h2
-	1J83HTBfoqZ4sdat2zf9XY97DOdxcPe31z9MnFwDIgjToPmEc7W7XgTb1KwvBblFtm6YV8GlfEv
-	0gb/N8Q21eQlm7k9M/tBjPPiTN9mMxM8/cIU5D3lQMgAi/XGHvWDMqbIUNeFv5YfxtlNrZ4TjQ5
-	OxZvYzYTL3LuuySnO9Dmkwc0QTSTVyS31UABYCoE1WHj0asZ3bdAnOarcD87l/omyfT7vAG1sZr
-	57wn79tKi/DZbOw07fpnnbbBM8QSFtv8HHHcM4kTleot7AFXU07PaS0u0nMm1OWf/iKjB0GJ7DB
-	DEUo=
-X-Google-Smtp-Source: AGHT+IHwKSqDAI+w1/EdZBFUqslJr/9SxgV3WjH4alkI2W5axku0Mr2VuAKZWEzZUGlhPGdRhpwblQ==
-X-Received: by 2002:a05:6122:2211:b0:520:535e:89f2 with SMTP id 71dfb90a1353d-529253cc28bmr10117993e0c.3.1745305431280;
-        Tue, 22 Apr 2025 00:03:51 -0700 (PDT)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-87764651923sm2192528241.3.2025.04.22.00.03.50
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Apr 2025 00:03:51 -0700 (PDT)
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-86dddba7e0eso1820671241.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Apr 2025 00:03:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVYVmLYLHwUhVHv3fh+q5z0jcxFzcTOvrlmmQSDqDYcIDk3XHsbXNVDZ13y14ClfD698c6Bx8oVKfP6@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:311a:b0:4c4:e42c:38ba with SMTP id
- ada2fe7eead31-4cb80145a4bmr7009563137.13.1745305430717; Tue, 22 Apr 2025
- 00:03:50 -0700 (PDT)
+	s=arc-20240116; t=1745332308; c=relaxed/simple;
+	bh=7UtTHz1OzXRKk72/53w5IsO8pN7dEsKHXzdKjN8mTNQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kZaVQIvKIPbabZi5k+OCnbcBj8GAY/Md2OPZzetO+Fa4fTLZBWAJQc/IDoEn9yW7kj1YJpeEv6tNdzNnHjC0kQDLO8TK0vldtuPBMpGDezIb3JxN0abXWv+GIfYzR3qrf3xg4YzWhadjtcJFKQgXHFqMwpF2G1trymaslXIDmps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qnKVP2qg; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qnKVP2qg"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 581D8A4BCA8;
+	Tue, 22 Apr 2025 14:26:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90596C4CEE9;
+	Tue, 22 Apr 2025 14:31:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745332305;
+	bh=7UtTHz1OzXRKk72/53w5IsO8pN7dEsKHXzdKjN8mTNQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qnKVP2qgtO1hUN9mVrGyWaGTEWIq8jqpIHr3uY8inZjbNWCGzdRo0J9uDNoKMTac4
+	 CvbGZZEvU2voGPjIOxRzKnGAQMMUdB8rkinceS5Q35tVPiweTvYOfb6F69Hp5kz9RK
+	 Lxej1524mrJGhqPR5hjuNZxX40hVhV4VStcN7qi/M9g3RTAnXioB6T31JWdzgU+cxl
+	 ZN20HhqG8eyKJyUJyJ0AVBKGkmtN4NO4E0W6r32ChQHQMVDyzsJScxz2LDwusrLjqq
+	 KiNG5ZeX16W68bez2U3lfR+MKOHY4fO/OC1L6rAgNnvcTL+TCBgn7RKVCuDlfxb4RJ
+	 B9aAONV7LjjUQ==
+Date: Tue, 22 Apr 2025 16:31:29 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Andrey Albershteyn <aalbersh@redhat.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] fs: introduce getfsxattrat and setfsxattrat
+ syscalls
+Message-ID: <20250422-suchen-filmpreis-3573a913457c@brauner>
+References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
+ <20250321-xattrat-syscall-v4-3-3e82e6fb3264@kernel.org>
+ <CAOQ4uxj2Fqmc_pSD4bqqoQu7QjmgSVp2V15FbmBdTNqQ03aPGQ@mail.gmail.com>
+ <faqun3wrpvwrhwukql3niqvvauy5ngrpytx5bxbrv5xkounez3@m7j2znjuzapu>
+ <CAOQ4uxjs=Gg-ocwx_fkzc0gxQ_dHx-P9EAgz5ZwbdbrxV0T_EA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250421122839.363619-1-thorsten.blum@linux.dev> <f178cc44-1b97-4e72-94ae-cffa08173a99@yoseli.org>
-In-Reply-To: <f178cc44-1b97-4e72-94ae-cffa08173a99@yoseli.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 22 Apr 2025 09:03:38 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWxdhTrxHuP5AmZEj2c+RRnUf0qfwsdmJ4CJNGg2AwXug@mail.gmail.com>
-X-Gm-Features: ATxdqUEaMllpvSmtk5uCeOO86P44ubvL2-2J492ivHDXIiPpiUf3EKaelrDCJLY
-Message-ID: <CAMuHMdWxdhTrxHuP5AmZEj2c+RRnUf0qfwsdmJ4CJNGg2AwXug@mail.gmail.com>
-Subject: Re: [PATCH] m68k: mm: Replace strcpy() with strscpy() in hardware_proc_show()
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>, Kees Cook <kees@kernel.org>, 
-	Greg Ungerer <gerg@linux-m68k.org>, linux-hardening@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxjs=Gg-ocwx_fkzc0gxQ_dHx-P9EAgz5ZwbdbrxV0T_EA@mail.gmail.com>
 
-Hi Jean-Michel,
-
-On Mon, 21 Apr 2025 at 15:02, Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> wrote:
-> On 21/04/2025 14:28, Thorsten Blum wrote:
-> > strcpy() is deprecated; use strscpy() instead.
+On Thu, Mar 27, 2025 at 12:39:28PM +0100, Amir Goldstein wrote:
+> On Thu, Mar 27, 2025 at 10:33 AM Andrey Albershteyn <aalbersh@redhat.com> wrote:
 > >
-> > Link: https://github.com/KSPP/linux/issues/88
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> > ---
-> >   arch/m68k/kernel/setup_mm.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > On 2025-03-23 09:56:25, Amir Goldstein wrote:
+> > > On Fri, Mar 21, 2025 at 8:49 PM Andrey Albershteyn <aalbersh@redhat.com> wrote:
+> > > >
+> > > > From: Andrey Albershteyn <aalbersh@redhat.com>
+> > > >
+> > > > Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
+> > > > extended attributes/flags. The syscalls take parent directory fd and
+> > > > path to the child together with struct fsxattr.
+> > > >
+> > > > This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
+> > > > that file don't need to be open as we can reference it with a path
+> > > > instead of fd. By having this we can manipulated inode extended
+> > > > attributes not only on regular files but also on special ones. This
+> > > > is not possible with FS_IOC_FSSETXATTR ioctl as with special files
+> > > > we can not call ioctl() directly on the filesystem inode using fd.
+> > > >
+> > > > This patch adds two new syscalls which allows userspace to get/set
+> > > > extended inode attributes on special files by using parent directory
+> > > > and a path - *at() like syscall.
+> > > >
+> > > > CC: linux-api@vger.kernel.org
+> > > > CC: linux-fsdevel@vger.kernel.org
+> > > > CC: linux-xfs@vger.kernel.org
+> > > > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > > ---
+> > > ...
+> > > > +SYSCALL_DEFINE5(setfsxattrat, int, dfd, const char __user *, filename,
+> > > > +               struct fsxattr __user *, ufsx, size_t, usize,
+> > > > +               unsigned int, at_flags)
+> > > > +{
+> > > > +       struct fileattr fa;
+> > > > +       struct path filepath;
+> > > > +       int error;
+> > > > +       unsigned int lookup_flags = 0;
+> > > > +       struct filename *name;
+> > > > +       struct mnt_idmap *idmap;.
+> > >
+> > > > +       struct dentry *dentry;
+> > > > +       struct vfsmount *mnt;
+> > > > +       struct fsxattr fsx = {};
+> > > > +
+> > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) < FSXATTR_SIZE_VER0);
+> > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) != FSXATTR_SIZE_LATEST);
+> > > > +
+> > > > +       if ((at_flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
+> > > > +               return -EINVAL;
+> > > > +
+> > > > +       if (!(at_flags & AT_SYMLINK_NOFOLLOW))
+> > > > +               lookup_flags |= LOOKUP_FOLLOW;
+> > > > +
+> > > > +       if (at_flags & AT_EMPTY_PATH)
+> > > > +               lookup_flags |= LOOKUP_EMPTY;
+> > > > +
+> > > > +       if (usize > PAGE_SIZE)
+> > > > +               return -E2BIG;
+> > > > +
+> > > > +       if (usize < FSXATTR_SIZE_VER0)
+> > > > +               return -EINVAL;
+> > > > +
+> > > > +       error = copy_struct_from_user(&fsx, sizeof(struct fsxattr), ufsx, usize);
+> > > > +       if (error)
+> > > > +               return error;
+> > > > +
+> > > > +       fsxattr_to_fileattr(&fsx, &fa);
+> > > > +
+> > > > +       name = getname_maybe_null(filename, at_flags);
+> > > > +       if (!name) {
+> > > > +               CLASS(fd, f)(dfd);
+> > > > +
+> > > > +               if (fd_empty(f))
+> > > > +                       return -EBADF;
+> > > > +
+> > > > +               idmap = file_mnt_idmap(fd_file(f));
+> > > > +               dentry = file_dentry(fd_file(f));
+> > > > +               mnt = fd_file(f)->f_path.mnt;
+> > > > +       } else {
+> > > > +               error = filename_lookup(dfd, name, lookup_flags, &filepath,
+> > > > +                                       NULL);
+> > > > +               if (error)
+> > > > +                       return error;
+> > > > +
+> > > > +               idmap = mnt_idmap(filepath.mnt);
+> > > > +               dentry = filepath.dentry;
+> > > > +               mnt = filepath.mnt;
+> > > > +       }
+> > > > +
+> > > > +       error = mnt_want_write(mnt);
+> > > > +       if (!error) {
+> > > > +               error = vfs_fileattr_set(idmap, dentry, &fa);
+> > > > +               if (error == -ENOIOCTLCMD)
+> > > > +                       error = -EOPNOTSUPP;
+> > >
+> > > This is awkward.
+> > > vfs_fileattr_set() should return -EOPNOTSUPP.
+> > > ioctl_setflags() could maybe convert it to -ENOIOCTLCMD,
+> > > but looking at similar cases ioctl_fiemap(), ioctl_fsfreeze() the
+> > > ioctl returns -EOPNOTSUPP.
+> > >
+> > > I don't think it is necessarily a bad idea to start returning
+> > >  -EOPNOTSUPP instead of -ENOIOCTLCMD for the ioctl
+> > > because that really reflects the fact that the ioctl is now implemented
+> > > in vfs and not in the specific fs.
+> > >
+> > > and I think it would not be a bad idea at all to make that change
+> > > together with the merge of the syscalls as a sort of hint to userspace
+> > > that uses the ioctl, that the sycalls API exists.
+> > >
+> > > Thanks,
+> > > Amir.
+> > >
 > >
-> > diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-> > index 0fba32552836..c7e8de0d34bb 100644
-> > --- a/arch/m68k/kernel/setup_mm.c
-> > +++ b/arch/m68k/kernel/setup_mm.c
-> > @@ -484,7 +484,7 @@ static int hardware_proc_show(struct seq_file *m, void *v)
-> >       if (mach_get_model)
-> >               mach_get_model(model);
-> >       else
-> > -             strcpy(model, "Unknown m68k");
-> > +             strscpy(model, "Unknown m68k");
+> > Hmm, not sure what you're suggesting here. I see it as:
+> > - get/setfsxattrat should return EOPNOTSUPP as it make more sense
+> >   than ENOIOCTLCMD
+> > - ioctl_setflags returns ENOIOCTLCMD which also expected
 > >
-> >       seq_printf(m, "Model:\t\t%s\n", model);
-> >       for (mem = 0, i = 0; i < m68k_num_memory; i++)
->
-> As we are not using the return value, I think it is a safe replacement.
+> > Don't really see a reason to change what vfs_fileattr_set() returns
+> > and then copying this if() to other places or start returning
+> > EOPNOTSUPP.
+> 
+> ENOIOCTLCMD conceptually means that the ioctl command is unknown
+> This is not the case since ->fileattr_[gs]et() became a vfs API
 
-strcpy() and strscpy() not only differ in return value: the (optional)
-third parameter of strscpy() specifies the destination buffer size.
-When not passed, the size is taken from the actual destination buffer.
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.16.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+vfs_fileattr_{g,s}et() should not return ENOIOCTLCMD. Change the return
+code to EOPNOTSUPP and then make EOPNOTSUPP be translated to ENOTTY on
+on overlayfs and to ENOIOCTLCMD in ecryptfs and in fs/ioctl.c. This way
+we get a clean VFS api while retaining current behavior. Amir can do his
+cleanup based on that.
