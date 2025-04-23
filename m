@@ -1,220 +1,148 @@
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F504269B12
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Apr 2025 09:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3755261573
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Apr 2025 15:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745402011; cv=none; b=V51CpYupkCT9fXE0q08QYvVkN+bXut1U7o7htH09RBhKXtRlnCvebmUgWOqOEoomkVUAgKls8BAv/NK/azRFGYTkilGx1UEgbDFrF63vZLZnW458WWEf6whArr4WxP8g9xkWJAgLo1TVgZgItplKAtmepJ7SyMAWIxxsRd80LqA=
+	t=1745422969; cv=none; b=nzwrsVLNWvxxITHBwkyFx4c0v6aDowZil/enOj09391pz5fb+pqcZpILUen1Za0TyfLp8YowZQPvfcNP5jR/uFDmK8iq/4cbSpa1DSOOn+/vgme6cvPnha5Ftd2rnUs8JLj0C10lyGc162SPsCPh/0dzNIxaR4BNBKTXCMGwRo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745402011; c=relaxed/simple;
-	bh=EUt9Pc3d/cQ830Ysfg1KDOqUA0z0jpWmWw3HLSWOSdQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jxWfOWjzYnR/Yzfgj7Ae6OlTeGs1Mjp022RGyOWrXQ7NUWqumow8BlUIUhSEJ6JvLucQPFRHP3kcCYoO7t+nCs6wluI6L1uf85iPsmlKIV7TUBhW44QTSY0WEx3kDiuUSQhDPF/9YmMTbf1C52gjyT3d1FU8uRwm8T/HKdHRoBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MkBnnBgU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JV9vpkpW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MkBnnBgU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JV9vpkpW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1745422969; c=relaxed/simple;
+	bh=7tJsF6LTV2TN3xVlVPySpHErvRYqqLVyNgQr13rzef8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WNNqOQ+gEIB27JnIU0ljWHjeclKCnHfpYPhDyiFE2eWWgs0Jljn6ez089bMUnVtezr5Z00+sIkNWlEdhfMl+omNDm66BLolSkdxgxtVbCpygWlguhr/D8nW3OrFnqz7TDkoEJdI7vjNmS4gmKtEFuJe95ADhR1nFlO3rB4pvXUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lB5E0y+6; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MkBnnBgU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JV9vpkpW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MkBnnBgU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JV9vpkpW"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 53EC121192;
-	Wed, 23 Apr 2025 09:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745402006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bAMJg+22aX8wNXOVQU/q0Slu5K2ETQkFa+MaYS1q1Aw=;
-	b=MkBnnBgUY4DejLxyqWELETbhQDSZbHRBCNcJ2SL2jANKjsmepr5ez71Lc+6XleLSZfpZrU
-	TZVIrwAG2mGYIiL+u5itSCcJjvabGWmDlypht/2m5b4xnKMjA73DuYr+ZRRUAYxQRyrlLB
-	7MnS/Z/KvF6Q+pV3yLCv4FTBynvtKsg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745402006;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bAMJg+22aX8wNXOVQU/q0Slu5K2ETQkFa+MaYS1q1Aw=;
-	b=JV9vpkpWivR2j2l2iOWTdS74vSAmYn3ZCfrfQCySD6Ap21BM7ulYL6yd2KEBTFx0uVIzmS
-	IUaaLaSNx/k8B8DQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1745402006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bAMJg+22aX8wNXOVQU/q0Slu5K2ETQkFa+MaYS1q1Aw=;
-	b=MkBnnBgUY4DejLxyqWELETbhQDSZbHRBCNcJ2SL2jANKjsmepr5ez71Lc+6XleLSZfpZrU
-	TZVIrwAG2mGYIiL+u5itSCcJjvabGWmDlypht/2m5b4xnKMjA73DuYr+ZRRUAYxQRyrlLB
-	7MnS/Z/KvF6Q+pV3yLCv4FTBynvtKsg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1745402006;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bAMJg+22aX8wNXOVQU/q0Slu5K2ETQkFa+MaYS1q1Aw=;
-	b=JV9vpkpWivR2j2l2iOWTdS74vSAmYn3ZCfrfQCySD6Ap21BM7ulYL6yd2KEBTFx0uVIzmS
-	IUaaLaSNx/k8B8DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3548813A6A;
-	Wed, 23 Apr 2025 09:53:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pUq5DJa4CGhWFQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 23 Apr 2025 09:53:26 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id BEC8BA07A7; Wed, 23 Apr 2025 11:53:25 +0200 (CEST)
-Date: Wed, 23 Apr 2025 11:53:25 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andrey Albershteyn <aalbersh@redhat.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] fs: introduce getfsxattrat and setfsxattrat
- syscalls
-Message-ID: <rbzlwvecvrp4xawwp5nywdq6wp5hgjhrtrabpszv74xmfqbj4f@x7v6eqfc5gcd>
-References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
- <20250321-xattrat-syscall-v4-3-3e82e6fb3264@kernel.org>
- <20250422-abbekommen-begierde-bcf48dd74a2e@brauner>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lB5E0y+6"
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-3085f827538so25746a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Apr 2025 08:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745422967; x=1746027767; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=msbxwaw4dDDTGBYZH73Q/F51Kg6OrIx7Df//23DLu30=;
+        b=lB5E0y+6rVg+uRvPDIHmPlby4A/ygzznJnKy/mwQdD8ezIiq3OYbPFdxnL3jqLsJRi
+         DIQe7BBJ+weiczqHSsoRc345XCbUKS9GGBXuNcvxUc0/lAkur+tQWnAqppOW2X9CeVV8
+         0hg+qZCCOfXEa9zxt/aOfkWhHlHBjRkgtkIpHlww56IBGtT/05nOCBEcqCyLHP6S4xoX
+         2K8RdXhPZtpWu7Eu212Y8Ly2mju3FkpdN8xjQ7SrAYW9aQNSSyUlyu3TO560xN1Kbv7V
+         i6wwVkRrq051OnWfafdDtFUq2gDmeCIreRXtvY7m0NGyzMLN+uygpVrJ3IWnf1ByKtBG
+         vBug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745422967; x=1746027767;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=msbxwaw4dDDTGBYZH73Q/F51Kg6OrIx7Df//23DLu30=;
+        b=ZtSX2D1/Uw1i14AQ7rWeuMPwmh9ENgZ6mfDkn1tpccKYqZnFyhdCs6M0rlEFIgRYQU
+         Y8XaYe2VeVBMzvSTWvYfsA8PpemXeTS6WtL3WHs7zl+hSUM69wFOuTrpcgcPDms9582W
+         z2gOzGMnuep/0ZFdGuZ3Vu+FislxiCzRPfwzOQ6Jua/crc5917dTWtMJPwBHoGLh4kqK
+         0in1VOjHiyVLuuHKmAkiILwlgyHd1HE1mCPD4Aut845F0pKen2z/A0f+Rt50Z89ML0av
+         +g1Qjhb5Pk7Cvqo+ndSx7IhgNhML1m97MExcaQ+IZmMA6fhiMIbtEyjI1ekmOk4Kkdxa
+         I6jQ==
+X-Gm-Message-State: AOJu0YzlFrtrK4BZmJrOdhN33bTKB2rHNkz7U92rTJmGKMXuq0MjInxg
+	ICoHCu5EIsq38taIbh00RnUbNIoPMvqArSXIK1uIvQYQX08Vqe2RNKxypAPS8ytYUweW+wFmAsj
+	3cl+nrlAlaov7Rwo2PvOaJksLkqU=
+X-Gm-Gg: ASbGncuXnzBAbLRvfnbu3Yc/iaLkV5o1JuP1NoSIUEm/7sTFWenPj77+WvyNje2SWeZ
+	W2eWRudSQjxO0WCTd8Q9877mAlY+SOdIIWKBMReHCyesmD+mKK+bTIyC7K4N05eU6YtyGLY6akH
+	y00AGXHSUSsF2qoK4ULnPy19Y=
+X-Google-Smtp-Source: AGHT+IFZAwM4sun1dByESMz9CCH4BRvNFnr7EdDKA4KFW/W/IXm92EgPOGJEwqSAjcoHJrRZJOQb2RUUdD9tovhhKBQ=
+X-Received: by 2002:a17:90b:51c7:b0:301:1c11:aa83 with SMTP id
+ 98e67ed59e1d1-3087bbad714mr28423963a91.28.1745422966840; Wed, 23 Apr 2025
+ 08:42:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250422-abbekommen-begierde-bcf48dd74a2e@brauner>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[redhat.com,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,linux-m68k.org,monstr.eu,alpha.franken.de,hansenpartnership.com,gmx.de,linux.ibm.com,ellerman.id.au,csgroup.eu,users.sourceforge.jp,libc.org,physik.fu-berlin.de,davemloft.net,gaisler.com,linutronix.de,alien8.de,linux.intel.com,zytor.com,zankel.net,zeniv.linux.org.uk,suse.cz,digikod.net,google.com,arndb.de,paul-moore.com,namei.org,hallyn.com,vger.kernel.org,lists.infradead.org,lists.linux-m68k.org,lists.ozlabs.org];
-	R_RATELIMIT(0.00)[to_ip_from(RLyerg7kx5bdf6cnfzf33td54o)];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[60];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+References: <20250417201013.46384-1-shankari.ak0208@gmail.com>
+ <CAMuHMdU9w8dc5T=0B7mECJhrK6ARUiGjJ3EG=0-BR9gbJm-XPA@mail.gmail.com> <CAPRMd3m2UmfPrzD2eXW9s_Uc1kM4cwCB4pMAbSSPX+MB85=H=A@mail.gmail.com>
+In-Reply-To: <CAPRMd3m2UmfPrzD2eXW9s_Uc1kM4cwCB4pMAbSSPX+MB85=H=A@mail.gmail.com>
+From: Shankari <shankari.ak0208@gmail.com>
+Date: Wed, 23 Apr 2025 21:12:34 +0530
+X-Gm-Features: ATxdqUGH9CdkJKB6goaoFyitsQC8r0g5JhLDAHlfP0EkZbFXT3xuVoFnNFVR4do
+Message-ID: <CAPRMd3mPw5+_wt4HAr-5SHXLWXCFBNqKBj1phE9d52_GBHr_kg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: replace deprecated strncpy with strscpy
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, jeanmichel.hautbois@yoseli.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 22-04-25 16:59:02, Christian Brauner wrote:
-> On Fri, Mar 21, 2025 at 08:48:42PM +0100, Andrey Albershteyn wrote:
-> > From: Andrey Albershteyn <aalbersh@redhat.com>
-> > 
-> > Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
-> > extended attributes/flags. The syscalls take parent directory fd and
-> > path to the child together with struct fsxattr.
-> > 
-> > This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
-> > that file don't need to be open as we can reference it with a path
-> > instead of fd. By having this we can manipulated inode extended
-> > attributes not only on regular files but also on special ones. This
-> > is not possible with FS_IOC_FSSETXATTR ioctl as with special files
-> > we can not call ioctl() directly on the filesystem inode using fd.
-> > 
-> > This patch adds two new syscalls which allows userspace to get/set
-> > extended inode attributes on special files by using parent directory
-> > and a path - *at() like syscall.
-> > 
-> > CC: linux-api@vger.kernel.org
-> > CC: linux-fsdevel@vger.kernel.org
-> > CC: linux-xfs@vger.kernel.org
-> > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
-...
-> > +		struct fsxattr __user *, ufsx, size_t, usize,
-> > +		unsigned int, at_flags)
-> > +{
-> > +	struct fileattr fa = {};
-> > +	struct path filepath;
-> > +	int error;
-> > +	unsigned int lookup_flags = 0;
-> > +	struct filename *name;
-> > +	struct fsxattr fsx = {};
-> > +
-> > +	BUILD_BUG_ON(sizeof(struct fsxattr) < FSXATTR_SIZE_VER0);
-> > +	BUILD_BUG_ON(sizeof(struct fsxattr) != FSXATTR_SIZE_LATEST);
-> > +
-> > +	if ((at_flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
-> > +		return -EINVAL;
-> > +
-> > +	if (!(at_flags & AT_SYMLINK_NOFOLLOW))
-> > +		lookup_flags |= LOOKUP_FOLLOW;
-> > +
-> > +	if (at_flags & AT_EMPTY_PATH)
-> > +		lookup_flags |= LOOKUP_EMPTY;
-> > +
-> > +	if (usize > PAGE_SIZE)
-> > +		return -E2BIG;
-> > +
-> > +	if (usize < FSXATTR_SIZE_VER0)
-> > +		return -EINVAL;
-> > +
-> > +	name = getname_maybe_null(filename, at_flags);
-> > +	if (!name) {
-> 
-> This is broken as it doesn't handle AT_FDCWD correctly. You need:
-> 
->         name = getname_maybe_null(filename, at_flags);
->         if (IS_ERR(name))
->                 return PTR_ERR(name);
-> 
->         if (!name && dfd >= 0) {
-> 		CLASS(fd, f)(dfd);
+Hi Geert,
 
-Ah, you're indeed right that if dfd == AT_FDCWD and filename == NULL, the
-we should operate on cwd but we'd bail with error here. I've missed that
-during my review. But as far as I've checked the same bug is there in
-path_setxattrat() and path_getxattrat() so we should fix this there as
-well?
+Thank you for the quick review and for pointing that out!
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Apologies for the duplicate. I'll make sure to check for existing
+commits more carefully next time. I appreciate your time and feedback.
+
+Regards,
+Shankari
+
+
+On Wed, Apr 23, 2025 at 8:49=E2=80=AFPM Shankari <shankari.ak0208@gmail.com=
+> wrote:
+>
+> Hi Geert,
+>
+> Thank you for the quick review and for pointing that out!
+>
+> Apologies for the duplicate. I'll make sure to check for existing commits=
+ more carefully next time. I appreciate your time and feedback.
+>
+> Regards,
+> Shankari
+>
+>
+> On Tue, Apr 22, 2025 at 12:23=E2=80=AFPM Geert Uytterhoeven <geert@linux-=
+m68k.org> wrote:
+>>
+>> Hi Shankari,
+>>
+>> On Thu, 17 Apr 2025 at 22:10, Shankari02 <shankari.ak0208@gmail.com> wro=
+te:
+>> > The use of strncpy() does not guarantee NUL-termination and is depreca=
+ted
+>> > in the Linux kernel. This code manually terminates the buffer afterwar=
+d,
+>> > but using strscpy() is simpler and safer.
+>> >
+>> > This change replaces the strncpy() + NUL termination pattern with strs=
+cpy().
+>> >
+>> > Signed-off-by: Shankari Anand <shankari.ak0208@gmail.com>
+>>
+>> Thanks for your patch!
+>>
+>> > --- a/arch/m68k/kernel/setup_mm.c
+>> > +++ b/arch/m68k/kernel/setup_mm.c
+>> > @@ -243,8 +243,7 @@ void __init setup_arch(char **cmdline_p)
+>> >         setup_initial_init_mm((void *)PAGE_OFFSET, _etext, _edata, _en=
+d);
+>> >
+>> >  #if defined(CONFIG_BOOTPARAM)
+>> > -       strncpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
+>> > -       m68k_command_line[CL_SIZE - 1] =3D 0;
+>> > +       strscpy(m68k_command_line, CONFIG_BOOTPARAM_STRING, CL_SIZE);
+>> >  #endif /* CONFIG_BOOTPARAM */
+>> >         process_uboot_commandline(&m68k_command_line[0], CL_SIZE);
+>> >         *cmdline_p =3D m68k_command_line;
+>>
+>> The same change was already applied as commit a7130910b80753d5 ("m68k:
+>> mm: Replace deprecated strncpy() with strscpy()") in v6.15-rc1.
+>>
+>> Gr{oetje,eeting}s,
+>>
+>>                         Geert
+>>
+>> --
+>> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m=
+68k.org
+>>
+>> In personal conversations with technical people, I call myself a hacker.=
+ But
+>> when I'm talking to journalists I just say "programmer" or something lik=
+e that.
+>>                                 -- Linus Torvalds
