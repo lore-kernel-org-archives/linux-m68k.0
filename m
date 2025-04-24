@@ -1,105 +1,102 @@
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55D7625
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 00:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22371F3BBC
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 07:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745453584; cv=none; b=LwuhelSahYQ5/K+iIUh5GjwL5tX8sgY0rpcFxMCoNt2P3/eAeZ5DO6WqFVdkJU4W61ZpxwcdqAvNaS6Fk9QTmmzgFBEkrYPnb/AYXJKHi2ltDe94qbBTjD9KxW2QKc6Bx9i56LOKNFM7yBAdj/QItdvgmRZyzs/dN5T6ocAWbOg=
+	t=1745479709; cv=none; b=eEZIViS8sq/MZv7fpvZewl1EZbnvESb1pQl5nGGzZgYoFLwC5L6dSLwsbiHCDagOvI0G5GlibgQ/a+rznSQL1il9c9VpNBZuRyZN76TCT0iZeZdiECNft3RpNF4uriGefNdi7+55KhGjfjiyLwC7yiiESxpSrk+vRSUu1zJZzOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745453584; c=relaxed/simple;
-	bh=KXVwvi4uGf7fKHoCEnFJtgiP4j/zZbTnigzekKy7y4U=;
-	h=To:Cc:Message-ID:From:Subject:Date; b=AfJs7ARqenaLqK2400DbAaucNO5cZzCkIqxx91XqFQMmx+lQbT+eU1JXeXOYVyJt7KQvZyiHTHir0YjzBIaqexA2cELsFHXfde1DFuGkiSnMXnf+gp0hC7NDBEwwk+9C1PvWz/TrUbdXlBVDHe5/gLN4dmzLz6MVbrCfLojrQMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OSBzwhXl; arc=none smtp.client-ip=202.12.124.144
+	s=arc-20240116; t=1745479709; c=relaxed/simple;
+	bh=rrafsmQRgHakfZDjK1w6FolouhAo42wX9rjQTJYVUM4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DcHvZ8cZSFfuuOl3nWrVaknsjXa7/JlUXntTIyAoGxCFYmx2mQEugAsuPBMOCL/YTL14FphHIC5vkR0Mzc24ZyQJyCOOzzwatw8J2JtP3bAmNvAJ/ja53MBIH6lNMx2xJFOUTbllfspw4h547W2pO2pfrNqpQkvBRSZfx4DOdoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OSBzwhXl"
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 8551A11401E2;
-	Wed, 23 Apr 2025 20:12:58 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Wed, 23 Apr 2025 20:12:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1745453578; x=1745539978; bh=v7iUFaq4E3JkL9AyU+buOcFRQq9P
-	UDS9u0Co2tFiTs0=; b=OSBzwhXls1aE7sxOO4HY86Oj72/3jL+nPb0y+UXu8Rd6
-	m+SnB4xSiAyH2zTTtBT9hsorkee938wLxQvrPwIHvPvlpAgQ1NQjTv3maF4aR16g
-	4tv/Ry9+3KiMSllhkevtUF3XCpQ324sfqbRVhK9HlTGbMI7WZ6FDjXTF/bdK6Xqd
-	jzixL+uJU1VLmYVMKH8iPnvThtbTsuxiX1CzZmMZMe3q4jhy7aQ4gmv7C1bPLEOM
-	YrjTbD9sE9D4l3efT+p02Hj+wDnoHJPaUJ5jVJLODZu2BtqlScfTHTWupXtedV6Z
-	8cK6nVBZDxnv+vsA1AYcYMkby5fFcJv+ugMbofAxNg==
-X-ME-Sender: <xms:CYIJaL5nVooWzxU0Av2ACtrrJvJFVccn-jjavW27hlt1hK4e8K2YzQ>
-    <xme:CYIJaA78HDcRRSwwrv6-hhKgHQY8NrRBXn0GG92oDRpRa_DRySDhwGgUYAzZ4U6nk
-    VlbT12A-O4qUBThSo4>
-X-ME-Received: <xmr:CYIJaCc-FPqihXq5l36yQiXI4lj4nY5YUIoaJg1y6Dp9Wu8sLR7UYPHISe1PsvO-fHvyZfzsxGjr7utkWgNCUlRzgq5z_2ZflgY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvgeektdduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhr
-    ohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorh
-    hgqeenucggtffrrghtthgvrhhnpeehfffggeefveegvedtiefffeevuedtgefhueehieet
-    ffejfefggeevfeeuvdduleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgt
-    phhtthhopeegpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgvggvrhhtsehlih
-    hnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehfuhhnrghhohesjhhurhgrihdrohhr
-    ghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheike
-    hkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhn
-    vghlrdhorhhg
-X-ME-Proxy: <xmx:CYIJaMLsTA3LztnmjIobrDfqRjuuf_MujzA7YHXbl_q4clTecXWmJw>
-    <xmx:CYIJaPLekoHuVpIyuCrFZpPpi1UUZ25LqIYCubrccwC-Sq6kNC7feQ>
-    <xmx:CYIJaFz11APJLZI2Z23OCx3Ag6-OmSMJIyk_tLiRKKKaNB4k_k39Iw>
-    <xmx:CYIJaLKximFEV5voY5SqIZm123qV2vAtTduyFgvXXh6PjUc1_cVwxw>
-    <xmx:CoIJaNBMWSWp-3u6Q9vYhqD-R9eJ7Z0TdkGR98kB6FhY1C0z4jaZ_1M6>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Apr 2025 20:12:55 -0400 (EDT)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <d0f30a551064ca4810b1c48d5a90954be80634a9.1745453246.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] m68k/mac: Fix macintosh_config for Mac II
-Date: Thu, 24 Apr 2025 10:07:26 +1000
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-86fbb48fc7fso309933241.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 00:28:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745479705; x=1746084505;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9seCpacsNWkUEqB++ORNCS6Ujo5QbBvcFa4UL8hXrKk=;
+        b=Zw//lamzUjC+o+XZeu8y8SnFTFr6GmYwoFRA+GAgjKQIyrBptcxaHGEu61giN63xzw
+         8WBdvwm7yAIUoe1fwmVIRuSZndkZzXVCQeIs4Efwf48CQeVkslWaRDTqeyaNVGJgy08Y
+         9ft6atOM8Yfa+iF1nS36LNWaHU0+mJDNTbuCTinWu2qFvVB3ciDZSYMJF174fVmZkeZK
+         62CuIiFj0BqMwrhPeuvyXbJp+VshpsBAQhBXIBGIuqV63wz4Yjbl+GEHWCC/xR9fu+e6
+         h/ORjce1pcnZb2t9YLcFZUHPHDs8nAQppnOZbtvgsUf+q0nZAamg8gfclVA+RCeMr4dI
+         x8/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVeIiCtHwsnDmEU+ro0by0S6C3ls2xh9Hs13GzESsKjogQB4vvPlxeyfQMZO5lt74V/Hf+mFDlvf4sV@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yz5BR/4lgqc1hLOLx0OzQgAv8cjBGwlGqFHVwm2MjHBZeWl8pP4
+	U7Lgecuw6vQUONdY+iXM4jWK0SWSzeLYjd9ij6JFlDaIyGS5lVHFihSE8ug6
+X-Gm-Gg: ASbGncvSAxbrYakZSNgEZ1D5PDGZ9VlZhVk605HVe3/xhytnoCEJM/62KLFWfdTE025
+	IErfsMJM+/tJIolddg2DQTZvkg6WceHCC7IpiBsj4rmCWZLV4W1BJ/6EvToMEZDWuCwhiarHQgo
+	JfmtgUOhX5uNFqQF3D8YkuvvSBSKdbO0/saqyuVY+Z8j5BTg1QiKmEL1dGVxIQN7Jz9/tyCeJrE
+	1tmTPRYuXt3o9pM+Fq0zDi1ajJjMwQiBM7rM6Cgvpwp9ei/s8ug1X/7YNNlS1h3VS4PcMehzhLF
+	Lai5kwl3+zrRPOqqyjVKOrHcrKp9qc3cDULfouVkfCrj6jK3eiBPeNKNJ692R3PT00r93XlMl6d
+	t0FtXZJg=
+X-Google-Smtp-Source: AGHT+IH722paWbOv+hJaF2Iemd2gNa1I/0OasQ/OQCPpFXLjjPgg5Kw9Us83BpcWJ8Zl9qSxmfbaig==
+X-Received: by 2002:a05:6102:54ac:b0:4cb:5ec2:52ea with SMTP id ada2fe7eead31-4d38f2e79e4mr1249733137.22.1745479704516;
+        Thu, 24 Apr 2025 00:28:24 -0700 (PDT)
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-877aef2f8ccsm190226241.27.2025.04.24.00.28.23
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Apr 2025 00:28:23 -0700 (PDT)
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-5262475372eso364817e0c.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 00:28:23 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXp5FuFT2I/M62QdNaqnidg0MZijqPI+aTvucgLB80MxYZBc9FarehiLT3gPq00ZlAh8AN6wGdmXeX+@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:94d:b0:4c3:9b0:9e6b with SMTP id
+ ada2fe7eead31-4d38d2231b4mr1364322137.10.1745479703504; Thu, 24 Apr 2025
+ 00:28:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <d0f30a551064ca4810b1c48d5a90954be80634a9.1745453246.git.fthain@linux-m68k.org>
+In-Reply-To: <d0f30a551064ca4810b1c48d5a90954be80634a9.1745453246.git.fthain@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 24 Apr 2025 09:28:11 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWD6GXLiKeOQRUT9BSPzXcMKYyk-YonvodZvTia2VEzHA@mail.gmail.com>
+X-Gm-Features: ATxdqUHeMyl0vXyqZGyuC_hoFBTwBf9LswSSeAvstppnbqazV4KiNo1iFAwzm_o
+Message-ID: <CAMuHMdWD6GXLiKeOQRUT9BSPzXcMKYyk-YonvodZvTia2VEzHA@mail.gmail.com>
+Subject: Re: [PATCH] m68k/mac: Fix macintosh_config for Mac II
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-When booted on my Mac II, the kernel prints this:
+On Thu, 24 Apr 2025 at 02:13, Finn Thain <fthain@linux-m68k.org> wrote:
+> When booted on my Mac II, the kernel prints this:
+>
+>     Detected Macintosh model: 6
+>     Apple Macintosh Unknown
+>
+> The catch-all entry ("Unknown") is mac_data_table[0] which is only needed
+> in the unlikely event that the bootinfo model ID can't be matched.
+> When model ID is 6, the search should begin and end at mac_data_table[1].
+> Fix the off-by-one error that causes this problem.
+>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-    Detected Macintosh model: 6
-    Apple Macintosh Unknown
+Nice catch!
 
-The catch-all entry ("Unknown") is mac_data_table[0] which is only needed
-in the unlikely event that the bootinfo model ID can't be matched.
-When model ID is 6, the search should begin and end at mac_data_table[1].
-Fix the off-by-one error that causes this problem.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.16.
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- arch/m68k/mac/config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index e324410ef239..d26c7f4f8c36 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -793,7 +793,7 @@ static void __init mac_identify(void)
- 	}
- 
- 	macintosh_config = mac_data_table;
--	for (m = macintosh_config; m->ident != -1; m++) {
-+	for (m = &mac_data_table[1]; m->ident != -1; m++) {
- 		if (m->ident == model) {
- 			macintosh_config = m;
- 			break;
+                        Geert
+
 -- 
-2.45.3
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
