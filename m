@@ -1,102 +1,153 @@
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22371F3BBC
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 07:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15731DED49
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 09:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745479709; cv=none; b=eEZIViS8sq/MZv7fpvZewl1EZbnvESb1pQl5nGGzZgYoFLwC5L6dSLwsbiHCDagOvI0G5GlibgQ/a+rznSQL1il9c9VpNBZuRyZN76TCT0iZeZdiECNft3RpNF4uriGefNdi7+55KhGjfjiyLwC7yiiESxpSrk+vRSUu1zJZzOI=
+	t=1745485585; cv=none; b=hO7Edhmf0rI/b1eQ5pDyNE9tNJw7+dS95Fv6jUa6eRIwV4K4xdhNEphpshVIkhkmScBp5rdFq/KJ9MGuuRl+jYMIeRzvg5XE8p6WoCa7nnk3wsvAt4Wx3lpes1eQyM8+m2J0rcCdweRJ5+rJfRzm/pFP1IyrIGKMIQLQsMcUj4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745479709; c=relaxed/simple;
-	bh=rrafsmQRgHakfZDjK1w6FolouhAo42wX9rjQTJYVUM4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DcHvZ8cZSFfuuOl3nWrVaknsjXa7/JlUXntTIyAoGxCFYmx2mQEugAsuPBMOCL/YTL14FphHIC5vkR0Mzc24ZyQJyCOOzzwatw8J2JtP3bAmNvAJ/ja53MBIH6lNMx2xJFOUTbllfspw4h547W2pO2pfrNqpQkvBRSZfx4DOdoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-86fbb48fc7fso309933241.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 00:28:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745479705; x=1746084505;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9seCpacsNWkUEqB++ORNCS6Ujo5QbBvcFa4UL8hXrKk=;
-        b=Zw//lamzUjC+o+XZeu8y8SnFTFr6GmYwoFRA+GAgjKQIyrBptcxaHGEu61giN63xzw
-         8WBdvwm7yAIUoe1fwmVIRuSZndkZzXVCQeIs4Efwf48CQeVkslWaRDTqeyaNVGJgy08Y
-         9ft6atOM8Yfa+iF1nS36LNWaHU0+mJDNTbuCTinWu2qFvVB3ciDZSYMJF174fVmZkeZK
-         62CuIiFj0BqMwrhPeuvyXbJp+VshpsBAQhBXIBGIuqV63wz4Yjbl+GEHWCC/xR9fu+e6
-         h/ORjce1pcnZb2t9YLcFZUHPHDs8nAQppnOZbtvgsUf+q0nZAamg8gfclVA+RCeMr4dI
-         x8/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVeIiCtHwsnDmEU+ro0by0S6C3ls2xh9Hs13GzESsKjogQB4vvPlxeyfQMZO5lt74V/Hf+mFDlvf4sV@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yz5BR/4lgqc1hLOLx0OzQgAv8cjBGwlGqFHVwm2MjHBZeWl8pP4
-	U7Lgecuw6vQUONdY+iXM4jWK0SWSzeLYjd9ij6JFlDaIyGS5lVHFihSE8ug6
-X-Gm-Gg: ASbGncvSAxbrYakZSNgEZ1D5PDGZ9VlZhVk605HVe3/xhytnoCEJM/62KLFWfdTE025
-	IErfsMJM+/tJIolddg2DQTZvkg6WceHCC7IpiBsj4rmCWZLV4W1BJ/6EvToMEZDWuCwhiarHQgo
-	JfmtgUOhX5uNFqQF3D8YkuvvSBSKdbO0/saqyuVY+Z8j5BTg1QiKmEL1dGVxIQN7Jz9/tyCeJrE
-	1tmTPRYuXt3o9pM+Fq0zDi1ajJjMwQiBM7rM6Cgvpwp9ei/s8ug1X/7YNNlS1h3VS4PcMehzhLF
-	Lai5kwl3+zrRPOqqyjVKOrHcrKp9qc3cDULfouVkfCrj6jK3eiBPeNKNJ692R3PT00r93XlMl6d
-	t0FtXZJg=
-X-Google-Smtp-Source: AGHT+IH722paWbOv+hJaF2Iemd2gNa1I/0OasQ/OQCPpFXLjjPgg5Kw9Us83BpcWJ8Zl9qSxmfbaig==
-X-Received: by 2002:a05:6102:54ac:b0:4cb:5ec2:52ea with SMTP id ada2fe7eead31-4d38f2e79e4mr1249733137.22.1745479704516;
-        Thu, 24 Apr 2025 00:28:24 -0700 (PDT)
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-877aef2f8ccsm190226241.27.2025.04.24.00.28.23
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Apr 2025 00:28:23 -0700 (PDT)
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-5262475372eso364817e0c.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 24 Apr 2025 00:28:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXp5FuFT2I/M62QdNaqnidg0MZijqPI+aTvucgLB80MxYZBc9FarehiLT3gPq00ZlAh8AN6wGdmXeX+@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:94d:b0:4c3:9b0:9e6b with SMTP id
- ada2fe7eead31-4d38d2231b4mr1364322137.10.1745479703504; Thu, 24 Apr 2025
- 00:28:23 -0700 (PDT)
+	s=arc-20240116; t=1745485585; c=relaxed/simple;
+	bh=g6bxeBGFz+ZfAiISf78nYF5d6OuqVi+zKYMYmkzuYww=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hkXW9vCOHm6UaXBUNib8cJV3kSgzjMwS14dTeD93KkYURDPvjV7qAhHyR/LYpeyWBnFgJMFZWX/n7pQF2Ne7yiaV7v0lHsCK7WtAMfI97LfjZnYzDuwHI4CXaQa5JsZOnF7aU9jqvo/04mzfg1WDUBnAOjJcJjU8y+pnyQNxNhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qPzQ2EtO; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qPzQ2EtO"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3068C5C634D;
+	Thu, 24 Apr 2025 09:04:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF029C4CEEB;
+	Thu, 24 Apr 2025 09:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745485581;
+	bh=g6bxeBGFz+ZfAiISf78nYF5d6OuqVi+zKYMYmkzuYww=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qPzQ2EtOhRHjvqeIqmfEs41n41+fPOpo5wVb0WXRA0Y64JK63Z0piOH/6q1TuKDwD
+	 WTI9c9BorspnKyVAu3DQkYsACDPHLJTqVVPTN6kTMVKEScUaCBv3GdtHESuUO5NqC6
+	 pqjqzGFZkOK5FpMLm1+UNv77/mYGep1Zag5d47x0b6vZpoHTEkoNH1VrlBp4U0AaKU
+	 qsF/Vn2vnRvvp1Kn7/YXcOkrtYa0w4Ynlqq5gkE0B8hjxnGwh/iyaywzNfxrIZA9z+
+	 2pzSBGKxX+TFKn8wOJih4WXcFzFXNu3Sjb1AkS/krSZea9kudjKkOe+16Pk7titbWK
+	 ch3/3zyDdzWnA==
+Date: Thu, 24 Apr 2025 11:06:07 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Andrey Albershteyn <aalbersh@redhat.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] fs: introduce getfsxattrat and setfsxattrat
+ syscalls
+Message-ID: <20250424-zuspielen-luxus-3d49b600c3bf@brauner>
+References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
+ <20250321-xattrat-syscall-v4-3-3e82e6fb3264@kernel.org>
+ <20250422-abbekommen-begierde-bcf48dd74a2e@brauner>
+ <rbzlwvecvrp4xawwp5nywdq6wp5hgjhrtrabpszv74xmfqbj4f@x7v6eqfc5gcd>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <d0f30a551064ca4810b1c48d5a90954be80634a9.1745453246.git.fthain@linux-m68k.org>
-In-Reply-To: <d0f30a551064ca4810b1c48d5a90954be80634a9.1745453246.git.fthain@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 24 Apr 2025 09:28:11 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWD6GXLiKeOQRUT9BSPzXcMKYyk-YonvodZvTia2VEzHA@mail.gmail.com>
-X-Gm-Features: ATxdqUHeMyl0vXyqZGyuC_hoFBTwBf9LswSSeAvstppnbqazV4KiNo1iFAwzm_o
-Message-ID: <CAMuHMdWD6GXLiKeOQRUT9BSPzXcMKYyk-YonvodZvTia2VEzHA@mail.gmail.com>
-Subject: Re: [PATCH] m68k/mac: Fix macintosh_config for Mac II
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <rbzlwvecvrp4xawwp5nywdq6wp5hgjhrtrabpszv74xmfqbj4f@x7v6eqfc5gcd>
 
-On Thu, 24 Apr 2025 at 02:13, Finn Thain <fthain@linux-m68k.org> wrote:
-> When booted on my Mac II, the kernel prints this:
->
->     Detected Macintosh model: 6
->     Apple Macintosh Unknown
->
-> The catch-all entry ("Unknown") is mac_data_table[0] which is only needed
-> in the unlikely event that the bootinfo model ID can't be matched.
-> When model ID is 6, the search should begin and end at mac_data_table[1].
-> Fix the off-by-one error that causes this problem.
->
-> Cc: Joshua Thompson <funaho@jurai.org>
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+On Wed, Apr 23, 2025 at 11:53:25AM +0200, Jan Kara wrote:
+> On Tue 22-04-25 16:59:02, Christian Brauner wrote:
+> > On Fri, Mar 21, 2025 at 08:48:42PM +0100, Andrey Albershteyn wrote:
+> > > From: Andrey Albershteyn <aalbersh@redhat.com>
+> > > 
+> > > Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
+> > > extended attributes/flags. The syscalls take parent directory fd and
+> > > path to the child together with struct fsxattr.
+> > > 
+> > > This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
+> > > that file don't need to be open as we can reference it with a path
+> > > instead of fd. By having this we can manipulated inode extended
+> > > attributes not only on regular files but also on special ones. This
+> > > is not possible with FS_IOC_FSSETXATTR ioctl as with special files
+> > > we can not call ioctl() directly on the filesystem inode using fd.
+> > > 
+> > > This patch adds two new syscalls which allows userspace to get/set
+> > > extended inode attributes on special files by using parent directory
+> > > and a path - *at() like syscall.
+> > > 
+> > > CC: linux-api@vger.kernel.org
+> > > CC: linux-fsdevel@vger.kernel.org
+> > > CC: linux-xfs@vger.kernel.org
+> > > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> ...
+> > > +		struct fsxattr __user *, ufsx, size_t, usize,
+> > > +		unsigned int, at_flags)
+> > > +{
+> > > +	struct fileattr fa = {};
+> > > +	struct path filepath;
+> > > +	int error;
+> > > +	unsigned int lookup_flags = 0;
+> > > +	struct filename *name;
+> > > +	struct fsxattr fsx = {};
+> > > +
+> > > +	BUILD_BUG_ON(sizeof(struct fsxattr) < FSXATTR_SIZE_VER0);
+> > > +	BUILD_BUG_ON(sizeof(struct fsxattr) != FSXATTR_SIZE_LATEST);
+> > > +
+> > > +	if ((at_flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
+> > > +		return -EINVAL;
+> > > +
+> > > +	if (!(at_flags & AT_SYMLINK_NOFOLLOW))
+> > > +		lookup_flags |= LOOKUP_FOLLOW;
+> > > +
+> > > +	if (at_flags & AT_EMPTY_PATH)
+> > > +		lookup_flags |= LOOKUP_EMPTY;
+> > > +
+> > > +	if (usize > PAGE_SIZE)
+> > > +		return -E2BIG;
+> > > +
+> > > +	if (usize < FSXATTR_SIZE_VER0)
+> > > +		return -EINVAL;
+> > > +
+> > > +	name = getname_maybe_null(filename, at_flags);
+> > > +	if (!name) {
+> > 
+> > This is broken as it doesn't handle AT_FDCWD correctly. You need:
+> > 
+> >         name = getname_maybe_null(filename, at_flags);
+> >         if (IS_ERR(name))
+> >                 return PTR_ERR(name);
+> > 
+> >         if (!name && dfd >= 0) {
+> > 		CLASS(fd, f)(dfd);
+> 
+> Ah, you're indeed right that if dfd == AT_FDCWD and filename == NULL, the
+> we should operate on cwd but we'd bail with error here. I've missed that
+> during my review. But as far as I've checked the same bug is there in
+> path_setxattrat() and path_getxattrat() so we should fix this there as
+> well?
 
-Nice catch!
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.16.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Yes, please!
