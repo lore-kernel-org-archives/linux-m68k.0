@@ -1,677 +1,249 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C77215781
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Apr 2025 18:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C708189B8C
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 26 Apr 2025 04:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745605022; cv=none; b=aZlVMNQuGMZzEc3x2EUCOPAlRolWzpbkoA+dqWYODiDJ5DEnENNpF/NzJPFXzX659+LDgA4EbGlxfanB1o7RdXmI+tTVpVOvonNRqCyp4pLRWn75mtzizI98YrU1SCEWNcrbMJW+SuUwwQ0FzdGrVyRQGgzwJTDSNUzEyCPiPT0=
+	t=1745640741; cv=none; b=gmbBvJxnNVeAoJkS76qOg0aiIYYdaRTQAmVVEurPyTQJ5AnaAfvfwzFU9D80eC5lgAZ1VmdfuHiNtIjoZqXk+UWB5EJunJzpLol+CIjZ1syhFHHm8hVF5IHi/XzhTegxTQG6RhDeUAUmXomf5IrWaEkBW+qUm4wzyd96qMDPQf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745605022; c=relaxed/simple;
-	bh=xRwS7DIQ9xzKdaaNVSmdVjShk/A0oP6INDbbCT/nzow=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 In-Reply-To:Content-Type:Content-Disposition; b=NhN26LnQfAXl1L9ll5k8AbVwvWlXZgR9fF/SXhEnm3y8k3yV5suerfZNzKrJw11KATU/j5l0z2u5JHUYd7FyMeLRTriL6RwEc/yTleQyF9XmdLftV65EZiGO5E0Vv3sTHpNJXbbZzhwsx2a/sBActIKC8ne/Rr5nLKd1K5Ftxvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XQBXvh6d; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1745640741; c=relaxed/simple;
+	bh=X798se1yqIjQj7BbSweueyaGMPQVZK7ePL+HlYpOiZQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nYo/keRT1f9raTCUuUVeyR+gkJoAM6MVi2DUa6IherwC+O1qfxYlFKXXeBDhqCti8U3uAR8ZX60I688zqZ4cQ4PwAtjT++o68LPrqDRDNfGGKJbAlA1Oj53HfM42qIxvc+h9ehmjknFO2zGv6JTYWxSjcDfaElYewZqFxzT1sl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=XlixYotI; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XQBXvh6d"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1745605018;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3/H3vr0OCdDcR3s3PDhlvbwdaoTNbpfjoBVpx9IMnBk=;
-	b=XQBXvh6dGO/AW/cAqs2Tc4It3KEa9KikLxaHcySET2Jw5OXbM3dn9QioqzmmABHu9viAqN
-	l6HC+YD4jXnvmiDjn+Ejzb/Lk8UJ1HlXHS3nX6duRULxBxByAjCdeXkGEvOESBU3hTMHNI
-	sClDMQqnmXUFX/LEPq1AyuVif5WU3No=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-520-ceurl57hM-2MxWw8IR806Q-1; Fri, 25 Apr 2025 14:16:55 -0400
-X-MC-Unique: ceurl57hM-2MxWw8IR806Q-1
-X-Mimecast-MFC-AGG-ID: ceurl57hM-2MxWw8IR806Q_1745605014
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-ac6caf952d7so253774066b.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Apr 2025 11:16:55 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="XlixYotI"
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-227d6b530d8so34026435ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 25 Apr 2025 21:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1745640738; x=1746245538; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LuPMmzATkY8xATRRwXVPRE8uVlsNQkZoSS0OdxW6pAs=;
+        b=XlixYotIjpVnO2kOHXf8MIeTZafA5wKP61ByLWBthUkigQyNadb9IxYqXNpRPcdpJa
+         teWpZa/BU457hMeZueI0Mh7sCEMpXqCm3kCZa9TZR0GxLmSPWtLORzHZi1lTUM1/51LX
+         SlB0A/l6RzBHByXQ/vpflDWtDLe83L4S7fhvU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745605014; x=1746209814;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/H3vr0OCdDcR3s3PDhlvbwdaoTNbpfjoBVpx9IMnBk=;
-        b=djDJVVL1nBFJh2GthMIYrvAVWMkDAxGg+IuzPRQJL7XVABW1u3RzC6HMG9eOZJEMfL
-         QOsP7JCgO+I+43Vx4kjQNQNm0no1VteOfb3quDVOvQADLMSCsbnBgUXA1U48gWJCKGdJ
-         EJG9QtMqK5yAliV8qtgEcFbiet/tdNlm2IE4AuZz0ulaEbHbbEHjf6SDellJGeSv3kj8
-         0iR9/EfeRUcOcXYg1wyEEcUDHCC1fUiMHiXEAMPEOTFxVmf56qSWJ6OKlqgZv9VLCmzP
-         Q69RiHqGAYnWim9vrKY6HvcePoXcltmDBbbWUsf6sqTkC02UDgiM0o982sWDNjgARecO
-         lEYw==
-X-Forwarded-Encrypted: i=1; AJvYcCW3ZeNup1ewlYhkt3Mxw6K/ej5qvasBWHKq7qqauKY0vQy5QrBV9u4qK1XnElonWG7v9u7+X/3Rf07C@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwRvUP+7GKSR+L//ADJBgsP2FTtXGqbPCgJwWe8ctxnbioNVXHS
-	YrUZ77hIlPTxpaxgwZe1CXoydy7cr7w3tnaOIEr2Ehls73dvZRL0kvhpBBzinUwuhure44hQIOQ
-	FmhJlDbTkN3RG7mBzwIP/girWcFUadHAM41HR7SoGBw1VilsC6tFOy4wqlt2ON5bp
-X-Gm-Gg: ASbGncuIGU7QbOfnZjRxVPDYaovFCBmDg6Os8DogngxZeG4jDvVwbI+DgLVaIbjNsuh
-	6CDYueWk6hgv+ycjjEqsWr8fPtJJDKw+UsL6DNLP0ve7W5tPLmBz69N1odKd+bTh+elo1av+N5M
-	ZiSGmq+rE0KnFHnsvbxV+5qocSvpsHuArlGlCthRxXces024VRjHTZKeZaz0rmVyKA5SxB97Tmy
-	rq9uNXohqjgvK9iGToQJR8gT2VEcMDZuyQk8+CQhUnT3WpJNuBitbxZx4WrjqVC1Q24XNxn/JXK
-	wNClFqJTmHgyU6PMIE/GnB7zIY/MUPI=
-X-Received: by 2002:a17:907:720d:b0:ac7:eb12:dc69 with SMTP id a640c23a62f3a-ace7110bb7emr344213566b.28.1745605013840;
-        Fri, 25 Apr 2025 11:16:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEcwZ2uBmoBZxtvmd2g+z9kEiApYvdSEco/tISBfW2KUfnlzh1cUwx+QqrN8Zv6maFk6XK8qg==
-X-Received: by 2002:a17:907:720d:b0:ac7:eb12:dc69 with SMTP id a640c23a62f3a-ace7110bb7emr344205866b.28.1745605013200;
-        Fri, 25 Apr 2025 11:16:53 -0700 (PDT)
-Received: from thinky (ip-217-030-074-039.aim-net.cz. [217.30.74.39])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ace6ed70606sm168961166b.160.2025.04.25.11.16.49
+        d=1e100.net; s=20230601; t=1745640738; x=1746245538;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LuPMmzATkY8xATRRwXVPRE8uVlsNQkZoSS0OdxW6pAs=;
+        b=AeHn5kqVkoe4VLKBfMhK8UH5aveIcQrHUtXM7DwfSDSshTa4wx06ico7fVtyCqVo0E
+         MzXpQoNcHIbs7m3R9Nkg43E1kb6ToYr92SEynD/fHyv/TXwAIpv3EJg8Daghnwt0qYkt
+         yCuLztYn4AqI7PLdPbFahpS5MLErCxiIm5LYpWMKhrmAQRaDB0viq+dtAte9/w2ElC7x
+         kAIDeWsKmZmOCd+9R7T8CaD84mOlaDklW0H+2HeEU40iJracvouih7uP1P0aka6X/oGz
+         pcblRGA9aPDz1UbUuHh3id/mpJymKYaag2lZxqT/pXKZXS1TufzqQAg44+NmiiOmgG6r
+         P1MA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQd8s/j25xddlB/Pn+SAMo72lDHXNnchAwx3rvRiA1q211PQ5P/K4o0A1jzwijzGE7h40mTQTMcLt0@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzkCvKSEGcrM7TE4j7LU4yRUBBzNVbsLo9BkjUXDlheh9MgF9+f
+	mqbYlQzVAKokP4e5YBqw67GFNKxJIGpMpVR6cC9lxAzuU43r/2ggFmQ2/VEx9N0=
+X-Gm-Gg: ASbGnct5i9d9bU+DdBLXimzQr5a2Q/5RwPVDzZQWrc2p3X7p8P8ylTBDtTInjKHGfsw
+	EiVN5gYQw1174vkcyn78jikTkGPLJKJIGQPp/YRilIKNfdJVcA4Jp4tvMQD+GAo6iisHQ15MRCl
+	vhflB8mR8ROktFwvtXUs2sEeFnjLPzIJAs4voNrMeSrDMBQpXRVAHGZ9pjRI9gBty9ifietfgGS
+	Y4isFqRNC+GYyr1b2oGMMbSWIyKLNBw9YzevC7AlQ7B6X7+h7iBzrPPqIn3OWDca2JZRihncfu0
+	XiNJlg+HAq73H9KMDCvUnJCTHn2Bf8hVWxwsSURcM3pbNBJO5t2ldDsnzyagqFdd
+X-Google-Smtp-Source: AGHT+IHIZFD7SC+VCaiJEN9Ucea/7xDUmwe56OfPeUEExIBNy9kJZpr29LjEj0S+2onGXU4Fs1xFhw==
+X-Received: by 2002:a17:903:3d08:b0:224:910:23f6 with SMTP id d9443c01a7336-22dbf743518mr74777915ad.45.1745640738287;
+        Fri, 25 Apr 2025 21:12:18 -0700 (PDT)
+Received: from shiro.work.home.arpa. ([2400:4162:2428:2ffe:5393:61f3:16d7:186f])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-22db51025basm41093945ad.187.2025.04.25.21.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Apr 2025 11:16:52 -0700 (PDT)
-Date: Fri, 25 Apr 2025 20:16:48 +0200
-From: Andrey Albershteyn <aalbersh@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Amir Goldstein <amir73il@gmail.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] fs: introduce getfsxattrat and setfsxattrat
- syscalls
-Message-ID: <l33napyvz5fwbcdju4otllbu4zr6faaz6mufz652alpxnjjfvl@h7j4hu4uwqwv>
-References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
- <20250321-xattrat-syscall-v4-3-3e82e6fb3264@kernel.org>
- <CAOQ4uxj2Fqmc_pSD4bqqoQu7QjmgSVp2V15FbmBdTNqQ03aPGQ@mail.gmail.com>
- <faqun3wrpvwrhwukql3niqvvauy5ngrpytx5bxbrv5xkounez3@m7j2znjuzapu>
- <CAOQ4uxjs=Gg-ocwx_fkzc0gxQ_dHx-P9EAgz5ZwbdbrxV0T_EA@mail.gmail.com>
- <20250422-suchen-filmpreis-3573a913457c@brauner>
- <20250422-gefressen-faucht-8ded2c9a5375@brauner>
+        Fri, 25 Apr 2025 21:12:17 -0700 (PDT)
+From: Daniel Palmer <daniel@0x0f.com>
+To: w@1wt.eu,
+	linux@weissschuh.net,
+	linux-m68k@lists.linux-m68k.org,
+	geert@linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: [PATCH] tools/nolibc: Add m68k support
+Date: Sat, 26 Apr 2025 13:12:12 +0900
+Message-ID: <20250426041212.4141152-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20250422-gefressen-faucht-8ded2c9a5375@brauner>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: roW4aBZ--A4Qp7mK8aleiphwO7q_RW7SR5BBisVYZAg_1745605014
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-On 2025-04-22 17:14:10, Christian Brauner wrote:
-> On Tue, Apr 22, 2025 at 04:31:29PM +0200, Christian Brauner wrote:
-> > On Thu, Mar 27, 2025 at 12:39:28PM +0100, Amir Goldstein wrote:
-> > > On Thu, Mar 27, 2025 at 10:33 AM Andrey Albershteyn <aalbersh@redhat.com> wrote:
-> > > >
-> > > > On 2025-03-23 09:56:25, Amir Goldstein wrote:
-> > > > > On Fri, Mar 21, 2025 at 8:49 PM Andrey Albershteyn <aalbersh@redhat.com> wrote:
-> > > > > >
-> > > > > > From: Andrey Albershteyn <aalbersh@redhat.com>
-> > > > > >
-> > > > > > Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
-> > > > > > extended attributes/flags. The syscalls take parent directory fd and
-> > > > > > path to the child together with struct fsxattr.
-> > > > > >
-> > > > > > This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
-> > > > > > that file don't need to be open as we can reference it with a path
-> > > > > > instead of fd. By having this we can manipulated inode extended
-> > > > > > attributes not only on regular files but also on special ones. This
-> > > > > > is not possible with FS_IOC_FSSETXATTR ioctl as with special files
-> > > > > > we can not call ioctl() directly on the filesystem inode using fd.
-> > > > > >
-> > > > > > This patch adds two new syscalls which allows userspace to get/set
-> > > > > > extended inode attributes on special files by using parent directory
-> > > > > > and a path - *at() like syscall.
-> > > > > >
-> > > > > > CC: linux-api@vger.kernel.org
-> > > > > > CC: linux-fsdevel@vger.kernel.org
-> > > > > > CC: linux-xfs@vger.kernel.org
-> > > > > > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
-> > > > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > > > > ---
-> > > > > ...
-> > > > > > +SYSCALL_DEFINE5(setfsxattrat, int, dfd, const char __user *, filename,
-> > > > > > +               struct fsxattr __user *, ufsx, size_t, usize,
-> > > > > > +               unsigned int, at_flags)
-> > > > > > +{
-> > > > > > +       struct fileattr fa;
-> > > > > > +       struct path filepath;
-> > > > > > +       int error;
-> > > > > > +       unsigned int lookup_flags = 0;
-> > > > > > +       struct filename *name;
-> > > > > > +       struct mnt_idmap *idmap;.
-> > > > >
-> > > > > > +       struct dentry *dentry;
-> > > > > > +       struct vfsmount *mnt;
-> > > > > > +       struct fsxattr fsx = {};
-> > > > > > +
-> > > > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) < FSXATTR_SIZE_VER0);
-> > > > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) != FSXATTR_SIZE_LATEST);
-> > > > > > +
-> > > > > > +       if ((at_flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
-> > > > > > +               return -EINVAL;
-> > > > > > +
-> > > > > > +       if (!(at_flags & AT_SYMLINK_NOFOLLOW))
-> > > > > > +               lookup_flags |= LOOKUP_FOLLOW;
-> > > > > > +
-> > > > > > +       if (at_flags & AT_EMPTY_PATH)
-> > > > > > +               lookup_flags |= LOOKUP_EMPTY;
-> > > > > > +
-> > > > > > +       if (usize > PAGE_SIZE)
-> > > > > > +               return -E2BIG;
-> > > > > > +
-> > > > > > +       if (usize < FSXATTR_SIZE_VER0)
-> > > > > > +               return -EINVAL;
-> > > > > > +
-> > > > > > +       error = copy_struct_from_user(&fsx, sizeof(struct fsxattr), ufsx, usize);
-> > > > > > +       if (error)
-> > > > > > +               return error;
-> > > > > > +
-> > > > > > +       fsxattr_to_fileattr(&fsx, &fa);
-> > > > > > +
-> > > > > > +       name = getname_maybe_null(filename, at_flags);
-> > > > > > +       if (!name) {
-> > > > > > +               CLASS(fd, f)(dfd);
-> > > > > > +
-> > > > > > +               if (fd_empty(f))
-> > > > > > +                       return -EBADF;
-> > > > > > +
-> > > > > > +               idmap = file_mnt_idmap(fd_file(f));
-> > > > > > +               dentry = file_dentry(fd_file(f));
-> > > > > > +               mnt = fd_file(f)->f_path.mnt;
-> > > > > > +       } else {
-> > > > > > +               error = filename_lookup(dfd, name, lookup_flags, &filepath,
-> > > > > > +                                       NULL);
-> > > > > > +               if (error)
-> > > > > > +                       return error;
-> > > > > > +
-> > > > > > +               idmap = mnt_idmap(filepath.mnt);
-> > > > > > +               dentry = filepath.dentry;
-> > > > > > +               mnt = filepath.mnt;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       error = mnt_want_write(mnt);
-> > > > > > +       if (!error) {
-> > > > > > +               error = vfs_fileattr_set(idmap, dentry, &fa);
-> > > > > > +               if (error == -ENOIOCTLCMD)
-> > > > > > +                       error = -EOPNOTSUPP;
-> > > > >
-> > > > > This is awkward.
-> > > > > vfs_fileattr_set() should return -EOPNOTSUPP.
-> > > > > ioctl_setflags() could maybe convert it to -ENOIOCTLCMD,
-> > > > > but looking at similar cases ioctl_fiemap(), ioctl_fsfreeze() the
-> > > > > ioctl returns -EOPNOTSUPP.
-> > > > >
-> > > > > I don't think it is necessarily a bad idea to start returning
-> > > > >  -EOPNOTSUPP instead of -ENOIOCTLCMD for the ioctl
-> > > > > because that really reflects the fact that the ioctl is now implemented
-> > > > > in vfs and not in the specific fs.
-> > > > >
-> > > > > and I think it would not be a bad idea at all to make that change
-> > > > > together with the merge of the syscalls as a sort of hint to userspace
-> > > > > that uses the ioctl, that the sycalls API exists.
-> > > > >
-> > > > > Thanks,
-> > > > > Amir.
-> > > > >
-> > > >
-> > > > Hmm, not sure what you're suggesting here. I see it as:
-> > > > - get/setfsxattrat should return EOPNOTSUPP as it make more sense
-> > > >   than ENOIOCTLCMD
-> > > > - ioctl_setflags returns ENOIOCTLCMD which also expected
-> > > >
-> > > > Don't really see a reason to change what vfs_fileattr_set() returns
-> > > > and then copying this if() to other places or start returning
-> > > > EOPNOTSUPP.
-> > > 
-> > > ENOIOCTLCMD conceptually means that the ioctl command is unknown
-> > > This is not the case since ->fileattr_[gs]et() became a vfs API
-> > 
-> > vfs_fileattr_{g,s}et() should not return ENOIOCTLCMD. Change the return
-> > code to EOPNOTSUPP and then make EOPNOTSUPP be translated to ENOTTY on
-> > on overlayfs and to ENOIOCTLCMD in ecryptfs and in fs/ioctl.c. This way
-> > we get a clean VFS api while retaining current behavior. Amir can do his
-> > cleanup based on that.
-> 
-> Also this get/set dance is not something new apis should do. It should
-> be handled like setattr_prepare() or generic_fillattr() where the
-> filesystem calls a VFS helper and that does all of this based on the
-> current state of the inode instead of calling into the filesystem twice:
-> 
-> int vfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
-> 		     struct fileattr *fa)
-> {
-> <snip>
-> 	inode_lock(inode);
-> 	err = vfs_fileattr_get(dentry, &old_ma);
-> 	if (!err) {
-> 		/* initialize missing bits from old_ma */
-> 		if (fa->flags_valid) {
-> <snip>
-> 		err = fileattr_set_prepare(inode, &old_ma, fa);
-> 		if (!err && !security_inode_setfsxattr(inode, fa))
-> 			err = inode->i_op->fileattr_set(idmap, dentry, fa);
-> 
+From: Daniel Palmer <daniel@thingy.jp>
 
-You mean something like this? (not all fs are done)
+Add nolibc support for m68k. Should be helpful for nommu where
+linking libc can bloat even hello world to the point where you get
+an OOM just trying to load it.
 
--- 
-
-From 421445f054ccad3116d55ae22c8995a48bb753fd Mon Sep 17 00:00:00 2001
-From: Andrey Albershteyn <aalbersh@kernel.org>
-Date: Fri, 25 Apr 2025 17:20:42 +0200
-Subject: [PATCH] fs: push retrieval of fileattr down to filesystems
-
-Currently, vfs_fileattr_set() calls twice to the file system. Firstly,
-to retrieve current state of the inode extended attributes and secondly
-to set the new ones.
-
-This patch refactors this in a way that filesystem firstly gets current
-inode attribute state and then calls VFS helper to verify them. This way
-vfs_fileattr_set() will call filesystem just once.
-
-Signed-off-by: Andrey Albershteyn <aalbersh@kernel.org>
+Signed-off-by: Daniel Palmer <daniel@thingy.jp>
 ---
- fs/ext2/ioctl.c          |  9 ++++++
- fs/ext4/ioctl.c          |  9 ++++++
- fs/f2fs/file.c           | 12 +++++++-
- fs/file_attr.c           | 62 ++++++++++++++++++++++++----------------
- fs/gfs2/file.c           |  9 ++++++
- fs/hfsplus/inode.c       |  9 ++++++
- fs/jfs/ioctl.c           |  9 +++++-
- fs/ntfs3/file.c          | 12 +++++++-
- fs/orangefs/inode.c      |  9 ++++++
- fs/ubifs/ioctl.c         | 12 +++++++-
- fs/xfs/xfs_ioctl.c       |  6 ++++
- include/linux/fileattr.h |  2 ++
- mm/shmem.c               |  8 ++++++
- 13 files changed, 140 insertions(+), 28 deletions(-)
+ tools/include/nolibc/arch-m68k.h | 141 +++++++++++++++++++++++++++++++
+ tools/include/nolibc/arch.h      |   2 +
+ 2 files changed, 143 insertions(+)
+ create mode 100644 tools/include/nolibc/arch-m68k.h
 
-diff --git a/fs/ext2/ioctl.c b/fs/ext2/ioctl.c
-index 44e04484e570..3a45ed9c12b7 100644
---- a/fs/ext2/ioctl.c
-+++ b/fs/ext2/ioctl.c
-@@ -32,6 +32,15 @@ int ext2_fileattr_set(struct mnt_idmap *idmap,
- {
- 	struct inode *inode = d_inode(dentry);
- 	struct ext2_inode_info *ei = EXT2_I(inode);
-+	struct fileattr cfa;
-+	int err;
-+
-+	err = ext2_fileattr_get(dentry, &cfa);
-+	if (err)
-+		return err;
-+	err = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (err)
-+		return err;
- 
- 	if (fileattr_has_fsx(fa))
- 		return -EOPNOTSUPP;
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index d17207386ead..f988ff4d7256 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1002,6 +1002,15 @@ int ext4_fileattr_set(struct mnt_idmap *idmap,
- 	struct inode *inode = d_inode(dentry);
- 	u32 flags = fa->flags;
- 	int err = -EOPNOTSUPP;
-+	struct fileattr cfa;
-+
-+	err = ext4_fileattr_get(dentry, &cfa);
-+	if (err)
-+		return err;
-+
-+	err = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (err)
-+		return err;
- 
- 	if (flags & ~EXT4_FL_USER_VISIBLE)
- 		goto out;
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index abbcbb5865a3..f196a07f1f17 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -3371,14 +3371,24 @@ int f2fs_fileattr_set(struct mnt_idmap *idmap,
- 		      struct dentry *dentry, struct fileattr *fa)
- {
- 	struct inode *inode = d_inode(dentry);
--	u32 fsflags = fa->flags, mask = F2FS_SETTABLE_FS_FL;
-+	u32 fsflags, mask = F2FS_SETTABLE_FS_FL;
- 	u32 iflags;
-+	struct fileattr cfa;
- 	int err;
- 
- 	if (unlikely(f2fs_cp_error(F2FS_I_SB(inode))))
- 		return -EIO;
- 	if (!f2fs_is_checkpoint_ready(F2FS_I_SB(inode)))
- 		return -ENOSPC;
-+
-+	err = f2fs_fileattr_get(dentry, &cfa);
-+	if (err)
-+		return err;
-+	err = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (err)
-+		return err;
-+	fsflags = fa->flags;
-+
- 	if (fsflags & ~F2FS_GETTABLE_FS_FL)
- 		return -EOPNOTSUPP;
- 	fsflags &= F2FS_SETTABLE_FS_FL;
-diff --git a/fs/file_attr.c b/fs/file_attr.c
-index 5e51c5b851ef..d0a01377bca8 100644
---- a/fs/file_attr.c
-+++ b/fs/file_attr.c
-@@ -7,6 +7,8 @@
- #include <linux/fileattr.h>
- #include <linux/namei.h>
- 
-+#include "internal.h"
-+
- /**
-  * fileattr_fill_xflags - initialize fileattr with xflags
-  * @fa:		fileattr pointer
-@@ -225,6 +227,36 @@ static int fileattr_set_prepare(struct inode *inode,
- 	return 0;
- }
- 
-+/**
-+ * vfs_fileattr_set_prepare - merge new filettr state and check for validity
-+ * @idmap:	idmap of the mount
-+ * @dentry:	the object to change
-+ * @cfa:	current fileattr state
-+ * @fa:		fileattr pointer with new values
+diff --git a/tools/include/nolibc/arch-m68k.h b/tools/include/nolibc/arch-m68k.h
+new file mode 100644
+index 000000000000..6dac1845f298
+--- /dev/null
++++ b/tools/include/nolibc/arch-m68k.h
+@@ -0,0 +1,141 @@
++/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
++/*
++ * m68k specific definitions for NOLIBC
++ * Copyright (C) 2025 Daniel Palmer<daniel@thingy.jp>
 + *
-+ * Return: 0 on success, or a negative error on failure.
++ * Roughly based on one or more of the other arch files.
++ *
 + */
-+int vfs_fileattr_set_prepare(struct mnt_idmap *idmap, struct dentry *dentry,
-+			     struct fileattr *cfa, struct fileattr *fa)
++
++#ifndef _NOLIBC_ARCH_M68K_H
++#define _NOLIBC_ARCH_M68K_H
++
++#include "compiler.h"
++#include "crt.h"
++
++#define _NOLIBC_SYSCALL_CLOBBERLIST "memory"
++
++#define my_syscall0(num)                                                      \
++({                                                                            \
++	register long _num __asm__ ("d0") = (num);                            \
++									      \
++	__asm__ volatile (                                                    \
++		"trap #0\n"                                                   \
++		: "+r"(_num)                                                  \
++		: "r"(_num)                                                   \
++		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
++	);                                                                    \
++	_num;                                                                 \
++})
++
++#define my_syscall1(num, arg1)                                                \
++({                                                                            \
++	register long _num __asm__ ("d0") = (num);                            \
++	register long _arg1 __asm__ ("d1") = (long)(arg1);                    \
++									      \
++	__asm__ volatile (                                                    \
++		"trap #0\n"                                                   \
++		: "+r"(_num)                                                  \
++		: "r"(_arg1)                                                  \
++		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
++	);                                                                    \
++	_num;                                                                 \
++})
++
++#define my_syscall2(num, arg1, arg2)                                          \
++({                                                                            \
++	register long _num __asm__ ("d0") = (num);                            \
++	register long _arg1 __asm__ ("d1") = (long)(arg1);                    \
++	register long _arg2 __asm__ ("d2") = (long)(arg2);                    \
++									      \
++	__asm__ volatile (                                                    \
++		"trap #0\n"                                                   \
++		: "+r"(_num)                                                  \
++		: "r"(_arg1), "r"(_arg2)                                      \
++		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
++	);                                                                    \
++	_num;                                                                 \
++})
++
++#define my_syscall3(num, arg1, arg2, arg3)                                    \
++({                                                                            \
++	register long _num __asm__ ("d0")  = (num);                           \
++	register long _arg1 __asm__ ("d1") = (long)(arg1);                    \
++	register long _arg2 __asm__ ("d2") = (long)(arg2);                    \
++	register long _arg3 __asm__ ("d3") = (long)(arg3);                    \
++									      \
++	__asm__ volatile (                                                    \
++		"trap #0\n"                                                   \
++		: "+r"(_num)                                                  \
++		: "r"(_arg1), "r"(_arg2), "r"(_arg3)                          \
++		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
++	);                                                                    \
++	_num;                                                                 \
++})
++
++#define my_syscall4(num, arg1, arg2, arg3, arg4)                              \
++({                                                                            \
++	register long _num __asm__ ("d0") = (num);                            \
++	register long _arg1 __asm__ ("d1") = (long)(arg1);                    \
++	register long _arg2 __asm__ ("d2") = (long)(arg2);                    \
++	register long _arg3 __asm__ ("d3") = (long)(arg3);                    \
++	register long _arg4 __asm__ ("d4") = (long)(arg4);                    \
++									      \
++	__asm__ volatile (                                                    \
++		"trap #0\n"                                                   \
++		: "+r" (_num)                                                 \
++		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4)              \
++		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
++	);                                                                    \
++	_num;                                                                 \
++})
++
++#define my_syscall5(num, arg1, arg2, arg3, arg4, arg5)                        \
++({                                                                            \
++	register long _num __asm__ ("d0") = (num);                            \
++	register long _arg1 __asm__ ("d1") = (long)(arg1);                    \
++	register long _arg2 __asm__ ("d2") = (long)(arg2);                    \
++	register long _arg3 __asm__ ("d3") = (long)(arg3);                    \
++	register long _arg4 __asm__ ("d4") = (long)(arg4);                    \
++	register long _arg5 __asm__ ("d5") = (long)(arg5);                    \
++									      \
++	__asm__ volatile (                                                    \
++		"trap #0\n"                                                   \
++		: "+r" (_num)                                                 \
++		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4), "r"(_arg5)  \
++		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
++	);                                                                    \
++	_num;                                                                 \
++})
++
++#define my_syscall6(num, arg1, arg2, arg3, arg4, arg5, arg6)                  \
++({                                                                            \
++	register long _num __asm__ ("d0")  = (num);                           \
++	register long _arg1 __asm__ ("d1") = (long)(arg1);                    \
++	register long _arg2 __asm__ ("d2") = (long)(arg2);                    \
++	register long _arg3 __asm__ ("d3") = (long)(arg3);                    \
++	register long _arg4 __asm__ ("d4") = (long)(arg4);                    \
++	register long _arg5 __asm__ ("d5") = (long)(arg5);                    \
++	register long _arg6 __asm__ ("a0") = (long)(arg6);                    \
++									      \
++	__asm__ volatile (                                                    \
++		"trap #0\n"                                                   \
++		: "+r" (_num)                                                 \
++		: "r"(_arg1), "r"(_arg2), "r"(_arg3), "r"(_arg4), "r"(_arg5), \
++		  "r"(_arg6)                                                  \
++		: _NOLIBC_SYSCALL_CLOBBERLIST                                 \
++	);                                                                    \
++	_num;                                                                 \
++})
++
++void _start(void);
++void __attribute__((weak, noreturn)) __nolibc_entrypoint __no_stack_protector _start(void)
 +{
-+	int err;
-+
-+	/* initialize missing bits from cfa */
-+	if (fa->flags_valid) {
-+		fa->fsx_xflags |= cfa->fsx_xflags & ~FS_XFLAG_COMMON;
-+		fa->fsx_extsize = cfa->fsx_extsize;
-+		fa->fsx_nextents = cfa->fsx_nextents;
-+		fa->fsx_projid = cfa->fsx_projid;
-+		fa->fsx_cowextsize = cfa->fsx_cowextsize;
-+	} else {
-+		fa->flags |= cfa->flags & ~FS_COMMON_FL;
-+	}
-+
-+	err = fileattr_set_prepare(d_inode(dentry), cfa, fa);
-+	return err;
++	__asm__ volatile (
++		"movel %sp, %sp@-\n"
++		"jsr _start_c\n"
++	);
++	__nolibc_entrypoint_epilogue();
 +}
-+EXPORT_SYMBOL(vfs_fileattr_set_prepare);
 +
- /**
-  * vfs_fileattr_set - change miscellaneous file attributes
-  * @idmap:	idmap of the mount
-@@ -245,7 +277,6 @@ int vfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
- 		     struct fileattr *fa)
- {
- 	struct inode *inode = d_inode(dentry);
--	struct fileattr old_ma = {};
- 	int err;
- 
- 	if (!inode->i_op->fileattr_set)
-@@ -255,29 +286,12 @@ int vfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
- 		return -EPERM;
- 
- 	inode_lock(inode);
--	err = vfs_fileattr_get(dentry, &old_ma);
--	if (!err) {
--		/* initialize missing bits from old_ma */
--		if (fa->flags_valid) {
--			fa->fsx_xflags |= old_ma.fsx_xflags & ~FS_XFLAG_COMMON;
--			fa->fsx_extsize = old_ma.fsx_extsize;
--			fa->fsx_nextents = old_ma.fsx_nextents;
--			fa->fsx_projid = old_ma.fsx_projid;
--			fa->fsx_cowextsize = old_ma.fsx_cowextsize;
--		} else {
--			fa->flags |= old_ma.flags & ~FS_COMMON_FL;
--		}
--
--		err = fileattr_set_prepare(inode, &old_ma, fa);
--		if (err)
--			goto out;
--		err = security_inode_file_setattr(dentry, fa);
--		if (err)
--			goto out;
--		err = inode->i_op->fileattr_set(idmap, dentry, fa);
--		if (err)
--			goto out;
--	}
-+	err = security_inode_file_setattr(dentry, fa);
-+	if (err)
-+		goto out;
-+	err = inode->i_op->fileattr_set(idmap, dentry, fa);
-+	if (err)
-+		goto out;
- 
- out:
- 	inode_unlock(inode);
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index fd1147aa3891..cf796fa73af2 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -282,10 +282,19 @@ int gfs2_fileattr_set(struct mnt_idmap *idmap,
- 	u32 fsflags = fa->flags, gfsflags = 0;
- 	u32 mask;
- 	int i;
-+	struct fileattr cfa;
-+	int error;
- 
- 	if (d_is_special(dentry))
- 		return -ENOTTY;
- 
-+	error = gfs2_fileattr_get(dentry, &cfa);
-+	if (error)
-+		return error;
-+	error = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (error)
-+		return error;
-+
- 	if (fileattr_has_fsx(fa))
- 		return -EOPNOTSUPP;
- 
-diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
-index f331e9574217..cdb11d00faea 100644
---- a/fs/hfsplus/inode.c
-+++ b/fs/hfsplus/inode.c
-@@ -678,6 +678,15 @@ int hfsplus_fileattr_set(struct mnt_idmap *idmap,
- 	struct inode *inode = d_inode(dentry);
- 	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
- 	unsigned int new_fl = 0;
-+	struct fileattr cfa;
-+	int err;
-+
-+	err = hfsplus_fileattr_get(dentry, &cfa);
-+	if (err)
-+		return err;
-+	err = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (err)
-+		return err;
- 
- 	if (fileattr_has_fsx(fa))
- 		return -EOPNOTSUPP;
-diff --git a/fs/jfs/ioctl.c b/fs/jfs/ioctl.c
-index f7bd7e8f5be4..4c62c14d15b0 100644
---- a/fs/jfs/ioctl.c
-+++ b/fs/jfs/ioctl.c
-@@ -75,11 +75,18 @@ int jfs_fileattr_set(struct mnt_idmap *idmap,
- {
- 	struct inode *inode = d_inode(dentry);
- 	struct jfs_inode_info *jfs_inode = JFS_IP(inode);
--	unsigned int flags;
-+	unsigned int flags = jfs_inode->mode2 & JFS_FL_USER_VISIBLE;
-+	struct fileattr cfa;
-+	int err;
- 
- 	if (d_is_special(dentry))
- 		return -ENOTTY;
- 
-+	fileattr_fill_flags(&cfa, jfs_map_ext2(flags, 0));
-+	err = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (err)
-+		return err;
-+
- 	if (fileattr_has_fsx(fa))
- 		return -EOPNOTSUPP;
- 
-diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 9b6a3f8d2e7c..bc7ee7595b70 100644
---- a/fs/ntfs3/file.c
-+++ b/fs/ntfs3/file.c
-@@ -83,12 +83,22 @@ int ntfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
- {
- 	struct inode *inode = d_inode(dentry);
- 	struct ntfs_inode *ni = ntfs_i(inode);
--	u32 flags = fa->flags;
-+	u32 flags;
- 	unsigned int new_fl = 0;
-+	struct fileattr cfa;
-+	int err;
-+
-+	err = ntfs_fileattr_get(dentry, &cfa);
-+	if (err)
-+		return err;
-+	err = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (err)
-+		return err;
- 
- 	if (fileattr_has_fsx(fa))
- 		return -EOPNOTSUPP;
- 
-+	flags = fa->flags;
- 	if (flags & ~(FS_IMMUTABLE_FL | FS_APPEND_FL | FS_COMPR_FL))
- 		return -EOPNOTSUPP;
- 
-diff --git a/fs/orangefs/inode.c b/fs/orangefs/inode.c
-index 5ac743c6bc2e..aecb61146443 100644
---- a/fs/orangefs/inode.c
-+++ b/fs/orangefs/inode.c
-@@ -910,6 +910,15 @@ static int orangefs_fileattr_set(struct mnt_idmap *idmap,
- 				 struct dentry *dentry, struct fileattr *fa)
- {
- 	u64 val = 0;
-+	struct fileattr cfa;
-+	int error = 0;
-+
-+	error = orangefs_fileattr_get(dentry, &cfa);
-+	if (error)
-+		return error;
-+	error = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (error)
-+		return error;
- 
- 	gossip_debug(GOSSIP_FILE_DEBUG, "%s: called on %pd\n", __func__,
- 		     dentry);
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 2c99349cf537..e71e362c786b 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -148,14 +148,24 @@ int ubifs_fileattr_set(struct mnt_idmap *idmap,
- 		       struct dentry *dentry, struct fileattr *fa)
- {
- 	struct inode *inode = d_inode(dentry);
--	int flags = fa->flags;
-+	int flags;
-+	struct fileattr cfa;
-+	int err;
- 
- 	if (d_is_special(dentry))
- 		return -ENOTTY;
- 
-+	err = ubifs_fileattr_get(dentry, &cfa);
-+	if (err)
-+		return err;
-+	err = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (err)
-+		return err;
-+
- 	if (fileattr_has_fsx(fa))
- 		return -EOPNOTSUPP;
- 
-+	flags = fa->flags;
- 	if (flags & ~UBIFS_GETTABLE_IOCTL_FLAGS)
- 		return -EOPNOTSUPP;
- 
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index d250f7f74e3b..c861dc1c3cf0 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -733,12 +733,18 @@ xfs_fileattr_set(
- 	struct xfs_dquot	*pdqp = NULL;
- 	struct xfs_dquot	*olddquot = NULL;
- 	int			error;
-+	struct fileattr		cfa;
- 
- 	trace_xfs_ioctl_setattr(ip);
- 
- 	if (d_is_special(dentry))
- 		return -ENOTTY;
- 
-+	xfs_fill_fsxattr(ip, XFS_DATA_FORK, &cfa);
-+	error = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (error)
-+		return error;
-+
- 	if (!fa->fsx_valid) {
- 		if (fa->flags & ~(FS_IMMUTABLE_FL | FS_APPEND_FL |
- 				  FS_NOATIME_FL | FS_NODUMP_FL |
-diff --git a/include/linux/fileattr.h b/include/linux/fileattr.h
-index f62a5143eb2d..aba76d897533 100644
---- a/include/linux/fileattr.h
-+++ b/include/linux/fileattr.h
-@@ -75,6 +75,8 @@ static inline bool fileattr_has_fsx(const struct fileattr *fa)
- }
- 
- int vfs_fileattr_get(struct dentry *dentry, struct fileattr *fa);
-+int vfs_fileattr_set_prepare(struct mnt_idmap *idmap, struct dentry *dentry,
-+			     struct fileattr *cfa, struct fileattr *fa);
- int vfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
- 		     struct fileattr *fa);
- int ioctl_getflags(struct file *file, unsigned int __user *argp);
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 99327c30507c..c2a5991f944f 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4199,6 +4199,14 @@ static int shmem_fileattr_set(struct mnt_idmap *idmap,
- 	struct inode *inode = d_inode(dentry);
- 	struct shmem_inode_info *info = SHMEM_I(inode);
- 	int ret, flags;
-+	struct fileattr cfa;
-+
-+	ret = shmem_fileattr_get(dentry, &cfa);
-+	if (ret)
-+		return ret;
-+	ret = vfs_fileattr_set_prepare(idmap, dentry, &cfa, fa);
-+	if (ret)
-+		return ret;
- 
- 	if (fileattr_has_fsx(fa))
- 		return -EOPNOTSUPP;
++#endif /* _NOLIBC_ARCH_M68K_H */
+diff --git a/tools/include/nolibc/arch.h b/tools/include/nolibc/arch.h
+index 8a2c143c0fba..ba3da0f098f1 100644
+--- a/tools/include/nolibc/arch.h
++++ b/tools/include/nolibc/arch.h
+@@ -33,6 +33,8 @@
+ #include "arch-s390.h"
+ #elif defined(__loongarch__)
+ #include "arch-loongarch.h"
++#elif defined(__m68k__)
++#include "arch-m68k.h"
+ #else
+ #error Unsupported Architecture
+ #endif
 -- 
-2.47.2
+2.49.0
 
