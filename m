@@ -1,54 +1,54 @@
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402124120B
-	for <linux-m68k@vger.kernel.org>; Sat, 26 Apr 2025 13:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C207F2A1D1
+	for <linux-m68k@vger.kernel.org>; Sat, 26 Apr 2025 13:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745672808; cv=none; b=nDu2/yW5JJP5FoijyoLulHgncgCD+P7DiSgZOMZKm4wpqXRQ7ZZRqYPGK+Zig5p56RZZ1ZC3aPZuk4uaMA20jcdAAR0ONbgiAr59zKSjv0wG006gtit5yqkYz8GGBSocsz+KA/hcWYMNzvx8YIuEVypBURs/0v0yVr9JSCEzmAE=
+	t=1745672989; cv=none; b=bfgOoQ57toBcngFzE1moGb+dFFpKbfy6zbDIcOMNRsYF9hvcwCKCnAHAXQ70zCSTfF5s427fn6rKYGdYAGY/aCfTQ4nT6FLA2k0flMlAyzr56UCxBSugTSNw799MqRfgQk09qeeuNB980fIlDrECMJivwsIdCT1CuDkqCP33Pw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745672808; c=relaxed/simple;
-	bh=JvMAVFm1NM3ffSnmd9auBChpROT6OsL8ga4FbcDoo8k=;
+	s=arc-20240116; t=1745672989; c=relaxed/simple;
+	bh=TrjXobdC90aiaVYJS8Yxpcn8NpZlegdCI/+sCJqaMoI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l/y7ZXCSix7OoVf/LdsG5D/mFqx1rC7xECPQ10p5c+97HiRRz8oiI8SfLz/2x35wZ3q4CeqjjOVc/Rnrf5R5jbzr2AIq4eacc0dhqT7I6pxPMlXWP/Us1FQIdWlOWX9863PI0GlnSYzJWFLjiX5ayUbveo5gZgh1ylyvVGfPL+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=TYprgeyH; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=cNGN6l2n+rTObQTd6KxCg75I5LTmYrt+FzcnafVE6/K4BTKzQMbNFUOhgYRUiTpwmSgJnOoIlpWmqR3B5KC7VGzFap28Y54+vt+1BOUvJe41WePO+TxjrKtzVh1SMtfJpAAF2jDggP4EC3DuNOCJRW4u/TaFz5m5gaLjZ/vg3c0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=G8OYn6RV; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="TYprgeyH"
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ff6cf448b8so4462520a91.3
-        for <linux-m68k@vger.kernel.org>; Sat, 26 Apr 2025 06:06:45 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="G8OYn6RV"
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-30820167b47so3295230a91.0
+        for <linux-m68k@vger.kernel.org>; Sat, 26 Apr 2025 06:09:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1745672805; x=1746277605; darn=vger.kernel.org;
+        d=0x0f.com; s=google; t=1745672987; x=1746277787; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvMAVFm1NM3ffSnmd9auBChpROT6OsL8ga4FbcDoo8k=;
-        b=TYprgeyH3paEbw6qhzg8c0Jzboi4BawbumudxfjxwlLEDL2EOdxRa/Seh0exY1zZc6
-         MkTDw5IYq2C8I8+u61Hbs/2EvcNtV/QDzhGEP0fYNUXU4u3itr/W2mPUxHtwYLAttqlC
-         i8rM3i/Q2ujIo/GTRx36or2tv17NXyLKqgojY=
+        bh=TrjXobdC90aiaVYJS8Yxpcn8NpZlegdCI/+sCJqaMoI=;
+        b=G8OYn6RVQSDqkXv3ue8YtDBU0Uuw3cA/Qe/FE4rQOs+xOJrrqUQKOeNsgoRaxQ2347
+         uY6Ho3K1oMTW23zNkJgQ2+uRT12l0WecniqeepvFp1d3RNi8up2sc4TchllMDs9GkthQ
+         qaKGI+ylR7/AbaT2yFSU8i101WuKOWdV7aoZI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745672805; x=1746277605;
+        d=1e100.net; s=20230601; t=1745672987; x=1746277787;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JvMAVFm1NM3ffSnmd9auBChpROT6OsL8ga4FbcDoo8k=;
-        b=lBwLy+pjix6ioSQ16a5OFnG3tYu9HVkB0Va/bszcxBBGA41RCh9EygOS8HfeqonL7+
-         fVeC7UT1tIBB+Qusc7sPqYu2169S1KjEw0K+mGlvoOK6fZglvD3Za42b6RHlkZXlb2ar
-         7O/97mkk+TVJ/T3XDuff1QseaSbI5B9HfV5iZIUema5Y/TAMpYrCz1v3dnC4bZsxMiSZ
-         rEMIKrXqDcQL77WYRF45msRkwLS+jrTEWmbyL043o0JmFZkLLBuzSw2gcmDGeAixpEv3
-         j1Lhr7CZp5e5QJT8z2twJfMm0SWiisrYKQagIe5OCGbEAc5nJvKUXdGeT3q9Lg00miFg
-         SQDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXrG+j5H4cDQIs9fntEnjI6U/gkvlJ5mqERiyZZVWKIAyGNvzyAZBGzME4UFl3cFwhdVH86p1zLwPjM@vger.kernel.org
-X-Gm-Message-State: AOJu0YxRy+FkF+C6fenSZ/xbL+wmD3se/IzyeA6s/N6nqCWUNc0Tzltz
-	89gvGNAW88sFQwx6NtrMKTWXBgQb6GtfU3PyaKaUZQovBQTSVQldHuaRcF4eHlwGXWIf2iuCVtl
-	1VG46j3/6dgGWsLhHf7tKvwVBr3xWINnnqxYba20pK2F7x5dW/k0=
-X-Gm-Gg: ASbGnct64kHx7iMedPPLvwY9aDCOzNfmr7IzoAnCTLtNAy6UjBHlRs52O++dqzqef9f
-	QmXdoRtXkBJ2wz75vqUZwRQLhKsOwc5n8hjI0OgWCsGOJ+gdXbf2KECbBchA7GypqJa5QxV2mBv
-	vhoLQZzNEdwczzNvp/UPXvpVie2VShH7n7+UiMorv7AXw8XqoR9G1kqZuz
-X-Google-Smtp-Source: AGHT+IGEnPlNRu9+3F9xFzOQGqys7rsSoXQK/5LuIDKUDuUshdzQ/sBW67JMAT5qemipeJFWaK/XnOBrmNWIm8Ruqgg=
-X-Received: by 2002:a17:90b:2245:b0:2fa:17dd:6afa with SMTP id
- 98e67ed59e1d1-309f7e00979mr9790877a91.17.1745672805377; Sat, 26 Apr 2025
- 06:06:45 -0700 (PDT)
+        bh=TrjXobdC90aiaVYJS8Yxpcn8NpZlegdCI/+sCJqaMoI=;
+        b=n1n+BFodIrZX44/2jEyVQn0GlZzfMlNIKa1oWCUQNQWQNyY2Nq8UlrCCbkk0jyiOL7
+         VVyMUX6bsaSkb9diYqREWifoiEM7H+alvF+w6z5JAmbDRXKbUfeTYrdPoDu6oRqFd8j4
+         Z/mXroNLYrLgW9bsMbSseEaLcEiJ4XS5G1bZrCXUd6n/V3R53oAVgo3RNXZBxC3Gh1rf
+         AT92Zf2bx7i4a5R39ItZf85mrnXAkX4SOYWu8Itm7t3gyuxmC7XwFDPg1vTTfVydhF3x
+         JJMqngfqVkmvu7oR4m/ml/GYXRfVMbo9QzQ8qbO4dBqyWWRK43TIfJkLSHbCoPl/HTPk
+         HbKg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvkeURvzm3nBWEEi/Q7zZbAZ8ydiK0Akb+NP3z8bE0h6auhryyHfRVHmOibS0aPXGSx9isGlPQFfw+@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqAbJ3Mc7iN2HEUROlvoaFPhsgNdNv6/D5I3vowUzcCe/XqViE
+	1L9Ag9TPILg/LeiwmDxF7iDVEIxb65csmgfPfFZeVyyP+Tuc1WsM+gSzraj0KxJZUKoizbeZW5O
+	LxYL8bte2T01ptKDB/ttKcFSF6ygjHws9l5BPuw==
+X-Gm-Gg: ASbGnctJUJkIXdGr0nDB5ok6gLB4JVZlIuJpi0/udwTFUDUqr9BelY4N4V2AD7u+CDc
+	RdjAbu3WYAA5MF76cvLFZ7ywTN3CbW0bO99STiMDityZ6OqYJePaWi+QA5G4vevA7sC0Pn3IqbK
+	AyDwtFsHQUOaghZU4R1WbpB7hmFetl65FYSQjO37rc3R+rAZUksq/RVj6k
+X-Google-Smtp-Source: AGHT+IFJ8jroVMyUx46fuQkn5I3LWI3lMSwo+PJo+v8BlHjbMXEDdo7FPKYRBfs7dbf21CFrjeWTjH3Cwc5FS76f3UA=
+X-Received: by 2002:a17:90b:42:b0:2fa:2268:1af4 with SMTP id
+ 98e67ed59e1d1-309ee37b550mr14275518a91.7.1745672986837; Sat, 26 Apr 2025
+ 06:09:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -56,34 +56,28 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20250426041212.4141152-1-daniel@0x0f.com> <20250426051423.GA8239@1wt.eu>
- <CAFr9PXkU3W6DdYKhHz13K7bk9bnik67R85wqYUwHeROKEx59zA@mail.gmail.com> <7bc208b3-5d28-4f25-8a59-c17f3ffa1907@kernel.org>
-In-Reply-To: <7bc208b3-5d28-4f25-8a59-c17f3ffa1907@kernel.org>
+ <CAFr9PXkU3W6DdYKhHz13K7bk9bnik67R85wqYUwHeROKEx59zA@mail.gmail.com> <20250426065613.GA8661@1wt.eu>
+In-Reply-To: <20250426065613.GA8661@1wt.eu>
 From: Daniel Palmer <daniel@0x0f.com>
-Date: Sat, 26 Apr 2025 22:06:34 +0900
-X-Gm-Features: ATxdqUGsmFXy4Vf-bYG9vLpgPLSGMqnnCiDCkFUKc0t8rFEC8v7yMRUEnllwNtk
-Message-ID: <CAFr9PXk5ycoZYce1eBOUBvnP_m7swPLT-giHDQSXaa4ywe7mZg@mail.gmail.com>
+Date: Sat, 26 Apr 2025 22:09:36 +0900
+X-Gm-Features: ATxdqUF5EkdwYJngK6gRuGlAEq-Y6P1m84eowWORfZZjV9CfX2nsT1VdlVXuheU
+Message-ID: <CAFr9PXn8-y9eq9YeOAzAs40WJM6Z93O6LYr_0PwMdT8TqiSnaA@mail.gmail.com>
 Subject: Re: [PATCH] tools/nolibc: Add m68k support
-To: Greg Ungerer <gerg@kernel.org>
-Cc: Willy Tarreau <w@1wt.eu>, linux@weissschuh.net, linux-m68k@vger.kernel.org, 
-	geert@linux-m68k.org, linux-kernel@vger.kernel.org
+To: Willy Tarreau <w@1wt.eu>
+Cc: linux@weissschuh.net, linux-m68k@vger.kernel.org, geert@linux-m68k.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hi Greg,
+Hi Willy,
 
-On Sat, 26 Apr 2025 at 21:38, Greg Ungerer <gerg@kernel.org> wrote:
-> > I need to test actually building and running something for nommu but I
-> > will do that later today.
-> > Making nommu test automatically might be a bit difficult though as I
-> > think it only really works with some changes I have to linux and QEMU.
->
-> It works out-of-the-box for m68k qemu and a mainline kernel configured
-> for m5208evb_defconfig - when using the qemu "mcf5208evb" machine.
-> That is a nommu m68k/coldfire variant.
+On Sat, 26 Apr 2025 at 15:56, Willy Tarreau <w@1wt.eu> wrote:
+> OK no worries, my point really is that it's important to implement the
+> test for the target platform. If it's mmu only that's fine, as it will
+> ensure we don't break it in future updates.
 
-Ok, I didn't realise there was any working nommu machine in mainline QEMU.
-Does direct kernel booting with a ramdisk work there? The tests for
-nolibc require that.
-Either way, I'll it out tomorrow.
+I sent a v2 that adds the tests to run on the QEMU virt machine and
+seems to pass.
+I tried the user mode as well and that passed also.
 
 Thanks,
 
