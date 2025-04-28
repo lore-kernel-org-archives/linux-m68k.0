@@ -1,80 +1,246 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B92820DD50
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Apr 2025 23:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6A025F7BA
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Apr 2025 09:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745797970; cv=none; b=fMMePSU5c+phluhU+V+6G54sitFbHFpGUbjSJaKNkbUsMKqSmnnGAIw0LNkawacSszays48xrvOQwgFRcLbmBCoGwlXyfr0vxEvIzKIc24jQwzorlrQPuXTHFPviRIOy0RnVsvvxrDR1pPLviPKAaHvdYzMTL9eiT91p/1o6c+4=
+	t=1745831854; cv=none; b=AOlRp955wP5moe7XhsYkiFXOl9Vtwk3UXEE5W77nBb2i16wdkNXNLorugKf+iAWTrKXQ6njRI12JqmEQ4SNivRaNSDsBme4LVeT9GiuCiMsu4QPKftCHaNWpkQ7w2ER/wQH6HOWDnNkj07GVAs9c5iTbIovqe4Wc5QTcqfGYdP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745797970; c=relaxed/simple;
-	bh=Blf2oY+040PZ8xuTRe4ED2+TJCxrPdGmdNIzr1Xdpec=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ag4aYQ3aA3GizdibCj4VdSQGQ5PtMwxJSh669B+HszcDrLMl9BK80ZK6YgtqIjhQhbnEA37iZr+Q3FwtqvW6NGwodf71m5Kh0vIVRyzmKM3RtKPVHrXAysLW+uei7exfJHc1zrioJw1OtN5qWCV6FvAhlKephiAXOhgXEJdAfVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1745831854; c=relaxed/simple;
+	bh=rE/9aBzbnF3T+gnZPwU56POXUdpF+I32mFhG6FkrGuA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UN7hr9uS3jq3HRZ5Cewu6l11nEnYBp7BoNCC6b0/FnhnQkiEyfpV3buQZmhxGkXusTTBr/mvXmkLp+YrEHfO7lm/dkF8snkeooQ6Orw9x7iLhDtsx6dOAW2935Rnrq64t21M1hrChomZtCPVR+v5G77/H+6UWzWL9ioXDxABQhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DTeB5saO; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DTeB5saO"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id F11E25C5832;
-	Sun, 27 Apr 2025 23:50:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F618C4CEE3;
-	Sun, 27 Apr 2025 23:52:45 +0000 (UTC)
-Message-ID: <8e6f3ad3-393b-4777-a4d0-24a524aad5aa@linux-m68k.org>
-Date: Mon, 28 Apr 2025 09:52:43 +1000
+	by nyc.source.kernel.org (Postfix) with ESMTP id 63DE9A4AA97;
+	Mon, 28 Apr 2025 09:12:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A6ABC4CEE4;
+	Mon, 28 Apr 2025 09:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745831850;
+	bh=rE/9aBzbnF3T+gnZPwU56POXUdpF+I32mFhG6FkrGuA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DTeB5saOxudMljAGIKv9nUmX1EsHifqW9vERWjak3y1cplx2lfh4omOTPPIlfCZpi
+	 wVa75UdWzQiVyPB7wGU0brrQsEOrM3sMtnY+nMpIIYRHQZ2YtJ9yuW+ST1XYuCPCpr
+	 SnTI1UU/jJlc1I5owTVcLfxL/58hZnS2aOKb6GgWI4s6Z3m9DYGoLPKxseEQa9e8IQ
+	 ldMKANF9rz5rcbp7kW8JyMzRvl3HVO39jtmDEA03JIaGEmW9sSRgynDf3txoAUepUs
+	 5CzWXZxc+9fwH8OkG+/gKXbsep/UpXsd4b/BkeeALa1VxwrDO5/wHbfZUzmS1r2SPx
+	 GaUIefJ4hTjQw==
+Date: Mon, 28 Apr 2025 11:17:16 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Andrey Albershteyn <aalbersh@redhat.com>
+Cc: Amir Goldstein <amir73il@gmail.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] fs: introduce getfsxattrat and setfsxattrat
+ syscalls
+Message-ID: <20250428-obigen-gebadet-96a12d55bc08@brauner>
+References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
+ <20250321-xattrat-syscall-v4-3-3e82e6fb3264@kernel.org>
+ <CAOQ4uxj2Fqmc_pSD4bqqoQu7QjmgSVp2V15FbmBdTNqQ03aPGQ@mail.gmail.com>
+ <faqun3wrpvwrhwukql3niqvvauy5ngrpytx5bxbrv5xkounez3@m7j2znjuzapu>
+ <CAOQ4uxjs=Gg-ocwx_fkzc0gxQ_dHx-P9EAgz5ZwbdbrxV0T_EA@mail.gmail.com>
+ <20250422-suchen-filmpreis-3573a913457c@brauner>
+ <20250422-gefressen-faucht-8ded2c9a5375@brauner>
+ <l33napyvz5fwbcdju4otllbu4zr6faaz6mufz652alpxnjjfvl@h7j4hu4uwqwv>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: Replace memcpy() + manual NUL-termination with
- strscpy()
-To: Thorsten Blum <thorsten.blum@linux.dev>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20250415072433.75505-1-thorsten.blum@linux.dev>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20250415072433.75505-1-thorsten.blum@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <l33napyvz5fwbcdju4otllbu4zr6faaz6mufz652alpxnjjfvl@h7j4hu4uwqwv>
 
-Hi Thorsten,
-
-On 15/4/25 17:24, Thorsten Blum wrote:
-> Use strscpy() to safely copy the command-line string instead of memcpy()
-> followed by a manual NUL-termination.
+On Fri, Apr 25, 2025 at 08:16:48PM +0200, Andrey Albershteyn wrote:
+> On 2025-04-22 17:14:10, Christian Brauner wrote:
+> > On Tue, Apr 22, 2025 at 04:31:29PM +0200, Christian Brauner wrote:
+> > > On Thu, Mar 27, 2025 at 12:39:28PM +0100, Amir Goldstein wrote:
+> > > > On Thu, Mar 27, 2025 at 10:33 AM Andrey Albershteyn <aalbersh@redhat.com> wrote:
+> > > > >
+> > > > > On 2025-03-23 09:56:25, Amir Goldstein wrote:
+> > > > > > On Fri, Mar 21, 2025 at 8:49 PM Andrey Albershteyn <aalbersh@redhat.com> wrote:
+> > > > > > >
+> > > > > > > From: Andrey Albershteyn <aalbersh@redhat.com>
+> > > > > > >
+> > > > > > > Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
+> > > > > > > extended attributes/flags. The syscalls take parent directory fd and
+> > > > > > > path to the child together with struct fsxattr.
+> > > > > > >
+> > > > > > > This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
+> > > > > > > that file don't need to be open as we can reference it with a path
+> > > > > > > instead of fd. By having this we can manipulated inode extended
+> > > > > > > attributes not only on regular files but also on special ones. This
+> > > > > > > is not possible with FS_IOC_FSSETXATTR ioctl as with special files
+> > > > > > > we can not call ioctl() directly on the filesystem inode using fd.
+> > > > > > >
+> > > > > > > This patch adds two new syscalls which allows userspace to get/set
+> > > > > > > extended inode attributes on special files by using parent directory
+> > > > > > > and a path - *at() like syscall.
+> > > > > > >
+> > > > > > > CC: linux-api@vger.kernel.org
+> > > > > > > CC: linux-fsdevel@vger.kernel.org
+> > > > > > > CC: linux-xfs@vger.kernel.org
+> > > > > > > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
+> > > > > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > > > > > ---
+> > > > > > ...
+> > > > > > > +SYSCALL_DEFINE5(setfsxattrat, int, dfd, const char __user *, filename,
+> > > > > > > +               struct fsxattr __user *, ufsx, size_t, usize,
+> > > > > > > +               unsigned int, at_flags)
+> > > > > > > +{
+> > > > > > > +       struct fileattr fa;
+> > > > > > > +       struct path filepath;
+> > > > > > > +       int error;
+> > > > > > > +       unsigned int lookup_flags = 0;
+> > > > > > > +       struct filename *name;
+> > > > > > > +       struct mnt_idmap *idmap;.
+> > > > > >
+> > > > > > > +       struct dentry *dentry;
+> > > > > > > +       struct vfsmount *mnt;
+> > > > > > > +       struct fsxattr fsx = {};
+> > > > > > > +
+> > > > > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) < FSXATTR_SIZE_VER0);
+> > > > > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) != FSXATTR_SIZE_LATEST);
+> > > > > > > +
+> > > > > > > +       if ((at_flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
+> > > > > > > +               return -EINVAL;
+> > > > > > > +
+> > > > > > > +       if (!(at_flags & AT_SYMLINK_NOFOLLOW))
+> > > > > > > +               lookup_flags |= LOOKUP_FOLLOW;
+> > > > > > > +
+> > > > > > > +       if (at_flags & AT_EMPTY_PATH)
+> > > > > > > +               lookup_flags |= LOOKUP_EMPTY;
+> > > > > > > +
+> > > > > > > +       if (usize > PAGE_SIZE)
+> > > > > > > +               return -E2BIG;
+> > > > > > > +
+> > > > > > > +       if (usize < FSXATTR_SIZE_VER0)
+> > > > > > > +               return -EINVAL;
+> > > > > > > +
+> > > > > > > +       error = copy_struct_from_user(&fsx, sizeof(struct fsxattr), ufsx, usize);
+> > > > > > > +       if (error)
+> > > > > > > +               return error;
+> > > > > > > +
+> > > > > > > +       fsxattr_to_fileattr(&fsx, &fa);
+> > > > > > > +
+> > > > > > > +       name = getname_maybe_null(filename, at_flags);
+> > > > > > > +       if (!name) {
+> > > > > > > +               CLASS(fd, f)(dfd);
+> > > > > > > +
+> > > > > > > +               if (fd_empty(f))
+> > > > > > > +                       return -EBADF;
+> > > > > > > +
+> > > > > > > +               idmap = file_mnt_idmap(fd_file(f));
+> > > > > > > +               dentry = file_dentry(fd_file(f));
+> > > > > > > +               mnt = fd_file(f)->f_path.mnt;
+> > > > > > > +       } else {
+> > > > > > > +               error = filename_lookup(dfd, name, lookup_flags, &filepath,
+> > > > > > > +                                       NULL);
+> > > > > > > +               if (error)
+> > > > > > > +                       return error;
+> > > > > > > +
+> > > > > > > +               idmap = mnt_idmap(filepath.mnt);
+> > > > > > > +               dentry = filepath.dentry;
+> > > > > > > +               mnt = filepath.mnt;
+> > > > > > > +       }
+> > > > > > > +
+> > > > > > > +       error = mnt_want_write(mnt);
+> > > > > > > +       if (!error) {
+> > > > > > > +               error = vfs_fileattr_set(idmap, dentry, &fa);
+> > > > > > > +               if (error == -ENOIOCTLCMD)
+> > > > > > > +                       error = -EOPNOTSUPP;
+> > > > > >
+> > > > > > This is awkward.
+> > > > > > vfs_fileattr_set() should return -EOPNOTSUPP.
+> > > > > > ioctl_setflags() could maybe convert it to -ENOIOCTLCMD,
+> > > > > > but looking at similar cases ioctl_fiemap(), ioctl_fsfreeze() the
+> > > > > > ioctl returns -EOPNOTSUPP.
+> > > > > >
+> > > > > > I don't think it is necessarily a bad idea to start returning
+> > > > > >  -EOPNOTSUPP instead of -ENOIOCTLCMD for the ioctl
+> > > > > > because that really reflects the fact that the ioctl is now implemented
+> > > > > > in vfs and not in the specific fs.
+> > > > > >
+> > > > > > and I think it would not be a bad idea at all to make that change
+> > > > > > together with the merge of the syscalls as a sort of hint to userspace
+> > > > > > that uses the ioctl, that the sycalls API exists.
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Amir.
+> > > > > >
+> > > > >
+> > > > > Hmm, not sure what you're suggesting here. I see it as:
+> > > > > - get/setfsxattrat should return EOPNOTSUPP as it make more sense
+> > > > >   than ENOIOCTLCMD
+> > > > > - ioctl_setflags returns ENOIOCTLCMD which also expected
+> > > > >
+> > > > > Don't really see a reason to change what vfs_fileattr_set() returns
+> > > > > and then copying this if() to other places or start returning
+> > > > > EOPNOTSUPP.
+> > > > 
+> > > > ENOIOCTLCMD conceptually means that the ioctl command is unknown
+> > > > This is not the case since ->fileattr_[gs]et() became a vfs API
+> > > 
+> > > vfs_fileattr_{g,s}et() should not return ENOIOCTLCMD. Change the return
+> > > code to EOPNOTSUPP and then make EOPNOTSUPP be translated to ENOTTY on
+> > > on overlayfs and to ENOIOCTLCMD in ecryptfs and in fs/ioctl.c. This way
+> > > we get a clean VFS api while retaining current behavior. Amir can do his
+> > > cleanup based on that.
+> > 
+> > Also this get/set dance is not something new apis should do. It should
+> > be handled like setattr_prepare() or generic_fillattr() where the
+> > filesystem calls a VFS helper and that does all of this based on the
+> > current state of the inode instead of calling into the filesystem twice:
+> > 
+> > int vfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
+> > 		     struct fileattr *fa)
+> > {
+> > <snip>
+> > 	inode_lock(inode);
+> > 	err = vfs_fileattr_get(dentry, &old_ma);
+> > 	if (!err) {
+> > 		/* initialize missing bits from old_ma */
+> > 		if (fa->flags_valid) {
+> > <snip>
+> > 		err = fileattr_set_prepare(inode, &old_ma, fa);
+> > 		if (!err && !security_inode_setfsxattr(inode, fa))
+> > 			err = inode->i_op->fileattr_set(idmap, dentry, fa);
+> > 
 > 
-> The source string is also NUL-terminated and meets the __must_be_cstr()
-> requirement of strscpy().
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> You mean something like this? (not all fs are done)
 
-Thanks, applied to m68knommu git tree, for-next branch.
-
-Regards
-Greg
-
-
-> ---
->   arch/m68k/kernel/setup_no.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-> index f9872098f5ca..f724875b15cc 100644
-> --- a/arch/m68k/kernel/setup_no.c
-> +++ b/arch/m68k/kernel/setup_no.c
-> @@ -145,8 +145,7 @@ void __init setup_arch(char **cmdline_p)
->   
->   	/* Keep a copy of command line */
->   	*cmdline_p = &command_line[0];
-> -	memcpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
-> -	boot_command_line[COMMAND_LINE_SIZE-1] = 0;
-> +	strscpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
->   
->   	/*
->   	 * Give all the memory to the bootmap allocator, tell it to put the
-
+Yes, possibly. But don't bother with this now as that'll need some more
+thinking and it'll just stall your work for no good reason. Let's just
+get the syscalls in mergable shape now.
