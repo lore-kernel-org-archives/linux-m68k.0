@@ -1,246 +1,83 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6A025F7BA
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Apr 2025 09:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE143C26
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Apr 2025 00:04:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745831854; cv=none; b=AOlRp955wP5moe7XhsYkiFXOl9Vtwk3UXEE5W77nBb2i16wdkNXNLorugKf+iAWTrKXQ6njRI12JqmEQ4SNivRaNSDsBme4LVeT9GiuCiMsu4QPKftCHaNWpkQ7w2ER/wQH6HOWDnNkj07GVAs9c5iTbIovqe4Wc5QTcqfGYdP8=
+	t=1745885076; cv=none; b=hVp1lrgz1M6QdBKjNLHVdTKdf9mE4eHp4BdNLX7bzTAAXmQ14mHCY8Scknj0LmkgID14Vmy9bIqCuEnjkKTDEWbZXorLE0T+D2PckeJfiXv3EBTlRN41pGJTWwsXOTDphFEo1gyfXntluldwlP0Rw8YZmdwRIhRAVAopLCv4vFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745831854; c=relaxed/simple;
-	bh=rE/9aBzbnF3T+gnZPwU56POXUdpF+I32mFhG6FkrGuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UN7hr9uS3jq3HRZ5Cewu6l11nEnYBp7BoNCC6b0/FnhnQkiEyfpV3buQZmhxGkXusTTBr/mvXmkLp+YrEHfO7lm/dkF8snkeooQ6Orw9x7iLhDtsx6dOAW2935Rnrq64t21M1hrChomZtCPVR+v5G77/H+6UWzWL9ioXDxABQhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DTeB5saO; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1745885076; c=relaxed/simple;
+	bh=pm1+6lHAg8kFKuzXKLaoKVWctIhuCttRdaDkOc3bA2k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IafrKK3y+G1smqwUmIEtJp9FPlOZH3ECjMaQjDlUNrzVHBq99+ryIMTP7WfS5GNKPGblntOyLkibuhQAV0OsUpa0eL1weNnfWzn3GSDNCcffRgdjXy0Xo1hrzBydQ0+L7n3h8mMgDcxyDdU84E9/V6f4SPVlTdboRSEFSLRRtbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=iu03hI/c; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DTeB5saO"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 63DE9A4AA97;
-	Mon, 28 Apr 2025 09:12:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A6ABC4CEE4;
-	Mon, 28 Apr 2025 09:17:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745831850;
-	bh=rE/9aBzbnF3T+gnZPwU56POXUdpF+I32mFhG6FkrGuA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DTeB5saOxudMljAGIKv9nUmX1EsHifqW9vERWjak3y1cplx2lfh4omOTPPIlfCZpi
-	 wVa75UdWzQiVyPB7wGU0brrQsEOrM3sMtnY+nMpIIYRHQZ2YtJ9yuW+ST1XYuCPCpr
-	 SnTI1UU/jJlc1I5owTVcLfxL/58hZnS2aOKb6GgWI4s6Z3m9DYGoLPKxseEQa9e8IQ
-	 ldMKANF9rz5rcbp7kW8JyMzRvl3HVO39jtmDEA03JIaGEmW9sSRgynDf3txoAUepUs
-	 5CzWXZxc+9fwH8OkG+/gKXbsep/UpXsd4b/BkeeALa1VxwrDO5/wHbfZUzmS1r2SPx
-	 GaUIefJ4hTjQw==
-Date: Mon, 28 Apr 2025 11:17:16 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Andrey Albershteyn <aalbersh@redhat.com>
-Cc: Amir Goldstein <amir73il@gmail.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] fs: introduce getfsxattrat and setfsxattrat
- syscalls
-Message-ID: <20250428-obigen-gebadet-96a12d55bc08@brauner>
-References: <20250321-xattrat-syscall-v4-0-3e82e6fb3264@kernel.org>
- <20250321-xattrat-syscall-v4-3-3e82e6fb3264@kernel.org>
- <CAOQ4uxj2Fqmc_pSD4bqqoQu7QjmgSVp2V15FbmBdTNqQ03aPGQ@mail.gmail.com>
- <faqun3wrpvwrhwukql3niqvvauy5ngrpytx5bxbrv5xkounez3@m7j2znjuzapu>
- <CAOQ4uxjs=Gg-ocwx_fkzc0gxQ_dHx-P9EAgz5ZwbdbrxV0T_EA@mail.gmail.com>
- <20250422-suchen-filmpreis-3573a913457c@brauner>
- <20250422-gefressen-faucht-8ded2c9a5375@brauner>
- <l33napyvz5fwbcdju4otllbu4zr6faaz6mufz652alpxnjjfvl@h7j4hu4uwqwv>
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="iu03hI/c"
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-739b3fe7ce8so5005907b3a.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Apr 2025 17:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1745885073; x=1746489873; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pm1+6lHAg8kFKuzXKLaoKVWctIhuCttRdaDkOc3bA2k=;
+        b=iu03hI/cdSLWjXa2uqfnQNxVSeZnPOe7APVdhc7rfkO1yzpSKAoS1M36qOuRxth7P9
+         y6Knc2zaCQPTHpvLYEUVuW/pqS9PLPlmP7+YvpuQRc233lFzOrMHyKkf7BAL4NJRC/TB
+         gAk4hAn8ZKW14vJLpfr60GbwtItIGvWmzRxjc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745885073; x=1746489873;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pm1+6lHAg8kFKuzXKLaoKVWctIhuCttRdaDkOc3bA2k=;
+        b=KME0h4W9wANa4GFwNevZVdKzJ+NjUwSMhENUACsHTec+Tx5hHnadT3dLR3zND3Ux/Y
+         S6xVYJxfoMeqYBcfEbuYpt2JqRJIQzy9LNqW4S5JOnmA8JGXV9M38qVFFkFtFuGuzHl4
+         uEbctdp2zP5AXxS7Qupdp+4QEATwV1+NFcjWXz3Oa/ry7rNeRuGSgpTb1uEOr4AZ0lVM
+         ylerMO8NuzHBr4DyS4oDiQ3aNw+AqUqK3GtTf32KKiM8kamFvR0f8bOMeIKf40Wxfoth
+         ojjUnq+TzKGj2f2/39B38j0qUTHyUSz0GvdCcTBubZOsWmqhpTkFqtVnP9t4s7VCNuzV
+         B6Fg==
+X-Forwarded-Encrypted: i=1; AJvYcCWjw0xsMeTBnR1k9iM1yN3mbDgCl4FTuHGVw0cJnXYZoS9Qyf6DqaGsDEXk7ajYiTVLCDfldnI/cra5@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwmgGUamzrNUUls5zdImzsdvNPgjgjPTS3Dzf3122c/suZli+VJ
+	5DpCozpwKE3Fqlc/U/m+yLeoXneynBUdkPyd46Dk7GDl2w33aS8BdhMPC5rA/MiNcR1+HswVz5K
+	SYSl59+5VjKSUOxTGtwSf6H1icxcHrW8O7BMJrA==
+X-Gm-Gg: ASbGncvo8ESgzRCP/w2Mva6Q648MXZQeQUtM5XvtkAYNp9IeG/RM0JrNr+4PfCfVNsF
+	xT4xuD6wAgAiki17sfoOEfVqpmYfsUqWiyt2h7Tbt7G4J9uCHoZd2RQ00KcRXqmYBEkdJ4ngjgV
+	qdN3SnGjC/q+39xp0phsQ5B3SWiCdO2d6UZUGYmDCBvi+AuLgHemirP3eR
+X-Google-Smtp-Source: AGHT+IHODQs6hlSHS3ey+DezbNAm7mdXVwvvBJJmUkxpQmUDI1R7g/QJMgfhaFo+GAPgW2tFTHfPxuVQXs6avEnvSMo=
+X-Received: by 2002:a17:90b:2b86:b0:2fc:a3b7:108e with SMTP id
+ 98e67ed59e1d1-30a23dc1e01mr944498a91.4.1745885072890; Mon, 28 Apr 2025
+ 17:04:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <l33napyvz5fwbcdju4otllbu4zr6faaz6mufz652alpxnjjfvl@h7j4hu4uwqwv>
+References: <20250416114240.2929832-1-daniel@0x0f.com> <ac188e54-7f23-4ecd-805c-c0437a53247a@linux-m68k.org>
+In-Reply-To: <ac188e54-7f23-4ecd-805c-c0437a53247a@linux-m68k.org>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Tue, 29 Apr 2025 09:04:22 +0900
+X-Gm-Features: ATxdqUHQKTGOMSOv8SkE055vDmiDt6du5-89tna8BU1UHWG1e9Uo5AjH1ewooDM
+Message-ID: <CAFr9PXmrVUL1HubP04iHR1ObhaNo+mObg7FC+-HpTF7QR0og3g@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Enable dead code elimination
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 25, 2025 at 08:16:48PM +0200, Andrey Albershteyn wrote:
-> On 2025-04-22 17:14:10, Christian Brauner wrote:
-> > On Tue, Apr 22, 2025 at 04:31:29PM +0200, Christian Brauner wrote:
-> > > On Thu, Mar 27, 2025 at 12:39:28PM +0100, Amir Goldstein wrote:
-> > > > On Thu, Mar 27, 2025 at 10:33 AM Andrey Albershteyn <aalbersh@redhat.com> wrote:
-> > > > >
-> > > > > On 2025-03-23 09:56:25, Amir Goldstein wrote:
-> > > > > > On Fri, Mar 21, 2025 at 8:49 PM Andrey Albershteyn <aalbersh@redhat.com> wrote:
-> > > > > > >
-> > > > > > > From: Andrey Albershteyn <aalbersh@redhat.com>
-> > > > > > >
-> > > > > > > Introduce getfsxattrat and setfsxattrat syscalls to manipulate inode
-> > > > > > > extended attributes/flags. The syscalls take parent directory fd and
-> > > > > > > path to the child together with struct fsxattr.
-> > > > > > >
-> > > > > > > This is an alternative to FS_IOC_FSSETXATTR ioctl with a difference
-> > > > > > > that file don't need to be open as we can reference it with a path
-> > > > > > > instead of fd. By having this we can manipulated inode extended
-> > > > > > > attributes not only on regular files but also on special ones. This
-> > > > > > > is not possible with FS_IOC_FSSETXATTR ioctl as with special files
-> > > > > > > we can not call ioctl() directly on the filesystem inode using fd.
-> > > > > > >
-> > > > > > > This patch adds two new syscalls which allows userspace to get/set
-> > > > > > > extended inode attributes on special files by using parent directory
-> > > > > > > and a path - *at() like syscall.
-> > > > > > >
-> > > > > > > CC: linux-api@vger.kernel.org
-> > > > > > > CC: linux-fsdevel@vger.kernel.org
-> > > > > > > CC: linux-xfs@vger.kernel.org
-> > > > > > > Signed-off-by: Andrey Albershteyn <aalbersh@redhat.com>
-> > > > > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > > > > > ---
-> > > > > > ...
-> > > > > > > +SYSCALL_DEFINE5(setfsxattrat, int, dfd, const char __user *, filename,
-> > > > > > > +               struct fsxattr __user *, ufsx, size_t, usize,
-> > > > > > > +               unsigned int, at_flags)
-> > > > > > > +{
-> > > > > > > +       struct fileattr fa;
-> > > > > > > +       struct path filepath;
-> > > > > > > +       int error;
-> > > > > > > +       unsigned int lookup_flags = 0;
-> > > > > > > +       struct filename *name;
-> > > > > > > +       struct mnt_idmap *idmap;.
-> > > > > >
-> > > > > > > +       struct dentry *dentry;
-> > > > > > > +       struct vfsmount *mnt;
-> > > > > > > +       struct fsxattr fsx = {};
-> > > > > > > +
-> > > > > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) < FSXATTR_SIZE_VER0);
-> > > > > > > +       BUILD_BUG_ON(sizeof(struct fsxattr) != FSXATTR_SIZE_LATEST);
-> > > > > > > +
-> > > > > > > +       if ((at_flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
-> > > > > > > +               return -EINVAL;
-> > > > > > > +
-> > > > > > > +       if (!(at_flags & AT_SYMLINK_NOFOLLOW))
-> > > > > > > +               lookup_flags |= LOOKUP_FOLLOW;
-> > > > > > > +
-> > > > > > > +       if (at_flags & AT_EMPTY_PATH)
-> > > > > > > +               lookup_flags |= LOOKUP_EMPTY;
-> > > > > > > +
-> > > > > > > +       if (usize > PAGE_SIZE)
-> > > > > > > +               return -E2BIG;
-> > > > > > > +
-> > > > > > > +       if (usize < FSXATTR_SIZE_VER0)
-> > > > > > > +               return -EINVAL;
-> > > > > > > +
-> > > > > > > +       error = copy_struct_from_user(&fsx, sizeof(struct fsxattr), ufsx, usize);
-> > > > > > > +       if (error)
-> > > > > > > +               return error;
-> > > > > > > +
-> > > > > > > +       fsxattr_to_fileattr(&fsx, &fa);
-> > > > > > > +
-> > > > > > > +       name = getname_maybe_null(filename, at_flags);
-> > > > > > > +       if (!name) {
-> > > > > > > +               CLASS(fd, f)(dfd);
-> > > > > > > +
-> > > > > > > +               if (fd_empty(f))
-> > > > > > > +                       return -EBADF;
-> > > > > > > +
-> > > > > > > +               idmap = file_mnt_idmap(fd_file(f));
-> > > > > > > +               dentry = file_dentry(fd_file(f));
-> > > > > > > +               mnt = fd_file(f)->f_path.mnt;
-> > > > > > > +       } else {
-> > > > > > > +               error = filename_lookup(dfd, name, lookup_flags, &filepath,
-> > > > > > > +                                       NULL);
-> > > > > > > +               if (error)
-> > > > > > > +                       return error;
-> > > > > > > +
-> > > > > > > +               idmap = mnt_idmap(filepath.mnt);
-> > > > > > > +               dentry = filepath.dentry;
-> > > > > > > +               mnt = filepath.mnt;
-> > > > > > > +       }
-> > > > > > > +
-> > > > > > > +       error = mnt_want_write(mnt);
-> > > > > > > +       if (!error) {
-> > > > > > > +               error = vfs_fileattr_set(idmap, dentry, &fa);
-> > > > > > > +               if (error == -ENOIOCTLCMD)
-> > > > > > > +                       error = -EOPNOTSUPP;
-> > > > > >
-> > > > > > This is awkward.
-> > > > > > vfs_fileattr_set() should return -EOPNOTSUPP.
-> > > > > > ioctl_setflags() could maybe convert it to -ENOIOCTLCMD,
-> > > > > > but looking at similar cases ioctl_fiemap(), ioctl_fsfreeze() the
-> > > > > > ioctl returns -EOPNOTSUPP.
-> > > > > >
-> > > > > > I don't think it is necessarily a bad idea to start returning
-> > > > > >  -EOPNOTSUPP instead of -ENOIOCTLCMD for the ioctl
-> > > > > > because that really reflects the fact that the ioctl is now implemented
-> > > > > > in vfs and not in the specific fs.
-> > > > > >
-> > > > > > and I think it would not be a bad idea at all to make that change
-> > > > > > together with the merge of the syscalls as a sort of hint to userspace
-> > > > > > that uses the ioctl, that the sycalls API exists.
-> > > > > >
-> > > > > > Thanks,
-> > > > > > Amir.
-> > > > > >
-> > > > >
-> > > > > Hmm, not sure what you're suggesting here. I see it as:
-> > > > > - get/setfsxattrat should return EOPNOTSUPP as it make more sense
-> > > > >   than ENOIOCTLCMD
-> > > > > - ioctl_setflags returns ENOIOCTLCMD which also expected
-> > > > >
-> > > > > Don't really see a reason to change what vfs_fileattr_set() returns
-> > > > > and then copying this if() to other places or start returning
-> > > > > EOPNOTSUPP.
-> > > > 
-> > > > ENOIOCTLCMD conceptually means that the ioctl command is unknown
-> > > > This is not the case since ->fileattr_[gs]et() became a vfs API
-> > > 
-> > > vfs_fileattr_{g,s}et() should not return ENOIOCTLCMD. Change the return
-> > > code to EOPNOTSUPP and then make EOPNOTSUPP be translated to ENOTTY on
-> > > on overlayfs and to ENOIOCTLCMD in ecryptfs and in fs/ioctl.c. This way
-> > > we get a clean VFS api while retaining current behavior. Amir can do his
-> > > cleanup based on that.
-> > 
-> > Also this get/set dance is not something new apis should do. It should
-> > be handled like setattr_prepare() or generic_fillattr() where the
-> > filesystem calls a VFS helper and that does all of this based on the
-> > current state of the inode instead of calling into the filesystem twice:
-> > 
-> > int vfs_fileattr_set(struct mnt_idmap *idmap, struct dentry *dentry,
-> > 		     struct fileattr *fa)
-> > {
-> > <snip>
-> > 	inode_lock(inode);
-> > 	err = vfs_fileattr_get(dentry, &old_ma);
-> > 	if (!err) {
-> > 		/* initialize missing bits from old_ma */
-> > 		if (fa->flags_valid) {
-> > <snip>
-> > 		err = fileattr_set_prepare(inode, &old_ma, fa);
-> > 		if (!err && !security_inode_setfsxattr(inode, fa))
-> > 			err = inode->i_op->fileattr_set(idmap, dentry, fa);
-> > 
-> 
-> You mean something like this? (not all fs are done)
+Hi Greg,
 
-Yes, possibly. But don't bother with this now as that'll need some more
-thinking and it'll just stall your work for no good reason. Let's just
-get the syscalls in mergable shape now.
+On Mon, 28 Apr 2025 at 08:37, Greg Ungerer <gerg@linux-m68k.org> wrote:
+> I notice that some other architectures (arm and powerpc) have version
+> checks on gcc or ld in the config. Do you know if there is any version
+> limitations for m68k here?
+
+I'm not sure about that. I'll try to work out why they have the checks
+and see if that affects m68k too.
+I'm using GCC13 so probably new enough that most things work.
+
+Cheers,
+
+Daniel
