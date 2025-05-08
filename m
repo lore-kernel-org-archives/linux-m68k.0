@@ -1,127 +1,177 @@
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2482F15B102
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 May 2025 03:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C1DB667
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 May 2025 03:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746417211; cv=none; b=aYuTFhOETTzUAcs4SD9BZ5+S+jY6EebxPnb1g0w1ZKDNiiZwBDIa313YNVdsKQr9QDxRi4QxIyJdtYCQ9ycLQ3IE+rrhd05URAXfAsGIKmYrrwKUldxNdHflurqKDcnEtjrYTHSpE+izTWX5PwY0rm38qOVk5lrewsADVqlJpEU=
+	t=1746673217; cv=none; b=H1QMzWDF4JWueHCVit1nDd3h5wvpOX4YuqvKOeasRgf8E5pQHuY0n1viYR1/lJFL7phm++XtYT7kf+07HdLwo8se28xTW4mU4gCWDjwwABG09tpCO33jTGIG6Ygh3ccQYVYS1e6z4JLCl7flA5TIYZWp+VFBnkp8NtdOC/oJVWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746417211; c=relaxed/simple;
-	bh=+1R9rV51p7/OfTwm6EUzx6NezHHQwEZqzko/OrtFayo=;
-	h=To:Cc:Message-ID:From:Subject:Date; b=X6LZ66QGoQDezLrtafU29e0TOonzXVFDY9sAouIqz1GX07wBM3o2VMOpoNaOx/4Y2eb7f0B00RUWSgk5aOMuHVfGjPdvO+I/5vAjPgMO2ufXCOEDeI3vQzykiSHC3zbIp/pMkGxzI9OgvxlwMN00K8199i7rIlpacSOVk9nYWvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RMtORW1i; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1746673217; c=relaxed/simple;
+	bh=1HvXxvyLdCiWfPzwj2LlgkAkTqI6asXpceWm4lOgNY0=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=H7fohqLuFtMc3Sp1P2iRGv0VCnAXPXNPpaG7CVS0p1rBrg/ijTUb5STgx97Ti3bs6dKBOgzg/3WXYN5NFCdLiLJkTUbd9fJHucMrgx0sbIjKwkwkr4t39/Gg5Nnm4l80F7VfE6FcMviRBcazndVwgjWEmBg9rbLrf7aOET9sO08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CJjrJQdz; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RMtORW1i"
-Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
-	by mailfout.phl.internal (Postfix) with ESMTP id F3A501380221;
-	Sun,  4 May 2025 23:53:26 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-11.internal (MEProxy); Sun, 04 May 2025 23:53:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1746417206; x=1746503606; bh=r/MmHKekpP3im7WWjT9AOVn8swvg
-	UEz7+2bbK7KC9so=; b=RMtORW1ie4MDZ6Ds8Fq34Oj8zFbffBKjlbN8KWqJH+nQ
-	YzMUsu4sgjTDnYSieB/4jqUEy1Ic5hpP6MTjk63ZitqmOJxMDgpFNshjCq4YpvGa
-	PIdUH+KbfCqMp3ajq6LJ0Ws8XvWMDoJw5mYW0ThPTfzcF4o568exvzZ1761Us1qy
-	1KOMKh+2hL3R3w2LVDAsNot9L6G1yFmEsUoUczfPMBFfazmgVL0QIJIH3+vE3qRi
-	kAqv5BJuUVMq2Euua/YLzHc61nRXLFxsTS+UWmdobUHUGSyF/wPYq5yE2sD93s71
-	bKvrxwIcP7Y2QBaZVpsg+VM3AWVksTrOiAnoYnBAJQ==
-X-ME-Sender: <xms:NjYYaCvCdcQxFxBW9biTR663nj8CqwdWpH8OaK1GtGn21Sfrzsnk7Q>
-    <xme:NjYYaHdqMATL_6Sjp-0o9x7AtNEoP5BKFqxROku9g9Hptp-Dd3cyn2KPNWGS5OTIl
-    L7frnGqXqf7ZY-OCS0>
-X-ME-Received: <xmr:NjYYaNyWWJdZaqGSInD3LbdsFu-khPTXSz0a8sDvxrtRvGj4pr9Q5tMbkNdznS9-It7mW15eb5d07AuzM_3avtzj5OHzHcF6bpg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgddvkedttdeiucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepvfevkffhufffsedttdertddttddtnecuhfhr
-    ohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorh
-    hgqeenucggtffrrghtthgvrhhnpeehfffggeefveegvedtiefffeevuedtgefhueehieet
-    ffejfefggeevfeeuvdduleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgt
-    phhtthhopeegpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgvggvrhhtsehlih
-    hnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehfuhhnrghhohesjhhurhgrihdrohhr
-    ghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheike
-    hkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhn
-    vghlrdhorhhg
-X-ME-Proxy: <xmx:NjYYaNNP9Seh5e7f2Kd-1o2yhKJN2n6iiT8u_tiw5Ppouh306eKJkg>
-    <xmx:NjYYaC9T8jUn8FFtCWbVyxENpHPCZWq2BLmfdM0Ap5d8k2D9PURTjQ>
-    <xmx:NjYYaFVBJKHvm8NfWhHgCnS1VjKW5RWNluFlcCdByBWL6T6_lmlD2A>
-    <xmx:NjYYaLfAG5KfG354xsWqlAXvwjFv8q8pZmz-82_9yY2E_5aGTQlJ6w>
-    <xmx:NjYYaNT6gpPOHlO-SRtyVq_BX7RDceQeA6mztvRTncgDD0YX0K4zLeu2>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 4 May 2025 23:53:23 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CJjrJQdz"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1746673217; x=1778209217;
+  h=date:from:to:cc:subject:message-id;
+  bh=1HvXxvyLdCiWfPzwj2LlgkAkTqI6asXpceWm4lOgNY0=;
+  b=CJjrJQdzWtzTYhdsZZSkJVKsu/toHyWBTDEAmhqhKLy2sGcqzTewjRy7
+   EIx6hr+Rfpm3nb6ZfBFjfIXhigguTcrGW9MjvHukhI0IajZaACwvFE+wj
+   BR85yT74ZN2/70jDiBVYaaLdHcgtbwJwgnvZqcBTt6+zfKz/PreJ52kUZ
+   qry57OKt0wsYN+FdgiSoU3/aOAtoWbtmw5S12eu9Ji6IFxBwDKTy+MDZn
+   IdbMd+nQPhj0VW4HxJlJBI8GlHDE+em2gnQwMmoKB1MHHNM7OO9nSpEJO
+   zs6SmA9LaniZJjUM5SrpQGgN6CYJHi6x2xIk5fB9ybSt/me22jFXH6hPH
+   A==;
+X-CSE-ConnectionGUID: pjdqulyQS2miIQEB86t+2A==
+X-CSE-MsgGUID: I/yMMuLIQ6+gBTgFwTd7FA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11426"; a="52248722"
+X-IronPort-AV: E=Sophos;i="6.15,271,1739865600"; 
+   d="scan'208";a="52248722"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2025 20:00:15 -0700
+X-CSE-ConnectionGUID: +EixcRUuS52yJpwqy3WmwA==
+X-CSE-MsgGUID: +Oym536hTve38zYzk0vJAw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,271,1739865600"; 
+   d="scan'208";a="173365336"
+Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 07 May 2025 20:00:13 -0700
+Received: from kbuild by 1992f890471c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uCrUZ-0009ad-1O;
+	Thu, 08 May 2025 03:00:11 +0000
+Date: Thu, 08 May 2025 10:59:17 +0800
+From: kernel test robot <lkp@intel.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <9f93f2f17010ac8d033d7f8f037c21dd51289260.1746417016.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] m68k/mac: Improve clocksource driver commentary
-Date: Mon, 05 May 2025 13:50:15 +1000
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 89273040247743b04ab6f536e47d90ad77d6cde1
+Message-ID: <202505081011.3wn8wn7f-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-qemu-system-m68k -M q800 has an old bug that causes the kernel to
-occasionally complain about a soft lockup:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 89273040247743b04ab6f536e47d90ad77d6cde1  Merge tag 'v6.15-rc5'
 
-    watchdog: BUG: soft lockup - CPU#0 stuck for 5107s!
+elapsed time: 3773m
 
-There isn't any actual lockup. The via1 clocksource produced a large
-jump in jiffies, causing the watchdog to detect a stale timestamp.
+configs tested: 100
+configs skipped: 1
 
-The 32-bit clocksource counter runs at 783360 Hz and its period is
-about 5482 seconds. Applying the "nanosecond" approximation used in
-get_timestamp() in kernel/watchdog.c then yields the duration reported
-in the log message above (always 5107 or 5108 in my tests):
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-0xffffffff / VIA_CLOCK_FREQ * 10**9 / 2**30 = 5106.209 seconds
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                               allnoconfig    gcc-14.2.0
+arc                   randconfig-001-20250506    gcc-8.5.0
+arc                   randconfig-002-20250506    gcc-12.4.0
+arm                               allnoconfig    clang-21
+arm                   randconfig-001-20250506    clang-21
+arm                   randconfig-002-20250506    clang-21
+arm                   randconfig-003-20250506    clang-17
+arm                   randconfig-004-20250506    clang-21
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250506    clang-21
+arm64                 randconfig-002-20250506    gcc-8.5.0
+arm64                 randconfig-003-20250506    clang-21
+arm64                 randconfig-004-20250506    gcc-8.5.0
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250506    gcc-14.2.0
+csky                  randconfig-002-20250506    gcc-14.2.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-21
+hexagon                          allyesconfig    clang-21
+hexagon               randconfig-001-20250506    clang-21
+hexagon               randconfig-002-20250506    clang-21
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250506    clang-20
+i386        buildonly-randconfig-002-20250506    clang-20
+i386        buildonly-randconfig-003-20250506    clang-20
+i386        buildonly-randconfig-004-20250506    gcc-12
+i386        buildonly-randconfig-005-20250506    clang-20
+i386        buildonly-randconfig-006-20250506    clang-20
+i386                                defconfig    clang-20
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250506    gcc-14.2.0
+loongarch             randconfig-002-20250506    gcc-14.2.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250506    gcc-8.5.0
+nios2                 randconfig-002-20250506    gcc-6.5.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                randconfig-001-20250506    gcc-11.5.0
+parisc                randconfig-002-20250506    gcc-5.5.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-21
+powerpc               randconfig-001-20250506    clang-21
+powerpc               randconfig-002-20250506    gcc-8.5.0
+powerpc               randconfig-003-20250506    gcc-8.5.0
+powerpc64             randconfig-001-20250506    clang-20
+powerpc64             randconfig-002-20250506    gcc-8.5.0
+powerpc64             randconfig-003-20250506    clang-18
+riscv                            allmodconfig    clang-21
+riscv                             allnoconfig    gcc-14.2.0
+riscv                 randconfig-001-20250506    clang-19
+riscv                 randconfig-002-20250506    clang-21
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-21
+s390                             allyesconfig    gcc-14.2.0
+s390                  randconfig-001-20250506    gcc-9.3.0
+s390                  randconfig-002-20250506    clang-21
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                    randconfig-001-20250506    gcc-12.4.0
+sh                    randconfig-002-20250506    gcc-12.4.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250506    gcc-11.5.0
+sparc                 randconfig-002-20250506    gcc-6.5.0
+sparc64               randconfig-001-20250506    gcc-7.5.0
+sparc64               randconfig-002-20250506    gcc-5.5.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-21
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250506    clang-17
+um                    randconfig-002-20250506    clang-21
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20250506    clang-20
+x86_64      buildonly-randconfig-002-20250506    gcc-12
+x86_64      buildonly-randconfig-003-20250506    gcc-12
+x86_64      buildonly-randconfig-004-20250506    clang-20
+x86_64      buildonly-randconfig-005-20250506    clang-20
+x86_64      buildonly-randconfig-006-20250506    gcc-12
+x86_64                              defconfig    gcc-11
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250506    gcc-13.3.0
+xtensa                randconfig-002-20250506    gcc-9.3.0
 
-It is notoriously difficult to correctly emulate a MOS6522 VIA chip. So
-it seems wise to document the VIA clocksource driver better, especially
-those hardware behaviours which the kernel relies upon.
-
-Cc: Joshua Thompson <funaho@jurai.org>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- arch/m68k/mac/via.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 01e6b0e37f8d..142c2ed77c84 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -621,6 +621,22 @@ static u64 mac_read_clk(struct clocksource *cs)
- 	 * These problems are avoided by ignoring the low byte. Clock accuracy
- 	 * is 256 times worse (error can reach 0.327 ms) but CPU overhead is
- 	 * reduced by avoiding slow VIA register accesses.
-+	 *
-+	 * The VIA timer counter observably decrements to 0xFFFF before the
-+	 * counter reload interrupt gets raised. That complicates things a bit.
-+	 *
-+	 * State | vT1CH      | VIA_TIMER_1_INT | inference drawn
-+	 * ------+------------+-----------------+-----------------------------
-+	 *  A    | FE thru 00 | false           | counter is decrementing
-+	 *  B    | FF         | false           | counter wrapped
-+	 *  C    | FF         | true            | wrapped, interrupt raised
-+	 *  D    | FF         | false           | wrapped, interrupt handled
-+	 *  E    | FE thru 00 | true            | wrapped, interrupt unhandled
-+	 *
-+	 * State D is never observed because handling the interrupt involves
-+	 * a 6522 register access and every access consumes a "phi 2" clock
-+	 * cycle. So 0xFF implies either state B or C, depending on the value
-+	 * of the VIA_TIMER_1_INT bit.
- 	 */
- 
- 	local_irq_save(flags);
--- 
-2.45.3
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
