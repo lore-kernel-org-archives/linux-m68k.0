@@ -1,174 +1,99 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1274A272E7A
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 11:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C58E2749C3
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 11:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747220558; cv=none; b=Foikg5XPZ2t2KCW9bKVH8cDs00KPVjx6ofUeNxf9nA4Y/KQeMZr+soLJonrLPuohRzXACJ5syqpJANyAdNUCAfEYLt+LCkvA/ON0vIFVY6jCbPBjGXuMERCltNTRdyX6c2cz+6rUGE19kSUT5mz5B5HNgAsNIzkxsIWJBKOOKjI=
+	t=1747222877; cv=none; b=lqT06qC4IIvwagcBRG2iYRDrDC6KFMlXx9YNMDNpypAf7sH1WkRTZZBUIBD29jkMAtIW88zTNefKzOtOckSPXwJk6HvWvWe+oe8uDqJ6MZqx9R/8gOmf+SFVZyM1qUJjIXu+jTKHhMCUxvyxh1XPhXxjPw+Bh8Jcec++Z1accC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747220558; c=relaxed/simple;
-	bh=g6FsWqajrTcVSIHknD3zeLY9flfbWnzSw3aQFZLECpw=;
+	s=arc-20240116; t=1747222877; c=relaxed/simple;
+	bh=AvMS1QZuWH8nM9oPd+mGGzHreipLq8tB7qOea+edNvc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 In-Reply-To:Content-Type:Content-Disposition; b=GpJqiKkLl9/89OiJIJuFCdw7FOSR/n3b+DNWUaid6NsiFjRKTJ9uq1gjLVh0BRxJPWPzmcKNVEzA49mH6PUfMLnvgtLtZdObKerSXQrNiMoWnai+QqLRruFmdz68Fs0ZpvEXGoytefNalrMpG4OYojNZAEWWj+S/UaBfQodK15Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I15Wzgb4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=uByoi2k1iKIAYsmPkbM+hPacytK/Z1J/NRG0R0BRMkAoqocTqQvKKGpXmX/96CndwFuZQUZWijdPYrIPbaK0yIY0hP1rt1MbvDz9ZMDspCdbX2gMHBUy6ZYuT3kBi7X8Lfq3+MCiHQMTgPSClttWDRev8qggBFc78hg9tBAhD5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HCYT2NKH; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I15Wzgb4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747220554;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cav3Z4NY5VTBc23C/qTtaVoA8kEGEB5wAcjksldNIvE=;
-	b=I15Wzgb4KH+oyoPc6ukXT/0Rwdg5uNuvsAl9IB61zrfdLL64n3zJsde/cQlpOL63vmRgqh
-	eIv0oGHsyLYob1U9Fx4UGZG6Ey1R5cIe9TH/vN63/4zQN/PjxsRIT1AnWpkbjir82ox2zz
-	gOhrSEgIy0Z5w8YIy6dkuIs0UXJ1P4g=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-400-z5eyD9TzNpmN4KEgVQtjWw-1; Wed, 14 May 2025 07:02:32 -0400
-X-MC-Unique: z5eyD9TzNpmN4KEgVQtjWw-1
-X-Mimecast-MFC-AGG-ID: z5eyD9TzNpmN4KEgVQtjWw_1747220552
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5fca07e1c56so5561138a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 04:02:32 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HCYT2NKH"
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-442ccf0e1b3so77003925e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 04:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747222874; x=1747827674; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=et8U1o84ecbh6m4FOLOfviKzf2/yLZIseHIwaaEPlVY=;
+        b=HCYT2NKHXcdBxFMa/9oyq5DibFlcegwhGSXz4dO0rUHz1zLgKSGyFTKc89BrIom/Zg
+         vIbfPHviHDY69dEfevZFSlkoh9g9LHLvBOBM1HlJ+v/25SqhxyXjjlKD+4HywZ4twdFX
+         7tnuPuleZRkNykMrw7Swir3YxN6TnVqVeL3erbWleoEYAb8oSRkoeJHM5tlRWJmZwhPo
+         /4/1HZpJoQ5imiOJzdTRR6OuzTedAJNdEpXLQ7KYHGVAM8UZmR7cm5RrWgHiUAWxVnPU
+         8dFrx3aKczadQYWPV75r8Hy/PScAOnHIYG0y4Ugb5CEG00cVFZJujnKDaLIrLKEbfosg
+         Sl0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747220551; x=1747825351;
+        d=1e100.net; s=20230601; t=1747222874; x=1747827674;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cav3Z4NY5VTBc23C/qTtaVoA8kEGEB5wAcjksldNIvE=;
-        b=kRI7iyYg8/k8xCIVUcvePHBB8yjO0IlGhsqKNvDOi9Lu0CZxVP9KOIrYHK4WkxQOC2
-         VTNM41nQvMUvj1fTTAI5Y+Wxs4HeYAxgn5yi/23p2+soRHZKWhflwT4hwbb1du3QC/WA
-         KGTB+WW9k+ZWVdZTYHeqj9w4bh5nTtCn2Isi43X0daquR3ekxiiRIZjSxwCSc8LGPvr2
-         MzipW8Dkx+Y9mUjuBJ9wkhfaVltG9ZKWCArVnq9KubYkO+NijWvEJugnOmwACVqiOz4P
-         UR6kLWobkVsTKl/RJWgbYHCjbg4Fm48hFSlrhQuNSVwGhwfbnroGPteFnD1+ST+PJJmO
-         95qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXs+H/DcceMuLcSHUJwb65MOp9Fgn4Bfs6J3gh0wwrdaO9p8qTHrtLUtllv7zutZs99t7qiXEZOjEdP@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwVxhpyvsMYlWmp6lEL0A4OLsGPIIiv2FNOA8U9JDp8/ZGc4RQA
-	wpWAYRMLhr0Dydry9i7067hqTOHNZiTinrJtw/8s+Gdv8ZzNJ8sRI24ENL5qnkG7wm2t+XLwBLp
-	9slLMvlExDddZKJkS2jjAkxlgZ3NVDt+0BrZ7ylnrof0DeaexfKP+TR6mP80X7e7m
-X-Gm-Gg: ASbGnctOJqqTxOm50wpQIlJwuWEprA++O9Qu5YSAlYBCNHgVuB8lkpxJaXE1OUf7i+0
-	2a1huEVioRop7Qdn+ZhDdBrBuWL+w3nH9ImqQ6ykj3XiJVk6I72v7FYzPkAb/jkxgIWpvSbuc7k
-	jNOFFVWEHosPysU7agf25T6MbpQpnIbwdRpEs8PS9HlStZtfwLYaobdVEQraa+yO+opQnCllwM2
-	E1AryXdxMialCH7lOBBnD0cQsuMIDNpVLRlVdaG0tpNP/LIoq1Sqh5/k9xKXDyxgJZzTgZMmWvd
-	Dw==
-X-Received: by 2002:a05:6402:234d:b0:5f4:ade4:88c5 with SMTP id 4fb4d7f45d1cf-5ff988dd135mr2082965a12.34.1747220551021;
-        Wed, 14 May 2025 04:02:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEs3ORoNcv9GW9V4gupozuqWmYmwSxEEUINo5zQzLXzCm36ngPWceLYKaaZhwPfqmrqY5iYdA==
-X-Received: by 2002:a05:6402:234d:b0:5f4:ade4:88c5 with SMTP id 4fb4d7f45d1cf-5ff988dd135mr2082854a12.34.1747220550339;
-        Wed, 14 May 2025 04:02:30 -0700 (PDT)
-Received: from thinky ([2a0e:fd87:a051:1:e664:4a86:4c01:c774])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5fe43357d45sm4879817a12.54.2025.05.14.04.02.15
+        bh=et8U1o84ecbh6m4FOLOfviKzf2/yLZIseHIwaaEPlVY=;
+        b=au+Dif57KxDAnGI0MAcHYUXHhmaRNaop+MaJszIv2RYE0kezW0n3ib7CXSBsGOVPHP
+         KE+noPw323/DiMxbtIudRruyCxl7XRua0JQYJMj014EgiHFcWMP6cIz9xjcs7bXDBryE
+         ApDtSQcih4z69S7g376GykKzHruLk3o2gFbdJicsqiEOfnwf32hbiAFGen9UEUooFU36
+         ykITYcaXI+Tc3BAqxZnTy4XvPr34inkN2HVcRAqIOS7B0n7KY/iyzjsKvKjAp0h+jUOQ
+         5HGpBxTnQMQP7I/iDfziSt+8a19IDJ1W32Neovh7+9syE8iZ8JvrA9v1bGYYZIIsrzGC
+         OrKw==
+X-Forwarded-Encrypted: i=1; AJvYcCXe7V3Hq4lsYFMfslWXF4HjLT7ky1s6CWzNubdfoJyBli0YkwznPpb3uZ873Y8ik/2gxahgNi1kW4Ip@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyHiMESlmgeBNIl5yrMJlDhCFzjDfiMRIJOdmgHi1S8jB92j3tV
+	xZe0Js/Nec9cNMVPzqJ4THztWnTYskm+zTIgLv/CNZjrlzB8dXT7
+X-Gm-Gg: ASbGncuqN+uQ61+mrV/BprQoxTCk8+hsnIE9SDWzcVsPUxCjsW5KiYn9Lrsrwb1bWiG
+	OZKw+yHQ9pff3KMqICYMg7wpKbJrHrneSd4DEANpAqJvlEf635ZL40Rbf/e6cjPGom4Jaq5c3HI
+	PwfQJ/amoge47pZkXg27QP2y04FzHncf69MdAgDlVikaZnqPn8qqCBlKZrPRYxwJmNlwefhFrUP
+	E6th88Fhf3fdprpXherbAe/FRrhJNIOsiY76Zmr1/NqU+K19Nww3KEl4Ky701Er/Sm7+Ke/cpuO
+	dSEsPuz/gLdM9ukojSonmCijBVWNvW3+IRBpOHTNa0ektmA=
+X-Google-Smtp-Source: AGHT+IGVtf89pkxJBQnHkIvMa5c5+fKBhgVKo/JJ9GqR/nbttBuKODGJ8fajL/+CqsHVRYTyZbU+tg==
+X-Received: by 2002:a05:600c:3b02:b0:43c:ee3f:2c3 with SMTP id 5b1f17b1804b1-442f20bae1emr25599145e9.7.1747222873501;
+        Wed, 14 May 2025 04:41:13 -0700 (PDT)
+Received: from gmail.com ([213.157.19.150])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442f397926asm26770195e9.36.2025.05.14.04.41.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 May 2025 04:02:29 -0700 (PDT)
-Date: Wed, 14 May 2025 13:02:13 +0200
-From: Andrey Albershteyn <aalbersh@redhat.com>
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, Tyler Hicks <code@tyhicks.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, linux-alpha@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	selinux@vger.kernel.org, ecryptfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, Andrey Albershteyn <aalbersh@kernel.org>
-Subject: Re: [PATCH v5 2/7] lsm: introduce new hooks for setting/getting
- inode fsxattr
-Message-ID: <kgl5h2iruqnhmad65sonlvneu6mdj6jl3sd4aoc3us3lvrgviy@imce27t4nk2e>
-References: <20250512-xattrat-syscall-v5-0-4cd6821e8ff7@kernel.org>
- <20250512-xattrat-syscall-v5-2-4cd6821e8ff7@kernel.org>
- <f700845d-f332-4336-a441-08f98cd7f075@schaufler-ca.com>
+        Wed, 14 May 2025 04:41:12 -0700 (PDT)
+Date: Wed, 14 May 2025 13:41:11 +0200
+From: Paolo Pisati <p.pisati@gmail.com>
+To: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v4 0/2] m68k: pata_cswarp: Add Amiga cslab ata support
+Message-ID: <aCSBV_L-NcNX4n7G@akinoame>
+References: <20250325155613.352680-1-p.pisati@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <f700845d-f332-4336-a441-08f98cd7f075@schaufler-ca.com>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: cAQVyCuLMA4ydSRW1oWv-hKnUIIbuLjKXuhcLbFl8nI_1747220552
-X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20250325155613.352680-1-p.pisati@gmail.com>
 
-On 2025-05-12 08:43:32, Casey Schaufler wrote:
-> On 5/12/2025 6:25 AM, Andrey Albershteyn wrote:
-> > Introduce new hooks for setting and getting filesystem extended
-> > attributes on inode (FS_IOC_FSGETXATTR).
-> >
-> > Cc: selinux@vger.kernel.org
-> > Cc: Paul Moore <paul@paul-moore.com>
-> >
-> > Signed-off-by: Andrey Albershteyn <aalbersh@kernel.org>
-> > ---
-> >  fs/file_attr.c                | 19 ++++++++++++++++---
-> >  include/linux/lsm_hook_defs.h |  2 ++
-> >  include/linux/security.h      | 16 ++++++++++++++++
-> >  security/security.c           | 30 ++++++++++++++++++++++++++++++
-> >  4 files changed, 64 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/fs/file_attr.c b/fs/file_attr.c
-> > index 2910b7047721..be62d97cc444 100644
-> > --- a/fs/file_attr.c
-> > +++ b/fs/file_attr.c
-> > @@ -76,10 +76,15 @@ EXPORT_SYMBOL(fileattr_fill_flags);
-> >  int vfs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
-> >  {
-> >  	struct inode *inode = d_inode(dentry);
-> > +	int error;
-> >  
-> >  	if (!inode->i_op->fileattr_get)
-> >  		return -ENOIOCTLCMD;
-> >  
-> > +	error = security_inode_file_getattr(dentry, fa);
-> > +	if (error)
-> > +		return error;
-> > +
+On Tue, Mar 25, 2025 at 04:56:11PM +0100, Paolo Pisati wrote:
+> Here is a driver (and the subsequent defconfig change) for the pata/CF socket in
+> the CS-Lab Warp series of Amiga boards.
 > 
-> If you're changing VFS behavior to depend on LSMs supporting the new
-> hooks I'm concerned about the impact it will have on the LSMs that you
-> haven't supplied hooks for. Have you tested these changes with anything
-> besides SELinux?
+> Changes in v4:
+>  - refactor pata_cswarp_data_xfer()
+>  - ioremap WARP_OFFSET_ATA region
+> 
+> Changes in v3:
+>  - suppress a comment
+>  - properly return ata_host_activate() error code
+> 
+> Change in v2:
+>  - fix style, remove duplicate swap macro, driver version, etc
+>  - rework the zorro attach mechanism
+>  - remove the unnecessary zorro ids refactor
+ 
+Gentle ping about this one: can i get an ACK or a NACK?
 
-Sorry, this thread is incomplete, I've resent full patchset again.
-If you have any further comments please comment in that thread [1]
-
-I haven't tested with anything except SELinux, but I suppose if
-module won't register any hooks, then security_inode_file_*() will
-return 0. Reverting SELinux implementation of the hooks doesn't
-cause any errors.
-
-I'm not that familiar with LSMs/selinux and its codebase, if you can
-recommend what need to be tested while adding new hooks, I will try
-to do that for next revision.
-
-[1]: https://lore.kernel.org/linux-fsdevel/CAOQ4uxgOAxg7N1OUJfb1KMp7oWOfN=KV9Lzz6ZrX0=XRGOQrEQ@mail.gmail.com/T/#t
-
+Thanks.
 -- 
-- Andrey
-
+bye,
+p.
