@@ -1,127 +1,174 @@
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B361E98E0
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 07:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1274A272E7A
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 11:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747206634; cv=none; b=Jo7NBlmKjFzzWA2AkwivlJAEN4ffyeOgEWuAPNJ/RV5P2QPhZUnZDHm9QNd1hE7wgOuWzZOlwvSdbnbj2WqI1hVIm6b5Gkf2r+xqmvT9FO8+XrRDAD/4kyGD5rcswpLRYv6RIB2MJ0IANAXU9ozhi0HwyghggLLU30gZxvbf/B8=
+	t=1747220558; cv=none; b=Foikg5XPZ2t2KCW9bKVH8cDs00KPVjx6ofUeNxf9nA4Y/KQeMZr+soLJonrLPuohRzXACJ5syqpJANyAdNUCAfEYLt+LCkvA/ON0vIFVY6jCbPBjGXuMERCltNTRdyX6c2cz+6rUGE19kSUT5mz5B5HNgAsNIzkxsIWJBKOOKjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747206634; c=relaxed/simple;
-	bh=/B+EwXmyrRAKb+rC7ELavWBH8AzZRPfvLMfeSNf7qgQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Hb0s4EVPB3lT1uO901/VKmqy3H2+lDNltCb4OWV4aUqcI8ppm+4zRAeYsUbVLTYGJy/xBM7de90++2P4kJhdrcLvYfbtVaXN/vKRZAGPQfleHUfW9hzBXF4X7/LEw/pMw5UuWX2fPssyxrJKMFqlkK+LbOb+9ovFytDvDyHk54k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-51eb1a714bfso5445380e0c.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 00:10:32 -0700 (PDT)
+	s=arc-20240116; t=1747220558; c=relaxed/simple;
+	bh=g6FsWqajrTcVSIHknD3zeLY9flfbWnzSw3aQFZLECpw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 In-Reply-To:Content-Type:Content-Disposition; b=GpJqiKkLl9/89OiJIJuFCdw7FOSR/n3b+DNWUaid6NsiFjRKTJ9uq1gjLVh0BRxJPWPzmcKNVEzA49mH6PUfMLnvgtLtZdObKerSXQrNiMoWnai+QqLRruFmdz68Fs0ZpvEXGoytefNalrMpG4OYojNZAEWWj+S/UaBfQodK15Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I15Wzgb4; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I15Wzgb4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1747220554;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cav3Z4NY5VTBc23C/qTtaVoA8kEGEB5wAcjksldNIvE=;
+	b=I15Wzgb4KH+oyoPc6ukXT/0Rwdg5uNuvsAl9IB61zrfdLL64n3zJsde/cQlpOL63vmRgqh
+	eIv0oGHsyLYob1U9Fx4UGZG6Ey1R5cIe9TH/vN63/4zQN/PjxsRIT1AnWpkbjir82ox2zz
+	gOhrSEgIy0Z5w8YIy6dkuIs0UXJ1P4g=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-400-z5eyD9TzNpmN4KEgVQtjWw-1; Wed, 14 May 2025 07:02:32 -0400
+X-MC-Unique: z5eyD9TzNpmN4KEgVQtjWw-1
+X-Mimecast-MFC-AGG-ID: z5eyD9TzNpmN4KEgVQtjWw_1747220552
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5fca07e1c56so5561138a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 04:02:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747206631; x=1747811431;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qEdCTK8Ua/3Kxw/UlKLJuxTv51uEZAV3qqkGRptSF+I=;
-        b=M6W3YnSKsUD8XpNrTXBY2NIhsSvvoLG2FOo6VObui+jtHhMuqM54d0EgNwJjeqk2Oo
-         4P0vWfL2F1dRm4l93yIhlGmqelXVuCB09ifUcWutDFPZ+MvYjh9+yOTByc0O/EdSQKBj
-         IBZQBiQl4Q2m6vuByRztBH3VHY9RMM0rSn4cgmBS4mw2HGTMgSZfIK4iJQgdNeBEEowM
-         6AO9f1sPiVkEm0tWkIhGcwmFXZICvTSxb+2UdgbAxBJ2OfBO5iZctIah8urLmrYryybt
-         s/8VgV9w4gVSlnrrQMzm7aPIznlds2NLCFJJBK/gjCbI2cw7tcwGnyN2tEhd8RGyeI0x
-         CE9A==
-X-Gm-Message-State: AOJu0YxvRBR7qReqJheMc/sbq98WNvBfDGnaO0zU6f3oojCfp/iOoky+
-	ERXE1ccWDgWxssxeda3c4DDv8rLVg0XPg2awpUw05XgscXir+go+XWRZwwkD
-X-Gm-Gg: ASbGncsVp642jWaSAmk/vJ6ilQJXd+oH9qHVqmBUMp7Kb1Ek3LO4XdhMUWlGCyKoTOW
-	aa6+VgxeMf1rCM3N6HLY6px4238WDHk0PWnYiLV11YGFAKHjRSrs4V01WGV5oL35nwcMt94KE+1
-	NXupmOHajBIuVG/BHIk2LLE3WlXZrvBBgY7LKtYmajcR7wqGQI/v6MjZtNsShBGwu4aCKOF89Q8
-	sKc39TW3XaharuLyEOB6Ezej50hjiLC0XvcYDUZAVD2n0Y9PfxFrvCyp8wEhqlSUJdIbZ1UuKCA
-	YKKm9G3Mwn5PRpAfmSoRbmmaF2IZ7gupFelMHWrO2l/qgawdOMGZNV1NSRuAKcHeK/UNjM81YpJ
-	C6KGmQT4n4YSEEEmQ+g==
-X-Google-Smtp-Source: AGHT+IHvhfCMxoL+mc7gghFK97WtEN5lDPyX3ZXb8nNW3b9VfsWnZDSQ6WfkHT9BSE4IlqZqUfzn0A==
-X-Received: by 2002:a05:6122:2506:b0:520:9688:d1bb with SMTP id 71dfb90a1353d-52d9c5674c6mr1934934e0c.2.1747206630691;
-        Wed, 14 May 2025 00:10:30 -0700 (PDT)
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-52c5372f0e0sm8956335e0c.19.2025.05.14.00.10.29
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 May 2025 00:10:30 -0700 (PDT)
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-52934f4fb23so5154824e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 May 2025 00:10:29 -0700 (PDT)
-X-Received: by 2002:a05:6122:8c2a:b0:52c:54fc:745 with SMTP id
- 71dfb90a1353d-52d9c5d8acamr1925737e0c.5.1747206629577; Wed, 14 May 2025
- 00:10:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747220551; x=1747825351;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cav3Z4NY5VTBc23C/qTtaVoA8kEGEB5wAcjksldNIvE=;
+        b=kRI7iyYg8/k8xCIVUcvePHBB8yjO0IlGhsqKNvDOi9Lu0CZxVP9KOIrYHK4WkxQOC2
+         VTNM41nQvMUvj1fTTAI5Y+Wxs4HeYAxgn5yi/23p2+soRHZKWhflwT4hwbb1du3QC/WA
+         KGTB+WW9k+ZWVdZTYHeqj9w4bh5nTtCn2Isi43X0daquR3ekxiiRIZjSxwCSc8LGPvr2
+         MzipW8Dkx+Y9mUjuBJ9wkhfaVltG9ZKWCArVnq9KubYkO+NijWvEJugnOmwACVqiOz4P
+         UR6kLWobkVsTKl/RJWgbYHCjbg4Fm48hFSlrhQuNSVwGhwfbnroGPteFnD1+ST+PJJmO
+         95qg==
+X-Forwarded-Encrypted: i=1; AJvYcCXs+H/DcceMuLcSHUJwb65MOp9Fgn4Bfs6J3gh0wwrdaO9p8qTHrtLUtllv7zutZs99t7qiXEZOjEdP@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwVxhpyvsMYlWmp6lEL0A4OLsGPIIiv2FNOA8U9JDp8/ZGc4RQA
+	wpWAYRMLhr0Dydry9i7067hqTOHNZiTinrJtw/8s+Gdv8ZzNJ8sRI24ENL5qnkG7wm2t+XLwBLp
+	9slLMvlExDddZKJkS2jjAkxlgZ3NVDt+0BrZ7ylnrof0DeaexfKP+TR6mP80X7e7m
+X-Gm-Gg: ASbGnctOJqqTxOm50wpQIlJwuWEprA++O9Qu5YSAlYBCNHgVuB8lkpxJaXE1OUf7i+0
+	2a1huEVioRop7Qdn+ZhDdBrBuWL+w3nH9ImqQ6ykj3XiJVk6I72v7FYzPkAb/jkxgIWpvSbuc7k
+	jNOFFVWEHosPysU7agf25T6MbpQpnIbwdRpEs8PS9HlStZtfwLYaobdVEQraa+yO+opQnCllwM2
+	E1AryXdxMialCH7lOBBnD0cQsuMIDNpVLRlVdaG0tpNP/LIoq1Sqh5/k9xKXDyxgJZzTgZMmWvd
+	Dw==
+X-Received: by 2002:a05:6402:234d:b0:5f4:ade4:88c5 with SMTP id 4fb4d7f45d1cf-5ff988dd135mr2082965a12.34.1747220551021;
+        Wed, 14 May 2025 04:02:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEs3ORoNcv9GW9V4gupozuqWmYmwSxEEUINo5zQzLXzCm36ngPWceLYKaaZhwPfqmrqY5iYdA==
+X-Received: by 2002:a05:6402:234d:b0:5f4:ade4:88c5 with SMTP id 4fb4d7f45d1cf-5ff988dd135mr2082854a12.34.1747220550339;
+        Wed, 14 May 2025 04:02:30 -0700 (PDT)
+Received: from thinky ([2a0e:fd87:a051:1:e664:4a86:4c01:c774])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5fe43357d45sm4879817a12.54.2025.05.14.04.02.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 May 2025 04:02:29 -0700 (PDT)
+Date: Wed, 14 May 2025 13:02:13 +0200
+From: Andrey Albershteyn <aalbersh@redhat.com>
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Richard Henderson <richard.henderson@linaro.org>, 
+	Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Tyler Hicks <code@tyhicks.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, linux-alpha@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
+	selinux@vger.kernel.org, ecryptfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, Andrey Albershteyn <aalbersh@kernel.org>
+Subject: Re: [PATCH v5 2/7] lsm: introduce new hooks for setting/getting
+ inode fsxattr
+Message-ID: <kgl5h2iruqnhmad65sonlvneu6mdj6jl3sd4aoc3us3lvrgviy@imce27t4nk2e>
+References: <20250512-xattrat-syscall-v5-0-4cd6821e8ff7@kernel.org>
+ <20250512-xattrat-syscall-v5-2-4cd6821e8ff7@kernel.org>
+ <f700845d-f332-4336-a441-08f98cd7f075@schaufler-ca.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250514052327.96537-1-siddarthsgml@gmail.com>
-In-Reply-To: <20250514052327.96537-1-siddarthsgml@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 14 May 2025 09:10:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXxDPDQVwx_9Z6ngvs4sYro3cobE=YP0y-b0zs0ody2vg@mail.gmail.com>
-X-Gm-Features: AX0GCFtFiSkMy3thsoXl2i-HHS-GqeqxowX3AK-tXVsLRnHiROCSZrI6s0ya3Vc
-Message-ID: <CAMuHMdXxDPDQVwx_9Z6ngvs4sYro3cobE=YP0y-b0zs0ody2vg@mail.gmail.com>
-Subject: Re: [PATCH] m68k: apollo: replace strcpy() with strscpy()
-To: Siddarth Gundu <siddarthsgml@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <f700845d-f332-4336-a441-08f98cd7f075@schaufler-ca.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: cAQVyCuLMA4ydSRW1oWv-hKnUIIbuLjKXuhcLbFl8nI_1747220552
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Siddarth,
+On 2025-05-12 08:43:32, Casey Schaufler wrote:
+> On 5/12/2025 6:25 AM, Andrey Albershteyn wrote:
+> > Introduce new hooks for setting and getting filesystem extended
+> > attributes on inode (FS_IOC_FSGETXATTR).
+> >
+> > Cc: selinux@vger.kernel.org
+> > Cc: Paul Moore <paul@paul-moore.com>
+> >
+> > Signed-off-by: Andrey Albershteyn <aalbersh@kernel.org>
+> > ---
+> >  fs/file_attr.c                | 19 ++++++++++++++++---
+> >  include/linux/lsm_hook_defs.h |  2 ++
+> >  include/linux/security.h      | 16 ++++++++++++++++
+> >  security/security.c           | 30 ++++++++++++++++++++++++++++++
+> >  4 files changed, 64 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/file_attr.c b/fs/file_attr.c
+> > index 2910b7047721..be62d97cc444 100644
+> > --- a/fs/file_attr.c
+> > +++ b/fs/file_attr.c
+> > @@ -76,10 +76,15 @@ EXPORT_SYMBOL(fileattr_fill_flags);
+> >  int vfs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
+> >  {
+> >  	struct inode *inode = d_inode(dentry);
+> > +	int error;
+> >  
+> >  	if (!inode->i_op->fileattr_get)
+> >  		return -ENOIOCTLCMD;
+> >  
+> > +	error = security_inode_file_getattr(dentry, fa);
+> > +	if (error)
+> > +		return error;
+> > +
+> 
+> If you're changing VFS behavior to depend on LSMs supporting the new
+> hooks I'm concerned about the impact it will have on the LSMs that you
+> haven't supplied hooks for. Have you tested these changes with anything
+> besides SELinux?
 
-Thanks for your patch!
+Sorry, this thread is incomplete, I've resent full patchset again.
+If you have any further comments please comment in that thread [1]
 
-On Wed, 14 May 2025 at 07:23, Siddarth Gundu <siddarthsgml@gmail.com> wrote=
-:
-> strcpy() is deprecated; use strscpy() instead.
->
-> strscpy was chosen because the code expects a NUL-terminated string
-> without zero-padding.
+I haven't tested with anything except SELinux, but I suppose if
+module won't register any hooks, then security_inode_file_*() will
+return 0. Reverting SELinux implementation of the hooks doesn't
+cause any errors.
 
-... which are not sufficient reasons: there is no size information
-about the destination buffer.
+I'm not that familiar with LSMs/selinux and its codebase, if you can
+recommend what need to be tested while adding new hooks, I will try
+to do that for next revision.
 
-> Link: https://github.com/KSPP/linux/issues/88
-> Signed-off-by: Siddarth Gundu <siddarthsgml@gmail.com>
+[1]: https://lore.kernel.org/linux-fsdevel/CAOQ4uxgOAxg7N1OUJfb1KMp7oWOfN=KV9Lzz6ZrX0=XRGOQrEQ@mail.gmail.com/T/#t
 
-> --- a/arch/m68k/apollo/config.c
-> +++ b/arch/m68k/apollo/config.c
-> @@ -218,7 +219,7 @@ static void dn_dummy_reset(void)
->
->  static void dn_get_model(char *model)
->  {
-> -    strcpy(model, "Apollo ");
-> +    strscpy(model, "Apollo ");
+-- 
+- Andrey
 
-include/linux/compiler.h:197:62: error: static assertion failed: "must be a=
-rray"
-[...]
-arch/m68k/apollo/config.c:222:5: note: in expansion of macro =E2=80=98strsc=
-py=E2=80=99
-  222 |     strscpy(model, "Apollo ");
-      |     ^~~~~~~
-
-Please try to (at least) test-compile your patches before submitting.
-
->      if (apollo_model >=3D APOLLO_DN3000 && apollo_model <=3D APOLLO_DN45=
-00)
->          strcat(model, apollo_models[apollo_model - APOLLO_DN3000]);
-
-FWIW, if the strscpy() would have prevented a buffer overflow, the
-strcat() would still cause one.  But none of these can happen for real.
->  }
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
