@@ -1,135 +1,267 @@
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB95F230D08
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 16 May 2025 09:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB04C1624C5
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 16 May 2025 15:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.48.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747387671; cv=none; b=LKW+71ayRJ18NVsXdtPMkKcTUEiLk8RCRfjs1LOLo/e3mzd0mZhpr0wNeAyi2sLeqs9MANJnE3xz98pUcxoUThyccK6waT9cHzB+FvLGbupu/DwXZt89i0TgItB0nG5jLr90n3jlHQkfkST+/z4p9UBxaN0FBGsI1/yr+qglDEs=
+	t=1747409309; cv=none; b=mF8rKs4zLZdhCQGbTQm9ojEdYnQ06rvEPmlNsX+lDsbPNq04TQ8tK5/4UNOkTgqzscD7L2hFwnVe7BRfN//gKMVMVe6XEOcJCtsG62KEnQXgmZDMugVvU77uNyHPDK08OaoZbgYtKsLeDTEaDzbpxeegOSlCZNETyl3U0au1iQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747387671; c=relaxed/simple;
-	bh=z/X55CJ4Amiz0wZbkHt0gq98rMad9RgnWcfw7QI1kL4=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=bOblCSkVVBOPcg+YLFSXiqYZ7GLDqMc9nDBHB+jZMNL2lsWqNVTLytMZBHw3iQCo4hs81FVRGqnn8DsuxOdQi12gadv1Nc5m3C1p+vgHshWD54ofPvKPwPsg8Qn5sGUryZKGqOpinQI8Cmd44he22NygKo5E8u/JGUapQZDy/o8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hA912So5; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1747409309; c=relaxed/simple;
+	bh=KS18mCmBwG/oVexqoftqFNnI2Pv+d2v1jXLpreeKDCY=;
+	h=From:To:CC:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ih/86XbS3vXjD6IVim48diR750ka/SbiPF/gIIcF/kZpkUob0vAXiQG4oLfJEI2PbhC/8Olz3ALt8fR6/aPgWuH+us4+uv7dEF6RvtD6Q/Pjy9N94ae+L5cZ/8woH2Ob2B7YKocCpy2K+GsU9rtBy/7hQGWvb19i6ycriiLalko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (2048-bit key) header.d=amazon.de header.i=@amazon.de header.b=nubmEBDS; arc=none smtp.client-ip=52.95.48.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hA912So5"
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.phl.internal (Postfix) with ESMTP id 4471A1380417;
-	Fri, 16 May 2025 05:27:46 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Fri, 16 May 2025 05:27:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1747387666; x=1747474066; bh=Kpjd1dlpYPRSKTDwyzlMgPlazmO2
-	anW6vzHpGHs+Oh4=; b=hA912So5ClnzbPClaC8NbxtYoJCiS+3BkXsTTosZvPGx
-	KxC7MuxOpIykSodpezlaz2Mn4trZIXB6zQn2NPwk4NiqiqX/FiGbzMj2KpudAVCV
-	GcyoW0FpzslZTblj/+tsqGAft4tVcUluUkxy8E6+7hPdEjdAr//CT89DBjwrBkMH
-	SjQKeaDF9EZ9wZFyAef8dSBmAQod/3OrFL/xynahuRJGfLv9DDbUXHH+R6cyMpJE
-	GWUcAP3bfRSoaPIINGe3inq79g/ViLg1gOnRiDtRJmYWfKhzmj1sFgagwDXTKl9G
-	gzhr096eQowfBUeID/j7e9DHxpg2g2Dvdpc7egCHQw==
-X-ME-Sender: <xms:EAUnaHkfIMmb_EHZ0NK2wqZ-pVqrvtjX3819vC1p_2OWF7seqTQkTg>
-    <xme:EAUnaK04driUOW4-6iYDwToIrKpbTu30hf2XkAiNeY3kEl6b6M0e2IOlDvWKWV-1z
-    P01RPZp23_5KP5FbYg>
-X-ME-Received: <xmr:EAUnaNrnHf4C-57JyiT58aY8SnJCqguFHysG_xLgBqsZnPbR1wDbcwRMvWxjTwrMUGFM8Sgybs5GWCjbS6sEpNfTKJl8gzJGzfo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdefuddvfeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
-    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
-    gvnhhtshculddquddttddmnecujfgurhepfffkhffvvefusedttdhjtddttddtnecuhfhr
-    ohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorh
-    hgqeenucggtffrrghtthgvrhhnpedthfeluddujeejgfdvteefieejtdefueekudetueff
-    ueevjeeiveehgfelueffffenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhskhgvlh
-    gvthhonhdrshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtoh
-    epiedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepnhhosghuhhhirhhouddrihif
-    rghmrghtshhusehtohhshhhisggrrdgtohdrjhhppdhrtghpthhtohepphgrvhgvlhesug
-    gvnhigrdguvgdprhgtphhtthhopegvsghivgguvghrmhesgihmihhsshhiohhnrdgtohhm
-    pdhrtghpthhtohepshgthhhmihhtiihmihgtsehgmhgrihhlrdgtohhmpdhrtghpthhtoh
-    eptghiphdquggvvheslhhishhtshdrtghiphdqphhrohhjvggtthdrohhrghdprhgtphht
-    thhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:EAUnaPn_5B424QGthSJFLAscFvja3TmYWr84LY47wTOANgXjYbwQzQ>
-    <xmx:EQUnaF13Sgk1ewVeYDzzFgexWU39zPaAGlKiy1B7Io_E0EBCHuYlUg>
-    <xmx:EQUnaOv8lAzvW2s4GAfcRyHTK70veswGzA_G330PynRvkYLbSp-D0A>
-    <xmx:EQUnaJVj7JveIgies1YAnBKxAJ0JVUQK6gVY0BHcCU1KV5bFn6SgDQ>
-    <xmx:EgUnaLUojtlx9f33YS2aTDeDwp5Z_PK34N81DnTWlDWa2XF9uQ41qK-D>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 16 May 2025 05:27:43 -0400 (EDT)
-Date: Fri, 16 May 2025 19:28:12 +1000
-Message-ID: <288cd2e42b6d4cbf77822cce3b348d6f@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-To: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>, Pavel Machek <pavel@denx.de>
-Cc: Eric W. Biederman <ebiederm@xmission.com>, Michael Schmitz <schmitzmic@gmail.com>, cip-dev@lists.cip-project.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH RESEND 4.19.y-cip] signal/m68k: Use force_sigsegv(SIGSEGV) in fpsp040_die
+	dkim=pass (2048-bit key) header.d=amazon.de header.i=@amazon.de header.b="nubmEBDS"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazoncorp2;
+  t=1747409308; x=1778945308;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=/YGeJfXKIquYSt90tYMJ+el7wnECiC9xpMwa6JMR6os=;
+  b=nubmEBDSVR4kf7Ll/DymsGk2hPxu6OkonUNThJo07qmSY1GaKEUFDm49
+   BZ4hetAsmrsMrCuDYSEEGzOVpaZoy1Iy6xDH7ArV8EZ363nNorM6EL8W9
+   /0Asg/hPfHk0jHe+3My9uHrWEXMXra/JaDqaVT3uujfiEUpQg6r9rl/Ie
+   qrIdB84CqBjqF9fUiU6KqNlPEtzDKsICzkoxRl7zDsR5eI5sabyXCZVsg
+   ZjOXcw/N3rMUxADuJydc3JilDJ6Z3XzipNkEro4bTSd3jMFpDTg8O25yT
+   0D8x879qtfFp7QrxWH+epDWb9i2wxocEixJY2qvK3HtK7uonkZOMywEen
+   g==;
+X-IronPort-AV: E=Sophos;i="6.15,294,1739836800"; 
+   d="scan'208";a="490816896"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2025 15:28:24 +0000
+Received: from EX19MTAEUC001.ant.amazon.com [10.0.43.254:48579]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.40.19:2525] with esmtp (Farcaster)
+ id 8875e536-5df1-4a46-a9d9-d4740a3f3911; Fri, 16 May 2025 15:28:23 +0000 (UTC)
+X-Farcaster-Flow-ID: 8875e536-5df1-4a46-a9d9-d4740a3f3911
+Received: from EX19D039EUA004.ant.amazon.com (10.252.50.95) by
+ EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Fri, 16 May 2025 15:28:20 +0000
+Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
+ EX19D039EUA004.ant.amazon.com (10.252.50.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Fri, 16 May 2025 15:28:19 +0000
+Received: from email-imr-corp-prod-iad-all-1a-6ea42a62.us-east-1.amazon.com
+ (10.25.36.214) by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id
+ 15.2.1544.14 via Frontend Transport; Fri, 16 May 2025 15:28:18 +0000
+Received: from dev-dsk-ptyadav-1c-43206220.eu-west-1.amazon.com (dev-dsk-ptyadav-1c-43206220.eu-west-1.amazon.com [172.19.91.144])
+	by email-imr-corp-prod-iad-all-1a-6ea42a62.us-east-1.amazon.com (Postfix) with ESMTP id CD1C2401B0;
+	Fri, 16 May 2025 15:28:17 +0000 (UTC)
+Received: by dev-dsk-ptyadav-1c-43206220.eu-west-1.amazon.com (Postfix, from userid 23027615)
+	id 89B166204; Fri, 16 May 2025 17:28:17 +0200 (CEST)
+From: Pratyush Yadav <ptyadav@amazon.de>
+To: Mike Rapoport <rppt@kernel.org>
+CC: Andrew Morton <akpm@linux-foundation.org>, Alexander Gordeev
+	<agordeev@linux.ibm.com>, Andreas Larsson <andreas@gaisler.com>, "Andy
+ Lutomirski" <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, "Arnd
+ Bergmann" <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain
+	<bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen
+	<dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, "Dinh
+ Nguyen" <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Guo Ren <guoren@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, "Huacai
+ Chen" <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, Jiaxun Yang
+	<jiaxun.yang@flygoat.com>, Johannes Berg <johannes@sipsolutions.net>, "John
+ Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>, Madhavan Srinivasan
+	<maddy@linux.ibm.com>, Mark Brown <broonie@kernel.org>, Matt Turner
+	<mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman
+	<mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt
+	<palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, "Richard
+ Weinberger" <richard@nod.at>, Russell King <linux@armlinux.org.uk>, "Stafford
+ Horne" <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, "Praveen
+ Kumar" <pravkmr@amazon.de>, <linux-alpha@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-snps-arc@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-csky@vger.kernel.org>,
+	<linux-hexagon@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-m68k@lists.linux-m68k.org>, <linux-mips@vger.kernel.org>,
+	<linux-openrisc@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+	<linux-s390@vger.kernel.org>, <linux-sh@vger.kernel.org>,
+	<sparclinux@vger.kernel.org>, <linux-um@lists.infradead.org>,
+	<linux-arch@vger.kernel.org>, <linux-mm@kvack.org>, <x86@kernel.org>
+Subject: Re: [PATCH v2 10/13] arch, mm: set high_memory in free_area_init()
+In-Reply-To: <20250313135003.836600-11-rppt@kernel.org>
+References: <20250313135003.836600-1-rppt@kernel.org>
+	<20250313135003.836600-11-rppt@kernel.org>
+Date: Fri, 16 May 2025 17:28:17 +0200
+Message-ID: <mafs05xi0o9ri.fsf@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 
-From: "Eric W. Biederman" <ebiederm@xmission.com>
+Hi Mike, Andrew,
 
-[ Upstream commit a3616a3c02722d1edb95acc7fceade242f6553ba ]
+On Thu, Mar 13 2025, Mike Rapoport wrote:
 
-In the fpsp040 code when copyin or copyout fails call
-force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+>
+> high_memory defines upper bound on the directly mapped memory.
+> This bound is defined by the beginning of ZONE_HIGHMEM when a system has
+> high memory and by the end of memory otherwise.
+>
+> All this is known to generic memory management initialization code that
+> can set high_memory while initializing core mm structures.
+>
+> Add a generic calculation of high_memory to free_area_init() and remove
+> per-architecture calculation except for the architectures that set and
+> use high_memory earlier than that.
+>
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>	# x86
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> ---
+>  arch/alpha/mm/init.c         |  1 -
+>  arch/arc/mm/init.c           |  2 --
+>  arch/arm64/mm/init.c         |  2 --
+>  arch/csky/mm/init.c          |  1 -
+>  arch/hexagon/mm/init.c       |  6 ------
+>  arch/loongarch/kernel/numa.c |  1 -
+>  arch/loongarch/mm/init.c     |  2 --
+>  arch/microblaze/mm/init.c    |  2 --
+>  arch/mips/mm/init.c          |  2 --
+>  arch/nios2/mm/init.c         |  6 ------
+>  arch/openrisc/mm/init.c      |  2 --
+>  arch/parisc/mm/init.c        |  1 -
+>  arch/riscv/mm/init.c         |  1 -
+>  arch/s390/mm/init.c          |  2 --
+>  arch/sh/mm/init.c            |  7 -------
+>  arch/sparc/mm/init_32.c      |  1 -
+>  arch/sparc/mm/init_64.c      |  2 --
+>  arch/um/kernel/um_arch.c     |  1 -
+>  arch/x86/kernel/setup.c      |  2 --
+>  arch/x86/mm/init_32.c        |  3 ---
+>  arch/x86/mm/numa_32.c        |  3 ---
+>  arch/xtensa/mm/init.c        |  2 --
+>  mm/memory.c                  |  8 --------
+>  mm/mm_init.c                 | 30 ++++++++++++++++++++++++++++++
+>  mm/nommu.c                   |  2 --
+>  25 files changed, 30 insertions(+), 62 deletions(-)
 
-This solves a couple of problems.  Because do_exit embeds the ptrace
-stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
-that to work correctly.  There is always the information needed for a
-ptrace stop where get_signal is called.  So exiting with a signal
-solves the ptrace issue.
+This patch causes a BUG() when built with CONFIG_DEBUG_VIRTUAL and
+passing in the cma= commandline parameter:
 
-Further exiting with a signal ensures that all of the threads in a
-process are killed not just the thread that malfunctioned.  Which
-avoids confusing userspace.
+    ------------[ cut here ]------------
+    kernel BUG at arch/x86/mm/physaddr.c:23!
+    ception 0x06 IP 10:ffffffff812ebbf8 error 0 cr2 0xffff88903ffff000
+    CPU: 0 UID: 0 PID: 0 Comm: swapper Not tainted 6.15.0-rc6+ #231 PREEMPT(undef)
+    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
+    RIP: 0010:__phys_addr+0x58/0x60
+    Code: 01 48 89 c2 48 d3 ea 48 85 d2 75 05 e9 91 52 cf 00 0f 0b 48 3d ff ff ff 1f 77 0f 48 8b 05 20 54 55 01 48 01 d0 e9 78 52 cf 00 <0f> 0b 90 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+    RSP: 0000:ffffffff82803dd8 EFLAGS: 00010006 ORIG_RAX: 0000000000000000
+    RAX: 000000007fffffff RBX: 00000000ffffffff RCX: 0000000000000000
+    RDX: 000000007fffffff RSI: 0000000280000000 RDI: ffffffffffffffff
+    RBP: ffffffff82803e68 R08: 0000000000000000 R09: 0000000000000000
+    R10: ffffffff83153180 R11: ffffffff82803e48 R12: ffffffff83c9aed0
+    R13: 0000000000000000 R14: 0000001040000000 R15: 0000000000000000
+    FS:  0000000000000000(0000) GS:0000000000000000(0000) knlGS:0000000000000000
+    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: ffff88903ffff000 CR3: 0000000002838000 CR4: 00000000000000b0
+    Call Trace:
+     <TASK>
+     ? __cma_declare_contiguous_nid+0x6e/0x340
+     ? cma_declare_contiguous_nid+0x33/0x70
+     ? dma_contiguous_reserve_area+0x2f/0x70
+     ? setup_arch+0x6f1/0x870
+     ? start_kernel+0x52/0x4b0
+     ? x86_64_start_reservations+0x29/0x30
+     ? x86_64_start_kernel+0x7c/0x80
+     ? common_startup_64+0x13e/0x141
 
-To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
-save all of the registers and jump to ret_from_exception (which
-ultimately calls get_signal) after fpsp040_die returns.
+The reason is that __cma_declare_contiguous_nid() does:
 
-v2: Updated the branches to use gas's pseudo ops that automatically
-    calculate the best branch instruction to use for the purpose.
+    	highmem_start = __pa(high_memory - 1) + 1;
 
-v1: https://lkml.kernel.org/r/87a6m8kgtx.fsf_-_@disp2133
-Link: https://lkml.kernel.org/r/87tukghjfs.fsf_-_@disp2133
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-[ Pass 'current' to force_sigsegv() as was done prior to v5.3 ]
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- arch/m68k/fpsp040/skeleton.S | 3 ++-
- arch/m68k/kernel/traps.c     | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+If dma_contiguous_reserve_area() (or any other CMA declaration) is
+called before free_area_init(), high_memory is uninitialized. Without
+CONFIG_DEBUG_VIRTUAL, it will likely work but use the wrong value for
+highmem_start.
 
-diff --git a/arch/m68k/fpsp040/skeleton.S b/arch/m68k/fpsp040/skeleton.S
-index 31a9c634c81e..081922c72daa 100644
---- a/arch/m68k/fpsp040/skeleton.S
-+++ b/arch/m68k/fpsp040/skeleton.S
-@@ -502,7 +502,8 @@ in_ea:
- 	.section .fixup,"ax"
- 	.even
- 1:
--	jbra	fpsp040_die
-+	jbsr	fpsp040_die
-+	jbra	.Lnotkern
+Among the architectures this patch touches, the below call
+dma_contiguous_reserve_area() _before_ free_area_init():
+
+- x86
+- s390
+- mips
+- riscv
+- xtensa
+- loongarch
+- csky
+
+The below call it _after_ free_area_init():
+- arm64
+
+And the below don't call it at all:
+- sparc
+- nios2
+- openrisc
+- hexagon
+- sh
+- um
+- alpha
+
+One possible fix would be to move the calls to
+dma_contiguous_reserve_area() after free_area_init(). On x86, it would
+look like the diff below. The obvious downside is that moving the call
+later increases the chances of allocation failure. I'm not sure how much
+that actually matters, but at least on x86, that means crash kernel and
+hugetlb reservations go before DMA reservation. Also, adding a patch
+like that at rc7 is a bit risky.
+
+The other option would be to revert this. I tried a revert, but it isn't
+trivial. It runs into merge conflicts in pretty much all of the arch
+files. Maybe reverting patches 11, 12, and 13 as well would make it
+easier but I didn't try that.
+
+Which option should we take? If we want to move
+dma_contiguous_reserve_area() a bit further down the line then I can
+send a patch doing that on the rest of the architectures. Otherwise I
+can try my hand at the revert.
+
+--- 8< ---
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 9d2a13b37833..ca6928dde0c9 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1160,7 +1160,6 @@ void __init setup_arch(char **cmdline_p)
+ 	x86_flattree_get_config();
  
- 	.section __ex_table,"a"
- 	.align	4
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 35f706d836c5..c6f18dc5884b 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -1155,7 +1155,7 @@ asmlinkage void set_esp0(unsigned long ssp)
-  */
- asmlinkage void fpsp040_die(void)
- {
--	do_exit(SIGSEGV);
-+	force_sigsegv(SIGSEGV, current);
- }
+ 	initmem_init();
+-	dma_contiguous_reserve(max_pfn_mapped << PAGE_SHIFT);
  
- #ifdef CONFIG_M68KFPU_EMU
+ 	if (boot_cpu_has(X86_FEATURE_GBPAGES)) {
+ 		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+@@ -1178,6 +1177,8 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	x86_init.paging.pagetable_init();
+ 
++	dma_contiguous_reserve(max_pfn_mapped << PAGE_SHIFT);
++
+ 	kasan_init();
+ 
+ 	/*
+
+-- 
+Regards,
+Pratyush Yadav
+
+
+
+Amazon Web Services Development Center Germany GmbH
+Tamara-Danz-Str. 13
+10243 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 257764 B
+Sitz: Berlin
+Ust-ID: DE 365 538 597
 
