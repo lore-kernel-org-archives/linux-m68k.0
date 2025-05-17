@@ -1,65 +1,67 @@
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015BC156237
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 17 May 2025 20:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9129A1A8F84
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 17 May 2025 20:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747513979; cv=none; b=ZRT9YqhigNXnjDi5YDec3n9+mxEyDlyLKCcRUydboftwRcY52Fn9CKr3s31APGSTMTGeWo+10y0NP8BZR8gUVDJHeNHw8/Z9aXOgZybi5wieu6RoC3dOuFwH+s0ee8RqlWCLZayT3jNJgCAgUJkRqZ7YSa8yc1kMVp8TlD7GmGQ=
+	t=1747514046; cv=none; b=tyMzfRW96OTk14RQXwC9jk70rEtTd84I/qs18DN20SyrZekID7VrKZDJYylTh8MZa+gS16H61AMu1zPX4f3yGn4YNhD1zcSYgojBCEZWVsLnzZRiKXreLoqGY5GF68xmjSGUBQBcwhIvmBd6aWuu38n0pCjkD8FtpU+P5ZIzDuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747513979; c=relaxed/simple;
-	bh=42iLIcYt/l0If4G7uGt2Nj/W8LQIEdFOpVdaaIX4VqQ=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=X5LI7Bj1S9GxwCFzNERH58F5V+fTOT6Tn2hQ1sp44p5LBdEWh/xSYomKyfRXeiWvqEmBv1rsZJSdmzuvYKn6Y9ipb7W57lsgZfHiXwtLF2I/H5kUbPN57TbAewmbkvaVVuu17RJIwxrCWhODWv4ftE4/zy5kzN05uPtZw2dOHSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kpe+0q/r; arc=none smtp.client-ip=209.85.128.54
+	s=arc-20240116; t=1747514046; c=relaxed/simple;
+	bh=4E/aFFWkVe0vQfX0S6QluHCY4Gqb2WRZhvbrp/lrr+w=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ALiJJD67sgRp1IVa3dGVjMbJt7nloTJRg/b89waCh9Z+213rW6rmRafk1kSox0R14ceKL0DkUvl/goh6/tmsZe7pf6HmDw/sC82uX6mMXMJrG9Jv5ILPocWux1XqVgLL2ed+h6tvp50jdoyOHgiL005iuX8XOxoZq+lYwHBIn/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lIEpmwUe; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kpe+0q/r"
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-442ed8a275fso38727065e9.2
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 17 May 2025 13:32:57 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lIEpmwUe"
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3a1fb18420aso3114421f8f.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 17 May 2025 13:34:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747513976; x=1748118776; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:autocrypt:subject:from
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7yIT7QdQvSCxnmN31XAsBOO9QvEIVddKZPUr95wm71M=;
-        b=Kpe+0q/rAt3seQAEecp4iUQyBiVdCJYyzTnN2Wf0mH26fiSgDIbCRmH6ImPEtBjI6F
-         vJPxwQ3O8guK4150/xz9gpAheZi+LctStoh9ihPFmeCTdioAjLAijqcx8H5slGz8kAlr
-         IrdxPkM+IvaGSp6kJCxa4iSSjbmS3rmJUVLv4Sfypfkz16uz/76iwx9f5CEINc/oH6Mc
-         QDNb+LEWNC5dSWMukpW3vxwXtLNmioxEHIfp0CEYPMp4TsiUVC7eYdKNni1sPL/sQOlD
-         t7lGn0ZMvLtDY3mr41Wa+wDBLym5NRjkii/FkdaSWDRT0GVKA+/f+72F76IcBOiWBV2w
-         5KaQ==
+        d=gmail.com; s=20230601; t=1747514043; x=1748118843; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=YpuDXqI4S55MWdcng3h5qGQQR58id20p/T1/UmNiWFA=;
+        b=lIEpmwUeqwpirn2j+P58GO2u178RHsBZ+FNV5RnHhE8Q5xOsV3OLrmEYyLsAqBtbUG
+         hSSwnOh9GSu1B8TN7KwBv0vXZU/4s3E6+Ok2My8NZ3Zjq+JraWXvTD+3+dKmXjgBWmLa
+         AVUNZ41S7mP8Ka6B3x9TgdOop8ZW/3+QXdiYWnZwDeTFqj/hU16lZML/JNzVvXFNzEyO
+         gfa9RjqYc1ECYIU9vdD9sO+xmfaWKO74EyGQ4Adtex7wqifX2Ip740aU3uYyfCDHFgWo
+         4BmrbBWccgr6FQejRsV1BRpAUAA+RPbrk47jxL0DlVgcAIMTsBYkifjKMPLt4tDBYlta
+         5XbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747513976; x=1748118776;
-        h=content-transfer-encoding:cc:to:autocrypt:subject:from
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7yIT7QdQvSCxnmN31XAsBOO9QvEIVddKZPUr95wm71M=;
-        b=Y7EV4wNy1iddqWXBe/FRBi3uev79JfE/H2ZFuZQ6l1NEljE1Gy/V1SoIgC2ADnVzEI
-         41kCzpOVTRtF7B0gc8C+DZ7zRaU6hn8le+NZmljrq1QxhHeluvlfukHDfoXQsU2ibm6o
-         GwltWAdXnsui0hBgVHZ68/Z6bX/EXQHL3DSogS2RzBQZdZ5gOnoETtVfkHE9gUW6ww1e
-         u/gVyvfz4rmcdxwqh3svBhAQIYlhgcBx1kIxEjBfKkevHh4DXYbLs6TIvLjeGgN/ea8n
-         oubcFLwUwaRWHHg25HKl7mRwYHH5gnbt4DQIHYNPJPueZfbycb+SmBrfCa0hOPCnQNuw
-         R7CA==
-X-Forwarded-Encrypted: i=1; AJvYcCVT4t7ODjx4jQHz7lkgf4SYlWXJGrq38bLXMO/+4faqs17weM8WHQqgSXqItIcEhPOxiqkaGOpXvCQh@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyX/Zzp+iZzWjeTSKQkXtkdEzoM3Ay7gmP9lmGZboTpAdrNlZLv
-	sRfCQ2pYGSyOj8dpQhCb/xXjcqH/EtRZGQSzUROS6MI8IEdSVt+z4+7n
-X-Gm-Gg: ASbGncuNDc62e6csGY87aNLZqGRVBHFQMsxdVPKYkog2S1u9sdA4hQr8rC1hrPqPSt2
-	5P62f5C34p58qKBq+pfFIAidMb0erw9bMPTRWE7r7k8Yt5PWwJT52dIMHFHEN12xFQt7h5Ieq2x
-	My2zVNPz9GGBHFuzjoIzyXuKC4CHHmGG/SVQIVe/tapTXGHi0Rr87HrTdYGQMpBC0lpqcX1oeUW
-	gdVICx7dJv320C7BFpryLBs4E6CA9Uo03jy1oK+5zb4hV8E5gw4lEAysoHAFL1tI7JTkoFOzTVt
-	2LF7pnCNlbevtbYMIQCQwTew3U24dZPc7V0VvLMuKR408SOlsokymRAU7fUDmvpxThGji8qb0Bq
-	zb4FkiHZBGP+Pkk8xV0sfgnYpywnSyXq026pU+X32LB1RnNhD0IcmNXdFFsDqmMMxZZX5p7gCSg
-	c3KkuU5PnLkUhmeAw=
-X-Google-Smtp-Source: AGHT+IH268GqSowwk2eZGa927407wYTBSIfR9dlYEUPnWYeak3Kp6SRS3MB6yTmyGmnRhGaDV2uXOw==
-X-Received: by 2002:a05:600c:5493:b0:43d:878c:7c40 with SMTP id 5b1f17b1804b1-442fd618f0dmr92023495e9.10.1747513976054;
-        Sat, 17 May 2025 13:32:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1747514043; x=1748118843;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YpuDXqI4S55MWdcng3h5qGQQR58id20p/T1/UmNiWFA=;
+        b=anyPHYGMJW7JM3KQFWUyOcb77XOZSDE/wovHZvSOsqbTXFYxwbubAtH6OTPkFPi/C9
+         nmvj7GNEJ78bnGF8PFBMmpbsG+9Ehsiy+ZWsPAghR1dURj4PGMXuPlctgRJVs02PqJ2O
+         lMj/qonCX29YCgzq9tuSTNIAbKhQ6DRBEWEYiWMQ1cz3LLDPFyPEy+zNjh1OhYZk8EYd
+         PPsk6scjfqMydR0nwVSdgTzu3FWurz8XfR39EP4eEUE/iQQ54E4iJrrS/WbfBImL6vll
+         oVSgbTewhd0vbfbMCThlQRPo2cJjorcGBMl2LIpVTkFMLpy076YK6EwUn0V9qSwAJNoh
+         nrvA==
+X-Forwarded-Encrypted: i=1; AJvYcCV9v2Q0R0WNhYMRDz6+0ooANiu7Hp7LTThtfoOEIGGMKng2UWsfW6lYHjc1dS78D5zWPtzTEpgRgkAm@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzQl5pWSsktl/yvfKsnSTjw792tEiikiTi/5CNLylPKvU6T5+M4
+	3I8+LykW0ZV5l+saAriP5LP/S4i4nVQk6vqGIDX40qjsw/nZC8c8oFwl
+X-Gm-Gg: ASbGnctT01i6i0Mi0PeVL6zKVsDAsWtQeps9DFF2gozMcvpFPH4bWCEwtudu3sVkofj
+	V+3ig5iG8y3pg+f3N5P8iPZTRnhCKrtVH/RTCS+BCjNttPQMVzeP0tIryWxinUqK6oBWhlQ7wSp
+	fIUxPDx/BmSKx7SQe5MpzBOHgEe9B5t9sEMrNG3Lj2wor8Bz0Bxo+xLfgrF05QQfiogW4SI1MuR
+	wHcV/6HKoJK++8LeEfjOkN49QQ8POF7sNWFHOlBdPSa0cSr/vpSmRFr0d0GRJwYm4mZvGJSAvN2
+	qbHKPf7ldYBje0r5UK9kf98JIdD8LftUPJFMnKcXD46pid98UPCFPiLbha0zBdxp5c2FkE3Y7fO
+	l7PYKHdq7U3W5I7IQ3l5tKLuc0yKklHjUBdD90vDGW/x74ceSBGv7rXHXPKKXD5iai/25jpWtfU
+	AhyehmfIGmC49OTTY=
+X-Google-Smtp-Source: AGHT+IHOpOx8CHNtGolc5aunKCnbXvQIEy0fH8gdhLeI/YjQ802knktd4SwoGUfVClicd1bb6TTaZA==
+X-Received: by 2002:a05:6000:2311:b0:3a3:6715:afba with SMTP id ffacd0b85a97d-3a36715b0dcmr2779505f8f.44.1747514042861;
+        Sat, 17 May 2025 13:34:02 -0700 (PDT)
 Received: from ?IPV6:2003:ea:8f37:2700:a4c5:88ff:c972:1238? (p200300ea8f372700a4c588ffc9721238.dip0.t-ipconnect.de. [2003:ea:8f37:2700:a4c5:88ff:c972:1238])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-442fd4fdbaesm87096455e9.7.2025.05.17.13.32.52
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-3a35ca8caf0sm7164563f8f.82.2025.05.17.13.34.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 May 2025 13:32:54 -0700 (PDT)
-Message-ID: <4d4c468e-300d-42c7-92a1-eabbdb6be748@gmail.com>
-Date: Sat, 17 May 2025 22:33:23 +0200
+        Sat, 17 May 2025 13:34:02 -0700 (PDT)
+Message-ID: <b3b9b3bc-c310-4a54-b376-c909c83575de@gmail.com>
+Date: Sat, 17 May 2025 22:34:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -67,10 +69,29 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
+Subject: [PATCH net-next 1/3] net: phy: fixed_phy: remove irq argument from
+ fixed_phy_add
 From: Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH net-next 0/3] net: phy: fixed_phy: simplifications and
- improvements
+To: Greg Ungerer <gerg@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Hauke Mehrtens
+ <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Vladimir Oltean <olteanv@gmail.com>, Doug Berger <opendmb@gmail.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Thangaraj Samynathan <Thangaraj.S@microchip.com>,
+ Rengarajan Sundararajan <Rengarajan.S@microchip.com>,
+ Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+ Andrew Lunn <andrew@lunn.ch>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Russell King - ARM Linux <linux@armlinux.org.uk>,
+ David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>
+Cc: Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org,
+ Linux USB Mailing List <linux-usb@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <4d4c468e-300d-42c7-92a1-eabbdb6be748@gmail.com>
+Content-Language: en-US
 Autocrypt: addr=hkallweit1@gmail.com; keydata=
  xsFNBF/0ZFUBEAC0eZyktSE7ZNO1SFXL6cQ4i4g6Ah3mOUIXSB4pCY5kQ6OLKHh0FlOD5/5/
  sY7IoIouzOjyFdFPnz4Bl3927ClT567hUJJ+SNaFEiJ9vadI6vZm2gcY4ExdIevYHWe1msJF
@@ -114,48 +135,88 @@ Autocrypt: addr=hkallweit1@gmail.com; keydata=
  H/0Z53okMykVs3a8tECPHIxnre2UxKdTbCEkjkR4V6JyplTS47oWMw3zyI7zkaadfzVFBxk2
  lo/Tny+FX1Azea3Ce7oOnRUEZtWSsUidtIjmL8YUQFZYm+JUIgfRmSpMFq8JP4VH43GXpB/S
  OCrl+/xujzvoUBFV/cHKjEQYBxo+MaiQa1U54ykM2W4DnHb1UiEf5xDkFd4=
-To: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Hauke Mehrtens
- <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Vladimir Oltean <olteanv@gmail.com>, Doug Berger <opendmb@gmail.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Thangaraj Samynathan <Thangaraj.S@microchip.com>,
- Rengarajan Sundararajan <Rengarajan.S@microchip.com>,
- Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
- Andrew Lunn <andrew@lunn.ch>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Russell King - ARM Linux <linux@armlinux.org.uk>,
- David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>
-Cc: Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org,
- Linux USB Mailing List <linux-usb@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+In-Reply-To: <4d4c468e-300d-42c7-92a1-eabbdb6be748@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-This series includes two types of changes:
-- All callers pass PHY_POLL, therefore remove irq argument
-- constify the passed struct fixed_phy_status *status
+All callers pass PHY_POLL, therefore remove irq argument from
+fixed_phy_add().
 
-Heiner Kallweit (3):
-  net: phy: fixed_phy: remove irq argument from fixed_phy_add
-  net: phy: fixed_phy: remove irq argument from fixed_phy_register
-  net: phy: fixed_phy: constify status argument where possible
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ arch/m68k/coldfire/m5272.c  | 2 +-
+ arch/mips/bcm47xx/setup.c   | 2 +-
+ drivers/net/phy/fixed_phy.c | 5 ++---
+ include/linux/phy_fixed.h   | 5 ++---
+ 4 files changed, 6 insertions(+), 8 deletions(-)
 
- arch/m68k/coldfire/m5272.c                   |  2 +-
- arch/mips/bcm47xx/setup.c                    |  2 +-
- drivers/net/dsa/dsa_loop.c                   |  2 +-
- drivers/net/ethernet/broadcom/bgmac.c        |  2 +-
- drivers/net/ethernet/broadcom/genet/bcmmii.c |  2 +-
- drivers/net/ethernet/faraday/ftgmac100.c     |  2 +-
- drivers/net/mdio/of_mdio.c                   |  2 +-
- drivers/net/phy/fixed_phy.c                  | 12 +++++-------
- drivers/net/usb/lan78xx.c                    |  2 +-
- include/linux/phy_fixed.h                    | 18 ++++++++----------
- 10 files changed, 21 insertions(+), 25 deletions(-)
-
+diff --git a/arch/m68k/coldfire/m5272.c b/arch/m68k/coldfire/m5272.c
+index 734dab657..5b70dfdab 100644
+--- a/arch/m68k/coldfire/m5272.c
++++ b/arch/m68k/coldfire/m5272.c
+@@ -119,7 +119,7 @@ static struct fixed_phy_status nettel_fixed_phy_status __initdata = {
+ static int __init init_BSP(void)
+ {
+ 	m5272_uarts_init();
+-	fixed_phy_add(PHY_POLL, 0, &nettel_fixed_phy_status);
++	fixed_phy_add(0, &nettel_fixed_phy_status);
+ 	clkdev_add_table(m5272_clk_lookup, ARRAY_SIZE(m5272_clk_lookup));
+ 	return 0;
+ }
+diff --git a/arch/mips/bcm47xx/setup.c b/arch/mips/bcm47xx/setup.c
+index 247be207f..de426a474 100644
+--- a/arch/mips/bcm47xx/setup.c
++++ b/arch/mips/bcm47xx/setup.c
+@@ -282,7 +282,7 @@ static int __init bcm47xx_register_bus_complete(void)
+ 	bcm47xx_leds_register();
+ 	bcm47xx_workarounds();
+ 
+-	fixed_phy_add(PHY_POLL, 0, &bcm47xx_fixed_phy_status);
++	fixed_phy_add(0, &bcm47xx_fixed_phy_status);
+ 	return 0;
+ }
+ device_initcall(bcm47xx_register_bus_complete);
+diff --git a/drivers/net/phy/fixed_phy.c b/drivers/net/phy/fixed_phy.c
+index c91adf246..34a71f223 100644
+--- a/drivers/net/phy/fixed_phy.c
++++ b/drivers/net/phy/fixed_phy.c
+@@ -160,10 +160,9 @@ static int fixed_phy_add_gpiod(unsigned int irq, int phy_addr,
+ 	return 0;
+ }
+ 
+-int fixed_phy_add(unsigned int irq, int phy_addr,
+-		  struct fixed_phy_status *status)
++int fixed_phy_add(int phy_addr, struct fixed_phy_status *status)
+ {
+-	return fixed_phy_add_gpiod(irq, phy_addr, status, NULL);
++	return fixed_phy_add_gpiod(PHY_POLL, phy_addr, status, NULL);
+ }
+ EXPORT_SYMBOL_GPL(fixed_phy_add);
+ 
+diff --git a/include/linux/phy_fixed.h b/include/linux/phy_fixed.h
+index 3392c09b5..316bb4ded 100644
+--- a/include/linux/phy_fixed.h
++++ b/include/linux/phy_fixed.h
+@@ -17,8 +17,7 @@ struct net_device;
+ 
+ #if IS_ENABLED(CONFIG_FIXED_PHY)
+ extern int fixed_phy_change_carrier(struct net_device *dev, bool new_carrier);
+-extern int fixed_phy_add(unsigned int irq, int phy_id,
+-			 struct fixed_phy_status *status);
++int fixed_phy_add(int phy_id, struct fixed_phy_status *status);
+ extern struct phy_device *fixed_phy_register(unsigned int irq,
+ 					     struct fixed_phy_status *status,
+ 					     struct device_node *np);
+@@ -28,7 +27,7 @@ extern int fixed_phy_set_link_update(struct phy_device *phydev,
+ 			int (*link_update)(struct net_device *,
+ 					   struct fixed_phy_status *));
+ #else
+-static inline int fixed_phy_add(unsigned int irq, int phy_id,
++static inline int fixed_phy_add(int phy_id,
+ 				struct fixed_phy_status *status)
+ {
+ 	return -ENODEV;
 -- 
 2.49.0
+
 
