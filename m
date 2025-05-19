@@ -1,74 +1,125 @@
-Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD4B027055D
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 May 2025 10:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2A4275103
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 May 2025 11:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747649561; cv=none; b=gg+Y2lyFEPhL+xIKTIkP7GgQnKrAt8EaPOUUOQp92+wL+e2MHyE+UxVMBCK56+8CnDNv2GWpq1IJ9j6402Y+8gRwr9Vb2Jp3VbWXAjqDlzn5CWuFEYPo4AyElF9D3TTQYDX8z1Pevte4us1mGE/OFV3TWDJzcj9qK8ddvNuF4KM=
+	t=1747654633; cv=none; b=Y3CFiiG+JEJOovHZ+X+0ghRDBZoe61owHySPnO5kfpqRVc18w6P2q9o2ESSxrFt0FzmziPKvfKJBmsFKgVcd8FAPq7RZDNjNGtED0Fj3lZLnAFh3vUIRLUSocl/bv5xmpf4v7Xwua9kyWev9BI2Xke4KvFDvWneCoBZpUpriRWQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747649561; c=relaxed/simple;
-	bh=36bTK+sJWp8PopkJbOlgwt9Ctf7FBzVSvSeBcSMc0sE=;
+	s=arc-20240116; t=1747654633; c=relaxed/simple;
+	bh=GFhTh8qt5cp6q80eo9lSCWZXWbRWYcGWMwJc66usfSM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ETddLEYWOJiEh3h/vhlPP4QlkAOn7l/dCY5d++MrIbuxCaWYTem8pYPeeFbNJITE7m41USl+mPeFqtqDalsJdEQxOerdKn6nosAxK7JuCu+Bw0ZnCkM1LphHdDuWlBsCH2GJ68rb94Nwh3+D+m+YRUYG9sTQslcXEQ4fltFAwd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nscdB7qP; arc=none smtp.client-ip=147.75.193.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=lFG+S3/aykM6ODEhrZKmWdUpf6Np4YMbfjxUAA8wnRR+ucZq6RHq7fD/10Wt1dxqt/gtQceDJKK+92Jp50WzAuhbxkYUiBJuKr3lkQfRAFj/BLpE1oJvXJ0G7ENYel2Xe2VK1cjFkTNJGpP/Z7ncD5y1faTzHCSDc1b4RxvLbJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=3TzfpJjN; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nscdB7qP"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 4B400A4C76D;
-	Mon, 19 May 2025 10:12:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1230AC4CEE4;
-	Mon, 19 May 2025 10:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747649557;
-	bh=36bTK+sJWp8PopkJbOlgwt9Ctf7FBzVSvSeBcSMc0sE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nscdB7qPs2zNee5BR3hmpAZQZCQBcXkdlF7Y6HsbM6UzPRdA3dF1BnWAVcJTPuKIv
-	 O3FYecQBdB24pQIIhnt57UfVPAxV9LgWpjYqCVizpPuKxRzp3e1tGtoxdxzCiww3pg
-	 KrBMVyUKbWn6bQi5E33gX2v1WUEStGoaCf1YS4m8mdcMbsKi6bgaKULPdgFE1O08w4
-	 NTbvxawzw3RhqwBP/2mlOvuL311cjPZ4d3W4fwM+V1XeLsP7wD/Giz/f3N3kZmH93H
-	 7tJGZQKhVupyasLyUF8vXgTKkesU5dptYyyOeOnTmIGAbpjsR1fJD00I4DSLdkVhBQ
-	 vnhqqJsWmqhWw==
-Date: Mon, 19 May 2025 12:12:21 +0200
-From: Christian Brauner <brauner@kernel.org>
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="3TzfpJjN"
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7390d21bb1cso3713513b3a.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 19 May 2025 04:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1747654629; x=1748259429; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DkYbc28ZqmxwTCsqpy3spmOraOHqionupf/htIjrysQ=;
+        b=3TzfpJjNg5QqBPkDa1sETHxhGlgNfz+TG6EUA2Bsc6nhrPkaLVkuXE50b5W2cf5SoY
+         8Ts1XoRXZbOCOh/JeguUiOiYsWWFjFUQo3XxHtk/qMSdQYAWRq264H+BLZqW8JOuMR54
+         KEIWyPYSYimU5fHB/3fKbi0NgLlcvWgDrmCZCq9HfnQreHmtAzSDhiWiI6qDq9aNBf88
+         VX9NfsEWa/bdkwYIoeKqxBnub7Um5xpyVE0F8ThuOyMz2USt/K5bf8MNPktBRwSV0evB
+         MzxMpaGEVCSgQKyYqMvhVUxnOtmyOvebf1/7zkRdoCzbNdBDx7CC4meULpt/fDV0Gxj8
+         klBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747654629; x=1748259429;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DkYbc28ZqmxwTCsqpy3spmOraOHqionupf/htIjrysQ=;
+        b=rANZsPV3UKPVJV+QqTXC5vvWKBHbhau2JiHvafUIxqHR+gTDfxzmvxi0acrLExWuSv
+         KkrGgFRCeBecY80hHRPJvZPKJCYxPEOa5FeJ7oyL0VNGneD61iFAsgnCCx4CrRB0kJt1
+         q1gneZ0L8zROVia2rpMR1EKcTlxIoYwL/z0lmA8maVViPD9ivz/ovaq5zRBMAfv/N4kw
+         E5fnTSVECIWGM4lDy3Ra61JGAyMIe9/K/LWHYSPAznXltOiI/SyIG7RxfmoHtj2rgJPN
+         Zu96CYDffZKGYvjWdl+utHE5kXikD07r6DC46o+q8GvG04N/4ELpJKgt/NNJMMXfgA6L
+         gjlg==
+X-Forwarded-Encrypted: i=1; AJvYcCU7jC1lXLwBaOyBoIxKFuMk75bWo64qvs3Uu7l80gY4EAygUmw54ldskPXBHOwEl9fvYC1NrtEgKrVJ@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyzYeM6TO3S3G8XQDaTE8SaZjrtq6y16tIR30gKQmeFWW3/YiqD
+	WnLMZGwNItcQpPh5yC+tqQ0PnrD251O1N8wa/cwjEubR7naXkd+oktjuaI6QKMTjDjk=
+X-Gm-Gg: ASbGncsMyk8nKxE8BMC0DCyE0mGLLYqMxZWzlk3rBO+1fukxzg4yQ05juvhps4gHZfr
+	MzTIQpERUW6nvXArkOf7BuI/4GeY3SoxrheSNI2jZjpRmW2ZzYMBv7Kv7f5vedC1SAOFG75KnVN
+	01zeqlWmXGdC1bVjkTnlnWzpklbnL9ioH8+bem9etCtpDcjX9bSvUMwHYVwtRQeGXNrBU4JVBhD
+	wnIJ0NAy3PsXrskwV1yhqRh/xzgO4yk3wBC9XYSTqllUibIhKiUXo52lmNf7eU8d96lGzqmba73
+	N26lXujkRVW1QuYd/iHl2w3+3yY80IZD6/mHVssUox2g8qFaGX277pWxZazNxs8oAeUni1pJgWL
+	usRUSsZeFGrUsAcW+U5ufjzXmak0=
+X-Google-Smtp-Source: AGHT+IEUy25uZy6yhylI082QEDzxGQ+0mJz25NQX6XuPMH4jpAhK+MU3tNtraGB6TKng6SdbDnt0Eg==
+X-Received: by 2002:a05:6a00:3a20:b0:736:a6e0:e66d with SMTP id d2e1a72fcca58-742a97a6df2mr15123631b3a.6.1747654628667;
+        Mon, 19 May 2025 04:37:08 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-184-88.pa.nsw.optusnet.com.au. [49.180.184.88])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-742a973a2f8sm5957134b3a.81.2025.05.19.04.37.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 May 2025 04:37:08 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.98.2)
+	(envelope-from <david@fromorbit.com>)
+	id 1uGyno-00000005Si8-44qA;
+	Mon, 19 May 2025 21:37:04 +1000
+Date: Mon, 19 May 2025 21:37:04 +1000
+From: Dave Chinner <david@fromorbit.com>
 To: Amir Goldstein <amir73il@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, 
-	Andrey Albershteyn <aalbersh@redhat.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S . Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
-	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Tyler Hicks <code@tyhicks.com>, Miklos Szeredi <miklos@szeredi.hu>, linux-alpha@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, 
-	Linux-Arch <linux-arch@vger.kernel.org>, selinux@vger.kernel.org, ecryptfs@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	Andrey Albershteyn <aalbersh@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S . Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Tyler Hicks <code@tyhicks.com>, Miklos Szeredi <miklos@szeredi.hu>,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org,
+	Linux-Arch <linux-arch@vger.kernel.org>, selinux@vger.kernel.org,
+	ecryptfs@vger.kernel.org, linux-unionfs@vger.kernel.org,
+	linux-xfs@vger.kernel.org, Andrey Albershteyn <aalbersh@kernel.org>
 Subject: Re: [PATCH v5 0/7] fs: introduce file_getattr and file_setattr
  syscalls
-Message-ID: <20250519-reklamieren-unsolidarisch-7cd73317561d@brauner>
+Message-ID: <aCsX4LTpAnGfFjHg@dread.disaster.area>
 References: <20250513-xattrat-syscall-v5-0-22bb9c6c767f@kernel.org>
  <399fdabb-74d3-4dd6-9eee-7884a986dab1@app.fastmail.com>
  <20250515-bedarf-absagen-464773be3e72@brauner>
@@ -150,18 +201,31 @@ On Thu, May 15, 2025 at 12:33:31PM +0200, Amir Goldstein wrote:
 > I think what Arnd means is that we will not be able to change struct
 > sfxattr in uapi
 > going forward, because we are not going to deprecate the ioctls and
-> certainly not
-> the XFS specific ioctl XFS_IOC_FSGETXATTRA.
 
-Sure, I'm just saying this could very likely be handled without the
-kernel or userspace having to care about the changed structure provided
-we teach the kernel to use the ioctl number, not the command and only
-ever copy v1 of the struct for the ioctls in new kernels. But anyway...
+There's no need to deprecate anything to rev an ioctl API.  We have
+had to solve this "changing struct size" problem previously in XFS
+ioctls. See XFS_IOC_FSGEOMETRY and the older XFS_IOC_FSGEOMETRY_V4
+and XFS_IOC_FSGEOMETRY_V1 versions of the API/ABI.
 
-> 
-> This struct is part of XFS uapi:
-> https://man7.org/linux/man-pages/man2/ioctl_xfs_fsgetxattr.2.html
-> 
+If we need to increase the structure size, we can rename the existing
+ioctl and struct to fix the version in the API, then use the
+original name for the new ioctl and structure definition.
+
+The only thing we have to make sure of is that the old and new
+structures have exactly the same overlapping structure. i.e.
+extension must always be done by appending new varibles, they can't
+be put in the middle of the structure.
+
+This way applications being rebuild will pick up the new definition
+automatically when the system asserts that it is suppored, whilst
+existing binaries will always still be supported by the kernel.
+
+If the application wants/needs to support all possible kernels, then
+if XFS_IOC_FSGEOMETRY is not supported, call XFS_IOC_FSGEOMETRY_V4,
+and if that fails (only on really old irix!) or you only need
+something in that original subset, call XFS_IOC_FSGEOMETRY_V1 which
+will always succeed....
+
 > Should we will need to depart from this struct definition and we might
 > as well do it for the initial release of the syscall rather than later on, e.g.:
 > 
@@ -184,9 +248,19 @@ ever copy v1 of the struct for the ioctls in new kernels. But anyway...
 > +
 > +#define FSXATTR_SIZE_VER0 20
 > +#define FSXATTR_SIZE_LATEST FSXATTR_SIZE_VER0
-> +
-> 
-> Right?
 
-Sure, I don't have a problem with that since I find the current name
-with "fsxattr" quite problematic anyway.
+If all the structures overlap the same, all that is needed in the
+code is to define the structure size that should be copied in and
+parsed. i.e:
+
+	case FSXATTR..._V1:
+		return ioctl_fsxattr...(args, sizeof(fsx_fileattr_v1));
+	case FSXATTR..._V2:
+		return ioctl_fsxattr...(args, sizeof(fsx_fileattr_v2));
+	case FSXATTR...:
+		return ioctl_fsxattr...(args, sizeof(fsx_fileattr));
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
