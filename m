@@ -1,158 +1,88 @@
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
+Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com [209.85.208.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AC12D023
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 18 May 2025 22:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5AA2D052
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 19 May 2025 06:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747608644; cv=none; b=esjVeEuPbHLPlhO2dzz2/FFycvwzj1XkLUqsEUe4I3FF0CqWuPGFQJTw6iG0KrOvOp9208Nx1gA5WMDgK7yeIA4HpzuEM4mxjhjn3nG/3EZXpVSi2K9sb7mv8Joig1HczFIebvF6ZrUdbvy/RUI93h/WyMwmaTObEilaH10U1To=
+	t=1747636311; cv=none; b=bTFPVf8nmqO2ahtQMTJ94DmInfTcFsXqMF5hIl1+18EP6KHWO8pmMgNMjaSsCJqGyWJ4LMKm1WliGe2B6BsM1tOTEF1FEQ0/dBwasMmUErZYKiPWo3v6vg5QKW8t2ACSy6c3dfPpnFPWvsdxMleefJ4sWDxtSsM3TJ4RhauJzvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747608644; c=relaxed/simple;
-	bh=YYkciApprTBW61Xe2c/9f1R4usCCh7pTaYq7TehA6mk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fiSVqHBsGS2viezsruFeMWJ0weiSITOo2ZAmOGD8vPpCW+qD3htn5udWOCvpQIbF2B427MYcATtCWYrHq/6Vc88/f8z7Hz1CQbaLwKoEttQBqBX+Fs29KTbWD/vd4OMNUxIJMx+wSHk1JNo3Gl1pZbsnOYdT9LALZQakG0p8d8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJ2w4g8G; arc=none smtp.client-ip=209.85.214.196
+	s=arc-20240116; t=1747636311; c=relaxed/simple;
+	bh=BF1ovdxwQHWY/86acyml+Ji0aewU5uxZv17FrAdL/Nc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HZ6US8dDqKaDB8CZUGryfHh0BbGayVTi47pd4bTeSfCPUWKccKjYb6wRMSNfn1/wJ8bettWUfPhtirHoUT64SEejrcn2BSZ8cGwcsoGHhBNXga669a72QXAjuUmUs3bH9wjSBw0RnRsG6cD+b/3RjOab5PaBbhsCDQ/oD8zGmrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lbep5J5W; arc=none smtp.client-ip=209.85.208.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJ2w4g8G"
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-22fcf9cf3c2so31445005ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 May 2025 15:50:42 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lbep5J5W"
+Received: by mail-ed1-f66.google.com with SMTP id 4fb4d7f45d1cf-6019b564d0bso3391721a12.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 May 2025 23:31:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747608642; x=1748213442; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tifdmFQDJps1lChYSd+EGnHuJQb6A1Xc67Aae2G0Ozs=;
-        b=QJ2w4g8Gf2nX4R3HlTvoPiWBCnWmOzwowUuIommbcPj07VRarR+sHR63uljHKi50m3
-         ofpwhCSGcOfUb1nJFzOiLx/jGCBiw7X2KycOnbKZ3VybMLZok1xrEiokDZJhYr4K7f4v
-         +2pmUAoOimDe6+ZsVLC2xr576YB3qiYthB+AQWWz0zzCHNr04Fbx1dMIS1DooSj2bfJN
-         lXpMUs6NfySu+4o8iA6OSC5JlJCkyxOwEgup0i4+Y10Qtl1QR5iUMSQ2H7h4VOH7hmXM
-         hDl+RFTkw5I6qvNgfPbR4p7ZRVIDL2QIoJ0GZ/wj90K2E52AG749BbfSLLjoTmRlwX/B
-         Q4jw==
+        d=gmail.com; s=20230601; t=1747636308; x=1748241108; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BF1ovdxwQHWY/86acyml+Ji0aewU5uxZv17FrAdL/Nc=;
+        b=Lbep5J5WbuHaxjE4op2BEYQ1W1NYCg71RvYb0uj/VMYRjGdOh7b0wBAC4sTQNHsDva
+         lJbJ4h5eTNX1m+7ayFxMceIrnWZL63pKoxh0WE4kqY0Ga7xyF7RmzvpN+xeyLgOfDFZk
+         MtEhp5RZi5rrJhTocAl8hLbZic5SYS08pLuvl0hBIXfdPhqPznQggFqcu87Ffi+OFyBu
+         7c/UyakB2L7j7hMYkl8mh9oiWSbCmKSNMePOAnqSD+crUBHN/prpo6H8D3sRKxxXva/9
+         PN/mv7HJoPL8RK5fnLce3HI1uTOpnp4ryhV6chsiZuyn+5teiazH9yjbLuc021mmoLG8
+         nzvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747608642; x=1748213442;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tifdmFQDJps1lChYSd+EGnHuJQb6A1Xc67Aae2G0Ozs=;
-        b=p7f1AWOZyxUY4jLTtG9/Z900KpNiPsan+4/GQI+BU1wgYG8HiKB9cKWWY3itTpSCos
-         FK6LzSamD/RuYu/PBigqLE3J9v0QPU4IPJUbUnEP7eaEdYG6bP8cNtlCbRQVlrpWqYj9
-         Bzo7zGchy25ioNgvnvsVc27eBrRYLF8bbrspTx05sOLCcHoPkcqgMFcRVtQvJGzwZ/1u
-         h+vCahjQLwfV8kekfovca2q8vBbVLGSrAu9DN05Di40STPqvH3NVBVUcmRyzM9PybMBi
-         Xs4r13iTqaOrc4r9WK9QmaSIZS+Y60j0GamsYhHL9spsEIq0f2L2cd1C5yVDAxK298+c
-         kNlg==
-X-Gm-Message-State: AOJu0Yy1gcaNuWYgnMaEKjr5bg6vafnTnMQP08MTeLIh6MhIHcdeFAWh
-	+yuj1ID6/osOm+YtFIPWyWhujqb2JfOnmDhX+Zxui9FVPPzOPL+sq2fZ
-X-Gm-Gg: ASbGnct97dOchaUNo8k6tdjtkle9/OKz1sHGkaWvabxhouLmSglLb7WntFt4LeVPlrO
-	e25tmm6FC/bPL70LsjCKUlLu0KgEoqk0drKfFTRw9mLcbcAGfXOX/9Ev9NQ501hLwrJIo1l3Sl9
-	qbMaLqi6BsnJ2yaHzMAqL4gSNQ6V20mYqFnADzt9iBiLnYP/btqWOHrFyZMqdHWSgIY+nyDNJvJ
-	hnprj+UUJNLVWfojyIU561ef2qNq/N15S4Syk7vhDuFbVBZIGjgonidF2RCVsR5Xod5AErN4h7h
-	NunaiRmwwhO8rxTgjtfyNBdnTBEOHFQEKgY37YpMC6nLPRHICC/2CdN0+JiVL5xsnlTmt64=
-X-Google-Smtp-Source: AGHT+IFDVyQnFmoqqGPJkqxSu2Pdvvb212In1H9P8PzfsGFz4fbsCW0TSpcfHw5lbipt/B2UA9BEsQ==
-X-Received: by 2002:a17:902:d4c2:b0:232:11e7:47bb with SMTP id d9443c01a7336-23211e75f95mr71816695ad.43.1747608641831;
-        Sun, 18 May 2025 15:50:41 -0700 (PDT)
-Received: from sid-Inspiron-15-3525.. ([106.222.228.126])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4ebb157sm47616605ad.176.2025.05.18.15.50.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 May 2025 15:50:41 -0700 (PDT)
-From: Siddarth Gundu <siddarthsgml@gmail.com>
-To: geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	elder@ieee.org,
-	Siddarth Gundu <siddarthsgml@gmail.com>
-Subject: [PATCH v2] rbd: replace strcpy() with strscpy()
-Date: Mon, 19 May 2025 04:20:35 +0530
-Message-ID: <20250518225035.227880-1-siddarthsgml@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1747636308; x=1748241108;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BF1ovdxwQHWY/86acyml+Ji0aewU5uxZv17FrAdL/Nc=;
+        b=Esq6sEU/FmKSO6uVS6wgnPU2GOGTJcdWyROGwjoDxr9ALMpjK5ixFe32T6J9kmFmzc
+         oyQuuHpSmmlTUiOvzutfwHDVehLKgpKqy5LfyAxkJ4T8zlFM6PyeHOGZh6jdD2/x7/3T
+         QKQURis5KF+tARtWFT3UZ70UkFYZiBRHc/i53rHcxwygY6GwpUTI6DIP5Ekh9sy7D6N0
+         AyTSRQ1T3u++sniPOiLlKoL7LpbB4aYORkSvdMYentrnUKOAAQH2wpy2giLFBKn/msHK
+         /I8XfYA40I4tq1UJUXlZxpuWWNvcdxHsVDE+d+A14qfbHsAcqxa/yg7kATqXevPRjfIF
+         bEmA==
+X-Gm-Message-State: AOJu0YzvHkCU0vnfHNMoyaNsT/IBj+SFFDIc/dQUc9iTehIf+9p1gCYt
+	5erx63TVIRHnNuSOwmuNNnU77vDRXAVVepMXfWMg8zZsSSvytmLrsx+xHtYk4b4MGBVicTI5QcG
+	9+hacyNnn/V0iEm1nBTjzlC+65KBLcCQ=
+X-Gm-Gg: ASbGncu+L5lPXux6bSQXheq66xUF0yBeT+69i+U/Yr/o+gFiX0ndlvI8wPSAzTqyw/Z
+	6EKapZh81dfFv+/nc7hnoER/zFM+J5RcGmFvYxx9GixviIyau4X1toS/t7sybGhpM1SXRz5dLUx
+	oKwkBk1kLIj141e/e4ospNDNioC4uH/zR5yw==
+X-Google-Smtp-Source: AGHT+IESRmn4RqUdcN4tMhYxA674kvZ/4Qlv/882CQtNwGmSIHeKn97znZffKYPCylyJNOLV+K7PjG8R0OFPcC/Fixc=
+X-Received: by 2002:a05:6402:348b:b0:601:834a:e678 with SMTP id
+ 4fb4d7f45d1cf-601834ae764mr8593090a12.17.1747636307474; Sun, 18 May 2025
+ 23:31:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250518225035.227880-1-siddarthsgml@gmail.com>
+In-Reply-To: <20250518225035.227880-1-siddarthsgml@gmail.com>
+From: Siddarth Gundu <siddarthsgml@gmail.com>
+Date: Mon, 19 May 2025 12:01:36 +0530
+X-Gm-Features: AX0GCFuZmeAJjIjy_nJmuf4nTuZgAv1N47LqwJBiIudfRuPaPnH59k5gJVtM8Nw
+Message-ID: <CAKWSiC6tYijmMtnmhRrq8OTivfRGu6D0y9vWbPd0g45x3yoA=w@mail.gmail.com>
+Subject: Re: [PATCH v2] rbd: replace strcpy() with strscpy()
+To: geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	elder@ieee.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-strcpy() is deprecated; use strscpy() instead.
+On Mon, May 19, 2025 at 4:20=E2=80=AFAM Siddarth Gundu <siddarthsgml@gmail.=
+com> wrote:
+>
+> strcpy() is deprecated; use strscpy() instead.
+>
+> Both the destination and source buffer are of fixed length
+> so strscpy with 2-arguments is used.
+>
+> Introduce a typedef for cookie array to improve code clarity.
+>
+> Link: https://github.com/KSPP/linux/issues/88
+> Signed-off-by: Siddarth Gundu <siddarthsgml@gmail.com>
 
-Both the destination and source buffer are of fixed length
-so strscpy with 2-arguments is used.
-
-Introduce a typedef for cookie array to improve code clarity.
-
-Link: https://github.com/KSPP/linux/issues/88
-Signed-off-by: Siddarth Gundu <siddarthsgml@gmail.com>
----
-changes since v1
-- added a typedef for cookie arrays
-
-About the typedef: I was a bit hesitant to add it since the kernel
-style guide is against adding new typedef but I wanted to follow 
-the review feedback for this.
-
- drivers/block/rbd.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-index faafd7ff43d6..863d9c591aa5 100644
---- a/drivers/block/rbd.c
-+++ b/drivers/block/rbd.c
-@@ -46,11 +46,14 @@
- #include <linux/slab.h>
- #include <linux/idr.h>
- #include <linux/workqueue.h>
-+#include <linux/string.h>
- 
- #include "rbd_types.h"
- 
- #define RBD_DEBUG	/* Activate rbd_assert() calls */
- 
-+typedef char rbd_cookie_t[32];
-+
- /*
-  * Increment the given counter and return its updated value.
-  * If the counter is already 0 it will not be incremented.
-@@ -411,7 +414,7 @@ struct rbd_device {
- 
- 	struct rw_semaphore	lock_rwsem;
- 	enum rbd_lock_state	lock_state;
--	char			lock_cookie[32];
-+	rbd_cookie_t		lock_cookie;
- 	struct rbd_client_id	owner_cid;
- 	struct work_struct	acquired_lock_work;
- 	struct work_struct	released_lock_work;
-@@ -3649,12 +3652,12 @@ static void format_lock_cookie(struct rbd_device *rbd_dev, char *buf)
- 	mutex_unlock(&rbd_dev->watch_mutex);
- }
- 
--static void __rbd_lock(struct rbd_device *rbd_dev, const char *cookie)
-+static void __rbd_lock(struct rbd_device *rbd_dev, const rbd_cookie_t cookie)
- {
- 	struct rbd_client_id cid = rbd_get_cid(rbd_dev);
- 
- 	rbd_dev->lock_state = RBD_LOCK_STATE_LOCKED;
--	strcpy(rbd_dev->lock_cookie, cookie);
-+	strscpy(rbd_dev->lock_cookie, cookie);
- 	rbd_set_owner_cid(rbd_dev, &cid);
- 	queue_work(rbd_dev->task_wq, &rbd_dev->acquired_lock_work);
- }
-@@ -3665,7 +3668,7 @@ static void __rbd_lock(struct rbd_device *rbd_dev, const char *cookie)
- static int rbd_lock(struct rbd_device *rbd_dev)
- {
- 	struct ceph_osd_client *osdc = &rbd_dev->rbd_client->client->osdc;
--	char cookie[32];
-+	rbd_cookie_t cookie;
- 	int ret;
- 
- 	WARN_ON(__rbd_is_lock_owner(rbd_dev) ||
-@@ -4581,7 +4584,7 @@ static void rbd_unregister_watch(struct rbd_device *rbd_dev)
- static void rbd_reacquire_lock(struct rbd_device *rbd_dev)
- {
- 	struct ceph_osd_client *osdc = &rbd_dev->rbd_client->client->osdc;
--	char cookie[32];
-+	rbd_cookie_t cookie;
- 	int ret;
- 
- 	if (!rbd_quiesce_lock(rbd_dev))
--- 
-2.43.0
-
+Truly sorry for sending this to the wrong mailing list, apologies.
+Please Ignore this. Sorry for my mistake.
