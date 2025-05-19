@@ -1,81 +1,93 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290582698BC
-	for <linux-m68k@vger.kernel.org>; Mon, 19 May 2025 08:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F00269CE0
+	for <linux-m68k@vger.kernel.org>; Mon, 19 May 2025 08:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747642458; cv=none; b=HP0KkOcgnj0uHKcnRsKiYjNpEtUGoQxyhQYYpq6abgDiP9HxUynSSd91b8zyq6DPlYQuSxdiD8/28vt3XQPNPtAD8n1vdyJUcRQSjXc7j8fTXCDIhct4/JipmkJzP4RuqlYXADIxVBdXJS0XMMkRI1y7iTXuZPbvahP6HRx1IeE=
+	t=1747642724; cv=none; b=Z3xY0MJWO6Z9ZPMf6PsJQJ5ym9gb7VQUov9995xfeyOviuUAkK94IScmyIjOOFGz/d3fSvFyf1M82rZK0LdfA59Ohs9XDq6z5Q1IOXVBJVT5vmDL+njTJxvyuIIrhVEweJIbxOELFxqPQJ1KJSr8L/vs0PIr8VRltAjkZBFpInU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747642458; c=relaxed/simple;
-	bh=utvshoq/aaq90aGZ+gX56mY9VSSo5RYpwROKbr4Xfso=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qqHy9epvC/zvBq8GfW3OB2NeJoWQ53oR8KUfEcwMTDS8Vo40rZY4zDQYEVvh6eaIPiWgkbdoXWUq018EIbqBvxt+mA0lnS2uXNTG0SznXl7nmkuZ+p9nCmYmQQGOhtFwdGN3Z6mdTAWNWtAuxJKXAK1afkVj5Yl+UKqk+O1ZcCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XYi5qcJo; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1747642724; c=relaxed/simple;
+	bh=q+aDT7PBT0dHjosMY8IpbVzAJEnMDbjhO+brUXUzeyo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EiWHawIojRscg1582imXX4rLX9V/9PHBk4ZkgDB1J0RkYUgRjXIghKr5jDxhP9XCkZMlSWClskdgQoyZi8vSpr2uWSqVvgTClF8TXGWVhjE1Ftgsi5JAMSYIsHUIZbbkJKZYFrCJSyCpAiFwGFkcAOHPIUuwhmaX7xIGGjKK5A8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=G//+s+M6; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XYi5qcJo"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747642454;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VncchEadz39g03PGfBzHIbsF8E9JFPFFhBi849ltTbo=;
-	b=XYi5qcJo++WaOpUe5itGAunuRE8uVHqnZC3QTCHNmDRAyt29GwzwHPpxaFDcewquVLlB/H
-	4IBAtzZglv3EPTsEFOdEh8GG8EcIg7UkQB74A3sZCYzvcaegNerUmgDKGSsSA845ma0/lZ
-	WRv6z6az09cUdOWjLS1F5F8Inj8miM4=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-637-ByqWt_iCPoOS_qVrcmQ7TQ-1; Mon,
- 19 May 2025 04:14:11 -0400
-X-MC-Unique: ByqWt_iCPoOS_qVrcmQ7TQ-1
-X-Mimecast-MFC-AGG-ID: ByqWt_iCPoOS_qVrcmQ7TQ_1747642450
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C76D91955DAB;
-	Mon, 19 May 2025 08:14:09 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.2.16.247])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B1C0819560AB;
-	Mon, 19 May 2025 08:14:07 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: John Paul Adrian Glaubitz via Libc-help <libc-help@sourceware.org>
-Cc: James Le Cuirot <chewi@aura-online.co.uk>,  John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>,  debian-68k <debian-68k@lists.debian.org>,
-  linux-m68k <linux-m68k@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="G//+s+M6"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=kOIwrCifEGdYZ1RSMvMa8u2PMRyyRiakwgjrXGvUlJo=; t=1747642721; x=1748247521; 
+	b=G//+s+M6ydrDgC7TbIgIWDOD6x4ZhQpmd3K+LkK7rtQOhb2zzaqbRqbe60S4Ke9YGO5/k5aGejJ
+	B1DCnwvkvPOx5HkZCn0bUc34m8rzmjRA1RsBHXEIOp7F+USydYVQKa56MwxFyTlPHbeQRMxgg+VRv
+	lc90NFBT/pC7qCqi4g6c8jX6hH5FHdNiCsnJBPgYCvhKwYi9exRngCsRHw98H21vP06kK5nbt2Osa
+	2SGigQFe0GBRc0yk3E378vIwZeqVyFv4ocRwJ4Pe11Tg4OuWZ1o7meafe+F8kpPafnrlYqRSxYxwR
+	/lDg3TzlWqtymmbibVhqAK6dd4dJ+h96TEAw==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.98)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1uGvhl-00000003zRx-2hYA; Mon, 19 May 2025 10:18:37 +0200
+Received: from p5b13afe4.dip0.t-ipconnect.de ([91.19.175.228] helo=[192.168.178.61])
+          by inpost2.zedat.fu-berlin.de (Exim 4.98)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1uGvhl-00000002xh9-12um; Mon, 19 May 2025 10:18:37 +0200
+Message-ID: <08f471d5cb51ed0fe5a3eb64fad088f3072d4784.camel@physik.fu-berlin.de>
 Subject: Re: Tuple and changes for m68k with -malign-int
-In-Reply-To: <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
-	(John Paul Adrian Glaubitz via Libc-help's message of "Sun, 18 May
-	2025 09:09:19 +0200")
-References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
-	<08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
-Date: Mon, 19 May 2025 10:14:04 +0200
-Message-ID: <8734d1kofn.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Antonio Vargas Gonzalez	
+ <windenntw@gmail.com>, James Le Cuirot <chewi@aura-online.co.uk>, 
+	libc-help@sourceware.org, debian-68k <debian-68k@lists.debian.org>,
+ linux-m68k	 <linux-m68k@vger.kernel.org>
+Date: Mon, 19 May 2025 10:18:35 +0200
+In-Reply-To: <mvm4ixhf2nj.fsf@linux-m68k.org>
+References: 
+	<e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
+		<08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
+		<CA+OL9jj_s3ek-_4fp5b5uq-Fxmdu3NpenW10RWkiPX8Jtmxq=A@mail.gmail.com>
+		<ab38d00426f3a0be1d312d969ebc747a569ebc74.camel@physik.fu-berlin.de>
+		<CAMuHMdURQAf=iQxwPh57_Xj-TO_cnqH=eNPKvYDv41o8SgJLKQ@mail.gmail.com>
+		<75c912630ade4e05af08eab9584c6f56d7c0ca1f.camel@physik.fu-berlin.de>
+	 <mvm4ixhf2nj.fsf@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-* John Paul Adrian Glaubitz via Libc-help:
+On Mon, 2025-05-19 at 10:03 +0200, Andreas Schwab wrote:
+> On Mai 19 2025, John Paul Adrian Glaubitz wrote:
+>=20
+> > Good idea. I will do that. My assumption is that on Linux, GCC develope=
+rs
+> > actually just forgot to switch alignment from 2 to 4 bytes with the swi=
+tch
+> > to ELF unlike NetBSD.
+>=20
+> The Linux developers care about backward compatilibity.
 
-> I was just looking at the necessary changes to switch m68k to 32-bit alignment
-> and I'm not sure we need to do anything about glibc. I am documenting my current
-> findings here [1].
+That makes no sense though as a.out and ELF binaries are not compatible, ar=
+e they?
 
->> [1] https://wiki.debian.org/M68k/Alignment
+Adrian
 
-Why doesn't this change need a new target triple?  This change alters
-struct layout (it introduces new padding in some cases), so it's quite
-incompatible with what we have today.
-
-Thanks,
-Florian
-
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
