@@ -1,140 +1,106 @@
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8544E26FA7D
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 May 2025 17:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE16E17BD9
+	for <linux-m68k@vger.kernel.org>; Tue, 20 May 2025 22:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747763970; cv=none; b=cQ6rM7i44Da+YGwIOewveW1INL35MFVDotad6qRD2/MUIpcBQnE4mCy77v/M4WJmHXoul570/raSQLx8oKPMk00qPcekyPTo546jFvhrim4y0tXl43lshIHAogmW4neQZk+ghoV1NeKhL1V9GwKBFI6HdA2gBMy2HoHNJ4QR79w=
+	t=1747779219; cv=none; b=ZonTS+KgH8ITOxUjSLWrE58dUxQgEF7JxShbQySH5/8h36qgaqrHqBg62KSa2Z8Oi075wdXLA7DxaI/O+rpGt0lWbU0mA7uHN0A62h8evSA4l2DdtQWIpjIUgv62U7LOCxabfpaLEQlXj39vhGzstKwU7ADASQCpj2HwRry0o6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747763970; c=relaxed/simple;
-	bh=sk1HYXDvnKjUBm5wbIYL2hxbtPS8MQRRAHhR6ynndh0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GfiDa1virXRhSnGug5fKRLm5O/vMYJTtw37qaIC9TfWWRV4Dl225V1hz+OTr6E3s7IMls/Z0GqEyPyhtRxdy5F0FEW34unF5RRkG45CaY6UOdQcFX81e8xmfJ/rlUOnUPmVOpfUjRcQU88Li9snDPNQL+PwA94nql8sJvW3v9g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=T7eQ5he7; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+	s=arc-20240116; t=1747779219; c=relaxed/simple;
+	bh=25nMf4+pKMupyxwBfqq8vmkmKdG2W7YV/LcjPzsh6p8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=a8p/yPOhV8A02PaXg/SnixJ7S0QuaOdI/ywjdh5uV1fqcEgzGFTM+BYMMTzcq21vVQGfUATLNi7MvroZolqQyVd+0DpUjJNuKvRWqKHkmSVbvDxl7C4B3yJX0VKziGcBqeAGWmUdLwY7YbTsIkO6yaoA95HBtq8tSWKrKqXsFdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=hhW3ShHQ; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="T7eQ5he7"
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-30e9b0f374fso4509013a91.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 May 2025 10:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1747763969; x=1748368769; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=INM95q65BeODTHlD+8KmvZymICq+GNLSDmmtrJVHoBo=;
-        b=T7eQ5he7Nn3zxnRcPvbC7t3qQ86nAg2LpyN/CNAIz9mqPF5fGd8oQSgcAept9pxnry
-         gbZBtGFRXZdUxTshkw2Hac01glV2t0J0g32Lei376OE9qWb8+GLKBaLJJJjgRM22gEv9
-         J71omAubi87Hmdr5Kk90Mqe/0/SchwrDg1s5Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747763969; x=1748368769;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=INM95q65BeODTHlD+8KmvZymICq+GNLSDmmtrJVHoBo=;
-        b=IKAEGzsLB0VfvX0KaZIuoLoQ0iVLZ4z17Ct3KvKLDnbN1Ds+pYzqi5pbEKZLoM/LcJ
-         Bl6BGfV7npRVEOYTMX73pq7nPU4fEGFksN1z1q9ec/jF50O2mtuje4DDSII6p68gM1iT
-         CBvP8W4XRN169B1oRinh5Pj7FmxoWZ7XuJrohuuUFKC2+0EAfcQl9Xe8ArXKb75rA2X1
-         5MU7EtwiG6E1pF1myQFshC0zbWDYayo5Nt3UqL0F/xb68gpP4EycOaSuRAzJPxgZhLR/
-         X6nBLhnKrqfzpYpZuNrwOGsK42YQ6V6DK6k0VNM85Ph0Q5TK1Ncak1xeh+zKyig+THby
-         ilgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUXjJMhBZnerqKmdETlfH43VONGtz6V873yifgbkWslPlaB/e0Mxm25ZSA6nhc1lsbiCUotrh6erbSr@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yw09aLg9CU3L0iDWELyiGqopZNTkywzjm2n72D4T+S/GEJBG86q
-	VIwEHO33P9RRVJ6Bx8+cFHphRNzLTYgLsSHUwfUERqpwtXpg6GPhv4KdUcHjbaSmTw==
-X-Gm-Gg: ASbGncsOdkSMz33MdlNW1nt01eyzmz7lE2U0WPI1v2hj7NEbjBJRBUIMpsYXd7Ui6Xg
-	kS33ryX5uN/7Xxl1QU33gJl0vRJuvIwIAFJanwoMK38da0hdHOThuC4vR9VnUkNsOyWTgnxmWVM
-	omxspHCh6U10pjwI8UQQDmehxuH7cxxjOGL1I4Eb8Fa+TOIU03eduZU10/bzkhEBMvcjpyQdJKd
-	HM6e4yAw1dH6FJF012y9/uFJdrUfBspQKGBqiwUm8jqgwdukXvkZKH+5INkTfXJLq6UXaHncYlZ
-	R4taOmP0U+g5hnxWcZpioSo/V26QHsiTW6GnlOI5ycoKYsXPz0Qdj31tPVil1ztlUkJuMsy6iHo
-	VejInnPMO8x2WJVw=
-X-Google-Smtp-Source: AGHT+IFaM8IaByeAyzbZ1A4gVDC35Pyz8pR9kNbpble9jg5fMy8ANLnTcAmpKkH3tcHj+isuz15jMQ==
-X-Received: by 2002:a17:90b:574c:b0:308:7270:d6ea with SMTP id 98e67ed59e1d1-30e7d5b7b41mr26127527a91.30.1747763968605;
-        Tue, 20 May 2025 10:59:28 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30e10039b2esm7535809a91.0.2025.05.20.10.59.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 May 2025 10:59:27 -0700 (PDT)
-Message-ID: <e6b8d2c5-5e3a-42b3-a68c-ceeda2fd8632@broadcom.com>
-Date: Tue, 20 May 2025 10:59:22 -0700
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="hhW3ShHQ"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Dq0HhiOUly8pe5c/ejgOto60RCYFASztklBZ4A8Na0Q=; t=1747779216; x=1748384016; 
+	b=hhW3ShHQFlT76534lJRC/94hjdrvQzuuXnsh0NhQPEdkVdp4Ye8SkyPSou8UIqHtSQ0vMVKuPDC
+	sBr6C4aXZgMJJVbk8Ny7LEcWG+ZbJYrUCfmPAYFkDgfzZDvt22zs8fYwUyzO3f5BMpkmN43sg3Qqd
+	2jX05vnk4O1UvgfGfahE1kjTcTCbMQZQb4zlO7TcX+wkLySHVRgIlXRRZB+yJF6vtCHeIA3vNMM6g
+	1Rr+g0XUJ8JbhJR0g1JvzbF8JCwseJhv25Cv2o0HKd938XhFW+EXa6imApNT9GvskjCdaqnXPzJ3P
+	pQ7BvP0Fhp1JCLfJXFpVB2itZ6YM5wzSqMVA==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.98)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1uHVDH-000000012lO-43ry; Wed, 21 May 2025 00:13:31 +0200
+Received: from p5b13afe4.dip0.t-ipconnect.de ([91.19.175.228] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.98)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1uHVDH-00000001sZT-36kt; Wed, 21 May 2025 00:13:31 +0200
+Message-ID: <e16df549745be6c1f3d815a60172d8ee8305ed95.camel@physik.fu-berlin.de>
+Subject: Re: Tuple and changes for m68k with -malign-int
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@linux-m68k.org>, Florian Weimer <fweimer@redhat.com>,
+  James Le Cuirot <chewi@aura-online.co.uk>, debian-68k
+ <debian-68k@lists.debian.org>, linux-m68k	 <linux-m68k@vger.kernel.org>,
+ Libc-help <libc-help@sourceware.org>
+Date: Wed, 21 May 2025 00:13:31 +0200
+In-Reply-To: <CAMuHMdWVjDGYW2SerNV5ov6jX1pPNw_j1=qpawBCJph18_SE2w@mail.gmail.com>
+References: 
+	<e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
+	 <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
+	 <8734d1kofn.fsf@oldenburg.str.redhat.com>
+	 <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
+	 <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org>
+	 <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>
+	 <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com>
+	 <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
+	 <CAMuHMdWVjDGYW2SerNV5ov6jX1pPNw_j1=qpawBCJph18_SE2w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/3] net: phy: fixed_phy: remove irq argument
- from fixed_phy_register
-To: Heiner Kallweit <hkallweit1@gmail.com>, Greg Ungerer
- <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Vladimir Oltean <olteanv@gmail.com>, Doug Berger <opendmb@gmail.com>,
- Thangaraj Samynathan <Thangaraj.S@microchip.com>,
- Rengarajan Sundararajan <Rengarajan.S@microchip.com>,
- Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
- Andrew Lunn <andrew@lunn.ch>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Russell King - ARM Linux <linux@armlinux.org.uk>,
- David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>
-Cc: Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org,
- Linux USB Mailing List <linux-usb@vger.kernel.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <4d4c468e-300d-42c7-92a1-eabbdb6be748@gmail.com>
- <31cdb232-a5e9-4997-a285-cb9a7d208124@gmail.com>
-Content-Language: en-US
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <31cdb232-a5e9-4997-a285-cb9a7d208124@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-On 5/17/25 13:35, Heiner Kallweit wrote:
-> All callers pass PHY_POLL, therefore remove irq argument from
-> fixed_phy_register().
-> 
-> Note: I keep the irq argument in fixed_phy_add_gpiod() for now,
-> for the case that somebody may want to use a GPIO interrupt in
-> the future, by e.g. adding a call to fwnode_irq_get() to
-> fixed_phy_get_gpiod().
-> 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Hi Geert,
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+On Tue, 2025-05-20 at 11:58 +0200, Geert Uytterhoeven wrote:
+> > interested in new, "fancy" packages, just don't upgrade or install Debi=
+an
+> > Etch or similar. Changing the default alignment does not affect existin=
+g
+> > software.
+>=20
+> What about existing software that is aware the minimum alignment is
+> 2-bytes on m68k?
+
+I just remembered that I actually asked the NetBSD people about that and th=
+ey
+said that they didn't run into any problems. In fact, here is a directory w=
+ith
+more than 5500 packages built for NetBSD/m68k with 4 bytes alignment:
+
+https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/m68k/10.0_2024Q3/All/
+
+So, I think we're safe in this regard. There are certainly going to be a fe=
+w cases
+where packages may need to be patched. But I would assume these to be rathe=
+r rare.
+
+Adrian
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
