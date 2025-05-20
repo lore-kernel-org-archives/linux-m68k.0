@@ -1,60 +1,63 @@
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7546647
-	for <linux-m68k@vger.kernel.org>; Tue, 20 May 2025 09:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E051268698
+	for <linux-m68k@vger.kernel.org>; Tue, 20 May 2025 09:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747733981; cv=none; b=K9umwJaJ4TrhgvFqf2Teibo/shBrUezS7QRK5Eila+ZpMkkvksHd7NzNhg/DLBe+wS0Y5LJWeAQX65Tb+CB5KTHIzjtU2pLml7gHxTuI6+T4PWohMGXF1EjXFhdlCd6/0O6bAYGcS5GHv/gf+QWc9Vt09YPmgUc9AK5zwQojJbc=
+	t=1747734211; cv=none; b=aF2gLeAK8/0URRy8TXynoJVhdoRlraWNaljKOOx7CYsR6yC2EjaYcTYaoioIyXaePfD74DrmwVF09YiKQolRval8ojmAAzQsT+c4Oh1mVi5K39Ubso4cuFn4cZAhlJGCN/x2pGl6QxkGoC1pKMLHQE8EneRB+UoquzfHHbfxy5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747733981; c=relaxed/simple;
-	bh=aziaYdz2VYuc05W3NuQQY0tBBd+hwqSpORAuyI9vGkQ=;
+	s=arc-20240116; t=1747734211; c=relaxed/simple;
+	bh=Q+yuuHBNG8f/hOJrKOior1OxTnkMTxBS3hKBzjLu8pc=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IFlGv3kdqwBdeylMxQ/HSUCZuLbpIwyab0ZOS57bgHYC7tKS+aTgHks8okC2jCqSkR1YwWd/pLlszQ7WsGl+YJ+jMc4LCxSfwQ2AWg/HSKp6Tc+Tk90fFXo22aH76+PoI/0Y8Gb/8xoatfKGyrzC7+0+0fsIvsFHeLdbZVuZINM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=NyBGF/I7; arc=none smtp.client-ip=130.133.4.66
+	 Content-Type:MIME-Version; b=rvkzdGeplCzstnuKTUrh8DmySTqMs4HMYemUMsgwDoXbh5zHbAcs/hBL+OpEDMGfMi7axH/BG2xe0wagxVkA8fb7R0a8H23Le6EpoM5GdbPgpbpSagDCP+vWAzYacmPRqV1TP/1H0IwrR1nTlxgo7nbSOQt2cR4AqxKzcoBX610=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=UITUyFCf; arc=none smtp.client-ip=130.133.4.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="NyBGF/I7"
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="UITUyFCf"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=UudVE5TQvbrxOwUjocfzBGm0VJAlILmXB1fGjTUdbg8=; t=1747733978; x=1748338778; 
-	b=NyBGF/I7L00PvEaY4vt1Ml23EhtO0GJl7LZFzB+3dGqdo0vELCnGQlfgqueTCDIS4Ofn96PGleM
-	sFKqE6no3KJXvxHY24UMuqJw2rE5Ytxyd2dILHQZ6Z9KjuPQr32f+vTpQ13gv2A90Af6HDHXWK++h
-	NB4sRAwL84sDYECivKaf1w59pXz041J6XRX7Hcq8DFBqe7K5HLHNpbEQA9ZGfmxmIifdfaomZqPhG
-	TR7H8+bX1ZA+T7JG9G+EgK125BPk5O3WCY1kuJXrBbLi37U3jOWwZbbE/MwRJ6YoMXlldGNPmeDyz
-	35T1r0KlcAyjiQv47pzRFEciStVFJ3KEI7OQ==;
+	bh=4HlaosinjC03lDih6/cfInHYGhlrQ1wzXCiCwOa6HVc=; t=1747734209; x=1748339009; 
+	b=UITUyFCfm3WCjUUZ6iwUMZakKgmkF316CbLul0x/+lVSIYBHW6APbemrxwXPcHCe0CJUJhvBwrE
+	TiO0Of0AoExoxLuH3Im2gLgKP8GFipJoghEWoSNThIVTAhhTjQBpEZVvl44boTVU/AnWNaKSVDirn
+	5OjzGHGbKRsQW8s+RBqAPSVWWe/neOaIw3eLdoGZ7X1WbtHHEHeUBTcvtLUEeC+EMlh3TqqikSw6v
+	cR/+ihLZ0vqqnZ4xuXOBOcPAQ5DnFrnbgpK5IojPr8qKx74JtKZWQq5GjlkMTWbEwVdKOOIjg2hbU
+	YlM7+si9uqE0PwK2E3u/py41NecAtdWwTdEQ==;
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.98)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uHJRg-000000015W1-1FNz; Tue, 20 May 2025 11:39:36 +0200
+          id 1uHJVO-000000016t0-0CWy; Tue, 20 May 2025 11:43:26 +0200
 Received: from p5b13afe4.dip0.t-ipconnect.de ([91.19.175.228] helo=[192.168.178.61])
           by inpost2.zedat.fu-berlin.de (Exim 4.98)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uHJRg-00000003wyp-0JdJ; Tue, 20 May 2025 11:39:36 +0200
-Message-ID: <ee846efaa0f328738bfc4ac48c9f4204e2cab89e.camel@physik.fu-berlin.de>
+          id 1uHJVN-00000003xsa-3LOP; Tue, 20 May 2025 11:43:25 +0200
+Message-ID: <48411baea4164252cba5635b09325c8acf29f3bc.camel@physik.fu-berlin.de>
 Subject: Re: Tuple and changes for m68k with -malign-int
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: James Le Cuirot <chewi@aura-online.co.uk>, Florian Weimer
-	 <fweimer@redhat.com>
-Cc: debian-68k <debian-68k@lists.debian.org>, linux-m68k
-	 <linux-m68k@vger.kernel.org>, Libc-help <libc-help@sourceware.org>
-Date: Tue, 20 May 2025 11:39:35 +0200
-In-Reply-To: <ef0d6607b9767fb755456fe4cdd0a262657493c0.camel@aura-online.co.uk>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Florian Weimer <fweimer@redhat.com>, James Le Cuirot	
+ <chewi@aura-online.co.uk>, debian-68k <debian-68k@lists.debian.org>,
+ linux-m68k	 <linux-m68k@vger.kernel.org>, Libc-help
+ <libc-help@sourceware.org>
+Date: Tue, 20 May 2025 11:43:25 +0200
+In-Reply-To: <7722ac8e-4df4-2c91-1b88-c0ef59c57e89@linux-m68k.org>
 References: 
 	<e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
-				<08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
-			 <8734d1kofn.fsf@oldenburg.str.redhat.com>
-		 <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
-	 <ef0d6607b9767fb755456fe4cdd0a262657493c0.camel@aura-online.co.uk>
+	   <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
+	   <8734d1kofn.fsf@oldenburg.str.redhat.com>
+	  <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
+	  <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org>
+	 <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>
+	 <7722ac8e-4df4-2c91-1b88-c0ef59c57e89@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.1 
@@ -67,22 +70,39 @@ MIME-Version: 1.0
 X-Original-Sender: glaubitz@physik.fu-berlin.de
 X-ZEDAT-Hint: PO
 
-On Mon, 2025-05-19 at 22:51 +0100, James Le Cuirot wrote:
-> For what it's worth, while Adrian and I are largely aligned (haha) on thi=
-s
-> change, myself and others in Gentoo do intend to use a new tuple. The cur=
-rent
-> plan is to do this at the same time as time64, which we believe also requ=
-ires
-> new tuples, despite Debian sticking the same ones there as well. We are a=
-ware
-> that other projects will require adjusting, but we'll just deal with it.
+On Tue, 2025-05-20 at 19:39 +1000, Finn Thain wrote:
+> Qt is an optional dependency of cmake, subject to USE=3Dgui on Gentoo, as=
+ it=20
+> should be. If that dep is required by Debian, that's a distro problem, no=
+t=20
+> an ABI problem.
 
-But what's the point for doing this? Are you worried that the three users o=
-f the
-port are going to have to reinstall their systems? Does this really justify=
- carrying
-patches for many other packages?
+I'm talking about Debian, not Gentoo. And as you admit here, you have to
+cripple functionality to make it work which is not what I am interested in.
+
+But if you're using Gentoo anyway, I don't understand what you are even
+complaining about. As you heard, Gentoo wants to introduce a new tuple for
+the change.
+
+Thus, you can continue to use Gentoo with 16-bit alignment just fine and le=
+t
+anyone else who needs 32-bit alignment move on.
+
+> As for gccgo, has that ever worked on m68k?
+
+Yes.
+
+> > Furthermore, more and more packages are being ported to Rust which mean=
+s=20
+> > m68k will either die a long death or have to switch to 4 bytes=20
+> > alignment.
+> >=20
+>=20
+> Other language runtimes work fine on the m68k ABI. Why is Rust special?
+
+You mean other languages such as JavaScript, Go, Java, Python and WebKit?
+
+No, they don't work fine on m68k.
 
 Adrian
 
