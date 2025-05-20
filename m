@@ -1,63 +1,63 @@
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B3825B69D
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 May 2025 17:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8544E26FA7D
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 20 May 2025 17:59:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747763862; cv=none; b=hTs6LuLlUxShbplzYJ5Tk22pzspzwsvrQdlBWz9LSzCuYudrzVBr8j2NZbfJnnEJSE3Ihl0JRd4CYLKypP1Xz7fA57DMzwSIO+AhtLAzYwgU/onZTpOx3/DIvULzCnjhzunUPPYtSbm47l8Jh+i2LKYiRQPDAMtlYiqOZG6Wkkw=
+	t=1747763970; cv=none; b=cQ6rM7i44Da+YGwIOewveW1INL35MFVDotad6qRD2/MUIpcBQnE4mCy77v/M4WJmHXoul570/raSQLx8oKPMk00qPcekyPTo546jFvhrim4y0tXl43lshIHAogmW4neQZk+ghoV1NeKhL1V9GwKBFI6HdA2gBMy2HoHNJ4QR79w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747763862; c=relaxed/simple;
-	bh=1M9X6QHw8QpmM9UT7xnHYungjw7J2YeWavwZ8Jbo5wo=;
+	s=arc-20240116; t=1747763970; c=relaxed/simple;
+	bh=sk1HYXDvnKjUBm5wbIYL2hxbtPS8MQRRAHhR6ynndh0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fE5dHroybkbCg2cxOZeYKGUD0ZGkCiEOKefCKDJRJq6MhfNQ8IfD1hsZ7P+HqNsYT1B3qS9ilZwWNV0mfa0bmlaYbmqT2ljwTPMwBHDEVSmpHjLnMfllPmYkimaRadSLMfypWYAqfb6R0o8eSdREc8KCHZntcywz/I+JpuPbigE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=EAgcAx4s; arc=none smtp.client-ip=209.85.210.182
+	 In-Reply-To:Content-Type; b=GfiDa1virXRhSnGug5fKRLm5O/vMYJTtw37qaIC9TfWWRV4Dl225V1hz+OTr6E3s7IMls/Z0GqEyPyhtRxdy5F0FEW34unF5RRkG45CaY6UOdQcFX81e8xmfJ/rlUOnUPmVOpfUjRcQU88Li9snDPNQL+PwA94nql8sJvW3v9g0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=T7eQ5he7; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="EAgcAx4s"
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7390d21bb1cso5262166b3a.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 May 2025 10:57:40 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="T7eQ5he7"
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-30e9b0f374fso4509013a91.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 20 May 2025 10:59:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1747763860; x=1748368660; darn=lists.linux-m68k.org;
+        d=broadcom.com; s=google; t=1747763969; x=1748368769; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=lkQx5a2rXQrbUi0huGR//kMdqarRCpuGjmWJng00MH0=;
-        b=EAgcAx4sxNnZ5zp+F+l0rSmK9LpmOHVyE1Ji334stTpJmFkKWiQmff0YmXdA/mA25M
-         uI7UA08UK97k752AXW4VAHSAADfXudA4atJxgWr/5miDkk53bTXHyqZDW/ONhDvCjBP1
-         1gjR2oqbJo5/pdTYbLD+Elk8hSqy6YxNxsstI=
+        bh=INM95q65BeODTHlD+8KmvZymICq+GNLSDmmtrJVHoBo=;
+        b=T7eQ5he7Nn3zxnRcPvbC7t3qQ86nAg2LpyN/CNAIz9mqPF5fGd8oQSgcAept9pxnry
+         gbZBtGFRXZdUxTshkw2Hac01glV2t0J0g32Lei376OE9qWb8+GLKBaLJJJjgRM22gEv9
+         J71omAubi87Hmdr5Kk90Mqe/0/SchwrDg1s5Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747763860; x=1748368660;
+        d=1e100.net; s=20230601; t=1747763969; x=1748368769;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lkQx5a2rXQrbUi0huGR//kMdqarRCpuGjmWJng00MH0=;
-        b=NLs08VMpqfOBT0JRHhPhFTpUibIkZklRMg4ixwUlqh/4RMXnNj+MBjLf7CNrKQqCLq
-         OC8/VuqywvJ9d4awFEJINyANPgYC9B9yc20/pnhNINLUyaB+3Bq2WUuKkzNxsLm3Lk4v
-         znpCHRxWjCG0S1fZqtKfAkpI/8wFgK9/Lk7s3RSq2c/2oHc1/4Ap2H7RELV8+ftnc6pp
-         o+UzhT6mRq19WNzbiTzxESCK65d7Vt0Hm7rv5MBowOHgd69gmmxLiYOXxt+RLfyd8+jS
-         PFuJXs28NMSP5P93ya2pLnxg2rBmYDqWFT8ohjDUCrdWoi7u5OwxteCIX6vkuIe3sO1a
-         T42g==
-X-Forwarded-Encrypted: i=1; AJvYcCU37aQ6cDq4ChkUc8Zi+Zh9ahtduCRtEMl3u+WrClMGqYqDs/ga3ko8DwFReEywH206lTFZhnmYuiHp@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxrRuwE8i4PCpCN435ZFUPzVqD2aKWl3xNVbn3rPXjZwHB3U0Ki
-	h2gz4t/aWfUYsCroKQJviG1ML/xkdMWJq6D18XsI08A+buC6aIl23Do3gZxp+JfaEw==
-X-Gm-Gg: ASbGncuCtNLd4I17S/ur0tgq0a4e1BDhvXoFM32eTc2kiF8XZgurAVUjIu38RhfFhL0
-	j71u8KG91qWqN9Z2pGg8JjBfxDQ2J/S7C+Q88OFv5grSqNiC5V1kIrV30MY86vhkAOEc4A2gozE
-	4rTDClC35ZaUjJF5HNAiCiMMBhqF9QHJ+qv0tb1TqwBN2UDIyFsIDfDSq22KMuA8eeH6VmWEf04
-	LInGlNy6Ed8VLeD7sQysBszSTIRis5eXjVY37TPYFi5Gwk47oy4xLf/VrBBABaWKQjT95R8CHRy
-	DTOH6cBmVnQb0QGkF7SK9pI4XSQf2FSRqq10hAZylTPb/+T5pNBkjQtCltx5psWQXJNq/fQrDiw
-	22mWjhTwOmJy8Q7KUPH+yi6+u0Q==
-X-Google-Smtp-Source: AGHT+IGSYLANxnLLAnM0uR33FTX21jqDSKnmTyPRmRqzlfjjZkaFjTCDN44LrfmyPnhRWOP6pDsJKg==
-X-Received: by 2002:a05:6a00:9186:b0:736:5e28:cfba with SMTP id d2e1a72fcca58-742a98a323bmr23868341b3a.18.1747763859603;
-        Tue, 20 May 2025 10:57:39 -0700 (PDT)
+        bh=INM95q65BeODTHlD+8KmvZymICq+GNLSDmmtrJVHoBo=;
+        b=IKAEGzsLB0VfvX0KaZIuoLoQ0iVLZ4z17Ct3KvKLDnbN1Ds+pYzqi5pbEKZLoM/LcJ
+         Bl6BGfV7npRVEOYTMX73pq7nPU4fEGFksN1z1q9ec/jF50O2mtuje4DDSII6p68gM1iT
+         CBvP8W4XRN169B1oRinh5Pj7FmxoWZ7XuJrohuuUFKC2+0EAfcQl9Xe8ArXKb75rA2X1
+         5MU7EtwiG6E1pF1myQFshC0zbWDYayo5Nt3UqL0F/xb68gpP4EycOaSuRAzJPxgZhLR/
+         X6nBLhnKrqfzpYpZuNrwOGsK42YQ6V6DK6k0VNM85Ph0Q5TK1Ncak1xeh+zKyig+THby
+         ilgg==
+X-Forwarded-Encrypted: i=1; AJvYcCUXjJMhBZnerqKmdETlfH43VONGtz6V873yifgbkWslPlaB/e0Mxm25ZSA6nhc1lsbiCUotrh6erbSr@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yw09aLg9CU3L0iDWELyiGqopZNTkywzjm2n72D4T+S/GEJBG86q
+	VIwEHO33P9RRVJ6Bx8+cFHphRNzLTYgLsSHUwfUERqpwtXpg6GPhv4KdUcHjbaSmTw==
+X-Gm-Gg: ASbGncsOdkSMz33MdlNW1nt01eyzmz7lE2U0WPI1v2hj7NEbjBJRBUIMpsYXd7Ui6Xg
+	kS33ryX5uN/7Xxl1QU33gJl0vRJuvIwIAFJanwoMK38da0hdHOThuC4vR9VnUkNsOyWTgnxmWVM
+	omxspHCh6U10pjwI8UQQDmehxuH7cxxjOGL1I4Eb8Fa+TOIU03eduZU10/bzkhEBMvcjpyQdJKd
+	HM6e4yAw1dH6FJF012y9/uFJdrUfBspQKGBqiwUm8jqgwdukXvkZKH+5INkTfXJLq6UXaHncYlZ
+	R4taOmP0U+g5hnxWcZpioSo/V26QHsiTW6GnlOI5ycoKYsXPz0Qdj31tPVil1ztlUkJuMsy6iHo
+	VejInnPMO8x2WJVw=
+X-Google-Smtp-Source: AGHT+IFaM8IaByeAyzbZ1A4gVDC35Pyz8pR9kNbpble9jg5fMy8ANLnTcAmpKkH3tcHj+isuz15jMQ==
+X-Received: by 2002:a17:90b:574c:b0:308:7270:d6ea with SMTP id 98e67ed59e1d1-30e7d5b7b41mr26127527a91.30.1747763968605;
+        Tue, 20 May 2025 10:59:28 -0700 (PDT)
 Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-742a982b7ffsm8484079b3a.104.2025.05.20.10.57.36
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30e10039b2esm7535809a91.0.2025.05.20.10.59.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 May 2025 10:57:38 -0700 (PDT)
-Message-ID: <45057903-7eab-451b-94c6-23c3d552f144@broadcom.com>
-Date: Tue, 20 May 2025 10:57:35 -0700
+        Tue, 20 May 2025 10:59:27 -0700 (PDT)
+Message-ID: <e6b8d2c5-5e3a-42b3-a68c-ceeda2fd8632@broadcom.com>
+Date: Tue, 20 May 2025 10:59:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -65,8 +65,8 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/3] net: phy: fixed_phy: remove irq argument
- from fixed_phy_add
+Subject: Re: [PATCH net-next 2/3] net: phy: fixed_phy: remove irq argument
+ from fixed_phy_register
 To: Heiner Kallweit <hkallweit1@gmail.com>, Greg Ungerer
  <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
  Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
@@ -85,7 +85,7 @@ Cc: Broadcom internal kernel review list
  Linux USB Mailing List <linux-usb@vger.kernel.org>,
  "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 References: <4d4c468e-300d-42c7-92a1-eabbdb6be748@gmail.com>
- <b3b9b3bc-c310-4a54-b376-c909c83575de@gmail.com>
+ <31cdb232-a5e9-4997-a285-cb9a7d208124@gmail.com>
 Content-Language: en-US
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
@@ -120,13 +120,18 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <b3b9b3bc-c310-4a54-b376-c909c83575de@gmail.com>
+In-Reply-To: <31cdb232-a5e9-4997-a285-cb9a7d208124@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 5/17/25 13:34, Heiner Kallweit wrote:
+On 5/17/25 13:35, Heiner Kallweit wrote:
 > All callers pass PHY_POLL, therefore remove irq argument from
-> fixed_phy_add().
+> fixed_phy_register().
+> 
+> Note: I keep the irq argument in fixed_phy_add_gpiod() for now,
+> for the case that somebody may want to use a GPIO interrupt in
+> the future, by e.g. adding a call to fwnode_irq_get() to
+> fixed_phy_get_gpiod().
 > 
 > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
