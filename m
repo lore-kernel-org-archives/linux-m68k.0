@@ -1,198 +1,290 @@
-Received: from anath.zia.io (anath.zia.io [192.80.49.0])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92BAF17A2E8
-	for <linux-m68k@vger.kernel.org>; Wed, 21 May 2025 17:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.80.49.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BA01E3DED
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 21 May 2025 17:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747849005; cv=none; b=DLLhWYVRUCNCzISQt5GTtblPBNPe5rWrpiWDSYm0jNIcGSWu8nBw9VGk0891LhDOPUNhBEVJLCs8QD45AvKABvtxYy8mH4V+wtYu9vecwCXOOou2P53bVBfrJC1tD5yonETzlPZ8sz63fb1ajF4QHZ+ocLfh+NqONOaHpRehiwY=
+	t=1747849327; cv=none; b=sUuzNTxsFShqcMS5vW4fNSM9iVlivu8exZ6Dd0dkWSzPGFM0t6dW17rjBgEFbpNyp3tECwZdEKIT5yjc9c26kYXBEy16fIz+skNCmq84CX+12Av1RK0vhxcU5WIP5Teb9Hg1KmJ6lfCnP7OdwL9ep0ZvsVIvJIZrTX8XdMhN1yQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747849005; c=relaxed/simple;
-	bh=m8tajTYt5jDIHHia063lfAgMMVxN1hETh4G3EugtsLM=;
-	h=Date:From:cc:Subject:Message-ID:MIME-Version:Content-Type; b=LVOZt7Q0sf2bzQF2OP001ZGCHZUjaEPOLbgrQFApEH6ygSF5VDE3kptBernfkuIyld3kW1phstIJgpGSAzickUhXZIawZDneYWfzY5e4Rdh1Jc19Bn+IiDJZWfVrUWDpYLRhkU/Lo7lFA0O4UFQuEtQOIbRo0DbVFJVVWVjIfU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klos.com; spf=pass smtp.mailfrom=klos.com; arc=none smtp.client-ip=192.80.49.0
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=klos.com
-Received: from daisy.zia.io (daisy.zia.io [IPv6:2001:1890:1bb7:b400:0:da:15:4])
-	by anath.zia.io (8.18.1/8.16.1) with ESMTPS id 54LHaXhe008238
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
-	for <linux-m68k@vger.kernel.org>; Wed, 21 May 2025 17:36:40 GMT
-Received: from daisy.zia.io (localhost [127.0.0.1])
-	by daisy.zia.io (8.18.1/8.18.1) with ESMTPS id 54LHaRui026349
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 21 May 2025 17:36:28 GMT
-Received: from localhost (john@localhost)
-	by daisy.zia.io (8.18.1/8.18.1/Submit) with ESMTP id 54LHaRGv026673;
-	Wed, 21 May 2025 17:36:27 GMT
-Date: Wed, 21 May 2025 17:36:27 +0000 (UTC)
-From: John Klos <john@klos.com>
-cc: debian-68k <debian-68k@lists.debian.org>,
-        linux-m68k <linux-m68k@vger.kernel.org>,
-        Libc-help <libc-help@sourceware.org>
-Subject: Re: Tuple and changes for m68k with -malign-int
-Message-ID: <a3c6f16d-95fc-c2e8-cd7c-b6941858b560@daisy.zia.io>
+	s=arc-20240116; t=1747849327; c=relaxed/simple;
+	bh=zILedU8aIBwOZV+2G1TrvBXeLPQ8UB3Yl8VhAYL566s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lCMoGJCgt1wld+DGwiTbyAF6seF5fC9yldc3VlsZiM9UkrDUvmgVMHhYSvRB8AmhkfzzMGDTgkv1fifZ88TK4atSWa3Pc9QiLpBtXKC+eJhK/UE0Hb+LeZ8R1jMPJ848vOIyicAeJ1lZUWQR4yB2IW9w2Uj2TOmS/9D43aTk4Cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FtwhFJZm; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FtwhFJZm"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747849326; x=1779385326;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zILedU8aIBwOZV+2G1TrvBXeLPQ8UB3Yl8VhAYL566s=;
+  b=FtwhFJZmizfkTYmx5ga1Gax636pY2hH2eQf2yOQa3b7e8XcOGY5TXc0w
+   x1bVb/lO0k8NZQkG/MBBPHWE5c9ACJiMSkBwYNAEfWXzEZEnKoFOI+0xu
+   +7lLEAIZlyQLRbWTnz0BsYGW+FqpfxGF5F37en1L6wyJPTbmxXHz4Pq/2
+   j5mkz2HfpjQ7XRbCg/CmrUvmWqRPieDv3TXu+oVbJg+UUPmJt9mNJ55CS
+   UH0N/U5pbgfoyVrqyxNEjVGz9Mhqk7Ipk3dPm9kFFMhxcrC8RIwAihS4E
+   bCDAOTZWm/6TtLWVlD+EGLrEzIoyif2i9/ITZKMUP7Oiz1J7tB4U/5t2q
+   Q==;
+X-CSE-ConnectionGUID: +U+3uMjVSQSJTbzmGJAlng==
+X-CSE-MsgGUID: LFcWNhYwSBqgpOsldNCXqQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="61252121"
+X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
+   d="scan'208";a="61252121"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 10:42:04 -0700
+X-CSE-ConnectionGUID: qNbmyK/7TbGW6UT8eUGwcg==
+X-CSE-MsgGUID: ECERoRRvSN6yuz91U4AnZw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,304,1739865600"; 
+   d="scan'208";a="171042032"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa002.jf.intel.com with ESMTP; 21 May 2025 10:41:57 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id DC1DA368; Wed, 21 May 2025 20:41:55 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org
+Cc: Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Ian Molton <spyro@f2s.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Denis Efremov <efremov@linux.com>
+Subject: [PATCH v1 1/1] floppy: Remove unused CROSS_64K() macro from arch/ code
+Date: Wed, 21 May 2025 20:41:52 +0300
+Message-ID: <20250521174152.1339379-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.4 (anath.zia.io [IPv6:2604:7c00:23:5:ff71:c3ae:58d8:ecb8]); Wed, 21 May 2025 17:36:40 +0000 (UTC)
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.4 (daisy.zia.io [0.0.0.0]); Wed, 21 May 2025 17:36:28 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 
->> There's no real point being made here. Which packages aren't relevant
->> any more, due to bloat? Who decides?
->
-> Users do. I've said so several times.
-> https://lists.debian.org/debian-68k/2023/08/msg00023.html
-> https://lists.debian.org/debian-68k/2024/10/msg00024.html
-> https://lists.debian.org/debian-68k/2024/11/msg00019.html
+Since the commit 3d86739c6343 ("floppy: always use the track buffer")
+the CROSS_64K() is not used by the driver, remove the leftovers.
 
-None of those links are relevant to a discussion about software bloat 
-and/or who decides if a package is suitable for m68k.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ arch/alpha/include/asm/floppy.h    | 19 -------------------
+ arch/arm/include/asm/floppy.h      |  2 --
+ arch/m68k/include/asm/floppy.h     |  4 ----
+ arch/mips/include/asm/floppy.h     | 15 ---------------
+ arch/parisc/include/asm/floppy.h   |  6 +-----
+ arch/powerpc/include/asm/floppy.h  |  5 -----
+ arch/sparc/include/asm/floppy_32.h |  3 ---
+ arch/sparc/include/asm/floppy_64.h |  3 ---
+ arch/x86/include/asm/floppy.h      |  5 +----
+ 9 files changed, 2 insertions(+), 60 deletions(-)
 
+diff --git a/arch/alpha/include/asm/floppy.h b/arch/alpha/include/asm/floppy.h
+index 64b42d9591fc..5a6239e65097 100644
+--- a/arch/alpha/include/asm/floppy.h
++++ b/arch/alpha/include/asm/floppy.h
+@@ -90,25 +90,6 @@ static int FDC2 = -1;
+ #define N_FDC 2
+ #define N_DRIVE 8
+ 
+-/*
+- * Most Alphas have no problems with floppy DMA crossing 64k borders,
+- * except for certain ones, like XL and RUFFIAN.
+- *
+- * However, the test is simple and fast, and this *is* floppy, after all,
+- * so we do it for all platforms, just to make sure.
+- *
+- * This is advantageous in other circumstances as well, as in moving
+- * about the PCI DMA windows and forcing the floppy to start doing
+- * scatter-gather when it never had before, and there *is* a problem
+- * on that platform... ;-}
+- */
+-
+-static inline unsigned long CROSS_64KB(void *a, unsigned long s)
+-{
+-	unsigned long p = (unsigned long)a;
+-	return ((p + s - 1) ^ p) & ~0xffffUL;
+-}
+-
+ #define EXTRA_FLOPPY_PARAMS
+ 
+ #endif /* __ASM_ALPHA_FLOPPY_H */
+diff --git a/arch/arm/include/asm/floppy.h b/arch/arm/include/asm/floppy.h
+index e1cb04ed5008..e579f77162e9 100644
+--- a/arch/arm/include/asm/floppy.h
++++ b/arch/arm/include/asm/floppy.h
+@@ -65,8 +65,6 @@ static unsigned char floppy_selects[4] = { 0x10, 0x21, 0x23, 0x33 };
+ #define N_FDC 1
+ #define N_DRIVE 4
+ 
+-#define CROSS_64KB(a,s) (0)
+-
+ /*
+  * This allows people to reverse the order of
+  * fd0 and fd1, in case their hardware is
+diff --git a/arch/m68k/include/asm/floppy.h b/arch/m68k/include/asm/floppy.h
+index a4d0fea47c6b..dea98bbc0932 100644
+--- a/arch/m68k/include/asm/floppy.h
++++ b/arch/m68k/include/asm/floppy.h
+@@ -107,13 +107,9 @@ static void fd_free_irq(void)
+ 
+ #define fd_free_dma()             /* nothing */
+ 
+-/* No 64k boundary crossing problems on Q40 - no DMA at all */
+-#define CROSS_64KB(a,s) (0)
+-
+ #define DMA_MODE_READ  0x44    /* i386 look-alike */
+ #define DMA_MODE_WRITE 0x48
+ 
+-
+ static int m68k_floppy_init(void)
+ {
+   use_virtual_dma =1;
+diff --git a/arch/mips/include/asm/floppy.h b/arch/mips/include/asm/floppy.h
+index 021d09ae5670..44da2ff91f65 100644
+--- a/arch/mips/include/asm/floppy.h
++++ b/arch/mips/include/asm/floppy.h
+@@ -34,21 +34,6 @@ static inline void fd_cacheflush(char * addr, long size)
+ #define N_FDC 1			/* do you *really* want a second controller? */
+ #define N_DRIVE 8
+ 
+-/*
+- * The DMA channel used by the floppy controller cannot access data at
+- * addresses >= 16MB
+- *
+- * Went back to the 1MB limit, as some people had problems with the floppy
+- * driver otherwise. It doesn't matter much for performance anyway, as most
+- * floppy accesses go through the track buffer.
+- *
+- * On MIPSes using vdma, this actually means that *all* transfers go thru
+- * the * track buffer since 0x1000000 is always smaller than KSEG0/1.
+- * Actually this needs to be a bit more complicated since the so much different
+- * hardware available with MIPS CPUs ...
+- */
+-#define CROSS_64KB(a, s) ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64)
+-
+ #define EXTRA_FLOPPY_PARAMS
+ 
+ #include <floppy.h>
+diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
+index b318a7df52f6..df20dbef3ada 100644
+--- a/arch/parisc/include/asm/floppy.h
++++ b/arch/parisc/include/asm/floppy.h
+@@ -22,13 +22,9 @@
+ #define _CROSS_64KB(a,s,vdma) \
+ (!(vdma) && ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
+ 
+-#define CROSS_64KB(a,s) _CROSS_64KB(a,s,use_virtual_dma & 1)
+-
+-
+ #define SW fd_routine[use_virtual_dma&1]
+ #define CSW fd_routine[can_use_virtual_dma & 1]
+ 
+-
+ #define fd_inb(base, reg)		readb((base) + (reg))
+ #define fd_outb(value, base, reg)	writeb(value, (base) + (reg))
+ 
+@@ -206,7 +202,7 @@ static int vdma_dma_setup(char *addr, unsigned long size, int mode, int io)
+ static int hard_dma_setup(char *addr, unsigned long size, int mode, int io)
+ {
+ #ifdef FLOPPY_SANITY_CHECK
+-	if (CROSS_64KB(addr, size)) {
++	if (_CROSS_64KB(addr, size, use_virtual_dma & 1)) {
+ 		printk("DMA crossing 64-K boundary %p-%p\n", addr, addr+size);
+ 		return -1;
+ 	}
+diff --git a/arch/powerpc/include/asm/floppy.h b/arch/powerpc/include/asm/floppy.h
+index f8ce178b43b7..048c0c5cdf30 100644
+--- a/arch/powerpc/include/asm/floppy.h
++++ b/arch/powerpc/include/asm/floppy.h
+@@ -203,11 +203,6 @@ static int FDC2 = -1;
+ #define N_FDC 2			/* Don't change this! */
+ #define N_DRIVE 8
+ 
+-/*
+- * The PowerPC has no problems with floppy DMA crossing 64k borders.
+- */
+-#define CROSS_64KB(a,s)	(0)
+-
+ #define EXTRA_FLOPPY_PARAMS
+ 
+ #endif /* __KERNEL__ */
+diff --git a/arch/sparc/include/asm/floppy_32.h b/arch/sparc/include/asm/floppy_32.h
+index 836f6575aa1d..7251d1fed7a4 100644
+--- a/arch/sparc/include/asm/floppy_32.h
++++ b/arch/sparc/include/asm/floppy_32.h
+@@ -96,9 +96,6 @@ static struct sun_floppy_ops sun_fdops;
+ #define N_FDC    1
+ #define N_DRIVE  8
+ 
+-/* No 64k boundary crossing problems on the Sparc. */
+-#define CROSS_64KB(a,s) (0)
+-
+ /* Routines unique to each controller type on a Sun. */
+ static void sun_set_dor(unsigned char value, int fdc_82077)
+ {
+diff --git a/arch/sparc/include/asm/floppy_64.h b/arch/sparc/include/asm/floppy_64.h
+index b0f633ce3518..135f9a49b6ba 100644
+--- a/arch/sparc/include/asm/floppy_64.h
++++ b/arch/sparc/include/asm/floppy_64.h
+@@ -95,9 +95,6 @@ static int sun_floppy_types[2] = { 0, 0 };
+ #define N_FDC    1
+ #define N_DRIVE  8
+ 
+-/* No 64k boundary crossing problems on the Sparc. */
+-#define CROSS_64KB(a,s) (0)
+-
+ static unsigned char sun_82077_fd_inb(unsigned long base, unsigned int reg)
+ {
+ 	udelay(5);
+diff --git a/arch/x86/include/asm/floppy.h b/arch/x86/include/asm/floppy.h
+index 6ec3fc969ad5..e76cb74bbed2 100644
+--- a/arch/x86/include/asm/floppy.h
++++ b/arch/x86/include/asm/floppy.h
+@@ -24,9 +24,6 @@
+ 	(!(vdma) &&							\
+ 	 ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
+ 
+-#define CROSS_64KB(a, s) _CROSS_64KB(a, s, use_virtual_dma & 1)
+-
+-
+ #define SW fd_routine[use_virtual_dma & 1]
+ #define CSW fd_routine[can_use_virtual_dma & 1]
+ 
+@@ -206,7 +203,7 @@ static int vdma_dma_setup(char *addr, unsigned long size, int mode, int io)
+ static int hard_dma_setup(char *addr, unsigned long size, int mode, int io)
+ {
+ #ifdef FLOPPY_SANITY_CHECK
+-	if (CROSS_64KB(addr, size)) {
++	if (_CROSS_64KB(addr, size, use_virtual_dma & 1)) {
+ 		printk("DMA crossing 64-K boundary %p-%p\n", addr, addr+size);
+ 		return -1;
+ 	}
+-- 
+2.47.2
 
->> You're talking about irrelevant things and bringing nonsense examples in
->> to the discussion. Your examples lack technical merit.
->
-> Perhaps you can show me the technical shortcomings of the patch I sent to
-> the python project?
-
-"your examples" refers to the "irrelevant things and bringing nonsense 
-examples". Your replies that ignore what I'm clearly writing lead me to 
-believe you're not engaging in good faith. It was literally in the 
-previous sentence.
-
-
->> Your argument is that ABI breakage is death, and that projects and the
->> world are better when we tell people to fix their broken code.
->
-> No, that's not what I said.
-
-You literally wrote, "But, if it's not already dead, you will kill 
-Debian/m68k if you break the ABI contract."
-
-
->> So can we all agree that there's no reason to not change alignment when
->> the time changes are done?
->
-> We've been over that before too:
-> https://lists.debian.org/debian-68k/2023/08/msg00023.html
-
-The discussion at that link offers no reasoning for not doing the 
-alignment change.
-
-
->> If you think that the work of getting projects to care about edge cases
->> isn't hard, then good for you - perhaps you should volunteer to do it.
->
-> I did that already:
-> https://lists.debian.org/debian-68k/2024/10/msg00042.html
-
-You half heartedly offered to help with projects that don't accept 
-upstream patches. Does this mean you also volunteer to contact them in the 
-first place? Have you contacted anyone directly yourself, aside from 
-sending an improved patch for python? For instance, have you contacted 
-anyone regarding any of the issues with the packages in Adrian's list?
-
-
->> Are there so few fans of m68k that this will kill Debian/m68k?
->
-> Once the ABI fragments, there is no "Linux/m68k" any longer. There are
-> isolated groups of users/developers with limited ability to collaborate
-> effectively.
-
-So what do you suppose will happen when the time changes are made?
-
-
->> Or do you or anyone else have a reason why it's not moot?
->
-> As I've said, I'm okay with a Gentoo/m68k profile for ABI experimentation
-> as long as the default profile tracks the upstream toolchain:
-> https://lists.debian.org/debian-68k/2024/10/msg00045.html
-
-Does this mean you want / expect the default profile to keep 32 bit time?
-
-
-> Well, your handwaving is no more convincing than mine. Measurements are
-> welcome, though it's hard to know which hardware designs to measure.
-
-Nobody would ever argue that unaligned access comes with no or little cost 
-in overhead. They might argue that some modern processors pipeline enough 
-that the cost can be folded in to execution, but that's about it. It's a 
-well known fact of programming.
-
-Calling my examples handwavy is childish, unless you want to argue that 
-the cost of unaligned access is in dispute. Do you want to do that? Do you 
-REALLY need measurements of something so well known? Or are you trying to 
-deflect?
-
-My example of a low memory / memory constrained system that does very well 
-with 32 bit alignment is NetBSD/sun2. I don't have data, but I don't think 
-I need data when the very lack of someone saying, "hey - we really need to 
-save memory, but we're going to ignore this One Neat Trick in order to 
-save more of it" is sufficient.
-
-
->> Likewise, do you really think that the overhead of unaligned access is
->> outweighed by the fact that more stuff fits in the cache? Seriously?
->
-> Yes, some of my 68030 systems have 16-bit data busses.
-
-Those are two wholly different things.
-
-The point you might be trying to make is that a cache miss on a system 
-with a 16 bit bus is more impactful than on a 32 bit bus system. Point 
-taken, but that's a rather small edge case (plus you've offered no 
-measurements to show the increase in cache misses that comes from 32 bit 
-alignment).
-
-
-> As for the ones with 32-bit busses, I'd expect that two cache accesses are
-> generally faster than a long-word-aligned RAM access, though you may be
-> right about those algorithms that miss the cache.
-
-Sure, but we're talking about one access, whether cache or memory, versus 
-two, cache or memory. The instance where one access to memory happens 
-instead of two to cache is very likely insignificant.
-
-
-> BTW, my Apple Workgroup Server 95 has 512 KB of L2 cache. If I can get
-> Linux to run on it, I think it might provide some interesting
-> measurements.
-
-Sure, but again, this has little to do with this discussion.
-
-
->>> One does not age gracefully by pretending to be young. m68k does not
->>> contribute anything by becoming the same as every other 32-bit
->>> big-endian platform.
->>
->> This is nonsense.
->
-> It is the main reason why porting to m68k leads to better code.
-
-I agree with that, but not fixing alignment so that m68k can remain the 
-canary in the coal mine isn't a good reason.
-
-
-Look - there is an incredibly compelling reason to NOT do this change. I 
-agree with that wholeheartedly. The reason this thread bothers me so much 
-is because instead of discussing the one good reason, discussing possible 
-solutions and mitigations of impact, a lot of this discussion has been 
-derailed in to irrelevant and sometimes outright intentional diversions.
-
-I really, really would like to see the discussion follow something like:
-
-1) Are we doing this?
-
-Separately, and without constantly going back to (1):
-
-2) If we are going to do this, what will it look like? How will we do it?
-    How will we make things easy for users? How will we deal with
-    compatibility with old binaries? Will we use a new tuple? How is
-    compatibility with binaries using 32 bit time handled, and is what's
-    being done there applicable to this change?
-
-John
