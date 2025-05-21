@@ -1,150 +1,107 @@
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A40FA233D98;
-	Wed, 21 May 2025 07:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0023422FAD3
+	for <linux-m68k@vger.kernel.org>; Wed, 21 May 2025 07:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747811212; cv=none; b=NNsxt4xQvRVez/6I/ZdudAChzzpyE5xAWVe+RJ8MNny7gw4/p15h2RD8wI4W7C6qVfhcdZ2q6xdPbWlbnhEweBhsCvl556+QwEEja1kiMnDydxnHwG4y1KevFfpiKO0U0Diy9xOeyGVoSG45Gjlymr0AYACf3O6q7605ydFtMUw=
+	t=1747812456; cv=none; b=nhvFRB+4VkLOf9AC1OleDc9ToudDGc4xwyTuLjf9rRQhHHEomKoiz1cWQYlvkYZzHs7rwX3iqVMUR9/dK4LHt3Se0ITt8hPjRTOtZ1VnutAzfQYSsBJvdEwQFnNCbY7N0EkZFEx0WnNV4HRAAERAc+IkUTSHJrNzCko0GCFgheY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747811212; c=relaxed/simple;
-	bh=kN7gCLNGDms9Wuy7WJknxpDvHnWcyi5Wp8kZR/n84Pc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nvqIzbv0JkGfu5XMh10DD5rnoMwaIk2i5TRChzWmfbDP11Bnf1kd3P9fS1azXNP4xgf8G2quVRcUzASKegj54mNtqUJo2GumRghBl8YxwEFzn8glIw0FFS5zo5CfzhYYkxgTCa3m5oe0EYN9s40KAcINyxIiiVz6kRVinhUuCRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.50
+	s=arc-20240116; t=1747812456; c=relaxed/simple;
+	bh=Q1fifgalGZ8XXisUGV8yRISkOnM1jWHHb1I1iOdtMtM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=mbE6s5hm7uWVNzs4AvOmty7SbrlPLJ4d82fRvS/61WlgmxKH3XqsC/DycFL3YXPYLCdAITjkXikDVvI0CEYwwGNlESqq1Z0IWlYLxYqXkatszHaoEj0c2reTy4xhEYdVUiMnS98wNpT1OIMxeykxJpM4VOwia3rWykTpmVchjL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=e/WwLetH; arc=none smtp.client-ip=103.168.172.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-4dfa28eb4d8so3681815137.1;
-        Wed, 21 May 2025 00:06:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747811207; x=1748416007;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RDdm/gMDJHRRO5S7yUdMVawXFqKo60gp6vNx+WKlT2U=;
-        b=UevpuF8/aKC2roJs1DEwfnvukSQI/Uh4RQWSv7+BlvqR2LffVx0dIi3qAoXB1MD6as
-         4bqTJqUBdyTYVNg7FIPzqSnu7qSZKXaXzBHhcpGJSZd81W1gfwXrcLCGWm0abKxazTNe
-         htaHb1VgBi69DVPI8xNiV4m1dEmGnS5YzC5m9cHdMrPIar7YfU6CUSRwVmI0FSDy0oU8
-         0QK96vRfNpukAIinqIdhic+L3nv5KwDhqggoUcSfqjtYuG3La1LksGL30R1VaiustIt6
-         5gbQ3BZGNxFNoUMT7oYtBmnFUqMjO/JXgNOJtLq1HljN31XFb5XghJi6UpCxRtf3fq2S
-         xzDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUCQzYcHj55saR02ToqDCnbiA4+c3FbG8x+++FWFoeOSJ+HZHftcazPrl2jAPj6LNqfgyrcA0WY0RlniQ==@vger.kernel.org, AJvYcCUwUeasRQq4hkwZrdJOb1eGgQyUorBh3QSH3JpC/LZ5rL9Ehe3SudXCCwVRX2O6F2mw46eNuISmuRR1Zw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEx+qkm/SOGuYTscFYP1sR7FGZxMBYnx6Po52Z2zYCW9j+SfVU
-	Kn+XUVNWgXIna/zY42jCHwpNpoGUYTGIUxFJ/a6b00OqdvR6aJnpw+5dBjFQ4SZA
-X-Gm-Gg: ASbGncv4u4E7Ssq1m4TmDoNuL8lm/d2U+5FfoeB14CG4hjhtYfhYPgIcwRuGc/0qxLq
-	89xJFChzzo8NzaM7cTJklLie3A9MR7iIxj2dpm49JvFsdyMYiowXbbZkBJUIqUEDY0YE7isoJww
-	smc2+kQSPoEzvwXePjiV6hI/ZUC10jLO2YAbK9UJxvbmhf7yWJ411J6JMMarQILU1WLC1MC0sAZ
-	bIWDozvgfJj/wsO6V21RJagTziNVknFW5sJlHrWiGn6EYUFVX34jkbS6hy8ibGx0Ok6X8K40mSd
-	3rIiIecGppxjYhWejtDFItwrPsIkyFZkK6nlujvPz0h9A/2l5itrLcJdTh9eiHPkOWAGeL/6ku/
-	Juf/nqcAjhJYHrg==
-X-Google-Smtp-Source: AGHT+IEo1x5paH3X9NHdSQ580yybbUT51mLYF4SVoqHfbMVx0EGDMQz9fOCRgR/kq6WMJ0fbziu9QA==
-X-Received: by 2002:a05:6102:1508:b0:4c3:346:29ef with SMTP id ada2fe7eead31-4dfc30f4313mr19386926137.11.1747811207218;
-        Wed, 21 May 2025 00:06:47 -0700 (PDT)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4dfa669860asm9360805137.2.2025.05.21.00.06.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 May 2025 00:06:46 -0700 (PDT)
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-4dfa28eb4d8so3681750137.1;
-        Wed, 21 May 2025 00:06:46 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWchq3jYZRgKMCnEIlOKuf/B2VmoNudcUo1cEaw3jdstoE6S2CErV6SeLtnwKDL5wsPyTvz1E0u24jOSA==@vger.kernel.org, AJvYcCWxjctrcTXH6PRbSSqLFAbtU4tXx30FSrawEwTjAHZlT5LYbXEijrmG7CgRjHVVzs/Rfj8dTk8L8c9qQQ==@vger.kernel.org
-X-Received: by 2002:a05:6102:3052:b0:4e1:ec70:536 with SMTP id
- ada2fe7eead31-4e1ec700665mr10616805137.4.1747811205821; Wed, 21 May 2025
- 00:06:45 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e/WwLetH"
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfout.phl.internal (Postfix) with ESMTP id E47671380411;
+	Wed, 21 May 2025 03:27:32 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Wed, 21 May 2025 03:27:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1747812452; x=1747898852; bh=2IG/Wx9VDdBywODLu62mv4LAl6juxCzN7kZ
+	isZWbo1w=; b=e/WwLetHmPHI1aIJKnodX9aOABASMYoaiEhiN3sEfsg0FJRVtkK
+	7HxAsNTfd6f24ZDolUDOu4ckppFEEpbWBRWiDvAI/zpor70mtrsk6hnPhoQFmze7
+	eGXVpvpd6ZhKYCNHT3qTJro/pxz8xSsTIsejLrvrlwjA0eungFV/LvDUN+H+Wy6A
+	5RBGEXi3Hy+FGT8E6mRE5SJeavObrHKxebDQRgyGS+VZLibXR3kh09IO1CTGI0hU
+	yITCuF9jbGtiU307mm3XLdqpFC0wAy0J+2mRppi6Zq1uOOXKzbVZfexAIz3sdECf
+	SxdNKM3m6nkvUsUOiDOh3ACkRck4RMOm07g==
+X-ME-Sender: <xms:ZIAtaL7igrVD9MmnC_e5nB50GYU52LqrWxNFlJfLMikhUqslLnkblw>
+    <xme:ZIAtaA5bj_PlH7mYqGqrQrgEL6-h46bDv0PEO8rs-E3XlakqP-fFZYm1iMADAru1B
+    5rmwhpA5wLasKAgM-c>
+X-ME-Received: <xmr:ZIAtaCexIIynaZlyLhLkMMDQ48UR6SfNzjg7WUjpyYbqlC6w6s1fNOCqznJ7CsiI3GHqOqrGtWPGOcgBtPx0FwfvMu1ApC_0WLc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgddvgeekucdltddurdegfedvrddttd
+    dmucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgf
+    nhhsuhgsshgtrhhisggvpdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttd
+    enucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvfevufgjkfhf
+    gggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinh
+    eslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefg
+    ueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidq
+    mheikehkrdhorhhgpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuthdprh
+    gtphhtthhopehjohhhnheskhhlohhsrdgtohhmpdhrtghpthhtohepuggvsghirghnqdei
+    kehksehlihhsthhsrdguvggsihgrnhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmie
+    ekkhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihgstgdqhhgvlhhp
+    sehsohhurhgtvgifrghrvgdrohhrgh
+X-ME-Proxy: <xmx:ZIAtaMLj628clNlZ4ECMylF8Ze7Hnk4-kb42slT7-vkzJJnEL-YsWQ>
+    <xmx:ZIAtaPIJLAVruaaKnF7zqh_dsEKKJt-B84W4iW-_b-nQacbMFmNTvg>
+    <xmx:ZIAtaFxErkxClVYgvpW5X0O_K3pqTFDriazM3DPJSofzTf31gduhbw>
+    <xmx:ZIAtaLJUC3fbqVzU9uzijlRYckbcC0iKYNCxBByE_kyBh8_jsnZ5Hw>
+    <xmx:ZIAtaBY6OOGRqHcGC6SI3camNPApPkC65ot8H8OTuMU1vT_szQfcqjth>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 21 May 2025 03:27:30 -0400 (EDT)
+Date: Wed, 21 May 2025 17:28:05 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: John Klos <john@klos.com>
+cc: debian-68k <debian-68k@lists.debian.org>, 
+    linux-m68k <linux-m68k@vger.kernel.org>, 
+    Libc-help <libc-help@sourceware.org>
+Subject: Re: Tuple and changes for m68k with -malign-int
+In-Reply-To: <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
+Message-ID: <973c317c-0182-2526-2e7f-0431f90d375f@linux-m68k.org>
+References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>  <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>  <8734d1kofn.fsf@oldenburg.str.redhat.com>  <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
+  <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org>  <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>  <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com> <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
+ <8cc5d290-ced1-cbe8-66c5-23977869f22a@linux-m68k.org> <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1669406380.git.geert@linux-m68k.org> <a9883a81-d909-09c5-708b-d598e030380e@physik.fu-berlin.de>
- <CAMuHMdWHUnWBN7ddBow+fqmt8W--9wFe5x_YMeRg7GQ=BNAL2Q@mail.gmail.com> <74946b31-6166-44b0-b2a7-b0633f014b60@helsinkinet.fi>
-In-Reply-To: <74946b31-6166-44b0-b2a7-b0633f014b60@helsinkinet.fi>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 21 May 2025 09:06:33 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXSWiM_xofyfgpoc0Jj8a_PwRR_tFe79t8=-X85-7WZug@mail.gmail.com>
-X-Gm-Features: AX0GCFuB4vJFSfv66iragTQL4KWajIPLPkZDuxM0m5SK06eB8kBWY6AhcxxTf3o
-Message-ID: <CAMuHMdXSWiM_xofyfgpoc0Jj8a_PwRR_tFe79t8=-X85-7WZug@mail.gmail.com>
-Subject: Re: [PATCH/RFC 0/3] Atari DRM driver
-To: Eero Tamminen <oak@helsinkinet.fi>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Helge Deller <deller@gmx.de>, Michael Schmitz <schmitzmic@gmail.com>, dri-devel@lists.freedesktop.org, 
-	linux-fbdev@vger.kernel.org, linux-m68k@vger.kernel.org, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 
-Hi Eero,
 
-On Wed, 21 May 2025 at 01:59, Eero Tamminen <oak@helsinkinet.fi> wrote:
-> On 23.1.2023 17.10, Geert Uytterhoeven wrote:
-> > On Mon, Jan 23, 2023 at 4:09 PM John Paul Adrian Glaubitz
-> > <glaubitz@physik.fu-berlin.de> wrote:
-> >> On 11/25/22 21:31, Geert Uytterhoeven wrote:
-> >>> This RFC patch series adds a DRM driver for the good old Atari
-> >>> ST/TT/Falcon hardware.  It was developed and tested (only) on the ARAnyM
-> >>> emulator.
-> >>
-> >> I just remembered this WIP driver. Has there been any progress?
-> >
-> > So far no further progress.
->
-> I tried your "atari-drm-wip-v1" branch commits on top of 6.14.
+On Wed, 21 May 2025, John Klos wrote:
 
-Thanks for testing!
+> 
+> But at the same time I've seen you say you don't need and arent 
+> interested in these fancy new languages and packages, so I can't see you 
+> volunteering to do it.
+> 
+> So if you're not going to volunteer yourself, then it's not really your 
+> place to suggest to others that they should be doing it instead of 
+> taking the easier route, which is to make more things work by default.
+> 
 
-> After some minor changes those applied. Getting it to build required
-> adding "&shadow_plane_state->fmtcnv_state" (struct drm_format_conv_state
-> *) argument to *_blit() functions in atari_drm.c, and changing:
->         drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
-> in its probe function to:
->         struct drm_format_info *format = NULL;
->          drm_client_setup(dev, format);
+I won't volunteer if the plan is to break the ABI so you can convert your 
+Quadra from C to Rust because you're afraid of NULL pointers. Same goes 
+for running bytecode in an Openjdk VM running in a QEMU VM.
 
-I do keep it up-to-date locally, so I could provide these changes,
-if you are interested.
+I am actively disinterested in that kind of trade-off because the ABI 
+churn would impact both users and upstream developers, many of whom will 
+receive zero benefit.
 
-> However, the result is not working very well yet.
->
-> Driver gets initialized fine under Hatari TT emulation:
-> -------------------------
-> atafb atafb: phys_screen_base 511000 screen_len 311296
-> atafb atafb: Determined 1280x960, depth 1
-> atafb atafb:    virtual 1280x1945
-> Console: switching to mono frame buffer device 160x60
-> fb0: frame buffer device, using 304K of video memory
-> ...
-> atari_drm atari_drm: phys_screen_base 55d000 screen_len 311296
-> atari_drm atari_drm: Determined 1280x960, depth 1
-> atari_drm atari_drm:    virtual 1280x1945
-> [drm] Initialized atari_drm 1.0.0 for atari_drm on minor 0
-> atari_drm atari_drm: Atari DRM, using 304K of video memory
-> -------------------------
->
-> However, once screen switches from "atafb" to "atari_drm" driver, Linux
-> boot logo & texts disappear, and (emulated) screen is either all white
-> (on mono monitor) or all black (on VGA & RGGB monitors).
+Of course, the ABI we have isn't perfect and I'm not against people 
+designing a better one, that will be stable for another 30 years. Though 
+that is an ambitious undertaking for an under-resourced project.
 
-So you have both atafb and atari_drm enabled? Please don't do that.
-
-> And while "atafb" works fine also under Falcon emulation with RGB (50Hz)
-> or VGA (60Hz) monitor, "atari_drm" probing fails:
-> -------------------------
-> genirq: Flags mismatch irq 4. 00200000 (framebuffer:modeswitch) vs.
-> 00200000 (framebuffer:modeswitch)
-
-That's also a sign of two drivers requesting the same IRQ unexpectedly.
-
-> atari_drm atari_drm: probe with driver atari_drm failed with error -16
-
-i.e. -EBUSY.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+For example, I doubt that we would ever have gained a TLS implementation 
+if had been left up to volunteers. There just aren't enough of us.
