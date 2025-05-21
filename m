@@ -1,150 +1,122 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from smtp.dnamail.fi (sender001.dnamail.fi [83.102.40.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCD5482EB
-	for <linux-m68k@vger.kernel.org>; Wed, 21 May 2025 17:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D6E1754B
+	for <linux-m68k@vger.kernel.org>; Wed, 21 May 2025 22:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.40.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747850080; cv=none; b=ni/tFyY9t/6O5PqbKDC/UN/I4dtejSOucHFHTZ6Y3s1I+YRiXZhi6fb2rVr4YtWWSvudL9vPRanZw5XmbWWkEClSnxigsjTOJFYaKFZOd+PmDF2iD49xoY2ovcwZeeIG//mR/d/0dcRhr2EJcMZmuFMRPKpsrJLYruwhqN3WEqg=
+	t=1747866067; cv=none; b=HM6FnlDsgjgtYgu99ZeHN23Iw3iUb+uZqip9gyBsbzumYNnThgG3LQJwgoqrJmnA3ym20Y0I538WW2uf/t4Hxk5no129ow+bkwmoLr7rktMzeBkOBwKMqfU0rajE8xqvMfORL4H1xLLcba3PK8VwCRkUHChnFdEB9fCssRsptB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747850080; c=relaxed/simple;
-	bh=+16tNxkr4xz9q1yrvxQgV8nlJmN/Xv9pLX9peAb7dRc=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=ohK/sBl3Bu6BjaFrptaYAlBaqpYv1ZYsuYDimGW+w19zkqWQ+rsnTk8x4TQzk9VMQTV2LN7Yh0RBELzW1ZsMn5hSjog8/orAter5kQVmp4yRLocFFH9j7QZZ5UG2xWzz85BLTh7dvc7topW4xlNrtzWQRMyOd5w1tUxnA0E2jCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=ODX6Et9x; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1747866067; c=relaxed/simple;
+	bh=4zGpmT/rfbzGZWSEN4BOj5AAfkkBskvN4PMtA04Scdc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z5W48/jwF6SeZ8niJednoHzKi5Q1fkbsfPwK6kujU+qh5Lh2edj/5XVxzjch3As9mPSrvOYl6x6qPZkBV8BPJitm5L3fgfnqFFuwOxehVBfmGPi1HKbWKyNGjNpUGEHQTaHmjFzKIPiYqyLHabIjlfXrm7QcWvZixQyU5wBpLP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b=W+q8Oarb; arc=none smtp.client-ip=83.102.40.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="ODX6Et9x"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=To:In-Reply-To:Cc:References:Message-Id:Date:
-	Subject:Mime-Version:From:Content-Transfer-Encoding:Content-Type:Sender:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=pd4NH4ZwS+O/Y1aJy4BFRty50s9UD5jQfWVbU3cMa4Y=; t=1747850076; x=1748454876; 
-	b=ODX6Et9xbP76pgUg+We0FvQKIlvjaV8dIef0JZJTtR7kxflkHTw2e5ybWkbyF4PTC/Kdo9fHfhD
-	TXhgjC0niDsQH7CE9VnIOdeSAQRN3NMjaJtHzBSupntkyQ38ieDz9Rmxle70N6iIH3hCzVOzkqV1s
-	HUng8WbLhYVYniZ0XCcl/D/KV3jP4fts2sdYbQa4TyMELaXXYnY+mBi6QIRQwhbWu8HFSTiZHI9qj
-	PtbEfmtlJbaupwcTQNU3/XHgCqEvQBlvYjhLtRTW9Geys3gaAIkATt9BZ5gYVuW+hCRCiwJjLOcn3
-	77z917fLMPopqkokboLEoXuhxmuH9XmvkHPA==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uHneD-00000002kp7-1pfu; Wed, 21 May 2025 19:54:33 +0200
-Received: from tmo-085-235.customers.d1-online.com ([80.187.85.235] helo=smtpclient.apple)
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uHneD-00000000ax6-0P3e; Wed, 21 May 2025 19:54:33 +0200
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+	dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b="W+q8Oarb"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.dnamail.fi (Postfix) with ESMTP id BEDDD2113E1A;
+	Thu, 22 May 2025 01:14:25 +0300 (EEST)
+X-Virus-Scanned: X-Virus-Scanned: amavis at smtp.dnamail.fi
+Received: from smtp.dnamail.fi ([83.102.40.178])
+ by localhost (dmail-psmtp01.s.dnaip.fi [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id lI8h2Qj7vyGn; Thu, 22 May 2025 01:14:25 +0300 (EEST)
+Received: from [192.168.101.100] (78-27-104-28.bb.dnainternet.fi [78.27.104.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: oak@dnamail.internal)
+	by smtp.dnamail.fi (Postfix) with ESMTPSA id BBB052113E15;
+	Thu, 22 May 2025 01:14:19 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.dnamail.fi BBB052113E15
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=helsinkinet.fi;
+	s=2025-03; t=1747865665;
+	bh=Fjt4K53mtitOEiWBMHgxnOFdR2p97ru+kRq5Ff+OFcs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=W+q8OarbgzsX0/PqMYn1v9SOdNuHYGByZxOUlg2frVLNv7qp4sA1W+gRhuE0HDmKE
+	 MBnS4V6kB0aP0hGZggJzmMDfczxaano74bCNug7gIyt8u/VykfD0vQ/0a56TUZuIFj
+	 akBWRoOCQrcGJkPQEw0aFCFc0Qxx3KHH16QRcBiy7NJKs5pf41guTf9XUaJx237kVJ
+	 QmA86Vh6d/CTNQmwYRwvtbDNkr0d3iqNPObPLBcBr32umLQ4VHmutklqrYAC5TbcCG
+	 04yoC1i+JwtotfKV7ZA43D8fAQNM4bVcTnmluqMy02qEEn8Mhoea+CpT13UPmSxbsC
+	 hY+ni+hwmi4Dw==
+Message-ID: <176b883b-3097-427b-a554-5d88a7a95a1a@helsinkinet.fi>
+Date: Thu, 22 May 2025 01:14:19 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Debian subset suitable for m68k (was: Tuple and changes for m68k with -malign-int)
-Date: Wed, 21 May 2025 19:54:22 +0200
-Message-Id: <F20746B7-7300-4967-8846-2D8BE287CEBC@physik.fu-berlin.de>
-References: <0c84a202-2a7c-43c0-8d47-e73c0d9dc9ad@helsinkinet.fi>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Debian subset suitable for m68k (was: Tuple and changes for m68k
+ with -malign-int)
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Cc: John Klos <john@klos.com>, debian-68k <debian-68k@lists.debian.org>,
  linux-m68k <linux-m68k@vger.kernel.org>
-In-Reply-To: <0c84a202-2a7c-43c0-8d47-e73c0d9dc9ad@helsinkinet.fi>
-To: Eero Tamminen <oak@helsinkinet.fi>
-X-Mailer: iPhone Mail (22F76)
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+References: <0c84a202-2a7c-43c0-8d47-e73c0d9dc9ad@helsinkinet.fi>
+ <F20746B7-7300-4967-8846-2D8BE287CEBC@physik.fu-berlin.de>
+Content-Language: en-US
+From: Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <F20746B7-7300-4967-8846-2D8BE287CEBC@physik.fu-berlin.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello Eero,
+Hi,
 
-> On May 21, 2025, at 4:16=E2=80=AFPM, Eero Tamminen <oak@helsinkinet.fi> wr=
-ote:
->=20
-> So to start, here are the things that are, and are not, relevant for me _o=
-n m68k_.  I.e. _personal_ opinions. First some general principles, and then f=
-ew examples.
->=20
->=20
-> Relevant
-> --------
->=20
-> Base system, compilers, interpreters, misc tools, some graphics, and thing=
-s shared between niche/retro communities (like m68k) in general.
->=20
-> In my case, for example:
-> - Kernel
-> - Busybox
-> - Gcc
-> - G++
-> - Lua
-> - Python
-> - La/TeX
-> - SDL1
-> - ScummVM
-> - Wired networking
-> - w3m, links, lynx etc
-> - Small niche windowing systems
-> - Slimmed-down Debian essentials
->=20
->=20
-> Not relevant
-> ------------
->=20
-> Modern corporate backed software, and anything needing encryption or GPUs s=
-upporting GLES2+, I get enough of those on x86 Linux. They are too slow / la=
-rge for m68k platform, and frankly boring, all something I try to avoid in m=
-y hobbies. :-)
->=20
-> For example:
-> - Java & C#
-> - LibreOffice
-> - Chrome/ium, Firefox, Webkit
-> - Modern desktop environments (KDE, Gnome...)
-> - libSDL v2 & v3, and things depending on them
-> - Wireless & VPN support
-> - Virtualization
->=20
->=20
-> Potentially relevant
-> --------------------
->=20
-> Some of the new tech, especially when it relates to smaller setups and bas=
-e system, and more lightweight GUI apps, might also be of interest at some p=
-oint:
-> - Wayland / Weston
-> - Golang
-> - Rust, Zig
-> - Abiword, Gnumeric, Evince (non-Gnome versions)
-> - LyX (LaTeX GUI)
->=20
->=20
-> Any thoughts on the above principles?
->=20
+On 21.5.2025 20.54, John Paul Adrian Glaubitz wrote:
+>> On May 21, 2025, at 4:16 PM, Eero Tamminen <oak@helsinkinet.fi> wrote:
+>>
+>> So to start, here are the things that are, and are not, relevant for me _on m68k_.  I.e. _personal_ opinions. First some general principles, and then few examples.
+...
+>> Any thoughts on the above principles?
+> 
+> The problem is that you assume that we can easily build and maintain a subset of Debian packages without investing a lot of time and effort.
 
-The problem is that you assume that we can easily build and maintain a subse=
-t of Debian packages without investing a lot of time and effort.
+I have no clue how that works, so my naive thought was that one could 
+just supply some kind of a package name "skiplist", and builders would 
+skip packages in that.
 
-However, I do not intend to maintain a custom version of Debian. I want to b=
-uild the vanilla version of Debian unstable because I do neither have the ti=
-me nor the resources to roll my own version of Debian.
+> However, I do not intend to maintain a custom version of Debian. I want to build the vanilla version of Debian unstable because I do neither have the time nor the resources to roll my own version of Debian.
+ >
+> And using vanilla Debian unstable means having to build all of these packages that you are trying to avoid because you think they’re bloated or useless.
 
-And using vanilla Debian unstable means having to build all of these package=
-s that you are trying to avoid because you think they=E2=80=99re bloated or u=
-seless.
+The idea wasn't to customize Debian or its packages, just not (even try 
+to) build some of the packages for the m68k package repo.
 
-And, as for Rust, an increasing number of Python packages such as python-cry=
-ptography embed Rust code, so the decision whether we should support Rust or=
- not has already been made.
+Is there some documentation on why it won't work?
 
-If you think it=E2=80=99s worthwhile to maintain a custom Linux distribution=
- for m68k, you are free to do that. However, it=E2=80=99s not the work I am i=
-nterested personally.
+---
 
-Adrian=
+Support for such list seems rather useful feature for the ports 
+architectures, to skip packages that won't build as-is, or with trivial 
+fixes, and for which nobody has declared interest (so that there would 
+be a motive to fix non-trivial issues with them).
+
+As to how that would work in practice, I would imagine that "skiplist" 
+provided for builders would need to include also all packages that 
+depend from given non-desirable package => there need to be some helper 
+scripts to maintain it.
+
+Those helper scripts could generate full "skiplist" from hand-maintained 
+smaller one, add everything depending from them, and check that list 
+against a hand-maintained whitelist, to verify that deps haven't changed 
+so that a package that somebody actually wants to use on m68k, would be 
+skipped.
+
+
+> And, as for Rust, an increasing number of Python packages such as python-cryptography embed Rust code, so the decision whether we should support Rust or not has already been made.
+
+Right, quite a lot of packages depends on that, and even more on Rusted 
+librsvg2.
+
+While package dependencies, especially build ones, can quickly get out 
+of hand, scripting I discussed above, would help in pointing out all 
+implications of dropping or including specific packages.  I.e. provide 
+full facts for discussion on whether to drop or include specific (e.g. 
+language) package for a m68k port subset.
+
+
+	- Eero
 
