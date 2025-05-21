@@ -1,107 +1,263 @@
-Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0023422FAD3
-	for <linux-m68k@vger.kernel.org>; Wed, 21 May 2025 07:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE60238145
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 21 May 2025 08:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747812456; cv=none; b=nhvFRB+4VkLOf9AC1OleDc9ToudDGc4xwyTuLjf9rRQhHHEomKoiz1cWQYlvkYZzHs7rwX3iqVMUR9/dK4LHt3Se0ITt8hPjRTOtZ1VnutAzfQYSsBJvdEwQFnNCbY7N0EkZFEx0WnNV4HRAAERAc+IkUTSHJrNzCko0GCFgheY=
+	t=1747817328; cv=none; b=kJwwD5yWWhNgwe/eCavUssQN9gCq5gC2vIz2ioWlO+FUGBcVahN0EBLkS9YY5+8I/pZkfa0gmN0686EPbBZ7F2rJdkFDXnBlAdgSNnAT0T94l0p3qrY3/BdhksXE2No43aZAp2KVUBbfeldm1iQ3aLZgEgnCHJjlymHImAbwJe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747812456; c=relaxed/simple;
-	bh=Q1fifgalGZ8XXisUGV8yRISkOnM1jWHHb1I1iOdtMtM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=mbE6s5hm7uWVNzs4AvOmty7SbrlPLJ4d82fRvS/61WlgmxKH3XqsC/DycFL3YXPYLCdAITjkXikDVvI0CEYwwGNlESqq1Z0IWlYLxYqXkatszHaoEj0c2reTy4xhEYdVUiMnS98wNpT1OIMxeykxJpM4VOwia3rWykTpmVchjL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=e/WwLetH; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1747817328; c=relaxed/simple;
+	bh=oks16V55Al3cIwa3tzMhKIQg+6JISq/7X+SJWpAWNGk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 In-Reply-To:Content-Type:Content-Disposition; b=gBy44nZHDUq0NGPRJmCRmOoaN5grYEXJxaAswQoQLV6758T/0cuSgPu3nxMaJRNBH/vMvbx59AM38xCK0s/GBv1ZwiVdjWoXOh5DOqkhPgj5TIb29XjmZLgvqjySYw65Vxzt91etTCoWL0z0em74N6Tz48S00ONzl+Tp5Ojt51c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RI8mkj+S; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e/WwLetH"
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id E47671380411;
-	Wed, 21 May 2025 03:27:32 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Wed, 21 May 2025 03:27:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1747812452; x=1747898852; bh=2IG/Wx9VDdBywODLu62mv4LAl6juxCzN7kZ
-	isZWbo1w=; b=e/WwLetHmPHI1aIJKnodX9aOABASMYoaiEhiN3sEfsg0FJRVtkK
-	7HxAsNTfd6f24ZDolUDOu4ckppFEEpbWBRWiDvAI/zpor70mtrsk6hnPhoQFmze7
-	eGXVpvpd6ZhKYCNHT3qTJro/pxz8xSsTIsejLrvrlwjA0eungFV/LvDUN+H+Wy6A
-	5RBGEXi3Hy+FGT8E6mRE5SJeavObrHKxebDQRgyGS+VZLibXR3kh09IO1CTGI0hU
-	yITCuF9jbGtiU307mm3XLdqpFC0wAy0J+2mRppi6Zq1uOOXKzbVZfexAIz3sdECf
-	SxdNKM3m6nkvUsUOiDOh3ACkRck4RMOm07g==
-X-ME-Sender: <xms:ZIAtaL7igrVD9MmnC_e5nB50GYU52LqrWxNFlJfLMikhUqslLnkblw>
-    <xme:ZIAtaA5bj_PlH7mYqGqrQrgEL6-h46bDv0PEO8rs-E3XlakqP-fFZYm1iMADAru1B
-    5rmwhpA5wLasKAgM-c>
-X-ME-Received: <xmr:ZIAtaCexIIynaZlyLhLkMMDQ48UR6SfNzjg7WUjpyYbqlC6w6s1fNOCqznJ7CsiI3GHqOqrGtWPGOcgBtPx0FwfvMu1ApC_0WLc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgddvgeekucdltddurdegfedvrddttd
-    dmucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgf
-    nhhsuhgsshgtrhhisggvpdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttd
-    enucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvfevufgjkfhf
-    gggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinh
-    eslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefg
-    ueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidq
-    mheikehkrdhorhhgpdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuthdprh
-    gtphhtthhopehjohhhnheskhhlohhsrdgtohhmpdhrtghpthhtohepuggvsghirghnqdei
-    kehksehlihhsthhsrdguvggsihgrnhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmie
-    ekkhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihgstgdqhhgvlhhp
-    sehsohhurhgtvgifrghrvgdrohhrgh
-X-ME-Proxy: <xmx:ZIAtaMLj628clNlZ4ECMylF8Ze7Hnk4-kb42slT7-vkzJJnEL-YsWQ>
-    <xmx:ZIAtaPIJLAVruaaKnF7zqh_dsEKKJt-B84W4iW-_b-nQacbMFmNTvg>
-    <xmx:ZIAtaFxErkxClVYgvpW5X0O_K3pqTFDriazM3DPJSofzTf31gduhbw>
-    <xmx:ZIAtaLJUC3fbqVzU9uzijlRYckbcC0iKYNCxBByE_kyBh8_jsnZ5Hw>
-    <xmx:ZIAtaBY6OOGRqHcGC6SI3camNPApPkC65ot8H8OTuMU1vT_szQfcqjth>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 21 May 2025 03:27:30 -0400 (EDT)
-Date: Wed, 21 May 2025 17:28:05 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: John Klos <john@klos.com>
-cc: debian-68k <debian-68k@lists.debian.org>, 
-    linux-m68k <linux-m68k@vger.kernel.org>, 
-    Libc-help <libc-help@sourceware.org>
-Subject: Re: Tuple and changes for m68k with -malign-int
-In-Reply-To: <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
-Message-ID: <973c317c-0182-2526-2e7f-0431f90d375f@linux-m68k.org>
-References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>  <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>  <8734d1kofn.fsf@oldenburg.str.redhat.com>  <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
-  <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org>  <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>  <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com> <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
- <8cc5d290-ced1-cbe8-66c5-23977869f22a@linux-m68k.org> <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RI8mkj+S"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1747817322;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UBrTKYMZkRkR/+obIFDmt3FxVCfGaAspFXfSUz2lNvE=;
+	b=RI8mkj+SS49vSOxzhHWQYBoO/VxdWCxWEPhFW/3bhoW9IakoXkLPED7RqN4XXJcRItZzon
+	W7uWh+7UeK4dfVAVORk9uPWvfTeVRvEAeqNCuDm3lwk3M4UzPqWLfRkQkM0yEbWaXVwQpi
+	BsyoCNqpmMGlXHZWoo8GUDN6IfafTkk=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-WHbOzrWJO0i5pjOr2BNPSg-1; Wed, 21 May 2025 04:48:41 -0400
+X-MC-Unique: WHbOzrWJO0i5pjOr2BNPSg-1
+X-Mimecast-MFC-AGG-ID: WHbOzrWJO0i5pjOr2BNPSg_1747817320
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-ac3e0c1336dso411320066b.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 21 May 2025 01:48:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747817320; x=1748422120;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UBrTKYMZkRkR/+obIFDmt3FxVCfGaAspFXfSUz2lNvE=;
+        b=hDY5GyfZ8XNcW1c6cZbuVWGE0IBKwhxgswaHEIca5DUbkJb4q9D2U/0QdiGA4xT5zy
+         8zUlrOBT06zKt2DbVSIAjy0lQ3YeRSu2RCva+F3lFaWdi2dPzTSP4gOXRXHNrrp1vpCa
+         elBIA+i1F+JDiZ9hh888aYERa9ngrWKblP5NJkUl2rPB9kGk9QYzFM91oy8gUNs2Q5kF
+         iHdZjVP1ph0EuddCYOAy2WKv2NbYlk4YLZSdf65o9+V0UgC+9ToXVpiJqkfIiUW4UqMH
+         fOI7Kd8UIwz0WUTLDCHVwFqnT3yBqHbtrq3TU8okBhj4TBEmpSlc17lEQhwtf5AXaSkE
+         7u8w==
+X-Forwarded-Encrypted: i=1; AJvYcCWnQuy2sybutpdUMirldLyar+kHHeWrIavUzcDFZ1rv14G54koJfVwT/ERhkT9L2BY1ygTXztTRR5vV@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yw5xkkJic/KYy+Y8wix+NpzW+7KH2mQUxTQ9z6NSGlywS7Bv+uP
+	CB9PdLe+VpWyECxkbWULy0mGrcXd5nHZx9C94PkzPtH21vGkF4kYFTdVpSLbjSgh0STmmOcrGt1
+	jO1OLBjpqDjh664SGvYEW+gBMNnDz93L1JGKNgF7DmZ1hH8MrwuFi+BiEeigTY/sSmICL
+X-Gm-Gg: ASbGncvGEyI8jxoewfsJmydrNdZyyt3zm8sL/Jp6EXOAFom7p5u4aBCCoz71IJdFQsq
+	AUNE05rkQz40Fasm4BkXFVxkWr2sdtPk8sPzEpikAv3lheSpB/IcWruzwsiwpFTAOp105Tspoah
+	aifhuyyWz+Sidq3eG9TwaE3CsMXcUNUcwoVT5rY7yngazZ8aPdL/Pfe9foBCRQ0c82VPJ8aqpoZ
+	5ACXD+dBqMGciNlJahfl+oBi6gQiMF8Fi5l9c5CrlPP5k+8Za0JoQHNghJHzBl/AiYDo+BSayGf
+	ag==
+X-Received: by 2002:a17:907:96a1:b0:ad4:cfbd:efd0 with SMTP id a640c23a62f3a-ad536c1a813mr1851019766b.36.1747817319661;
+        Wed, 21 May 2025 01:48:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4Uad4LLY/qbicMx/bjSP1amiyVw6y5+cI+R+l9yVSKq3rctv7sT91m06PC9V35nY4DdIi0w==
+X-Received: by 2002:a17:907:96a1:b0:ad4:cfbd:efd0 with SMTP id a640c23a62f3a-ad536c1a813mr1851012766b.36.1747817319102;
+        Wed, 21 May 2025 01:48:39 -0700 (PDT)
+Received: from thinky ([2a0e:fd87:a051:1:d224:1f1f:6cfc:763a])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad5505131f7sm659880666b.67.2025.05.21.01.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 May 2025 01:48:38 -0700 (PDT)
+Date: Wed, 21 May 2025 10:48:26 +0200
+From: Andrey Albershteyn <aalbersh@redhat.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: Amir Goldstein <amir73il@gmail.com>, 
+	Christian Brauner <brauner@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S . Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Tyler Hicks <code@tyhicks.com>, Miklos Szeredi <miklos@szeredi.hu>, linux-alpha@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-api@vger.kernel.org, 
+	Linux-Arch <linux-arch@vger.kernel.org>, selinux@vger.kernel.org, ecryptfs@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	Andrey Albershteyn <aalbersh@kernel.org>
+Subject: Re: [PATCH v5 0/7] fs: introduce file_getattr and file_setattr
+ syscalls
+Message-ID: <sfmrojifgnrpeilqxtixyqrdjj5uvvpbvirxmlju5yce7z72vi@ondnx7qbie4y>
+References: <20250513-xattrat-syscall-v5-0-22bb9c6c767f@kernel.org>
+ <399fdabb-74d3-4dd6-9eee-7884a986dab1@app.fastmail.com>
+ <20250515-bedarf-absagen-464773be3e72@brauner>
+ <CAOQ4uxicuEkOas2UR4mqfus9Q2RAeKKYTwbE2XrkcE_zp8oScQ@mail.gmail.com>
+ <aCsX4LTpAnGfFjHg@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <aCsX4LTpAnGfFjHg@dread.disaster.area>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: M0GLYqjqW7eKqAx0pfkFccIIQ0ZlDs9yvMb0F9RGuMk_1747817320
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-
-On Wed, 21 May 2025, John Klos wrote:
-
+On 2025-05-19 21:37:04, Dave Chinner wrote:
+> On Thu, May 15, 2025 at 12:33:31PM +0200, Amir Goldstein wrote:
+> > On Thu, May 15, 2025 at 11:02 AM Christian Brauner <brauner@kernel.org> wrote:
+> > >
+> > > On Tue, May 13, 2025 at 11:53:23AM +0200, Arnd Bergmann wrote:
+> > > > On Tue, May 13, 2025, at 11:17, Andrey Albershteyn wrote:
+> > > >
+> > > > >
+> > > > >     long syscall(SYS_file_getattr, int dirfd, const char *pathname,
+> > > > >             struct fsxattr *fsx, size_t size, unsigned int at_flags);
+> > > > >     long syscall(SYS_file_setattr, int dirfd, const char *pathname,
+> > > > >             struct fsxattr *fsx, size_t size, unsigned int at_flags);
+> > > >
+> > > > I don't think we can have both the "struct fsxattr" from the uapi
+> > > > headers, and a variable size as an additional argument. I would
+> > > > still prefer not having the extensible structure at all and just
+> > >
+> > > We're not going to add new interfaces that are fixed size unless for the
+> > > very basic cases. I don't care if we're doing that somewhere else in the
+> > > kernel but we're not doing that for vfs apis.
+> > >
+> > > > use fsxattr, but if you want to make it extensible in this way,
+> > > > it should use a different structure (name). Otherwise adding
+> > > > fields after fsx_pad[] would break the ioctl interface.
+> > >
+> > > Would that really be a problem? Just along the syscall simply add
+> > > something like:
+> > >
+> > > diff --git a/fs/ioctl.c b/fs/ioctl.c
+> > > index c91fd2b46a77..d3943805c4be 100644
+> > > --- a/fs/ioctl.c
+> > > +++ b/fs/ioctl.c
+> > > @@ -868,12 +868,6 @@ static int do_vfs_ioctl(struct file *filp, unsigned int fd,
+> > >         case FS_IOC_SETFLAGS:
+> > >                 return ioctl_setflags(filp, argp);
+> > >
+> > > -       case FS_IOC_FSGETXATTR:
+> > > -               return ioctl_fsgetxattr(filp, argp);
+> > > -
+> > > -       case FS_IOC_FSSETXATTR:
+> > > -               return ioctl_fssetxattr(filp, argp);
+> > > -
+> > >         case FS_IOC_GETFSUUID:
+> > >                 return ioctl_getfsuuid(filp, argp);
+> > >
+> > > @@ -886,6 +880,20 @@ static int do_vfs_ioctl(struct file *filp, unsigned int fd,
+> > >                 break;
+> > >         }
+> > >
+> > > +       switch (_IOC_NR(cmd)) {
+> > > +       case _IOC_NR(FS_IOC_FSGETXATTR):
+> > > +               if (WARN_ON_ONCE(_IOC_TYPE(cmd) != _IOC_TYPE(FS_IOC_FSGETXATTR)))
+> > > +                       return SOMETHING_SOMETHING;
+> > > +               /* Only handle original size. */
+> > > +               return ioctl_fsgetxattr(filp, argp);
+> > > +
+> > > +       case _IOC_NR(FFS_IOC_FSSETXATTR):
+> > > +               if (WARN_ON_ONCE(_IOC_TYPE(cmd) != _IOC_TYPE(FFS_IOC_FSSETXATTR)))
+> > > +                       return SOMETHING_SOMETHING;
+> > > +               /* Only handle original size. */
+> > > +               return ioctl_fssetxattr(filp, argp);
+> > > +       }
+> > > +
+> > 
+> > I think what Arnd means is that we will not be able to change struct
+> > sfxattr in uapi
+> > going forward, because we are not going to deprecate the ioctls and
 > 
-> But at the same time I've seen you say you don't need and arent 
-> interested in these fancy new languages and packages, so I can't see you 
-> volunteering to do it.
+> There's no need to deprecate anything to rev an ioctl API.  We have
+> had to solve this "changing struct size" problem previously in XFS
+> ioctls. See XFS_IOC_FSGEOMETRY and the older XFS_IOC_FSGEOMETRY_V4
+> and XFS_IOC_FSGEOMETRY_V1 versions of the API/ABI.
 > 
-> So if you're not going to volunteer yourself, then it's not really your 
-> place to suggest to others that they should be doing it instead of 
-> taking the easier route, which is to make more things work by default.
+> If we need to increase the structure size, we can rename the existing
+> ioctl and struct to fix the version in the API, then use the
+> original name for the new ioctl and structure definition.
+> 
+> The only thing we have to make sure of is that the old and new
+> structures have exactly the same overlapping structure. i.e.
+> extension must always be done by appending new varibles, they can't
+> be put in the middle of the structure.
+> 
+> This way applications being rebuild will pick up the new definition
+> automatically when the system asserts that it is suppored, whilst
+> existing binaries will always still be supported by the kernel.
+> 
+> If the application wants/needs to support all possible kernels, then
+> if XFS_IOC_FSGEOMETRY is not supported, call XFS_IOC_FSGEOMETRY_V4,
+> and if that fails (only on really old irix!) or you only need
+> something in that original subset, call XFS_IOC_FSGEOMETRY_V1 which
+> will always succeed....
+> 
+> > Should we will need to depart from this struct definition and we might
+> > as well do it for the initial release of the syscall rather than later on, e.g.:
+> > 
+> > --- a/include/uapi/linux/fs.h
+> > +++ b/include/uapi/linux/fs.h
+> > @@ -148,6 +148,17 @@ struct fsxattr {
+> >         unsigned char   fsx_pad[8];
+> >  };
+> > 
+> > +/*
+> > + * Variable size structure for file_[sg]et_attr().
+> > + */
+> > +struct fsx_fileattr {
+> > +       __u32           fsx_xflags;     /* xflags field value (get/set) */
+> > +       __u32           fsx_extsize;    /* extsize field value (get/set)*/
+> > +       __u32           fsx_nextents;   /* nextents field value (get)   */
+> > +       __u32           fsx_projid;     /* project identifier (get/set) */
+> > +       __u32           fsx_cowextsize; /* CoW extsize field value (get/set)*/
+> > +};
+> > +
+> > +#define FSXATTR_SIZE_VER0 20
+> > +#define FSXATTR_SIZE_LATEST FSXATTR_SIZE_VER0
+> 
+> If all the structures overlap the same, all that is needed in the
+> code is to define the structure size that should be copied in and
+> parsed. i.e:
+> 
+> 	case FSXATTR..._V1:
+> 		return ioctl_fsxattr...(args, sizeof(fsx_fileattr_v1));
+> 	case FSXATTR..._V2:
+> 		return ioctl_fsxattr...(args, sizeof(fsx_fileattr_v2));
+> 	case FSXATTR...:
+> 		return ioctl_fsxattr...(args, sizeof(fsx_fileattr));
+> 
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
 > 
 
-I won't volunteer if the plan is to break the ABI so you can convert your 
-Quadra from C to Rust because you're afraid of NULL pointers. Same goes 
-for running bytecode in an Openjdk VM running in a QEMU VM.
+So, looks like there's at least two solutions to this concern.
+Considering also that we have a bit of space in fsxattr,
+'fsx_pad[8]', I think it's fine to stick with the current fsxattr
+for now.
 
-I am actively disinterested in that kind of trade-off because the ABI 
-churn would impact both users and upstream developers, many of whom will 
-receive zero benefit.
+-- 
+- Andrey
 
-Of course, the ABI we have isn't perfect and I'm not against people 
-designing a better one, that will be stable for another 30 years. Though 
-that is an ambitious undertaking for an under-resourced project.
-
-For example, I doubt that we would ever have gained a TLS implementation 
-if had been left up to volunteers. There just aren't enough of us.
