@@ -1,120 +1,108 @@
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [195.130.132.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780C11B87D9
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 11:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB44202C38
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 12:55:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748260308; cv=none; b=QY/PusGAvUXveKgh/uvSEmJf7VN7w5t/S2umXajQ/JBZ8Yi/Yl/5aSI1UpON0haREzT0uYr8mgEhor4IM0NZH2k+dyJ3gKsRtu5Q76d3ZjLW3GKTBvUQLKDZ/V6Ubl0Nv5ocgvalAdz8kKZ/mcF7p/iGhsHfgoEiplg9YEn4ZYY=
+	t=1748264148; cv=none; b=MDRTL1hKpyh6wNcaUt6Kdfj4x9O1oI+VV75G/cPXA3QfkIfpUD0Qu890fE4jdYdWa4arDPfvAB2OGVajIJBC8El9DxCMHdGKR2mn285DRpdEilHpCBJPY9B6Uf2HKwi3oRFZES9eb4uRwDZbwsGPxfEyz/jsCVtz6LkQpeIp8Bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748260308; c=relaxed/simple;
-	bh=eVe7gzDvYkF/v7+yXapTB41J01zj8EULcLXAJYEXPmM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KoKFAJKoihY+i1F+oWLJAW3YlId+kE1BiTesnoN8I+fvEshOchl5m89H0kUcaFIKUIl7iFpFBllrZfNo3qqAmv/L2ujHwA/40tIrSUxrOpo1URVWJWK5BL5/aIysYwiSjj3TShQK4Pb1EVX9Dy/clhKHcVuCL260n0jq+kOmIqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wu5vHtVy; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wu5vHtVy"
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-5240a432462so1399680e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 04:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748260305; x=1748865105; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vk7I/TjZus1WfjiLul9K4l43bV0WtVtb36G6wrfsiH4=;
-        b=Wu5vHtVy7/8fK22/q0xVj2GbRfd3rRorzubjZgvqipQrxA2PoZ5WiTcZkBUw6yX8jI
-         nu1U/0nLa2/4ZzuE5yGkyM1anDHMt2kasIzfZLpPXbzdb7Mtm2YjZMwhzUxMda4Mm4HT
-         7nw7Cpqb5kh4HDdbYccVaDf3rEJjZkopOXAv43mEYLUm6Q27knjavDu+lAIAzZlhuw+k
-         82WardQ+WzW65GypTsVpYAkpwMYHI5zsZK9P74vfNtFqbNFZIVRkxs555tSYXUQ9tNAU
-         8h3OipYDrmxzva91aq2Wn3LhU9DTJ+Nc21wXlZ+/6nZ8CtQ+ugnseIk42KKHWFO+YMOv
-         a/OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748260305; x=1748865105;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vk7I/TjZus1WfjiLul9K4l43bV0WtVtb36G6wrfsiH4=;
-        b=KLJLrCj3Nly2lj2nLF89ECzt244QYylAyA9y55yn46q4VYEXBN6ALEt+GSJzQfNl8X
-         t0Wd6Oenumr0zDammsXcIjEGLxAwAY1DitJW1AudGQVk/nvupyiQyu7yXoQC+ZtvQLsP
-         tdStbg8N32vR14q4vcFwxBtINqGZQ7Lo7l0iFbxhPE0yyzt7m1HMqIgv4pu78HwxPMaD
-         7eNonDJ0m9bTNnhKt7VZupFBfGe4M4JKOETExSqlxMHUM7F467W3sLRqc05SZxVUsynu
-         ikVPZ6FE6/+g08tLTfgH0V2z/IiPNLh+4/ANDa/sPHNDQRrXiup1QGNhs8+cmRoh8vXf
-         hQQw==
-X-Forwarded-Encrypted: i=1; AJvYcCWZrocNkFmdi0HUmB+zH1aEfZnZXCuRyKz0qAYtNJmIczX+tD989oPePbNo2+egKOZO6OoL0eJYq8L4@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyPyLCNdNnnHTsE+nY8okff2Ek+17QYJ6h9Iq9zGdRC4F92REbt
-	wFHPgLAz9FdRcTZQhX1/8Y9PHVa1grWUsh69U7ARMwq7Dyr3mXq5YOue7Ojp+VcfGLfAkO1hHYn
-	z/YWjQkaFthPBeZut1HoR49rDCvkK6AQ=
-X-Gm-Gg: ASbGnctuw43D7hKLXWqxcfjyXiiTbHJ8tDTego9TfXVzPmUahFelmwjoLSExHSQq499
-	kfb22GFghaISvmH4MW+I4kAjsor/welF+M/hq9CRfFoR2dYm2EmFRppBo+1NaK8BH/QSAg344QU
-	JlJZY+qlUyfkpV7u0O4ykVXlSdFyeBxoh8PDwKW+LurNFRyjJnqBmC9EqDmmovNmZJPg==
-X-Google-Smtp-Source: AGHT+IEJff5k2A8k6P3iag0uEos2mJDRIGeS8NhKRZjyRef4636hA/5M4HMNpMmn3C4cZE82rze+xiVAJ/76kykfQIw=
-X-Received: by 2002:a05:6122:2007:b0:52d:bcd1:ab55 with SMTP id
- 71dfb90a1353d-52f1ed6fa19mr10025557e0c.2.1748260305247; Mon, 26 May 2025
- 04:51:45 -0700 (PDT)
+	s=arc-20240116; t=1748264148; c=relaxed/simple;
+	bh=KkQwgXHw8yl2iRNVVytw7enFpOc2PlsBaF7EKHxMBZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gtQrfLsp7ZKJo+42dcbDKpUt6nfkPLCQHGBQ4KdFz64jDTsLmdrVf8+StyPOnGj5a/RuAHy4SNajkdtGNu3y7o2OJ4jlD09hHlTsRmP92SbBedGbtM3cg6t0/fx+ejI2I3Nwz8lk58KSoqcpxEGdY6rxKcDDXQsV2pLv+KRBWzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+	by cantor.telenet-ops.be (Postfix) with ESMTPS id 4b5b9r3PXBz4wws4
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 14:46:40 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:9962:836e:244b:c4d7])
+	by xavier.telenet-ops.be with cmsmtp
+	id tomY2E00e0Y7Yez01omYtE; Mon, 26 May 2025 14:46:33 +0200
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1uJXDc-00000003Rpo-2huh;
+	Mon, 26 May 2025 14:46:32 +0200
+Received: from geert by rox.of.borg with local (Exim 4.97)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1uJXDs-0000000Beit-2cTP;
+	Mon, 26 May 2025 14:46:32 +0200
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.16
+Date: Mon, 26 May 2025 14:46:24 +0200
+Message-ID: <20250526124624.2778122-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250325155613.352680-1-p.pisati@gmail.com> <aCSBV_L-NcNX4n7G@akinoame>
- <30ba2e36-8957-4dc0-a5d7-85ba71ad0a59@kernel.org>
-In-Reply-To: <30ba2e36-8957-4dc0-a5d7-85ba71ad0a59@kernel.org>
-From: Paolo Pisati <p.pisati@gmail.com>
-Date: Mon, 26 May 2025 13:51:34 +0200
-X-Gm-Features: AX0GCFvO8Va9CeULMkFesSsZFw4wit0oh9MQ_2DCVFRYVjrkbWKkIl8KYMha6qQ
-Message-ID: <CAMmgNdZ0RT+GTrK_mmeG3d=Khtck80gE9itrjSQbOrtKB=_U2w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] m68k: pata_cswarp: Add Amiga cslab ata support
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, Damien Le Moal <dlemoal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+	Hi Linus,
 
-any chance you could give us an update on this?
+The following changes since commit 0af2f6be1b4281385b618cb86ad946eded089ac8:
 
-On Wed, May 14, 2025 at 3:38=E2=80=AFPM Damien Le Moal <dlemoal@kernel.org>=
- wrote:
->
-> On 5/14/25 13:41, Paolo Pisati wrote:
-> > On Tue, Mar 25, 2025 at 04:56:11PM +0100, Paolo Pisati wrote:
-> >> Here is a driver (and the subsequent defconfig change) for the pata/CF=
- socket in
-> >> the CS-Lab Warp series of Amiga boards.
-> >>
-> >> Changes in v4:
-> >>  - refactor pata_cswarp_data_xfer()
-> >>  - ioremap WARP_OFFSET_ATA region
-> >>
-> >> Changes in v3:
-> >>  - suppress a comment
-> >>  - properly return ata_host_activate() error code
-> >>
-> >> Change in v2:
-> >>  - fix style, remove duplicate swap macro, driver version, etc
-> >>  - rework the zorro attach mechanism
-> >>  - remove the unnecessary zorro ids refactor
-> >
-> > Gentle ping about this one: can i get an ACK or a NACK?
->
-> Sorry, this fell through the cracks.
-> This looks OK to me.
->
-> Geert,
->
-> Any comment / ack ? Or do you prefer to take these through the m68k tree =
-?
->
-> --
-> Damien Le Moal
-> Western Digital Research
+  Linux 6.15-rc1 (2025-04-06 13:11:33 -0700)
 
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.16-tag1
 
---=20
-bye,
-p.
+for you to fetch changes up to f440518f379d22c95329e9e0e0fb6caaafa0f8b0:
+
+  m68k: defconfig: Update defconfigs for v6.15-rc1 (2025-05-19 13:37:36 +0200)
+
+----------------------------------------------------------------
+m68k updates for v6.16
+
+  - One more strscpy() conversion,
+  - Fix detection of real Mac II,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Finn Thain (1):
+      m68k: mac: Fix macintosh_config for Mac II
+
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v6.15-rc1
+
+Thorsten Blum (1):
+      m68k: Replace strcpy() with strscpy() in hardware_proc_show()
+
+ arch/m68k/configs/amiga_defconfig    | 4 ----
+ arch/m68k/configs/apollo_defconfig   | 4 ----
+ arch/m68k/configs/atari_defconfig    | 4 ----
+ arch/m68k/configs/bvme6000_defconfig | 4 ----
+ arch/m68k/configs/hp300_defconfig    | 4 ----
+ arch/m68k/configs/mac_defconfig      | 4 ----
+ arch/m68k/configs/multi_defconfig    | 4 ----
+ arch/m68k/configs/mvme147_defconfig  | 4 ----
+ arch/m68k/configs/mvme16x_defconfig  | 4 ----
+ arch/m68k/configs/q40_defconfig      | 4 ----
+ arch/m68k/configs/sun3_defconfig     | 4 ----
+ arch/m68k/configs/sun3x_defconfig    | 4 ----
+ arch/m68k/kernel/setup_mm.c          | 2 +-
+ arch/m68k/mac/config.c               | 2 +-
+ 14 files changed, 2 insertions(+), 50 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
