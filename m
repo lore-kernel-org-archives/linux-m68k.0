@@ -1,88 +1,127 @@
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9D33C465
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 14:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A04201004
+	for <linux-m68k@vger.kernel.org>; Mon, 26 May 2025 15:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748268236; cv=none; b=A9Sis7NxE0ssL7UkZAD4+qUHFELrj1bhiJmTs9a/ERLsg0YOMFDcqLLsmadDa8NBLXJfhM7n0NZxWocFBOj61j1hSWc/5P10Pqu4hy8uhx9CIuRzKifxaEVbsIHlIgj+exobrvO611KNoxQ1ymCQIn0zMhcTP3fdyO4J5sW4EaM=
+	t=1748271950; cv=none; b=JchRYJix3iEueNEW5CUCQZLA9zkyGJMM6sxtQkcu76mhcs8C3k98JF8SneSIz72BKQ8Nuoh6WSsQKoWcX8LHGCNEiOp/lSQDyyZxm7ecqfY7RCTvniMc2D1IWXSqsF7KrsM6DQZu9ZwJox/NF1UlWF8kzEBFrBL2TUlaQ8smHgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748268236; c=relaxed/simple;
-	bh=M56FL+UpkK56wuTbs3FGjSdEUPCOwsr0dxOYvxuBUrM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m5jqCYeEfctUTq6CFqY5Aw0CDNqjp7m7s6ZWJgN0vLmV5rcAd5yASVxavcioeEH1s3IJeqtoLCGEOofIq4FonSybNFiGaGaeHtJK8Bd4xmrJBN2r5Dl5eBpEqcFeZBrHXayrNOGG6Q9gSooAxwzMc0AOWY1mfDwRmvAGFNJOC2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-40337dd3847so1410415b6e.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 07:03:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748268232; x=1748873032;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3Yw5iSzYbzriDp17/brRyJ5/xBiVxOZLd/jW4wl5BxA=;
-        b=ItGS7rZxEt63e2FWooIUf8A+SEw5fAZDCzjMQIakgkVUskgt5fXcXIaPonddWE/wCj
-         IZxXV0uHVdSkDgltdrGYNQ9fMvgwgtHs/kIYrQhhAzv9Y9vbgzj6NGVyokwVQxokudTx
-         CBbFngqUd0DGS8LXA3dq2MHol7Z23nqB4Q8Wui7uvHfFyDVmpaNcMuWm94R/9cFZdEC3
-         yXjS7k3EWyYjJpGzNY2mkJJn1Qyhh/56WqELdhjpJVh7jKyAoO9GTATsx9wh+Ltw9Doh
-         JqMTxvSkGgXevqFLpA0Exk2Fj0wtpI7V7zosLlK4riTeXeLxMejmcPJACPsyeP87ikK8
-         S90w==
-X-Forwarded-Encrypted: i=1; AJvYcCUPPxqYpcZdDA4frfN8/PexXEaVWeE5iAV8OI+wXIcuVTXZ0gJDXCIBBcMXFNkb79VSFUJvkqaOBo8k@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy9VET3SQzGBUEDp20XHt+28Ye5L3TwVobseEO/EsW6zMfvrkcK
-	xtdJDRZ0Z/ALsTcF+yBz+BtJmyySoWvm4tn05ME9OahSSyM/Nk2kMZVlDjXrFCti
-X-Gm-Gg: ASbGnct5vL5tkK9bD6a7SAMsnh1iIIydwyKzglXLEiw3ichyoaod4y8ZgVixI+nLf00
-	lA3o1yY8nCAuMZJdlU2nwdqHFaTy3dAfn97WTIK+xSbze2JZgRACner9pWiAAn334qXEQb84L2V
-	EW9FuL1JuQNdsVf600IFwn4cZZYSi6iS5pI6YKc6PW2JKOM6cvQq1Kb4+U5m7ucUJrkXYr3nlRs
-	IEoleIPuVxw2N3XAhgIeJp5Kkqi7HzEf9QjOXiYPOHgUbTa58FhV0f27MLlSfyzomxjFQ/j2VE3
-	mB3qOHeKkq+4pReBCnMcQCzEB2UO69hlA0ZWw4ylukfXqqJJoF+c1g933TEos7Uiva1d0JXXWbo
-	EdEoYAK3H3aGSOLRpJWrml3LW
-X-Google-Smtp-Source: AGHT+IGORG1S40ex5hEFgyFsA3wsXTRmcGelEG5tV+nZiSIZmSxFMELgE4L1NokvR/GA7Zf/xvSbPA==
-X-Received: by 2002:a05:6808:2289:b0:404:f4a0:7fbf with SMTP id 5614622812f47-40646827871mr5195471b6e.31.1748268232105;
-        Mon, 26 May 2025 07:03:52 -0700 (PDT)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-609f303156esm4385041eaf.38.2025.05.26.07.03.51
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 May 2025 07:03:51 -0700 (PDT)
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-72ec58e45baso1289134a34.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 07:03:51 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVsNDzZjGsUHhixRXYrXpevChfrwyMUoLvx9Hi7beKKPqLj6NWfiPNtfZVKY8GnYMe0dkf7dGOFmLo0@lists.linux-m68k.org
-X-Received: by 2002:a05:620a:3190:b0:7c5:4eee:5409 with SMTP id
- af79cd13be357-7ceecc3c64amr1605591185a.48.1748268219856; Mon, 26 May 2025
- 07:03:39 -0700 (PDT)
+	s=arc-20240116; t=1748271950; c=relaxed/simple;
+	bh=SgKMALHkJyZFK82wXmKO681g+91A4tKbQ6jkOin05co=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=TReLOoKgHva+M6wKP77tU0BHNcvK/yeo7cxZW2Sk9XWDTLpYvlRr3xl+JSuY3Sqa0foYB6Ze7rSyF7VzRIghjBcqiU86n9jShHpTn19ii1Z9QaXCVvh43vK0vdU+94JhTcUXKCmla28JAS66Px65V/ggVWLHTv6IVRDXsSeWc8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=aI3b+/SM; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="aI3b+/SM"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=adsNFySRxxvmYtSEG94pSAAxwYLsB0qhFjwhVzAQ+7c=; t=1748271947; x=1748876747; 
+	b=aI3b+/SM6oFp7mk2iJ0PmCsjyz77NGyQUyBl0+flUONOTRFRvSmwehmXc2IjATC+MAupoS5bQZw
+	lLKINE5h2YQpwrUhK/zCq4XJ995pqt1ynj5T1VDcjZjpfmv+8f1kaCU4yo9BI5VizvSaqnmNywdWp
+	QOH8HJOMOUMiLIbp1cznf7DYtLJdRuW9dhbA3+gQZZG3O61EjVAyXuzGtQuS9v81F6lYExC8GFKFR
+	LcS0EMj+2D6MuHIpvhrEClP9pr8wOa8HVA8aw6k8KjJ9RSGPD0oDdmQJRbMCE8+YMexdVy9Ul8itQ
+	jcdWUqaekzC5+SJk8tvHgwh0uaHqi9ohvBtw==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.98)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1uJZOU-00000001NzP-3aRJ; Mon, 26 May 2025 17:05:38 +0200
+Received: from dynamic-078-054-122-178.78.54.pool.telefonica.de ([78.54.122.178] helo=[192.168.178.50])
+          by inpost2.zedat.fu-berlin.de (Exim 4.98)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1uJZOU-00000002IDc-2ke7; Mon, 26 May 2025 17:05:38 +0200
+Message-ID: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+Subject: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: port-m68k <port-m68k@netbsd.org>
+Cc: debian-68k <debian-68k@lists.debian.org>, linux-m68k
+	 <linux-m68k@vger.kernel.org>
+Date: Mon, 26 May 2025 17:05:37 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.1 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250325155613.352680-1-p.pisati@gmail.com> <20250325155613.352680-3-p.pisati@gmail.com>
-In-Reply-To: <20250325155613.352680-3-p.pisati@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 May 2025 16:03:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdViC5UYcdca5yHzTYhkNF60sNJOd3y=JMNRn5zfApSEOg@mail.gmail.com>
-X-Gm-Features: AX0GCFuoxcpObwYMdx2bQg0VrY-3KmF7-dZUL-LWHGwcdoJt6f4gDNi9UsoTaqs
-Message-ID: <CAMuHMdViC5UYcdca5yHzTYhkNF60sNJOd3y=JMNRn5zfApSEOg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] m68k: defconfig: enable PATA_CSWARP
-To: Paolo Pisati <p.pisati@gmail.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-On Tue, 25 Mar 2025 at 16:56, Paolo Pisati <p.pisati@gmail.com> wrote:
-> Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
+Hi,
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I'm currently testing enabling 4 bytes alignment and first started looking =
+into
+what NetBSD does (gcc/config/m68k/linux.h in the GCC source). Surprisingly,=
+ this
+is set to 64 and not 32 bits for the largest possible alignment.
 
-Gr{oetje,eeting}s,
+The explanation is as follows:
 
-                        Geert
+/* No data type wants to be aligned rounder than this.                     =
+                                                                           =
+                    =20
+   For m68k/SVR4, some types (doubles for example) are aligned on 8 byte   =
+                                                                           =
+                    =20
+   boundaries */
 
+#undef BIGGEST_ALIGNMENT
+#define BIGGEST_ALIGNMENT 64
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+BIGGEST_ALIGNMENT is what's being toggled with the -malign-int option
+in gcc/config/m68k/m68k.h:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+/* No data type wants to be aligned rounder than this.                     =
+                                                                           =
+                    =20
+   Most published ABIs say that ints should be aligned on 16-bit           =
+                                                                           =
+                    =20
+   boundaries, but CPUs with 32-bit busses get better performance          =
+                                                                           =
+                    =20
+   aligned on 32-bit boundaries.  */
+#define BIGGEST_ALIGNMENT (TARGET_ALIGN_INT ? 32 : 16)
+
+In order to test GCC on Linux/m68k with 32-bit alignment, I just copied
+the definitions from netbsd-elf.h into linux.h above which eventually
+failed with:
+
+free(): invalid pointer
+during GIMPLE pass: slp
+../../../../../src/libstdc++-v3/src/c++17/floating_from_chars.cc: In functi=
+on 'std::from_chars_result std::from_chars(const char*, const char*, double=
+&, chars_format)':
+../../../../../src/libstdc++-v3/src/c++17/floating_from_chars.cc:1243:1: in=
+ternal compiler error: Aborted
+
+Now I'm wondering whether why some types on NetBSD such as double have 8 by=
+tes
+alignment on a 32-bit system. Does anyone know the reasoning for that?
+
+And does libstdc++ have an additional codepath on NetBSD to deal with the
+largest possible alignment to be 8 bytes so that the error above does not
+occur?
+
+Or could it just be a result of the ABI mismatch because glibc needs to be
+patched as well?
+
+Thanks,
+Adrian
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
