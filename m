@@ -1,96 +1,120 @@
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E184633DF
-	for <linux-m68k@vger.kernel.org>; Mon, 26 May 2025 05:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780C11B87D9
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 11:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748237088; cv=none; b=Cpy1HNryq+GCdB4ODWb5ks6M+3bLTjrbe1Cb4T1U/ZhakhWemljlfKwwppIe/UBoJ3aXrIMg08hRxSduJF6PR7i01jL1nsxpKM+MX7zjKj0OPOy1iim9Ww1td6TSmEZXb5pEI74icqP4IkF1qSX0ol136HFVxND7KG5a1QqgvWg=
+	t=1748260308; cv=none; b=QY/PusGAvUXveKgh/uvSEmJf7VN7w5t/S2umXajQ/JBZ8Yi/Yl/5aSI1UpON0haREzT0uYr8mgEhor4IM0NZH2k+dyJ3gKsRtu5Q76d3ZjLW3GKTBvUQLKDZ/V6Ubl0Nv5ocgvalAdz8kKZ/mcF7p/iGhsHfgoEiplg9YEn4ZYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748237088; c=relaxed/simple;
-	bh=5v3+G4HhJrD59l2qDdRifjTl0FDYBWzgskPnfwpbggk=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ZlvCKrvxKZ3g5DBBJkwUHwkI2VpNgkGhnbZ42/KOoExifZRKruZcz+mHfufb63p+qauCrgPRIASv2ctfjo2h48NZbj9y8WMXlL5RO0efxyAiwSTDzu7OZIytWUSCtuRZaj1E2BK9QkYJ1omnmEMJxwz9UbGzq8Xxq4zteodutg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DUkdMDrF; arc=none smtp.client-ip=202.12.124.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1748260308; c=relaxed/simple;
+	bh=eVe7gzDvYkF/v7+yXapTB41J01zj8EULcLXAJYEXPmM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KoKFAJKoihY+i1F+oWLJAW3YlId+kE1BiTesnoN8I+fvEshOchl5m89H0kUcaFIKUIl7iFpFBllrZfNo3qqAmv/L2ujHwA/40tIrSUxrOpo1URVWJWK5BL5/aIysYwiSjj3TShQK4Pb1EVX9Dy/clhKHcVuCL260n0jq+kOmIqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wu5vHtVy; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DUkdMDrF"
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfout.stl.internal (Postfix) with ESMTP id 92A3D1140110;
-	Mon, 26 May 2025 01:24:44 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-08.internal (MEProxy); Mon, 26 May 2025 01:24:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1748237084; x=1748323484; bh=whqSE1/j1iFyOkHa+9c1HZgqz5rhcaJ0lg+
-	oB7JF+8g=; b=DUkdMDrFnbDCutgjcKs477CqypAzTK4rpsXLPA3EfejQ5wq51DY
-	Hq04Uv5+Wj+Tqh+ej5mQ+xxTbO7oxaXSakyFeany/lgy7+Exg+JJWg1X/O68wAnQ
-	ZhqkqKn/PqSomlBVjKQaGRvKgrUIkyTCpmQwkt8xnijyG5yfW0w6QUH/2ldUt9pq
-	GiLOWj9nijNWPIjKXq5NEYCxu2qIlIrcuuqXeClqcf3u06hyxZ9wBWwEDQskH4bO
-	fBIr2G/fKliDVXMt0fAFJurPzmtPOXORtGNvQkgGsbmdVQ1ejCzvLENFfXL/tY6Y
-	Qhcd2FNa9jjgGMfeCNRLTr+gumkWBclYf2g==
-X-ME-Sender: <xms:G_szaOWCUZjP5sfSDIbRxIkG5ITBTXqj4_zc60HxYmXWtJAn84hyRQ>
-    <xme:G_szaKmVYJ8wGQKS6c7ERwRT5ZnQlUAPi00G0y7jlXeRj7EfwwEhR54xK1X_ByeqU
-    BGstDxhtwSeqinQR_4>
-X-ME-Received: <xmr:G_szaCbnwR_S5_sFDxpMBC_Ily2qQ0pbgkaQK1InAGUFar015LdkcFcEVninr9t0OY8Wm-St7IffFf0jtr9VV59wWM6PaPkKLFg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddtgdduieeikeculddtuddrgeefvddrtd
-    dtmdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggft
-    fghnshhusghstghrihgsvgdpuffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftd
-    dtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvvefujgfk
-    fhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrih
-    hnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnhepleeuheelheek
-    gfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueehueelnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhig
-    qdhmieekkhdrohhrghdpnhgspghrtghpthhtohepgedpmhhouggvpehsmhhtphhouhhtpd
-    hrtghpthhtohepjhhohhhnsehklhhoshdrtghomhdprhgtphhtthhopeguvggsihgrnhdq
-    ieekkheslhhishhtshdruggvsghirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqmh
-    eikehksehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhisggtqdhhvghl
-    phesshhouhhrtggvfigrrhgvrdhorhhg
-X-ME-Proxy: <xmx:G_szaFX7JgtYshzgTvifAWi80KBYSoNMCoR2M0DGvmbPSc22god-mg>
-    <xmx:G_szaIklB2pB_hp15UWGkme2c30eE5UDyx2eDQXPBijmexkOzxqRpg>
-    <xmx:G_szaKet9nn1qVmpZ3v5AJ9kPUTeVvCYPYLpQr6P7Di0kEhtzGwLUw>
-    <xmx:G_szaKGLnej8SVLUhFv8b1cev4fjR3OdUXWpmKne89k2qiOlT1hUiw>
-    <xmx:HPszaPEap_3lk2tvBGLr5LV2JA-QCEFBoLRVccietVMV0mtIFpSQvJBy>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 May 2025 01:24:41 -0400 (EDT)
-Date: Mon, 26 May 2025 15:25:21 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: John Klos <john@klos.com>
-cc: debian-68k <debian-68k@lists.debian.org>, 
-    linux-m68k <linux-m68k@vger.kernel.org>, 
-    Libc-help <libc-help@sourceware.org>
-Subject: Re: Tuple and changes for m68k with -malign-int
-In-Reply-To: <f1128cf9-cd26-9182-f9f2-89c9a0b3d4bf@linux-m68k.org>
-Message-ID: <ba0a8ae0-1973-f850-de81-690870f03499@linux-m68k.org>
-References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>  <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>  <8734d1kofn.fsf@oldenburg.str.redhat.com>  <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
-  <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org>  <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>  <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com> <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
- <8cc5d290-ced1-cbe8-66c5-23977869f22a@linux-m68k.org> <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io> <f1128cf9-cd26-9182-f9f2-89c9a0b3d4bf@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wu5vHtVy"
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-5240a432462so1399680e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 May 2025 04:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748260305; x=1748865105; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vk7I/TjZus1WfjiLul9K4l43bV0WtVtb36G6wrfsiH4=;
+        b=Wu5vHtVy7/8fK22/q0xVj2GbRfd3rRorzubjZgvqipQrxA2PoZ5WiTcZkBUw6yX8jI
+         nu1U/0nLa2/4ZzuE5yGkyM1anDHMt2kasIzfZLpPXbzdb7Mtm2YjZMwhzUxMda4Mm4HT
+         7nw7Cpqb5kh4HDdbYccVaDf3rEJjZkopOXAv43mEYLUm6Q27knjavDu+lAIAzZlhuw+k
+         82WardQ+WzW65GypTsVpYAkpwMYHI5zsZK9P74vfNtFqbNFZIVRkxs555tSYXUQ9tNAU
+         8h3OipYDrmxzva91aq2Wn3LhU9DTJ+Nc21wXlZ+/6nZ8CtQ+ugnseIk42KKHWFO+YMOv
+         a/OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748260305; x=1748865105;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vk7I/TjZus1WfjiLul9K4l43bV0WtVtb36G6wrfsiH4=;
+        b=KLJLrCj3Nly2lj2nLF89ECzt244QYylAyA9y55yn46q4VYEXBN6ALEt+GSJzQfNl8X
+         t0Wd6Oenumr0zDammsXcIjEGLxAwAY1DitJW1AudGQVk/nvupyiQyu7yXoQC+ZtvQLsP
+         tdStbg8N32vR14q4vcFwxBtINqGZQ7Lo7l0iFbxhPE0yyzt7m1HMqIgv4pu78HwxPMaD
+         7eNonDJ0m9bTNnhKt7VZupFBfGe4M4JKOETExSqlxMHUM7F467W3sLRqc05SZxVUsynu
+         ikVPZ6FE6/+g08tLTfgH0V2z/IiPNLh+4/ANDa/sPHNDQRrXiup1QGNhs8+cmRoh8vXf
+         hQQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZrocNkFmdi0HUmB+zH1aEfZnZXCuRyKz0qAYtNJmIczX+tD989oPePbNo2+egKOZO6OoL0eJYq8L4@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyPyLCNdNnnHTsE+nY8okff2Ek+17QYJ6h9Iq9zGdRC4F92REbt
+	wFHPgLAz9FdRcTZQhX1/8Y9PHVa1grWUsh69U7ARMwq7Dyr3mXq5YOue7Ojp+VcfGLfAkO1hHYn
+	z/YWjQkaFthPBeZut1HoR49rDCvkK6AQ=
+X-Gm-Gg: ASbGnctuw43D7hKLXWqxcfjyXiiTbHJ8tDTego9TfXVzPmUahFelmwjoLSExHSQq499
+	kfb22GFghaISvmH4MW+I4kAjsor/welF+M/hq9CRfFoR2dYm2EmFRppBo+1NaK8BH/QSAg344QU
+	JlJZY+qlUyfkpV7u0O4ykVXlSdFyeBxoh8PDwKW+LurNFRyjJnqBmC9EqDmmovNmZJPg==
+X-Google-Smtp-Source: AGHT+IEJff5k2A8k6P3iag0uEos2mJDRIGeS8NhKRZjyRef4636hA/5M4HMNpMmn3C4cZE82rze+xiVAJ/76kykfQIw=
+X-Received: by 2002:a05:6122:2007:b0:52d:bcd1:ab55 with SMTP id
+ 71dfb90a1353d-52f1ed6fa19mr10025557e0c.2.1748260305247; Mon, 26 May 2025
+ 04:51:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <20250325155613.352680-1-p.pisati@gmail.com> <aCSBV_L-NcNX4n7G@akinoame>
+ <30ba2e36-8957-4dc0-a5d7-85ba71ad0a59@kernel.org>
+In-Reply-To: <30ba2e36-8957-4dc0-a5d7-85ba71ad0a59@kernel.org>
+From: Paolo Pisati <p.pisati@gmail.com>
+Date: Mon, 26 May 2025 13:51:34 +0200
+X-Gm-Features: AX0GCFvO8Va9CeULMkFesSsZFw4wit0oh9MQ_2DCVFRYVjrkbWKkIl8KYMha6qQ
+Message-ID: <CAMmgNdZ0RT+GTrK_mmeG3d=Khtck80gE9itrjSQbOrtKB=_U2w@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] m68k: pata_cswarp: Add Amiga cslab ata support
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, Damien Le Moal <dlemoal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Geert,
+
+any chance you could give us an update on this?
+
+On Wed, May 14, 2025 at 3:38=E2=80=AFPM Damien Le Moal <dlemoal@kernel.org>=
+ wrote:
+>
+> On 5/14/25 13:41, Paolo Pisati wrote:
+> > On Tue, Mar 25, 2025 at 04:56:11PM +0100, Paolo Pisati wrote:
+> >> Here is a driver (and the subsequent defconfig change) for the pata/CF=
+ socket in
+> >> the CS-Lab Warp series of Amiga boards.
+> >>
+> >> Changes in v4:
+> >>  - refactor pata_cswarp_data_xfer()
+> >>  - ioremap WARP_OFFSET_ATA region
+> >>
+> >> Changes in v3:
+> >>  - suppress a comment
+> >>  - properly return ata_host_activate() error code
+> >>
+> >> Change in v2:
+> >>  - fix style, remove duplicate swap macro, driver version, etc
+> >>  - rework the zorro attach mechanism
+> >>  - remove the unnecessary zorro ids refactor
+> >
+> > Gentle ping about this one: can i get an ACK or a NACK?
+>
+> Sorry, this fell through the cracks.
+> This looks OK to me.
+>
+> Geert,
+>
+> Any comment / ack ? Or do you prefer to take these through the m68k tree =
+?
+>
+> --
+> Damien Le Moal
+> Western Digital Research
 
 
-On Wed, 21 May 2025, I wrote:
 
-> 
-> On Wed, 21 May 2025, John Klos wrote:
-> 
-> > Likewise, do you really think that the overhead of unaligned access is 
-> > outweighed by the fact that more stuff fits in the cache? Seriously?
-> > 
-> 
-> Yes, some of my 68030 systems have 16-bit data busses.
-> 
-
-For the record, the user manuals say the entries in the 68020 and 68030 
-caches are long-words. So a 16-bit data bus would be a liability for 
-accesses involving the caches, and John's probably right about overhead.
+--=20
+bye,
+p.
