@@ -1,80 +1,112 @@
-Received: from outbound.pv.icloud.com (p-west1-cluster3-host6-snip4-8.eps.apple.com [57.103.66.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9C41C5F06
-	for <linux-m68k@vger.kernel.org>; Mon, 26 May 2025 18:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.66.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBDAF9E8
+	for <linux-m68k@vger.kernel.org>; Mon, 26 May 2025 18:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748283922; cv=none; b=NV0GcHtV+clxgigdXEGG40Qyro1EkWv+kVJTWCv614zcdWjaABdILqE+1tnA5BEoVd42IGV6cKCqqkm28OGFtC8H6QplF1VYuk4FunpYnM0NAyJ5n8aECl3hCUGOV122+6klru41O+urKlSLd1louHc6zUTqjEZQ6z86Itpc9CU=
+	t=1748285359; cv=none; b=IATJnravJVaL3VEzams8godgOk0cVYVNhnDfjSZ0urwa6j1sHU2lBfWXG+GuvFEhEqQEwxS4zdszS0wgUaJ5HOsNk/j+Rg5LfhMCP3wk9Z/0P+D+HAt3JUHRQTyQR+FWYxjNrCDvQPy8unPO6nSALOUJ5LRTydMIAUW/Cz/H/yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748283922; c=relaxed/simple;
-	bh=24EYYKYZvMLjB1GwnnXcpDmJu2PBzSCU1UO4MP2KvRw=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=rn9KCq5tW/QH8ocOyts9uzOvLqUKlAMoxThHyqhRtpX+nc4aCFiBs8SMDcNj4D6fuoQ7O2CEMgnL5kVQTV2n7D2oYd/PFfk4yVAfugjAMzqonKnDPCvIKkmCJGrmW81ncf3cHV/gVNHMQq04Q6uQ2ApVNVtwpkD5iBGRd2ICEUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=DmtjFLCD; arc=none smtp.client-ip=57.103.66.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
+	s=arc-20240116; t=1748285359; c=relaxed/simple;
+	bh=W6woZj3zpZZ/NpROcizRirvtqvqOuT+F5DQmM/nX7ig=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gGsdhEJqvg11UQvLQ1WBdKxZkM3PPAACv+8qY9qqkseLFesoNo69CbMNIpaqDDlNm5IM+nXqAV8iqoAIO9o73WNzapzSzmnk2uyYYsx+WGz3DEy3T4OeKKeA6kMLivttVSUtYz6qeo+F+RGLBbSsipkeYzUIZdFsEcaQ3mPDlHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CgjWx38S; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="DmtjFLCD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-	bh=/Ed6aIV7O7Fx3cEtuWQx/vJ9NzUc0xIQXN3bSt3Ldfk=;
-	h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To:x-icloud-hme;
-	b=DmtjFLCDSLMbkFVQeJvsqfF3DK0X4VRPomzGiLcruoPBfmqdXHCq8tmSznaMHb7MP
-	 oEQCXjVJci9abcd78hn3dUSS1rtDgBd1NhpgldJb0599raXyuu3qHerzcfLeYpmdqe
-	 jV81FsR3OGScYNht422XyKtwCaD2wAeIcikQAWo2a0B6ZijiHWcrDFZ3F9ycnfJzTl
-	 1tCYOZufMPefdtgPPWVSfQ9skbKa+eGVq/374CRv6RDdpdw5MVB2evPscSIzHtg7ln
-	 B1gZZQAlQ0x86Gr84Q/0CaNoKIRUZnObzARpbr8C8ZNMVDcg5tochckHQ8anTp4O46
-	 3Qb3mMMeDx90Q==
-Received: from outbound.pv.icloud.com (localhost [127.0.0.1])
-	by outbound.pv.icloud.com (Postfix) with ESMTPS id 3E24FC000A6;
-	Mon, 26 May 2025 18:25:16 +0000 (UTC)
-Received: from smtpclient.apple (asmtp-me-k8s.p98.prod.me.com [17.56.9.34])
-	by outbound.pv.icloud.com (Postfix) with ESMTPSA id EF435C000A3;
-	Mon, 26 May 2025 18:25:15 +0000 (UTC)
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CgjWx38S"
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-551fc6d4a76so2937672e87.0
+        for <linux-m68k@vger.kernel.org>; Mon, 26 May 2025 11:49:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748285354; x=1748890154; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xKQQZ40MDKPSK/f86/aTfJXDJ4VkASyIAY23NlJ8lls=;
+        b=CgjWx38S+rAHx+KohHDXCYMUDHMf6EHrGelBfY1xs69xkN7QSymZ/57Fpe6hQUAASq
+         JpPx4BsH/Vcn2dhL/EBgC/Pr6IFtlPRmXWZ26A+plTJsJCl7Sw9xSJtCqS0gJYr2unx/
+         tGUMOqHLg85ZMf/MCRLQeCAz7wMYKkh6a7GJ81xcKSpp05TJ9UzsccOw3AiMIhw0FtAQ
+         ntU+laaxXprKBC2uH36rx/v9IgX6GbwcXHdklWhl4fkRNuj/XdVL7CMt7kTy9es6hFUy
+         k5CEBfNKUdepaXJF4JOWL/LgnC6DjjqsGjP6ROFyahGJ5WaPytNmphPpq1jFAaVDgrFp
+         wN3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748285354; x=1748890154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xKQQZ40MDKPSK/f86/aTfJXDJ4VkASyIAY23NlJ8lls=;
+        b=fxrmRr5YQB/zC1Vn2AeWTt9lKtM7Qi/nzo9JCN4tXmfcP9ht1x1wQxs5vLxy3XdQ1R
+         Xml5oZi4DDZvdRbY8sBShCBrmpo1HKEkMHgPhffJfObb2G68iygcpf4rccjX68SLkfgw
+         xnABaDbqTUAyVQzJmoHSc98HKu6l7GjoyVDid4wpbacnM0DOMKamviqwcAJWtSXjZJgT
+         S35s0u6J5tPxOUMmvFOz1fgvocpBuqHevHKX7DhG+XfhEWdxJX5FNJKdnPcv5XYwlFJs
+         WgqknEBPF6ui5Pyw89pU+k3mCC4GTff4kn1w1G6tU5iibARygk/+1t86SRp05vBX6NYs
+         k9Gw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVJEX0JYwMaJUWuK2Ird98J19Jb0GvTbC6g4LHHGiYiIsJp7eNj+tNyIqECC8QujWBGu588bC+re0L@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7OLjrKIvvigMeenzirZzDrcjYJPtojaS56YDRDCGBmL0EVpb7
+	j3icoFPOHQBZxEIoCrnz9o2Cvuv1qvd6VNyOXk+D0F1+D9v/u+jFSvn6dE6Ts9LUwagl//vKCSm
+	F91NQPhG8855MzdX/jSx4hihdYNBpfI8=
+X-Gm-Gg: ASbGncuGlkg7yPbOJ5ujV2EPK7mU+CHWlDSrB2nZfU2YMwzc8G9EtfU6KQCYMSuJmcK
+	aQIH1OeXQuUAqvgBNtyON/BFccyzgyjK6Qx4uiuaIzAN8Ixld0y8AqgyIBJ0v34nYO+nzGicSnQ
+	H2CJkqWBtRw52mSElV8EShwT9UtoluR/A=
+X-Google-Smtp-Source: AGHT+IEokjisy47mtg9Et8ixdHkIXYMxQD1pDudndPGchPC/fZMl3SdBX1S/SXWAF8nYqEYKdStL7AnDsR1yUfR2xCU=
+X-Received: by 2002:a05:6512:3c8d:b0:549:5850:f275 with SMTP id
+ 2adb3069b0e04-5521cbaed91mr3042450e87.50.1748285353721; Mon, 26 May 2025
+ 11:49:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.500.181.1.5\))
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-From: Jason Thorpe <thorpej@me.com>
-In-Reply-To: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
-Date: Mon, 26 May 2025 11:25:05 -0700
-Cc: port-m68k <port-m68k@netbsd.org>,
- debian-68k <debian-68k@lists.debian.org>,
- linux-m68k <linux-m68k@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D8AE0197-8FE8-4986-9B1F-09B802BE5DEE@me.com>
+MIME-Version: 1.0
 References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <CAH8yC8=bbDMNFLj=eQzW+ZHvJpH0ZdVQthfscTo1fe0w=wnU_g@mail.gmail.com> <e22c54a868bb70825aa3f91084742fded97470d6.camel@physik.fu-berlin.de>
+In-Reply-To: <e22c54a868bb70825aa3f91084742fded97470d6.camel@physik.fu-berlin.de>
+Reply-To: noloader@gmail.com
+From: Jeffrey Walton <noloader@gmail.com>
+Date: Mon, 26 May 2025 14:48:36 -0400
+X-Gm-Features: AX0GCFvmnvi5oSdMSNooWIfR9CtNEuI7DcHM1E4PuVz6UI6wxukB3OuqjYEsBMs
+Message-ID: <CAH8yC8=iVc46vN-aq671r7utpwJjWERRDS3FKEkurFfe7cWiBQ@mail.gmail.com>
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
 To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-X-Mailer: Apple Mail (2.3826.500.181.1.5)
-X-Proofpoint-GUID: TK6WoCdX4oEopUm7hc3r5_Gn29oagWKV
-X-Proofpoint-ORIG-GUID: TK6WoCdX4oEopUm7hc3r5_Gn29oagWKV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-05-26_09,2025-05-26_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
- bulkscore=0 mlxscore=0 suspectscore=0 clxscore=1011 adultscore=0 spamscore=0
- malwarescore=0 mlxlogscore=673 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.22.0-2503310001 definitions=main-2505260157
+Cc: port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>, 
+	linux-m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-> On May 26, 2025, at 8:05=E2=80=AFAM, John Paul Adrian Glaubitz =
+On Mon, May 26, 2025 at 2:23=E2=80=AFPM John Paul Adrian Glaubitz
 <glaubitz@physik.fu-berlin.de> wrote:
->=20
-> Now I'm wondering whether why some types on NetBSD such as double have =
-8 bytes
-> alignment on a 32-bit system. Does anyone know the reasoning for that?
+>
+> On Mon, 2025-05-26 at 14:16 -0400, Jeffrey Walton wrote:
+> > I don't know about the 64 byte alignment on NetBSD. Maybe it was
+> > copied/pasted/modified from amd64? amd64 has a BIGGEST_ALIGNMENT of 64
+> > due to AVX512. Prior to that, I believe amd64 had a BIGGEST_ALIGNMENT
+> > of 32 due to AVX. (These were due to the aligned loads, like
+> > _mm256_load_epi32 (32-byte requirement) or _mm512_load_epi32 (64-byte
+> > requirement)).
+> >
+> > For PowerPC with Altivec, I believe BIGGEST_ALIGNMENT should be 16.
+> >
+> > I don't know if __ALTIVEC__ plays a part in BIGGEST_ALIGNMENT. That
+> > is, should BIGGEST_ALIGNMENT be 4 (for int) or 8 (for doubles) unless
+> > __ALTIVEC__ is defined; and if __ALTIVEC__ is defined, then
+> > BIGGEST_ALIGNMENT should be 16.
+>
+> The alignment is specified in bits here, not bytes. Hence a BIGGEST_ALIGN=
+MENT
+> of 64 means 8 bytes, not 64 bytes.
 
-Because that=E2=80=99s what is specified in the System V ABI for m68k.
+Derp...
 
-     https://m680x0.github.io/ref/sysv-m68k-abi-part1.pdf
+Maybe the 64-bits/8-bytes is coming from limitations in the linker.
+See the discussion of __BIGGEST_ALIGNMENT__ at
+<https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html>:
 
-See Figure 3-1.  =E2=80=9Cdouble=E2=80=9D and =E2=80=9Clong double=E2=80=9D=
- are explicitly 8-byte aligned.
+    On some systems, the linker is only able to arrange for variables to
+    be aligned up to a certain maximum alignment. (For some linkers, the
+    maximum supported alignment may be very very small.) If your linker
+    is only able to align variables up to a maximum of 8-byte alignment,
+    then specifying aligned(16) in an __attribute__ still only provides
+    you with 8-byte alignment.
 
--- thorpej
-
+Jeff
