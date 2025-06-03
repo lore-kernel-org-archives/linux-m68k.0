@@ -1,63 +1,99 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB354221297;
-	Mon,  2 Jun 2025 20:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D071E4A4;
+	Tue,  3 Jun 2025 08:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748895302; cv=none; b=Mq9i97vValHwX57DFN3QHAO9gFTKKMEjnwLYWsHp1BuX1uWLYxpvV4zRMFTQJI6JKKJ48t9DZ+cuOXd6OHQJYq/rYOnjG1e9iXe+JEP/oNZB8izxbd8hDCaLMNBBDTVLIH/pfo7+swSaa92jAgXvRKF5/G54DRB+mjusPE1UAeA=
+	t=1748940468; cv=none; b=XJrXu5jO5gbuDEypAo+Lhal4xwXtKSjfCiPHRzI2sn7N//PGMGm8h5dwbpv9UqayvNIefhsKX4lzmPI+fCaKpeEIIHAJpROTNOuCejbolJBFP7olxZc73jLE1PKBlKLpXM9WwT+e1V1Q0YSdwZZMkJ+Hq30etDP5Y6rd34jwHk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748895302; c=relaxed/simple;
-	bh=j68d7MpeEO8xwT9CNVd6kpQnlJhM4cvbAyjJbViCMiI=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=k6qHD5mMez8Brq8/lxQpAXkH0ZMShLcjMWXjxwY/YxEl/PXA5pgd3wHAquwB2sX8sCSVZ6whic3crDpWv7WQUdXyjxUNQCB+BRzs5S/nwquuXOiOIKH0ZcbPEvP0cll7mD5LdSKOCEqIlbcQuH7+vku364VvueYMvXfYJZkZFeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K58Xp1j/; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1748940468; c=relaxed/simple;
+	bh=jJl7zNe61UoVTJuk1dJpds0EqaxQd/Bjp7rrpdF3Vrg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=O1RWHlQeNIO3lztG2SYP+QNSM01u40WvUMPuBGRjInPJs69hGDJZnG3R5JnsOb/mGzn3MDDt66DbQxVbbb9KM3R/sWKODdkeD3QjMjYizgQgbpNp8M2DkeY6zLkUcDenNavqbq67ndu9CkqSb0+SHFcJNKLYxUdnB+4LQ7bq+wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=W43ANvm/; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K58Xp1j/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56BA2C4CEEB;
-	Mon,  2 Jun 2025 20:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748895301;
-	bh=j68d7MpeEO8xwT9CNVd6kpQnlJhM4cvbAyjJbViCMiI=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=K58Xp1j/DTZ+al/jDGb0Ar+7rb+u0xWVsGhAi1RywDHNrKMXfyxCzJ+dKkiD2m0tD
-	 qp8idM2bwurb2dCqJNe+AvV5ZWGWBwC20Dn9IzvmeDMvI+If+VFTuDIKhFOFcIeg3r
-	 SNDtkAPex9eVOgz/78van6bZuYfQYv2mQ/UW5xWkmdaQme+UiWm8o7mnuQgbLbC2sW
-	 qLuTogboIVbhv3AQLYPPA3lROFm36Lr7iFpGX7NMceHGUh1kZ3lLWkmF6xVg1vIP9z
-	 5SMYuPrCfrsOXPyUlX+cAgvGwACyLd9jBg+0HduwWyI1jHJKyx0OxHc27cCUZ0OfHp
-	 UwlfAui0Hx+Ig==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34079380AAD0;
-	Mon,  2 Jun 2025 20:15:35 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v6.16
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <992c6488-4089-4e0c-96cf-70e8d18b4986@linux-m68k.org>
-References: <992c6488-4089-4e0c-96cf-70e8d18b4986@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <992c6488-4089-4e0c-96cf-70e8d18b4986@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.16
-X-PR-Tracked-Commit-Id: eb43efd062d10bacdf6b50df0e300a7049474e51
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: df7b9b4f6bfeb1143e7626c536e03bb122e90cc9
-Message-Id: <174889533385.896656.14004325410523635837.pr-tracker-bot@kernel.org>
-Date: Mon, 02 Jun 2025 20:15:33 +0000
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: torvalds@linux-foundation.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="W43ANvm/"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=ll9HQg8JHducpOZaqvXxVZxIxZ1+gNQW3g36PYXusgc=;
+	t=1748940467; x=1750150067; b=W43ANvm/jK2PCmf4C1oXzPDqDDSRZ1zVHQkxCJcm6w/HiYB
+	VW6658f7aklLrNQNLom+gJ1hRl9ycgnkPhERK9THyfshpc23RtOAqz2ZZ5qXxBJFlMPmeEYm1aZc+
+	O3IwiVjeRbdDUMTZfWQ4hCj4K0XskBvgHmH1GHqA8Pou+aX60Bni5Wi2OhDgCrMZcAhl5CBv3T2qe
+	FIYjR8//KG0nDEQm8XjikFkzgD2xIiQ3nqdB0QIPpyepc9QBEOtY7gRcaoEkej0SlaTJOUpOrpGp4
+	661ZL7FYZuhoI6EweKtt83zB67dvOKFPnNR0VaBxJHGY+lfKfxM0cHnOpdP9SdcQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98.2)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1uMNIR-00000009mC8-119O;
+	Tue, 03 Jun 2025 10:46:59 +0200
+Message-ID: <b4fe62d12be677dc047ee2fce4a65284a5f915e8.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/2] arch: use always-$(KBUILD_BUILTIN) for vmlinux.lds
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
+Cc: Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev	
+ <agordeev@linux.ibm.com>, Alexandre Ghiti <alex@ghiti.fr>, Andreas Larsson	
+ <andreas@gaisler.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Borislav Petkov	 <bp@alien8.de>, Brian Cain <bcain@kernel.org>, Catalin
+ Marinas	 <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Dave Hansen	 <dave.hansen@linux.intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren	 <guoren@kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, Heiko Carstens	 <hca@linux.ibm.com>,
+ Helge Deller <deller@gmx.de>, Huacai Chen	 <chenhuacai@kernel.org>, Ingo
+ Molnar <mingo@redhat.com>, "James E.J. Bottomley"	
+ <James.Bottomley@HansenPartnership.com>, John Paul Adrian Glaubitz	
+ <glaubitz@physik.fu-berlin.de>, Jonas Bonn <jonas@southpole.se>, Madhavan
+ Srinivasan <maddy@linux.ibm.com>, Matt Turner <mattst88@gmail.com>, Max
+ Filippov <jcmvbkbc@gmail.com>,  Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Simek <monstr@monstr.eu>, Naveen N Rao <naveen@kernel.org>, Nicholas
+ Piggin <npiggin@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul
+ Walmsley	 <paul.walmsley@sifive.com>, Rich Felker <dalias@libc.org>,
+ Richard Henderson	 <richard.henderson@linaro.org>, Richard Weinberger
+ <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Stafford Horne
+ <shorne@gmail.com>, Stefan Kristiansson	
+ <stefan.kristiansson@saunalahti.fi>, Sven Schnelle <svens@linux.ibm.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner
+ <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,  Vineet Gupta
+ <vgupta@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Will Deacon
+ <will@kernel.org>,  Yoshinori Sato <ysato@users.sourceforge.jp>,
+ linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	sparclinux@vger.kernel.org, x86@kernel.org
+Date: Tue, 03 Jun 2025 10:46:57 +0200
+In-Reply-To: <20250602181256.529033-2-masahiroy@kernel.org>
+References: <20250602181256.529033-1-masahiroy@kernel.org>
+	 <20250602181256.529033-2-masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 
-The pull request you sent on Mon, 2 Jun 2025 08:53:11 +1000:
+On Tue, 2025-06-03 at 03:12 +0900, Masahiro Yamada wrote:
+> The extra-y syntax is deprecated. Instead, use always-$(KBUILD_BUILTIN),
+> which behaves equivalently.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v6.16
+OK, whatever you say ;-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/df7b9b4f6bfeb1143e7626c536e03bb122e90cc9
+>  arch/um/kernel/Makefile         | 2 +-
 
-Thank you!
+Acked-by: Johannes Berg <johannes@sipsolutions.net>
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+johannes
