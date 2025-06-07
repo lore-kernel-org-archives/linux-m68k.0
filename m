@@ -1,204 +1,105 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808C6207669
-	for <linux-m68k@vger.kernel.org>; Sat,  7 Jun 2025 09:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FD415D1
+	for <linux-m68k@vger.kernel.org>; Sat,  7 Jun 2025 10:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749289474; cv=none; b=ezimFQDQ35qtOAVMd2+bHfv62/JFbE7UYBJ1wA92etXiepJ7WxSOceca9BwUZBPREMp7XV4Fryfi0r29iqRoctvK0zq56jwoV1ysNbNPhxfsV/h/cz4SNm9dcmEfLW2ER7d2xO6tDc2SKtI5P4B1O/XcEYHvrpR9eZ3tfcZQORo=
+	t=1749290564; cv=none; b=lT5SLiPkUEGwPxIduLTKg+emUkivQr0EKTBqBTAukLKsMa+aMfL3l/E9tbzd5JBufO6RWhw+Ta30BwHs143PnzQhhWMYba5/VElCpb4AMbrTxh9mEV571Xus/aES8S1FBNrshROil6Tz+dr6Rqyw3FWNxP5HrA1GuHqDMns9uJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749289474; c=relaxed/simple;
-	bh=s1Z2+yR9BGQuXTfn4GXHWkU1PUHsoIf74O7s89o96do=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=RwoIqTwSXZCydvqLYo8BBiHdVfeaIsoR/wwrWLgw5GOOR+Ih6pn8atShf3ZF6JKEh1M/WoUo8YAGfQXjI5dJRDgcKVsHjobg7+c199b/fF2BuFN+4x4B2uOAPdrCfs8P9k19kAY8kgJdAXmjojKhcUF7VAz1tD9Ud0LD4oR1jBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=pDK6GxGa; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1749290564; c=relaxed/simple;
+	bh=tPybxwY5gRS9ZtvWDRMPSDHenxs20vzDc33V5D36Dl4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R/Pa8MfTIdXlwb51JrUfXtjDkb+cTUghBymq0C7KIeeDnbUOHTgSRSfwWb7R9MfuS9YvSU+wSLTDPwVUlKE3o73J/bYGlyxTpz1KVcIv6grEn4n9U7AtyQ3zQYXPMxi9L113SvapdJBu6gD4Pn6h1KUkm9NzJ7ZGiXuL04BY95A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tethuvudet.se; spf=none smtp.mailfrom=tethuvudet.se; dkim=pass (2048-bit key) header.d=tethuvudet-se.20230601.gappssmtp.com header.i=@tethuvudet-se.20230601.gappssmtp.com header.b=UCh+JIA2; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tethuvudet.se
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=tethuvudet.se
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="pDK6GxGa"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=NOeworqpELATt9mAU+Zgo0MD8Fd5HIylnebZ+XKa7XQ=; t=1749289471; x=1749894271; 
-	b=pDK6GxGatyPqtN8MHOCm/Sxc2AlpFWhzM+8JWN0tDlZWN65wqWMWsQaDoWIRubvZfnZQcHR06vH
-	COiKx532LTBtjLdDW5ww4v3yyvoPaMHFTloWYE/jnp4ppT+ytEcHKeFJp9qtLhv+AsgkucU6HwKlH
-	T8hG2epV7q6LlcrjPVzwOHhmyn33QRYVXMKUqYlORiDmkbFhrMvQo1tZfp9vEUR4xk11/MDPX+OZr
-	ShPYlcRdPTGWn6gTqVgljaGAOdnJBH1D9q2VQB03TFzKFDrg/IBlAFyFV+2OswDlDfwPodyxqjqar
-	s6DlBvIRcr9DKNwWwmgnXtLSK8CNrzEoj1ww==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uNq6C-000000018A9-0yef; Sat, 07 Jun 2025 11:44:24 +0200
-Received: from p5b13afe4.dip0.t-ipconnect.de ([91.19.175.228] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uNq6B-00000002zza-4BZ8; Sat, 07 Jun 2025 11:44:24 +0200
-Message-ID: <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Jean-Michel Hautbois	
- <jeanmichel.hautbois@yoseli.org>, port-m68k <port-m68k@netbsd.org>,
- debian-68k	 <debian-68k@lists.debian.org>, linux-m68k
- <linux-m68k@vger.kernel.org>
-Date: Sat, 07 Jun 2025 11:44:23 +0200
-In-Reply-To: <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
-References: 
-	<ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
-	  <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
-	  <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
-	  <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
-	  <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
-	  <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
-	 <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
-	 <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	dkim=pass (2048-bit key) header.d=tethuvudet-se.20230601.gappssmtp.com header.i=@tethuvudet-se.20230601.gappssmtp.com header.b="UCh+JIA2"
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-32a8abb1613so2868561fa.2
+        for <linux-m68k@vger.kernel.org>; Sat, 07 Jun 2025 03:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tethuvudet-se.20230601.gappssmtp.com; s=20230601; t=1749290555; x=1749895355; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+2UdhL65JAsWjXvkcSHDNO/oU1J71LGi/o9cFVvTJ84=;
+        b=UCh+JIA2Znrqf1P6CJhfycsYWjIvsV30e52UZq1v4ibD8xj97ZowfTlq2TLRAy3XSq
+         kkFIdXph+mYEx6AE4pmfym3+3oOz4XFKIHZM/48clHHNB/IoS0hfqAKU5nfQpchIy1zK
+         0jQY4HUIkYzSMrzvv5B+Z/qqghK17WzCR0rBKIJo1tGJv+6EEGlODQMqpLKC2l1I9Wxo
+         Hen+oag17PwSTw65cOAGrXnVhIm4EiXXzZAp0Tx0R6lRzZaaRIxOVtR+IYi69FSQLgyz
+         fP09N3G5VoqiI7irtTeVsTF0LQbk6Tg+8YWW1w+46Tn22DfhG6mWsfW0kBB41HhVFqkr
+         mnlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749290555; x=1749895355;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+2UdhL65JAsWjXvkcSHDNO/oU1J71LGi/o9cFVvTJ84=;
+        b=tIqFveXfD9klJIeWGyHMMJNoX+E1nmChaghBDUE0XmZe1m80RKalKJT6fsg+8KmsiF
+         jPg+vuKh2lzz05OKAxoI2FK3hcpq/kIDQusnrsZX9elW7OhtPrqrzME65M9TaDSrLq3M
+         gsQ1stfaGBJWtisTUu5npMx6K8dupfehj7+1TUUIsFM2foXJqbp5LnMXcBkv8d0tc+Lb
+         uuB111pU1x5QN1DQeDfU/MZdDzNeY/HHgXl9YqzvIEVmQcYr5qPVKxU0PQsC9fmteODm
+         eMFIHed10zGF4tBCqoZFauixtXmvNVFiPMVcf1xHI20UdQy9o0vXbBoXAsBR2oSjXGj8
+         wANA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5bu2KVEPgribH6yhJTpaR736mNYDt7kwGTxH7m87XHZ/XU397/UadOYWXUJldn/nXrDY3or1WfbSN@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVwwJM8jpifcM2oMPsNtxi3YOeEf4YPNgjHmJaTEEpbHfTVPEo
+	pVyg4N1HqZfLI1D6hTBT1QoQn0+2zRHpP+qxNnSXefF8e00xxpaaLrX87CAmpjb/SyrokYa/mqv
+	IN0W2uLk=
+X-Gm-Gg: ASbGncuhMemLrT+BXukeJ7SuFO00Ag77N870zirdmyR5awV7Uv+so1dtpKsX/PyNVYL
+	svGhKVFkaMPcgTWO4RpIlThGJwTeB0mx/LTdQGSjVjaOH4roqYA/MPK5Pn5R5SJTxOPpP7LkhcC
+	LJ5VZcp8nU6oVUlY2kW4oyvbuCP2UU48WLoyKcdMO+dLPspuvNu3EV3+zd7/IJq7ocodXwK34xz
+	BDAqWAElALZyhTmrJc4savetyuUN6kUigpi/T9SS0hJmKAvpLYL/0OfrF0Lt2Uez9UoMQei31K1
+	VamimpAgCT2LQ+AS3em2DksGdK1tRtTn0SbkNNqIMQClE0nsvxip98gkFL7jPJKeMLbjDCCHkzf
+	wzq7F7UtdXdWTMIWtwlbRFC/4
+X-Google-Smtp-Source: AGHT+IGb9Yt5c5dXjYX7cyofjvNVGvqqf6K/lIsfA/1djAPBxThuxrLPQf+dAD8GNdj/btYKq794fA==
+X-Received: by 2002:a05:6512:1156:b0:553:29cc:c47a with SMTP id 2adb3069b0e04-5536860fd82mr554756e87.6.1749290554995;
+        Sat, 07 Jun 2025 03:02:34 -0700 (PDT)
+Received: from [10.198.177.219] (90-226-0-12-no2310.tbcn.telia.com. [90.226.0.12])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5536773105bsm457651e87.195.2025.06.07.03.02.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 07 Jun 2025 03:02:34 -0700 (PDT)
+Message-ID: <cb873001-0287-4a60-a793-07b553d92224@tethuvudet.se>
+Date: Sat, 7 Jun 2025 12:02:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+User-Agent: Mozilla Thunderbird
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+To: Andreas Schwab <schwab@linux-m68k.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Finn Thain <fthain@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>,
+ linux-m68k <linux-m68k@vger.kernel.org>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
+ <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
+ <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
+ <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+ <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+ <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+ <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+ <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+ <87sekbq3f8.fsf@linux-m68k.org>
+Content-Language: sv
+From: Anders Magnusson <ragge@tethuvudet.se>
+In-Reply-To: <87sekbq3f8.fsf@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 2025-06-06 at 20:20 +1000, Finn Thain wrote:
-> Whereas, the ability to use old binaries is proof that we care about rule=
-=20
-> #1 don't break userspace.
+Den 2025-06-07 kl. 11:58, skrev Andreas Schwab:
+> On Jun 07 2025, John Paul Adrian Glaubitz wrote:
+>
+>> Who is "we"? The official(!) ABI says that pointers are supposed to be aligned
+>> with 4 bytes, not 2 bytes.
+> No, that is wrong.  The official ABI uses 2 byte alignment.
+The paper copy of the "System V Application Binary Interface" for 68000 
+that I have here says that all pointers should be aligned 4 bytes 
+(figure 3-1).  Nothing else.
 
-Who is "we"? The official(!) ABI says that pointers are supposed to be alig=
-ned
-with 4 bytes, not 2 bytes. It's the current implementation that violates th=
-e
-ABI, not what I want to achieve which is make Linux/m68k adhere to the offi=
-cial
-specification.
-
-Furthermore, we're still talking about a hobbyist platform here which hasn'=
-t been
-in production use for more than ten years. It doesn't really matter whether=
- we break
-the ABI or not.
-
-And it's not like there isn't strong case for making this change. As I have=
- tirelessly
-explained, the current port with 2 bytes alignment is simply no longer feas=
-ible since
-an increasing number of packages either require 4 bytes alignment or requir=
-e Rust.
-
-These include more and more fundamental packages such as coreutils, the ker=
-nel or various
-Python packages such as python-cryptography. It's simply not an option to c=
-ontinue on
-the current path as it has become a dead-end.
-
-I don't see the point in maintaining something that becomes increasingly us=
-eless because
-more and more packages are no longer buildable. If kernel people think that=
- usefulness
-is already established when you can boot busybox and type some commands, th=
-en you might
-be able to continue on that path.
-
-But I'm a distribution maintainer and distributions consist of way more pac=
-kages than
-the kernel, busybox and the toolchain. And even the toolchain doesn't even =
-fully build
-on Linux/m68k anymore because it requires 4 bytes alignment for LLVM, gccgo=
- and mold.
-
-So, whatever we currently have that we would break compatibility with, I do=
- not think
-that it's worth the effort to keep it alive.
-
-> Having said that, I agree that there is scope for a better ABI.=20
-> Users/developers will eventually want solutions to the Y2038 problem.
-
-This has already been addressed in Debian and surprisingly, no started a fi=
-ght over it.
-
-I don't see why it shouldn't be possible to do the same with the alignment.=
- We have the
-full source available. We can rebuild everything and I have already created=
- an initial
-4 bytes alignment bootstrap with the help of Helmut Grohne's fantastic rebo=
-otstrap project.
-
-So far, it works as expected and multiple packages that previously didn't b=
-uild because
-of the 2 bytes alignment, just built fine and without any further patches. =
-This is
-exactly what I want.
-
-> > > BTW, looking into the history of __ADDR_BND_PKEY_PAD() (which is=20
-> > > overkill on m68k, as __alignof__(void *) =3D 2, but might still be=
-=20
-> > > useful for anyone wanting to revive CRIS support ;-), I ran into=20
-> > > Andreas' explanation why the minimal alignment is still 2 bytes:=20
-> > > https://lore.kernel.org/all/87y3i442w1.fsf@linux-m68k.org/.
-> >=20
-> > This post just proves that it's always a bad idea to keep historical=
-=20
-> > burden instead of fixing it.
-> >=20
-> > Again, can you please bring up a convincing argument why it would be a=
-=20
-> > hard problem to break the ABI for Linux on 40-year-old hardware? And wh=
-o=20
-> > would be affected by it?
-> >=20
->=20
-> I think Arnd already answered those questions:=20
-> https://lore.kernel.org/all/383faec7-8987-4680-920d-8f802e1bea34@app.fast=
-mail.com/
->=20
-> Moreover, "what's wrong with my idea" is the wrong question. The right=
-=20
-> question is, "what's wrong with my patches?"
-
-Finn, again, you haven't contributed any useful input to help alleviate the
-original problem. I don't really understand why you think it's acceptable t=
-o
-constantly bombard my efforts with such comments. How does this help?
-
-Please re-read what John Klos wrote on this matter as he already pointed ou=
-t
-why your comments to this discussion aren't moving us any further here.
-
-> > The ABI isn't set in stone and if need to break it to fix fundamental=
-=20
-> > problems, then be it.
->=20
-> Well, that's a value judgement you're free to make regarding your systems=
-.=20
-> It's easy to find fault in other peoples' systems but it's also pointless=
-.=20
-> It won't get us closer to a consensus that will hold for another 30 years=
-.
-
-I'm not seeing how violating the official ABI was ever agreed upon. It seem=
-s
-that Andreas took this decision in his own hand while the NetBSD people wer=
-e
-courageous enough to switch the default alignment when switching the execut=
-able
-format.
-
-Adrian
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+-- R
