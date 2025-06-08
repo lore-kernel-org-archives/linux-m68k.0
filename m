@@ -1,102 +1,114 @@
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643402B9AA
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  8 Jun 2025 09:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A6713C3CD
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  8 Jun 2025 09:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749375393; cv=none; b=ddWRABGP6VDPTYWDV6w2taFfQr5jqONPn16K7XRvuZkFgqoUm+5R8d4jYljG+eEkLOb6vJqYRZVJRKWiLx7DBAWoxqhbIWxYyNn6LOqCv4UXw3KynhBfPBj8xU0b5eSxM7KR0FyT86JvhdAYxKr0Mz9nHq3LpK57KIIcMHSbomY=
+	t=1749375605; cv=none; b=opnm6PI7WvFb6SeWHqrmYiMnn/xVS/xR4A8TruS6yoo8c7R8PJox9qjNhVEBDdsigCeXr4ROp1Wx8dL12qO0vxqbViXV2yOqzPF/mVbJVzVOWG2ppG5wFPE18+gmhse2iac1pX2QMo5es23zEaFwI3C4kDEFNAOTps1CBA7wQ9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749375393; c=relaxed/simple;
-	bh=VCLDuzrT1NpTtg6uPad5mV2mHCMOuncqCM44nHvvkz0=;
+	s=arc-20240116; t=1749375605; c=relaxed/simple;
+	bh=jmOKtbWnlZR/Qj4SRxgpy6Bosb3xk2ulOZQUv/2xbV4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JRUM4w4dq5b3Bq9xsi0GjUOJZMhUE5uzTWnJme4HuAn5EZgd0ZPtlHDmpx5ti4wkCcfA4g2V5pgQqFInKMgu/Hh1dMbAaxDNaVG2R280kYv0W9Pjf2HF8xLxj4seci3e2HiHZ4z6iB5e52k+I03CTTxXZcxQk3WWZ9op+46Psb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.44
+	 To:Cc:Content-Type; b=ecQUzQErT1M1CcgbPDCW9/XYHpx+NB+XY2LhahwBYsEB4vJmnAviIJxFduT3CYIaU8lwWXUfOeYD1/+J1lUKhp9pbyMoPt2zcOqudFbs3fysJx9c+ySGzYcL2/KttgqbIj+W556+eM2pfbEWLGS+yTZ3fXsIq5XYXvqj24PWu5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4e58d270436so1149535137.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Jun 2025 02:36:31 -0700 (PDT)
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-530807a856fso3185800e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Jun 2025 02:40:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749375389; x=1749980189;
+        d=1e100.net; s=20230601; t=1749375602; x=1749980402;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=nmxOdpkXc8wFRgqF6mDzsfzWIfq2uzHJ8hAPDDQrOa0=;
-        b=nahv7n+5cRdEVBGwW7pfMWLPuYMmV1gGBs8pa/lsDQ/wGbsel0Ex2X+RynsS+KzH7f
-         RNN6DZOUEK8bJZ1h+xf7s49yBF4iGxPPSPNOv42gALtWWka6sKQIH2dQt1tfoRRjI//r
-         DF6lTqMS4i1WmvRc7PxYmaXMh026ci6XsLAyxb5T9xuMJs2x4eKeo+2GSqFUJqmysGm1
-         CDhfArVeNTjqMaxI7jmOhixUVV0ZDtTlaIjRn0+BgzqWckzje8EOMBKbnGL7vmj4NdYZ
-         btRS4m+rqbHvjRH+Z3YCj2ekJ/vPbSXuAf/hnz5b9YAObDBpUpnRlXI78rgYeQ9XAoUu
-         pIEA==
-X-Forwarded-Encrypted: i=1; AJvYcCV29pbP+tNRltqxgn0HYKAGCqt7kEJHjefYfRAvz/2rnO/r28yMDmMlPwHRBzVNW31uSXRKRdaGTnk1@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzQyk8/jDeXRvdACr4ievlmCuQE7JLcTTeQDYgiJ9y4j4ocYZlF
-	zv1PxPq5tQOZOwRLLSWiYe4fT3GM0KYpAjbr2PTV5+w53WgTXIxlbunIp1dyh9mB
-X-Gm-Gg: ASbGnctBIq9is6SdFaaGwDTCh4MhgLuh28mh94Cq/3Dx465UJU8HdWSs7J5pb1AmyJY
-	mrorIneBfRI6UBsJMYBC756mnkRZbxIrUxdMgrtVrRfzNzgFMmoXJ1k99WZq3rc32+SdUGI7tPZ
-	SqdcaL5swbu24nN9Nk8/WIDRlQGQ7JLhL2OlqJMFTS3LM7IXHIvA13ZXrEbqDSQ9wRtSMb6DaTO
-	ru64cCinZajeVMQiFSuS6iqlup0o5ZkLMgjqKx3EgOdWJ7flcABWWzQkluydQuzGgSWGfyYDIl2
-	BOyaKyKM45mYRkafA9g5CTRPXugxn6vDbPKdKNlzqPvJlBqqG4oxPXe6pXpyQSBchYys86nctHu
-	JfGQneI85VJNl7w==
-X-Google-Smtp-Source: AGHT+IH0AdV0UChSCQ83Oxw0QpmqEh/UXXideCuuRX4qsu4gyO9yktqRH7LRHBkJ7AzutAL2QRznmA==
-X-Received: by 2002:a05:6102:c50:b0:4e1:52fa:748d with SMTP id ada2fe7eead31-4e7729e2ed9mr7939193137.15.1749375388847;
-        Sun, 08 Jun 2025 02:36:28 -0700 (PDT)
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4e7737d3474sm3622970137.4.2025.06.08.02.36.28
+        bh=PEIWuLmQRMVnfGdgxWwMM+uZrcmSfOPwu48WTLXFYZc=;
+        b=ltQZQhapaM5ESLMpBhX098AV87wQi5EXByPKEwR9NWQrTroHMAamWdlJmq9ucsI2f5
+         cg6NHpvKGb40WfFTeitHHltyQrwRslfgPaP4Soo62zeQSwFkvYZsW+CvedeJlW3CisLF
+         o7DJFgpGWeFU5AFNU3+y3BOg5TGtoy3MDJrU28EANZmmmgyq9jkedRHeyJANgCh+MYfW
+         YVfKvay0PFucO8UBBpfwZSg9YWmTLEE8FzRd/0qdtqqA56cWEmcr7IRU7bk1i6hNfV26
+         x+A1JdJauKW1IA5jdYJwQfLEPiv4lf+g4CYntJZKmoAK9umpkYFIdmKhnYjeEstSh+Y4
+         fRdg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1Vy+jgpyZv/oGAx3WQpe2V1hynrQbMl98XA1dZ+uegZtQRqdTl4p8l0F04N6L7GRSKh8rw+fCByj9@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yz6hjyCBr8lNLWRe8Xa+GLm91E0SASkAlcZoKTv4NvhUvGjwifb
+	cwtZUtKAw7RMiqXcyqzPoUKr0vHljwxY/ekMyPfDUHlDWn6IGHdbahiWB/Q64YfS
+X-Gm-Gg: ASbGncv47sohbBxR8duDdoh+4ctJa6nNdjf/3CLHluzpzLztdvKhxq4juWph+EEW+EL
+	aZqEl3hiirGvjDNlxypJ2gCK+vHMqaqmJR4rTee3p3s8v78FAgNFxIMU0k2gerf16+6nfHBoHOT
+	QVY5QZ3jemo1+7TmsFUHcdH/j3zdy662vtIujLBb0EtmCV/7sO4474rTFxZo0oYoKGkymiZgKrI
+	L3N+4BZsAOrA3o3wq4D87Sowc8hTpl3MNYYdawTkb6HamHexVS4DTS0j+cLW85Zkj5uMtQkkgLp
+	5BUtEuVQAOYMFcMFK+ySkOZyUP/SJDaHsGwj3t+GDu24Uvx5Ro8KH5x3xiy5dhvAG0Gi9O8kbi/
+	SaYXuCgqWV4bv6xyUIf9fKE5H
+X-Google-Smtp-Source: AGHT+IH8lO07iVmFe8Ro2gPEEY/EYOToYRl8GIa3JqDecShyAMydB21gEzxXRAvchlEw/bqxctn7Yw==
+X-Received: by 2002:a05:6122:478c:b0:530:5b54:e035 with SMTP id 71dfb90a1353d-530f34a12damr2629064e0c.4.1749375601876;
+        Sun, 08 Jun 2025 02:40:01 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-530e63e5829sm3316341e0c.31.2025.06.08.02.40.01
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Jun 2025 02:36:28 -0700 (PDT)
-Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-4e58a9bb8fcso1112415137.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Jun 2025 02:36:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWwT5Syh/r9jHPmWbAVHySbqv6qjHT8Ce6mz7TaZFUfaQd8FWrfF1Jjmh54ffrtXMNEsEsEG6Xcfrt6@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:3ca4:b0:4e5:5f29:baac with SMTP id
- ada2fe7eead31-4e772aa0fe3mr7547400137.18.1749375388278; Sun, 08 Jun 2025
- 02:36:28 -0700 (PDT)
+        Sun, 08 Jun 2025 02:40:01 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-86dc3482b3dso3311592241.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Jun 2025 02:40:01 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVsDHCi+RByQnpoqh2oNa5TFjuv5XDG9nvpERk8jk5ZJuymzGWn2DvSfbCAS4aXjo5ETDXilU1xCI5a@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:12c7:b0:4e1:ec70:536 with SMTP id
+ ada2fe7eead31-4e784052d39mr1902461137.4.1749375601424; Sun, 08 Jun 2025
+ 02:40:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250416114240.2929832-1-daniel@0x0f.com> <ac188e54-7f23-4ecd-805c-c0437a53247a@linux-m68k.org>
- <CAFr9PXmrVUL1HubP04iHR1ObhaNo+mObg7FC+-HpTF7QR0og3g@mail.gmail.com>
- <42674c5a-42fe-4846-bf90-340310393fea@linux-m68k.org> <5bc4ad99-3432-c7e1-32a7-e9f9db86f94a@linux-m68k.org>
-In-Reply-To: <5bc4ad99-3432-c7e1-32a7-e9f9db86f94a@linux-m68k.org>
+References: <20250315105907.1275012-1-arnd@kernel.org> <20250315105907.1275012-3-arnd@kernel.org>
+ <6c7770dd1c216410fcff3bf0758a45d5afcb5444.camel@physik.fu-berlin.de>
+In-Reply-To: <6c7770dd1c216410fcff3bf0758a45d5afcb5444.camel@physik.fu-berlin.de>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 8 Jun 2025 11:36:16 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXuuTnDk-snc4NipM1xYOom_uiDHtek1UkxuxhETJEeQA@mail.gmail.com>
-X-Gm-Features: AX0GCFurA39txgMwJUlMsxaYBEzkQJOCgUrg-8vEcHy7l3MZSE04h5oOKTiCj9c
-Message-ID: <CAMuHMdXuuTnDk-snc4NipM1xYOom_uiDHtek1UkxuxhETJEeQA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Enable dead code elimination
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Daniel Palmer <daniel@0x0f.com>, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Date: Sun, 8 Jun 2025 11:39:49 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXeTWSU64jQt+nybsSBOpBEu_zO0WmE5FK1PnA3YkALUQ@mail.gmail.com>
+X-Gm-Features: AX0GCFt4vabIohtnnm_mFUKWYT8sgcrvXqd5vSNi-se7k7UhxzRe5PjaG9sA3nI
+Message-ID: <CAMuHMdXeTWSU64jQt+nybsSBOpBEu_zO0WmE5FK1PnA3YkALUQ@mail.gmail.com>
+Subject: Re: [PATCH 2/6] sh: remove duplicate ioread/iowrite helpers
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org, 
+	Arnd Bergmann <arnd@arndb.de>, Richard Henderson <richard.henderson@linaro.org>, 
+	Matt Turner <mattst88@gmail.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	Naveen N Rao <naveen@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, Julian Vetter <julian@outer-limits.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, linux-alpha@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hi Finn,
+Hi Adrian,
 
-On Sun, 8 Jun 2025 at 10:32, Finn Thain <fthain@linux-m68k.org> wrote:
-> On Tue, 29 Apr 2025, Greg Ungerer wrote:
-> > On 29/4/25 10:04, Daniel Palmer wrote:
-> > > On Mon, 28 Apr 2025 at 08:37, Greg Ungerer <gerg@linux-m68k.org> wrote:
-> > >> I notice that some other architectures (arm and powerpc) have version
-> > >> checks on gcc or ld in the config. Do you know if there is any
-> > >> version limitations for m68k here?
-> > >
-> > > I'm not sure about that. I'll try to work out why they have the checks
-> > > and see if that affects m68k too. I'm using GCC13 so probably new
-> > > enough that most things work.
+On Sat, 7 Jun 2025 at 14:08, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Sat, 2025-03-15 at 11:59 +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > FWIW, the oldest toolchain I had lying around was based on gcc 8.3.0 and
-> > binutils 2.32. This patch worked fine on that.
+> > The ioread/iowrite functions on sh only do memory mapped I/O like the
+> > generic verion, and never map onto non-MMIO inb/outb variants, so they
+> > just add complexity. In particular, the use of asm-generic/iomap.h
+> > ties the declaration to the x86 implementation.
 > >
+> > Remove the custom versions and use the architecture-independent fallback
+> > code instead. Some of the calling conventions on sh are different here,
+> > so fix that by adding 'volatile' keywords where required by the generic
+> > implementation and change the cpg clock driver to no longer depend on
+> > the interesting choice of return types for ioread8/ioread16/ioread32.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+> Those are quite a number of changes that I would like to test on real hardware
+> first before merging them into the kernel.
 >
-> I was going to try the patch with gcc-6.4.0 but apparently that's too old
-> to build stock linux-6.15 (see below). Documentation/admin-guide/README.rst
-> says I should have "at least gcc 5.1".
+> @Geert: Could you test it on your SH-7751 LANDISK board as well?
 
-Someone forgot to update that file...
-Anyway, it has just been increased again for v6.16-rc1 by Arnd in
-commit 118c40b7b50340bf ("kbuild: require gcc-8 and binutils-2.30").
+Already done for a while, as this patch is commit 2494fce26e434071 ("sh:
+remove duplicate ioread/iowrite helpers") in v6.15-rc1 ;-)
 
 Gr{oetje,eeting}s,
 
