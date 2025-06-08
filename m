@@ -1,78 +1,73 @@
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D596DBA3F
-	for <linux-m68k@vger.kernel.org>; Sun,  8 Jun 2025 01:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F7C171D2
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  8 Jun 2025 08:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749345004; cv=none; b=JJUAWlsRLbcJaik9F09zAs9YcrbCZmizKgNAPwbBKZgydyis0egy7lq4ez2e5JNHJAkoJkW5l7Ao2UBnBSTZq0OVEk5r+t2NyBM/XJFoSKVAkNTmIGM8PMbvCNwF5NGGH7vRB6ku6gNtcHRqm5/wKnA3X3i1EeUNaRNBmfqmsuU=
+	t=1749371532; cv=none; b=lggXsqoJidCiljxOrUxjExUPzcp6qPk9zdjRNZaX7puNIr7AoR7kLl6u2F2IRajGlqixj9CVvzGP9+cHIfs+S6z91oJWC1qqBFVodCzrGV4CFWllYoW6mXZ3uxO0GfHHLxNszB/vF/OU27NNBZLhAIwxDaKerjcO5JxsG9CGS6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749345004; c=relaxed/simple;
-	bh=fo7iXYL0y1yCtxXFGBxuYSdez0mMnCLTfjNbyYT3ErQ=;
+	s=arc-20240116; t=1749371532; c=relaxed/simple;
+	bh=I3KsMDwr5qvkZ4rDykXuWvFT+KsLZrNF+UPrBdhe35g=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=hWN4cgVZhqyiq2XdjhzbGTU4aLJ/zMXB2lVxyKdcPvH82+StFFcEECv+HZMZzOEDWB1XKvkmyHb+gzL8U+cKTJNoixLmmw7Lor0E4n4j61pipew4/y8Lv2AxsE0B6pDgr3SZ3uh3Rb97RXRiohpEijNNFs5tZ7SY2ROLMb2Qwt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IkD44bpM; arc=none smtp.client-ip=103.168.172.152
+	 MIME-Version:Content-Type; b=GPL4tWn4imwP631dqDmgeJnnfJ+bVuAKrDaIj4b5vTtDLiidzt3sC5oeDPUN3s4A9de64VbbNKOr/yT/p4OYEzKXbC80UkOzbqiaWIHaGzCVyg7ak6L+NyzXA9h4BIP6D/7+5UQ78wks6y3R8FYCDGLZnpb7UQXOglyUjpOi4Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=m3hsCSS/; arc=none smtp.client-ip=202.12.124.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IkD44bpM"
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id C3E9111400D1;
-	Sat,  7 Jun 2025 21:09:59 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="m3hsCSS/"
+Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
+	by mailfout.stl.internal (Postfix) with ESMTP id 6C08B11400AC;
+	Sun,  8 Jun 2025 04:32:08 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-08.internal (MEProxy); Sat, 07 Jun 2025 21:09:59 -0400
+  by phl-compute-02.internal (MEProxy); Sun, 08 Jun 2025 04:32:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749344999; x=1749431399; bh=8qB74uePzWEsKAaP1Gw283juFkUYchbx+Jy
-	no5AnM3s=; b=IkD44bpMiY6sLKUoI3zwQMhHgd2C1B7Oi2W60N5A+EG4aoqJn44
-	ArriWd5HtGsb+Kf+jQ5iMcD6AgI5kkowSUgwUKJAh83fc//S65T3/szzq+xs073q
-	k/t1mim9vWMll1mkFj3++VdtcsF00qZf7fuWyW9eeIq9Cl0MEpiqANiIxAA0bcq4
-	ed+r6lqYq8CROv+Zp9R75ZMcofPtoXY8/dU9iWt7NjX6WzGOYUrxEjyaz+qvXfdA
-	NHrWu0o2eoQ4fQgZS+VHvP9aMgE08GiPMdiYOgN8u7wkiUC2tAEQ4aPdbWxVhWww
-	LnvowawgHHsJjoRimXWwTz0IEaMyE7ABmlQ==
-X-ME-Sender: <xms:5uJEaAZqhOY58QD_iev13uH4gpgEEfos_dl4b6nNRs_EwIXC4HVRjQ>
-    <xme:5uJEaLakIFdSZ19y0BODGiwsx-RCuEKoIeLYFMeC7f5ynjLgXa9If_BK1jfVjmUSR
-    G_cLbXZPebHf-chK1c>
-X-ME-Received: <xmr:5uJEaK_9CRAR9JTD3wBQ49qQCS2v7c-SJwBGJfwbx0N7V6nmi70jFfwb1Om-59yYhLNvXRxqcB9rPXenrLXkwYt0DI7SYx9MpXU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdejvdelucetufdoteggodetrfdotf
+	1749371528; x=1749457928; bh=mZgu0Rm94Z01tFsvuUU3DItJrThYzWjRwqJ
+	DNhTfGCc=; b=m3hsCSS/I1/rfvttRsMmxQIcA1bTYr+sFUhmhOhD8DKwFkHpZwT
+	3d621oVGwDq9+lbfU0RkTd+izF11/GQIp7eGrBOnzF7lMWQD5w/rrbZgFTpomZdJ
+	LWTh21iq4cwbfZqStSmF2iYn8zMLwajEudbK01JNRsLhxghu+8lbIPYnoJtIjEN5
+	9JS+Jz8kRDvchr9k+1bTw1ww7dP3MSXSiNkvzFl9Q0NP/UIpfBUYfmJTzRXrRrzF
+	kqJ3hq/WgVs5bTy2sDfrm4AfbSgMX6TOQoxlu6ujVPsYS6usWqMiwuiovO5KvwI7
+	QuoW89onxOwqxLoZpVXj0QTlcYgjAk1oxVg==
+X-ME-Sender: <xms:h0pFaIQo26DnZV-tZu9c3IFE28_dzbrz-x48NyNQG9Zavm3b5qsbpQ>
+    <xme:h0pFaFz0XH2ayXIqTk04MzCzQVrzLi_lxs-bypcdK52Gr6HjvxVa_3eq2XQbvvMkm
+    gJwxT2C0jNWntRv_5I>
+X-ME-Received: <xmr:h0pFaF0LT-gJ_7RShfgoHvgBMmKX0Demm2p0sh9ljqmuWBqqDHPUDSYMYytcBFisVACGv6IuUI7a_7pirkFL6DGKlztammWI3e4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdejieduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
     htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
     hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpefggfetleffuddtteetjedtkeejuddthfdvleeg
-    keetheelfffhhfdtueehkeevudenucffohhmrghinhepfihikhhiphgvughirgdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhh
-    rghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeeipdhmohguvg
-    epshhmthhpohhuthdprhgtphhtthhopehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdq
-    sggvrhhlihhnrdguvgdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdroh
-    hrghdprhgtphhtthhopehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghl
-    ihdrohhrghdprhgtphhtthhopehpohhrthdqmheikehksehnvghtsghsugdrohhrghdprh
-    gtphhtthhopeguvggsihgrnhdqieekkheslhhishhtshdruggvsghirghnrdhorhhgpdhr
-    tghpthhtoheplhhinhhugidqmheikehksehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:5uJEaKqpY7JbutGIsBVAE_pWODCHhWK5r6AJNlIZgJ9Tq9pTz3TweA>
-    <xmx:5uJEaLq92Y-vNdiOtL-45HOML93QdyeW4JMciZLbM1JAROpO8s_aYg>
-    <xmx:5uJEaISAiZT0FoUxkybh2FUOT-qfid1sKe_NehbxPzq-brRcE1dNNQ>
-    <xmx:5uJEaLrhTyz5bFTMIkGuT2PePe6CI3RVykmyfaFgsZyi2E1-7N3GAg>
-    <xmx:5-JEaDxHPRMGRbOHd68vbPTPd8cVlLS6y093PQ0y-zRfOp6-JGnuoWp_>
+    horhhgqeenucggtffrrghtthgvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefg
+    vddtkeekvdekhefftdekvedvueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhn
+    sehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohephedpmhhouggvpehsmh
+    htphhouhhtpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgt
+    phhtthhopegurghnihgvlhestdigtdhfrdgtohhmpdhrtghpthhtohepghgvvghrtheslh
+    hinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqmheikehksehlihhs
+    thhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnh
+    gvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:h0pFaMDQfFL9-yz1KYi88jO2r8G-6N6EM1mepSojDgU1QsgIDKKINQ>
+    <xmx:h0pFaBgm9W8SboiLemchfIDzcKLtHULznbP66fs8iF-zZ5vkLQu74A>
+    <xmx:h0pFaIpkoVpJzo0ZUBZ-5oWaWN0dAAdYkqGqVx2IwNzy3pkYlL7r0w>
+    <xmx:h0pFaEhc4WT8JfhV4MhYH19j71DH77rfdoGF5-zWduIDMBiwPEKoJA>
+    <xmx:iEpFaFxaxYb6PwEetBev1A6BsQCmFEhvxVkMCiMJAfzcQrhofOpFY1Ww>
 Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 7 Jun 2025 21:09:56 -0400 (EDT)
-Date: Sun, 8 Jun 2025 11:10:38 +1000 (AEST)
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 8 Jun 2025 04:32:04 -0400 (EDT)
+Date: Sun, 8 Jun 2025 18:32:52 +1000 (AEST)
 From: Finn Thain <fthain@linux-m68k.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
-    port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>, 
-    linux-m68k <linux-m68k@vger.kernel.org>
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-In-Reply-To: <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
-Message-ID: <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>   <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>   <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>   <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> 
-  <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>   <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
- <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+To: Greg Ungerer <gerg@linux-m68k.org>
+cc: Daniel Palmer <daniel@0x0f.com>, geert@linux-m68k.org, 
+    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: Enable dead code elimination
+In-Reply-To: <42674c5a-42fe-4846-bf90-340310393fea@linux-m68k.org>
+Message-ID: <5bc4ad99-3432-c7e1-32a7-e9f9db86f94a@linux-m68k.org>
+References: <20250416114240.2929832-1-daniel@0x0f.com> <ac188e54-7f23-4ecd-805c-c0437a53247a@linux-m68k.org> <CAFr9PXmrVUL1HubP04iHR1ObhaNo+mObg7FC+-HpTF7QR0og3g@mail.gmail.com> <42674c5a-42fe-4846-bf90-340310393fea@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -82,60 +77,59 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 
 
-On Sat, 7 Jun 2025, John Paul Adrian Glaubitz wrote:
+On Tue, 29 Apr 2025, Greg Ungerer wrote:
 
-> On Fri, 2025-06-06 at 20:20 +1000, Finn Thain wrote:
-> > Whereas, the ability to use old binaries is proof that we care about 
-> > rule #1 don't break userspace.
+> On 29/4/25 10:04, Daniel Palmer wrote:
+> > 
+> > On Mon, 28 Apr 2025 at 08:37, Greg Ungerer <gerg@linux-m68k.org> wrote:
+> >> I notice that some other architectures (arm and powerpc) have version 
+> >> checks on gcc or ld in the config. Do you know if there is any 
+> >> version limitations for m68k here?
+> > 
+> > I'm not sure about that. I'll try to work out why they have the checks 
+> > and see if that affects m68k too. I'm using GCC13 so probably new 
+> > enough that most things work.
 > 
-> Who is "we"?
-
-AFAICT, it's essentially everyone who contributes patches at the userspace 
-interfaces.
-
-> The official(!) ABI says that pointers are supposed to be aligned with 4 
-> bytes, not 2 bytes. It's the current implementation that violates the 
-> ABI, not what I want to achieve which is make Linux/m68k adhere to the 
-> official specification.
-> 
-
-You've mistaken the flock for the shepherd. And the map for the terrain(!)
-
-But once you've been around the block a few times, you'll come to 
-understand that standards lag best practice. They don't lead.
-
-And then maybe you'll stop moving in circles.
-
-Also, you've misunderstood he relationship between Linux and Unix. There 
-is a long and colorful history there. You should look into it. 
-https://en.wikipedia.org/wiki/SVR4#SVR6_(cancelled)
-
-> Furthermore, we're still talking about a hobbyist platform here which 
-> hasn't been in production use for more than ten years. It doesn't really 
-> matter whether we break the ABI or not.
+> FWIW, the oldest toolchain I had lying around was based on gcc 8.3.0 and 
+> binutils 2.32. This patch worked fine on that.
 > 
 
-By the same argument, since Debian is comprised of volunteers and 
-hobbyists, it can be ignored by corporate-sponsored organizations, such as 
-the Rust Foundation, and by upstream maintainers employed by for-profit 
-companies. Yet they don't ignore us. Why do you think that is?
+I was going to try the patch with gcc-6.4.0 but apparently that's too old 
+to build stock linux-6.15 (see below). Documentation/admin-guide/README.rst 
+says I should have "at least gcc 5.1".
 
-> And it's not like there isn't strong case for making this change. As I 
-> have tirelessly explained, the current port with 2 bytes alignment is 
-> simply no longer feasible since an increasing number of packages either 
-> require 4 bytes alignment or require Rust.
-> 
-> These include more and more fundamental packages such as coreutils, the 
-> kernel or various Python packages such as python-cryptography. It's 
-> simply not an option to continue on the current path as it has become a 
-> dead-end.
-> 
+Anyway, I think this patch should not cause any unpleasant surprises, 
+given that "make oldconfig" says dead code elimination is EXPERIMENTAL.
 
-Every CPU architecture is a dead end. This observation is as old as 
-Moore's Law.
 
-> I don't see the point in maintaining something that becomes increasingly 
-> useless because more and more packages are no longer buildable.
-
-That's because you still haven't identified those packages in the Debian 
-archive which actually need porting.
+  CC      mm/vmscan.o
+In file included from <command-line>:0:0:
+mm/vmscan.c: In function 'read_ctrl_pos':
+././include/linux/compiler_types.h:557:38: error: call to '__compiletime_assert_469' declared with attribute error: min(tier, 4U - 1) signedness error
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                                      ^
+././include/linux/compiler_types.h:538:4: note: in definition of macro '__compiletime_assert'
+    prefix ## suffix();    \
+    ^~~~~~
+././include/linux/compiler_types.h:557:2: note: in expansion of macro '_compiletime_assert'
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+  ^~~~~~~~~~~~~~~~~~~
+./include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+ #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                     ^~~~~~~~~~~~~~~~~~
+./include/linux/minmax.h:93:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+  BUILD_BUG_ON_MSG(!__types_ok(ux, uy),  \
+  ^~~~~~~~~~~~~~~~
+./include/linux/minmax.h:98:2: note: in expansion of macro '__careful_cmp_once'
+  __careful_cmp_once(op, x, y, __UNIQUE_ID(x_), __UNIQUE_ID(y_))
+  ^~~~~~~~~~~~~~~~~~
+./include/linux/minmax.h:105:19: note: in expansion of macro '__careful_cmp'
+ #define min(x, y) __careful_cmp(min, x, y)
+                   ^~~~~~~~~~~~~
+mm/vmscan.c:3166:37: note: in expansion of macro 'min'
+  for (i = tier % MAX_NR_TIERS; i <= min(tier, MAX_NR_TIERS - 1); i++) {
+                                     ^~~
+make[4]: *** [scripts/Makefile.build:203: mm/vmscan.o] Error 1
+make[3]: *** [scripts/Makefile.build:461: mm] Error 2
+make[2]: *** [Makefile:2003: .] Error 2
+make[1]: *** [/home/fthain/src/kernel.org/linux/Makefile:369: __build_one_by_one] Error 2
