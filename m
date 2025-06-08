@@ -1,92 +1,141 @@
-Received: from outbound.pv.icloud.com (p-west1-cluster1-host2-snip4-10.eps.apple.com [57.103.64.83])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E12EEDE
-	for <linux-m68k@vger.kernel.org>; Sat,  7 Jun 2025 23:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.64.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D596DBA3F
+	for <linux-m68k@vger.kernel.org>; Sun,  8 Jun 2025 01:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749337583; cv=none; b=VxC/I/SOtowI1TWfMGfw76JajT++UqCip7ZSiTH1XZM2C1RKmB56pWdVTd+8l0gOgZoRuF3jBJpXdzK4u3J1+rO+hzIjXY9Itdmvdh2UGzPbi5Awprm2RVBadofXMa/oRplBt080U7w66JJQv7ATwpurUD7x61Lu/Rd4WYwAFvg=
+	t=1749345004; cv=none; b=JJUAWlsRLbcJaik9F09zAs9YcrbCZmizKgNAPwbBKZgydyis0egy7lq4ez2e5JNHJAkoJkW5l7Ao2UBnBSTZq0OVEk5r+t2NyBM/XJFoSKVAkNTmIGM8PMbvCNwF5NGGH7vRB6ku6gNtcHRqm5/wKnA3X3i1EeUNaRNBmfqmsuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749337583; c=relaxed/simple;
-	bh=xtJYhB9eXV12GGn6FRT0lXfhmLpjpDbCSecz2nVSxT0=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=dnv8zAOjbjlZDIIvkwN1ot1dzP5rOnf4tu+lUHvbfb4hBqAa7aIbJcdPT4VaK26mEtXmE9h6LeeJ2SQmUNHz5IdSUAUHXY3fAjiAX0I4++NlXFuKlhg+BQ9vDJ0kbozfV5O3laFf7pMgIoyYOg/DkO+IRwfZiFrFS/v6aEBTSKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=iI3Gl4gk; arc=none smtp.client-ip=57.103.64.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
+	s=arc-20240116; t=1749345004; c=relaxed/simple;
+	bh=fo7iXYL0y1yCtxXFGBxuYSdez0mMnCLTfjNbyYT3ErQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=hWN4cgVZhqyiq2XdjhzbGTU4aLJ/zMXB2lVxyKdcPvH82+StFFcEECv+HZMZzOEDWB1XKvkmyHb+gzL8U+cKTJNoixLmmw7Lor0E4n4j61pipew4/y8Lv2AxsE0B6pDgr3SZ3uh3Rb97RXRiohpEijNNFs5tZ7SY2ROLMb2Qwt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IkD44bpM; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="iI3Gl4gk"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-	bh=xtJYhB9eXV12GGn6FRT0lXfhmLpjpDbCSecz2nVSxT0=;
-	h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To:x-icloud-hme;
-	b=iI3Gl4gkYg7qImkvlJ7EWnlWc0LS40LoTn4DKZ+5rasedHd7ddRCpIOuKmz7CIWdH
-	 YZwDxzRUoN0wWcSEvdeOavjcLqzDFAbhulCVYMaVdoTiAydHo7xW3vHk+89mthctbB
-	 1cYsx9at+XSeDWsxs8S4NTGQp2cxEl4s2Mbqitwjz+3PKn8NPlcUvf0pHeCXhmlEZX
-	 wVBy6QNSYgjlX9kzw9cSBUeWBsJ677A885nl+Bxrkhk+UXt2Q6dEg8yQJi6fEZjaHU
-	 ZUEtfUBDzlzzGViJ5s/am2sJdqwDBC/+zxxEVZQkrNl5Gk6t5p2gNXJLGb4xI5gMP9
-	 N/PD8lFbyfx7Q==
-Received: from outbound.pv.icloud.com (unknown [127.0.0.2])
-	by outbound.pv.icloud.com (Postfix) with ESMTPS id 61AB4C0009D;
-	Sat,  7 Jun 2025 23:06:18 +0000 (UTC)
-Received: from smtpclient.apple (asmtp-me-k8s.p98.prod.me.com [17.56.9.34])
-	by outbound.pv.icloud.com (Postfix) with ESMTPSA id 3C39AC00092;
-	Sat,  7 Jun 2025 23:06:17 +0000 (UTC)
-Content-Type: text/plain;
-	charset=utf-8
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IkD44bpM"
+Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id C3E9111400D1;
+	Sat,  7 Jun 2025 21:09:59 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-08.internal (MEProxy); Sat, 07 Jun 2025 21:09:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1749344999; x=1749431399; bh=8qB74uePzWEsKAaP1Gw283juFkUYchbx+Jy
+	no5AnM3s=; b=IkD44bpMiY6sLKUoI3zwQMhHgd2C1B7Oi2W60N5A+EG4aoqJn44
+	ArriWd5HtGsb+Kf+jQ5iMcD6AgI5kkowSUgwUKJAh83fc//S65T3/szzq+xs073q
+	k/t1mim9vWMll1mkFj3++VdtcsF00qZf7fuWyW9eeIq9Cl0MEpiqANiIxAA0bcq4
+	ed+r6lqYq8CROv+Zp9R75ZMcofPtoXY8/dU9iWt7NjX6WzGOYUrxEjyaz+qvXfdA
+	NHrWu0o2eoQ4fQgZS+VHvP9aMgE08GiPMdiYOgN8u7wkiUC2tAEQ4aPdbWxVhWww
+	LnvowawgHHsJjoRimXWwTz0IEaMyE7ABmlQ==
+X-ME-Sender: <xms:5uJEaAZqhOY58QD_iev13uH4gpgEEfos_dl4b6nNRs_EwIXC4HVRjQ>
+    <xme:5uJEaLakIFdSZ19y0BODGiwsx-RCuEKoIeLYFMeC7f5ynjLgXa9If_BK1jfVjmUSR
+    G_cLbXZPebHf-chK1c>
+X-ME-Received: <xmr:5uJEaK_9CRAR9JTD3wBQ49qQCS2v7c-SJwBGJfwbx0N7V6nmi70jFfwb1Om-59yYhLNvXRxqcB9rPXenrLXkwYt0DI7SYx9MpXU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdejvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
+    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
+    horhhgqeenucggtffrrghtthgvrhhnpefggfetleffuddtteetjedtkeejuddthfdvleeg
+    keetheelfffhhfdtueehkeevudenucffohhmrghinhepfihikhhiphgvughirgdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhh
+    rghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeeipdhmohguvg
+    epshhmthhpohhuthdprhgtphhtthhopehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdq
+    sggvrhhlihhnrdguvgdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdroh
+    hrghdprhgtphhtthhopehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghl
+    ihdrohhrghdprhgtphhtthhopehpohhrthdqmheikehksehnvghtsghsugdrohhrghdprh
+    gtphhtthhopeguvggsihgrnhdqieekkheslhhishhtshdruggvsghirghnrdhorhhgpdhr
+    tghpthhtoheplhhinhhugidqmheikehksehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:5uJEaKqpY7JbutGIsBVAE_pWODCHhWK5r6AJNlIZgJ9Tq9pTz3TweA>
+    <xmx:5uJEaLq92Y-vNdiOtL-45HOML93QdyeW4JMciZLbM1JAROpO8s_aYg>
+    <xmx:5uJEaISAiZT0FoUxkybh2FUOT-qfid1sKe_NehbxPzq-brRcE1dNNQ>
+    <xmx:5uJEaLrhTyz5bFTMIkGuT2PePe6CI3RVykmyfaFgsZyi2E1-7N3GAg>
+    <xmx:5-JEaDxHPRMGRbOHd68vbPTPd8cVlLS6y093PQ0y-zRfOp6-JGnuoWp_>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 7 Jun 2025 21:09:56 -0400 (EDT)
+Date: Sun, 8 Jun 2025 11:10:38 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
+    port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>, 
+    linux-m68k <linux-m68k@vger.kernel.org>
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+In-Reply-To: <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+Message-ID: <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>   <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>   <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>   <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> 
+  <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>   <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+ <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.500.181.1.5\))
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-From: Jason Thorpe <thorpej@me.com>
-In-Reply-To: <87ldq38byn.fsf@igel.home>
-Date: Sat, 7 Jun 2025 16:06:06 -0700
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Finn Thain <fthain@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
- port-m68k <port-m68k@netbsd.org>,
- debian-68k <debian-68k@lists.debian.org>,
- linux-m68k <linux-m68k@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F0697786-0392-46CF-91B3-C4F64391E1BE@me.com>
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
- <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
- <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
- <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
- <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
- <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
- <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
- <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
- <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
- <87sekbq3f8.fsf@linux-m68k.org> <2126C1A0-7737-4228-9B28-B160C672C8AD@me.com>
- <87ldq38byn.fsf@igel.home>
-To: Andreas Schwab <schwab@linux-m68k.org>
-X-Mailer: Apple Mail (2.3826.500.181.1.5)
-X-Proofpoint-GUID: 4sqmkKHUdaACRy6EN-5QndioiqKR0xo5
-X-Proofpoint-ORIG-GUID: 4sqmkKHUdaACRy6EN-5QndioiqKR0xo5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
- definitions=2025-06-07_10,2025-06-05_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- bulkscore=0 mlxlogscore=721 adultscore=0 malwarescore=0 phishscore=0
- spamscore=0 clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.22.0-2503310001 definitions=main-2506070169
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 
 
+On Sat, 7 Jun 2025, John Paul Adrian Glaubitz wrote:
 
-> On Jun 7, 2025, at 2:43=E2=80=AFPM, Andreas Schwab =
-<schwab@linux-m68k.org> wrote:
->=20
-> On Jun 07 2025, Jason Thorpe wrote:
->=20
->> https://m680x0.github.io/ref/sysv-m68k-abi-part1.pdf
->=20
-> How is that relevant?
+> On Fri, 2025-06-06 at 20:20 +1000, Finn Thain wrote:
+> > Whereas, the ability to use old binaries is proof that we care about 
+> > rule #1 don't break userspace.
+> 
+> Who is "we"?
 
-It=E2=80=99s literally the ABI we=E2=80=99re all discussing.
+AFAICT, it's essentially everyone who contributes patches at the userspace 
+interfaces.
 
--- thorpej
+> The official(!) ABI says that pointers are supposed to be aligned with 4 
+> bytes, not 2 bytes. It's the current implementation that violates the 
+> ABI, not what I want to achieve which is make Linux/m68k adhere to the 
+> official specification.
+> 
 
+You've mistaken the flock for the shepherd. And the map for the terrain(!)
+
+But once you've been around the block a few times, you'll come to 
+understand that standards lag best practice. They don't lead.
+
+And then maybe you'll stop moving in circles.
+
+Also, you've misunderstood he relationship between Linux and Unix. There 
+is a long and colorful history there. You should look into it. 
+https://en.wikipedia.org/wiki/SVR4#SVR6_(cancelled)
+
+> Furthermore, we're still talking about a hobbyist platform here which 
+> hasn't been in production use for more than ten years. It doesn't really 
+> matter whether we break the ABI or not.
+> 
+
+By the same argument, since Debian is comprised of volunteers and 
+hobbyists, it can be ignored by corporate-sponsored organizations, such as 
+the Rust Foundation, and by upstream maintainers employed by for-profit 
+companies. Yet they don't ignore us. Why do you think that is?
+
+> And it's not like there isn't strong case for making this change. As I 
+> have tirelessly explained, the current port with 2 bytes alignment is 
+> simply no longer feasible since an increasing number of packages either 
+> require 4 bytes alignment or require Rust.
+> 
+> These include more and more fundamental packages such as coreutils, the 
+> kernel or various Python packages such as python-cryptography. It's 
+> simply not an option to continue on the current path as it has become a 
+> dead-end.
+> 
+
+Every CPU architecture is a dead end. This observation is as old as 
+Moore's Law.
+
+> I don't see the point in maintaining something that becomes increasingly 
+> useless because more and more packages are no longer buildable.
+
+That's because you still haven't identified those packages in the Debian 
+archive which actually need porting.
