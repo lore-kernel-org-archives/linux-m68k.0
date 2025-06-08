@@ -1,87 +1,110 @@
-Received: from fout-b2-smtp.messagingengine.com (fout-b2-smtp.messagingengine.com [202.12.124.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6361EF363
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  8 Jun 2025 09:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643402B9AA
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  8 Jun 2025 09:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749374481; cv=none; b=AmqC00KcFryu8G/bjLkh5najjB8w83j0kpPR56/yBwDMuB7HsAmwEPQBw8XlBcX5Pjq4VUVPu+7FrRUb7YevnaucKfWwUqVo2a5EHPeIJsxrBo/8P1AVV1jGcWYRwvms7c6ay9Rja3fqlfBcB2aRQJvoZy+4IQTORLbYnKdn+8I=
+	t=1749375393; cv=none; b=ddWRABGP6VDPTYWDV6w2taFfQr5jqONPn16K7XRvuZkFgqoUm+5R8d4jYljG+eEkLOb6vJqYRZVJRKWiLx7DBAWoxqhbIWxYyNn6LOqCv4UXw3KynhBfPBj8xU0b5eSxM7KR0FyT86JvhdAYxKr0Mz9nHq3LpK57KIIcMHSbomY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749374481; c=relaxed/simple;
-	bh=mVfnbJht8rwIEf1+tkEzHADYwQp7BhR2ZNpvh4Mar1w=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=jfCM8JveBkgYUma5/uRKr6bbwSaVmGxSBdaVyIuXIeB1X1l9P95ws0fZnzLZw6HZTkPxpBevHbyljNkgTzohj39nmTYf083O/itAYOI3Xps7gSlftIk/HiMxlVg1xmOXjFl/CiSy97kHU7Ke7uLIDLa/przQExn2kvIunFTE1b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OdHEgMdf; arc=none smtp.client-ip=202.12.124.145
+	s=arc-20240116; t=1749375393; c=relaxed/simple;
+	bh=VCLDuzrT1NpTtg6uPad5mV2mHCMOuncqCM44nHvvkz0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JRUM4w4dq5b3Bq9xsi0GjUOJZMhUE5uzTWnJme4HuAn5EZgd0ZPtlHDmpx5ti4wkCcfA4g2V5pgQqFInKMgu/Hh1dMbAaxDNaVG2R280kYv0W9Pjf2HF8xLxj4seci3e2HiHZ4z6iB5e52k+I03CTTxXZcxQk3WWZ9op+46Psb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OdHEgMdf"
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfout.stl.internal (Postfix) with ESMTP id 2C4C111400C3;
-	Sun,  8 Jun 2025 05:21:18 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Sun, 08 Jun 2025 05:21:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749374478; x=1749460878; bh=M28RBFdXpVoeGqBRyHqsq+T77yEEWMi+JRy
-	I7xzcgVQ=; b=OdHEgMdf+YSChJ9rOe+OqIeLEFrlz6qmpdn56P1uavSglRhSYCt
-	mxtSCsmN3eOJz58EyMI3LpulPOY53uPYhOAxolK0JDhXHBGWdnUlgOVbNlYpZr5Q
-	gI4WcJqckvwZtqyAfcqma8nidF6O+mJvXB0OHsjJgrLrMXPbvxutV9K2SysXyZUP
-	9tMapHEurwHTqIrYQtWVT2wi0w+83XRM5xAifxl5MA9HSgkrnFmvqmRYbMb8hz2n
-	IPliAAA7LpcuEOnGjRDKWPZzkF0JS5WgEQn9kMnj5K+X5pDrhiT0JKfpQixaRlYN
-	iEe4bGBnR2sv+JydKRuUmua2zS0eMNMPuxA==
-X-ME-Sender: <xms:DVZFaJU3ZLkt4KJ2wJ-5MNf8xHtiGcuiuxYxAnoSS67J84JvCJ9dEw>
-    <xme:DVZFaJmk7bRNoGhdcODwOSX8z5clPBnELcPnR_AcNogpdL-GR1vwueGYkZ2KdvyAb
-    7xY72tV76JPa4x0Uhs>
-X-ME-Received: <xmr:DVZFaFbjfO3IAz4H7jpp7D90I7QdTKx_7uO9bIF7Wks7G-melUktRYPo9-QiUhPHO5LdvRcY8l1PF_gHMlUGkmZQ43ZLyoNeOn0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdejieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
-    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
-    horhhgqeenucggtffrrghtthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeff
-    ffdtgfejveekgeefvdeuheeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggp
-    rhgtphhtthhopeehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehgvghrgheslh
-    hinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepuggrnhhivghlsedtgidtfhdrtgho
-    mhdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtth
-    hopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhr
-    tghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:DVZFaMV7l77JpbGO9E-3MojSdid32zZXnpx0XwLvZB-9EN1GHiTZDQ>
-    <xmx:DVZFaDl1kmvv3SJre6FZS6b7TGeis06C3M_mZOHPYSZuUeD462F14A>
-    <xmx:DVZFaJe7H2K-MZVrCvnNE7P_FubnUIElsbntZfAlbMpMyMcCjc0Izg>
-    <xmx:DVZFaNEa3p2PHKAbYhis7kxVFIzvHS0ymU8rjKaAjjffXJec-dqkbA>
-    <xmx:DlZFaE1ViggqMLb48W59WxnkupFlnUy6B0Dv_8e1pn0Ojw9FNKTQxvM6>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 8 Jun 2025 05:21:14 -0400 (EDT)
-Date: Sun, 8 Jun 2025 19:22:02 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Greg Ungerer <gerg@linux-m68k.org>
-cc: Daniel Palmer <daniel@0x0f.com>, geert@linux-m68k.org, 
-    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Enable dead code elimination
-In-Reply-To: <5bc4ad99-3432-c7e1-32a7-e9f9db86f94a@linux-m68k.org>
-Message-ID: <0b8aa376-7059-2939-ab37-68f8a69eb57d@linux-m68k.org>
-References: <20250416114240.2929832-1-daniel@0x0f.com> <ac188e54-7f23-4ecd-805c-c0437a53247a@linux-m68k.org> <CAFr9PXmrVUL1HubP04iHR1ObhaNo+mObg7FC+-HpTF7QR0og3g@mail.gmail.com> <42674c5a-42fe-4846-bf90-340310393fea@linux-m68k.org>
- <5bc4ad99-3432-c7e1-32a7-e9f9db86f94a@linux-m68k.org>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-4e58d270436so1149535137.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Jun 2025 02:36:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749375389; x=1749980189;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nmxOdpkXc8wFRgqF6mDzsfzWIfq2uzHJ8hAPDDQrOa0=;
+        b=nahv7n+5cRdEVBGwW7pfMWLPuYMmV1gGBs8pa/lsDQ/wGbsel0Ex2X+RynsS+KzH7f
+         RNN6DZOUEK8bJZ1h+xf7s49yBF4iGxPPSPNOv42gALtWWka6sKQIH2dQt1tfoRRjI//r
+         DF6lTqMS4i1WmvRc7PxYmaXMh026ci6XsLAyxb5T9xuMJs2x4eKeo+2GSqFUJqmysGm1
+         CDhfArVeNTjqMaxI7jmOhixUVV0ZDtTlaIjRn0+BgzqWckzje8EOMBKbnGL7vmj4NdYZ
+         btRS4m+rqbHvjRH+Z3YCj2ekJ/vPbSXuAf/hnz5b9YAObDBpUpnRlXI78rgYeQ9XAoUu
+         pIEA==
+X-Forwarded-Encrypted: i=1; AJvYcCV29pbP+tNRltqxgn0HYKAGCqt7kEJHjefYfRAvz/2rnO/r28yMDmMlPwHRBzVNW31uSXRKRdaGTnk1@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzQyk8/jDeXRvdACr4ievlmCuQE7JLcTTeQDYgiJ9y4j4ocYZlF
+	zv1PxPq5tQOZOwRLLSWiYe4fT3GM0KYpAjbr2PTV5+w53WgTXIxlbunIp1dyh9mB
+X-Gm-Gg: ASbGnctBIq9is6SdFaaGwDTCh4MhgLuh28mh94Cq/3Dx465UJU8HdWSs7J5pb1AmyJY
+	mrorIneBfRI6UBsJMYBC756mnkRZbxIrUxdMgrtVrRfzNzgFMmoXJ1k99WZq3rc32+SdUGI7tPZ
+	SqdcaL5swbu24nN9Nk8/WIDRlQGQ7JLhL2OlqJMFTS3LM7IXHIvA13ZXrEbqDSQ9wRtSMb6DaTO
+	ru64cCinZajeVMQiFSuS6iqlup0o5ZkLMgjqKx3EgOdWJ7flcABWWzQkluydQuzGgSWGfyYDIl2
+	BOyaKyKM45mYRkafA9g5CTRPXugxn6vDbPKdKNlzqPvJlBqqG4oxPXe6pXpyQSBchYys86nctHu
+	JfGQneI85VJNl7w==
+X-Google-Smtp-Source: AGHT+IH0AdV0UChSCQ83Oxw0QpmqEh/UXXideCuuRX4qsu4gyO9yktqRH7LRHBkJ7AzutAL2QRznmA==
+X-Received: by 2002:a05:6102:c50:b0:4e1:52fa:748d with SMTP id ada2fe7eead31-4e7729e2ed9mr7939193137.15.1749375388847;
+        Sun, 08 Jun 2025 02:36:28 -0700 (PDT)
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4e7737d3474sm3622970137.4.2025.06.08.02.36.28
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Jun 2025 02:36:28 -0700 (PDT)
+Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-4e58a9bb8fcso1112415137.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 08 Jun 2025 02:36:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWwT5Syh/r9jHPmWbAVHySbqv6qjHT8Ce6mz7TaZFUfaQd8FWrfF1Jjmh54ffrtXMNEsEsEG6Xcfrt6@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:3ca4:b0:4e5:5f29:baac with SMTP id
+ ada2fe7eead31-4e772aa0fe3mr7547400137.18.1749375388278; Sun, 08 Jun 2025
+ 02:36:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <20250416114240.2929832-1-daniel@0x0f.com> <ac188e54-7f23-4ecd-805c-c0437a53247a@linux-m68k.org>
+ <CAFr9PXmrVUL1HubP04iHR1ObhaNo+mObg7FC+-HpTF7QR0og3g@mail.gmail.com>
+ <42674c5a-42fe-4846-bf90-340310393fea@linux-m68k.org> <5bc4ad99-3432-c7e1-32a7-e9f9db86f94a@linux-m68k.org>
+In-Reply-To: <5bc4ad99-3432-c7e1-32a7-e9f9db86f94a@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 8 Jun 2025 11:36:16 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXuuTnDk-snc4NipM1xYOom_uiDHtek1UkxuxhETJEeQA@mail.gmail.com>
+X-Gm-Features: AX0GCFurA39txgMwJUlMsxaYBEzkQJOCgUrg-8vEcHy7l3MZSE04h5oOKTiCj9c
+Message-ID: <CAMuHMdXuuTnDk-snc4NipM1xYOom_uiDHtek1UkxuxhETJEeQA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Enable dead code elimination
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, Daniel Palmer <daniel@0x0f.com>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Finn,
 
-On Sun, 8 Jun 2025, Finn Thain wrote:
+On Sun, 8 Jun 2025 at 10:32, Finn Thain <fthain@linux-m68k.org> wrote:
+> On Tue, 29 Apr 2025, Greg Ungerer wrote:
+> > On 29/4/25 10:04, Daniel Palmer wrote:
+> > > On Mon, 28 Apr 2025 at 08:37, Greg Ungerer <gerg@linux-m68k.org> wrote:
+> > >> I notice that some other architectures (arm and powerpc) have version
+> > >> checks on gcc or ld in the config. Do you know if there is any
+> > >> version limitations for m68k here?
+> > >
+> > > I'm not sure about that. I'll try to work out why they have the checks
+> > > and see if that affects m68k too. I'm using GCC13 so probably new
+> > > enough that most things work.
+> >
+> > FWIW, the oldest toolchain I had lying around was based on gcc 8.3.0 and
+> > binutils 2.32. This patch worked fine on that.
+> >
+>
+> I was going to try the patch with gcc-6.4.0 but apparently that's too old
+> to build stock linux-6.15 (see below). Documentation/admin-guide/README.rst
+> says I should have "at least gcc 5.1".
 
-> 
-> Anyway, I think this patch should not cause any unpleasant surprises, 
-> given that "make oldconfig" says dead code elimination is EXPERIMENTAL.
-> 
+Someone forgot to update that file...
+Anyway, it has just been increased again for v6.16-rc1 by Arnd in
+commit 118c40b7b50340bf ("kbuild: require gcc-8 and binutils-2.30").
 
-(their emphasis).
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
