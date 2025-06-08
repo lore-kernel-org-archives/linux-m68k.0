@@ -1,135 +1,146 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from mail.duskware.de (mail.duskware.de [91.199.88.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3331A13C3CD;
-	Sun,  8 Jun 2025 09:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C551E412A
+	for <linux-m68k@vger.kernel.org>; Sun,  8 Jun 2025 11:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.88.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749375890; cv=none; b=KnWhYCEbExGnPNSAv86S7/7I2t7rDc1XlHJ1taaoI59NJofyZK2X9fCO242Fww0/QNC2ma5mjCD//adVq0vo4WRcCHLcGfxW+IpzJvHmv+XG2P7jdBw6xmz/r+lXPpKtQdtUVBG7j41o7jfXt7mg155dXU58EAVjFHq2BfngyRQ=
+	t=1749383249; cv=none; b=PYQwO/HuFoorlXZ2kNH+AKwyA0qKmndnW+174A2KTFRu68TJ1JIfJXzRHsYwsbJYWDFfJ4gOKtI07quisv6Rs3Zgt+Ew++7/M1/2dO7EKNSe2pBCrw5AGiZRWfryFJV1wIHcxyKLDGcoDVYBnPfOqtBHJ/i5ZmyD4RvF0zMW9IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749375890; c=relaxed/simple;
-	bh=TCv1nBrubfIcsi4DlAa3/6ZRjyP5G7Lfpe6gnZZm6Ns=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HwvqU5A8W7/YUI7VttXS/0qiMBvv9TGQ6rjex7dpKedWW5kdf4rltyxjuyd3kML5k+KsFyii5O7E9wLOdVjXZ+omJ2rsxkii3qTPft7+Q2OKhZvf+qmtyIgOLMmWnNeRqL/6Tv/h+InH/tfVNHsI0NyGONsAvmJwLunPbz71S9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=XsF7RNTr; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="XsF7RNTr"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=AvQSbwk0OMZgevNebkqyi44TEBQebr6htxrvwpOZR80=; t=1749375887; x=1749980687; 
-	b=XsF7RNTrY6leik/CR49OltCXmZ+nmg2YeysRu2zcT3ZmKZ0KTI/9vIHQTdvHBDPZp3uOGkhnj6N
-	CGsuW/loLdu/7d7QXyIejxsVUOJ5PMiCXJhGFrl+ZKN4kAlLdxfKImpeA3McLvcXXjbkOWTUY3psl
-	GA36G4WhvFEdjldstuPb8CW3OC8DU7Td7nb7iNs7LTulSoumtHmMfshUxYGOpHCo99BmQHlq3dTuI
-	YG+RY5Mn2MrLq5Q1ExJB8yEp+mdDxwbilTzu4iBErGwB6tFKXsUAEIwIn/+wcTtqaOWSdBrDojB54
-	OgV9BQHCiSqGo9gdI3Asy0s0I8f1n20+K3Zg==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uOCZv-00000000rzo-33xN; Sun, 08 Jun 2025 11:44:35 +0200
-Received: from p57bd96d0.dip0.t-ipconnect.de ([87.189.150.208] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uOCZv-00000001WdX-1muC; Sun, 08 Jun 2025 11:44:35 +0200
-Message-ID: <ea09adb64428a73b84cc0199c3b1efb09b9db23c.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 2/6] sh: remove duplicate ioread/iowrite helpers
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org, Arnd
- Bergmann	 <arnd@arndb.de>, Richard Henderson
- <richard.henderson@linaro.org>, Matt Turner	 <mattst88@gmail.com>, Greg
- Ungerer <gerg@linux-m68k.org>, Thomas Bogendoerfer	
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"	
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
- Madhavan Srinivasan	 <maddy@linux.ibm.com>, Michael Ellerman
- <mpe@ellerman.id.au>, Nicholas Piggin	 <npiggin@gmail.com>, Christophe
- Leroy <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker	
- <dalias@libc.org>, Julian Vetter <julian@outer-limits.org>, Bjorn Helgaas	
- <bhelgaas@google.com>, linux-alpha@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org
-Date: Sun, 08 Jun 2025 11:44:34 +0200
-In-Reply-To: <CAMuHMdXeTWSU64jQt+nybsSBOpBEu_zO0WmE5FK1PnA3YkALUQ@mail.gmail.com>
-References: <20250315105907.1275012-1-arnd@kernel.org>
-	 <20250315105907.1275012-3-arnd@kernel.org>
-	 <6c7770dd1c216410fcff3bf0758a45d5afcb5444.camel@physik.fu-berlin.de>
-	 <CAMuHMdXeTWSU64jQt+nybsSBOpBEu_zO0WmE5FK1PnA3YkALUQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	s=arc-20240116; t=1749383249; c=relaxed/simple;
+	bh=qDMpk7VsH0RqDEoTebW66YTeJ9V8K8DlId4GfI8EAd4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KIXsl1DHQu8RbkFJbp/05ljfy1ieqAddIiLaLMV0vzspzfG3gNC3eUhHDtFFk3VEm28A/1G7tUAD14ufJuWrIrnjYXCPq+z73R6vylNDLBTrxBSjDlIxBpXyfHKjfFLfSEllWU5q66KVGteZ3eSRTu3U0BIcBOBaeA1CbBEh0NU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=duskware.de; spf=pass smtp.mailfrom=duskware.de; arc=none smtp.client-ip=91.199.88.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=duskware.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=duskware.de
+Received: by mail.duskware.de (Postfix, from userid 205)
+	id 1CF6CA7DFF; Sun,  8 Jun 2025 13:47:18 +0200 (CEST)
+Date: Sun, 8 Jun 2025 13:47:18 +0200
+From: Martin Husemann <martin@duskware.de>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	port-m68k <port-m68k@netbsd.org>,
+	debian-68k <debian-68k@lists.debian.org>,
+	linux-m68k <linux-m68k@vger.kernel.org>
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+Message-ID: <20250608114717.GB1644@mail.duskware.de>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
+ <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
+ <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
+ <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+ <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+ <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+ <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+ <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+ <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
+User-Agent: Mutt/1.7.2 (2016-11-26)
 
-Hello Geert,
-
-On Sun, 2025-06-08 at 11:39 +0200, Geert Uytterhoeven wrote:
-> Hi Adrian,
+On Sun, Jun 08, 2025 at 11:10:38AM +1000, Finn Thain wrote:
 >=20
-> On Sat, 7 Jun 2025 at 14:08, John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> > On Sat, 2025-03-15 at 11:59 +0100, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >=20
-> > > The ioread/iowrite functions on sh only do memory mapped I/O like the
-> > > generic verion, and never map onto non-MMIO inb/outb variants, so the=
-y
-> > > just add complexity. In particular, the use of asm-generic/iomap.h
-> > > ties the declaration to the x86 implementation.
-> > >=20
-> > > Remove the custom versions and use the architecture-independent fallb=
-ack
-> > > code instead. Some of the calling conventions on sh are different her=
-e,
-> > > so fix that by adding 'volatile' keywords where required by the gener=
-ic
-> > > implementation and change the cpg clock driver to no longer depend on
-> > > the interesting choice of return types for ioread8/ioread16/ioread32.
-> > >=20
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> On Sat, 7 Jun 2025, John Paul Adrian Glaubitz wrote:
 >=20
-> > Those are quite a number of changes that I would like to test on real h=
-ardware
-> > first before merging them into the kernel.
+> > On Fri, 2025-06-06 at 20:20 +1000, Finn Thain wrote:
+> > > Whereas, the ability to use old binaries is proof that we care about=
+=20
+> > > rule #1 don't break userspace.
 > >=20
-> > @Geert: Could you test it on your SH-7751 LANDISK board as well?
+> > Who is "we"?
 >=20
-> Already done for a while, as this patch is commit 2494fce26e434071 ("sh:
-> remove duplicate ioread/iowrite helpers") in v6.15-rc1 ;-)
+> AFAICT, it's essentially everyone who contributes patches at the userspac=
+e=20
+> interfaces.
 
-Well, there is no Tested-By from either of us, so this isn't optimal.
+Since this thread also hit a non-Linux lists I just want to point
+out that we (as in: NetBSD) did not break userland when adapting the
+SVR4 ABI including different alignment for ELF.
 
-I wished Arnd could have at least pinged me back regarding this. He knows I=
-'m
-actively maintaining arch/sh and I would like to properly test and review
-such changes.
+I just tested it with some original 1994 NetBSD 1.0 / amiga binaries
+on an amiga running NetBSD-current as of earlier today.
 
-But I'm not doing this professionally, so I cannot be always there with 100=
-%
-capacity. Just pushing such changes in without any input from me defeats th=
-e
-purpose of a maintainer.
+I started with an empty ~/aout_test directory.
 
-Adrian
+I slightly shortened the lengthy and boring download sequence in the log
+(back then distributions were optimized for transport via floopies - duh!)
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+--8<--
+[~/aout_test] martin@amiga > uname -a
+NetBSD amiga.aprisoft.de 10.99.14 NetBSD 10.99.14 (GENERIC) #6: Sun Jun  8 =
+08:11:46 CEST 2025  martin@seven-days-to-the-wolves.aprisoft.de:/work/src/s=
+ys/arch/amiga/compile/GENERIC amiga
+[~/aout_test] martin@amiga > file /bin/ls
+/bin/ls: ELF 32-bit MSB pie executable, Motorola m68k, 68020, version 1 (SY=
+SV), dynamically linked, interpreter /libexec/ld.elf_so, for NetBSD 10.99.1=
+4, not stripped
+[~/aout_test] martin@amiga > ftp http://archive.netbsd.org/pub/NetBSD-archi=
+ve/Ne =08tBSD-1.0/amiga/binary/base10/base10.aa
+Trying [2a04:4e42:8e::262]:80 ...
+ftp: Can't connect to `2a04:4e42:8e::262:80': No route to host
+Trying 146.75.117.6:80 ...
+Requesting http://archive.netbsd.org/pub/NetBSD-archive/NetBSD-1.0/amiga/bi=
+nary/base10/base10.aa
+[..]
+[~/aout_test] martin@amiga > ftp http://archive.netbsd.org/pub/NetBSD-archi=
+ve/Ne =0DtBSD-1.0/amiga/binary/base10/base10.ag=08=1B[Kh
+Trying [2a04:4e42:8e::262]:80 ...
+ftp: Can't connect to `2a04:4e42:8e::262:80': No route to host
+Trying 146.75.117.6:80 ...
+Requesting http://archive.netbsd.org/pub/NetBSD-archive/NetBSD-1.0/amiga/bi=
+nary/base10/base10.ah
+[..]
+142449 bytes retrieved in 00:00 (818.21 KiB/s)
+[~/aout_test] martin@amiga > su
+Password:
+[/data/home/martin/aout_test] amiga # cat base10.a* | tar xzpzf -
+[/data/home/martin/aout_test] amiga # file bin/ls
+bin/ls: a.out NetBSD/m68k demand paged executable @0x2020+T=3D114688+D=3D81=
+92+B=3D7992
+[/data/home/martin/aout_test] amiga # chroot . /bin/sh
+# pwd
+/
+# ls -l
+total 6436
+drwxr-xr-x   2 0    0       512 Oct 21  1994 altroot
+-rw-r--r--   1 205  100  901120 Oct 28  1994 base10.aa
+-rw-r--r--   1 205  100  901120 Oct 28  1994 base10.ab
+-rw-r--r--   1 205  100  901120 Oct 28  1994 base10.ac
+-rw-r--r--   1 205  100  901120 Oct 28  1994 base10.ad
+-rw-r--r--   1 205  100  901120 Oct 28  1994 base10.ae
+-rw-r--r--   1 205  100  901120 Oct 28  1994 base10.af
+-rw-r--r--   1 205  100  901120 Oct 28  1994 base10.ag
+-rw-r--r--   1 205  100  142449 Oct 28  1994 base10.ah
+drwxr-xr-x   2 0    0       512 Oct 21  1994 bin
+drwxr-xr-x   3 0    0       512 Oct 21  1994 dev
+drwxr-xr-x   8 0    0       512 Oct 21  1994 etc
+drwxr-xr-x   2 0    0       512 Oct 21  1994 home
+drwxr-xr-x   2 0    0       512 Oct 21  1994 mnt
+drwxr-xr-x   2 0    0       512 Oct 21  1994 root
+drwxr-xr-x   2 0    0      1024 Oct 21  1994 sbin
+drwxr-xr-x   2 0    0       512 Oct 21  1994 stand
+drwxrwxrwt   2 0    0       512 Oct 21  1994 tmp
+drwxr-xr-x  14 0    0       512 Oct 21  1994 usr
+drwxr-xr-x  18 0    0       512 Oct 21  1994 var
+# uname -a
+NetBSD amiga.aprisoft.de 10.99.14 NetBSD 10.99.14 (GENERIC) #6: Sun Jun  8 =
+08:11:46 CEST 2025  martin@seven-days-to-the-wolves.aprisoft.de:/work/src/s=
+ys/arch/amiga/compile/GENERIC amiga
+-->8--
+
+So the 1.0 original release a.out binaries still work and a -current
+kernel provides the right data (with old alignment and 32bit time_t)
+for a stat(2) system call from 1994 using the a.out ABI.
+
+Martin
