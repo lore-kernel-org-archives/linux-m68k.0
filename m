@@ -1,150 +1,139 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from borehabit.cfd (ip160.ip-51-81-179.us [51.81.179.160])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFAA28A1E9
-	for <linux-m68k@vger.kernel.org>; Tue, 10 Jun 2025 11:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5F82236F7
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Jun 2025 14:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.179.160
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749554799; cv=none; b=eqvtHTOChM1/FGdgU1eOhQoD+3lbAyGz24WpK+6BJ8bfRLsKQ/igoTWk67/AOv9bZcsU7XkqzyGXPyc6RVXPaoqI59M6rSDfTPC+Tx0/VG6137BuHQoCzC+kop2s0A05VJkogeD+Iyct2UlJ7K6KWopgHlYvrFijCzSCmkCl4O8=
+	t=1749567298; cv=none; b=QTSyILGiceiEBENB4CtFmVMcdVvOMEw/xRgNi0nDJPEUfYUX7wSgO0DL41YNaXJbZdMkmJwYopB1yn6WUGEekkBbcxZUxQega4dvxI9yKwLYvZ5s+JjJFZIfXYQuE3bJU6hzjug1tZ8CjkC4oqKgDIqXirq++bdYO6V1rixoTEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749554799; c=relaxed/simple;
-	bh=AVXVGhCQTCmGxRJcX1V3zA42oc3xVpPDLepPNTJEVZQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nmSGfYiDtunZt3VUabeKdrJYAX/zbC2DsCp/Kw0mOi0nuuT9AAhzjTsPiPDgwGoWymGGNLVRGPA+F1QR3frIFftPSbevncG5npRxZjP76CqHbFw7Y4AVzd9x0FSoQFlZlCkApfkeEI/LFmBD80Or/2cR5jFdK6sEVLHAvHGCHY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=bE4a2nwh; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1749567298; c=relaxed/simple;
+	bh=j/qZ6nCFDOcbnwIbag40JF9HDzOLw0n9TJz9U1mz3X8=;
+	h=To:Subject:Date:From:Message-ID:MIME-Version:Content-Type; b=JeaX4oNLLQzJSnuFbFe94jmGwQ6HBr0enc3RbdIXK36ZjWLsfEzlH5sm5KdBB5cApB7e325EZvTFy0MnUFXc3sgIWAYdkL4nSJQwLkQb3rV8V4EQhsnV9JrU8qEtKcz6hykrBFsGtOm3t/Gxl3iVcgBfv06s2WCgKpXCbbEV2ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=borehabit.cfd; spf=pass smtp.mailfrom=borehabit.cfd; dkim=pass (1024-bit key) header.d=borehabit.cfd header.i=@borehabit.cfd header.b=q0/dRRFk; arc=none smtp.client-ip=51.81.179.160
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=borehabit.cfd
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=borehabit.cfd
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="bE4a2nwh"
+	dkim=pass (1024-bit key) header.d=borehabit.cfd header.i=@borehabit.cfd header.b="q0/dRRFk"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=f+pXUsAnDhLdEaUODUT+boiFhUfydBC07FaxP99p0fs=; t=1749554796; x=1750159596; 
-	b=bE4a2nwhU7i35Y4Qwxr+47pS5lhxxJf44iubYfw3Ui+inFBpBSH8kuykfYnk3/y8+fNrhr1UNSS
-	MXPKWD/R85ChVYLxP7UgF9lxPH0VVEMsSIMdKKwf5UaYzHxSwJV2otHVVFpb/g/aXZj26F1swnrre
-	EQltUwGqi5tWqotsXSdEgApxHUMWqHujRy6e/c3d45Day5JCawNwr8RjfSyd+8U4DH3ni2aRolwND
-	BMRt10vpnWpcpiJkftEB68+ExbCWi4VFq9wXWdvCTDR08bEpmQ5I+ZCVhckjxQsLYWGu58JtAAGsk
-	cC0Z6mP5lcVSJ8bSFEak4UL3CxfLqC7fMA5g==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uOx7i-000000010qC-3o8i; Tue, 10 Jun 2025 13:26:34 +0200
-Received: from p57bd96d0.dip0.t-ipconnect.de ([87.189.150.208] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uOx7i-00000001O6F-2l5l; Tue, 10 Jun 2025 13:26:34 +0200
-Message-ID: <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Jean-Michel Hautbois	
- <jeanmichel.hautbois@yoseli.org>, port-m68k <port-m68k@netbsd.org>,
- debian-68k	 <debian-68k@lists.debian.org>, linux-m68k
- <linux-m68k@vger.kernel.org>
-Date: Tue, 10 Jun 2025 13:26:34 +0200
-In-Reply-To: <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
-References: 
-	<ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
-	   <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
-	   <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
-	   <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
-	   <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
-	   <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
-	  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
-	  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
-	 <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
-	 <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	d=borehabit.cfd; s=mail; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:Reply-To:From:Date:Subject:To:Sender:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=CFYjPvEUim5mD5QwWelE+Axpgk7p2gwnF2M5gpb++Rg=; b=q0/dRRFkY6cfiYde+n/Cv6ZZis
+	+zTWHSn7b31FEhlIMWWhIXY69hnlspYqFdhs5cqhrOqawjWr+ICmgOhYW0P84DzHvxDyf2JuYNd6P
+	L3gKylYB1PiKxarT2lATvGJMwx6UMbbnoO6ElV5AuxEnk49oV6A6sIYpyPOu4fXH1YBg=;
+Received: from admin by borehabit.cfd with local (Exim 4.90_1)
+	(envelope-from <support@borehabit.cfd>)
+	id 1uP0NM-000V62-Gz
+	for linux-m68k@lists.linux-m68k.org; Tue, 10 Jun 2025 21:54:56 +0700
+To: linux-m68k@lists.linux-m68k.org
+Subject: WTS Available laptops and Memory
+Date: Tue, 10 Jun 2025 14:54:56 +0000
+From: Exceptional One PC <support@borehabit.cfd>
+Reply-To: info@exceptionalonepc.com
+Message-ID: <c81b50301db92dce0a6d6431b8170b4d@borehabit.cfd>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, 2025-06-08 at 11:10 +1000, Finn Thain wrote:
-> > Furthermore, we're still talking about a hobbyist platform here which=
-=20
-> > hasn't been in production use for more than ten years. It doesn't reall=
-y=20
-> > matter whether we break the ABI or not.
-> >=20
->=20
-> By the same argument, since Debian is comprised of volunteers and=20
-> hobbyists, it can be ignored by corporate-sponsored organizations, such a=
-s=20
-> the Rust Foundation, and by upstream maintainers employed by for-profit=
-=20
-> companies. Yet they don't ignore us. Why do you think that is?
+Hello,
 
-There is a clear difference between architectures that are actively used in
-production as compared to architectures that are used for hobbyists project=
-s
-only.
+Looking for a buyer to move any of the following Items located in USA.
 
-We couldn't push such changes on x86_64, for example, because there is huge
-worldwide userbase meaning that introducing such an ABI-breaking change wou=
-ld
-come at a huge cost. On m68k, on the other hand, the user base is so small
-and insignificant that the costs for introducing the change are negligible =
-and
-the profits for making the change strongly outweigh the disadvantages.
 
-Please don't pretend that you don't see a significant difference here. Your
-argument is dishonest and you're just trying to derail the discussion.
+Used MICRON SSD 7300 PRO 3.84TB 
+U.2 HTFDHBE3T8TDF SSD 2.5" NVMe 3480GB
+Quantity 400, price $100 EACH 
 
-> > And it's not like there isn't strong case for making this change. As I=
-=20
-> > have tirelessly explained, the current port with 2 bytes alignment is=
-=20
-> > simply no longer feasible since an increasing number of packages either=
-=20
-> > require 4 bytes alignment or require Rust.
-> >=20
-> > These include more and more fundamental packages such as coreutils, the=
-=20
-> > kernel or various Python packages such as python-cryptography. It's=20
-> > simply not an option to continue on the current path as it has become a=
-=20
-> > dead-end.
-> >=20
->=20
-> Every CPU architecture is a dead end. This observation is as old as=20
-> Moore's Law.
 
-Yes, and we all have to die some day. What's the point of bringing up this =
-argument?
+ 005052112 _ 7.68TB HDD -$200 PER w/ caddies refurbished 
+ Quantity 76, price $100
 
-You are arguing in hyperboles which clearly shows you're not interested in =
-a serious
-discussion. Why are you even participating here?
 
-> > I don't see the point in maintaining something that becomes increasingl=
-y=20
-> > useless because more and more packages are no longer buildable.
->=20
-> That's because you still haven't identified those packages in the Debian=
-=20
-> archive which actually need porting.
 
-I have posted that list several times already: https://wiki.debian.org/M68k=
-/Alignment
+Brand New CISCO C9300-48UXM-E
+Available 5
+$2000 EACH
 
-Adrian
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Brand New C9200L-48T-4X-E
+$1,200 EACH
+QTY4
+
+HP 1040G3 Elite Book Folio Processor :- Intel Core i5
+◻Processor :- Intel Core i5
+◻Generation :- 6th
+◻RAM :- 16GB
+◻Storage :- 256G SSD
+◻Display :- 14 inch" Touch Screen 
+QTY 340 $90 EA
+
+
+
+SK HYNIX 16GB 2RX4 PC4 - 2133P-RAO-10
+HMA42GR7AFR4N-TF TD AB 1526
+QTY560 $20 EA
+
+
+Xeon Gold 6442Y (60M Cache, 2.60 GHz)	
+ PK8071305120500	 
+ QTY670 700 each 
+
+
+SAMSUNG 64GB 4DRX4 PC4-2666V-LD2-12-MAO
+M386A8K40BM2-CTD60 S
+QTY 320 $42 each
+
+
+
+Brand New CISCO C9300-48UXM-E
+Available 5
+$2500 EACH
+
+
+Core i3-1315U (10M Cache, up to 4.50 GHz)	
+ FJ8071505258601
+QTY50  $80 EA
+
+Intel Xeon Gold 5418Y Processors
+QTY28 $780 each
+
+
+Brand New C9200L-48T-4X-E  
+$1000 EACH
+QTY4
+
+
+Brand New Gigabyte NVIDIA GeForce RTX 5090 AORUS
+MASTER OC Graphics Card GPU 32GB GDDR7
+QTY50 $1,300
+
+
+ Brand New N9K-C93108TC-FX-24 Nexus
+9300-FX w/ 24p 100M/1/10GT & 6p 40/100G
+Available 4
+$3000 each
+
+
+
+Brand New NVIDIA GeForce RTX 4090 Founders
+Edition 24GB - QTY: 56 - $700 each
+
+
+
+
+Charles Lawson
+Exceptional One PC
+3645 Central Ave, Riverside
+CA 92506, United States
+www.exceptionalonepc.com
+info@exceptionalonepc.com
+Office: (951)-556-3104
+
