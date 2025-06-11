@@ -1,179 +1,137 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0482E6108
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Jun 2025 11:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09AF26E6EF
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Jun 2025 11:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749640963; cv=none; b=Xx4E1Ge4MfyPd6kAo8oqdmJ6vyVByUKNQ5rRs0UihYCR3dnZgD0PLuUXS+zU216nMtgqL91bdNkVdygjaITo3TDO0uKAn/XMwMVnLO4IRmtRuon4d5obFifhjt42+gbeVCI672vkZNbOIN7cW7MtRAl0iqJ20Klbe5rNAju2tTY=
+	t=1749642067; cv=none; b=dNZIaROddYWrzNO2bVVccG54LPN03cT6EuzwljlzCyejjRxXMDcmXSbdDDNulMaixvvSjH3sBwOyXg7jxmceocJQZVViRyW8V7z0Rr32IwD9KCPo1OyTqlpSJPOyjPMXgDNNs6sJEQMjqG1v9U5Ojd77twbCRUG00Wy6e/hQPBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749640963; c=relaxed/simple;
-	bh=Qe6Nr2dHM83kzSqpO6AU8+NASoIrgEuIaTGJZzzqwls=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=E++JXztAZpeqWvTlpcuVWliQIOdBQZBHeK2irm4aslbjhu0HKTiJ/ibmMOuVu2tbDy/RL06hiGzr5wwoD+NDU2jsriHb/gjiPBDL0XFK+3Gy6/LSW4xtULEWxagTzrF4SwGuXsjVtLG97NMBLwNMRBeA6HUfsaGHLoS7WOcJ6vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dH9YSq+V; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1749642067; c=relaxed/simple;
+	bh=rZ0zvi28l1ukvpo0XyM5nQnFn6b0NBgI6Zhy3uH+b3k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mfTuJk/VU8VViYjm0WnzVg+yqadVebRb4BxnOt0ZynI+CmXJCe8B+5cKeRC2VJjUw4GR1YYe+DEt/ecKM1iEgUDZAvd+FgimDRFhFSunok8JA3WLbh3o9PGnsG5Pg4zuD5EIDBKCSq8MluB/l73axCjCcnuH3dAG/xNh9Lt1cJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=egcw4i5Y; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dH9YSq+V"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749640962; x=1781176962;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Qe6Nr2dHM83kzSqpO6AU8+NASoIrgEuIaTGJZzzqwls=;
-  b=dH9YSq+VXyvmtsCBY77Yz3E5KssH0QU9VIeOw0JKwubANu42py9oyWeO
-   F7jB1NE8X7FykbwHFZCDF3Buv/6QyEdSr/pFLxpLTdxkojFiJ6VhNQbtz
-   xoxJV/KRkUXaUoVS0Kvfwa80yrW5HEi0bFqcc9g0qss6k3yS0MbVJnPcB
-   aSkiypsoYdaGUf1/c6VsiMJqwS8BGKmVbOJqXVCJZYNjd1W/PSKl3ymja
-   pX5BO1prxydzxAkkybI2cenYnndjqv6HzHoVVjgloZCXKQdqHuEH32rDi
-   Ui7i/dfaXJ9G7IFe2ZKA2FYSkViaEqljIvvRdGRfsrwK96LHEYcgQOZV9
-   g==;
-X-CSE-ConnectionGUID: 41Cj8uJyTDKXr38Zg+gckw==
-X-CSE-MsgGUID: 20T2uxQFTg61BgY4XXoy0A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11460"; a="62058882"
-X-IronPort-AV: E=Sophos;i="6.16,227,1744095600"; 
-   d="scan'208";a="62058882"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2025 04:22:41 -0700
-X-CSE-ConnectionGUID: Ojyg/RhjTriSvTpn1TMQ5w==
-X-CSE-MsgGUID: 52oD8a70SvawWK4mDJNmAQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,227,1744095600"; 
-   d="scan'208";a="147017158"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.183])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2025 04:22:38 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 11 Jun 2025 14:22:34 +0300 (EEST)
-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Joshua Thompson <funaho@jurai.org>, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH 04/33] m68k: remove unneeded tty includes
-In-Reply-To: <20250611100319.186924-5-jirislaby@kernel.org>
-Message-ID: <2e994f05-8aa9-82c0-e8e3-927730dccadf@linux.intel.com>
-References: <20250611100319.186924-1-jirislaby@kernel.org> <20250611100319.186924-5-jirislaby@kernel.org>
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="egcw4i5Y"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1749642064;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=eOMqJTJmLauU1Yqmyrgr3U7LB7TOvCdgHAQ81c6XRIc=;
+	b=egcw4i5YXWVCwe7QMfp50HIIoJYWcMDvGydyZqyBw6KCgqAlpVwHa6Jl8EgpFwaVKJDhqH
+	GLHStz9OfdIWPGQ8O0zHN2H8YQTlFCTe35wLWsH1NK1ucZNvntCgpF8wW91GpXU1+UPGUN
+	EdyU339VmZHmp/QRY7RVy103BtVBa2o=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-64-zDBcJLujMCO1kuDWIHoPHw-1; Wed,
+ 11 Jun 2025 07:41:03 -0400
+X-MC-Unique: zDBcJLujMCO1kuDWIHoPHw-1
+X-Mimecast-MFC-AGG-ID: zDBcJLujMCO1kuDWIHoPHw_1749642062
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AC149195608C;
+	Wed, 11 Jun 2025 11:41:01 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.45.224.174])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 7FE3019560A3;
+	Wed, 11 Jun 2025 11:40:58 +0000 (UTC)
+From: Thomas Huth <thuth@redhat.com>
+To: linux-m68k@lists.linux-m68k.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Ungerer <gerg@linux-m68k.org>
+Cc: Sam Creasey <sammy@sammy.net>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in uapi headers 
+Date: Wed, 11 Jun 2025 13:40:54 +0200
+Message-ID: <20250611114056.118309-1-thuth@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-843499514-1749640954=:957"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The kernel Makefiles define the __ASSEMBLY__ macro to provide
+a way to use headers in both, assembly and C source code.
+However, all the supported versions of the GCC and Clang compilers
+also define the macro __ASSEMBLER__ automatically already when compiling
+assembly code, so some kernel headers are using __ASSEMBLER__ instead.
+With regards to userspace code, this seems also to be constant source
+of confusion, see for example these links here:
 
---8323328-843499514-1749640954=:957
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+ https://lore.kernel.org/kvm/20250222014526.2302653-1-seanjc@google.com/
+ https://stackoverflow.com/questions/28924355/gcc-assembler-preprocessor-not-compatible-with-standard-headers
+ https://forums.raspberrypi.com/viewtopic.php?p=1652944#p1653834
+ https://github.com/riscv-software-src/opensbi/issues/199
 
-On Wed, 11 Jun 2025, Jiri Slaby (SUSE) wrote:
+To avoid confusion in the future, it would make sense to standardize
+on the macro that gets defined by the compiler, so this patch series
+changes all occurances of __ASSEMBLY__ into __ASSEMBLER__.
 
-> All these includes must have been cut & pasted. The code does not use
-> any tty or vt functionality at all.
->=20
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Joshua Thompson <funaho@jurai.org>
-> Cc: linux-m68k@lists.linux-m68k.org
+I split the patches per architecture to ease the review, and I also
+split the uapi headers from the normal ones in case we decide that
+uapi needs to be treated differently from the normal headers here.
 
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+The x86, parisc and sh patches already got merged via their specific
+architecture tree:
 
---
- i.
+ https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=24a295e4ef1ca8
+ https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8a141be3233af7
+ https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cccaea1d66e94b
+ https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e2b6a188625a2b
+ https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9cc646950eefda
 
-> ---
->  arch/m68k/amiga/config.c  | 2 --
->  arch/m68k/apollo/config.c | 2 --
->  arch/m68k/atari/config.c  | 1 -
->  arch/m68k/mac/config.c    | 2 --
->  arch/m68k/q40/config.c    | 2 --
->  5 files changed, 9 deletions(-)
->=20
-> diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-> index 0147130dc34e..242d18e750b0 100644
-> --- a/arch/m68k/amiga/config.c
-> +++ b/arch/m68k/amiga/config.c
-> @@ -16,12 +16,10 @@
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
->  #include <linux/seq_file.h>
-> -#include <linux/tty.h>
->  #include <linux/clocksource.h>
->  #include <linux/console.h>
->  #include <linux/rtc.h>
->  #include <linux/init.h>
-> -#include <linux/vt_kern.h>
->  #include <linux/delay.h>
->  #include <linux/interrupt.h>
->  #include <linux/zorro.h>
-> diff --git a/arch/m68k/apollo/config.c b/arch/m68k/apollo/config.c
-> index e161ecd76035..e324c5f671de 100644
-> --- a/arch/m68k/apollo/config.c
-> +++ b/arch/m68k/apollo/config.c
-> @@ -3,9 +3,7 @@
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
-> -#include <linux/tty.h>
->  #include <linux/rtc.h>
-> -#include <linux/vt_kern.h>
->  #include <linux/interrupt.h>
-> =20
->  #include <asm/setup.h>
-> diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
-> index b48a0606a000..ee2d061efb2a 100644
-> --- a/arch/m68k/atari/config.c
-> +++ b/arch/m68k/atari/config.c
-> @@ -33,7 +33,6 @@
->  #include <linux/ioport.h>
->  #include <linux/platform_device.h>
->  #include <linux/usb/isp116x.h>
-> -#include <linux/vt_kern.h>
->  #include <linux/module.h>
-> =20
->  #include <asm/bootinfo.h>
-> diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-> index d26c7f4f8c36..c0033f885ed4 100644
-> --- a/arch/m68k/mac/config.c
-> +++ b/arch/m68k/mac/config.c
-> @@ -15,7 +15,6 @@
->  #include <linux/reboot.h>
->  #include <linux/types.h>
->  #include <linux/mm.h>
-> -#include <linux/tty.h>
->  #include <linux/console.h>
->  #include <linux/interrupt.h>
->  /* keyb */
-> @@ -23,7 +22,6 @@
->  #include <linux/delay.h>
->  /* keyb */
->  #include <linux/init.h>
-> -#include <linux/vt_kern.h>
->  #include <linux/platform_device.h>
->  #include <linux/ata_platform.h>
->  #include <linux/adb.h>
-> diff --git a/arch/m68k/q40/config.c b/arch/m68k/q40/config.c
-> index de7870ad2a30..5a4258697622 100644
-> --- a/arch/m68k/q40/config.c
-> +++ b/arch/m68k/q40/config.c
-> @@ -13,14 +13,12 @@
->  #include <linux/types.h>
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
-> -#include <linux/tty.h>
->  #include <linux/console.h>
->  #include <linux/linkage.h>
->  #include <linux/init.h>
->  #include <linux/major.h>
->  #include <linux/serial_reg.h>
->  #include <linux/rtc.h>
-> -#include <linux/vt_kern.h>
->  #include <linux/bcd.h>
->  #include <linux/platform_device.h>
-> =20
->=20
---8323328-843499514-1749640954=:957--
+So I assume the m68k patches should go via the m68k tree.
+
+v2:
+- Split the m68k patches from the global series
+  (see https://lore.kernel.org/all/20250314071013.1575167-1-thuth@redhat.com/)
+- Rebased the patches on linux-next and fixed the conflicts
+  and new occurances of __ASSEMBLY__
+
+Thomas Huth (2):
+  m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in uapi headers
+  m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in non-uapi headers
+
+ arch/m68k/include/asm/adb_iop.h           |  4 ++--
+ arch/m68k/include/asm/bootinfo.h          |  4 ++--
+ arch/m68k/include/asm/entry.h             |  4 ++--
+ arch/m68k/include/asm/kexec.h             |  4 ++--
+ arch/m68k/include/asm/mac_baboon.h        |  4 ++--
+ arch/m68k/include/asm/mac_iop.h           |  4 ++--
+ arch/m68k/include/asm/mac_oss.h           |  4 ++--
+ arch/m68k/include/asm/mac_psc.h           |  4 ++--
+ arch/m68k/include/asm/mac_via.h           |  4 ++--
+ arch/m68k/include/asm/math-emu.h          |  6 +++---
+ arch/m68k/include/asm/mcf_pgtable.h       |  4 ++--
+ arch/m68k/include/asm/mcfmmu.h            |  2 +-
+ arch/m68k/include/asm/motorola_pgtable.h  |  4 ++--
+ arch/m68k/include/asm/nettel.h            |  4 ++--
+ arch/m68k/include/asm/openprom.h          |  4 ++--
+ arch/m68k/include/asm/page.h              |  4 ++--
+ arch/m68k/include/asm/page_mm.h           |  4 ++--
+ arch/m68k/include/asm/page_no.h           |  4 ++--
+ arch/m68k/include/asm/pgtable.h           |  2 +-
+ arch/m68k/include/asm/pgtable_mm.h        |  8 ++++----
+ arch/m68k/include/asm/ptrace.h            |  4 ++--
+ arch/m68k/include/asm/setup.h             | 10 +++++-----
+ arch/m68k/include/asm/sun3_pgtable.h      |  8 ++++----
+ arch/m68k/include/asm/sun3mmu.h           |  4 ++--
+ arch/m68k/include/asm/thread_info.h       |  6 +++---
+ arch/m68k/include/asm/traps.h             |  6 +++---
+ arch/m68k/include/uapi/asm/bootinfo-vme.h |  4 ++--
+ arch/m68k/include/uapi/asm/bootinfo.h     |  8 ++++----
+ arch/m68k/include/uapi/asm/ptrace.h       |  4 ++--
+ arch/m68k/math-emu/fp_emu.h               |  8 ++++----
+ 30 files changed, 72 insertions(+), 72 deletions(-)
+
+-- 
+2.49.0
+
