@@ -1,117 +1,109 @@
-Received: from sonic303-21.consmr.mail.ne1.yahoo.com (sonic303-21.consmr.mail.ne1.yahoo.com [66.163.188.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.dnamail.fi (sender103.dnamail.fi [83.102.40.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B61198A08
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Jun 2025 15:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.188.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA4517597
+	for <linux-m68k@vger.kernel.org>; Wed, 11 Jun 2025 15:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.40.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749655298; cv=none; b=K7f7A3YPkhwTHLZbF3t5/KcPZ6svIbGz7VkJ8TWHx2xIwHdcpzae11RV00ecxwvzkA4gGg+kFfZgpW42fKhu+XMb/f/XDvF9XjQuE1z4zYq5iG+8dn13Ack59YQM06I82543ZbejtyxMBHbKUBnt8vfzfZJ5nyvS0QaX1Ou0Md0=
+	t=1749656469; cv=none; b=EPObEnJ2zPP6klzcXmhx1QPcS8lEXFU1/fFjzQn+lUs9TEVrJbgNJY/omN2RlrhLU/lBTA7PTYbkSQaDxAJ7Y9RVilO6jWxuWhEl383zL6auLjuNvUwgkx3zDcC2fuBSGVoo8X0MTJrcs+t2y52tRyt2TLBZB6MmcXS9edU9JJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749655298; c=relaxed/simple;
-	bh=O1JywEeb2SRqn30Trzh6Qn2o5IMAYLE9KIF+A4OvcXY=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=SAmpSYU/oh8Vp8uLVdWdLWSoKWUI4Znry0X7LgtjPoj5CBIK547PFKeYXcr6RR/hLZfKvvv5DTDcJfCOAISTEKtYAkFPGJX51Ot3/ezmsVFbczI7AP4GJ0lxKlA0bYznJfc/ogM28gfcnh8k+IP1GYosA05+EAMJRjf34SRUlmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=AqGnIuri; arc=none smtp.client-ip=66.163.188.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+	s=arc-20240116; t=1749656469; c=relaxed/simple;
+	bh=3vXW11SDLcbQTYXid250UEiddCBVSzcxzOHSeaXJF3w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZWlFbxELuCZ/K7Pq05DMw3t0rEy8vYO2PnN617Qzc3y4KAnBmdS0HjEspjKG6ak6q8voFD/dY0jO0AXWM4tlA4DSLPOBndXHjDka9aXBfx2gO9UZo5n3No2CdeYfVBg2MrawOioszAI64bRSJLIhFiVeUR+YdfBbUhT2SC8LvW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b=kS/jd5/6; arc=none smtp.client-ip=83.102.40.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="AqGnIuri"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1749655289; bh=+9p/gmrzccoejMVdna8AayHd4NMaJeGHWc5VXU5X5K4=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=AqGnIuriWau0krnhgJF1VTMfURdX3QkCXDti5l5r7Znai9waRQYX1DgjYkSf0UkKxO6By4Dg9o0Ox5aHAZF76j9sYKAq4r2adRkpwur0kTJlOsSUEdxVo+OZkhlDycsjNOncsEFIPEF9OW/Z26ttFIg4U+KiQzQfJIdgbYESzcPfkLrtzJdOOliw0J1XH/1DuuJq31OK4ac47NDDh5jVoLRirDFoINXH3wuFcBbr0ufK41F6/iFXToCZGEcjRZ2tBY/yEuybpr8RNOZVZEuW7PHDEU8R7Q4shiar+ju7pCfPgRjXmujtE/mEiG2ng7GJ7vb7reQ71Z8y0AU/EzgfgQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1749655289; bh=3ZAGyV590GcVxuXDWinzYDY0dSGU8U1/ABn8PW6/yvf=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=e1V+fOJpYtvFMmc+LdcCu8NGiEzbtWDcBkWIxMpVH6hIdytbEexBlhpwii09Oe/q5igG/4TEi4DtMqNChED00gxR2saQoWOqvsgXctPIcQ1NBFL8z3S8AX9kepviQnE7VZZxPuI3q4UKpMKGZglnE6qe1HbqJBjzD7D4QDG0OPZ8yzt7sChiXxMFqzV5nfQLA0pDNzAfUZhlBPt5MqZu9BeiWqCIudvlTYuQi+544/o9d74PGvH5e6g25zDMBIIq5TxuLHMU7FNNih+UOqaKveLU2rQj5jxu3zTZJXTuAgovr4RboTjYS/MIOhAjMeni2B7/My5pbl6wcXG/YmN+UA==
-X-YMail-OSG: 5ZFNKqwVM1nrAZJ4PLR8innhmoEpMKEVeY0MT5z3HTBpY3SkqPQuvPyDkyI5by4
- m4TA8gAQohMzPG_93_xIKYnI_KPDy3lwaf6ab7Q_aqUWOfB8wu2uXEDfebP5bxQHU._A_nOdUpCb
- HVURPXqJlI3RXFVRsZPdkx9UW98nJefyN9T2QYLK_g.bgHOxsVTYLl6FygtaSS9JWW18ObWVIdZv
- MYeemmWnyNOLTWBR_Si_7OUJQ.K9Ky2LaHgTaLJAlRTK8TzGalu3wjl26KaqIr60CSi9wQM40Iwp
- NI8CYLHZXp8jXB6UIooKT9B0FtOvC95Z0CFPxGpnrXlaC61BliIccSIYprHOvWl6a6fyC3ws.rH8
- jZSuYpm43yQZ6Gc2sLn6YhuSv3Blna6xDOlpq_oEh7h3vwJhE8cZD8tq2HR1D9CZUbeIr2Dg269U
- 24.EkyRYKf72y8_BCZExVOKxwSvQtRjINSfLLhc2tliD_MDgKbW.RpS6AnoFrGTPeo.1uOQjF1lh
- oFSKPy9WeACyA550Re8C_P4x9evnBZeK9yLuXZfk.uR_x2va46IPPxx4fv5hadHo_7XITnRO_m3a
- .Ti4S2v6DPH_82mn3VkglsVOwklO50UCRM3KuSCNVc2841vQUeZtrspwcXOfDv4efmyWVjoVNJcZ
- FkvcW.UsschXNFT8v7PA68ECPEtnmkbGU12Q7.IcjoZgHcWS3J6ctGkCsWQ.HsTjONxG3q6koaAU
- 1S7W9ADc8iMmrTQJzlWh5kp58BEu0RSt7Sd4Ijl25_PsQ3xK2V5TDl8kbX4hGGtP.Ninh_k3bMuF
- s1s.GNBLQS2Z0DiQNJ2g7UsdU9FwXZLo7wyeqkyX_WYeSfXfo.aMtAm6x4xtTmvkuKb3mA0JNUcZ
- 9EPrTr8Q694bFODZGYp0fZTmdDhA9FZhBej8bBwXhNzjTBR54JBejsdOVn1laZhQq28J7FHDNd0V
- AExy.eQJOIrSgbStLPqlxinei8EJ5.UIvTmqWEo2ZFSI8ef8BjMegZcSIupDQ6b3f6phE0Ub1rR5
- qSmDA8UvFHB.Xr0dqajMsZgysP9LLrPb_2FM4835R7e6XZqI9DAki15xGTAOD3Tl9P_TwyB7sAX4
- 2mbEdzONUtT3YIZ.50dKKr9rrqdqa3WQm4xwFzPDubb35_fjuJC6u3en.qflGU6uBSVHXdQnUU4b
- mJviVAu7iiOzOUI_v3uSOFeJVdoqEsx2w4ZFraIBPfKShjxiwnvLwIWuXaAEGJDRNWV5rAHhOVrK
- 88tTpAHKHJKPDr_ZeAsWWpGrRJhmBR4OZHpEBmL_aTql54dMHlzua8ZU7aHLlqB1Cmcg5ESsned8
- .f_RXxZ.lXqilMxX9aMRSuPj8brb.YrRNDVdMt8qbdwStJGTfcemZmiBK8cNKbfFwvK363cfT6m6
- ALYASb8AcD1dK2TDYsy27hEwtm_8eMF3HCVaV1WNogOPqpuwqR36uHL29QSF1xqKjuntfdYjvtTE
- Fn4h0Zna.m_Kk.bL0yx2VaxlolifogeYq_Fe4ao0eFRQ43XZ89YFLCwymxmczOe0P5P5GgB4CRlT
- PndpNCuhXe08s8b4a_ETAu8oQQ7JYRTPUostIKI54sbRIG9fllQ8u7GwuVIOHLJ.GnjD7zi3ZKO3
- .ar247PwQ8PpF9VphcwhgSOpq.iqRbEiOEGR5wTZTBvbfi.2mVyagV4iRk1RRH3ifOT7Eg5Fh3Qj
- MAg9iWYDuBYLjFmAvVzds8nx4o9WLsIqZU_FT_9GGx.IOwSZRcIG5lYmawtYvuZCQt5HTtaEH2df
- WB2ZAkuC3oAVpwuWj30cDJlc3lgBRB6yKRmn9UsQaQCpG8r9UGcv04FTBRQCtX5E5PxbWiAsFyDE
- ByBvRvKJKBBoTrdBhSG74DFPliep_QaVGdC61QIZlFo7uH2WhzCQzdf8xNX8al6GTARYdI.Cfsvp
- mUSA7z3d0Q5fGbiN4YrjX5o9q9oQ1CDouzq.68qOeQhxlwqpJQ8NJDdrIN3nMhRwRNQoaLNs.1bL
- BCein4o493rNUMefI.Xzc8o3vjGSYC7TTs.605Au1RUrvXt3UQ8znbyQlm4o4OGy.mvmPUR471gh
- fzZuZ.YPBSV73BSy7dtcnk_GnFvWchNv1qqP9V6XDln6oa6PyFZz4suaIU.F_lFGJbBf3d._Anre
- SU.TEmlJBX1ILMejbLktKRaVdumuxIuDx01lO1z92UT4iMdM19kvi84_BBNdXPjFz0B6bMIYWHDp
- jUDnjK03M.7fsZRp260ea_hXHuIoy4_3gJBKWwE0dUJw_KIT6dxxAVfSmrNhgOnjR8oHBTg--
-X-Sonic-MF: <userm57@yahoo.com>
-X-Sonic-ID: 9d5f826e-d22f-4930-b42e-ad05fb16e7bf
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.ne1.yahoo.com with HTTP; Wed, 11 Jun 2025 15:21:29 +0000
-Received: by hermes--production-ne1-9495dc4d7-nmbx6 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 1f0b11c12d0c4d4c7d6991c536a92356;
-          Wed, 11 Jun 2025 15:11:22 +0000 (UTC)
-Subject: Re: [PATCH v3 0/3] m68k: Bug fix and cleanup for framebuffer debug
- console
-To: Finn Thain <fthain@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- stable@vger.kernel.org
-References: <cover.1743115195.git.fthain@linux-m68k.org>
-From: Stan Johnson <userm57@yahoo.com>
-Message-ID: <255c7fc4-aa15-fe51-94db-90029b22e479@yahoo.com>
-Date: Wed, 11 Jun 2025 09:11:21 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+	dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b="kS/jd5/6"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.dnamail.fi (Postfix) with ESMTP id 1610A4098E95;
+	Wed, 11 Jun 2025 18:32:35 +0300 (EEST)
+X-Virus-Scanned: X-Virus-Scanned: amavis at smtp.dnamail.fi
+Received: from smtp.dnamail.fi ([83.102.40.157])
+ by localhost (dmail-psmtp02.s.dnaip.fi [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id ilHn58AroDtG; Wed, 11 Jun 2025 18:32:34 +0300 (EEST)
+Received: from [192.168.101.100] (87-92-125-210.bb.dnainternet.fi [87.92.125.210])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: oak@dnamail.internal)
+	by smtp.dnamail.fi (Postfix) with ESMTPSA id 01FD8408850A;
+	Wed, 11 Jun 2025 18:32:33 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.dnamail.fi 01FD8408850A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=helsinkinet.fi;
+	s=2025-03; t=1749655954;
+	bh=2EJbWb9oF7krvYB3QVEmg5xHrUFyQqMyptyTQqwsJrw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=kS/jd5/6C/ylgO0SIkkTzmjUVNvvynyJsmcgzJaHzKvx4yKNrv2taoRZCG0NlRyOf
+	 ImgZ2EUvVEaf+n02bvMIWnHGGxKtzqr5FtzMev9IDfUoq4LfZkygk/0gv7EctnhGkG
+	 Bl+CYvydQfHx8XmdZQbaSodL8OXHl2+8ivbHSu/5HLuaGSQxfJK80SB+bMalmll7RT
+	 iPWwOS97rtcLsOp/mmbI2i7wNK/KaQIJSRQKxXVOgNObx3L8BWLe1KOQTqXxLATZdB
+	 X3oysJXOJonpkKcWY0alaS3wogHck/Kn/LehpqdaIdaeQWI3vsnPG/ZH0+to844ie5
+	 4Ge5Q3x3ohnaQ==
+Message-ID: <6a50c81a-cb0c-4529-959a-fad5260261fc@helsinkinet.fi>
+Date: Wed, 11 Jun 2025 18:32:33 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1743115195.git.fthain@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Stan Johnson <userm57@yahoo.com>
+Cc: Finn Thain <fthain@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>,
+ linux-m68k <linux-m68k@vger.kernel.org>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
+ <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
+ <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
+ <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+ <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+ <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+ <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+ <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+ <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
+ <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>
+ <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com>
+ <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
 Content-Language: en-US
+From: Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.23956 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-Tested-by: Stan Johnson <userm57@yahoo.com>
+Hi,
 
-On a Mac IIci, the three patches fix the lost-column issue.
+On 11.6.2025 10.44, John Paul Adrian Glaubitz wrote:
+> As previously stated, NetBSD uses 4 bytes alignment and runs fine even on
+> 68010-based systems. In fact, using a 4 bytes alignment will actually
+> improve performance as it's the natural alignment the hardware uses.
 
-I didn't notice any regressions booting the new kernel to multiuser
-and accessing serial, scsi and network.
+It will decrease performance if increased alignment means that something 
+that fit earlier into i/d-cache, does not fit any more.
 
--Stan Johnson
+(68030 has 256 bytes, 68040 has 4 KB, and 68060 has 8 KB, of both.)
+
+To get some numbers on this...
+
+if you could provide vmlinuz & System.map files for both (otherwise 
+identical) 2-byte & 4-byte alignment kernel builds, using kernel config 
+here:
+https://github.com/hatari/hatari/blob/main/tools/linux/kernel.config
+
+I could measure the perf difference for the whole kernel boot, and if 
+there are differences, profile what causes those differences.
 
 
-On 3/27/25 4:39 PM, Finn Thain wrote:
-> This series has a bug fix for the early bootconsole as well as some
-> related efficiency improvements and cleanup.
-> 
-> The relevant code is subject to CONSOLE_DEBUG, which is presently only
-> used with CONFIG_MAC. To test this series (in qemu-system-m68k, for example)
-> it's helpful to enable CONFIG_EARLY_PRINTK and
-> CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER and boot with
-> kernel parameters 'console=ttyS0 earlyprintk keep_bootcon'.
-> 
-> ---
-> Changed since v1: 
->  - Solved problem with line wrap while scrolling.
->  - Added two additional patches.
-> 
-> Changed since v2:
->  - Adopted addq and subq as suggested by Andreas.
-> 
-> 
-> Finn Thain (3):
->   m68k: Fix lost column on framebuffer debug console
->   m68k: Avoid pointless recursion in debug console rendering
->   m68k: Remove unused "cursor home" code from debug console
-> 
->  arch/m68k/kernel/head.S | 73 +++++++++++++++++++++--------------------
->  1 file changed, 37 insertions(+), 36 deletions(-)
-> 
+	- Eero
+
+PS. I will be using Hatari for that, as it has semi-cycle-accurate 
+emulation for 38030, and good profiling facilities: 
+https://www.hatari-emu.org/doc/debugger.html#Profiling)
+
+
