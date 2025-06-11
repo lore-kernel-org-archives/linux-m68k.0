@@ -1,40 +1,70 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A992D246771
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Jun 2025 16:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B3A5227
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Jun 2025 00:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749572893; cv=none; b=QQ3edSj68hFu0hg28K5ZU5mqN08lyI/rmQS0dvt2jL6nkflm+RH5zi/yfFEMAkp5JGRqybY4ISjoWwWIqz4Ms13ulaP8+p0j60G7KkFtDjOcMEbgKgQ/zWLN1EtMQR9hHERdEh9LRAx+orHphS5TyT3G49XKy6v1L9BrH041Fn4=
+	t=1749600805; cv=none; b=M8gvB/COSeXTidVcAihCh/Cx+PeD11+aLKVb5GYgbPE6Jufqd7EU8IEr8olB7elnTq/jr2GrEc9I37wBQxqr8V3inG6F8FuRAIlcGRRtQeWaeAAUcbzlz9lCbo5kdsA8oHdIMPdtxJTsbh210SJ/5KBmc0WpQuhYC1UdLsci6DU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749572893; c=relaxed/simple;
-	bh=VGaA2UjcATw5usDRARWAGHoyvA3nRCcXodZF/+d4fPQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=eEtPh7UkAiPKDMGvPJJ3AxxNiSVsLdBUYVnmR+xFdrkCVkceCY7VakqVe00DCBp3riyuiacw7OEJkEOuKcvoXLmT3//IzOB4L4M7McKpzcFJpKmoPYrcpNCZNsopXFK1wQX6olU7AHzMpLPMIrKkGwYZAaBizgi9pt+YH3yig9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JJ1f2Y7N; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1749600805; c=relaxed/simple;
+	bh=Zr5kJXOd0E61qhqZcjK4JuesW5RctkKk1iK7a73axYc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JHRzjiKUi2iHpAXSmU8EB1IbJUeRkS4cPQtCNRysowhPn4nU/UnimxbNhOZIoeUObnx2r648PpmvMxG4KKwpdA+CQoksJ2Z1IBSECDqpUtA3lgBOIyj9+QmK0gdVRxM35Tc5qcutnHL23CMifDNO6uCQj+T5Nj7+y+Xk82/Rj4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TPQcws8z; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JJ1f2Y7N"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id DB613629F9;
-	Tue, 10 Jun 2025 16:28:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84AE9C4CEED;
-	Tue, 10 Jun 2025 16:28:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749572889;
-	bh=VGaA2UjcATw5usDRARWAGHoyvA3nRCcXodZF/+d4fPQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=JJ1f2Y7NQSd54tSszQLRiQIl7dD277rRFw5CD03cct8JsOIa9MeckGxwgeTNERJbY
-	 /Aq7k/QdxMobJHlLVMWLaBVYiO7WUz7b5oZF8aZHHmpn5SGMFxfrabCx4zi/NelVA7
-	 9tpmie/ZR7eRtm/GQUxR12kWA/MXW8KxThnLlIuGSON9FK96/TttZtzzrp91aMtCTf
-	 nkrgxszvlyVUm0gGo8/i60pLDKogQxJCIy6qqOtv6fYwtbh3P8fqWAcjVqLwJncDb0
-	 2wdFJTUv8YDSR+ksvQyqg1NCDe5af7sVQqmJb6cWow02fsajDICno0naOHZ+D1dFYd
-	 UMToThilj3zfw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D5B39D6540;
-	Tue, 10 Jun 2025 16:28:41 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TPQcws8z"
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3139027b825so1666866a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Jun 2025 17:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749600803; x=1750205603; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TzGokTHWaqpctTJmaaX7l1tJgh1TuHPjKfl0NST8upg=;
+        b=TPQcws8zAcQ2jSu/tvCKkyPYXwzRatRP31suwSFv9XsHwU3m6aoFteTDsnrAqNeLgj
+         kHpBt1EdiaroCKNCVAb1VsVYqdaujrbB3xmd0+UK2aeUhqucsdNHZBiMM/NcUk69urwq
+         nIaLxINnI8AiZpNWiC56C7Boa455iBx9UFPtG6UrTdoJrXbUnSg+uoy+waVi0YvBCnsy
+         Z7lXw8rO9CnGyVLc0p11MowUSUBmG32PFh4ad45Ax9qquORycJFooTSDm1u43bn3RKRu
+         DC4LkWK5pFZTO46oSLD2MsNiZT3mECPOS4HGJIQVu4WBX9IjnskSNM74Stu+MPTlpgkZ
+         d1KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749600803; x=1750205603;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TzGokTHWaqpctTJmaaX7l1tJgh1TuHPjKfl0NST8upg=;
+        b=TnZ7mewEJOWWvKHLnQCS1AsJ6b5QB93aUkdrW+IbFGvSZlPl/Ee4Y3Mz8j2Wh0Outy
+         SKiPi81P0cmkCKgEu9CU05Ui4Zbj1PNLAMysWmzJq4IgXrFJM/bHptyqbpiVimGmz5DN
+         bW/7U6yDO5PxYVy+9Fy5LHiXnk9s94rPwRszuSjA5+7S/eGQwn7gsMBV0dlXDUxam2xG
+         hmwoY7aYTPRmi8FkI1yg7BQhCW08tDIGJMoH3kI12vZ8krT7rlTD2FHL2phxwrr/XwWV
+         /X1H4nN/Wjn1n5HUNFYR/kuBLw3m8UOuwzmswpOvGBSG2gd30VrifVq/JRQRObFkYw9+
+         WdOw==
+X-Gm-Message-State: AOJu0YwCfnDldHiJ7X3pij+D0zBdbP9SoM6h4MPVPKlsavXvcaoT3kay
+	0ohArb1dwBgSdk2UkSOrU54ySHRrNDcCLcRw6pMT26IvuvYUSouxFdOU
+X-Gm-Gg: ASbGncs74fYT1ugbRZMGT/ChIZPCbiVkbbjhE3uNz0cPWPFKpd/k71rVXYsNCeWNQ4T
+	2OP7SDY+dNo0UVXCvUcVeJFOfkwgp6u0mFNXzUR3LZuiL57f/s6t2CM1j9MkhcUfNZpRfnl2Tgs
+	dWkciFfvcN5wKFMrXRBLgwfdcsdYHkV/8/bDbWG9gxnqiQl+8jF9mP1wmOfqjrnozPXN+iwWdtQ
+	dQZx9S2HZk+mPyiD9z43qFwtyG/a6R3vuEHhry89YJQ131DXEkEcOtL/URoZO2ifBJ+yccr8c+Z
+	0oshDcsdvWyq2S+s75ieB3mzDywmc6dSZ6Q8ZwgZBXMkJMBJ6nDd9jC5RLWGJDyFNTYA/ZuvzDH
+	FLhN9uimEta6/vHJjZ6lFGNkbDiHITSs=
+X-Google-Smtp-Source: AGHT+IFgEtHJxBLgI+jT81eBlMA+EU05hPKkSjYudhy5V5fcfuuIgxncTbMqid7sNNmukcqK2M9LYA==
+X-Received: by 2002:a17:90b:3c11:b0:311:fde5:c4be with SMTP id 98e67ed59e1d1-313b20072e3mr846808a91.35.1749600802854;
+        Tue, 10 Jun 2025 17:13:22 -0700 (PDT)
+Received: from fedora.. (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-313b2137b77sm161367a91.34.2025.06.10.17.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Jun 2025 17:13:22 -0700 (PDT)
+From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Subject: [PATCH 0/4] Convert motorola to use ptdescs
+Date: Tue, 10 Jun 2025 17:12:51 -0700
+Message-ID: <20250611001255.527952-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -42,83 +72,27 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 2/2] arch: use always-$(KBUILD_BUILTIN) for vmlinux.lds
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <174957291974.2454024.16546912662876416180.git-patchwork-notify@kernel.org>
-Date: Tue, 10 Jun 2025 16:28:39 +0000
-References: <20250602181256.529033-2-masahiroy@kernel.org>
-In-Reply-To: <20250602181256.529033-2-masahiroy@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-kbuild@vger.kernel.org,
- aou@eecs.berkeley.edu, agordeev@linux.ibm.com, alex@ghiti.fr,
- andreas@gaisler.com, anton.ivanov@cambridgegreys.com, bp@alien8.de,
- bcain@kernel.org, catalin.marinas@arm.com, chris@zankel.net,
- borntraeger@linux.ibm.com, christophe.leroy@csgroup.eu,
- dave.hansen@linux.intel.com, davem@davemloft.net, dinguyen@kernel.org,
- geert@linux-m68k.org, guoren@kernel.org, hpa@zytor.com, hca@linux.ibm.com,
- deller@gmx.de, chenhuacai@kernel.org, mingo@redhat.com,
- James.Bottomley@HansenPartnership.com, johannes@sipsolutions.net,
- glaubitz@physik.fu-berlin.de, jonas@southpole.se, maddy@linux.ibm.com,
- mattst88@gmail.com, jcmvbkbc@gmail.com, mpe@ellerman.id.au, monstr@monstr.eu,
- naveen@kernel.org, npiggin@gmail.com, palmer@dabbelt.com,
- paul.walmsley@sifive.com, dalias@libc.org, richard.henderson@linaro.org,
- richard@nod.at, linux@armlinux.org.uk, shorne@gmail.com,
- stefan.kristiansson@saunalahti.fi, svens@linux.ibm.com,
- tsbogend@alpha.franken.de, tglx@linutronix.de, gor@linux.ibm.com,
- vgupta@kernel.org, kernel@xen0n.name, will@kernel.org,
- ysato@users.sourceforge.jp, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- sparclinux@vger.kernel.org, x86@kernel.org
 
-Hello:
+m68k's Motorola still uses struct page (it's pointer tables) to track
+page tables. This patchset converts it to use ptdescs, to help prepare
+for allocating memory descriptors independently of struct page.
 
-This patch was applied to riscv/linux.git (fixes)
-by Masahiro Yamada <masahiroy@kernel.org>:
+It also includes some minor cleanups to make the code more readable. 
 
-On Tue,  3 Jun 2025 03:12:54 +0900 you wrote:
-> The extra-y syntax is deprecated. Instead, use always-$(KBUILD_BUILTIN),
-> which behaves equivalently.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/alpha/kernel/Makefile      | 2 +-
->  arch/arc/kernel/Makefile        | 2 +-
->  arch/arm/kernel/Makefile        | 2 +-
->  arch/arm64/kernel/Makefile      | 2 +-
->  arch/csky/kernel/Makefile       | 2 +-
->  arch/hexagon/kernel/Makefile    | 2 +-
->  arch/loongarch/kernel/Makefile  | 2 +-
->  arch/m68k/kernel/Makefile       | 2 +-
->  arch/microblaze/kernel/Makefile | 2 +-
->  arch/mips/kernel/Makefile       | 2 +-
->  arch/nios2/kernel/Makefile      | 2 +-
->  arch/openrisc/kernel/Makefile   | 2 +-
->  arch/parisc/kernel/Makefile     | 2 +-
->  arch/powerpc/kernel/Makefile    | 2 +-
->  arch/riscv/kernel/Makefile      | 2 +-
->  arch/s390/kernel/Makefile       | 2 +-
->  arch/sh/kernel/Makefile         | 2 +-
->  arch/sparc/kernel/Makefile      | 2 +-
->  arch/um/kernel/Makefile         | 2 +-
->  arch/x86/kernel/Makefile        | 2 +-
->  arch/xtensa/kernel/Makefile     | 2 +-
->  21 files changed, 21 insertions(+), 21 deletions(-)
+----
 
-Here is the summary with links:
-  - [2/2] arch: use always-$(KBUILD_BUILTIN) for vmlinux.lds
-    https://git.kernel.org/riscv/c/e21efe833eae
+Based on mm-new. This has only been compile tested, but there are
+no expected runtime changes.
 
-You are awesome, thank you!
+Vishal Moola (Oracle) (4):
+  m68k: mm: Convert get_pointer_table() to use ptdescs
+  m68k: mm: Convert free_pointer_table() to use ptdescs
+  m68k: mm: Convert init_pointer_table() to use ptdescs
+  m68k: mm: Convert pointer table macros to use ptdescs
+
+ arch/m68k/mm/motorola.c | 54 ++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.49.0
 
