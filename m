@@ -1,70 +1,74 @@
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B3A5227
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Jun 2025 00:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018DECA52
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Jun 2025 00:13:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749600805; cv=none; b=M8gvB/COSeXTidVcAihCh/Cx+PeD11+aLKVb5GYgbPE6Jufqd7EU8IEr8olB7elnTq/jr2GrEc9I37wBQxqr8V3inG6F8FuRAIlcGRRtQeWaeAAUcbzlz9lCbo5kdsA8oHdIMPdtxJTsbh210SJ/5KBmc0WpQuhYC1UdLsci6DU=
+	t=1749600806; cv=none; b=l5xNuuev4YZtahM3jv+OyapvAXzITrKp2pgSbyzWkwjz6vIDN1hRkb4EMVzd5X9INOUriqSzOp65T9IReK7FDd48m8GW25xkOXBsBtaqHS8s32i2XyerdHgl6ysm6WGTMAdWbmaWTGp1vJr59Q+3BsmPnD4SnmpSWeAGe2DHWuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749600805; c=relaxed/simple;
-	bh=Zr5kJXOd0E61qhqZcjK4JuesW5RctkKk1iK7a73axYc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JHRzjiKUi2iHpAXSmU8EB1IbJUeRkS4cPQtCNRysowhPn4nU/UnimxbNhOZIoeUObnx2r648PpmvMxG4KKwpdA+CQoksJ2Z1IBSECDqpUtA3lgBOIyj9+QmK0gdVRxM35Tc5qcutnHL23CMifDNO6uCQj+T5Nj7+y+Xk82/Rj4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TPQcws8z; arc=none smtp.client-ip=209.85.216.46
+	s=arc-20240116; t=1749600806; c=relaxed/simple;
+	bh=SNItmd5R2WhZINe253nyh/MHq5OLywdOxcZlfMkpENg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=mS8P0ZrQiDSZ7hAMrBQjNH76d1k6Op9N1HVtzVISHzvOP0DtLYGZSNjM2AVjIs42xu6rNLm/LJRfwrAC0luoHijIjP91G2OfHBM+SKY0oe4kya0tytaT4gOcV4pC3YgOrXza25mo5QbC0xCZ/b7+xEXu0OTtobcYCGvQc4uiNp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ALxZZ6ju; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TPQcws8z"
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3139027b825so1666866a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Jun 2025 17:13:23 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ALxZZ6ju"
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-3137c2021a0so2422485a91.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Jun 2025 17:13:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749600803; x=1750205603; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TzGokTHWaqpctTJmaaX7l1tJgh1TuHPjKfl0NST8upg=;
-        b=TPQcws8zAcQ2jSu/tvCKkyPYXwzRatRP31suwSFv9XsHwU3m6aoFteTDsnrAqNeLgj
-         kHpBt1EdiaroCKNCVAb1VsVYqdaujrbB3xmd0+UK2aeUhqucsdNHZBiMM/NcUk69urwq
-         nIaLxINnI8AiZpNWiC56C7Boa455iBx9UFPtG6UrTdoJrXbUnSg+uoy+waVi0YvBCnsy
-         Z7lXw8rO9CnGyVLc0p11MowUSUBmG32PFh4ad45Ax9qquORycJFooTSDm1u43bn3RKRu
-         DC4LkWK5pFZTO46oSLD2MsNiZT3mECPOS4HGJIQVu4WBX9IjnskSNM74Stu+MPTlpgkZ
-         d1KA==
+        d=gmail.com; s=20230601; t=1749600804; x=1750205604; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gwNzgrxrzZm1rRDLFM6hWfUfWXH1JJ/RfVhLHdqYs2A=;
+        b=ALxZZ6juG8ONW/C4gS8OMmFuZeZ60Eb9WwkOtTSJw+F2SdN0IYDMsqX7F9QSfLoP4k
+         TNzxFn6kX5kYbevBk2RpCNGWWOvWujdPBs9SXJyGTr8a95rNCIUuqR2ocr0d/rMU+rDm
+         Br01Sd7Na/g1aww8UUwL8EnCmE1W82ddU6AoF93eRNEEHo/Wsq1XFHeCr2AhpGGqaQKI
+         P5tQsr5ZxHg6khoF2OuNODSlwsK0szzNu4FSR5JFrLBN1cAyYkV/5k+6/4lSSV/lLfzP
+         1i1N3roToFcu6jI9X08Z4Avnz2jBMKCKdzYbx3ecbMAD5iSgYuuVtCzV2C2qgla/v3i+
+         mQsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749600803; x=1750205603;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TzGokTHWaqpctTJmaaX7l1tJgh1TuHPjKfl0NST8upg=;
-        b=TnZ7mewEJOWWvKHLnQCS1AsJ6b5QB93aUkdrW+IbFGvSZlPl/Ee4Y3Mz8j2Wh0Outy
-         SKiPi81P0cmkCKgEu9CU05Ui4Zbj1PNLAMysWmzJq4IgXrFJM/bHptyqbpiVimGmz5DN
-         bW/7U6yDO5PxYVy+9Fy5LHiXnk9s94rPwRszuSjA5+7S/eGQwn7gsMBV0dlXDUxam2xG
-         hmwoY7aYTPRmi8FkI1yg7BQhCW08tDIGJMoH3kI12vZ8krT7rlTD2FHL2phxwrr/XwWV
-         /X1H4nN/Wjn1n5HUNFYR/kuBLw3m8UOuwzmswpOvGBSG2gd30VrifVq/JRQRObFkYw9+
-         WdOw==
-X-Gm-Message-State: AOJu0YwCfnDldHiJ7X3pij+D0zBdbP9SoM6h4MPVPKlsavXvcaoT3kay
-	0ohArb1dwBgSdk2UkSOrU54ySHRrNDcCLcRw6pMT26IvuvYUSouxFdOU
-X-Gm-Gg: ASbGncs74fYT1ugbRZMGT/ChIZPCbiVkbbjhE3uNz0cPWPFKpd/k71rVXYsNCeWNQ4T
-	2OP7SDY+dNo0UVXCvUcVeJFOfkwgp6u0mFNXzUR3LZuiL57f/s6t2CM1j9MkhcUfNZpRfnl2Tgs
-	dWkciFfvcN5wKFMrXRBLgwfdcsdYHkV/8/bDbWG9gxnqiQl+8jF9mP1wmOfqjrnozPXN+iwWdtQ
-	dQZx9S2HZk+mPyiD9z43qFwtyG/a6R3vuEHhry89YJQ131DXEkEcOtL/URoZO2ifBJ+yccr8c+Z
-	0oshDcsdvWyq2S+s75ieB3mzDywmc6dSZ6Q8ZwgZBXMkJMBJ6nDd9jC5RLWGJDyFNTYA/ZuvzDH
-	FLhN9uimEta6/vHJjZ6lFGNkbDiHITSs=
-X-Google-Smtp-Source: AGHT+IFgEtHJxBLgI+jT81eBlMA+EU05hPKkSjYudhy5V5fcfuuIgxncTbMqid7sNNmukcqK2M9LYA==
-X-Received: by 2002:a17:90b:3c11:b0:311:fde5:c4be with SMTP id 98e67ed59e1d1-313b20072e3mr846808a91.35.1749600802854;
-        Tue, 10 Jun 2025 17:13:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1749600804; x=1750205604;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gwNzgrxrzZm1rRDLFM6hWfUfWXH1JJ/RfVhLHdqYs2A=;
+        b=UjZCwgcOqCu3A/kyJXffPo+tygZ/BrFmfu90LV8+GHnr6ypEGCWNOvGgWkmgVRVMcI
+         fAriZyz1+GuW93GMaYjhEiwpEb5RbA1Z8TVGMwMGoYp9XGS58JUJ5da/X2ReoRJiytcF
+         aMJpKA104w6RgdKXloAH+HLCalNYcqXxgihb+s/Rj7HkgofV1CTkUFGcu2Sx/1UukpCF
+         0aueg1KyerZtmNBN14nc2XIueb4HgMnCm6z+t0b5bixQZelsFssQ7vsNqm+To/JthrLJ
+         eQAIKOPXTj9z237ERQzml8zNiRe9Mq3ixy92GJs32JH5oLwrAkTUpNWrwGIaDIp/SeSk
+         y5Jw==
+X-Gm-Message-State: AOJu0Yzh9vpy3TW/qdH9Yl5GUIW2bKacwnk6CNXT0arQLyZjRUDk1ZRK
+	dXziAUObOM3VxMyKiqAGb++FPnzth5jC28p1gJ1oXPpxV9hDJbYo32LR
+X-Gm-Gg: ASbGnct6aCeiVSZPPSgWbQmM1lAfCN25xSq0H7w5ncFNmZPjipHNpslmhxXalPOFo+v
+	xlUs7q/bKHoCO6FgzAQx1pH7J368qI622CbhcTN/+3xDK868wW7cZRgKxCOR5sr5tkbKmesWVon
+	xM0kwrBcjRAfDAfp7HAV91CTbiZtZJEqHlXLqKazeHe54BEY9AZrbmae5778GX9uxpP+iSTEzrk
+	mzyFRqXByBHzI5Chrb3cD16g1LmcCerreYZI7L26SBJy+fjeH4MN1cYxf2xp+PQ7I3uB3W+IT3k
+	v8D6eLlmTKnWXGcOflH20fMDFQm9DhaAFclL5ru/K2kg8axidTFc8gOj7WdnsSmIQaPzDYUfjTZ
+	XXjaBKx5YrDgJeRG5BhBd
+X-Google-Smtp-Source: AGHT+IEnVIJq8re2nkxKhrVozBJlMxoUvTXEOoZn3mbH4xRKhEQUjhgYJTFjn9s27Mup4N+t/eXxRA==
+X-Received: by 2002:a17:90b:274a:b0:312:e1ec:de44 with SMTP id 98e67ed59e1d1-313af1f4a63mr1816899a91.27.1749600804133;
+        Tue, 10 Jun 2025 17:13:24 -0700 (PDT)
 Received: from fedora.. (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-313b2137b77sm161367a91.34.2025.06.10.17.13.21
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-313b2137b77sm161367a91.34.2025.06.10.17.13.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Jun 2025 17:13:22 -0700 (PDT)
+        Tue, 10 Jun 2025 17:13:23 -0700 (PDT)
 From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org,
 	Andrew Morton <akpm@linux-foundation.org>,
 	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH 0/4] Convert motorola to use ptdescs
-Date: Tue, 10 Jun 2025 17:12:51 -0700
-Message-ID: <20250611001255.527952-1-vishal.moola@gmail.com>
+Subject: [PATCH 1/4] m68k: mm: Convert get_pointer_table() to use ptdescs
+Date: Tue, 10 Jun 2025 17:12:52 -0700
+Message-ID: <20250611001255.527952-2-vishal.moola@gmail.com>
 X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250611001255.527952-1-vishal.moola@gmail.com>
+References: <20250611001255.527952-1-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -73,26 +77,83 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-m68k's Motorola still uses struct page (it's pointer tables) to track
-page tables. This patchset converts it to use ptdescs, to help prepare
-for allocating memory descriptors independently of struct page.
+Motorola uses get_pointer_table() for page tables, so it should be using
+struct ptdesc, not struct page.
 
-It also includes some minor cleanups to make the code more readable. 
+This helps us prepare to allocate ptdescs as their own memory
+descriptor, and prepares to remove a user of page->lru.
 
-----
+Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+---
+ arch/m68k/mm/motorola.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-Based on mm-new. This has only been compile tested, but there are
-no expected runtime changes.
-
-Vishal Moola (Oracle) (4):
-  m68k: mm: Convert get_pointer_table() to use ptdescs
-  m68k: mm: Convert free_pointer_table() to use ptdescs
-  m68k: mm: Convert init_pointer_table() to use ptdescs
-  m68k: mm: Convert pointer table macros to use ptdescs
-
- arch/m68k/mm/motorola.c | 54 ++++++++++++++++++++---------------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
-
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 745bd575dcfa..35c3571ffbef 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -148,16 +148,18 @@ void *get_pointer_table(struct mm_struct *mm, int type)
+ 
+ 	/*
+ 	 * For a pointer table for a user process address space, a
+-	 * table is taken from a page allocated for the purpose.  Each
+-	 * page can hold 8 pointer tables.  The page is remapped in
++	 * table is taken from a ptdesc allocated for the purpose.  Each
++	 * ptdesc can hold 8 pointer tables.  The ptdesc is remapped in
+ 	 * virtual address space to be noncacheable.
+ 	 */
+ 	if (mask == 0) {
+-		void *page;
++		struct ptdesc *ptdesc = pagetable_alloc(GFP_KERNEL | __GFP_ZERO, 0);
++		void *pt_addr;
+ 		ptable_desc *new;
+ 
+-		if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
++		if (!ptdesc)
+ 			return NULL;
++		pt_addr = ptdesc_address(ptdesc);
+ 
+ 		switch (type) {
+ 		case TABLE_PTE:
+@@ -165,23 +167,23 @@ void *get_pointer_table(struct mm_struct *mm, int type)
+ 			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
+ 			 * SMP.
+ 			 */
+-			pagetable_pte_ctor(mm, virt_to_ptdesc(page));
++			pagetable_pte_ctor(mm, ptdesc);
+ 			break;
+ 		case TABLE_PMD:
+-			pagetable_pmd_ctor(mm, virt_to_ptdesc(page));
++			pagetable_pmd_ctor(mm, ptdesc);
+ 			break;
+ 		case TABLE_PGD:
+-			pagetable_pgd_ctor(virt_to_ptdesc(page));
++			pagetable_pgd_ctor(ptdesc);
+ 			break;
+ 		}
+ 
+-		mmu_page_ctor(page);
++		mmu_page_ctor(pt_addr);
+ 
+-		new = PD_PTABLE(page);
++		new = PD_PTABLE(pt_addr);
+ 		PD_MARKBITS(new) = ptable_mask(type) - 1;
+ 		list_add_tail(new, dp);
+ 
+-		return (pmd_t *)page;
++		return (pmd_t *)pt_addr;
+ 	}
+ 
+ 	for (tmp = 1, off = 0; (mask & tmp) == 0; tmp <<= 1, off += ptable_size(type))
+@@ -191,7 +193,7 @@ void *get_pointer_table(struct mm_struct *mm, int type)
+ 		/* move to end of list */
+ 		list_move_tail(dp, &ptable_list[type]);
+ 	}
+-	return page_address(PD_PAGE(dp)) + off;
++	return ptdesc_address(PD_PTDESC(dp)) + off;
+ }
+ 
+ int free_pointer_table(void *table, int type)
 -- 
 2.49.0
 
