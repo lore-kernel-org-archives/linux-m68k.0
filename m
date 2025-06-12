@@ -1,111 +1,133 @@
-Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A435F2A1C9
-	for <linux-m68k@vger.kernel.org>; Thu, 12 Jun 2025 01:54:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFFC2040A7
+	for <linux-m68k@vger.kernel.org>; Thu, 12 Jun 2025 07:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749693250; cv=none; b=VmuOVXHFafVAyHl7VKLs+ii8m8LpZD+cbO9lVgI7+MSfkQ8J0HfHK8FHrZycnAe8x/8v6YtxeccKeFAQe1y3zNE9Ftqih+Ynm3LUkoxrCLbgn209jKfMIvzbKiOvi6KrqkxkMhOj5lmLKNvkR5gsBPZJdi9irMo780YqTTRfuRE=
+	t=1749712730; cv=none; b=TjrbymvViJmKkY5XGZzDwwWMX2P/PPOX2BwD9baAdlvIajV2cb8V700iKwTmKdabXBAzsjOLetpbSF5l72nl073dsmpPdUA56Nut0I38s5DrW3A/ZGpoKzdmt/N6BUbCGYXr/VBgPh1oQoj9TN2KsZCfrNE2auzmUsnJ6ZCXsmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749693250; c=relaxed/simple;
-	bh=z02WzgjrK8JFjJbbOAtsah2ls010MDw1uFDuxt6z5tA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=XMVvdl5buer9ks2qK2Gc2pQr1BjhIq1gK1QMkWLGEJ9xYson0jqOb2NG0QlF7m4Yo4taHzSlXfAk2yoKXq8mvZTifnV6Q+0YHRyffaArEaGmVA8z/VV7fJU6k72dauSszzUNkzsJ49eueVYbfZ7pycvDDqQ8M1FJgjJbe/7vMG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ViVUgwTF; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1749712730; c=relaxed/simple;
+	bh=ye8PkrmvY2n3dcn9ndCk5Jbu240xmP+WcT/JTbQwnrM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=jAtJU9I1H6DiqjObtISitbTsRvK7KSJfniNX1AxQVWlomLgvX7OaOto8hkxXRUysyvlHBoIaZaEaDfrJjxBHNx3A/3RgTEDQ/TJTVPE1XNnlyOscGExH+yqCeLg8qf1gQgYVuwPYxpIu4YHUOSwEzhbvQvehcFpYyooZFTLSA4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=XBsNDRO+; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ViVUgwTF"
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 4720D1140216;
-	Wed, 11 Jun 2025 21:54:06 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Wed, 11 Jun 2025 21:54:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749693246; x=1749779646; bh=LcLZbnx4518Mt+y2PJBZO38L4UmSDhRlmpJ
-	xHuLv2bU=; b=ViVUgwTFGAFdDmZOVsvlHyQ0+nvhhT1GrnqgAZ7b0xj0ZRo1ySX
-	WsK/ogIwy+gdfG4Xgg81NNWi3aYfyFCMH9lW8JYzE2m+nf9jDaTgECYQj8DDEsWO
-	MTEiyYYqq9GFPHc5udXEVxjHXeRqwCnbUGrpxWd4yzR6CDT/kW1FCV5uALljAJqV
-	AdtgWaYrNI4oR9FxyjmnLdXcVzg2OUgMQeqJORZeYC/sQU6Rejq4tjvzCYjlxylT
-	3u62MvRBdLZ7FhyG9F9JSqeGBVWIHrJIOouQipmi+bF5rncgeV19127mUzuKHNjf
-	CAcTfYV1XIhhTjUWztYQr0wqboNCvEVoAXw==
-X-ME-Sender: <xms:PTNKaH0Us8f8StimsY7EacQjWIiUOF4g3aVD9m9hcGJEgEiNpHPFpA>
-    <xme:PTNKaGEj2nz75Q-q3ixbyMLpHQjb6zBSszfUF2DqkkzTvvgpwe8S6wKK3N-VdpkR6
-    zePr7YpiSvlquyVBkE>
-X-ME-Received: <xmr:PTNKaH6OdteDCChEBPKvBvYCkjsNWk1cYlsB6SRG2npkxTAx7ddK7kC-GCF-jorWv95Df7OpcF6ozcEUBHryQ19IixOZlWCFqk8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugddufeektdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvden
-    ucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkh
-    drohhrgheqnecuggftrfgrthhtvghrnhepgffhiefhgedvffeukeffteettdejudduledu
-    keduuefhfefhjeeivdeggfdutdevnecuffhomhgrihhnpeguvggsihgrnhdrohhrghenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghi
-    nheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeejpdhmohguvgepsh
-    hmthhpohhuthdprhgtphhtthhopehglhgruhgsihhtiiesphhhhihsihhkrdhfuhdqsggv
-    rhhlihhnrdguvgdprhgtphhtthhopehushgvrhhmheejseihrghhohhordgtohhmpdhrtg
-    hpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepjhgv
-    rghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhrtghpthhtoh
-    epphhorhhtqdhmieekkhesnhgvthgsshgurdhorhhgpdhrtghpthhtohepuggvsghirghn
-    qdeikehksehlihhsthhsrdguvggsihgrnhdrohhrghdprhgtphhtthhopehlihhnuhigqd
-    hmieekkhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:PTNKaM1Liyajd3LBAIgLuS27s2jZ1p8dzCerRHqjaYhmHWRe_vRDuQ>
-    <xmx:PTNKaKE4qXJ7dTlrHxlg0GP4mdYvysbR58Q9jqQ5rllq0BIyU2_ofg>
-    <xmx:PTNKaN9eQC4sc-_XkpoQk2w2tpPcHuMJ_2ZDrN1vxYLLHSk2rfamSg>
-    <xmx:PTNKaHlQ1tCKErbAgVeTqkxhBItyETgcg4V0WGlhYUIh3FTCAaJatQ>
-    <xmx:PjNKaLy4ZxeQ6CRP11PBTpMUj2iMVEGAi0bDUCbmjDH9ToZZ3utottSW>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 11 Jun 2025 21:54:02 -0400 (EDT)
-Date: Thu, 12 Jun 2025 11:54:49 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: Stan Johnson <userm57@yahoo.com>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
-    port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>, 
-    linux-m68k <linux-m68k@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="XBsNDRO+"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=uu50dlDsKCc2uXuMFquWeQFeD5bj70jp6J1usDMlPiQ=; t=1749712726; x=1750317526; 
+	b=XBsNDRO+HGaWl8txCHwCA7bWPUNyoBZrMrZS9OP5BmPVHFiywz8gl8VCbeysc3vnAEvXacnsKAX
+	6ZdQ3N6PTnnPtp++YzTqm9rtHMivm3KMliwI/zw1Xa6ELFXgotgLBfYkZXtVV43h/uBhicF4GYrjJ
+	xReri9bGWetiJeAsUBAK6dOLZo3dpS2nMebjvMfSj2KWJtnk/0XUj/ZBMRUtz3lhsrUBaCPB0QXYs
+	OvtvaTGKkiODopmuaJ0DURKYYUiPtR3y3va3+QNvRUvlGPZkP/smwSM1sGJe2+cf9GO7bLEAEWXRs
+	+bapTajIG5mq4j/UrkaGz3ICRhECd/Sv9Cjg==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.98)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1uPcCx-00000002NYK-0w8E; Thu, 12 Jun 2025 09:18:43 +0200
+Received: from p57bd96d0.dip0.t-ipconnect.de ([87.189.150.208] helo=[192.168.178.61])
+          by inpost2.zedat.fu-berlin.de (Exim 4.98)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1uPcCw-00000000bIU-46Zq; Thu, 12 Jun 2025 09:18:43 +0200
+Message-ID: <89247655be6ac93710ebc1573a9f08ec293706f2.camel@physik.fu-berlin.de>
 Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-In-Reply-To: <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
-Message-ID: <7d9d8c95-1b06-c6c5-0932-7ba3af55829a@linux-m68k.org>
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>  <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>  <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>  <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> 
- <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>  <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
-  <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>  <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>  <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>  <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com>
- <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Stan Johnson <userm57@yahoo.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>,  Jean-Michel Hautbois
+ <jeanmichel.hautbois@yoseli.org>, port-m68k <port-m68k@netbsd.org>,
+ debian-68k	 <debian-68k@lists.debian.org>, linux-m68k
+ <linux-m68k@vger.kernel.org>
+Date: Thu, 12 Jun 2025 09:18:42 +0200
+In-Reply-To: <7d9d8c95-1b06-c6c5-0932-7ba3af55829a@linux-m68k.org>
+References: 
+	<ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+	  <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
+	  <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
+	  <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
+	  <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+	  <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+	  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+	  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+	  <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+	  <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
+	  <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>
+	  <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com>
+	 <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
+	 <7d9d8c95-1b06-c6c5-0932-7ba3af55829a@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
+On Thu, 2025-06-12 at 11:54 +1000, Finn Thain wrote:
+> On Wed, 11 Jun 2025, John Paul Adrian Glaubitz wrote:
+>=20
+> >=20
+> > I'm not sure what you are trying to say here. The fact that your=20
+> > computer is too slow for modern Linux distributions is unrelated to the=
+=20
+> > alignment discussion.
+> >=20
+>=20
+> Sorry, Adrian, but you can't have it both ways. Either you support small=
+=20
+> systems or you don't. Debian's documentation says of m68k:
+>=20
+>     This architecture covers Amigas and ATARIs having a Motorola 680x0=
+=20
+>     processor for x>=3D2; with MMU. However, the port is still active and=
+=20
+>     available for installation even if not a part of this official stable=
+=20
+>     release and might be reactivated for future releases.
+>=20
+> https://www.debian.org/doc/manuals/debian-faq/compatibility.en.html#arche=
+s
+>=20
+> There is no mention of fast emulators. Yet that's all you're targeting=
+=20
+> now.
 
-On Wed, 11 Jun 2025, John Paul Adrian Glaubitz wrote:
+This is old documentation, I'm not sure why you think this is an argument.
 
-> 
-> I'm not sure what you are trying to say here. The fact that your 
-> computer is too slow for modern Linux distributions is unrelated to the 
-> alignment discussion.
-> 
+> Debian needs to fix this, so that those users/developers who are=20
+> interested in small systems can colaborate effectively without being=20
+> mislead.
 
-Sorry, Adrian, but you can't have it both ways. Either you support small 
-systems or you don't. Debian's documentation says of m68k:
+Debian doesn't owe anyone anything. There a number of people who work on
+Debian Ports in their free time and they are free to decide how they spend
+their free time. Your arguments are really getting desperate.
 
-    This architecture covers Amigas and ATARIs having a Motorola 680x0 
-    processor for x>=2; with MMU. However, the port is still active and 
-    available for installation even if not a part of this official stable 
-    release and might be reactivated for future releases.
+It's also absurd that you think that switching the alignment to 4 bytes wil=
+l
+make the port considerably slower when the contrary is the case and NetBSD
+developers on this thread have explained several times that they don't have
+any issues with 4 bytes alignment. Heck, even Amiga Unix uses 4 bytes align=
+ment.
 
-https://www.debian.org/doc/manuals/debian-faq/compatibility.en.html#arches
+Adrian
 
-There is no mention of fast emulators. Yet that's all you're targeting 
-now.
-
-Debian needs to fix this, so that those users/developers who are 
-interested in small systems can colaborate effectively without being 
-mislead.
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
