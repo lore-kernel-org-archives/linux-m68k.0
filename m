@@ -1,118 +1,81 @@
-Received: from mail-24421.protonmail.ch (mail-24421.protonmail.ch [109.224.244.21])
+Received: from outbound.pv.icloud.com (p-west1-cluster3-host11-snip4-10.eps.apple.com [57.103.66.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672E115573F
-	for <linux-m68k@vger.kernel.org>; Thu, 12 Jun 2025 08:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.224.244.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9871F2380
+	for <linux-m68k@vger.kernel.org>; Thu, 12 Jun 2025 10:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.66.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749716742; cv=none; b=Bzly9NKB3rkDQhycXr+mdktzs9DdZObzAAT9PiHVPGtSnAFN318EknvcGuqD1VExDD1ES9JocwYS5K/T38u4gZE20KzcAfdrVhxi4+fW7shoGCMmvxVNDXeYk+pAWsONnj8+mjt03DycUF5xhhLBe1qdF7gnrxYl6G9OSRZBeZk=
+	t=1749722422; cv=none; b=UM/G1gkxOYlq49kmNcLO5k7rxkeUY806inVFQYb+AyHLPcGA9NbNhtvWIU/66y2+gsFAysiexJhJUC17ikNJGxgq6KEqtVB9Q3k67jJfFe10pl7e8Yv91h0X7R7z0DHZVz8NsYczKjsgcYWqyV6fRxVf7BNUttHUbPgXfaoEJFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749716742; c=relaxed/simple;
-	bh=BIqkUG9arzpngpZ9/m0tkiUXdhhyZaOz1kBqtvxmGiA=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IZIaEwZVfMgSeigJEkBA9spXGzLOXwMinmm1GPU+wTfixud2H3DnmlgGECJQncrcADuQBu9R2rWEJTEJRaxekW6YCCvLrqLs5VaXGUNXWobRQYic9Qx0D0fnj78biO33EJ4wy6tQ5Ngd2WhDVINyRQJ+WhdKeTW31ocVOHCVvKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=r-v-e.co; spf=pass smtp.mailfrom=r-v-e.co; dkim=pass (2048-bit key) header.d=r-v-e.co header.i=@r-v-e.co header.b=I2EZALac; arc=none smtp.client-ip=109.224.244.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=r-v-e.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=r-v-e.co
+	s=arc-20240116; t=1749722422; c=relaxed/simple;
+	bh=ZsSx5eLEImiAIeyNKg5HAQD5PDNcEO8UID1Y36XBhac=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=LgA9wxa4nZy8HycGkCYXN4UXb3vIYbvRNAlOT1iZrEHoPEpfS/bEG50ax6x6BHecQJamDXenfOSS5/uMeyS64IAo5nVJnfzIdw6Q5WVrrohXm+F7n4OrIxV3ejE+5BFB2AoU+Nnk1e2Fc1pOSafax1oRhpo3kQzdS2a+I3QYbZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=ol7C6x9A; arc=none smtp.client-ip=57.103.66.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=r-v-e.co header.i=@r-v-e.co header.b="I2EZALac"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=r-v-e.co;
-	s=protonmail2; t=1749716731; x=1749975931;
-	bh=TI/Xa3RQonu2l2TAZ0xCqxCXxWJDQWX0LQjdbxCs2Wk=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=I2EZALacOEpwE60nD+ROaSVzn0AoHz4hcigZRXcAoRXuMF6Wwm/RO/5z+ya8XhCQu
-	 310FMrTTg5/ylzkLeD0Yn0fwt3kvbt5bfV9+yrsqrQ0+yA1fYPwiMxqRqfUlnFmIi9
-	 1Yv/38rpcVw0v5M8UTn0cN0ymad5PMb6kkJYoEEpZZQaff9UL8gYRtLDf1SIWwOvIK
-	 BTEBpzQFdJRBZo8yc/IBvnUswHqm8vQEKoiRVUOPp9PJQcfulyehZ2uYe5DOnROdoG
-	 4kFxwqiTQXrY8Y8lb9rmUFH/weE1OAB5ol2ZEm2nlyT/uHj5igUTy6LyzkE8u1yEcR
-	 5KtM4paS7KAiA==
-Date: Thu, 12 Jun 2025 08:25:27 +0000
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-From: =?utf-8?Q?Administrator_=40_R=C2=B7V=C2=B7E?= <admin@r-v-e.co>
-Cc: "stefan.k.reinauer@gmail.com" <stefan.k.reinauer@gmail.com>, "fthain@linux-m68k.org" <fthain@linux-m68k.org>, "userm57@yahoo.com" <userm57@yahoo.com>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "jeanmichel.hautbois@yoseli.org" <jeanmichel.hautbois@yoseli.org>, "port-m68k@netbsd.org" <port-m68k@netbsd.org>, "debian-68k@lists.debian.org" <debian-68k@lists.debian.org>, "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-Message-ID: <WtNQmVJr3uIeOkUfpStavGscYvoTLpprxvowAOsqJKw8V7XCOZqKDi3Qw7Z1m8JVMsv71f0VZCVqZ3MiKnjLYp-VwSvtvTLkoVtJpAkA0gA=@r-v-e.co>
-In-Reply-To: <6c1d08bf4cd4d7c92338357bd61dca8a23559ad0.camel@physik.fu-berlin.de>
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de> <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de> <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org> <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de> <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com> <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de> <7d9d8c95-1b06-c6c5-0932-7ba3af55829a@linux-m68k.org> <CABq5eXH8S9MVoRi5znU+u7EJPmaRA+8yOyd-QKBJMQa10UoAmw@mail.gmail.com> <6c1d08bf4cd4d7c92338357bd61dca8a23559ad0.camel@physik.fu-berlin.de>
-Feedback-ID: 40622035:user:proton
-X-Pm-Message-ID: 55686504ce882059a57dccf8a0bc276c6eb4b444
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="ol7C6x9A"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+	bh=ZsSx5eLEImiAIeyNKg5HAQD5PDNcEO8UID1Y36XBhac=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:To:x-icloud-hme;
+	b=ol7C6x9AT1vP7oVwgXuLY7Ev0SanzzVkOfxUsKrXEhaoVMvyTgHVMbB5xUgESTUNZ
+	 b+hDcT2/jWY2T6toiHWjMsrlzV6SaAhFM1z0c5UdyikdRAn4TbASmGBpbtKEcd/hLw
+	 CFlZM+8N7xYpHSP2xrNYoAGCRSVaH8ulPLehDET7BPhWdqHPRnLaV2f/fkj7NGdazP
+	 vc4cEGU654npWvR+ujqXoSvWLmKWjHdrQSjBcjNBl3WDYSzjzxbjjn17XUD0c0ytNR
+	 1iAS0h3NVIQmyoc5wvu7tfqLeIOs+R3ne7cREv8w0sxTdSmHHD5D5Y9pF6Yl738PrP
+	 xFpK8N5QzjoPQ==
+Received: from outbound.pv.icloud.com (unknown [127.0.0.2])
+	by outbound.pv.icloud.com (Postfix) with ESMTPS id E065AC0009C;
+	Thu, 12 Jun 2025 10:00:18 +0000 (UTC)
+Received: from smtpclient.apple (asmtp-me-k8s.p98.prod.me.com [17.56.9.34])
+	by outbound.pv.icloud.com (Postfix) with ESMTPSA id AD65BC0009B;
+	Thu, 12 Jun 2025 10:00:16 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Jason Thorpe <thorpej@me.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+Date: Thu, 12 Jun 2025 06:00:04 -0400
+Message-Id: <7345697D-F323-4B8A-A93B-181EF119B9F6@me.com>
+References: <89247655be6ac93710ebc1573a9f08ec293706f2.camel@physik.fu-berlin.de>
+Cc: Finn Thain <fthain@linux-m68k.org>, Stan Johnson <userm57@yahoo.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>,
+ linux-m68k <linux-m68k@vger.kernel.org>
+In-Reply-To: <89247655be6ac93710ebc1573a9f08ec293706f2.camel@physik.fu-berlin.de>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+X-Mailer: iPhone Mail (22F76)
+X-Proofpoint-ORIG-GUID: BD0KVzKSivZwODHMmLGk-tr_H4Dix3j-
+X-Proofpoint-GUID: BD0KVzKSivZwODHMmLGk-tr_H4Dix3j-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-12_07,2025-06-10_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ bulkscore=0 malwarescore=0 adultscore=0 mlxscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=531 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.22.0-2503310001 definitions=main-2506120077
 
-Thanks for your great hard work and efforts to mantain the various and now =
-considered exotic architectures running Debian, Adrian!
+It may in fact improve performance; aligned long words require fewer bus cyc=
+les.
 
+-- thorpej
+Sent from my iPhone.
 
- - R=C2=B7V=C2=B7E -=C2=A0 =C2=A0=20
-=C2=A0- REAL & VIRTUAL ENVIRONMENTS=C2=A0-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0http://www.r-v-e.org
+> On Jun 12, 2025, at 3:18=E2=80=AFAM, John Paul Adrian Glaubitz <glaubitz@p=
+hysik.fu-berlin.de> wrote:
+>=20
+> It's also absurd that you think that switching the alignment to 4 bytes wi=
+ll
+> make the port considerably slower when the contrary is the case and NetBSD=
 
-
--------- Original Message --------
-On 12/06/2025 09:27, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.d=
-e> wrote:
-
->  On Wed, 2025-06-11 at 20:16 -0700, Stefan Reinauer wrote:
->  > > Sorry, Adrian, but you can't have it both ways. Either you support s=
-mall
->  > > systems or you don't. Debian's documentation says of m68k:
->  > >
->  > > =C2=A0 =C2=A0 This architecture covers Amigas and ATARIs having a Mo=
-torola 680x0
->  > > =C2=A0 =C2=A0 processor for x>=3D2; with MMU. However, the port is s=
-till active and
->  > > =C2=A0 =C2=A0 available for installation even if not a part of this =
-official stable
->  > > =C2=A0 =C2=A0 release and might be reactivated for future releases.
->  > >
->  > > https://www.debian.org/doc/manuals/debian-faq/compatibility.en.html#=
-arches
->  > >
->  > > There is no mention of fast emulators. Yet that's all you're targeti=
-ng
->  > > now.
->  >
->  > Fixing pthreads would probably go a long way. That's where we lost abo=
-ut half of our performance.
-> =20
->  This may be accurate, but I'm again not sure how this is related to the =
-discussion we're having.
-> =20
->  Finn accuses me that I deliberately slow down Linux on m68k when all I d=
-o is continue to maintain
->  vanilla Debian on m68k. Modern versions of Linux being slower on slow m6=
-8k machines these days is
->  unfortunate, but it's not something I can be blamed for.
-> =20
->  My goal is to keep Debian's m68k alive and healthy and one critical chan=
-ge to make to make this whole
->  effort sustainable is to switch the default alignment to 4 bytes. If we =
-want have a smaller and faster
->  Debian distribution available, that is still something that can be worke=
-d in a separate project and if
->  users are willing to help with such an effort, I'm happy to look into it=
-.
-> =20
->  However, what I don't like is that multiple people in this thread dismis=
-s my work completely with
->  questionable arguments and unrealistic counter-proposals when they have =
-no clue how distributions
->  are maintained and how tedious it is to spin your own distribution.
-> =20
->  Adrian
-> =20
->  --
->   .''`.  John Paul Adrian Glaubitz
->  : :' :  Debian Developer
->  `. `'   Physicist
->    `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-> =20
->  
+> developers on this thread have explained several times that they don't hav=
+e
+> any issues with 4 bytes alignment. Heck, even Amiga Unix uses 4 bytes alig=
+nment.
