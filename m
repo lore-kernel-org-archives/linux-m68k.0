@@ -1,112 +1,152 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp.dnamail.fi (sender103.dnamail.fi [83.102.40.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F032441A7
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Jun 2025 13:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EF3433A8
+	for <linux-m68k@vger.kernel.org>; Thu, 12 Jun 2025 14:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.40.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749736641; cv=none; b=CngAeQkV9dzS1XcTYURr4DS6nzJuZ5tMJ1YLhBthVbs7RnlGAi9/ErrZU05zP3qGAMDLNLaOYt6vhVMPbBK9E0geOEkW1jP0G1hIPw4r7QCaFWJ+0xneJZpZa6Zie2rWexOUEueEvpUu/uCfzkm51QVC9oojzn0D308aL0anm9s=
+	t=1749740074; cv=none; b=jUNHCDyuE9r5vjQWLn/doRbVzSRqfuxjFROB2PR1yFOsk0ru1pXjdnSqyCSW1bMON4FfwMB0YzzCuxOBxwX4pQcXhClrhwtAJGPENlfDOYeooWSUDF9yPdHf3t5k9yXBbUuGIh4YeYEtH7Zq7jdQk7KWc2bo+wzrDYMm5JEcn7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749736641; c=relaxed/simple;
-	bh=F7bde/Npr4YGTsBIjpskcngwX6JWR57U9O1yVp+CEcw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=X+kAkwwnkUrSpOedDqP/dNBIZqa+lmQ2rTGBa0zfsdaf8mS6bsbXPx9vNfhcpFU5+8hICKoRMrJGjR1frqX6DJPxepv5p7gOL89wTWB3c+7WyBGTUpXgFPvcg0+GZ9PcrmhLLv0R0MjkqTLJjgmaL1z0EYB0g56Wk6Ai9aY+sY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ngnkwd9L; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1749740074; c=relaxed/simple;
+	bh=pj6Ie2XPdLfJ01/A0aQXJT2xpYqn5t+xIUrk6JlZtA8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s0ZGV4YcdD9E0FdQp6uG6hd9U+wIvfNDTY6r3yunU6PUV/t2z2dFCdphT95g68ChwUChId2mTzs7zmLho/cMV4ZOyjXTLPu6XxZrlmQxjQbSRxcKxBOmlwSq+AOMVEjj/81cpv7gfBBZs/CaEZ7GhZueMoOHkeYdzct2Bw+7O8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b=Ll+ntkeS; arc=none smtp.client-ip=83.102.40.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ngnkwd9L"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749736640; x=1781272640;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=F7bde/Npr4YGTsBIjpskcngwX6JWR57U9O1yVp+CEcw=;
-  b=ngnkwd9LB2FDvnRZJCmejmv1dvB5tymGEah7vm/eLxoBMBTdATONao0N
-   OQWKmTQC5pdmk9bmbWcgjOjExazEi9aa58lIub6CRFQ41EFEK1rMmkMp3
-   lNwiNbY76C3C1ZdWWWn0dUBVyS/Z+4C7eTRbMIct2h6hThn5917Cd4Jfa
-   5OpZjePg/F/tqg+I3SJczUPOXKwQhbIumdQxf5N4bf/MX/c912xzhg8+Y
-   iOhiIHOihG4eMah2Ri+86ZOpwZxz7xYtNOhHtSW/DQ08jV7etfPb5mqyC
-   S3u6ewallUgdjUd/aqSLBZmcBiJ/0S74sGbckgL+bBuCOxswZ/N6I7TVi
-   A==;
-X-CSE-ConnectionGUID: fHow9Aa3QQOsyAn+XjyN5w==
-X-CSE-MsgGUID: UwNYOsWqSEqDSppfELV4+g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11462"; a="62955703"
-X-IronPort-AV: E=Sophos;i="6.16,231,1744095600"; 
-   d="scan'208";a="62955703"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2025 06:57:19 -0700
-X-CSE-ConnectionGUID: hsfS+M08QceJviWNTyszOA==
-X-CSE-MsgGUID: 3VjKNcKORfysjx3+fSdYkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,231,1744095600"; 
-   d="scan'208";a="178431981"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 12 Jun 2025 06:57:17 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uPiQd-000BbW-0R;
-	Thu, 12 Jun 2025 13:57:15 +0000
-Date: Thu, 12 Jun 2025 21:56:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:dt 12/14] arch/m68k/kernel/setup_mm.c:214:14: error:
- implicit declaration of function 'early_init_dt_verify'
-Message-ID: <202506130005.zhZFq5Wk-lkp@intel.com>
+	dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b="Ll+ntkeS"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.dnamail.fi (Postfix) with ESMTP id 2FCF9400E1ED;
+	Thu, 12 Jun 2025 17:54:27 +0300 (EEST)
+X-Virus-Scanned: X-Virus-Scanned: amavis at smtp.dnamail.fi
+Received: from smtp.dnamail.fi ([83.102.40.157])
+ by localhost (dmail-psmtp02.s.dnaip.fi [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id 5qF_XFNQZ5ea; Thu, 12 Jun 2025 17:54:25 +0300 (EEST)
+Received: from [192.168.101.100] (87-92-13-246.bb.dnainternet.fi [87.92.13.246])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: oak@dnamail.internal)
+	by smtp.dnamail.fi (Postfix) with ESMTPSA id 66092400E143;
+	Thu, 12 Jun 2025 17:54:24 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.dnamail.fi 66092400E143
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=helsinkinet.fi;
+	s=2025-03; t=1749740065;
+	bh=Niy0UNsA2QwCKMZAvfiAjykl1Cip4SkC5NRjpxTCTUo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Ll+ntkeSKagA5UPrOf4x7Qrb+rjgAEx0eeOVfmzfnf22+w2cI+cvuA8CEjeVtI1U/
+	 aWnlcuR5itKT2TpDqlMLbN1toa0kd/HwG5JFGfT4RPu69kZhAwWHrUIDcF1DwqnpyT
+	 05DECzm5HNIDTLME5x5uotxDZbnyn8tcCyb8swJjTG+q44jAbk8kTQAbQmEKGGhzTm
+	 eQ8GxQe9WH/pG5E0apEHGcBtl5a4IOhyH8vBUchzYgoxKc8cKj1NTP1qzAjYPNvqvb
+	 wk4Jow09jTbCFdJ4kDfTEiaGszAH6avoXug8AJ47RCO495jtOS1sbv1IK+f+95G8Bk
+	 jc/DoU9yQ5Gng==
+Message-ID: <243529d0-daac-48b9-b482-04e3ed2f66f0@helsinkinet.fi>
+Date: Thu, 12 Jun 2025 17:54:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Stan Johnson <userm57@yahoo.com>
+Cc: Finn Thain <fthain@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>,
+ linux-m68k <linux-m68k@vger.kernel.org>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
+ <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
+ <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
+ <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+ <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+ <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+ <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+ <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+ <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
+ <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>
+ <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com>
+ <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
+ <6a50c81a-cb0c-4529-959a-fad5260261fc@helsinkinet.fi>
+ <ea1aecf0f20b5466f63b3c6e671d1d29c81dfd87.camel@physik.fu-berlin.de>
+Content-Language: en-US
+From: Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <ea1aecf0f20b5466f63b3c6e671d1d29c81dfd87.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
-head:   a227d3c7914f7e7059bba92fc8a99e4be11b0abf
-commit: 57417b30738e9f804d3efecdf41a3119fce08244 [12/14] m68k: implement a builtin devicetree for mm targets
-config: m68k-randconfig-r133-20250612 (https://download.01.org/0day-ci/archive/20250613/202506130005.zhZFq5Wk-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 11.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20250613/202506130005.zhZFq5Wk-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506130005.zhZFq5Wk-lkp@intel.com/
+On 11.6.2025 18.49, John Paul Adrian Glaubitz wrote:
+> On Wed, 2025-06-11 at 18:32 +0300, Eero Tamminen wrote:
+>> It will decrease performance if increased alignment means that something
+>> that fit earlier into i/d-cache, does not fit any more.
+> 
+> »Control whether GCC aligns int, long, long long, float, double, and long double
+>   variables on a 32-bit boundary (-malign-int) or a 16-bit boundary (-mno-align-int).
+>   Aligning variables on 32-bit boundaries produces code that runs somewhat faster on
+>   processors with 32-bit busses at the expense of more memory.«
 
-All errors (new ones prefixed by >>):
-
-   In file included from arch/m68k/kernel/setup.c:3:
-   arch/m68k/kernel/setup_mm.c: In function 'm68k_setup_fdt':
->> arch/m68k/kernel/setup_mm.c:214:14: error: implicit declaration of function 'early_init_dt_verify' [-Werror=implicit-function-declaration]
-     214 |         if (!early_init_dt_verify(__va(fdt), fdt)) {
-         |              ^~~~~~~~~~~~~~~~~~~~
->> arch/m68k/kernel/setup_mm.c:218:9: error: implicit declaration of function 'early_init_dt_scan_nodes'; did you mean 'early_init_dt_scan_chosen_stdout'? [-Werror=implicit-function-declaration]
-     218 |         early_init_dt_scan_nodes();
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~
-         |         early_init_dt_scan_chosen_stdout
-   cc1: some warnings being treated as errors
+The "more memory" part is the gotcha I was referring to.
 
 
-vim +/early_init_dt_verify +214 arch/m68k/kernel/setup_mm.c
+>> To get some numbers on this...
+>>
+>> if you could provide vmlinuz & System.map files for both (otherwise
+>> identical) 2-byte & 4-byte alignment kernel builds, using kernel config
+>> here:
+>> https://github.com/hatari/hatari/blob/main/tools/linux/kernel.config
+>>
+>> I could measure the perf difference for the whole kernel boot, and if
+>> there are differences, profile what causes those differences.
+> 
+> But anyway, as I have said before, I am not going to change my mind on this
+> and I'm already working on it. If you prefer maintaining a Linux port with
+> 2 bytes alignment, you are free to do so. But please don't expect me to waste
+> my time on it.
 
-   207	
-   208	#ifdef CONFIG_BUILTIN_DTB
-   209	static void __init m68k_setup_fdt(void)
-   210	{
-   211		phys_addr_t fdt = (phys_addr_t) &__dtb_start;
-   212	
-   213		pr_info("m68k generic DT machine support, FDT blob at 0x%08x\n", fdt);
- > 214		if (!early_init_dt_verify(__va(fdt), fdt)) {
-   215			pr_err("FDT blob is bad?!\n");
-   216			return;
-   217		}
- > 218		early_init_dt_scan_nodes();
-   219		unflatten_device_tree();
-   220	}
-   221	
+Unsubstantiated performance claims are no good.  I was offering help in 
+substantiating them.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+If perf improves, that's validation for the performance argument. If 
+performance impact is insignificant, that's proof against claims of 
+4-byte alignment decreasing performance.
+
+(Linux kernel has general "no ABI changes, as long as ABI has users" 
+policy, so verified arguments like above might help sway kernel 
+maintainers to help with potential 4-byte alignment issues.)
+
+
+Now, if perf actually decreases with 4-byte alignment setups, it's 
+something to investigate, and hopefully / eventually to fix. Pinpointing 
+causes for such things is something where I can specifically help.
+
+
+Note: the above kernel config is a minimal, monolithic[1] one.  It's a 
+starting point, much faster to build & boot, and makes it easier to 
+pinpoint issues.
+
+After that is done, I could measure + profile also something closer to 
+latest Debian kernel config, if additional data points are needed, or 
+you're just interested about alignment impact for (boot time) perf in 
+specific additional drivers.
+
+(Full m68k Debian is too heavy to boot in reasonable time on machines 
+that Hatari emulates, due to missing crypto acceleration, but IMHO also 
+unnecessary for kernel ABI change discussions.)
+
+
+	- Eero
+
+[1] This is due to limitations in the current Hatari profiler, it was 
+intended for profiling ROM code and (CPU+DSP) programs on OSes which do 
+not support shared libs / modules.
+
+(It's been used e.g. to optimize upstream ScummVM, so that subset of its 
+game engines work OK even on 32Mhz 030: 
+https://scummvm.org/downloads/#release)
