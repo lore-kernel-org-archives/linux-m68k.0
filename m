@@ -1,69 +1,73 @@
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850F224C08D
-	for <linux-m68k@vger.kernel.org>; Fri, 13 Jun 2025 11:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F562D23BA
+	for <linux-m68k@vger.kernel.org>; Fri, 13 Jun 2025 11:22:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749813412; cv=none; b=rYXLaopcKtwkv5CJaM+Bl8nKd1EnmvGaxOOMKdeeRuU+YLDdqR4/avD86A4v+cn5Sjk7anh7QpHQ//13D99ng2f5TuDiW/zK45TL0VJ/meWFOHfPXEyaqXJ6CoKZwc6MSxdsWzxsqKWKc10ZYN/o1sCNha3Qpf2QPpsCMB6uzqc=
+	t=1749813779; cv=none; b=sGFpj9+MtdvRz78JHOSNIdGZ3cFbVj8UwU/0kWKMgrujJPN9XZOVwbWcMhROCTwtuYIjUt8pIUbt6sNFuubEFpBdW4x3vD0ZE3mnLDw/ittEAA+vbEPxNxC5EcrF3tuECzcXPffnplER7MabOCOYJv6hwGT4XyRuZaGO61ewzTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749813412; c=relaxed/simple;
-	bh=me5mMw0+WEWhwCa9j2tebqWxpjho2lBXxL2qWquNpPc=;
+	s=arc-20240116; t=1749813779; c=relaxed/simple;
+	bh=GhDpqgllzYG4agbLdJOBcPjfGnF8gNMYRmNDIoiSETQ=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bjeZkr9BoTkcfR65ZoHNlyOmlf2Q0YcMNoWZI9KL0UqzH69yPYvxIXUNNt59tekS2AQsF2z8UDCUt8g6Zr1qlBA6qJSPJRpaBvlmRsVIhPS4dBUTCYMH3jCjmn6nl0qSM44IyiI4MyhWg9PF6uBeNGHGb4axtlbeoXd/qkPK4Rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=hfrVptSf; arc=none smtp.client-ip=130.133.4.66
+	 Content-Type:MIME-Version; b=esRv/Y/QsloktssG8XCGXMGHVu/2sTfMi7NvxAdvmhzA4wpMGxTouR1op1D6iwTtb3jAzWQRJGDD451Jo5Ilqcyy0XbfCQkXhVc0xMULqCx/YNX7ThEOvgI3OqljMbZ2apfWXq0CC3eS4sAG3VVLy6AMU5mm7Q3fI3cQnLE/vKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=Rd/AV+cD; arc=none smtp.client-ip=130.133.4.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="hfrVptSf"
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="Rd/AV+cD"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
 	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=nWghLvz8LcHiApNtdY2/crkR0BdVNcuATpdTFcxu6l4=; t=1749813410; x=1750418210; 
-	b=hfrVptSfqUS457TCOuo5Wxu7u2m/0pAiZrJ2JFwc8ULRBUF02S55HRmf3Gz6LfTJ7H44Z5Caurz
-	hUJf5Oef8Ra+eyJDRWv8xpp2XAi1IK4T0gkoQYmUwJJiwKje9WVqIDoTK65qMKaaMVsobPCoPCe/B
-	yjxveUc/WuysmZZvCh7jysuMO2McGIYOFaT9kPlFBEowivOO7ShcrfqRZruTBoLhJgFSvg97IJmmL
-	/LdGajqGyebkzlJWo8T6qfiU77DyI7mM/rVLHqvzpcjcIH21GCW8Sxj2m2FD6j3ZO+VcmHNo7kmMo
-	A2dVIxz+1LAR2zGtsSvadMQs51b7USqnmzqQ==;
+	bh=GBpchiGbBw1kLtrkFGMUOuxsdxvuxXA9u1fa1miPeiE=; t=1749813777; x=1750418577; 
+	b=Rd/AV+cD7smTHm4ICCvmStWH+CvJZKyq8sIlHXYxYdjySgjmblvfUiwD4gspPqq8KEYgNlpnS+b
+	Jq747Hbbyeq8Pscju4lJSzuQQcK5XQ4w3psQxdU66ODkxsE/iuOjmaiOe489CUeJID+mHUXt3SZeL
+	dTtkHa2KXz4hKQM9RLxJrfQrETJhWWGzdp56RjdXio0LhCPkZhoHWjqfFt2vKkUUJ4DAtykCQimfG
+	EvLQTg+jD8BdOZo86vAGWlLOJ/Au5TuuCWn6qt/KfwyXuESGqe6mgWp7ryIZn7XBv6FU28W4cSKkQ
+	JQvLH5FSSkNrb1C2keuAZewy0LMERWusBB7A==;
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.98)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uQ2Ot-00000000Z7h-0EfK; Fri, 13 Jun 2025 13:16:47 +0200
+          id 1uQ2Un-00000000b9D-3ePv; Fri, 13 Jun 2025 13:22:53 +0200
 Received: from p57bd96d0.dip0.t-ipconnect.de ([87.189.150.208] helo=[192.168.178.61])
           by inpost2.zedat.fu-berlin.de (Exim 4.98)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uQ2Os-00000001N4f-3TvC; Fri, 13 Jun 2025 13:16:46 +0200
-Message-ID: <c4f086207e68843ea154b5d41950957fa11c6837.camel@physik.fu-berlin.de>
+          id 1uQ2Un-00000001QAl-2aIx; Fri, 13 Jun 2025 13:22:53 +0200
+Message-ID: <6c9b49aaab26bd7fda7a95e7e0c5392b26abbcb4.camel@physik.fu-berlin.de>
 Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: "Administrator @" =?ISO-8859-1?Q?R=B7V=B7E?= <admin@r-v-e.co>
-Cc: "stefan.k.reinauer@gmail.com" <stefan.k.reinauer@gmail.com>, 
- "fthain@linux-m68k.org"	 <fthain@linux-m68k.org>, "userm57@yahoo.com"
- <userm57@yahoo.com>,  "geert@linux-m68k.org"	 <geert@linux-m68k.org>,
- "jeanmichel.hautbois@yoseli.org"	 <jeanmichel.hautbois@yoseli.org>,
- "port-m68k@netbsd.org" <port-m68k@netbsd.org>, 
- "debian-68k@lists.debian.org"	 <debian-68k@lists.debian.org>,
- "linux-m68k@vger.kernel.org"	 <linux-m68k@vger.kernel.org>
-Date: Fri, 13 Jun 2025 13:16:46 +0200
-In-Reply-To: <WtNQmVJr3uIeOkUfpStavGscYvoTLpprxvowAOsqJKw8V7XCOZqKDi3Qw7Z1m8JVMsv71f0VZCVqZ3MiKnjLYp-VwSvtvTLkoVtJpAkA0gA=@r-v-e.co>
+To: Eero Tamminen <oak@helsinkinet.fi>, Stan Johnson <userm57@yahoo.com>
+Cc: Finn Thain <fthain@linux-m68k.org>, Geert Uytterhoeven	
+ <geert@linux-m68k.org>, Jean-Michel Hautbois
+ <jeanmichel.hautbois@yoseli.org>,  port-m68k <port-m68k@netbsd.org>,
+ debian-68k <debian-68k@lists.debian.org>, linux-m68k	
+ <linux-m68k@vger.kernel.org>
+Date: Fri, 13 Jun 2025 13:22:52 +0200
+In-Reply-To: <243529d0-daac-48b9-b482-04e3ed2f66f0@helsinkinet.fi>
 References: 
 	<ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+	 <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>
+	 <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
+	 <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
+	 <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+	 <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+	 <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+	 <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
 	 <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
 	 <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
 	 <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>
 	 <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com>
 	 <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
-	 <7d9d8c95-1b06-c6c5-0932-7ba3af55829a@linux-m68k.org>
-	 <CABq5eXH8S9MVoRi5znU+u7EJPmaRA+8yOyd-QKBJMQa10UoAmw@mail.gmail.com>
-	 <6c1d08bf4cd4d7c92338357bd61dca8a23559ad0.camel@physik.fu-berlin.de>
-	 <WtNQmVJr3uIeOkUfpStavGscYvoTLpprxvowAOsqJKw8V7XCOZqKDi3Qw7Z1m8JVMsv71f0VZCVqZ3MiKnjLYp-VwSvtvTLkoVtJpAkA0gA=@r-v-e.co>
+	 <6a50c81a-cb0c-4529-959a-fad5260261fc@helsinkinet.fi>
+	 <ea1aecf0f20b5466f63b3c6e671d1d29c81dfd87.camel@physik.fu-berlin.de>
+	 <243529d0-daac-48b9-b482-04e3ed2f66f0@helsinkinet.fi>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.56.2 
@@ -76,15 +80,54 @@ MIME-Version: 1.0
 X-Original-Sender: glaubitz@physik.fu-berlin.de
 X-ZEDAT-Hint: PO
 
-On Thu, 2025-06-12 at 08:25 +0000, Administrator @ R=C2=B7V=C2=B7E wrote:
-> Thanks for your great hard work and efforts to mantain the various and no=
-w
-> considered exotic architectures running Debian, Adrian!
+On Thu, 2025-06-12 at 17:54 +0300, Eero Tamminen wrote:
+> Unsubstantiated performance claims are no good.  I was offering help in=
+=20
+> substantiating them.
 
-Thanks, and you're welcome. Unfortunately, some people like Finn and Eero d=
-on't
-appreciate these efforts and seem to think that this all comes at zero cost=
-s.
+You're not offering help. You, like Finn as well, are trying to block fixin=
+g
+a long-standing problem of Linux/m68k without offering any sustainable alte=
+rnatives
+to fix this problem.
+
+> If perf improves, that's validation for the performance argument. If=20
+> performance impact is insignificant, that's proof against claims of=20
+> 4-byte alignment decreasing performance.
+
+Performance was never the main argument. The main argument was unbreaking
+the port. You are moving goal posts which is an indicator that you're not
+interested in leading a fair and unbiased discussion.
+
+> (Linux kernel has general "no ABI changes, as long as ABI has users"=20
+> policy, so verified arguments like above might help sway kernel=20
+> maintainers to help with potential 4-byte alignment issues.)
+
+NetBSD has been building several thousand packages on m68k with 4 bytes ali=
+gnment
+without any problems. Why anyone would think that 4 bytes alignment poses a=
+ problem
+is beyond me.
+
+> Now, if perf actually decreases with 4-byte alignment setups, it's=20
+> something to investigate, and hopefully / eventually to fix. Pinpointing=
+=20
+> causes for such things is something where I can specifically help.
+
+I'm not sure how a package that doesn't build at all runs faster than one
+that builds. You are arguing like this is about performance, it isn't.
+
+It's about unbreaking the port since more and more packages assume 4 bytes
+alignment. Do you think that something that is not working at all should
+be preferred over something that is working with degraded performance?
+
+> (Full m68k Debian is too heavy to boot in reasonable time on machines=20
+> that Hatari emulates, due to missing crypto acceleration, but IMHO also=
+=20
+> unnecessary for kernel ABI change discussions.)
+
+Last time I booted Debian/m68k on my Amiga 68060 it booted fine. It took
+a few minutes but that's not surprising given the machine has only 50 MHz.
 
 Adrian
 
