@@ -1,91 +1,62 @@
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from anath.zia.io (anath.zia.io [192.80.49.0])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6C87F9
-	for <linux-m68k@vger.kernel.org>; Fri, 13 Jun 2025 13:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDC3224CC
+	for <linux-m68k@vger.kernel.org>; Fri, 13 Jun 2025 13:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.80.49.0
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749819684; cv=none; b=nXvBoYHmLDbucm8Vq5PX/gSl2SsU1X9gd56zd7GmpzS4SdxXm61J6b0lrb0zSNB1jnWEIo2np/WgPGohgUOYG5Uek0E1cAMqfw/nXcDhZD2noMag+5HZ7iFrHZY4u27l9eyxS1xkdvcixP4Zb7MpDW/0mU0FNYbpPdB8g8MB2Ws=
+	t=1749820890; cv=none; b=nJLAUznqdd7cMhS0KxYt38JNlpbCLwf2FS1K1e7fhztQt2aqJM2RvA/6KVbNBAQz6pghFlrl5bwvXvFTw09j1t7VHsD8NFohYQpAlJHejwHIXXFmxh4/iXpYTZ60zudNWYvH+4Rsh0FCdBkZQIk4vGOgDytfQXaRCB/qq+E7Gi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749819684; c=relaxed/simple;
-	bh=5WFslk9cKp7TxAWdtb3VjXIIKd+30n7Biu+enBnWfLY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KC39AdvgbwBq+OEjDZ0cjdD5jg8MgHeb53rnPuZccebf2mV9RVs3HaAt6ZeJas90UajgEKbR5p3wPf4wgqsdCHfzZqrhd3wA2nX3GkUggf7IKrf45UGnUyehoac/+HJDozVgEJbJZNIPhxbm7aK15F7dYt/tCrwUGvsn+smLbkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kazik.de; spf=pass smtp.mailfrom=kazik.de; dkim=pass (1024-bit key) header.d=kazik.de header.i=@kazik.de header.b=TpxXXms9; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kazik.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kazik.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kazik.de header.i=@kazik.de header.b="TpxXXms9"
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-610db3f3f90so1015220eaf.2
-        for <linux-m68k@vger.kernel.org>; Fri, 13 Jun 2025 06:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kazik.de; s=google; t=1749819681; x=1750424481; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WFslk9cKp7TxAWdtb3VjXIIKd+30n7Biu+enBnWfLY=;
-        b=TpxXXms9XcRj+qiorOHVdmxL2fugXLBJDKI0c9LdU2rtBvC+JY6Ag2xzZm/lXt0TN2
-         QDefN9IFnCB2r9XNXkjT5zI90zM55G+oqYoi3l7uwwQ6OkHAdKXdi0ZqQc7zb70smOfO
-         D3Q75t5gc5PpkITCrzRNJWVbemh+xJzd6uMeo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749819681; x=1750424481;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5WFslk9cKp7TxAWdtb3VjXIIKd+30n7Biu+enBnWfLY=;
-        b=EbJhEBCEWgKYs5fKBPlK1BbxKJumMvLdW24KnhjjIn6h+yLJXJbQbvPfchxJQCkVnG
-         IQYjplAIFtGa6B+bjR9IzNYLv/4Pjv7vlFfxvhntDLisQTX8DL8fwp7IenaxQ1ykURPC
-         rMJ95SEOVgWj/xG/VixcYuOotIQgr3xnWHcoiSc0LcnuZqg9bhlTswBX1wuMqNVQTK/F
-         rVTK3Xv4bGtJ44sdyfx3SeDx1MEnrUvkMGlbQe5f7sZdyQWWwSHjkVMthfd3kL9oQb0x
-         IUgPtQaH+Kw1drYAEO82O0naUujaaqYfMrpZ8jabKJZhJcmgKPLeiXa2bd9wIwwn3ucT
-         qc3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVyl2gHguIClnIY/v/NFXDp9cq5CThPXoQ0i+PTbziQgofMHc1fVghXE3f1NgQRVSOP0girGp/mAnFS@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRu/vDnk9/FN62+7ZGs3cmHsvUuWYvGsFAqJbcsKvQQ93+Y7h3
-	+a3tAGa5CK2D6Y2KEH5AAHy3YlwXodxonneot1xX2dzMX1TUXmQShJ0Ku8R3tZhKmANRKtz/Sqx
-	Og4oUZbgpppAx8ui6siPPNX3UU8TlRbwleaztIeIq
-X-Gm-Gg: ASbGnctXK8hkM/yx/AzFVHejv0DPbUn7Bz+TgV30z9AHvN0huw31Enwty1vc1WtSsLU
-	CyiN7hRjfEcqVOZoCZPG2B3Xlupp3fEIJ4eR14yq2okzr2trF6CyVDJMMQtTN4SFtYIugClT4Fv
-	JPH8LgWH89ph0Bmol4FOqIKqJ8KWazTzOXqw1z56tus7EhL9tpAPoFsQ1JUfGEXQj7F3buLFlCQ
-	SM9
-X-Google-Smtp-Source: AGHT+IGn1+ETT+zm88pwAhw5+VGefPJ13yC3WqC+eSWuCkiLlWav/YH14qslkoNZ1avh0V665XG8lm0WtbTCunS4KaM=
-X-Received: by 2002:a05:6870:1609:b0:2bc:7e72:2110 with SMTP id
- 586e51a60fabf-2ead4f10254mr1663010fac.13.1749819681083; Fri, 13 Jun 2025
- 06:01:21 -0700 (PDT)
+	s=arc-20240116; t=1749820890; c=relaxed/simple;
+	bh=/7XY7d1rAhQixzsnIvlIV3YWSCMSH3Do4v3NOrVuB2U=;
+	h=Date:From:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=FLk39Kigil6WRHtu3iDH3nRXd1aXjiyyaTevVogCeLvqkka/n2qEhfRfGJh1bN4Oc7VxlOst4ARvTDoYT2YeUjDbhIoeHppKsn8hriuil2WDwzLz1yGmKpSop7+3hpoxuGJfLFlTXsfVgjIpv4HFQrXeTWR/fTPSzbX1dBv56FM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klos.com; spf=pass smtp.mailfrom=klos.com; arc=none smtp.client-ip=192.80.49.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=klos.com
+Received: from daisy.zia.io (daisy.zia.io [IPv6:2001:1890:1bb7:b400:0:da:15:4])
+	by anath.zia.io (8.18.1/8.16.1) with ESMTPS id 55DDLFk6003357
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
+	for <linux-m68k@vger.kernel.org>; Fri, 13 Jun 2025 13:21:20 GMT
+Received: from daisy.zia.io (localhost [127.0.0.1])
+	by daisy.zia.io (8.18.1/8.18.1) with ESMTPS id 55DDL9D9018893
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 13 Jun 2025 13:21:09 GMT
+Received: from localhost (john@localhost)
+	by daisy.zia.io (8.18.1/8.18.1/Submit) with ESMTP id 55DDL9nW029518;
+	Fri, 13 Jun 2025 13:21:09 GMT
+Date: Fri, 13 Jun 2025 13:21:09 +0000 (UTC)
+From: John Klos <john@klos.com>
+cc: port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>,
+        linux-m68k <linux-m68k@vger.kernel.org>
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+In-Reply-To: <6c9b49aaab26bd7fda7a95e7e0c5392b26abbcb4.camel@physik.fu-berlin.de>
+Message-ID: <d6a5e25c-70bc-a7a2-1512-c7059c092f72@daisy.zia.io>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>  <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>  <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>  <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> 
+ <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>  <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+  <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>  <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>  <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>  <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com> 
+ <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>  <6a50c81a-cb0c-4529-959a-fad5260261fc@helsinkinet.fi>  <ea1aecf0f20b5466f63b3c6e671d1d29c81dfd87.camel@physik.fu-berlin.de>  <243529d0-daac-48b9-b482-04e3ed2f66f0@helsinkinet.fi>
+ <6c9b49aaab26bd7fda7a95e7e0c5392b26abbcb4.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
- <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org> <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
- <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
- <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
- <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
- <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org> <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
- <CAMuHMdUACa7Z-BV077H+G0Hd=mTBqLw7VdshbYCixeVtsuHYeg@mail.gmail.com>
- <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>
- <CAMuHMdWFb2kBpEBV3PQuwyCoCDBsANZobTSccrEog7j_dcBF2Q@mail.gmail.com>
- <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de>
- <CAMuHMdVFrrtMkn1LSV0t0Yxed1uiyjmovu=P9jfz8jWJViNNHQ@mail.gmail.com> <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de>
-In-Reply-To: <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de>
-From: ALeX Kazik <alex@kazik.de>
-Date: Fri, 13 Jun 2025 15:01:09 +0200
-X-Gm-Features: AX0GCFtl_8iAs2sM8DB1r9zdef5A_jouzh1bf72V9WkcUfDMQxayo_BTNZPfEHU
-Message-ID: <CAFFuhJor0woLg7kK1OZTt0HG3=DT8f=VL6M_bVzJeyF2vD8y9Q@mail.gmail.com>
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>, 
-	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, port-m68k <port-m68k@netbsd.org>, 
-	debian-68k <debian-68k@lists.debian.org>, linux-m68k <linux-m68k@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.4 (daisy.zia.io [0.0.0.0]); Fri, 13 Jun 2025 13:21:09 +0000 (UTC)
 
 Hi,
 
-I'm only reading here because I installed debian on my Amiga a long
-time ago, and just for fun.
+> You're not offering help. You, like Finn as well, are trying to block fixing
+> a long-standing problem of Linux/m68k without offering any sustainable alternatives
+> to fix this problem.
 
-And I think that the people who keep this running should be able to
-decide the future.
-But that is only my opinion.
+I didn't see anywhere that Eero was blocking or hinting at blocking. I 
+only saw Eero offering to collect data, which I think is a good idea.
 
-Alex.
+It might not be directly relevant to the issue at hand, but we shouldn't 
+say no to more information that might inform these changes, either for 
+better or for worse.
+
+John
