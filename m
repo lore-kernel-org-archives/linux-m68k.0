@@ -1,43 +1,43 @@
 Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A711023DE
-	for <linux-m68k@vger.kernel.org>; Sat, 14 Jun 2025 01:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2008C2CA9
+	for <linux-m68k@vger.kernel.org>; Sat, 14 Jun 2025 01:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749863585; cv=none; b=nklKaUYHjt7lnV3udNI5Y4OhuyXuYfac3L2+36wH0vZbjDDZOUB8pw8CNEV7hW4OwLrdgOfz2AMFlM722AvvNOlf0CvtbGcLqMKGZLYWArvA1CjMr0xSuAWuHDPU8CxnceTPAfBn1prPDihlzrtJnvqMBY4WhvljuHOoMHh1JZo=
+	t=1749864506; cv=none; b=s41kbK2Dsu++y8FTB+8+FjqZtyCUXfLzg4eI4Lw5fu6qC0C8jZavwK8/Uc/8J5mfPljzSX65Wrj52bbPivo2z6Dg1ruoxUu1zga4CAkMLwu8gfqw8tO6WKvfV2cfGjhOXYmUmOhTKjAN/1pbWHI7UrRD2xQO0PKofc7HZycS8ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749863585; c=relaxed/simple;
-	bh=e9dE76bE5SsEx7TsCioIF4ct5jgETrKpIs1Erd+KJrE=;
+	s=arc-20240116; t=1749864506; c=relaxed/simple;
+	bh=oTCW7G/ddZJVJI5/74wVjzgw6keP6gBky/nToIv4m7M=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=SehUW2I7rzuUmFre4jjf86s/dlsZhbZn84fhf2gdrAgu2Nu8CBpU0zJUv9WQaSdnNgw8CFNZN3jn0tNlkUnXbQyVZudtV4jSrMvRPHFD33ff/Z3SqBSWxQfugW7nGKyE5jMKY8UISiixvY6XRcT8KU1fxuQM6smoid3UtOcY4fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cYhIJAaH; arc=none smtp.client-ip=103.168.172.153
+	 MIME-Version:Content-Type; b=UYR4SU11t52NmQAZcXWg+dl/OHMX9MKLVfCDi5Q/EM1OCQMcS1Xi8cd2pae3ng5HICqrN9ggIF+SEvqV6O9aFt/w4PQWy96G2BmOlCoxzK6I/t+TLDQA0+Qe9/jraSb4HBloU5SdnkDOJgSTv8fpotBKSv+yTIZai9GdTZYIUj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=G9Yx8NHx; arc=none smtp.client-ip=103.168.172.153
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cYhIJAaH"
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id C16BC1140106;
-	Fri, 13 Jun 2025 21:13:02 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="G9Yx8NHx"
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 1C431114016B;
+	Fri, 13 Jun 2025 21:28:23 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Fri, 13 Jun 2025 21:13:02 -0400
+  by phl-compute-03.internal (MEProxy); Fri, 13 Jun 2025 21:28:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749863582; x=1749949982; bh=46pymWHT4Qj0iEGYhrUJBc5s2sDQns5FjPE
-	G2S+wuK0=; b=cYhIJAaHuvFsdOg5BrGItd6Vc6DCNWMI/XujcNhdT9j29N+MicX
-	PoxEGcQ/B44oZ0xkghNi4SUTc0f57HJNT2038WNl9pMOF31EiItgv7s0PpczSMa0
-	Tn3W3UeuCWAfRohXXSfWNmWw/EJ92ZROU10rmbKpzka9CrgiEuWJapHtFHA6tmde
-	kZ6Qf+oOujE07JfqsrtuAroYj+ZhUPNtlWGRkAZKXkkOukfrFw4gWHd4e15cgd7p
-	rZi4xlwdPuJEw7EAaiS1zfxs0A9L8bvQTjaGeXEaXPZiyVeTxhsJNbDST1z87Qsr
-	hkPCKCyhq9oofOS3p6vcp/3RvTe0sLSl3Mg==
-X-ME-Sender: <xms:ncxMaAV3gVi-NKCgYvEnCT86PRjR1-WzvlxEA3g5J2C5TSjW8-azUQ>
-    <xme:ncxMaElHoFZTLbQkYTohYDspiVELe3drN470aKvnmfIq_pcH2MGYo637KaGql5Xt9
-    BUPifKQ75UBA-JYpTM>
-X-ME-Received: <xmr:ncxMaEZI9t7_aAby7KKigEMBptMnk7W-f0dRB16AxO9A8bzXG_Ub2IElcm8kyus-NinurjzO3_BMCQu8CQ0wGIEFGavxv-8Xfqs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduleegjecutefuodetggdotefrod
+	1749864503; x=1749950903; bh=7EpKOYRwAtUHcgxj16BxrlW5iTYB72DtnHd
+	Wo+ul+tk=; b=G9Yx8NHxpKAhZJrtBd3/JPFKTNwgUYvp53o/lznnrtnQanJ2tlw
+	xpZBifvDXaZCDcVCsFib4L3iviV63AyMmxVOjJya49hCjp+KGbEcfB6mP8LOfgHo
+	9sJSD+axNT7R3topqq+q7/LTDO4MfRaU0mczvpIAbgitOY+vpgrZH+zWinxEmhAy
+	9Q0tLEhUPyUHzWivWSzLS9mXFXeH/zGuBADhiNDGZPe2C+puo6RPpmL0GPdQpnkF
+	WfLxPGNSZXuAbA8eLKJSTCtgDRWu5HhKI9N1txlJjNepM1SoIz9I6g8tfzXcRQQf
+	uDwK0KNgEUkGddrjDdOxYS2h9oJ4NKRCw3w==
+X-ME-Sender: <xms:NtBMaOxnih_y0GEOVY47cJGBFUitjvdnXWcWqbg4tsSZREePsmYhTw>
+    <xme:NtBMaKRj0oSTtVhD9hvKrSx7dF0TCSJVrv28Lr71JeDUYYTJ2WF89EeuKjMRXhsi0
+    6ZV2Nr_TUEWGbTm7Gw>
+X-ME-Received: <xmr:NtBMaAUdqp1hi92scDkTJn0UgIoIU269it9rLPQHONsQfbfGznCTpp0dCwAz8o4n3qkgQTXTOh8LnQ401H_uKDXBlJEBx9cJ91s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduleehudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvden
@@ -45,50 +45,34 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduleegjecutefuodetgg
     drohhrgheqnecuggftrfgrthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeef
     fffftdfgjeevkeegfedvueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
     hmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgs
-    pghrtghpthhtohepkedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepghhlrghusg
-    hithiisehphhihshhikhdrfhhuqdgsvghrlhhinhdruggvpdhrtghpthhtohepohgrkhes
-    hhgvlhhsihhnkhhinhgvthdrfhhipdhrtghpthhtohepuhhsvghrmhehjeeshigrhhhooh
-    drtghomhdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgt
-    phhtthhopehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgh
-    dprhgtphhtthhopehpohhrthdqmheikehksehnvghtsghsugdrohhrghdprhgtphhtthho
-    peguvggsihgrnhdqieekkheslhhishhtshdruggvsghirghnrdhorhhgpdhrtghpthhtoh
-    eplhhinhhugidqmheikehksehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:ncxMaPUVN80e4kYNA1eNbNCCkwtt3ss7aSr3ZEcjaShWIbC01ixVNw>
-    <xmx:ncxMaKk7Ts6dN0FL1BFOs11fPQdJDJbJuZtLsURCvKe_cEdbT_H1DQ>
-    <xmx:ncxMaEfZmy_iVAVbOqLvm-lxE3wOIAoLSJGMMcyTzJNWkdSM6olqMw>
-    <xmx:ncxMaMHeopyRiBGs_QFS7dCHXmaoQ0kSCu2RfXHsOLh17TxmcMGScw>
-    <xmx:nsxMaGYqB3oM31TVze9Z0kGRLkjzX3EeKg20oyFARUkGp7qrrCQVzQj6>
+    pghrtghpthhtohepiedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepghhlrghusg
+    hithiisehphhihshhikhdrfhhuqdgsvghrlhhinhdruggvpdhrtghpthhtohepghgvvghr
+    theslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepjhgvrghnmhhitghhvghlrd
+    hhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhrtghpthhtohepphhorhhtqdhmieek
+    khesnhgvthgsshgurdhorhhgpdhrtghpthhtohepuggvsghirghnqdeikehksehlihhsth
+    hsrdguvggsihgrnhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkhesvhhgvghr
+    rdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:NtBMaEhFAFMsPqDzBj_URe0i_0syzDznd7cTohEDElqqUCNZioggfQ>
+    <xmx:NtBMaAD0_x--deyq_6YaqAbkRXc6ouLl9SqXXiNQz1aCyZWA4TgHrQ>
+    <xmx:NtBMaFKAGQY_Yx4g4euOessapGA7YrMBnVR1PNSYIzfcZ-7g88p3Rw>
+    <xmx:NtBMaHDgWlwd_OFfw05y5cLQX1q986a6i9pHWwpsV6waH_ScFhrzmA>
+    <xmx:N9BMaGpsQGOE9jWD4jy7D4Qj7-Wil-sW0mlccL-rxPyQhVGm0ROR4bfx>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Jun 2025 21:12:59 -0400 (EDT)
-Date: Sat, 14 Jun 2025 11:13:46 +1000 (AEST)
+ 13 Jun 2025 21:28:19 -0400 (EDT)
+Date: Sat, 14 Jun 2025 11:29:08 +1000 (AEST)
 From: Finn Thain <fthain@linux-m68k.org>
 To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: Eero Tamminen <oak@helsinkinet.fi>, Stan Johnson <userm57@yahoo.com>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
     Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
     port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>, 
     linux-m68k <linux-m68k@vger.kernel.org>
 Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-In-Reply-To: <6c9b49aaab26bd7fda7a95e7e0c5392b26abbcb4.camel@physik.fu-berlin.de>
-Message-ID: <a3fa0a05-d766-72a5-78d1-6a4df6fe8b43@linux-m68k.org>
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de> 
- <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org> 
- <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de> 
- <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> 
- <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de> 
- <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com> 
- <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de> 
- <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org> 
- <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de> 
- <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org> 
- <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de> 
- <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com> 
- <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de> 
- <6a50c81a-cb0c-4529-959a-fad5260261fc@helsinkinet.fi> 
- <ea1aecf0f20b5466f63b3c6e671d1d29c81dfd87.camel@physik.fu-berlin.de> 
- <243529d0-daac-48b9-b482-04e3ed2f66f0@helsinkinet.fi>
- <6c9b49aaab26bd7fda7a95e7e0c5392b26abbcb4.camel@physik.fu-berlin.de>
+In-Reply-To: <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>
+Message-ID: <bde11e6f-923b-6c29-67b2-5474dd5b2401@linux-m68k.org>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>  <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org>  <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>  <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> 
+ <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>  <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+  <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>  <CAMuHMdUACa7Z-BV077H+G0Hd=mTBqLw7VdshbYCixeVtsuHYeg@mail.gmail.com> <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -101,13 +85,10 @@ Content-Type: text/plain; charset=us-ascii
 On Fri, 13 Jun 2025, John Paul Adrian Glaubitz wrote:
 
 > 
-> Performance was never the main argument. The main argument was 
-> unbreaking the port. You are moving goal posts which is an indicator 
-> that you're not interested in leading a fair and unbiased discussion.
-> 
+> Do you expect me to patch broken packages into all eternity?
 
-Linux/m68k is not broken, Gentoo/m68k is not broken and buildroot is not 
-broken. They don't require that I build LLVM. They don't require that I 
-build _multiple_ implementations of Rust and Go. They don't require that I 
-build Qt in order to build cmake. So I suggest you fix your package 
-archive and package manager.
+Some volunteers go looking for bugs to fix and problems to solve, but 
+no-one expects them to do it. Others are getting paid to do it. Most 
+people simply don't have time for that -- nothing to be ashamed of.
+
+FWIW, I'm not getting paid. Nor am I trying to get hired in the future.
