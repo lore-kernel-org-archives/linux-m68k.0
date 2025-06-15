@@ -1,149 +1,141 @@
-Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B87845945
-	for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 09:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476DE14F9D6
+	for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 09:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749979799; cv=none; b=ffRT2YL6jBUvhXR130+dwzsPEoJ5JxOTKw0FBLdUgsRrtWPq4xxo1S1wlJkvX8Q5rbWW7derPF28hdEbafalSbyd3ntcjMlZ8pkUPryNrYba94Q5PVft5qJJMfu1rUEtu3JfYC0ImzF99l7tkGcH1IKHWBohah8bAgzg6K9SWKA=
+	t=1749979961; cv=none; b=FUGButkMtSN10x8ydLMtrbI245xYSAm3t6mkB5/qU8SsRtySquxU8DEGZUm5RaTdMWrzadbEOCfc6TSelsub5qi5znFbj3b8V2aRsm26THQePXryAy+XeIABS7/BdIESLko0935DatHTgtQ4pVeRWq22PDaBhrVFRjtBRCb6SzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749979799; c=relaxed/simple;
-	bh=CsZRgFWhKkACceSMpMyM8Fa+YAhfeL2VzX03HXAbp3o=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=i6a22Re+5pxDngpGxfL86is4iTpIbzMSaIRvMtUIfWNIZZbbdENn0RNd54kvLtWfxSStUpzkSpPa+F2yfaj1uPrfg3RXIPVI0OPT3/BM9dJE/NWQfMb87WVdLh+FQWOWy7b/XyIWNvc2qo6nxHrkVX6auHiHOmQWNlcxkaPgIP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=l38OyuvL; arc=none smtp.client-ip=202.12.124.151
+	s=arc-20240116; t=1749979961; c=relaxed/simple;
+	bh=RKasgKyIpCv9jpFBXiaYp5xajoVy+l3nCtrEefRMfLY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dx9l3BER3kgmRwyxIslNkMf6RJsvpLESwhv1kb7w1siyi2kQcmabB+4Lt2Z0SNdB4hZBWBzSMoTUqVgS6dqKL57JbwNfEhCtySM+znFAT7z5wvBXtTswzat0AJAkFiwdraFWA7IJ/+ts0X3ax4wltVUUXc/mA4pnDrkE3e/69k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l38OyuvL"
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id DA22D11400AB;
-	Sun, 15 Jun 2025 05:29:55 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Sun, 15 Jun 2025 05:29:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1749979795; x=1750066195; bh=7I1fLumi9RMPHfBWGAnx9N+r1dVdj50OCaJ
-	h8FEcbys=; b=l38OyuvLGsJjoHsTKiEJfoNuInqXB5YXMPlpvr+6tx/DcITaI5l
-	+ZZgpWT3ZVPPKF/A9Slt8bKDz15mLo0snEU6ewBcvQCx0skX7SJxB5QBjUPY6ybA
-	Z3ynJ1M+/3H4SQ6tRCCnoht99abdOauA1/0MYIRLBw+ZqPZy0+DMxT+6lZbs+EZz
-	erCnEee7u8E6OoaY9IscvwZB43IvarEwpsZzqwi5VtL5xy9e+DY5PP6g0DLN2/Ub
-	9zwjzhLokmG6GsieMfTTJhWLsnFXj/2E5io9yJFDs/vHodElCMFgaWe3XRqVkaBd
-	0Sq2S6bKFu85IUnSvBJ6ot8gP9uxaQEsxvQ==
-X-ME-Sender: <xms:k5JOaLD1OsCM9XWNZMPSI6IAw05TsX3LODOpTsktrp0au0IMT6bdgw>
-    <xme:k5JOaBjYDDgRHCkihJZho_VS2yyBnA9hcR_EwLUkmdD4sRDJGI3SsV9PmwuuPwYT2
-    RADDa_WF4z7ESF5lLw>
-X-ME-Received: <xmr:k5JOaGnqHWWxJa-4HbiF9tbXOJ-wZ0ZrNXjKTEu1UmgBQ6pSBPm81eH3Z4f75u6rKIf3-2bNqirjic6SVRFUU-SNpb0VkIYiOP4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugddvfeefhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvden
-    ucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkh
-    drohhrgheqnecuggftrfgrthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeef
-    fffftdfgjeevkeegfedvueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgs
-    pghrtghpthhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepghhlrghusg
-    hithiisehphhihshhikhdrfhhuqdgsvghrlhhinhdruggvpdhrtghpthhtohepphhorhht
-    qdhmieekkhesnhgvthgsshgurdhorhhgpdhrtghpthhtohepuggvsghirghnqdeikehkse
-    hlihhsthhsrdguvggsihgrnhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkhes
-    vhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:k5JOaNyQBlqF4UE5l57rsuAz-F9TschXtYacyicXQuGfvH2oHy2Ybg>
-    <xmx:k5JOaAQaBcrl1NgkcTEgPZfnMHcPJzIHuW53rWwgRXPoPOC5vfHfZA>
-    <xmx:k5JOaAZIIo7_VLqAqRtuAZpn4uw4ahiZA_7ghCEuEwKMemy-6CdwNw>
-    <xmx:k5JOaBSgc12A0wXYJGmF3qNIdHxHRyr785kvI4s9hAvDUR974jHFDw>
-    <xmx:k5JOaIJ2ZU-OhPVuIBd3N0YKx029UZFLqasRP_dtaVc6qlNTgsDs6SDs>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 15 Jun 2025 05:29:52 -0400 (EDT)
-Date: Sun, 15 Jun 2025 19:30:43 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>, 
-    linux-m68k <linux-m68k@vger.kernel.org>
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-In-Reply-To: <5de0835e46f8c2479668fe5fe98f8e0d230cbfce.camel@physik.fu-berlin.de>
-Message-ID: <d3c2060c-f2ea-f80d-2462-d3dba29950c2@linux-m68k.org>
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>  
- <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>  
- <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>  
- <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>  
- <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>  
- <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>  
- <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>  
- <CAMuHMdUACa7Z-BV077H+G0Hd=mTBqLw7VdshbYCixeVtsuHYeg@mail.gmail.com>  
- <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>  
- <CAMuHMdWFb2kBpEBV3PQuwyCoCDBsANZobTSccrEog7j_dcBF2Q@mail.gmail.com>  
- <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de>  
- <CAMuHMdVFrrtMkn1LSV0t0Yxed1uiyjmovu=P9jfz8jWJViNNHQ@mail.gmail.com>  
- <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de>  
- <569d73fb-8ad5-46f0-bf4c-568919f319e7@helsinkinet.fi>  
- <b2f74ffcd4c4a8aef248c21cd6deafcb92d86d37.camel@physik.fu-berlin.de>  
- <022ab204-7be9-4f6a-a92f-2601fae1f146@vivier.eu> 
- <5d8619dfe4134319b558684209f2b89c5c1447cf.camel@physik.fu-berlin.de> 
- <889f54af-2317-ee51-cea5-47d813683944@linux-m68k.org>
- <5de0835e46f8c2479668fe5fe98f8e0d230cbfce.camel@physik.fu-berlin.de>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-87f28565e89so287583241.2
+        for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 02:32:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749979956; x=1750584756;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nusEFuBwtkKjWrZQQOjuLpzRwKA17lxrN7GTr5wPIQY=;
+        b=XU0sIoB91JSmpBztrp706QtffRdPjvVjfTKemFyY59FF/8dbB33siITZcghvmKYK2m
+         yVgSowYjVSH9fAmVPmkmMIVPNehgjmdlMBNkNXkDiDD+R0plUXje4SBYY/vSfpqKq8wu
+         x/tkUbQVjoANJLARVVxgyzSNr9tQw2iVxPKZrRw+1blqKPlafEmAoPaQhMB0PPysmb4i
+         Z5vm+c6O8hjY5VE8/Vm2HhthNAQFijWF5VIAIvmrE9ztgwtAC6yqXoHHkdBqPisXcWb1
+         Z3s8+44ie2XDU0XHIIdDZ2lKOnVI40SQz0+lBfp8dcf1yk3nZ07UIreCvfDRGZW3Bh/U
+         KxBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUdwq7k8ByrtV7HVjYkxXymlPVH/OpmgGIB7dHYCSEi73sFNxvtVVmJc2Lksq3UlwEjlfIJfluldXj9@vger.kernel.org
+X-Gm-Message-State: AOJu0YzFTnIFhaftiFGwhbRxHAWRR8bshX4OLKc2N3cu5Yc+Bu5GsoL2
+	/mHehi/ixRFjuyZ73fu6AJaWja1opkRk+NEnr7tPiNdxrAo6o35MEk/oVU9P4p9x
+X-Gm-Gg: ASbGncuhFWzqIrZ7X10deqM+V4MfShhxqSnVI0RjqvA7viqUgVEl4+yhDh3C0DFmwZA
+	++DA7vyon5fACmbW6wrvqFFH9n1hlspj0WdgfvHMurvU87o3PUxMWmb64s94yAyoohEBrjZL78K
+	rZIt8v1ccfPcK2eKma4GSmuTaTfS4qbx7nRxComMcD/GJEQB5gESFE60j6Ur2zYtoqb1mLA6uud
+	OKH+woEHzKhAIje7nUut7DVPOvgPmO28p/LrHcGVK1WblIVSe9CPgC/SMgE3M7hytjJjX7YAf8A
+	VrtOYtWJkDvOPceSFlJw1r/oFURY49bDoLXfGLHZpvy8EkfeZlauhZnDiEj9dbprlYcKK6cx/J6
+	7dNWXYUpc/2FZHv8a1J+LiZMk
+X-Google-Smtp-Source: AGHT+IG3jMUymOSS+1xIrluxe3QHizhvLXXvQxdGK8nNN7E79vB43k7JOpRlFBeBMzufN/R+Zce7eg==
+X-Received: by 2002:a05:6102:4b8c:b0:4e4:f503:6675 with SMTP id ada2fe7eead31-4e7f61f45d2mr3768378137.18.1749979956394;
+        Sun, 15 Jun 2025 02:32:36 -0700 (PDT)
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-87f2dc41124sm81095241.26.2025.06.15.02.32.36
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Jun 2025 02:32:36 -0700 (PDT)
+Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-4e80d19c7ebso563975137.3
+        for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 02:32:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXc78bPuCCOqYT5c0wBSi/aiDT9C7FxzeSlhxaP0lkSH+XQUvjz9RFRqGWkdHn76y8hH35TM2ktmJWg@vger.kernel.org
+X-Received: by 2002:a05:6102:1483:b0:4e2:82c3:661c with SMTP id
+ ada2fe7eead31-4e7f614bf0amr4473623137.11.1749979955992; Sun, 15 Jun 2025
+ 02:32:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+ <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+ <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+ <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org> <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+ <CAMuHMdUACa7Z-BV077H+G0Hd=mTBqLw7VdshbYCixeVtsuHYeg@mail.gmail.com>
+ <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>
+ <CAMuHMdWFb2kBpEBV3PQuwyCoCDBsANZobTSccrEog7j_dcBF2Q@mail.gmail.com>
+ <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de>
+ <CAMuHMdVFrrtMkn1LSV0t0Yxed1uiyjmovu=P9jfz8jWJViNNHQ@mail.gmail.com>
+ <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de>
+ <569d73fb-8ad5-46f0-bf4c-568919f319e7@helsinkinet.fi> <b2f74ffcd4c4a8aef248c21cd6deafcb92d86d37.camel@physik.fu-berlin.de>
+ <86c91d1c-cfc6-44c9-8883-d9ae46c3f4c3@helsinkinet.fi>
+In-Reply-To: <86c91d1c-cfc6-44c9-8883-d9ae46c3f4c3@helsinkinet.fi>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 15 Jun 2025 11:32:23 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVL5mWGstzyik11iHyoBf-mUtwnPiCLM12qurGjHYSbkw@mail.gmail.com>
+X-Gm-Features: AX0GCFud1nLpbAVh7LkB4pxOCpjuf5qm1Ee3bD586ujV_RZbF6nuUtYJGF5VsSg
+Message-ID: <CAMuHMdVL5mWGstzyik11iHyoBf-mUtwnPiCLM12qurGjHYSbkw@mail.gmail.com>
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+To: Eero Tamminen <oak@helsinkinet.fi>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Finn Thain <fthain@linux-m68k.org>, 
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, port-m68k <port-m68k@netbsd.org>, 
+	debian-68k <debian-68k@lists.debian.org>, linux-m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Eero,
 
-On Sun, 15 Jun 2025, John Paul Adrian Glaubitz wrote:
+On Fri, 13 Jun 2025 at 21:29, Eero Tamminen <oak@helsinkinet.fi> wrote:
+> On 13.6.2025 17.53, John Paul Adrian Glaubitz wrote:
+> > On Fri, 2025-06-13 at 17:15 +0300, Eero Tamminen wrote:
+> >> Wouldn't next upgrade completely break user's Debian system so it needs
+> >> complete re-install?
+> >
+> > You would need to extract the glibc package manually from my tests. After that,
+> > upgrading the system should be possible.
+>
+> I think quite a bit more binaries than just Glibc are needed for Debian
+> upgrade tooling to work, but OK.
+>
+> As to other potential issues...
+>
+> I assume there are no m68k port packages with closed source executable
+> code (FW) [1], like the other architectures (esp. x86) have & need, and
+> that any code intended to work also on non-m68k platform, should be fine
+> with 4-byte alignment.
+>
+> But what about m68k specific C/C++ and assembly code that may hard-code
+> 2-byte alignment assumptions; is there any tooling to detect (potential)
+> alignment issues in those?
 
-> 
-> Honest question, Finn: Why are you even participating in this discussion 
-> when you're neither willing to acknowledge the problem nor willing to 
-> help address it?
-> 
+This is one of my worries, too.
+The Debian package archive is much larger than the NetBSD one...
 
-You and I don't discuss much; you ignore most of what I've said, then tell 
-me that what I said is off-topic. LOL.
+> Or is the plan just to rely on packages' self-tests to reveal issues,
+> and then track them down from there?
+>
+>
+> [1] Are sources for "bootstra.tos" & "amiboot" anywhere, in case they
+> need updates:
+> https://wiki.debian.org/M68k/Installing
+> https://people.debian.org/~wouter/d-i/images/20130502-06:51/tools/atari/
+> https://people.debian.org/~wouter/d-i/images/20130502-06:51/tools/amiga/
+> ?
 
-> Do you think that you just need to bombard me with repeated statements 
-> that I am going to change my mind over something that I have chewed over 
-> for so long?
-> 
+https://github.com/geertu/m68kboot
 
-You're quite right, I need to stop responding to repeated nonsense -- I 
-will quit it.
+I don't expect any changes would be needed for the bootstraps.
+FWIW, include/uapi/linux/zorro.h already has __packed for the various
+AmigaOS structs, as that was needed for APUS (support for which was
+removed from the kernel a long time ago).
 
-> I think everyone in this thread has now understood that you are neither 
-> willing to help resolve these issues nor are you willing to accept my 
-> preferred solution that Gentoo and I are already working on.
-> 
+Gr{oetje,eeting}s,
 
-I've no idea who "everyone" is... but I'm speaking both to those 
-participating in this thread and to those who know better.
+                        Geert
 
-As for "unwilling to help", I help where I see a need.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-As for solutions, well, you have one, but you'd create more problems than 
-you'd solve.
-
-> So, what's the deal with your continued engagement?
-> 
-
-I'm not here to stop you exercising whatever power you've garnered over 
-whatever domain you've claimed. (No wonder you're baffled by my presence.)
-
-I'm here to bell the cat. What you're doing is harmful. Forking the 
-packages that make up your distribution is harmful and so is fragmenting 
-the ABI.
-
-You can't improve Debian by refusing to acknowledge it's limitations. You 
-can't improve the Debian experience by railroading users. You can't 
-improve upstream codebases by papering over their mistakes. You can't 
-improve collaboration by ignoring the advice of upstream toolchain and 
-kernel developers. You can't have a stable ABI without consensus. You 
-can't improve the long term prospects for the Linux/m68k project until you 
-understood how it got to where it was when you arrived.
-
-So to answer your fine question, Adrian, I continue to engage out of hope 
-that you will finally realize that there are better ways to serve the 
-community than the path you're on.
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
