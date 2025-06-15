@@ -1,123 +1,122 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA7226AD0
-	for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 08:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544BF1922FB
+	for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 09:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749975195; cv=none; b=YyMb2++HDnANbP8wF8nK8h+A9OSWGuYaWEj2sIzi0u+s7FPo7iI4wXsXLNB+57hPOMWuh/MNbPcOYbRIhcEdyrnrkVXZBxbMVo+0uaZsqg4vsxpmhM6TSdeOlH/xz5OynPEZuX1+WZJAr1funBP1QSbZAr/4Uu/1ZUmZT+LSVM8=
+	t=1749979599; cv=none; b=Wz/ZzKS8WGdHrXMmykxDu+nBYiWMoIa0xhqCq6SIEvENlO6UGCT6xljaOiSf1n2wZCUC8wlAPD2iZ4eTbn8ueqmDEBd3fGuxKNa69Ff7FaP2v23UyNEtvm8Krp3Po/akdouTDaN0Amrdskj7jChtG2ZmrBMmjbo5Gs3fGDNIrOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749975195; c=relaxed/simple;
-	bh=eabwU5RBwOWkwdk7VPeCPN2gymdmoIq4hCGHjhsqK9s=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DDY8o8eSE9/sjwELGecwD88WDDeLSguhvzbwka0rqampdGBckJJ/URKypgzD+3sxzfiI1C282qtg4hyLjwPjlpVJJX3T5R1+iqkVubkLu4tys0RCIDK8QKrU3/doAImJtOw9RWYIdE4u65N9S0TbBJ04S1vAQxn/TpMwHyspWoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=PbAubulU; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="PbAubulU"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ppdG68mpf5blu5mDYSM8fBBYCCrnL3C4UIDgiojfGX0=; t=1749975192; x=1750579992; 
-	b=PbAubulUswof1dlukfgob8wlRgwTkoTuBwUQsewXPLzTGEeqqJ9KAsM5AnT2bviKBbrHuiG6WUf
-	dnaPysOjWIi+iisrrqrPz2egr4JzXdqMqC7vzVljdy+XBekFXGaLK4DOXVyfg9jRkiV/HE9QyF/rn
-	PQY+90Yj9u+yehbXDThBs2hzolJ9qc81x+0zTg1J/OcRvgrDjMd0HAqbtLCnT8kpkZ780yFVWNAjn
-	osBRglLa2aTOMfnxNoddWt9AobnFU70pQYnzE+A+w9gTyhIHbnHHACM174CsEx0761cmT4n1yacz3
-	nQyB8fdDO2cumbtSqNxpe69LxgS5EF7rUArA==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uQiUH-00000000Z4U-33Lh; Sun, 15 Jun 2025 10:13:09 +0200
-Received: from p57bd96d0.dip0.t-ipconnect.de ([87.189.150.208] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uQiUH-00000002zAq-2AwD; Sun, 15 Jun 2025 10:13:09 +0200
-Message-ID: <5de0835e46f8c2479668fe5fe98f8e0d230cbfce.camel@physik.fu-berlin.de>
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: port-m68k <port-m68k@netbsd.org>, debian-68k
- <debian-68k@lists.debian.org>,  linux-m68k <linux-m68k@vger.kernel.org>
-Date: Sun, 15 Jun 2025 10:13:08 +0200
-In-Reply-To: <889f54af-2317-ee51-cea5-47d813683944@linux-m68k.org>
-References: 
-	<ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
-	  <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org>
-	  <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
-	  <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
-	  <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
-	  <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
-	  <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
-	  <CAMuHMdUACa7Z-BV077H+G0Hd=mTBqLw7VdshbYCixeVtsuHYeg@mail.gmail.com>
-	  <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>
-	  <CAMuHMdWFb2kBpEBV3PQuwyCoCDBsANZobTSccrEog7j_dcBF2Q@mail.gmail.com>
-	  <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de>
-	  <CAMuHMdVFrrtMkn1LSV0t0Yxed1uiyjmovu=P9jfz8jWJViNNHQ@mail.gmail.com>
-	  <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de>
-	  <569d73fb-8ad5-46f0-bf4c-568919f319e7@helsinkinet.fi>
-	  <b2f74ffcd4c4a8aef248c21cd6deafcb92d86d37.camel@physik.fu-berlin.de>
-	  <022ab204-7be9-4f6a-a92f-2601fae1f146@vivier.eu>
-	 <5d8619dfe4134319b558684209f2b89c5c1447cf.camel@physik.fu-berlin.de>
-	 <889f54af-2317-ee51-cea5-47d813683944@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	s=arc-20240116; t=1749979599; c=relaxed/simple;
+	bh=GSpWOHfVXakSaD/Q84GJTChuyjvW2ajkUetlv69EKPo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FciUZy6/tbzCD1g7la7jfvPWcfxFuKGS1DqYNNeR5rL+cZVom3VF4dbH8SWjKL82xHDq/vGD8s/JSafFKCNLkPrSe0T9Epd5DGTlGJkpkR1pOlpNgbV/+3g4ZDjIyeSzjBA7ClcvgcnRcNWjrLn2k2M04Vd4B4cVgvCS27QrE6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-530eec21626so1024491e0c.1
+        for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 02:26:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749979595; x=1750584395;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c3bhViaOaDJ84vNxc7BTgogYnTzaPMwvXPmcmnkqrBQ=;
+        b=Cq6I+LNOJY6i+zkfOIfjzHlaJ9Hi7jcsDetsINeSwB1fr9YpE6GDCEle+j3fRq7LDb
+         sa4w4QfpsHLVNE3YtU87yN0+W/hO0DDf0Fuu2IY57cONCo8eNHku/pl4Nnj535db43NB
+         wR4q5VmQ94Po/WIvm4yTOZOgZ2ZEvZyCyweWbvQ9vyGy2fDDlXPWZ/eoqHN6hsruxrQn
+         GvWAi2z6qmsfuhiD/dHeZzsgOtfY2a4//IKNnfcu98pTNtW3i1mnpY6q64ELjJSWBH/M
+         iik2NybYuge4Je3pq+Skr209ZjV/zxgKc4j2ZDkyQVJl5TiQzz19Zj6EI6S5XT4m5ebP
+         tjYw==
+X-Forwarded-Encrypted: i=1; AJvYcCUe3PmpbYMbQnbSIFbI4f2nGlTodFelA2PSzloOX+DRFdQd74Cwliisb+4wjaeM2x83E0wOYjAi0RFg@vger.kernel.org
+X-Gm-Message-State: AOJu0YynFkjTEUrlaXFDYBEII5j2NQZIsllAs1fonw+WLS1RKeqaxyls
+	DAr+ShOfRDSvNyyFVOJ9vv2MTez2Nls+kTKF9L1prx+NNUdEmj31zN+pDftyp3nv
+X-Gm-Gg: ASbGncurUqs4OlH5QP4o+tRYiEPyQgDU/PHFJ5NrobiVSaoi4/3va21wrYMl10WOM+O
+	qnCmeSBHJujlnelIOCV/6XuBhtKBYCmQzCS6rKTkwKs7EnxTm6zIbIoA4uDc91aal15+e1sUpEf
+	C1x8O0W1h0cMpOt3N81Q/a8s+6ETe54+C8UmaVZu+I07ppKXYE/eM51sWTGjtQZxC4ksKJp9YAO
+	OXAqf2lqbGoy7PhfULgn52Dym+psAezfvM/597zsZWbtrxf3nd2P/wId+++I0asZx0cocB8jwsg
+	Qr+f8Oub0/Kq3gjuJrDauYjoNQM5UFf9KP38NDDCgcDN26nwSJFyhguOq/zFTHAKfMxXyC7dyac
+	oRNKzRQpnsdA7c75/RD3Wycqx
+X-Google-Smtp-Source: AGHT+IEfFl7TxysDwXIqHodBKayokjHa8y/jNhWZZh4llWEVtpxKWrYlyVlc0vdkZ7TA9gSqz0z/QA==
+X-Received: by 2002:a05:6122:8f8d:b0:531:2afc:463e with SMTP id 71dfb90a1353d-53149551fd7mr3417475e0c.5.1749979595022;
+        Sun, 15 Jun 2025 02:26:35 -0700 (PDT)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5313ddd7ff2sm865891e0c.12.2025.06.15.02.26.34
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Jun 2025 02:26:34 -0700 (PDT)
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4e7f367ea11so535016137.3
+        for <linux-m68k@vger.kernel.org>; Sun, 15 Jun 2025 02:26:34 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWl2BnT90Q04zkYM/kvr9kTdrVMs//r+MvSckhTbj2JC0zZM85osmcXQl2NRbvcudoCYHq83Kdj3Ai+@vger.kernel.org
+X-Received: by 2002:a05:6102:2c81:b0:4e7:bf03:cd6f with SMTP id
+ ada2fe7eead31-4e7f61373aemr4368017137.2.1749979594027; Sun, 15 Jun 2025
+ 02:26:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <442267d5-241e-44a5-9b54-fee06bc5c03b@yoseli.org> <9013836044f8bfb7f0cd62ba536f6a1c75034465.camel@physik.fu-berlin.de>
+ <80f5c684-638b-4486-9026-1f8689a7f147@yoseli.org> <95e56d983ace4976143c7e1180ffe5606c0ee3fe.camel@physik.fu-berlin.de>
+ <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+ <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+ <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org> <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+ <CAMuHMdUACa7Z-BV077H+G0Hd=mTBqLw7VdshbYCixeVtsuHYeg@mail.gmail.com>
+ <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>
+ <CAMuHMdWFb2kBpEBV3PQuwyCoCDBsANZobTSccrEog7j_dcBF2Q@mail.gmail.com>
+ <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de>
+ <CAMuHMdVFrrtMkn1LSV0t0Yxed1uiyjmovu=P9jfz8jWJViNNHQ@mail.gmail.com>
+ <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de> <3e499af848b28c640334f329010d3d45c0b12c95.camel@physik.fu-berlin.de>
+In-Reply-To: <3e499af848b28c640334f329010d3d45c0b12c95.camel@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 15 Jun 2025 11:26:22 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVzfDxv24wp+AyJs2253+8RHB51oM1Qsc3NUNaf-jE+nA@mail.gmail.com>
+X-Gm-Features: AX0GCFtg8nhXgs8fIY3OU9zwX6MTnxWnvnT41hOUut_6OUFk_Jr0wtoL_CU3F_U
+Message-ID: <CAMuHMdVzfDxv24wp+AyJs2253+8RHB51oM1Qsc3NUNaf-jE+nA@mail.gmail.com>
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Finn Thain <fthain@linux-m68k.org>, 
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, port-m68k <port-m68k@netbsd.org>, 
+	debian-68k <debian-68k@lists.debian.org>, linux-m68k <linux-m68k@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 2025-06-15 at 11:42 +1000, Finn Thain wrote:
-> On Sat, 14 Jun 2025, John Paul Adrian Glaubitz wrote:
->=20
-> >=20
-> > Sure, we can remove Python on m68k. But whether it will still be useful=
-=20
-> > after that remains a different question. I would argue we should rather=
-=20
-> > totally drop the port then because Linux without Python doesn't really=
-=20
-> > work these days.
-> >=20
->=20
-> https://lists.debian.org/debian-68k/2024/10/msg00042.html
-> https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D1105110
+Hi Adrian,
 
-Honest question, Finn: Why are you even participating in this discussion wh=
-en
-you're neither willing to acknowledge the problem nor willing to help addre=
-ss
-it?
+On Fri, 13 Jun 2025 at 15:00, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Fri, 2025-06-13 at 14:51 +0200, John Paul Adrian Glaubitz wrote:
+> > On Fri, 2025-06-13 at 14:30 +0200, Geert Uytterhoeven wrote:
+> > > So you change the default alignment, bump all so-versions in userspace,
+> > > but keep the kernel-userspace ABI the same by adding explicit alignment
+> > > tags where needed? Old binaries keep on working, new binaries join
+> > > the ecosystem of anything that still builds on 32-bit big-endian ;-)
+> >
+> > I think you're still missing the part that I'm not maintaining my own Linux
+> > distribution meaning that I cannot bump SO versions or making any substantial
+> > changes to the distributions.
+>
+> To make this perfectly clear: The whole point about making this change is to *not*
+> having to roll my own Linux distribution for Linux/m68k. I'm building vanilla Debian
+> on m68k which means that I *don't* want to make any changes to the distribution as
+> I simply do not have any control over this.
+>
+> Do you expect that I can go to the glibc project and ask them to bump the ABI version
+> from 6 to 7 because some people think it's extremely important to be able to run a 1993
+> Linux binary an Amiga running a Debian unstable snapshot from 2025.
 
-Do you think that you just need to bombard me with repeated statements that=
- I
-am going to change my mind over something that I have chewed over for so lo=
-ng?
+Sorry, I didn't know you have to coordinate this with the glibc project.
+But you have to do something to mark it incompatible with older versions...
+IIRC, I saw Debian bumping SO versions before...
 
-I think everyone in this thread has now understood that you are neither wil=
-ling
-to help resolve these issues nor are you willing to accept my preferred sol=
-ution
-that Gentoo and I are already working on.
+Gr{oetje,eeting}s,
 
-So, what's the deal with your continued engagement?
+                        Geert
 
-Adrian
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
