@@ -1,120 +1,120 @@
-Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75ADD7262B
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Jun 2025 04:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DAE7FBAC
+	for <linux-m68k@vger.kernel.org>; Mon, 16 Jun 2025 06:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750049266; cv=none; b=B/0DLqzswDDb3Y2eX8cQLNtyWrDE3GkoQLj2CW7gSx44RiRxoGhxWUeQFc1q4qr1PwxUs+wrwcJgXBks0f+SDpZ7/8YpcFX4t6SHHv3iyyNzox5waeRLPZbr4BxzlzWtgycSinSPCc1i+DdYm9PwKCfAoiLuaQtvSUDIJz3mPeQ=
+	t=1750055603; cv=none; b=k5Yb9FSKhoENfaIFlIhx5XTuzTr1wg3VdXGhXttemMSFIFfwKShEUAeBcm66iwU8yQPK+P+DN2qSs0r4zIgHsKEadfSsJmQYeAOBLlFQYXcBWW9/i9Zitl1Xe+hjIZ6viPQXkccQkkTnc2xrCI20fqnBm7T3lipkBIiC2WO807w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750049266; c=relaxed/simple;
-	bh=JgKxW0HVXtgKY3WO2AkZ7op8Gjhf3Dn0TTLe2zjmwCs=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=bfWQ+CjdTLgrHp5rM7XGROdqPzYv2fVt8j6LBL4KR6IgwxthWrSY5GXNE2b7HzwUm7rrahM6qKms3XKpz87/BlHqqBI1D/aUOOWP9rFOXRuLfBKoE0uQNQ+D4psDlg1jkERzgu0gluCEGvDE/rA9IrWED7SPaxC1gFBdbZgyqrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pWA5PiBU; arc=none smtp.client-ip=202.12.124.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pWA5PiBU"
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 547B22540192;
-	Mon, 16 Jun 2025 00:47:42 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Mon, 16 Jun 2025 00:47:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1750049262; x=1750135662; bh=ryeev/K4q5bix4317N1FMPzSBxQmiLFLg/h
-	yPT7QCME=; b=pWA5PiBUweIBnsC4DY5zU7E0U5O2cafnX5J7s7E1ndhvwUcQqJv
-	VOnOJAoBnsj9yaoIGn90pSgiKisljr8ZCVvBM3vksDLuGVUYxBw7ez678gkODmZv
-	FNL5Zj7FYJDY+fJiYJvnk3YNSFor4Cq5sx2d1ZLIrA9Zb3WxmVtIV0sQ1hZ7ANQP
-	yVYUi4oou3oMLi4U55bqgpuSGBYKntyGkfl9TUDdtdH/wYYsDJwYM34jc16QeMwF
-	2no5ukIRT10zSlvjoLTduQGLM0LSxCRh3IlusX106ntYR+nhO1LcBXqgI3GdAsGV
-	jiWymvjRHRLv/OA9KwtH5T9+qgfB3SUKVYA==
-X-ME-Sender: <xms:7aFPaOoCke5bmCOYJnENWPPk_fGQ207K9vyz-_oezK_XsHRYQg91vw>
-    <xme:7aFPaMqVCsDc8audLbUYHKUGDqBglzK3zFdGBdbvdo-lvEbS7KuFRLRwYPufKfIc6
-    88J9tvsKZmoWpIDBig>
-X-ME-Received: <xmr:7aFPaDObrYBEjf46_VhqkNYcc7i9GjI2vMvAVayd02YgLw551QtBHXooU5iIWOuOVDJ9dbidOCH6DglevO-poXiGCq72kArwoY0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugddvheeihecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefujgfkfhggtgesthdtredttddtvden
-    ucfhrhhomhephfhinhhnucfvhhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkh
-    drohhrgheqnecuggftrfgrthhtvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeef
-    fffftdfgjeevkeegfedvueehueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgs
-    pghrtghpthhtohepgedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepuggrnhhivg
-    hlsedtgidtfhdrtghomhdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdr
-    ohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmh
-    eikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgv
-    rhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:7aFPaN5SQlWD3-SzMj-oyc9hP9cAlCVJonDNK5O5ipGA_V4tsDOnAg>
-    <xmx:7aFPaN6AnAhEQRJLNW05YvO5oZcVoI4USJypF49hzJA2ecM4nx_oUA>
-    <xmx:7aFPaNju-Bd6oaVVKVmtFk0_yNoHsYWT1MP_a481nAQuKmzM-a15Vw>
-    <xmx:7aFPaH5TUc0H3VF8UeNkBcC-8leSllNS2FAa8QIknA1qwNQDTBSZYw>
-    <xmx:7qFPaNXPdT2INA6wHUaNM0aaqlAampDTxuxy6QyLT8Yvg5MQ17Iid1cA>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 16 Jun 2025 00:47:39 -0400 (EDT)
-Date: Mon, 16 Jun 2025 14:48:32 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Daniel Palmer <daniel@0x0f.com>
-cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Enable dead code elimination
-In-Reply-To: <20250416114240.2929832-1-daniel@0x0f.com>
-Message-ID: <d75712c5-63a1-896f-7750-0e4f28c77127@linux-m68k.org>
-References: <20250416114240.2929832-1-daniel@0x0f.com>
+	s=arc-20240116; t=1750055603; c=relaxed/simple;
+	bh=XhtVgFe033XZjBQcfKppYLhzZ0zNbUzRr0BBC/EdXFo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WzIWLpGgwyHeGVeFnznHXCZ/vyGVsUiYPp8eH0NUJvrcs3gHKlpaxim6BmljIjKEaFybvEzbO7VXgA2piRitVZQ5bQHbMYxYobreZRdZLbEkqtT7QgsOMeipZMpJ/iRZmG14rB/6ycdzgMdL77nqIund7tU2yjjkEwNRbvFdGSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vivier.eu; spf=pass smtp.mailfrom=vivier.eu; arc=none smtp.client-ip=212.227.126.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=vivier.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivier.eu
+Received: from [192.168.100.1] ([82.64.211.94]) by mrelayeu.kundenserver.de
+ (mreue010 [213.165.67.103]) with ESMTPSA (Nemesis) id
+ 1N3KgE-1uqnSn2Duk-00si6p; Mon, 16 Jun 2025 08:33:03 +0200
+Message-ID: <479479a8-a315-4687-af2b-4fc0efed7a6b@vivier.eu>
+Date: Mon, 16 Jun 2025 08:33:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Eero Tamminen <oak@helsinkinet.fi>, Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@linux-m68k.org>,
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>,
+ linux-m68k <linux-m68k@vger.kernel.org>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+ <CAMuHMdXNF5OCjdK7+AHWTCqSEDa-n-dYdESVVSP5Jn9UqA6feA@mail.gmail.com>
+ <d1d407e4df2b3558efd5769de746645823e73513.camel@physik.fu-berlin.de>
+ <758f14d8-6d03-2aab-468b-170b0bbb7d2a@linux-m68k.org>
+ <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+ <CAMuHMdUACa7Z-BV077H+G0Hd=mTBqLw7VdshbYCixeVtsuHYeg@mail.gmail.com>
+ <6e6f8e27ff90ce3f8535fc4f5c57049c59a9b227.camel@physik.fu-berlin.de>
+ <CAMuHMdWFb2kBpEBV3PQuwyCoCDBsANZobTSccrEog7j_dcBF2Q@mail.gmail.com>
+ <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de>
+ <CAMuHMdVFrrtMkn1LSV0t0Yxed1uiyjmovu=P9jfz8jWJViNNHQ@mail.gmail.com>
+ <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de>
+ <569d73fb-8ad5-46f0-bf4c-568919f319e7@helsinkinet.fi>
+ <b2f74ffcd4c4a8aef248c21cd6deafcb92d86d37.camel@physik.fu-berlin.de>
+ <022ab204-7be9-4f6a-a92f-2601fae1f146@vivier.eu>
+ <5d8619dfe4134319b558684209f2b89c5c1447cf.camel@physik.fu-berlin.de>
+Content-Language: en-US, fr-FR
+From: Laurent Vivier <laurent@vivier.eu>
+In-Reply-To: <5d8619dfe4134319b558684209f2b89c5c1447cf.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:FcKSeb+bpsa2TFxyUUm21fDiHLuCOVY++DFHhcy/JQUosTcvsKS
+ pPGX4eVgi25FCCLqLgyuEpoNTChKqQ4Xu9lGEkxVTp4TsWwOb3+J7sBv8mSJAMNo8xnViwE
+ 3C8iphd97WN3YtF4dLVUX6R8MvBofuGZkWbXxuTvm/kBPizJsr0BJ1qpqy2RCBXsgIuFOpM
+ rAx9qtH6Jo82JS3k36F3g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:vtZDVJ+dUds=;iBTRnBtsBQo3kdNgibrdq7YfoJZ
+ EA52oWaL+k7otQcdtPT3ulP6iCdjJZR0EY/KZTJ44wYstpG6ocdXmKCusBQZ2Vscgq1rhVmel
+ FWTSLkflfrx56ge1+P86xzy08GCSp+a1hc61dEVQLbCjI8BaRaLDMAqhfM1lcqdAD3c3YOKtI
+ 1eQ9oR34taMi4CaWaHshyqaR6lGs10qgf/5DoZ3Ve3AdONq1HdgAZCT5Jsi8RYUjf2tYb88Uh
+ iDnkvSTV5yUeX9341r99mY/eAgCCsx6lDPyI4GstsgX5caYZ52cAevoAyaj2fPGAAK33qfR98
+ bxuQEJFs3SSiYEqfWUB/nl3kVQxwukLAeXv0N2WISTMTWU6Z4fYM24QgCgQwANeNBktbX6PKr
+ ruRMTT30T8q9U2Lg0kHw16toq02Y5D2W3ElMurMkLBcvbKavvx9LilmAJVwWfiHd+Qm9/WnHI
+ oBO3bMQQleGoKZUanIKG3qBWnX7snzA+OwmNP7p5w9JGGJygXvSWFbDtzz5se99s3WJBMaBB1
+ swUEV0nxjETJvNEpcjVniXh0nz6Q+QlcgReGoBpwHaEdUpaoxdx7ICDGCDGmvY4YIUbvf+hOa
+ XOdU+S46mP2oo/HMw3XV+dvsLh9W5UuoDaH4pOOy0ANGjTrRfS+N+0rfFZPxfQk4kkd7MVF/o
+ dBwL/yz9G/NfiF1XqeaVEogLd2tIR5v8d+tb/yTRwx5aSqBtaVKGvpUyh66G6MoZMGjCuidJt
+ 7Uib6G0UbicImywPyPZTJcSzdmf6bJM/oOm9G41m1yOS4bV0Og8bGMtb6U2tMbsTyqYfSlS+Y
+ BqQADnjaxmbCPO6ZFTByR6Q9ss5G+SVc5P5MTuGDFwNxFkxmFHmbq+xvMO4rIQVlXnVTm3l0k
+ 9SlPsuy4JFZnKM/euhNKG5OtnF77chNYXRNGaZGOfiXj3D7cRuNpo0LhTtdMae29Hq3yaWyxv
+ sSFE7memOHnZoC++ZDSilIsjWmADaoyX8Kk99lOrqwIsSD0W0Ax3+HFi80TbegqMHr1R1pJOi
+ o5AB8wmzdIYLhtkV9tzbdZzmiZEVbid6MgSlbyE5rtiOqpiCy2v86ZETlz3Ye6uiWYViufGkL
+ w0E95yQVAgw2Befw7uojuHL0MoeZSWg3xQ46wUPQ+hzAyG1aHnrVSJs/nPwcCI95nRtSnWVeV
+ tc9CfFV87spefdJN5EmSTIaRMbVW4qyPiDaAL4ej03B/5r0h9mBPOJwBkN+CPnXTwNYgaVIkN
+ +rvOO1Kzkm44u+vRgmSgGrrSk9g5wSiSSbhz+hHkdBPSUOvGYh8gXEdoAuGH5KK4MBl5PSjvj
+ SSRKWKkYNaCxW4mV1qej+FyWFO7TbCuS54KDwUUsux9UCkeRspqxmGi6XYCchWlIVvWZNFZZM
+ /aznvBny+J/2NGdLL1TZtTtnA2JlOF7izn9nySALVlG5/jzIJ1e9iPRZAo
 
 
-On Wed, 16 Apr 2025, Daniel Palmer wrote:
 
-> Allow the experimental dead code elimination config to be enabled.
+Le 14/06/2025 à 09:21, John Paul Adrian Glaubitz a écrit :
+> On Fri, 2025-06-13 at 17:24 +0200, Laurent Vivier wrote:
+>> A stupid question: is this possible to remove from debian the packets
+>> that are broken?
+>> (I'm sorry if you already answered to this question).
 > 
-> For my 68000 nommu config this frees up a few hundred K of memory
-> so seems worth while.
-> 
-> Boot and build tested on nommu and mmu enabled configs.
-> 
-> Before:
-> Memory: 5388K/8192K available (1986K kernel code, 114K rwdata,
-> 244K rodata, 92K init, 41K bss, 2624K reserved, 0K cma-reserved)
-> 
-> After
-> Memory: 5684K/8192K available (1714K kernel code, 112K rwdata,
-> 228K rodata, 92K init, 37K bss, 2328K reserved, 0K cma-reserved)
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> Sure, we can remove Python on m68k. But whether it will still be useful
+> after that remains a different question. I would argue we should rather
+> totally drop the port then because Linux without Python doesn't really
+> work these days.
 
-With gcc-13.3, enabling DCE here recovered 0.5 MB of memory. Very nice! I 
-saw no regressions in basic functionality. I tested on Aranym, Qemu and 
-Quadra 605, including module load & unload.
+You can see the fix for python has been merged 5 days ago...
 
-Tested-by: Finn Thain <fthain@linux-m68k.org>
+>> Because I'm afraid that changing the ABI could cause more problems than
+>> it solves.
+> 
+> For what exact reason? NetBSD/m68k runs with 4 bytes alignment.
+> Why shouldn't this work for Linux?
 
-> ---
->  arch/m68k/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+The problem is not the 4 byte alignment but changing the ABI.
+
+You will create the exact same problem you want to fix: we can guess 
+some softwares are built on linux/m68k with 2byte alignment in mind. So 
+once the ABI is changed, you'll have to track them to fix them.
+
 > 
-> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-> index eb5bb6d36899..11835eb59d94 100644
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -32,6 +32,7 @@ config M68K
->  	select HAVE_ASM_MODVERSIONS
->  	select HAVE_DEBUG_BUGVERBOSE
->  	select HAVE_EFFICIENT_UNALIGNED_ACCESS if !CPU_HAS_NO_UNALIGNED
-> +	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
->  	select HAVE_MOD_ARCH_SPECIFIC
->  	select HAVE_UID16
->  	select MMU_GATHER_NO_RANGE if MMU
-> 
+> And I have bootstrapped Debian/m68k using rebootstrap with 4 bytes alignment
+> without any problems. If you think there are problems with 4 bytes alignment,
+> I would like to see them reported.
+
+Adrian, I respect all the work you do for debian ports and particularly 
+on m68k, but I want to point out that this ABI change can generate more 
+problems than it solves.
+
+Thanks,
+Laurent
