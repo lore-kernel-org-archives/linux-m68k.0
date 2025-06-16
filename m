@@ -1,36 +1,36 @@
-Received: from outbound.pv.icloud.com (p-west1-cluster1-host8-snip4-4.eps.apple.com [57.103.64.37])
+Received: from outbound.pv.icloud.com (p-west1-cluster4-host2-snip4-4.eps.apple.com [57.103.65.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FC38488
-	for <linux-m68k@vger.kernel.org>; Mon, 16 Jun 2025 14:43:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.64.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB161EF09D
+	for <linux-m68k@vger.kernel.org>; Mon, 16 Jun 2025 14:44:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.65.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750084999; cv=none; b=DcPk4rw75bl1RlCiTa/BYKjlfmZR0t+ZXvXvnRNFfjWRZgi465tSZ3tpm+I8MFC+GbwxyCPGhCRGpmJGq5Ii1RJ/WkUH2LdkQFWyLGoPmt+LHLdQdqlu37/GTwibMS9pOWmvgpabpNzx6yQEG5RgNunTeCZ+8JLgtgZRUPSb9H4=
+	t=1750085094; cv=none; b=U+EZUCOG6I2ofT0NNOyisvymfWGiRtbkmr9je2KF4x6V0m+zJTR6on6MbRhcNFdJFwBZ+CCB2BMUJZKya+/fK5N7iP3E169HNfzAkSNegQNHmoZRPTYML8sNyVvXJeHYNfH39c44GzfM4rydsUADHKE1h8pE1e9Kh2/z3XGce28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750084999; c=relaxed/simple;
-	bh=ChNtRMXJyLZF5aYZEAB3JWng2PijwuxzBM4+8SANodI=;
+	s=arc-20240116; t=1750085094; c=relaxed/simple;
+	bh=Y1QcR0zTVc3YooCrGbN5b5vSiWQuBZrNjTW8GqvOoFg=;
 	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=bhdBxToOcvg4h8+RFZMCNQKqkTjiqhCmrF3WyPmERLe7E0ZExGCS7P+Cf0/m6B+Y10rgAkdZWFUwrtuseovo0jpXtUZFIIbY0CBX8D1rGUVIUduMxxd6hoqtc7U+ihgRJSpBoWYQpSBKKDaB4MnJKQq4CeUvXQZ8cxHuItp6wTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=rk76NvTJ; arc=none smtp.client-ip=57.103.64.37
+	 Message-Id:References:To; b=QC5bB1Fc47nwQai8K7d4FZBDw5StzZvoimgIaOWDJ0lGK3VItGF1ssXIfnx+1enBk69vJEgMnGm1hkgD4vT94Zi6SGBSjahKCyQWlGfimRW+QPTOjcaNijRp9NMbOCGtb4V+0it//Evb2FyWqAzUx4EuBFyQhtyw1KJJeND9mxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=qsXhf6w2; arc=none smtp.client-ip=57.103.65.145
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="rk76NvTJ"
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="qsXhf6w2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-	bh=1Jjc4dt9QrEt90/ccQzE9ASUCxaa9YGrSXVfcUCfdRI=;
+	bh=Y1QcR0zTVc3YooCrGbN5b5vSiWQuBZrNjTW8GqvOoFg=;
 	h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To:x-icloud-hme;
-	b=rk76NvTJEjQC24MvfR1dcsrL5sotHd2Cj4ZMgWG+zwtRWLmJ8POlCwu3Uk3U5y8ng
-	 tx7icMv/+LsSQe8uYlV/RbIN8Rykzj/HEoA2ELCmqsN4Y90zNZL5mGn/ULAjwxHUN/
-	 XPT8jdJx8rOc26HwKc6aok17ur8x0hRUItlTEcvTzzleru8r41XXt0P60G3LIyH7o3
-	 UKiMDzTDy7kcK0xs+bScdzt3Ww7AoAkMORISEDwNClsMWnZk9o80mTSJjSpC3Qe089
-	 P056i/7Rai8eKGJ60fS4iCYqA70oYAM5dG27EbEwNhzKTibUWvz0U7I62lf6xK7dt3
-	 rq0IRkpDNLcyw==
+	b=qsXhf6w2urXoRJi4hFioWoXAxEHffRhMqB5NyIFkkVYjNhpF2RiokhpCmMiwJJ8cV
+	 2taHk0LGSX5xJuVRULrge5apy178Snb05mmj5lqOrswtuZiqpB0G7oBGIHsitByIYY
+	 ZrO+UyIUf1fXxNz70yX7qRtpLIOSilLa+vgW6ACtY1PhTFr+BrTlmNDCNF5BeBEJG7
+	 WJTMgK1bkD2FTGydgGCjarZhElisw2pLq0UvxTJW+nP4OmLROuuluANdaNXq3K6Imw
+	 EUuAEiSxxTCC5EZ3hoJhjOny84EUeAxWALA8eLKBEdBYN8RX40eWEi9cja2e+coDPf
+	 FvlhABzmMudXw==
 Received: from outbound.pv.icloud.com (unknown [127.0.0.2])
-	by outbound.pv.icloud.com (Postfix) with ESMTPS id 69027C0009A;
-	Mon, 16 Jun 2025 14:43:14 +0000 (UTC)
+	by outbound.pv.icloud.com (Postfix) with ESMTPS id 12460C0009D;
+	Mon, 16 Jun 2025 14:44:49 +0000 (UTC)
 Received: from smtpclient.apple (asmtp-me-k8s.p98.prod.me.com [17.56.9.34])
-	by outbound.pv.icloud.com (Postfix) with ESMTPSA id 75261C00092;
-	Mon, 16 Jun 2025 14:43:13 +0000 (UTC)
+	by outbound.pv.icloud.com (Postfix) with ESMTPSA id 41242C00092;
+	Mon, 16 Jun 2025 14:44:49 +0000 (UTC)
 Content-Type: text/plain;
 	charset=utf-8
 Precedence: bulk
@@ -41,14 +41,15 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.500.181.1.5\))
 Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
 From: Jason Thorpe <thorpej@me.com>
-In-Reply-To: <7a80e6f1-1ac8-4082-b37f-f577ca0bdd5d@vivier.eu>
-Date: Mon, 16 Jun 2025 07:43:02 -0700
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+In-Reply-To: <f869d1238c15875a29f4cdf7569c176ba81fd6c4.camel@physik.fu-berlin.de>
+Date: Mon, 16 Jun 2025 07:44:38 -0700
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Laurent Vivier <laurent@vivier.eu>,
  port-m68k <port-m68k@netbsd.org>,
  debian-68k <debian-68k@lists.debian.org>,
  linux-m68k <linux-m68k@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <758E94EA-113D-4FB4-B5EF-1203FB67F520@me.com>
+Message-Id: <84AEB275-E34D-4D39-AC14-CC6853F4DBA5@me.com>
 References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
  <CAMuHMdWFb2kBpEBV3PQuwyCoCDBsANZobTSccrEog7j_dcBF2Q@mail.gmail.com>
  <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de>
@@ -65,35 +66,31 @@ References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
  <1960b583-2100-468e-8e1e-face3f7f10d6@vivier.eu>
  <5d8b1560fb29bec6d56ff6d8aafb4931a7079b63.camel@physik.fu-berlin.de>
  <7a80e6f1-1ac8-4082-b37f-f577ca0bdd5d@vivier.eu>
-To: Laurent Vivier <laurent@vivier.eu>
+ <CAMuHMdUH3zfrxSV9UqxnG1dEnHA_SmeYVsmKzV3kzYq6TLnucg@mail.gmail.com>
+ <f869d1238c15875a29f4cdf7569c176ba81fd6c4.camel@physik.fu-berlin.de>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 X-Mailer: Apple Mail (2.3826.500.181.1.5)
-X-Proofpoint-GUID: ccwSq1fN8i4Ku0TtKznjqoapmYdoCee_
-X-Proofpoint-ORIG-GUID: ccwSq1fN8i4Ku0TtKznjqoapmYdoCee_
+X-Proofpoint-ORIG-GUID: voqip1WuOSIGslOQEz6Wj3jv9PEdgsRy
+X-Proofpoint-GUID: voqip1WuOSIGslOQEz6Wj3jv9PEdgsRy
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
  definitions=2025-06-16_07,2025-06-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 mlxscore=0
- spamscore=0 bulkscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.22.0-2503310001 definitions=main-2506160091
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
+ spamscore=0 mlxlogscore=578 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.22.0-2503310001 definitions=main-2506160093
 
 
-> On Jun 16, 2025, at 2:10=E2=80=AFAM, Laurent Vivier =
-<laurent@vivier.eu> wrote:
+
+> On Jun 16, 2025, at 4:01=E2=80=AFAM, John Paul Adrian Glaubitz =
+<glaubitz@physik.fu-berlin.de> wrote:
 >=20
-> I think you need to change the ABI type in the ELF header:
-> https://fr.wikipedia.org/wiki/Executable_and_Linkable_Format
+> Strictly speaking, a value of 0x00 indicates SysV ABI [1].
+>=20
+> But maybe we could use 0x03 for Linux/m68k with 4 bytes alignment.
 
-4-byte alignment binaries should have ELFOSABI_SYSV (0) (since that ABI =
-spec is where the 4 byte alignment comes from).  If Linux/m68k is =
-already using that, then those binaries are broken by definition.
-
-Let=E2=80=99s hope existing Linux/m68k binaries are using ELFOSABI_LINUX =
-/ ELFOSABI_GNU (3) (sorry, I don=E2=80=99t have any handy to check).
-
-If the existing binaries correctly label themselves has having the =
-Linux-specific ABI, then this is trivial and there=E2=80=99s no reason =
-to use a note to differentiate them.
+I mean, that would be wrong, but if you=E2=80=99ve been pained into a =
+corner...
 
 -- thorpej
 
