@@ -1,88 +1,116 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B52194098
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Jun 2025 01:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02592F22
+	for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 07:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750125513; cv=none; b=bbwOx5/VljOzk0iO5fifV01qiA60T4ETVZfUbI2H7qb9XedLKKvGH2Li87oOD2wCKqxY10ogsnmxIbcdLU6FLCU0RCT0OYRespL1MAQ7IdxRhQ7iQo8aeoMuBDgVM3aLqoIisTG3B3o/2SBCNtaHuzXDYybbGpQaV3VwPHt7WVw=
+	t=1750143753; cv=none; b=JK5DVXiMO8NZ062te4RsMWtbAcMHTb7IVIs/GYPkbQBvHBuLwWEuvbHTSLRf0uS0DB4uFE7dUFCkVTrey7Nm+A4H92A/D6O08thiBW/ZPGpAU4j+DUobf8Rc+is550F/gdadMRi+irCNPN3dZXCK9yKUwOQMfKdbz5Eg5+e5bXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750125513; c=relaxed/simple;
-	bh=b9B5iZZh1RRMXRDdv5OkTIpxM4z1zzE2Qs6RJLP+c4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=OaePc32v8Hut0g8aaopi9HwP4NMZm3se1x9+gdbwOe7ql0jMVaxkGjcYwWkBHtzVbnVz2zQ8GYi+9qvOzZK/AVc842XS0MtgVuEystbeLXxIJmNylb7lSkm2xpYQb++ZCSNiRxzLAfO/+HxRYT3afQAdfAtJ/NrMSUoJg0NAiBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BYrvflk2; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BYrvflk2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1750125512; x=1781661512;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=b9B5iZZh1RRMXRDdv5OkTIpxM4z1zzE2Qs6RJLP+c4c=;
-  b=BYrvflk2Kd7tHOIcnZJoPenEBTo7AzXVQo6rnz9/YD7AKzh277+dWXNR
-   7uboF8SnlfzG2txxE5WaM9cD+LBAVXRN1Rz55y9qbfIVQEKLxabE+SHTE
-   WpEdffHxmaULYa3+mfhx89ABoMW900C6F2JTMHlrwYAF8P5NYylhQy92e
-   icJMMGqx/AHa2AEI/DSj+BUMXHs3NeFj1t3iJZvXgAQUMuLzpDaRjj3zQ
-   qsVj/DEgGtH38jYP08f4EFlJ7X/z6fsZ4ZEG1ihl84AmRecBcYdcxZUWP
-   SQGpkpDjE+a2Dq7vPAsNebR7OwLnEX7HZO+LngeHWfJuK2rQX+5emPn8b
-   Q==;
-X-CSE-ConnectionGUID: dpVYaYpyTmCSOjGwJ6n/Kw==
-X-CSE-MsgGUID: MA2crxzKS5iHM1hJJG/9cQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11465"; a="63635665"
-X-IronPort-AV: E=Sophos;i="6.16,242,1744095600"; 
-   d="scan'208";a="63635665"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2025 18:58:30 -0700
-X-CSE-ConnectionGUID: 75E4KUTHTZqXwE8gW4YMHQ==
-X-CSE-MsgGUID: DCvwaia8Smuz46hEP5MwTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,242,1744095600"; 
-   d="scan'208";a="152479046"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 16 Jun 2025 18:58:28 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uRLak-000FVK-0n;
-	Tue, 17 Jun 2025 01:58:26 +0000
-Date: Tue, 17 Jun 2025 09:58:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Paul Gazzillo <paul@pgazz.com>,
-	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-	oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:dt 11/14] kismet: WARNING: unmet direct dependencies
- detected for OF_EARLY_FLATTREE when selected by BUILTIN_DTB
-Message-ID: <202506170917.2r2wGfhC-lkp@intel.com>
+	s=arc-20240116; t=1750143753; c=relaxed/simple;
+	bh=Tm9kDsFIvUxTYk5/GKIChfKwFGYUgIyZxjjk73Yhi7Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f5pPm7iR5AHE2cGKx3B/0fPPC3MHIEqH0gCG17ITSzeBme/BiYkgx+srPLX3lZZJVegSUDA4OzMgL6f3WnUwq74U2bc0NXN6Q9gJrt+f3v7Vflu80J2h47lOhL3dP2qoKg9Idl7vA7bouHLaz2ezfprUyOLRpfASiaIjWZTKNP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-4e8088896b7so1950062137.1
+        for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 00:02:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750143749; x=1750748549;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9KYnDHl/VbhqSpaVxNhMYw/zXz0a4qAxZjeYwz7XVVU=;
+        b=ZeW6bS3KX+H59tLip//0UG4jylZ6Eigp36BOJuVKWe3AtW+tj0J/41WNU5Us7w8vKZ
+         JNdc8itHVQg1CJKD+GjrzB6P2ODnkCOvsiNnRdprTh7yGQN5qGWLuRi2k+tpfjskFbDv
+         wX7HL6aE9QnWn5zsA1RYZumcQ4SbM9n+j1Bkuil92jZM1B11yvYt2W90pUk3u8Jq9XLF
+         cbG7JhoWH4+CRb0fE+RxgDgRStTqQg4YDwf3+RfMOKW0GNNWLU1PUL7c/IsRYElNLK8e
+         hg+GZS5sSe/KLFPEs+jShpA7w4/actXiIroRjXUu0xGntO7Az1ehGFtbWf1wefld+H42
+         Fpzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVe9f8fTHTvu/RVt8RJKAt3CpnOU45OVnrskNmuJgAcM+7+jmScfUVT8dlLl9Wc8XdU5Bf2AUmZ3vfE@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7kSQ2t9U+fuB6LqRazQiPIs7lhqSbKyeCz2YliwpqbErb8RSj
+	3WgPdEAOd40MPbIs5RUpIGoFVZV6xVNC6buq0z6k+rSXNj44RKMBAXIW+wP+78+g
+X-Gm-Gg: ASbGncvY/CMebo4MFU8A+324h7z7/+gCv52WM1pufVv2YZktFFmor5W7DhOK3+ar1sF
+	QFjm+IIqPuT0oY5679hBKOG2clQQNz5f/UoS93PN3I8q8bQHxT2elQ7tU2PZVhFCUUbC7gI4CnD
+	zR0kAz6VWQ3fshC8rkjA9fE4kgxCCrhmulplUuFZo8VChLC3PaMCGVp8xmfgI4WtNblCCfr+Za1
+	Zw1cgpLVl9TsQDHZ2cwgRPWalMkJ4DqyRYs7HNZ77ftnsipd8LghM8Qx2UVNmQm7bZ9Yq79fbHf
+	e44ZJLKQDLpobv+Tg6DDOAqrXBI4y9db0WgISlAxdASA1vX94i11zF9p06xtNBYnozTwvfZ6hJY
+	RpKBaZQN6m8aRc3yX2QxvuC6p
+X-Google-Smtp-Source: AGHT+IFlhp6AlldVt1hcciSBr5XPZvlpi88caQqRs80wjKrBdUw9jp7a7TQkY7feDp70vNDatA7gDw==
+X-Received: by 2002:a05:6102:161f:b0:4e7:df03:ea26 with SMTP id ada2fe7eead31-4e977acc13amr637686137.9.1750143749202;
+        Tue, 17 Jun 2025 00:02:29 -0700 (PDT)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4e7e7097e5esm1561730137.15.2025.06.17.00.02.28
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Jun 2025 00:02:28 -0700 (PDT)
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-86d587dbc15so3578825241.1
+        for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 00:02:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWkFxYci5qh2yexwbK+DXmC7K4FaxwLlvCxYrG85qCSN8E0KqYyTJUEo1rUQ6A1/Opa+LFgHstV2j+J@vger.kernel.org
+X-Received: by 2002:a05:6122:3bc4:b0:531:3a03:1122 with SMTP id
+ 71dfb90a1353d-53180baee1emr679720e0c.2.1750143748509; Tue, 17 Jun 2025
+ 00:02:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
+ <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
+ <8734d1kofn.fsf@oldenburg.str.redhat.com> <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
+ <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org> <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>
+ <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com>
+ <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
+ <8cc5d290-ced1-cbe8-66c5-23977869f22a@linux-m68k.org> <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
+In-Reply-To: <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 17 Jun 2025 09:02:16 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUznJ3Zm9JnhLG4MmEO1WODL0bddwN4rvO-eTdVUDzFjQ@mail.gmail.com>
+X-Gm-Features: AX0GCFukjyDdasSMjYiJfqVkmke0GGQOxR381YkKn1TFaYtubIvpvdA8AjkfbLU
+Message-ID: <CAMuHMdUznJ3Zm9JnhLG4MmEO1WODL0bddwN4rvO-eTdVUDzFjQ@mail.gmail.com>
+Subject: Re: Tuple and changes for m68k with -malign-int
+To: John Klos <john@klos.com>
+Cc: debian-68k@lists.debian.org, linux-m68k <linux-m68k@vger.kernel.org>, 
+	Libc-help <libc-help@sourceware.org>
+Content-Type: text/plain; charset="UTF-8"
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
-head:   c0b8c6b8045a76e54fd4593f5fb10d664cfdd567
-commit: c19a59419df8d5af5c8ca7c54c94143e3584a04d [11/14] m68k: implement a builtin devicetree for nonmmu
-config: m68k-kismet-CONFIG_OF_EARLY_FLATTREE-CONFIG_BUILTIN_DTB-0-0 (https://download.01.org/0day-ci/archive/20250617/202506170917.2r2wGfhC-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20250617/202506170917.2r2wGfhC-lkp@intel.com/reproduce)
+Hi John,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506170917.2r2wGfhC-lkp@intel.com/
+On Wed, 21 May 2025 at 04:15, John Klos <john@klos.com> wrote:
+> Should Linux maintain a 32 bit platform that has alignment issues because
+> programmers make bad assumptions?
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for OF_EARLY_FLATTREE when selected by BUILTIN_DTB
-   WARNING: unmet direct dependencies detected for OF_EARLY_FLATTREE
-     Depends on [n]: OF [=n]
-     Selected by [y]:
-     - BUILTIN_DTB [=y]
+Linux (the kernel) does maintain it, and bug fixes are backported
+to stable trees.  The upstream kernel (outside the arch/m68k dir)
+has no problem fixing whatever alignment issues that pop up.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Your argument is that ABI breakage is death, and that projects and the
+> world are better when we tell people to fix their broken code.
+
+"we don't break user space" is the #1 rule in the kernel[1].
+
+> I agree that ABI breakage is a huge hurdle. At the same time, the ABI will
+> change to fix 32 bit time. Is there any good reason to NOT switch to 32
+> bit alignment at the same time the time changes are made? I can't think of
+> any reason.
+>
+> So can we all agree that there's no reason to not change alignment when
+> the time changes are done?
+
+According to Andeas, here is no change to be made for 64-bit time_t[2].
+
+[1] https://lore.kernel.org/all/CAHk-=wg-6jYZ=bJWdyBR=n8QOfwHTZZdzSUUPgFW+NGCV-pe2g@mail.gmail.com
+[2] https://lore.kernel.org/all/87plff8p9w.fsf@igel.home
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
