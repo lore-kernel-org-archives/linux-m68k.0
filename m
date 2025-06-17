@@ -1,127 +1,112 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6E4CA6F
-	for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 07:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1589F28D8EF
+	for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 07:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750145117; cv=none; b=PjVaYISAbgs9nsp5OFwh2IBePGx8q3+5BDk16fGwZby1dSTN3mbfUQs1Jp4lzvJQn0YO/fTanzAgJ3oOxLfnzZJGY+WnfuE6TckqJEeSNTG90AIjsc7W1lIpxq5M9Ni7lcHGAb/ZrMba48o6zoZzyq+7aY3e+wvcTfDOtQ+3QKE=
+	t=1750146063; cv=none; b=m9NOQUaORNiYPunOURFUUZkvA1YKxSIN+l7JqhBmFNKtzirfE22imENwUnyGeGs8QD+Ez0fQXmSCS/Wp47WV6Bxt0IrdztAGh66UAcjUfh/8kAzgdcpbln51MP7C8xI94K3xJCpOXh4OCXRoVz/64zWtkcFa5I1yVAQOlSqbAtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750145117; c=relaxed/simple;
-	bh=rTgIq/E4CO57I7/jhJR5DicH2mwtvau7CWIvUOdgkX8=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VJnmccd5KRI2DYIc1/+wR8vxxRUXKeSIM2ONJPdQ3pxkqT4oTvF+0IHxhSpqNdVc6S1KfQhkFRklkAxfuOsP994O1wLmurQKskdNbUQl103MbtmIte9yswkvojLwisP4PwhNT/ZLBXRzOVLB4FYq9lSJK1WDwKIYa8EjW3+q8PE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=hEEzrgdV; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="hEEzrgdV"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=dzbMa9sG/WrS5VkC/OU1IFRoEA7kgyV0cVYYexzxHso=; t=1750145113; x=1750749913; 
-	b=hEEzrgdVQyXRB61BAB41oONVwQojl8uT2zNZV7890aWDVsk+yotW+CuKxiWH0Fzg4LDvDkEJ2hF
-	wLpdkiI0b7TMoesjdIeM4BZyxSmqwNNc/96vUjjDF3GRdIVLHBJz4mV8sCx/Klcij3+WUEN5cmhCl
-	TDKdV+K7+CqVc0Vu5N1W5l9H9TujlN0Dji85/Km0DufVlG5fJa1J+TRN7HANp1biTWVr8eoGO+YZW
-	48p3/Ujh4tU6qu/04IosQVOBjELPdtCmD0AqvsnZHP+TDjvumWk0qEjAF1OqVs5IAbcdSKJnq9bad
-	kbSDKUo95HcHscU25K2dm99Iq16k5wMZEqyQ==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uRQgw-00000001aTR-3i1S; Tue, 17 Jun 2025 09:25:10 +0200
-Received: from p57bd96d0.dip0.t-ipconnect.de ([87.189.150.208] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uRQgw-00000003oCF-2gra; Tue, 17 Jun 2025 09:25:10 +0200
-Message-ID: <bf1e84c20996f003645a182d46535758fea10b74.camel@physik.fu-berlin.de>
-Subject: Re: Tuple and changes for m68k with -malign-int
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, John Klos <john@klos.com>
-Cc: debian-68k@lists.debian.org, linux-m68k <linux-m68k@vger.kernel.org>, 
- Libc-help <libc-help@sourceware.org>
-Date: Tue, 17 Jun 2025 09:25:09 +0200
-In-Reply-To: <CAMuHMdUznJ3Zm9JnhLG4MmEO1WODL0bddwN4rvO-eTdVUDzFjQ@mail.gmail.com>
-References: 
-	<e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
-	 <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
-	 <8734d1kofn.fsf@oldenburg.str.redhat.com>
-	 <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
-	 <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org>
-	 <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>
-	 <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com>
-	 <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
-	 <8cc5d290-ced1-cbe8-66c5-23977869f22a@linux-m68k.org>
-	 <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
-	 <CAMuHMdUznJ3Zm9JnhLG4MmEO1WODL0bddwN4rvO-eTdVUDzFjQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	s=arc-20240116; t=1750146063; c=relaxed/simple;
+	bh=OvIxcnTipst2qgXtF4AZh5QCjqFxVN2WoluyA1CNgjw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZIWtnQnFURrCnEo82C1RKP2THXZeQvnlZ1lSAKL7v5uSzHCHPCGsv0hlcX8k5d9zm7UVbQw8ertTCJ1Hsk4QacRqriHHufO3yQnjf/jHrCoy+RL3+h+w3thdMdsglvckL55SqHVwNyq7/RNw10u8Y/ZrfEwqCm7JZqZzIDuTu2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-87f36c458afso1133031241.1
+        for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 00:41:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750146058; x=1750750858;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wmyMMbgnjr3QF5O/4rDtlR9LUvWg8JU7nalUDuC/65U=;
+        b=bs+GO7tvue9yAYAvtX7SEdTa2CDEi+V3ws2Stb9jrQcBUxSDKE0SC9smJxlzY2ztZ1
+         GBU+2Yj7Iq07YXkSHQyXRGqJWMnIAnexATLNgcZ7KBmley2OXS4mwVHfDvyGmNP4lq4Z
+         z0czohPZ972oGLAQ6BZzTZPdqSU1vZMczm5zs4JPc44NmU/gl65+3Ms+0Cnb1fW6kLnh
+         xAVebW6QSr6dLkLRHqSTQ3BHKOI3c41s/SCly6Kpdx0RROWLT6SGQlYnN3yCnKI/vKUP
+         ieuFkIU+axiz46qjwz7GwvG9969f8TlPlYPtQjxpxq1hQnqtzS9BncepnCuen0Hyunk6
+         9kAA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkJMix09xinQlQXMc4ivmWTnY53L/7jQVbUWr9uGl19W5jbk8PPttBpvm3CI2D4SseOZc50YJ3ptNk@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbbuO3YxZPC5+zu62CaoNmbQgp835VDSnoy3Pz/5Xd+b0QDUe1
+	rGf5SPr+d09/PE8ILbKSJy00DbnD7uNJ1HQQP6EUDcIA4OnbDz0oHxYYhaXw9LGa
+X-Gm-Gg: ASbGncu0e11G59+oAK6z8w1HhL/zlAxBFu9Q94G/g5ll29sTwR3wheqfbHBPXi0tMid
+	7qKnvqmV3KJdRd2uCRMpzRnDdEVEf7cLu1Au8WMffOA6TmTz+gkK3QuevaVNojFjgMEsAjshJmp
+	0hgBcaFa10D3ChymW+DQSrKWbn+49u1GQWWI7dGnrQtyB0f/+87oOLLi3hmwMr3KTnPZIJJU7y8
+	9yC1YM2WlvQFerpSrTPK+ILB7YrsVEdz3ExRHQTX5xWiuXS3NIp1QAIN09YkHzqKbFPky0Ati9f
+	8WXuoV/z2WA7ks6ruqp6eKtnHxKTPVMpA+Lb/PZ7x+pHt130csooVyYBGUr2fHY4DGlDIm6mT/F
+	8tTDF7Y3DnieJ4r/TE9O6Nfpq
+X-Google-Smtp-Source: AGHT+IF85hc0Qp7ixwB8Dwn9NWK27DTkdE2rbC1f0Q/rXUeaYdULCIgLf2EdwR4UUXBEeZB3NCPv0w==
+X-Received: by 2002:a05:6102:5349:b0:4e5:9b5f:a7a2 with SMTP id ada2fe7eead31-4e7f61629a4mr9031207137.9.1750146058490;
+        Tue, 17 Jun 2025 00:40:58 -0700 (PDT)
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-87f2fface76sm662453241.12.2025.06.17.00.40.57
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Jun 2025 00:40:57 -0700 (PDT)
+Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-4e80ef8df69so1766207137.3
+        for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 00:40:57 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWmgUAzYoD5Zrndy4TWoRcPo/oaFnCKBrVRSTbOVl37Xi0FehpHV0eQtzvBrMRTitz1fUlLA65h9bWx@vger.kernel.org
+X-Received: by 2002:a05:6102:2b8e:b0:4e2:8b49:9f96 with SMTP id
+ ada2fe7eead31-4e7f6160f1fmr7302403137.6.1750146057586; Tue, 17 Jun 2025
+ 00:40:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+References: <e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
+ <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
+ <8734d1kofn.fsf@oldenburg.str.redhat.com> <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
+ <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org> <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>
+ <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com>
+ <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
+ <8cc5d290-ced1-cbe8-66c5-23977869f22a@linux-m68k.org> <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
+ <CAMuHMdUznJ3Zm9JnhLG4MmEO1WODL0bddwN4rvO-eTdVUDzFjQ@mail.gmail.com> <bf1e84c20996f003645a182d46535758fea10b74.camel@physik.fu-berlin.de>
+In-Reply-To: <bf1e84c20996f003645a182d46535758fea10b74.camel@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 17 Jun 2025 09:40:45 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV6zMWPOD_t0HoWgJDeGJardpqKgbZb9+HLCJZPsp-yCg@mail.gmail.com>
+X-Gm-Features: AX0GCFvp4eKaedMO8hEG4ETzmr2kdCHHevTIXzAzxphGJhOjmR8QefwfcBTJ3yU
+Message-ID: <CAMuHMdV6zMWPOD_t0HoWgJDeGJardpqKgbZb9+HLCJZPsp-yCg@mail.gmail.com>
+Subject: Re: Tuple and changes for m68k with -malign-int
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: John Klos <john@klos.com>, debian-68k@lists.debian.org, 
+	linux-m68k <linux-m68k@vger.kernel.org>, Libc-help <libc-help@sourceware.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Geert,
+Hi Adrian,
 
-On Tue, 2025-06-17 at 09:02 +0200, Geert Uytterhoeven wrote:
-> On Wed, 21 May 2025 at 04:15, John Klos <john@klos.com> wrote:
-> > Should Linux maintain a 32 bit platform that has alignment issues becau=
-se
-> > programmers make bad assumptions?
->=20
-> Linux (the kernel) does maintain it, and bug fixes are backported
-> to stable trees.  The upstream kernel (outside the arch/m68k dir)
-> has no problem fixing whatever alignment issues that pop up.
+On Tue, 17 Jun 2025 at 09:25, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Tue, 2025-06-17 at 09:02 +0200, Geert Uytterhoeven wrote:
+> > On Wed, 21 May 2025 at 04:15, John Klos <john@klos.com> wrote:
+> > > Should Linux maintain a 32 bit platform that has alignment issues because
+> > > programmers make bad assumptions?
+> >
+> > Linux (the kernel) does maintain it, and bug fixes are backported
+> > to stable trees.  The upstream kernel (outside the arch/m68k dir)
+> > has no problem fixing whatever alignment issues that pop up.
+>
+> This might change in the future when Rust code becomes more dominant in the kernel.
+>
+> What's going to happen when Rust code becomes mandatory in key parts of the kernel
+> and then we're unable to build it because we insisted on keeping the 2 byte ABI?
 
-This might change in the future when Rust code becomes more dominant in the=
- kernel.
+We fix Rust? ;-)
 
-What's going to happen when Rust code becomes mandatory in key parts of the=
- kernel
-and then we're unable to build it because we insisted on keeping the 2 byte=
- ABI?
+Is this a Rust issue, or an LLVM issue?
+In case of the latter, how does llvm-mos handle this?
 
-> > Your argument is that ABI breakage is death, and that projects and the
-> > world are better when we tell people to fix their broken code.
->=20
-> "we don't break user space" is the #1 rule in the kernel[1].
+Gr{oetje,eeting}s,
 
-Except when we do: https://lwn.net/Articles/605607/ ;-)
+                        Geert
 
-> > I agree that ABI breakage is a huge hurdle. At the same time, the ABI w=
-ill
-> > change to fix 32 bit time. Is there any good reason to NOT switch to 32
-> > bit alignment at the same time the time changes are made? I can't think=
- of
-> > any reason.
-> >=20
-> > So can we all agree that there's no reason to not change alignment when
-> > the time changes are done?
->=20
-> According to Andeas, here is no change to be made for 64-bit time_t[2].
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-That's not the question to ask though but rather whether the shift to 64-bi=
-t
-time_t changed the ABI and according to the analysis made at Debian, it did=
- [1].
-
-Adrian
-
-> [1] https://wiki.debian.org/ReleaseGoals/64bit-time
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
