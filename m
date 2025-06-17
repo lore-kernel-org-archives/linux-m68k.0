@@ -1,122 +1,93 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989DB2DBF7B
-	for <linux-m68k@vger.kernel.org>; Tue, 17 Jun 2025 11:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59CFE2DE21C
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Jun 2025 12:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750160272; cv=none; b=c7y21VFhQ2Vuo67ljUd3BzN3if39p9BBix0DmEdDRNhxk4nYbnOsDzLTqDvTiGv4l1bUHsPA2zPAz53GesJMYI4JSko6j9bYVxPvYynRcjzuqnqoc7CpnAx4sLJZ++APXyNqdSsJUYL7d8kOTMOmEU80P7IXSNn568OFNPt+sDw=
+	t=1750163361; cv=none; b=irsZZI9heq+6N9SNRhTmvWF8d0G7yPN7kTk/CQCH0lGZIo7V/KHblWuAubpRfIZC3mvh2cO62+b/O8+ggQwtkkw2kLexEpW4YgC/ID7GkuS0RqVyFTdRR341STH5L7nhYab0jrS5OIiSPdiwnQBRRLCxdJazeEljeYiRSCOreCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750160272; c=relaxed/simple;
-	bh=Y+zEe7kqy1YzjvfKJk39whjWD/GUim+WGO+paT1omrM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=p8NVHZgl/s3Y3DQIIzp0p3cw78XH1dgx1Df5rIoy+2t1W6D6QX1ZBPS+lRKA4WPiIodBa6mfPPssekAnBM5V6wNb8KFPRBo2hne3Bs2/AUD/JfVxd3tV4Qh5GQXe7M+XobvvLDFhZLmdaEvjjf50oT09JfSPICsfdFir11laDAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=C6kGH0aG; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="C6kGH0aG"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=P4UIt7GFKzwP18FB8ljjgS/PMhDBVZoPrNkgrPjZ9F8=; t=1750160269; x=1750765069; 
-	b=C6kGH0aGgodA/1CoNTAF/YFc+2doTohEzBbFDkjHkzJSksFDIxOgmEk+YpXvft5SaEFBT1SBTXO
-	eZQ1YBjlEPGgvwYNoFbr/QmiWFnq0VdpE5xIVjhbuDAcTMKl9YWiDp/GTRvleiQn+3cK0Fp8MI4U7
-	plLTsIxBs5BhEiNdPybKRAEmC5BlmCwZxSHlrPiGlJ83z7ztvojYzOvgTk7ny3BLAx3/vBS5e2007
-	zmQet8OV/FIOX+dVJfQByb/BRjzDV7I/EkGYjvDqYL8oq2zABxEGRmGC1uclfl2zeKR2o7cKKQc/9
-	QGP6cEUpSXnTrfxcYmt2Q+VER/PaQ8BnOTTA==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1uRUdO-00000003g7X-29xl; Tue, 17 Jun 2025 13:37:46 +0200
-Received: from p57bd96d0.dip0.t-ipconnect.de ([87.189.150.208] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1uRUdO-00000000MsV-1Y69; Tue, 17 Jun 2025 13:37:46 +0200
-Message-ID: <f0f2fe26ef68647025b5f5d99136867b11a752bc.camel@physik.fu-berlin.de>
-Subject: Re: Tuple and changes for m68k with -malign-int
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: John Klos <john@klos.com>, debian-68k@lists.debian.org, linux-m68k
-	 <linux-m68k@vger.kernel.org>, Libc-help <libc-help@sourceware.org>
-Date: Tue, 17 Jun 2025 13:37:45 +0200
-In-Reply-To: <CAMuHMdUxUSQ3uKstM96U3Taj_dyCM5siGHO8i9qAO5iVadoTqg@mail.gmail.com>
-References: 
-	<e9035006d50933fb02727fa373629cc821784f6c.camel@aura-online.co.uk>
-	 <08ce465732a0eb0dce550978c98ef822abba5f96.camel@physik.fu-berlin.de>
-	 <8734d1kofn.fsf@oldenburg.str.redhat.com>
-	 <f1f9bcd9fe3823935e747748f09bcf88cfc4d947.camel@physik.fu-berlin.de>
-	 <3388daa5-8129-e78d-d4bc-d7696cd3a30f@linux-m68k.org>
-	 <1ceb208498c53cf8db2acf746a4649f1eaea1457.camel@physik.fu-berlin.de>
-	 <CAMuHMdWMJKbd-Nfe6yWc_XE56KFmffnJ3T9AhNgUZ4=m9UGSeA@mail.gmail.com>
-	 <224e0eddab2deb8579e023e5bfc739e7151115d4.camel@physik.fu-berlin.de>
-	 <8cc5d290-ced1-cbe8-66c5-23977869f22a@linux-m68k.org>
-	 <235be957-538f-15bb-3d92-0a4e393906f5@daisy.zia.io>
-	 <CAMuHMdUznJ3Zm9JnhLG4MmEO1WODL0bddwN4rvO-eTdVUDzFjQ@mail.gmail.com>
-	 <bf1e84c20996f003645a182d46535758fea10b74.camel@physik.fu-berlin.de>
-	 <CAMuHMdV6zMWPOD_t0HoWgJDeGJardpqKgbZb9+HLCJZPsp-yCg@mail.gmail.com>
-	 <dd408059d1861b055623386e1b8aac5c5bd53e49.camel@physik.fu-berlin.de>
-	 <CAMuHMdVgqoFo132WPzAFcEG0gdxkCHA98jzek9b4Da+n_xOvwA@mail.gmail.com>
-	 <730b54f202dac75ec23d59e7c90bb1b13bd30a58.camel@physik.fu-berlin.de>
-	 <CAMuHMdUxUSQ3uKstM96U3Taj_dyCM5siGHO8i9qAO5iVadoTqg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+	s=arc-20240116; t=1750163361; c=relaxed/simple;
+	bh=1rabJWHs/troXwkLRRhetm/8+lxBBJBnQJuQDDtiXSQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JogLE2WK8PFOFg/uPNADUV+wM6RcPcdTIGolUpC+W2CAv3IrJoRYXvIQwMJKI1AYWFAr9A9RvlkfdF9HFYXwUwXe/ps4OHSuYiIlYm5i5wiE+Dck5hzFoQxjyqiLnGSDwMsKAVcn3Q6nxVSth93N0wGRAosrq56cePDKmxJzEig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-4c9cea30173so1546214137.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Jun 2025 05:29:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750163357; x=1750768157;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uly5rMibStMdldgH/XC+DdGvc/SzsbEOlkLd11yOicU=;
+        b=X9/8xzpu7d0fA9SNpwe3oKMklBgXUJ7xmzl9YXukua7mx4dWvR1hG6GP+XFczI4d2e
+         exgVAnXFqYkHzT8FEk5QPbFtraPxgImwbe3nx6ku/587F/Rl4WGZf+mmpwrzaKk9uDWc
+         IgHC0MJUXgGIE0YjVTex9Jn5bE1gbMiqykNN63HBBoEs7JOKZBJ4dZlJaoE1+Xy7vfSu
+         /Wh4Dn82QFkAmbBhvvK31064F2tEMbJU8pKu4GDf6Hnt6VsbJdhZ2XFrfhGSylthMRii
+         QXGQ0BNMPTKdG+y9I0o14T9g8wG4obGoPVmiJHZMLYEaXDnPwuO9MdLp88FEgdB0lHdd
+         +r9A==
+X-Forwarded-Encrypted: i=1; AJvYcCV2sF91KOvCrEjr+7xb0K+Omydx0N59Qy4lwEG+A0ydd5nYs39SHUgQvhz/X4VCT9ukCggAxwz4SXAu@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwopnjEQJn2JxCBRkrzjFqp8H+ca0NopJo/+CuB8idRSpB7B3mm
+	Cp9IFBf7nUZ7HZWEapCN3ez5kWU6kPRL83KQiDBmdl9xXlVbQ3KJR/OsKdgS0TKA
+X-Gm-Gg: ASbGncv7Axr59H5bM6/ay6/qq7Bz5VcQju/d3pPnH8PyW4saEHK5WsuRmTj550F5VO7
+	uNYqwaLiFPE10mv75qi9KjTbStc7NXQqxECMUmchI2B+kplAVVPvLd9XziiHK57VJLg7mgGL++n
+	Ilqn2pOIou8wOVX9fklQmtbFIRnT3NFPS95+GiItik+jLYTRWKpekvUA4mPzzAOLRkcncaQsl7j
+	aq4f1hAju0Qjyq121Fblo2PsKSRFkKcPFbUIFq9mM/kN3w3p7xQE0H7AKbb0lrZBsLrsjC3msyR
+	/VOzPMokBbvtlHgLfo/WDQD5gYuftqLrfhDEATCn1ZONJj3tFJ+lHGPSv90qkSXUzCbQsQTtBj+
+	6k7C5MPHKQjbYqMjbHzdpmRmG
+X-Google-Smtp-Source: AGHT+IHQkIWessLHtmgm7brC5fxJu9kfMNicuQVq0KlDm/gPGUapsrwvmFfduCKevi2f1SCqgkvbWQ==
+X-Received: by 2002:a05:6102:6a91:b0:4e5:59ce:471b with SMTP id ada2fe7eead31-4e7f63eacdbmr9315692137.23.1750163356579;
+        Tue, 17 Jun 2025 05:29:16 -0700 (PDT)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4e7e6e18f37sm1725123137.7.2025.06.17.05.29.16
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Jun 2025 05:29:16 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4e8135adfccso654628137.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 17 Jun 2025 05:29:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWCqf2Mm4fbGgfGLFr4I5wbotqzNxJ0x5eY5gF0T2oHsWGroovMCMA3j/rLM7V5CAa16rZXAVP8u6KC@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:6c9:b0:4e5:9867:14fb with SMTP id
+ ada2fe7eead31-4e7f63f3d52mr8675512137.24.1750163355790; Tue, 17 Jun 2025
+ 05:29:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+References: <20250611100319.186924-1-jirislaby@kernel.org> <20250611100319.186924-5-jirislaby@kernel.org>
+In-Reply-To: <20250611100319.186924-5-jirislaby@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 17 Jun 2025 14:29:04 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUDFjBwu-3+bx=MqNW_m5EdUHcfn-gROY1ZfHFahzkUgw@mail.gmail.com>
+X-Gm-Features: Ac12FXy71I420HG6FoY8xytnP_y8sbWA9TF3YO8Rg8lKJ2-nqSvV06O0TmPz6vM
+Message-ID: <CAMuHMdUDFjBwu-3+bx=MqNW_m5EdUHcfn-gROY1ZfHFahzkUgw@mail.gmail.com>
+Subject: Re: [PATCH 04/33] m68k: remove unneeded tty includes
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc: gregkh@linuxfoundation.org, linux-serial@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Joshua Thompson <funaho@jurai.org>, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 2025-06-17 at 13:21 +0200, Geert Uytterhoeven wrote:
-> > I'm not sure how this is relevant at all. What is the gross profit of t=
-he NetBSD organization?
->=20
-> IOW, you can have plenty of ABIs, if you have the manpower to create
-> and maintain them.
+On Wed, 11 Jun 2025 at 12:03, Jiri Slaby (SUSE) <jirislaby@kernel.org> wrote:
+> All these includes must have been cut & pasted. The code does not use
+> any tty or vt functionality at all.
+>
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 
-Both Debian and Gentoo want to maintain the 4 bytes alignment ABI in the lo=
-ng term.
+Since GregKH seems to be eager to pick up this series:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I don't think there is a point to continue to maintain the 2 bytes alignmen=
-t ABI.
+Gr{oetje,eeting}s,
 
-For whom would we do that?
+                        Geert
 
-> > > > > Is this a Rust issue, or an LLVM issue?
-> > > >=20
-> > > > https://github.com/M680x0/M680x0-mono-repo/issues/10
-> > >=20
-> > > So you mean it's an LLVM issue.
-> >=20
-> > It's an issue on many projects that use things like tagged pointers etc=
-.
->=20
-> I know.  If you want to tag pointers, it is your responsibility to use
-> unused bits (Hi Apple 24-bit).  When using the low bit(s) for tagging,
-> you have to make sure the objects you are pointing to are sufficiently
-> aligned. BTW, how does LLVM tag pointers to chars?
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I don't know. I'm not an expert on the LLVM codebase even though I made som=
-e
-contributions. If you know how to address this issue I'm curious to hear ab=
-out
-the fix.
-
-Adrian
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
