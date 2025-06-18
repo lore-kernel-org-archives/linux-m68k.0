@@ -1,69 +1,92 @@
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B3A2FEE31
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Jun 2025 16:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDD91B3923
+	for <linux-m68k@vger.kernel.org>; Wed, 18 Jun 2025 22:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750265794; cv=none; b=NVBcGeI14Z8SukObJldM1x8LKwuDOrikArpAE/sni+hDbZUmQXw5QaOo+6pQHzt98/SyGM74VnWj2Rg8rQSJ+ygkX7vRjkHaUDWBBuVMLrPetHIDkzt23GjAQxhfPtOwb5IEvSf0Sb99X7yooPSnXrrPxnoveEgF6N+nELf5BKM=
+	t=1750284915; cv=none; b=VL9REwtZBS+Q6y+nE+Q8292ARv/1+5TqdVSRt8rDnMXavB+dRViQfX+OcUFfWLxjSoi8Ht47ED4EBDkY24eU+Fx7wSCVRivCylIgG+vLKVu6leOkh021MNAx9gUq0lOYHrkz9MmzxMCA8+DLbYvPOsdMW7iXlAL1Nf4Cu+Jqu2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750265794; c=relaxed/simple;
-	bh=edKXmParjhRu0BhM9r3sRCPgV6sjq8X4X6plBTPVfNE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AOq/pa/4JKMLktqvfVikXGUjghHRBJKCswaNOtB0LyIGoXybHsucUQEgwm7NTqWfuZM7J9nmzlEezwMNo9139WvbqmuhLf+ORvcy/KD0jYq9+OerT9rJr5q+IqLR221xjj2frc6RDcw7hGygRW5enPWdik83byoj5spjJWW/cQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6B4wjG1; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1750284915; c=relaxed/simple;
+	bh=j8ysJ9wq05IwLDiKQYsd3kS3ZfHj5qh8bbk71v0CUDs=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=sAK92Hc+7NqzdYDOFecHHAjkxdfCBXOp2cI86vPXgwTFSqkKwiSzljSK+96B5QSXSR48d3D4OkhMD1bGqbiJnYUnlLJIO98Kniz51hnajTncBh1Tm4YDy75PsA7pcE+aRZtYCGpY29bKP51mOCwEY6tq8JzHQ9JnkRebjRmLU00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oVD+zek4; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6B4wjG1"
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-3139027b825so5209343a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Jun 2025 09:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750265792; x=1750870592; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MLNHDlj/zAzYGC80eowNg066XecWuUgwFQMmbVio33Q=;
-        b=O6B4wjG18c6o8dOGQaBun7ALs1sfNcaSnFWZihwyHBRhVplwc7XycP5puG4K0R4vJX
-         sLqKTckSgjeWFsD98JnJzONoh89ejoZw7EtvZMN0yV/G78gvR1fzqavTrJKxMqtwLA3H
-         jlGbxl+hhI6zfvXafCy7YqA/bfEl1fNOsfbRsx+pzvfxNDp1e1P9FP+7kIpsqSrifAS0
-         50fyMEUbegp5GInQVKFkbS/I1IhWzrCBCWnK1RJc/OWebe+i/V34Kg3TosZbcUZqLRDP
-         8P+eNGn7sPxyfpGo15/q9Vvm82dZV88dK/uapUaeUMiE3dJuLo6NQQW5Ng4/hWW7Ovao
-         lXfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750265792; x=1750870592;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MLNHDlj/zAzYGC80eowNg066XecWuUgwFQMmbVio33Q=;
-        b=GF/TjLkK8pDOM41WfCqckWqtEps3aCZQxLLyAM7LQWo5ODP45Y6276bM2xhzw83Hta
-         RGQ/IB8fPu5YgzK2OgLEfUqDO4CfdMqm15JUJut1J99zMddiOvWWKRgKdVgB0xaqlSvV
-         m4l2k32i0azkpWlvejlJJBxlGQiKxsMGeMXRaBK8RqMDOpJn/AAGC4DWPQNFZSFGvwq6
-         wkYfg4W1PomxBwnTor+l3YybJYGC4ZASjCrNPwzJ7RSIO7Nz/N48UKxqmb+rgyl/8hSI
-         kEwV2tu2WihUQlRHE1dEmJrv9UJ0D0VuD6RKprCGsJsI/M3JAKmlAsaHNF5uyQNeH1wh
-         oi2A==
-X-Gm-Message-State: AOJu0Yxc3aFIVMWcdvCm7OZlalveMd7TQgEf3l+Ce0sr8qYhuYDlW/Dp
-	q3hJTOmj21bNEItESlEYxPkqd2Zgo92Ctk4taffQLvS+MgbE7dM+AMfQ
-X-Gm-Gg: ASbGncsq5MHjg5fXxvujF82iZDk9unocxtpcl20kFnFpJlRtJ0y1AmxOUr7OmU6171y
-	S8h5tslRGl2g6Px5TIar6l5I0fq6YvN+l9Ze1BK6XA+z+z/DAWMNzIYE3VfYCCcW/mS3dM1IPD6
-	4EDe2BCCfndtHuAgUXLOwNXtmLUzEvad3UELSHMAR278y/81Ya9zsjfCeuDQfCmrZ81rFKCumt3
-	cl1+TWGdTCSkHjyAZ6qCgBFc7+ceuiz/v/oZnWz8VzaHMcGpfznnjvNA9Svs0UiCaY7KsBhbrj6
-	kiLWWDJhIjcLf16X7vyd/31YLfRuwlu72/NapHGSyuOGaiphbjwT/1dlD3hr+0P8Ndxjzgksepg
-	oHiBe/Pn9wDxOZm2Y+Q==
-X-Google-Smtp-Source: AGHT+IGbG5+rTgIf20wLcHyLzd/2R2UT4T7M+n2ZkFgbdZx4r8t5wgYFo1GhEYLYd0AZgdFs9EwxoQ==
-X-Received: by 2002:a17:90b:3dd0:b0:311:ff02:3fcb with SMTP id 98e67ed59e1d1-313f1dee9c6mr27723365a91.28.1750265791565;
-        Wed, 18 Jun 2025 09:56:31 -0700 (PDT)
-Received: from fedora (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3158a23d5e3sm182153a91.16.2025.06.18.09.56.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 09:56:30 -0700 (PDT)
-Date: Wed, 18 Jun 2025 09:56:28 -0700
-From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 0/4] Convert motorola to use ptdescs
-Message-ID: <aFLvvBuz8gpdJdEE@fedora>
-References: <20250611001255.527952-1-vishal.moola@gmail.com>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oVD+zek4"
+Received: from phl-compute-09.internal (phl-compute-09.phl.internal [10.202.2.49])
+	by mailfout.phl.internal (Postfix) with ESMTP id 513941380478;
+	Wed, 18 Jun 2025 18:15:11 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Wed, 18 Jun 2025 18:15:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1750284911; x=1750371311; bh=jU0nNChvTvu3e2Gg6B85IN5Vq5G+Dza8Scc
+	+XdzNX1M=; b=oVD+zek4Y0GrjvkFeSPlk+/cLOEruZJDc8KNdIbQenHBo8hKCsE
+	loQi+hDcmlbz38DGr5vYGF8+Owz++lpfUGARA00s65hjHhBOrNmdevgQAlkdOwNi
+	oL2IACWajsY/NrTISsXJRawrVo/APtPA7B8cvIcRKQg+kL6zDfdLRlWp3aVTlggt
+	pu1w+D51jRlxJGVWj5zwPVKMNFxaGbNzUe0bgVlJ1W2AblZwsT0YcxAI5yz9AN3c
+	uPBTnR+r8y4BYmM5awAvg5r3++bFUC+onhKTjRs/vtdSNmgu1P7192IEhnqDRqb/
+	kaGQXCLxQQmnTuqUJP8w1CNUVnlQ1RhceBg==
+X-ME-Sender: <xms:bjpTaC-bqOPPYmMrEQhnxrU6_X36HrP7Oh8x65mTlZ-r8C-tolqOlQ>
+    <xme:bjpTaCtpgIPQkv17cYvlbqi8g653oQKm9HQs12MTd6lg_zQ-o0TFGTX-nZj6kS9Ov
+    Ddn-Uz3gmkpKOv0OYs>
+X-ME-Received: <xmr:bjpTaIDBLZHWpUc38C6oyfjOt4gXPqaWXqANPf_a7dtheUdF93jKwp6uEFi_1eQiJTFD_3k99QPe9xB0J_JIDH7JazqbFI3m-NA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgdefkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecu
+    hfhrohhmpefhihhnnhcuvfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrd
+    horhhgqeenucggtffrrghtthgvrhhnpeffjefhjeefudfgffdujeelieejffduffevkeet
+    udeiiefhledvfeehgeehhfdufeenucffohhmrghinhepshhouhhrtggvfigrrhgvrdhorh
+    hgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhht
+    hhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepiedpmhhoug
+    gvpehsmhhtphhouhhtpdhrtghpthhtohepghhlrghusghithiisehphhihshhikhdrfhhu
+    qdgsvghrlhhinhdruggvpdhrtghpthhtohepthhhohhrphgvjhesmhgvrdgtohhmpdhrtg
+    hpthhtoheplhgruhhrvghnthesvhhivhhivghrrdgvuhdprhgtphhtthhopehpohhrthdq
+    mheikehksehnvghtsghsugdrohhrghdprhgtphhtthhopeguvggsihgrnhdqieekkheslh
+    hishhtshdruggvsghirghnrdhorhhgpdhrtghpthhtoheplhhinhhugidqmheikehksehv
+    ghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:bjpTaKfPN5O3WCTZ3hJXAQJZKDrDN-9RUeHnnSrGJM3B6Bo9N_vH_Q>
+    <xmx:bjpTaHM4i09s_UUiQTTRrkKr-wNFvYBhTuGziXY82RfsWw27xjz3Yw>
+    <xmx:bjpTaEn36DeamfVafSgnJKj1v7YR9G4yF46auGlPvKzj-f-2AB4JsA>
+    <xmx:bjpTaJtxRtQefCgz9GmhO2jd2BsTlpsuGZpAU594hXn8ZYfXJ2iAxQ>
+    <xmx:bzpTaMVQWxp6CQqNiU-UGWeGP2jB-LfuZwE9QmV52jJ6pw8oqDP_2d8D>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Jun 2025 18:15:07 -0400 (EDT)
+Date: Thu, 19 Jun 2025 08:16:01 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+cc: Jason Thorpe <thorpej@me.com>, Laurent Vivier <laurent@vivier.eu>, 
+    port-m68k <port-m68k@netbsd.org>, debian-68k <debian-68k@lists.debian.org>, 
+    linux-m68k <linux-m68k@vger.kernel.org>
+Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
+In-Reply-To: <1d14a2d7a1adc165fe77d25b1f8611beab14cf9c.camel@physik.fu-berlin.de>
+Message-ID: <3c1b218c-7513-3974-e2c8-ff9902f04b48@linux-m68k.org>
+References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de> 
+ <49a62eda6aea856df248aa223365b5230020d829.camel@physik.fu-berlin.de> 
+ <CAMuHMdVFrrtMkn1LSV0t0Yxed1uiyjmovu=P9jfz8jWJViNNHQ@mail.gmail.com> 
+ <ddef536e0645c9d7cebfd829837af653da50afaa.camel@physik.fu-berlin.de> 
+ <569d73fb-8ad5-46f0-bf4c-568919f319e7@helsinkinet.fi> 
+ <b2f74ffcd4c4a8aef248c21cd6deafcb92d86d37.camel@physik.fu-berlin.de> 
+ <022ab204-7be9-4f6a-a92f-2601fae1f146@vivier.eu> 
+ <5d8619dfe4134319b558684209f2b89c5c1447cf.camel@physik.fu-berlin.de> 
+ <479479a8-a315-4687-af2b-4fc0efed7a6b@vivier.eu> 
+ <d7c6cb263b3ac949c842ca7cf483fbc7a0e032a5.camel@physik.fu-berlin.de> 
+ <708ea8ed-c1b3-4f9a-83fe-af979bc194b1@vivier.eu> 
+ <0cf54bd607a7926414d6c9a0350fe93898a235ce.camel@physik.fu-berlin.de> 
+ <1960b583-2100-468e-8e1e-face3f7f10d6@vivier.eu> 
+ <5d8b1560fb29bec6d56ff6d8aafb4931a7079b63.camel@physik.fu-berlin.de> 
+ <7a80e6f1-1ac8-4082-b37f-f577ca0bdd5d@vivier.eu> 
+ <758E94EA-113D-4FB4-B5EF-1203FB67F520@me.com> 
+ <daeee4ff-ff27-27ef-7e6f-71ccd556f6d2@linux-m68k.org>
+ <1d14a2d7a1adc165fe77d25b1f8611beab14cf9c.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -71,20 +94,27 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250611001255.527952-1-vishal.moola@gmail.com>
 
-On Tue, Jun 10, 2025 at 05:12:51PM -0700, Vishal Moola (Oracle) wrote:
-> m68k's Motorola still uses struct page (it's pointer tables) to track
-> page tables. This patchset converts it to use ptdescs, to help prepare
-> for allocating memory descriptors independently of struct page.
-> 
-> It also includes some minor cleanups to make the code more readable. 
-> 
-> ----
-> 
-> Based on mm-new. This has only been compile tested, but there are
-> no expected runtime changes.
 
-Just a friendly ping requesting someone takes a look at this series..
-It should be simple, just make sure I didn't miss anything :)
+On Wed, 18 Jun 2025, John Paul Adrian Glaubitz wrote:
+
+> On Wed, 2025-06-18 at 13:19 +1000, Finn Thain wrote:
+> 
+> > Do you know of a good solution for this open bug?
+> > https://sourceware.org/bugzilla/show_bug.cgi?id=30273
+> 
+> The proper solution would be to actually adhere to the official SVR4 ABI 
+> when declaring elfosabi == GDB_OSABI_SVR4 and using GDB_OSABI_LINUX for 
+> the old Linux ABI.
+> 
+> This bug is another example why it was not a good idea to ignore the 
+> official AT&T System V ABI ELF specification as it proves that 
+> independent upstream projects look at the actual official specification 
+> when implementing code.
+> 
+
+I think what you meant to say was, "no".
+
+Interesting how, after a year or two of agitating and bloviating, you 
+don't actually have a solution that would permit two co-existent 
+m68k-linux ELF ABIs. I wonder what you real aim was?
