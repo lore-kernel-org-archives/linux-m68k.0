@@ -1,133 +1,90 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E1E2EF9BF
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Jun 2025 15:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750261463; cv=pass; b=IzfLF6d/bLQ3a4iFYnFPr95VMXb6w4HmBXxPo/79ztgtIeEFeNRMyFWx4hBS4OOSxhFA/IYG4p5GFTomwl8LMLT9GsxrbHteDPNLuNhjrrh5Rc0j738NdjmWDJJ5cFhR2D454AEy68AHAg0wcZbZsxLtajBScY5bPdN3YKbkr5A=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750261463; c=relaxed/simple;
-	bh=0PChpZZcxBTee4ekPwAdtSiUTVZYfyzAxN+Tiey2ywo=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=ZkmpkAebGrfqAMjjd5GAnvQj0LqRCsbGl9twN3G80HBYgolWiGj/Q9P4UXTc0c/WjPkmVmQKBTnBkCqpmmXcgUeqWvFddw6OS4/zdjkJHti/cg5vwB1oYugCRYzdtlInbkhLwF4c4IlGfJ8iU2iB+c041V3KIVhGRGg9sEwvCag=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fpond.eu; spf=none smtp.mailfrom=fpond.eu; dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=VGgJkb7+; dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=7EWfcwyP; arc=pass smtp.client-ip=85.215.255.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fpond.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fpond.eu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B3A2FEE31
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Jun 2025 16:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750265794; cv=none; b=NVBcGeI14Z8SukObJldM1x8LKwuDOrikArpAE/sni+hDbZUmQXw5QaOo+6pQHzt98/SyGM74VnWj2Rg8rQSJ+ygkX7vRjkHaUDWBBuVMLrPetHIDkzt23GjAQxhfPtOwb5IEvSf0Sb99X7yooPSnXrrPxnoveEgF6N+nELf5BKM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750265794; c=relaxed/simple;
+	bh=edKXmParjhRu0BhM9r3sRCPgV6sjq8X4X6plBTPVfNE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AOq/pa/4JKMLktqvfVikXGUjghHRBJKCswaNOtB0LyIGoXybHsucUQEgwm7NTqWfuZM7J9nmzlEezwMNo9139WvbqmuhLf+ORvcy/KD0jYq9+OerT9rJr5q+IqLR221xjj2frc6RDcw7hGygRW5enPWdik83byoj5spjJWW/cQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6B4wjG1; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="VGgJkb7+";
-	dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="7EWfcwyP"
-ARC-Seal: i=1; a=rsa-sha256; t=1750261453; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=UUlEhnzO/4BPW5FSbitC8s1fff1o4KrdRdJQodetGGbrbz1oJINMbYAWgy/K+K/yVF
-    uvefO4rxrkJU3l0nbLTMbQMQqI8hN1MjqgU4Yjn1g2mHQPIEhUBiiI9UejrSwmmC0sFM
-    QW1+gGKYjCcFo0MauG+GCnLPDSHUlVXRhmKFw79EX4fSxsrs9SP8tAt4Y8tDCe73VFo5
-    CWQQ/qyBl/jpsh78eWAAl3zaruiGln/g4d6ETxldFHdO+HDV4iSMM3XBnpb1b3IMeRGJ
-    5QAZ9tIXzD7nm6QiM7t9PyMtTEPW2xmfthKGyJBemjWDgWZimwpoxeSC7sYtDBlxgezT
-    KDhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1750261453;
-    s=strato-dkim-0002; d=strato.com;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=iM3r5D46BIauaLI/sTimycMV3v+5FS8I6Sj5/MW8eSU=;
-    b=WiwaIpU4ueCyrnsefZwLc5YMfE/l1V+2vgDf3oumit1GJ/XwDFCgzYCQ7/pbuAd6lT
-    lvJMc7+eYl5imjeO8u0m0+x09gkQ/WxcKsf3C3Voti4S3KGQEq5DS0RxhKslegE7Z2ec
-    qssmhLhr9V1rRGVKk8xjzCjP4khUTIyvvMWHPRqNz5hi1X5ONEkW/QtmwrdiQfURE0Ja
-    XQ0DHktDob2pmkGXhv1na628criVUBUxG9vDHPuc/Hxu81/OodeqLBM6Agg4VZjFgr8P
-    t6r3Iv8usQKtrxChAEufJG8qH56ioyGOF/hppbIi/hyRK2sJfyl9ROkV2kfERZWTZsYA
-    HK4Q==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1750261453;
-    s=strato-dkim-0002; d=fpond.eu;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=iM3r5D46BIauaLI/sTimycMV3v+5FS8I6Sj5/MW8eSU=;
-    b=VGgJkb7+772a27IkDVti32K5WKAqSBZSCKfOb3ruOYZm1WNbyMr1p3srdrAeGGzhKD
-    fZ7PXRElwKBryT6NEtr3MOnV1f1PBgJvv8E0BC3Xez+jpYcNesofPWst16MTQPJPRiMr
-    BbrjEf3Ttc/23H5Y9Rc2Ma7BVHFM735Fj+3+ENKdFmhW0uJybvGPavtAXU+qhO+dbnFC
-    0D2GEXgBkK8+jGgMh9wTQzHwULRdMNvWtI8sEml5pGJfNipmB8fRJRRugijCaqJRt7PV
-    yembg0CWXX3fph0H7nPK12xUAWvr/5SjFCmzDx8s5px7oGL4V/ZWCmyC2MH4Q/AN54Dm
-    O3pA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1750261453;
-    s=strato-dkim-0003; d=fpond.eu;
-    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=iM3r5D46BIauaLI/sTimycMV3v+5FS8I6Sj5/MW8eSU=;
-    b=7EWfcwyPVK6jjAGftgMEWBA3kXuBKGgKATIa+ICm90kLb9WS1qpY9+RbPoIYx37ysm
-    3F2SG4DilkfBSAR8PgDw==
-X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73amq+g13rqGzvv30UF1hex6fd76vq"
-Received: from open-xchange-core-mw-gw-27.open-xchange-core-mw-hazelcast-headless.open-xchange.svc.cluster.local
-    by smtp-ox.front (RZmta 51.3.0 AUTH)
-    with ESMTPSA id z2a34015IFiDUuf
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 18 Jun 2025 17:44:13 +0200 (CEST)
-Date: Wed, 18 Jun 2025 17:44:12 +0200 (CEST)
-From: Ulrich Hecht <uli@fpond.eu>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Pavel Machek <pavel@denx.de>, Michael Schmitz <schmitzmic@gmail.com>,
-	Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-	cip-dev@lists.cip-project.org, linux-m68k@lists.linux-m68k.org
-Message-ID: <279974101.333016.1750261452981@webmail.strato.de>
-In-Reply-To: <288cd2e42b6d4cbf77822cce3b348d6f@linux-m68k.org>
-References: <288cd2e42b6d4cbf77822cce3b348d6f@linux-m68k.org>
-Subject: Re: [cip-dev] [PATCH RESEND 4.19.y-cip] signal/m68k: Use
- force_sigsegv(SIGSEGV) in fpsp040_die
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6B4wjG1"
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-3139027b825so5209343a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Jun 2025 09:56:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750265792; x=1750870592; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MLNHDlj/zAzYGC80eowNg066XecWuUgwFQMmbVio33Q=;
+        b=O6B4wjG18c6o8dOGQaBun7ALs1sfNcaSnFWZihwyHBRhVplwc7XycP5puG4K0R4vJX
+         sLqKTckSgjeWFsD98JnJzONoh89ejoZw7EtvZMN0yV/G78gvR1fzqavTrJKxMqtwLA3H
+         jlGbxl+hhI6zfvXafCy7YqA/bfEl1fNOsfbRsx+pzvfxNDp1e1P9FP+7kIpsqSrifAS0
+         50fyMEUbegp5GInQVKFkbS/I1IhWzrCBCWnK1RJc/OWebe+i/V34Kg3TosZbcUZqLRDP
+         8P+eNGn7sPxyfpGo15/q9Vvm82dZV88dK/uapUaeUMiE3dJuLo6NQQW5Ng4/hWW7Ovao
+         lXfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750265792; x=1750870592;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MLNHDlj/zAzYGC80eowNg066XecWuUgwFQMmbVio33Q=;
+        b=GF/TjLkK8pDOM41WfCqckWqtEps3aCZQxLLyAM7LQWo5ODP45Y6276bM2xhzw83Hta
+         RGQ/IB8fPu5YgzK2OgLEfUqDO4CfdMqm15JUJut1J99zMddiOvWWKRgKdVgB0xaqlSvV
+         m4l2k32i0azkpWlvejlJJBxlGQiKxsMGeMXRaBK8RqMDOpJn/AAGC4DWPQNFZSFGvwq6
+         wkYfg4W1PomxBwnTor+l3YybJYGC4ZASjCrNPwzJ7RSIO7Nz/N48UKxqmb+rgyl/8hSI
+         kEwV2tu2WihUQlRHE1dEmJrv9UJ0D0VuD6RKprCGsJsI/M3JAKmlAsaHNF5uyQNeH1wh
+         oi2A==
+X-Gm-Message-State: AOJu0Yxc3aFIVMWcdvCm7OZlalveMd7TQgEf3l+Ce0sr8qYhuYDlW/Dp
+	q3hJTOmj21bNEItESlEYxPkqd2Zgo92Ctk4taffQLvS+MgbE7dM+AMfQ
+X-Gm-Gg: ASbGncsq5MHjg5fXxvujF82iZDk9unocxtpcl20kFnFpJlRtJ0y1AmxOUr7OmU6171y
+	S8h5tslRGl2g6Px5TIar6l5I0fq6YvN+l9Ze1BK6XA+z+z/DAWMNzIYE3VfYCCcW/mS3dM1IPD6
+	4EDe2BCCfndtHuAgUXLOwNXtmLUzEvad3UELSHMAR278y/81Ya9zsjfCeuDQfCmrZ81rFKCumt3
+	cl1+TWGdTCSkHjyAZ6qCgBFc7+ceuiz/v/oZnWz8VzaHMcGpfznnjvNA9Svs0UiCaY7KsBhbrj6
+	kiLWWDJhIjcLf16X7vyd/31YLfRuwlu72/NapHGSyuOGaiphbjwT/1dlD3hr+0P8Ndxjzgksepg
+	oHiBe/Pn9wDxOZm2Y+Q==
+X-Google-Smtp-Source: AGHT+IGbG5+rTgIf20wLcHyLzd/2R2UT4T7M+n2ZkFgbdZx4r8t5wgYFo1GhEYLYd0AZgdFs9EwxoQ==
+X-Received: by 2002:a17:90b:3dd0:b0:311:ff02:3fcb with SMTP id 98e67ed59e1d1-313f1dee9c6mr27723365a91.28.1750265791565;
+        Wed, 18 Jun 2025 09:56:31 -0700 (PDT)
+Received: from fedora (c-67-164-59-41.hsd1.ca.comcast.net. [67.164.59.41])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3158a23d5e3sm182153a91.16.2025.06.18.09.56.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Jun 2025 09:56:30 -0700 (PDT)
+Date: Wed, 18 Jun 2025 09:56:28 -0700
+From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 0/4] Convert motorola to use ptdescs
+Message-ID: <aFLvvBuz8gpdJdEE@fedora>
+References: <20250611001255.527952-1-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v8.36.53
-X-Originating-Port: 46284
-X-Originating-Client: open-xchange-appsuite
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250611001255.527952-1-vishal.moola@gmail.com>
 
+On Tue, Jun 10, 2025 at 05:12:51PM -0700, Vishal Moola (Oracle) wrote:
+> m68k's Motorola still uses struct page (it's pointer tables) to track
+> page tables. This patchset converts it to use ptdescs, to help prepare
+> for allocating memory descriptors independently of struct page.
+> 
+> It also includes some minor cleanups to make the code more readable. 
+> 
+> ----
+> 
+> Based on mm-new. This has only been compile tested, but there are
+> no expected runtime changes.
 
-> On 05/16/2025 11:28 AM CEST Finn Thain <fthain@linux-m68k.org> wrote:
-> 
->  
-> From: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> [ Upstream commit a3616a3c02722d1edb95acc7fceade242f6553ba ]
-> 
-> In the fpsp040 code when copyin or copyout fails call
-> force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
-> 
-> This solves a couple of problems.  Because do_exit embeds the ptrace
-> stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
-> that to work correctly.  There is always the information needed for a
-> ptrace stop where get_signal is called.  So exiting with a signal
-> solves the ptrace issue.
-> 
-> Further exiting with a signal ensures that all of the threads in a
-> process are killed not just the thread that malfunctioned.  Which
-> avoids confusing userspace.
-> 
-> To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
-> save all of the registers and jump to ret_from_exception (which
-> ultimately calls get_signal) after fpsp040_die returns.
-> 
-> v2: Updated the branches to use gas's pseudo ops that automatically
->     calculate the best branch instruction to use for the purpose.
-> 
-> v1: https://lkml.kernel.org/r/87a6m8kgtx.fsf_-_@disp2133
-> Link: https://lkml.kernel.org/r/87tukghjfs.fsf_-_@disp2133
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> [ Pass 'current' to force_sigsegv() as was done prior to v5.3 ]
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-
-Thanks, applied for the next 4.19.
-Please CC me for 4.4 and 4.19 patches in the future.
-
-CU
-Uli
+Just a friendly ping requesting someone takes a look at this series..
+It should be simple, just make sure I didn't miss anything :)
