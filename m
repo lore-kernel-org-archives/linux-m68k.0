@@ -1,103 +1,133 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F012E06EF
-	for <linux-m68k@vger.kernel.org>; Wed, 18 Jun 2025 12:59:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750251597; cv=none; b=rleFi15djGs8z63aJmlNrud+ZKO4uqIt1nDzKPXa9kOFIRfVd5Yn/uL0wrr3eMT2H7zO5Gw75HCmGJQG/bxj10jt8/iJlXN4ecWC4sfQNr+8xrtRRSYZY1WEgHUJzxchz1qgpqObalbyhEVAQeBRqoe2KeYBtD4AfGfmKMlZOWQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750251597; c=relaxed/simple;
-	bh=5AXFoe5XQ1i00S0OUmfW8xC3MZwiS6oqD1yLe+OOyXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Uw9ULhrUwWhRqT42I6IOr22IW4ktuNSoTnzWGdWAG9rSY9F5BorbD9YeqIauSzO/VUsOvVQ980MzW56wZmdl00+3eiejSfoId3kgaSAmQagX013nDVq3NS+z6Kpm9VRwGZrQ+MsVF5poxwAR2VNOwk0w3wHzC2ocFf8HQ/hXM+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WUCbh4oO; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E1E2EF9BF
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Jun 2025 15:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750261463; cv=pass; b=IzfLF6d/bLQ3a4iFYnFPr95VMXb6w4HmBXxPo/79ztgtIeEFeNRMyFWx4hBS4OOSxhFA/IYG4p5GFTomwl8LMLT9GsxrbHteDPNLuNhjrrh5Rc0j738NdjmWDJJ5cFhR2D454AEy68AHAg0wcZbZsxLtajBScY5bPdN3YKbkr5A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750261463; c=relaxed/simple;
+	bh=0PChpZZcxBTee4ekPwAdtSiUTVZYfyzAxN+Tiey2ywo=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=ZkmpkAebGrfqAMjjd5GAnvQj0LqRCsbGl9twN3G80HBYgolWiGj/Q9P4UXTc0c/WjPkmVmQKBTnBkCqpmmXcgUeqWvFddw6OS4/zdjkJHti/cg5vwB1oYugCRYzdtlInbkhLwF4c4IlGfJ8iU2iB+c041V3KIVhGRGg9sEwvCag=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fpond.eu; spf=none smtp.mailfrom=fpond.eu; dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=VGgJkb7+; dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b=7EWfcwyP; arc=pass smtp.client-ip=85.215.255.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fpond.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fpond.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WUCbh4oO"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E72C4CEE7;
-	Wed, 18 Jun 2025 12:59:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750251597;
-	bh=5AXFoe5XQ1i00S0OUmfW8xC3MZwiS6oqD1yLe+OOyXo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=WUCbh4oO95vARHoS942+iNQaDnsZAOSStOL/8FdWUOn3f9CFaDOszcoXIHpnpZrVR
-	 GrCiCAAvjg7G3GzYae1X0i4kEMKGxB5yf8YW0WAoNFg/Rpo1yiEfn5PTOWBnnC1iwS
-	 TQhw9f4qPrm0FkHSb/Sd26e56gtJqfz8AZ4lsvoltUtI52W4+Kh+vrV6anR57FU8vD
-	 L0mNEtbuq4dBw+45JPRrf4dktDDGTdVFSC+TxHkGAqhlBBNOskfVucTELR2F+VDG0u
-	 7ofRRdhoU5gLQWS0g3z9Xp07HLNw1tALQNOMjnHqpMwbkYb6CVafOazNCxixzJygCk
-	 dcKMiToxvgT4Q==
-Message-ID: <07736e45-f71e-425a-8fff-3a11957d8353@kernel.org>
-Date: Wed, 18 Jun 2025 22:59:53 +1000
+	dkim=pass (2048-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="VGgJkb7+";
+	dkim=permerror (0-bit key) header.d=fpond.eu header.i=@fpond.eu header.b="7EWfcwyP"
+ARC-Seal: i=1; a=rsa-sha256; t=1750261453; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=UUlEhnzO/4BPW5FSbitC8s1fff1o4KrdRdJQodetGGbrbz1oJINMbYAWgy/K+K/yVF
+    uvefO4rxrkJU3l0nbLTMbQMQqI8hN1MjqgU4Yjn1g2mHQPIEhUBiiI9UejrSwmmC0sFM
+    QW1+gGKYjCcFo0MauG+GCnLPDSHUlVXRhmKFw79EX4fSxsrs9SP8tAt4Y8tDCe73VFo5
+    CWQQ/qyBl/jpsh78eWAAl3zaruiGln/g4d6ETxldFHdO+HDV4iSMM3XBnpb1b3IMeRGJ
+    5QAZ9tIXzD7nm6QiM7t9PyMtTEPW2xmfthKGyJBemjWDgWZimwpoxeSC7sYtDBlxgezT
+    KDhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1750261453;
+    s=strato-dkim-0002; d=strato.com;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=iM3r5D46BIauaLI/sTimycMV3v+5FS8I6Sj5/MW8eSU=;
+    b=WiwaIpU4ueCyrnsefZwLc5YMfE/l1V+2vgDf3oumit1GJ/XwDFCgzYCQ7/pbuAd6lT
+    lvJMc7+eYl5imjeO8u0m0+x09gkQ/WxcKsf3C3Voti4S3KGQEq5DS0RxhKslegE7Z2ec
+    qssmhLhr9V1rRGVKk8xjzCjP4khUTIyvvMWHPRqNz5hi1X5ONEkW/QtmwrdiQfURE0Ja
+    XQ0DHktDob2pmkGXhv1na628criVUBUxG9vDHPuc/Hxu81/OodeqLBM6Agg4VZjFgr8P
+    t6r3Iv8usQKtrxChAEufJG8qH56ioyGOF/hppbIi/hyRK2sJfyl9ROkV2kfERZWTZsYA
+    HK4Q==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1750261453;
+    s=strato-dkim-0002; d=fpond.eu;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=iM3r5D46BIauaLI/sTimycMV3v+5FS8I6Sj5/MW8eSU=;
+    b=VGgJkb7+772a27IkDVti32K5WKAqSBZSCKfOb3ruOYZm1WNbyMr1p3srdrAeGGzhKD
+    fZ7PXRElwKBryT6NEtr3MOnV1f1PBgJvv8E0BC3Xez+jpYcNesofPWst16MTQPJPRiMr
+    BbrjEf3Ttc/23H5Y9Rc2Ma7BVHFM735Fj+3+ENKdFmhW0uJybvGPavtAXU+qhO+dbnFC
+    0D2GEXgBkK8+jGgMh9wTQzHwULRdMNvWtI8sEml5pGJfNipmB8fRJRRugijCaqJRt7PV
+    yembg0CWXX3fph0H7nPK12xUAWvr/5SjFCmzDx8s5px7oGL4V/ZWCmyC2MH4Q/AN54Dm
+    O3pA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1750261453;
+    s=strato-dkim-0003; d=fpond.eu;
+    h=Subject:References:In-Reply-To:Message-ID:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=iM3r5D46BIauaLI/sTimycMV3v+5FS8I6Sj5/MW8eSU=;
+    b=7EWfcwyPVK6jjAGftgMEWBA3kXuBKGgKATIa+ICm90kLb9WS1qpY9+RbPoIYx37ysm
+    3F2SG4DilkfBSAR8PgDw==
+X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73amq+g13rqGzvv30UF1hex6fd76vq"
+Received: from open-xchange-core-mw-gw-27.open-xchange-core-mw-hazelcast-headless.open-xchange.svc.cluster.local
+    by smtp-ox.front (RZmta 51.3.0 AUTH)
+    with ESMTPSA id z2a34015IFiDUuf
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 18 Jun 2025 17:44:13 +0200 (CEST)
+Date: Wed, 18 Jun 2025 17:44:12 +0200 (CEST)
+From: Ulrich Hecht <uli@fpond.eu>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Pavel Machek <pavel@denx.de>, Michael Schmitz <schmitzmic@gmail.com>,
+	Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+	cip-dev@lists.cip-project.org, linux-m68k@lists.linux-m68k.org
+Message-ID: <279974101.333016.1750261452981@webmail.strato.de>
+In-Reply-To: <288cd2e42b6d4cbf77822cce3b348d6f@linux-m68k.org>
+References: <288cd2e42b6d4cbf77822cce3b348d6f@linux-m68k.org>
+Subject: Re: [cip-dev] [PATCH RESEND 4.19.y-cip] signal/m68k: Use
+ force_sigsegv(SIGSEGV) in fpsp040_die
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: port-m68k <port-m68k@netbsd.org>, debian-68k
- <debian-68k@lists.debian.org>, linux-m68k <linux-m68k@vger.kernel.org>
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
- <5d8619dfe4134319b558684209f2b89c5c1447cf.camel@physik.fu-berlin.de>
- <889f54af-2317-ee51-cea5-47d813683944@linux-m68k.org>
- <5de0835e46f8c2479668fe5fe98f8e0d230cbfce.camel@physik.fu-berlin.de>
- <d3c2060c-f2ea-f80d-2462-d3dba29950c2@linux-m68k.org>
- <0b09dcea10c9bab4a50b2599ef8ac59b89f09b3e.camel@physik.fu-berlin.de>
- <8eb87c55-95c2-0c73-4941-6e8732266220@linux-m68k.org>
- <4c0581c5baccf73e96e53d755e70b57b23ba1da4.camel@physik.fu-berlin.de>
- <CAMuHMdWdDdoO9w9PvULL6+vVZs1Fn1boobgV9fO9OqpyhOsznQ@mail.gmail.com>
- <cebbe80cb85e004176ae2b566132d6d8e92e73db.camel@physik.fu-berlin.de>
- <CAMuHMdVuU1bsoUwXNkuUvxjb-F-YS325dEX+KPtY4FJPbtMUXw@mail.gmail.com>
- <29677f1e81b42c87926875109907485e41587883.camel@physik.fu-berlin.de>
- <38c670cc-6169-4720-a883-c34df26e1a4f@kernel.org>
- <6e0e0cf97b77d881b67916889d4b172c5bbdda00.camel@physik.fu-berlin.de>
- <CAMuHMdX7TS=ApEnQrcpGjyWY-mHrmE6zHYQLNh3CEdYS6c2UhA@mail.gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <CAMuHMdX7TS=ApEnQrcpGjyWY-mHrmE6zHYQLNh3CEdYS6c2UhA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v8.36.53
+X-Originating-Port: 46284
+X-Originating-Client: open-xchange-appsuite
 
-Hi Geert,
 
-On 18/6/25 22:54, Geert Uytterhoeven wrote:
-> Hi Adrian,
+> On 05/16/2025 11:28 AM CEST Finn Thain <fthain@linux-m68k.org> wrote:
 > 
-> On Wed, 18 Jun 2025 at 14:27, John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
->> On Wed, 2025-06-18 at 22:21 +1000, Greg Ungerer wrote:
->>>> Could you please elaborate this a bit more, please?
->>>>
->>>> Coldfire is handled as a separate target via TARGET_COLDFIRE in GCC, so we
->>>> would certainly be able to toggle the alignment settings independent of
->>>> what's done on classic m68k.
->>>
->>> The net out is that it is the same gcc compiler, m68k-linux-gcc.
->>> ColdFire just needs specific code generation via command line switches,
->>> like -m5200 (or -m5206e or -m5307 or -mcfv4e, etc). This is the same way
->>> you would specify 680x0 level - m68020, -m68030, etc.
->>
->> Yes, but there is a TARGET_COLDFIRE macro as I mentioned above which could
->> be used to trigger which alignment to use by default. I don't see how that
->> would complicate things.
->>
->>> The bulk of the instruction set is the same. Asm code will look totally
->>> familiar to anyone who knows m68k :-)   One notable difference is that
->>> there is a more limited set addressing modes for some instructions.
->>
->> True, but you won't be able to run any classic m68k binaries on ColdFire
->> and the other way around, are you?
+>  
+> From: "Eric W. Biederman" <ebiederm@xmission.com>
 > 
-> IIIRC if you use a proper subset of the user mode instructions, you
-> can create binaries that run on both.
+> [ Upstream commit a3616a3c02722d1edb95acc7fceade242f6553ba ]
+> 
+> In the fpsp040 code when copyin or copyout fails call
+> force_sigsegv(SIGSEGV) instead of do_exit(SIGSEGV).
+> 
+> This solves a couple of problems.  Because do_exit embeds the ptrace
+> stop PTRACE_EVENT_EXIT a complete stack frame needs to be present for
+> that to work correctly.  There is always the information needed for a
+> ptrace stop where get_signal is called.  So exiting with a signal
+> solves the ptrace issue.
+> 
+> Further exiting with a signal ensures that all of the threads in a
+> process are killed not just the thread that malfunctioned.  Which
+> avoids confusing userspace.
+> 
+> To make force_sigsegv(SIGSEGV) work in fpsp040_die modify the code to
+> save all of the registers and jump to ret_from_exception (which
+> ultimately calls get_signal) after fpsp040_die returns.
+> 
+> v2: Updated the branches to use gas's pseudo ops that automatically
+>     calculate the best branch instruction to use for the purpose.
+> 
+> v1: https://lkml.kernel.org/r/87a6m8kgtx.fsf_-_@disp2133
+> Link: https://lkml.kernel.org/r/87tukghjfs.fsf_-_@disp2133
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> [ Pass 'current' to force_sigsegv() as was done prior to v5.3 ]
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
-You might be right on that. If you chose the lowest common denominator
-of ColdFire code generation, -m5200, then I seem to recall for user
-space that would just be a subset of traditional 68k.
+Thanks, applied for the next 4.19.
+Please CC me for 4.4 and 4.19 patches in the future.
 
-Regards
-Greg
-
+CU
+Uli
