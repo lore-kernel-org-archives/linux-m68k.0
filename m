@@ -1,46 +1,48 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outbound.pv.icloud.com (p-west1-cluster6-host11-snip4-8.eps.apple.com [57.103.67.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFC9239E8D
-	for <linux-m68k@vger.kernel.org>; Thu, 19 Jun 2025 05:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B43235BE1
+	for <linux-m68k@vger.kernel.org>; Thu, 19 Jun 2025 15:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.67.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750312624; cv=none; b=WrK12wAXfAET4MMEyUGdrkrFdU3s7wPvVHb9SmtRnfelQWhM0WJpdCjOaVMmPLzs5i+VzaP/Z5MBN8pov8244TzKWSXS05sjXwvcxYSpVoQQWys8gtSW9uX26Devb5IoGdPnuSjCNJXtcOasi1IGWzSP6slKKDUHq5fonGpjvpc=
+	t=1750348684; cv=none; b=E3fB1Enpq0a1BBvh97sYpF56Sc7xLF5o2ks7FeZXlu6W+UJBeTd8JgBdNTbzQyUCsUwZNDRUh3zGaAskcKFdRE8+rC683xD/CfsqIFYjw+vXCy+ENIvzR5CMQYVsF3/gBmX6T+6cOi+a0JAA8zZepyVebgPJcOS3UPf4IqDOeFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750312624; c=relaxed/simple;
-	bh=asZ7c6cj01Akza++rGxYZ8R1DtjWAkxSYA6C5rPcVQ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rmE0h4MPMBfEvRHEOb1iqxrMDJt04PKP4Uh8DFdiLsWF3ELea3SZ6eIaNAT0jIH1YjX+Pevz1NurFyld5TffMQRAI+ExoXIKS3z7NjSmpEaiYuBPRzck9WjtQG6cblvlid/kH3UXiLc/6raUDjiRu4+75hw4yWt0NN9J3ozgS38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bbMmdkn1; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1750348684; c=relaxed/simple;
+	bh=tVXh9AribAs8UDPG9E4HO2eUbhdZJBH+2WdaeTrNqH0=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=QHnpWVk0RJhyPDcVOSukfl+b3cvGSg01eAFaOO7fdP/2ZgphB/aFkEPSxSxiBGgp18pW/dhmvxYxdMQfn6SQUamIoKM7tjHlc+fWL0vZL9t0GdK98r9eO9TL4lAN8dsGcnqTPRXwf3A76RuKoitGcbUeFCXA3Jb4oFB1pbyfwBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=w02KPS72; arc=none smtp.client-ip=57.103.67.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bbMmdkn1"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4323EC4CEEA;
-	Thu, 19 Jun 2025 05:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750312623;
-	bh=asZ7c6cj01Akza++rGxYZ8R1DtjWAkxSYA6C5rPcVQ0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bbMmdkn1ZCZ3B1ds0JduZHyi1nG8mS0mzUGQ2A8Gc3SBLoHLoT77GbOmMzGnLOg3b
-	 prun1wrjq4/vNvO0qUtPOfO40XtrdkwrNiDR4ULfxVqcm5tIvCbeF4YZKG70wJJX3F
-	 WLIo5PRiQSqTDxfw2TaDvke396QsX9sG0h++5dHuUNPVCwSl4dB+E6BkrYGHaui8rS
-	 U4OBu9+LsTjt2eKLX21ZE39TgUVF+/uVHawvr5PiJFRmTxqr/oRPkbPn42bCHjV1CG
-	 XsHG4F7IS+XiLJengc7L4iWHjkiccbbNysRMus03coqaPx6wtfdq24or89JnI/M83f
-	 PbDduax4ioxPw==
-Message-ID: <3803048d-d7d7-4ea8-8b32-d6cdece8be45@kernel.org>
-Date: Thu, 19 Jun 2025 15:56:59 +1000
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="w02KPS72"
+Received: from outbound.pv.icloud.com (unknown [127.0.0.2])
+	by outbound.pv.icloud.com (Postfix) with ESMTPS id 84D30C0009A;
+	Thu, 19 Jun 2025 15:58:00 +0000 (UTC)
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai; bh=YPsAQ8Q6MNoXQmZzoMjhJnwsNVEYB93/LhjEmzzFr/0=; h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To:x-icloud-hme; b=w02KPS72adofSRWKTEhhuwL0dEbYtkEgKVDyHmZ0qhnOkSdxOxt7voUtQz82PMGqoXXSm2Nfb8IDmcj49TmXiCRzqY06lXMHCgNPtotyfk9Hwym5F8IjZ2kC5xm/quF/iyunQ7IZUyrO8T2y38J6/cocFWDGrf9cD7xwT5ZlvIo3rTcXl2s+pFG3RuxTOtAsZXT1WvAV3tiz3jGJRjGj+q2lneWIXbx5SV+Yt5tD1fRGxsw7S2A0oPpWAzQiTLNYshxc43ih7Z1ArZgVbzEjo7teMwn324VtTg8Z8SeIAWFcEyAI+Jt022u8JIwwg2RUSMBE+rzPOALtvfaR9arj5w==
+Received: from smtpclient.apple (asmtp-me-k8s.p98.prod.me.com [17.56.9.34])
+	by outbound.pv.icloud.com (Postfix) with ESMTPSA id 4E073C00092;
+	Thu, 19 Jun 2025 15:57:59 +0000 (UTC)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3826.500.181.1.5\))
 Subject: Re: Question on BIGGEST_ALIGNMENT in GCC on NetBSD/m68k
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Geert Uytterhoeven <geert@linux-m68k.org>, port-m68k <port-m68k@netbsd.org>,
+From: Jason Thorpe <thorpej@me.com>
+In-Reply-To: <3803048d-d7d7-4ea8-8b32-d6cdece8be45@kernel.org>
+Date: Thu, 19 Jun 2025 08:57:48 -0700
+Cc: Finn Thain <fthain@linux-m68k.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ port-m68k <port-m68k@netbsd.org>,
  debian-68k <debian-68k@lists.debian.org>,
  linux-m68k <linux-m68k@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4FA1E668-2837-4DCA-85B3-6D795B6101B5@me.com>
 References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
  <889f54af-2317-ee51-cea5-47d813683944@linux-m68k.org>
  <5de0835e46f8c2479668fe5fe98f8e0d230cbfce.camel@physik.fu-berlin.de>
@@ -56,93 +58,38 @@ References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
  <fc9dd771-b010-e593-d8e4-2cdad57722ed@linux-m68k.org>
  <a140ad5e-35c5-4d14-beb4-d55a58fe0181@kernel.org>
  <931c08f8-1d1c-a317-5380-aa41b26bfed4@linux-m68k.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <931c08f8-1d1c-a317-5380-aa41b26bfed4@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <3803048d-d7d7-4ea8-8b32-d6cdece8be45@kernel.org>
+To: Greg Ungerer <gerg@kernel.org>
+X-Mailer: Apple Mail (2.3826.500.181.1.5)
+X-Proofpoint-ORIG-GUID: cQeD-2HgxHX0QOrh1yNa2JfL_CBTxVzp
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjE5MDEzMiBTYWx0ZWRfX8xMFHGbVVIPe
+ 6U+eUwABOfi8pT9hgCI5B3ragchhkQsL3RZcODcx+nxc+LG9KR4468DeD1T5BZXruJ8ugPEoFcN
+ ysSngQyhDYs4VUgcGHP7yiULuejhLWjOJ+Hql22pBh3yDKTN0VZj9kJUVunX97CV0tpMUFtR74e
+ /wwwlDQyS4SPiXtDXwm8rFYZNkq/kmfqaVq4amu67A8QiULDU8GirTVvc4kvBTxuiZYcsmvu40e
+ 8WgWwoy70roaOBvxcNDb2aoTiIYwkPX3qpDH/XbFKiJB+26gbLzuh6LeRVL6OtNZuEMM9rJQc=
+X-Proofpoint-GUID: cQeD-2HgxHX0QOrh1yNa2JfL_CBTxVzp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.0.736,FMLib:17.12.80.40
+ definitions=2025-06-19_06,2025-06-18_03,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ adultscore=0 mlxscore=0 mlxlogscore=584 malwarescore=0 phishscore=0
+ spamscore=0 clxscore=1011 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.22.0-2506060001 definitions=main-2506190132
 
 
+> On Jun 18, 2025, at 10:56=E2=80=AFPM, Greg Ungerer <gerg@kernel.org> =
+wrote:
+>=20
+> Granted many ColdFire platforms are short on RAM. Size is a problem.
+> New versions of packages almost always get larger, that is an on-going
+> problem. Heck even version to version kernel bloat is a problem.
+> Especially as the years go on.
 
-On 19/6/25 15:31, Finn Thain wrote:
-> On Thu, 19 Jun 2025, Greg Ungerer wrote:
->> On 19/6/25 08:29, Finn Thain wrote:
->>> On Wed, 18 Jun 2025, Greg Ungerer wrote:
->>>
->>>>> It's not really necessary to enforce this on Coldfire. However,
->>>>> since buildroot builds completely from source, it wouldn't even be a
->>>>> problem to change the alignment there as well.
->>>>
->>>> Yes, that is totally right in my experience. Certainly in my ColdFire
->>>> work it is pretty much always a build-everything approach via
->>>> buildroot or similar. I wouldn't think an ABI change would actually
->>>> worry too many ColdFire uses, they don't use distributions like
->>>> debian on them. (I would love to hear from anyone who does!).
->>>>
->>>
->>> That may work for end-users with a vendor BSP. But upstream developers
->>> need to be able to swap components. In general, when debugging I often
->>> have to run old binaries to find out whether I'm dealing with a deeper
->>> regression or not. Also, there is the bisection problem. It's not just
->>> a couple of distros who get to pay for an ABI break. It's the entire
->>> ecosystem.
->>
->> I am sure there is value in that for some. Like I said though that has
->> not been my experience with ColdFire. And by that I mean as the upstream
->> maintainer of ColdFire Linux support for +20 years. I pretty mush
->> _always_ build kernel + libs + user for testing even small kernel
->> changes.
-> 
-> OK, so you're not building binutils, newlib, gcc, gdb etc. with each
-> revision. Do you use a board support package (BSP) from the vendor?
+As a data point, NetBSD on the sun2 (68010) uses the larger alignment =
+just like there rest of the NetBSD m68k platforms and the typical memory =
+config for those things is 4MB.  ColdFire is not my jam (too new :-), so =
+I=E2=80=99m not really that familiar with the memory configs on those =
+platforms.
 
-Vendor?
-No vendors involved here. I mostly build for the default in-kernel
-configurations, they are whole, do not require any extra external code.
-As a maintainer I am only really interested in what is in kernel source.
-
-I build updated toolchains and test on each major/minor release of
-binutils, gcc. I do that via my simple-linux scripts
-(http://https://github.com/gregungerer/simple-linux). They take a little
-longer to run than 1 minute though :-)
-
-
->> My standard small system build takes less than 1 minute for everything.
->> Again, I am just relating my experience with this - admittedly probably
->> not typical of actual end users.
->>
->> FWIW even when I was working on shipping ColdFire based products my
->> firmware was always a complete update, no separate kernel and user space
->> updates. Typical of small embedded systems. I can't actually remember
->> many times I have run with a previously compiled user space.
->>
-> 
-> Given that on-chip RAM is scarce on Coldfire devices, it seems entirely
-> plausible that an alignment change could result in ENOMEM after a rebuild
-> -- unless the toolchain offered a choice of ABI.
-
-Linux today doesn't really make much use of on-chip RAM on ColdFire.
-It is too small to be useful for most things at the kernel scale.
-There has been plenty of specialized code to use it over the years to
-optimize for some particular application. Not sure how that is relevant
-here though.
-
-Granted many ColdFire platforms are short on RAM. Size is a problem.
-New versions of packages almost always get larger, that is an on-going
-problem. Heck even version to version kernel bloat is a problem.
-Especially as the years go on.
-
-
-> So this becomes a burden for those who maintain tooling that deals with
-> ABIs, as well as for the vendor which has to support its BSP -- unless the
-> vendor also happens to desire a choice of alignment (that's why I raised
-> that question on 6/6).
-
-Changing ABIs will surely affect many. Just keeping up with Linux development
-in general is a on-going task, nothing comes fore free.
-
-Regards
-Greg
-
-
+-- thorpej
 
