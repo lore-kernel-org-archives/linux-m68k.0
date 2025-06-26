@@ -1,90 +1,147 @@
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4322676CD
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 08:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79BBD1DE2DC
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 11:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750927210; cv=none; b=T3uhILGXIiz2jItxCWb+Lid2XOv1x67LZDi8ulP8K3JyOW1z3gRhmoZOy3LshLH9TJ1Qj3kvEOK/cyjjTSnfqbQahwp0U9ZHAhiQ4f80zjdm5Nf8abqOUGTcUI+mifPkSDpmgwaC/GJlrkJz/gUNgih1LVxVSljLp56LG2qunts=
+	t=1750937108; cv=none; b=QVYk2Mh7+pBitSGmnmDG4wBWHNvmkoqJ6i9eo0JLkeg5bzX44l/JbUvsEN1cBuSb3+l5lT2Zn9LpqdGJ5L17+ArFXP536B2LOfHbAubwtgHGdJrlhqRyobGYK8l515tBkTve1KCB+/JRB0VQ9a+01/u1hjOJbnKTjD7/XCiBj1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750927210; c=relaxed/simple;
-	bh=qeXksUF95t7j8fufzrGvvwqKIxNAuDnTZhd6tkl1V8k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gZkB6PjjTFFj1/6KUTDVr373JQML0SChazAwb8Gyj0OfENkkPzH9RwqnBu5RbgE0O9VLcSm1letqrrebtIj8VUAmTKjhZWgkZMY7Kss1rpX1sR98HVcw2uYQ3kwvSdukX2ZonwXxGNg+T56zS+9X4mdIDGD8vtfAQDt1NwmG9Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-532de49b7e2so248077e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:40:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750927207; x=1751532007;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=md/YimW6cxDI1mQlDnB4XDpgGsxgoMmV/QV/Bk6cGXo=;
-        b=ET+Z2fxvMhj/4ErhjVN0BIsC7EXihPHy7ZiUNwGAQOuduQi5G1r6zuqSaJfSblXUTN
-         oew8PuJiZeidM6dywwR7dHa8lE/FxUgtn0zA/tnEMplU3beZtSosGxO5jwDOFotNgkYr
-         sqGELSVl9FX9X5Qsqu0aM7m6OUzJsBdx31h+KTvAeGvh2NAPMz8eH0Nf+LE50/t40P0n
-         HJCLIlENmv4VW+aWjCy2tqSEgFdfdnKULfOxl9LmtkLn6Kyi46ksrulb2/8omfshE869
-         V72WmdgEHPAYHXYwABkRLKeWOhlwnJDwhZb0mrOBvsgECQ2/r05bH7AHa5jAgK5VMpwl
-         6JWA==
-X-Gm-Message-State: AOJu0YwuyMKae1J9sTxjrM6L9baGa4C5OFeGHrKyrY8hyIj8hhBtK970
-	lkLf/R80vyJxl0XdbzAHrGneUIPGIAIou4GCldsD4cgcXAX9PsWN62W9z/LmbyZ8
-X-Gm-Gg: ASbGnctfZY3No8V9LWcIciH4r3TOO2xwiih0CaH3vvHQKh3F1g2plqjFy1FKeSyKwnp
-	Mk+grz/17YLaGbuZEMRC8KG7MOBoN671iaWLZU2wKkhbmAAsSUykb70ycWWc/nluqCfwdykI3Mp
-	EI9ygRzTVPo2kiDZaRBVXmeMOfCpD31I2+qD9uBv6nMhqcN1SJq1jIwbF4RiYrFpp5Sx32We3aD
-	kbvSIFqMBRhmFLRUwePMr3SdWVbCCoAULrlWcEWs4Q65ga6Vwkpu+Qxj4UGdxJrMs9kEsHZYl4/
-	y6pE3dBs+kBMrWsh0hD41IDcdNN7u2q10Qe+VkogRg94KWDwEmF64EQ6lGcya21izdnEt4dZg+s
-	4oFqwDqQ0jxyX4d8CrWj46jVK
-X-Google-Smtp-Source: AGHT+IHDaR2B6+TaMzPfXPeT2I5mxAhlNKLivE3KpcZfWv/bEk2Ud+xMoqC6mfjgH7myibzOynu3Cw==
-X-Received: by 2002:a05:6122:1ac9:b0:531:19ee:93ea with SMTP id 71dfb90a1353d-532ef208beamr4612246e0c.0.1750927206769;
-        Thu, 26 Jun 2025 01:40:06 -0700 (PDT)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-531ab3a4558sm2225793e0c.44.2025.06.26.01.40.05
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Jun 2025 01:40:06 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-87f2170921dso203503241.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:40:05 -0700 (PDT)
-X-Received: by 2002:a05:6102:e0b:b0:4e5:a6ad:8fee with SMTP id
- ada2fe7eead31-4ecc76995e9mr5141786137.19.1750927205507; Thu, 26 Jun 2025
- 01:40:05 -0700 (PDT)
+	s=arc-20240116; t=1750937108; c=relaxed/simple;
+	bh=WPi7lZxfyGk2K+kKqnWvYWwj/GG6aQbbRdFMQNfcNX8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=hm4o6IUve3WlfsAZWxC61WsheK58w8Yf1A8LKdrHOYtyZDYDS4xOd45/heYEu7Di/DemY8UhALXXm9VHmMzneYfVZ3LLGmbDJ+gWb3LUF9wA1nfy6Y4T7J0KTAlJNIv7Xwc6tFvcDX8vfnFRpkx8rlEJlKIm1C7foW+0axNv0m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gRe+9wNW; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gRe+9wNW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1750937107; x=1782473107;
+  h=date:from:to:cc:subject:message-id;
+  bh=WPi7lZxfyGk2K+kKqnWvYWwj/GG6aQbbRdFMQNfcNX8=;
+  b=gRe+9wNW7wQbOFTA0TqpL7xf5BNuFqBIt3WnTX2P7l+OD+rTP0a60EZm
+   WpDyw+Y6bcMJhzIvoTWOFJc6zAcb/tUbl6efnQ7qSCvtELnyIHcLlfUe2
+   zau5U0QD/+lLR2pNBrLvbUId55hppjMCHPkkXpdkZ0u8KO7SqV3MNNns0
+   HrYX30RtCa4JPGx8NLxwneg0wHkkIQLUNMcetDUBIIgtjoAFCaC46f8u5
+   ZiXn9caL+w1UPgvUuciLxt/hZ0BxADgjANfBS//V/6CTqQlrF8o87Dsr1
+   jebK2RV9AEOwqXOpJcr6mkGuwtvNVPiXEWEx8K029yTCki04QZ37cxBkB
+   g==;
+X-CSE-ConnectionGUID: 1a6k7bZhRdCtDf939LYwoA==
+X-CSE-MsgGUID: DyShVcNNT123BYF0wINJpg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11475"; a="78665402"
+X-IronPort-AV: E=Sophos;i="6.16,267,1744095600"; 
+   d="scan'208";a="78665402"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2025 04:25:05 -0700
+X-CSE-ConnectionGUID: OMT2AG9SThqJ8+ZLidRkCg==
+X-CSE-MsgGUID: y7Ofr7cfSDC4XYCYz61EkQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,267,1744095600"; 
+   d="scan'208";a="152994913"
+Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 26 Jun 2025 04:25:05 -0700
+Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uUkiz-000Tzy-2y;
+	Thu, 26 Jun 2025 11:25:01 +0000
+Date: Thu, 26 Jun 2025 19:24:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 56305a98e411188bfdb8b66d6595d083b96897e7
+Message-ID: <202506261914.iLP3Vzv5-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250611001255.527952-1-vishal.moola@gmail.com> <20250611001255.527952-5-vishal.moola@gmail.com>
-In-Reply-To: <20250611001255.527952-5-vishal.moola@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 26 Jun 2025 10:39:52 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWTUH7g8rsv+U7oRQi9Xxrg-_LWmBvAoV1XBa3BvrSA8g@mail.gmail.com>
-X-Gm-Features: Ac12FXzMwLUwExJVMIRYYdFiU5SpZE69imPVWDF6nzBjPzIJC28SN5VooQ2k9_o
-Message-ID: <CAMuHMdWTUH7g8rsv+U7oRQi9Xxrg-_LWmBvAoV1XBa3BvrSA8g@mail.gmail.com>
-Subject: Re: [PATCH 4/4] m68k: mm: Convert pointer table macros to use ptdescs
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 11 Jun 2025 at 02:13, Vishal Moola (Oracle)
-<vishal.moola@gmail.com> wrote:
-> Motorola uses its pointer tables for page tables, so its macros should be
-> using struct ptdesc, not struct page. This removes a user of page->lru.
->
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 56305a98e411188bfdb8b66d6595d083b96897e7  Merge tag 'v6.16-rc3'
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.17.
+elapsed time: 1455m
 
-Gr{oetje,eeting}s,
+configs tested: 70
+configs skipped: 1
 
-                        Geert
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+alpha                            allyesconfig    gcc-15.1.0
+arc                              allmodconfig    gcc-15.1.0
+arc                               allnoconfig    gcc-15.1.0
+arc                              allyesconfig    gcc-15.1.0
+arc                   randconfig-001-20250625    gcc-11.5.0
+arc                   randconfig-002-20250625    gcc-12.4.0
+arm                              allmodconfig    gcc-15.1.0
+arm                               allnoconfig    clang-21
+arm                              allyesconfig    gcc-15.1.0
+arm                   randconfig-001-20250625    clang-21
+arm                   randconfig-002-20250625    gcc-11.5.0
+arm                   randconfig-003-20250625    gcc-13.3.0
+arm                   randconfig-004-20250625    gcc-15.1.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.1.0
+arm64                 randconfig-001-20250625    gcc-11.5.0
+arm64                 randconfig-002-20250625    clang-20
+arm64                 randconfig-003-20250625    gcc-12.3.0
+arm64                 randconfig-004-20250625    clang-20
+csky                              allnoconfig    gcc-15.1.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-21
+hexagon                          allyesconfig    clang-21
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250625    clang-20
+i386        buildonly-randconfig-002-20250625    gcc-12
+i386        buildonly-randconfig-003-20250625    gcc-12
+i386        buildonly-randconfig-004-20250625    gcc-12
+i386        buildonly-randconfig-005-20250625    clang-20
+i386        buildonly-randconfig-006-20250625    clang-20
+i386                                defconfig    clang-20
+loongarch                        allmodconfig    gcc-15.1.0
+loongarch                         allnoconfig    gcc-15.1.0
+m68k                             allmodconfig    gcc-15.1.0
+m68k                              allnoconfig    gcc-15.1.0
+m68k                             allyesconfig    gcc-15.1.0
+microblaze                       allmodconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                       allyesconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+nios2                             allnoconfig    gcc-14.2.0
+openrisc                          allnoconfig    gcc-15.1.0
+parisc                            allnoconfig    gcc-15.1.0
+powerpc                           allnoconfig    gcc-15.1.0
+riscv                             allnoconfig    gcc-15.1.0
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-21
+s390                             allyesconfig    gcc-15.1.0
+sh                               allmodconfig    gcc-15.1.0
+sh                                allnoconfig    gcc-15.1.0
+sh                               allyesconfig    gcc-15.1.0
+sparc                            allmodconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-21
+um                               allyesconfig    gcc-12
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20250626    clang-20
+x86_64      buildonly-randconfig-002-20250626    clang-20
+x86_64      buildonly-randconfig-003-20250626    clang-20
+x86_64      buildonly-randconfig-004-20250626    clang-20
+x86_64      buildonly-randconfig-005-20250626    clang-20
+x86_64      buildonly-randconfig-006-20250626    clang-20
+x86_64                              defconfig    gcc-11
+x86_64                          rhel-9.4-rust    clang-18
+xtensa                            allnoconfig    gcc-15.1.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
