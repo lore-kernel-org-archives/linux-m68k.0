@@ -1,68 +1,68 @@
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E4E2951D0
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 08:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A821B295DAA
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 08:39:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750927172; cv=none; b=CR4e4J0j78rtJGacNnzIl1skIgC5Vrw3AkuHH5tcUpSvcNuMMpdn8JMklf7/xOh5CfAqo+AgiI4kcICC2/hUahBfk3R4RHo11uD7k3IiflgOHFYJhU1lG/qPoyb08JtMuRJe3o0QCzbQKm6so9CxWskSqy84z87u8QAM+KTW7Gw=
+	t=1750927191; cv=none; b=MyNKzpWfFyNl6/PPTrLHqnBTs/xVSjOYuwBK94bNJFjigKvsaNqtv4Z+96XlHcWsf54MEDpFvzs8/30Y8XM8eyY8OkKo5w1w1C9swpd65RSqttgbLUPD4VgG1mSLgKnGLv+Th9GNXLA3wYTghDRPkBvS1D5JhTmSXCBH/Ry+OBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750927172; c=relaxed/simple;
-	bh=6PaV7JJYXh8KsTODrQZtbOXxqLUgltfiOiPWjBNzpr8=;
+	s=arc-20240116; t=1750927191; c=relaxed/simple;
+	bh=WUU7H5N5bg4FTysBPqopoztkT9yebyoBSgc2tc9QetA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dtKzT9KSAyUJe20PPzMSMUpxPTDPLI4D6Xqz0OQQr2prf5HvSN1s0uZFY+0KdqV43FdXYPNaCEEAvHS/XjhEwfJR3RUGZ9W2ElABYyF2c42rSecQ6xDUSNU1AX0SmUdXRDqYqtkFGrtTFOrj8Sb5vSVyqlVjADRAege2Y4D8lCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.170
+	 To:Cc:Content-Type; b=IHQVffrfomHsTwP662rlmlaPonXwMV0pLdm6Nubaet27/6ZSkgiSO8upF/3D2KXkxedjd9X6urBv8eRCHDAYK62CdyvlzzrbAchHsikXDFwgfM+66uhslHh/lp+8rkw8HAtkPHt8bgmj1kRkjZ6GNyXn/pGRdFXAeL4ANhQiTog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-5316a5e4c6cso249832e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:39:30 -0700 (PDT)
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-87f234ba1abso161133241.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:39:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750927169; x=1751531969;
+        d=1e100.net; s=20230601; t=1750927188; x=1751531988;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lob2G1MzEWqPTCQFL3Gx57+nKxmTHYmjapAHnccB6w4=;
-        b=C3V/c5FJ5NuSzbP9XADZchv0XxiETDhg55L4m2EyJsaK2hZ9ongHQgZMru9C2pMOub
-         eyIkPdq5Z8vH21ZV9zvqjapB5b6YFTwtcyf3obCdt2Gk0b5igPFzTb7+oyG+4wTMWP59
-         kInv5b1gjBTjFsZwpjxwHRKNCdZ8Ia1izFBcZuf8MR9kyvLAwoNPXz6VfO26z8njW/H4
-         5wIJ8nBid9CBm/hfR7xuGwRIdzN+JppCK+8lTYwU1d8p61Ii7kTofyco3qhZDsJuyRrt
-         z6n3sQrD0MQlYzW9Br2aq7ch+qAEs9sb+Kmu6AI/Wh2YIPBOp3/bH/cUgC2vO5CbH9JP
-         YCpQ==
-X-Gm-Message-State: AOJu0Ywp8PYD8rw6fZzGrkWOlh2SE7I85F1J1SphsgnOWLWXQWC3yu0P
-	E76vAEYtgDi0nbQ9LFgTFazx/3RkGb3ZyK1Cdn5vGOlxxVbCWIeqUV//ybG0jxFf
-X-Gm-Gg: ASbGncsLJuJPvMKp7ZeVmg1RulbL6ISISVZ2DXOUYuME2wqByQ/t8uUjbsYLGa2Gr+3
-	nRkPsgEdaAYVZHuFUA45nojaAvbTELCKulyMlMe+9pXk1t5s8i2uJEsHsvHvgGDGQ1ZlIEazqls
-	8TgC1Ann9MOHOmz5IMmXkwNwcH1Trtk0L6O6IVFlI93tmvZ3YdKgia5rCunAXr9lotW7BiPxHhk
-	oMtnYUBcppgiksE7K+j9f5v0gjLvy4CEDQPHzVd/PGIrj+yreAQL/aNdEw0LMIpI7cbIRZyEqbe
-	IdP3ihgcoEWBqRWC4qFPPz7vT33DL5aySSFnDo92CQPNIzYXJ+OJrEsEmFbTzOMRDnk6bnHD4T3
-	GMSuEtCQyVS57ImBjlEymfe3O
-X-Google-Smtp-Source: AGHT+IH2OOkM3wggZ/vTqj9pmzg4z8NeAOumxexZh4cl9vQC9ypw+5sjC8ptX4qkQG5VGXpsUfSCyw==
-X-Received: by 2002:a05:6122:16a5:b0:530:7a17:88ce with SMTP id 71dfb90a1353d-532ef65b2d1mr4955390e0c.9.1750927169372;
-        Thu, 26 Jun 2025 01:39:29 -0700 (PDT)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-531c37f0f31sm1570805e0c.22.2025.06.26.01.39.29
+        bh=4CXXrh6q12709fq3ouPkXeXw0fUYo3PeMNTc+UDJCbM=;
+        b=Q6ZTSxj/i7suEd/TZ7u9Ltur7+d4uak2/GX/YOw03efapGO9K2GwPnlRjtCkOTBf3P
+         Cvhp/lLeD6dnXZzS8FzCV6knR+1c1x0J7JdX+17VZzs88KAfzNvbHeMB+JxiBRE2/Upu
+         823RmErfWyPs56L0vk5N13xawyzAt/jbVkEGcsTOUa7ehvoLluQ4/CJX/KyQq6w9f/RM
+         /zcd9Pu7+RknnuIsOx4A20tjSss1vM1aoJiyIg7B5rVmfy8VUOMR7TlkiB4paJWvwS/U
+         Fet9hG9ZlZ/5jTqv1n3peYwspchmCEwS/gEzsQNoh3BmN8flgo19SoUP9yCRHLDalIzP
+         y71g==
+X-Gm-Message-State: AOJu0YxHuMq/efK8Q0ZESrDVd+WYbsg1tIFeHUOqzgb8qxY3sPc0dT+u
+	iW5yAK83cEVZQ4pi3pJgwu081nL+xZB1JQfgJK6m/CUnNeaH6yJbF5qZH9gy4kT3
+X-Gm-Gg: ASbGnctPqNYDpTSFBbUvS/oKRryFKfyp7CGWTh8Hcjan4fK+J2/6D2MGaNDKQgnezT9
+	iOmg5au8WMyD8eLRaCwI2WoOWg9QDZxbnDWD2smbQRO30WV3xeas//BhX6qbTcvkLbDvZGlQodC
+	870+nZBaqroFS/6MI2u6MF8/vx9DtHI0mUgEsKHcfyIVWXVIXYUhRi3HQM6anFh0vv2Gjph13Td
+	0+iG7EgAjAm+RqqRHUY8aIE/Ee8pVasJOksnliWErHE0mrWWkxg2LCyaxzhrES5FOkzI4OHra0K
+	WHml502ZlpCI+u1VY4N3DNROVP4s3pEzSX0q0zfdQxWNj5W1PrgcjXfoqaHzf3oV81IYkh//FhM
+	WoB6dMTwbNnjTtzLyzWcDslq9
+X-Google-Smtp-Source: AGHT+IGgjlFvBr8ayWIDn2t99+ZqGfz/1EILYnjg6URENMlQg3eLQRrt2jhB79hYX30oPxBHfVroYw==
+X-Received: by 2002:a05:6122:8c81:b0:52c:4eb0:118d with SMTP id 71dfb90a1353d-532ef39f81emr5082785e0c.4.1750927187981;
+        Thu, 26 Jun 2025 01:39:47 -0700 (PDT)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-531ab3501ecsm2230919e0c.30.2025.06.26.01.39.47
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Jun 2025 01:39:29 -0700 (PDT)
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-87f13aba2ccso137399241.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:39:29 -0700 (PDT)
-X-Received: by 2002:a05:6102:441b:b0:4e5:ac0f:582c with SMTP id
- ada2fe7eead31-4ecc767318cmr4581498137.13.1750927168822; Thu, 26 Jun 2025
- 01:39:28 -0700 (PDT)
+        Thu, 26 Jun 2025 01:39:47 -0700 (PDT)
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4e77d1333aeso195946137.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:39:47 -0700 (PDT)
+X-Received: by 2002:a05:6102:1610:b0:4e9:a2bd:b422 with SMTP id
+ ada2fe7eead31-4ecc7682529mr4585520137.15.1750927187429; Thu, 26 Jun 2025
+ 01:39:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250611001255.527952-1-vishal.moola@gmail.com> <20250611001255.527952-3-vishal.moola@gmail.com>
-In-Reply-To: <20250611001255.527952-3-vishal.moola@gmail.com>
+References: <20250611001255.527952-1-vishal.moola@gmail.com> <20250611001255.527952-4-vishal.moola@gmail.com>
+In-Reply-To: <20250611001255.527952-4-vishal.moola@gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 26 Jun 2025 10:39:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWg6peQCvAbc9pDpwbWaihFgmLXqP_8wCJj0LqM2Aox3Q@mail.gmail.com>
-X-Gm-Features: Ac12FXyvmwAXyOKQTays6DxovKUCjymJjBQVFK-JHF8Pq-Hwz9BIIkfjRAbKh6c
-Message-ID: <CAMuHMdWg6peQCvAbc9pDpwbWaihFgmLXqP_8wCJj0LqM2Aox3Q@mail.gmail.com>
-Subject: Re: [PATCH 2/4] m68k: mm: Convert free_pointer_table() to use ptdescs
+Date: Thu, 26 Jun 2025 10:39:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX0ERhb8KTmEJ-QQdix-yt6iP3SPvvc0hhRj4kjTCVJmw@mail.gmail.com>
+X-Gm-Features: Ac12FXx11KF5_uv-y_hIKWSdWLzp2qstbKTBUYUc-2CxFIYYvesDwIAbfVm6Hi4
+Message-ID: <CAMuHMdX0ERhb8KTmEJ-QQdix-yt6iP3SPvvc0hhRj4kjTCVJmw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] m68k: mm: Convert init_pointer_table() to use ptdescs
 To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
 	Andrew Morton <akpm@linux-foundation.org>
@@ -70,7 +70,7 @@ Content-Type: text/plain; charset="UTF-8"
 
 On Wed, 11 Jun 2025 at 02:13, Vishal Moola (Oracle)
 <vishal.moola@gmail.com> wrote:
-> Motorola uses free_pointer_table() for page tables, so it should be using
+> Motorola uses init_pointer_table() for page tables, so it should be using
 > struct ptdesc, not struct page.
 >
 > This helps us prepare to allocate ptdescs as their own memory
