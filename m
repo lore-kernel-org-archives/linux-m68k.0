@@ -1,130 +1,131 @@
-Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3139938F9C
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Jun 2025 04:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDAC625F7B7
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 08:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750739776; cv=none; b=DPvAO6ebZj0MIksCe0hmAhuF3vI0yvHo/ljYW0WwVhhkfn6mqOgXZm/lNeN7gCppveBNfjNVJUSqHLgEpVvLvxxfak+3RbzhRWWTGHGaiBZR0owDCz+kAckE844+hMiJu+BGuRh6dyJX7Xc3r6X72SwudN/6MVkE4z8nBaMZ17s=
+	t=1750927145; cv=none; b=su+37moDpaNUnvd0UaB/yewq95UTlM1QbON3i5PKmrj8DW4e7iQyvmQ2rFQBjv7YoV5Ruuzi3Vao14mJ+jC1gyrpoWSzWkVjJg2RgwLXWrwOBe4+flgv55uQuP4VqYqqyFJ2yTq2q4gez34ZJe7GkGr/W+RPOYYdxnqcY/rjo9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750739776; c=relaxed/simple;
-	bh=VILg30m1JNzI9tjXF7BsAq6dG9yUHY8m7rz+hsjUtxE=;
-	h=To:Cc:Message-ID:From:Subject:Date; b=KpM50F7KbJdvysatUG4A+uyNR8E/Rmhijfaa5roB+lPKWKQrU5pTNrDlHbRR2iYt1tCgJsUobfOib0pziL7A6I47bGtmxvu2tvubwPfY9HY7FaGz/Ym+2fwK5ePBeDeiz/HuhV3mH4eMyQQdieA3MgxkvhfsJyag8L5XOQ1xDK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=S3QLN7wC; arc=none smtp.client-ip=103.168.172.156
+	s=arc-20240116; t=1750927145; c=relaxed/simple;
+	bh=07vUsEyMksdmohfakBhz4xlamEj3Jb2m/86V7iG/J7s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pA5grof92yK4QOsnMDUJsj3OyDXI4aQmC1/aW0C7fzDo43TsjQ3pNHdvNJfdW2NoV5gJJv2Pels3l7vxukDz2WrVU2cN0y5b7xtkCKh8bZnrdx5A/gqA3nri8g1dCpMEfUqp+oTVYjxmWvQ8F2GgTB1juuejsHdmWdqTM62MfB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="S3QLN7wC"
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 64E631140197;
-	Tue, 24 Jun 2025 00:36:12 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Tue, 24 Jun 2025 00:36:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1750739772; x=1750826172; bh=mn02hylKuA3gScj5sJyFgmyH1Yex
-	Y2TD0lBROkl8QJ0=; b=S3QLN7wCAtB/vn0MwcB0fLx7iUx3fUgn6g3wDHw00WXd
-	VgxG109GsIV6eq0bcHWRzfxCOGFtWQXabjlZ50iIZaNn+FY5WCk6V8s3zLOB5mAz
-	fSlj2Xws/QaNh7Lho8n7tQMst+Q8AXbC2iGYnLCBCS8RHAxuNnKqEj//U733vvzA
-	9g38f4lymY7a0a8fJLCQ/06s6Mpq89Gez08sL2AqkQogWlIz0OtEnwiTKyX8Gct/
-	tBduhSs4/dXxidto6oYnpNg1LhSPVTQNz1WQgiT/iqPy+az66FdeJBvT472pnjly
-	PlsST9GJdWTKsx1k78GHrIOCDcFsr9wnViozs9Q9yg==
-X-ME-Sender: <xms:OytaaAEKoujO1FWa9tBPqdo7HW3VVdf8bcNOBIJRN3bNN7iPvC4Lsw>
-    <xme:OytaaJVE3QAiZWrh9zYwlGXM14oqVeYq_SHLP6ZB6CZbis-I5s4WWzW43sL3sZiCs
-    ufhfctIod_OkNa-Liw>
-X-ME-Received: <xmr:OytaaKJpkJBE7oOTBGzQ4JRVKlnJoez7Fw6Nn-VxIDgXEX3Y5yCwJoBlP24eDL-C3E0IiMU5LZP-gldbFguffbYmo25TwfxLd1w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddukeelhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefvvefkhffuffestddtredttddttdenucfhrhhomhephfhinhhnucfvhhgrihhnuceo
-    fhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnhephe
-    ffgfegfeevgeevtdeiffefveeutdeghfeuheeiteffjeefgfegveefuedvudelnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnse
-    hlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepgedpmhhouggvpehsmhht
-    phhouhhtpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtg
-    hpthhtohepfhhunhgrhhhosehjuhhrrghirdhorhhgpdhrtghpthhtoheplhhinhhugidq
-    mheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlih
-    hnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:OytaaCHyn24ZT7t_M-Xv3y9aGk--1_X0B0j8IlrYbWLcgDK1Lp3vkQ>
-    <xmx:OytaaGWCU94ErwvWlS5CizlIG0yNHzbSYlqvJjsPlDo1XsCI1VL-Vg>
-    <xmx:OytaaFPft_xmQGXb9g5Gm23F77oI0vDykRuS8JezYdIC2U3XV4eW1A>
-    <xmx:OytaaN05EBr5WVxoGt4BG2c7ZivnT0mwnX3x94X6t_Vu6aLcUdo0tg>
-    <xmx:PCtaaDL89vpeWo1EjejnCR96-CfQBPQqzkbO56CPiBL81sF-AvPETGYI>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Jun 2025 00:36:08 -0400 (EDT)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <f7b4c02a1c8ed74ccceb5535d7e1e202deada8ce.1750739568.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v2] m68k/mac: Improve clocksource driver commentary
-Date: Tue, 24 Jun 2025 14:32:48 +1000
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-4e9b26a5e45so244830137.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:39:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750927141; x=1751531941;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3FKr6SOJmsMSyWxgl87rxUfaSgqLues1OApSM1lNIyA=;
+        b=YCooAwWR+zMn7VBnOLNuGc73gLgXS1vs3G9dVFWwVJcLw+fIW71di8INF/rN/iyow5
+         8HGRtRWcV4bCqL13z8loCUw/ycQHgF/Pw8YX6A4j25DdprNNrE+4P7P1Y0my0NFT8+EB
+         gigqCtG+KdkOAguxJsSGHyBtnjy9pKB/fAikLXj2CoMPRjNgaJ42eBxCXp5lzW8w7kQL
+         0a5gFRzJ0q8qyJmbN0KjRfQxn6/OS90DSQf4g1FAdKsGE3dzIeL2BP940kRCFIWvACn5
+         QEwYszjZJx2M1F3msL4NAlLGJ4tKeXjlEIW7LqWwCd7qdUWbBeOwabgApF0+7s8rkmdk
+         6Vgw==
+X-Gm-Message-State: AOJu0Yz4YU6hWt5ZeEvrKK0Tk6ROSt8PX2S2Zp+3SUaHHUkUUb4YhGBy
+	ihvOsBOGoAQfoVTa4qICzbAon3+nSv4SmaT5thJq/TOwR2i72kU/nOlCVkGD9xI0
+X-Gm-Gg: ASbGncvO/NikKOwhPhTGFw9jTwc7NBuW9uhcCdwX6wX88/Du4istNQc4/d4xbAfdxAc
+	+akFMwCqRJhCUCZSu32DhwyaxTNcuLSSZefq8QurhFcmqg83lVS6EszC6mKk3Mn7Bany7HPugNy
+	qp/zuRn1N0IIAnWfCefDs0/H4d26ot+uSZ8EmC1lJ8OXQNH+HoawOL0hZIybMsL/6OLke/KLdDh
+	4O4Vk2DNq+gLmdZ5Z03MTHyO+rBcXGoGeX1S6H1w5G0sfr/U/JlDF7+JVyvjjbyrbN9W1+D3NUl
+	brNUGdmpKjYxRl2DDPWoclpbMdIrPLKyifIhYSStopkf0CoVbzsqaQrN+s7QJeqrMEiNjN67j7z
+	dp1c3jIgyhzXH3PdU71WfwkTU
+X-Google-Smtp-Source: AGHT+IGg5Xo+Z8FgbJxbhOcmAecjGl+H+x/o8TVsAndSoevnnLvOwlOjuKFwQ9+ZqiM3F7elHkf+qQ==
+X-Received: by 2002:a05:6102:441b:b0:4e5:ac0f:582c with SMTP id ada2fe7eead31-4ecc767318cmr4581199137.13.1750927141027;
+        Thu, 26 Jun 2025 01:39:01 -0700 (PDT)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-884d1db7935sm166610241.33.2025.06.26.01.39.00
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Jun 2025 01:39:00 -0700 (PDT)
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-87f13aba2ccso137282241.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 01:39:00 -0700 (PDT)
+X-Received: by 2002:a05:6102:c8d:b0:4e5:9628:9e39 with SMTP id
+ ada2fe7eead31-4ecc6a7750bmr4213230137.6.1750927139785; Thu, 26 Jun 2025
+ 01:38:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20250611001255.527952-1-vishal.moola@gmail.com> <20250611001255.527952-2-vishal.moola@gmail.com>
+In-Reply-To: <20250611001255.527952-2-vishal.moola@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 26 Jun 2025 10:38:48 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXd=eha_pRNGCFHN7sS2OOh60cj=c=yPUyg_-J0S8V8yQ@mail.gmail.com>
+X-Gm-Features: Ac12FXzbd6ICmeY6_N3sDigtBp9r-6oclQKShUI06FUTJz5bv9x-2knTpcY-Rxo
+Message-ID: <CAMuHMdXd=eha_pRNGCFHN7sS2OOh60cj=c=yPUyg_-J0S8V8yQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] m68k: mm: Convert get_pointer_table() to use ptdescs
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 
-qemu-system-m68k -M q800 has an old bug that causes the kernel to
-occasionally complain about a soft lockup:
+Hi Vishal,
 
-    watchdog: BUG: soft lockup - CPU#0 stuck for 5107s!
+On Wed, 11 Jun 2025 at 02:13, Vishal Moola (Oracle)
+<vishal.moola@gmail.com> wrote:
+> Motorola uses get_pointer_table() for page tables, so it should be using
+> struct ptdesc, not struct page.
+>
+> This helps us prepare to allocate ptdescs as their own memory
+> descriptor, and prepares to remove a user of page->lru.
+>
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-There isn't any actual lockup. The via1 clocksource produced a large
-jump in jiffies, causing the watchdog to detect a stale timestamp.
+Thanks for your patch!
 
-The 32-bit clocksource counter runs at 783360 Hz and its period is
-about 5482 seconds. Applying the "nanosecond" approximation used in
-get_timestamp() in kernel/watchdog.c then yields the duration reported
-in the log message above (always 5107 or 5108 in my tests):
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.17, with the small changes
+described below.
 
-0xffffffff / VIA_CLOCK_FREQ * 10**9 / 2**30 = 5106.209 seconds
+> --- a/arch/m68k/mm/motorola.c
+> +++ b/arch/m68k/mm/motorola.c
+> @@ -148,16 +148,18 @@ void *get_pointer_table(struct mm_struct *mm, int type)
+>
+>         /*
+>          * For a pointer table for a user process address space, a
+> -        * table is taken from a page allocated for the purpose.  Each
+> -        * page can hold 8 pointer tables.  The page is remapped in
+> +        * table is taken from a ptdesc allocated for the purpose.  Each
+> +        * ptdesc can hold 8 pointer tables.  The ptdesc is remapped in
+>          * virtual address space to be noncacheable.
+>          */
+>         if (mask == 0) {
+> -               void *page;
+> +               struct ptdesc *ptdesc = pagetable_alloc(GFP_KERNEL | __GFP_ZERO, 0);
 
-It is notoriously difficult to correctly emulate a MOS6522 VIA chip. So
-it seems wise to document the VIA clocksource driver better, especially
-those hardware behaviours which the kernel relies upon.
+I will move the assignment just before the NULL-check below, to ease
+applying the WIP preempt patches on top.
 
-Cc: Joshua Thompson <funaho@jurai.org>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Changed since v1:
- - The letters A through E could be mistaken for hex digits so number the
-   states using roman numerals instead.
----
- arch/m68k/mac/via.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> +               void *pt_addr;
 
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 9320d71ba8e9..5f77de8a7767 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -622,6 +622,22 @@ static u64 mac_read_clk(struct clocksource *cs)
- 	 * These problems are avoided by ignoring the low byte. Clock accuracy
- 	 * is 256 times worse (error can reach 0.327 ms) but CPU overhead is
- 	 * reduced by avoiding slow VIA register accesses.
-+	 *
-+	 * The VIA timer counter observably decrements to 0xFFFF before the
-+	 * counter reload interrupt gets raised. That complicates things a bit.
-+	 *
-+	 * State | vT1CH      | VIA_TIMER_1_INT | inference drawn
-+	 * ------+------------+-----------------+-----------------------------
-+	 * i     | FE thru 00 | false           | counter is decrementing
-+	 * ii    | FF         | false           | counter wrapped
-+	 * iii   | FF         | true            | wrapped, interrupt raised
-+	 * iv    | FF         | false           | wrapped, interrupt handled
-+	 * v     | FE thru 00 | true            | wrapped, interrupt unhandled
-+	 *
-+	 * State iv is never observed because handling the interrupt involves
-+	 * a 6522 register access and every access consumes a "phi 2" clock
-+	 * cycle. So 0xFF implies either state ii or state iii, depending on
-+	 * the value of the VIA_TIMER_1_INT bit.
- 	 */
- 
- 	local_irq_save(flags);
--- 
-2.49.0
+I will move this one line down, to follow the reverse Xmas rule.
 
+>                 ptable_desc *new;
+>
+> -               if (!(page = (void *)get_zeroed_page(GFP_KERNEL)))
+> +               if (!ptdesc)
+>                         return NULL;
+> +               pt_addr = ptdesc_address(ptdesc);
+>
+>                 switch (type) {
+>                 case TABLE_PTE:
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
