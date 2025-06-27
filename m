@@ -1,147 +1,108 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79BBD1DE2DC
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Jun 2025 11:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E63661E572F
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Jun 2025 06:00:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750937108; cv=none; b=QVYk2Mh7+pBitSGmnmDG4wBWHNvmkoqJ6i9eo0JLkeg5bzX44l/JbUvsEN1cBuSb3+l5lT2Zn9LpqdGJ5L17+ArFXP536B2LOfHbAubwtgHGdJrlhqRyobGYK8l515tBkTve1KCB+/JRB0VQ9a+01/u1hjOJbnKTjD7/XCiBj1k=
+	t=1751004003; cv=none; b=iXAaUC6SvjXm50QIAiio4XWnT+mlv0sezXa/fmMkHz5K/Bn+ESaNB/MRBoZdZW/TWLlg+lqvKPc9z6mgVv8aChv8u6LPVvy/5sAwGvnTzVPfyKdg5DeMnAPxhp6fUYxsCrFSvenWwmgwv0isKuC+0j8A71RFXBUqDNbgpyGefuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750937108; c=relaxed/simple;
-	bh=WPi7lZxfyGk2K+kKqnWvYWwj/GG6aQbbRdFMQNfcNX8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=hm4o6IUve3WlfsAZWxC61WsheK58w8Yf1A8LKdrHOYtyZDYDS4xOd45/heYEu7Di/DemY8UhALXXm9VHmMzneYfVZ3LLGmbDJ+gWb3LUF9wA1nfy6Y4T7J0KTAlJNIv7Xwc6tFvcDX8vfnFRpkx8rlEJlKIm1C7foW+0axNv0m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gRe+9wNW; arc=none smtp.client-ip=192.198.163.7
+	s=arc-20240116; t=1751004003; c=relaxed/simple;
+	bh=PNjNZMpScHoR5w6If3yM1SnGGvv4bf5QJBsM8IGLZV4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ZiA/69TNVkpT9v027TVIdaMeFhZ6YSvLIFrSVDnHDie9zMElJMFkOWUjNIGfRhTbpP51NadDnkwC9/qfpL2NcD3FichmPRUBdK/vFfNcGpicMCiThe6BIepl4Fw2SuQMI9wVzrdpkkX6xONPjBVbsrf7FcXwrYSw8vZ0TrZF4PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jS5nYgkJ; arc=none smtp.client-ip=198.175.65.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gRe+9wNW"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jS5nYgkJ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1750937107; x=1782473107;
-  h=date:from:to:cc:subject:message-id;
-  bh=WPi7lZxfyGk2K+kKqnWvYWwj/GG6aQbbRdFMQNfcNX8=;
-  b=gRe+9wNW7wQbOFTA0TqpL7xf5BNuFqBIt3WnTX2P7l+OD+rTP0a60EZm
-   WpDyw+Y6bcMJhzIvoTWOFJc6zAcb/tUbl6efnQ7qSCvtELnyIHcLlfUe2
-   zau5U0QD/+lLR2pNBrLvbUId55hppjMCHPkkXpdkZ0u8KO7SqV3MNNns0
-   HrYX30RtCa4JPGx8NLxwneg0wHkkIQLUNMcetDUBIIgtjoAFCaC46f8u5
-   ZiXn9caL+w1UPgvUuciLxt/hZ0BxADgjANfBS//V/6CTqQlrF8o87Dsr1
-   jebK2RV9AEOwqXOpJcr6mkGuwtvNVPiXEWEx8K029yTCki04QZ37cxBkB
-   g==;
-X-CSE-ConnectionGUID: 1a6k7bZhRdCtDf939LYwoA==
-X-CSE-MsgGUID: DyShVcNNT123BYF0wINJpg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11475"; a="78665402"
-X-IronPort-AV: E=Sophos;i="6.16,267,1744095600"; 
-   d="scan'208";a="78665402"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2025 04:25:05 -0700
-X-CSE-ConnectionGUID: OMT2AG9SThqJ8+ZLidRkCg==
-X-CSE-MsgGUID: y7Ofr7cfSDC4XYCYz61EkQ==
+  t=1751004002; x=1782540002;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=PNjNZMpScHoR5w6If3yM1SnGGvv4bf5QJBsM8IGLZV4=;
+  b=jS5nYgkJYqD667LMGFl6QovCcyGHD6L8q6HwK5r0yJo6kJqGwEbR+M5N
+   sp2kJgd4aq8woZpSHmIUS1rypt9QXla608ttS/1ur9n/zE+sSVHJnyG2r
+   qKp/dR47bY9yhS7dKehsv/fIU/BELl8e2IIsdux0GhdLXFcT6XCYKMeb3
+   Wn6g2d/4/Z2ff7c6VIkfJK3JlSzn4Kx8CizWpIAnUXPrnGmcdUbljhpWi
+   9YjruEmIASXIAv5GOjpzPoAwhF/pPImzuWl5BXlInzs09GQ8KjzBa2Pa+
+   wfczox1AfunbCEG2CsEHenMEZfWBqhPRUF+ndBtbHiWjWGt9Katrm96vD
+   w==;
+X-CSE-ConnectionGUID: sWfIenH0T+CnWn6A+rO9tQ==
+X-CSE-MsgGUID: 7HBD/w12R4ql7JhvfkDv6g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11476"; a="63569806"
+X-IronPort-AV: E=Sophos;i="6.16,269,1744095600"; 
+   d="scan'208";a="63569806"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2025 23:00:01 -0700
+X-CSE-ConnectionGUID: qIAPEiwdQJCUGJBChcHHrA==
+X-CSE-MsgGUID: O1Bz6RBsRnqMXQ9UtQ6qaw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,267,1744095600"; 
-   d="scan'208";a="152994913"
+X-IronPort-AV: E=Sophos;i="6.16,269,1744095600"; 
+   d="scan'208";a="157009570"
 Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 26 Jun 2025 04:25:05 -0700
+  by fmviesa005.fm.intel.com with ESMTP; 26 Jun 2025 22:59:59 -0700
 Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1uUkiz-000Tzy-2y;
-	Thu, 26 Jun 2025 11:25:01 +0000
-Date: Thu, 26 Jun 2025 19:24:24 +0800
+	id 1uV27x-000VqE-0u;
+	Fri, 27 Jun 2025 05:59:57 +0000
+Date: Fri, 27 Jun 2025 13:59:04 +0800
 From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 56305a98e411188bfdb8b66d6595d083b96897e7
-Message-ID: <202506261914.iLP3Vzv5-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:dt 7/14] arch/m68k/coldfire/intc.c:173:34: error:
+ 'MCFINT_VECBASE' undeclared
+Message-ID: <202506271329.TPfKPXfx-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 56305a98e411188bfdb8b66d6595d083b96897e7  Merge tag 'v6.16-rc3'
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
+head:   f1fa7fc50979940f45a83a33ea77b41c98d8e29b
+commit: bd3e6e3ba6e920be08054f1c066c0cf8801875af [7/14] m68k: coldfire: support devicetree binding for intc controller
+config: m68k-amcore_defconfig (https://download.01.org/0day-ci/archive/20250627/202506271329.TPfKPXfx-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 15.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250627/202506271329.TPfKPXfx-lkp@intel.com/reproduce)
 
-elapsed time: 1455m
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202506271329.TPfKPXfx-lkp@intel.com/
 
-configs tested: 70
-configs skipped: 1
+All errors (new ones prefixed by >>):
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+   arch/m68k/coldfire/intc.c: In function 'intc_of_init':
+>> arch/m68k/coldfire/intc.c:173:34: error: 'MCFINT_VECBASE' undeclared (first use in this function)
+     173 |         const unsigned int num = MCFINT_VECBASE + 64;
+         |                                  ^~~~~~~~~~~~~~
+   arch/m68k/coldfire/intc.c:173:34: note: each undeclared identifier is reported only once for each function it appears in
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                   randconfig-001-20250625    gcc-11.5.0
-arc                   randconfig-002-20250625    gcc-12.4.0
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-15.1.0
-arm                   randconfig-001-20250625    clang-21
-arm                   randconfig-002-20250625    gcc-11.5.0
-arm                   randconfig-003-20250625    gcc-13.3.0
-arm                   randconfig-004-20250625    gcc-15.1.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250625    gcc-11.5.0
-arm64                 randconfig-002-20250625    clang-20
-arm64                 randconfig-003-20250625    gcc-12.3.0
-arm64                 randconfig-004-20250625    clang-20
-csky                              allnoconfig    gcc-15.1.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250625    clang-20
-i386        buildonly-randconfig-002-20250625    gcc-12
-i386        buildonly-randconfig-003-20250625    gcc-12
-i386        buildonly-randconfig-004-20250625    gcc-12
-i386        buildonly-randconfig-005-20250625    clang-20
-i386        buildonly-randconfig-006-20250625    clang-20
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    gcc-15.1.0
-loongarch                         allnoconfig    gcc-15.1.0
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-14.2.0
-openrisc                          allnoconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-riscv                             allnoconfig    gcc-15.1.0
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-15.1.0
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250626    clang-20
-x86_64      buildonly-randconfig-002-20250626    clang-20
-x86_64      buildonly-randconfig-003-20250626    clang-20
-x86_64      buildonly-randconfig-004-20250626    clang-20
-x86_64      buildonly-randconfig-005-20250626    clang-20
-x86_64      buildonly-randconfig-006-20250626    clang-20
-x86_64                              defconfig    gcc-11
-x86_64                          rhel-9.4-rust    clang-18
-xtensa                            allnoconfig    gcc-15.1.0
 
---
+vim +/MCFINT_VECBASE +173 arch/m68k/coldfire/intc.c
+
+   169	
+   170	static int __init intc_of_init(struct device_node *np,
+   171				       struct device_node *parent)
+   172	{
+ > 173		const unsigned int num = MCFINT_VECBASE + 64;
+   174		struct irq_domain *domain;
+   175		int irq;
+   176	
+   177		domain = irq_domain_add_linear(np, num, &intc_irqdomain_ops, NULL);
+   178	
+   179		for (irq = MCFINT_VECBASE; irq < num; irq++)
+   180			irq_create_mapping(domain, irq);
+   181	
+   182		return 0;
+   183	}
+   184	
+
+-- 
 0-DAY CI Kernel Test Service
 https://github.com/intel/lkp-tests/wiki
