@@ -1,89 +1,237 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77340246784
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Jul 2025 09:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FAF275AFF
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Jul 2025 13:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751360663; cv=none; b=EAb+HOnEFBOjMcpSi041FEcKqjo+QnVzT9c0l6OvAPq6REF6+rbCeEtxx72Kh0cnC3XmD7yxSt5ARDDAXV8Co2NqJ0YsM0Ee8EgmHyDeLUJAsXZdXn4Y0Nmv4sgK528SsiODRw8uF+J+adciPFWuICTbFvSgokNaJCVj+fbYu+0=
+	t=1751378197; cv=none; b=ZeJeH/jdoLpxAw1DuzzD937zilgQErhF1v+lnmoXqjITYlEM1WRdpEOv/mFwiNn60RNcYeJQj9XK8GcDnSUkpxXmCrnwUpwrUa9pwII9/RsseKTbN7HSFkyoqTgTjGpM55se0+HJ0Z0ofYGCcrfzkBoOwuCo4csfJvw4X5gsX50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751360663; c=relaxed/simple;
-	bh=EQtISQAZO5Qgnmieoc1daWZObnSmksWwypA80rM6uwA=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=juTjBSZ96pmUTncduVHcKv2+etNpvF857t4Hu8FIvi7aQgvo/Hjqw0DuX7z+8CROEndqFMQdZn3kuNG5OhGjheI+zWulXsG01PifSrIvn+9A2xxEmx8wcr/yN8+QR+MrZSrXopKLgC+rBbENVG8LuL+s90HXVWBcNzXDRqFzryo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Oj6f3AwG; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Oj6f3AwG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1751360661; x=1782896661;
-  h=date:from:to:cc:subject:message-id;
-  bh=EQtISQAZO5Qgnmieoc1daWZObnSmksWwypA80rM6uwA=;
-  b=Oj6f3AwGUSfQyb6IDnyKI4hDITYmH9xBrWHKGEI9ZyQibyPlPJtLrknj
-   aFeEmBFmkmA4qf/lSpKDreTLZ7nNZB/DScJ1JM8+n3oQ66B5V1CNIELfl
-   02a5h3wRa+QnBR72Uc+JF15iESWhSL4nOVPj/aokyroBNKnZ7JhOImzsu
-   agLTIOvug2nnCmqMDR1JfVq1vdiNDkc+yvCR3ald/ZaTyfJqx6jnz4WSl
-   oW04QMf4rHWPJwwfbe1ytk0l1ocC+nRLYWvtXOgtxgeCLOk5RgdQ6ckmy
-   6f5zHAiwgGp5plMxtbjk7FAur3rdbXsUP+Ao5uXDneaL10z7hGO2QVqVA
-   g==;
-X-CSE-ConnectionGUID: jG0q6MmKTiqXLOvAW90EWg==
-X-CSE-MsgGUID: 3S4cdjUdR9OSI57xnziG2Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11480"; a="53575630"
-X-IronPort-AV: E=Sophos;i="6.16,279,1744095600"; 
-   d="scan'208";a="53575630"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2025 02:04:20 -0700
-X-CSE-ConnectionGUID: hM7L3rnpSZu/C22cJtXfWA==
-X-CSE-MsgGUID: 4wh7BH9oRPCs9opjWU1p4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,279,1744095600"; 
-   d="scan'208";a="154431687"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 01 Jul 2025 02:04:19 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uWWuX-000Zve-0X;
-	Tue, 01 Jul 2025 09:04:17 +0000
-Date: Tue, 01 Jul 2025 17:03:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-v6.17] BUILD SUCCESS
- 8135422ae047fe0d5b7e8017f3fd43cf4dfa80c4
-Message-ID: <202507011722.o7gU0O5o-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1751378197; c=relaxed/simple;
+	bh=OjzN30GIiPcplOAaeYUjDuVVavt00lwj5wf5fyxHSgE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S05gTkHLE8V4iYRybtCUgNkBFpBODX1NP+Y1isp8ot0h0LfyhJx8NpxOkW5YCRFHdJmx44iUQh8V1dRAAuqsTIMaEMxqm24S043xBCJ+esNB8Kb4lmUk0OBHTNA9A44+vQEwnvEZzeEUiY80aNJvpKQcAn4Ma2z3jQvWvrjbffE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C6151515;
+	Tue,  1 Jul 2025 06:56:18 -0700 (PDT)
+Received: from e133380.cambridge.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE12C3F58B;
+	Tue,  1 Jul 2025 06:56:23 -0700 (PDT)
+From: Dave Martin <Dave.Martin@arm.com>
+To: linux-kernel@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Akihiko Odaki <akihiko.odaki@daynix.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Chris Zankel <chris@zankel.net>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Jonas Bonn <jonas@southpole.se>,
+	Kees Cook <kees@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Rich Felker <dalias@libc.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH 00/23] binfmt_elf,arch/*: Use elf.h for coredump note names
+Date: Tue,  1 Jul 2025 14:55:53 +0100
+Message-Id: <20250701135616.29630-1-Dave.Martin@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.17
-branch HEAD: 8135422ae047fe0d5b7e8017f3fd43cf4dfa80c4  m68k: mm: Convert pointer table macros to use ptdescs
+This series aims to clean up an aspect of coredump generation:
 
-elapsed time: 800m
+ELF coredumps contain a set of notes describing the state of machine
+registers and other information about the dumped process.
 
-configs tested: 12
-configs skipped: 131
+Notes are identified by a numeric identifier n_type and a "name"
+string, although this terminology is somewhat misleading.  Officially,
+the "name" of a note is really an "originator" or namespace identifier
+that indicates how to interpret n_type [1], although in practice it is
+often used more loosely.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Either way, each kind of note needs _both_ a specific "name" string and
+a specific n_type to identify it robustly.
 
-tested configs:
-loongarch   allmodconfig    gcc-15.1.0
-m68k        allmodconfig    gcc-15.1.0
-m68k         allnoconfig    gcc-15.1.0
-m68k        allyesconfig    gcc-15.1.0
-microblaze  allmodconfig    gcc-15.1.0
-microblaze   allnoconfig    gcc-15.1.0
-microblaze  allyesconfig    gcc-15.1.0
-mips         allnoconfig    gcc-15.1.0
-nios2        allnoconfig    gcc-14.2.0
-sh           allnoconfig    gcc-15.1.0
-sparc        allnoconfig    gcc-15.1.0
-xtensa       allnoconfig    gcc-15.1.0
+To centralise this knowledge in one place and avoid the need for ad-hoc
+code to guess the correct name for a given note, commit 7da8e4ad4df0
+("elf: Define note name macros") [2] added an explicit NN_<foo> #define
+in elf.h to give the name corresponding to each named note type
+NT_<foo>.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Now that the note name for each note is specified explicitly, the
+remaining guesswork for determining the note name for common and
+arch-specific regsets in ELF core dumps can be eliminated.
+
+This series aims to do just that:
+
+ * Patch 2 adds a user_regset field to specify the note name, and a
+   helper macro to populate it correctly alongside the note type.
+
+ * Patch 3 ports away the ad-hoc note names in the common coredump
+   code.
+
+ * Patches 4-22 make the arch-specific changes.  (This is pretty
+   mechanical for most arches.)
+
+ * The final patch adds a WARN() when no note name is specified,
+   and simplifies the fallback guess.  This should only be applied
+   when all arches have ported across.
+
+See the individual patches for details.
+
+
+Testing:
+
+ * x86, arm64: Booted in a VM and triggered a core dump with no WARN(),
+   and verified that the dumped notes are the same.
+
+ * arm: Build-tested only (for now).
+
+ * Other arches: not tested yet
+
+Any help with testing is appreciated.  If the following generates the
+same notes (as dumped by readelf -n core) and doesn't trigger a WARN,
+then we are probably good.
+
+$ sleep 60 &
+$ kill -QUIT $!
+
+(Register content might differ between runs, but it should be safe to
+ignore that -- this series only deals with the note names and types.)
+
+Cheers
+---Dave
+
+
+[1] System V Application Binary Interface, Edition 4.1,
+Section 5 (Program Loading and Dynamic Linking) -> "Note Section"
+
+https://refspecs.linuxfoundation.org/elf/gabi41.pdf
+
+[2] elf: Define note name macros
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/uapi/linux/elf.h?id=7da8e4ad4df0dd12f37357af62ce1b63e75ae2e6
+
+
+Dave Martin (23):
+  regset: Fix kerneldoc for struct regset_get() in user_regset
+  regset: Add explicit core note name in struct user_regset
+  binfmt_elf: Dump non-arch notes with strictly matching name and type
+  ARC: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  ARM: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  arm64: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  csky: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  hexagon: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  LoongArch: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  m68k: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  MIPS: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  nios2: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  openrisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  parisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  powerpc/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  riscv: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  s390/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  sh: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  sparc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  x86/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  um: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+  xtensa: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+    names
+  binfmt_elf: Warn on missing or suspicious regset note names
+
+ arch/arc/kernel/ptrace.c                 |  4 +-
+ arch/arm/kernel/ptrace.c                 |  6 +-
+ arch/arm64/kernel/ptrace.c               | 52 ++++++++---------
+ arch/csky/kernel/ptrace.c                |  4 +-
+ arch/hexagon/kernel/ptrace.c             |  2 +-
+ arch/loongarch/kernel/ptrace.c           | 16 ++---
+ arch/m68k/kernel/ptrace.c                |  4 +-
+ arch/mips/kernel/ptrace.c                | 20 +++----
+ arch/nios2/kernel/ptrace.c               |  2 +-
+ arch/openrisc/kernel/ptrace.c            |  4 +-
+ arch/parisc/kernel/ptrace.c              |  8 +--
+ arch/powerpc/kernel/ptrace/ptrace-view.c | 74 ++++++++++++------------
+ arch/riscv/kernel/ptrace.c               | 12 ++--
+ arch/s390/kernel/ptrace.c                | 42 +++++++-------
+ arch/sh/kernel/ptrace_32.c               |  4 +-
+ arch/sparc/kernel/ptrace_32.c            |  4 +-
+ arch/sparc/kernel/ptrace_64.c            |  8 +--
+ arch/x86/kernel/ptrace.c                 | 22 +++----
+ arch/x86/um/ptrace.c                     | 10 ++--
+ arch/xtensa/kernel/ptrace.c              |  4 +-
+ fs/binfmt_elf.c                          | 36 +++++++-----
+ fs/binfmt_elf_fdpic.c                    | 17 +++---
+ include/linux/regset.h                   | 12 +++-
+ 23 files changed, 194 insertions(+), 173 deletions(-)
+
+
+base-commit: 86731a2a651e58953fc949573895f2fa6d456841
+-- 
+2.34.1
+
