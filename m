@@ -1,108 +1,89 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E63661E572F
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Jun 2025 06:00:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77340246784
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Jul 2025 09:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751004003; cv=none; b=iXAaUC6SvjXm50QIAiio4XWnT+mlv0sezXa/fmMkHz5K/Bn+ESaNB/MRBoZdZW/TWLlg+lqvKPc9z6mgVv8aChv8u6LPVvy/5sAwGvnTzVPfyKdg5DeMnAPxhp6fUYxsCrFSvenWwmgwv0isKuC+0j8A71RFXBUqDNbgpyGefuE=
+	t=1751360663; cv=none; b=EAb+HOnEFBOjMcpSi041FEcKqjo+QnVzT9c0l6OvAPq6REF6+rbCeEtxx72Kh0cnC3XmD7yxSt5ARDDAXV8Co2NqJ0YsM0Ee8EgmHyDeLUJAsXZdXn4Y0Nmv4sgK528SsiODRw8uF+J+adciPFWuICTbFvSgokNaJCVj+fbYu+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751004003; c=relaxed/simple;
-	bh=PNjNZMpScHoR5w6If3yM1SnGGvv4bf5QJBsM8IGLZV4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ZiA/69TNVkpT9v027TVIdaMeFhZ6YSvLIFrSVDnHDie9zMElJMFkOWUjNIGfRhTbpP51NadDnkwC9/qfpL2NcD3FichmPRUBdK/vFfNcGpicMCiThe6BIepl4Fw2SuQMI9wVzrdpkkX6xONPjBVbsrf7FcXwrYSw8vZ0TrZF4PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jS5nYgkJ; arc=none smtp.client-ip=198.175.65.11
+	s=arc-20240116; t=1751360663; c=relaxed/simple;
+	bh=EQtISQAZO5Qgnmieoc1daWZObnSmksWwypA80rM6uwA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=juTjBSZ96pmUTncduVHcKv2+etNpvF857t4Hu8FIvi7aQgvo/Hjqw0DuX7z+8CROEndqFMQdZn3kuNG5OhGjheI+zWulXsG01PifSrIvn+9A2xxEmx8wcr/yN8+QR+MrZSrXopKLgC+rBbENVG8LuL+s90HXVWBcNzXDRqFzryo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Oj6f3AwG; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jS5nYgkJ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Oj6f3AwG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1751004002; x=1782540002;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=PNjNZMpScHoR5w6If3yM1SnGGvv4bf5QJBsM8IGLZV4=;
-  b=jS5nYgkJYqD667LMGFl6QovCcyGHD6L8q6HwK5r0yJo6kJqGwEbR+M5N
-   sp2kJgd4aq8woZpSHmIUS1rypt9QXla608ttS/1ur9n/zE+sSVHJnyG2r
-   qKp/dR47bY9yhS7dKehsv/fIU/BELl8e2IIsdux0GhdLXFcT6XCYKMeb3
-   Wn6g2d/4/Z2ff7c6VIkfJK3JlSzn4Kx8CizWpIAnUXPrnGmcdUbljhpWi
-   9YjruEmIASXIAv5GOjpzPoAwhF/pPImzuWl5BXlInzs09GQ8KjzBa2Pa+
-   wfczox1AfunbCEG2CsEHenMEZfWBqhPRUF+ndBtbHiWjWGt9Katrm96vD
-   w==;
-X-CSE-ConnectionGUID: sWfIenH0T+CnWn6A+rO9tQ==
-X-CSE-MsgGUID: 7HBD/w12R4ql7JhvfkDv6g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11476"; a="63569806"
-X-IronPort-AV: E=Sophos;i="6.16,269,1744095600"; 
-   d="scan'208";a="63569806"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2025 23:00:01 -0700
-X-CSE-ConnectionGUID: qIAPEiwdQJCUGJBChcHHrA==
-X-CSE-MsgGUID: O1Bz6RBsRnqMXQ9UtQ6qaw==
+  t=1751360661; x=1782896661;
+  h=date:from:to:cc:subject:message-id;
+  bh=EQtISQAZO5Qgnmieoc1daWZObnSmksWwypA80rM6uwA=;
+  b=Oj6f3AwGUSfQyb6IDnyKI4hDITYmH9xBrWHKGEI9ZyQibyPlPJtLrknj
+   aFeEmBFmkmA4qf/lSpKDreTLZ7nNZB/DScJ1JM8+n3oQ66B5V1CNIELfl
+   02a5h3wRa+QnBR72Uc+JF15iESWhSL4nOVPj/aokyroBNKnZ7JhOImzsu
+   agLTIOvug2nnCmqMDR1JfVq1vdiNDkc+yvCR3ald/ZaTyfJqx6jnz4WSl
+   oW04QMf4rHWPJwwfbe1ytk0l1ocC+nRLYWvtXOgtxgeCLOk5RgdQ6ckmy
+   6f5zHAiwgGp5plMxtbjk7FAur3rdbXsUP+Ao5uXDneaL10z7hGO2QVqVA
+   g==;
+X-CSE-ConnectionGUID: jG0q6MmKTiqXLOvAW90EWg==
+X-CSE-MsgGUID: 3S4cdjUdR9OSI57xnziG2Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11480"; a="53575630"
+X-IronPort-AV: E=Sophos;i="6.16,279,1744095600"; 
+   d="scan'208";a="53575630"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2025 02:04:20 -0700
+X-CSE-ConnectionGUID: hM7L3rnpSZu/C22cJtXfWA==
+X-CSE-MsgGUID: 4wh7BH9oRPCs9opjWU1p4w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,269,1744095600"; 
-   d="scan'208";a="157009570"
+X-IronPort-AV: E=Sophos;i="6.16,279,1744095600"; 
+   d="scan'208";a="154431687"
 Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 26 Jun 2025 22:59:59 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 01 Jul 2025 02:04:19 -0700
 Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1uV27x-000VqE-0u;
-	Fri, 27 Jun 2025 05:59:57 +0000
-Date: Fri, 27 Jun 2025 13:59:04 +0800
+	id 1uWWuX-000Zve-0X;
+	Tue, 01 Jul 2025 09:04:17 +0000
+Date: Tue, 01 Jul 2025 17:03:32 +0800
 From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:dt 7/14] arch/m68k/coldfire/intc.c:173:34: error:
- 'MCFINT_VECBASE' undeclared
-Message-ID: <202506271329.TPfKPXfx-lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:for-v6.17] BUILD SUCCESS
+ 8135422ae047fe0d5b7e8017f3fd43cf4dfa80c4
+Message-ID: <202507011722.o7gU0O5o-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
-head:   f1fa7fc50979940f45a83a33ea77b41c98d8e29b
-commit: bd3e6e3ba6e920be08054f1c066c0cf8801875af [7/14] m68k: coldfire: support devicetree binding for intc controller
-config: m68k-amcore_defconfig (https://download.01.org/0day-ci/archive/20250627/202506271329.TPfKPXfx-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250627/202506271329.TPfKPXfx-lkp@intel.com/reproduce)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v6.17
+branch HEAD: 8135422ae047fe0d5b7e8017f3fd43cf4dfa80c4  m68k: mm: Convert pointer table macros to use ptdescs
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506271329.TPfKPXfx-lkp@intel.com/
+elapsed time: 800m
 
-All errors (new ones prefixed by >>):
+configs tested: 12
+configs skipped: 131
 
-   arch/m68k/coldfire/intc.c: In function 'intc_of_init':
->> arch/m68k/coldfire/intc.c:173:34: error: 'MCFINT_VECBASE' undeclared (first use in this function)
-     173 |         const unsigned int num = MCFINT_VECBASE + 64;
-         |                                  ^~~~~~~~~~~~~~
-   arch/m68k/coldfire/intc.c:173:34: note: each undeclared identifier is reported only once for each function it appears in
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+loongarch   allmodconfig    gcc-15.1.0
+m68k        allmodconfig    gcc-15.1.0
+m68k         allnoconfig    gcc-15.1.0
+m68k        allyesconfig    gcc-15.1.0
+microblaze  allmodconfig    gcc-15.1.0
+microblaze   allnoconfig    gcc-15.1.0
+microblaze  allyesconfig    gcc-15.1.0
+mips         allnoconfig    gcc-15.1.0
+nios2        allnoconfig    gcc-14.2.0
+sh           allnoconfig    gcc-15.1.0
+sparc        allnoconfig    gcc-15.1.0
+xtensa       allnoconfig    gcc-15.1.0
 
-vim +/MCFINT_VECBASE +173 arch/m68k/coldfire/intc.c
-
-   169	
-   170	static int __init intc_of_init(struct device_node *np,
-   171				       struct device_node *parent)
-   172	{
- > 173		const unsigned int num = MCFINT_VECBASE + 64;
-   174		struct irq_domain *domain;
-   175		int irq;
-   176	
-   177		domain = irq_domain_add_linear(np, num, &intc_irqdomain_ops, NULL);
-   178	
-   179		for (irq = MCFINT_VECBASE; irq < num; irq++)
-   180			irq_create_mapping(domain, irq);
-   181	
-   182		return 0;
-   183	}
-   184	
-
--- 
+--
 0-DAY CI Kernel Test Service
 https://github.com/intel/lkp-tests/wiki
