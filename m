@@ -1,195 +1,129 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F629283689
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Jul 2025 19:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDEF927603B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  2 Jul 2025 13:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751399631; cv=none; b=FpkRg7+3AiV2q21dyTvK1xlgMhjuv/CQZHzClpgw6+ri43LdaLdhhJ27lAr3P6BWe1vu+95ME+ZrYWXScu2izYpJjDOpaINyDh5iaxGbiTujDjo7sZOxL+sMw0uP6nRzR0+Hf4y3j5GqH78ml6MtbZp0BpqwS08npJ1qh6JM7g4=
+	t=1751461235; cv=none; b=JePDMWyDYmBsnq5D4zQnHvjlTq6ZK/YJue09YZERnrSIgr65nleuq3XTZDoEJe7VHuvn476lataqaqCdxL36t2VKokFDSdoZbK47gsCJYxFBObZMzhybtGUPfNQjGAYKRikIFuXsksg9uV0XhljURtV279wHZk90h5XCjbXAwZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751399631; c=relaxed/simple;
-	bh=+C9Yss4YdWSzHwvGBYKKeNsfjSXaZu9ih9J7wMvojXk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=AvrqJzjL8cKGbYihZPVzrL4WR4RO6B+zzCNKo+Fzkf4mHcUOoELc8aEhOIqvXJntKILV6h657NyfCZsLHzIgcSloTLW2miwyuUBkqPlGpto6qUebyTU4WEkOJXKg4sFm7dtlon06WfeRqlsM4eUi2dy7nh7AUHvBHXPUoMFA4Fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eXKpohgS; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eXKpohgS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1751399630; x=1782935630;
-  h=date:from:to:cc:subject:message-id;
-  bh=+C9Yss4YdWSzHwvGBYKKeNsfjSXaZu9ih9J7wMvojXk=;
-  b=eXKpohgS8uuFkwEpXiz7KTssZAaSrgO6eEs4XCjnitjje6fcPBWwt7XY
-   uOoPnTHf/iKt6Aiu27QqXvKEpNJ7imAUpKXOFahedhnLLXFR6j5Z02Uds
-   FCEB231GVT+m477hND7R4atwU6TL0ecGOedhhG9d5XTsOU7PPNfE8Qp0Z
-   xadkyMjkEsl3LjiNwPM+LHqy9pCsIR+5/HNFTJEIyqNyCmAZApN8H4rIv
-   xgwvDz9tVhJriJU52vCQ0/yzv/EiLOe6Ak2L4gIV66Z7mEvedkUlzcEud
-   ls1AeVPzzsajJR195DXskQ4tpzhPFLlNHliFCRxQdg6bYFSxH93aVNAUK
-   g==;
-X-CSE-ConnectionGUID: pYsLK3ghSFSUC6qzSeJZzA==
-X-CSE-MsgGUID: tOQe10inR2OwZx5SiPWZqA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11481"; a="65136513"
-X-IronPort-AV: E=Sophos;i="6.16,279,1744095600"; 
-   d="scan'208";a="65136513"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2025 12:53:48 -0700
-X-CSE-ConnectionGUID: J7DQOv0AQXCqQwbqEoxyaA==
-X-CSE-MsgGUID: oCtPL0wAQiiC7ho1BzPpPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,279,1744095600"; 
-   d="scan'208";a="191042920"
-Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 01 Jul 2025 12:53:47 -0700
-Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uWh33-000acY-0o;
-	Tue, 01 Jul 2025 19:53:45 +0000
-Date: Wed, 02 Jul 2025 03:53:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- b2293c854609368a3dae82cfa6d395829c904de2
-Message-ID: <202507020316.vhZjBeJR-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1751461235; c=relaxed/simple;
+	bh=3jG+fkwb7Ujhu5FmDmiXnzy7sAxfPYKezCKC13BEJag=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DR5Qp02/Wq8JKtvw29ctqHwa4fuXUYqSWJ7ERdqbq+ZNzvhz3z70BE+5P5llT0JpfDlgNB/z4XuNvh75ecgHjXclDN2PmmSDc9GA43SLipvtbHzwA2YFUIUc/P/OAJy94dTuZMaYmkXiBo+N5RUH0y2X+whAn3Kny+Z2EAhSfqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 5B2A643F28;
+	Wed,  2 Jul 2025 13:00:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F356C4CEF0;
+	Wed,  2 Jul 2025 13:00:30 +0000 (UTC)
+Message-ID: <55f3eec5-184d-4743-8d1c-911c1fcc27b2@linux-m68k.org>
+Date: Wed, 2 Jul 2025 23:00:28 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in
+ uapi headers
+To: Thomas Huth <thuth@redhat.com>, linux-m68k@lists.linux-m68k.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Sam Creasey <sammy@sammy.net>, linux-kernel@vger.kernel.org
+References: <20250611114056.118309-1-thuth@redhat.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20250611114056.118309-1-thuth@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: b2293c854609368a3dae82cfa6d395829c904de2  m68k: mm: Convert pointer table macros to use ptdescs
+Hi Thomas,
 
-elapsed time: 1449m
+On 11/6/25 21:40, Thomas Huth wrote:
+> The kernel Makefiles define the __ASSEMBLY__ macro to provide
+> a way to use headers in both, assembly and C source code.
+> However, all the supported versions of the GCC and Clang compilers
+> also define the macro __ASSEMBLER__ automatically already when compiling
+> assembly code, so some kernel headers are using __ASSEMBLER__ instead.
+> With regards to userspace code, this seems also to be constant source
+> of confusion, see for example these links here:
+> 
+>   https://lore.kernel.org/kvm/20250222014526.2302653-1-seanjc@google.com/
+>   https://stackoverflow.com/questions/28924355/gcc-assembler-preprocessor-not-compatible-with-standard-headers
+>   https://forums.raspberrypi.com/viewtopic.php?p=1652944#p1653834
+>   https://github.com/riscv-software-src/opensbi/issues/199
+> 
+> To avoid confusion in the future, it would make sense to standardize
+> on the macro that gets defined by the compiler, so this patch series
+> changes all occurances of __ASSEMBLY__ into __ASSEMBLER__.
+> 
+> I split the patches per architecture to ease the review, and I also
+> split the uapi headers from the normal ones in case we decide that
+> uapi needs to be treated differently from the normal headers here.
+> 
+> The x86, parisc and sh patches already got merged via their specific
+> architecture tree:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=24a295e4ef1ca8
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8a141be3233af7
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cccaea1d66e94b
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e2b6a188625a2b
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9cc646950eefda
+> 
+> So I assume the m68k patches should go via the m68k tree.
 
-configs tested: 118
-configs skipped: 3
+Looks good to me, for the whole series:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 
-tested configs:
-alpha                            alldefconfig    gcc-15.1.0
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                   randconfig-001-20250701    gcc-13.3.0
-arc                   randconfig-002-20250701    gcc-15.1.0
-arc                        vdk_hs38_defconfig    gcc-15.1.0
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-15.1.0
-arm                        multi_v7_defconfig    gcc-15.1.0
-arm                   randconfig-001-20250701    clang-17
-arm                   randconfig-002-20250701    gcc-8.5.0
-arm                   randconfig-003-20250701    clang-21
-arm                   randconfig-004-20250701    clang-21
-arm                         vf610m4_defconfig    gcc-15.1.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250701    clang-21
-arm64                 randconfig-002-20250701    gcc-15.1.0
-arm64                 randconfig-003-20250701    clang-18
-arm64                 randconfig-004-20250701    gcc-8.5.0
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20250701    gcc-11.5.0
-csky                  randconfig-002-20250701    gcc-10.5.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-hexagon               randconfig-001-20250701    clang-21
-hexagon               randconfig-002-20250701    clang-21
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250701    gcc-12
-i386        buildonly-randconfig-002-20250701    gcc-12
-i386        buildonly-randconfig-003-20250701    gcc-12
-i386        buildonly-randconfig-004-20250701    gcc-12
-i386        buildonly-randconfig-005-20250701    gcc-12
-i386        buildonly-randconfig-006-20250701    clang-20
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    gcc-15.1.0
-loongarch                         allnoconfig    gcc-15.1.0
-loongarch             randconfig-001-20250701    gcc-13.3.0
-loongarch             randconfig-002-20250701    gcc-15.1.0
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                        m5307c3_defconfig    gcc-15.1.0
-m68k                           virt_defconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-mips                         rt305x_defconfig    clang-21
-nios2                             allnoconfig    gcc-14.2.0
-nios2                 randconfig-001-20250701    gcc-14.2.0
-nios2                 randconfig-002-20250701    gcc-13.3.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250701    gcc-14.3.0
-parisc                randconfig-002-20250701    gcc-10.5.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                       ebony_defconfig    clang-21
-powerpc               randconfig-001-20250701    gcc-13.3.0
-powerpc               randconfig-002-20250701    clang-21
-powerpc               randconfig-003-20250701    clang-21
-powerpc                     tqm8540_defconfig    gcc-15.1.0
-powerpc64             randconfig-001-20250701    clang-21
-powerpc64             randconfig-002-20250701    clang-21
-powerpc64             randconfig-003-20250701    gcc-10.5.0
-riscv                             allnoconfig    gcc-15.1.0
-riscv                    nommu_virt_defconfig    clang-21
-riscv                 randconfig-001-20250701    gcc-14.3.0
-riscv                 randconfig-002-20250701    gcc-10.5.0
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-15.1.0
-s390                  randconfig-001-20250701    gcc-9.3.0
-s390                  randconfig-002-20250701    clang-17
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                    randconfig-001-20250701    gcc-15.1.0
-sh                    randconfig-002-20250701    gcc-13.3.0
-sh                           se7722_defconfig    gcc-15.1.0
-sh                            titan_defconfig    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                 randconfig-001-20250701    gcc-10.3.0
-sparc                 randconfig-002-20250701    gcc-15.1.0
-sparc64               randconfig-001-20250701    gcc-8.5.0
-sparc64               randconfig-002-20250701    gcc-12.4.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-um                    randconfig-001-20250701    gcc-12
-um                    randconfig-002-20250701    gcc-12
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250701    gcc-12
-x86_64      buildonly-randconfig-002-20250701    gcc-12
-x86_64      buildonly-randconfig-003-20250701    gcc-12
-x86_64      buildonly-randconfig-004-20250701    gcc-12
-x86_64      buildonly-randconfig-005-20250701    clang-20
-x86_64      buildonly-randconfig-006-20250701    clang-20
-x86_64                              defconfig    gcc-11
-x86_64                          rhel-9.4-rust    clang-18
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                  cadence_csp_defconfig    gcc-15.1.0
-xtensa                  nommu_kc705_defconfig    gcc-15.1.0
-xtensa                randconfig-001-20250701    gcc-15.1.0
-xtensa                randconfig-002-20250701    gcc-13.3.0
+Thanks
+Greg
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+
+> v2:
+> - Split the m68k patches from the global series
+>    (see https://lore.kernel.org/all/20250314071013.1575167-1-thuth@redhat.com/)
+> - Rebased the patches on linux-next and fixed the conflicts
+>    and new occurances of __ASSEMBLY__
+> 
+> Thomas Huth (2):
+>    m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in uapi headers
+>    m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in non-uapi headers
+> 
+>   arch/m68k/include/asm/adb_iop.h           |  4 ++--
+>   arch/m68k/include/asm/bootinfo.h          |  4 ++--
+>   arch/m68k/include/asm/entry.h             |  4 ++--
+>   arch/m68k/include/asm/kexec.h             |  4 ++--
+>   arch/m68k/include/asm/mac_baboon.h        |  4 ++--
+>   arch/m68k/include/asm/mac_iop.h           |  4 ++--
+>   arch/m68k/include/asm/mac_oss.h           |  4 ++--
+>   arch/m68k/include/asm/mac_psc.h           |  4 ++--
+>   arch/m68k/include/asm/mac_via.h           |  4 ++--
+>   arch/m68k/include/asm/math-emu.h          |  6 +++---
+>   arch/m68k/include/asm/mcf_pgtable.h       |  4 ++--
+>   arch/m68k/include/asm/mcfmmu.h            |  2 +-
+>   arch/m68k/include/asm/motorola_pgtable.h  |  4 ++--
+>   arch/m68k/include/asm/nettel.h            |  4 ++--
+>   arch/m68k/include/asm/openprom.h          |  4 ++--
+>   arch/m68k/include/asm/page.h              |  4 ++--
+>   arch/m68k/include/asm/page_mm.h           |  4 ++--
+>   arch/m68k/include/asm/page_no.h           |  4 ++--
+>   arch/m68k/include/asm/pgtable.h           |  2 +-
+>   arch/m68k/include/asm/pgtable_mm.h        |  8 ++++----
+>   arch/m68k/include/asm/ptrace.h            |  4 ++--
+>   arch/m68k/include/asm/setup.h             | 10 +++++-----
+>   arch/m68k/include/asm/sun3_pgtable.h      |  8 ++++----
+>   arch/m68k/include/asm/sun3mmu.h           |  4 ++--
+>   arch/m68k/include/asm/thread_info.h       |  6 +++---
+>   arch/m68k/include/asm/traps.h             |  6 +++---
+>   arch/m68k/include/uapi/asm/bootinfo-vme.h |  4 ++--
+>   arch/m68k/include/uapi/asm/bootinfo.h     |  8 ++++----
+>   arch/m68k/include/uapi/asm/ptrace.h       |  4 ++--
+>   arch/m68k/math-emu/fp_emu.h               |  8 ++++----
+>   30 files changed, 72 insertions(+), 72 deletions(-)
+> 
+
