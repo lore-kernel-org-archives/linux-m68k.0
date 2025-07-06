@@ -1,90 +1,120 @@
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39576203706
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  6 Jul 2025 10:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6756E1F61C
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  6 Jul 2025 10:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751797679; cv=none; b=R309DIZW0MxLo+FqZKx82wqlve9xrzBmLgARj6bSrg0jyLBNxvj/PpIh4ttRcP8fP71QylmY8HpXmvv+DX5MnQDlYopgu6snLF7OdIr3ob1BW3w5syTLneJb9bmkp9iw/iwwuvbm+s7/klpchPuggLXUT3FzkE2EijWHINXK370=
+	t=1751798645; cv=none; b=qRWu6S6wUZm9j8OFVzfsOaRLIy74u6MrgjToAsM2v7Tt7Jwg83Fl5rjosxdxErLZTO56I3dx5gllRBS6s5KTHlGr5Y5CN7YGtHY1PSsOJe5sWzqwq/GqQICNf2CQ2DxZcGo+a0bH9xGiBWDt9biejGbcBxsudxz0lVC4ROYlPfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751797679; c=relaxed/simple;
-	bh=9K+ZlIV9VyTnpA8DmHWdooGPTnN2QzCix4/ezMftv38=;
+	s=arc-20240116; t=1751798645; c=relaxed/simple;
+	bh=ljVTvv3ylF1q9GeYuLzJbrJ2pdJMNqnHTJ3mlwUP0Qw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kLw7T1HOklWs/wmeOnNKWPxRuiQYCvosozirn62i7dGnHqykIitHtTf8D6PPJ2ANw+SV+ytNoACRvekENLtKmC87Vzvkj7LbGvLeVaujiwgF3tevK7YG7V1TmJ2iosxhmPJx9rs6rqttZDeJEhu1OpsvU0mQZP8Tg/kNjqYq1bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+	 To:Cc:Content-Type; b=nYjy/cHURFzXa4D8+kK4zBvul9llz2qrWwgiwYSQCfaa4/VHfyvXC5H1iIEAQuuimebamQaRjDGqUbMwN1jD3yARfwpO8hurevZI8/povlssWtYEuDDcsL3j+97tOVhI/KofohQnj6XVWb4dIuxtNxXWYDPSRiEKtUOjWg544kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-5331f409ed2so617843e0c.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 06 Jul 2025 03:27:57 -0700 (PDT)
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-532f9127978so699381e0c.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 06 Jul 2025 03:44:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1751797676; x=1752402476;
+        d=1e100.net; s=20230601; t=1751798642; x=1752403442;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D5qeoi1n24XfufXve0BXfIa0gWLLUTNel49/JF9R7Qk=;
-        b=CPrOJmAjBveGoUWFw/F3RrB36J1Z7fsMCG8jN2ARSgU0hNCp4uykxcWAQSVa4s0+VK
-         PDd9YBY7qRMWoDcq7vleTH5y7yvIJG8sPIWcD8RQ4N6cHxgWotvyZ31iZAUbBtEwft8+
-         leNfIYOZjdr/U+vgJx6rNAMNxfmKz0szvTqas4kSaUyRpJaSYU646nGTchRCEqDmQkyX
-         jvP9Ps2Da1Su9Nk4SyeZS7ukWvUWgk9/DdcgY6vcVoWvz7h8dnG0K3kExHhp6dM2Sub3
-         Go/k0lVgCmSBox3NCD1jAyG8+3jOKuZ5+oAHD8b1fU2o3LdvlnW+xmJZhbH1kHsqhRDo
-         903A==
-X-Gm-Message-State: AOJu0Yzuu0itfmJver0XRKuBlXLQhtFC+D8hujscDQkk/EOUBE+9ywVI
-	3kraWTl3oDKGEulCaCVkIn4MM8LqabX+7uNjwK+tUBjYEKvqresQH68ei23AuDDU
-X-Gm-Gg: ASbGncso18c+sFt5wQq4/v2d+K7T46KzCQdbwCHt6PUWWFqChq/55GD0FlZFdYeOCq3
-	z9scIzRH26hy64QlpexjDGFM601+dXd7RDGFqq6thiPsr0Rx2TSy0xO+Zozohn0nMLB+An5siOX
-	ZoAT6xqIbN0rXjojPq5szFTnd2xAXLswLCOgyxPmTB/jdnG7Zi3m1ymDdLFJkpTYSOCdNX0wjwa
-	29YqbKXUAphhdOjzYm655S+xXkgjs+3A9Ba6E0mCHauCmd8I0g+pvupUKiSOuoIQzK2d+jcEeOc
-	9JHUZgD1bU178/bWEBzThguUdrZ2BgY8N4RpFi5+p1T4fTljypF19QM0MICwyC1q306AkCR/QBS
-	JzLxSWWSZtPE+qUblu3TY+c3xtvZgb+UfJIMpQuI=
-X-Google-Smtp-Source: AGHT+IFc9x7J2zS3O2QeI3aRmy1gg+1z/RBsMLFTsfjckjcC4HYczqDGvuMRbR1V9GdsJXnsiXWUlw==
-X-Received: by 2002:a05:6122:318e:b0:531:45f1:604d with SMTP id 71dfb90a1353d-534f66481c9mr2176304e0c.6.1751797676385;
-        Sun, 06 Jul 2025 03:27:56 -0700 (PDT)
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5347906c2fdsm884995e0c.30.2025.07.06.03.27.56
+        bh=+fryjNABzJeXYbuU+fJLRsiqin0eN86NG1i+dXCSHWg=;
+        b=Tf1o3KJUcvZ2KQzG+naMAITcJ8T19GAVSNSs3/as4l1N1pKIJUzLZRDLOvuQAihtOt
+         6DuSECyj1b8xU9FQwunFQoST32uJreZOWNVYjA/4S5I2qRGFDywUmPxNsUFVCPE0J0ab
+         2+Nq6TD7CGZ704svg7akbGCtrl17lg4l/vi3hl9SY3yPN/kvq86JFhm6Q+sLaQZWacpW
+         RsC8avReaWmwLk8roeoGfvmBTSX7CZ9tiXmTE8iLEL0Ag3ZHdo0Gv97l8Cp+Qhi5xTUk
+         iKqSMb2KPFvgB8CqOk1eX9kMBBJdE7MBJmMY3D7PEnOWlynKOEPZcXcRHly+31Rvjc/N
+         3CRg==
+X-Gm-Message-State: AOJu0YxQgy3IThlKhQj3GBSQ3s/m2kw6DxmAaprw3wQAv12txLkNxIts
+	KgdPuAh93vyNK9SHfr3QiZgYc/UJGyhPw+8T8MNKMl4TbiWCdFnXmOqZmpzH6hgI
+X-Gm-Gg: ASbGncvmRDPCla9XyedH+SjilYwGesjURsVPJib7M1dmrpFurHwPjUr9GwyxMv4h8tn
+	9mquL4VUPjqWH/nieP+/4kjO1BNzKr9u85+jN9j6RCofrsxITkAIb2pzS2cDqolqn1QKbNpGSjc
+	8cvMGMCsSV+/JnCCa4M8uWdXV/CtdzROWo/ULoc9Yq/dABc7fMT0Jv6RnJl2vXnHFcr6tDwPxXT
+	6d5Am5jus3vAu9m3X2BWufSxFoxizodocoWcmpXBvk5DNY5t+CwpfuV0SYg1ATZdF4XghoKPaEx
+	acbDRGoLTIsjzWkZSlFIlHjVa+IvBmJGpKpnnm9L6qMMg+1yUfP7VKSoYr+GR9R+84RHbJsNJfN
+	v5vhDzyRibG1xn4LfYfukDG+9
+X-Google-Smtp-Source: AGHT+IGKOF1EGYlgQDN9TkF9iZ5/65y31DYIr4o9EffeOZTTOgmlhfk3HflkffEzAmYc5bgvuOUjkA==
+X-Received: by 2002:a05:6102:370f:b0:4e9:bb3c:7c45 with SMTP id ada2fe7eead31-4f3059d0a68mr2152120137.4.1751798642535;
+        Sun, 06 Jul 2025 03:44:02 -0700 (PDT)
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-886e927c999sm978222241.10.2025.07.06.03.44.02
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Jul 2025 03:27:56 -0700 (PDT)
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-530d764149eso566029e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 06 Jul 2025 03:27:56 -0700 (PDT)
-X-Received: by 2002:a05:6122:2522:b0:531:4041:c4c7 with SMTP id
- 71dfb90a1353d-534f6647ef7mr2383299e0c.7.1751797675864; Sun, 06 Jul 2025
- 03:27:55 -0700 (PDT)
+        Sun, 06 Jul 2025 03:44:02 -0700 (PDT)
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-87edd8f4e9fso375107241.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 06 Jul 2025 03:44:02 -0700 (PDT)
+X-Received: by 2002:a05:6102:b02:b0:4ec:c50c:399f with SMTP id
+ ada2fe7eead31-4f305a6fa78mr2353704137.11.1751798641763; Sun, 06 Jul 2025
+ 03:44:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1743115195.git.fthain@linux-m68k.org> <ec2d443d3c3213028bbbab7c2e0382cd53db75fe.1743115195.git.fthain@linux-m68k.org>
-In-Reply-To: <ec2d443d3c3213028bbbab7c2e0382cd53db75fe.1743115195.git.fthain@linux-m68k.org>
+References: <20250416114240.2929832-1-daniel@0x0f.com> <CAMuHMdV6efvaJuqVjnayyCs2KAbJmi52n0afLS=jh=nKN0y9Ng@mail.gmail.com>
+In-Reply-To: <CAMuHMdV6efvaJuqVjnayyCs2KAbJmi52n0afLS=jh=nKN0y9Ng@mail.gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 6 Jul 2025 12:27:44 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXqZ8AVgx7i21PWQcv6MCCfv8nN+g3c5VieAAr_vB6qSw@mail.gmail.com>
-X-Gm-Features: Ac12FXyDnW8Qrbd8AeQfhiv1PJDIJ_HfDyd7HbCagdBx1CNeK_YtloNRAxfCHtE
-Message-ID: <CAMuHMdXqZ8AVgx7i21PWQcv6MCCfv8nN+g3c5VieAAr_vB6qSw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] m68k: Remove unused "cursor home" code from debug console
-To: Finn Thain <fthain@linux-m68k.org>
+Date: Sun, 6 Jul 2025 12:43:50 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVEO+o0Py3ioC6ohbJooQdMhD9AXTHD1j1y+C_1TqSAAg@mail.gmail.com>
+X-Gm-Features: Ac12FXwVVv9iMUPL5V7yTBrj-e-SiCiCS33sv508W7QTGDAo-a5WgiT62Pf5vvw
+Message-ID: <CAMuHMdVEO+o0Py3ioC6ohbJooQdMhD9AXTHD1j1y+C_1TqSAAg@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Enable dead code elimination
+To: Daniel Palmer <daniel@0x0f.com>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 27 Mar 2025 at 23:44, Finn Thain <fthain@linux-m68k.org> wrote:
-> The cursor home operation is unused and seems undesirable for logging.
-> Remove it. The console_not_cr label actually means "not line feed and
-> not carriage return either" so take the opportunity to replace it with
-> something less confusing. Rectify some inconsistent whitespace while
-> we're here.
+On Sun, 6 Jul 2025 at 11:14, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Wed, 16 Apr 2025 at 13:42, Daniel Palmer <daniel@0x0f.com> wrote:
+> > Allow the experimental dead code elimination config to be enabled.
+> >
+> > For my 68000 nommu config this frees up a few hundred K of memory
+> > so seems worth while.
+> >
+> > Boot and build tested on nommu and mmu enabled configs.
+> >
+> > Before:
+> > Memory: 5388K/8192K available (1986K kernel code, 114K rwdata,
+> > 244K rodata, 92K init, 41K bss, 2624K reserved, 0K cma-reserved)
+> >
+> > After
+> > Memory: 5684K/8192K available (1714K kernel code, 112K rwdata,
+> > 228K rodata, 92K init, 37K bss, 2328K reserved, 0K cma-reserved)
+> >
+> > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 >
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> Thanks for your patch!
+>
+> Note that enabling this requires enabling CONFIG_EXPERT first, which is
+> currently enabled in the Coldfire defconfigs, but not in the Classic
+> defconfigs.  For atari_defconfig, I see a size reduction of ca. 150 KiB
+> (gcc 13.3.0).
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v6.17.
+Let's share the actual figures I had saved before:
+
+    $ bloat-o-meter vmlinux-v6.16-rc2+EXPERT{,+LD_DEAD_CODE_DATA_ELIMINATION}
+    add/remove: 0/2125 grow/shrink: 10275/32 up/down: 52254/-205419 (-153165)
+    [...]
+    Total: Before=5277826, After=5124661, chg -2.90%
+
+    dmesg:
+    -Memory: 265412K/276480K available (4345K kernel code, 486K
+rwdata, 1240K rodata, 164K init, 143K bss, 10440K reserved, 0K
+cma-reserved)
+    +Memory: 265616K/276480K available (4205K kernel code, 484K
+rwdata, 1180K rodata, 160K init, 143K bss, 10236K reserved, 0K
+cma-reserved)
+
+    gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04)
 
 Gr{oetje,eeting}s,
 
                         Geert
 
-
---
+-- 
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
