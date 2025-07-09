@@ -1,305 +1,245 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from www3579.sakura.ne.jp (www3579.sakura.ne.jp [49.212.243.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320DE5383
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Jul 2025 05:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057912AD22;
+	Wed,  9 Jul 2025 06:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.212.243.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751951119; cv=none; b=FwvQQaz2OZe7LUJmQCcRnq2l+2pH8IIjpbpm/+YZ/bhDGnA2RDKbNjBOF1Ra6SqGALk1Vrvi6AY/I9Ri2GOWRs4ZPCUCqSfIrfM5RLpTjmrJBO7pViP23ITJ5BX088bHv36+2UhNNVSN1O3cmtmh8QUEBFkjOLpn+pQSQn1n66c=
+	t=1752041314; cv=none; b=cwsFZQUZV5CblH8tTNod3uaQ40uNMSgruxffgBTz2GRHGYpNOigL+rkOfyEEzmh33XJG2IRuT9MkyBGi2SeYJ5A063GDOfJD+DRWjVPR0RgU7DrHVVdIWUWnXgcm+WFoxBZEP4fwhwyuXghA2EzqfR6AB6CqaL6VJgQEV3YM09U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751951119; c=relaxed/simple;
-	bh=uOJt9zOMe5rk+yeaMDFWEUOiCLicVCF5PvmGzwookMc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Oyannh4fhllrgcxla2kgg1G/Y9vVP9VILBACqlPjBcaW7mZGcNpd4oKCsKaPDTukTLYhVKec2W603LDRD8lOpHVnlbbvp1I0G4FWJQQnDm9GNc8MCofMqgX2XyyfJbvnM80V1aPcrEi+9X72NNDr91EjUcGlZg4DjTrGlOr44sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hp9jodm6; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1752041314; c=relaxed/simple;
+	bh=EN5ByLBGywGLTiCp1bK3fyTglM7Zbn5pwSVlzcDFN2s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qaNfHBZdmVn+C4/k3T/460yBMv7DwsBMD9TOjx+u6sH7+2bVSxV4IT2F3DWonM3Ft/0HDeppBUcB5ht+1KAstHjw9Xw6ySrtnGJHqOh9sp1v7EBzyUZ8IsDWLrSGDK7toMYn5JISjwnY/2yyY5ZzOeDbQcNtETk5G7KDR+yjtl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rsg.ci.i.u-tokyo.ac.jp; spf=pass smtp.mailfrom=rsg.ci.i.u-tokyo.ac.jp; dkim=fail (0-bit key) header.d=rsg.ci.i.u-tokyo.ac.jp header.i=@rsg.ci.i.u-tokyo.ac.jp header.b=P+9TWd4x reason="key not found in DNS"; arc=none smtp.client-ip=49.212.243.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rsg.ci.i.u-tokyo.ac.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rsg.ci.i.u-tokyo.ac.jp
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hp9jodm6"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1751951117; x=1783487117;
-  h=date:from:to:cc:subject:message-id;
-  bh=uOJt9zOMe5rk+yeaMDFWEUOiCLicVCF5PvmGzwookMc=;
-  b=Hp9jodm6NPOi8G3CMqvvkXYifXQVRHnaqDkjKsAgCtYpPcI/dHiZhPIQ
-   CXmaophlXizgqlFJuengZcigjGv6k9NH0VllJIDYirblwSho7GGnGhGU0
-   nyCPeoicqVWbgcyxqXTlwFQ417I89Tnnm+C8vBfVFf9QCmfO3UOaWLMAA
-   58YRHDtg5OFfcw8f9Eo6SI0HwvpkUo4/dnFr0WlXxCSO3gXK52/M/3ZVV
-   WJRyV12FrF0RTUUWjFUjwlG/MaKzGZq+08S3yTcPURcyh87TWH3QbqIb1
-   h23t6MxD4LMvht9PE8+6DpNOzfmFqDhHZwhbw7p3/7jOhbS1RuOF4tOOI
-   Q==;
-X-CSE-ConnectionGUID: oN8uKloVRw+vQTOfeFIgoA==
-X-CSE-MsgGUID: oN0CLxyeQ/uEUnNK51kReQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11487"; a="57947352"
-X-IronPort-AV: E=Sophos;i="6.16,296,1744095600"; 
-   d="scan'208";a="57947352"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2025 22:05:15 -0700
-X-CSE-ConnectionGUID: f+jS96V5Qn2VcM0oR3dp8Q==
-X-CSE-MsgGUID: O71gVY47T06XSJwBeVokVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,296,1744095600"; 
-   d="scan'208";a="159732586"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 07 Jul 2025 22:05:13 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uZ0Vz-00010Z-1T;
-	Tue, 08 Jul 2025 05:05:11 +0000
-Date: Tue, 08 Jul 2025 13:04:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 0fe926a05d02a3f4406c16c66a6d95c86fbbc826
-Message-ID: <202507081328.1LAgblNU-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=rsg.ci.i.u-tokyo.ac.jp header.i=@rsg.ci.i.u-tokyo.ac.jp header.b="P+9TWd4x"
+Received: from [157.82.206.39] ([157.82.206.39])
+	(authenticated bits=0)
+	by www3579.sakura.ne.jp (8.16.1/8.16.1) with ESMTPSA id 56955rZV065688
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 9 Jul 2025 14:05:53 +0900 (JST)
+	(envelope-from odaki@rsg.ci.i.u-tokyo.ac.jp)
+DKIM-Signature: a=rsa-sha256; bh=4clTUl4sMeFn+3+ZKeZuCK2i1/1ZYbUuPzsuXuco86k=;
+        c=relaxed/relaxed; d=rsg.ci.i.u-tokyo.ac.jp;
+        h=Message-ID:Date:Subject:To:From;
+        s=rs20250326; t=1752037554; v=1;
+        b=P+9TWd4xgbOJt4IAGxHHsFZCUP5mU2LruCqB6XvGSTxPuNiG88lEdFqKSI5e8GV9
+         IZQ027gIzqE6R884yIAbqFDeeb+QV4d98ETFvdXUnoX+FYopiMFnNscVsB2zI9Wa
+         2l2RcZyKqEBQDUjGZTaMI0r6Rf5IedBu6hCBpXk/895FEVdR2zQg58ehwJmyxgfF
+         XT9yXnMK/B98pfOeSBYxC5A9B18qaCU6AclyvtM00Ovo46CMOeuPcCCb07Ssut/I
+         yGZrAOC9hnteaFT0HuEm66QoaIAFlJenYdCL8L9SlWdVr/Lxm01+5vFw0NVbVwNR
+         jKgFire83dealgPIcgL8rg==
+Message-ID: <36c0213c-6b14-4ad2-969e-3d8e356bb680@rsg.ci.i.u-tokyo.ac.jp>
+Date: Wed, 9 Jul 2025 14:05:53 +0900
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/23] binfmt_elf,arch/*: Use elf.h for coredump note
+ names
+To: Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>, "H. Peter Anvin"
+ <hpa@zytor.com>,
+        "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexandre Ghiti <alex@ghiti.fr>, Andreas Larsson <andreas@gaisler.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chris Zankel <chris@zankel.net>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dinh Nguyen
+ <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Jonas Bonn <jonas@southpole.se>, Kees Cook <kees@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Max Filippov
+ <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley
+ <paul.walmsley@sifive.com>,
+        Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
+References: <20250701135616.29630-1-Dave.Martin@arm.com>
+Content-Language: en-US
+From: Akihiko Odaki <odaki@rsg.ci.i.u-tokyo.ac.jp>
+In-Reply-To: <20250701135616.29630-1-Dave.Martin@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 0fe926a05d02a3f4406c16c66a6d95c86fbbc826  Merge tag 'v6.16-rc5'
+On 2025/07/01 22:55, Dave Martin wrote:
+> This series aims to clean up an aspect of coredump generation:
+> 
+> ELF coredumps contain a set of notes describing the state of machine
+> registers and other information about the dumped process.
+> 
+> Notes are identified by a numeric identifier n_type and a "name"
+> string, although this terminology is somewhat misleading.  Officially,
+> the "name" of a note is really an "originator" or namespace identifier
+> that indicates how to interpret n_type [1], although in practice it is
+> often used more loosely.
+> 
+> Either way, each kind of note needs _both_ a specific "name" string and
+> a specific n_type to identify it robustly.
+> 
+> To centralise this knowledge in one place and avoid the need for ad-hoc
+> code to guess the correct name for a given note, commit 7da8e4ad4df0
+> ("elf: Define note name macros") [2] added an explicit NN_<foo> #define
+> in elf.h to give the name corresponding to each named note type
+> NT_<foo>.
+> 
+> Now that the note name for each note is specified explicitly, the
+> remaining guesswork for determining the note name for common and
+> arch-specific regsets in ELF core dumps can be eliminated.
+> 
+> This series aims to do just that:
+> 
+>   * Patch 2 adds a user_regset field to specify the note name, and a
+>     helper macro to populate it correctly alongside the note type.
+> 
+>   * Patch 3 ports away the ad-hoc note names in the common coredump
+>     code.
+> 
+>   * Patches 4-22 make the arch-specific changes.  (This is pretty
+>     mechanical for most arches.)
+> 
+>   * The final patch adds a WARN() when no note name is specified,
+>     and simplifies the fallback guess.  This should only be applied
+>     when all arches have ported across.
+> 
+> See the individual patches for details.
+> 
+> 
+> Testing:
+> 
+>   * x86, arm64: Booted in a VM and triggered a core dump with no WARN(),
+>     and verified that the dumped notes are the same.
+> 
+>   * arm: Build-tested only (for now).
+> 
+>   * Other arches: not tested yet
+> 
+> Any help with testing is appreciated.  If the following generates the
+> same notes (as dumped by readelf -n core) and doesn't trigger a WARN,
+> then we are probably good.
+> 
+> $ sleep 60 &
+> $ kill -QUIT $!
+> 
+> (Register content might differ between runs, but it should be safe to
+> ignore that -- this series only deals with the note names and types.)
+> 
+> Cheers
+> ---Dave
+> 
+> 
+> [1] System V Application Binary Interface, Edition 4.1,
+> Section 5 (Program Loading and Dynamic Linking) -> "Note Section"
+> 
+> https://refspecs.linuxfoundation.org/elf/gabi41.pdf
+> 
+> [2] elf: Define note name macros
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/uapi/linux/elf.h?id=7da8e4ad4df0dd12f37357af62ce1b63e75ae2e6
+> 
+> 
+> Dave Martin (23):
+>    regset: Fix kerneldoc for struct regset_get() in user_regset
+>    regset: Add explicit core note name in struct user_regset
+>    binfmt_elf: Dump non-arch notes with strictly matching name and type
+>    ARC: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    ARM: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    arm64: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    csky: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    hexagon: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    LoongArch: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    m68k: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    MIPS: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    nios2: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    openrisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    parisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    powerpc/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    riscv: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    s390/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    sh: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    sparc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    x86/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    um: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+>    xtensa: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
+>      names
+>    binfmt_elf: Warn on missing or suspicious regset note names
+> 
+>   arch/arc/kernel/ptrace.c                 |  4 +-
+>   arch/arm/kernel/ptrace.c                 |  6 +-
+>   arch/arm64/kernel/ptrace.c               | 52 ++++++++---------
+>   arch/csky/kernel/ptrace.c                |  4 +-
+>   arch/hexagon/kernel/ptrace.c             |  2 +-
+>   arch/loongarch/kernel/ptrace.c           | 16 ++---
+>   arch/m68k/kernel/ptrace.c                |  4 +-
+>   arch/mips/kernel/ptrace.c                | 20 +++----
+>   arch/nios2/kernel/ptrace.c               |  2 +-
+>   arch/openrisc/kernel/ptrace.c            |  4 +-
+>   arch/parisc/kernel/ptrace.c              |  8 +--
+>   arch/powerpc/kernel/ptrace/ptrace-view.c | 74 ++++++++++++------------
+>   arch/riscv/kernel/ptrace.c               | 12 ++--
+>   arch/s390/kernel/ptrace.c                | 42 +++++++-------
+>   arch/sh/kernel/ptrace_32.c               |  4 +-
+>   arch/sparc/kernel/ptrace_32.c            |  4 +-
+>   arch/sparc/kernel/ptrace_64.c            |  8 +--
+>   arch/x86/kernel/ptrace.c                 | 22 +++----
+>   arch/x86/um/ptrace.c                     | 10 ++--
+>   arch/xtensa/kernel/ptrace.c              |  4 +-
+>   fs/binfmt_elf.c                          | 36 +++++++-----
+>   fs/binfmt_elf_fdpic.c                    | 17 +++---
+>   include/linux/regset.h                   | 12 +++-
+>   23 files changed, 194 insertions(+), 173 deletions(-)
+> 
+> 
+> base-commit: 86731a2a651e58953fc949573895f2fa6d456841
 
-elapsed time: 1151m
+For the whole series:
+Reviewed-by: Akihiko Odaki <odaki@rsg.ci.i.u-tokyo.ac.jp>
 
-configs tested: 228
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig    clang-21
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-alpha                               defconfig    clang-19
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    clang-21
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                                 defconfig    clang-19
-arc                   randconfig-001-20250707    gcc-15.1.0
-arc                   randconfig-001-20250708    clang-17
-arc                   randconfig-002-20250707    gcc-8.5.0
-arc                   randconfig-002-20250708    clang-17
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-15.1.0
-arm                     am200epdkit_defconfig    gcc-15.1.0
-arm                                 defconfig    clang-19
-arm                        mvebu_v7_defconfig    clang-21
-arm                   randconfig-001-20250707    gcc-10.5.0
-arm                   randconfig-001-20250708    clang-17
-arm                   randconfig-002-20250707    gcc-11.5.0
-arm                   randconfig-002-20250708    clang-17
-arm                   randconfig-003-20250707    clang-21
-arm                   randconfig-003-20250708    clang-17
-arm                   randconfig-004-20250707    clang-21
-arm                   randconfig-004-20250708    clang-17
-arm                           u8500_defconfig    gcc-15.1.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    clang-21
-arm64                             allnoconfig    gcc-15.1.0
-arm64                               defconfig    clang-19
-arm64                 randconfig-001-20250707    gcc-8.5.0
-arm64                 randconfig-001-20250708    clang-17
-arm64                 randconfig-002-20250707    gcc-11.5.0
-arm64                 randconfig-002-20250708    clang-17
-arm64                 randconfig-003-20250707    gcc-12.3.0
-arm64                 randconfig-003-20250708    clang-17
-arm64                 randconfig-004-20250707    gcc-14.3.0
-arm64                 randconfig-004-20250708    clang-17
-csky                              allnoconfig    clang-21
-csky                              allnoconfig    gcc-15.1.0
-csky                                defconfig    clang-19
-csky                  randconfig-001-20250707    gcc-15.1.0
-csky                  randconfig-001-20250708    gcc-8.5.0
-csky                  randconfig-002-20250707    gcc-12.4.0
-csky                  randconfig-002-20250708    gcc-8.5.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-hexagon                             defconfig    clang-19
-hexagon               randconfig-001-20250707    clang-21
-hexagon               randconfig-001-20250708    gcc-8.5.0
-hexagon               randconfig-002-20250707    clang-21
-hexagon               randconfig-002-20250708    gcc-8.5.0
-i386                             allmodconfig    clang-20
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    clang-20
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    clang-20
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250707    gcc-12
-i386        buildonly-randconfig-002-20250707    clang-20
-i386        buildonly-randconfig-003-20250707    gcc-12
-i386        buildonly-randconfig-004-20250707    gcc-12
-i386        buildonly-randconfig-005-20250707    gcc-12
-i386        buildonly-randconfig-006-20250707    gcc-12
-i386                                defconfig    clang-20
-i386                  randconfig-001-20250708    gcc-11
-i386                  randconfig-002-20250708    gcc-11
-i386                  randconfig-003-20250708    gcc-11
-i386                  randconfig-004-20250708    gcc-11
-i386                  randconfig-005-20250708    gcc-11
-i386                  randconfig-006-20250708    gcc-11
-i386                  randconfig-007-20250708    gcc-11
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-21
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20250707    clang-21
-loongarch             randconfig-001-20250708    gcc-8.5.0
-loongarch             randconfig-002-20250707    gcc-15.1.0
-loongarch             randconfig-002-20250708    gcc-8.5.0
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                                defconfig    clang-19
-m68k                        m5272c3_defconfig    gcc-15.1.0
-m68k                           sun3_defconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-14.2.0
-nios2                             allnoconfig    gcc-15.1.0
-nios2                               defconfig    gcc-14.2.0
-nios2                               defconfig    gcc-15.1.0
-nios2                 randconfig-001-20250707    gcc-10.5.0
-nios2                 randconfig-001-20250708    gcc-8.5.0
-nios2                 randconfig-002-20250707    gcc-12.4.0
-nios2                 randconfig-002-20250708    gcc-8.5.0
-openrisc                          allnoconfig    clang-21
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-12
-openrisc                            defconfig    gcc-15.1.0
-openrisc                    or1ksim_defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    clang-21
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250707    gcc-8.5.0
-parisc                randconfig-001-20250708    gcc-8.5.0
-parisc                randconfig-002-20250707    gcc-15.1.0
-parisc                randconfig-002-20250708    gcc-8.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    clang-21
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                          allyesconfig    clang-21
-powerpc                      arches_defconfig    gcc-15.1.0
-powerpc                       eiger_defconfig    gcc-15.1.0
-powerpc                     mpc512x_defconfig    clang-21
-powerpc               randconfig-001-20250707    gcc-8.5.0
-powerpc               randconfig-001-20250708    gcc-8.5.0
-powerpc               randconfig-002-20250707    clang-21
-powerpc               randconfig-002-20250708    gcc-8.5.0
-powerpc               randconfig-003-20250707    gcc-8.5.0
-powerpc               randconfig-003-20250708    gcc-8.5.0
-powerpc64             randconfig-001-20250707    gcc-8.5.0
-powerpc64             randconfig-001-20250708    gcc-8.5.0
-powerpc64             randconfig-002-20250707    gcc-10.5.0
-powerpc64             randconfig-002-20250708    gcc-8.5.0
-powerpc64             randconfig-003-20250707    clang-21
-powerpc64             randconfig-003-20250708    gcc-8.5.0
-riscv                            allmodconfig    clang-21
-riscv                             allnoconfig    clang-21
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-21
-riscv                               defconfig    gcc-12
-riscv                 randconfig-001-20250707    clang-21
-riscv                 randconfig-001-20250708    clang-17
-riscv                 randconfig-002-20250707    clang-21
-riscv                 randconfig-002-20250708    clang-17
-s390                             allmodconfig    clang-18
-s390                             allmodconfig    gcc-15.1.0
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    clang-21
-s390                                defconfig    gcc-12
-s390                  randconfig-001-20250707    clang-21
-s390                  randconfig-001-20250708    clang-17
-s390                  randconfig-002-20250707    gcc-11.5.0
-s390                  randconfig-002-20250708    clang-17
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-12
-sh                                  defconfig    gcc-15.1.0
-sh                          landisk_defconfig    gcc-15.1.0
-sh                    randconfig-001-20250707    gcc-15.1.0
-sh                    randconfig-001-20250708    clang-17
-sh                    randconfig-002-20250707    gcc-15.1.0
-sh                    randconfig-002-20250708    clang-17
-sh                           se7712_defconfig    gcc-15.1.0
-sh                           se7721_defconfig    gcc-15.1.0
-sh                           se7724_defconfig    gcc-15.1.0
-sh                           se7751_defconfig    gcc-15.1.0
-sh                   secureedge5410_defconfig    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20250707    gcc-12.4.0
-sparc                 randconfig-001-20250708    clang-17
-sparc                 randconfig-002-20250707    gcc-8.5.0
-sparc                 randconfig-002-20250708    clang-17
-sparc64                             defconfig    clang-20
-sparc64                             defconfig    gcc-12
-sparc64               randconfig-001-20250707    clang-20
-sparc64               randconfig-001-20250708    clang-17
-sparc64               randconfig-002-20250707    gcc-15.1.0
-sparc64               randconfig-002-20250708    clang-17
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-um                                  defconfig    clang-21
-um                                  defconfig    gcc-12
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20250707    gcc-12
-um                    randconfig-001-20250708    clang-17
-um                    randconfig-002-20250707    gcc-12
-um                    randconfig-002-20250708    clang-17
-um                           x86_64_defconfig    clang-21
-um                           x86_64_defconfig    gcc-12
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250707    gcc-12
-x86_64      buildonly-randconfig-001-20250708    gcc-12
-x86_64      buildonly-randconfig-002-20250707    gcc-12
-x86_64      buildonly-randconfig-002-20250708    gcc-12
-x86_64      buildonly-randconfig-003-20250707    gcc-12
-x86_64      buildonly-randconfig-003-20250708    gcc-12
-x86_64      buildonly-randconfig-004-20250707    clang-20
-x86_64      buildonly-randconfig-004-20250708    gcc-12
-x86_64      buildonly-randconfig-005-20250707    gcc-12
-x86_64      buildonly-randconfig-005-20250708    gcc-12
-x86_64      buildonly-randconfig-006-20250707    clang-20
-x86_64      buildonly-randconfig-006-20250708    gcc-12
-x86_64                              defconfig    clang-20
-x86_64                              defconfig    gcc-11
-x86_64                                  kexec    clang-20
-x86_64                randconfig-001-20250708    gcc-12
-x86_64                randconfig-002-20250708    gcc-12
-x86_64                randconfig-003-20250708    gcc-12
-x86_64                randconfig-004-20250708    gcc-12
-x86_64                randconfig-005-20250708    gcc-12
-x86_64                randconfig-006-20250708    gcc-12
-x86_64                randconfig-007-20250708    gcc-12
-x86_64                randconfig-008-20250708    gcc-12
-x86_64                               rhel-9.4    clang-20
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250707    gcc-12.4.0
-xtensa                randconfig-001-20250708    clang-17
-xtensa                randconfig-002-20250707    gcc-8.5.0
-xtensa                randconfig-002-20250708    clang-17
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Akihiko Odaki
