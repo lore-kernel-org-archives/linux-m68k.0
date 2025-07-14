@@ -1,245 +1,82 @@
-Received: from www3579.sakura.ne.jp (www3579.sakura.ne.jp [49.212.243.89])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057912AD22;
-	Wed,  9 Jul 2025 06:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.212.243.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E4926C3B3
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Jul 2025 19:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752041314; cv=none; b=cwsFZQUZV5CblH8tTNod3uaQ40uNMSgruxffgBTz2GRHGYpNOigL+rkOfyEEzmh33XJG2IRuT9MkyBGi2SeYJ5A063GDOfJD+DRWjVPR0RgU7DrHVVdIWUWnXgcm+WFoxBZEP4fwhwyuXghA2EzqfR6AB6CqaL6VJgQEV3YM09U=
+	t=1752520930; cv=none; b=hGErzqkHl7MCkfvBE6s6UePR2k7/Um4f4TMkfDHgjF/73WSxZkF3QJcDoJX5gx1thQvHRvF2XJrKzxspBX+rDlQ8shE3bMCm5SRQAT6yd9lbzjbLKLbHzKFSNw6VWLOtkk/aA75xKbmvXr0NY/WdoNw7UjZdu3zXtQRrvrs1OxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752041314; c=relaxed/simple;
-	bh=EN5ByLBGywGLTiCp1bK3fyTglM7Zbn5pwSVlzcDFN2s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qaNfHBZdmVn+C4/k3T/460yBMv7DwsBMD9TOjx+u6sH7+2bVSxV4IT2F3DWonM3Ft/0HDeppBUcB5ht+1KAstHjw9Xw6ySrtnGJHqOh9sp1v7EBzyUZ8IsDWLrSGDK7toMYn5JISjwnY/2yyY5ZzOeDbQcNtETk5G7KDR+yjtl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rsg.ci.i.u-tokyo.ac.jp; spf=pass smtp.mailfrom=rsg.ci.i.u-tokyo.ac.jp; dkim=fail (0-bit key) header.d=rsg.ci.i.u-tokyo.ac.jp header.i=@rsg.ci.i.u-tokyo.ac.jp header.b=P+9TWd4x reason="key not found in DNS"; arc=none smtp.client-ip=49.212.243.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rsg.ci.i.u-tokyo.ac.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rsg.ci.i.u-tokyo.ac.jp
+	s=arc-20240116; t=1752520930; c=relaxed/simple;
+	bh=cyKqxF354Kh3jiiJsvMFm0rw2SJcg/Rvana9gIG9/Cw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=RjYeHZ7TdpxBCsYJA0IxZTpOAXkIPO16PVYdMm50DjYMbi8/aYe2Oih4KZQqQQ3n9LkJY3TpGGLALFGdzJiMdmhBYULuxmLtM5/0+OAAJTGqWt4BptKiTb1Q2XoT/ZWJjbgrc5hCklL3xvw6aYH5wd2qOPWZ0ONG3+aDZ+hS8F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=II+iiKTR; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=rsg.ci.i.u-tokyo.ac.jp header.i=@rsg.ci.i.u-tokyo.ac.jp header.b="P+9TWd4x"
-Received: from [157.82.206.39] ([157.82.206.39])
-	(authenticated bits=0)
-	by www3579.sakura.ne.jp (8.16.1/8.16.1) with ESMTPSA id 56955rZV065688
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 9 Jul 2025 14:05:53 +0900 (JST)
-	(envelope-from odaki@rsg.ci.i.u-tokyo.ac.jp)
-DKIM-Signature: a=rsa-sha256; bh=4clTUl4sMeFn+3+ZKeZuCK2i1/1ZYbUuPzsuXuco86k=;
-        c=relaxed/relaxed; d=rsg.ci.i.u-tokyo.ac.jp;
-        h=Message-ID:Date:Subject:To:From;
-        s=rs20250326; t=1752037554; v=1;
-        b=P+9TWd4xgbOJt4IAGxHHsFZCUP5mU2LruCqB6XvGSTxPuNiG88lEdFqKSI5e8GV9
-         IZQ027gIzqE6R884yIAbqFDeeb+QV4d98ETFvdXUnoX+FYopiMFnNscVsB2zI9Wa
-         2l2RcZyKqEBQDUjGZTaMI0r6Rf5IedBu6hCBpXk/895FEVdR2zQg58ehwJmyxgfF
-         XT9yXnMK/B98pfOeSBYxC5A9B18qaCU6AclyvtM00Ovo46CMOeuPcCCb07Ssut/I
-         yGZrAOC9hnteaFT0HuEm66QoaIAFlJenYdCL8L9SlWdVr/Lxm01+5vFw0NVbVwNR
-         jKgFire83dealgPIcgL8rg==
-Message-ID: <36c0213c-6b14-4ad2-969e-3d8e356bb680@rsg.ci.i.u-tokyo.ac.jp>
-Date: Wed, 9 Jul 2025 14:05:53 +0900
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="II+iiKTR"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=lyYpP11IV4bpIFu/ApBOf5v9Ko6xUqN4taKSagvjK/M=; b=II+iiKTRIbP7EEoPO6fBG6NuT8
+	KAumMfvVQL9jagZZy1XxsYsaHkq4mhSugWHhFSmyPUt7gbBHEHNxrR1425KC1OIUWfCo1tkQBVnBL
+	WLeW/1oH6pWr/qJLENwIYK423PEBvvGwDpv9RxA/uLtNg2F5/oXVoEaWYUcOqvgH5aZqXi6wh/Wba
+	zvX9RiF3THpbEJvToWOaeVXbS8utGH/rnirN7xHjEsxDDFAC92FLrCPubWF0Cjh4nCKjUGXvA+zkq
+	2o2/y29MOWMRADimP+Sjief7/LA8ROswOiDVRd2TMbmAn5fElVNqYMwttX4jINmbvezlzNJklFqA0
+	XHDstQNQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ubOkW-00000008sD1-2ZOq;
+	Mon, 14 Jul 2025 19:22:04 +0000
+Date: Mon, 14 Jul 2025 20:22:04 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-mm@kvack.org
+Subject: nommu and folios
+Message-ID: <aHVY3PIBI0M7Whi7@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/23] binfmt_elf,arch/*: Use elf.h for coredump note
- names
-To: Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, "H. Peter Anvin"
- <hpa@zytor.com>,
-        "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexandre Ghiti <alex@ghiti.fr>, Andreas Larsson <andreas@gaisler.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dinh Nguyen
- <dinguyen@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jonas Bonn <jonas@southpole.se>, Kees Cook <kees@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Max Filippov
- <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>, Oleg Nesterov <oleg@redhat.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley
- <paul.walmsley@sifive.com>,
-        Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
-References: <20250701135616.29630-1-Dave.Martin@arm.com>
-Content-Language: en-US
-From: Akihiko Odaki <odaki@rsg.ci.i.u-tokyo.ac.jp>
-In-Reply-To: <20250701135616.29630-1-Dave.Martin@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2025/07/01 22:55, Dave Martin wrote:
-> This series aims to clean up an aspect of coredump generation:
-> 
-> ELF coredumps contain a set of notes describing the state of machine
-> registers and other information about the dumped process.
-> 
-> Notes are identified by a numeric identifier n_type and a "name"
-> string, although this terminology is somewhat misleading.  Officially,
-> the "name" of a note is really an "originator" or namespace identifier
-> that indicates how to interpret n_type [1], although in practice it is
-> often used more loosely.
-> 
-> Either way, each kind of note needs _both_ a specific "name" string and
-> a specific n_type to identify it robustly.
-> 
-> To centralise this knowledge in one place and avoid the need for ad-hoc
-> code to guess the correct name for a given note, commit 7da8e4ad4df0
-> ("elf: Define note name macros") [2] added an explicit NN_<foo> #define
-> in elf.h to give the name corresponding to each named note type
-> NT_<foo>.
-> 
-> Now that the note name for each note is specified explicitly, the
-> remaining guesswork for determining the note name for common and
-> arch-specific regsets in ELF core dumps can be eliminated.
-> 
-> This series aims to do just that:
-> 
->   * Patch 2 adds a user_regset field to specify the note name, and a
->     helper macro to populate it correctly alongside the note type.
-> 
->   * Patch 3 ports away the ad-hoc note names in the common coredump
->     code.
-> 
->   * Patches 4-22 make the arch-specific changes.  (This is pretty
->     mechanical for most arches.)
-> 
->   * The final patch adds a WARN() when no note name is specified,
->     and simplifies the fallback guess.  This should only be applied
->     when all arches have ported across.
-> 
-> See the individual patches for details.
-> 
-> 
-> Testing:
-> 
->   * x86, arm64: Booted in a VM and triggered a core dump with no WARN(),
->     and verified that the dumped notes are the same.
-> 
->   * arm: Build-tested only (for now).
-> 
->   * Other arches: not tested yet
-> 
-> Any help with testing is appreciated.  If the following generates the
-> same notes (as dumped by readelf -n core) and doesn't trigger a WARN,
-> then we are probably good.
-> 
-> $ sleep 60 &
-> $ kill -QUIT $!
-> 
-> (Register content might differ between runs, but it should be safe to
-> ignore that -- this series only deals with the note names and types.)
-> 
-> Cheers
-> ---Dave
-> 
-> 
-> [1] System V Application Binary Interface, Edition 4.1,
-> Section 5 (Program Loading and Dynamic Linking) -> "Note Section"
-> 
-> https://refspecs.linuxfoundation.org/elf/gabi41.pdf
-> 
-> [2] elf: Define note name macros
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/include/uapi/linux/elf.h?id=7da8e4ad4df0dd12f37357af62ce1b63e75ae2e6
-> 
-> 
-> Dave Martin (23):
->    regset: Fix kerneldoc for struct regset_get() in user_regset
->    regset: Add explicit core note name in struct user_regset
->    binfmt_elf: Dump non-arch notes with strictly matching name and type
->    ARC: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    ARM: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    arm64: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    csky: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    hexagon: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    LoongArch: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    m68k: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    MIPS: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    nios2: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    openrisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    parisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    powerpc/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    riscv: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    s390/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    sh: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    sparc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    x86/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    um: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
->    xtensa: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note
->      names
->    binfmt_elf: Warn on missing or suspicious regset note names
-> 
->   arch/arc/kernel/ptrace.c                 |  4 +-
->   arch/arm/kernel/ptrace.c                 |  6 +-
->   arch/arm64/kernel/ptrace.c               | 52 ++++++++---------
->   arch/csky/kernel/ptrace.c                |  4 +-
->   arch/hexagon/kernel/ptrace.c             |  2 +-
->   arch/loongarch/kernel/ptrace.c           | 16 ++---
->   arch/m68k/kernel/ptrace.c                |  4 +-
->   arch/mips/kernel/ptrace.c                | 20 +++----
->   arch/nios2/kernel/ptrace.c               |  2 +-
->   arch/openrisc/kernel/ptrace.c            |  4 +-
->   arch/parisc/kernel/ptrace.c              |  8 +--
->   arch/powerpc/kernel/ptrace/ptrace-view.c | 74 ++++++++++++------------
->   arch/riscv/kernel/ptrace.c               | 12 ++--
->   arch/s390/kernel/ptrace.c                | 42 +++++++-------
->   arch/sh/kernel/ptrace_32.c               |  4 +-
->   arch/sparc/kernel/ptrace_32.c            |  4 +-
->   arch/sparc/kernel/ptrace_64.c            |  8 +--
->   arch/x86/kernel/ptrace.c                 | 22 +++----
->   arch/x86/um/ptrace.c                     | 10 ++--
->   arch/xtensa/kernel/ptrace.c              |  4 +-
->   fs/binfmt_elf.c                          | 36 +++++++-----
->   fs/binfmt_elf_fdpic.c                    | 17 +++---
->   include/linux/regset.h                   | 12 +++-
->   23 files changed, 194 insertions(+), 173 deletions(-)
-> 
-> 
-> base-commit: 86731a2a651e58953fc949573895f2fa6d456841
+Hi Greg!
 
-For the whole series:
-Reviewed-by: Akihiko Odaki <odaki@rsg.ci.i.u-tokyo.ac.jp>
+The last user of add_to_page_cache_lru() is fs/ramfs/file-nommu.c I
+think I need your advice about how best to proceed with nommu and folios.
 
-Regards,
-Akihiko Odaki
+The basic idea behind folios is that they represent a physically,
+logically and virtually contiguous block of memory that is a power-of-2
+bytes in size >= PAGE_SIZE.  struct page is going to be shrunk and it'll
+be most efficient if we can arrange for allocations to be larger in size.
+
+UCLinux obviously has very different performance requirements from the
+kinds of systems I usually work on -- memory usage minimisation is much
+more important.  So ideally we wouldn't split the allocation all the way
+to order-0 in ramfs_nommu_expand_for_mapping(), but do a split at just
+the break point.  eg if we have a 40kB file, we'd allocate an order-4
+folio, split it into an order-3 folio and add that to the page cache;
+split the order-2 page from the end and free it; split the remainder
+into one order-1 folio, add it to the page cache and free the remaining
+order-1 page.
+
+The problem here is that all the code for handling large folios is
+currently gated by CONFIG_TRANSPARENT_HUGEPAGE, which I'm guessing is
+not enabled by any uclinux configs ;-)
+
+Something I've been wanting to do for a while is split out the code
+for handling PMD-sized folios from the code for splitting large folios
+into smaller folios.  That's necessarily going to increase the size of
+the text section for uclinux, but hopefully it'll be worthwhile because
+it'll decrease how much memory is allocated at runtime.
+
+Of course if uclinux files are typically PAGE_SIZE or smaller, this isn't
+going to help at all.  Which brings me to the really sticky question
+... how much do you care about uclinux support in a 2025 and later kernel?
+I have no idea how actively microcontroller people use Linux or update
+to recent kernels.  I'm not trying to push uclinux out, just don't want
+to do work that nobody will ever use ;-)
