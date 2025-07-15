@@ -1,127 +1,107 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D63270EB9
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jul 2025 10:33:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06D12E92DA
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jul 2025 13:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752575584; cv=none; b=JkvQMgLOfae0Qa4uCatnpZ5xSdQIAd0hjLWQNjM6wsVRKJYCeCsrMEBeV8feFv7IvcSAksF2UDvuNYbSTACKpNraNhzh3FPO6rVs3rSeYcF/xGabV/v8TnSNkhQKf5YLAK+l1jLaXQcxoix18KdhJ/4xAr+z1OBTGXUk+eYuG+I=
+	t=1752587669; cv=none; b=MQvlj1hwCZyGFVVdkk8sHfYFi4xRALz5352qqpWvJrRJ5dqFEpV5BGImu5/Wrkuud9WM5LAVNW2URc//H9lIozKCRlWg9Z8XuUmvPzIABBzayc5/IQkBl72cS/A1XZVbSd9vf+QTO8ZlPldWP6vqK9wYgNtcqvaHY/MVrGW0rE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752575584; c=relaxed/simple;
-	bh=xwq2Wx5SphMaUmADLHLqoOqRQ+nHABl3M0HNZKp0p0M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXcfHtB6GrNvS/CQFcIpiuFm1jy5yvVuPNcqBjXGxmFkxQ/yT+AdgLElHVnTBYrdkRuTl4BPVkNFGIFx132zC//xfGP/zwX5VBY3cWvIStardIqphdpn1ArzWFIkWDLHupSWsWMhcg+somrRjcBLohKNzDO93BkFpxhSpy6REL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8276112FC;
-	Tue, 15 Jul 2025 03:32:52 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.59])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C689E3F694;
-	Tue, 15 Jul 2025 03:32:52 -0700 (PDT)
-Date: Tue, 15 Jul 2025 11:32:47 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Kees Cook <kees@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Akihiko Odaki <akihiko.odaki@daynix.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Chris Zankel <chris@zankel.net>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Jonas Bonn <jonas@southpole.se>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
-	Stafford Horne <shorne@gmail.com>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
-	x86@kernel.org
-Subject: Re: [PATCH 00/23] binfmt_elf,arch/*: Use elf.h for coredump note
- names
-Message-ID: <aHYuT0SxX65tAEp3@e133380.arm.com>
-References: <20250701135616.29630-1-Dave.Martin@arm.com>
- <175255782864.3413694.2008555655056311560.b4-ty@kernel.org>
+	s=arc-20240116; t=1752587669; c=relaxed/simple;
+	bh=BbW46wPXuETQUGt3Z1/ORJj85+W6uydh64nbL3ZPUD0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dqf5j9ui8aOPysJJXa0cwrIZ6TuEo5pFH/w18zyv8T1PoxfvN5VVWWLWClk8HFWGcZbNaVqVtKyeLs5/RTjJvZBiZtDPpg234MxfMJK4YR7s6n1BSIvMuFC5nUeZ062boXnkqrxu7UoiM0NUquCf9Y3z2+f92IVrTYVVSMrPhrY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 8E09D61360;
+	Tue, 15 Jul 2025 13:54:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A7CEC4CEE3;
+	Tue, 15 Jul 2025 13:54:24 +0000 (UTC)
+Message-ID: <f2582a94-1bbc-41a0-9a21-17e77f3979a3@linux-m68k.org>
+Date: Tue, 15 Jul 2025 23:54:21 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <175255782864.3413694.2008555655056311560.b4-ty@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: nommu and folios
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-mm@kvack.org
+References: <aHVY3PIBI0M7Whi7@casper.infradead.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <aHVY3PIBI0M7Whi7@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 14, 2025 at 10:37:11PM -0700, Kees Cook wrote:
-> On Tue, 01 Jul 2025 14:55:53 +0100, Dave Martin wrote:
-> > This series aims to clean up an aspect of coredump generation:
-> > 
-> > ELF coredumps contain a set of notes describing the state of machine
-> > registers and other information about the dumped process.
-> > 
-> > Notes are identified by a numeric identifier n_type and a "name"
-> > string, although this terminology is somewhat misleading.  Officially,
-> > the "name" of a note is really an "originator" or namespace identifier
-> > that indicates how to interpret n_type [1], although in practice it is
-> > often used more loosely.
-> > 
-> > [...]
+Hi Matthew,
+
+On 15/7/25 05:22, Matthew Wilcox wrote:
+> Hi Greg!
 > 
-> Applied to for-next/execve, thanks!
+> The last user of add_to_page_cache_lru() is fs/ramfs/file-nommu.c I
+> think I need your advice about how best to proceed with nommu and folios.
 > 
-> [01/23] regset: Fix kerneldoc for struct regset_get() in user_regset
->         https://git.kernel.org/kees/c/6fd9e1aa0784
-
-[...]
-
-> [23/23] binfmt_elf: Warn on missing or suspicious regset note names
->         https://git.kernel.org/kees/c/a55128d392e8
+> The basic idea behind folios is that they represent a physically,
+> logically and virtually contiguous block of memory that is a power-of-2
+> bytes in size >= PAGE_SIZE.  struct page is going to be shrunk and it'll
+> be most efficient if we can arrange for allocations to be larger in size.
 > 
-> Take care,
+> UCLinux obviously has very different performance requirements from the
+> kinds of systems I usually work on -- memory usage minimisation is much
+> more important.  So ideally we wouldn't split the allocation all the way
+> to order-0 in ramfs_nommu_expand_for_mapping(), but do a split at just
+> the break point.  eg if we have a 40kB file, we'd allocate an order-4
+> folio, split it into an order-3 folio and add that to the page cache;
+> split the order-2 page from the end and free it; split the remainder
+> into one order-1 folio, add it to the page cache and free the remaining
+> order-1 page.
 > 
-> -- 
-> Kees Cook
+> The problem here is that all the code for handling large folios is
+> currently gated by CONFIG_TRANSPARENT_HUGEPAGE, which I'm guessing is
+> not enabled by any uclinux configs ;-)
 
-Thanks!
+Yeah, pretty sure that is right :-)
+Interestingly there is one architecture that is by default 64bit, RISCV.
+It has good support for running nommu. Though I don't think in practice
+that you would see nommu systems using it with largish memory sizes.
+Even then I doubt they would be using TRANSPARENT HUPGEPAGES either.
 
-Assuming nobody screams about things going wrong in next, I'll plan to
-water down the paranoid check in binfmt_elf.c:fill_thread_core_info().
 
-Anyone copy-pasting a new arch after this is in mainline shouldn't fall
-foul of this.
+> Something I've been wanting to do for a while is split out the code
+> for handling PMD-sized folios from the code for splitting large folios
+> into smaller folios.  That's necessarily going to increase the size of
+> the text section for uclinux, but hopefully it'll be worthwhile because
+> it'll decrease how much memory is allocated at runtime.
 
-Cheers
----Dave
+That sounds like a win overall. Anyone using modern kernels on nommu
+has to accept the ever increasing kernel text section anyway.
+
+
+> Of course if uclinux files are typically PAGE_SIZE or smaller, this isn't
+> going to help at all.
+
+Average file size is probably larger than PAGE_SIZE. All the standard
+application binaries will be much larger.
+
+
+>  Which brings me to the really sticky question
+> ... how much do you care about uclinux support in a 2025 and later kernel?
+> I have no idea how actively microcontroller people use Linux or update
+> to recent kernels.  I'm not trying to push uclinux out, just don't want
+> to do work that nobody will ever use ;-)
+
+That is really hard to answer. My gut feeling is that it may not be used
+that much any more. But then I keep getting surprised when people show up
+with new silicon that has no MMU (RISCV being a case in point). From what
+I can tell it is still popular with the ARM/Cortex-M variants as well.
+Not really sure about the Xtensa community, they may be active too.
+
+Regards
+Greg
+
+
