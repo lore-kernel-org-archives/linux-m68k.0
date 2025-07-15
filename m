@@ -1,82 +1,183 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E4926C3B3
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 14 Jul 2025 19:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF0A7263F49
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Jul 2025 05:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752520930; cv=none; b=hGErzqkHl7MCkfvBE6s6UePR2k7/Um4f4TMkfDHgjF/73WSxZkF3QJcDoJX5gx1thQvHRvF2XJrKzxspBX+rDlQ8shE3bMCm5SRQAT6yd9lbzjbLKLbHzKFSNw6VWLOtkk/aA75xKbmvXr0NY/WdoNw7UjZdu3zXtQRrvrs1OxU=
+	t=1752557843; cv=none; b=jz8677Ti2Vl6MzizCRJHY8Xtpyq2DRSbOLogeLkK8AxwnFqo7siccN19vy9Gckb1HTyC/OzXWgjmR9VTZPcOOlHSTIfMMYq2SpJkE1lOFl7Lhb13N2KuUXxM5YKs91444vPDZZuCDMd4m7BrdC8CLOct6M1S18366PaZSHxVOPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752520930; c=relaxed/simple;
-	bh=cyKqxF354Kh3jiiJsvMFm0rw2SJcg/Rvana9gIG9/Cw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RjYeHZ7TdpxBCsYJA0IxZTpOAXkIPO16PVYdMm50DjYMbi8/aYe2Oih4KZQqQQ3n9LkJY3TpGGLALFGdzJiMdmhBYULuxmLtM5/0+OAAJTGqWt4BptKiTb1Q2XoT/ZWJjbgrc5hCklL3xvw6aYH5wd2qOPWZ0ONG3+aDZ+hS8F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=II+iiKTR; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1752557843; c=relaxed/simple;
+	bh=6J3hCrPuy++HUhp2ZStrBO9vMI6jCI0BvgNUFtgBHOI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kA+7Njs+KpndjqfQTQSJf9P1+BlaZ4Y/snaQXkHj9nrhArwEmqQq3/n4HQHZQyy+6EpRPuxWinPuBE35HJuW+6U/5QOfF8QUS6tT6lHf4OxnIILU5+cPJptDz7MeVmLUkbVWc1W+7pxoQZSM2hAD3LGU3Bi6y2CrSAZGdmJ2WT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OD3WsebZ; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="II+iiKTR"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=lyYpP11IV4bpIFu/ApBOf5v9Ko6xUqN4taKSagvjK/M=; b=II+iiKTRIbP7EEoPO6fBG6NuT8
-	KAumMfvVQL9jagZZy1XxsYsaHkq4mhSugWHhFSmyPUt7gbBHEHNxrR1425KC1OIUWfCo1tkQBVnBL
-	WLeW/1oH6pWr/qJLENwIYK423PEBvvGwDpv9RxA/uLtNg2F5/oXVoEaWYUcOqvgH5aZqXi6wh/Wba
-	zvX9RiF3THpbEJvToWOaeVXbS8utGH/rnirN7xHjEsxDDFAC92FLrCPubWF0Cjh4nCKjUGXvA+zkq
-	2o2/y29MOWMRADimP+Sjief7/LA8ROswOiDVRd2TMbmAn5fElVNqYMwttX4jINmbvezlzNJklFqA0
-	XHDstQNQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1ubOkW-00000008sD1-2ZOq;
-	Mon, 14 Jul 2025 19:22:04 +0000
-Date: Mon, 14 Jul 2025 20:22:04 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-mm@kvack.org
-Subject: nommu and folios
-Message-ID: <aHVY3PIBI0M7Whi7@casper.infradead.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OD3WsebZ"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 7C443A4C138;
+	Tue, 15 Jul 2025 05:37:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12609C4CEF4;
+	Tue, 15 Jul 2025 05:37:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752557840;
+	bh=6J3hCrPuy++HUhp2ZStrBO9vMI6jCI0BvgNUFtgBHOI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=OD3WsebZ74BNCweLXWK6ZDpiy1GYCnmXu2xh27/ENvLdsLSkrLFQ6mR5l1mP+HUMG
+	 MShniYJqNM1s31wMmQw8FxDkHjit4SvfyoI6wUc1GOv+6z5AyvmnmyD6drAojuQ7np
+	 fOs0Zsj44GMv/NBf25ahV1vQZSouQi2ASuXroB6TqmINioyqTPuLu3wfF4V0KxSSjK
+	 0PR45/X7hWdpadu6p9W0SgtO5vmgSyqWPe258S/Buu2TrZcJGDDU9K/fmM8I4Uoql0
+	 Hu69E3heOIAt/PsIe2m0WLAzWWr5PZ0Gr/ihpETockVthBQZ9NoB8xkXw0f93zawy2
+	 SFMRROjblWu6w==
+From: Kees Cook <kees@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	Dave Martin <Dave.Martin@arm.com>
+Cc: Kees Cook <kees@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Akihiko Odaki <akihiko.odaki@daynix.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Chris Zankel <chris@zankel.net>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Jonas Bonn <jonas@southpole.se>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Rich Felker <dalias@libc.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Will Deacon <will@kernel.org>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: Re: [PATCH 00/23] binfmt_elf,arch/*: Use elf.h for coredump note names
+Date: Mon, 14 Jul 2025 22:37:11 -0700
+Message-Id: <175255782864.3413694.2008555655056311560.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250701135616.29630-1-Dave.Martin@arm.com>
+References: <20250701135616.29630-1-Dave.Martin@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Greg!
+On Tue, 01 Jul 2025 14:55:53 +0100, Dave Martin wrote:
+> This series aims to clean up an aspect of coredump generation:
+> 
+> ELF coredumps contain a set of notes describing the state of machine
+> registers and other information about the dumped process.
+> 
+> Notes are identified by a numeric identifier n_type and a "name"
+> string, although this terminology is somewhat misleading.  Officially,
+> the "name" of a note is really an "originator" or namespace identifier
+> that indicates how to interpret n_type [1], although in practice it is
+> often used more loosely.
+> 
+> [...]
 
-The last user of add_to_page_cache_lru() is fs/ramfs/file-nommu.c I
-think I need your advice about how best to proceed with nommu and folios.
+Applied to for-next/execve, thanks!
 
-The basic idea behind folios is that they represent a physically,
-logically and virtually contiguous block of memory that is a power-of-2
-bytes in size >= PAGE_SIZE.  struct page is going to be shrunk and it'll
-be most efficient if we can arrange for allocations to be larger in size.
+[01/23] regset: Fix kerneldoc for struct regset_get() in user_regset
+        https://git.kernel.org/kees/c/6fd9e1aa0784
+[02/23] regset: Add explicit core note name in struct user_regset
+        https://git.kernel.org/kees/c/85a7f9cbf8a8
+[03/23] binfmt_elf: Dump non-arch notes with strictly matching name and type
+        https://git.kernel.org/kees/c/9674a1be4dd5
+[04/23] ARC: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/237dc8d79627
+[05/23] ARM: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/49b849d11cd1
+[06/23] arm64: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/87b0d081dc98
+[07/23] csky: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/2c2fb861fc59
+[08/23] hexagon: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/55821111b1b3
+[09/23] LoongArch: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/1260e3b13584
+[10/23] m68k: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/e572168e8d2a
+[11/23] MIPS: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/18bd88faa246
+[12/23] nios2: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/8368cd0e4636
+[13/23] openrisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/10cd957a895f
+[14/23] parisc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/92acdd819b5d
+[15/23] powerpc/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/307035acefbd
+[16/23] riscv: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/c9502cc7bef5
+[17/23] s390/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/d6a883cb40fc
+[18/23] sh: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/afe74eecd88f
+[19/23] sparc: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/c9d4cb25e94e
+[20/23] x86/ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/3de0414dec7b
+[21/23] um: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/40d3a88594b5
+[22/23] xtensa: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+        https://git.kernel.org/kees/c/cb32fb722f4b
+[23/23] binfmt_elf: Warn on missing or suspicious regset note names
+        https://git.kernel.org/kees/c/a55128d392e8
 
-UCLinux obviously has very different performance requirements from the
-kinds of systems I usually work on -- memory usage minimisation is much
-more important.  So ideally we wouldn't split the allocation all the way
-to order-0 in ramfs_nommu_expand_for_mapping(), but do a split at just
-the break point.  eg if we have a 40kB file, we'd allocate an order-4
-folio, split it into an order-3 folio and add that to the page cache;
-split the order-2 page from the end and free it; split the remainder
-into one order-1 folio, add it to the page cache and free the remaining
-order-1 page.
+Take care,
 
-The problem here is that all the code for handling large folios is
-currently gated by CONFIG_TRANSPARENT_HUGEPAGE, which I'm guessing is
-not enabled by any uclinux configs ;-)
+-- 
+Kees Cook
 
-Something I've been wanting to do for a while is split out the code
-for handling PMD-sized folios from the code for splitting large folios
-into smaller folios.  That's necessarily going to increase the size of
-the text section for uclinux, but hopefully it'll be worthwhile because
-it'll decrease how much memory is allocated at runtime.
-
-Of course if uclinux files are typically PAGE_SIZE or smaller, this isn't
-going to help at all.  Which brings me to the really sticky question
-... how much do you care about uclinux support in a 2025 and later kernel?
-I have no idea how actively microcontroller people use Linux or update
-to recent kernels.  I'm not trying to push uclinux out, just don't want
-to do work that nobody will ever use ;-)
