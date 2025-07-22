@@ -1,66 +1,68 @@
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431652576
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Jul 2025 03:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB4728A73F
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Jul 2025 03:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753155351; cv=none; b=N+osnKDh+0MF3sveWz37ETmrRgwcKtGXN22Wq2VFkuUDCLJyV9NCqJEX3wjqPSX0neo9lvSrmhD9h74JW96lFNgNRY2LG5OWwShFHVoXeNHrQwALbq71rI12nrUboC0Um+yU3CQfMpdL3iObBMUYzScWCZHd56gFMsMTQFOdPKc=
+	t=1753155553; cv=none; b=EnQE/azBcZCSfURChUfcyuVOUP/XDQ0nnfwzGxINYjSRRiIj1j1zNHfu7pFL4yl6sI7JFREvG/9wkmnWyAYKSqCNeAf5eTgIj/8WF0TcbvPYNWimqlHrlaR+gou+9MsoEMCzoaDaxwRFwwbuA1j1TqV2YzFA96Tqfi1jQQgct88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753155351; c=relaxed/simple;
-	bh=9XEHvf4vG1D4yyvbE6MLh31skmRGLDLGj0AHdpDV6CQ=;
-	h=Date:From:To:Cc:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=oJuaWkATWuEmS6OoCKnw0l91F+/qDOLXtz47V8OAFTMQQ1BSZR3Wwr2ydqvejN/E8mEq8P+AwqFTlwXqOiZB/38Cb2gn+aoeuguuu6KZ/M7OqzSyN94pzf7Dz8kwCO1r98w7murIvDR3IPhSm4nrEvqJa5F4valsluQjKsHoqXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A5OF/VPd; arc=none smtp.client-ip=209.85.210.175
+	s=arc-20240116; t=1753155553; c=relaxed/simple;
+	bh=a8ZDCKvk1z9V4mWSqgga4htHIEnZXgftQcODAhyHbhI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=S0HDHAhOV/G1J73NrmpWTI75YHkRqLe0NFQJ9YXej6WZloA6FWuBF+jP/j4U9ujwWkz249mD1IjkpI3DTckTjyjCsmFCaExm95yEs/mFpawQSlU70UWKh007S13jsqOjEy6LHqjID8eC3Ci6CLYhiEPsfqZLULwTch9lhyq/KK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TY05xoLQ; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A5OF/VPd"
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7426c44e014so4640336b3a.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Jul 2025 20:35:50 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TY05xoLQ"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-23dea2e01e4so58438025ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Jul 2025 20:39:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753155349; x=1753760149; darn=lists.linux-m68k.org;
-        h=content-disposition:mime-version:message-id:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=F2LbdLcacR9W8sqqUGkM7qsaJ4maKUnitzkAiJJt3Aw=;
-        b=A5OF/VPddXkc7D3ZwI55anZiY3fcz1XMCr6kzglQxTxs+KC6Mmv/SUjRjaNmdR7B+c
-         +avIGSg5MCGg1NhnR4eX9JfCormR29grq67seW39oMsq5KQIRUjDUeiUI59ig0lyjQzr
-         eOGoosXNQpNzVaYUvC+gaw0VFaeHbMqPDrINs7GIPoca/V11zoDhi1RZ2c8XVSGyjgW1
-         hyAWM7LSHQrB9nCFJul7yQgL6z2ufME/cLDXc9clKZZ20bk2neX/2rcd4cjf2OY69Qao
-         1yakjVlSJO6beUOD8vP7M1PfHcK9o3L+SRNZGSu0XMn7FORzaXDTQwE+EPAY8Sy7mGvV
-         +XnA==
+        d=gmail.com; s=20230601; t=1753155551; x=1753760351; darn=lists.linux-m68k.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2HxvgsGdyX3E0xq2IbH1R0rlYmLQG970WtCL2FPZRg4=;
+        b=TY05xoLQ8HzLdrl5TP2Hq9bITQ+cq2Fhc3Q3nP1o6FPfC1yJnW+Vk6uYs7ut7aWg+V
+         Sfymbaq2PqfEJYuewng6CtzyfS7RV7XjV7S2oXGorzPxcsT7uwgSozlhp1RcTCw7cZ1H
+         QtTjij76Pvf7IuGNU65W/CO1pODWQg4kVZS7Kbq6H0kX3r6UfWFmjhxOeFXGb5/SObrG
+         4S6+q4/BpDTLbh604VkLX5Zhyn3te9JyYp+ZXnQQWyTnSLQktVgS7hC1CoMmYxa44Px0
+         gl1nSzBf30y4ZmJOsj0d8ZjZ25INxVUqo5kLz5OTQl5hgW7mj1a0yT4ej3KSYQRavr9j
+         g3XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753155349; x=1753760149;
-        h=content-disposition:mime-version:message-id:cc:to:from:date
+        d=1e100.net; s=20230601; t=1753155551; x=1753760351;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F2LbdLcacR9W8sqqUGkM7qsaJ4maKUnitzkAiJJt3Aw=;
-        b=MfssgvtloS5uJN7ra/QGMZnBK6hYQDp47tVB0pMMarM7ypW2YFGEzA3VS808v/flS/
-         RJhM30rFgMvbDSLdbeY5WUESbU9VnulBwxn5NiWZs3UzJhfV9r2R0nhEh6GQSdwSO+Rm
-         VWV3MQGvOTRFs03nf3o3+gYAdj7mdpvRXcugt2cdxnQT47CI3uGrlmZwy/hsw87kbvEX
-         y5S1hkdD/kRDxERoJV0/Zr3zF+tz4MrhVSRbeQJxBXtk+QYvoxQ1JQn+qbGWNCsIaqi+
-         M/vLMhR/RFa/Gzn1tvJF6AioNQLjKDoGGunAjq2q1ketaWTdi1rQkyaZJq0bSzu3VeAp
-         xA6g==
-X-Gm-Message-State: AOJu0Ywmco1LXXjoJi+FKZq+qz4rnwp+u9iKU0UpCWDz5UXEL/3H0mFJ
-	v8Wb3s1Zana+8jUzPCKj6LW/Rynm89pJl3HAIoNjH5VD7TepqmMH1UZT
-X-Gm-Gg: ASbGncsyJlERZveccM4JplsrsT8NEb4k1p5Na8+KPmA1ElRM5AJ6Q/ls2MCkymBBiX/
-	/rfvW6vdrhupo7vKaD3kfL9yQnLHwtc1s6NuWqArxKRP7AFvZ6Sq0Y3WSkByLNA45k3728lOZ/d
-	HV21vX+SKxtvZgKk/JUoOiROST3S9XeJxrdIXr6b+DgFLPeOha8w1u6zlst93LloANBo+F3EgHq
-	wQROLwq0iBBY1q3X3UsoGeu03c9xHkrUMmvVGIHedkRKvtu3qxv7XA99RnSZsn1HQmDfd8lCLV8
-	OIRwab+5Z2BsoB46MD+SfHZbiXyO7+4BrA3EJiXZbCpFxTwVXv6cNxSyHw2WswGxYa6ZoPIyc1j
-	/tnZqbm8grCm9rDM1suUQElBRvrvGzZU=
-X-Google-Smtp-Source: AGHT+IHv2JveUKY4jPAPdg0y0FEpCFWmS72cA64bGwD9nQdsd9BsKzCXCJ4dAYh7/e8A0baYOoHK7A==
-X-Received: by 2002:a05:6a21:6da8:b0:239:c7c:8de8 with SMTP id adf61e73a8af0-2390c7cf703mr28643449637.12.1753155349537;
-        Mon, 21 Jul 2025 20:35:49 -0700 (PDT)
+        bh=2HxvgsGdyX3E0xq2IbH1R0rlYmLQG970WtCL2FPZRg4=;
+        b=E3x3gZVzsH11SvUsQyEjP+F5Iz57piaqGBSfevnET30raG9uaUyH66KFlJ0Ha6r+9h
+         ftwwdPvhTmSNfQ3sRJvS8W5A+UVsNmbxTDW6frf6OFV4MGXYe6WR3k1WYo2tptX2C74R
+         pamZBbNtLekCYGhBJqCXL/JuxnWu+uGjyU2ryXIk67Tam3zP/q8Z5xn5dFGWs5WvncSJ
+         hRcNKQIu3l+7yewUW/U9ZvXrevHKjwq37pOpGU8k6eOCWdCHGGuLutx6k9K8T7gKflbA
+         2Cy2YXfZV+JMhn+XeCvL5UUqhePOx/474csccNXl+5IonESgdlauZhvws9NCxCe+ql6g
+         v6FQ==
+X-Gm-Message-State: AOJu0YyLW4HCTnaeJNAClFpcxWnlXMMlSMQItHEqWryXeoty6pShXv/t
+	UvyXK043k9AeP5S2ZGlY/17J8l5NZpf7fw8thodwsZ5OSJaTRRS1i7pr
+X-Gm-Gg: ASbGnct+q3ObWewbQtvwJjHrYyk4Yn2K41o12aRHDz2odOwvhhYHX4uBOr8/kKYvcIE
+	UxQnxhPsUPb2IXYXwbvux+8U7Z02XZaGw6+0fu4e7ceQdlekOwgsc1RFeHYbexHeW/JRMmR3Pai
+	o4ddp8rBOoCl4CDHzzgvWMlfZiETjQY5p3vY4tyUzOaixLMOSq7kvXsE4n839xXIJups8uvlSMx
+	16mAdeaY8lcm+SpACei6RXLnuID1cFI8uaAaWziQdPyDLZgfixE1a/z/ZmUOF3InAXIc+Emh+po
+	NLQe2dk8xWqq0LKYcZctRmbV6Y6cH5K1MGeetFwSs0mImON5c5kharGrjQPGmACiQ3ulHuC0A5Y
+	TjukabDgocFPmczT+pUxIqJgwrE2AEcM=
+X-Google-Smtp-Source: AGHT+IELXenhGbrXs3GHqpCXNMZRZtfRAufEp0joWU/yATfc1Fkd0qA6Op2/PITBrKGg0UU01VXk1w==
+X-Received: by 2002:a17:903:faf:b0:235:799:eca5 with SMTP id d9443c01a7336-23e2576e67cmr337988305ad.44.1753155551546;
+        Mon, 21 Jul 2025 20:39:11 -0700 (PDT)
 Received: from brak3rDesk ([115.96.77.246])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b3f2ff61ff2sm5028368a12.35.2025.07.21.20.35.48
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23e3b6f309fsm65886665ad.223.2025.07.21.20.39.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jul 2025 20:35:49 -0700 (PDT)
-Date: Tue, 22 Jul 2025 09:05:45 +0530
+        Mon, 21 Jul 2025 20:39:11 -0700 (PDT)
+Date: Tue, 22 Jul 2025 09:09:08 +0530
 From: Rujra Bhatt <braker.noob.kernel@gmail.com>
 To: geert@linux-m68k.org
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org
-Message-ID: <aH8HEQoqGhSN9AJ9@brak3rDesk>
+	skhan@linuxfoundation.org, linux-kernel-mentees@lists.linux.dev
+Subject: [PATCH] drivers:zorro:zorro-sysfs.c Replace sprintf() with
+ sysfs_emit()
+Message-ID: <aH8H3D0WRrqqZYc4@brak3rDesk>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -70,10 +72,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-linux-kernel-mentees@lists.linux.dev 
-Bcc: 
-Subject: [PATCH] drivers:zorro:zorro-sysfs.c Replace sprintf() with
- sysfs_emit()
 Reply-To: 
 
 replace sprintf() with sysfs_emit() in sysfs
