@@ -1,123 +1,133 @@
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C51F52F88;
-	Wed, 16 Jul 2025 18:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431652576
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 22 Jul 2025 03:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752689765; cv=none; b=MUb+NLDl3umxOA+k0XN3Yt2pg9Mzu5NiLMDPhjCwN9iT8zptoNBLQDXgzjxMweN+Uvp1bV83mTWbefFrPCkikulHkKRd5h1iBFZ/6lWxx1MpRtAeZAmTumhgh6+GXA6fSf7vhnUK85f4Bdnte5Db9MlJGjQrEcDYdE04ITNaSWc=
+	t=1753155351; cv=none; b=N+osnKDh+0MF3sveWz37ETmrRgwcKtGXN22Wq2VFkuUDCLJyV9NCqJEX3wjqPSX0neo9lvSrmhD9h74JW96lFNgNRY2LG5OWwShFHVoXeNHrQwALbq71rI12nrUboC0Um+yU3CQfMpdL3iObBMUYzScWCZHd56gFMsMTQFOdPKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752689765; c=relaxed/simple;
-	bh=AxYk3hb0otPOpe8iCoKRDXyzipO8+IEj3pxhrwFiias=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=mv36Ox1PVk8hnD3xOC4ArP2C0pFpqq2+z1/sbV9o6l4M56er6JhN0x4fFODYCIdeuwg4xhSxltO5n5HpqPKg640zcUTQ9664JInY5hte0hvnuMaAjcCmPuRlEY2opVZb2MV+TqfJCOl9ogFF1HleuLA0yBegB0kQX4mhiXA0uzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=PdYs1CW7; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+	s=arc-20240116; t=1753155351; c=relaxed/simple;
+	bh=9XEHvf4vG1D4yyvbE6MLh31skmRGLDLGj0AHdpDV6CQ=;
+	h=Date:From:To:Cc:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=oJuaWkATWuEmS6OoCKnw0l91F+/qDOLXtz47V8OAFTMQQ1BSZR3Wwr2ydqvejN/E8mEq8P+AwqFTlwXqOiZB/38Cb2gn+aoeuguuu6KZ/M7OqzSyN94pzf7Dz8kwCO1r98w7murIvDR3IPhSm4nrEvqJa5F4valsluQjKsHoqXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A5OF/VPd; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="PdYs1CW7"
-Received: from [127.0.0.1] (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 56GI4wZF1640497
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 16 Jul 2025 11:05:02 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 56GI4wZF1640497
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2025062101; t=1752689107;
-	bh=AxYk3hb0otPOpe8iCoKRDXyzipO8+IEj3pxhrwFiias=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=PdYs1CW7P6NGZ7nqrSTKiw9kGz8+zKtbJLnnYWGn7EmE85IhMRHjUsfqejqSu3NpC
-	 F8mkqPxV94oRfsry8xLqbBh6TIeqEphXrM8IQVQXG98VV0VtmaqRkm8gcHZ1DS8I+Y
-	 9Ud40lsWpWvI8f/Mw4fJttPFSqVPnBxm60MpDadKClPpxIliIxgGgmXKbtvKQmNI4w
-	 9zRbpJ/rGGTy9XhzMH+JGYmHR8cviSmLp4ZAluTl43LX0HJw1hILVpbbrTd8F7h/pQ
-	 VEaChnOfID89c6bfwtXUBb4UKngfABWVJFjrAYzLGKal7C5mVferZwFoGX1uSfry52
-	 xqWYa7EnyTKlQ==
-Date: Wed, 16 Jul 2025 11:04:52 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Ghiti <alex@ghiti.fr>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.osdn.me>, Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-arch@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_1/1=5D_uapi/termios=3A_remov?=
- =?US-ASCII?Q?e_struct_ktermios_from_uapi_headers?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <aHfn9z9_oIVgNGgx@shell.armlinux.org.uk>
-References: <20250716164735.170713-1-hpa@zytor.com> <aHfn9z9_oIVgNGgx@shell.armlinux.org.uk>
-Message-ID: <9AEAF0BE-39D7-4617-9CB5-D0703B3E6DF8@zytor.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A5OF/VPd"
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7426c44e014so4640336b3a.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 21 Jul 2025 20:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753155349; x=1753760149; darn=lists.linux-m68k.org;
+        h=content-disposition:mime-version:message-id:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=F2LbdLcacR9W8sqqUGkM7qsaJ4maKUnitzkAiJJt3Aw=;
+        b=A5OF/VPddXkc7D3ZwI55anZiY3fcz1XMCr6kzglQxTxs+KC6Mmv/SUjRjaNmdR7B+c
+         +avIGSg5MCGg1NhnR4eX9JfCormR29grq67seW39oMsq5KQIRUjDUeiUI59ig0lyjQzr
+         eOGoosXNQpNzVaYUvC+gaw0VFaeHbMqPDrINs7GIPoca/V11zoDhi1RZ2c8XVSGyjgW1
+         hyAWM7LSHQrB9nCFJul7yQgL6z2ufME/cLDXc9clKZZ20bk2neX/2rcd4cjf2OY69Qao
+         1yakjVlSJO6beUOD8vP7M1PfHcK9o3L+SRNZGSu0XMn7FORzaXDTQwE+EPAY8Sy7mGvV
+         +XnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753155349; x=1753760149;
+        h=content-disposition:mime-version:message-id:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F2LbdLcacR9W8sqqUGkM7qsaJ4maKUnitzkAiJJt3Aw=;
+        b=MfssgvtloS5uJN7ra/QGMZnBK6hYQDp47tVB0pMMarM7ypW2YFGEzA3VS808v/flS/
+         RJhM30rFgMvbDSLdbeY5WUESbU9VnulBwxn5NiWZs3UzJhfV9r2R0nhEh6GQSdwSO+Rm
+         VWV3MQGvOTRFs03nf3o3+gYAdj7mdpvRXcugt2cdxnQT47CI3uGrlmZwy/hsw87kbvEX
+         y5S1hkdD/kRDxERoJV0/Zr3zF+tz4MrhVSRbeQJxBXtk+QYvoxQ1JQn+qbGWNCsIaqi+
+         M/vLMhR/RFa/Gzn1tvJF6AioNQLjKDoGGunAjq2q1ketaWTdi1rQkyaZJq0bSzu3VeAp
+         xA6g==
+X-Gm-Message-State: AOJu0Ywmco1LXXjoJi+FKZq+qz4rnwp+u9iKU0UpCWDz5UXEL/3H0mFJ
+	v8Wb3s1Zana+8jUzPCKj6LW/Rynm89pJl3HAIoNjH5VD7TepqmMH1UZT
+X-Gm-Gg: ASbGncsyJlERZveccM4JplsrsT8NEb4k1p5Na8+KPmA1ElRM5AJ6Q/ls2MCkymBBiX/
+	/rfvW6vdrhupo7vKaD3kfL9yQnLHwtc1s6NuWqArxKRP7AFvZ6Sq0Y3WSkByLNA45k3728lOZ/d
+	HV21vX+SKxtvZgKk/JUoOiROST3S9XeJxrdIXr6b+DgFLPeOha8w1u6zlst93LloANBo+F3EgHq
+	wQROLwq0iBBY1q3X3UsoGeu03c9xHkrUMmvVGIHedkRKvtu3qxv7XA99RnSZsn1HQmDfd8lCLV8
+	OIRwab+5Z2BsoB46MD+SfHZbiXyO7+4BrA3EJiXZbCpFxTwVXv6cNxSyHw2WswGxYa6ZoPIyc1j
+	/tnZqbm8grCm9rDM1suUQElBRvrvGzZU=
+X-Google-Smtp-Source: AGHT+IHv2JveUKY4jPAPdg0y0FEpCFWmS72cA64bGwD9nQdsd9BsKzCXCJ4dAYh7/e8A0baYOoHK7A==
+X-Received: by 2002:a05:6a21:6da8:b0:239:c7c:8de8 with SMTP id adf61e73a8af0-2390c7cf703mr28643449637.12.1753155349537;
+        Mon, 21 Jul 2025 20:35:49 -0700 (PDT)
+Received: from brak3rDesk ([115.96.77.246])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b3f2ff61ff2sm5028368a12.35.2025.07.21.20.35.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jul 2025 20:35:49 -0700 (PDT)
+Date: Tue, 22 Jul 2025 09:05:45 +0530
+From: Rujra Bhatt <braker.noob.kernel@gmail.com>
+To: geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org
+Message-ID: <aH8HEQoqGhSN9AJ9@brak3rDesk>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On July 16, 2025 10:57:11 AM PDT, "Russell King (Oracle)" <linux@armlinux=
-=2Eorg=2Euk> wrote:
->On Wed, Jul 16, 2025 at 09:47:32AM -0700, H=2E Peter Anvin wrote:
->> diff --git a/arch/arm/include/asm/ktermios=2Eh b/arch/arm/include/asm/k=
-termios=2Eh
->> new file mode 100644
->> index 000000000000=2E=2E4320921a82a9
->> --- /dev/null
->> +++ b/arch/arm/include/asm/ktermios=2Eh
->> @@ -0,0 +1 @@
->> +#include <asm-generic/ktermios=2Eh>
->
->Isn't this what arch/arm/include/asm/Kbuild's generic-y is for?
->
->Ditto for other arches=2E
->
+linux-kernel-mentees@lists.linux.dev 
+Bcc: 
+Subject: [PATCH] drivers:zorro:zorro-sysfs.c Replace sprintf() with
+ sysfs_emit()
+Reply-To: 
 
-Ah, yes, you're right (except for those with nontrivial stubs=2E)
+replace sprintf() with sysfs_emit() in sysfs
+*_show() functions in zorro-sysfs.c to follow the kernel's guidelines
+from Documentation/filesystems/sysfs.rst.
 
-I also found that a handful of drivers and arch/sparc needs <asm/termios=
-=2Eh> =E2=86=92 <linux/termios=2Eh> in <linux/termios_internal=2Eh>=2E
+This improves consistency, safety, and makes the code easier to
+maintain and update in the future.
+
+Signed-off-by: Rujra Bhatt <braker.noob.kernel@gmail.com>
+---
+ drivers/zorro/zorro-sysfs.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/zorro/zorro-sysfs.c b/drivers/zorro/zorro-sysfs.c
+index 10aedcd21363..a552724b7fc7 100644
+--- a/drivers/zorro/zorro-sysfs.c
++++ b/drivers/zorro/zorro-sysfs.c
+@@ -29,7 +29,7 @@ static ssize_t name##_show(struct device *dev,				\
+ 	struct zorro_dev *z;						\
+ 									\
+ 	z = to_zorro_dev(dev);						\
+-	return sprintf(buf, format_string, z->field);			\
++	return sysfs_emit(buf, format_string, z->field);			\
+ }									\
+ static DEVICE_ATTR_RO(name);
+ 
+@@ -44,7 +44,7 @@ static ssize_t serial_show(struct device *dev, struct device_attribute *attr,
+ 	struct zorro_dev *z;
+ 
+ 	z = to_zorro_dev(dev);
+-	return sprintf(buf, "0x%08x\n", be32_to_cpu(z->rom.er_SerialNumber));
++	return sysfs_emit(buf, "0x%08x\n", be32_to_cpu(z->rom.er_SerialNumber));
+ }
+ static DEVICE_ATTR_RO(serial);
+ 
+@@ -53,7 +53,7 @@ static ssize_t resource_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct zorro_dev *z = to_zorro_dev(dev);
+ 
+-	return sprintf(buf, "0x%08lx 0x%08lx 0x%08lx\n",
++	return sysfs_emit(buf, "0x%08lx 0x%08lx 0x%08lx\n",
+ 		       (unsigned long)zorro_resource_start(z),
+ 		       (unsigned long)zorro_resource_end(z),
+ 		       zorro_resource_flags(z));
+@@ -65,7 +65,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct zorro_dev *z = to_zorro_dev(dev);
+ 
+-	return sprintf(buf, ZORRO_DEVICE_MODALIAS_FMT "\n", z->id);
++	return sysfs_emit(buf, ZORRO_DEVICE_MODALIAS_FMT "\n", z->id);
+ }
+ static DEVICE_ATTR_RO(modalias);
+ 
+-- 
+2.43.0
+
