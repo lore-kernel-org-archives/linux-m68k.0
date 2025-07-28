@@ -1,69 +1,33 @@
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4790D231858
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jul 2025 09:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA34C253356
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jul 2025 09:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753695282; cv=none; b=GwgAqG2/OUpAdHTYaPlAGKQADKI6rYUBVvVGKnHn8fxvCOwy6gBaswf29yH9BU7Kj8Y0uf4wRs9N3YJShrek+VtPu9yzzdq6USLwdK5gkckAxYWSedIU1ybXlVwuc6IU1IHMkvmwl9JRq8nHuixdoLWnkUc2M2F3Iyk63sfi8z4=
+	t=1753695303; cv=none; b=hyuLLsgiLQ+Vfc7I5XslwNv0HWyrNHIbwR94JHsuQ1B5MNIRnRGncT2BoM04cwoCd0+e/lF5d34fNovExuMEfz8RIkRZiXqhwS5y4s5bxfbHgRvBlRroMJji1XB8eV6dnWnP63SIaUg2SuZFVZjBCFMrCkyL7y6cAEYm6VVaC0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753695282; c=relaxed/simple;
-	bh=FVjrhbgU51oFrsK8FhKQpqxMkotAxlE+hef9bztLMf0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gRACm/hOlOIUM+F2MaFl80Y84t1QFbt+Lf3LI0Y4+eHAhLVF72cJqjHTqkDCMbS3tzWE/W7LTHy0xQNLaslzv0swq6DBdyYNOUiIB1FTp1o/b4mYWwHiMXBJOrlNLEzwCXGpwQOXJa3Krj/rUObwg2HQBsLTbOwwnaz1h4i1V5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cra3hL6W; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cra3hL6W"
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-235f9ea8d08so39642455ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Jul 2025 02:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753695280; x=1754300080; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZoKs7p6HZYNszKO17OO4KdXekmUg9ugS36Em0DKxuqU=;
-        b=cra3hL6WnRLSXIHFFApSSy02M7dL+iQFRx0LinV3XA8eTAw0Eqg92HOuDCF38ZebgU
-         7Ztl7KheHHzXECyEy3E8TxTJTKS0Cj3dZbpl/oBUFTbxTaU6aXI9xaUcbHsgu2IsyYee
-         NxLxeyg7Rerg+V+tmpxgs/CSqd5w7Yo9akXbs3Jj7WisQMdReIA+FoEBUELBzu9zieiO
-         yszgk7XoZO/jx2MhVAxGHXkTBez3eWk8tkG0DHlX87JgdczVvX1spmT8+9aB/RG2zx29
-         9R9OXOWB0ertWa475qoXZieIVNw6efi0r77QMhkkpxTrx3eUS12ePWV06xtBHrbinD5/
-         02bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753695280; x=1754300080;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZoKs7p6HZYNszKO17OO4KdXekmUg9ugS36Em0DKxuqU=;
-        b=kMxJs4yhzkxIs/RF5ayyV1qKAOuANsUa7IfTiKQaiqMcUOEDEaMRMnwKtonqr4NqqJ
-         lbJ4+tzQ63yBFO/q4LsEzAeC709HcdSEfyQiM1bGouTCR+JCqo26rFPe0maifuSQej1r
-         IjGpRQtOWeIofTufumaTsGyLM0jQ6TRBR0awLI38KM3flbH6JfE4Bj1aaVCQvVMOzoHy
-         pkczE5GyHdF5wJDe1DVpYAQWgENITJIMly+TQLXoUMYiCW7AITmRg/pe2S34KtHLMikx
-         DCQZk5V2lEMrnyl6oQFGg0SlZaAQ7TcDpRD57sXM0VK0EOsyrdC4efBkzGDXNPZB6h8m
-         4Rng==
-X-Gm-Message-State: AOJu0Yy0mzh2q5zkwKph7EvEUtHTsqdwQ0OD7LUIMyoKEZ0fDmUr2CyJ
-	MkIui1iNY07x1Q8MBUjBaJegbSq3M8uYP7+Ty48QHin8/cfmFQ3EHpGg
-X-Gm-Gg: ASbGncueIbY8c6vbsVw0EHHyPaqFkVcZA2iYpJz7hH7j5EaRv+41a7EgW0EWGGNQWsT
-	oq21KWLYzRQlIcNLPNdzJfrmH8798cTAQG4KLOCAJInW010BX4co4C5F5g5PAtkuKdJ2bAi9c4f
-	TUf3v1MRCSA1puybrjIUUEDMjOjFFa3Q/GUW43dTt6Qko7ILFz3HyFPpiNLrJ2HqyfoxSLL6udz
-	kw1B2fKHohIyK+/wsQvKgkvj6lCprggMk3EMoGUKAhKuGrEhiDDsES0BSRvxwZx9/tbPNc/PDuk
-	pLbDKE9cECOtJA38Ms/csS3rTQE1dl+zh0RbdZDabWDu9OA0r9glePL9DEb9GRwJ+7pzukgWaCY
-	efxkI1mlW7fG0KTcimGrURud4hUcaaiWGkP5Bj5nHw2Y+DoASfA==
-X-Google-Smtp-Source: AGHT+IGjJPaZL1a0kCFTxQSZwuSbVti44KmI2KrA1FlBXfoREc0LVs07EjrFSf+mheRkE+jWaoW3Qg==
-X-Received: by 2002:a17:903:2345:b0:235:e1d6:4e22 with SMTP id d9443c01a7336-23fb3040f6cmr137246975ad.18.1753695280353;
-        Mon, 28 Jul 2025 02:34:40 -0700 (PDT)
-Received: from localhost.localdomain ([49.36.70.111])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23fbe546bebsm49809855ad.179.2025.07.28.02.34.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Jul 2025 02:34:39 -0700 (PDT)
-From: Dishank Jogi <jogidishank503@gmail.com>
-To: geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org,
+	s=arc-20240116; t=1753695303; c=relaxed/simple;
+	bh=nTv/krKUq1pAf23k38ECr9b6F14induhosI1RFjnmPY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b7gyae5kyTNyaAmFE5Md8kY7aKd7pGL9Bd4uV8dmvkihaAUOOebkOXRCLyLu3wmyOKyomOqaFBm4d+pLY4GNolDpuXMuiFdtPlwmSjoIHWaUukgE1ZfiF1/tR0r6DDvqJ4qSlhzn1HKJSG5wXOaV5DQ1PVYRnyJRd7Gq+7x40SE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id BF7E8600BB;
+	Mon, 28 Jul 2025 09:34:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22144C4CEF4;
+	Mon, 28 Jul 2025 09:34:57 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org,
-	darshanrathod475@gmail.com,
-	Dishank Jogi <jogidishank503@gmail.com>
-Subject: [PATCH] zorro: fix checkpatch error by avoiding assignment in if-statement.
-Date: Mon, 28 Jul 2025 09:34:12 +0000
-Message-ID: <20250728093412.48065-1-jogidishank503@gmail.com>
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.17
+Date: Mon, 28 Jul 2025 11:34:37 +0200
+Message-ID: <20250728093437.223500-1-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -73,40 +37,112 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These changes improve code readability and bring the file
-in line with the Linux kernel coding style.
+	Hi Linus,
 
-No functional changes.
+The following changes since commit e04c78d86a9699d136910cfc0bdcf01087e3267e:
 
-Signed-off-by: Dishank Jogi <jogidishank503@gmail.com>
----
- drivers/zorro/gen-devlist.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+  Linux 6.16-rc2 (2025-06-15 13:49:41 -0700)
 
-diff --git a/drivers/zorro/gen-devlist.c b/drivers/zorro/gen-devlist.c
-index e325c5ce995b..ff4515e02409 100644
---- a/drivers/zorro/gen-devlist.c
-+++ b/drivers/zorro/gen-devlist.c
-@@ -44,7 +44,8 @@ main(void)
- 
- 	while (fgets(line, sizeof(line)-1, stdin)) {
- 		lino++;
--		if ((c = strchr(line, '\n')))
-+		c = strchr(line, '\n')
-+		if (c)
- 			*c = 0;
- 		if (!line[0] || line[0] == '#')
- 			continue;
-@@ -68,7 +69,8 @@ main(void)
- 					fprintf(devf, "\tPRODUCT(%s,%s,\"", manuf, line+1);
- 					pq(devf, c);
- 					fputs("\")\n", devf);
--				} else goto err;
-+				} else
-+					goto err;
- 				break;
- 			default:
- 				goto err;
--- 
-2.43.0
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.17-tag1
+
+for you to fetch changes up to c8995932db2bad6fa093ac64dbaf7a3e8870eafa:
+
+  m68k: mac: Improve clocksource driver commentary (2025-07-06 12:53:21 +0200)
+
+----------------------------------------------------------------
+m68k updates for v6.17
+
+  - Ptdescs conversions,
+  - Fix lost column on the graphical debug console,
+  - Replace __ASSEMBLY__ with __ASSEMBLER__ in headers,
+  - Miscellaneous fixes and improvements,
+  - Defconfig updates.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Daniel Palmer (1):
+      m68k: Enable dead code elimination
+
+Finn Thain (5):
+      m68k: Fix lost column on framebuffer debug console
+      m68k: Avoid pointless recursion in debug console rendering
+      m68k: Remove unused "cursor home" code from debug console
+      m68k: Don't unregister boot console needlessly
+      m68k: mac: Improve clocksource driver commentary
+
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v6.16-rc2
+
+Thomas Huth (2):
+      m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in uapi headers
+      m68k: Replace __ASSEMBLY__ with __ASSEMBLER__ in non-uapi headers
+
+Vishal Moola (Oracle) (4):
+      m68k: mm: Convert get_pointer_table() to use ptdescs
+      m68k: mm: Convert free_pointer_table() to use ptdescs
+      m68k: mm: Convert init_pointer_table() to use ptdescs
+      m68k: mm: Convert pointer table macros to use ptdescs
+
+ arch/m68k/Kconfig                         |  1 +
+ arch/m68k/Kconfig.debug                   |  2 +-
+ arch/m68k/configs/amiga_defconfig         |  9 +++-
+ arch/m68k/configs/apollo_defconfig        |  9 +++-
+ arch/m68k/configs/atari_defconfig         |  9 +++-
+ arch/m68k/configs/bvme6000_defconfig      |  9 +++-
+ arch/m68k/configs/hp300_defconfig         |  9 +++-
+ arch/m68k/configs/mac_defconfig           |  9 +++-
+ arch/m68k/configs/multi_defconfig         |  9 +++-
+ arch/m68k/configs/mvme147_defconfig       |  9 +++-
+ arch/m68k/configs/mvme16x_defconfig       |  9 +++-
+ arch/m68k/configs/q40_defconfig           |  9 +++-
+ arch/m68k/configs/sun3_defconfig          |  9 +++-
+ arch/m68k/configs/sun3x_defconfig         |  9 +++-
+ arch/m68k/include/asm/adb_iop.h           |  4 +-
+ arch/m68k/include/asm/bootinfo.h          |  4 +-
+ arch/m68k/include/asm/entry.h             |  4 +-
+ arch/m68k/include/asm/kexec.h             |  4 +-
+ arch/m68k/include/asm/mac_baboon.h        |  4 +-
+ arch/m68k/include/asm/mac_iop.h           |  4 +-
+ arch/m68k/include/asm/mac_oss.h           |  4 +-
+ arch/m68k/include/asm/mac_psc.h           |  4 +-
+ arch/m68k/include/asm/mac_via.h           |  4 +-
+ arch/m68k/include/asm/math-emu.h          |  6 +--
+ arch/m68k/include/asm/mcf_pgtable.h       |  4 +-
+ arch/m68k/include/asm/mcfmmu.h            |  2 +-
+ arch/m68k/include/asm/motorola_pgtable.h  |  4 +-
+ arch/m68k/include/asm/nettel.h            |  4 +-
+ arch/m68k/include/asm/openprom.h          |  4 +-
+ arch/m68k/include/asm/page.h              |  4 +-
+ arch/m68k/include/asm/page_mm.h           |  4 +-
+ arch/m68k/include/asm/page_no.h           |  4 +-
+ arch/m68k/include/asm/pgtable.h           |  2 +-
+ arch/m68k/include/asm/pgtable_mm.h        |  8 +--
+ arch/m68k/include/asm/ptrace.h            |  4 +-
+ arch/m68k/include/asm/setup.h             | 10 ++--
+ arch/m68k/include/asm/sun3_pgtable.h      |  8 +--
+ arch/m68k/include/asm/sun3mmu.h           |  4 +-
+ arch/m68k/include/asm/thread_info.h       |  6 +--
+ arch/m68k/include/asm/traps.h             |  6 +--
+ arch/m68k/include/uapi/asm/bootinfo-vme.h |  4 +-
+ arch/m68k/include/uapi/asm/bootinfo.h     |  8 +--
+ arch/m68k/include/uapi/asm/ptrace.h       |  4 +-
+ arch/m68k/kernel/early_printk.c           | 42 ++++++----------
+ arch/m68k/kernel/head.S                   | 81 ++++++++++++++++---------------
+ arch/m68k/mac/via.c                       | 16 ++++++
+ arch/m68k/math-emu/fp_emu.h               |  8 +--
+ arch/m68k/mm/motorola.c                   | 56 ++++++++++-----------
+ 48 files changed, 270 insertions(+), 180 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
