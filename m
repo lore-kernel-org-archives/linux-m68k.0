@@ -1,70 +1,131 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E38E1C5D53
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 01:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4EA1F5E6
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 07:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753751499; cv=none; b=Nk2gc+F1pKdX2s63Ll5GPjGZETd7hx6teOmBfvPfN2R/IYBU1MTNxcAHR7OLw3xhlt3DH+JKVmPCd8/qYn2eGvHXw9BN1XPrV5r59PkvGhVtHuYkbmZQEWoTOdjKqDtTX/t+N89bVlrmDrm2c7IpyTlrl0v9BrZ8WxDB0o7aqHc=
+	t=1753772927; cv=none; b=b8kKyU62O4BxgJycH2EYPTV5ksUFrBIJPGomKS7hmlerQGU5FMBp97GQ/ow+O+kfreHk6J8d6kD4SR2hgMqCPbEZnc18ZsdG5QoZ2CNc9Fr/mdtI7wv05NaIJGihW1b+gVL4wOAl2ghNWHwPckFqtMXOjquNwSy9QvcZhiHs4q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753751499; c=relaxed/simple;
-	bh=8ZaxoHBTEhVL12axKf/WX+LwUM3Y/BFGh5lAMOgD5zg=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=EPlx4+aTt2A0XkzFP0cmzaI7Vna21tu+z/hezUevjoAmq1xDVkL0XdF1VAoG9uGv3QqSPPTzuzDUxomwlmBGML1wGyu3B88gn4D44gyvJ7wdzv/pfDFecrMP1meM6zHAfn5JEfUZY/w+6bDW0N9pGMz2/JIdZw308lXg94vsn84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VYacduDB; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VYacduDB"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D1D7A601EB;
-	Tue, 29 Jul 2025 01:11:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A19EC4CEEF;
-	Tue, 29 Jul 2025 01:11:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753751496;
-	bh=8ZaxoHBTEhVL12axKf/WX+LwUM3Y/BFGh5lAMOgD5zg=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=VYacduDBsz15Xg+SgB5nuf2LLCwR/ZQLnHAeY89QssQwJkwueQk+gOc3P9X3M8ERc
-	 StQHaCIjU+ApLe7jJ1kkQ1SZSrlnoE0XfZBTw8Yh+roL1ES9ZIfl3oMlPK7Nd5vIme
-	 keZEIUjTWzO7k+Xn5laz3kmccx4u/wXUQCxvKazPAkCcbgCoN5asGQOK49wsxNUWzg
-	 4V8Tr4vXYS3H1wOaKUIe57TRZzvYstxc8p2ZRo6fWA+RbWlSndzB3fEL4aGd9Fgn3b
-	 ZBNnQvFR6RJKhSTgEfjDhuJgvmCxPS2qK55MY85inxik6zCKjNO7RH2cHI8IhVIhst
-	 yOtThARlrGBsA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 34A0C383BF5F;
-	Tue, 29 Jul 2025 01:11:54 +0000 (UTC)
-Subject: Re: [GIT PULL] execve updates for v6.17
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <202507261437.F2079B3B7@keescook>
-References: <202507261437.F2079B3B7@keescook>
-X-PR-Tracked-List-Id: <linux-sh.vger.kernel.org>
-X-PR-Tracked-Message-Id: <202507261437.F2079B3B7@keescook>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.17
-X-PR-Tracked-Commit-Id: 7f71195c15dcf5f34c4c7f056603659374e3a525
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d900c4ce638d707f09c7e5c2afa71e035c0bb33d
-Message-Id: <175375151288.918485.7118599213274098690.pr-tracker-bot@kernel.org>
-Date: Tue, 29 Jul 2025 01:11:52 +0000
-To: Kees Cook <kees@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Akihiko Odaki <akihiko.odaki@daynix.com>, Akihiko Odaki <odaki@rsg.ci.i.u-tokyo.ac.jp>, Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev <agordeev@linux.ibm.com>, Alexandre Ghiti <alex@ghiti.fr>, Andreas Larsson <andreas@gaisler.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Chris Zankel <chris@zankel.net>, Dave Hansen <dave.hansen@linux.intel.com>, Dave Martin <Dave.Martin@arm.com>, David Hildenbrand <david@redhat.com>, "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Dishank Jogi <dishank.jogi@siqol.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, "H. Peter Anvin" <hpa@
- zytor.com>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Johannes Berg <johannes@sipsolutions.net>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Jonas Bonn <jonas@southpole.se>, Kees Cook <kees@kernel.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, loongarch@lists.linux.dev, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Oleg Nesterov
-  <oleg@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Russell King <linux@armlinux.org.uk>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Sven Schnelle <svens@linux.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, x86@kernel.org, Yin Fengwei <fengwei_yin@linux.alibaba.com>, Yoshinori Sato <ysato@users.sourceforge.jp>
+	s=arc-20240116; t=1753772927; c=relaxed/simple;
+	bh=qEOp4eAuXtjwqThRUtipER/RVG2D7gK9UTVt7qKgUs0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iZGUNWpjAeRT1Y9vWoTVT+1vDyg0Qh7NLpFAMQ3bh8/H68ENjs8XCwNSYbO4fgo5oeGNj95Hqvk9ba5UwJ6nGwFwSGMSM7NFbOLjv5G2tU1Hm20T5PARaXw/oclZtjqU1KkxHdRRhU4ni482lmOoWhnmEjD0NRLWo2evU3lKYqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-531426c7139so1942058e0c.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 00:08:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753772924; x=1754377724;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y8YtcC/yIgCDEWMFfAtdpI0rgOgUJRQFp+eUsj2IWqc=;
+        b=KZdrro2oN+tPEzugqYDVe1aL3L3BHp+9T62pEubHHM1kKE/xsRHT+lYLGWbf+orjd6
+         AvP36Z9nLfCv3SdPk6dyZLMOVqUvA3wbdHpFADqFIa+MoQG/HLmrKTi4nkln5Q0yuuq/
+         XOWIXVtwNjOldWpxMIf6QVTySX/+Ep78aHiAkG+MKGybvb4HoOiT6pV9rErtTqhfoqY4
+         1JFZlKPWX0c5tmCQtFnpBNeYOuzeP1DLU6/euer/uUFn2R1xlXMjQoW++y4noErUX8Hz
+         r8WPwTCTmKHoyBh3owukfnkwsg9FxGN//vK1WxuDmpA56Z84F2qRYtRL6kNdw18TERXK
+         /Mhw==
+X-Gm-Message-State: AOJu0YyY2cIFJ7q9Jr/R1RTvrwB7GSmlKExF+MwWv0nxbnF8vB9VjDzt
+	ECXYYSV+VbxdWOKNTQ01NOt1+XOVw4aLWrNM+jwdL7hvUpeNlhVZ1L6dtJj/x/Se
+X-Gm-Gg: ASbGncusjm9hTRWbg9G+RVpbO1UNpcK3XIsmUZBCxX95dMmu1QoIx2X/WvP20S838Wd
+	QpXy1J6iOPjoIba7/WjPFqy9/LYPC9Vxm1CJ9xXiysbsjWAarHN9pmdIhBZnTS1syQCef/qVBxr
+	OwwwJWTrbiT67wrpterlXNx74jgneYv6ladnhYaa3lnFTjuzf3MQ5+89G2KlsfFk6sVuH7ZxKZr
+	CkGFKseYRmI4djdJ3jVU5IXqTNtMu6LRtkUzqqcZmuIYcpmHxPvzuUPu2sngI4GYE1XUMqiTNFo
+	Ki3gUsJowy13lwSr3M77oKn/pZsAPms5rzqLTb6FK6eJXOSVMwNyahVs9SmMq973dgR74N9E7jo
+	pdT618pTH5NaAf4YTf125toUH4jWHWmXhHf0vmz0wjVhuTfIn57vEGIkO2sn5A8vYQ9JXOJQ=
+X-Google-Smtp-Source: AGHT+IFCSmiU0+8rQBh/pt3CdZPoBf/ds0CslcyTXIzKJYV3qnHVaj9MfklIshyDlfVALEfy9Z+aew==
+X-Received: by 2002:a05:6122:6219:20b0:539:1291:b03 with SMTP id 71dfb90a1353d-53912910cb6mr318959e0c.5.1753772924075;
+        Tue, 29 Jul 2025 00:08:44 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-538e261fee5sm1878482e0c.11.2025.07.29.00.08.43
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jul 2025 00:08:43 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-880f92a63c7so1054564241.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 00:08:43 -0700 (PDT)
+X-Received: by 2002:a05:6102:304e:b0:4fb:dcde:3f96 with SMTP id
+ ada2fe7eead31-4fbdcde4191mr324280137.8.1753772923410; Tue, 29 Jul 2025
+ 00:08:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20250728093412.48065-1-jogidishank503@gmail.com>
+In-Reply-To: <20250728093412.48065-1-jogidishank503@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 29 Jul 2025 09:08:32 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUkJrsug-hKkM_f+0xxrPHBQfw_3WB2FhMM=yAYzRn1Eg@mail.gmail.com>
+X-Gm-Features: Ac12FXxAEbnb4l6V0uvEPoVTtKnza535a3ryL1k5c8rsxUEbVBR5-jZ6yXaKH1E
+Message-ID: <CAMuHMdUkJrsug-hKkM_f+0xxrPHBQfw_3WB2FhMM=yAYzRn1Eg@mail.gmail.com>
+Subject: Re: [PATCH] zorro: fix checkpatch error by avoiding assignment in if-statement.
+To: Dishank Jogi <jogidishank503@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	darshanrathod475@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-The pull request you sent on Sat, 26 Jul 2025 14:39:20 -0700:
+Hi Dishank,
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.17
+On Mon, 28 Jul 2025 at 11:34, Dishank Jogi <jogidishank503@gmail.com> wrote:
+> These changes improve code readability and bring the file
+> in line with the Linux kernel coding style.
+>
+> No functional changes.
+>
+> Signed-off-by: Dishank Jogi <jogidishank503@gmail.com>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d900c4ce638d707f09c7e5c2afa71e035c0bb33d
+Thanks for your patch!
 
-Thank you!
+> --- a/drivers/zorro/gen-devlist.c
+> +++ b/drivers/zorro/gen-devlist.c
+> @@ -44,7 +44,8 @@ main(void)
+>
+>         while (fgets(line, sizeof(line)-1, stdin)) {
+>                 lino++;
+> -               if ((c = strchr(line, '\n')))
+> +               c = strchr(line, '\n')
+
+As Christophe pointed out, this line lacks a semicolon.
+Please do not submit untested patches.
+
+> +               if (c)
+>                         *c = 0;
+>                 if (!line[0] || line[0] == '#')
+>                         continue;
+> @@ -68,7 +69,8 @@ main(void)
+>                                         fprintf(devf, "\tPRODUCT(%s,%s,\"", manuf, line+1);
+>                                         pq(devf, c);
+>                                         fputs("\")\n", devf);
+> -                               } else goto err;
+> +                               } else
+> +                                       goto err;
+
+This does not comply with Linux kernel coding style: please use braces
+in both branches.
+
+However, in this case I'd rather invert the logic, remove the braces,
+and reduce indentation for the big block:
+
+    if (strlen(line) <= 5 || line[5] != ' ')
+            goto err;
+
+    [...]
+
+>                                 break;
+>                         default:
+>                                 goto err;
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
