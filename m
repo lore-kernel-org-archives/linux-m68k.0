@@ -1,129 +1,102 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E0A1E25F8
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 15:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4A6295517
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 15:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753803160; cv=none; b=i0Iwn853pqZAZDghVDxdqnhdCh0y9FVdD8Ow6VvORih8eQjjMp83QIxhvNDXJ5HmathKSmZfnCXc9h1dTB5xqbO2IRUufaKC1YioiPH+SzA/rdSlfzED10Zi8oJqz4LhhDMwCePq42VJml3CuuG8YjIdX0an5+3uVOQVMGJxIhc=
+	t=1753804185; cv=none; b=NF3C8MBRRpN9j00gVHGPUl5Vj2XAYzIFfsnvydZ0vDFQSoWvX14K9uWGicEU5d66kgnBUl6PRT/RkEYngOsVOXlsHQIXh3lfS26MKiLfTBrH/8Ni1CqbF4U5BDVbnFCsgI2xD3DrvppAu43+I+j7HyYukJ942+tBJmt7mN4BZ3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753803160; c=relaxed/simple;
-	bh=HWU8yO0NS7630BaYWOPXICFtNRntaPz4NMUJ9knONhQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cV3vOlqaVe5/a48+i8YmwFSRufSkO+ixV1RLW2xxVA8qnjyUJh3xYiIEMCsmpPHtB/4glsRsOoezkBLTwoxR8zLSadJgDjcTyQCzcbaeyKGBPP2IUNxdK+kRPO+NlBYiWKFjxFGRIGCMGfKn72NXdwqlXG+lHteVM+GdL8GOI+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UleKxBDh; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UleKxBDh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1753803158; x=1785339158;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HWU8yO0NS7630BaYWOPXICFtNRntaPz4NMUJ9knONhQ=;
-  b=UleKxBDh8zaagP1iLP7nTsvg8eVXdhYIbe/JBaPoTtq+TFsf6cjIKmLz
-   KnMlTfg3OGzKgP5DrO7u9D+AcR0lvN0oAT6Dbh/vudzftsXAFOQESMWrW
-   PK/QJevF32xHPmvfCL8481E3ZOK38/ISjDKlYvjAPeNktQwtK/2sqh5hR
-   ku+5Sd3v1AnLlc5ZLUIFlVnPOdv8HmUFRZsqW0FaLWGrofK8OyI9ex02d
-   QEZeMDh1+AJ6ZQcEnX6gkyLrC1oZkZ7bqws4ARwsU3JhH2MDUu834Awl+
-   7pcK4knGOh2+hUdoAxeTWQYYtjcDq0KUY1RPmKTaZhG7HPBeS6nozn/Jr
-   g==;
-X-CSE-ConnectionGUID: qmalcrGQQPynlgvI7XnriA==
-X-CSE-MsgGUID: 6xlWUFSyT7OXFPh6akTxWA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11506"; a="73530637"
-X-IronPort-AV: E=Sophos;i="6.16,349,1744095600"; 
-   d="scan'208";a="73530637"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2025 08:32:36 -0700
-X-CSE-ConnectionGUID: T/AEkhXGRWGLYA0vRlFh7A==
-X-CSE-MsgGUID: DrGPGc0TS7WB6NQ94h6Utw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,349,1744095600"; 
-   d="scan'208";a="199899382"
-Received: from lkp-server01.sh.intel.com (HELO 160750d4a34c) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 29 Jul 2025 08:32:35 -0700
-Received: from kbuild by 160750d4a34c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ugmJb-0001Pj-29;
-	Tue, 29 Jul 2025 15:32:31 +0000
-Date: Tue, 29 Jul 2025 23:31:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Dishank Jogi <jogidishank503@gmail.com>, geert@linux-m68k.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, darshanrathod475@gmail.com,
-	Dishank Jogi <jogidishank503@gmail.com>
-Subject: Re: [PATCH] zorro: fix checkpatch error by avoiding assignment in
- if-statement.
-Message-ID: <202507292343.vsRhsbLu-lkp@intel.com>
-References: <20250728093412.48065-1-jogidishank503@gmail.com>
+	s=arc-20240116; t=1753804185; c=relaxed/simple;
+	bh=xOEAeeQL3t1RcMvLNfRNpf/bSygqBiYvdQLATWAkt5A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gcoMEnVaqKcWkqH7NaMIVR+zpMuOuNApd61zDj14LG1XIMmQ6KmhfbAOz0GKuPrl3KtpCo7Fi2pJ/3we9oKqrj2rn65Is39IJhXSGTJltUSDbTj8HffhL0sXNm83zHW1JbBLMInFM0NgCzCWSrw0rZc7roD+G9NJ6mYKNm1IuCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-538fafc4935so1480565e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 08:49:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753804182; x=1754408982;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wADgSHvwlHUwTHyzEE7Zo53BPHoQdaEMqx/JOShNjmo=;
+        b=v1pRDauYuyh/eiiKQaOViPwxWeiYgWBkx7tPOcnGkUHeWwJGGo1VFbNrYo7oFom3hh
+         emXmdDh12KtCqzvaDmawO5IZQsltqO0eA3vYX/FDgi83MWk4TWFr3xuaQ9t8vnxjIqxx
+         vYcZhCOhoNTdxqaXrJ6pBy88ljKaB8rPS2RAprnVfGrJL9/mu8l7fr4BH+GQjKdgJCQw
+         LU/2OGiF/WNBsmQ8B+dxpUqYFu1prxBD+uWv+yzJPRRr0JJ61Fyhhd/us2/r1oG2Oa1o
+         jARnndIEyT4Dtgjpz07boGD7w6lG9QHnROXyPzQdmY+YufJdJ5J3Nil7tnRMRv1Cr4GV
+         0vDw==
+X-Gm-Message-State: AOJu0Yxt8BmEGOlrkw2dP42tfYh3z1RLkbdlIwJaPhzz5Xd4E5vxm1ry
+	tuJn0CUGnhoi8D0KndeF8hxNEuWMAJkLo8BEH+GIStc1qUWgcqgyyxK4oneicFzh
+X-Gm-Gg: ASbGncu0vXOBrsjbaRWFQxDJVGKaX+ZmmBGQvfZs2N4mtsMPhy1J0H2bvUV329+cz1R
+	0h+/lOBWP4xK3zWwQInQwKX4aLGD69aZFdOIU9fEQ5QR4BDm4R5GNrnKF5TF96Qd4lStv9R2jK1
+	zicg8LLIOk8XliS5g6I2KN3aXBaw4mn7Q2oH1Y3ot04SNHxMyQeEF2ZYGCpb3J7P1wpbd0BIeKg
+	eplU+NQjUGrHmIK4U2kwr2hl6dCALUv+xLLkQukSfxYseZzO1aZOYxVQ6gvMCMDaDEnW2qGZhrL
+	P8IeZYmKUZgdR7U3ruIDrmTbEEeMH7zPJtrKc9WSSzyUNP4RFsF4uDKXOe1rXdA8eKyD0/B2zEN
+	pcpJUlOdcYNyT01hSUTyWsYUWxacD5a/OeElK5FvLuiB6hPRBKWv65wtIHuh5
+X-Google-Smtp-Source: AGHT+IFWH5rft4kcfOHSKZgRZ8nRjigL56v8ITEc0YYp6mB/mGq7hfXV7qpUdtf/rpQ3YUVaQbxy/g==
+X-Received: by 2002:a05:6122:a13:b0:537:b126:bf07 with SMTP id 71dfb90a1353d-5391ce9e496mr308103e0c.1.1753804181804;
+        Tue, 29 Jul 2025 08:49:41 -0700 (PDT)
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com. [209.85.217.45])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-538eb0b86f7sm1789099e0c.18.2025.07.29.08.49.41
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Jul 2025 08:49:41 -0700 (PDT)
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-4e9a109035bso4055182137.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Jul 2025 08:49:41 -0700 (PDT)
+X-Received: by 2002:a05:6102:8026:b0:4e5:8eb6:e8dd with SMTP id
+ ada2fe7eead31-4fbe7f213c7mr299399137.5.1753804181235; Tue, 29 Jul 2025
+ 08:49:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250728093412.48065-1-jogidishank503@gmail.com>
+References: <20250728093412.48065-1-jogidishank503@gmail.com>
+ <CAMuHMdUkJrsug-hKkM_f+0xxrPHBQfw_3WB2FhMM=yAYzRn1Eg@mail.gmail.com> <CADorM-9OnP2zbtn6FHp-3NcO8nfnwC_RbzdcHdiUJCPXyMy8ig@mail.gmail.com>
+In-Reply-To: <CADorM-9OnP2zbtn6FHp-3NcO8nfnwC_RbzdcHdiUJCPXyMy8ig@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 29 Jul 2025 17:49:30 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW3JxeLEnbPqc8_Qvpr7mwHhsZoaWwB8QXTMbYRYW7-Aw@mail.gmail.com>
+X-Gm-Features: Ac12FXx2zcj8uSpr-DclIbXGTBctpzKN-BF1IK0QUMN4DdI6w1-myOzFZAJSa8k
+Message-ID: <CAMuHMdW3JxeLEnbPqc8_Qvpr7mwHhsZoaWwB8QXTMbYRYW7-Aw@mail.gmail.com>
+Subject: Re: [PATCH] zorro: fix checkpatch error by avoiding assignment in if-statement.
+To: Jogi Dishank <jogidishank503@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	darshanrathod475@gmail.com, Christophe Leroy <christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Dishank,
+Hi Jogi,
 
-kernel test robot noticed the following build errors:
+On Tue, 29 Jul 2025 at 14:10, Jogi Dishank <jogidishank503@gmail.com> wrote:
+>
+> Hi,
+>
+> Thank you for the suggestion.
+>
+> Additionally, the conditional logic is inverted to reduce indentation
+> and improve readability, aligning with kernel coding style.
 
-[auto build test ERROR on geert-m68k/for-next]
-[also build test ERROR on gerg-m68knommu/for-next geert-m68k/for-linus linus/master v6.16 next-20250729]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks, but this is not how you send a v2.
+Please read Documentation/process/submitting-patches.rst.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Dishank-Jogi/zorro-fix-checkpatch-error-by-avoiding-assignment-in-if-statement/20250728-173702
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-patch link:    https://lore.kernel.org/r/20250728093412.48065-1-jogidishank503%40gmail.com
-patch subject: [PATCH] zorro: fix checkpatch error by avoiding assignment in if-statement.
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20250729/202507292343.vsRhsbLu-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250729/202507292343.vsRhsbLu-lkp@intel.com/reproduce)
+> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507292343.vsRhsbLu-lkp@intel.com/
+Unless I am mistaken, Christophe merely pointed out a bug in
+your first submission, he did not suggest this patch.
 
-All errors (new ones prefixed by >>):
+> Signed-off-by: Dishank Jogi <jogidishank503@gmail.com>
 
-   drivers/zorro/gen-devlist.c: In function 'main':
->> drivers/zorro/gen-devlist.c:47:39: error: expected ';' before 'if'
-      47 |                 c = strchr(line, '\n')
-         |                                       ^
-         |                                       ;
-      48 |                 if (c)
-         |                 ~~                     
+Gr{oetje,eeting}s,
 
-
-vim +47 drivers/zorro/gen-devlist.c
-
-    28	
-    29	int
-    30	main(void)
-    31	{
-    32		char line[1024], *c, *bra, manuf[8];
-    33		int manufs = 0;
-    34		int mode = 0;
-    35		int lino = 0;
-    36		int manuf_len = 0;
-    37		FILE *devf;
-    38	
-    39		devf = fopen("devlist.h", "w");
-    40		if (!devf) {
-    41			fprintf(stderr, "Cannot create output file!\n");
-    42			return 1;
-    43		}
-    44	
-    45		while (fgets(line, sizeof(line)-1, stdin)) {
-    46			lino++;
-  > 47			c = strchr(line, '\n')
+                        Geert
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
