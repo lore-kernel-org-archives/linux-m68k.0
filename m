@@ -1,36 +1,36 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A722874FA
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D54D288C8B
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754325864; cv=none; b=ERfW5MhqmLhr3GvvnHXfNr4wdqKiiM2gZf+JcFsJR47aXdgodobSfaJ7lE4mIpS9EMImbKy6kxDR5jgZ4sNHkELLeegdcT5sfd7ddSQSozf9sF8ogNz2M7jxC/zA0PNcUm8XKjQkWUFJJwtUzw2bWNo/nAHMRvWsyiB+BepTzsY=
+	t=1754325864; cv=none; b=tOGNn/PxkVypo2SdaTk/g1dREA4k8UM07NMvaipYy8fb/+LmxcmbpLu0iKWT/Ziviv0XvqjUjwLTHaroveRaIlWmaEIn0qHJMBDj8JWycVY0gRvqoTwGBKh/RjtCGlm0S5WLcajdJVqLbaeMBG6bycU1ps3/hBBnGPTsmLpnQSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1754325864; c=relaxed/simple;
-	bh=752sQmjr+WkEQIQTz2YsThA0XswYRbPSJznITLPZ8n0=;
+	bh=bi83DBSxTax3RYBhak54pajUvhtkEYIGQUxIvC9PE+I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ABGCueqEcBgQO0M/7aj1JyxpEy6vhcNFUdLIrxwIQGNFyloN/nLq5aRmi3shRxgS0O7uEuMDu6wWrASUlwZGa0Ct+xLZ++apXmABewf+yGGBcJz0aCSPDS2a/0Pl1kTZn+PWSA0uXfRTHcfuSpwWUx/5ytQFpEBpmXVAVGKScSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFYJDn3i; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=ClQEP1VYf+EWUD48IVBqBNyoZmhWc53U2Whly3j3JRs0wylxwMmW65zmHFS6fRw/+lgvCTk7TQeWDc9bRiUHaTWT16DQ45F56SKGvoAQj60xFwHqLau58IjObsAJ0J0a7BwikImzVY1RGSBzo5fXTB+rH/VvG41jMvzalWu86SI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bgcltgsy; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFYJDn3i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bgcltgsy"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6774745E60;
+	by tor.source.kernel.org (Postfix) with ESMTP id BD5A761139;
 	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41AB4C113CF;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8802DC4CEFE;
 	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1754325858;
-	bh=752sQmjr+WkEQIQTz2YsThA0XswYRbPSJznITLPZ8n0=;
+	bh=bi83DBSxTax3RYBhak54pajUvhtkEYIGQUxIvC9PE+I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DFYJDn3iT6d1HFBeZ+4JC6ama4tupJDc2NxZKYp8ACnJ1iL3GmdJ4nU9J6Gxpz6zV
-	 ggkLZE5g33xSNghuW+/4AldAgkpmoHzVtp05Mm0Tk77p9FwqmOTo5KhNYbg7IGPo42
-	 Zaxz1NYG/MDOHO+D0u6LkCfsfIaxlPUFpaI3es/IGEblVRHWsEmsmx5qlouLXGxOO/
-	 jZURCEO+cG1tK5otFXKDXMarJRlXurVor/Uk6n4hK/Tfhs4SPDSIBIKjGx1Re9Gru2
-	 RayDn4/9xO/y4REx1nhEGhNAedTHIr/vlsv5X97wp/q8FQQMD03LxVviKNDFWQcU2I
-	 jhO6Ld2SN/XqA==
+	b=Bgcltgsyxoyf/pKF+Tj3hy+i0p+Uv1aCtnom71lmu6zgJmQHg1dJf8V/XnIlHC6pd
+	 hAwD0iPYUVHXShTacAvArdMfxY2rrIc7kzQgBeVWZ45s4XF8e2w/jVyaR5nvULRC5+
+	 sUciGGOA+pFzVwTxE0KvHX4IhxnVx3dJs4Wnd4ORleV95p6qSQhhsHcakorPshOjz5
+	 iOP3HSpjTYkxiRvo64dk+KgzJK3zbqgu/qopxOBJFcbPZR48Q3Yi9RzBKlPO9/3p14
+	 ix2M4vSFeoehIGIXuzlmpvsGAPVuJjjrj6bN9GUItM/Rzeuwwb8T1+GYCAcKq1BlZh
+	 VR8QPX6SL2SsQ==
 From: Kees Cook <kees@kernel.org>
 To: linux-arch@vger.kernel.org
 Cc: Kees Cook <kees@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Kees Cook <kees@kernel.org>,
 	sparclinux@vger.kernel.org,
 	llvm@lists.linux.dev,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH 07/17] alpha: Add __attribute_const__ to ffs()-family implementations
-Date: Mon,  4 Aug 2025 09:44:03 -0700
-Message-Id: <20250804164417.1612371-7-kees@kernel.org>
+Subject: [PATCH 15/17] xtensa: Add __attribute_const__ to ffs()-family implementations
+Date: Mon,  4 Aug 2025 09:44:11 -0700
+Message-Id: <20250804164417.1612371-15-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250804163910.work.929-kees@kernel.org>
 References: <20250804163910.work.929-kees@kernel.org>
@@ -62,7 +62,7 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3242; i=kees@kernel.org; h=from:subject; bh=752sQmjr+WkEQIQTz2YsThA0XswYRbPSJznITLPZ8n0=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHkeW55xweCLlqOjVdbHHOVIuePb3nVd3fpROS5YTs nc5WMrUUcrCIMbFICumyBJk5x7n4vG2Pdx9riLMHFYmkCEMXJwCMJEFFxkZZtwvav769fajq9di vywovGGe9+SBsdj3hDVaNi73rnRVSzAy/N3mv2O7ocl6bb0KjjvftqjJnWeQndM4JzZ/d2XXEZZ 33AA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2758; i=kees@kernel.org; h=from:subject; bh=bi83DBSxTax3RYBhak54pajUvhtkEYIGQUxIvC9PE+I=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHkeb9bDx/Nw2R6PD5fZFAdkDyyrPvD+T8PfQGlEXi 7KDPivPdJSyMIhxMciKKbIE2bnHuXi8bQ93n6sIM4eVCWQIAxenAEyklofhr0z6rA9SgTnRLP1d iyVVkrKvHem4/UN/SuIUQe4VwRMSyxn+6bhFap9w6BJ9Zbqp022VpEZv9/UHv08EpmQaNBTd/8H NBQA=
 X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -75,82 +75,68 @@ __attribute__const__, the compiler had to assume the function might
 change variable states as a side-effect (which is not true for ffs(),
 which provides deterministic math results).
 
-Add missing __attribute_const__ annotations to Alpha's implementations
-of __ffs(), ffs(), fls64(), __fls(), fls(), and ffz() functions. These
-are pure mathematical functions that always return the same result for
-the same input with no side effects, making them eligible for compiler
+Add missing __attribute_const__ annotations to Xtensa's implementations
+of ffs(), __ffs(), fls(), __fls(), ffz() functions. These are pure
+mathematical functions that always return the same result for the
+same input with no side effects, making them eligible for compiler
 optimization.
 
-Build tested ARCH=alpha defconfig with GCC alpha-linux-gnu 14.2.0.
+Build tested ARCH=xtensa defconfig with GCC xtensa-linux 15.1.0.
 
 Link: https://github.com/KSPP/linux/issues/364 [1]
 Signed-off-by: Kees Cook <kees@kernel.org>
 ---
- arch/alpha/include/asm/bitops.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/xtensa/include/asm/bitops.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/alpha/include/asm/bitops.h b/arch/alpha/include/asm/bitops.h
-index 3e33621922c3..76e4343c090f 100644
---- a/arch/alpha/include/asm/bitops.h
-+++ b/arch/alpha/include/asm/bitops.h
-@@ -328,7 +328,7 @@ static inline unsigned long ffz_b(unsigned long x)
- 	return sum;
- }
- 
--static inline unsigned long ffz(unsigned long word)
-+static inline unsigned long __attribute_const__ ffz(unsigned long word)
- {
- #if defined(CONFIG_ALPHA_EV6) && defined(CONFIG_ALPHA_EV67)
- 	/* Whee.  EV67 can calculate it directly.  */
-@@ -348,7 +348,7 @@ static inline unsigned long ffz(unsigned long word)
- /*
-  * __ffs = Find First set bit in word.  Undefined if no set bit exists.
-  */
--static inline unsigned long __ffs(unsigned long word)
-+static inline __attribute_const__ unsigned long __ffs(unsigned long word)
- {
- #if defined(CONFIG_ALPHA_EV6) && defined(CONFIG_ALPHA_EV67)
- 	/* Whee.  EV67 can calculate it directly.  */
-@@ -373,7 +373,7 @@ static inline unsigned long __ffs(unsigned long word)
-  * differs in spirit from the above __ffs.
+diff --git a/arch/xtensa/include/asm/bitops.h b/arch/xtensa/include/asm/bitops.h
+index e02ec5833389..f7390b6761e1 100644
+--- a/arch/xtensa/include/asm/bitops.h
++++ b/arch/xtensa/include/asm/bitops.h
+@@ -37,7 +37,7 @@ static inline unsigned long __cntlz (unsigned long x)
+  * bit 0 is the LSB of addr; bit 32 is the LSB of (addr+1).
   */
  
--static inline int ffs(int word)
-+static inline __attribute_const__ int ffs(int word)
+-static inline int ffz(unsigned long x)
++static inline int __attribute_const__ ffz(unsigned long x)
  {
- 	int result = __ffs(word) + 1;
- 	return word ? result : 0;
-@@ -383,14 +383,14 @@ static inline int ffs(int word)
-  * fls: find last bit set.
+ 	return 31 - __cntlz(~x & -~x);
+ }
+@@ -46,7 +46,7 @@ static inline int ffz(unsigned long x)
+  * __ffs: Find first bit set in word. Return 0 for bit 0
   */
- #if defined(CONFIG_ALPHA_EV6) && defined(CONFIG_ALPHA_EV67)
--static inline int fls64(unsigned long word)
-+static inline __attribute_const__ int fls64(unsigned long word)
+ 
+-static inline unsigned long __ffs(unsigned long x)
++static inline __attribute_const__ unsigned long __ffs(unsigned long x)
  {
- 	return 64 - __kernel_ctlz(word);
+ 	return 31 - __cntlz(x & -x);
  }
- #else
- extern const unsigned char __flsm1_tab[256];
+@@ -57,7 +57,7 @@ static inline unsigned long __ffs(unsigned long x)
+  * differs in spirit from the above ffz (man ffs).
+  */
  
--static inline int fls64(unsigned long x)
-+static inline __attribute_const__ int fls64(unsigned long x)
+-static inline int ffs(unsigned long x)
++static inline __attribute_const__ int ffs(unsigned long x)
  {
- 	unsigned long t, a, r;
- 
-@@ -403,12 +403,12 @@ static inline int fls64(unsigned long x)
+ 	return 32 - __cntlz(x & -x);
  }
- #endif
+@@ -67,7 +67,7 @@ static inline int ffs(unsigned long x)
+  * Note fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
+  */
  
--static inline unsigned long __fls(unsigned long x)
-+static inline __attribute_const__ unsigned long __fls(unsigned long x)
+-static inline int fls (unsigned int x)
++static inline __attribute_const__ int fls (unsigned int x)
  {
- 	return fls64(x) - 1;
+ 	return 32 - __cntlz(x);
  }
- 
--static inline int fls(unsigned int x)
-+static inline __attribute_const__ int fls(unsigned int x)
+@@ -78,7 +78,7 @@ static inline int fls (unsigned int x)
+  *
+  * Undefined if no set bit exists, so code should check against 0 first.
+  */
+-static inline unsigned long __fls(unsigned long word)
++static inline __attribute_const__ unsigned long __fls(unsigned long word)
  {
- 	return fls64(x);
+ 	return 31 - __cntlz(word);
  }
 -- 
 2.34.1
