@@ -1,129 +1,151 @@
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B2F2253EB
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 30 Jul 2025 10:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54EB286893
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753869922; cv=none; b=kPAsQjxfto7gHsiZWyQIhbNSxckjYhXBR1j4KAHwDraFVF0gxq52eFpWNj7M/mQ/bR3gNKqlB0eWSVg6Bw+YVAaYC3L3pbUlJD7KfFcWrsScvGFkNeTYVif+XQvNYn3s1rM1tIFBVv4WiSGtXFMSWYNcG5BFC0lUzD34YA6DQU8=
+	t=1754325861; cv=none; b=CeqpukLYn/nQpoNYmTBsRDp1H0lrTlGxN1p7FAjA8ktVjUcXzJXf4ZTqiQMAA1hUhkcPYX5xBPViNLdhaezIhYDXhii+RRHJ8SZZ8H3OaFN9iJCRQAlRnWBzjvDa9SHU/KGAW/tunyGYI4Hn2hJgKQOigdfyMeJgKUN6xQ44ag4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753869922; c=relaxed/simple;
-	bh=3sUA/KOgsfzhmthv63Ee3iRgy6n2DJjRUUokISVQg74=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nOyw7u5QuIS0IqDHbLkddjEOx6Te4JeZFOgQdwIoi5gnHAANW3yjMZ0iXnCmy64LxE7xZxoD6f1+nJX8u0Ye4Yvk5EBlPL9K2XXIqHfy+uaA1UXK01ppH0SkTHTm1y9IThrUhE1eW1+gXkUVzi+NQdVKLh+DkLHzu6GvyaaufE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-87f32826f22so459836241.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 30 Jul 2025 03:05:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753869918; x=1754474718;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hvFOMtlzmgf57aIdk7rzIqnMh7+rkPSLEpyIZ7Q84yo=;
-        b=JXdCtJuJFq65Ouu/xffqMFt1OvFYP59pr04Ag1hMcUaTvem8FDLnf2DGMdeeGrWNGz
-         4M8jdMW2VVKVnJrMZyFHnKy9lmfX7rdANsHD9NWddp70jT4rQRwX46LN2+Ijx8KYB+vw
-         pc18lFKDRmdy3ucbdhIWa1GUtTw576JWKp2dYx9i0rJ6jFvOEciVaEiosa7o9y4I13/h
-         ojwSbuViILK08E2GmnpAVTMFKzDvcht0LwYfX6mkAM61oKrHhbJFBt46o+PuE0aIu19P
-         OxuoPV7sCWeQd/Zne+2oc1d96ivba44iOWdVPB0XWnjQON8FgudQxrWFvg5Ja4gbeTlA
-         1Jaw==
-X-Forwarded-Encrypted: i=1; AJvYcCVuhU9GrEbuDMXg/ztCenSwoqOhJ21MX5ucQjBCKNV9cJKw0Gy9LIYiSO3a5Opq3dnkSWFPgP8s5XFy@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxVI7kVxu3oM64vCYMTPOo/yjwJJa4KNJ6Wvy3ZbMdg5GVTAROs
-	JOhNwipNMYlHSrBU/vH/gHeUU5mBPIMn9X9a8lcYT8q6zn5YprGfvKQVEf7DpyAn
-X-Gm-Gg: ASbGncspVz2hf+aQ+akHk4wA9BkAs+GCchJKrUjviZ5Y0KLjhnc3rmfkDykNy6RvO6o
-	OmcZvetzcplCeceJ2/mHjaTOcrSh+DWCBMS/LAot5hz5jGMjA3ni1q99G2xuK55zRpQ7d13c+Fe
-	3D5gV3Xok/PDqQBAVeropALgKwakcl8v4man+HBIX6MkuT9XiXOHIDRiGkDNSp3QfW9D0i9Nk9y
-	49qSWtcqLl64d+OG/P38JCom741eFdkEXSZWkcWFUZkAjZBxjmiA2iJ3aHvw9eUjyRAr3gSxghI
-	jlAfA+atInX+62XviIolHG9Mz20wTtQQoO+saJdOeyATfq3mkbvmRStRJZHtsYXs115QECeD7Rh
-	ARjjwEs+D9llwdi1Gv+VChxXK+y+UixFzp1QeYaCG1NWkCCemfYTp63T/GFt88/PTLeKZ+o8=
-X-Google-Smtp-Source: AGHT+IEqGdSGidnYdwxlovWsUJeo5rV8YS1g82xTdB1nO8Kh1ZeHsy24P272iGn31Ngm4ajmM3O7xw==
-X-Received: by 2002:a05:6102:36d:b0:4fb:fbdb:283c with SMTP id ada2fe7eead31-4fbfbdb2a26mr148428137.13.1753869917878;
-        Wed, 30 Jul 2025 03:05:17 -0700 (PDT)
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-88b8dcd2199sm2331891241.17.2025.07.30.03.05.16
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Jul 2025 03:05:17 -0700 (PDT)
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-4f2f2f22c1aso499032137.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 30 Jul 2025 03:05:16 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV0VAbl8oM0mv+efyOfA3gQr/D6ErrSTRvU6LGYf63sIyAR8bSA/hsA40TUtnsNCBJ4fmBbBlFn82D/@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:3249:10b0:4fa:3f49:a3b4 with SMTP id
- ada2fe7eead31-4fa778c5582mr2504514137.3.1753869916655; Wed, 30 Jul 2025
- 03:05:16 -0700 (PDT)
+	s=arc-20240116; t=1754325861; c=relaxed/simple;
+	bh=adGs1kuuk4zPQI9OS9eVOvJux65kSL76tPiJyL+ncj8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=BMopHnnv3xIYWzpfzGywIz7H3FRMAWnxvN5QDYypkivL5h1Q5Rp5lccL0lIReyVtEEp0wFVrFdFnfoMmJinCBHdCLO5f42X1p+aQEtYySsfZhmRiUzrA48J4Ogi70Hiz7dg6+2xxoRWU/y3OEvOILHaA9z20NcVU9zKKzF0G+4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZNX2f+uk; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZNX2f+uk"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 3F16845DAE;
+	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E879C4CEFF;
+	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754325858;
+	bh=adGs1kuuk4zPQI9OS9eVOvJux65kSL76tPiJyL+ncj8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZNX2f+ukbjZ1j6eu9fz/+prTtT0vGsnjndcPXpFpG7P0Ia1Ril8Zf05ioP7FLpyo+
+	 Mm2+aQHENVj0SHKpUPkPNDfgX5KBmrxkUcMnELWwkSRO5YI2iFCS8V36kFAf3sXzwz
+	 zIvsdeC0pDzY9IKgCqH+xjQqPw2s+/XGMq9xJey9eoC5Sun/SfxY85adcWU/9qVD5I
+	 Eh9+V8XR+/ZCwx0FSYMbTtEWnpevQ2WhcEQ/mvJoIbxn3Y2oVc+jESY8sptZ+6Y1E7
+	 hXKnvnLGQgbuK3ouTYEW2vnpMJujCrVf4XcvM08Nb1q67D1mup4HnPed6XG6GGawWY
+	 izdWDqT9JS+RA==
+From: Kees Cook <kees@kernel.org>
+To: linux-arch@vger.kernel.org
+Cc: Kees Cook <kees@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	x86@kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	llvm@lists.linux.dev,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH 04/17] x86: Add __attribute_const__ to ffs()-family implementations
+Date: Mon,  4 Aug 2025 09:44:00 -0700
+Message-Id: <20250804164417.1612371-4-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250804163910.work.929-kees@kernel.org>
+References: <20250804163910.work.929-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250702114924.091581796@infradead.org> <20250702121158.465086194@infradead.org>
- <CAMuHMdXn4z1pioTtBGMfQM0jsLviqS2jwysaWXpoLxWYoGa82w@mail.gmail.com> <aInp78zC_WwVW6yd@jlelli-thinkpadt14gen4.remote.csb>
-In-Reply-To: <aInp78zC_WwVW6yd@jlelli-thinkpadt14gen4.remote.csb>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 30 Jul 2025 12:05:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVPR7Q7pvn+QqGcq2pJ00apDgUcaCmAgq6nnM1uHySMcw@mail.gmail.com>
-X-Gm-Features: Ac12FXzT6dorMp5Cef-PIa_OaBJW01JDox25_62CFaduLwIvUCuQGOZNFREweac
-Message-ID: <CAMuHMdVPR7Q7pvn+QqGcq2pJ00apDgUcaCmAgq6nnM1uHySMcw@mail.gmail.com>
-Subject: Re: [PATCH v2 02/12] sched/deadline: Less agressive dl_server handling
-To: Juri Lelli <juri.lelli@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, vschneid@redhat.com, clm@meta.com, 
-	linux-kernel@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3280; i=kees@kernel.org; h=from:subject; bh=adGs1kuuk4zPQI9OS9eVOvJux65kSL76tPiJyL+ncj8=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHkdcn9HKVsXGsIr7AKdfgqSU+aeIrz0tzpYr9wkum fXBvsyko5SFQYyLQVZMkSXIzj3OxeNte7j7XEWYOaxMIEMYuDgF4CbnMTJ099c09f3590OhLee3 kxnL/7s7bxwLjPFLUap6/mJdAGsII8MONcmt6pUnOeTOCVhKzbgjGJmr7T41n6lg2nSB8PZMR24 A
+X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-Hi Juri,
+While tracking down a problem where constant expressions used by
+BUILD_BUG_ON() suddenly stopped working[1], we found that an added static
+initializer was convincing the compiler that it couldn't track the state
+of the prior statically initialized value. Tracing this down found that
+ffs() was used in the initializer macro, but since it wasn't marked with
+__attribute__const__, the compiler had to assume the function might
+change variable states as a side-effect (which is not true for ffs(),
+which provides deterministic math results).
 
-On Wed, 30 Jul 2025 at 11:46, Juri Lelli <juri.lelli@redhat.com> wrote:
-> On 30/07/25 11:34, Geert Uytterhoeven wrote:
-> Apologies for interjecting.
+Add missing __attribute_const__ annotations to x86's implementations of
+variable__ffs(), variable_ffz(), __fls(), variable_ffs(), and fls() functions.
+These are pure mathematical functions that always return the same result for the same
+input with no side effects, making them eligible for compiler optimization.
 
-No apologies needed, much appreciated!
+Build tested ARCH=x86_64 defconfig with GCC gcc 14.2.0.
 
-> > On Wed, 2 Jul 2025 at 14:19, Peter Zijlstra <peterz@infradead.org> wrote:
-> > > Chris reported that commit 5f6bd380c7bd ("sched/rt: Remove default
-> > > bandwidth control") caused a significant dip in his favourite
-> > > benchmark of the day. Simply disabling dl_server cured things.
-> > >
-> > > His workload hammers the 0->1, 1->0 transitions, and the
-> > > dl_server_{start,stop}() overhead kills it -- fairly obviously a bad
-> > > idea in hind sight and all that.
-> > >
-> > > Change things around to only disable the dl_server when there has not
-> > > been a fair task around for a whole period. Since the default period
-> > > is 1 second, this ensures the benchmark never trips this, overhead
-> > > gone.
-> > >
-> > > Fixes: 557a6bfc662c ("sched/fair: Add trivial fair server")
-> > > Reported-by: Chris Mason <clm@meta.com>
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > Link: https://lkml.kernel.org/r/20250520101727.507378961@infradead.org
-> >
-> > Thanks for your patch, which is now commit cccb45d7c4295bbf
-> > ("sched/deadline: Less agressive dl_server handling") upstream.
-> >
-> > This commit causes
-> >
-> >     sched: DL replenish lagged too much
-> >
-> > to be printed after full user-space (Debian) start-up on m68k
-> > (atari_defconfig running on ARAnyM).  Reverting this commit and fixing
-> > the small conflict gets rid of the message.
->
-> Does
-> https://lore.kernel.org/lkml/20250615131129.954975-1-kuyo.chang@mediatek.com/
-> help already (w/o the revert)?
+Link: https://github.com/KSPP/linux/issues/364 [1]
+Signed-off-by: Kees Cook <kees@kernel.org>
+---
+ arch/x86/include/asm/bitops.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Thanks, it does!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/x86/include/asm/bitops.h b/arch/x86/include/asm/bitops.h
+index eebbc8889e70..a835f891164d 100644
+--- a/arch/x86/include/asm/bitops.h
++++ b/arch/x86/include/asm/bitops.h
+@@ -246,7 +246,7 @@ arch_test_bit_acquire(unsigned long nr, const volatile unsigned long *addr)
+ 					  variable_test_bit(nr, addr);
+ }
+ 
+-static __always_inline unsigned long variable__ffs(unsigned long word)
++static __always_inline __attribute_const__ unsigned long variable__ffs(unsigned long word)
+ {
+ 	asm("tzcnt %1,%0"
+ 		: "=r" (word)
+@@ -265,7 +265,7 @@ static __always_inline unsigned long variable__ffs(unsigned long word)
+ 	 (unsigned long)__builtin_ctzl(word) :	\
+ 	 variable__ffs(word))
+ 
+-static __always_inline unsigned long variable_ffz(unsigned long word)
++static __always_inline __attribute_const__ unsigned long variable_ffz(unsigned long word)
+ {
+ 	return variable__ffs(~word);
+ }
+@@ -287,7 +287,7 @@ static __always_inline unsigned long variable_ffz(unsigned long word)
+  *
+  * Undefined if no set bit exists, so code should check against 0 first.
+  */
+-static __always_inline unsigned long __fls(unsigned long word)
++static __always_inline __attribute_const__ unsigned long __fls(unsigned long word)
+ {
+ 	if (__builtin_constant_p(word))
+ 		return BITS_PER_LONG - 1 - __builtin_clzl(word);
+@@ -301,7 +301,7 @@ static __always_inline unsigned long __fls(unsigned long word)
+ #undef ADDR
+ 
+ #ifdef __KERNEL__
+-static __always_inline int variable_ffs(int x)
++static __always_inline __attribute_const__ int variable_ffs(int x)
+ {
+ 	int r;
+ 
+@@ -355,7 +355,7 @@ static __always_inline int variable_ffs(int x)
+  * set bit if value is nonzero. The last (most significant) bit is
+  * at position 32.
+  */
+-static __always_inline int fls(unsigned int x)
++static __always_inline __attribute_const__ int fls(unsigned int x)
+ {
+ 	int r;
+ 
+@@ -400,7 +400,7 @@ static __always_inline int fls(unsigned int x)
+  * at position 64.
+  */
+ #ifdef CONFIG_X86_64
+-static __always_inline int fls64(__u64 x)
++static __always_inline __attribute_const__ int fls64(__u64 x)
+ {
+ 	int bitpos = -1;
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.34.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
