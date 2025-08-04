@@ -1,36 +1,36 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273B0288510
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A722874FA
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754325864; cv=none; b=d3hTEpYUppx+dyCSguc3LTVY5RNNw2m2r2VsZ0wYcJTd2MlCSTP8qDtqqfNcW0OQUpWvU3f95TgznetQQ3FZc7Dh1hMDBeVE58kpUxIHU7Hm7KNqyg+bY3/S+nBn9tFLehZ7VNsrGt6o8iSUwm6/FmNNxBKXihUX5dYGBLuHkwY=
+	t=1754325864; cv=none; b=ERfW5MhqmLhr3GvvnHXfNr4wdqKiiM2gZf+JcFsJR47aXdgodobSfaJ7lE4mIpS9EMImbKy6kxDR5jgZ4sNHkELLeegdcT5sfd7ddSQSozf9sF8ogNz2M7jxC/zA0PNcUm8XKjQkWUFJJwtUzw2bWNo/nAHMRvWsyiB+BepTzsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1754325864; c=relaxed/simple;
-	bh=Lvi+SOjPyvnPy8ciTq59tLtKnNheCboKdQcwuoaKmUM=;
+	bh=752sQmjr+WkEQIQTz2YsThA0XswYRbPSJznITLPZ8n0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E+0kXKucQeST7c40Jvd5cOTDu9QJ3sYAiGdijMcNf5KCh0CKzsIowVq3r8UFJmWKg/8Ge8gAqIsFTmg+Ad69ORU/K1dGR5ozoXz7r+rKL/j28HT9LLrZrOGHnketK2ZDQmeJK/cMPZhj7qzJDDhSwB2zTKb0eB1MM4FWi9XhehE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ctp3G9Ag; arc=none smtp.client-ip=139.178.84.217
+	 MIME-Version; b=ABGCueqEcBgQO0M/7aj1JyxpEy6vhcNFUdLIrxwIQGNFyloN/nLq5aRmi3shRxgS0O7uEuMDu6wWrASUlwZGa0Ct+xLZ++apXmABewf+yGGBcJz0aCSPDS2a/0Pl1kTZn+PWSA0uXfRTHcfuSpwWUx/5ytQFpEBpmXVAVGKScSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFYJDn3i; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ctp3G9Ag"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFYJDn3i"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D5B615C5C4F;
+	by sea.source.kernel.org (Postfix) with ESMTP id 6774745E60;
 	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CA43C4AF09;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41AB4C113CF;
 	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1754325858;
-	bh=Lvi+SOjPyvnPy8ciTq59tLtKnNheCboKdQcwuoaKmUM=;
+	bh=752sQmjr+WkEQIQTz2YsThA0XswYRbPSJznITLPZ8n0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ctp3G9AgiSCKLRp3GaS8h8tJ0qd2GiWi29AWYoW9OphEKR9uxRpx+tVuZ37fpfpsL
-	 IIiqsW+BqW+QyimiyTxqwluC3gBj0itLpMcnGvSkUJW+Jtvtu0G8zJm4JEpeAv07ho
-	 5p6x/9qjLA5BPlYqTiJ+ItnXGdxvcaVtNEU6C921kzwAdklU0oJOrywzY/43+qATyc
-	 qkCMHpUPQU7oHixjqmmc6E/rz2akCtU5V8u3ok+s8qmQdwYEwufDL+M7FaTtHByKcC
-	 AuS5qqztdOQXGV87h2P9OWbRhnDlzJPeEZsfRqWu0o2aRbkYyxMYY+FjPb1Q+fYa9A
-	 LXmNT4G4CjwRQ==
+	b=DFYJDn3iT6d1HFBeZ+4JC6ama4tupJDc2NxZKYp8ACnJ1iL3GmdJ4nU9J6Gxpz6zV
+	 ggkLZE5g33xSNghuW+/4AldAgkpmoHzVtp05Mm0Tk77p9FwqmOTo5KhNYbg7IGPo42
+	 Zaxz1NYG/MDOHO+D0u6LkCfsfIaxlPUFpaI3es/IGEblVRHWsEmsmx5qlouLXGxOO/
+	 jZURCEO+cG1tK5otFXKDXMarJRlXurVor/Uk6n4hK/Tfhs4SPDSIBIKjGx1Re9Gru2
+	 RayDn4/9xO/y4REx1nhEGhNAedTHIr/vlsv5X97wp/q8FQQMD03LxVviKNDFWQcU2I
+	 jhO6Ld2SN/XqA==
 From: Kees Cook <kees@kernel.org>
 To: linux-arch@vger.kernel.org
 Cc: Kees Cook <kees@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Kees Cook <kees@kernel.org>,
 	sparclinux@vger.kernel.org,
 	llvm@lists.linux.dev,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH 14/17] s390: Add __attribute_const__ to ffs()-family implementations
-Date: Mon,  4 Aug 2025 09:44:10 -0700
-Message-Id: <20250804164417.1612371-14-kees@kernel.org>
+Subject: [PATCH 07/17] alpha: Add __attribute_const__ to ffs()-family implementations
+Date: Mon,  4 Aug 2025 09:44:03 -0700
+Message-Id: <20250804164417.1612371-7-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250804163910.work.929-kees@kernel.org>
 References: <20250804163910.work.929-kees@kernel.org>
@@ -62,7 +62,7 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2996; i=kees@kernel.org; h=from:subject; bh=Lvi+SOjPyvnPy8ciTq59tLtKnNheCboKdQcwuoaKmUM=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHkdP80i3EZa0WqNV8fMHixWbmEZHeZVc662+q3+e/ xLYYFLfUcrCIMbFICumyBJk5x7n4vG2Pdx9riLMHFYmkCEMXJwCMBGxaIa/knsDtxWE2YZe7I7U 3WXadmPtRbMlWjOOFS4Pyt5xp698FyPDCXntuf8OrPNQnv7aqHOTUcK6qfbFbx5JC57KYzE7e+8 jOwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3242; i=kees@kernel.org; h=from:subject; bh=752sQmjr+WkEQIQTz2YsThA0XswYRbPSJznITLPZ8n0=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHkeW55xweCLlqOjVdbHHOVIuePb3nVd3fpROS5YTs nc5WMrUUcrCIMbFICumyBJk5x7n4vG2Pdx9riLMHFYmkCEMXJwCMJEFFxkZZtwvav769fajq9di vywovGGe9+SBsdj3hDVaNi73rnRVSzAy/N3mv2O7ocl6bb0KjjvftqjJnWeQndM4JzZ/d2XXEZZ 33AA=
 X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -75,67 +75,82 @@ __attribute__const__, the compiler had to assume the function might
 change variable states as a side-effect (which is not true for ffs(),
 which provides deterministic math results).
 
-Add missing __attribute_const__ annotations to S390's implementations of
-ffs(), __ffs(), fls(), and __fls() functions. These are pure mathematical
-functions that always return the same result for the same input with no
-side effects, making them eligible for compiler optimization.
+Add missing __attribute_const__ annotations to Alpha's implementations
+of __ffs(), ffs(), fls64(), __fls(), fls(), and ffz() functions. These
+are pure mathematical functions that always return the same result for
+the same input with no side effects, making them eligible for compiler
+optimization.
 
-Build tested ARCH=s390 defconfig with GCC s390x-linux-gnu 14.2.0.
+Build tested ARCH=alpha defconfig with GCC alpha-linux-gnu 14.2.0.
 
 Link: https://github.com/KSPP/linux/issues/364 [1]
 Signed-off-by: Kees Cook <kees@kernel.org>
 ---
- arch/s390/include/asm/bitops.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/alpha/include/asm/bitops.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/s390/include/asm/bitops.h b/arch/s390/include/asm/bitops.h
-index a5ca0a947691..fbcc3e1cc776 100644
---- a/arch/s390/include/asm/bitops.h
-+++ b/arch/s390/include/asm/bitops.h
-@@ -179,7 +179,7 @@ static inline unsigned char __flogr(unsigned long word)
-  *
-  * Undefined if no bit exists, so code should check against 0 first.
+diff --git a/arch/alpha/include/asm/bitops.h b/arch/alpha/include/asm/bitops.h
+index 3e33621922c3..76e4343c090f 100644
+--- a/arch/alpha/include/asm/bitops.h
++++ b/arch/alpha/include/asm/bitops.h
+@@ -328,7 +328,7 @@ static inline unsigned long ffz_b(unsigned long x)
+ 	return sum;
+ }
+ 
+-static inline unsigned long ffz(unsigned long word)
++static inline unsigned long __attribute_const__ ffz(unsigned long word)
+ {
+ #if defined(CONFIG_ALPHA_EV6) && defined(CONFIG_ALPHA_EV67)
+ 	/* Whee.  EV67 can calculate it directly.  */
+@@ -348,7 +348,7 @@ static inline unsigned long ffz(unsigned long word)
+ /*
+  * __ffs = Find First set bit in word.  Undefined if no set bit exists.
   */
 -static inline unsigned long __ffs(unsigned long word)
 +static inline __attribute_const__ unsigned long __ffs(unsigned long word)
  {
- 	return __flogr(-word & word) ^ (BITS_PER_LONG - 1);
- }
-@@ -191,7 +191,7 @@ static inline unsigned long __ffs(unsigned long word)
-  * This is defined the same way as the libc and
-  * compiler builtin ffs routines (man ffs).
+ #if defined(CONFIG_ALPHA_EV6) && defined(CONFIG_ALPHA_EV67)
+ 	/* Whee.  EV67 can calculate it directly.  */
+@@ -373,7 +373,7 @@ static inline unsigned long __ffs(unsigned long word)
+  * differs in spirit from the above __ffs.
   */
+ 
 -static inline int ffs(int word)
 +static inline __attribute_const__ int ffs(int word)
  {
- 	unsigned long mask = 2 * BITS_PER_LONG - 1;
- 	unsigned int val = (unsigned int)word;
-@@ -205,7 +205,7 @@ static inline int ffs(int word)
-  *
-  * Undefined if no set bit exists, so code should check against 0 first.
+ 	int result = __ffs(word) + 1;
+ 	return word ? result : 0;
+@@ -383,14 +383,14 @@ static inline int ffs(int word)
+  * fls: find last bit set.
   */
--static inline unsigned long __fls(unsigned long word)
-+static inline __attribute_const__ unsigned long __fls(unsigned long word)
- {
- 	return __flogr(word) ^ (BITS_PER_LONG - 1);
- }
-@@ -221,7 +221,7 @@ static inline unsigned long __fls(unsigned long word)
-  * set bit if value is nonzero. The last (most significant) bit is
-  * at position 64.
-  */
+ #if defined(CONFIG_ALPHA_EV6) && defined(CONFIG_ALPHA_EV67)
 -static inline int fls64(unsigned long word)
 +static inline __attribute_const__ int fls64(unsigned long word)
  {
- 	unsigned long mask = 2 * BITS_PER_LONG - 1;
+ 	return 64 - __kernel_ctlz(word);
+ }
+ #else
+ extern const unsigned char __flsm1_tab[256];
  
-@@ -235,7 +235,7 @@ static inline int fls64(unsigned long word)
-  * This is defined the same way as ffs.
-  * Note fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
-  */
--static inline int fls(unsigned int word)
-+static inline __attribute_const__ int fls(unsigned int word)
+-static inline int fls64(unsigned long x)
++static inline __attribute_const__ int fls64(unsigned long x)
  {
- 	return fls64(word);
+ 	unsigned long t, a, r;
+ 
+@@ -403,12 +403,12 @@ static inline int fls64(unsigned long x)
+ }
+ #endif
+ 
+-static inline unsigned long __fls(unsigned long x)
++static inline __attribute_const__ unsigned long __fls(unsigned long x)
+ {
+ 	return fls64(x) - 1;
+ }
+ 
+-static inline int fls(unsigned int x)
++static inline __attribute_const__ int fls(unsigned int x)
+ {
+ 	return fls64(x);
  }
 -- 
 2.34.1
