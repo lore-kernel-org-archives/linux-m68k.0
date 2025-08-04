@@ -1,36 +1,36 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A568E286898
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329762874FC
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754325861; cv=none; b=ulBOSPNS2Tl3K4pxB6rKXDgzdOP7NftMgB814uz2XY8gh5mKWFGXINqCqPbIs5gerAiBsIo+R1lwgUddscnsBGN2TU71yMo/EyxQIWXcAebLfD38wyYiQ9gNV5zl7VquTcvxFlN1GuH6pFmd2IQ/DcRlulLdednKtm85FRhSYQU=
+	t=1754325861; cv=none; b=gtyY9BY8iKq+Rnw7G+dnHFiefWXUrS9YiNVFr1dQNLCEYXRkX9wNad4G1tm7Tfl2w2rt2nftLQhkowxlWzbIehiAya+Ouydq37kNkawCtvQqub8t3KGfsQifeZbnN+62Kp44SJ60xv/naYzxtAHg5+SH4VJ2LhYPigUbsB1rwsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1754325861; c=relaxed/simple;
-	bh=VbqzFFZFobB7kkMuGpRYRdOZTcP62BCCuXda9NlZ/Xk=;
+	bh=guvy9CFz34iD95VNx9U+nwzbEodayv2bp++BoAV7Co8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=C7M2e3zSc1q31X7+P0cperMMRF0P+6FP+lO2vqB2iYkhHyc1Zoz6omzKsq+/rOAIGviojXH4gOmt4lRdpduiRr3iuqcIDi61IXeX7fXgkA7M3bXgEGZiaPGqrnCSW7yYScPU4VrpwKI/3UPVjPmvj0Hqd/wdFu6FQjJ2oX2wFQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GROEzo0L; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=p+HtU4yr3gtAxWxOxiQ2B/642GGKw1TTu3Q4IA8ljTWHe5hBf0ECV5RpmlCmpcuTmedjUqi65FrIlmeRglF9k5YLujpYIVE2FpaoAgvo/s1bycBV9CizGBafaXT4H5wek2637CJD6Wv2K/BJw0wwlcuLh65t8uAkBPP8GwaVeZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m7b8ufEv; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GROEzo0L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m7b8ufEv"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1B2824524C;
+	by sea.source.kernel.org (Postfix) with ESMTP id 5C1BC45E3C;
 	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5C3EC4CEF7;
-	Mon,  4 Aug 2025 16:44:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B233C116D0;
+	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754325857;
-	bh=VbqzFFZFobB7kkMuGpRYRdOZTcP62BCCuXda9NlZ/Xk=;
+	s=k20201202; t=1754325858;
+	bh=guvy9CFz34iD95VNx9U+nwzbEodayv2bp++BoAV7Co8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GROEzo0Lk1ZsfeiO0JcyeztscMMNwzmm9+gJ1U/EYaNzg4Y1I9YztXPW4KVquUcK5
-	 W1K5xmL/UiItHuLKr7g7rVctCPykcFOWlbjwT/5GKF4IR51MZgfwEqS7sU43da6u8g
-	 reQLveK36NSdF1lZOl6oCtDuIGJJLu+fUI30lmFxJfQ+8ZRKDBZhwM3u0epPf8Aups
-	 YbSGTxe9YC4kSDibdvDhM9woUdKWTVutzTqXCwPcCu0R/bYFliwQt3Y30D0OcRNc1L
-	 VrFaejLOI8CKjQUVofmE1a2gjth5Cd5PXSHYoS6bdeeUlAe5H/iZRgF3cNlXedvEDY
-	 YrD4mtIeYiNEQ==
+	b=m7b8ufEvWKC7zComlRM7+u4PtyfPEWo/yjTdeYkDlJsbVyvwHAovh35m4D3uuSVye
+	 gHJqZVdqWNTwtanGfltzgxGVOtOstQHMiweKxm56tiOvOzLvR44JZYdUL8B5L1htI+
+	 DGDKHooxzEKRzUaDUXP7yWLGj/TWeVyVHYMQzEghCsXqPhdeduMIDPn11gl9swH7a+
+	 HEINXXtYK9TpmhXZNMHyNCftjjwDDURfQsMuyzWDTs0oBX4SY+zy7mK7Jgke/vDeg3
+	 U7w0bqTMAqEajLuIcJFHYSbSneQKkmY/yNhbGerF4hTMOq3OpZ4VDdx/o1lJJPBczx
+	 s7evE8jRDh0cw==
 From: Kees Cook <kees@kernel.org>
 To: linux-arch@vger.kernel.org
 Cc: Kees Cook <kees@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Kees Cook <kees@kernel.org>,
 	sparclinux@vger.kernel.org,
 	llvm@lists.linux.dev,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH 02/17] bitops: Add __attribute_const__ to generic ffs()-family implementations
-Date: Mon,  4 Aug 2025 09:43:58 -0700
-Message-Id: <20250804164417.1612371-2-kees@kernel.org>
+Subject: [PATCH 06/17] sh: Add __attribute_const__ to ffs()-family implementations
+Date: Mon,  4 Aug 2025 09:44:02 -0700
+Message-Id: <20250804164417.1612371-6-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250804163910.work.929-kees@kernel.org>
 References: <20250804163910.work.929-kees@kernel.org>
@@ -62,7 +62,7 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7306; i=kees@kernel.org; h=from:subject; bh=VbqzFFZFobB7kkMuGpRYRdOZTcP62BCCuXda9NlZ/Xk=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHod3ax3aZ7G1tNvmkOGJx9qa4vfF3JjywveGBNjO+ X/n4OtlHaUsDGJcDLJiiixBdu5xLh5v28Pd5yrCzGFlAhnCwMUpABPZsICR4cE598PfnU503XBf /ub6WsFMhYK5i9d8+uG5at3nr/ULGW8wMpzpCr5noSqbsj3Ev6bHTCzs+tI3exR3iLkwvJ8tVl3 LzgwA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1828; i=kees@kernel.org; h=from:subject; bh=guvy9CFz34iD95VNx9U+nwzbEodayv2bp++BoAV7Co8=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHkfmP9t48PLcGkVp7XKfZ3/uTi7Rm+jids/QLcX+v ovoKoOHHaUsDGJcDLJiiixBdu5xLh5v28Pd5yrCzGFlAhnCwMUpABNRZ2T4Z1zh+zj++LvqmA3l LWq5U/2rD36e5VuY8uHfOu9mze9iixn+5z/fPemPk/mc5Lc7HA/9vMSTdJhT49XaZfdm+L/0SFt yjQUA
 X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -75,193 +75,41 @@ __attribute__const__, the compiler had to assume the function might
 change variable states as a side-effect (which is not true for ffs(),
 which provides deterministic math results).
 
-Add missing __attribute_const__ annotations to generic implementations of
-ffs(), __ffs(), fls(), and __fls() functions. These are pure mathematical
-functions that always return the same result for the same input with no
-side effects, making them eligible for compiler optimization.
+Add missing __attribute_const__ annotations to SH's implementations of
+__ffs() and ffz() functions. These are pure mathematical functions that
+always return the same result for the same input with no side effects,
+making them eligible for compiler optimization.
 
-Build tested with x86_64 defconfig using GCC 14.2.0, which should validate
-the implementations when used by ARM, ARM64, LoongArch, Microblaze,
-NIOS2, and SPARC32 architectures.
+Build tested ARCH=sh defconfig with GCC sh4-linux-gnu 14.2.0.
 
 Link: https://github.com/KSPP/linux/issues/364 [1]
 Signed-off-by: Kees Cook <kees@kernel.org>
 ---
- include/asm-generic/bitops/__ffs.h         | 2 +-
- include/asm-generic/bitops/__fls.h         | 2 +-
- include/asm-generic/bitops/builtin-__ffs.h | 2 +-
- include/asm-generic/bitops/builtin-__fls.h | 2 +-
- include/asm-generic/bitops/builtin-fls.h   | 2 +-
- include/asm-generic/bitops/ffs.h           | 2 +-
- include/asm-generic/bitops/fls.h           | 2 +-
- include/asm-generic/bitops/fls64.h         | 4 ++--
- include/linux/bitops.h                     | 2 +-
- lib/clz_ctz.c                              | 8 ++++----
- 10 files changed, 14 insertions(+), 14 deletions(-)
+ arch/sh/include/asm/bitops.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/asm-generic/bitops/__ffs.h b/include/asm-generic/bitops/__ffs.h
-index 2d08c750c8a7..3a899c626fdc 100644
---- a/include/asm-generic/bitops/__ffs.h
-+++ b/include/asm-generic/bitops/__ffs.h
-@@ -10,7 +10,7 @@
+diff --git a/arch/sh/include/asm/bitops.h b/arch/sh/include/asm/bitops.h
+index 10ceb0d6b5a9..aba3aa96a50e 100644
+--- a/arch/sh/include/asm/bitops.h
++++ b/arch/sh/include/asm/bitops.h
+@@ -24,7 +24,7 @@
+ #include <asm-generic/bitops/non-atomic.h>
+ #endif
+ 
+-static inline unsigned long ffz(unsigned long word)
++static inline unsigned long __attribute_const__ ffz(unsigned long word)
+ {
+ 	unsigned long result;
+ 
+@@ -44,7 +44,7 @@ static inline unsigned long ffz(unsigned long word)
   *
   * Undefined if no bit exists, so code should check against 0 first.
   */
--static __always_inline unsigned int generic___ffs(unsigned long word)
-+static __always_inline __attribute_const__ unsigned int generic___ffs(unsigned long word)
+-static inline unsigned long __ffs(unsigned long word)
++static inline __attribute_const__ unsigned long __ffs(unsigned long word)
  {
- 	unsigned int num = 0;
+ 	unsigned long result;
  
-diff --git a/include/asm-generic/bitops/__fls.h b/include/asm-generic/bitops/__fls.h
-index e974ec932ec1..35f33780ca6c 100644
---- a/include/asm-generic/bitops/__fls.h
-+++ b/include/asm-generic/bitops/__fls.h
-@@ -10,7 +10,7 @@
-  *
-  * Undefined if no set bit exists, so code should check against 0 first.
-  */
--static __always_inline unsigned int generic___fls(unsigned long word)
-+static __always_inline __attribute_const__ unsigned int generic___fls(unsigned long word)
- {
- 	unsigned int num = BITS_PER_LONG - 1;
- 
-diff --git a/include/asm-generic/bitops/builtin-__ffs.h b/include/asm-generic/bitops/builtin-__ffs.h
-index cf4b3d33bf96..d3c3f567045d 100644
---- a/include/asm-generic/bitops/builtin-__ffs.h
-+++ b/include/asm-generic/bitops/builtin-__ffs.h
-@@ -8,7 +8,7 @@
-  *
-  * Undefined if no bit exists, so code should check against 0 first.
-  */
--static __always_inline unsigned int __ffs(unsigned long word)
-+static __always_inline __attribute_const__ unsigned int __ffs(unsigned long word)
- {
- 	return __builtin_ctzl(word);
- }
-diff --git a/include/asm-generic/bitops/builtin-__fls.h b/include/asm-generic/bitops/builtin-__fls.h
-index 6d72fc8a5259..7770c4f1bfcd 100644
---- a/include/asm-generic/bitops/builtin-__fls.h
-+++ b/include/asm-generic/bitops/builtin-__fls.h
-@@ -8,7 +8,7 @@
-  *
-  * Undefined if no set bit exists, so code should check against 0 first.
-  */
--static __always_inline unsigned int __fls(unsigned long word)
-+static __always_inline __attribute_const__ unsigned int __fls(unsigned long word)
- {
- 	return (sizeof(word) * 8) - 1 - __builtin_clzl(word);
- }
-diff --git a/include/asm-generic/bitops/builtin-fls.h b/include/asm-generic/bitops/builtin-fls.h
-index c8455cc28841..be707da8c7cd 100644
---- a/include/asm-generic/bitops/builtin-fls.h
-+++ b/include/asm-generic/bitops/builtin-fls.h
-@@ -9,7 +9,7 @@
-  * This is defined the same way as ffs.
-  * Note fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
-  */
--static __always_inline int fls(unsigned int x)
-+static __always_inline __attribute_const__ int fls(unsigned int x)
- {
- 	return x ? sizeof(x) * 8 - __builtin_clz(x) : 0;
- }
-diff --git a/include/asm-generic/bitops/ffs.h b/include/asm-generic/bitops/ffs.h
-index 4c43f242daeb..5ff2b7fbda6d 100644
---- a/include/asm-generic/bitops/ffs.h
-+++ b/include/asm-generic/bitops/ffs.h
-@@ -10,7 +10,7 @@
-  * the libc and compiler builtin ffs routines, therefore
-  * differs in spirit from ffz (man ffs).
-  */
--static inline int generic_ffs(int x)
-+static inline __attribute_const__ int generic_ffs(int x)
- {
- 	int r = 1;
- 
-diff --git a/include/asm-generic/bitops/fls.h b/include/asm-generic/bitops/fls.h
-index 26f3ce1dd6e4..8eed3437edb9 100644
---- a/include/asm-generic/bitops/fls.h
-+++ b/include/asm-generic/bitops/fls.h
-@@ -10,7 +10,7 @@
-  * Note fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
-  */
- 
--static __always_inline int generic_fls(unsigned int x)
-+static __always_inline __attribute_const__ int generic_fls(unsigned int x)
- {
- 	int r = 32;
- 
-diff --git a/include/asm-generic/bitops/fls64.h b/include/asm-generic/bitops/fls64.h
-index 866f2b2304ff..b5f58dd261a3 100644
---- a/include/asm-generic/bitops/fls64.h
-+++ b/include/asm-generic/bitops/fls64.h
-@@ -16,7 +16,7 @@
-  * at position 64.
-  */
- #if BITS_PER_LONG == 32
--static __always_inline int fls64(__u64 x)
-+static __always_inline __attribute_const__ int fls64(__u64 x)
- {
- 	__u32 h = x >> 32;
- 	if (h)
-@@ -24,7 +24,7 @@ static __always_inline int fls64(__u64 x)
- 	return fls(x);
- }
- #elif BITS_PER_LONG == 64
--static __always_inline int fls64(__u64 x)
-+static __always_inline __attribute_const__ int fls64(__u64 x)
- {
- 	if (x == 0)
- 		return 0;
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 9be2d50da09a..ea7898cc5903 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -267,7 +267,7 @@ static inline int parity8(u8 val)
-  * The result is not defined if no bits are set, so check that @word
-  * is non-zero before calling this.
-  */
--static inline unsigned int __ffs64(u64 word)
-+static inline __attribute_const__ unsigned int __ffs64(u64 word)
- {
- #if BITS_PER_LONG == 32
- 	if (((u32)word) == 0UL)
-diff --git a/lib/clz_ctz.c b/lib/clz_ctz.c
-index fb8c0c5c2bd2..8778ec44bf63 100644
---- a/lib/clz_ctz.c
-+++ b/lib/clz_ctz.c
-@@ -15,28 +15,28 @@
- #include <linux/kernel.h>
- 
- int __weak __ctzsi2(int val);
--int __weak __ctzsi2(int val)
-+int __weak __attribute_const__ __ctzsi2(int val)
- {
- 	return __ffs(val);
- }
- EXPORT_SYMBOL(__ctzsi2);
- 
- int __weak __clzsi2(int val);
--int __weak __clzsi2(int val)
-+int __weak __attribute_const__ __clzsi2(int val)
- {
- 	return 32 - fls(val);
- }
- EXPORT_SYMBOL(__clzsi2);
- 
- int __weak __clzdi2(u64 val);
--int __weak __clzdi2(u64 val)
-+int __weak __attribute_const__ __clzdi2(u64 val)
- {
- 	return 64 - fls64(val);
- }
- EXPORT_SYMBOL(__clzdi2);
- 
- int __weak __ctzdi2(u64 val);
--int __weak __ctzdi2(u64 val)
-+int __weak __attribute_const__ __ctzdi2(u64 val)
- {
- 	return __ffs64(val);
- }
 -- 
 2.34.1
 
