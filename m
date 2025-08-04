@@ -1,36 +1,36 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66FA5286893
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010F9286898
 	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 16:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754325863; cv=none; b=ceAi3Sl4NflUnld5VLtzxMgHPrKGAI1OdVCEy7Tq9l8QyEe1yGluE1DhA08sJVwKK2FA6yDltrdXKiks/Arz020cxZPIsegPkt2Nn+kzSAwREbQUPdvv2QAQtmIItAxq3Ev2tNa4tI79HvlK/fuIhdaAKywyEgYlTLgKxV4GSo0=
+	t=1754325864; cv=none; b=VR/IPPwivYQ+GXxwRC1T+Sc72ICPnmipusgBR76Bn+PZtU/eJoL27nToKcwIKpEKMmZCvyg1NqoSzj608DYWKOfdUeTdVXUzaigeOkeD7wV68WZCyMGaO9+dvA3p8CuQewbxE7SsEUdnH14qTWvIXN6RWqgmu5xweLWYcF5U9XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754325863; c=relaxed/simple;
-	bh=3HtYht3o5b53HlW3hmmaVS1l68Fq+Byhwo7/QFnsV8I=;
+	s=arc-20240116; t=1754325864; c=relaxed/simple;
+	bh=HdxC+YrG0RYotBTATCCMvdXpeJF/VSAnm1GW7teMP8Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OiKFrkkmPVgQcIMjXTZiO9qQR4eg9n0H8v1kGzQE8ceTpZ/2wd7JsqsVsP2ug2haxHBkMXASHQYUgwGenCSH5yvc2aCVck3xaLXa08jCg/iGF1znxl+OwQlusykcBSkMLLLDvnnq6dHxnIZIsRKqjDJ40x6N4iRiRj9j4C17NcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V8su36dz; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=Q8qFwmKyzHN0C6YDE60/CUSYUCWCxF9DqmwdQK14JsLf2TEmT05RF66l8YpHVHwmx6c8pvoXGdM2v222pb+Dp8XzB4Cwi80PYMIAIZTqumrDD3MqW4l7enuRfxg6B9njXyiCggtBQTzs2ZFz3kKwAzA22NPHdPLdeO6OHOYTKII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eht0h6wa; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V8su36dz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eht0h6wa"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7FCA145E89;
+	by sea.source.kernel.org (Postfix) with ESMTP id AC8E045E9D;
 	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 557BFC19422;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A4D0C19425;
 	Mon,  4 Aug 2025 16:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1754325858;
-	bh=3HtYht3o5b53HlW3hmmaVS1l68Fq+Byhwo7/QFnsV8I=;
+	bh=HdxC+YrG0RYotBTATCCMvdXpeJF/VSAnm1GW7teMP8Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=V8su36dz8wLeATBiw+fLXUhOrWYvB0J2NFju0ulT3yX9bH3I4brsk1bfIPOwMtl4M
-	 eUdlQo6ZAufcuJ508hVz4gfoq3F3K0NaNBhUI39fozig9HtwiVIhUGFAxBVlIHjavx
-	 dlf5V9cU0uGCk2uQOYlzN0s30pv/X2w1LMbTVx6rbh/tujJoBv2E/x6rjwgPDf4RAL
-	 WgADCxDgFlafZg+p0CJETlCNY4boSlI5JQCzG5Rc0pHbrftG9aN/2N2mn7r2AzIlix
-	 US1fliCniVnKsIeSvSJNltImuRoFdZvNSuevHgga/082pXz8xl7Spx/2XIW3pDNRLi
-	 Tj/NQpbrTOeCw==
+	b=eht0h6wavbG5fQnbmTMV1LmgGtMtTND4AiQx88qlrbrKMG7q+I2KV9TG5su1TUwJl
+	 9JdYbIVDZVFNRpe+KxrQj3yYkr4jIKgX9AM48OY/X2HUTDt/yQMqghpZgo8dI+lUiY
+	 sPFgdBPotx0O5vmB6rNUrXXCO7pIkGlxNLrZo/VrhZoavzwFsJfvHQQ5GRxGNORwYq
+	 ll8Z8hIgRcmL2pG5t8gqltpIuUcpQJARO85MAZKd2YSKMLDdNiWDCDoVxzSQxjvD/J
+	 I98kgiMNwgfmoVibR8Ga7ysDFMZhTXmoCPMBAlSUtMbpOVSZMmG3i0SdT9ZJxpw6vZ
+	 nJ6HuuSPbsIvw==
 From: Kees Cook <kees@kernel.org>
 To: linux-arch@vger.kernel.org
 Cc: Kees Cook <kees@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Kees Cook <kees@kernel.org>,
 	sparclinux@vger.kernel.org,
 	llvm@lists.linux.dev,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH 12/17] mips: Add __attribute_const__ to ffs()-family implementations
-Date: Mon,  4 Aug 2025 09:44:08 -0700
-Message-Id: <20250804164417.1612371-12-kees@kernel.org>
+Subject: [PATCH 17/17] KUnit: ffs: Validate all the __attribute_const__ annotations
+Date: Mon,  4 Aug 2025 09:44:13 -0700
+Message-Id: <20250804164417.1612371-17-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250804163910.work.929-kees@kernel.org>
 References: <20250804163910.work.929-kees@kernel.org>
@@ -62,7 +62,7 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2679; i=kees@kernel.org; h=from:subject; bh=3HtYht3o5b53HlW3hmmaVS1l68Fq+Byhwo7/QFnsV8I=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHkd9Czh7JOPuiXLZd7+tXh0+UvAmMXjmUpsPrqFNd emffkyY2FHKwiDGxSArpsgSZOce5+Lxtj3cfa4izBxWJpAhDFycAjCR0IeMDKtMbV93TbymIV3y RUjmeV9k6+Ycm98bV/GzP/x1wf6SQwEjw9LvUaanzu14nd9/YYIdr+mme3uzdviENGY4hmxRS95 ymhcA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3872; i=kees@kernel.org; h=from:subject; bh=HdxC+YrG0RYotBTATCCMvdXpeJF/VSAnm1GW7teMP8Q=; b=owGbwMvMwCVmps19z/KJym7G02pJDBkTHsc45wRtnf/oYkjVF1ejQumtl0UPxWm1daQdPSSrw bs5K8W2o5SFQYyLQVZMkSXIzj3OxeNte7j7XEWYOaxMIEMYuDgFYCKRWxgZOjz/P/l/pMCzl0Hu 27r4n4VL9jtHtEl/uSCclF54euLlvwz/qxb+jO8s3m0ks3bJu3DRTzNP+l7bENDeHCloJ86woVy TAwA=
 X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -71,63 +71,90 @@ BUILD_BUG_ON() suddenly stopped working[1], we found that an added static
 initializer was convincing the compiler that it couldn't track the state
 of the prior statically initialized value. Tracing this down found that
 ffs() was used in the initializer macro, but since it wasn't marked with
-__attribute__const__, the compiler had to assume the function might
+__attribute_const__, the compiler had to assume the function might
 change variable states as a side-effect (which is not true for ffs(),
 which provides deterministic math results).
 
-Add missing __attribute_const__ annotations to MIPS's implementations of
-ffs(), __ffs(), fls(), and __fls() functions. These are pure mathematical
-functions that always return the same result for the same input with no
-side effects, making them eligible for compiler optimization.
+Validate all the __attibute_const__ annotations were found for all
+architectures by reproducing the specific problem encountered in the
+original bug report.
 
-Build tested ARCH=mips defconfig with GCC mipsel-linux-gnu 14.2.0.
+Build and run tested with everything I could reach with KUnit:
 
-Link: https://github.com/KSPP/linux/issues/364 [1]
+$ ./tools/testing/kunit/kunit.py run --arch=x86_64 ffs
+$ ./tools/testing/kunit/kunit.py run --arch=i386 ffs
+$ ./tools/testing/kunit/kunit.py run --arch=arm64 --make_options "CROSS_COMPILE=aarch64-linux-gnu-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=arm --make_options "CROSS_COMPILE=arm-linux-gnueabi-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=powerpc ffs
+$ ./tools/testing/kunit/kunit.py run --arch=powerpc32 ffs
+$ ./tools/testing/kunit/kunit.py run --arch=powerpcle ffs
+$ ./tools/testing/kunit/kunit.py run --arch=m68k ffs
+$ ./tools/testing/kunit/kunit.py run --arch=loongarch ffs
+$ ./tools/testing/kunit/kunit.py run --arch=s390 --make_options "CROSS_COMPILE=s390x-linux-gnu-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=riscv --make_options "CROSS_COMPILE=riscv64-linux-gnu-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=riscv32 --make_options "CROSS_COMPILE=riscv64-linux-gnu-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=sparc --make_options "CROSS_COMPILE=sparc64-linux-gnu-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=sparc64 --make_options "CROSS_COMPILE=sparc64-linux-gnu-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=alpha --make_options "CROSS_COMPILE=alpha-linux-gnu-" ffs
+$ ./tools/testing/kunit/kunit.py run --arch=sh --make_options "CROSS_COMPILE=sh4-linux-gnu-" ffs
+
+Closes: https://github.com/KSPP/linux/issues/364
 Signed-off-by: Kees Cook <kees@kernel.org>
 ---
- arch/mips/include/asm/bitops.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ lib/tests/ffs_kunit.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/arch/mips/include/asm/bitops.h b/arch/mips/include/asm/bitops.h
-index 89f73d1a4ea4..42f88452c920 100644
---- a/arch/mips/include/asm/bitops.h
-+++ b/arch/mips/include/asm/bitops.h
-@@ -327,7 +327,7 @@ static inline void __clear_bit_unlock(unsigned long nr, volatile unsigned long *
-  * Return the bit position (0..63) of the most significant 1 bit in a word
-  * Returns -1 if no 1 bit exists
-  */
--static __always_inline unsigned long __fls(unsigned long word)
-+static __always_inline __attribute_const__ unsigned long __fls(unsigned long word)
- {
- 	int num;
- 
-@@ -393,7 +393,7 @@ static __always_inline unsigned long __fls(unsigned long word)
-  * Returns 0..SZLONG-1
-  * Undefined if no bit exists, so code should check against 0 first.
-  */
--static __always_inline unsigned long __ffs(unsigned long word)
-+static __always_inline __attribute_const__ unsigned long __ffs(unsigned long word)
- {
- 	return __fls(word & -word);
+diff --git a/lib/tests/ffs_kunit.c b/lib/tests/ffs_kunit.c
+index ed11456b116e..9a329cdc09c2 100644
+--- a/lib/tests/ffs_kunit.c
++++ b/lib/tests/ffs_kunit.c
+@@ -496,6 +496,46 @@ static void ffz_edge_cases_test(struct kunit *test)
+ 	}
  }
-@@ -405,7 +405,7 @@ static __always_inline unsigned long __ffs(unsigned long word)
-  * This is defined the same way as ffs.
-  * Note fls(0) = 0, fls(1) = 1, fls(0x80000000) = 32.
-  */
--static inline int fls(unsigned int x)
-+static inline __attribute_const__ int fls(unsigned int x)
- {
- 	int r;
  
-@@ -458,7 +458,7 @@ static inline int fls(unsigned int x)
-  * the libc and compiler builtin ffs routines, therefore
-  * differs in spirit from the below ffz (man ffs).
++/*
++ * To have useful build error output, split the tests into separate
++ * functions so it's clear which are missing __attribute_const__.
++ */
++#define CREATE_WRAPPER(func)						\
++static noinline bool build_test_##func(void)				\
++{									\
++	int init_##func = 32;						\
++	int result_##func = func(6);					\
++									\
++	/* Does the static initializer vanish after calling func? */	\
++	BUILD_BUG_ON(init_##func < 32);					\
++									\
++	/* "Consume" the results so optimizer doesn't drop them. */	\
++	barrier_data(&init_##func);					\
++	barrier_data(&result_##func);					\
++									\
++	return true;							\
++}
++CREATE_WRAPPER(ffs)
++CREATE_WRAPPER(fls)
++CREATE_WRAPPER(__ffs)
++CREATE_WRAPPER(__fls)
++CREATE_WRAPPER(ffz)
++#undef CREATE_WRAPPER
++
++/*
++ * Make sure that __attribute_const__ has be applied to all the
++ * functions. This is a regression test for:
++ * https://github.com/KSPP/linux/issues/364
++ */
++static void ffs_attribute_const_test(struct kunit *test)
++{
++	KUNIT_EXPECT_TRUE(test, build_test_ffs());
++	KUNIT_EXPECT_TRUE(test, build_test_fls());
++	KUNIT_EXPECT_TRUE(test, build_test___ffs());
++	KUNIT_EXPECT_TRUE(test, build_test___fls());
++	KUNIT_EXPECT_TRUE(test, build_test_ffz());
++}
++
+ /*
+  * KUnit test case definitions
   */
--static inline int ffs(int word)
-+static inline __attribute_const__ int ffs(int word)
- {
- 	if (!word)
- 		return 0;
 -- 
 2.34.1
 
