@@ -1,90 +1,82 @@
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C066128B4F8
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 Aug 2025 17:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1FA244679
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 Aug 2025 08:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754327712; cv=none; b=IDr4N6kBes2ujTfX9zTDJNhWQF1cr1yGkvibnuOADSXB8PaKyVfnAswPYX3igLazRMvQ7lxhwtQNfMWYAaqY66kS4CBkL4+QgISpY1Ygz+8SQgoJ+sKFTRVBURM0Hp3C+9EoI0+m7PSw8Qg0X9e01QNQB+b48uCpcxg2lDi3UxA=
+	t=1754381591; cv=none; b=cUkrtlF3qkxHi9D5NtZobXSOvPMHH7hJwsTvw0zMFVKE4b8uiHcaVYht/hgwI839HYJshDeKXqp3NbArF19CiwQ7G+8ge0hUd0mzTx2cTg4LFa/3lUgiGdHfdvigIuUgeQybNJEYTZKLVsaKXc1PkEA1Xb/Dt7yMEIkjheR6uvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754327712; c=relaxed/simple;
-	bh=BSv3IA5IuUJhTBGL3xkgYTrQYKCsOpXUGxp4B+QDShQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WBA55IBiITPf/AMu87R4ToESOJiXDhPDT4y321e/t/MUk13vEq03Acz5p4QcqR9qYg4f8C6oRu/bJ7rcXi5g2Li8XLHDwrRbII33Re3JiQj2mSFNLhfq/OW2XRhyqHCzXtEwfNN5dlhnhe3IE1YH+GXmb1FmunTDEf4+Z7OLCfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PqLQ00F2; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1754381591; c=relaxed/simple;
+	bh=XY5X8rTqj6KCB7z+WOowtTK7MrFk016Y1kqMLEFIi1Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hHRSZ+1Z4g0m99MD1JInJYq4o3ZWJMrRR7kJzMex0AhMypvGThTaPnT0InBI+YmALutmflYlV+BSvUZEfOsOnuw2yQbcK+mdmlQgHNyrZzGVsplV/wj8C1GX5qtCJtfUPENhmuSw4vED3SUAb1ZJYSQauqzfv3V86VcX1+QHt4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqLQ00F2"
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3b78315ff04so3732638f8f.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 Aug 2025 10:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754327709; x=1754932509; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ES2rPSb96ZRcMua/upicMCXBbX2m2hK2sP3TCwY9yY=;
-        b=PqLQ00F2UJdJD5Xr2A6LX45pQoj1+dqB6f1NuXYE4Ma3LRANhjuXpcphac2h664qhK
-         wI9pCWja1wIhQ6kdgw5QywxDjcZOKS4De1ve3raJltE1MCRut7vutWdTzjMKPf+dClvc
-         IxOjq01Sz+FotWlVAFj2+o9Nka64el7DsjyCtgsQARGflyzVl0iQy1LdysowndWahyCR
-         desXvSAIbVWJoANakisQkXwd59mn2al2Vi0i0cWS3OOST4kWIFSDpo6IqB19wA9v1px3
-         n6QawcoOCjPBgVr4SVAQeADPKwPF21BmPltsVr+WDAF3lpbXcD4O+zxwTyin7oAEvFk+
-         h34w==
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-539613258e8so641493e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Aug 2025 01:13:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754327709; x=1754932509;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1ES2rPSb96ZRcMua/upicMCXBbX2m2hK2sP3TCwY9yY=;
-        b=eBnxM6r7ptPTYnn1GnFa4NJjKzE4GSWrytJW/0CfX4gLNZI3ss9HkjsTZ7GeaZTDDL
-         lTqvkDWCgNvMv8a8FrS6Zt5xAuWe1uYC68X9ziD3V8O02InFA/sUPh70vqvQFdm2hGSu
-         Myhp1XQKoR1L+oVeeGmLIKfWLe4WbASerX/P1IlODVcuZHdlTr2JlQ09mBdEVQlUB/vO
-         Ie92o5HGSQHS8L5qPpZ5rhltNl68nPaCQWUzffJRQGv1VOpIXpmLoVTIZzMocTkOZpOb
-         4pEcnsq6g10emVGE6qeJyGLE4QXUg3bBxZ5H+9U/ofGgfE9MXuNLmRlkqE40o81z4gb9
-         Q1+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWhrvnFFdxJZhnelE72tuPWj/rhXqqNbVJmD81A99elTCaV+SeQRfqS9T9slWeYUm4uQDnwJ3d9UsHZ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyxCiH7ukRr7R3tFx5EmMNoICOcXuQCTQ3BCaauID2CosK/mMlM
-	nF7/ydaPa7xmf2QXL+zSbhLNIl9LSbZjsBkVl/PGt+7/MEpYEgdxT7ZE
-X-Gm-Gg: ASbGncume/g+uGPnwSbjHDyBUdu28SScDC8EzIHhTq9otoJk1/7//Uwpag6jA3ZIe1h
-	mmRpaijOY3fNA44Iq8LXegD2ViTcTcKzXBbtlp1fy7wXv0eQu7TdpUj9dopeMeTOa07zkPZh+qM
-	QFn/4/8SSXjnJQkELwpO9v8N/8eA+TwVgIZZHjEoH3pvgtILSxhaI6CEXtYqj7/iukFJCgC3/5Q
-	7LzS2QGoaK5y/qrNZV0UyYxZ6xGzrczS5QDcPw4EFc0AY8Dw67UADn/lCxEMG3jth2Zr7x1fykg
-	lZMzrHKtBc6a//GGU/jIzkZKJAqichle0brMv2rc2fkS2XqO5KwD+aqbcSk7wWtT7kd6XRXKiPo
-	SSdGM1X4l/L7BzeRvCC6jKdkHVQvJQ/5P8OR0o2RsEnyj+AWLUeKqtPIngotvtQ==
-X-Google-Smtp-Source: AGHT+IEpNawQWUPhZIXoNWLCtN2+qaXCsKArzNXCXzW1yE3i7/WUxeM9GsxIUXvlWMi666W2l82q6Q==
-X-Received: by 2002:a05:6000:40c9:b0:3b8:893f:a185 with SMTP id ffacd0b85a97d-3b8d94cf20dmr7323692f8f.53.1754327708754;
-        Mon, 04 Aug 2025 10:15:08 -0700 (PDT)
-Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b79c47ae8esm16051546f8f.61.2025.08.04.10.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Aug 2025 10:15:07 -0700 (PDT)
-Date: Mon, 4 Aug 2025 18:15:06 +0100
-From: Stafford Horne <shorne@gmail.com>
-To: Kees Cook <kees@kernel.org>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	x86@kernel.org, linux-alpha@vger.kernel.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, llvm@lists.linux.dev,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 10/17] openrisc: Add __attribute_const__ to ffs()-family
- implementations
-Message-ID: <aJDqmoUNhwWeAlpa@antec>
-References: <20250804163910.work.929-kees@kernel.org>
- <20250804164417.1612371-10-kees@kernel.org>
+        d=1e100.net; s=20230601; t=1754381588; x=1754986388;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FYbREyEF6GDi+6BqzkUaervyY8mSRtfMj7JERduR6Tc=;
+        b=frJE5HXANwI9uwflOUpcZPtf3dnzxVZeF2LQQSdPutMF4dUrGKy9X5kRASmCx2/k+0
+         dFJFGrKMTyXspYBi1dyWmZGQsTGyMHubqeg4eWkIPYsrqNc0SsCweudQldGfy3D+8hJa
+         L8R91ftbtrjJFsDzLfum+NiErA0N+LMj+EeV8e38gJ19mgcfOsuzySZM8/mhuEMDzEZH
+         A3q5shI+gJKamOKtlJwWMo+//lfuGgI1IbMFyvcpjQl/nB5cEy6c+i39doXlyTIQF5FR
+         BNfyu8KzTruJkxfse+CKyicjUKV1KQu9f38c8ctu3rBbWLt+zJLvOm9zqDCGOIwG1zJO
+         83XA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEjrhKnX5Kr+8uJ1N+EU/e+4CD3TuxR2hkX2XpoODj//4J25HkLJPTYJ5wzuMXnNo8kBjWI35GHRuw@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxkmdaKi5GwZ0dSFQAZDhAZ9+eK1PtncI5uorepq3yaag//avYO
+	H8mkGBg/rU2vUZvD0QkMydufP9aj+5Hu6JDERgbKLzacy5eAQSRCKKPdhG65PQaS
+X-Gm-Gg: ASbGncuY9ow0HOYk8qu0BYJX7M3IHxqzLJ6XoJi31/Pi2Ch4ZuauRRmAUW8e0AXOTlm
+	LXXiz6vkyrKUQHBJGbZU5s/LPYDs8FamdfMaXtZtpNgFCZ4Ftdd67gHC0TxSZeZs2VPbwQawPH2
+	M864kCaXRy+k7dB2W3ywsW/+ERXm6Ibx5El/b6/3q3u6bpD36XtGKP4REv5sgBAPg4GYaYk+k2V
+	w3WdNWkEEdFaFO3p2rujViS6bC4JnV9NUGDaOsg1RNABhT2XPFxdiFdLI2VydZgin+akh1nF70T
+	fjncc9xWhH5QdPAqRrM7ZujhHjN8yeanP/oE2ymb/3U2bBHYzekpz/+WjmE6sO3536lv0FxvDej
+	PD3JDKIa5PpgGMMwxK7z+LBC/XzoQA3ol/xEqMeRLlnEqTRgqUXIJRSIqZTIO
+X-Google-Smtp-Source: AGHT+IF1TVNN7c5XQ6RBe4H1vN3h2v1R+8OAylKD0DojGTkdoH2nTWiuXv0dF1fvzpGVBNSIzKGpDw==
+X-Received: by 2002:a05:6122:1697:b0:535:e789:6ccc with SMTP id 71dfb90a1353d-5395f1f80f0mr5374494e0c.3.1754381588347;
+        Tue, 05 Aug 2025 01:13:08 -0700 (PDT)
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-53936cbbc29sm3333648e0c.19.2025.08.05.01.13.07
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Aug 2025 01:13:07 -0700 (PDT)
+Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-88bb3eebeacso1223941241.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 Aug 2025 01:13:07 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVFgoc9+0GLWBNpxG021czUeaaK1POGtQIJVWSvEtO73qKiv/+t8jI6gHz1+8jqmal9+YZFM2jw4AoV@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:3a0b:b0:4d7:11d1:c24e with SMTP id
+ ada2fe7eead31-4fdc480dc77mr4806207137.21.1754381587163; Tue, 05 Aug 2025
+ 01:13:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250804164417.1612371-10-kees@kernel.org>
+References: <20250804163910.work.929-kees@kernel.org> <20250804164417.1612371-11-kees@kernel.org>
+In-Reply-To: <20250804164417.1612371-11-kees@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 5 Aug 2025 10:12:55 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWRAxGqLxPY0eZkrg4zMr4qY5KUcTqPjNXEKOTeNYGc8A@mail.gmail.com>
+X-Gm-Features: Ac12FXxoASDmKZziFEtov1BZOWBk9xds-hH6z1CBqhINtQO4YVRNUk0c1YQzJUM
+Message-ID: <CAMuHMdWRAxGqLxPY0eZkrg4zMr4qY5KUcTqPjNXEKOTeNYGc8A@mail.gmail.com>
+Subject: Re: [PATCH 11/17] m68k: Add __attribute_const__ to ffs()-family implementations
+To: Kees Cook <kees@kernel.org>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org, 
+	linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, llvm@lists.linux.dev, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Aug 04, 2025 at 09:44:06AM -0700, Kees Cook wrote:
+On Mon, 4 Aug 2025 at 18:44, Kees Cook <kees@kernel.org> wrote:
 > While tracking down a problem where constant expressions used by
 > BUILD_BUG_ON() suddenly stopped working[1], we found that an added static
 > initializer was convincing the compiler that it couldn't track the state
@@ -93,81 +85,30 @@ On Mon, Aug 04, 2025 at 09:44:06AM -0700, Kees Cook wrote:
 > __attribute__const__, the compiler had to assume the function might
 > change variable states as a side-effect (which is not true for ffs(),
 > which provides deterministic math results).
-> 
-> Add missing __attribute_const__ annotations to OpenRISC's implementations of
-> ffs(), __ffs(), fls(), and __fls() functions. These are pure mathematical
-> functions that always return the same result for the same input with no
-> side effects, making them eligible for compiler optimization.
-> 
-> Build tested ARCH=openrisc defconfig with GCC or1k-linux 15.1.0.
-
-THis looks ok to me.
-
+>
+> Add missing __attribute_const__ annotations to M68K's implementations
+> of ffs(), __ffs(), fls(), __fls(), and ffz() functions. These are
+> pure mathematical functions that always return the same result for
+> the same input with no side effects, making them eligible for compiler
+> optimization.
+>
+> Build tested ARCH=m68k defconfig with GCC m68k-linux-gnu 14.2.0.
+>
 > Link: https://github.com/KSPP/linux/issues/364 [1]
 > Signed-off-by: Kees Cook <kees@kernel.org>
 
-Acked-by: Stafford Horne <shorne@gmail.com>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> ---
->  arch/openrisc/include/asm/bitops/__ffs.h | 2 +-
->  arch/openrisc/include/asm/bitops/__fls.h | 2 +-
->  arch/openrisc/include/asm/bitops/ffs.h   | 2 +-
->  arch/openrisc/include/asm/bitops/fls.h   | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/openrisc/include/asm/bitops/__ffs.h b/arch/openrisc/include/asm/bitops/__ffs.h
-> index 1e224b616fdf..4827b66530b2 100644
-> --- a/arch/openrisc/include/asm/bitops/__ffs.h
-> +++ b/arch/openrisc/include/asm/bitops/__ffs.h
-> @@ -11,7 +11,7 @@
->  
->  #ifdef CONFIG_OPENRISC_HAVE_INST_FF1
->  
-> -static inline unsigned long __ffs(unsigned long x)
-> +static inline __attribute_const__ unsigned long __ffs(unsigned long x)
->  {
->  	int ret;
->  
-> diff --git a/arch/openrisc/include/asm/bitops/__fls.h b/arch/openrisc/include/asm/bitops/__fls.h
-> index 9658446ad141..637cc76fe4b7 100644
-> --- a/arch/openrisc/include/asm/bitops/__fls.h
-> +++ b/arch/openrisc/include/asm/bitops/__fls.h
-> @@ -11,7 +11,7 @@
->  
->  #ifdef CONFIG_OPENRISC_HAVE_INST_FL1
->  
-> -static inline unsigned long __fls(unsigned long x)
-> +static inline __attribute_const__ unsigned long __fls(unsigned long x)
->  {
->  	int ret;
->  
-> diff --git a/arch/openrisc/include/asm/bitops/ffs.h b/arch/openrisc/include/asm/bitops/ffs.h
-> index b4c835d6bc84..536a60ab9cc3 100644
-> --- a/arch/openrisc/include/asm/bitops/ffs.h
-> +++ b/arch/openrisc/include/asm/bitops/ffs.h
-> @@ -10,7 +10,7 @@
->  
->  #ifdef CONFIG_OPENRISC_HAVE_INST_FF1
->  
-> -static inline int ffs(int x)
-> +static inline __attribute_const__ int ffs(int x)
->  {
->  	int ret;
->  
-> diff --git a/arch/openrisc/include/asm/bitops/fls.h b/arch/openrisc/include/asm/bitops/fls.h
-> index 6b77f6556fb9..77da7639bb3e 100644
-> --- a/arch/openrisc/include/asm/bitops/fls.h
-> +++ b/arch/openrisc/include/asm/bitops/fls.h
-> @@ -11,7 +11,7 @@
->  
->  #ifdef CONFIG_OPENRISC_HAVE_INST_FL1
->  
-> -static inline int fls(unsigned int x)
-> +static inline __attribute_const__ int fls(unsigned int x)
->  {
->  	int ret;
->  
-> -- 
-> 2.34.1
-> 
-> 
+# ffs: pass:9 fail:0 skip:0 total:9
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
