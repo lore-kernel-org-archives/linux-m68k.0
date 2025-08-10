@@ -1,101 +1,106 @@
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+Received: from nyc.source.kernel.org (nyc.source.kernel.org [147.75.193.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F1C1CBA18
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 10 Aug 2025 09:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEBEE27C152
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 10 Aug 2025 21:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.75.193.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754817696; cv=none; b=Zb3hgmc+5fgxcfd4VHHa33cXQdE/3ijGPOuHmm5e8c0Yll9YrQMjKXPIBIxZJWZaxnDFLhDIIAxJ5ZWDQ0QwjYcA4DsHwxbvUt4n5TP6HJXLKqxAWjfA1G1xiajOhxLcUyLNo/KeTZ7Lug2mntLIITs8p7yTxonPdNe3wOesSMw=
+	t=1754860356; cv=none; b=JZgpdmM8GhzLJLJ3bhEhqRo7G8E3Yqs/IbztmmzNbZa0m2w3do1ewv9ednWh0hwlE1ekUfP6xT6kTnWNK4XzKh1AkD4lKfbGSbK9aGE3fZzF+oJlklHJ3zGzcc2B6ldgsJiVlGD6er8k+9rTHXvzwT5HSleLd/2znY2jdytgYJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754817696; c=relaxed/simple;
-	bh=VFwkm31i9/tKE057pPNZIoanm3t4mIphBXmwDC5Uils=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rulTB1eyS4IQSV41YIjfZHlo/M6rIOiaeZ0RZAlL8bAlZIgfAKVocIpCLwVRA4mBR+i0qgv87ZgoXjV5HR65YCivZu+6wvfxE8MtS1oHu/A7gKK0lSWKadhOIPaIwCPaZW33h7Di5GM/5bcBnFkgzdoGTIGJNpJ2hOSzUf7gPA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Dgsk0sQB; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+	s=arc-20240116; t=1754860356; c=relaxed/simple;
+	bh=+EPDIqigYF0dLwDVKm4n7P07Soa8UCdwgsSbIhQglhg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=S4Wl6U3REnmxfN2mdxxsw04MabBKEny+8oM4ypJJ1jQ5CUPZoVMhkLI59Wa4aojrCyK2vDFBqLRtWwVOA1xU0iDdaec2L1j+MkebiL/9dUBM2C/8NcVp8Hmivy7w2ad4jEDmH9nqV1hooSmybIh46nhqrB4fctIrL0y182dcsE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PRWX9qby; arc=none smtp.client-ip=147.75.193.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Dgsk0sQB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1754817692;
-	bh=VFwkm31i9/tKE057pPNZIoanm3t4mIphBXmwDC5Uils=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dgsk0sQB21nZ9PzQOVKk2iiVoV1rTBZ5/5544czQpjYx8SmgqZ+upRXfobmMV3Tdl
-	 EHD06Lwa9ztRq7cgLzzHGa3RH5wRImcyMtJdnzdv4ITH9cshabt7sTkwVTH83rm7wy
-	 PNrs76CSpHDZ1gBp1ik1g3sPCHBxUPW+80Bt9xIE=
-Date: Sun, 10 Aug 2025 11:21:32 +0200
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Add target for lz4 compressed vmlinux
-Message-ID: <e4ac35a6-f521-47fa-b949-b827197ca537@t-8ch.de>
-References: <20250809015529.373693-1-daniel@0x0f.com>
- <5dd0a031-dd7b-4078-b1a8-6b760248390b@t-8ch.de>
- <CAFr9PXmF-AOL8yj9FntHw+b1A8HWKNeAHU=rx7Dk7pfi1N_4fA@mail.gmail.com>
- <d7974cbe-41b3-4994-8982-30c8f660e65f@t-8ch.de>
- <CAFr9PXkJCPm9UwV8-FeZxhB+ODxGgtbKdD3n90UjqyPGF8tMSw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PRWX9qby"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id B3E0DA568E7;
+	Sun, 10 Aug 2025 21:12:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B60AC4CEEB;
+	Sun, 10 Aug 2025 21:12:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754860351;
+	bh=+EPDIqigYF0dLwDVKm4n7P07Soa8UCdwgsSbIhQglhg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=PRWX9qbyv9u6FbnKrFjePyfsaZ737MOhr4mO7TsZ7R+GzU8zlYvZAYf8JD/OXtEUT
+	 hA9ZGe4MgMB70B1Zw0njMIw4A2/fhOmu8/xlsiHxmIUZJvNyZW6a8uiunB9JTjc62k
+	 WQvCcnsGvL3edUrU5mU3msfwtOhFXOborJRekZFipn3fdTQKLp1K+FdaZrtWvHMoCG
+	 BjGMfqHcgkkIzLtrpEo6cyj4t26pG93hr2845rzETZe270MpglUmq+wxcG1OLi+DB/
+	 81Kg/BR1SiRTfzYt5r1OrTvGUw8lrqFdyiU9Eqy8LtRG2Wu0knKnUQq5VbApAR7XFV
+	 wpBAVMLGZQIKw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33BB739D0C2B;
+	Sun, 10 Aug 2025 21:12:45 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFr9PXkJCPm9UwV8-FeZxhB+ODxGgtbKdD3n90UjqyPGF8tMSw@mail.gmail.com>
+Subject: Re: [PATCH 00/23] binfmt_elf,arch/*: Use elf.h for coredump note
+ names
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <175486036374.1221929.319441619761028585.git-patchwork-notify@kernel.org>
+Date: Sun, 10 Aug 2025 21:12:43 +0000
+References: <20250701135616.29630-1-Dave.Martin@arm.com>
+In-Reply-To: <20250701135616.29630-1-Dave.Martin@arm.com>
+To: Dave Martin <Dave.Martin@arm.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ davem@davemloft.net, hpa@zytor.com, James.Bottomley@HansenPartnership.com,
+ akihiko.odaki@daynix.com, aou@eecs.berkeley.edu, agordeev@linux.ibm.com,
+ alex@ghiti.fr, andreas@gaisler.com, anton.ivanov@cambridgegreys.com,
+ bp@alien8.de, bcain@kernel.org, catalin.marinas@arm.com, chris@zankel.net,
+ borntraeger@linux.ibm.com, christophe.leroy@csgroup.eu,
+ dave.hansen@linux.intel.com, dinguyen@kernel.org, geert@linux-m68k.org,
+ guoren@kernel.org, hca@linux.ibm.com, deller@gmx.de, chenhuacai@kernel.org,
+ mingo@redhat.com, johannes@sipsolutions.net, glaubitz@physik.fu-berlin.de,
+ jonas@southpole.se, kees@kernel.org, maddy@linux.ibm.com, jcmvbkbc@gmail.com,
+ mpe@ellerman.id.au, npiggin@gmail.com, oleg@redhat.com, palmer@dabbelt.com,
+ paul.walmsley@sifive.com, dalias@libc.org, richard@nod.at,
+ linux@armlinux.org.uk, shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+ svens@linux.ibm.com, tsbogend@alpha.franken.de, tglx@linutronix.de,
+ gor@linux.ibm.com, vgupta@kernel.org, kernel@xen0n.name, will@kernel.org,
+ ysato@users.sourceforge.jp, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
 
-On 2025-08-10 18:08:15+0900, Daniel Palmer wrote:
-> On Sat, 9 Aug 2025 at 21:29, Thomas Weißschuh <linux@weissschuh.net> wrote:
-> > On 2025-08-09 20:35:39+0900, Daniel Palmer wrote:
-> > > On Sat, 9 Aug 2025 at 16:50, Thomas Weißschuh <linux@weissschuh.net> wrote:
-> > I would continue with vmlinux.tmp. It might not actually be stripped.
-> >
-> > quiet_cmd_precompress = PRECOMPRESS $@
-> > ifndef CONFIG_KGDB
-> >       cmd_precompress = cp $< $@
-> > else
-> >       cmd_precompress = $(STRIP) $< -o $@
-> > endif
-> >
-> > vmlinux.tmp: vmlinux FORCE
-> >         $(call if_changed,precompress)
-> >
-> > targets += vmlinux.tmp
-> >
-> > This will also correctly handle CONFIG_KGDB changing.
-> >
-> > (Maybe the naming can be improved)
+Hello:
+
+This patch was applied to riscv/linux.git (fixes)
+by Kees Cook <kees@kernel.org>:
+
+On Tue,  1 Jul 2025 14:55:53 +0100 you wrote:
+> This series aims to clean up an aspect of coredump generation:
 > 
-> Nice, that's a lot better and I've reworked my patch to do that.
-
-If you also modify the existing code, you should split up the changes
-over multiple patches. First split out the rule for vmlinux.tmp, then
-switch over the compressors. Each patch should do a single step and
-explain why it is done.
-
-And I am still not happy about the naming in my example :-/
-
-> > And for the compressor invocations we already have predefined commands:
-> >
-> > vmlinux.gz: vmlinux.tmp FORCE
-> >         $(call if_changed,gzip)
+> ELF coredumps contain a set of notes describing the state of machine
+> registers and other information about the dumped process.
 > 
-> I also did this for all of the targets and $(call if_changed,lz4)
-> results in an lz4 file with the old header format[0] and 8MB block
-> size which is not what I need.
-> So v2 will have a patch to add a helper to generate that style of lz4
-> in scripts/Makefile.lib
+> Notes are identified by a numeric identifier n_type and a "name"
+> string, although this terminology is somewhat misleading.  Officially,
+> the "name" of a note is really an "originator" or namespace identifier
+> that indicates how to interpret n_type [1], although in practice it is
+> often used more loosely.
+> 
+> [...]
 
-Modifying generic files in scripts/ will be more effort to argue for.
-Also that change should be its own patch again.
+Here is the summary with links:
+  - [16/23] riscv: ptrace: Use USER_REGSET_NOTE_TYPE() to specify regset note names
+    https://git.kernel.org/riscv/c/c9502cc7bef5
 
-I am wondering a bit why the legacy header format does not work.
-The manpage of lz4 specifically mentions that it is commonly used for
-Linux kernel images. Which is exactly what we are doing here.
-Does your usecase work not work with the legacy header? If not, please
-mention this in the patches.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Thomas
