@@ -1,130 +1,151 @@
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A626A2F90E4
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 12 Aug 2025 16:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13D873009EF
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 15 Aug 2025 12:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755015841; cv=none; b=qQr3hWKzyjD7NlsHBh1kVmRz6kszRxPjJ/38VfcItROtJwEnIsmQLU/pIQIjHisUvhv9ceTEG4/0hc95hPQWH5MmJ/Jn2evtf7HrFvhF56KcOUA8uYPPjqJFdDKralcWliG869skhrBpxf/jINImgfmZV5yp6X7xB1djWz+esF4=
+	t=1755260659; cv=none; b=WMbchPSWYsPvOrgxZbyyunL3CqtjnWZI9/FOPqSZ145XkkfFmdjqu+COYhQQkQF3T5iu0ZK8Ow9a+V8as5BUjk03pfmhlG7Mi5V+xcyWSo30NAC1zxdPW1GI+t/9s3obX9v7V5gauC0Z/9iwEqIWNW522HnuKPtjH9doew3At7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755015841; c=relaxed/simple;
-	bh=DX/a/5+B4C5HgtQc829srmgZngPbuyntkKppc+GEAp4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=fZ7cE+6vUJiMCt7eTR6GlMxvVxvR8e4GlZ1E/3TE2SzwYphGSFVzz3cGPK9Hnkeh8eu+tZOpfoUW9hgY8ta19AS7qghJ25++ie97e9VTHf/fCI6TPArqGh/BJUN2WfZdQQvKmw8GUMCEJfjt3gVgN+fxHxJc+My7px0y86HELdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TUc1N2T8; arc=none smtp.client-ip=139.178.84.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1755260659; c=relaxed/simple;
+	bh=j3VWF1UseoZEG8mpMD4BASAnx08WjqII5tx6UBWw3Cw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=SphVUQff+amE69zQb7sG0MtA7Xa6JzIYLmoKIvSC4g/fsj20/Gs8rsQZLb4fW1NF9jRuoT+yx1d/yS2AtYVIbaxw797E9Be3GzGAyVdYqsTlGgtTzFZF10IalKvvomYF0ko4oACJ4Cb+oh2n1Wa2HCPf2kqSQ5/DTgr39hn/E3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JTMpgshG; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TUc1N2T8"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 6F18F5C695D;
-	Tue, 12 Aug 2025 16:23:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58270C4CEF6;
-	Tue, 12 Aug 2025 16:23:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755015838;
-	bh=DX/a/5+B4C5HgtQc829srmgZngPbuyntkKppc+GEAp4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=TUc1N2T8TbtzPU7YHakEEQGtQWIy/0cxkndUmUoUoYyBPJnec8Qeecaa3FYjGPqXU
-	 0hRy0dOCtkiN6geGXdcQu084ZA3CqeMRvV/ZNJA9/XBh5noIoAUAQ0DQWHzW5Wqp2a
-	 sL/nXMBTC6PtZ3Yp4MzWPzScAq5+GwmFF4F/KIAzFsPijQ9BmpGGaqglT12Om22K5l
-	 IukZHX0AMZOFvl/jAuwISbexWGd0F8HooIRbCFqdb4FDMlRmnBka+3HmX8MYbr2ScI
-	 5T00COSasqF4+8FBfCUz+YIveYu4rSNYVl+hzJO+2PkDwAkvJCdaZP6Pyrh0ljhIcl
-	 KR+rDDyLCWlMg==
-From: Mark Brown <broonie@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>, 
- Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
- Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>, 
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
- Gregory Clement <gregory.clement@bootlin.com>, 
- Russell King <linux@armlinux.org.uk>, Daniel Mack <daniel@zonque.org>, 
- Haojian Zhuang <haojian.zhuang@gmail.com>, 
- Robert Jarzmik <robert.jarzmik@free.fr>, 
- Krzysztof Kozlowski <krzk@kernel.org>, 
- Alim Akhtar <alim.akhtar@samsung.com>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee@kernel.org>, 
- Pavel Machek <pavel@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Matti Vaittinen <mazziesaccount@gmail.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Jeff Johnson <jjohnson@kernel.org>, Hans de Goede <hansg@kernel.org>, 
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- "Dr. David Alan Gilbert" <linux@treblig.org>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-samsung-soc@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
- linux-mips@vger.kernel.org, linux-sh@vger.kernel.org, 
- linux-input@vger.kernel.org, linux-leds@vger.kernel.org, 
- linux-media@vger.kernel.org, patches@opensource.cirrus.com, 
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
- ath10k@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
- linux-usb@vger.kernel.org, linux-sound@vger.kernel.org
-In-Reply-To: <20250808151822.536879-1-arnd@kernel.org>
-References: <20250808151822.536879-1-arnd@kernel.org>
-Subject: Re: (subset) [PATCH 00/21] gpiolib: fence off legacy interfaces
-Message-Id: <175501582810.192378.6304989017593161369.b4-ty@kernel.org>
-Date: Tue, 12 Aug 2025 17:23:48 +0100
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JTMpgshG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1755260658; x=1786796658;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=j3VWF1UseoZEG8mpMD4BASAnx08WjqII5tx6UBWw3Cw=;
+  b=JTMpgshGAIc3JTcBPiCMAHHHNuZfXfW0uP8WaIfVGMQxFfATsMBaWNg5
+   ml1nBweVeYe/PbQaeGFKiZLAb6EYkECgEslEFHZqSaIz6GDKXdvXysS0X
+   Iro8exLq7Nc6DTQflg4bAXHgHkOBudE29aUdy+orVwXTbqCbb+RQBFRra
+   IkiKUT/YX5U3NEbPvsVVzS2P24hZBInbqW3Xx7qKCRdkWPuKC0uYzRMy2
+   /lVnEFwdbeohrhpQsmaYpvrA3l0gmET/6sgpSWBq6uLhNrDqxpGH5v/GN
+   3f1w0vfsqrTf+VYszXv2DbX70fNpyuHG803NbwxevGMCM1uvQd5tUNYGu
+   Q==;
+X-CSE-ConnectionGUID: TntPoD9VQ7KTM9kvfibKCw==
+X-CSE-MsgGUID: ryCs/hyMSuqpCZiqb91bZw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11522"; a="57690139"
+X-IronPort-AV: E=Sophos;i="6.17,290,1747724400"; 
+   d="scan'208";a="57690139"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2025 05:24:16 -0700
+X-CSE-ConnectionGUID: 85x5RQDpQwWJAFQzxkXvSQ==
+X-CSE-MsgGUID: yuZglviPSXCfappjvVsJNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,290,1747724400"; 
+   d="scan'208";a="172340429"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by orviesa005.jf.intel.com with ESMTP; 15 Aug 2025 05:24:15 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1umtTg-000BxG-2J;
+	Fri, 15 Aug 2025 12:24:12 +0000
+Date: Fri, 15 Aug 2025 20:23:34 +0800
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:armnommu 3/3] include/linux/compiler_types.h:572:38:
+ error: call to '__compiletime_assert_547' declared with attribute error:
+ BUILD_BUG_ON failed: sizeof(priv_tbl->probs) % 16
+Message-ID: <202508152015.U8E8Ryjx-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-cff91
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, 08 Aug 2025 17:17:44 +0200, Arnd Bergmann wrote:
-> Commit 678bae2eaa81 ("gpiolib: make legacy interfaces optional") was
-> merged for linux-6.17, so now it is possible to use the legacy interfaces
-> conditionally and eventually have the support left out of the kernel
-> whenever it is not needed.
-> 
-> I created six patches to force-enable CONFIG_GPIOLIB_LEGACY on the
-> few (mostly ancient) platforms that still require this, plus a set of
-> patches to either add the corresponding Kconfig dependencies that make
-> the device drivers conditional on that symbol, or change them to no
-> longer require it.
-> 
-> [...]
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
+head:   037916143d9bf6331f9834e99f8da416960ac8da
+commit: 037916143d9bf6331f9834e99f8da416960ac8da [3/3] ARM: versatile: support configuring versatile machine for no-MMU
+config: arm-randconfig-r073-20250815 (https://download.01.org/0day-ci/archive/20250815/202508152015.U8E8Ryjx-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 10.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250815/202508152015.U8E8Ryjx-lkp@intel.com/reproduce)
 
-Applied to
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508152015.U8E8Ryjx-lkp@intel.com/
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+All errors (new ones prefixed by >>):
 
-Thanks!
+   In file included from <command-line>:
+   drivers/media/platform/rockchip/rkvdec/rkvdec-vp9.c: In function 'rkvdec_vp9_start':
+>> include/linux/compiler_types.h:572:38: error: call to '__compiletime_assert_547' declared with attribute error: BUILD_BUG_ON failed: sizeof(priv_tbl->probs) % 16
+     572 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                      ^
+   include/linux/compiler_types.h:553:4: note: in definition of macro '__compiletime_assert'
+     553 |    prefix ## suffix();    \
+         |    ^~~~~~
+   include/linux/compiler_types.h:572:2: note: in expansion of macro '_compiletime_assert'
+     572 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |  ^~~~~~~~~~~~~~~~
+   drivers/media/platform/rockchip/rkvdec/rkvdec-vp9.c:1010:2: note: in expansion of macro 'BUILD_BUG_ON'
+    1010 |  BUILD_BUG_ON(sizeof(priv_tbl->probs) % 16); /* ensure probs size is 128-bit aligned */
+         |  ^~~~~~~~~~~~
+--
+   In file included from <command-line>:
+   rkvdec-vp9.c: In function 'rkvdec_vp9_start':
+>> include/linux/compiler_types.h:572:38: error: call to '__compiletime_assert_547' declared with attribute error: BUILD_BUG_ON failed: sizeof(priv_tbl->probs) % 16
+     572 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                      ^
+   include/linux/compiler_types.h:553:4: note: in definition of macro '__compiletime_assert'
+     553 |    prefix ## suffix();    \
+         |    ^~~~~~
+   include/linux/compiler_types.h:572:2: note: in expansion of macro '_compiletime_assert'
+     572 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |  ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |  ^~~~~~~~~~~~~~~~
+   rkvdec-vp9.c:1010:2: note: in expansion of macro 'BUILD_BUG_ON'
+    1010 |  BUILD_BUG_ON(sizeof(priv_tbl->probs) % 16); /* ensure probs size is 128-bit aligned */
+         |  ^~~~~~~~~~~~
 
-[08/21] ASoC: add GPIOLIB_LEGACY dependency where needed
-        commit: 5383d67e2430822fa7bd20dcbbebbd8ae808e386
-[20/21] ASoC: pxa: add GPIOLIB_LEGACY dependency
-        commit: 2d86d2585ab929a143d1e6f8963da1499e33bf13
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+vim +/__compiletime_assert_547 +572 include/linux/compiler_types.h
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  558  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  559  #define _compiletime_assert(condition, msg, prefix, suffix) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  560  	__compiletime_assert(condition, msg, prefix, suffix)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  561  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  562  /**
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  563   * compiletime_assert - break build and emit msg if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  564   * @condition: a compile-time constant condition to check
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  565   * @msg:       a message to emit if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  566   *
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  567   * In tradition of POSIX assert, this macro will break the build if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  568   * supplied condition is *false*, emitting the supplied error message if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  569   * compiler has support to do so.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  570   */
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  571  #define compiletime_assert(condition, msg) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21 @572  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  573  
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+:::::: The code at line 572 was first introduced by commit
+:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
 
-Thanks,
-Mark
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
