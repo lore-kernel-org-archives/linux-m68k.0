@@ -1,197 +1,133 @@
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39ADB2E762C
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 07:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8F2274B3D
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 08:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755848617; cv=none; b=PBX2PEQ6z+qZX8/fFPzZPJxu1FrllS/9s60+5bCo93esjqAaASzL+tWtWvEeFxgflL1D7qu5luXbHlw2XVGmLvRaLKpZqWCPNwTXXdbxjz9gUkzoiyoLvdv1YySI2LnDRJesW3bbAyjXjgQhKNS5ijJaakkGpuav5egj7K1G2uM=
+	t=1755851137; cv=none; b=RxuLoOnU1WO6WM5EVFTr+ysmGwjn/XxBTGKwDufq1f93QSrXn8YREdjWh41rolOlbN3GdJwGeaKBQe6JPnX66YNbGL4DgUjn4KkB9Xcx55I/H8X2HF87PVTjYMi86jAVjFRRUtQYKKiTaM0TNa3UgdCErZfJbwJpwj9UQ5mrSH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755848617; c=relaxed/simple;
-	bh=krPOIuAnX1YAn/LSlLgHFThnWB2dzMlHdGdTX+Q+fpQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KllSQjV2WJbOSRDwO227iWeja/mfqmrwxMqcXkhMlK1MihdNc3XdD418W/BGLDex2y6rnG1UDWPlZz2apEWQTrpgtRtfEjWs8YiIzHsPwlap62jpWNc/M8BFTzqCeTjcd2HKJ7hB+8s//8eBD/PS6OZsCcpZ+10Wxo7QAqlte5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7e87031323aso214362885a.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 00:43:36 -0700 (PDT)
+	s=arc-20240116; t=1755851137; c=relaxed/simple;
+	bh=zlLmFvLNDW9vN7b5IXbmzEIC4ELhBoJQAVXG/6TWmus=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SxvWfWBMtpqQhy1xmFhnViYL4Y++8kyge2pU7b8ooqUfPUGQca0w2AlIFL4DHYQLrNum1/Qtyw4QC9j84NJB7ANU2bew3DWatB8yCZsfx+HLCsWDtSDIOtqnGIWwixloCr6MaEJVot8l7KTn1Aj4U9C0msxFDHuhUMWYWjTxE5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ev+38wuG; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ev+38wuG"
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-76e39ec6f30so1778774b3a.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 01:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1755851135; x=1756455935; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=A6gsZaSXQ47LkCep2YQ4+/o/o27alg6LEKbwJk8ujjM=;
+        b=Ev+38wuG34v7coXR1T0zXV2ioe8yS+Kw3ivUD91k7zSchXKYBUrooZdyV17t02YZok
+         7YBNgrIe2FmUyJYCaIxwNHG7sTPuuJnIFr7a17a1faWoiytEFNNJE+njJ+bD37LpbYdi
+         t91Gd2GHGBNtQ8Op4aWJRQ1QOsD8ipD2XhSsI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755848615; x=1756453415;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0FARPr6rK+Mbgdw6vlFkXYOZ64JiCWby6oGm3JaoyMM=;
-        b=VtOKZq9W45AAPE6QKoOtwY1PuYjnRVd0e/q5nkwkJiZ037+arp+P/cSlk0ovfEoW7l
-         /22EzClbsKoSlI4bDwLFLc8R5JryOjg6tMmiKQhlxLP9J97TBCPxS8DVN9qOKbOEiYQS
-         DljgTUHC+QlRHfKpltvVro3c2EvOH1AIUx7Bfgfi6FBY6weHFJbc8uPUwFffL1QtRUbx
-         Mn1nnw3sKFuu5w24aTs/Jdkdki0bF3EwaEhfwcarpoq/m6IxC5HpOju2GD/ppUW1QuqK
-         Ky53PmLStKDxpSdNobark9zCOq9VBkW/kzt18evURsaMkt4KcyTQniyGXp+cDhZ52EPb
-         STJw==
-X-Forwarded-Encrypted: i=1; AJvYcCWzbu0VDGQYknKbeB9wqlB3ixkzmz7UJ2fxwyhbUAXhP/UoIPbeNB9KSyHXVrgUY0iIkKEoqha2bFCw@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzpNckZHCN+nCpL50kLnOXGISKeVFQORU07PeWMw4fmg50sCCvj
-	lPq1kGNnXaeWIwMJPR8K2I+K9DWv5z5TnJ0AsaLQtC0oHTFfmBPk11/DFusEG1EJ
-X-Gm-Gg: ASbGncuabXf7kYpmmQy67T1t4nK3yIYtKAdUwGvlTeOooBIW7grd/SjluWarYBkZwaO
-	L95xCyTcPZ6bv/GIGU2lX+o9Ub7mkEDbqCnJsj2oClGe/BC9NvyYyNBd/jaQw+IJi1chKQS6Lbn
-	aubAiG/5xQTtnAaHMi3pyB43mAYQecqGssvKouJb+d6dCmBJ1k989Ub0xUxogURdjiB7CVq+AYX
-	8K0ciOo2Q5OVrdG/iLFc1VrwK9lFy/V8Z466kE47oDq5YETsRhSAzf7KJfGhlit8B59rBWc2q/7
-	aiNkT/QK41HHcX1cwxHnae/ktG12+0RLJXbY+oBdW6mcpDLhO4JaUrLlANXZcriJNwKrpdAOgTZ
-	z+XCdJBhxfcMeBQV4rvelfRlJvMBetl2FCwK6fHd++YFZVFc7NpKlrFyET3tGBine
-X-Google-Smtp-Source: AGHT+IGvW62sQwoPswbWUVzeKh6vk5BskOwvA+qBxfnr8gt7d9YO/fDD5o0rsM4BKAXgaljHijxOQA==
-X-Received: by 2002:a05:620a:468c:b0:7e3:3384:4a8b with SMTP id af79cd13be357-7ea10fda85emr240010385a.37.1755848614707;
-        Fri, 22 Aug 2025 00:43:34 -0700 (PDT)
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com. [209.85.222.177])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7e87e06f32esm1292395985a.33.2025.08.22.00.43.34
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Aug 2025 00:43:34 -0700 (PDT)
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7e87061a6d5so195420485a.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 00:43:34 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVu4iSS3kQDTr4ZLU0UUp8XKB2fFiVxA8W20+0M4LJ1pa9hPKhxFrRm1qzNpjFhyPxRixO4fP2cJ8xU@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:292c:b0:51a:4906:f198 with SMTP id
- ada2fe7eead31-51d0f712425mr493191137.32.1755848231779; Fri, 22 Aug 2025
- 00:37:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1755851135; x=1756455935;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A6gsZaSXQ47LkCep2YQ4+/o/o27alg6LEKbwJk8ujjM=;
+        b=TFHiTfihF1dmrZxFeZXoSwaSmukLsRSf02967A3LM3jyggqmYQq+/5k3tzl+ydKsWz
+         C/yX7XC8yntl2HmLw0ZkPAU5Eelhf4LdlKI0Kv90IJ4KBKwBlI+zYN8eiplBw7aVmUF4
+         8BsJjOH3LgX2zEJygMEyh65Egr3P/hcBJD2WWKhJl5maWCN0ZsHlLEbISjGQjd8I98Xf
+         kNvUuU/2VZbufqKgpTdGVn3hiYaqrD+oktF9qUnC1MQ1FaNmcOG9hK1iyaEH1XZA4yVD
+         V5mg2XfJ/sZn1RZlnqOnGZx6KjYVj2/zBawsX3dYMACFbxc4oTve3CfczVxOcNl7Xo+A
+         KW1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWtAk6L6Desf+9dGDPaEICCtDu1IBoKacPNbCUmqjBipGtXsa6d3XTlCIKWL2KaV47/bUpRd4rdjXQB@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yzj/mTaxsihp9N0JZ22cbecI+KKXp2XWbd5x9k1jFg36bMPsNqm
+	tYHOJilLrplq/Wng8OijFqthQMkTJlvqfP3B+lK2Ksra6MAA+IXk7QUmRHRbrEY8uA==
+X-Gm-Gg: ASbGncteDsLucNGLjWUE4Tk8W0H0Ehh7wOz/QT9zf6ebQzNzRplKl5H3ovQYDfjdsbh
+	cghLGc3I9qOUzlCtqAxac3btpRPNdKvkUOfnR4KheXhm0HZ0Hjx3hD+bwUEqIL49iGZUhPc4aTg
+	us8fFSu+GyHG+gADdXO2GY3v0WZw6pL1lfttgf62j2N52v2HvUrSomRNZc1azoI4Hk3QdxN2H5s
+	mkOWwdaFVDFwI2f08G1txCArUQPkvNKu4tvEce9C6mtgTQd4cAQzYJakaDVj5Y+5N0gelE4t7Nu
+	W3bxQhIAzVXDsB5JxcTGHXVgaBCYo9yj81SxHGBtQlKgYmdIDoqrxfuUxAJ3l/GG0T8cXb1oPzf
+	7J9U6Za9VT8WO9A8nxtb3Ha6WGw==
+X-Google-Smtp-Source: AGHT+IEpxfwjdV9ouQebW2LxlFa+cZmxXdr0EhECma1StQf8MlFvFhPTw888sARkRnBbURAQZ8iZfg==
+X-Received: by 2002:a05:6a00:3cd3:b0:76e:3d16:6e7b with SMTP id d2e1a72fcca58-7702f9ede7bmr3258059b3a.8.1755851135040;
+        Fri, 22 Aug 2025 01:25:35 -0700 (PDT)
+Received: from google.com ([2401:fa00:8f:203:2920:8e55:4590:b98f])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e7d4f7cdfsm10103999b3a.63.2025.08.22.01.25.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Aug 2025 01:25:34 -0700 (PDT)
+Date: Fri, 22 Aug 2025 17:25:27 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org, 
+	zi.li@linux.dev, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
+	joel.granados@kernel.org, jstultz@google.com, kent.overstreet@linux.dev, 
+	leonylgao@tencent.com, linux-kernel@vger.kernel.org, longman@redhat.com, 
+	mhiramat@kernel.org, mingo@redhat.com, mingzhe.yang@ly.com, peterz@infradead.org, 
+	rostedt@goodmis.org, senozhatsky@chromium.org, tfiga@chromium.org, will@kernel.org, 
+	Lance Yang <lance.yang@linux.dev>, Eero Tamminen <oak@helsinkinet.fi>, 
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Subject: Re: [PATCH 2/3] hung_task: extend hung task blocker tracking to
+ rwsems
+Message-ID: <twh66isgxspp72gz7u6bbfxkcyzxgggzqfma7cl37xrvd5k2aa@ibfr6ogn5ylk>
+References: <20250627072924.36567-1-lance.yang@linux.dev>
+ <20250627072924.36567-3-lance.yang@linux.dev>
+ <CAMuHMdXR72M+oiJ_WmuHC0Xkq2m4=zqhP8DtW40mHyJTCdS+ew@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250627072924.36567-1-lance.yang@linux.dev> <20250627072924.36567-3-lance.yang@linux.dev>
- <CAMuHMdXR72M+oiJ_WmuHC0Xkq2m4=zqhP8DtW40mHyJTCdS+ew@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CAMuHMdXR72M+oiJ_WmuHC0Xkq2m4=zqhP8DtW40mHyJTCdS+ew@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 22 Aug 2025 09:37:00 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUHFQcvHzYSQjXZduPUUiStS4Yyv45k5XNY2MeDjSjW0A@mail.gmail.com>
-X-Gm-Features: Ac12FXxI_L5Ws2KwGrFXrK6I6fkxlxM84gwL4BbWTbOUZfcpCqY9qguqBwYwQ8o
-Message-ID: <CAMuHMdUHFQcvHzYSQjXZduPUUiStS4Yyv45k5XNY2MeDjSjW0A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] hung_task: extend hung task blocker tracking to rwsems
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, zi.li@linux.dev, anna.schumaker@oracle.com, 
-	boqun.feng@gmail.com, joel.granados@kernel.org, jstultz@google.com, 
-	kent.overstreet@linux.dev, leonylgao@tencent.com, 
-	linux-kernel@vger.kernel.org, longman@redhat.com, mhiramat@kernel.org, 
-	mingo@redhat.com, mingzhe.yang@ly.com, peterz@infradead.org, 
-	rostedt@goodmis.org, senozhatsky@chromium.org, tfiga@chromium.org, 
-	will@kernel.org, Lance Yang <lance.yang@linux.dev>, Eero Tamminen <oak@helsinkinet.fi>, 
-	linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 22 Aug 2025 at 09:34, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Fri, 27 Jun 2025 at 09:30, Lance Yang <ioworker0@gmail.com> wrote:
-> > From: Lance Yang <lance.yang@linux.dev>
-> >
-> > Inspired by mutex blocker tracking[1], and having already extended it to
-> > semaphores, let's now add support for reader-writer semaphores (rwsems).
-> >
-> > The approach is simple: when a task enters TASK_UNINTERRUPTIBLE while
-> > waiting for an rwsem, we just call hung_task_set_blocker(). The hung task
-> > detector can then query the rwsem's owner to identify the lock holder.
-> >
-> > Tracking works reliably for writers, as there can only be a single writer
-> > holding the lock, and its task struct is stored in the owner field.
-> >
-> > The main challenge lies with readers. The owner field points to only one
-> > of many concurrent readers, so we might lose track of the blocker if that
-> > specific reader unlocks, even while others remain. This is not a
-> > significant issue, however. In practice, long-lasting lock contention is
-> > almost always caused by a writer. Therefore, reliably tracking the writer
-> > is the primary goal of this patch series ;)
-> >
-> > With this change, the hung task detector can now show blocker task's info
-> > like below:
-> >
-> > [Fri Jun 27 15:21:34 2025] INFO: task cat:28631 blocked for more than 122 seconds.
-> > [Fri Jun 27 15:21:34 2025]       Tainted: G S                  6.16.0-rc3 #8
-> > [Fri Jun 27 15:21:34 2025] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [Fri Jun 27 15:21:34 2025] task:cat             state:D stack:0     pid:28631 tgid:28631 ppid:28501  task_flags:0x400000 flags:0x00004000
-> > [Fri Jun 27 15:21:34 2025] Call Trace:
-> > [Fri Jun 27 15:21:34 2025]  <TASK>
-> > [Fri Jun 27 15:21:34 2025]  __schedule+0x7c7/0x1930
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx___schedule+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? policy_nodemask+0x215/0x340
-> > [Fri Jun 27 15:21:34 2025]  ? _raw_spin_lock_irq+0x8a/0xe0
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx__raw_spin_lock_irq+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  schedule+0x6a/0x180
-> > [Fri Jun 27 15:21:34 2025]  schedule_preempt_disabled+0x15/0x30
-> > [Fri Jun 27 15:21:34 2025]  rwsem_down_read_slowpath+0x55e/0xe10
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_rwsem_down_read_slowpath+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx___might_resched+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  down_read+0xc9/0x230
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_down_read+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? __debugfs_file_get+0x14d/0x700
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx___debugfs_file_get+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? handle_pte_fault+0x52a/0x710
-> > [Fri Jun 27 15:21:34 2025]  ? selinux_file_permission+0x3a9/0x590
-> > [Fri Jun 27 15:21:34 2025]  read_dummy_rwsem_read+0x4a/0x90
-> > [Fri Jun 27 15:21:34 2025]  full_proxy_read+0xff/0x1c0
-> > [Fri Jun 27 15:21:34 2025]  ? rw_verify_area+0x6d/0x410
-> > [Fri Jun 27 15:21:34 2025]  vfs_read+0x177/0xa50
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_vfs_read+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? fdget_pos+0x1cf/0x4c0
-> > [Fri Jun 27 15:21:34 2025]  ksys_read+0xfc/0x1d0
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_ksys_read+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  do_syscall_64+0x66/0x2d0
-> > [Fri Jun 27 15:21:34 2025]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [Fri Jun 27 15:21:34 2025] RIP: 0033:0x7f3f8faefb40
-> > [Fri Jun 27 15:21:34 2025] RSP: 002b:00007ffdeda5ab98 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> > [Fri Jun 27 15:21:34 2025] RAX: ffffffffffffffda RBX: 0000000000010000 RCX: 00007f3f8faefb40
-> > [Fri Jun 27 15:21:34 2025] RDX: 0000000000010000 RSI: 00000000010fa000 RDI: 0000000000000003
-> > [Fri Jun 27 15:21:34 2025] RBP: 00000000010fa000 R08: 0000000000000000 R09: 0000000000010fff
-> > [Fri Jun 27 15:21:34 2025] R10: 00007ffdeda59fe0 R11: 0000000000000246 R12: 00000000010fa000
-> > [Fri Jun 27 15:21:34 2025] R13: 0000000000000003 R14: 0000000000000000 R15: 0000000000000fff
-> > [Fri Jun 27 15:21:34 2025]  </TASK>
-> > [Fri Jun 27 15:21:34 2025] INFO: task cat:28631 <reader> blocked on an rw-semaphore likely owned by task cat:28630 <writer>
-> > [Fri Jun 27 15:21:34 2025] task:cat             state:S stack:0     pid:28630 tgid:28630 ppid:28501  task_flags:0x400000 flags:0x00004000
-> > [Fri Jun 27 15:21:34 2025] Call Trace:
-> > [Fri Jun 27 15:21:34 2025]  <TASK>
-> > [Fri Jun 27 15:21:34 2025]  __schedule+0x7c7/0x1930
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx___schedule+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? __mod_timer+0x304/0xa80
-> > [Fri Jun 27 15:21:34 2025]  schedule+0x6a/0x180
-> > [Fri Jun 27 15:21:34 2025]  schedule_timeout+0xfb/0x230
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_schedule_timeout+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_process_timeout+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? down_write+0xc4/0x140
-> > [Fri Jun 27 15:21:34 2025]  msleep_interruptible+0xbe/0x150
-> > [Fri Jun 27 15:21:34 2025]  read_dummy_rwsem_write+0x54/0x90
-> > [Fri Jun 27 15:21:34 2025]  full_proxy_read+0xff/0x1c0
-> > [Fri Jun 27 15:21:34 2025]  ? rw_verify_area+0x6d/0x410
-> > [Fri Jun 27 15:21:34 2025]  vfs_read+0x177/0xa50
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_vfs_read+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  ? fdget_pos+0x1cf/0x4c0
-> > [Fri Jun 27 15:21:34 2025]  ksys_read+0xfc/0x1d0
-> > [Fri Jun 27 15:21:34 2025]  ? __pfx_ksys_read+0x10/0x10
-> > [Fri Jun 27 15:21:34 2025]  do_syscall_64+0x66/0x2d0
-> > [Fri Jun 27 15:21:34 2025]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [Fri Jun 27 15:21:34 2025] RIP: 0033:0x7f8f288efb40
-> > [Fri Jun 27 15:21:34 2025] RSP: 002b:00007ffffb631038 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> > [Fri Jun 27 15:21:34 2025] RAX: ffffffffffffffda RBX: 0000000000010000 RCX: 00007f8f288efb40
-> > [Fri Jun 27 15:21:34 2025] RDX: 0000000000010000 RSI: 000000002a4b5000 RDI: 0000000000000003
-> > [Fri Jun 27 15:21:34 2025] RBP: 000000002a4b5000 R08: 0000000000000000 R09: 0000000000010fff
-> > [Fri Jun 27 15:21:34 2025] R10: 00007ffffb630460 R11: 0000000000000246 R12: 000000002a4b5000
-> > [Fri Jun 27 15:21:34 2025] R13: 0000000000000003 R14: 0000000000000000 R15: 0000000000000fff
-> > [Fri Jun 27 15:21:34 2025]  </TASK>
-> >
-> > [1] https://lore.kernel.org/all/174046694331.2194069.15472952050240807469.stgit@mhiramat.tok.corp.google.com/
-> >
-> > Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Suggested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Signed-off-by: Lance Yang <lance.yang@linux.dev>
->
-> Thanks for your patch, which is now commit 194a9b9e843b4077
-> ("hung_task: show the blocker task if the task is hung on
-> semaphore") in v6.16-rc1.
+Hi Greet,
 
-Sorry, wrong email thread.
+On (25/08/22 09:34), Geert Uytterhoeven wrote:
+> WARNING: CPU: 0 PID: 39 at include/linux/hung_task.h:48
+> __down_common+0x13a/0x1be
+> CPU: 0 UID: 0 PID: 39 Comm: getty Not tainted
+> 6.15.0-rc6hatari-00018-g194a9b9e843b #1986 NONE
+> Stack from 01633d00:
+>         01633d00 00366e9e 00366e9e 00000000 002c9762 00360cb5 01633d24 0000873e
+>         00366e9e 01633d40 0002e0d4 00360cb5 00000030 00000009 0039c79a 00061408
+>         01633d78 000028e0 00360cb5 00000030 002c9762 00000009 00000000 00000000
+>         7fffffff 00000002 1185d266 01633eb0 01326c58 00000080 01633dc0 002c9762
+>         00360cb5 00000030 00000009 00000000 00002014 01326c00 1185d266 01633eb0
+>         002c93ea 00053d60 00061408 01326c58 0038db90 0038db90 01633e32 01633fb8
+> Call Trace: [<002c9762>] __down_common+0x13a/0x1be
+>  [<0000873e>] dump_stack+0x10/0x16
+>  [<0002e0d4>] __warn+0x7a/0xbc
+>  [<00061408>] msleep+0x0/0x2c
+>  [<000028e0>] warn_slowpath_fmt+0x42/0x62
+>  [<002c9762>] __down_common+0x13a/0x1be
+>  [<002c9762>] __down_common+0x13a/0x1be
+>  [<00002014>] arch_local_irq_enable+0xe/0x22
+>  [<002c93ea>] mutex_lock+0x0/0x28
+>  [<00053d60>] other_cpu_in_panic+0x0/0x26
+>  [<00061408>] msleep+0x0/0x2c
+>  [<002c97fc>] __down+0x16/0x1e
+>  [<002c9832>] down+0x2e/0x30
+>  [<00053dac>] console_lock+0x26/0x4c
+>  [<001aae4e>] do_con_write+0x3a/0x16d4
+>  [<002c93ea>] mutex_lock+0x0/0x28
+>  [<0004fa70>] __add_wait_queue+0x3a/0x6a
+>  [<001ac520>] con_write+0x1a/0x30
+>  [<0019cafa>] n_tty_write+0x2c6/0x35e
+>  [<00199456>] signal_pending+0x0/0x26
+>  [<000aba2a>] __kvmalloc_node_noprof+0x3a/0x114
+>  [<00004cc0>] io_uring_try_cancel_requests+0x98/0x318
+>  [<0004fb2e>] woken_wake_function+0x0/0x24
+>  [<0019a180>] file_tty_write.isra.0+0x144/0x1b8
+>  [<0019a206>] tty_write+0x12/0x16
+>  [<000b97c2>] vfs_write+0xec/0x148
+>  [<00028000>] fp_getdest+0x1b8/0x224
+>  [<00010000>] g_trace+0x16/0x28
+>  [<000b9916>] ksys_write+0x54/0x8a
+>  [<000b9962>] sys_write+0x16/0x1a
+>  [<000093da>] syscall+0x8/0xc
+>  [<0000c001>] arch_dma_prep_coherent+0x51/0x58
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I'm struggling to make any sense out of this backtrace, this looks
+like random ksyms names.  Any chance you can get more reliable/informative
+backtrace?  config-debug maybe, or something.
