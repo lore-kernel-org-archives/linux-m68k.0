@@ -1,133 +1,88 @@
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8F2274B3D
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 08:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5249A2F616C
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 10:42:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.178.84.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755851137; cv=none; b=RxuLoOnU1WO6WM5EVFTr+ysmGwjn/XxBTGKwDufq1f93QSrXn8YREdjWh41rolOlbN3GdJwGeaKBQe6JPnX66YNbGL4DgUjn4KkB9Xcx55I/H8X2HF87PVTjYMi86jAVjFRRUtQYKKiTaM0TNa3UgdCErZfJbwJpwj9UQ5mrSH0=
+	t=1755859335; cv=none; b=PA+Z4OyXjiB0z21fLYAqjbCMMhl2uPRY6YGKpxvP2RaWizgpZM0MVW3DysQ4Bi/MSQKppZu1vtCMVCOHPSPxUhOY26Y/ZhbKx1yJslez7fycUcA5pehVV98qM4VGM+qF206FUQnoPfVhPc8M+lBLocXcoWU5o2BCSz/VlHVmvNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755851137; c=relaxed/simple;
-	bh=zlLmFvLNDW9vN7b5IXbmzEIC4ELhBoJQAVXG/6TWmus=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SxvWfWBMtpqQhy1xmFhnViYL4Y++8kyge2pU7b8ooqUfPUGQca0w2AlIFL4DHYQLrNum1/Qtyw4QC9j84NJB7ANU2bew3DWatB8yCZsfx+HLCsWDtSDIOtqnGIWwixloCr6MaEJVot8l7KTn1Aj4U9C0msxFDHuhUMWYWjTxE5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ev+38wuG; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+	s=arc-20240116; t=1755859335; c=relaxed/simple;
+	bh=szj+3gfS6Z5W+fHoFy3+zV0zYzKZpjf7oq/V6EnguxE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M+C60Icm/tGIwlYOPHfEIsLszDrke5o6OD7cQstN6qHgjt7dFcpWe6LdnyI4zvV24kE/ML6q9wgASgrcJDEt87FO3CWPZEkLZ2viPbHR80fM7V70P02hELX0pGbntqkR+i9fkJZQ1UWmYn8fv+jhyUbL8PKngYo78zx6CLpaKBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6nHErAm; arc=none smtp.client-ip=139.178.84.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ev+38wuG"
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-76e39ec6f30so1778774b3a.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 Aug 2025 01:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1755851135; x=1756455935; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=A6gsZaSXQ47LkCep2YQ4+/o/o27alg6LEKbwJk8ujjM=;
-        b=Ev+38wuG34v7coXR1T0zXV2ioe8yS+Kw3ivUD91k7zSchXKYBUrooZdyV17t02YZok
-         7YBNgrIe2FmUyJYCaIxwNHG7sTPuuJnIFr7a17a1faWoiytEFNNJE+njJ+bD37LpbYdi
-         t91Gd2GHGBNtQ8Op4aWJRQ1QOsD8ipD2XhSsI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755851135; x=1756455935;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A6gsZaSXQ47LkCep2YQ4+/o/o27alg6LEKbwJk8ujjM=;
-        b=TFHiTfihF1dmrZxFeZXoSwaSmukLsRSf02967A3LM3jyggqmYQq+/5k3tzl+ydKsWz
-         C/yX7XC8yntl2HmLw0ZkPAU5Eelhf4LdlKI0Kv90IJ4KBKwBlI+zYN8eiplBw7aVmUF4
-         8BsJjOH3LgX2zEJygMEyh65Egr3P/hcBJD2WWKhJl5maWCN0ZsHlLEbISjGQjd8I98Xf
-         kNvUuU/2VZbufqKgpTdGVn3hiYaqrD+oktF9qUnC1MQ1FaNmcOG9hK1iyaEH1XZA4yVD
-         V5mg2XfJ/sZn1RZlnqOnGZx6KjYVj2/zBawsX3dYMACFbxc4oTve3CfczVxOcNl7Xo+A
-         KW1A==
-X-Forwarded-Encrypted: i=1; AJvYcCWtAk6L6Desf+9dGDPaEICCtDu1IBoKacPNbCUmqjBipGtXsa6d3XTlCIKWL2KaV47/bUpRd4rdjXQB@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yzj/mTaxsihp9N0JZ22cbecI+KKXp2XWbd5x9k1jFg36bMPsNqm
-	tYHOJilLrplq/Wng8OijFqthQMkTJlvqfP3B+lK2Ksra6MAA+IXk7QUmRHRbrEY8uA==
-X-Gm-Gg: ASbGncteDsLucNGLjWUE4Tk8W0H0Ehh7wOz/QT9zf6ebQzNzRplKl5H3ovQYDfjdsbh
-	cghLGc3I9qOUzlCtqAxac3btpRPNdKvkUOfnR4KheXhm0HZ0Hjx3hD+bwUEqIL49iGZUhPc4aTg
-	us8fFSu+GyHG+gADdXO2GY3v0WZw6pL1lfttgf62j2N52v2HvUrSomRNZc1azoI4Hk3QdxN2H5s
-	mkOWwdaFVDFwI2f08G1txCArUQPkvNKu4tvEce9C6mtgTQd4cAQzYJakaDVj5Y+5N0gelE4t7Nu
-	W3bxQhIAzVXDsB5JxcTGHXVgaBCYo9yj81SxHGBtQlKgYmdIDoqrxfuUxAJ3l/GG0T8cXb1oPzf
-	7J9U6Za9VT8WO9A8nxtb3Ha6WGw==
-X-Google-Smtp-Source: AGHT+IEpxfwjdV9ouQebW2LxlFa+cZmxXdr0EhECma1StQf8MlFvFhPTw888sARkRnBbURAQZ8iZfg==
-X-Received: by 2002:a05:6a00:3cd3:b0:76e:3d16:6e7b with SMTP id d2e1a72fcca58-7702f9ede7bmr3258059b3a.8.1755851135040;
-        Fri, 22 Aug 2025 01:25:35 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:2920:8e55:4590:b98f])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e7d4f7cdfsm10103999b3a.63.2025.08.22.01.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Aug 2025 01:25:34 -0700 (PDT)
-Date: Fri, 22 Aug 2025 17:25:27 +0900
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org, 
-	zi.li@linux.dev, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
-	joel.granados@kernel.org, jstultz@google.com, kent.overstreet@linux.dev, 
-	leonylgao@tencent.com, linux-kernel@vger.kernel.org, longman@redhat.com, 
-	mhiramat@kernel.org, mingo@redhat.com, mingzhe.yang@ly.com, peterz@infradead.org, 
-	rostedt@goodmis.org, senozhatsky@chromium.org, tfiga@chromium.org, will@kernel.org, 
-	Lance Yang <lance.yang@linux.dev>, Eero Tamminen <oak@helsinkinet.fi>, 
-	linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH 2/3] hung_task: extend hung task blocker tracking to
- rwsems
-Message-ID: <twh66isgxspp72gz7u6bbfxkcyzxgggzqfma7cl37xrvd5k2aa@ibfr6ogn5ylk>
-References: <20250627072924.36567-1-lance.yang@linux.dev>
- <20250627072924.36567-3-lance.yang@linux.dev>
- <CAMuHMdXR72M+oiJ_WmuHC0Xkq2m4=zqhP8DtW40mHyJTCdS+ew@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6nHErAm"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 660285C6EDD;
+	Fri, 22 Aug 2025 10:42:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9732C4CEF1;
+	Fri, 22 Aug 2025 10:42:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755859332;
+	bh=szj+3gfS6Z5W+fHoFy3+zV0zYzKZpjf7oq/V6EnguxE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Z6nHErAm/pUPaakROjt3KPlw9luXcDWmN0nZs7orZiYiBR2etMYdDuTEiaIiVNd6i
+	 LOO11n57I6grApgdgfPix4RAmYl5x2dQE6+0SiNHdXSYnosIMu1yX5BRWGd5Dq+kPx
+	 5boOv0iWdR4VEZKFJOjsGdUu7hnjx695tnyxBQJ9/+pl+ENNm1sn4DNiAd+rX9Z/1C
+	 +SSgdiqKwjxXO/ep1HOBM09E9v0f+RpioWsCO0w4C4jEyQuyJh7pnJOsusOr6EAJ99
+	 +gsTAFnXKeBBo6gzvj7Vx0WVQD4tqc9WEKspZg0gYmfYA3Y/sVLR77DoAEvFi/BRCP
+	 R6J0gkvSLGFCA==
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To: geert@linux-m68k.org
+Cc: linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	linux-m68k@lists.linux-m68k.org
+Subject: [PATCH] m68k: make HPDCA and HPAPCI bools
+Date: Fri, 22 Aug 2025 12:42:08 +0200
+Message-ID: <20250822104208.751191-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXR72M+oiJ_WmuHC0Xkq2m4=zqhP8DtW40mHyJTCdS+ew@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Greet,
+The only user -- 8250_hp300 -- tests for CONFIG_HPDCA and CONFIG_HPAPCI.
+It does not test for *_MODULE variants. That means that if someone sets
+the configs to =m, the code is not compiled at all.
 
-On (25/08/22 09:34), Geert Uytterhoeven wrote:
-> WARNING: CPU: 0 PID: 39 at include/linux/hung_task.h:48
-> __down_common+0x13a/0x1be
-> CPU: 0 UID: 0 PID: 39 Comm: getty Not tainted
-> 6.15.0-rc6hatari-00018-g194a9b9e843b #1986 NONE
-> Stack from 01633d00:
->         01633d00 00366e9e 00366e9e 00000000 002c9762 00360cb5 01633d24 0000873e
->         00366e9e 01633d40 0002e0d4 00360cb5 00000030 00000009 0039c79a 00061408
->         01633d78 000028e0 00360cb5 00000030 002c9762 00000009 00000000 00000000
->         7fffffff 00000002 1185d266 01633eb0 01326c58 00000080 01633dc0 002c9762
->         00360cb5 00000030 00000009 00000000 00002014 01326c00 1185d266 01633eb0
->         002c93ea 00053d60 00061408 01326c58 0038db90 0038db90 01633e32 01633fb8
-> Call Trace: [<002c9762>] __down_common+0x13a/0x1be
->  [<0000873e>] dump_stack+0x10/0x16
->  [<0002e0d4>] __warn+0x7a/0xbc
->  [<00061408>] msleep+0x0/0x2c
->  [<000028e0>] warn_slowpath_fmt+0x42/0x62
->  [<002c9762>] __down_common+0x13a/0x1be
->  [<002c9762>] __down_common+0x13a/0x1be
->  [<00002014>] arch_local_irq_enable+0xe/0x22
->  [<002c93ea>] mutex_lock+0x0/0x28
->  [<00053d60>] other_cpu_in_panic+0x0/0x26
->  [<00061408>] msleep+0x0/0x2c
->  [<002c97fc>] __down+0x16/0x1e
->  [<002c9832>] down+0x2e/0x30
->  [<00053dac>] console_lock+0x26/0x4c
->  [<001aae4e>] do_con_write+0x3a/0x16d4
->  [<002c93ea>] mutex_lock+0x0/0x28
->  [<0004fa70>] __add_wait_queue+0x3a/0x6a
->  [<001ac520>] con_write+0x1a/0x30
->  [<0019cafa>] n_tty_write+0x2c6/0x35e
->  [<00199456>] signal_pending+0x0/0x26
->  [<000aba2a>] __kvmalloc_node_noprof+0x3a/0x114
->  [<00004cc0>] io_uring_try_cancel_requests+0x98/0x318
->  [<0004fb2e>] woken_wake_function+0x0/0x24
->  [<0019a180>] file_tty_write.isra.0+0x144/0x1b8
->  [<0019a206>] tty_write+0x12/0x16
->  [<000b97c2>] vfs_write+0xec/0x148
->  [<00028000>] fp_getdest+0x1b8/0x224
->  [<00010000>] g_trace+0x16/0x28
->  [<000b9916>] ksys_write+0x54/0x8a
->  [<000b9962>] sys_write+0x16/0x1a
->  [<000093da>] syscall+0x8/0xc
->  [<0000c001>] arch_dma_prep_coherent+0x51/0x58
+There is actually no point having these as tristate. Switch them to
+bool.
 
-I'm struggling to make any sense out of this backtrace, this looks
-like random ksyms names.  Any chance you can get more reliable/informative
-backtrace?  config-debug maybe, or something.
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+---
+ arch/m68k/Kconfig.devices | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
+index e6e3efac1840..e277f1bd2de1 100644
+--- a/arch/m68k/Kconfig.devices
++++ b/arch/m68k/Kconfig.devices
+@@ -105,14 +105,14 @@ config AMIGA_BUILTIN_SERIAL
+ 	  To compile this driver as a module, choose M here.
+ 
+ config HPDCA
+-	tristate "HP DCA serial support"
++	bool "HP DCA serial support"
+ 	depends on DIO && SERIAL_8250
+ 	help
+ 	  If you want to use the internal "DCA" serial ports on an HP300
+ 	  machine, say Y here.
+ 
+ config HPAPCI
+-	tristate "HP APCI serial support"
++	bool "HP APCI serial support"
+ 	depends on HP300 && SERIAL_8250
+ 	help
+ 	  If you want to use the internal "APCI" serial ports on an HP400
+-- 
+2.51.0
+
