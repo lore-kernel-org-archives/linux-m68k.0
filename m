@@ -1,82 +1,129 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6F85C96
-	for <linux-m68k@vger.kernel.org>; Sat, 23 Aug 2025 11:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1F823AE66
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 23 Aug 2025 21:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755947186; cv=none; b=rxCe6hgPBzzONS5RHO9DN6fDfzILzwoO3uyC02O4YRkmJvYP8IHC7rabqxhyrfB09Yh1rYH4eURyOzX0zbl4VyeqZs+kf78NDPV+GClp/7nLa/vKky4li8jDvvW13/OO44DrUlRgdCS841lqoGj+ApCUVnZ/uCAYS+jDcaFGIC8=
+	t=1755986033; cv=none; b=brTHbCWTPsV50gJGCe7e7YRI1ZxsmINQ368/QwK/ZkRGrGXWzsvWJA+x4wZZDK+DwS/plD+DqeZShxru7ZpJ5RPY72ATE0WGZyKcs4JBIFdQQbrWqEBnHGQ9z0wbTVS8Kdgmn7DK0+NTsvdxshdTZ4MpCrbUl4BiqVhe8Arp7sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755947186; c=relaxed/simple;
-	bh=9VvyqVBQm6gTSfPiyy9VmEq8gmCVeJSx0bKfWN7Cj5A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=vGGoM/zvAnI+NX8q8LT4U3NjijkiqjD+NnCs2xRlb9a7+y/g0ceWe258YF+zVxvEK9fAuni6ZDoZqdTzEaVU0WZVJmtoLErxu8cSi3GvdvPZEJ9tKEpg87WSns0AgVUsBhfwSDaJXiIFxbjDkd6QdTKToyttcqR/1+phl70og70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=T7yLqrqV; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1755986033; c=relaxed/simple;
+	bh=9BXIzaov3cIKsITFD2kYAmNOig9QKsNDG5ar116bKPs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aSoRrGJcLfrMmt7NXjWPQVpW0Q4TjxXLoCB9QSvnRf8yFzaJnOvARJhYJsEud6DTXh77usNJDVJZX3sVDn7+vk9VVjraphPh/2Z5OfBLGaMKR77rK4g61MJf8TdM8oHXwZsyV/yplXqWG6w6Q2YwZfgxk2LYFwI/IjkiOQPSyBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QnSCpB9Q; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="T7yLqrqV"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=OpUJUIx5NnLf7UUO20BYNfidNkWoKlc9wFkiYQVlK7o=; t=1755947181;
-	x=1756551981; b=T7yLqrqVG5yIGssptjF+wFL+ZGX//OJL0Try+9MbcE0aSBCgPnnS+kDMUVAii
-	miX8/ggTdDd39q2kn3SuoWY2K4UBXIv/jIMNR4ZEEQLMWGMe7tZcV6mymUdMLuf3Hp3glM8YBJKO4
-	05Fu+mzdLuIj9X3zsHEoSEWrqG/WHnYZ6zWk2Us1U8LbQy2O+j/R42nZ6iY0pKsGm3T/s35qtlHTz
-	0KS4zkauxZ0gPSaDWWaOV5s6Xsb5isFJPlFGifqkEMLt3Zu2NyRSrz/Yc0UrDJ/5nQPzg2LV8/rGY
-	Y5KAd9zY0Z2qle2/EJ3ndHHcL+R0AspycKcUpn9O6vqvnQcKFQ==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1upm4c-00000002Ic4-2Udm; Sat, 23 Aug 2025 13:06:14 +0200
-Received: from dynamic-078-054-253-150.78.54.pool.telefonica.de ([78.54.253.150] helo=[192.168.178.50])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1upm4c-0000000229y-1dle; Sat, 23 Aug 2025 13:06:14 +0200
-Message-ID: <110b6ca9b56e87e6bcfd058a284f25453bc90465.camel@physik.fu-berlin.de>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QnSCpB9Q"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1755986032; x=1787522032;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9BXIzaov3cIKsITFD2kYAmNOig9QKsNDG5ar116bKPs=;
+  b=QnSCpB9QwsRISmkvsCWhzFOB6RbhUMOsO2TnPs2dYugjss12KPkT3it1
+   LCs14n4eitCP4OrFVA+CLvynI9LeeGZeYlqo6IeryhMwoDWRpNwg6viFg
+   SCSA/CTgoGwSl5k2VfA8eyIUJLlj5RluHxlx7b7tv27awVFLcUwZNVvAY
+   xom2D8wQO0VhwXCyeYKN3cf7cwUBxyS0IO2nrw+wYCsCjRofskRYZUo6L
+   PXKv0L8n5/A+LNlDhtG77fcuOL8SZCQGdMzbq70jpbGjPy7/dSNZQNHvs
+   3Mpbuw1aAn/0jvyyzviFvQWwMxQXG12YG/LWetAb1Iyr7gx6DoeeNKEJF
+   A==;
+X-CSE-ConnectionGUID: J+0ltQtNS6i13aXD+XGfOQ==
+X-CSE-MsgGUID: fFvvQ9DcT9mXqpzn6z0AZQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="58319428"
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="58319428"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2025 14:53:50 -0700
+X-CSE-ConnectionGUID: XxiiGVKgSbGjo2/uo1qaBQ==
+X-CSE-MsgGUID: RpzRL/2pTRGLvAstCrrpKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="168210962"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by orviesa010.jf.intel.com with ESMTP; 23 Aug 2025 14:53:44 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1upwBB-000Mch-25;
+	Sat, 23 Aug 2025 21:53:41 +0000
+Date: Sun, 24 Aug 2025 05:53:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org,
+	fthain@linux-m68k.org, geert@linux-m68k.org, mhiramat@kernel.org,
+	senozhatsky@chromium.org
+Cc: oe-kbuild-all@lists.linux.dev, lance.yang@linux.dev,
+	amaindex@outlook.com, anna.schumaker@oracle.com,
+	boqun.feng@gmail.com, ioworker0@gmail.com, joel.granados@kernel.org,
+	jstultz@google.com, kent.overstreet@linux.dev,
+	leonylgao@tencent.com, linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, longman@redhat.com,
+	mingo@redhat.com, mingzhe.yang@ly.com, oak@helsinkinet.fi,
+	rostedt@goodmis.org, tfiga@chromium.org, will@kernel.org,
+	stable@vger.kernel.org
 Subject: Re: [PATCH 1/1] hung_task: fix warnings by enforcing alignment on
  lock structures
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: debian-68k <debian-68k@lists.debian.org>
-Cc: linux-m68k <linux-m68k@vger.kernel.org>
-Date: Sat, 23 Aug 2025 13:06:08 +0200
-In-Reply-To: <20250823074048.92498-1-lance.yang@linux.dev>
-References: <f79735e1-1625-4746-98ce-a3c40123c5af@linux.dev>
-	 <20250823074048.92498-1-lance.yang@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 
+Message-ID: <202508240539.ARmC1Umu-lkp@intel.com>
+References: <20250823074048.92498-1-lance.yang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250823074048.92498-1-lance.yang@linux.dev>
 
-On Sat, 2025-08-23 at 15:40 +0800, Lance Yang wrote:
-> From: Lance Yang <lance.yang@linux.dev>
->=20
-> The blocker tracking mechanism assumes that lock pointers are at least
-> 4-byte aligned to use their lower bits for type encoding.
->=20
-> However, as reported by Geert Uytterhoeven, some architectures like m68k
-> only guarantee 2-byte alignment of 32-bit values. This breaks the
-> assumption and causes two related WARN_ON_ONCE checks to trigger.
+Hi Lance,
 
-Another case for switching Debian m68k to 32-bit alignment.
+kernel test robot noticed the following build warnings:
 
-Adrian
+[auto build test WARNING on tip/locking/core]
+[also build test WARNING on akpm-mm/mm-everything sysctl/sysctl-next linus/master v6.17-rc2 next-20250822]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+url:    https://github.com/intel-lab-lkp/linux/commits/Lance-Yang/hung_task-fix-warnings-by-enforcing-alignment-on-lock-structures/20250823-164122
+base:   tip/locking/core
+patch link:    https://lore.kernel.org/r/20250823074048.92498-1-lance.yang%40linux.dev
+patch subject: [PATCH 1/1] hung_task: fix warnings by enforcing alignment on lock structures
+config: x86_64-buildonly-randconfig-001-20250823 (https://download.01.org/0day-ci/archive/20250824/202508240539.ARmC1Umu-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250824/202508240539.ARmC1Umu-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508240539.ARmC1Umu-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from sound/soc/codecs/mt6660.c:15:
+>> sound/soc/codecs/mt6660.h:28:1: warning: alignment 1 of 'struct mt6660_chip' is less than 8 [-Wpacked-not-aligned]
+      28 | };
+         | ^
+>> sound/soc/codecs/mt6660.h:25:22: warning: 'io_lock' offset 49 in 'struct mt6660_chip' isn't aligned to 8 [-Wpacked-not-aligned]
+      25 |         struct mutex io_lock;
+         |                      ^~~~~~~
+
+
+vim +28 sound/soc/codecs/mt6660.h
+
+f289e55c6eeb43 Jeff Chang 2020-01-16  19  
+f289e55c6eeb43 Jeff Chang 2020-01-16  20  struct mt6660_chip {
+f289e55c6eeb43 Jeff Chang 2020-01-16  21  	struct i2c_client *i2c;
+f289e55c6eeb43 Jeff Chang 2020-01-16  22  	struct device *dev;
+f289e55c6eeb43 Jeff Chang 2020-01-16  23  	struct platform_device *param_dev;
+f289e55c6eeb43 Jeff Chang 2020-01-16  24  	struct mt6660_platform_data plat_data;
+f289e55c6eeb43 Jeff Chang 2020-01-16 @25  	struct mutex io_lock;
+f289e55c6eeb43 Jeff Chang 2020-01-16  26  	struct regmap *regmap;
+f289e55c6eeb43 Jeff Chang 2020-01-16  27  	u16 chip_rev;
+f289e55c6eeb43 Jeff Chang 2020-01-16 @28  };
+f289e55c6eeb43 Jeff Chang 2020-01-16  29  #pragma pack(pop)
+f289e55c6eeb43 Jeff Chang 2020-01-16  30  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
