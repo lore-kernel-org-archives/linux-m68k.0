@@ -1,93 +1,190 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB7FA23506F
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 24 Aug 2025 06:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C221DED64
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 24 Aug 2025 16:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756016359; cv=none; b=kMw5ebFY24E04auzAxTHNHYvT6SqMvjy7MrKjPvfRcyao62GigA02MzahVVANbkenoc0ae0pXJtj81PJ82f3YgIkCkRk27BrxuJv5wAGRC24ET1ns61AbxZBmbB7hEX6T3zWaFLNXbOK7JpMR72Zx74856DYkZCxrt41S2NZ46M=
+	t=1756051540; cv=none; b=J1ykT63bX28r9jLrsrT4FpTJokSXNmyrVhi58lKS8XfwsOAoa2dmdzSeOci5ZgkF3XyjWnyQQaC/afeTaaaezRpxVAKyoCVzClYxn2+mIZUx+4Cf56FyagUWvqf+iauvE1B6Gc+r0shRehU6ZHdfNalcavoubAd6TNpCieWE1hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756016359; c=relaxed/simple;
-	bh=aWnyWpVpmRA/TEM+DQ7lGMG2JKN9gC4jy/Tey7yqi/Y=;
+	s=arc-20240116; t=1756051540; c=relaxed/simple;
+	bh=Mi7F3tei2rj1HymPB3blUPLuefLWtod+S/dRQyDqiIk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QoK62BQ5A4de+ISqI12eg+clBRAhHqKnZMyCL0znNvZSyyV6Vv+5pI1ES77uK6c1Bww++pZ/MVYhY735W3dJHTdzIXQL+dH1exF7yziJfBIMUBLf1pgla5TQSt9nxg246dOVI0s4EsdYVk1hH3J/FjlovDU1XbwwC5PCvPx0ATg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fqUNVMjB; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	 In-Reply-To:Content-Type; b=rEuxJ7VYu9F3OGn+S7lEZL4RVP0ibqKSetxWCxIMnyTRBrWgYvmz/tqeUR/nQvlZCFB4cZ2+uFsoxh+cebDkHs74yuGdjwrEpneBItt42QkG37wMwa6JOoeF/HKbMalNKRYHFz1mqZewwNvg1ripbekWN7GcgP/YNaTN5iu0FmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hauke-m.de; spf=pass smtp.mailfrom=hauke-m.de; dkim=pass (2048-bit key) header.d=hauke-m.de header.i=@hauke-m.de header.b=lg6BsDEj; arc=none smtp.client-ip=80.241.56.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hauke-m.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hauke-m.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fqUNVMjB"
-Message-ID: <5ff7bea5-185f-458e-9ae6-ddfcbdf29b7a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756016345;
+	dkim=pass (2048-bit key) header.d=hauke-m.de header.i=@hauke-m.de header.b="lg6BsDEj"
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4c8zKm4XK6z9ttW;
+	Sun, 24 Aug 2025 18:05:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
+	t=1756051532;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CtR68zd6ECJ7fn6f8w4WpB+86/yimlas3RqjC+/LWmE=;
-	b=fqUNVMjB/ldRGKboFELsCAzgHYfRi0z7xgldfRbeiF6BFiae3y2YnCI+WLeYMvnoEBO1ck
-	4jMFgdz8hf69BIVgaPvqFL6iCfhjWZmPwmoounV88RdMJoHF4xoaxR22415zt9MJLhwRMY
-	EJ4oE5hdL1fBjtmkbSKsqo8pg36mzAA=
-Date: Sun, 24 Aug 2025 14:18:54 +0800
+	bh=lv+ks0EhXGLhxzJIKgt/PifkJOMUPAtRtcGjDgfWzTA=;
+	b=lg6BsDEjyqfrxlz6EsZA1h6JdqrEWpUDrq09kMZQ+2Eg7PX9sdTfn7IWC+b0BX8qStAgOm
+	hy4v+RdkWvLpd7yFDJRCcldCDzWJo3GcUQM5FpXi+rP/JsD/Rvfa53sL1Y19w6P8xySTra
+	gNePx87ZpXgpGVGcp7CCiAyQQD5aPUDEIju4rVCCXL0hsh5hzY4QvoT6KPRudKNR/gf74b
+	XdXw0CyljXT31qVLeqsR/bZ31kQPFCf/kiwqaPR9fdN5QWZSKzmfm+/kEeXQz4uheZb6IC
+	R97/eKy+9faheJBPa8wDHNT5RaBr32PbIyYBYKaPZmg84eUAqEF7phEhR6avpg==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=none;
+	spf=pass (outgoing_mbo_mout: domain of hauke@hauke-m.de designates 2001:67c:2050:b231:465::1 as permitted sender) smtp.mailfrom=hauke@hauke-m.de
+Message-ID: <3c0f31ce-38a8-4f1e-8c39-6aa6ac879dc6@hauke-m.de>
+Date: Sun, 24 Aug 2025 18:05:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] hung_task: fix warnings by enforcing alignment on
- lock structures
+Subject: Re: [PATCH net-next] net: phy: fixed: let fixed_phy_add always use
+ addr 0 and remove return value
+To: Heiner Kallweit <hkallweit1@gmail.com>, Greg Ungerer
+ <gerg@linux-m68k.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Andrew Lunn
+ <andrew@lunn.ch>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Russell King - ARM Linux <linux@armlinux.org.uk>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, David Miller <davem@davemloft.net>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ Takumi Sueda <puhitaku@gmail.com>
+References: <762700e5-a0b1-41af-aa03-929822a39475@gmail.com>
 Content-Language: en-US
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: akpm@linux-foundation.org, mhiramat@kernel.org,
- kernel test robot <lkp@intel.com>, geert@linux-m68k.org,
- senozhatsky@chromium.org, oe-kbuild-all@lists.linux.dev,
- amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com,
- ioworker0@gmail.com, joel.granados@kernel.org, jstultz@google.com,
- kent.overstreet@linux.dev, leonylgao@tencent.com,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- longman@redhat.com, mingo@redhat.com, mingzhe.yang@ly.com,
- oak@helsinkinet.fi, rostedt@goodmis.org, tfiga@chromium.org,
- will@kernel.org, stable@vger.kernel.org
-References: <20250823074048.92498-1-lance.yang@linux.dev>
- <202508240539.ARmC1Umu-lkp@intel.com>
- <29f4f58e-2f14-99c8-3899-3b0be79382c2@linux-m68k.org>
- <9efaadc9-7f96-435e-9711-7f2ce96a820a@linux.dev>
- <a70ad7be-390f-2a2c-c920-5064cabe2b36@linux-m68k.org>
- <e27b6484-8fb9-4c7f-9c8f-4d583cb64781@linux.dev>
- <0e0d52b4-8c69-9774-c69d-579985c0f0ee@linux-m68k.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Lance Yang <lance.yang@linux.dev>
-In-Reply-To: <0e0d52b4-8c69-9774-c69d-579985c0f0ee@linux-m68k.org>
+From: Hauke Mehrtens <hauke@hauke-m.de>
+In-Reply-To: <762700e5-a0b1-41af-aa03-929822a39475@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 4c8zKm4XK6z9ttW
 
-
-
-On 2025/8/24 13:57, Finn Thain wrote:
+On 8/22/25 22:36, Heiner Kallweit wrote:
+> We have only two users of fixed_phy_add(), both use address 0 and
+> ignore the return value. So simplify fixed_phy_add() accordingly.
 > 
-> On Sun, 24 Aug 2025, Lance Yang wrote:
+> Whilst at it, constify the fixed_phy_status configs.
 > 
->>
->> The blocker tracking mechanism operates on pointers to higher-level
->> locks (like struct mutex), as that is what is stored in the
->> task_struct->blocker field. It does not operate on the lower-level
->> arch_spinlock_t inside it.
->>
+> Note:
+> fixed_phy_add() is a legacy function which shouldn't be used in new
+> code, as it's use may be problematic:
+> - No check whether a fixed phy exists already at the given address
+> - If fixed_phy_register() is called afterwards by any other driver,
+>    then it will also use phy_addr 0, because fixed_phy_add() ignores
+>    the ida which manages address assignment
+> Drivers using a fixed phy created by fixed_phy_add() in platform code,
+> should dynamically create a fixed phy with fixed_phy_register()
+> instead.
 > 
-> Perhaps you are aware that the minimum alignment of the struct is at least
-> the minimum alignment of the first member. I believe that the reason why
-
-Yes, that's how it should work in theory.
-
-> the lock is always the first member is that misaligned accesses would harm
-> performance.
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> ---
+>   arch/m68k/coldfire/m5272.c  | 4 ++--
+>   arch/mips/bcm47xx/setup.c   | 4 ++--
+>   drivers/net/phy/fixed_phy.c | 4 ++--
+>   include/linux/phy_fixed.h   | 8 ++------
+>   4 files changed, 8 insertions(+), 12 deletions(-)
 > 
-> I really don't know why you want to argue about fixing this.
+> diff --git a/arch/m68k/coldfire/m5272.c b/arch/m68k/coldfire/m5272.c
+> index 5b70dfdab..918e2a323 100644
+> --- a/arch/m68k/coldfire/m5272.c
+> +++ b/arch/m68k/coldfire/m5272.c
+> @@ -108,7 +108,7 @@ void __init config_BSP(char *commandp, int size)
+>    * an ethernet switch. In this case we need to use the fixed phy type,
+>    * and we need to declare it early in boot.
+>    */
+> -static struct fixed_phy_status nettel_fixed_phy_status __initdata = {
+> +static const struct fixed_phy_status nettel_fixed_phy_status __initconst = {
+>   	.link	= 1,
+>   	.speed	= 100,
+>   	.duplex	= 0,
+> @@ -119,7 +119,7 @@ static struct fixed_phy_status nettel_fixed_phy_status __initdata = {
+>   static int __init init_BSP(void)
+>   {
+>   	m5272_uarts_init();
+> -	fixed_phy_add(0, &nettel_fixed_phy_status);
+> +	fixed_phy_add(&nettel_fixed_phy_status);
+>   	clkdev_add_table(m5272_clk_lookup, ARRAY_SIZE(m5272_clk_lookup));
+>   	return 0;
+>   }
+> diff --git a/arch/mips/bcm47xx/setup.c b/arch/mips/bcm47xx/setup.c
+> index de426a474..a93a4266d 100644
+> --- a/arch/mips/bcm47xx/setup.c
+> +++ b/arch/mips/bcm47xx/setup.c
+> @@ -256,7 +256,7 @@ static int __init bcm47xx_cpu_fixes(void)
+>   }
+>   arch_initcall(bcm47xx_cpu_fixes);
+>   
+> -static struct fixed_phy_status bcm47xx_fixed_phy_status __initdata = {
+> +static const struct fixed_phy_status bcm47xx_fixed_phy_status __initconst = {
+>   	.link	= 1,
+>   	.speed	= SPEED_100,
+>   	.duplex	= DUPLEX_FULL,
+> @@ -282,7 +282,7 @@ static int __init bcm47xx_register_bus_complete(void)
+>   	bcm47xx_leds_register();
+>   	bcm47xx_workarounds();
+>   
+> -	fixed_phy_add(0, &bcm47xx_fixed_phy_status);
+> +	fixed_phy_add(&bcm47xx_fixed_phy_status);
+>   	return 0;
+>   }
+>   device_initcall(bcm47xx_register_bus_complete);
+> diff --git a/drivers/net/phy/fixed_phy.c b/drivers/net/phy/fixed_phy.c
+> index 7902b35c5..b39532abf 100644
+> --- a/drivers/net/phy/fixed_phy.c
+> +++ b/drivers/net/phy/fixed_phy.c
+> @@ -153,9 +153,9 @@ static int fixed_phy_add_gpiod(unsigned int irq, int phy_addr,
+>   	return 0;
+>   }
+>   
+> -int fixed_phy_add(int phy_addr, const struct fixed_phy_status *status)
+> +void fixed_phy_add(const struct fixed_phy_status *status)
+>   {
+> -	return fixed_phy_add_gpiod(PHY_POLL, phy_addr, status, NULL);
+> +	fixed_phy_add_gpiod(PHY_POLL, 0, status, NULL);
+>   }
+>   EXPORT_SYMBOL_GPL(fixed_phy_add);
+>   
+> diff --git a/include/linux/phy_fixed.h b/include/linux/phy_fixed.h
+> index 5399b9e41..6227a1bde 100644
+> --- a/include/linux/phy_fixed.h
+> +++ b/include/linux/phy_fixed.h
+> @@ -17,7 +17,7 @@ struct net_device;
+>   
+>   #if IS_ENABLED(CONFIG_FIXED_PHY)
+>   extern int fixed_phy_change_carrier(struct net_device *dev, bool new_carrier);
+> -int fixed_phy_add(int phy_id, const struct fixed_phy_status *status);
+> +void fixed_phy_add(const struct fixed_phy_status *status);
+>   struct phy_device *fixed_phy_register(const struct fixed_phy_status *status,
+>   				      struct device_node *np);
+>   
+> @@ -26,11 +26,7 @@ extern int fixed_phy_set_link_update(struct phy_device *phydev,
+>   			int (*link_update)(struct net_device *,
+>   					   struct fixed_phy_status *));
+>   #else
+> -static inline int fixed_phy_add(int phy_id,
+> -				const struct fixed_phy_status *status)
+> -{
+> -	return -ENODEV;
+> -}
+> +static inline void fixed_phy_add(const struct fixed_phy_status *status) {}
+>   static inline struct phy_device *
+>   fixed_phy_register(const struct fixed_phy_status *status,
+>   		   struct device_node *np)
 
-Okay, arguing further isn't productive. Looking forward to seeing
-your patch ;)
+Hi,
 
-Thanks,
-Lance
+I do not use this hardware any more, but Takumi reported that 
+fixed_phy_add() is not working for the PHY registration on brcm47xx any 
+more and we have to use fixed_phy_register(), see:
+https://github.com/openwrt/openwrt/pull/19610
 
+Does this need a bigger refactoring anyway?
+
+Hauke
