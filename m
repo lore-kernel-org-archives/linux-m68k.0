@@ -1,70 +1,83 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1F823AE66
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 23 Aug 2025 21:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DCF246BF
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 24 Aug 2025 00:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755986033; cv=none; b=brTHbCWTPsV50gJGCe7e7YRI1ZxsmINQ368/QwK/ZkRGrGXWzsvWJA+x4wZZDK+DwS/plD+DqeZShxru7ZpJ5RPY72ATE0WGZyKcs4JBIFdQQbrWqEBnHGQ9z0wbTVS8Kdgmn7DK0+NTsvdxshdTZ4MpCrbUl4BiqVhe8Arp7sg=
+	t=1755996477; cv=none; b=CkZ9a1FDD0Q5d2RU2r3X/hxNMZQ3OThUk64qBKOZP3SdehNl6hei2QX6JPMotCEpwH1+Rntl0Mzu/stUbqtdDkBHtxRFXsHOlvmy9QtlMMv56MeRlAMTX/yst3Mx+Lzv7KGj6li0DWmuGbi42pyPrTYczoBMSa9pclgL6qIe5/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755986033; c=relaxed/simple;
-	bh=9BXIzaov3cIKsITFD2kYAmNOig9QKsNDG5ar116bKPs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aSoRrGJcLfrMmt7NXjWPQVpW0Q4TjxXLoCB9QSvnRf8yFzaJnOvARJhYJsEud6DTXh77usNJDVJZX3sVDn7+vk9VVjraphPh/2Z5OfBLGaMKR77rK4g61MJf8TdM8oHXwZsyV/yplXqWG6w6Q2YwZfgxk2LYFwI/IjkiOQPSyBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QnSCpB9Q; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1755996477; c=relaxed/simple;
+	bh=xuziBNnie5ysUoLtEvcYwCBlbrBMWsV4Kgchzge+dzw=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Ebtn0okMg07VctmJ3TravH99M4l1qNlLNHjAfMQbqIMXfjhL3eMzYcyS9/StzEhJTaeMaw+EC4X7FcuSPIfqI9IyQQrHGms7udv81ih001sJxcVbvkGxlQ7Md5JiGLrmd1sJSDArnImhxCOkGUwn2dudM3cNeLRtiJHkjEj9Ox8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=H6OSqoDq; arc=none smtp.client-ip=202.12.124.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QnSCpB9Q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1755986032; x=1787522032;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9BXIzaov3cIKsITFD2kYAmNOig9QKsNDG5ar116bKPs=;
-  b=QnSCpB9QwsRISmkvsCWhzFOB6RbhUMOsO2TnPs2dYugjss12KPkT3it1
-   LCs14n4eitCP4OrFVA+CLvynI9LeeGZeYlqo6IeryhMwoDWRpNwg6viFg
-   SCSA/CTgoGwSl5k2VfA8eyIUJLlj5RluHxlx7b7tv27awVFLcUwZNVvAY
-   xom2D8wQO0VhwXCyeYKN3cf7cwUBxyS0IO2nrw+wYCsCjRofskRYZUo6L
-   PXKv0L8n5/A+LNlDhtG77fcuOL8SZCQGdMzbq70jpbGjPy7/dSNZQNHvs
-   3Mpbuw1aAn/0jvyyzviFvQWwMxQXG12YG/LWetAb1Iyr7gx6DoeeNKEJF
-   A==;
-X-CSE-ConnectionGUID: J+0ltQtNS6i13aXD+XGfOQ==
-X-CSE-MsgGUID: fFvvQ9DcT9mXqpzn6z0AZQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="58319428"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="58319428"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2025 14:53:50 -0700
-X-CSE-ConnectionGUID: XxiiGVKgSbGjo2/uo1qaBQ==
-X-CSE-MsgGUID: RpzRL/2pTRGLvAstCrrpKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="168210962"
-Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 23 Aug 2025 14:53:44 -0700
-Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1upwBB-000Mch-25;
-	Sat, 23 Aug 2025 21:53:41 +0000
-Date: Sun, 24 Aug 2025 05:53:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org,
-	fthain@linux-m68k.org, geert@linux-m68k.org, mhiramat@kernel.org,
-	senozhatsky@chromium.org
-Cc: oe-kbuild-all@lists.linux.dev, lance.yang@linux.dev,
-	amaindex@outlook.com, anna.schumaker@oracle.com,
-	boqun.feng@gmail.com, ioworker0@gmail.com, joel.granados@kernel.org,
-	jstultz@google.com, kent.overstreet@linux.dev,
-	leonylgao@tencent.com, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, longman@redhat.com,
-	mingo@redhat.com, mingzhe.yang@ly.com, oak@helsinkinet.fi,
-	rostedt@goodmis.org, tfiga@chromium.org, will@kernel.org,
-	stable@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="H6OSqoDq"
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfout.stl.internal (Postfix) with ESMTP id B16161D00058;
+	Sat, 23 Aug 2025 20:47:53 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Sat, 23 Aug 2025 20:47:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1755996473; x=1756082873; bh=K9+5HFtQoSlLWA05xKrNFkVtPjshle8xz2R
+	oDrH7qqw=; b=H6OSqoDqn0f5f56RTJE1davNYSkFNdjq6EsNs8+j8FJVcjLjwsQ
+	qyzJM6MFR52H1SMMk7booEPiSEJmSHfIykHbupGfnce5We+RQgYp9Q1mTpuX0EWh
+	n9kfZ6EhjmnQ28cSS20faecxQDKeMSeUAu34VH2d2YMsn3Qvse8StIDEeMUi/6SX
+	atUG2FD5gWhazXI3vYLGwyiI8DWSPKauctAtNX1Wx/40SCEZbDbBBrQoW9hoA0lX
+	GffGOBLvGAMuVv6KVSUiR5gZwleoExAYVNDqL3m4RRLchByDZHovFFfiisIs6vBf
+	q1/6CpFnblGlIs+0OS3hZS2X0uK8mOzs5kw==
+X-ME-Sender: <xms:N2GqaI2_gjPKjn3kbIlU-XthtqRduRD0SuAJCLzNrmmEjtA2y4vBOQ>
+    <xme:N2GqaEzYHNaPMkd6kj0WsMxP0Uz0_3WxBVPmS-ZFy3CStA4TYhaak-KVRoYq6lQPK
+    AsP9o74B5wsRTy-TZo>
+X-ME-Received: <xmr:N2GqaEURq1-gbDivz9hBV5Sor30hze0bjYu5B_hBbJ5UquvytqMejPX9_lbVOf3bQ65XoVGlqHvyi5Px9ZjnU1Uz1y4b8bYtRnE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduieekudduucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeu
+    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedvhedpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtoheplhgrnhgtvgdrhigrnhhgsehlihhnuhigrd
+    guvghvpdhrtghpthhtoheplhhkphesihhnthgvlhdrtghomhdprhgtphhtthhopegrkhhp
+    mheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepghgvvghrth
+    eslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepmhhhihhrrghmrghtsehkvghr
+    nhgvlhdrohhrghdprhgtphhtthhopehsvghnohiihhgrthhskhihsegthhhrohhmihhumh
+    drohhrghdprhgtphhtthhopehovgdqkhgsuhhilhguqdgrlhhlsehlihhsthhsrdhlihhn
+    uhigrdguvghvpdhrtghpthhtoheprghmrghinhguvgigsehouhhtlhhoohhkrdgtohhmpd
+    hrtghpthhtoheprghnnhgrrdhstghhuhhmrghkvghrsehorhgrtghlvgdrtghomh
+X-ME-Proxy: <xmx:N2GqaBpOZYglFui0EcyXP4m2ZlwBg_VcFUylNyLblJoVMYzokceriw>
+    <xmx:N2GqaBf6sadZesdCD3THfvgjucDbU1NYOfW0aKDU2lbFgIxNWBvulw>
+    <xmx:N2GqaPGkju3b2tuzqBpc043uXH8WFFG1NPtqD307ax55BXlTZT_SVw>
+    <xmx:N2GqaH3H8LC98VX9T0kBNvsrVrjXgZ4inLJE4Gxszraoti0Xi_QsYw>
+    <xmx:OWGqaFYFZ9DRuli5EtF7eM0QsoYHPE0fnw2EIhtHxquh5xRDrsTU6ljl>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 23 Aug 2025 20:47:49 -0400 (EDT)
+Date: Sun, 24 Aug 2025 10:47:43 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Lance Yang <lance.yang@linux.dev>
+cc: kernel test robot <lkp@intel.com>, akpm@linux-foundation.org, 
+    geert@linux-m68k.org, mhiramat@kernel.org, senozhatsky@chromium.org, 
+    oe-kbuild-all@lists.linux.dev, amaindex@outlook.com, 
+    anna.schumaker@oracle.com, boqun.feng@gmail.com, ioworker0@gmail.com, 
+    joel.granados@kernel.org, jstultz@google.com, kent.overstreet@linux.dev, 
+    leonylgao@tencent.com, linux-kernel@vger.kernel.org, 
+    linux-m68k@lists.linux-m68k.org, longman@redhat.com, mingo@redhat.com, 
+    mingzhe.yang@ly.com, oak@helsinkinet.fi, rostedt@goodmis.org, 
+    tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
 Subject: Re: [PATCH 1/1] hung_task: fix warnings by enforcing alignment on
  lock structures
-Message-ID: <202508240539.ARmC1Umu-lkp@intel.com>
-References: <20250823074048.92498-1-lance.yang@linux.dev>
+In-Reply-To: <202508240539.ARmC1Umu-lkp@intel.com>
+Message-ID: <29f4f58e-2f14-99c8-3899-3b0be79382c2@linux-m68k.org>
+References: <20250823074048.92498-1-lance.yang@linux.dev> <202508240539.ARmC1Umu-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -72,58 +85,24 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250823074048.92498-1-lance.yang@linux.dev>
-
-Hi Lance,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on tip/locking/core]
-[also build test WARNING on akpm-mm/mm-everything sysctl/sysctl-next linus/master v6.17-rc2 next-20250822]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Lance-Yang/hung_task-fix-warnings-by-enforcing-alignment-on-lock-structures/20250823-164122
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20250823074048.92498-1-lance.yang%40linux.dev
-patch subject: [PATCH 1/1] hung_task: fix warnings by enforcing alignment on lock structures
-config: x86_64-buildonly-randconfig-001-20250823 (https://download.01.org/0day-ci/archive/20250824/202508240539.ARmC1Umu-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14+deb12u1) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250824/202508240539.ARmC1Umu-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202508240539.ARmC1Umu-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from sound/soc/codecs/mt6660.c:15:
->> sound/soc/codecs/mt6660.h:28:1: warning: alignment 1 of 'struct mt6660_chip' is less than 8 [-Wpacked-not-aligned]
-      28 | };
-         | ^
->> sound/soc/codecs/mt6660.h:25:22: warning: 'io_lock' offset 49 in 'struct mt6660_chip' isn't aligned to 8 [-Wpacked-not-aligned]
-      25 |         struct mutex io_lock;
-         |                      ^~~~~~~
 
 
-vim +28 sound/soc/codecs/mt6660.h
+On Sun, 24 Aug 2025, kernel test robot wrote:
 
-f289e55c6eeb43 Jeff Chang 2020-01-16  19  
-f289e55c6eeb43 Jeff Chang 2020-01-16  20  struct mt6660_chip {
-f289e55c6eeb43 Jeff Chang 2020-01-16  21  	struct i2c_client *i2c;
-f289e55c6eeb43 Jeff Chang 2020-01-16  22  	struct device *dev;
-f289e55c6eeb43 Jeff Chang 2020-01-16  23  	struct platform_device *param_dev;
-f289e55c6eeb43 Jeff Chang 2020-01-16  24  	struct mt6660_platform_data plat_data;
-f289e55c6eeb43 Jeff Chang 2020-01-16 @25  	struct mutex io_lock;
-f289e55c6eeb43 Jeff Chang 2020-01-16  26  	struct regmap *regmap;
-f289e55c6eeb43 Jeff Chang 2020-01-16  27  	u16 chip_rev;
-f289e55c6eeb43 Jeff Chang 2020-01-16 @28  };
-f289e55c6eeb43 Jeff Chang 2020-01-16  29  #pragma pack(pop)
-f289e55c6eeb43 Jeff Chang 2020-01-16  30  
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    In file included from sound/soc/codecs/mt6660.c:15:
+> >> sound/soc/codecs/mt6660.h:28:1: warning: alignment 1 of 'struct mt6660_chip' is less than 8 [-Wpacked-not-aligned]
+>       28 | };
+>          | ^
+> >> sound/soc/codecs/mt6660.h:25:22: warning: 'io_lock' offset 49 in 'struct mt6660_chip' isn't aligned to 8 [-Wpacked-not-aligned]
+>       25 |         struct mutex io_lock;
+>          |                      ^~~~~~~
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Misalignment warnings like this one won't work if you just pick an 
+alignment arbitrarily i.e. to suit whatever bitfield you happen to need.
+
+Instead, I think I would naturally align the actual locks, that is, 
+arch_spinlock_t and arch_rwlock_t in include/linux/spinlock_types*.h.
