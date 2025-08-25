@@ -1,117 +1,166 @@
-Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
+Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7480B1DF73A
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 04:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D6D28C035
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 10:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756095291; cv=none; b=lhrrQBJvrkdZZ+H58FGBbgLDX0nKNVYtuj+pS2HxmpxggpZ0mEvcC4IjvDH1j5HtSHN5WQUD+y3CUw4nu5TGw8w9vx3wXyQeq4EpZjhwFkQvyRSu4ITiHPbAa7Ml8qHhspfr+EVsMknaYa8GiIfoLrF9b8BNy+dn44rG7Ch8+AM=
+	t=1756118991; cv=none; b=BrYyJPwHmH3vLqxKV5D5MA4/fIR8ahm7XmOmrK025sKoHzCaEryIiJLQ+gkpUtH5yAGrmOOsmYegXD/5SpfkEtyCHSBB+JE2H3pxm7VtXDx3jFkn+dVWbGgorNa9vzHujDiVAfwpPik6OKvNWnJd7BlhvQigZuo3HFYuqchKnGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756095291; c=relaxed/simple;
-	bh=jRE0j/a3Blw5jBzPmdqmicKxGpOIJhBd9aEt46ekE8w=;
-	h=To:Cc:Message-ID:From:Subject:Date; b=Efk7kmboze6KKoYtFbS0p0OkjNJsn+c0rmBZN18lvg2fT9GeXMe+TN/6/exWqqP/x/6V1KZdylmOnt9YywkT8PU8AzZ0924MS2LsO+18kJlyhE+RGwsye5RI06PMgQiCUu8iR4zZD5yn8cE2+bAZ6GewaUyZayy1b2QtHJab804=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Fl0SF4Be; arc=none smtp.client-ip=202.12.124.148
+	s=arc-20240116; t=1756118991; c=relaxed/simple;
+	bh=A5e0g3A5w23DzIM9o26RbMYH8roh80cNhkZmB5++jQ0=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=EdmFnXup/4SnevySFqwJfcbiPoKoi/XTi9sPAYNzpyKFsPyjQmvW3TjAS7UlRIuNAmXEHTENAflb+8uLlgFg43qRxwFOTBQghiYB6Q9dr179va8x8qrK/7J/UBv5xZty2sTld5O1yjuEDVz9yZK4zPz5a4BVmnx/A17Q4y/u7CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=k3xX7Spl; arc=none smtp.client-ip=202.12.124.155
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Fl0SF4Be"
-Received: from phl-compute-09.internal (phl-compute-09.internal [10.202.2.49])
-	by mailfout.stl.internal (Postfix) with ESMTP id 7953A1D00068
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 00:14:49 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="k3xX7Spl"
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 2136F7A00B5;
+	Mon, 25 Aug 2025 06:49:48 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-09.internal (MEProxy); Mon, 25 Aug 2025 00:14:49 -0400
+  by phl-compute-01.internal (MEProxy); Mon, 25 Aug 2025 06:49:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1756095289; x=1756181689; bh=voARBgy3yx2HVaACbb8e7bteXCgR
-	0SdI2PllfVi1VYk=; b=Fl0SF4BeiisWcPlmspx7uwHOhir+ReLubAtLfjQ4hlQy
-	0WUykTC4UBnm20kXBcCWvtpLGr21djm1m1nH3YCOOlYeiLeO2SoQQSJBw4l5PPfO
-	UV3gdd2Id3Q9YC5Mbm7+hvW5JCJPv4PlKKOEy4+A//fYqeJ6Ane5+fMpQE8z+m6r
-	U6xZmhHSFC1jF+O93diNiCeXH2t2hPYqrWF5+K30D9onDtxhS718Ceyurw0sN+3Y
-	zvzbJzqsoQqUf2yg1uxJDLoD12WFQ2ZWYmvcfKXhPGzXPSo7pki/9QPaXlilE+U4
-	8D7NRwOM7QehCRvU7HKhQXPPON5TWIUabWotguPqWg==
-X-ME-Sender: <xms:OeOraBDcEf1KBd5yLGCheuEFXaEa9Zzm-BTJ7q5lVPlA6XgQZXQhew>
-    <xme:OeOraBh-MweHewUiugX82tay6fwZP88RpG-pKHWQQM9aqoct-eVp4bO352F_xU_J2
-    Id8Cw6CRk2EJahYSkw>
-X-ME-Received: <xmr:OeOraF_By8pjUxwXT8paoVK67BVtoA-08wnGCjwHHkZ3Q3xCgqM6gdH9MxCEAceSYcwwD7kRAFeoyZIy9FGEs-BIsG2reiGZw34>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddujedugeduucetufdoteggodetrf
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1756118987; x=1756205387; bh=10eh3N4jyDTXYO/BHE5C2RtFW5688leWuGj
+	xIzsegzs=; b=k3xX7SplGmP8SSjuwtxnU+ZAhbUb3o3mZNvPMAZgpqkhHwWyd7q
+	z9OzNupyrVXXTvBNvdiJThDWrf7wEr9njNAl1G4x8jV5Ze2TM3W3WyBKuq1+Ax6S
+	PwZMaPEXvKw0kwyqYW8XBVPb3EEQG5Fh0hZkNThTqb/fTAj6XX2bj4DN9NH95zFJ
+	mlEbrYJpb4mOx6zhzAJ8ZsoPcRUmRh3o/69WoLPFfQS0hRg71hR9LXTEabGneLBV
+	H0XSPk/wsHZU4aJeTCB9lP3w3jNzm37BdCQRLSse9YTETyzsicwJOWMMDmiqzA8D
+	XUJAO4quV979lIG4TiUdLfJc2cTGMVhUjnQ==
+X-ME-Sender: <xms:yj-saFbeGFsZBoYb7E_JIts9CVvFXt9msvSnS5QT7PbxZi6mHQGR3g>
+    <xme:yj-saLkJa3xlhedfamF1g8lOHfQkR89ihgSFdStgMjymAfcq3_Yi0-gFEnZvrVngp
+    QCsHMZK1a4AeyWAgJ4>
+X-ME-Received: <xmr:yj-saKrEDEaaJl1vOcIwwSoCXcfB0D_KHWIdoIWhDroPMN39zDyQGcaeb66y1wWVeQaI1cx5jZ2b8FYOOOtDHnMUZCbI2My-N9s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddujedvudelucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcu
-    oehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpe
-    ekffejgfehheehkeekffffveekteevvddvveelhffgffetteefgfeutdehleetheenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdp
-    nhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinh
-    hugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:OeOraN-kNa-3kDdkASpY44yADpqE_bcj1wF9ooKwtrH2i-it3g2uew>
-    <xmx:OeOraOB5Nu3QYUNOof8qIqj5bV9enR5Ij4nH_xZh18IY_qH2Zng-RA>
-    <xmx:OeOraNwtMJs3tLnyMwuSuWwhcZ01UfAmyLGFsq_yApwNbWkWkAdtUg>
-    <xmx:OeOraDTOGkSSyzpmwHtee_cKUHKb3GLe1R8pRHqyiZ87VvBki4Cahw>
-    <xmx:OeOraJEmP7bPQAqSBmqfymg6fGxd4n_fhm_o34ghpTyc04LYoMspCKhJ>
+    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeu
+    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeduuddpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtoheplhgrnhgtvgdrhigrnhhgsehlihhnuhigrd
+    guvghvpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhr
+    ghdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtth
+    hopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
+    thhopehmhhhirhgrmhgrtheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepohgrkheshh
+    gvlhhsihhnkhhinhgvthdrfhhipdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggv
+    rggurdhorhhgpdhrtghpthhtohepshhtrggslhgvsehvghgvrhdrkhgvrhhnvghlrdhorh
+    hgpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:yj-saNCxKc2O3YWu30nvgu472OnYnqOMCyNFDkFqAUYpHXBkDr0blg>
+    <xmx:yj-saNHS705Fyzu_Vq6MoYEBPPQr1bKPkfwXlSReP8YKVmtXiE0p9g>
+    <xmx:yj-saH0fu_C5itZIZ9xugF600fHPZiLmo9y-84tPu04M6IEfit0Xyg>
+    <xmx:yj-saOOHMTbr5Lj-uOR-7jSqrAuKbdJtU4mdKnvkaYluZKHIT61Hkw>
+    <xmx:yz-saAmMSdqEDrRBRD3yWUDoQxZC_q6RocuMBVzkzBly6rqS1CVTlt-Z>
 Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA for
- <linux-m68k@lists.linux-m68k.org>; Mon,
- 25 Aug 2025 00:14:46 -0400 (EDT)
-To: "Andrew Morton" <akpm@linux-foundation.org>,
-    "Lance Yang" <lance.yang@linux.dev>
-Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>,
-    "Masami Hiramatsu" <mhiramat@kernel.org>,
-    "Eero Tamminen" <oak@helsinkinet.fi>,
-    "Peter Zijlstra" <peterz@infradead.org>,
-    "Will Deacon" <will@kernel.org>,
-    stable@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    linux-m68k@lists.linux-m68k.org
-Message-ID: <7d9554bfe2412ed9427bf71ce38a376e06eb9ec4.1756087385.git.fthain@linux-m68k.org>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 25 Aug 2025 06:49:43 -0400 (EDT)
+Date: Mon, 25 Aug 2025 20:49:38 +1000 (AEST)
 From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] atomic: Specify natural alignment for atomic_t
-Date: Mon, 25 Aug 2025 12:03:05 +1000
+To: Lance Yang <lance.yang@linux.dev>
+cc: akpm@linux-foundation.org, geert@linux-m68k.org, 
+    linux-kernel@vger.kernel.org, mhiramat@kernel.org, oak@helsinkinet.fi, 
+    peterz@infradead.org, stable@vger.kernel.org, will@kernel.org, 
+    Lance Yang <ioworker0@gmail.com>, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH] atomic: Specify natural alignment for atomic_t
+In-Reply-To: <4e7e7292-338d-4a57-84ec-ae7427f6ad7c@linux.dev>
+Message-ID: <d07778f8-8990-226b-5171-4a36e6e18f32@linux-m68k.org>
+References: <7d9554bfe2412ed9427bf71ce38a376e06eb9ec4.1756087385.git.fthain@linux-m68k.org> <20250825032743.80641-1-ioworker0@gmail.com> <c8851682-25f1-f594-e30f-5b62e019d37b@linux-m68k.org> <96ae7afc-c882-4c3d-9dea-3e2ae2789caf@linux.dev>
+ <5a44c60b-650a-1f8a-d5cb-abf9f0716817@linux-m68k.org> <4e7e7292-338d-4a57-84ec-ae7427f6ad7c@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 
-Some recent commits incorrectly assumed the natural alignment of locks.
-That assumption fails on Linux/m68k (and, interestingly, would have failed
-on Linux/cris also). This leads to spurious warnings from the hang check
-code. Fix this bug by adding the necessary 'aligned' attribute.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Lance Yang <lance.yang@linux.dev>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Eero Tamminen <oak@helsinkinet.fi>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Reported-by: Eero Tamminen <oak@helsinkinet.fi>
-Closes: https://lore.kernel.org/lkml/CAMuHMdW7Ab13DdGs2acMQcix5ObJK0O2dG_Fxzr8_g58Rc1_0g@mail.gmail.com/
-Fixes: e711faaafbe5 ("hung_task: replace blocker_mutex with encoded blocker")
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-I tested this on m68k using GCC and it fixed the problem for me. AFAIK,
-the other architectures naturally align ints already so I'm expecting to
-see no effect there.
----
- include/linux/types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[Belated Cc linux-m68k...]
 
-diff --git a/include/linux/types.h b/include/linux/types.h
-index 6dfdb8e8e4c3..cd5b2b0f4b02 100644
---- a/include/linux/types.h
-+++ b/include/linux/types.h
-@@ -179,7 +179,7 @@ typedef phys_addr_t resource_size_t;
- typedef unsigned long irq_hw_number_t;
- 
- typedef struct {
--	int counter;
-+	int counter __aligned(sizeof(int));
- } atomic_t;
- 
- #define ATOMIC_INIT(i) { (i) }
--- 
-2.49.1
+On Mon, 25 Aug 2025, Lance Yang wrote:
 
+> 
+> On 2025/8/25 14:17, Finn Thain wrote:
+> > 
+> > On Mon, 25 Aug 2025, Lance Yang wrote:
+> > 
+> >>
+> >> What if we squash the runtime check fix into your patch?
+> > 
+> > Did my patch not solve the problem?
+> 
+> Hmm... it should solve the problem for natural alignment, which is a 
+> critical fix.
+> 
+> But it cannot solve the problem of forced misalignment from drivers 
+> using #pragma pack(1). The runtime warning will still trigger in those 
+> cases.
+> 
+> I built a simple test module on a kernel with your patch applied:
+> 
+> ```
+> #include <linux/module.h>
+> #include <linux/init.h>
+> 
+> struct __attribute__((packed)) test_container {
+>     char padding[49];
+>     struct mutex io_lock;
+> };
+> 
+> static int __init alignment_init(void)
+> {
+>     struct test_container cont;
+>     pr_info("io_lock address offset mod 4: %lu\n", (unsigned long)&cont.io_lock % 4);
+>     return 0;
+> }
+> 
+> static void __exit alignment_exit(void)
+> {
+>     pr_info("Module unloaded\n");
+> }
+> 
+> module_init(alignment_init);
+> module_exit(alignment_exit);
+> MODULE_LICENSE("GPL");
+> MODULE_AUTHOR("x");
+> MODULE_DESCRIPTION("x");
+> ```
+> 
+> Result from dmesg:
+> [Mon Aug 25 15:44:50 2025] io_lock address offset mod 4: 1
+> 
+
+Thanks for sending code to illustrate your point. Unfortunately, I was not 
+able to reproduce your results. Tested on x86, your test module shows no 
+misalignment:
+
+[131840.349042] io_lock address offset mod 4: 0
+
+Tested on m68k I also get 0, given the patch at the top of this thread:
+
+[    0.400000] io_lock address offset mod 4: 0
+
+> 
+> As we can see, a packed struct can still force the entire mutex object 
+> to an unaligned address. With an address like this, the WARN_ON_ONCE can 
+> still be triggered.
+
+I don't think so. But there is something unexpected going on here -- the 
+output from pahole appears to say io_lock is at offset 49, which seems to 
+contradict the printk() output above.
+
+struct test_container {
+        char                       padding[49];          /*     0    49 */
+        struct mutex               io_lock __attribute__((__aligned__(1))); /*    49    12 */
+
+        /* size: 61, cachelines: 1, members: 2 */
+        /* forced alignments: 1 */
+        /* last cacheline: 61 bytes */
+} __attribute__((__packed__));
