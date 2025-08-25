@@ -1,33 +1,33 @@
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4252E5411
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 11:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277BB2EA74C
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 11:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756120783; cv=none; b=qYOUaOkJramgZOCrI82s6yKpgSKQ6A/hnISqXGpztjosxXXDGLSYLGqZzqT6LK6il+s3Gtd33S1WO659UivfyPAubQmpciA8fuWNLHNyazL0apAy0h4C8i2GWfXycxFh3rCD9R0Aywj5zSfxsDt0JKh/xd8Nl026huHF3NbMWqk=
+	t=1756121861; cv=none; b=BF6eeSpKZppbgqWyp+cjeAA24WR7hNzXuqMJKk3raLQ4gQfUAr99qa2v64u0jcTrjiaXy4IX8VHASuTtIRgeXCV80dART/dDxEOI3vi9lKOmLHyGMCNfbc/JQMtH7oAyu4pdhn9z2+5+J1YFLxy6PxmAW+e1sK9b4zKfZIvzMuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756120783; c=relaxed/simple;
-	bh=abeEpDYL1qgnMqEOopqpv+UkECheT5tVxOCyUApnwH4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r+3Frm0pPs/nC5axFz+yF5U8aUaHYuJ9ys4Vy3btQdIg+s18yVEH1NXjL7MWYp6AFW8BC9uaYc1kUHqQoWmCIV/ez4FZ9z65FfVYB/d38y47sW969OPNsNIiW1K8N/8oi2wq57STMeA+9T+gOH09wtpoXp9pDJ37Gb7ONPnZe+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cLHA4cDC; arc=none smtp.client-ip=95.215.58.183
+	s=arc-20240116; t=1756121861; c=relaxed/simple;
+	bh=pwJCEMDpvX3gklff8xWinqIcMPxht82kzXUSa4aAw8Y=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=kJdAGgGytm+6pmt43P78z0SgPOP7rqzfo/S/d7rWD5/pT22d8nmh0IgDV5lIMPuJkQZNvRDY4RHLgmoL70kHkn1mYb+Jw4GYYwC/lZ+yH6hEjBQzSfXYJSkIpQKy881SA5KLDn4Ncs1a1Z9sp4H68htlrqrjOFFVSfskkOKZXKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nPPJsa0x; arc=none smtp.client-ip=95.215.58.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cLHA4cDC"
-Message-ID: <d95592ec-f51e-4d80-b633-7440b4e69944@linux.dev>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nPPJsa0x"
+Message-ID: <30a55f56-93c2-4408-b1a5-5574984fb45f@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756120779;
+	t=1756121847;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Q3B0wNYJZR8rgNNF1zxTd6HIMaR7QIKKvouK3UYKEvM=;
-	b=cLHA4cDCqEAbAsT55G9hBCiMO1/WtVQIBYsSTb84tnvkWYDt+dgExmtKFnm2O38aUL9xfW
-	ER0biyvRqLkhNXP5M1jkfBh2cOWrtr+8H0Ug0cP7L7DkeUcA00lTg/xa3H5vrnCipnwmV5
-	HleeHsELwNfr8Whj9pmjWnyURQcormc=
-Date: Mon, 25 Aug 2025 19:19:19 +0800
+	bh=0E9DoNqxH8BhrYWKlmOL9GX4MsVdIQhY6Uu/0eN17PI=;
+	b=nPPJsa0xezAuseaYyAKztO89AC2rWbR4RjjyDTrK9pem5DC8VI6SQBPctQ61hKlfEtvcRy
+	ctw6+e+AciKKAJCaZT3I4/wXtIoiloms6v80MmCTJ4AXwsLL8NpmSHUMqqD4liNzn36M+X
+	ovTmSgNUttMRPT4sTSIuDLaWVh/x0gQ=
+Date: Mon, 25 Aug 2025 19:36:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -36,6 +36,8 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Subject: Re: [PATCH] atomic: Specify natural alignment for atomic_t
 Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
 To: Finn Thain <fthain@linux-m68k.org>
 Cc: akpm@linux-foundation.org, geert@linux-m68k.org,
  linux-kernel@vger.kernel.org, mhiramat@kernel.org, oak@helsinkinet.fi,
@@ -48,113 +50,165 @@ References: <7d9554bfe2412ed9427bf71ce38a376e06eb9ec4.1756087385.git.fthain@linu
  <5a44c60b-650a-1f8a-d5cb-abf9f0716817@linux-m68k.org>
  <4e7e7292-338d-4a57-84ec-ae7427f6ad7c@linux.dev>
  <d07778f8-8990-226b-5171-4a36e6e18f32@linux-m68k.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Lance Yang <lance.yang@linux.dev>
-In-Reply-To: <d07778f8-8990-226b-5171-4a36e6e18f32@linux-m68k.org>
+ <d95592ec-f51e-4d80-b633-7440b4e69944@linux.dev>
+In-Reply-To: <d95592ec-f51e-4d80-b633-7440b4e69944@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Thanks for digging deeper!
 
-On 2025/8/25 18:49, Finn Thain wrote:
+
+On 2025/8/25 19:19, Lance Yang wrote:
+> Thanks for digging deeper!
 > 
-> [Belated Cc linux-m68k...]
-> 
-> On Mon, 25 Aug 2025, Lance Yang wrote:
-> 
+> On 2025/8/25 18:49, Finn Thain wrote:
 >>
->> On 2025/8/25 14:17, Finn Thain wrote:
+>> [Belated Cc linux-m68k...]
+>>
+>> On Mon, 25 Aug 2025, Lance Yang wrote:
+>>
 >>>
->>> On Mon, 25 Aug 2025, Lance Yang wrote:
->>>
+>>> On 2025/8/25 14:17, Finn Thain wrote:
 >>>>
->>>> What if we squash the runtime check fix into your patch?
+>>>> On Mon, 25 Aug 2025, Lance Yang wrote:
+>>>>
+>>>>>
+>>>>> What if we squash the runtime check fix into your patch?
+>>>>
+>>>> Did my patch not solve the problem?
 >>>
->>> Did my patch not solve the problem?
+>>> Hmm... it should solve the problem for natural alignment, which is a
+>>> critical fix.
+>>>
+>>> But it cannot solve the problem of forced misalignment from drivers
+>>> using #pragma pack(1). The runtime warning will still trigger in those
+>>> cases.
+>>>
+>>> I built a simple test module on a kernel with your patch applied:
+>>>
+>>> ```
+>>> #include <linux/module.h>
+>>> #include <linux/init.h>
+>>>
+>>> struct __attribute__((packed)) test_container {
+>>>      char padding[49];
+>>>      struct mutex io_lock;
+>>> };
+>>>
+>>> static int __init alignment_init(void)
+>>> {
+>>>      struct test_container cont;
+>>>      pr_info("io_lock address offset mod 4: %lu\n", (unsigned 
+>>> long)&cont.io_lock % 4);
+>>>      return 0;
+>>> }
+>>>
+>>> static void __exit alignment_exit(void)
+>>> {
+>>>      pr_info("Module unloaded\n");
+>>> }
+>>>
+>>> module_init(alignment_init);
+>>> module_exit(alignment_exit);
+>>> MODULE_LICENSE("GPL");
+>>> MODULE_AUTHOR("x");
+>>> MODULE_DESCRIPTION("x");
+>>> ```
+>>>
+>>> Result from dmesg:
+>>> [Mon Aug 25 15:44:50 2025] io_lock address offset mod 4: 1
+>>>
 >>
->> Hmm... it should solve the problem for natural alignment, which is a
->> critical fix.
+>> Thanks for sending code to illustrate your point. Unfortunately, I was 
+>> not
+>> able to reproduce your results. Tested on x86, your test module shows no
+>> misalignment:
 >>
->> But it cannot solve the problem of forced misalignment from drivers
->> using #pragma pack(1). The runtime warning will still trigger in those
->> cases.
+>> [131840.349042] io_lock address offset mod 4: 0
 >>
->> I built a simple test module on a kernel with your patch applied:
+>> Tested on m68k I also get 0, given the patch at the top of this thread:
 >>
->> ```
->> #include <linux/module.h>
->> #include <linux/init.h>
+>> [    0.400000] io_lock address offset mod 4: 0
 >>
->> struct __attribute__((packed)) test_container {
->>      char padding[49];
->>      struct mutex io_lock;
->> };
->>
->> static int __init alignment_init(void)
->> {
->>      struct test_container cont;
->>      pr_info("io_lock address offset mod 4: %lu\n", (unsigned long)&cont.io_lock % 4);
->>      return 0;
->> }
->>
->> static void __exit alignment_exit(void)
->> {
->>      pr_info("Module unloaded\n");
->> }
->>
->> module_init(alignment_init);
->> module_exit(alignment_exit);
->> MODULE_LICENSE("GPL");
->> MODULE_AUTHOR("x");
->> MODULE_DESCRIPTION("x");
->> ```
->>
->> Result from dmesg:
->> [Mon Aug 25 15:44:50 2025] io_lock address offset mod 4: 1
->>
+>>>
+>>> As we can see, a packed struct can still force the entire mutex object
+>>> to an unaligned address. With an address like this, the WARN_ON_ONCE can
+>>> still be triggered.
 > 
-> Thanks for sending code to illustrate your point. Unfortunately, I was not
-> able to reproduce your results. Tested on x86, your test module shows no
-> misalignment:
-> 
-> [131840.349042] io_lock address offset mod 4: 0
-> 
-> Tested on m68k I also get 0, given the patch at the top of this thread:
-> 
-> [    0.400000] io_lock address offset mod 4: 0
-> 
 >>
->> As we can see, a packed struct can still force the entire mutex object
->> to an unaligned address. With an address like this, the WARN_ON_ONCE can
->> still be triggered.
+>> I don't think so. But there is something unexpected going on here -- the
+>> output from pahole appears to say io_lock is at offset 49, which seems to
+>> contradict the printk() output above.
+> 
+> Interesting! That contradiction is the key. It seems we're seeing different
+> compiler behaviors.
+> 
+> I'm on GCC 14.2.0 (Debian 14.2.0-19), and it appears to be strictly 
+> respecting
+> the packed attribute.
+> 
+> So let's print something more:
+> 
+> ```
+> #include <linux/module.h>
+> #include <linux/init.h>
+> 
+> struct __attribute__((packed)) test_container {
+>      char padding[49];
+>      struct mutex io_lock;
+> };
+> 
+> static int __init alignment_init(void)
+> {
+>      struct test_container cont;
+>      pr_info("Container base address      : %px\n", &cont);
+>      pr_info("io_lock member address      : %px\n", &cont.io_lock);
+>      pr_info("io_lock address offset mod 4: %lu\n", (unsigned 
+> long)&cont.io_lock % 4);
+>      return 0;
+> }
+> 
+> static void __exit alignment_exit(void)
+> {
+>      pr_info("Module unloaded\n");
+> }
+> 
+> module_init(alignment_init);
+> module_exit(alignment_exit);
+> MODULE_LICENSE("GPL");
+> MODULE_AUTHOR("x");
+> MODULE_DESCRIPTION("x");
+> ```
+> 
+> Result from dmesg:
+> 
+> ```
+> [Mon Aug 25 19:15:33 2025] Container base address      : ff1100063570f840
+> [Mon Aug 25 19:15:33 2025] io_lock member address      : ff1100063570f871
+> [Mon Aug 25 19:15:33 2025] io_lock address offset mod 4: 1
+> ```
+> 
+> io_lock is exactly base + 49, resulting in misalignment.
+> 
+> Seems like your compiler is cleverly re-aligning the whole struct on the
+> stack, but we can't rely on that behavior, as it's not guaranteed across
+> all compilers or versions. wdyt?
 
-> 
-> I don't think so. But there is something unexpected going on here -- the
-> output from pahole appears to say io_lock is at offset 49, which seems to
-> contradict the printk() output above.
 
-Interesting! That contradiction is the key. It seems we're seeing different
-compiler behaviors.
-
-I'm on GCC 14.2.0 (Debian 14.2.0-19), and it appears to be strictly 
-respecting
-the packed attribute.
-
-So let's print something more:
+Same here, using a global static variable instead of a local one. The result
+is consistently misaligned.
 
 ```
 #include <linux/module.h>
 #include <linux/init.h>
 
-struct __attribute__((packed)) test_container {
+static struct __attribute__((packed)) test_container {
      char padding[49];
      struct mutex io_lock;
-};
+} cont;
 
 static int __init alignment_init(void)
 {
-     struct test_container cont;
      pr_info("Container base address      : %px\n", &cont);
      pr_info("io_lock member address      : %px\n", &cont.io_lock);
      pr_info("io_lock address offset mod 4: %lu\n", (unsigned 
@@ -177,13 +231,7 @@ MODULE_DESCRIPTION("x");
 Result from dmesg:
 
 ```
-[Mon Aug 25 19:15:33 2025] Container base address      : ff1100063570f840
-[Mon Aug 25 19:15:33 2025] io_lock member address      : ff1100063570f871
-[Mon Aug 25 19:15:33 2025] io_lock address offset mod 4: 1
+[Mon Aug 25 19:33:28 2025] Container base address      : ffffffffc28f0940
+[Mon Aug 25 19:33:28 2025] io_lock member address      : ffffffffc28f0971
+[Mon Aug 25 19:33:28 2025] io_lock address offset mod 4: 1
 ```
-
-io_lock is exactly base + 49, resulting in misalignment.
-
-Seems like your compiler is cleverly re-aligning the whole struct on the
-stack, but we can't rely on that behavior, as it's not guaranteed across
-all compilers or versions. wdyt?
