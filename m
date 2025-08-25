@@ -1,49 +1,50 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F103F277C95
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 16:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6BF3009E6
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 16:35:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756139758; cv=none; b=Opq/mjec8Si+7RXDg8xkuop6kTBiuciXDbhssBQT7c5INXB7JN59xBTy6OapdtPFY8kxnnmY5p5MmDub6UfUq3vB0iHqLujtgFSYDRYqk5SzYHwx8Vd3/l4y0Fl3/v9DaflDpH6Vkrx1MzhWBBPZGHVngENP3vo3rH7SQ1s8qW8=
+	t=1756139759; cv=none; b=IbX1ik4YgTkB6noV/GoZiSzeATHzQnq/LB17HoDL3wrLWewbpQW8s/9SFyjmTEYnvLc8sjic1zR+3f7s6FMJgcBpnXI1o30M1rH6KIv3KRvboNGaijwUBSZh2zfzdNeey+sWNW1Iy27G55qDmbn/l2qnbymGHu6EK/NYKWwumS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756139758; c=relaxed/simple;
-	bh=L2un3Tp24kq84D49bPeqtKFgx0ttvdt2Oi+LfIRW2Jk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DiaZizboQdZc6QlOh3Mi5hcVugZreldGFZN9+rthq+X9Fmk1e5OhrX1fGDCrBnzRIvQrjMwaElTg6DzUyC1DC9ojMnVV2fFe9Skij+3KcSShkV6t98DTmmZNzNfP7K7Nu07DhN+guL2hRgX2WXibjmJZe4hH/eNGeSw9JaBsdVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b1jBJs97; arc=none smtp.client-ip=198.175.65.13
+	s=arc-20240116; t=1756139759; c=relaxed/simple;
+	bh=4BgR1C08p0drss5NDxXSek6A+9jO5AXL54CNKL2STq4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=azHTwOriUAxo53WmyenlR2dbWkQJu5fXAAuf4KE8vL2OrgjMkJU+nSfsfFK27SDrxNGB/Cs5rqBWcowT2NlIQLf7G3G/BI2EHK4gHWxaLuHk2rvtvtnf0y0eYdVwIHFu4sOCO8+Kt+1n1Akcth839f8WOv9zjt6OYGPwWDeZEuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IddtJ7b6; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b1jBJs97"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IddtJ7b6"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1756139757; x=1787675757;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=L2un3Tp24kq84D49bPeqtKFgx0ttvdt2Oi+LfIRW2Jk=;
-  b=b1jBJs977XWwEidIdBcGxRAgk56wpCWxMdqWBf0XyKnzTkwgDLklcF0n
-   abgUWucmdc/ghVoA7ZB79gBOreevLiMCY4ulzNGaCuFTGWXLVw+N6W6ub
-   AZ40EyjidEsfaTbxRCjf05HdAv6f+n8UZLSEKsO1ngCsQIpIwsTAMLq5Q
-   0HpuwA+2UClm/r9Z65I9sdgGu1VMKOCoUnNKSuITm41LUB0eQlfLqpYTV
-   yeeD9Bf8jMvAqa7RmxnReturTZDcnbxpQojBEmjxPlSFKd1WdUIgLdbf0
-   4JxLR8jQknajEYv2xfPG6ik0nccfhSqaEBsG/IcqkHg/NzWsCs+Rb38JS
-   A==;
-X-CSE-ConnectionGUID: DQEWdbO7QG2zHxI309yGtQ==
-X-CSE-MsgGUID: GAdgGYn7QH6Y5DL4EaTkig==
-X-IronPort-AV: E=McAfee;i="6800,10657,11533"; a="69459518"
+  t=1756139758; x=1787675758;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=4BgR1C08p0drss5NDxXSek6A+9jO5AXL54CNKL2STq4=;
+  b=IddtJ7b67kNvKBVHp5j6dx/9utGLPI6omcP0MXi3JBQXf/SuufKQCWzS
+   53WSywoxJ18LbwzUcc1O3CUlii4AyCTJ+f2qNUdDo/LHwP8ZX0XLhtHiU
+   CqDC5ummM+sx41j/57aMvLnF/QZofBzSKGwPj9r5WrscA+i107L6vKbE0
+   e0A+zuEItfyK9B4CgwTElyrgl0yBxDDymNaEPkB1jdTqEeTCOjFQsAJAe
+   PJByDOXqXlJ9fW4p/0+tra7dH4u3HdebhwtTa63n2bG6SJ0vdhrP4DcVo
+   AIdIQJd5NxloBlbqufi9V3ebouhq5buhVjnPKIuc5vpd+WnEquui3kRj9
+   g==;
+X-CSE-ConnectionGUID: w4ZLkchaRBCYJkdM9U380g==
+X-CSE-MsgGUID: cA+tsnFeRya9CHcY7zkm9g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11533"; a="58288842"
 X-IronPort-AV: E=Sophos;i="6.18,213,1751266800"; 
-   d="scan'208";a="69459518"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2025 09:35:55 -0700
-X-CSE-ConnectionGUID: orFQ8jjkTR+a1kLWJels8Q==
-X-CSE-MsgGUID: l5OrMqmGT8icT6nXAJqR8A==
+   d="scan'208";a="58288842"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Aug 2025 09:35:56 -0700
+X-CSE-ConnectionGUID: RQaCu0IOQPuihHdwgc5pQg==
+X-CSE-MsgGUID: snlOI4+aRY2/4OBMeyrQuA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.18,213,1751266800"; 
-   d="scan'208";a="169241087"
+   d="scan'208";a="168588221"
 Received: from black.igk.intel.com ([10.91.253.5])
-  by orviesa007.jf.intel.com with ESMTP; 25 Aug 2025 09:35:48 -0700
+  by orviesa010.jf.intel.com with ESMTP; 25 Aug 2025 09:35:48 -0700
 Received: by black.igk.intel.com (Postfix, from userid 1003)
-	id D581B94; Mon, 25 Aug 2025 18:35:46 +0200 (CEST)
+	id DD7AF96; Mon, 25 Aug 2025 18:35:46 +0200 (CEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Helge Deller <deller@gmx.de>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -79,10 +80,12 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	Denis Efremov <efremov@linux.com>,
 	Jens Axboe <axboe@kernel.dk>,
 	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 0/3] floppy: A couple of cleanups
-Date: Mon, 25 Aug 2025 18:32:54 +0200
-Message-ID: <20250825163545.39303-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 2/3] floppy: Replace custom SZ_64K constant
+Date: Mon, 25 Aug 2025 18:32:56 +0200
+Message-ID: <20250825163545.39303-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.50.1
+In-Reply-To: <20250825163545.39303-1-andriy.shevchenko@linux.intel.com>
+References: <20250825163545.39303-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -91,33 +94,78 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There are a few places in architecture code for the floppy driver
-that may be cleaned up. Do it so.
+There are only two headers using the K_64 custom constant. Moreover,
+its usage tangles a code because the constant is defined in the C
+file, while users are in the headers. Replace it with well defined
+SZ_64K from sizes.h.
 
-Assumed to route via Andrew Morton's tree as floppy is basically orphaned.
+Acked-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ arch/parisc/include/asm/floppy.h | 5 +++--
+ arch/x86/include/asm/floppy.h    | 3 ++-
+ drivers/block/floppy.c           | 2 --
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-Changelog v2:
-- combined separate patches sent earlier into a series
-- added tags (Helge, Geert)
-- fixed typo in the commit message (Geert)
-
-Andy Shevchenko (3):
-  floppy: Remove unused CROSS_64KB() macro from arch/ code
-  floppy: Replace custom SZ_64K constant
-  floppy: Sort headers alphabetically
-
- arch/alpha/include/asm/floppy.h    | 19 ----------
- arch/arm/include/asm/floppy.h      |  2 --
- arch/m68k/include/asm/floppy.h     |  4 ---
- arch/mips/include/asm/floppy.h     | 15 --------
- arch/parisc/include/asm/floppy.h   | 11 +++---
- arch/powerpc/include/asm/floppy.h  |  5 ---
- arch/sparc/include/asm/floppy_32.h |  3 --
- arch/sparc/include/asm/floppy_64.h |  3 --
- arch/x86/include/asm/floppy.h      |  8 ++---
- drivers/block/floppy.c             | 56 ++++++++++++++----------------
- 10 files changed, 34 insertions(+), 92 deletions(-)
-
+diff --git a/arch/parisc/include/asm/floppy.h b/arch/parisc/include/asm/floppy.h
+index df20dbef3ada..f15b69fea901 100644
+--- a/arch/parisc/include/asm/floppy.h
++++ b/arch/parisc/include/asm/floppy.h
+@@ -8,9 +8,9 @@
+ #ifndef __ASM_PARISC_FLOPPY_H
+ #define __ASM_PARISC_FLOPPY_H
+ 
++#include <linux/sizes.h>
+ #include <linux/vmalloc.h>
+ 
+-
+ /*
+  * The DMA channel used by the floppy controller cannot access data at
+  * addresses >= 16MB
+@@ -20,7 +20,8 @@
+  * floppy accesses go through the track buffer.
+  */
+ #define _CROSS_64KB(a,s,vdma) \
+-(!(vdma) && ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
++	(!(vdma) && \
++	 ((unsigned long)(a) / SZ_64K != ((unsigned long)(a) + (s) - 1) / SZ_64K))
+ 
+ #define SW fd_routine[use_virtual_dma&1]
+ #define CSW fd_routine[can_use_virtual_dma & 1]
+diff --git a/arch/x86/include/asm/floppy.h b/arch/x86/include/asm/floppy.h
+index e76cb74bbed2..e7a244051c62 100644
+--- a/arch/x86/include/asm/floppy.h
++++ b/arch/x86/include/asm/floppy.h
+@@ -10,6 +10,7 @@
+ #ifndef _ASM_X86_FLOPPY_H
+ #define _ASM_X86_FLOPPY_H
+ 
++#include <linux/sizes.h>
+ #include <linux/vmalloc.h>
+ 
+ /*
+@@ -22,7 +23,7 @@
+  */
+ #define _CROSS_64KB(a, s, vdma)						\
+ 	(!(vdma) &&							\
+-	 ((unsigned long)(a)/K_64 != ((unsigned long)(a) + (s) - 1) / K_64))
++	 ((unsigned long)(a) / SZ_64K != ((unsigned long)(a) + (s) - 1) / SZ_64K))
+ 
+ #define SW fd_routine[use_virtual_dma & 1]
+ #define CSW fd_routine[can_use_virtual_dma & 1]
+diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+index 24be0c2c4075..d769a223fcc8 100644
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -233,8 +233,6 @@ static unsigned short virtual_dma_port = 0x3f0;
+ irqreturn_t floppy_interrupt(int irq, void *dev_id);
+ static int set_dor(int fdc, char mask, char data);
+ 
+-#define K_64	0x10000		/* 64KB */
+-
+ /* the following is the mask of allowed drives. By default units 2 and
+  * 3 of both floppy controllers are disabled, because switching on the
+  * motor of these drives causes system hangs on some PCI computers. drive
 -- 
 2.50.1
 
