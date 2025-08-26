@@ -1,126 +1,136 @@
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD45227A917
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 20:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BDF2E265A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Aug 2025 04:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756154905; cv=none; b=u5qfEsYW78yMUkJQEaz7mLnqDTyfaUaXAXv1X0tP0c2D3XhHGC8D+B7cGWrGIhDRUQoV34m83hOt6Mq6x+GczJYYhsiG4ysmmrDXLL/5iI+7sq0MmDsEV3j/xWjHOnIM+G6ztwm5dmmv2UxhRBfOgYQgLDO2BZpHDzaFjxYTc8o=
+	t=1756183796; cv=none; b=PvP8Xpa5/gxg2ZimVYKQVKXvGk9b84VN4FLijLTyVtNybRV1017pWKI8fkQwyDP1RHB/Hmh463D3/chNj1g2QxU36fe0sUvf/bTmxJbulqTGLE8/EfwPCOirCpVXahZIVvO/yJLzc2RiXSPWf3tkjoH07HY80XDd0hG/edAYpv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756154905; c=relaxed/simple;
-	bh=ws0OH/LPbfD0uWhZ3//ck7/pwntfVUXedOFJRthyTE0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=fBYHY5k1T3kp8yZmaWFXjONiuhdqrGtyfMwyY1r6Jvvjx2VQABzhGA69bdc4xwJOwDReUWGElNjF/bJf5JbUJ3c5mQ8sBwLPYdmBCdPsVvNN98yvY36Zzp8fOIcqkRzlJV181N/wuh9l9GgY1vP69BJCUTuY4ZyE9GvyDzBjoyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=d1A/Y4de; arc=none smtp.client-ip=209.85.166.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+	s=arc-20240116; t=1756183796; c=relaxed/simple;
+	bh=mrTYfgAhz8yJIWYyD+ab7SDQCpNIYQe9Kn5DqAcQJpU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=YNO8DpqYbeEitWOCuqV+SHNgyJO75tJeh/4zwkzat3FABEgc7ffEAbvMCIo7nZVxa2Cyl/rkuTqs/mkbtDqfd2ypNKWLqlBZvjyb+xp0l4eUdLSL8kHp4dP9KL7SJNcaBgOUkzxbPJSNE6WfLR7Xkg+25TYVaQSFgJO5039aEOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AGOU2HDD; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="d1A/Y4de"
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3ea8b3a64beso13897065ab.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 25 Aug 2025 13:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1756154903; x=1756759703; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N/dnllQLN8cDpaKVqJzQZtSLrZ7j3LLHfYLifC1ogCM=;
-        b=d1A/Y4de87ou1nsbcvfKXafa7UrGuCUySJGgTC/BZ798OQcepz49wkulo25MhBtI4R
-         Sqrj5M+O+vNoFj+fYxNWJ1o65vTON+YBKaJqO9C+63/xWrZg6piEAOvGi+9JDWJGa8bj
-         R+E5wYOMZ6iCIhB/XQS1USwJGltKJjheE3llv2bI0Cg0uEsy3CDxchHKtH0bzrTlEmSI
-         BBq/6OrEVjjuA10TvAuWeICBSLeF3Zpz8/vQiskd7xPSO3X/Xxog/9K1sQ4DRo9DJqfh
-         nDvgsrpxSP+8rqvvS1q6A6/gLanifXyAya9GwnCdMyjNPVDiHzIPCWPy8s9emBHPoimO
-         6E6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756154903; x=1756759703;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N/dnllQLN8cDpaKVqJzQZtSLrZ7j3LLHfYLifC1ogCM=;
-        b=sggdw/RP9KnQPxTQFd1iMfkpjXy31dZPjoFTk4Tasi4dgrkH5hhWBNcXSjRZU7AHvz
-         j3ZHEvczGrU7Jm3G46ESexKrK4vHlLKXTXApB9HAEcl6mP/eGeaMM/bh10fdxRmAneun
-         S6LXATY0H6n20iB+IoMQf6/mWTn9WQOeQvbR0+l3FtzjFZUPGTJcjZuJhXB+cRnzppGX
-         Y1zFjegylqz7LuSIOqAwqynF5BH8lFLwh7dELljx4cGR/kLUH1tLNTWorBec8YPeeZXv
-         6Yc3sCK8rI8tEYwThSOKmqj62A8nGJYTmMJpv93TcA8KfkEmfmE5gY0yCjmhgsASnBV0
-         cRTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWCeHHLBeXBm9XOoBUGdyZsl3fimM3BQyqihdZJv9SuPCyZethWPw9bK4nn770GgbSSwZ2W8+BsL9gb@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxtXliKCtjQp76cgcsmtfBGVmmGO58+i/nDu5dT/BfnWCgIBU7W
-	KznMjHoKv/JiFWkDkMriYU9DXWWDx9Hcw6H3Ka7mlK0Qprc87ZMk8DvYToMor2XAZUU=
-X-Gm-Gg: ASbGncvnMxX7yI/9rdq6mSfYg5lx8hYAsS1MdhSMJhtj5GJbJuTpqztdCpXVV9vY7OL
-	ZBAbBMWpuAOsR8iI8XXqdzezjlVx1J0YAasDwaJAfYoHG3NG86B4Fg2i41AT+QNAwVnaA5/zY7s
-	ogyLn2oHsmdK8klwz1slb6NlvLYBP3cUi7/u+gnWervjCBVL2cjtH8dHbiIX+J6ijJnPESIvvAR
-	EHPkZ7aKW+KAwJIZjrzQlsKR1qnCUQJWKrzmTfRsupd3Ru4KwgkxweDjhf1NGOh00mGp2B/egxZ
-	zk4RGc0Y391I6+Kd3IvopWZ5I30x1Jnp4e6zoQj8yAaTyDA0JZ7Y/HF0Q47EAQZeP3Xk9oLKPXx
-	iUlKulJydi+6aJw==
-X-Google-Smtp-Source: AGHT+IGz/OLusjKqnvYuytsepj0QasUaFhQNGeebbI4cWxx4cpCIdsaTdG9b8SEzhdQW1utDLqTgxw==
-X-Received: by 2002:a05:6e02:1582:b0:3eb:cca5:5586 with SMTP id e9e14a558f8ab-3ebcca5874cmr83676445ab.17.1756154902655;
-        Mon, 25 Aug 2025 13:48:22 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3ea4effe70csm53084775ab.51.2025.08.25.13.48.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 13:48:22 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Helge Deller <deller@gmx.de>, Geert Uytterhoeven <geert@linux-m68k.org>, 
- Thomas Fourier <fourier.thomas@gmail.com>, linux-alpha@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- sparclinux@vger.kernel.org, linux-block@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Ian Molton <spyro@f2s.com>, 
- Russell King <linux@armlinux.org.uk>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- Christophe Leroy <christophe.leroy@csgroup.eu>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, Thomas Gleixner <tglx@linutronix.de>, 
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
- "H. Peter Anvin" <hpa@zytor.com>, Denis Efremov <efremov@linux.com>, 
- Andrew Morton <akpm@linux-foundation.org>
-In-Reply-To: <20250825163545.39303-1-andriy.shevchenko@linux.intel.com>
-References: <20250825163545.39303-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 0/3] floppy: A couple of cleanups
-Message-Id: <175615490112.25116.3742797696959119744.b4-ty@kernel.dk>
-Date: Mon, 25 Aug 2025 14:48:21 -0600
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AGOU2HDD"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 6F2F640476;
+	Tue, 26 Aug 2025 04:49:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60EB9C4CEF1;
+	Tue, 26 Aug 2025 04:49:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756183793;
+	bh=mrTYfgAhz8yJIWYyD+ab7SDQCpNIYQe9Kn5DqAcQJpU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AGOU2HDDCy6d14h/txWFuiD0IdaXRysDk6Dbpw4n4li24LSI+9kVsYYI1nxI4n4m6
+	 SbuIYsohrM1cYPTeY/HyYGVBpxZuBnMPh/BUsP56TuQTZgo7W9pHSOGaeiPOcj3os6
+	 O3BhEqhgjZmfLYkLGPpLZnzdWyMmWNEj1Q98oDoLOki0iyRwGWUiR9+3dIULnXei5X
+	 v6UNkUvGrXvCuJj2pNMX2kUI45+OTM6H6K25uUOj1YET7MGRoLDs5v5qE3GrsNkc2N
+	 m6qaVKhaVtOdx8/lMiVSQDQrzqsrxCC2pssxUTaNj7NnU4sakQD8nLdNDr/0HHhjAc
+	 Lr/FVDTwVp1zA==
+Date: Tue, 26 Aug 2025 13:49:48 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Lance Yang <lance.yang@linux.dev>
+Cc: akpm@linux-foundation.org, fthain@linux-m68k.org, geert@linux-m68k.org,
+ senozhatsky@chromium.org, amaindex@outlook.com, anna.schumaker@oracle.com,
+ boqun.feng@gmail.com, ioworker0@gmail.com, joel.granados@kernel.org,
+ jstultz@google.com, kent.overstreet@linux.dev, leonylgao@tencent.com,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ longman@redhat.com, mingo@redhat.com, mingzhe.yang@ly.com,
+ oak@helsinkinet.fi, peterz@infradead.org, rostedt@goodmis.org,
+ tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] hung_task: fix warnings caused by unaligned lock
+ pointers
+Message-Id: <20250826134948.4f5f5aa74849e7f56f106c83@kernel.org>
+In-Reply-To: <20250823050036.7748-1-lance.yang@linux.dev>
+References: <f79735e1-1625-4746-98ce-a3c40123c5af@linux.dev>
+	<20250823050036.7748-1-lance.yang@linux.dev>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3-dev-2ce6c
 
+On Sat, 23 Aug 2025 13:00:36 +0800
+Lance Yang <lance.yang@linux.dev> wrote:
 
-On Mon, 25 Aug 2025 18:32:54 +0200, Andy Shevchenko wrote:
-> There are a few places in architecture code for the floppy driver
-> that may be cleaned up. Do it so.
+> From: Lance Yang <lance.yang@linux.dev>
 > 
-> Assumed to route via Andrew Morton's tree as floppy is basically orphaned.
+> The blocker tracking mechanism assumes that lock pointers are at least
+> 4-byte aligned to use their lower bits for type encoding.
 > 
-> Changelog v2:
-> - combined separate patches sent earlier into a series
-> - added tags (Helge, Geert)
-> - fixed typo in the commit message (Geert)
+> However, as reported by Geert Uytterhoeven, some architectures like m68k
+> only guarantee 2-byte alignment of 32-bit values. This breaks the
+> assumption and causes two related WARN_ON_ONCE checks to trigger.
 > 
-> [...]
+> To fix this, the runtime checks are adjusted. The first WARN_ON_ONCE in
+> hung_task_set_blocker() is changed to a simple 'if' that returns silently
+> for unaligned pointers. The second, now-invalid WARN_ON_ONCE in
+> hung_task_clear_blocker() is then removed.
+> 
+> Thanks to Geert for bisecting!
+> 
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lore.kernel.org/lkml/CAMuHMdW7Ab13DdGs2acMQcix5ObJK0O2dG_Fxzr8_g58Rc1_0g@mail.gmail.com
+> Fixes: e711faaafbe5 ("hung_task: replace blocker_mutex with encoded blocker")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Lance Yang <lance.yang@linux.dev>
 
-Applied, thanks!
+Looks good to me. I think we can just ignore it for
+this debugging option.
 
-[1/3] floppy: Remove unused CROSS_64KB() macro from arch/ code
-      commit: d74968780bf287958e2815be5f088dd6c7b7aa19
-[2/3] floppy: Replace custom SZ_64K constant
-      commit: 8e7ee0f6fa33934373c1c37e8cfb71cff2acea09
-[3/3] floppy: Sort headers alphabetically
-      commit: d4399e6eb27a803b73d17fe984448a823b4d3a30
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Best regards,
+Thank you,
+
+> ---
+>  include/linux/hung_task.h | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/hung_task.h b/include/linux/hung_task.h
+> index 34e615c76ca5..69640f266a69 100644
+> --- a/include/linux/hung_task.h
+> +++ b/include/linux/hung_task.h
+> @@ -20,6 +20,10 @@
+>   * always zero. So we can use these bits to encode the specific blocking
+>   * type.
+>   *
+> + * Note that on architectures like m68k with only 2-byte alignment, the
+> + * blocker tracking mechanism gracefully does nothing for any lock that is
+> + * not 4-byte aligned.
+> + *
+>   * Type encoding:
+>   * 00 - Blocked on mutex			(BLOCKER_TYPE_MUTEX)
+>   * 01 - Blocked on semaphore			(BLOCKER_TYPE_SEM)
+> @@ -45,7 +49,7 @@ static inline void hung_task_set_blocker(void *lock, unsigned long type)
+>  	 * If the lock pointer matches the BLOCKER_TYPE_MASK, return
+>  	 * without writing anything.
+>  	 */
+> -	if (WARN_ON_ONCE(lock_ptr & BLOCKER_TYPE_MASK))
+> +	if (lock_ptr & BLOCKER_TYPE_MASK)
+>  		return;
+>  
+>  	WRITE_ONCE(current->blocker, lock_ptr | type);
+> @@ -53,8 +57,6 @@ static inline void hung_task_set_blocker(void *lock, unsigned long type)
+>  
+>  static inline void hung_task_clear_blocker(void)
+>  {
+> -	WARN_ON_ONCE(!READ_ONCE(current->blocker));
+> -
+>  	WRITE_ONCE(current->blocker, 0UL);
+>  }
+>  
+> -- 
+> 2.49.0
+> 
+
+
 -- 
-Jens Axboe
-
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
