@@ -1,159 +1,198 @@
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCD67081C
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Aug 2025 05:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF303596D
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Aug 2025 07:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756185409; cv=none; b=aVSoA6WBQT0ZZS2eEb5WbgPgjNj+myfkOCO8bgbNGA+vg4xLleiHdaMr+AAMEsIYOoFKZaqO3hbGhnwArtDkAAeW21ob4ZiuIb4mWyAVhlo2h2HxJFwjFarbOQb0dNPc4o2bzCPf4vRhJVp2mvih3dy8DiNJOOxlJWi7QnWE92g=
+	t=1756191666; cv=none; b=AbJW2h9V/DIFGYlOThuUxhISmNoEjBv12RueDMOJJhCgU7WW737V1TUiEf1PLWymFZ5wa1IEfHEzHZc3TA3pvkPZa+meWQnRvuiNdKe3QPgwN4mJFqJ0JW/zlIBnDkcjlXHNfte4QOfOWEk3j3nooYd19RO09YOSt/yBPtiMKxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756185409; c=relaxed/simple;
-	bh=2jbbXl6GDwJvfi5DE0nXIK0RqpNAJHPFS3yDlEfn2QY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aVMoXcYv9SmejJH+5eFk0IHumJEUFRhwGmX8fDzGwaTKAjHIFOR3VYT4EqtPDtQ+jzR1yNkOHEqcAzW2B2mepVx2OGItSS9rUBmngTqN6DtWpWgxdrNgOvfgBrHDLYLLGoqYw4bmDTwUWCKo4zByv3e5RY+nAMfDmQnApcRkIMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tZIXCni+; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1756191666; c=relaxed/simple;
+	bh=XUmcwogi7Ta1qPObQ5MJ5DLghO71z0VTRSn7qZsUIt4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=kfu7xzvTUzFntFEl5FxT1lGYf63U65IDJthxfnKhbG+STXGexxkYJFPwiVcSXo7SIVd6IzTRcEVxtjRhN58dZghwS0RSBvWDknYLp/rS5gRMlqBDYKV4FLd5GiNbnF+86nJznfG1hxyV6/q3R2it+pdlvR0KSlaURRyPXO37LF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E6kvhofE; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tZIXCni+"
-Message-ID: <1edc08b2-801f-4968-8198-ebb0d7c3accb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756185395;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ci1PdBuzNcOaR7y0193uhT7DsHMGCXsYNxvG0Vv+L28=;
-	b=tZIXCni+4wK0EP62V+S2BZuZBIQQws2yaAgZvU3Iqj4kP9q8pHcuR98QSThIliOFz8mmYN
-	XzdzZG5TMOKZnf63CvCg34Rft41XAaxTCJNEoym1yhUTRb0yum5IlLr0e9D/SkU455HAF8
-	X/kcqfcjs/Oa1OwV1AsjPa0+mB7bBfY=
-Date: Tue, 26 Aug 2025 13:16:25 +0800
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E6kvhofE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1756191665; x=1787727665;
+  h=date:from:to:cc:subject:message-id;
+  bh=XUmcwogi7Ta1qPObQ5MJ5DLghO71z0VTRSn7qZsUIt4=;
+  b=E6kvhofEGhNGo7MrjLNoGd+V5T7Bub+53Dk4TJ9ukSBZ7xOpYP70UeUa
+   QTTM9xLSySy+PAn2r2oHxN6/ek/XY/JhxLBU+Wg8ssLDKiw3AxIgjak/h
+   kcuY6mOxa/qaIic3SensiWqh9QpPnqOAa9E0oA6VOYw5RTQb9ACiOwQFr
+   0ZFTBDEvRIw7mZEKaTaQbNX6hzfGypmd/JjXPYqchyvM3GU7PQoCqHdta
+   G4weShEdA9b4FRvjP27DjF8yfLS1YTa+jbPUFl8QuzB1Gz/AGZs7lFPhE
+   XMwDgpE7jC21v2tQTxWHPsoXV9+TdLBLnAMOxDCPkpA/tcop6znbphtGw
+   Q==;
+X-CSE-ConnectionGUID: PZNKp3wLQbORCKTPfnXqJA==
+X-CSE-MsgGUID: Gfx0jbsOTcObaxCS3JD34w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11533"; a="62232971"
+X-IronPort-AV: E=Sophos;i="6.18,214,1751266800"; 
+   d="scan'208";a="62232971"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2025 00:01:04 -0700
+X-CSE-ConnectionGUID: Y4Us6SCpSKyzaO+7Jw77BQ==
+X-CSE-MsgGUID: x2ftufb+QTenJvacmKJgHw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,214,1751266800"; 
+   d="scan'208";a="169884863"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by fmviesa008.fm.intel.com with ESMTP; 26 Aug 2025 00:01:02 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uqnfr-000OHv-2i;
+	Tue, 26 Aug 2025 07:00:57 +0000
+Date: Tue, 26 Aug 2025 15:00:48 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 935846450801c685f73e5b5ee9cfd757b0bc1f9f
+Message-ID: <202508261540.0pWbUYl7-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] hung_task: fix warnings by enforcing alignment on
- lock structures
-Content-Language: en-US
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: akpm@linux-foundation.org, fthain@linux-m68k.org, geert@linux-m68k.org,
- senozhatsky@chromium.org, amaindex@outlook.com, anna.schumaker@oracle.com,
- boqun.feng@gmail.com, ioworker0@gmail.com, joel.granados@kernel.org,
- jstultz@google.com, kent.overstreet@linux.dev, leonylgao@tencent.com,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- longman@redhat.com, mingo@redhat.com, mingzhe.yang@ly.com,
- oak@helsinkinet.fi, peterz@infradead.org, rostedt@goodmis.org,
- tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
-References: <f79735e1-1625-4746-98ce-a3c40123c5af@linux.dev>
- <20250823074048.92498-1-lance.yang@linux.dev>
- <20250826140217.7f566d2b404ac5ece8b36fa3@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Lance Yang <lance.yang@linux.dev>
-In-Reply-To: <20250826140217.7f566d2b404ac5ece8b36fa3@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 935846450801c685f73e5b5ee9cfd757b0bc1f9f  Merge tag 'v6.17-rc3'
 
+elapsed time: 960m
 
-On 2025/8/26 13:02, Masami Hiramatsu (Google) wrote:
-> Hi Lence,
-> 
-> On Sat, 23 Aug 2025 15:40:48 +0800
-> Lance Yang <lance.yang@linux.dev> wrote:
-> 
->> From: Lance Yang <lance.yang@linux.dev>
->>
->> The blocker tracking mechanism assumes that lock pointers are at least
->> 4-byte aligned to use their lower bits for type encoding.
->>
->> However, as reported by Geert Uytterhoeven, some architectures like m68k
->> only guarantee 2-byte alignment of 32-bit values. This breaks the
->> assumption and causes two related WARN_ON_ONCE checks to trigger.
->>
->> To fix this, enforce a minimum of 4-byte alignment on the core lock
->> structures supported by the blocker tracking mechanism. This ensures the
->> algorithm's alignment assumption now holds true on all architectures.
->>
->> This patch adds __aligned(4) to the definitions of "struct mutex",
->> "struct semaphore", and "struct rw_semaphore", resolving the warnings.
-> 
-> Instead of putting the type flags in the blocker address (pointer),
-> can't we record the type information outside? It is hard to enforce
+configs tested: 121
+configs skipped: 4
 
-Yes. Of course. The current pointer-encoding is a tricky trade-off ...
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> the alignment to the locks, because it is embedded in the data
-> structure. Instead, it is better to record the type as blocker_type
-> in current task_struct.
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+alpha                            allyesconfig    gcc-15.1.0
+arc                              allmodconfig    gcc-15.1.0
+arc                               allnoconfig    gcc-15.1.0
+arc                              allyesconfig    gcc-15.1.0
+arc                      axs103_smp_defconfig    gcc-15.1.0
+arc                   randconfig-001-20250826    gcc-11.5.0
+arc                   randconfig-002-20250826    gcc-8.5.0
+arm                              alldefconfig    gcc-15.1.0
+arm                              allmodconfig    gcc-15.1.0
+arm                               allnoconfig    clang-22
+arm                              allyesconfig    gcc-15.1.0
+arm                   milbeaut_m10v_defconfig    clang-19
+arm                   randconfig-001-20250826    gcc-12.5.0
+arm                   randconfig-002-20250826    gcc-13.4.0
+arm                   randconfig-003-20250826    gcc-8.5.0
+arm                   randconfig-004-20250826    gcc-10.5.0
+arm                       versatile_defconfig    gcc-15.1.0
+arm                        vexpress_defconfig    gcc-15.1.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.1.0
+arm64                 randconfig-001-20250826    clang-22
+arm64                 randconfig-002-20250826    gcc-8.5.0
+arm64                 randconfig-003-20250826    clang-22
+arm64                 randconfig-004-20250826    gcc-8.5.0
+csky                              allnoconfig    gcc-15.1.0
+csky                  randconfig-001-20250826    gcc-15.1.0
+csky                  randconfig-002-20250826    gcc-11.5.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-22
+hexagon                          allyesconfig    clang-22
+hexagon               randconfig-001-20250826    clang-19
+hexagon               randconfig-002-20250826    clang-22
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250826    gcc-12
+i386        buildonly-randconfig-002-20250826    gcc-12
+i386        buildonly-randconfig-003-20250826    clang-20
+i386        buildonly-randconfig-004-20250826    gcc-12
+i386        buildonly-randconfig-005-20250826    clang-20
+i386        buildonly-randconfig-006-20250826    gcc-12
+i386                                defconfig    clang-20
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-22
+loongarch             randconfig-001-20250826    gcc-14.3.0
+loongarch             randconfig-002-20250826    gcc-14.3.0
+m68k                             allmodconfig    gcc-15.1.0
+m68k                              allnoconfig    gcc-15.1.0
+m68k                             allyesconfig    gcc-15.1.0
+microblaze                       allmodconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                       allyesconfig    gcc-15.1.0
+microblaze                          defconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+mips                           ip30_defconfig    gcc-15.1.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20250826    gcc-8.5.0
+nios2                 randconfig-002-20250826    gcc-10.5.0
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                         allyesconfig    gcc-15.1.0
+openrisc                            defconfig    gcc-15.1.0
+parisc                           allmodconfig    gcc-15.1.0
+parisc                            allnoconfig    gcc-15.1.0
+parisc                           allyesconfig    gcc-15.1.0
+parisc                              defconfig    gcc-15.1.0
+parisc                randconfig-001-20250826    gcc-8.5.0
+parisc                randconfig-002-20250826    gcc-15.1.0
+parisc64                            defconfig    gcc-15.1.0
+powerpc                          allmodconfig    gcc-15.1.0
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                          allyesconfig    clang-22
+powerpc               randconfig-001-20250826    gcc-8.5.0
+powerpc               randconfig-002-20250826    clang-22
+powerpc               randconfig-003-20250826    gcc-13.4.0
+powerpc                      tqm8xx_defconfig    clang-19
+powerpc64             randconfig-001-20250826    gcc-10.5.0
+powerpc64             randconfig-002-20250826    gcc-11.5.0
+powerpc64             randconfig-003-20250826    gcc-14.3.0
+riscv                            allmodconfig    clang-22
+riscv                             allnoconfig    gcc-15.1.0
+riscv                            allyesconfig    clang-16
+riscv                 randconfig-001-20250826    gcc-8.5.0
+riscv                 randconfig-002-20250826    gcc-11.5.0
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.1.0
+s390                  randconfig-001-20250826    clang-22
+s390                  randconfig-002-20250826    clang-18
+sh                               allmodconfig    gcc-15.1.0
+sh                                allnoconfig    gcc-15.1.0
+sh                               allyesconfig    gcc-15.1.0
+sh                                  defconfig    gcc-15.1.0
+sh                    randconfig-001-20250826    gcc-11.5.0
+sh                    randconfig-002-20250826    gcc-9.5.0
+sparc                            allmodconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+sparc                               defconfig    gcc-15.1.0
+sparc                 randconfig-001-20250826    gcc-13.4.0
+sparc                 randconfig-002-20250826    gcc-8.5.0
+sparc64               randconfig-001-20250826    gcc-8.5.0
+sparc64               randconfig-002-20250826    clang-22
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    gcc-12
+um                    randconfig-001-20250826    gcc-12
+um                    randconfig-002-20250826    clang-17
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20250826    clang-20
+x86_64      buildonly-randconfig-002-20250826    clang-20
+x86_64      buildonly-randconfig-003-20250826    gcc-12
+x86_64      buildonly-randconfig-004-20250826    clang-20
+x86_64      buildonly-randconfig-005-20250826    gcc-12
+x86_64      buildonly-randconfig-006-20250826    gcc-12
+x86_64                              defconfig    gcc-11
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                randconfig-001-20250826    gcc-11.5.0
+xtensa                randconfig-002-20250826    gcc-8.5.0
 
-TODO +1. Separating the type into its own field in task_struct is the
-right long-term solution ;)
-
-Cheers,
-Lance
-
-> 
-> Thank you,
-> 
->>
->> Thanks to Geert for bisecting!
->>
->> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Closes: https://lore.kernel.org/lkml/CAMuHMdW7Ab13DdGs2acMQcix5ObJK0O2dG_Fxzr8_g58Rc1_0g@mail.gmail.com
->> Fixes: e711faaafbe5 ("hung_task: replace blocker_mutex with encoded blocker")
->> Cc: <stable@vger.kernel.org>
->> Signed-off-by: Lance Yang <lance.yang@linux.dev>
->> ---
->>   include/linux/mutex_types.h | 2 +-
->>   include/linux/rwsem.h       | 2 +-
->>   include/linux/semaphore.h   | 2 +-
->>   3 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/linux/mutex_types.h b/include/linux/mutex_types.h
->> index fdf7f515fde8..de798bfbc4c7 100644
->> --- a/include/linux/mutex_types.h
->> +++ b/include/linux/mutex_types.h
->> @@ -51,7 +51,7 @@ struct mutex {
->>   #ifdef CONFIG_DEBUG_LOCK_ALLOC
->>   	struct lockdep_map	dep_map;
->>   #endif
->> -};
->> +} __aligned(4); /* For hung_task blocker tracking, which encodes type in LSBs */
->>   
->>   #else /* !CONFIG_PREEMPT_RT */
->>   /*
->> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
->> index f1aaf676a874..f6ecf4a4710d 100644
->> --- a/include/linux/rwsem.h
->> +++ b/include/linux/rwsem.h
->> @@ -64,7 +64,7 @@ struct rw_semaphore {
->>   #ifdef CONFIG_DEBUG_LOCK_ALLOC
->>   	struct lockdep_map	dep_map;
->>   #endif
->> -};
->> +} __aligned(4); /* For hung_task blocker tracking, which encodes type in LSBs */
->>   
->>   #define RWSEM_UNLOCKED_VALUE		0UL
->>   #define RWSEM_WRITER_LOCKED		(1UL << 0)
->> diff --git a/include/linux/semaphore.h b/include/linux/semaphore.h
->> index 89706157e622..ac9b9c87bfb7 100644
->> --- a/include/linux/semaphore.h
->> +++ b/include/linux/semaphore.h
->> @@ -20,7 +20,7 @@ struct semaphore {
->>   #ifdef CONFIG_DETECT_HUNG_TASK_BLOCKER
->>   	unsigned long		last_holder;
->>   #endif
->> -};
->> +} __aligned(4); /* For hung_task blocker tracking, which encodes type in LSBs */
->>   
->>   #ifdef CONFIG_DETECT_HUNG_TASK_BLOCKER
->>   #define __LAST_HOLDER_SEMAPHORE_INITIALIZER				\
->> -- 
->> 2.49.0
->>
-> 
-> 
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
