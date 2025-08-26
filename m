@@ -1,37 +1,37 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BDF2E265A
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Aug 2025 04:49:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2A021D3D3
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 Aug 2025 05:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756183796; cv=none; b=PvP8Xpa5/gxg2ZimVYKQVKXvGk9b84VN4FLijLTyVtNybRV1017pWKI8fkQwyDP1RHB/Hmh463D3/chNj1g2QxU36fe0sUvf/bTmxJbulqTGLE8/EfwPCOirCpVXahZIVvO/yJLzc2RiXSPWf3tkjoH07HY80XDd0hG/edAYpv4=
+	t=1756184557; cv=none; b=GydcmZBikLu6m7RbvSrSq3Ad0gmUrF/fFsX4j0wtzDxK4eYQUY7EkO7icaNyQkRQoAviQE+W8seFNM2Taaq3rj7CZnkO85H/9/jV65FnPvz2Y8nBU7ArVWGXaubIITwRa8QXzcywvKNhf/2EEIJsCja0iciceMK6aIgtBTSsxwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756183796; c=relaxed/simple;
-	bh=mrTYfgAhz8yJIWYyD+ab7SDQCpNIYQe9Kn5DqAcQJpU=;
+	s=arc-20240116; t=1756184557; c=relaxed/simple;
+	bh=Hxhmy6RB+z8kvpV21B5aHmme1C4i2b3SIeG6Tj7bea8=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=YNO8DpqYbeEitWOCuqV+SHNgyJO75tJeh/4zwkzat3FABEgc7ffEAbvMCIo7nZVxa2Cyl/rkuTqs/mkbtDqfd2ypNKWLqlBZvjyb+xp0l4eUdLSL8kHp4dP9KL7SJNcaBgOUkzxbPJSNE6WfLR7Xkg+25TYVaQSFgJO5039aEOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AGOU2HDD; arc=none smtp.client-ip=172.234.252.31
+	 Mime-Version:Content-Type; b=BdydYGcXXIp8R15YFDJRhVgy2ZYpWM/n8d1RFN/HuhFOe5e9QvCaTmsq2+AJUv7iydMDd/KnFf/iNRekb6YchQcFSQfLyhFdmLBrQjlIeQCue2DAhDXD1p0sS3uxjfSgJLxtHeYxVPXi24aPDDor1+en5srN9HwpSeu4kmuxa5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iJBc691d; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AGOU2HDD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iJBc691d"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6F2F640476;
-	Tue, 26 Aug 2025 04:49:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60EB9C4CEF1;
-	Tue, 26 Aug 2025 04:49:50 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id C05D9601EC;
+	Tue, 26 Aug 2025 05:02:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C6A7C4CEF1;
+	Tue, 26 Aug 2025 05:02:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756183793;
-	bh=mrTYfgAhz8yJIWYyD+ab7SDQCpNIYQe9Kn5DqAcQJpU=;
+	s=k20201202; t=1756184542;
+	bh=Hxhmy6RB+z8kvpV21B5aHmme1C4i2b3SIeG6Tj7bea8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AGOU2HDDCy6d14h/txWFuiD0IdaXRysDk6Dbpw4n4li24LSI+9kVsYYI1nxI4n4m6
-	 SbuIYsohrM1cYPTeY/HyYGVBpxZuBnMPh/BUsP56TuQTZgo7W9pHSOGaeiPOcj3os6
-	 O3BhEqhgjZmfLYkLGPpLZnzdWyMmWNEj1Q98oDoLOki0iyRwGWUiR9+3dIULnXei5X
-	 v6UNkUvGrXvCuJj2pNMX2kUI45+OTM6H6K25uUOj1YET7MGRoLDs5v5qE3GrsNkc2N
-	 m6qaVKhaVtOdx8/lMiVSQDQrzqsrxCC2pssxUTaNj7NnU4sakQD8nLdNDr/0HHhjAc
-	 Lr/FVDTwVp1zA==
-Date: Tue, 26 Aug 2025 13:49:48 +0900
+	b=iJBc691doB/lOoG3QXMSL0Kkm5wIm77UE4/tBUj6mbBEzuKrwvhoOB61w3DARzrc+
+	 GNhGzisWqh00iuLzxkwPnCfqu34MHl9wc66TDe9vo5pGmC628FPLErvU00Hb7Pr9MZ
+	 vOTvytXybQZ3WZVOOhc5XN4IGzQrBy7CwtlBykGNvRcRtMwkNDqxrg73g77fbO/XII
+	 GKsesAR1zJALHF4uM2FaIIPnXDiBDyOxum9r/eIXRPVqh9Nkj/jlVXX+sG0iYtJu0D
+	 Iagj8aOabUdrygII2S7hyvI8rjiCV5yEM+ji5EdkXL00LISyC9UPQCCpO5XT+Ogt/I
+	 nkcN6MCCnOnEw==
+Date: Tue, 26 Aug 2025 14:02:17 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Lance Yang <lance.yang@linux.dev>
 Cc: akpm@linux-foundation.org, fthain@linux-m68k.org, geert@linux-m68k.org,
@@ -42,12 +42,12 @@ Cc: akpm@linux-foundation.org, fthain@linux-m68k.org, geert@linux-m68k.org,
  longman@redhat.com, mingo@redhat.com, mingzhe.yang@ly.com,
  oak@helsinkinet.fi, peterz@infradead.org, rostedt@goodmis.org,
  tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/1] hung_task: fix warnings caused by unaligned lock
- pointers
-Message-Id: <20250826134948.4f5f5aa74849e7f56f106c83@kernel.org>
-In-Reply-To: <20250823050036.7748-1-lance.yang@linux.dev>
+Subject: Re: [PATCH 1/1] hung_task: fix warnings by enforcing alignment on
+ lock structures
+Message-Id: <20250826140217.7f566d2b404ac5ece8b36fa3@kernel.org>
+In-Reply-To: <20250823074048.92498-1-lance.yang@linux.dev>
 References: <f79735e1-1625-4746-98ce-a3c40123c5af@linux.dev>
-	<20250823050036.7748-1-lance.yang@linux.dev>
+	<20250823074048.92498-1-lance.yang@linux.dev>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -58,7 +58,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sat, 23 Aug 2025 13:00:36 +0800
+Hi Lence,
+
+On Sat, 23 Aug 2025 15:40:48 +0800
 Lance Yang <lance.yang@linux.dev> wrote:
 
 > From: Lance Yang <lance.yang@linux.dev>
@@ -70,10 +72,21 @@ Lance Yang <lance.yang@linux.dev> wrote:
 > only guarantee 2-byte alignment of 32-bit values. This breaks the
 > assumption and causes two related WARN_ON_ONCE checks to trigger.
 > 
-> To fix this, the runtime checks are adjusted. The first WARN_ON_ONCE in
-> hung_task_set_blocker() is changed to a simple 'if' that returns silently
-> for unaligned pointers. The second, now-invalid WARN_ON_ONCE in
-> hung_task_clear_blocker() is then removed.
+> To fix this, enforce a minimum of 4-byte alignment on the core lock
+> structures supported by the blocker tracking mechanism. This ensures the
+> algorithm's alignment assumption now holds true on all architectures.
+> 
+> This patch adds __aligned(4) to the definitions of "struct mutex",
+> "struct semaphore", and "struct rw_semaphore", resolving the warnings.
+
+Instead of putting the type flags in the blocker address (pointer),
+can't we record the type information outside? It is hard to enforce
+the alignment to the locks, because it is embedded in the data
+structure. Instead, it is better to record the type as blocker_type
+in current task_struct.
+
+Thank you,
+
 > 
 > Thanks to Geert for bisecting!
 > 
@@ -82,51 +95,51 @@ Lance Yang <lance.yang@linux.dev> wrote:
 > Fixes: e711faaafbe5 ("hung_task: replace blocker_mutex with encoded blocker")
 > Cc: <stable@vger.kernel.org>
 > Signed-off-by: Lance Yang <lance.yang@linux.dev>
-
-Looks good to me. I think we can just ignore it for
-this debugging option.
-
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
-
 > ---
->  include/linux/hung_task.h | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  include/linux/mutex_types.h | 2 +-
+>  include/linux/rwsem.h       | 2 +-
+>  include/linux/semaphore.h   | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/hung_task.h b/include/linux/hung_task.h
-> index 34e615c76ca5..69640f266a69 100644
-> --- a/include/linux/hung_task.h
-> +++ b/include/linux/hung_task.h
-> @@ -20,6 +20,10 @@
->   * always zero. So we can use these bits to encode the specific blocking
->   * type.
->   *
-> + * Note that on architectures like m68k with only 2-byte alignment, the
-> + * blocker tracking mechanism gracefully does nothing for any lock that is
-> + * not 4-byte aligned.
-> + *
->   * Type encoding:
->   * 00 - Blocked on mutex			(BLOCKER_TYPE_MUTEX)
->   * 01 - Blocked on semaphore			(BLOCKER_TYPE_SEM)
-> @@ -45,7 +49,7 @@ static inline void hung_task_set_blocker(void *lock, unsigned long type)
->  	 * If the lock pointer matches the BLOCKER_TYPE_MASK, return
->  	 * without writing anything.
->  	 */
-> -	if (WARN_ON_ONCE(lock_ptr & BLOCKER_TYPE_MASK))
-> +	if (lock_ptr & BLOCKER_TYPE_MASK)
->  		return;
+> diff --git a/include/linux/mutex_types.h b/include/linux/mutex_types.h
+> index fdf7f515fde8..de798bfbc4c7 100644
+> --- a/include/linux/mutex_types.h
+> +++ b/include/linux/mutex_types.h
+> @@ -51,7 +51,7 @@ struct mutex {
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  	struct lockdep_map	dep_map;
+>  #endif
+> -};
+> +} __aligned(4); /* For hung_task blocker tracking, which encodes type in LSBs */
 >  
->  	WRITE_ONCE(current->blocker, lock_ptr | type);
-> @@ -53,8 +57,6 @@ static inline void hung_task_set_blocker(void *lock, unsigned long type)
+>  #else /* !CONFIG_PREEMPT_RT */
+>  /*
+> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+> index f1aaf676a874..f6ecf4a4710d 100644
+> --- a/include/linux/rwsem.h
+> +++ b/include/linux/rwsem.h
+> @@ -64,7 +64,7 @@ struct rw_semaphore {
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  	struct lockdep_map	dep_map;
+>  #endif
+> -};
+> +} __aligned(4); /* For hung_task blocker tracking, which encodes type in LSBs */
 >  
->  static inline void hung_task_clear_blocker(void)
->  {
-> -	WARN_ON_ONCE(!READ_ONCE(current->blocker));
-> -
->  	WRITE_ONCE(current->blocker, 0UL);
->  }
+>  #define RWSEM_UNLOCKED_VALUE		0UL
+>  #define RWSEM_WRITER_LOCKED		(1UL << 0)
+> diff --git a/include/linux/semaphore.h b/include/linux/semaphore.h
+> index 89706157e622..ac9b9c87bfb7 100644
+> --- a/include/linux/semaphore.h
+> +++ b/include/linux/semaphore.h
+> @@ -20,7 +20,7 @@ struct semaphore {
+>  #ifdef CONFIG_DETECT_HUNG_TASK_BLOCKER
+>  	unsigned long		last_holder;
+>  #endif
+> -};
+> +} __aligned(4); /* For hung_task blocker tracking, which encodes type in LSBs */
 >  
+>  #ifdef CONFIG_DETECT_HUNG_TASK_BLOCKER
+>  #define __LAST_HOLDER_SEMAPHORE_INITIALIZER				\
 > -- 
 > 2.49.0
 > 
