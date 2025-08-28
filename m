@@ -1,127 +1,75 @@
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C3631C84A0
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Aug 2025 02:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEC029D28B;
+	Thu, 28 Aug 2025 07:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756346734; cv=none; b=YccknJhIw31geKORGyAA3MEPGCnI0fRrhjK5lnlNpp2eZk9M8WHE+cKzt4+ORUNDYPxckOUoPAYZ/gdMlmmpwhhIzmmmv78/DSizA+SgTx0RpAqSpIq9KwbWqPYGDgil17XNxeAQrfszBW5T2uuxsduccfHt5iKnCIhd5/5szqg=
+	t=1756366724; cv=none; b=FOiOiHAUzEaNDbp5+yW7Kj78aFMmqbOEZZCMAYyC48t1kCXtOHlLahUe4NYLXBl56ZpLwqXAcLQlAS+Bq6SrLzvG4d1IoY89J6ddNoIkJIBXxmHGGygZOjqeXViWcURyJS4sq/TJ1f1uNCVcqRhPBu3nKYLFql74E7A8azu5+Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756346734; c=relaxed/simple;
-	bh=IiiK/TLSYzjTbuhRBbkspw8DwVRCSdJwRbF9f7BfnzQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i+yh7GwON+Ut+4peexj80fSrg49hkt74ukDBvTVc1nNz1VmQq5+sWDvrT6Nmn2WmVXBsGQ75npZryjqJlOaRlILrvtstoG5YGAkfMo6rjqn56gFMJnsCMGD9/qKfV/32qQd7JmioL7Smm8qB5YSQFRxzEcBuJ/a2t1aVWqdOebM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OEdAR1uH; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OEdAR1uH"
-Message-ID: <cfb62b9d-9cbd-47dd-a894-3357027e2a50@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1756346720;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Rb2F2xDiL4eTGN41G2MHNYXODkWfWx3B+Sfl8F3SlJw=;
-	b=OEdAR1uHhvyS3yB4J7+ExJ3vBSsoIRGDRSEgjJLQN0jVFDfw4h6Ix2tzNSSUoP3oIR85+f
-	kaIZZxMQqSCzAUYpng0TFfAAKLFqQxm9fB+S9Bf+l8Y1mFC6PJe0EOIBVAVhX90gAuHH+9
-	TpqCpbeKga7zbbp3YT9LlRDUFCCdXjI=
-Date: Thu, 28 Aug 2025 10:05:11 +0800
+	s=arc-20240116; t=1756366724; c=relaxed/simple;
+	bh=1FeGWWkpnViziSe6lc+DKmue88Hh0SsFpGyGy5ESXBs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nDLWwlHTXAHERnXRk4Zv4uLjpYZYfy7y/pKmRfLRQ3nBAdPZl2Ffaz0iXldkaimAV4fhSMT3vVhmRvrKRAsCS8zC1K7Olit+K+mDWRkXLf7QsYRGEqxDVKttw06ENebi38baog0rKiFy7sNOjxzSm3dP/K36e8soQH0H9Swz4Sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1urXDA-0001jz-00; Thu, 28 Aug 2025 09:38:20 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id 09775C04FD; Thu, 28 Aug 2025 08:57:33 +0200 (CEST)
+Date: Thu, 28 Aug 2025 08:57:33 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Andreas Larsson <andreas@gaisler.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-pci@vger.kernel.org, sparclinux@vger.kernel.org,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Yinghai Lu <yinghai@kernel.org>,
+	Igor Mammedov <imammedo@redhat.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	linux-kernel@vger.kernel.org,
+	=?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 03/24] MIPS: PCI: Use pci_enable_resources()
+Message-ID: <aK_93U_PnpKayqZD@alpha.franken.de>
+References: <20250822145605.18172-1-ilpo.jarvinen@linux.intel.com>
+ <20250822145605.18172-4-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] atomic: Specify natural alignment for atomic_t
-Content-Language: en-US
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: akpm@linux-foundation.org, geert@linux-m68k.org,
- linux-kernel@vger.kernel.org, mhiramat@kernel.org, oak@helsinkinet.fi,
- peterz@infradead.org, stable@vger.kernel.org, will@kernel.org,
- Lance Yang <ioworker0@gmail.com>, linux-m68k@lists.linux-m68k.org
-References: <7d9554bfe2412ed9427bf71ce38a376e06eb9ec4.1756087385.git.fthain@linux-m68k.org>
- <20250825032743.80641-1-ioworker0@gmail.com>
- <c8851682-25f1-f594-e30f-5b62e019d37b@linux-m68k.org>
- <96ae7afc-c882-4c3d-9dea-3e2ae2789caf@linux.dev>
- <5a44c60b-650a-1f8a-d5cb-abf9f0716817@linux-m68k.org>
- <4e7e7292-338d-4a57-84ec-ae7427f6ad7c@linux.dev>
- <d07778f8-8990-226b-5171-4a36e6e18f32@linux-m68k.org>
- <d95592ec-f51e-4d80-b633-7440b4e69944@linux.dev>
- <30a55f56-93c2-4408-b1a5-5574984fb45f@linux.dev>
- <4405ee5a-becc-7375-61a9-01304b3e0b20@linux-m68k.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Lance Yang <lance.yang@linux.dev>
-In-Reply-To: <4405ee5a-becc-7375-61a9-01304b3e0b20@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250822145605.18172-4-ilpo.jarvinen@linux.intel.com>
 
-
-
-On 2025/8/28 07:43, Finn Thain wrote:
+On Fri, Aug 22, 2025 at 05:55:44PM +0300, Ilpo Järvinen wrote:
+> pci-legacy.c under MIPS has a copy of pci_enable_resources() named as
+> pcibios_enable_resources(). Having own copy of same functionality could
+> lead to inconsistencies in behavior, especially now as
+> pci_enable_resources() and the bridge window resource flags behavior
+> are going to be altered by upcoming changes.
 > 
-> On Mon, 25 Aug 2025, Lance Yang wrote:
+> The check for !r->start && r->end is already covered by the more
+> generic checks done in pci_enable_resources().
 > 
->>
->> Same here, using a global static variable instead of a local one. The
->> result is consistently misaligned.
->>
->> ```
->> #include <linux/module.h>
->> #include <linux/init.h>
->>
->> static struct __attribute__((packed)) test_container {
->>      char padding[49];
->>      struct mutex io_lock;
->> } cont;
->>
->> static int __init alignment_init(void)
->> {
->>      pr_info("Container base address      : %px\n", &cont);
->>      pr_info("io_lock member address      : %px\n", &cont.io_lock);
->>      pr_info("io_lock address offset mod 4: %lu\n", (unsigned long)&cont.io_lock % 4);
->>      return 0;
->> }
->>
->> static void __exit alignment_exit(void)
->> {
->>      pr_info("Module unloaded\n");
->> }
->>
->> module_init(alignment_init);
->> module_exit(alignment_exit);
->> MODULE_LICENSE("GPL");
->> MODULE_AUTHOR("x");
->> MODULE_DESCRIPTION("x");
->> ```
->>
->> Result from dmesg:
->>
->> ```
->> [Mon Aug 25 19:33:28 2025] Container base address      : ffffffffc28f0940
->> [Mon Aug 25 19:33:28 2025] io_lock member address      : ffffffffc28f0971
->> [Mon Aug 25 19:33:28 2025] io_lock address offset mod 4: 1
->> ```
->>
+> Call pci_enable_resources() from MIPS's pcibios_enable_device() and
+> remove pcibios_enable_resources().
 > 
-> FTR, I was able to reproduce that result (i.e. static storage):
-> 
-> [    0.320000] Container base address      : 0055d9d0
-> [    0.320000] io_lock member address      : 0055da01
-> [    0.320000] io_lock address offset mod 4: 1
-> 
-> I think the experiments you sent previously would have demonstrated the
-> same result, except for the unpredictable base address that you sensibly
-> logged in this version.
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  arch/mips/pci/pci-legacy.c | 38 ++------------------------------------
+>  1 file changed, 2 insertions(+), 36 deletions(-)
 
-Thanks for taking the time to reproduce it!
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-This proves the problem can happen in practice (e.g., with packed structs),
-so we need to ignore the unaligned pointers on the architectures that don't
-trap for now.
-
-Cheers,
-Lance
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
