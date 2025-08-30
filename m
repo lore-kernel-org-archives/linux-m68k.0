@@ -1,92 +1,88 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D880337681
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 28 Aug 2025 17:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753C619CC39
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 30 Aug 2025 08:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756402315; cv=none; b=Jso/IcXHfui/yfqjQL5QuD85gOJtu/DyaVYx1m6MWEW7G1I4Dxcopi49KNWrthivaJmHSk4Uel2OkN06GjJON8BCjoNL3cvM0YoutX4c/hrllbGuFRocpGJ6g6gzN/sN//uEvUbOTn+XXdjyjvU0iE/76r6IzPQDnBqML9Wc8GE=
+	t=1756542337; cv=none; b=fhdTfRiq5wBsT7J98z1CUqzv6JRlIvPc8IMcgP4spIBt8vXoVdAhWxMJMOkRNC21tS/cM66pAZH3Zugwqa/bI8BFqYAiTxxFpQtFmSLC1Ur5Whvs6nNyvtsJ+Aof9XMiw8TU4tGA/B0hbBe3XK7M4tsEBXD84M5xWwPOdsNXTSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756402315; c=relaxed/simple;
-	bh=vl9K/umacKTfK8n27M0KwHBfAPbKCprrGgu7yc+VISM=;
+	s=arc-20240116; t=1756542337; c=relaxed/simple;
+	bh=GXci5abGEkhGLYPJl646wtelvlD2GLlP4vv0mqfMNLk=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Nfslcaly4WqfyZq3WM+M+7Pnk/Upg7m/61hlmAANPXJhIVtDkY+39Xw9cSm65Vy6Ttx1xayvzfpv7untdDS3A6Qc4yhIkiNP/LVALvqkmjzMnywPMLvspR6DAtIBOQzJoCi2IWvxaqbmv/3ENNQ5teLWvraEMuOi6LQyQeBLQ1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nm8QlKSU; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	 Content-Disposition; b=nMLL9d/ALyC3rSgfC+0kJ2l72NfYyXelRYlfImfHB61cw8Qq63QFCsSQiEwwiBGx7S0zZsTc7cNYl857W4/A5vRdb1e3aIpuAW2s6yLoNO5AL5/xI7P83lz3kwHpEfmlPaHX0chAdp6bW/+i/5J5ChRjtXLVja09Thc7AWds/Kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UecJ8fIe; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nm8QlKSU"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id DE08840BC1;
-	Thu, 28 Aug 2025 17:31:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DAD3C4CEEB;
-	Thu, 28 Aug 2025 17:31:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756402312;
-	bh=vl9K/umacKTfK8n27M0KwHBfAPbKCprrGgu7yc+VISM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Nm8QlKSUyPe3Gf+UCV04JeGw8KneAP2RaHR1A4YbseNmdkgRMIY3thPtQ/OAYQiqm
-	 rp3ocwBxMk/z+rHqd3B3InJvp1jblMILJ8F44Ut8sekeJqhuMCpm+VVbun3jgnT//q
-	 q0lW/PAxNv/v+VJ6n0eT+l5UxBBHcIAWlsXm/8Q5IroJBUY9QpO12Xnvn9FXHPslGE
-	 sHC5eDUO0UKs2FOZh0vS5hlguumDWK8S8lyFXrZ9svJWpBcdmUBMxo7iH7EljoSAk4
-	 QTHLNxoCXsQjUo/wNZpIa9zzlYtq6gjBnxsDClXPPdwPYrbU2icH59w927cENgcDjw
-	 K4izz/zKsSrjw==
-Date: Thu, 28 Aug 2025 12:31:51 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: Andreas Larsson <andreas@gaisler.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-pci@vger.kernel.org, sparclinux@vger.kernel.org,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Yinghai Lu <yinghai@kernel.org>,
-	Igor Mammedov <imammedo@redhat.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	=?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 00/24] PCI: Bridge window selection improvements
-Message-ID: <20250828173151.GA950809@bhelgaas>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UecJ8fIe"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1756542336; x=1788078336;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=GXci5abGEkhGLYPJl646wtelvlD2GLlP4vv0mqfMNLk=;
+  b=UecJ8fIe+0T97oYOmLG65WUvkGiiVcA8NKOalRdfTMPZpb0eTpkDDZpJ
+   Y29A8x3+S+OrLpNLFkLh6w1BABj09eg1TPtEySjCCH2OYKbT2sE7kS+fm
+   m7qMixFe6FnKfrQjQW/Eak9puBZPJbG2M79Bq3o4b3iWg2cKkopvgtPlM
+   x0xFsUxttA3Gt698LORnDppiyG1ukRtMkOnVI2LTMak5EkjdHtNKy71c5
+   4ImyqU17WrIq/1oDG6Ei5G/WOCopaAwswen71bHdseVBsQx5+3voZu+Dj
+   yMDgj5MyPr8vYPKqxJHN9nssFcTo2mBai2FIU8KfOmKUOAP5QIZqobM7X
+   g==;
+X-CSE-ConnectionGUID: Y/LwMszJTlm/silcPT/z/w==
+X-CSE-MsgGUID: aZjSa5Z6STSWhuDTgyMDrg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="58744380"
+X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
+   d="scan'208";a="58744380"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2025 01:25:34 -0700
+X-CSE-ConnectionGUID: Un6i40duRe+1dKKdb7gTAg==
+X-CSE-MsgGUID: 0WrkPXBGSkKbBMxlOO9+Ng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,225,1751266800"; 
+   d="scan'208";a="194224162"
+Received: from lkp-server02.sh.intel.com (HELO 4ea60e6ab079) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 30 Aug 2025 01:25:32 -0700
+Received: from kbuild by 4ea60e6ab079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1usGtg-000VFf-1K;
+	Sat, 30 Aug 2025 08:25:17 +0000
+Date: Sat, 30 Aug 2025 16:24:28 +0800
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Paul Gazzillo <paul@pgazz.com>,
+	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+	oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:dt 11/14] kismet: WARNING: unmet direct dependencies
+ detected for OF_EARLY_FLATTREE when selected by BUILTIN_DTB
+Message-ID: <202508301640.5Abt7QHs-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d209c08a-56df-5aac-869d-7c6c548c0614@linux.intel.com>
 
-On Thu, Aug 28, 2025 at 07:47:06PM +0300, Ilpo Järvinen wrote:
-> On Wed, 27 Aug 2025, Bjorn Helgaas wrote:
-> > On Fri, Aug 22, 2025 at 05:55:41PM +0300, Ilpo Järvinen wrote:
-> > > This series is based on top of the three resource fitting and
-> > > assignment algorithm fixes (v3).
-> > > 
-> > > PCI resource fitting and assignment code needs to find the bridge
-> > > window a resource belongs to in multiple places, yet, no common
-> > > function for that exists. Thus, each site has its own version of
-> > > the decision, each with their own corner cases, misbehaviors, and
-> > > some resulting in complex interfaces between internal functions.
-> > > ...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
+head:   e542a0eb98d4a7e73f37ff7e0ef696c177e436c0
+commit: 85446503d3e2b6e8345ed24531fcaab9748fb7b9 [11/14] m68k: implement a builtin devicetree for nonmmu
+config: m68k-kismet-CONFIG_OF_EARLY_FLATTREE-CONFIG_BUILTIN_DTB-0-0 (https://download.01.org/0day-ci/archive/20250830/202508301640.5Abt7QHs-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20250830/202508301640.5Abt7QHs-lkp@intel.com/reproduce)
 
-> I'll need to do minor corrections into a few intermediate patches though 
-> to ensure bisectability, we really want to make this as bisectable as 
-> possible. In other words, I've found 2 relatively small issues in them 
-> which won't change the end result when the whole series is complete and 
-> fixed some small grammar errors in the changelogs.
-> 
-> I see you made some corrections so I'm not sure what's the best course of 
-> action here to update them. Should I just send v2 normally and you deal 
-> with your changes while replacing v1 with v2?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202508301640.5Abt7QHs-lkp@intel.com/
 
-That would work for me.  Or if you picked the patches from
-pci/resource and posted a v2 based on them, that would be even easier
-for me.
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for OF_EARLY_FLATTREE when selected by BUILTIN_DTB
+   WARNING: unmet direct dependencies detected for OF_EARLY_FLATTREE
+     Depends on [n]: OF [=n]
+     Selected by [y]:
+     - BUILTIN_DTB [=y]
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
