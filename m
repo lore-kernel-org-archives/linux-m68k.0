@@ -1,168 +1,203 @@
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.dnamail.fi (sender001.dnamail.fi [83.102.40.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFCAA33A036
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Sep 2025 13:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FFA7321F26
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Sep 2025 15:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.40.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756735164; cv=none; b=CY4LiOkvzebLe5Cq1mqXK5wPQSdtUUlj83fHt+i34e5GZgf/l0xrexct4u1MnbmnztXH2uYhJ0PZJWJLFZj6B66c5QN+BFqoVZJ9xF7/9RI0ckdZ/8UpFWZYvCp5yyU71earqtbLLsffDZAuIWsj/YhhWBID1y8AEAS95w0a2ms=
+	t=1756740066; cv=none; b=Q+3Lb/tDuGv/ki1lBx99pzTn8aDbaHdrXDY0Pg96PfAbE3PU6G2xft+AdZQtFVgmC757Z2OUBExXaYU5bdgxW4Y9zDjnvq0vUDId+uUVX4S8xlPCmx6urGEGU5EQX13CA6lhWimjaM6tHIUo+wixsFwA5sle+4fPstQJcWCH69Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756735164; c=relaxed/simple;
-	bh=oUIhwrLYwstlzlY55FK1ZW41MS2asLYsST3xVM4ctTc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UrttT4zeGLv4f9pawBKxlpsxrn4eaoyACUuiN82Jkw4F6+WmWziQsb6/rOY9DiQPaubuCINEBbPfduEgrojfdZzcqyk90UArqwF3RmxsPjujvUboc+FdBE9w+M5nnACkhEOiaCfsMf2Tk7AV1Fnf7LS/sO1AuMl4fAc69Qc8nXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-3196b9ed1a3so1020639fac.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Sep 2025 06:59:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756735162; x=1757339962;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NmDip3pK7R1bCI3jhASK9yPIU2OeMFz+fVnQvMU5RZM=;
-        b=unvcXDDbLCCnGKQsmY+LzAuhJFbeYPJHNAixG3nevWT4yARM1BXkxUUzi0PWdCbHMz
-         vXC66nDiEia4+jrbXqNQo1WQ12Mz2LWChrg3AkcEFFxgBdSpcxz0XZ1YPz1rfSVJ3VDD
-         rrS0YQX/znZM5/xOivmCmwJQ7GsSQKWmtDZn4tr79TP1S9uG86M6SyK0YKmIduF1m/wW
-         El+CsKTBKJY/SLqyFGeqm17/rkAlW2YGRO32hdhE9VQouRw27Ze7owkoLcp1kGm17w1H
-         5BHXwK5QpJcG9RBt75l5kX1HFeoP5yFH1/39PBZQGgTzE46uCpBzJCYgLgjo3w0ePUdF
-         oeaw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/ed5dMMtCUFEJ5VPKMaWe3Nm9NcNBYWRrOvwO9uS82wb89xZpruvfVwTsyr60QKtCHi0X8QN6PH39@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyGeQXwEjvIOKeUi8cLuH8KyB9SMRIYYXx7Jub+exJaARsIvaW0
-	kpAF3jdZjhssejmtalejPb3bQ8IB1kb3pjv3LXdJ5pQb14HwNn+UPDnHvij9SdYCIhs=
-X-Gm-Gg: ASbGncsnvLVKYdIw3WV0J+F/nlTZfThcZPtkEEVfDc4PvH20Lwfuis0seHm+/Ojzc6O
-	atX9SolAFmxgve5Z2CmHZNY3OFmcpytmTHCYpWNXkXAG3XuDvBXZhLg+h8AnZDSwEVj+avio8SN
-	0DcmmoTpzLXnm7idi1I67Y7QJEAhFCv6AOSvC0G6uM2leShZ2RzBKQPbdIAt8XIn73Ltepmyuuj
-	EQkx257Z6WDB1s3AtGfOS00ii11Qm9CvIumAErm/eW9r6xso90I7iKm/Kpuf3uD/uPpHjD/SoTP
-	ZrcdzboPRnfW8QOXDX61VvU/eDZipWWkFOF2gSp/VU/NVUx6zYTrbXr27FJAZ5XiHolc+CWlvor
-	+bFrwF/86miv2yuTfg4rRGxO/eW6EJp3OcH9+ntedJhPssvPAnQabQb7LddzE
-X-Google-Smtp-Source: AGHT+IGbE0P8BX9OfP7VWjswNUQHeGvRCqYpuo7qxTKBwoG42Ey8aGbFH+0u4Uesu9+jILGwiKGIcQ==
-X-Received: by 2002:a05:6808:bc4:b0:437:de58:881 with SMTP id 5614622812f47-437f7cfa5e6mr3111025b6e.21.1756735161383;
-        Mon, 01 Sep 2025 06:59:21 -0700 (PDT)
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com. [209.85.160.41])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-437ffea5800sm915868b6e.7.2025.09.01.06.59.20
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Sep 2025 06:59:20 -0700 (PDT)
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-315a0b68314so3799118fac.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Sep 2025 06:59:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXb2GF83hek8fbEdw9fXy6QENWajJofuX8dJIpq8Fq+ZoeEwT/rmmlnYuo9ts6RGxQF8cNUrzPw8PTE@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:3053:b0:52a:c340:11db with SMTP id
- ada2fe7eead31-52b1bb24afcmr2206016137.27.1756734711158; Mon, 01 Sep 2025
- 06:51:51 -0700 (PDT)
+	s=arc-20240116; t=1756740066; c=relaxed/simple;
+	bh=4MXorRygA3iS+ycoLelxrTTNdpMNmF6JkScxrjohY68=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PCJSk1LMXRvPnMzwbzy3pHrD0SZx7GflFKhnLt1hFJd/ikKk5nchXK79mG8rO1pqOPE0Goa7aYUXkPAGof6XjnwE9dqPTRnbryGEjHZArhDcagzpctjtR6ilxeQrZ3oewcMwLCW7lwjUquCKaCC0az2yNizyJ2ave+YB3zH/5dE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b=JamioJuo; arc=none smtp.client-ip=83.102.40.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b="JamioJuo"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.dnamail.fi (Postfix) with ESMTP id EA3C12113FDE;
+	Mon,  1 Sep 2025 18:13:00 +0300 (EEST)
+X-Virus-Scanned: X-Virus-Scanned: amavis at smtp.dnamail.fi
+Received: from smtp.dnamail.fi ([83.102.40.178])
+ by localhost (dmail-psmtp01.s.dnaip.fi [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id d7tmIfMIGLGX; Mon,  1 Sep 2025 18:12:59 +0300 (EEST)
+Received: from [192.168.101.100] (87-92-61-203.bb.dnainternet.fi [87.92.61.203])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: oak@dnamail.internal)
+	by smtp.dnamail.fi (Postfix) with ESMTPSA id 1426E2113E0B;
+	Mon,  1 Sep 2025 18:12:53 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.dnamail.fi 1426E2113E0B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=helsinkinet.fi;
+	s=2025-03; t=1756739579;
+	bh=pd2r8zAJCyTMArHVQIHS7IIjNpjZF/Rb/ZQJCnx4bzQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JamioJuoeiN7QczyB3T5zGC9ajP+/uWKCaeIzE7JtGaHVdOveU6j5nivGA1bW0r9l
+	 WsHr9r6qBBRP58NeY2GvU5Hle2aWMiJU48BUkxLAa58nZyX5i1oQvZ0Jd6X0qhJRxo
+	 SCUp5f46+KTEuyE8ecbwphl7kob8qqisDgiXQ+7R3wBYDKrXVj1eqYPi2tNOwg/gLz
+	 a3GquxmdlACo4ak1bhoqwGqlWOMkksUuV0zqQOSPtUi4H4KG2x7mk6rOz9rqu6+Wa3
+	 Los+xKGZb/wy3LItojmYirnerShUvTFtbna0BDyw9UScbHYFL57jQLrkNECZhUe1RF
+	 VKEbYv0HKL2bg==
+Message-ID: <617b6c79-2d66-467f-89a0-79d2d2efb714@helsinkinet.fi>
+Date: Mon, 1 Sep 2025 18:12:53 +0300
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250901-nios2-implement-clone3-v2-0-53fcf5577d57@siemens-energy.com>
- <20250901-nios2-implement-clone3-v2-3-53fcf5577d57@siemens-energy.com>
-In-Reply-To: <20250901-nios2-implement-clone3-v2-3-53fcf5577d57@siemens-energy.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 1 Sep 2025 15:51:38 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWyCbOgs6XyW=8PG2pVw1-zhWP_VtsXsGz1HeFrZ6kjdA@mail.gmail.com>
-X-Gm-Features: Ac12FXxyJUafI_d6iF6chcUi31LuXt_e8cojxsF4wFcxCNHCg2s17r6RQqbjdms
-Message-ID: <CAMuHMdWyCbOgs6XyW=8PG2pVw1-zhWP_VtsXsGz1HeFrZ6kjdA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] arch: copy_thread: pass clone_flags as u64
-To: schuster.simon@siemens-energy.com
-Cc: Dinh Nguyen <dinguyen@kernel.org>, Christian Brauner <brauner@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@redhat.com>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
-	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Valentin Schneider <vschneid@redhat.com>, Kees Cook <kees@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, Guo Ren <guoren@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Paul Moore <paul@paul-moore.com>, Serge Hallyn <sergeh@kernel.org>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	John Johansen <john.johansen@canonical.com>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Kentaro Takeda <takedakn@nttdata.co.jp>, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, apparmor@lists.ubuntu.com, 
-	selinux@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] atomic: Specify natural alignment for atomic_t
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@linux-m68k.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Lance Yang
+ <lance.yang@linux.dev>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>,
+ stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org
+References: <7d9554bfe2412ed9427bf71ce38a376e06eb9ec4.1756087385.git.fthain@linux-m68k.org>
+ <1a5ce56a-d0d0-481e-b663-a7b176682a65@helsinkinet.fi>
+ <CAMuHMdUKgMfL+1EnkZbbqNqTv4aMs_XWocXxq5jVGeOMaQXnDQ@mail.gmail.com>
+Content-Language: en-US
+From: Eero Tamminen <oak@helsinkinet.fi>
+In-Reply-To: <CAMuHMdUKgMfL+1EnkZbbqNqTv4aMs_XWocXxq5jVGeOMaQXnDQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 1 Sept 2025 at 15:10, Simon Schuster via B4 Relay
-<devnull+schuster.simon.siemens-energy.com@kernel.org> wrote:
-> From: Simon Schuster <schuster.simon@siemens-energy.com>
->
-> With the introduction of clone3 in commit 7f192e3cd316 ("fork: add
-> clone3") the effective bit width of clone_flags on all architectures was
-> increased from 32-bit to 64-bit, with a new type of u64 for the flags.
-> However, for most consumers of clone_flags the interface was not
-> changed from the previous type of unsigned long.
->
-> While this works fine as long as none of the new 64-bit flag bits
-> (CLONE_CLEAR_SIGHAND and CLONE_INTO_CGROUP) are evaluated, this is still
-> undesirable in terms of the principle of least surprise.
->
-> Thus, this commit fixes all relevant interfaces of the copy_thread
-> function that is called from copy_process to consistently pass
-> clone_flags as u64, so that no truncation to 32-bit integers occurs on
-> 32-bit architectures.
->
-> Signed-off-by: Simon Schuster <schuster.simon@siemens-energy.com>
+Hi Geert,
 
-Fixes: c5febea0956fd387 ("fork: Pass struct kernel_clone_args into copy_thread")
+On 1.9.2025 11.51, Geert Uytterhoeven wrote:
+>> On 23.8.2025 10.49, Lance Yang wrote:
+>>   > Anyway, I've prepared two patches for discussion, either of which should
+>>   > fix the alignment issue :)
+>>   >
+>>   > Patch A[1] adjusts the runtime checks to handle unaligned pointers.
+>>   > Patch B[2] enforces 4-byte alignment on the core lock structures.
+>>   >
+>>   > Both tested on x86-64.
+>>   >
+>>   > [1]
+>> https://lore.kernel.org/lkml/20250823050036.7748-1-lance.yang@linux.dev
+>>   > [2] https://lore.kernel.org/lkml/20250823074048.92498-1-
+>>   > lance.yang@linux.dev
+>>
+>> Same goes for both of these, except that removing warnings makes minimal
+>> kernel boot 1-2% faster than 4-aligning the whole struct.
 
->  arch/m68k/kernel/process.c       | 2 +-
+Note that above result was from (emulated) 68030 Falcon, i.e. something 
+that has really small caches (256-byte i-/d-cache), *and* a kernel 
+config using CONFIG_CC_OPTIMIZE_FOR_SIZE=y (with GCC 12.2).
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
 
-Gr{oetje,eeting}s,
+> That is an interesting outcome! So the gain of naturally-aligning the
+> lock is more than offset by the increased cache pressure due to wasting
+> (a bit?) more memory.
 
-                        Geert
+Another reason could be those extra inlined warning checks in:
+-----------------------------------------------------
+$ git grep -e hung_task_set_blocker -e hung_task_clear_blocker kernel/
+kernel/locking/mutex.c: hung_task_set_blocker(lock, BLOCKER_TYPE_MUTEX);
+kernel/locking/mutex.c: hung_task_clear_blocker();
+kernel/locking/rwsem.c:         hung_task_set_blocker(sem, 
+BLOCKER_TYPE_RWSEM_READER);
+kernel/locking/rwsem.c:         hung_task_clear_blocker();
+kernel/locking/rwsem.c:         hung_task_set_blocker(sem, 
+BLOCKER_TYPE_RWSEM_WRITER);
+kernel/locking/rwsem.c:         hung_task_clear_blocker();
+kernel/locking/semaphore.c:     hung_task_set_blocker(sem, 
+BLOCKER_TYPE_SEM);
+kernel/locking/semaphore.c:     hung_task_clear_blocker();
+-----------------------------------------------------
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Do you know what was the impact on total kernel size?
+
+As expected, kernel code size is smaller with the static inlined warn 
+checks removed:
+-----------------------------------------------------
+$ size vmlinux-m68k-6.16-fix1 vmlinux-m68k-6.16-fix2
+    text	   data	    bss	    dec	    hex	filename
+3088520	 953532	  84224	4126276	 3ef644	vmlinux-m68k-6.16-fix1  [1]
+3088730	 953564	  84192	4126486	 3ef716	vmlinux-m68k-6.16-fix2  [2]
+-----------------------------------------------------
+
+But could aligning of structs have caused 32 bytes moving from BSS to 
+DATA section?
+
+
+	- Eero
+
+PS. I profiled these 3 kernels on emulated Falcon. According to (Hatari) 
+profiler, main difference in the kernel with the warnings removed, is it 
+doing less than half of the calls to  NCR5380_read() / 
+atari_scsi_reg_read(), compared to the other 2 versions.
+
+These additional 2x calls in the other two versions, seem to mostly come 
+through chain originating from process_scheduled_works(), 
+NCR5380_poll_politely*() functions and bus probing.
+
+After quick look at the WARN_ON_ONCE()s and SCSI code, I have no idea 
+how having those checks being inlined to locking functions, or not, 
+would cause a difference like that.  I've tried patching & building 
+kernels again, and repeating profiling, but result is same.
+
+While Hatari call (graph) tracking might have some issue (due to kernel 
+stack return address manipulation), I don't see how there could be a 
+problem with the profiler instruction counts.  Kernel code at given 
+address does not change during boot in monolithic kernel, (emulator) 
+profiler tracks _every_ executed instruction/address, and it's clearly 
+correct function:
+------------------------------------
+# disassembly with profile data: <instructions percentage>% (<sum of 
+instructions>, <sum of cycles>, <sum of i-cache misses>, <sum of d-cache 
+hits>)
+...
+atari_scsi_falcon_reg_read:
+$001dd826  link.w    a6,#$0      0.43% (414942, 1578432, 44701, 0)
+$001dd82a  move.w    sr,d1       0.43% (414942, 224, 8, 0)
+$001dd82c  ori.w     #$700,sr    0.43% (414942, 414368, 44705, 0)
+$001dd830  move.l    $8(a6),d0   0.43% (414942, 357922, 44705, 414911)
+$001dd834  addi.l    #$88,d0     0.43% (414942, 1014804, 133917, 0)
+$001dd83a  move.w    d0,$8606.w  0.43% (414942, 3618352, 89169, 0)
+$001dd83e  move.w    $8604.w,d0  0.43% (414942, 3620646, 89162, 0)
+$001dd842  move.w    d1,sr       0.43% (414942, 2148, 142, 0)
+$001dd844  unlk      a6          0.43% (414942, 436, 0, 414893)
+$001dd846  rts                   0.43% (414942, 1073934, 134123, 414942)
+atari_scsi_falcon_reg_write:
+$001dd848  link.w    a6,#$0      0.00% (81, 484, 29, 0)
+$001dd84c  move.l    $c(a6),d0   0.00% (81, 326, 29, 73)
+...
+------------------------------------
+
+Maybe those WARN_ON_ONCE() checks just happen to slow down something 
+marginally so that things get interrupted & re-started more for the SCSI 
+code?
+
+PPS. emulated machine has no SCSI drives, only one IDE drive (with 4MB 
+Busybox partition):
+----------------------------------------------------
+scsi host0: Atari native SCSI, irq 15, io_port 0x0, base 0x0, can_queue 
+1, cmd_per_lun 2, sg_tablesize 1, this_id 7, flags { }
+atari-falcon-ide atari-falcon-ide: Atari Falcon and Q40/Q60 PATA controller
+scsi host1: pata_falcon
+ata1: PATA max PIO4 cmd fff00000 ctl fff00038 data fff00000 no IRQ, 
+using PIO polling
+...
+ata1: found unknown device (class 0)
+ata1.00: ATA-7: Hatari  IDE disk 4M, 1.0, max UDMA/100
+ata1.00: 8192 sectors, multi 16: LBA48
+ata1.00: configured for PIO
+...
+scsi 1:0:0:0: Direct-Access     ATA      Hatari  IDE disk 1.0  PQ: 0 ANSI: 5
+sd 1:0:0:0: [sda] 8192 512-byte logical blocks: (4.19 MB/4.00 MiB)
+sd 1:0:0:0: [sda] Write Protect is off
+sd 1:0:0:0: [sda] Mode Sense: 00 3a 00 00
+sd 1:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't 
+support DPO or FUA
+sd 1:0:0:0: [sda] Preferred minimum I/O size 512 bytes
+sd 1:0:0:0: [sda] Attached SCSI disk
+VFS: Mounted root (ext2 filesystem) readonly on device 8:0.
+---------------------------------------------------
