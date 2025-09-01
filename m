@@ -1,129 +1,156 @@
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306F62FB614
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Sep 2025 08:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF782FD7CA
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Sep 2025 08:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756715953; cv=none; b=Iiqq1iPcG3Fbzajy9s8H51MCVZGBM29hcEhhthUZtMhKwQl+aIqaMB0+QPK62ugEYw/AlAkjvdU6jCLT/GCc4cpMDqLr3QmwuQp9QZnZnrTq0Kur9PcqLiTwuTBJXykgE7kcxGvOhW3L93SSjNhQpuMlk9jBCanYR9OUCCWTcn4=
+	t=1756716362; cv=none; b=H9dGSKEv45cgoRRXiQcXWOQOs3Cw/PFNwgcVDa3AhWguCTXmRre+vM8ZgU9pWqcxb2r4hcx+lqRfIs1KthfASSuqmYVjo6g8fBanSOsQ8DGddNHKVwPsZ13YB5nEwz+McWjGqnSvBS7ZsxibMfSnNASD/Nzt0aDM5KxKITL/xFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756715953; c=relaxed/simple;
-	bh=WTjzIUF3S1zA20EdM2pk/6KkYo46Fw8eYT1zQTtvK4M=;
+	s=arc-20240116; t=1756716362; c=relaxed/simple;
+	bh=ZE9gLmPnDqTqk06S/cgXtqlrzst3rOGf71E5ISS59so=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gfIh/MRg/wMOxn99eHDqYxcs3iAKRy/cUrpTaR6oYZYBS15O5eYpGbe0aRxMsI9vXOEnIMzZFu4vVgoeBBKwhBsXdYg2WIJG9S7fB9ZdckkznfTELuqyxQFTkiS4FW3deAaBq3q6ThyfbHZzNCLYiTqGgBSW4e4uuL55KUGS+N8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.52
+	 To:Cc:Content-Type; b=bjBTz58n82guxewp2sOCYURa5llNbJ52Ftq6repJRxoTCn4oqQIu/cTg0l0fkFJb1uMdwGXEsYZcnKg9K3whloyTUJO1vaB9AabRsRYqN8qiTzjk5QP4iZSl8R3WXPNl/V9jGgyS4t4tmqi8KMyZoLHy7P79sx6S0p548fzayiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-89434e44afcso2439709241.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Sep 2025 01:39:10 -0700 (PDT)
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-544a2339775so280439e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Sep 2025 01:46:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756715950; x=1757320750;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ulv02t6E8nasXluvV9ehM0QMWfZqnXi7fBl8WMsUhHw=;
-        b=PDoRM+ym2jIuV5Yd8P8hY4WS7/zUQKbdLnBOSTKWJUte2ZUsd6059zvE+uvA28sW+T
-         B1Id2ZxFiTGxST7Jz+tPk1jUQKpclmWxrjJUgvpu1HRrVeoopnvdMgXHbUy0n7QA8Zcs
-         7bqXNShVriLZucvyM2gcc/WGK5lsRH0ae06iYzAX4JQ154NMHxBffcTxVj7LpTMmNQt8
-         aG6dkzQm+XlStDfJ8SjDYgEk6nPifF1aUUbIgsdWiVvkKfo8zBQ6BEyXkLJp8eK7uO5O
-         ycgxST7xA+HPevoZq2urddjMQspzwul/249xosLFNrQJsl2Ype/MbkRWBf6FW6sBcKo5
-         F84g==
-X-Forwarded-Encrypted: i=1; AJvYcCXRfZFES0ezigAOcmJGRMmBnvNC3PJKfUj9w9pjZ1NAyR0o8yFWQBaAvL6W7Cgc4aWFSkMtPhS3VOfy@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yzhk6x+uIAdL26x7pB0hLWobIEPFwuqkzDvxlD0lsgtbURg36Qn
-	UMdHeTAsUAN0DuZsXIhKs2jx3y9hBCSVIycF9M3W4NJj9unKi5dDlJSPrXsztnO7
-X-Gm-Gg: ASbGncuEOOoTRLWPEIS7QFivjOlv9C0SosOMJAARRZQ1PX5ZPK7V5zVqJkfu45lXPS8
-	UR4XR2E6arbSU489+zkFI6qMq9sRYpktJbZaiuqRuwpORa4AJJbRVO84soL61yeioTBOkG7F6NZ
-	Q/IYXwIDTuKli6VslZZ0teElWdNw5MRJD5awMOqSF0lUg4tXN3VZk0b5ffBGfXFsGaMfE3YmUAR
-	5kXBZLv5IPZ3+9gY9t/ny3CekgLKpjM8/BnmIKqD52mZw1oNEJ1A4GXTveKLx+0j1HmhFoqfV6t
-	44DLcoqCD01N/kyfLEEkvKFr52OEgryXLse47OH5SgtuZpDEDqCMreoe1uj8pvKo/tgPwtoOfP4
-	CH9GUmcnf2UpaZmiWdB2uJ7qYDOCV5ICDD2NMHkG/mBMV4F1D/EJ1ar84bEoXSSPRjdfxE4A=
-X-Google-Smtp-Source: AGHT+IEYEvyYZmdRGWdn342nbQsPb9NX3ZqOa3olBIGkpahTMz2en3f7Hse4VtYY2YjuOH5oWnJwCQ==
-X-Received: by 2002:a05:6102:5a92:b0:4e4:5ed0:19b2 with SMTP id ada2fe7eead31-52b19859a58mr1891639137.9.1756715949660;
-        Mon, 01 Sep 2025 01:39:09 -0700 (PDT)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-52af1e46f50sm2750862137.14.2025.09.01.01.39.09
+        d=1e100.net; s=20230601; t=1756716359; x=1757321159;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lu55cGC1shfZahu4nJqSCls01RHf6IMjgCiuEU3j5YM=;
+        b=RHRY7WUcVv04Gt9UxdNMpv2KE4vrs26KmImBkqmQkILqVj8nfA6L6cCxkDB8rwcVuq
+         XA8iGL9CxQaubERUFu/dnywF+uClnrVegV5NGcjqvW5YCM2aWmi4ATd7GjR5tEDY+DKX
+         wWBm51fNpu0sCkXYpqMuF0opjQ0nhpaju9uCzTT0TWlUosk6OlanopU22ayIvwaKnPnB
+         4V5sWFl+kNAiKWwOc9K1ZS/xQtTxzcWOfDyVZlVmogAZV8NbsmVnpjSVTKx5B5/B3SSP
+         QQ39bPa6P/3S9acpFc+fufupNff0nqTBvqT0VqsTHjLH1Mb/y1cegM2idjIqlALubhTE
+         EtHg==
+X-Forwarded-Encrypted: i=1; AJvYcCVuGgUQgKl3qDkUDvkkGYgX39XTjneDHAYBiUglTFcAMWwQ99ZQMRkEhrkpbab2L2YkBz7PuXnIZiK7@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yxov77HVq65gD1lD/9pRfsagh3qPxO+xlJvfDtod/l1nm4+iyuT
+	7DpCsPzcEdsJrLL/f47DLzdefqfsU1yo95vFB1bHH+k9LHeH8ep8yRckm7E4ok2n
+X-Gm-Gg: ASbGncsotJOsDSN/ZTFMiQgUtRzWcQalirIOYI6uKBo6tawqbt7Lggf+G/NGptS6LcJ
+	v/NRdfxfzT7+jVnkCWq33ME9mlErUAV2/Cboi5nhE59JNLIJfjoKIfAmDo0v06302O8EfF74ZPq
+	tz9rnZdQiaDpxumx8XE2quNLpjgj4tnoC2sACLY/weT6ASmjcG5iL4jsDHbiN/fldBmvpHLg/gt
+	tteb4CJFOONDaKftWylP7SZL7A2DCM/VGdRbolAUP8E3Z/8USnSRQ2qUdKK8GldH1d1tolQ0t43
+	4FmrLirCss7xWJBunWMQjaRxiehvlBEMX4JaEzt8y7XuPW/y5KD2IBGcWtaXBAlaWq63BenqtZI
+	d4mc7Cjea9HnIWTRg4gNg7AlS9OWgl3YUynMQH2D1Qw8UpcHU6Nk9s/sl0jro
+X-Google-Smtp-Source: AGHT+IHmezJE8jkSV+YF0RoKB68/bi3yJWhv0F4OIAYrsQTobErDJT/fTEho0TG/WGVToSVbM9ibQQ==
+X-Received: by 2002:a05:6122:2022:b0:543:cd49:ce78 with SMTP id 71dfb90a1353d-544a02889edmr1898141e0c.14.1756716359055;
+        Mon, 01 Sep 2025 01:45:59 -0700 (PDT)
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-544afcfe32dsm1341719e0c.23.2025.09.01.01.45.58
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Sep 2025 01:39:09 -0700 (PDT)
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-8943761ca20so2301645241.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Sep 2025 01:39:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUGhETaF9uLv0OFPgCyxkupjZJUwawLNutsc7DLCUwK/kWoZmi8DAWtqTeGv2zSOQvoJXZDC40CND9k@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:5789:b0:51c:4443:16e0 with SMTP id
- ada2fe7eead31-52b1be316e5mr1967209137.30.1756715948932; Mon, 01 Sep 2025
- 01:39:08 -0700 (PDT)
+        Mon, 01 Sep 2025 01:45:58 -0700 (PDT)
+Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-523264ecab8so1372631137.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 01 Sep 2025 01:45:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWEXPNHLmv0giGY7GxxzwsSHozFHZzCS4N7X4uyOd3ERDWEyZgMaEJoy9jYU31Vmdr5BfoC7Gfrb7Dl@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:162c:b0:51f:66fc:53b4 with SMTP id
+ ada2fe7eead31-52b1bd28af5mr1710735137.30.1756716358063; Mon, 01 Sep 2025
+ 01:45:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250822145605.18172-1-ilpo.jarvinen@linux.intel.com> <20250827223606.GA915856@bhelgaas>
-In-Reply-To: <20250827223606.GA915856@bhelgaas>
+References: <7d9554bfe2412ed9427bf71ce38a376e06eb9ec4.1756087385.git.fthain@linux-m68k.org>
+ <20250825032743.80641-1-ioworker0@gmail.com> <c8851682-25f1-f594-e30f-5b62e019d37b@linux-m68k.org>
+ <96ae7afc-c882-4c3d-9dea-3e2ae2789caf@linux.dev> <5a44c60b-650a-1f8a-d5cb-abf9f0716817@linux-m68k.org>
+ <4e7e7292-338d-4a57-84ec-ae7427f6ad7c@linux.dev> <d07778f8-8990-226b-5171-4a36e6e18f32@linux-m68k.org>
+ <d95592ec-f51e-4d80-b633-7440b4e69944@linux.dev> <30a55f56-93c2-4408-b1a5-5574984fb45f@linux.dev>
+ <4405ee5a-becc-7375-61a9-01304b3e0b20@linux-m68k.org> <cfb62b9d-9cbd-47dd-a894-3357027e2a50@linux.dev>
+In-Reply-To: <cfb62b9d-9cbd-47dd-a894-3357027e2a50@linux.dev>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 1 Sep 2025 10:38:57 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUqKT4OaX6P_1CW_e2U1GwiCmyV5sAoDVa7EWUX2r6SsA@mail.gmail.com>
-X-Gm-Features: Ac12FXyky2hWsQI9uSpsphCp4R_EUgbfbVJ67zlGAAXkq-snhjMBdE6QAlpgqhY
-Message-ID: <CAMuHMdUqKT4OaX6P_1CW_e2U1GwiCmyV5sAoDVa7EWUX2r6SsA@mail.gmail.com>
-Subject: Re: [PATCH 00/24] PCI: Bridge window selection improvements
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Andreas Larsson <andreas@gaisler.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-	"David S. Miller" <davem@davemloft.net>, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-pci@vger.kernel.org, 
-	sparclinux@vger.kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Yinghai Lu <yinghai@kernel.org>, Igor Mammedov <imammedo@redhat.com>, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	linux-kernel@vger.kernel.org, 
-	=?UTF-8?Q?Micha=C5=82_Winiarski?= <michal.winiarski@intel.com>, 
-	linuxppc-dev@lists.ozlabs.org, Greg Ungerer <gerg@linux-m68k.org>
+Date: Mon, 1 Sep 2025 10:45:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV-AtPm-W-QUC1HixJ8Koy_HdESwCCOhRs3Q26=wjWwog@mail.gmail.com>
+X-Gm-Features: Ac12FXyV9h1utoTEvCbocGnG0IAN7uIVG3x3Lc95GJw3v48XpvYZ_YA0jVY7Wlc
+Message-ID: <CAMuHMdV-AtPm-W-QUC1HixJ8Koy_HdESwCCOhRs3Q26=wjWwog@mail.gmail.com>
+Subject: Re: [PATCH] atomic: Specify natural alignment for atomic_t
+To: Lance Yang <lance.yang@linux.dev>
+Cc: Finn Thain <fthain@linux-m68k.org>, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, mhiramat@kernel.org, oak@helsinkinet.fi, 
+	peterz@infradead.org, stable@vger.kernel.org, will@kernel.org, 
+	Lance Yang <ioworker0@gmail.com>, linux-m68k@lists.linux-m68k.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-CC Greg
+Hi Lance,
 
-On Thu, 28 Aug 2025 at 00:36, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> On Fri, Aug 22, 2025 at 05:55:41PM +0300, Ilpo J=C3=A4rvinen wrote:
-> > This series is based on top of the three resource fitting and
-> > assignment algorithm fixes (v3).
+On Thu, 28 Aug 2025 at 04:05, Lance Yang <lance.yang@linux.dev> wrote:
+> On 2025/8/28 07:43, Finn Thain wrote:
+> > On Mon, 25 Aug 2025, Lance Yang wrote:
+> >> Same here, using a global static variable instead of a local one. The
+> >> result is consistently misaligned.
+> >>
+> >> ```
+> >> #include <linux/module.h>
+> >> #include <linux/init.h>
+> >>
+> >> static struct __attribute__((packed)) test_container {
+> >>      char padding[49];
+> >>      struct mutex io_lock;
+> >> } cont;
+> >>
+> >> static int __init alignment_init(void)
+> >> {
+> >>      pr_info("Container base address      : %px\n", &cont);
+> >>      pr_info("io_lock member address      : %px\n", &cont.io_lock);
+> >>      pr_info("io_lock address offset mod 4: %lu\n", (unsigned long)&cont.io_lock % 4);
+> >>      return 0;
+> >> }
+> >>
+> >> static void __exit alignment_exit(void)
+> >> {
+> >>      pr_info("Module unloaded\n");
+> >> }
+> >>
+> >> module_init(alignment_init);
+> >> module_exit(alignment_exit);
+> >> MODULE_LICENSE("GPL");
+> >> MODULE_AUTHOR("x");
+> >> MODULE_DESCRIPTION("x");
+> >> ```
+> >>
+> >> Result from dmesg:
+> >>
+> >> ```
+> >> [Mon Aug 25 19:33:28 2025] Container base address      : ffffffffc28f0940
+> >> [Mon Aug 25 19:33:28 2025] io_lock member address      : ffffffffc28f0971
+> >> [Mon Aug 25 19:33:28 2025] io_lock address offset mod 4: 1
+> >> ```
+> >>
 > >
-> > PCI resource fitting and assignment code needs to find the bridge
-> > window a resource belongs to in multiple places, yet, no common
-> > function for that exists. Thus, each site has its own version of
-> > the decision, each with their own corner cases, misbehaviors, and
-> > some resulting in complex interfaces between internal functions.
-> > ...
+> > FTR, I was able to reproduce that result (i.e. static storage):
+> >
+> > [    0.320000] Container base address      : 0055d9d0
+> > [    0.320000] io_lock member address      : 0055da01
+> > [    0.320000] io_lock address offset mod 4: 1
+> >
+> > I think the experiments you sent previously would have demonstrated the
+> > same result, except for the unpredictable base address that you sensibly
+> > logged in this version.
 >
-> > I've tried to look out for any trouble that code under arch/ could
-> > cause after the flags start to behave differently and therefore ended
-> > up consolidating arch/ code to use pci_enable_resources(). My
-> > impression is that strictly speaking only the MIPS code would break
-> > similar to PCI core's copy of pci_enable_resources(), the others were
-> > much more lax in checking so they'd likely keep working but
-> > consolidation seemed still the best approach there as the enable checks
-> > seemed diverging for no apparent reason.
-> > ...
+> Thanks for taking the time to reproduce it!
 >
-> >   m68k/PCI: Use pci_enable_resources() in pcibios_enable_device()
-> >   sparc/PCI: Remove pcibios_enable_device() as they do nothing extra
-> >   MIPS: PCI: Use pci_enable_resources()
-> > ...
->
-> >  arch/m68k/kernel/pcibios.c   |  39 +-
-> >  arch/mips/pci/pci-legacy.c   |  38 +-
-> >  arch/sparc/kernel/leon_pci.c |  27 --
-> >  arch/sparc/kernel/pci.c      |  27 --
-> >  arch/sparc/kernel/pcic.c     |  27 --
-> > ...
->
-> I love the fact that you're doing so much cleanup.  Thanks for all the
-> work in this!
->
-> Obviously all this code is quite sensitive, so I put it on
-> pci/resource to get more exposure in -next.  If it turns out that we
-> trip over things or just don't feel comfortable yet for v6.18, we can
-> always defer this part until the next cycle.
->
-> I will also watch for acks from the m68k, mips, and sparc maintainers
-> for those pieces.
+> This proves the problem can happen in practice (e.g., with packed structs),
+> so we need to ignore the unaligned pointers on the architectures that don't
+> trap for now.
+
+Putting locks inside a packed struct is definitely a Very Bad Idea
+and a No Go.  Packed structs are meant to describe memory data and
+MMIO register layouts, and must not contain control data for critical
+sections.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
