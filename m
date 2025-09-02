@@ -1,108 +1,143 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27CA62DC33D
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Sep 2025 12:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF02430505C
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Sep 2025 13:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756817778; cv=none; b=daXzLHuCukZ+CuLFBKpauOo1f7L1yWFnxMydbqBlgIeZfihHJcAzWH/kQDliihAhAivLk3z0HtJLc4qC9E7P3h+1oHlBfaQnigrPqkhi7jZIBZ5kUEYVpduavFuvz/RCtuC5X+6QAE54iiqr0zFIGRTHgmhOgkiKXnGyDK9xcVw=
+	t=1756819865; cv=none; b=K7L2unLm9vuBzauho0hyr+ygSW/pZjf7x5PW9W99eeEAzAkbQV0AiArVKh/n4u0K+Luou3Wha7v3Vj3BPRLgSODEQFkGs101Vhs7/j/OiEJtcpPTHMbytSZAJUD1mo96EcWz6TuZvahaHATaWTkES4XGXg6qzjh607csIrrZVx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756817778; c=relaxed/simple;
-	bh=6fXt4bhKhGQeDgocLc+VTGxwmm9hlaSYbwbrhqO4eo4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=LE7txRJ2t+FT4up2E3dQoVPqe74gukxJDnUH6NCIG7lYni1GHJqzjl/2wYsr7aHJgNkpXuLUNE3QFgCBG9xF7SVuvYMkGcNSeOyCVGlO1g9ZX5vhPDGrIn5bZP5COd/Kq2IzZNLKCroWrLoikPRleF3pTw3A0UBD7OosknHRsfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=none smtp.mailfrom=aws-us-west-2-korg-mail-1.web.codeaurora.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pwazNMHJ; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=aws-us-west-2-korg-mail-1.web.codeaurora.org
+	s=arc-20240116; t=1756819865; c=relaxed/simple;
+	bh=pDe7Bax8OHI5BmNveGIn98X/IVs5G4OLXHlf6nPqWdo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JqZ2y0lJPEzCJWvyOvetJ3c4iXzjsBGXHpuKJIyxIGyS8dZInE59/h/oJnpNCySp7FribsmW6wq1v+z2OFW3t6cT2z2iTZzXV6+ma/guT4IM21Rpv0zSFoiQWM8NAuCgw0uzqd2vyyF/spSo9Gwd330M148WeUcyHP5fID6XW2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=w5bHHYAd; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pwazNMHJ"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1BF8340BAC;
-	Tue,  2 Sep 2025 12:56:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F86C4CEF4;
-	Tue,  2 Sep 2025 12:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756817774;
-	bh=6fXt4bhKhGQeDgocLc+VTGxwmm9hlaSYbwbrhqO4eo4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=pwazNMHJ405xvwddvksWXCvf2Bzxx2noy2IUYDoxR08pNT70eoYJ6avMGFl9/Brfy
-	 djIhKc4IwsWYRDzf4ckgbuj4YCoKw+9YxQrmPP2zcN5BTWN72msT/8L7gG1b4AnNXA
-	 H4LLv6NBYhzDqxK03/Bs/TmEL+LOYNY+NS+YPvoSxcEaL2K4fCDy8dQcwcD1Yoj3r7
-	 9WeAzZMLfWuw825r0YE0Jvdw3d0z5Gpm6BLaVjSBhLdAAnUEwVxIWvjvouZoMk16IB
-	 vPb54RivBXsgQ9vEkrWC7YCee6GXl108+ujfuPj+LCZ1l3MNDksA1EisuEfyh34BqK
-	 8exw6nerb4i/Q==
-From: Lee Jones <lee@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>, 
- Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
- Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>, 
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, 
- Gregory Clement <gregory.clement@bootlin.com>, 
- Russell King <linux@armlinux.org.uk>, Daniel Mack <daniel@zonque.org>, 
- Haojian Zhuang <haojian.zhuang@gmail.com>, 
- Robert Jarzmik <robert.jarzmik@free.fr>, 
- Krzysztof Kozlowski <krzk@kernel.org>, 
- Alim Akhtar <alim.akhtar@samsung.com>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee@kernel.org>, 
- Pavel Machek <pavel@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Matti Vaittinen <mazziesaccount@gmail.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Jeff Johnson <jjohnson@kernel.org>, Hans de Goede <hansg@kernel.org>, 
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- "Dr. David Alan Gilbert" <linux@treblig.org>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-samsung-soc@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
- linux-mips@vger.kernel.org, linux-sh@vger.kernel.org, 
- linux-input@vger.kernel.org, linux-leds@vger.kernel.org, 
- linux-media@vger.kernel.org, patches@opensource.cirrus.com, 
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
- ath10k@lists.infradead.org, platform-driver-x86@vger.kernel.org, 
- linux-usb@vger.kernel.org, linux-sound@vger.kernel.org
-In-Reply-To: <20250808151822.536879-1-arnd@kernel.org>
-References: <20250808151822.536879-1-arnd@kernel.org>
-Subject: Re: (subset) [PATCH 00/21] gpiolib: fence off legacy interfaces
-Message-Id: <175681776381.2341743.17892612215782644085.b4-ty@kernel.org>
-Date: Tue, 02 Sep 2025 13:56:03 +0100
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w5bHHYAd"
+Message-ID: <f6835c03-3c3f-40ee-8000-f53f49d2b4a4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1756819860;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=40Z84sgwetMbmmZdXb2WLa4xBqxAl/JOWhj9T2RQau8=;
+	b=w5bHHYAdZAGiudzrFbS4Z3VV4YzJjmmuecFyP2MuFdT8pGwvYYKI389jfNPyARZoSThCvD
+	VfYnAhdn75HlLNyMAvVsWMgf01PlsCAY4ORoSxlMjXWuIS/JRQ/9WqHocixT1MshVEeZpz
+	rALW9o030eIJfHuHIyPozab3ApZYPlY=
+Date: Tue, 2 Sep 2025 21:30:52 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.15-dev-c81fc
+Subject: Re: [PATCH] atomic: Specify natural alignment for atomic_t
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@linux-m68k.org>, akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org, mhiramat@kernel.org, oak@helsinkinet.fi,
+ peterz@infradead.org, stable@vger.kernel.org, will@kernel.org,
+ Lance Yang <ioworker0@gmail.com>, linux-m68k@lists.linux-m68k.org
+References: <7d9554bfe2412ed9427bf71ce38a376e06eb9ec4.1756087385.git.fthain@linux-m68k.org>
+ <20250825032743.80641-1-ioworker0@gmail.com>
+ <c8851682-25f1-f594-e30f-5b62e019d37b@linux-m68k.org>
+ <96ae7afc-c882-4c3d-9dea-3e2ae2789caf@linux.dev>
+ <5a44c60b-650a-1f8a-d5cb-abf9f0716817@linux-m68k.org>
+ <4e7e7292-338d-4a57-84ec-ae7427f6ad7c@linux.dev>
+ <d07778f8-8990-226b-5171-4a36e6e18f32@linux-m68k.org>
+ <d95592ec-f51e-4d80-b633-7440b4e69944@linux.dev>
+ <30a55f56-93c2-4408-b1a5-5574984fb45f@linux.dev>
+ <4405ee5a-becc-7375-61a9-01304b3e0b20@linux-m68k.org>
+ <cfb62b9d-9cbd-47dd-a894-3357027e2a50@linux.dev>
+ <CAMuHMdV-AtPm-W-QUC1HixJ8Koy_HdESwCCOhRs3Q26=wjWwog@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+In-Reply-To: <CAMuHMdV-AtPm-W-QUC1HixJ8Koy_HdESwCCOhRs3Q26=wjWwog@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 08 Aug 2025 17:17:44 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+Hi Geert,
+
+On 2025/9/1 16:45, Geert Uytterhoeven wrote:
+> Hi Lance,
 > 
-> Commit 678bae2eaa81 ("gpiolib: make legacy interfaces optional") was
-> merged for linux-6.17, so now it is possible to use the legacy interfaces
-> conditionally and eventually have the support left out of the kernel
-> whenever it is not needed.
+> On Thu, 28 Aug 2025 at 04:05, Lance Yang <lance.yang@linux.dev> wrote:
+>> On 2025/8/28 07:43, Finn Thain wrote:
+>>> On Mon, 25 Aug 2025, Lance Yang wrote:
+>>>> Same here, using a global static variable instead of a local one. The
+>>>> result is consistently misaligned.
+>>>>
+>>>> ```
+>>>> #include <linux/module.h>
+>>>> #include <linux/init.h>
+>>>>
+>>>> static struct __attribute__((packed)) test_container {
+>>>>       char padding[49];
+>>>>       struct mutex io_lock;
+>>>> } cont;
+>>>>
+>>>> static int __init alignment_init(void)
+>>>> {
+>>>>       pr_info("Container base address      : %px\n", &cont);
+>>>>       pr_info("io_lock member address      : %px\n", &cont.io_lock);
+>>>>       pr_info("io_lock address offset mod 4: %lu\n", (unsigned long)&cont.io_lock % 4);
+>>>>       return 0;
+>>>> }
+>>>>
+>>>> static void __exit alignment_exit(void)
+>>>> {
+>>>>       pr_info("Module unloaded\n");
+>>>> }
+>>>>
+>>>> module_init(alignment_init);
+>>>> module_exit(alignment_exit);
+>>>> MODULE_LICENSE("GPL");
+>>>> MODULE_AUTHOR("x");
+>>>> MODULE_DESCRIPTION("x");
+>>>> ```
+>>>>
+>>>> Result from dmesg:
+>>>>
+>>>> ```
+>>>> [Mon Aug 25 19:33:28 2025] Container base address      : ffffffffc28f0940
+>>>> [Mon Aug 25 19:33:28 2025] io_lock member address      : ffffffffc28f0971
+>>>> [Mon Aug 25 19:33:28 2025] io_lock address offset mod 4: 1
+>>>> ```
+>>>>
+>>>
+>>> FTR, I was able to reproduce that result (i.e. static storage):
+>>>
+>>> [    0.320000] Container base address      : 0055d9d0
+>>> [    0.320000] io_lock member address      : 0055da01
+>>> [    0.320000] io_lock address offset mod 4: 1
+>>>
+>>> I think the experiments you sent previously would have demonstrated the
+>>> same result, except for the unpredictable base address that you sensibly
+>>> logged in this version.
+>>
+>> Thanks for taking the time to reproduce it!
+>>
+>> This proves the problem can happen in practice (e.g., with packed structs),
+>> so we need to ignore the unaligned pointers on the architectures that don't
+>> trap for now.
 > 
-> [...]
+> Putting locks inside a packed struct is definitely a Very Bad Idea
+> and a No Go.  Packed structs are meant to describe memory data and
 
-Applied, thanks!
+Right. That's definitely not how packed structs should be used ;)
 
-[12/21] mfd: arizona: make legacy gpiolib interface optional
-        commit: 12f6c0afc8987d72017a3ecf7c1183cb951b0d24
-[13/21] mfd: si476x: add GPIOLIB_LEGACY dependency
-        commit: 1ae250257e43b3fba225e4f8ea7d87125dc861ae
-[14/21] mfd: aat2870: add GPIOLIB_LEGACY dependency
-        commit: 3144986f37911f131f373743f294b2941a8ef37c
+> MMIO register layouts, and must not contain control data for critical
+> sections.
 
---
-Lee Jones [李琼斯]
+Unfortunately, this patten was found in an in-tree driver, as reported[1]
+by kernel test robot, and there might be other undiscovered instances ...
 
+[1] 
+https://lore.kernel.org/oe-kbuild-all/202508240539.ARmC1Umu-lkp@intel.com
+
+Cheers,
+Lance
