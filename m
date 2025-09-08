@@ -1,24 +1,24 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F373B2F3C30
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Sep 2025 09:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0B72F6593
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Sep 2025 09:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757324755; cv=none; b=PxSJ2owsLQrGkHFvNxnhNR+FUeQaOZG7558D3Dy0+E6xHX3txIgMuqbc+FMJ+6UKdAGMBOy66WRwHgc5UnpR/uPMQ1IXvlljDlI86EpO9G3RwpSXJyK4ja1SiEv8pKYqXv23cM1/VMXrQVB2VPobb8zzmQqkZc95Aq0OIJABjB8=
+	t=1757324757; cv=none; b=RkVP7Zvw1YfWxAWTG+2JNvlkTpDQrzj+Q1ldKvlwX+jLsKR4x5HcsOw+Wgsuz1cj7UYwCU5PY4wit+eByM2MPjAJ+lplCE1ux9JzEpacDiOYrFLM30QT1/juxMvgd3R62/c01bcXXAV/raWzZEDaP2RtboAefYMyL+wiLXE3pkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757324755; c=relaxed/simple;
-	bh=WG7WUKtE4zJYheWQPYmuVySI5x2lgsKDFdlo5YMsXy8=;
+	s=arc-20240116; t=1757324757; c=relaxed/simple;
+	bh=TZUhvHSGGcLtIxh0HnB+s/u5WaFKlmsEZiZnhX4sdrk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pco74DypGZGIKGj/izX6tWadKPf6QWE8yLHIHO4u/wz9kWxBMDwcZJ6bl/+H+pvdwjbhM4bT0OPlqJa5j5E6BPhiOqr2WHE9rSComeorS/0vQV6k/oVF1LxrQMGulcSKZfG+DRYpw80a0XqHS++eLS2hiI+zP3MfoY8F7ED3OGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=B2T1fiWMc5FEXdCXXFYwLmwGjTEJFUf3DflVOOddFVtxX7dfiNuogGdzL4FBqX0NJK9Fcww+VpqX/JQPAjUTdTb+g3PFRQizlTcKapx7kcTl9fZkkx8S4q6vpJZsKzmzxM+uZ8cf8oDrSQiLORCoDz/U+oPYK6w45ARcZcBfwPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2EBEA4358A;
+	by tor.source.kernel.org (Postfix) with ESMTP id 7208760052;
+	Mon,  8 Sep 2025 09:45:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77A2FC4CEFA;
 	Mon,  8 Sep 2025 09:45:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67DECC4CEF8;
-	Mon,  8 Sep 2025 09:45:51 +0000 (UTC)
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Slaby <jirislaby@kernel.org>,
@@ -28,9 +28,9 @@ Cc: linux-m68k@lists.linux-m68k.org,
 	linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 1/2] tty: serial: 8250: Move HP300/400 serial Kconfig options
-Date: Mon,  8 Sep 2025 11:45:41 +0200
-Message-ID: <56244caed4261057d317cd3101be27660b4fc117.1757323858.git.geert@linux-m68k.org>
+Subject: [PATCH 2/2] tty: serial: 8250: Rework HP300 serial Kconfig logic
+Date: Mon,  8 Sep 2025 11:45:42 +0200
+Message-ID: <f69570963ce01fe83bf11675c47415530e8d950e.1757323858.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1757323858.git.geert@linux-m68k.org>
 References: <cover.1757323858.git.geert@linux-m68k.org>
@@ -42,187 +42,71 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The HPDCA and HPAPCI Kconfig symbols for HP300 and HP400 serial ports
-are clearly suboptions of the HP300 serial driver.  Hence move them from
-arch/m68k/Kconfig.devices to drivers/tty/serial/8250/Kconfig.
-Add "SERIAL_8250_"-prefixes to the symbols, and "8250 "-prefixes
-to their descriptions, to match the style of the new location.
+When SERIAL_8250 and HP300 are enabled, but none of SERIAL_8250_HPDCA
+and SERIAL_8250_HPAPCI is built-in:
+
+    drivers/tty/serial/8250/8250_hp300.c:24:2: warning: #warning CONFIG_SERIAL_8250 defined but neither CONFIG_SERIAL_8250_HPDCA nor CONFIG_SERIAL_8250_HPAPCI defined, are you sure? [-Wcpp]
+       24 | #warning CONFIG_SERIAL_8250 defined but neither CONFIG_SERIAL_8250_HPDCA nor CONFIG_SERIAL_8250_HPAPCI defined, are you sure?
+	  |  ^~~~~~~
+
+Fix this by reworking the Kconfig logic to make such combinations
+impossible:
+  - Stop enabling SERIAL_8250_HP300 by default when both SERIAL_8250 and
+    HP300 are enabled,
+  - Instead, let SERIAL_8250_HPDCA and SERIAL_8250_HPAPCI select
+    SERIAL_8250_HP300.
+
+Note that since commit 0cff260a42c051ee ("[SERIAL] Allow 8250 PCI, PNP,
+GSC and HP300 support to be disabled"), the warning message is wrong,
+and should have been s/CONFIG_SERIAL_8250/CONFIG_SERIAL_8250_HP300/.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- arch/m68k/Kconfig.devices            | 14 -------------
- drivers/tty/serial/8250/8250_hp300.c | 30 ++++++++++++++--------------
- drivers/tty/serial/8250/Kconfig      | 14 +++++++++++++
- 3 files changed, 29 insertions(+), 29 deletions(-)
+ drivers/tty/serial/8250/8250_hp300.c | 4 ----
+ drivers/tty/serial/8250/Kconfig      | 4 ++--
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
-index e6e3efac184074c2..999ee6aaa8d29c2f 100644
---- a/arch/m68k/Kconfig.devices
-+++ b/arch/m68k/Kconfig.devices
-@@ -104,20 +104,6 @@ config AMIGA_BUILTIN_SERIAL
- 
- 	  To compile this driver as a module, choose M here.
- 
--config HPDCA
--	tristate "HP DCA serial support"
--	depends on DIO && SERIAL_8250
--	help
--	  If you want to use the internal "DCA" serial ports on an HP300
--	  machine, say Y here.
--
--config HPAPCI
--	tristate "HP APCI serial support"
--	depends on HP300 && SERIAL_8250
--	help
--	  If you want to use the internal "APCI" serial ports on an HP400
--	  machine, say Y here.
--
- config SERIAL_CONSOLE
- 	bool "Support for serial port console"
- 	depends on AMIGA_BUILTIN_SERIAL=y
 diff --git a/drivers/tty/serial/8250/8250_hp300.c b/drivers/tty/serial/8250/8250_hp300.c
-index 3012ea03d22ca1d5..583a86d87b559ec4 100644
+index 583a86d87b559ec4..30e7d09eed8ae5bf 100644
 --- a/drivers/tty/serial/8250/8250_hp300.c
 +++ b/drivers/tty/serial/8250/8250_hp300.c
-@@ -20,11 +20,11 @@
+@@ -20,10 +20,6 @@
  
  #include "8250.h"
  
--#if !defined(CONFIG_HPDCA) && !defined(CONFIG_HPAPCI) && !defined(CONFIG_COMPILE_TEST)
--#warning CONFIG_SERIAL_8250 defined but neither CONFIG_HPDCA nor CONFIG_HPAPCI defined, are you sure?
-+#if !defined(CONFIG_SERIAL_8250_HPDCA) && !defined(CONFIG_SERIAL_8250_HPAPCI) && !defined(CONFIG_COMPILE_TEST)
-+#warning CONFIG_SERIAL_8250 defined but neither CONFIG_SERIAL_8250_HPDCA nor CONFIG_SERIAL_8250_HPAPCI defined, are you sure?
- #endif
- 
--#ifdef CONFIG_HPAPCI
-+#ifdef CONFIG_SERIAL_8250_HPAPCI
+-#if !defined(CONFIG_SERIAL_8250_HPDCA) && !defined(CONFIG_SERIAL_8250_HPAPCI) && !defined(CONFIG_COMPILE_TEST)
+-#warning CONFIG_SERIAL_8250 defined but neither CONFIG_SERIAL_8250_HPDCA nor CONFIG_SERIAL_8250_HPAPCI defined, are you sure?
+-#endif
+-
+ #ifdef CONFIG_SERIAL_8250_HPAPCI
  struct hp300_port {
  	struct hp300_port *next;	/* next port */
- 	int line;			/* line (tty) number */
-@@ -33,7 +33,7 @@ struct hp300_port {
- static struct hp300_port *hp300_ports;
- #endif
- 
--#ifdef CONFIG_HPDCA
-+#ifdef CONFIG_SERIAL_8250_HPDCA
- 
- static int hpdca_init_one(struct dio_dev *d,
- 					const struct dio_device_id *ent);
-@@ -110,7 +110,7 @@ int __init hp300_setup_serial_console(void)
- 
- 	/* Check for APCI console */
- 	if (scode == 256) {
--#ifdef CONFIG_HPAPCI
-+#ifdef CONFIG_SERIAL_8250_HPAPCI
- 		pr_info("Serial console is HP APCI 1\n");
- 
- 		port.uartclk = HPAPCI_BAUD_BASE * 16;
-@@ -119,11 +119,11 @@ int __init hp300_setup_serial_console(void)
- 		port.regshift = 2;
- 		add_preferred_console("ttyS", port.line, "9600n8");
- #else
--		pr_warn("Serial console is APCI but support is disabled (CONFIG_HPAPCI)!\n");
-+		pr_warn("Serial console is APCI but support is disabled (CONFIG_SERIAL_8250_HPAPCI)!\n");
- 		return 0;
- #endif
- 	} else {
--#ifdef CONFIG_HPDCA
-+#ifdef CONFIG_SERIAL_8250_HPDCA
- 		unsigned long pa = dio_scodetophysaddr(scode);
- 		if (!pa)
- 			return 0;
-@@ -142,7 +142,7 @@ int __init hp300_setup_serial_console(void)
- 		if (DIO_ID(pa + DIO_VIRADDRBASE) & 0x80)
- 			add_preferred_console("ttyS", port.line, "9600n8");
- #else
--		pr_warn("Serial console is DCA but support is disabled (CONFIG_HPDCA)!\n");
-+		pr_warn("Serial console is DCA but support is disabled (CONFIG_SERIAL_8250_HPDCA)!\n");
- 		return 0;
- #endif
- 	}
-@@ -153,7 +153,7 @@ int __init hp300_setup_serial_console(void)
- }
- #endif /* CONFIG_SERIAL_8250_CONSOLE */
- 
--#ifdef CONFIG_HPDCA
-+#ifdef CONFIG_SERIAL_8250_HPDCA
- static int hpdca_init_one(struct dio_dev *d,
- 				const struct dio_device_id *ent)
- {
-@@ -203,7 +203,7 @@ static int hpdca_init_one(struct dio_dev *d,
- static int __init hp300_8250_init(void)
- {
- 	static int called;
--#ifdef CONFIG_HPAPCI
-+#ifdef CONFIG_SERIAL_8250_HPAPCI
- 	int line;
- 	unsigned long base;
- 	struct uart_8250_port uart;
-@@ -217,10 +217,10 @@ static int __init hp300_8250_init(void)
- 	if (!MACH_IS_HP300)
- 		return -ENODEV;
- 
--#ifdef CONFIG_HPDCA
-+#ifdef CONFIG_SERIAL_8250_HPDCA
- 	dio_register_driver(&hpdca_driver);
- #endif
--#ifdef CONFIG_HPAPCI
-+#ifdef CONFIG_SERIAL_8250_HPAPCI
- 	if (hp300_model < HP_400) {
- 		if (!num_ports)
- 			return -ENODEV;
-@@ -284,7 +284,7 @@ static int __init hp300_8250_init(void)
- 	return 0;
- }
- 
--#ifdef CONFIG_HPDCA
-+#ifdef CONFIG_SERIAL_8250_HPDCA
- static void hpdca_remove_one(struct dio_dev *d)
- {
- 	int line;
-@@ -300,7 +300,7 @@ static void hpdca_remove_one(struct dio_dev *d)
- 
- static void __exit hp300_8250_exit(void)
- {
--#ifdef CONFIG_HPAPCI
-+#ifdef CONFIG_SERIAL_8250_HPAPCI
- 	struct hp300_port *port, *to_free;
- 
- 	for (port = hp300_ports; port; ) {
-@@ -312,7 +312,7 @@ static void __exit hp300_8250_exit(void)
- 
- 	hp300_ports = NULL;
- #endif
--#ifdef CONFIG_HPDCA
-+#ifdef CONFIG_SERIAL_8250_HPDCA
- 	dio_unregister_driver(&hpdca_driver);
- #endif
- }
 diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-index f64ef0819cd4e507..2696c236917afddd 100644
+index 2696c236917afddd..9b5df423606bfb80 100644
 --- a/drivers/tty/serial/8250/Kconfig
 +++ b/drivers/tty/serial/8250/Kconfig
-@@ -162,6 +162,20 @@ config SERIAL_8250_HP300
- 	depends on SERIAL_8250 && HP300
- 	default SERIAL_8250
+@@ -159,12 +159,11 @@ config SERIAL_8250_EXAR
  
-+config SERIAL_8250_HPDCA
-+	tristate "8250 HP DCA serial support"
-+	depends on SERIAL_8250 && DIO
-+	help
-+	  If you want to use the internal "DCA" serial ports on an HP300
-+	  machine, say Y here.
-+
-+config SERIAL_8250_HPAPCI
-+	tristate "8250 HP APCI serial support"
-+	depends on SERIAL_8250 && HP300
-+	help
-+	  If you want to use the internal "APCI" serial ports on an HP400
-+	  machine, say Y here.
-+
- config SERIAL_8250_CS
- 	tristate "8250/16550 PCMCIA device support"
- 	depends on PCMCIA && SERIAL_8250 && HAS_IOPORT
+ config SERIAL_8250_HP300
+ 	tristate
+-	depends on SERIAL_8250 && HP300
+-	default SERIAL_8250
+ 
+ config SERIAL_8250_HPDCA
+ 	tristate "8250 HP DCA serial support"
+ 	depends on SERIAL_8250 && DIO
++	select SERIAL_8250_HP300
+ 	help
+ 	  If you want to use the internal "DCA" serial ports on an HP300
+ 	  machine, say Y here.
+@@ -172,6 +171,7 @@ config SERIAL_8250_HPDCA
+ config SERIAL_8250_HPAPCI
+ 	tristate "8250 HP APCI serial support"
+ 	depends on SERIAL_8250 && HP300
++	select SERIAL_8250_HP300
+ 	help
+ 	  If you want to use the internal "APCI" serial ports on an HP400
+ 	  machine, say Y here.
 -- 
 2.43.0
 
