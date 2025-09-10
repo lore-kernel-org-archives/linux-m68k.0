@@ -1,48 +1,83 @@
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A132FD1D8
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Sep 2025 19:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D731828EB
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 00:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757444558; cv=none; b=b9XhDD75gUMyjCIVVuLtkeulmNDd7K7X8KgMuhQtG2Kd9KB5g0vY7qjkKv8sUIr3u4be+gXPLWGvwcuu4gkBQyVpTKSvzYtaqz0azKzXo/YGJUUuQ9SANf7IUp/SmFaPdo9hat1EKx45I3c5UDqazKdi4DNteIXTPMHVo6KUZwU=
+	t=1757462821; cv=none; b=bWm+IkXx4aCcdoys3Wmo4ykRofeuC3/L0xc0Jw9wTFPW3VbgT0Tca99Ci0ipj6IAvdhwxSp0uri60AU3wVMkVIJNp10tu4KR0+ru97efNGtXoFKlybezcM5Zv0XCUQjouSNA8tDDyTa8PgVN97HLedLpvE62aTIuqeU+U5gGGgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757444558; c=relaxed/simple;
-	bh=X8wJTRgJGLcEi9EtsflCMYhUpaaTBt8jRFbpTb/kMqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=myIEHeG54dFWIGkrYPwtk2ZPFZ1QSPXbPmEMwBmRpJ2HmE0Cmq9xnK7IsU2obYLLev19BYP6BvDk68vRAyF+A7qiU3KMXbcaFkuThfM9s8Ozd+9Pk5Ytm3He/Ni2ozEurU9WWtK3K+eeOdWVx32Jj2pJbNUQpQHuxQjuaA0ZtI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FqbAnY7/; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1757462821; c=relaxed/simple;
+	bh=RsmIRUdpmeC+5siB3DndQQwalZ7bkzuKj60a51UgypQ=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=KRM8xSzd98ncGy7swS11e3p+7eT3APao+sbGQ9oY4F5kFvxkNJPbup1F26v/ohI9C1IpehPmYHqzs7yRVc10regPKllHt9m0WRMjxZyinuMSaYrg4bg1ttlgIB7dWIf6GzUplUHcdHDbtsGFn9Z56OJeRWyE1wUrp8w8yDmiDq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OrDTEdu/; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FqbAnY7/"
-Date: Tue, 9 Sep 2025 15:02:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757444554;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zYkMx8WK7lNjK14p/mD7ZsSlCCvdjLO/g0ftEbN00Ho=;
-	b=FqbAnY7/cSsNsdhVXzuR+mxDtHEbOopdB0fMwWrrxDIES6D63rfoHQWMSSXbZWbdSN4Egw
-	pRxy7NJRo3xJmJE39gu7rSxVx7X4znt0sgNZtqNKSHMS24/iWyImwifoUq2e8Yz5ya8yTS
-	3eT+8Ilj6QecDDEIjp1F+XC87lgKEHQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org, 
-	amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
-	fthain@linux-m68k.org, geert@linux-m68k.org, ioworker0@gmail.com, 
-	joel.granados@kernel.org, jstultz@google.com, leonylgao@tencent.com, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, longman@redhat.com, 
-	mhiramat@kernel.org, mingo@redhat.com, mingzhe.yang@ly.com, oak@helsinkinet.fi, 
-	peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, 
-	tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OrDTEdu/"
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfout.phl.internal (Postfix) with ESMTP id 01478EC024F;
+	Tue,  9 Sep 2025 20:06:58 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-06.internal (MEProxy); Tue, 09 Sep 2025 20:06:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1757462817; x=1757549217; bh=iFrYSh+DPwmcqz8uizFLdHufnJyI67r++QL
+	TBgAM1pY=; b=OrDTEdu/3+G1F7PYDx2AdwJuFOalhEkGDF+LGUkkf5MK/NR6JXv
+	GfeRhyyHMiCyfIlAZtL5Xstscwj2DggWRxqDfEJbwiHsTKbRH0lUOGkXwEJPLp49
+	1ZQoRl3+K2vYyT94i2QzoTzQ4UMNDYra3BondziT0gmE18m5E269h+yjUZjLhiu2
+	pAk09XzDVmpE1uUtqRfsCScYPITIr1drJRSx9skqxHMhZs+YBhFOolBQWpsFC0Pq
+	oPW+mTsNox4z0Mxm6Y5XGiwCY3rfbqEuNZSApBd/usULcLm07vvCC7lR3XlZC+wo
+	hkmGAoxsrp/Pv2fsPYpjHC7PQrqMqeVAcDg==
+X-ME-Sender: <xms:H8HAaMJpSe4R3eTQSVuFyYoJga6T2iV6aKkJt4eqOuU568W1Wq6Exw>
+    <xme:H8HAaNesZsEuhkxHdxaOoxTLu0wtkGxjHvRJXZhEmfjIbXOnv2yPNndKRHCb_kP2w
+    6zwDlj67tkuidcVN3Y>
+X-ME-Received: <xmr:H8HAaPIIXy4Vlf8eq6_QK9SJ_lO32bf3kK_Go3AU5EtsM-2OPLBwcrcnmukEbRMXVg3Nnw-M39_avuRqkgIigVKwZOSeazMLbzw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvudekudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
+    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepiedugeehveevudffudduhedtveehhfejffefuedujeeuheffkeeigeduudfhfeev
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehl
+    ihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepvdegpdhmohguvgepshhmth
+    hpohhuthdprhgtphhtthhopehkvghnthdrohhvvghrshhtrhgvvghtsehlihhnuhigrdgu
+    vghvpdhrtghpthhtoheplhgrnhgtvgdrhigrnhhgsehlihhnuhigrdguvghvpdhrtghpth
+    htoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthho
+    pegrmhgrihhnuggvgiesohhuthhlohhokhdrtghomhdprhgtphhtthhopegrnhhnrgdrsh
+    gthhhumhgrkhgvrhesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepsghoqhhunhdrfhgv
+    nhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheike
+    hkrdhorhhgpdhrtghpthhtohepihhofihorhhkvghrtdesghhmrghilhdrtghomhdprhgt
+    phhtthhopehjohgvlhdrghhrrghnrgguohhssehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:H8HAaPB6VYSAVwr_gpKUINuvTLw-rVHn00n5zZ-ZXBZoi95rTj6niQ>
+    <xmx:H8HAaAgJ9Qsk-lWCVlnrI0PxRrNqkxu1atRFv8nAPPwQu9v0-gyg6A>
+    <xmx:H8HAaBNbmk_oAnG3GjNDRDfQCTBcqRAyVxICL6KGPBoeZ6qoAd_VTw>
+    <xmx:H8HAaPbqWAEgUx3W3uY_A3SkumywPPEQA9bW4JJf8POEShbQvLMGdg>
+    <xmx:IcHAaJxUccZL0deGSWGBnMNamTTPoBjRZpNsFH21TLO2I92IOjnCRC_u>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 9 Sep 2025 20:06:52 -0400 (EDT)
+Date: Wed, 10 Sep 2025 10:07:04 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+cc: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org, 
+    amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
+    geert@linux-m68k.org, ioworker0@gmail.com, joel.granados@kernel.org, 
+    jstultz@google.com, leonylgao@tencent.com, linux-kernel@vger.kernel.org, 
+    linux-m68k@lists.linux-m68k.org, longman@redhat.com, mhiramat@kernel.org, 
+    mingo@redhat.com, mingzhe.yang@ly.com, oak@helsinkinet.fi, 
+    peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, 
+    tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
 Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
  pointers
-Message-ID: <z7652ickjbgkcdtxcmr35yjmk3c3yokwnstfs5ym4vtqar56tz@c4lcrvzjashs>
-References: <20250909145243.17119-1-lance.yang@linux.dev>
- <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
- <b7db49106e6e7985ea949594f2e43cd53050d839.camel@physik.fu-berlin.de>
+In-Reply-To: <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
+Message-ID: <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
+References: <20250909145243.17119-1-lance.yang@linux.dev> <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -50,25 +85,47 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b7db49106e6e7985ea949594f2e43cd53050d839.camel@physik.fu-berlin.de>
-X-Migadu-Flow: FLOW_OUT
 
-On Tue, Sep 09, 2025 at 06:55:42PM +0200, John Paul Adrian Glaubitz wrote:
-> On Tue, 2025-09-09 at 12:46 -0400, Kent Overstreet wrote:
-> > On Tue, Sep 09, 2025 at 10:52:43PM +0800, Lance Yang wrote:
-> > > From: Lance Yang <lance.yang@linux.dev>
-> > > 
-> > > The blocker tracking mechanism assumes that lock pointers are at least
-> > > 4-byte aligned to use their lower bits for type encoding.
-> > > 
-> > > However, as reported by Eero Tamminen, some architectures like m68k
-> > > only guarantee 2-byte alignment of 32-bit values. This breaks the
-> > > assumption and causes two related WARN_ON_ONCE checks to trigger.
+
+On Tue, 9 Sep 2025, Kent Overstreet wrote:
+
+> On Tue, Sep 09, 2025 at 10:52:43PM +0800, Lance Yang wrote:
+> > From: Lance Yang <lance.yang@linux.dev>
 > > 
-> > Isn't m68k the only architecture that's weird like this?
+> > The blocker tracking mechanism assumes that lock pointers are at least
+> > 4-byte aligned to use their lower bits for type encoding.
+> > 
+> > However, as reported by Eero Tamminen, some architectures like m68k
+> > only guarantee 2-byte alignment of 32-bit values. This breaks the
+> > assumption and causes two related WARN_ON_ONCE checks to trigger.
 > 
-> Yes, and it does this on Linux only. I have been trying to change it upstream
-> though as the official SysV ELF ABI for m68k requires a 4-byte natural alignment [1].
+> Isn't m68k the only architecture that's weird like this?
+> 
 
-Better to make it an explicit ifdef on the architecture, then...
+No. Historically, Linux/CRIS did not naturally align integer types either. 
+AFAIK, there's no standard that demands natural alignment of integer 
+types. Linux ABIs differ significantly.
+
+For example, Linux/i386 does not naturally align long longs. Therefore, 
+x86 may be expected to become the next m68k (or CRIS) unless such 
+assumptions are avoided and alignment requirements are made explicit.
+
+The real problem here is the algorithm. Some under-resourced distros 
+choose to blame the ABI instead of the algorithm, because in doing so, 
+they are freed from having to work to improve upstream code bases.
+
+IMHO, good C doesn't make alignment assumptions, because that hinders 
+source code portability and reuse, as well as algorithm extensibility. 
+We've seen it before. The issue here [1] is no different from the pointer 
+abuse which we fixed in Cpython [2].
+
+Linux is probably the only non-trivial program that could be feasibly 
+rebuilt with -malign-int without ill effect (i.e. without breaking 
+userland) but that sort of workaround would not address the root cause 
+(i.e. algorithms with bad assumptions).
+
+[1]
+https://lore.kernel.org/lkml/CAMuHMdW7Ab13DdGs2acMQcix5ObJK0O2dG_Fxzr8_g58Rc1_0g@mail.gmail.com/
+
+[2]
+https://github.com/python/cpython/pull/135016
