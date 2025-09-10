@@ -1,103 +1,78 @@
-Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0322E30F550
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 08:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D55268C73
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 11:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757491359; cv=none; b=AB8nZz7mOPsxwSCeZQFQMxEWs8IPx60ZY23MAtx/pAPvx3bxSCMW3POZ4fM/XMdku/GKnP/QCs9GE7Mpsp+BJeQkvlDUro6jwbUOvxECJixInkZhuCnNV9WRIyvEh1VvFTtz4W7iA6Yr5NfJu7pf0n2QY+MvJPgoc5Pvzs4LMoY=
+	t=1757503601; cv=none; b=RxArgqRGYcRFInArNmJRRbT21e++eWv4f5ENiFjhc2QgoiH6F5ib49hJBQyCOpG/jSAg7B4EjWXLdVph8Jgcnx9TDihOSifTsIdXRmIimHdpqKrGjLmJwiLDD1XUrmh0UtOTV7wRMECoNMxuxrlVg18s3aOY5EfQ37G8wzuHmtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757491359; c=relaxed/simple;
-	bh=2Qs0PjLdKIL4vHUJW8CVZIk4BYyaMYnRnOSwZdAOHpc=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=qEVm1StKqwdjko1FK1AsRWcFfiFHCN49OFVKSowPoml+xFbmf5fsH/WJpftNgFXYLvHKzTdDb9ZIxYAZUVMWv7/ebSkcdjDyQl/fRJnFCgiFDhvAE4OvF0MJ2Q1m1ezTRkcQx3DnL4X2OEKwo2Pxetqs2ElezCNxiL8bEGj0t5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jHnyPBoy; arc=none smtp.client-ip=103.168.172.154
+	s=arc-20240116; t=1757503601; c=relaxed/simple;
+	bh=9A/+Jl1iaYTBA92IVzHH5LyJ1K62t4u/S6c38+cVgK8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=J/J14m+i8eLZUtZ+NJCtCUkbwp0TATEuHLoo5Y8CT4XN+y3oTikXLGAGNdYjM7lxfJYP1Uojhp9JAUScb7zxx3sN/QQY9ad1hxgj9MXM0exO5MZ9JM+p6KmCKrZWBtfswfVW7dO+BrUqDPUWPNJ1tnq4GYEQKdsR7aj1F3yMFP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jHnyPBoy"
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 395D814001E4;
-	Wed, 10 Sep 2025 04:02:37 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Wed, 10 Sep 2025 04:02:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1757491357; x=1757577757; bh=QnEHEbf4gQgWVUJkCTbojMh3ocIvXTr36C3
-	XOEu4rCk=; b=jHnyPBoyeRrcIRjBpohki3O+Q0Bh54mCIOg3xPk7iQMMnZGBnW4
-	Wa9ZPwVA/jYtSaR9pq2m+Lcp62BTz6z7w4rPkFjp/gNHbnye/q6Vg+NM4nNspE/m
-	kqFaQIMUdOHYEpqxNPkCgsatpL47R8mWX/C1SvHzvz3KHD+7FFeWf0HiGmMRGBEU
-	morbfxF6tHn447u2PGnT0TDNzw250ZEnMnwY3Lg5Sna+cOZ+UVQ0Kni7lP3wRP09
-	VK2j/KNYpUYX+g3v2SKKuHuJcihWZms6/y2MiCPVCURcJf37volIKyPtrxpr+0ev
-	V2IrMDn/QgIIXauh6Dh91hWoA5yBx3aKgEw==
-X-ME-Sender: <xms:mzDBaIUz7w2FpB2UKpinfGCVu4J5cyg31nFWN8caDVtsw0d6grpxWA>
-    <xme:mzDBaNKTr_vMul39T5Pc9yPj-k_OzYLWSxLvSa_fU3ysamEpw0ofk8gIa7f7qbx1x
-    toZCaF8RMUeOfXYrCA>
-X-ME-Received: <xmr:mzDBaFTLyqLCnD6wBLk8ZHPhWgbl8SOc_AhqQ-tZoB0GfM3yoykC0GcO0DOjvEoulLGvKlzHSdbFIydGbSI_tNjuy9zQp9pyvp4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdejhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
-    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueehueel
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthh
-    grihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepvdehpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopehstghhfigrsgeslhhinhhugidqmheikehkrd
-    horhhgpdhrtghpthhtohepkhgvnhhtrdhovhgvrhhsthhrvggvtheslhhinhhugidruggv
-    vhdprhgtphhtthhopehlrghntggvrdihrghngheslhhinhhugidruggvvhdprhgtphhtth
-    hopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohep
-    rghmrghinhguvgigsehouhhtlhhoohhkrdgtohhmpdhrtghpthhtoheprghnnhgrrdhstg
-    hhuhhmrghkvghrsehorhgrtghlvgdrtghomhdprhgtphhtthhopegsohhquhhnrdhfvghn
-    ghesghhmrghilhdrtghomhdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkh
-    drohhrghdprhgtphhtthhopehiohifohhrkhgvrhdtsehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:mzDBaBhXwPQVseb1--gu2aj0vdJYhq0GVdJniWqeAzH-rp5wrwK7QQ>
-    <xmx:mzDBaHtAobGYZRM6USPnCtP2f6_BTvBCN87d4Xr5Qo5XyUiPFUotsg>
-    <xmx:mzDBaEin-ZnIFznx-A1VLWADF5HYTsrywiFrQfg4I2O24F-oUsQ8YQ>
-    <xmx:mzDBaGHfZdu8RvjK9C3vwVEGVlN_91a9MpV1DO1kt3TiTesuNPXiRw>
-    <xmx:nTDBaDzuOBd163gG6EWzZQKHrcsAD0tHbT5CgrzW6y4CViEHMvYfO8Uf>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Sep 2025 04:02:33 -0400 (EDT)
-Date: Wed, 10 Sep 2025 18:02:43 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Andreas Schwab <schwab@linux-m68k.org>
-cc: Kent Overstreet <kent.overstreet@linux.dev>, 
-    Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org, 
-    amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
-    geert@linux-m68k.org, ioworker0@gmail.com, joel.granados@kernel.org, 
-    jstultz@google.com, leonylgao@tencent.com, linux-kernel@vger.kernel.org, 
-    linux-m68k@lists.linux-m68k.org, longman@redhat.com, mhiramat@kernel.org, 
-    mingo@redhat.com, mingzhe.yang@ly.com, oak@helsinkinet.fi, 
-    peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, 
-    tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+	by mail-out.m-online.net (Postfix) with ESMTP id 4cMJKz31Ljz1r5hm;
+	Wed, 10 Sep 2025 13:26:31 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
+	by mail.m-online.net (Postfix) with ESMTP id 4cMJKz0m5Fz1qqlb;
+	Wed, 10 Sep 2025 13:26:31 +0200 (CEST)
+X-Virus-Scanned: amavis at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+ by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
+ with ESMTP id g6C75_oYFWsS; Wed, 10 Sep 2025 13:26:21 +0200 (CEST)
+X-Auth-Info: L8z1TJlNxCzTgyCseFs3gJOGQviCk5ZiscXQAcpoBPsvQ1tdp1edomGRnmNhfKfL
+Received: from igel.home (aftr-82-135-83-103.dynamic.mnet-online.de [82.135.83.103])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.mnet-online.de (Postfix) with ESMTPSA;
+	Wed, 10 Sep 2025 13:26:21 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+	id E70C32C1975; Wed, 10 Sep 2025 13:26:20 +0200 (CEST)
+From: Andreas Schwab <schwab@linux-m68k.org>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,  Lance Yang
+ <lance.yang@linux.dev>,  akpm@linux-foundation.org,  amaindex@outlook.com,
+  anna.schumaker@oracle.com,  boqun.feng@gmail.com,  geert@linux-m68k.org,
+  ioworker0@gmail.com,  joel.granados@kernel.org,  jstultz@google.com,
+  leonylgao@tencent.com,  linux-kernel@vger.kernel.org,
+  linux-m68k@lists.linux-m68k.org,  longman@redhat.com,
+  mhiramat@kernel.org,  mingo@redhat.com,  mingzhe.yang@ly.com,
+  oak@helsinkinet.fi,  peterz@infradead.org,  rostedt@goodmis.org,
+  senozhatsky@chromium.org,  tfiga@chromium.org,  will@kernel.org,
+  stable@vger.kernel.org
 Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
  pointers
-In-Reply-To: <875xdqsssz.fsf@igel.home>
-Message-ID: <cd9d62b4-addf-49c2-731c-ec7c89cbebc5@linux-m68k.org>
-References: <20250909145243.17119-1-lance.yang@linux.dev> <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov> <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org> <875xdqsssz.fsf@igel.home>
+In-Reply-To: <cd9d62b4-addf-49c2-731c-ec7c89cbebc5@linux-m68k.org> (Finn
+	Thain's message of "Wed, 10 Sep 2025 18:02:43 +1000 (AEST)")
+References: <20250909145243.17119-1-lance.yang@linux.dev>
+	<yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
+	<99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
+	<875xdqsssz.fsf@igel.home>
+	<cd9d62b4-addf-49c2-731c-ec7c89cbebc5@linux-m68k.org>
+Date: Wed, 10 Sep 2025 13:26:20 +0200
+Message-ID: <871poesg4j.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 
+On Sep 10 2025, Finn Thain wrote:
 
-On Wed, 10 Sep 2025, Andreas Schwab wrote:
+> So you'd have to patch the uapi headers at the same time. I think that's 
+> "feasible", no?
 
-> On Sep 10 2025, Finn Thain wrote:
-> 
-> > Linux is probably the only non-trivial program that could be feasibly 
-> > rebuilt with -malign-int without ill effect (i.e. without breaking 
-> > userland)
-> 
-> No, you can't.  It would change the layout of basic user-level
-> structures, breaking the syscall ABI.
-> 
-
-So you'd have to patch the uapi headers at the same time. I think that's 
-"feasible", no?
+I would surely be a big task.
+ 
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
