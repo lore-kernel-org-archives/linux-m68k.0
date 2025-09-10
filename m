@@ -1,49 +1,83 @@
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9022714658D
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 01:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6830B31076C
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 06:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757468908; cv=none; b=VeI8qT5T5kAiebUiFIGxA2N2MiXidOQekNAIxNjCNGB1n6ydeW11cReOHSE5G8pH428AnHk+i4rLsKS0JfOxSW8BeynNJkis5hx2R5rW6Tf0dtsoDYLuyanA3QfC36ETpNXFrmJtv4kNGut0Tg1NvKTjztwXfntKsOi/+Q0VEuE=
+	t=1757486445; cv=none; b=ok/29JjgxWi/L5vOypGSZUIjXxDyRh3uIj2Qc2kNcKvAZKqA3HQ2g2i6YW170ZnHIk2NuJ5LcV8VqPNBH7InbAxgDSx6NhFO4aD3nDY4m98+CcwrGdJ7XYOG8++OKjQZawhzIagPOqwXRaVrLtG8rWCSSVRI5wBajDrF4Bs1ok8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757468908; c=relaxed/simple;
-	bh=lNwyQ1qlgC5YOiwLCjfVvPjilzDWvlgRD5Sr/+vFbDw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EqX37MnCWeUxpI3HvKIJrVEFzjHZTt2cXOBBDklYWmmqiPdufZxBI89Wza2JFUJuSVmVFwkkDhb+XmjpJ9N+gje6ZCKEGCjRf0Ryj6pfanKvH++LmYh59mUmSK4VISJzKVT+ZTc5DE9JqJoPtB/+4E1fx35aGldI9CIC80isOnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BKaghRGO; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1757486445; c=relaxed/simple;
+	bh=7jjRD8BTevaY7rS1pWoOxLrH6ISRJVP/bKev31mEkng=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=KRouUt1i88Op6biTXfPwn7x6outKalu8RgHThZ3VcNpekV1cdjBrX1ryMC6l4f6WqGHKe44Pi0CC0Smmn75XyonWMsRBjmNWRoUpexHQozRjj6r74jUS5MsYX5Dc7oIGydjBVkEGk1uzSyZCkQT36lDfTHaNy7CaEnHdpujBn2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NMxKQyIq; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BKaghRGO"
-Date: Tue, 9 Sep 2025 21:48:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757468892;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=07Yd4H765qOC6tzm5S7wF2VWIIKcE5+hjsYL92cJvP0=;
-	b=BKaghRGOQ0MHnFTX33b2EgYcSDm+bEncTYRvENHbJ3QJO8IE3YcUPgrrCoChuicXfhNNep
-	ncfJhA3J3wwuer9hfjm/wmZlMCMuaBJqvBjMmDL1q6T0tHQK4sMY1Nd6JD84pgLKyGo4lk
-	mBC0eFg2rI3JdqYLf8pEOCswE20wL1c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org, 
-	amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
-	geert@linux-m68k.org, ioworker0@gmail.com, joel.granados@kernel.org, 
-	jstultz@google.com, leonylgao@tencent.com, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, longman@redhat.com, mhiramat@kernel.org, mingo@redhat.com, 
-	mingzhe.yang@ly.com, oak@helsinkinet.fi, peterz@infradead.org, rostedt@goodmis.org, 
-	senozhatsky@chromium.org, tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NMxKQyIq"
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfout.phl.internal (Postfix) with ESMTP id 722AEEC0278;
+	Wed, 10 Sep 2025 02:40:42 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Wed, 10 Sep 2025 02:40:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1757486442; x=1757572842; bh=OWQWCqJ4zr2cR9931ynOENBrPmoeSoM6f+s
+	8UfHmcZQ=; b=NMxKQyIqsV+4hmpmHYOHcVEue8A57DfTFChqozpiUOdBRDSNcJK
+	Qsc1tUH5rjX2YW9XnzJnSjXC2gbAiIF6afkMsmScV23ehGQdtRgfr/cfxR758cFj
+	PkVwvVFVyn3aQEoYttFuUgh154tVGIfomWcv4E9QKHkYyeYo8sZMjpv3ppzZvp1F
+	kA9unavSGGgyyiaToLWzWEuHdA1g8Qzszo6oIbZgCMvLAHTsaepZAW+daGNjnBr4
+	tcIpOg9JSaG1uhPU8C0a0wOV5GfB2wgfZfAQOBbY9wgAkL86cqZbQ472UvVvJAJy
+	+2xVW8r88/7zwxOZDUES839Egt44ha/tZqQ==
+X-ME-Sender: <xms:Zx3BaAZUsnSQ2E-K482BSo5TYgZ20eqXIipdRTCAN_zRlF6bOTjiKA>
+    <xme:Zx3BaMuDOy09feaelUwWxHImuVsfmjw8hQeL0UFE8Xq-ua-429qPzn-c-WOvx-oja
+    WlUMW8SIIa9wt3J9Ck>
+X-ME-Received: <xmr:Zx3BaNbGDRL2iXrCufwse8uqy117dtMdir0HgB2xrvgdtwLmGuYz-yCOkYoZfUmxvyn6-e-Rn0xgQqC9qQtaGCM2p0Jlw1uOkLw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdehlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
+    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueehueel
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthh
+    grihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepvdegpdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehkvghnthdrohhvvghrshhtrhgvvghtsehlih
+    hnuhigrdguvghvpdhrtghpthhtoheplhgrnhgtvgdrhigrnhhgsehlihhnuhigrdguvghv
+    pdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprh
+    gtphhtthhopegrmhgrihhnuggvgiesohhuthhlohhokhdrtghomhdprhgtphhtthhopegr
+    nhhnrgdrshgthhhumhgrkhgvrhesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepsghoqh
+    hunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepghgvvghrtheslhhinhhu
+    gidqmheikehkrdhorhhgpdhrtghpthhtohepihhofihorhhkvghrtdesghhmrghilhdrtg
+    homhdprhgtphhtthhopehjohgvlhdrghhrrghnrgguohhssehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:Zx3BaAQthzqmSYw39aO2VgYP9PxAdLi9hjYNcNQCGTj7FjplinTihg>
+    <xmx:Zx3BaIzTi8c062zBH73nzXMBPfWDn0UND5dKemdmI1BxsLzDE7nR_g>
+    <xmx:Zx3BaEctcdIo5UcSdZuTdSH2trc8Idp9vjrshCcy4XemvaIsV7QWZA>
+    <xmx:Zx3BaBojm5dPEyideLjqfC5hG2lP0DfwiGN0ZgoUmbEYtDXeR3xltw>
+    <xmx:ah3BaJqMfRY_qQLjBsH-3uDLhfe_dGA8I-vCOHl-krAinZNb0t6oyRVg>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Sep 2025 02:40:38 -0400 (EDT)
+Date: Wed, 10 Sep 2025 16:40:53 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+cc: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org, 
+    amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
+    geert@linux-m68k.org, ioworker0@gmail.com, joel.granados@kernel.org, 
+    jstultz@google.com, leonylgao@tencent.com, linux-kernel@vger.kernel.org, 
+    linux-m68k@lists.linux-m68k.org, longman@redhat.com, mhiramat@kernel.org, 
+    mingo@redhat.com, mingzhe.yang@ly.com, oak@helsinkinet.fi, 
+    peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, 
+    tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
 Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
  pointers
-Message-ID: <gtie7ylcuftmi2jgzviipxnvjzcds46eqce4fxxalbutwphbe4@erwrj3p7udrz>
-References: <20250909145243.17119-1-lance.yang@linux.dev>
- <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
- <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
- <ufkr7rkg7rsfo6ovsnwz2gqf4mtmmevb3mququeukqlryzwzmz@x4chw22ojvnu>
- <bea3d81c-2b33-a89d-ae26-7d565a5d2217@linux-m68k.org>
+In-Reply-To: <gtie7ylcuftmi2jgzviipxnvjzcds46eqce4fxxalbutwphbe4@erwrj3p7udrz>
+Message-ID: <e94499dc-0155-0268-60a4-f9a11ad298a6@linux-m68k.org>
+References: <20250909145243.17119-1-lance.yang@linux.dev> <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov> <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org> <ufkr7rkg7rsfo6ovsnwz2gqf4mtmmevb3mququeukqlryzwzmz@x4chw22ojvnu>
+ <bea3d81c-2b33-a89d-ae26-7d565a5d2217@linux-m68k.org> <gtie7ylcuftmi2jgzviipxnvjzcds46eqce4fxxalbutwphbe4@erwrj3p7udrz>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -51,55 +85,21 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bea3d81c-2b33-a89d-ae26-7d565a5d2217@linux-m68k.org>
-X-Migadu-Flow: FLOW_OUT
 
-On Wed, Sep 10, 2025 at 11:35:56AM +1000, Finn Thain wrote:
-> Similarly, on m68k, there is no issue with __alignof(long) == 2 because 
-> these platforms don't trap on misaligned access. But that seems a bit 
-> irrelevant to the real issue, which is not specific architectural quirks, 
-> but the algorithms and their ongoing development.
 
-Err, I believe the topic was just alignment and the breaking of commonly
-held expectations :)
+On Tue, 9 Sep 2025, Kent Overstreet wrote:
+
+> Err, I believe the topic was just alignment and the breaking of commonly 
+> held expectations :)
+> 
+
+...
 
 > 
-> > ...
-> > > 
-> > > IMHO, good C doesn't make alignment assumptions, because that hinders 
-> > > source code portability and reuse, as well as algorithm extensibility. 
-> > > We've seen it before. The issue here [1] is no different from the 
-> > > pointer abuse which we fixed in Cpython [2].
-> > 
-> > That kind of thinking really dates from before multithreaded and even 
-> > lockless algorithms became absolutely pervasive, especially in the 
-> > kernel.
-> > 
-> 
-> What I meant was, "assumptions hinder portability etc." not "good C 
-> hinders portability etc." (my bad).
+> Also, grep for READ_ONCE/WRITE_ONCE in the kernel tree if you want to 
+> see how big the issue is
 
-Of course, but given the lack of a true atomic type in C there's no good
-alternative way to avoid this landmine.
-
-Also, grep for READ_ONCE/WRITE_ONCE in the kernel tree if you want to
-see how big the issue is - ad then remember that only captures a
-fraction of it :)
-
-> 
-> > These days, READ_ONCE() and WRITE_ONCE() are pervasive, and since C 
-> > lacks any notion of atomics in the type system (the place this primarily 
-> > comes up), it would go a long ways towards improving portability and 
-> > eliminating nasty land mines.
-> > 
-> 
-> Natural alignment would seem to be desirable for new ABIs, until you 
-> realize that it implies wasted RAM on embedded systems and reduced data 
-> locality (that is, cooler caches if you did this on i386).
-
-For the data structures where it matters we tend to organize things by
-natural alignment already.
-
-If anyone wanted to gather precise numbers, there's memory allocation
-profiling + pahole :)
+I'm already aware of the comment in include/asm-generic/rwonce.h about 
+load tearing and 64-bit loads on 32-bit architectures. That's partly why I 
+mentioned long long alignment on i386. Perhaps, for being so common, i386 
+has generally lowered expectations?
