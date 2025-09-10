@@ -1,71 +1,72 @@
-Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D731828EB
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 00:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE27A2B9B7
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 00:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757462821; cv=none; b=bWm+IkXx4aCcdoys3Wmo4ykRofeuC3/L0xc0Jw9wTFPW3VbgT0Tca99Ci0ipj6IAvdhwxSp0uri60AU3wVMkVIJNp10tu4KR0+ru97efNGtXoFKlybezcM5Zv0XCUQjouSNA8tDDyTa8PgVN97HLedLpvE62aTIuqeU+U5gGGgo=
+	t=1757465128; cv=none; b=COAq0uRXVHoZs0tjpDBfwrODXQIu4P5GmO2sAopR8tVDrEZ3csAwYf0IM8/nFjWeByznNQDS4VaXfQz5soofCYlm9UHAjJrQAymabXZiramw3+05usryqSo8q6t9raHL1vV//u8jWrIun96H1Lgj0R9JOUm7lwNRXegbyeKOi8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757462821; c=relaxed/simple;
-	bh=RsmIRUdpmeC+5siB3DndQQwalZ7bkzuKj60a51UgypQ=;
+	s=arc-20240116; t=1757465128; c=relaxed/simple;
+	bh=Gqn/3fVgulPCD+mTY/274v5+FDLdPoYZYdQ5zz1r2TA=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=KRM8xSzd98ncGy7swS11e3p+7eT3APao+sbGQ9oY4F5kFvxkNJPbup1F26v/ohI9C1IpehPmYHqzs7yRVc10regPKllHt9m0WRMjxZyinuMSaYrg4bg1ttlgIB7dWIf6GzUplUHcdHDbtsGFn9Z56OJeRWyE1wUrp8w8yDmiDq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OrDTEdu/; arc=none smtp.client-ip=103.168.172.151
+	 MIME-Version:Content-Type; b=cBEgLeZoDvXnmHXeTSYuluL3NqrWiEze4Q88JSG9wnaI5UWPq98PZb3FaSwvG9tZ6qNzU9zwk1esChi0mWqWulLQ2dK09Bet/ivss3cxtAONmRmHPKmslix8eAP2FPL2Hsa/ni3FwhN2e9dBLdxGnszUKgqkiETkl88zTGLZUwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Sqjf8hUE; arc=none smtp.client-ip=103.168.172.158
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OrDTEdu/"
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfout.phl.internal (Postfix) with ESMTP id 01478EC024F;
-	Tue,  9 Sep 2025 20:06:58 -0400 (EDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Sqjf8hUE"
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id EDA8E140019C;
+	Tue,  9 Sep 2025 20:45:25 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Tue, 09 Sep 2025 20:06:58 -0400
+  by phl-compute-03.internal (MEProxy); Tue, 09 Sep 2025 20:45:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1757462817; x=1757549217; bh=iFrYSh+DPwmcqz8uizFLdHufnJyI67r++QL
-	TBgAM1pY=; b=OrDTEdu/3+G1F7PYDx2AdwJuFOalhEkGDF+LGUkkf5MK/NR6JXv
-	GfeRhyyHMiCyfIlAZtL5Xstscwj2DggWRxqDfEJbwiHsTKbRH0lUOGkXwEJPLp49
-	1ZQoRl3+K2vYyT94i2QzoTzQ4UMNDYra3BondziT0gmE18m5E269h+yjUZjLhiu2
-	pAk09XzDVmpE1uUtqRfsCScYPITIr1drJRSx9skqxHMhZs+YBhFOolBQWpsFC0Pq
-	oPW+mTsNox4z0Mxm6Y5XGiwCY3rfbqEuNZSApBd/usULcLm07vvCC7lR3XlZC+wo
-	hkmGAoxsrp/Pv2fsPYpjHC7PQrqMqeVAcDg==
-X-ME-Sender: <xms:H8HAaMJpSe4R3eTQSVuFyYoJga6T2iV6aKkJt4eqOuU568W1Wq6Exw>
-    <xme:H8HAaNesZsEuhkxHdxaOoxTLu0wtkGxjHvRJXZhEmfjIbXOnv2yPNndKRHCb_kP2w
-    6zwDlj67tkuidcVN3Y>
-X-ME-Received: <xmr:H8HAaPIIXy4Vlf8eq6_QK9SJ_lO32bf3kK_Go3AU5EtsM-2OPLBwcrcnmukEbRMXVg3Nnw-M39_avuRqkgIigVKwZOSeazMLbzw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvudekudcutefuodetggdotefrod
+	1757465125; x=1757551525; bh=iWsr2kImsDaUmYNz/Af1Y+/PPsAmVjK/7kk
+	TLWems/A=; b=Sqjf8hUEZP6mM9mXNkKIv1U/cnpSaFdHbLltmf19IyPTSePZ9+Q
+	ybPb+KR3WX3EueeEhNnqZO2pgrNNgW1iDbOETseiIyG+ndHGRYEtmDtnjui7jTcR
+	Hq1mkoEhcgupuKfDtQ0mRxBu/Y5NPWd8wMlzuRQMgPqf6nNsGgDcAuJ9EbgR88qL
+	6/iyr4W1LzHj1MB4PXdhtQ4rlbSx16UCpMio2aC4Fg4iHWUPCz4cjuPwG0RhtIGK
+	ZMksakloC+2zNHS9B9t4NGfgCvbWmPzkmKz8bL0FNU7LY3QUSt/gZpObyikOvTLS
+	3H0B504sugm4M3wdxLhhWXsbNWirLi7Sd+Q==
+X-ME-Sender: <xms:I8rAaMP3ulbwaz5t8iS4XAADJVPycpPFo_4tPHwzb9ZAqKBsZsJ4Pw>
+    <xme:I8rAaFv8QpIckWvo1CthHm9_z8Uz2shYTlK9jc2jrGum5yxVKYeCVWvC8MfCghj6d
+    a5rTqRzOxqv3i4KRkE>
+X-ME-Received: <xmr:I8rAaALQf5ZZPnxWC1WJQogW3T3D4KDQC4XVfabCQdiyzWyv3BYAkDy0hzoZ2YdVYWkFB1pciJUYOBYV2mD1d67UFIZv15-p8u4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvudekkecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
     ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
     hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
     ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepiedugeehveevudffudduhedtveehhfejffefuedujeeuheffkeeigeduudfhfeev
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehl
-    ihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepvdegpdhmohguvgepshhmth
-    hpohhuthdprhgtphhtthhopehkvghnthdrohhvvghrshhtrhgvvghtsehlihhnuhigrdgu
-    vghvpdhrtghpthhtoheplhgrnhgtvgdrhigrnhhgsehlihhnuhigrdguvghvpdhrtghpth
-    htoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthho
-    pegrmhgrihhnuggvgiesohhuthhlohhokhdrtghomhdprhgtphhtthhopegrnhhnrgdrsh
-    gthhhumhgrkhgvrhesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepsghoqhhunhdrfhgv
-    nhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheike
-    hkrdhorhhgpdhrtghpthhtohepihhofihorhhkvghrtdesghhmrghilhdrtghomhdprhgt
-    phhtthhopehjohgvlhdrghhrrghnrgguohhssehkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:H8HAaPB6VYSAVwr_gpKUINuvTLw-rVHn00n5zZ-ZXBZoi95rTj6niQ>
-    <xmx:H8HAaAgJ9Qsk-lWCVlnrI0PxRrNqkxu1atRFv8nAPPwQu9v0-gyg6A>
-    <xmx:H8HAaBNbmk_oAnG3GjNDRDfQCTBcqRAyVxICL6KGPBoeZ6qoAd_VTw>
-    <xmx:H8HAaPbqWAEgUx3W3uY_A3SkumywPPEQA9bW4JJf8POEShbQvLMGdg>
-    <xmx:IcHAaJxUccZL0deGSWGBnMNamTTPoBjRZpNsFH21TLO2I92IOjnCRC_u>
+    hrnhepgffhiefhgedvffeukeffteettdejudduledukeduuefhfefhjeeivdeggfdutdev
+    necuffhomhgrihhnpeguvggsihgrnhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhgpdhnsggprhgtphhtthhopedvhedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    epghhlrghusghithiisehphhihshhikhdrfhhuqdgsvghrlhhinhdruggvpdhrtghpthht
+    ohepkhgvnhhtrdhovhgvrhhsthhrvggvtheslhhinhhugidruggvvhdprhgtphhtthhope
+    hlrghntggvrdihrghngheslhhinhhugidruggvvhdprhgtphhtthhopegrkhhpmheslhhi
+    nhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheprghmrghinhguvgigse
+    houhhtlhhoohhkrdgtohhmpdhrtghpthhtoheprghnnhgrrdhstghhuhhmrghkvghrseho
+    rhgrtghlvgdrtghomhdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtg
+    homhdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphht
+    thhopehiohifohhrkhgvrhdtsehgmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:I8rAaMMNJGQ2yP3bBwoBCdQYElVKnW-aRFs9CqQDewjp3oO4szeKTg>
+    <xmx:I8rAaMAD6ip1_y1H45THOeH_bttiBvdjYkyms5FFN5zAZay0O0AAbw>
+    <xmx:I8rAaMV1bn4-SzJiDdaZ_mht5VlfD8tMDtIE2zsTa_aIvUbgCdToBA>
+    <xmx:I8rAaAeiVZt9U_ipQ_XAOvkt9eVPPnq9tpk52V6krO7Y20K_fP0rFA>
+    <xmx:JcrAaFd86-jDq3eO5zuCzj5B2XrUzbEfBHJcRsYrbluXjKCsNsRYJjvK>
 Feedback-ID: i58a146ae:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 9 Sep 2025 20:06:52 -0400 (EDT)
-Date: Wed, 10 Sep 2025 10:07:04 +1000 (AEST)
+ 9 Sep 2025 20:45:22 -0400 (EDT)
+Date: Wed, 10 Sep 2025 10:45:35 +1000 (AEST)
 From: Finn Thain <fthain@linux-m68k.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-cc: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org, 
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+cc: Kent Overstreet <kent.overstreet@linux.dev>, 
+    Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org, 
     amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com, 
     geert@linux-m68k.org, ioworker0@gmail.com, joel.granados@kernel.org, 
     jstultz@google.com, leonylgao@tencent.com, linux-kernel@vger.kernel.org, 
@@ -75,9 +76,9 @@ cc: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org,
     tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
 Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
  pointers
-In-Reply-To: <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
-Message-ID: <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
-References: <20250909145243.17119-1-lance.yang@linux.dev> <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
+In-Reply-To: <b7db49106e6e7985ea949594f2e43cd53050d839.camel@physik.fu-berlin.de>
+Message-ID: <4d270f51-d724-ecea-a9c4-7e6b3c20fcaf@linux-m68k.org>
+References: <20250909145243.17119-1-lance.yang@linux.dev>  <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov> <b7db49106e6e7985ea949594f2e43cd53050d839.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -87,45 +88,18 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 
 
-On Tue, 9 Sep 2025, Kent Overstreet wrote:
+On Tue, 9 Sep 2025, John Paul Adrian Glaubitz wrote:
 
-> On Tue, Sep 09, 2025 at 10:52:43PM +0800, Lance Yang wrote:
-> > From: Lance Yang <lance.yang@linux.dev>
-> > 
-> > The blocker tracking mechanism assumes that lock pointers are at least
-> > 4-byte aligned to use their lower bits for type encoding.
-> > 
-> > However, as reported by Eero Tamminen, some architectures like m68k
-> > only guarantee 2-byte alignment of 32-bit values. This breaks the
-> > assumption and causes two related WARN_ON_ONCE checks to trigger.
+> I have been trying to change it upstream though 
+
+That ship sailed decades ago.
+
+> as the official SysV ELF ABI for m68k requires a 4-byte natural 
+> alignment [1] ...
 > 
-> Isn't m68k the only architecture that's weird like this?
+> [1] https://people.debian.org/~glaubitz/m68k-sysv-abi.pdf (p. 29)
 > 
 
-No. Historically, Linux/CRIS did not naturally align integer types either. 
-AFAIK, there's no standard that demands natural alignment of integer 
-types. Linux ABIs differ significantly.
-
-For example, Linux/i386 does not naturally align long longs. Therefore, 
-x86 may be expected to become the next m68k (or CRIS) unless such 
-assumptions are avoided and alignment requirements are made explicit.
-
-The real problem here is the algorithm. Some under-resourced distros 
-choose to blame the ABI instead of the algorithm, because in doing so, 
-they are freed from having to work to improve upstream code bases.
-
-IMHO, good C doesn't make alignment assumptions, because that hinders 
-source code portability and reuse, as well as algorithm extensibility. 
-We've seen it before. The issue here [1] is no different from the pointer 
-abuse which we fixed in Cpython [2].
-
-Linux is probably the only non-trivial program that could be feasibly 
-rebuilt with -malign-int without ill effect (i.e. without breaking 
-userland) but that sort of workaround would not address the root cause 
-(i.e. algorithms with bad assumptions).
-
-[1]
-https://lore.kernel.org/lkml/CAMuHMdW7Ab13DdGs2acMQcix5ObJK0O2dG_Fxzr8_g58Rc1_0g@mail.gmail.com/
-
-[2]
-https://github.com/python/cpython/pull/135016
+GNU/Linux is not AT&T Unix and was never intended to be that. 
+Hence, your old System V (trademark) binaries are not going to work, 
+unfortunately.
