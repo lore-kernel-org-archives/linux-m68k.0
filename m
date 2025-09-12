@@ -1,161 +1,119 @@
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AA7257858
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 15:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21D2285CB2
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 06:23:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757518768; cv=none; b=LmbUUkuCqNhtpIv4p3l2WyfJO/s5bVpq9hiwUC4eOaqzzSIaAKNE7SNkUupdki2MiOH2y8fHpoIsAvvwDwUBDeqY3R0bZPK/ZpPdNLIftqk69GrYedrJtAyPs17YrX4loaTYaUOC7pE2SCdM1nwNGnZUgBmm7Ayet+jJpNJc2o0=
+	t=1757658232; cv=none; b=OJOCgE06icGKsDWBhi6yfPXT519l6shJuKToDOgAtpaDCAFFG2K8z7PLiuLGlCkBZF9xtLhw9BJjSukDfKJMXsuk98ALHgKmXX80FcJTPIGMbzLsCm62fMBTSN/HECMx4BS6IRXfgfAwXKcv2/yj4zE8f3lEcPtRzoI54x88Iyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757518768; c=relaxed/simple;
-	bh=t0BBx4j77k/r4wLzkQ6QdpJr9i23fY5IO7mYzhTBa90=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uNZhlvxsKPUerrI1ZTHxauhIqrDunCsqXBMoxeFDUNn8ch1MeAM5WsnVfvlbAVVpJciBPPN1pl+RScqtJgW+DMcgJJH9/BHJmZnaXjnOARq8nB0iXEj47bNBw6RP0oieop5lJbV8pGl06jU3anttsyIDRW+C1CHL0d6mopvb6Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PdH4YmLc; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1757658232; c=relaxed/simple;
+	bh=9T73VS9+o4Zoo6JQMDrxwkWyCcTGJSPu9bJ/JLxGhoI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TZD9lemkQRPttvn2PJm5B5UID14CCBOV+MseZEgD7Ew76VdwxvM6lOFIXqlMg4A/WVIu8v8Sjl0u44Qpci064j/0vZWfvInlB9FoxS8b/WTrHQICSu5huFio7mHJyMqUCPIVuIgBeiis23xy/nfUOb7Kj9kBiVC032Lod+6ZImU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K+tUT9Ui; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PdH4YmLc"
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-76e4fc419a9so5786395b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Sep 2025 08:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757518766; x=1758123566; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wNIzyizj71N4TrhGzRu7v49ragUENadc6/+UUtmHAZ0=;
-        b=PdH4YmLcgcnHlcO1FlOK0Ysfbrfj0ruIgjsuY/FZnL/3KYLx37p/ISUxmlL6gcuDc+
-         jDn7qwo0cOouYy1tPkuhFDMWW+k6z5Rv2l+72qCbkOk/C5Ewxhonod0ojwnJwP57XDkk
-         SjHtUWQyc1ySPjgnpSOZWP8yJxZz4Cn3YiskRqQvNf/z/JlmNfVpTd1M/8O/ufLobbsI
-         vJR0ljMfHgNKcPNSL3NUSwm3KCwjDmNtNmJx8fZ7W4IT4c0dGXCu1XdvgrAvcvgPRGR5
-         RVx72x3n4OOt0Oh4zv+D24zbdvEOmIIVixyZ1n0EGTsbxdYZRUhrMtS0p4YqHg8McFvv
-         yzow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757518766; x=1758123566;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wNIzyizj71N4TrhGzRu7v49ragUENadc6/+UUtmHAZ0=;
-        b=qnDYtFJNGVHE6QkLmttKzxVVv4OiOhEohqiGXzQXh9moZGvrP8D9RLqFNG+x3kP5WL
-         bhuppkHQeCD8On/VTyXk//HHk5gkDwSTPr2nyLyo3ant8YokLW6sXQxZaHtVrjpIj+CG
-         YqB5xBqqHIME41klZ2cgJP3s/eYau6cBrsfM7czP5VOLSsMmNyR+UUBl5MGhto0npv4l
-         497zsXXE7gzo1pCX4zHx8V00sXKawgbeBBT1xJ8qdG/JVFG1x4l4VKEk3sWeBQsHO20A
-         ZGo8PI6IKwnqhzZf1GEF3aZNqXde4gj7C//tsYsKuxT8Ke9tpCiIzBzrd6ef7HSD3G0O
-         uyrA==
-X-Forwarded-Encrypted: i=1; AJvYcCU3VLPRw3hgQJvSMGST4AHk4zatUX+qEw6A7uTwLUkPXxxZQCnTlQxiAZNYc1tF7g4AJ0X7TnX5pMPr@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyXLS8mIPStueMmd9jNAwJQJveawWnwOa2Wb77d+djI+7zMQYnf
-	9cqN13QuOXSwlIfg89QSwpzxP0+slb2RGvz/xewBK1g0UZIRE6oh+2Bp
-X-Gm-Gg: ASbGncvv6okdP5IQOx8+cz2YK7bfZ9YFKusixVeU7+P+ScMnYuqUOyas5V2kRYrA9It
-	B9BYn8fCPkr8x1jIxMlUqMCYhHYhRIwnHIFMDrklaOTen5++rgkU3nQ74+MVoAusFB2WEQ0Y9CV
-	xYxg/oILIKLsX4xEq6wG4QeN8+2sogELmSDucAXo11P8xxtP5Crx4EcywOaods7G3mCTGg2NuL1
-	kydB8cRoh26+t6twpdCy46Dfud+vsbRckbE89RVoWv25Qr+mmyumOGiBASt9H7sF2arCo9RPgn5
-	/uMrw6NskpTWxooOgzn7Iz8gGiaHfNbUuDtDP4mNiJr5yBMw64tXAi75dT96LWSXxYtc30bcz8b
-	PqmXdziOvdg0AUDHv7zlcwsELz9f+fDBS
-X-Google-Smtp-Source: AGHT+IEOlqvObZUV3RxQzGGSxEugu+hq9OMCc5zjg0K2fS2Pjf8AZXtTPPCGB5s7XnoH5Swvb30hIg==
-X-Received: by 2002:a05:6a20:3d19:b0:24d:b11b:e908 with SMTP id adf61e73a8af0-2533e9504f9mr23346063637.11.1757518765905;
-        Wed, 10 Sep 2025 08:39:25 -0700 (PDT)
-Received: from localhost ([216.228.125.130])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32dab590277sm2085577a91.8.2025.09.10.08.39.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Sep 2025 08:39:25 -0700 (PDT)
-Date: Wed, 10 Sep 2025 11:39:23 -0400
-From: Yury Norov <yury.norov@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Mary Strodl <mstrodl@csh.rit.edu>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] m68k: bitops: Fix find_*_bit() signatures
-Message-ID: <aMGbq2h1ElzsDrCR@yury>
-References: <de6919554fbb4cd1427155c6bafbac8a9df822c8.1757517135.git.geert@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K+tUT9Ui"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 77E38601AF;
+	Fri, 12 Sep 2025 06:23:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5749EC4CEF4;
+	Fri, 12 Sep 2025 06:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757658229;
+	bh=9T73VS9+o4Zoo6JQMDrxwkWyCcTGJSPu9bJ/JLxGhoI=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=K+tUT9Ui0Lj0qetX4V8f8hxvGPJsm/BKTf0HW7pE5h0z0YOzKPHtIxQhImX/f+n88
+	 gIuNPwW4DTVun4DprE4qf5t+qx5He/qG+pETHjCT3CATCAXmMzjZ1vWuw+ac99zdfm
+	 +0aVzmrQL52bl6DV3bmQq+0IRUqRkRMDEuBcnmXuYaPcRJHCkC+i31tQKa7A3TQ56D
+	 n7cx6at6JYpOJZbx3fVBPZli50U6g2ppn8f3IMad24G4Qk3PIFAOv0b3LedhAUosuY
+	 IGi+43ynLvyWq4ea6CVaNvuE7ALbHzlh+dAhb+JmPcQZnJO83RCRsGrJ+lGYixbAwm
+	 91fKGAvuN2fkg==
+Message-ID: <295aa861-8e5c-4146-a137-20dcfc24e1c0@kernel.org>
+Date: Fri, 12 Sep 2025 08:23:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de6919554fbb4cd1427155c6bafbac8a9df822c8.1757517135.git.geert@linux-m68k.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] defconfig: cleanup orphaned CONFIG_SCHED_DEBUG
+To: Trevor Woerner <twoerner@gmail.com>, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-arm-msm@vger.kernel.org, openbmc@lists.ozlabs.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250828103828.33255-1-twoerner@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 a/A=
+In-Reply-To: <20250828103828.33255-1-twoerner@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Sep 10, 2025 at 05:16:13PM +0200, Geert Uytterhoeven wrote:
-> The function signatures of the m68k-optimized implementations of the
-> find_{first,next}_{,zero_}bit() helpers do not match the generic
-> variants.
+On 28/08/2025 12:38, Trevor Woerner wrote:
+> In commit b52173065e0a ("sched/debug: Remove CONFIG_SCHED_DEBUG") this
+> Kconfig option was removed since CONFIG_SCHED_DEBUG was made unconditional
+> by patches preceding it.
 > 
-> Fix this by changing all non-pointer inputs and outputs to "unsigned
-> long", and updating a few local variables.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202509092305.ncd9mzaZ-lkp@intel.com/
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Trevor Woerner <twoerner@gmail.com>
 
-Acked-by: Yury Norov (NVIDIA) <yury.norov@gmail.com>
+I doubt anyone will pick up such patch touching all possible
+architectures. I would suggest to split it per arch.
 
-> ---
-> To be queued in the m68k tree for v6.18.
-> 
->  arch/m68k/include/asm/bitops.h | 25 ++++++++++++++-----------
->  1 file changed, 14 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
-> index 139ec9289ff2d324..e9639e48c6c3c1da 100644
-> --- a/arch/m68k/include/asm/bitops.h
-> +++ b/arch/m68k/include/asm/bitops.h
-> @@ -350,12 +350,12 @@ static inline bool xor_unlock_is_negative_byte(unsigned long mask,
->  #include <asm-generic/bitops/ffz.h>
->  #else
->  
-> -static inline int find_first_zero_bit(const unsigned long *vaddr,
-> -				      unsigned size)
-> +static inline unsigned long find_first_zero_bit(const unsigned long *vaddr,
-> +						unsigned long size)
->  {
->  	const unsigned long *p = vaddr;
-> -	int res = 32;
-> -	unsigned int words;
-> +	unsigned long res = 32;
-> +	unsigned long words;
->  	unsigned long num;
->  
->  	if (!size)
-> @@ -376,8 +376,9 @@ static inline int find_first_zero_bit(const unsigned long *vaddr,
->  }
->  #define find_first_zero_bit find_first_zero_bit
->  
-> -static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
-> -				     int offset)
-> +static inline unsigned long find_next_zero_bit(const unsigned long *vaddr,
-> +					       unsigned long size,
-> +					       unsigned long offset)
->  {
->  	const unsigned long *p = vaddr + (offset >> 5);
->  	int bit = offset & 31UL, res;
-> @@ -406,11 +407,12 @@ static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
->  }
->  #define find_next_zero_bit find_next_zero_bit
->  
-> -static inline int find_first_bit(const unsigned long *vaddr, unsigned size)
-> +static inline unsigned long find_first_bit(const unsigned long *vaddr,
-> +					   unsigned long size)
->  {
->  	const unsigned long *p = vaddr;
-> -	int res = 32;
-> -	unsigned int words;
-> +	unsigned long res = 32;
-> +	unsigned long words;
->  	unsigned long num;
->  
->  	if (!size)
-> @@ -431,8 +433,9 @@ static inline int find_first_bit(const unsigned long *vaddr, unsigned size)
->  }
->  #define find_first_bit find_first_bit
->  
-> -static inline int find_next_bit(const unsigned long *vaddr, int size,
-> -				int offset)
-> +static inline unsigned long find_next_bit(const unsigned long *vaddr,
-> +					  unsigned long size,
-> +					  unsigned long offset)
->  {
->  	const unsigned long *p = vaddr + (offset >> 5);
->  	int bit = offset & 31UL, res;
-> -- 
-> 2.43.0
+If you want to keep it like that, there is a chance soc@ would pick it
+up if you send it to them.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
