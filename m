@@ -1,63 +1,63 @@
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3BC405F7
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 00:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF416BB5B
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 01:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757725185; cv=none; b=ReLpXpepj+vzNCMM24bbJsXhWaY4zdwM63qYgTL6tV+Dx/PvqQ3YpxBlRiZnKCDTf6zMLyO00cnKL02n/mmdbFf7P8iPO/iauyHTsZG11kVSKBvjXtb1W5Q7OWSPX6K+yykt9Nugbc/6Sw6s2nUnOXQ17Z6lEp5xJoarfJC0xXU=
+	t=1757725251; cv=none; b=FPYUqzD/REo6MnBViPI1BLc5H+CCteljRUjD0DnfpcHpHfg1vLOt+e7L1gNeFn4iN8UczjnO5ovMVFTzFaXGJZQw4SojEBKhlhpSQH+WWHX0XTeGeV8Y29+6UAhDpnAXYLZ8rNVQ3BElk05FQq3pdKMZqRa3M7xAqJy4iCP1gxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757725185; c=relaxed/simple;
-	bh=96PHKpKkduNWBMWlLUmXlhnRkmSl0kWQr4vXMbTyP8M=;
+	s=arc-20240116; t=1757725251; c=relaxed/simple;
+	bh=WmrSleO2XCNYN8uS+EKoWQ5+E5KvuC+dDdzgWUmiL7o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t9A7bwCCK9207h4IRO8sfo8X1bqepkldQcoAzM/ZXslTmMYbjs540HtZnzoNQbWc/FvgUpBFRmS9+cuhYyuzL9P1p4tmIBEwkLZ2eTMrlC8+zrQ/8GBkNbVZNr6OGlIqLCYx/X74pb0WZ5cMWGowVXdwkiah1ndX5cON3xR5ifw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZnJWj+L0; arc=none smtp.client-ip=209.85.218.51
+	 MIME-Version; b=WGkPiLmzqOTeI6L0L9CmvAEykYZT/IFnyA8NnH7rNPhzH7zSg7dLum4LC+1r2X9h5DNwHbAEyLvlG8U8rD38WflzOiDfUS5WT88Yj1HPnOHyEoKuecGtQ2iv9zKB4m2UY+Oy8hKmVFSBD4QEcyavkQmceFrqbrETSjIoYVKUMOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kniDhehI; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZnJWj+L0"
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b07e081d852so68050566b.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 17:59:41 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kniDhehI"
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b04b55d5a2cso428224366b.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 18:00:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757725180; x=1758329980; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1757725246; x=1758330046; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6fWPoN959WwxjoYegCw0rDaXLTHmPmQJSliJ+OqkRJY=;
-        b=ZnJWj+L0EhD/xf13/W+QxPXdZwJfKFDS0KKMqKPjiRXgzIwTOKzDkHE8QJKmAfG1Z1
-         JjwphNUsceWKLfo4xajSASl0ztvchTi6h7n/uqSfrMtgjLH04zRLxNpGtwO3bTsmrs3/
-         zJur3YUpdy7eGRjn96hdiRyddvgQYNGk5NkZGEQuWSDD2wp01rXiW0aPcHWG0KmLCisJ
-         If78FMn54mbyog9ocyIdS8tBKzMGYYy0sWavilZz7zgTwdQBZir+7gDtAuR1WJ8wh6b7
-         m9uLfUyvZEx3KITIW5Wf257Lw9Bjkclfu1x3dohz9wnp8d5g1e9DV6qM+N4XVKVhOUX7
-         QLYQ==
+        bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=;
+        b=kniDhehI0l0VkfEd7EC3Yud5ur9bgZ3wQkti+8TG18g0C+4PHouO82AM2/2F1xSng6
+         KxJ0GiJqqT5RpRAygEhoTRKKvmfMu4CLki4Pw3AYdsNWN40kOR02fmBagQhbkpXLnjG5
+         +UFnzUMavLJR7CkiJo/0MMxVNTp8Pc/atdP2GCfxGKH1HiJWD7aMEJL01a1RfO9CgBB5
+         RnKL7oJdYqwffv7lhSrWcU624koQQHvI/zEv5ero4iE4XlVIo8NC2arcvk4zaUvDS3yd
+         ZbCqmqIQiZauNwAd3rHACYrvSAQA4OLwxXv7sz9vVQdzA5qYXHq2aZcWpJFEZJTqDtqt
+         f4Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757725180; x=1758329980;
+        d=1e100.net; s=20230601; t=1757725246; x=1758330046;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6fWPoN959WwxjoYegCw0rDaXLTHmPmQJSliJ+OqkRJY=;
-        b=Te0MjFENAncN4fsrKWrzOC7Eiix81eclMubt9h48Yj2Myh0BPl5TQhbD3FGOpv/Wmz
-         X7MpklN3OB8RK56aT3EDVymm2+vcYbFoI73iNHkTz+kfS4x839Soh2JahK8NqjonEM2d
-         tO9Q+0Fw+aq0EBjFBGA3SLyh38inhvnDZriASpGsRZiLq3xzs0slC53nsIJR4vykCl4x
-         85nQXvLQLcFGPp3LKnCyx2QOeM5fp3A+W6Yj8t1Xy4s7I/0UCuNQ6l9fKw/FgQ2qKf7v
-         bluT7TNOAEvMcpoJTVeYoiJgUUIuVbl39ctXHQ+kr6GO2YOj3Ly5ucTFXlYZ7FRJVNJm
-         M0Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCWu7bOcq9lVlCZibO4HxiD0hCL2tVofnaGF2tGKesai6jYGM0mR4DFRNgOjZtszW2nd10llIYbIVCm7@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzWk6SeDjYTv6dFXflWOUQfHTr1jBJpCU5kdIVKN+6cPFVzf3yH
-	EZEtdyiTVzkiiuL4uuJlwUvSptlaBGRegRAVoYhA2R6A29Ow0bYPxeJp
-X-Gm-Gg: ASbGncuW/yfhXcVNnTGlCJaemObUy4nxOh6Wahm95p01owWakKJaac7EM3lexe9/AmC
-	KKEDd4LWvLm4PwVa+lF/O9e4df8xLzWFV6E47YlMmzQoEiOWwzOA+c9e+0LdRBM1UCXC7w6R5jV
-	1qyQqWBBYnfM1V6GWRZlE/VYldzx3VdJDyCIn/Y8uMU7/JFCYaqCVT1sMKGbhvg/ffaL1MKzqqN
-	DAYWpbV8prBIdHmZ8mnMpldd36Q0Sf3C5djNvdo2f6OX50vLkP3HY4LWBlC7957unyw2U1lJPpx
-	+RSoddPSoDrcgYkSYaXd4sIyobQRbsZ4+leCA1SzbS+PGifvTofYOloxHsn1Jui3BD8f5ldfyE6
-	bFuWsSn5rt2QGjngZoaw=
-X-Google-Smtp-Source: AGHT+IGLvsatTRrbnodGqisgzpCsfnT+5kjCyZkQGsCYdRKthq/XXLBOPdic+fyhUVGMnj7YztyCUg==
-X-Received: by 2002:a17:907:3f1a:b0:b04:ae7c:703e with SMTP id a640c23a62f3a-b07c35bca5fmr458205966b.24.1757725180390;
-        Fri, 12 Sep 2025 17:59:40 -0700 (PDT)
+        bh=XoEWD/ShpnwzaQ8ORuPz9c0ALO6Ls67XcNa7R8iqlGI=;
+        b=Y/IjRKNQUL9IlgzxJ4onkPdPLl3wL3tKvG5oGFpMuC0SgZvCS1PjOOj5D2F98FenEi
+         yFwe3hoI8Kxxr0Ea2d4DeFUW8GxC0d1jWB5lL+FxnyB/YE/dywrX5x782H6khAHgoAc2
+         UznkDVr7LBhU8Nx8o0pX3ooHOf+THxgq8i0+iI/0mNx3C4xqMw3xlNVemDJn+h9z6VVB
+         nCRgwvqJ7u1pfrDX5HAuQnzVX6bdRRR19af23jzTDG+J1U1RSoLe8ptihcvYKIG427SF
+         yCnqM8WDz2yYaWm106pnsc40CPFtBujUR8B10Q0LKVUKjC2UZHyKakHw23J320xfnlz1
+         Gzpw==
+X-Forwarded-Encrypted: i=1; AJvYcCXo34hbF78rpIGZQDn7gLGKmDVF1D7R2YBb6+kVBHcp9VO9NtmvHnsX9DOQWHaQnc83sc9KJHCDKf++@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yzi/vkt0JHchvm4Qf6YH3d2i/S4mxdTYZRO1fejAL6cHQxVi9Gd
+	fwbM4qAynVPhUQy3hji/u14GUwnT2Gl1W3ushQf4W30AH53fTP/+LD+J
+X-Gm-Gg: ASbGncs3H9gGSG0SzsK8E8XL+HszJmEPwLKE3wKi62ZKe6Q6a6XNrTyIIH86TC1QqRd
+	z+ggNcXDWorq+zArZz6gwZ9a+1BDfIXGiG2Sv79w0PyxsI7rz5gKkjHm11CAXfJ3bxn9z3i36r5
+	KWBHUySQao4FLc1rlZUnfqYDr8ipIarqGLhveSEkCb7gWOQKtC1eSwO3NA6uffYOastJAn8HC3f
+	v5iQdfETkKNq0bYYhcpR0ReX/ijf3yMvxDXeWOXyg68NkfejDCkCbCqq7USKgQ/TWYbck6dWqal
+	cgm4eMsBelZNZ2xm23f4DeRhZWrbfc+BdUarPBpWwINmq8UPXwHNFyPgPl4A7UMIMnxrsR41W3V
+	27/tX5i1lDlXUGCLymBebMrycI+zEug==
+X-Google-Smtp-Source: AGHT+IFN5sGx8Mx9m2aD2jbl3cQxyHXmx0LPyYapXdwnUwhP9+XvMT+8Mvs3QRhc/UxXrnFX4WIsYg==
+X-Received: by 2002:a17:907:daa:b0:b04:7232:3e97 with SMTP id a640c23a62f3a-b07c357507cmr467580066b.21.1757725245716;
+        Fri, 12 Sep 2025 18:00:45 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b3347a2dsm471368266b.98.2025.09.12.17.59.35
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32dcf77sm470822766b.64.2025.09.12.18.00.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:59:39 -0700 (PDT)
+        Fri, 12 Sep 2025 18:00:45 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -113,9 +113,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 18/62] doc: modernize Documentation/driver-api/early-userspace/early_userspace_support.rst
-Date: Sat, 13 Sep 2025 00:37:57 +0000
-Message-ID: <20250913003842.41944-19-safinaskar@gmail.com>
+Subject: [PATCH RESEND 19/62] init: remove mentions of "ramdisk=" command line parameter
+Date: Sat, 13 Sep 2025 00:37:58 +0000
+Message-ID: <20250913003842.41944-20-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
@@ -127,52 +127,109 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Update it to reflect initrd removal
+It is already removed
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- .../early_userspace_support.rst                | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ arch/arm/boot/dts/samsung/exynos4210-origen.dts   | 2 +-
+ arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts | 2 +-
+ arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts | 2 +-
+ arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts | 2 +-
+ arch/arm/configs/exynos_defconfig                 | 2 +-
+ arch/arm/configs/s5pv210_defconfig                | 2 +-
+ drivers/block/Kconfig                             | 1 -
+ 7 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/driver-api/early-userspace/early_userspace_support.rst b/Documentation/driver-api/early-userspace/early_userspace_support.rst
-index 61bdeac1bae5..0ca923c1007b 100644
---- a/Documentation/driver-api/early-userspace/early_userspace_support.rst
-+++ b/Documentation/driver-api/early-userspace/early_userspace_support.rst
-@@ -127,28 +127,22 @@ mailing list at https://www.zytor.com/mailman/listinfo/klibc
- How does it work?
- =================
+diff --git a/arch/arm/boot/dts/samsung/exynos4210-origen.dts b/arch/arm/boot/dts/samsung/exynos4210-origen.dts
+index f1927ca15e08..4dcf794bd18b 100644
+--- a/arch/arm/boot/dts/samsung/exynos4210-origen.dts
++++ b/arch/arm/boot/dts/samsung/exynos4210-origen.dts
+@@ -36,7 +36,7 @@ aliases {
+ 	};
  
--The kernel has currently 3 ways to mount the root filesystem:
-+The kernel has currently 2 ways to mount the root filesystem:
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial2:115200n8";
+ 	};
  
- a) all required device and filesystem drivers compiled into the kernel, no
--   initrd.  init/main.c:init() will call prepare_namespace() to mount the
-+   initramfs.  init/main.c:kernel_init_freeable() will call prepare_namespace() to mount the
-    final root filesystem, based on the root= option and optional init= to run
--   some other init binary than listed at the end of init/main.c:init().
-+   some other init binary than listed at the end of init/main.c:kernel_init().
+diff --git a/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts b/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
+index 18f4f494093b..4cdeddeff3fc 100644
+--- a/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
++++ b/arch/arm/boot/dts/samsung/exynos4210-smdkv310.dts
+@@ -30,7 +30,7 @@ aliases {
+ 	};
  
--b) some device and filesystem drivers built as modules and stored in an
--   initrd.  The initrd must contain a binary '/linuxrc' which is supposed to
--   load these driver modules.  It is also possible to mount the final root
--   filesystem via linuxrc and use the pivot_root syscall.  The initrd is
--   mounted and executed via prepare_namespace().
--
--c) using initramfs.  The call to prepare_namespace() must be skipped.
-+b) using initramfs.  The call to prepare_namespace() must be skipped.
-    This means that a binary must do all the work.  Said binary can be stored
-    into initramfs either via modifying usr/gen_init_cpio.c or via the new
--   initrd format, an cpio archive.  It must be called "/init".  This binary
-+   initramfs format, an cpio archive.  It must be called "/init".  This binary
-    is responsible to do all the things prepare_namespace() would do.
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial1:115200n8";
+ 	};
  
-    To maintain backwards compatibility, the /init binary will only run if it
-    comes via an initramfs cpio archive.  If this is not the case,
--   init/main.c:init() will run prepare_namespace() to mount the final root
-+   init/main.c:kernel_init_freeable() will run prepare_namespace() to mount the final root
-    and exec one of the predefined init binaries.
+diff --git a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
+index c83fb250e664..4b18cc55d6ca 100644
+--- a/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
++++ b/arch/arm/boot/dts/samsung/exynos4412-smdk4412.dts
+@@ -27,7 +27,7 @@ aliases {
+ 	};
  
- Bryan O'Sullivan <bos@serpentine.com>
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial1:115200n8";
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts b/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
+index bb623726ef1e..4164c7c2a3eb 100644
+--- a/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
++++ b/arch/arm/boot/dts/samsung/exynos5250-smdk5250.dts
+@@ -27,7 +27,7 @@ memory@40000000 {
+ 	};
+ 
+ 	chosen {
+-		bootargs = "root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M init=/linuxrc";
++		bootargs = "root=/dev/ram0 rw initrd=0x41000000,8M init=/linuxrc";
+ 		stdout-path = "serial2:115200n8";
+ 	};
+ 
+diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_defconfig
+index 6915c766923a..77d3521f55d4 100644
+--- a/arch/arm/configs/exynos_defconfig
++++ b/arch/arm/configs/exynos_defconfig
+@@ -15,7 +15,7 @@ CONFIG_HIGHMEM=y
+ CONFIG_SECCOMP=y
+ CONFIG_ARM_APPENDED_DTB=y
+ CONFIG_ARM_ATAG_DTB_COMPAT=y
+-CONFIG_CMDLINE="root=/dev/ram0 rw ramdisk=8192 initrd=0x41000000,8M console=ttySAC1,115200 init=/linuxrc mem=256M"
++CONFIG_CMDLINE="root=/dev/ram0 rw initrd=0x41000000,8M console=ttySAC1,115200 init=/linuxrc mem=256M"
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_STAT=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
+diff --git a/arch/arm/configs/s5pv210_defconfig b/arch/arm/configs/s5pv210_defconfig
+index 02121eec3658..8ec82d9b51e4 100644
+--- a/arch/arm/configs/s5pv210_defconfig
++++ b/arch/arm/configs/s5pv210_defconfig
+@@ -8,7 +8,7 @@ CONFIG_KALLSYMS_ALL=y
+ CONFIG_ARCH_S5PV210=y
+ CONFIG_VMSPLIT_2G=y
+ CONFIG_ARM_APPENDED_DTB=y
+-CONFIG_CMDLINE="root=/dev/ram0 rw ramdisk=8192 initrd=0x20800000,8M console=ttySAC1,115200 init=/linuxrc"
++CONFIG_CMDLINE="root=/dev/ram0 rw initrd=0x20800000,8M console=ttySAC1,115200 init=/linuxrc"
+ CONFIG_CPU_FREQ=y
+ CONFIG_CPU_FREQ_STAT=y
+ CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND=y
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index df38fb364904..8cf06e40f61c 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -229,7 +229,6 @@ config BLK_DEV_RAM
+ 	  store a copy of a minimal root file system off of a floppy into RAM
+ 	  during the initial install of Linux.
+ 
+-	  Note that the kernel command line option "ramdisk=XX" is now obsolete.
+ 	  For details, read <file:Documentation/admin-guide/blockdev/ramdisk.rst>.
+ 
+ 	  To compile this driver as a module, choose M here: the
 -- 
 2.47.2
 
