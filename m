@@ -1,63 +1,63 @@
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A612214B977
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 00:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF3E1459F7
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 00:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757724990; cv=none; b=LfxKo8sX6kK4ix4cqYTJlCiPm+woAegV53Es1h1N9qx3LqyNLMENIQ/P+9zufxrFH8JijR0wb6pQKFnrvu7Aroyq96jsBXoz0mYWRnXhC6rKZ/DZ96cGtg2oVi/rSuAI9IGP0ZexqKZQu77GTAIHBOoR1wgzNjrgl99Q56I3p+Y=
+	t=1757725056; cv=none; b=C5HfsF7iwIghpdUQcRKYvXF4t48QQa3XFtQMTIaifX4OrN5knCnrFL2jCnZQlncUPtoMZVXFscKNFrnNnqxAwFOGhmvRCP3GB3+LbTQSGOZw+UlmgDeOj1PO+C4pU1/BzlJYGbD1chLu1zPOgmHHyxKjqG5zClOnzBc8xxU4+2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757724990; c=relaxed/simple;
-	bh=ds9VwpQCIQQEuVYbVkP08KSVWpcFcJ5JA8drV9AyvVg=;
+	s=arc-20240116; t=1757725056; c=relaxed/simple;
+	bh=icqv9qJHo4M/f4BybNZRp4QArCkqmFyOuQeqTRdwg0I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mbXFnaiafaDYqx2ZOkZbqhfzKI2YmWTmY65mwbpX8ydKqUaWrtdmom1+nrv9dpQfn+7TTi7Dxd8k54X8gZeB7KVKMBtmGOBFvhhyZxcr9anStb0mspI+5IqVX4nCjzsTsJU+hlZdHW72sjHOJhT6Q+5+Iooi2h+sfgLoWflHTwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CI62THcS; arc=none smtp.client-ip=209.85.218.46
+	 MIME-Version; b=krYDbs3IA6LGz5qGMs8BSKFnK1XEPpvRNy2anR/1lzf8lZxgdh/NDrIEq5Y+VKztXqtbq95M9pp9IJYDF+enDUMI/moU/a2bi38ykZWwQwVphGWYWkWVUTFOxD1ypdH8dpmK7+BPaBzwzc/DJEk0xDwqIVO6F5SFWT6PW8VaoIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hS8xHdFm; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CI62THcS"
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b04770a25f2so357580266b.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 17:56:25 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hS8xHdFm"
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-62f125e5303so6216a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 17:57:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757724984; x=1758329784; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1757725050; x=1758329850; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=57Y6Vt+tKEG1ezrQxMY6sE7xxEuIy1GPZf6G9mOPdfs=;
-        b=CI62THcSa19FiVhhYAKzUOlie91BwgILKLlztuaCKnPkKc+jEu8vMPnkOJWtV+nJ/A
-         uvHvogZgclTs4VIirjjcwMjNCqwjtq9dk5UzoyTijgC+kIO3/z1wAtLKgubHMVZeqfbm
-         9Y7RuBSADBluIpygZz0fFC84iC2MboS8C91mftWcXDNVuQ7PE5JvDwnTLC1llgmL0OXU
-         E5E3FHKcakb0BLUPP2GLIgoNgETzYClILIL3Os6vvxDpTnMshK52VzbGMpMYUtKKxqsy
-         AFEl8SPZ6gySVJgYJXHHG6Hk0vbd/fslWTFLyEpA7VdGHWznhFuzHTLaH8jh/x25FSqQ
-         a3Tg==
+        bh=ezI+jX/C/Y112e/n5Rz3xR2Z7MqtqGJhurNzHRBUkc4=;
+        b=hS8xHdFm879UX4s2pD+itLsM3+AK7yez0muP6EkQ2B3cR7hNfLSzKkX6Qzgv+U24eo
+         eTLUg8rUaksti7vHn2tdxd6zPNE2zEG1Nzlkx2MJJGVdt7xEWQJEo3VU0DEzQ2i+0kZK
+         G+gh1GMexXeFK2WFuR5Fu/CT3TttZaDQECxSkNeoMZmzHwzVexanmUwII0oIlGkP5H4k
+         ePznkSxpACfozgD1LH0RaUedlgPeoH89rfTwui7lPjcG5NPzYaaUYgor70/bZY/pPcP4
+         LplPvZJR7U2LZuaCVgklV9OoEjVgpAnG0XARP2i6sNKECgCE9UZzX5wIuo+6Jqw2uh2X
+         3EoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757724984; x=1758329784;
+        d=1e100.net; s=20230601; t=1757725050; x=1758329850;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=57Y6Vt+tKEG1ezrQxMY6sE7xxEuIy1GPZf6G9mOPdfs=;
-        b=rFUxPCRptdIsseEucW5KaG0Xhbx9xMPw/veMMAAsxqEVApKO1u2FuypvqwwNXtcC8o
-         dX5XwojMsdhZYag2DDG7bTQPgejp3m30YiOQ+z7xVVn1+FjCcPLXzVRjFTfuVzqx9SHm
-         +QfNN2bBxgN6u0qj25NGqHtU1TBlDA/C7MkxeIMtqrNEwn6sSr05jVqJz1bpGZMNj0qp
-         EIqtGxZwp9dRQkojwmbRf+bu6D/mMCCQ8B/C/+ViGVmctpkh5imaCEdUt0yteYWRfxp+
-         9MDzqKk0onihoOJnJ5EfhPD4yMLuUx25Lw8EGZVpqHe1FAOItb0hAkWmrB4of5tT3qMQ
-         ReeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWBTcDgWMmeNHUCroQQsi9vMp9yaxRbrqUYG7r0RuCSx+l0FSvlFVy73aZrXwHLex+F24YSPsWLfbEB@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwOvuRldXB0xBfi1pOBGXdhUBRmA66i82Nh9NYu1z7V2hdddbbn
-	18gLTmWNIb21cQGgTelFRAWkUQqMipfh4ubBoyZKg/42ZMlmIL8ulHdK
-X-Gm-Gg: ASbGncuRTIpahtnocTJGYRQ8tBbVM4LZaPSPWAZoXJDv56VVwcyv/p2bEqtzXx4Vqcx
-	DvQGh4YRVStfPulCAH2RrcGUk64YJJQIwJdu3GTosQpLDtmCSB5dfBOf/0zeDSHTLD/1IpqfQ6s
-	D7+ro4Jb9+EnvorTtLsZi1LVoiFJUUYa8P/lASfeIEUKCeAlmQXMSvLWclNhRp6W2sOfQ6NWyfy
-	+4WVoVLgtmmizRgRaRzQixhuACJ/DCNCcx/TapcyTHvmuOzb5apOrS1GG2nPkUAMzAUQ2a4mf6p
-	nL55Bdkw3iwLWu28p6yoJHRResRu2YuTh7bILKsB7nQArzd6vNcRAPzIKYeH5rJbjLIyufbwXOA
-	ITYr4IvMu3csJJnKlHxZBrxYY9CWc3g==
-X-Google-Smtp-Source: AGHT+IG1YYL4kFwbVvTnXfTe3odNA00ZLAAz2mLJaF8vV1UmquQWKJyitdN/Fum9NwuVLBLjujgrow==
-X-Received: by 2002:a17:907:3fa1:b0:b07:88aa:255b with SMTP id a640c23a62f3a-b07c354ed12mr458973666b.11.1757724983824;
-        Fri, 12 Sep 2025 17:56:23 -0700 (PDT)
+        bh=ezI+jX/C/Y112e/n5Rz3xR2Z7MqtqGJhurNzHRBUkc4=;
+        b=rS6SX8nAHk7Mz4gwiAhBQuLrRxDdQZsTvw1gwlOEAKvnR/tx3ZAMJq/cO6SW2KFLBc
+         imQM7tRXEJAIOdbbIqvfN5gLrDg21dWB5/VSop6VooAaNYUIZdFgeG+b/TGg5obAzggM
+         3WLt/FAXYtTYKjKWNZX/H38blKVlW0MPsr1IuvvORvoU5QsasV3Ad8JMm5utCwlCPZ9D
+         jnw8X9eVIrK4ajwsyREwxbCT8TAtI+MtFWiLNrvsFtE9X5juvZkIuYvhuJxAVNGzBxzf
+         3sLo80wXrPSwsJhi7h5L+IiiCmJINyH7s3eRwXTwGGYN7Gzn7depxSIiE/lqJ8Qf3C8e
+         kkgA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUJ2BobqRYxRY0b4Xfn4A8shxBXSCDbcPZ1ElOFKq7kWkDfGdVxsHQO69LlwuuJuPugdDJs6CdBAgS@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzztPZsbzi3wEVYLbaAAiiy9VrvLq8RiRKdSsN2G3/0zpv7W9eD
+	QjwKKJmZgQt0MWlDb3WXYK04Ou29VhSjjF6WHLPAzk1/DseAQhK0oDG5
+X-Gm-Gg: ASbGnctf/2Jl0X3tVW/x3eNZhL1hTzMepQHyhjXF1iHzdnTC6ex67uHxTyIsQzDGJGL
+	wroulMEuJ9tr3xemIozzzMgZ9cWvNzIQDTp2kZb79jJXNGlEdMdp6YJE9HOHz8RGaCXDzTQ1Y63
+	r9+OnIQKbVi3cooavaqjez0puOdoIsdKS+EJdxjIYlH9ZRqjyiAL7mGcD64eyWbPAk+wmri8Tr7
+	XaDJB90gP38+bDNNdF5IUTpY4/AbUVDEkP5pmKQbVVgqjhQBOlL0ie5FS2GUpONjnpo3F099sWw
+	res7r//IuKvCmu+dtiz6eANLwsGBHyHk5mFhmBfjRVOMrvm1xcHHoCB0Fm1fklvVHDaJGfZtbj8
+	AqgxFtJU+9dWWFYsdQu6TCGHzNSeutA==
+X-Google-Smtp-Source: AGHT+IGnRtXHmAlBOGcWImQD5jsKfQTyCdy3QliDqyqREaJdsFoBMJl1utqd/JT9F2sOVlrjQyooHw==
+X-Received: by 2002:a17:907:944b:b0:b04:ad1c:59e4 with SMTP id a640c23a62f3a-b07c35328admr535751966b.12.1757725049282;
+        Fri, 12 Sep 2025 17:57:29 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b33478besm484760966b.99.2025.09.12.17.56.19
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32dd47bsm478662366b.58.2025.09.12.17.57.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:56:23 -0700 (PDT)
+        Fri, 12 Sep 2025 17:57:28 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -113,9 +113,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 15/62] doc: modernize Documentation/admin-guide/blockdev/ramdisk.rst
-Date: Sat, 13 Sep 2025 00:37:54 +0000
-Message-ID: <20250913003842.41944-16-safinaskar@gmail.com>
+Subject: [PATCH RESEND 16/62] brd: remove "ramdisk_size" command line parameter
+Date: Sat, 13 Sep 2025 00:37:55 +0000
+Message-ID: <20250913003842.41944-17-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
@@ -127,153 +127,99 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Update it to reflect initrd removal
+It was used mostly for initrd. It could be used only if
+brd is built-in. Use "brd.rd_size" instead
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- .../admin-guide/blockdev/ramdisk.rst          | 103 ++----------------
- 1 file changed, 7 insertions(+), 96 deletions(-)
+ .../admin-guide/kernel-parameters.txt         |  3 ---
+ Documentation/arch/m68k/kernel-options.rst    | 20 ++-----------------
+ arch/arm/configs/s3c6400_defconfig            |  2 +-
+ drivers/block/brd.c                           | 10 ----------
+ 4 files changed, 3 insertions(+), 32 deletions(-)
 
-diff --git a/Documentation/admin-guide/blockdev/ramdisk.rst b/Documentation/admin-guide/blockdev/ramdisk.rst
-index e57c61108dbc..6289e085f18f 100644
---- a/Documentation/admin-guide/blockdev/ramdisk.rst
-+++ b/Documentation/admin-guide/blockdev/ramdisk.rst
-@@ -5,18 +5,14 @@ Using the RAM disk block device with Linux
- .. Contents:
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index ad52e3d26014..e862a7b1d2ec 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5279,9 +5279,6 @@
+ 	raid=		[HW,RAID]
+ 			See Documentation/admin-guide/md.rst.
  
- 	1) Overview
--	2) Kernel Command Line Parameters
--	3) Using "rdev"
--	4) An Example of Creating a Compressed RAM Disk
-+	2) Module parameters
+-	ramdisk_size=	[RAM] Sizes of RAM disks in kilobytes
+-			See Documentation/admin-guide/blockdev/ramdisk.rst.
+-
+ 	random.trust_cpu=off
+ 			[KNL,EARLY] Disable trusting the use of the CPU's
+ 			random number generator (if available) to
+diff --git a/Documentation/arch/m68k/kernel-options.rst b/Documentation/arch/m68k/kernel-options.rst
+index 2008a20b4329..f6469ebeb2c7 100644
+--- a/Documentation/arch/m68k/kernel-options.rst
++++ b/Documentation/arch/m68k/kernel-options.rst
+@@ -215,27 +215,11 @@ Devices possible for Atari:
+            seconds.
  
  
- 1) Overview
+-2.6) ramdisk_size=
+-------------------
+-
+-:Syntax: ramdisk_size=<size>
+-
+-This option instructs the kernel to set up a ramdisk of the given
+-size in KBytes. Do not use this option if the ramdisk contents are
+-passed by bootstrap! In this case, the size is selected automatically
+-and should not be overwritten.
+-
+-The only application is for root filesystems on floppy disks, that
+-should be loaded into memory. To do that, select the corresponding
+-size of the disk as ramdisk size, and set the root device to the disk
+-drive (with "root=").
+-
+-
+-2.7) swap=
++2.5) swap=
+ 
+   I can't find any sign of this option in 2.2.6.
+ 
+-2.8) buff=
++2.6) buff=
  -----------
  
--The RAM disk driver is a way to use main system memory as a block device.  It
--is required for initrd, an initial filesystem used if you need to load modules
--in order to access the root filesystem (see Documentation/admin-guide/initrd.rst).  It can
--also be used for a temporary filesystem for crypto work, since the contents
-+The RAM disk driver is a way to use main system memory as a block device.
-+It can also be used for a temporary filesystem for crypto work, since the contents
- are erased on reboot.
+   I can't find any sign of this option in 2.2.6.
+diff --git a/arch/arm/configs/s3c6400_defconfig b/arch/arm/configs/s3c6400_defconfig
+index a37e6ac40825..23635d5b9322 100644
+--- a/arch/arm/configs/s3c6400_defconfig
++++ b/arch/arm/configs/s3c6400_defconfig
+@@ -4,7 +4,7 @@ CONFIG_ARCH_MULTI_V6=y
+ # CONFIG_ARCH_MULTI_V7 is not set
+ CONFIG_ARCH_S3C64XX=y
+ CONFIG_MACH_WLF_CRAGG_6410=y
+-CONFIG_CMDLINE="console=ttySAC0,115200 root=/dev/ram init=/linuxrc initrd=0x51000000,6M ramdisk_size=6144"
++CONFIG_CMDLINE="console=ttySAC0,115200 root=/dev/ram init=/linuxrc initrd=0x51000000,6M"
+ CONFIG_VFP=y
+ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index 72f02d2b8a99..05c4325904d2 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -222,16 +222,6 @@ MODULE_LICENSE("GPL");
+ MODULE_ALIAS_BLOCKDEV_MAJOR(RAMDISK_MAJOR);
+ MODULE_ALIAS("rd");
  
- The RAM disk dynamically grows as more space is required. It does this by using
-@@ -30,109 +26,24 @@ and (re)build the kernel.
- 
- To use RAM disk support with your system, run './MAKEDEV ram' from the /dev
- directory.  RAM disks are all major number 1, and start with minor number 0
--for /dev/ram0, etc.  If used, modern kernels use /dev/ram0 for an initrd.
+-#ifndef MODULE
+-/* Legacy boot options - nonmodular */
+-static int __init ramdisk_size(char *str)
+-{
+-	rd_size = simple_strtol(str, NULL, 0);
+-	return 1;
+-}
+-__setup("ramdisk_size=", ramdisk_size);
+-#endif
 -
--The new RAM disk also has the ability to load compressed RAM disk images,
--allowing one to squeeze more programs onto an average installation or
--rescue floppy disk.
-+for /dev/ram0, etc.
- 
- 
--2) Parameters
-----------------------------------
-+2) Module parameters
-+--------------------
- 
--2a) Kernel Command Line Parameters
--
--	ramdisk_size=N
-+	rd_size=N
- 		Size of the ramdisk.
- 
- This parameter tells the RAM disk driver to set up RAM disks of N k size.  The
- default is 4096 (4 MB).
- 
--2b) Module parameters
--
- 	rd_nr
- 		/dev/ramX devices created.
- 
- 	max_part
- 		Maximum partition number.
- 
--	rd_size
--		See ramdisk_size.
--
--3) Using "rdev"
-----------------
--
--"rdev" is an obsolete, deprecated, antiquated utility that could be used
--to set the boot device in a Linux kernel image.
--
--Instead of using rdev, just place the boot device information on the
--kernel command line and pass it to the kernel from the bootloader.
--
--You can also pass arguments to the kernel by setting FDARGS in
--arch/x86/boot/Makefile and specify in initrd image by setting FDINITRD in
--arch/x86/boot/Makefile.
--
--Some of the kernel command line boot options that may apply here are::
--
--  ramdisk_size=M
--
--If you make a boot disk that has LILO, then for the above, you would use::
--
--	append = "ramdisk_size=M"
--
--4) An Example of Creating a Compressed RAM Disk
-------------------------------------------------
--
--To create a RAM disk image, you will need a spare block device to
--construct it on. This can be the RAM disk device itself, or an
--unused disk partition (such as an unmounted swap partition). For this
--example, we will use the RAM disk device, "/dev/ram0".
--
--Note: This technique should not be done on a machine with less than 8 MB
--of RAM. If using a spare disk partition instead of /dev/ram0, then this
--restriction does not apply.
--
--a) Decide on the RAM disk size that you want. Say 2 MB for this example.
--   Create it by writing to the RAM disk device. (This step is not currently
--   required, but may be in the future.) It is wise to zero out the
--   area (esp. for disks) so that maximal compression is achieved for
--   the unused blocks of the image that you are about to create::
--
--	dd if=/dev/zero of=/dev/ram0 bs=1k count=2048
--
--b) Make a filesystem on it. Say ext2fs for this example::
--
--	mke2fs -vm0 /dev/ram0 2048
--
--c) Mount it, copy the files you want to it (eg: /etc/* /dev/* ...)
--   and unmount it again.
--
--d) Compress the contents of the RAM disk. The level of compression
--   will be approximately 50% of the space used by the files. Unused
--   space on the RAM disk will compress to almost nothing::
--
--	dd if=/dev/ram0 bs=1k count=2048 | gzip -v9 > /tmp/ram_image.gz
--
--e) Put the kernel onto the floppy::
--
--	dd if=zImage of=/dev/fd0 bs=1k
--
--f) Put the RAM disk image onto the floppy, after the kernel. Use an offset
--   that is slightly larger than the kernel, so that you can put another
--   (possibly larger) kernel onto the same floppy later without overlapping
--   the RAM disk image. An offset of 400 kB for kernels about 350 kB in
--   size would be reasonable. Make sure offset+size of ram_image.gz is
--   not larger than the total space on your floppy (usually 1440 kB)::
--
--	dd if=/tmp/ram_image.gz of=/dev/fd0 bs=1k seek=400
--
--g) Make sure that you have already specified the boot information in
--   FDARGS and FDINITRD or that you use a bootloader to pass kernel
--   command line boot options to the kernel.
--
--That is it. You now have your boot/root compressed RAM disk floppy. Some
--users may wish to combine steps (d) and (f) by using a pipe.
--
- 
- 						Paul Gortmaker 12/95
- 
+ /*
+  * The device scheme is derived from loop.c. Keep them in synch where possible
+  * (should share code eventually).
 -- 
 2.47.2
 
