@@ -1,63 +1,63 @@
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742524C83
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 00:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9751D51022
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 00:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757724332; cv=none; b=jQFiVRTkkoRCxHXWG1LptWg6ian1XFhJ/8sQkxXxBvUGroBAF+ajQwYfwinS7meU5VkufOD5m08Z4OEOVuWQcW/3ECH76kTzlA48roiyGkpaaLOoGzGKP8myKawtQOwLS5xDXGpEasCgCNdWNA8egpOpHpmuleDvKG3OKS2o788=
+	t=1757724399; cv=none; b=rD/ElP+DerKQDzIomt20eXD0Z6E+vxIT/v13b/eRLxBTiEWNI7CBuwB8zD89OfQ10jHw/fIn+vpFOZgpFOGPB11HoI7l6j4ZaaIxpfb+M/mjoTo84r9DpK4eVkXPLZ9g3WVjIO1pWgKXMLn2NjY8LrW2cofk6VvBoXzfOqxLGrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757724332; c=relaxed/simple;
-	bh=kibOCauDCBkqzoIIQtVCNE2P0zxtFVdI1DUZ/kvaArs=;
+	s=arc-20240116; t=1757724399; c=relaxed/simple;
+	bh=zjnx3/NY9AOu8ee75jqsChu3O0QCH1Ezxe1gYYeY9CY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P1ELhxBzarjDCLWWbgazvg9Doice9Dgy3yTquzd+C6/CRe1M/Y+8OJQmUM6z2L2qSnBsDVlqQYZ+Mnifow2RFYxJEK4ha768sjxoKthVQgelPyiA5ACqv/FVnk/3UdKJSv8ivBL0nQHTNHShJcFkdVcgP6XD/Bo3C32XLUZGeIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HiNASMRM; arc=none smtp.client-ip=209.85.218.52
+	 MIME-Version; b=ODnX9D5c4VUwf7mD++h52wVgLERhsfQXBIg8mg731fB8VsRslCjphcEdRF43L5FKNBcLS3uXYcBCbuzMLTC8G/n8mX6qHPhOFKNQSXhL9/cYf+bWHflHklhEbAEFh+YHFiLedN29Tza23yh7J8/9bQ8OizGmMPXPYslO7Dguh5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AO3zLjqC; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiNASMRM"
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b043a33b060so374069266b.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 17:45:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AO3zLjqC"
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b046f6fb230so480207166b.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 17:46:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757724329; x=1758329129; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1757724394; x=1758329194; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fi1FJKwP9nWnSjptSGh11GRsqwR1G48l7l6Ou3g4XAs=;
-        b=HiNASMRMx6WMTSSIVzBaVqM+LNy3CDLifgxQrCGPh9New8QrCCO/vPQDX86j9MjubK
-         A9ciAKuV23clBbcYqzvoCUUZPZhtG0uRrtXS9+qenRh/9gIsKjoQ49hU2EcnHLJfsAvf
-         1hkVAhwCcVRgapbGXgOp+0xZNM3kC3Tn8vA3vJ1Hhl9G+ghMch1zoMeRaQ3/Z/Cov322
-         7I9aeGF5TIwXziERfEOs9b4p6HdPF93kVuuwv+hFd/IUdoxpDzkaiddRSJTEp1+HAZnw
-         VVaP77y2Z4D/kwwDnBBStULstEWkQQAbpuVGfbU1WJ0MaRkRI31LNVXwWA8b668hgI39
-         x3Og==
+        bh=Y83Wia04Z/mNTHCUGozzAt26nJVQ29vmo/6z8Jb/IIM=;
+        b=AO3zLjqCSaVsxxOcGKyzjuEjB4S9CUcqJDdPxIFMp3Wzi15TvuQjrMP3C1FgIvMCVi
+         nRNf5gp+OTgQrH1VXviU3LbX+YfVfTiPAjANnYe17/OO6Y51ZQYvJBotLuk/R0szPRc7
+         zOSYSSe/IqB/m5FdcwntCqONXQq4LSb0Sbj5SWQ12brkN/MHRbee0sd5pF9r8rly7eLB
+         CBmbmIRlqRfJa7tOgrQgCoYjW4TZFZYYM2v3U3ie7ISX2mSRJz42eU9ykXUIJJx0A0x7
+         ANTYW67FzUIrDURb9dBr8ZYfJR+MvldJDMZ8AzQe3mqFnQhY0GndKl2nGixhgTdmyQbA
+         NetQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757724329; x=1758329129;
+        d=1e100.net; s=20230601; t=1757724394; x=1758329194;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fi1FJKwP9nWnSjptSGh11GRsqwR1G48l7l6Ou3g4XAs=;
-        b=oEOqx6eSrzf+VG4kQO0ojYVCI1N2pk/tUhcDZhP0JRIm3AcXQlGfrMA/TpIBHDEXMZ
-         8ujKYbTjul9kQ04avLL8Udg7pRfREPvkEe7Elw9sl5Zj/hdehg7c4CnVlYyNRUWCmgb7
-         OBhQ063bJrAm8EtBgcnaOgT82wtI2nRaDrkKpEPhjrARLPdaC7xwWfkQb8ylv4i8GW2W
-         P84p9uAEwTbp8gFbIqUH9vCCIFD7LsTtPapuv7L2TGkNR+7S2ROm9BaLkGtf8g07NinP
-         lCBCDNWQPJvuvs2ri4ehkgj38XaeecwK28VdoOb7GT0MXb2JT3YmF8BDyEs+s91THDGS
-         8lBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWAgQOp+t3BhTRRVNxxXibJWQbcQcpegkJWKtsrIdBBzTjqaRH0Eckgo9fQfatYYKf//yORGZfZ45OS@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzCOzBHk/chVRdXNmpATyTmU5OEf34CDTqHUtDKQm9bW/D1S5tH
-	M1jt0Hhkk2hxNp6HKlN78LdwtWXeeu1EVfov7xSEgMh3E2Dm5xodQh3p
-X-Gm-Gg: ASbGncsUbN7xy1kOODWtgP/ao01PkmU0ThhdHyYQF4r81jpDmCL+mV4d8pdNUb4JUFj
-	oLVZqX6HkqGjvmWl5ymR0/zMFJT1gxNn5Sm8chQsXk5qv5Yj9J1jaPfA25DODklxPM+SV6jSSUM
-	Kut5kRQDFOdANKteqglZn0Cb49b0Kc4lf1P1lZ/k8QF5/CP+6hmPLnPvENEvX6GFSfzUNIBiroN
-	ClalNm/+EI+yszc+KV1b/8cpfaarhoG2qUAs+npBgAsnZNp08H2t0ZA+TS9Av1zqAbaYg+4Dhqj
-	BhWlblVNs1yq+H9yO3/oEbA+A/u/ChxAOBds1WdMilgjrRycQ7zliD3E0Q5d5QTG82Kvf1pa0EI
-	AOn434lmooTgVT2o1MRc=
-X-Google-Smtp-Source: AGHT+IEY39yKNpHOwhu+b8E85JfZO5GXoHp0A73FES6zZeZtQwPXvLC0BV0HcFzY55ZLXxqy2VO9oA==
-X-Received: by 2002:a17:907:9405:b0:b07:c9b2:dbd with SMTP id a640c23a62f3a-b07c9b20f2cmr456963866b.4.1757724328684;
-        Fri, 12 Sep 2025 17:45:28 -0700 (PDT)
+        bh=Y83Wia04Z/mNTHCUGozzAt26nJVQ29vmo/6z8Jb/IIM=;
+        b=FRrF4NK5hN7+tpgBdDgNns5O7szOnu+xep/AfjKJscJuwfrhsyQoEeB6heh/EmMYz0
+         sqG9g//RIxVUmMTQ3+bwnv7Btj8TfO/xhohuWyQl8yLPhSalaRDxas1omXzNdFsQj2sg
+         bxfy8LmE/VqswC3GVN6XaWLLxmORWrROdfsaOpF4BQ0DGoDeRkX9g1p7njMX/oo3WWr/
+         /Mcxw9KyIH7OGC6x5tXVyssFYAuilyRphuYw/j/VsjTP6xiAmfZIPpu2XV/4NveAsFSy
+         Vy9n5kEVdvKtWpFxhWgnTuaEzXzaw3q29PeEqTh+UkLUBvMbdO/D1A/TyYcMa27ZHGID
+         mNgg==
+X-Forwarded-Encrypted: i=1; AJvYcCWrEsBuE0yLtmtGsaCeccJh06YP3vSp7UeJvVVgHQ/I5ath9lC+fOAvUnWhakZfRRKOJgs10dQszY14@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzlYSoyKJrAdNNAxl/JOUbG2UqnP7Vfnl/326HFeN5TwITVJCI4
+	hAZpnG895dFmM4j68v4KMlfQzBFQMYdjss0hPd14P06xHQnAFWbhCZYx
+X-Gm-Gg: ASbGncu5Zf4UoTG3iCGXq0M003FXt0D5d+FMDV2qSplPkLsNGGeJaPg+mDYo323e4yO
+	JcGOr5VwKuY3hJB6qBbP6/dEqkJMU38T2+tPYk90TXLrK/iePqxSi5lW3m5ZEPKbvKdLag6khZs
+	EGG/dBlmHmVChDoDUe5g/GatNk625OS89DIfi1N7XbCBN14xVLQjQne9GzNWF1uW3bM9fGAkW29
+	sNJhvIjK8mZ6MmezmzpgP9c2vdWqG9mNNZjaHuxpc6ReqdBvBOagDylQ3/OdNMlciA/rkhfm0gY
+	ymk8cU1L5HSAgSMkzHZThbbv75HixsyAxZjnvbqu4AO72tvjandLf9QvSgGNBrNV2iJmNstR9hX
+	Oi8hwoEn6yiiHgEGpoIA=
+X-Google-Smtp-Source: AGHT+IEhRE4IwIn6e21II3sG+AWhFOewnNElGtSUdTtt48+B8a0G24fjikoaCpJ97iRLzEKC56BiAg==
+X-Received: by 2002:a17:907:96a3:b0:b07:e258:4629 with SMTP id a640c23a62f3a-b07e2584a05mr103605766b.16.1757724393999;
+        Fri, 12 Sep 2025 17:46:33 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32dd5casm460965366b.68.2025.09.12.17.45.24
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32f2334sm475232966b.78.2025.09.12.17.46.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:45:28 -0700 (PDT)
+        Fri, 12 Sep 2025 17:46:33 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -113,9 +113,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 05/62] init: remove "ramdisk_start" command line parameter, which controls starting block number of initrd
-Date: Sat, 13 Sep 2025 00:37:44 +0000
-Message-ID: <20250913003842.41944-6-safinaskar@gmail.com>
+Subject: [PATCH RESEND 06/62] arm: init: remove special logic for setting brd.rd_size
+Date: Sat, 13 Sep 2025 00:37:45 +0000
+Message-ID: <20250913003842.41944-7-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
@@ -127,64 +127,81 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is preparation for initrd removal
+There is no any reason for having special mechanism
+for setting ramdisk size.
+
+Also this allows us to change rd_size variable to static
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- Documentation/admin-guide/blockdev/ramdisk.rst  | 3 +--
- Documentation/admin-guide/kernel-parameters.txt | 2 --
- init/do_mounts_rd.c                             | 7 -------
- 3 files changed, 1 insertion(+), 11 deletions(-)
+ arch/arm/kernel/atags_parse.c | 12 ------------
+ drivers/block/brd.c           |  8 ++++----
+ include/linux/initrd.h        |  3 ---
+ 3 files changed, 4 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/admin-guide/blockdev/ramdisk.rst b/Documentation/admin-guide/blockdev/ramdisk.rst
-index 9ce6101e8dd9..e57c61108dbc 100644
---- a/Documentation/admin-guide/blockdev/ramdisk.rst
-+++ b/Documentation/admin-guide/blockdev/ramdisk.rst
-@@ -74,12 +74,11 @@ arch/x86/boot/Makefile.
+diff --git a/arch/arm/kernel/atags_parse.c b/arch/arm/kernel/atags_parse.c
+index a3f0a4f84e04..615d9e83c9b5 100644
+--- a/arch/arm/kernel/atags_parse.c
++++ b/arch/arm/kernel/atags_parse.c
+@@ -87,18 +87,6 @@ static int __init parse_tag_videotext(const struct tag *tag)
+ __tagtable(ATAG_VIDEOTEXT, parse_tag_videotext);
+ #endif
  
- Some of the kernel command line boot options that may apply here are::
- 
--  ramdisk_start=N
-   ramdisk_size=M
- 
- If you make a boot disk that has LILO, then for the above, you would use::
- 
--	append = "ramdisk_start=N ramdisk_size=M"
-+	append = "ramdisk_size=M"
- 
- 4) An Example of Creating a Compressed RAM Disk
- -----------------------------------------------
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index f940c1184912..07e8878f1e13 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5285,8 +5285,6 @@
- 	ramdisk_size=	[RAM] Sizes of RAM disks in kilobytes
- 			See Documentation/admin-guide/blockdev/ramdisk.rst.
- 
--	ramdisk_start=	[RAM] RAM disk image start address
--
- 	random.trust_cpu=off
- 			[KNL,EARLY] Disable trusting the use of the CPU's
- 			random number generator (if available) to
-diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
-index 8e0a774a9c6f..864fa88d9f89 100644
---- a/init/do_mounts_rd.c
-+++ b/init/do_mounts_rd.c
-@@ -17,13 +17,6 @@
- static struct file *in_file, *out_file;
- static loff_t in_pos, out_pos;
- 
--static int __init ramdisk_start_setup(char *str)
+-#ifdef CONFIG_BLK_DEV_RAM
+-static int __init parse_tag_ramdisk(const struct tag *tag)
 -{
--	/* will be removed in next commit */
--	return 1;
--}
--__setup("ramdisk_start=", ramdisk_start_setup);
+-	if (tag->u.ramdisk.size)
+-		rd_size = tag->u.ramdisk.size;
 -
- static int __init crd_load(decompress_fn deco);
+-	return 0;
+-}
+-
+-__tagtable(ATAG_RAMDISK, parse_tag_ramdisk);
+-#endif
+-
+ static int __init parse_tag_serialnr(const struct tag *tag)
+ {
+ 	system_serial_low = tag->u.serialnr.low;
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index 0c2eabe14af3..72f02d2b8a99 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -27,6 +27,10 @@
  
+ #include <linux/uaccess.h>
+ 
++static unsigned long rd_size = CONFIG_BLK_DEV_RAM_SIZE;
++module_param(rd_size, ulong, 0444);
++MODULE_PARM_DESC(rd_size, "Size of each RAM disk in kbytes.");
++
  /*
+  * Each block ramdisk device has a xarray brd_pages of pages that stores
+  * the pages containing the block device's contents.
+@@ -209,10 +213,6 @@ static int rd_nr = CONFIG_BLK_DEV_RAM_COUNT;
+ module_param(rd_nr, int, 0444);
+ MODULE_PARM_DESC(rd_nr, "Maximum number of brd devices");
+ 
+-unsigned long rd_size = CONFIG_BLK_DEV_RAM_SIZE;
+-module_param(rd_size, ulong, 0444);
+-MODULE_PARM_DESC(rd_size, "Size of each RAM disk in kbytes.");
+-
+ static int max_part = 1;
+ module_param(max_part, int, 0444);
+ MODULE_PARM_DESC(max_part, "Num Minors to reserve between devices");
+diff --git a/include/linux/initrd.h b/include/linux/initrd.h
+index 6320a9cb6686..b42235c21444 100644
+--- a/include/linux/initrd.h
++++ b/include/linux/initrd.h
+@@ -5,9 +5,6 @@
+ 
+ #define INITRD_MINOR 250 /* shouldn't collide with /dev/ram* too soon ... */
+ 
+-/* size of a single RAM disk */
+-extern unsigned long rd_size;
+-
+ /* 1 if it is not an error if initrd_start < memory_start */
+ extern int initrd_below_start_ok;
+ 
 -- 
 2.47.2
 
