@@ -1,63 +1,63 @@
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1922E70810
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 00:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3549845C14
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 00:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757724072; cv=none; b=b0d7yEOH60BIg4DwAu0VhFksVor7i9xGixnwPAT0Xgn+6kmDp+VqipA2qvJ1PBOO16fXxf7vy1NHf/KCu+w3JMRp/+PK3H7DjU9ixMnnExQ399r435vCFWp3Sz+PsMAl6ERcLM38PDO0CoHRj703uWYqd6QACWOnH5mZaEPpbZo=
+	t=1757724137; cv=none; b=IXSe8UjAwMQ7Nrr/8JS6bqZHUrMgX9c7Zn8XDMhixZkx3aKAV8z7Y2Jz3J9t9NsaMMrYC1LliCUupax8rCDDd21BlfXTSAjN2wNDbcBD+neZWLC7J1yNRG3bEXatSIELiKyqaRcQyd+/iCEJSuLGZVe6uhKHrkXXB+HPWG8bHf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757724072; c=relaxed/simple;
-	bh=yhXDovoFaZRmENn1P/7nJEAYKmeDJf//ZQgmQHs9gQQ=;
+	s=arc-20240116; t=1757724137; c=relaxed/simple;
+	bh=e1WCcnLcnFd6vSa9GXhjG8apiPFNDP8cBSBGKhm1A0M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ey8FTpHsquBGWb5tu9mzNTnKDyZNUD4JQ+0NGWUo4hLXXRsTgn2YBSK78TK8JZVpIuX/YskMtO9v/jSHnVBrKOK5J2uxZ8gt8e/QTltbH/lcjOce8WWwX9iziAjEGEsIDSr2GDa6FyL2Oiw7qvOri3ps78D8e8M6gxo3FhfpD9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fEhkzUL+; arc=none smtp.client-ip=209.85.208.50
+	 MIME-Version; b=GHtcd1hHxsA04AEn+YGk4xnq9Cq2yagnsy74MIZwQBsHrP8zNS82t+ACB4+Ca6KQMg3qYLnjVoijFU9x6eMtazCQRcnOnIW8K/QJhTXFMm5kJBrYvFhvPbMDToILCuQmPxMQMEdY4h2iEQoH2FKO2BTk+EeSDil8+V04E+OYSDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bHv4f/t3; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fEhkzUL+"
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-62ee43b5e96so1599044a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 17:41:08 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bHv4f/t3"
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-62f0411577aso357646a12.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Sep 2025 17:42:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757724067; x=1758328867; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1757724133; x=1758328933; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XF39SoyvPO4HSizOmVkN9E4c/OCzbmGR6ZiNtCSz3R4=;
-        b=fEhkzUL+fLT8UfCDZ73MSof2B3Z7A+cS6uluvXlJvCYB1Iz43gTzDoFsdPpo4hGbfv
-         5JFQmE9hEYTInVtkBpr23svnrEMG4EmhP2wMUIsDVs3MJmnY8pQeUy1kbhn/qRiBeH9d
-         gczWOIfHPSxn2JJytNCnzVaRedPpNGS72ES3CM3KGqhpp68vGlHUH2XODDznLwS01k8t
-         h1actF7zqeV4UEi4e+XeLCF3IyK/gm9DaT/tQ9Y2ZGVxfksM22kMN9KiryBqgexEeeBb
-         Gj4IyE4j1RreVapLBDqbLEtUFX+3jtUr1XPta8QQtLPwS9q4dd1jkA+j1Pni7YwaZcoO
-         eJmQ==
+        bh=Iq4EBZrV1lfKd4Zb7NXCMDMChiW0nY1yh2iMeYqfP7Y=;
+        b=bHv4f/t3AY6ZCwKEVSkp4rgMm770Zct2RVmbL/V40agfoqJKc9Mfpgl1i6C4evRzls
+         tZqv8gc5I3UfeH112SfdXOSM/6Lo78nimHbYK0hlDSBE7NuHx1pmHglUeYs3GCnhJsYw
+         4UeKRTKxNgsAiIP/4irghMlaHL+uvHhPiO1tDQnKvIh0urswklWrSJHDott933TNw073
+         5LqrsDLugwCtldsKRsZUX04KNQ81KbJ1Du8deKCS/Q+IncX/8sEADf0iJi9ZKxvw5syu
+         dhF44i2Y/aZqzLvsAYqSsqZqwREo7Ru9NRclWH1Id3wpHjPLhmm4Cf2jnhJZq8Utc0yO
+         BmGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757724067; x=1758328867;
+        d=1e100.net; s=20230601; t=1757724133; x=1758328933;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XF39SoyvPO4HSizOmVkN9E4c/OCzbmGR6ZiNtCSz3R4=;
-        b=MTDEpeHkQFLEZnEFWoS0E3kxsLn+cZYm4zsgQG39bhM9aqTFrqzOAKBf5qBv8nHpKo
-         KlH/1zZvwgIfTjKUiTOwNzVmkZPcK3yz/uOo81+vVgB5nZbKt/QLoGyYloXxmo5KspA1
-         N+eRTFAigYsKwmfGvb9zRvpWKgw/o3A3+/xjb/yqx4qsXWi6pOaXMHabucvMEKsIhbYQ
-         NIkRvUDp1HpYxJaoyC9Efxanvr2WhlQ2EEwqjg6sRMAwLE84x22Owoiw23VehDiGAlEb
-         TxN6v+ATZigr+KrYw2f1NByhMrPfEiCNpWYEd85H2ldetvonIUYT+M7kplYYTTjykobU
-         XoiA==
-X-Forwarded-Encrypted: i=1; AJvYcCW5y/pv/a92rJJYRGjEgbQ1DDttjbZZ6ivizeVyVJMcnDpyxdaGS2srhL59vUSAHlZrRCXT6ctnTrEb@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy6a+gn0/zapX9OBMPYtBT4RstLtHIbbYljgkHMWO9IrYp6oAhT
-	pJM/SsSGZuFkMtj46X11KKpJjRZB8Ggr/3xOPk8G5fdu9jU9h/RMFlYS
-X-Gm-Gg: ASbGnctdUE2tFiVAbWe7OtFmVsTpsD5PxyWT70CHciLKaErPrhw1n5kbOhzWnvv/eBi
-	kIincnT1gwvEEd/onJvKcyeqIwGkGCGSPu7Xmc9dw4HeYDgLtMJEWGhH8bvQ1IqbXnivb2Fq5jx
-	D5P237sHGOZUY5oM2Oma383cnweBmzkk98mR+S25DE4tQzPkKjX7QF9yKyJjmuUtc9qRkupLFWZ
-	LfXBA71KonXF8P6vVCJCbOXsFJeAHW3fp9WuKZMkyEkzPzn/tTamV9w9HJsCQKjxAXcrcHTkG/F
-	wH7k8MhYOaPop5oEJOvnwjtU31la2MlNCkFDHFjov+jqoGyO+JlMTZjz8/tStBQvREWFqxydXPG
-	nbPopaXcEOyZNoud//kYR6pOx/dLp+Mbkti1u5CmJ
-X-Google-Smtp-Source: AGHT+IEtE+sLJ/l9Jfm7JaiF1fYpyMVV9PhBGBMQ2H0UV0Mi6JbllI7aH7Kqq18B0Ua9aQ0IxOB0Jg==
-X-Received: by 2002:a05:6402:3552:b0:62e:ed2f:a660 with SMTP id 4fb4d7f45d1cf-62eed2fa993mr2339876a12.11.1757724067127;
-        Fri, 12 Sep 2025 17:41:07 -0700 (PDT)
+        bh=Iq4EBZrV1lfKd4Zb7NXCMDMChiW0nY1yh2iMeYqfP7Y=;
+        b=wz2ZYNbDfbv86Jf5SqisXQAjZ8494+6r7McT8c88VuDPGdZW2/535G4Qldq/+xmj35
+         Uy9OJo4EycQZEAZQ0VhUeikFzLiMVw4bEqtbSBuI+kMUcT6/UNsMVRD1mqnIpYCLAJDP
+         OJDHO7DaIgWyTHiBQ3caq9OwPbHmdjZt2AfGb3L4Yowk+52E4Wf1H+IcTCbVWqDrWYVr
+         2LMP+vPGKtYW4GqbFmnxTuVmX4/rmKHS8F1e4mD87AZCQS9GlEucH2YA0ZVT0hNOXAan
+         m4lhZUGeUcJjP5Df3qSI1eDANrzEdD63hp4uQ1W05upIv7rbHJv9pkhEaYBl7bu90qf/
+         kzLA==
+X-Forwarded-Encrypted: i=1; AJvYcCX4HGt8Kq3/R/4Q06mD0yqxuNI27A3fdR62HRJ8BD3z2tPX0nNyWMKT6+CpZX1ZU8ZTfHPL8JYqZ/a/@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzHJbZ/9+qWQSIQFbS/lSQ5Ss4FLMFVYfH+JWtFpJP3Fq5IcKmH
+	iTWSQoOQlcwGeFjIW3wrLttWbZ+Jm5KmKiRDNRfYpJjJ0klY8WJlhhxf
+X-Gm-Gg: ASbGncu0EM6WPJ1vT24vnNF4IF9bCb/Np/kHZYVpfWKDokU1K9NWwJE0Gay6PK/p9B7
+	LtcI3zZfD5SNrzDVglBiU0zfVp3urKzjJV9UK6imLSRZHMFOJsjj99i6cLyFw4HauYeij8p02xi
+	HyJ2deITqB1POKxb8Ny8+i0B4Onu6Fw21wDUPO2K/yVLGzIZitt0vNMmm47i0iw3SLqGz6Ql42Y
+	NtRP2qJBTrT/04pCzp0JmMjdalf8UnCYgmtNl+OnbP3bcXlWtI9IAbnetvERqiVUA65rDIaf1Fx
+	MQGgg2uweir8/FNrtWMOgBwtU08pfimV04t5WwDII8nLrP/GsqS6yQj3/+pI+kUUN7x4hCOgmPn
+	uTu4GfnmQskDGZ8x+8iA=
+X-Google-Smtp-Source: AGHT+IF0YGOwgI/SiDLzLobCRbGCMEuk6UiMOqwXQtTxtsbaeH+eIG/iAAo9vQw+zhuCea49+yp7bA==
+X-Received: by 2002:a17:907:2d2b:b0:afe:8761:e77a with SMTP id a640c23a62f3a-b07c35833dfmr474345066b.19.1757724132448;
+        Fri, 12 Sep 2025 17:42:12 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-62f0c7a5546sm189920a12.43.2025.09.12.17.41.02
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b3128a5csm466901366b.37.2025.09.12.17.42.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Sep 2025 17:41:06 -0700 (PDT)
+        Fri, 12 Sep 2025 17:42:12 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -113,9 +113,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 01/62] init: remove deprecated "load_ramdisk" command line parameter, which does nothing
-Date: Sat, 13 Sep 2025 00:37:40 +0000
-Message-ID: <20250913003842.41944-2-safinaskar@gmail.com>
+Subject: [PATCH RESEND 02/62] init: remove deprecated "prompt_ramdisk" command line parameter, which does nothing
+Date: Sat, 13 Sep 2025 00:37:41 +0000
+Message-ID: <20250913003842.41944-3-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
@@ -133,53 +133,53 @@ Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
  Documentation/admin-guide/kernel-parameters.txt | 2 --
  arch/arm/configs/neponset_defconfig             | 2 +-
- init/do_mounts.c                                | 7 -------
+ init/do_mounts_rd.c                             | 7 -------
  3 files changed, 1 insertion(+), 10 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 747a55abf494..d3b05ce249ff 100644
+index d3b05ce249ff..f940c1184912 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3275,8 +3275,6 @@
- 			If there are multiple matching configurations changing
- 			the same attribute, the last one is used.
+@@ -5229,8 +5229,6 @@
+ 			Param: <number> - step/bucket size as a power of 2 for
+ 				statistical time based profiling.
  
--	load_ramdisk=	[RAM] [Deprecated]
+-	prompt_ramdisk=	[RAM] [Deprecated]
 -
- 	lockd.nlm_grace_period=P  [NFS] Assign grace period.
- 			Format: <integer>
- 
+ 	prot_virt=	[S390] enable hosting protected virtual machines
+ 			isolated from the hypervisor (if hardware supports
+ 			that). If enabled, the default kernel base address
 diff --git a/arch/arm/configs/neponset_defconfig b/arch/arm/configs/neponset_defconfig
-index 2227f86100ad..16f7300239da 100644
+index 16f7300239da..4d720001c12e 100644
 --- a/arch/arm/configs/neponset_defconfig
 +++ b/arch/arm/configs/neponset_defconfig
 @@ -9,7 +9,7 @@ CONFIG_ASSABET_NEPONSET=y
  CONFIG_ZBOOT_ROM_TEXT=0x80000
  CONFIG_ZBOOT_ROM_BSS=0xc1000000
  CONFIG_ZBOOT_ROM=y
--CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) load_ramdisk=1 prompt_ramdisk=0 mem=32M noinitrd initrd=0xc0800000,3M"
-+CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) prompt_ramdisk=0 mem=32M noinitrd initrd=0xc0800000,3M"
+-CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) prompt_ramdisk=0 mem=32M noinitrd initrd=0xc0800000,3M"
++CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) mem=32M noinitrd initrd=0xc0800000,3M"
  CONFIG_FPE_NWFPE=y
  CONFIG_PM=y
  CONFIG_MODULES=y
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 6af29da8889e..0f2f44e6250c 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -34,13 +34,6 @@ static int root_wait;
+diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
+index ac021ae6e6fa..f7d53bc21e41 100644
+--- a/init/do_mounts_rd.c
++++ b/init/do_mounts_rd.c
+@@ -17,13 +17,6 @@
+ static struct file *in_file, *out_file;
+ static loff_t in_pos, out_pos;
  
- dev_t ROOT_DEV;
- 
--static int __init load_ramdisk(char *str)
+-static int __init prompt_ramdisk(char *str)
 -{
--	pr_warn("ignoring the deprecated load_ramdisk= option\n");
+-	pr_warn("ignoring the deprecated prompt_ramdisk= option\n");
 -	return 1;
 -}
--__setup("load_ramdisk=", load_ramdisk);
+-__setup("prompt_ramdisk=", prompt_ramdisk);
 -
- static int __init readonly(char *str)
- {
- 	if (*str)
+ int __initdata rd_image_start;		/* starting block # of image */
+ 
+ static int __init ramdisk_start_setup(char *str)
 -- 
 2.47.2
 
