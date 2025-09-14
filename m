@@ -1,63 +1,63 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010FB267B01
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Sep 2025 03:51:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7993825D53B
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Sep 2025 03:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757821873; cv=none; b=iv33lQGT/dLpRdpfP/1ZK9JWXcK2RY2C2rpQ3h99mRfJx4JzIDIHlhkuPR++PcSUxiZ+rXbPh4/Ff+im9dOMtnGRpJLLuZl0Z1W4yDjJ2ozOYGY2JlyxChHoNnbOvUbUu/hIpBaY+7jXEiosfWq3TmM0s4FhQfh6d8Jmwwf5Gck=
+	t=1757821909; cv=none; b=LuxVTKfPclSVc3KkZZflUbozAGzrSGrStBR9dtAllUBoJfc5/Gd4ySwD9eN2ceLsksZXcRfr45m49ZIZ4+kDirXkHtvbeXCh6gHX5GzSnco4dDPzgYyNAe8Hwe7/2eh/ehM0jiI58I+Urm2cp/LPG2Kd0zqqPzfNc417A5wb3Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757821873; c=relaxed/simple;
-	bh=0pa06GJsqjKCCDz/UM3o5nwPqkgP4CqvzP324rR3v40=;
+	s=arc-20240116; t=1757821909; c=relaxed/simple;
+	bh=E44LF/8lHGTYomA5WWH/VDahlaDv99Wi8d81CdQz9ho=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A+Qf2KqQ6H7LhFaPET+9CXi6f3H+8ybOtrm7PiHZAnel9S7dBpFV4puokuYWZiPbBTJAcDnX01fVkR8bxh25x2v3AlIh3F6BoQFIIXjSV/m9mxzrUN7sMuQG/ej9wv7ncpB+bEpIxJRViJq9aigVC8X77IfufXje6yi0fbHqeHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MR16B3k6; arc=none smtp.client-ip=209.85.218.42
+	 MIME-Version; b=ohagv7QYmFOhU/G/RUtBUooBZoNttWzU4bK12inZxeX8YnrmEf1jn9HCnl3eREAZlu5VSXx8WSHVDIBTJdUDZksp0ZjeJcuMSAUWtQeX/R9olCubfGAUsZLDYLZ4ENtkTjPNbqTVu1NjQwoUJLqFnajJ+rxsuB+JUOh+4X/EIx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TFR7yUSd; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MR16B3k6"
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b0aaa7ea90fso92709466b.1
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 20:51:09 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TFR7yUSd"
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b07c38680b3so313778266b.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 20:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757821868; x=1758426668; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1757821905; x=1758426705; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cgyNirakXvU+05rXEnyXXLzO67oYWYN1IcZHpjjqHUg=;
-        b=MR16B3k6q8Fn3wWMaDUID3y8rXe25ndkwlTjCbYIyuGjROsjEE49nnrEj4mgbPlQbA
-         0ek9XWcXs81qglV+E/emmfvs8CBVGRLCyHXXh2CAeBuTJCbeqFdyjVTSl+qc3J1QWmey
-         DHsocrN2XWqylzl1FYm40QNzqdLI01ysEa11ahh7nHCGnS8kV9GeeMvJ3hWb5FmfVigt
-         EjWm0Utycn+M70t8lpPDLh0s9waxFsDcQrd1MD8PJXaEKjU3dENT174Jek4d+BXrgIid
-         k3Puyyigubo30dfLnrhfkFUfTVv8CMCwmQWLFWULkNKOUf5fCfSgR2n4IJO+jV1LHzve
-         TKcQ==
+        bh=eXT46s/O30O5D6iGHqIIZ8OQqeCOoCO9YfqStJzQ+0w=;
+        b=TFR7yUSdMlGSt6RHPnh6Q2uWxInigS1NalgdzStGSlncz3v3JwJu7icb54EOcjAOkh
+         LY4D8W+AGE7eMofE4SUFMVXuUmTntt6HgVSFvbyoG1qDTffBM4OAEIwF2jGBHC6hGSNu
+         QXLhprC+it0YD6BU0A+DM5YwrpkDZT4hw5FRFxKL6Kq4DvZs+tjirQkURPcwjDnydhc8
+         ApJbC7bBiSLneJoaAN5IzjRiBdTI65G61jNIQuGWc8+LxvetNz5wZV0aoxRke/U8pKK7
+         IsnOagF0goezAIJit+ccwM9XFI5thKBVI9kl351mYpSiNUtOjd61rQzLOjaZkAMiOjOR
+         6JzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757821868; x=1758426668;
+        d=1e100.net; s=20230601; t=1757821905; x=1758426705;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cgyNirakXvU+05rXEnyXXLzO67oYWYN1IcZHpjjqHUg=;
-        b=QTIvIs1oEmz31KVuz2Txe6uu8+wwv8UjOdk57k+/yzVxRrAFVdNa1gNIMuVMjGRi3Q
-         uZfP4sz0vrsC2Qlw7vZ2GWSs56UGDVoOY2jZAeDv56rN+fd1OzEPNJWmw4e/bGyxtYjH
-         xVWTzR/90WQopMyYnivxgHZPDQZr79gp3etIdyB4lk1AwYFwFZp5rWGG58jbeRQA5Wdj
-         6H4JLZgD14SaNPLfm6szXWuAkcLK0GABGNGoXBFN26RB/3RPoPhxAAiZcesuFnDZUAV3
-         piTkFMyBpk7Wq0Wd9Mu0/11YQ9B5yJ8W0UNIb1S7A5e8NBdWbL0aCi5M8NWY6z3dyO23
-         sJEg==
-X-Forwarded-Encrypted: i=1; AJvYcCVpF5UXjKUFA166j/pztFtZbwyt/JLXfxCuvUNKCh5WqxgFSlYnPo/qoWWB6qf3ANYQZZ9W/cCa5uKE@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwGiJi1WM566IKbbTKQWQaDLi4l+CdigXJ1kOrl6s1BmP9fBrS/
-	60uPPYy8qAqa0IhL+oGvL9YJeKAxZD1zvWynYpHIsb7rpFk/yf++f3qp
-X-Gm-Gg: ASbGncvO4wV/xMm5q5j2jsdjch1awfi/YXPastVIaDFM7dD0Tc/jziZIhWwKKh1Kj86
-	4eLetIugJRKEybpcsp7bDZq0FzbnaFqTOZUBBphxXja3X7URGMXPrcGowRWnj83RIZ7hVooug9b
-	C3k+tlTFS3T1PE4Dyjh75fCD9z2q6QKPMovLxB/DGzy8wC3DXO6rhghx5VBR3G+qQNrwg5dsxIV
-	N8MSo615etg8FHzJUkhDxGeMxeqJfbmavf4GQlySr5u8ef4LoM3mz5g0CzwU0gWgZtnhtNzm/Lx
-	mjtJ2mdzdRtS5SHcQ90hVkM9Ii57KIM5zt62HEz3/325bdnczE8YhjCqItSSLDSCaoKwSGa8QbE
-	wd/WdKKItQJJQeSFALNU=
-X-Google-Smtp-Source: AGHT+IGYiK6likOM/TjE1BLl/jI3UX22nGT0EQIxF87CUWohx3tkGnMcAa8PzC4lwu+rbC2577QTfw==
-X-Received: by 2002:a17:906:46c7:b0:b07:da17:79fd with SMTP id a640c23a62f3a-b07da178367mr507229866b.17.1757821868321;
-        Sat, 13 Sep 2025 20:51:08 -0700 (PDT)
+        bh=eXT46s/O30O5D6iGHqIIZ8OQqeCOoCO9YfqStJzQ+0w=;
+        b=gnUMPDOiwtT02PBkeT3eJHZ0oWx8me9xA7CBfCJqCpRFvdBp97Y3vm2KKvdWZhoUjS
+         ybN/YGJY2fX4vhGOrRLuEQNySeBhkevIP3OJoBVGts7fXRUwOLY4ZxzfXkN7/yDNS958
+         fcymo0xef5qd/r6ikOKQ3w2XdwYPDZZyeKEFpnJzUlK7quN3YsQ4goFuThc5IyMOYMsB
+         +HXXzGm+lBgNk1TLRiZ5RfADKvP6Xvr7HY2eOE1mjgzwUR5i3G1jxOK9N/6OAsAL4fuA
+         4bJzvMiJEMn8uO0sElvFxH6IHksJ4qInhyF9GVUkImnGGLeVDOb9LWGrIyl1+hD2DM/T
+         L+yg==
+X-Forwarded-Encrypted: i=1; AJvYcCWrXwPOAuZyerCchwmllo5zWwY7KSQ9N6RrfMLbJ+2paF2kKT1olsMzcgK2liDdKmiL4Dt/AhzjL+bi@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yx71TU6v5eLWpyHCv14U26g0z23zPzLkCQaM5GQNgB0+8SXGpfe
+	IJLnZTqsReFDogzVkHWZrZ1Ww2HuFd7A0RtGH/lzbyBCtutmPZoONQRG
+X-Gm-Gg: ASbGnctF8KftCkIRuK28VDqnsLJjviWfQcnRyJ3gCau7NZRQBoqfSvvERvg8S4zdPFm
+	nQN1rGqMGi0S5+mgko9qCADQtiBuFpEPmnU9OdvNRvBGswnuwLHmr4dlDvz4hrcq0xcbFfuCjU5
+	UubTDdb0/24aNM5CF5KPhxq4Amdt76F7efjwdzZGSrlYu+wp/pTuYFkWXd4fyxgSSMcMcdVXFqy
+	AvGHDSIbYmnvyO+cV9/mBRymyJbMlJfmFx+qvBD8sj5ylgPXuc4kkxn39XApoZ2RBco0NKlNppW
+	nOdjWipXt05c+EV1A2L7H896XaP7c2ldJpoDx9JskywtiKi3KRu+xlxUFdFsWbOvUqyzn05xMAc
+	CT4L03cT5O1Q4DsEAZ0U=
+X-Google-Smtp-Source: AGHT+IEAFUpwy9YyLhSCGMZ/kQuTAA3iwfbEpQd1MDgVvquhbXlSq99pqpi7zF/bJ0OEdeyJIf4Tkg==
+X-Received: by 2002:a17:907:3f07:b0:b04:7ad5:b567 with SMTP id a640c23a62f3a-b07c35be704mr853139866b.16.1757821904788;
+        Sat, 13 Sep 2025 20:51:44 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b3347b6fsm679031866b.111.2025.09.13.20.51.04
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07b32f35cdsm661712966b.92.2025.09.13.20.51.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Sep 2025 20:51:07 -0700 (PDT)
+        Sat, 13 Sep 2025 20:51:43 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -113,9 +113,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 39/62] init: make console_on_rootfs static
-Date: Sun, 14 Sep 2025 06:51:03 +0300
-Message-ID: <20250914035103.3619203-1-safinaskar@gmail.com>
+Subject: [PATCH RESEND 40/62] init: rename free_initrd_mem to free_initramfs_mem
+Date: Sun, 14 Sep 2025 06:51:38 +0300
+Message-ID: <20250914035138.3631173-1-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
@@ -131,34 +131,94 @@ This is cleanup after initrd removal
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- include/linux/initrd.h | 2 --
- init/main.c            | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ arch/arm/mm/init.c     |  2 +-
+ arch/x86/mm/init.c     |  2 +-
+ include/linux/initrd.h |  2 +-
+ init/initramfs.c       | 10 +++++-----
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/initrd.h b/include/linux/initrd.h
-index 364b603215ac..55239701c4e0 100644
---- a/include/linux/initrd.h
-+++ b/include/linux/initrd.h
-@@ -23,6 +23,4 @@ extern unsigned long phys_external_initramfs_size;
- extern char __builtin_initramfs_start[];
- extern unsigned long __builtin_initramfs_size;
- 
--void console_on_rootfs(void);
--
- #endif /* __LINUX_INITRD_H */
-diff --git a/init/main.c b/init/main.c
-index 58a7199c81f7..f119460bf8e1 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1533,7 +1533,7 @@ static int __ref kernel_init(void *unused)
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 4faeec51c522..290e9f9874c9 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -437,7 +437,7 @@ void free_initmem(void)
  }
  
- /* Open /dev/console, for stdin/stdout/stderr, this should never fail */
--void __init console_on_rootfs(void)
-+static void __init console_on_rootfs(void)
+ #ifdef CONFIG_BLK_DEV_INITRD
+-void free_initrd_mem(unsigned long start, unsigned long end)
++void free_initramfs_mem(unsigned long start, unsigned long end)
  {
- 	struct file *file = filp_open("/dev/console", O_RDWR, 0);
+ 	if (start == virt_external_initramfs_start)
+ 		start = round_down(start, PAGE_SIZE);
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index bb57e93b4caf..c7ca996fb430 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -981,7 +981,7 @@ void __ref free_initmem(void)
+ }
  
+ #ifdef CONFIG_BLK_DEV_INITRD
+-void __init free_initrd_mem(unsigned long start, unsigned long end)
++void __init free_initramfs_mem(unsigned long start, unsigned long end)
+ {
+ 	/*
+ 	 * end could be not aligned, and We can not align that,
+diff --git a/include/linux/initrd.h b/include/linux/initrd.h
+index 55239701c4e0..b2a0128c3438 100644
+--- a/include/linux/initrd.h
++++ b/include/linux/initrd.h
+@@ -7,7 +7,7 @@
+ extern int initramfs_below_start_ok;
+ 
+ extern unsigned long virt_external_initramfs_start, virt_external_initramfs_end;
+-extern void free_initrd_mem(unsigned long, unsigned long);
++extern void free_initramfs_mem(unsigned long, unsigned long);
+ 
+ #ifdef CONFIG_BLK_DEV_INITRD
+ extern void __init reserve_initrd_mem(void);
+diff --git a/init/initramfs.c b/init/initramfs.c
+index 8ed352721a79..7a050e54ff1a 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -642,7 +642,7 @@ void __init reserve_initrd_mem(void)
+ 	if (!phys_external_initramfs_size)
+ 		return;
+ 	/*
+-	 * Round the memory region to page boundaries as per free_initrd_mem()
++	 * Round the memory region to page boundaries as per free_initramfs_mem()
+ 	 * This allows us to detect whether the pages overlapping the initrd
+ 	 * are in use, but more importantly, reserves the entire set of pages
+ 	 * as we don't want these pages allocated for other purposes.
+@@ -676,7 +676,7 @@ void __init reserve_initrd_mem(void)
+ 	virt_external_initramfs_end = 0;
+ }
+ 
+-void __weak __init free_initrd_mem(unsigned long start, unsigned long end)
++void __weak __init free_initramfs_mem(unsigned long start, unsigned long end)
+ {
+ #ifdef CONFIG_ARCH_KEEP_MEMBLOCK
+ 	unsigned long aligned_start = ALIGN_DOWN(start, PAGE_SIZE);
+@@ -707,9 +707,9 @@ static bool __init kexec_free_initrd(void)
+ 	 */
+ 	memset((void *)virt_external_initramfs_start, 0, virt_external_initramfs_end - virt_external_initramfs_start);
+ 	if (virt_external_initramfs_start < crashk_start)
+-		free_initrd_mem(virt_external_initramfs_start, crashk_start);
++		free_initramfs_mem(virt_external_initramfs_start, crashk_start);
+ 	if (virt_external_initramfs_end > crashk_end)
+-		free_initrd_mem(crashk_end, virt_external_initramfs_end);
++		free_initramfs_mem(crashk_end, virt_external_initramfs_end);
+ 	return true;
+ }
+ #else
+@@ -744,7 +744,7 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+ 	 * free only memory that is not part of crashkernel region.
+ 	 */
+ 	if (!do_retain_initrd && virt_external_initramfs_start && !kexec_free_initrd()) {
+-		free_initrd_mem(virt_external_initramfs_start, virt_external_initramfs_end);
++		free_initramfs_mem(virt_external_initramfs_start, virt_external_initramfs_end);
+ 	} else if (do_retain_initrd && virt_external_initramfs_start) {
+ 		bin_attr_initrd.size = virt_external_initramfs_end - virt_external_initramfs_start;
+ 		bin_attr_initrd.private = (void *)virt_external_initramfs_start;
 -- 
 2.47.2
 
