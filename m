@@ -1,63 +1,63 @@
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6464B267AF6
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Sep 2025 03:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD282459F3
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 14 Sep 2025 03:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757822018; cv=none; b=dO2qN45naJ2wERxA9BnKkwATDz+UNxGoqzowThMVdV6UHcGlxP2AgivxbOT4/MmUcOS9pkW0Sb5OAc4Qe/vPLboO5Gp7tOUs0ygf+OKgOEviuJMUzge8yuPaehzzDrt38rCLrV+UKm0SH785EC5p8SMUXAZBAIM3QoAZEHE8pSE=
+	t=1757822052; cv=none; b=Yc5fyQGiIMWhLAYXx/szWDagbym5baQhFY7hnLo9E1wIeGRxituFxYFovX+Mq7tg90WlY0pBrA5n7ysJ4v6BdyTOLUxw81J9C8ajbjd6r415m6+t1Agkvf95bnihyhtWqbLYSEtlZDjwhguDVozxpgMjHZDNIsOy6tv6HZ2Lvx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757822018; c=relaxed/simple;
-	bh=FZoweijhihxtu6HrPrxAC18gjv4DF8N0f7D122SferU=;
+	s=arc-20240116; t=1757822052; c=relaxed/simple;
+	bh=E3G8T/3zLMm3x5kad8USEbJCkxfjt487WTCm3NfxUQM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MMkhyI5AEXUFaxwtdKWugC5GbghvJ6rljuqKLJK/kM1/hTEKp5LQ5nfDbQMjOb6BSCvoVMzWXZVkPK/5gqBOj4uiHtovTlBD4OFmlI4Vu/miUOpZc28WzKgGNmu4y+dL0/LjdWE7eNc6pxkgIWUKaBbX1/6Im5UFUE3PDzw58z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I0NKMel2; arc=none smtp.client-ip=209.85.208.49
+	 MIME-Version; b=Xfxj5nwo0ieU4X9yw0BBbBLm62/97S3r35DT1ol9IQxLRIJDvngmg2sK3i8sFqdn6TVUODlUpvSKpXdVV37aH3MNtfnqxEPLsQL0ZzSO1ihV9esJoj8kjjl1n+t0QDCnARmiZJ1jau5K3VvxWi/28cZ/2Chg/mnsg1VHwAecFbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lTwYKul7; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I0NKMel2"
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-62f1987d446so948903a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 20:53:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lTwYKul7"
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b042cc3954fso566981066b.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Sep 2025 20:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757822013; x=1758426813; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1757822048; x=1758426848; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PB2E9PPBAv72v29AyxICCzYyZlb0WEV+ovfXoPOatKs=;
-        b=I0NKMel2/yIsG4PvZ4birdlbMgClUvcohefbfpWYBVJdCDGcqJlXbS32j/zA9q5hP+
-         kNba/VYtmgaZNW1HsSDdqEFKkcSk51dkhkcma/syLEijFdOz9OCdhhDHmMCp+/YcjhFJ
-         7OWYDCms1Jon/xyVxhgTurrNenPuhqvqDBQL+w2zpDcKAk32sfC0wEWEadfK1oTF/wVE
-         k7lfZurEofFslJTPDR5nnOREDIC+bI2Hdp0oXTCeTXs0J55fsvWCyOauaRxdx86eDta7
-         +eSURxSvWqp4+9IF2Y3Rw5vq74zPeAJjEEBQZminbVsJLdAOAari+aDsV6UDoDyCI67Y
-         bmWQ==
+        bh=U0YiDU4Bzw7IKNW2/fgCfvKW6iRx1DQ4l7Ssn455PQA=;
+        b=lTwYKul7TcBjIL4ZE6HzXFXbe0M68PLV6SphD6I7xCQqLhH61f5uU70/O33apZ04Cn
+         oqH0oUwO8khKsMsuQSdvBNBerDLud+j/0ePXCSVTo7L+5Myr45UDV23zD11/BX6niIOH
+         KBCzvT9eRF8XYa0oxY2SWd3wWF6nWgWsqIX8ohrdd478Jocl5cr1zF3bhfLPDqowtLzC
+         7InaGLBMh0MKxYLx8MuqP7dWPX9qAJI1939zYwQxWj/lsTTjXNARcMG7DoB4NCsPT8aP
+         ajSghs8opsWMU28Y4MgYWatXyOyhKd8+/Nv0/gqWqs/W6Oqd3RmcDWB9wRp352c9VA2P
+         EwBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757822013; x=1758426813;
+        d=1e100.net; s=20230601; t=1757822048; x=1758426848;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PB2E9PPBAv72v29AyxICCzYyZlb0WEV+ovfXoPOatKs=;
-        b=JE9vzSffmS0antqVuKyr81K8hY6mX7lH3A1BTo4nz2DAhCcP+8M0THmxp/q5S4OaZp
-         DAiIzS3e8fwTtK5tPv4kF1b2MBsTPbJhgFtvVbZKpLbTdzZSXlMUM2gpPwLRDaxRa8uN
-         1EXPVGfmnO8bL/WarKjnVm4G9aCdokyYlChUIwBImtYLj1JfOGeKFXY2Rgtp7vpof/X3
-         Z9+P/U4KW+4lwDyhH4Bsk/LN2kACqXGkQ+05KWjR3C8gILP1ezgtJOkg9GYuc7q3c/vR
-         FYKmHOOTXEaMHK/E18AE7tM13Xq2JiJDcR3IIPkDA0u3l3B8jsRdkEdujduId0bsOtfw
-         JmwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbc9jiHGe2IGOGSY/RDa2Sfs+VohGB4SRlU0qJIZy4Q5AB0bWbI8UjBpg7FC0mqVBEDRVSg8xvOHU3@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxIQ1wVNLH+jo6Tfx+j3BObxwwiOIvYe5eFC6BYSR10uQ01tgJt
-	k6qNPo48k+BOhgpddj008JRPE8OSFuArixxFqcFbpfcIwl/mghFwuhui
-X-Gm-Gg: ASbGnctQ65cfxFUeHluIhdLL+ehmYT7en1Ec5BbrnwPQ7ePaZn3pDN8jKiY6gXKWgrr
-	qW+Om2vHeDfTDzdaMQAVdEdHOP/WIQ678TDz3TesLJwC2U6Odli57G0up13YdIi6j9bnBLg50J3
-	fBHX4f63og76DYyxG18vZjzyiC6701drxbgHSQJ2CHy50Y0CQXCJfd/3LPS62DFtE0NGpt2/GTe
-	VLAhiYr4oGfRIna4oGUQG1TECXeBcV7mSFfvDMVW5NMvh5uqh9eMHgjRq/cLbEAck2DCm4+qs3Q
-	K+Zc6YWZl/7/COtXJebHADdtoudBXKtX2wgpNGKXsFp5OdGnqPwO+kb0Ov4GfzlXKGQ1jC6GO9X
-	yebzqZKJXJhaWJiKif8oMGnJG9ICoNw==
-X-Google-Smtp-Source: AGHT+IGUQXhZVcMzH5x4qrxgNQpCZ4sYyZ3ugDsvfNumu2I8pECs9df4oC+H+CMnm997jPnr5crTug==
-X-Received: by 2002:a05:6402:2111:b0:61d:2096:1e92 with SMTP id 4fb4d7f45d1cf-62ed82614c4mr7020136a12.15.1757822012514;
-        Sat, 13 Sep 2025 20:53:32 -0700 (PDT)
+        bh=U0YiDU4Bzw7IKNW2/fgCfvKW6iRx1DQ4l7Ssn455PQA=;
+        b=Xr9qgvVYIqqP47mdGrfF97N0V4l2A9iff8J8/XzCkF31inWlRHMZifc5IhHed0mzFO
+         WNzOPheiRn55VQm40sl9sb2kDrclx/Tsy53MpwTFyBgAJoQUnz2Qxcz+U2oslmH6apOy
+         VXbh4WLyIjoOf67W0FoFlgZFxai/uWse6V0aKZvlQwuZ3/GrTjPtICB1FAdIRy+KlJHB
+         LPKZh0uOJJk3Uv2g09R6R7+9mtQTFheCZjKCcCHxvQpYxeyV2xEWNXxlNIKdX7bImCnp
+         S5367S3ngQRdlXXghPCBAE0QlvlNCs5qLo40pMgz+BK23SiYwD1MZatMghO/s0fMATHD
+         teUA==
+X-Forwarded-Encrypted: i=1; AJvYcCXPB2IDuXvDhL1rtVh3R7ngWI2f/ZGOwgPCknriQqDuoO78NELuLAdKTcf9bdWNaSEH5kebNLYhYiix@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyjtDXCAqadNST2r6FwPL+X2jCEahS8ZSTO6yX2Ri677jcvyVru
+	AqMcDjHj1JGbmzdt9yWBNTCqejXapmhUL+NFReUxvZDa1Ub5TTcnpllZ
+X-Gm-Gg: ASbGncsNmt13H31PeVetde6cfXv+96D5Bw5KWiTqquDf/FXDsspmG+s0XEdnYTEU7Ya
+	Glu0E5kujNdjE+ura9DWB28hbZd5M5YnTuaP4hOxwnSo5nsAJGNvoWq9nJUfvSl06XfKUTKZEMg
+	RrV7yNW4zVyINSQla3eYCq/k4cMEKt2s6a0WnDnS9IUUUXRxS0aFI16yeOFycvCIEacu5c2uqk0
+	e1KFVVXn8tHWwiJY9QHES5rwKQr2d6duuqMLj+7VogPhmGGl7QgB8qmUgVPBxlnJ8y9KtErP3te
+	9Lci9FgYCix0qMN1pVUFB11m4CHfXMv2TVsEpunQEAyPj0h+YMHOmenL3jJpFfAP970gOTriN2H
+	G/NdiQaPoqqKGDxSt9WrelI6F4nDtEA==
+X-Google-Smtp-Source: AGHT+IEVLkeZlLSkzoTpPLzlBRvNTQ9m/bl133jXYp2zZldNvB+tlYKH8pXYzZ5ISfOO2+UjGM6RFg==
+X-Received: by 2002:a17:907:e8d:b0:b0e:3d88:27fd with SMTP id a640c23a62f3a-b0e3d97e027mr75192266b.8.1757822048020;
+        Sat, 13 Sep 2025 20:54:08 -0700 (PDT)
 Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id 4fb4d7f45d1cf-62ec33f3a5esm6570485a12.30.2025.09.13.20.53.27
+        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-b07da7a8918sm303079766b.56.2025.09.13.20.54.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Sep 2025 20:53:32 -0700 (PDT)
+        Sat, 13 Sep 2025 20:54:07 -0700 (PDT)
 From: Askar Safin <safinaskar@gmail.com>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -113,9 +113,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Thorsten Blum <thorsten.blum@linux.dev>,
 	Heiko Carstens <hca@linux.ibm.com>,
 	patches@lists.linux.dev
-Subject: [PATCH RESEND 43/62] setsid: inline ksys_setsid into the only caller
-Date: Sun, 14 Sep 2025 06:53:26 +0300
-Message-ID: <20250914035326.3661003-1-safinaskar@gmail.com>
+Subject: [PATCH RESEND 44/62] doc: kernel-parameters: remove [RAM] from reserve_mem=
+Date: Sun, 14 Sep 2025 06:54:02 +0300
+Message-ID: <20250914035402.3670906-1-safinaskar@gmail.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250913003842.41944-1-safinaskar@gmail.com>
 References: <20250913003842.41944-1-safinaskar@gmail.com>
@@ -127,51 +127,27 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is cleanup after initrd removal
+This parameter has nothing to do with ramdisk
 
 Signed-off-by: Askar Safin <safinaskar@gmail.com>
 ---
- include/linux/syscalls.h | 1 -
- kernel/sys.c             | 7 +------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index 77f45e5d4413..75e9ee03d19b 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -1231,7 +1231,6 @@ int ksys_fchown(unsigned int fd, uid_t user, gid_t group);
- ssize_t ksys_read(unsigned int fd, char __user *buf, size_t count);
- void ksys_sync(void);
- int ksys_unshare(unsigned long unshare_flags);
--int ksys_setsid(void);
- int ksys_sync_file_range(int fd, loff_t offset, loff_t nbytes,
- 			 unsigned int flags);
- ssize_t ksys_pread64(unsigned int fd, char __user *buf, size_t count,
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 1e28b40053ce..66e1e2dfd585 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1265,7 +1265,7 @@ static void set_special_pids(struct pid **pids, struct pid *pid)
- 		change_pid(pids, curr, PIDTYPE_PGID, pid);
- }
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a259f2bdba0f..0805d3ebc75a 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6277,8 +6277,7 @@
+ 			them.  If <base> is less than 0x10000, the region
+ 			is assumed to be I/O ports; otherwise it is memory.
  
--int ksys_setsid(void)
-+SYSCALL_DEFINE0(setsid)
- {
- 	struct task_struct *group_leader = current->group_leader;
- 	struct pid *sid = task_pid(group_leader);
-@@ -1300,11 +1300,6 @@ int ksys_setsid(void)
- 	return err;
- }
- 
--SYSCALL_DEFINE0(setsid)
--{
--	return ksys_setsid();
--}
--
- DECLARE_RWSEM(uts_sem);
- 
- #ifdef COMPAT_UTS_MACHINE
+-	reserve_mem=	[RAM]
+-			Format: nn[KMG]:<align>:<label>
++	reserve_mem=	Format: nn[KMG]:<align>:<label>
+ 			Reserve physical memory and label it with a name that
+ 			other subsystems can use to access it. This is typically
+ 			used for systems that do not wipe the RAM, and this command
 -- 
 2.47.2
 
