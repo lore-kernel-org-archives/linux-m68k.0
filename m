@@ -1,154 +1,129 @@
-Received: from pegase2.c-s.fr (pegase2.c-s.fr [93.17.235.10])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E9F3043C7
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Sep 2025 11:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.235.10
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5494D301489
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Sep 2025 11:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757937050; cv=none; b=VZJQN71QvGHu56F29hyMPKzJerwm677LJOmiZ2v9q7LDgDQ1nB0YdNNkYPULsLfD31arcRbFLCB/bCD3yDSpYOw09HVTDisIpNNUREtpaf6/vbf2wJlC+kQDC+HEkEuV4ppo+hHQSYLPKnpSwqT05ktz2058k1skai0te8m0Wtk=
+	t=1757937283; cv=none; b=kBy39Tu2EDVOeVloyWDVBChI/ai7jSkhz95beF9be6t+u1nti6u1cH3E9hlRzVrEz9D13gAlTQhBqEfKeSio0DgRQWzjevrHFJYPuVsG8WSJxOACwv43XeBE75HTV+hAppjUeskX0/lJPjYtj9Kdo4zWpZVbkpbzO/k1MJoEUq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757937050; c=relaxed/simple;
-	bh=8Z5zmYLUV+4ZrO5EHC1XTvy0sirc64JgGyrM0lTrX/4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qO2B+ywKbkFTzIElK6eYfekbKWKWOjFd9PqFFKjtsCK7nwJ4unvt0V48XjsBssE0uVKpfP3Det0QLQBM3BmKK2SDaekbB74VmlEwho0S1Ioj0NeVl+zZaJV1fyuvShP/P6mzEE5gPS1TXog0KJc8YlF5nm8JaDsS072JlypC1HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.235.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub4.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4cQMtW5q8Yz9sxd;
-	Mon, 15 Sep 2025 13:16:51 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id OLcbQxt2yUNY; Mon, 15 Sep 2025 13:16:51 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4cQMtV4LnCz9sxb;
-	Mon, 15 Sep 2025 13:16:50 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 706ED8B766;
-	Mon, 15 Sep 2025 13:16:50 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id sggpKi6r1EPD; Mon, 15 Sep 2025 13:16:50 +0200 (CEST)
-Received: from [10.25.207.160] (unknown [10.25.207.160])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id B33B28B763;
-	Mon, 15 Sep 2025 13:16:49 +0200 (CEST)
-Message-ID: <053f39a9-06dc-4fbd-ad1b-325f9d3f3f66@csgroup.eu>
-Date: Mon, 15 Sep 2025 13:16:49 +0200
+	s=arc-20240116; t=1757937283; c=relaxed/simple;
+	bh=X1mJ891dQWSYdtfoPDMNxd56dDiE4l7XqS7hxKPA0zg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lIl6LaqXrqzy2aKzeF4kdNRaiZ/psdxlwic/bwnjAVjM5iwfFJP/AQnuH9Qfm1SOFpJPCIzuthQktSoVDLOiUyEAErDQvm1Hwfx1HXz0ac7w33A6+ANlqjb3/s7jeMJx6c+dx6Okt/hIN4c3/oIkxgGgANInNDhnjNAppQYpmWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-5448c576e3bso1418217e0c.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Sep 2025 04:54:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757937281; x=1758542081;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8j9g6khBudlWCULOd6eX9KmZnbNuYyJvR9k6Ybie28I=;
+        b=cJeGEpK5ZPS0FAjIp/9QPCKHddWMJLWlfMdEP1pNGp1gZCS7asPSN7Y5PIZHNWmNYM
+         /tq4IrTqvPY/mdmPx6aigvlhqc2IVS/JlChybcN6+C+eBIuBT+UIV2flyxr683Ttv1KC
+         ngRpUtcLmp6V/nsZ4aiaAD1GfI0dNpnm5Klgu8s99jh74MgVwHdzrQyzh8EOB19yb9z4
+         Db+h0Ct2yGqox550VxYpxUi3rvtKdrTo/ZZUyq9ShBMnxXQ2VOC657VkyseuEfW9YR3v
+         rSGtzZSEMb5eHJMKGSx8Ib+pBm9l1+y0Fse4FjcRLWmub+JUNNOwwLjs2u+7opAMAgOc
+         gJ0w==
+X-Gm-Message-State: AOJu0YzRXHG3Z5zyMuL+RutFWf7XjSYxc2GnZpvalrM9y4heaU9biTBu
+	kef/83AiIK20/9ga4WFA86e11BDgruKzwoZTVcPsuei21O5EWxQeIArpTVRM2O9G
+X-Gm-Gg: ASbGnct1Xg/8Ouuh5XOsn9ZXOmSEeJhHkSWjkLhzFSZ9yCgyQg8D6bAr9yw8NT9WdCn
+	dwHTvvAtmTNCKMgGZS1kD+wSfnajD0vtZGNlyNap8fS9HSUFzMKNCEVIzHlq8g9HYaqntfoH08n
+	G63+BW8mSk376D75DaPJceZK7eXhkt+N/Va44tCy1tr3eYJVHyOjgR+K0EcHjDVgZMpoUQ3WhMy
+	gK8XPZ1HqqLNyE8wijLELbJzsJgxsgrMGYFCXrz3GAwUzLIYZb0MoVkWgYlFHnog5EcNF3GNDO2
+	c7Mc+Z1TzpovSjjxykIk6b8P1IOYEE732pyaBTPhBbeFT3AsfLpYmrykIWh+1Ak1xyCeJCdKZWQ
+	BouyG3pdbrqglbOwMwp+miZbxkSfwqEYCR1ib/QnUpqUlZC8ljGgoJpkEecocIOestYEtmEc=
+X-Google-Smtp-Source: AGHT+IHIYsHQZLq9AoSrWVg7FIP9Vq6vSDqTRKHJ2Bme8ufRrkdgFIIGcdlYKRLwstrHG5vMG7EJdw==
+X-Received: by 2002:a05:6102:d8d:b0:555:56e0:f372 with SMTP id ada2fe7eead31-5560908d470mr3932221137.2.1757937280761;
+        Mon, 15 Sep 2025 04:54:40 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-8ccd640cb5csm2194202241.21.2025.09.15.04.54.40
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Sep 2025 04:54:40 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-890190c7912so982835241.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Sep 2025 04:54:40 -0700 (PDT)
+X-Received: by 2002:a05:6102:8098:b0:527:4113:6ad6 with SMTP id
+ ada2fe7eead31-5560a10e919mr3310852137.9.1757937280011; Mon, 15 Sep 2025
+ 04:54:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 02/62] init: remove deprecated "prompt_ramdisk"
- command line parameter, which does nothing
-To: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
- Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>,
- Aleksa Sarai <cyphar@cyphar.com>,
- =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- Julian Stecklina <julian.stecklina@cyberus-technology.de>,
- Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>,
- Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>,
- Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org,
- Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org,
- initramfs@vger.kernel.org, linux-api@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-efi@vger.kernel.org,
- linux-ext4@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
- linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
- devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
- Kees Cook <kees@kernel.org>, Thorsten Blum <thorsten.blum@linux.dev>,
- Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
-References: <20250913003842.41944-1-safinaskar@gmail.com>
- <20250913003842.41944-3-safinaskar@gmail.com>
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Content-Language: fr-FR
-In-Reply-To: <20250913003842.41944-3-safinaskar@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20250728071452.35171-1-jogidishank503@gmail.com>
+In-Reply-To: <20250728071452.35171-1-jogidishank503@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 15 Sep 2025 13:54:29 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXpn8VhFL3RF_NEEdK3-VuHuHHZ6PFBcJi+kYCgbnwL8Q@mail.gmail.com>
+X-Gm-Features: AS18NWBDv-eagQpa9zzAr9IRsIYBMwlArzoXlxqRod7XiXKpYRxYZJ8lRHiHNyU
+Message-ID: <CAMuHMdXpn8VhFL3RF_NEEdK3-VuHuHHZ6PFBcJi+kYCgbnwL8Q@mail.gmail.com>
+Subject: Re: [PATCH] zorro: remove extra whitespace in macro definitions
+To: Dishank Jogi <jogidishank503@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	darshanrathod475@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Dishank,
 
+On Mon, 28 Jul 2025 at 09:15, Dishank Jogi <jogidishank503@gmail.com> wrote:
+> Cleaned up the formatting of MANUF and PRODUCT macro
+> definitions in 'drivers/zorro/names.c' by removing extra
+> spaces between macro names and their parameters.
+>
+> No functional changes.
+>
+> Signed-off-by: Dishank Jogi <jogidishank503@gmail.com>
 
-Le 13/09/2025 à 02:37, Askar Safin a écrit :
-> [Vous ne recevez pas souvent de courriers de safinaskar@gmail.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> This is preparation for initrd removal
+Thanks for your patch!
 
-Squash patch 1 and patch 2 together and say this is cleanup of two 
-options deprecated by commit c8376994c86c ("initrd: remove support for 
-multiple floppies") with the documentation by commit 6b99e6e6aa62 
-("Documentation/admin-guide: blockdev/ramdisk: remove use of "rdev"")
+> --- a/drivers/zorro/names.c
+> +++ b/drivers/zorro/names.c
+> @@ -36,21 +36,21 @@ struct zorro_manuf_info {
+>   * real memory.. Parse the same file multiple times
+>   * to get all the info.
+>   */
+> -#define MANUF( manuf, name )           static char __manufstr_##manuf[] __initdata = name;
+> +#define MANUF(manuf, name)             static char __manufstr_##manuf[] __initdata = name;
+>  #define ENDMANUF()
+> -#define PRODUCT( manuf, prod, name )   static char __prodstr_##manuf##prod[] __initdata = name;
+> +#define PRODUCT(manuf, prod, name)     static char __prodstr_##manuf##prod[] __initdata = name;
 
-Christophe
+You missed removing a bogus space.  I will fix that up while applying.
 
-> 
-> Signed-off-by: Askar Safin <safinaskar@gmail.com>
-> ---
->   Documentation/admin-guide/kernel-parameters.txt | 2 --
->   arch/arm/configs/neponset_defconfig             | 2 +-
->   init/do_mounts_rd.c                             | 7 -------
->   3 files changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index d3b05ce249ff..f940c1184912 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5229,8 +5229,6 @@
->                          Param: <number> - step/bucket size as a power of 2 for
->                                  statistical time based profiling.
-> 
-> -       prompt_ramdisk= [RAM] [Deprecated]
-> -
->          prot_virt=      [S390] enable hosting protected virtual machines
->                          isolated from the hypervisor (if hardware supports
->                          that). If enabled, the default kernel base address
-> diff --git a/arch/arm/configs/neponset_defconfig b/arch/arm/configs/neponset_defconfig
-> index 16f7300239da..4d720001c12e 100644
-> --- a/arch/arm/configs/neponset_defconfig
-> +++ b/arch/arm/configs/neponset_defconfig
-> @@ -9,7 +9,7 @@ CONFIG_ASSABET_NEPONSET=y
->   CONFIG_ZBOOT_ROM_TEXT=0x80000
->   CONFIG_ZBOOT_ROM_BSS=0xc1000000
->   CONFIG_ZBOOT_ROM=y
-> -CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) prompt_ramdisk=0 mem=32M noinitrd initrd=0xc0800000,3M"
-> +CONFIG_CMDLINE="console=ttySA0,38400n8 cpufreq=221200 rw root=/dev/mtdblock2 mtdparts=sa1100:512K(boot),1M(kernel),2560K(initrd),4M(root) mem=32M noinitrd initrd=0xc0800000,3M"
->   CONFIG_FPE_NWFPE=y
->   CONFIG_PM=y
->   CONFIG_MODULES=y
-> diff --git a/init/do_mounts_rd.c b/init/do_mounts_rd.c
-> index ac021ae6e6fa..f7d53bc21e41 100644
-> --- a/init/do_mounts_rd.c
-> +++ b/init/do_mounts_rd.c
-> @@ -17,13 +17,6 @@
->   static struct file *in_file, *out_file;
->   static loff_t in_pos, out_pos;
-> 
-> -static int __init prompt_ramdisk(char *str)
-> -{
-> -       pr_warn("ignoring the deprecated prompt_ramdisk= option\n");
-> -       return 1;
-> -}
-> -__setup("prompt_ramdisk=", prompt_ramdisk);
-> -
->   int __initdata rd_image_start;         /* starting block # of image */
-> 
->   static int __init ramdisk_start_setup(char *str)
-> --
-> 2.47.2
-> 
-> 
+>  #include "devlist.h"
+>
+>
+> -#define MANUF( manuf, name )           static struct zorro_prod_info __prods_##manuf[] __initdata = {
+> +#define MANUF(manuf, name)             static struct zorro_prod_info __prods_##manuf[] __initdata = {
+>  #define ENDMANUF()                     };
+> -#define PRODUCT( manuf, prod, name )   { 0x##prod, 0, __prodstr_##manuf##prod },
+> +#define PRODUCT(manuf, prod, name)     { 0x##prod, 0, __prodstr_##manuf##prod },
+>  #include "devlist.h"
+>
+>  static struct zorro_manuf_info __initdata zorro_manuf_list[] = {
+> -#define MANUF( manuf, name )           { 0x##manuf, ARRAY_SIZE(__prods_##manuf), __manufstr_##manuf, __prods_##manuf },
+> +#define MANUF(manuf, name)             { 0x##manuf, ARRAY_SIZE(__prods_##manuf), __manufstr_##manuf, __prods_##manuf },
+>  #define ENDMANUF()
+> -#define PRODUCT( manuf, prod, name )
+> +#define PRODUCT(manuf, prod, name)
+>  #include "devlist.h"
+>  };
 
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v6.18.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
