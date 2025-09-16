@@ -1,267 +1,125 @@
-Received: from quail.birch.relay.mailchannels.net (quail.birch.relay.mailchannels.net [23.83.209.151])
+Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FB7299A96
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 15 Sep 2025 21:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.151
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757971002; cv=pass; b=rYGVs+wG1Q91EpspJlEd6jrtz0Ay3Nb9ueekqmXt+Bnqiw9tDi7icdLxUNjF1A/zwht9inmG10b2Pdu6qPBEc/leBgrwogVQkU79jz/dkWpokczabkOr9g/x2+P3PRYp9z6jOM3JChaTppdBoKdjf84T7aY8+9uNvfY6yxliJqI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757971002; c=relaxed/simple;
-	bh=XM3XKQ5jJB/NRmfxGIRymJW83Dn38opP9h7KE9Mh1Fk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X35XJQ5so4ePga9oDtwKmklSAGCRXiltI/RDeTF9DStkS3nNKrXTvMvVQ7qD6qv0iKPGzkiB0gtmNbSZDGyVI02EoLLsjicYKRsNIebmXxsLGq6EQ9CkzhBjy92eKhM5HUJ6ExmlikqIeNL+IfKVJ3ZcSqJiqWEnJkdaxMOzOSU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net; spf=pass smtp.mailfrom=landley.net; dkim=pass (2048-bit key) header.d=landley.net header.i=@landley.net header.b=hn99im0l; arc=pass smtp.client-ip=23.83.209.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=landley.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=landley.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D75C915A8;
+	Tue, 16 Sep 2025 00:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757981789; cv=none; b=N5kjfxzc6onXGVVoZqro3/JlfmViszcXnCBd1LNtiyxeVQCBgIw+ILlWonBmlsUWIbqzn2TdC2QBrQKJ+I4JPSzAYpk8vk7TNOwT97Tf/7QgZvl3FjlvACgYXuvemVBMWWXjYW3c5SMUSSgZt5yIUsraXbm28xLumQTS2whE2h4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757981789; c=relaxed/simple;
+	bh=7wyvt1aUEIplVhO7XedK4IOEAVq8hHM1yH+qSy1rpJc=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=d+YCqxBVKDrDY3MC718pouogErLVR/fciY7t1DunkfOn+lbBD4j6L3Z+d8RgrmQ/ZLk9z+2EZDhfL/0GZRR2SDVpppzFnUdoLu1AJXXdJbrVEOXK9d3f0k778SefLTean2gJ5l0YKE7m3DzRRq1gz3PKgE1snUyrLM+gkIUgH4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DTwym6wB; arc=none smtp.client-ip=202.12.124.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=landley.net header.i=@landley.net header.b="hn99im0l"
-X-Sender-Id: dreamhost|x-authsender|rob@landley.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 968258E2BE4;
-	Mon, 15 Sep 2025 21:05:20 +0000 (UTC)
-Received: from pdx1-sub0-mail-a312.dreamhost.com (trex-blue-3.trex.outbound.svc.cluster.local [100.106.207.148])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 7F7018E2C1F;
-	Mon, 15 Sep 2025 21:05:19 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1757970320; a=rsa-sha256;
-	cv=none;
-	b=FvgXqYHopx4Eg97mRKI8YTgJvrM5uX3hCyA3PstNG3tElSt5C8Mkh16K26ulc4hSsVKTwm
-	jS2iRuOvoFtVg23iLmldnlytqHxYeolaJsyfj8H9DSakx31ClyoFyXVp7iwZ2teQvFuGpD
-	7saB7Wb4g9tAoqQmvsAu+UkcIlhVWTJzOhYRfUz/BaC08DNcuaaQQ9As8b8ykz1bHx7Qk4
-	TBDIHtaaxH15dWAfQpWNrqJJMfgLr/Vh4+3miXzPpdfAMtZz9JhTu8o8DhIj9xhKVHKRwa
-	bwWqLubQ4kcKxK/2hf/oaDh9DMbl/qSfr7Eus3yNXxVfu+spuLPfBiaIS0ertg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1757970320;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=uCpj1HrCG/lIFPmsjCJyYsttI0Vr58GFZK2WKDkB6bM=;
-	b=TrnkHhqm0Tp2Y/WSmzMAHR5Hhj24mtPtbQYmBJGsRakDWzg0mrJuBQoW9Qkjf7BGvzNNiH
-	2H1V/J8m98raC3dPissEKtvzgOQ/Hk71uVhQ6kj9WsCG0K4v6raNCVOsjB2cVm10SC7pnX
-	WxSZlPhsLyt7jNTRP69EAqO62VJJbdbVWYt/YK0l1PbM6GNyoiMvREWQ3rw4KysPytNuVO
-	2/ZnkG/pktV9GKqEbQ9+gUEw2tbIV0YT43iSdJj78GsI/5MaQ7x6n5ojdu79KkG9JBYmK8
-	GwXKzdwJN0Mu44sDWX8K+r6sdW0U/yb7L1RpJBIrkhHihenS55Fk4oEdNruPqA==
-ARC-Authentication-Results: i=1;
-	rspamd-76d5d85dd7-gchpr;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=rob@landley.net
-X-Sender-Id: dreamhost|x-authsender|rob@landley.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|rob@landley.net
-X-MailChannels-Auth-Id: dreamhost
-X-Shade-Trouble: 5607b4e4499028f3_1757970320441_1498479094
-X-MC-Loop-Signature: 1757970320441:4276322646
-X-MC-Ingress-Time: 1757970320441
-Received: from pdx1-sub0-mail-a312.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.106.207.148 (trex/7.1.3);
-	Mon, 15 Sep 2025 21:05:20 +0000
-Received: from [192.168.88.7] (unknown [209.81.127.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: rob@landley.net)
-	by pdx1-sub0-mail-a312.dreamhost.com (Postfix) with ESMTPSA id 4cQcxR2ZPnzFr;
-	Mon, 15 Sep 2025 14:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=landley.net;
-	s=dreamhost; t=1757970319;
-	bh=uCpj1HrCG/lIFPmsjCJyYsttI0Vr58GFZK2WKDkB6bM=;
-	h=Date:Subject:To:Cc:From:Content-Type:Content-Transfer-Encoding;
-	b=hn99im0llKSPW8E4jU23jnYGHjKkBB42PZKG9Y5nexC8X6GV18Ye+xjEO0dI68API
-	 P0iIc1uUspgFQAEvTZJLAiGacD/gPQaqYVm1QWE0N/6QokQnP06W1bW8XwSoYhszK+
-	 lhn3ZJav0Djh8uCO1T1JTFZ2nxRyoQNIwSBLc+tBT4L5AJvvFnEk/puQX4fjV81Sze
-	 CQbiCBjHhliP+rleng7xNOeK8VpGNGP6Px4E+lL1g37CD4cYE8Qe9KRdlQRN3asHoO
-	 TI/V5yxrsCSuRB+QTSU/G3DsOoX+FIakqvSZS3fVzb5U3KSBT5DjgaaVyyrqpLaA73
-	 VR4ur/x6Wjb7g==
-Message-ID: <8f595eec-e85e-4c1f-acb0-5069a01c1012@landley.net>
-Date: Mon, 15 Sep 2025 16:05:14 -0500
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DTwym6wB"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id BF1827A014C;
+	Mon, 15 Sep 2025 20:16:25 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Mon, 15 Sep 2025 20:16:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1757981785; x=1758068185; bh=nd5//992Sn2C6rJuZNs6CVfdDJPCaeF3X6A
+	0IwVAbQM=; b=DTwym6wB9PyYVJKs++qpVap4g8n//DXe5kH6IHNpkN5mhkE4cr9
+	aiNsfvm0OHBL5KHtAp0PiYkuBiovzdO1x/+gLc+pXz+irwRvYjZdMyGb+/pYt8zb
+	mCI1CeJDoa+m1eAQDPOcsIF5OKCy2i5WtRnluFnK6iXEKgVZ4w0KtE8sQod8L58e
+	GfcAwM2glqqUg1xiQ1xNUPcCrbpcBA89AXdJQXhjlG2CSWSf3tnwL11tLxD1iBjd
+	6eQyrDOp4vlN6+VyMC94o/YfawAm8WEWlPQMWss3xZIkXUgZZ5KO3npTvi+f8CeX
+	GOXqXAStx/9wbLYGSvtpUZZFnY2S0EutEog==
+X-ME-Sender: <xms:WKzIaITbrcF9CCQYLK3qjFtcN_XyKcAh4nXvpumAUfZc0QV89YESDA>
+    <xme:WKzIaBl6ID0b0P5BNF26rZ3Ih7XNA71wid1MRelmliMDURM_lDROddoF1ya2OBMAM
+    Etl4wWNuhW7-TAIEHk>
+X-ME-Received: <xmr:WKzIaBOs4zmVUnA_Ho5weg0WHC-DoUaaEI36Scm3pPElfkusrnEo9AZN_bLx_1WMlV69Kuf5nnHGfjcXxpUlkSRdAlhEAPSgypw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdefleduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
+    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdtkeevvdeu
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhgpdhnsggprhgtphhtthhopeduuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    eprghrnhgusegrrhhnuggsrdguvgdprhgtphhtthhopehpvghtvghriiesihhnfhhrrggu
+    vggrugdrohhrghdprhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpth
+    htoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthho
+    pegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopegtohhrsggvth
+    eslhifnhdrnhgvthdprhgtphhtthhopehmrghrkhdrrhhuthhlrghnugesrghrmhdrtgho
+    mhdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdroh
+    hrghdprhgtphhtthhopehlihhnuhigqdgrrhgthhesvhhgvghrrdhkvghrnhgvlhdrohhr
+    gh
+X-ME-Proxy: <xmx:WKzIaFiTu4CyMwTqs__Fky2KtquFaoP5UpQn-NDKLzR2TRlh__mHaA>
+    <xmx:WKzIaPhi6cH_eZBS17w9y5PyajhQt51gXTDziMjjvKDUTq66WH9HBQ>
+    <xmx:WKzIaELF6LYk7LUq538ggVi9AXmIiP7QcO5TkFrlqi-Lmdx43BYyLQ>
+    <xmx:WKzIaOlWxuDMBAisTH4VbPuxygflomfJgrgn0_It54x0JsgQepAVvA>
+    <xmx:WazIaPZfW3Hc61XmKDhjns6h0uUIz3diSE3aUOUcdGwlf9TeTvHoGjIH>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Sep 2025 20:16:21 -0400 (EDT)
+Date: Tue, 16 Sep 2025 10:16:12 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Arnd Bergmann <arnd@arndb.de>
+cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+    Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, 
+    Linux-Arch <linux-arch@vger.kernel.org>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org
+Subject: Re: [RFC v2 3/3] atomic: Add alignment check to instrumented atomic
+ operations
+In-Reply-To: <57bca164-4e63-496d-9074-79fd89feb835@app.fastmail.com>
+Message-ID: <1c9095f5-df5c-2129-df11-877a03a205ab@linux-m68k.org>
+References: <cover.1757810729.git.fthain@linux-m68k.org> <e5a38b0ccf2d37185964a69b6e8657c992966ff7.1757810729.git.fthain@linux-m68k.org> <20250915080054.GS3419281@noisy.programming.kicks-ass.net> <4b687706-a8f1-5f51-6e64-6eb09ae3eb5b@linux-m68k.org>
+ <20250915100604.GZ3245006@noisy.programming.kicks-ass.net> <8247e3bd-13c2-e28c-87d8-5fd1bfed7104@linux-m68k.org> <57bca164-4e63-496d-9074-79fd89feb835@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 17/62] doc: modernize
- Documentation/filesystems/ramfs-rootfs-initramfs.rst
-To: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
- Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>,
- Aleksa Sarai <cyphar@cyphar.com>,
- =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
- Julian Stecklina <julian.stecklina@cyberus-technology.de>,
- Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>,
- Alexander Graf <graf@amazon.com>, Lennart Poettering <mzxreary@0pointer.de>,
- linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, x86@kernel.org, Ingo Molnar
- <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org,
- linux-api@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
- "Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, devicetree@vger.kernel.org,
- Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>,
- Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>,
- patches@lists.linux.dev
-References: <20250913003842.41944-1-safinaskar@gmail.com>
- <20250913003842.41944-18-safinaskar@gmail.com>
-Content-Language: en-US
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <20250913003842.41944-18-safinaskar@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 
-On 9/12/25 19:37, Askar Safin wrote:
-> Update it to reflect initrd removal.
+
+On Mon, 15 Sep 2025, Arnd Bergmann wrote:
+
+> On Mon, Sep 15, 2025, at 12:37, Finn Thain wrote:
+> > On Mon, 15 Sep 2025, Peter Zijlstra wrote:
+> >>
+> >> > When you do atomic operations on atomic_t or atomic64_t, (sizeof(long)
+> >> > - 1) probably doesn't make much sense. But atomic operations get used on 
+> >> > scalar types (aside from atomic_t and atomic64_t) that don't have natural 
+> >> > alignment. Please refer to the other thread about this: 
+> >> > https://lore.kernel.org/all/ed1e0896-fd85-5101-e136-e4a5a37ca5ff@linux-m68k.org/
+> >> 
+> >> Perhaps set ARCH_SLAB_MINALIGN ?
+> >> 
+> >
+> > That's not going to help much. The 850 byte offset of task_works into 
+> > struct task_struct and the 418 byte offset of exit_state in struct 
+> > task_struct are already misaligned.
 > 
-> Also I specified that error reports should
-> go to linux-doc@vger.kernel.org , because
-> Rob Landley said that he keeps getting
-> reports about this document and is unable
-> to fix them
+> Has there been any progress on building m68k kernels with -mint-align?
 
-Do you think emailing a list I could forward stuff to will improve matters?
+Not that I know of.
 
-I find the community an elaborate bureaucracy unresponsive to hobbyists. 
-Documentation/process/submitting-patches.rst being a 934 line document 
-with a bibliography, plus a 24 step checklist not counting the a) b) c) 
-subsections are just symptoms. The real problem is following those is 
-not sufficient to navigate said bureaucracy.
+> IIRC there are only a small number of uapi structures that need
+> __packed annotations to maintain the existing syscall ABI.
+> 
 
->   What is ramfs?
->   --------------
->   
-> @@ -101,9 +103,9 @@ archive is extracted into it, the kernel will fall through to the older code
->   to locate and mount a root partition, then exec some variant of /sbin/init
->   out of that.
->   
-> -All this differs from the old initrd in several ways:
-> +All this differs from the old initrd (removed in 2025) in several ways:
+Packing uapi structures (and adopting -malign-int) sounds easier than the 
+alternative, which might be to align certain internal kernel struct 
+members, on a case-by-case basis, where doing so could be shown to improve 
+performance on some architecture or other (while keeping -mno-align-int).
 
-Why keep the section when you removed the old mechanism? You took away 
-their choices, you don't need to sell them on it.
+Well, it's easy to find all the structs that belong to the uapi, but it's 
+not easy to find all the internal kernel structs that describe MMIO 
+registers. For -malign-int, both kinds of structs are a problem.
 
-(Unless you're trying to sell them on using a current linux kernel 
-rather than 2.6 or bsd or qnx or something. But if they _do_ remove 32 
-bit support, or stick a rust dependency in the base build, I suspect 
-that ship has sailed...)
-
-> -  - The old initrd was always a separate file, while the initramfs archive is
-> +  - The old initrd was always a separate file, while the initramfs archive can be
->       linked into the linux kernel image.  (The directory ``linux-*/usr`` is
->       devoted to generating this archive during the build.)
->   
-> @@ -137,7 +139,7 @@ Populating initramfs:
->   
->   The 2.6 kernel build process always creates a gzipped cpio format initramfs
->   archive and links it into the resulting kernel binary.  By default, this
-> -archive is empty (consuming 134 bytes on x86).
-> +archive is nearly empty (consuming 134 bytes on x86).
-
-Those two lines you just touched contradict each other.
-
-For historical reference, commit c33df4eaaf41 in 2007 added a second 
-codepath to special case NOT having an initramfs, for some reason. 
-That's how static linked cpio in the kernel image and external initrd= 
-loaded cpio from the bootloader wound up having different behavior.
-
-The init/noinitramfs.c file does init/mkdir("/dev") and 
-init_mknod("/dev/console") because calling the syscall_blah() functions 
-directly was considered icky so they created gratuitous wrappers to do 
-it for you instead, because that's cleaner somehow. (Presumably the same 
-logic as C++ having get and set methods that perform a simple assignment 
-and return a value. Because YOU can't be trusted to touch MY code.)
-
-Note that ONLY init/noinitramfs.c creates /dev/console. You'd THINK the 
-logical thing to do would be to detect failure of the filp_open() in 
-console_on_rootfs() and do the mkdir/mknod there and retry (since that's 
-__init code too), but no...
-
-My VERY vague recollection from back in the dark ages is if you didn't 
-specify any INITRAMFS_SOURCE in kconfig then gen_init_cpio got called 
-with no arguments and spit out a "usage" section that got interpreted as 
-scripts/gen_initramfs_list.sh output, back when the plumbing ignored 
-lines it didn't understand but there was an "example: a simple 
-initramfs" section in the usage with "dir /dev" and "nod /dev/console" 
-lines that created a cpio archive with /dev/console in it which would 
-get statically linked in as a "default", and code reached out and used 
-this because it was there without understanding WHY it was there. So it 
-initially worked by coincidence, and rather than make it explicit they 
-went "two codepaths, half the testing!" and thus...
-
-Anyway, that's why the 130+ byte archive was there. It wasn't actually 
-empty, even when initramfs was disabled.
-
-One of the "cleanups that didn't actually fix it" was 
-https://github.com/mpe/linux-fullhistory/commit/2bd3a997befc if you want 
-to dig into the history yourself. I wrote my docs in 2005 and that was 
-2010 so "somewhere in there"...
-
-> -If the kernel has initrd support enabled, an external cpio.gz archive can also
-> -be passed into a 2.6 kernel in place of an initrd.  In this case, the kernel
-> -will autodetect the type (initramfs, not initrd) and extract the external cpio
-> +If the kernel has CONFIG_BLK_DEV_INITRD enabled, an external cpio.gz archive can also
-
-You renamed that symbol, then even you use the old name here.
-
-> +be passed into a 2.6 kernel.  In this case, the kernel will extract the external cpio
->   archive into rootfs before trying to run /init.
->   
-> -This has the memory efficiency advantages of initramfs (no ramdisk block
-> -device) but the separate packaging of initrd (which is nice if you have
-> +This is nice if you have
->   non-GPL code you'd like to run from initramfs, without conflating it with
-> -the GPL licensed Linux kernel binary).
-> +the GPL licensed Linux kernel binary.
-
-IANAL: Whether or not this qualifies as "mere aggregation" had yet to go 
-to court last I heard.
-
-Which is basically why 
-https://hackmd.io/@starnight/Load_Firmware_Files_Later_in_Linux_Kernel 
-was so screwed up in the first place: the logical thing to do would be 
-put the firmware in a static initramfs and have the module 
-initialization happen after initramfs was populated... BUT LICENSING! We 
-must have a much more complicated implementation because license. I 
-believe I suggested passing said initramfs in via the initrd mechanism 
-so it remains a separate file until boot time, and was ignored. *shrug* 
-The usual...
-
->   It can also be used to supplement the kernel's built-in initramfs image.  The
->   files in the external archive will overwrite any conflicting files in
-> @@ -278,7 +278,7 @@ User Mode Linux, like so::
->     EOF
->     gcc -static hello.c -o init
->     echo init | cpio -o -H newc | gzip > test.cpio.gz
-> -  # Testing external initramfs using the initrd loading mechanism.
-> +  # Testing external initramfs.
-
-Does grub not still call it "initrd"?
-
->     qemu -kernel /boot/vmlinuz -initrd test.cpio.gz /dev/zero
-
-A) they added -hda so you don't have to give it a dummy /dev/zero anymore.
-
-B) there's no longer a "qemu" defaulting to the current architecture, 
-you have to explicitly specify qemu-system-blah unless you create the 
-symlink yourself by hand. This was considered an "improvement" by IBM 
-bureaucrats. (Not a regression, a "feature". Oh well...)
-
-C) to be honest I'd just point people at mkroot for examples these days, 
-but I'm biased. (It smells like me.)
-
-Rob
+If better performance is to be had, my guess is that aligning atomic_t 
+will get 80% of it (just an appeal to the Pareto principle, FWIW...)
