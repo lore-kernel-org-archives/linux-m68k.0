@@ -1,149 +1,142 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B1F20FA9C
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Sep 2025 14:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AAB192B75;
+	Mon, 22 Sep 2025 15:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758551351; cv=none; b=DVCwgLZxccC5I/Apl7QnjQ3WWxDrMwlsGzwQ6pGzN91pkYZWQD0oItKtlV+OITydZgy2zVJtvcWKC/AMxc8GL27XtzPXJjFvbGckW8Q6aaBRNnTkCMUcPAaa8vdtcSHT/XQn+9oGnl4rn8H6TsgMDVvHUKRD/xyrFCVw+Jm+kNA=
+	t=1758554529; cv=none; b=Hjw24r1K65VZj6ZmVDaZplS8LfFe8kxOdPo+HjW7QEOe4v1jlmitaLA36H1DhKzyyzxIUn7n0zmHUC9e7lFR3y1YXoxvTJRe32M+1UjyAjVs8yOBegMeawha4V0EnHGqLnjZuyg3n8vRqnZIBMxhEt6kWL1bYPSr48pKiBpH1iI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758551351; c=relaxed/simple;
-	bh=zds9c11i5EPuC+LW5E2qVk5slu7nHVv1cCYASY1uK64=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KdX7rbLzNZUYZVkNiKvbh7EIMQ2Ae1/+NqHc28lzmTEViFXEGrErJOHzyKMflki4kqkZ/2C/tIdqgUktsmMrSHDXmimI9wN3xFnMBa7zz+9EeSiqr/3HO0b5kReBUcIJM0nzGqI9YKHBTS2frk54CyR59znzGUuJgh+tH5V4eDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freebox.fr; spf=pass smtp.mailfrom=freebox.fr; dkim=pass (2048-bit key) header.d=freebox-fr.20230601.gappssmtp.com header.i=@freebox-fr.20230601.gappssmtp.com header.b=IZKlLdiP; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=freebox.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=freebox.fr
+	s=arc-20240116; t=1758554529; c=relaxed/simple;
+	bh=IgATrXO91VR9Hs0/GWvI5q1OG1RkIqn3kxafeoyKJjM=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=IzTXJ0ahvMqclFqVTSMD6GAU5x46JQeXClXm8HpO8cfXVTFw8qSzkx3kSsamp+oJQZhetB1YcvcoCiNGIkfeBV/6JygjgnwDfsh7nElYGt46qaOvKM3FK23bUjMRCDCA7/wX36DGVOf23PG+zVHJA3gxR6I4Q15VozuX8dLWnzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=g2nV0Kex; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lzbAe1jD; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=freebox-fr.20230601.gappssmtp.com header.i=@freebox-fr.20230601.gappssmtp.com header.b="IZKlLdiP"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-55ce508d4d6so3950513e87.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Sep 2025 07:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=freebox-fr.20230601.gappssmtp.com; s=20230601; t=1758551345; x=1759156145; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zds9c11i5EPuC+LW5E2qVk5slu7nHVv1cCYASY1uK64=;
-        b=IZKlLdiPmqMOkskdqQeDbqoX1+iX3KC/ztQZYpMbsL6XFJfeRMiB9DrmTs+4sDS/c/
-         wR9/kBQT6zTlFbLIZEb+TyHKBJA/JdVQxdLeoT9N2Gui1d8rOlltfyHAuo9YpSjIqB/8
-         /8fTaKaiTXk9MHbn6aRG/MrMk8RxRrzanO9gGioYIFq+yEOrGx4Q7SQOBARqURFJa4rD
-         8BdW5iwzKyoQa3uJPwEdwVA36MLbKHaUpfEvYF/kJtF8RKybIic8m85XzT177xw6M98W
-         Jg5yy9JjL5iSIgdKcM+LLOvGZ4Xwd+4vKf8xmfHuSbkSWR6AG7QbY61Ko6SkA+3mK1Ow
-         CGRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758551345; x=1759156145;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zds9c11i5EPuC+LW5E2qVk5slu7nHVv1cCYASY1uK64=;
-        b=gnYyOOd+NPPzvBuhIgHtl4eN3RWKW1JktLZHgDPBk4Nojw6ugwRX1nJEiwGA10C77Q
-         WkNQDIQd/oTM8jtxmjHzNMQPp1uV0jbEMT5nHsq3sbDtDr0W0NtQxYRCfVadYxV/UDgP
-         6gwUbqpVbT6K62j3FQoo1zbtXx5tB8n6Hik6avZ9jSsrNBwmqEwKi/CcNSaJVzBHo5Pl
-         Qrrj2UHBHPO89rUMbA+FdyXrST3zlNJSoajwYLcAnsFhWBsGhDZKifK1wnsy/J4n5sjB
-         QkwU3vRZ5C1aGUKz6/hmsIETHXty+F+x9zL+OQ+yPX95n8igLkgu3qEKUEguqnMaYaFH
-         mEPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU8p4GvnGf0mJpcx9OD7dW4QpGtivl+TXjEuPluRP0GUcNAPaDl9sunQuuAHRdQizjBzumBJl3m2tY+@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy6fDs4xqaaXbxqGt4nvNBkpxGXYITLvBCcwR711RrTeno842vD
-	ofuEh4vHAgFoMFrhxZa93W6tcna4gqMk82C7tvpnAxPqxTfGbPqxAlgqAbuRnOqT2g7GHlAMF05
-	9uyEuYEZkn9c4MvWWfThx4HizCl89jIHEpZQcUScdpw==
-X-Gm-Gg: ASbGnctfRK5FVty1MWtbIVj4zCUEl+bPdF3lP3G9ZTFWAgiTL1YMEWC13auLD+ZhIRb
-	R7RxKfCNwrLBVlOkIfEQHL9bZ28FC9hlp71uxPr5P7fuodHMvs9PPJg7Nr63dwRjnVqfG8gt0lG
-	Wa5CuOp6iQKZiwHDvzC6HoiorEyYjg0UOnncTn/RXOVS5s1pMK0mWgLHtrZE5aTbP6DUFGp2EHg
-	S30PX+hQ0brQPY=
-X-Google-Smtp-Source: AGHT+IF9Kx0YHTgWZximr8IphichwJGTQ/wmiFKfxBKU7xEPIwY53K1eZ5EsUZqb+vcW1xAllqgOcQU2VEEacURTmEE=
-X-Received: by 2002:a05:6512:4389:b0:57b:478b:d8a6 with SMTP id
- 2adb3069b0e04-57b478be162mr3313173e87.35.1758551344116; Mon, 22 Sep 2025
- 07:29:04 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="g2nV0Kex";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lzbAe1jD"
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 864581400029;
+	Mon, 22 Sep 2025 11:22:06 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-05.internal (MEProxy); Mon, 22 Sep 2025 11:22:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1758554526;
+	 x=1758640926; bh=ya7VGGpmpXv8BTTLA/PuENk8KsOGcjcqd2vAO4qYW/U=; b=
+	g2nV0Kex8bQfzQ0MyhdkvOtqyNdHFrVDtzzNKj3vEvsaG4mB0DlrAWehueVkKjJZ
+	PtwNTJbSkpTHDF9vOg92OyW40QICFeydshIv+ntVRXzpFXQLhA/n6jOMAjhm0J+I
+	4wp3Z/xdjL4SWUa0VK0o/Q3UTDHjqUOgqgDPu13kK/SFyb+OogLDNTwo6l4b4WlT
+	0e0IPalnA4bADo2Zex/MzuFrVWFYaB98ucUsWqkiQukF/GX2kADOPvL3MIzPhE6S
+	JmiVmecAZhKhTefAl+7gtyE+Q/ESvb6WYAZr85pFtBiUa8Ivkh4wXwZEygfg/Cov
+	mVQ07EOqxOjAX+cIT4QNWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1758554526; x=
+	1758640926; bh=ya7VGGpmpXv8BTTLA/PuENk8KsOGcjcqd2vAO4qYW/U=; b=l
+	zbAe1jD09npJLGHf3/IvIsRJxvCNpbA2CWyumWw5BX+jAJ0YymtHuYTeGXtdXx28
+	Ro3IW1cwZSMBLqavOEa1CmMDwuQ3eRpzwXVqk2hOecP6smFaPTTbHTn+WSLQ0VCt
+	uTkuu4yOuZ6kHJ2WwzEmS81d4LY0a41wt6vDPGLnIJ69vtMZ+MHYUtgHyAK/0Flf
+	MAJ4HPskMdDie5/WE/qpJXlt8B05JaHQcA34GBM+JdhnYrrU34SoTY4N3FiVxhqd
+	1AEzORzBUYJ9Y8qj2U6e04/93A2yskTYr/JTukLNkqufNQLMXkWj8Wle3t+kiaRz
+	QqfKsFVK4Loi1pRCaATnA==
+X-ME-Sender: <xms:nWnRaKfa0gxWh59JdvT0I8-iCRpKuatq8RpzDnRr2Xkt8T7Cua9NIA>
+    <xme:nWnRaPD2uyWISJrxKva8FXR8R2QpncFyjAbh7svzS51zs9vS4cKAAag41rWQHwiZS
+    PBCwPIIoefixTBrQ_WqIfsLpN55IXhp03FljHlWi3K0wNkrz-trtQA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdehkedvtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpeeggfejudejvdeijeeglefgtdfhudffieetfedugefhffekjeefhedtjeefjeetfeen
+    ucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvgdpnhgspghrtghp
+    thhtohepuddvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehmrghrkhdrrhhuth
+    hlrghnugesrghrmhdrtghomhdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghi
+    lhdrtghomhdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprh
+    gtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghkphhmsehl
+    ihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopehfthhhrghinheslh
+    hinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmhei
+    kehkrdhorhhgpdhrtghpthhtoheplhgrnhgtvgdrhigrnhhgsehlihhnuhigrdguvghvpd
+    hrtghpthhtoheptghorhgsvghtsehlfihnrdhnvght
+X-ME-Proxy: <xmx:nWnRaKYC4UZddIWr7FgJ70jGfUvY8Mwhfd-XBC8iAaZTBa0kqA7ZZw>
+    <xmx:nWnRaDzDoQ0d-dIU6qgL7VsWsCYEmDxHm9D4v0CloTU6s4UL5KpF6w>
+    <xmx:nWnRaBMqiKNYA_7mTeBEuvwJGxFm7ripqfLnqmCbu8Z2GcRE5l-oSA>
+    <xmx:nWnRaKebuJ_F6SjpIUSAqHS_6ZoHWbLakPealYRKZJAy_aXiVxmaaw>
+    <xmx:nmnRaGVWiwQkV2qk8oDks-mSus7AB9T0YPjtM8bf306BRdPCKzfqnVgL>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id C0D34700069; Mon, 22 Sep 2025 11:22:05 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250918152830.438554-1-nschichan@freebox.fr> <20250918195806.6337-1-safinaskar@gmail.com>
- <CAHNNwZAzecVcJXZmycX063-=p-M5jVkfStfgYVKJruOFo7y9zg@mail.gmail.com> <CAPnZJGDwETQVVURezSRxZB8ZAwBETQ5fwbXyeMpfDLuLW4rVdg@mail.gmail.com>
-In-Reply-To: <CAPnZJGDwETQVVURezSRxZB8ZAwBETQ5fwbXyeMpfDLuLW4rVdg@mail.gmail.com>
-From: Nicolas Schichan <nschichan@freebox.fr>
-Date: Mon, 22 Sep 2025 16:28:52 +0200
-X-Gm-Features: AS18NWBjmNA3KBj8cPrgwDAVm5OX9a5odWP7LbRlHvhoE96nP3yo2_PGoZ1JbG8
-Message-ID: <CAHNNwZC7gC7zaZGiSBhobSAb4m2O1BuoZ4r=SQBF-tCQyuAPvw@mail.gmail.com>
-Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
-To: Askar Safin <safinaskar@gmail.com>
-Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
-	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
-	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
-	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
-	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
-	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
-	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
-	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
-	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
-	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
-	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-ThreadId: Ah_uXtpTlO07
+Date: Mon, 22 Sep 2025 17:21:45 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Finn Thain" <fthain@linux-m68k.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Peter Zijlstra" <peterz@infradead.org>, "Will Deacon" <will@kernel.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Boqun Feng" <boqun.feng@gmail.com>, "Jonathan Corbet" <corbet@lwn.net>,
+ "Mark Rutland" <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k@vger.kernel.org,
+ "Lance Yang" <lance.yang@linux.dev>
+Message-Id: <57ac401b-222b-4c85-b719-9e671a4617cf@app.fastmail.com>
+In-Reply-To: <6c295a4e-4d18-a004-5db8-db2e57afc957@linux-m68k.org>
+References: <cover.1757810729.git.fthain@linux-m68k.org>
+ <abf2bf114abfc171294895b63cd00af475350dba.1757810729.git.fthain@linux-m68k.org>
+ <CAMuHMdUgkVYyUvc85_P9TyTM5f-=mC=+X=vtCWN45EMPqF7iMg@mail.gmail.com>
+ <6c295a4e-4d18-a004-5db8-db2e57afc957@linux-m68k.org>
+Subject: Re: [RFC v2 2/3] atomic: Specify alignment for atomic_t and atomic64_t
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-[resending to the lists and Cc, sorry I initially replied only to Askar]
-
-On Sat, Sep 20, 2025 at 5:55=E2=80=AFAM Askar Safin <safinaskar@gmail.com> =
-wrote:
-> On Fri, Sep 19, 2025 at 6:25=E2=80=AFPM Nicolas Schichan <nschichan@freeb=
-ox.fr> wrote:
-> > Considering that the deprecation message didn't get displayed in some
-> > configurations, maybe it's a bit early at the very least.
+On Mon, Sep 22, 2025, at 10:16, Finn Thain wrote:
 >
-> I changed my opinion.
-> Breaking users, who did not see a deprecation message at all,
-> is unfair.
-> I will send a patchset soon, which will remove initrd codepath,
-> which currently contains deprecation notice. And I will put
-> deprecation notice to
-> other codepath.
+> Yes, I noticed that also, after I started building with defconfigs.
+> I pushed a new patch to my github repo.
+>
+> https://github.com/fthain/linux/tree/atomic_t
 
-Thanks
+I had a look at that repository, and I think the extra
+annotations you added on a lot of structures have the
+same mistake that I made when looking at annotating
+ABI structures for -malign-int earlier:
 
-> Then in September 2026 I will fully remove initrd.
+Adding __aligned__((sizeof(long))) to a structure definition
+only changes the /outer/ alignment of the structure itself,
+so e.g.
 
-Is there a way to find some kind of middle ground here ?
+struct {
+    short a;
+    int b;
+} __attribute__((aligned(sizeof(long))));
 
-I'm lead to believe that the main issue with the current code is that
-it needs to parse the superblocks of the ramdisk image in order to get
-the amount to data to copy into /dev/ram0.
+creates a structure with 4-byte alignment and 8-byte
+size when building with -mno-align-int, but the padding
+is added after 'b', which is still misaligned.
 
-It looks like it is partly because of the ramdisk_start=3D kernel
-command line parameter which looks to be a remnant of the time it was
-possible to boot on floppy disk on x86.
+In order to align members the same way that -malign-int does,
+each unaligned member needs a separate attribute to force
+aligning it, like
 
-This kernel command line allows to look for a rootfs image at an
-offset into the initrd data.
+struct {
+    short a;
+    int b __attribute__((aligned(sizeof(int))));
+};
 
-If we assume now that the rootfs image data starts at the beginning of
-the initrd image and is the only part of the initrd image this would
-indeed remove a lot of complexity.
+This is different from how __attribute__((packed)) works,
+as that is always applied to each member of the struct
+if you add it to the end.
 
-Maybe it would be possible to remove the identify_ramdisk_image()
-function and just copy the actual size of /initrd.image into
-/dev/ram0. This would allow any file system to be used in an initrd
-image (no just romfs, cramfs, minixfs, ext2fs and squashfs), and this
-would simplify the code in init/do_mounts_rd.c greatly, with just the
-function rd_load_image() and nr_blocks() remaining in this file.
-
-I can send a patch for that but first I need to sort out my SMTP
-issues from the other day.
-
-Regards,
-
---=20
-Nicolas Schichan
+      Arnd
