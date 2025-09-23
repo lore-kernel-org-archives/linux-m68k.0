@@ -1,203 +1,144 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FC823C516
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Sep 2025 21:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509881339B1;
+	Tue, 23 Sep 2025 06:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758576016; cv=none; b=SPeKTrO150OnF6m695oR0nRHzhMMb/cLthV4sEphsPDyjFty6hSISL6lTkBDQoi+5sy7zDSKjMmNnbs89TEkHpeV8Tvvim1xCiWrm5P2G8Qbel5hh7bhr40fIslCqMzC/VZCvV9LFFFdjdDvnox8lwiYrLtOQBPosekpanjhKLc=
+	t=1758608927; cv=none; b=dCr8Co9cVYoTm1RzNa1znYLcDwtWC1PptbRUN0CdmIp8SpqAZIzD5EVXPWTU/UlorHhjTTTBuS7dGFAmgF46JnACX9qPVVl41a1UviRKKcYkQgvFsNSyhQUJ3RY/dbeXfb7PMvkG+6t15nMhFqF2rSqq0IspQQ7unaw0icRDgVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758576016; c=relaxed/simple;
-	bh=lritopqt0IRbIQNoZJhUtTvqUeD4HBWXxs4cgG59Eys=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=W10XqayeaSG4b7y8E0YfwGklbuYUkZhiEF3c39Soh7dvarlvirewEqvng/5MC5P61m+4NS7QU9SS3nwYewTr7lAuaLk+ilUKmxDn4Q5ot/VvLAWmL0Sc9fdY/iSxriTQEGUYqlF/Z2OGOeHb3d3lmiYIvSpyViTxgS4JYfzG8IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iw0YPHs7; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1758608927; c=relaxed/simple;
+	bh=NkP125ATTezUnhKgdUx8JE36LdcjUutSKbJNYs806jk=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=a+PUSvrExrCo6nBmjqK8YYI88BKNQ0L0Q2UvJg+brfvfX1FQmW52bT4JmjZhCwyKFfg//NKZrz6crQi2zEBCnLYp7fvSEMBQctaqxgbDZ7MIUZa//TmLhnPMf8h8RR/ySUarGJ1UFOH1WcYQqQ6cA4lxkTqqEifT47ryozUVAVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=BJhjWQnG; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iw0YPHs7"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1758576015; x=1790112015;
-  h=date:from:to:cc:subject:message-id;
-  bh=lritopqt0IRbIQNoZJhUtTvqUeD4HBWXxs4cgG59Eys=;
-  b=iw0YPHs7O6Q/bwAp0ZxLKYKTNDZ3OeYbnC6CcbDllU3DLEHb9G2TPXWd
-   EH1qA0YirkloI32GyOOc/MQc3pBrQAt0qiqPfdH3nQ18pWN/Y2Ctgk/mn
-   sb4f0W/pmURC23gxobAW0RzTS7ZKLRBukw1ckcXsLSUD6A+q//pdt3jCv
-   PJ+dBSdNIuhVXOubpmrxz7bdDABZKUbbvHv+NWZS9SMRv0SlqZcDg+fKX
-   C07AkSae5GTXxH1Adtgus3QIzLTv/gF1Bch1a2Cz4kQ6X3jm6XKysLOtW
-   0ziZfZAGJslgF6A+Onor3UHu/+NKV0bhvE8mGrSDR5y9WokLrEix5IGA4
-   Q==;
-X-CSE-ConnectionGUID: Ios8RE/5TPyYhzjivN2MrA==
-X-CSE-MsgGUID: LPXCXhXCSJemyPSqn4UEQw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11561"; a="63477131"
-X-IronPort-AV: E=Sophos;i="6.18,286,1751266800"; 
-   d="scan'208";a="63477131"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2025 14:20:12 -0700
-X-CSE-ConnectionGUID: fzcmfOhISNmxh9237CtFuw==
-X-CSE-MsgGUID: P44OXdVFQGmr/7l1K3oWJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,286,1751266800"; 
-   d="scan'208";a="176508001"
-Received: from lkp-server02.sh.intel.com (HELO 84c55410ccf6) ([10.239.97.151])
-  by fmviesa006.fm.intel.com with ESMTP; 22 Sep 2025 14:20:11 -0700
-Received: from kbuild by 84c55410ccf6 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v0nxB-0002UH-23;
-	Mon, 22 Sep 2025 21:20:09 +0000
-Date: Tue, 23 Sep 2025 05:19:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 5a8e23c2d2603cd8c64a5d79ea2a8833bc3799d8
-Message-ID: <202509230526.N1Kwy7TG-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BJhjWQnG"
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfout.phl.internal (Postfix) with ESMTP id 32E8AEC00BF;
+	Tue, 23 Sep 2025 02:28:43 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Tue, 23 Sep 2025 02:28:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1758608923; x=1758695323; bh=3NuQRXfs/lZoWU7jqTgyvHvDGlA/BMy0qPp
+	aeoiVwNU=; b=BJhjWQnGJcJoEoIbwpzAyzc8P4ETp61dBe1bTXRS1K51zlBLH6x
+	xt8+GEqJSfvAriAUQN8MVPkBI/v+rUBngjGavRnFvmZer2RdflmecnYwWAxmr7zA
+	1u4BEnSXuxNeKnKvW5yCOm5qz5u+IFr1sB5e5Sv3WSIQ8rL32+dVr8A5XAAFfWiJ
+	hhXyeLEaCA+YqLdPpb4N1rAeTl3/pYZlWITBIGAUs/8OFOENJNDUfWsMOgSF24o8
+	UOsIxl/+w2nxu/1O6rqdaMsoOZ2XTAHbAYGxKN75LEQszvaq8Nc+fguiyZt4sGGU
+	lbHWwtA1V6sWRNRPGE0qighzT7k6DzzhnUw==
+X-ME-Sender: <xms:Gj7SaC1dbrtaTf-jFGjpp1h8XhFH8ZswRqNfXwR7jaY8oemiozsUSQ>
+    <xme:Gj7SaNPrLgwG-09tAPZq9ik7IyWwqJWjKftfrPc8jQfoTkO3TOW-Nwsq5P4LdXI7e
+    nQMtMr2_UmpHSmqR1XchghKU8s3sjEzL36vFB8XQBpgauLAWH6WNoo>
+X-ME-Received: <xmr:Gj7SaKYI94Eoz7iaMaIe33w7XQSBXhnIyRyJYduVW8uKwtJJyH0GgsOGqgZEIHjW9xHATsIoVntRqOYVW2tRcWnrhriU-n2PoiU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdeitddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
+    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepueevvdegledvveehvddvkeeffefgvdeiieejvdejveffhefguefhheeftdetuddt
+    necuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
+    rhhgpdhnsggprhgtphhtthhopeduvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    eprghrnhgusegrrhhnuggsrdguvgdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhm
+    ieekkhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrgh
+    dprhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghkphhm
+    sehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopegsohhquhhnrd
+    hfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopegtohhrsggvtheslhifnhdrnhgv
+    thdprhgtphhtthhopehmrghrkhdrrhhuthhlrghnugesrghrmhdrtghomhdprhgtphhtth
+    hopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:Gj7SaDxRZofyEPYb7BaSf729ZwwhjjBP9vom_vSwKoy3OBBBswMfpw>
+    <xmx:Gj7SaBOgzPtLdbBobAI0V1u_fXaZSEOlLrf-CPzxQuSz1KN3__rYBQ>
+    <xmx:Gj7SaKfZ4n7Yun0fZzrbxHvihbRpVUhrsy4dSpisMeCs_z9QZM8law>
+    <xmx:Gj7SaOTAAOeC4slNSsXdghJS61SmkZFfxhnbeGZiY1j15HMI6kHuSw>
+    <xmx:Gz7SaNpzccL9mUuih5g-lggqimr2lGBavrlYIlUdcz5DDU9DUa_ej5E0>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 23 Sep 2025 02:28:39 -0400 (EDT)
+Date: Tue, 23 Sep 2025 16:28:38 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Arnd Bergmann <arnd@arndb.de>
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+    Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, 
+    Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k@vger.kernel.org, 
+    Lance Yang <lance.yang@linux.dev>
+Subject: Re: [RFC v2 2/3] atomic: Specify alignment for atomic_t and
+ atomic64_t
+In-Reply-To: <57ac401b-222b-4c85-b719-9e671a4617cf@app.fastmail.com>
+Message-ID: <86be5cf0-065e-d55d-fdb6-b9cf6655165e@linux-m68k.org>
+References: <cover.1757810729.git.fthain@linux-m68k.org> <abf2bf114abfc171294895b63cd00af475350dba.1757810729.git.fthain@linux-m68k.org> <CAMuHMdUgkVYyUvc85_P9TyTM5f-=mC=+X=vtCWN45EMPqF7iMg@mail.gmail.com> <6c295a4e-4d18-a004-5db8-db2e57afc957@linux-m68k.org>
+ <57ac401b-222b-4c85-b719-9e671a4617cf@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 5a8e23c2d2603cd8c64a5d79ea2a8833bc3799d8  Merge tag 'v6.17-rc7'
 
-elapsed time: 730m
+On Mon, 22 Sep 2025, Arnd Bergmann wrote:
 
-configs tested: 126
-configs skipped: 5
+> On Mon, Sep 22, 2025, at 10:16, Finn Thain wrote:
+> >
+> > Yes, I noticed that also, after I started building with defconfigs.
+> > I pushed a new patch to my github repo.
+> >
+> > https://github.com/fthain/linux/tree/atomic_t
+> 
+> I had a look at that repository, and I think the extra annotations you 
+> added on a lot of structures have the same mistake that I made when 
+> looking at annotating ABI structures for -malign-int earlier:
+> 
+> Adding __aligned__((sizeof(long))) to a structure definition only 
+> changes the /outer/ alignment of the structure itself,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Right. I should have dropped those changes earlier.
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                   randconfig-001-20250922    gcc-8.5.0
-arc                   randconfig-002-20250922    gcc-9.5.0
-arc                        vdk_hs38_defconfig    gcc-15.1.0
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-22
-arm                              allyesconfig    gcc-15.1.0
-arm                        multi_v7_defconfig    gcc-15.1.0
-arm                   randconfig-001-20250922    clang-22
-arm                   randconfig-002-20250922    gcc-12.5.0
-arm                   randconfig-003-20250922    clang-17
-arm                   randconfig-004-20250922    gcc-8.5.0
-arm                             rpc_defconfig    clang-18
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250922    gcc-8.5.0
-arm64                 randconfig-002-20250922    gcc-15.1.0
-arm64                 randconfig-003-20250922    clang-22
-arm64                 randconfig-004-20250922    clang-22
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20250922    gcc-15.1.0
-csky                  randconfig-002-20250922    gcc-15.1.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-22
-hexagon                          allyesconfig    clang-22
-hexagon               randconfig-001-20250922    clang-20
-hexagon               randconfig-002-20250922    clang-19
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386                             allyesconfig    gcc-14
-i386        buildonly-randconfig-001-20250922    clang-20
-i386        buildonly-randconfig-002-20250922    gcc-14
-i386        buildonly-randconfig-003-20250922    gcc-14
-i386        buildonly-randconfig-004-20250922    gcc-14
-i386        buildonly-randconfig-005-20250922    clang-20
-i386        buildonly-randconfig-006-20250922    clang-20
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch             randconfig-001-20250922    clang-22
-loongarch             randconfig-002-20250922    clang-18
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                        m5307c3_defconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20250922    gcc-11.5.0
-nios2                 randconfig-002-20250922    gcc-8.5.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250922    gcc-8.5.0
-parisc                randconfig-002-20250922    gcc-9.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                          allyesconfig    clang-22
-powerpc                 mpc8315_rdb_defconfig    clang-22
-powerpc                 mpc832x_rdb_defconfig    gcc-15.1.0
-powerpc               randconfig-001-20250922    clang-22
-powerpc               randconfig-002-20250922    gcc-12.5.0
-powerpc               randconfig-003-20250922    clang-17
-powerpc64             randconfig-002-20250922    clang-20
-powerpc64             randconfig-003-20250922    clang-17
-riscv                            allmodconfig    clang-22
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20250922    clang-22
-riscv                 randconfig-002-20250922    clang-22
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20250922    gcc-8.5.0
-s390                  randconfig-002-20250922    gcc-11.5.0
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                            hp6xx_defconfig    gcc-15.1.0
-sh                    randconfig-001-20250922    gcc-15.1.0
-sh                    randconfig-002-20250922    gcc-11.5.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20250922    gcc-15.1.0
-sparc                 randconfig-002-20250922    gcc-14.3.0
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20250922    gcc-12.5.0
-sparc64               randconfig-002-20250922    gcc-14.3.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20250922    gcc-14
-um                    randconfig-002-20250922    clang-22
-um                           x86_64_defconfig    clang-22
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250922    clang-20
-x86_64      buildonly-randconfig-002-20250922    gcc-13
-x86_64      buildonly-randconfig-003-20250922    gcc-13
-x86_64      buildonly-randconfig-004-20250922    clang-20
-x86_64      buildonly-randconfig-005-20250922    clang-20
-x86_64      buildonly-randconfig-006-20250922    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250922    gcc-9.5.0
-xtensa                randconfig-002-20250922    gcc-11.5.0
+@@ -8,7 +8,7 @@ struct vfsmount;
+ struct path {
+        struct vfsmount *mnt;
+        struct dentry *dentry;
+-} __randomize_layout;
++} __aligned(sizeof(long)) __randomize_layout;
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+There's no need: struct path contains a struct dentry, which contains a 
+seqcount_spinlock_t, which contains a spinlock_t which contains an 
+atomic_t member, which is explicitly aligned.
+
+Despite that, there's still some kmem cache or other allocator somewhere 
+that has produced some misaligned path and dentry structures. So we get 
+misaligned atomics somewhere in the VFS and TTY layers. I was unable to 
+find those allocations.
+
+> so e.g.
+> 
+> struct {
+>     short a;
+>     int b;
+> } __attribute__((aligned(sizeof(long))));
+> 
+> creates a structure with 4-byte alignment and 8-byte
+> size when building with -mno-align-int, but the padding
+> is added after 'b', which is still misaligned.
+> 
+
+Sure but -mno-align-int isn't particularly relevant here as it's only for 
+m68k. Besides, I'd like to avoid the mess that would create.
+
+The basic aim here is to naturally align both atomic_t and atomic64_t on 
+all architectures (my testing is confined to m68k) and to try to find out 
+what that would cost and what benefit it might bring.
+
+The patches you're reviewing were a hack to try to silence the WARN from 
+CONFIG_DEBUG_ATOMIC, because that way I could try to assess the 
+cost/benefit.
