@@ -1,180 +1,143 @@
-Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C7E1A238C;
-	Tue, 23 Sep 2025 19:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE60313D64
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Sep 2025 16:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758654738; cv=none; b=F07qSSEqdhmVgyABT53MpDoy3UP5YvetQ8Bo7wdcEdZDnZt8YyPoAOZbeTlkcdgjUbdXSpw9eYzsy+iOAPfSjAabaTDX+YloIyodKfuv2azbYY3rjh0kGmGu+nwuH3QswZoxpc0jqpd1HDYnVH9Gtur+QWj/FxbzIgikxxGkP7U=
+	t=1758730691; cv=none; b=d2AvkRAUqyrMCrLnjypAYyle6/Hvrgti25t59LvtKchCDTUKlXOvwftXRUIjs2FfXhO/OHctrZxoO0fQp4aoDjvtTSK8vLA1GUawz6BXLLGObr5k/q1KtyaN9J5NZpNk8MV3h1GAsVG/Q+mf06OW+V+kuLgsnhWH6uxWL2u3dWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758654738; c=relaxed/simple;
-	bh=K9hUxD1sDBQjJycPokUgcShClv5YGLDQwzjF05XesCg=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=sWjYUfgnHOJbpJ3bCFn9QWKqjN1JITkhh5GkWoPtjwVwwT/dWp1Di6B1LiWdIxxX5/yyfUejPvQyPHdh8BC90Papw9xRKt15tJg2SflCiXQiPP1uH/17pquJUP/nCOp6tNI44fWOXER6EGQ6mMv8LTHwwahWvZXREMChSLzmHmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=0BiAbPrc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=laYJFjYl; arc=none smtp.client-ip=202.12.124.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+	s=arc-20240116; t=1758730691; c=relaxed/simple;
+	bh=+elp/mgEwQHUPO2/veHl6cFeD7QMzkxV3mT27B/vMe0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g8m2ou13+c99qNmI0i2wW6baPPqJDiE4e4IVbiWsqVvPDt9UBtVZ8NcN8BzNjHy1iBeQD85BXCb6XYuC79IwOG/n1D7NjkoGIBrguQlohgzgYKWRmCYH4a4E0ox3bEP3ufZhtOItk7+zrfKVND4HMOZJCbH0cHlhiOJvM1T1+sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j6g5lCjm; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="0BiAbPrc";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="laYJFjYl"
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.stl.internal (Postfix) with ESMTP id 8ED761D001E2;
-	Tue, 23 Sep 2025 15:12:13 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Tue, 23 Sep 2025 15:12:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1758654733;
-	 x=1758741133; bh=iUiT2Fl+6MjOXvC+Q0lwYMXWDbppNCqwm5jrh/TyslY=; b=
-	0BiAbPrc4I54T23GlrH+iGowUChevpO8+3nVvQK6FUnssG3HcbHM/7HG0ma7ISCN
-	rw5Hh3GxExHG19YK8BA0mAFxCARgjOcZ6NJszXwmxzWs0HO++ZupGfWyXEt7Sr8q
-	PJGj17KqH3dFgQYPS60Z8FgiALEKc8UMbu/5aDMVFn4WUEOcBdb0Y2TXJQ2uT9WP
-	XmBo5/NBtbBgtb2vpRZKMXRkBj7E6B0A3TtRaA3fEQdfLeg0NVfUklU3cVr5Jeyu
-	lGbD5bWt326h+Fd62mKKNrKHqpCqXqp00L7PPHNG3BdFWYQtSXgaBVpVl6+NkPeH
-	CLAEi+e6Y6WmrWNeB1h2RA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1758654733; x=
-	1758741133; bh=iUiT2Fl+6MjOXvC+Q0lwYMXWDbppNCqwm5jrh/TyslY=; b=l
-	aYJFjYlU2Bni4MQ7cU4cvarP52j8CwAw3TARt88G/SvcuDDfJrsbhnhgxt35yqAk
-	TwHyg/CQqzBRVSCljmKNsXzj4fh6u6DafI5Ym7tpGJcHp83dTZIbmsmYKWiJ+xoq
-	rFZVh0ixm8H134H4hBfeZWu1xnyFksA2ENbjnvoR+IfqO+VeU866q1prECqgEZA+
-	NBOca/LjkM92sqw5IkjEC38rUQiAnAlN9bw2t9G2PhNCVzb8TLRgaLuQslNJPJ08
-	kcVMRpLjCTJNl7G0we1UV12ayUdx6xhN2Gx5Dj9hCdeeQ1r4550kj6zoJ8xTct8E
-	YlF/ZBO8HlKSQzd5uSxDQ==
-X-ME-Sender: <xms:DPHSaDIHsgfBAHZluoyVxLK5ejuOZbZuLyBKR3kRVEi02syjWI5XWQ>
-    <xme:DPHSaB_Q6hI6geTUqa6OWKf8keIR6k7nhMejJHAwx_AImBJuycpLo4BhsD8Hof6HT
-    PW4VrEI7uCaGAwX4l5NnofQHWL7JQGkyBAfsQstQ9vlA8AOYnVS2E4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdeiudehgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
-    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
-    hnpefhtdfhvddtfeehudekteeggffghfejgeegteefgffgvedugeduveelvdekhfdvieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
-    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeduvddpmhhouggvpehsmhhtphhouhht
-    pdhrtghpthhtohepmhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtoh
-    epsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepphgvthgvrhii
-    sehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhg
-    pdhrtghpthhtohepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtth
-    hopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlrghntggv
-    rdihrghngheslhhinhhugidruggvvhdprhgtphhtthhopegtohhrsggvtheslhifnhdrnh
-    gvth
-X-ME-Proxy: <xmx:DPHSaPEqVqZo97lvmb3tEneaotIr7nAqindr7Lq6ynAXSyA8d2iqvg>
-    <xmx:DPHSaCtN2yPPNz-0iZm-NczqWZy7aTeEvcMswZvYA1Suy73QCAQ0Gw>
-    <xmx:DPHSaNaeSDZgNy-QIxe6yFw-f_O_90xpjPBorxoz281ktIM5dzMoMw>
-    <xmx:DPHSaK6EVcKt_cqamKBK3Vvae_RDjMCRaY-pPzu2_2Jj8iI7uLetmw>
-    <xmx:DfHSaOG9d_xB2qs67oRkDLQwwHxNkQfa9NA1gTkSR3FeiGw-oG6g4w4o>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 7CB7F700069; Tue, 23 Sep 2025 15:12:12 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j6g5lCjm"
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-8582a34639aso3147685a.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Sep 2025 09:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1758730686; x=1759335486; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+elp/mgEwQHUPO2/veHl6cFeD7QMzkxV3mT27B/vMe0=;
+        b=j6g5lCjm2fEo1SGHlctt1t8SdWSgmGwWefXkR4GCojvspYmfLzri1iMZ+ua+Nl0h4J
+         v5lvHTZqtumzpVxTP7qF2wSeyIDmC67alrx92qzBWVB7SfQjHqBCqnMBAcKdKmlh3goe
+         MPJXxqXUiinglAGCM+ZFldGwAVxBEfZARaCtJpe6i+vSVjMkKF+NQsVbHokENWS2Lfxe
+         5HHyCVeTtXQwXLRH9DtilC0pQ8iYBona0OG8bZX92Xdkm4zxzOPFMejz4imJkxSdkP0U
+         UpYvxY8Wlg0S1NewLjxF9jpQWM86Mg35C3g5D9c488Xbxffxd83lIusGxwQQsWKlbVze
+         pUwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758730686; x=1759335486;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+elp/mgEwQHUPO2/veHl6cFeD7QMzkxV3mT27B/vMe0=;
+        b=QQzQWBBVWDoNqVIRYJ1qc1ti9hW+pFkkSxHj9K8CtjOqSi8IGuoBgfqUA9e6R2kqgG
+         82IC07ej8UIUvBMddQpajvH3w4PO+mgvEh54eLkXrMnvKwgmI+i7DU9StsZJ+xw9sUe2
+         S7i23efw8KLbZv+4bMwLmrO4o8Izg/+Yi8thNofc1/h6FMuGGncq8K3FYkOSR4zejAkf
+         uNYi7cc/WyUfvhc3P0Hzb2i9oAmxr2Hb6MHuP3yJT/mUkkrSgGAJ1TSmlG9N+Xr9ZaxA
+         DOkoyHVkY5NxPm12exPcOpoqIyd1N55ozjkQeeHUrcJt2HFZhS3lZmr+RoVLpjOlMufd
+         6Xtg==
+X-Forwarded-Encrypted: i=1; AJvYcCXnpzOb285b1viG2tl+2DR2MvguD7r1Tj1g80lkvC1eVlGkl7qCIVPVfpWCdNwMll4eqP+s/AcnfBES@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwSIaZ2wPmXMmh0M6NLmpMKXTcOGyWM6UGSXKmeL7rwaKlMXJeI
+	cyR4Y0IR9nAvY7PCzqucM5CKRbnBEMq26r4UDN59qrac2y11t2vP2GnkhC4KCorHfg2uCjKh8MF
+	bEURrKDmGVdVjHqN1A28zqIH+jdSq0H4=
+X-Gm-Gg: ASbGnctUj+I+oj/KPw5yw5bdCmlb37ljun0rnF/lRxotEihiNI7+RL2EHuxSHpz8PNR
+	AegARaBbT2TfDntW2MAY+zTgdLZKtcm/Yi8DMa2dNt0SPna/Ptk6r4nWq1B8wkZ16h3W+vTOcB9
+	SVgzRwej4vBElwKB2FVSMUKOaXa5FzvzvDig1AgIgiBbgZPTCm4DOfjBDjcW18SKFmr3vitvZ5X
+	g9wgycUFucCsAUFTmuZlcDFHccfxUSpviYiLKzS
+X-Google-Smtp-Source: AGHT+IHrjx0XfB3NQHdqBt66Ox1dwY4oj3I0wMxztSwqqFAAkQnhEkK0QBLdnresO+RuCvDJitimjmBRn2YZHsgZxpk=
+X-Received: by 2002:a05:622a:3d2:b0:4d9:ea03:74f8 with SMTP id
+ d75a77b69052e-4da473535b8mr6186491cf.16.1758730685377; Wed, 24 Sep 2025
+ 09:18:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Ah_uXtpTlO07
-Date: Tue, 23 Sep 2025 21:11:42 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Finn Thain" <fthain@linux-m68k.org>
-Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Peter Zijlstra" <peterz@infradead.org>, "Will Deacon" <will@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Boqun Feng" <boqun.feng@gmail.com>, "Jonathan Corbet" <corbet@lwn.net>,
- "Mark Rutland" <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k@vger.kernel.org,
- "Lance Yang" <lance.yang@linux.dev>
-Message-Id: <da6cf99f-6da9-4cf7-9028-79580a8d7b2a@app.fastmail.com>
-In-Reply-To: <3b55179e-b290-bbf5-fdf2-bb7834884017@linux-m68k.org>
-References: <cover.1757810729.git.fthain@linux-m68k.org>
- <abf2bf114abfc171294895b63cd00af475350dba.1757810729.git.fthain@linux-m68k.org>
- <CAMuHMdUgkVYyUvc85_P9TyTM5f-=mC=+X=vtCWN45EMPqF7iMg@mail.gmail.com>
- <6c295a4e-4d18-a004-5db8-db2e57afc957@linux-m68k.org>
- <57ac401b-222b-4c85-b719-9e671a4617cf@app.fastmail.com>
- <86be5cf0-065e-d55d-fdb6-b9cf6655165e@linux-m68k.org>
- <d707b875-8e3c-4c18-a26f-bf2c5f554bc2@app.fastmail.com>
- <3b55179e-b290-bbf5-fdf2-bb7834884017@linux-m68k.org>
-Subject: Re: [RFC v2 2/3] atomic: Specify alignment for atomic_t and atomic64_t
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+References: <20250913003842.41944-1-safinaskar@gmail.com> <ffbf1a04-047d-4787-ac1e-f5362e1ca600@csgroup.eu>
+In-Reply-To: <ffbf1a04-047d-4787-ac1e-f5362e1ca600@csgroup.eu>
+From: Alexander Patrakov <patrakov@gmail.com>
+Date: Thu, 25 Sep 2025 00:17:39 +0800
+X-Gm-Features: AS18NWB-xeGoRDKYPj3kUYXUnKXLhFMFvvc0QyoLpOeKcP1DsD-enKeBhlulfsI
+Message-ID: <CAN_LGv3Opj9RW0atfXODy-Epn++5mt_DLEi-ewxR9Me5x46Bkg@mail.gmail.com>
+Subject: Re: [PATCH RESEND 00/62] initrd: remove classic initrd support
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Askar Safin <safinaskar@gmail.com>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>, 
+	Jens Axboe <axboe@kernel.dk>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	Aleksa Sarai <cyphar@cyphar.com>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+	Julian Stecklina <julian.stecklina@cyberus-technology.de>, 
+	Gao Xiang <hsiangkao@linux.alibaba.com>, Art Nikpal <email2tema@gmail.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Eric Curtin <ecurtin@redhat.com>, 
+	Alexander Graf <graf@amazon.com>, Rob Landley <rob@landley.net>, 
+	Lennart Poettering <mzxreary@0pointer.de>, linux-arch@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, 
+	Ingo Molnar <mingo@redhat.com>, linux-block@vger.kernel.org, initramfs@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	"Theodore Y . Ts'o" <tytso@mit.edu>, linux-acpi@vger.kernel.org, Michal Simek <monstr@monstr.eu>, 
+	devicetree@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Thorsten Blum <thorsten.blum@linux.dev>, Heiko Carstens <hca@linux.ibm.com>, patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 23, 2025, at 10:05, Finn Thain wrote:
-> On Tue, 23 Sep 2025, Arnd Bergmann wrote:
->> On Tue, Sep 23, 2025, at 08:28, Finn Thain wrote:
->>
->> Maybe we should just change __alignof__(unsigned long long) to a plain 
->> '8' here and make that the minimum alignment everywhere, same as the 
->> atomic64_t alignment change.
->> 
+On Tue, Sep 23, 2025 at 8:22=E2=80=AFPM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
 >
-> It would be better (less wasteful of memory) to specify the alignment 
-> parameter to kmem_cache_create() only at those call sites where it 
-> matters.
-
-I think that's the idea: __alignof__(unsigned long long) is the
-alignment that the ABI requires for allocating arbitrary data
-structures that may contain 64-bit integers, so this is already
-the minimum. Architectures that may have noncoherent DMA master
-devices often need to raise the ARCH_KMALLOC_MINALIGN to the cache
-line size but leave the ARCH_SLAB_MINALIGN at the ABI-required
-minimum value. Any caller that needs a higher alignment than the
-ABI minimum needs to specify that.
-
->> Alternatively, we can keep the __alignof__ here in order to reduce 
->> padding on architectures with a default 4-byte alignment for __u64, but 
->> then override ARCH_SLAB_MINALIGN and ARCH_KMALLOC_MINALIGN on m68k to be 
->> '4' instead of '2'.
->> 
 >
-> Raising that to 4 would probably have little or no effect (for m68k or any 
-> other arch). Back when I prepared the RFC patch series, I instrumented 
-> create_cache() in mm/slab_common.c, and those caches that were allocated 
-> at boot (for my usual minimal m68k .config) were already aligned to 4 
-> bytes or 16.
+>
+> Le 13/09/2025 =C3=A0 02:37, Askar Safin a =C3=A9crit :
+> > [Vous ne recevez pas souvent de courriers de safinaskar@gmail.com. D=C3=
+=A9couvrez pourquoi ceci est important =C3=A0 https://aka.ms/LearnAboutSend=
+erIdentification ]
+> >
+> > Intro
+> > =3D=3D=3D=3D
+> > This patchset removes classic initrd (initial RAM disk) support,
+> > which was deprecated in 2020.
+> > Initramfs still stays, and RAM disk itself (brd) still stays, too.
+> > init/do_mounts* and init/*initramfs* are listed in VFS entry in
+> > MAINTAINERS, so I think this patchset should go through VFS tree.
+> > This patchset touchs every subdirectory in arch/, so I tested it
+> > on 8 (!!!) archs in Qemu (see details below).
+> > Warning: this patchset renames CONFIG_BLK_DEV_INITRD (!!!) to CONFIG_IN=
+ITRAMFS
+> > and CONFIG_RD_* to CONFIG_INITRAMFS_DECOMPRESS_* (for example,
+> > CONFIG_RD_GZIP to CONFIG_INITRAMFS_DECOMPRESS_GZIP).
+> > If you still use initrd, see below for workaround.
+>
+> Apologise if my question looks stupid, but I'm using QEMU for various
+> tests, and the way QEMU is started is something like:
+>
+> qemu-system-ppc -kernel ./vmlinux -cpu g4 -M mac99 -initrd
+> ./qemu/rootfs.cpio.gz
+>
+> I was therefore expecting (and fearing) it to fail with your series
+> applied, but surprisingly it still works.
+>
+> Therefore is it really initrd you are removing or just some corner case
+> ? If it is really initrd, then how does QEMU still work with that
+> -initrd parameter ?
 
-Ok
+The QEMU -initrd parameter is a misnomer. It can be used to pass an
+initrd or an initramfs, and the kernel automatically figures out what
+it is. What you are passing is an initramfs (a gzipped cpio archive
+with all the files), which is a modern and supported use case.
 
-> Also, increasing ARCH_SLAB_MINALIGN to 8 didn't solve the VFS/TTY layer 
-> problem I have with CONFIG_DEBUG_ATOMIC on m68k. So the culprit is not the 
-> obvious suspect (a kmem cache of objects with atomic64_t members). There's 
-> some other allocator at work and it's aligning objects to 2 bytes not 4.
-
-In that case, my guess would be something that concatenates structures
-in some variant of
-
-struct s1 {
-     int a;
-     short b;
-     int rest[];
-};
-
-struct s2 {
-     atomic_t a;
-};
-
-     struct s1 *obj1 = kmalloc(sizeof(struct s1) + sizeof(struct s2), GFP_KERNEL);
-     struct s2 *obj2 = (void*)&obj1[1];
-
-which causes problems because s2 has a larger alignment than s1.
-We've had problems with DMA to structures like this in the past.
-
-The more common construct that does
-
-struct s1 {
-     short a;
-     struct s2;
-};
-
-should not produce misaligned members in the inner struct,
-unless the outer one has a __packed attribute. Unfortunately
-we disabled -Wpacked-not-aligned, which would otherwise catch
-that problem.
-
-     Arnd
+--=20
+Alexander Patrakov
