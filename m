@@ -1,144 +1,68 @@
-Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AACE41D90DD;
-	Tue, 30 Sep 2025 02:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08237153BE9
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 30 Sep 2025 02:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759198710; cv=none; b=Bb983A4IjQr3gk1rA7ErniU7hE2zAx7bWUi+pj+7BL57RkRHcnLqGY1i1pQHmYMRFDCV1rVZipT0+WDFqBO4mnSP2yDIxBstXS5q55cHbp77HgCljLRu1whidKECsIWlzHmEfobdyCbI+vK6Oi3zLxD8CYytotkLrUki9s3Yc7w=
+	t=1759200869; cv=none; b=fBCHufHACBz+H9loySHrjtOCbbT4KezanMcRAJRmGn+GFLsRTv8+8928M46OZZF0FQbrw7E3QVcaEZIGFbPzT3lbreaFeDkfywwNwMO5j5m4MdPOPemOA4G2rwQp8OabBOIvU4VGzenWyZZvu+jsKp6VwvZpGj+9fJZ3g+Kat18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759198710; c=relaxed/simple;
-	bh=zwmI4fi1gUlKKuIqdfNOTlqHa1rvM+fktGwKmYh2zRA=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=oGCYpr3Zp53VXf6U8L9FyQR7JLsZ62RNudEQFPkkRHvI61NWzEiZXnlD+WYDXEM0jOgt+8NO2p49AcBnGMjGGqIYoRUPZp+Z98mF8791ugOcrg/qiSULKSfWI5IsSSk3509eTs1zQyvHqM2P5FQXhUviWNAp7gMh7KXH7wMvv5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rcdMVqr2; arc=none smtp.client-ip=202.12.124.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1759200869; c=relaxed/simple;
+	bh=je3gIsAsl9yWB2e7Ll3nCfkjmu8FWFLvgLuURNmUVzU=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=KJsu0AzdW/YYbQoScvNcE18UymjMGUC57hQOivQKlusPwrA1ivJwralzKXFyatqWHFLt96Ng4/VEYIOCO0G9B/kd/+ygeW3JD5XFpBG4niGfVnUnSEnAU7PRsqgCLDqeDXtmvN1JI6fp6xYJ8CljTfpI2Pooiwq3XgzxJWggs9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KOG3b+o8; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rcdMVqr2"
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.stl.internal (Postfix) with ESMTP id 77C851D0009F;
-	Mon, 29 Sep 2025 22:18:26 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Mon, 29 Sep 2025 22:18:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1759198706; x=1759285106; bh=j5IHdNjhYZKz/YGLkmQrITb2jP7tOnqjnYw
-	EbmqU8g4=; b=rcdMVqr2pmErDpuubXeYNaUOzdqbXfzDA2pxKgweiBUGGJvFejR
-	qru9kwV53qT47G+8XmPG514yGBz8bdlOjbBwVXTQ9uc+lWcT7cXJD6NSkF2VtzPs
-	wLammHa5gC23/KQp1wwJWWDy/W3SC4PDbA5gU/oIwa6ojqDDyMTmGgJg3LsqPCZM
-	0nmx/ZXO9DRMM+FXONvnB0U284dG/VPjBcVsbdOkZTH+87rYLi1rL4GDkeN37e4G
-	bCSCnF3g/aE0WEeimyiS4Wo4F8Zmb2CtH4wevqjjgpvmyWZJe7IVMR8FAzZo5DL6
-	M8cg/T4oW3I2DHN/EbYNyDmNzc4K8rjzwTA==
-X-ME-Sender: <xms:8D3baEXngSJ8Bj_McMpel1A2uHV6BLCjR34It1LkSml_jTOO987mng>
-    <xme:8D3baAtIspvXaB02GU6Y314vhb2_erg2cTIlZPi0qEVoum5nYQD9kMAS51NAZ2fuM
-    DyQNLMH7G1yO8fgoXGwF_noivn-yJxIzBbcYmfGuyauICA6-oRnPlI>
-X-ME-Received: <xmr:8D3baH6cXzVEZSAjiklZC1mdpUVERfud56QLRlm3Q1fMt4A9Ps6_TD2Tnp6tpLbuMcgbqAdd0PtIHMlwwMjaJkBpnbDD6Kq0M1c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdejleeiiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
-    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueehueel
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthh
-    grihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepuddvpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopegrrhhnugesrghrnhgusgdruggvpdhrtghpth
-    htohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepphgvthgv
-    rhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnhgvlh
-    drohhrghdprhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdho
-    rhhgpdhrtghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpth
-    htoheptghorhgsvghtsehlfihnrdhnvghtpdhrtghpthhtohepmhgrrhhkrdhruhhtlhgr
-    nhgusegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrh
-    drkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:8D3baDRU4XpRsXkNwWEg1kUHRauXJTg9Yd1BgMae7NtuWeslv88y2w>
-    <xmx:8D3baKuzd_gj-q5s-27IXj9jT392NsiSNXQxQ-YHiy9gyCCtzyMw-g>
-    <xmx:8D3baF_BdKeWoA_3gxYc93V5_caHBnVmvP7vepEogrRCy1rzzpkFXQ>
-    <xmx:8D3baDy673D4S580cSjV4tiDCHqRRWZ6E1E_hk4XQE9tVHJNJPcSZw>
-    <xmx:8j3baBJFsPQl4_-2VESjoUfhPp5do53Grecm9v68XGE4ejHuEXMhJWnO>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 29 Sep 2025 22:18:23 -0400 (EDT)
-Date: Tue, 30 Sep 2025 12:18:21 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Arnd Bergmann <arnd@arndb.de>
-cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-    Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, 
-    Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k@vger.kernel.org, 
-    Lance Yang <lance.yang@linux.dev>
-Subject: Re: [RFC v2 2/3] atomic: Specify alignment for atomic_t and
- atomic64_t
-In-Reply-To: <86be5cf0-065e-d55d-fdb6-b9cf6655165e@linux-m68k.org>
-Message-ID: <ec2982e3-2996-918e-f406-32f67a0decfe@linux-m68k.org>
-References: <cover.1757810729.git.fthain@linux-m68k.org> <abf2bf114abfc171294895b63cd00af475350dba.1757810729.git.fthain@linux-m68k.org> <CAMuHMdUgkVYyUvc85_P9TyTM5f-=mC=+X=vtCWN45EMPqF7iMg@mail.gmail.com> <6c295a4e-4d18-a004-5db8-db2e57afc957@linux-m68k.org>
- <57ac401b-222b-4c85-b719-9e671a4617cf@app.fastmail.com> <86be5cf0-065e-d55d-fdb6-b9cf6655165e@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KOG3b+o8"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id DB4816020A;
+	Tue, 30 Sep 2025 02:54:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E3C1C4CEF4;
+	Tue, 30 Sep 2025 02:54:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759200866;
+	bh=je3gIsAsl9yWB2e7Ll3nCfkjmu8FWFLvgLuURNmUVzU=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=KOG3b+o8oREVCaX33RNp7PegVdjypRS3e4B4AArfLRXcy6kjpa/Kzubvs5rPUSZ/q
+	 oRlTtAidDOmA7SD/hxnjKu8P417VOpDBwyHmtc+r5M4ElcrrUTZ/PVpegF2OudYwJJ
+	 bl3Bd0fMGO09NB0zxeBymu9O6FujBDYqHF343sjwWNEZJW8wy/g3u7kMKsApyDbLEz
+	 bE1hLZwsSmE+f4+DC38duVER/4AB8KxCpq3WjlcQyLHZa7khBFI4ixgFt82bmXqtXJ
+	 2N0Vw2AH1lUysfwr1rm1QFCJ3qcsuucSHyVPxA9JAAaT0vs96qZw4t5j6nQ8sCSHNB
+	 e9UV/ClnBgEow==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33FEB39D0C1A;
+	Tue, 30 Sep 2025 02:54:21 +0000 (UTC)
+Subject: Re: [GIT PULL] m68k updates for v6.18
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250929091005.2829122-1-geert@linux-m68k.org>
+References: <20250929091005.2829122-1-geert@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250929091005.2829122-1-geert@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.18-tag1
+X-PR-Tracked-Commit-Id: 695f2c0c25f3c844f9dd177d20c1e8afc55df1ac
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f1004b2f19d7e9add9d707f64d9fcbc50f67921b
+Message-Id: <175920085973.1805104.16407289749945630957.pr-tracker-bot@kernel.org>
+Date: Tue, 30 Sep 2025 02:54:19 +0000
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 
+The pull request you sent on Mon, 29 Sep 2025 11:10:05 +0200:
 
-On Tue, 23 Sep 2025, I wrote:
+> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.18-tag1
 
-> 
-> ... there's still some kmem cache or other allocator somewhere that has 
-> produced some misaligned path and dentry structures. So we get 
-> misaligned atomics somewhere in the VFS and TTY layers. I was unable to 
-> find those allocations.
-> 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f1004b2f19d7e9add9d707f64d9fcbc50f67921b
 
-It turned out that the problem wasn't dynamic allocations, it was a local 
-variable in the core locking code (kernel/locking/rwsem.c): a misaligned 
-long used with an atomic operation (cmpxchg). To get natural alignment for 
-64-bit quantities, I had to align other local variables as well, such as 
-the one in ktime_get_real_ts64_mg() that's used with 
-atomic64_try_cmpxchg(). The atomic_t branch in my github repo has the 
-patches I wrote for that.
+Thank you!
 
-To silence the misalignment WARN from CONFIG_DEBUG_ATOMIC, for 64-bit 
-atomic operations, for my small m68k .config, it was also necesary to 
-increase ARCH_SLAB_MINALIGN to 8. However, I'm not advocating a 
-ARCH_SLAB_MINALIGN increase, as that wastes memory. I think it might be 
-more useful to limit the alignment test for CONFIG_DEBUG_ATOMIC, as 
-follows.
-
-
-diff --git a/include/linux/instrumented.h b/include/linux/instrumented.h
-index 402a999a0d6b..cd569a87c0a8 100644
---- a/include/linux/instrumented.h
-+++ b/include/linux/instrumented.h
-@@ -68,7 +68,7 @@ static __always_inline void instrument_atomic_read(const volatile void *v, size_
- {
- 	kasan_check_read(v, size);
- 	kcsan_check_atomic_read(v, size);
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ATOMIC) && ((unsigned long)v & (size - 1)));
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ATOMIC) && ((unsigned long)v & (size - 1) & 3));
- }
- 
- /**
-@@ -83,7 +83,7 @@ static __always_inline void instrument_atomic_write(const volatile void *v, size
- {
- 	kasan_check_write(v, size);
- 	kcsan_check_atomic_write(v, size);
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ATOMIC) && ((unsigned long)v & (size - 1)));
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ATOMIC) && ((unsigned long)v & (size - 1) & 3));
- }
- 
- /**
-@@ -98,7 +98,7 @@ static __always_inline void instrument_atomic_read_write(const volatile void *v,
- {
- 	kasan_check_write(v, size);
- 	kcsan_check_atomic_read_write(v, size);
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ATOMIC) && ((unsigned long)v & (size - 1)));
-+	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ATOMIC) && ((unsigned long)v & (size - 1) & 3));
- }
- 
- /**
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
