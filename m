@@ -1,117 +1,105 @@
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C34F22B8AB;
-	Mon,  6 Oct 2025 10:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E7B1B0F11;
+	Mon,  6 Oct 2025 10:31:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759746157; cv=none; b=IksYwJjcSWN9nTRPC2o7ElH+7qKI37Hfo5/ittdlyz1+qw6X8zfURkGOG5nuQeSyCMGHFD6RzWcqeW6aYV5x4ey727jG/PYjOFLY9jYyYef0f2gl2nRuJmmzO1ulBgM20ByXvefpWr2vONGZFQ1B46GFipf48aaNpgvCtqNRUAc=
+	t=1759746685; cv=none; b=ipBdWE1dpf31JQPsEsxcNxH1TeC0UTSavlP3S/wvmOonLKoUgB/j4u92JhxbByHz7C/mq9ag6bLosNKfvB5fHxuI336KwxSdGmKcKXrwqO8ZjeG34dRtgS45bKjtuOUOUBRR7NdIvKGAp8g84yKWnWR8pU2OsmwvTaMjSSwmuic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759746157; c=relaxed/simple;
-	bh=RWB8LdLzeKP9Rj8M796qQePt0MqCr8q+l9MZCniVCkE=;
+	s=arc-20240116; t=1759746685; c=relaxed/simple;
+	bh=b+CNaA3oh8r6e/OAlITi9nu9rHrLqnEFHAYZxcvagNg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=prmjNT8bmnHudsYhV7dCrqH24mAhRKPFaE+DAolg0aeriHHsCrrmTdg3eQtSLAemVkjYctAetdsM9TmzFS/vW2bAWtRHL3MCUeJ1WVoOH8p0Tqx84GpWihnebD/sVMOTsKKCf96KEn8XTi1peWlXaV3IHtYmdsSPOHt97kefjdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=InQdX/pQ; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=N21kCTZ5mdCpiOU2CR3B8EZ84WxoArA91iCidEneo9H8JhwgHPAjvmhaU/Owsy7IJtyiAezAzrraoV0fEPpigN9LA5UyHNkpTL4sj1a8z+ZSLkNq13xGIhon6gInnvN7vwsBALxnEe+lJslprfp3HTfQiYfUgdZhAchBDRcWUoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UI/4M3nl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NtpGNc3M; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="InQdX/pQ"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=SeCyiSXFpxhnjR3QB+ng4nXlKTTmpqXiFGZBf0t4NWI=; b=InQdX/pQ+ItKhGdnROX2jwBeL6
-	WUh8BnnvAV8uvo6jJQlXpL27GKvqHKjbVzOIjb/p4ETjEqd8/4gp71INIyCNGzEUuOF0wAM9+Rtme
-	+2kSlD9nRZ9SHijekYjOmpWHjhm2QjEhrP+Eu0DX8NTc+a7ioBn/tV3URslvLTR/s5fjJp1DbJgy0
-	nnzbnKxPl7zlmXx1lf4hhkIl7zyJvcVE1YFNIsxzSYYOKYKU355WY4xXYMEs7LG0oDyP5Xe2YTUR0
-	Dq6GaBgJcXQP89dewm3jNl+xgjvbuIjw1hBaNn2LATNhR0MHoqo+Pr/YIejP5ceBpeCY5pvJQWsq5
-	mjNnK2Kg==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1v5iMO-00000009bJH-38AL;
-	Mon, 06 Oct 2025 10:22:30 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id A09E8300212; Mon, 06 Oct 2025 12:22:28 +0200 (CEST)
-Date: Mon, 6 Oct 2025 12:22:28 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Finn Thain <fthain@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Will Deacon <will@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-	Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-	Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k@vger.kernel.org,
-	Lance Yang <lance.yang@linux.dev>
-Subject: Re: [RFC v2 2/3] atomic: Specify alignment for atomic_t and
- atomic64_t
-Message-ID: <20251006102228.GT3245006@noisy.programming.kicks-ass.net>
-References: <cover.1757810729.git.fthain@linux-m68k.org>
- <abf2bf114abfc171294895b63cd00af475350dba.1757810729.git.fthain@linux-m68k.org>
- <CAMuHMdUgkVYyUvc85_P9TyTM5f-=mC=+X=vtCWN45EMPqF7iMg@mail.gmail.com>
- <6c295a4e-4d18-a004-5db8-db2e57afc957@linux-m68k.org>
- <57ac401b-222b-4c85-b719-9e671a4617cf@app.fastmail.com>
- <86be5cf0-065e-d55d-fdb6-b9cf6655165e@linux-m68k.org>
- <ec2982e3-2996-918e-f406-32f67a0decfe@linux-m68k.org>
- <e02f861b-706c-4f6d-bded-002601da954a@app.fastmail.com>
- <257a045a-f39d-8565-608f-f01f7914be21@linux-m68k.org>
- <d9e3f41e-d152-4382-bb99-7b134ff9f26f@app.fastmail.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UI/4M3nl";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NtpGNc3M"
+Date: Mon, 6 Oct 2025 12:31:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1759746682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F9Vm+6SJzGBd5zjp+yPXjTWbX+rAQXleybVGXQfhq7o=;
+	b=UI/4M3nlqJnAYlqpT17Mseq7S2zJU8z1njhf96Gz7gEYUYXML597UuNBUEbJ6EM+DCIyEw
+	sFS2Z/dbJrkqtrs8DXwSv9eeeMjO/w0aZ+zPwpoMzQfiLdTPMVdZpQKtNwxIaTzSUFRU7w
+	AWa652iFBakQ6IHxGySS9Kei3DOTrUUuTowp6bF8n2HzVlHVwIidCb8pMTFmMdjHjoMwft
+	o6cIGM3Im05QeOcWv7kYmnw7zqv74fNX+0p6Y4DkEeWmJ4pv5p5pDmr+sXmbkBkjKFdZRt
+	fkcRooj+2vXghK3Br2p71oIUj1NKNlSPCViHT4ObCaZA615rn7nku8p8I7itIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1759746682;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F9Vm+6SJzGBd5zjp+yPXjTWbX+rAQXleybVGXQfhq7o=;
+	b=NtpGNc3MOmhSzinQtDWvHhLii8O9bWFP0LRgQ0Q/2w77f7fPY0q7BmX4iHGfaRsHHkT5us
+	rh4qI44lVzvruvDg==
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas.schier@linux.dev>, linux-kbuild@vger.kernel.org, linux-m68k@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: uapi: Strip comments before size type check
+Message-ID: <20251006122254-b3b3f96f-67e5-4223-a040-79c845097f6d@linutronix.de>
+References: <6e68ab921a728caea4f3f37bfae9b1896edfa97a.1759740354.git.geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <d9e3f41e-d152-4382-bb99-7b134ff9f26f@app.fastmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6e68ab921a728caea4f3f37bfae9b1896edfa97a.1759740354.git.geert@linux-m68k.org>
 
-On Mon, Oct 06, 2025 at 12:07:24PM +0200, Arnd Bergmann wrote:
+On Mon, Oct 06, 2025 at 10:49:28AM +0200, Geert Uytterhoeven wrote:
+> On m68k, check_sizetypes in headers_check reports:
+> 
+>     ./usr/include/asm/bootinfo-amiga.h:17: found __[us]{8,16,32,64} type without #include <linux/types.h>
+> 
+> This header file does not use any of the Linux-specific integer types,
+> but merely refers to them from comments, so this is a false positive.
+> As of commit c3a9d74ee413bdb3 ("kbuild: uapi: upgrade check_sizetypes()
+> warning to error"), this check was promoted to an error, breaking m68k
+> all{mod,yes}config builds.
 
-> It looks like Mark Rutland fixed the try_cmpxchg() function this
-> way in commit ec570320b09f ("locking/atomic: Correct (cmp)xchg()
-> instrumentation"), but for some reason we still have the wrong
-> annotation on the atomic_try_cmpxchg() helpers.
+This commit has been in -next for some time. Any idea why the issue did
+not show up there?
 
-> Mark, I've tried to modify your script to produce that output,
-> the output looks correct to me, but it makes the script more
-> complex than I liked and I'm not sure that matching on
-> "${type}"="p" is the best way to check for this.
+> Fix this by stripping simple comments before looking for Linux-specific
+> integer types.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I don't see anything wrong with this. The result looks good.
+Reviewed-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
 
-> diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
-> index 592f3ec89b5f..9c1d53f81eb2 100755
-> --- a/scripts/atomic/gen-atomic-instrumented.sh
-> +++ b/scripts/atomic/gen-atomic-instrumented.sh
-> @@ -12,7 +12,7 @@ gen_param_check()
->  	local arg="$1"; shift
->  	local type="${arg%%:*}"
->  	local name="$(gen_param_name "${arg}")"
-> -	local rw="write"
-> +	local rw="atomic_write"
->  
->  	case "${type#c}" in
->  	i) return;;
-> @@ -20,14 +20,17 @@ gen_param_check()
->  
->  	if [ ${type#c} != ${type} ]; then
->  		# We don't write to constant parameters.
-> -		rw="read"
-> +		rw="atomic_read"
-> +	elif [ "${type}" = "p" ] ; then
-> +		# The "old" argument in try_cmpxchg() gets accessed non-atomically
-> +		rw="read_write"
->  	elif [ "${meta}" != "s" ]; then
->  		# An atomic RMW: if this parameter is not a constant, and this atomic is
->  		# not just a 's'tore, this parameter is both read from and written to.
-> -		rw="read_write"
-> +		rw="atomic_read_write"
->  	fi
->  
-> -	printf "\tinstrument_atomic_${rw}(${name}, sizeof(*${name}));\n"
-> +	printf "\tinstrument_${rw}(${name}, sizeof(*${name}));\n"
->  }
->  
->  #gen_params_checks(meta, arg...)
+> ---
+>  usr/include/headers_check.pl | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/usr/include/headers_check.pl b/usr/include/headers_check.pl
+> index 21c2fb9520e6af2d..75dfdce39e7f4610 100755
+> --- a/usr/include/headers_check.pl
+> +++ b/usr/include/headers_check.pl
+> @@ -155,6 +155,9 @@ sub check_sizetypes
+>  	if (my $included = ($line =~ /^\s*#\s*include\s+[<"](\S+)[>"]/)[0]) {
+>  		check_include_typesh($included);
+>  	}
+> +	# strip comments (single-line and C99 only)
+> +	$line =~ s@\/\*.*?\*\/@@;
+> +	$line =~ s@\/\/.*$@@;
+
+C99/C++ comments are rejected in UAPI headers, so this line can be dropped.
+
+>  	if ($line =~ m/__[us](8|16|32|64)\b/) {
+>  		printf STDERR "$filename:$lineno: " .
+>  		              "found __[us]{8,16,32,64} type " .
+> -- 
+> 2.43.0
 > 
