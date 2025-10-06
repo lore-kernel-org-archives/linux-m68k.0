@@ -1,128 +1,147 @@
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE25170A11;
-	Mon,  6 Oct 2025 11:09:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C79233155
+	for <linux-m68k@vger.kernel.org>; Mon,  6 Oct 2025 11:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759748972; cv=none; b=aaIVmFAlqOtvxngd9SIfQ8yrRXhFxkH4YZXApgQXR8XoJPwAViaJcQ4G8Bgzthit0H3RyfX0QpjCId58s3VwUTjec90SLYgB+Fh3CiHRP+fRqWbPvV5H0NUqmY2C4pNunBmuPQ0eItk/NsMWotS3wOjD4r0K+VsMtoDsILFE0Hs=
+	t=1759749737; cv=none; b=A9j9T2T21FR7M2onvJ1G0TI8PitXzERZyvKW8zpG2IJhZCvZcPksUlDyK2sIcDc2Hp5B2BEFcJI39giVIzJkFdB9d8d7ARGrv4vfMJpi9dOKoHzNcg/lpvJCxLAYLRihB0EHRrU+DheVy/8l54rN4/wZtWuthiMMm3iispVbj/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759748972; c=relaxed/simple;
-	bh=iiNffHnTx8Pb202eharTBuQvX3jDw0eC9DrGa8U6EQA=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=loDOXuJk7WhoYfmKbGp4zcmt1jFP8GqCHOIr8bk59w6gcfhpBUWwIW434DQV4cesfJNx/PGTtSQa6wY/nBzaxKFp8QkD3CO/4MioHRtBoLHnI8KeQ5Zs0tTeOAb7hQWq1yMm//ZqyTbkELIP6mEk8i1ouwHzXsto2fRDsDj5la8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=L0W0W0zr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=csGpiTI/; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="L0W0W0zr";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="csGpiTI/"
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfout.phl.internal (Postfix) with ESMTP id 93285EC00DE;
-	Mon,  6 Oct 2025 07:09:28 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-06.internal (MEProxy); Mon, 06 Oct 2025 07:09:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1759748968;
-	 x=1759835368; bh=oQr2Z+5xhGdK3c4D5pXVny9a8KKlRowOFGyX0jHZkFk=; b=
-	L0W0W0zrDIxkRpMNjsP0GpnYr49Zm7NbXvAr3HV4YnE/L1NQuSKvD/6o9bS6/0G+
-	OTxSxNPQKiCQTS0jilYj/ug0+Tzejh/fEM+viQKDVE9Bf0JDFYWZ0AdwdrUZpCjr
-	tYyY7dBZw5OReKhGRdPyB1/BcGAVwUfVa9dV8B+qoha7LC83dMphyoOkiJXSQm2h
-	SOGm/uoQpP93QhcMi0K3IVbtrz24TuhqbPY4X2WGzvL+z+Frp2geDqmavLI1CHbU
-	6vvkd7H3RZA/kURLGxpbIqyczcFH5eGVcvtDdk2qTYUkhDaMDpCxDULGrKxBCu+b
-	dv3TgkErgUaay43QWw/jLQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1759748968; x=
-	1759835368; bh=oQr2Z+5xhGdK3c4D5pXVny9a8KKlRowOFGyX0jHZkFk=; b=c
-	sGpiTI/QyhntH9oqno6KaikRMNh64/fbq2nUe0r3iiQPpiht8ZstyHst0ctTGzOm
-	Dbn/TwJcHL2tI8+FxO+dyU0M2Lh7nrJ6yC5L4jqdzEmOnfKTyBUkXO7OsBWz6Qfk
-	ovubapVYBxxVcnxx80ZfbEhsFf76SwefyULb4m+BPY0c1DqqCIfOZ/NaiyAevInh
-	MBuboA/2BvU1HhVUyunCLaIgSNEiMm4oG1ofbASLYCynQFpY/0ENmYXeK3J2E9/9
-	KldBnmz+uREeipvmhuEOvgpfDxtpF69NTz7wlhC5EnrpoLJdGTGNrcdAjTRFLRst
-	ykPmOvIpXhKqZA/FCtf1w==
-X-ME-Sender: <xms:Z6PjaBSeap3uRzX5Hfxsbtc9YjxTnLko18CYpLvxnYeZhDkr277K9Q>
-    <xme:Z6PjaCv90eZGDOM0u3pJNRH0JnN_kbmpEywY-cKHhVHUOSvhmY6cr0_UDXVPiTuen
-    NZzdg7J7AeycJ-_hl7OrkJjde1b4OUDElK3OOfJwHjM0VqX7uDOog>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdeljeefkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
-    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
-    hnpefhtdfhvddtfeehudekteeggffghfejgeegteefgffgvedugeduveelvdekhfdvieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
-    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeduvddpmhhouggvpehsmhhtphhouhht
-    pdhrtghpthhtohepmhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtoh
-    epsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepphgvthgvrhii
-    sehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhg
-    pdhrtghpthhtohepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtth
-    hopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlrghntggv
-    rdihrghngheslhhinhhugidruggvvhdprhgtphhtthhopegtohhrsggvtheslhifnhdrnh
-    gvth
-X-ME-Proxy: <xmx:Z6PjaBX0cBgZ2CgBOyBd1TwdSkWiBoruyUO9s2Oxz5LB3GQA-d106Q>
-    <xmx:Z6PjaLStS_r5Errx1Qi3eBp4-QOpj97zD9y-2P-QDtT8L6KkYbppdQ>
-    <xmx:Z6PjaMvumckM1omos56IlPrzbowiquwXXaL602ABw6FmKpE_MdOIFw>
-    <xmx:Z6PjaMYsOmBqFct7xibtZ4Ln_DgNvjDzJwdIXQDrI9z1dGV5UKFXfQ>
-    <xmx:aKPjaN4wUe5yun1MsuHEzALlD7APlgm3cCx-9X6w9gyiOdeIWKW1goi9>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 98D76700065; Mon,  6 Oct 2025 07:09:27 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1759749737; c=relaxed/simple;
+	bh=Y3Atn65xFGH/0e1A2PaPhs3F2p+GKPI48e94fdpGas4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rkEdFkH1WFmYycH5itEk48HJqD7Y1PAjcErD+4uvQ1RYzhajMOywFhZVpZ/saBM2yKM6Qp8YQp7keoOf+VwakwXczWoa146mOb9RIzOQ2+N3rIeK55I9QrUfq+mSo4joGE5OddWMWkdInsjfPKgYQB+H4Fwg1SwjeRLSBszlLBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-90f6d66e96dso1359590241.0
+        for <linux-m68k@vger.kernel.org>; Mon, 06 Oct 2025 04:22:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759749734; x=1760354534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L5v6YXX9bgIrUD9M85TqnlXajae/PoAZkbY3xvYAmEY=;
+        b=pZOP+HCir33nyHPsJ5slDpOkDwr8jaArSHkZ2/Ib7h5zg5+0MShp7OVWdvgJNsm/nV
+         M8Zkr91ajvJltu2/MSo6GcJJk1geDft75jAx0se+mFWxzl9Y2/kiFpHiO305wL2Ud8rQ
+         9dq/FenkxqBeTqOK71zRnee5ImsUzl1z7c8jeEU17i1vPpPePcXR9maJ9FdUouQe7Xjg
+         nHR5jDn/KQL5K18PNmACDBmVeX75nN58jdX+W5r4rTlM9hKJhysQfhihexf69r7AEacB
+         SULKs4j8fBq46RjsVws7XR+YDZYRhR0SqEfUNXYYFOY+8kW4AvW2whrtwmKYA07uG6+W
+         VHIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV5ACueR+FNkOn1WXUPL7g1PyXXNhkS9apND9eZ74J9gXoMv7mv0tlcpcj9mIWsa6yaEakmo54nibbO@vger.kernel.org
+X-Gm-Message-State: AOJu0YyRtEaQkhNt1ka83EQgceCtXif7d0GQJQtYL/9WgmLM2VqmOG3i
+	rUWGWm1sV737uddOcWhgAb71CAW3rUKUZzvJMVqMCUOvuNn1poXHBJj8yGk2tSXq
+X-Gm-Gg: ASbGnctDXTaq+8De02gEMT1hSk86/eKkUHflCLNTiOYuzPLIaNtauCLju+8SOUGEaYl
+	S1Ff2ScpA/aqDC5qa8dx4vqEqqnMWSs3VbY1MHgRBt1BaTcbrkfVoZdcWV4sfiHDELyXUiGFVz8
+	liNdtTyH6XZGzYWpDZD8O3BQ5irhkWlVSJTXs1qaHWTnr1iSRuqgmflUV9sNo71JceyxsD994AT
+	XQKgC0wWoaV7moTaXsyAD0pYItqmR3gv5KXcJqFH20tlVWdQpH7Vx5xwjFEmKN5et1fAgiaZVVw
+	qhgnglhZQ9AdovpvvMcntrw+hi4v6aSEsFSUojFBo8vLqvQoMpHLMUCq1KrTWPtovDBxOA2UHjV
+	JcpMV2PCXkpi6ixWOJyTZPt/QCRdkYGN+rAPSjeovuYZQGP/9v1VUE/O15+HzE0VwhT2Bsu22Tu
+	od90slF63y/7IqBrnJLhg=
+X-Google-Smtp-Source: AGHT+IH5aBn/62Zw+yjK2aIYVtAjnIVO8Gjng8ExJa9wQ9/4+4SXiytlJLdY1ghJc4/LauGYm9YLZA==
+X-Received: by 2002:a05:6102:8015:b0:5a2:8ace:c921 with SMTP id ada2fe7eead31-5d41cfd5822mr4183857137.4.1759749733572;
+        Mon, 06 Oct 2025 04:22:13 -0700 (PDT)
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com. [209.85.217.51])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5d40c509443sm3295493137.6.2025.10.06.04.22.13
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Oct 2025 04:22:13 -0700 (PDT)
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-5d4018cb45fso2075664137.2
+        for <linux-m68k@vger.kernel.org>; Mon, 06 Oct 2025 04:22:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXS9Gb4zehCaRkRFa0yZ0Df6HMjgIREs+sPb0olxfQMspit9tEZqyCDsbThwVIeAQKAaXpEhcE4PwSq@vger.kernel.org
+X-Received: by 2002:a05:6102:5086:b0:51f:66fc:53b8 with SMTP id
+ ada2fe7eead31-5d41d10c1e6mr3769193137.25.1759749732995; Mon, 06 Oct 2025
+ 04:22:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Ah_uXtpTlO07
-Date: Mon, 06 Oct 2025 13:09:07 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Peter Zijlstra" <peterz@infradead.org>
-Cc: "Finn Thain" <fthain@linux-m68k.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>, "Will Deacon" <will@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Boqun Feng" <boqun.feng@gmail.com>, "Jonathan Corbet" <corbet@lwn.net>,
- "Mark Rutland" <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k@vger.kernel.org,
- "Lance Yang" <lance.yang@linux.dev>
-Message-Id: <92c5af4d-c6e9-43bf-ba2c-ce6627b8d962@app.fastmail.com>
-In-Reply-To: <20251006102228.GT3245006@noisy.programming.kicks-ass.net>
-References: <cover.1757810729.git.fthain@linux-m68k.org>
- <abf2bf114abfc171294895b63cd00af475350dba.1757810729.git.fthain@linux-m68k.org>
- <CAMuHMdUgkVYyUvc85_P9TyTM5f-=mC=+X=vtCWN45EMPqF7iMg@mail.gmail.com>
- <6c295a4e-4d18-a004-5db8-db2e57afc957@linux-m68k.org>
- <57ac401b-222b-4c85-b719-9e671a4617cf@app.fastmail.com>
- <86be5cf0-065e-d55d-fdb6-b9cf6655165e@linux-m68k.org>
- <ec2982e3-2996-918e-f406-32f67a0decfe@linux-m68k.org>
- <e02f861b-706c-4f6d-bded-002601da954a@app.fastmail.com>
- <257a045a-f39d-8565-608f-f01f7914be21@linux-m68k.org>
- <d9e3f41e-d152-4382-bb99-7b134ff9f26f@app.fastmail.com>
- <20251006102228.GT3245006@noisy.programming.kicks-ass.net>
-Subject: Re: [RFC v2 2/3] atomic: Specify alignment for atomic_t and atomic64_t
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+References: <6e68ab921a728caea4f3f37bfae9b1896edfa97a.1759740354.git.geert@linux-m68k.org>
+ <20251006122254-b3b3f96f-67e5-4223-a040-79c845097f6d@linutronix.de>
+In-Reply-To: <20251006122254-b3b3f96f-67e5-4223-a040-79c845097f6d@linutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 6 Oct 2025 13:22:01 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWydvUtYUiT23HcgRA3+6di0sZmVqrAPMGM_v5B208=zw@mail.gmail.com>
+X-Gm-Features: AS18NWCyOXitXU3rGEXUiPmnEZfW-xN2u5xkzC9-zt4O_5XgyELmHdg8FqqTPME
+Message-ID: <CAMuHMdWydvUtYUiT23HcgRA3+6di0sZmVqrAPMGM_v5B208=zw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: uapi: Strip comments before size type check
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas.schier@linux.dev>, 
+	linux-kbuild@vger.kernel.org, linux-m68k@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 6, 2025, at 12:22, Peter Zijlstra wrote:
-> On Mon, Oct 06, 2025 at 12:07:24PM +0200, Arnd Bergmann wrote:
->
->> It looks like Mark Rutland fixed the try_cmpxchg() function this
->> way in commit ec570320b09f ("locking/atomic: Correct (cmp)xchg()
->> instrumentation"), but for some reason we still have the wrong
->> annotation on the atomic_try_cmpxchg() helpers.
->
->> Mark, I've tried to modify your script to produce that output,
->> the output looks correct to me, but it makes the script more
->> complex than I liked and I'm not sure that matching on
->> "${type}"="p" is the best way to check for this.
->
-> I don't see anything wrong with this. The result looks good.
+Hi Thomas,
 
-Thanks for having a look, I've sent it out as a proper patch now.
+On Mon, 6 Oct 2025 at 12:31, Thomas Wei=C3=9Fschuh
+<thomas.weissschuh@linutronix.de> wrote:
+> On Mon, Oct 06, 2025 at 10:49:28AM +0200, Geert Uytterhoeven wrote:
+> > On m68k, check_sizetypes in headers_check reports:
+> >
+> >     ./usr/include/asm/bootinfo-amiga.h:17: found __[us]{8,16,32,64} typ=
+e without #include <linux/types.h>
+> >
+> > This header file does not use any of the Linux-specific integer types,
+> > but merely refers to them from comments, so this is a false positive.
+> > As of commit c3a9d74ee413bdb3 ("kbuild: uapi: upgrade check_sizetypes()
+> > warning to error"), this check was promoted to an error, breaking m68k
+> > all{mod,yes}config builds.
+>
+> This commit has been in -next for some time. Any idea why the issue did
+> not show up there?
 
-      Arnd
+No idea. Looks like the build bots that are still running don't exercise m6=
+8k
+builds on linux-next?
+Perhaps this is just collateral damage of the loss of the kisskb build serv=
+ice?
+
+> > Fix this by stripping simple comments before looking for Linux-specific
+> > integer types.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> Reviewed-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
+
+Thanks!
+
+>
+> > ---
+> >  usr/include/headers_check.pl | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/usr/include/headers_check.pl b/usr/include/headers_check.p=
+l
+> > index 21c2fb9520e6af2d..75dfdce39e7f4610 100755
+> > --- a/usr/include/headers_check.pl
+> > +++ b/usr/include/headers_check.pl
+> > @@ -155,6 +155,9 @@ sub check_sizetypes
+> >       if (my $included =3D ($line =3D~ /^\s*#\s*include\s+[<"](\S+)[>"]=
+/)[0]) {
+> >               check_include_typesh($included);
+> >       }
+> > +     # strip comments (single-line and C99 only)
+> > +     $line =3D~ s@\/\*.*?\*\/@@;
+> > +     $line =3D~ s@\/\/.*$@@;
+>
+> C99/C++ comments are rejected in UAPI headers, so this line can be droppe=
+d.
+
+'git grep "//" -- "*uapi*.h"' disagrees...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
