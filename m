@@ -1,118 +1,113 @@
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA22255222
-	for <linux-m68k@vger.kernel.org>; Tue,  7 Oct 2025 07:43:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882012882DE
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Oct 2025 09:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759822993; cv=none; b=dv0yhJNp+yAptMzIGSBZqqsvvj8xAfjVdr4MdsygRgMyJPNLLi3tLEYSKI63M3ryObndVxwPh6VYA1rLJJX9aVIRB7sp9RVuolp6gRsv+Lg9+h1fYf5jNgrC45hEZcom4AEH3JYQ4iDnc8Htd3O0wbtNVN1KHWrkQ5az5VmewKM=
+	t=1759829016; cv=none; b=K3dekRidY0YO6iWBQJNO7IxaNdZwdY64kthfdnmxZqPthJoEFrOkYutLZR/BL6C4T/mHfLzXkp5yGXMaN3qURwW0oJosw6waCliznrgdEbvmytQyFQaLd9j/wJ0Wh+AmCU+JyGgQ6nqWA75g9HC2gnxAUAK5M3KYt9D8mGH8EeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759822993; c=relaxed/simple;
-	bh=yD3QIkLWD6CmpQEwsafFM6XowJaBglaGuKWBSqHUs7o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qU8ja9aV4qHJIoZlJKabqWiA2LU/rY4WZvpb2TTPoqB9oDUEpYKC8dSzEBbIROhSd7aH22wp88AFHjRHXc7vSUcz4+u4P8YuNC4Krl8B3eaIbQbLd8H/6pamzNktf8veevGblzpJ0XhoJMN8/TNhppJO/n7pQhWbeIMR+micog0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-556f7e21432so4809373137.2
-        for <linux-m68k@vger.kernel.org>; Tue, 07 Oct 2025 00:43:11 -0700 (PDT)
+	s=arc-20240116; t=1759829016; c=relaxed/simple;
+	bh=OyjOTab8mpNvoOfusTuJ3kewJnbeyW2Tdc9RzvHdAeo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q59BXHFYyskPS2QixgOqK+Bak3U2mYHJCr8YdTr0yRngKVabYFxFsHGr1v7IOimVulT7IEPSKXaWtsrhQvUxjSVK6wXxWmji7c0jh/OE4bcgp1x41/yR2aPOo+si1hYIA+9kkizk3SkvbqTFMDtBlpCuDBIw/f+eTAQ2EiB5tK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=JfOWVWX0; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="JfOWVWX0"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7833765433cso7311869b3a.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Oct 2025 02:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=thingy.jp; s=google; t=1759829013; x=1760433813; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8BMrreGYaM+ETQ7wh1dqgwXsdvPXSRmjMBiX7/QH9P8=;
+        b=JfOWVWX0P70KERNXRmp0NkG6qDyd/NU9yMX+KwaBMenGNH5asXbul0n0ajVdicqQgo
+         5KgOfXiCgEtjeo5Yh0F+a4Y0wOzYBv2jVAAfFr6LdHDXwayQR5+Fkfnh7Y5gqXGORLfy
+         JiALDLB3kndD/ev0ETpGEQjgrs/35Y6blGZyc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759822990; x=1760427790;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1759829013; x=1760433813;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=U7xFWmE6FERg0BV2hLFsu2RpZYyTvYQhUdrHdelRqPs=;
-        b=pN8EmNLe7mseWpZpL3kEOUOChGgRn5CDwrWKA2nUrp5KcuaEEssABIt9vlGI2VUf3Q
-         sThefTj1/rek2KquQ7/souSp3+3OOFp7qmUy7MkheHgSm9W8n/3J07DDqHxIjQXHAc8s
-         WMYpddXNjTQ4q3U+zOiqyTmx/a9WvWAK4Qx0lXHxyAC/5iiqSfYTTBcu3wDkznl7fk28
-         djXJx2CJ+z4STS755aY8tlx/Kh6WLqmXYuywD6/2DO84JpkJDOSwpX+YJiNxImi4FJ4P
-         Tj6dPSNzzZRCfoqFd7Fjqzs6Nym9AozeCo4ikCTvHuOcMAO5zuTbQpY7+awEUrI41tPR
-         GmwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1Hvhog66YJZQumnGv+X9bwcOfclMVuWbTxvHQOfJP0yEMBIzd7v/IQ31ZGTFJXO+CyLx7TMiPpCoW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+Er98h5mLAtUWaPXTZn27oo4Jl4b1HBNu4lRcXjTrOxKjQfLc
-	GzoKmnsP2Se7lafXg75iLS3whCwRGIe94yqQ6jD68kw6oy+w8eL9R63k8EPqSEYJ
-X-Gm-Gg: ASbGncvP8kTbCn/OPb80cBVFl5OQm7qlbbE426xEm/muqEQqfqle5Wr6Dt+ERhjW6Rs
-	gG+huSNc0kRaNpS0ZkIZzYUzURo7WAzVfQG7Vt5OvMABbPrauVzKVlanCS+qWlMWyKES3FxwuDc
-	BkBjXbE2FwGRTk6EEEoLoLjhQwqqINsv0HTcg5fe5DkfeK77J3jctSe80fRRP+HaKao4QPI3eg1
-	3Xa10wHmfyixhpk9FYwa4O0gbWjbbD0NhLTkRC2fAgSTKCHRcJeFuoUzBKAaXcpqtFBx7Mh78AU
-	Z2L2dwtpnsa5DbmT+1chiU/B+pjqTTRk+mv69lidmv4o1STOxqeJVU0o7swkiZQimNp7wQG11jD
-	DFIsv2qUrLeZOmgqK7+ON0Vhj4rtNGU2U2nmbcAr5BFnKjUy+BCzPPJuJVkF2Go0+BDHK3Qrf2w
-	qhQCzHA360a2oepS+g0o0=
-X-Google-Smtp-Source: AGHT+IGWdxlVHDNKFh/+x2XEozuMzvPYABUuFZS26aV+LCID951ZrS0sse4pWmKxgHsIJoZjVAHCbA==
-X-Received: by 2002:a05:6102:b15:b0:55d:cfa5:9d52 with SMTP id ada2fe7eead31-5d41d1423e3mr5992329137.27.1759822990433;
-        Tue, 07 Oct 2025 00:43:10 -0700 (PDT)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5d5d383430asm589224137.2.2025.10.07.00.43.09
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Oct 2025 00:43:10 -0700 (PDT)
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-5d3fb34ba53so5011586137.1
-        for <linux-m68k@vger.kernel.org>; Tue, 07 Oct 2025 00:43:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX9DDu9rgdmjLITNw2IOSLm4Tpg3AUW4Pk+zCfF9xYIlnEePNU+Ow+j/d/HUYBFIELr/zvh2hPOmHIg@vger.kernel.org
-X-Received: by 2002:a05:6102:2acb:b0:5ca:a978:8a with SMTP id
- ada2fe7eead31-5d41d1728f1mr5458809137.33.1759822989670; Tue, 07 Oct 2025
- 00:43:09 -0700 (PDT)
+        bh=8BMrreGYaM+ETQ7wh1dqgwXsdvPXSRmjMBiX7/QH9P8=;
+        b=xC9NZbw//vLTtCyBX+v9s3gU6erXjag9DQEPeDOUotxY20+gacWXb4WmB2o/7aXOVV
+         9DBdGATEVI79oTWpUIOxpqqGutuLmS16U8Q3qzmAU8+CnpToMOuxLR9Tqy9kxBpuAU8P
+         /936iFY247JK+lH0VAqpW1vKdjGf/sa0WNOH9YTTLR5AuQB7S7c8RIbZF0v0SIjONpfp
+         9Dn7wkLDpfAMD/dGAGWyFzLxSx6/YKM6XgqYx9fY0oq49fWHWjIsYHfGj8KAEiHIl49p
+         HAhRRPCbfLhLDL0brGCWjjP7cZddkNqbKoOJZb2UtrpnnWZdRSTTMBFV1CIH+U9Fw/BG
+         1YIg==
+X-Gm-Message-State: AOJu0YzXZgWm03A3inj6m9rMYZrIcJUQ+s25v4O0XrV/02X6OWZPPBMA
+	rVvnSmfN+dSqpNElITWEpCJEY4c4iJDe6NimuFEiH5Sgb1c+B5XyPKuZF+iiDu16RzDxj5NQQgg
+	2moGyedM=
+X-Gm-Gg: ASbGnct++IiwEFjeLtqlPuViTkJZFmaQj/yi+Jh/8ug4lhiC773kb4zJvJQtoe3BZ33
+	ULsEzDNSVcyQVZ/XjSZRFLGHiaefFrKERWOVrKP1siFa7MPuOi9cWqKGQNW2fWYh1jU1TyH6guO
+	qb4C344zIzGn+mRCj7DJ+NHiSHuDZ5ilVBK2rLABIWEqha+wvu2Rx4+6iMCEEI5xhrsR263/OKF
+	n/QUCPeoviGOOTMb05vqtXkpDM4jZLdvgvQXDKCOGIvuVPjCpcVCd2jHhDqO4z1qG04mUIrv/1k
+	sQQtXe5mEDt/qFMsWdeEaQ+rxp6iWkklYhz79MKEumjxQBvosJhuDQ+Oio+b7MQbEVGzq0zf2wJ
+	UIqJD0S1q9TmskgfepgLegATraoqgkcQFqzV8BW2HhIbH8Eg73zf35KGwuuSE1ZKW6de3bNxNOW
+	kTn4lUtFcoDYS6Os/qYvQtO26ugkTHdwHaUjc=
+X-Google-Smtp-Source: AGHT+IG2M1roqWj3uq0lJ8nnzGjIVwpT4KjTyGoeZ+ChvFAl/lA0gtYsMYOlp2/3j2ZlBG1u6YV22A==
+X-Received: by 2002:aa7:8dcd:0:b0:792:52ab:d9fe with SMTP id d2e1a72fcca58-79252abe295mr2218766b3a.0.1759829013136;
+        Tue, 07 Oct 2025 02:23:33 -0700 (PDT)
+Received: from kinako.work.home.arpa (p1522181-ipxg00c01sizuokaden.shizuoka.ocn.ne.jp. [122.26.198.181])
+        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-78b01f99acesm15123273b3a.5.2025.10.07.02.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Oct 2025 02:23:32 -0700 (PDT)
+From: Daniel Palmer <daniel@thingy.jp>
+To: linux-m68k@lists.linux-m68k.org,
+	linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: [RFC PATCH 0/5] PCI on the Amiga 4000
+Date: Tue,  7 Oct 2025 18:23:08 +0900
+Message-ID: <20251007092313.755856-1-daniel@thingy.jp>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <949f096337e28d50510e970ae3ba3ec9c1342ec0.1759753998.git.geert@linux-m68k.org>
- <mvm347wjj90.fsf@linux-m68k.org> <CAMuHMdXdeJ6Bq=zA7QcN82YNaZW3R8ebeXpGzqHus-KPkSj5XA@mail.gmail.com>
- <20251006180201.GA429708@ax162>
-In-Reply-To: <20251006180201.GA429708@ax162>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 7 Oct 2025 09:42:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUi09MEU+AUE7C5OtJzO1ZiQ-1OVVi9EWNxt7vHA3ZvVw@mail.gmail.com>
-X-Gm-Features: AS18NWD5V9LmBNtT9znIAEdUf0-LOhM5TAhAk1S7CGHt0o8L8arsWU6hMHw8j3s
-Message-ID: <CAMuHMdUi09MEU+AUE7C5OtJzO1ZiQ-1OVVi9EWNxt7vHA3ZvVw@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: uapi: Strip comments before size type check
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Andreas Schwab <schwab@linux-m68k.org>, Nicolas Schier <nicolas.schier@linux.dev>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
-	linux-kbuild@vger.kernel.org, linux-m68k@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Nathan,
+This series adds a driver for the Mediator 4000 PCI
+bridge for the Amiga 4000.
 
-On Mon, 6 Oct 2025 at 20:02, Nathan Chancellor <nathan@kernel.org> wrote:
-> On Mon, Oct 06, 2025 at 03:20:52PM +0200, Geert Uytterhoeven wrote:
-> > On Mon, 6 Oct 2025 at 14:40, Andreas Schwab <schwab@linux-m68k.org> wrote:
-> > > On Okt 06 2025, Geert Uytterhoeven wrote:
-> > > > --- a/usr/include/headers_check.pl
-> > > > +++ b/usr/include/headers_check.pl
-> > > > @@ -155,6 +155,8 @@ sub check_sizetypes
-> > > >       if (my $included = ($line =~ /^\s*#\s*include\s+[<"](\S+)[>"]/)[0]) {
-> > > >               check_include_typesh($included);
-> > > >       }
-> > > > +     # strip comments (single-line only)
-> > > > +     $line =~ s@\/\*.*?\*\/@@;
-> > >
-> > > I don't think you need to quote the forward slashes in the regexp.
-> >
-> > Thanks, you are right!
-> >
-> > So far for not just following my instinct, but looking for similar functionality
-> > in other scripts like scripts/kernel-doc.pl...
->
-> I will fix this up when applying. I think I am going to adjust the
-> comment to
->
->   # strip single-line comments, as types may be referenced within them
->
-> just to be a little more verbose about why it is being done.
+Since this is my first PCI driver it's probably awful
+so this is an RFC and also there is one interesting
+unsolved bit:
 
-OK, thanks!
+As far as I can tell the Mediator 4000 cannot do DMA
+between the normal memory and the PCI cards but PCI cards
+can DMA between themselves. In the AmigaOS drivers a
+bounce buffer is allocated on one of the cards that contains
+memory, like a graphics card, and that is used for PCI
+DMA. I'm not sure if that's even possible to do in Linux?
 
-Gr{oetje,eeting}s,
+I've managed to use a network card that doesn't need DMA
+so far, but I'm having trouble getting a Voodoo 3000 or
+Radeon 9250 graphics card to come up properly. I guess
+no one tests their cutting edge graphics drivers on non-x86
+machines. ;)
 
-                        Geert
+Daniel Palmer (5):
+  m68k: Adjust the pci io range
+  m68k: Increase number of IRQs for Amiga to allow for PCI
+  m68k: amiga: Allow PCI
+  zorro: Add ids for Elbox Mediator 4000
+  PCI: Add driver for Elbox Mediator 4000 Zorro->PCI bridge
+
+ arch/m68k/Kconfig.machine                 |   1 +
+ arch/m68k/include/asm/io_mm.h             |   9 +-
+ arch/m68k/include/asm/irq.h               |   4 +-
+ drivers/pci/controller/Kconfig            |  11 +
+ drivers/pci/controller/Makefile           |   1 +
+ drivers/pci/controller/pci-mediator4000.c | 314 ++++++++++++++++++++++
+ drivers/zorro/zorro.ids                   |   2 +
+ 7 files changed, 338 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/pci/controller/pci-mediator4000.c
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.51.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
