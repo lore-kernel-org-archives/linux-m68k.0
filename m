@@ -1,93 +1,73 @@
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BBD2D9EE7
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Oct 2025 11:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC6D54652;
+	Tue,  7 Oct 2025 16:55:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759836219; cv=none; b=K43XdUXPHkbEwrPGiWlfpwtiED28VenevhwJIVDe1aw/oXEbDYneukItsAlimZ6CEfQdMrbxnQDduhO/wqOfdnRKJl1GzG6BVsxfYHxfvPklQEotvAd0lIxXbATAFDsytD30SED14fdE7fyoAoWlE5ej81DXuMoCP4en8xpyJ8A=
+	t=1759856154; cv=none; b=PXc2eLqjZMa6hjtAx0RHxKiTJa3FVTC8QWSuFbw4V8EOBKT0RwNncDvscC3PbS2SIXmRKEmoPPhlKrqDQLx1tXtRWPK0oV659ZC/FAZwugHG4nJUa+pH7vX0+fPMWmn16t5ZE1qMoI/YAC+7sd5a4CXQuWTWw9RxA2JTpFJYhXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759836219; c=relaxed/simple;
-	bh=TpJeOnUoOLw+CN76IYU70OlkPMEo6Sx6I6bv3quU3YU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E3ovHNN22cPAPv+dnUIa4nzeUzqXpMtau/soQQ0Cq5zLpbkHiYLy3utbdXH99KKWKsHJAPnxeGaNzV8dI4hnziAE2DZdVqhvs9EGfKBR/ezKJJidwS15hMZfwGOlwLOpVDHDkeWmPVFhBTuJqZ8kTY/Bk2IgXpKEu3Fp3uyXIxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=IoSE4u78; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1759856154; c=relaxed/simple;
+	bh=URAiG9MmTw29Ev5NGh/hkcy8mhrNOyqYfKWtm5NzFgw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=uj+HyK83F3y+gxLFPJk6sJVYHDcMW6a3i3gBXqwZA8kL52TJbDd03yen3EYb15nQ4Pkn2PpwOMXxxxrFK4TVmp/uoYBkS13i7eeLGk9lzUDzfc0sQvdU2OARn+3+/M68boNQl7KdNhFERqHDUyLuYEqwAHwUT9ObzZ+gIaPT9GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UEfiEv8j; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="IoSE4u78"
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-339d7c4039aso2765614a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Oct 2025 04:23:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=thingy.jp; s=google; t=1759836216; x=1760441016; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TpJeOnUoOLw+CN76IYU70OlkPMEo6Sx6I6bv3quU3YU=;
-        b=IoSE4u78sui1vGR4qZIwnKHeemDhiVSLeMzTuwd22nL0lNosYHq8dA5ROKoCEJMKvK
-         ZtCl9f4vOFVnaa664Q4RR7B+zgcsQXwcZ6hDH+iZ8coqgqYFc3Rh5p3uKf0uNlt8NlTJ
-         m7S5NWis2KluRToU0qjcxNaFyKwzdPEpSDfrI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759836216; x=1760441016;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TpJeOnUoOLw+CN76IYU70OlkPMEo6Sx6I6bv3quU3YU=;
-        b=cXANYL72vLUqUx0UFPrZ6QKpJHV+wRYSZhaCPNg3ePlVcrWMiMw6q/pUZNle5zHt/k
-         aeEW4n3pIgLUB8aDovxK6YpxdHNq/26zBjRHOLntqS7VsgjAYQtpFnagqH+MZdGiS6Gk
-         xyfu8TZpwzoiCNMFnz0F9UICDWtRB0kMqZa/1TqKWckqYnQnKdWC4t32/MBERYLwbNBX
-         Q1J6Cx40ZoscLvaQsRebxhLvnx6tm/3s2zr9IFIxEWGpmFPpoQLDlNEP8NTE0nnszU4k
-         KCH2wkK7OBHWt3DgUYA+lXsh50oE2RQZ5U27sNELsfHfwmMGKkIy0/MO2/WOx4AZXhdn
-         c1cg==
-X-Forwarded-Encrypted: i=1; AJvYcCXe2NTyeoT0ORPrCsBI+9vQDhSpFSF1riwxopN3rPXN+fLShAesQCv0BVkAehwoHqZK5yLjmTqimKwE@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yz5CKyp9RdJ5WpfVNMhltBp94PGcdXDd/Y5yV64EFP+ZStZmEiI
-	W/0Ro4HKPlKss/eayBPqmpLRtEn8WFIxCeIjpLM9mDYhzUHyaJsRUvXUTj2b53Fq1jbDVCV4kxb
-	T2jRv+6f/gCKC2hhHoHVvajwNQnmb0n84vjwap7vrjg==
-X-Gm-Gg: ASbGncuKshWcOICcF+Yag2Z2nmykLf7CYNxUF6CJkRdp5AGob7HVQ8OY/6l3MjcxHyB
-	r5zE5aLNCZWeKwJIeaHlZGggc7EPca5AP2OnIINPaJ5xT3TQZSecVAsRUN2hVuoD/zxemijTeqx
-	gVSoQLSgDW3OXHqQ/xdbaambFfUzq+1YWnctLOFwK6btHywBvTb3Tok8HEkTOuzoIqXqyK75ii9
-	i+qXwSBSbEMJCZNzepKCtjt1W+sXXSg
-X-Google-Smtp-Source: AGHT+IESCXXn6K/T88opj7JzvSx4+eiTbjz/XV8PoT8lX1Nd43fyg5hSHU3kcLz9D/gith95LtUTey7rw9SGLXhbOqQ=
-X-Received: by 2002:a17:90b:3ece:b0:330:7f80:bbd9 with SMTP id
- 98e67ed59e1d1-339c27f1a18mr18415931a91.31.1759836216299; Tue, 07 Oct 2025
- 04:23:36 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UEfiEv8j"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6660C4CEF1;
+	Tue,  7 Oct 2025 16:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1759856154;
+	bh=URAiG9MmTw29Ev5NGh/hkcy8mhrNOyqYfKWtm5NzFgw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=UEfiEv8j+Nj9oortxUUSIWTtbfLlFvnAga1GJYGZPhSj2SJVVH9hpZ1N2oGvwebP9
+	 Yt6i56XKHAPP1xexe1By27KDfgxfCsEIAiB9o73+KFanDC86OdGwVYjT4kdCCNd/IR
+	 HLd8XGwjnmt5QM5XvApB3pGux9kQ6A4aix5y62b5NWT+rEPWjeas9ZYfJbJl2S+4Xn
+	 W8fTIqWA8p7KdyHZIaeBc+r+ntwoOtlosEXWXlsDgt5AnFdPT/EZTjjP1ORWHv0yVB
+	 BRuNyhCtHiJ0o0TfEJaKTBgX9TIlqznXgT05deSSEhnxtldZRj/OlKCsW4pUS6UeUn
+	 QhpSwlDcGpkqw==
+From: Nathan Chancellor <nathan@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>, 
+ Nicolas Schier <nicolas.schier@linux.dev>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kbuild@vger.kernel.org, linux-m68k@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <949f096337e28d50510e970ae3ba3ec9c1342ec0.1759753998.git.geert@linux-m68k.org>
+References: <949f096337e28d50510e970ae3ba3ec9c1342ec0.1759753998.git.geert@linux-m68k.org>
+Subject: Re: [PATCH v2] kbuild: uapi: Strip comments before size type check
+Message-Id: <175985615239.1365513.5981195894675028617.b4-ty@kernel.org>
+Date: Tue, 07 Oct 2025 09:55:52 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251007092313.755856-1-daniel@thingy.jp> <20251007092313.755856-4-daniel@thingy.jp>
- <CAMuHMdWDfNgUUh-uU7ZFKmmAccEMqDdfDpwRXQYmwjMG6O_Trg@mail.gmail.com>
- <46382bc6cab2196a79780a946bee96dde402ae31.camel@physik.fu-berlin.de> <CAMuHMdUUAEoN+KBnk=aY6UnkxXnFp8KY0BV8qQGfGip=nNtfaQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUUAEoN+KBnk=aY6UnkxXnFp8KY0BV8qQGfGip=nNtfaQ@mail.gmail.com>
-From: Daniel Palmer <daniel@thingy.jp>
-Date: Tue, 7 Oct 2025 20:23:25 +0900
-X-Gm-Features: AS18NWCq_eV2IvEc3GKy8N26uH_9-vQmDw1mItucWkfRV0H0wQEVAB3YqjC82L8
-Message-ID: <CAFr9PXk_evnt5g1rtpbnCEXBVBeW3pCJ_8S1DFz6ynfvJcXOgA@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/5] m68k: amiga: Allow PCI
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, linux-m68k@lists.linux-m68k.org, 
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev
 
-Hi Geert, Adrian,
 
-On Tue, 7 Oct 2025 at 19:22, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Adrian,
->
-> On Tue, 7 Oct 2025 at 11:41, John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> > On Tue, 2025-10-07 at 11:37 +0200, Geert Uytterhoeven wrote:
-> > > On Tue, 7 Oct 2025 at 11:33, Daniel Palmer <daniel@thingy.jp> wrote:
+On Mon, 06 Oct 2025 14:33:42 +0200, Geert Uytterhoeven wrote:
+> On m68k, check_sizetypes in headers_check reports:
+> 
+>     ./usr/include/asm/bootinfo-amiga.h:17: found __[us]{8,16,32,64} type without #include <linux/types.h>
+> 
+> This header file does not use any of the Linux-specific integer types,
+> but merely refers to them from comments, so this is a false positive.
+> As of commit c3a9d74ee413bdb3 ("kbuild: uapi: upgrade check_sizetypes()
+> warning to error"), this check was promoted to an error, breaking m68k
+> all{mod,yes}config builds.
+> 
+> [...]
 
-> > Isn't this what patch 5 does?
+Applied, thanks!
 
-Sorry, I guess the ordering could have been better... There is also a
-reference to the Kconfig symbol added in patch 5 in one of the earlier
-patches.
-If this has a hope of being merged I'll fix that for the next try.
+[1/1] kbuild: uapi: Strip comments before size type check
+      https://git.kernel.org/kbuild/c/66128f4287b04
 
-Thanks,
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
 
-Daniel
