@@ -1,102 +1,115 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB270158874;
-	Tue,  7 Oct 2025 09:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28ADA264609
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Oct 2025 10:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759830078; cv=none; b=jV6B8xfc6xUAEBhvWdQg93/i2A/A1Z3OFCZKPcitU/JjPBhpCcmmpLSAeDpBZor8aBgNtOjJRXo8m0kVzllnFDSDu5ucCvhBnzmyJ51B1LbeMzcqJ9949Y4G9MZjSKy+np+UI1v5KpBYUU+PT5xNsdbAKKWSw2r5mPfr+JZSFD0=
+	t=1759832561; cv=none; b=PPAdvMdaatqLD1T4xBZJvgNLZw8R7R8dQQx+wnzHGXsroEP7hYCxqW+Slv+SqYH+C0NnJTytYhdQIcAg73aODE33C8KXgwa6n40PAjjlsoCNB49l6ExAFBrczaMtnhjBkTkkaiX1+1xPowbh84qLGX89ytD12klqiV7HGSA3wVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759830078; c=relaxed/simple;
-	bh=Yl0b5wauRFDcVVfHTZ0ZzZ4C2ktVgGqGYjCXELOnT48=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dbGIb7wGXE3QpKRa29vy80ES4+QnAUJkF8kKNDGBVtLX5NgU82PgZWWcCDQn+rYd3nT+arAUOvXVQX/KS7QUz40HfmTIYgHSXZQwaiSErPqHz1ZeHeP9NhBfX5R+JBTsjvZejKlBhjx8CYdeR8dEr/+KgKrcrXQQCKOLbVASyxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=alhuDt7s; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="alhuDt7s"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=X13BoCz3JYAX7vIvmjbaXJVqzeYJjE6+iBmJX/F4R0M=; t=1759830075;
-	x=1760434875; b=alhuDt7sPMVPtfAANGwlazFLZmOtclQCT7HAgwx7o5BL9OboEqmR4V0Xve7nr
-	lvay+HIAIKn3EjSf6YY8Wby4ffRxseFnkB6Bk8UnyNkL06ptLCqES9liuroiQlKfGVnoCXt+pHuNL
-	C8Sy5zl7HdD22XY9iJ4CptUe22rl3Ae3xUreDkZuK3lPt8UCY6lwVzpJ0Bm5E0EE7fRTAXkxF8ehn
-	Tpq49PGE0a6FwH6MHwOdx78OZpTROFNkomVEQfUd02mUdy7P6neeRCT3wkKxHA9WTFnOq636zEVB2
-	+v8zoH98Q0x+AdedHjuysL5JcNU35dtqkJRS3aq59URXOwBBkg==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.98)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1v64C0-00000001yfz-0Fim; Tue, 07 Oct 2025 11:41:12 +0200
-Received: from p5b13aa34.dip0.t-ipconnect.de ([91.19.170.52] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.98)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1v64Bz-00000001VNO-3RwC; Tue, 07 Oct 2025 11:41:12 +0200
-Message-ID: <46382bc6cab2196a79780a946bee96dde402ae31.camel@physik.fu-berlin.de>
-Subject: Re: [RFC PATCH 3/5] m68k: amiga: Allow PCI
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Daniel Palmer
- <daniel@thingy.jp>
-Cc: linux-m68k@lists.linux-m68k.org, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Tue, 07 Oct 2025 11:41:11 +0200
-In-Reply-To: <CAMuHMdWDfNgUUh-uU7ZFKmmAccEMqDdfDpwRXQYmwjMG6O_Trg@mail.gmail.com>
-References: <20251007092313.755856-1-daniel@thingy.jp>
-	 <20251007092313.755856-4-daniel@thingy.jp>
-	 <CAMuHMdWDfNgUUh-uU7ZFKmmAccEMqDdfDpwRXQYmwjMG6O_Trg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.0 
+	s=arc-20240116; t=1759832561; c=relaxed/simple;
+	bh=X08yRMXxYQpEQFN6+DWg0rBxqMjXg4JwaZTEUg+jC/A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a9+Jhy/Ybp8k2BBpVTBShYQeIMePdRX5qsgF0jQ/D9I6DW7flEriwjp5xxEj+tTFiq6Edjypco2SFE6vBXJ0QX6V5Tpbge/RKwfq/SL/tEttvK/o6VGxlWCp/2q/at+l5kO5qvcIUjV/VhBQZn+3qV2v3poa8I1iPqGU9PQ5bv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-5523142df73so4356156e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Oct 2025 03:22:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759832557; x=1760437357;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0UyUj3Qix+qDVReFl/Sm439a80dBofMDi/9/TOImgQQ=;
+        b=OMHgNYKneRm12otj/gRkYMZld0gqDnmoyNrnCz2G30crHgPP0+/wqk8eszz3BLcTKg
+         NKKolij6DrlIaGXy7wlRkxSOGTkzmvYfRXWI8gFmp90m9lkJf40VLYzka9RAb2qwr5zn
+         ru4ljfI5EU8B41c3uhe4+r5CATHa5QKUaBepG2XohO0dRf2dLMaAP03n99ogwk5B+bmE
+         gP9yjYmFcCRxb+kB6iVYpn2B1qqRbF0TnX5b0ahwd/lkPYemuBdthcHI1D6/hQCptQy5
+         21d9BXqoPIZbsraZaFtI4USeqJ6EjUwf/i9VP36TF9IlzUh00DFbJzZOeQPaalQv+0kt
+         YOQg==
+X-Forwarded-Encrypted: i=1; AJvYcCVj7HnL69KkA6cKwASVZUPjaWGFS50AA2GLJqWDgwxstzuSPijIuwMCuEBs/WpKjnn+EiHV77RQmeyu@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwXAfBSEBl1xqxZu1B/393ejJUfuJ47dznhjTpYwmDLFi31fnse
+	nSuuYtpWwOsKiusdX8dx8CiX8M8StG+4qNt5QmwNsmBTJyq2IDMOSNk4ctCOlMdQ
+X-Gm-Gg: ASbGncs6vOiwEn5lZ1hDUDZoFBP/GzzdYth5dq3q23Z0D9OprKMwynEsweUwbmKGyvs
+	YarLBW4ACyJbE8iCbnWWOpz3ySr/ER17eEBM8hnjNE4d8ZyHSpx4RzyCl0zHRVTkjABfCyGtOeN
+	AFdKAMwSmCblNme0QN7vPMmF1rFR1QizKr2FhRFCbU8h67xmtfYzyeXWsw6ewoy0FJgyhfuCVW7
+	1R9Vk/WZR7YjLmHg/LCpZ99SFTwS7ChQUGLs8lTKxUMbTXRr6G/jblYOFi7n+W3fz8HsISv9edx
+	0yWgYi6kAgeg1Au8sxADUo33a88FlOKhyEkGacXsBD2/yk+pXBWxGOWnr/uTuKi+4PoKVxeleAg
+	hPtM2dplP86ItzQ0MOjs8PLNtXoJHQkU88nxY6YYSwjfg3CibZUxem7ApworZUAekPuF937jHVu
+	xCi/NNZhrGFl4C
+X-Google-Smtp-Source: AGHT+IG5If1b3R56s0nhUWR8kCeyxSIuY2WkSvisCP+lLYk7tK+mML+XK64fFEKmQvZZuZUkoOPf+g==
+X-Received: by 2002:a05:6122:2503:b0:54b:bc2a:f58d with SMTP id 71dfb90a1353d-5524e83e38amr5156712e0c.3.1759832556645;
+        Tue, 07 Oct 2025 03:22:36 -0700 (PDT)
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com. [209.85.221.169])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5523cf3e877sm3614705e0c.16.2025.10.07.03.22.36
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Oct 2025 03:22:36 -0700 (PDT)
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-54bd3158f7bso4585716e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 07 Oct 2025 03:22:36 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUCvAa5oQQ5ze+vY639h3CauyRRbKE7htTafH7febZ98JuiKgCQKbUzI/lbMJl/1zP+kcliAWQ+f5KH@lists.linux-m68k.org
+X-Received: by 2002:a05:6122:1e0d:b0:543:e262:ade2 with SMTP id
+ 71dfb90a1353d-5524ea6b0e4mr5683075e0c.12.1759832556074; Tue, 07 Oct 2025
+ 03:22:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+References: <20251007092313.755856-1-daniel@thingy.jp> <20251007092313.755856-4-daniel@thingy.jp>
+ <CAMuHMdWDfNgUUh-uU7ZFKmmAccEMqDdfDpwRXQYmwjMG6O_Trg@mail.gmail.com> <46382bc6cab2196a79780a946bee96dde402ae31.camel@physik.fu-berlin.de>
+In-Reply-To: <46382bc6cab2196a79780a946bee96dde402ae31.camel@physik.fu-berlin.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 7 Oct 2025 12:22:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUUAEoN+KBnk=aY6UnkxXnFp8KY0BV8qQGfGip=nNtfaQ@mail.gmail.com>
+X-Gm-Features: AS18NWAPkggXOuJ8Zyug-B_6vXxzZFwJxIAhU-W5_YEhuf5bM649C2kMw_p5v_Y
+Message-ID: <CAMuHMdUUAEoN+KBnk=aY6UnkxXnFp8KY0BV8qQGfGip=nNtfaQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/5] m68k: amiga: Allow PCI
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Daniel Palmer <daniel@thingy.jp>, linux-m68k@lists.linux-m68k.org, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Geert,
+Hi Adrian,
 
-On Tue, 2025-10-07 at 11:37 +0200, Geert Uytterhoeven wrote:
-> Hi Daniel,
->=20
-> On Tue, 7 Oct 2025 at 11:33, Daniel Palmer <daniel@thingy.jp> wrote:
-> > The Amiga has various options for adding a PCI bus so select HAVE_PCI.
-> >=20
-> > Signed-off-by: Daniel Palmer <daniel@thingy.jp>
->=20
-> Thanks for your patch!
->=20
-> > --- a/arch/m68k/Kconfig.machine
-> > +++ b/arch/m68k/Kconfig.machine
-> > @@ -7,6 +7,7 @@ config AMIGA
-> >         bool "Amiga support"
-> >         depends on MMU
-> >         select LEGACY_TIMER_TICK
-> > +       select HAVE_PCI
-> >         help
-> >           This option enables support for the Amiga series of computers=
-. If
-> >           you plan to use this kernel on an Amiga, say Y here and brows=
-e the
->=20
-> This doesn't make much sense without upstream support for actual
-> PCI host bridge controllers.
+On Tue, 7 Oct 2025 at 11:41, John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On Tue, 2025-10-07 at 11:37 +0200, Geert Uytterhoeven wrote:
+> > On Tue, 7 Oct 2025 at 11:33, Daniel Palmer <daniel@thingy.jp> wrote:
+> > > The Amiga has various options for adding a PCI bus so select HAVE_PCI.
+> > >
+> > > Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+> >
+> > Thanks for your patch!
+> >
+> > > --- a/arch/m68k/Kconfig.machine
+> > > +++ b/arch/m68k/Kconfig.machine
+> > > @@ -7,6 +7,7 @@ config AMIGA
+> > >         bool "Amiga support"
+> > >         depends on MMU
+> > >         select LEGACY_TIMER_TICK
+> > > +       select HAVE_PCI
+> > >         help
+> > >           This option enables support for the Amiga series of computers. If
+> > >           you plan to use this kernel on an Amiga, say Y here and browse the
+> >
+> > This doesn't make much sense without upstream support for actual
+> > PCI host bridge controllers.
+>
+> Isn't this what patch 5 does?
 
-Isn't this what patch 5 does?
+Oops, sorry, I hadn't realized this is part of a series, as I somehow
+haven't received the other patches from the series yet...
 
-Adrian
+Gr{oetje,eeting}s,
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
