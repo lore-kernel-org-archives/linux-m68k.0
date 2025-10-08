@@ -1,115 +1,123 @@
-Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8FB29B8D0;
-	Wed,  8 Oct 2025 06:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7626629D29B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Oct 2025 07:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759904659; cv=none; b=jgRWFf12WxPv0pM8Y5xk1kdJ+5CpwQoDw4rrejmuCBBK0d+Zaue0bM5GHIPTNprjflgW41WyAo/1WwmGgjcjUzgxy6AJw1GpsyL0M6o5yfRBXMaVmTXV10sESFuLSrPfOFwTA2AAdSDbnQksg+18n7qqnJ5FCJPObI+LjdnJAr8=
+	t=1759907409; cv=none; b=jgBfH9p08pV4f+pPF0hdrDQ0lqPi/zUkTYYnJgybw6MlGBPTAnslHms10sorWhLjE1lNVZdR/ktOMSvW9GUSAIzp2mK+z7aIVB1oVa8ELmYD68HdMsWEOReOJhKNL/oK6+ojuj/5Y0ucY82z0mP/YLWFIlz891mDSUJrzG63zkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759904659; c=relaxed/simple;
-	bh=S7+jHto0uyDlubN6nNelCH1snqkJhKvmTzZHBlkWxTo=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=YPWWCcddPTIeAuBLsozj7aHg1bEoBV7kERThm4mKf9k89Y1ReJmFLBIHyrH3Mvu4KbCJmjBmH+2Ja96jO/OTFKZqwpdKQ/7XmS23L/fXn5jPGPdx1Nlutx5AJMGE9jWfsk/Sj5MeaUk/XG38XrRkCn1I+TSL6oXseulsBkNg4gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=e343gnqj; arc=none smtp.client-ip=202.12.124.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1759907409; c=relaxed/simple;
+	bh=VQJRkZRtjm9yYWfgQgpaOG+NO/ZbwOJN3/eg/6wIot4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ud0H+9+SgrTQtHTn2R5pQafjQc1AiEfCc7ikL37QzFvg9GAcgo/cxIXuzJ9LHa8C7unhk10rp9i1bvOscqUh7IgzOEUqfGq/YGl4lLv4ImCHGj31Zzh9vTkdbeyPtzy3QkGI5acfuKAWC1MdUBfJJwYzyANez/OM5FKMcgr06ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F5wmyozk; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="e343gnqj"
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id AA7237A01A3;
-	Wed,  8 Oct 2025 02:24:16 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Wed, 08 Oct 2025 02:24:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1759904656; x=1759991056; bh=of/Zk3NoJ60SOfxlEHlLZ01daHGhpIzTjyp
-	dolQThQU=; b=e343gnqjFy1PppZY6uJWRoFww340axIIW38FzpYcbN7JFjIecxM
-	grKONPF4Dgw42i2E1UC0eZRmETN60ynrf2mzWJVGNrCLajA+rgC3Gwvb8E6RvvMc
-	ayB+CanQth/Lr/PwnXQaG4b/Tk05sKZwIGqbM2I0/zdA1X7Md8+gFIl4QT+NxMpF
-	yg9IAGj0y1CVWemZOvhxfHMGEsvk/BTssTmDRRuuAJ5ryVjQiY+0y/zUQ/0v5+NI
-	9ZHpMsJBFHW9TxgvQOeELO4Xiy1FcpdwG4+s8clzaVdslUrBamMXSvScsNRI+1zZ
-	0VRXU9h2nZsJKLgvssp25Q+850cHyD91bMA==
-X-ME-Sender: <xms:kAPmaHVdBDzzPaw1Lj9b1DhCcxAVu6aE3pUWBYR3Kz4b8RQEDf1x9g>
-    <xme:kAPmaLe7kw6iVouRMfyk6ZL0qUrDIwEF8Ocoh0VqNXOm1Ho-_ZzDN_iqx6NwV6c3N
-    woKPYZhtHu1OF5yw_efhAJyQTihDjIrcGFZle56SGNzvW6ke_yfJE8x>
-X-ME-Received: <xmr:kAPmaAZyDH5LNo-v358EcZkQJ9Vw1yimYihJsaH_heedAVIBbHq9pbX8Fca-XJv00PYWLk8p6TKAivI5R5rfsTbrCghbW_61gzU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddutddvheejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeefieehjedvtefgiedtudethfekieelhfevhefgvddtkeekvdekhefftdekvedv
-    ueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdr
-    ohhrghdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgtphhtth
-    hopegrrhhnugeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnhgv
-    lhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprh
-    gtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopehg
-    vggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrrh
-    gthhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieek
-    khesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrhhnugesrghrnhgusg
-    druggvpdhrtghpthhtohepmhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhm
-X-ME-Proxy: <xmx:kAPmaHNbd-jlESmo_2aFmWEfHA20QqC529OOxm7GGAddWroafqG_eQ>
-    <xmx:kAPmaGV7UAeThoR0OdoUmhpZDAaZopiWvBhTYI_n3u0TGEAxOzOx4Q>
-    <xmx:kAPmaEKF6_WhGI5exe5jIpz1kntf9sCNwjCfRViPUHfq_UWAVjghPA>
-    <xmx:kAPmaJqfY6qtdz9Rlx60yTZOjiv0YkFTF_YoOa-DtVAreKRxVn4JCA>
-    <xmx:kAPmaIsLOPvMqH6rdlbp9yeS2SJMEjtZrFn8hCpnlFa5EtX0WU0L0KUy>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 Oct 2025 02:24:14 -0400 (EDT)
-Date: Wed, 8 Oct 2025 17:24:04 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Arnd Bergmann <arnd@kernel.org>
-cc: Will Deacon <will@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-    Boqun Feng <boqun.feng@gmail.com>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Linux-Arch <linux-arch@vger.kernel.org>, linux-m68k@vger.kernel.org, 
-    Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>, 
-    Gary Guo <gary@garyguo.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] atomic: skip alignment check for try_cmpxchg() old arg
-In-Reply-To: <20251006110740.468309-1-arnd@kernel.org>
-Message-ID: <7061992e-e8bd-e5e5-9e63-3fb131e0fdde@linux-m68k.org>
-References: <20251006110740.468309-1-arnd@kernel.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F5wmyozk"
+Message-ID: <23b67f9d-20ff-4302-810c-bf2d77c52c63@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759907403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rJE2iJraxcGKQYdozv2wRe9vFO3p9uVwcxrTzZaEgVA=;
+	b=F5wmyozke8Z7AcxH5nXvRJXhnHUNF8spAp2HepNhPC948/KGjmk5rYgOkVRLqqjmzT4gOc
+	nHr3eFtstfJuEyxDUpUpOIJziHjK6CtXqBIlqKmGQmiApZoep+3PGjmiBvDc6RJDQ1OC+c
+	b7/wlbrLmCgrpuixony81PuBKC4BGU0=
+Date: Wed, 8 Oct 2025 15:09:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
+ pointers
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Eero Tamminen
+ <oak@helsinkinet.fi>, Kent Overstreet <kent.overstreet@linux.dev>,
+ amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com,
+ ioworker0@gmail.com, joel.granados@kernel.org, jstultz@google.com,
+ leonylgao@tencent.com, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, longman@redhat.com, mhiramat@kernel.org,
+ mingo@redhat.com, mingzhe.yang@ly.com, peterz@infradead.org,
+ rostedt@goodmis.org, senozhatsky@chromium.org, tfiga@chromium.org,
+ will@kernel.org, stable@vger.kernel.org
+References: <20250909145243.17119-1-lance.yang@linux.dev>
+ <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
+ <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
+ <CAMuHMdVYiSLOk-zVopXV8i7OZdO7PAK7stZSJNJDMw=ZEqtktA@mail.gmail.com>
+ <inscijwnnydibdwwrkggvgxjtimajr5haixff77dbd7cxvvwc7@2t7l7oegsxcp>
+ <20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org>
+ <b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org>
+ <56784853-b653-4587-b850-b03359306366@linux.dev>
+ <693a62e0-a2b5-113b-d5d9-ffb7f2521d6c@linux-m68k.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+In-Reply-To: <693a62e0-a2b5-113b-d5d9-ffb7f2521d6c@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
-On Mon, 6 Oct 2025, Arnd Bergmann wrote:
 
-> From: Arnd Bergmann <arnd@arndb.de>
+On 2025/10/8 14:14, Finn Thain wrote:
 > 
-> The 'old' argument in atomic_try_cmpxchg() and related functions is a
-> pointer to a normal non-atomic integer number, which does not require
-> to be naturally aligned, unlike the atomic_t/atomic64_t types themselves.
+> On Wed, 8 Oct 2025, Lance Yang wrote:
 > 
-> In order to add an alignment check with CONFIG_DEBUG_ATOMIC into the
-> normal instrument_atomic_read_write() helper, change this check to use
-> the non-atomic instrument_read_write(), the same way that was done
-> earlier for try_cmpxchg() in commit ec570320b09f ("locking/atomic:
-> Correct (cmp)xchg() instrumentation").
+>> On 2025/10/8 08:40, Finn Thain wrote:
+>>>
+>>> On Tue, 7 Oct 2025, Andrew Morton wrote:
+>>>
+>>>> Getting back to the $Subject at hand, are people OK with proceeding
+>>>> with Lance's original fix?
+>>>>
+>>>
+>>> Lance's patch is probably more appropriate for -stable than the patch I
+>>> proposed -- assuming a fix is needed for -stable.
+>>
+>> Thanks!
+>>
+>> Apart from that, I believe this fix is still needed for the hung task
+>> detector itself, to prevent unnecessary warnings in a few unexpected
+>> cases.
+>>
 > 
-> This prevents warnings on m68k calling the 32-bit atomic_try_cmpxchg()
-> with 16-bit aligned arguments as well as several more architectures
-> including x86-32 when calling atomic64_try_cmpxchg() with 32-bit
-> aligned u64 arguments.
-> 
-> Reported-by: Finn Thain <fthain@linux-m68k.org>
+> Can you be more specific about those cases? A fix for a theoretical bug
+> doesn't qualify for -stable branches. But if it's a fix for a real bug, I
+> have misunderstood Andrew's question...
 
-Tested-by: Finn Thain <fthain@linux-m68k.org>
+I believe it is a real bug, as it was reported by Eero and Geert[1].
 
-> Link: https://lore.kernel.org/all/cover.1757810729.git.fthain@linux-m68k.org/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/linux/atomic/atomic-instrumented.h | 26 +++++++++++-----------
->  scripts/atomic/gen-atomic-instrumented.sh  | 11 +++++----
->  2 files changed, 20 insertions(+), 17 deletions(-)
+The blocker tracking mechanism in -stable assumes that lock pointers
+are at least 4-byte aligned. As I mentioned previously[2], this
+assumption fails for packed structs on architectures that don't trap
+on unaligned access.
+
+Of course, we could always improve the mechanism to not make
+assumptions. But for -stable, this fix completely resolves the issue
+by ignoring any unaligned pointer, whatever the cause (e.g., packed
+structs, non-native alignment, etc.).
+
+So we can all sleep well at night again :)
+
+[1] 
+https://lore.kernel.org/lkml/CAMuHMdW7Ab13DdGs2acMQcix5ObJK0O2dG_Fxzr8_g58Rc1_0g@mail.gmail.com/
+[2] 
+https://lore.kernel.org/lkml/cfb62b9d-9cbd-47dd-a894-3357027e2a50@linux.dev/
+
 > 
+>>>
+>>> Besides those two alternatives, there is also a workaround:
+>>> $ ./scripts/config -d DETECT_HUNG_TASK_BLOCKER
+>>> which may be acceptable to the interested parties (i.e. m68k users).
+>>>
+>>> I don't have a preference. I'll leave it up to the bug reporters (Eero
+>>> and Geert).
+>>
+
