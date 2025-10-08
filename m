@@ -1,110 +1,485 @@
-Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D7620371E
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Oct 2025 10:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EECE62EB5A4
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Oct 2025 10:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759918358; cv=none; b=o4ANX6+PwwrCkPNehEGJb/OF7jogneJ4XN1YjChHJtPn5rkRX18acwBr224MWukwxp7yuVFerFKMM0uUxP9NhEaFipvUfCtMY29zXb8dakwjvZqltedcejxh8QgUTZ9CqXbMR09pFT55nKJrOdIPfWwsy0yoUXuZIPqb+/jU8lo=
+	t=1759919757; cv=none; b=R6o7PpIVphyX6esDyto1QHSKYVXZjZC8r0Qol95ZpJYPfZcC5nQcs/YD+CmFAJfwmGRbiCDmPJATCuTDJ9sLFGB8mmetjHkkM24yXF+LbVlaiNfTIWAzrYcXiPPXYxPRUArl9IKpjw7LBpDhxRmd7KsACyMjczQD0KKcIjotTYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759918358; c=relaxed/simple;
-	bh=jTzS4kwuSRRXeuWd1CLD8POBVGHVhraKrwblg4VzhoY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=hdLLeCPQbX9y1kHk2nnwEDRxHkMrpOJwIOeZyN9iYIbPxZXgbmr8746iFAiP2C9EBlqee8nXJ+/tCfIa2TjeJDvuXSBlxsUR7xT9GgEmgxHMSyiAijtvRFmPO4x4eYQmJJ2CkA4eZxn12fZikoP7T94d3p5iUd/KLp068ZKGBhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KapiCPuC; arc=none smtp.client-ip=202.12.124.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1759919757; c=relaxed/simple;
+	bh=9RqEXUujz/PpWW4H2k7WMGpGABZxw+Nt5qUjiEVCk40=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=XszEoKkegzFEjWQ1TRXRjgceporrgWkuuD/rVjR445r8xEFdJOP+aRB0agE6xCg3YA8HmsYap6r2/b10ETu8BvZUIdtrz0SEs9cyYzc1mjVNZWswcsLyrumUU482sPwoAfA8wbSBPVRL+LwOOvLyMva+EtuS4SmpNX+Gd1JD7iM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aaB3w+Ou; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KapiCPuC"
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id B05E91D000FE;
-	Wed,  8 Oct 2025 06:12:34 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Wed, 08 Oct 2025 06:12:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1759918354; x=1760004754; bh=C0mcj3R+Pq8SIGSRvhGuf+yHogOBW1PlBpA
-	1eheqQNM=; b=KapiCPuCp29GApxnLpCSKulJsqpaf8XHRowgnKPp4jrgvHasYCZ
-	Et4yb5sn+JzWcER1uSpLeM71B9du/M1aRSzq0zTWWybwyaJ2Pzl6fHGGGwcyIMBy
-	MNa0JZIjKuZaS5oPw+1wBI/9z7lOC7wEFGsoLMUMJkxAt3glA77fZDSth0IP+PGd
-	mwuVEu+KoQKd4a/z/HXGLeZawExXcoShz5zRASOfKV0u6nQOF6lBpvBJlGMxr3VX
-	IiXVBU74iOgaDJktCoe4suDAR7p0uOpNufzCAxI448uFV4HYY7mbwCJtqEfEvHwV
-	6Hr3Ak+57cjrRbPkk+cJtr0ah4KAIkv0hWA==
-X-ME-Sender: <xms:EDnmaCkxwIP7KCxdmOBTKLYXjtTAfuYD-4_KFP-fH1rXw3v1nDV3UQ>
-    <xme:EDnmaFiUbrHuADkHU4jwiYnnI6i1JmwVU9imU0GDJ15BNcpgsX_6p-v5KlfzIk79e
-    z099J1GKSoxyLM8Yf8g1SscDqHv8vT8_wUWgqQZpbFXNuVemu2kxAF3>
-X-ME-Received: <xmr:EDnmaLWSxJInq4dHcPBwHkQYAzyQI8pukgAHsC3j82dRJ3uF9si0LGiU7yjwkYmXM2pXb7UVYUplJc8V69vDTVSqrF5JUdYDszw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddutdeftddvucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeu
-    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedvgedpmhho
-    uggvpehsmhhtphhouhhtpdhrtghpthhtoheplhgrnhgtvgdrhigrnhhgsehlihhnuhigrd
-    guvghvpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhr
-    ghdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtth
-    hopehorghksehhvghlshhinhhkihhnvghtrdhfihdprhgtphhtthhopehkvghnthdrohhv
-    vghrshhtrhgvvghtsehlihhnuhigrdguvghvpdhrtghpthhtoheprghmrghinhguvgigse
-    houhhtlhhoohhkrdgtohhmpdhrtghpthhtoheprghnnhgrrdhstghhuhhmrghkvghrseho
-    rhgrtghlvgdrtghomhdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtg
-    homhdprhgtphhtthhopehiohifohhrkhgvrhdtsehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:EDnmaHhchxw7do8bN3Csr6DXSWWYITTQu_fXTdKWOxl3okX7cwIYVg>
-    <xmx:EDnmaP5uE1polYs9_9nbOSKFHRzQoKXIvzwW5hNT7w9MJnvbghRq5w>
-    <xmx:EDnmaP6GAth2rEMCVRdbPubAvY9k8qzkF7Tw_0dOXXIpfuNiFnLoDA>
-    <xmx:EDnmaNEATMPGkyTg9DPaHQXiWarxNONnV-fuk4oWC77sB-bPZmd56g>
-    <xmx:EjnmaLSMmBUvoF2AHnNlW92owPDU9p8ndw6RcIizLqHogBTKm53hQFnZ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 Oct 2025 06:12:29 -0400 (EDT)
-Date: Wed, 8 Oct 2025 21:12:24 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Lance Yang <lance.yang@linux.dev>
-cc: Andrew Morton <akpm@linux-foundation.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Eero Tamminen <oak@helsinkinet.fi>, 
-    Kent Overstreet <kent.overstreet@linux.dev>, amaindex@outlook.com, 
-    anna.schumaker@oracle.com, boqun.feng@gmail.com, ioworker0@gmail.com, 
-    joel.granados@kernel.org, jstultz@google.com, leonylgao@tencent.com, 
-    linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-    longman@redhat.com, mhiramat@kernel.org, mingo@redhat.com, 
-    mingzhe.yang@ly.com, peterz@infradead.org, rostedt@goodmis.org, 
-    senozhatsky@chromium.org, tfiga@chromium.org, will@kernel.org, 
-    stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
- pointers
-In-Reply-To: <2bd2c4a8-456e-426a-aece-6d21afe80643@linux.dev>
-Message-ID: <ba00388c-1d5b-4d95-054d-a6f09af41e7b@linux-m68k.org>
-References: <20250909145243.17119-1-lance.yang@linux.dev> <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov> <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org> <CAMuHMdVYiSLOk-zVopXV8i7OZdO7PAK7stZSJNJDMw=ZEqtktA@mail.gmail.com>
- <inscijwnnydibdwwrkggvgxjtimajr5haixff77dbd7cxvvwc7@2t7l7oegsxcp> <20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org> <b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org> <56784853-b653-4587-b850-b03359306366@linux.dev>
- <693a62e0-a2b5-113b-d5d9-ffb7f2521d6c@linux-m68k.org> <23b67f9d-20ff-4302-810c-bf2d77c52c63@linux.dev> <2bd2c4a8-456e-426a-aece-6d21afe80643@linux.dev>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aaB3w+Ou"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1759919756; x=1791455756;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=9RqEXUujz/PpWW4H2k7WMGpGABZxw+Nt5qUjiEVCk40=;
+  b=aaB3w+OupQellPdK9oNhPQ9miUamhjLLbF1zqtRJH0RfSgW7JK5OFyK0
+   FT9IKmTbljJA+uEMqMS1kCqy7h5Wr25uZUx+UxzuFIOENg55SmSUAzw1X
+   guuTPh2qnhuWVMY6b3uVfh70NVoj8yJSYJAIO9hmV7EpCzndM6YdKRVdh
+   0E0plEof1ctrnUX4Y2+s8plUibepU61lmj/Vogmx4HM8Z/iBq0PvJBGi3
+   i+0/MDImnc+Yujq3cNN0ZSVRe1iwKvsEZ/Sm5ofNLK9g7FIiHGx3d+EWR
+   jZ50SHlAsr3MuEk3vLB9si/Azi93SuisQZviXuLnrcW12UrzUF69fa0Ua
+   Q==;
+X-CSE-ConnectionGUID: hq7gMooJTCqUnUitXD/RuA==
+X-CSE-MsgGUID: 926b4OrfSHie3sH8iML1WQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11575"; a="61315348"
+X-IronPort-AV: E=Sophos;i="6.18,323,1751266800"; 
+   d="scan'208";a="61315348"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2025 03:35:54 -0700
+X-CSE-ConnectionGUID: Xa+K/yk/R62z8aeBsETWtw==
+X-CSE-MsgGUID: KHXsbDOrQOWMp4dzt5ZuvQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,323,1754982000"; 
+   d="scan'208";a="180232833"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.117])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2025 03:35:51 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 8 Oct 2025 13:35:43 +0300 (EEST)
+To: Daniel Palmer <daniel@thingy.jp>
+cc: linux-m68k@lists.linux-m68k.org, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 5/5] PCI: Add driver for Elbox Mediator 4000 Zorro->PCI
+ bridge
+In-Reply-To: <20251007092313.755856-6-daniel@thingy.jp>
+Message-ID: <62f9c9af-9764-a75e-e311-064cd1388a86@linux.intel.com>
+References: <20251007092313.755856-1-daniel@thingy.jp> <20251007092313.755856-6-daniel@thingy.jp>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 
+On Tue, 7 Oct 2025, Daniel Palmer wrote:
 
-On Wed, 8 Oct 2025, Lance Yang wrote:
-
+> The Mediator 4000 is pretty simple:
+> - There is one "board" in the zorro space that has 2 registers to
+>   set the base address of the PCI memory address space in the
+>   machine address space and handle interrupts, and then windows
+>   to address the PCI config space and PCI IO space.
 > 
-> In other words, we are not just fixing the bug reported by Eero and 
-> Geert, but correcting the blocker tracking mechanism's flawed assumption 
-> for -stable ;)
+> - Another board that contains the PCI memory address space inside
+>   of a window of 256MB or 512MB (configured by a jumper).
 > 
-> If you feel this doesn't qualify as a fix, I can change the Fixes: tag 
-> to point to the original commit that introduced this flawed mechanism 
-> instead.
+> Since the hardware has no official documentation I cooked this
+> up using the WinUAE emulated version to work out how it mostly
+> works then confirmed it still worked on my real Amiga 4000.
+> 
+> Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+> ---
+>  drivers/pci/controller/Kconfig            |  11 +
+>  drivers/pci/controller/Makefile           |   1 +
+>  drivers/pci/controller/pci-mediator4000.c | 314 ++++++++++++++++++++++
+>  3 files changed, 326 insertions(+)
+>  create mode 100644 drivers/pci/controller/pci-mediator4000.c
+> 
+> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> index 41748d083b93..3fb977318123 100644
+> --- a/drivers/pci/controller/Kconfig
+> +++ b/drivers/pci/controller/Kconfig
+> @@ -215,6 +215,17 @@ config PCIE_MEDIATEK_GEN3
+>  	  Say Y here if you want to enable Gen3 PCIe controller support on
+>  	  MediaTek SoCs.
+>  
+> +config PCI_MEDIATOR4000
+> +	tristate "Elbox Mediator 4000 Zorro->PCI bridge"
+> +	depends on AMIGA
+> +	select IRQ_DOMAIN
+> +	help
+> +	  Adds support for the Elbox Mediator 4000 Zorro->PCI bridge for
+> +	  the Amiga 4000.
+> +
+> +	  Say Y here if you are one of the few people that has this hardware
+> +	  and run Linux on it.
+> +
+>  config PCIE_MT7621
+>  	tristate "MediaTek MT7621 PCIe controller"
+>  	depends on SOC_MT7621 || COMPILE_TEST
+> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+> index 038ccbd9e3ba..03cd529716ec 100644
+> --- a/drivers/pci/controller/Makefile
+> +++ b/drivers/pci/controller/Makefile
+> @@ -39,6 +39,7 @@ obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
+>  obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
+>  obj-$(CONFIG_PCIE_APPLE) += pcie-apple.o
+>  obj-$(CONFIG_PCIE_MT7621) += pcie-mt7621.o
+> +obj-$(CONFIG_PCI_MEDIATOR4000) += pci-mediator4000.o
+>  
+>  # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
+>  obj-y				+= dwc/
+> diff --git a/drivers/pci/controller/pci-mediator4000.c b/drivers/pci/controller/pci-mediator4000.c
+> new file mode 100644
+> index 000000000000..106cde263e2c
+> --- /dev/null
+> +++ b/drivers/pci/controller/pci-mediator4000.c
+> @@ -0,0 +1,314 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2025 Daniel Palmer <daniel@thingy.jp>
+> + */
+> +
+> +#include <asm/amigaints.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/pci.h>
+> +#include <linux/slab.h>
+> +#include <linux/zorro.h>
+> +
+> +/* Offsets etc */
+> +#define MEDIATOR4000_CONTROL			0x0
+> +#define MEDIATOR4000_CONTROL_SIZE		0x4
+> +#define MEDIATOR4000_CONTROL_WINDOW		0x0
+> +#define MEDIATOR4000_CONTROL_WINDOW_SHIFT	0x18
+
+Define the field with GENMASK(). Usually SHIFT defines are unnecessary. 
+Down- and upshifting can be done with FIELD_GET/PREP() if needed.
+
+> +#define MEDIATOR4000_CONTROL_IRQ		0x4
+> +#define MEDIATOR4000_CONTROL_IRQ_MASK_SHIFT	0x4
+
+GENMASK()?
+
+> +#define MEDIATOR4000_PCICONF			0x800000
+> +#define MEDIATOR4000_PCICONF_SIZE		0x400000
+> +#define MEDIATOR4000_PCICONF_DEV_STRIDE		0x800
+> +#define MEDIATOR4000_PCICONF_FUNC_STRIDE	0x100
+> +#define MEDIATOR4000_PCIIO			0xc00000
+> +#define MEDIATOR4000_PCIIO_SIZE			0x100000
+
+Use SZ_* from linux/sizes.h
+
+> +/* How the Amiga sees the mediator 4000 */
+> +#define MEDIATOR4000_IRQ	IRQ_AMIGA_PORTS
+> +#define MEDIATOR4000_ID_CONTROL	ZORRO_ID(ELBOX_COMPUTER, 0x21, 0)
+> +#define MEDIATOR4000_ID_WINDOW	ZORRO_ID(ELBOX_COMPUTER, 0x21 | 0x80, 0)
+> +
+> +/*
+> + * There are a few versions of the PCI backplane board,
+> + * at most there are 6 slots it seems.
+> + */
+> +#define MEDIATOR4000_MAX_SLOTS 6
+> +
+> +#define MEDIATOR4000_PCICONF_DEVFUNC_OFF(priv, devfn)		\
+> +	(priv->config_base +					\
+> +	(MEDIATOR4000_PCICONF_DEV_STRIDE * PCI_SLOT(devfn)) +	\
+> +	(MEDIATOR4000_PCICONF_FUNC_STRIDE * PCI_FUNC(devfn)))
+> +
+> +struct pci_mediator4000_priv {
+> +	struct resource pciio_res;
+> +	unsigned long config_base;
+> +	unsigned long setup_base;
+> +	struct irq_domain *irqdomain;
+> +	int irqmap[PCI_NUM_INTX];
+> +};
+> +
+> +static int pci_mediator4000_readconfig(struct pci_bus *bus, unsigned int devfn,
+> +				       int where, int size, u32 *value)
+> +{
+> +	struct pci_mediator4000_priv *priv = bus->sysdata;
+> +	unsigned long addr = MEDIATOR4000_PCICONF_DEVFUNC_OFF(priv, devfn) + where;
+> +	u32 v;
+> +
+> +	if (PCI_SLOT(devfn) >= MEDIATOR4000_MAX_SLOTS)
+> +		return PCIBIOS_FUNC_NOT_SUPPORTED;
+> +
+> +	/* Apparently only reading longs works */
+> +	v = z_readl(addr & ~0x3);
+> +
+> +	switch (size) {
+> +	case 4:
+> +		v = le32_to_cpu(v);
+> +		break;
+> +	case 2:
+> +		v = le16_to_cpu(((u16 *)(&v))[(addr & 0x3) >> 1]);
+> +		break;
+> +	case 1:
+> +		v = ((u8 *)&v)[addr & 0x3];
+> +		break;
+> +	default:
+> +		return PCIBIOS_FUNC_NOT_SUPPORTED;
+> +	}
+> +
+> +	*value = v;
+> +
+> +	return PCIBIOS_SUCCESSFUL;
+> +}
+> +
+> +static int pci_mediator4000_writeconfig(struct pci_bus *bus, unsigned int devfn,
+> +					int where, int size, u32 value)
+> +{
+> +	struct pci_mediator4000_priv *priv = bus->sysdata;
+> +	unsigned long addr = MEDIATOR4000_PCICONF_DEVFUNC_OFF(priv, devfn) + where;
+> +	u32 v;
+> +
+> +	if (PCI_SLOT(devfn) >= MEDIATOR4000_MAX_SLOTS)
+> +		return PCIBIOS_FUNC_NOT_SUPPORTED;
+> +
+> +	/* If its a long just write it */
+> +	if (size == 4) {
+> +		v = cpu_to_le32(value);
+> +		z_writel(v, addr);
+> +		return PCIBIOS_SUCCESSFUL;
+> +	}
+> +
+> +	/* Not a long, do RMW */
+> +	v = z_readl(addr & ~0x3);
+> +
+> +	switch (size) {
+> +	case 2:
+> +		((u16 *)(&v))[(addr & 0x3) >> 1] = cpu_to_le16((u16)value);
+> +		break;
+> +	case 1:
+> +		((u8 *)(&v))[addr & 0x3] = value;
+> +		break;
+> +	default:
+> +		return PCIBIOS_FUNC_NOT_SUPPORTED;
+> +	}
+> +
+> +	z_writel(v, addr & ~0x3);
+> +
+> +	return PCIBIOS_SUCCESSFUL;
+> +}
+> +
+> +static irqreturn_t pci_mediator4000_irq(int irq, void *dev_id)
+> +{
+> +	struct pci_mediator4000_priv *priv = dev_id;
+> +	u8 v = z_readb(priv->setup_base + MEDIATOR4000_CONTROL_IRQ);
+> +	unsigned long mask = v & 0xf;
+
+What's this magic 0xf, should it use FIELD_GET() instead and name that 
+field?
+
+I personally find this way of hiding logic into the variable declarations 
+harder to read than if it would appear after them separately, it costs a 
+few lines but this is simple and short function so it doesn't make things 
+hard to follow.
+
+> +	int i;
+> +
+> +	for_each_set_bit(i, &mask, PCI_NUM_INTX)
+> +		generic_handle_domain_irq(priv->irqdomain, i);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int pci_mediator4000_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+> +{
+> +	struct pci_mediator4000_priv *priv = dev->bus->sysdata;
+> +
+> +	/*
+> +	 * I'm not actually sure how the lines are wired on
+> +	 * mediators with more than 4 slots. My 4 slot board seems to just
+> +	 * have slot number == irq.
+> +	 */
+> +	return priv->irqmap[slot % PCI_NUM_INTX];
+> +}
+> +
+> +static struct pci_ops pci_mediator4000_ops = {
+> +	.read = pci_mediator4000_readconfig,
+> +	.write = pci_mediator4000_writeconfig,
+> +};
+> +
+> +static struct resource mediator4000_busn = {
+> +	.name = "mediator4000 busn",
+> +	.start = 0,
+> +	.end = 0,
+> +	.flags = IORESOURCE_BUS,
+> +};
+> +
+> +static void pci_mediator4000_mask_irq(struct irq_data *d)
+> +{
+> +	struct pci_mediator4000_priv *priv = irq_data_get_irq_chip_data(d);
+> +	u8 v = z_readb(priv->setup_base + MEDIATOR4000_CONTROL_IRQ);
+> +
+> +	v &= ~(BIT(irqd_to_hwirq(d)) << MEDIATOR4000_CONTROL_IRQ_MASK_SHIFT);
+
+Use FIELD_PREP() instead of the SHIFT define.
+
+I'd also put these z_readb() calls right before this line (and not on the 
+variable declaration line) as it's part of this RMW sequence (which is 
+easy to pick up when they're grouped together).
+
+> +	z_writeb(v, priv->setup_base + MEDIATOR4000_CONTROL_IRQ);
+> +}
+> +
+> +static void pci_mediator4000_unmask_irq(struct irq_data *d)
+> +{
+> +	struct pci_mediator4000_priv *priv = irq_data_get_irq_chip_data(d);
+> +	u8 v = z_readb(priv->setup_base + MEDIATOR4000_CONTROL_IRQ);
+> +
+> +	v |= (BIT(irqd_to_hwirq(d)) << MEDIATOR4000_CONTROL_IRQ_MASK_SHIFT);
+
+FIELD_PREP()
+
+> +	z_writeb(v, priv->setup_base + MEDIATOR4000_CONTROL_IRQ);
+> +}
+> +
+> +static struct irq_chip pci_mediator4000_irq_chip = {
+> +	.name = "mediator4000",
+> +	.irq_mask = pci_mediator4000_mask_irq,
+> +	.irq_unmask = pci_mediator4000_unmask_irq,
+> +};
+> +
+> +static int pci_mediator4000_irq_map(struct irq_domain *domain, unsigned int irq,
+> +				    irq_hw_number_t hwirq)
+> +{
+> +	irq_set_chip_and_handler(irq, &pci_mediator4000_irq_chip, handle_level_irq);
+> +	irq_set_chip_data(irq, domain->host_data);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct irq_domain_ops pci_mediator4000_irqdomain_ops = {
+> +	.map = pci_mediator4000_irq_map,
+> +};
+> +
+> +static int mediator4000_setup(struct device *dev,
+> +			      struct zorro_dev *m4k_control,
+> +			      struct zorro_dev *m4k_window)
+> +{
+> +	unsigned long control_base = m4k_control->resource.start;
+> +	struct pci_mediator4000_priv *priv;
+> +	struct pci_host_bridge *bridge;
+> +	struct fwnode_handle *fwnode;
+> +	struct resource *res;
+> +	int i, ret;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	ret = devm_request_irq(dev, MEDIATOR4000_IRQ, pci_mediator4000_irq,
+> +			       IRQF_SHARED, "mediator4000", priv);
+> +	if (ret)
+> +		return -ENODEV;
+> +
+> +	bridge = devm_pci_alloc_host_bridge(dev, 0);
+> +	if (!bridge)
+> +		return -ENOMEM;
+> +
+> +	res = devm_request_mem_region(dev, control_base + MEDIATOR4000_CONTROL,
+> +				      MEDIATOR4000_CONTROL_SIZE, "mediator4000-registers");
+> +	if (!res)
+> +		return -ENOMEM;
+> +
+> +	priv->setup_base = res->start;
+> +
+> +	/* Setup the window base */
+> +	z_writeb((m4k_window->resource.start >> MEDIATOR4000_CONTROL_WINDOW_SHIFT) & 0xf0,
+
+FIELD_GET().
+
+I'm not sure what that 0xf0 does, is it aligning for which we've 
+ALIGN_DOWN()?
+
+> +		 priv->setup_base + MEDIATOR4000_CONTROL_WINDOW);
+> +
+> +	res = devm_request_mem_region(dev, control_base + MEDIATOR4000_PCICONF,
+> +				 MEDIATOR4000_PCICONF_SIZE, "mediator4000-pci-config");
+> +	if (!res)
+> +		return -ENOMEM;
+> +
+> +	priv->config_base = res->start;
+> +
+> +	res = devm_request_mem_region(dev, control_base + MEDIATOR4000_PCIIO,
+> +				  MEDIATOR4000_PCIIO_SIZE, "mediator4000-pci-io");
+> +	if (!res)
+> +		return -ENOMEM;
+> +
+> +	priv->pciio_res.name = "mediator4000-pci-io",
+> +	priv->pciio_res.flags  = IORESOURCE_IO,
+> +	priv->pciio_res.start = res->start;
+> +	priv->pciio_res.end = res->end;
+
+DEFINE_RES()
+
+> +	res = insert_resource_conflict(&ioport_resource, &priv->pciio_res);
+> +	if (res)
+> +		return -ENOMEM;
+> +
+> +	pci_add_resource_offset(&bridge->windows, &priv->pciio_res, priv->pciio_res.start);
+> +	pci_add_resource(&bridge->windows, &m4k_window->resource);
+> +	pci_add_resource(&bridge->windows, &mediator4000_busn);
+> +
+> +	/* fixme: PCI DMA can only happen inside the window? How to enforce that? */
+> +
+> +	bridge->sysdata = priv;
+> +	bridge->ops = &pci_mediator4000_ops;
+> +	bridge->swizzle_irq = pci_common_swizzle;
+> +	bridge->map_irq = pci_mediator4000_map_irq;
+> +
+> +	fwnode = irq_domain_alloc_named_fwnode("mediator4000");
+> +	if (!fwnode)
+> +		return -ENOMEM;
+> +
+> +	priv->irqdomain = irq_domain_create_linear(fwnode,
+> +						   PCI_NUM_INTX,
+> +						   &pci_mediator4000_irqdomain_ops,
+> +						   priv);
+> +	if (!priv->irqdomain) {
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	for (i = 0; i < PCI_NUM_INTX; i++)
+> +		priv->irqmap[i] = irq_create_mapping(priv->irqdomain, i);
+> +
+> +	ret = pci_host_probe(bridge);
+> +	if (!ret)
+
+Please reverse the logic.
+
+> +		return 0;
+> +
+> +err:
+> +	irq_domain_free_fwnode(fwnode);
+> +	return ret;
+> +}
+> +
+> +static int pci_mediator4000_probe(struct zorro_dev *m4k_control,
+> +				  const struct zorro_device_id *ent)
+> +{
+> +	struct device *dev = &m4k_control->dev;
+> +	struct zorro_dev *m4k_window;
+> +
+> +	m4k_window = zorro_find_device(MEDIATOR4000_ID_WINDOW, m4k_control);
+> +	if (!m4k_window) {
+> +		dev_err(&m4k_control->dev, "Could not find window board\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	return mediator4000_setup(dev, m4k_control, m4k_window);
+> +}
+> +
+> +static const struct zorro_device_id pci_mediator4000_zorro_tbl[] = {
+> +	{
+> +		.id = MEDIATOR4000_ID_CONTROL,
+> +	},
+> +	{ 0 }
+> +};
+> +MODULE_DEVICE_TABLE(zorro, pci_mediator4000_zorro_tbl);
+> +
+> +static struct zorro_driver pci_mediator4000_driver = {
+> +	.name     = "pci_mediator4000",
+> +	.id_table = pci_mediator4000_zorro_tbl,
+> +	.probe    = pci_mediator4000_probe,
+> +};
+> +
+> +module_driver(pci_mediator4000_driver,
+> +	      zorro_register_driver,
+> +	      zorro_unregister_driver);
 > 
 
-That's really a question for the bug reporters. I don't personally have a 
-problem with CONFIG_DETECT_HUNG_TASK_BLOCKER so I can't say whether the 
-fix meets the requirements set in 
-Documentation/process/stable-kernel-rules.rst. And I still don't know 
-what's meant by "unnecessary warnings in a few unexpected cases".
+-- 
+ i.
+
