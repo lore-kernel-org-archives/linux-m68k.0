@@ -1,108 +1,92 @@
-Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13DE82853E9
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Oct 2025 00:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932592135AD
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Oct 2025 03:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759884024; cv=none; b=i9T1b80TRU0C0P731yUDzYlt6vu/5MrBARE/gPzSpAubPpnsSg0MPG8g9SsflpzV/rtvxP0Fxx+94SR5s5obYhBE4GY88j8zFFXWqBUJK6/bo1SrkEfbkiKnFuB4Ycpl74rgo69q5xzPEEY1a2P/dhiwKbGjdbql9hwfmUPMKMU=
+	t=1759892622; cv=none; b=CcGlVgxMcGDyNZOv8OcKfnQ6at1kZh59lYWMhBz74TkHLDJB8m/fYKS7FCmuuEVGR8F0rdoAsynWNfq5w0b/z2rJmC14DRSL9QHSxSEMCnWOaRIHnwTvQRFSvm/e3DGMUFjD1NSXo6OVz25pEGGBZWzKylleRXZsuC41G7N2dW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759884024; c=relaxed/simple;
-	bh=4Lj6XaN2MmCn4Ty31dhCcFk/RRrhqYrrk/p2EtLxfgs=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=vDheB1fNuMC2SLvcUvXe+qLl/a/rgJzQNdAgkNPqN1GGRNnjhz6N5B3RS+yP2KTchc46nItR2miuCIjDm/PNDK+Jrc+fZumHj/spuDlj5s/ony93FfCg47CjXUTpAJUl2bLB0Cx7MIlcQ0Mq4kQF8zK4pIGa2hd34uHRaPb4VOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VwdkZqZ4; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1759892622; c=relaxed/simple;
+	bh=5yStW0L1wEARM1VcACJHqDCy7X/TSWEwGB67a2Fqnmg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YPx1XKIQX3ui3ZW32ot900fUdqMU+yct+3uHKyyjsqKG8WqgBC5kNNw49FTrvDooQVMXpnPjuDl/EBv5IvAnZ4Uro9JFcNk0SjQ3UBE2SUjkoL9r4XD1zONG7c6XKZ6cFBzI/rUxqeOodo4EH80Z9CkKVTflokc6S0uWQ9Xf5Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T/3jXx84; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VwdkZqZ4"
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 229E914005B1;
-	Tue,  7 Oct 2025 20:40:22 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Tue, 07 Oct 2025 20:40:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1759884022; x=1759970422; bh=GIQqrOTmZqlirCfdm3X1h0B9JmIfdK5suLW
-	7FpXibLA=; b=VwdkZqZ4D9mMNQ50FJ8vt034npGjIiVnaoOm/Cr6hYN0i76aTFC
-	DAX/kfGxEMubDBgsZOKO3wTPxRaVEAQD61LBIhIxHPBJfPWdPLhyUjTwE9/IOaoY
-	c+/Rcd6CM5Pv/PdH3DPRtUqQaGSXMCcKpP9vz4sER/7ixtx3lCixEpauRin/sCYT
-	t2cMvqb50YEo6n/0VTAU4EZUxSATg8uIEMEmFJybkeZEsAJUIruT23P0QJfOQ24g
-	rSZ8es58kqIxlrFbGEBbjXC2G6+wCX72ibbAYIN31Uq++o07ZaEVo6QfNcxlp4JV
-	4IfZmQXnzsS9Me/lR4hB0GQW1SL25wEyldQ==
-X-ME-Sender: <xms:87LlaNp5q7HArd0fhgaJV7uvZQG6_a_eJPncjOasx8yIma_2qD2AwQ>
-    <xme:87LlaLWNFyMVVQgBqSvK-kxSyJ2DZK7Di3aMZNWFr1qEuRzvXW4wwR2fRHrSWymoW
-    NyokvQVFEBkef4HVZxY561ayUhxq8XvLD72_L8jC1P8KyiEOcq8PIE>
-X-ME-Received: <xmr:87LlaE5NfE9cpCiamDcg51BfyMGBd3Gb2UTyy7ckRUFU8hCmrRC2xMnzbJupfQP0PUvA3ObD3juOMQupCSNClqrl1I95HmeoLPU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddutddukeelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeu
-    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedvgedpmhho
-    uggvpehsmhhtphhouhhtpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurg
-    htihhonhdrohhrghdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhr
-    ghdprhgtphhtthhopehorghksehhvghlshhinhhkihhnvghtrdhfihdprhgtphhtthhope
-    hkvghnthdrohhvvghrshhtrhgvvghtsehlihhnuhigrdguvghvpdhrtghpthhtoheplhgr
-    nhgtvgdrhigrnhhgsehlihhnuhigrdguvghvpdhrtghpthhtoheprghmrghinhguvgigse
-    houhhtlhhoohhkrdgtohhmpdhrtghpthhtoheprghnnhgrrdhstghhuhhmrghkvghrseho
-    rhgrtghlvgdrtghomhdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtg
-    homhdprhgtphhtthhopehiohifohhrkhgvrhdtsehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:87LlaJ1FczvzMhYXPa0JGQElbUfGWoiZGJkuFow5sf0FqicGrvIc3Q>
-    <xmx:87LlaL_xGHyojH9SdXJQOn9BYEjUJQIu8tLodRgilRsxOUEZz7rYwQ>
-    <xmx:87LlaCuZwC_-s-n_W5DetwBmZRfR5rDbh4ZKCIXU72FuhOH-fknO4Q>
-    <xmx:87LlaPorCqtvHMBeN_xkH7zPAltn74kZjyUlNGacXr7gsFIhTjRGOA>
-    <xmx:9rLlaOk84XAnOx4ieLBPJf7Fc1DQLRWoIpvkPx00d0A0IuFkcLFfBkyU>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Oct 2025 20:40:17 -0400 (EDT)
-Date: Wed, 8 Oct 2025 11:40:09 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Andrew Morton <akpm@linux-foundation.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Eero Tamminen <oak@helsinkinet.fi>
-cc: Kent Overstreet <kent.overstreet@linux.dev>, 
-    Lance Yang <lance.yang@linux.dev>, amaindex@outlook.com, 
-    anna.schumaker@oracle.com, boqun.feng@gmail.com, ioworker0@gmail.com, 
-    joel.granados@kernel.org, jstultz@google.com, leonylgao@tencent.com, 
-    linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-    longman@redhat.com, mhiramat@kernel.org, mingo@redhat.com, 
-    mingzhe.yang@ly.com, peterz@infradead.org, rostedt@goodmis.org, 
-    senozhatsky@chromium.org, tfiga@chromium.org, will@kernel.org, 
-    stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
- pointers
-In-Reply-To: <20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org>
-Message-ID: <b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org>
-References: <20250909145243.17119-1-lance.yang@linux.dev> <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov> <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org> <CAMuHMdVYiSLOk-zVopXV8i7OZdO7PAK7stZSJNJDMw=ZEqtktA@mail.gmail.com>
- <inscijwnnydibdwwrkggvgxjtimajr5haixff77dbd7cxvvwc7@2t7l7oegsxcp> <20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org>
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T/3jXx84"
+Message-ID: <56784853-b653-4587-b850-b03359306366@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759892608;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vSRrtrvWgwS90ySr5nF6OQKQum7o9S6zWNvqm6k9XvM=;
+	b=T/3jXx84Rfw++V6z2MKJJv5c/rPYfsL5Ui23RZkEQx9CDR0WnlRFujpQtx7DTK8morvqzQ
+	fGf+hxuXI0wGprlzykRqYh0W/J+sSVWQbdk1l39Qun/FBJqNpmP2TIBlXlxC4mcFM9II/u
+	MInrvhq4Nld0p1caXSOIDmVSFa3ddig=
+Date: Wed, 8 Oct 2025 11:03:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
+ pointers
+Content-Language: en-US
+To: Finn Thain <fthain@linux-m68k.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Eero Tamminen <oak@helsinkinet.fi>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, amaindex@outlook.com,
+ anna.schumaker@oracle.com, boqun.feng@gmail.com, ioworker0@gmail.com,
+ joel.granados@kernel.org, jstultz@google.com, leonylgao@tencent.com,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ longman@redhat.com, mhiramat@kernel.org, mingo@redhat.com,
+ mingzhe.yang@ly.com, peterz@infradead.org, rostedt@goodmis.org,
+ senozhatsky@chromium.org, tfiga@chromium.org, will@kernel.org,
+ stable@vger.kernel.org
+References: <20250909145243.17119-1-lance.yang@linux.dev>
+ <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
+ <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
+ <CAMuHMdVYiSLOk-zVopXV8i7OZdO7PAK7stZSJNJDMw=ZEqtktA@mail.gmail.com>
+ <inscijwnnydibdwwrkggvgxjtimajr5haixff77dbd7cxvvwc7@2t7l7oegsxcp>
+ <20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org>
+ <b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+In-Reply-To: <b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
-On Tue, 7 Oct 2025, Andrew Morton wrote:
+
+On 2025/10/8 08:40, Finn Thain wrote:
+> 
+> On Tue, 7 Oct 2025, Andrew Morton wrote:
+> 
+>>
+>> Getting back to the $Subject at hand, are people OK with proceeding
+>> with Lance's original fix?
+>>
+> 
+> Lance's patch is probably more appropriate for -stable than the patch I
+> proposed -- assuming a fix is needed for -stable.
+
+Thanks!
+
+Apart from that, I believe this fix is still needed for the hung task
+detector itself, to prevent unnecessary warnings in a few unexpected
+cases.
 
 > 
-> Getting back to the $Subject at hand, are people OK with proceeding
-> with Lance's original fix?
+> Besides those two alternatives, there is also a workaround:
+> $ ./scripts/config -d DETECT_HUNG_TASK_BLOCKER
+> which may be acceptable to the interested parties (i.e. m68k users).
 > 
+> I don't have a preference. I'll leave it up to the bug reporters (Eero and
+> Geert).
 
-Lance's patch is probably more appropriate for -stable than the patch I 
-proposed -- assuming a fix is needed for -stable.
-
-Besides those two alternatives, there is also a workaround:
-$ ./scripts/config -d DETECT_HUNG_TASK_BLOCKER
-which may be acceptable to the interested parties (i.e. m68k users).
-
-I don't have a preference. I'll leave it up to the bug reporters (Eero and 
-Geert).
