@@ -1,174 +1,169 @@
-Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B99E1C3027;
-	Thu,  9 Oct 2025 02:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58767241CB7
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Oct 2025 04:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759978598; cv=none; b=AbIRU+W3eACTfXJgagrC9dRNJWykfRGIEnYrk9j6xTq6I6PNbAP3uumaMKOTfz2hA829vxkBJibXsJiqTZ5levId3ghoy79tMOnm1l6cgBUc9KCMp4hGIzOP8KJcLbuxgrXF3NARCVxEH23T+0CqL1bv8du/jclPzj1Iq8TkzDQ=
+	t=1759982698; cv=none; b=V6qU511T6PMoAPzoKJGg7/7jJCxBeFf2DGlyg74o9yZTp6X0hJ2kX6k4FzHVTL+02xQGPHnZiCV4fyfwBgR+7RShbYj9VfQj+G0ErcTGgKvPqlfS4TsGO3mRMGHSrJQgerDgttxe+Osy8h6sTjHxuCDLYwdESVwIyh4e9t4t34I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759978598; c=relaxed/simple;
-	bh=vQOfMX/6QF2frKlgI4zbsMZqKYzIvryKIPH3yqqBjlE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=l2H+cQNVyugmxETS0CBFUbBSGhtyk2ab51E7NTYyfz35ayXgUFb0KwBqDuTRp/+Ze8UWE+mCfHrrKVWGYN4e74Nw2z3yXkoxg9lqF4zzjbinqC20q73F/6uM8QnheOnVtnfifsjfcYkqWXAMmFcR/KXdgQrHxmCZ+bczh0Q9PRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UMugnjF9; arc=none smtp.client-ip=202.12.124.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1759982698; c=relaxed/simple;
+	bh=DCmW1Fy9ep6190H7tU2v5kS2XIm6raDoEW/DHR1Vjjg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Z6Mz+0nrcZ2i5HDJA08MEe4tXVIUkHlglS2M8J/rY3SM2RHqr5qeeb/Mnnuz4Xit7QH8l51JtVNhY1YV03sklkMWk/79Ypw1E0wxETbeGDk8KChLfStmw3v8osZW1wIHlxtxHGpaEObEEtIkvMlugmGg4teRx5C3PJpSOMYxFyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linux-foundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=nIUztAZJ; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UMugnjF9"
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id C59A07A0055;
-	Wed,  8 Oct 2025 22:56:33 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Wed, 08 Oct 2025 22:56:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1759978593; x=1760064993; bh=uL1Z46mIMlWDqH+R1NLQjW+DW0aqB/vjTR7
-	Nvu5o2aM=; b=UMugnjF9bu7n2sl+cwKXR1JuyODQ4J9royl8Vmt8htBspEjb/K8
-	3GThAi/OyKvUjC6TA1lNcLNT+MStYcOFa/EhVHOCfJPi2bZ3WH/CYpCjiMd3ylSp
-	yshI7HkTa1W5pk551PpoeaUFDxcqMl6IvLElTTGuYEELG9u94+3c3cUg10jsBzSq
-	oCaKUDWaW1he1jove+3hPNOM1cCOZ6ocAwEHB7NQ0TV9lV4Dx6CXJyxfbtCxiSk0
-	QyQyUqaxXFNRuWD+1u0XvbhUP5AHYjKfzYkbPrJZO43gHmLzHeofgRXZSZ3h/Mb6
-	BX7aBvbtL7UOxIam5hlAyMLzdzFRDpWgZAw==
-X-ME-Sender: <xms:YCTnaIQgTpu88XeFOudQm1s8Mvwn9xUlf9lBt386_YtwmzENmA1qaQ>
-    <xme:YCTnaB6fzBs00EbWXLDGUohKl6Z1Ev2fKT6SRPL0SmR2R3K_TBapYAoUaThxb0jje
-    yyZ6A31xcv4edCFaJSaN-dh5Qs5RHSKIuVeBNH0ZxgrV6d1RfilIKg>
-X-ME-Received: <xmr:YCTnaBoAB4kEA85ynV8CCRlJyOqOoZH60jZMXS94IR0Wlcm-Jfwknqvh2egzuxACMB6TLQUiEg0K9qpjDHTK5rXE-o948fB4W5I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddutdehtdegucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeelfeeklefggfetkedukeevfffgvdeuheetffekledtfeejteelieejteehgeel
-    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedvhedpmhho
-    uggvpehsmhhtphhouhhtpdhrtghpthhtoheprghlvgigvghirdhsthgrrhhovhhoihhtoh
-    hvsehgmhgrihhlrdgtohhmpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggu
-    rdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhope
-    grshhtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhesihhoghgvrghr
-    sghogidrnhgvthdprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphht
-    thhopegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopegtohhrsg
-    gvtheslhifnhdrnhgvth
-X-ME-Proxy: <xmx:YCTnaFUCZ9mbgctsCLbcsLNmMGb1mT-M1I_hBDo7nakitsT95jlwcA>
-    <xmx:YCTnaBoNT_YxL6gQ2kLiKXTBz5pwXVtKMpLptTcjRTdoQo8l8d4X9g>
-    <xmx:YCTnaMvl1N7XGHQ_G7jg7zlyGI-phTxv3lfe9xG0MoqHnoLwvwyQBA>
-    <xmx:YCTnaHSWqgw3FZEAMa5JuYFUjdCRwmOgwdxA0Q12-9XxKZWoXCJ4AA>
-    <xmx:YSTnaAw-_18wT2EamGw4uVXrGz7ejqXMMQC5arZ31uvydq_9YG0wh346>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 Oct 2025 22:56:29 -0400 (EDT)
-Date: Thu, 9 Oct 2025 13:56:19 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
-    Alexei Starovoitov <ast@kernel.org>, 
-    Daniel Borkmann <daniel@iogearbox.net>, 
-    Andrii Nakryiko <andrii@kernel.org>, 
-    Andrew Morton <akpm@linux-foundation.org>, 
-    Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-    Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    linux-arch <linux-arch@vger.kernel.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, 
-    Martin KaFai Lau <martin.lau@linux.dev>, 
-    Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-    Yonghong Song <yonghong.song@linux.dev>, 
-    John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-    Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-    Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC v3 2/5] bpf: Explicitly align bpf_res_spin_lock
-In-Reply-To: <CAADnVQLOQq5m3yN4hqqrx4n1hagY73rV03d7g5Wm9OwVwR_0fA@mail.gmail.com>
-Message-ID: <fdda632e-bac9-e830-8840-2fcd6b2292b6@linux-m68k.org>
-References: <cover.1759875560.git.fthain@linux-m68k.org> <807cfee43bbcb34cdc6452b083ccdc754344d624.1759875560.git.fthain@linux-m68k.org> <CAADnVQLOQq5m3yN4hqqrx4n1hagY73rV03d7g5Wm9OwVwR_0fA@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="nIUztAZJ"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id F3CC1604A9;
+	Thu,  9 Oct 2025 04:04:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E35D1C4CEE7;
+	Thu,  9 Oct 2025 04:04:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1759982694;
+	bh=DCmW1Fy9ep6190H7tU2v5kS2XIm6raDoEW/DHR1Vjjg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nIUztAZJruIzIDci75GQZX+SEixhge4TpK1eNqOb/hlvMQJFOaZTX2zEx1gcgBklJ
+	 oEzDbhGwzqUsxOaZE6o64JYS4LapPFhGlquXTm5JJNaZB3G3vqHEBvJGh9agHawsud
+	 f46csRYJjvknKBzXG25HGsS1kJoMjo7iE+A8M1l0=
+Date: Wed, 8 Oct 2025 21:04:53 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Lance Yang <lance.yang@linux.dev>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Eero Tamminen
+ <oak@helsinkinet.fi>, Kent Overstreet <kent.overstreet@linux.dev>,
+ amaindex@outlook.com, anna.schumaker@oracle.com, boqun.feng@gmail.com,
+ ioworker0@gmail.com, joel.granados@kernel.org, jstultz@google.com,
+ leonylgao@tencent.com, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, longman@redhat.com, mhiramat@kernel.org,
+ mingo@redhat.com, mingzhe.yang@ly.com, peterz@infradead.org,
+ rostedt@goodmis.org, Finn Thain <fthain@linux-m68k.org>,
+ senozhatsky@chromium.org, tfiga@chromium.org, will@kernel.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
+ pointers
+Message-Id: <20251008210453.71ba81a635fc99ce9262be7e@linux-foundation.org>
+In-Reply-To: <3e0b7551-698f-4ef6-919b-ff4cbe3aa11c@linux.dev>
+References: <20250909145243.17119-1-lance.yang@linux.dev>
+	<yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
+	<99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
+	<CAMuHMdVYiSLOk-zVopXV8i7OZdO7PAK7stZSJNJDMw=ZEqtktA@mail.gmail.com>
+	<inscijwnnydibdwwrkggvgxjtimajr5haixff77dbd7cxvvwc7@2t7l7oegsxcp>
+	<20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org>
+	<b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org>
+	<56784853-b653-4587-b850-b03359306366@linux.dev>
+	<693a62e0-a2b5-113b-d5d9-ffb7f2521d6c@linux-m68k.org>
+	<23b67f9d-20ff-4302-810c-bf2d77c52c63@linux.dev>
+	<2bd2c4a8-456e-426a-aece-6d21afe80643@linux.dev>
+	<ba00388c-1d5b-4d95-054d-a6f09af41e7b@linux-m68k.org>
+	<3fa8182f-0195-43ee-b163-f908a9e2cba3@linux.dev>
+	<ad7cb710-0d5a-93b1-fa4d-efb236760495@linux-m68k.org>
+	<3e0b7551-698f-4ef6-919b-ff4cbe3aa11c@linux.dev>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary=-14638117742092801439175997857935
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, 9 Oct 2025 10:01:18 +0800 Lance Yang <lance.yang@linux.dev> wrote:
 
----14638117742092801439175997857935
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+> I think we fundamentally disagree on whether this fix for known
+> false-positive warnings is needed for -stable.
+
+Having the kernel send scary warnings to our users is really bad
+behavior.  And if we don't fix it, people will keep reporting it.
+
+And removing a WARN_ON is a perfectly good way of fixing it.  The
+kernel has 19,000 WARNs, probably seven of which are useful :(
 
 
-On Wed, 8 Oct 2025, Alexei Starovoitov wrote:
 
-> On Tue, Oct 7, 2025 at 4:50=E2=80=AFPM Finn Thain <fthain@linux-m68k.org>=
- wrote:
-> >
-> > Align bpf_res_spin_lock to avoid a BUILD_BUG_ON() when the alignment
-> > changes, as it will do on m68k when, in a subsequent patch, the minimum
-> > alignment of the atomic_t member of struct rqspinlock gets increased.
-> > Drop the BUILD_BUG_ON() as it is now redundant.
-> >
-> > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > Cc: Song Liu <song@kernel.org>
-> > Cc: Yonghong Song <yonghong.song@linux.dev>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: KP Singh <kpsingh@kernel.org>
-> > Cc: Stanislav Fomichev <sdf@fomichev.me>
-> > Cc: Hao Luo <haoluo@google.com>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/asm-generic/rqspinlock.h | 2 +-
-> >  kernel/bpf/rqspinlock.c          | 1 -
-> >  2 files changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/include/asm-generic/rqspinlock.h b/include/asm-generic/rqs=
-pinlock.h
-> > index 6d4244d643df..eac2dcd31b83 100644
-> > --- a/include/asm-generic/rqspinlock.h
-> > +++ b/include/asm-generic/rqspinlock.h
-> > @@ -28,7 +28,7 @@ struct rqspinlock {
-> >   */
-> >  struct bpf_res_spin_lock {
-> >         u32 val;
-> > -};
-> > +} __aligned(__alignof__(struct rqspinlock));
->=20
-> I don't follow.
-> In the next patch you do:
->=20
-> typedef struct {
-> - int counter;
-> + int __aligned(sizeof(int)) counter;
-> } atomic_t;
->=20
-> so it was 4 and still 4 ?
-> Are you saying 'int' on m68k is not 4 byte aligned by default,
-> so you have to force 4 byte align?
->=20
 
-Right. __alignof(int) =3D=3D 2 on m68k.
+From: Lance Yang <lance.yang@linux.dev>
+Subject: hung_task: fix warnings caused by unaligned lock pointers
+Date: Tue, 9 Sep 2025 22:52:43 +0800
 
-> >  struct qspinlock;
-> >  #ifdef CONFIG_QUEUED_SPINLOCKS
-> > diff --git a/kernel/bpf/rqspinlock.c b/kernel/bpf/rqspinlock.c
-> > index 338305c8852c..a88a0e9749d7 100644
-> > --- a/kernel/bpf/rqspinlock.c
-> > +++ b/kernel/bpf/rqspinlock.c
-> > @@ -671,7 +671,6 @@ __bpf_kfunc int bpf_res_spin_lock(struct bpf_res_sp=
-in_lock *lock)
-> >         int ret;
-> >
-> >         BUILD_BUG_ON(sizeof(rqspinlock_t) !=3D sizeof(struct bpf_res_sp=
-in_lock));
-> > -       BUILD_BUG_ON(__alignof__(rqspinlock_t) !=3D __alignof__(struct =
-bpf_res_spin_lock));
->=20
-> Why delete it? Didn't you make them equal in the above hunk?
->=20
+From: Lance Yang <lance.yang@linux.dev>
 
-I deleted it because it's tautological. I think "do not repeat yourself"=20
-applies here.
----14638117742092801439175997857935--
+The blocker tracking mechanism assumes that lock pointers are at least
+4-byte aligned to use their lower bits for type encoding.
+
+However, as reported by Eero Tamminen, some architectures like m68k
+only guarantee 2-byte alignment of 32-bit values. This breaks the
+assumption and causes two related WARN_ON_ONCE checks to trigger.
+
+To fix this, the runtime checks are adjusted to silently ignore any lock
+that is not 4-byte aligned, effectively disabling the feature in such
+cases and avoiding the related warnings.
+
+Thanks to Geert Uytterhoeven for bisecting!
+
+Link: https://lkml.kernel.org/r/20250909145243.17119-1-lance.yang@linux.dev
+Fixes: e711faaafbe5 ("hung_task: replace blocker_mutex with encoded blocker")
+Signed-off-by: Lance Yang <lance.yang@linux.dev>
+Reported-by: Eero Tamminen <oak@helsinkinet.fi>
+Closes: https://lore.kernel.org/lkml/CAMuHMdW7Ab13DdGs2acMQcix5ObJK0O2dG_Fxzr8_g58Rc1_0g@mail.gmail.com
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Anna Schumaker <anna.schumaker@oracle.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Joel Granados <joel.granados@kernel.org>
+Cc: John Stultz <jstultz@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Lance Yang <lance.yang@linux.dev>
+Cc: Mingzhe Yang <mingzhe.yang@ly.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Tomasz Figa <tfiga@chromium.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yongliang Gao <leonylgao@tencent.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/hung_task.h |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+--- a/include/linux/hung_task.h~hung_task-fix-warnings-caused-by-unaligned-lock-pointers
++++ a/include/linux/hung_task.h
+@@ -20,6 +20,10 @@
+  * always zero. So we can use these bits to encode the specific blocking
+  * type.
+  *
++ * Note that on architectures where this is not guaranteed, or for any
++ * unaligned lock, this tracking mechanism is silently skipped for that
++ * lock.
++ *
+  * Type encoding:
+  * 00 - Blocked on mutex			(BLOCKER_TYPE_MUTEX)
+  * 01 - Blocked on semaphore			(BLOCKER_TYPE_SEM)
+@@ -45,7 +49,7 @@ static inline void hung_task_set_blocker
+ 	 * If the lock pointer matches the BLOCKER_TYPE_MASK, return
+ 	 * without writing anything.
+ 	 */
+-	if (WARN_ON_ONCE(lock_ptr & BLOCKER_TYPE_MASK))
++	if (lock_ptr & BLOCKER_TYPE_MASK)
+ 		return;
+ 
+ 	WRITE_ONCE(current->blocker, lock_ptr | type);
+@@ -53,8 +57,6 @@ static inline void hung_task_set_blocker
+ 
+ static inline void hung_task_clear_blocker(void)
+ {
+-	WARN_ON_ONCE(!READ_ONCE(current->blocker));
+-
+ 	WRITE_ONCE(current->blocker, 0UL);
+ }
+ 
+_
+
