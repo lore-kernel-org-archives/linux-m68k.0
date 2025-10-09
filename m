@@ -1,123 +1,158 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 471821DE2BD
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Oct 2025 01:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D260A1A23A4
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Oct 2025 02:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759972041; cv=none; b=eff1wy2g/AFOa4y2Kslo7OpnzRHwKTlbkPdid5YEP/H95xm+Hdglib9QY7YZxsatbPKbqRe+9yy2Tgpp20iBNLKk9gRmGk+Cgvb+fN/lWpx6QVs/Gnr/8qt7FeE/wItINiy1z+nm/jp7W3ezYv6JqkwZrPBN20a7A7U8C38FOns=
+	t=1759975337; cv=none; b=HQOz8urtSWN1KoLfdMOhhVHgYoFKjYzUjUo6fFXg7VSXCcZvDVvQGs9qSlFrgNoNSyOkzGhWHTiEY7FBNKeWrj815TGtT05A3t9WgeZ1JfeTAWJ6Noym8va4pA0hs07AGtjZvl3F191Mj6dHxCzRO8JybcbcfMXc8rzvJmx0YqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759972041; c=relaxed/simple;
-	bh=uICwW+7JjdNTrdwYOThDjo78WSe40MG6kD2tcS8UCr0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=CiaIGgUnAmffkoXEXCuhx5yYEqB8GfGwMeB8pgliwHawj8m9mdN3dVM4iH2C42V+nCNdpti96o8/8l1UodiNNtnkVd4HXUHRAeKeEW2kzwVfl56yp5o+vW61PPrZav0pEOKlbG9sH7NsyHPGHsML5IibwOIZZuot1AdQyNdqafE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cq+QIuaS; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1759975337; c=relaxed/simple;
+	bh=FGWwqKnQ6kJ8i65qahfQZ38o0N58kC2zqWCBjd710Ao=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F0vTIMLfU6seM3A5uMDUyTWAVTGHZpAAERuzgAYPs0RCAomn310PMi8TEYNMtenPSbMj76IJ/WVjBog9/8b3uuWKg+7+rdAt3y/iD+ojMQvmQtvu6TYR/TolJ1ojOqdQlxBa83L/3O7pTENCeCUN4NRxHAzQxxLa1jqvuaabfCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ibQ2QABF; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cq+QIuaS"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id E0B6E62139;
-	Thu,  9 Oct 2025 01:07:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90DF0C4CEE7;
-	Thu,  9 Oct 2025 01:07:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759972036;
-	bh=uICwW+7JjdNTrdwYOThDjo78WSe40MG6kD2tcS8UCr0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Cq+QIuaSsbZ85Bye4hA95eTz3hsHytAX1GTFc9YGto55OBTrhSQts03gyTHo2eSvn
-	 rNgYrFWU2souedJNKH6yF6ZCWEwY8jrNexNaitylW4ivlHpWVjhbYCAMV/nCTZ0CtL
-	 oShIr9D42WzY/SRFilbT1mqkl6x9++jWyPnFwByoyG/Cut3jUlY64GzGWuzLpebMQz
-	 w6uj0kRrCETVOXtVAqrz1jAM7/GJQA5bYn5s7PAlvZCkQNO3eOD7pPdDsew6svVkaE
-	 TtclXcV4dI7gawm5GYhlHGNy+cRg3zhyB0uCj+rKzY1KwQUV3/WZTj4Wp3vrhYv/Dt
-	 LmzPOKnu/WrKQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33DE73A41017;
-	Thu,  9 Oct 2025 01:07:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ibQ2QABF"
+Message-ID: <3e0b7551-698f-4ef6-919b-ff4cbe3aa11c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1759975319;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZhDQlPsddEKheWIQpFcriCM6m7o0PSu3nTL17MTHX4o=;
+	b=ibQ2QABFSTUpvgdiYujW8QvoiiTr1qEW3Tdy3UeDf8h5TEfQnjsr5maVJuqWlDZTTUlXD5
+	yI3rzmoIa5SFI48PvMG3ZLD3PcxHf2ijRHO6zBJyHIVZ1/i0ruLKCavWH9QgnbffM0axmv
+	synA/a4qrBBCMmUDmk+vT/aydAh+VYU=
+Date: Thu, 9 Oct 2025 10:01:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 00/17] Add __attribute_const__ to ffs()-family
- implementations
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <175997202477.3661959.16005423815156173105.git-patchwork-notify@kernel.org>
-Date: Thu, 09 Oct 2025 01:07:04 +0000
-References: <20250804163910.work.929-kees@kernel.org>
-In-Reply-To: <20250804163910.work.929-kees@kernel.org>
-To: Kees Cook <kees@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, x86@kernel.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, llvm@lists.linux.dev,
- linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
+ pointers
+Content-Language: en-US
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Eero Tamminen <oak@helsinkinet.fi>,
+ Kent Overstreet <kent.overstreet@linux.dev>, amaindex@outlook.com,
+ anna.schumaker@oracle.com, boqun.feng@gmail.com, ioworker0@gmail.com,
+ joel.granados@kernel.org, jstultz@google.com, leonylgao@tencent.com,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ longman@redhat.com, mhiramat@kernel.org, mingo@redhat.com,
+ mingzhe.yang@ly.com, peterz@infradead.org, rostedt@goodmis.org,
+ Finn Thain <fthain@linux-m68k.org>, senozhatsky@chromium.org,
+ tfiga@chromium.org, will@kernel.org, stable@vger.kernel.org
+References: <20250909145243.17119-1-lance.yang@linux.dev>
+ <yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
+ <99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
+ <CAMuHMdVYiSLOk-zVopXV8i7OZdO7PAK7stZSJNJDMw=ZEqtktA@mail.gmail.com>
+ <inscijwnnydibdwwrkggvgxjtimajr5haixff77dbd7cxvvwc7@2t7l7oegsxcp>
+ <20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org>
+ <b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org>
+ <56784853-b653-4587-b850-b03359306366@linux.dev>
+ <693a62e0-a2b5-113b-d5d9-ffb7f2521d6c@linux-m68k.org>
+ <23b67f9d-20ff-4302-810c-bf2d77c52c63@linux.dev>
+ <2bd2c4a8-456e-426a-aece-6d21afe80643@linux.dev>
+ <ba00388c-1d5b-4d95-054d-a6f09af41e7b@linux-m68k.org>
+ <3fa8182f-0195-43ee-b163-f908a9e2cba3@linux.dev>
+ <ad7cb710-0d5a-93b1-fa4d-efb236760495@linux-m68k.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Lance Yang <lance.yang@linux.dev>
+In-Reply-To: <ad7cb710-0d5a-93b1-fa4d-efb236760495@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+@Andrew, what's your call on this?
 
-This series was applied to riscv/linux.git (for-next)
-by Kees Cook <kees@kernel.org>:
+I think we fundamentally disagree on whether this fix for known
+false-positive warnings is needed for -stable.
 
-On Mon,  4 Aug 2025 09:43:56 -0700 you wrote:
-> Hi,
+Rather than continuing this thread, let's just ask the maintainer.
+
+Thanks,
+Lance
+
+On 2025/10/9 05:55, Finn Thain wrote:
 > 
-> While tracking down a problem where constant expressions used by
-> BUILD_BUG_ON() suddenly stopped working[1], we found that an added static
-> initializer was convincing the compiler that it couldn't track the state
-> of the prior statically initialized value. Tracing this down found that
-> ffs() was used in the initializer macro, but since it wasn't marked with
-> __attribute_const__, the compiler had to assume the function might
-> change variable states as a side-effect (which is not true for ffs(),
-> which provides deterministic math results).
+> On Wed, 8 Oct 2025, Lance Yang wrote:
 > 
-> [...]
-
-Here is the summary with links:
-  - [01/17] KUnit: Introduce ffs()-family tests
-    (no matching commit)
-  - [02/17] bitops: Add __attribute_const__ to generic ffs()-family implementations
-    (no matching commit)
-  - [03/17] csky: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [04/17] x86: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [05/17] powerpc: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [06/17] sh: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [07/17] alpha: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [08/17] hexagon: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [09/17] riscv: Add __attribute_const__ to ffs()-family implementations
-    https://git.kernel.org/riscv/c/c51c26e687a6
-  - [10/17] openrisc: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [11/17] m68k: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [12/17] mips: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [13/17] parisc: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [14/17] s390: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [15/17] xtensa: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [16/17] sparc: Add __attribute_const__ to ffs()-family implementations
-    (no matching commit)
-  - [17/17] KUnit: ffs: Validate all the __attribute_const__ annotations
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>> On 2025/10/8 18:12, Finn Thain wrote:
+>>>
+>>> On Wed, 8 Oct 2025, Lance Yang wrote:
+>>>
+>>>>
+>>>> In other words, we are not just fixing the bug reported by Eero and
+>>>> Geert, but correcting the blocker tracking mechanism's flawed
+>>>> assumption for -stable ;)
+>>>>
+>>>> If you feel this doesn't qualify as a fix, I can change the Fixes:
+>>>> tag to point to the original commit that introduced this flawed
+>>>> mechanism instead.
+>>>>
+>>>
+>>> That's really a question for the bug reporters. I don't personally
+>>> have a problem with CONFIG_DETECT_HUNG_TASK_BLOCKER so I can't say
+>>> whether the fix meets the requirements set in
+>>> Documentation/process/stable-kernel-rules.rst. And I still don't know
+>>
+>> I'm a bit confused, as I recall you previously stating that "It's wrong
+>> and should be fixed"[1].
+>>
+> 
+> You took that quote out of context. Please go and read it again.
+> 
+>> To clarify, is your current position that it should be fixed in general,
+>> but the fix should not be backported to -stable?
+>>
+> 
+> To clarify, what do you mean by "it"? Is it the commentary discussed in
+> [1]? The misalignment of atomics? The misalignment of locks? The alignment
+> assumptions in your code? The WARN reported by Eero and Geert?
+> 
+>> If so, then I have nothing further to add to this thread and am happy to
+>> let the maintainer @Andrew decide.
+>>
+>>> what's meant by "unnecessary warnings in a few unexpected cases".
+>>
+>> The blocker tracking mechanism will trigger a warning when it encounters
+>> any unaligned lock pointer (e.g., from a packed struct). I don't think
+>> that is the expected behavior.
+> 
+> Sure, no-one was expecting false positives.
+> 
+> I think you are conflating "misaligned" with "not 4-byte aligned". Your
+> algorithm does not strictly require natural alignment, it requires 4-byte
+> alignment of locks.
+> 
+> Regarding your concern about packed structs, please re-read this message:
+> https://lore.kernel.org/all/CAMuHMdV-AtPm-W-QUC1HixJ8Koy_HdESwCCOhRs3Q26=wjWwog@mail.gmail.com/
+> 
+> AFAIK the problem with your code is nothing more than the usual difficulty
+> encountered when porting between architectures that have different
+> alignment rules for scalar variables.
+> 
+> Therefore, my question about the theoretical nature of the problem comes
+> down to this.
+> 
+> Is the m68k architecture the only one producing actual false positives?
+> 
+> Do you know of actual instances of locks in packed structs?
+> 
+>> Instead, it should simply skip any unaligned pointer it cannot handle.
+>> For the stable kernels, at least, this is the correct behavior.
+>>
+> 
+> Why? Are users of the stable branch actually affected?
+> 
+>> [1]
+>> https://lore.kernel.org/lkml/6ec95c3f-365b-e352-301b-94ab3d8af73c@linux-m68k.org/
+>>
+>>
 
