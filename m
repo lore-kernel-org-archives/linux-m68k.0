@@ -1,114 +1,414 @@
-Received: from mail-yx1-f50.google.com (mail-yx1-f50.google.com [74.125.224.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA80925A642
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Oct 2025 04:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15002C21EB
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Oct 2025 12:59:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760072282; cv=none; b=l4pAAJdGfgKI/AdAlQ/FH4Q0clSTFMO2kSbH7FsJEjpI7Qy51ToKkVjokf3Om1YMV1yHnl4qBUXidlpmPbqnY++7CI0yWxytz18z186JcMcoQCfnluhxM+cRTnXMiG3E+Wsof0IPI6vb+GLs+4L2xrKpAfxoTwW5ztnzD7i2aM0=
+	t=1760360372; cv=none; b=RYZU6hFaMCu2eVMV/+azyKFxTqhmjIYRMdUePpbYsviItW0ovlURlp9n1IRoqx5zr01XCpLXgPuAMUbjGiIKiHbOOfesusFLgwnDsYw/McUnUp3XgEc827R8BZ0Asv1Wt+MZBub5AO5W7RarH0dlUBF2Hm7/DfbeXpBXIfUoa4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760072282; c=relaxed/simple;
-	bh=20zVq/I1A85ImSdUuzZ7bh9Qs7dqD4eEIEsQzzw5Ci4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hqX4TBrHJxPLRLmQaGHu29WCXsOVJppzidDal/wGIUAs9f+tr5LBK7Bgx3hemMVzNYRvsTyyA8T+fPrgGUhQVcqDP/WJGrJCNs1v15XEPvWVmiYU8kAiulSy9Mh/ivpEV7ErlbHJOfp4FGB7Rpban8OnJ5TXMWSjHtc8SP0KCKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZx4ZKAF; arc=none smtp.client-ip=74.125.224.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZx4ZKAF"
-Received: by mail-yx1-f50.google.com with SMTP id 956f58d0204a3-63bc1aeb427so1693684d50.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Oct 2025 21:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760072278; x=1760677078; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7qS0AM3lX7OGhXSFEYS6mkC3EKNzPxshbg7hLZcah0=;
-        b=OZx4ZKAFybehGrdsgeuSmi9r2EpkacptyhP+b6C0owvWc7Brl5xENEkL9ox0gdiEl7
-         8Y61MCDhL5yy0m4jxYhod8y0EFNqKrL9jIejLQ9R+vxGiuv45dkbPq6iPf5Mx1H2S86g
-         B+pqS5xiaFtTK22n/9HjZdl7unq0JqUQdk/i7zCujp0sF88CmmLZHIzRgMehaZwPUSI/
-         Y2ugCz9kT7VRzdGvpXv/yJupc7i7uu89VW89vWaE+JHz3hovPebvr+TMosTCJO11BbRa
-         bK3HZzyzhA5rPjlpJGIK4lIycgUgU8GqJ3y8hV5iZY8Ei6aGML5zdKfBNJ4YgwDSuVEi
-         QKYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760072278; x=1760677078;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7qS0AM3lX7OGhXSFEYS6mkC3EKNzPxshbg7hLZcah0=;
-        b=iYqs6APz2WZ6uHYcPVwOOzrrlS97XoZbeij/p/aEeUDXMnWkJRZUHBg6Pebc0ubjd9
-         fwEDFRJDsAgXFQ33Y4jCzpny3f+77Zw6hTsL1KwztD9EfHZJ7kbTUDauT55i1a+oQucw
-         lDM+mj3I5NJJ1Xhoacy5U3l3/lfbmCayG2Ty0vXdKMPFQ8+vVt5UgF6kp5yyHVOPhYtG
-         c05ODDiZaZGf5yyuKwkbVhniud1ZU1IrnuROLn7v8CX87HGR/RjdDgj2RigHfLp9qF8q
-         Q+ebFVWlfHAstay3rYWn1+QtvEoOJG1dUyzKcDHeFUWotR7NidAdBYwSDay9u/91kEaP
-         sxsg==
-X-Forwarded-Encrypted: i=1; AJvYcCXqIaErHkIqXvtD1pcFwwsKqN2DMdraOWx+re63qupM/SxMYYoQldCIYEa1F6GJJ1hB4An5T11gBiqE@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yw8uplkONXztYZ3N8afDV/aGRDNprXZ1Rim4XfMnnmhIJbiTgSk
-	ZV6byV9R8ouHNJUM4QZ/blRYf2Khjq9pajGK2XpUTEUwRrKID7TfQzIbWP316lDXUMLgnjmVFwC
-	9ovodbt1kHj7C1g33o6Thtx5MbuL0lPo=
-X-Gm-Gg: ASbGnctfqMZ9Y2MdIKVFOUTwX3XpnQcLiatFJbR+P5+KfT54W03fTbflJ0VXk4BMXRt
-	8xQKhhd1RfdOOuc/SXVjekc4WWT130FXKrgt06iDwsjBInkKSh+ClqwH9rr+HSkOp1+9seooil1
-	7WrzR+v8BT6lLQ0oRR5SCH1aiuxiYIKID1HYx03ZporCZFIPxH/9F8OpTzaEl6mnbhy2a7D/afp
-	uLWO9269paof11iHieRqZCGqw==
-X-Google-Smtp-Source: AGHT+IHqDciv7GAPYfMGdKr9Fwuo5GT168N8GcrpsJ5KozP5HqYqg/LDALxuogvzJXgNCm6zrA+DoCqu7lr8uhQrVc0=
-X-Received: by 2002:a53:5009:0:b0:636:2420:d3ce with SMTP id
- 956f58d0204a3-63ccb93456dmr7466309d50.51.1760072277565; Thu, 09 Oct 2025
- 21:57:57 -0700 (PDT)
+	s=arc-20240116; t=1760360372; c=relaxed/simple;
+	bh=2R1PZIIxBinNd8P129jzA8RERXSgPSFllJXUsjHBc0Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rqNF6DBq0Phe+ETI+55f40mA5z7+wBrZuXBEHjEOJLCzcX3sAurysGjwx67k4UVJ4bF1kR0/xWdRu3rWe75q/4d2l2nq5IkUoe3u7COTPUd0Rtn4uxL7RSATTdl8ZxHmkjUr8iFZe2xz7Qj3JdevFKHeN7XBRQfYLsNF/SkGbNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id B99F96126A;
+	Mon, 13 Oct 2025 12:59:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A194DC4CEE7;
+	Mon, 13 Oct 2025 12:59:27 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.18-rc1
+Date: Mon, 13 Oct 2025 14:59:22 +0200
+Message-ID: <65e00bcb7b2980278bb087986ee405627aa32d8b.1760360254.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHNNwZC7gC7zaZGiSBhobSAb4m2O1BuoZ4r=SQBF-tCQyuAPvw@mail.gmail.com>
- <20250925131055.3933381-1-nschichan@freebox.fr>
-In-Reply-To: <20250925131055.3933381-1-nschichan@freebox.fr>
-From: Askar Safin <safinaskar@gmail.com>
-Date: Fri, 10 Oct 2025 07:57:21 +0300
-X-Gm-Features: AS18NWAQwCKadWHXCZjVUBNaD3TaKIilJiJAQzSbvGFaYuFuE8UDpW1_H3riB-k
-Message-ID: <CAPnZJGBPyONjJoM6cskxysDnN4pxWuWJCK5A6TgikR2xHsrN5Q@mail.gmail.com>
-Subject: Re: [PATCH-RFC] init: simplify initrd code (was Re: [PATCH RESEND
- 00/62] initrd: remove classic initrd support).
-To: nschichan@freebox.fr
-Cc: akpm@linux-foundation.org, andy.shevchenko@gmail.com, axboe@kernel.dk, 
-	brauner@kernel.org, cyphar@cyphar.com, devicetree@vger.kernel.org, 
-	ecurtin@redhat.com, email2tema@gmail.com, graf@amazon.com, 
-	gregkh@linuxfoundation.org, hca@linux.ibm.com, hch@lst.de, 
-	hsiangkao@linux.alibaba.com, initramfs@vger.kernel.org, jack@suse.cz, 
-	julian.stecklina@cyberus-technology.de, kees@kernel.org, 
-	linux-acpi@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, 
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, mcgrof@kernel.org, 
-	mingo@redhat.com, monstr@monstr.eu, mzxreary@0pointer.de, 
-	patches@lists.linux.dev, rob@landley.net, sparclinux@vger.kernel.org, 
-	thomas.weissschuh@linutronix.de, thorsten.blum@linux.dev, 
-	torvalds@linux-foundation.org, tytso@mit.edu, viro@zeniv.linux.org.uk, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 25, 2025 at 4:12=E2=80=AFPM <nschichan@freebox.fr> wrote:
-> - drop prompt_ramdisk and ramdisk_start kernel parameters
-> - drop compression support
-> - drop image autodetection, the whole /initrd.image content is now
->   copied into /dev/ram0
-> - remove rd_load_disk() which doesn't seem to be used anywhere.
+  - Drop CONFIG_SCTP_COOKIE_HMAC_SHA1=y (removed in commit
+    2f3dd6ec901f29ae ("sctp: Convert cookie authentication to use
+    HMAC-SHA256")),
+  - Drop CONFIG_BATMAN_ADV_NC=y (removed in commit 87b95082db32ae1c
+    ("batman-adv: remove network coding support")),
+  - Enable modular build of the SHA-1 secure hash algorithm (no longer
+    auto-enabled since commit 2f3dd6ec901f29ae ("sctp: Convert cookie
+    authentication to use HMAC-SHA256")).
 
-I welcome any initrd simplification!
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k tree for v6.19.
 
-> Hopefully my email config is now better and reaches gmail users
-> correctly.
+I did not disable CONFIG_XFS_ONLINE_SCRUB_STATS (CONFIG_XFS_ONLINE_SCRUB
+defaults to enabled since commit 0ff51a1fd786f47b, causing
+CONFIG_DEBUG_FS and a lot of other options to be enabled), but instead
+sent a fix for the latter.  Still, we may want to reconsider
+CONFIG_DEBUG_FS etc. in light of systemd[2].
 
-Yes, I got this email.
+[1] "[PATCH] xfs: XFS_ONLINE_SCRUB_STATS should depend on DEBUG_FS"
+    https://lore.kernel.org/69104b397a62ea3149c932bd3a9ed6fc7e4e91a0.1760345180.git.geert@linux-m68k.org
 
---
-Askar Safin
+[2] "[PATCH/RFC] m68k: defconfig: Enable options needed for systemd"
+    https://lore.kernel.org/e93e50b85422cdb04e800f5008abf92babf6d509.1731591904.git.geert@linux-m68k.org
+---
+ arch/m68k/configs/amiga_defconfig    | 3 +--
+ arch/m68k/configs/apollo_defconfig   | 3 +--
+ arch/m68k/configs/atari_defconfig    | 3 +--
+ arch/m68k/configs/bvme6000_defconfig | 3 +--
+ arch/m68k/configs/hp300_defconfig    | 3 +--
+ arch/m68k/configs/mac_defconfig      | 3 +--
+ arch/m68k/configs/multi_defconfig    | 3 +--
+ arch/m68k/configs/mvme147_defconfig  | 3 +--
+ arch/m68k/configs/mvme16x_defconfig  | 3 +--
+ arch/m68k/configs/q40_defconfig      | 3 +--
+ arch/m68k/configs/sun3_defconfig     | 3 +--
+ arch/m68k/configs/sun3x_defconfig    | 3 +--
+ 12 files changed, 12 insertions(+), 24 deletions(-)
+
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index 1ff6bee754377470..aab4bbda796ef903 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -265,7 +265,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -281,7 +280,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -584,6 +582,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 6af37716384ca72f..6b0bab7520351555 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -261,7 +261,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -277,7 +276,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -540,6 +538,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index e5349b4fa30d4a15..8588b3a1f6d7d2fc 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -268,7 +268,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -284,7 +283,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -571,6 +569,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index 28492ef5145706dd..ed85517ff01c6a4f 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -258,7 +258,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -274,7 +273,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -532,6 +530,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 2fbefb16b72ef978..0217a698285618d0 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -260,7 +260,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -276,7 +275,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -542,6 +540,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index deec5df3f35a4ad7..a9ba431a94081694 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -259,7 +259,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -275,7 +274,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -559,6 +557,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index b03808fb545f78c6..3239cef425993026 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -279,7 +279,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -295,7 +294,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -647,6 +645,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 0d401db0e8f82b16..baf0fc7a66d94593 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -257,7 +257,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -273,7 +272,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -532,6 +530,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 90fb5b6bcf833aea..9cb732f0c6ce160d 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -258,7 +258,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -274,7 +273,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -533,6 +531,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index b89b0f7fe2dac747..6b3295e4c5aef47d 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -259,7 +259,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -275,7 +274,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -549,6 +547,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 8cc372c4df720651..1f3a2fad6d2f6600 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -254,7 +254,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -270,7 +269,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -530,6 +528,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index f4569f64c6e4e797..d8ef36564d506aca 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -255,7 +255,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
+ CONFIG_BRIDGE_EBT_LOG=m
+ CONFIG_BRIDGE_EBT_NFLOG=m
+ CONFIG_IP_SCTP=m
+-CONFIG_SCTP_COOKIE_HMAC_SHA1=y
+ CONFIG_RDS=m
+ CONFIG_RDS_TCP=m
+ CONFIG_L2TP=m
+@@ -271,7 +270,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
+ CONFIG_DNS_RESOLVER=y
+ CONFIG_BATMAN_ADV=m
+ # CONFIG_BATMAN_ADV_BATMAN_V is not set
+-CONFIG_BATMAN_ADV_NC=y
+ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+@@ -530,6 +528,7 @@ CONFIG_CRYPTO_AEGIS128=m
+ CONFIG_CRYPTO_MD4=m
+ CONFIG_CRYPTO_MICHAEL_MIC=m
+ CONFIG_CRYPTO_RMD160=m
++CONFIG_CRYPTO_SHA1=m
+ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+-- 
+2.43.0
+
