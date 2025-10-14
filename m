@@ -1,98 +1,79 @@
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C65F2F5322
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Oct 2025 10:12:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB192F7AC3
+	for <linux-m68k@vger.kernel.org>; Tue, 14 Oct 2025 10:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760436733; cv=none; b=EuYSUFmyWMFQqcvlplhX+Hb+lCu8uopPwcGnT+fZHm1m0p+0Lu9MwCnVcsik+8s65EFLu0gnJTxPoULlP/EXEFlWXj9aMniZM1jyOhclAg4mcDD45QrSaz49xd6eI0qD2BK+6/zXDK39rs3F+iScq9e5FRbrxnjRbcVIweAzMPM=
+	t=1760437445; cv=none; b=P794gVKlXyzty8jPqduC60KaunIw0sfRmkp8M2JaQ38Oa6zyPvlWsQeau+PTF+Zdlc14NVVBeuYV74qpMJvlyP7VS6tK9Z3QTAPbG8wMk0UvovFiEXYTlBnfHzlKuJz4QyBESKvF01+GHEzDoiyTxS2iDvAnDQBa6+47uOwABzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760436733; c=relaxed/simple;
-	bh=tDZJGyjyFwsEnGU/+BhSU4pXv/ZOaODbT4E16jUaFWU=;
+	s=arc-20240116; t=1760437445; c=relaxed/simple;
+	bh=NvHrsqobRMlVNo+tAxu9F71BW5DWp04J4+78E6v6/2I=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sD6CNtBfSv9sYtmnCz+cia0yZRNSaf5mFRohWRaynCqnU7QAcdtAWUthWNK/N9d34afNlF7kZM/IYc2NJS6yDYSqrffqnjUW1fKGfyczvR//pOuzOgzFtzl7C1NXJG7zqSm4vLpFq1tlWFEe+zNACf14DxHlpV6nVPc7GgRXeR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QLNCBC60; arc=none smtp.client-ip=209.85.128.49
+	 MIME-Version:Content-Type; b=SeaxzHO9LkCpyWAdD15zVAjnbSEUY1kPMw6uLbrDFtQ+vuBaPhvo3OWgJ4Jzs3RN5cLs7qSn8cNkaywB7XwxTKB0/3brRCr6ir09KQoDxwRlClFNQu4eWIA8TQm66BpNjuba9nntyoIZq9x3CHR8WUqLbqSwf03eEfBp2ndhY5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nJGus4q+; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QLNCBC60"
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-46e6a689bd0so36969055e9.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Oct 2025 03:12:11 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nJGus4q+"
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-46e47cca387so51277955e9.3
+        for <linux-m68k@vger.kernel.org>; Tue, 14 Oct 2025 03:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760436729; x=1761041529; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1760437441; x=1761042241; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TmcOUYE96CwkIuciWDdS0GQ43f2j/gyLBNOKfTnV8UA=;
-        b=QLNCBC60Wj6tHFSt5/jUQwBWK7wiVQzgObCKUa6Lr+uRr4AR1pvwaSRT5xFOimeqBA
-         wXDxhrF+Ik6Q4spaJ9tnYHd2wwdzBetzXMCba8NSeQJNuRb1HjbU/JUCzVnO37HKaKnA
-         bTiDZSqFzwjvrMsJ54S4fvA7/zmE2/V08fwPzhKZa8SiTmDx9Ivl6krtp6QKaZX5Q7Lw
-         O3DyIqotICDyWaUlZ0sxMG5FOJ43pdWedAcc9qEefL0X6eGxyLdPkFyiSzsAW7DbmpjQ
-         nruZXTx2TcBybolbULRmtvUnIyfsoZzm09BcoKONQ7wUrTtJTp9vNFEANIDCuYor9IXD
-         Rwew==
+        bh=2B27CnCtnwt2IGtR8SnAOo/nO7i1YaXCeSpoBrMXO7I=;
+        b=nJGus4q+SYUIGvndAARIM3qO3Lktr1Z0SOm1vq1+sjfRbXZeH6sLkfSF0S7jXNKoAY
+         Dy8fFkrCnXxwbaUC7wSzd3cnb/ANQpABHu0Zsjs2E93SgctEem8y0v783q8iifANnFGI
+         DYTnlBoEV+cf+AZAn4fh513Qxvx416dxglUYMCBIm60Tixd2wluyqzYRLmRKShx1ir7z
+         bA4iRcINkApQgVwOtfchyWghh3EB91tY1ab7RGV1lNX3D9o35dlYF/FwyBynpK0Vbcte
+         +bdCCamUp1Jv/MqnUqCwEIy/ojaOTqskhisZzL45ct46yDBU7IHiU4H+rkzzuVD3qS7T
+         /k3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760436729; x=1761041529;
+        d=1e100.net; s=20230601; t=1760437441; x=1761042241;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TmcOUYE96CwkIuciWDdS0GQ43f2j/gyLBNOKfTnV8UA=;
-        b=P/n/xfbKk2958sKSeSl/hj9bU6c+VAWsCBW0NX++dyrEta4WrjQFQjylo2oSLIjK3E
-         7bcoEdJQ6m3AJ2VoMvyCqucOUNGiE9st+xqYa4Z/2ArYGg6E4ZTVNPFGTG89FCbdnGt3
-         Tha2HfEHJK7GnXwhtTd6x7B5N/DZVkQNE2L9DgX4ruoqfDfyahIW5MWRU6oRJGoswtQB
-         pK/NGCMR0y5KpiHSngCf8rI/wcWoanryw6ENLd7HVGW6xmwRNT37o9jNwNx7wWTdvJC/
-         iQNxLDmcmpzW+Va79CGiGQAnU4SCiQqnWxx1zUGnEhdREfCLzDuL1Wj8fPFWFQln//vZ
-         RjRA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSM7bO4ucrzsUG10XGvkeDEGSk+xXtQ1IArM64t4IwQidxVCdrheF1+ylwAzuOEapn+2UfnJZxJYKa@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxB3R4THGIOzkEoNUCXjLmmVtdRYCXl2EvDfgqR3EhmuJC0KcjT
-	8G+S94s2MPLZUmRh4c0mycEWHz31nugT1Rexd/+1X2VnmbeM+deKkesn
-X-Gm-Gg: ASbGncuv7sWopuY8EupwUt8daOZD8w4KfkrRbc0G/PjoZa5Gf/E9oUwVq728jXaQvQj
-	Tq8Kj4VtX8KcfKEwgbfReKx8IWKlHo0uu+MtDiwPVblJZd9EmDVmT2k7qvFcblc0+2a68CzM8Wy
-	enVKwzDSjxDcPSUZVkjPttZGYCquxFdCPQ5VT82DitdC4/r2ptgEVWTtrMUEhC+zeTBwsYISBjo
-	LQPpRk+EHKjwBJebGlSIB8HfL2JMPxo3QHGIRDQA2DnABfYqRvqvjpNfgJg7WTKpGGKfbnfVuMw
-	y9UhADhzW9Ykm8mNUk5p2fJHkYXe84R3S3WPVvEw9aDH43HN6XKqeF2whJp9s8MC06DWIy4rMYp
-	oQ2QpopEjgMIm6FRvqnGKuIiQo3JR+OVFWElZB9lolqBrkKAtkXJtfPmB8GMT0VtQolkEGWNnuf
-	ZK0QegH28=
-X-Google-Smtp-Source: AGHT+IF6ne/xuQ/Yzz4Zzb7wpstPRXQSA86ePFiRmshMRn4gI9s18XitfechdzacRqFT+6sY8lXeJg==
-X-Received: by 2002:a05:600c:3b1f:b0:46e:4340:adf7 with SMTP id 5b1f17b1804b1-46fa9a8b3c0mr176129525e9.8.1760436729180;
-        Tue, 14 Oct 2025 03:12:09 -0700 (PDT)
+        bh=2B27CnCtnwt2IGtR8SnAOo/nO7i1YaXCeSpoBrMXO7I=;
+        b=O9yMIfHZdczJ80AY776vrK5YQL9XfuHIkGtOlMQSXXjauAjHvdi6/lo1/ppCrLbx0E
+         rGck47eVFJ8H0szcAcooir0wIXwp2qExD3QR4e8LK7wig334uFyUW1bH5RmNy/RZBFJm
+         OwGuUy9JGs0oHyE9mveeG5VkMFdhCU+LmIhephdei0/03wBDO4nKX3sk4/V+rxjNMePY
+         vBKRieX1nHc2+5T0afC5zN9UmBEupIPfsw17H1kr6VjYSU0NdGLKsJhC68UOxfMOcn5X
+         M8Drt9tED6IXF3iCNSMn632MsxEUMuAyMOCeH0slkopZIw8+rkhQZAiZqwSiopE+djk/
+         PdlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQvrYxeo+OUYPYZoBhtHyXXWaVBk4AxTFjnj7aBXJZM1GD28gONS0Cv0Gz3CHzKdVZeXHdpxgBdJ7/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyu4X4Vf2NiOZF8mfQ5M0zIQN0jLyny6pVmKV6Q/n8iS7RJmLrf
+	ugKX8zX7w9Ujbm7W1jH76xHnytq13NG4QunAfTVbc4vLPXHqc845N0kR
+X-Gm-Gg: ASbGncvDIlI0BALsJYGMTHhnCogC2hBgAe8REsAGBcnwIzHiUCNKgpf/SkypkI9Vccz
+	BYBVgeenSojLIeKhtsLM38qfPIw7USAUx6GMeVFbnN4xsMEmsWRXwYfveCJAUxHILOeZP4qPGCZ
+	GqZU6nSIp7cOATEoFw2732Ckq7OPLg46g9e+5i/AzQRlw96/WQmikXGvkvdtEe9EJZXHFQW3jWt
+	GMj+QyMfQrp+sQKtqcEpTE+1L3pRd7+uGKLoyhKubM5QC0lnrVbck4cbk/Iw9/53BCu0UtHAXM6
+	ia+iZAr/MSpMj+zFa6G5srFMS4dx+y6D7lGlqhDmsvIY9eGB+X9v61ZdHQmZrJ/xdjsuUzDNR4V
+	pMAILIvnytvh8ouYgsjLxk+JjgbrawkM3mbc+gxMx+gn2ZsLx+IpWHt9032flYcE4DuG21QIAzz
+	/GhvsBfWJFzVD1qhqJuQ==
+X-Google-Smtp-Source: AGHT+IFJLN+ZyNIVUulNgloN7eKBRUWfhH8DTaEyEj2PWqBPSZ2eXtCGpbEULmWHbXarmuQpgFVGnQ==
+X-Received: by 2002:a05:600c:4688:b0:46e:4372:5395 with SMTP id 5b1f17b1804b1-46fa9b01ff5mr167772905e9.25.1760437441227;
+        Tue, 14 Oct 2025 03:24:01 -0700 (PDT)
 Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fb4982b30sm230224825e9.6.2025.10.14.03.12.08
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5cf70fsm22150016f8f.27.2025.10.14.03.24.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Oct 2025 03:12:08 -0700 (PDT)
-Date: Tue, 14 Oct 2025 11:11:25 +0100
+        Tue, 14 Oct 2025 03:24:00 -0700 (PDT)
+Date: Tue, 14 Oct 2025 11:23:59 +0100
 From: David Laight <david.laight.linux@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Lance Yang
- <lance.yang@linux.dev>, Eero Tamminen <oak@helsinkinet.fi>, Kent Overstreet
- <kent.overstreet@linux.dev>, amaindex@outlook.com,
- anna.schumaker@oracle.com, boqun.feng@gmail.com, ioworker0@gmail.com,
- joel.granados@kernel.org, jstultz@google.com, leonylgao@tencent.com,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- longman@redhat.com, mhiramat@kernel.org, mingo@redhat.com,
- mingzhe.yang@ly.com, peterz@infradead.org, rostedt@goodmis.org, Finn Thain
- <fthain@linux-m68k.org>, senozhatsky@chromium.org, tfiga@chromium.org,
- will@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] hung_task: fix warnings caused by unaligned lock
- pointers
-Message-ID: <20251014111125.731ab016@pumpkin>
-In-Reply-To: <CAMuHMdV5o0mA50yeEfG9cH-YUZspEd-OVSDJP-q+H+bxbqm-KQ@mail.gmail.com>
-References: <20250909145243.17119-1-lance.yang@linux.dev>
-	<yqjkjxg25gh4bdtftsdngj5suturft2b4hjbfxwe6hehbg4ctq@6i55py3jaiov>
-	<99410857-0e72-23e4-c60f-dea96427b85a@linux-m68k.org>
-	<CAMuHMdVYiSLOk-zVopXV8i7OZdO7PAK7stZSJNJDMw=ZEqtktA@mail.gmail.com>
-	<inscijwnnydibdwwrkggvgxjtimajr5haixff77dbd7cxvvwc7@2t7l7oegsxcp>
-	<20251007135600.6fc4a031c60b1384dffaead1@linux-foundation.org>
-	<b43ce4a0-c2b5-53f2-e374-ea195227182d@linux-m68k.org>
-	<56784853-b653-4587-b850-b03359306366@linux.dev>
-	<693a62e0-a2b5-113b-d5d9-ffb7f2521d6c@linux-m68k.org>
-	<23b67f9d-20ff-4302-810c-bf2d77c52c63@linux.dev>
-	<2bd2c4a8-456e-426a-aece-6d21afe80643@linux.dev>
-	<ba00388c-1d5b-4d95-054d-a6f09af41e7b@linux-m68k.org>
-	<3fa8182f-0195-43ee-b163-f908a9e2cba3@linux.dev>
-	<ad7cb710-0d5a-93b1-fa4d-efb236760495@linux-m68k.org>
-	<3e0b7551-698f-4ef6-919b-ff4cbe3aa11c@linux.dev>
-	<20251008210453.71ba81a635fc99ce9262be7e@linux-foundation.org>
-	<CAMuHMdV5o0mA50yeEfG9cH-YUZspEd-OVSDJP-q+H+bxbqm-KQ@mail.gmail.com>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Boqun Feng
+ <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Mark Rutland
+ <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Geert
+ Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org,
+ linux-doc@vger.kernel.org
+Subject: Re: [RFC v3 1/5] documentation: Discourage alignment assumptions
+Message-ID: <20251014112359.451d8058@pumpkin>
+In-Reply-To: <76571a0e5ed7716701650ec80b7a0cd1cf07fde6.1759875560.git.fthain@linux-m68k.org>
+References: <cover.1759875560.git.fthain@linux-m68k.org>
+	<76571a0e5ed7716701650ec80b7a0cd1cf07fde6.1759875560.git.fthain@linux-m68k.org>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -103,44 +84,46 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 9 Oct 2025 09:11:06 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Wed, 08 Oct 2025 09:19:20 +1100
+Finn Thain <fthain@linux-m68k.org> wrote:
 
-> Hi Andrew,
+> Discourage assumptions that simply don't hold for all Linux ABIs.
+> Exceptions to the natural alignment rule for scalar types include
+> long long on i386 and sh.
+> ---
+>  Documentation/core-api/unaligned-memory-access.rst | 7 -------
+>  1 file changed, 7 deletions(-)
 > 
-> On Thu, 9 Oct 2025 at 06:04, Andrew Morton <akpm@linux-foundation.org> wrote:
-> > On Thu, 9 Oct 2025 10:01:18 +0800 Lance Yang <lance.yang@linux.dev> wrote:  
-> > > I think we fundamentally disagree on whether this fix for known
-> > > false-positive warnings is needed for -stable.  
-> >
-> > Having the kernel send scary warnings to our users is really bad
-> > behavior.  And if we don't fix it, people will keep reporting it.  
-> 
-> As the issue is present in v6.16 and v6.17, I think that warrants -stable.
-> 
-> > And removing a WARN_ON is a perfectly good way of fixing it.  The
-> > kernel has 19,000 WARNs, probably seven of which are useful :(  
-> 
-> Right. And there is panic_on_warn...
+> diff --git a/Documentation/core-api/unaligned-memory-access.rst b/Documentation/core-api/unaligned-memory-access.rst
+> index 5ceeb80eb539..1390ce2b7291 100644
+> --- a/Documentation/core-api/unaligned-memory-access.rst
+> +++ b/Documentation/core-api/unaligned-memory-access.rst
+> @@ -40,9 +40,6 @@ The rule mentioned above forms what we refer to as natural alignment:
+>  When accessing N bytes of memory, the base memory address must be evenly
+>  divisible by N, i.e. addr % N == 0.
+>  
+> -When writing code, assume the target architecture has natural alignment
+> -requirements.
 
-Which, like panic_on_oops, panics before syslogd has a chance to write
-the error message to /var/log/kernel.
-Both are set in some environments.
-
-Tracking down those crashes is a right PITA.
+I think I'd be more explicit, perhaps:
+Note that not all architectures align 64bit items on 8 byte boundaries or
+even 32bit items on 4 byte boundaries.
 
 	David
 
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
+> -
+>  In reality, only a few architectures require natural alignment on all sizes
+>  of memory access. However, we must consider ALL supported architectures;
+>  writing code that satisfies natural alignment requirements is the easiest way
+> @@ -103,10 +100,6 @@ Therefore, for standard structure types you can always rely on the compiler
+>  to pad structures so that accesses to fields are suitably aligned (assuming
+>  you do not cast the field to a type of different length).
+>  
+> -Similarly, you can also rely on the compiler to align variables and function
+> -parameters to a naturally aligned scheme, based on the size of the type of
+> -the variable.
+> -
+>  At this point, it should be clear that accessing a single byte (u8 or char)
+>  will never cause an unaligned access, because all memory addresses are evenly
+>  divisible by one.
 
