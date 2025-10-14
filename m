@@ -1,414 +1,324 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15002C21EB
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Oct 2025 12:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AAFA2D6401
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Oct 2025 08:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760360372; cv=none; b=RYZU6hFaMCu2eVMV/+azyKFxTqhmjIYRMdUePpbYsviItW0ovlURlp9n1IRoqx5zr01XCpLXgPuAMUbjGiIKiHbOOfesusFLgwnDsYw/McUnUp3XgEc827R8BZ0Asv1Wt+MZBub5AO5W7RarH0dlUBF2Hm7/DfbeXpBXIfUoa4Y=
+	t=1760431712; cv=none; b=SQ5ZEazOjDy0VsKV0fQLJMMCOXEdIPR2mRCY9VI2ZUFdNvj3LzzepLNiWBV8+PUI3VJUsCmAkZGFHswTi1+SoN+3eiAXIqhj/i/PBggT+FY6diUWYj2iXXERxOwQ9Ttw0489e0rXOoyIW94iCErMopFD/EDHh5/seT+euB5OoLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760360372; c=relaxed/simple;
-	bh=2R1PZIIxBinNd8P129jzA8RERXSgPSFllJXUsjHBc0Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rqNF6DBq0Phe+ETI+55f40mA5z7+wBrZuXBEHjEOJLCzcX3sAurysGjwx67k4UVJ4bF1kR0/xWdRu3rWe75q/4d2l2nq5IkUoe3u7COTPUd0Rtn4uxL7RSATTdl8ZxHmkjUr8iFZe2xz7Qj3JdevFKHeN7XBRQfYLsNF/SkGbNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id B99F96126A;
-	Mon, 13 Oct 2025 12:59:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A194DC4CEE7;
-	Mon, 13 Oct 2025 12:59:27 +0000 (UTC)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v6.18-rc1
-Date: Mon, 13 Oct 2025 14:59:22 +0200
-Message-ID: <65e00bcb7b2980278bb087986ee405627aa32d8b.1760360254.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1760431712; c=relaxed/simple;
+	bh=8auHW0dr/ARts0357pdn7BBer6tnl7aQsGkVFKsMHwI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=cyj188Ouon9M//yPzcX6cuSa6LL7pGHx65pjWpIkfm7ZaSGtDTFP/FqXGLhiXVn+6Jyz2wzZGzHvLMBl+GaeuZ94sOLn0z0AK64wvVTLv6iOD8ZwcbwrgUlWRqOnqOTTn6uVp0tTGg29IRI+CzsAfpNKpjiafK12u/rZMHjYSug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H5iPjHwA; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H5iPjHwA"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1760431709; x=1791967709;
+  h=date:from:to:cc:subject:message-id;
+  bh=8auHW0dr/ARts0357pdn7BBer6tnl7aQsGkVFKsMHwI=;
+  b=H5iPjHwA5vEbZxtO16i+AM0eB4QX2mNDISOd3GvJlO8rfirDBscfaA2B
+   oLHDvsp2UUWQ8TyN6BZdvgcDKi/OA/DiNAgl//l5qGPQnBQ7pU/fOn7Kh
+   lIIFT90d1g0ODdc3LGlifHsPExzQjkmVOT4LPVNbFmrrjDQqXRTbm9UBV
+   e3+DEgr0Au5z5GcfuxtzKnTrEbhXWA83sHUX/hoTo5Lbh+GVVNLW7uhxe
+   voxeuLY51hDC0ZWQNvZobZDpJD3cfPJzzN45oQ0Ru0nWr192LPJvBBgue
+   kcN+X8sI2HSV2/XyfRnM2I6i1wKHYQPxGrZPFz8PzFHXXJyVNAi6f2BHr
+   w==;
+X-CSE-ConnectionGUID: g35enzaTRBa8FZKbf66teg==
+X-CSE-MsgGUID: lU0sG+ovRL6PjXWwWKMEPQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11581"; a="72854509"
+X-IronPort-AV: E=Sophos;i="6.19,227,1754982000"; 
+   d="scan'208";a="72854509"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2025 01:48:28 -0700
+X-CSE-ConnectionGUID: AU4EcpkzTmOmMEsoY4gfAg==
+X-CSE-MsgGUID: PDgC24hvT7iuK/1rBUbhbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,227,1754982000"; 
+   d="scan'208";a="186924831"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by orviesa005.jf.intel.com with ESMTP; 14 Oct 2025 01:48:27 -0700
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1v8ahk-0002ZB-0g;
+	Tue, 14 Oct 2025 08:48:24 +0000
+Date: Tue, 14 Oct 2025 16:47:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 90b2f0aaf37dac827373a682db8df7d3ae0dc7de
+Message-ID: <202510141629.LORJNcWT-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-  - Drop CONFIG_SCTP_COOKIE_HMAC_SHA1=y (removed in commit
-    2f3dd6ec901f29ae ("sctp: Convert cookie authentication to use
-    HMAC-SHA256")),
-  - Drop CONFIG_BATMAN_ADV_NC=y (removed in commit 87b95082db32ae1c
-    ("batman-adv: remove network coding support")),
-  - Enable modular build of the SHA-1 secure hash algorithm (no longer
-    auto-enabled since commit 2f3dd6ec901f29ae ("sctp: Convert cookie
-    authentication to use HMAC-SHA256")).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 90b2f0aaf37dac827373a682db8df7d3ae0dc7de  Merge tag 'v6.18-rc1'
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k tree for v6.19.
+elapsed time: 1129m
 
-I did not disable CONFIG_XFS_ONLINE_SCRUB_STATS (CONFIG_XFS_ONLINE_SCRUB
-defaults to enabled since commit 0ff51a1fd786f47b, causing
-CONFIG_DEBUG_FS and a lot of other options to be enabled), but instead
-sent a fix for the latter.  Still, we may want to reconsider
-CONFIG_DEBUG_FS etc. in light of systemd[2].
+configs tested: 247
+configs skipped: 4
 
-[1] "[PATCH] xfs: XFS_ONLINE_SCRUB_STATS should depend on DEBUG_FS"
-    https://lore.kernel.org/69104b397a62ea3149c932bd3a9ed6fc7e4e91a0.1760345180.git.geert@linux-m68k.org
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-[2] "[PATCH/RFC] m68k: defconfig: Enable options needed for systemd"
-    https://lore.kernel.org/e93e50b85422cdb04e800f5008abf92babf6d509.1731591904.git.geert@linux-m68k.org
----
- arch/m68k/configs/amiga_defconfig    | 3 +--
- arch/m68k/configs/apollo_defconfig   | 3 +--
- arch/m68k/configs/atari_defconfig    | 3 +--
- arch/m68k/configs/bvme6000_defconfig | 3 +--
- arch/m68k/configs/hp300_defconfig    | 3 +--
- arch/m68k/configs/mac_defconfig      | 3 +--
- arch/m68k/configs/multi_defconfig    | 3 +--
- arch/m68k/configs/mvme147_defconfig  | 3 +--
- arch/m68k/configs/mvme16x_defconfig  | 3 +--
- arch/m68k/configs/q40_defconfig      | 3 +--
- arch/m68k/configs/sun3_defconfig     | 3 +--
- arch/m68k/configs/sun3x_defconfig    | 3 +--
- 12 files changed, 12 insertions(+), 24 deletions(-)
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+alpha                            allyesconfig    clang-19
+alpha                            allyesconfig    gcc-15.1.0
+alpha                               defconfig    clang-19
+arc                              allmodconfig    clang-19
+arc                              allmodconfig    gcc-15.1.0
+arc                               allnoconfig    gcc-15.1.0
+arc                              allyesconfig    clang-19
+arc                              allyesconfig    gcc-15.1.0
+arc                                 defconfig    clang-19
+arc                   randconfig-001-20251014    clang-16
+arc                   randconfig-001-20251014    gcc-15.1.0
+arc                   randconfig-002-20251014    clang-16
+arc                   randconfig-002-20251014    gcc-8.5.0
+arm                              allmodconfig    clang-19
+arm                              allmodconfig    gcc-15.1.0
+arm                               allnoconfig    clang-22
+arm                              allyesconfig    clang-19
+arm                              allyesconfig    gcc-15.1.0
+arm                                 defconfig    clang-19
+arm                   milbeaut_m10v_defconfig    gcc-15.1.0
+arm                        multi_v5_defconfig    gcc-15.1.0
+arm                   randconfig-001-20251014    clang-16
+arm                   randconfig-001-20251014    gcc-15.1.0
+arm                   randconfig-002-20251014    clang-16
+arm                   randconfig-002-20251014    gcc-13.4.0
+arm                   randconfig-003-20251014    clang-16
+arm                   randconfig-004-20251014    clang-16
+arm                   randconfig-004-20251014    gcc-8.5.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.1.0
+arm64                               defconfig    clang-19
+arm64                 randconfig-001-20251014    clang-16
+arm64                 randconfig-001-20251014    gcc-9.5.0
+arm64                 randconfig-002-20251014    clang-16
+arm64                 randconfig-002-20251014    gcc-10.5.0
+arm64                 randconfig-003-20251014    clang-16
+arm64                 randconfig-003-20251014    gcc-14.3.0
+arm64                 randconfig-004-20251014    clang-16
+arm64                 randconfig-004-20251014    gcc-14.3.0
+csky                              allnoconfig    gcc-15.1.0
+csky                                defconfig    clang-19
+csky                  randconfig-001-20251014    gcc-15.1.0
+csky                  randconfig-001-20251014    gcc-8.5.0
+csky                  randconfig-002-20251014    gcc-13.4.0
+csky                  randconfig-002-20251014    gcc-8.5.0
+hexagon                          allmodconfig    clang-17
+hexagon                          allmodconfig    clang-19
+hexagon                           allnoconfig    clang-22
+hexagon                          allyesconfig    clang-19
+hexagon                          allyesconfig    clang-22
+hexagon                             defconfig    clang-19
+hexagon               randconfig-001-20251014    clang-22
+hexagon               randconfig-001-20251014    gcc-8.5.0
+hexagon               randconfig-002-20251014    clang-22
+hexagon               randconfig-002-20251014    gcc-8.5.0
+i386                             allmodconfig    clang-20
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    clang-20
+i386                              allnoconfig    gcc-14
+i386                             allyesconfig    clang-20
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20251013    gcc-13
+i386        buildonly-randconfig-001-20251014    gcc-14
+i386        buildonly-randconfig-002-20251013    clang-20
+i386        buildonly-randconfig-002-20251014    gcc-14
+i386        buildonly-randconfig-003-20251013    gcc-14
+i386        buildonly-randconfig-003-20251014    gcc-14
+i386        buildonly-randconfig-004-20251013    clang-20
+i386        buildonly-randconfig-004-20251014    gcc-14
+i386        buildonly-randconfig-005-20251013    gcc-14
+i386        buildonly-randconfig-005-20251014    gcc-14
+i386        buildonly-randconfig-006-20251013    gcc-14
+i386        buildonly-randconfig-006-20251014    gcc-14
+i386                                defconfig    clang-20
+i386                  randconfig-001-20251014    clang-20
+i386                  randconfig-002-20251014    clang-20
+i386                  randconfig-003-20251014    clang-20
+i386                  randconfig-004-20251014    clang-20
+i386                  randconfig-005-20251014    clang-20
+i386                  randconfig-006-20251014    clang-20
+i386                  randconfig-007-20251014    clang-20
+i386                  randconfig-011-20251014    gcc-14
+i386                  randconfig-012-20251014    gcc-14
+i386                  randconfig-013-20251014    gcc-14
+i386                  randconfig-014-20251014    gcc-14
+i386                  randconfig-015-20251014    gcc-14
+i386                  randconfig-016-20251014    gcc-14
+i386                  randconfig-017-20251014    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-22
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20251014    clang-18
+loongarch             randconfig-001-20251014    gcc-8.5.0
+loongarch             randconfig-002-20251014    gcc-15.1.0
+loongarch             randconfig-002-20251014    gcc-8.5.0
+m68k                             allmodconfig    clang-19
+m68k                             allmodconfig    gcc-15.1.0
+m68k                              allnoconfig    gcc-15.1.0
+m68k                             allyesconfig    clang-19
+m68k                             allyesconfig    gcc-15.1.0
+m68k                                defconfig    clang-19
+microblaze                       allmodconfig    clang-19
+microblaze                       allmodconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                       allyesconfig    clang-19
+microblaze                       allyesconfig    gcc-15.1.0
+microblaze                          defconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+mips                          ath79_defconfig    gcc-15.1.0
+mips                   sb1250_swarm_defconfig    gcc-15.1.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                             allnoconfig    gcc-15.1.0
+nios2                               defconfig    gcc-11.5.0
+nios2                               defconfig    gcc-15.1.0
+nios2                 randconfig-001-20251014    gcc-11.5.0
+nios2                 randconfig-001-20251014    gcc-8.5.0
+nios2                 randconfig-002-20251014    gcc-8.5.0
+openrisc                          allnoconfig    clang-22
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                         allyesconfig    gcc-15.1.0
+openrisc                            defconfig    gcc-14
+parisc                           alldefconfig    gcc-15.1.0
+parisc                           allmodconfig    gcc-15.1.0
+parisc                            allnoconfig    clang-22
+parisc                            allnoconfig    gcc-15.1.0
+parisc                           allyesconfig    gcc-15.1.0
+parisc                              defconfig    gcc-15.1.0
+parisc                generic-64bit_defconfig    gcc-15.1.0
+parisc                randconfig-001-20251014    gcc-11.5.0
+parisc                randconfig-001-20251014    gcc-8.5.0
+parisc                randconfig-002-20251014    gcc-8.5.0
+parisc                randconfig-002-20251014    gcc-9.5.0
+parisc64                            defconfig    gcc-15.1.0
+powerpc                          allmodconfig    gcc-15.1.0
+powerpc                           allnoconfig    clang-22
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                          allyesconfig    gcc-15.1.0
+powerpc               randconfig-001-20251014    gcc-8.5.0
+powerpc               randconfig-001-20251014    gcc-9.5.0
+powerpc               randconfig-002-20251014    clang-22
+powerpc               randconfig-002-20251014    gcc-8.5.0
+powerpc               randconfig-003-20251014    gcc-14.3.0
+powerpc               randconfig-003-20251014    gcc-8.5.0
+powerpc                     redwood_defconfig    gcc-15.1.0
+powerpc                     tqm8540_defconfig    gcc-15.1.0
+powerpc64             randconfig-001-20251014    gcc-8.5.0
+powerpc64             randconfig-002-20251014    gcc-8.5.0
+powerpc64             randconfig-003-20251014    gcc-8.5.0
+riscv                            allmodconfig    gcc-15.1.0
+riscv                             allnoconfig    clang-22
+riscv                             allnoconfig    gcc-15.1.0
+riscv                            allyesconfig    gcc-15.1.0
+riscv                               defconfig    clang-22
+riscv                               defconfig    gcc-14
+riscv                 randconfig-001-20251013    clang-22
+riscv                 randconfig-001-20251014    gcc-10.5.0
+riscv                 randconfig-002-20251013    clang-22
+riscv                 randconfig-002-20251014    gcc-10.5.0
+s390                             allmodconfig    clang-18
+s390                             allmodconfig    gcc-15.1.0
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.1.0
+s390                                defconfig    gcc-14
+s390                  randconfig-001-20251013    gcc-8.5.0
+s390                  randconfig-001-20251014    gcc-10.5.0
+s390                  randconfig-002-20251013    clang-22
+s390                  randconfig-002-20251014    gcc-10.5.0
+sh                               allmodconfig    gcc-15.1.0
+sh                                allnoconfig    gcc-15.1.0
+sh                               allyesconfig    gcc-15.1.0
+sh                         apsh4a3a_defconfig    gcc-15.1.0
+sh                                  defconfig    gcc-14
+sh                        dreamcast_defconfig    gcc-15.1.0
+sh                            hp6xx_defconfig    gcc-15.1.0
+sh                    randconfig-001-20251013    gcc-10.5.0
+sh                    randconfig-001-20251014    gcc-10.5.0
+sh                    randconfig-002-20251013    gcc-15.1.0
+sh                    randconfig-002-20251014    gcc-10.5.0
+sh                          sdk7786_defconfig    gcc-15.1.0
+sh                           se7724_defconfig    gcc-15.1.0
+sparc                            allmodconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+sparc                               defconfig    gcc-15.1.0
+sparc                 randconfig-001-20251013    gcc-8.5.0
+sparc                 randconfig-001-20251014    gcc-10.5.0
+sparc                 randconfig-002-20251013    gcc-8.5.0
+sparc                 randconfig-002-20251014    gcc-10.5.0
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20251013    clang-20
+sparc64               randconfig-001-20251014    gcc-10.5.0
+sparc64               randconfig-002-20251013    gcc-14.3.0
+sparc64               randconfig-002-20251014    gcc-10.5.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    clang-19
+um                               allyesconfig    gcc-14
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20251013    gcc-14
+um                    randconfig-001-20251014    gcc-10.5.0
+um                    randconfig-002-20251013    gcc-14
+um                    randconfig-002-20251014    gcc-10.5.0
+um                           x86_64_defconfig    gcc-14
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20251014    gcc-14
+x86_64      buildonly-randconfig-002-20251014    clang-20
+x86_64      buildonly-randconfig-002-20251014    gcc-14
+x86_64      buildonly-randconfig-003-20251014    gcc-14
+x86_64      buildonly-randconfig-004-20251014    clang-20
+x86_64      buildonly-randconfig-004-20251014    gcc-14
+x86_64      buildonly-randconfig-005-20251014    clang-20
+x86_64      buildonly-randconfig-005-20251014    gcc-14
+x86_64      buildonly-randconfig-006-20251014    gcc-14
+x86_64                              defconfig    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-001-20251014    gcc-14
+x86_64                randconfig-002-20251014    gcc-14
+x86_64                randconfig-003-20251014    gcc-14
+x86_64                randconfig-004-20251014    gcc-14
+x86_64                randconfig-005-20251014    gcc-14
+x86_64                randconfig-006-20251014    gcc-14
+x86_64                randconfig-007-20251014    gcc-14
+x86_64                randconfig-008-20251014    gcc-14
+x86_64                randconfig-071-20251014    gcc-14
+x86_64                randconfig-072-20251014    gcc-14
+x86_64                randconfig-073-20251014    gcc-14
+x86_64                randconfig-074-20251014    gcc-14
+x86_64                randconfig-075-20251014    gcc-14
+x86_64                randconfig-076-20251014    gcc-14
+x86_64                randconfig-077-20251014    gcc-14
+x86_64                randconfig-078-20251014    gcc-14
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                randconfig-001-20251013    gcc-11.5.0
+xtensa                randconfig-001-20251014    gcc-10.5.0
+xtensa                randconfig-002-20251013    gcc-11.5.0
+xtensa                randconfig-002-20251014    gcc-10.5.0
+xtensa                         virt_defconfig    gcc-15.1.0
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 1ff6bee754377470..aab4bbda796ef903 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -265,7 +265,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -281,7 +280,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -584,6 +582,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 6af37716384ca72f..6b0bab7520351555 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -261,7 +261,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -277,7 +276,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -540,6 +538,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index e5349b4fa30d4a15..8588b3a1f6d7d2fc 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -268,7 +268,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -284,7 +283,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -571,6 +569,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 28492ef5145706dd..ed85517ff01c6a4f 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -258,7 +258,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -274,7 +273,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -532,6 +530,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 2fbefb16b72ef978..0217a698285618d0 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -260,7 +260,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -276,7 +275,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -542,6 +540,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index deec5df3f35a4ad7..a9ba431a94081694 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -259,7 +259,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -275,7 +274,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -559,6 +557,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index b03808fb545f78c6..3239cef425993026 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -279,7 +279,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -295,7 +294,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -647,6 +645,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 0d401db0e8f82b16..baf0fc7a66d94593 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -257,7 +257,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -273,7 +272,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -532,6 +530,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 90fb5b6bcf833aea..9cb732f0c6ce160d 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -258,7 +258,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -274,7 +273,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -533,6 +531,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index b89b0f7fe2dac747..6b3295e4c5aef47d 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -259,7 +259,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -275,7 +274,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -549,6 +547,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 8cc372c4df720651..1f3a2fad6d2f6600 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -254,7 +254,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -270,7 +269,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -530,6 +528,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index f4569f64c6e4e797..d8ef36564d506aca 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -255,7 +255,6 @@ CONFIG_BRIDGE_EBT_SNAT=m
- CONFIG_BRIDGE_EBT_LOG=m
- CONFIG_BRIDGE_EBT_NFLOG=m
- CONFIG_IP_SCTP=m
--CONFIG_SCTP_COOKIE_HMAC_SHA1=y
- CONFIG_RDS=m
- CONFIG_RDS_TCP=m
- CONFIG_L2TP=m
-@@ -271,7 +270,6 @@ CONFIG_6LOWPAN_GHC_EXT_HDR_ROUTE=m
- CONFIG_DNS_RESOLVER=y
- CONFIG_BATMAN_ADV=m
- # CONFIG_BATMAN_ADV_BATMAN_V is not set
--CONFIG_BATMAN_ADV_NC=y
- CONFIG_NETLINK_DIAG=m
- CONFIG_MPLS=y
- CONFIG_NET_MPLS_GSO=m
-@@ -530,6 +528,7 @@ CONFIG_CRYPTO_AEGIS128=m
- CONFIG_CRYPTO_MD4=m
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_RMD160=m
-+CONFIG_CRYPTO_SHA1=m
- CONFIG_CRYPTO_SM3_GENERIC=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_XCBC=m
--- 
-2.43.0
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
