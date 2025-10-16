@@ -1,173 +1,135 @@
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B376244692
-	for <linux-m68k@vger.kernel.org>; Wed, 15 Oct 2025 13:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CD761A9B46;
+	Thu, 16 Oct 2025 06:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760536420; cv=none; b=LqnrRatqubeCkC8v90A15JzVnCO0nZsuEbZ/hzLCm566QGLmqFoKKa8eBooFldYAck6SrjhbFMOAI54Mw+35MnKq3E7o18URMwDQDPi0Ce4iB71tcqob6PZ/7xI97/mw/8ZGsDcz8yQrmpfgOrfyDRBLTCT3E3/oletOxwch+Ro=
+	t=1760597594; cv=none; b=iqgV0Lzun7RWaXc04/Dq5yA0vq03oR//LNJHRa0cW4M9wlwGM4XMVRMsifoU964+ydn682lMvkUIqDBe9GtVX4V2OAsQSmrvqvi14C6hj0BUiCwAlBS062R1masRDYmvMp+F4kXfFRZbt1mFzhfWoFWQnusjjrHWhl9uO/f5aSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760536420; c=relaxed/simple;
-	bh=nAMaEtaGYdQF7zxrims38eySXuR9N44DgyDjL/b4jdA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZDQkeStOJ0Av9yE3mn6yTlfdZwvBYMcFXTHWrfeaSUp8ilgBnlUUzr5caZWOZJTRhtXbDpGmOgt9+XH3Dx3bamjjNVX76pd5Gb3j/oFvAQLevIx3ZbFc0fjYgpIs4mOvCx9idObGnM+++eznvALREQLxREyCw/AXbhia+TMEezg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d2RoqtRc; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1760597594; c=relaxed/simple;
+	bh=LoP0iL2fgdFZyWRft6p0C1mJ+sXum2DzJhkgo80tJwY=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=GgGH6LMVLXSsvIOPMMQfIHrdp+GV75Kl5h82Ujr/B1ez/yyO8q+J7GoCRf35IPp6YEKwTIWYxCegN72A4BAEuKl/qRC+5B4v3VE3iX2HhMmrrVA70PtA+FO6J3Rdf9N26jWdTDqUDYk1c1lJ90G83p0TMaCx6ZM45995te3BZ6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MshjixAm; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d2RoqtRc"
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-46e6ba26c50so42192085e9.2
-        for <linux-m68k@vger.kernel.org>; Wed, 15 Oct 2025 06:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760536416; x=1761141216; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bqOmoGsO8trYgMWNWNZ7iS8eeHupXqHvme7XfA7g8fw=;
-        b=d2RoqtRcNZZ7OgIbR6a/B+bnakofR0frrNNrsUBx2J8Fk+ktFT8VUo+5/GLVyCArVZ
-         cf9CI3VHUTSyBKDAw9TNicpa7Mz2NTB6o5pRT/af41tc/CvnPmwAirRjox10xgYyt0rV
-         aStuPuqsh9vabgPGVRi0j0snuMlinXF27o9tuBwTyNEPgKef0V5DEidH7jzkbHnUl1Rd
-         qrtkm1AWD4YsHUvdx3Xf/TljeZfzTcYKHetT8k3YEFq9UBDmu8rHzO6vvsjiT0UysEYH
-         YOYRsCywIhdpKPOI7/x2e2hNDJpiT1AIfT/uyshIsOA/mtN2fGDkxEphVKpXw9cKHBsT
-         IJHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760536416; x=1761141216;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bqOmoGsO8trYgMWNWNZ7iS8eeHupXqHvme7XfA7g8fw=;
-        b=qgtLVhWYBwY3jA6i08fPLM+JCRGDUA4aYXspe/NqwAkGKpg+9vX+UipSt7AF08IPcA
-         7Veijkh3RpeVUis2cmiFlKEAsEh+OwR8bL9m+fp8TMEkS6II7UyQU153OrlRubAEN6vT
-         c16I1OkPIAsWOORj0+2vMxymHChxWstzsKSX/l7AsV+qodgDViMAxp2Ykuzru+qlAkyY
-         FSJVXu34tJ5pMSPoBEQKO0aC8wTxFvDB6XWWkySwmx79Xp/+CMHiVNGDoxgJjrcSKewj
-         wgft6BRMdoy/QIf4OcIA4yTkGpEj6Bc8AZAdSh7hquAO2lklD/5URv5PjUbcbEuel4ow
-         XP7A==
-X-Forwarded-Encrypted: i=1; AJvYcCVWu+H1p6pDJv416XRPFegquci3Ym+0it27OVTE1MZ5vsj8t5iS3h0QldpqoI1e8yynoB+Ctl7aMHTH@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHdxo72R9+hIW6YibU2/+WE99N46BdjT+bRZTJ0rQ6upIo+lmi
-	FagnmGJNxkOUIuu5cLIoAdN7vPAYDadRUWmCtk1ZGhGcdOEhu0XOOFIA
-X-Gm-Gg: ASbGncv2f/10zLqx1EYmZDGco9jxMLaOGZkZWaisRV5tq4ItZa6UCrKs9Ta/EOQz62o
-	pK6yTZ+zWsodo+lzbfa9zMTC73p9fL1iIixogf+RkU8nqx/5zafsZR/4hcWYovpds+W1kfKcbKL
-	CpC1ariUG7HJ4vSsp9sIYQ9oJn4wGPuuc0T7gGwkb+Rqvk501kb/9frHzjtK0CsTXa3C3DPaphH
-	ZqoEXML9SEn8mtHDgbxeffcfMB4Pyc4rqCFtXgaoW3NMVLmgRnHqFOtyCtqLInYNWvn4vi02B54
-	uO8oumLSn1F+rBaIuenzEmwykr1HVB8Y8PRuh5DPDLx4mVFfic7fqb6rO7HUu1BX0SXMciacTHt
-	hvzs9/FlEkRZqfCoGhQztTbeBFx5tNLzAEepg3SGTAbZJrUXN1CJUL7T0d4Fsiw+IJRYY+YarvU
-	SoZAgk1ks=
-X-Google-Smtp-Source: AGHT+IENrsvklw3VMayWb2/SzhwdX4veJ0+2ZwpShwijlf0i60yg9zXIjqKms1bHJUjYdDjkBYD4JQ==
-X-Received: by 2002:a05:600c:6095:b0:46f:b32e:52d9 with SMTP id 5b1f17b1804b1-46fb3cbc5f8mr146733575e9.13.1760536415649;
-        Wed, 15 Oct 2025 06:53:35 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4710049cba2sm35932135e9.0.2025.10.15.06.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Oct 2025 06:53:35 -0700 (PDT)
-Date: Wed, 15 Oct 2025 14:53:32 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Boqun Feng
- <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Mark Rutland
- <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, Geert
- Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org,
- linux-doc@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MshjixAm"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 4C05014000F4;
+	Thu, 16 Oct 2025 02:53:09 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Thu, 16 Oct 2025 02:53:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1760597589; x=1760683989; bh=tcUBI5yvDagqARx1NRhoV/Xb73Hae3sjMcC
+	zbp2ZYMI=; b=MshjixAmEDWJtMGKvrmtBxn8dNwDRLg8fCulAR/XGo3Gsrfuynv
+	pV/lk8YPlC2PY56rMG3RyG5WNNZDL5vTRTVyHg5rzDJc9adoIiGP+DBpYPWnBT/r
+	gZ1uIp/EFCIaMHdB5ncUSmXl4MD5Tub7GGKEcuCWT80VWFxKoGGJGuRS2M2ETIRw
+	/iKPKDlp6pUHYEf3LUUGHYarSNsQos2MLapnv/S3nvCM99QmFlJAmuJKA9y9kCp7
+	R/5yxrJFHn7siUrXblYkGGNI/pmTinXisoBUZj0aKNa2C3I+wAQnx8zbrYPWyskM
+	jQOF1d1SI4s6gd9T/W3wgWQmiKjQvbfEU4w==
+X-ME-Sender: <xms:VJbwaG8r2GtnqYu_SyRHYVMJCO6mTOCi-aEd2j__gZMaLjmP7_t9sQ>
+    <xme:VJbwaKYrKgw5b4WDAtVqdtM34Q2ZFD8NXrV9FANNezB_BxwEV4C3-kCDROtqVWPP1
+    g3REiOAwt1ypuKZMcNbCIA1tD4bwywQibLuaaXZMOSN7l0v9faWR4A>
+X-ME-Received: <xmr:VJbwaEoHqwlbUCRYubDX81jG181ptZlPIR8HlTq_FB-4f_EATTnaeNiietu4tjPlkLpSypcpu_NohqMID3K5AKQ_oS8gw1VZUos>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdduvdehiedvucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeu
+    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedufedpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtohepuggrvhhiugdrlhgrihhghhhtrdhlihhnuh
+    igsehgmhgrihhlrdgtohhmpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggu
+    rdhorhhgpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhope
+    grkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtohepsgho
+    qhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtoheptghorhgsvghtsehlfi
+    hnrdhnvghtpdhrtghpthhtohepmhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhr
+    tghpthhtoheprghrnhgusegrrhhnuggsrdguvgdprhgtphhtthhopehlihhnuhigqdhkvg
+    hrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:VJbwaP3dFtsuOU6BbisEcqdjq5j4-7XdMeq6K7FhkpxAXaV9TFuJoQ>
+    <xmx:VJbwaMla1P6LLOpI_G6WJiwD14sEUFKkzKxaEh_n7JJyNIknZLQHpg>
+    <xmx:VJbwaLZ8ZeeRsp6rqWOIr9WhdsUOR_yC8BJ7Ejr4IZfWKcablR_3qg>
+    <xmx:VJbwaO8whWJLF9_uQWbe_M3DgeWM1Z_t9XlpDgeSBsDU1mq54U19Tw>
+    <xmx:VZbwaDgCeOhZ0pxog5aFoAFfJE_CiynmZYMXUc28LRzsN7A1vM-bgH7->
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 16 Oct 2025 02:53:05 -0400 (EDT)
+Date: Thu, 16 Oct 2025 17:53:05 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: David Laight <david.laight.linux@gmail.com>
+cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
+    Andrew Morton <akpm@linux-foundation.org>, 
+    Boqun Feng <boqun.feng@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+    Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>, 
+    linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, 
+    linux-doc@vger.kernel.org
 Subject: Re: [RFC v3 1/5] documentation: Discourage alignment assumptions
-Message-ID: <20251015145332.260eebe6@pumpkin>
-In-Reply-To: <f5f939ae-f966-37ba-369d-be147c0642a3@linux-m68k.org>
-References: <cover.1759875560.git.fthain@linux-m68k.org>
-	<76571a0e5ed7716701650ec80b7a0cd1cf07fde6.1759875560.git.fthain@linux-m68k.org>
-	<20251014112359.451d8058@pumpkin>
-	<f5f939ae-f966-37ba-369d-be147c0642a3@linux-m68k.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+In-Reply-To: <20251015145332.260eebe6@pumpkin>
+Message-ID: <29188dc5-32a3-28f9-b488-26cca713e070@linux-m68k.org>
+References: <cover.1759875560.git.fthain@linux-m68k.org> <76571a0e5ed7716701650ec80b7a0cd1cf07fde6.1759875560.git.fthain@linux-m68k.org> <20251014112359.451d8058@pumpkin> <f5f939ae-f966-37ba-369d-be147c0642a3@linux-m68k.org>
+ <20251015145332.260eebe6@pumpkin>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 
-On Wed, 15 Oct 2025 18:40:39 +1100 (AEDT)
-Finn Thain <fthain@linux-m68k.org> wrote:
 
-> On Tue, 14 Oct 2025, David Laight wrote:
-> 
-> > On Wed, 08 Oct 2025 09:19:20 +1100
-> > Finn Thain <fthain@linux-m68k.org> wrote:
-> >   
-> > > Discourage assumptions that simply don't hold for all Linux ABIs.
-> > > Exceptions to the natural alignment rule for scalar types include
-> > > long long on i386 and sh.
-> > > ---
-> > >  Documentation/core-api/unaligned-memory-access.rst | 7 -------
-> > >  1 file changed, 7 deletions(-)
-> > > 
-> > > diff --git a/Documentation/core-api/unaligned-memory-access.rst b/Documentation/core-api/unaligned-memory-access.rst
-> > > index 5ceeb80eb539..1390ce2b7291 100644
-> > > --- a/Documentation/core-api/unaligned-memory-access.rst
-> > > +++ b/Documentation/core-api/unaligned-memory-access.rst
-> > > @@ -40,9 +40,6 @@ The rule mentioned above forms what we refer to as natural alignment:
-> > >  When accessing N bytes of memory, the base memory address must be evenly
-> > >  divisible by N, i.e. addr % N == 0.
-> > >  
-> > > -When writing code, assume the target architecture has natural alignment
-> > > -requirements.  
-> > 
-> > I think I'd be more explicit, perhaps:
-> > Note that not all architectures align 64bit items on 8 byte boundaries or
-> > even 32bit items on 4 byte boundaries.
-> >   
-> 
-> That's what the next para is alluding to...
-> 
-> > > In reality, only a few architectures require natural alignment on all sizes
-> > > of memory access. However, we must consider ALL supported architectures; 
-> > > writing code that satisfies natural alignment requirements is the easiest way 
-> > > to achieve full portability.  
-> 
-> How about this?
-> 
-> "In reality, only a few architectures require natural alignment for all 
-> sizes of memory access. That is, not all architectures need 64-bit values 
-> to be aligned on 8-byte boundaries and 32-bit values on 4-byte boundaries. 
-> However, when writing code intended to achieve full portability, we must 
-> consider all supported architectures."
-
-There are several separate alignments:
-- The alignment the cpu needs, for most x86 instructions this is 1 byte [1].
-  Many RISC cpu require 'word' alignment (for some definition of 'word').
-  A problematic case is data that crosses page boundaries.
-- The alignment the compiler uses for structure members; returned by _Alignof().
-  m68k only 16bit aligns 32bit values.
-- The 'preferred' alignment returned by __alignof__().
-  32bit x86 returns 8 for 64bit types even though the ABI only 4-byte aligns them.
-- The 'natural' alignment based on the size of the item.
-  I'd guess that 'complex double' (if supported) may only be 8 byte aligned.
-
-What normally matters is the ABI alignment for structure members.
-If you mark anything 'packed' the compiler will generate shifts and masks (etc)
-to get working code.
-Taking the address of an item in a packed structure generates a warning
-for very good reason. 
-
-[1] I've fallen foul of gcc deciding to 'vectorise' a loop and then having
-it crash because the buffer address was misaligned.
-Nasty because the code worked in initial testing and I expected the loop
-(32bit adds of a buffer) to work fine even when misaligned.
-
-	David
+On Wed, 15 Oct 2025, David Laight wrote:
 
 > 
-> > > @@ -103,10 +100,6 @@ Therefore, for standard structure types you can always rely on the compiler
-> > >  to pad structures so that accesses to fields are suitably aligned (assuming
-> > >  you do not cast the field to a type of different length).
-> > >  
-> > > -Similarly, you can also rely on the compiler to align variables and function
-> > > -parameters to a naturally aligned scheme, based on the size of the type of
-> > > -the variable.
-> > > -
-> > >  At this point, it should be clear that accessing a single byte (u8 or char)
-> > >  will never cause an unaligned access, because all memory addresses are evenly
-> > >  divisible by one.  
-> > 
-> >   
+> There are several separate alignments:
+> - The alignment the cpu needs, for most x86 instructions this is 1 byte [1].
+>   Many RISC cpu require 'word' alignment (for some definition of 'word').
+>   A problematic case is data that crosses page boundaries.
+> - The alignment the compiler uses for structure members; returned by _Alignof().
+>   m68k only 16bit aligns 32bit values.
+> - The 'preferred' alignment returned by __alignof__().
+>   32bit x86 returns 8 for 64bit types even though the ABI only 4-byte aligns them.
+> - The 'natural' alignment based on the size of the item.
+>   I'd guess that 'complex double' (if supported) may only be 8 byte aligned.
+> 
 
+Those distinctions could be useful in a discussion about memory 
+efficiency. But this document is concerned with avoiding a performance 
+penalty -- it's entirely unconcerned with over-alignment and memory waste.
+Hence, "aligned" is used as shorthand for "naturally aligned".
+
+The ambiguity in this document (and my proposed change) stems from using 
+the word architecture to cover ABI, platform, CPU, ISA etc.
+I can improve upon that.
+
+> What normally matters is the ABI alignment for structure members.
+> If you mark anything 'packed' the compiler will generate shifts and masks (etc)
+> to get working code.
+> Taking the address of an item in a packed structure generates a warning
+> for very good reason. 
+> 
+
+I believe the problem with 'packed' is already covered in this document.
+
+> [1] I've fallen foul of gcc deciding to 'vectorise' a loop and then having
+> it crash because the buffer address was misaligned.
+> Nasty because the code worked in initial testing and I expected the loop
+> (32bit adds of a buffer) to work fine even when misaligned.
+> 
+
+I think that pitfall is already discussed also, along with a remedy.
+
+There is also this,
+
+    ... for standard structure types you can always rely on the compiler 
+    to pad structures so that accesses to fields are suitably aligned 
+    (assuming you do not cast the field to a type of different length).
+
+So it seems to be fairly comprehensive but I may be missing something (?)
