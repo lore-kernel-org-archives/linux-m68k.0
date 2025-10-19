@@ -1,42 +1,131 @@
-Received: from mail.pickup.hu (mail.pickup.hu [89.251.32.12])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7AD31C27
-	for <linux-m68k@vger.kernel.org>; Sat, 18 Oct 2025 18:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.251.32.12
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671B7224AF9
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Oct 2025 06:50:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760811985; cv=none; b=UjWZXttcDowyqGEctAS3EBZ8H3d/DVV0qyizYvWVvT0aEx6ASiat5lgyKiYPPIuPUS9yUKBzt3Sp0aCqDnqmQh0udNaUPrwKHEfKaR7TtHHkMukKdVGNbB1K7/FjsT5XNxPcsNT0FwDQjuMjEdybDwZGChUIg/ASPeY6J0cz5Vw=
+	t=1760856633; cv=none; b=sUB7RLO609L4F004kh6JoQsQm/SXfwTqlH/5aaoU/1GtijKf3VZ3uloRNn2NoDIaC4xKWJBJCD9c9qzdVPtnXvjGPZX18M1z/9iYZaV3do8ODCQ4rrkw9JevgbPStHBp1zhv64Oqoi2AIGbtjYJEDcCuwFkuYSq2jCdgFEAyEbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760811985; c=relaxed/simple;
-	bh=Ktx2dnctFouS4GNNCXke8A7G9DPNh45BF3KaXzOW/3Y=;
-	h=Content-Type:MIME-Version:Subject:To:From:Date:Message-Id; b=ShNo58U4kB0KOxTOof8B8rs9ci7FZwnyr2YG2iuacf+O6BHoWz9uPkgIuHVhTSET5yK+jGNpJM3Bunk59NFdbsvzjQM++nHVnrmugE3p6D9KB8H/12MNSrkUwZ+X0nb7hFEaz6ODQqF9ruYIAi4gRPZ5ymCi6xXfi5vpa8t3lrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=pickup.hu; spf=pass smtp.mailfrom=pickup.hu; arc=none smtp.client-ip=89.251.32.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=pickup.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pickup.hu
-Received: from IP-223-57.dataclub.eu (unknown [89.251.44.254])
-	by mail.pickup.hu (pickup.hu 1. eMail Server) with ESMTP id 5F2E7CF9765
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 18 Oct 2025 20:26:22 +0200 (CEST)
-Content-Type: text/plain; charset="iso-8859-1"
+	s=arc-20240116; t=1760856633; c=relaxed/simple;
+	bh=EdgpjTa5vPTpdpYEzLk3B3e9bf5d6qYFWAfS+EwNqnE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Su4txTRX+Yn63R35c/XjBLPjoKsxEkIyb7NjSMOz19BealwGYnDvJf7pAj+SaG0sVyBjGxoyozPPIUqBkvg9/Cw4LKmskKFNOdlHEJyHLIV/8Jp4yr7Ep23LR1lF2hFSoS02KNN6Fr7+mjN+T8Hk1Lglw9mPP4kVnzZi1xOZTBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cl0KoSN2; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cl0KoSN2"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id A755140A5D;
+	Sun, 19 Oct 2025 06:50:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57F25C4CEE7;
+	Sun, 19 Oct 2025 06:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1760856630;
+	bh=EdgpjTa5vPTpdpYEzLk3B3e9bf5d6qYFWAfS+EwNqnE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cl0KoSN24WldfEYSRSfu5lozmGJAVE9xioGE6C+PBBseYSuE/7hgf2KbKvxu1nAfq
+	 +AnxTaK9VaE7xdn62r2Zk9oFnNMs7lSpecdggsfr9Z5mfbyraggVUnrWZwla30ASHd
+	 TTQUKVBXbjDXmyKfOdXMojvKQKorenot/jpefXad8wpoUyJQ/gWBwcSUSTx6MlFUkq
+	 O4BqR0RMnSAfMnvUpkN7wKJhQIsaUmfqwAekVS20NwyN/940rzzKb69Mu6Ni7vQrxn
+	 4PzVEO7y+ixH5H5iambi/6vum/20jOqyGoZB3A2tTRPyBtt8DjbzWrov4g4xwvEbN2
+	 ljhF5KLlm27vA==
+Date: Sun, 19 Oct 2025 02:50:21 -0400
+From: Guo Ren <guoren@kernel.org>
+To: Kees Cook <kees@kernel.org>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	x86@kernel.org, linux-alpha@vger.kernel.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, llvm@lists.linux.dev,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 03/17] csky: Add __attribute_const__ to ffs()-family
+ implementations
+Message-ID: <aPSKLRnWUAVSGQjF@gmail.com>
+References: <20250804163910.work.929-kees@kernel.org>
+ <20250804164417.1612371-3-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Family December trip 
-To: linux-m68k@lists.linux-m68k.org
-From: "Pina Alvarez" <zoliedit@pickup.hu>
-Date: Sat, 18 Oct 2025 21:26:22 +0300
-Reply-To: pinaalvarez@igeneraltradingllc.com
-Message-Id: <20251018182622.5F2E7CF9765@mail.pickup.hu>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250804164417.1612371-3-kees@kernel.org>
 
-Hello,
+On Mon, Aug 04, 2025 at 09:43:59AM -0700, Kees Cook wrote:
+> While tracking down a problem where constant expressions used by
+> BUILD_BUG_ON() suddenly stopped working[1], we found that an added static
+> initializer was convincing the compiler that it couldn't track the state
+> of the prior statically initialized value. Tracing this down found that
+> ffs() was used in the initializer macro, but since it wasn't marked with
+> __attribute__const__, the compiler had to assume the function might
+> change variable states as a side-effect (which is not true for ffs(),
+> which provides deterministic math results).
+> 
+> Add missing __attribute_const__ annotations to C-SKY's implementations of
+> ffs(), __ffs(), fls(), and __fls() functions. These are pure mathematical
+> functions that always return the same result for the same input with no
+> side effects, making them eligible for compiler optimization.
+LGTM.
 
-I was wondering if you received the email I sent last week regarding the
-December trip, I would hope you can plan for myself and my family of 14
-(10 Adults & 4 Children)
+Acked-by: Guo Ren <guoren@kernel.org>
 
-am attaching an itinerary also for you to take a look
-
-thank you
-Pina Alvarez
+> 
+> Build tested ARCH=csky defconfig with GCC csky-linux 15.1.0.
+> 
+> Link: https://github.com/KSPP/linux/issues/364 [1]
+> Signed-off-by: Kees Cook <kees@kernel.org>
+> ---
+>  arch/csky/include/asm/bitops.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/csky/include/asm/bitops.h b/arch/csky/include/asm/bitops.h
+> index 72e1b2aa29a0..80d67eee6e86 100644
+> --- a/arch/csky/include/asm/bitops.h
+> +++ b/arch/csky/include/asm/bitops.h
+> @@ -9,7 +9,7 @@
+>  /*
+>   * asm-generic/bitops/ffs.h
+>   */
+> -static inline int ffs(int x)
+> +static inline __attribute_const__ int ffs(int x)
+>  {
+>  	if (!x)
+>  		return 0;
+> @@ -26,7 +26,7 @@ static inline int ffs(int x)
+>  /*
+>   * asm-generic/bitops/__ffs.h
+>   */
+> -static __always_inline unsigned long __ffs(unsigned long x)
+> +static __always_inline __attribute_const__ unsigned long __ffs(unsigned long x)
+>  {
+>  	asm volatile (
+>  		"brev %0\n"
+> @@ -39,7 +39,7 @@ static __always_inline unsigned long __ffs(unsigned long x)
+>  /*
+>   * asm-generic/bitops/fls.h
+>   */
+> -static __always_inline int fls(unsigned int x)
+> +static __always_inline __attribute_const__ int fls(unsigned int x)
+>  {
+>  	asm volatile(
+>  		"ff1 %0\n"
+> @@ -52,7 +52,7 @@ static __always_inline int fls(unsigned int x)
+>  /*
+>   * asm-generic/bitops/__fls.h
+>   */
+> -static __always_inline unsigned long __fls(unsigned long x)
+> +static __always_inline __attribute_const__ unsigned long __fls(unsigned long x)
+>  {
+>  	return fls(x) - 1;
+>  }
+> -- 
+> 2.34.1
+> 
+> 
