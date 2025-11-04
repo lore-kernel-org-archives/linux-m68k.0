@@ -1,237 +1,206 @@
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F1B2BDC25
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Nov 2025 07:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C742D9796
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  4 Nov 2025 10:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762155378; cv=none; b=Q0dtcLdwJjS8Fw6KUlt02qnD5ZGKNl3CdXhdw0AfZRKJB7gN3kQ2VDGZ9ZXKsvwQLtYPPXSPMhpuMiEA/8R4CpmAD4Dlnp6H4JVqVMDj4Jz4kbPfC/Vx7Wa2P0pXUAh7qjxNJDpcPwIFxgj3y1EgBgzChq5+eYwk3J98jBWyaUk=
+	t=1762253748; cv=none; b=IY8FJk3o3ocimKKkNTU8cnpsauoy9MyR8ifUdhBN8x+A7822yakZjCA0jVPXpeuhQVF/QVWoCsQ4TLK5HRT3ipqVgxBCVaKvg7ZUoMBD5RK4OK8ysJKXNmIb9s0Wwz2HEFRSsIk+oOnGhDYK/7lUijTXadZoFgkdg584J1I5SOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762155378; c=relaxed/simple;
-	bh=KImMfOPBHJxMvj6GnbGXjOLE3ksMhUz7hd07AjPOnlc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bTtIP01CSrBGLI+pdc4H22E7BPBl330uxaOln/gBk4UWSvTBAof1AnG8PBWvsR94u6d11OoUcDykKsMsEBwtjn1xM0QxKDY7mN1bIOoyzRSU2pglF8IiaFXhtP7iL1mXc4IpxYD11wA48JCOb8EvtuyORJL5W5cNEpyPtSB79uQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CCnd3paw; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1762253748; c=relaxed/simple;
+	bh=m3x04uIQ1a409cHexe3UOp+Rteczp58QSb2nxWTkKEY=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=r+TjYdueDlf3bMgXpp35M3SufC1iruwmtjms6FRyj0PiLTiY29lo3QvOTmXJTLlheUh3Vg74ZCwPT8NXPildQqreU0VAmhOQxxuPZuGyMHJaufETHS18K/HUbUQbNsVVaa2ATHGTjA4QEmGDk6vCc2bl36YmPutO7WfX/kwcTeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IfqUrOJL; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CCnd3paw"
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-429c19b5de4so2089916f8f.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 02 Nov 2025 23:36:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762155373; x=1762760173; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Xy242WDGUqoE91x1eR+As3xqC/KmA/wU0RO3gRLGjUI=;
-        b=CCnd3pawRQ49mNwYyh9TUl5hB+Dgxj5j8TlkdWAHm0XeV5/qlBYqoeFzAUPGSFVpaf
-         9lJ321d3m05RqHEmkxiATBLnuunnvxplqReK0QLK+OiPVoRkb6s6BWHPZqE0Lz12X6mO
-         wPB7aTd4+ZdCmcQhxo15JiMvMbQvsEsGCNzXrseb47hKRdQ9RgPvf7ohJH4uoiAM2h7K
-         FWKU0DIpaciZy4KEoRHmztyXD6YgXIMd4jhg+DSQJrc7MEqD+QVeKSqEIpvPg/U+lnKk
-         BOhvDAzwd69s8xrGPtfqXOltDWW0+qocuVDuuyzCf8MZyRt+JV8Xt3FEmkj28vM9I4mA
-         uynQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762155374; x=1762760174;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xy242WDGUqoE91x1eR+As3xqC/KmA/wU0RO3gRLGjUI=;
-        b=KuwPpTyTJLkZ3VfLPS7tbTYiGC75DOIDJiWs4JJTnUX1RkyMW81IeSehi+NJFbsC0o
-         BIcp4o770bNWFnfWQ/hAZIPqL9Sisrkuq2r+rGPVq1KQBwa1Bsj4UXWhx0LhTl6PWo9n
-         1ldnTg/yDEaH6d9kGpbigOUf0WyITMqp3vqsqdjzc5d0cSul2NpeUv/+WkYs7qg09ub1
-         81vyc9UIz/ezTyGLXvxisP5vZFdfnQIynyEEwNWNC1Q2OvNSW75GRc4QX5mYYoF2RDQt
-         ynOZ+StvFyQKl4SVxibAs0NYDA6CyVYzNbkC4hyJSDxRSTICnRX3YklR5351+7mpEovz
-         ZrtA==
-X-Gm-Message-State: AOJu0YxgvVwcR91G6heOtqnrkL6fJU0tnEdjTz2PDkmxSY8k6rBNdbdL
-	3vOsdPtcg3OrjUBUSOy5GJExVY8nV4E5WXPGUYOST/iug5hk5dultRtO
-X-Gm-Gg: ASbGncu6NeCbWf0yyTqXCmhetAlkd9IHCXOpeukQgL0z3wZUFmhzujWREbJSNyHX456
-	QwjVHJl4ARnBPNG5hyOpPIWSWhRcSPoQI7AR1Lo1pdCXWj1dH8jEcrkdG68QWbsQSI5v9zkuE27
-	c5iAfAiQgKxsunD9+DjlUdiX72NK81rcmp3YAGM92rMGGb/PyjVtH6PfsMPE8u9nWa7iC3hmB4g
-	vC1IJPznRqIc6f+ezTaYyuW8v5H7eUVAwXC1zy9jmMS57KhpNovsTGBr2ddr2fBWZcIKHzpXtQY
-	xNOplO30pgnjRWLMtx8Upkoce+5QsxvWHAMskZKgREuulyg4/f+OGr06bd1TLVI+GWXIqDeXO3d
-	5QTCVbMrf/htlq5eqg9cukNZ55txiCujme+p0sZHdCYuevl4BYSwO/gj3nZfswMElD21+Y5M+Zk
-	IX8ALNMdG6CEjPLTzufWxwLhTWzomzeRTnnholLTC7jkhG5ATx5z4ihpdUTTJV6REZyOgvTHA+O
-	cV+30Hlw0f6bpt2Url3BE9lYWDzdd7XcSSEVVOl/n2jteY063iTbw==
-X-Google-Smtp-Source: AGHT+IGVnLrE9OIWhpiHYyEFkXyZRArW2hWys6rXTWz6yN6lGED8eruKLvg3nkjVzrRE8Fc1QB6LXA==
-X-Received: by 2002:a5d:5d89:0:b0:429:8a71:d57 with SMTP id ffacd0b85a97d-429bd688474mr9767699f8f.27.1762155373261;
-        Sun, 02 Nov 2025 23:36:13 -0800 (PST)
-Received: from ?IPV6:2003:ea:8f0d:b700:d90a:9c99:d3d5:33f3? (p200300ea8f0db700d90a9c99d3d533f3.dip0.t-ipconnect.de. [2003:ea:8f0d:b700:d90a:9c99:d3d5:33f3])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429d1061e42sm6679455f8f.37.2025.11.02.23.36.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Nov 2025 23:36:12 -0800 (PST)
-Message-ID: <fe2e1f1f-3d34-441b-ab97-cb39c10225a9@gmail.com>
-Date: Mon, 3 Nov 2025 08:36:12 +0100
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IfqUrOJL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762253744; x=1793789744;
+  h=date:from:to:cc:subject:message-id;
+  bh=m3x04uIQ1a409cHexe3UOp+Rteczp58QSb2nxWTkKEY=;
+  b=IfqUrOJL+F1fjj6xVsQaKmtUF2nmQUYLeJ2lNy881jVHWEGoP7HelzRC
+   wIY3oU54ltndegHfkqzESdcC/ey7P3DWWVxTGr29bUdc6CFGHuVqj9z4X
+   x06pTNZkMt6ID3ZXrqos8fQGeAbBFJ3ljDNApAZ7Ds1ZWG6zl22m10qpl
+   yGiv+e0wwV5eU0uxGz1nxa5Lrbu0suI6VgZXO1kIqWgy7VR3ul9Lw8vJF
+   OFfPV98vSO+9di0qaokEV5FQVVVQYsNwSInNv7JuAVoBgnVtUdBV7RKwE
+   YL6SkCUQVRraTfPTNtnhR8zRYLMJdQEhvEMIVd3yMdIAsvkbQqJ32+Okd
+   g==;
+X-CSE-ConnectionGUID: eAQB24WiR22HRZxBFENvUw==
+X-CSE-MsgGUID: 56NLUyuWSHOceHYNvWGW6g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11602"; a="81749470"
+X-IronPort-AV: E=Sophos;i="6.19,278,1754982000"; 
+   d="scan'208";a="81749470"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2025 02:55:42 -0800
+X-CSE-ConnectionGUID: LXL8i47MRIOtUULNkUohPA==
+X-CSE-MsgGUID: TTUBfNOeSAigsoq13PyMhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,278,1754982000"; 
+   d="scan'208";a="186370719"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 04 Nov 2025 02:55:42 -0800
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vGEgF-000RIW-2g;
+	Tue, 04 Nov 2025 10:54:56 +0000
+Date: Tue, 04 Nov 2025 18:53:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 5b75dfcae059408cc7454bcfb3d7b2111ea831fd
+Message-ID: <202511041803.wUfVdKUw-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 2/6] net: fec: register a fixed phy using
- fixed_phy_register_100fd if needed
-To: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Hauke Mehrtens
- <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Michael Chan <michael.chan@broadcom.com>, Wei Fang <wei.fang@nxp.com>,
- Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
- Russell King - ARM Linux <linux@armlinux.org.uk>,
- Andrew Lunn <andrew@lunn.ch>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- David Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- imx@lists.linux.dev, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <0285fcb0-0fb5-4f6f-823c-7b6e85e28ba3@gmail.com>
- <adf4dc5c-5fa3-4ae6-a75c-a73954dede73@gmail.com>
- <7a495800-a639-4356-bc23-1134280c350c@linux-m68k.org>
-Content-Language: en-US
-From: Heiner Kallweit <hkallweit1@gmail.com>
-In-Reply-To: <7a495800-a639-4356-bc23-1134280c350c@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 11/3/2025 4:15 AM, Greg Ungerer wrote:
-> Hi Heiner,
-> 
-> On 31/10/25 07:42, Heiner Kallweit wrote:
->> In case of coldfire/5272 a fixed phy is used, which so far is created
->> by platform code, using fixed_phy_add(). This function has a number of
->> problems, therefore create a potentially needed fixed phy here, using
->> fixed_phy_register_100fd.
->>
->> Note 1: This includes a small functional change, as coldfire/5272
->> created a fixed phy in half-duplex mode. Likely this was by mistake,
->> because the fec MAC is 100FD-capable, and connection is to a switch.
->>
->> Note 2: Usage of phy_find_next() makes use of the fact that dev_id can
->> only be 0 or 1.
->>
->> Due to lack of hardware, this is compile-tested only.
-> 
-> I did not get net-next and try this all out, but it doesn't compile when
-> applied to 6.18-rc4.
-> 
-> 
->> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->> ---
->>   drivers/net/ethernet/freescale/Kconfig    |  1 +
->>   drivers/net/ethernet/freescale/fec_main.c | 52 +++++++++++------------
->>   2 files changed, 27 insertions(+), 26 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
->> index bbef47c34..e2a591cf9 100644
->> --- a/drivers/net/ethernet/freescale/Kconfig
->> +++ b/drivers/net/ethernet/freescale/Kconfig
->> @@ -28,6 +28,7 @@ config FEC
->>       depends on PTP_1588_CLOCK_OPTIONAL
->>       select CRC32
->>       select PHYLIB
->> +    select FIXED_PHY if M5272
-> 
-> Does it make sense to limit this to 5272 only here?
-> I get that this most closely keeps functionality same as before.
-> 
-On DT-based systems FIXED_PHY is selected by OF_MDIO.
-For non-DT systems I limited this to M5272, because it provides the
-same functionality as before, and reduces object code size a little
-on other platforms due to using fixed_phy function stubs.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 5b75dfcae059408cc7454bcfb3d7b2111ea831fd  Merge tag 'v6.18-rc4'
 
-> Regards
-> Greg
-> 
-> 
-> 
->>       select PAGE_POOL
->>       imply PAGE_POOL_STATS
->>       imply NET_SELFTESTS
->> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
->> index c60ed8bac..0b71e4c15 100644
->> --- a/drivers/net/ethernet/freescale/fec_main.c
->> +++ b/drivers/net/ethernet/freescale/fec_main.c
->> @@ -52,6 +52,7 @@
->>   #include <linux/of_net.h>
->>   #include <linux/phy.h>
->>   #include <linux/pinctrl/consumer.h>
->> +#include <linux/phy_fixed.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/pm_runtime.h>
->>   #include <linux/prefetch.h>
->> @@ -2476,11 +2477,8 @@ static int fec_enet_parse_rgmii_delay(struct fec_enet_private *fep,
->>   static int fec_enet_mii_probe(struct net_device *ndev)
->>   {
->>       struct fec_enet_private *fep = netdev_priv(ndev);
->> -    struct phy_device *phy_dev = NULL;
->> -    char mdio_bus_id[MII_BUS_ID_SIZE];
->> -    char phy_name[MII_BUS_ID_SIZE + 3];
->> -    int phy_id;
->> -    int dev_id = fep->dev_id;
->> +    struct phy_device *phy_dev;
->> +    int ret;
->>         if (fep->phy_node) {
->>           phy_dev = of_phy_connect(ndev, fep->phy_node,
->> @@ -2492,30 +2490,28 @@ static int fec_enet_mii_probe(struct net_device *ndev)
->>           }
->>       } else {
->>           /* check for attached phy */
->> -        for (phy_id = 0; (phy_id < PHY_MAX_ADDR); phy_id++) {
->> -            if (!mdiobus_is_registered_device(fep->mii_bus, phy_id))
->> -                continue;
->> -            if (dev_id--)
->> -                continue;
->> -            strscpy(mdio_bus_id, fep->mii_bus->id, MII_BUS_ID_SIZE);
->> -            break;
->> -        }
->> +        phy_dev = phy_find_first(fep->mii_bus);
->> +        if (fep->dev_id && phy_dev)
->> +            phy_dev = phy_find_next(fep->mii_bus, phy_dev);
->>   -        if (phy_id >= PHY_MAX_ADDR) {
->> +        if (!phy_dev) {
->>               netdev_info(ndev, "no PHY, assuming direct connection to switch\n");
->> -            strscpy(mdio_bus_id, "fixed-0", MII_BUS_ID_SIZE);
->> -            phy_id = 0;
->> +            phy_dev = fixed_phy_register_100fd();
->> +            if (IS_ERR(phy_dev)) {
->> +                netdev_err(ndev, "could not register fixed PHY\n");
->> +                return PTR_ERR(phy_dev);
->> +            }
->>           }
->>   -        snprintf(phy_name, sizeof(phy_name),
->> -             PHY_ID_FMT, mdio_bus_id, phy_id);
->> -        phy_dev = phy_connect(ndev, phy_name, &fec_enet_adjust_link,
->> -                      fep->phy_interface);
->> -    }
->> +        ret = phy_connect_direct(ndev, phy_dev, &fec_enet_adjust_link,
->> +                     fep->phy_interface);
->> +        if (ret) {
->> +            if (phy_is_pseudo_fixed_link(phy_dev))
->> +                fixed_phy_unregister(phy_dev);
->> +            netdev_err(ndev, "could not attach to PHY\n");
->> +            return ret;
->> +        }
->>   -    if (IS_ERR(phy_dev)) {
->> -        netdev_err(ndev, "could not attach to PHY\n");
->> -        return PTR_ERR(phy_dev);
->>       }
->>         /* mask with MAC supported features */
->> @@ -3622,8 +3618,9 @@ static int
->>   fec_enet_close(struct net_device *ndev)
->>   {
->>       struct fec_enet_private *fep = netdev_priv(ndev);
->> +    struct phy_device *phy_dev = ndev->phydev;
->>   -    phy_stop(ndev->phydev);
->> +    phy_stop(phy_dev);
->>         if (netif_device_present(ndev)) {
->>           napi_disable(&fep->napi);
->> @@ -3631,7 +3628,10 @@ fec_enet_close(struct net_device *ndev)
->>           fec_stop(ndev);
->>       }
->>   -    phy_disconnect(ndev->phydev);
->> +    phy_disconnect(phy_dev);
->> +
->> +    if (!fep->phy_node && phy_is_pseudo_fixed_link(phy_dev))
->> +        fixed_phy_unregister(phy_dev);
->>         if (fep->quirks & FEC_QUIRK_ERR006687)
->>           imx6q_cpuidle_fec_irqs_unused();
-> 
+elapsed time: 1467m
 
+configs tested: 129
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+alpha                            allyesconfig    clang-19
+alpha                            allyesconfig    gcc-15.1.0
+arc                              allmodconfig    clang-19
+arc                               allnoconfig    gcc-15.1.0
+arc                              allyesconfig    clang-19
+arc                          axs101_defconfig    gcc-15.1.0
+arc                   randconfig-001-20251103    gcc-9.5.0
+arc                   randconfig-002-20251103    gcc-15.1.0
+arm                              allmodconfig    clang-19
+arm                               allnoconfig    clang-22
+arm                              allyesconfig    clang-19
+arm                         lpc18xx_defconfig    clang-22
+arm                   randconfig-001-20251103    clang-22
+arm                   randconfig-002-20251103    clang-16
+arm                   randconfig-003-20251103    gcc-14.3.0
+arm                   randconfig-004-20251103    clang-22
+arm                           spitz_defconfig    gcc-15.1.0
+arm                         vf610m4_defconfig    gcc-15.1.0
+arm                         wpcm450_defconfig    gcc-15.1.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.1.0
+arm64                            allyesconfig    gcc-15.1.0
+arm64                 randconfig-001-20251104    gcc-13.4.0
+arm64                 randconfig-002-20251104    clang-22
+arm64                 randconfig-003-20251104    gcc-13.4.0
+arm64                 randconfig-004-20251104    clang-22
+csky                             allmodconfig    gcc-15.1.0
+csky                              allnoconfig    gcc-15.1.0
+csky                             allyesconfig    gcc-15.1.0
+csky                  randconfig-001-20251104    gcc-10.5.0
+csky                  randconfig-002-20251104    gcc-15.1.0
+hexagon                          allmodconfig    clang-17
+hexagon                          allmodconfig    clang-19
+hexagon                           allnoconfig    clang-22
+hexagon                          allyesconfig    clang-19
+hexagon                          allyesconfig    clang-22
+hexagon               randconfig-001-20251103    clang-22
+hexagon               randconfig-002-20251103    clang-22
+i386                              allnoconfig    gcc-14
+i386        buildonly-randconfig-001-20251104    gcc-14
+i386        buildonly-randconfig-002-20251104    clang-20
+i386        buildonly-randconfig-003-20251104    gcc-12
+i386        buildonly-randconfig-004-20251104    gcc-14
+i386        buildonly-randconfig-005-20251104    gcc-12
+i386        buildonly-randconfig-006-20251104    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-22
+loongarch                        allyesconfig    gcc-15.1.0
+loongarch             randconfig-001-20251103    gcc-12.5.0
+loongarch             randconfig-002-20251103    gcc-14.3.0
+m68k                             allmodconfig    gcc-15.1.0
+m68k                              allnoconfig    gcc-15.1.0
+m68k                             allyesconfig    gcc-15.1.0
+microblaze                       allmodconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                       allyesconfig    gcc-15.1.0
+mips                             allmodconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+mips                             allyesconfig    gcc-15.1.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                 randconfig-001-20251103    gcc-11.5.0
+nios2                 randconfig-002-20251103    gcc-11.5.0
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                         allyesconfig    gcc-15.1.0
+parisc                           allmodconfig    gcc-15.1.0
+parisc                            allnoconfig    gcc-15.1.0
+parisc                           allyesconfig    gcc-15.1.0
+parisc                randconfig-001-20251103    gcc-14.3.0
+parisc                randconfig-002-20251103    gcc-15.1.0
+powerpc                          allmodconfig    gcc-15.1.0
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                          allyesconfig    gcc-15.1.0
+powerpc                     mpc512x_defconfig    clang-22
+powerpc               randconfig-001-20251103    gcc-8.5.0
+powerpc               randconfig-002-20251103    clang-20
+powerpc64             randconfig-001-20251103    clang-22
+riscv                            allmodconfig    gcc-15.1.0
+riscv                             allnoconfig    gcc-15.1.0
+riscv                            allyesconfig    gcc-15.1.0
+s390                             allmodconfig    clang-18
+s390                             allmodconfig    gcc-15.1.0
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.1.0
+sh                               allmodconfig    gcc-15.1.0
+sh                                allnoconfig    gcc-15.1.0
+sh                               allyesconfig    gcc-15.1.0
+sh                         ap325rxa_defconfig    gcc-15.1.0
+sh                                  defconfig    gcc-15.1.0
+sparc                            allmodconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+sparc                 randconfig-001-20251104    gcc-13.4.0
+sparc                 randconfig-002-20251104    gcc-12.5.0
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20251104    gcc-8.5.0
+sparc64               randconfig-002-20251104    clang-22
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    clang-19
+um                               allyesconfig    gcc-14
+um                                  defconfig    clang-22
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20251104    clang-22
+um                    randconfig-002-20251104    clang-22
+um                           x86_64_defconfig    clang-22
+x86_64                            allnoconfig    clang-20
+x86_64      buildonly-randconfig-001-20251104    clang-20
+x86_64      buildonly-randconfig-002-20251104    gcc-12
+x86_64      buildonly-randconfig-003-20251104    gcc-14
+x86_64      buildonly-randconfig-004-20251104    gcc-14
+x86_64      buildonly-randconfig-005-20251104    gcc-12
+x86_64      buildonly-randconfig-006-20251104    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-011-20251104    gcc-14
+x86_64                randconfig-012-20251104    gcc-14
+x86_64                randconfig-013-20251104    clang-20
+x86_64                randconfig-014-20251104    clang-20
+x86_64                randconfig-015-20251104    gcc-14
+x86_64                randconfig-016-20251104    clang-20
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                randconfig-001-20251104    gcc-13.4.0
+xtensa                randconfig-002-20251104    gcc-11.5.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
