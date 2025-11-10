@@ -1,132 +1,270 @@
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FCF266EE9
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Nov 2025 09:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B91286425
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Nov 2025 17:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762767114; cv=none; b=GvAP0uFWzdFWdRcWylGPV28Ec81iFnvl6derqQDPIeMVRyDcGeGgeN/j+PyAOxyo03orqH4ya/2NBquSV7Op87y/BiZzUqh8kRjhV3Ooob373+7vqv8TYmNWqHOQPKN8xNz1cvE2ni1kNdWeVnJ5H2FrNtSiwjlFNrT5jo6WC6o=
+	t=1762794286; cv=none; b=umE5mH4PK3JGyN84QXXt068guWG2geVTag1HLGXxH0CYTpwgjwgK/7vU/+lgzd3LIVw/gO/iGUwGa3d03qXyDNQnUpdt8eUaEgOh6CfTKyZr+Pv05nju9lAJMGLIx2wyI0e6HlPBnYSZu4EcSpIUKX1xy3d7B1GWp+y2DTu8etY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762767114; c=relaxed/simple;
-	bh=/fJzjpPCho25zV5kgp+Mt+JXbM7T0RiVyjwGWi7iCBY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DoFigdI6jWTFumTuMEUMTzTxLJmf+LI6Ew0wHaGXHghrTDYcYcE3FZn+eLt/m+9R7aB1482xu8XNqi/WClv4nLUCFVsOsveMeiN5i3wpyYHYqeCy9YO7DjgeZ4+UjZ0C7d7EcJTeYrWtaaMhETJnopwg7kKqymAODiFYutcRlpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-54bc08ef45dso1652012e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Nov 2025 01:31:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762767111; x=1763371911;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hRtPdzI1Yw78zykFlB0XCziKqeVOXzigJtW+jsiVzcI=;
-        b=NfXvvHKVSfkEDlp7zxq9e1GvOE8UWeqEVe32GlaTuylMz4JW19XuP5erlVI019wFN8
-         ziXiEzCQtO+q9IECA1RlnO585O+OO7AafTV90mLwTOzGdm6/+JHNd0dLjUdo/o0nFj5G
-         1r9cpqQm6X4zHiib54i7egtj2Oy8Z8NOpmzYjU16Dmu9TyQJMOtKMCSUUWPbnz0B7EQK
-         dcdjAMqDaIL7iWo9vLpSi22+jYhh50BHrRHn1iQ2P7uTF6I5XlMSvYJCL7I0cDpWKASN
-         flq/p6heHaBHLqWtaJg7mzd7Tgsdkx5CSoBjCJyA1oNLwoqSSF0Cfqrv7W85UApejAuV
-         o/ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUK+6o3OeJyQAKyarB6tzkWz+yS7ZKV3MlsYhnFlgij8BCq+RBb2qPe0E9bmhCtSbK8StZ5xEdM8tqt@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxVyeSJCYpc1UqhO/mghKJ9n7xVzhHFAr/1+TOhi8js1+V33bfN
-	aFwDDIcnINlBK93siYTEhmQ2Ox7YqR8MoyPshVeP2W1Oz6n9BYAU2/atliW+XQ3e
-X-Gm-Gg: ASbGncsr6ctIHX+hon5IIEegyIr694EEI8hMIDwPE8IKJ6HwpjgToAWYkc0yWI4/mtH
-	PZ62p/cywGv39PzUQA+L2XexK13Me3bvPCh6hOpiRvvsgyVhPmXh6Ke3J6EB/hMsZnH+Mbq7ydz
-	PyrhNHkwJyJHl3SO50Id6C83q+G2S9Z2JR3yY94rfCvypJekxpniNfeQfoYuTvgy72bYZvgXmpf
-	zleMYYZunjhakK5omKzReqtSKvT5WWnhyjcxf2IMmeIwxZRmVkDARc8CawEUKyY5E3IjJTGCR4m
-	cBhD0hZ36FLpK9sbgU7gahj23j6BqDR/VsHNqR3pCaBnnndElr63G0WWJBMyDBAU/GLELn0kFOo
-	o4Gbe0VrEdKNvU2FBTgplJLHPxfzGRBpZKranMVfwPSJuTXnW0OXAxXteD2BRH+mRe6B0bJoShB
-	98GcgXbIRyxvSR1eg+gMLWJRaAi8dw0WIRPe1JZjUlUg==
-X-Google-Smtp-Source: AGHT+IGtgHs20BQJHFjyn40aC9OsCGGrOkG2fNQf4sUGK7jS8mzbGpU6NrqJ/jzEN8QGXdRbjh3PZg==
-X-Received: by 2002:a05:6122:2906:b0:54a:992c:8164 with SMTP id 71dfb90a1353d-559b323e16dmr2186098e0c.7.1762767111259;
-        Mon, 10 Nov 2025 01:31:51 -0800 (PST)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-55996e27abdsm6704094e0c.4.2025.11.10.01.31.50
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Nov 2025 01:31:50 -0800 (PST)
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-5dbcd54d2d8so2488287137.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Nov 2025 01:31:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXSe05t4WIPwPrDab649DvJygCiR2NJAKswuiQFQuaV/vaWr0LgRnizGCISUQUSZFgUKTJorWo2rlgz@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:c04:b0:520:dbc0:6ac4 with SMTP id
- ada2fe7eead31-5ddc46497a0mr2779273137.2.1762767109934; Mon, 10 Nov 2025
- 01:31:49 -0800 (PST)
+	s=arc-20240116; t=1762794286; c=relaxed/simple;
+	bh=x5+SThPAsaS5nauv66UmWgNf8U64VnnnZxx9CiToBYY=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gpSl2iflOr3ZtXvuujK9s9BcVDkNtw/Ri8D+jtqisQsw02Btk0R0sEQbbrGawAnaXEL0ulBwZJkXx1/PYYQIpv983lGIZUS6TB8lJme5irgrye7OJkWWleg34xDhE6cEsMRG4KjhZmz2LSb2NLt8sgawU4eAq8oMITtHdxppC5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IvZD8vx0; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IvZD8vx0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762794285; x=1794330285;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=x5+SThPAsaS5nauv66UmWgNf8U64VnnnZxx9CiToBYY=;
+  b=IvZD8vx0pvxwhaDxaXsWLmeiDNyzB1wyge30zNNPt93nSsarbiQ9XcJ1
+   vHnx5SWVPMUy68Ri4UeIYbkVBA6uDW4cc+0CqUuA1qE0pIE53nRqUU8I6
+   2RiQsOp1XT6KLCLbNTHixdLnLZ2SjkP18uU0OivOSnNS0ZDIwBgXaN9qW
+   Ho7AiSG5GjR/N/FtJkUBKk6QBxXQ1q36vWXq1DipJwvYiP4MGz+v7Vrb+
+   ZMBxCtYzoF9PhNRDwhFxMcFmwc5rgdB2+xFsKqVFielQHV49EuH0nwlL/
+   Xoa/GZGbsQt53MR+6FEdp7rQXlH3mSeMdqOl2Ak7KH5zD7pxC6YEbpBc/
+   w==;
+X-CSE-ConnectionGUID: 27EtWwjtRq2+Fraoi9IX4w==
+X-CSE-MsgGUID: oPOC8te0Rd+G/wqbxJ52aQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11609"; a="64756978"
+X-IronPort-AV: E=Sophos;i="6.19,294,1754982000"; 
+   d="scan'208";a="64756978"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2025 09:04:44 -0800
+X-CSE-ConnectionGUID: z3l6HQ1WR/+cp3bB1IV/lg==
+X-CSE-MsgGUID: HKFgsgv8TZu/ht/cOhQStA==
+X-ExtLoop1: 1
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.13])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2025 09:04:37 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 10 Nov 2025 19:04:32 +0200 (EET)
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+cc: Andreas Larsson <andreas@gaisler.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
+    linux-mips@vger.kernel.org, linux-pci@vger.kernel.org, 
+    sparclinux@vger.kernel.org, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>, 
+    Yinghai Lu <yinghai@kernel.org>, Igor Mammedov <imammedo@redhat.com>, 
+    "Rafael J . Wysocki" <rafael@kernel.org>, 
+    Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+    Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
+    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    =?ISO-8859-2?Q?Micha=B3_Winiarski?= <michal.winiarski@intel.com>, 
+    linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 02/24] sparc/PCI: Remove pcibios_enable_device() as they
+ do nothing extra
+In-Reply-To: <8fcc0fd4b74f99d5c4d80d3907e7607a7d4c89da.camel@physik.fu-berlin.de>
+Message-ID: <d221be13-f652-cc75-90d1-92cf38e0110e@linux.intel.com>
+References: <20250822145605.18172-1-ilpo.jarvinen@linux.intel.com>  <20250822145605.18172-3-ilpo.jarvinen@linux.intel.com> <8fcc0fd4b74f99d5c4d80d3907e7607a7d4c89da.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251107-b4-m5441x-add-rng-support-v2-0-f91d685832b9@yoseli.org>
- <20251107-b4-m5441x-add-rng-support-v2-2-f91d685832b9@yoseli.org>
- <CAMuHMdWL76hY-Pv30ooSM1J6XkVWbRXSLTDCjfpPOvhFN4tKyA@mail.gmail.com> <12779401.O9o76ZdvQC@jeanmichel-ms7b89>
-In-Reply-To: <12779401.O9o76ZdvQC@jeanmichel-ms7b89>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 10 Nov 2025 10:31:37 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW26uKBUnYB5c3XAzKPKFVGNoOOwra_u_NOjPCV20Y-AA@mail.gmail.com>
-X-Gm-Features: AWmQ_blSVM0mC21k2j7-_pQqo1T8ZhoFgD5EPrlyILfYI73Lumvke_itdhGi4eY
-Message-ID: <CAMuHMdW26uKBUnYB5c3XAzKPKFVGNoOOwra_u_NOjPCV20Y-AA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] m68k: coldfire: Add RNG support for MCF54418
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Olivia Mackall <olivia@selenic.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="8323328-784219086-1762794272=:1060"
 
-Hi Jean-Michel,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Mon, 10 Nov 2025 at 09:34, Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> wrote:
-> Le lundi 10 novembre 2025, 09:15:11 heure normale d=E2=80=99Europe centra=
-le Geert
-> Uytterhoeven a =C3=A9crit :
-> > On Fri, 7 Nov 2025 at 11:29, Jean-Michel Hautbois
-> > <jeanmichel.hautbois@yoseli.org> wrote:
-> > > Add platform device support for the MCF54418 RNGB hardware with clock
-> > > enabled at platform initialization.
-> > >
-> > > The imx-rngc driver now uses devm_clk_get_optional() to support both
-> > > Coldfire (always-on clock) and i.MX platforms (managed clock).
-> > >
-> > > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/drivers/char/hw_random/Kconfig
-> > > +++ b/drivers/char/hw_random/Kconfig
-> > > @@ -270,12 +270,13 @@ config HW_RANDOM_MXC_RNGA
-> > >
-> > >  config HW_RANDOM_IMX_RNGC
-> > >
-> > >         tristate "Freescale i.MX RNGC Random Number Generator"
-> > >         depends on HAS_IOMEM
-> > >
-> > > -       depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6=
-UL ||
-> > > COMPILE_TEST +       depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SL=
-L ||
-> > > SOC_IMX6UL || M5441x || COMPILE_TEST
-> > Is the same RNG present in other Coldfire SoCs?
->
-> According to the RM, it is only present in MCF54416 and MCF54418.
+--8323328-784219086-1762794272=:1060
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-I guess that is sufficient to make it depend on COLDFIRE?
+On Thu, 6 Nov 2025, John Paul Adrian Glaubitz wrote:
 
-Gr{oetje,eeting}s,
+> Hello Ilpo,
+>=20
+> On Fri, 2025-08-22 at 17:55 +0300, Ilpo J=C3=A4rvinen wrote:
+> > Under arch/sparc/ there are multiple copies of pcibios_enable_device()
+> > but none of those seem to do anything extra beyond what
+> > pci_enable_resources() is supposed to do. These functions could lead to
+> > inconsistencies in behavior, especially now as pci_enable_resources()
+> > and the bridge window resource flags behavior are going to be altered
+> > by upcoming changes.
+> >=20
+> > Remove all pcibios_enable_device() from arch/sparc/ so that PCI core
+> > can simply call into pci_enable_resources() instead using it's __weak
+> > version of pcibios_enable_device().
+> >=20
+> > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  arch/sparc/kernel/leon_pci.c | 27 ---------------------------
+> >  arch/sparc/kernel/pci.c      | 27 ---------------------------
+> >  arch/sparc/kernel/pcic.c     | 27 ---------------------------
+> >  3 files changed, 81 deletions(-)
+> >=20
+> > diff --git a/arch/sparc/kernel/leon_pci.c b/arch/sparc/kernel/leon_pci.=
+c
+> > index 8de6646e9ce8..10934dfa987a 100644
+> > --- a/arch/sparc/kernel/leon_pci.c
+> > +++ b/arch/sparc/kernel/leon_pci.c
+> > @@ -60,30 +60,3 @@ void leon_pci_init(struct platform_device *ofdev, st=
+ruct leon_pci_info *info)
+> >  =09pci_assign_unassigned_resources();
+> >  =09pci_bus_add_devices(root_bus);
+> >  }
+> > -
+> > -int pcibios_enable_device(struct pci_dev *dev, int mask)
+> > -{
+> > -=09struct resource *res;
+> > -=09u16 cmd, oldcmd;
+> > -=09int i;
+> > -
+> > -=09pci_read_config_word(dev, PCI_COMMAND, &cmd);
+> > -=09oldcmd =3D cmd;
+> > -
+> > -=09pci_dev_for_each_resource(dev, res, i) {
+> > -=09=09/* Only set up the requested stuff */
+> > -=09=09if (!(mask & (1<<i)))
+> > -=09=09=09continue;
+> > -
+> > -=09=09if (res->flags & IORESOURCE_IO)
+> > -=09=09=09cmd |=3D PCI_COMMAND_IO;
+> > -=09=09if (res->flags & IORESOURCE_MEM)
+> > -=09=09=09cmd |=3D PCI_COMMAND_MEMORY;
+> > -=09}
+> > -
+> > -=09if (cmd !=3D oldcmd) {
+> > -=09=09pci_info(dev, "enabling device (%04x -> %04x)\n", oldcmd, cmd);
+> > -=09=09pci_write_config_word(dev, PCI_COMMAND, cmd);
+> > -=09}
+> > -=09return 0;
+> > -}
+> > diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
+> > index ddac216a2aff..a9448088e762 100644
+> > --- a/arch/sparc/kernel/pci.c
+> > +++ b/arch/sparc/kernel/pci.c
+> > @@ -722,33 +722,6 @@ struct pci_bus *pci_scan_one_pbm(struct pci_pbm_in=
+fo *pbm,
+> >  =09return bus;
+> >  }
+> > =20
+> > -int pcibios_enable_device(struct pci_dev *dev, int mask)
+> > -{
+> > -=09struct resource *res;
+> > -=09u16 cmd, oldcmd;
+> > -=09int i;
+> > -
+> > -=09pci_read_config_word(dev, PCI_COMMAND, &cmd);
+> > -=09oldcmd =3D cmd;
+> > -
+> > -=09pci_dev_for_each_resource(dev, res, i) {
+> > -=09=09/* Only set up the requested stuff */
+> > -=09=09if (!(mask & (1<<i)))
+> > -=09=09=09continue;
+> > -
+> > -=09=09if (res->flags & IORESOURCE_IO)
+> > -=09=09=09cmd |=3D PCI_COMMAND_IO;
+> > -=09=09if (res->flags & IORESOURCE_MEM)
+> > -=09=09=09cmd |=3D PCI_COMMAND_MEMORY;
+> > -=09}
+> > -
+> > -=09if (cmd !=3D oldcmd) {
+> > -=09=09pci_info(dev, "enabling device (%04x -> %04x)\n", oldcmd, cmd);
+> > -=09=09pci_write_config_word(dev, PCI_COMMAND, cmd);
+> > -=09}
+> > -=09return 0;
+> > -}
+> > -
+> >  /* Platform support for /proc/bus/pci/X/Y mmap()s. */
+> >  int pci_iobar_pfn(struct pci_dev *pdev, int bar, struct vm_area_struct=
+ *vma)
+> >  {
+> > diff --git a/arch/sparc/kernel/pcic.c b/arch/sparc/kernel/pcic.c
+> > index 25fe0a061732..3d54ad5656a4 100644
+> > --- a/arch/sparc/kernel/pcic.c
+> > +++ b/arch/sparc/kernel/pcic.c
+> > @@ -641,33 +641,6 @@ void pcibios_fixup_bus(struct pci_bus *bus)
+> >  =09}
+> >  }
+> > =20
+> > -int pcibios_enable_device(struct pci_dev *dev, int mask)
+> > -{
+> > -=09struct resource *res;
+> > -=09u16 cmd, oldcmd;
+> > -=09int i;
+> > -
+> > -=09pci_read_config_word(dev, PCI_COMMAND, &cmd);
+> > -=09oldcmd =3D cmd;
+> > -
+> > -=09pci_dev_for_each_resource(dev, res, i) {
+> > -=09=09/* Only set up the requested stuff */
+> > -=09=09if (!(mask & (1<<i)))
+> > -=09=09=09continue;
+> > -
+> > -=09=09if (res->flags & IORESOURCE_IO)
+> > -=09=09=09cmd |=3D PCI_COMMAND_IO;
+> > -=09=09if (res->flags & IORESOURCE_MEM)
+> > -=09=09=09cmd |=3D PCI_COMMAND_MEMORY;
+> > -=09}
+> > -
+> > -=09if (cmd !=3D oldcmd) {
+> > -=09=09pci_info(dev, "enabling device (%04x -> %04x)\n", oldcmd, cmd);
+> > -=09=09pci_write_config_word(dev, PCI_COMMAND, cmd);
+> > -=09}
+> > -=09return 0;
+> > -}
+> > -
+> >  /* Makes compiler happy */
+> >  static volatile int pcic_timer_dummy;
+>=20
+> This change actually broke driver initialization on SPARC, see:
+>=20
+> https://github.com/sparclinux/issues/issues/22
 
-                        Geert
+Does the attached patch help?
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+--
+ i.
+--8323328-784219086-1762794272=:1060
+Content-Type: text/x-diff; name=sparc-pref.patch
+Content-Transfer-Encoding: BASE64
+Content-ID: <d5e9a1c0-3012-20f8-19e5-901e9bf48c88@linux.intel.com>
+Content-Description: 
+Content-Disposition: attachment; filename=sparc-pref.patch
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+RnJvbTogSWxwbyBKw6RydmluZW4gPGlscG8uamFydmluZW5AbGludXguaW50
+ZWwuY29tPg0KU3ViamVjdDogW1BBVENIXSBTUEFSQy9QQ0k6IENvcnJlY3Qg
+NjQtYml0IG5vbi1wcmVmIC0+IHByZWYNCg0KU2lnbmVkLW9mZi1ieTogSWxw
+byBKw6RydmluZW4gPGlscG8uamFydmluZW5AbGludXguaW50ZWwuY29tPg0K
+DQotLS0NCiBhcmNoL3NwYXJjL2tlcm5lbC9vZl9kZXZpY2VfNjQuYyB8IDE4
+ICsrKysrKysrKysrKysrKysrKw0KIDEgZmlsZSBjaGFuZ2VkLCAxOCBpbnNl
+cnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9hcmNoL3NwYXJjL2tlcm5lbC9v
+Zl9kZXZpY2VfNjQuYyBiL2FyY2gvc3BhcmMva2VybmVsL29mX2RldmljZV82
+NC5jDQppbmRleCBmNTMwOTJiMDdiOWUuLmVhMjFkOTBlM2Y5NCAxMDA2NDQN
+Ci0tLSBhL2FyY2gvc3BhcmMva2VybmVsL29mX2RldmljZV82NC5jDQorKysg
+Yi9hcmNoL3NwYXJjL2tlcm5lbC9vZl9kZXZpY2VfNjQuYw0KQEAgLTMxMSw2
+ICszMTEsMjMgQEAgc3RhdGljIGludCBfX2luaXQgdXNlXzF0bzFfbWFwcGlu
+ZyhzdHJ1Y3QgZGV2aWNlX25vZGUgKnBwKQ0KIAlyZXR1cm4gMTsNCiB9DQog
+DQorc3RhdGljIHZvaWQgb2ZfZml4dXBfcGNpX3ByZWYoc3RydWN0IGRldmlj
+ZV9ub2RlICpkcCwgaW50IGluZGV4LA0KKwkJCSAgICAgIHN0cnVjdCBkZXZp
+Y2Vfbm9kZSAqcHAsIHN0cnVjdCByZXNvdXJjZSAqcmVzKQ0KK3sNCisJaWYg
+KCFyZXNvdXJjZV9zaXplKHJlcykpDQorCQlyZXR1cm47DQorCWlmIChyZXMt
+PmVuZCA8PSB+KCh1MzIpMCkpDQorCQlyZXR1cm47DQorDQorCWlmICghb2Zf
+bm9kZV9pc190eXBlKHBwLCAicGNpIikgJiYgIW9mX25vZGVfaXNfdHlwZShw
+cCwgInBjaWV4IikpDQorCQlyZXR1cm47DQorDQorCWlmICghKHJlcy0+Zmxh
+Z3MgJiBJT1JFU09VUkNFX1BSRUZFVENIKSkgew0KKwkJcmVzLT5mbGFncyB8
+PSBJT1JFU09VUkNFX1BSRUZFVENIOw0KKwkJcHJpbnRrKCIlcE9GIHJlZ1sl
+ZF0gZml4dXA6IHByZWYgY29ycmVjdGVkXG4iLCBkcCwgaW5kZXgpOw0KKwl9
+DQorfQ0KKw0KIHN0YXRpYyBpbnQgb2ZfcmVzb3VyY2VfdmVyYm9zZTsNCiAN
+CiBzdGF0aWMgdm9pZCBfX2luaXQgYnVpbGRfZGV2aWNlX3Jlc291cmNlcyhz
+dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpvcCwNCkBAIC00MTIsNiArNDI5LDcg
+QEAgc3RhdGljIHZvaWQgX19pbml0IGJ1aWxkX2RldmljZV9yZXNvdXJjZXMo
+c3RydWN0IHBsYXRmb3JtX2RldmljZSAqb3AsDQogCQkJci0+c3RhcnQgPSBy
+ZXN1bHQ7DQogCQkJci0+ZW5kID0gcmVzdWx0ICsgc2l6ZSAtIDE7DQogCQkJ
+ci0+ZmxhZ3MgPSBmbGFnczsNCisJCQlvZl9maXh1cF9wY2lfcHJlZihkcCwg
+aW5kZXgsIHBwLCByKTsNCiAJCX0NCiAJCXItPm5hbWUgPSBvcC0+ZGV2Lm9m
+X25vZGUtPmZ1bGxfbmFtZTsNCiAJfQ0KDQotLSANCnRnOiAoM2E4NjYwODc4
+ODM5Li4pIHNwYXJjL2R0LWZpeHVwLXByZWYgKGRlcGVuZHMgb246IG1haW4p
+DQo=
+
+--8323328-784219086-1762794272=:1060--
