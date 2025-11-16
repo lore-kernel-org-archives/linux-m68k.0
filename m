@@ -1,279 +1,187 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3284328242
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Nov 2025 15:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA2B2AE78
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 16 Nov 2025 22:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763049391; cv=none; b=nHVhUhCbFVPh10zeUONRaR+hU4kOO3Rr6fd9R6u/iwIW3lEsF/MKrnS1VeLIqXuW0Gfw+NWh9uDMPdPeVrtrSuEcA4vnaQc5SjT06zaPxjwdz7mabScR/N2uH97d22t6ydHreamRaQeDrpPzViFatB6z2ct6NqbVEuxAOc6LjfQ=
+	t=1763330765; cv=none; b=ZQergi3qh89BstLgkWt7neRojQ5kwNgpIFeR3owuOnrGrozmBAh/7j1Q1C686IEKt++jwOgJ1W8pMp0oQEVXTYXX/M8472r6vvWzAZ7NCwx3EC9eRrkgdRCpaYN1gexaaNcoQSLsCkms5VgOYzJfyu9KeuUNAVTgLcW0F7WpQ88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763049391; c=relaxed/simple;
-	bh=qi0VduJ3q4LlN3ypA1D4cqv/xmGMRFYGUvSvvFXqbEg=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ntJIEVBMx+EhP3kWucFhFP6jvtBDwBVwguWreqX04DEg8dFxom46mW7uW8NataQ3qZNbH7naQUAWhL3th6w/24pO63kqbtZDYaX3pcCSTm1i4dbZJ9xM2oEJ38OSKPLV0z3JQiOsjepQKn0dTPzdoWexLT5LMnrUgBwVgipshwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Crqr6pJ2; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1763330765; c=relaxed/simple;
+	bh=NoMZ3Y2ifizfF05AKV3r0/RVY9sTBUE7f9wUu6gFsq4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fhZodEAYZg8xpdGWRLZ2tBi1fIS+c8JKguI0u0/iWq0qK22sppJs9/AnCoT/d9vu4B3+7hEqs+hGXdJKf/xNVIV4aWQg+Mh556WPKqaZV1yNEwTgZfE1Qd5dzqrSEvL4EomWTGP/Y3Lmz1CzedyiwtfLiCBXLK6PIPeqEmtSWjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=acsrZeDQ; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Crqr6pJ2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763049390; x=1794585390;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=qi0VduJ3q4LlN3ypA1D4cqv/xmGMRFYGUvSvvFXqbEg=;
-  b=Crqr6pJ2W+PZvqn+mOt9CaOIelD/w9Fd5JGSfb1+KaW52v108UC171fF
-   etZqgYMzDuHl78AdbwNKP2OtSFdBJTWeasdXTgsApCVqd+32M8+D06jpg
-   6eQ3ETwo1n7plhC4IatxsptmXuK8+FLAIETMHbHZoHx04P4BYLCCN2gLp
-   3z45xiP00LOJQp2S0J+6lolK5w5lkDgX5f2eTsHwYvQFjHA3ygiVpdKUH
-   8q1a4jvOooVIpyNiy7xnhtOpOk3FY5LQxWvE8q3Vf+rXEvEu+oSr3lraF
-   zNhg75oc4Avu66QsgHpUkwiYnpC/07uP0czv+LAVS/y6TNf0RKSs0eXVq
-   Q==;
-X-CSE-ConnectionGUID: UBftoqVHQH2jfKZjGUv9pw==
-X-CSE-MsgGUID: MYtxUO9tShK8Bb+hYJyQJA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11612"; a="75449607"
-X-IronPort-AV: E=Sophos;i="6.19,302,1754982000"; 
-   d="scan'208";a="75449607"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2025 07:56:29 -0800
-X-CSE-ConnectionGUID: 5Q3fWISCQ1is7ToHEb2EBw==
-X-CSE-MsgGUID: FzBA1utJSVaatum3p4QUZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,302,1754982000"; 
-   d="scan'208";a="220182536"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.164])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2025 07:56:20 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 13 Nov 2025 17:56:16 +0200 (EET)
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-cc: Andreas Larsson <andreas@gaisler.com>, Bjorn Helgaas <bhelgaas@google.com>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-    linux-mips@vger.kernel.org, linux-pci@vger.kernel.org, 
-    sparclinux@vger.kernel.org, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>, 
-    Yinghai Lu <yinghai@kernel.org>, Igor Mammedov <imammedo@redhat.com>, 
-    "Rafael J . Wysocki" <rafael@kernel.org>, 
-    Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
-    Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
-    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    =?ISO-8859-2?Q?Micha=B3_Winiarski?= <michal.winiarski@intel.com>, 
-    linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/24] sparc/PCI: Remove pcibios_enable_device() as they
- do nothing extra
-In-Reply-To: <d221be13-f652-cc75-90d1-92cf38e0110e@linux.intel.com>
-Message-ID: <f8231cc3-a3ba-fc58-077e-90cce1a94429@linux.intel.com>
-References: <20250822145605.18172-1-ilpo.jarvinen@linux.intel.com>  <20250822145605.18172-3-ilpo.jarvinen@linux.intel.com> <8fcc0fd4b74f99d5c4d80d3907e7607a7d4c89da.camel@physik.fu-berlin.de> <d221be13-f652-cc75-90d1-92cf38e0110e@linux.intel.com>
+	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="acsrZeDQ"
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7a435a3fc57so3374048b3a.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 16 Nov 2025 14:06:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=thingy.jp; s=google; t=1763330761; x=1763935561; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kwPHPRDAP+avrRYrwmR4toIK8fXHAU0A+bdBUwmg6mQ=;
+        b=acsrZeDQSp21kQsp/XugoZ4FB+LDlQtExgH701Kqm0ORTEQqFBHYn+kihwa9Yr31M+
+         UVnTul2q6emqQUa4M+eAZFD+eJ93iU5DsEZ5zDDDDaM4BHXm+YnONZSWosBl6BY9RgWf
+         SOcmxzbOoO6UXeZxclcWPKgU8Hv8sbHcl+Gj4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763330761; x=1763935561;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kwPHPRDAP+avrRYrwmR4toIK8fXHAU0A+bdBUwmg6mQ=;
+        b=BgzrpMD0v1mv3zqa3s6PO5HH9qxtdIEW2rpIIyBE9dPO4v/DlzKBgUgTVtAjtXl37f
+         NDHX9FMVLAcmwjp6CmwsJUapbPB4ydppwuAWbnAwP559BxU/71YlFV8y2j648qJCy/We
+         858AGblaM+j+MdL5SvUGhTXEazw2DjuEWW03GM7HWaqErOlCy0DgCi+izqL+QW+wBjab
+         Ng6wSzrzPJcpopcWBiHEbpQTE9WiWcz3hx2IWvrvdLlzFWBkjZmv/eRzUPzyPcjWvzT8
+         0A7oa4ltc72pp/Vt0N2Kl94CGEGAQe6olBNV721Fm6HW/MYgQb+wL7WqkHJHRvndSaZt
+         Ck1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUd7mVR3AS0lfiUIT6oY5Hpkje5bS9zrbTrt4cJNyes9bz1DJBn/3tXhhav9EetNNU11KfmViUriOkK@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxzhBSAwMyTb8ncct2uwAnvG5PK406SXdyFC/HswYxYK06XqQSN
+	cIhr0JPiQBm9CgUtJc87Rcc3nzteXBSziMSV6GN2uOzxcg6Rwet8pss7x/7BTl/RHaY=
+X-Gm-Gg: ASbGncvpLqCFYxgPimErEBpOpZi+ESxPls3jZeHdH0rFPf8ockNmVx7up1F9LYL7vzN
+	rlZjxxTs3w0WLOF9SzWiiGTSuaPBl5Dcy38q84aRNIXF9IQWIJbo8oVG6jW7/8kWsPNy5LCcagf
+	/ChGrpCl8sr0rkeEOVmI8nsH7YqD+zJ9bvRrO+9C93n0rdGSwP3I0vg/eP1Jkxy6awUrh3jGpOE
+	p0TPx0AKJAZdnu7wuOmThNoy6Hnj0o2z02clseYhE1OfdhmsVYgLTm4/zTGmc40Uv5TguduvFth
+	yn6BXklApeVJpKlC5NtZ1nOemKpm1oVIrrpWXF0RCFeK5XMz/KyCsZqb/C10AmpxU/h+xkefHtc
+	r/GTWlIUEfYnhT3g85xYsh4W0E8yfe5R+9dNS/4yTqWqgJe90u9FecrQQ3ba3DExHRlA=
+X-Google-Smtp-Source: AGHT+IG+SSKSih/MoY+IPwcTb2Il/KY16m8hTqsMiKaO5XWtG7/0/rnS2tWfbIWmGccbDy8cZDCyEA==
+X-Received: by 2002:a05:6a00:c91:b0:7b9:d7c2:fdf9 with SMTP id d2e1a72fcca58-7ba3bb9528dmr10624068b3a.15.1763330761220;
+        Sun, 16 Nov 2025 14:06:01 -0800 (PST)
+Received: from kinako ([2400:2200:5f7:2c14:5394:bb99:aaf4:3b1c])
+        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-7b927c22c5fsm11023129b3a.67.2025.11.16.14.05.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Nov 2025 14:06:00 -0800 (PST)
+From: Daniel Palmer <daniel@thingy.jp>
+To: geert@linux-m68k.org,
+	linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: [PATCH] m68k: Implement kernel memory protection
+Date: Mon, 17 Nov 2025 07:05:08 +0900
+Message-ID: <20251116220508.1513445-1-daniel@thingy.jp>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-135835264-1763049376=:1464"
+Content-Transfer-Encoding: 8bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Every time I boot linux on my various m68k machines I see
+"This architecture does not have kernel memory protection."
 
---8323328-135835264-1763049376=:1464
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+I wondered why this was as some of my machines even have one of
+those fancy MMU doodads. I worked out it was because we don't have
+CONFIG_ARCH_HAS_STRICT_KERNEL_RWX, found kernel_set_cachemode()
+seemed like it had the code for setting some extra flags for
+kernel pages and turned that into something that sets write
+protect for kernel pages.
 
-On Mon, 10 Nov 2025, Ilpo J=C3=A4rvinen wrote:
+So now we can make CONFIG_ARCH_HAS_STRICT_KERNEL_RWX=y and
+provide mark_rodata_ro() to mark the kernel text and rodata
+as write protected.
 
-> On Thu, 6 Nov 2025, John Paul Adrian Glaubitz wrote:
->=20
-> > Hello Ilpo,
-> >=20
-> > On Fri, 2025-08-22 at 17:55 +0300, Ilpo J=C3=A4rvinen wrote:
-> > > Under arch/sparc/ there are multiple copies of pcibios_enable_device(=
-)
-> > > but none of those seem to do anything extra beyond what
-> > > pci_enable_resources() is supposed to do. These functions could lead =
-to
-> > > inconsistencies in behavior, especially now as pci_enable_resources()
-> > > and the bridge window resource flags behavior are going to be altered
-> > > by upcoming changes.
-> > >=20
-> > > Remove all pcibios_enable_device() from arch/sparc/ so that PCI core
-> > > can simply call into pci_enable_resources() instead using it's __weak
-> > > version of pcibios_enable_device().
-> > >=20
-> > > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > > ---
-> > >  arch/sparc/kernel/leon_pci.c | 27 ---------------------------
-> > >  arch/sparc/kernel/pci.c      | 27 ---------------------------
-> > >  arch/sparc/kernel/pcic.c     | 27 ---------------------------
-> > >  3 files changed, 81 deletions(-)
-> > >=20
-> > > diff --git a/arch/sparc/kernel/leon_pci.c b/arch/sparc/kernel/leon_pc=
-i.c
-> > > index 8de6646e9ce8..10934dfa987a 100644
-> > > --- a/arch/sparc/kernel/leon_pci.c
-> > > +++ b/arch/sparc/kernel/leon_pci.c
-> > > @@ -60,30 +60,3 @@ void leon_pci_init(struct platform_device *ofdev, =
-struct leon_pci_info *info)
-> > >  =09pci_assign_unassigned_resources();
-> > >  =09pci_bus_add_devices(root_bus);
-> > >  }
-> > > -
-> > > -int pcibios_enable_device(struct pci_dev *dev, int mask)
-> > > -{
-> > > -=09struct resource *res;
-> > > -=09u16 cmd, oldcmd;
-> > > -=09int i;
-> > > -
-> > > -=09pci_read_config_word(dev, PCI_COMMAND, &cmd);
-> > > -=09oldcmd =3D cmd;
-> > > -
-> > > -=09pci_dev_for_each_resource(dev, res, i) {
-> > > -=09=09/* Only set up the requested stuff */
-> > > -=09=09if (!(mask & (1<<i)))
-> > > -=09=09=09continue;
-> > > -
-> > > -=09=09if (res->flags & IORESOURCE_IO)
-> > > -=09=09=09cmd |=3D PCI_COMMAND_IO;
-> > > -=09=09if (res->flags & IORESOURCE_MEM)
-> > > -=09=09=09cmd |=3D PCI_COMMAND_MEMORY;
-> > > -=09}
-> > > -
-> > > -=09if (cmd !=3D oldcmd) {
-> > > -=09=09pci_info(dev, "enabling device (%04x -> %04x)\n", oldcmd, cmd)=
-;
-> > > -=09=09pci_write_config_word(dev, PCI_COMMAND, cmd);
-> > > -=09}
-> > > -=09return 0;
-> > > -}
-> > > diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
-> > > index ddac216a2aff..a9448088e762 100644
-> > > --- a/arch/sparc/kernel/pci.c
-> > > +++ b/arch/sparc/kernel/pci.c
-> > > @@ -722,33 +722,6 @@ struct pci_bus *pci_scan_one_pbm(struct pci_pbm_=
-info *pbm,
-> > >  =09return bus;
-> > >  }
-> > > =20
-> > > -int pcibios_enable_device(struct pci_dev *dev, int mask)
-> > > -{
-> > > -=09struct resource *res;
-> > > -=09u16 cmd, oldcmd;
-> > > -=09int i;
-> > > -
-> > > -=09pci_read_config_word(dev, PCI_COMMAND, &cmd);
-> > > -=09oldcmd =3D cmd;
-> > > -
-> > > -=09pci_dev_for_each_resource(dev, res, i) {
-> > > -=09=09/* Only set up the requested stuff */
-> > > -=09=09if (!(mask & (1<<i)))
-> > > -=09=09=09continue;
-> > > -
-> > > -=09=09if (res->flags & IORESOURCE_IO)
-> > > -=09=09=09cmd |=3D PCI_COMMAND_IO;
-> > > -=09=09if (res->flags & IORESOURCE_MEM)
-> > > -=09=09=09cmd |=3D PCI_COMMAND_MEMORY;
-> > > -=09}
-> > > -
-> > > -=09if (cmd !=3D oldcmd) {
-> > > -=09=09pci_info(dev, "enabling device (%04x -> %04x)\n", oldcmd, cmd)=
-;
-> > > -=09=09pci_write_config_word(dev, PCI_COMMAND, cmd);
-> > > -=09}
-> > > -=09return 0;
-> > > -}
-> > > -
-> > >  /* Platform support for /proc/bus/pci/X/Y mmap()s. */
-> > >  int pci_iobar_pfn(struct pci_dev *pdev, int bar, struct vm_area_stru=
-ct *vma)
-> > >  {
-> > > diff --git a/arch/sparc/kernel/pcic.c b/arch/sparc/kernel/pcic.c
-> > > index 25fe0a061732..3d54ad5656a4 100644
-> > > --- a/arch/sparc/kernel/pcic.c
-> > > +++ b/arch/sparc/kernel/pcic.c
-> > > @@ -641,33 +641,6 @@ void pcibios_fixup_bus(struct pci_bus *bus)
-> > >  =09}
-> > >  }
-> > > =20
-> > > -int pcibios_enable_device(struct pci_dev *dev, int mask)
-> > > -{
-> > > -=09struct resource *res;
-> > > -=09u16 cmd, oldcmd;
-> > > -=09int i;
-> > > -
-> > > -=09pci_read_config_word(dev, PCI_COMMAND, &cmd);
-> > > -=09oldcmd =3D cmd;
-> > > -
-> > > -=09pci_dev_for_each_resource(dev, res, i) {
-> > > -=09=09/* Only set up the requested stuff */
-> > > -=09=09if (!(mask & (1<<i)))
-> > > -=09=09=09continue;
-> > > -
-> > > -=09=09if (res->flags & IORESOURCE_IO)
-> > > -=09=09=09cmd |=3D PCI_COMMAND_IO;
-> > > -=09=09if (res->flags & IORESOURCE_MEM)
-> > > -=09=09=09cmd |=3D PCI_COMMAND_MEMORY;
-> > > -=09}
-> > > -
-> > > -=09if (cmd !=3D oldcmd) {
-> > > -=09=09pci_info(dev, "enabling device (%04x -> %04x)\n", oldcmd, cmd)=
-;
-> > > -=09=09pci_write_config_word(dev, PCI_COMMAND, cmd);
-> > > -=09}
-> > > -=09return 0;
-> > > -}
-> > > -
-> > >  /* Makes compiler happy */
-> > >  static volatile int pcic_timer_dummy;
-> >=20
-> > This change actually broke driver initialization on SPARC, see:
-> >=20
-> > https://github.com/sparclinux/issues/issues/22
->=20
-> Does the attached patch help?
+The test enabled by CONFIG_DEBUG_RODATA_TEST=y says this is
+working, but I've only tested on the virt machine.
 
-Second fixup patch attached.
+Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+---
+ arch/m68k/Kconfig   |  1 +
+ arch/m68k/mm/init.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 70 insertions(+)
 
---=20
- i.
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 11835eb59d94..2137fd19ffbd 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -8,6 +8,7 @@ config M68K
+ 	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
+ 	select ARCH_HAS_DMA_PREP_COHERENT if M68K_NONCOHERENT_DMA && !COLDFIRE
++	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if M68K_NONCOHERENT_DMA
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 488411af1b3f..bc1147f25624 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -123,3 +123,72 @@ void __init mem_init(void)
+ {
+ 	init_pointer_tables();
+ }
++
++#ifdef CONFIG_MMU
++/*
++ * Based on (basically copy/pasted) kernel_set_cachemode() because
++ * presumably that is correct and covers the required differences.
++ */
++static void __mark_ro_data(unsigned long virtaddr, ssize_t size)
++{
++	pgd_t *pgd_dir;
++	p4d_t *p4d_dir;
++	pud_t *pud_dir;
++	pmd_t *pmd_dir;
++	pte_t *pte_dir;
++
++	while (size > 0) {
++		pgd_dir = pgd_offset_k(virtaddr);
++		p4d_dir = p4d_offset(pgd_dir, virtaddr);
++		pud_dir = pud_offset(p4d_dir, virtaddr);
++		if (pud_bad(*pud_dir)) {
++			pud_clear(pud_dir);
++			return;
++		}
++		pmd_dir = pmd_offset(pud_dir, virtaddr);
++
++#if CONFIG_PGTABLE_LEVELS == 3
++		if (CPU_IS_020_OR_030) {
++			unsigned long pmd = pmd_val(*pmd_dir);
++
++			if ((pmd & _DESCTYPE_MASK) == _PAGE_PRESENT) {
++				*pmd_dir = __pmd(pmd | _PAGE_RONLY);
++				virtaddr += PMD_SIZE;
++				size -= PMD_SIZE;
++				continue;
++			}
++		}
++#endif
++
++		if (pmd_bad(*pmd_dir)) {
++			pmd_clear(pmd_dir);
++			return;
++		}
++		pte_dir = pte_offset_kernel(pmd_dir, virtaddr);
++
++		set_pte(pte_dir, pte_wrprotect(*pte_dir));
++		virtaddr += PAGE_SIZE;
++		size -= PAGE_SIZE;
++	}
++}
++
++void mark_rodata_ro(void)
++{
++	unsigned long start;
++	unsigned long end;
++
++	/* kernel text - kernel_pg_dir lives in the first page, so skip that */
++	start = (unsigned long) _stext + PAGE_SIZE;
++	end = (unsigned long) _etext;
++	pr_info("Write protecting kernel text: 0x%lx - 0x%lx\n", start, end);
++	__mark_ro_data(start, end - start);
++
++	/* ro data */
++	start = (unsigned long) __start_rodata;
++	end = (unsigned long) __end_rodata;
++	pr_info("Write protecting kernel read-only data: 0x%lx - 0x%lx\n", start, end);
++	__mark_ro_data(start, end - start);
++
++	flush_tlb_all();
++}
++#endif
+-- 
+2.51.0
 
---8323328-135835264-1763049376=:1464
-Content-Type: text/x-diff; name=sparc-pref2.patch
-Content-Transfer-Encoding: BASE64
-Content-ID: <474a4557-bd2d-a362-a883-08ba47f89a36@linux.intel.com>
-Content-Description: 
-Content-Disposition: attachment; filename=sparc-pref2.patch
-
-RnJvbTogSWxwbyBKw6RydmluZW4gPGlscG8uamFydmluZW5AbGludXguaW50
-ZWwuY29tPg0KU3ViamVjdDogW1BBVENIXSBTUEFSQy9QQ0k6IENvcnJlY3Qg
-NjQtYml0IG5vbi1wcmVmIC0+IHByZWYNCg0KU2lnbmVkLW9mZi1ieTogSWxw
-byBKw6RydmluZW4gPGlscG8uamFydmluZW5AbGludXguaW50ZWwuY29tPg0K
-DQotLS0NCiBhcmNoL3NwYXJjL2tlcm5lbC9wY2kuYyB8IDE5ICsrKysrKysr
-KysrKysrKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgMTkgaW5zZXJ0aW9ucygr
-KQ0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9zcGFyYy9rZXJuZWwvcGNpLmMgYi9h
-cmNoL3NwYXJjL2tlcm5lbC9wY2kuYw0KaW5kZXggYTk0NDgwODhlNzYyLi4z
-Yjg1NzU4OTEwMDYgMTAwNjQ0DQotLS0gYS9hcmNoL3NwYXJjL2tlcm5lbC9w
-Y2kuYw0KKysrIGIvYXJjaC9zcGFyYy9rZXJuZWwvcGNpLmMNCkBAIC0xODEs
-NiArMTgxLDI0IEBAIHN0YXRpYyBpbnQgX19pbml0IG9mcGNpX2RlYnVnKGNo
-YXIgKnN0cikNCiANCiBfX3NldHVwKCJvZnBjaV9kZWJ1Zz0iLCBvZnBjaV9k
-ZWJ1Zyk7DQogDQorc3RhdGljIHZvaWQgb2ZfZml4dXBfcGNpX3ByZWYoc3Ry
-dWN0IHBjaV9kZXYgKmRldiwgaW50IGluZGV4LA0KKwkJCSAgICAgIHN0cnVj
-dCByZXNvdXJjZSAqcmVzKQ0KK3sNCisJaWYgKCEocmVzLT5mbGFncyAmIElP
-UkVTT1VSQ0VfTUVNXzY0KSkNCisJCXJldHVybjsNCisNCisJaWYgKCFyZXNv
-dXJjZV9zaXplKHJlcykpDQorCQlyZXR1cm47DQorCWlmIChyZXMtPmVuZCA8
-PSB+KCh1MzIpMCkpDQorCQlyZXR1cm47DQorDQorCWlmICghKHJlcy0+Zmxh
-Z3MgJiBJT1JFU09VUkNFX1BSRUZFVENIKSkgew0KKwkJcmVzLT5mbGFncyB8
-PSBJT1JFU09VUkNFX1BSRUZFVENIOw0KKwkJcGNpX2luZm8oZGV2LCAicmVn
-IDB4JXg6IGZpeHVwOiBwcmVmIGFkZGVkIHRvIDY0LWJpdCByZXNvdXJjZVxu
-IiwNCisJCQkgaW5kZXgpOw0KKwl9DQorfQ0KKw0KIHN0YXRpYyB1bnNpZ25l
-ZCBsb25nIHBjaV9wYXJzZV9vZl9mbGFncyh1MzIgYWRkcjApDQogew0KIAl1
-bnNpZ25lZCBsb25nIGZsYWdzID0gMDsNCkBAIC0yNDQsNiArMjYyLDcgQEAg
-c3RhdGljIHZvaWQgcGNpX3BhcnNlX29mX2FkZHJzKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKm9wLA0KIAkJcmVzLT5lbmQgPSBvcF9yZXMtPmVuZDsNCiAJ
-CXJlcy0+ZmxhZ3MgPSBmbGFnczsNCiAJCXJlcy0+bmFtZSA9IHBjaV9uYW1l
-KGRldik7DQorCQlvZl9maXh1cF9wY2lfcHJlZihkZXYsIGksIHJlcyk7DQog
-DQogCQlwY2lfaW5mbyhkZXYsICJyZWcgMHgleDogJXBSXG4iLCBpLCByZXMp
-Ow0KIAl9DQoNCi0tIA0KdGc6ICgzYTg2NjA4Nzg4MzkuLikgc3BhcmMvZHQt
-Zml4dXAtcHJlZiAoZGVwZW5kcyBvbjogbWFpbikNCg==
-
---8323328-135835264-1763049376=:1464--
