@@ -1,201 +1,130 @@
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CA12ECEAE
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Nov 2025 10:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1E9343D7F
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Nov 2025 10:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763635161; cv=none; b=My1FWewnVg8EWbWx2rZhAbrH0lcPF7+RZug2Y5S2ZIPdGcFFUJ3QZEngiJkJPumplYSDFToPUC3zOP/abKa3GPHmDYh26BwTryNiJMNob7+HNRXwRHgaf/5+U/dsQntV9bCRYmxn42NMAlZnNWkd7CNsEI0mRwPaYU0oS76Kpdc=
+	t=1763719407; cv=none; b=SkrFg1Cepb3teIOyDOJuYa6LE+9TFtvt2nBaTa9TeOfRXJ2rAnsmgVQBHFCiCmIfr+Z/Re8HL+qPoY5G41WpXhLHhyljjp/FT1WO+pSgpcT8UoxCa6DR4t8EZE4RjJpwIV2PtfHJwZeD2iuRnsKbW+XJTilXcmtiVOb+4MO2WH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763635161; c=relaxed/simple;
-	bh=BHE8ecW080hEUBYHsfRQy6FJfv9ooT+paLaeKuAiPQ4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=evWyx2SXIK8MN1xGAtI+tMZroJtfqCnGazhLrLHeIXYsGEQhG6oOvIAbyKQnNr+mciqO93BZLgNjXcRrNGymDc7xWjyo8Z+TeWdhas7dA5kJ60XAD4O2lnxYP2YCSytFgIQId9eWbFLbvAwtgJ4gb/pQqzrGL98rhjNz3rYAbyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=SzGiWCtL; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="SzGiWCtL"
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2984dfae0acso12039195ad.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Nov 2025 02:39:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=thingy.jp; s=google; t=1763635159; x=1764239959; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hhwxa2PuTpIzju4Jjb3k2siPGNsjvz97d+Kdch7Zl9s=;
-        b=SzGiWCtLjZ7MknOtd1NAdpY02YUSSz9NssgK1Ml2O+7K1hvcuMml1FEU9x+voT2yK1
-         dkHwvXRWhEGGM5K7/lHGdBSTiel7suOEEQrt8632pakqPdwBBlsu5lXrohfopo/L9oUt
-         cIS+WFhFKq32wvXl/gYGo3a1rbpq8I+B4V8hc=
+	s=arc-20240116; t=1763719407; c=relaxed/simple;
+	bh=TeUAIYoYe5WG9QPmEwZ5LJi25FDVtq2bv+Us8Wz9dgA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UhdEbooxpmhZAuBsWpdF+pYDQFvs59KoN18SNaYTbOojYygnyHz0zRpwSU/oAJczMU43ye28+rvm842ozm7CNGvHOixpuHJVG7ule91w3ZuLbljwIebvsl2fdftowCdIbA/QEHKR/Y+NvWlbTIp/9/67Odax0iznosKXkvbi0EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-93516cbe2bbso528282241.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Nov 2025 02:03:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763635159; x=1764239959;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hhwxa2PuTpIzju4Jjb3k2siPGNsjvz97d+Kdch7Zl9s=;
-        b=pakLdxq3pNHoJTzoWPENfnzasXXZ5/REQhrMpnCh2tn2Qo6VAk0fwXxhxe3riyaxwd
-         F5yEM7nYxxtfTMl0lJlDiFii/vqAfFQpv0Y2UMhj9Rw2+8gjhG4tFOlDLh+lHE0iJFwi
-         mI2ruPtgL0SID1d8bgsfwl8ZomVmes8ZQh/aS/eP23B3jARHTe5Px0nlv8aYKDnuyKHC
-         TIv5WV+7SYbWt1A/smRjcW6YqVm8Y1co8g3LrSsbJfqeff3I934SFfUTLU3ULE8F2Es1
-         8S/NkAQGlesEw0erQgZu9tCcDoJA7F1IpPufu/xCxj0v4xV+h2+wNZpbhjoYVDldFEWB
-         VIOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJMUHU7BGeBY6ERP+RkVlYsE+14oxwJny/CUeEdeg13RRPleFKdeLa3T1Xsl0NyH4KHBtJm7Aj+Kbh@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzghbYfRKXoZWBNFaSqCBLJKXldRp0qtEtikNTQ8NtKr/4e9bQK
-	cjqnz/WBNephPg/HJ+VgvgWRT3uv5KJ63hUPGFpTyXN8vinGbN3VQLy2XuLkIue/djI=
-X-Gm-Gg: ASbGncu0ApjZjgFoOawDMIntnJkGM+yV/VeAC4exLJVoB42bMMtzqiyE9idqCElNRzI
-	RqKu2oleRsuOld4B2nh4J6BudKP5tb2Viykhq0iJL3p2JPCLIj42UKKz5P87iB5hh+mxtSk4pBz
-	ofVUcU+RwhNL4wNwwbtP7alM9oyZLvzo7MUQxGeoxmc8oOGAbEgZvQl5n7JURpls0rPBGoDldsp
-	dnxG7+dG7symkPjdrX92UI0jfSPa+skOvvNZhwbCMbtrjLNtMQ/dCsE4OOt3fwFZwmJKd6njEAs
-	VJK4VbM373j/0XIWUzlSM0oAT2I9IaBdiuoP37LXAA/uUyf/M3k3c5w1M9NOXEWRR3bFs9mgu3t
-	iTPvq2Vh35sSCnvUDCV5EAUGx0t9MaUmcC/iZV6CR8uchrodxa36UKJTaRqp+aqlkzXA8oDE3j4
-	wvQL3vCuJk6yE3cltrrYRMRswvHfLMrKRsTF0KCPKcZt9QoTGMlqijO7uUoQ2BlV3tYxQZg2Bu0
-	Q==
-X-Google-Smtp-Source: AGHT+IEJHD9EOFgAlpBP7xrnEfuWDeJ5213S3zMr53sttOFn6TCus9wLiTU7vAcQ3zsDVAbTLEnEjg==
-X-Received: by 2002:a17:902:f689:b0:295:50f5:c0e1 with SMTP id d9443c01a7336-29b5b06a956mr42913245ad.15.1763635159468;
-        Thu, 20 Nov 2025 02:39:19 -0800 (PST)
-Received: from kinako.work.home.arpa (p1352012-ipxg00a01sizuokaden.shizuoka.ocn.ne.jp. [114.145.28.12])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-29b5b1387e3sm22381035ad.24.2025.11.20.02.39.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Nov 2025 02:39:18 -0800 (PST)
-From: Daniel Palmer <daniel@thingy.jp>
-To: geert@linux-m68k.org,
-	schmitzmic@gmail.com,
-	gerg@kernel.org,
-	linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	Daniel Palmer <daniel@thingy.jp>
-Subject: [PATCH v2 2/2] m68k: Implement kernel memory protection
-Date: Thu, 20 Nov 2025 19:38:54 +0900
-Message-ID: <20251120103854.1630306-3-daniel@thingy.jp>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251120103854.1630306-1-daniel@thingy.jp>
-References: <20251120103854.1630306-1-daniel@thingy.jp>
+        d=1e100.net; s=20230601; t=1763719404; x=1764324204;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wlBMUu/EpwAnMbRqR4FueGr8bEwdrvt/wf+TDoxxT9k=;
+        b=ctJ9CkllWkDy3sfQc4cYmnPZk88HC2LmwRGE6iVqxqfsPHZU+1EXgxS+uAX1ASxpAv
+         DbfHOUxG2IDapr+8fGM8uXhfuU5tsJ+mpRkOJYcvbPjEewjkVr+758hNx/v0rJXp0J1w
+         4XDadCM5GEmnKaEDU6Vrc8reaQw/f8IpQLQ5Th1X3h02UNFjpJxsHEns1eDthh3RANoW
+         JNBy21Q3G3xGDw85FVSd+D8UDP8eTc5d+2mrkV1BFHDIm7RzhDEo6Eo9SfGU+PIOZaUn
+         P4bm+whulteskA/3WRUJ/GmfIbzh38ILRRZvveBj+K9niDANPQEpJXaXOCr8paIHhIlP
+         wAvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/fvyLC+Kh7rUKKA3o83EaSFqULTheWv+fLZA1zPjoYK7D5Q6F3VfKwkpucg/W885zXtpIPLohut5z@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yyd0g5X1Hmk8SyZagfRSWC7Lfhdbvku2KZmKak2lrsmNZkO6M6o
+	kEpxMTddsQaH4/je2O50VvZRr9s3ryvNPBpC7hG9/mbTulIH/XdRjtn52zspQVSi
+X-Gm-Gg: ASbGncvrbRxX67R4GzFdL0Zu4N/oyQ5e8JS2mlAynFCnC9eFzk337UOL9VSm3huiEif
+	xveLeFKGOvnTIjriQKgJmYtZQ6PLyu2ZaDTD96jj1Q42yRY/nlcToTIqsDLHl52/aRBo/BQxzpI
+	2BbRstzVH1iw/nI6X1CLTYRb3D+moX59Q9xx8QrwWXa8y2YF3OWpKkPBoIjHcP+GLT1sArkTFip
+	RP8T85bYkel9p4nZalLKbG+xRhbtD/IYGoGBv7XPI9tpTHhKdtXhddTtT8sMlaQP9hxO3PRzaWD
+	8tKkJ/uN2V03+F3fYEv4QAwGRlgjaQc6n8YdDJ6995uL0xsVylA/+NW01G9WP5WHqLiqzaOEHRL
+	c5aSYq+H6FRGU0nBwQDMKqHDUu8a0K8XJdSl97Vu//F0kPGq3aWgH/MxuKFwZ1DSl+d019xJHcI
+	dSiIOnjpGRcU9I0UA2Fiu5cf5Guez/eso6tJx8U5q1CXF+9lGB
+X-Google-Smtp-Source: AGHT+IGVaDobEc45OozSFTZcwq2IOrUVN6n453a1fkfBDD31crE4uFLJLcdvLtjXrf3y3onj5xYb+g==
+X-Received: by 2002:a05:6122:da2:b0:559:6960:bdf9 with SMTP id 71dfb90a1353d-55b8d7b1658mr396761e0c.16.1763719403549;
+        Fri, 21 Nov 2025 02:03:23 -0800 (PST)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-55b7f60308csm2170850e0c.2.2025.11.21.02.03.23
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Nov 2025 02:03:23 -0800 (PST)
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-93a9f6efebbso543779241.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 21 Nov 2025 02:03:23 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWqRiVxM0Vy42GcbqQ+85Prm5Iuy8ZxcGRQSpd8ODSBIicYXnyefLYjsbNBHV/tikwiN94DX80wc2di@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:579a:b0:5db:33f9:adce with SMTP id
+ ada2fe7eead31-5e1de3d42camr385692137.41.1763719402998; Fri, 21 Nov 2025
+ 02:03:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20251120180233.763975-1-hsukrut3@gmail.com>
+In-Reply-To: <20251120180233.763975-1-hsukrut3@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 21 Nov 2025 11:03:11 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV3UvDHT0uu8oeiCGc9pURaLPDPmG-Fu9kC9H8DQyqRDw@mail.gmail.com>
+X-Gm-Features: AWmQ_bkayHVM_Ddsfirz9lK5uUvThJmyJwFAo8HPyX8vy-dtp3QKVrq4J4AGcFo
+Message-ID: <CAMuHMdV3UvDHT0uu8oeiCGc9pURaLPDPmG-Fu9kC9H8DQyqRDw@mail.gmail.com>
+Subject: Re: [RFC/RFT PATCH] fbdev: q40fb: request memory region
+To: Sukrut Heroorkar <hsukrut3@gmail.com>
+Cc: Helge Deller <deller@gmx.de>, 
+	"open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>, 
+	"open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>, open list <linux-kernel@vger.kernel.org>, 
+	shuah@kernel.org, david.hunter.linux@gamil.com, 
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Every time I boot linux on my various m68k machines I see
-"This architecture does not have kernel memory protection."
+Hi Sukrut,
 
-I wondered why this was as some of my machines even have one of
-those fancy MMU doodads. I worked out it was because we don't have
-CONFIG_ARCH_HAS_STRICT_KERNEL_RWX, found kernel_set_cachemode()
-seemed like it had the code for setting some extra flags for
-kernel pages and turned that into something that sets write
-protect for kernel pages.
+CC linux-m68k
 
-So now we can make CONFIG_ARCH_HAS_STRICT_KERNEL_RWX=y and
-provide mark_rodata_ro() to mark the kernel text and rodata
-as write protected.
+On Thu, 20 Nov 2025 at 19:03, Sukrut Heroorkar <hsukrut3@gmail.com> wrote:
+> The q40fb driver uses a fixed physical address but never reserves
+> the corresponding I/O region. Reserve the range  as suggested in
+> Documentation/gpu/todo.rst ("Request memory regions in all fbdev drivers").
+>
+> If the memory cannot be reserved, fail probe with -EBUSY to avoid
+> conflicting with another user of the same address.
+>
+> Signed-off-by: Sukrut Heroorkar <hsukrut3@gmail.com>
 
-The test enabled by CONFIG_DEBUG_RODATA_TEST=y says this is
-working.
+Thanks for your patch!
 
-Tested on Amiga 4000 (060), virt (040), MVME147 (030)
+> ---
+> Testing: This patch is sent as RFT since Q40 hardware is unavilable and
+> QEMU does not emulated a Q40 platform. The change is therefore compile-tested
+> only.
 
-Signed-off-by: Daniel Palmer <daniel@thingy.jp>
----
- arch/m68k/Kconfig   |  1 +
- arch/m68k/mm/init.c | 73 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 74 insertions(+)
+I would suggest not to apply this, unless it is tested on real
+hardware.  It wouldn't be the first time an innocent-looking change like
+this breaks a system. See e.g.
+https://lore.kernel.org/all/Y5I2oQexHNdlIbsQ@shell.armlinux.org.uk
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 11835eb59d94..2137fd19ffbd 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -8,6 +8,7 @@ config M68K
- 	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
- 	select ARCH_HAS_CURRENT_STACK_POINTER
- 	select ARCH_HAS_DMA_PREP_COHERENT if M68K_NONCOHERENT_DMA && !COLDFIRE
-+	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if M68K_NONCOHERENT_DMA
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
- 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
-diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
-index 488411af1b3f..f11597751741 100644
---- a/arch/m68k/mm/init.c
-+++ b/arch/m68k/mm/init.c
-@@ -123,3 +123,76 @@ void __init mem_init(void)
- {
- 	init_pointer_tables();
- }
-+
-+#ifdef CONFIG_MMU
-+/*
-+ * Based on (basically copy/pasted) kernel_set_cachemode() because
-+ * presumably that is correct and covers the required differences.
-+ */
-+static void __mark_ro_data(unsigned long virtaddr, ssize_t size)
-+{
-+	pgd_t *pgd_dir;
-+	p4d_t *p4d_dir;
-+	pud_t *pud_dir;
-+	pmd_t *pmd_dir;
-+	pte_t *pte_dir;
-+
-+	while (size > 0) {
-+		pgd_dir = pgd_offset_k(virtaddr);
-+		p4d_dir = p4d_offset(pgd_dir, virtaddr);
-+		pud_dir = pud_offset(p4d_dir, virtaddr);
-+		if (pud_bad(*pud_dir)) {
-+			pud_clear(pud_dir);
-+			return;
-+		}
-+		pmd_dir = pmd_offset(pud_dir, virtaddr);
-+
-+#if CONFIG_PGTABLE_LEVELS == 3
-+		if (CPU_IS_020_OR_030) {
-+			unsigned long pmd = pmd_val(*pmd_dir);
-+
-+			if ((pmd & _DESCTYPE_MASK) == _PAGE_PRESENT) {
-+				/* We cannot write protect part of an early term */
-+				if (WARN_ON(size < PMD_SIZE))
-+					break;
-+
-+				*pmd_dir = __pmd(pmd | _PAGE_RONLY);
-+				virtaddr += PMD_SIZE;
-+				size -= PMD_SIZE;
-+				continue;
-+			}
-+		}
-+#endif
-+
-+		if (pmd_bad(*pmd_dir)) {
-+			pmd_clear(pmd_dir);
-+			return;
-+		}
-+
-+		/* We cannot write protect part of a page */
-+		if (WARN_ON(size < PAGE_SIZE))
-+			break;
-+
-+		pte_dir = pte_offset_kernel(pmd_dir, virtaddr);
-+
-+		set_pte(pte_dir, pte_wrprotect(*pte_dir));
-+		virtaddr += PAGE_SIZE;
-+		size -= PAGE_SIZE;
-+	}
-+}
-+
-+void mark_rodata_ro(void)
-+{
-+	unsigned long start;
-+	unsigned long end;
-+
-+	/* kernel text + 1 page , kernel_pg_dir lives in the first page, so skip that */
-+	start = (unsigned long) _stext + PAGE_SIZE;
-+	end = (unsigned long) __end_rodata;
-+
-+	pr_info("Write protecting kernel text and read-only data: 0x%lx - 0x%lx\n", start, end);
-+	__mark_ro_data(start, end - start);
-+
-+	flush_tlb_all();
-+}
-+#endif
--- 
-2.51.0
+> --- a/drivers/video/fbdev/q40fb.c
+> +++ b/drivers/video/fbdev/q40fb.c
+> @@ -101,6 +101,13 @@ static int q40fb_probe(struct platform_device *dev)
+>         info->par = NULL;
+>         info->screen_base = (char *) q40fb_fix.smem_start;
+>
+> +       if (!request_mem_region(q40fb_fix.smem_start, q40fb_fix.smem_len,
+> +                               "q40fb")) {
+> +               dev_err(&dev->dev, "cannot reserve video memory at 0x%lx\n",
+> +                       q40fb_fix.smem_start);
+> +               return -EBUSY;
+> +       }
+> +
+>         if (fb_alloc_cmap(&info->cmap, 256, 0) < 0) {
+>                 framebuffer_release(info);
+>                 return -ENOMEM;
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
