@@ -1,38 +1,38 @@
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADA53019CC
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 12:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A27E27FD40
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 13:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763988640; cv=none; b=A4uedO0LOajK2RYOuMZy9oDYYTtByzZuJ5PKPv2N4MB15hePWW2rZoDKckrW3lrCGvDON9/m2EnMSgTs8g07MMOj0Md/u4HScfMtuC8vZXjdmVTdheqpjxplyl31Gqs7en+yzR/IKQhqSrZ26C3xkcbdkntAFeB/OZ9OUhxbkBk=
+	t=1763989457; cv=none; b=i6IqMy0BTtx+SBNX2Jwt5mgdekBSkCv1SuTlH/psWolw4+RvBt5gh09HNfVehaelKfMns9NEyrp1gMvj+u/cPAt5UPQZf8ooUumZ9o9+agH3fBWn5GLoBy/lyUctAEwDhf2dArD97MD4etOPIumTE1cb6MTqH4n8s6HtpDzSfgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763988640; c=relaxed/simple;
-	bh=va9Btmq0fbQ8/UccRYS5f0pnh1pGaTMnXaLt4GgFyE4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=LxZvqbAwyNB29/dKAFaDB9nGUJcx66q2Yc/EDE79j88+oy65f9axp32LZ5wj2QV03g/Ckz408OoluZlCzJDrZXG4jd4Sum9lT1kJHeoDdY2NXGi6uYPrDgL9mSiY1GeSSGE+v4wSTHdQggRijCkoe84uIZSq6aaI8/d7TNdAnJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=dCE/EADP; arc=none smtp.client-ip=217.70.183.199
+	s=arc-20240116; t=1763989457; c=relaxed/simple;
+	bh=0UAP833jY/lb8txc7zCx1KB4AkZTvgzHkZy42y98Tew=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=lZlOLW8yHawdsaSkN7IUs6bTocU/GJ1TXr7ySUdA0K8d461gEEkFDYPID4qU0WXqGf+rE5F5nof7b226VLcm6gGfawec2lQsi4kbgmjvOcHIsEhFG9Gi/MuEDnI0OT25BnrOe7IMAclXqxCYQ8iAeHBod/IgPjVU0Iw1muIrS54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=Zt4h9Xnc; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="dCE/EADP"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2E70A443F2;
-	Mon, 24 Nov 2025 12:50:30 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="Zt4h9Xnc"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3CCD644287;
+	Mon, 24 Nov 2025 13:04:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1763988631;
+	t=1763989453;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7ZtBQiByJLXTd7tTZYVsrh3HjYSN2tUwTsUZ2S4eorM=;
-	b=dCE/EADPCiUx/BmWcaQ91hKfGmfXq+LjtqIgKmF2lGiKgn4/nJ78cHSVJ4jjRpaLCF4xjm
-	7gZ+XdXJ1Jq3198HOrbDyTCr1lZZQXKf03PUji7c4V5uz15ivq26BLLmld6iepm042U+hm
-	6J3DqpJU4jAVWgzrz7rnE+HvXtaNxed1wdLeducplH2ILL4SCMnESkg/KFZIZkX/9aVwrl
-	iJPoJM8OBrLV+TgZl3+QdMiUSnKv4e26vgpFpmgO9rOCU64rqYfIsLcSHjwD0Oj/iuwmUH
-	jdcwD7AQ85d5xSIgRhpN21S+6DXcVM7DaPMk9etinKnVlj4Y1W1ZoQUZR/xBFw==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Iz84JXpr1Wzt9qHfLXBjH0UwcZH1zgAuKf5TwypISLI=;
+	b=Zt4h9Xnc+VgkZ+ClQYTR6tf/8V365T0zZK/TVtsBVREhskVhXLeb0YvbgwGMnDNIN8eBZe
+	BoJRnoA76OHe92Pcw3tDIb5VVY6nOn8qCGWRLVqaTD9cpzEQWri1H52H7tTqvgTM5sqwwl
+	ji+nvZrUT9Z7QFL2vcLl1Q4Zq5oW3f9md+wm+RpJuYvhtjxkXhHy6LFrXmGrrCnYsQ4BCp
+	OiQ4p35od93O0+9a4d8vL4xSgYhnwaEiZOYMGgg6muUNa7TtaUTLxo0lSuyepjQZ4oRTam
+	SRBLcFXb+TCen7HjJ5xkAroshnwFlEXrsur1UNEpRE3E8hSkEPitE6M6iPK0AQ==
 From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Mon, 24 Nov 2025 13:50:26 +0100
-Subject: [PATCH 5/7] dma: fsl-edma: Move error handler out of header file
+Subject: [PATCH v3 0/3] m68k: coldfire: Add RNG support and const
+ qualifiers for MCF54418
+Date: Mon, 24 Nov 2025 14:04:05 +0100
+Message-Id: <20251124-b4-m5441x-add-rng-support-v3-0-f447251dad27@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -41,75 +41,86 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251124-dma-coldfire-v1-5-dc8f93185464@yoseli.org>
-References: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
-In-Reply-To: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
-To: Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, imx@lists.linux.dev, 
- dmaengine@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
- linux-kernel@vger.kernel.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-B4-Tracking: v=1; b=H4sIAMVXJGkC/42NQQ6CMBBFr0Jm7Zi2FAVX3sOwaG2BSZQ2UyQQw
+ t2tnMDle8l/f4PkmXyCW7EB+5kShTFDeSrgOZix90guMyihKinFFa3Gd6W1XNA4hzz2mD4xBp5
+ QdM7WTgslhYG8j+w7Wo72o808UJoCr8fVrH72n+qsUGDXSHepq7pUtrmvIfkXnQP30O77/gW44
+ mqfwwAAAA==
+X-Change-ID: 20251107-b4-m5441x-add-rng-support-0fdb8d40210a
+To: Greg Ungerer <gerg@linux-m68k.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Olivia Mackall <olivia@selenic.com>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, imx@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
+ Frank Li <Frank.Li@nxp.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1763988624; l=1852;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1763989450; l=2074;
  i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=va9Btmq0fbQ8/UccRYS5f0pnh1pGaTMnXaLt4GgFyE4=;
- b=U+7OL0mSSRtoc1L1IzHaoAh3XKB++Gghc/o8riySTGs8840ZQW83gYZJVA9DyfGUs/Ojx8q5p
- NVkDcnZ1NJlDVcCR8Uo9EWSysAc5TiM58JZliwIUv+fK1JQRRZKdOWY
+ bh=0UAP833jY/lb8txc7zCx1KB4AkZTvgzHkZy42y98Tew=;
+ b=IOWyT2SHmlZDdAReG6ykhqIOoK01euZHGQiy2C+rgvsv+tKNJH6if5FdUVJ+ZQ/8I0educP0Z
+ 8XDIw3GfNVzBvtAUKienQlIP7lEmgPrEZdRBNx8mGNJ7S3xfEngGXJU
 X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
  pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvfeekieegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfgvrghnqdfoihgthhgvlhcujfgruhhtsghoihhsuceojhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgqeenucggtffrrghtthgvrhhnpeffjefhtdelhffhheevheeutefghfefteeluedvudfhgeegteeitddtuefhhfelteenucfkphepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgspdhhvghlohephihoshgvlhhiqdihohgtthhordihohhsvghlihdrohhrghdpmhgrihhlfhhrohhmpehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrghdpnhgspghrtghpthhtohepkedprhgtphhtthhopegumhgrvghnghhinhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhrt
- ghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopefhrhgrnhhkrdfnihesnhigphdrtghomhdprhgtphhtthhopehvkhhouhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehimhigsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvfeekieejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhufffkfggtgfgvfevofesthejredtredtjeenucfhrhhomheplfgvrghnqdfoihgthhgvlhcujfgruhhtsghoihhsuceojhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgqeenucggtffrrghtthgvrhhnpeekkeevfeelffehgedvuefhieektdellefhffeuueffkefhueetudetkeevffegudenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedvrgdtudemvgdtrgemudeileemjedugedtmeekkegsfeemheduheefmegtvdeigeemgehfsgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtudemvgdtrgemudeileemjedugedtmeekkegsfeemheduheefmegtvdeigeemgehfsgdphhgvlhhopeihohhsvghlihdqhihotghtohdrhihoshgvlhhirdhorhhgpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeduhedprhgtphhtthhopehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrghdprhgtphhtthhopehlihhnuhigqdgrrhhmq
+ dhkvghrnhgvlheslhhishhtshdrihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehhvghrsggvrhhtsehgohhnughorhdrrghprghnrgdrohhrghdrrghupdhrtghpthhtohepfhgvshhtvghvrghmsehgmhgrihhlrdgtohhmpdhrtghpthhtohepshhhrgifnhhguhhosehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrdhhrghuvghrsehpvghnghhuthhrohhnihigrdguvgdprhgtphhtthhopehimhigsehlihhsthhsrdhlihhnuhigrdguvghv
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Move fsl_edma_err_chan_handler from an inline function in the header
-to a proper function in fsl-edma-common.c. This prepares for MCF
-ColdFire eDMA support where the error handler needs to be called from
-the MCF-specific error interrupt handler.
+This series adds support for the MCF54418 hardware random number generator
+(RNGB) and improves type safety for platform device resources.
 
-No functional change for existing users.
+The MCF54418 contains an RNGB hardware block compatible with the imx-rngc
+driver. This series enables its use by:
+- Adding platform device registration for the RNG hardware
+- Enabling the clock at platform initialization
+- Making the imx-rngc driver compatible with Coldfire's always-on clock
+model using devm_clk_get_optional()
+
+Additionally, following Frank Li's suggestion, all static resource array
+in arch/m68k/coldfire/device.c are marked const, moving them to read-only
+memory and aligning with kernel API expectations.
+
+Testing on DLC Next board shows:
+- Hardware RNG throughput: 26 MB/s
+- FIPS 140-2 quality: 0.2% failure rate (rng-tools)
+- Boot time improvement: CRNG initialization 7 seconds faster
 
 Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- drivers/dma/fsl-edma-common.c | 5 +++++
- drivers/dma/fsl-edma-common.h | 6 +-----
- 2 files changed, 6 insertions(+), 5 deletions(-)
+Changes in v3:
+- Depend on COLDFIRE is enough
+- Split the clock change in a dedicated commit
+- Link to v2: https://lore.kernel.org/r/20251107-b4-m5441x-add-rng-support-v2-0-f91d685832b9@yoseli.org
 
-diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
-index db36a6aafc910364d75ce6c5d334fd19d2120b6b..40ac6a7d8480b9ed2c6a2bdec59b4fda5fcb6271 100644
---- a/drivers/dma/fsl-edma-common.c
-+++ b/drivers/dma/fsl-edma-common.c
-@@ -44,6 +44,11 @@
- #define EDMA64_ERRH		0x28
- #define EDMA64_ERRL		0x2c
- 
-+void fsl_edma_err_chan_handler(struct fsl_edma_chan *fsl_chan)
-+{
-+	fsl_chan->status = DMA_ERROR;
-+}
-+
- void fsl_edma_tx_chan_handler(struct fsl_edma_chan *fsl_chan)
- {
- 	spin_lock(&fsl_chan->vchan.lock);
-diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
-index 4c86f2f39c1db9a812245fe85755ec8d1169c44c..64b537527291795964a77a9021192a39756b6987 100644
---- a/drivers/dma/fsl-edma-common.h
-+++ b/drivers/dma/fsl-edma-common.h
-@@ -478,11 +478,7 @@ static inline struct fsl_edma_desc *to_fsl_edma_desc(struct virt_dma_desc *vd)
- 	return container_of(vd, struct fsl_edma_desc, vdesc);
- }
- 
--static inline void fsl_edma_err_chan_handler(struct fsl_edma_chan *fsl_chan)
--{
--	fsl_chan->status = DMA_ERROR;
--}
--
-+void fsl_edma_err_chan_handler(struct fsl_edma_chan *fsl_chan);
- void fsl_edma_tx_chan_handler(struct fsl_edma_chan *fsl_chan);
- void fsl_edma_disable_request(struct fsl_edma_chan *fsl_chan);
- void fsl_edma_chan_mux(struct fsl_edma_chan *fsl_chan,
+Changes in v2:
+- Split const qualifier changes into a separate patch as suggested by
+Frank Li
+- Mark all resource arrays (including RNG) as const in device.c
+- No functional changes to RNG implementation
 
+---
+Jean-Michel Hautbois (3):
+      m68k: coldfire: Mark platform device resource arrays as const
+      hwrng: imx-rngc: Use optional clock
+      m68k: coldfire: Add RNG support for MCF54418
+
+ arch/m68k/coldfire/device.c       | 52 ++++++++++++++++++++++++++++++---------
+ arch/m68k/coldfire/m5441x.c       |  2 +-
+ arch/m68k/include/asm/m5441xsim.h |  9 +++++++
+ drivers/char/hw_random/Kconfig    |  3 ++-
+ drivers/char/hw_random/imx-rngc.c |  9 ++++++-
+ 5 files changed, 60 insertions(+), 15 deletions(-)
+---
+base-commit: ac3fd01e4c1efce8f2c054cdeb2ddd2fc0fb150d
+change-id: 20251107-b4-m5441x-add-rng-support-0fdb8d40210a
+
+Best regards,
 -- 
-2.39.5
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
