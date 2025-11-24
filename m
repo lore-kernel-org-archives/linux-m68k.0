@@ -1,39 +1,38 @@
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13EF3002AD
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 12:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FA2301016
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 12:50:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763988636; cv=none; b=rmkCHvEP8G6msTovW0Tkq+oED+C7HRuDDM1bc1BKvumv9E/hplpF5OCOQz+7FArAv0lntwTQViHj/6kZ3WsNHDlwh4lux1xsBQphRXL/2cwI0JITZ5/ywWUfis+rhTvz36PfLWbkF89CpIJNrrIOzwAws/UUd/Oyi5ekWHmbFf8=
+	t=1763988636; cv=none; b=YcxY/sUTVOsbfXGqrLv6xzVxAyBy4jGUL4ySHmdJrQo7XzTSCUZz2pbdVKFm++09+EdbxqetWY3uvef4pi2QrM7ECbGiGNXv5rmtT+JUF7c+FvLGRqId3sX5uDO7bBbiRK81XscXRKOrNfuV0IIXW4wtEElbbAr8gd7hTlCDdcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1763988636; c=relaxed/simple;
-	bh=FKaWobWJViggwPnsZtfIAribt87lp1BCi3e4jWWfCu4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GSNgjK+sYCg8/HlRiTsCdlZPupNXo4ubBmKnom4/EXAmb+QCZQ8MuRo3iJTm6b0I+kvSMmn39mTAbBhbdz6lmCxB1NzbnGO2HG2rZmUmAkSubMVH8v0uz1KbdRlz0NjFU9TuIdasI77JwADs9CpJYDZFO1n+U9zaNmdoO2CZabc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=U15TD4HS; arc=none smtp.client-ip=217.70.183.199
+	bh=BaqG+ncA4e6jPTLXGj38TJPyzRCYGVfmkhU4oOz1CUk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Qa6XciMxG17UFIjCx6NaViX5vIxouv8WdX5598OG8hrAC/XtBnDyqBggh93emQuCx2X+V2Q+WGyOu+EFCx3M/ScAZlz0x8aXoYreip7kYgwltbO1VTZkbK1LFqFvCeWhZGeisJ0ztNU7dlG5bYJ0Pp1uQVJfBuBP0qvAJrYov1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=ocCJdz60; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="U15TD4HS"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4FC6B443B9;
-	Mon, 24 Nov 2025 12:50:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="ocCJdz60"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BCD29442B0;
+	Mon, 24 Nov 2025 12:50:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1763988633;
+	t=1763988625;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AFRCqjmZTDjYwXs9mHTwQzP6v0YfpJFAmMSvBfVoyHo=;
-	b=U15TD4HSkHAMYItwQM7vgmkCbaMyiG3kyDRBFaP2O/KBbGwQj5GrzmTqqROk/aFmUxzUbq
-	4rIjnPLXZYH1vb59EClBZlAxQlrAS9UqXDw+OQuYeTfGJS86JOi3TvboKSvweq20u0Sp65
-	F8BXhrLFan5PJzJU05z3EL+FcX2kWn4tjvAY2fYNGlAHzd3wzi+D6EkdPQWTjnS3r/PAJw
-	GyK+uEynZcAJ02L++y2CwHCRaFhuuGvZOIbXRzNTFkqmrZH612LRTpqtrQ1AQ6KAJhSQkA
-	qYEc+fyNrShgSqsqlb/HhDY0sdxvLqJmWs41q5dFMONG4y/+oPfCKB6lVMea/Q==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=W5926LvFRqXES9Meu0EUUgUHy4p8Z6V+TT02fhE4MHI=;
+	b=ocCJdz60FjHaM+ZEJvXxQ9T1XOBfGdtDJyk5GkWBe4Jkbhwo04TgRdLAGih1OQFWEtnStB
+	tV4cfZEbNrKqe6Yg0NeBFB0RBUblM5/Ak/Jxi3kH6did7jk+IU1oUW2v+MsvCoR2Cj67KR
+	o1gvdLE8PXCXkWSeeNBr3Bs+hJCnWLceHSwTnwuWUS261fPLI6Az1VHxZlQXn16hcL0fpn
+	CIynIp+9XaVobsMyb4qpuDOlYDD2Gq97trWIrAxGpWqQY7IVFZTHF3MHMQpoc24IYsj+m+
+	J7XOYdvM1M8Nf2kDsBHU6+xXXbX/d6M7orVni7G8eI/i8bhcimkO8Om5KD5Vjg==
 From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Mon, 24 Nov 2025 13:50:28 +0100
-Subject: [PATCH 7/7] dma: fsl-edma: Support source stride for interleaved
- DMA transfers
+Subject: [PATCH 0/7] dma: fsl/mcf-edma: Bug fixes and enhancements for
+ ColdFire support
+Date: Mon, 24 Nov 2025 13:50:21 +0100
+Message-Id: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -42,70 +41,71 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251124-dma-coldfire-v1-7-dc8f93185464@yoseli.org>
-References: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
-In-Reply-To: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
+X-B4-Tracking: v=1; b=H4sIAI1UJGkC/x3MQQqAIBBA0avIrBtIzRZdJVqYjjVQGgoRSHdPW
+ r7F/xUKZaYCk6iQ6ebCKTbIToDbbdwI2TeD6pWRUmn0p0WXDh84E5qgR0skB71qaMmVKfDz7+b
+ lfT8OBzYrXgAAAA==
+X-Change-ID: 20251123-dma-coldfire-5f36aee143b3
 To: Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>
 Cc: Greg Ungerer <gerg@linux-m68k.org>, imx@lists.linux.dev, 
  dmaengine@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
  linux-kernel@vger.kernel.org, 
  Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1763988624; l=1817;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1763988624; l=1829;
  i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=FKaWobWJViggwPnsZtfIAribt87lp1BCi3e4jWWfCu4=;
- b=ZCvvR4NFd0F1MK2oKb9mLxd1UhjGQdDhiI93WRdjZ8MUKl+Tun9eVHJkDV+PuaxjlNBCCM579
- V56STaWPPNZAxi75LsvF9ncwbF4axnDWG15e2rq6Bwf3k9ny25yVMFd
+ bh=BaqG+ncA4e6jPTLXGj38TJPyzRCYGVfmkhU4oOz1CUk=;
+ b=Fxs1DZlsqwRCapYlWQSXqfJsbrfVlGZrT6bjmqm46WsGu4wjs2yJwd65eXhY6P2NKfjlmEfkm
+ iPFA+GgIN92A2Hgn/lEuy4b8mQbXX+KUEphIaaCLZzgQtWpaCyIUTd2
 X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
  pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvfeekieegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfgvrghnqdfoihgthhgvlhcujfgruhhtsghoihhsuceojhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgqeenucggtffrrghtthgvrhhnpeffjefhtdelhffhheevheeutefghfefteeluedvudfhgeegteeitddtuefhhfelteenucfkphepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgsnecuvehluhhsthgvrhfuihiivgepheenucfrrghrrghmpehinhgvthepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgspdhhvghlohephihoshgvlhhiqdihohgtthhordihohhsvghlihdrohhrghdpmhgrihhlfhhrohhmpehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrghdpnhgspghrtghpthhtohepkedprhgtphhtthhopegumhgrvghnghhinhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhrt
- ghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopefhrhgrnhhkrdfnihesnhigphdrtghomhdprhgtphhtthhopehvkhhouhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehimhigsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvfeekieegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhufffkfggtgfgvfevofesthejredtredtjeenucfhrhhomheplfgvrghnqdfoihgthhgvlhcujfgruhhtsghoihhsuceojhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgqeenucggtffrrghtthgvrhhnpeduteehgeeihfelleelkeetkeetvefhvddugeduvddvudegheelkeeltdfftdehjeenucfkphepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgspdhhvghlohephihoshgvlhhiqdihohgtthhordihohhsvghlihdrohhrghdpmhgrihhlfhhrohhmpehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrghdpnhgspghrtghpthhtohepkedprhgtphhtthhopegumhgrvghnghhinhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhrtghpt
+ hhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopefhrhgrnhhkrdfnihesnhigphdrtghomhdprhgtphhtthhopehvkhhouhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehimhigsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Add support for using src_port_window_size to configure the source
-address stride (SOFF) in DMA transfers. This enables interleaved
-memory access patterns needed for applications like stereo audio
-de-interleaving.
+This series addresses several bugs in the fsl-edma and mcf-edma drivers
+affecting MCF54418 ColdFire processors.
 
-When src_port_window_size is set, the source offset is calculated as:
-  SOFF = src_port_window_size * dst_addr_width
+Patch 1 adds a write barrier after TCD descriptor fill to ensure proper
+memory ordering.
 
-This allows DMA to skip samples in memory while writing consecutive
-samples to the device, enabling efficient stereo-to-mono de-interleaving
-without CPU intervention.
+Patch 2 adds the FSL_EDMA_DRV_MCF flag to fix byte-lane addressing for
+MCF54418.
+
+Patch 3 adds per-channel IRQ naming for easier debugging.
+
+Patches 4-6 fix the interrupt and error handlers for all 64 DMA
+channels:
+- Patch 4 fixes the interrupt handler to process all 64 channels
+- Patch 5 moves the error handler out of the header file for clarity
+- Patch 6 fixes the error handler for all 64 channels with proper types
+
+Patch 7 adds source stride support for interleaved DMA transfers,
+enabling memory access patterns where source samples are not contiguous.
+
+Tested on a custom MCF54418-based platform with slave DMA transfers.
 
 Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- drivers/dma/fsl-edma-common.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Jean-Michel Hautbois (7):
+      dma: fsl-edma: Add write barrier after TCD descriptor fill
+      dma: fsl-edma: Add FSL_EDMA_DRV_MCF flag for ColdFire eDMA
+      dma: mcf-edma: Add per-channel IRQ naming for debugging
+      dma: mcf-edma: Fix interrupt handler for 64 DMA channels
+      dma: fsl-edma: Move error handler out of header file
+      dma: mcf-edma: Fix error handler for all 64 DMA channels
+      dma: fsl-edma: Support source stride for interleaved DMA transfers
 
-diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
-index 40ac6a7d8480b9ed2c6a2bdec59b4fda5fcb6271..e510cab24382fa557a2623465393c852b616fef3 100644
---- a/drivers/dma/fsl-edma-common.c
-+++ b/drivers/dma/fsl-edma-common.c
-@@ -647,6 +647,9 @@ struct dma_async_tx_descriptor *fsl_edma_prep_dma_cyclic(
- 			doff = fsl_chan->is_multi_fifo ? 4 : 0;
- 			if (fsl_chan->cfg.dst_port_window_size)
- 				doff = fsl_chan->cfg.dst_addr_width;
-+			if (fsl_chan->cfg.src_port_window_size)
-+				soff = fsl_chan->cfg.src_port_window_size *
-+					fsl_chan->cfg.dst_addr_width;
- 		} else if (direction == DMA_DEV_TO_MEM) {
- 			src_addr = fsl_chan->dma_dev_addr;
- 			dst_addr = dma_buf_next;
-@@ -714,6 +717,9 @@ struct dma_async_tx_descriptor *fsl_edma_prep_slave_sg(
- 			dst_addr = fsl_chan->dma_dev_addr;
- 			soff = fsl_chan->cfg.dst_addr_width;
- 			doff = 0;
-+			if (fsl_chan->cfg.src_port_window_size)
-+				soff = fsl_chan->cfg.src_port_window_size *
-+					fsl_chan->cfg.dst_addr_width;
- 		} else if (direction == DMA_DEV_TO_MEM) {
- 			src_addr = fsl_chan->dma_dev_addr;
- 			dst_addr = sg_dma_address(sg);
+ drivers/dma/fsl-edma-common.c | 14 +++++++++
+ drivers/dma/fsl-edma-common.h | 11 ++++----
+ drivers/dma/mcf-edma-main.c   | 66 +++++++++++++++++++++++++------------------
+ 3 files changed, 57 insertions(+), 34 deletions(-)
+---
+base-commit: d13f3ac64efb868d09cb2726b1e84929afe90235
+change-id: 20251123-dma-coldfire-5f36aee143b3
 
+Best regards,
 -- 
-2.39.5
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
