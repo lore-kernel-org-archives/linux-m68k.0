@@ -1,167 +1,180 @@
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11013029.outbound.protection.outlook.com [52.101.83.29])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA23B301481
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 13:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763989534; cv=none; b=cwMQClXTuP0aKYRwmBP2j8xoWpV1Ol/72kFBmq8Umhwg+Eu4jEPI1DLGPYR/fJEAFB0VRjm2l7dJlrXonOJoy8jKLofZTIgqHec4A1XxrrrCcbf10e5UffTpplS+RlzybvUs1H6IUbVknEE9Qk4hye47c3TuLBpOQUcxyYaOM4M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763989534; c=relaxed/simple;
-	bh=rvffBPeDVxbQoo+Q7lx63a7eZIjGM7ukQNoAugTkn9w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tsZHw69DwnJcW3LUhLCkASbv1nppWCrwx6jalmuBQ982LHDLhFAYEX+uwqaZY+wAEtTsPoLlwHPTC6Kf6H/7vIJfPOUbv/YYvp5T6TjfrbC2Vp8/Ai+j7xITHWL17zsF2kOHITxfj9uS5yF9h7l7Pm5yazjcs9sByKNZWlv+zN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-5dd88eef2f3so1540210137.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 05:05:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763989532; x=1764594332;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oRA7IiXm/R9YyxGpbeRsKjwk7bFwEo0rtrEj2XwEZxU=;
-        b=PMUWsPEC4g92x5xm5tcFGdDxKYsLk8MOM+LMFyZYgp9RilKUPzVI8TTOkxUuh9ch99
-         WpwM2+FoYrWEWbbgEbExlOzF/04jncQuzaHSCYZTgW4et+OKrS+ILj2RXYfIFmv0QAZP
-         vP97fzwxsR1ZLB04JzNJTApVKI9+NRljueLX2Ced7PUIBlopbSNU564vyZs8IY04R66m
-         bByDN1XPEY3M8xTXwBW8wpRenyZcmA5qBxWyUQo2naZEg48Rody2QmIPH88ljgEWv8sl
-         2tFfj3O/cFONpgfpmzJw7SfIchbZMIk+psnY1m9FJ6gwIubwckgE85uuMPZ56hyOxjk+
-         sQLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWZKD+W0JZc4nKESLRC3us7O5/bScppCu500+Q8QT6xXTHOw83ycluWCxfpooEFtKMHM4ATfJE1dNPG@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yw8rJCXjOZPAcQd5AaRC1v41ZBchSHcnZv96WuViodgKMzez897
-	7RzJIel9TFP2hwSaausx1l1Dyb6QdUm58BWfM8/7i8sOfeYCiv1ZohVg/S4GnJ5o
-X-Gm-Gg: ASbGncuXyZuniF9/riDOG0l7fRy8WFicpbQ3e4Z0wJU0HIEuJ33cY8dlL4C+k5+ufFx
-	1UmjbxAkPrE8qEHYu24M2eSZobtF1XtkKKYl901V2WsF1yRE+qiEIoaBAigfkeNzjiPxSyG9dGR
-	42GoiblF7Q4bZfCMEtpAre5CWj0g46MZut4uUVx9RKKZvbEMRcMqo7Wp8KxqXwOk68Wm+xoUta2
-	WIZvPOKIYQNnhmS023GzZWpNpB5qlw935tfVVDndu2q/9yDiakouh6qlcvpYnTnjfUfz/bF+2iQ
-	ePeUzwrCr3keW4inUXj0JUjiT8+8sjrU9GrJ2OPMXJlgXttzqIaq0Ed8FjJh7HLmKcC40j8RTnh
-	WWly8xxFXK3d5uT5aeyiRtaP1LnWfrPy3ATwLqCgCCf27rVeN9iGaFCqAID1HEvy8fi1EzaQ0s6
-	xQlxxe429TIBMyxYqEbfg8NsWxdC/8lwCGBRuUfnIeJnd0exuiVEUpyXh6T4Z6zBGRdcxPAA==
-X-Google-Smtp-Source: AGHT+IGxSbmcHcrcKVyMShkoEf/elGpLSz89dW/3Vtwh2RqYffTZp56GpfsfIJ2+dWwOrGI/h6njlw==
-X-Received: by 2002:a05:6102:5113:b0:5db:18fe:7520 with SMTP id ada2fe7eead31-5e1de3bf69dmr2992869137.22.1763989531439;
-        Mon, 24 Nov 2025 05:05:31 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-5e1bd96889csm5430480137.5.2025.11.24.05.05.29
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Nov 2025 05:05:30 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-9371f6f2813so1120504241.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 05:05:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWM/trEsQEFmwYW92jbO47mosuwi6j2H2dGjHrGvi+hw7OrfjskglIPkKALNnl2SVltBM3NOhN7cY4P@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:5113:b0:5db:18fe:7520 with SMTP id
- ada2fe7eead31-5e1de3bf69dmr2992625137.22.1763989529183; Mon, 24 Nov 2025
- 05:05:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DAB4314B62
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 15:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.29
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763998105; cv=fail; b=Rs5U5wEgJjibTI8/OeldzQOfOFTX+Oc2PIW5EW64FBEWvrYDDYtxIGkNS/gdBRWyO+gyNsz7adEOAfJkHh9JGaAcbRvY9mbyOTl5g5BzkQcV1LSu6kLdbhDb9p0MIGHiq5WDB6uT22mfnZFyUkvqU8c+Ly6hv6r0G792isf8x2g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763998105; c=relaxed/simple;
+	bh=NHdsb2uMbw8K8G9gpxsyllkOKgqzecaKXtRus4mHpVY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=iC6nqKMRPMCrSP7BGsm/0F3hUvek/U0OJzn7Hb622wwjzYaMSEIqpl3ykzrXrXWZy2KjQjU3JIEKqnXD4VB/bxMVIKk8uTg8ia3/0YiP09yry/HK7z6IQs9DF0fUEArGbOSargcwAkoG7p4RfRtMhN7rk+LbSDKYWqk5gBOqdOk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=PDMWsszR; arc=fail smtp.client-ip=52.101.83.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="PDMWsszR"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D34MqUU0L20LtTlg8GSxG28LfoYFZJNXJ3xALazoIZ6qD3sHbyeXHXaQXkUFpzRiIopjptWdEZuowA/QHRQdmXqJlupo/XPChCYX0kq0iCjJrzpdy0F+5WCD4SDhRO+hlyREGGbcP6V6z0bnPO+T/mBjHqBPR4l51a6xYeJnDqM0cAdR0MWETMuwgZMFRxNJF4SctiSGzlFfqXm/JPiymfoIkLQ91NW332ruvcT/X3C5lqW5oEDQfDmQB9ndnrOu6Gmozpn60p4zVCsoYUeTEKZZ5fbPPdrKcS9DGZa9hdRKlcBgUJImDRL8H7FHJMe2Ah/spc8WVV4zSGdyUsJecQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8okQT4j/nUrcE4w8ta/1ombqUkljeXvIinqVSug4ckE=;
+ b=OSV1RXssnr64PuyAYX60xypBJ7i+lxW78KvwhcKI2t9W6CFm3Rd4VbrB+MxptWg2bipR4IrwMyB+p/BGmqleezXnsUExfJOxRIwdPo6rqO9Tw458E42rwB0IskAibLJWbJcGpxbP1/ZuVaJotwn5M2xuEEe1d5mc3t9nmJkFYF9z2d+892LuyLtevHqKujtPwOY92AkCORR9keMMOHCLRtAye2QEaafl69Dg9ENNwv8SzPJOLdfMCsnmvX2tNhg3/ui0BqytL66Gn2Em0+vG5mXf10IA7+DHro1ebISWT5jHe3oY2WPOIKen6Idv+kgy4pruRPrAaLRkg7OSoTaPSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8okQT4j/nUrcE4w8ta/1ombqUkljeXvIinqVSug4ckE=;
+ b=PDMWsszR3h44ZbfT9FqsHQ5ODUy90ckXZ6Gym4vMHNZDw4TgEPP+P1iP/XL+172RmO8zbKRecCXXLgb7wt1eAnAf8tb8RNsugwSYynH6M8zRYK+ezes03ys+LrrtJMKhX+OnUrPU4QNgajN9H52c3LlUvEZGGjraw+Hc5jorbOJDMzDeHMdSiOI/gzmlIFc3dCoED8fHMz/tv6gzchtpirlTN31F53s7nMv9tiTBFpUcvXSHSBoUvSuz+IkYHUMJtQzpMmUNz9Jlh3gs2DqHXaHBXilhzuXctipsV1FgFtkBebLke28Xnv2KnCEgGW3w+rKs0i0VNW7TNQ9OBsY5QA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DU2PR04MB8951.eurprd04.prod.outlook.com (2603:10a6:10:2e2::22)
+ by DU4PR04MB10718.eurprd04.prod.outlook.com (2603:10a6:10:58f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.17; Mon, 24 Nov
+ 2025 15:28:19 +0000
+Received: from DU2PR04MB8951.eurprd04.prod.outlook.com
+ ([fe80::753c:468d:266:196]) by DU2PR04MB8951.eurprd04.prod.outlook.com
+ ([fe80::753c:468d:266:196%4]) with mapi id 15.20.9343.016; Mon, 24 Nov 2025
+ 15:28:19 +0000
+Date: Mon, 24 Nov 2025 10:28:08 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/3] hwrng: imx-rngc: Use optional clock
+Message-ID: <aSR5iI8ZgmJZ08Ep@lizhi-Precision-Tower-5810>
+References: <20251124-b4-m5441x-add-rng-support-v3-0-f447251dad27@yoseli.org>
+ <20251124-b4-m5441x-add-rng-support-v3-2-f447251dad27@yoseli.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251124-b4-m5441x-add-rng-support-v3-2-f447251dad27@yoseli.org>
+X-ClientProxiedBy: BY1P220CA0017.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:5c3::6) To DU2PR04MB8951.eurprd04.prod.outlook.com
+ (2603:10a6:10:2e2::22)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org> <20251124-dma-coldfire-v1-3-dc8f93185464@yoseli.org>
-In-Reply-To: <20251124-dma-coldfire-v1-3-dc8f93185464@yoseli.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 24 Nov 2025 14:05:18 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWDryHHdrsBzsUF4BRhNoDXm4+3FVQ4FV2acGT6reeYhw@mail.gmail.com>
-X-Gm-Features: AWmQ_bleU8rfcOoPzR7hq6Rm0AD1QUkBfKzAzzAbdXJa_V1TGP9TwrSr0BINHw4
-Message-ID: <CAMuHMdWDryHHdrsBzsUF4BRhNoDXm4+3FVQ4FV2acGT6reeYhw@mail.gmail.com>
-Subject: Re: [PATCH 3/7] dma: mcf-edma: Add per-channel IRQ naming for debugging
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>, 
-	Greg Ungerer <gerg@linux-m68k.org>, imx@lists.linux.dev, dmaengine@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|DU4PR04MB10718:EE_
+X-MS-Office365-Filtering-Correlation-Id: c4483eb2-ed5f-40f3-7a33-08de2b6e18bb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|19092799006|1800799024|52116014|376014|7416014|366016|38350700014|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?Iu3aYZekrOWYqKT1jYAdbXxP+p5xrPnB/q09hwCphwed7y/QmUNFCl9KIa59?=
+ =?us-ascii?Q?CkV/AsfyKLuUh6QIp5e/WuPZPKsDzprQz4Zgz3hyBIEG8O7IWnu21bhNxH98?=
+ =?us-ascii?Q?8hJSE7vsUlGwgK1TgM1e3wOcAseogwFFolSL80/66+66cPGrvw7UEkszxDh4?=
+ =?us-ascii?Q?Bfzfcpq7WvpXiMq2dabv1mN1+9KXdJWRg/urkGcExDdj8KGNVmP6Muwy+Z76?=
+ =?us-ascii?Q?4rf+yKGykzysE7UI1GW7UBkSLj8zVI5YguWXQad5Pxg/4tyIKj9cfjPKVp6w?=
+ =?us-ascii?Q?cdFBL5CR16XF1BbQ0gvb4D6Vr+mQr18OmVBH6LCSTdNHKzZmzcbchfPDoY/P?=
+ =?us-ascii?Q?9c3ltcmUL7anREnXxarMwmVc5PR53TSq8uGf3qleSYevq040u090Bh1EtL3g?=
+ =?us-ascii?Q?FrRMObOCES3r7NTTMnkTlAjugqXHxAnP4DwQTVtPbioy2oMhD0UXU2i8apU8?=
+ =?us-ascii?Q?otqxm+vych2zKl2W22UrfBd1KU/p0u9j0OxMEWQB4IOHvERNUjRDQjK8S0hQ?=
+ =?us-ascii?Q?63LkSAvppcEXr9XhhEgRgREspNZHHWx1SPNQt7WimC+EDpXtGLGv9p0XfPZP?=
+ =?us-ascii?Q?nGCg0ecxqQuxUiiFLPkmrZUQqSjDYg1M1fXL/OGJzb3VZYw60oaca2ZLbtE9?=
+ =?us-ascii?Q?gliRZNOAUJj5NTr62LLgdEOZxRnn5z5tapD0xWvf1ffBbPckWU/H7LSuF5LW?=
+ =?us-ascii?Q?rH3CKwA0D9E6KjDuPKSCdMlhYlBTMHF40X7FMr2ruIz4QAT2cSDb09Lnur4Y?=
+ =?us-ascii?Q?rKzGm/fOIvT0aanJmKNNwl91e3Cq/4X2KW0gTu6wvCTy/0q4cyUxZ4S2lN5j?=
+ =?us-ascii?Q?PEmrZ5DWRXZbNeAxUG7SBQByQMItvxgt7/ITG4UsAVA+JZHenoySQhXir7ol?=
+ =?us-ascii?Q?7yxsJT2q/4ILlHl6ebVNFiJUPDoZVnLEkUXCQK52YDKR334ebXhnk1qinvwZ?=
+ =?us-ascii?Q?trz7pUtpnFR/LvAKDKoVBF/T7caUfEiRhuLYr0qdXZdM2avl3Wn1za2KxRQo?=
+ =?us-ascii?Q?p0wOpXH+DqOEBX6NYCMFDoFpzl+83oJ+8gXalkL2V/xVJIB+DHDOX0hFoubF?=
+ =?us-ascii?Q?W8dCOQxWU7qx6TrCk/jUBLIigDlV6A6+eCiahlTz6iiKojipMai+6pJMHGr2?=
+ =?us-ascii?Q?4qNkThhOMInfTmXLl/XcCRcfxR+gu1R/VQgybY7E88HK/9l4jYmNPPkMNDmS?=
+ =?us-ascii?Q?p4ic9Yshk2PKqQxxWhnFbdcnsgtApRymAxuLXF/Erg49uBP1uaM824Qb9nDa?=
+ =?us-ascii?Q?gzeBDhDEvSVlYbBvoFPj3GUOvz9ellpL3ZE3dSrxNbR0XN0ZbNeA0Hlqa+Ko?=
+ =?us-ascii?Q?hG68Awn9wkQqh30dhGLDVsieaa582VgWrFkf0k2m5fow14iJxsc5vjtZpaJ2?=
+ =?us-ascii?Q?pG4SCjv5YIJQWaPjRpydqI/pIeRr38mannFNepIgDZFfb9AmIhHghrGzAcD9?=
+ =?us-ascii?Q?4yOYTXJ5yiHJPpKWKZijEyPw0EtOl8Zxt27n8fpUqG1C2Mfyss5exTvCbst+?=
+ =?us-ascii?Q?uG80mcF786lyBVQybQpvYpSyzkB6FMmJWv6I?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(1800799024)(52116014)(376014)(7416014)(366016)(38350700014)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?JJCJ8lTMA/OfgNXW3wky+RjtW7ipvQBhPFCMo7CNK/T3jw9CSwGWALCBppNc?=
+ =?us-ascii?Q?rZOeP7aYVhx83pZT6vwiDDS/NOO31wp77UUrHGzPydLgVgHROYg4v4ksm/df?=
+ =?us-ascii?Q?hWUKGOEp16YHWapLQDn/9eE4RsQoQzxVuoV4CkW1RQTzYGnkzsfrgJb8a2Av?=
+ =?us-ascii?Q?afTOXY9dzSgD8+25U3f6JrXh3pex20a/Y8J/2wUVayC3auRPf56Ak8qFI8JX?=
+ =?us-ascii?Q?GpHdBCTfto7KF/3l8zpL8X9WvSNqkWh4daeJrySj0k/NBNj1ynfzSHk/Q87g?=
+ =?us-ascii?Q?FCHDhMyOtGIKAtRMOBdQhT6GO+Yf2mOXyyJHD8dYi1xsnAPNDY3BJql8thaN?=
+ =?us-ascii?Q?qIDG4kmrrm1bxIUnf4Xm39BRCWM1kNL2eL+d01Jwc+EAyN2TZh/wYz/7K5Pj?=
+ =?us-ascii?Q?XsdmoXpxvNwwPHbuppRBM38EmWoWk6TjkBJIoQkf4O+6Z8P2lMHxpzz8QkJq?=
+ =?us-ascii?Q?WGu2QSBLv9gTRmJogkqjrxabSyY5NyGtWgGam1RFrwJz5WGGxGO5Us6IgOQa?=
+ =?us-ascii?Q?K5nC4C1Kw5LFAvAh7fRYNVPsPDCVkYQXWyds2axHPbmVKxp71JSyvR3UKTxE?=
+ =?us-ascii?Q?BEEoZuirGHbwXC1DP6U6NCM/EYz47JMXRpIpVZgMkTD/URQuHkGUkcdSpf1K?=
+ =?us-ascii?Q?O6nFZE5uoXCqP3uikSOY7L9ie+lysNPJ2zxtzXrC52vQWWaXerCcxlh3ylL1?=
+ =?us-ascii?Q?LReMfs3qR1uP4+Jf8zOgi6xrlej8nz99qjwYCPU4D8F93FOEsynoLcKgkDHW?=
+ =?us-ascii?Q?7K+rfnXiImsEufyCKpeMVr4H6/ht55EzuGwaFES3en4Y9pvTpaFzTTY3u2HF?=
+ =?us-ascii?Q?6gPPz0ilk6p3Tzla0wrqJXKWjkentqpHW5h+/T74c3wk9LN14eGhaJSLfCEd?=
+ =?us-ascii?Q?WObqaRtkmMnB3qn/ognS3XL/Ou6gbv8AiN0/WH+A7xmjxNhxFNRFlQRjN+0y?=
+ =?us-ascii?Q?giM0Kbt99IK9utFLNo0NJbvptbHvTfo3qbSpF+eWkM+/LIcUKLtBvGTyfcJp?=
+ =?us-ascii?Q?2VoEIAMXQ5YXo1i55lFq9SlFV0TOshf//FojpQ/08ZKsRIPll2A2pjJMCdMZ?=
+ =?us-ascii?Q?55ZSf6mR++BfzdD6o3lA7UOW03IbnUMU6Ks6VHEOEGY8u1/TgTDcmjKn12p1?=
+ =?us-ascii?Q?+7aAlDpn0DQjxBU6owL7x9NXiSSBCJeqHpievZkSOsVKSHCqYhP8Y58vvTl6?=
+ =?us-ascii?Q?8hAZxQN2F+YVsQCrhRKZz/+q1RWn6Y5pCn27MWieT2k61xAUN90d+OaoX1ZK?=
+ =?us-ascii?Q?uojXR4yk577IQBuXW/VBs8LvDBR1bgw5wxi+IGKx1tkqya6HprYC30FBMKw0?=
+ =?us-ascii?Q?EtBCNy5sg5OqWkVX8IIgpCr6Ub+ijrpu7EO4afN8xN3f/KZQCNuBH6mKn/XK?=
+ =?us-ascii?Q?H2fAfa+I4dT4TUhPKmSm8SzUgEdPmekDjn8POeWV46h4tbCLcdKFJNmoR4wf?=
+ =?us-ascii?Q?iAVFt/FEjlmznKCzbOdzmXJSNnkziPPMgzy9Y/M+Z2WdeR38e12u7V0wlt39?=
+ =?us-ascii?Q?6sc5Hc2tLsRnPRTXeP6w+9le/LPxR3lwKcMfRJ1gnM5X/BMW7/BQyYrq57tN?=
+ =?us-ascii?Q?XiCUeVPxcTkjnv2ugRw=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4483eb2-ed5f-40f3-7a33-08de2b6e18bb
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8951.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2025 15:28:19.6780
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: n3TVeTm3aAeiqzJJaZwvRRzFV4TGv//F4P2ybeLURjkoJbR855BRqWQiJfW0hej+8fmJwm9jFr8FCz8IBKScCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR04MB10718
 
-Hi Jean-Michel,
-
-On Mon, 24 Nov 2025 at 13:52, Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> wrote:
-> Add dynamic per-channel IRQ naming to make DMA interrupt identification
-> easier in /proc/interrupts and debugging tools.
->
-> Instead of all channels showing "eDMA", they now show:
-> - "eDMA-0" through "eDMA-15" for channels 0-15
-> - "eDMA-16" through "eDMA-55" for channels 16-55
-> - "eDMA-tx-56" for the shared channel 56-63 interrupt
-> - "eDMA-err" for the error interrupt
->
-> This aids debugging DMA issues by making it clear which channel's
-> interrupt is being serviced.
+On Mon, Nov 24, 2025 at 02:04:07PM +0100, Jean-Michel Hautbois wrote:
+> Change devm_clk_get() to devm_clk_get_optional() to support platforms
+> where the RNG clock is always enabled and not exposed via the clock
+> framework (such as ColdFire MCF54418).
 >
 > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> ---
 
-Thanks for your patch!
 
-> --- a/drivers/dma/mcf-edma-main.c
-> +++ b/drivers/dma/mcf-edma-main.c
-> @@ -81,8 +81,12 @@ static int mcf_edma_irq_init(struct platform_device *pdev,
->         if (!res)
->                 return -1;
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
+
+>  drivers/char/hw_random/imx-rngc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> -       for (ret = 0, i = res->start; i <= res->end; ++i)
-> -               ret |= request_irq(i, mcf_edma_tx_handler, 0, "eDMA", mcf_edma);
-> +       for (ret = 0, i = res->start; i <= res->end; ++i) {
-> +               char *irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> +                                               "eDMA-%d", i - res->start);
-
-Can return NULL, so needs error handling.
-
-> +
-> +               ret |= request_irq(i, mcf_edma_tx_handler, 0, irq_name, mcf_edma);
-> +       }
->         if (ret)
->                 return ret;
+> diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
+> index 241664a9b5d9ac7244f15cbe5d5302ca3787ebea..d6a847e48339b2758c73c95d57a7aa48eb4875e0 100644
+> --- a/drivers/char/hw_random/imx-rngc.c
+> +++ b/drivers/char/hw_random/imx-rngc.c
+> @@ -259,7 +259,7 @@ static int __init imx_rngc_probe(struct platform_device *pdev)
+>  	if (IS_ERR(rngc->base))
+>  		return PTR_ERR(rngc->base);
 >
-> @@ -91,15 +95,19 @@ static int mcf_edma_irq_init(struct platform_device *pdev,
->         if (!res)
->                 return -1;
+> -	rngc->clk = devm_clk_get(&pdev->dev, NULL);
+> +	rngc->clk = devm_clk_get_optional(&pdev->dev, NULL);
+>  	if (IS_ERR(rngc->clk))
+>  		return dev_err_probe(&pdev->dev, PTR_ERR(rngc->clk), "Cannot get rng_clk\n");
 >
-> -       for (ret = 0, i = res->start; i <= res->end; ++i)
-> -               ret |= request_irq(i, mcf_edma_tx_handler, 0, "eDMA", mcf_edma);
-> +       for (ret = 0, i = res->start; i <= res->end; ++i) {
-> +               char *irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> +                                               "eDMA-%d", 16 + i - res->start);
-
-Likewise
-
-> +
-> +               ret |= request_irq(i, mcf_edma_tx_handler, 0, irq_name, mcf_edma);
-> +       }
->         if (ret)
->                 return ret;
 >
->         ret = platform_get_irq_byname(pdev, "edma-tx-56-63");
->         if (ret != -ENXIO) {
->                 ret = request_irq(ret, mcf_edma_tx_handler,
-> -                                 0, "eDMA", mcf_edma);
-> +                                 0, "eDMA-tx-56", mcf_edma);
-
-Fits on a single line.
-
->                 if (ret)
->                         return ret;
->         }
-> @@ -107,7 +115,7 @@ static int mcf_edma_irq_init(struct platform_device *pdev,
->         ret = platform_get_irq_byname(pdev, "edma-err");
->         if (ret != -ENXIO) {
->                 ret = request_irq(ret, mcf_edma_err_handler,
-> -                                 0, "eDMA", mcf_edma);
-> +                                 0, "eDMA-err", mcf_edma);
-
-Likewise.
-
->                 if (ret)
->                         return ret;
->         }
+> --
+> 2.39.5
 >
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
