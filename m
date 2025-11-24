@@ -1,68 +1,62 @@
-Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11011049.outbound.protection.outlook.com [52.101.70.49])
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012056.outbound.protection.outlook.com [52.101.66.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB24313E10
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 15:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.70.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5114314A99
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 15:58:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.56
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763998172; cv=fail; b=SfDIqdpbd54at0nv7i4aV59ysDBtg8OKEJ5YXpYl5JlN6llKK7gPRWNI51MnDwJfJWHnaave4RMtguoS8yhRgfEXs+vjghBphKk0C09iDgQIzz/W7SALHxGJwsbH+bopHuTSahOu2Bfitag8pVLSTrU7NDSsF+KmAQue7lDX+Hk=
+	t=1763999883; cv=fail; b=tYo32wzhm3VaIgu6zE67uT9WIAzUn9POTcKvBm8EA3ngOuT/GoclGJcrz4DxqgJ+I3GFcE1TX+e+1nvUiL6DUDn6ruztj4F1xNqMxmcNyeaiZJJoq10Euf9Xv/SpnKD1hsbXnpM2fQL+mrKYTdJHXRlFO9elwO8C/hbJmdvZ9Zw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763998172; c=relaxed/simple;
-	bh=smG86+7AMfkze3vf+hwM3ZX2jRffPZb5LFXc++ZvaMc=;
+	s=arc-20240116; t=1763999883; c=relaxed/simple;
+	bh=tGV2SNVTwQbZoHYcWrrBJata9bkeFDPNVqJqi4QeCBA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=k9l3/tuujDyPHq4NYxoaOKo6/TJsWg5xhNCILAobb2IS3KRFg+PMtNlDpSdzF4Sh4oE+UnR5lzqOf4j1c/xbTQuGJLVjy3JMKZBMBC0dE8k53On6e1Td2AUHRmM9YDodVOHZ++El4lgo2lIIIuPUl9z1Xk5qzhb9w2mW48zSFY4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=CD6Yrhiu; arc=fail smtp.client-ip=52.101.70.49
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ZU38j7RLR/WBQih2qL3SR2Eilj/zDYRLq3Qp4A5OHepWJVk8Z5dteofP4wXkM7USxYfI2j6NZ8HAuyI30XvuS0Y+4aRDwzTi6/G6b4XkgnL8b2wMCwku1eXe/RI+3Ksp+vXjO4+PpwmOsqS3rT2of3Zxhh8WLFyTmX+eaUau954=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=HQrNTVlY; arc=fail smtp.client-ip=52.101.66.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="CD6Yrhiu"
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="HQrNTVlY"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VYllsk+aVQPtBjikCK0C/mqbO7+XVYHbAL9lr+1EOFhP/t3QUQUAX0sK8q7SujGuIw/S/Jm810+IDoW54SjNYNIL16dcleEcFn0kKGcXOTCZDXuCle7CMoYwXUb4Kyf0zFxDSolgtngCDXrxkbLlue3elU/amp3vZhTCeODNqENYViu3Xo57ccDZebjz19HeMH6LWbsvUbcWojOufblOVpYdDwMJftc1FXwcRultbFxwqWpqe9FFPHc5fE+Ly9xlEnH8QwZS95kw0LIE4ETYTF5bdA9d/zTEgvzFl6XPIQdNOj6WUXvVl6VjvKl1Kz6orNWVxP9tDGM08gnhiU3DIA==
+ b=jAOfR0iLZb70E54Hm7QssZjiHyAcXxvpjtBcA5CCafk8LbVh06uSC2IhzguLh43eaqfjFHXwt4eVAzm7IORCilPPaPlyBvpFD9b/v5pm4+PFKCpAQIzHBV4UI8Nb4UFebI4mQK2Q3U/M4aeSYS+56MGVL8K3NzHgdFlHp694UzxXHrD4eV7HmwLttvvoHJ6dM0+XqmSGUo+t3PnxjXOxu9Tphu2RCP+9nUBgOazL6QwDP0Z+lu2FpoNsHJJheSZQp4tAL1XDAjiEJ5OS1RMyyz41gH16mC5VvcU6v1uPLGCQfMbr8Mc/7wa1Us6MVdcDu+a6sIlwbilb3vtFII4lzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XSdiAzf7hH+3uyR8qUpcX0FBcfFeJk/ty2N1mjMWmqg=;
- b=BvXW4OAYBN4EcIMJ7kKqiMw1OTVOth8VvT0mPHLnwyN4qGUKmGqsh4DBW3AOLhN5Gqodm+fnxjGd4sIvBopLsDL212s1xYAXsFu7bXw003pi0j6RcoIlu10zzviiZ1kSWFe92TReUJBg3qPTaUHoD64yTUQ0fEJSLxo8+5DtiWp64vspzHuU5gbYt1maEMbKmFcGuLR3jWWvJz9RlBz0us+aiTRQQsBGr+VsKPVezl9+6imhglsyH58XQibwl03GOyQXF/yTIZPbgTVMVGb4SMoNntx6QQWAHQFi6hdAD5+72ZlFId4cxgMBWFBuIpdgpRu0058gU8xBHCCsrSDqXQ==
+ bh=lrMHcIjedmf7LN9qBmxfD1WQ29f1Glch7Y6rxvOcQYw=;
+ b=b7a2X/YZ+MEYcKvOMYj97Q50IUWZva6ezQTTbatsU9UDWZocrxnBFl8V8yn32d3NCeXAhwBTvbAHbf/U07V0B1zmn/q+E13REhTc6K+0fQ6f8e1npS6h2eD/if0fha0WFqS42rumXL6TNLFJejHAOwkG5bx5eJEl+fOVMOu4uulwXxdbDe691q2iMzh4XJd+Qo4BfeViyKDSqNH2uy4/pxzPqqqXL1s1EN+bTs6X78aAnkaGutzIyCg68xNukUMZV/ePkPqgaldMUhX3PxXcNcojmmiW3bPgBJwKPWvEadDS4ap1GpB3bECu7DzhRU9GMssheJOI5vheuAevl9xPaA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XSdiAzf7hH+3uyR8qUpcX0FBcfFeJk/ty2N1mjMWmqg=;
- b=CD6YrhiuH/KZnjNZCVCg7ndQKUhjjjElLdBNfJ4mu0GQ+My0/4deGzDHHb7tgzjlvI707oA2eAnZcPRAA/XtExwAwcIXUtldYIM9NyCjKCOXkQi/R/7HCVkVAgvSjyq0+AAr52HZV+i83cRvDmQaFx1WWzYohwejwCXFw47+tzdi+jQPk3QMihT4MT2YcRbgjmpl2aFX0BsnIw47pfpf1ywDm0nqRvMNU9uHke3+/QHVn7tPiWKhu4K8vkFtvg/mc+1dslOiw7jG7BkkXRUAPm1eK/Ug/sOvhrECUe9kp684dTQlKhKS5QWf9wrmZ9lWCjNmZAdM5usfvlBYXlUcWQ==
+ bh=lrMHcIjedmf7LN9qBmxfD1WQ29f1Glch7Y6rxvOcQYw=;
+ b=HQrNTVlY2nbUrhUjlLZbGmAtShKjctMIt2/TBeQkGoOCQiKMnQvslaFlzjZn5JquggR3gXpxQlpaLoIdUULtJRF1hfs2VnqqjbYw3ZuOyNhraGmhbFkOkCbZGhVKesoW87xcANKdYVnDrADGQ0YGQbxP33l38OMb/6aDOE6OJc2AhKpNBGjI4CR4+VIZrR5QdTm8OSgXQB92wkGDNxAF8t4OxAaZ/gfZ24Yb2u/hWY91rgjkZ4emeH+/0/Tok0UrpLyy+1+UBVT8ND4fMk/3MDAT+AHmhJf5X6wSRZfuit7rKR70RJ1/b/JrHBHihvEKpNe2eFgtztQsvF5ze3nW2A==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from DU2PR04MB8951.eurprd04.prod.outlook.com (2603:10a6:10:2e2::22)
- by PAWPR04MB9910.eurprd04.prod.outlook.com (2603:10a6:102:380::7) with
+ by VI1PR04MB9761.eurprd04.prod.outlook.com (2603:10a6:800:1df::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.17; Mon, 24 Nov
- 2025 15:29:26 +0000
+ 2025 15:57:56 +0000
 Received: from DU2PR04MB8951.eurprd04.prod.outlook.com
  ([fe80::753c:468d:266:196]) by DU2PR04MB8951.eurprd04.prod.outlook.com
  ([fe80::753c:468d:266:196%4]) with mapi id 15.20.9343.016; Mon, 24 Nov 2025
- 15:29:25 +0000
-Date: Mon, 24 Nov 2025 10:29:18 -0500
+ 15:57:56 +0000
+Date: Mon, 24 Nov 2025 10:57:49 -0500
 From: Frank Li <Frank.li@nxp.com>
 To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 3/3] m68k: coldfire: Add RNG support for MCF54418
-Message-ID: <aSR5zu07XOTzuf+n@lizhi-Precision-Tower-5810>
-References: <20251124-b4-m5441x-add-rng-support-v3-0-f447251dad27@yoseli.org>
- <20251124-b4-m5441x-add-rng-support-v3-3-f447251dad27@yoseli.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>,
+	imx@lists.linux.dev, dmaengine@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] dma: fsl-edma: Add write barrier after TCD
+ descriptor fill
+Message-ID: <aSSAfW9xLTRN5Fwk@lizhi-Precision-Tower-5810>
+References: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
+ <20251124-dma-coldfire-v1-1-dc8f93185464@yoseli.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251124-b4-m5441x-add-rng-support-v3-3-f447251dad27@yoseli.org>
-X-ClientProxiedBy: PH7PR10CA0007.namprd10.prod.outlook.com
- (2603:10b6:510:23d::7) To DU2PR04MB8951.eurprd04.prod.outlook.com
+In-Reply-To: <20251124-dma-coldfire-v1-1-dc8f93185464@yoseli.org>
+X-ClientProxiedBy: SJ0PR03CA0286.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::21) To DU2PR04MB8951.eurprd04.prod.outlook.com
  (2603:10a6:10:2e2::22)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -71,230 +65,121 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|PAWPR04MB9910:EE_
-X-MS-Office365-Filtering-Correlation-Id: f449601e-2104-467f-a110-08de2b6e403d
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8951:EE_|VI1PR04MB9761:EE_
+X-MS-Office365-Filtering-Correlation-Id: 852ebb43-d545-4662-22e6-08de2b723bd8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|52116014|19092799006|38350700014|7053199007;
+	BCL:0;ARA:13230040|19092799006|376014|52116014|366016|1800799024|7053199007|38350700014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Tr2uJclCF75QuptwUEbkhCxOgtgtyc3H1DBRQHOSbwsszIbscMY0XlFouAMh?=
- =?us-ascii?Q?i0br+KBaL7JtOc6X3c+TVfKLQKsSWigqAu39uvnQlJ6qgVyFwF3wogb+PXQ3?=
- =?us-ascii?Q?k0FUl9i7w2cvyWz7Lv3j/CTgwmpHCXhw1+TokeU2ht6WjBlESRNuiXBz2Kyg?=
- =?us-ascii?Q?+AbjJ+VI1ShDEnv1Wj+Lv0vDPv06tLRpj0KaHH4OmrqjyVI6bQrc6Mz3RAp6?=
- =?us-ascii?Q?cN2hH//fp7Xy1/sP18uFzIPXRJPBFW5m7iX8O9MN7+hndg821eDwv+LjdsO8?=
- =?us-ascii?Q?99/aURG3Bd4QYAu8sJe4Dlgj+zYlHr0i7VN2g5lYfWrWYQrWR5AQMa4wgjzQ?=
- =?us-ascii?Q?QSU23LXa84c+oxJ88gXxyPspADZS3qbOgOF96EyrFSouGU9FUXKXS+kZnOcx?=
- =?us-ascii?Q?AwfagfjuR95ugOYwQzATIwvsppkI9U/UIQE3oEdWxwk8uCqtywVsEe+jNiQR?=
- =?us-ascii?Q?hGQEisVEp3seynAvafhjH6bCItfHQ9cfZQqZzvZN1ddP2KkjBs6CtV2yRGC1?=
- =?us-ascii?Q?fT7yCEptOxIQ4TOwTkZTE2AN3E60v9Fnk5Jo+rOVmazKtqpl+R/VN3zmALUn?=
- =?us-ascii?Q?Z1686x/ehpIvA3faip5EyZi/sj3V0ws3nU3i7GJPPnA8DjGIUGt6safL3z1r?=
- =?us-ascii?Q?xbv+2FInw72rsFs053Ay2h5Wjfa4sQsEHo8Z+AXSSvJKeJrx2VwSRRDCWRUV?=
- =?us-ascii?Q?zzyZXxSSCBMVtiBdb29X2MTvGe94P8NAYIhxs2p2j1LUWlxd4saeHTSKgdBQ?=
- =?us-ascii?Q?bU1Rb+C+zYCkpO1lolDLJPDggjeQIHjiDBt79bBNoQGBc5xLGSlo/y4oBn5X?=
- =?us-ascii?Q?Li4GsUu7m6Ew003u253ikl2qXlJ4yPJukrjpF5pCHVReA+YWF4RxgtcStgIP?=
- =?us-ascii?Q?eXsgMC+qVPX0L+HtlWIbVFXqUegTf11LCdjq8G0+aeIv7HP59fL6mdbysGPE?=
- =?us-ascii?Q?ac4hE3qCH4LjuGfEBCSCEidhLoFiIzZ0A4Eeb8OpraAfSFewaZQ2gEl1dog8?=
- =?us-ascii?Q?menYnAq6UhcpT8BJQwPe+Juza6ejVTuzItJjM+HzKBx6zw2Ymf8wtdE/SLV5?=
- =?us-ascii?Q?LKMpHzExbqnxOwnIEe2hFiwIl4ciHEN0d6kxnQOHYLIfmTovrTuftCUZo86b?=
- =?us-ascii?Q?1qduG5mntzpgU3b5UJMfMnIw5MC3hGxolW8MBTM1WTHQliGCtCoOenM3Jcfq?=
- =?us-ascii?Q?hFB/pLWXr8/WDRlDwihbo2RJsojdB1fkV8hOUTWYO9Dza4VkLWkNv9YR6V9X?=
- =?us-ascii?Q?zAoVJ3mIRbHTrRQ98c13fJleqN4nSBya5ZC2gne5WkOQvmXzlaeuAd7E2VFR?=
- =?us-ascii?Q?2Ulv73h0GhYCDb4AJTPlzVJ997Avu+W7wNzh8IA2tLuJosqpeQrnVSeLGX86?=
- =?us-ascii?Q?lNILukTioi2Middn3ELHq0TDGVzvO2tS937eDLAzk8KusAwD7+IctiEIRJob?=
- =?us-ascii?Q?UDDdwE6izlgSajjfS61UsxB4cGllGlRhSOzw1eYKZ9Jo/cG6iPk7aku4CZlF?=
- =?us-ascii?Q?0m/W7wbdHiQCJznpMOqMJZMWD149UZ3kRa2g?=
+	=?us-ascii?Q?nYzPIkuEvKsKJo7qVQS45ZlEsum2RahOiOvHiOiyjIyRwDBza6FTzS6ec89M?=
+ =?us-ascii?Q?3CKJngAQu+1bGMCniXkAxRgP0JzFLbwinOFkRPFCEtnSg34iLn+kqN3/Yb2S?=
+ =?us-ascii?Q?8Y3WEK2PHKbHR3W8LqFGIFQAXYdXIax0Dwt65wRjUP/5adJG/38tcEl9+JZI?=
+ =?us-ascii?Q?bogPuu8hq/+10y3j2bLC0RofM29hRewJauNNfXIEm1dx+Q+l1IBfqZzTDOXW?=
+ =?us-ascii?Q?wuMUI13mDdJJ1MRDZ6R63iuKV6JB2uACj0FlUvibrQAbgZnPGWekD3ZCx5bQ?=
+ =?us-ascii?Q?Kj0R/5kSNswhkMB3/9WDxwGfWHt2kvnWms7jiakz/Jid73OfTFXE+TRVOZv+?=
+ =?us-ascii?Q?EMh+AmGGLp7Xp5nhZ4IrI1kunUeM2fBf4JUuzJYm1H96nuG2F3G48go4bTza?=
+ =?us-ascii?Q?pUWg4LOMiuU2Gzrc2WW6lXImupmOFCKQ+NEIKFyqdXf42iJwEoBn57glk8WD?=
+ =?us-ascii?Q?+nq99wTHJNvBdl8qnpBCXwMQc3sM9wkNjQTWS1j6rqd9DZdMcraZaHCYrTPF?=
+ =?us-ascii?Q?wSGLtLURrzmciAxOGAfaT0UabPC5qEK70jO6gwxvkrHWl1PB46DHP+ygHbmG?=
+ =?us-ascii?Q?IkmdDf5u7MfJpeyCuSUD5SvelG8RfE2Vg0lhNWWnIc/SnUzfKyqEJYqb/+xo?=
+ =?us-ascii?Q?j/sFox6dNqLUtspEMCM9Vl3/j2Fv1QpNenlqHPduo2agCrCx6NGLZErAAcdq?=
+ =?us-ascii?Q?INdE7EH+VOmkGCjUwB4eth/cb92C0G+eR3RfHlH1vjH1BnQRan37WL3Uf455?=
+ =?us-ascii?Q?+XSKeX9qXYkOCakcB0qdq2wKmW4CnxtLYCDX1U71G9hnnRiWTVjxO+A5Dahr?=
+ =?us-ascii?Q?pbbjMwScMzbhuyXczLVRxeMhcTaY8dmt7GYYXDRz59lLbAmbsY5c7nxsEAe8?=
+ =?us-ascii?Q?72NGfTARLRR87DRmUUMFTXsci2KNCO4zAuMLWfB6ScajhpCO5+3G2mfarWt/?=
+ =?us-ascii?Q?3R+KND2WODSCv5+fkJE3KoK8XpnVwDx5nRU0isMJ94hC8NCRt213sfOyJibl?=
+ =?us-ascii?Q?qU5K6EHh+uhXSpmjS4eP6JUudcejnJLpV1Gtgf15MYE/6M86YoMNxc7DY6c/?=
+ =?us-ascii?Q?P7UXXCMCx/E36kh0MK6cJf9GyfT0DH4649EeHWlJAdHRDWpxMbMKI2B7SkDG?=
+ =?us-ascii?Q?b1XCkhqJbDVo3NmOrguJI2DNIyhfOtg4mbE0G9DQTm3I4JOSWmncQ64Jjx1j?=
+ =?us-ascii?Q?HqZIOyIBBqVW2Ab482YZuUvYKFjfmjjCDcp+swsj9v3nr9VxsYd29c3JQ5PS?=
+ =?us-ascii?Q?94/iepbqMYtJ+q9dTd6zkE/eIk1Dqe2TsLmQDzI3R9D4TpoLVeqbM0pHVcIo?=
+ =?us-ascii?Q?2i8KAcY1t5dRQcV58dkwpy7jqPauvmz5z1CnvOKUbeM75pv2dFKzVId2atVN?=
+ =?us-ascii?Q?6EmG909h0oSeu8iynT7IAmETHA2wq96SHEXfSR1FQfDK5DixEWcV7/9jhCnp?=
+ =?us-ascii?Q?UaYzP2FRZv3KVO9wp+N+10eiLqREKWlSEbBv9AepEA3m5j1GI2/4s1by7H5W?=
+ =?us-ascii?Q?eDJ/4BenRmi0BwpKmwNyVSumqBgHXbIgvmcV?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(52116014)(19092799006)(38350700014)(7053199007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8951.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(376014)(52116014)(366016)(1800799024)(7053199007)(38350700014);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?jv+94A3obUxBv09PnGucuP/Eo/MZXylhGG6WOylTQWVP95Lh2hlg1K2tOg/M?=
- =?us-ascii?Q?cZaSVSyu6Ygsq7fsYimARvMm7Tnj3un0rISBZwE/g9I1C45GgNC/twbdTfyQ?=
- =?us-ascii?Q?5q6tc+KHx9xCa4loIeIgJ1y1mMMppSAaUAfakCCjQsGMpPNDFPlWxbiFEzFI?=
- =?us-ascii?Q?4TscYa1yUztfFLaNqhvesygOydviNPMIgkudf05h51OV2YKSVw0MblS4BBpy?=
- =?us-ascii?Q?bmPd0SAUkc6sPd0ZzUnkAMMEe1KXwiUPkXag2Y4WW3qC0mirOYhp4nAnQK5m?=
- =?us-ascii?Q?APZ37jZj0cdZZLgX6u6SD3byWJ/PjdPtmkxnxeKXHOyrj+fVh4ek8b5Ex6Zb?=
- =?us-ascii?Q?LJg95Mn3iJYWO68gBaIGKx1WCEk7BGmr3wYo9uO8mDwcF3+4CPVjWreHLd+/?=
- =?us-ascii?Q?ui8xkfEYyCAa4JTkzceqZLuqQhQiHFZEed3EkfTbwBG5rqWk5DukQBS5z1Kl?=
- =?us-ascii?Q?F7xCzW8JqlVJOwcjzUu//1kAMZGXxdLFdUw3K8fDUh/OsWN6Ms4k5MAIRERs?=
- =?us-ascii?Q?ujoeyoWCKoRB4B7ODXfMaq3sP1YT0SomxLj3LWctQHid5uGwJt1saIJuLrdW?=
- =?us-ascii?Q?Pnr1zvXxJYZFuIHa/rLXHyeJrPpgsgDLtkrDbi+ZxNVIUP9VyGuMgFC3MmgA?=
- =?us-ascii?Q?hfBsR5YaA84L7mctwtj+46IiyhqNVHV6REBDP3Att6zIbO16Ch/7Lyhs7QQ+?=
- =?us-ascii?Q?vluvb5KuBhaINa4Qkne4JtQ9peDVZJiEX17hX0H/PWLupwqpeEcnkdeY0rqf?=
- =?us-ascii?Q?6RaPA98p40tA+hzycGcuZJIerKfbUCCtRbgv84a/Z9DsE1YXrQz3mkZgn90C?=
- =?us-ascii?Q?ONyCX5YySiF229R5chTwnOACFyCMny+oNsrT3Iv3JXHmYdzmhQ11JN+qDEj3?=
- =?us-ascii?Q?hhsZIGBfZG3Buy6QeXYTmVCQfgzp/rBQPeBfIzNYyfD5aXAGZwekWjFDLpcn?=
- =?us-ascii?Q?2lCNrhpOIOrYcJrn1DwGWJcRFqFHw70WakUFKmO8PYoTi3ibZouzpb2QNAYt?=
- =?us-ascii?Q?CLNac+YE13pP4hoCF49KRPqs8LPfe/3py5wTyPaBZnAz+zod9gayY7SQEP05?=
- =?us-ascii?Q?pCCHX58UGp1GlWyzd5uZ4G2cpehOnf8Ps6oaIE87ZW1pgAUJXEobhrXPp/CZ?=
- =?us-ascii?Q?5j0AlKQ9V5LIBlr/by96UOVz8bS4O4FAFQPMjpuJhoaSBPm9nHQ+PIL3nU37?=
- =?us-ascii?Q?6VedBc37ZzeoytzdpbKhUEjw6b+UprTxsIW+7VnAHxr6y6lmqsP/4Ox78Q2J?=
- =?us-ascii?Q?56qg1p+mJ3f7RQvINaKt0LOx1qpb0+Hr1mtdiskRYg3p1XpYDWe+wFQ5rT4W?=
- =?us-ascii?Q?1L1vxhFXphiMsHj4IeDJ9lznsLbHgRDRMZzXMQFfqrV1TIKnqkzCsJ25eZk2?=
- =?us-ascii?Q?WAlbbxrkiFxpvbtJzOJGVPMPwYnFNKOAyc6xBz4jEn83QZ7zqEbP0YgSkFqU?=
- =?us-ascii?Q?HM61pLTquJlTAx/s9bLTOgh6C5cB46NFh1xFuFSvUeELfHjC2pUBlnFk+WWX?=
- =?us-ascii?Q?EMULFtab5PpIdicCdp76/lWvFPzCORVaq1G2opeHoaeCMEkpKhB+zUP2fNVx?=
- =?us-ascii?Q?B1EpIwNhZLSCqGttrq0=3D?=
+	=?us-ascii?Q?SDjnmJ5W6vagkUUHzRlgXGIJrGYH7ApMQzkuFpkjFNkd2D8U5d3jfuZhTLnU?=
+ =?us-ascii?Q?3GAKDBRFBYG3r/gMEz7mt2pbtgOjkSNC/9KB7Ndnd+oe1Iwaj6pIhrKs3RNs?=
+ =?us-ascii?Q?pkP2DQol4eXgmQi6SSlqHs0c73Ct08/cQe9pnPC0weu4ZGJciTzJMmW1qPx2?=
+ =?us-ascii?Q?YqjBRzKtMcCKoPJXiz7XF2Ehr3O0t/qmRojSn0AC2/aov+9CIIIuEQOBMAq/?=
+ =?us-ascii?Q?esh+XMqTRnRtLCZOPSYebr6+dtwH1NAoEDwpaNoRcGhrk6p+fbCPQyf+oBor?=
+ =?us-ascii?Q?x2xWGZOsIkc/OhEg47zn+0HTtMWEfzOMv4ECr0Ihn8ub+/e8rKweJzu5TYw9?=
+ =?us-ascii?Q?XFaDkks9wvgRi1p47QUhgpWrmeE10oC1EbUlVt3wmJ74Dq+FW0ipqE6wOyIa?=
+ =?us-ascii?Q?tNBSEAhMdw2tRowXpmI3dFM+dzLTQYnTI2CiQVTf1QVx3aIUWdV/gn+0utJH?=
+ =?us-ascii?Q?F85+BOPAa1i3cPSO9umNxBnKpOiyB5WLzgYqQzz8ho6SUjHQXPzYZRAWh0dy?=
+ =?us-ascii?Q?Fw4vXsqWXZfoLi8TWArXQLgWKjCbHvz3tYr/CHJ4w3a187G8hpsAKvaslWLD?=
+ =?us-ascii?Q?ujUOANjx+MQWdxi8N9r7nz0Ss9CwpoaG7bw8Ifzfxkv3EwgZLWJmsFcGPvSn?=
+ =?us-ascii?Q?AGbvboO9tDapKmFgyEHLUyLBmLQM9Z4mbR8X/l+qG8Vl9aQ83F+6NY5YCa+C?=
+ =?us-ascii?Q?bQsE6G6SlgJomBLbLgA/XL4ZAfg010AcjJ5xEDHX89LzaqY2eCH1z6pQbsK9?=
+ =?us-ascii?Q?/V2ve/Ddp/AKEhnOY7OYPluegOWcE3fIQZAL4jzd6aGgwJWrPOShinSivmMo?=
+ =?us-ascii?Q?0NmN6t3+xC/MVpGcm55mWT8W4Uw+5trnSAqSxfbKCJXoO2ZH68oK2sPzMJAc?=
+ =?us-ascii?Q?4tz7uvsRBEJnDabfaabJEuJ9hvDWfub4j337nxLuP/s40MPkpjV56OG/9pq7?=
+ =?us-ascii?Q?1xzzYYoa59ueE3DvdYVp6xH7u87ofjC2HY88f7qZgcUrqg7ZbCfqazkkUffh?=
+ =?us-ascii?Q?8hNxDKaMRiYvBNbQA7JLQOCHiRljr+4aRuhj5c+0D+K3krSqfDduOEwdZNp2?=
+ =?us-ascii?Q?w3fsWLRi8egGaQPy5A3hKnG88/oBT3vS4qezHMohX6Qyj8elj1nDp35WtMFz?=
+ =?us-ascii?Q?Hk4cWOt0KM38lMay8IAznzw0PTi8zxKdPBEFQrDNryq7+81jfTRQj8goJjyg?=
+ =?us-ascii?Q?jli/Z0S2siAT9soy9MTjLMUEATgFhGFyJRQJVjrv4G3KogNqaYBao7vlr38m?=
+ =?us-ascii?Q?RTBUI1scZ+fJtZxVVCBTdBS9uPqIqjylWUze1Vw4gtBvJLR3r7rFVWN+6X5c?=
+ =?us-ascii?Q?5/D2GBtOt/wQ+g7PZf2Mc+AEusi06G9QsphtMvnFMmzox1Tt6lprKUx1n824?=
+ =?us-ascii?Q?/RE2kv6V869UDPjmXuo10pRDl85W7k41CTQRhtfMvEf2znoc2zfIszm481rQ?=
+ =?us-ascii?Q?FPX/k4ez/1YA9DNNVsMWqIW2nkwdy5Z+zMOG8YQmy7Bs36jY19rXZ3BI8/+3?=
+ =?us-ascii?Q?4mWBN9RgpwO6hLIGeMTNY/uGhqdmTAJDAoxHjfQTZCXyWQ/88dnU9qo/gVaO?=
+ =?us-ascii?Q?t6Of6aTtFO5yM7dA3+Q=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f449601e-2104-467f-a110-08de2b6e403d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 852ebb43-d545-4662-22e6-08de2b723bd8
 X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8951.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2025 15:29:25.8593
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2025 15:57:56.5023
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: utMF74rycXip6hpiBFO5dlH7Ys1Jc57oMmR4A9D5gvvRwrg/0RhPz1n0YGU9UxiKALwDHFL3m3YsJcp19Bz6cg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9910
+X-MS-Exchange-CrossTenant-UserPrincipalName: UCvQNFlU6e83vEWq+AM4T/UuHZCh4Vhp1HUzvMcVEn25McOYYcOSh2cJ4OnEzPuQxxU4OepVK9h9tuqri0/aVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9761
 
-On Mon, Nov 24, 2025 at 02:04:08PM +0100, Jean-Michel Hautbois wrote:
-> Add support for the hardware Random Number Generator (RNGB) found on
-> MCF54418 ColdFire processors with clock enabled at platform
-> initialization.
->
-> The RNGB block is compatible with the imx-rngc driver.
+On Mon, Nov 24, 2025 at 01:50:22PM +0100, Jean-Michel Hautbois wrote:
+> Add dma_wmb() barrier after filling TCD descriptors to ensure all
+> descriptor writes are visible to the DMA engine before starting
+> transfers. This prevents potential race conditions where the DMA
+> hardware might read partially written descriptors.
 >
 > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 > ---
+>  drivers/dma/fsl-edma-common.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
+> index 4976d7dde08090d16277af4b9f784b9745485320..db36a6aafc910364d75ce6c5d334fd19d2120b6b 100644
+> --- a/drivers/dma/fsl-edma-common.c
+> +++ b/drivers/dma/fsl-edma-common.c
+> @@ -553,6 +553,9 @@ void fsl_edma_fill_tcd(struct fsl_edma_chan *fsl_chan,
+>  	fsl_edma_set_tcd_to_le(fsl_chan, tcd, csr, csr);
+>
+>  	trace_edma_fill_tcd(fsl_chan, tcd);
+> +
+> +	/* Ensure descriptor writes are visible to DMA engine */
+> +	dma_wmb();
 
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
+This is not necessary because there are writel() in
+fsl_edma_issue_pending(), which will do memory barrier in writel().
 
-> arch/m68k/coldfire/device.c       | 28 ++++++++++++++++++++++++++++
->  arch/m68k/coldfire/m5441x.c       |  2 +-
->  arch/m68k/include/asm/m5441xsim.h |  9 +++++++++
->  drivers/char/hw_random/Kconfig    |  3 ++-
->  drivers/char/hw_random/imx-rngc.c |  7 +++++++
->  5 files changed, 47 insertions(+), 2 deletions(-)
+currently, edma use vchan, descriptior have not dymantically to appending
+to running queue. so writel() in fsl_edma_issue_pending() is enough.
+
+Even though edma will support append to running queue in future, dma_wmd()
+should be just before update csr.
+
+ 	dma_wmb();  // just before indicate TCD is ready to use.
+	fsl_edma_set_tcd_to_le(fsl_chan, tcd, csr, csr);
+
+Frank
+>  }
 >
-> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-> index 20adba27a687029ef53249bad71b342d563d612b..4183929b0b501459da25d1b4cde7d77f19c3dc16 100644
-> --- a/arch/m68k/coldfire/device.c
-> +++ b/arch/m68k/coldfire/device.c
-> @@ -622,6 +622,31 @@ static struct platform_device mcf_flexcan0 = {
->  };
->  #endif /* MCFFLEXCAN_SIZE */
->
-> +#ifdef MCF_RNG_BASE
-> +/*
-> + * Random Number Generator (RNG) - only on MCF54418
-> + */
-> +static const struct resource mcf_rng_resource[] = {
-> +	{
-> +		.start = MCF_RNG_BASE,
-> +		.end   = MCF_RNG_BASE + MCF_RNG_SIZE - 1,
-> +		.flags = IORESOURCE_MEM,
-> +	},
-> +	{
-> +		.start = MCF_IRQ_RNG,
-> +		.end   = MCF_IRQ_RNG,
-> +		.flags = IORESOURCE_IRQ,
-> +	},
-> +};
-> +
-> +static struct platform_device mcf_rng = {
-> +	.name           = "imx-rngc",
-> +	.id             = -1,
-> +	.num_resources  = ARRAY_SIZE(mcf_rng_resource),
-> +	.resource       = mcf_rng_resource,
-> +};
-> +#endif /* MCF_RNG_BASE */
-> +
->  static struct platform_device *mcf_devices[] __initdata = {
->  	&mcf_uart,
->  #ifdef MCFFEC_BASE0
-> @@ -660,6 +685,9 @@ static struct platform_device *mcf_devices[] __initdata = {
->  #ifdef MCFFLEXCAN_SIZE
->  	&mcf_flexcan0,
->  #endif
-> +#ifdef MCF_RNG_BASE
-> +	&mcf_rng,
-> +#endif
->  };
->
->  /*
-> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-> index 7a25cfc7ac07570ff15da3c55d080a717cf93a06..ab5b006372379294db3b522820de88137bfb7e78 100644
-> --- a/arch/m68k/coldfire/m5441x.c
-> +++ b/arch/m68k/coldfire/m5441x.c
-> @@ -158,6 +158,7 @@ static struct clk * const enable_clks[] __initconst = {
->  	&__clk_0_33, /* pit.1 */
->  	&__clk_0_37, /* eport */
->  	&__clk_0_48, /* pll */
-> +	&__clk_0_49, /* rng */
->  	&__clk_0_51, /* esdhc */
->
->  	&__clk_1_36, /* CCM/reset module/Power management */
-> @@ -179,7 +180,6 @@ static struct clk * const disable_clks[] __initconst = {
->  	&__clk_0_44, /* usb otg */
->  	&__clk_0_45, /* usb host */
->  	&__clk_0_47, /* ssi.0 */
-> -	&__clk_0_49, /* rng */
->  	&__clk_0_50, /* ssi.1 */
->  	&__clk_0_53, /* enet-fec */
->  	&__clk_0_54, /* enet-fec */
-> diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-> index f48cf63bd7822fd53c33788128f984585c0c421a..dd64cdfcad3e810254c6854b9de5b6bbeb67b950 100644
-> --- a/arch/m68k/include/asm/m5441xsim.h
-> +++ b/arch/m68k/include/asm/m5441xsim.h
-> @@ -198,6 +198,15 @@
->  #define MCFRTC_SIZE		(0xfc0a8840 - 0xfc0a8000)
->  #define MCF_IRQ_RTC		(MCFINT2_VECBASE + MCFINT2_RTC)
->
-> +/*
-> + *  Random Number Generator (RNG) Module.
-> + *  Note: Only present in MCF54418, not in MCF54410/54415/54417
-> + */
-> +#define MCF_RNG_BASE		0xfc0c4000
-> +#define MCF_RNG_SIZE		0x1c
-> +#define MCFINT2_RNG		28
-> +#define MCF_IRQ_RNG		(MCFINT2_VECBASE + MCFINT2_RNG)
-> +
->  /*
->   *  GPIO Module.
->   */
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 492a2a61a65be8bd9e46b0a70f3e43703973512e..2f301e43db846c687a38377a164429818137ece2 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -270,12 +270,13 @@ config HW_RANDOM_MXC_RNGA
->  config HW_RANDOM_IMX_RNGC
->  	tristate "Freescale i.MX RNGC Random Number Generator"
->  	depends on HAS_IOMEM
-> -	depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COMPILE_TEST
-> +	depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COLDFIRE || COMPILE_TEST
->  	default HW_RANDOM
->  	help
->  	  This driver provides kernel-side support for the Random Number
->  	  Generator Version C hardware found on some Freescale i.MX
->  	  processors. Version B is also supported by this driver.
-> +	  Also supports RNGB on Freescale MCF54418 (Coldfire V4e).
->
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called imx-rngc.
-> diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-> index d6a847e48339b2758c73c95d57a7aa48eb4875e0..44f20a05de0a425cb6ff7b2a347b111750ac3702 100644
-> --- a/drivers/char/hw_random/imx-rngc.c
-> +++ b/drivers/char/hw_random/imx-rngc.c
-> @@ -353,12 +353,19 @@ static const struct of_device_id imx_rngc_dt_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(of, imx_rngc_dt_ids);
->
-> +static const struct platform_device_id imx_rngc_devtype[] = {
-> +	{ .name = "imx-rngc" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(platform, imx_rngc_devtype);
-> +
->  static struct platform_driver imx_rngc_driver = {
->  	.driver = {
->  		.name = KBUILD_MODNAME,
->  		.pm = pm_ptr(&imx_rngc_pm_ops),
->  		.of_match_table = imx_rngc_dt_ids,
->  	},
-> +	.id_table = imx_rngc_devtype,
->  };
->
->  module_platform_driver_probe(imx_rngc_driver, imx_rngc_probe);
+>  static struct fsl_edma_desc *fsl_edma_alloc_desc(struct fsl_edma_chan *fsl_chan,
 >
 > --
 > 2.39.5
