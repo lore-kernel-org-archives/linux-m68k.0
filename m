@@ -1,39 +1,39 @@
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C505030101A
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 12:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B343A301036
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 12:50:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763988637; cv=none; b=CqHG2zxqVz0hgS9L10c8tYHEpcInOlg3CGgWsbHQXdAfED+bNDcWKXABEhd1PfRSIvRkvc4JPqmeSBT5qty5zgT1QvYJ90TZcH8+z3qopOqBEuT79iHWMEHNzqNl30HSCKDXM6Ug02mX+/HLMb1KjcBKwDBDSR5Z3o/GfrmChws=
+	t=1763988637; cv=none; b=bVXWZwHUnc1QD/EoOPgruS/0AzoIXkaSoacTbhzwNFziV7/9j08YZFrJFWklHsA1j/XiktrUNTx0ZxufN7FWtephA+s2I/ZGbUp4ug/5FUxy0WhmbLq+5uKS3AKHuf9J4Sfh19vscq0Xjr993isty4llBOaTejN9rVlV9M9ZAHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1763988637; c=relaxed/simple;
-	bh=Am/rzQ0IYN1ljIZfblco1hpJOru0W+mU/bl94mc/5G4=;
+	bh=NC3qxNqmP4HK1nvjbqrndKPXY2/Q9zKHsvGxZJ8Uckk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Iu9f9aFgJXCi1R1HAaN0TL8AwSdRQYMGNN+5D3au6pam8+D8MtUptKOip6BDeZnqRan2AuM/LtwktRubBd3igTkDj6df8/VAuXr8+iH+XahhL7JiiCVDAOGckPieDIt/J0zYk3gmp0/7MbKx5uxcTb0BHrp5DPfSSjKR744zrv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=dzB13r1A; arc=none smtp.client-ip=217.70.183.199
+	 In-Reply-To:To:Cc; b=MSE8SFGplowE6ort6wJS7PV2gyz7uwVRiUrfl9V3viDGgme9XADSfYf+39+wkS5NHMljddir35KWu6teaNFuaBRt3W4eu9mXSL+VMAs04KfgG+iktFbWmosOSQO3T0mCStiAtu+H6T0EnAmoLX0mzg88eVWD/qJE+i+z+Kxco8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=ovijoCbJ; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="dzB13r1A"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 42825443F3;
-	Mon, 24 Nov 2025 12:50:31 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="ovijoCbJ"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F1372443F0;
+	Mon, 24 Nov 2025 12:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1763988632;
+	t=1763988627;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JRVv+nJggHB2NVFJ/jtfPoNfHMQMyOCHv8ab1FARrSg=;
-	b=dzB13r1AD+HIfzQIx/Mne3asm8qnGJqH4bjY3KFT3uZV3QJsb+maCnAshydOabupYwLZ2n
-	A3mnEOI5UBlYmUarhBaPJGDoSzl5ciWxl+U0WG/qaRxtnqfi5nZ4wV74/YkQG5/9rmmbj5
-	HDve0mVOgM/Aipf0cTveQAU96+fo3jlsbpN4a+8r8LzCYsPH+CPZeH+gGtTNMwMYc/2zuO
-	KhcYun0SyoOtnrivO1bhiyfP91TDEkcQ6MywLBAiHEBYH8SIiGLLGX1PzP1K+ahMYiyo57
-	41fandHUeTki0AWiyFI0HYlDexUZQVbXxNP+vRxELrTRcpZXAtbV4vuXlZJ2zw==
+	bh=qm+mub2CsjoKJKFrgQvB1fzGBYlrYQ1WARbF1U7F/co=;
+	b=ovijoCbJXm46QY2vkR+tUzKLVpdohQQHIQSxdRyJbDjQqUEpi6ktp+els0OK6uDNGOoNsB
+	Yja6E7kOz42KDyjMLdrIlN+xoEalI55jghLx6zdNjOOhVyyisbOs4sTrUGpiFNO23swIO0
+	a5cxTkBxVEhAZ5AHShwHoTggWaIzBC7JDyi5srRL87787z24zLwv3L4o01u171KICVTMAa
+	wK8gfIsuCdITeRK0OD20N8k1YZk0BuBnlH6E1lbuudZ5m61U2xZmqU2AW7htONwpVrMPh2
+	aD5YaOIKG1CcKf7SxqbadsaGYUgIc5pXScWLWEMl7LPa11jINrf4gelC6r+MOg==
 From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Mon, 24 Nov 2025 13:50:27 +0100
-Subject: [PATCH 6/7] dma: mcf-edma: Fix error handler for all 64 DMA
- channels
+Date: Mon, 24 Nov 2025 13:50:23 +0100
+Subject: [PATCH 2/7] dma: fsl-edma: Add FSL_EDMA_DRV_MCF flag for ColdFire
+ eDMA
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -42,7 +42,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251124-dma-coldfire-v1-6-dc8f93185464@yoseli.org>
+Message-Id: <20251124-dma-coldfire-v1-2-dc8f93185464@yoseli.org>
 References: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
 In-Reply-To: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
 To: Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>
@@ -51,98 +51,78 @@ Cc: Greg Ungerer <gerg@linux-m68k.org>, imx@lists.linux.dev,
  linux-kernel@vger.kernel.org, 
  Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1763988624; l=2788;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1763988624; l=2569;
  i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=Am/rzQ0IYN1ljIZfblco1hpJOru0W+mU/bl94mc/5G4=;
- b=pSeX/Ghnsxe14PHuZ07DpJROJmTRTD9gpx83nHaFNTGdx0jSTxS64TKYIitROwgd7YXn2QAWg
- X3q9OQ+PG7WBAanAlumYTZ3+cpLM5b6TXXD+F2ZWlq3B5RaLpN9SJMI
+ bh=NC3qxNqmP4HK1nvjbqrndKPXY2/Q9zKHsvGxZJ8Uckk=;
+ b=qGB8yWl6L08p1IXyt7ydTMeOGc6tztSHwFnrsTGl3ZQDMM0uvRo2fVaGMNG5gagj5wbuEMAzY
+ Y2tvCmJ3EAGC80Em5EHN4x1hiNaBkIoB9OyvH/utTCHBL8xkdx2jQ8I
 X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
  pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvfeekieegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfgvrghnqdfoihgthhgvlhcujfgruhhtsghoihhsuceojhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgqeenucggtffrrghtthgvrhhnpeffjefhtdelhffhheevheeutefghfefteeluedvudfhgeegteeitddtuefhhfelteenucfkphepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgsnecuvehluhhsthgvrhfuihiivgepheenucfrrghrrghmpehinhgvthepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgspdhhvghlohephihoshgvlhhiqdihohgtthhordihohhsvghlihdrohhrghdpmhgrihhlfhhrohhmpehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrghdpnhgspghrtghpthhtohepkedprhgtphhtthhopegumhgrvghnghhinhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhrt
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvfeekieegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfgvrghnqdfoihgthhgvlhcujfgruhhtsghoihhsuceojhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgqeenucggtffrrghtthgvrhhnpeffjefhtdelhffhheevheeutefghfefteeluedvudfhgeegteeitddtuefhhfelteenucfkphepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddumegvtdgrmeduieelmeejudegtdemkeeksgefmeehudehfeemtgdvieegmeegfhgspdhhvghlohephihoshgvlhhiqdihohgtthhordihohhsvghlihdrohhrghdpmhgrihhlfhhrohhmpehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrghdpnhgspghrtghpthhtohepkedprhgtphhtthhopegumhgrvghnghhinhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhrt
  ghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopefhrhgrnhhkrdfnihesnhigphdrtghomhdprhgtphhtthhopehvkhhouhhlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehimhigsehlihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Fix the DMA error interrupt handler to properly handle errors on all
-64 channels. The previous implementation had several issues:
+Add FSL_EDMA_DRV_MCF driver flag to identify MCF ColdFire eDMA
+controllers which have a native M68K register layout.
 
-1. Returned IRQ_NONE if low channels had no errors, even if high
-   channels did
-2. Used direct status assignment instead of fsl_edma_err_chan_handler()
-   for high channels
+The edma_writeb() function applies an XOR ^ 0x3 byte-lane adjustment for
+big-endian eDMA controllers where byte registers within a 32-bit word
+need address correction.
 
-Split the error handling into two separate loops for the low (0-31)
-and high (32-63) channel groups, using for_each_set_bit() for cleaner
-iteration. Both groups now consistently use fsl_edma_err_chan_handler()
-for proper error status reporting.
+However, the MCF54418 eDMA 8-bit registers (SERQ, CERQ, SEEI, CEEI,
+CINT, CERR, SSRT, CDNE) are located at sequential byte addresses
+(0x4018-0x401F) as documented in the MCF54418 Reference Manual Table
+19-2. No byte-lane adjustment is needed, as applying the XOR causes
+writes to target incorrect registers (writing to CERR at 0x401D would
+actually access SSRT at 0x401E).
+
+Set this flag in the MCF eDMA driver to bypass the XOR adjustment and
+access registers at their documented addresses.
 
 Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- drivers/dma/mcf-edma-main.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ drivers/dma/fsl-edma-common.h | 5 ++++-
+ drivers/dma/mcf-edma-main.c   | 2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
+index 205a96489094805aa728b72a51ae101cd88fa003..4c86f2f39c1db9a812245fe85755ec8d1169c44c 100644
+--- a/drivers/dma/fsl-edma-common.h
++++ b/drivers/dma/fsl-edma-common.h
+@@ -225,6 +225,8 @@ struct fsl_edma_desc {
+ #define FSL_EDMA_DRV_TCD64		BIT(15)
+ /* All channel ERR IRQ share one IRQ line */
+ #define FSL_EDMA_DRV_ERRIRQ_SHARE       BIT(16)
++/* MCF eDMA: Different register layout, no XOR for byte access */
++#define FSL_EDMA_DRV_MCF                BIT(17)
+ 
+ 
+ #define FSL_EDMA_DRV_EDMA3	(FSL_EDMA_DRV_SPLIT_REG |	\
+@@ -419,7 +421,8 @@ static inline void edma_writeb(struct fsl_edma_engine *edma,
+ 			       u8 val, void __iomem *addr)
+ {
+ 	/* swap the reg offset for these in big-endian mode */
+-	if (edma->big_endian)
++	/* MCF eDMA has different register layout, no XOR needed */
++	if (edma->big_endian && !(edma->drvdata->flags & FSL_EDMA_DRV_MCF))
+ 		iowrite8(val, (void __iomem *)((unsigned long)addr ^ 0x3));
+ 	else
+ 		iowrite8(val, addr);
 diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
-index dd64f50f2b0a70a4664b03c7d6a23e74c9bcd7ae..adae2914c23db3ce9244c0cb8d4208fd71874f76 100644
+index 9e1c6400c77be237684855759382d7b7bd2e6ea0..f95114829d8006fe4558169888ff38037d7610de 100644
 --- a/drivers/dma/mcf-edma-main.c
 +++ b/drivers/dma/mcf-edma-main.c
-@@ -12,6 +12,7 @@
- #include "fsl-edma-common.h"
- 
- #define EDMA_CHANNELS		64
-+#define EDMA_CHANS_PER_REG	(EDMA_CHANNELS / 2)
- #define EDMA_MASK_CH(x)		((x) & GENMASK(5, 0))
- 
- static irqreturn_t mcf_edma_tx_handler(int irq, void *dev_id)
-@@ -42,33 +43,33 @@ static irqreturn_t mcf_edma_err_handler(int irq, void *dev_id)
- {
- 	struct fsl_edma_engine *mcf_edma = dev_id;
- 	struct edma_regs *regs = &mcf_edma->regs;
--	unsigned int err, ch;
-+	unsigned int ch;
-+	unsigned long err;
-+	bool handled = false;
- 
-+	/* Check low 32 channels (0-31) */
- 	err = ioread32(regs->errl);
--	if (!err)
--		return IRQ_NONE;
--
--	for (ch = 0; ch < (EDMA_CHANNELS / 2); ch++) {
--		if (err & BIT(ch)) {
-+	if (err) {
-+		handled = true;
-+		for_each_set_bit(ch, &err, EDMA_CHANS_PER_REG) {
- 			fsl_edma_disable_request(&mcf_edma->chans[ch]);
- 			iowrite8(EDMA_CERR_CERR(ch), regs->cerr);
- 			fsl_edma_err_chan_handler(&mcf_edma->chans[ch]);
- 		}
- 	}
- 
-+	/* Check high 32 channels (32-63) */
- 	err = ioread32(regs->errh);
--	if (!err)
--		return IRQ_NONE;
--
--	for (ch = (EDMA_CHANNELS / 2); ch < EDMA_CHANNELS; ch++) {
--		if (err & (BIT(ch - (EDMA_CHANNELS / 2)))) {
--			fsl_edma_disable_request(&mcf_edma->chans[ch]);
--			iowrite8(EDMA_CERR_CERR(ch), regs->cerr);
--			mcf_edma->chans[ch].status = DMA_ERROR;
-+	if (err) {
-+		handled = true;
-+		for_each_set_bit(ch, &err, EDMA_CHANS_PER_REG) {
-+			fsl_edma_disable_request(&mcf_edma->chans[ch + EDMA_CHANS_PER_REG]);
-+			iowrite8(EDMA_CERR_CERR(ch + EDMA_CHANS_PER_REG), regs->cerr);
-+			fsl_edma_err_chan_handler(&mcf_edma->chans[ch + EDMA_CHANS_PER_REG]);
- 		}
- 	}
- 
--	return IRQ_HANDLED;
-+	return handled ? IRQ_HANDLED : IRQ_NONE;
+@@ -145,7 +145,7 @@ static void mcf_edma_irq_free(struct platform_device *pdev,
  }
  
- static int mcf_edma_irq_init(struct platform_device *pdev,
+ static struct fsl_edma_drvdata mcf_data = {
+-	.flags = FSL_EDMA_DRV_EDMA64,
++	.flags = FSL_EDMA_DRV_EDMA64 | FSL_EDMA_DRV_MCF,
+ 	.setup_irq = mcf_edma_irq_init,
+ };
+ 
 
 -- 
 2.39.5
