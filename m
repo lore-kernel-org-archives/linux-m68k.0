@@ -1,125 +1,175 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60F7B2BFC9B
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Nov 2025 17:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F59713AD26;
+	Tue, 25 Nov 2025 03:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764006517; cv=none; b=Z+GuZLpl9wxl9Bj/NIvfupXhK8mTHu1B6rqjQc+ExxTLNnDit7SgHP6Zs/O18eK0InPPArqyOp6xlq8eSAsusgYI1htRhIrQAMG5+M3Zim2C1jRFuNSpth/wUsUupLKstjqWL17SPEdOl8ug/zqlYJJcn08Cyf1PeJNtG9eSEKI=
+	t=1764042738; cv=none; b=LjcbnxwDjzGqE90J2m9A4BoOU3g0KpJzu0jZLyYOJrcFt3iC9ovh7yzamLZrbyMdTjycDLGtiTn3AN7VC0wxa1CMgaszns3cfe5jVsgvPiNwnrIKZdfN9b+Sc40k6+SROGkXgdHm9CCPaqonUalIF8h8aZspcvIfKIJb1uvCQr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764006517; c=relaxed/simple;
-	bh=ZMfp9MU43gbbsHJVljv1nrWxCaYgeHGHk75SKAtcBEI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CSXiU9s4vZKUue3OuxieyIA2GDpU/bE8IrXaG+E0y5aHo6sahchA81J+tRXSu6WG58KTS2+QBCIwl8DC+tzFfxaiikn7Al0CoGYJhV6gNis5UoD3dc8V+H/DuT2doSlMa+N/YE9aYeeGn9ltsDkfvnaYMf29x6b+VfEeSwMLAIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T9FDwH/G; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1764042738; c=relaxed/simple;
+	bh=HL2RIrxbaY+hT1cX9C3uaPVHQVuhrHWqIUhbEeLdw7w=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gn9ji+9D7c7aPeLKCvYMsdJ46WfoZYVJAV0NxCZYP7hgjvDlDrIp/36JFQQJGV1SrGs35fsvi5sbX2onhztE/iPv+yHnbdyaLzby6hSXEjyOtAzFaSzvR5Lprj18Z94D7asU+xenN1uipGSYz9eERbo+lyNqn8sAHgO129d3dv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=yDH0zy4o; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T9FDwH/G"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1764006515; x=1795542515;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZMfp9MU43gbbsHJVljv1nrWxCaYgeHGHk75SKAtcBEI=;
-  b=T9FDwH/G1YdBpy5jpkvT4102i0nD04w0rkEqCZ0rHuBkiTUPyzur8Ak8
-   Xrt25jSgWlziinfLnIWkDg/+nucYZoGr9yWXCo12vDKezt9tnrIMcrLuh
-   44ANlD2N7q7wJSibqREbGFjiXHIzNVdf86ssKERHTfDIRAQEH0+Fdg0H4
-   1xjSPQ74Z0Z86Wlcpfj5rlwBHW+3yWGVTnbH+FNe0jczRdyobsDzvolHe
-   RbersM2ccSHx633TrkJVhh7r49ZMeu1lW+UJjCHIRxv6YWLGX9Jkgtq00
-   mWmUMR/VLlcu0XMCB5KH9WtP2chHiFq9F/IkXcq6PUAd8o7FttPpGQ3mU
-   g==;
-X-CSE-ConnectionGUID: hJBuy5LjTGCAU6Q0FR1laA==
-X-CSE-MsgGUID: 0pz0XSEqS8CtiZA4x4al9Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11623"; a="66050733"
-X-IronPort-AV: E=Sophos;i="6.20,223,1758610800"; 
-   d="scan'208";a="66050733"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2025 09:48:33 -0800
-X-CSE-ConnectionGUID: 7wgYsk0wQyGLB6sMISS2RA==
-X-CSE-MsgGUID: Ce6J77WjRE2IkJQjB3NoxA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,223,1758610800"; 
-   d="scan'208";a="215736574"
-Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 24 Nov 2025 09:48:30 -0800
-Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vNafr-000000000z7-2axH;
-	Mon, 24 Nov 2025 17:48:27 +0000
-Date: Tue, 25 Nov 2025 01:48:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v3 1/3] m68k: coldfire: Mark platform device resource
- arrays as const
-Message-ID: <202511250103.RMNoU3xH-lkp@intel.com>
-References: <20251124-b4-m5441x-add-rng-support-v3-1-f447251dad27@yoseli.org>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="yDH0zy4o"
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 0E12A14001C2;
+	Mon, 24 Nov 2025 22:52:14 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Mon, 24 Nov 2025 22:52:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1764042734; x=1764129134; bh=ZoiqM/VdP8Zh4LcL4YUTBTDUnfzLnNQaQW8
+	D5KI+HZE=; b=yDH0zy4o2V5cUr5C+8118YgDR1oD2fvLo47+dWZEwPARRZQD9mi
+	KlFW3QKsxftJZBsipD0iVj2rVoJBjYJhRgtYTmhuJ4FH9Y40KOLDKlESWYTQiCe1
+	uKEHd29d2A/yL1CYbUdtCpIyBks9YuCmRFxuB3vDau6GCa8uz4BtUuiwtn9zaDyK
+	CrSLT+XDlPot8EknFc0ICfiR2r++5xw1xdELYk1A8RLUP07ulX2F04j5C7ZHgGXU
+	ZQtSmL5ToLxDBpTJOElOviz1jOmtqj4WWA/wwgWccCMHmJtlswc3WwWX7QTPGN/z
+	Dwi9QGPfIbkn0GGI1TCQ+vRXFr72rDfHSNA==
+X-ME-Sender: <xms:7CcladD50EReW2_4t2KMghQWpO4fP84lR8rZBSZ-CewGTxMqqMRIxw>
+    <xme:7CclaXYQELCK4216FyN6AH3jmBM3fj_w5OTkzh29he2J214IfDUeKFYfMrZpxTu0q
+    xxVP_kWMOe8ozMSE0ipCqWzwG9y7psF025hMfxM_aEsyJyN1s7Yhfzt>
+X-ME-Received: <xmr:7CclaVkhNLanpXFeNDpwRrUteiP-qnhrN4b8ANBpVwCQjjMQOzxkkjgvXJ_Ea0dZRRhmCu8F2IxOY4PGp5qGRwQPXJJx2lgM0Tk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvgedtgeehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevufgjkfhfgggtsehmtderredttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeevudekfeehgeetvdekhfeifeevgeejveeufefhgeejteffjeetuedvgfelfeet
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeduuddpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtohepuggrnhhivghlsedtgidtfhdrtghomhdprh
+    gtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopeif
+    ihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfoh
+    hunhgurghtihhonhdrohhrghdprhgtphhtthhopegrrhhnugesrghrnhgusgdruggvpdhr
+    tghpthhtohepsghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepgh
+    gvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqrghr
+    tghhsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrh
+    hnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:7CclacqTZRPeV2bRVcRZjN87waTHkqZqhE93iQS-DT5glryhlA2LIw>
+    <xmx:7CclaXCikLd9DKwchG5tTWUSIfjnharKL5mtnDUp-6gU9PKq9wONvQ>
+    <xmx:7CclafEGdCw1I5LtJ1Z3lYw2AGo2rnE4R8SscxHDd-RlJM8g_S82Qw>
+    <xmx:7CclaR0RWtb3oIwKJ2dzL7C0sZYpd04j1kcjDm34CLeapZ6DUzQ-gQ>
+    <xmx:7icladwjGW6_pgY1XPDM5W8tSt1X6gStbVhH0mFMGxcPVxhCBkyDrVG1>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 24 Nov 2025 22:52:09 -0500 (EST)
+Date: Tue, 25 Nov 2025 14:52:43 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Daniel Palmer <daniel@0x0f.com>
+cc: Peter Zijlstra <peterz@infradead.org>, Will Deacon <will@kernel.org>, 
+    Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+    Boqun Feng <boqun.feng@gmail.com>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-arch@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, 
+    Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [RFC v4 3/5] atomic: Specify alignment for atomic_t and
+ atomic64_t
+In-Reply-To: <CAFr9PX=MYUDGJS2kAvPMkkfvH+0-SwQB_kxE4ea0J_wZ_pk=7w@mail.gmail.com>
+Message-ID: <25208400-a203-fb5c-d0c3-2934a4d227e3@linux-m68k.org>
+References: <cover.1760999284.git.fthain@linux-m68k.org> <93055d50d71662261fbcc04488536e7330975954.1760999284.git.fthain@linux-m68k.org> <CAFr9PX=MYUDGJS2kAvPMkkfvH+0-SwQB_kxE4ea0J_wZ_pk=7w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary=-14638117742116190217176404272535
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---14638117742116190217176404272535
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251124-b4-m5441x-add-rng-support-v3-1-f447251dad27@yoseli.org>
-
-Hi Jean-Michel,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on ac3fd01e4c1efce8f2c054cdeb2ddd2fc0fb150d]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jean-Michel-Hautbois/m68k-coldfire-Mark-platform-device-resource-arrays-as-const/20251124-210737
-base:   ac3fd01e4c1efce8f2c054cdeb2ddd2fc0fb150d
-patch link:    https://lore.kernel.org/r/20251124-b4-m5441x-add-rng-support-v3-1-f447251dad27%40yoseli.org
-patch subject: [PATCH v3 1/3] m68k: coldfire: Mark platform device resource arrays as const
-config: m68k-allnoconfig (https://download.01.org/0day-ci/archive/20251125/202511250103.RMNoU3xH-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251125/202511250103.RMNoU3xH-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202511250103.RMNoU3xH-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> arch/m68k/coldfire/device.c:141:35: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     141 |         .resource               = mcf_fec0_resources,
-         |                                   ^~~~~~~~~~~~~~~~~~
 
 
-vim +/const +141 arch/m68k/coldfire/device.c
+On Mon, 24 Nov 2025, Daniel Palmer wrote:
 
-b7ce7f0d0efc1a arch/m68k/platform/coldfire/device.c Greg Ungerer      2011-12-24  136  
-b7ce7f0d0efc1a arch/m68k/platform/coldfire/device.c Greg Ungerer      2011-12-24  137  static struct platform_device mcf_fec0 = {
-bea8bcb12da09b arch/m68k/platform/coldfire/device.c Steven King       2012-06-06  138  	.name			= FEC_NAME,
-b7ce7f0d0efc1a arch/m68k/platform/coldfire/device.c Greg Ungerer      2011-12-24  139  	.id			= 0,
-b7ce7f0d0efc1a arch/m68k/platform/coldfire/device.c Greg Ungerer      2011-12-24  140  	.num_resources		= ARRAY_SIZE(mcf_fec0_resources),
-b7ce7f0d0efc1a arch/m68k/platform/coldfire/device.c Greg Ungerer      2011-12-24 @141  	.resource		= mcf_fec0_resources,
-f61e64310b7573 arch/m68k/coldfire/device.c          Greg Ungerer      2018-03-28  142  	.dev = {
-f61e64310b7573 arch/m68k/coldfire/device.c          Greg Ungerer      2018-03-28  143  		.dma_mask		= &mcf_fec0.dev.coherent_dma_mask,
-f61e64310b7573 arch/m68k/coldfire/device.c          Greg Ungerer      2018-03-28  144  		.coherent_dma_mask	= DMA_BIT_MASK(32),
-f61e64310b7573 arch/m68k/coldfire/device.c          Greg Ungerer      2018-03-28  145  		.platform_data		= FEC_PDATA,
-f61e64310b7573 arch/m68k/coldfire/device.c          Greg Ungerer      2018-03-28  146  	}
-b7ce7f0d0efc1a arch/m68k/platform/coldfire/device.c Greg Ungerer      2011-12-24  147  };
-63a24cf8cc330e arch/m68k/coldfire/device.c          Antonio Quartulli 2024-10-29  148  #endif /* MCFFEC_BASE0 */
-b7ce7f0d0efc1a arch/m68k/platform/coldfire/device.c Greg Ungerer      2011-12-24  149  
+> On Tue, 21 Oct 2025 at 07:39, Finn Thain <fthain@linux-m68k.org> wrote:
+> >
+> > Some recent commits incorrectly assumed 4-byte alignment of locks.
+> > That assumption fails on Linux/m68k (and, interestingly, would have
+> > failed on Linux/cris also). Specify the minimum alignment of atomic
+> > variables for fewer surprises and (hopefully) better performance.
+> 
+> FWIW I implemented jump labels for m68k and I think there is a problem
+> with this in there too.
+> jump_label_init() calls static_key_set_entries() and setting
+> key->entries in there is corrupting 'atomic_t enabled' at the start of
+> key.
+> 
+> With this patch the problem goes away.
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+That's interesting. I wonder whether the alignment requirements of machine 
+instructions permitted the "appropriation" of the low bits from those 
+pointers...
+
+In anycase, a modified jump label algorithm that did not use/abuse pointer 
+bits would need to execute as fast as the existing implementation. And 
+that might be quite difficult (especially a portable algorithm).
+
+Recently I had an opportunity to do some performance measurements on m68k 
+for this atomic_t alignment patch. I tested some kernel stressors on an 
+AWS 95 (33 MHz 68040, 128 MB RAM, 512 KiB L2$) and also on a Mac IIfx (40 
+MHz 68030, 80 MB RAM, 32 KiB L2$).
+
+The patch makes the kernel faster or slower, depending the workload. For 
+example, the fifo, futex and shm stressors were consistently faster 
+whereas the splice, signal and msg stressors were consistently slower.
+
+There are no hardware counters for cache misses that might account for 
+part of the slowdown. OTOH, alignment also reduces instances of locks 
+split across page boundaries, which might account for the speed-up. (I 
+didn't look at VM performance counters.)
+
+Finally, I should note that the stress-ng man page says "do NOT use" as a 
+benchmark. OK, well, if anyone wishes to reproduce my results, I can send 
+you the statically linked binary I used. The job file is attached.
+
+I wonder whether others have done any throughput measurement for this 
+patch, using their favourite workloads?
+---14638117742116190217176404272535
+Content-Type: text/plain; charset=US-ASCII; name=aligned-atomics.job
+Content-Transfer-Encoding: BASE64
+Content-ID: <f33f9f04-1c1e-57de-00a9-6b89fecc77fc@nippy.intranet>
+Content-Description: 
+Content-Disposition: attachment; filename=aligned-atomics.job
+
+cnVuIHNlcXVlbnRpYWwNCm1ldHJpY3MtYnJpZWYNCnRpbWVvdXQgMTgwcw0K
+bm8tcmFuZC1zZWVkDQpvb21hYmxlDQp0ZW1wLXBhdGggL3RtcA0KDQpjbG9u
+ZSAxDQpjbG9uZS1vcHMgNA0KDQpkZW50cnkgMQ0KZGVudHJ5LW9wcyA4MTky
+DQoNCiNkZXYgMQ0KI2Rldi1vcHMgMzAwDQoNCmRldi1zaG0gMQ0KZGV2LXNo
+bS1vcHMgMjANCg0KZG5vdGlmeSAxDQpkbm90aWZ5LW9wcyAxMjAwDQoNCmZh
+dWx0IDENCmZhdWx0LW9wcyA4MDAwDQoNCmZpZm8gMQ0KZmlmby1vcHMgMjQw
+MDANCg0KZmlsZS1pb2N0bCAxDQpmaWxlLWlvY3RsLW9wcyAyMDAwMA0KDQpm
+dXRleCAxDQpmdXRleC1vcHMgNDAwMDANCg0KZ2V0IDENCmdldC1vcHMgMzAw
+MA0KDQpnZXRkZW50IDENCmdldGRlbnQtb3BzIDEwMDAwDQoNCmljbXAtZmxv
+b2QgMQ0KaWNtcC1mbG9vZC1vcHMgNDAwMDANCg0KaW5vdGlmeSAxDQppbm90
+aWZ5LW9wcyA0MDANCg0KaW9wcmlvIDENCmlvcHJpby1vcHMgODAwMA0KDQpr
+aWxsIDENCmtpbGwtb3BzIDE1MDAwMA0KDQptZW1mZCAxDQptZW1mZC1ieXRl
+cyAzMm0NCm1lbWZkLW9wcyA4DQoNCm1tYXBmb3JrIDENCm1tYXBmb3JrLW9w
+cyA0DQoNCm1zZyAxDQptc2ctb3BzIDMwMDAwMA0KDQpub3AgMQ0Kbm9wLW9w
+cyAzMDAwDQoNCnBvbGwgMQ0KcG9sbC1vcHMgODAwMA0KDQpwdHJhY2UgMQ0K
+cHRyYWNlLW9wcyA1MDAwMA0KDQpwdHkgMQ0KcHR5LW9wcyAyDQoNCnJhd3Br
+dCAxDQpyYXdwa3Qtb3BzIDgwMDAwDQoNCnJhd3VkcCAxDQpyYXd1ZHAtb3Bz
+IDE1MDAwDQoNCnJlc291cmNlcyAxDQpyZXNvdXJjZXMtb3BzIDMwMA0KDQpy
+ZXZpbyAxDQpyZXZpby1vcHMgNTAwMDANCg0Kc2VlayAxDQpzZWVrLW9wcyAx
+MjAwMA0KDQojc2VtIDENCiNzZW0tb3BzIDQwMDANCg0Kc2VtLXN5c3YgMQ0K
+c2VtLXN5c3Ytb3BzIDMwMDAwMA0KDQpzZW5kZmlsZSAxDQpzZW5kZmlsZS1v
+cHMgMTUwMA0KDQpzZXQgMQ0Kc2V0LW9wcyAyMDAwMA0KDQpzaG0gMQ0Kc2ht
+LW9wcyAxNQ0KDQpzaWdjaGxkIDENCnNpZ2NobGQtb3BzIDUwMDANCg0Kc2ln
+bmFsIDENCnNpZ25hbC1vcHMgMTUwMDAwDQoNCnNpZ3NlZ3YgMQ0Kc2lnc2Vn
+di1vcHMgMTAwMDAwDQoNCnNvY2sgMQ0Kc29jay1vcHMgNTANCg0Kc3BsaWNl
+IDENCnNwbGljZS1vcHMgMTAwMDANCg0KdGVlIDENCnRlZS1vcHMgMTUwMA0K
+DQp1ZHAgMQ0KdWRwLW9wcyAzMDAwMA0KDQp1dGltZSAxDQp1dGltZS1vcHMg
+NDAwMA0KDQp2bSAxDQp2bS1vcHMgMjUwMA0K
+
+---14638117742116190217176404272535--
