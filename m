@@ -1,63 +1,64 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274FC2DA765
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Nov 2025 08:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9802331B822
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Nov 2025 12:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764059781; cv=none; b=GPMBfi5ymg3tBMIhQ8fQnWJWQd20OjHMWfKl4qjuDMg3SWdAT4ldzI9wNmxKeT/ZHh0Zc8IN+Yv96FLI+c1KY0nNzpHFXSJT6EAswyBGJZA6t7Wjyjz2eEj5BTDTvXALSQ+1NJ4tSrMdVTIHZjn6HGT9qS47sRU+WATbccUS2Kk=
+	t=1764072466; cv=none; b=rqOiCSImjApkH2RoTKN6tLWNpN1m8XoDE5vbepOE1JtPehbRfsVPJNQ+B9c5UsmoMVBv0nYTgymjZX+cjktCDk1bygg/+5zXFoOeNK350drCYMMkQoR/SGny/p9SskmQFs4QR/qD43LhIB7oKpBqZOUYW/p4ocL+5cOZhc/c6Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764059781; c=relaxed/simple;
-	bh=X0XjT64sT/WdpRuEO/Hl2etOjQix3IiRxfA7bAlxIos=;
+	s=arc-20240116; t=1764072466; c=relaxed/simple;
+	bh=qq0TTX9wGeZLumRD8PikUL8kyyuwxIpCYIAiBzzYFF8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PlEf43q4X7wctTcg8G8B1cRd3xAGIv2/NS5G6lsqii7A8Jt1OzdwayC7KKRvz2y9x9o+7taqW5Oluirg39/0r89K/D5UiCJheKwHEIW9jykLSLHSImhF9BmqDMlE0lcfgLl+LKFIayOpCA6dTjYFUUjN6coin/mpGt4buJRxomM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=INSrIiit; arc=none smtp.client-ip=192.198.163.19
+	 Content-Type:Content-Disposition:In-Reply-To; b=f3/WoI8eog3RPd9cFPWb43ej6w/JFP+K8u2lEOkbE4YrtgtoZYmmgTUUWwLbfWAUhxxvgRsN9HyN5/yB4kM6Pq+SoUBaFfkN7NTn8cCCHJa+f9lKmE3fp+T+6kvOpaKHRtwHLci0ggUVvOP0p+pGkCw/x09r3kXiI/vEZ8ZEH68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KDjfJQTv; arc=none smtp.client-ip=192.198.163.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="INSrIiit"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KDjfJQTv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1764059780; x=1795595780;
+  t=1764072465; x=1795608465;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=X0XjT64sT/WdpRuEO/Hl2etOjQix3IiRxfA7bAlxIos=;
-  b=INSrIiitNR2mNesmgWvMgHRS2R+xe7mXvgpeS3D1rctXt7SOeG/Ilb4i
-   XvgAaMa2oHxVE3tEOshItOFTXxYgaROg7t7qt9yoZVSJuRMi3DrvIjM47
-   3haV3uv+T+02gvaRNEpksHj8/oKNlHMtheDFnVGDm3KRUdqjpK3qJr2Xp
-   3EtnsyinYJahPaLZEckaSK17mFvu4st2iq8pjE0i3e/ylu1h50AhJZazm
-   dHjqKZKTyH1Zvf0teb4Dc4EVb9dTvG0OsoZouXUVsYub/JULgrJBMdsYq
-   scJ/PN2duHA/JszTSRmDwerjcR6eUc+KHXFvVoJGCvTTB5lf7iqYZHk+M
+  bh=qq0TTX9wGeZLumRD8PikUL8kyyuwxIpCYIAiBzzYFF8=;
+  b=KDjfJQTvdgzXkV0wjOXZSUnLbabNUrnGHTPQvPEdY5omfWYRDjC7HYys
+   /YFGMBG63JCxtbPFzr7UcdZrulLS8xPN23jBiOU9kbewZnR7sU+Ig/SZP
+   d0KcQ0oaukQE4bc8d4tT5fTzmdTkkje38oVZdtEfuXInFa2jkYHUpw2IC
+   EDz7jei/2j2GII/BGBz3QTmJoOeS+hpb6dLXF6bJDAoffNpwwM+pSXbwC
+   RCU8u0LJiz6MNXUNBdnX+da92Az9CysBO3jQE8ZvLyFam6Zx7IZnpq0rA
+   6roXiPbVxVIHkXjxXZS9Z+6Q8UNhgo09DU8h+cFJ1ILV8IzuGepxkcryD
    A==;
-X-CSE-ConnectionGUID: ED86upI7Rt2bIW1EHEwF1g==
-X-CSE-MsgGUID: +4uAoIAeTfmUb6KLWkpvOQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11623"; a="65071672"
+X-CSE-ConnectionGUID: uIdkSxgFSySiDsaOsbUO3g==
+X-CSE-MsgGUID: zpw4ckdYQiGyldbho8xnxA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11623"; a="76711218"
 X-IronPort-AV: E=Sophos;i="6.20,225,1758610800"; 
-   d="scan'208";a="65071672"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2025 00:36:18 -0800
-X-CSE-ConnectionGUID: 7luyBKC2TAC97/xvON/MMQ==
-X-CSE-MsgGUID: rLU+iZilTkmS8KmXXIuJlQ==
+   d="scan'208";a="76711218"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2025 04:07:43 -0800
+X-CSE-ConnectionGUID: yI0JdMhYQuGbPYrGH12LFQ==
+X-CSE-MsgGUID: 3/m9BFMBTCCqBnJ3l9vdpQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.20,225,1758610800"; 
-   d="scan'208";a="193012469"
+   d="scan'208";a="192617430"
 Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 25 Nov 2025 00:36:16 -0800
+  by orviesa007.jf.intel.com with ESMTP; 25 Nov 2025 04:07:38 -0800
 Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1vNoWz-000000001X7-3arI;
-	Tue, 25 Nov 2025 08:36:13 +0000
-Date: Tue, 25 Nov 2025 16:35:43 +0800
+	id 1vNrpX-000000001l7-3NhZ;
+	Tue, 25 Nov 2025 12:07:35 +0000
+Date: Tue, 25 Nov 2025 20:06:56 +0800
 From: kernel test robot <lkp@intel.com>
 To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
 	Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Greg Ungerer <gerg@linux-m68k.org>,
-	imx@lists.linux.dev, dmaengine@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Greg Ungerer <gerg@linux-m68k.org>, imx@lists.linux.dev,
+	dmaengine@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
 	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 Subject: Re: [PATCH 3/7] dma: mcf-edma: Add per-channel IRQ naming for
  debugging
-Message-ID: <202511251608.l7i5CNAr-lkp@intel.com>
+Message-ID: <202511251902.QUkQzBbn-lkp@intel.com>
 References: <20251124-dma-coldfire-v1-3-dc8f93185464@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -79,30 +80,26 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Jean-Michel-Hautbois/dma-
 base:   d13f3ac64efb868d09cb2726b1e84929afe90235
 patch link:    https://lore.kernel.org/r/20251124-dma-coldfire-v1-3-dc8f93185464%40yoseli.org
 patch subject: [PATCH 3/7] dma: mcf-edma: Add per-channel IRQ naming for debugging
-config: x86_64-buildonly-randconfig-002-20251125 (https://download.01.org/0day-ci/archive/20251125/202511251608.l7i5CNAr-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251125/202511251608.l7i5CNAr-lkp@intel.com/reproduce)
+config: x86_64-buildonly-randconfig-004-20251125 (https://download.01.org/0day-ci/archive/20251125/202511251902.QUkQzBbn-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251125/202511251902.QUkQzBbn-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202511251608.l7i5CNAr-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511251902.QUkQzBbn-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   drivers/dma/mcf-edma-main.c: In function 'mcf_edma_irq_init':
->> drivers/dma/mcf-edma-main.c:86:56: warning: format '%d' expects argument of type 'int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+>> drivers/dma/mcf-edma-main.c:86:18: warning: format specifies type 'int' but the argument has type 'resource_size_t' (aka 'unsigned long long') [-Wformat]
       86 |                                                 "eDMA-%d", i - res->start);
-         |                                                       ~^   ~~~~~~~~~~~~~~
-         |                                                        |     |
-         |                                                        int   resource_size_t {aka long long unsigned int}
-         |                                                       %lld
-   drivers/dma/mcf-edma-main.c:100:56: warning: format '%d' expects argument of type 'int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+         |                                                       ~~   ^~~~~~~~~~~~~~
+         |                                                       %llu
+   drivers/dma/mcf-edma-main.c:100:18: warning: format specifies type 'int' but the argument has type 'resource_size_t' (aka 'unsigned long long') [-Wformat]
      100 |                                                 "eDMA-%d", 16 + i - res->start);
-         |                                                       ~^   ~~~~~~~~~~~~~~~~~~~
-         |                                                        |          |
-         |                                                        int        resource_size_t {aka long long unsigned int}
-         |                                                       %lld
+         |                                                       ~~   ^~~~~~~~~~~~~~~~~~~
+         |                                                       %llu
+   2 warnings generated.
 
 
 vim +86 drivers/dma/mcf-edma-main.c
