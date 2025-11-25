@@ -1,46 +1,64 @@
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97C8A2D63F6
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Nov 2025 08:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274FC2DA765
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 25 Nov 2025 08:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764057768; cv=none; b=P1QKWPkNBzl1n/DFA9dCFJDJ4nHcQtzqh3K8Z+PGU1tWJ3Jm1TedMQA6z8aimCfS9maRA92eARWHv9IyzE/A6lsPOzG50qeBzBJ/7xw1GEdUpB1crjjIdNnw19CVfxGrmBVDkmpUJO0klOrNILQjNDc8S8HbMY0Ftw5EssuXZmU=
+	t=1764059781; cv=none; b=GPMBfi5ymg3tBMIhQ8fQnWJWQd20OjHMWfKl4qjuDMg3SWdAT4ldzI9wNmxKeT/ZHh0Zc8IN+Yv96FLI+c1KY0nNzpHFXSJT6EAswyBGJZA6t7Wjyjz2eEj5BTDTvXALSQ+1NJ4tSrMdVTIHZjn6HGT9qS47sRU+WATbccUS2Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764057768; c=relaxed/simple;
-	bh=CD1JVdqtXIGAroJaFbdwj3Epr2vxLT0HRN8O1zlEfQc=;
+	s=arc-20240116; t=1764059781; c=relaxed/simple;
+	bh=X0XjT64sT/WdpRuEO/Hl2etOjQix3IiRxfA7bAlxIos=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mqN578EGUOQdXdUPETz8h9MDdvrcer5Mjzi3U0jzSG2HDeVWSwch0fybzEydsS5oMt7OOBQJYuBMr5o2wFJ9gLZLXHDboTsH92DnX/egP/zRtVhK0+x+YOeE/X1GiAdl/I237f4KuV4s4MRwZLYRb6NQ8lpDqfGypgXfGTKtv4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=eF+x5kn4; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=PlEf43q4X7wctTcg8G8B1cRd3xAGIv2/NS5G6lsqii7A8Jt1OzdwayC7KKRvz2y9x9o+7taqW5Oluirg39/0r89K/D5UiCJheKwHEIW9jykLSLHSImhF9BmqDMlE0lcfgLl+LKFIayOpCA6dTjYFUUjN6coin/mpGt4buJRxomM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=INSrIiit; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="eF+x5kn4"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 30E664438A;
-	Tue, 25 Nov 2025 08:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1764057758;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MoWndkx7e+UmCx3Hyadc2ePIsV1F+2M/5sK889nnkUE=;
-	b=eF+x5kn4Bz19wPZCq0SGBedVZbd9n4F4xU/K90iEC+buRU+T91zXQH+GAWq8hU5nAAELWj
-	v6MZm0y1QxnUg4rXhaXly0jXTujkXkA/8kRoTZgPYnDDjNDFAP7D8gp1DJXWIyjO8PkFrz
-	koT3FHLxjoVSTljKli5l9Y6mDPriL/zA2skOnFhxHwClCANUM885LMJaq9+38wkVv0fP68
-	eN6aMgu0MLs8f0RdGt/SMY2EmDRXYqNOauGIh6a8Sq2x+z+SPD9mF4iKcrV+TOdPLJnnXm
-	whE38bX14TIRPi8iH5m2pNJ1Cpl4JTNC6EQRdP1qiNgB+kO9QrWDlASfeheUEA==
-Date: Tue, 25 Nov 2025 09:02:36 +0100
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>,
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="INSrIiit"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764059780; x=1795595780;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X0XjT64sT/WdpRuEO/Hl2etOjQix3IiRxfA7bAlxIos=;
+  b=INSrIiitNR2mNesmgWvMgHRS2R+xe7mXvgpeS3D1rctXt7SOeG/Ilb4i
+   XvgAaMa2oHxVE3tEOshItOFTXxYgaROg7t7qt9yoZVSJuRMi3DrvIjM47
+   3haV3uv+T+02gvaRNEpksHj8/oKNlHMtheDFnVGDm3KRUdqjpK3qJr2Xp
+   3EtnsyinYJahPaLZEckaSK17mFvu4st2iq8pjE0i3e/ylu1h50AhJZazm
+   dHjqKZKTyH1Zvf0teb4Dc4EVb9dTvG0OsoZouXUVsYub/JULgrJBMdsYq
+   scJ/PN2duHA/JszTSRmDwerjcR6eUc+KHXFvVoJGCvTTB5lf7iqYZHk+M
+   A==;
+X-CSE-ConnectionGUID: ED86upI7Rt2bIW1EHEwF1g==
+X-CSE-MsgGUID: +4uAoIAeTfmUb6KLWkpvOQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11623"; a="65071672"
+X-IronPort-AV: E=Sophos;i="6.20,225,1758610800"; 
+   d="scan'208";a="65071672"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2025 00:36:18 -0800
+X-CSE-ConnectionGUID: 7luyBKC2TAC97/xvON/MMQ==
+X-CSE-MsgGUID: rLU+iZilTkmS8KmXXIuJlQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,225,1758610800"; 
+   d="scan'208";a="193012469"
+Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
+  by fmviesa009.fm.intel.com with ESMTP; 25 Nov 2025 00:36:16 -0800
+Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vNoWz-000000001X7-3arI;
+	Tue, 25 Nov 2025 08:36:13 +0000
+Date: Tue, 25 Nov 2025 16:35:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	Frank Li <Frank.Li@nxp.com>, Vinod Koul <vkoul@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, Greg Ungerer <gerg@linux-m68k.org>,
 	imx@lists.linux.dev, dmaengine@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] dma: mcf-edma: Fix interrupt handler for 64 DMA
- channels
-Message-ID: <aSVinMNSTEQLZxRi@yoseli-yocto.yoseli.org>
-References: <20251124-dma-coldfire-v1-0-dc8f93185464@yoseli.org>
- <20251124-dma-coldfire-v1-4-dc8f93185464@yoseli.org>
- <aSSDItseEjQ0VMh6@lizhi-Precision-Tower-5810>
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: Re: [PATCH 3/7] dma: mcf-edma: Add per-channel IRQ naming for
+ debugging
+Message-ID: <202511251608.l7i5CNAr-lkp@intel.com>
+References: <20251124-dma-coldfire-v1-3-dc8f93185464@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -49,78 +67,101 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aSSDItseEjQ0VMh6@lizhi-Precision-Tower-5810>
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvgedtleegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnhepffehhfdvieeuvdejteduhffgfefffeduveetgeekhfekledukeegjefhtdffgfffnecukfhppedvrgdtudemvgdtrgemudeileemjedugedtmeekvgdtugemkegrugdumegvvggvleemleehsgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvrgdtudemvgdtrgemudeileemjedugedtmeekvgdtugemkegrugdumegvvggvleemleehsgdphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopeejpdhrtghpthhtohephfhrrghnkhdrlhhisehngihprdgtohhmpdhrtghpthhtohepvhhkohhulheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepghgvrhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehimhigsehli
- hhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtohepughmrggvnhhgihhnvgesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+In-Reply-To: <20251124-dma-coldfire-v1-3-dc8f93185464@yoseli.org>
 
-Hi Frank,
+Hi Jean-Michel,
 
-On Mon, Nov 24, 2025 at 11:09:06AM -0500, Frank Li wrote:
-> On Mon, Nov 24, 2025 at 01:50:25PM +0100, Jean-Michel Hautbois wrote:
-> > Fix the DMA completion interrupt handler to properly handle all 64
-> > channels on MCF54418 ColdFire processors.
-> >
-> > The previous code used BIT(ch) to test interrupt status bits, which
-> > causes undefined behavior on 32-bit architectures when ch >= 32 because
-> > unsigned long is 32 bits and the shift would exceed the type width.
-> >
-> > Replace with bitmap_from_u64() and for_each_set_bit() which correctly
-> > handle 64-bit values on 32-bit systems by using a proper bitmap
-> > representation.
-> >
-> > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> > ---
-> >  drivers/dma/mcf-edma-main.c | 13 +++++++------
-> >  1 file changed, 7 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
-> > index 8a7c1787adb1f66f3b6729903635b072218afad1..dd64f50f2b0a70a4664b03c7d6a23e74c9bcd7ae 100644
-> > --- a/drivers/dma/mcf-edma-main.c
-> > +++ b/drivers/dma/mcf-edma-main.c
-> > @@ -18,7 +18,8 @@ static irqreturn_t mcf_edma_tx_handler(int irq, void *dev_id)
-> >  {
-> >  	struct fsl_edma_engine *mcf_edma = dev_id;
-> >  	struct edma_regs *regs = &mcf_edma->regs;
-> > -	unsigned int ch;
-> > +	unsigned long ch;
-> 
-> channel number max value is 63. unsigned int should be enough.
+kernel test robot noticed the following build warnings:
 
-Yes, indeed, it is enough. I changed to unsigned long because
-for_each_set_bit() calls find_next_bit which returns unsigned long. This
-only avoiding an implicit conversion. But I can remove this change if it
-does not make sense ?
+[auto build test WARNING on d13f3ac64efb868d09cb2726b1e84929afe90235]
 
-Thanks,
-JM
+url:    https://github.com/intel-lab-lkp/linux/commits/Jean-Michel-Hautbois/dma-fsl-edma-Add-write-barrier-after-TCD-descriptor-fill/20251124-205625
+base:   d13f3ac64efb868d09cb2726b1e84929afe90235
+patch link:    https://lore.kernel.org/r/20251124-dma-coldfire-v1-3-dc8f93185464%40yoseli.org
+patch subject: [PATCH 3/7] dma: mcf-edma: Add per-channel IRQ naming for debugging
+config: x86_64-buildonly-randconfig-002-20251125 (https://download.01.org/0day-ci/archive/20251125/202511251608.l7i5CNAr-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251125/202511251608.l7i5CNAr-lkp@intel.com/reproduce)
 
-> 
-> Frank
-> > +	DECLARE_BITMAP(status_mask, 64);
-> >  	u64 intmap;
-> >
-> >  	intmap = ioread32(regs->inth);
-> > @@ -27,11 +28,11 @@ static irqreturn_t mcf_edma_tx_handler(int irq, void *dev_id)
-> >  	if (!intmap)
-> >  		return IRQ_NONE;
-> >
-> > -	for (ch = 0; ch < mcf_edma->n_chans; ch++) {
-> > -		if (intmap & BIT(ch)) {
-> > -			iowrite8(EDMA_MASK_CH(ch), regs->cint);
-> > -			fsl_edma_tx_chan_handler(&mcf_edma->chans[ch]);
-> > -		}
-> > +	bitmap_from_u64(status_mask, intmap);
-> > +
-> > +	for_each_set_bit(ch, status_mask, mcf_edma->n_chans) {
-> > +		iowrite8(EDMA_MASK_CH(ch), regs->cint);
-> > +		fsl_edma_tx_chan_handler(&mcf_edma->chans[ch]);
-> >  	}
-> >
-> >  	return IRQ_HANDLED;
-> >
-> > --
-> > 2.39.5
-> >
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511251608.l7i5CNAr-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/dma/mcf-edma-main.c: In function 'mcf_edma_irq_init':
+>> drivers/dma/mcf-edma-main.c:86:56: warning: format '%d' expects argument of type 'int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+      86 |                                                 "eDMA-%d", i - res->start);
+         |                                                       ~^   ~~~~~~~~~~~~~~
+         |                                                        |     |
+         |                                                        int   resource_size_t {aka long long unsigned int}
+         |                                                       %lld
+   drivers/dma/mcf-edma-main.c:100:56: warning: format '%d' expects argument of type 'int', but argument 4 has type 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+     100 |                                                 "eDMA-%d", 16 + i - res->start);
+         |                                                       ~^   ~~~~~~~~~~~~~~~~~~~
+         |                                                        |          |
+         |                                                        int        resource_size_t {aka long long unsigned int}
+         |                                                       %lld
+
+
+vim +86 drivers/dma/mcf-edma-main.c
+
+    72	
+    73	static int mcf_edma_irq_init(struct platform_device *pdev,
+    74					struct fsl_edma_engine *mcf_edma)
+    75	{
+    76		int ret = 0, i;
+    77		struct resource *res;
+    78	
+    79		res = platform_get_resource_byname(pdev,
+    80					IORESOURCE_IRQ, "edma-tx-00-15");
+    81		if (!res)
+    82			return -1;
+    83	
+    84		for (ret = 0, i = res->start; i <= res->end; ++i) {
+    85			char *irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+  > 86							"eDMA-%d", i - res->start);
+    87	
+    88			ret |= request_irq(i, mcf_edma_tx_handler, 0, irq_name, mcf_edma);
+    89		}
+    90		if (ret)
+    91			return ret;
+    92	
+    93		res = platform_get_resource_byname(pdev,
+    94				IORESOURCE_IRQ, "edma-tx-16-55");
+    95		if (!res)
+    96			return -1;
+    97	
+    98		for (ret = 0, i = res->start; i <= res->end; ++i) {
+    99			char *irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+   100							"eDMA-%d", 16 + i - res->start);
+   101	
+   102			ret |= request_irq(i, mcf_edma_tx_handler, 0, irq_name, mcf_edma);
+   103		}
+   104		if (ret)
+   105			return ret;
+   106	
+   107		ret = platform_get_irq_byname(pdev, "edma-tx-56-63");
+   108		if (ret != -ENXIO) {
+   109			ret = request_irq(ret, mcf_edma_tx_handler,
+   110					  0, "eDMA-tx-56", mcf_edma);
+   111			if (ret)
+   112				return ret;
+   113		}
+   114	
+   115		ret = platform_get_irq_byname(pdev, "edma-err");
+   116		if (ret != -ENXIO) {
+   117			ret = request_irq(ret, mcf_edma_err_handler,
+   118					  0, "eDMA-err", mcf_edma);
+   119			if (ret)
+   120				return ret;
+   121		}
+   122	
+   123		return 0;
+   124	}
+   125	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
