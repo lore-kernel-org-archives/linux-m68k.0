@@ -1,132 +1,133 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B53239594
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Nov 2025 01:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3256631DDA4
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Nov 2025 08:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764208780; cv=none; b=sGYdcH6tyqBYu/eUulD6DvHxnelA51+qpcvjGSLqfJIViofX2kqSMH5X2FuF74P0vYXrmqE1DlQNwEtx78P8Qfr6bLgIVXuoJqRk2NUsg0L36yV7p0vbVLIHPrkAUh2iusLtjfZNOsK/mBLOOpmaj/0/RdN7Kf6fg3pjzSuhHvI=
+	t=1764232641; cv=none; b=BaZDIaJS+dAMnkRUETUQHE98cUpttMbmbLJz19+zrY+TJvxjMOSYL4DXgOR+HJ+VYu9gqz+5FGWbBmkvEdXBaa4esNDe6ZKMLTmrlkIu9V4feB9MtHQKVeWLkngK+0fXEDMUePV24adp7rmct2fb17MzOjCNYxlUclplducIhd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764208780; c=relaxed/simple;
-	bh=/iTY5lK+GbVbpicqPvPbabWVnqm2qRHYTtm+0dMiuCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D33lKBPPOxMfn1n7OD0B2obW9DmenYTG5bQPUu0XJhs02pQX2Kqvr2+bYBMTWqYVJlOiqpmOiugWe7kC2r0jd/+atX6BBE39geyZWuZqzlmB4+rwaDVyfj5WmYk27gy947qwGG15jF7SXWaSs8z38lYfTmCjKUaSJKzozM2I7/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aqBLRcP1; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aqBLRcP1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1764208778; x=1795744778;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/iTY5lK+GbVbpicqPvPbabWVnqm2qRHYTtm+0dMiuCA=;
-  b=aqBLRcP191dbD787WEhc/6OIL2rh0A/iwW3yh/hnYO7vHz24tRSFJJyX
-   1mqEEOMKqdET80YrOOBjJ0cxaIiRmUEytHc/pvbkE86lIoTy5U6Pm4PX7
-   /w6dxc0fc3Tx1xc/+owfFzInGcKWS6qnGdjBfJ0G7+WS4tUoMEGojvmrc
-   EhjADvOXuidbi5W4SAT38hSedJL8f/09kTbtube2kRrweCGe0K+Se0rVq
-   xdePsZQgiVdhxTjqMANJQhZYvYOidOiu2hy3XcDEr1rtidcFsy8DILkh/
-   kUOPTxfP+PWNlW4pzGhnKX/Q5iSa8AvoB/Ikmsr4jQGzlThWn40VN+0Zj
-   w==;
-X-CSE-ConnectionGUID: erwSfl6gSUyZ3dxspemMiQ==
-X-CSE-MsgGUID: YxTEXuGOTJeVFvxIqkadBw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11625"; a="65439495"
-X-IronPort-AV: E=Sophos;i="6.20,229,1758610800"; 
-   d="scan'208";a="65439495"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2025 17:59:37 -0800
-X-CSE-ConnectionGUID: dOnZxvv5TN6aBUKek9C2pg==
-X-CSE-MsgGUID: kq4D3beKReSkhCcAnWR2Fg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,229,1758610800"; 
-   d="scan'208";a="193907601"
-Received: from lkp-server01.sh.intel.com (HELO 4664bbef4914) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 26 Nov 2025 17:59:35 -0800
-Received: from kbuild by 4664bbef4914 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vORIC-000000003Yb-2ohe;
-	Thu, 27 Nov 2025 01:59:32 +0000
-Date: Thu, 27 Nov 2025 09:59:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Daniel Palmer <daniel@thingy.jp>, geert@linux-m68k.org
-Cc: oe-kbuild-all@lists.linux.dev, kas@kernel.org, mingo@kernel.org,
-	seanjc@google.com, bp@alien8.de, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, Daniel Palmer <daniel@thingy.jp>
-Subject: Re: [PATCH] m68k: implement runtime consts
-Message-ID: <202511270956.hzGiPzdZ-lkp@intel.com>
-References: <20251127000505.2117956-1-daniel@thingy.jp>
+	s=arc-20240116; t=1764232641; c=relaxed/simple;
+	bh=/k8EWPhfGokPGMRiqiH2p4Mjc5NgvkT0g+q1DuCM1Vc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lfcfwj5lkESEgIJlR3DJ1KTMz6kkbJOOSemuADC6wuu+bthtnVaKZ+huQ9zC8hyS1dBn1bxtLhsBCMkg41jpyU+4AnAPljK7oBecp7MTlQFtm2A+RSV4O6Jhm8yJxsPQkCElN+QOOoqdLwk9226dvtJCo8yT/qp7hs3lsWcsFyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-55b4dafb425so1141278e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Nov 2025 00:37:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764232638; x=1764837438;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bIb8SaPvztgKHHZzH8CWgVAXI7TZRDphVAmy2KGknFI=;
+        b=WmFoa6RAaAwJE/TtXMffL8Z/SEpti0qmtMcFQyAge1oH7wG7Iq3rBRwIvpfAIHacAi
+         eeNXETyvIGwIasGSqEeltwrB6v4sGdSiVhrEoqGyHFOjhyXLPDowYobZyt0U1n43GcFI
+         2nNXxLJXt1FZVSoOyp2cX1qQOf552Os0XxuC+BUxwbD1aTUkeHZAxSNgBDLDlZAsKhFj
+         Lum/e3ITVbFgT/ognA5Ij347Z5wA+pUfZzCz1ew4Rdz4wPbpkaVOcQf9lVqIoSewLscv
+         noIDwV+3YlKM7qJRmY5Szx3AIehhvKlO7Yy38o5i2tzmqTMYKz7ep4q4HdhmGa6E0Ox7
+         9FUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3NUQzTJhcci3qKc1SPiE0IwgKy49SCNS1ruZRA2TZXWeBW6uOBxJ9Oc8Ge33zNAySGVw33Qsyxjm0@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxDw+Qs/k0V9StMd4hmkZ/fyPY9WS8BaiGtF9IKh+N/AGaJZDIO
+	kjktLRSBMhHSCuSDTmCru1zrv+1Y7PuhVhlAA5v5Qwj8JPrBAJAsUpozWYzijYM6
+X-Gm-Gg: ASbGncu5+yAvGiTRcFbLsRs8U3Mz2pmPecY9LCHouOqqYj2pLyOXiu6RIWloSv9GzGM
+	C02NznLEpTZJnLYdU7T6ufKmIUWczVXX+zhSlPSRR/me2nOswF2RG19a9x4BWJ5dPwiTjSoK2MC
+	sLf6QxSgOJnHwGMqUWTNozIqEdkNfcPrAYNXSXgQW78Bk1/9B68aSYpQyKGSTtQPd/nteTWtm5+
+	VSO+TzDuJHrer43cGQZFV5DfNkO3tRXH/YEp3dXJ6CBvs683VKFJuWBLqRa2RuRNO07V+3a5tzK
+	zbG4EIhQ3k0L6i5/KSm6GuVB0tcu1ODBKOFNKjiDtxugxY9zb61zZObvDKe84/ke1Q96qC7Udc6
+	Qnvg/Iqx1tYUKlL7tQlWhdySzOAL5QcFwfAPoqkOPYWapKpwgGk+nJbLyNUUJU+ahiXzcWndfkW
+	xb8/TeAoxCyoKcSmnrhgnNN8cs/bIrWLMhCoMOt600t8JhLq1S
+X-Google-Smtp-Source: AGHT+IERNc5QeiPOa2QC9YUYDcxJjQgKyz0j9MfUfxr84BsPNsTS4AJLj+CkPMMolLoewXKrybK0fQ==
+X-Received: by 2002:a05:6122:8007:b0:55b:9bf6:da7d with SMTP id 71dfb90a1353d-55b9bf6db38mr5682456e0c.2.1764232637832;
+        Thu, 27 Nov 2025 00:37:17 -0800 (PST)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-55cf5186d0csm336756e0c.20.2025.11.27.00.37.16
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Nov 2025 00:37:16 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-9372164d768so1123924241.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Nov 2025 00:37:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUjCCNNJ0sVzhE2T7v+sE4hRVuyp0d602opcYq8opplqEcHtRYik51dQyinEpY87E/NVmYAMZuFJ0At@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:1623:b0:5db:e32d:a3ff with SMTP id
+ ada2fe7eead31-5e1c41a822amr12513289137.19.1764232635987; Thu, 27 Nov 2025
+ 00:37:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251127000505.2117956-1-daniel@thingy.jp>
+References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
+ <20251126-b4-m5441x-add-rng-support-v4-1-5309548c9555@yoseli.org> <aSdjT9BLzGF3_5PB@akranes.kaiser.cx>
+In-Reply-To: <aSdjT9BLzGF3_5PB@akranes.kaiser.cx>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 27 Nov 2025 09:37:05 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUGmw+Pa43oqcGzt0x7ED2FGw0=U7XddvdaUZ3GFmsxsQ@mail.gmail.com>
+X-Gm-Features: AWmQ_bkVv9s4nivghVE7rDnIpugWqg40dFmqyxV-7HzaTJ-oT-X1ymFUQxkCVvQ
+Message-ID: <CAMuHMdUGmw+Pa43oqcGzt0x7ED2FGw0=U7XddvdaUZ3GFmsxsQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] hwrng: imx-rngc: Use optional clock
+To: Martin Kaiser <martin@kaiser.cx>
+Cc: Jean-Michel Hautbois via B4 Relay <devnull+jeanmichel.hautbois.yoseli.org@kernel.org>, 
+	Greg Ungerer <gerg@linux-m68k.org>, Olivia Mackall <olivia@selenic.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, Frank Li <Frank.Li@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Daniel,
+Hi Martin,
 
-kernel test robot noticed the following build warnings:
+On Wed, 26 Nov 2025 at 21:30, Martin Kaiser <martin@kaiser.cx> wrote:
+> Thus wrote Jean-Michel Hautbois via B4 Relay (devnull+jeanmichel.hautbois.yoseli.org@kernel.org):
+>
+> > From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+>
+> > Change devm_clk_get() to devm_clk_get_optional() to support platforms
+> > where the RNG clock is always enabled and not exposed via the clock
+> > framework (such as ColdFire MCF54418).
+>
+> > Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> > ---
+> >  drivers/char/hw_random/imx-rngc.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> > diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
+> > index 241664a9b5d9..d6a847e48339 100644
+> > --- a/drivers/char/hw_random/imx-rngc.c
+> > +++ b/drivers/char/hw_random/imx-rngc.c
+> > @@ -259,7 +259,7 @@ static int __init imx_rngc_probe(struct platform_device *pdev)
+> >       if (IS_ERR(rngc->base))
+> >               return PTR_ERR(rngc->base);
+>
+> > -     rngc->clk = devm_clk_get(&pdev->dev, NULL);
+> > +     rngc->clk = devm_clk_get_optional(&pdev->dev, NULL);
+> >       if (IS_ERR(rngc->clk))
+> >               return dev_err_probe(&pdev->dev, PTR_ERR(rngc->clk), "Cannot get rng_clk\n");
+>
+> The clock is not optional on a standard imx25 system. If it's missing in the
+> device tree, the rngb will not work and we should not load the driver.
 
-[auto build test WARNING on geert-m68k/for-next]
-[also build test WARNING on geert-m68k/for-linus linus/master v6.18-rc7 next-20251126]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+As the clocks property is marked required in
+Documentation/devicetree/bindings/rng/imx-rng.yaml, "make dtbs_check"
+should flag a missing clock.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Palmer/m68k-implement-runtime-consts/20251127-080652
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-patch link:    https://lore.kernel.org/r/20251127000505.2117956-1-daniel%40thingy.jp
-patch subject: [PATCH] m68k: implement runtime consts
-config: m68k-allnoconfig (https://download.01.org/0day-ci/archive/20251127/202511270956.hzGiPzdZ-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251127/202511270956.hzGiPzdZ-lkp@intel.com/reproduce)
+> Should we call devm_clk_get or devm_clk_get_optional, depending on the
+> detected device?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202511270956.hzGiPzdZ-lkp@intel.com/
+That can quickly lead to complex code.  Nowadays it is fine to rely on
+"make dtbs_check" for some part of the validation.
 
-All warnings (new ones prefixed by >>):
+Gr{oetje,eeting}s,
 
-   In file included from fs/dcache.c:38:
-   arch/m68k/include/asm/runtime-const.h: In function '__runtime_fixup_ptr':
->> arch/m68k/include/asm/runtime-const.h:28:29: warning: unused variable 'end' [-Wunused-variable]
-      28 |         const unsigned long end = start + sizeof(*value);
-         |                             ^~~
-   arch/m68k/include/asm/runtime-const.h: In function '__runtime_fixup_shift':
-   arch/m68k/include/asm/runtime-const.h:51:29: warning: unused variable 'end' [-Wunused-variable]
-      51 |         const unsigned long end = start + sizeof(*insn);
-         |                             ^~~
-
-
-vim +/end +28 arch/m68k/include/asm/runtime-const.h
-
-    13	
-    14	#define runtime_const_ptr(sym) ({				\
-    15		typeof(sym) __ret;					\
-    16		asm_inline("1:\t"					\
-    17			"mov.l #0xcafef00d,%0\n\t"			\
-    18			".pushsection runtime_ptr_" #sym ",\"a\"\n\t"	\
-    19			".long 1b - .\n\t"				\
-    20			".popsection"					\
-    21			: "=a" (__ret));				\
-    22		__ret; })
-    23	
-    24	static inline void __runtime_fixup_ptr(void *where, unsigned long val)
-    25	{
-    26		u32 *value = where + 2;
-    27		const unsigned long start = ((unsigned long) where) + 2;
-  > 28		const unsigned long end = start + sizeof(*value);
-    29	
-    30		*value = val;
-    31	
-    32		flush_icache_range(start, end);
-    33	}
-    34	
+                        Geert
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
