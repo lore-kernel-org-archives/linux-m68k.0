@@ -1,115 +1,105 @@
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from akranes.kaiser.cx (akranes.kaiser.cx [152.53.16.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22DC832A3C6
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Nov 2025 10:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A65C2144C7;
+	Thu, 27 Nov 2025 13:22:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=152.53.16.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764238943; cv=none; b=WiQ8FsIIeKkUTMcY1cObUoTw0aa9VRgandSCcNKJbGq+srDSl+abUve1iABNhvStJfeVS0KD7KU9KhXVHKrKf1gp5EGt7ED2rxGi+OXThTIQhOWIIodz3ShPoKSJSZvJHzpqbwtnZR/5V3aoxd/QKdBPJxtBrmpcs8VgSanV1kM=
+	t=1764249772; cv=none; b=LNMNa/1iz0cLHfDrdVF8ok+OYfWpXRD4HT2N9PcimK2L8R15oBWWpLT5JGxaRmLgVtTJS73wnxhtChcpn8SDt1YDQmnBIGZFokbV8zsqGHVzcL1PkTEJytqvTGPmK9XHGuOeb+ySw6y3o3CWoi4d6JPAJU2lP3+OqXz55/v+MN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764238943; c=relaxed/simple;
-	bh=WgZGIDHTZ2yGJPvf3HrBh6RhI6jHlRHm8hDy2sdVpM8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UxiVqylZ9iiJDyDk/Pf8BSbyisgN0UofSL4NbgrIb6MesD00IjjgkHmBjITOZUUSN94xp55Jmzlv7dUNCIu4ukhLMUPQvxBONT10wBk6KWG28P/DQNxc0nCGABvmPhZuR9eI9CD09V/4kMhkpowXgA4SpFO6B/WYsJGm8LmufVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-5dfccb35b10so425139137.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Nov 2025 02:22:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764238941; x=1764843741;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1j09ivE7kOjEbNLk28pWagcV+zggz3YJQi9QBU8ZUiM=;
-        b=Oex8/rcWmEOiifQgKO2JAR67CfPxxODFGMF5Kkm9eVoyZ6CzqUUMSQTeaK5qRQaYPg
-         D7AVuCCe2VjVpB7OYc+HfiWDSnUsWpGOilwlPf5HWj3RiLmCNLttVD4UaeT2b2FQgAjK
-         HXApNr5IwSc5lhToxm/3oOjy4mrv4jrSxm1pTWT7igGHimqpJFpBuMUqGtdkg/hUNgSO
-         VK8oH1AYEhm1S/7sVe6wfF04NVXjB3ZVlVeQXOZr2c4PJULrrGxfHQF5Qf+KD+1DivPS
-         kbZsqPWMRm4H37A5SRy66ehjg8AeRycJnUDByWHeECFMiU5OT/CsgHBDKmwJEupkpjVM
-         u8RA==
-X-Forwarded-Encrypted: i=1; AJvYcCUARlc+Zix6MQEqs2CzJBCF/gb6AApwya1/aNvW36rli/Vv4xGEZXA4WnIhdnYD42hpAnnZWLJr8XSD@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxndAnCvQp5OcprL00cFFT8Q/M8oZPsKa3suqa/I2+jE9gOu2jx
-	WjMzUhPI2+YMYqwQj2xcWHWy4KvXT0wbWco6f0dNa8bKF/zWRNqW9kPnUBTfRbsc
-X-Gm-Gg: ASbGncsRSyqveyQ/y3oU+keENf+lXgr5lFM4xGGYZaV/lRMzSdwED1fE1UMDZZtghaf
-	myWbWPuwSFP/50gX6eLB3XUKAduUQpwd5jZSdQiI9XEmSWVW77yq9gDJtPkCuOEJi2Vjfrb33Cn
-	GmrYu0DkOgArkW4gcbu2vxrTcF0iJk4zugAvze7qXHwz9yKUkYiMkEJFCyWYBAf3FXl7VkSOwsD
-	WndCzBMS/PK9nnnmHieAZzVPFoVJfKA45Onsye5QPdZ5GNk+FTcozyt4vaN9nApjGjUUmowd3h/
-	GBjj3enmP0foUhu4VuuYH2H62v+yZ5xrU08aO0S/YzZqj5ULK+5jX+wnLP83N1LxwQiiLYVqPbE
-	uB4i1xxAyPYxahJ6qmPfQd+MctO62dUHJPhxMpWuEPe+u5uKvMlj+XQp3g27yC27XxOPZl1AAFx
-	lckcgLHEq6baZm2TjGP+DYA9TkoAK9AxfusvoVPnx3uZx6+Jru
-X-Google-Smtp-Source: AGHT+IHKRw+s4KSp2gUBRRtEdPYfK67U3NLFCZpqGtW8Du0VzC9I0ohMPzbvL88T815EBNTYWNuB2g==
-X-Received: by 2002:a05:6102:4243:b0:5de:e881:1a8d with SMTP id ada2fe7eead31-5e224491296mr3684245137.45.1764238940762;
-        Thu, 27 Nov 2025 02:22:20 -0800 (PST)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-93cd7662111sm375476241.13.2025.11.27.02.22.20
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Nov 2025 02:22:20 -0800 (PST)
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-5dfa9e34adbso523637137.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Nov 2025 02:22:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWcc/wYl58c5CrpiMZON4uy4MCnz+yZA+ITyZNdFXq6P8752zNGvtMfDcN6mApByiUiTxnQD2FhgS+E@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:26d1:b0:5df:3b19:4119 with SMTP id
- ada2fe7eead31-5e2243d73aamr3298264137.26.1764238940353; Thu, 27 Nov 2025
- 02:22:20 -0800 (PST)
+	s=arc-20240116; t=1764249772; c=relaxed/simple;
+	bh=j4m5kttRAm5kvGpDGtBPI0PXQs8rTAdOSDIXXBd0eGE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UOV65wKwpCHv7p5cXinTLTaYEW20MlDzNSxZfTIBuUCu//f/TtlHbXJVat77Z/PiGrLnRk1/c+cl/FrXrDbJfAhck0E8BnWeeXVbXob8SBvFbmiNr4iEoICaW28oMePpQH32/SeM63wVzeFvw7gZRHg1ArB8nCJKeeTrTgHYMFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx; spf=pass smtp.mailfrom=kaiser.cx; arc=none smtp.client-ip=152.53.16.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kaiser.cx
+Received: from martin by akranes.kaiser.cx with local (Exim 4.96)
+	(envelope-from <martin@akranes.kaiser.cx>)
+	id 1vObxC-0007Pt-0N;
+	Thu, 27 Nov 2025 14:22:34 +0100
+Date: Thu, 27 Nov 2025 14:22:34 +0100
+From: Martin Kaiser <martin@kaiser.cx>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Jean-Michel Hautbois via B4 Relay <devnull+jeanmichel.hautbois.yoseli.org@kernel.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH v4 1/2] hwrng: imx-rngc: Use optional clock
+Message-ID: <aShQmqUfT5OQFf0N@akranes.kaiser.cx>
+References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
+ <20251126-b4-m5441x-add-rng-support-v4-1-5309548c9555@yoseli.org>
+ <aSdjT9BLzGF3_5PB@akranes.kaiser.cx>
+ <CAMuHMdUGmw+Pa43oqcGzt0x7ED2FGw0=U7XddvdaUZ3GFmsxsQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251127000505.2117956-1-daniel@thingy.jp> <202511270956.hzGiPzdZ-lkp@intel.com>
- <CAFr9PXngrVvcQ2yO0JUj6ve1T39rWftwECnKfUcV3PcKUCPPmg@mail.gmail.com>
-In-Reply-To: <CAFr9PXngrVvcQ2yO0JUj6ve1T39rWftwECnKfUcV3PcKUCPPmg@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 27 Nov 2025 11:22:09 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXMA4seUXqJsoVpuYNVS8wEFWYJKRBSWOZ=vS2Js6Bh3g@mail.gmail.com>
-X-Gm-Features: AWmQ_bkWE_UikKHWyVd5p5ZLA9UiWuUIjL7yc4JLz2wDvsO1mNkFp2kBVZB-msg
-Message-ID: <CAMuHMdXMA4seUXqJsoVpuYNVS8wEFWYJKRBSWOZ=vS2Js6Bh3g@mail.gmail.com>
-Subject: Re: [PATCH] m68k: implement runtime consts
-To: Daniel Palmer <daniel@thingy.jp>
-Cc: kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev, kas@kernel.org, 
-	mingo@kernel.org, seanjc@google.com, bp@alien8.de, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUGmw+Pa43oqcGzt0x7ED2FGw0=U7XddvdaUZ3GFmsxsQ@mail.gmail.com>
+Sender: "Martin Kaiser,,," <martin@akranes.kaiser.cx>
 
-Hi Daniel,
+Hi Geert,
 
-On Thu, 27 Nov 2025 at 11:13, Daniel Palmer <daniel@thingy.jp> wrote:
-> On Thu, 27 Nov 2025 at 10:59, kernel test robot <lkp@intel.com> wrote:
-> > All warnings (new ones prefixed by >>):
-> >
-> >    In file included from fs/dcache.c:38:
-> >    arch/m68k/include/asm/runtime-const.h: In function '__runtime_fixup_ptr':
-> > >> arch/m68k/include/asm/runtime-const.h:28:29: warning: unused variable 'end' [-Wunused-variable]
-> >       28 |         const unsigned long end = start + sizeof(*value);
-> >          |                             ^~~
-> >    arch/m68k/include/asm/runtime-const.h: In function '__runtime_fixup_shift':
-> >    arch/m68k/include/asm/runtime-const.h:51:29: warning: unused variable 'end' [-Wunused-variable]
-> >       51 |         const unsigned long end = start + sizeof(*insn);
-> >          |                             ^~~
->
-> I guess this is because allnoconfig results in CONFIG_MMU=n and that means
-> that the nommu defines for cache operations are used and those look like:
-> #define flush_icache_range(start, len) __flush_icache_all()
->
-> And the arguments getting passed aren't used. Also noticed that it's
-> start and len
-> there not start and end like everywhere else seems to be...
->
-> I guess the  flush_icache_range macro needs to be tweaked to not
-> trigger the unused
-> warning but I'm not sure how right now.
+Thus wrote Geert Uytterhoeven (geert@linux-m68k.org):
 
-Replacing the macros by static inline functions should fix that.
+> Hi Martin,
 
-Gr{oetje,eeting}s,
+> On Wed, 26 Nov 2025 at 21:30, Martin Kaiser <martin@kaiser.cx> wrote:
+> > Thus wrote Jean-Michel Hautbois via B4 Relay (devnull+jeanmichel.hautbois.yoseli.org@kernel.org):
 
-                        Geert
+> > > From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > > Change devm_clk_get() to devm_clk_get_optional() to support platforms
+> > > where the RNG clock is always enabled and not exposed via the clock
+> > > framework (such as ColdFire MCF54418).
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> > > Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> > > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> > > ---
+> > >  drivers/char/hw_random/imx-rngc.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+
+> > > diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
+> > > index 241664a9b5d9..d6a847e48339 100644
+> > > --- a/drivers/char/hw_random/imx-rngc.c
+> > > +++ b/drivers/char/hw_random/imx-rngc.c
+> > > @@ -259,7 +259,7 @@ static int __init imx_rngc_probe(struct platform_device *pdev)
+> > >       if (IS_ERR(rngc->base))
+> > >               return PTR_ERR(rngc->base);
+
+> > > -     rngc->clk = devm_clk_get(&pdev->dev, NULL);
+> > > +     rngc->clk = devm_clk_get_optional(&pdev->dev, NULL);
+> > >       if (IS_ERR(rngc->clk))
+> > >               return dev_err_probe(&pdev->dev, PTR_ERR(rngc->clk), "Cannot get rng_clk\n");
+
+> > The clock is not optional on a standard imx25 system. If it's missing in the
+> > device tree, the rngb will not work and we should not load the driver.
+
+> As the clocks property is marked required in
+> Documentation/devicetree/bindings/rng/imx-rng.yaml, "make dtbs_check"
+> should flag a missing clock.
+
+> > Should we call devm_clk_get or devm_clk_get_optional, depending on the
+> > detected device?
+
+> That can quickly lead to complex code.  Nowadays it is fine to rely on
+> "make dtbs_check" for some part of the validation.
+
+ok, understood. With this clarification, I'm happy with the patch.
+
+Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+
+Thanks,
+Martin
