@@ -1,105 +1,88 @@
-Received: from akranes.kaiser.cx (akranes.kaiser.cx [152.53.16.207])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A65C2144C7;
-	Thu, 27 Nov 2025 13:22:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=152.53.16.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B887030217B
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Dec 2025 09:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764249772; cv=none; b=LNMNa/1iz0cLHfDrdVF8ok+OYfWpXRD4HT2N9PcimK2L8R15oBWWpLT5JGxaRmLgVtTJS73wnxhtChcpn8SDt1YDQmnBIGZFokbV8zsqGHVzcL1PkTEJytqvTGPmK9XHGuOeb+ySw6y3o3CWoi4d6JPAJU2lP3+OqXz55/v+MN4=
+	t=1764582680; cv=none; b=sqUbpjR1a/ScUUXYNOEP9y8kSk6EGYPfYuZikJKrt3NudimMPS4IbIiJpYYN/rslpiSe/sUSXL9hfZjafq2ineQ/bhsg14P74hzcXcx40/C9ShHEsFvGuU0poa5LpU60QArait/0XUIlIRQ8HJEdtF61PxcVfy1M++AOaoBD3eI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764249772; c=relaxed/simple;
-	bh=j4m5kttRAm5kvGpDGtBPI0PXQs8rTAdOSDIXXBd0eGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UOV65wKwpCHv7p5cXinTLTaYEW20MlDzNSxZfTIBuUCu//f/TtlHbXJVat77Z/PiGrLnRk1/c+cl/FrXrDbJfAhck0E8BnWeeXVbXob8SBvFbmiNr4iEoICaW28oMePpQH32/SeM63wVzeFvw7gZRHg1ArB8nCJKeeTrTgHYMFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx; spf=pass smtp.mailfrom=kaiser.cx; arc=none smtp.client-ip=152.53.16.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kaiser.cx
-Received: from martin by akranes.kaiser.cx with local (Exim 4.96)
-	(envelope-from <martin@akranes.kaiser.cx>)
-	id 1vObxC-0007Pt-0N;
-	Thu, 27 Nov 2025 14:22:34 +0100
-Date: Thu, 27 Nov 2025 14:22:34 +0100
-From: Martin Kaiser <martin@kaiser.cx>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Jean-Michel Hautbois via B4 Relay <devnull+jeanmichel.hautbois.yoseli.org@kernel.org>,
+	s=arc-20240116; t=1764582680; c=relaxed/simple;
+	bh=Uy/K7kKi/+uzfJZ0QSE3QVyViUZBLVUCDO/oGQd53aY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o4iFzYABQmwsffBjG7Vvi/lCO3nbqz6Tgkx32jmzw//eQW9UUCRTzdvXTXMhvwgxLgXpcbmU5xdhHbswuxDjTeyM9x27h5IEtb3fkm7Fpm+e7vBAB1C4Yr42HqUUlCC2eCXGlJy7pKWlJ+LRkBmuciOFGTertRIOalcR2ylKiQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 173786014C;
+	Mon,  1 Dec 2025 09:51:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D964C116D0;
+	Mon,  1 Dec 2025 09:51:13 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Greg Ungerer <gerg@linux-m68k.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v4 1/2] hwrng: imx-rngc: Use optional clock
-Message-ID: <aShQmqUfT5OQFf0N@akranes.kaiser.cx>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
- <20251126-b4-m5441x-add-rng-support-v4-1-5309548c9555@yoseli.org>
- <aSdjT9BLzGF3_5PB@akranes.kaiser.cx>
- <CAMuHMdUGmw+Pa43oqcGzt0x7ED2FGw0=U7XddvdaUZ3GFmsxsQ@mail.gmail.com>
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v6.19
+Date: Mon,  1 Dec 2025 10:51:08 +0100
+Message-ID: <20251201095108.3450261-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUGmw+Pa43oqcGzt0x7ED2FGw0=U7XddvdaUZ3GFmsxsQ@mail.gmail.com>
-Sender: "Martin Kaiser,,," <martin@akranes.kaiser.cx>
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+	Hi Linus,
 
-Thus wrote Geert Uytterhoeven (geert@linux-m68k.org):
+The following changes since commit 3a8660878839faadb4f1a6dd72c3179c1df56787:
 
-> Hi Martin,
+  Linux 6.18-rc1 (2025-10-12 13:42:36 -0700)
 
-> On Wed, 26 Nov 2025 at 21:30, Martin Kaiser <martin@kaiser.cx> wrote:
-> > Thus wrote Jean-Michel Hautbois via B4 Relay (devnull+jeanmichel.hautbois.yoseli.org@kernel.org):
+are available in the Git repository at:
 
-> > > From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v6.19-tag1
 
-> > > Change devm_clk_get() to devm_clk_get_optional() to support platforms
-> > > where the RNG clock is always enabled and not exposed via the clock
-> > > framework (such as ColdFire MCF54418).
+for you to fetch changes up to aaf4e92341b081bac1230f22619b0a298e285dab:
 
-> > > Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> > > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> > > ---
-> > >  drivers/char/hw_random/imx-rngc.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+  m68k: defconfig: Update defconfigs for v6.18-rc1 (2025-11-24 11:03:50 +0100)
 
-> > > diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-> > > index 241664a9b5d9..d6a847e48339 100644
-> > > --- a/drivers/char/hw_random/imx-rngc.c
-> > > +++ b/drivers/char/hw_random/imx-rngc.c
-> > > @@ -259,7 +259,7 @@ static int __init imx_rngc_probe(struct platform_device *pdev)
-> > >       if (IS_ERR(rngc->base))
-> > >               return PTR_ERR(rngc->base);
+----------------------------------------------------------------
+m68k updates for v6.19
 
-> > > -     rngc->clk = devm_clk_get(&pdev->dev, NULL);
-> > > +     rngc->clk = devm_clk_get_optional(&pdev->dev, NULL);
-> > >       if (IS_ERR(rngc->clk))
-> > >               return dev_err_probe(&pdev->dev, PTR_ERR(rngc->clk), "Cannot get rng_clk\n");
+  - Defconfig updates.
 
-> > The clock is not optional on a standard imx25 system. If it's missing in the
-> > device tree, the rngb will not work and we should not load the driver.
+Thanks for pulling!
 
-> As the clocks property is marked required in
-> Documentation/devicetree/bindings/rng/imx-rng.yaml, "make dtbs_check"
-> should flag a missing clock.
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v6.18-rc1
 
-> > Should we call devm_clk_get or devm_clk_get_optional, depending on the
-> > detected device?
+ arch/m68k/configs/amiga_defconfig    | 3 +--
+ arch/m68k/configs/apollo_defconfig   | 3 +--
+ arch/m68k/configs/atari_defconfig    | 3 +--
+ arch/m68k/configs/bvme6000_defconfig | 3 +--
+ arch/m68k/configs/hp300_defconfig    | 3 +--
+ arch/m68k/configs/mac_defconfig      | 3 +--
+ arch/m68k/configs/multi_defconfig    | 3 +--
+ arch/m68k/configs/mvme147_defconfig  | 3 +--
+ arch/m68k/configs/mvme16x_defconfig  | 3 +--
+ arch/m68k/configs/q40_defconfig      | 3 +--
+ arch/m68k/configs/sun3_defconfig     | 3 +--
+ arch/m68k/configs/sun3x_defconfig    | 3 +--
+ 12 files changed, 12 insertions(+), 24 deletions(-)
 
-> That can quickly lead to complex code.  Nowadays it is fine to rely on
-> "make dtbs_check" for some part of the validation.
+Gr{oetje,eeting}s,
 
-ok, understood. With this clarification, I'm happy with the patch.
+						Geert
 
-Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Thanks,
-Martin
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
