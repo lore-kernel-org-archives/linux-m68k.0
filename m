@@ -1,213 +1,87 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from mslow3.mail.gandi.net (mslow3.mail.gandi.net [217.70.178.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9C0137932
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  3 Dec 2025 12:15:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C57ED1DA23
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Dec 2025 01:35:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764764161; cv=none; b=ktU4kAsILC4cWaKMlexgxuibVD8CanVld2B2pikOVrBVXGRMwqOI6aQ2R35pKoO1dnE/wTNwd/jy/oPlyjlj5YHJ58PUSf+FE1yCKfmqDcLXPav/pcuwsBWwOAWjZglfctpRBE5QtAvN2feU2ZgPmMymXrywWZ0Y+yVjg24xV0s=
+	t=1764898509; cv=none; b=eoLMUFQdHVHGzJjP0KIb9hd+nJ1usHd4AZFauoHkXXRUuRZJTyAGMaSIMYS2brbVznzdd3YAQnfoXp0hoFIiATVg2KRAo9zztfXW4v0Gt1GjaTznETABF+OYDHRBXCexif9bYLUc8JJuf1QKVHN3cvfR4LkcA45wSfCnvKnizYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764764161; c=relaxed/simple;
-	bh=uqJL9FFx4SSTFGQ6utymUEwOosWqYj0K1wfyPjvnJeU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W6aEEV1QpLlYVKVIjA6PN7tqZIOwFX0CDYrOF4kFl/iZQQaK5h3rB3u9Ta3AvKxKdqhbqw3F7wJfZgjEjDCGa52d89OKB3n5J6h82Wp8fBXqJdfwNHskuefMPAPfjEzxjb1lL3yZA9tejqloRw5zt+XR+lpkfM4uZn08yVqMnzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id DB4E1408F6;
-	Wed,  3 Dec 2025 12:15:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D009C4CEFB;
-	Wed,  3 Dec 2025 12:15:55 +0000 (UTC)
-Message-ID: <bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org>
-Date: Wed, 3 Dec 2025 22:15:52 +1000
+	s=arc-20240116; t=1764898509; c=relaxed/simple;
+	bh=NkjZyJNs9wpAMrcbs4u78XLH89pbMyHFAAOxoGOBVC4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DVQuavDJSlzsaqPVYUuEmE41bjjlHWTB0Ik6D/71nqkdneX9lrv4h2RoHyGsr5D0p8Sn1c5o0ceZTRMDR0NxwQDTKX4pXGwKnUiCILfSkZ7Zj1EN2YlwJAMNd5pSXpalfu+A1ugz6HXl55MbQF4NgjnOWuhA9uMMvNlzlISIAqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=HqPyZEBC; arc=none smtp.client-ip=217.70.178.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="HqPyZEBC"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+	by mslow3.mail.gandi.net (Postfix) with ESMTP id 05FBD589B33
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Dec 2025 09:58:04 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9C00F43292;
+	Thu,  4 Dec 2025 09:57:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1764842277;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j0JfA9qeZWT32I3zxoCJgKu5UVGNhTPQk772t2ZnUNU=;
+	b=HqPyZEBCaEqU1FPt2tgP0xr8uAEEqIjeBw0Z+4e0HaDQNLEDshPQ52wukmcG02Pb84m/pV
+	HzMIwb4KyLcjoxpoLE/wMW3EXJfLZMU+GM+nBv80L18pRK+GQy+xfK7PecOhraWmrSBu3+
+	DV46x5XkQAF8aqQiqHWejsUkTk3DXvi2+/KpBaEXd3+XGYcXax2a1cF1WXHePMDIGn+H2S
+	K3R/0FAToR8g+maMq7IdM6Qn2HoJMFpIerCDcTL0tbjLNG/hgjnxj6jiTqgeYBXvF7fHHT
+	hl8sa4kuFxWPwiKb9m00czh6MHJq/4reUiBg1y9yNN7vB8HnjIumShsv88OTdA==
+Date: Thu, 4 Dec 2025 10:57:55 +0100
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+To: Daniel Palmer <daniel@thingy.jp>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+	kas@kernel.org, mingo@kernel.org, seanjc@google.com, bp@alien8.de,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: implement runtime consts
+Message-ID: <aTFbI1RKsbEdR2Ph@yoseli-yocto.yoseli.org>
+References: <20251127000505.2117956-1-daniel@thingy.jp>
+ <202511270956.hzGiPzdZ-lkp@intel.com>
+ <CAFr9PXngrVvcQ2yO0JUj6ve1T39rWftwECnKfUcV3PcKUCPPmg@mail.gmail.com>
+ <CAMuHMdXMA4seUXqJsoVpuYNVS8wEFWYJKRBSWOZ=vS2Js6Bh3g@mail.gmail.com>
+ <CAFr9PXm_8Lyk5rPMWw+mAzu97RRfjLj8NLqz5K0Po4p9PM6FOw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] m68k: coldfire: Add RNG support for MCF54418
-To: jeanmichel.hautbois@yoseli.org, Geert Uytterhoeven
- <geert@linux-m68k.org>, Olivia Mackall <olivia@selenic.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, Frank Li <Frank.Li@nxp.com>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
- <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFr9PXm_8Lyk5rPMWw+mAzu97RRfjLj8NLqz5K0Po4p9PM6FOw@mail.gmail.com>
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdehvdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuifetpfffkfdpucggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeflvggrnhdqofhitghhvghlucfjrghuthgsohhishcuoehjvggrnhhmihgthhgvlhdrhhgruhhtsghoihhsseihohhsvghlihdrohhrgheqnecuggftrfgrthhtvghrnhephefggefgtdduheelkeeuleejjeeijeeihfetieevueeftdeigeeuueefudevjeefnecukfhppedvrgdtudemvgdtrgemudeileemjedugedtmehflehfheemfegrrgegmeeljeeljeemfeehvgeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvdgrtddumegvtdgrmeduieelmeejudegtdemfhelfhehmeefrggrgeemleejleejmeefhegvkedphhgvlhhopehlohgtrghlhhhoshhtpdhmrghilhhfrhhomhepjhgvrghnmhhitghhvghlrdhhrghuthgsohhisheshihoshgvlhhirdhorhhgpdhnsggprhgtphhtthhopedutddprhgtphhtthhopegurghnihgvlhesthhhihhnghihrdhjphdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlkhhpsehinhhtvghlrdgtohhmpdhrtghpthhtohepohgvqdhksghui
+ hhlugdqrghllheslhhishhtshdrlhhinhhugidruggvvhdprhgtphhtthhopehkrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhnghhosehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsvggrnhhjtgesghhoohhglhgvrdgtohhmpdhrtghpthhtohepsghpsegrlhhivghnkedruggv
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Hi Jean-Michel,
-
-On 26/11/25 17:08, Jean-Michel Hautbois via B4 Relay wrote:
-> From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+On Wed, Dec 03, 2025 at 05:06:52PM +0900, Daniel Palmer wrote:
+> Hi Geert,
 > 
-> Add support for the hardware Random Number Generator (RNGB) found on
-> MCF54418 ColdFire processors with clock enabled at platform
-> initialization.
+> On Thu, 27 Nov 2025 at 19:22, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 > 
-> The RNGB block is compatible with the imx-rngc driver.
+> >
+> > Replacing the macros by static inline functions should fix that.
 > 
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> ---
->   arch/m68k/coldfire/device.c       | 28 ++++++++++++++++++++++++++++
->   arch/m68k/coldfire/m5441x.c       |  2 +-
->   arch/m68k/include/asm/m5441xsim.h |  9 +++++++++
->   drivers/char/hw_random/Kconfig    |  3 ++-
->   drivers/char/hw_random/imx-rngc.c |  7 +++++++
->   5 files changed, 47 insertions(+), 2 deletions(-)
+> Thanks. I've done that now. Any comments on the rest of this?
+> I have a few things like implementing jump labels, a vDSO to get
+> around the sys_get_thread_area() bottleneck to come after this.
 
-I am happy with the ColdFire arch parts, so from me:
+Hi Daniel,
 
-     Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+It would be great to have vDSO at least for sys_get_thread_area() ! I
+implemented something, but if you already have it, please, submit a RFC
+I will test on coldfire !
 
-I don't mind taking this commit via the m68knommu git tree if the hw_rng
-maintainers are ok with that. Otherwise if you break out the arch/m68k
-parts I can apply those on their own.
+Thanks,
+JM
 
-Regards
-Greg
-
-
-
-> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-> index b6958ec2a220..9d8f844e319a 100644
-> --- a/arch/m68k/coldfire/device.c
-> +++ b/arch/m68k/coldfire/device.c
-> @@ -622,6 +622,31 @@ static struct platform_device mcf_flexcan0 = {
->   };
->   #endif /* MCFFLEXCAN_SIZE */
->   
-> +#ifdef MCF_RNG_BASE
-> +/*
-> + * Random Number Generator (RNG) - only on MCF54418
-> + */
-> +static struct resource mcf_rng_resource[] = {
-> +	{
-> +		.start = MCF_RNG_BASE,
-> +		.end   = MCF_RNG_BASE + MCF_RNG_SIZE - 1,
-> +		.flags = IORESOURCE_MEM,
-> +	},
-> +	{
-> +		.start = MCF_IRQ_RNG,
-> +		.end   = MCF_IRQ_RNG,
-> +		.flags = IORESOURCE_IRQ,
-> +	},
-> +};
-> +
-> +static struct platform_device mcf_rng = {
-> +	.name           = "imx-rngc",
-> +	.id             = -1,
-> +	.num_resources  = ARRAY_SIZE(mcf_rng_resource),
-> +	.resource       = mcf_rng_resource,
-> +};
-> +#endif /* MCF_RNG_BASE */
-> +
->   static struct platform_device *mcf_devices[] __initdata = {
->   	&mcf_uart,
->   #ifdef MCFFEC_BASE0
-> @@ -660,6 +685,9 @@ static struct platform_device *mcf_devices[] __initdata = {
->   #ifdef MCFFLEXCAN_SIZE
->   	&mcf_flexcan0,
->   #endif
-> +#ifdef MCF_RNG_BASE
-> +	&mcf_rng,
-> +#endif
->   };
->   
->   /*
-> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-> index 7a25cfc7ac07..ab5b00637237 100644
-> --- a/arch/m68k/coldfire/m5441x.c
-> +++ b/arch/m68k/coldfire/m5441x.c
-> @@ -158,6 +158,7 @@ static struct clk * const enable_clks[] __initconst = {
->   	&__clk_0_33, /* pit.1 */
->   	&__clk_0_37, /* eport */
->   	&__clk_0_48, /* pll */
-> +	&__clk_0_49, /* rng */
->   	&__clk_0_51, /* esdhc */
->   
->   	&__clk_1_36, /* CCM/reset module/Power management */
-> @@ -179,7 +180,6 @@ static struct clk * const disable_clks[] __initconst = {
->   	&__clk_0_44, /* usb otg */
->   	&__clk_0_45, /* usb host */
->   	&__clk_0_47, /* ssi.0 */
-> -	&__clk_0_49, /* rng */
->   	&__clk_0_50, /* ssi.1 */
->   	&__clk_0_53, /* enet-fec */
->   	&__clk_0_54, /* enet-fec */
-> diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-> index f48cf63bd782..dd64cdfcad3e 100644
-> --- a/arch/m68k/include/asm/m5441xsim.h
-> +++ b/arch/m68k/include/asm/m5441xsim.h
-> @@ -198,6 +198,15 @@
->   #define MCFRTC_SIZE		(0xfc0a8840 - 0xfc0a8000)
->   #define MCF_IRQ_RTC		(MCFINT2_VECBASE + MCFINT2_RTC)
->   
-> +/*
-> + *  Random Number Generator (RNG) Module.
-> + *  Note: Only present in MCF54418, not in MCF54410/54415/54417
-> + */
-> +#define MCF_RNG_BASE		0xfc0c4000
-> +#define MCF_RNG_SIZE		0x1c
-> +#define MCFINT2_RNG		28
-> +#define MCF_IRQ_RNG		(MCFINT2_VECBASE + MCFINT2_RNG)
-> +
->   /*
->    *  GPIO Module.
->    */
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 492a2a61a65b..2f301e43db84 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -270,12 +270,13 @@ config HW_RANDOM_MXC_RNGA
->   config HW_RANDOM_IMX_RNGC
->   	tristate "Freescale i.MX RNGC Random Number Generator"
->   	depends on HAS_IOMEM
-> -	depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COMPILE_TEST
-> +	depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COLDFIRE || COMPILE_TEST
->   	default HW_RANDOM
->   	help
->   	  This driver provides kernel-side support for the Random Number
->   	  Generator Version C hardware found on some Freescale i.MX
->   	  processors. Version B is also supported by this driver.
-> +	  Also supports RNGB on Freescale MCF54418 (Coldfire V4e).
->   
->   	  To compile this driver as a module, choose M here: the
->   	  module will be called imx-rngc.
-> diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
-> index d6a847e48339..44f20a05de0a 100644
-> --- a/drivers/char/hw_random/imx-rngc.c
-> +++ b/drivers/char/hw_random/imx-rngc.c
-> @@ -353,12 +353,19 @@ static const struct of_device_id imx_rngc_dt_ids[] = {
->   };
->   MODULE_DEVICE_TABLE(of, imx_rngc_dt_ids);
->   
-> +static const struct platform_device_id imx_rngc_devtype[] = {
-> +	{ .name = "imx-rngc" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(platform, imx_rngc_devtype);
-> +
->   static struct platform_driver imx_rngc_driver = {
->   	.driver = {
->   		.name = KBUILD_MODNAME,
->   		.pm = pm_ptr(&imx_rngc_pm_ops),
->   		.of_match_table = imx_rngc_dt_ids,
->   	},
-> +	.id_table = imx_rngc_devtype,
->   };
->   
->   module_platform_driver_probe(imx_rngc_driver, imx_rngc_probe);
+> Cheers,
 > 
-
+> Daniel
