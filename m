@@ -1,97 +1,79 @@
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210D83148A1
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Dec 2025 09:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBA130DEBB
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 12 Dec 2025 12:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764926645; cv=none; b=QU6miWEVd6dYQvjzbYoeUs08jV5PfcOW3yke910Atuom14t96wItUt7AD4bR1DLQPnOjONUOEa5EEnCdwYJQjkN+/YdqFkn4LSPFiRoq0tcETu0x/aZjaz4GBzZNGATM9AGnJ9yIl9dm5oNfLSnmGdyMoP/7qNzrnSll9SdQgBg=
+	t=1765542587; cv=none; b=YsFOmPYducIW74t2FQeFRbvegNUDy2StTazNoXIvhuC8iEL4/vJcazf1ldYdI4cDNN7QjyY7w4NwnEFYXbl8LlSz5wUdmh/fcb+/nG9MsXYobiREqg8KgGu95UnvuFORgE/+FVcgF7OWTJnLmzYc1Mc3nj08OBSn1kZ4GbSleN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764926645; c=relaxed/simple;
-	bh=Agnrt+zlXfqAyBkX1umXQhxb4bDtHR8MlYVZIicHX50=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CQOXC6768urDBIqL7eO5pX65qOj5l1+1rSce8ED1Sn/2CEuNeR5DYRRI4AN2aFqP59beNM2y49ZbDYGNiWsil5a7/nhvfDUvZxB2dZYbVBL/bh8YPpkAhibXj+3y+6pHbmRK/oYXF9dMLSQSLwuJvBVafvQhvOpM/Ar760+h6Ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=awNgZU2J; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="awNgZU2J"
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-34372216275so2033426a91.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Dec 2025 01:23:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=thingy.jp; s=google; t=1764926635; x=1765531435; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Agnrt+zlXfqAyBkX1umXQhxb4bDtHR8MlYVZIicHX50=;
-        b=awNgZU2J2PookgDfNMrycETv9fJ8RHf6DHefBS/wFfG8K7JSSRsGm0CsOUJvJ4QcAL
-         JhOSra9Rm1GXVlx+kBp+2b8l6b0DeV5geKcYXjyNLZtfV/G5nI5n9czUZlzzfC2nUcIP
-         ojYLsBk7x8ZXxmwz+O9USmPEGdGQOWx0BGl40=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764926635; x=1765531435;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Agnrt+zlXfqAyBkX1umXQhxb4bDtHR8MlYVZIicHX50=;
-        b=soCVKKAE6NOUGclcdgZr3lso2SOWHqyswT3u8ms72LQ2gS2Fu78ETkulH9M8IyuU48
-         wOiDoIarvTfkYGO2rbDEY8t1F+0yaAHaix6ODOojknCLBvwvhYyJPM3jUT5YTIKsamfr
-         yBilwXosV0ugKru7fR206D4kbe0YpahEmzgNV/hONKyJAR3Ehw7Jea7cJ55kBJQptvry
-         5UU1gwZTOWYax3/YWW7K3sFOWT0DVlSGeI9h/mGYtFPVahWNDfKjV4Yge0ixWIQvgCZ+
-         tgBvnKFNiEXks14B3OJ2AhlLBLD8GMVZdpnC4vJ57mGF+UgjXIG1pc7OQy/GP698wOKs
-         CmgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWBkXA4NsM70Qj6gXdak3ORqcozb3hcMXZFzisIYeMsHQQV7Tlqsp+xNvcST7QlfqchML0tdwa7LS31@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzaV51xePfxvHQc31AtCdw1P2RIKFuqpRQ38uS7shBHVUReWHbS
-	l6jnWWXbucPBwSFyN6zDIh4q8O8RAlzbJVOEiJIitE+OEltgKdxRpGYZandL8BvMSczg6iieTUB
-	tfehE1Et5lGG9snf/KeYVHgY0T05E21QzRNqCM6nD6w==
-X-Gm-Gg: ASbGncvvnKE4svpgIWiscgZvQ3GT1q698LjstKlsCYy0tn2BMK+3WCmy4OVGEs4e2v3
-	5FDgCG6V7JPHg7YJ/990AFDxTn+Ixh7EmytPTGKyNvJo52+EbzYqMuhVOpXz5V1yoBX3y30Hy0H
-	q2zR/ArsKjksI/iWP/jdkcq/OKUze+yJDCNOMe60wpcoNQrsJ7GfEVgKhUKSe/QZHC/Tc/Z1MU/
-	KygeIGEn9IOcQYCItCrC4iydgV6ZC2HXnS4a3GDHyNdXJ2CAopgocvAVF1KdBMH61LqTiZe
-X-Google-Smtp-Source: AGHT+IEOw548MdKMTZftyNVZPELqp1JrFaodVAmVB/fkgKWTaXcotXK1RdiGGFYAXIcc8rN7D2IA8hJ4dWve1WZENI0=
-X-Received: by 2002:a17:90b:17c9:b0:33b:ba50:fccc with SMTP id
- 98e67ed59e1d1-349126c8597mr9590835a91.18.1764926635516; Fri, 05 Dec 2025
- 01:23:55 -0800 (PST)
+	s=arc-20240116; t=1765542587; c=relaxed/simple;
+	bh=MvFlc4yA4VYklYrn6VSU7nom+HE54NhdUPg0kJMK9EA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZJgY8aOd5by66hksv5K1uXrjV/oc+hIwz4z//cVM8rrt23IVZJ/vf8VNdaj+GVlfNrp5sy8obkf/F7dqUO2hXXIRKbHto+t390IeGXw6yGKNfgh6b283F9/7+YCQ6QUwNl1EESYhumL280O6/5601pzWCdZUuUmRu8PWG6ebuIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isrc.iscas.ac.cn; spf=pass smtp.mailfrom=isrc.iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isrc.iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isrc.iscas.ac.cn
+Received: from localhost.localdomain (unknown [36.112.3.239])
+	by APP-05 (Coremail) with SMTP id zQCowACnOQ2sCjxpNERxAA--.11928S2;
+	Fri, 12 Dec 2025 20:29:32 +0800 (CST)
+From: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>
+To: fthain@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>
+Subject: [PATCH] nubus: add a cleanup in nubus_init()
+Date: Fri, 12 Dec 2025 20:29:30 +0800
+Message-Id: <20251212122930.36115-1-lihaoxiang@isrc.iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251127000505.2117956-1-daniel@thingy.jp> <202511270956.hzGiPzdZ-lkp@intel.com>
- <CAFr9PXngrVvcQ2yO0JUj6ve1T39rWftwECnKfUcV3PcKUCPPmg@mail.gmail.com>
- <CAMuHMdXMA4seUXqJsoVpuYNVS8wEFWYJKRBSWOZ=vS2Js6Bh3g@mail.gmail.com>
- <CAFr9PXm_8Lyk5rPMWw+mAzu97RRfjLj8NLqz5K0Po4p9PM6FOw@mail.gmail.com> <aTFbI1RKsbEdR2Ph@yoseli-yocto.yoseli.org>
-In-Reply-To: <aTFbI1RKsbEdR2Ph@yoseli-yocto.yoseli.org>
-From: Daniel Palmer <daniel@thingy.jp>
-Date: Fri, 5 Dec 2025 18:23:42 +0900
-X-Gm-Features: AWmQ_bm95y55GKRm-h806Gi4jrC-4zbAV_U9EVI2cghncO4ejB7hseaz_ZWKUyk
-Message-ID: <CAFr9PXksr=JaO+0gXRoD2zBH4YCGwm=sDqaVb9v0_b7u9=+2eA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: implement runtime consts
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev, 
-	kas@kernel.org, mingo@kernel.org, seanjc@google.com, bp@alien8.de, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowACnOQ2sCjxpNERxAA--.11928S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrXF13Ww17Kr43ZrW7uw1xXwb_yoWxWFc_Kr
+	4jvw13Xr1q9F1xK3yakw45Zryq9rn2vr48XFWftrWftry5WrWYqFWDZrn8Krn8urWYyr12
+	kFW7JryDAry7GjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbwxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
+	Gr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+	1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48J
+	MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
+	AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
+	0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
+	v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+	xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
+X-CM-SenderInfo: 5olkt0x0ld0ww6lv2u4olvutnvoduhdfq/1tbiBwkOE2k8ADEeEAAAs5
 
-Hi Jean-Michel,
+If nubus_parent_device_register fails, call put_device()
+to drop the device reference.
 
-On Thu, 4 Dec 2025 at 18:57, Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> wrote:
-> It would be great to have vDSO at least for sys_get_thread_area() ! I
-> implemented something, but if you already have it, please, submit a RFC
-> I will test on coldfire !
+Signed-off-by: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>
+---
+ drivers/nubus/nubus.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I will try to clean it up and send it. A very untidy version along
-with other stuff I'm messing with is on github[0].
-You will also need a patch for your libc to use it. So far I have
-worked out how to get glibc[1] and uclibng[2] to work but I haven't
-managed to get musl to work yet[3].
-Note that I have no idea if it's safe to do what it's doing. ;)
+diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
+index ab0f32b901c8..21706bdcb509 100644
+--- a/drivers/nubus/nubus.c
++++ b/drivers/nubus/nubus.c
+@@ -883,8 +883,10 @@ static int __init nubus_init(void)
+ 
+ 	nubus_proc_init();
+ 	err = nubus_parent_device_register();
+-	if (err)
++	if (err) {
++		put_device(&nubus_parent);
+ 		return err;
++	}
+ 	nubus_scan_bus();
+ 	return 0;
+ }
+-- 
+2.25.1
 
-0 - https://github.com/fifteenhex/linux/tree/m68kvdso-20251201
-1 - https://github.com/fifteenhex/glibc/tree/m68kgetthreadarea-20251203
-2 - https://github.com/fifteenhex/uclibc-ng/tree/m68k-vdsogetthreadarea
-3 - https://github.com/fifteenhex/musl/tree/m68kgetthreadarea-20251203
-
-Cheers,
-
-Daniel
