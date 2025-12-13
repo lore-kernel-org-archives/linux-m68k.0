@@ -1,182 +1,78 @@
-Received: from fhigh-b6-smtp.messagingengine.com (fhigh-b6-smtp.messagingengine.com [202.12.124.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0448542A82
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Dec 2025 07:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57ABE2C1589
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Dec 2025 08:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765610493; cv=none; b=gI0rCHqhE+rfXgfyKWA4loObOo5QuTYP6mb/dsRxDzUjijpjVJ/XK0Lz/GCyQYbj9bldWxfp70SKFJMpklTWEx9yvUJXRyEdTPdsrljmasrDrccNU+5bE4UjVmie2/Njr4ixXScq6zTTW80x8r+aVZrbB/dtNNJivApxIhXDqZk=
+	t=1765616344; cv=none; b=EHn9WmJuaEZMtO8rLr5fd1KclvQfJVaRPcWnvlsMxNhbyLxyWSwHyhtYDyJ4AaCzhwN4iU2KPg/DzOclpdjvzc+R3u2dg/w8EsGrhAP1RtULR5lcsZ8mV++wssaZMAl/ROmxlqZeN8HikvpDgyc2hv6LQ3v8l/0uU55NrshSmpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765610493; c=relaxed/simple;
-	bh=fUnHrRGmkR9DWnSKMyxB/FSD2YC4+vtIXWALNDbXb8I=;
-	h=To:Cc:Message-ID:From:Subject:Date; b=lPav2dcEMmoEqDTBOE8+9p6HQDYfVwxKuXpJQR9ZWy7aAj3PtlCLkmtmwTjwA0LA49D2GLWmbLkYCqgeizQb3pIA55+kFBN3ZLJDFgCxF/iprlw5qpae5kLgftA4lsD82FoatziyRILwtqWA8Y6ywdhv1ZXjY8cwQ221dkGiAlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kr/uF0CY; arc=none smtp.client-ip=202.12.124.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1765616344; c=relaxed/simple;
+	bh=9qaxgdBedbMlAF/AiTFx9iXGeht8SIZnj9By9VlfdQQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RxuVP2UiBL0imED7d8R456Lb1BM2Bt2PvMfC3LSUWpHdrYWKRcBVCpbzZJLM8EUyWeeUFp3tpnFcnQfyG3+d6tDkaEmHemRdLljxg2qcgit5bMMr4j6HOrw82DgHkTAG9QbU2iRKsxkiHQyGNPJCt5r5hL+HXuoZviRfufg9H0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=Ca/xgedo; arc=none smtp.client-ip=209.85.216.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kr/uF0CY"
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 09EB17A0099;
-	Sat, 13 Dec 2025 02:21:30 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Sat, 13 Dec 2025 02:21:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1765610489; x=1765696889; bh=rZzIYAnvUxx5O5o2uz0JKMo1qYer
-	zsDkeiYWT5O3O5Y=; b=kr/uF0CYNAaRdASEOtM027tiv4VZIZnT1w/pB257u5Vk
-	OMB8B3kC96jZ2/iGiNn082fG7g9RpdIF4gH/X6WCuZDzb7X0pmbjS5lVOobT6pxm
-	Pi3gWEM/k0D4u/IPaBq7iyd7HJIgJMvqG0XY74721roTKVThbUX/W4SA+olICr6h
-	1N9XCGf0HbZDdpI2oBIAoUnLTubMKjxWfEyuxAgnz5hvb9P6zTHPL8zLZksCkTX3
-	wasCBwsNnRg0+QJ5TrFEtzQ7tBd8MAIePDs++W1kCHUyJjeS+1EWF7XoXOOqWim8
-	5cEfcWFY2YvK+QvCjivi7AJ3FS4FtM/yJ9lJfOjCFw==
-X-ME-Sender: <xms:-BM9aWypd2s-gKqdipm0L-SUfB-9mGsH5KQtYHPeSYnc41h07D6Arw>
-    <xme:-BM9aV9sKxNXwVWXuXVGQyhxWQjZN_zaBDmc-ss_87QaYqzYWhfhRtCRJ9HwkPdsq
-    ERxJdHqMDO2C4of-gTOohoZ9IKTjJnJdfD6CWLZnSql4pKqvZ5gPog>
-X-ME-Received: <xmr:-BM9aSLZMb-b2M-8Wjy8nIZSbEnslWKZgtJ-Fdc4uHP2QHgTKzcEsw1FIM4koc_AcgVPVDEcC-womSqiA-g7KyDm0lskwyqIu8c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdeftdeghecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefvvefkhffuffestddtredttddttdenucfhrhhomhephfhinhhnucfvhhgrihhnuceo
-    fhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnhephe
-    ffgfegfeevgeevtdeiffefveeutdeghfeuheeiteffjeefgfegveefuedvudelnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnse
-    hlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohephedpmhhouggvpehsmhht
-    phhouhhtpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtg
-    hpthhtoheplhhihhgrohigihgrnhhgsehishhrtgdrihhstggrshdrrggtrdgtnhdprhgt
-    phhtthhopegurghnihgvlhestdigtdhfrdgtohhmpdhrtghpthhtoheplhhinhhugidqmh
-    eikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhn
-    uhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:-BM9aTdvk7yMpzjJKPhnX7-IWt9-Eyaysj91Puziw4RRggLY6NYxAQ>
-    <xmx:-BM9aZ-T219AWFLS-qJMSuFnIkyXBxYwVHhhAe8UI7K0srm6nCamhg>
-    <xmx:-BM9aYrT4p5oIuFPSS0Kyrh9l94RHUber6XDeZRoLBu5GAZspAXenQ>
-    <xmx:-BM9aWCE4i0vSA2uLY4MlosIGi3XtKhxSLPzo7xBRZSgYoWbOjNKXw>
-    <xmx:-RM9aTU62lNDE9upGMeJwzPy8ePgqQ3AbGurgc58nUkgVMukuffzOyBQ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 13 Dec 2025 02:21:27 -0500 (EST)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>,
-    Daniel Palmer <daniel@0x0f.com>,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <478d5f080d74b6688c9e3f9132e3fe251e997ad7.1765610469.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH] nubus: Call put_device() in bus initialization error path
-Date: Sat, 13 Dec 2025 18:21:09 +1100
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Ca/xgedo"
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-3436a97f092so3325493a91.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Dec 2025 00:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1765616341; x=1766221141; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9qaxgdBedbMlAF/AiTFx9iXGeht8SIZnj9By9VlfdQQ=;
+        b=Ca/xgedoNj4+ic8+bmsXPZNy2qKe4fmCPHppvx3eTHYcClpNBQTHC6isZzdlZAPcDx
+         Eh/bBUjH3TpCp6RmWuRyaTtOm6sqalSwiCYkbCYy07K8dv/D4Y7DX1fLgwSaSv1b7si/
+         T1d2i0IDbfllTirxruhqkSmS5yLZ3FGjJKzAU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765616341; x=1766221141;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9qaxgdBedbMlAF/AiTFx9iXGeht8SIZnj9By9VlfdQQ=;
+        b=h1Kx4A2TapckKgT9MprwmUPBSlfrwfoBaNeATBWnpZJ4XEJQCpMcrc5/0p5+sSngXA
+         /Hk2FBPQxqLlGGBwdCwxad0aLmPLovlqRU2sfbH1SUFyzVmsOa5uozbi7c7Pd8X/RE0r
+         tNO0xoHxBWIXbs+wIsfTbiIooIcOCRs0TRoLPLTdJlS6B1trq4QjQAm9uEAqf0fRndiC
+         XNsjeMmLC+UGrIIrktBfCC6ZvFVhAfGBbGD3sG+muL/PuizjlB/B0WhuscKTdP2njlek
+         Qoj0k9BvZ3lanKfIQvUYNdxqT6ZZ8joiI7WWx1Utnd0b502vA2d5KcbQ+S7+MEozgPSL
+         abCg==
+X-Forwarded-Encrypted: i=1; AJvYcCXT5Mpqe6LX+b+ytUoJQ8rB8t2bqQWHJd9LXS/vK0u2TsUzb6DXehgvrUwwnkneCjgby+JDevx1T6nj@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyXKfikB8Z7Co29y7bg1F+r+rep3Yz9JzcNRSdzU8wcKdMhiQfz
+	ZAqgmrLnTQ+vTCINp9bfUznrwrZ0OdNvsv+4udMqYgxie/A3vRkPv6fpXXgymA1gYfOM3CNizDS
+	I0ljzPbS91OOBXrBfgje+wTGzBg1tLOou8pw8Xu7I4g==
+X-Gm-Gg: AY/fxX4Y4yNJa7EYdHZ367mQPajiiX8WLdzaeFaPoSAHGxmatbg7176SHbHfjk6O+bB
+	grHCoIRa4kjUqd4iypM5WgpqY6bFLFOIfKwGU3OBkPN6JEsQvBLuIBmd8ltQlKXyJGwCYGkQumJ
+	hshqzESZWIOiD/+b8Xr+Ie1Y/4uCuwTWT39Ir5fAzHC9kySKrFe/Uuyk6Gqpw4911uo6UAhNgqg
+	Pn4HvFGg2fKYlnGpwgBkEipTv+E5LMlNs+/TzLe70OCkDZrkQuzRTKlpaJ52Lz9SGmuEepZXGm0
+	JvAWz1g=
+X-Google-Smtp-Source: AGHT+IGcvTcRqnrAF1GhbpiCbeCLt5QtCPEN1oqvKA0Q2IqAn3s9igm0wH5C88AL3u7rdWC9UHGK4kCh3jkNmgEwtGA=
+X-Received: by 2002:a17:90b:5348:b0:341:88c1:6a7d with SMTP id
+ 98e67ed59e1d1-34abd78fb40mr4344743a91.18.1765616341518; Sat, 13 Dec 2025
+ 00:59:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <478d5f080d74b6688c9e3f9132e3fe251e997ad7.1765610469.git.fthain@linux-m68k.org>
+In-Reply-To: <478d5f080d74b6688c9e3f9132e3fe251e997ad7.1765610469.git.fthain@linux-m68k.org>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Sat, 13 Dec 2025 17:58:50 +0900
+X-Gm-Features: AQt7F2quHYGNkam8yo9yl_VA9WMmS2XR41fqKy3jvJJ0Jb3UfQE7ZUd1-cvOTzc
+Message-ID: <CAFr9PXm8yY5xmEUesbtU1i_PwYF+LMs2nNGFbDZf=SwuomMPQQ@mail.gmail.com>
+Subject: Re: [PATCH] nubus: Call put_device() in bus initialization error path
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The error path for bus initialization is missing a call to put_device().
-Add that call. This error path will probably never actually execute, but
-any kernel source code may be subject to static checking or re-use.
+Hi Finn,
 
-Cc: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>
-Cc: Daniel Palmer <daniel@0x0f.com>
-Suggested-by: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Tested on a Mac IIfx.
----
- drivers/nubus/bus.c   | 13 ++-----------
- drivers/nubus/nubus.c | 12 +++++++++---
- include/linux/nubus.h |  3 +--
- 3 files changed, 12 insertions(+), 16 deletions(-)
+On Sat, 13 Dec 2025 at 16:21, Finn Thain <fthain@linux-m68k.org> wrote:
+> Tested on a Mac IIfx.
 
-diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
-index 12df4d88970c..b7d417385d98 100644
---- a/drivers/nubus/bus.c
-+++ b/drivers/nubus/bus.c
-@@ -51,21 +51,12 @@ void nubus_driver_unregister(struct nubus_driver *ndrv)
- }
- EXPORT_SYMBOL(nubus_driver_unregister);
- 
--static struct device nubus_parent = {
--	.init_name	= "nubus",
--};
--
- static int __init nubus_bus_register(void)
- {
- 	return bus_register(&nubus_bus_type);
- }
- postcore_initcall(nubus_bus_register);
- 
--int __init nubus_parent_device_register(void)
--{
--	return device_register(&nubus_parent);
--}
--
- static void nubus_device_release(struct device *dev)
- {
- 	struct nubus_board *board = to_nubus_board(dev);
-@@ -79,9 +70,9 @@ static void nubus_device_release(struct device *dev)
- 	kfree(board);
- }
- 
--int nubus_device_register(struct nubus_board *board)
-+int nubus_device_register(struct device *parent, struct nubus_board *board)
- {
--	board->dev.parent = &nubus_parent;
-+	board->dev.parent = parent;
- 	board->dev.release = nubus_device_release;
- 	board->dev.bus = &nubus_bus_type;
- 	dev_set_name(&board->dev, "slot.%X", board->slot);
-diff --git a/drivers/nubus/nubus.c b/drivers/nubus/nubus.c
-index ab0f32b901c8..197c8c0de199 100644
---- a/drivers/nubus/nubus.c
-+++ b/drivers/nubus/nubus.c
-@@ -41,6 +41,10 @@ module_param_named(populate_procfs, nubus_populate_procfs, bool, 0);
- 
- LIST_HEAD(nubus_func_rsrcs);
- 
-+static struct device nubus_parent = {
-+	.init_name	= "nubus",
-+};
-+
- /* Meaning of "bytelanes":
- 
-    The card ROM may appear on any or all bytes of each long word in
-@@ -829,7 +833,7 @@ static void __init nubus_add_board(int slot, int bytelanes)
- 		list_add_tail(&fres->list, &nubus_func_rsrcs);
- 	}
- 
--	if (nubus_device_register(board))
-+	if (nubus_device_register(&nubus_parent, board))
- 		put_device(&board->dev);
- }
- 
-@@ -882,9 +886,11 @@ static int __init nubus_init(void)
- 		return 0;
- 
- 	nubus_proc_init();
--	err = nubus_parent_device_register();
--	if (err)
-+	err = device_register(&nubus_parent);
-+	if (err) {
-+		put_device(&nubus_parent);
- 		return err;
-+	}
- 	nubus_scan_bus();
- 	return 0;
- }
-diff --git a/include/linux/nubus.h b/include/linux/nubus.h
-index 4d103ac8f5c7..b8710c825d64 100644
---- a/include/linux/nubus.h
-+++ b/include/linux/nubus.h
-@@ -162,8 +162,7 @@ void nubus_seq_write_rsrc_mem(struct seq_file *m,
- unsigned char *nubus_dirptr(const struct nubus_dirent *nd);
- 
- /* Declarations relating to driver model objects */
--int nubus_parent_device_register(void);
--int nubus_device_register(struct nubus_board *board);
-+int nubus_device_register(struct device *parent, struct nubus_board *board);
- int nubus_driver_register(struct nubus_driver *ndrv);
- void nubus_driver_unregister(struct nubus_driver *ndrv);
- int nubus_proc_show(struct seq_file *m, void *data);
--- 
-2.49.1
-
+I quickly tested on QEMU's quadra machine and no problems there. Will
+test on an LC475 a bit later.
