@@ -1,148 +1,146 @@
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED4E19E992
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Dec 2025 12:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F15E322C80
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Dec 2025 06:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765627456; cv=none; b=Dyg1N2XPS3Ad52kyndHfPe3oun+QRCCF5xL+RoYXzSWmVD2nHH2lrERCM+wuEGowNwaux1GYr1OFA8xq919FRjyxkGZuj4rTxqjGrY0jXWufD9UXcf+Z7KNdmqZAwAQ+wINsKEHKVcNOS2ujHTmqTn4wkmHWHnW6RJEl93NctFs=
+	t=1765867113; cv=none; b=C/y8D9MuRIoFBLK0LsxfK9PvVnwVIV6iUhMuM8nP2OhsHcprf8cyVFg7SanQoXH9ssLVuRp6DkMUyAuz5xx3r+oaJXjH0Y0YnJ/WL9nlC0kOs7GLhOkEYIsdZZ+tdbSnAh6oEyxV3YXJTLbx/JMKHLyKJCStLLPdgdIeIeUnO0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765627456; c=relaxed/simple;
-	bh=yzs67KyH1NIfYYY657ZCVGTMcWOvRK6GdTbAsd2x7iE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OWYDGmxa43o9KWfzmpBvALiG5w/V80N+OSZutBj/gO9a0Zewwz5M/uz9nQcQ7wvcFBSYmlJVi6o5JFvqKKNqimtTrDxw4yJ6U0paoOwFeJnNA13vA1OsxdX4280AMUei7lW8Ko6gUs+egvvlI3cx+Pnu/5583V1SD7ylyHjKjIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=M9uNvXFy; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1765867113; c=relaxed/simple;
+	bh=+m9ugDvP8DldppU+Xne3BpzGk7erpZucQQE5LNo8A2E=;
+	h=Message-ID:From:Subject:Date:To:Cc; b=FHEJu4GP667NvtRG2bYUjZbpPQu/YDEykEPXIDcz3lYeksVCc1yegaX8mftOsfgblmRtQR6P1t9W1qDtBFuvbdb9CdrH9xbPh6esxm+5o0YfRQLi0rkuK8QLPARBKyOgVe+FruYrXlmb/U7xrQkqjvyI3QAs5E0bpKSV7D0oxC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XpOQ7fR4; arc=none smtp.client-ip=202.12.124.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="M9uNvXFy"
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-7b7828bf7bcso2207112b3a.2
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 13 Dec 2025 04:04:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=thingy.jp; s=google; t=1765627452; x=1766232252; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ei8ywdXlXxvDh5vQP6qyXiLudvOCTn5oljiolbISDvU=;
-        b=M9uNvXFyy7gEtgpJ8nCe1ltmtOoX7ZvhCWHB6Eu+tSi2ZWIAgRR3/ASjV9+91eNUk0
-         H8ndCNXsJMFx2BCfJb7xHkJcrtS0ZwQCvg0FUdxujEC3U5Nts3YyL9bN8rb07WZrfEmd
-         vVPs3a8knV7YqaFuq376fRSRy0AVx9uifQwC0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765627452; x=1766232252;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ei8ywdXlXxvDh5vQP6qyXiLudvOCTn5oljiolbISDvU=;
-        b=PtdRe8K/RWBZ0AnkuPzO8+EYJcBNtty9GGNM5YzRo/B8ULozCVW6TRSfLrt19UU6kT
-         kye5MoM5BKIdyz4QHrGylF9xV9jsdrCYH0o3XvU9iNaVy/GdVupxy3hDyr5ArIsNxX0g
-         4MoeLUsYYigp18GzlJR8cTMyNIqIdleQBewYsf+Uf2z+RXV9YdXX3AVdtCyvc2mAuiIs
-         5nCgIi7DasWqpSk2bzqL4ool2EoL2DdCnkP3Wkrlpl1fu+noxHQxv/yncf18Omd58uCj
-         RwYGCOZulDFV3nro0wP/jnhZPN8JOqLUEZs+aI8yegnJBx/7EVeMJDbrsfGw7SRtBjdF
-         4TbQ==
-X-Gm-Message-State: AOJu0Ywoy/CEI01XGOfY2Uj7PUW4l6uv5Apf7Fc7OqI/lNfjLlbA8wKf
-	5PSkquvW2iF5RIWLuyJ/PS9wFl+BSEogXee1RAtUCHPYTDi9VPZiY5qr1BhIsk4s9rQ=
-X-Gm-Gg: AY/fxX6VQcxilThANepnOU9sdteJuxtgYk82EE35dvZ8NwKMgIS3hm2Vjx80E9iDYiA
-	N0GnCCIS1M0AN61cav4DIcVqYjDbYv5Q+wUHxfNDOO+Fkv1SKhnwXHS4w8agvg1tPVuk1LFoSNd
-	f9Nw2ugiP6FmlybFM9brTTvYr0Q5oS0EnmC0PlcgkX8/3fsEXu6GUITP9j5bXq0K9gBVcY8QRYz
-	2atBiNWz5j8DEDB40WgPUDOh3N4RItI6DSm1E2Agi37HJV+ANZoSrsIFOiPhpJ9moxsGOaJUCA8
-	DUzbAnmYMdlaXV2iFbfvWZBWkdVcHjsbpH2LICPI1xX+nBsq/pH+bOmmcMceq7916Q4gGsbTGJS
-	Lm0+zgwXA+e0E6vG9Pfucw0wv98/5j3zN7Wzh4RP1Iq2ONa24Ag56uYCEIA21X1yj1fpszER5nG
-	Bm/HGvkHaUnJbjb5f05IEQAd6gVMYUQ/FCX/hyx1A7jjNHch7y1GcorXbbrHyIQ9wRarhBGEUHD
-	kw=
-X-Google-Smtp-Source: AGHT+IFhu4El5lM5dBAOIMKdzomSrPTOIqQiG3alVXt/ZNWVrpFkAuaDVRCa4Vc5YmZN1G1ScWJZsQ==
-X-Received: by 2002:a05:6a00:4107:b0:7e8:4398:b370 with SMTP id d2e1a72fcca58-7f669c8a7bbmr3801807b3a.67.1765627451246;
-        Sat, 13 Dec 2025 04:04:11 -0800 (PST)
-Received: from kinako.work.home.arpa (p1344243-ipxg00a01sizuokaden.shizuoka.ocn.ne.jp. [114.145.20.243])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-7f4c585cde0sm7761084b3a.69.2025.12.13.04.04.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Dec 2025 04:04:10 -0800 (PST)
-From: Daniel Palmer <daniel@thingy.jp>
-To: gerg@linux-m68k.org,
-	geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Palmer <daniel@thingy.jp>
-Subject: [PATCH] m68k: nommu: fix memmove() with differently aligned src and dest for 68000
-Date: Sat, 13 Dec 2025 21:04:01 +0900
-Message-ID: <20251213120401.3992567-1-daniel@thingy.jp>
-X-Mailer: git-send-email 2.51.0
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XpOQ7fR4"
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id CA7DB7A00FC;
+	Tue, 16 Dec 2025 01:38:25 -0500 (EST)
+Received: from phl-frontend-02 ([10.202.2.161])
+  by phl-compute-06.internal (MEProxy); Tue, 16 Dec 2025 01:38:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1765867105; x=1765953505; bh=9AoWIhfivy4UOmlDhOIXxucmgxZr
+	f7I6w7HEi8HnW/4=; b=XpOQ7fR4p5tZHtVqK9hezAwN0iR7Ej3xwfmj6h2wl0PT
+	u9MuVU8odNVKLPmTejjbR9tm0tLsMfB2gQR4Y1taeNrLGJ4J9RmtfIa+EN/Ke2kf
+	mXVUOLpq287yxZR0HSgr0D3IdsmOTHe75czX6R5lkMHqw6RvbLHuDio2Y0gft2tB
+	R1bbXYMr1fDxRH2qSafqByoj2xw4jUxlLvsJON4NynBzSqjLrn4PO67T6a0T5frP
+	LTUCD3jDrT1pyDjgL38j5INN4ETiXILU3RLti2Sg9Ka1Ze34q7dzdCf4jyk+fHpw
+	KyLi88ojCydxBJ916IRT6r7PHahEgmz9gom0qrq8zA==
+X-ME-Sender: <xms:X_5Aaar7URYpNmvxdK7vDqbW6R6P7_oaHf2HJTdnCKikVNCUkPhVyQ>
+    <xme:X_5AaahLqfjIcpa1rNTqZg6H4cZP5ZQ9Ok8cEjBLC758rOxuczwaDz9ZT7ajmecQ9
+    m46yAMJ73rKxderSDT7kYnFjyEdwqJSNWgtxyLUB5ZsEYztcSf7Cw>
+X-ME-Received: <xmr:X_5AaT1jrnOfUKl0vjVSC-UvATqSRSGwo_-LnF1h1avenvg_DZBpj3eb0eHNLF0ckb1WWH-YzxUiQw7KkJKmdHzbv59Zdo0Sh80>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefkeellecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefkhffufffvveestddtredttddttdenucfhrhhomhephfhinhhnucfvhhgrihhnuceo
+    fhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnhepud
+    evtdeiveefvdffteduheetieehtdekhfekiedvledvtdehkeetieeuuddufeeunecuffho
+    mhgrihhnpedujedrqdhnvgifnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghr
+    tghpthhtohepfeehpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehpvghtvghrii
+    esihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopeifihhllheskhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrgh
+    dprhgtphhtthhopegrnhgurhhiiheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghr
+    nhgusegrrhhnuggsrdguvgdprhgtphhtthhopegrshhtsehkvghrnhgvlhdrohhrghdprh
+    gtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopegs
+    phhfsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrlhhirghssehlih
+    gstgdrohhrgh
+X-ME-Proxy: <xmx:X_5AaYZXDuSyF6P66w92xvicPXnobpN8Xpw5UGL-SoWpNjcJ6kN9xA>
+    <xmx:X_5AaZ4d0tEF2QN-dZ0E5ohtaW8NEzkP2qNW-oNMvzebmpvRD2rBDQ>
+    <xmx:X_5AaWIxt82httcCmTeewHLxbx1ppXqQb7IYiWVXXXYLltDHk8pHQg>
+    <xmx:X_5AacqnFu4MPU9Ce6YZ9yUpOSrR6jJZL6j6pWyYsLHxyd_SYhYKxg>
+    <xmx:Yf5AaboFQo-iNoPfBejvSJoR0jFweEV6XUdV6-NzhTGNDN6TTNAzEWwQ>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 16 Dec 2025 01:38:21 -0500 (EST)
+Message-ID: <cover.1765866665.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v5 0/4] Align atomic storage
+Date: Tue, 16 Dec 2025 17:31:05 +1100
+To: Peter Zijlstra <peterz@infradead.org>,
+    Will Deacon <will@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+    Andrii Nakryiko <andrii@kernel.org>,    Arnd Bergmann <arnd@arndb.de>,
+    Alexei Starovoitov <ast@kernel.org>,
+    Boqun Feng <boqun.feng@gmail.com>,    bpf@vger.kernel.org,
+    Rich Felker <dalias@libc.org>,
+    Daniel Borkmann <daniel@iogearbox.net>,
+    Dinh Nguyen <dinguyen@kernel.org>,
+    Eduard Zingerman <eddyz87@gmail.com>,    Gary Guo <gary@garyguo.net>,
+    Geert Uytterhoeven <geert@linux-m68k.org>,
+    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+    Guo Ren <guoren@kernel.org>,    Hao Luo <haoluo@google.com>,
+    John Fastabend <john.fastabend@gmail.com>,
+    Jiri Olsa <jolsa@kernel.org>,    Jonas Bonn <jonas@southpole.se>,
+    KP Singh <kpsingh@kernel.org>,    linux-arch@vger.kernel.org,
+    linux-csky@vger.kernel.org,    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,    linux-openrisc@vger.kernel.org,
+    linux-sh@vger.kernel.org,    Mark Rutland <mark.rutland@arm.com>,
+    Martin KaFai Lau <martin.lau@linux.dev>,
+    Stanislav Fomichev <sdf@fomichev.me>,
+    Stafford Horne <shorne@gmail.com>,    Song Liu <song@kernel.org>,
+    Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+    Yonghong Song <yonghong.song@linux.dev>,
+    Yoshinori Sato <ysato@users.sourceforge.jp>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-68000 has different alignment needs to 68020+.
-memcpy() checks if the destination is aligned and does a smaller copy
-to fix the alignment and then critically for 68000 it checks if the
-source is still unaligned and if it is reverts to smaller copies.
+This series adds the __aligned attribute to atomic_t and atomic64_t
+definitions in include/linux and include/asm-generic (respectively)
+to get natural alignment of both types on csky, m68k, microblaze,
+nios2, openrisc and sh.
 
-memmove() does not currently do the second part and malfunctions if
-one of the pointers is aligned and the other isn't.
+This series also adds Kconfig options to enable a new run-time warning
+to help reveal misaligned atomic accesses on platforms which don't
+trap that.
 
-This is apparently getting triggered by printk. If I put breakpoints
-into the new checks added by this commit the first hit looks like this:
+The performance impact is expected to vary across platforms and workloads.
+The measurements I made on m68k show that some workloads run faster and
+others slower.
 
-memmove (n=205, src=0x2f3971 <printk_shared_pbufs+205>, dest=0x2f3980 <printk_shared_pbufs+220>) at arch/m68k/lib/memmove.c:82
-
-Signed-off-by: Daniel Palmer <daniel@thingy.jp>
 ---
 
-This is from my "make 68000 work again" backlog.
+Changed since v4:
+ - Dropped parisc header file patch as it's been merged already.
+ - Submitted as PATCH instead of RFC.
 
-I have had this fix for years and I think the few other people that
-have various 68000 hobby builds must have something similar.
+Changed since v3:
+ - Rebased on v6.17.
+ - New patch to resolve header dependency issue on parisc.
+ - Dropped documentation patch.
 
-/root # uname -a
-uClinux buildroot 6.18.0-12420-gdc1a468a2724 #120 Sat Dec 13 20:42:45 JST 2025 m68k GNU/Linux
-/root # cat /proc/cpuinfo
-CPU:            68000
-MMU:            none
-FPU:            none
-Clocking:       1179.1MHz
-BogoMips:       1758.00
-Calibration:    879001600 loops
-/root #
+Changed since v2:
+ - Specify natural alignment for atomic64_t.
+ - CONFIG_DEBUG_ATOMIC checks for natural alignment again.
+ - New patch to add weakened alignment check.
+ - New patch for explicit alignment in BPF header.
 
- arch/m68k/lib/memmove.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+---
 
-diff --git a/arch/m68k/lib/memmove.c b/arch/m68k/lib/memmove.c
-index 6519f7f349f6..e33f00b02e4c 100644
---- a/arch/m68k/lib/memmove.c
-+++ b/arch/m68k/lib/memmove.c
-@@ -24,6 +24,15 @@ void *memmove(void *dest, const void *src, size_t n)
- 			src = csrc;
- 			n--;
- 		}
-+#if defined(CONFIG_M68000)
-+		if ((long)src & 1) {
-+			char *cdest = dest;
-+			const char *csrc = src;
-+			for (; n; n--)
-+				*cdest++ = *csrc++;
-+			return xdest;
-+		}
-+#endif
- 		if (n > 2 && (long)dest & 2) {
- 			short *sdest = dest;
- 			const short *ssrc = src;
-@@ -66,6 +75,15 @@ void *memmove(void *dest, const void *src, size_t n)
- 			src = csrc;
- 			n--;
- 		}
-+#if defined(CONFIG_M68000)
-+		if ((long)src & 1) {
-+			char *cdest = dest;
-+			const char *csrc = src;
-+			for (; n; n--)
-+				*--cdest = *--csrc;
-+			return xdest;
-+		}
-+#endif
- 		if (n > 2 && (long)dest & 2) {
- 			short *sdest = dest;
- 			const short *ssrc = src;
+Finn Thain (3):
+  bpf: Explicitly align bpf_res_spin_lock
+  atomic: Specify alignment for atomic_t and atomic64_t
+  atomic: Add option for weaker alignment check
+
+Peter Zijlstra (1):
+  atomic: Add alignment check to instrumented atomic operations
+
+ include/asm-generic/atomic64.h   |  2 +-
+ include/asm-generic/rqspinlock.h |  2 +-
+ include/linux/instrumented.h     | 15 +++++++++++++++
+ include/linux/types.h            |  2 +-
+ kernel/bpf/rqspinlock.c          |  1 -
+ lib/Kconfig.debug                | 18 ++++++++++++++++++
+ 6 files changed, 36 insertions(+), 4 deletions(-)
+
 -- 
-2.51.0
-
+2.49.1
