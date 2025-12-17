@@ -1,85 +1,132 @@
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-yx1-f52.google.com (mail-yx1-f52.google.com [74.125.224.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA7C2BEFF8
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Dec 2025 23:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC4F2A1BF
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Dec 2025 05:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765927225; cv=none; b=LGP9Hl0kyUFHl7kIYTT+08KvYuab0I1aAXG9sqPMx3hagVELHK9wOnQ+Bv5SndGVbIFUMpV6yhjOtOtIJL0g7PVQYXZME/gcWUmHfxTb8MiPQqLmv6IjpaYbaxjtTjrW62BrxVEsxhRg60BUJDU5BB9aw8X4SLmhfq8+GZHucjU=
+	t=1765948619; cv=none; b=r+9pPTB6zBdm3BKaS48MBJWZ3ig2DOVM8PtR2q2+9M5X6QY8yeMfI5fBvged6sGNxUkFQXe3pujohy3XR6QGPoYd8ikDutgQ0dBk78VPUKq+zZEqiwoOsZv9lLFZdPcSlmQxCZZitWbDpILQVbSYy5O223sNDiNDRoXrPb9s6mU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765927225; c=relaxed/simple;
-	bh=tnDIMW2fMK57uxvstIhw75Gggae731ypToeg9A4Cnu0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NP8I2pyiRyuBy+LaVIlOwQwXXD7eoApj9iLVqi95ktY5bCnafuBy0w+5B0LGKlAM17nQpQoTZoWCdo65/BtI31BPyy7G2cXstO1LMqGascC3KJMVcRVbH0ftvndJb21C+YfEFoh06srxmP4sQ2xR4csaRGBtFxhqiRbg4XRJuuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=kvJ8wKtd; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1765948619; c=relaxed/simple;
+	bh=/jlPoiqgi6X9ie2iedDP5clCEEtvTwbUswfK2n0ew3Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kG9CFwq7iEHiqowuU/YcKJHRgrGAUwtRzL+W9u9MGBXI1yrjfx1BSzyTQZYq6Yd5ItoNI3HEFnriFwVrQQYwz209ieczmocEgqC7dhc37+XwSmzE09N8mm/Pf/Rq3lETobEN1edBdPnoFBTDufVZN/uEl0pMl6tqFPEXoQFwLkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D33EYwr/; arc=none smtp.client-ip=74.125.224.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="kvJ8wKtd"
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34c5f0222b0so2712627a91.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Dec 2025 15:20:22 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D33EYwr/"
+Received: by mail-yx1-f52.google.com with SMTP id 956f58d0204a3-641e942242cso4204638d50.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Dec 2025 21:16:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1765927222; x=1766532022; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gy2rjlQJ/MwlF7d+TSXEhOTxke1Wr2G6RWbQLrYM7Dk=;
-        b=kvJ8wKtdv4pVoX768uBTZLxyb7didVi2nhO7WmnaDJKMzEO6NzV7j4zLzyAaHBT8Hu
-         D8HdWv5ym52Mw3mczdW+xWivPlK/1gM3C0zFX7+coJ6eWUwWQVCT3wjfkdNy9Jo4stpn
-         X5HrV93wRZf/DVqNp9YnyQG0D3R8EgiRuHFok=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765927222; x=1766532022;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1765948616; x=1766553416; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gy2rjlQJ/MwlF7d+TSXEhOTxke1Wr2G6RWbQLrYM7Dk=;
-        b=BLNiDyqKJxeYME1rEVO6VJClgopAIw+fR+DrxPQOA+f17cwvHBmwsSnBx601e/k5JE
-         VRpeI0Zs/kuacaG6rz65oP9GpsZkkr1uSwQJim/gJePESVSeq2izpKnNiE9tqf9IxinG
-         fAB8WGfRlbrJakA4lhv4Ty4sm6XO/SWgBTvJd5iyxMVvZdi1/WMoNSjdgHOXEjCmM2nh
-         ZRBhuSA28l6M1MrnmvEzz5my4nreNnHF9LFjC//owGdTFvyYUp480VKWyQwezSSf51T1
-         1Uv4kLX+sovaxTSisPL0jr0eEAYMSWdN06gzGyp3Ve39hc6nxvoCo76hrkk8dOI1ic3N
-         fkJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzPYVVPWxAg0deEryo3+aDd+NIBe+AKj3xDPkYiy20dh871Mn9lfa+QURy6nZxHxf2xYID8rRWI8H0@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyG6E2gxd29FrvQAg/JSnz1yUkVwl4FKan62npMg8WHK+e5CbQ2
-	JuFsgBW3PAnyvFVP5Hf4tAJqkNq3HWRIqenV7b3M9NO7azDP1mtnGa4LIz/4561TMotC6i4i0Ic
-	XqlgpEo2J1w1cjmjDA0HAMSv2+3SIbRbQY+MdRWU1eQ==
-X-Gm-Gg: AY/fxX5K1shorbNqO5Tl4SoE0h3orjVK5eEqorPvqqzlV/o5Jkv5ODA5VFOLiBY7AWV
-	QrjNzwWtavOceoZ3I33k4Pr0zgijbMKLrKTGccrqWK+A5Jao2lmBvHy+MNnY4w3JNdh11dz/Ktu
-	4sJQHwQNVvsy4BLYSY6C4efIGhJdeiJNXh+piyJRw2d9BRc6dlxiG2iNR47hwBShLnxbKR889Sf
-	qLBGLlRdn+NekNcNzGiPao0wloYW9mMUig4j28aU8/krQ7dVt+2fCYwBjhvBKhyjf2NlzGs
-X-Google-Smtp-Source: AGHT+IHRLmrH0NhxsCVKZ9qmGrCAl+I2i9/10P+TFyGujd+JX2sBrK1stDmkuLqLUE/Qescwxw7u3hLX+aeoqjfkUTM=
-X-Received: by 2002:a17:90b:2891:b0:32b:9774:d340 with SMTP id
- 98e67ed59e1d1-34abd78d3a2mr13622806a91.33.1765927222280; Tue, 16 Dec 2025
- 15:20:22 -0800 (PST)
+        bh=e3U4fucPIwa5C3A7mTN8iePIKa9pv0/tHUusJYkp2+Y=;
+        b=D33EYwr/HIoQsJKuYhFnDBMdAwy5Ig4187xljGt01vPUQvPIDONt4k4D+PApVYACKT
+         M5KdzH+jXW1c35ODUbrbpbNKbtlCSBH62q34E5sI0X1kCsfuVV82dz8sjinJw45PqGOG
+         LSl6OBcP3HhLB7uTihtiDAhTjQMi7hM70f4/yQidMqDY7cFt38Iy5vs+fujtS8vGPVQD
+         qhW9HzC9Xd2FblD4awrNeWq6j0+8rdeo6C7lU29Skv4t0nCrxGPc1+iFMyEePAMUcKQg
+         jGTHEWR7pcjnplta/sOOV76eM69u1dPPQ/XU9M8vyGB7BOKazT831vdSq8txy33cVMYo
+         9qvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765948616; x=1766553416;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=e3U4fucPIwa5C3A7mTN8iePIKa9pv0/tHUusJYkp2+Y=;
+        b=UX9dbFSzIJUuJEPf/MjW7A3uSpkP3YO7jv9RC1t6PVD7mGd6tf2EoUJIXrJPYOWj4X
+         0ESqI0ijvJNLxe+Gsr6riNyIBqLUTr58/BuQ4iOrjGaCnyA31PY3J/YWUs3GlsOJmjSm
+         njGiKYqkii7FaYUy5/kNnemYkTsFzCc7/NPk8vTm0JL24zp5G76XFRDo1y9tLvafVrV/
+         aazVdFAMNHdT3lft2IfFJ5X62n6l/MzbOFvdezOiIr7BsjT3extaJMkXHVYCk2Kkjb3D
+         bAyqI7DhEI92hR6z6m4zkUO45+lnCMW/3JxlabCzBbeDkSwa7ni7tBLMr3+tiVFmW0cB
+         kjUw==
+X-Forwarded-Encrypted: i=1; AJvYcCXxyvQdXZEylitluOwfcBwloo3KER0V9LGSsraVR9IqpOuW1Xb4RoXqWLYXRZPb4AlRjkeey0rAN0ZH@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyNJMfh6Z6XCmywfRQZrorkdkrcxscdpYrYRN71nah7Id7iq5WB
+	FQnWBJmiINvr7kcjWYFyzLf1NVkYSEAuBeSuL1cKMUYx+PqDfFR809VQ
+X-Gm-Gg: AY/fxX6SxrcLQZgkZsV0fwbBDuQTH///LUMQAYRRRKEeOIZYyRg0wWtIELl6li5eBNa
+	ZJ2UbfbZ27HiTOpbv7pbg/bt3OR7a75J/83vMdnzsljJGhEnS7NEYOd6C+ZjaGi/GaNI9RPuWei
+	OGULA4OZp1jqBlnADRtV1xF+LnLU6wH+e2ZF+9bi84zZGVu7mP8wL649oIsCG2mWfslFkVmF8W8
+	S5x3dbMK4vyqe88L2STChAgicLmLUaLd3jSHL9JX2gz5i/xN+RrlLmg/YubH/4xuzdzpOHVS6GB
+	rYhk79km2AsXPjUayX2DYHZN1RLIQAsbN4nzJonTMAXOlStrf+UIIRyDSEoc8nJ5Rpz9kK12jQH
+	NQ0Bw4VRkNjtp0tGu/aWPlv2g7HQ1Rex46w9+JUh9qUtXdmwL++mFwptewfeuVxgoxMahlj/eg0
+	7xKahsto3ObmEfUQatje2CWw==
+X-Google-Smtp-Source: AGHT+IHl6JmRY4pmU+6aPgmZru5eursIsfwMpCPv4j6lmgmMPRhAD6OhtZZX534fHOXjHyU3LGVXxw==
+X-Received: by 2002:a05:690e:16a0:b0:644:7b59:4216 with SMTP id 956f58d0204a3-645555cda86mr12968997d50.3.1765948616522;
+        Tue, 16 Dec 2025 21:16:56 -0800 (PST)
+Received: from localhost ([2a03:2880:25ff:52::])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-64477dab686sm8555903d50.16.2025.12.16.21.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Dec 2025 21:16:56 -0800 (PST)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Dave Hansen <dave.hansen@intel.com>,
+	Brendan Jackman <jackmanb@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Zi Yan <ziy@nvidia.com>,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel-team@meta.com,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v2 2/2] mm/page_alloc: Prevent reporting pcp->batch = 0 [mcf5208evb boot failure]
+Date: Tue, 16 Dec 2025 21:16:54 -0800
+Message-ID: <20251217051654.80355-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <42143500-c380-41fe-815c-696c17241506@roeck-us.net>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251009192933.3756712-1-joshua.hahnjy@gmail.com>
- <20251009192933.3756712-3-joshua.hahnjy@gmail.com> <42143500-c380-41fe-815c-696c17241506@roeck-us.net>
-In-Reply-To: <42143500-c380-41fe-815c-696c17241506@roeck-us.net>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Wed, 17 Dec 2025 08:20:10 +0900
-X-Gm-Features: AQt7F2pdkaX_FXf3Vw4ZDQFKJiyh0g2VIemxkf9QfS5MKxqxzb6tlEjZT7oT4fU
-Message-ID: <CAFr9PXkRRQwMGzAQyhkaZU-BLFHP02rd3nHy7HR9Z+T5eUaUJg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mm/page_alloc: Prevent reporting pcp->batch = 0
- [mcf5208evb boot failure]
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Joshua Hahn <joshua.hahnjy@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Dave Hansen <dave.hansen@intel.com>, Brendan Jackman <jackmanb@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel-team@meta.com, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Guenter,
+On Tue, 16 Dec 2025 13:47:03 -0800 Guenter Roeck <linux@roeck-us.net> wrote:
 
-On Wed, 17 Dec 2025 at 06:47, Guenter Roeck <linux@roeck-us.net> wrote:
+> Hi,
+> 
+> On Thu, Oct 09, 2025 at 12:29:31PM -0700, Joshua Hahn wrote:
+> > zone_batchsize returns the appropriate value that should be used for
+> > pcp->batch. If it finds a zone with less than 4096 pages or PAGE_SIZE >
+> > 1M, however, it leads to some incorrect math.
+> > 
+> > In the above case, we will get an intermediary value of 1, which is then
+> > rounded down to the nearest power of two, and 1 is subtracted from it.
+> > Since 1 is already a power of two, we will get batch = 1-1 = 0:
+> > 
+> > 	batch = rounddown_pow_of_two(batch + batch/2) - 1;
+> > 
+> > A pcp->batch value of 0 is nonsensical. If this were actually set, then
+> > functions like drain_zone_pages would become no-ops, since they could
+> > only free 0 pages at a time.
+> > 
+> > Of the two callers of zone_batchsize, the one that is actually used to
+> > set pcp->batch works around this by setting pcp->batch to the maximum
+> > of 1 and zone_batchsize. However, the other caller, zone_pcp_init,
+> > incorrectly prints out the batch size of the zone to be 0.
+> > 
+> > This is probably rare in a typical zone, but the DMA zone can often have
+> > less than 4096 pages, which means it will print out "LIFO batch:0".
+> > 
+> > Before: [    0.001216]   DMA zone: 3998 pages, LIFO batch:0
+> > After:  [    0.001210]   DMA zone: 3998 pages, LIFO batch:1
+> > 
+> > Instead of dealing with the error handling and the mismatch between the
+> > reported and actual zone batchsize, just return 1 if the zone_batchsize
+> > is 1 page or less before the rounding.
+> > 
+> > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+> 
 > With this patch in the tree, the qemu 'mcf5208evb' machine fails to boot
 > with memory errors such as
->
+> 
 > S01syslogd: page allocation failure: order:7, mode:0xcc0(GFP_KERNEL), nodemask=(null)
 > CPU: 0 UID: 0 PID: 34 Comm: S01syslogd Not tainted 6.19.0-rc1 #1 NONE
 > Stack from 407d7ce0:
@@ -94,12 +141,17 @@ On Wed, 17 Dec 2025 at 06:47, Guenter Roeck <linux@roeck-us.net> wrote:
 >  [<400bf614>] get_page_from_freelist+0x0/0xfa6
 >  [<400c0e5c>] __alloc_frozen_pages_noprof+0x6be/0x8be
 >  [<400c1358>] get_free_pages_noprof+0x16/0x3e
+> 
+> Reverting this patch fixes the problem.
 
-I reported a different issue but with the same change:
+Hi Guenter,
 
-https://lore.kernel.org/lkml/CAFr9PX=_HaM3_xPtTiBn5Gw5-0xcRpawpJ02NStfdr0khF2k7g@mail.gmail.com/
-https://lore.kernel.org/lkml/20251211102607.2538595-1-daniel@thingy.jp/
+Thank you for the report. Daniel Palmer has identified an issue on NOMMU
+systems, and I think this is caused by the same issue. It seems like
+mcf5208evb is also NOMMU (arch/m68k/Kconfig.cpu shows config M520x depends on
+!MMU), so I imagine this is the same issue that was reported.
 
-Cheers,
-
-Daniel
+Andrew let me know that the commit has already been committed to mainline
+so I'll be sending up a fix shortly. Sorry about the problem, and thank you
+again for reporting it. I hope you have a great day!
+Joshua
