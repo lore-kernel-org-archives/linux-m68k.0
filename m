@@ -1,83 +1,131 @@
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DAE1F17E8;
-	Fri, 19 Dec 2025 03:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E00D32E729
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 19 Dec 2025 11:59:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766115344; cv=none; b=jqx6aohk2vfJx84drBU4rwug3PrxwYwNM8C6+weidUIaE+p6orMEUMRbi3R9nffDLSP7TISeuVPZmJIvyDBgp7f6fTU28oD2huJkKj1qKn3C9hiqTVNTCDCrM4C1fIRAbC9RhZ6wx3BpjyxoTge8amoBVWEZzrVLcgsJONJai0o=
+	t=1766145543; cv=none; b=MPYZWmZnY3n7X6ei/zc+OEjLKS9Gd3R/24M44fNs3BmGG2mpfjMgNyY/cbepXVBic2GpCS/+BCP6sMspIdpFkyOpKkO1TSHbdsfS6eIfYuJ1KXBdc3XwNnty+eaDjOja4rSlN0kxoUe+7E4g/G+kI2/Twn4qWbQIKKMWvJqvDUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766115344; c=relaxed/simple;
-	bh=74vJrN3KnthL4brOBqNVSN2MUKWj7lS9SCILQELXKZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TevwRjErY7CkG48iWkVM1UA1yTEgW4H9mevx9cCqznyVemkU+k6VBYA4RyfMWGxRQK7B1snoLBT57GvOKRVUDn0xM/np5TscCEwDzpXQ9/n1DMB2EFNW+e8+lcXkgcjtHLZYbB+ZE2CyPYmgoluj33s2f+cCaH7G46N5r5Nyp7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=BpdeKBz1; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="BpdeKBz1"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=1vpLG2xCKwKkUhQAxR9QJDnM8LdIuHlyBTs/ApoYfJg=; 
-	b=BpdeKBz1cp7osWVKXwJgNSp1AGdJkYFp71VRqYS16kfQgnxNKJBJIAbR54B0AJTxgz7TfYexWEp
-	lv5mlnmb+WTaC+UI7v/53XOGxr1SdFOsFovEPe8yQhaSQrOV0Hxgyut9jfz94a4HKH+9yORdgvdR9
-	RrqWIKzuo7P64iNYGWqVEasyFu+GkABI3JFki53SakEST1ffwDbLqxDamB5Wlv5tKWzvsWS76eJ2v
-	pRpLJF9sQV1/PxKp7bFN3WAwSunAOCpNx0OoDeTufJ9L68ay0AiUHI5jvdrG2CzcuKoJI/UeVuEz/
-	8FxAcVv54IVioanN3PT1y++JB3fb2YdZUXKA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1vWRH8-00BD02-0M;
-	Fri, 19 Dec 2025 11:35:31 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 19 Dec 2025 11:35:30 +0800
-Date: Fri, 19 Dec 2025 11:35:30 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: jeanmichel.hautbois@yoseli.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v4 2/2] m68k: coldfire: Add RNG support for MCF54418
-Message-ID: <aUTIAicJiTxKHJb7@gondor.apana.org.au>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
- <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
+	s=arc-20240116; t=1766145543; c=relaxed/simple;
+	bh=BPaaj0qgJf0jJsVT7Vn/xyMT+bl/9lrzOQdk7gVbpR4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p3GMEjS8HuBWPiH28r3laZEaotp01tshm29iXXDG8dcQHWDZRgmHCrW7p8NJRY0HQizt6g19yHlUS0ovSO+S5q342v5bLz2uDXpSzIdMsme7WaWlF9kXSCxF08oaIQJ9VqQD/onx6y3t1u+aQgcShqCiePIkbL8qUiHkVnM4SX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 1469860018;
+	Fri, 19 Dec 2025 11:59:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFA9C4CEF1;
+	Fri, 19 Dec 2025 11:58:58 +0000 (UTC)
+Message-ID: <d36788e2-52be-42b1-bb99-e2a18f99f7ce@linux-m68k.org>
+Date: Fri, 19 Dec 2025 21:58:54 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: nommu: fix memmove() with differently aligned src
+ and dest for 68000
+To: Daniel Palmer <daniel@thingy.jp>, geert@linux-m68k.org
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20251213120401.3992567-1-daniel@thingy.jp>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20251213120401.3992567-1-daniel@thingy.jp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 26, 2025 at 08:08:10AM +0100, Jean-Michel Hautbois via B4 Relay wrote:
-> From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Hi Daniel,
+
+On 13/12/25 22:04, Daniel Palmer wrote:
+> 68000 has different alignment needs to 68020+.
+> memcpy() checks if the destination is aligned and does a smaller copy
+> to fix the alignment and then critically for 68000 it checks if the
+> source is still unaligned and if it is reverts to smaller copies.
 > 
-> Add support for the hardware Random Number Generator (RNGB) found on
-> MCF54418 ColdFire processors with clock enabled at platform
-> initialization.
+> memmove() does not currently do the second part and malfunctions if
+> one of the pointers is aligned and the other isn't.
+
+What is the nature of the failure, is it a trap?
+
+
+> This is apparently getting triggered by printk. If I put breakpoints
+> into the new checks added by this commit the first hit looks like this:
 > 
-> The RNGB block is compatible with the imx-rngc driver.
+> memmove (n=205, src=0x2f3971 <printk_shared_pbufs+205>, dest=0x2f3980 <printk_shared_pbufs+220>) at arch/m68k/lib/memmove.c:82
 > 
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+
+Seems to make sense from what we have in memcpy.c.
+
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Geert: if you are ok with this I can take it via the m68knommu tree?
+
+Regards
+Greg
+
+
+
 > ---
->  arch/m68k/coldfire/device.c       | 28 ++++++++++++++++++++++++++++
->  arch/m68k/coldfire/m5441x.c       |  2 +-
->  arch/m68k/include/asm/m5441xsim.h |  9 +++++++++
->  drivers/char/hw_random/Kconfig    |  3 ++-
->  drivers/char/hw_random/imx-rngc.c |  7 +++++++
->  5 files changed, 47 insertions(+), 2 deletions(-)
+> 
+> This is from my "make 68000 work again" backlog.
+> 
+> I have had this fix for years and I think the few other people that
+> have various 68000 hobby builds must have something similar.
+> 
+> /root # uname -a
+> uClinux buildroot 6.18.0-12420-gdc1a468a2724 #120 Sat Dec 13 20:42:45 JST 2025 m68k GNU/Linux
+> /root # cat /proc/cpuinfo
+> CPU:            68000
+> MMU:            none
+> FPU:            none
+> Clocking:       1179.1MHz
+> BogoMips:       1758.00
+> Calibration:    879001600 loops
+> /root #
+> 
+>   arch/m68k/lib/memmove.c | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
+> 
+> diff --git a/arch/m68k/lib/memmove.c b/arch/m68k/lib/memmove.c
+> index 6519f7f349f6..e33f00b02e4c 100644
+> --- a/arch/m68k/lib/memmove.c
+> +++ b/arch/m68k/lib/memmove.c
+> @@ -24,6 +24,15 @@ void *memmove(void *dest, const void *src, size_t n)
+>   			src = csrc;
+>   			n--;
+>   		}
+> +#if defined(CONFIG_M68000)
+> +		if ((long)src & 1) {
+> +			char *cdest = dest;
+> +			const char *csrc = src;
+> +			for (; n; n--)
+> +				*cdest++ = *csrc++;
+> +			return xdest;
+> +		}
+> +#endif
+>   		if (n > 2 && (long)dest & 2) {
+>   			short *sdest = dest;
+>   			const short *ssrc = src;
+> @@ -66,6 +75,15 @@ void *memmove(void *dest, const void *src, size_t n)
+>   			src = csrc;
+>   			n--;
+>   		}
+> +#if defined(CONFIG_M68000)
+> +		if ((long)src & 1) {
+> +			char *cdest = dest;
+> +			const char *csrc = src;
+> +			for (; n; n--)
+> +				*--cdest = *--csrc;
+> +			return xdest;
+> +		}
+> +#endif
+>   		if (n > 2 && (long)dest & 2) {
+>   			short *sdest = dest;
+>   			const short *ssrc = src;
 
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
