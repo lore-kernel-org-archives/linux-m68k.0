@@ -1,99 +1,218 @@
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB50AB665
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Dec 2025 00:48:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088F031AA9D
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Dec 2025 13:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766364498; cv=none; b=htQi07BBwYpQxAMyb/YDZOhJ7OD8NkQt/N1h23zvVxYS7VH4CgUM5Av8T9txI+UYyOCJ0XSNtMwq0LXLUjLO7UjacfaqwFM9iMYDAyhMUdQANwrGbnOo/n9e5JaxYyaFG6GAFYGUTeLJ5vw3/PIFeV0GECxs8mFh2OtqIjnPBTg=
+	t=1766410809; cv=none; b=WZ4QvJGDtS5Swg7fuLp017Mwhq2OvFzkgA0Wye6mbot24geFuo0cyYNk+fo/AsX0228yhllZlJ+AmNcWVHQjTXvicdB7S3QwNlmJ+b0yK414L5kDqmFRe9RsaxWiAIR95JKJa4XOt0UkBX6qyhrbWbT9khzlbjw50FVuAqiUZAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766364498; c=relaxed/simple;
-	bh=VzAGgsB4CZ06CGGPAwW0bd5B76P5Z0NtwLbnSPzY5jI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m/bJhNDPfkdJnkuwFgwR2aW8mfEPxSS+X7IB4wVG3m2ygZuCYPpPuulPXcoW4YMEee+tkoBCK4qRrthvZzREt4vc4c48xSRus1Pj37TbyZ4QKMRhRmzvmkrohsEnmdHmkN9U/TVN408nMBkri94s4Pa6rgltPFL+maoADJTp7xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=asuZoBoO; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1766410809; c=relaxed/simple;
+	bh=muLgVZCdKaW2U2xDoEdjfO+6X4Y0Pnz9sEwYXNUnPt8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gLcB+Iy3r3vzl6ZhoNrQ9oZig2HvZmryF27DGN0MYscrGD9cP/FQ4MCUmJysySYzo/mlt27lRt/4HNrCZjg4qjRztqA8p2qWCslJvdohseb20MPbigEurNtxVhbB8hbS3FbrDAfusXurbabOtmqQyE14LJxTkBpsvUeeQYN+gpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZCj0C9be; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="asuZoBoO"
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-34c565b888dso3905989a91.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Dec 2025 16:48:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=thingy.jp; s=google; t=1766364495; x=1766969295; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VzAGgsB4CZ06CGGPAwW0bd5B76P5Z0NtwLbnSPzY5jI=;
-        b=asuZoBoO/M7aH/OwN/8nFEY1f3fQjPhlx1qp2JPIkPiPfdjPSFwR5M65j/eQBatfPQ
-         4oLSBJHOv4DFi66p9ncZVcwE/44I0vvgA/ff3W0HPxj1T6WVyHRVMM7ljAvOy3Nd/Tj3
-         7/ApsqqCCdHBDpszCHa/iuILKfSgdG+tpS2Kg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766364495; x=1766969295;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VzAGgsB4CZ06CGGPAwW0bd5B76P5Z0NtwLbnSPzY5jI=;
-        b=w2SSLnxQara4hMxNTfDwF8qBCNqW4EXQb4ZdcRgglvVdWt6+FintNkjW/XC5Pqo4J0
-         w0f10cIOKXLIlD3GxkxJx8ORe9aHxX8DW1p5zDC8nEPhrWkwrs25nXM7UridK20bk8rq
-         DU2MZ76xc3VakSbQCD6n7tfIUWLSy+WIfYTYDSHxYxy8L05sT5wnhYKp8HbqDACDvBdq
-         wpMc/yxfIU7KWNpGmbWIGbhgL3sCtbfZP6R5RXiTWd0kjnzHTlt2f3O9WOOSQLaePf9M
-         FGMgBjYgYLI3m6IvgC5VX8UcqtfZP+dpZZXwY1nQxfe2IJj926cvghOei5TGpMvu1K49
-         1mQA==
-X-Gm-Message-State: AOJu0YzD1btaww5ilrOMysMQ6mK7tIm98r1mrsYBppsy1XXRDIIDZX+6
-	Kr0PWA/H4O97ndQC3W4RW9uOtJSFEAAdPAyROLMXVgVc1840DFU6kw73aNd4HRu8Z2dDa3EWnR2
-	VSxu+2e0bBM0mMgT5PBLpWnBjVW37pQS8wJkptlGQ924jlEikLcD9
-X-Gm-Gg: AY/fxX7+CUmC2djSDBfWtq7MK170nczigDuWzHVQ9yfFS6cTZvAID/xT9dyzBSTzRFq
-	WbxG1aU9TtRnFdUtekePz5exHqx8E4xm/Hd9jWjDjkJ4ugYQ7HjZk1H3EStmEwnJh9DFLDbEbFA
-	H67ldYSRJ3cii74hk1sjlTjfdxT+MUSSJj5v3JLKQOTq9f5NeQzXdFpYJF5HsxeX/yH4Dlkt5pq
-	6gAE3G8Q7QBxJIdvw5UlzCSRBVpVsf5lu06t7tCx27YYdPpw8MPbB8YSb3GhW3d0rkSzbeP
-X-Google-Smtp-Source: AGHT+IHzVyM/40ciZAsCxy/ddiLlkKqq2cgj3h202JuCFPcdOLOMMM7LQnZAmLChlKwYmrGf8w3bKo+1dkclrEQjmFc=
-X-Received: by 2002:a05:6a21:3282:b0:366:14ac:e1fa with SMTP id
- adf61e73a8af0-376aa6eadfemr9825083637.76.1766364494780; Sun, 21 Dec 2025
- 16:48:14 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZCj0C9be"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id CFE4F60157;
+	Mon, 22 Dec 2025 13:40:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35697C116D0;
+	Mon, 22 Dec 2025 13:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766410805;
+	bh=muLgVZCdKaW2U2xDoEdjfO+6X4Y0Pnz9sEwYXNUnPt8=;
+	h=From:Subject:Date:To:Cc:From;
+	b=ZCj0C9beJef3axNrm2XgnoGLms2pgUlR2mrt44z9HlCo/nXdOZ10ZlKH9eCS4MOqx
+	 hu406JUdw7F1SI74nsIBhNeBQ/+f56Ny32VNrnSFeDqqwhQlFZtCN1rrHzq4iWKjdZ
+	 qqHK7xpVWuiFKvC9rRrYdincmqDl5IopNBmK4tz8kGXwnBFvHcl6pIkJebxNte4kTH
+	 29drDNpdcYtJEBpZN14M8TTTy2io/MJJgWOdEZDEUHR5Io14zL3+tceCxBnI+RlipD
+	 TuSDFuo5fAOQIVEpfijBRPUF4br/1Gm/4Jkm7gIdC63dBOHIChv0M460pGJp4QUpx9
+	 iWwGwgb0UDRBg==
+From: Tamir Duberstein <tamird@kernel.org>
+Subject: [PATCH v2 0/3] bitmap: convert self-test to KUnit
+Date: Mon, 22 Dec 2025 14:39:53 +0100
+Message-Id: <20251222-bitmap-kunit-convert-v2-0-6a61a5330eff@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251213120401.3992567-1-daniel@thingy.jp> <d36788e2-52be-42b1-bb99-e2a18f99f7ce@linux-m68k.org>
- <CAFr9PX=hfUoqyiVwA5CRoC6mmr4KmYbxvodMmFFk_k8-NGp9cg@mail.gmail.com> <5a1242e4-c8a6-4f31-828c-07bc64df5f3f@helsinkinet.fi>
-In-Reply-To: <5a1242e4-c8a6-4f31-828c-07bc64df5f3f@helsinkinet.fi>
-From: Daniel Palmer <daniel@thingy.jp>
-Date: Mon, 22 Dec 2025 09:48:03 +0900
-X-Gm-Features: AQt7F2oZqGQi0KT4uO8vUHWVUjmZ5vfB05lZ1y621zRt9dDhp_Ppn4E8A7tUTZ8
-Message-ID: <CAFr9PXkfY=v-OGibxWBf_-wOBX909Mqsy=KqUpfmDA2hNnS7yQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: nommu: fix memmove() with differently aligned src
- and dest for 68000
-To: Eero Tamminen <oak@helsinkinet.fi>
-Cc: linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/4WNTQ6CMBBGr0Jm7Zgy/EVX3MOwgDLCRGlJWxsN4
+ e5WLuDyveR73waenbCHa7aB4yherElApwz03JuJUcbEQIoqRarBQcLSr/h4GQmorYnsAl5oLPK
+ yGYiZIU1Xx3d5H9lbl3gWH6z7HC8x/9k/wZijQl2RqpuqKIuhbqell+dZ2wW6fd+/Pj7Q1bgAA
+ AA=
+X-Change-ID: 20250207-bitmap-kunit-convert-92d3147b2eee
+To: David Gow <davidgow@google.com>, John Hubbard <jhubbard@nvidia.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Naveen N Rao <naveen@kernel.org>, Yury Norov <yury.norov@gmail.com>, 
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, Shuah Khan <shuah@kernel.org>, 
+ Kees Cook <kees@kernel.org>, Christophe Leroy <chleroy@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, 
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org, 
+ Tamir Duberstein <tamird@gmail.com>, 
+ Alexander Potapenko <glider@google.com>
+X-Mailer: b4 0.15-dev
+X-Developer-Signature: v=1; a=openssh-sha256; t=1766410800; l=5806;
+ i=tamird@gmail.com; h=from:subject:message-id;
+ bh=muLgVZCdKaW2U2xDoEdjfO+6X4Y0Pnz9sEwYXNUnPt8=;
+ b=U1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgtYz36g7iDMSkY5K7Ab51ksGX7hJgs
+ MRt+XVZTrIzMVIAAAAGcGF0YXR0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5AAAA
+ QPdMa0k+VR5LYx68pRWGXM8XiWp2v3ywu104Hv6JbMXqGymv1ic7WHGars53bB8FK7u1ctCpS3z
+ ghxhcU2RtLQk=
+X-Developer-Key: i=tamird@gmail.com; a=openssh;
+ fpr=SHA256:264rPmnnrb+ERkS7DDS3tuwqcJss/zevJRzoylqMsbc
 
-Hi Eero,
+This is the last remaining "Test Module" kselftest, the rest having been
+converted to KUnit.
 
-On Mon, 22 Dec 2025 at 08:54, Eero Tamminen <oak@helsinkinet.fi> wrote:
-> Both WinUAE (Amiga) and Hatari (Atari) emulators emulate 680x0
-> exceptions just fine, and can run Linux.
+Relative to v1 this keeps benchmarks out of KUnit in light of Yury's
+concerns:
+
+On Sat, Feb 8, 2025 at 12:53 PM Yury Norov <yury.norov@gmail.com> wrote:
 >
-> (They also emulate 030 cache and it's even semi-cycle-accurate [1].)
+> [...]
 >
-> Hatari CLI debugger / profiler will give you kernel backtraces even if
-> kernel itself could not, see: https://www.hatari-emu.org/doc/m68k-linux.txt
+> This is my evidence: sometimes people report performance or whatever
+> issues on their systems, suspecting bitmaps guilty. I ask them to run
+> the bitmap or find_bit test to narrow the problem. Sometimes I need to
+> test a hardware I have no access to, and I have to (kindly!) ask
+people
+> to build a small test and run it. I don't want to ask them to rebuild
+> the whole kernel, or even to build something else.
+>
+> https://lore.kernel.org/all/YuWk3titnOiQACzC@yury-laptop/
 
-I have been using WinUAE. The driver I sent for the A4000 mediator PCI
-bridge I sent a while back was initially tested in WinUAE and then
-finished off on my real A4000.
-I have to turn off JIT to get it working under wine so it's not very
-fast. I didn't know about hatari, so I'll take a look.
+I tested this using:
 
-I'm using QEMU for 68000 emulation because I have added a machine that
-roughly emulates the Dragonball EZ that is "supported"[0] in the
-kernel and I can use that to test most things before trying it on the
-real hardware. It made getting u-boot and the kernel working properly
-a lot easier.
+$ tools/testing/kunit/kunit.py run --arch arm64 --make_options LLVM=1 bitmap
 
-Cheers,
+There was a previous attempt[2] to do this in July 2024. Please bear
+with me as I try to understand and address the objections from that
+time. I've spoken with Muhammad Usama Anjum, the author of that series,
+and received their approval to "take over" this work. Here we go...
 
-Daniel
+On 7/26/24 11:45 PM, John Hubbard wrote:
+> 
+> This changes the situation from "works for Linus' tab completion
+> case", to "causes a tab completion problem"! :)
+> 
+> I think a tests/ subdir is how we eventually decided to do this [1],
+> right?
+> 
+> So:
+> 
+>     lib/tests/bitmap_kunit.c
+> 
+> [1] https://lore.kernel.org/20240724201354.make.730-kees@kernel.org
 
-0 - GCC currently generates code that will cause unaligned accesses,
-some code in entry.S is currently broken.
+This is true and unfortunate, but not trivial to fix because new
+kallsyms tests were placed in lib/tests in commit 84b4a51fce4c
+("selftests: add new kallsyms selftests")  *after* the KUnit filename
+best practices were adopted.
+
+I propose that the KUnit maintainers blaze this trail using
+`string_kunit.c` which currently still lives in lib/ despite the KUnit
+docs giving it as an example at lib/tests/.
+
+On 7/27/24 12:24 AM, Shuah Khan wrote:
+> 
+> This change will take away the ability to run bitmap tests during
+> boot on a non-kunit kernel.
+> 
+> Nack on this change. I wan to see all tests that are being removed
+> from lib because they have been converted - also it doesn't make
+> sense to convert some tests like this one that add the ability test
+> during boot.
+
+This point was also discussed in another thread[3] in which:
+
+On 7/27/24 12:35 AM, Shuah Khan wrote:
+> 
+> Please make sure you aren't taking away the ability to run these tests during
+> boot. 
+>
+> It doesn't make sense to convert every single test especially when it
+> is intended to be run during boot without dependencies - not as a kunit test
+> but a regression test during boot.
+> 
+> bitmap is one example - pay attention to the config help test - bitmap
+> one clearly states it runs regression testing during boot. Any test that
+> says that isn't a candidate for conversion.
+> 
+> I am going to nack any such conversions.
+
+The crux of the argument seems to be that the config help text is taken
+to describe the author's intent with the fragment "at boot". I think
+this may be a case of confirmation bias: I see at least the following
+KUnit tests with "at boot" in their help text:
+- CPUMASK_KUNIT_TEST
+- BITFIELD_KUNIT
+- CHECKSUM_KUNIT
+- UTIL_MACROS_KUNIT
+
+It seems to me that the inference being made is that any test that runs
+"at boot" is intended to be run by both developers and users, but I find
+no evidence that bitmap in particular would ever provide additional
+value when run by users.
+
+There's further discussion about KUnit not being "ideal for cases where
+people would want to check a subsystem on a running kernel", but I find
+no evidence that bitmap in particular is actually testing the running
+kernel; it is a unit test of the bitmap functions, which is also stated
+in the config help text.
+
+David Gow made many of the same points in his final reply[4], which was
+never replied to.
+
+Link: https://lore.kernel.org/all/20250207-printf-kunit-convert-v2-0-057b23860823@gmail.com/T/#u [0]
+Link: https://lore.kernel.org/all/20250207-scanf-kunit-convert-v4-0-a23e2afaede8@gmail.com/T/#u [1]
+Link: https://lore.kernel.org/all/20240726110658.2281070-1-usama.anjum@collabora.com/T/#u [2]
+Link: https://lore.kernel.org/all/327831fb-47ab-4555-8f0b-19a8dbcaacd7@collabora.com/T/#u [3]
+Link: https://lore.kernel.org/all/CABVgOSmMoPD3JfzVd4VTkzGL2fZCo8LfwzaVSzeFimPrhgLa5w@mail.gmail.com/ [4]
+
+Thanks for your attention.
+
+Signed-off-by: Tamir Duberstein <tamird@gmail.com>
+---
+Changes in v2:
+- Rebase on v6.19-rc1, dropping the first patch.
+- Extract benchmarks into new module and deduplicate
+  `test_bitmap_{read,write}_perf`.
+- Remove tc_err() and use KUnit assertions.
+- Parameterize `test_bitmap_cut` and `test_bitmap_parse{,list}`.
+- Drop KUnit boilerplate from BITMAP_KUNIT_TEST help text.
+- Drop arch changes.
+- Link to v1: https://lore.kernel.org/r/20250207-bitmap-kunit-convert-v1-0-c520675343b6@gmail.com
+
+---
+Tamir Duberstein (3):
+      test_bitmap: extract benchmark module
+      bitmap: convert self-test to KUnit
+      bitmap: break kunit into test cases
+
+ MAINTAINERS                           |   3 +-
+ lib/Kconfig.debug                     |  16 +-
+ lib/Makefile                          |   5 +-
+ lib/bitmap_benchmark.c                |  89 +++++
+ lib/{test_bitmap.c => bitmap_kunit.c} | 630 ++++++++++++++--------------------
+ tools/testing/selftests/lib/Makefile  |   2 +-
+ tools/testing/selftests/lib/bitmap.sh |   3 -
+ tools/testing/selftests/lib/config    |   1 -
+ 8 files changed, 360 insertions(+), 389 deletions(-)
+---
+base-commit: 8f0b4cce4481fb22653697cced8d0d04027cb1e8
+change-id: 20250207-bitmap-kunit-convert-92d3147b2eee
+
+Best regards,
+--  
+Tamir Duberstein <tamird@gmail.com>
+
