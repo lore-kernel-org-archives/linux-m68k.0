@@ -1,96 +1,99 @@
-Received: from smtp.dnamail.fi (sender001.dnamail.fi [83.102.40.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0122BE05A
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Dec 2025 00:01:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.102.40.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB50AB665
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 22 Dec 2025 00:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766361670; cv=none; b=frsewV8Xwv+N7CH8khGau2CPxMJO+mtOi2+fz4WVvORHz2xxN2ak76qoH171pSlOoZLiCDKb9TOnHS2Bos3bYSvUVo9x4YCrFfcV43QZqODH/qrYFw/n2i6JROF/7ZjrCbXZcTjuM6wjrEdICqubIjpYuifXEGTP2MrvSaUjKR8=
+	t=1766364498; cv=none; b=htQi07BBwYpQxAMyb/YDZOhJ7OD8NkQt/N1h23zvVxYS7VH4CgUM5Av8T9txI+UYyOCJ0XSNtMwq0LXLUjLO7UjacfaqwFM9iMYDAyhMUdQANwrGbnOo/n9e5JaxYyaFG6GAFYGUTeLJ5vw3/PIFeV0GECxs8mFh2OtqIjnPBTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766361670; c=relaxed/simple;
-	bh=TCPHoBS8yTW3aMPKynxGVSVshmFxQeIcZHaqo4n/nEY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=llDmYMsKN8N1kXYsWuE1sATvaKSOLxJecsE7eX17pBroMkq4mDQuG2FYIoV2WnOo0meJudhROfAfAAdyW4Enivj81XSED6Zf2jFwkRxJWFkufZLmVUnGP/g+AAz8XfxuVEXib/n2TLWV21j2tDQJy5yCqIHPk8A4WVtu2v7aDsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi; spf=pass smtp.mailfrom=helsinkinet.fi; dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b=KwSKvlUF; arc=none smtp.client-ip=83.102.40.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=helsinkinet.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helsinkinet.fi
+	s=arc-20240116; t=1766364498; c=relaxed/simple;
+	bh=VzAGgsB4CZ06CGGPAwW0bd5B76P5Z0NtwLbnSPzY5jI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m/bJhNDPfkdJnkuwFgwR2aW8mfEPxSS+X7IB4wVG3m2ygZuCYPpPuulPXcoW4YMEee+tkoBCK4qRrthvZzREt4vc4c48xSRus1Pj37TbyZ4QKMRhRmzvmkrohsEnmdHmkN9U/TVN408nMBkri94s4Pa6rgltPFL+maoADJTp7xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=asuZoBoO; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=helsinkinet.fi header.i=@helsinkinet.fi header.b="KwSKvlUF"
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.dnamail.fi (Postfix) with ESMTP id B116A2113003;
-	Mon, 22 Dec 2025 01:54:09 +0200 (EET)
-X-Virus-Scanned: X-Virus-Scanned: amavis at smtp.dnamail.fi
-Received: from smtp.dnamail.fi ([83.102.40.178])
- by localhost (dmail-psmtp01.s.dnaip.fi [127.0.0.1]) (amavis, port 10024)
- with ESMTP id ZSSGzCbv9AO7; Mon, 22 Dec 2025 01:54:05 +0200 (EET)
-Received: from [192.168.101.100] (87-92-37-248.bb.dnainternet.fi [87.92.37.248])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: oak@dnamail.internal)
-	by smtp.dnamail.fi (Postfix) with ESMTPSA id E5FC12113E0B;
-	Mon, 22 Dec 2025 01:54:04 +0200 (EET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.dnamail.fi E5FC12113E0B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=helsinkinet.fi;
-	s=2025-03; t=1766361245;
-	bh=jhqnSybF2IB4CeQLYaeeq2Mc3xw0YVGtyId8h+IoDMU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=KwSKvlUFMVSGtwOwUn92O2yYfSjnpUGG+WlIk62y0lv5uHAIIz5jtNXVGvuiobuOb
-	 H3Mas6oXMIeEl0LLSACoIPvURrWu7RbbhRNeITqTbrvtKe4XmZcl467n/7ugVl/ZrF
-	 B6zYkbqmHwR8JYn9RNhhkTzoMX9A/WOUfItwtKXB9gJu/IslG9zLaO/XU6JmgoBzV3
-	 WXg43KjCMFbPMbrva6+stMhg1r1M99GAfCmTx2FVuYnn6ghy0+54icEd0a8IHrJstq
-	 Oodh4WVI/AFWY/mN/J7zdxyWTVBSqQDbRMPTMhHpBagDo9nS9M+oashpKzjaoitrVT
-	 247OGIpvgo4rg==
-Message-ID: <5a1242e4-c8a6-4f31-828c-07bc64df5f3f@helsinkinet.fi>
-Date: Mon, 22 Dec 2025 01:54:04 +0200
+	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="asuZoBoO"
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-34c565b888dso3905989a91.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 21 Dec 2025 16:48:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=thingy.jp; s=google; t=1766364495; x=1766969295; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VzAGgsB4CZ06CGGPAwW0bd5B76P5Z0NtwLbnSPzY5jI=;
+        b=asuZoBoO/M7aH/OwN/8nFEY1f3fQjPhlx1qp2JPIkPiPfdjPSFwR5M65j/eQBatfPQ
+         4oLSBJHOv4DFi66p9ncZVcwE/44I0vvgA/ff3W0HPxj1T6WVyHRVMM7ljAvOy3Nd/Tj3
+         7/ApsqqCCdHBDpszCHa/iuILKfSgdG+tpS2Kg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766364495; x=1766969295;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VzAGgsB4CZ06CGGPAwW0bd5B76P5Z0NtwLbnSPzY5jI=;
+        b=w2SSLnxQara4hMxNTfDwF8qBCNqW4EXQb4ZdcRgglvVdWt6+FintNkjW/XC5Pqo4J0
+         w0f10cIOKXLIlD3GxkxJx8ORe9aHxX8DW1p5zDC8nEPhrWkwrs25nXM7UridK20bk8rq
+         DU2MZ76xc3VakSbQCD6n7tfIUWLSy+WIfYTYDSHxYxy8L05sT5wnhYKp8HbqDACDvBdq
+         wpMc/yxfIU7KWNpGmbWIGbhgL3sCtbfZP6R5RXiTWd0kjnzHTlt2f3O9WOOSQLaePf9M
+         FGMgBjYgYLI3m6IvgC5VX8UcqtfZP+dpZZXwY1nQxfe2IJj926cvghOei5TGpMvu1K49
+         1mQA==
+X-Gm-Message-State: AOJu0YzD1btaww5ilrOMysMQ6mK7tIm98r1mrsYBppsy1XXRDIIDZX+6
+	Kr0PWA/H4O97ndQC3W4RW9uOtJSFEAAdPAyROLMXVgVc1840DFU6kw73aNd4HRu8Z2dDa3EWnR2
+	VSxu+2e0bBM0mMgT5PBLpWnBjVW37pQS8wJkptlGQ924jlEikLcD9
+X-Gm-Gg: AY/fxX7+CUmC2djSDBfWtq7MK170nczigDuWzHVQ9yfFS6cTZvAID/xT9dyzBSTzRFq
+	WbxG1aU9TtRnFdUtekePz5exHqx8E4xm/Hd9jWjDjkJ4ugYQ7HjZk1H3EStmEwnJh9DFLDbEbFA
+	H67ldYSRJ3cii74hk1sjlTjfdxT+MUSSJj5v3JLKQOTq9f5NeQzXdFpYJF5HsxeX/yH4Dlkt5pq
+	6gAE3G8Q7QBxJIdvw5UlzCSRBVpVsf5lu06t7tCx27YYdPpw8MPbB8YSb3GhW3d0rkSzbeP
+X-Google-Smtp-Source: AGHT+IHzVyM/40ciZAsCxy/ddiLlkKqq2cgj3h202JuCFPcdOLOMMM7LQnZAmLChlKwYmrGf8w3bKo+1dkclrEQjmFc=
+X-Received: by 2002:a05:6a21:3282:b0:366:14ac:e1fa with SMTP id
+ adf61e73a8af0-376aa6eadfemr9825083637.76.1766364494780; Sun, 21 Dec 2025
+ 16:48:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20251213120401.3992567-1-daniel@thingy.jp> <d36788e2-52be-42b1-bb99-e2a18f99f7ce@linux-m68k.org>
+ <CAFr9PX=hfUoqyiVwA5CRoC6mmr4KmYbxvodMmFFk_k8-NGp9cg@mail.gmail.com> <5a1242e4-c8a6-4f31-828c-07bc64df5f3f@helsinkinet.fi>
+In-Reply-To: <5a1242e4-c8a6-4f31-828c-07bc64df5f3f@helsinkinet.fi>
+From: Daniel Palmer <daniel@thingy.jp>
+Date: Mon, 22 Dec 2025 09:48:03 +0900
+X-Gm-Features: AQt7F2oZqGQi0KT4uO8vUHWVUjmZ5vfB05lZ1y621zRt9dDhp_Ppn4E8A7tUTZ8
+Message-ID: <CAFr9PXkfY=v-OGibxWBf_-wOBX909Mqsy=KqUpfmDA2hNnS7yQ@mail.gmail.com>
 Subject: Re: [PATCH] m68k: nommu: fix memmove() with differently aligned src
  and dest for 68000
-To: Daniel Palmer <daniel@thingy.jp>
+To: Eero Tamminen <oak@helsinkinet.fi>
 Cc: linux-m68k@lists.linux-m68k.org
-References: <20251213120401.3992567-1-daniel@thingy.jp>
- <d36788e2-52be-42b1-bb99-e2a18f99f7ce@linux-m68k.org>
- <CAFr9PX=hfUoqyiVwA5CRoC6mmr4KmYbxvodMmFFk_k8-NGp9cg@mail.gmail.com>
-Content-Language: en-US
-From: Eero Tamminen <oak@helsinkinet.fi>
-In-Reply-To: <CAFr9PX=hfUoqyiVwA5CRoC6mmr4KmYbxvodMmFFk_k8-NGp9cg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Daniel,
+Hi Eero,
 
-On 12/19/25 15:30, Daniel Palmer wrote:
-> On Fri, 19 Dec 2025 at 20:59, Greg Ungerer <gerg@linux-m68k.org> wrote:
->> On 13/12/25 22:04, Daniel Palmer wrote:
->>> 68000 has different alignment needs to 68020+.
->>> memcpy() checks if the destination is aligned and does a smaller copy
->>> to fix the alignment and then critically for 68000 it checks if the
->>> source is still unaligned and if it is reverts to smaller copies.
->>>
->>> memmove() does not currently do the second part and malfunctions if
->>> one of the pointers is aligned and the other isn't.
->>
->> What is the nature of the failure, is it a trap?
-> 
-> Address error because of the unaligned address. This was actually a
-> real pain to work out because on QEMU it worked fine (mainline QEMU
-> allows the unaligned access[0]) and on the real CPU it just locked up.
-Both WinUAE (Amiga) and Hatari (Atari) emulators emulate 680x0 
-exceptions just fine, and can run Linux.
+On Mon, 22 Dec 2025 at 08:54, Eero Tamminen <oak@helsinkinet.fi> wrote:
+> Both WinUAE (Amiga) and Hatari (Atari) emulators emulate 680x0
+> exceptions just fine, and can run Linux.
+>
+> (They also emulate 030 cache and it's even semi-cycle-accurate [1].)
+>
+> Hatari CLI debugger / profiler will give you kernel backtraces even if
+> kernel itself could not, see: https://www.hatari-emu.org/doc/m68k-linux.txt
 
-(They also emulate 030 cache and it's even semi-cycle-accurate [1].)
+I have been using WinUAE. The driver I sent for the A4000 mediator PCI
+bridge I sent a while back was initially tested in WinUAE and then
+finished off on my real A4000.
+I have to turn off JIT to get it working under wine so it's not very
+fast. I didn't know about hatari, so I'll take a look.
 
-Hatari CLI debugger / profiler will give you kernel backtraces even if 
-kernel itself could not, see: https://www.hatari-emu.org/doc/m68k-linux.txt
+I'm using QEMU for 68000 emulation because I have added a machine that
+roughly emulates the Dragonball EZ that is "supported"[0] in the
+kernel and I can use that to test most things before trying it on the
+real hardware. It made getting u-boot and the kernel working properly
+a lot easier.
 
+Cheers,
 
-	- Eero
+Daniel
 
-[1] https://www.hatari-emu.org/doc/debugger.html#Profile_data_accuracy
-
+0 - GCC currently generates code that will cause unaligned accesses,
+some code in entry.S is currently broken.
