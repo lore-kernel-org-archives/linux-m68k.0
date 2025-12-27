@@ -1,67 +1,67 @@
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166433148CC
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 12:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E40315764
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 12:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766837849; cv=none; b=J9CcnDPcOk4krnbWmNcMYL/Ng2xtx66nOe3pRpXGsmkINFeEMN14/5B91SmJ+teuzm8APrBWyKlhvR/ROk4gz14+RARutk1bAH7mB1cYFVzzNeiGMMSpqHsWUbx5yGd7NZtEPAwUHbuNGIxfT+fjmDJh1IKO9veiCQpQcCZYC+s=
+	t=1766837862; cv=none; b=XzrlReHrXT1x+wdmvFGfYztG1ijq5nSB9lPrElKk7LVpzSDfS1RN4iUyyK/9EUBNKHAd9iQ7/Nln/U1QbJ2ibPU5MO+C3GGGOjI8p8tcMnYJCaBinYOiNAykEMcKSXgdhEP0YGnqFOl5UYDV6+r1p2TbUsmyU7ypKOTZ58X91vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766837849; c=relaxed/simple;
-	bh=lE/1DIYMabiYcINvDQN+J482ZjUVJCV7RenaBaf63GU=;
+	s=arc-20240116; t=1766837862; c=relaxed/simple;
+	bh=ZR0iR9pvZGcVZSHwNZDrCThadrViJMyV5/bfGtiN4gw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=A08EymTwb7EDTDAI7Me8a6pMh3tTzxzr1rTYycIBwzJslx5fe681nni5OotJN/u3MrTICgV3Q9Fr8Y57ULnBzDQiVXawDXwXHObjTV+y2pE5tpH7XFv9MGl+c9r8KYc+xWtg62c7cYisDcFB/556Fo+ro9fToiAE3R60AYR/7PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UOQzkexr; arc=none smtp.client-ip=209.85.128.65
+	 In-Reply-To:To:Cc; b=Xr7H51iqkX6jQ7arSY7tIjou8h1VB6cRDvcU0nQrYDY7aj/L1jHfIB7UfDgFua7LRZ4AWqLwSgPank0C1qr1Zhs/44fgihFJOA9YHH7pPW8gQR3O6iinb29Q0KDxlBPTuEUS/xegc8Lh5jWHBB5SH/sH1KWjsiHI7wEAMBF44g4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UsgJiZXF; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UOQzkexr"
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-47d3ba3a4deso14096945e9.2
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 04:17:25 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UsgJiZXF"
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-477a2ab455fso75769295e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 04:17:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1766837844; x=1767442644; darn=lists.linux-m68k.org;
+        d=suse.com; s=google; t=1766837858; x=1767442658; darn=lists.linux-m68k.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=l5BRw7RvrfQfP/K6gt0hDAa/lWwGnQ3AR1h1gaT2J0c=;
-        b=UOQzkexr1nMNacyIGTyyB1zZa2lJNO3+38tdqK8A4FP1oxBWMuskMLv7wl4gXNFHES
-         GK+4N2FiXRyNiWLGmcSzA3dncrW1Sw+39OG2JSZhCGTEclEGwbN40mFNz/Sxaa53R1WB
-         BfBxkxqt2CReXpFeqFRIg08SVK0LOCq4YW2k3YPhHHuf+L8yncST42pQ6WFwxKpcLrbV
-         IeRMgS8y4bt0B38UTubnAGofpe31FLjVbQUTupPOVFdWmQBjabKUBnR+Zp35mVI//QoK
-         W63vH/pEFYRpl7cNM6lJ1Ej7OFlHuGIGFrKjWw3I8JI0rM6XvLs70+n1uWyzUnOv8/de
-         xcaQ==
+        bh=GvSE1c/4a8QCKCTV5gdf1mCLxf9YZVQyxdWd8z10SmE=;
+        b=UsgJiZXFx6V6+077J3LxGFOAja4Lgu9CwDh9I0XyxOy7fI86vS7wsgBwtmJjqH2e1u
+         Kds8QWA8vsposAw4qTmw42ZI4isB66OA9itVtw8CDFwWEy5Y+pKj0h+oCPw3eLwVPiBe
+         W2Ovxas5Vp2WPWFjAteenyaj6NQbHEJ5xjhX8bo1wjSfyYiRypYAqSR7MJ9a6ucnktG0
+         AWgcvrMT1CtA/2B3ZOTPk5S5SjEZBIfpsVDfPy1sJCNz2YodocmKEztsHMZPdX58Y6pk
+         57+l/z1awOtai2T9CTgKYsFJunxYWYSTkIDQf4h6XCfgvzTdiSGY8GaatNwkUrEIYQeA
+         w3KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766837844; x=1767442644;
+        d=1e100.net; s=20230601; t=1766837858; x=1767442658;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=l5BRw7RvrfQfP/K6gt0hDAa/lWwGnQ3AR1h1gaT2J0c=;
-        b=PK/8dzSJ+AiiBw4+VPsBfZJMNJyT40wv0twUt3LhTHAoIuKut0Ndy5LTOkOubx+ILG
-         LrIeO+9/HxlkPwWWSBpmDWXxaTZmrW62sliV/BAwXus4EXoKgX5eLfkIgmnWnLEN/T0M
-         PuJdBCkW4cUIAIVDh1nj4CVhb27rP21BdhDGH5t/2sU2zsc0gy3zEmfHhg7k3gXhQ9DO
-         9C/jxijOH4kBqt3bj4HhAIDg9aLICoPqWonCtKfDL8ddPSrlBvyZN1wxUspg4f223WnH
-         gpDwBtWwyHCBaHYGzTU6Z3wyTlj46M5B1RbsQHkJ3NwEo7cG2/zUS1MI3iIZx5IhAzPW
-         T9tQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0V7Ywz7AY/MSgVuDkhbOD9oRFi4e3leoUg/sScPH1zQrkCvJvvlixv3TiZeseW57pUj0WfgBSKHbI@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yyo81WkPSgrBtykRVfgwD5uv89sZJ6dppbey06DGwSU0+O4/9QE
-	fWQpKGQIGNnWF3fB7PkLiiqlHhWC5WhD60vCVmxsQJVlKReWha8giADQVtsOEvlSc0o=
-X-Gm-Gg: AY/fxX51+9O3h/oJjiFlQFrxwRx7kLYCYnuwibmymBcufRmPg2mreTn7/2UAAvZPhaf
-	zBzbgRuwuTkVLNa73wEzGmQ8Ao9y5y8XkePqMDuMAVk035V5c2W8YBZnHSZfr2O2z3nBqSE9wwx
-	6OUXahdTUl3alh/zENYagJUEtqc0TPHLFH/zbyLxvE55QYiymr5X/521fxBUaqkWoICqNkC2hwE
-	0lU4dDPb+86QK6QqxtUIg57N6bun/Pj/uFUPb2q9bkN1VnD4QeoJI0SPMr2Bj0MM+UstVELdH8s
-	sBw8ux/BVNScEVfdwuQVCPu5SUTsQPrcFj4v1ehq/Pr5TynUU5oUK/zVdCwvzh7MxA+b+KL1dBG
-	gf55RmovQjmbN/Zoqa79Ay4CVkq1wWl+9uPvjNLk9uVEwUYv+8aHFGE2C4fCqgiygzVg5yKUpQc
-	HnoFiIJq/A
-X-Google-Smtp-Source: AGHT+IFB/Fm/BbhF4rdbmVdiGzUqk88gX/08HvStcaIXA3100u27BggsIM2y0GxgIqiLG/N+dnbC3Q==
-X-Received: by 2002:a05:600c:4f52:b0:477:a978:3a7b with SMTP id 5b1f17b1804b1-47d1958a5d5mr344953125e9.22.1766837844304;
-        Sat, 27 Dec 2025 04:17:24 -0800 (PST)
+        bh=GvSE1c/4a8QCKCTV5gdf1mCLxf9YZVQyxdWd8z10SmE=;
+        b=FdVlmZtDoc2zBE/e5fBrHDVpUGooyxse3S5V04Ffrg2xbSt2I+cP83E/mGjHQTRYSS
+         maeKfGaL6Yc+EMnXUKXps36lRfwljCxWwil3fmTQi65qNWUY9fgmAkX38RSEPTNszdL+
+         Nog8sgINvU0AcftXiUaF8Pt9tQl2ppOGl6+IE7vlyuwgukIzbf+Er8mesfbGy1kfJa/M
+         mqCn28meR+Fqp6Q0FDAxdJWvAgNA5/wZ7qalhvJOmhI+/3T3IZebgGEF89zfHRVwwzI3
+         s+2YrRCsDJAWE136GtXSjTwEP2TBEmZWSwkwMKCd6dUYOyXvxdxE55kRhRqYxRjQivJN
+         0D1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXiqG7iHB3x/tNw40UN8h5gBbR8L33oL0CLXr+lKRAKUdp/LffxwmBpAYyy0AHfJgPaHuO1N+dyd0Xm@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzAvsdW0YZXBjZPvDCBEk+ahwNMUlH85QdhkXFMlDjmwva8ElS0
+	IThaFyU6i0G+mp/Fxja2Yi2GGx1HAoBc9kNuG28iBjYCCiLsyeV/7/BST1l1RaEe0EA=
+X-Gm-Gg: AY/fxX6/OGODYydDCClT0nBarGvoM6hAgO7XvDiJvKl73AaxP46pkniWrUUbdHWPguN
+	IN25OKbmnGTisqsexsgbyig2IouksD3jg+DRcFe5j9K2Im0iFoN1tPlxHhQAN+BTT+ARR6C6Fo/
+	5xEpvViXO5j7hp0G10NXSGOZc2MnnZjK/VilYC5Jl4X+RN80xqEQKUJv2Hn743+vjjwIr8pA2or
+	u6cxKb3sTF/9IflTWzgy+U3HRLeNpZ6UV0aKNFKNOmzA6kql1an5FTFDJuGMCTp7NU2o6r9rC85
+	AkHShJ4qptIIPgZjJXeieRqlS5Io7z69lItWCqQMzRlqtOsDNZR08AktutoGqr/yhn2xrrMPP31
+	4g3r5ZdOM5fsf6usTQIQWSVxXmO7ysQnwisXV3rYl5c3Hz9Lf0GTVoY8i+Q8tWI5Vh6GcLlO79H
+	U3AlgeBcc1abjWFtsUvbE=
+X-Google-Smtp-Source: AGHT+IFc0PxKRmRSwma+5BK2z0BfbuhbWCK5ZAQiNCh/fQVQ/f+EcwX2yper4KDcLK2LLWDZAwXkgQ==
+X-Received: by 2002:a05:600c:620c:b0:475:dde5:d91b with SMTP id 5b1f17b1804b1-47d3639489cmr187665015e9.17.1766837853435;
+        Sat, 27 Dec 2025 04:17:33 -0800 (PST)
 Received: from [127.0.0.1] ([2804:5078:811:d400:58f2:fc97:371f:2])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfdd0sm97940127c88.4.2025.12.27.04.17.15
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfdd0sm97940127c88.4.2025.12.27.04.17.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Dec 2025 04:17:23 -0800 (PST)
+        Sat, 27 Dec 2025 04:17:32 -0800 (PST)
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
-Date: Sat, 27 Dec 2025 09:16:11 -0300
-Subject: [PATCH 04/19] printk: Reintroduce consoles_suspended global state
+Date: Sat, 27 Dec 2025 09:16:12 -0300
+Subject: [PATCH 05/19] printk: Add more context to suspend/resume functions
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251227-printk-cleanup-part3-v1-4-21a291bcf197@suse.com>
+Message-Id: <20251227-printk-cleanup-part3-v1-5-21a291bcf197@suse.com>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 In-Reply-To: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 To: Richard Weinberger <richard@nod.at>, 
@@ -107,232 +107,66 @@ Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
  Marcos Paulo de Souza <mpdesouza@suse.com>
 X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1766837798; l=7960;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1766837798; l=1815;
  i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
- bh=lE/1DIYMabiYcINvDQN+J482ZjUVJCV7RenaBaf63GU=;
- b=0Nm1rVm8usUyQfc8Y8VdqZ5lSxqrxogghCnWlBop68h2x3eX8wvULmkNK1yqxgDQDAsr7NT2A
- 16smAUrBtylBcdO0yBiCQkV9TDNRTRX47nnARx+C0eR1hFzoRnJz2MU
+ bh=ZR0iR9pvZGcVZSHwNZDrCThadrViJMyV5/bfGtiN4gw=;
+ b=tA7/rFTFgz8i0hdAJ53eXVaQiZ32fF9Si88T8AKGgxMwsJDyXHg4gS+HXEQzjoX95zhxiaqSG
+ v/P+ZTpJjf2DQdqlDkpPXA8mgBEajKQf1Xila0zWamPBwICGf70zjAA
 X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
  pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
 
-This change partially reverts commit 9e70a5e109a4
-("printk: Add per-console suspended state"). The intent of the original
-commit was to move the management of the console suspended state to the
-consoles themselves to be able to use SRCU instead of console lock.
+The new comments clarifies from where the functions are supposed to be
+called.
 
-But having a global state is still useful when checking if the global
-suspend was triggered by power management. This way, instead of setting
-the state of each individual console, the code would only set/read from the
-global state.
-
-Along with this change, two more fixes are necessary: change
-console_{suspend,resume} to set/clear CON_SUSPEND instead of setting
-CON_ENABLED and change show_cons_active to call __console_is_usable to
-check console usefulness.
-
-Link: https://lore.kernel.org/lkml/844j4lepak.fsf@jogness.linutronix.de/
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-[mpdesouza@suse.com: Adapted code related to console_is_usable]
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- drivers/tty/tty_io.c    |  6 +++---
- include/linux/console.h | 53 +++++++++++++++++++++++++++++++++++++++++++++++--
- kernel/printk/printk.c  | 23 +++++++++++----------
- 3 files changed, 67 insertions(+), 15 deletions(-)
+ kernel/printk/printk.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index e2d92cf70eb7..7d2bded75b75 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -3552,9 +3552,9 @@ static ssize_t show_cons_active(struct device *dev,
- 	for_each_console(c) {
- 		if (!c->device)
- 			continue;
--		if (!(c->flags & CON_NBCON) && !c->write)
--			continue;
--		if ((c->flags & CON_ENABLED) == 0)
-+		if (!__console_is_usable(c, c->flags,
-+					 consoles_suspended,
-+					 NBCON_USE_ANY))
- 			continue;
- 		cs[i++] = c;
- 		if (i >= ARRAY_SIZE(cs))
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 648cf10e3f93..caf9b0951129 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -509,6 +509,7 @@ extern void console_list_lock(void) __acquires(console_mutex);
- extern void console_list_unlock(void) __releases(console_mutex);
- 
- extern struct hlist_head console_list;
-+extern bool consoles_suspended;
- 
- /**
-  * console_srcu_read_flags - Locklessly read flags of a possibly registered
-@@ -561,6 +562,47 @@ static inline void console_srcu_write_flags(struct console *con, short flags)
- 	WRITE_ONCE(con->flags, flags);
- }
- 
-+/**
-+ * consoles_suspended_srcu_read - Locklessly read the global flag for
-+ *				suspending all consoles.
-+ *
-+ * The global "consoles_suspended" flag is synchronized using console_list_lock
-+ * and console_srcu_read_lock. It is the same approach as CON_SUSPENDED flag.
-+ * See console_srcu_read_flags() for more details.
-+ *
-+ * Context: Any context.
-+ * Return: The current value of the global "consoles_suspended" flag.
-+ */
-+static inline bool consoles_suspended_srcu_read(void)
-+{
-+	WARN_ON_ONCE(!console_srcu_read_lock_is_held());
-+
-+	/*
-+	 * The READ_ONCE() matches the WRITE_ONCE() when "consoles_suspended"
-+	 * is modified with consoles_suspended_srcu_write().
-+	 */
-+	return data_race(READ_ONCE(consoles_suspended));
-+}
-+
-+/**
-+ * consoles_suspended_srcu_write - Write the global flag for suspending
-+ *			all consoles.
-+ * @suspend:	new value to write
-+ *
-+ * The write must be done under the console_list_lock. The caller is responsible
-+ * for calling synchronize_srcu() to make sure that all callers checking the
-+ * usablility of registered consoles see the new state.
-+ *
-+ * Context: Any context.
-+ */
-+static inline void consoles_suspended_srcu_write(bool suspend)
-+{
-+	lockdep_assert_console_list_lock_held();
-+
-+	/* This matches the READ_ONCE() in consoles_suspended_srcu_read(). */
-+	WRITE_ONCE(consoles_suspended, suspend);
-+}
-+
- /**
-  * console_srcu_is_nbcon - Locklessly check whether the console is nbcon
-  * @con:	struct console pointer of console to check
-@@ -658,8 +700,12 @@ extern void nbcon_kdb_release(struct nbcon_write_context *wctxt);
- 
- /* Variant of console_is_usable() when the console_list_lock is held. */
- static inline bool __console_is_usable(struct console *con, short flags,
--				     enum nbcon_write_cb nwc)
-+				       bool all_suspended,
-+				       enum nbcon_write_cb nwc)
- {
-+	if (all_suspended)
-+		return false;
-+
- 	if (!(flags & CON_ENABLED))
- 		return false;
- 
-@@ -711,7 +757,9 @@ static inline bool __console_is_usable(struct console *con, short flags,
- static inline bool console_is_usable(struct console *con,
- 				     enum nbcon_write_cb nwc)
- {
--	return __console_is_usable(con, console_srcu_read_flags(con), nwc);
-+	return __console_is_usable(con, console_srcu_read_flags(con),
-+				   consoles_suspended_srcu_read(),
-+				   nwc);
- }
- 
- #else
-@@ -727,6 +775,7 @@ static inline bool nbcon_kdb_try_acquire(struct console *con,
- 					 struct nbcon_write_context *wctxt) { return false; }
- static inline void nbcon_kdb_release(struct nbcon_write_context *wctxt) { }
- static inline bool __console_is_usable(struct console *con, short flags,
-+				       bool all_suspended,
- 				       enum nbcon_write_cb nwc) { return false; }
- static inline bool console_is_usable(struct console *con,
- 				     enum nbcon_write_cb nwc) { return false; }
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index b03ffc23c27c..173c14e08afe 100644
+index 173c14e08afe..85a8b6521d9e 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -104,6 +104,13 @@ DEFINE_STATIC_SRCU(console_srcu);
-  */
- int __read_mostly suppress_printk;
- 
-+/*
-+ * Global flag for calling down all consoles during suspend.
-+ * There is also a per-console flag which is used when the related
-+ * device HW gets disabled, see CON_SUSPEND.
-+ */
-+bool consoles_suspended;
-+
- #ifdef CONFIG_LOCKDEP
- static struct lockdep_map console_lock_dep_map = {
- 	.name = "console_lock"
-@@ -2731,8 +2738,6 @@ MODULE_PARM_DESC(console_no_auto_verbose, "Disable console loglevel raise to hig
+@@ -2734,7 +2734,8 @@ MODULE_PARM_DESC(console_no_auto_verbose, "Disable console loglevel raise to hig
+ /**
+  * console_suspend_all - suspend the console subsystem
+  *
+- * This disables printk() while we go into suspend states
++ * This disables printk() while we go into suspend states. Called by the power
++ * management subsystem.
   */
  void console_suspend_all(void)
  {
--	struct console *con;
--
- 	if (console_suspend_enabled)
- 		pr_info("Suspending console(s) (use no_console_suspend to debug)\n");
+@@ -2766,6 +2767,12 @@ void console_suspend_all(void)
+ 	synchronize_srcu(&console_srcu);
+ }
  
-@@ -2749,8 +2754,7 @@ void console_suspend_all(void)
- 		return;
- 
- 	console_list_lock();
--	for_each_console(con)
--		console_srcu_write_flags(con, con->flags | CON_SUSPENDED);
-+	consoles_suspended_srcu_write(true);
- 	console_list_unlock();
- 
- 	/*
-@@ -2765,7 +2769,6 @@ void console_suspend_all(void)
++/**
++ * console_resume_all - resume the console subsystem
++ *
++ * This resumes printk() when the system is being restored. Called by the power
++ * management subsystem.
++ */
  void console_resume_all(void)
  {
  	struct console_flush_type ft;
--	struct console *con;
- 
- 	/*
- 	 * Allow queueing irq_work. After restoring console state, deferred
-@@ -2776,8 +2779,7 @@ void console_resume_all(void)
- 
- 	if (console_suspend_enabled) {
- 		console_list_lock();
--		for_each_console(con)
--			console_srcu_write_flags(con, con->flags & ~CON_SUSPENDED);
-+		consoles_suspended_srcu_write(false);
- 		console_list_unlock();
- 
- 		/*
-@@ -3557,7 +3559,7 @@ void console_suspend(struct console *console)
+@@ -3553,7 +3560,7 @@ struct tty_driver *console_device(int *index)
+ /*
+  * Prevent further output on the passed console device so that (for example)
+  * serial drivers can suspend console output before suspending a port, and can
+- * re-enable output afterwards.
++ * re-enable output afterwards. Called by console drivers.
+  */
+ void console_suspend(struct console *console)
  {
- 	__pr_flush(console, 1000, true);
- 	console_list_lock();
--	console_srcu_write_flags(console, console->flags & ~CON_ENABLED);
-+	console_srcu_write_flags(console, console->flags | CON_SUSPENDED);
- 	console_list_unlock();
+@@ -3572,6 +3579,7 @@ void console_suspend(struct console *console)
+ }
+ EXPORT_SYMBOL(console_suspend);
  
- 	/*
-@@ -3576,7 +3578,7 @@ void console_resume(struct console *console)
- 	bool is_nbcon;
- 
- 	console_list_lock();
--	console_srcu_write_flags(console, console->flags | CON_ENABLED);
-+	console_srcu_write_flags(console, console->flags & ~CON_SUSPENDED);
- 	is_nbcon = console->flags & CON_NBCON;
- 	console_list_unlock();
- 
-@@ -4200,7 +4202,8 @@ static int unregister_console_locked(struct console *console)
- 
- 	if (!console_is_registered_locked(console))
- 		res = -ENODEV;
--	else if (__console_is_usable(console, console->flags, NBCON_USE_ATOMIC))
-+	else if (__console_is_usable(console, console->flags,
-+				     consoles_suspended, NBCON_USE_ATOMIC))
- 		__pr_flush(console, 1000, true);
- 
- 	/* Disable it unconditionally */
++/* Resumes printing on the passed console device. Called by console drivers. */
+ void console_resume(struct console *console)
+ {
+ 	struct console_flush_type ft;
 
 -- 
 2.52.0
