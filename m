@@ -1,137 +1,195 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B7731A064
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Dec 2025 14:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40472533D6
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 12:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766499570; cv=none; b=XrIqsXBwmGgdakeFOgXyWBEUk3FtmfY0f+2RTBM/uxsX9+qzPkLFGnX3ed3XOtzGXB9CM5fZEhiMBcDznWI++5t1tDi4XIPvrGu7WbPqPhzK9nqfqF2I/pAp9G+gNDoBg8qXaflClVsvnip9sqmaZY/fo/xNmnxnnffTlxQDY7Y=
+	t=1766837812; cv=none; b=MbBLN7TOcJUsD20+NPAUPmY0xyxHRZJBpoMsoAmBqWHKNovUdHok25kYxfQ6vtOe9IxuyPFRGaMHOkNT8nooszbfZ+D5r8CzqBuW1t8qlEMqZ5nBktA97+i2JJ7sfG/TQ3GRg8XV4Do1yKS+IuZDxosm31LL2j1ll0AzHRj7qS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766499570; c=relaxed/simple;
-	bh=ZZQg8s4/nNF1ZlkzREeuw4bYSFY91iLUDaAHPJx09QE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nl8VpylmDGQ892qe8j+zo5wtFOACqpFfmERMmvQ6vQVICTusYTVrQ+wHKhEIgSropxKaSlp16tpFfFVh/sJHKYz0rJ+PSmnhrVYsULXI+jS/SFAmSKDCyn4pNY2ABMOLC4c7BNQjrBt4QpVK1hCwZRq3PGaj3olGyIQ1njLVgaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=imrFSS0M; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1766837812; c=relaxed/simple;
+	bh=pGCwrx7s/pzxpnqEvxnowKr5kIMRsCkFnk8/FBkLNPk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hvuTwMlt2Fovs/JytNurGin+zTT72+frw6ExEQZIyXSVm1N9nEE1hMSJnK+79oVT0dUYHkLCpRm9wMBJwC41U7g5HQvSmLmN3SC/p5pYWjJ6sXdHebQqtj6pKUr2pK/EztCpRcB5LdVLo19Qh7DUhUI7SYJz0IkOb+70YSKbFFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SWviFTbL; arc=none smtp.client-ip=209.85.128.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="imrFSS0M"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766499568; x=1798035568;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZZQg8s4/nNF1ZlkzREeuw4bYSFY91iLUDaAHPJx09QE=;
-  b=imrFSS0MkgdlisaLcn8jnrmqhsbVRfM8yyGnFaYf7sT68ooCcsrJJBxp
-   qTAhAWuOT7lhdBvSVpHYN3kmaJ15bwgV6m/vjg8NnBEuBhCjk1PcKJHks
-   HIBU8vF13oia1q6CMcVsABdKSy6znjnoIfVwv7Ms6PCzfQ3PN4rU9VDcw
-   2DnheXXYEJw9R075TphvkBX1xyONpnk7h72qVjyDMewo1LLzizziOU4DU
-   +6qOpe7bwmutM5e2iRSZjyPIojbveNrPMVPBFEarlFvoEaY3usJNYKrrv
-   M4jxCSqGjBiE4h4U5uTY6t8PBm8UB1670Ab74ztuaEHlIkq54CMttSBJZ
-   Q==;
-X-CSE-ConnectionGUID: WoavBpvVThSLauXPOHc2Qw==
-X-CSE-MsgGUID: oTI+ZjzISbiSgphDWrvF+A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11651"; a="79463743"
-X-IronPort-AV: E=Sophos;i="6.21,171,1763452800"; 
-   d="scan'208";a="79463743"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2025 06:19:27 -0800
-X-CSE-ConnectionGUID: Vg9Iuvx1SiG+8Rwxb+2JDA==
-X-CSE-MsgGUID: nMqDeak8TR2g8NmJnysUGQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,171,1763452800"; 
-   d="scan'208";a="230813594"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 23 Dec 2025 06:19:23 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vY3EO-00000000217-3Qms;
-	Tue, 23 Dec 2025 14:19:20 +0000
-Date: Tue, 23 Dec 2025 22:18:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tamir Duberstein <tamird@kernel.org>, David Gow <davidgow@google.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Naveen N Rao <naveen@kernel.org>, Yury Norov <yury.norov@gmail.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Shuah Khan <skhan@linuxfoundation.org>, Kees Cook <kees@kernel.org>,
-	Christophe Leroy <chleroy@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
-	Tamir Duberstein <tamird@gmail.com>
-Subject: Re: [PATCH v2 3/3] bitmap: break kunit into test cases
-Message-ID: <202512232235.vUHmJH7T-lkp@intel.com>
-References: <20251222-bitmap-kunit-convert-v2-3-6a61a5330eff@gmail.com>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SWviFTbL"
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-477aa218f20so47217275e9.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 04:16:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1766837808; x=1767442608; darn=lists.linux-m68k.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZTn0eoJ78H/BcwAZAT5V21TN0j41vlUozcdKxdaozdI=;
+        b=SWviFTbLz9WLLvnfmoiZOm7kB5UC5YywNQBD9uURx801dqr7gq38ci+IbgT6xz4NlV
+         JcDkzkcd1fELxWtbGkSI81RfF3vmoHgLV0S7iEfP7LeA/oWogS8vkruuDmc4ZGHaOszJ
+         8ihatXDtbim5xjDG6dO3jSl3KGXm4TN8isKEVXq97H5GB0LRO6KBsCqsdtlDCnk6o1Y7
+         3bzIlU7fxQfY23mgIJo2aQP5fbr1ZJ5ll2ID5LM+KwQp1YKFrmmD3tz0oj3q08ZUnBh6
+         S/XOipo3z/E0VJty2TLj2YXfnL4A7lLpq1Z7Ehpq+iBGE2W+s9zop7/ExIHt8tAJ0Jwu
+         QhjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766837808; x=1767442608;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZTn0eoJ78H/BcwAZAT5V21TN0j41vlUozcdKxdaozdI=;
+        b=ASQn9po4LuFwVVjWrpoazYjIkQFe90Ks5pPlpG6OLnNUpFTa+v/iMLmFffFERrVEDN
+         djDMNQ+8dRIKTXYgxhaKccRNE/woX8wCxfXp14q6PajmeE7tQe8yMDJFfII0ZpbSqOt7
+         HS/q7IeLhUpYYqOwoiPP6ZKjE8RAQzEgHU2arADrY9IYAH4xuKgdFCzju4vr7K4WLkvA
+         XcLYM2ReqqcLBZ29AlmsE9LGduQwACOSSfBfCOjjdiBYPo6B84OaYJt2EnTu3q2xRDuT
+         7xz8Bg7lluxqALGKkuFOYdSprWdZ4LczVINZy0VaPZsylD74GID3PaIuMo54dQoufuuM
+         umEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbIgoCy5jj47O8pJFDcAf0gwqxhaW+md6l62XcXOEM7kff+VCEB0uTz3Qa/88Z2Tbp4iJWYc/XUxO2@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YygadH7+vbzACcdLO7NpNf0edNIpPp6OZft8asMy3qySJkKuKuH
+	mLOWkSeposPRijQmc7eP9qSpjY+AW5OP/TpKU0tHwRucKBAfj/oMUcutvXkSTEqLD9c=
+X-Gm-Gg: AY/fxX7J3WqRN59QhcUeE8J3VXgu7D26vS1K/xV8VrmQNPzAjqGC3dWnr87G2eM/fng
+	WdiFerQIPuZDCeWB8Yhb+9k/thfNKk08IZe2kLEUYb4TR46B/halqVsJkq914SeoSg3xl8fzVt3
+	/l+4wObBF80XWUJt9i2RxfyJu3SyYr+giTDQvlvUkv6DLD3TppFOdJOE7mHPLf32reZpLnMYG63
+	9VOO36wsU9B7EBT/LzRCmWSJ+HfGNQFqvmJCS/NlgksQ86m39He6qslid27JfOPYjNFxkcPRRqV
+	NzUVsc8sSY1J9vg1ucvH3TopxOPhW1sIFdcjNmH70b9ovjSI9tlU5j+INasaPmUNH9vc3BaYPIY
+	Q5AtdYrTG8c/NVOfqmVXFxPNBGH5FeAQWJP7cuDUaYqcrDrdex1j/NMB4sxL808HbewtV1B2SXJ
+	mAfNALBAmNy+JG3bZUFC0=
+X-Google-Smtp-Source: AGHT+IGAwYPYNfJmaY9Q33nFH+RhwoM5QU0IvIHlZhMLVrSDLSWfjJCihtYGJekOl50CWdODgpBmVA==
+X-Received: by 2002:a05:600c:c086:b0:47b:e0ff:60f9 with SMTP id 5b1f17b1804b1-47d19577114mr202487205e9.20.1766837807525;
+        Sat, 27 Dec 2025 04:16:47 -0800 (PST)
+Received: from [127.0.0.1] ([2804:5078:811:d400:58f2:fc97:371f:2])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfdd0sm97940127c88.4.2025.12.27.04.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Dec 2025 04:16:46 -0800 (PST)
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH 00/19] printk cleanup - part 3
+Date: Sat, 27 Dec 2025 09:16:07 -0300
+Message-Id: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251222-bitmap-kunit-convert-v2-3-6a61a5330eff@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAfOT2kC/x2MwQpAQBBAf0VzNmVsHPyKHAaDidY2i5T8u83l1
+ Tu890AUU4nQZA+YXBp190koz2BY2M+COiaHsigrSsBg6o8Vh03YnwED2+FQmKjuiXrHNaQ0mEx
+ 6/9u2e98PHmJw7WYAAAA=
+X-Change-ID: 20251202-printk-cleanup-part3-ea116b11b3a6
+To: Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jason Wessel <jason.wessel@windriver.com>, 
+ Daniel Thompson <danielt@kernel.org>, 
+ Douglas Anderson <dianders@chromium.org>, Petr Mladek <pmladek@suse.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ John Ogness <john.ogness@linutronix.de>, 
+ Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ Jiri Slaby <jirislaby@kernel.org>, Breno Leitao <leitao@debian.org>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook <kees@kernel.org>, 
+ Tony Luck <tony.luck@intel.com>, 
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+ Christophe Leroy <christophe.leroy@csgroup.eu>, 
+ Andreas Larsson <andreas@gaisler.com>, 
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>, 
+ Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org, 
+ netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+ linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ sparclinux@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
+ Marcos Paulo de Souza <mpdesouza@suse.com>
+X-Mailer: b4 0.15-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1766837798; l=4070;
+ i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
+ bh=pGCwrx7s/pzxpnqEvxnowKr5kIMRsCkFnk8/FBkLNPk=;
+ b=DtTvQmWwxI8nBiz56K8JWeAXva4ZUTP1TZfMsHc/t23MukO3Q9HDBbWL5zjE/2eZrLFOXevOl
+ 63plshGMBJVDC6pfWYfhJHhdbEMnrJWz9+G+dP9Hv10iWAGuGbiHgYC
+X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
+ pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
 
-Hi Tamir,
+The parts 1 and 2 can be found here [1] and here[2].
 
-kernel test robot noticed the following build warnings:
+The changes proposed in this part 3 are mostly to clarify the usage of
+the interfaces for NBCON, and use the printk helpers more broadly.
+Besides it, it also introduces a new way to register consoles
+and drop thes the CON_ENABLED flag. It seems too much, but in reality
+the changes are not complex, and as the title says, it's basically a
+cleanup without changing the functional changes.
 
-[auto build test WARNING on 8f0b4cce4481fb22653697cced8d0d04027cb1e8]
+This patchset includes a patch from part 2 that needed more work [3], as
+suggested by Petr Mladek.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tamir-Duberstein/test_bitmap-extract-benchmark-module/20251222-214306
-base:   8f0b4cce4481fb22653697cced8d0d04027cb1e8
-patch link:    https://lore.kernel.org/r/20251222-bitmap-kunit-convert-v2-3-6a61a5330eff%40gmail.com
-patch subject: [PATCH v2 3/3] bitmap: break kunit into test cases
-config: arm64-randconfig-004-20251223 (https://download.01.org/0day-ci/archive/20251223/202512232235.vUHmJH7T-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 9.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251223/202512232235.vUHmJH7T-lkp@intel.com/reproduce)
+These changes were tested by reverting f79b163c4231
+("Revert "serial: 8250: Switch to nbcon console""), and used qemu to test
+suspend/resume cycles, and everything worked as expected.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512232235.vUHmJH7T-lkp@intel.com/
+PS: b4 --auto-to-cc added a bunch of people as CC, so I'm not sure if
+I should remove some or not, so I'm leaving the list as it is. If the
+patchset needs a v2, and you feel that you don't need to copied, just
+let me know.
 
-All warnings (new ones prefixed by >>):
+Thanks for checking the patches, and happy holidays!
 
-   lib/bitmap_kunit.c: In function 'test_bitmap_printlist':
->> lib/bitmap_kunit.c:468:2: warning: 'memset' used with length equal to number of elements without multiplication by element size [-Wmemset-elt-size]
-     468 |  memset(bmap, -1, PAGE_SIZE);
-         |  ^~~~~~
+[1]: https://lore.kernel.org/lkml/20250226-printk-renaming-v1-0-0b878577f2e6@suse.com/#t
+[2]: https://lore.kernel.org/linux-serial/20251121-printk-cleanup-part2-v2-0-57b8b78647f4@suse.com/
+[3]: https://lore.kernel.org/linux-serial/aSgeqM3DWvR8-cMY@pathway.suse.cz/
 
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+Marcos Paulo de Souza (19):
+      printk/nbcon: Use an enum to specify the required callback in console_is_usable()
+      printk: Introduce console_is_nbcon
+      printk: Drop flags argument from console_is_usable
+      printk: Reintroduce consoles_suspended global state
+      printk: Add more context to suspend/resume functions
+      printk: Introduce register_console_force
+      drivers: netconsole: Migrate to register_console_force helper
+      debug: debug_core: Migrate to register_console_force helper
+      m68k: emu: nfcon.c: Migrate to register_console_force helper
+      fs: pstore: platform: Migrate to register_console_force helper
+      powerpc: kernel: udbg: Migrate to register_console_force helper
+      sparc: kernel: btext: Migrate to register_console_force helper
+      um: drivers: mconsole_kern.c: Migrate to register_console_force helper
+      drivers: hwtracing: stm: console.c: Migrate to register_console_force helper
+      drivers: tty: serial: mux.c: Migrate to register_console_force helper
+      drivers: tty: serial: ma35d1_serial: Migrate to register_console_force helper
+      drivers: tty: ehv_bytechan: Migrate to register_console_force helper
+      drivers: braille: console: Drop CON_ENABLED console flag
+      printk: Remove CON_ENABLED flag
 
-vim +/memset +468 lib/bitmap_kunit.c
+ arch/m68k/emu/nfcon.c                           |   5 +-
+ arch/powerpc/kernel/udbg.c                      |   4 +-
+ arch/sparc/kernel/btext.c                       |   4 +-
+ arch/um/drivers/mconsole_kern.c                 |   3 +-
+ arch/um/kernel/kmsg_dump.c                      |   2 +-
+ drivers/accessibility/braille/braille_console.c |   1 -
+ drivers/hwtracing/stm/console.c                 |   4 +-
+ drivers/net/netconsole.c                        |  13 +--
+ drivers/tty/ehv_bytechan.c                      |   4 +-
+ drivers/tty/serial/ma35d1_serial.c              |   4 +-
+ drivers/tty/serial/mux.c                        |   4 +-
+ drivers/tty/tty_io.c                            |   6 +-
+ fs/proc/consoles.c                              |   1 -
+ fs/pstore/platform.c                            |   6 +-
+ include/linux/console.h                         | 143 +++++++++++++++++++-----
+ kernel/debug/debug_core.c                       |   6 +-
+ kernel/debug/kdb/kdb_io.c                       |   6 +-
+ kernel/printk/nbcon.c                           |  17 +--
+ kernel/printk/printk.c                          | 140 ++++++++++++-----------
+ 19 files changed, 230 insertions(+), 143 deletions(-)
+---
+base-commit: 93d65587479cfc97c0d7e41b5e8c6378ca681632
+change-id: 20251202-printk-cleanup-part3-ea116b11b3a6
 
-6ea86bdfc169ba lib/test_bitmap.c  Yury Norov       2019-05-14  459  
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  460  static void test_bitmap_printlist(struct kunit *kunittest)
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  461  {
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  462  	static long bmap[PAGE_SIZE];
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  463  	static char buf[PAGE_SIZE];
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  464  	char expected[256];
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  465  	int ret, slen;
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  466  	ktime_t time;
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  467  
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14 @468  	memset(bmap, -1, PAGE_SIZE);
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  469  	slen = snprintf(expected, sizeof(expected), "0-%ld\n", PAGE_SIZE * 8 - 1);
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  470  	KUNIT_ASSERT_GT(kunittest, slen, 0);
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  471  
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  472  	time = ktime_get();
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  473  	ret = bitmap_print_to_pagebuf(true, buf, bmap, PAGE_SIZE * 8);
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  474  	time = ktime_get() - time;
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  475  
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  476  	KUNIT_ASSERT_EQ(kunittest, ret, slen);
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  477  	KUNIT_ASSERT_STREQ(kunittest, buf, expected);
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  478  
-8ef3340af7139f lib/bitmap_kunit.c Tamir Duberstein 2025-12-22  479  	kunit_info(kunittest, "Time: %llu", time);
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  480  }
-db7313005e9c2d lib/test_bitmap.c  Yury Norov       2021-08-14  481  
+Best regards,
+--  
+Marcos Paulo de Souza <mpdesouza@suse.com>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
