@@ -1,67 +1,67 @@
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E40315764
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 12:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF05A3126D3
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 12:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766837862; cv=none; b=XzrlReHrXT1x+wdmvFGfYztG1ijq5nSB9lPrElKk7LVpzSDfS1RN4iUyyK/9EUBNKHAd9iQ7/Nln/U1QbJ2ibPU5MO+C3GGGOjI8p8tcMnYJCaBinYOiNAykEMcKSXgdhEP0YGnqFOl5UYDV6+r1p2TbUsmyU7ypKOTZ58X91vM=
+	t=1766837869; cv=none; b=nJLS/bMNEPJx6agH2gh4ecrUmWN05tiRz2CwXvZVX+ZbYcfuLbgoI2h5hVtBORV1EWvLI5o0XZIakUJ1unN3Q1YKQ7yg7w39KjhzNaCF3OAk6x0PuIXadcI3B1PXkx0trY0e97xx8qMEsh6DRQ0Q7k4TA++rPfyBVsTQsbsf40k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766837862; c=relaxed/simple;
-	bh=ZR0iR9pvZGcVZSHwNZDrCThadrViJMyV5/bfGtiN4gw=;
+	s=arc-20240116; t=1766837869; c=relaxed/simple;
+	bh=yZ/nvvnmmkaNmxpD4iXjZtoziYkh4kvSpXf/WZXovX8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Xr7H51iqkX6jQ7arSY7tIjou8h1VB6cRDvcU0nQrYDY7aj/L1jHfIB7UfDgFua7LRZ4AWqLwSgPank0C1qr1Zhs/44fgihFJOA9YHH7pPW8gQR3O6iinb29Q0KDxlBPTuEUS/xegc8Lh5jWHBB5SH/sH1KWjsiHI7wEAMBF44g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UsgJiZXF; arc=none smtp.client-ip=209.85.128.43
+	 In-Reply-To:To:Cc; b=KmYj56i/6h85ZFTCmtRY55Zi3666twa1TOCbTFasbK9vbflc89TKpsGQ17wrkLAyiPkDriWAYl8uTFchYXhN0wSBxu32i6OGfrFkw3fZxIejnHd+SIYYZj0bz5YMm7uAQK2v2wPNWQv0p/KpXDNXCVviqNdML/axKIblCTT7av0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=djPWXDMP; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UsgJiZXF"
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-477a2ab455fso75769295e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 04:17:39 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="djPWXDMP"
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-477b5e0323bso43701995e9.0
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Dec 2025 04:17:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1766837858; x=1767442658; darn=lists.linux-m68k.org;
+        d=suse.com; s=google; t=1766837863; x=1767442663; darn=lists.linux-m68k.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GvSE1c/4a8QCKCTV5gdf1mCLxf9YZVQyxdWd8z10SmE=;
-        b=UsgJiZXFx6V6+077J3LxGFOAja4Lgu9CwDh9I0XyxOy7fI86vS7wsgBwtmJjqH2e1u
-         Kds8QWA8vsposAw4qTmw42ZI4isB66OA9itVtw8CDFwWEy5Y+pKj0h+oCPw3eLwVPiBe
-         W2Ovxas5Vp2WPWFjAteenyaj6NQbHEJ5xjhX8bo1wjSfyYiRypYAqSR7MJ9a6ucnktG0
-         AWgcvrMT1CtA/2B3ZOTPk5S5SjEZBIfpsVDfPy1sJCNz2YodocmKEztsHMZPdX58Y6pk
-         57+l/z1awOtai2T9CTgKYsFJunxYWYSTkIDQf4h6XCfgvzTdiSGY8GaatNwkUrEIYQeA
-         w3KQ==
+        bh=8qC0U4cjRdxCF4b/YJbgVpXPFvwbnk17NoVL2cOfc8A=;
+        b=djPWXDMPui3J2JEWz8Dp3F/Wdwop0X1Sjl1d5yQ0x3NE2PXTWTo5b62ttU++QbaYjZ
+         9Dr9n9AgfI8Mk7lifP9cgu8aSCK/Iv9S6mLIndKoFKqQhyFSHxTDRLz4CpRqnYXu8nEc
+         48+ZdjSDATFImjdQpi4O+k6sT2BnF2BjYiFw4E58J9VFJUWnWRBtnfI2Fc1P29A+OERD
+         5mWEf3Bxh3Yjc4yEL31RK0xh/L+vex81LYaxod7dEqI6h5wyd634scBWVLStfCrmvyLT
+         vQPMFfE2SblID8Gqs8Dg21frqo/zGglzkz+dWnCFRqdO/NejQ0aK3VrNzLKktxbB3Z5M
+         fUqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766837858; x=1767442658;
+        d=1e100.net; s=20230601; t=1766837863; x=1767442663;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=GvSE1c/4a8QCKCTV5gdf1mCLxf9YZVQyxdWd8z10SmE=;
-        b=FdVlmZtDoc2zBE/e5fBrHDVpUGooyxse3S5V04Ffrg2xbSt2I+cP83E/mGjHQTRYSS
-         maeKfGaL6Yc+EMnXUKXps36lRfwljCxWwil3fmTQi65qNWUY9fgmAkX38RSEPTNszdL+
-         Nog8sgINvU0AcftXiUaF8Pt9tQl2ppOGl6+IE7vlyuwgukIzbf+Er8mesfbGy1kfJa/M
-         mqCn28meR+Fqp6Q0FDAxdJWvAgNA5/wZ7qalhvJOmhI+/3T3IZebgGEF89zfHRVwwzI3
-         s+2YrRCsDJAWE136GtXSjTwEP2TBEmZWSwkwMKCd6dUYOyXvxdxE55kRhRqYxRjQivJN
-         0D1w==
-X-Forwarded-Encrypted: i=1; AJvYcCXiqG7iHB3x/tNw40UN8h5gBbR8L33oL0CLXr+lKRAKUdp/LffxwmBpAYyy0AHfJgPaHuO1N+dyd0Xm@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzAvsdW0YZXBjZPvDCBEk+ahwNMUlH85QdhkXFMlDjmwva8ElS0
-	IThaFyU6i0G+mp/Fxja2Yi2GGx1HAoBc9kNuG28iBjYCCiLsyeV/7/BST1l1RaEe0EA=
-X-Gm-Gg: AY/fxX6/OGODYydDCClT0nBarGvoM6hAgO7XvDiJvKl73AaxP46pkniWrUUbdHWPguN
-	IN25OKbmnGTisqsexsgbyig2IouksD3jg+DRcFe5j9K2Im0iFoN1tPlxHhQAN+BTT+ARR6C6Fo/
-	5xEpvViXO5j7hp0G10NXSGOZc2MnnZjK/VilYC5Jl4X+RN80xqEQKUJv2Hn743+vjjwIr8pA2or
-	u6cxKb3sTF/9IflTWzgy+U3HRLeNpZ6UV0aKNFKNOmzA6kql1an5FTFDJuGMCTp7NU2o6r9rC85
-	AkHShJ4qptIIPgZjJXeieRqlS5Io7z69lItWCqQMzRlqtOsDNZR08AktutoGqr/yhn2xrrMPP31
-	4g3r5ZdOM5fsf6usTQIQWSVxXmO7ysQnwisXV3rYl5c3Hz9Lf0GTVoY8i+Q8tWI5Vh6GcLlO79H
-	U3AlgeBcc1abjWFtsUvbE=
-X-Google-Smtp-Source: AGHT+IFc0PxKRmRSwma+5BK2z0BfbuhbWCK5ZAQiNCh/fQVQ/f+EcwX2yper4KDcLK2LLWDZAwXkgQ==
-X-Received: by 2002:a05:600c:620c:b0:475:dde5:d91b with SMTP id 5b1f17b1804b1-47d3639489cmr187665015e9.17.1766837853435;
-        Sat, 27 Dec 2025 04:17:33 -0800 (PST)
+        bh=8qC0U4cjRdxCF4b/YJbgVpXPFvwbnk17NoVL2cOfc8A=;
+        b=dp6kfmvckcBBZpOlGxrDcy2lp3Jt38qEg1Y12iInNq2CU1Qf6pcJk3Hgbemj6VHG3P
+         bFHvzhyPntbQZBDZP2ISX0y6hkKnSaV0tcqXJems0KJCfVxY6D2Pfgo6dyhxH/Y36TyW
+         3ER0uMu+MIWIccWHn4/dqMXMI/No/ZpjCdXrUzTVxTxBIj/UNvbzl3SE1giTFRv5b5sL
+         /TDPmk2olR/cmRzpj7Y6MB/ciQIi7xWXdEk6rMV/6qqLyQRXopN4c9y1S+wd3fDe9U/q
+         3pJCHGhfKplZQkCumGUDY32CfdoebEJqvA0mPdb5+f9r6quW7Eaalj84HOF7TrJ6TV8A
+         Ye6g==
+X-Forwarded-Encrypted: i=1; AJvYcCViN98LQBFWNoEbXAsra0Hl+XCptEBZCGU5se5RP0qOIrqBAdu+z3I1GLZVq+tr3pr+UfrOWmF7Jb2w@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy/kFsk4PX2kK31a0G9f9u6YWOSE6jwv+c8CUSj8wlPM3y8nqMy
+	lSJ6nI7fwoxS/TFNoYrNGgDX5e018NZeE11R+kKwxNFjQj1O7fON/8qRBCZTksxhKOQ=
+X-Gm-Gg: AY/fxX49z3YDN/RrRxun5Hg3glM7DKv5zGkMesU5TDKsBTtdio/DSp0UklJEWElaVVj
+	sdb9QT74VAfdcJJwEk2zfaaLY89DMCdLe8O+wa8aAh42lmoye31BwIfwy7ijcxEgwQOpCjeqgtf
+	j5nzPoyb3Ln2GdVq3cBaFGZ6iIT5ttgvvKECUacc0NOoZXlOmhe0+tWWRRdFOjVXKesUVG5G7aD
+	0qC9eSH+geQvYm8eIH8rLeSiXGaT2ziIzPVj3pV4cKRUsKZuhaDpGuMKnmhbzVRvUb088VhZm/l
+	Nel2oRmqMH1Qjf1kncYl+I+xN5inJNs4THOvOC1lat9sGGFLHseHC+li8sE+VlP5ZnP0u40wKf4
+	LGnVNZ70FAFIB966NSULHWVh+kUw+drFxErGW5c8PlgXsH43D1VgJcclz34CcGkxCnqplq9J/ce
+	eN0gnvhcmXPbptd4rqq1w=
+X-Google-Smtp-Source: AGHT+IG9JI4KghQQLO4JoQ5Zx3PCxaurUWQYnoyI9pepg6l828D4iHu4xsQcwAkRrVG/7RHQ7XMpOg==
+X-Received: by 2002:a05:600c:3397:b0:475:d91d:28fb with SMTP id 5b1f17b1804b1-47be2999657mr224830455e9.4.1766837862676;
+        Sat, 27 Dec 2025 04:17:42 -0800 (PST)
 Received: from [127.0.0.1] ([2804:5078:811:d400:58f2:fc97:371f:2])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfdd0sm97940127c88.4.2025.12.27.04.17.24
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-121724cfdd0sm97940127c88.4.2025.12.27.04.17.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Dec 2025 04:17:32 -0800 (PST)
+        Sat, 27 Dec 2025 04:17:42 -0800 (PST)
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
-Date: Sat, 27 Dec 2025 09:16:12 -0300
-Subject: [PATCH 05/19] printk: Add more context to suspend/resume functions
+Date: Sat, 27 Dec 2025 09:16:13 -0300
+Subject: [PATCH 06/19] printk: Introduce register_console_force
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20251227-printk-cleanup-part3-v1-5-21a291bcf197@suse.com>
+Message-Id: <20251227-printk-cleanup-part3-v1-6-21a291bcf197@suse.com>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 In-Reply-To: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
 To: Richard Weinberger <richard@nod.at>, 
@@ -107,66 +107,154 @@ Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
  Marcos Paulo de Souza <mpdesouza@suse.com>
 X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1766837798; l=1815;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1766837798; l=5702;
  i=mpdesouza@suse.com; s=20231031; h=from:subject:message-id;
- bh=ZR0iR9pvZGcVZSHwNZDrCThadrViJMyV5/bfGtiN4gw=;
- b=tA7/rFTFgz8i0hdAJ53eXVaQiZ32fF9Si88T8AKGgxMwsJDyXHg4gS+HXEQzjoX95zhxiaqSG
- v/P+ZTpJjf2DQdqlDkpPXA8mgBEajKQf1Xila0zWamPBwICGf70zjAA
+ bh=yZ/nvvnmmkaNmxpD4iXjZtoziYkh4kvSpXf/WZXovX8=;
+ b=Bzarxjf3B7CuE6yunxTz81Z6xrtzP/oSyuvyRHrm78aAxtHdfrdz9xczyh+zQMNScnR1tQowx
+ BZmWRp2B3qfBQ9NUKyPZEo6SC7UASze6iocMjN2ThffW7UbTy1hRyur
 X-Developer-Key: i=mpdesouza@suse.com; a=ed25519;
  pk=/Ni/TsKkr69EOmdZXkp1Q/BlzDonbOBRsfPa18ySIwU=
 
-The new comments clarifies from where the functions are supposed to be
-called.
+The register_console_force function will register a console even if it
+wasn't specified on boot. The new function will act like all consoles
+being registered were using the CON_ENABLED flag.
+
+The CON_ENABLED flag will be removed in the following patches and the
+drivers that use it will migrate to register_console_force instead.
 
 Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- kernel/printk/printk.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ include/linux/console.h |  1 +
+ kernel/printk/printk.c  | 65 ++++++++++++++++++++++++++++++++-----------------
+ 2 files changed, 43 insertions(+), 23 deletions(-)
 
+diff --git a/include/linux/console.h b/include/linux/console.h
+index caf9b0951129..7d374a29a625 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -792,6 +792,7 @@ enum con_flush_mode {
+ extern int add_preferred_console(const char *name, const short idx, char *options);
+ extern void console_force_preferred_locked(struct console *con);
+ extern void register_console(struct console *);
++extern void register_console_force(struct console *c);
+ extern int unregister_console(struct console *);
+ extern void console_lock(void);
+ extern int console_trylock(void);
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 173c14e08afe..85a8b6521d9e 100644
+index 85a8b6521d9e..c5c05e4d0a67 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -2734,7 +2734,8 @@ MODULE_PARM_DESC(console_no_auto_verbose, "Disable console loglevel raise to hig
- /**
-  * console_suspend_all - suspend the console subsystem
-  *
-- * This disables printk() while we go into suspend states
-+ * This disables printk() while we go into suspend states. Called by the power
-+ * management subsystem.
+@@ -3858,7 +3858,7 @@ static int console_call_setup(struct console *newcon, char *options)
+  * enabled such as netconsole
   */
- void console_suspend_all(void)
+ static int try_enable_preferred_console(struct console *newcon,
+-					bool user_specified)
++					bool user_specified, bool force)
  {
-@@ -2766,6 +2767,12 @@ void console_suspend_all(void)
- 	synchronize_srcu(&console_srcu);
- }
+ 	struct console_cmdline *c;
+ 	int i, err;
+@@ -3896,12 +3896,15 @@ static int try_enable_preferred_console(struct console *newcon,
+ 		return 0;
+ 	}
  
++	if (force)
++		newcon->flags |= CON_ENABLED;
++
+ 	/*
+ 	 * Some consoles, such as pstore and netconsole, can be enabled even
+ 	 * without matching. Accept the pre-enabled consoles only when match()
+ 	 * and setup() had a chance to be called.
+ 	 */
+-	if (newcon->flags & CON_ENABLED && c->user_specified ==	user_specified)
++	if (newcon->flags & CON_ENABLED && c->user_specified == user_specified)
+ 		return 0;
+ 
+ 	return -ENOENT;
+@@ -4001,26 +4004,11 @@ static u64 get_init_console_seq(struct console *newcon, bool bootcon_registered)
+ 
+ static int unregister_console_locked(struct console *console);
+ 
+-/*
+- * The console driver calls this routine during kernel initialization
+- * to register the console printing procedure with printk() and to
+- * print any messages that were printed by the kernel before the
+- * console driver was initialized.
+- *
+- * This can happen pretty early during the boot process (because of
+- * early_printk) - sometimes before setup_arch() completes - be careful
+- * of what kernel features are used - they may not be initialised yet.
+- *
+- * There are two types of consoles - bootconsoles (early_printk) and
+- * "real" consoles (everything which is not a bootconsole) which are
+- * handled differently.
+- *  - Any number of bootconsoles can be registered at any time.
+- *  - As soon as a "real" console is registered, all bootconsoles
+- *    will be unregistered automatically.
+- *  - Once a "real" console is registered, any attempt to register a
+- *    bootconsoles will be rejected
 +/**
-+ * console_resume_all - resume the console subsystem
-+ *
-+ * This resumes printk() when the system is being restored. Called by the power
-+ * management subsystem.
-+ */
- void console_resume_all(void)
- {
- 	struct console_flush_type ft;
-@@ -3553,7 +3560,7 @@ struct tty_driver *console_device(int *index)
- /*
-  * Prevent further output on the passed console device so that (for example)
-  * serial drivers can suspend console output before suspending a port, and can
-- * re-enable output afterwards.
-+ * re-enable output afterwards. Called by console drivers.
++ * __register_console: Register a new console
++ * @force: Register the console even if not specified on boot
   */
- void console_suspend(struct console *console)
+-void register_console(struct console *newcon)
++static void __register_console(struct console *newcon, bool force)
  {
-@@ -3572,6 +3579,7 @@ void console_suspend(struct console *console)
- }
- EXPORT_SYMBOL(console_suspend);
+ 	bool use_device_lock = (newcon->flags & CON_NBCON) && newcon->write_atomic;
+ 	bool bootcon_registered = false;
+@@ -4080,11 +4068,11 @@ void register_console(struct console *newcon)
+ 	}
  
-+/* Resumes printing on the passed console device. Called by console drivers. */
- void console_resume(struct console *console)
+ 	/* See if this console matches one we selected on the command line */
+-	err = try_enable_preferred_console(newcon, true);
++	err = try_enable_preferred_console(newcon, true, force);
+ 
+ 	/* If not, try to match against the platform default(s) */
+ 	if (err == -ENOENT)
+-		err = try_enable_preferred_console(newcon, false);
++		err = try_enable_preferred_console(newcon, false, force);
+ 
+ 	/* printk() messages are not printed to the Braille console. */
+ 	if (err || newcon->flags & CON_BRL) {
+@@ -4185,8 +4173,39 @@ void register_console(struct console *newcon)
+ unlock:
+ 	console_list_unlock();
+ }
++
++/*
++ * The console driver calls this routine during kernel initialization
++ * to register the console printing procedure with printk() and to
++ * print any messages that were printed by the kernel before the
++ * console driver was initialized.
++ *
++ * This can happen pretty early during the boot process (because of
++ * early_printk) - sometimes before setup_arch() completes - be careful
++ * of what kernel features are used - they may not be initialised yet.
++ *
++ * There are two types of consoles - bootconsoles (early_printk) and
++ * "real" consoles (everything which is not a bootconsole) which are
++ * handled differently.
++ *  - Any number of bootconsoles can be registered at any time.
++ *  - As soon as a "real" console is registered, all bootconsoles
++ *    will be unregistered automatically.
++ *  - Once a "real" console is registered, any attempt to register a
++ *    bootconsoles will be rejected
++ */
++void register_console(struct console *newcon)
++{
++	__register_console(newcon, false);
++}
+ EXPORT_SYMBOL(register_console);
+ 
++
++void register_console_force(struct console *newcon)
++{
++	__register_console(newcon, true);
++}
++EXPORT_SYMBOL(register_console_force);
++
+ /* Must be called under console_list_lock(). */
+ static int unregister_console_locked(struct console *console)
  {
- 	struct console_flush_type ft;
 
 -- 
 2.52.0
