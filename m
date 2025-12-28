@@ -1,36 +1,36 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0EF12D061B
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Dec 2025 12:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F6E2D0C85
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Dec 2025 12:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766925723; cv=none; b=dQy7xully3dWTmi4/w9zmvZwa64cKdade7balfZLwYJL8o9xhVqSKUVbnDS0jjr6BKk7Qan75R+HDJApn/k9yM2FnSvMxSaVf9ayP4Hp1UkpcGeTqf5R7wki0FMFgM9/5+dev1HolH9Id8MZnemaVoa/zzPJ1PwuZcPgJuxivnk=
+	t=1766925738; cv=none; b=CZrEB0zou9hy7RjWl7wG5L1XWBfS+II1LHD6YQsbzsE0V5Wzflp6wYWM96v3Vvc+ahfBVPgbZVAQ7HIL/njL0vSwETO/4krHNcIf0Qo+uChXKXbM8q0jnB12Q7NnMDHqVvleRAfn9SHDHVQ9YHHvU5IRdzX80q/6ghBayTeE1RI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766925723; c=relaxed/simple;
-	bh=3bBcyNtfu29ffLXJ+V2J2og1TMjw9NsnHxGDp+htXro=;
+	s=arc-20240116; t=1766925738; c=relaxed/simple;
+	bh=qGV3crV7vYfN1DCsmhF37VWmOXuApg3MmNmGXJVotqE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q5J3/wk2ozQpkIDs4sxAR6tP4gvmorJFJ23iaEmXb61dEDU04DZu/EPEUjA/rsGfMjW9B3AvbKF+cUOOiTmFhJrWctKIKpjwMmLRHQwp8sC/fvHnGp0ec1ms6z+SYaz6GjO4JtxOyQN3V4VuVibuSQ2ChzeM9C1VaZIHfFl3B5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e2IxxChb; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=E+qAJkIUbEL89eZtcubwxSb7KhZwwPqV6R9Z13N426WWrOEQUdn7LrOoqIYz8o5RsKn2jaovfeueU5APTWFCjO6r0bUdjjgLtJ2A1FDEW4PNaNUcreDzAIdvI3QR2boV2hyt368e3ATfDa9H7TtZQQZSukDz7ri99BtikqDvl1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JG4fyb9H; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e2IxxChb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JG4fyb9H"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9DA3041B29;
+	by sea.source.kernel.org (Postfix) with ESMTP id A2E26439B6;
+	Sun, 28 Dec 2025 12:42:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01C9AC16AAE;
 	Sun, 28 Dec 2025 12:42:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFAC0C4CEFB;
-	Sun, 28 Dec 2025 12:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766925721;
-	bh=3bBcyNtfu29ffLXJ+V2J2og1TMjw9NsnHxGDp+htXro=;
+	s=k20201202; t=1766925735;
+	bh=qGV3crV7vYfN1DCsmhF37VWmOXuApg3MmNmGXJVotqE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e2IxxChbr+WqhxUJqacGBpmCd1PqzAy4zc9UBbcOCqdKCOk2YKVQpzwDRZKTERBC3
-	 wU94sjxI9JDWlVCchpv68PCB3A3MtZ636tuoKpyxfT+F8knOACQljGZUyRdrNyMCa6
-	 Zos1ZnJtxt4bcHDt1F1q+UJbJZZTnCasPetVagLUWb2eYoHs36oqib7EzzLbhHNJnv
-	 IWg6kDQ4bDLRCseuZuPrJHtRiDl5wbuF+4oXFfevHlBLLk23U57n6rxH1v9PIEs7ep
-	 KcHa8f+V+tfZVhvjeTnh7Ds3Ya2WScXP0K2wYzYOimworWvRDA3K9omtARRkSxYnMC
-	 k2jlxJmP/NZ9g==
+	b=JG4fyb9He83CXx9yabJ1wYRs95IfVNB2F586zi15zCd1oNMacH+6znZ+ceKQNfrjx
+	 +eEr/AdmSp+H6pVP0U+08wQCx51U84RT2GE26vxy/u14qcmZxaO7/IU/klSevnk8lA
+	 vM0pVSQsLZxPglXSMVb7/hD3lm54KyOTx//USUlQkU1glusRU8S4mDrDjLgXCn7xSo
+	 DKDwYDHlsd1BLmX8x4wKtXILnIiP77e+5+1B+TOY7FeKhNOo3J1JwxAr29ouMLQoI+
+	 5rsEd2gotTkEQ5pwtj0IiqueuPgvAF9w6W+R0W7LI3FnHuera9SImC6lMLPkR6NFTL
+	 hrnrQ8sndZQKA==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -97,9 +97,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH 07/28] loongarch: introduce arch_zone_limits_init()
-Date: Sun, 28 Dec 2025 14:39:37 +0200
-Message-ID: <20251228124001.3624742-8-rppt@kernel.org>
+Subject: [PATCH 08/28] m68k: introduce arch_zone_limits_init()
+Date: Sun, 28 Dec 2025 14:39:38 +0200
+Message-ID: <20251228124001.3624742-9-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251228124001.3624742-1-rppt@kernel.org>
 References: <20251228124001.3624742-1-rppt@kernel.org>
@@ -120,38 +120,81 @@ Later MM core will use this function as an architecture specific callback
 during nodes and zones initialization and thus there won't be a need to
 call free_area_init() from every architecture.
 
+Since all variants of m68k add all memory to ZONE_DMA, it is possible to
+use unified implementation for arch_zone_limits_init() that sets the end
+of ZONE_DMA to memblock_end_of_DRAM().
+
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/loongarch/mm/init.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/m68k/mm/init.c     | 7 ++++++-
+ arch/m68k/mm/mcfmmu.c   | 2 +-
+ arch/m68k/mm/motorola.c | 2 +-
+ arch/m68k/mm/sun3mmu.c  | 2 +-
+ 4 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
-index 0946662afdd6..17235f87eafb 100644
---- a/arch/loongarch/mm/init.c
-+++ b/arch/loongarch/mm/init.c
-@@ -60,15 +60,19 @@ int __ref page_is_ram(unsigned long pfn)
- 	return memblock_is_memory(addr) && !memblock_is_reserved(addr);
- }
+diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+index 488411af1b3f..6b1d9d2434b5 100644
+--- a/arch/m68k/mm/init.c
++++ b/arch/m68k/mm/init.c
+@@ -40,6 +40,11 @@
+ void *empty_zero_page;
+ EXPORT_SYMBOL(empty_zero_page);
  
--void __init paging_init(void)
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
- {
--	unsigned long max_zone_pfns[MAX_NR_ZONES];
--
- #ifdef CONFIG_ZONE_DMA32
- 	max_zone_pfns[ZONE_DMA32] = MAX_DMA32_PFN;
- #endif
- 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
++{
++	max_zone_pfns[ZONE_DMA] = PFN_DOWN(memblock_end_of_DRAM());
 +}
 +
-+void __init paging_init(void)
-+{
-+	unsigned long max_zone_pfns[MAX_NR_ZONES];
+ #ifdef CONFIG_MMU
  
-+	arch_zone_limits_init(max_zone_pfns);
- 	free_area_init(max_zone_pfns);
+ int m68k_virt_to_node_shift;
+@@ -69,7 +74,7 @@ void __init paging_init(void)
+ 	high_memory = (void *) end_mem;
+ 
+ 	empty_zero_page = memblock_alloc_or_panic(PAGE_SIZE, PAGE_SIZE);
+-	max_zone_pfn[ZONE_DMA] = end_mem >> PAGE_SHIFT;
++	arch_zone_limits_init(max_zone_pfn);
+ 	free_area_init(max_zone_pfn);
  }
  
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 19a75029036c..24a6f7bbd1ce 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -73,7 +73,7 @@ void __init paging_init(void)
+ 	}
+ 
+ 	current->mm = NULL;
+-	max_zone_pfn[ZONE_DMA] = PFN_DOWN(_ramend);
++	arch_zone_limits_init(max_zone_pfn);
+ 	free_area_init(max_zone_pfn);
+ }
+ 
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 62283bc2ed79..d6ccd23caf61 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -517,6 +517,6 @@ void __init paging_init(void)
+ 		if (node_present_pages(i))
+ 			node_set_state(i, N_NORMAL_MEMORY);
+ 
+-	max_zone_pfn[ZONE_DMA] = memblock_end_of_DRAM();
++	arch_zone_limits_init(max_zone_pfn);
+ 	free_area_init(max_zone_pfn);
+ }
+diff --git a/arch/m68k/mm/sun3mmu.c b/arch/m68k/mm/sun3mmu.c
+index 1ecf6bdd08bf..fdd69cc4240c 100644
+--- a/arch/m68k/mm/sun3mmu.c
++++ b/arch/m68k/mm/sun3mmu.c
+@@ -82,7 +82,7 @@ void __init paging_init(void)
+ 	current->mm = NULL;
+ 
+ 	/* memory sizing is a hack stolen from motorola.c..  hope it works for us */
+-	max_zone_pfn[ZONE_DMA] = ((unsigned long)high_memory) >> PAGE_SHIFT;
++	arch_zone_limits_init(max_zone_pfn);
+ 
+ 	/* I really wish I knew why the following change made things better...  -- Sam */
+ 	free_area_init(max_zone_pfn);
 -- 
 2.51.0
 
