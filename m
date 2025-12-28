@@ -1,36 +1,36 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98551307AE4
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Dec 2025 12:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A3B3093DD
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Dec 2025 12:46:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766926004; cv=none; b=l7psx7M+r9rx1z88uqS7fdnUOPPOFCa5UJG97BYuD8Kc6Niq8U2ovuM2BJUTyH54+SppqZvjeMrNFfBVIK+dNsqgcS47yIhPofvEu4WKz9+H7APUxpVS9WdXagLWTngk2MVLr70gFDheb7DfmdmSd9giqSt7FqhDRlnxCVd6Cg4=
+	t=1766926018; cv=none; b=BO5tRyVdl2WRIgUcsOa4Z6qQ+QUCSf4pvHZ9EFCZrdeTQqpBndouf3o8KEhcy5ain+S1yxuywdlKs8sbVEkVZV7FA94po4Pxl4g1oZmcXRZxuUsZm2bhG0v620KuWawqUPpr510iXCcQNNUrh1yvuIOrlpl07BvNLoiTbtdnVEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766926004; c=relaxed/simple;
-	bh=HLFdL0b2vHYE2Es8eysIP16cx1LQEF5ywfNPEf+XyUQ=;
+	s=arc-20240116; t=1766926018; c=relaxed/simple;
+	bh=zJEIy7O/CTkdhQmMkACZcULIRougkhyexygWc4ZDAXg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tAZOXzXKraIkZIEg4HsefZe4t9LeQCWnsAV5aQLX/gBPbxWOaDKyyGKZXO4XEfqg8UZFDObGJG66LZNYVhNc1tCfnyjIl75wL0UCR9Ng8nANoVFtTSwaYSE+mBQI+9q2tRpP8p26sRlmm778bRja6y/5XvapLvY76gfW8cK+v+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qdL0kS/S; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=ZAnWD93+4c+zrinhaFwx4Tk/xpY+5eVSXpXdnp08Cw4VOYTrzPGLYHjdiA7tdpYGt3w2r8I3rr5I0PsB3MiOCi5c0WGHi2H/NAfu+zGTN4b8KuprYOBaZy6Zpv8gjOVwVqmNSI2DOaIKdVIvU2Jct/i66jj0IUsHc9NukK30UiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CUM35TWv; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qdL0kS/S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CUM35TWv"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 50CE24378D;
+	by tor.source.kernel.org (Postfix) with ESMTP id 77B79600AA;
+	Sun, 28 Dec 2025 12:46:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9132C4CEFB;
 	Sun, 28 Dec 2025 12:46:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC499C4CEFB;
-	Sun, 28 Dec 2025 12:46:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766926002;
-	bh=HLFdL0b2vHYE2Es8eysIP16cx1LQEF5ywfNPEf+XyUQ=;
+	s=k20201202; t=1766926016;
+	bh=zJEIy7O/CTkdhQmMkACZcULIRougkhyexygWc4ZDAXg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qdL0kS/SmoVKxl3WK0KKH+Jldx6Q7XCWF4V+7VX9pSzxoVIkAcP2FPqqmEDdDdypd
-	 cLaoKUTUDB4h90YuoSE8146Xk14NH6RwNwsudZVlWBJbL+a4t2Nqpsbk3k2ARV3+N2
-	 eID7ge2FU6TWbxLFJUWNUQEm0iiU1l23JkDPBTcH2jJtDq6J+FeokyJzunQW8y6L+G
-	 6DbBTj4JSTeBjvfu66zvi0Ev+Vp1cGy39Y078vptGbfRjWTon98SfWpDR6jBxZ0QHk
-	 a5h2+rfUr8yvB4s2JvJiV3TjJJQjjmTYiv3y8i2jyTIREdfgCO9d8lClaXU31YpnjS
-	 AuacBCA8hM+Vw==
+	b=CUM35TWv/cMbcrOeR73n+XHNIa0BmyPC6QF36LaL20Yna6xWY0BSLgjEuB9NNQVFs
+	 xNgPahJssiqOsbE9daKLMR7RnvAjtHzSJrJwXaBKr1VZ2hmtoHuKqqj/Ei3WWyVnyR
+	 Wh9FJBMTwNv7vmoGVNVBHufARIfuWEgzOKFYbpxpdKPvSpUfd7Cv9IO1T53Wmkuk0g
+	 eTkgXuXNAJmvtbrLMYLsdFLyK5kO0YcuaWIYnLXROnMlWOeCSui3e7muw2Lh0uwkGX
+	 kMLPW+nF7Pn138We0BaiaTiOz67ixNks7n7EVEQ8aFn6s9NF7PTZZssQ5hCt3c+BXR
+	 5rgqGKWhVXizA==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -97,9 +97,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH 27/28] mm/hugetlb: drop hugetlb_cma_check()
-Date: Sun, 28 Dec 2025 14:39:57 +0200
-Message-ID: <20251228124001.3624742-28-rppt@kernel.org>
+Subject: [PATCH 28/28] Revert "mm/hugetlb: deal with multiple calls to hugetlb_bootmem_alloc"
+Date: Sun, 28 Dec 2025 14:39:58 +0200
+Message-ID: <20251228124001.3624742-29-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251228124001.3624742-1-rppt@kernel.org>
 References: <20251228124001.3624742-1-rppt@kernel.org>
@@ -113,105 +113,111 @@ Content-Transfer-Encoding: 8bit
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-hugetlb_cma_check() was required when the ordering of hugetlb_cma_reserve()
-and hugetlb_bootmem_alloc() was architecture depended.
+hugetlb_bootmem_alloc() is called only once, no need to check if it was
+called aready at its entry.
 
-Since hugetlb_cma_reserve() is always called before hugetlb_bootmem_alloc()
-there is no need to check whether hugetlb_cma_reserve() was already called.
+Other checks performed during HVO initialization are also no longer
+necessary because sparse_init() that calls hugetlb_vmemmap_init_early()
+and hugetlb_vmemmap_init_late() is alaways called after
+hugetlb_bootmem_alloc().
 
-Drop unneeded hugetlb_cma_check() function.
+This reverts commit d58b2498200724e4f8c12d71a5953da03c8c8bdf.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- mm/hugetlb.c     |  1 -
- mm/hugetlb_cma.c | 16 +++-------------
- mm/hugetlb_cma.h |  5 -----
- 3 files changed, 3 insertions(+), 19 deletions(-)
+ include/linux/hugetlb.h |  6 ------
+ mm/hugetlb.c            | 12 ------------
+ mm/hugetlb_vmemmap.c    | 11 -----------
+ 3 files changed, 29 deletions(-)
 
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 08fc332e88a7..c8b1a6dd2d46 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -175,7 +175,6 @@ extern int sysctl_hugetlb_shm_group __read_mostly;
+ extern struct list_head huge_boot_pages[MAX_NUMNODES];
+ 
+ void hugetlb_bootmem_alloc(void);
+-bool hugetlb_bootmem_allocated(void);
+ extern nodemask_t hugetlb_bootmem_nodes;
+ void hugetlb_bootmem_set_nodes(void);
+ 
+@@ -1300,11 +1299,6 @@ static inline bool hugetlbfs_pagecache_present(
+ static inline void hugetlb_bootmem_alloc(void)
+ {
+ }
+-
+-static inline bool hugetlb_bootmem_allocated(void)
+-{
+-	return false;
+-}
+ #endif	/* CONFIG_HUGETLB_PAGE */
+ 
+ static inline spinlock_t *huge_pte_lock(struct hstate *h,
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 51273baec9e5..82b322ae3fdc 100644
+index 82b322ae3fdc..e5a350c83d75 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -4159,7 +4159,6 @@ static int __init hugetlb_init(void)
- 		}
+@@ -4470,21 +4470,11 @@ void __init hugetlb_bootmem_set_nodes(void)
  	}
- 
--	hugetlb_cma_check();
- 	hugetlb_init_hstates();
- 	gather_bootmem_prealloc();
- 	report_hugepages();
-diff --git a/mm/hugetlb_cma.c b/mm/hugetlb_cma.c
-index b1eb5998282c..f5e79103e110 100644
---- a/mm/hugetlb_cma.c
-+++ b/mm/hugetlb_cma.c
-@@ -85,9 +85,6 @@ hugetlb_cma_alloc_bootmem(struct hstate *h, int *nid, bool node_exact)
- 	return m;
  }
  
+-static bool __hugetlb_bootmem_allocated __initdata;
 -
--static bool cma_reserve_called __initdata;
--
- static int __init cmdline_parse_hugetlb_cma(char *p)
- {
- 	int nid, count = 0;
-@@ -149,8 +146,10 @@ void __init hugetlb_cma_reserve(void)
- 		return;
- 
- 	order = arch_hugetlb_cma_order();
--	if (!order)
-+	if (!order) {
-+		pr_warn("hugetlb_cma: the option isn't supported by current arch\n");
- 		return;
-+	}
- 
- 	/*
- 	 * HugeTLB CMA reservation is required for gigantic
-@@ -159,7 +158,6 @@ void __init hugetlb_cma_reserve(void)
- 	 * breaking this assumption.
- 	 */
- 	VM_WARN_ON(order <= MAX_PAGE_ORDER);
--	cma_reserve_called = true;
- 
- 	hugetlb_bootmem_set_nodes();
- 
-@@ -253,14 +251,6 @@ void __init hugetlb_cma_reserve(void)
- 		hugetlb_cma_size = 0;
- }
- 
--void __init hugetlb_cma_check(void)
+-bool __init hugetlb_bootmem_allocated(void)
 -{
--	if (!hugetlb_cma_size || cma_reserve_called)
+-	return __hugetlb_bootmem_allocated;
+-}
+-
+ void __init hugetlb_bootmem_alloc(void)
+ {
+ 	struct hstate *h;
+ 	int i;
+ 
+-	if (__hugetlb_bootmem_allocated)
 -		return;
 -
--	pr_warn("hugetlb_cma: the option isn't supported by current arch\n");
--}
+ 	hugetlb_bootmem_set_nodes();
+ 
+ 	for (i = 0; i < MAX_NUMNODES; i++)
+@@ -4498,8 +4488,6 @@ void __init hugetlb_bootmem_alloc(void)
+ 		if (hstate_is_gigantic(h))
+ 			hugetlb_hstate_alloc_pages(h);
+ 	}
 -
- bool hugetlb_cma_exclusive_alloc(void)
- {
- 	return hugetlb_cma_only;
-diff --git a/mm/hugetlb_cma.h b/mm/hugetlb_cma.h
-index 2c2ec8a7e134..78186839df3a 100644
---- a/mm/hugetlb_cma.h
-+++ b/mm/hugetlb_cma.h
-@@ -8,7 +8,6 @@ struct folio *hugetlb_cma_alloc_folio(int order, gfp_t gfp_mask,
- 				      int nid, nodemask_t *nodemask);
- struct huge_bootmem_page *hugetlb_cma_alloc_bootmem(struct hstate *h, int *nid,
- 						    bool node_exact);
--void hugetlb_cma_check(void);
- bool hugetlb_cma_exclusive_alloc(void);
- unsigned long hugetlb_cma_total_size(void);
- void hugetlb_cma_validate_params(void);
-@@ -31,10 +30,6 @@ struct huge_bootmem_page *hugetlb_cma_alloc_bootmem(struct hstate *h, int *nid,
- 	return NULL;
+-	__hugetlb_bootmem_allocated = true;
  }
  
--static inline void hugetlb_cma_check(void)
--{
--}
+ /*
+diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+index 9d01f883fd71..a9280259e12a 100644
+--- a/mm/hugetlb_vmemmap.c
++++ b/mm/hugetlb_vmemmap.c
+@@ -794,14 +794,6 @@ void __init hugetlb_vmemmap_init_early(int nid)
+ 	struct huge_bootmem_page *m = NULL;
+ 	void *map;
+ 
+-	/*
+-	 * Noting to do if bootmem pages were not allocated
+-	 * early in boot, or if HVO wasn't enabled in the
+-	 * first place.
+-	 */
+-	if (!hugetlb_bootmem_allocated())
+-		return;
 -
- static inline bool hugetlb_cma_exclusive_alloc(void)
- {
- 	return false;
+ 	if (!READ_ONCE(vmemmap_optimize_enabled))
+ 		return;
+ 
+@@ -847,9 +839,6 @@ void __init hugetlb_vmemmap_init_late(int nid)
+ 	struct hstate *h;
+ 	void *map;
+ 
+-	if (!hugetlb_bootmem_allocated())
+-		return;
+-
+ 	if (!READ_ONCE(vmemmap_optimize_enabled))
+ 		return;
+ 
 -- 
 2.51.0
 
