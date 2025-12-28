@@ -1,36 +1,36 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FCE2D193F
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Dec 2025 12:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0EF12D061B
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Dec 2025 12:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766925710; cv=none; b=mPWeVNMnkwh2nvqldALkjqkP6l7wkrJHbo1Moc36f7F4EkmmvNoJXDiAru1uZbYcif572f2MvRynr3KGna00GSf3MDUjuUE1+I/G52qBhAQ710b7KXFTaMdOR41Xj2K8CubMzcyaP/oNZaP9tjo6QWHxMzu9DAg/gbqolverWSE=
+	t=1766925723; cv=none; b=dQy7xully3dWTmi4/w9zmvZwa64cKdade7balfZLwYJL8o9xhVqSKUVbnDS0jjr6BKk7Qan75R+HDJApn/k9yM2FnSvMxSaVf9ayP4Hp1UkpcGeTqf5R7wki0FMFgM9/5+dev1HolH9Id8MZnemaVoa/zzPJ1PwuZcPgJuxivnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766925710; c=relaxed/simple;
-	bh=eqWldmxLZQ+MuA70zzUt7CpIfBT1PwNgoY4RoneYtY0=;
+	s=arc-20240116; t=1766925723; c=relaxed/simple;
+	bh=3bBcyNtfu29ffLXJ+V2J2og1TMjw9NsnHxGDp+htXro=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NHiJI98USmPazBiEJ3pP2lotPHIaD24qNQDoXjMWNcfOYyaGz8TBLCBLG910yzJw6xqwBMuM9FtjD9oieRjkWj6d7DogCG8gpOslT1UMEn62zib0FGQmSo2g0r1dLYaa05YEakje2hHuyCPcbz37GuiAx3zRmIYd7l+X9ArgnUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hZjbD+MQ; arc=none smtp.client-ip=172.105.4.254
+	 MIME-Version; b=Q5J3/wk2ozQpkIDs4sxAR6tP4gvmorJFJ23iaEmXb61dEDU04DZu/EPEUjA/rsGfMjW9B3AvbKF+cUOOiTmFhJrWctKIKpjwMmLRHQwp8sC/fvHnGp0ec1ms6z+SYaz6GjO4JtxOyQN3V4VuVibuSQ2ChzeM9C1VaZIHfFl3B5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e2IxxChb; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hZjbD+MQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e2IxxChb"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id C19F8600AA;
+	by sea.source.kernel.org (Postfix) with ESMTP id 9DA3041B29;
+	Sun, 28 Dec 2025 12:42:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFAC0C4CEFB;
 	Sun, 28 Dec 2025 12:41:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA494C113D0;
-	Sun, 28 Dec 2025 12:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766925707;
-	bh=eqWldmxLZQ+MuA70zzUt7CpIfBT1PwNgoY4RoneYtY0=;
+	s=k20201202; t=1766925721;
+	bh=3bBcyNtfu29ffLXJ+V2J2og1TMjw9NsnHxGDp+htXro=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hZjbD+MQrWxcfBpvPSpYRAHix6i5JMPKqqWjug6L9k4tMqPiNxBtk2ZEPYrx0iYxa
-	 lPDWL97x3gfgGtVSk/EXS/mFYzkmo6e7uePyonoH0agWw7NO0FW043zsRKfg3Mc7Li
-	 AeJJJdxb868nBOQ+F+IWq/zfI30jwYv2QeoLL2LmynOKi0hE+EdkeXd17Gk4ByiGt3
-	 t8atKxv/+snc5y717GK/LGz98n9yUfG6rDoz7DxJ/bGj0E7dEiuUJIW1v4O1g45Q4X
-	 ZsWwGAz2zPOATBD14sHotb7AupNiQ7ojVTj0X9koH39OA0OTd6M4bjQCFHfyLwKfsu
-	 XSuFagWnrbklA==
+	b=e2IxxChbr+WqhxUJqacGBpmCd1PqzAy4zc9UBbcOCqdKCOk2YKVQpzwDRZKTERBC3
+	 wU94sjxI9JDWlVCchpv68PCB3A3MtZ636tuoKpyxfT+F8knOACQljGZUyRdrNyMCa6
+	 Zos1ZnJtxt4bcHDt1F1q+UJbJZZTnCasPetVagLUWb2eYoHs36oqib7EzzLbhHNJnv
+	 IWg6kDQ4bDLRCseuZuPrJHtRiDl5wbuF+4oXFfevHlBLLk23U57n6rxH1v9PIEs7ep
+	 KcHa8f+V+tfZVhvjeTnh7Ds3Ya2WScXP0K2wYzYOimworWvRDA3K9omtARRkSxYnMC
+	 k2jlxJmP/NZ9g==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -97,9 +97,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH 06/28] hexagon: introduce arch_zone_limits_init()
-Date: Sun, 28 Dec 2025 14:39:36 +0200
-Message-ID: <20251228124001.3624742-7-rppt@kernel.org>
+Subject: [PATCH 07/28] loongarch: introduce arch_zone_limits_init()
+Date: Sun, 28 Dec 2025 14:39:37 +0200
+Message-ID: <20251228124001.3624742-8-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251228124001.3624742-1-rppt@kernel.org>
 References: <20251228124001.3624742-1-rppt@kernel.org>
@@ -122,50 +122,36 @@ call free_area_init() from every architecture.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/hexagon/mm/init.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ arch/loongarch/mm/init.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index 34eb9d424b96..e2c9487d8d34 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -54,6 +54,18 @@ void sync_icache_dcache(pte_t pte)
- 	__vmcache_idsync(addr, PAGE_SIZE);
+diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+index 0946662afdd6..17235f87eafb 100644
+--- a/arch/loongarch/mm/init.c
++++ b/arch/loongarch/mm/init.c
+@@ -60,15 +60,19 @@ int __ref page_is_ram(unsigned long pfn)
+ 	return memblock_is_memory(addr) && !memblock_is_reserved(addr);
  }
  
+-void __init paging_init(void)
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
-+{
-+	/*
-+	 *  This is not particularly well documented anywhere, but
-+	 *  give ZONE_NORMAL all the memory, including the big holes
-+	 *  left by the kernel+bootmem_map which are already left as reserved
-+	 *  in the bootmem_map; free_area_init should see those bits and
-+	 *  adjust accordingly.
-+	 */
-+	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
+ {
+-	unsigned long max_zone_pfns[MAX_NR_ZONES];
+-
+ #ifdef CONFIG_ZONE_DMA32
+ 	max_zone_pfns[ZONE_DMA32] = MAX_DMA32_PFN;
+ #endif
+ 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
 +}
 +
- /*
-  * In order to set up page allocator "nodes",
-  * somebody has to call free_area_init() for UMA.
-@@ -65,16 +77,7 @@ static void __init paging_init(void)
- {
- 	unsigned long max_zone_pfn[MAX_NR_ZONES] = {0, };
++void __init paging_init(void)
++{
++	unsigned long max_zone_pfns[MAX_NR_ZONES];
  
--	/*
--	 *  This is not particularly well documented anywhere, but
--	 *  give ZONE_NORMAL all the memory, including the big holes
--	 *  left by the kernel+bootmem_map which are already left as reserved
--	 *  in the bootmem_map; free_area_init should see those bits and
--	 *  adjust accordingly.
--	 */
--
--	max_zone_pfn[ZONE_NORMAL] = max_low_pfn;
--
-+	arch_zone_limits_init(max_zone_pfn);
- 	free_area_init(max_zone_pfn);  /*  sets up the zonelists and mem_map  */
++	arch_zone_limits_init(max_zone_pfns);
+ 	free_area_init(max_zone_pfns);
+ }
  
- 	/*
 -- 
 2.51.0
 
