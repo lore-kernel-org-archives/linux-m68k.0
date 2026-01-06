@@ -1,189 +1,86 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F7F32471A
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Jan 2026 12:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A68032E151
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Jan 2026 12:56:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767702605; cv=none; b=oYULq1j7Q11fvZ9wc0U7ZzbjHsuF3xSITUOqqo4rulaXGEuL7vNEoiMyd9WE7jLGAguISlcyi7TXqlugIXz0x5Cg1veuBf6qQLOPyU7HEtVus4AnnKp08FpX8IR8sTcGldsACzCm0sgiYvQZ2+f8v72/x4GZvrxXLahhiy1flOM=
+	t=1767704186; cv=none; b=Qfq4XCcofTxe+A40UekgtZ8a+ibZ+GpZHtqNev4qm1llJuAeG6Lx+SnIjhUjBKvU4ERmXzTzWyjIDCa7n5CTEaqfVww5ewAGq3etBav3/746y0CeKQ4SvHL6Fyz3rAzmGD+ucic12X08RRMOnkuNgYnodYuEX6Vj/3mPDzhch2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767702605; c=relaxed/simple;
-	bh=kScoJcPO/M4zo5BX4pMoo5vDQQCwmWGMQJvCKxTwDv0=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=K0fBsrWQ+hjhINYfGHDUJW0y8hKvQZ4oyR5wpidbzpVs6VHOUEKhyu25eBoYoNZlrndTqoetGKo0B+rTOmwujG6Dj0m+JrXb5Wajzj5tYsYLChh3JYmY51i90a6IZ9tO4tP9ZEiKXtUbm92GNnFGX/dIrM2Bk+3GMWM/0SF8RKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HLaGsTU8; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1767704186; c=relaxed/simple;
+	bh=a6QY7v3K7LjddIGzyyZ7ya0cKsRU0fqtaAJcXUSvpLo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JtdJat6WfD/2hS/yY3tDfjHmw4qNtE5E7nPieN7eofStxw4xR85uKj7rnlF7ezQbQsdHOHZ1bPdLImxOFa0NSG47XxAczgVP3VKc6LFBJtwEZUoNWCLz5j8cRs9V/ZKsBzCNXTHAQFUJG8Nfp3FcCLm0Ikq/G1jqiywNll9WTq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=NIQzh2I3; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HLaGsTU8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1767702603; x=1799238603;
-  h=date:from:to:cc:subject:message-id;
-  bh=kScoJcPO/M4zo5BX4pMoo5vDQQCwmWGMQJvCKxTwDv0=;
-  b=HLaGsTU81MERpJA6VaiRQFwOqwpaEa0TUb9f8tHx46rbrhMXCpXuqKF/
-   n5tMOcqWStduxXpjOtUhBp0YOuPwJmhvDS/H2rO5SAdocAmg1DwkRTDw2
-   1vC34DnVpptgTGyrNNm8v+20fXDYXtD1NMrpPGDunFtrIlvpwwkz7VggS
-   qTEaMihvSQS7hgh6NHvLzaVgPshdZuGKV1NvXNvoR0PCkABicsBobSZ6h
-   NZWE6RaQc9FfxGIHNR01mMldEGIg1aC9lklr5lBturi7vjuHn5cxTmSJJ
-   oiH3nQ80PaSZ1GB6L9ityZeQxZtvNMIDbmMhf1c8DljiSZYo8B3D4Z4Q2
-   A==;
-X-CSE-ConnectionGUID: PD7rupilSZmQoe/wIlti9w==
-X-CSE-MsgGUID: r2mLcfZbQTWzlAcf9FmPxA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11662"; a="86651444"
-X-IronPort-AV: E=Sophos;i="6.21,204,1763452800"; 
-   d="scan'208";a="86651444"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2026 04:30:02 -0800
-X-CSE-ConnectionGUID: rGN+QzIrSXWZJ2Cz5RuaCw==
-X-CSE-MsgGUID: KlRgOnneR7aKm8FItVgBvw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,204,1763452800"; 
-   d="scan'208";a="202700342"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by orviesa008.jf.intel.com with ESMTP; 06 Jan 2026 04:30:01 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vd6CE-000000001wL-0LfN;
-	Tue, 06 Jan 2026 12:29:58 +0000
-Date: Tue, 06 Jan 2026 20:29:44 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 634df17853975c4219460d9eda73d1835750deb8
-Message-ID: <202601062035.iD71WvKy-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="NIQzh2I3"
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-34c30f0f12eso858130a91.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jan 2026 04:56:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1767704184; x=1768308984; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=a6QY7v3K7LjddIGzyyZ7ya0cKsRU0fqtaAJcXUSvpLo=;
+        b=NIQzh2I3+7ASO4BFyyvOFg3aKjn1Oyq/v1tsPEuxAJN394wV5Gp5MBndu7jWeHujx3
+         se0UdUICNRpl/+843ci5dA2Cm60KlEyg0I2Bdd4BUCe6IMrCE3U6l5zu8D2PGdNNS2Ru
+         +gR9YmIlWiwvtlbyxtK9YNR2QmNDnldWZ4KbU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767704184; x=1768308984;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a6QY7v3K7LjddIGzyyZ7ya0cKsRU0fqtaAJcXUSvpLo=;
+        b=fR08KpAR/wvE7ikcY7sGmLWWEY9zLNNI5yjtVa03BDJ3FoGy8V1rqiFf6AtryUaJw9
+         tY9wEeT0r+e7y38keVTk/F3Mj3yGV3SlfgusCT7HMyXwZOD1qyjNhJ3xgBY9MXzjNpFK
+         wBrpOdf0L+Nch4it8o9JjcECuGIfKPXqeGFE6PWzSzfgHkQ3JcHtBO6yVWcB1uGXpOnE
+         5RuEVdQa57gyR/Lc9zJpoMq3CgkzcAy6cstYTiXLRxcUGlyXP43Ysowcce0VLIMC1OtA
+         5HXUlqYORu9i9ktmsCto9fF0uLlQ4Urr7AVNGvhV2XbwU0o6+XRjz6zOPwLXv4RkNIG0
+         tQhg==
+X-Forwarded-Encrypted: i=1; AJvYcCU4Wr8S/4K0f4HPJCTaXOjQU4X0zElCOG6kVSnixcuBCKFj0+jCanT6F3tXCkrOJKsm06ZnWIoEYvVH@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwNulMpIDKYi8E4yrjRuXEejcdO1A1bD/SuGcBibHLTYp64PWrf
+	lUmXcjZ4KQcr7znk7dX36vbajMZnD2uymVBDQcRyuGWwJPaeECOcBrPWyy3U3kEI/oIlX9cJjQo
+	+qSJ5BDgAGDtaXezW0okXVWYKCTHLLejgQ5gKq5udNg==
+X-Gm-Gg: AY/fxX7d+tqk0n/Qs6FPjM+MLJ/yXtLHkISDl6xYOW6p8uw9BWpCw1YxWgHK8nhNUkV
+	E9EqRjSAVK+x9/5nNl0J5brvQaXyNV6IC0m1JVVLXsqCSuvA2lUN2BOnsH4U3uvyOGuhoJrm8iN
+	TsnAwiCjsAdTPiubVV6Z851mf5BUAKmnejpeldtiwX8rK/Y/2icH6/zJQuulGj1fxNLZaXnY1Y4
+	ky3VLiLP1uCUlABEEkT90sCAI2lvBOvM87xssMTEj2TEOCBHfABlA9aHSJzUPlzVtTLlBUeAylq
+	RrIEZ/U=
+X-Google-Smtp-Source: AGHT+IHnONGJjk+cAuGQ/Uc3C9K5oE87B+HOi6y2Nb+5V2EGCNfaEvbJpioISHK4gDmLBHgSsc6t8cW7NhLgahAIJWI=
+X-Received: by 2002:a17:90b:3e83:b0:341:315:f4ed with SMTP id
+ 98e67ed59e1d1-34f5f280f61mr2131814a91.10.1767704183640; Tue, 06 Jan 2026
+ 04:56:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20260101-custom-logo-v2-0-8eec06dfbf85@kernel.org>
+ <20260101-custom-logo-v2-6-8eec06dfbf85@kernel.org> <CAMuHMdVy48F5HAfqfJgbY83KDAztb9YWTqm8mT1ntTfj0311oA@mail.gmail.com>
+In-Reply-To: <CAMuHMdVy48F5HAfqfJgbY83KDAztb9YWTqm8mT1ntTfj0311oA@mail.gmail.com>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Tue, 6 Jan 2026 21:56:11 +0900
+X-Gm-Features: AQt7F2oqCzC4ATldD0uEPXW8K0e3G46S_P8BzIk8JoOxtgGMBUB2Uvx42XKGtbU
+Message-ID: <CAFr9PX=hc31at7uHrZ3qcqtTd=B+726WZyxMz+7j1bAJ1vokhQ@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] video/logo: move logo selection logic to Kconfig
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Vincent Mailhol <mailhol@kernel.org>, Helge Deller <deller@gmx.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 634df17853975c4219460d9eda73d1835750deb8  Merge tag 'v6.19-rc4'
+On Tue, 6 Jan 2026 at 20:54, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-elapsed time: 1505m
+> E.g. an m68k multi-platform kernel including Mac support will scare
+> non-Mac users into thinking their machine was assimilated by the
+> Apple Empire...
+>
 
-configs tested: 112
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                               defconfig    gcc-15.1.0
-arc                                 defconfig    gcc-15.1.0
-arc                   randconfig-001-20260106    gcc-13.4.0
-arc                   randconfig-002-20260106    gcc-8.5.0
-arm                         bcm2835_defconfig    clang-22
-arm                                 defconfig    clang-22
-arm                   randconfig-001-20260106    gcc-11.5.0
-arm                   randconfig-002-20260106    clang-22
-arm                   randconfig-003-20260106    gcc-10.5.0
-arm                   randconfig-004-20260106    gcc-8.5.0
-arm64                               defconfig    gcc-15.1.0
-arm64                 randconfig-001-20260106    clang-22
-arm64                 randconfig-002-20260106    gcc-8.5.0
-arm64                 randconfig-003-20260106    gcc-9.5.0
-arm64                 randconfig-004-20260106    gcc-10.5.0
-csky                                defconfig    gcc-15.1.0
-csky                  randconfig-001-20260106    gcc-10.5.0
-csky                  randconfig-002-20260106    gcc-11.5.0
-hexagon                             defconfig    clang-22
-hexagon               randconfig-001-20260106    clang-22
-hexagon               randconfig-002-20260106    clang-17
-i386        buildonly-randconfig-001-20260106    clang-20
-i386        buildonly-randconfig-002-20260106    clang-20
-i386        buildonly-randconfig-003-20260106    gcc-14
-i386        buildonly-randconfig-004-20260106    clang-20
-i386        buildonly-randconfig-005-20260106    gcc-14
-i386        buildonly-randconfig-006-20260106    clang-20
-i386                                defconfig    clang-20
-i386                  randconfig-001-20260106    clang-20
-i386                  randconfig-002-20260106    gcc-14
-i386                  randconfig-003-20260106    clang-20
-i386                  randconfig-004-20260106    clang-20
-i386                  randconfig-005-20260106    clang-20
-i386                  randconfig-006-20260106    clang-20
-i386                  randconfig-007-20260106    clang-20
-i386                  randconfig-011-20260106    clang-20
-i386                  randconfig-012-20260106    gcc-14
-i386                  randconfig-013-20260106    gcc-14
-i386                  randconfig-014-20260106    clang-20
-i386                  randconfig-015-20260106    gcc-14
-i386                  randconfig-016-20260106    clang-20
-i386                  randconfig-017-20260106    gcc-14
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20260106    gcc-15.1.0
-loongarch             randconfig-002-20260106    gcc-15.1.0
-m68k                                defconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                      maltasmvp_defconfig    gcc-15.1.0
-mips                           xway_defconfig    clang-22
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20260106    gcc-8.5.0
-nios2                 randconfig-002-20260106    gcc-11.5.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20260106    gcc-8.5.0
-parisc                randconfig-002-20260106    gcc-11.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                    adder875_defconfig    gcc-15.1.0
-powerpc                        fsp2_defconfig    gcc-15.1.0
-powerpc               randconfig-001-20260106    clang-22
-powerpc               randconfig-002-20260106    gcc-8.5.0
-powerpc64             randconfig-001-20260106    gcc-8.5.0
-powerpc64             randconfig-002-20260106    gcc-8.5.0
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20260106    gcc-8.5.0
-riscv                 randconfig-002-20260106    clang-22
-s390                             alldefconfig    gcc-15.1.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20260106    gcc-8.5.0
-s390                  randconfig-002-20260106    gcc-14.3.0
-sh                                  defconfig    gcc-15.1.0
-sh                        edosk7705_defconfig    gcc-15.1.0
-sh                    randconfig-001-20260106    gcc-15.1.0
-sh                    randconfig-002-20260106    gcc-10.5.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20260106    gcc-11.5.0
-sparc                 randconfig-002-20260106    gcc-15.1.0
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20260106    clang-22
-sparc64               randconfig-002-20260106    gcc-15.1.0
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20260106    clang-22
-um                    randconfig-002-20260106    clang-22
-um                           x86_64_defconfig    clang-22
-x86_64      buildonly-randconfig-001-20260106    clang-20
-x86_64      buildonly-randconfig-002-20260106    gcc-14
-x86_64      buildonly-randconfig-003-20260106    clang-20
-x86_64      buildonly-randconfig-004-20260106    gcc-14
-x86_64      buildonly-randconfig-005-20260106    clang-20
-x86_64      buildonly-randconfig-006-20260106    gcc-14
-x86_64                              defconfig    gcc-14
-x86_64                randconfig-001-20260106    gcc-14
-x86_64                randconfig-002-20260106    gcc-14
-x86_64                randconfig-003-20260106    clang-20
-x86_64                randconfig-004-20260106    clang-20
-x86_64                randconfig-005-20260106    gcc-14
-x86_64                randconfig-006-20260106    gcc-14
-x86_64                randconfig-011-20260106    gcc-14
-x86_64                randconfig-012-20260106    gcc-13
-x86_64                randconfig-013-20260106    gcc-14
-x86_64                randconfig-014-20260106    gcc-14
-x86_64                randconfig-015-20260106    clang-20
-x86_64                randconfig-016-20260106    clang-20
-x86_64                randconfig-071-20260106    gcc-14
-x86_64                randconfig-072-20260106    clang-20
-x86_64                randconfig-073-20260106    clang-20
-x86_64                randconfig-074-20260106    clang-20
-x86_64                randconfig-075-20260106    gcc-14
-x86_64                randconfig-076-20260106    clang-20
-xtensa                randconfig-001-20260106    gcc-8.5.0
-xtensa                randconfig-002-20260106    gcc-8.5.0
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+This is actually how I tell if my Amiga or Mac is currently connected
+to my monitor... Amiga has the normal tux, Mac has the tux inside of a
+monitor.
