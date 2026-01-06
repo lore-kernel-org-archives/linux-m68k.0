@@ -1,145 +1,208 @@
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f194.google.com (mail-vk1-f194.google.com [209.85.221.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E892FABE1
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Jan 2026 21:22:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7751533D6
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Jan 2026 11:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767648156; cv=none; b=sE68d05ECm3cQ/Nlv24UUgCE78Uj2HtX44XUwdDuktrjgS0FhYnkLKF1KHx2gV3rS1pzedyaWNZ67frg4EDm0HdaHlaHEj2CPrLeHp2ci3bUAYJudNcQjSX6FNEMT3TkQj0GaXUh7UDT5TDl1I+Hiqp64Xeg8RoI6qH4ksanGYM=
+	t=1767700106; cv=none; b=phuWz5qAPhQe3gD8kC01ysGrFcShso79/MyU7xv4qz3POTKOuXmo5aTI+r2nUrItTikF/UDgxHgwsS09ZvCNHfFDL6MRRGgeDkAMmEBvy8lHB5UKPlUqEiEgHbK/hV8C5v2u85gcYJX3YluALL2S57jkwclFAbIBVuKTU8GIBYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767648156; c=relaxed/simple;
-	bh=+WNAaoI8KsgV5YS5TesK8IFdo3fX5U3jSg4GO6PtS4g=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=LEtmsDFb91rsn0DQyQkSUjNhdm4jfFbsDh2p1Cp5LufVLMh5vNrbYaTWGVb/GkN50pd0AriLKbQb6FQm8FArA1IfaROCPTaSHqmr3N83qq1xJ0Fze+vzpUrJfJuSIkILC9tGpyA1tMXL7b4d/c2xgvXSDO4K8yJX+O6a7Ff8MNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eqdezFN1; arc=none smtp.client-ip=103.168.172.152
+	s=arc-20240116; t=1767700106; c=relaxed/simple;
+	bh=cy90DhPfHZ+Icz6r89LIwxLLHRAHP0I0oJNrsBe1qfk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NIQb+Nh+pvC/EUqlfDBNcZVVx8V4Ysm1RHT3tZXieySMSv7mDd0Fvkk73KoDn/DPz1qglabUmyLyB+jOKum0L1gEpDY/hgEx5qbfHvn/AMTbn5NlNQCLNGpijAI5ROESAjm7hxrqhuudX6BBeXu2rKYhZgctws8OJCFqEx5MQlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eqdezFN1"
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 23A451400032;
-	Mon,  5 Jan 2026 16:22:33 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Mon, 05 Jan 2026 16:22:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1767648153; x=1767734553; bh=1oFLbJyX5go2BlHEUxj/VKfPiVdmEHtKl5G
-	WuW0kFIE=; b=eqdezFN16Fss6rS/wPHGPIsFq0pelGmfkt/ukW2GV67pAKlsyru
-	fU2KrcYiGz9lRFKAYKn5E7XqMI9wp643WQ4/sgfRtAlY/UaO3QQeke1YpQLwCZ9T
-	1YShV8vYjGNPt3tK+v/NzSYYYp90rTiBRIOR/RRM9/HZdEh0KY8dSkd1yYG234My
-	Sc1Vmex2hqoY4Wpao7xV00oip1yTy37nb9jEgm/QaRNMsm9YUHb3kW/5RDw25X41
-	pABCS0pndEllLrjZ26PPF1noRpSmE0aEjbB+isbQ8FgveMemnM80EULCv5Ld64Tz
-	Y7lEO7VnGoNcizPAlgfFHyBCU4dsp9I27bg==
-X-ME-Sender: <xms:lytcaT1ganGq_1JSY179V2JrXj4Kun5nYZmIaAZA8u-G3TZUSlZSCA>
-    <xme:lytcaRUAtJ81jeIkCVaL3uMSCIHVhxTZg-4797Yi67IEtjKJKMYUsn4qiS7eWYO6Z
-    dbnPqhK8JctnFOVhtMKub20jMuRANp7YTyAb9CzIhlKc3ldKCl5Kw>
-X-ME-Received: <xmr:lytcaWvbcRsGUpixZ-pwbEgBqlFQOZours-U9JekKWZC-HFLHGejNS1SaCD7ocYlpjkQEDYHWgJ7GzBW7qwJ8csgAYbJYN1q8uY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdelkeefjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
-    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdtkeevvdeu
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehkrdho
-    rhhgpdhnsggprhgtphhtthhopeduledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
-    epphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghkphhmsehl
-    ihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtthhopeifihhllheskhgvrh
-    hnvghlrdhorhhgpdhrtghpthhtoheprghrnhgusegrrhhnuggsrdguvgdprhgtphhtthho
-    pegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgtphhtthhopehgrghrhiesgh
-    grrhihghhuohdrnhgvthdprhgtphhtthhopehmrghrkhdrrhhuthhlrghnugesrghrmhdr
-    tghomhdprhgtphhtthhopehlihhnuhigqdgrrhgthhesvhhgvghrrdhkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdr
-    ohhrgh
-X-ME-Proxy: <xmx:lytcaQVmEogYXAZyUme2qxEo9qtLhZJK5ZxlHf-zsytFygzFz0d0lw>
-    <xmx:lytcaaU2Zg07o4EuVTGdVLoA1RUkpIJHaKrYGgA8uNLM4yHjVGlRLA>
-    <xmx:lytcaSfRvNtCG4W0SDoXjfUDUUt_Hi4HOk9rSTB3mxtdTkimsowLeg>
-    <xmx:lytcaZ7-Vd7YFQu9qqSMLogDhuVICe_imL02aTQRNVrspcHQaJcINQ>
-    <xmx:mStcaXSSILeYg-9ytee6l1Uss8S0VUCpZEOdzT_YZyY9QYWhHYXUfzm8>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 5 Jan 2026 16:22:28 -0500 (EST)
-Date: Tue, 6 Jan 2026 08:22:26 +1100 (AEDT)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Peter Zijlstra <peterz@infradead.org>
-cc: Andrew Morton <akpm@linux-foundation.org>, Will Deacon <will@kernel.org>, 
-    Arnd Bergmann <arnd@arndb.de>, Boqun Feng <boqun.feng@gmail.com>, 
-    Gary Guo <gary@garyguo.net>, Mark Rutland <mark.rutland@arm.com>, 
-    linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>, 
-    Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-    x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
-    "H. Peter Anvin" <hpa@zytor.com>, linux-efi@vger.kernel.org
-Subject: Re: [PATCH v6 3/4] atomic: Add alignment check to instrumented atomic
- operations
-In-Reply-To: <20260105160634.GA2393663@noisy.programming.kicks-ass.net>
-Message-ID: <07b62c4e-d3e7-dcc6-8752-0780faaeec24@linux-m68k.org>
-References: <cover.1767169542.git.fthain@linux-m68k.org> <f8cfe0d121be0849f5175495e73eafeeb85e1ad3.1767169542.git.fthain@linux-m68k.org> <20260105160634.GA2393663@noisy.programming.kicks-ass.net>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f194.google.com with SMTP id 71dfb90a1353d-55b2a09ff61so280869e0c.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jan 2026 03:48:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767700103; x=1768304903;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eme3GKSVVTwekk5ahSqs0LbJRLjiKfIn3cO6kiKk5PI=;
+        b=vyAznfu3qLq5ch2PQLGETTOxoh5SCtO56GzAC4u+mRjxGfsLQgrN108yHh7qh8LfO9
+         bpOxbmVzqZhpfccvRuJwdEjqRXv2dTQYY2/HSYN1laQ+yLgom37xq84wLSGUxVS83HRD
+         iKaTk4NKJNXvEF3kVHL9tC0kdX8Pzl1wZcdJcHcMg04lnRloNLjPBCCpxZDmqd2Ki4NX
+         iXZ/4fwnaK+faJbocuQqwRJacT/Avncw6RVolFDIKnBu/ItOe7wruw0dFbItAeCYlVVc
+         iHYddC+OU5qPEEupRKYfWl/P6ZL1hQ3jYx29Sw0FBgi1POLh5FpOSS+zDHQd3JwWOXhv
+         suTA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhsPnRehmlpyV3EnSK7jg4lJIHYsQ6LOwl3rwppK6P1PrB4Y1qGfM5civVulOAFSxJW2TlLXcTDLdG@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yx0EiSwNTvGkTorQ9bmwPssaqxvwxzUYUYlgSLRQuJAc4WrU5wK
+	AhOOtxm51QCzpoQFfGWe7JeeDmuaM2Yit/pM8bWnau5nvhPsDw737xY/SBXst8Ba
+X-Gm-Gg: AY/fxX4+xdSk4sRz+9nygtZAwwHENEkNhGONYdkwve27L1gZB6lWBg6iMd4o8cIMnK0
+	hRYXSUrYpZtrRr4z4cTMgwfu02CiegRkzKE2JG9roJvdRSynxYIDFKoCRv+NUcD0eEwHeKZFdm/
+	cnxiGP+5NdIAVdWaiecQHSPuOUIwly2AsVqVyoJN8d0M1BYiMJ2itEfYBCPnvgZkN8JT1wGtkDn
+	qmzPjRyF5VDMou9eMBRLP0db7GB0nYxjBsKIjfYh6h+duyQ7p6S96dX288IfOKur3RBOmEeygjE
+	0/LjVAnE18XUPQ3J0spZ1qdMtsw8ABWxjXs9Ixf3Rhu2q5HSZsWsWSeQ0UqWu22zutYC7vzWwZJ
+	Vk9En9ncEp4A9nsynXSNEp6CrqxAHjqi+T0M0Jts2UHNuyVKXShRVONL4wdMEDDHKYRVap/KmUD
+	YsuKH5Fb9dcfO07bRgcEZv9VkFSAhXs5ZKyH9E0UvLkQw560Qr
+X-Google-Smtp-Source: AGHT+IG8wbfvfqT+janbqr8UqX+cqSY7P7/hIA7Ay2xLNw7qJfT+ARsUxBXhflezXdI6qJJ6uz+H5A==
+X-Received: by 2002:a05:6122:3d06:b0:55b:9c3f:55f with SMTP id 71dfb90a1353d-5633958dc77mr673042e0c.18.1767700103337;
+        Tue, 06 Jan 2026 03:48:23 -0800 (PST)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5633a1ea753sm581801e0c.4.2026.01.06.03.48.22
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Jan 2026 03:48:22 -0800 (PST)
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-93f6bd3a8f4so245749241.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jan 2026 03:48:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUKZZW5E5Ycfj6EycAN4RofyefC7qf6KXrdbJ3adhYlPJ3M/jTVWba73td5c95eR6jwyrql9hC3QAk6@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:3588:b0:5db:d411:20cd with SMTP id
+ ada2fe7eead31-5ec744a8304mr863867137.28.1767700102655; Tue, 06 Jan 2026
+ 03:48:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <20260101-custom-logo-v2-0-8eec06dfbf85@kernel.org> <20260101-custom-logo-v2-6-8eec06dfbf85@kernel.org>
+In-Reply-To: <20260101-custom-logo-v2-6-8eec06dfbf85@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 6 Jan 2026 12:48:11 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVy48F5HAfqfJgbY83KDAztb9YWTqm8mT1ntTfj0311oA@mail.gmail.com>
+X-Gm-Features: AQt7F2oMgVPDZ6yIPBL4v-hrcVUiy-32V0b_EbYL6M5HBMZvyW9vi5iymuHAylg
+Message-ID: <CAMuHMdVy48F5HAfqfJgbY83KDAztb9YWTqm8mT1ntTfj0311oA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] video/logo: move logo selection logic to Kconfig
+To: Vincent Mailhol <mailhol@kernel.org>
+Cc: Helge Deller <deller@gmx.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, linux-fbdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	linux-sh@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Vincent,
 
-On Mon, 5 Jan 2026, Peter Zijlstra wrote:
+CC linux-m68k
 
-> On Wed, Dec 31, 2025 at 07:25:42PM +1100, Finn Thain wrote:
-> > From: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > Add a Kconfig option for debug builds which logs a warning when an
-> > instrumented atomic operation takes place that's misaligned.
-> > Some platforms don't trap for this.
-> > 
-> > [fthain: added __DISABLE_BUG_TABLE macro.]
-> > 
-> > Cc: Sasha Levin <sashal@kernel.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: x86@kernel.org
-> > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Link: https://lore.kernel.org/lkml/20250901093600.GF4067720@noisy.programming.kicks-ass.net/
-> > Link: https://lore.kernel.org/linux-next/df9fbd22-a648-ada4-fee0-68fe4325ff82@linux-m68k.org/
-> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> > ---
-> > Checkpatch.pl says...
-> > ERROR: Missing Signed-off-by: line by nominal patch author 'Peter Ziljstra <peterz@infradead.org>'
-> > ---
-> > Changed since v5:
-> >  - Add new __DISABLE_BUG_TABLE macro to prevent a build failure on those
-> > architectures which use atomics in pre-boot code like the EFI stub loader:
-> > 
-> > x86_64-linux-gnu-ld: error: unplaced orphan section `__bug_table' from `arch/x86/boot/compressed/sev-handle-vc.o'
-> 
-> Urgh, so why not simply use __DISABLE_EXPORTS, that's typically (ab)used
-> for these things?
-> 
+Thanks for your patch, which is now commit bd710b3da7308cb1
+("video/logo: move logo selection logic to Kconfig") in fbdev/for-next.
 
-OK, I'll change it back to __DISABLE_EXPORTS.
+On Thu, 1 Jan 2026 at 16:26, Vincent Mailhol <mailhol@kernel.org> wrote:
+> Now that the path to the logo file can be directly entered in Kbuild,
+> there is no more need to handle all the logo file selection in the
+> Makefile and the C files.
 
-> Also, unless __DISABLE_BUG_TABLE goes live inside asm/bug.h and kills
-> all __bug_table emissions, its a misnomer.
-> 
+This may do the wrong thing when booting a multi-platform kernel.
 
-Yes, __DISABLE_BUG_TABLE is certainly a misnomer, since what it actually 
-does is to elide code that would emit bug table entries. I would argue 
-that this distinction is splitting hairs but it's moot.
+>
+> The only exception is the logo_spe_clut224 which is only used by the
+> Cell processor (found for example in the Playstation 3) [1]. This
+> extra logo uses its own different image which shows up on a separate
+> line just below the normal logo. Because the extra logo uses a
+> different image, it can not be factorized under the custom logo logic.
+>
+> Move all the logo file selection logic to Kbuild (except from the
+> logo_spe_clut224.ppm), this done, clean-up the C code to only leave
+> one entry for each logo type (monochrome, 16-colors and 224-colors).
+>
+> [1] Cell SPE logos
+> Link: https://lore.kernel.org/all/20070710122702.765654000@pademelon.sonytel.be/
+>
+> Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 
-> Furthermore, that SEV thing is broken and needs to be fixed anyway, this 
-> isn't helping it much. noinstr code should not be using instrumented 
-> things to begin with.
-> 
+> --- a/drivers/video/logo/Kconfig
+> +++ b/drivers/video/logo/Kconfig
 
-The problem is not confined to x86. I needed something that would work for 
-loongarch, arm, riscv etc.
+> @@ -61,6 +63,12 @@ config LOGO_LINUX_CLUT224
+>  config LOGO_LINUX_CLUT224_FILE
+>         string "224-color logo .ppm file"
+>         depends on LOGO_LINUX_CLUT224
+> +       default "drivers/video/logo/logo_dec_clut224.ppm" if MACH_DECSTATION || ALPHA
+> +       default "drivers/video/logo/logo_mac_clut224.ppm" if MAC
 
-Anyway, thanks for your review. I will make the necessary changes.
+E.g. an m68k multi-platform kernel including Mac support will scare
+non-Mac users into thinking their machine was assimilated by the
+Apple Empire...
+
+> +       default "drivers/video/logo/logo_parisc_clut224.ppm" if PARISC
+> +       default "drivers/video/logo/logo_sgi_clut224.ppm" if SGI_IP22 || SGI_IP27 || SGI_IP32
+> +       default "drivers/video/logo/logo_sun_clut224.ppm" if SPARC
+> +       default "drivers/video/logo/logo_superh_clut224.ppm" if SUPERH
+>         default "drivers/video/logo/logo_linux_clut224.ppm"
+>         help
+>           Takes a path to a 224-color logo in the portable pixmap file
+
+> --- a/drivers/video/logo/logo.c
+> +++ b/drivers/video/logo/logo.c
+> @@ -48,59 +48,21 @@ const struct linux_logo * __ref fb_find_logo(int depth)
+>         if (nologo || logos_freed)
+>                 return NULL;
+>
+> -       if (depth >= 1) {
+>  #ifdef CONFIG_LOGO_LINUX_MONO
+> -               /* Generic Linux logo */
+> +       if (depth >= 1)
+>                 logo = &logo_linux_mono;
+>  #endif
+> -#ifdef CONFIG_LOGO_SUPERH_MONO
+> -               /* SuperH Linux logo */
+> -               logo = &logo_superh_mono;
+> -#endif
+> -       }
+>
+> -       if (depth >= 4) {
+>  #ifdef CONFIG_LOGO_LINUX_VGA16
+> -               /* Generic Linux logo */
+> +       if (depth >= 4)
+>                 logo = &logo_linux_vga16;
+>  #endif
+> -#ifdef CONFIG_LOGO_SUPERH_VGA16
+> -               /* SuperH Linux logo */
+> -               logo = &logo_superh_vga16;
+> -#endif
+> -       }
+>
+> -       if (depth >= 8) {
+>  #ifdef CONFIG_LOGO_LINUX_CLUT224
+> -               /* Generic Linux logo */
+> +       if (depth >= 8)
+>                 logo = &logo_linux_clut224;
+>  #endif
+> -#ifdef CONFIG_LOGO_DEC_CLUT224
+> -               /* DEC Linux logo on MIPS/MIPS64 or ALPHA */
+> -               logo = &logo_dec_clut224;
+> -#endif
+> -#ifdef CONFIG_LOGO_MAC_CLUT224
+> -               /* Macintosh Linux logo on m68k */
+> -               if (MACH_IS_MAC)
+
+MACH_IS_MAC can be a runtime check.
+
+> -                       logo = &logo_mac_clut224;
+> -#endif
+> -#ifdef CONFIG_LOGO_PARISC_CLUT224
+> -               /* PA-RISC Linux logo */
+> -               logo = &logo_parisc_clut224;
+> -#endif
+> -#ifdef CONFIG_LOGO_SGI_CLUT224
+> -               /* SGI Linux logo on MIPS/MIPS64 */
+> -               logo = &logo_sgi_clut224;
+> -#endif
+> -#ifdef CONFIG_LOGO_SUN_CLUT224
+> -               /* Sun Linux logo */
+> -               logo = &logo_sun_clut224;
+> -#endif
+> -#ifdef CONFIG_LOGO_SUPERH_CLUT224
+> -               /* SuperH Linux logo */
+> -               logo = &logo_superh_clut224;
+> -#endif
+> -       }
+> +
+>         return logo;
+>  }
+>  EXPORT_SYMBOL_GPL(fb_find_logo);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
