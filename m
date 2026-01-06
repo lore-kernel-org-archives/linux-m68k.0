@@ -1,86 +1,123 @@
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A68032E151
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  6 Jan 2026 12:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D5F339843
+	for <linux-m68k@vger.kernel.org>; Tue,  6 Jan 2026 13:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767704186; cv=none; b=Qfq4XCcofTxe+A40UekgtZ8a+ibZ+GpZHtqNev4qm1llJuAeG6Lx+SnIjhUjBKvU4ERmXzTzWyjIDCa7n5CTEaqfVww5ewAGq3etBav3/746y0CeKQ4SvHL6Fyz3rAzmGD+ucic12X08RRMOnkuNgYnodYuEX6Vj/3mPDzhch2g=
+	t=1767706851; cv=none; b=ZqgFnwVGii55ybAGDPsAa9zuwKK2ZL9vgqtMxTeKtQCeYu3P1fJTzGB0Jn44tgZr4Pc9rmtOLTGlUzFDbtbJDSPqFN+GnrRlXEyq+6HCil91A8KEZym0XIPUSJQsYxAQBTigMVw4t9yUFWCgMya4EO0dZ9tSYil4utL5eD574VU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767704186; c=relaxed/simple;
-	bh=a6QY7v3K7LjddIGzyyZ7ya0cKsRU0fqtaAJcXUSvpLo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JtdJat6WfD/2hS/yY3tDfjHmw4qNtE5E7nPieN7eofStxw4xR85uKj7rnlF7ezQbQsdHOHZ1bPdLImxOFa0NSG47XxAczgVP3VKc6LFBJtwEZUoNWCLz5j8cRs9V/ZKsBzCNXTHAQFUJG8Nfp3FcCLm0Ikq/G1jqiywNll9WTq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=NIQzh2I3; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1767706851; c=relaxed/simple;
+	bh=eQUlLzp42aTbsOmV7Iq9Ny8/PWIEO81VDfoTBl/LZtg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NzB1NGb+o2PuOqEslZWOB/YDPhITX9pRT7z+CYd7OExDKQ3N3JNt2wWoXyGA1EYodcul5HGuwP4eQWLTGD8gjTsd0FciUblp035TXe+WwU95R6JQ0jaA+DToYfRLr04OsSc8Z4wJX9fvKbneFamnXrNMEiU61FuRUQOumV5YwUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=RG3yl+8L; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="NIQzh2I3"
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-34c30f0f12eso858130a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 06 Jan 2026 04:56:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1767704184; x=1768308984; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=a6QY7v3K7LjddIGzyyZ7ya0cKsRU0fqtaAJcXUSvpLo=;
-        b=NIQzh2I3+7ASO4BFyyvOFg3aKjn1Oyq/v1tsPEuxAJN394wV5Gp5MBndu7jWeHujx3
-         se0UdUICNRpl/+843ci5dA2Cm60KlEyg0I2Bdd4BUCe6IMrCE3U6l5zu8D2PGdNNS2Ru
-         +gR9YmIlWiwvtlbyxtK9YNR2QmNDnldWZ4KbU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767704184; x=1768308984;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a6QY7v3K7LjddIGzyyZ7ya0cKsRU0fqtaAJcXUSvpLo=;
-        b=fR08KpAR/wvE7ikcY7sGmLWWEY9zLNNI5yjtVa03BDJ3FoGy8V1rqiFf6AtryUaJw9
-         tY9wEeT0r+e7y38keVTk/F3Mj3yGV3SlfgusCT7HMyXwZOD1qyjNhJ3xgBY9MXzjNpFK
-         wBrpOdf0L+Nch4it8o9JjcECuGIfKPXqeGFE6PWzSzfgHkQ3JcHtBO6yVWcB1uGXpOnE
-         5RuEVdQa57gyR/Lc9zJpoMq3CgkzcAy6cstYTiXLRxcUGlyXP43Ysowcce0VLIMC1OtA
-         5HXUlqYORu9i9ktmsCto9fF0uLlQ4Urr7AVNGvhV2XbwU0o6+XRjz6zOPwLXv4RkNIG0
-         tQhg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4Wr8S/4K0f4HPJCTaXOjQU4X0zElCOG6kVSnixcuBCKFj0+jCanT6F3tXCkrOJKsm06ZnWIoEYvVH@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwNulMpIDKYi8E4yrjRuXEejcdO1A1bD/SuGcBibHLTYp64PWrf
-	lUmXcjZ4KQcr7znk7dX36vbajMZnD2uymVBDQcRyuGWwJPaeECOcBrPWyy3U3kEI/oIlX9cJjQo
-	+qSJ5BDgAGDtaXezW0okXVWYKCTHLLejgQ5gKq5udNg==
-X-Gm-Gg: AY/fxX7d+tqk0n/Qs6FPjM+MLJ/yXtLHkISDl6xYOW6p8uw9BWpCw1YxWgHK8nhNUkV
-	E9EqRjSAVK+x9/5nNl0J5brvQaXyNV6IC0m1JVVLXsqCSuvA2lUN2BOnsH4U3uvyOGuhoJrm8iN
-	TsnAwiCjsAdTPiubVV6Z851mf5BUAKmnejpeldtiwX8rK/Y/2icH6/zJQuulGj1fxNLZaXnY1Y4
-	ky3VLiLP1uCUlABEEkT90sCAI2lvBOvM87xssMTEj2TEOCBHfABlA9aHSJzUPlzVtTLlBUeAylq
-	RrIEZ/U=
-X-Google-Smtp-Source: AGHT+IHnONGJjk+cAuGQ/Uc3C9K5oE87B+HOi6y2Nb+5V2EGCNfaEvbJpioISHK4gDmLBHgSsc6t8cW7NhLgahAIJWI=
-X-Received: by 2002:a17:90b:3e83:b0:341:315:f4ed with SMTP id
- 98e67ed59e1d1-34f5f280f61mr2131814a91.10.1767704183640; Tue, 06 Jan 2026
- 04:56:23 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="RG3yl+8L"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
+	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=O5AOB7TP1vH9WaDeopPf7LMpNUMNG7AaSZbTMezZqx4=; t=1767706846;
+	x=1768311646; b=RG3yl+8LGXphM71a74oL9AC1JaqG1YQ0SvOBn/9Bgaq6Tp4zBFJnNCpfh5HqT
+	u2EI7RuMipGHNdX7cfPDL2o66r4iuHSbSaUcGMchs6uFLrjf4Ow2AYOXe5OjLUSHQ1K2Z376A/TlS
+	+t1LuytuZBYTljNqjV03RovkATL+9BzErChriFPdPAyoYtPePV3oNbJyoe7JxHhzXsZ0eJYLY3HFr
+	EZpZHtX2JoTrxIXFkk746hh6lWwRsNP9z1SLaySmMFldEHCxqioukmQI7eHLCektg/hlxJhvWBvFS
+	vNECC62PyR3SeVpaEmZAUHKo7FcfEOzRCofRO+DSM4drV+bbTA==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.99)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1vd7IY-00000003Usn-0ovI; Tue, 06 Jan 2026 14:40:34 +0100
+Received: from p5dc55f29.dip0.t-ipconnect.de ([93.197.95.41] helo=[192.168.178.61])
+          by inpost2.zedat.fu-berlin.de (Exim 4.99)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1vd7IX-00000002at7-3yr4; Tue, 06 Jan 2026 14:40:34 +0100
+Message-ID: <9277b6ef0478bc6651c03b4220004a4c8a2e1cdb.camel@physik.fu-berlin.de>
+Subject: Re: Preliminary results - was: Re: Question on BIGGEST_ALIGNMENT in
+ GCC on NetBSD/m68k
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: =?ISO-8859-1?Q?Kolbj=F8rn?= Barmen <linux-m68k@kolla.no>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "port-m68k@netbsd.org"
+	 <port-m68k@netbsd.org>, "debian-68k@lists.debian.org"
+	 <debian-68k@lists.debian.org>, "linux-m68k@vger.kernel.org"
+	 <linux-m68k@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 06 Jan 2026 14:40:33 +0100
+In-Reply-To: <f1f4afab-51a4-10b5-106c-e9e6e5528e6f@kolla.no>
+References: 
+	<ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
+	  <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
+	  <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org>
+	  <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>
+	  <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com>
+	  <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
+	  <7d9d8c95-1b06-c6c5-0932-7ba3af55829a@linux-m68k.org>
+	  <CABq5eXH8S9MVoRi5znU+u7EJPmaRA+8yOyd-QKBJMQa10UoAmw@mail.gmail.com>
+	  <6c1d08bf4cd4d7c92338357bd61dca8a23559ad0.camel@physik.fu-berlin.de>
+	  <WtNQmVJr3uIeOkUfpStavGscYvoTLpprxvowAOsqJKw8V7XCOZqKDi3Qw7Z1m8JVMsv71f0VZCVqZ3MiKnjLYp-VwSvtvTLkoVtJpAkA0gA=@r-v-e.co>
+	  <c4f086207e68843ea154b5d41950957fa11c6837.camel@physik.fu-berlin.de>
+	  <CAMuHMdU7Px7bT4XCZC=vF6aUFGj8=cd=refOf2u17mRjp2FUSA@mail.gmail.com>
+	  <2c10a9539a82b534e4a815361bb24c04d30b7e67.camel@physik.fu-berlin.de>
+	  <CAMuHMdXnebgBVWp-uxrmxTFKZkQVU2h-OW7H+7hJ+4beN9DFLg@mail.gmail.com>
+	 <9f1613138de30db0248649e6a36c2b063693057f.camel@physik.fu-berlin.de>
+	 <f1f4afab-51a4-10b5-106c-e9e6e5528e6f@kolla.no>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.2 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260101-custom-logo-v2-0-8eec06dfbf85@kernel.org>
- <20260101-custom-logo-v2-6-8eec06dfbf85@kernel.org> <CAMuHMdVy48F5HAfqfJgbY83KDAztb9YWTqm8mT1ntTfj0311oA@mail.gmail.com>
-In-Reply-To: <CAMuHMdVy48F5HAfqfJgbY83KDAztb9YWTqm8mT1ntTfj0311oA@mail.gmail.com>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Tue, 6 Jan 2026 21:56:11 +0900
-X-Gm-Features: AQt7F2oqCzC4ATldD0uEPXW8K0e3G46S_P8BzIk8JoOxtgGMBUB2Uvx42XKGtbU
-Message-ID: <CAFr9PX=hc31at7uHrZ3qcqtTd=B+726WZyxMz+7j1bAJ1vokhQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] video/logo: move logo selection logic to Kconfig
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Vincent Mailhol <mailhol@kernel.org>, Helge Deller <deller@gmx.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-On Tue, 6 Jan 2026 at 20:54, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Hi Kolbj=C3=B8rn,
 
-> E.g. an m68k multi-platform kernel including Mac support will scare
-> non-Mac users into thinking their machine was assimilated by the
-> Apple Empire...
->
+On Tue, 2026-01-06 at 14:34 +0100, Kolbj=C3=B8rn Barmen wrote:
+> On Mon, 16 Jun 2025, John Paul Adrian Glaubitz wrote:
+>=20
+> > To summarize:
+> >=20
+> > - the ELF header provides provides the e_ident and e_flags fields which=
+ could be
+> >   used for identifying a Linux/m68k system using the 4 bytes alignment =
+ABI
+> > - MIPS uses e_flags for differentiating its ABIs
+> > - PA-RISC sets e_ident to 0x03 (Linux) while every other arch uses 0x00=
+ (SysV ABI)
+> > - qemu-user needs to be patched to deal with the changed alignment (inc=
+lude/user/abitypes.h)
+> > - the kernel needs to be patched to deal with the changed alignment (ar=
+ch/m68k/kernel/signal.c)
+>=20
+>=20
+> Does this patch exist somewhere? I ask because I am migrating to
+> 32bit-aligned userland (https://www.gentoo.org/downloads/#m68k) and the
+> gcc provided fails building kernel, stopping at arch/m68k/kernel/signal.c
 
-This is actually how I tell if my Amiga or Mac is currently connected
-to my monitor... Amiga has the normal tux, Mac has the tux inside of a
-monitor.
+I haven't created that patch yet as my work on this effort is currently pau=
+sed. However, it should
+be straight-forward to update the asserts in the kernel code.
+
+According to Geert, Arnd Bergmann made some changes to the kernel uapi that=
+ would allow the kernel
+to be built with either alignment. Not sure what the current state of thing=
+s is.
+
+Let's CC Arnd to find out.
+
+Adrian
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
