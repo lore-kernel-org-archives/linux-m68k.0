@@ -1,39 +1,40 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D403148B2
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Jan 2026 19:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05E1328613
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Jan 2026 19:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767899192; cv=none; b=Le/r5kPVgt2AmrXxgR9nbsgs1O3eWA6+uGqCS54MoI+zV/xNpKB4ym9VN8TexIhOcRMaRtTXkYO2a8YCk8Eef6BI2GHFWmZuP4adiH8yE7wrvRsgo/DFDtsQWuFdSrclIamwcLSzN3RR8knqyGBz1aus2Rr7GyNZu2I0u9EJTWI=
+	t=1767899193; cv=none; b=OuBXTeAxp5ZhrJ4ssXQZXg3G+9fwpVXB/Ar4CuzxqzW6rk+McqREiDaZ/H1HNc4WsuXYPVKXaDGFHl6gF/Ei8Ra5hBX+F7C9JBNfVPB8+TtD8FPKpO70oD3fJYRTuYbThK/WRUmVQ/t3NVug02XuK+qTup+Ae8htnc1YDpqgNgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767899192; c=relaxed/simple;
-	bh=hMR72iZ0thgJBXHcw7i0rwzD5E7Yh8K/gSE4GwE0s8o=;
+	s=arc-20240116; t=1767899193; c=relaxed/simple;
+	bh=qg2e2Usx8Cl41wSYK/azjfp1gWl9UYs7OwucUlFA8gA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=T1pEb27vBMXNUGkgcFXg/9Rl/JGZrX+9b4cwzUHtlPtuwLaMz0LbqMhFkeCiuduha+EdVHQn+6yf0tfp6r0igxcfCJVTfVeuIbF0nHpTpQOgnRj3d7MoB5rSphLBj7HrEaU2IRFERJiQnNu6AwfZ0SJmAqpk4hm383DMNxEgHk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qhY2rdYh; arc=none smtp.client-ip=172.234.252.31
+	 In-Reply-To:To:Cc; b=HN4lkjcB2doH2LLuCIOAQdrRzJzrBIye79hvD6rS5qZZjfhyLGJRfi+m2yB3aGfSjEON/hoy2UZ75Fq7lwNyFUniUmcBIc8cESM42z5+A2BHzhXnicFK5qjZ/c/9jmOa8+liJ39GSCoVyl/kI8zQLkBp1J/79I56iwH4traRF9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QsNSg27T; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhY2rdYh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QsNSg27T"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id BDFCD42A74;
+	by sea.source.kernel.org (Postfix) with ESMTP id A684F443B0;
+	Thu,  8 Jan 2026 19:06:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C3C4C2BCB0;
 	Thu,  8 Jan 2026 19:06:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77AFFC116C6;
-	Thu,  8 Jan 2026 19:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767899185;
-	bh=hMR72iZ0thgJBXHcw7i0rwzD5E7Yh8K/gSE4GwE0s8o=;
+	s=k20201202; t=1767899189;
+	bh=qg2e2Usx8Cl41wSYK/azjfp1gWl9UYs7OwucUlFA8gA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=qhY2rdYheiSx3xwuiHfLLejkLRsjydMi6hqeIn8urbc7VIAsX3UMODDc8/ODwZMBM
-	 ZibSYxWYAfWkFl8lHICjFhDhgrBIHbzxvKQlydtGvCKznD+YXKXVrhDwzAxgJgIVyV
-	 etSu7HNqasvLViPIDxgnagn9ncv2/l8ttT7hp+GvQxgtHe3yIkS0lyRp9Su4TLFB1Z
-	 5RyT2FR6rg396pQCPnA8gFaSiQrAaMNytt11c6WLOGT4tLE5Ou74q0oz3kxV+2Ol7V
-	 ZXttuOxo+cA9tvBsuLKzzvC0CzVAjvAX3xj0fpL+GmOGogi/DCDM/gvaqwzuvx3DRI
-	 nwONyY/odOJ1g==
+	b=QsNSg27TFoBlkAJi4dxsfETT4aSYXsnD6YRoUNQyNhYblVejyp3WExiE3bN4l+/lQ
+	 9G+hkiFujwtTi6eAHIi46UJBCeL8UwbzWak4cUJybgzlZYkEIYZmoB2BJe9rGvqFEt
+	 9uNyNiG6OzvD5fYKhRCdxteGaX2gYnTkj4qCQRxrUz63f3t7pKuVMwQGZhALnZ/hS9
+	 C+yEE1g6c6Yc2eSb7G0nMI3qABGRfx6X0jRZzDx63LbaJ4s5EX1bgkRrn3xTz6a57E
+	 UWXyv9tXQhW29uHUzFf6kH1vVZikdpwQLSRvKz+E3CO2ScNBeuEXmlmQq+TXb1DYCK
+	 dRESuublD4XUQ==
 From: Vincent Mailhol <mailhol@kernel.org>
-Date: Thu, 08 Jan 2026 20:04:51 +0100
-Subject: [PATCH v3 3/7] video/logo: allow custom logo
+Date: Thu, 08 Jan 2026 20:04:52 +0100
+Subject: [PATCH v3 4/7] newport_con: depend on LOGO_LINUX_CLUT224 instead
+ of LOGO_SGI_CLUT224
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -42,7 +43,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260108-custom-logo-v3-3-5a7aada7a6d4@kernel.org>
+Message-Id: <20260108-custom-logo-v3-4-5a7aada7a6d4@kernel.org>
 References: <20260108-custom-logo-v3-0-5a7aada7a6d4@kernel.org>
 In-Reply-To: <20260108-custom-logo-v3-0-5a7aada7a6d4@kernel.org>
 To: Helge Deller <deller@gmx.de>, 
@@ -54,132 +55,54 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-fbdev@vger.kernel.org,
  linux-sh@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
  Vincent Mailhol <mailhol@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4516; i=mailhol@kernel.org;
- h=from:subject:message-id; bh=hMR72iZ0thgJBXHcw7i0rwzD5E7Yh8K/gSE4GwE0s8o=;
- b=owGbwMvMwCV2McXO4Xp97WbG02pJDJkJDMKnTihKy1vkmduLWSwrUvlwyL0rJ/VRsuk29oaVD
- Y59xnM6JrIwiHExWIopsiwr5+RW6Cj0Djv01xJmDisTyBBpkQYGIGBh4MtNzCs10jHSM9U21DM0
- 1AEyGbg4BWCqI54yMtzn26M9q4L1zhktFfa3F75MvqWt0RlcK+SRvHqqot4O0TuMDD+lnJ0vV70
- tu6ITxH0xp8Rr0ROGNa0zJVIYvuyb8WJaDzsA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1323; i=mailhol@kernel.org;
+ h=from:subject:message-id; bh=qg2e2Usx8Cl41wSYK/azjfp1gWl9UYs7OwucUlFA8gA=;
+ b=owGbwMvMwCV2McXO4Xp97WbG02pJDJkJDGJbLKe79Gstivg4787eg29LJr9ivsllH2217cHfA
+ /d27T6Q0TGRhUGMi8FSTJFlWTknt0JHoXfYob+WMHNYmUCGSIs0MAABCwNfbmJeqZGOkZ6ptqGe
+ oaEOkMnAxSkAU53AxvA/eu/x7i7NMq8/Rq/UZySfnHt0q0b7VzUjRuEXV07NuM9+kpHh9q3SB5I
+ O2cz/or7wb/ePWbgrdJZpg9XifnEnrVxvU3EeAA==
 X-Developer-Key: i=mailhol@kernel.org; a=openpgp;
  fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
 
-Some people like to replace the default Tux boot logo by an image of
-their own. There exist a few tutorials here [1] and there [2]. But
-this requires modifying the source tree which is a bit cumbersome.
-
-Add a string entry in Kbuild for each of the logo categories
-(monochrome, 16-colors, 224-colors). The string entry takes a path to
-a .pbm or .ppm image allowing the user to more easily provide a custom
-logo without having to modify the sources.
-
-Add an help entry with a short hint on how to convert images to the
-portable pixmap file format.
-
-Update the Makefile accordingly. When converted to .c file, the logo
-will have one of these fixed file name:
-
-  - logo_linux_mono.c
-  - logo_linux_vga16.c
-  - logo_linux_clut224.c:
-
-depending on the image type and this regardless of the name of the
-.pgm/.ppm source filename. This will allow for further simplifications
-in an upcoming change.
-
-[1] ArmadeuS Project wiki -- Linux Boot Logo
-Link: https://www.armadeus.org/wiki/index.php?title=Linux_Boot_Logo
-
-[2] Timesys -- How To Use a Custom Boot Logo / Splash Screen
-Link: https://linuxlink.timesys.com/docs/wiki/engineering/HOWTO_Use_a_custom_boot_logo
+newport_show_logo() is only activated if CONFIG_LOGO_SGI_CLUT224 is
+set (otherwise it is a NOP). This configuration item will be removed
+in an upcoming change so instead, make it depend on LOGO_LINUX_CLUT224.
 
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 ---
- drivers/video/logo/Kconfig  | 41 +++++++++++++++++++++++++++++++++++++++++
- drivers/video/logo/Makefile | 11 ++++++++++-
- 2 files changed, 51 insertions(+), 1 deletion(-)
+**Changelog**
 
-diff --git a/drivers/video/logo/Kconfig b/drivers/video/logo/Kconfig
-index ce6bb753522d..1d1651c067a1 100644
---- a/drivers/video/logo/Kconfig
-+++ b/drivers/video/logo/Kconfig
-@@ -22,14 +22,55 @@ config LOGO_LINUX_MONO
- 	bool "Standard black and white Linux logo"
- 	default y
+v2 -> v3:
+
+  - Typo fix in patch description:
+
+      s/CCONFIG_LOGO_LINUX_CLUT224/CONFIG_LOGO_SGI_CLUT224/g
+---
+ drivers/video/console/newport_con.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
+index 242415366074..337e04236d6d 100644
+--- a/drivers/video/console/newport_con.c
++++ b/drivers/video/console/newport_con.c
+@@ -95,7 +95,7 @@ static inline void newport_init_cmap(void)
  
-+config LOGO_LINUX_MONO_FILE
-+	string "Monochrome logo .pbm file"
-+	depends on LOGO_LINUX_MONO
-+	default "drivers/video/logo/logo_linux_mono.pbm"
-+	help
-+	  Takes a path to a monochromatic logo in the portable pixmap file
-+	  format (.pbm). This defaults to the Tux penguin.
-+
-+	  For example, the below ImageMagick command can be used to reduce
-+	  an image to black and white and convert it into a pbm file:
-+
-+	    magick source_image -compress none destination.pbm
-+
- config LOGO_LINUX_VGA16
- 	bool "Standard 16-color Linux logo"
- 	default y
+ static const struct linux_logo *newport_show_logo(void)
+ {
+-#ifdef CONFIG_LOGO_SGI_CLUT224
++#ifdef CONFIG_LOGO_LINUX_CLUT224
+ 	const struct linux_logo *logo = fb_find_logo(8);
+ 	const unsigned char *clut;
+ 	const unsigned char *data;
+@@ -127,7 +127,7 @@ static const struct linux_logo *newport_show_logo(void)
+ 	return logo;
+ #else
+ 	return NULL;
+-#endif /* CONFIG_LOGO_SGI_CLUT224 */
++#endif /* CONFIG_LOGO_LINUX_CLUT224 */
+ }
  
-+config LOGO_LINUX_VGA16_FILE
-+	string "16-color logo .ppm file"
-+	depends on LOGO_LINUX_VGA16
-+	default "drivers/video/logo/logo_linux_vga16.ppm"
-+	help
-+	  Takes a path to a logo in the portable pixmap file format (.ppm),
-+	  using the 16 colors from the drivers/video/logo/clut_vga16.ppm
-+	  palette. This defaults to the Tux penguin.
-+
-+	  For example, the below ImageMagick command can be used to reduce an
-+	  image to the VGA 16 colors palette and convert into a ppm file:
-+
-+	    magick source_image -compress none \
-+	      -remap drivers/video/logo/clut_vga16.ppm destination.ppm
-+
- config LOGO_LINUX_CLUT224
- 	bool "Standard 224-color Linux logo"
- 	default y
- 
-+config LOGO_LINUX_CLUT224_FILE
-+	string "224-color logo .ppm file"
-+	depends on LOGO_LINUX_CLUT224
-+	default "drivers/video/logo/logo_linux_clut224.ppm"
-+	help
-+	  Takes a path to a 224-color logo in the portable pixmap file
-+	  format (.ppm). This defaults to the Tux penguin.
-+
-+	  For example, the below ImageMagick command can be used to reduce
-+	  an image palette to 224 colors and convert it into a ppm file:
-+
-+	    magick source_image -compress none -colors 224 destination.ppm
-+
- config LOGO_DEC_CLUT224
- 	bool "224-color Digital Equipment Corporation Linux logo"
- 	depends on MACH_DECSTATION || ALPHA
-diff --git a/drivers/video/logo/Makefile b/drivers/video/logo/Makefile
-index 3f249e9dcf37..ac8e9da3f51a 100644
---- a/drivers/video/logo/Makefile
-+++ b/drivers/video/logo/Makefile
-@@ -22,7 +22,16 @@ hostprogs := pnmtologo
- 
- # Create commands like "pnmtologo -t mono -n logo_mac_mono -o ..."
- quiet_cmd_logo = LOGO    $@
--      cmd_logo = $(obj)/pnmtologo -t $2 -n $* -o $@ $<
-+      cmd_logo = $(obj)/pnmtologo -t $2 -n $(basename $(notdir $@)) -o $@ $<
-+
-+$(obj)/logo_linux_mono.c: $(CONFIG_LOGO_LINUX_MONO_FILE) $(obj)/pnmtologo FORCE
-+	$(call if_changed,logo,mono)
-+
-+$(obj)/logo_linux_vga16.c: $(CONFIG_LOGO_LINUX_VGA16_FILE) $(obj)/pnmtologo FORCE
-+	$(call if_changed,logo,vga16)
-+
-+$(obj)/logo_linux_clut224.c: $(CONFIG_LOGO_LINUX_CLUT224_FILE) $(obj)/pnmtologo FORCE
-+	$(call if_changed,logo,clut224)
- 
- $(obj)/%.c: $(src)/%.pbm $(obj)/pnmtologo FORCE
- 	$(call if_changed,logo,mono)
+ static inline void newport_clear_screen(int xstart, int ystart, int xend,
 
 -- 
 2.52.0
