@@ -1,105 +1,129 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D281277023
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Jan 2026 02:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+Received: from os3-371-18707.vs.sakura.ne.jp (os3-371-18707.vs.sakura.ne.jp [133.167.82.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6164427A45C
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Jan 2026 03:24:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=133.167.82.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767840996; cv=none; b=QWpYLHbM9/FNCCqhmui4EmEU9RAsw0WHfHdgE8vIMy1MO4vnYD9Ce9V2QuaaZuCD387uBFrY6FUUFtPHA42Vx4EMIY06X8LYjKQr5UuAfYvIfj7v222Q3V/g1Fa12nsHZfSkg6HY20ZW4+49xvK8ZGH+Xh8gA0EfZ6S024bXzTQ=
+	t=1767842671; cv=none; b=l/1ZYfBlR147Rvj2vsfM2/qvx2S8po+/Y/i74lFGar2gfCyoX2Wev47Cu9tcL+yr1LzTAt4rQfGAJ/S8w6EOPH/jnrzynIiUalYxJW+Rr3d2Z/38oBX4C7q8I1gvNJ1R5Wg106moL7y6s+A33DZYsE0XP2cmzC+sEIJ23j7zmsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767840996; c=relaxed/simple;
-	bh=bb09VXEHSGVuDvACYJHsjuF/qKdFpVlUXhZlI58yIwU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ium39sQXra8QOvqdaYTQitcd11hTFfq+hOV6Wg95ImQPjC60gJnqcAmnYiObMYpLq8lnBB9Sp4zwMpXlWIN2E4yyddieCNh315mfTj/iJmIEDrwXkzBtWjXmAdTFY8sMyhVtw95EevrSgfh/hE5Zdcuz03UC4zqOxeFl9mskjrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VO9+Hp/X; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VO9+Hp/X"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8034D6000A;
-	Thu,  8 Jan 2026 02:56:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97908C4CEF1;
-	Thu,  8 Jan 2026 02:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767840993;
-	bh=bb09VXEHSGVuDvACYJHsjuF/qKdFpVlUXhZlI58yIwU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VO9+Hp/XVRs8XQB3IDBstup2R+DaU4I6K4mDp34Wm113uMcakMBKaj2eTx55ExHtE
-	 nBWUzkdaWvlhDxELVvEA3C6puD6nUZG5J+gpcQ61WkLHnhj+M05LSE5AZcHJamwhvc
-	 j/BMfPrbYmdBOqJI5BeEugABP3Mc/vfHCk9GLrpJscoyfLAOJwB+2t8XFPTPsEybag
-	 xGnWNL183qpjfSIH8SOBIaB8sVnhazL4Rw/1WNvWFQdpTNcIdnvnpj/0Brkneg1BPR
-	 7qMuhdE1AoXtCk2F775jaiAkT9nh2gM4h7JiM3GPN+qLCo8vxQs/u1WGbxiPYaxbeg
-	 hV7kgr+lj43kw==
-Message-ID: <dc57f648-524c-4fdc-9fce-73f1bab2fee4@kernel.org>
-Date: Wed, 7 Jan 2026 18:56:29 -0800
+	s=arc-20240116; t=1767842671; c=relaxed/simple;
+	bh=3fDnAEZyh9eQP2BgGX84E9knAjw64Ap2K+ewZiDWFDk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bTXgX/tblQ2wiYSDrSZYD9MKH55shMwXAWpD1ecUqf33StMLy1hkA75uZRXPOsid2vD31KqVE+vDScflvaem+33jawnOW/mMlOkhMSGsQLKrirWinw90zOgZS6zGWSMEDUCUtJfoRqVmYdefONpwimKDlu63u9KyIEwA+2DwLqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux-m68k.org; spf=fail smtp.mailfrom=lists.linux-m68k.org; arc=none smtp.client-ip=133.167.82.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lists.linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=lists.linux-m68k.org
+From: "lists.linux-m68k.org"<linux-m68k@lists.linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Subject: =?UTF-8?B?44Ki44Kr44Km44Oz44OI5oOF5aCx44Gu5a6a5pyf56K66KqN44Gu44GU5qGI5YaF?=
+Date: 8 Jan 2026 12:24:26 +0900
+Message-ID: <20260108122426.B60AE0449B91881B@lists.linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/28] arc: introduce arch_zone_limits_init()
-To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Alex Shi <alexs@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>,
- Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@kernel.org>,
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- "David S. Miller" <davem@davemloft.net>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- David Hildenbrand <david@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
- Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
- Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Jonathan Corbet <corbet@lwn.net>, "Liam R. Howlett"
- <Liam.Howlett@oracle.com>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
- Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
- Palmer Dabbelt <palmer@dabbelt.com>, Pratyush Yadav <pratyush@kernel.org>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- Stafford Horne <shorne@gmail.com>, Suren Baghdasaryan <surenb@google.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
- Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
- Will Deacon <will@kernel.org>, x86@kernel.org, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-mm@kvack.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- sparclinux@vger.kernel.org
-References: <20260102070005.65328-1-rppt@kernel.org>
- <20260102070005.65328-3-rppt@kernel.org>
-Content-Language: en-US
-From: Vineet Gupta <vgupta@kernel.org>
-In-Reply-To: <20260102070005.65328-3-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
+linux-m68k@lists.linux-m68k.org =E6=A7=98=E5=B9=B3=E7=B4=A0=E3=82=88=E3=82=
+=8A
 
+lists.linux-m68k.org =E3=81=AE=E3=82=B5=E3=83=BC=E3=83=93=E3=82=B9=E3=82=92=
+=E3=81=94=E5=88=A9=E7=94=A8=E3=81=84=E3=81=9F=E3=81=A0=E3=81=8D=E3=80=81=E8=
+=AA=A0=E3=81=AB=E3=81=82=E3=82=8A=E3=81=8C=E3=81=A8=E3=81=86=E3=81=94=E3=81=
+=96=E3=81=84=E3=81=BE=E3=81=99=E3=80=82
 
-On 1/1/26 22:59, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
->
-> Move calculations of zone limits to a dedicated arch_zone_limits_init()
-> function.
->
-> Later MM core will use this function as an architecture specific callback
-> during nodes and zones initialization and thus there won't be a need to
-> call free_area_init() from every architecture.
->
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+lists.linux-m68k.org=20
+=E3=81=A7=E3=81=AF=E3=80=81=E3=82=B5=E3=83=BC=E3=83=93=E3=82=B9=E3=81=AE=E5=
+=AE=89=E5=85=A8=E6=80=A7=E3=81=8A=E3=82=88=E3=81=B3=E3=81=8A=E5=AE=A2=E6=A7=
+=98=E6=83=85=E5=A0=B1=E4=BF=9D=E8=AD=B7=E3=81=AE=E8=A6=B3=E7=82=B9=E3=81=8B=
+=E3=82=89=E3=80=81=E3=81=94=E7=99=BB=E9=8C=B2=E3=81=84=E3=81=9F=E3=81=A0=E3=
+=81=84=E3=81=A6=E3=81=84=E3=82=8B=E3=82=A2=E3=82=AB=E3=82=A6=E3=83=B3=E3=83=
+=88=E6=83=85=E5=A0=B1=E3=81=AB=E3=81=A4=E3=81=84=E3=81=A6=E3=80=81=E5=AE=9A=
+=E6=9C=9F=E7=9A=84=E3=81=AA=E7=A2=BA=E8=AA=8D=E3=82=92=E3=81=8A=E9=A1=98=E3=
+=81=84=E3=81=97=E3=81=A6=E3=81=8A=E3=82=8A=E3=81=BE=E3=81=99
+=E3=80=82=E3=81=93=E3=81=AE=E3=81=94=E6=A1=88=E5=86=85=E3=81=AF=E3=80=81=E3=
+=82=B7=E3=82=B9=E3=83=86=E3=83=A0=E3=81=AE=E5=AE=89=E5=AE=9A=E9=81=8B=E7=94=
+=A8=E3=81=8A=E3=82=88=E3=81=B3=E3=82=BB=E3=82=AD=E3=83=A5=E3=83=AA=E3=83=86=
+=E3=82=A3=E6=B0=B4=E6=BA=96=E7=B6=AD=E6=8C=81=E3=82=92=E7=9B=AE=E7=9A=84=E3=
+=81=A8=E3=81=97=E3=81=9F=E5=AE=9A=E6=9C=9F=E7=A2=BA=E8=AA=8D=E3=81=AE=E4=B8=
+=80=E7=92=B0=E3=81=A8=E3=81=97=E3=81=A6=E3=81=8A=E9=80=81=E3=82=8A=E3=81=97=
+=E3=81=A6=E3=81=8A=E3=82=8A=E3=81=BE=E3=81=99=E3=80=82=E3=81=8A=E6=89=8B=E6=
+=95=B0=E3=81=A7=E3=81=AF=E3=81=94=E3=81=96=E3=81=84=E3=81=BE
+=E3=81=99=E3=81=8C=E3=80=81=E4=B8=8B=E8=A8=98=E3=82=88=E3=82=8A=E7=8F=BE=E5=
+=9C=A8=E3=81=AE=E8=A8=AD=E5=AE=9A=E5=86=85=E5=AE=B9=E3=82=92=E3=81=94=E7=A2=
+=BA=E8=AA=8D=E3=81=8F=E3=81=A0=E3=81=95=E3=81=84=E3=80=82
 
-Thx !
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80
+=E2=96=A0 =E3=82=A2=E3=82=AB=E3=82=A6=E3=83=B3=E3=83=88=E6=83=85=E5=A0=B1=
+=E3=81=AE=E7=A2=BA=E8=AA=8D
+=F0=9F=94=97=20
+https://hotelapucaranapalace.com.br/slowd/verifications/qulita?zonealldom=
+=3Dlinux-m68k@lists.linux-m68k.org
+=EF=BC=88=E2=80=BB=E4=B8=8A=E8=A8=98=E3=83=AA=E3=83=B3=E3=82=AF=E3=81=AF li=
+sts.linux-m68k.org =E5=85=AC=E5=BC=8F=E3=82=B5=E3=82=A4=E3=83=88=E5=86=85=
+=E3=81=AE=E3=82=BB=E3=82=AD=E3=83=A5=E3=83=AA=E3=83=86=E3=82=A3=E9=96=A2=E9=
+=80=A3=E3=83=9A=E3=83=BC=E3=82=B8=E3=81=A7=E3=81=99=EF=BC=89
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80
+=E3=80=90=E7=A2=BA=E8=AA=8D=E5=AF=BE=E8=B1=A1=E3=80=91
+=E5=AF=BE=E8=B1=A1=E3=82=A2=E3=82=AB=E3=82=A6=E3=83=B3=E3=83=88=EF=BC=9Alin=
+ux-m68k@lists.linux-m68k.org
+=E7=A2=BA=E8=AA=8D=E6=9C=9F=E9=99=90=EF=BC=9A=E6=9C=AC=E3=83=A1=E3=83=BC=E3=
+=83=AB=E5=8F=97=E4=BF=A1=E5=BE=8C=E3=80=81=E6=95=B0=E6=97=A5=E4=BB=A5=E5=86=
+=85=E3=82=92=E7=9B=AE=E5=AE=89=E3=81=AB=E3=81=94=E7=A2=BA=E8=AA=8D=E3=81=8F=
+=E3=81=A0=E3=81=95=E3=81=84
+=E3=81=94=E6=A1=88=E5=86=85=E6=97=A5=EF=BC=9A2026=E5=B9=B41=E6=9C=887=E6=97=
+=A5=EF=BC=88=E6=B0=B4=EF=BC=89
+=E6=9C=AC=E3=81=94=E6=A1=88=E5=86=85=E3=81=AB=E3=81=8A=E5=BF=83=E5=BD=93=E3=
+=81=9F=E3=82=8A=E3=81=8C=E3=81=AA=E3=81=84=E5=A0=B4=E5=90=88=E3=82=84=E3=80=
+=81=E3=82=A2=E3=82=AB=E3=82=A6=E3=83=B3=E3=83=88=E3=81=AE=E3=81=94=E5=88=A9=
+=E7=94=A8=E7=8A=B6=E6=B3=81=E3=81=AB=E4=B8=8D=E5=AE=89=E3=81=8C=E3=81=82=E3=
+=82=8B=E5=A0=B4=E5=90=88=E3=81=AF=E3=80=81=E5=85=AC=E5=BC=8F=E3=82=B5=E3=82=
+=A4=E3=83=88=E3=82=88=E3=82=8A=E3=82=B5=E3=83=9D=E3=83=BC=E3=83=88=E7=AA=93=
+=E5=8F=A3=E3=82=92=E3=81=94=E7=A2=BA=E8=AA=8D=E3=81=8F=E3=81=A0=E3=81=95=E3=
+=81=84=E3=80=82
 
-Acked-by: Vineet Gupta <vgupta@kernel.org>
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80
+=E3=80=90=E3=82=B5=E3=83=9D=E3=83=BC=E3=83=88=E7=AA=93=E5=8F=A3=E3=80=91lis=
+ts.linux-m68k.org=20
+=E3=82=AB=E3=82=B9=E3=82=BF=E3=83=9E=E3=83=BC=E3=82=B5=E3=83=9D=E3=83=BC=E3=
+=83=88=E5=8F=97=E4=BB=98=E6=99=82=E9=96=93=EF=BC=9A9:00=E3=80=9C18:00=EF=BC=
+=88=E5=B9=B4=E4=B8=AD=E7=84=A1=E4=BC=91=EF=BC=89
+=E9=9B=BB=E8=A9=B1=EF=BC=9A0120-86-0000=EF=BC=88=E3=83=95=E3=83=AA=E3=83=BC=
+=E3=83=80=E3=82=A4=E3=83=A4=E3=83=AB=EF=BC=89
+=E3=83=A1=E3=83=BC=E3=83=AB=EF=BC=9Asupport@lists.linux-m68k.org
+
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80
+=E2=80=BB=E6=9C=AC=E3=83=A1=E3=83=BC=E3=83=AB=E3=81=AF=E9=80=81=E4=BF=A1=E5=
+=B0=82=E7=94=A8=E3=82=A2=E3=83=89=E3=83=AC=E3=82=B9=E3=82=88=E3=82=8A=E8=87=
+=AA=E5=8B=95=E9=85=8D=E4=BF=A1=E3=81=95=E3=82=8C=E3=81=A6=E3=81=84=E3=81=BE=
+=E3=81=99=E3=80=82=E6=9C=AC=E3=83=A1=E3=83=BC=E3=83=AB=E3=81=B8=E3=81=AE=E7=
+=9B=B4=E6=8E=A5=E3=81=AE=E3=81=94=E8=BF=94=E4=BF=A1=E3=81=AB=E3=81=AF=E5=AF=
+=BE=E5=BF=9C=E3=81=A7=E3=81=8D=E3=81=8B=E3=81=AD=E3=81=BE=E3=81=99=E3=81=AE=
+=E3=81=A7=E3=80=81=E3=81=94=E4=BA=86=E6=89=BF=E3=81=8F=E3=81=A0=E3=81=95=E3=
+=81=84=E3=80=82=E4=BB=8A=E5=BE=8C=E3=81=A8=E3=82=82=20
+lists.linux-m68k.org =E3=82=92=E3=82=88=E3=82=8D=E3=81=97=E3=81=8F=E3=81=8A=
+=E9=A1=98=E3=81=84=E7=94=B3=E3=81=97=E4=B8=8A=E3=81=92=E3=81=BE=E3=81=99=E3=
+=80=82
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80
+=C2=A9 2026 lists.linux-m68k.org
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80
