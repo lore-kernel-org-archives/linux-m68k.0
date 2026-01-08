@@ -1,40 +1,40 @@
 Received: from coreboot.org (mail.coreboot.org [78.46.105.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E79288C2D
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Jan 2026 06:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1CE72FFDE3
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Jan 2026 06:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=78.46.105.101
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767852390; cv=pass; b=dV3ZKBmXuql+g27IKx5MqMefWP+IFPXRGoOpgP8lxDQ286l5fyPI+pCQXq0z8bWmRTWUwj5y4IJAM9iWJsQWU9KeHW0lPhaeaG4bRqtOBHOWnPhYrYpqHNh8TngOf/eIvrKGZNfrE8tFhYyaS08/keFtR2KbrZMugnIHRvAgAxs=
+	t=1767852392; cv=pass; b=dt5y0iXJgZQPZ77ufLDERyG4k+wScHIUl/hQyzJdMqqu8LJhYs8BqFk8+XZ/EDIFVgIWmRZYa/e0WlZoKo7rRBtX3dmEBj57Ywb8lh+rmaOrLExrf1lDsmJJwrdLcU7WY8lpLnKufmvHpIYbLSeBla4+x8No0MO/Xk29+UXY9Rs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767852390; c=relaxed/simple;
-	bh=Aef3uOojhktxdpgbBVtj2i10xCfqok61pegQ7KkgfPY=;
+	s=arc-20240116; t=1767852392; c=relaxed/simple;
+	bh=uG3Q4KnFzTOVKzxEMW3sNaSSgRnOO7PzJVCdYDRJyMI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FeNIfLacM9HWv/anCBVDBtXiTh01Gshua+FW+zD/jUf7fgxIGixbR5VdfiwuYoHsyRH5y199tvwPbqTOacIwmcpqU4g2ZUVND2Jt5t+26YM3NrKmFzd8X+jHc+Jzsi/7OAJXFN5UptCeloG4i18Fo3dta2LH6PRELuQ+gHGvwSo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=coreboot.org; spf=pass smtp.mailfrom=coreboot.org; dkim=pass (1024-bit key) header.d=coreboot.org header.i=@coreboot.org header.b=pJ1ngfZl; arc=pass smtp.client-ip=78.46.105.101
+	 MIME-Version; b=eT2UqdCoK+TIa/NYotOQFceMe41wRzQXSgex8ohQYrPGC28rwB0rFABYIXBT5LZabbP5jz3Q5HN+FfaPNw6xN6EXxtZWZbsjHkoQwYLO5YPZwDuqClG5bnWmQ0AQ4U5B/G4XCzBPj6QunYhRLTdHdqJb0kiq17yMzfHUqSbKC4A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=coreboot.org; spf=pass smtp.mailfrom=coreboot.org; dkim=pass (1024-bit key) header.d=coreboot.org header.i=@coreboot.org header.b=ECG9EIIZ; arc=pass smtp.client-ip=78.46.105.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=coreboot.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=coreboot.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=coreboot.org header.i=@coreboot.org header.b="pJ1ngfZl"
+	dkim=pass (1024-bit key) header.d=coreboot.org header.i=@coreboot.org header.b="ECG9EIIZ"
 Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-	by coreboot.org (Postfix) with ESMTPA id 6C95F81792;
-	Thu,  8 Jan 2026 06:06:22 +0000 (UTC)
+	by coreboot.org (Postfix) with ESMTPA id 0DAC281799;
+	Thu,  8 Jan 2026 06:06:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=coreboot.org;
-	s=dkim; t=1767852383; h=from:from:sender:reply-to:subject:subject:date:date:
+	s=dkim; t=1767852386; h=from:from:sender:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rfXIiselqp+z5r0pgynR7xOhQL8mToJ8Go6ROMue2VI=;
-	b=pJ1ngfZlSr75h5LnbQW5FU1GnT8IdCJXw97F7ZDhzs7kn7JPv/HOXF1QH95OQD4aNkRjGY
-	WZvj/2ohcv6RJVQSEbbh/Sw/AYVES+hrEcEVQL10xWymBuBsfEuOslbv7lrgXavzdYidTG
-	0Puv1cgL51KJjKjeJyWSaUbFdegQUNc=
+	bh=bgWW/qOyI8oR77Syc1vNd9FGTBSyCeMClbyKNA/+K7w=;
+	b=ECG9EIIZEB3juTNk1k1io86+X7u3v1bDtKyIjoYCGJL2JNVx4bPuROzKfV+0CCq0/KZWX1
+	JOcnqw8gMC3rFXpIz4aK9eHoQ6mhlYwr+tpwpvRn55srDJEAf021sNK+wlcwu48xqSj6m0
+	2WDBjPRXm61sp27v3Fl+MvugK03G6ZI=
 From: Stefan <stefan.reinauer@coreboot.org>
 To: geert@linux-m68k.org
 Cc: linux-m68k@lists.linux-m68k.org,
 	Stefan <stefan.reinauer@coreboot.org>
-Subject: [PATCH 1/5] m68k: Add vDSO support for fast TLS access
-Date: Wed,  7 Jan 2026 22:05:29 -0800
-Message-ID: <20260108060533.3891380-2-stefan.reinauer@coreboot.org>
+Subject: [PATCH 2/5] m68k: Extend vDSO with clock_gettime() support infrastructure
+Date: Wed,  7 Jan 2026 22:05:30 -0800
+Message-ID: <20260108060533.3891380-3-stefan.reinauer@coreboot.org>
 In-Reply-To: <20260108060533.3891380-1-stefan.reinauer@coreboot.org>
 References: <20260108060533.3891380-1-stefan.reinauer@coreboot.org>
 Precedence: bulk
@@ -45,917 +45,745 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=coreboot.org;
-	s=dkim; t=1767852383; h=from:from:sender:reply-to:subject:subject:date:date:
+	s=dkim; t=1767852386; h=from:from:sender:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rfXIiselqp+z5r0pgynR7xOhQL8mToJ8Go6ROMue2VI=;
-	b=o7QmSl+qCJF3yPGDlHXtvqiMN6Eaak/K16hfc8NANidDQPRUC+LDJB9/UxmyxJqSizhAMX
-	YVjiXSADAqHfIYyJLzVvmj1KiKLPjI/t++6FR7ULuSikBcHBx85Rk4YzPkp57MTrQ/znEa
-	S1yJwCOHKVw0W5qhfZws9zoTTGxwUFc=
-ARC-Seal: i=1; s=dkim; d=coreboot.org; t=1767852383; a=rsa-sha256;
+	bh=bgWW/qOyI8oR77Syc1vNd9FGTBSyCeMClbyKNA/+K7w=;
+	b=TMU5Pe61bmM2azqCp/gt/faBoSmfb0d4w9qGGIomn5RCIVEi9g2REfn7bRVX2LL8o6EQlm
+	Ue3J9bUH6/VQUZvmY02rwipEimG57PuOeno1EZP4e0SR6rK5eQelnw4DoNCNdL4n4Ekme1
+	xdPfes8rsvNXQ6CnbOWF5QzA5Fbu/lU=
+ARC-Seal: i=1; s=dkim; d=coreboot.org; t=1767852386; a=rsa-sha256;
 	cv=none;
-	b=HtSljTeRGMsz+mGh5MOy1RGNM3OBe4+HaGqTyN3e02U5OMv+UCghqOu06I1uI8S4HsyCHLIEx7lFu3Ykr62Blu4CirAw6jzin4hY7LXgv59EOrLBqd33EZr+dER4dRv8yCIvCw9+NvEJv4WiXTbK39AjiBqqZuUP0PC/6P3sOuM=
+	b=AIb1GaHlliZjyjXlRUey7BhCchUFCHOmcUVB51qp/t0q1zICZC8k0jq5gqGsrPeZ2zmCal3Xr1/DtgiybsZZW9vG1Ph2/MHJexjedYOi2+xpT8rQBmfXjanfiTreh/l+P4174z+qUMUHf4q+U1wPIinCJMPfAhg7Z+P/HbXwxfU=
 ARC-Authentication-Results: i=1; coreboot.org;
 	auth=pass smtp.auth=stepan@coreboot.org smtp.mailfrom=stefan.reinauer@coreboot.org
+X-Spamd-Bar: +
+X-Spam-Level: *
 Authentication-Results: coreboot.org;
 	auth=pass smtp.auth=stepan@coreboot.org smtp.mailfrom=stefan.reinauer@coreboot.org
-X-Spamd-Bar: /
 
-Implement a vDSO (virtual dynamic shared object) for the m68k
-architecture to provide fast userspace access to the thread-local
-storage (TLS) pointer without requiring a system call.
+Add the data structures and kernel infrastructure needed to support fast
+userspace clock_gettime() via the vDSO. This extends the existing TLS-only
+vDSO with:
 
-The vDSO consists of two mappings installed during execve:
-  - A data page ([vvar]) mapped read-only to userspace containing
-    the TLS pointer at offset 0, updated by the kernel on context
-    switch and set_thread_area() calls
-  - A code page ([vdso]) containing a minimal ELF with the vDSO
-    symbol __vdso_m68k_tls for identification
+Data structure changes (vdso.h):
+- Expand m68k_vdso_data to include clock state: sequence counter for
+  consistent reads, raw tick counters, timer parameters (frequency,
+  multiplier, shift), and pre-computed wall/monotonic time values
+- Add timer type constants for Mac VIA and Amiga CIA timers
+- Add a timer page to the vDSO layout for mapping hardware timer
+  registers read-only to userspace
+- Add sequence counter helpers (m68k_vdso_write_begin/end) for lock-free
+  updates
+- Add m68k_vdso_init_clock() and m68k_vdso_set_timer_addr() declarations
 
-This significantly improves pthread performance on m68k systems with
-MMU enabled, as TLS pointer access is extremely frequent in threaded
-applications. Instead of trapping into the kernel, userspace can now
-read the TLS pointer directly from the vDSO data page.
+Kernel infrastructure (vdso.c):
+- Add vdso_timer_mapping with fault handler to map platform timer
+  registers into userspace
+- Implement m68k_vdso_set_timer_addr() for platform code to register
+  timer physical address
+- Implement m68k_vdso_init_clock() to initialize clocksource parameters
+- Update arch_setup_additional_pages() to install the timer page between
+  the data page and code pages
 
-The implementation follows the standard kernel vDSO patterns using
-vm_special_mapping with fault handlers for the data page and
-arch_setup_additional_pages() for installation.
+Linker script (vdso.lds):
+- Add vDSO linker script for m68k defining the ELF structure and
+  exporting __vdso_m68k_tls
+
+The timer page allows userspace to read hardware timer registers directly
+without a syscall. On platforms without vDSO clock support, accesses to
+the timer page will fault and the vDSO code falls back to the syscall
+path.
+
+This commit provides the kernel-side infrastructure; platform-specific
+timer integration (Mac VIA, Amiga CIA) and the userspace vDSO clock
+routines will follow in subsequent patches.
 
 Signed-off-by: Stefan Reinauer <stefan.reinauer@coreboot.org>
 ---
- arch/m68k/Kconfig                   |  15 +++
- arch/m68k/include/asm/elf.h         |  20 ++++
- arch/m68k/include/asm/mmu.h         |  19 +++-
- arch/m68k/include/asm/mmu_context.h |  78 +++++++++----
- arch/m68k/include/asm/tlbflush.h    |   8 +-
- arch/m68k/include/asm/vdso.h        |  48 ++++++++
- arch/m68k/include/uapi/asm/auxvec.h |   8 ++
- arch/m68k/kernel/Makefile           |   3 +
- arch/m68k/kernel/sys_m68k.c         |   7 ++
- arch/m68k/kernel/vdso.c             | 170 ++++++++++++++++++++++++++++
- arch/m68k/kernel/vdso/Makefile      |  39 +++++++
- arch/m68k/kernel/vdso/vdso-note.S   |  14 +++
- arch/m68k/kernel/vdso/vdso-tls.S    |  32 ++++++
- arch/m68k/kernel/vdso/vdso.S        |  18 +++
- arch/m68k/kernel/vdso/vdso.lds.S    |  66 +++++++++++
- arch/m68k/mm/mcfmmu.c               |   2 +-
- arch/m68k/sun3/mmu_emu.c            |   2 +-
- 17 files changed, 518 insertions(+), 31 deletions(-)
- create mode 100644 arch/m68k/include/asm/vdso.h
- create mode 100644 arch/m68k/include/uapi/asm/auxvec.h
- create mode 100644 arch/m68k/kernel/vdso.c
- create mode 100644 arch/m68k/kernel/vdso/Makefile
- create mode 100644 arch/m68k/kernel/vdso/vdso-note.S
- create mode 100644 arch/m68k/kernel/vdso/vdso-tls.S
- create mode 100644 arch/m68k/kernel/vdso/vdso.S
- create mode 100644 arch/m68k/kernel/vdso/vdso.lds.S
+ arch/m68k/include/asm/elf.h      |   5 +-
+ arch/m68k/include/asm/vdso.h     | 109 +++++++++++-
+ arch/m68k/kernel/vdso.c          | 130 ++++++++++++--
+ arch/m68k/kernel/vdso/vdso.lds   | 282 +++++++++++++++++++++++++++++++
+ arch/m68k/kernel/vdso/vdso.lds.S |   2 +-
+ 5 files changed, 499 insertions(+), 29 deletions(-)
+ create mode 100644 arch/m68k/kernel/vdso/vdso.lds
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 11835eb59..3c11f1e50 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -121,6 +121,21 @@ endmenu
- 
- menu "Kernel Features"
- 
-+config VDSO
-+	bool "Enable vDSO for fast TLS access"
-+	depends on MMU
-+	default y
-+	help
-+	  Enable the virtual Dynamic Shared Object (vDSO) for m68k.
-+	  This provides a fast path for accessing the thread-local storage
-+	  (TLS) pointer without requiring a system call, significantly
-+	  improving pthread performance.
-+
-+	  The vDSO maps a small data page into userspace that the kernel
-+	  updates on context switch with the current thread's TLS pointer.
-+
-+	  If unsure, say Y.
-+
- endmenu
- 
- if !MMU
 diff --git a/arch/m68k/include/asm/elf.h b/arch/m68k/include/asm/elf.h
-index 2def06a99..e93255b35 100644
+index e93255b35..d9c98c28c 100644
 --- a/arch/m68k/include/asm/elf.h
 +++ b/arch/m68k/include/asm/elf.h
-@@ -8,6 +8,8 @@
- 
- #include <asm/ptrace.h>
- #include <asm/user.h>
-+#include <asm/auxvec.h>
-+#include <asm/page.h>
+@@ -132,14 +132,15 @@ int arch_setup_additional_pages(struct linux_binprm *, int);
  
  /*
-  * 68k ELF relocation types
-@@ -123,4 +125,22 @@ typedef struct user_m68kfp_struct elf_fpregset_t;
- 
- #define ELF_FDPIC_CORE_EFLAGS  0
- 
-+#ifdef CONFIG_VDSO
-+#define ARCH_HAS_SETUP_ADDITIONAL_PAGES
-+struct linux_binprm;
-+int arch_setup_additional_pages(struct linux_binprm *, int);
-+
-+/*
-+ * Pass AT_SYSINFO_EHDR to userspace - points to vDSO code page (ELF header).
-+ * mm->context.vdso stores the data page address, code page is +PAGE_SIZE.
-+ */
-+#define ARCH_DLINFO							\
-+do {									\
-+	if (current->mm->context.vdso)					\
-+		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
-+			    (elf_addr_t)(current->mm->context.vdso +	\
-+					 PAGE_SIZE));			\
-+} while (0)
-+#endif
-+
- #endif
-diff --git a/arch/m68k/include/asm/mmu.h b/arch/m68k/include/asm/mmu.h
-index e00672425..2adca3dcb 100644
---- a/arch/m68k/include/asm/mmu.h
-+++ b/arch/m68k/include/asm/mmu.h
-@@ -3,8 +3,23 @@
- #define __MMU_H
- 
- #ifdef CONFIG_MMU
--/* Default "unsigned long" context */
--typedef unsigned long mm_context_t;
-+/*
-+ * M68K MMU context structure.
-+ *
-+ * The 'id' field stores the hardware context ID or page table physical address:
-+ *   - COLDFIRE: ASID (Address Space ID) for MMU
-+ *   - Classic 68k: Physical address of the root page table
-+ *   - SUN3: MMU context number
-+ *
-+ * The 'vdso' field stores the base address of the vDSO mapping in userspace.
-+ */
-+typedef struct {
-+	unsigned long id;
-+#ifdef CONFIG_VDSO
-+	unsigned long vdso;
-+#endif
-+} mm_context_t;
-+
- #else
- #include <asm-generic/mmu.h>
- #endif
-diff --git a/arch/m68k/include/asm/mmu_context.h b/arch/m68k/include/asm/mmu_context.h
-index 141bbdfad..82756eb57 100644
---- a/arch/m68k/include/asm/mmu_context.h
-+++ b/arch/m68k/include/asm/mmu_context.h
-@@ -7,6 +7,10 @@
- 
- #ifdef CONFIG_MMU
- 
-+#ifdef CONFIG_VDSO
-+#include <asm/vdso.h>
-+#endif
-+
- #if defined(CONFIG_COLDFIRE)
- 
- #include <asm/atomic.h>
-@@ -27,9 +31,9 @@ extern void steal_context(void);
- 
- static inline void get_mmu_context(struct mm_struct *mm)
- {
--	mm_context_t ctx;
-+	unsigned long ctx;
- 
--	if (mm->context != NO_CONTEXT)
-+	if (mm->context.id != NO_CONTEXT)
- 		return;
- 	while (arch_atomic_dec_and_test_lt(&nr_free_contexts)) {
- 		atomic_inc(&nr_free_contexts);
-@@ -42,14 +46,14 @@ static inline void get_mmu_context(struct mm_struct *mm)
- 			ctx = 0;
- 	}
- 	next_mmu_context = (ctx + 1) & LAST_CONTEXT;
--	mm->context = ctx;
-+	mm->context.id = ctx;
- 	context_mm[ctx] = mm;
- }
- 
- /*
-  * Set up the context for a new address space.
+  * Pass AT_SYSINFO_EHDR to userspace - points to vDSO code page (ELF header).
+- * mm->context.vdso stores the data page address, code page is +PAGE_SIZE.
++ * mm->context.vdso stores the base address; code page is at +2*PAGE_SIZE
++ * (after vvar data page and timer page).
   */
--#define init_new_context(tsk, mm)	(((mm)->context = NO_CONTEXT), 0)
-+#define init_new_context(tsk, mm)	(((mm)->context.id = NO_CONTEXT), 0)
- 
- /*
-  * We're finished using the context for an address space.
-@@ -57,23 +61,23 @@ static inline void get_mmu_context(struct mm_struct *mm)
- #define destroy_context destroy_context
- static inline void destroy_context(struct mm_struct *mm)
- {
--	if (mm->context != NO_CONTEXT) {
--		clear_bit(mm->context, context_map);
--		mm->context = NO_CONTEXT;
-+	if (mm->context.id != NO_CONTEXT) {
-+		clear_bit(mm->context.id, context_map);
-+		mm->context.id = NO_CONTEXT;
- 		atomic_inc(&nr_free_contexts);
- 	}
- }
- 
--static inline void set_context(mm_context_t context, pgd_t *pgd)
-+static inline void set_context(unsigned long context_id, pgd_t *pgd)
- {
--	__asm__ __volatile__ ("movec %0,%%asid" : : "d" (context));
-+	__asm__ __volatile__ ("movec %0,%%asid" : : "d" (context_id));
- }
- 
- static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	struct task_struct *tsk)
- {
- 	get_mmu_context(tsk->mm);
--	set_context(tsk->mm->context, next->pgd);
-+	set_context(tsk->mm->context.id, next->pgd);
- }
- 
- /*
-@@ -85,10 +89,20 @@ static inline void activate_mm(struct mm_struct *active_mm,
- 	struct mm_struct *mm)
- {
- 	get_mmu_context(mm);
--	set_context(mm->context, mm->pgd);
-+	set_context(mm->context.id, mm->pgd);
-+}
-+
-+static inline void __m68k_update_vdso_tls(struct task_struct *next)
-+{
-+#ifdef CONFIG_VDSO
-+	m68k_vdso_update_tls(task_thread_info(next)->tp_value);
-+#endif
- }
- 
--#define prepare_arch_switch(next) load_ksp_mmu(next)
-+#define prepare_arch_switch(next) do { \
-+	__m68k_update_vdso_tls(next); \
-+	load_ksp_mmu(next); \
-+} while (0)
- 
- static inline void load_ksp_mmu(struct task_struct *task)
- {
-@@ -143,7 +157,7 @@ static inline void load_ksp_mmu(struct task_struct *task)
- 		goto bug;
- 
- 	set_pte(pte, pte_mkyoung(*pte));
--	asid = mm->context & 0xff;
-+	asid = mm->context.id & 0xff;
- 	if (!pte_dirty(*pte) && mmuar <= PAGE_OFFSET)
- 		set_pte(pte, pte_wrprotect(*pte));
- 
-@@ -178,7 +192,7 @@ extern void clear_context(unsigned long context);
- static inline int init_new_context(struct task_struct *tsk,
- 				   struct mm_struct *mm)
- {
--	mm->context = SUN3_INVALID_CONTEXT;
-+	mm->context.id = SUN3_INVALID_CONTEXT;
- 	return 0;
- }
- 
-@@ -186,22 +200,22 @@ static inline int init_new_context(struct task_struct *tsk,
-    got one, go get one for it. */
- static inline void get_mmu_context(struct mm_struct *mm)
- {
--	if (mm->context == SUN3_INVALID_CONTEXT)
--		mm->context = get_free_context(mm);
-+	if (mm->context.id == SUN3_INVALID_CONTEXT)
-+		mm->context.id = get_free_context(mm);
- }
- 
- /* flush context if allocated... */
- #define destroy_context destroy_context
- static inline void destroy_context(struct mm_struct *mm)
- {
--	if (mm->context != SUN3_INVALID_CONTEXT)
--		clear_context(mm->context);
-+	if (mm->context.id != SUN3_INVALID_CONTEXT)
-+		clear_context(mm->context.id);
- }
- 
- static inline void activate_context(struct mm_struct *mm)
- {
- 	get_mmu_context(mm);
--	sun3_put_context(mm->context);
-+	sun3_put_context(mm->context.id);
- }
- 
- static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
-@@ -217,6 +231,15 @@ static inline void activate_mm(struct mm_struct *prev_mm,
- 	activate_context(next_mm);
- }
- 
-+static inline void __m68k_update_vdso_tls(struct task_struct *next)
-+{
-+#ifdef CONFIG_VDSO
-+	m68k_vdso_update_tls(task_thread_info(next)->tp_value);
-+#endif
-+}
-+
-+#define prepare_arch_switch(next) __m68k_update_vdso_tls(next)
-+
- #else
- 
- #include <asm/setup.h>
-@@ -227,14 +250,14 @@ static inline void activate_mm(struct mm_struct *prev_mm,
- static inline int init_new_context(struct task_struct *tsk,
- 				   struct mm_struct *mm)
- {
--	mm->context = virt_to_phys(mm->pgd);
-+	mm->context.id = virt_to_phys(mm->pgd);
- 	return 0;
- }
- 
- static inline void switch_mm_0230(struct mm_struct *mm)
- {
- 	unsigned long crp[2] = {
--		0x80000000 | _PAGE_TABLE, mm->context
-+		0x80000000 | _PAGE_TABLE, mm->context.id
- 	};
- 	unsigned long tmp;
- 
-@@ -272,7 +295,7 @@ static inline void switch_mm_0460(struct mm_struct *mm)
- 	asm volatile ("pflushan");
- 
- 	/* switch the root pointer */
--	asm volatile ("movec %0,%%urp" : : "r" (mm->context));
-+	asm volatile ("movec %0,%%urp" : : "r" (mm->context.id));
- 
- 	if (CPU_IS_060) {
- 		unsigned long tmp;
-@@ -302,7 +325,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next, str
- static inline void activate_mm(struct mm_struct *prev_mm,
- 			       struct mm_struct *next_mm)
- {
--	next_mm->context = virt_to_phys(next_mm->pgd);
-+	next_mm->context.id = virt_to_phys(next_mm->pgd);
- 
- 	if (CPU_IS_020_OR_030)
- 		switch_mm_0230(next_mm);
-@@ -310,6 +333,15 @@ static inline void activate_mm(struct mm_struct *prev_mm,
- 		switch_mm_0460(next_mm);
- }
- 
-+static inline void __m68k_update_vdso_tls(struct task_struct *next)
-+{
-+#ifdef CONFIG_VDSO
-+	m68k_vdso_update_tls(task_thread_info(next)->tp_value);
-+#endif
-+}
-+
-+#define prepare_arch_switch(next) __m68k_update_vdso_tls(next)
-+
+ #define ARCH_DLINFO							\
+ do {									\
+ 	if (current->mm->context.vdso)					\
+ 		NEW_AUX_ENT(AT_SYSINFO_EHDR,				\
+ 			    (elf_addr_t)(current->mm->context.vdso +	\
+-					 PAGE_SIZE));			\
++					 2 * PAGE_SIZE));		\
+ } while (0)
  #endif
  
- #include <asm-generic/mmu_context.h>
-diff --git a/arch/m68k/include/asm/tlbflush.h b/arch/m68k/include/asm/tlbflush.h
-index 6d42e2906..092d23975 100644
---- a/arch/m68k/include/asm/tlbflush.h
-+++ b/arch/m68k/include/asm/tlbflush.h
-@@ -143,7 +143,7 @@ static inline void flush_tlb_mm (struct mm_struct *mm)
- 	unsigned long i;
- 
- 	oldctx = sun3_get_context();
--	sun3_put_context(mm->context);
-+	sun3_put_context(mm->context.id);
- 
- 	for (i = 0; i < TASK_SIZE; i += SUN3_PMEG_SIZE) {
- 		seg = sun3_get_segmap(i);
-@@ -168,7 +168,7 @@ static inline void flush_tlb_page (struct vm_area_struct *vma,
- 	unsigned char i;
- 
- 	oldctx = sun3_get_context();
--	sun3_put_context(vma->vm_mm->context);
-+	sun3_put_context(vma->vm_mm->context.id);
- 	addr &= ~SUN3_PMEG_MASK;
- 	if((i = sun3_get_segmap(addr)) != SUN3_INVALID_PMEG)
- 	{
-@@ -191,13 +191,13 @@ static inline void flush_tlb_range (struct vm_area_struct *vma,
- 	start &= ~SUN3_PMEG_MASK;
- 
- 	oldctx = sun3_get_context();
--	sun3_put_context(mm->context);
-+	sun3_put_context(mm->context.id);
- 
- 	while(start < end)
- 	{
- 		if((seg = sun3_get_segmap(start)) == SUN3_INVALID_PMEG)
- 		     goto next;
--		if(pmeg_ctx[seg] == mm->context) {
-+		if(pmeg_ctx[seg] == mm->context.id) {
- 			pmeg_alloc[seg] = 0;
- 			pmeg_ctx[seg] = 0;
- 			pmeg_vaddr[seg] = 0;
 diff --git a/arch/m68k/include/asm/vdso.h b/arch/m68k/include/asm/vdso.h
-new file mode 100644
-index 000000000..d0759bce5
---- /dev/null
+index d0759bce5..ad0ec3cfe 100644
+--- a/arch/m68k/include/asm/vdso.h
 +++ b/arch/m68k/include/asm/vdso.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_M68K_VDSO_H
-+#define _ASM_M68K_VDSO_H
-+
-+#ifdef CONFIG_MMU
-+
-+#include <linux/types.h>
-+
-+/*
-+ * M68K vDSO data structure - mapped read-only to userspace.
-+ * The kernel updates this on context switch and set_thread_area() calls.
+@@ -8,27 +8,74 @@
+ 
+ /*
+  * M68K vDSO data structure - mapped read-only to userspace.
+- * The kernel updates this on context switch and set_thread_area() calls.
++ * The kernel updates this on context switch, set_thread_area() calls,
++ * and timer interrupts.
+  *
+  * This struct is at offset 0 in the vDSO data page, so userspace can
+  * read the TLS pointer directly from the vDSO base address.
 + *
-+ * This struct is at offset 0 in the vDSO data page, so userspace can
-+ * read the TLS pointer directly from the vDSO base address.
-+ */
-+struct m68k_vdso_data {
-+	unsigned long tls_ptr;		/* Thread pointer, offset 0 */
-+	unsigned long reserved[3];	/* Reserved for future use */
-+};
++ * For clock_gettime() support, the kernel also maintains clock state
++ * that userspace can read to compute the current time without syscalls.
+  */
+ struct m68k_vdso_data {
+-	unsigned long tls_ptr;		/* Thread pointer, offset 0 */
+-	unsigned long reserved[3];	/* Reserved for future use */
++	/* TLS support - must be at offset 0 */
++	__u32 tls_ptr;			/* Thread pointer */
 +
-+/*
-+ * vDSO layout:
-+ *   Page 0: Data page (TLS pointer, read-only to user, written by kernel)
-+ *   Page 1: Code page (minimal ELF with vDSO identification)
-+ */
-+#define M68K_VDSO_DATA_PAGES	1
-+#define M68K_VDSO_CODE_PAGES	1
-+#define M68K_VDSO_PAGES		(M68K_VDSO_DATA_PAGES + M68K_VDSO_CODE_PAGES)
++	/* Clock support - sequence counter for consistent reads */
++	__u32 seq;			/* Sequence counter (odd = update in progress) */
 +
-+#ifndef __ASSEMBLY__
++	/* Raw clock tick counters - updated on timer interrupt */
++	__u32 clk_total;		/* Accumulated ticks from timer wraps */
++	__u32 clk_offset;		/* Pending wrap adjustment */
 +
-+/* Kernel pointer to the vDSO data page (for updates) */
-+extern struct m68k_vdso_data *m68k_vdso_data;
++	/* Timer parameters - set at init, constant thereafter */
++	__u32 timer_cycles;		/* Ticks per jiffy */
++	__u32 clock_freq_hz;		/* Timer frequency in Hz */
++	__u32 cs_mult;			/* Clocksource multiplier */
++	__u32 cs_shift;			/* Clocksource shift */
 +
-+/* vDSO code symbols (from vdso.S) */
-+extern char m68k_vdso_start[], m68k_vdso_end[];
++	/* Pre-computed time values - updated on timer interrupt */
++	__s64 wall_time_sec;		/* Wall clock seconds (CLOCK_REALTIME) */
++	__u32 wall_time_nsec;		/* Wall clock nanoseconds */
++	__s64 monotonic_sec;		/* Monotonic seconds (CLOCK_MONOTONIC) */
++	__u32 monotonic_nsec;		/* Monotonic nanoseconds */
 +
-+/* Update TLS pointer in vDSO data page */
-+static inline void m68k_vdso_update_tls(unsigned long tp)
-+{
-+	if (m68k_vdso_data)
-+		WRITE_ONCE(m68k_vdso_data->tls_ptr, tp);
++	/* Platform-specific timer info */
++	__u32 timer_type;		/* M68K_TIMER_* constant */
++	__u32 timer_reg_offset;		/* Offset to timer count register in timer page */
++
++	__u32 reserved[2];		/* Reserved for future use */
+ };
+ 
++/* Timer types */
++#define M68K_TIMER_NONE		0	/* No vDSO clock support */
++#define M68K_TIMER_VIA		1	/* Mac VIA timer */
++#define M68K_TIMER_CIA		2	/* Amiga CIA timer */
++
+ /*
+- * vDSO layout:
+- *   Page 0: Data page (TLS pointer, read-only to user, written by kernel)
+- *   Page 1: Code page (minimal ELF with vDSO identification)
++ * vDSO memory layout:
++ *   Page 0:         Data page (vvar) - TLS, clock data, read-only to user
++ *   Page 1:         Timer page - mapped hardware timer registers (read-only)
++ *   Page 2+:        Code pages - vDSO ELF with __vdso_clock_gettime64, etc.
++ *
++ * The timer page is optional - only mapped on platforms with vDSO clock
++ * support (Mac VIA, Amiga CIA). On unsupported platforms, clock_gettime
++ * falls back to syscall.
+  */
+ #define M68K_VDSO_DATA_PAGES	1
++#define M68K_VDSO_TIMER_PAGES	1
+ #define M68K_VDSO_CODE_PAGES	1
+-#define M68K_VDSO_PAGES		(M68K_VDSO_DATA_PAGES + M68K_VDSO_CODE_PAGES)
++#define M68K_VDSO_PAGES		(M68K_VDSO_DATA_PAGES + M68K_VDSO_TIMER_PAGES + M68K_VDSO_CODE_PAGES)
++
++/* Offsets from vDSO base for userspace */
++#define M68K_VDSO_DATA_OFFSET	0
++#define M68K_VDSO_TIMER_OFFSET	(M68K_VDSO_DATA_PAGES * PAGE_SIZE)
++#define M68K_VDSO_CODE_OFFSET	((M68K_VDSO_DATA_PAGES + M68K_VDSO_TIMER_PAGES) * PAGE_SIZE)
+ 
+ #ifndef __ASSEMBLY__
+ 
++#include <linux/compiler.h>
++
+ /* Kernel pointer to the vDSO data page (for updates) */
+ extern struct m68k_vdso_data *m68k_vdso_data;
+ 
+@@ -39,9 +86,55 @@ extern char m68k_vdso_start[], m68k_vdso_end[];
+ static inline void m68k_vdso_update_tls(unsigned long tp)
+ {
+ 	if (m68k_vdso_data)
+-		WRITE_ONCE(m68k_vdso_data->tls_ptr, tp);
++		WRITE_ONCE(m68k_vdso_data->tls_ptr, (__u32)tp);
 +}
 +
-+#endif /* !__ASSEMBLY__ */
++/*
++ * Begin a vDSO data update sequence.
++ * Increments seq to odd value, indicating update in progress.
++ * Must be paired with m68k_vdso_write_end().
++ */
++static inline void m68k_vdso_write_begin(void)
++{
++	if (m68k_vdso_data) {
++		WRITE_ONCE(m68k_vdso_data->seq, m68k_vdso_data->seq + 1);
++		/* Ensure seq update is visible before data updates */
++		smp_wmb();
++	}
++}
 +
-+#endif /* CONFIG_MMU */
-+#endif /* _ASM_M68K_VDSO_H */
-diff --git a/arch/m68k/include/uapi/asm/auxvec.h b/arch/m68k/include/uapi/asm/auxvec.h
-new file mode 100644
-index 000000000..a7148a3e2
---- /dev/null
-+++ b/arch/m68k/include/uapi/asm/auxvec.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef __ASM_M68K_AUXVEC_H
-+#define __ASM_M68K_AUXVEC_H
-+
-+/* vDSO location */
-+#define AT_SYSINFO_EHDR	33
-+
-+#endif
-diff --git a/arch/m68k/kernel/Makefile b/arch/m68k/kernel/Makefile
-index 57c1b3e8d..a1ed760e8 100644
---- a/arch/m68k/kernel/Makefile
-+++ b/arch/m68k/kernel/Makefile
-@@ -23,3 +23,6 @@ obj-$(CONFIG_UBOOT)		+= uboot.o
- 
- obj-$(CONFIG_EARLY_PRINTK)	+= early_printk.o
- 
-+obj-$(CONFIG_VDSO)		+= vdso.o
-+obj-$(CONFIG_VDSO)		+= vdso/
-+
-diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-index 1af5e6082..d6628260a 100644
---- a/arch/m68k/kernel/sys_m68k.c
-+++ b/arch/m68k/kernel/sys_m68k.c
-@@ -25,6 +25,9 @@
- #include <asm/setup.h>
- #include <linux/uaccess.h>
- #include <asm/cachectl.h>
-+#ifdef CONFIG_VDSO
-+#include <asm/vdso.h>
-+#endif
- #include <asm/traps.h>
- #include <asm/page.h>
- #include <asm/syscalls.h>
-@@ -574,6 +577,10 @@ asmlinkage unsigned long sys_get_thread_area(void)
- asmlinkage int sys_set_thread_area(unsigned long tp)
- {
- 	current_thread_info()->tp_value = tp;
-+#ifdef CONFIG_VDSO
-+	/* Update vDSO for immediate fast-path access */
-+	m68k_vdso_update_tls(tp);
-+#endif
- 	return 0;
++/*
++ * End a vDSO data update sequence.
++ * Increments seq to even value, indicating update complete.
++ */
++static inline void m68k_vdso_write_end(void)
++{
++	if (m68k_vdso_data) {
++		/* Ensure data updates are visible before seq update */
++		smp_wmb();
++		WRITE_ONCE(m68k_vdso_data->seq, m68k_vdso_data->seq + 1);
++	}
  }
  
-diff --git a/arch/m68k/kernel/vdso.c b/arch/m68k/kernel/vdso.c
-new file mode 100644
-index 000000000..395092654
---- /dev/null
-+++ b/arch/m68k/kernel/vdso.c
-@@ -0,0 +1,170 @@
-+// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * M68K vDSO setup
-+ *
-+ * This provides a fast path for TLS (Thread Local Storage) pointer access.
-+ * Instead of making a syscall to get/set the thread pointer, userspace can
-+ * read directly from the vDSO data page which the kernel updates on context
-+ * switch and set_thread_area() syscall.
++ * Update clock tick counters in vDSO.
++ * Called from timer interrupt with seq protection.
 + */
-+
-+#include <linux/elf.h>
-+#include <linux/err.h>
-+#include <linux/mm.h>
-+#include <linux/slab.h>
-+#include <linux/binfmts.h>
-+#include <asm/page.h>
-+#include <asm/vdso.h>
-+
-+/* External symbols from vdso/vdso.S - the embedded vDSO binary */
-+extern char m68k_vdso_start[], m68k_vdso_end[];
-+
-+/* vDSO data page - kernel writable, mapped read-only to userspace */
-+static union {
-+	struct m68k_vdso_data	data;
-+	u8			page[PAGE_SIZE];
-+} vdso_data_store __page_aligned_data;
-+
-+/* Kernel pointer for TLS updates */
-+struct m68k_vdso_data *m68k_vdso_data = &vdso_data_store.data;
-+
-+/* Page array for the vDSO code pages */
-+static struct page **vdso_pagelist;
-+static unsigned int vdso_pages;
-+
-+/* VM special mapping for mremap support */
-+static int vdso_mremap(const struct vm_special_mapping *sm,
-+		       struct vm_area_struct *new_vma)
++static inline void m68k_vdso_update_clock(__u32 clk_total, __u32 clk_offset)
 +{
-+	current->mm->context.vdso = new_vma->vm_start;
-+	return 0;
++	if (m68k_vdso_data) {
++		m68k_vdso_data->clk_total = clk_total;
++		m68k_vdso_data->clk_offset = clk_offset;
++	}
 +}
 +
-+static struct vm_special_mapping vdso_mapping __ro_after_init = {
-+	.name = "[vdso]",
-+	.mremap = vdso_mremap,
-+};
++/* Initialize vDSO timer parameters (called once at boot) */
++void m68k_vdso_init_clock(__u32 timer_type, __u32 timer_cycles,
++			  __u32 clock_freq_hz, __u32 cs_mult, __u32 cs_shift);
 +
-+/* Data page mapping (read-only to userspace) */
-+static struct page *vdso_data_page;
++/* Set physical address of timer registers for vDSO mapping */
++void m68k_vdso_set_timer_addr(unsigned long phys_addr, unsigned long size);
 +
-+static vm_fault_t vdso_data_fault(const struct vm_special_mapping *sm,
-+				  struct vm_area_struct *vma,
-+				  struct vm_fault *vmf)
+ #endif /* !__ASSEMBLY__ */
+ 
+ #endif /* CONFIG_MMU */
+diff --git a/arch/m68k/kernel/vdso.c b/arch/m68k/kernel/vdso.c
+index 395092654..1e66f7eba 100644
+--- a/arch/m68k/kernel/vdso.c
++++ b/arch/m68k/kernel/vdso.c
+@@ -2,10 +2,18 @@
+ /*
+  * M68K vDSO setup
+  *
+- * This provides a fast path for TLS (Thread Local Storage) pointer access.
+- * Instead of making a syscall to get/set the thread pointer, userspace can
+- * read directly from the vDSO data page which the kernel updates on context
+- * switch and set_thread_area() syscall.
++ * This provides fast paths for:
++ * - TLS (Thread Local Storage) pointer access
++ * - clock_gettime() via hardware timer access
++ *
++ * Instead of making syscalls, userspace can read directly from the vDSO
++ * data pages which the kernel updates on context switch, set_thread_area()
++ * calls, and timer interrupts.
++ *
++ * Memory layout:
++ *   Page 0: vvar (data page) - TLS pointer, clock state
++ *   Page 1: Timer page - mapped hardware timer registers (platform-specific)
++ *   Page 2+: vDSO code - ELF with __vdso_clock_gettime64, etc.
+  */
+ 
+ #include <linux/elf.h>
+@@ -13,6 +21,7 @@
+ #include <linux/mm.h>
+ #include <linux/slab.h>
+ #include <linux/binfmts.h>
++#include <linux/io.h>
+ #include <asm/page.h>
+ #include <asm/vdso.h>
+ 
+@@ -25,8 +34,13 @@ static union {
+ 	u8			page[PAGE_SIZE];
+ } vdso_data_store __page_aligned_data;
+ 
+-/* Kernel pointer for TLS updates */
++/* Kernel pointer for vDSO data updates */
+ struct m68k_vdso_data *m68k_vdso_data = &vdso_data_store.data;
++EXPORT_SYMBOL(m68k_vdso_data);
++
++/* Physical address of platform timer registers (set by platform code) */
++static unsigned long timer_phys_addr;
++static unsigned long timer_page_size;
+ 
+ /* Page array for the vDSO code pages */
+ static struct page **vdso_pagelist;
+@@ -64,6 +78,24 @@ static struct vm_special_mapping vdso_data_mapping __ro_after_init = {
+ 	.fault = vdso_data_fault,
+ };
+ 
++/* Timer page mapping (read-only hardware registers to userspace) */
++static vm_fault_t vdso_timer_fault(const struct vm_special_mapping *sm,
++				   struct vm_area_struct *vma,
++				   struct vm_fault *vmf)
 +{
-+	if (vmf->pgoff != 0)
++	/* Only allow access if timer mapping is configured */
++	if (!timer_phys_addr || vmf->pgoff != 0)
 +		return VM_FAULT_SIGBUS;
 +
 +	return vmf_insert_pfn(vma, vmf->address,
-+			      page_to_pfn(vdso_data_page));
++			      __phys_to_pfn(timer_phys_addr));
 +}
 +
-+static struct vm_special_mapping vdso_data_mapping __ro_after_init = {
-+	.name = "[vvar]",
-+	.fault = vdso_data_fault,
++static struct vm_special_mapping vdso_timer_mapping __ro_after_init = {
++	.name = "[vdso_timer]",
++	.fault = vdso_timer_fault,
 +};
 +
-+static int __init vdso_init(void)
+ static int __init vdso_init(void)
+ {
+ 	unsigned int i;
+@@ -97,8 +129,12 @@ static int __init vdso_init(void)
+ 	/* Get page for vDSO data */
+ 	vdso_data_page = virt_to_page(&vdso_data_store);
+ 
+-	/* Initialize the TLS pointer to 0 */
+-	m68k_vdso_data->tls_ptr = 0;
++	/*
++	 * Note: vdso_data_store is zero-initialized (BSS), and clock
++	 * parameters are set by platform timer init (mac_sched_init, etc.)
++	 * which runs before this initcall. Don't overwrite that data!
++	 * timer_type=0 (M68K_TIMER_NONE) means no vDSO clock support.
++	 */
+ 
+ 	pr_info("m68k vDSO: %u code pages, data at %px\n",
+ 		vdso_pages, m68k_vdso_data);
+@@ -107,16 +143,55 @@ static int __init vdso_init(void)
+ }
+ arch_initcall(vdso_init);
+ 
++/*
++ * Set the physical address of the timer registers to map into vDSO.
++ * Called by platform code (Mac VIA, Amiga CIA) during timer init.
++ */
++void m68k_vdso_set_timer_addr(unsigned long phys_addr, unsigned long size)
 +{
-+	unsigned int i;
-+	unsigned long pfn;
-+
-+	/* Validate the vDSO binary */
-+	if (memcmp(m68k_vdso_start, "\177ELF", 4)) {
-+		pr_err("m68k vDSO: invalid ELF header\n");
-+		return -ENOEXEC;
-+	}
-+
-+	/* Calculate number of code pages */
-+	vdso_pages = (m68k_vdso_end - m68k_vdso_start) >> PAGE_SHIFT;
-+	if (vdso_pages == 0) {
-+		pr_err("m68k vDSO: no code pages\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Allocate page list for vDSO code */
-+	vdso_pagelist = kcalloc(vdso_pages, sizeof(struct page *), GFP_KERNEL);
-+	if (!vdso_pagelist)
-+		return -ENOMEM;
-+
-+	/* Get pages for vDSO code */
-+	pfn = __phys_to_pfn(__pa_symbol(m68k_vdso_start));
-+	for (i = 0; i < vdso_pages; i++)
-+		vdso_pagelist[i] = pfn_to_page(pfn + i);
-+
-+	vdso_mapping.pages = vdso_pagelist;
-+
-+	/* Get page for vDSO data */
-+	vdso_data_page = virt_to_page(&vdso_data_store);
-+
-+	/* Initialize the TLS pointer to 0 */
-+	m68k_vdso_data->tls_ptr = 0;
-+
-+	pr_info("m68k vDSO: %u code pages, data at %px\n",
-+		vdso_pages, m68k_vdso_data);
-+
-+	return 0;
++	timer_phys_addr = phys_addr & PAGE_MASK;  /* Page-align */
++	timer_page_size = PAGE_ALIGN(size);
++	pr_info("m68k vDSO: timer at phys %lx, size %lx\n",
++		timer_phys_addr, timer_page_size);
 +}
-+arch_initcall(vdso_init);
++EXPORT_SYMBOL(m68k_vdso_set_timer_addr);
 +
 +/*
-+ * Called during execve to install the vDSO into the new process.
-+ * Layout:
-+ *   vdso_base:          vDSO data page (read-only)
-+ *   vdso_base + PAGE_SIZE: vDSO code pages (read+exec)
++ * Initialize vDSO clock parameters.
++ * Called by platform timer init code after clocksource is registered.
 + */
-+int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
++void m68k_vdso_init_clock(__u32 timer_type, __u32 timer_cycles,
++			  __u32 clock_freq_hz, __u32 cs_mult, __u32 cs_shift)
 +{
-+	struct mm_struct *mm = current->mm;
-+	unsigned long vdso_base, vdso_text_len;
-+	struct vm_area_struct *vma;
-+	int ret;
++	if (!m68k_vdso_data)
++		return;
 +
-+	if (!vdso_pagelist)
-+		return 0;
++	m68k_vdso_write_begin();
 +
-+	if (mmap_write_lock_killable(mm))
-+		return -EINTR;
++	m68k_vdso_data->timer_type = timer_type;
++	m68k_vdso_data->timer_cycles = timer_cycles;
++	m68k_vdso_data->clock_freq_hz = clock_freq_hz;
++	m68k_vdso_data->cs_mult = cs_mult;
++	m68k_vdso_data->cs_shift = cs_shift;
 +
-+	/* Total size: 1 data page + code pages */
-+	vdso_text_len = vdso_pages << PAGE_SHIFT;
++	m68k_vdso_write_end();
 +
-+	/* Find unmapped area for data page + code pages */
-+	vdso_base = get_unmapped_area(NULL, 0,
-+				      PAGE_SIZE + vdso_text_len, 0, 0);
-+	if (IS_ERR_VALUE(vdso_base)) {
-+		ret = vdso_base;
-+		goto out_unlock;
-+	}
++	pr_info("m68k vDSO: clock type=%u cycles=%u freq=%u mult=%u shift=%u\n",
++		timer_type, timer_cycles, clock_freq_hz, cs_mult, cs_shift);
++}
++EXPORT_SYMBOL(m68k_vdso_init_clock);
 +
-+	/* Install vDSO data page (vvar) - read-only with fault handler */
-+	vma = _install_special_mapping(mm, vdso_base, PAGE_SIZE,
+ /*
+  * Called during execve to install the vDSO into the new process.
+  * Layout:
+- *   vdso_base:          vDSO data page (read-only)
+- *   vdso_base + PAGE_SIZE: vDSO code pages (read+exec)
++ *   vdso_base:                    vDSO data page (vvar, read-only)
++ *   vdso_base + PAGE_SIZE:        Timer page (read-only hardware regs)
++ *   vdso_base + 2*PAGE_SIZE:      vDSO code pages (read+exec)
+  */
+ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ {
+ 	struct mm_struct *mm = current->mm;
+-	unsigned long vdso_base, vdso_text_len;
++	unsigned long vdso_base, vdso_text_len, total_size;
+ 	struct vm_area_struct *vma;
+ 	int ret;
+ 
+@@ -126,12 +201,13 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 	if (mmap_write_lock_killable(mm))
+ 		return -EINTR;
+ 
+-	/* Total size: 1 data page + code pages */
+ 	vdso_text_len = vdso_pages << PAGE_SHIFT;
+ 
+-	/* Find unmapped area for data page + code pages */
+-	vdso_base = get_unmapped_area(NULL, 0,
+-				      PAGE_SIZE + vdso_text_len, 0, 0);
++	/* Total size: data page + timer page + code pages */
++	total_size = PAGE_SIZE + PAGE_SIZE + vdso_text_len;
++
++	/* Find unmapped area for all vDSO pages */
++	vdso_base = get_unmapped_area(NULL, 0, total_size, 0, 0);
+ 	if (IS_ERR_VALUE(vdso_base)) {
+ 		ret = vdso_base;
+ 		goto out_unlock;
+@@ -147,8 +223,23 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 		goto out_unlock;
+ 	}
+ 
++	/*
++	 * Install timer page - read-only mapping of hardware timer registers.
++	 * This allows userspace to read the timer without a syscall.
++	 * If no timer is configured (timer_phys_addr == 0), accesses will
++	 * fault and the vDSO code will fall back to syscall.
++	 */
++	vma = _install_special_mapping(mm, vdso_base + PAGE_SIZE, PAGE_SIZE,
 +				       VM_READ | VM_MAYREAD | VM_DONTDUMP |
-+				       VM_PFNMAP,
-+				       &vdso_data_mapping);
++				       VM_PFNMAP | VM_IO,
++				       &vdso_timer_mapping);
 +	if (IS_ERR(vma)) {
 +		ret = PTR_ERR(vma);
 +		goto out_unlock;
 +	}
 +
-+	/* Install vDSO code pages */
-+	vma = _install_special_mapping(mm, vdso_base + PAGE_SIZE, vdso_text_len,
-+				       VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYEXEC,
-+				       &vdso_mapping);
-+	if (IS_ERR(vma)) {
-+		ret = PTR_ERR(vma);
-+		goto out_unlock;
-+	}
-+
-+	/* Store vDSO base in mm context.
-+	 * Note: we store the data page address, so userspace can read TLS
-+	 * directly from offset 0.
-+	 */
-+	mm->context.vdso = vdso_base;
-+
-+	ret = 0;
-+
-+out_unlock:
-+	mmap_write_unlock(mm);
-+	return ret;
-+}
-diff --git a/arch/m68k/kernel/vdso/Makefile b/arch/m68k/kernel/vdso/Makefile
+ 	/* Install vDSO code pages */
+-	vma = _install_special_mapping(mm, vdso_base + PAGE_SIZE, vdso_text_len,
++	vma = _install_special_mapping(mm, vdso_base + 2 * PAGE_SIZE, vdso_text_len,
+ 				       VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYEXEC,
+ 				       &vdso_mapping);
+ 	if (IS_ERR(vma)) {
+@@ -156,9 +247,12 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 		goto out_unlock;
+ 	}
+ 
+-	/* Store vDSO base in mm context.
+-	 * Note: we store the data page address, so userspace can read TLS
+-	 * directly from offset 0.
++	/*
++	 * Store vDSO base in mm context.
++	 * This points to the data page; userspace uses known offsets:
++	 *   +0x0000: vvar (data page with TLS, clock state)
++	 *   +0x1000: timer registers
++	 *   +0x2000: vDSO code
+ 	 */
+ 	mm->context.vdso = vdso_base;
+ 
+diff --git a/arch/m68k/kernel/vdso/vdso.lds b/arch/m68k/kernel/vdso/vdso.lds
 new file mode 100644
-index 000000000..c3119ae82
+index 000000000..b99671c73
 --- /dev/null
-+++ b/arch/m68k/kernel/vdso/Makefile
-@@ -0,0 +1,39 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Building vDSO images for m68k
-+#
-+
-+# vDSO object files (userspace code)
-+obj-vdso := vdso-note.o vdso-tls.o
-+
-+# Build targets
-+targets := $(obj-vdso) vdso.so vdso.so.dbg vdso.lds
-+
-+obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
-+
-+# The kernel object that embeds the vDSO
-+obj-y += vdso.o
-+
-+# Preprocessor flags for linker script
-+CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
-+
-+# Linker flags for the vDSO shared object
-+ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
-+             -z max-page-size=4096 -shared \
-+             --hash-style=sysv --build-id=sha1 -T
-+
-+# Force dependency: vdso.o needs vdso.so to exist
-+$(obj)/vdso.o: $(obj)/vdso.so
-+
-+# Link rule for the vDSO shared object
-+$(obj)/vdso.so.dbg: $(obj)/vdso.lds $(obj-vdso) FORCE
-+	$(call if_changed,vdsold)
-+
-+# Strip rule for the final .so
-+$(obj)/vdso.so: OBJCOPYFLAGS := -S
-+$(obj)/vdso.so: $(obj)/vdso.so.dbg FORCE
-+	$(call if_changed,objcopy)
-+
-+# Link command
-+quiet_cmd_vdsold = VDSOLD  $@
-+      cmd_vdsold = $(LD) $(ldflags-y) $(filter %.lds,$^) $(filter %.o,$^) -o $@
-diff --git a/arch/m68k/kernel/vdso/vdso-note.S b/arch/m68k/kernel/vdso/vdso-note.S
-new file mode 100644
-index 000000000..09277cd71
---- /dev/null
-+++ b/arch/m68k/kernel/vdso/vdso-note.S
-@@ -0,0 +1,14 @@
++++ b/arch/m68k/kernel/vdso/vdso.lds
+@@ -0,0 +1,282 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * This header exists to force full rebuild when the compiler is upgraded.
++ *
++ * When fixdep scans this, it will find this string "CONFIG_CC_VERSION_TEXT"
++ * and add dependency on include/config/CC_VERSION_TEXT, which is touched
++ * by Kconfig when the version string from the compiler changes.
++ */
++/* Additional tree-wide dependencies start here. */
++/*
++ * If any of the GCC plugins change, we need to rebuild everything that
++ * was built with them, as they may have changed their behavior and those
++ * behaviors may need to be synchronized across all translation units.
++ */
++/*
++ * If the randstruct seed itself changes (whether for GCC plugins or
++ * Clang), the entire tree needs to be rebuilt since the randomization of
++ * structures may change between compilation units if not.
++ */
++/*
++ * If any external changes affect Clang's integer wrapping sanitizer
++ * behavior, a full rebuild is needed as the coverage for wrapping types
++ * may have changed, which may impact the expected behaviors that should
++ * not differ between compilation units.
++ */
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * M68K vDSO note section
-+ *
-+ * This creates the ELF note that identifies this as a Linux vDSO.
++ * Automatically generated file; DO NOT EDIT.
++ * Linux/m68k 6.18.3 Kernel Configuration
 + */
-+
-+#include <linux/build-salt.h>
-+#include <linux/version.h>
-+#include <linux/elfnote.h>
-+
-+ELFNOTE_START(Linux, 0, "a")
-+	.long LINUX_VERSION_CODE
-+ELFNOTE_END
-diff --git a/arch/m68k/kernel/vdso/vdso-tls.S b/arch/m68k/kernel/vdso/vdso-tls.S
-new file mode 100644
-index 000000000..de66c492a
---- /dev/null
-+++ b/arch/m68k/kernel/vdso/vdso-tls.S
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * M68K vDSO TLS access function
-+ *
-+ * This provides a symbol that userspace can call to get the TLS pointer.
-+ * However, the primary mechanism for fast TLS access is for userspace to
-+ * read directly from offset 0 of the vDSO data page (vvar).
-+ *
-+ * The kernel updates this value on:
-+ *   - Context switch (prepare_arch_switch)
-+ *   - set_thread_area() syscall
++ * The use of "&&" / "||" is limited in certain expressions.
++ * The following enable to calculate "and" / "or" with macro expansion only.
 + */
-+
-+#include <linux/linkage.h>
-+
 +/*
-+ * __vdso_m68k_tls - Get the TLS pointer
-+ *
-+ * This is mostly for identification; the fast path is to read
-+ * directly from the data page at offset 0.
-+ *
-+ * Returns: TLS pointer in d0
++ * Helper macros to use CONFIG_ options in C/CPP expressions. Note that
++ * these only work with boolean and tristate options.
 + */
-+SYM_FUNC_START(__vdso_m68k_tls)
-+	/* The TLS pointer is at the very beginning of the data page.
-+	 * The data page is at a fixed offset before the code page.
-+	 * However, this function is more of a marker than useful code.
-+	 * Userspace should read directly from the vDSO base address.
-+	 */
-+	move.l	#0, %d0		/* Return 0 - userspace should use direct access */
-+	rts
-+SYM_FUNC_END(__vdso_m68k_tls)
-diff --git a/arch/m68k/kernel/vdso/vdso.S b/arch/m68k/kernel/vdso/vdso.S
-new file mode 100644
-index 000000000..951c36da4
---- /dev/null
-+++ b/arch/m68k/kernel/vdso/vdso.S
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Embed the vDSO binary into the kernel image.
-+ *
-+ * The vDSO ELF binary is built separately and included here as raw data.
-+ * The kernel's vdso.c uses these symbols to find and map the vDSO.
++ * Getting something that works in C and CPP for an arg that may or may
++ * not be defined is tricky.  Here, if we have "#define CONFIG_BOOGER 1"
++ * we match on the placeholder define, insert the "0," for arg1 and generate
++ * the triplet (0, 1, 0).  Then the last step cherry picks the 2nd arg (a one).
++ * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
++ * the last step cherry picks the 2nd arg, we get a zero.
 + */
-+
-+#include <linux/linkage.h>
-+#include <asm/page.h>
-+
-+	.section ".rodata", "a"
-+	.balign PAGE_SIZE
-+	.globl m68k_vdso_start, m68k_vdso_end
-+m68k_vdso_start:
-+	.incbin "arch/m68k/kernel/vdso/vdso.so"
-+	.balign PAGE_SIZE
-+m68k_vdso_end:
-diff --git a/arch/m68k/kernel/vdso/vdso.lds.S b/arch/m68k/kernel/vdso/vdso.lds.S
-new file mode 100644
-index 000000000..7f14c12e6
---- /dev/null
-+++ b/arch/m68k/kernel/vdso/vdso.lds.S
-@@ -0,0 +1,66 @@
++/*
++ * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
++ * otherwise. For boolean options, this is equivalent to
++ * IS_ENABLED(CONFIG_FOO).
++ */
++/*
++ * IS_MODULE(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'm', 0
++ * otherwise.  CONFIG_FOO=m results in "#define CONFIG_FOO_MODULE 1" in
++ * autoconf.h.
++ */
++/*
++ * IS_REACHABLE(CONFIG_FOO) evaluates to 1 if the currently compiled
++ * code can call a function defined in code compiled based on CONFIG_FOO.
++ * This is similar to IS_ENABLED(), but returns false when invoked from
++ * built-in code when CONFIG_FOO is set to 'm'.
++ */
++/*
++ * IS_ENABLED(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y' or 'm',
++ * 0 otherwise.  Note that CONFIG_FOO=y results in "#define CONFIG_FOO 1" in
++ * autoconf.h, while CONFIG_FOO=m results in "#define CONFIG_FOO_MODULE 1".
++ */
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * M68K vDSO linker script
 + */
-+
-+#include <asm/page.h>
-+
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* const.h: Macros for dealing with constants.  */
++/* Some constant macros are used in both assembler and
++ * C code.  Therefore we cannot annotate them always with
++ * 'UL' and other type specifiers unilaterally.  We
++ * use the following macros to deal with this.
++ *
++ * Similarly, _AT() will cast an expression with a type in C, but
++ * leave it unchanged in asm.
++ */
++/*
++** asm/setup.h -- Definition of the Linux/m68k setup information
++**
++** Copyright 1992 by Greg Harp
++**
++** This file is subject to the terms and conditions of the GNU General Public
++** License.  See the file COPYING in the main directory of this archive
++** for more details.
++**
++** Created 09/29/92 by Greg Harp
++**
++** 5/2/94 Roman Hodek:
++**   Added bi_atari part of the machine dependent union bi_un; for now it
++**   contains just a model field to distinguish between TT and Falcon.
++** 26/7/96 Roman Zippel:
++**   Renamed to setup.h; added some useful macros to allow gcc some
++**   optimizations if possible.
++** 5/10/96 Geert Uytterhoeven:
++**   Redesign of the boot information structure; moved boot information
++**   structure to bootinfo.h
++*/
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * asm/bootinfo.h -- Definition of the Linux/m68k boot information structure
++ *
++ * Copyright 1992 by Greg Harp
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive
++ * for more details.
++ */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * int-ll64 is used everywhere now.
++ */
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * asm-generic/int-ll64.h
++ *
++ * Integer declarations for architectures which use "long long"
++ * for 64-bit types.
++ */
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * asm-generic/int-ll64.h
++ *
++ * Integer declarations for architectures which use "long long"
++ * for 64-bit types.
++ */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * In order to keep safe and avoid regression, only unify uapi
++ * bitsperlong.h for some archs which are using newer toolchains
++ * that have the definitions of __CHAR_BIT__ and __SIZEOF_LONG__.
++ * See the following link for more info:
++ * https://lore.kernel.org/linux-arch/b9624545-2c80-49a1-ac3c-39264a591f7b@app.fastmail.com/
++ */
++/*
++ * FIXME: The check currently breaks x86-64 build, so it's
++ * temporarily disabled. Please fix x86-64 and reenable
++ */
++/*
++ * small_const_nbits(n) is true precisely when it is known at compile-time
++ * that BITMAP_SIZE(n) is 1, i.e. 1 <= n <= BITS_PER_LONG. This allows
++ * various bit/bitmap APIs to provide a fast inline implementation. Bitmaps
++ * of size 0 are very rare, and a compile-time-known-size 0 is most likely
++ * a sign of error. They will be handled correctly by the bit/bitmap APIs,
++ * but using the out-of-line functions, so that the inline implementations
++ * can unconditionally dereference the pointer(s).
++ */
++    /*
++     *  Tag Definitions
++     *
++     *  Machine independent tags start counting from 0x0000
++     *  Machine dependent tags start counting from 0x8000
++     */
++     /* (struct mem_info) */
++     /* (struct mem_info) */
++     /* (string) */
++/*
++ * A random seed used to initialize the RNG. Record format:
++ *
++ *   - length       [ 2 bytes, 16-bit big endian ]
++ *   - seed data    [ `length` bytes, padded to preserve 4-byte struct alignment ]
++ */
++    /*
++     *  Linux/m68k Architectures (BI_MACHTYPE)
++     */
++    /*
++     *  CPU, FPU and MMU types (BI_CPUTYPE, BI_FPUTYPE, BI_MMUTYPE)
++     *
++     *  Note: we may rely on the following equalities:
++     *
++     *      CPU_68020 == MMU_68851
++     *      CPU_68030 == MMU_68030
++     *      CPU_68040 == FPU_68040 == MMU_68040
++     *      CPU_68060 == FPU_68060 == MMU_68060
++     */
++    /*
++     * Stuff for bootinfo interface versioning
++     *
++     * At the start of kernel code, a 'struct bootversion' is located.
++     * bootstrap checks for a matching version of the interface before booting
++     * a kernel, to avoid user confusion if kernel and bootstrap don't work
++     * together :-)
++     *
++     * If incompatible changes are made to the bootinfo interface, the major
++     * number below should be stepped (and the minor reset to 0) for the
++     * appropriate machine. If a change is backward-compatible, the minor
++     * should be stepped. "Backwards-compatible" means that booting will work,
++     * but certain features may not.
++     */
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++** asm/setup.h -- Definition of the Linux/m68k setup information
++**
++** Copyright 1992 by Greg Harp
++**
++** This file is subject to the terms and conditions of the GNU General Public
++** License.  See the file COPYING in the main directory of this archive
++** for more details.
++*/
++    /*
++     *  Miscellaneous
++     */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* This handles the memory map.. */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* const.h: Macros for dealing with constants.  */
++/*
++ * PAGE_SHIFT determines the page size.
++ *
++ * Note: This definition is required because PAGE_SHIFT is used
++ * in several places throughout the codebase.
++ */
++/*
++ * Applies only to 32-bit architectures.
++ *
++ * Subtle: (1 << CONFIG_PAGE_SHIFT) is an int, not an unsigned long.
++ * So if we assign PAGE_MASK to a larger type it gets extended the
++ * way we want (i.e. with 1s in the high bits) while masking a
++ * 64-bit value such as phys_addr_t.
++ */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0 */
 +OUTPUT_FORMAT("elf32-m68k", "elf32-m68k", "elf32-m68k")
 +OUTPUT_ARCH(m68k)
-+
 +SECTIONS
 +{
-+	PROVIDE(_start = .);
-+
-+	. = SIZEOF_HEADERS;
-+
-+	.hash		: { *(.hash) }			:text
-+	.gnu.hash	: { *(.gnu.hash) }
-+	.dynsym		: { *(.dynsym) }
-+	.dynstr		: { *(.dynstr) }
-+	.gnu.version	: { *(.gnu.version) }
-+	.gnu.version_d	: { *(.gnu.version_d) }
-+	.gnu.version_r	: { *(.gnu.version_r) }
-+
-+	.note		: { *(.note.*) }		:text	:note
-+
-+	.text		: { *(.text*) }			:text
-+	PROVIDE(__etext = .);
-+
-+	.rodata		: { *(.rodata*) }		:text
-+
-+	.dynamic	: { *(.dynamic) }		:text	:dynamic
-+
-+	.eh_frame_hdr	: { *(.eh_frame_hdr) }		:text	:eh_frame_hdr
-+	.eh_frame	: { KEEP(*(.eh_frame)) }	:text
-+
-+	/*
++ PROVIDE(_start = .);
++ . = SIZEOF_HEADERS;
++ .hash : { *(.hash) } :text
++ .gnu.hash : { *(.gnu.hash) }
++ .dynsym : { *(.dynsym) }
++ .dynstr : { *(.dynstr) }
++ .gnu.version : { *(.gnu.version) }
++ .gnu.version_d : { *(.gnu.version_d) }
++ .gnu.version_r : { *(.gnu.version_r) }
++ .note : { *(.note.*) } :text :note
++ .text : { *(.text*) } :text
++ PROVIDE(__etext = .);
++ .rodata : { *(.rodata*) } :text
++ .dynamic : { *(.dynamic) } :text :dynamic
++ .eh_frame_hdr : { *(.eh_frame_hdr) } :text :eh_frame_hdr
++ .eh_frame : { KEEP(*(.eh_frame)) } :text
++ /*
 +	 * Discard .note.GNU-stack, which is emitted as a stacktop section.
 +	 */
-+	/DISCARD/	: {
-+		*(.note.GNU-stack)
-+		*(.data .data.* .gnu.linkonce.d.*)
-+		*(.bss .bss.* .gnu.linkonce.b.*)
-+	}
++ /DISCARD/ : {
++  *(.note.GNU-stack)
++  *(.data .data.* .gnu.linkonce.d.*)
++  *(.bss .bss.* .gnu.linkonce.b.*)
++ }
 +}
-+
 +PHDRS
 +{
-+	text		PT_LOAD		FLAGS(5);	/* PF_R|PF_X */
-+	dynamic		PT_DYNAMIC	FLAGS(4);	/* PF_R */
-+	note		PT_NOTE		FLAGS(4);	/* PF_R */
-+	eh_frame_hdr	PT_GNU_EH_FRAME;
++ text PT_LOAD FILEHDR PHDRS FLAGS(5); /* PF_R|PF_X */
++ dynamic PT_DYNAMIC FLAGS(4); /* PF_R */
++ note PT_NOTE FLAGS(4); /* PF_R */
++ eh_frame_hdr PT_GNU_EH_FRAME;
 +}
-+
 +/*
 + * This controls what userland symbols we export from the vDSO.
 + * Currently we only export a symbol that identifies the vDSO version.
 + */
 +VERSION
 +{
-+	LINUX_5.0 {
-+	global:
-+		__vdso_m68k_tls;
-+	local: *;
-+	};
++ LINUX_5.0 {
++ global:
++  __vdso_m68k_tls;
++ local: *;
++ };
 +}
-diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
-index 19a750290..d79dfdabe 100644
---- a/arch/m68k/mm/mcfmmu.c
-+++ b/arch/m68k/mm/mcfmmu.c
-@@ -126,7 +126,7 @@ int cf_tlb_miss(struct pt_regs *regs, int write, int dtlb, int extension_word)
- 	}
+diff --git a/arch/m68k/kernel/vdso/vdso.lds.S b/arch/m68k/kernel/vdso/vdso.lds.S
+index 7f14c12e6..f8466da6f 100644
+--- a/arch/m68k/kernel/vdso/vdso.lds.S
++++ b/arch/m68k/kernel/vdso/vdso.lds.S
+@@ -46,7 +46,7 @@ SECTIONS
  
- 	set_pte(pte, pte_mkyoung(*pte));
--	asid = mm->context & 0xff;
-+	asid = mm->context.id & 0xff;
- 	if (!pte_dirty(*pte) && !KMAPAREA(mmuar))
- 		set_pte(pte, pte_wrprotect(*pte));
- 
-diff --git a/arch/m68k/sun3/mmu_emu.c b/arch/m68k/sun3/mmu_emu.c
-index b39fc3717..b9a75eb33 100644
---- a/arch/m68k/sun3/mmu_emu.c
-+++ b/arch/m68k/sun3/mmu_emu.c
-@@ -363,7 +363,7 @@ int mmu_emu_handle_fault (unsigned long vaddr, int read_flag, int kernel_fault)
- 		crp = swapper_pg_dir;
- 		context = 0;
- 	} else {
--		context = current->mm->context;
-+		context = current->mm->context.id;
- 		if(kernel_fault)
- 			crp = swapper_pg_dir;
- 		else
+ PHDRS
+ {
+-	text		PT_LOAD		FLAGS(5);	/* PF_R|PF_X */
++	text		PT_LOAD		FILEHDR PHDRS FLAGS(5);	/* PF_R|PF_X */
+ 	dynamic		PT_DYNAMIC	FLAGS(4);	/* PF_R */
+ 	note		PT_NOTE		FLAGS(4);	/* PF_R */
+ 	eh_frame_hdr	PT_GNU_EH_FRAME;
 -- 
 2.51.0
 
