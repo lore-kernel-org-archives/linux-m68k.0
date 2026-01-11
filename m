@@ -1,36 +1,36 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C74E22AE65
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Jan 2026 08:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08861318B8F
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Jan 2026 08:25:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768119927; cv=none; b=FIkiRQrRjdOPrG8Vaz6H7QwC7ZrnkAYdssiMkjPcqujT3pNETidaUImCr0O8TTmRTHifrU+mEMhWKK9S6mSvq0JW4+tBvqNKWIXRgKtLczVZL+aawPPw1a1jHq9X/5bqnBCLBSQ1UEhkjLXlJKg/DHAJwQ8IVUPuY8RN7bWqpOA=
+	t=1768119945; cv=none; b=d6XrUJyQa513Y2FBdnkEbmEz029w9hBhDyPDB7aTg41LLtc439CNxtWtvzKoBAhuVhpN8oZAqRU0eoGBcflXlPMrCOb1z+8+uI/zbH8GHyEJN4tc6jP+WosGhl3vCejUV1QvnpZyGe8BlCFLGFDdQ+AG9t0s8lr0b0D5+8Un4WU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768119927; c=relaxed/simple;
-	bh=qZJ/kX6852xy97RGj2L4BqvkwDGVySCnfrT6X/8ZHF4=;
+	s=arc-20240116; t=1768119945; c=relaxed/simple;
+	bh=hFJveYfaCrIw0+iDVEP3vQL9fd/XBHyX+JYd2Rm0RhA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FW9afHBJbKol0H1QRiUC1Seba2i88O04dQvLTuIfCrvKa48FqVT01SsbOXsHasoJbVtKsTdV+d5j9P7L+z3QGE2pWPDArRxHLQGHIg7O3T5xWYBdy6+0qHAWf8HbN18k6QJJ1oTtu1bPF6KN5yCRDnWTwftr3U+lZ9FaKxxZ+GI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c+P+a//z; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=sagzym3kRr2+JdXyIhRfOUFHTTXyoJa7KFfJ1tmiFm5JvzDt9O9y391yVHqXaAuC1Jg+85Vs4H/ftqF5tyjP/nrzrwcuRwLqpq9jMxqXtHvkRevJvOx94AX+k5izqyS4NrQINyIWBxjzq+jbQ5D84sh9J4GeyJ6f/Z60jd+JkMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ejea3zjx; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c+P+a//z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ejea3zjx"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id D50E440557;
-	Sun, 11 Jan 2026 08:25:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EE4AC4CEF7;
-	Sun, 11 Jan 2026 08:25:10 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 28AAD60121;
+	Sun, 11 Jan 2026 08:25:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E397C4CEF7;
+	Sun, 11 Jan 2026 08:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768119925;
-	bh=qZJ/kX6852xy97RGj2L4BqvkwDGVySCnfrT6X/8ZHF4=;
+	s=k20201202; t=1768119940;
+	bh=hFJveYfaCrIw0+iDVEP3vQL9fd/XBHyX+JYd2Rm0RhA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c+P+a//z4Nd5nIw0v+f+shPEprkJC1dixcExDF6DS8B1qCxJNhAn9gpWgY3+8tYux
-	 5S5M6nBwReivNwSNXdn/8vuT0YA2vEEo0MxOaXXZ7/PYTBLJ22IqjIFsWf6fSvFriU
-	 Xp/PcxtxdPH7dMXA6/y4k9GPtvHylLYxsywRRRuXL+oes1SFX8LWWJf3/H/FCWaM5b
-	 3/5oyLuN+DtN5k0D9u+ZZMiZW5jvG2mpiqt2m0hga5FUwHpEnfNSjZsML4vSpltVef
-	 8ZMgZSSbpINkDwSUrZONYkFT4OT4WwQePp6Vv669nytS4Ymj4bdmUg/4ZkvKpXSVhU
-	 wY8POksQVxL1g==
+	b=ejea3zjxcNk55gNO0bbLBhxe4NsBzp6h2dbs/uOwmj7bbdTrm/aLn1CsdSYQKFNyy
+	 MIgW724HlUOkhiogpK1xlqx1PfJ9vKR44ePzsM2MgEMnwLOTLYReW2B1UTZtcIh8qV
+	 HscmT3ORaZ3YNpVrsvYWLb9xhAvf3GwE+1yTZ8bLpTWXBeJ/ZCly/j0T5NtIzfIx6y
+	 1wPtCTY7OtWi8bK+mO5MGkaG9OvtDG3md54oVLJwaZjJezEVKKVPB/mpNay0l7xI6c
+	 OP0eAip/WOsG1W062M/zkogcxJrAkYPvW6p7Fzk4WPU8E58buvamLYO9CoxJxr46de
+	 UnewUkKtu81TQ==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Shi <alexs@kernel.org>,
@@ -99,9 +99,9 @@ Cc: Alex Shi <alexs@kernel.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org
-Subject: [PATCH v3 16/29] riscv: introduce arch_zone_limits_init()
-Date: Sun, 11 Jan 2026 10:20:50 +0200
-Message-ID: <20260111082105.290734-17-rppt@kernel.org>
+Subject: [PATCH v3 17/29] s390: introduce arch_zone_limits_init()
+Date: Sun, 11 Jan 2026 10:20:51 +0200
+Message-ID: <20260111082105.290734-18-rppt@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260111082105.290734-1-rppt@kernel.org>
 References: <20260111082105.290734-1-rppt@kernel.org>
@@ -124,32 +124,32 @@ call free_area_init() from every architecture.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/riscv/mm/init.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/s390/mm/init.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index addb8a9305be..97e8661fbcff 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -79,15 +79,19 @@ uintptr_t _dtb_early_pa __initdata;
+diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+index e4953453d254..1c11ad84dddb 100644
+--- a/arch/s390/mm/init.c
++++ b/arch/s390/mm/init.c
+@@ -86,6 +86,12 @@ static void __init setup_zero_pages(void)
+ 	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
+ }
  
- phys_addr_t dma32_phys_limit __initdata;
- 
--static void __init zone_sizes_init(void)
 +void __init arch_zone_limits_init(unsigned long *max_zone_pfns)
- {
--	unsigned long max_zone_pfns[MAX_NR_ZONES] = { 0, };
--
- #ifdef CONFIG_ZONE_DMA32
- 	max_zone_pfns[ZONE_DMA32] = PFN_DOWN(dma32_phys_limit);
- #endif
- 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
++{
++	max_zone_pfns[ZONE_DMA] = virt_to_pfn(MAX_DMA_ADDRESS);
++	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
 +}
 +
-+static void __init zone_sizes_init(void)
-+{
-+	unsigned long max_zone_pfns[MAX_NR_ZONES] = { 0, };
- 
+ /*
+  * paging_init() sets up the page tables
+  */
+@@ -97,8 +103,7 @@ void __init paging_init(void)
+ 	sparse_init();
+ 	zone_dma_limit = DMA_BIT_MASK(31);
+ 	memset(max_zone_pfns, 0, sizeof(max_zone_pfns));
+-	max_zone_pfns[ZONE_DMA] = virt_to_pfn(MAX_DMA_ADDRESS);
+-	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
 +	arch_zone_limits_init(max_zone_pfns);
  	free_area_init(max_zone_pfns);
  }
