@@ -1,147 +1,142 @@
-Received: from fout-b6-smtp.messagingengine.com (fout-b6-smtp.messagingengine.com [202.12.124.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAA034B19F
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jan 2026 05:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D80369239
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jan 2026 06:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768282726; cv=none; b=biQsDk3XsPsS/XcVT1F/zHkTFeiuONoZhOJQbOdUyhlYqO5jMOdRrhwo41lngueWHf6bE4ENwLJicWK0Kbs34GCQBtP0i1gnPa0pjNF+VVPka1phdgNtL7rInyj/a5HOmx2TVQToi5Z6F2whnUeaUx8twK8LMCrO1EgmPVjzFrQ=
+	t=1768287054; cv=none; b=cyv/VknM8+aMQAi0oPurMdROJS/RdinB6EMxEGOVAx+uA7104+SLqqGKP3Y97zn73zxN8PL06FZvyVspD8XxrSujweuJxv1LPZmgRs061ymJfmit+BIls3bgk/sGGFFBdbeO1hgZUXcJ27Wsg4xFPuxD3EpTg8z2IUPLLIsHZBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768282726; c=relaxed/simple;
-	bh=OWh8njjsogK8OZKE0gH6MErCWwee1eb7vZZ80vE+0TE=;
-	h=To:Cc:Message-ID:In-Reply-To:References:From:Subject:Date; b=FFWwn7QDnMeIwMfXjnxE702bZIul1fUUThOPk+EoIGCgHXE4PwVoZJkZtmqFYWmQmyb/XXGF10dQaLF+KnXnIreOAVqdx88/+KMxLHD1f2+rfYiPRiE6gdvvmJ+SrJq7mvWGWznlvu4cYtxcO0tQlbv7NpK26QYQZ7bDh1UpoL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iYyhii0f; arc=none smtp.client-ip=202.12.124.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1768287054; c=relaxed/simple;
+	bh=aDB3sdHl8yEvBSscr99tVhZre5iBP2s4Ktcd0fugEGQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BWIye15Z8VMFAsJ557EQqfdANiJhMGp3WkZcxM7TTnHoHlxEkgJ87D97a/HOpTSDetf4OAppPqEVjkpr3j4Arjm/HyAiI8xvGFp7X3g/QcJjQ3lfxH4JVt/aO2G3b2X4HEk5KiYXijm5VUUDRWsQaMJj3QcRJGUYRl048lH7ZBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZSK9IhBq; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iYyhii0f"
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfout.stl.internal (Postfix) with ESMTP id C7F531D00142;
-	Tue, 13 Jan 2026 00:38:44 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Tue, 13 Jan 2026 00:38:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768282724; x=
-	1768369124; bh=ycpRkHG759Ns/LsRddK7ctIaYu+SsUoRWuefNhT6tys=; b=i
-	Yyhii0fzWjaiSQ+kRHXhEEV6wQMWKKtiv59fCZDrdXyo9vlZWAjASXOvsDjoQkY4
-	BO0Fp3BhFe4vQXcYN9zTvhBjy5HGEK05PNOz1EZqvlEbpGeF1kYG4MEUxhgPfpvY
-	vpBemnfhGcm+HkxaTc7vY4yG5W5jEtff97qqB9W/Ojw3Lyj7Y6O/5vJJ1MfQT0Cf
-	tWq1O5Zp1N2YRer2PFZ2DHI0b+hvEXI6uSwo5qGiYV2ChdXBy4EclNf767A8ectC
-	dAv8r2yTRCKzzh0OTEIBoiFE6YAt/Fw4RDYrUwm0HAQid+BEaacB1pOez0BypOz2
-	qAVCrX8ywMVOW5JAWDU+A==
-X-ME-Sender: <xms:ZNplaZQOhomhhxip7ZaY5bzdiMoP32TZ_irYZobh6VC82xALF97BXw>
-    <xme:ZNplaQKWXVvGA6EUkmwdECQdRD9LRBlf1TBH95wzNvkmUA-6JNWwcmh5TPDinsw5A
-    -Dwu97tZakkExRB0HyLQM-Gb3s0LyV-fLTcVgFiVAgNPU1fBFDHKg>
-X-ME-Received: <xmr:ZNplaYW76MPoorYwdSussJKRulV5l5LWJt-lGqWtQCBDMNzNHUzkoSwNlO93voyirdrxTM_u8N-0Qt-gejHZWIgR9BaN6hNy0ac>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduudelhedtucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepvfevkfgjfhfhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghi
-    nhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrh
-    hnpeevgffgtdfhhfefveeuudfgtdeugfeftedtveekieeggfduleetgeegueehgeffffen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrg
-    hinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopedutddpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtih
-    honhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdp
-    rhgtphhtthhopeifihhllheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghrnhguse
-    grrhhnuggsrdguvgdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtgho
-    mhdprhgtphhtthhopehgrghrhiesghgrrhihghhuohdrnhgvthdprhgtphhtthhopehmrg
-    hrkhdrrhhuthhlrghnugesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdgrrhgt
-    hhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnh
-    gvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:ZNplacQXqEDJXX51NobZwDfReEZ7dhS2TKy9BEoG1UoZjU5PhM0BYg>
-    <xmx:ZNplaYC8FNBNzAQ5jrA6fV7VTIANHlQlsh7MsJwNaSBJwmzrYASDQA>
-    <xmx:ZNplaTKGffdnYUnFknnoa5D3etEqCkyIzcNry-5BTwG1mlZ5ieM2_w>
-    <xmx:ZNplaTDi_y-WWlqYtjmJATYT9wX9KcGu6IA-HHfeR2hNmDbKgnGU3g>
-    <xmx:ZNplaadJr2mD4dVAoWPRvmwQjw1J3JUGLfG-kivd_8uCIvOsoh828eI_>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 13 Jan 2026 00:38:42 -0500 (EST)
-To: Andrew Morton <akpm@linux-foundation.org>,
-    Peter Zijlstra <peterz@infradead.org>,
-    Will Deacon <will@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-    Boqun Feng <boqun.feng@gmail.com>,
-    Gary Guo <gary@garyguo.net>,
-    Mark Rutland <mark.rutland@arm.com>,
-    linux-arch@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    linux-m68k@lists.linux-m68k.org
-Message-ID: <6d25a12934fe9199332f4d65d17c17de450139a8.1768281748.git.fthain@linux-m68k.org>
-In-Reply-To: <cover.1768281748.git.fthain@linux-m68k.org>
-References: <cover.1768281748.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v7 4/4] atomic: Add option for weaker alignment check
-Date: Tue, 13 Jan 2026 16:22:28 +1100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZSK9IhBq"
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-88fcc71dbf4so45770866d6.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Jan 2026 22:50:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768287051; x=1768891851; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vX59/flKMUDb8zjb/CqTAfKlTuGyJwgf2lJ9POWv81Y=;
+        b=ZSK9IhBqK0Rz96COE2AA+7M8Lto9cMiiiJPJfqorNd1U5Khf2ZNP48LbhJyCSKcdI5
+         TXRtwaNgumWlo2VJvA0W1DoKAhueqHur/nGyG5CvrexKstskEzEv3nxulOh2z4bU5ffo
+         6Wa89n15nskRn0EL5EZbApUGA/koyB5Kadlvn0L3rJfNVuPUd1ER1D3F9HYnI++Dt/6+
+         phYIJ6gRONE5IRJBF5/RimWJOotxS9JGuNaIOLGWhOH6NL6JPk6yjU54i15vkwkRrMn3
+         eUVY2WAnTlshvOh1V504xmMP3yMvfw+wwEvrBmH2KTdlIV7EU/S6Xmp964r1trYkKDQq
+         74tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768287051; x=1768891851;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vX59/flKMUDb8zjb/CqTAfKlTuGyJwgf2lJ9POWv81Y=;
+        b=qBB8BwiiIA62zc/pNusxW/WrJlHTIwSgvex1v7kCg+GtS0bfTdbz5H8HG0uN0L1Ryv
+         a29Q1MOQSvwaviBTvCzvNfvvj/6nmq6AS6U62d0Bo5YGD3O0971LJjjEOiXc3IW7WCRV
+         6HsMD/N3vQI1oWNp+sHTAkXlBXacipCLV7t5l8+sKWcJ17FWODX71348QCjo19xsyril
+         ZZwvl1aC6UkUHyLYvRIg5cWgcjdehOKzpA49F+edwCnvRMAmRNEJzipQzOrdt1gTcr35
+         xuakuBWcGmG3XiILWslCggUTPc4ZajDLzMJWYzSpwFmTLaeOe2xLnFAnRrOW4qhedSB+
+         X3CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEw+lvyNko88gejq1yaoHi9KadMGboBHRyfhf3lYOBXWHh7j7muWuO4dKNEDBI9Yx5Psm133mr4smQ@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxuFRvsdwPMsAPqMqR/8gqZQwmu2QzB68CbKR87mkElfb5LlNUK
+	UEm5x1IdXyMeT7PS11Y1lqc09JOMQ+AAzvS9A6L94nTNM7XiuuzxmaBt
+X-Gm-Gg: AY/fxX6pVD9T8yuwifdTX58YnhZSUlSXg3MxPTJoMaLNhWbtcwu3VwVK+iHU0fLkJcE
+	8wf6cDaCj8o2UmIG0SZ1A0N/VPjmSqdw2dUHZdEgHTlEgvWnEjWQqvt4333g0vGF1rmcrk6WIAS
+	D+JfCNEZmDlH1CwwUhgi7BOnKzidpeunTCnjpzXngtCeacgMd93ihe1ivxJbT/7v8egkWcXPyN2
+	KsS5cS5Zwjo5MvljURz18LqyqVKYKep0oMXWmOmlDVHWeLydx55fB7HVo1c5G0aPrjKrZr4Pb+U
+	BYZQw855k/U/ALFGGKPxP/efCXhp9IyLaaKb75h/f0tQ0Ly3bUwozNBiTPkQiQanzel5aEIhg6R
+	SC9+rSIQr9La0wWjscJEHsZNcOMJkK4+NPg2Af3FSYAM48lWlvcWoous1e1m6C1XHxQVH5qu1sb
+	nqEJizmQgQmVKgOk6LOBJMxpiYYikVSksHjOnzcjSvyuSQAbDnYuTpiI7CVw==
+X-Google-Smtp-Source: AGHT+IFA85MjM1cnTGL5nks8UTBaUTRvSeGOw/MqVWENdA/8we2okwkLgNeF33lCoaLlOIlw7RP7mg==
+X-Received: by 2002:a05:6214:4291:b0:888:81f1:a05e with SMTP id 6a1803df08f44-890842d1be9mr273660036d6.60.1768287051243;
+        Mon, 12 Jan 2026 22:50:51 -0800 (PST)
+Received: from [172.20.10.9] (mobile-access-c1d2ca-216.dhcp.inet.fi. [193.210.202.216])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-890770cdfb0sm152433806d6.6.2026.01.12.22.50.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jan 2026 22:50:50 -0800 (PST)
+Message-ID: <86b974d7-cabd-4913-b5f2-5b62b520e023@gmail.com>
+Date: Tue, 13 Jan 2026 08:50:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/29] arch, mm: consolidate hugetlb early reservation
+To: Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>
+Cc: Alex Shi <alexs@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>,
+ Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
+ Brian Cain <bcain@kernel.org>,
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ David Hildenbrand <david@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
+ Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Jonathan Corbet <corbet@lwn.net>, Klara Modin <klarasmodin@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
+ Muchun Song <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Pratyush Yadav <pratyush@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Ritesh Harjani <ritesh.list@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+ Will Deacon <will@kernel.org>, x86@kernel.org, linux-alpha@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ sparclinux@vger.kernel.org
+References: <20260111082105.290734-1-rppt@kernel.org>
+ <20260112142323.495fc43e662e7d276b0fa371@linux-foundation.org>
+Content-Language: en-US
+From: Kalle Niemi <kaleposti@gmail.com>
+In-Reply-To: <20260112142323.495fc43e662e7d276b0fa371@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add a new Kconfig symbol to make CONFIG_DEBUG_ATOMIC more useful on
-those architectures which do not align dynamic allocations to 8-byte
-boundaries. Without this, CONFIG_DEBUG_ATOMIC produces excessive
-WARN splats.
+On 1/13/26 00:23, Andrew Morton wrote:
+> On Sun, 11 Jan 2026 10:20:34 +0200 Mike Rapoport <rppt@kernel.org> wrote:
+> 
+>> v3 changes:
+>> * fix empty_zero_page initialization on arm
+>> * fix ZONE_DMA limit calculation on powerpc
+>> * add Acks
+> 
+> updated, thanks.  I'll suppress the ensuing email flood.
+> 
+> Kalle, can you please retest sometime, see if the BeagleBone Black boot
+> failure was fixed?
+> 
+> Seems we haven't heard back from rmk regarding
+> https://lkml.kernel.org/r/aVrUDeSkqqY9ZCtS@shell.armlinux.org.uk.
 
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
-Changed since v6:
- - Rebased.
+Hello!
 
-Changed since v5:
- - Rebased.
+I will test this v3 patch ASAP and reply results here.
+Collective sorry for the delay; I have been busy!
 
-Changed since v3:
- - Dropped #include <linux/cache.h> to avoid a build failure on arm64.
- - Rewrote Kconfig help text to better describe preferred alignment.
- - Refactored to avoid line-wrapping and duplication.
----
- include/linux/instrumented.h | 8 +++++++-
- lib/Kconfig.debug            | 8 ++++++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/instrumented.h b/include/linux/instrumented.h
-index e34b6a557e0a..a1b4cf81adc2 100644
---- a/include/linux/instrumented.h
-+++ b/include/linux/instrumented.h
-@@ -59,7 +59,13 @@ static __always_inline void instrument_read_write(const volatile void *v, size_t
- static __always_inline void instrument_atomic_check_alignment(const volatile void *v, size_t size)
- {
- #ifndef __DISABLE_EXPORTS
--	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ATOMIC) && ((unsigned long)v & (size - 1)));
-+	if (IS_ENABLED(CONFIG_DEBUG_ATOMIC)) {
-+		unsigned int mask = size - 1;
-+
-+		if (IS_ENABLED(CONFIG_DEBUG_ATOMIC_LARGEST_ALIGN))
-+			mask &= sizeof(struct { long x; } __aligned_largest) - 1;
-+		WARN_ON_ONCE((unsigned long)v & mask);
-+	}
- #endif
- }
- 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 4b4d1445ef9c..977a2c9163a2 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1369,6 +1369,14 @@ config DEBUG_ATOMIC
- 
- 	  This option has potentially significant overhead.
- 
-+config DEBUG_ATOMIC_LARGEST_ALIGN
-+	bool "Check alignment only up to __aligned_largest"
-+	depends on DEBUG_ATOMIC
-+	help
-+	  If you say Y here then the check for natural alignment of
-+	  atomic accesses will be constrained to the compiler's largest
-+	  alignment for scalar types.
-+
- menu "Lock Debugging (spinlocks, mutexes, etc...)"
- 
- config LOCK_DEBUGGING_SUPPORT
--- 
-2.49.1
-
+BR
+Kalle
