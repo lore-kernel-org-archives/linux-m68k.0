@@ -1,64 +1,64 @@
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBAD22EC097
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jan 2026 16:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97AF3816F0
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jan 2026 17:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768321559; cv=none; b=ZyxccFCJV7FVsF2YIrVBnjfSq1nRVQkLBO46nhiiEeioCgv/AQx9ijF32qvCP7g91HLwv4v7UQMOA9bEDxhKeRX1iZQDlhUppHKs+xvZogwIR4B1RcwoOKXtrn4yr9Iv1/FVK5F4zvanryZNT5bc712P9JnOq2JBsSNdtbHQov0=
+	t=1768325845; cv=none; b=dwr3bTgeP+9xzZSBwhPlps63gVNspJXInZtXONczOh6fxN9VxgYOxRg+EWI8S+sJTvXMP33cJOzLtKkpcaU1pr2CH2bXiLTYZe5+P20oz58QL0CDcuM0LQ3BOzFLTdsU2cHILKh/IXtKgE7cwSBojCjGbedcYEMKNb7snAaAOhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768321559; c=relaxed/simple;
-	bh=tEU15hlDUcTJJO53/6hArpv/PNu5aaHiWIXc6QqAK0Q=;
+	s=arc-20240116; t=1768325845; c=relaxed/simple;
+	bh=ICK4ui9NDNRZmZPvqUFhVVRYDzu3U7vjvh8uoefFqv4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LMLTVu/4ACUq95fYtFOxXwGtbMIeL0faIE/NoRQ60y3zp1HQlBB2gZjfUFkUJ8Is43cuafQGMDP00CB8ap5mi9Ypwzp1NaJRGE072+6aoj8rDwLkTh32hTIC/I5rMASFc38r+7DqhYiOE9W7vttZzVx1Q3XhqYuzkK3HXjg0+eE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GUXanUB6; arc=none smtp.client-ip=209.85.128.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=TE3uPhH7CqUO+0/DTau+AuUSaBAWQvEv8nbZ7fV3YFXuhKoDyRv6COq6+myygocr80iRZbm7vo0MSBRa9M4zUd4pun4AqcWAnRS32xRiUW0abtFpjo3n3yJQmYKnmU0ul2XdafQK7wgPbJbtzX4xs9r1Dt1pgPeTCM3GfdQZEl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gQMlCSnA; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GUXanUB6"
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-477a2ab455fso71146205e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jan 2026 08:25:57 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gQMlCSnA"
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-430f57cd471so3943956f8f.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Jan 2026 09:37:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768321556; x=1768926356; darn=lists.linux-m68k.org;
+        d=suse.com; s=google; t=1768325840; x=1768930640; darn=lists.linux-m68k.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y9kSWtn88k+QkPqpOG7NN6Fxk/gRH5gvJVVHZoYjlVA=;
-        b=GUXanUB6V/yJyHZnPQJuMrtvy7M5FsD3rQQlcGsEnzF+OzNGmXwyTFv1aS0gcmz9+P
-         CEIZv5n9oVf++xQu+a8ki8w9UU72UT0NAg+8SORSJAOCboG3E/kdEdL7eZ98ednYyCYg
-         7X9S5Apx8R2sz6ktfogoPMj10xaxihQ3pjvb5EwLNym1z0xxPAZhRl8a2EzZSUdfEI40
-         51yfqsY57papop7kZGKxAAClRzW62iPq18XKDnkgJSrlnBkyCmvfRSWhy8ezMEkTZVPJ
-         xsV56WlGRU7eQfZi9DoZ9vhHqRjALXIg71L5fkrphhbYR8bDdvaZ9bHpqbIBGpR+AJaT
-         mXXg==
+        bh=/CVOy4tPw1zWY0e6rYcKRwtfrfRvUlKFzd8YTNoGp5w=;
+        b=gQMlCSnAIL0fp6P50z51xR3vMvICmLhDWN43V6nrtC3xvIPkMdqGZb5P/qo7Dh4L1T
+         o1EZdW5fDgA3pw7MKmSopEhmI0ucKBAV8dRzHlEv3PPSgOjBy+0VNwsxe9G9r4y8OThr
+         Bs3DSsjRt67jgLoWYzCHAHbdXthfZ9KMmneMVgmr94gdFBjuvDgmCfnZH//RT1PS2QBX
+         8TgrUTjA9L4Wn8nfapOYMXoXEr0RMGwF5vxNVQZBHzv+vkYEZf2xibHf6kvU1dE6IkvB
+         ZvRWo25xR4WapEnf/HvgOtFkTFG56w1P0FtOM9rYFHaiKUX0YuA782KDJRIBP9SoCxrS
+         vVkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768321556; x=1768926356;
+        d=1e100.net; s=20230601; t=1768325840; x=1768930640;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y9kSWtn88k+QkPqpOG7NN6Fxk/gRH5gvJVVHZoYjlVA=;
-        b=jqv/HJjBB6UdCkb90UxjpPtIgI0bGM0Sfutf6sniCPPYXEi91U6al7Bsa3aDlf1X5n
-         pWUAiK+5G9d1vfvKJvceSWaW8cQjdaKn2G69PCHf3dS+PneW8H7qWfP9rCWPfs+s4N1/
-         DLki+7rTnbWuR58ZJaHSxEiOHAC8Li+zqLXTiuk9xgNzHavwLdPApIWwjk7NokweVuPD
-         7aPnmXqvkxWuAKciCgJVA2e9uwkQO3ICNGf7oU74Q8vDje2A3Vw9cQo57ptDsqtcseks
-         LQ7oe8KJTGP6Atec6Qvu2lGmaHd1NDQFqyY5zCcWG98HdumzDSGPbxWBLYIzm5/GAyT0
-         WfGw==
-X-Forwarded-Encrypted: i=1; AJvYcCXFdE2KQc+VwZoGw7K4uPzKtYajsHwdsoGRWFAP6C2YvfsQ1TKk2lW05zNCeeb5/09Fyv6xtzk9Gw1a@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzZTlrJ3gYubz480+HTTMyL0BVtdMext1BxlfSYDuhFGi5kOn5E
-	i+OZZGToBVCdLmfIcJSqrJcga0SShp0KJ+eUyHJFa6oQinUShWuVhWkODG0ib5riChE=
-X-Gm-Gg: AY/fxX4UXzQmsM/SlriqEpw5WL+Arc6YBvI3SUBw/oxpW8rKjfSAvwhFIbWSGyuFiB7
-	x+cqdldb5S1LeYHf8fIHsU4iGK8PUEhKD3cyLueAnBqq2a0F+rWtdogqRMaGcAr5NFzbIsRyDpC
-	HErQDz3tuRijYtd8nTWlxKt9tF0tTv35Q1K+hSyT3UO8yAXU90ghTmw21IgTARL0mujJtVNtTsE
-	fMIokFE5hfTpQ4YsIyDjkafjVLisosjgJ9Y4f3LMxwO808k+Vu1UyAW2cKXEtjAm8vl/s3H/nry
-	w9HRrTVneBC7NdUgmPkoxvNKUk0rV3Cn4T/K6aGca3ubkwyUvsAYqaa4MGHBQdm3oiOfoZVm9fv
-	0/tPriEDMsGcB4v3FdVH377OXb6VZcfYdPKQPy50v/ofDZwL5/84xBnnaNgbNztZscFuFodgEdD
-	LfXWdwfwGukgqoiJpeOfN1/blF
-X-Google-Smtp-Source: AGHT+IG4o2sMRbjal/wNqE1AyBhrQEhgOmuQP9i1Wb50Y85ZgDNaJvwCCbv/cl0e10bMkrsnwOfPLQ==
-X-Received: by 2002:a05:600c:1e1c:b0:477:58af:a91d with SMTP id 5b1f17b1804b1-47d84b0aa4bmr229523325e9.5.1768321556267;
-        Tue, 13 Jan 2026 08:25:56 -0800 (PST)
+        bh=/CVOy4tPw1zWY0e6rYcKRwtfrfRvUlKFzd8YTNoGp5w=;
+        b=Xhgl7UFJNwr0Y1IA79+9FAomNrHw+7JlD5Ot+Y6Dji9BtbOt/LvViyaWtLXJs+zmEX
+         RzD+Vo6WJVcuiOcf94X7uj6BdGyFByBjQjhZ/LpUxGIrlFRvnZnDbrZZzZQ9Udb/kIaC
+         /o5E1WsX+5XliaoVWOzZ5AbkiKNnDODEAtfzYl3qw7Ssn33RIiRmeVUn1EIr36OUD4dl
+         rZfuJrCSQLhJTo1T3lPOt2Bfy/MlwYVDxX7LwyTX/5GdiyXFNXDEyVfdEr+KPj4BmBUJ
+         9NV5UUin6+w0WRoBY6Axp9UXQWRnJy/6ukIxXZ6BoqTDHJTOq04+ZkSQcTot+nVEmC/8
+         h2zg==
+X-Forwarded-Encrypted: i=1; AJvYcCXKUXMJMcpixTTNSwXR5nWHw5RYhgL1uJeDgqVxK8ZMvi08xWwKaH1X7M3TBS1wqIms+NfQhviGBekf@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwET05llllFn+ELFOXtfIIFUX6sQ2pLZOdAVSeyVxhT766vBWfy
+	ldtaGWigpzP7d+uc1xdI/KKVRuwZlTQyYH3++SPi8CGf2hi8DSP5ei4+mgFc7CwHeko=
+X-Gm-Gg: AY/fxX5fBvTwztbQMG7kg4qGp0vC1r/WkkX3Xlmp6SYSIozxHSskpO2L7WKZGonWCT9
+	0INPmk8aw/R6ZEC8JvZLrgsqAAPOZbdj6nE6uyxD2zQvFxRblKXkCaqVT1XZWSKhUkpF54gKvXD
+	T6QSRMgsR/3WhReMvSSaL6bStgwVkAzv6Z8GQ02T1On54Y/hxXlSqVkIt6QmAROL6HFwh/YLbYy
+	ueiGJz7HkmiRy3X8jV6JHBZfY7d9RAJDVtszLX7DcDQxXcgf8kWdxRheNvheaUfPGTiZxRiEfYF
+	8iqVsOHogXz/9WYaIXPVEQN8iuOzlaNXg0TUxHHzaFZcyTxIZL+5Q3dlpA2av54H9szpZmFaTqP
+	U8brmXnxCJBwCm1wZg8G3g4OBu0FFJIZqlPiUxvtXMPcQsxy4xqRdWuisu+R4coGcAVy9VsMCN4
+	2bFDjV+ncjoCJPoA==
+X-Google-Smtp-Source: AGHT+IHUReQqvVgC0db5F0/UgqAPwHgCcpq2ZD0lhm0g7XnDeEa3Phlj1/GEitKl8zvqkUFbSZC6XA==
+X-Received: by 2002:a05:6000:2dc9:b0:430:fced:902 with SMTP id ffacd0b85a97d-432c36436fbmr29258778f8f.26.1768325840268;
+        Tue, 13 Jan 2026 09:37:20 -0800 (PST)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0dad8bsm45637605f8f.8.2026.01.13.08.25.54
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432d9610671sm28342147f8f.34.2026.01.13.09.37.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 08:25:55 -0800 (PST)
-Date: Tue, 13 Jan 2026 17:25:52 +0100
+        Tue, 13 Jan 2026 09:37:19 -0800 (PST)
+Date: Tue, 13 Jan 2026 18:37:17 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -97,11 +97,10 @@ Cc: Richard Weinberger <richard@nod.at>,
 	sparclinux@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 01/19] printk/nbcon: Use an enum to specify the required
- callback in console_is_usable()
-Message-ID: <aWZyEHsOJFLRLRKT@pathway.suse.cz>
+Subject: Re: [PATCH 02/19] printk: Introduce console_is_nbcon
+Message-ID: <aWaCzZ8_UuyAa6xp@pathway.suse.cz>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
- <20251227-printk-cleanup-part3-v1-1-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-2-21a291bcf197@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -110,78 +109,83 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251227-printk-cleanup-part3-v1-1-21a291bcf197@suse.com>
+In-Reply-To: <20251227-printk-cleanup-part3-v1-2-21a291bcf197@suse.com>
 
-On Sat 2025-12-27 09:16:08, Marcos Paulo de Souza wrote:
-> The current usage of console_is_usable() is clumsy. The parameter
-> @use_atomic is boolean and thus not self-explanatory. The function is
-> called twice in situations when there are no-strict requirements.
+On Sat 2025-12-27 09:16:09, Marcos Paulo de Souza wrote:
+> Besides checking if the current console is NBCON or not, console->flags
+> is also being read in order to serve as argument of the console_is_usable
+> function.
 > 
-> Replace it with enum nbcon_write_cb which provides a more descriptive
-> values for all 3 situations: atomic, thread or any.
+> But CON_NBCON flag is unique: it's set just once in the console
+> registration and never cleared. In this case it can be possible to read
+> the flag when console_srcu_lock is held (which is the case when using
+> for_each_console).
 > 
-> Note that console_is_usable() checks only NBCON_USE_ATOMIC because
-> .write_thread() callback is mandatory. But the other two values still
-> make sense because they describe the intention of the caller.
+> This change makes possible to remove the flags argument from
+> console_is_usable in the next patches.
 > 
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  include/linux/console.h   | 27 +++++++++++++++++++++++++++
+>  kernel/debug/kdb/kdb_io.c |  2 +-
+>  kernel/printk/nbcon.c     |  2 +-
+>  kernel/printk/printk.c    | 15 ++++++---------
+>  4 files changed, 35 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/console.h b/include/linux/console.h
+> index 35c03fc4ed51..dd4ec7a5bff9 100644
 > --- a/include/linux/console.h
 > +++ b/include/linux/console.h
-> @@ -202,6 +202,19 @@ enum cons_flags {
->  	CON_NBCON_ATOMIC_UNSAFE	= BIT(9),
->  };
+> @@ -561,6 +561,33 @@ static inline void console_srcu_write_flags(struct console *con, short flags)
+>  	WRITE_ONCE(con->flags, flags);
+>  }
 >  
 > +/**
-> + * enum nbcon_write_cb - Defines which nbcon write() callback must be used based
-> + *                       on the caller context.
-> + * @NBCON_USE_ATOMIC: Use con->write_atomic().
-> + * @NBCON_USE_THREAD: Use con->write_thread().
-> + * @NBCON_USE_ANY:    The caller does not have any strict requirements.
+> + * console_srcu_is_nbcon - Locklessly check whether the console is nbcon
+
+There is _srcu in the function name, see below.
+
+> + * @con:	struct console pointer of console to check
+> + *
+> + * Requires console_srcu_read_lock to be held, which implies that @con might
+> + * be a registered console. The purpose of holding console_srcu_read_lock is
+> + * to guarantee that no exit/cleanup routines will run if the console
+> + * is currently undergoing unregistration.
+> + *
+> + * If the caller is holding the console_list_lock or it is _certain_ that
+> + * @con is not and will not become registered, the caller may read
+> + * @con->flags directly instead.
+> + *
+> + * Context: Any context.
+> + * Return: True when CON_NBCON flag is set.
 > + */
-> +enum nbcon_write_cb {
-> +	NBCON_USE_ATOMIC,
-> +	NBCON_USE_THREAD,
-> +	NBCON_USE_ANY,
+> +static inline bool console_is_nbcon(const struct console *con)
 
-AFAIK, this would define NBCON_USE_ATOMIC as zero. See below.
+And here it is without _srcu.
 
-> +};
+I would prefer the variant with _srcu to make it clear that it
+can be called only under _srcu. Similar to console_srcu_read_flags(con).
+
+> +{
+> +	WARN_ON_ONCE(!console_srcu_read_lock_is_held());
 > +
->  /**
->   * struct nbcon_state - console state for nbcon consoles
->   * @atom:	Compound of the state fields for atomic operations
-> @@ -622,7 +635,8 @@ extern void nbcon_kdb_release(struct nbcon_write_context *wctxt);
->   * which can also play a role in deciding if @con can be used to print
->   * records.
->   */
-> -static inline bool console_is_usable(struct console *con, short flags, bool use_atomic)
-> +static inline bool console_is_usable(struct console *con, short flags,
-> +				     enum nbcon_write_cb nwc)
+> +	/*
+> +	 * The CON_NBCON flag is statically initialized and is never
+> +	 * set or cleared at runtime.
+> +	 */
+> +	return data_race(con->flags & CON_NBCON);
+> +}
+> +
+>  /* Variant of console_is_registered() when the console_list_lock is held. */
+>  static inline bool console_is_registered_locked(const struct console *con)
 >  {
->  	if (!(flags & CON_ENABLED))
->  		return false;
-> @@ -631,7 +645,7 @@ static inline bool console_is_usable(struct console *con, short flags, bool use_
->  		return false;
->  
->  	if (flags & CON_NBCON) {
-> -		if (use_atomic) {
-> +		if (nwc & NBCON_USE_ATOMIC) {
-
-This will always be false because NBCON_USE_ATOMIC is zero.
-I think that it was defined as "0x1" in the original proposal.
-
-Let's keep it defined by as zero and use here:
-
-		if (nwc == NBCON_USE_ATOMIC) {
-
-Note that we do _not_ want to return "false" for "NBCON_USE_ANY"
-when con->write_atomic does not exist.
-
->  			/* The write_atomic() callback is optional. */
->  			if (!con->write_atomic)
->  				return false;
-
 
 Otherwise, it looks good to me.
+
+With a consistent name, feel free to use:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
 Best Regards,
 Petr
