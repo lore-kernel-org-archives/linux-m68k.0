@@ -1,94 +1,90 @@
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D454038A297
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 10:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF25E349B0A;
+	Wed, 14 Jan 2026 13:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768384933; cv=none; b=JNeP25qNYdtoskW0tKIgMyYEuRpajVBs3C3YoryGOvobH3HH91XkpBGh8IOWC9UzQXs2aeYAqO9KJ2VHN1RyedcFjQVWdD2hRmiWbYrpk27GbIyZCce7JMRVzMTYLa3QMj/Ou026HyH1Q6jXt7C+SIpSwskzCvm3yFDf+DddvGk=
+	t=1768396035; cv=none; b=mVTFxBwAv4BKPRU8rdzd4Ut5AQOTJH6yEgaGqqzBS2yljSE1c/WIPmkifk4bBGnOUZF7y9sxN0H2G0gKqRMI7n7PoI5C/BlkRzRE7n7cHXGZa4obE2POW82OyUQUhe/ksI2pBYuMIuaEjgmWs1VqiE0uLRdKidiLv32/bmBy1Us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768384933; c=relaxed/simple;
-	bh=an3PQRdJRli5xUp+0iFhR8Tl9IEB+ilkJpCoeRs721w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rhQ3qJ9iLs/GPdSwAxrOb28+C6oKlJqFWO3wL6C5Uj21pdn99w0aURWxn6ds12l9NEAtPf6cDNFheWAFDIX+I2Gq3fcmd0C4HQT19pEp1FVLF+bMUxikneYnM2xHebZIVZdsnCEDSUQ0XZIVsnfdIQ7nFut5+s5rHAQyDZzzNxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=soT9n1XU; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1768396035; c=relaxed/simple;
+	bh=494HrHF0odc3qjfHZTbGKxMt/JQuHQDVh91/V7jleyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uDHko0ftdpppTgt9ayRlxFYiQakd8CkQ1se6R1u4qKbWbjck172XmshGvJpCU6520+W0Y20oFvLIaaOCdoUVKJ0gpLavHG14cyGTfD3LJYiIJTSnmgdRi5nLOtHReOG/JM0vX4YHhSsmFHwHgyt8CFXT4VKCSUCcGZzZv+CgdoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=o5O0fVjj; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="soT9n1XU"
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2a58f2e514eso10887675ad.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 02:02:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1768384930; x=1768989730; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=an3PQRdJRli5xUp+0iFhR8Tl9IEB+ilkJpCoeRs721w=;
-        b=soT9n1XU+hbX4GUoVSg6o/KRMer869gqJp54rhU3jLGOLcy2jGZYSStT/Us00K7rbc
-         wDYYJKfbj68WKsN1yOQxV31V40+cTIwwFbEE0oIJBPa8R07bJzDSngZZMU/YAuIw3BsP
-         h49Y5/EJDOR6ouSlQ+Vh2K/RjP+arClpBy31s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768384930; x=1768989730;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=an3PQRdJRli5xUp+0iFhR8Tl9IEB+ilkJpCoeRs721w=;
-        b=E8lv/MkkoYX+6HWfvmgWPKNrNLizrtRvwIIjZJEiiyJr4KDiLLzhgfeCLlMmsKBbEP
-         2idplhxpDrIcV74MRCheB8m6gyZWheCCFw+HarGbMVLp3zMUp72zmvZPSXr5KcP51YKB
-         K+uh+giVhaNrl6zpEsI18jfl3HUiRNpOLpgxORdhGY3M1Wv93Se+X3BWtei0MAb49IWf
-         8DuFGopjWMsMCQ/JtvtbBQt9+NaaNY0ftlZaHw72X6a1ghzm5s0p96gaW1W1oUtXXCoN
-         29nKsHoQ7RuwetXcdpZV50dYAFbu5pdD6PRtQJijbf59/FrtDxSDH+IccOnrt+wKUiXP
-         vVnA==
-X-Forwarded-Encrypted: i=1; AJvYcCVfv5Ce5kljupTK7fv78H5mDQuR0PhmT+N++YyQAWxODe9tVwTCQJewzjaO49KtmEkAOhviqIM8a4+E@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxouJhkBt2N6Fp6TlCunYlcah5aZcVKlTtSfMHSIqKtyzaQCIHP
-	pBNoJqGnXM4CWY5mBvOmZTARXd2cbHH4LgjdmbjuhcPpi8aUZiMeU3aFWGOzSh3/b5pBS23lM5e
-	Kdcb/tWpNeZq2WX9SmWvWU3UVnHi1jEZJzFiS10kK7g==
-X-Gm-Gg: AY/fxX7QH3xB5XLPI2z742SBlvf2DZiWTwxM+/4iYav0WWd/Wh44WnDJ+Twa7qFK260
-	+qOvetxDxNIoKaJzhTY5oB6Ew+ICvVfgdlsvaOCNtOuUaGFEC621aWiTzSUNKi69VHZc/vU+KFe
-	bSsUaQzqZds64L37Q+DoKXj0rFFUZq7ipuOPm6u6Vhmhdplmkf/e3w33aDQgzePf+Ox9J2YqssO
-	eGiQWrYYkEHMl+DV3b6qzK9NuI9s/TQC+yE85z4jdbaOQk8VSUsnRXJcJyMnhHh5a891EIl
-X-Received: by 2002:a17:902:d490:b0:2a0:e5da:febf with SMTP id
- d9443c01a7336-2a599e57f84mr19789975ad.46.1768384930034; Wed, 14 Jan 2026
- 02:02:10 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o5O0fVjj"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=fyWL+E9yB213HC+XbKKPFkof5RMwUvNvxik7cDpGBIs=; b=o5O0fVjjT861S1Q9jOEqjzB8Qu
+	bedeQjx594j4au0gOU7X+maZEF0bvVwFYKXA9BmOd6Cg6xga5+otgqfzbueW1CvoddvTvkWMn1aI6
+	mMRshcM3Oi3ITdG29NdLZuSUiWL1j2KN6nuqeExljjV4AVGFzdTt/ezOLz3u71pCY+iPU8w9SdDtN
+	e4np0FoUjzASDNdaZQhVGwESuL6yuKSh2IqvMpuPLazrvx5aEOFySPkwaS3PavByU0OYk0f4m12MU
+	2z0O+FTEqdDlevwtWLNNISBm0X6sFjIZ9FwswRl45tPfU2EEFpmiQkHNyWuFSqRIirWR5syUyvvZz
+	2gcYuscg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vg0aW-00000004skF-2pm5;
+	Wed, 14 Jan 2026 13:07:04 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 0D67B3005AA; Wed, 14 Jan 2026 14:07:04 +0100 (CET)
+Date: Wed, 14 Jan 2026 14:07:03 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+	Mark Rutland <mark.rutland@arm.com>, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	Sasha Levin <sashal@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Ard Biesheuvel <ardb@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v7 3/4] atomic: Add alignment check to instrumented
+ atomic operations
+Message-ID: <20260114130703.GC830755@noisy.programming.kicks-ass.net>
+References: <cover.1768281748.git.fthain@linux-m68k.org>
+ <51ebf844e006ca0de408f5d3a831e7b39d7fc31c.1768281748.git.fthain@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260112182258.1851769-1-visitorckw@gmail.com> <20260112182258.1851769-2-visitorckw@gmail.com>
-In-Reply-To: <20260112182258.1851769-2-visitorckw@gmail.com>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Wed, 14 Jan 2026 19:01:58 +0900
-X-Gm-Features: AZwV_QgguIt852C_mUjivXJfQcOZtzqwma4T4Ld0LagZcZXCH6S-e9IavQmDjH0
-Message-ID: <CAFr9PXn9nzw=kmWqv_ZPZshhGuh0iAW5b=Csygt6WZOnmd2tig@mail.gmail.com>
-Subject: Re: [PATCH 1/2] power: reset: Add QEMU virt-ctrl driver
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: geert@linux-m68k.org, sre@kernel.org, jserv@ccns.ncku.edu.tw, 
-	eleanor15x@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51ebf844e006ca0de408f5d3a831e7b39d7fc31c.1768281748.git.fthain@linux-m68k.org>
 
-Hi Kuan-Wei,
+On Tue, Jan 13, 2026 at 04:22:28PM +1100, Finn Thain wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> Add a Kconfig option for debug builds which logs a warning when an
+> instrumented atomic operation takes place that's misaligned.
+> Some platforms don't trap for this.
+> 
+> [ fthain: added __DISABLE_EXPORTS conditional and refactored as helper
+> function. ]
+> 
+> Cc: Sasha Levin <sashal@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Link: https://lore.kernel.org/lkml/20250901093600.GF4067720@noisy.programming.kicks-ass.net/
+> Link: https://lore.kernel.org/linux-next/df9fbd22-a648-ada4-fee0-68fe4325ff82@linux-m68k.org/
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> 
+> ---
+> Checkpatch.pl says...
+> ERROR: Missing Signed-off-by: line by nominal patch author 'Peter Ziljstra <peterz@infradead.org>'
 
-On Tue, 13 Jan 2026 at 03:27, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
->
-> Add a new driver for the 'virt-ctrl' device found on QEMU virt machines
-> (e.g. m68k). This device provides a simple interface for system reset
-> and power off [1].
->
-> This driver registers a restart handler for system reboot and sets the
-> global pm_power_off callback for system shutdown. It is designed to be
-> generic and can be reused by other architectures utilizing this QEMU
-> device.
->
-> Link: https://gitlab.com/qemu-project/qemu/-/blob/v10.2.0/hw/misc/virt_ctrl.c [1]
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Feel free to add:
 
-FWIW: I have a driver for this in my "m68k with devicetree" tree. As
-far as I could tell the virt_ctrl thing in QEMU might get more
-features aside from power control.
-So I made it a misc device instead.
-
-Cheers,
-
-Daniel
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
