@@ -1,68 +1,66 @@
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C10437C0E4
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 08:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EAE52BEFF5
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 08:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768378834; cv=none; b=NoW+mvYcRABsaTsZN7d5Pr2ONPi4xlW0+cN+Ad22hvvNWrTcsVDax2IOHnZOcrlIb3qy3ZztyL/2X4WfiubMvkJ8gS7OmCr3W0kOTdWezebV+G2w0STUC08rA85eXHLkge/YoDD9QP8SGH1/ueyga703CxaHUwsVhDiPL5bpfvE=
+	t=1768380266; cv=none; b=KRIX8qv8FGXLVm7IYiaMtFgGAyygbDwijb2ft4cKGY/ANEtaeXozeHMnlaMUnnKOHChaR+s+xrrfrYZlGZ9eLsfzkl5gVNuXMsSvBx2pTKJbLniOJIuXEIDJTcy9RHeJwM5+8mcv6EPE5ne7QLSFGDHlH4al23IoBOpvB7jWaMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768378834; c=relaxed/simple;
-	bh=cVeFdKo0k7nGdWRXnAwflkhPHd9OUkqReF3689rtABc=;
+	s=arc-20240116; t=1768380266; c=relaxed/simple;
+	bh=ysd4WYTvCh9+HsQ1AtbOfW5FzL4/iKQHwd6lm5bPF7A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dLe8yqMb3QJ8rBRV/i68jRtUm8ku9GYevjbB7eumn6CYCSe8jsPJCGbmHEfF/EIpn7UlXUV+ksRvcuaBFyAkBHGaMrxoRUvs1r4yQNWdkcnBg0jIxbZoRcwWkm7jZ2pcHcQeFnEDuip9dnOLMPM6Reensu0R/Y3XGB+NXSoa8hA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DIZlxAWF; arc=none smtp.client-ip=209.85.221.42
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ay+2CmjlNmX7GnY8Sl+MEuzodgg3gsyk9Cu1qKBdjew9muHr+rhG70QTI90Eu8MXEGMNDBkl0rFOrh7gH7XFOQ/ZuBwRJ/25+s9pJQ5kzB+UB8kgyOOdEWzIChu10i819NicXw9ITBjxj9SXvV6v03ocMGbbqIvEaXMNvwuMZMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CX9aWhaV; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DIZlxAWF"
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-430f2ee2f00so4898394f8f.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 00:20:28 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CX9aWhaV"
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-42fbc305914so5911925f8f.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 00:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768378824; x=1768983624; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kOjWICKElajAktcnLTxDO0a0hjOrXuTPJG+TIiIDMlE=;
-        b=DIZlxAWFnDpCTuGclYJVX2fXGMJDBVpxuHoOnXz+U6nu3KBOEZLDzULHed/744Bctb
-         MihqXmNCFvCWmhn1b/HyOc0Qq0fOoCfK0Pe4shbUrMtIFX+cO7mj3+c/rbTvP1cz/sxL
-         dWv0HBiGwfi/hvXC2VoEn6ixQJWCgKq89K/yvf273QlS9AX0LzXCN+mEeBNUSq2FWYOe
-         mIeYMc039P8GhxsZYgSCN5zmaLFvrQi3KcYA9K9NiwI2nwoYIK23A33kjHCBgZDrfYuu
-         vuQswl3rP1Y+MsbZg2YF5cqCOeJK/zXoQDNAySYWJpHXRjyXNN25RqdB8Gj7rdcEU6f0
-         30lw==
+        d=suse.com; s=google; t=1768380255; x=1768985055; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Nn9M/VPDoeuifL+P7no8o5FApQZk7zNKYvSR+p2CRU=;
+        b=CX9aWhaVPFm1Yk28jUg+Z+VqsIUYBTAG1jXmnG5Tit5tpBfMTXQJHTKJDsAvZK4dvh
+         KoP7Q9mKBGOh5Pww0X4TMlkhYbZ0XfO/uXVA7CwRlOE706IUnh1E7I421Uzvjjm0BGQ/
+         8EHcnHPExQr09nHsyBCelNIBfNhKNADq9B958/cSgdez3baB/E8qeESbCloBe1CefLEh
+         zJWx2JJdmhtkX6LAFa52Jx4ms9SkuAg3JzBZHm0Z1JWoIcx0SckBpl+rFmhRrAdiNwgR
+         4zs1PLDbmm/abqDgvkzeqfwNRAAVCFNXekUpPa6a0ZZQvAOlTv1Tz1w+2rsK6qRR6IX2
+         1LDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768378824; x=1768983624;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kOjWICKElajAktcnLTxDO0a0hjOrXuTPJG+TIiIDMlE=;
-        b=YaZbolXCzbLhKfnp5r/yR84nXGceQVMlexlqaDNKnT3Q5ZQsAnuEWv4iRCxUf3Fwz+
-         8D1d5ONFGMXMz0rYLS1EdM2UbKQVvff+3EVHQB2OCZh3k9wg9nDon7KIqHXZqc8uWVC5
-         aYg0wv6wn56H6Ugiac4DzaC9Fj9C3VpSUuCa85l1YxhsZa0X8qT8T2QanipW31DriasY
-         ZYmIvL8RI/sdonAgifwMFr1JD+4oP58bjJT5YHm88QHjz5ABESRc4dB5SbyBtI8SXCZL
-         MDL48hRKeRJYI5lkOIftaCz1Ien/0TTyiAtUGoPexvz4dWwd6m320vl9qXG/ExAMPnag
-         ZmMg==
-X-Forwarded-Encrypted: i=1; AJvYcCXBZ0SCPnxTpnCxTfI2rhU0NVPZuN0Kk2qpj3+Hp5GBSZAKdT1SdPfKW8t0YJt5XjxepTWqzEeMnyw5@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwEmMau+4P+9j7jThHIneazDPLigw17EzzPG9sSwR0H0ukUEp6W
-	dtKgkwXh/VFTjHaNy/1/MGNnGV7LG9QPaGJ3iD2XhvSCwLPc91YV6rbR7TfDKMTL0QI=
-X-Gm-Gg: AY/fxX7GOpFhi8wDRpMmLC0UyXbxpFH8y4uu6OHKVaDPil+/qN4laG+Ed14n9XIhzRm
-	IBFD6v4/7Lr/UaaHePt+pgMnnl57hMKMsdH5sbve/kihw81yBl7WfM+0OOHTbgD7M+ufhfa5Y3Y
-	wlVAAP7Ot/aMZmQnTXXLiBMWQdNBW6P8wun7JZsUcFqJ4ElT3+fGryxmcNlZdRa1UTZU6OHL+lU
-	PWBLKwDqRI9Yz4fUGqt+oTQDS44Q6SRY/Nj5j46XBIqNQvmVtdjmEPLvEo0pFoPMNyKjL/IwJu6
-	letvcTVOK4WdAziFr7m4r2UBKBUFiQUIih5NmWucXWLFe+OLcmILwK5oFa4WxjhmjKAr7jM14YE
-	vIvpbZdFkoxitThTWP5eSDV4OtbTpmGdTjgUdkKorT3dBXG2uy4FTWq0avSXq6nC5780fleVWfN
-	ZmJDTjH2+Y99s8kw==
-X-Received: by 2002:a05:6000:40e1:b0:432:5b81:498 with SMTP id ffacd0b85a97d-4342c4f4a32mr1782744f8f.23.1768378823922;
-        Wed, 14 Jan 2026 00:20:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1768380255; x=1768985055;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/Nn9M/VPDoeuifL+P7no8o5FApQZk7zNKYvSR+p2CRU=;
+        b=d4ESQofHdJ9+/S3MAdnGjLTrRGXHR6c1o5n7YlQwwTYLQG2IrB3NkUNMbr1vUQS4Xp
+         IUzXqNZPdgnCWrGdsKkgrWRSS4Aphw59vcJypzGd5fOplhM7/J31/zw6h/jR+LtmZZ5i
+         1GNwPUjUWiaiZj1OpLtiRjsEaiDqymxgnChXqgPNsF5yGv6g3ydOfnwquTJMQtJGXt+D
+         1vmzbgoNKxa0FqPedaCnRqgan8yXgv1stJTsZaWFoBGSeCz6P8ArU9o1bEEP1bDGGKr6
+         pt/NeKHLhzd9e7Q+ZO6vQ1p/T+IqGPoF7a8knQT1lAs0rneyPFQDO2l/10egq7tRPr8O
+         s9VQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXtvQDjxLzfiwBmb2OQ9fkOe4/2y2M8vB1EiYBzWA/IfSu7+NGu+hMCdOvRe8whloH4kptNu+ly67uc@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxZQmQEAKBj2CqBwKvbKXLTIAEyGKY8nX1eqkzvYlSpv+DUnVPL
+	c2PnoD2C24UROIdJCBezDiexjZx2kkw8CREitVpGYnIsa9cOeaXClFCYq2ofsnvOSEA=
+X-Gm-Gg: AY/fxX6O7btXhpqKul1DtmPe/FUB+UP4ZD/KSFKcBLivzp0FU5Pj2Jbe7K9K8Xy2PxO
+	ui54mOs18NEQ4Aj7C+2eF8U3UFHMrukThrUelh5kzD1dy0ejlpPRYpQ/YWj64kFsbzJaQZI4k8a
+	EsjIXTqvGYnngTFbHShPmsTuukcaIxnCo5v3Hy1Mc/nVRvFfJ+Kx+U+tuaejl7nM6uB9LYglXvQ
+	PsDoszrWK+f+8O9goIxoMX9o+L86SXHt4kJOytD1piiWFDQ9gwnUCAvqkbWwEt00ctzCiYy9Flw
+	yiH5z+WfD3X9eRzHqMb+E5IIeYL46qXH3rcIu5BkkbKDFzvoHkn7Tyqt45o2fCe6vDOPquvXeEI
+	yqLXzQacpXX2vOiEp08U+Mx4MawsSkhvcGvHJ54bFWVW5vyOywIHEcIDG9K37EE/MPoRcXsj501
+	znxoIlqTKEfsQk4w==
+X-Received: by 2002:a05:6000:61e:b0:431:a38:c2f7 with SMTP id ffacd0b85a97d-4342c574bedmr1500621f8f.59.1768380254886;
+        Wed, 14 Jan 2026 00:44:14 -0800 (PST)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0dad8bsm49346913f8f.8.2026.01.14.00.20.22
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5ee5e3sm48685590f8f.35.2026.01.14.00.44.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 00:20:23 -0800 (PST)
-Date: Wed, 14 Jan 2026 09:20:20 +0100
+        Wed, 14 Jan 2026 00:44:14 -0800 (PST)
+Date: Wed, 14 Jan 2026 09:44:11 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc: Daniel Thompson <daniel@riscstar.com>,
-	Richard Weinberger <richard@nod.at>,
+Cc: Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -98,149 +96,87 @@ Cc: Daniel Thompson <daniel@riscstar.com>,
 	sparclinux@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 00/19] printk cleanup - part 3
-Message-ID: <aWdRxBbJOEIZ-KjE@pathway.suse.cz>
+Subject: Re: [PATCH 03/19] printk: Drop flags argument from console_is_usable
+Message-ID: <aWdXW6ohfQ7_z2B_@pathway.suse.cz>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
- <aVuz_hpbrk8oSCVC@aspen.lan>
- <aVvF2hivCm0vIlfE@aspen.lan>
- <a5d83903fe2d2c2eb21de1527007913ff00847c5.camel@suse.com>
- <89409a0f48e6998ff6dd2245691b9954f0e1e435.camel@suse.com>
+ <20251227-printk-cleanup-part3-v1-3-21a291bcf197@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <89409a0f48e6998ff6dd2245691b9954f0e1e435.camel@suse.com>
+In-Reply-To: <20251227-printk-cleanup-part3-v1-3-21a291bcf197@suse.com>
 
-On Tue 2026-01-13 21:32:33, Marcos Paulo de Souza wrote:
-> On Tue, 2026-01-13 at 09:41 -0300, Marcos Paulo de Souza wrote:
-> > On Mon, 2026-01-05 at 14:08 +0000, Daniel Thompson wrote:
-> > > On Mon, Jan 05, 2026 at 12:52:14PM +0000, Daniel Thompson wrote:
-> > > > Hi Marcos
-> > > > 
-> > > > On Sat, Dec 27, 2025 at 09:16:07AM -0300, Marcos Paulo de Souza
-> > > > wrote:
-> > > > > The parts 1 and 2 can be found here [1] and here[2].
-> > > > > 
-> > > > > The changes proposed in this part 3 are mostly to clarify the
-> > > > > usage of
-> > > > > the interfaces for NBCON, and use the printk helpers more
-> > > > > broadly.
-> > > > > Besides it, it also introduces a new way to register consoles
-> > > > > and drop thes the CON_ENABLED flag. It seems too much, but in
-> > > > > reality
-> > > > > the changes are not complex, and as the title says, it's
-> > > > > basically a
-> > > > > cleanup without changing the functional changes.
-> > > > 
-> > > > I ran this patchset through the kgdb test suite and I'm afraid it
-> > > > is
-> > > > reporting functional changes.
-> > > > 
-> > > > Specifically the earlycon support for kdb has regressed (FWIW the
-> > > > problem bisects down to the final patch in the series where
-> > > > CON_ENABLED
-> > > > is removed).
-> > > > 
-> > > > Reproduction on x86-64 KVM outside of the test suite should be
-> > > > easy:
-> > > > 
-> > > >     make defconfig
-> > > >     scripts/config \
-> > > >         --enable DEBUG_INFO \
-> > > > 	--enable DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT \
-> > > > 	--enable DEBUG_FS \
-> > > > 	--enable KALLSYMS_ALL \
-> > > > 	--enable MAGIC_SYSRQ \
-> > > > 	--enable KGDB \
-> > > > 	--enable KGDB_TESTS \
-> > > > 	--enable KGDB_KDB \
-> > > > 	--enable KDB_KEYBOARD \
-> > > > 	--enable LKDTM \
-> > > > 	--enable SECURITY_LOCKDOWN_LSM
-> > > >     make olddefconfig
-> > > >     make -j$(nproc)
-> > > >     qemu-system-x86_64 \
-> > > >         -m 1G -smp 2 -nographic \
-> > > > 	-kernel arch/x86/boot/bzImage \
-> > > > 	-append "console=ttyS0,115200 kgdboc=ttyS0
-> > > > earlycon=uart8250,io,0x3f8 kgdboc_earlycon kgdbwait"
-> > > 
-> > > Actually I realized there was a simpler reproduction (hinted at by
-> > > the
-> > > missing "printk: legacy bootconsole [uart8250] enabled" in the
-> > > regressed
-> > > case). It looks like the earlycon simply doesn't work and that
-> > > means
-> > > the
-> > > reproduction doesn't require anything related to kgdb at all.
-> > > Simply:
-> > > 
-> > >     make defconfig
-> > >     make -j$(nproc)
-> > >     qemu-system-x86_64 -m 1G -smp 2 -nographic -kernel
-> > > arch/x86/boot/bzImage \
-> > >         -append "earlycon=uart8250,io,0x3f8"
-> > > 
-> > > With the part 3 patchset applied I get no output from the earlycon
-> > > (without the patch set I get the early boot messages which, as
-> > > expected,
-> > > stop when tty0 comes up).
-> > 
-> > Hi Daniel, sorry for the late reply! Lots of things to check lately
-> > :)
-> > 
-> > Ok, I reproduced here, thanks a lot for testing kgdboc, it's a quick
-> > way to check that the new register_console_force is not working. Let
-> > me
-> > take a look to find what's wrong. Thanks a lot for finding this
-> > issue!
+On Sat 2025-12-27 09:16:10, Marcos Paulo de Souza wrote:
+> The flags argument was also used to check if CON_NBCON was set, but their
+> usage was fixed in the last commit. All current users are reading the
+> variable just to call console_is_usable.
 > 
-> Ok, I did a bisect and found out that the issue lies in the last
-> commit, where CON_ENABLED was removed. After it, I then checked what
-> was wrong, since everything was being plumbed correctly (tm), and then
-> I found that it was not:
+> By calling console_srcu_read_flags inside console_is_usable makes the
+> code cleaner and removes one argument from the function.
 > 
-> On _register_console, the function try_enable_default_console is called
-> when there are not registered consoles, and then it sets CON_ENABLED
-> for the console. Later on, try_enable_preferred_console it checks if
-> the console was specified by the user, and at the same time it had
-> CON_ENABLED set.
+> Along with it, create a variant called __console_is_usable that can be
+> used under console_list_lock(), like unregister_console_locked.
 > 
-> It worked by chance, but now, we don't have this flag anymore, and then
-> we are not _marking_ the console on try_enable_default_console so
-> try_enable_preferred_console returns ENOENT.
+> --- a/include/linux/console.h
+> +++ b/include/linux/console.h
+> @@ -656,13 +656,8 @@ extern bool nbcon_kdb_try_acquire(struct console *con,
+>  				  struct nbcon_write_context *wctxt);
+>  extern void nbcon_kdb_release(struct nbcon_write_context *wctxt);
+>  
+> -/*
+> - * Check if the given console is currently capable and allowed to print
+> - * records. Note that this function does not consider the current context,
+> - * which can also play a role in deciding if @con can be used to print
+> - * records.
+> - */
+> -static inline bool console_is_usable(struct console *con, short flags,
+> +/* Variant of console_is_usable() when the console_list_lock is held. */
 
-Great catch! Yeah, it worked just by chance.
+Nit: The comment is a bit misleading because this function is called
+     also from console_is_usable() under console_srcu_read_lock().
 
-> So, without any console kgdb is activated much later in the boot
-> process, as you found it.
-> 
-> I talked with Petr Mladek and it would need to rework the way that we
-> register a console, and he's already working on it.
+     I would say something like:
 
-Yes, I have some patches in early stages of developnent of another
-feature which would help here.
+/*
+ * The caller must ensure that @con can't disappear either by taking
+ * console_list_lock() or console_srcu_read_lock(). See also
+ * console_is_usable().
+ */
+> +static inline bool __console_is_usable(struct console *con, short flags,
+>  				     enum nbcon_write_cb nwc)
+>  {
+>  	if (!(flags & CON_ENABLED))
+> @@ -707,6 +702,18 @@ static inline bool console_is_usable(struct console *con, short flags,
+>  	return true;
+>  }
+>  
+> +/*
+> + * Check if the given console is currently capable and allowed to print
+> + * records. Note that this function does not consider the current context,
+> + * which can also play a role in deciding if @con can be used to print
+> + * records.
 
-> For now I believe
-> that we could take a look in all the patches besides the last one that
-> currently breaks the earlycon with kgdb and maybe other usecases.
+And I would add here something like:
 
-I agree. I am going to review this patchset first. Then I'll try to
-clean up the patches which remove the ugly side effect from
-try_enable_preferred_console(). Then we could discuss how
-to move forward. It might make sense to push this patchset
-first without the last patch...
+ *
+ * Context: Must be called under console_srcu_read_lock().
 
-> Sorry for not catching this issue before. I'll use kgdb next time to
-> make sure that it keeps working :)
+> + */
+> +static inline bool console_is_usable(struct console *con,
+> +				     enum nbcon_write_cb nwc)
+> +{
+> +	return __console_is_usable(con, console_srcu_read_flags(con), nwc);
+> +}
+> +
+>  #else
+>  static inline void nbcon_cpu_emergency_enter(void) { }
+>  static inline void nbcon_cpu_emergency_exit(void) { }
 
-Do not worry at all. It was a well hidden catch. It is great that
-Daniel found the regression in time...
+Otherwise, it looks good. It is a nice clean up.
 
 Best Regards,
 Petr
