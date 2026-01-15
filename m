@@ -1,83 +1,73 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597EA3A4ADB
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 16:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602E825742F
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 06:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768408753; cv=none; b=inoCzAcXlQRWywu7VjRZDBicP5y7wJ88ZbA+v/GyOZk1j2lbAtghEQmCJIyH51E/UczYEoisqLNK5/LyoESBXqvnRzwLwPjJB0+FExCzR4iBmbRWJnaj+7Nq//pngRCXKZGtlNhwRHtXqNWGR6PPmiuel+A4Pn66Z0jWNk0KWfQ=
+	t=1768457745; cv=none; b=MMoT4cooLIU7bvAZ90cHPMggoMdGAgpFqGucCNBuOF+iVU/+Ux3T90ZB44DRpsbkr+SoH6elA5eR/IaKaH15A8sZ/ITpisdipJ+TE4kODpyYnVM2XrZjwL0MjAMXV/pwoE7zqcN6BGvyKzyLe66vo7KwR5xfh7Lqhs2XVHZz2tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768408753; c=relaxed/simple;
-	bh=3O46Pj7m8kkRm5o6FCiKeQjNffkaPKNOyTPfHDTuyTM=;
+	s=arc-20240116; t=1768457745; c=relaxed/simple;
+	bh=xuYDqmlOXdV6M+f9LMPEInQe4YGVV3/NVgJwk7BAxnw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YBpykQ4Q7p7BxR560ueSk9Q0vHC2o/GEeqMEIEgnO2yibCwkERIYHPN955qENRl2Ga9XGOCJ8LeUkC3S5CoU0u30MeBURyWtfQy8FG0ziRg4Ao4ghnTjRSCpaKFgygvPywpZhGaf8qUqG16EHD4oDFEhWMwGGXomQHueSRjMMKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rX3NXa+Z; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=u9U06sU6WPD7FRfAsjd90sHcBpmslWysebrxuJNrydgq7C35HPMpIB3I0lgBIsKYXWBdO9R4NxfOSSdoMEb232ILzT10KCaJFSiQ7jLG15rU0Owlw2dfk8TSE01VSvsxYuUPet/wZRmA3Qq2PWlItYuOtaf4Ba/mHMYwHJiCPn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X/EkValX; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rX3NXa+Z"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9A323408E4;
-	Wed, 14 Jan 2026 16:38:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80489C4CEF7;
-	Wed, 14 Jan 2026 16:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768408730;
-	bh=3O46Pj7m8kkRm5o6FCiKeQjNffkaPKNOyTPfHDTuyTM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rX3NXa+ZIaH3nFwhK4UUCK7Tl+BkdrM7lAWylErEBVX8n4+UiQ4G9G3ZhsgmdM3kk
-	 vN8PXFoQ+O9dscO4bKZ3M3QWmyyXJXre63JLVYqnzZ2NTakKl+OU0g0oj8iEefzjr3
-	 mgengyjgYNSq8vnqi/nIcJdbHx722ODGLyY8W8WF4jD1J44QYJo3q7W39OBPor2Wnp
-	 mtMB1YriAKD7oAMO5DENXpRw1aefTtMKh3nXtSKTmIbbZIhuLzX4/xt9jCGtUk6R4U
-	 0bsnyWbYeo3xcvSjczR5clmShq482fExnV7dzxGfD2Q4FGvs3AgYwtJ9KizIe5aoQq
-	 liWKl6bOegsTQ==
-Date: Wed, 14 Jan 2026 16:38:39 +0000
-From: Daniel Thompson <danielt@kernel.org>
-To: Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc: Daniel Thompson <daniel@riscstar.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jason Wessel <jason.wessel@windriver.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Breno Leitao <leitao@debian.org>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Shan-Chun Hung <schung@nuvoton.com>,
-	Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
-	netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	sparclinux@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 00/19] printk cleanup - part 3
-Message-ID: <aWfGj1eQhj2fAWB-@aspen.lan>
-References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
- <aVuz_hpbrk8oSCVC@aspen.lan>
- <aVvF2hivCm0vIlfE@aspen.lan>
- <a5d83903fe2d2c2eb21de1527007913ff00847c5.camel@suse.com>
- <89409a0f48e6998ff6dd2245691b9954f0e1e435.camel@suse.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/EkValX"
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-c0c24d0f4ceso228533a12.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 22:15:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768457742; x=1769062542; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LjxQx55L3HFhzEsrPSzupy5cs4/k1InHSQSDwivVXVQ=;
+        b=X/EkValX2iXv8JTW3QFebAk/pCBY1EecWoF5XNvX+kPze4e+4oqRKDqXNyTDEZvQA+
+         hYkuysQoYtlcivXaO4EjNn/ZvLkJUJera26J2BnO7AlJIb5gWsDtFqk/VUuS3ZBAkPRn
+         Z/B/JEQknqGd51uL+AhM/ga4zz2VDwmRRHQ91THrek7z3ynUBgshvWW3LdKwhrboc6ta
+         ThDLWe4SDoG6Tb8b3sR/OtQQ3nS2VG12+MJrTHZ4w1xnRB2tRihD25B+r99DbYqSCFdD
+         tTI1K4LDHpdHZ/IfwSmQzyz1SLphzvI6hF2YJKhU90EARo2fF6yymhTb/+e0bU/1sbTW
+         RLtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768457742; x=1769062542;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LjxQx55L3HFhzEsrPSzupy5cs4/k1InHSQSDwivVXVQ=;
+        b=OJTKdMfeT5ctkHx/es3DsY0VE3s/vVfLTo/9WqXufJNw6XitddMX8vsQcAA+qWGXBE
+         y9wpolgSWo85bjPsiRdAtpOXSf9OBDZvl7TJwA/jCw6j6yhEuFlh/kSDWKgnWHxGod4W
+         LE9aREStCVQ2jUZNWHPomda0VMAbv9MZs2qSZ20DUlG9zDVpZj5u+H5bTvge+2aqgAnu
+         CnstIprHc+dTf4xIwU/QIk5A1DuJGu54FOEultfDCcTEbFQ84MGijqedCsyw63fUds6l
+         gSLhDbGGxEzc4wkaadAgye74Cx0V4rkGBWMIzx/d41uq1Tp5zL3GVRq5SiqcFQr5uk+V
+         bscA==
+X-Forwarded-Encrypted: i=1; AJvYcCUTjA6DW2p4W5BAYxkFW2BvSPdpSzTiZQLqy7ls/V8DrAxfkXPdSJW9yrm/i/1Zv1Ovzp0vSJKTGVlD@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yxx6KFOV/ZduivacqYas/Hpj0ii+3roTYAo4CcyBvCpeuzGq1iC
+	ct4lsTR8OdK0miSo3psUbhBc/dCHBSa9UcTWRMC6Eh4Lfggr8XOzENkd
+X-Gm-Gg: AY/fxX6pYpAStyzRoq1TWMGoF9PbxV3YrDxV+XNuiPScAjrwyHl9RnwrH5WgazbaxET
+	oZlnDodO6tlt5pDmnCglSkuCUjrZskdfaa4eDL364kdockeBCVZyFqLeO5DFCa23hFf7agEy2HB
+	NSzNggCYU/29Ts4oi4zNA1mzOY6n1lxW7oGS1HTdzz3Zg2o2srKiRLyUUASl7xcQFMXVkzDANPc
+	i/+zrmRS2E9DsEyHJKR5TBoCv4OP3Dkl1U4WMkJ+3nL6UiC9sJDVT2qtPEYjQruuzcQct2qib3L
+	PnHsFFOni82ycr5PwOjccb0AOFAXgzfJxZ5hfjpG4CzmqA7YAGpBVKKGgtZ7/LKX0VEZiGgmm4B
+	L6XE6u6pNcdpIICBjyX1XpKfzA8D5EKb6+DDlVD5zer/mER0hhErGDQzQ26CsXNGu7BQxsa4rij
+	Hfdnq2x++YrIDm35f75QkvFQOM
+X-Received: by 2002:a17:90b:350b:b0:34a:8c77:d37b with SMTP id 98e67ed59e1d1-351090da11amr6037803a91.16.1768457741930;
+        Wed, 14 Jan 2026 22:15:41 -0800 (PST)
+Received: from google.com ([2402:7500:568:57ed:f859:ae8b:d60b:53d6])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-352677ba62csm1059931a91.2.2026.01.14.22.15.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jan 2026 22:15:41 -0800 (PST)
+Date: Thu, 15 Jan 2026 14:15:37 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Daniel Palmer <daniel@0x0f.com>
+Cc: geert@linux-m68k.org, sre@kernel.org, jserv@ccns.ncku.edu.tw,
+	eleanor15x@gmail.com, linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 1/2] power: reset: Add QEMU virt-ctrl driver
+Message-ID: <aWiGCY4aEF5dZOqY@google.com>
+References: <20260112182258.1851769-1-visitorckw@gmail.com>
+ <20260112182258.1851769-2-visitorckw@gmail.com>
+ <CAFr9PXn9nzw=kmWqv_ZPZshhGuh0iAW5b=Csygt6WZOnmd2tig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -86,26 +76,41 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <89409a0f48e6998ff6dd2245691b9954f0e1e435.camel@suse.com>
+In-Reply-To: <CAFr9PXn9nzw=kmWqv_ZPZshhGuh0iAW5b=Csygt6WZOnmd2tig@mail.gmail.com>
 
-On Tue, Jan 13, 2026 at 09:32:33PM -0300, Marcos Paulo de Souza wrote:
-> I talked with Petr Mladek and it would need to rework the way that we
-> register a console, and he's already working on it. For now I believe
-> that we could take a look in all the patches besides the last one that
-> currently breaks the earlycon with kgdb and maybe other usecases.
->
-> Sorry for not catching this issue before. I'll use kgdb next time to
-> make sure that it keeps working :)
+Hi Daniel,
 
-As I understood things the bug was in earlycon rather then kgdb.
+On Wed, Jan 14, 2026 at 07:01:58PM +0900, Daniel Palmer wrote:
+> Hi Kuan-Wei,
+> 
+> On Tue, 13 Jan 2026 at 03:27, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> >
+> > Add a new driver for the 'virt-ctrl' device found on QEMU virt machines
+> > (e.g. m68k). This device provides a simple interface for system reset
+> > and power off [1].
+> >
+> > This driver registers a restart handler for system reboot and sets the
+> > global pm_power_off callback for system shutdown. It is designed to be
+> > generic and can be reused by other architectures utilizing this QEMU
+> > device.
+> >
+> > Link: https://gitlab.com/qemu-project/qemu/-/blob/v10.2.0/hw/misc/virt_ctrl.c [1]
+> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> 
+> FWIW: I have a driver for this in my "m68k with devicetree" tree. As
+> far as I could tell the virt_ctrl thing in QEMU might get more
+> features aside from power control.
+> So I made it a misc device instead.
 
-It was picked up by the kgdbtest suite since kgdb does some cool things
-with earlycon (thanks to Doug Anderson) so I added a few earlycon tests
-to the kgdbtest suite. However it wasn't kgdb itself that failed here.
+Thanks for the note.
+Just out of curious, are there currently specific plans to add
+non-power features to virt_ctrl?
 
-So... if you want to run https://gitlab.com/daniel-thompson/kgdbtest
-then certainly feel free but its probably less effort just to include
-a couple of earlycon checks in your testing.
+If new features are added, shouldn't they be exposed via separate
+drivers in their respective subsystems, rather than consolidating
+everything into a misc driver?
+
+Regards,
+Kuan-Wei
 
 
-Daniel.
