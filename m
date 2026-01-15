@@ -1,63 +1,63 @@
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E153312821
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 10:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0235636E49A
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 11:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768472790; cv=none; b=b0FxxCtMWyIHt+2ijlNZv88iiU4llVxfZ/YugVTUjUJrMd5DLes0LSAt5CK+irQQP6ppbt+xw93mgReBEpXro8AFcob1WIUivVR2jOwfGiOXRFqyx6EHJf8FTIt2miA6jFPfpIxxT18ot2nUS3IqoOEQbFDMzmg0mVIwPMM9aJM=
+	t=1768475161; cv=none; b=Ub0ePYHvXUboUcg5gUKgSAfftcWT0IUjujVBJ24WcnSXeYs1beINZi3YbS8Gm45pf/IfL3bX2wZl/D5zLvEDGvNA5AYiiXO2eqaosq5kYe8gAk0SdTShCA8xC9nAp81MZx2MxVDBAWnhVb9ESfCmESVA0CHt0sWcfe/zjn38HS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768472790; c=relaxed/simple;
-	bh=cTvHKPGvKDvdv3CW2phXagRp3ofYcYf6SwlYtKmyZc4=;
+	s=arc-20240116; t=1768475161; c=relaxed/simple;
+	bh=5pJaxN7hZxh6H+l9RH7y9R9O3ys4FH/dz9mNWCjHNb8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FJ1piay7tCNnmWMrQb3qMmQlY5uTMn2I0dHa17Jf0962748in5Pm/gW0lWodli2ohqE7mwQivAsFj0AvZBxxvY0Pq2Zpmq9FzugjHsQtOzOIiSZcwhrN+EeJDqJgMHiYnxPORQL2aWlc+gD89U/+8k/WMj9ktWXTcYrQv4w5EyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HNiHkL8s; arc=none smtp.client-ip=209.85.128.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=HkZHp7SHzYiv6pagJpia00oySy3eFzhJzRLIv4yW8JRpTtO4Mj49mZ91mKl/3PJnZvz6hlSRwG0KDJEkNGSnDT+sIknobveEf4Lfag1iuO/c6V0ZsW/R5Fk7Y7oCFkUGZ2XCPYqOh68tsgeKmwGOfEU5FDuO7RlnJ3iNMBSA7jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eqoJI59i; arc=none smtp.client-ip=209.85.221.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HNiHkL8s"
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-480142406b3so2386375e9.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 02:26:28 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eqoJI59i"
+Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-432d2c96215so635037f8f.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 03:05:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768472787; x=1769077587; darn=lists.linux-m68k.org;
+        d=suse.com; s=google; t=1768475155; x=1769079955; darn=lists.linux-m68k.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JLly7CGERK95lIS5prsdJ95HAbwiiwFAFGJDvTd/YQs=;
-        b=HNiHkL8sZFIDE+mPvItLzof07SYSxOqD7I6ffEc8ij4yviqKc8ENTiE24G8pWpzZF3
-         Np/zgHdM5lT4fbh/H8jcZdy4J9uB9wTxVwXegAHZt3zO9t5/1zY+wBPVc0PGrWBii3yv
-         wwYgCKuzSmpvd3AsKG3ZpSJau6nYie6ySs0LfdQ4809j6o5+6yxE4TuLxRGTAqv7uDD5
-         lyimYNVEjjNn5Z3Tj4MoTk/a+CgbUt4xUwDHZc+3W+QMJYwhX/jIMC6dlsr1S0IDMcsR
-         fPFQtqQYKBTcVN7I4IsM44L+gXh6zgvZSvrAscX6TYHpfmVK6J60S07hZ288TmObReAS
-         p8OQ==
+        bh=AuZzUvIQYamq4W1YoLrzX7y0En5/TpcBTyFE7gx3A0A=;
+        b=eqoJI59iXJNQ7U1UrGR+Id0tqLYULmP0Zc7s0swOv5lKFj1TRmgVgfKjZnf5VCkqh1
+         HtDLxuPER8Ol/ALHYvNyTMCgKaFzgGqAWTE+V0Lvcojx3omuH8rCMnltDk49uJgtPdY+
+         oNhQWwcM5rgx1fHXd40/ukFf5LzhPWyhiyuSvxxw69As36xqQDCZRxAqDD5+yRj/jZYU
+         GJQRI+ZWgQv0vitQf1FusB0fCSSwnlMjHi57hQ+6OKprcHtUB1PaVCKUpbjP7/Om6GjN
+         DtYG8KqD6mQjO+LlM5BIMdxwJRvKg3CmCgg0hQ2F+fz0eRim87b2lQ/BIjYG19Pj5ztb
+         68YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768472787; x=1769077587;
+        d=1e100.net; s=20230601; t=1768475155; x=1769079955;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JLly7CGERK95lIS5prsdJ95HAbwiiwFAFGJDvTd/YQs=;
-        b=IfboBpT6Xcfy5kYFHpDhG4VBvH5lW4QI6RFuLdqzBtinrXhbMbb84zAUyogAdcWBFR
-         s499dF1pALPb1FtrurQl8zDP0RmIOBYP8/o2uTVeCQEGNoBRP19brYMxGKo7xMCWSnAX
-         paEHgXoGVDCnFnM+C7mX+FhogwvtChilG+Dqon8nqiX/lJOIqpp/ppYsMQ40caxxrmol
-         gNN1zQXiKzpeUpu8QrRuLK6wRD6UZqhxFcFrWhysR1rwhYEsFnTaZ7V1UZg7na0XP9uI
-         KGBmbT9s6kkoj94cx5YBsW5BuGfkVMSt5MUIU+m1fQIxkR7bcr/Faj9dzuoqgNzAWpoJ
-         UMFg==
-X-Forwarded-Encrypted: i=1; AJvYcCX1IRul0vpNkuk76U163zYhiaFL7nr3EMRRkqaSfTjDgxYlva5iWk7LP68k+3O4ISxCnH5Ii//8zLwt@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yw+IoGL8lU5v8vGhlLB7WF4timtF+LqUWG4OZ4eAaTWdgYVM86G
-	d28onDbkXLt9unlrLXVguIAU6aHjPWaAhNZyT/Y8iXBrzw033m69hRvA1Qy8ThcOgF8=
-X-Gm-Gg: AY/fxX7Fu2U4tL+aNP6Z4+wz2NNmK9SdXbV2Tbl+ReAI2S6ewMEqTFtvwNoXylWDl3I
-	iibcEZV0nBJxTsL3emlJOtnz7OnTTCDtkR5t1ctNUktZvNhgUUP2r4323qq0z192p5l8yZcA2cD
-	F7f0cBqPjZ15BPN6knbwY3b7cciajWr5FSk+9dqG/kVUszQComlOwcNh9mscyF60qLRtQV8F0yR
-	CDoVFgB+dcONOYAKEIpdTjQVbhvHycABB9+6eYpMFOnlwI6uoKb3+KYdshKCMuqMAUOEXyvbUUT
-	olvR3XkneTANg4sFW8wuzmGCi9wjiZ6lZGnmC2xVAy+bLJWU7KSQd3CqBQYgYxIzhNgoDreef2M
-	5adaDo0wdxhtWmZc0aIxDQge8nhOm0/5U1FTrsxKEt+YL7G88AYVXGJdtssHJk3hQ+gArcfhNz5
-	z7LY6dfsIPA81uPg==
-X-Received: by 2002:a05:600c:8b77:b0:477:afc5:fb02 with SMTP id 5b1f17b1804b1-47ee4819d6emr64067955e9.21.1768472787399;
-        Thu, 15 Jan 2026 02:26:27 -0800 (PST)
+        bh=AuZzUvIQYamq4W1YoLrzX7y0En5/TpcBTyFE7gx3A0A=;
+        b=mJYFLe9ip9oaU4QY156f4OnX7/69taIKW8IxSy0Jutv5UyEIZQTMgeViUl9EREG6AG
+         cLMmMv5aDDhbVHkEjKkoBIulzJJzaK89wyDVp85cJM6Ym/D1IPUF8QFwqa0pAL6N44Vi
+         YMdphsBPALmzx1SnXObEDYfMQgKXyQWkutYFNTlzzamK3BhAhvF3hvKAs3zst5Q9suyQ
+         /MN4C4DjB1hkK0DIp/Bg2v4z07i/F3LlUV45yREpWrlfWAu4JqcmDX93XYCpDv8dlXwt
+         4YEtKkx+5rkoU5B0J9QmFOYYzGI6gyOmbP7fDZsOLyjLsZN9qmdjC1YbZ0PL3xk2BQd9
+         b0WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVppTy5i50RN0eGKAthjp0v0jmOzVRuqOd5uJ+AryryChM+9tl3yplMTGsCQrTSujtQrFSYIhztKCVi@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yybf+1W6XqYbCn7pacxZOed0fifW5ywKsGGsyMLk+bYRPUWyw16
+	lYqoep4LeVOThAxGI0qrIbrixKHhQDGIDz7OLP7mTRk43wPOw0A16+rr+XjOe7watBE=
+X-Gm-Gg: AY/fxX6kQytYCKwp8hOccTITyhV5J1vEAmGi8/mNs2zshUiy0Zr2z/7zvi8TqZW+Nth
+	ukKe5q31cuR/mdvisafpAG/aC/0isPb1mRc5su9cerjAzIzit1Op9T7wGlyMqM6f+PvtftvjOl4
+	2z5ymdqPOjJssxt5XRXznwvtT6J3+pvz6AGIKUixDFTLJQfMM3Nzmg2se2tYYqcsyeRaXTSDqHv
+	ZFextPaTSct4KctdKibEKQYVVrs/JHMnUzqIhCCAC/Z/L63tUmeIlV30w/OoKLELIzSDKl+2+ZC
+	BYXd0PBV8Rzo5CI3h7btSJPqgzRVoNUJWPKYFitqP5L1XwaSDnRbhXba3x8oXKZQF3rl7Gqcl5e
+	0MbRo0al3rZgGsaWLz2++1PsX1lyPm2mURlfwP9jHzDCh/dco0s8Iuyk/KOgAef53G7Kr9wuE8R
+	MdKPsfEZzS71V/fQ==
+X-Received: by 2002:a05:6000:2f84:b0:430:fa9a:74d with SMTP id ffacd0b85a97d-4342d3912bcmr7103110f8f.24.1768475154515;
+        Thu, 15 Jan 2026 03:05:54 -0800 (PST)
 Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-434af6d90aasm4935338f8f.29.2026.01.15.02.26.25
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-434af6d909fsm5297949f8f.31.2026.01.15.03.05.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 02:26:26 -0800 (PST)
-Date: Thu, 15 Jan 2026 11:26:18 +0100
+        Thu, 15 Jan 2026 03:05:53 -0800 (PST)
+Date: Thu, 15 Jan 2026 12:05:51 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: Marcos Paulo de Souza <mpdesouza@suse.com>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -87,18 +87,20 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Jacky Huang <ychuang3@nuvoton.com>,
-	Shan-Chun Hung <schung@nuvoton.com>, linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
-	linux-serial@vger.kernel.org, netdev@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
+	netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 09/19] m68k: emu: nfcon.c: Migrate to
+Subject: Re: [PATCH 10/19] fs: pstore: platform: Migrate to
  register_console_force helper
-Message-ID: <aWjAysWXHUOHSisl@pathway.suse.cz>
+Message-ID: <aWjKD4jv8CySV0Rj@pathway.suse.cz>
 References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
- <20251227-printk-cleanup-part3-v1-9-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-10-21a291bcf197@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -107,20 +109,64 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251227-printk-cleanup-part3-v1-9-21a291bcf197@suse.com>
+In-Reply-To: <20251227-printk-cleanup-part3-v1-10-21a291bcf197@suse.com>
 
-On Sat 2025-12-27 09:16:16, Marcos Paulo de Souza wrote:
+On Sat 2025-12-27 09:16:17, Marcos Paulo de Souza wrote:
 > The register_console_force function was introduced to register consoles
 > even on the presence of default consoles, replacing the CON_ENABLE flag
 > that was forcing the same behavior.
 > 
 > No functional changes.
-> 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-LGTM, nice cleanup!
+> --- a/fs/pstore/platform.c
+> +++ b/fs/pstore/platform.c
+> @@ -418,10 +418,10 @@ static void pstore_register_console(void)
+>  		sizeof(pstore_console.name));
+>  	/*
+>  	 * Always initialize flags here since prior unregister_console()
+> -	 * calls may have changed settings (specifically CON_ENABLED).
+> +	 * calls may have changed settings.
+>  	 */
+> -	pstore_console.flags = CON_PRINTBUFFER | CON_ENABLED | CON_ANYTIME;
+> -	register_console(&pstore_console);
+> +	pstore_console.flags = CON_PRINTBUFFER | CON_ANYTIME;
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+As the original comment suggests, this was done primary because
+of CON_ENABLED flag. Otherwise, the console was not registered again.
+
+register_console() might remove CON_PRINTBUFFER when there was
+a boot console and the newly registered console will get associated
+with /dev/console. But I consider this a corner case. Other console
+drivers ignore this scenario.
+
+I suggest to define the two flags statically in
+struct console pstore_console definition as it is done by
+other console drivers. Remove this explicit dynamic assigment.
+And add the following into the commit message:
+
+<proposal>
+Define the remaining console flags statically in the structure definition
+as it is done by other console drivers.
+
+The flags were re-defined primary because of the CON_ENABLED flag.
+Otherwise, the re-registration failed.
+
+The CON_PRINTBUFFER might get cleared when a boot console was registered
+and the pstrore console got associated with /dev/console. In this
+case, the pstore console would not re-play the entire ring buffer
+on re-registration. But it is a corner case. And it actually might
+be a desired behavior.
+</proposal>
+
+Otherwise, the next generations of kernel developers might think that
+the re-assigment was there because of CON_PRINTBUFFER flag.
+And it might cause non-necessary headaches ;-)
+
+
+> +	register_console_force(&pstore_console);
+>  }
+>  
+>  static void pstore_unregister_console(void)
 
 Best Regards,
 Petr
