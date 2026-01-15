@@ -1,73 +1,104 @@
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602E825742F
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 06:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5406C361DD8
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 10:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768457745; cv=none; b=MMoT4cooLIU7bvAZ90cHPMggoMdGAgpFqGucCNBuOF+iVU/+Ux3T90ZB44DRpsbkr+SoH6elA5eR/IaKaH15A8sZ/ITpisdipJ+TE4kODpyYnVM2XrZjwL0MjAMXV/pwoE7zqcN6BGvyKzyLe66vo7KwR5xfh7Lqhs2XVHZz2tM=
+	t=1768472199; cv=none; b=oV/5WkatArVDmDt53LNKP8W9uQhMvinJdIgWrU+WRwsx/DE5Uq4OpMbtlIubUVYK2wM7GTJEFwVWaBaW3ubERYHkkmTj92yGb92dP5wmQ6q+BCH3L9va0DwVbOYsBi8YgYpsnGlOKWfiCNKCREpFvxES5xNupzUxMQxaHOx4mqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768457745; c=relaxed/simple;
-	bh=xuYDqmlOXdV6M+f9LMPEInQe4YGVV3/NVgJwk7BAxnw=;
+	s=arc-20240116; t=1768472199; c=relaxed/simple;
+	bh=zwLrvsF0GMvPSCBeAjAWQZcmbWMJVYh05GZu4CqMmyk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u9U06sU6WPD7FRfAsjd90sHcBpmslWysebrxuJNrydgq7C35HPMpIB3I0lgBIsKYXWBdO9R4NxfOSSdoMEb232ILzT10KCaJFSiQ7jLG15rU0Owlw2dfk8TSE01VSvsxYuUPet/wZRmA3Qq2PWlItYuOtaf4Ba/mHMYwHJiCPn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X/EkValX; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=CMhv5+QntyXBXCxUqPs7/LkivwGsU88DPtceyyu5MXjawqTXU+ZOLwOcTOPblTit+UOXIeeJoySuEhwEmHpW+R+O01hA6Y+rqyDclNvkEblrgXK5w4yEEQwDuXL75zSecboWnGUp2YCzDdFzrmdEWNCekBtnmGj0S9LaBidyvkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AP7sUYTh; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X/EkValX"
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-c0c24d0f4ceso228533a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 14 Jan 2026 22:15:43 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AP7sUYTh"
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4801c1ad878so2005185e9.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Jan 2026 02:16:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768457742; x=1769062542; darn=lists.linux-m68k.org;
+        d=suse.com; s=google; t=1768472195; x=1769076995; darn=lists.linux-m68k.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LjxQx55L3HFhzEsrPSzupy5cs4/k1InHSQSDwivVXVQ=;
-        b=X/EkValX2iXv8JTW3QFebAk/pCBY1EecWoF5XNvX+kPze4e+4oqRKDqXNyTDEZvQA+
-         hYkuysQoYtlcivXaO4EjNn/ZvLkJUJera26J2BnO7AlJIb5gWsDtFqk/VUuS3ZBAkPRn
-         Z/B/JEQknqGd51uL+AhM/ga4zz2VDwmRRHQ91THrek7z3ynUBgshvWW3LdKwhrboc6ta
-         ThDLWe4SDoG6Tb8b3sR/OtQQ3nS2VG12+MJrTHZ4w1xnRB2tRihD25B+r99DbYqSCFdD
-         tTI1K4LDHpdHZ/IfwSmQzyz1SLphzvI6hF2YJKhU90EARo2fF6yymhTb/+e0bU/1sbTW
-         RLtA==
+        bh=zwLrvsF0GMvPSCBeAjAWQZcmbWMJVYh05GZu4CqMmyk=;
+        b=AP7sUYThOfAR/cQuPmioUzcwWLc2jr8ETv6BWjzmjWWz27gZOezsq8xXfZ4hHLwYLQ
+         7kvEthhLbRbjht/wWTwMLgyPW7Esj9J6C1c0yX3aWbF0s/r+igPJ9kRuwjuzk59jSiaU
+         o+ZgS+ZFNWUzsTvkKW9pwjalSAjLyN4JTNupuIC+b0jE+c8t1AJKvlz7CKPv905PfAaT
+         VRuCgDoK79CAb5znba0Nx0evaCFx3j9D9aIRLhaB9KyoOC1eN2cTEOm2hEkYsMlZjM51
+         j9/r0RWhimym5T4qtUYBdMoecgZxjNKjbDtkwQgycJ0rYCXoTcNv50bvAgynZRdvlWSn
+         S44g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768457742; x=1769062542;
+        d=1e100.net; s=20230601; t=1768472195; x=1769076995;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LjxQx55L3HFhzEsrPSzupy5cs4/k1InHSQSDwivVXVQ=;
-        b=OJTKdMfeT5ctkHx/es3DsY0VE3s/vVfLTo/9WqXufJNw6XitddMX8vsQcAA+qWGXBE
-         y9wpolgSWo85bjPsiRdAtpOXSf9OBDZvl7TJwA/jCw6j6yhEuFlh/kSDWKgnWHxGod4W
-         LE9aREStCVQ2jUZNWHPomda0VMAbv9MZs2qSZ20DUlG9zDVpZj5u+H5bTvge+2aqgAnu
-         CnstIprHc+dTf4xIwU/QIk5A1DuJGu54FOEultfDCcTEbFQ84MGijqedCsyw63fUds6l
-         gSLhDbGGxEzc4wkaadAgye74Cx0V4rkGBWMIzx/d41uq1Tp5zL3GVRq5SiqcFQr5uk+V
-         bscA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTjA6DW2p4W5BAYxkFW2BvSPdpSzTiZQLqy7ls/V8DrAxfkXPdSJW9yrm/i/1Zv1Ovzp0vSJKTGVlD@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yxx6KFOV/ZduivacqYas/Hpj0ii+3roTYAo4CcyBvCpeuzGq1iC
-	ct4lsTR8OdK0miSo3psUbhBc/dCHBSa9UcTWRMC6Eh4Lfggr8XOzENkd
-X-Gm-Gg: AY/fxX6pYpAStyzRoq1TWMGoF9PbxV3YrDxV+XNuiPScAjrwyHl9RnwrH5WgazbaxET
-	oZlnDodO6tlt5pDmnCglSkuCUjrZskdfaa4eDL364kdockeBCVZyFqLeO5DFCa23hFf7agEy2HB
-	NSzNggCYU/29Ts4oi4zNA1mzOY6n1lxW7oGS1HTdzz3Zg2o2srKiRLyUUASl7xcQFMXVkzDANPc
-	i/+zrmRS2E9DsEyHJKR5TBoCv4OP3Dkl1U4WMkJ+3nL6UiC9sJDVT2qtPEYjQruuzcQct2qib3L
-	PnHsFFOni82ycr5PwOjccb0AOFAXgzfJxZ5hfjpG4CzmqA7YAGpBVKKGgtZ7/LKX0VEZiGgmm4B
-	L6XE6u6pNcdpIICBjyX1XpKfzA8D5EKb6+DDlVD5zer/mER0hhErGDQzQ26CsXNGu7BQxsa4rij
-	Hfdnq2x++YrIDm35f75QkvFQOM
-X-Received: by 2002:a17:90b:350b:b0:34a:8c77:d37b with SMTP id 98e67ed59e1d1-351090da11amr6037803a91.16.1768457741930;
-        Wed, 14 Jan 2026 22:15:41 -0800 (PST)
-Received: from google.com ([2402:7500:568:57ed:f859:ae8b:d60b:53d6])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-352677ba62csm1059931a91.2.2026.01.14.22.15.39
+        bh=zwLrvsF0GMvPSCBeAjAWQZcmbWMJVYh05GZu4CqMmyk=;
+        b=BRGfllrIytazzNw6WgI53CeWj8qVDdNG1b2kBemyXJViw1d+9NF5f7mAaa4l1nZ/z9
+         E7LseWOKjOr3p3R2igZvxipExPwaV1Bwr/Njcw5ngTOYG5TVDHuGJGGxUykKMVIPL4C5
+         RKpeIP03j1nEfxQmCJTdDbOLJc11wbjXmOf/tw0QAc9GE5yeq9STjm8dB5EfSQZ7m/Ca
+         qqNMlvb2JfI4WH1MP1C0pr0Q1o0vvwVQXBNjdU+RwkpjT9TOwhVwgWPGM1/ChLwufdEQ
+         Wt9Cg5VTMP7RiRV1SQeaAkoFN4/NdUFrDzCudynCOxxowZWE9y5FI4E0jkrXqGd/wANH
+         qNtA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4LTMZiDtD8wNI2WhayouE9n/iE3+gRksWw/BMC2+K1YfF++wvEbu2FNxwJOp23yekMuNRx9a2ayZz@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyPJT8YdE5Uv6w5weLf4HuWFtNmhDcdXIAKSiQO4ddSGFCM05dM
+	oTNXdPncUPiUEh1dJSAlSRZd4fz1Agj5WRuDukcmqRSK6NvuJz3YL5V9OAf3LybDD0E=
+X-Gm-Gg: AY/fxX72uFKyMVf2Q28BfAght9fzeP3PmKXPfpTMId2V5teMjf1mKAhb26wmBMHSlN3
+	fwckB2Bn7ClKnNhxkfgKEoHaAzdwrQQS+mjI+Md2F0VTiR5MgvOV/C/QFXawsPUAL6eghs3IhDt
+	3kNzUnhfCnkr0Dz3ZQMhfugV3ruTdyZ9CQfB++5Yf3AwbDDE/PuZ2w3goZMBHoGNhrx1gasyKJK
+	guerImtnjrxs1yHWXJH61cfJu5lkkBV4zkvaaKF8DNFgeJvwaHKU4r/kpnRGi7GesqylzYGRN/I
+	1KZLds+DBcM3IdieowPrrnbUsWKPlbsY2An09zsL7Ny9e7N9MHo0Xm0C01fFIHSlXaXs3DYiRiC
+	rfYKhrlUGHRQ67scd5lKILB6kdx0Nsbs8N0iXrijhxJ4Tpa1cB+9bo9uRJ1bsEr7toVIDO/jegH
+	DW4elvOUdG1uVZxcbq73vMknyZ
+X-Received: by 2002:a05:600c:608c:b0:477:a246:8398 with SMTP id 5b1f17b1804b1-47ee32e0829mr58296485e9.2.1768472195426;
+        Thu, 15 Jan 2026 02:16:35 -0800 (PST)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ee28144aasm39739585e9.11.2026.01.15.02.16.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 22:15:41 -0800 (PST)
-Date: Thu, 15 Jan 2026 14:15:37 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: geert@linux-m68k.org, sre@kernel.org, jserv@ccns.ncku.edu.tw,
-	eleanor15x@gmail.com, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 1/2] power: reset: Add QEMU virt-ctrl driver
-Message-ID: <aWiGCY4aEF5dZOqY@google.com>
-References: <20260112182258.1851769-1-visitorckw@gmail.com>
- <20260112182258.1851769-2-visitorckw@gmail.com>
- <CAFr9PXn9nzw=kmWqv_ZPZshhGuh0iAW5b=Csygt6WZOnmd2tig@mail.gmail.com>
+        Thu, 15 Jan 2026 02:16:34 -0800 (PST)
+Date: Thu, 15 Jan 2026 11:16:31 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Breno Leitao <leitao@debian.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>, linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+	linux-serial@vger.kernel.org, netdev@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 07/19] drivers: netconsole: Migrate to
+ register_console_force helper
+Message-ID: <aWi-f9LBJtxGWgWs@pathway.suse.cz>
+References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-7-21a291bcf197@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -76,41 +107,21 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFr9PXn9nzw=kmWqv_ZPZshhGuh0iAW5b=Csygt6WZOnmd2tig@mail.gmail.com>
+In-Reply-To: <20251227-printk-cleanup-part3-v1-7-21a291bcf197@suse.com>
 
-Hi Daniel,
+On Sat 2025-12-27 09:16:14, Marcos Paulo de Souza wrote:
+> The register_console_force function was introduced to register consoles
+> even on the presence of default consoles, replacing the CON_ENABLE flag
+> that was forcing the same behavior.
 
-On Wed, Jan 14, 2026 at 07:01:58PM +0900, Daniel Palmer wrote:
-> Hi Kuan-Wei,
-> 
-> On Tue, 13 Jan 2026 at 03:27, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-> >
-> > Add a new driver for the 'virt-ctrl' device found on QEMU virt machines
-> > (e.g. m68k). This device provides a simple interface for system reset
-> > and power off [1].
-> >
-> > This driver registers a restart handler for system reboot and sets the
-> > global pm_power_off callback for system shutdown. It is designed to be
-> > generic and can be reused by other architectures utilizing this QEMU
-> > device.
-> >
-> > Link: https://gitlab.com/qemu-project/qemu/-/blob/v10.2.0/hw/misc/virt_ctrl.c [1]
-> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> 
-> FWIW: I have a driver for this in my "m68k with devicetree" tree. As
-> far as I could tell the virt_ctrl thing in QEMU might get more
-> features aside from power control.
-> So I made it a misc device instead.
+I would add "No functional changes." like you did in the other
+similar patches ;-)
 
-Thanks for the note.
-Just out of curious, are there currently specific plans to add
-non-power features to virt_ctrl?
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-If new features are added, shouldn't they be exposed via separate
-drivers in their respective subsystems, rather than consolidating
-everything into a misc driver?
+Nice clean up!
 
-Regards,
-Kuan-Wei
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-
+Best Regards,
+Petr
