@@ -1,86 +1,166 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B8C2F90C5
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Jan 2026 00:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19DC3587BE
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Jan 2026 10:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768523287; cv=none; b=V+0iqTYb4iW3FlRPYNqiVscM6M0tK/0tA7oMnjVDs8VXN6tQelu2CAz57KSh3UR+XXY1ZmvwnSDSbph6wS5+L9QGdwkRNAjz2Mgen2amL/2VjB11bEE/mHnpyDrdsbYdcTCsxPamb0JdqGnNSEFVQkZd9vrwO86AD4R0xjSb3GQ=
+	t=1768557605; cv=none; b=it3F3L4ZZg/M5Gna8z4AerMsXoWryL+PZp02DozH3NZa+cr8ZzZBnDvOFVjPLJD6egVea/J7nxk3AZQnjWOIgjOAyXtdv52Uc5ZJpMpwKZt/vTONK/t2ffOMNkbNFO2AmQP/a+WSpPWOqnpB4ZXmU84BUBpx0W6dclCD1/vs9Zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768523287; c=relaxed/simple;
-	bh=YV6ChD24v87T0e1S9B6uWgobgiLdIGOUGGt8/uzGG/s=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Ho7+Y4agVQCUMNaBlCuRZkwm/vHiMhr5u4sMxX1df2xM1+BBB0LPHGYC+dUMvC/7oPoNTo1zzEsv0GLuGt8fFvEyAJ3eYZ2aEzOyq5mN7A75AoMtGUBYM1GrTf0MA9fSItSLt8/i4pYz9fZ68rOMdPsIKUPyYmPv/qrPcilADJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linux-foundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=vEKoIAY6; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-foundation.org
+	s=arc-20240116; t=1768557605; c=relaxed/simple;
+	bh=fW48aaLNkBbdqH7KvcMJgixNgMqvTRK+gAl5/GVTNZ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YMAbcBkse428wPi3yMsi9+6LmEMJjP39fe+3ggmVuRBlbM8DmwkTTkjUKlfNgJmnnHS8QjQGRf2wvuRtVomBsuTXEC7JH9UaGREdmBz/V0vzDyniPmH8boFggZTTzg7JAFQUKL15TWYxZMAUHAxJk1gl3jmFBu0CTYq3Ih56iRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MbVAG75X; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="vEKoIAY6"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id B295644438;
-	Fri, 16 Jan 2026 00:27:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E71C116D0;
-	Fri, 16 Jan 2026 00:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1768523279;
-	bh=YV6ChD24v87T0e1S9B6uWgobgiLdIGOUGGt8/uzGG/s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=vEKoIAY6eL4hRGcdCttIzUgXRzV5Iiurh95nHkTsQfRUJJGyvrPt17mGFK+MrgLYM
-	 sKRJtzIq7qmrO1LIXaBocTkhWOusYT5KQWowJuXVqVkCdY6rjXakEfL6boM4W/7wZb
-	 nEva7fgF42qfT7z+KryQ9vp9kpLzKo8pGQStcm00=
-Date: Thu, 15 Jan 2026 16:27:58 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Peter Zijlstra
- <peterz@infradead.org>, Will Deacon <will@kernel.org>, Arnd Bergmann
- <arnd@arndb.de>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo
- <gary@garyguo.net>, Mark Rutland <mark.rutland@arm.com>,
- linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>, Thomas
- Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav
- Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, Ard
- Biesheuvel <ardb@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v7 3/4] atomic: Add alignment check to instrumented
- atomic operations
-Message-Id: <20260115162758.4d29875e8b75d8bdbb04d170@linux-foundation.org>
-In-Reply-To: <740c3d41-42d8-efa8-3ff0-a2f9cc7a2c49@linux-m68k.org>
-References: <cover.1768281748.git.fthain@linux-m68k.org>
-	<51ebf844e006ca0de408f5d3a831e7b39d7fc31c.1768281748.git.fthain@linux-m68k.org>
-	<CAMuHMdXSXcxzhgfFyc3sBdyoJ4vq9sMpzLBLcZskqtZXdAjH+g@mail.gmail.com>
-	<740c3d41-42d8-efa8-3ff0-a2f9cc7a2c49@linux-m68k.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MbVAG75X"
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-42fbc305914so1361866f8f.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 16 Jan 2026 02:00:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1768557601; x=1769162401; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ik7nBSUvqjiZji8p0UMpcxyJ9CmKYvj/STnQwZRmw6o=;
+        b=MbVAG75X+ivu/BydjOTZO0ofePQLVw6+Yh6O/UirchYjUbit3X8CqN6W7mxirch6Jw
+         GFiRAgmwdXZIA/pIpzinUVgfIPbEtmDFIsu4Zjd5atN3wY2autg1cTKYg7uYyuItgHpB
+         f+C1QFYR1Y44m1eUSCGGdhFt5oH0XkgTdNJ/K8p8GazPdov5gn2XDYrb+vyxU1EEXifq
+         E05T3fGieB6qIJaQcaJ1QzTvw5DfD8RT+8xNsbB6cxbQAhCtWydAOxViPjzSFDjyMvZT
+         BxwRdZHutAFrO3cZ23g8TMt1YAS7dO3Z0rua/iVQAN41bN4GOYuvO8QuojiyIZ+U/Naj
+         JB4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768557601; x=1769162401;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ik7nBSUvqjiZji8p0UMpcxyJ9CmKYvj/STnQwZRmw6o=;
+        b=wWnxn45MBOkXJHo4eaWQNo9QY0qKYeO7su0NxTh5aq8/NwBdpvVgOC3JTc6lQteVh7
+         7suEWEFa7MMmy1JNLdnJo8vJ/M5X+ZwWjlVpTmDJWvDY7XDfDulSYPjWiYMV6ZdkR5ZB
+         ZZ5p0i4ZNV+gjIOKbkGtkzTJscr3JrfEj5dbp3wUr3BZrSqkhREsHlUxnJmlkAD4Hj+o
+         Yhm4MZ7wUpdS25fC1uPOgXS9RacCL9h+5+RzySOcg3bRE/V6wQ3pQYGOr/DHZ4ii8UqO
+         nho7HBz4HVRMKTLJxoyw1wqWr1/aDkWew7XSguklUZtzS2+zLJfebGlgixw/r2646XGz
+         MIew==
+X-Forwarded-Encrypted: i=1; AJvYcCXwXxO6cKrQRgPpd0qsFjCfd3F/NENAGFYX3Yog8mArHukP0uqRhwq7Fj9h8V47DiLj3IZJY/XCvT3C@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yzo9Evb0K5MKc0NV/YZeF6snnI1FwY74FslKM2xeWICU4aD1Mio
+	hc+iZLxMJJDcBbiyJbSA4ag98outCR2tP3CnoFa1e/EHXhQ9X60JhmQJwtZYggxUexM=
+X-Gm-Gg: AY/fxX4ZIl8OXzDeC/9hWMq64mrXDLVOYqHFSpDtSm/LZoB5311qRwMUO2AMubX3u2S
+	N6d5kPukw31zrvV8HcbXRIdN5IRkA5eeV9bv3K7EsvSJ+XSRvMduHqTv5WP8hDWEsovNzJb41e9
+	CaR5ssSk6l7NJBYaJgHcnbUVmT+zcwr0sXvI7Bbd7lIGKRG7PjVKZw0R/0n6AGLXhuPdvlkTv6M
+	Wg3z6NG7aohNbAewGXQfGBRZmS8K+jjqKej/8q8UZ8X33c+JGnh+mB2DqN6TURtl698ORRco7gS
+	Q7m3cS9WGbVhmvbymbBOjejMwP1FiQCRg1BaVV+o14v1mcv296Iu2PUbLVBnwMhKn0Do4YdThjF
+	GZEmJM2MhMJobYF+05zHD/RAk19W1Qwp8VF8gDQSoKSyBwU2O6Sc4c2XvYIXzeAtdBdhKQSuD8H
+	ydLuHV+LDbLgjGDw==
+X-Received: by 2002:a05:6000:26ce:b0:432:dfea:1fa8 with SMTP id ffacd0b85a97d-43569bc5767mr3019291f8f.45.1768557601174;
+        Fri, 16 Jan 2026 02:00:01 -0800 (PST)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43569921f6esm4337797f8f.4.2026.01.16.01.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Jan 2026 02:00:00 -0800 (PST)
+Date: Fri, 16 Jan 2026 10:59:57 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Breno Leitao <leitao@debian.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Kees Cook <kees@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>,
+	Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
+	netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-hardening@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 15/19] drivers: tty: serial: mux.c: Migrate to
+ register_console_force helper
+Message-ID: <aWoMHbbn-BmmbZMg@pathway.suse.cz>
+References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-15-21a291bcf197@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251227-printk-cleanup-part3-v1-15-21a291bcf197@suse.com>
 
-On Wed, 14 Jan 2026 14:53:33 +1100 (AEDT) Finn Thain <fthain@linux-m68k.org> wrote:
-
+On Sat 2025-12-27 09:16:22, Marcos Paulo de Souza wrote:
+> The register_console_force function was introduced to register consoles
+> even on the presence of default consoles, replacing the CON_ENABLE flag
+> that was forcing the same behavior.
 > 
-> On Tue, 13 Jan 2026, Geert Uytterhoeven wrote:
-> 
-> > >
-> > > ---
-> > > Checkpatch.pl says...
-> > > ERROR: Missing Signed-off-by: line by nominal patch author 'Peter Ziljstra <peterz@infradead.org>'
-> > 
-> > Alternatively, you can credit Peter using
-> > 
-> >     Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > 
-> > just before the Link-header pointing to his suggestion.
-> > 
-> 
-> I'll leave that up to Peter as he's both author and maintainer.
+> --- a/drivers/tty/serial/mux.c
+> +++ b/drivers/tty/serial/mux.c
+> @@ -390,7 +390,7 @@ static struct console mux_console = {
+>  	.write =	mux_console_write,
+>  	.device =	uart_console_device,
+>  	.setup =	mux_console_setup,
+> -	.flags =	CON_ENABLED | CON_PRINTBUFFER,
+> +	.flags =	CON_PRINTBUFFER,
+>  	.index =	0,
+>  	.data =		&mux_driver,
+>  };
+> @@ -547,7 +547,7 @@ static int __init mux_init(void)
+>  		mod_timer(&mux_timer, jiffies + MUX_POLL_DELAY);
+>  
+>  #ifdef CONFIG_SERIAL_MUX_CONSOLE
+> -	        register_console(&mux_console);
+> +		register_console_force(&mux_console);
 
-We have his signoff.
+The situation here is the same as in 16th patch for
+ma35d1serial_console().
 
-> If there was to be another revision, perhaps I can add --
-> 
->     Suggested-by-suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Also "mux_console" is assigned to
 
-edited and added, thanks.
+static int __init mux_probe(struct parisc_device *dev)
+{
+[...]
+		mux_driver.cons = MUX_CONSOLE;
+
+		status = uart_register_driver(&mux_driver);
+[...]
+		status = uart_add_one_port(&mux_driver, port);
+[...]
+}
+
+So, that it can get registered also by:
+
+  + mux_probe()
+    + uart_add_one_port()
+      + serial_ctrl_register_port()
+	+ serial_core_register_port()
+	  + serial_core_add_one_port()
+	    + uart_configure_port()
+	      + register_console()
+
+And we would need to pass the "force" information via CON_FORCE flag.
+
+Best Regards,
+Petr
