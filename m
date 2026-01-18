@@ -1,174 +1,82 @@
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F44C30FC16
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Jan 2026 14:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B3B2EE611
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Jan 2026 17:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768745488; cv=none; b=GyBQm4uKuNd9/9svEwoo7xGj87VP80OvLGT/violE+ZA5HiVs9jLMBKQIfcqgTTM6s6yvGfEGI+6+dLEDWS0GrD2IE3d598MAZwi01cyTSmg8/0hy5NQZ8Mjgnua+vZgjAbLiYY5VusuB1GSFI+uqnojO8ZWf0XxYqgqvWzM5I8=
+	t=1768757642; cv=none; b=KfFtEXjB3MTpjfHzzIlVNTxYQ4nB17AdGhJu3ferRGbcMoInSNSlwBto5DTO2unbrPBn0p4D+ocw/+5kP27f7mLuQ3dNw1gSfW4GJBGrHfXuAn9c7thRJmmU4ef/ZsjP0eoD/biP6ZWkJnBv3nQD5f21CJ6tGwiU6WEa3msPnzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768745488; c=relaxed/simple;
-	bh=APuCaRsP0tJWIJZvULDtqm9mswir8H+vbo2b0RKmV7w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hMTYTydSc/k6pRT4rQ/sSlPfvan/nXE4CByZA7kgFMNdOQS8JkG+gcvyDFhQ5Qnts7uEqJNnw4d3sN9N7dp37dLx/OpyXH6of0kG+dXbWBB/dCe66ZBEAI77srnoLvsKe6ArnuY9HI0ESYvAEtkApXRuEA+Zhd9Vu+m+j3+Kyaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KmFjQVgN; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1768757642; c=relaxed/simple;
+	bh=yQrvuAM+jyAa30aIDV8qGFS0NmslnywQ3ZtSVoKChjc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WevbTxvs1HWgbg7G7VqDqvQLtRh3ufi6J7ZA9MjzTzsVNpP+C4fTLQr0KBtthzkatsMvAZHsJTwKqQqnfMSm+NwzYYo0Pl/kClmI5O9KeuAVj8SYnPy/lvMQrEbysPezXs4GUMceOOlZxFAlNcqzuzLOi8NMX4AkYWxzw8B9gZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I8zcESbG; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KmFjQVgN"
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-c05d66dbab2so2348600a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 18 Jan 2026 06:11:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768745486; x=1769350286; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AqDJGvudyOS3k99PpLPEmecPUls9OZTpXwxY9UHrGPM=;
-        b=KmFjQVgNntlgekslKjsDM8rY974ZW8/iJmFzshRMO6/eZPYbyT7AQDYh38yXIEHB1W
-         sRs/QL7UgvAhMGmLgYWU84uAi8QmWXo6IcfUXFJyLpNZFPJh9t1ySWLbLC4/sqn3Sz3G
-         8tmnmQ+bgXH23oFLqaWbevqkVNhKjluniNF/RclAj0M79WIEuNvRiHSs3kYKQZE2awxb
-         SY8bX6Wm8La8pVtSeykN1yMrJxXUpSSlWe2MRVi8OtNdN6E/9ye2ufN766W8fea6kZFl
-         uS1Y4zRnQiPo0ieEmRAqAbZVpXAMBv1qTPf4r8ZYfeaFBI0kY42UV8gMEB+ige4wrHZh
-         RThQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768745486; x=1769350286;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AqDJGvudyOS3k99PpLPEmecPUls9OZTpXwxY9UHrGPM=;
-        b=frrLn4pBLDfb5nqTzynHNj2QiRvEe4aIFWBgD6700TacqMe2YHHYSZyc9kyGhKcvKm
-         LKrlz5idxESOXpw1MiIj1vVqUzWq3d+fi+d1dyBvEU9RionOFs+IdWfXFsfsuDgz1nLF
-         7OsqOAsGnw55HIVLTW9G7jhvETKWeO3tEw9IE2pja63mdqwMQKCOETTpgQ72UGYVPhYf
-         Zmz5hzmYigFqJR5oBSpUqUIf4CP6O+MkBTVTjU88O1EAyDSfjk4uGPU4OBnt6gmWvVv/
-         syNXmTZBlFTlV3mFOp03Qaal4c7DbkDa3V13+r+4Wvu2GKHvIl53EeZ3ffyipK0kf5dw
-         FSyg==
-X-Forwarded-Encrypted: i=1; AJvYcCWr3YRGK6m//JpBGpBuB3uqgSsW1pWH74NPS9i3nKCRYODwSqh9866qlGepvEnHggxtSR3A7JB5IIsS@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzbGFzveLBZxzcEDC+HFSJy2M4QDJ2Fe5zHWK1ugWY6xHqUrk/H
-	gvDxVuQDEsYeogOg/X2Bv+uaSbCM0YWjQJ8a7UTcshteyj+Q7zwtMMkK
-X-Gm-Gg: AY/fxX7WT6T0J0bSK51WfGQZStkaH5utHAGaLLMo/tPN7zJMZGfkzBqwEzvm8HCwcRs
-	bO0Z8PBdYo3rUhtySCTjhSySuJvvf4q6oCIVNyd+FFbzk1bc+pXObPpNCF+1QO87RQlx0Igy5nG
-	VbGQuF758RzChYRRBYok08P6wsyGutQ5bi0w5nJ+OKkTWYSXjqgohAyyjed95Hp/raIowW0FzG5
-	eoGK4MWn7ODMEubilzMHjw66TznACbSE8zw8HvT/fX4QF0V7QLknnfvEmLBCIkqXgabIuthb4eM
-	r314seGosiBDKSDnsxorSlIij40cEd1sKaDs+nBkCYthjV6F32Ob54H6fmqdBBMDNBREmuYR4uH
-	WE4srN/KPfF5CoH9SUtFXzmCV4Ra9zKnxhufXxoGC4stLROhbnW/sLDEikD2My+pYfZR8aQ2Gjy
-	XxP4fBAPQj
-X-Received: by 2002:a05:6a20:a122:b0:37e:61fc:a896 with SMTP id adf61e73a8af0-38dfe7c3042mr7636975637.66.1768745485767;
-        Sun, 18 Jan 2026 06:11:25 -0800 (PST)
-Received: from [192.168.2.226] ([114.92.45.6])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c5edf32d1f1sm6549138a12.22.2026.01.18.06.10.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Jan 2026 06:11:25 -0800 (PST)
-Message-ID: <b27b8bc4-8730-4ce8-bf39-0ca8459feecc@gmail.com>
-Date: Sun, 18 Jan 2026 22:10:50 +0800
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I8zcESbG"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768757638;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2t/tirZ2t6GUke0fiFkoZfIjHR57XL3GSnj23R3fG3s=;
+	b=I8zcESbGD6z5UCziVUc2HKLfdA218Hlb0zqnBVccK5F+cnV5upenayJAMM3+geLA2Pffny
+	N5hPd2Wq1bSKkGPCE4T4wKCHUEd8OlIQuSWez/fxKhEBIoN+CQpghxOvWTL18o4ZK0uUnq
+	0XELhb7ol2zelZsHK+wh88qou7/ZonM=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] m68knommu: Replace deprecated strcpy with strscpy in init_ucsimm
+Date: Sun, 18 Jan 2026 18:33:49 +0100
+Message-ID: <20260118173349.1197500-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/pgtable: convert pgtable_t to ptdesc pointer
-To: "David Hildenbrand (Red Hat)" <david@kernel.org>,
- Matthew Wilcox <willy@infradead.org>
-Cc: Mike Rapoport <rppt@kernel.org>, alexs@kernel.org,
- Richard Henderson <richard.henderson@linaro.org>,
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
- Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Nick Piggin <npiggin@gmail.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
- Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
- Stafford Horne <shorne@gmail.com>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Paul Walmsley <pjw@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alex@ghiti.fr>, Yoshinori Sato
- <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka
- <vbabka@suse.cz>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>,
- "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>,
- "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
- "open list:MMU GATHER AND TLB INVALIDATION" <linux-arch@vger.kernel.org>,
- "open list:MMU GATHER AND TLB INVALIDATION" <linux-mm@kvack.org>,
- "open list:C-SKY ARCHITECTURE" <linux-csky@vger.kernel.org>,
- "open list:QUALCOMM HEXAGON ARCHITECTURE" <linux-hexagon@vger.kernel.org>,
- "open list:LOONGARCH" <loongarch@lists.linux.dev>,
- "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
- "open list:MIPS" <linux-mips@vger.kernel.org>,
- "open list:OPENRISC ARCHITECTURE" <linux-openrisc@vger.kernel.org>,
- "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
- "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
- "open list:SUPERH" <linux-sh@vger.kernel.org>,
- "open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>
-References: <20260107064642.15771-1-alexs@kernel.org>
- <aV4h5vQUNXn5cpMY@kernel.org>
- <080e493a-e4f1-4c97-a3e1-f76f126b5213@gmail.com>
- <aV5yIuGi9Ni5YP5E@casper.infradead.org>
- <1d110134-89ab-474b-bca6-cfbfd4b5057f@gmail.com>
- <85a0be43-3598-435d-a50e-9403b7e963f7@gmail.com>
- <4fd1610b-acc5-4c17-a227-4d63272d3718@kernel.org>
-Content-Language: en-US
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <4fd1610b-acc5-4c17-a227-4d63272d3718@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+strcpy() has been deprecated [1] because it performs no bounds checking
+on the destination buffer, which can lead to buffer overflows. Replace
+it with the safer strscpy().
 
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy [1]
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+Compile-tested only.
+---
+ arch/m68k/68000/ucsimm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On 2026/1/18 18:51, David Hildenbrand (Red Hat) wrote:
-> On 1/18/26 09:13, Alex Shi wrote:
->>
->>
->> On 2026/1/8 10:23, Alex Shi wrote:
->>>
->>>
->>> On 2026/1/7 22:48, Matthew Wilcox wrote:
->>>> On Wed, Jan 07, 2026 at 05:28:36PM +0800, Alex Shi wrote:
->>>>> Right, I will fix this. and sent the 2nd version.
->>>> No, the patch is stupid and wrong.  Don't send a v2.  You seem to 
->>>> have a
->>>> hairtrigger resend, so I'm trying to prevent a v2 being sent instead of
->>>> sending a patient reply.
->>>
->>> Hi Matthew,
->>>
->>> I hear you—no v2 will be sent.
->>> but sorry for a bit confusing, what's your expected fix? is the too
->>> quick resenting? or the direction to alignment pgtable_t with ptdesc is
->>> wrong?
->>
->> Hi Willy, Do you mind to share the detailed concern for this patch?
-> 
-> I think we recently had a discussion that we should much rather rework 
-> core code to consistently make pgtable_t a pointer to the start of the 
-> page table or something like that.
-> 
-> Because the way you change the code just means that we will not be able 
-> to handle code that fits multiple pages tables into a single page 
-> (s390x, ppc) consistently.
-> 
->      arch/s390/include/asm/page.h:typedef pte_t *pgtable_t;
-> 
-
-Got it. Thanks a lot for the explanation!
+diff --git a/arch/m68k/68000/ucsimm.c b/arch/m68k/68000/ucsimm.c
+index c54fde75eae8..6b84e826040f 100644
+--- a/arch/m68k/68000/ucsimm.c
++++ b/arch/m68k/68000/ucsimm.c
+@@ -9,6 +9,7 @@
+  * for more details.
+  */
+ #include <linux/init.h>
++#include <linux/string.h>
+ #include <asm/bootstd.h>
+ #include <asm/machdep.h>
+ #include <asm/MC68VZ328.h>
+@@ -31,7 +32,7 @@ void __init init_ucsimm(char *command, int size)
+ 	pr_info("uCsimm/uCdimm hwaddr %pM\n", p);
+ 	p = getbenv("APPEND");
+ 	if (p)
+-		strcpy(p, command);
++		strscpy(p, command, size);
+ 	else
+ 		command[0] = 0;
+ }
+-- 
+Thorsten Blum <thorsten.blum@linux.dev>
+GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
 
