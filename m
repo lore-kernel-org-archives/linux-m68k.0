@@ -1,83 +1,84 @@
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B129222575
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jan 2026 11:15:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930393321C8
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jan 2026 11:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769426155; cv=none; b=GaI5POqhKdom3+qm3CrjDmoDaTY2PCDwPd3K42pCfJ3hzOjBILCAfs/+63nVHsnQwyRKA2uTE7dPHfX1G9ScdRokw0d9+0yPeMYT9JbnyiYhTgEuqGjGUss+5X0AHTUN+gOL/m+jfUAjDfouh7Lmi/86ZYGPGVs31q3IAr1PL3M=
+	t=1769426480; cv=none; b=KrxKlwwtvUkSm9y9ddXcWp5SuRjFo86+e79ESx59m9UZycyO4VNSH+2McHv4lzB80aDZ3Kib5Wnf2NTY+qFrRnMZX9T9axNIO5Ko9uxNHcvD8WktYdISXU9P7RiaCXaB4wgjuNkdQZYxP7nqupuN1i/ITzSqKwcvQ3aW3rFPTAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769426155; c=relaxed/simple;
-	bh=JbTGtzc2mzKBMxPj4Ue9JCghzTgDHNnJt4uoy49bwv8=;
+	s=arc-20240116; t=1769426480; c=relaxed/simple;
+	bh=tGe6v+UkH+nHY5twHVV5nC6gW7A4kVDGuAPzVtQWS64=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EpPt1lkQyRBQUi+stjWTOD0JQCsQeR4f1FI7fYMZVUefXuCu/8h82L2eeQQC+AvCm/iay6GvbQQqfwlOVh80dnmsM6qpk/mWdwRoki/yZsJzktcLxiEiR+4r/PseQRyd78l6qUM0khxf2t1sdKDi5nGFKZX55fmtAbgvtMVo9Ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+	 To:Cc:Content-Type; b=W4TRwUkktOV61/PT6EnqFebk9YHAvP9u5bVUPSIuNVTYw/DioOc6ABCnuRj7zqCieXFEU9664Wj0bijrcs93GOSn6GtzygQsmCaAuEVYwSpKb5nEEEddbj48f93epXDQ/f7ljT8FUCwKlg9721fdPBjIftIhdB6ot5BLJveWKBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-5664634a27fso454200e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jan 2026 03:15:53 -0800 (PST)
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-56376c3e866so4275463e0c.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jan 2026 03:21:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769426153; x=1770030953;
+        d=1e100.net; s=20230601; t=1769426478; x=1770031278;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OJIfH5Aon7srwHhfRUF+/BJZV8CEdhhUZHGETNPgMrY=;
-        b=CRkCqRdzea0cN+wC5LuhTSwdNWuOgXJQhNKOFhWVijzrm512UrUGcbDkAWWpzRbkht
-         4tqDl+lTGKC6fKMt6AcaTFJRPtrvAwGNfCFahhcws8JH4wOmgIy/qGmkzlPkBS64Ow0s
-         4CmhLWtnt/cWkm3MRu7jnoaidrxZejwEfHTgyCVmwUpOI28G6Pl8MrNlxQld6QrveKch
-         fXWwl2jAnjrAYfZWGcVp70J5/8JtTPv3kndyCacr9t5MnqySO40f465idKD93q+JmK8J
-         d0Z9P7RYLL6uxouZuRR531OiDPRrW8syJNw6BUFufvToN70CQdcZmRWKe5dF/OsoXie8
-         dNRw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJxADxp79wpOu082GPU0cO+oPyysXo65zDfZAqUdCxfyYGUIk6wNMeJ07nx2NS5SMLq8k3B5Sd5XYp@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwGcbJmwjJw9m9RL8FAPkBCIvdJv8QfKdf2J7deXuUkaeUGWRMB
-	Jq91nDdm61s1JsJALBFVGd1mTBJ8j3SR5hl2q2JOUno2pEpOWLAjztjOj67VIFeH
-X-Gm-Gg: AZuq6aKrd+mXppU6yMPuO5XzbOyhJO4jXI/LF2HmgwNwkn5Ju5JkL1nuy4mktYQUOH5
-	2ery1GHAsyNJRR5vLji/U3knDsq2inTHbLHoNszswfJNZse8KiRw4faAVjvJpXtXJBXAnHMMnff
-	8tBIRxlq321ByTLQ90OM2chD1Z5j1NcOkqA00+Ggc5rXti37+1gz9ViepBG5PpN4dVrkvgGK75G
-	ze51IeFQ6qsd/wgSQeXUaOUsjYhk1+mA6z8MEAY0sA4V3FRx+14lKHzCNzhuIusM3GrRpwSkoXA
-	YrgR95mN6gOUA/2Sq3hlOxdfD3oQZ3/gWU1fquFJ3iuoSXTZghBdYe7Mo417UXPmKcQmKcYe7J3
-	kVdm/OHD10xC+xIOL40FqlgpZU6pNtY+lqoFsH8Ml6MIEZL+7rSHbWXE/BNy4VQf7SpB+Htqy6F
-	0JW9eh2CfXaPJuVuE3wUIhtSOZlHZTIPSwJrNk2X+IW/2DQJJR
-X-Received: by 2002:a05:6122:240c:b0:563:5f68:7a75 with SMTP id 71dfb90a1353d-5665ca08509mr960715e0c.20.1769426152837;
-        Mon, 26 Jan 2026 03:15:52 -0800 (PST)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5663fa96675sm1648827e0c.9.2026.01.26.03.15.52
+        bh=BNw7CNlxTDDFOwZp5WHCg23lMNI0FBRvOqG/wK9y0lM=;
+        b=dsMPcYrwKZliX3px+PiTa02Wuipe9I/P1q+mABDdIygsqt197fIh0bUYYjO3nqJRbZ
+         dqRzQ3+rEd3zSLqnmdG4vMJJR1kmvq18aNkS1UcQRr/FgA3h78Vim0sCwoVPltCReTu9
+         sjpbifstVVhuwRLR9GsjzzZaWjBEbUF+d+/gshPKVTZQbQ56kLHTmJFAmRrKFzC6g5vU
+         S0D5/cF7b78iioYeLvagzsulbcQ1KzWAzKSq9x515Zi/V0DHdRyxWSNF91N4O+n9GGDM
+         lK9oWcnae6jMAoKanp2i3bg6cO8CLKYXOaR37eqIN559ibNg+E/nLDHtyqiUHiLIzu6W
+         bjSA==
+X-Forwarded-Encrypted: i=1; AJvYcCWouPMmwMqwzCtZgeSE6bXHLD+dzqT0ZinLJ1L8wGtsAs4UDdk6org3Gpr9UZVRjb1lwNRijUeZpefd@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YysmyhigCiw8HZmC7/s1FbO5a6VL8WExIy5w4GpgppVc4V8HwD+
+	6xb/miWjzijSq8L1dGGfJazbn+a19I5S74uX6WxAuSTE80v/JOmk54cpx5R7A3Tv
+X-Gm-Gg: AZuq6aIAxMUp6M5m5Ff9PjJNOEpWzUTt/hd5eXRb/Yk/E6PMZVn1rSt6JMnk+iQ6Kte
+	0k+a8ruz2lXV40kQxNENg1aD0GaDMET/6rfwrbiCjRyfQzu1T7i4ln8paVpbgqHzbyn4ZOkdNLS
+	aCCNGgxxwZSvtDCSS7xVOzZUBkq0iUnVe6wnQoXL7NcAyKQqSf210bG6QY/Q1VurkedN6TCcPGd
+	p2kroVdobVI0fQcj3i8KGbYDS9Kl8lSnL8G5iVoKP9yXO7buuBTsrgP+7nVu7jYsYmpr36cE6UN
+	AYBHV/XLDJtHVjz7gJA8E+jLSII0PBMOuC+DWPxEoe7sP0cgJGvHxJBcs2LV4uZFmeq3ceEkLyQ
+	mhm3uuRgzZqTCGu8Yfa8Cs4MNCj6H0iAlX9XJTOTD2jN+HY0lYxBSNhe+QO1vsaSeFVyoWsLIHQ
+	sbjPl75S6091Pc2I57B+gHmwa1X4NpdurpLanS8lS4sew5scEY9XFI
+X-Received: by 2002:a05:6122:3a10:b0:563:60ce:9d53 with SMTP id 71dfb90a1353d-5665c966b10mr1259282e0c.9.1769426478410;
+        Mon, 26 Jan 2026 03:21:18 -0800 (PST)
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com. [209.85.221.182])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5663fb7dab9sm1690798e0c.15.2026.01.26.03.21.18
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jan 2026 03:15:52 -0800 (PST)
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-941275fece4so940288241.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jan 2026 03:15:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWTuvULV9YjF24sasV9TSYdsHMpi9h0zos4VuVjLmKQihT5YUa/i9kYpRK323/LfOCMByUlXXabOPpn@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:b0a:b0:5f5:4d9b:bd67 with SMTP id
- ada2fe7eead31-5f5762cd92emr956147137.6.1769426151820; Mon, 26 Jan 2026
- 03:15:51 -0800 (PST)
+        Mon, 26 Jan 2026 03:21:18 -0800 (PST)
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-559f4801609so2003918e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Jan 2026 03:21:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWIACkkjq9t2o8SG+FMjbvAvoUILX9YgFhfWUpWXkDxjTDaM8cGjARQAstDjYGPRN9IxJcmq2xHOXQ6@lists.linux-m68k.org
+X-Received: by 2002:a05:6122:210f:b0:557:b52a:d553 with SMTP id
+ 71dfb90a1353d-5665c964819mr995056e0c.7.1769426477829; Mon, 26 Jan 2026
+ 03:21:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260117202152.1036278-2-thorsten.blum@linux.dev>
-In-Reply-To: <20260117202152.1036278-2-thorsten.blum@linux.dev>
+References: <478d5f080d74b6688c9e3f9132e3fe251e997ad7.1765610469.git.fthain@linux-m68k.org>
+In-Reply-To: <478d5f080d74b6688c9e3f9132e3fe251e997ad7.1765610469.git.fthain@linux-m68k.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Jan 2026 12:15:40 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW7-Pnp94XimfMpZEhX+7Lqwcw=txmSbmP093qwKgeKtA@mail.gmail.com>
-X-Gm-Features: AZwV_QjqyriwL9plB4iJXqQJS36NK4Yq_f4sx6c7Es0KXYdjcq2O4A_TN9DYGF8
-Message-ID: <CAMuHMdW7-Pnp94XimfMpZEhX+7Lqwcw=txmSbmP093qwKgeKtA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: sun3: Replace vsprintf() with bounded vsnprintf()
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Sam Creasey <sammy@sammy.net>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
+Date: Mon, 26 Jan 2026 12:21:06 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWb41i2mCU0Ob7pDaL1zJVgpJtXKFCWCf+XsoigF3OSag@mail.gmail.com>
+X-Gm-Features: AZwV_QgdN7GdXnYk_jOAiRhvvo41YA3lGsW8i9wVIt6VjDJZBCNjYXvvvYWdtqo
+Message-ID: <CAMuHMdWb41i2mCU0Ob7pDaL1zJVgpJtXKFCWCf+XsoigF3OSag@mail.gmail.com>
+Subject: Re: [PATCH] nubus: Call put_device() in bus initialization error path
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>, Daniel Palmer <daniel@0x0f.com>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 17 Jan 2026 at 21:22, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> vsprintf() performs no bounds checking and can overflow - replace it
-> with the safer vsnprintf().
+On Sat, 13 Dec 2025 at 08:21, Finn Thain <fthain@linux-m68k.org> wrote:
+> The error path for bus initialization is missing a call to put_device().
+> Add that call. This error path will probably never actually execute, but
+> any kernel source code may be subject to static checking or re-use.
 >
-> Also remove the useless '+ 1' that is a leftover of commit 66ed28ea096c
-> ("m68k: sun3: Remove unused vsprintf() return value in prom_printf()").
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> Cc: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>
+> Cc: Daniel Palmer <daniel@0x0f.com>
+> Suggested-by: Haoxiang Li <lihaoxiang@isrc.iscas.ac.cn>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 i.e. will queue in the m68k tree for v6.20.
