@@ -1,185 +1,143 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70525325705
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Jan 2026 18:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3426E3128BA
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Jan 2026 15:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769537500; cv=none; b=bjQlnUtaOPvi5YZf+KXNMmn5slUMAGSllHvxI3OFvf1ww6E5IzizlAg8HfPtOiZ6NatffM3jyVOV3SP8DEXDa9083E8t2WF1VhtTxddOEks20lcsq4mq6wM7KbBi254Bbi0wcRh6ioMDU2qKr7vh6BjKzabTLrF7iu+DO4uOCTY=
+	t=1769787098; cv=none; b=bNZLh1x9XMXJs5WoKrnNgUqsm2f2cWx+Em2hO26REZ8GPwdUCekOKJYZsifimQtWwRFT0x/GrNLM6jZGw/hHR/oTuxI4gYlubc/4BMYZzVPWB2C8qBzdGXnEEA9RS15kWAfIu66IqJTML6wakP7OOW4rRowoP2RU4UrDLvqf7BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769537500; c=relaxed/simple;
-	bh=esR6CFIdT2IldE04x541sMjzg2hM0kwiBu50M1Q4i6U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fdnUEC54nLlCVJ0gcN1eGXOyHGhaOzI+Mkf4K+XEzmOnbhjIR3AJoLefXTCP8ZncWraa+ILtI0Pd3d9A5WIL29ojHyLzXe/A+xHya6FiuC4XYf0Vi7FHLj1EU7yhdbhLqBhgoScNAhNlalq5Ako1BfpSHexpdYpcG1a+lpDHiRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ByaWjtsS; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1769787098; c=relaxed/simple;
+	bh=fOeDEk/IglYGyJoaC4rl87IP7u52uvkE7LuzzFUoZCQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XQIK1IjNVqgYjdhwcLDfWushuWahN9OzbGu1cEEQWSp/xOR7C/3Px4l+TO8JcXtWuxaOeN2ZxaJ18SBnqlsu5iR+lbK2cNVHimksBoiORoeYPbIE4z5fLIRTBSiSzZSnAiA1E3Mlaq/q+sdvjGBlAEuj97Hu3pRaNCtQ0d6vm7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0KQp0ypV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tRQx2Qeq; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ByaWjtsS"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 503606013B;
-	Tue, 27 Jan 2026 18:11:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4A5C116C6;
-	Tue, 27 Jan 2026 18:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769537498;
-	bh=esR6CFIdT2IldE04x541sMjzg2hM0kwiBu50M1Q4i6U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ByaWjtsSvwoLSW/kNH7xWLyVjxxz5GlRC8jYXsgV/gqb4/lcnR/DbPtvL6ZsfFpSk
-	 UMuJqyvtKtohQKsmQxoM99rDtG1O4GqRTw9ZhQsEmWLSfLiBrUcxYInGfM89HyeRgM
-	 CxuZITcoVajun6fKU8J38DnbH8BoWcjGzNDWtXdHngn0Bx8YWSVtKYdo5/nJpd1YVl
-	 JH22ZwPPk16pgnbMx9Vr3rouzXVb84WvDBKXKk6PK90HPv2OIOvHU6AimhWntYIXkX
-	 +GnE9E9QwmWlr81X+KXfieSH8beDfJtCHQfJLkjpSxZ2STIQw2Fz3NkhSNYKoguw1h
-	 QmmKWVv1yE1UQ==
-Date: Tue, 27 Jan 2026 20:11:19 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Andreas Larsson <andreas@gaisler.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Hildenbrand <david@kernel.org>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
-	Stafford Horne <shorne@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Gleixner <tglx@kernel.org>, Vineet Gupta <vgupta@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>,
-	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH mm-unstable] arch, mm: consolidate empty_zero_page
-Message-ID: <aXj_x5CyUeys7ONM@kernel.org>
-References: <20260124095628.668870-1-rppt@kernel.org>
- <2157220c-0394-40fa-9918-a8514171bd10@gaisler.com>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0KQp0ypV";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tRQx2Qeq"
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1769787091;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vOa37cugu1e7NFG01Hi5lQxNeOFAbNhgF4zlCMpuWB0=;
+	b=0KQp0ypVQ4kZaeO3mPHMfxJV+hK/54vG6DKBi+oQw7b2zUOdcXSHVjzGTkDhg+DII5BPUq
+	aN49RxuHT0Y324cEPE9hahaKdLHrEB12udzdH1NvAbslSIBaR+apFss0VpjAJQGlvJvNWz
+	Qkt0FDwz1uMiX4gq49nlr83YKlkc4clstGJ1Gn1qJZPTuOUjrQYGQ2og6q2aakCd23E2bK
+	j7QeXx4RcIyDXczvYB5hGiBrowZd2spJR3vfcC58o7tRoab9LXrUZs+RPcCpb6cx/pdJtb
+	HBe2qGa1jRaFKPPNxGpTtUqYNPr0BFkp5fHngur0T+mOUqFJcq3Nhz3k8u/Dpw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1769787091;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vOa37cugu1e7NFG01Hi5lQxNeOFAbNhgF4zlCMpuWB0=;
+	b=tRQx2QeqDh72ig5xLjiaegMLqnl9AhaSG7GZod8dlzScFDOmHttRC8Fl88vJKoOCPg8W40
+	GHTlrnG5vPdq05BA==
+To: Petr Mladek <pmladek@suse.com>, Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jason Wessel <jason.wessel@windriver.com>,
+ Daniel Thompson <danielt@kernel.org>, Douglas Anderson
+ <dianders@chromium.org>, Steven Rostedt <rostedt@goodmis.org>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>, Jiri Slaby <jirislaby@kernel.org>,
+ Breno Leitao <leitao@debian.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook
+ <kees@kernel.org>, Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli"
+ <gpiccoli@igalia.com>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
+ Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, Andreas Larsson
+ <andreas@gaisler.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>, Jacky Huang <ychuang3@nuvoton.com>,
+ Shan-Chun Hung <schung@nuvoton.com>, Laurentiu Tudor
+ <laurentiu.tudor@nxp.com>, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+ linux-serial@vger.kernel.org, netdev@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-hardening@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 01/19] printk/nbcon: Use an enum to specify the required
+ callback in console_is_usable()
+In-Reply-To: <aWZyEHsOJFLRLRKT@pathway.suse.cz>
+References: <20251227-printk-cleanup-part3-v1-0-21a291bcf197@suse.com>
+ <20251227-printk-cleanup-part3-v1-1-21a291bcf197@suse.com>
+ <aWZyEHsOJFLRLRKT@pathway.suse.cz>
+Date: Fri, 30 Jan 2026 16:37:30 +0106
+Message-ID: <878qdf3ynh.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2157220c-0394-40fa-9918-a8514171bd10@gaisler.com>
+Content-Type: text/plain
 
-Hi,
-
-On Tue, Jan 27, 2026 at 05:02:39PM +0100, Andreas Larsson wrote:
-> On 2026-01-24 10:56, Mike Rapoport wrote:
+On 2026-01-13, Petr Mladek <pmladek@suse.com> wrote:
+> On Sat 2025-12-27 09:16:08, Marcos Paulo de Souza wrote:
+>> The current usage of console_is_usable() is clumsy. The parameter
+>> @use_atomic is boolean and thus not self-explanatory. The function is
+>> called twice in situations when there are no-strict requirements.
+>> 
+>> Replace it with enum nbcon_write_cb which provides a more descriptive
+>> values for all 3 situations: atomic, thread or any.
+>> 
+>> Note that console_is_usable() checks only NBCON_USE_ATOMIC because
+>> .write_thread() callback is mandatory. But the other two values still
+>> make sense because they describe the intention of the caller.
+>> 
+>> --- a/include/linux/console.h
+>> +++ b/include/linux/console.h
+>> @@ -202,6 +202,19 @@ enum cons_flags {
+>>  	CON_NBCON_ATOMIC_UNSAFE	= BIT(9),
+>>  };
+>>  
+>> +/**
+>> + * enum nbcon_write_cb - Defines which nbcon write() callback must be used based
+>> + *                       on the caller context.
+>> + * @NBCON_USE_ATOMIC: Use con->write_atomic().
+>> + * @NBCON_USE_THREAD: Use con->write_thread().
+>> + * @NBCON_USE_ANY:    The caller does not have any strict requirements.
+>> + */
+>> +enum nbcon_write_cb {
+>> +	NBCON_USE_ATOMIC,
+>> +	NBCON_USE_THREAD,
+>> +	NBCON_USE_ANY,
 >
-> > Every architecture defines empty_zero_page that way or another, but for the
-> > most of them it is always a page aligned page in BSS and most definitions
-> > of ZERO_PAGE do virt_to_page(empty_zero_page).
-> 
-> Running this in an LDOM on an UltraSparc T4 sparc64, the entire LDOM
-> hangs after a while during boot.
-> 
-> > diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-> > index c2d19c9a9244..2bd99944176d 100644
-> > --- a/arch/sparc/mm/init_64.c
-> > +++ b/arch/sparc/mm/init_64.c
-> > @@ -177,9 +177,6 @@ extern unsigned long sparc_ramdisk_image64;
-> >  extern unsigned int sparc_ramdisk_image;
-> >  extern unsigned int sparc_ramdisk_size;
-> >  
-> > -struct page *mem_map_zero __read_mostly;
-> > -EXPORT_SYMBOL(mem_map_zero);
-> > -
-> >  unsigned int sparc64_highest_unlocked_tlb_ent __read_mostly;
-> >  
-> >  unsigned long sparc64_kern_pri_context __read_mostly;
-> > @@ -2506,18 +2503,6 @@ void __init mem_init(void)
-> >  	 */
-> >  	register_page_bootmem_info();
-> >  
-> > -	/*
-> > -	 * Set up the zero page, mark it reserved, so that page count
-> > -	 * is not manipulated when freeing the page from user ptes.
-> > -	 */
-> > -	mem_map_zero = alloc_pages(GFP_KERNEL|__GFP_ZERO, 0);
-> > -	if (mem_map_zero == NULL) {
-> > -		prom_printf("paging_init: Cannot alloc zero page.\n");
-> > -		prom_halt();
-> > -	}
-> > -	mark_page_reserved(mem_map_zero);
-> > -
-> > -
-> >  	if (tlb_type == cheetah || tlb_type == cheetah_plus)
-> >  		cheetah_ecache_flush_init();
-> >  }
-> 
-> This just removes the mark_page_reserved(mem_map_zero) without 
-> replacing it with something corresponding to that. Perhaps part
-> of the problem?
+> AFAIK, this would define NBCON_USE_ATOMIC as zero. See below.
 
-I don't think so, empty_zero_page is in BSS now an it's reserved as a part
-of the kernel image.
+Yes, although the start value is not guaranteed. And anyway if is to be
+used as bits, it should be explicitly set so (such as with enum
+cons_flags).
 
-I suspect that virt_to_page() does not work BSS symbols on sparc64. Can you
-please try with this patch:
+But in reality, we only care about NBCON_USE_ATOMIC and
+!NBCON_USE_ATOMIC, so I agree with your comments below about keeping it
+a simple enum and not caring about the numerical value.
 
-diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-index 74ede706fb32..0578c5172d4e 100644
---- a/arch/sparc/include/asm/pgtable_64.h
-+++ b/arch/sparc/include/asm/pgtable_64.h
-@@ -22,6 +22,7 @@
- #include <asm/adi.h>
- #include <asm/page.h>
- #include <asm/processor.h>
-+#include <asm/vaddrs.h>
- 
- /* The kernel image occupies 0x4000000 to 0x6000000 (4MB --> 96MB).
-  * The page copy blockops can use 0x6000000 to 0x8000000.
-@@ -210,6 +211,11 @@ extern unsigned long _PAGE_CACHE;
- extern unsigned long pg_iobits;
- extern unsigned long _PAGE_ALL_SZ_BITS;
- 
-+extern unsigned long kern_base;
-+#define ZERO_PAGE(vaddr)						   \
-+	(virt_to_page(empty_zero_page + ((unsigned long)__va(kern_base)) - \
-+		      ((unsigned long)KERNBASE)))
-+
- /* PFNs are real physical page numbers.  However, mem_map only begins to record
-  * per-page information starting at pfn_base.  This is to handle systems where
-  * the first physical page in the machine is at some huge physical address,
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 2bd99944176d..d2d724ba4f83 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -170,6 +170,8 @@ static void __init read_obp_memory(const char *property,
- 
- /* Kernel physical address base and size in bytes.  */
- unsigned long kern_base __read_mostly;
-+EXPORT_SYMBOL(kern_base);
-+
- unsigned long kern_size __read_mostly;
- 
- /* Initial ramdisk setup */
- 
-> Cheers,
-> Andreas
+>> @@ -631,7 +645,7 @@ static inline bool console_is_usable(struct console *con, short flags, bool use_
+>>  		return false;
+>>  
+>>  	if (flags & CON_NBCON) {
+>> -		if (use_atomic) {
+>> +		if (nwc & NBCON_USE_ATOMIC) {
+>
+> Let's keep it defined by as zero and use here:
+>
+> 		if (nwc == NBCON_USE_ATOMIC) {
+>
+> Note that we do _not_ want to return "false" for "NBCON_USE_ANY"
+> when con->write_atomic does not exist.
 
--- 
-Sincerely yours,
-Mike.
+I agree.
+
+If changed to "nwc == NBCON_USE_ATOMIC":
+
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
