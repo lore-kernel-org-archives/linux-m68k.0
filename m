@@ -1,110 +1,159 @@
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490443F23AC
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Feb 2026 13:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.176
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770210178; cv=pass; b=C0KD/IVmf7GuJo0OgO/YlrxtrGUy8j9+H0jEs9crEk2wt/sACWQoAU61N2ZrwbhPGfghZEeowymzA+RIJEjDopi6iKkD8gYVZwrwvVbX7Lu8eolyymDvHeGbKvIS5Y4i/APH2sVAaLC2ak3dWmUUiX271SGTspPZq1JQrWr3IiA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770210178; c=relaxed/simple;
-	bh=jqB50L1VPXgD56TAUS5qWxfi8WyhK/RAKlozHuVqM+E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PItZ7y8eRms55w6oaz6wvzS36yADk7oqiX2GeTmyaLS8sairEtaXSbPIul+x5JpBsY9JNsC8SaV0VOOQqBaTU01WM1SPh7gWldLtj93gfCUHjYRJJyxWSu/ItB1CVjBPdwQCIJSehd21mVXjoR6a0y5bvVRYx1/XFvT0WhdIKOw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=R2/rpsee; arc=pass smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CC8421EE9
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Feb 2026 15:12:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.10
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770217965; cv=none; b=U5eU/K8Q0Xrjg9ETRsktGhjS4Ot+vViWLJPmCEwmG6XMD+A1+sXoT9UWr4mlgUOmrsO8No98xT+CdXAF5trUFkyYXSFtR1TvQIHU7YzDG32/EXFSdO3n1dYH2eDzfKApP++PIArDhfFo+ixhcjyGuKDGuO/9GijbdW0Ja+3k1fE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770217965; c=relaxed/simple;
+	bh=AO46tXArkWBhvk3CGb7pT15KuJbMhPz8K7XwrkuyLSw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OdJZl/UkfLLY5tuL5dJpe7AcOJ08IRybpM+HUzIOc/8VbOfupTDiRt5cAFdkkuyi/9nL+7kd9gQ3zNk2QcotKjKslTaN1j3JLGrApwYYHHswjbsaiS2dm1ITjSTIFT7XXmFkzPYY6tOIJwj6MjE78JqwnbO1UrNbdkk0r+5D8fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivier.eu; spf=pass smtp.mailfrom=vivier.eu; dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b=i1/6jcDA; arc=none smtp.client-ip=212.227.17.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivier.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivier.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="R2/rpsee"
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-81e8b1bdf0cso4300710b3a.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 04 Feb 2026 05:02:58 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770210177; cv=none;
-        d=google.com; s=arc-20240605;
-        b=ah54gd60+mz/GvcaIvIzVPr4+olKHQDqG9Hu4AxIF1IXNCEbcCHIzw+fJfNByQYJl8
-         ogehnIluvXxj197176Iy110A8OqQ/z62RMxWWZyRXNtXGB/RSXPZnI91tJzz/oNl6ZBv
-         SxKsEOgMt1cmDjG2oSqtO9ehcm+WI58tC2e3WSSZW2f1EcVtJ16dY+Es1Jwl3icCLwwq
-         n3HXmPrXmtJy5kOi34CFr6dxLl+HaFQzRv1uMETfgwxVgPDnBGiI27Q4QcnEGSzkny/4
-         XGU9OVE/cj7Krj1Ejdg2x6RzRlRNwGMx4GACuSKqKN37DBwWn7PWlFjplzfgP2SeHlEO
-         4nWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=jqB50L1VPXgD56TAUS5qWxfi8WyhK/RAKlozHuVqM+E=;
-        fh=7IXdtsk5nc3AhBZ0fqvOvPWtzWtH+Lu1CMs1pP3Pa7U=;
-        b=QXBsQ76G94NQxbmf0fYxmzmKmeKlr11fi7roh1HaUAqw3rQyfE8Ddbjzb1Ibey1zP7
-         KEoRS4zL30YUCxW+jeCu6N2sfUmEv6/ruGylBuzYdoi4FahJwH7RPHQtiNDiakKs+g5K
-         gZ+afxXEWu6OUCGHySu1H8WCXLIRFOWffRRAxWuHS9uJXLOoSdebtoOJebYHTXnFgsBu
-         QG680sENWfulG5sd/ZMAUwRgA9q4RrsK/UBzXHaNcOBnERwPuZNFrgOo4Zqo7kw6mwgu
-         iB2LpdF3QFdM2uBLrOZFFsQHWqee7b4Vvo2e1OZVW0xoOhL0ZTc7TvN6RXyIlVUh5zV2
-         h0Tg==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1770210177; x=1770814977; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jqB50L1VPXgD56TAUS5qWxfi8WyhK/RAKlozHuVqM+E=;
-        b=R2/rpseeuWVh7nQohjk6AFrNw+rxTtNo4eOvC7zeAv54fZf2RLu8tEBMcECki/L2zt
-         Lcg+lCmWNvnj640raOpxZCbFfmfP08mRLc+hKRtBsedAbi7otKGAXBjsiWS7fJzODwUP
-         +q5SuoHARPbh7ikacLJyLmJnFLUheLOCKND00=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770210177; x=1770814977;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jqB50L1VPXgD56TAUS5qWxfi8WyhK/RAKlozHuVqM+E=;
-        b=sXY1zz3nl7xpE4wxi+fRzK9ObHGUHJf9lKoNoE/mHAyO7xYUrpMp85w0qOsAVwSir+
-         45NiZwGmLBb9MyWq8xAji0BAAhujluP0VlCEUbUF+xCyGcKdKVcEAdw2hK3g0l60G2F4
-         HDdOQYAVgs1N9zmA2vo5V7IpfaDe4oiqgcq9aqs5XbN6PHIGQSnVgRwIXEdOyECZsouI
-         FOOQxi3L8VSLUdtBdWv2pfYPBY1AJ7FG52P5J2Ze57Z0DY8GzeZTqnTlIU+10x8auOIO
-         wEYbDkhdAHecaY7Or37ksM40ZgJwbH8J3qh37QoSddfzWVn67Yzmc/maINcbzGEPXO/b
-         mptQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXNdkmGl6GuJmoexummcC8G5/B3we+QeidVMTCIWNeAq+7I8xhcqLjFZBsQseIIZhrC4oI/G8e3mkWJ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzEnMEdhj4WYB3VFUqoqXzZbL0Dre5/LbL9G5+Cr/0qnbQoL/9g
-	03+WHVhwdpRS9aui3bev/BLyROnOKaw5Iw1NAS99gEIOp6osapWEbO/VMTd4Y9FdKZmMh6kQeSQ
-	imyd8HW1ag5/X0XDvosoRT6nr+Pd4ZsLGNTwQ4szGuA==
-X-Gm-Gg: AZuq6aLZTK3qCLJNX2FgkiPMrlajXeE2UbYnnnClgMW39nqQdFMCUBI8LE1qJ+u5nQ7
-	+jG+oyQRRBY1b7Eb7dJ9Kv1ndD/XSBsbYd46XmFUFTikisg+lME4SJF4L0UP+E4nMd1/YsO3tHj
-	RfyggIlVOs1/GUxfuTaKKrOMa1IjP/ZNwIDk7H9gvzTaHzbJR7wX8V1a6KKSnznMdduUMyONutT
-	Iohb6E/AftY+a0wIvRmczM8LcCQ83QtX8Mckp5hqXx521MjGGRdLBQLemWompnlC/fvmyPJyQ==
-X-Received: by 2002:a17:90b:350d:b0:341:315:f4ed with SMTP id
- 98e67ed59e1d1-354870eb613mr2584532a91.10.1770210177520; Wed, 04 Feb 2026
- 05:02:57 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b="i1/6jcDA"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivier.eu;
+	s=s1-ionos; t=1770217952; x=1770822752; i=laurent@vivier.eu;
+	bh=AO46tXArkWBhvk3CGb7pT15KuJbMhPz8K7XwrkuyLSw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=i1/6jcDA9T9IlZSDz49+vF6bo3GcvmTqeb7w15djppJ4M5zp/ZSd2tJng7mjAkdz
+	 GY0XRyM6BkFv7G78PGKFWUgiURj8FDfoFwWd9CGRZI9Vuu+N3OHPl3IC2XSb4E7+p
+	 6aUNYz/ada+Tp+VaOR1XQxZQtHvwCBpDST+ko4Ci4f99lxE57pwGgG7gvcVADEudQ
+	 6OW+QNnZo9/PcggIYfp5dm5WOO5Lrk3QNF0MT4f0ju+9s8jXbPcj3nAtikqZeJpza
+	 Hi/CuLrJfFVUiwUQR/1bzRBPck7DMyRm73MQKiPalibtJbptMUtN5GS92mraSkpH1
+	 aLCuHosSPiJArQqvnw==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from [192.168.100.1] ([82.64.211.94]) by mrelayeu.kundenserver.de
+ (mreue109 [213.165.67.119]) with ESMTPSA (Nemesis) id
+ 1MxDgs-1vckPo23OC-00rN3O; Wed, 04 Feb 2026 16:12:32 +0100
+Message-ID: <07164a0e-fff2-4e8a-baeb-7b5b6f730365@vivier.eu>
+Date: Wed, 4 Feb 2026 16:12:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] Add QEMU virt-ctrl driver and update m68k virt
+To: Daniel Palmer <daniel@0x0f.com>
+Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, sre@kernel.org,
+ jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>
 References: <20260203170824.2968045-1-visitorckw@gmail.com>
  <CAMuHMdUMBoLd8cKXMK64qjGfTqQfK21mDAXMh8DdJHkL7QbDVQ@mail.gmail.com>
- <e7ddd671-6e25-4114-9d4c-21ecebe82ef5@vivier.eu> <CAFr9PX=heS=ywLCidd8o_BzS4TS5U=GA8yv7itzNFp5nuwf2XA@mail.gmail.com>
+ <e7ddd671-6e25-4114-9d4c-21ecebe82ef5@vivier.eu>
+ <CAFr9PX=heS=ywLCidd8o_BzS4TS5U=GA8yv7itzNFp5nuwf2XA@mail.gmail.com>
  <2a4ebbea-12c9-4362-aa09-dd3a7de1be46@vivier.eu>
-In-Reply-To: <2a4ebbea-12c9-4362-aa09-dd3a7de1be46@vivier.eu>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Wed, 4 Feb 2026 22:02:46 +0900
-X-Gm-Features: AZwV_Qizyl8upErpfnTfEOGA157wPCSy37URTJkgip2hxCDhdYxq0FUzjc6r6AU
-Message-ID: <CAFr9PXmqSv00Dt=fwwGsDcr8DgpELsa-X=beqazcQOJvxB0=1w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Add QEMU virt-ctrl driver and update m68k virt
-To: Laurent Vivier <laurent@vivier.eu>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, sre@kernel.org, jserv@ccns.ncku.edu.tw, 
-	eleanor15x@gmail.com, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org, 
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+ <CAFr9PXmqSv00Dt=fwwGsDcr8DgpELsa-X=beqazcQOJvxB0=1w@mail.gmail.com>
+Content-Language: fr
+From: Laurent Vivier <laurent@vivier.eu>
+Autocrypt: addr=laurent@vivier.eu; keydata=
+ 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
+In-Reply-To: <CAFr9PXmqSv00Dt=fwwGsDcr8DgpELsa-X=beqazcQOJvxB0=1w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TMm81Y1BakMRhxpBZubPIT46VGbaQlqk/zL3Sg4UAbDBmqYw4sn
+ +vIF6HXR1CS2oJOINz+s1C6OfXE4NL3x4ZjOhnUjljysPvLLyM+L5oZsoZ2Q/nEHjzWYIuf
+ SZ/PMFGny1+d+GQI3xCH8CtqF8sSbxkB0+DFT3yoKrwWRShZTuhLxkBaFPEAZgGdx6WMeXL
+ 3TFKf3qOS+UM9vgDVaCPQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:25K/C10vbLI=;gejJtD92ifegTQ4ulr1JzOb++vi
+ 6E59LMdH9PsEtt4Zbbiv1qXPtnWcKgstp4TstmkMoV6y5BBrHYTPhFoy1+/0Rtf24mr+ZUAvY
+ m4BZpPaBRv111ZK3Ud5G8SozrQoFyTgCxc/5AwaRPFo7k57YPRrJH5AIoFMZM/wZsMApqcIQZ
+ PdmhE/i1PGsDyx8b3bgSc91S1gJSOWWsQDJ/MROFDa9D6bxV4J8CEPHrlnD3X8LvJQ88rdmb5
+ AqNezQaSTfj7/W9YnHFfxGdksgMS5wyvVLqVrEycQaRXm0XzB/u091mWGKCsTwO8eok2Hsjb3
+ uHdPFMJPtYsi2wpK56NiHGaGt/RXbXNC2g5v2qUgxczboEkJTtB/HbTnHG8fQdNMbzvj2Sxw6
+ FPXDd6iQIHXpHjHwPSMu5kOuGqDYZsl+WDDJmxQ+fsOUcXcSff1p2SPi54FBJB+p2lCY3GgSk
+ 8S/8cHCYHyfijIYE3GOjhbn3LRNBFvmG2L36/G4lT9hglq2Kj63IvLuBD/dIkAP2I43+goXOq
+ sh1Gb4/WGBvA7X4zfFAPuLbX9VmN47eParUmzs+AfseTveFQrKgyJtdSbNiLg4jkZvpTwgcdJ
+ Gdcwh8UhOEUnxuK8OhChRCQfwrNpcdn+7VX5bEXq7qf0I2vExduochy74SMoZOg8UhMcQkpKR
+ Ts2cHEyP7lTwVKy/0e8g9rKmuI1pn273Sgwjs9EQere6ZBXFYDHqreT/zlokPh1krUkgNbKJB
+ A+Qsu9v5rjeO71DmpkejvrGuMZs1+5yn7RmqDQnd45BubEMZD4C+ch6G2qYeMo4mFC1E6uAoB
+ ZArwqpPbnj+g2FVYDcPAc3qGST+Y77POgE5CX+cIlHb6ypaL+CWgqCobDr2x6TSmMF0oYgg0S
+ OUWVGZAcCT3QyDjRae15YdpVPTsxrDJiI49iM7y9TYnYb6KraeVzzEjwKE5YPjSygg+vqNftF
+ EmSQOAlTinN7MCa1o7tlw0SiGTxGZSLWoxVShKdrmfl09AOWq9Dd5bIykmAz1e3e1Rmf8tVmQ
+ 6Rc81Zq2BFTIK7TmSNrTJ4VGqg9AjmLuMcCss8L8VyrP6ai6LXDbZhaT+IxYITVd94BQv716Z
+ ekjK7SqbdRmFDyYe6BMvrVFwvKCKBPxDONIsbHJ7JBhVa3Kv/dTEC5XelCqnzq5rGnvpvF5bj
+ ydgkKQLeZfwdI1YgZTAPOFWnV7JTv7/1zKCAJyvEpY9msVHVEZTAI3MnwY+xAJoGTG/+EmkV8
+ J93bus4KPFD4GObYvjoT7aGzcLRW8nTtGQIv+xj/x3GGZMChjVUTegDdNQexgIH7gaZffjvkV
+ tC6qEfyLWkKa5Jc+1NZ7jifyVaa0vTEC5H/LIOCPCUawQRpu/MnXLVfgxe3wlWi2gZE2SskLe
+ 63mPYrjlnhdPa5fffL2gb93bnX8+5ds5fCT/cbhsCXCo/eA2PaCFfRamxxxaQUln1W66qs0Ns
+ +PSBtITuStqvsHtj7+ExpXDKc4nfEIVCPRRWD0W47AEeKZP+A8AhrwQv9b/G8EH8JrcXKGYfn
+ eaK4nmfX2UC7UTkN5+NKRqU/8mcz5NMhM+L2A30EpxqW5MR1OncfkBfay+eYoxof5u47dEAMj
+ 7LRK0YRNBb05eAWSW2lXMTLGNzOjQ/6EupFeqXXG2sR0L8pnKYJm7AedsXyJtn7/l4oCoGuy6
+ LLA9VDdgTnE3EXCIVQ1Wbl+ciZ+Xtn7erYVUWO8IdglqV35zXt9IAZI1wB59QFyEjEQDhD9Fo
+ /Hcb3OkBnZF8wYhrDMdZaqd+/kSxrhasqLMlvfhL7F3u/caGLzBFPms4=
 
-Hi Laurent,
+Le 04/02/2026 =C3=A0 14:02, Daniel Palmer a =C3=A9crit=C2=A0:
+> Hi Laurent,
+>=20
+> On Wed, 4 Feb 2026 at 21:53, Laurent Vivier <laurent@vivier.eu> wrote:
+>> How to use it with QEMU? Do we need some changes in the code?
+>=20
+> You just load u-boot instead of the linux kernel. I don't think you
+> can actually do much with it because there's no virtio support to load
+> linux etc yet.
+> But I have that all working in my own branch and now Kuan-Wei has got
+> the first parts merged adding the remaining parts to boot linux
+> shouldn't be too difficult.
+>
+I have an old branch with a bootstrap ROM that can be used to start a bigg=
+er ROM, I use it with=20
+petitboot, but perhaps it can be used to load U-boot instead:
 
-On Wed, 4 Feb 2026 at 21:53, Laurent Vivier <laurent@vivier.eu> wrote:
-> How to use it with QEMU? Do we need some changes in the code?
+https://github.com/vivier/qemu/tree/m68k-virt-petitboot
 
-You just load u-boot instead of the linux kernel. I don't think you
-can actually do much with it because there's no virtio support to load
-linux etc yet.
-But I have that all working in my own branch and now Kuan-Wei has got
-the first parts merged adding the remaining parts to boot linux
-shouldn't be too difficult.
+In this case virt-ctrl is extended to control the firmware.
 
-Cheers,
-
-Daniel
+Thanks,
+Laurent
