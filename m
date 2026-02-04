@@ -1,41 +1,38 @@
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CC8421EE9
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Feb 2026 15:12:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAF143C04E
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Feb 2026 20:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770217965; cv=none; b=U5eU/K8Q0Xrjg9ETRsktGhjS4Ot+vViWLJPmCEwmG6XMD+A1+sXoT9UWr4mlgUOmrsO8No98xT+CdXAF5trUFkyYXSFtR1TvQIHU7YzDG32/EXFSdO3n1dYH2eDzfKApP++PIArDhfFo+ixhcjyGuKDGuO/9GijbdW0Ja+3k1fE=
+	t=1770238050; cv=none; b=EEtdrzbLT0UuhNYz54Ut0DxPscsl5zsJcwvwGHVzefpMcEK73SYEEMvvBEURfUwq6MWTo9ur+K7D58imj9Cgc9JYPIqiuO8CV8Z+j0hnQ389i1Veh2HpjCLD3wUKqnsoevdBmJ7cgI5VSePhABWH078nUVsOQyWYhdJdKoMlbiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770217965; c=relaxed/simple;
-	bh=AO46tXArkWBhvk3CGb7pT15KuJbMhPz8K7XwrkuyLSw=;
+	s=arc-20240116; t=1770238050; c=relaxed/simple;
+	bh=M6F4r+8xqCKwYdWkmNuqBBLFmaH1X62wessV5kAOjaY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OdJZl/UkfLLY5tuL5dJpe7AcOJ08IRybpM+HUzIOc/8VbOfupTDiRt5cAFdkkuyi/9nL+7kd9gQ3zNk2QcotKjKslTaN1j3JLGrApwYYHHswjbsaiS2dm1ITjSTIFT7XXmFkzPYY6tOIJwj6MjE78JqwnbO1UrNbdkk0r+5D8fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivier.eu; spf=pass smtp.mailfrom=vivier.eu; dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b=i1/6jcDA; arc=none smtp.client-ip=212.227.17.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivier.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivier.eu
+	 In-Reply-To:Content-Type; b=R1KKD8EjbfjHHPiCWKIEv6wN1wN99NAT7rB11MvIqkfHoK/Rx1iUp6iTC7u1lsRp6gxdzqXH4Eje15ov6YZMVbf8mkX4P3DE8wvlScntk3r4mxNjeHdzyrpFV9nfrOLI8ym8fHF6Bmmzlmh0bM8nxNekRFRU9k5WOEiuZXge6aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ceImbz8E; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b="i1/6jcDA"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivier.eu;
-	s=s1-ionos; t=1770217952; x=1770822752; i=laurent@vivier.eu;
-	bh=AO46tXArkWBhvk3CGb7pT15KuJbMhPz8K7XwrkuyLSw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=i1/6jcDA9T9IlZSDz49+vF6bo3GcvmTqeb7w15djppJ4M5zp/ZSd2tJng7mjAkdz
-	 GY0XRyM6BkFv7G78PGKFWUgiURj8FDfoFwWd9CGRZI9Vuu+N3OHPl3IC2XSb4E7+p
-	 6aUNYz/ada+Tp+VaOR1XQxZQtHvwCBpDST+ko4Ci4f99lxE57pwGgG7gvcVADEudQ
-	 6OW+QNnZo9/PcggIYfp5dm5WOO5Lrk3QNF0MT4f0ju+9s8jXbPcj3nAtikqZeJpza
-	 Hi/CuLrJfFVUiwUQR/1bzRBPck7DMyRm73MQKiPalibtJbptMUtN5GS92mraSkpH1
-	 aLCuHosSPiJArQqvnw==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from [192.168.100.1] ([82.64.211.94]) by mrelayeu.kundenserver.de
- (mreue109 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1MxDgs-1vckPo23OC-00rN3O; Wed, 04 Feb 2026 16:12:32 +0100
-Message-ID: <07164a0e-fff2-4e8a-baeb-7b5b6f730365@vivier.eu>
-Date: Wed, 4 Feb 2026 16:12:29 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ceImbz8E"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 591C560010;
+	Wed,  4 Feb 2026 20:47:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD6EFC4CEF7;
+	Wed,  4 Feb 2026 20:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770238049;
+	bh=M6F4r+8xqCKwYdWkmNuqBBLFmaH1X62wessV5kAOjaY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ceImbz8Ehfv99L+KpKZmE6O02UITPIW3Q3unzHK6ZvZ03KKVV9vd0o/zcMuSR8I/T
+	 H1Ir3pkRy/Ac8NihhmQc2XLTMSvLY7g8u6dkzpUWxLGR59JnhG3WFIY+0sjN6+ny7L
+	 OA5yX5VUcxDkJ35fbSlJkf7gZPNX9n4UDZ49V6CXYwaJng3pK5jMKjC8bZQ49jWrDJ
+	 mh81ww5c4mKrrXjIQs9nNyAtjUxe+jiJJyDGCyhHXV8PWeMF/uLi6iv05wTvaTDa01
+	 /w1na7IgsBIyj8KXiazPHDVq2pFYUxDfVF0755O+BReCpOPHi91jybdC/Nf+ItlP65
+	 sGqFAAkbH50Hw==
+Message-ID: <36511161-6fb0-4928-a0ed-9b5e03b50a27@kernel.org>
+Date: Wed, 4 Feb 2026 21:47:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -43,117 +40,177 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] Add QEMU virt-ctrl driver and update m68k virt
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, sre@kernel.org,
- jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org,
- Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20260203170824.2968045-1-visitorckw@gmail.com>
- <CAMuHMdUMBoLd8cKXMK64qjGfTqQfK21mDAXMh8DdJHkL7QbDVQ@mail.gmail.com>
- <e7ddd671-6e25-4114-9d4c-21ecebe82ef5@vivier.eu>
- <CAFr9PX=heS=ywLCidd8o_BzS4TS5U=GA8yv7itzNFp5nuwf2XA@mail.gmail.com>
- <2a4ebbea-12c9-4362-aa09-dd3a7de1be46@vivier.eu>
- <CAFr9PXmqSv00Dt=fwwGsDcr8DgpELsa-X=beqazcQOJvxB0=1w@mail.gmail.com>
-Content-Language: fr
-From: Laurent Vivier <laurent@vivier.eu>
-Autocrypt: addr=laurent@vivier.eu; keydata=
- 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
-In-Reply-To: <CAFr9PXmqSv00Dt=fwwGsDcr8DgpELsa-X=beqazcQOJvxB0=1w@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable] arch, mm: consolidate empty_zero_page
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
+ Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
+ Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@kernel.org>,
+ Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+ Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-mm@kvack.org, x86@kernel.org
+References: <20260124095628.668870-1-rppt@kernel.org>
+From: "David Hildenbrand (arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260124095628.668870-1-rppt@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TMm81Y1BakMRhxpBZubPIT46VGbaQlqk/zL3Sg4UAbDBmqYw4sn
- +vIF6HXR1CS2oJOINz+s1C6OfXE4NL3x4ZjOhnUjljysPvLLyM+L5oZsoZ2Q/nEHjzWYIuf
- SZ/PMFGny1+d+GQI3xCH8CtqF8sSbxkB0+DFT3yoKrwWRShZTuhLxkBaFPEAZgGdx6WMeXL
- 3TFKf3qOS+UM9vgDVaCPQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:25K/C10vbLI=;gejJtD92ifegTQ4ulr1JzOb++vi
- 6E59LMdH9PsEtt4Zbbiv1qXPtnWcKgstp4TstmkMoV6y5BBrHYTPhFoy1+/0Rtf24mr+ZUAvY
- m4BZpPaBRv111ZK3Ud5G8SozrQoFyTgCxc/5AwaRPFo7k57YPRrJH5AIoFMZM/wZsMApqcIQZ
- PdmhE/i1PGsDyx8b3bgSc91S1gJSOWWsQDJ/MROFDa9D6bxV4J8CEPHrlnD3X8LvJQ88rdmb5
- AqNezQaSTfj7/W9YnHFfxGdksgMS5wyvVLqVrEycQaRXm0XzB/u091mWGKCsTwO8eok2Hsjb3
- uHdPFMJPtYsi2wpK56NiHGaGt/RXbXNC2g5v2qUgxczboEkJTtB/HbTnHG8fQdNMbzvj2Sxw6
- FPXDd6iQIHXpHjHwPSMu5kOuGqDYZsl+WDDJmxQ+fsOUcXcSff1p2SPi54FBJB+p2lCY3GgSk
- 8S/8cHCYHyfijIYE3GOjhbn3LRNBFvmG2L36/G4lT9hglq2Kj63IvLuBD/dIkAP2I43+goXOq
- sh1Gb4/WGBvA7X4zfFAPuLbX9VmN47eParUmzs+AfseTveFQrKgyJtdSbNiLg4jkZvpTwgcdJ
- Gdcwh8UhOEUnxuK8OhChRCQfwrNpcdn+7VX5bEXq7qf0I2vExduochy74SMoZOg8UhMcQkpKR
- Ts2cHEyP7lTwVKy/0e8g9rKmuI1pn273Sgwjs9EQere6ZBXFYDHqreT/zlokPh1krUkgNbKJB
- A+Qsu9v5rjeO71DmpkejvrGuMZs1+5yn7RmqDQnd45BubEMZD4C+ch6G2qYeMo4mFC1E6uAoB
- ZArwqpPbnj+g2FVYDcPAc3qGST+Y77POgE5CX+cIlHb6ypaL+CWgqCobDr2x6TSmMF0oYgg0S
- OUWVGZAcCT3QyDjRae15YdpVPTsxrDJiI49iM7y9TYnYb6KraeVzzEjwKE5YPjSygg+vqNftF
- EmSQOAlTinN7MCa1o7tlw0SiGTxGZSLWoxVShKdrmfl09AOWq9Dd5bIykmAz1e3e1Rmf8tVmQ
- 6Rc81Zq2BFTIK7TmSNrTJ4VGqg9AjmLuMcCss8L8VyrP6ai6LXDbZhaT+IxYITVd94BQv716Z
- ekjK7SqbdRmFDyYe6BMvrVFwvKCKBPxDONIsbHJ7JBhVa3Kv/dTEC5XelCqnzq5rGnvpvF5bj
- ydgkKQLeZfwdI1YgZTAPOFWnV7JTv7/1zKCAJyvEpY9msVHVEZTAI3MnwY+xAJoGTG/+EmkV8
- J93bus4KPFD4GObYvjoT7aGzcLRW8nTtGQIv+xj/x3GGZMChjVUTegDdNQexgIH7gaZffjvkV
- tC6qEfyLWkKa5Jc+1NZ7jifyVaa0vTEC5H/LIOCPCUawQRpu/MnXLVfgxe3wlWi2gZE2SskLe
- 63mPYrjlnhdPa5fffL2gb93bnX8+5ds5fCT/cbhsCXCo/eA2PaCFfRamxxxaQUln1W66qs0Ns
- +PSBtITuStqvsHtj7+ExpXDKc4nfEIVCPRRWD0W47AEeKZP+A8AhrwQv9b/G8EH8JrcXKGYfn
- eaK4nmfX2UC7UTkN5+NKRqU/8mcz5NMhM+L2A30EpxqW5MR1OncfkBfay+eYoxof5u47dEAMj
- 7LRK0YRNBb05eAWSW2lXMTLGNzOjQ/6EupFeqXXG2sR0L8pnKYJm7AedsXyJtn7/l4oCoGuy6
- LLA9VDdgTnE3EXCIVQ1Wbl+ciZ+Xtn7erYVUWO8IdglqV35zXt9IAZI1wB59QFyEjEQDhD9Fo
- /Hcb3OkBnZF8wYhrDMdZaqd+/kSxrhasqLMlvfhL7F3u/caGLzBFPms4=
+Content-Transfer-Encoding: 7bit
 
-Le 04/02/2026 =C3=A0 14:02, Daniel Palmer a =C3=A9crit=C2=A0:
-> Hi Laurent,
->=20
-> On Wed, 4 Feb 2026 at 21:53, Laurent Vivier <laurent@vivier.eu> wrote:
->> How to use it with QEMU? Do we need some changes in the code?
->=20
-> You just load u-boot instead of the linux kernel. I don't think you
-> can actually do much with it because there's no virtio support to load
-> linux etc yet.
-> But I have that all working in my own branch and now Kuan-Wei has got
-> the first parts merged adding the remaining parts to boot linux
-> shouldn't be too difficult.
->
-I have an old branch with a bootstrap ROM that can be used to start a bigg=
-er ROM, I use it with=20
-petitboot, but perhaps it can be used to load U-boot instead:
+On 1/24/26 10:56, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> 
+> Reduce 22 declarations of empty_zero_page to 3 and 23 declarations of
+> ZERO_PAGE() to 4.
+> 
+> Every architecture defines empty_zero_page that way or another, but for the
+> most of them it is always a page aligned page in BSS and most definitions
+> of ZERO_PAGE do virt_to_page(empty_zero_page).
+> 
+> Move Linus vetted x86 definition of empty_zero_page and ZERO_PAGE() to the
+> core MM and drop these definitions in architectures that do not implement
+> colored zero page (MIPS and s390).
+> 
+> ZERO_PAGE() remains a macro because turning it to a wrapper for a static
+> inline causes severe pain in header dependencies.
 
-https://github.com/vivier/qemu/tree/m68k-virt-petitboot
+That's just what I wanted to ask after looking at it :)
 
-In this case virt-ctrl is extended to control the firmware.
+> 
+> For the most part the change is mechanical, with these being noteworthy:
+> 
+> * alpha: aliased empty_zero_page with ZERO_PGE that was also used for boot
+>    parameters. Switching to a generic empty_zero_page removes the aliasing
+>    and keeps ZERO_PGE for boot parameters only
+> * arm64: uses __pa_symbol() in ZERO_PAGE() so that definition of
+>    ZERO_PAGE() is kept intact.
+> * m68k/parisc/sparc64/um: allocated empty_zero_page from memblock,
+>    although they do not support zero page coloring and having it in BSS
+>    will work fine.
+> * sh: used empty_zero_page for boot parameters at the very early boot.
+>    Rename the parameters page to boot_params_page and let sh use the generic
+>    empty_zero_page.
+> * hexagon: had an amusing comment about empty_zero_page
+> 
+> 	/* A handy thing to have if one has the RAM. Declared in head.S */
+> 
+>    that unfortunately had to go :)
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 
-Thanks,
-Laurent
+[...]
+
+>   
+> +#ifndef __HAVE_COLOR_ZERO_PAGE
+> +extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+> +#endif
+> +
+> +#ifndef ZERO_PAGE
+> +#define ZERO_PAGE(vaddr) ((void)(vaddr),virt_to_page(empty_zero_page))
+
+Took me a second ...
+
+> +#endif
+> +
+>   #endif /* !__ASSEMBLY__ */
+>   
+>   #if !defined(MAX_POSSIBLE_PHYSMEM_BITS) && !defined(CONFIG_64BIT)
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 1a29a719af58..8ea5b76f317f 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -53,6 +53,15 @@ EXPORT_SYMBOL(mem_map);
+>   void *high_memory;
+>   EXPORT_SYMBOL(high_memory);
+>   
+> +#ifndef __HAVE_COLOR_ZERO_PAGE
+> +/*
+> + * ZERO_PAGE is a global shared page that is always zero: used
+> + * for zero-mapped memory areas etc..
+> + */
+
+I am not so sure of how much value that comment here is.
+
+... and in particular, why it is not next to ZERO_PAGE in pgtable.h? ;)
+
+> +unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_aligned_bss;
+
+Is there a good (or historic) reason why this is not simply
+
+uint8_t empty_zero_page[PAGE_SIZE] __page_aligned_bss;
+
+Almost looks to simple, right? So there must be some problem with it :)
+
+> +EXPORT_SYMBOL(empty_zero_page);
+> +#endif
+
+Nothing else jumped at me, nice cleanup ... if you get sparc to work :P
+
+-- 
+Cheers,
+
+David
