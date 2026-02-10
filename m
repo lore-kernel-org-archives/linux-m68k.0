@@ -1,68 +1,117 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C0C32C923
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Feb 2026 05:08:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8FE3806AC
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Feb 2026 14:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770700127; cv=none; b=g3x6xSnctpvm0owl1bWRKon/01J16InwBMpFtpZnsDMeN+1YhADaNjCFgCtw+OLxzaHBN28H9AWy8o+vWFPpf+0MH5imQaiJFQZDoxpY2E4/dQgppXtTKypvKeyrly6STnZcdBhdX9JEh+PE3TNxAeavAl7Pr+RmB9n0P1aqKX8=
+	t=1770735021; cv=none; b=o4sEC3kbXSI1GVqEs6/T3FOu0GrMtEMCpD4UdJg+8ODtEzfDtZ4H5xHYlZ4eMnLqNAslKDlePwvTVZXU9B28ETIoO1bjOK244fgY+Gr/NPK13fDJCfSA6CebKYjepsX909djqteHJ3jUf6i/EkMpMj0trr3RBvS3B84W0WS2rh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770700127; c=relaxed/simple;
-	bh=a5szpgUFyACWV3kw9uRVMzKfUpU0i/IBCBlXm+wh2Qo=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=URl4dNTmVVDOXZV4XgrtGqy7xFhF+96TdPh7CqjPgPUys52jnx+U+PTZwIhDDWzAo/l9HLK65TTom3ht5+F3t/OepFz+rbfsMwsaPUJ8JVbamxP4Ay+3wwUuVmI/7rGgcfOHnKUCVE/ax6vrzROyIq+HYk+iNqm87qZVdjv5WhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=titbV04f; arc=none smtp.client-ip=172.105.4.254
+	s=arc-20240116; t=1770735021; c=relaxed/simple;
+	bh=YqNhqDan6ig5Eg8FfWiJBfgfNLXjdOvNf1vIcFRh5H8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sDEF4aQLBY1Cr0i7uWxEPRlCQ1qwmPjipDgsipvPhF8jR9rvH5vqW4kvRPrFih1mBDMq33hlm94r9Y6wY06KzTMrWtl5Y8HOnqvH0eGY/xKe3QZxBSve0zEFQx29Aqp0L0R6RBn9+Ig3q4IFbWH1KLAcu41lrZ5zd52ZzLgLL04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W3ex2H+6; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="titbV04f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W3ex2H+6"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 88CF360137;
-	Tue, 10 Feb 2026 05:08:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F19EC116C6;
-	Tue, 10 Feb 2026 05:08:45 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 9BDB860137;
+	Tue, 10 Feb 2026 14:50:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E02CC116C6;
+	Tue, 10 Feb 2026 14:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770700125;
-	bh=a5szpgUFyACWV3kw9uRVMzKfUpU0i/IBCBlXm+wh2Qo=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=titbV04f6+IlSibkkyKNNsAkVDfon7NN1vi2lVFmt3jUhvZ1muSOdyLxJtA/tpg2R
-	 ANIF2XOrk8sYa2bLBrVM/8+Oab5ufV/WAUTpTJyMlyCQyjap8vGJuhvf6/Skv72rZH
-	 QEEEu9n7+FpQc5H17CrtsEyiqw/eaTb6XesZFg346cxZAvBPhoZl/hZaNsKPA/B37z
-	 JhQJ4Lqh0xU0GkyDuTKN0ixq7ZXhOd7ijSn6Zo8VNk+3e2Us2rEyay0u76cIfBDreq
-	 H739KCt4oOdyZz4gUtAAJAvrWaXOvecoanQEdTCAOLGCnbhPHgH41HSIu4sO98o08i
-	 KrNZoLlOPXkMw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 0AFFA380AA5E;
-	Tue, 10 Feb 2026 05:08:42 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k updates for v6.20
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20260209090450.4079574-1-geert@linux-m68k.org>
-References: <20260209090450.4079574-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20260209090450.4079574-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v7.0-tag1
-X-PR-Tracked-Commit-Id: cb39cf99d88e8f2c68a41fb3bb01c4f40a8fcc30
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b33c3b84045e880d8a7596f260860038c71cf393
-Message-Id: <177070012068.3352335.15111261788287950724.pr-tracker-bot@kernel.org>
-Date: Tue, 10 Feb 2026 05:08:40 +0000
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Andrew Morton <akpm@linux-foundation.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+	s=k20201202; t=1770735018;
+	bh=YqNhqDan6ig5Eg8FfWiJBfgfNLXjdOvNf1vIcFRh5H8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W3ex2H+6njMxfdkQtt4hfXP8xNYoYvUybMgCjkdXkRHCgKGQQudxPVj6r6Yq4X87J
+	 qKQk4SPbkNxJjifgbRHYB0LIbaEKgNT1q7EAGZDodtYWpYtXt+PLTjreRRyYh0ZuB+
+	 0XRCg3HQoTLA4LhyIdFuLZzdVr/SSw9/Ndr1QL+8Jlw7RzN+PIW/LRCopkpQH6Rwal
+	 J24gsB2JhUZnmKMnS2yaIoTinVPtyDQgj4UHrG750qhTNlhIvb22kewZVjFgo8FCOz
+	 fm9CerA5/tgkSQquoEeuWIQfz2qcaZ22uCaDVSNGjTWlgBnoS+i6Uy7a10vU89BO1/
+	 TkxTBVLkg+EFQ==
+Date: Tue, 10 Feb 2026 16:50:00 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Hildenbrand <david@kernel.org>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Gleixner <tglx@kernel.org>, Vineet Gupta <vgupta@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH v2 2/4] mm: rename my_zero_pfn() to zero_pfn()
+Message-ID: <aYtFmCQQMYkZh7Wh@kernel.org>
+References: <20260209144058.2092871-1-rppt@kernel.org>
+ <20260209144058.2092871-3-rppt@kernel.org>
+ <0f15b363-a5e5-4a58-89b0-13b5112772b0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0f15b363-a5e5-4a58-89b0-13b5112772b0@kernel.org>
 
-The pull request you sent on Mon,  9 Feb 2026 10:04:49 +0100:
+On Mon, Feb 09, 2026 at 04:08:32PM +0100, Christophe Leroy (CS GROUP) wrote:
+> 
+> 
+> Le 09/02/2026 à 15:40, Mike Rapoport a écrit :
+> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> > 
+> > my_zero_pfn() is a silly name.
+> > 
+> > Rename zero_pfn variable to zero_page_pfn and my_zero_pfn() function to
+> > zero_pfn().
+> > 
+> > While on it, move extern declarations of zero_page_pfn outside the
+> > functions that use it and add a comment about what ZERO_PAGE is.
+> 
+> I guess the idea of the extern declaration being inside its only external
+> users was to ensure nobody would start using it directly, hence bypassing
+> the overloadable helpers.
+> 
+> Should we at least call the variable __zero_page_pfn instead in order to
+> warn people that using it directly requires care ?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v7.0-tag1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b33c3b84045e880d8a7596f260860038c71cf393
-
-Thank you!
+I'd better move it back inside the helpers.
+ 
+> Christophe
+> 
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Sincerely yours,
+Mike.
