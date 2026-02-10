@@ -1,29 +1,43 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B352368263
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Feb 2026 15:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABB1374724
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 10 Feb 2026 15:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770736022; cv=none; b=VRwS6DNkh+tzm4ECkoRJmsIPibPZOl5ylf0J/5Mox4Ng4ltBejaP8t/Eu5mPVM3RYsoyhuyMHLgOC8TIe+P8B3ZTLwMG6YUFo9eaL8ey8rFd+baFhsUGjymOWYVhaoaZf9vxZ63W6snhxnqb92/RiKfrBgAWE4VO+IqqYXABRMs=
+	t=1770736288; cv=none; b=XiTxTpBXnSemjusrlxzG34qv6b6QELAVygft93P2wjNl7dxBTafbyNiezmdPZ+S7LSSw0gBl8amVxIqEh++WDyucYgvjEcF84aHezPAEFhivQIubP2+whGrCHac5U4JVCenJLEijqam3YGHNjs4ysmwW0SPH+kJUjzEP+wV4xxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770736022; c=relaxed/simple;
-	bh=W95p4VhCTCQaRY027oJYrb08jjxns6gg54ZGyTfK2N4=;
+	s=arc-20240116; t=1770736288; c=relaxed/simple;
+	bh=DrZA2lEnZtuNLdn/aPtjSDtEw66qk6VI5lqRaUZw6MU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ma3wS5JUoH8Jebw0cBj4MSMGDZANLX8o46fCktOR17b8e7X6J6OXfuf/4sKOE+u8aW51BpDPd0ioyBrY2+I7aA0v1XW5cbHlUedDFvvP8cpRBLzvL+fINIIKMUMzzeaX56vvCRP662DiMqrk62AmKxZwDd5YTinHSeVI4xJDEao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83A22150C;
-	Tue, 10 Feb 2026 07:06:54 -0800 (PST)
-Received: from arm.com (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B054A3F63F;
-	Tue, 10 Feb 2026 07:06:53 -0800 (PST)
-Date: Tue, 10 Feb 2026 15:06:51 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Mike Rapoport <rppt@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=U/94R+WHEZn/cZC1ntvn+G3OiNQPf9YM/aFvNq5ceAdde6mt2g7uGlV1azISh03ghFiSOswiIr/qb0B+GmVgMrDilHxvju40gj95aHw53lUcTrEGZBBNLVjqPgXnL6QavqrRxpGhd4ALT7a90JBLRDcDaSJLp1zY1ykFkjy2B8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=urq6vVA5; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="urq6vVA5"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 6621B43431;
+	Tue, 10 Feb 2026 15:11:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E8C5C19421;
+	Tue, 10 Feb 2026 15:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770736287;
+	bh=DrZA2lEnZtuNLdn/aPtjSDtEw66qk6VI5lqRaUZw6MU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=urq6vVA5/zKz3Gz1KYHkENaWXWCJIrhCTsYUwnayOnesr9oKXBBLBNMjlu+XBMlsX
+	 uvq+Efs174+4yyISyJyhtDzzs/cN02rvp2iUIhXHkx/anXX8qt9ZAmETpPgSslZHmi
+	 dOfA+PMsiB9phlzplVn1h4BGTREeTKK/mGvc6yXqdxvQxzLhPLxFwqFd5ksvBLgBcA
+	 bXe2QTazQVXJjMFOS7sSTsI47jqhux9/INIvbsc/ERm/5Uzn5QYdEvPtT9gAmiWW1c
+	 l9kJ02GWTagzlQ4QKwDTfsaZp4dl08KF0CAozjxLRxRQf1YPFG1TFMTQoA3lk8WvtB
+	 TCA+9Vof32JbQ==
+Date: Tue, 10 Feb 2026 17:11:08 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Andreas Larsson <andreas@gaisler.com>,
 	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
 	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
@@ -35,7 +49,6 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
 	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	Madhavan Srinivasan <maddy@linux.ibm.com>,
 	Magnus Lindholm <linmag7@gmail.com>,
 	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
@@ -57,11 +70,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH v2 4/4] mm: cache struct page for empty_zero_page and
- return it from ZERO_PAGE()
-Message-ID: <aYtJi4uNcpoCTK_x@arm.com>
+Subject: Re: [PATCH v2 2/4] mm: rename my_zero_pfn() to zero_pfn()
+Message-ID: <aYtKjEYYiVDRi7vF@kernel.org>
 References: <20260209144058.2092871-1-rppt@kernel.org>
- <20260209144058.2092871-5-rppt@kernel.org>
+ <20260209144058.2092871-3-rppt@kernel.org>
+ <b932ac24-2465-4176-a5fa-d9b904600a15@lucifer.local>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -70,29 +83,20 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260209144058.2092871-5-rppt@kernel.org>
+In-Reply-To: <b932ac24-2465-4176-a5fa-d9b904600a15@lucifer.local>
 
-On Mon, Feb 09, 2026 at 04:40:57PM +0200, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+On Tue, Feb 10, 2026 at 02:52:56PM +0000, Lorenzo Stoakes wrote:
+> On Mon, Feb 09, 2026 at 04:40:55PM +0200, Mike Rapoport wrote:
+> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> >
+> > my_zero_pfn() is a silly name.
 > 
-> For most architectures every invocation of ZERO_PAGE() does
-> virt_to_page(empty_zero_page). But empty_zero_page is in BSS and it is
-> enough to get its struct page once at initialization time and then use
-> it whenever a zero page should be accessed.
-> 
-> Add yet another __zero_page variable that will be initialized as
-> virt_to_page(empty_zero_page) for most architectures in a weak
-> arch_setup_zero_pages() function.
-> 
-> For architectures that use colored zero pages (MIPS and s390) rename their
-> setup_zero_pages() to arch_setup_zero_pages() and make it global rather
-> than static.
-> 
-> For architectures that cannot use virt_to_page() for BSS (arm64 and
-> sparc64) add override of arch_setup_zero_pages().
-> 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Is it too late to ask for it to be renamed to lorenzos_zero_pfn()? I've long
+> felt it was mine, due to the previous naming, and I feel like maybe it's time to
+> make it official... ;)
 
-For arm64:
+It's not too late, but the pfn will go to the highest bidder ;-P
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+-- 
+Sincerely yours,
+Mike.
