@@ -1,201 +1,134 @@
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA0327BF6C
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Feb 2026 15:28:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65804F4F1
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Feb 2026 15:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770910107; cv=none; b=SdkEfGpYi/ZI+T930JqdrNG6lJkqxbUcxL18r0FQCtB1xdiq5FTPJog62qbH57e/wew2jvXowdVlvsV/BCB6ZD81AUwiFBh50UI05Y5sbSkDejOYXdjlUBn5KZFydSRNJmudv7gvkDmu6FFZo0ZYWa9eXoPAzrCEwTmpfdA+3j4=
+	t=1770910118; cv=none; b=BpMGLYPnY716X2N/ehyrzK1GKacn0j4iM5wp19OMG7dz/HuoFctX4O2KGZRXrV008AFWA8YyWc9+7JJ6vWjcJV7/9AckHmqwwkNC0Jb5euqNVy99QB9iaGcoPWtQys+Nlm+IA6IViqm6pe/sl7GcXguR4G4ScaZFFw4p44mJQPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770910107; c=relaxed/simple;
-	bh=zpJ5yyVAUYN47OXuq9X+BWWcs9IcB0j4YwHJ3GCizEc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mUiV4wU0tHmrj0uhcI91k6PLaH+ekN0CFU1KGW4znxJSvXwxc32IGmTuhcohJfTodP7Y/kDFMCzFNh8bljUpez5Oiob0JAZMmRGYaGA6wzPIkgudap8Qnnge/9avfnyEfCRJmyj2tG3Wp+4S+qDRbTnsVWZlEQeyCLO7utbvTOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W27sjswi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jGwcCSjI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W27sjswi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jGwcCSjI; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W27sjswi";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jGwcCSjI";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W27sjswi";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jGwcCSjI"
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4FB745BDB1;
-	Thu, 12 Feb 2026 15:28:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770910104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=H6Ok7yayDSj8orWu5mTwXnKKhkzyIWcEaWvhkksfU+I=;
-	b=W27sjswiPFhRjFyxLmKyVhaHTw+oGCRytro4u60AS9rG1tmn/tcETrbEeCsYW76GH1CO9N
-	7beSRbDDVF5qLcQN5V9HLo+9/7x6UoM4dPnr+T7Y6SDV34AXz4FXpxTKwoGBY3cMxg4GNn
-	laBTaqE73JMHHxPiR6zYkHmL8ALXIUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770910104;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=H6Ok7yayDSj8orWu5mTwXnKKhkzyIWcEaWvhkksfU+I=;
-	b=jGwcCSjI8s00pX6bW9fUMyiN3/8PM0hFJkVOrvxvMRy28RDPVq/dz18/gDLKnzlJGXNCd5
-	NrWS+vbROHtGETAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770910104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=H6Ok7yayDSj8orWu5mTwXnKKhkzyIWcEaWvhkksfU+I=;
-	b=W27sjswiPFhRjFyxLmKyVhaHTw+oGCRytro4u60AS9rG1tmn/tcETrbEeCsYW76GH1CO9N
-	7beSRbDDVF5qLcQN5V9HLo+9/7x6UoM4dPnr+T7Y6SDV34AXz4FXpxTKwoGBY3cMxg4GNn
-	laBTaqE73JMHHxPiR6zYkHmL8ALXIUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770910104;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=H6Ok7yayDSj8orWu5mTwXnKKhkzyIWcEaWvhkksfU+I=;
-	b=jGwcCSjI8s00pX6bW9fUMyiN3/8PM0hFJkVOrvxvMRy28RDPVq/dz18/gDLKnzlJGXNCd5
-	NrWS+vbROHtGETAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D39863EA62;
-	Thu, 12 Feb 2026 15:28:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bltXM5fxjWmBcwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 12 Feb 2026 15:28:23 +0000
-Message-ID: <a5b8f7ab-b9cd-4ca1-9192-d0347a79a2c0@suse.cz>
-Date: Thu, 12 Feb 2026 16:28:23 +0100
+	s=arc-20240116; t=1770910118; c=relaxed/simple;
+	bh=pxs8YbD1TjSNqeCrVp0K89guriRQWw3wRcf8TsFR4x4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZKGsaAjJLEOMhxEdV+o/HfDqvHxcJG7qT1oXPMQPha1J7ebnOcqAEEuL580YJrSekGEP/FDFw/L8r5bEr6kUxwQzS43fmXdzScn3fS0YiIs3GkjK1PgsRB1uYYczq3iM2BYrx4yjts9PNMoJFuzoXwHsXhg+t8QkxHvreEbgycA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-566390e7db3so2311352e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Feb 2026 07:28:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770910115; x=1771514915;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1swUXVQRVAJERNN5QK89cxeKMa011a7QNqexhVz+39E=;
+        b=kRHGULMN0X0YrgNQuH0OayFwSGlYtHtWwx6zG165Qp0mk5cHEVF6EGnpzjX2WfaFgD
+         xuakbS4UDs6nnzjBKAhZL+GZLHo4HLi8M/2jnCLl9Wzb99j2lq+J3eK2V01t30ml1Uhq
+         ganu8iiB0bZr8Q8g55j8UPLtLUoIN+AKbwLvjFomTT7YdHkrCgoQvKSk4SHzfDCaAAZy
+         W3XWXxKN0GI4AoaJ+1TGKhyXa3Wjcz2uK5eU1tu7pKa14CelLWaWDiSE1gKLa8RASJ9k
+         fz4HV7ogqWT0/KhbR5TJSib8jCchvt1A7mj4HSel7y5XA/hfFnINYweGbU+g8qyqO/HG
+         JaPA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQwN42uLmd4+94SBIrbkcUJhPv0tpeZ+LNW7/I4ZkgnnK3jq7xAYCT15bQ4gqau0E01MAoUt5gCR4L@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzTeyXFZkl6C8tQQyiyYAaFjJn15kWdwiFog1IXAY2z7pTjfrrz
+	OlgN83/XF5BJg0u/mcnoAsu8Jc1G0n1LGJ/gYA4z4rQBODE3j3+NVHAM6YwJ5CZ+
+X-Gm-Gg: AZuq6aIWEbk2cvD6PyOssinAdd6xrdu353ty8deyODTt4zgOrRztEog2lYlXl8JE+a5
+	VWPrsp3SziANFP43iH2vevEvrkXAau+MdU+G19o/AFjI2s8NqM9OiqpTV/4FD4edVukkY5pnh/F
+	UD+HiYTl8/JnKGOH6btmCqs8dpEM7UZbLxj3qohZw26bEIpn2z4SlLAjhaBZrkWDtYQ1pmYwdjH
+	HHq52C4GOpAgeuDkGyOfR/7NU5bfqaAqirKdFDApm2hZQxvInKwo+jJrcVyTBaEP9VGcLs2oFQm
+	NqPinKM8ehtopJ0BQhrWWOY+9gAxJ3rcmt0kEe9BvmK+9Qfk/DnTGXO1ftLYC5D9A8BXpIOavVc
+	006pRYA1d2c9lK9Cfw/cnrvCyBYQRZhJAXebdJztKn6Vn+gnPrkh6aMGiP4+bTBjgzzQgYgcKOa
+	/SEQpEHdKjU1Yvqaw7LNPwsiSwXHB0c2mZfGXpqabqcTkklKsOtVd8gVb95dua
+X-Received: by 2002:a05:6122:338a:b0:563:618f:b7e1 with SMTP id 71dfb90a1353d-5675b69ccfbmr621124e0c.4.1770910115236;
+        Thu, 12 Feb 2026 07:28:35 -0800 (PST)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5674bc76b6asm1980899e0c.0.2026.02.12.07.28.35
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Feb 2026 07:28:35 -0800 (PST)
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-5fd05e8d317so1831142137.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Feb 2026 07:28:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU7RdYtVWQIvsEuLxT8v7DHJNGsIoImrxh+FXeUU31WszgMteUANOe4bVhMdhPiV0wxqXDBNxPtldn7@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:26cc:b0:5fd:eb2d:e714 with SMTP id
+ ada2fe7eead31-5fe006b511fmr835506137.22.1770910114712; Thu, 12 Feb 2026
+ 07:28:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] mm: rename my_zero_pfn() to zero_pfn()
-Content-Language: en-US
-To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
- "David S. Miller" <davem@davemloft.net>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- David Hildenbrand <david@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
- Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
- Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@kernel.org>,
- Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-mm@kvack.org, x86@kernel.org
-References: <20260211103141.3215197-1-rppt@kernel.org>
- <20260211103141.3215197-3-rppt@kernel.org>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20260211103141.3215197-3-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_GT_50(0.00)[52];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gaisler.com,alien8.de,kernel.org,arm.com,davemloft.net,linux.intel.com,linux-m68k.org,gmx.de,redhat.com,sipsolutions.net,physik.fu-berlin.de,oracle.com,linux.ibm.com,gmail.com,ellerman.id.au,suse.com,monstr.eu,dabbelt.com,nod.at,armlinux.org.uk,google.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.linux-m68k.org,lists.ozlabs.org,kvack.org];
-	R_RATELIMIT(0.00)[to_ip_from(RL81e5qggtdx371s8ik49ru6xr)];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
-X-Spam-Flag: NO
+References: <20260206-nbcon-v7-0-62bda69b1b41@debian.org> <20260206-nbcon-v7-1-62bda69b1b41@debian.org>
+In-Reply-To: <20260206-nbcon-v7-1-62bda69b1b41@debian.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 12 Feb 2026 16:28:23 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUVzSQv=Zw7qh3UVYftdb=Am+URJ2dJ9mwD3WXbuNRT5w@mail.gmail.com>
+X-Gm-Features: AZwV_QheoIK05fsOpIY7usPxMKv7SFALLCN-Vk5kXX3MLafKpNUG4FK9VCekOcM
+Message-ID: <CAMuHMdUVzSQv=Zw7qh3UVYftdb=Am+URJ2dJ9mwD3WXbuNRT5w@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 1/4] printk: Add execution context (task
+ name/CPU) to printk_info
+To: Breno Leitao <leitao@debian.org>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	pmladek@suse.com, john.ogness@linutronix.de, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, asantostc@gmail.com, 
+	efault@gmx.de, gustavold@gmail.com, calvin@wbinvd.org, jv@jvosburgh.net, 
+	mpdesouza@suse.com, kernel-team@meta.com, 
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/11/26 11:31, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> 
-> my_zero_pfn() is a silly name.
-> 
-> Rename zero_pfn variable to zero_page_pfn and my_zero_pfn() function to
-> zero_pfn().
-> 
-> While on it, move extern declarations of zero_page_pfn outside the
-> functions that use it and add a comment about what ZERO_PAGE is.
-> 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Hi Breno,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On Fri, 6 Feb 2026 at 15:39, Breno Leitao <leitao@debian.org> wrote:
+> Extend struct printk_info to include the task name, pid, and CPU
+> number where printk messages originate. This information is captured
+> at vprintk_store() time and propagated through printk_message to
+> nbcon_write_context, making it available to nbcon console drivers.
+>
+> This is useful for consoles like netconsole that want to include
+> execution context in their output, allowing correlation of messages
+> with specific tasks and CPUs regardless of where the console driver
+> actually runs.
+>
+> The feature is controlled by CONFIG_PRINTK_EXECUTION_CTX, which is
+> automatically selected by CONFIG_NETCONSOLE_DYNAMIC. When disabled,
+> the helper functions compile to no-ops with no overhead.
+>
+> Suggested-by: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
+Thanks for your patch, which is now commit 60325c27d3cfe134 ("printk:
+Add execution context (task name/CPU) to printk_info").
+
+This increases (the IMHO already large) _printk_rb_static_infos
+array by another 40 KiB, according to bloat-o-meter:
+
+    _printk_rb_static_infos                   180224  221184  +40960
+
+> --- a/drivers/net/Kconfig
+> +++ b/drivers/net/Kconfig
+> @@ -341,6 +341,7 @@ config NETCONSOLE_DYNAMIC
+>         bool "Dynamic reconfiguration of logging targets"
+>         depends on NETCONSOLE && SYSFS && CONFIGFS_FS && \
+>                         !(NETCONSOLE=y && CONFIGFS_FS=m)
+> +       select PRINTK_EXECUTION_CTX
+>         help
+>           This option enables the ability to dynamically reconfigure target
+>           parameters (interface, IP addresses, port numbers, MAC addresses)
+
+I guess we should start disabling NETCONSOLE_DYNAMIC in the m68k
+defconfigs...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
