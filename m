@@ -1,38 +1,42 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF7D28935A
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Feb 2026 05:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47A82D6E58
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Feb 2026 08:39:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770874396; cv=none; b=Oumef2saLGbzWxnntsgPrzBCf3vvefaOgnXzBNpyB7oGdhJ7wjIzcpb7Mh0cOt3P+lvBTP72y0zj9thd8BsNpa6G+forkCRW3BwLoArBJ/CzWFF055/CRgzyzXMBUhEbL9USY9UxdsBfc/LON/9e1aKueJz/ewgQnohml/dZpL4=
+	t=1770885576; cv=none; b=TtI85oXTePY6y2zqZP56W9Gme4831VO4ar9nWrA3wRdG8TLzGUMImhwdhFC6sEPnTesbBW+93p+raczGVunFJjvDh5+UUX1+8FDAn75jm/NKujHyQyxgDwhPZHIgahfGmOO4QlD2qNKdrpIrBnNF1P8OT+jjhsICluzS1ztiK+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770874396; c=relaxed/simple;
-	bh=xWdXZIArybbo9Rgxccq3nL2HLMDxrTRxGRMmTyJ92Ek=;
+	s=arc-20240116; t=1770885576; c=relaxed/simple;
+	bh=BzJbIjAB4mXB/Sc6APaKaqhOX7eJEEX+6i6XmfqBtZc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z0yme6WLU2UOSR7MC3bRZ0wyCrfEI+xos3GpUBLQbmda/KbWAHfLjyOVGPa7bxaA3VhSMplLHn8Cgoe1F6HdVlnuDGhwRSWaf6A6xiD1l7BW8uui4RpAdlr5Z0v8hnFwMRti9eLm9vA3CPBH1jKNWEibot3/AeEsQ6n6Ytk19iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fnRt4bNT; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	 In-Reply-To:Content-Type; b=FlPNdBxelr70KFOtwZw+zMTGzkQpG8dIZa2Yvznoi/hW8eaVDQYuJQwCBuNIKoSaYL8GNKXBatuQTYOyl4AqIaSEOrLFRnV3jjYHYle8/tgZh0/UbRh6uCpjvn3uDvzlRI7ka6dnyuck0ySPJS42ZSGT8ZDSJfMPn6wrSJiJu9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=fail (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=Kom0jmG4 reason="key not found in DNS"; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fnRt4bNT"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 97C9B4151B;
-	Thu, 12 Feb 2026 05:33:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D227FC4CEF7;
-	Thu, 12 Feb 2026 05:33:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770874394;
-	bh=xWdXZIArybbo9Rgxccq3nL2HLMDxrTRxGRMmTyJ92Ek=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fnRt4bNTruqGWDCex4UgCYs5xfFXruN8Lon65hP9g22+WBdZKtSwF7Vlpe0Cerco4
-	 bvwxt2r8yj+pM8xOwU8CRkM4OmUaUA/+Tzc72yQC0G+UVZeUmzyMyMPGyxL/xNIa4X
-	 +/VC+HyZKbjW0nnljKGakLZZFB897pqnLw9d71EIpoTCJ5wnD5VHVMEklBRL/Jcabq
-	 Mwmjfv/JZu6GfI7SyoqZ+mxEsaOK/PQXeGkhDnmh+ztI8JZFzkYG9tnpHFUHqIR6N4
-	 w+N5IHX73Du91X+qNAEJ7TQrDCCl9z1LnQGwJBdYZfNUoF2uBKOsddFYGgsxivKLws
-	 KFvp/8rynpEOQ==
-Message-ID: <0b420450-a85f-4f7c-93c2-4d2de37d257b@kernel.org>
-Date: Wed, 11 Feb 2026 23:33:09 -0600
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="Kom0jmG4"
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4fBTHd67LVz1DDhH;
+	Thu, 12 Feb 2026 09:39:25 +0100 (CET)
+Received: from [192.168.0.25] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4fBTHb5J7Hz1DDZ7;
+	Thu, 12 Feb 2026 09:39:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=simplycom2; t=1770885565;
+	bh=PGI9E0Ah/sCKqUWdGGZrUCOyQzLXgtvn+/30CBuRp9w=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Kom0jmG4cp2aCCPXYGhzvsNdpnID6H+n8FBHwTifdpEYGIUBXrnEh77Zjb+F4Uw9H
+	 UXUPUIguRj6rXxio7bPxKL8EDMaAwhGefR3rfI1wHeSXx/zPR33P8qJNbunSZ43qDr
+	 NgFlGeDjza2ZQm8OzzMjsW6vlhjo+CZxjlwQT+qLbYqhmgxd8Q8Ihyd2HOc3dvoADp
+	 o+xiWOcZDwMxqEP+I8vJDl4qWqdv4qG5u0jzztECJfg3xosxH+CpUDCdgJZ6vEOukO
+	 glY3kmdJgj3w/lSoryU0vkLnI0wkwv88sda11lAy2tHIoR1eKoCLmGUm0esizzLPxM
+	 ivEADa7FfTprA==
+Message-ID: <e2a3798f-cbc4-49c5-bbd3-42509c22c8fa@gaisler.com>
+Date: Thu, 12 Feb 2026 09:38:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -41,14 +45,13 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 3/4] arch, mm: consolidate empty_zero_page
-Content-Language: en-US
 To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+Cc: Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
  "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
  "David S. Miller" <davem@davemloft.net>,
  Dave Hansen <dave.hansen@linux.intel.com>,
- David Hildenbrand <david@kernel.org>,
+ David Hildenbrand <david@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
  Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
  Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
  Ingo Molnar <mingo@redhat.com>, Johannes Berg <johannes@sipsolutions.net>,
@@ -74,14 +77,13 @@ Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
  linux-mm@kvack.org, x86@kernel.org
 References: <20260211103141.3215197-1-rppt@kernel.org>
  <20260211103141.3215197-4-rppt@kernel.org>
-From: Dinh Nguyen <dinguyen@kernel.org>
+Content-Language: en-US
+From: Andreas Larsson <andreas@gaisler.com>
 In-Reply-To: <20260211103141.3215197-4-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
-
-On 2/11/26 04:31, Mike Rapoport wrote:
+On 2026-02-11 11:31, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
 > Reduce 22 declarations of empty_zero_page to 3 and 23 declarations of
@@ -101,25 +103,25 @@ On 2/11/26 04:31, Mike Rapoport wrote:
 > For the most part the change is mechanical, with these being noteworthy:
 > 
 > * alpha: aliased empty_zero_page with ZERO_PGE that was also used for boot
->    parameters. Switching to a generic empty_zero_page removes the aliasing
->    and keeps ZERO_PGE for boot parameters only
+>   parameters. Switching to a generic empty_zero_page removes the aliasing
+>   and keeps ZERO_PGE for boot parameters only
 > * arm64: uses __pa_symbol() in ZERO_PAGE() so that definition of
->    ZERO_PAGE() is kept intact.
+>   ZERO_PAGE() is kept intact.
 > * m68k/parisc/um: allocated empty_zero_page from memblock,
->    although they do not support zero page coloring and having it in BSS
->    will work fine.
+>   although they do not support zero page coloring and having it in BSS
+>   will work fine.
 > * sparc64 can have empty_zero_page in BSS rather allocate it, but it
->    can't use virt_to_page() for BSS. Keep it's definition of ZERO_PAGE()
->    but instead of allocating it, make mem_map_zero point to
->    empty_zero_page.
+>   can't use virt_to_page() for BSS. Keep it's definition of ZERO_PAGE()
+>   but instead of allocating it, make mem_map_zero point to
+>   empty_zero_page.
 > * sh: used empty_zero_page for boot parameters at the very early boot.
->    Rename the parameters page to boot_params_page and let sh use the generic
->    empty_zero_page.
+>   Rename the parameters page to boot_params_page and let sh use the generic
+>   empty_zero_page.
 > * hexagon: had an amusing comment about empty_zero_page
 > 
 > 	/* A handy thing to have if one has the RAM. Declared in head.S */
 > 
->    that unfortunately had to go :)
+>   that unfortunately had to go :)
 > 
 > Acked-by: Helge Deller <deller@gmx.de>   # parisc
 > Tested-by: Helge Deller <deller@gmx.de>  # parisc
@@ -129,10 +131,13 @@ On 2/11/26 04:31, Mike Rapoport wrote:
 > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 > ---
 
->   arch/nios2/include/asm/pgtable.h          |  7 -------
->   arch/nios2/kernel/head.S                  | 10 ----------
->   arch/nios2/kernel/nios2_ksyms.c           |  1 -
+>  arch/sparc/include/asm/pgtable_32.h       |  8 --------
+>  arch/sparc/include/asm/setup.h            |  2 --
+>  arch/sparc/kernel/head_32.S               |  7 -------
+>  arch/sparc/mm/init_32.c                   |  4 ----
+>  arch/sparc/mm/init_64.c                   | 11 ++++-------
+Acked-by: Andreas Larsson <andreas@gaisler.com> #sparc
 
-For nios2,
+Cheers,
+Andreas
 
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
