@@ -1,64 +1,64 @@
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71030359705
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Feb 2026 17:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9EB35B64F
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Feb 2026 17:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771781566; cv=none; b=Dhbk4ZErjtJpNtjcAhxjM6pZ0z2YErAxKdbe7GyAKyTzSo2XMwMmI+Dou9V5Uis+I9nv9UWeGV7V0oSmeWFguUhT1j8HisbFqFMI9y0lfdHnmTb+RK+CwVu/fNiKeHXUjcAoRo+qcToxgusIzVqkYY2rKxQi4UXDwcjo7xxcg4U=
+	t=1771781568; cv=none; b=picacnTCui4i7taYIJAJ8MbeZf5+PKhK5Fh3fof//TOprvkCWfEVCqUPToWZPK3dajHKQmeh6PPIgkRTtg6anue8lkaKbtPWxX1AFE5H1Mx+Dah9hr7KexyjbOdWachH+7Hl0aQNEXoPrtgzOpz/z6ny7MKeFiebpp9D9hJansg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771781566; c=relaxed/simple;
-	bh=hIGKj/FGC8Gh/lZO2wAX9+uKoIqF6oc1pUcFUMBWm3g=;
+	s=arc-20240116; t=1771781568; c=relaxed/simple;
+	bh=1m0uQK6CF91pCqxZ05R2dJ2x/VRhrWU9g6QLkLHuA+s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Sf0pPow4YZ+G9MocofsxilffukXyyZGIuql/HCKUi/uqGtDfXHNSbASIX9hi/mU5fouPIlE3YfEHDIag99WcpBug5BEvBlvqxwKoydaB13MCHwaeD1hq+5VcOv9cZBgB29LhAR3XO6weHx1pWwij7atSCdAmQjua98v+s5uH3C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KCMdv6lg; arc=none smtp.client-ip=209.85.216.54
+	 MIME-Version; b=jBB04uUYK2iJoTpZ9IJq2NLi4c6a/Vlu9U53Ckgekh9ndQXf5nQOcKXbvZH/PD3z2r++I1NOrJ4lMbJZf4YVKYp6z2M/d9K6Cfe8heX6eo4wDEgiKUU4lnbrEY305xGGRSaeMidSxN3zYlTyVJRrd2GNo2+IuLx2MZI1+L9VE1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZL7nvKQW; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KCMdv6lg"
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3562212b427so1436128a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Feb 2026 09:32:44 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZL7nvKQW"
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-c70c112cb61so403423a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 22 Feb 2026 09:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771781564; x=1772386364; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20230601; t=1771781567; x=1772386367; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V1btUeakV5x2bdwZTY0fXlY/DrEgaFMrytEHGtVsI2A=;
-        b=KCMdv6lg3+GDv3ypniAFX/5p5fPr/knG+rL6ZD6EJZgDSvvHax8XadjF5CCtDJxaMA
-         BbORBxuicJ6qtX1XmVoTXjeAEgjCZIQDfx0EXiZa8FMpnWy+5G8qX5waT0gxfYDOAeXm
-         jAN3hMv2UFBznTidmx5xMOE3wkHEl0VE0jnJkCdpQv465mhPJzp+4ateg3bL7T4mbYs/
-         ml4QmmBVugSnLzy+auflxs0EJl1/4HXlSpqDCjSSHcyAboAKLF75d4gfE7bzurjotD9q
-         bZTP9R5CudrW/9AZuyqpsvMPfO3uHK3QE9VAldREJY41qka8HzqXXwK56Z/lvCjALcLo
-         uDBg==
+        bh=0wImU8utWXre1Uxo904gEyPqXxKNFzEXRXMuF4CHFNE=;
+        b=ZL7nvKQW2Gzuo8+FySDrZUmo7it4xM11Gu7274vioC+qka4Lq86Ub9rcV3JAbD0Q77
+         QWejPuYJ5JPfooJGKB0iWrwG778wBxGeqqIB0I7PaPL+LzF1MXydfPLKhUQX93pER0l3
+         wMwRfA3J5faj8R5OlvpJe+Ky7J/u2Ar2P+MFqQt+D7D3kG2JgSFrNgnRXoIoLlFj8jBR
+         E5bA8xqoeoCVDPmpT7vRmjCKO3ucWs8CRwMW4g6RG+NP6S04TqVFYFiZKIGluvjOD603
+         KSn8XzlTu5hcXKkxgUjGQZx0ZES/BvcWC+pCTBERi5SeuEdnYA/LsF3x0t5L3Ys1zbHW
+         A7tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771781564; x=1772386364;
+        d=1e100.net; s=20230601; t=1771781567; x=1772386367;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=V1btUeakV5x2bdwZTY0fXlY/DrEgaFMrytEHGtVsI2A=;
-        b=kggrjDpRIMguW2mjRaBtVpTTc4pErootFIdrUfBgrbpuviqQJ09iYk+lvyYuLGnVXM
-         DOzA/DBc2BlvrrXtJWZfnGLRf7alKbmmL56njNZP4kjB6F9QQ866fEb6d9d+rKM36Pdo
-         g6aGpwAHobwrVCgvDv9mYFhuvnWpQtHGgYKiSFZ0H3eIy3jUrNoKRzsPKq3kLSmRH3pz
-         jIbhzHRKpplCf56AaBVVn84Iq84xVInspxd8V7B73zBPCXUCv6vpvy9NKwJtvGTDTMyZ
-         xg8mZpOKvW3DrIc1K9jGv+n6zZp4D40tTsbJ19ipIQtTbu6ybCgmYgo74GClTixRIMxc
-         WX8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWozkWSq8u0z+rTN7QZjG78lgxCcXDOPISN1k2B7iLspV6VJxsTif84nqG49cidoE5Sx2CyXNSuVTqs@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwfIFlsXzwVMhhGM6wMqbw/+PaandcFcFAY+ulH/mzQjS3Ynpb4
-	NO8ppwi8rYYdEBZ6kpll1yDtItmeb1sAJMEEjQHmKp5wKgaPztNB25oh
-X-Gm-Gg: AZuq6aIgqZUnRoyNH6+/T6yOcZ2ebjVgGyw+Q+lxRjbBBZaVTBxOTo39/wb1TNgByd5
-	p2LmeASy/EjlYhm7GckSJl8D/JOpi4xr1MTFZXvmp/3RHQoH13o1b6mQ+ojOEFtOfTGL4ndwDM5
-	NTEtFEkOqwNRQVJmDEPflm+1eMbxiWlX9a8+UXsj4UEwIKp+IohxD3rLGbyIaIez+G7dwGAyF2/
-	GVdvPphxlVhHiyKXHspeIM4lYny7YbXtLvCl8h5Rb/B+Eu4L17abx+p9bxCTq0LNEeImt6dKwag
-	MGZgAZ1FpOnuLypkWyVs11Fhj2FAFq6njVZKBvAlnh0LnmMD/+3oYXVySaO+2VfLxHwltXK8UAc
-	kEOvTbfWQae6B3hIp42l5iL3XfNNAzKEYUwYi23oHhu/Ah3yb0tiDesOhQRntXXuw0BIcsfcbBM
-	fqovmBhvufgTsEkjXw5CnijY+2B4TgFe+96gOW5+DcgQVkz9TJvoX+vM3ATjqZcWT0tbI8wt0cV
-	DGs8YNDIdw5WMGg2SZIc1UQX8h0F04i2Z2y
-X-Received: by 2002:a17:90b:268b:b0:356:7917:236 with SMTP id 98e67ed59e1d1-358ae8c6a26mr4779794a91.26.1771781563791;
-        Sun, 22 Feb 2026 09:32:43 -0800 (PST)
+        bh=0wImU8utWXre1Uxo904gEyPqXxKNFzEXRXMuF4CHFNE=;
+        b=mFtqo7g+TEgsnagasB9EsM4ACaqyDi8RTcBkwE7ycxFieEYSP+sUuWIu876/ss/Tb0
+         zHHpw5U5IpPYunhMptqsue7xrw9P2G7qicxpDR+PDpwN1CXmvQltqWP9nIKNAeK6tJ3D
+         1dsmE5o6bhiaWBf1lE/dLqxoqblFsFrlAk4yp5UhODP5KHZPs0jgRohyH2lW13H6Uu8n
+         Snnl+oNBdBFPod+YsemPSWjXMt3x+CbVg9YDiSskYIDEgtSjFyR3VVhP/8QU65byRGFL
+         sI768THkEr363jIbh5d1yQvRXhoh8VJUPX6UjDMq0JZUuP5VMQxnHLT2D6X0o3BRKMFh
+         M+TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVny7xpmZbBUxiELD5QTM8TaDj30pG0Gpg8vD1TnljcBb6JZSGmFkonTMKPMgbHVJxRPu1j1uE31m4A@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyZNX9sbl/IcSH5VDrDeaHn41G3ay0QKLXzjkm+PYVYeFXjuP5j
+	kyVORZqz5DAyiUS2XTwmVgX/pVRugu7B4MkNXHS5nODGo0BWIUCzTA7L
+X-Gm-Gg: AZuq6aIieY/aHheNQW3P9OGD3pFwiGOTBPSKudukFFEG7T8bG40g6NpRGslkyTcqWAY
+	LdBHsrnYmvZdlK0+GB0z826bZzPZZf84helu0cNT4lz/MsBnxH1RdzpER9NSO3PSWxAzHhv68RD
+	9VzKmpnLs5+PPB3BWUEPLIV8WJnMM2arvhl3Gw6mupEkWKYaPlJiNFCBm+4lrHs5kqBmws17LJQ
+	2e9/MFIBBVxi1XJFbYdlDFNsBv1YUacqzNh7z3NqGGlduAnPdjSZz11bs8nSuuWYXsZF5JR/edz
+	rY7lXqFzEBYueMaQsl9uNkcEDpWBxYcGrUfLKH22YdTs2dtWn0mJHdmfrMRWIZKgCTM3ktmTFf3
+	7U+49WqrAmWgOesQsOWbfgpOxWclaVrHk7ht95P6yItBaTESv2+VjaaGpo5f+GkcpZiZGQn1c3a
+	GnzEYReRLs6fptjFOd2QtcPkhcemu4PjO78oZ2Rot4Rw9mIDEkTkOUWYDPe787bn/Cl8cV8/Ub1
+	btbv9tZmr1Go6e1bCMmML+TS3U+pU7sKsg+
+X-Received: by 2002:a05:6a20:3d19:b0:394:6344:e5c4 with SMTP id adf61e73a8af0-39545dc00f1mr5380438637.3.1771781566900;
+        Sun, 22 Feb 2026 09:32:46 -0800 (PST)
 Received: from visitorckw-work01.c.googlers.com.com (7.162.199.104.bc.googleusercontent.com. [104.199.162.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70b726cbf2sm5275750a12.34.2026.02.22.09.32.41
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70b726cbf2sm5275750a12.34.2026.02.22.09.32.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 09:32:43 -0800 (PST)
+        Sun, 22 Feb 2026 09:32:46 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: geert@linux-m68k.org,
 	sre@kernel.org
@@ -70,9 +70,9 @@ Cc: jserv@ccns.ncku.edu.tw,
 	linux-m68k@lists.linux-m68k.org,
 	linux-pm@vger.kernel.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v3 1/2] power: reset: Add QEMU virt-ctrl driver
-Date: Sun, 22 Feb 2026 17:32:24 +0000
-Message-ID: <20260222173225.1105572-2-visitorckw@gmail.com>
+Subject: [PATCH v3 2/2] m68k: virt: Switch to qemu-virt-ctrl driver
+Date: Sun, 22 Feb 2026 17:32:25 +0000
+Message-ID: <20260222173225.1105572-3-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.53.0.345.g96ddfc5eaa-goog
 In-Reply-To: <20260222173225.1105572-1-visitorckw@gmail.com>
 References: <20260222173225.1105572-1-visitorckw@gmail.com>
@@ -84,207 +84,162 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a new driver for the 'virt-ctrl' device found on QEMU virt machines
-(e.g. m68k). This device provides a simple interface for system reset
-and power off [1].
+Register the "qemu-virt-ctrl" platform device during board
+initialization to utilize the new generic power/reset driver.
 
-This driver utilizes the modern system-off API to register callbacks
-for both system restart and power off. It also registers a reboot
-notifier to catch SYS_HALT events, ensuring that LINUX_REBOOT_CMD_HALT
-is properly handled. It is designed to be generic and can be reused by
-other architectures utilizing this QEMU device.
+Consequently, remove the legacy reset and power-off implementations
+specific to the virt machine. The platform's mach_reset callback is
+updated to call do_kernel_restart(), bridging the legacy m68k reboot
+path to the generic kernel restart handler framework for this machine.
 
-Link: https://gitlab.com/qemu-project/qemu/-/blob/v10.2.0/hw/misc/virt_ctrl.c [1]
+To prevent any regressions in reboot or power-off functionality when
+the driver is not built-in, explicitly select POWER_RESET and
+POWER_RESET_QEMU_VIRT_CTRL for the VIRT machine in Kconfig.machine.
+
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
 Changes in v3:
-- Add a reboot notifier to handle SYS_HALT.
-- Implement virt_ctrl_write32() to handle native endianness.
+- Add 'select POWER_RESET' and 'select POWER_RESET_QEMU_VIRT_CTRL' in
+  Kconfig.machine to avoid restart/power-off regressions.
 
-I noticed devm_register_sys_off_handler() currently lacks a
-SYS_OFF_MODE_HALT. Therefore, I registered a standard reboot notifier
-for SYS_HALT, while keeping restart and power-off on the sys-off API.
+ arch/m68k/Kconfig.machine |  2 ++
+ arch/m68k/virt/config.c   | 42 +--------------------------------------
+ arch/m68k/virt/platform.c | 20 ++++++++++++++++---
+ 3 files changed, 20 insertions(+), 44 deletions(-)
 
- MAINTAINERS                          |   6 ++
- drivers/power/reset/Kconfig          |  10 +++
- drivers/power/reset/Makefile         |   1 +
- drivers/power/reset/qemu-virt-ctrl.c | 122 +++++++++++++++++++++++++++
- 4 files changed, 139 insertions(+)
- create mode 100644 drivers/power/reset/qemu-virt-ctrl.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 55af015174a5..aa9eb8540637 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21441,6 +21441,12 @@ S:	Maintained
- F:	drivers/firmware/qemu_fw_cfg.c
- F:	include/uapi/linux/qemu_fw_cfg.h
+diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
+index de39f23b180e..624e6b27f394 100644
+--- a/arch/m68k/Kconfig.machine
++++ b/arch/m68k/Kconfig.machine
+@@ -133,6 +133,8 @@ config VIRT
+ 	select GOLDFISH_TIMER
+ 	select GOLDFISH_TTY
+ 	select M68040
++	select POWER_RESET
++	select POWER_RESET_QEMU_VIRT_CTRL
+ 	select RTC_CLASS
+ 	select RTC_DRV_GOLDFISH
+ 	select TTY
+diff --git a/arch/m68k/virt/config.c b/arch/m68k/virt/config.c
+index 632ba200ad42..b338e2a8da6a 100644
+--- a/arch/m68k/virt/config.c
++++ b/arch/m68k/virt/config.c
+@@ -13,18 +13,6 @@
  
-+QEMU VIRT MACHINE SYSTEM CONTROLLER DRIVER
-+M:	Kuan-Wei Chiu <visitorckw@gmail.com>
-+L:	linux-pm@vger.kernel.org
-+S:	Maintained
-+F:	drivers/power/reset/qemu-virt-ctrl.c
-+
- QLOGIC QL41xxx FCOE DRIVER
- M:	Saurav Kashyap <skashyap@marvell.com>
- M:	Javed Hasan <jhasan@marvell.com>
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index f6c1bcbb57de..99e3334726a5 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -354,4 +354,14 @@ config POWER_MLXBF
- 	help
- 	  This driver supports reset or low power mode handling for Mellanox BlueField.
+ struct virt_booter_data virt_bi_data;
  
-+config POWER_RESET_QEMU_VIRT_CTRL
-+	tristate "QEMU Virt Machine System Controller"
-+	depends on HAS_IOMEM
-+	help
-+	  This driver supports the system reset and power off functionality
-+	  provided by the QEMU 'virt-ctrl' device.
+-#define VIRT_CTRL_REG_FEATURES	0x00
+-#define VIRT_CTRL_REG_CMD	0x04
+-
+-static struct resource ctrlres;
+-
+-enum {
+-	CMD_NOOP,
+-	CMD_RESET,
+-	CMD_HALT,
+-	CMD_PANIC,
+-};
+-
+ static void virt_get_model(char *str)
+ {
+ 	/* str is 80 characters long */
+@@ -33,25 +21,9 @@ static void virt_get_model(char *str)
+ 		(u8)(virt_bi_data.qemu_version >> 16),
+ 		(u8)(virt_bi_data.qemu_version >> 8));
+ }
+-
+-static void virt_halt(void)
+-{
+-	void __iomem *base = (void __iomem *)virt_bi_data.ctrl.mmio;
+-
+-	iowrite32be(CMD_HALT, base + VIRT_CTRL_REG_CMD);
+-	local_irq_disable();
+-	while (1)
+-		;
+-}
+-
+ static void virt_reset(void)
+ {
+-	void __iomem *base = (void __iomem *)virt_bi_data.ctrl.mmio;
+-
+-	iowrite32be(CMD_RESET, base + VIRT_CTRL_REG_CMD);
+-	local_irq_disable();
+-	while (1)
+-		;
++	do_kernel_restart(NULL);
+ }
+ 
+ /*
+@@ -113,20 +85,8 @@ void __init config_virt(void)
+ 		 virt_bi_data.tty.mmio);
+ 	setup_earlycon(earlycon);
+ 
+-	ctrlres = (struct resource)
+-		   DEFINE_RES_MEM_NAMED(virt_bi_data.ctrl.mmio, 0x100,
+-					"virtctrl");
+-
+-	if (request_resource(&iomem_resource, &ctrlres)) {
+-		pr_err("Cannot allocate virt controller resource\n");
+-		return;
+-	}
+-
+ 	mach_init_IRQ = virt_init_IRQ;
+ 	mach_sched_init = virt_sched_init;
+ 	mach_get_model = virt_get_model;
+ 	mach_reset = virt_reset;
+-	mach_halt = virt_halt;
+-
+-	register_platform_power_off(virt_halt);
+ }
+diff --git a/arch/m68k/virt/platform.c b/arch/m68k/virt/platform.c
+index 1560c4140ab9..764f556b4b32 100644
+--- a/arch/m68k/virt/platform.c
++++ b/arch/m68k/virt/platform.c
+@@ -30,7 +30,10 @@ static int __init virt_platform_init(void)
+ 		DEFINE_RES_MEM(virt_bi_data.rtc.mmio + 0x1000, 0x1000),
+ 		DEFINE_RES_IRQ(virt_bi_data.rtc.irq + 1),
+ 	};
+-	struct platform_device *pdev1, *pdev2;
++	const struct resource virt_ctrl_res[] = {
++		DEFINE_RES_MEM(virt_bi_data.ctrl.mmio, 0x100),
++	};
++	struct platform_device *pdev1, *pdev2, *pdev3;
+ 	struct platform_device *pdevs[VIRTIO_BUS_NB];
+ 	unsigned int i;
+ 	int ret = 0;
+@@ -57,19 +60,30 @@ static int __init virt_platform_init(void)
+ 		goto err_unregister_tty;
+ 	}
+ 
++	pdev3 = platform_device_register_simple("qemu-virt-ctrl",
++						PLATFORM_DEVID_NONE,
++						virt_ctrl_res,
++						ARRAY_SIZE(virt_ctrl_res));
++	if (IS_ERR(pdev3)) {
++		ret = PTR_ERR(pdev3);
++		goto err_unregister_rtc;
++	}
 +
-+	  Say Y here if you are running Linux on a QEMU virtual machine that
-+	  provides this controller, such as the m68k virt machine.
-+
- endif
-diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
-index 0e4ae6f6b5c5..d7ae97241a83 100644
---- a/drivers/power/reset/Makefile
-+++ b/drivers/power/reset/Makefile
-@@ -41,3 +41,4 @@ obj-$(CONFIG_SYSCON_REBOOT_MODE) += syscon-reboot-mode.o
- obj-$(CONFIG_POWER_RESET_SC27XX) += sc27xx-poweroff.o
- obj-$(CONFIG_NVMEM_REBOOT_MODE) += nvmem-reboot-mode.o
- obj-$(CONFIG_POWER_MLXBF) += pwr-mlxbf.o
-+obj-$(CONFIG_POWER_RESET_QEMU_VIRT_CTRL) += qemu-virt-ctrl.o
-diff --git a/drivers/power/reset/qemu-virt-ctrl.c b/drivers/power/reset/qemu-virt-ctrl.c
-new file mode 100644
-index 000000000000..f40d04afd4e3
---- /dev/null
-+++ b/drivers/power/reset/qemu-virt-ctrl.c
-@@ -0,0 +1,122 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * QEMU Virt Machine System Controller Driver
-+ *
-+ * Copyright (C) 2026 Kuan-Wei Chiu <visitorckw@gmail.com>
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/reboot.h>
-+
-+/* Registers */
-+#define VIRT_CTRL_REG_FEATURES	0x00
-+#define VIRT_CTRL_REG_CMD	0x04
-+
-+/* Commands */
-+#define CMD_NOOP	0
-+#define CMD_RESET	1
-+#define CMD_HALT	2
-+#define CMD_PANIC	3
-+
-+struct qemu_virt_ctrl {
-+	void __iomem *base;
-+	struct notifier_block reboot_nb;
-+};
-+
-+static inline void virt_ctrl_write32(u32 val, void __iomem *addr)
-+{
-+	if (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN))
-+		iowrite32be(val, addr);
-+	else
-+		iowrite32(val, addr);
-+}
-+
-+static int qemu_virt_ctrl_power_off(struct sys_off_data *data)
-+{
-+	void __iomem *base = data->cb_data;
-+
-+	virt_ctrl_write32(CMD_HALT, base + VIRT_CTRL_REG_CMD);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int qemu_virt_ctrl_restart(struct sys_off_data *data)
-+{
-+	void __iomem *base = data->cb_data;
-+
-+	virt_ctrl_write32(CMD_RESET, base + VIRT_CTRL_REG_CMD);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int qemu_virt_ctrl_reboot_notify(struct notifier_block *nb,
-+					unsigned long action, void *data)
-+{
-+	struct qemu_virt_ctrl *ctrl = container_of(nb, struct qemu_virt_ctrl, reboot_nb);
-+
-+	if (action == SYS_HALT)
-+		virt_ctrl_write32(CMD_HALT, ctrl->base + VIRT_CTRL_REG_CMD);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int qemu_virt_ctrl_probe(struct platform_device *pdev)
-+{
-+	struct qemu_virt_ctrl *ctrl;
-+	int ret;
-+
-+	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
-+	if (!ctrl)
-+		return -ENOMEM;
-+
-+	ctrl->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(ctrl->base))
-+		return PTR_ERR(ctrl->base);
-+
-+	ret = devm_register_sys_off_handler(&pdev->dev,
-+					    SYS_OFF_MODE_RESTART,
-+					    SYS_OFF_PRIO_DEFAULT,
-+					    qemu_virt_ctrl_restart,
-+					    ctrl->base);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "cannot register restart handler\n");
-+
-+	ret = devm_register_sys_off_handler(&pdev->dev,
-+					    SYS_OFF_MODE_POWER_OFF,
-+					    SYS_OFF_PRIO_DEFAULT,
-+					    qemu_virt_ctrl_power_off,
-+					    ctrl->base);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "cannot register power-off handler\n");
-+
-+	ctrl->reboot_nb.notifier_call = qemu_virt_ctrl_reboot_notify;
-+	ret = devm_register_reboot_notifier(&pdev->dev, &ctrl->reboot_nb);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret, "cannot register reboot notifier\n");
-+
-+	return 0;
-+}
-+
-+static const struct platform_device_id qemu_virt_ctrl_id[] = {
-+	{ "qemu-virt-ctrl", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(platform, qemu_virt_ctrl_id);
-+
-+static struct platform_driver qemu_virt_ctrl_driver = {
-+	.probe = qemu_virt_ctrl_probe,
-+	.driver = {
-+		.name = "qemu-virt-ctrl",
-+	},
-+	.id_table = qemu_virt_ctrl_id,
-+};
-+module_platform_driver(qemu_virt_ctrl_driver);
-+
-+MODULE_AUTHOR("Kuan-Wei Chiu <visitorckw@gmail.com>");
-+MODULE_DESCRIPTION("QEMU Virt Machine System Controller Driver");
-+MODULE_LICENSE("GPL");
+ 	for (i = 0; i < VIRTIO_BUS_NB; i++) {
+ 		pdevs[i] = virt_virtio_init(i);
+ 		if (IS_ERR(pdevs[i])) {
+ 			ret = PTR_ERR(pdevs[i]);
+-			goto err_unregister_rtc_virtio;
++			goto err_unregister_virtio;
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-err_unregister_rtc_virtio:
++err_unregister_virtio:
+ 	while (i > 0)
+ 		platform_device_unregister(pdevs[--i]);
++	platform_device_unregister(pdev3);
++err_unregister_rtc:
+ 	platform_device_unregister(pdev2);
+ err_unregister_tty:
+ 	platform_device_unregister(pdev1);
 -- 
 2.53.0.345.g96ddfc5eaa-goog
 
