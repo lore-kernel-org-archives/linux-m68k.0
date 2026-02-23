@@ -1,38 +1,38 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA25230F531
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Feb 2026 16:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3F130C610
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Feb 2026 16:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771863524; cv=none; b=V2mxXoxiHzBN3FrfbbzoAVGEpg7PaeXUYoT6EcOA50ls2TgXQT3NXT6GdLfOPXEWqHy+vk9rXVLVN4fdcOBoFgzEmJoewR+Qa7ayJl6YnYz9AjNtInyAKrbglZImE3gIL1jPk+hxy6y0yJ1mrt1Rg41xNJjxPMOWa/ThE7MjlsQ=
+	t=1771863628; cv=none; b=FXxaqRhSFJpqelDYh23NLDql/62JCzoklTQ2agAE5Xaj395Kt7NbG9y0rl22yzTuNhuK9xOzSR6RQ1AYs29E2cXpaMjulwyisfxyi13UypjJjbP22ONgXBp/bfL+yPN3uFLmrOatDWFlojjfvZjpEnlMxRXgPkByVuo1o/F01nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771863524; c=relaxed/simple;
-	bh=ENSbuCfjK9K9qz+F1QE9v10noBk4EeAtynmQ7eTgJA4=;
+	s=arc-20240116; t=1771863628; c=relaxed/simple;
+	bh=r8mDeUpeW8tBUm82rtc4kcjK4ONsKrxt6c1CNArIpvE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bj22Fsiojd+1MnE3r/Bi12VGKDqwfC2foG/1/jJr8cTekILJAI/Cn8IhtWd6jbDrTlJrO7+IkX5CTlpC9QefKKdWCiuz84DIb+HvwyIumK2hBE7WSLqqhqcr/Szv++SlIldfsUKRVkYpTHtrdsmfMPTjuHjH4Syo2Sxy1hqrKxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YEnC/BJ7; arc=none smtp.client-ip=172.105.4.254
+	 In-Reply-To:Content-Type; b=Cu/9A3D675TsF2xiZDfCu63LC2cJM7rhy5vSy6g+jh5OB2JSjf75Depf9U4fSDQN2urROenAGZ4CafI9JZnkVrlC9Hu76Bv7FRJ2yeW+b95jahH7toG8enQjQQtfjL+EWzJlnPEON9AOa7129xKk/Yc+k0gLUreSLwIZpEwXQaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PvSQrdeo; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YEnC/BJ7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PvSQrdeo"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 751A660137;
-	Mon, 23 Feb 2026 16:18:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 217A4C116C6;
-	Mon, 23 Feb 2026 16:18:26 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 8C6BF6013A;
+	Mon, 23 Feb 2026 16:20:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 491D5C19421;
+	Mon, 23 Feb 2026 16:20:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771863518;
-	bh=ENSbuCfjK9K9qz+F1QE9v10noBk4EeAtynmQ7eTgJA4=;
+	s=k20201202; t=1771863626;
+	bh=r8mDeUpeW8tBUm82rtc4kcjK4ONsKrxt6c1CNArIpvE=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YEnC/BJ7YyhFoowsZI0FWuJYftp2IbxDrX+JOlaVZIHCtTRK5H9iLszRJLsbUYdWy
-	 lwnLrg/i2lYRCQUZXxXOfkqACPnRrHK04HIY78DlzO55W80Ad5w7OrCsTc9ZD6YVVA
-	 CmqcCx111G1GJBl5B5fHXG+JLWAawS3moQ4hJaMzSXr+wlqgwZyy2TLDr6pplVvi+f
-	 PIRQMwh1ICqFnlhi6xEgSOf6uQu+A9gGbvdqi2qzB6lpzlA1YqgtgdKtu/4bh4tl3V
-	 AA4v53sz8w4BAOuORtdceaoP/FiSfypya0e3/QxPQWcqKNMQ4w5Tb7f8UhrX3TaP13
-	 161hEcU36My6g==
-Message-ID: <c5db6944-37fc-401e-bd06-68140f59c6e7@kernel.org>
-Date: Mon, 23 Feb 2026 17:18:24 +0100
+	b=PvSQrdeocpoNN0p9MaK3sggyEhP6bDqgKlYc4yggH5rAQfcrJSEuKTtELQhVIOkjx
+	 27RQ0W9Om2jLvItanmN74NXkqDRCxLkjXjaCXz5bEKdFVStFxL1rlOWFSZbj8akEiQ
+	 RTIy9lvApB5TO1WlSYuX4YYlQUEqNRrOHfiiFgYlCTl+BgTe7OSrlqkia9urvm4gfH
+	 wEnzHCtCVlI5CNU0NW15/hd1zgUBBwRbdtJjTdH3whUnlSskR3W3fdLulPBddBqTd9
+	 p/zoAG/hQZwKDfywAO//6WYOrm1PgrTL/1tu0We8q3IF+9vQhWyrE7DidGdwP4gezC
+	 Z3Nfs3HSc7qbw==
+Message-ID: <4bbe1b83-da01-4226-9a86-1bf6194c22e4@kernel.org>
+Date: Mon, 23 Feb 2026 17:20:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -40,7 +40,8 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] arch, mm: consolidate empty_zero_page
+Subject: Re: [PATCH v2 4/4] mm: cache struct page for empty_zero_page and
+ return it from ZERO_PAGE()
 To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
 Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
  Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
@@ -72,7 +73,7 @@ Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
  sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
  linux-mm@kvack.org, x86@kernel.org
 References: <20260209144058.2092871-1-rppt@kernel.org>
- <20260209144058.2092871-4-rppt@kernel.org>
+ <20260209144058.2092871-5-rppt@kernel.org>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -119,55 +120,30 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260209144058.2092871-4-rppt@kernel.org>
+In-Reply-To: <20260209144058.2092871-5-rppt@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 2/9/26 15:40, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> Reduce 22 declarations of empty_zero_page to 3 and 23 declarations of
-> ZERO_PAGE() to 4.
+> For most architectures every invocation of ZERO_PAGE() does
+> virt_to_page(empty_zero_page). But empty_zero_page is in BSS and it is
+> enough to get its struct page once at initialization time and then use
+> it whenever a zero page should be accessed.
 > 
-> Every architecture defines empty_zero_page that way or another, but for the
-> most of them it is always a page aligned page in BSS and most definitions
-> of ZERO_PAGE do virt_to_page(empty_zero_page).
+> Add yet another __zero_page variable that will be initialized as
+> virt_to_page(empty_zero_page) for most architectures in a weak
+> arch_setup_zero_pages() function.
 > 
-> Move Linus vetted x86 definition of empty_zero_page and ZERO_PAGE() to the
-> core MM and drop these definitions in architectures that do not implement
-> colored zero page (MIPS and s390).
+> For architectures that use colored zero pages (MIPS and s390) rename their
+> setup_zero_pages() to arch_setup_zero_pages() and make it global rather
+> than static.
 > 
-> ZERO_PAGE() remains a macro because turning it to a wrapper for a static
-> inline causes severe pain in header dependencies.
+> For architectures that cannot use virt_to_page() for BSS (arm64 and
+> sparc64) add override of arch_setup_zero_pages().
 > 
-> For the most part the change is mechanical, with these being noteworthy:
-> 
-> * alpha: aliased empty_zero_page with ZERO_PGE that was also used for boot
->   parameters. Switching to a generic empty_zero_page removes the aliasing
->   and keeps ZERO_PGE for boot parameters only
-> * arm64: uses __pa_symbol() in ZERO_PAGE() so that definition of
->   ZERO_PAGE() is kept intact.
-> * m68k/parisc/um: allocated empty_zero_page from memblock,
->   although they do not support zero page coloring and having it in BSS
->   will work fine.
-> * sparc64 can have empty_zero_page in BSS rather allocate it, but it
->   can't use virt_to_page() for BSS. Keep it's definition of ZERO_PAGE()
->   but instead of allocating it, make mem_map_zero point to
->   empty_zero_page.
-> * sh: used empty_zero_page for boot parameters at the very early boot.
->   Rename the parameters page to boot_params_page and let sh use the generic
->   empty_zero_page.
-> * hexagon: had an amusing comment about empty_zero_page
-> 
-> 	/* A handy thing to have if one has the RAM. Declared in head.S */
-> 
->   that unfortunately had to go :)
-> 
-> Acked-by: Helge Deller <deller@gmx.de>   # parisc
-> Tested-by: Helge Deller <deller@gmx.de>  # parisc
-> Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
 > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> ---
 
 Acked-by: David Hildenbrand (Arm) <david@kernel.org>
 
