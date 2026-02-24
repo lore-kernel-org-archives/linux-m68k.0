@@ -1,153 +1,144 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3F130C610
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Feb 2026 16:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39248378805
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Feb 2026 10:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771863628; cv=none; b=FXxaqRhSFJpqelDYh23NLDql/62JCzoklTQ2agAE5Xaj395Kt7NbG9y0rl22yzTuNhuK9xOzSR6RQ1AYs29E2cXpaMjulwyisfxyi13UypjJjbP22ONgXBp/bfL+yPN3uFLmrOatDWFlojjfvZjpEnlMxRXgPkByVuo1o/F01nc=
+	t=1771929148; cv=none; b=HlwKHHk8GkdWp0v32VCnqp8a4Dy/LlXslUnIeEPTmzToR7Pi5LM2rIohJsmSRy2jdey6bF6v1AvSsE9/gJ4M4dBWa4QM3erHJJ7T1PotAQqZdvL1kZXUXeI0MLwvmvh5UGlMh48WVFmhxuuTha8OCQYxi3RtstS2tEBQJveJF/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771863628; c=relaxed/simple;
-	bh=r8mDeUpeW8tBUm82rtc4kcjK4ONsKrxt6c1CNArIpvE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cu/9A3D675TsF2xiZDfCu63LC2cJM7rhy5vSy6g+jh5OB2JSjf75Depf9U4fSDQN2urROenAGZ4CafI9JZnkVrlC9Hu76Bv7FRJ2yeW+b95jahH7toG8enQjQQtfjL+EWzJlnPEON9AOa7129xKk/Yc+k0gLUreSLwIZpEwXQaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PvSQrdeo; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PvSQrdeo"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8C6BF6013A;
-	Mon, 23 Feb 2026 16:20:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 491D5C19421;
-	Mon, 23 Feb 2026 16:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771863626;
-	bh=r8mDeUpeW8tBUm82rtc4kcjK4ONsKrxt6c1CNArIpvE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PvSQrdeocpoNN0p9MaK3sggyEhP6bDqgKlYc4yggH5rAQfcrJSEuKTtELQhVIOkjx
-	 27RQ0W9Om2jLvItanmN74NXkqDRCxLkjXjaCXz5bEKdFVStFxL1rlOWFSZbj8akEiQ
-	 RTIy9lvApB5TO1WlSYuX4YYlQUEqNRrOHfiiFgYlCTl+BgTe7OSrlqkia9urvm4gfH
-	 wEnzHCtCVlI5CNU0NW15/hd1zgUBBwRbdtJjTdH3whUnlSskR3W3fdLulPBddBqTd9
-	 p/zoAG/hQZwKDfywAO//6WYOrm1PgrTL/1tu0We8q3IF+9vQhWyrE7DidGdwP4gezC
-	 Z3Nfs3HSc7qbw==
-Message-ID: <4bbe1b83-da01-4226-9a86-1bf6194c22e4@kernel.org>
-Date: Mon, 23 Feb 2026 17:20:13 +0100
+	s=arc-20240116; t=1771929148; c=relaxed/simple;
+	bh=1GwAU01i1Cp85CJMb4RNqTa2xdPel81JZPOeaCOEgRs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Jzl+G9mzd0pb7EWOMzHO8ELsEXNBHtgCY20dtTXkNo5rsDpy1Qu3OcaHdpcX2qKblp1cFXBnNkHJvFSTq/bmoRyr8kLlVB0W/j47jkTEijhnifnWgeTC/hiQhB/nFGWD7POiW8AViatxKIOdt3mMJOM/OjAVopb5p3n5GolA0Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-5675d609621so4273842e0c.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Feb 2026 02:32:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771929144; x=1772533944;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o0ECHy7IIkSoMlwhMz4EvuWOcX52LNjoZN4A9XL4RMI=;
+        b=aIkuF1lB54lbll+XVZzai0BdgvJqv0llu6485Lvglux4DlUUFMzQtAdzcY8xqsdhhS
+         Bv95F8ZbtaeWHWmfkYO88TIs0DmVfTJWW9olJzCIaELAkdUAvpfwQ3ThkVdhgfxiLjvS
+         /4ES67iWW5Ed/vox+EO0JqKDAoe50cS+y6bc02g3xawh2JyIxvoz4T3MMUFZQlIc5j1j
+         X5iJ8QBvcW98tC9uOe+3s/k3uBCuzUw69SZlu0mJs7Jaa7+pmeHOjLJO3XDAuSFYlMwU
+         1nzD/gyEMA9m/knzKCo0Z4UU1iCTRddKwbgPa/Vcf9gGmoOVu0pRY6JvqIGytldFqEID
+         qlbA==
+X-Forwarded-Encrypted: i=1; AJvYcCWLB7CPsKSYUkKjJFd1JAywxk0qK+o2ilScDOytFre1TY0aaT9RgR9ok8oIPRsvnlaOZ1A+MyrHs2BH@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YykNiicXRY0feZa84R32TGAC8QzvE8IZRNbqxRSXhJbGeYHsPuO
+	lqap18C1Sn90ecNsArAcrQJnpw9OKtaPl2A/nEqNcG57AlUKi1qHGjNo3bvTX9Uk
+X-Gm-Gg: ATEYQzwYJig6puTNklyTF3tSGM2pn1W5lGOz6xvfsA4aAALVBfQVf3vSnCvU/nNOiyz
+	Dz3qFL/p3YXRKmn0x5VPZABacR5ly6ocXnbIiJ8e24OzVljO+Ew9ooMZJAx3eTt/xYDVhpp5haJ
+	fv19/yyMDl8cvFL+2jRm0l7m5/VZ3BHHUShzYdyVb5pVQ2C/JbXZz3nALfDA/Er86bO44/q7BWG
+	uyAO48/DrZ7q1VkHFekxaJPrqnMg6yFlCBWLo5xdBKr7cnOTOqzulGlxVCH6qvVvlsU2AAZnY7g
+	ShKb3pnu+EFlrSV0F9UmcAGpjbGZ4j0YhNNNGvDgtSYhJ4Jo5yU3oZGO5pVzhY2IFu2XRXcc27e
+	uAU15BwWQeMIZUMlJhGqrOhVwGelBtaeS9jYAeVxAV690HvRYqH/bxG+fAKmLsfxtVYbgu27IJF
+	nEO64GOP7OXUsm0g47Ogvn9Lh8KVybFIQEE3qQrJ1It09Ftk06zHHqSmM7k1mTznQs
+X-Received: by 2002:a05:6122:e450:b0:563:667f:9f98 with SMTP id 71dfb90a1353d-568e4867cc7mr5908460e0c.9.1771929144055;
+        Tue, 24 Feb 2026 02:32:24 -0800 (PST)
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-568e58f8d17sm11866488e0c.12.2026.02.24.02.32.23
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Feb 2026 02:32:23 -0800 (PST)
+Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-5675d609621so4273828e0c.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Feb 2026 02:32:23 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVTD1GIYLouNoOFjQoW8bO1V+gtY4xc+iavLl/sMcz8Dq2dkZXY7UAJlOtpBhHkrhDsZCvG0JRVN0sq@lists.linux-m68k.org
+X-Received: by 2002:a05:6122:928:b0:55b:305b:4e31 with SMTP id
+ 71dfb90a1353d-568e48e2688mr5412576e0c.17.1771929143232; Tue, 24 Feb 2026
+ 02:32:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] mm: cache struct page for empty_zero_page and
- return it from ZERO_PAGE()
-To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Larsson <andreas@gaisler.com>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
- "David S. Miller" <davem@davemloft.net>,
- Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
- Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>,
- Magnus Lindholm <linmag7@gmail.com>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>,
- Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
- Suren Baghdasaryan <surenb@google.com>, Thomas Gleixner <tglx@kernel.org>,
- Vineet Gupta <vgupta@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
- Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-mm@kvack.org, x86@kernel.org
-References: <20260209144058.2092871-1-rppt@kernel.org>
- <20260209144058.2092871-5-rppt@kernel.org>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20260209144058.2092871-5-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20251213120401.3992567-1-daniel@thingy.jp>
+In-Reply-To: <20251213120401.3992567-1-daniel@thingy.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 24 Feb 2026 11:32:12 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWqFfusk_23FBX0YcrkhygjcN=DX25ys6cDyP1_ja2qmQ@mail.gmail.com>
+X-Gm-Features: AaiRm53_r1uCks844XnhWZw2-XpoqBE3FDFs5PQtJK-ST0JMVyDOTdyS02-nZXU
+Message-ID: <CAMuHMdWqFfusk_23FBX0YcrkhygjcN=DX25ys6cDyP1_ja2qmQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: nommu: fix memmove() with differently aligned src
+ and dest for 68000
+To: Daniel Palmer <daniel@thingy.jp>
+Cc: gerg@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/9/26 15:40, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> 
-> For most architectures every invocation of ZERO_PAGE() does
-> virt_to_page(empty_zero_page). But empty_zero_page is in BSS and it is
-> enough to get its struct page once at initialization time and then use
-> it whenever a zero page should be accessed.
-> 
-> Add yet another __zero_page variable that will be initialized as
-> virt_to_page(empty_zero_page) for most architectures in a weak
-> arch_setup_zero_pages() function.
-> 
-> For architectures that use colored zero pages (MIPS and s390) rename their
-> setup_zero_pages() to arch_setup_zero_pages() and make it global rather
-> than static.
-> 
-> For architectures that cannot use virt_to_page() for BSS (arm64 and
-> sparc64) add override of arch_setup_zero_pages().
-> 
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Hi Daniel,
 
-Acked-by: David Hildenbrand (Arm) <david@kernel.org>
+On Sat, 13 Dec 2025 at 13:04, Daniel Palmer <daniel@thingy.jp> wrote:
+> 68000 has different alignment needs to 68020+.
+> memcpy() checks if the destination is aligned and does a smaller copy
+> to fix the alignment and then critically for 68000 it checks if the
+> source is still unaligned and if it is reverts to smaller copies.
+>
+> memmove() does not currently do the second part and malfunctions if
+> one of the pointers is aligned and the other isn't.
+>
+> This is apparently getting triggered by printk. If I put breakpoints
+> into the new checks added by this commit the first hit looks like this:
+>
+> memmove (n=205, src=0x2f3971 <printk_shared_pbufs+205>, dest=0x2f3980 <printk_shared_pbufs+220>) at arch/m68k/lib/memmove.c:82
+>
+> Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+
+Thanks for your patch, which is now commit 590fe2f46c8698bb ("m68k:
+nommu: fix memmove() with differently aligned src and dest for
+68000") in v7.0-rc1.
+
+> --- a/arch/m68k/lib/memmove.c
+> +++ b/arch/m68k/lib/memmove.c
+> @@ -24,6 +24,15 @@ void *memmove(void *dest, const void *src, size_t n)
+>                         src = csrc;
+>                         n--;
+>                 }
+> +#if defined(CONFIG_M68000)
+
+Ideally, these (and the few existing other checks) should check for
+CONFIG_CPU_HAS_NO_UNALIGNED instead.
+
+> +               if ((long)src & 1) {
+> +                       char *cdest = dest;
+> +                       const char *csrc = src;
+> +                       for (; n; n--)
+> +                               *cdest++ = *csrc++;
+> +                       return xdest;
+> +               }
+> +#endif
+>                 if (n > 2 && (long)dest & 2) {
+>                         short *sdest = dest;
+>                         const short *ssrc = src;
+> @@ -66,6 +75,15 @@ void *memmove(void *dest, const void *src, size_t n)
+>                         src = csrc;
+>                         n--;
+>                 }
+> +#if defined(CONFIG_M68000)
+> +               if ((long)src & 1) {
+> +                       char *cdest = dest;
+> +                       const char *csrc = src;
+> +                       for (; n; n--)
+> +                               *--cdest = *--csrc;
+> +                       return xdest;
+> +               }
+> +#endif
+>                 if (n > 2 && (long)dest & 2) {
+>                         short *sdest = dest;
+>                         const short *ssrc = src;
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Cheers,
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-David
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
