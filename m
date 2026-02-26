@@ -1,467 +1,310 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624EC31A07F
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Feb 2026 22:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9707374166
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Feb 2026 14:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772056995; cv=none; b=MonP8fV7xTt22EHUk/79W1CNsHbwLcv0Kp5OTT5poANzooI2YmzGiZGrdRjl6z0EYq08Bz64ofqMfo7HlVG4b/ow4Vs+3hTo5fZU4wzDP87F9ljeK3OCrnROk35GCxpeAW4L+Zh2zuUtMO7dN94B2H71A63s9yGvJHrVUUkwNiY=
+	t=1772117764; cv=none; b=fev+ngMCVFy5dH45g2WkfXX0W8HI2dBYXMVEnCxSHWPlCX926bhmNNLJamxOp9n0X2XkWIpWOar9nHc+DkPqNVYnFNnIUfrWccLIcHhbkSIBEvU8V0CGqndR+bqitMHmTS20vIYCi992tgmlUFdn6CKcNSKKTM6ttdZ7AcIzoBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772056995; c=relaxed/simple;
-	bh=gYzWYbqUVyUWAs9EGE5ShllXabtNZu/2sUv3FCUuj7w=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=V9aTFvXa9mp77vhKfeGo6ggyIHTAKDhEtdMvsB7LsetxkU2VFA4opYVCkvb4gjfy7HSlw6WQ4BucszzONx33Ih41e7hINdFmiNOncQ2IjyCr8eLaBB//gU8LtRdm6bpN1KF6K3G7toYTkgworhOtc38akYnQ40UZ/AgnL46KLlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lh2Gp07e; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1772117764; c=relaxed/simple;
+	bh=nXVQ53makdg3jwsMBYpdubAWQrSSGP1sXdl2IvF9QoM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Iqiu42675Z+T7K0QVH7g0ZTJA39m867ZhBC1melKHfaAGIFGdtEQCO9ypNoh++l+kIvK4K0gC3ayMvvnf+uQEMQywNvts/z9ffln3FQeKkTFUrIW/RXi6lb1dwVACZ4oFl7Cu+TbFLsH0rlf7t+hVuGfzLmlabIdmUl7izpb4v0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=D8WUGFxG; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lh2Gp07e"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0B41C60053;
-	Wed, 25 Feb 2026 22:03:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71333C116D0;
-	Wed, 25 Feb 2026 22:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772056991;
-	bh=gYzWYbqUVyUWAs9EGE5ShllXabtNZu/2sUv3FCUuj7w=;
-	h=From:Date:Subject:To:Cc:From;
-	b=Lh2Gp07eMCKl2XdNkedsqAZVkfBDWlOl2fsRxHEWE9tKv6jQh0edVVUsxDh6W5Xp/
-	 cpuHLuvKro/8fpHAIcfb6xh/0YkDcRPPmsCi3vH9hoM2N/cp4Zu293fjw8x0Y3sBRt
-	 xrryrjjtuF0G+GfHoJWSUPrL9Ub+h33d7ZDtN9xF5vWiBWN/Dqwh64X9F4ye8SQCek
-	 kzV0xNeQjeGNvdSYha+gv6+Zs0BqrJ4PL5GFW9IS3v5kg8ppoQ0ELPzksn51X2e+bF
-	 DsAPQYsTPAgDK9wa/O/d5HZiuyl/GUUOQtp0CrrKYMUtc7XQZ+nQdyI2fcEiQZeqbq
-	 KLkKqVrgOPu2w==
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Wed, 25 Feb 2026 15:02:51 -0700
-Subject: [PATCH] kbuild: Split .modinfo out from ELF_DETAILS
+	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="D8WUGFxG"
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-35621ce8a9cso413699a91.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Feb 2026 06:56:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=thingy.jp; s=google; t=1772117760; x=1772722560; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W+9DeU24eJjz9tNf9en2Zw19YE84GqsQyUQaagU9Tag=;
+        b=D8WUGFxGdDqtET9D3suSL/SAXOtsDQgKPs/HSZ9EdZdgPKjGhDbkrJksHIS7LS4x1x
+         PyGTO+ukVQvHeBr4NkvAWyn0K5w9YMmOue3DsfEE1odEPnFg1hiAJ2fEAhzdL5dguk61
+         /QNdPCBnJCAwS5UF9NMPhhg/Fkf+aP8crIaCY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772117760; x=1772722560;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W+9DeU24eJjz9tNf9en2Zw19YE84GqsQyUQaagU9Tag=;
+        b=CIxNijhefNS1B8K8YdQz1U/wRzVqdcI65CN3EIehH8T+yEq1sfZJMMlfN1F9nD/ag2
+         zwHe58sYFsRWhVfYyj+A8pCGHhY2oM5LgTK3om+M2TrULXeJajW3fqv6SLR8viMY28yQ
+         IeG9imDuTdiIYetfvpLfeP1eMbZhf54LfFUgu9js0jOLq+HG5vbweTTjBxWcj9Gl7MEp
+         b+PYlroxiy7otKdZ6KjnHmm61krqj1Dz4QknmMBHtqNsAi4odFLMfENh73RA5XucK5J4
+         54SNAEctVYZu1z8aTo6dt9CySsSZnIVRvZj3jfCT3Mq+kasYD5yjo/QFNQGHmzol0YIg
+         Yneg==
+X-Gm-Message-State: AOJu0YxOaLuCmLwAdpuCiqs1VoUMJA+KCgZXVajDsvZmt2Ie/8U1tZRV
+	nS/yWOyGgjmIlmxTgBP+mMo1pddUwOk7fmxhYthTHaD5W93yTB6sRdDXn5f1D3h3TWE=
+X-Gm-Gg: ATEYQzwxIZFwOQTTjoEyOQIjxPvAcas3/1GsOsOvBIkWxxPy07Ukrka8ky5G8jpHLtu
+	bmmkaKd2N4k5nrlmxThyd3zMqyeaQEyzRcDjs5z8KZRJ48JqxiyGgTCOILfc3DIy2KEzfVWv+ce
+	QnQYTxhjpxvN+YOpRPgGKsSva1SnVqGkUGXXrw1s+zUA294+Vjiz1Jy+AaiY1TeDqOVqUMKhstH
+	KWbMKDCBoWrIuPAaxyBYR5CmOv1IqlMFmPrh+rWnZP2hjQawEOznpDX3dpInM+nBLvMCaChmf78
+	kK/TYLn4W40MGDtbs0UJPSsvoHYDQOkgpI51Ty4ZVpzA1V7d1qpbZVBGKIolfBY/eSYZtPMispB
+	qCZCl8MpiCD/3RX0pNqI7zIbeAiBQK/hwkTipqpB6HTAL2FGjvfLS1ZbGfUv3+Q5r5qKtDEp6W6
+	d55eDaxwtQmZWbpA4oMT8zP84A6ItPtzPdKgqtaWRGLYQGc5B7s+1oom1FbGhiAB3MY9c/fozh4
+	O+nCjiChpOIOG8=
+X-Received: by 2002:a17:90b:3e82:b0:356:1edc:b71 with SMTP id 98e67ed59e1d1-35928a38e71mr3311421a91.1.1772117760137;
+        Thu, 26 Feb 2026 06:56:00 -0800 (PST)
+Received: from kinako.work.home.arpa (p1590226-ipxg00c01sizuokaden.shizuoka.ocn.ne.jp. [153.227.10.226])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-35912f5f29fsm3486404a91.1.2026.02.26.06.55.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Feb 2026 06:55:59 -0800 (PST)
+From: Daniel Palmer <daniel@thingy.jp>
+To: sudipm.mukherjee@gmail.com,
+	joerg@dorchain.net
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: [PATCH] parport: mfc3: Convert to a modern zorro driver
+Date: Thu, 26 Feb 2026 23:54:41 +0900
+Message-ID: <20260226145441.3606201-1-daniel@thingy.jp>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260225-separate-modinfo-from-elf-details-v1-1-387ced6baf4b@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yXNwQrCMAyA4VcZORvoOh3MVxEPcUk1srWj6UQYe
- 3erHr/L/29gklUMzs0GWV5qmmJFe2hgfFC8CypXg3e+d94f0WShTEVwTqwxJAw5zShTQJZCOhl
- y1/aO6RS6YYDaWbIEff8el+vftt6eMpZvGPb9A+qYJnaFAAAA
-X-Change-ID: 20260224-separate-modinfo-from-elf-details-d3160da5f399
-To: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>
-Cc: Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Vineet Gupta <vgupta@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
- Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
- Sam Creasey <sammy@sammy.net>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Kees Cook <kees@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
- Masahiro Yamada <masahiroy@kernel.org>, Alexey Gladkov <legion@kernel.org>, 
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, 
- stable@vger.kernel.org, Ed W <lists@wildgooses.com>
-X-Mailer: b4 0.15-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=11544; i=nathan@kernel.org;
- h=from:subject:message-id; bh=gYzWYbqUVyUWAs9EGE5ShllXabtNZu/2sUv3FCUuj7w=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDJnzCyeriCZdaxI+5Sf0rTM57l6D0sWGw+sO7C6JuqWuV
- lv08cGpjhIWBjEuBlkxRZbqx6rHDQ3nnGW8cWoSzBxWJpAhDFycAjAR9SKG75EsPLMZNsz8+2PX
- foVJdy5bdNqZ6l3jFRDMuD/jsMiKLoa/Andbtyi/Z/w0p6XQ5urDDXN8jKJenk+u2/pZubeWW6q
- QDwA=
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+Content-Transfer-Encoding: 8bit
 
-Commit 3e86e4d74c04 ("kbuild: keep .modinfo section in
-vmlinux.unstripped") added .modinfo to ELF_DETAILS while removing it
-from DISCARDS, as it was needed in vmlinux.unstripped and ELF_DETAILS
-was present in all architecture specific vmlinux linker scripts. While
-this shuffle is fine for vmlinux, ELF_DETAILS and DISCARDS may be used
-by other linker scripts, such as the s390 and x86 compressed boot
-images, which may not expect to have a modinfo section. In certain
-circumstances, this could result in a bootloader failing to load the
-compressed kernel [1].
+Currently this driver causes my Amiga 4000 to crash if it
+is not a module because it tries to iterate over the zorro
+devices before that has been setup.
 
-Commit ddc6cbef3ef1 ("s390/boot/vmlinux.lds.S: Ensure bzImage ends with
-SecureBoot trailer") recently addressed this for the s390 bzImage but
-the same bug remains for parisc and x86. The presence of .modinfo in the
-x86 bzImage was the root cause of the issue workad around with
-commit d50f21091358 ("kbuild: align modinfo section for Secureboot
-Authenticode EDK2 compat"). misc.c in arch/x86/boot/compressed includes
-lib/decompress_unzstd.c, which in turn includes lib/xxhash.c and its
-MODULE_LICENSE / MODULE_DESCRIPTION macros due to the STATIC definition.
+Convert the driver over to the modern zorro driver API so
+it probes like the other zorro drivers and doesn't crash
+my machine.
 
-Split .modinfo out from ELF_DETAILS into its own macro and handle it in
-all vmlinux linker scripts. Discard .modinfo in the places where it was
-previously being discarded from being in DISCARDS, as it has never been
-necessary in those uses.
+Claude was able to do the manual work of moving the original
+code but I had to fix up some mistakes, clean up the
+allocations to use devm versions and so on.
 
-Cc: stable@vger.kernel.org
-Fixes: 3e86e4d74c04 ("kbuild: keep .modinfo section in vmlinux.unstripped")
-Reported-by: Ed W <lists@wildgooses.com>
-Closes: https://lore.kernel.org/587f25e0-a80e-46a5-9f01-87cb40cfa377@wildgooses.com/ [1]
-Tested-by: Ed W <lists@wildgooses.com> # x86_64
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Only build, boot, and "checked the driver is registered correctly"
+tested as I don't have the card and it seems to be one of the
+few things winuae doesn't emulate. Using claude to fix it up
+seemed better than just deleting it considering all of the effort
+Joerg put in to documenting the hardware etc.
+
+Assisted-by: Claude:claude-4.6-sonnet
+Signed-off-by: Daniel Palmer <daniel@thingy.jp>
 ---
-I intend to take this as a fix via the Kbuild tree for 7.0 after
-sufficient testing in -next, please Ack accordingly.
----
- arch/alpha/kernel/vmlinux.lds.S           | 1 +
- arch/arc/kernel/vmlinux.lds.S             | 1 +
- arch/arm64/kernel/vmlinux.lds.S           | 1 +
- arch/csky/kernel/vmlinux.lds.S            | 1 +
- arch/hexagon/kernel/vmlinux.lds.S         | 1 +
- arch/loongarch/kernel/vmlinux.lds.S       | 1 +
- arch/m68k/kernel/vmlinux-nommu.lds        | 1 +
- arch/m68k/kernel/vmlinux-std.lds          | 1 +
- arch/m68k/kernel/vmlinux-sun3.lds         | 1 +
- arch/mips/kernel/vmlinux.lds.S            | 1 +
- arch/nios2/kernel/vmlinux.lds.S           | 1 +
- arch/openrisc/kernel/vmlinux.lds.S        | 1 +
- arch/parisc/boot/compressed/vmlinux.lds.S | 1 +
- arch/parisc/kernel/vmlinux.lds.S          | 1 +
- arch/powerpc/kernel/vmlinux.lds.S         | 1 +
- arch/riscv/kernel/vmlinux.lds.S           | 1 +
- arch/s390/kernel/vmlinux.lds.S            | 1 +
- arch/sh/kernel/vmlinux.lds.S              | 1 +
- arch/sparc/kernel/vmlinux.lds.S           | 1 +
- arch/um/kernel/dyn.lds.S                  | 1 +
- arch/um/kernel/uml.lds.S                  | 1 +
- arch/x86/boot/compressed/vmlinux.lds.S    | 2 +-
- arch/x86/kernel/vmlinux.lds.S             | 1 +
- include/asm-generic/vmlinux.lds.h         | 4 +++-
- 24 files changed, 26 insertions(+), 2 deletions(-)
+ drivers/parport/parport_mfc3.c | 157 ++++++++++++++++++---------------
+ 1 file changed, 87 insertions(+), 70 deletions(-)
 
-diff --git a/arch/alpha/kernel/vmlinux.lds.S b/arch/alpha/kernel/vmlinux.lds.S
-index 2efa7dfc798a..2d136c63db16 100644
---- a/arch/alpha/kernel/vmlinux.lds.S
-+++ b/arch/alpha/kernel/vmlinux.lds.S
-@@ -71,6 +71,7 @@ SECTIONS
+diff --git a/drivers/parport/parport_mfc3.c b/drivers/parport/parport_mfc3.c
+index bb1817218d7b..c77282ba78d3 100644
+--- a/drivers/parport/parport_mfc3.c
++++ b/drivers/parport/parport_mfc3.c
+@@ -66,17 +66,19 @@
+ #include <asm/irq.h>
+ #include <asm/amigaints.h>
  
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
+-/* Maximum Number of Cards supported */
+-#define MAX_MFC 5
+-
+ #undef DEBUG
  
- 	DISCARDS
-diff --git a/arch/arc/kernel/vmlinux.lds.S b/arch/arc/kernel/vmlinux.lds.S
-index 61a1b2b96e1d..6af63084ff28 100644
---- a/arch/arc/kernel/vmlinux.lds.S
-+++ b/arch/arc/kernel/vmlinux.lds.S
-@@ -123,6 +123,7 @@ SECTIONS
- 	_end = . ;
+-static struct parport *this_port[MAX_MFC] = {NULL, };
+ static volatile int dummy; /* for trigger readds */
  
- 	STABS_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 	DISCARDS
+ #define pia(dev) ((struct pia *)(dev->base))
+ static struct parport_operations pp_mfc3_ops;
  
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index ad6133b89e7a..2964aad0362e 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -349,6 +349,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	HEAD_SYMBOLS
-diff --git a/arch/csky/kernel/vmlinux.lds.S b/arch/csky/kernel/vmlinux.lds.S
-index d718961786d2..81943981b3af 100644
---- a/arch/csky/kernel/vmlinux.lds.S
-+++ b/arch/csky/kernel/vmlinux.lds.S
-@@ -109,6 +109,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	DISCARDS
-diff --git a/arch/hexagon/kernel/vmlinux.lds.S b/arch/hexagon/kernel/vmlinux.lds.S
-index 1150b77fa281..aae22283b5e0 100644
---- a/arch/hexagon/kernel/vmlinux.lds.S
-+++ b/arch/hexagon/kernel/vmlinux.lds.S
-@@ -62,6 +62,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 	.hexagon.attributes 0 : { *(.hexagon.attributes) }
- 
-diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kernel/vmlinux.lds.S
-index 08ea921cdec1..d0e1377a041d 100644
---- a/arch/loongarch/kernel/vmlinux.lds.S
-+++ b/arch/loongarch/kernel/vmlinux.lds.S
-@@ -147,6 +147,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- #ifdef CONFIG_EFI_STUB
-diff --git a/arch/m68k/kernel/vmlinux-nommu.lds b/arch/m68k/kernel/vmlinux-nommu.lds
-index 2624fc18c131..45d7f4b0177b 100644
---- a/arch/m68k/kernel/vmlinux-nommu.lds
-+++ b/arch/m68k/kernel/vmlinux-nommu.lds
-@@ -85,6 +85,7 @@ SECTIONS {
- 	_end = .;
- 
- 	STABS_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	/* Sections to be discarded */
-diff --git a/arch/m68k/kernel/vmlinux-std.lds b/arch/m68k/kernel/vmlinux-std.lds
-index 1ccdd04ae462..7326586afe15 100644
---- a/arch/m68k/kernel/vmlinux-std.lds
-+++ b/arch/m68k/kernel/vmlinux-std.lds
-@@ -58,6 +58,7 @@ SECTIONS
-   _end = . ;
- 
-   STABS_DEBUG
-+  MODINFO
-   ELF_DETAILS
- 
-   /* Sections to be discarded */
-diff --git a/arch/m68k/kernel/vmlinux-sun3.lds b/arch/m68k/kernel/vmlinux-sun3.lds
-index f13ddcc2af5c..1b19fef201fb 100644
---- a/arch/m68k/kernel/vmlinux-sun3.lds
-+++ b/arch/m68k/kernel/vmlinux-sun3.lds
-@@ -51,6 +51,7 @@ __init_begin = .;
-   _end = . ;
- 
-   STABS_DEBUG
-+  MODINFO
-   ELF_DETAILS
- 
-   /* Sections to be discarded */
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-index 2b708fac8d2c..579b2cc1995a 100644
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -217,6 +217,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	/* These must appear regardless of  .  */
-diff --git a/arch/nios2/kernel/vmlinux.lds.S b/arch/nios2/kernel/vmlinux.lds.S
-index 37b958055064..206f92445bfa 100644
---- a/arch/nios2/kernel/vmlinux.lds.S
-+++ b/arch/nios2/kernel/vmlinux.lds.S
-@@ -57,6 +57,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	DISCARDS
-diff --git a/arch/openrisc/kernel/vmlinux.lds.S b/arch/openrisc/kernel/vmlinux.lds.S
-index 049bff45f612..9b29c3211774 100644
---- a/arch/openrisc/kernel/vmlinux.lds.S
-+++ b/arch/openrisc/kernel/vmlinux.lds.S
-@@ -101,6 +101,7 @@ SECTIONS
- 	/* Throw in the debugging sections */
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
-         /* Sections to be discarded -- must be last */
-diff --git a/arch/parisc/boot/compressed/vmlinux.lds.S b/arch/parisc/boot/compressed/vmlinux.lds.S
-index ab7b43990857..87d24cc824b6 100644
---- a/arch/parisc/boot/compressed/vmlinux.lds.S
-+++ b/arch/parisc/boot/compressed/vmlinux.lds.S
-@@ -90,6 +90,7 @@ SECTIONS
- 	/* Sections to be discarded */
- 	DISCARDS
- 	/DISCARD/ : {
-+		*(.modinfo)
- #ifdef CONFIG_64BIT
- 		/* temporary hack until binutils is fixed to not emit these
- 		 * for static binaries
-diff --git a/arch/parisc/kernel/vmlinux.lds.S b/arch/parisc/kernel/vmlinux.lds.S
-index b445e47903cf..0ca93d6d7235 100644
---- a/arch/parisc/kernel/vmlinux.lds.S
-+++ b/arch/parisc/kernel/vmlinux.lds.S
-@@ -165,6 +165,7 @@ SECTIONS
- 	_end = . ;
- 
- 	STABS_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 	.note 0 : { *(.note) }
- 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index 15850296c0a9..8fc11d6565bf 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -397,6 +397,7 @@ SECTIONS
- 	_end = . ;
- 
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	DISCARDS
-diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-index 61bd5ba6680a..997f9eb3b22b 100644
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@ -170,6 +170,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 	.riscv.attributes 0 : { *(.riscv.attributes) }
- 
-diff --git a/arch/s390/kernel/vmlinux.lds.S b/arch/s390/kernel/vmlinux.lds.S
-index 53bcbb91bb9b..2b62395e35bf 100644
---- a/arch/s390/kernel/vmlinux.lds.S
-+++ b/arch/s390/kernel/vmlinux.lds.S
-@@ -221,6 +221,7 @@ SECTIONS
- 	/* Debugging sections.	*/
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	/*
-diff --git a/arch/sh/kernel/vmlinux.lds.S b/arch/sh/kernel/vmlinux.lds.S
-index 008c30289eaa..169c63fb3c1d 100644
---- a/arch/sh/kernel/vmlinux.lds.S
-+++ b/arch/sh/kernel/vmlinux.lds.S
-@@ -89,6 +89,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	DISCARDS
-diff --git a/arch/sparc/kernel/vmlinux.lds.S b/arch/sparc/kernel/vmlinux.lds.S
-index f1b86eb30340..7ea510d9b42f 100644
---- a/arch/sparc/kernel/vmlinux.lds.S
-+++ b/arch/sparc/kernel/vmlinux.lds.S
-@@ -191,6 +191,7 @@ SECTIONS
- 
- 	STABS_DEBUG
- 	DWARF_DEBUG
-+	MODINFO
- 	ELF_DETAILS
- 
- 	DISCARDS
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index a36b7918a011..ad3cefeff2ac 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -172,6 +172,7 @@ SECTIONS
- 
-   STABS_DEBUG
-   DWARF_DEBUG
-+  MODINFO
-   ELF_DETAILS
- 
-   DISCARDS
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index a409d4b66114..30aa24348d60 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -113,6 +113,7 @@ SECTIONS
- 
-   STABS_DEBUG
-   DWARF_DEBUG
-+  MODINFO
-   ELF_DETAILS
- 
-   DISCARDS
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index 587ce3e7c504..e0b152715d9c 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -88,7 +88,7 @@ SECTIONS
- 	/DISCARD/ : {
- 		*(.dynamic) *(.dynsym) *(.dynstr) *(.dynbss)
- 		*(.hash) *(.gnu.hash)
--		*(.note.*)
-+		*(.note.*) *(.modinfo)
- 	}
- 
- 	.got.plt (INFO) : {
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 3a24a3fc55f5..4711a35e706c 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -427,6 +427,7 @@ SECTIONS
- 	.llvm_bb_addr_map : { *(.llvm_bb_addr_map) }
- #endif
- 
-+	MODINFO
- 	ELF_DETAILS
- 
- 	DISCARDS
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index eeb070f330bd..1e1580febe4b 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -848,12 +848,14 @@
- 
- /* Required sections not related to debugging. */
- #define ELF_DETAILS							\
--		.modinfo : { *(.modinfo) . = ALIGN(8); }		\
- 		.comment 0 : { *(.comment) }				\
- 		.symtab 0 : { *(.symtab) }				\
- 		.strtab 0 : { *(.strtab) }				\
- 		.shstrtab 0 : { *(.shstrtab) }
- 
-+#define MODINFO								\
-+		.modinfo : { *(.modinfo) . = ALIGN(8); }
++struct mfc3_card {
++	struct parport *port;
++	unsigned long piabase;
++	bool has_irq;
++};
 +
- #ifdef CONFIG_GENERIC_BUG
- #define BUG_TABLE							\
- 	. = ALIGN(8);							\
-
----
-base-commit: 6de23f81a5e08be8fbf5e8d7e9febc72a5b5f27f
-change-id: 20260224-separate-modinfo-from-elf-details-d3160da5f399
-
-Best regards,
---  
-Nathan Chancellor <nathan@kernel.org>
+ static void mfc3_write_data(struct parport *p, unsigned char data)
+ {
+ 	pr_debug("write_data %c\n", data);
+@@ -173,14 +175,18 @@ static int use_cnt;
+ 
+ static irqreturn_t mfc3_interrupt(int irq, void *dev_id)
+ {
+-	int i;
++	struct zorro_dev *z = NULL;
+ 
+-	for( i = 0; i < MAX_MFC; i++)
+-		if (this_port[i] != NULL)
+-			if (pia(this_port[i])->crb & 128) { /* Board caused interrupt */
+-				dummy = pia(this_port[i])->pprb; /* clear irq bit */
+-				parport_generic_irq(this_port[i]);
+-			}
++	while ((z = zorro_find_device(ZORRO_PROD_BSC_MULTIFACE_III, z))) {
++		struct mfc3_card *card = zorro_get_drvdata(z);
++
++		if (!card || !card->port)
++			continue;
++		if (pia(card->port)->crb & 128) { /* Board caused interrupt */
++			dummy = pia(card->port)->pprb; /* clear irq bit */
++			parport_generic_irq(card->port);
++		}
++	}
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -280,85 +286,96 @@ static struct parport_operations pp_mfc3_ops = {
+ 
+ /* ----------- Initialisation code --------------------------------- */
+ 
+-static int __init parport_mfc3_init(void)
++static int mfc3_probe(struct zorro_dev *z, const struct zorro_device_id *ent)
+ {
++	unsigned long piabase = z->resource.start + PIABASE;
++	struct device *dev = &z->dev;
++	struct mfc3_card *card;
+ 	struct parport *p;
+-	int pias = 0;
+ 	struct pia *pp;
+-	struct zorro_dev *z = NULL;
+ 
+-	if (!MACH_IS_AMIGA)
++	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++
++	if (!devm_request_mem_region(dev, piabase, sizeof(struct pia), "PIA"))
++		return -EBUSY;
++
++	pp = ZTWO_VADDR(piabase);
++	pp->crb = 0;
++	pp->pddrb = 255; /* all data pins output */
++	pp->crb = PIA_DDR | 32 | 8;
++	dummy = pp->pddrb; /* reading clears interrupt */
++	pp->cra = 0;
++	pp->pddra = 0xe0; /* /RESET, /DIR, /AUTO-FEED output */
++	pp->cra = PIA_DDR;
++	pp->ppra = 0; /* reset printer */
++	udelay(10);
++	pp->ppra = 128;
++
++	p = parport_register_port((unsigned long)pp, IRQ_AMIGA_PORTS,
++				  PARPORT_DMA_NONE, &pp_mfc3_ops);
++	if (!p)
+ 		return -ENODEV;
+ 
+-	while ((z = zorro_find_device(ZORRO_PROD_BSC_MULTIFACE_III, z))) {
+-		unsigned long piabase = z->resource.start+PIABASE;
+-		if (!request_mem_region(piabase, sizeof(struct pia), "PIA"))
+-			continue;
++	card->port = p;
++	card->piabase = piabase;
+ 
+-		pp = ZTWO_VADDR(piabase);
+-		pp->crb = 0;
+-		pp->pddrb = 255; /* all data pins output */
+-		pp->crb = PIA_DDR|32|8;
+-		dummy = pp->pddrb; /* reading clears interrupt */
+-		pp->cra = 0;
+-		pp->pddra = 0xe0; /* /RESET,  /DIR ,/AUTO-FEED output */
+-		pp->cra = PIA_DDR;
+-		pp->ppra = 0; /* reset printer */
+-		udelay(10);
+-		pp->ppra = 128;
+-		p = parport_register_port((unsigned long)pp, IRQ_AMIGA_PORTS,
+-					  PARPORT_DMA_NONE, &pp_mfc3_ops);
+-		if (!p)
+-			goto out_port;
+-
+-		if (p->irq != PARPORT_IRQ_NONE) {
+-			if (use_cnt++ == 0)
+-				if (request_irq(IRQ_AMIGA_PORTS, mfc3_interrupt, IRQF_SHARED, p->name, &pp_mfc3_ops))
+-					goto out_irq;
++	if (p->irq != PARPORT_IRQ_NONE) {
++		if (use_cnt++ == 0) {
++			if (request_irq(IRQ_AMIGA_PORTS, mfc3_interrupt,
++					IRQF_SHARED, p->name, &pp_mfc3_ops)) {
++				use_cnt--;
++				goto err_put_port;
++			}
+ 		}
+-		p->dev = &z->dev;
++		card->has_irq = true;
++	}
+ 
+-		this_port[pias++] = p;
+-		pr_info("%s: Multiface III port using irq\n", p->name);
+-		/* XXX: set operating mode */
++	p->dev = dev;
++	p->private_data = (void *)piabase;
+ 
+-		p->private_data = (void *)piabase;
+-		parport_announce_port (p);
++	zorro_set_drvdata(z, card);
+ 
+-		if (pias >= MAX_MFC)
+-			break;
+-		continue;
++	pr_info("%s: Multiface III port using irq\n", p->name);
++	/* XXX: set operating mode */
++	parport_announce_port(p);
+ 
+-	out_irq:
+-		parport_put_port(p);
+-	out_port:
+-		release_mem_region(piabase, sizeof(struct pia));
+-	}
++	return 0;
+ 
+-	return pias ? 0 : -ENODEV;
++err_put_port:
++	parport_put_port(p);
++
++	return -ENODEV;
+ }
+ 
+-static void __exit parport_mfc3_exit(void)
++static void mfc3_remove(struct zorro_dev *z)
+ {
+-	int i;
++	struct mfc3_card *card = zorro_get_drvdata(z);
+ 
+-	for (i = 0; i < MAX_MFC; i++) {
+-		if (!this_port[i])
+-			continue;
+-		parport_remove_port(this_port[i]);
+-		if (this_port[i]->irq != PARPORT_IRQ_NONE) {
+-			if (--use_cnt == 0) 
+-				free_irq(IRQ_AMIGA_PORTS, &pp_mfc3_ops);
+-		}
+-		release_mem_region(ZTWO_PADDR(this_port[i]->private_data), sizeof(struct pia));
+-		parport_put_port(this_port[i]);
+-	}
++	parport_remove_port(card->port);
++
++	if (card->has_irq && (--use_cnt == 0))
++		free_irq(IRQ_AMIGA_PORTS, &pp_mfc3_ops);
++
++	parport_put_port(card->port);
+ }
+ 
++static const struct zorro_device_id mfc3_zorro_tbl[] = {
++	{ ZORRO_PROD_BSC_MULTIFACE_III },
++	{ 0 }
++};
++MODULE_DEVICE_TABLE(zorro, mfc3_zorro_tbl);
++
++static struct zorro_driver mfc3_driver = {
++	.name = "parport_mfc3",
++	.id_table = mfc3_zorro_tbl,
++	.probe = mfc3_probe,
++	.remove = mfc3_remove,
++};
++
++module_driver(mfc3_driver, zorro_register_driver, zorro_unregister_driver);
+ 
+ MODULE_AUTHOR("Joerg Dorchain <joerg@dorchain.net>");
+ MODULE_DESCRIPTION("Parport Driver for Multiface 3 expansion cards Parallel Port");
+ MODULE_LICENSE("GPL");
+-
+-module_init(parport_mfc3_init)
+-module_exit(parport_mfc3_exit)
+-- 
+2.51.0
 
