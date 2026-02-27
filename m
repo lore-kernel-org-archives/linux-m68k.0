@@ -1,174 +1,303 @@
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680A83EFD13
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Feb 2026 15:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540B4314D1E
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Feb 2026 10:16:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772119868; cv=none; b=UFHwVhazJgGSVtzipuoeitOY6BdlA6+Fv1uOVjkRDI7uIGj1PpAyijiO78NU7jsCmMh50sc+VNUcMJFmvxF+1pX4q1QPWrhMrjzcaNMVqJzzNnq48l0pNz7d5JQ+3NyvXbHu34ExsbjDwd+otY+R0NHDYdXZj/MRm+ovyvYKttY=
+	t=1772187415; cv=none; b=OLsv8nJY4CDtS0z8jjgXWse8e9pKZCyy3YLs0XuLQwhO8xNxPqq40M5gNi112pZoE1hSS/YH0vwKvDGgoqZQxbeJiJptHOmRYx1Zkxj312WPbEg0gttDyf9/SQrk57FjfA7MsXOKuyYGp/JtF0p8hi+7KJhuh6qUQrb7ALGN1k4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772119868; c=relaxed/simple;
-	bh=W6cz4cNXddimTmvHvnLUt/GXnPXspMzemlZTksCzWUY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KcY3WTBbdCK7GfVNsCW8az6VoJ34ynlTwcAaUcOwUnwt2f/YSHHYekooNaVjE0YQqARH7cZ9cYVLmOrqlAXINVkBFg0M97/SiUPmoZh7JsaLV29trt5vWgNJ4w5n/iczix9CNmsMCdhVWKp3Fznayzsq53+yLwxfuRmwjDDkg54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b9358dd7f79so131394066b.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Feb 2026 07:31:07 -0800 (PST)
+	s=arc-20240116; t=1772187415; c=relaxed/simple;
+	bh=DgTC8IVFKOsCitk+Wsq6tCWCZGgu8Aot8CLNSdfr03o=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nt94ZgxhUTLHWeGs7o0enovR20vuRRWSys6mOx7YdVswE+mtabdZulvaX0YbvnBjrjh09Hfkj3N+TfHdMD1cJ3gRrjsXhuh0FHHk0Huv2CJJ7cDFN3pEfi/KuBIyUi2BFe4/8NnvaDLCIWi0EbyNmtJDkA/aJA0NWcapU0Ap7W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b=KrhIa6Go; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thingy.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=thingy.jp header.i=@thingy.jp header.b="KrhIa6Go"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2a962230847so17900185ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Feb 2026 02:16:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=thingy.jp; s=google; t=1772187411; x=1772792211; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QfJg30mJUVGYxijzk+lCAk658Lta6KCJk/Tcavup9u0=;
+        b=KrhIa6GomhPiMTMeoqizRgdOzFhRQ8MhH1A9BcyIt1qo8OlTZovkJjotOTV/huHoZ7
+         +CqXigjevs0uU7QvWrqwN1yZZc53KjKSSkIx/H9HGPWkuiwWWZ01S3BXZbzUWtK/8hhz
+         gAkIxuNupRXQNGYcdSlPbePvgk+kYCNdTR6hg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772119866; x=1772724666;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1772187411; x=1772792211;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q/7kJpx1RNz+WKaw23lDOcFWZbt7jdmNalLaKHH2YJE=;
-        b=FYLeGJ+PLiHJyWdmo/KNNUI2G7n27sPwErH2D6zVtT5LF4lb3YyI0XjLQy8/SE1FdV
-         3SxoNr78UgktksTwQ9d+8K3BFjWNrxE/lX9WLbvwiFn3uKWkw8VdOOEgPsxEOLqJlHNw
-         sALXnQ/Bg3eWengWjUTdUQP2260HV4C+rZWKCoZdOAmTMbsrBuoW7cCewueUB3S53tpX
-         rcoQMhlc7HbiGYBnXd1ju1+eL5SqdL20KYqu2thpwesPLsMd/5oV3HTzGFPKkCqhGZXV
-         p/4GdVOGz+9ih5xZJumdcJ1/Hwu7JTCNWb/gNFOSXCeZST5Mte4WRLFdW5OqTySLh2i8
-         tAtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVTbegCK/9TtoSsR0GyWyTPQR3sPa9r/0dsX1+pBy+WDAZhK8BFTB4avMYcKewbMs5ndyQMH6dg+sLF@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yz+T5F61ULwpV2cti6DY5o6NPaBmwFwOGdTx5B3PR6u20FPj+/K
-	t7gkHB+Dl1ntFeuFwUgYDuICtrrACn50cSKYsbNFHB/xz75diktxjPEh4dDvnJUmqLU=
-X-Gm-Gg: ATEYQzxViORbV6BaLyiSamd+rQxkMgh4HYnnBSGBnEgEBK9v2hOK5g5HxaxtRr7Iamm
-	3IDqH0CGQD0Q1KvPoChjpg6DXaz+O8Ku8SBgZmtt16tZ3P0iutW9Dlm6PwqJlXdlidIuBukYbcC
-	M4ehalZQSI1Api18QzruGQTsRZq8S/vYR22lbHz4iqUL2RdVmE4ZPBhYgCIO2S+ZHBURdi0f1Wa
-	NHQ4UGlIf1dkIm7O8zw0bTFhWAF11GaahBH5zuAwP7oDbhn4ZMCF03g6V/9JHwbQELQWMDMu1Cd
-	+4Pmlnk7aqegjFMit5JD1esKi4HnPuFauvt8yZHZy7VzBj1DzGtgPw+3VM3hBfcykqYZB2JeGqz
-	22mGRHWPVJ7IN0LyTJx68DtQD/q9gVvNvzSs2P6HBttoBzJA/WbVLWoUwcflEVGQmbnpfZyM5v8
-	cCwUArqkhSosJl50uXaU4igAHig98KsLUsuOSxDlDcwjkBxWqdG6zJuR7Y07cN
-X-Received: by 2002:a17:907:9345:b0:b8e:5e2:79fc with SMTP id a640c23a62f3a-b93514b7aabmr287787166b.14.1772119865525;
-        Thu, 26 Feb 2026 07:31:05 -0800 (PST)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b935ae6560asm72074666b.43.2026.02.26.07.31.03
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Feb 2026 07:31:04 -0800 (PST)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b93718302beso13111166b.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Feb 2026 07:31:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVIUx0elGz8S5KLTYRcZ/yCBJbAwljkiz+5O+UgUCAulb4gv+FYWPEuCANkZ6kTK4YlPnukEFUY5tWl@lists.linux-m68k.org
-X-Received: by 2002:a17:907:26c4:b0:b8f:a724:8704 with SMTP id
- a640c23a62f3a-b9351725707mr318151066b.42.1772119863346; Thu, 26 Feb 2026
- 07:31:03 -0800 (PST)
+        bh=QfJg30mJUVGYxijzk+lCAk658Lta6KCJk/Tcavup9u0=;
+        b=COXzlZA34Vb0cPz5gu46S//IFTPKn253GtEiVTtv6cBjHowwZ3hbxAmctMKfwwgJHk
+         FwiSvcskOU5l6idTsZM6FA3zpDNPWb7SgWn8vpWXWp8c5UfJhiAX06OKCaBdc6MGF04E
+         E0oa24KBh9zLXSZRHY+tfN9dZctbXZ58M2p8hMnu5zDUxQGqP8TzVVa3M9s01Uw7Nrt8
+         5hOJjCHYS+2Gk1XX9BisUfYPJSEPCApdVfKULeiJN9fNoVscmFmptqnZBwKA5t6p7zSf
+         tspL+1pFudwmvam+hJYf+0RX5RcFX9IMFVSC5rEyJ2SBAOWg0wg300F7BZkQPTYHX9fE
+         CQVw==
+X-Forwarded-Encrypted: i=1; AJvYcCUK6VsoyDkC9X8WKQ+0HTG4EWkYlYecRFzkU5A9CqhAhhpAAeK99ok7cmlHsmP/Q1ZHhZ1Xl1IqsQWR@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yx7KW1LgkycymVgk01kecFi2CTEZ1PZ1AIqpYfF+j6RaeTB3oMs
+	aDMzAZl4elQ/6wTiDYUustdX8jdS+Lnvter0HOK95KM0ccT+Rj8F6aGPDt/vD2dmI9o=
+X-Gm-Gg: ATEYQzxiiv+udkvhLi7Myl2tG/uWMVEl4r7c5/sHmd0pTJA722lf6P9Qtr/lbItjPZe
+	l42Enpotl/rHOzhZMP4SzQzmL4Q44R2gJ4BmMSophnYs9IGK18A6n6QrSB2k6Q3VHwDxvEzblz2
+	jz2Egt167tC7QawjeM+EAsducSsmffYtsbG5yQqGKetSDcSqZ+HZKq6UUxm6v1b7ZWY8eIdam/H
+	21gsGQqNhyK843+gd0VWKTodv1hEGh54AkSbz3JlMkKuee9iFNFl0URF2NcDKYxyCCcaCOZbhlo
+	cPvD8Yl5skIIY74RZ2deX82NbUr++p0uCSuTsgDkWmF0ZPj+3UT4qlMrRRms6GtnuPen4s7XA8D
+	vX4Jz1ogPju+6WSqc8OG0vEt26pFKkqmbAyCLBlhs/h3og/iNaQ//zD0JETrl3SS6CNdhE9yRpA
+	vf+tkr7qUmhEe5ko68A+GvjWKNCWRuAToI+If4Mwu8uJ68XlfArWjbhICASbY1BrA9r/VoxLuHD
+	EnqlWlyd3ka7Ns=
+X-Received: by 2002:a17:903:3c23:b0:2a3:e7fe:646e with SMTP id d9443c01a7336-2ae2e3ebfa2mr25339525ad.5.1772187411508;
+        Fri, 27 Feb 2026 02:16:51 -0800 (PST)
+Received: from kinako.work.home.arpa (p1590226-ipxg00c01sizuokaden.shizuoka.ocn.ne.jp. [153.227.10.226])
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2adfb5b1035sm74531775ad.7.2026.02.27.02.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Feb 2026 02:16:51 -0800 (PST)
+From: Daniel Palmer <daniel@thingy.jp>
+To: sudipm.mukherjee@gmail.com,
+	joerg@dorchain.net
+Cc: geert@linux-m68k.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: [PATCH v2] parport: mfc3: Convert to a modern zorro driver
+Date: Fri, 27 Feb 2026 19:16:43 +0900
+Message-ID: <20260227101643.473010-1-daniel@thingy.jp>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260226145441.3606201-1-daniel@thingy.jp>
-In-Reply-To: <20260226145441.3606201-1-daniel@thingy.jp>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 26 Feb 2026 16:30:50 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV_SpynGesz3yT9ahN76re9cfRa9C_nETF8VhZ0L8-JPg@mail.gmail.com>
-X-Gm-Features: AaiRm50j9nNeAhFWbruo-n9pWRuC9wLPrHenSmjbiLJu6Ugj_ZR3Vf6feq2I5j0
-Message-ID: <CAMuHMdV_SpynGesz3yT9ahN76re9cfRa9C_nETF8VhZ0L8-JPg@mail.gmail.com>
-Subject: Re: [PATCH] parport: mfc3: Convert to a modern zorro driver
-To: Daniel Palmer <daniel@thingy.jp>
-Cc: sudipm.mukherjee@gmail.com, joerg@dorchain.net, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Daniel,
+Currently this driver causes my Amiga 4000 to crash if it
+is not a module because it tries to iterate over the zorro
+devices before that has been setup.
 
-Thanks for your patch!
+Convert the driver over to the modern zorro driver API so
+it probes like the other zorro drivers and doesn't crash
+my machine.
 
-On Thu, 26 Feb 2026 at 16:07, Daniel Palmer <daniel@thingy.jp> wrote:
-> Currently this driver causes my Amiga 4000 to crash if it
-> is not a module because it tries to iterate over the zorro
-> devices before that has been setup.
+Claude was able to do the manual work of moving the original
+code but I had to fix up some mistakes, clean up the
+allocations to use devm versions and so on.
 
-Interesting, that is not supposed to happen.
+Only build, boot, and "checked the driver is registered correctly"
+tested as I don't have the card and it seems to be one of the
+few things winuae doesn't emulate. Using claude to fix it up
+seemed better than just deleting it considering all of the effort
+Joerg put in to documenting the hardware etc.
 
-> Convert the driver over to the modern zorro driver API so
-> it probes like the other zorro drivers and doesn't crash
-> my machine.
+Assisted-by: Claude:claude-4.6-sonnet
+Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+---
 
-Thanks, doing the conversion is definitely worthwhile!
+v2: Clean up how the interrupt works a bit and return IRQ_NONE when the
+    interrupt wasn't for the card as suggested by Geert.
+    I guess this should work but without a way to test it this is best
+    effort.
 
-> Claude was able to do the manual work of moving the original
-> code but I had to fix up some mistakes, clean up the
-> allocations to use devm versions and so on.
->
-> Only build, boot, and "checked the driver is registered correctly"
-> tested as I don't have the card and it seems to be one of the
-> few things winuae doesn't emulate. Using claude to fix it up
-> seemed better than just deleting it considering all of the effort
-> Joerg put in to documenting the hardware etc.
->
-> Assisted-by: Claude:claude-4.6-sonnet
-> Signed-off-by: Daniel Palmer <daniel@thingy.jp>
+ drivers/parport/parport_mfc3.c | 152 ++++++++++++++++-----------------
+ 1 file changed, 72 insertions(+), 80 deletions(-)
 
-> --- a/drivers/parport/parport_mfc3.c
-> +++ b/drivers/parport/parport_mfc3.c
-> @@ -66,17 +66,19 @@
->  #include <asm/irq.h>
->  #include <asm/amigaints.h>
->
-> -/* Maximum Number of Cards supported */
-> -#define MAX_MFC 5
-> -
->  #undef DEBUG
->
-> -static struct parport *this_port[MAX_MFC] = {NULL, };
->  static volatile int dummy; /* for trigger readds */
->
->  #define pia(dev) ((struct pia *)(dev->base))
->  static struct parport_operations pp_mfc3_ops;
->
-> +struct mfc3_card {
-> +       struct parport *port;
-> +       unsigned long piabase;
-> +       bool has_irq;
-> +};
-> +
->  static void mfc3_write_data(struct parport *p, unsigned char data)
->  {
->         pr_debug("write_data %c\n", data);
-> @@ -173,14 +175,18 @@ static int use_cnt;
->
->  static irqreturn_t mfc3_interrupt(int irq, void *dev_id)
->  {
-> -       int i;
-> +       struct zorro_dev *z = NULL;
->
-> -       for( i = 0; i < MAX_MFC; i++)
-> -               if (this_port[i] != NULL)
-> -                       if (pia(this_port[i])->crb & 128) { /* Board caused interrupt */
-> -                               dummy = pia(this_port[i])->pprb; /* clear irq bit */
-> -                               parport_generic_irq(this_port[i]);
-> -                       }
-> +       while ((z = zorro_find_device(ZORRO_PROD_BSC_MULTIFACE_III, z))) {
-
-Please no such while loops in an interrupt handler.
-I guess you can just register multiple interrupt handlers (IRQF_SHARED,
-fwiw), one per instance, and pass the mfc3_card structure as dev_id
-instead? That would let you get rid of has_irq and use_cnt, too.
-
-> +               struct mfc3_card *card = zorro_get_drvdata(z);
-> +
-> +               if (!card || !card->port)
-> +                       continue;
-> +               if (pia(card->port)->crb & 128) { /* Board caused interrupt */
-> +                       dummy = pia(card->port)->pprb; /* clear irq bit */
-> +                       parport_generic_irq(card->port);
-> +               }
-> +       }
->         return IRQ_HANDLED;
-
-Pre-existing: the handler should return IRQ_NONE if
-parport_generic_irq() was not called.
-
->  }
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/parport/parport_mfc3.c b/drivers/parport/parport_mfc3.c
+index bb1817218d7b..21210cb2d8d2 100644
+--- a/drivers/parport/parport_mfc3.c
++++ b/drivers/parport/parport_mfc3.c
+@@ -66,12 +66,8 @@
+ #include <asm/irq.h>
+ #include <asm/amigaints.h>
+ 
+-/* Maximum Number of Cards supported */
+-#define MAX_MFC 5
+-
+ #undef DEBUG
+ 
+-static struct parport *this_port[MAX_MFC] = {NULL, };
+ static volatile int dummy; /* for trigger readds */
+ 
+ #define pia(dev) ((struct pia *)(dev->base))
+@@ -169,19 +165,17 @@ static unsigned char mfc3_read_status(struct parport *p)
+ 	return status;
+ }
+ 
+-static int use_cnt;
+-
+ static irqreturn_t mfc3_interrupt(int irq, void *dev_id)
+ {
+-	int i;
+-
+-	for( i = 0; i < MAX_MFC; i++)
+-		if (this_port[i] != NULL)
+-			if (pia(this_port[i])->crb & 128) { /* Board caused interrupt */
+-				dummy = pia(this_port[i])->pprb; /* clear irq bit */
+-				parport_generic_irq(this_port[i]);
+-			}
+-	return IRQ_HANDLED;
++	struct parport *p = dev_id;
++
++	if (pia(p)->crb & 128) { /* Board caused interrupt */
++		dummy = pia(p)->pprb; /* clear irq bit */
++		parport_generic_irq(p);
++		return IRQ_HANDLED;
++	}
++
++	return IRQ_NONE;
+ }
+ 
+ static void mfc3_enable_irq(struct parport *p)
+@@ -280,85 +274,83 @@ static struct parport_operations pp_mfc3_ops = {
+ 
+ /* ----------- Initialisation code --------------------------------- */
+ 
+-static int __init parport_mfc3_init(void)
++static int mfc3_probe(struct zorro_dev *z, const struct zorro_device_id *ent)
+ {
++	unsigned long piabase = z->resource.start + PIABASE;
++	struct device *dev = &z->dev;
+ 	struct parport *p;
+-	int pias = 0;
+ 	struct pia *pp;
+-	struct zorro_dev *z = NULL;
+ 
+-	if (!MACH_IS_AMIGA)
++	if (!devm_request_mem_region(dev, piabase, sizeof(struct pia), "PIA"))
++		return -EBUSY;
++
++	pp = ZTWO_VADDR(piabase);
++	pp->crb = 0;
++	pp->pddrb = 255; /* all data pins output */
++	pp->crb = PIA_DDR | 32 | 8;
++	dummy = pp->pddrb; /* reading clears interrupt */
++	pp->cra = 0;
++	pp->pddra = 0xe0; /* /RESET, /DIR, /AUTO-FEED output */
++	pp->cra = PIA_DDR;
++	pp->ppra = 0; /* reset printer */
++	udelay(10);
++	pp->ppra = 128;
++
++	p = parport_register_port((unsigned long)pp, IRQ_AMIGA_PORTS,
++				  PARPORT_DMA_NONE, &pp_mfc3_ops);
++	if (!p)
+ 		return -ENODEV;
+ 
+-	while ((z = zorro_find_device(ZORRO_PROD_BSC_MULTIFACE_III, z))) {
+-		unsigned long piabase = z->resource.start+PIABASE;
+-		if (!request_mem_region(piabase, sizeof(struct pia), "PIA"))
+-			continue;
+-
+-		pp = ZTWO_VADDR(piabase);
+-		pp->crb = 0;
+-		pp->pddrb = 255; /* all data pins output */
+-		pp->crb = PIA_DDR|32|8;
+-		dummy = pp->pddrb; /* reading clears interrupt */
+-		pp->cra = 0;
+-		pp->pddra = 0xe0; /* /RESET,  /DIR ,/AUTO-FEED output */
+-		pp->cra = PIA_DDR;
+-		pp->ppra = 0; /* reset printer */
+-		udelay(10);
+-		pp->ppra = 128;
+-		p = parport_register_port((unsigned long)pp, IRQ_AMIGA_PORTS,
+-					  PARPORT_DMA_NONE, &pp_mfc3_ops);
+-		if (!p)
+-			goto out_port;
+-
+-		if (p->irq != PARPORT_IRQ_NONE) {
+-			if (use_cnt++ == 0)
+-				if (request_irq(IRQ_AMIGA_PORTS, mfc3_interrupt, IRQF_SHARED, p->name, &pp_mfc3_ops))
+-					goto out_irq;
+-		}
+-		p->dev = &z->dev;
+-
+-		this_port[pias++] = p;
+-		pr_info("%s: Multiface III port using irq\n", p->name);
+-		/* XXX: set operating mode */
+-
+-		p->private_data = (void *)piabase;
+-		parport_announce_port (p);
+-
+-		if (pias >= MAX_MFC)
+-			break;
+-		continue;
+-
+-	out_irq:
+-		parport_put_port(p);
+-	out_port:
+-		release_mem_region(piabase, sizeof(struct pia));
++	if (p->irq != PARPORT_IRQ_NONE) {
++		if (request_irq(IRQ_AMIGA_PORTS, mfc3_interrupt,
++				IRQF_SHARED, p->name, p))
++			goto err_put_port;
+ 	}
+ 
+-	return pias ? 0 : -ENODEV;
++	p->dev = dev;
++	p->private_data = (void *)piabase;
++
++	zorro_set_drvdata(z, p);
++
++	pr_info("%s: Multiface III port using irq\n", p->name);
++	/* XXX: set operating mode */
++	parport_announce_port(p);
++
++	return 0;
++
++err_put_port:
++	parport_put_port(p);
++
++	return -ENODEV;
+ }
+ 
+-static void __exit parport_mfc3_exit(void)
++static void mfc3_remove(struct zorro_dev *z)
+ {
+-	int i;
+-
+-	for (i = 0; i < MAX_MFC; i++) {
+-		if (!this_port[i])
+-			continue;
+-		parport_remove_port(this_port[i]);
+-		if (this_port[i]->irq != PARPORT_IRQ_NONE) {
+-			if (--use_cnt == 0) 
+-				free_irq(IRQ_AMIGA_PORTS, &pp_mfc3_ops);
+-		}
+-		release_mem_region(ZTWO_PADDR(this_port[i]->private_data), sizeof(struct pia));
+-		parport_put_port(this_port[i]);
+-	}
++	struct parport *p = zorro_get_drvdata(z);
++
++	parport_remove_port(p);
++
++	if (p->irq != PARPORT_IRQ_NONE)
++		free_irq(IRQ_AMIGA_PORTS, p);
++
++	parport_put_port(p);
+ }
+ 
++static const struct zorro_device_id mfc3_zorro_tbl[] = {
++	{ ZORRO_PROD_BSC_MULTIFACE_III },
++	{ 0 }
++};
++MODULE_DEVICE_TABLE(zorro, mfc3_zorro_tbl);
++
++static struct zorro_driver mfc3_driver = {
++	.name = "parport_mfc3",
++	.id_table = mfc3_zorro_tbl,
++	.probe = mfc3_probe,
++	.remove = mfc3_remove,
++};
++
++module_driver(mfc3_driver, zorro_register_driver, zorro_unregister_driver);
+ 
+ MODULE_AUTHOR("Joerg Dorchain <joerg@dorchain.net>");
+ MODULE_DESCRIPTION("Parport Driver for Multiface 3 expansion cards Parallel Port");
+ MODULE_LICENSE("GPL");
+-
+-module_init(parport_mfc3_init)
+-module_exit(parport_mfc3_exit)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.51.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
