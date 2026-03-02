@@ -1,33 +1,36 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DB638F62F
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Mar 2026 10:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8C93A1D02
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Mar 2026 10:25:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772447128; cv=none; b=ON+38TdPEY4lwCFeWYe4MNiHFSq0TmbrV4eKuupa7Zg+DKVhigh/jYGCq6vKbEMViDqlJ0MS5veDxS5Yq15WSGWqnD1jwVyd6ID8dOi4dbPwl+yfKXlpALknFoZoCkTc1oKiERLsBAVGbdnPonKp/+KkGAhiPiu9+/NPdv+YxZY=
+	t=1772447129; cv=none; b=n0KjPHPlh1Qu1BeSdaRoj6aLf2/Kvb0fRwANUkdXrEwKMq1PgShsqfL8SbmSzQsIPkn3k5TWnzSN2uN0F3nnC8gO+zyMk7COma1tNcEiYs5pV2xA7MU69qMxvvnjuneah2KGRKNbyDSNTsNfdp+IHXCkdkhIFRkYPir2eOrU6wk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772447128; c=relaxed/simple;
-	bh=wf8H0tEOxyxj9/9oFM8DHALX6KYAT9fJ+PFtYMC8n5g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ARoJiZf75B4PIMLE/CGgxqIDAUNTCr5AgpEBXlq7tgJp1TFXk6Ar8wihAGmjnKIJZ9qQrWFxkP/x6HWVszBlyp5T189g59VyqyQgw0++RHp7uG08BDPFdyaXpzDq2I/iw/QlSmcCuc5fVUYceHAWPKvZ0hoxMTyxgdNQQsIUDAQ=
+	s=arc-20240116; t=1772447129; c=relaxed/simple;
+	bh=u4H7VYkjJKluMxFTfthNQRtuDMGQjKB5jo/OimLQkDI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KMHHuyLdIJOlAwuSl1a9Gy2oBzfwxORvKxYRaDlKX/JbyxPOJHVsDDOug1/uWs8ssNFx+GzZbSZDwDJGXU90KrhhEQ32ZIm4b1L7eYYii0VBZcd4wZ4gSTV/5D+9qkuGbiNNPFfTUsQSxopAL3keFU0QnFFzdAMQ+jyJmqCtsTk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4484F40D6E;
+	by sea.source.kernel.org (Postfix) with ESMTP id BB94044361;
+	Mon,  2 Mar 2026 10:25:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 894E0C19425;
 	Mon,  2 Mar 2026 10:25:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BF82C19423;
-	Mon,  2 Mar 2026 10:25:25 +0000 (UTC)
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Philip Blundell <philb@gnu.org>,
 	Kars de Jong <jongk@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/2] m68k: defconfig: Logo and regular updates
-Date: Mon,  2 Mar 2026 11:25:18 +0100
-Message-ID: <cover.1772446429.git.geert@linux-m68k.org>
+Subject: [PATCH 1/2] m68k: defconfig: hp300: Enable monochrome and 16-color linux logos
+Date: Mon,  2 Mar 2026 11:25:19 +0100
+Message-ID: <51190cab2bb1adb9554aaaba9fae54342653a338.1772446429.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1772446429.git.geert@linux-m68k.org>
+References: <cover.1772446429.git.geert@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -36,38 +39,31 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-	Hi all,
+According to "HP 9000 Series 300 Computers: Video Signals and
+Monitors"[1], HP Topcat and Catseye graphics hardware varieties support
+monochrome, 16-color, 64-color, and 256-color displays.  Hence enable the
+standard black-and-white and 16-color Linux logos, too.
 
-The recent logo configuration updates forced me to look into the logo
-needs of the various platforms.
+[1] https://www.hp-series300.net/docs/monitors.pdf
 
-I plan to queue these for v7.1.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ arch/m68k/configs/hp300_defconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks for your comments!
-
-Geert Uytterhoeven (2):
-  m68k: defconfig: hp300: Enable monochrome and 16-color linux logos
-  m68k: defconfig: Update defconfigs for v7.0-rc1
-
- arch/m68k/configs/amiga_defconfig  | 2 ++
- arch/m68k/configs/apollo_defconfig | 2 +-
- arch/m68k/configs/atari_defconfig  | 2 ++
- arch/m68k/configs/hp300_defconfig  | 4 ++--
- arch/m68k/configs/mac_defconfig    | 2 ++
- arch/m68k/configs/multi_defconfig  | 2 ++
- arch/m68k/configs/q40_defconfig    | 2 ++
- 7 files changed, 13 insertions(+), 3 deletions(-)
-
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 308836b60bba4d52..35761920185c9415 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -386,8 +386,6 @@ CONFIG_FB=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
+ CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=y
+ CONFIG_LOGO=y
+-# CONFIG_LOGO_LINUX_MONO is not set
+-# CONFIG_LOGO_LINUX_VGA16 is not set
+ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
 -- 
 2.43.0
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
