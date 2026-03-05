@@ -1,124 +1,162 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851511E5207
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Mar 2026 00:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B96E189B84
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Mar 2026 23:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772671006; cv=none; b=e69FKoylwu4CZgFFD9381sLij3wEcZpVS/GX5UujvwPgyxbU7aSl2umDaMT7ZmeCLdAB08pWGxQsLsVplZuclNqaAZ3SWWZHcrB3NWrdyt70ut/b/tW6a5RdsZxZbfH3SNhu34PbH8xMXhkWh3zSNhNc/i5QppJASUl7fGky+M4=
+	t=1772751708; cv=none; b=ArtFpU7b25LTIAYLEEn5IIMgxBkGRHwAw7dABjUWO0CfkOgzZO71zHGqJau38bXE4gdSJkwgirTlsAk8YPtFR/m4GEV5Ln4H5TxjrYWfzz26M5zXo+RdGa/WT5o/2rAWmv0YcXnIQ2uqsHy3+c4f1bw11FjdgOYLZOcAiZlNHL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772671006; c=relaxed/simple;
-	bh=dufxbUIyr7d8ExFT8JscxBc90VyX6BXpvMXaMHirGFY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=e2b56njJYefkPtgkJ2W7JX3wCKQt9BjAFhpowp0OJ6X2kke2qw4zn9v0Qjy0X2wKjnQR5zH2ULX9D22sqAgZ3srPf6U2REWoS5Xi9xqwKpgCI1a+1h0q+ibxQOpdAPPYEdBUM1bkALxGt2E85w7iDWPgNhM83Yz2wJ6yu+JPnrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KToGiCmv; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1772751708; c=relaxed/simple;
+	bh=XETZmt/ZEJx0r+XYBiPTgV9mCSBd3IrEzAmVWfBnZsg=;
+	h=To:Cc:Message-ID:From:Subject:Date; b=iFZzrC2WDIKI7rxQjdpZ/t/dkpor/5ahRSlhH/726MHArBhx3Z5vgF5Jwec9TPOozP1CUbgtBUnXv+ykTrPe40OwUhWeZ9ScWFByCcvUYHN9O0+3ARdZ3E3ukmmv3gCfD4dRU4xAci+NpNDGpB/pleLFfbDXUt+BFSvgDsHTbeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HOIfHqAO; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KToGiCmv"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id D54F2403ED;
-	Thu,  5 Mar 2026 00:36:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70C0CC4CEF7;
-	Thu,  5 Mar 2026 00:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772671004;
-	bh=dufxbUIyr7d8ExFT8JscxBc90VyX6BXpvMXaMHirGFY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=KToGiCmvRjrVNqFH9bmGJHeZ38P88LzG7roLZL+LfIaWcpEiN2r+2cd8LeoKKP35z
-	 U1kZMnp2GF5lnZ/nU+B3HGi0hmJYpifkPnaIttjOzC0p4MJWgdE7whcAtStb71A/hR
-	 PWMEoeZUETbXXgqKLd947UqscZTCqE7PdSGVXWHEJVzdsA5P/GL+TYntigcrzmPu9S
-	 bwFDNJowrmaquHt0GQepYaacF/aqErDIPLaR1+ZJBBxnDoRwltgCLkyg6X/do1S70f
-	 /t3wS/hkSXMAn5Ptc3L2X59NGkKMvuLeUJNxpcdH9xAkM1JdLfqBeN7u7tjz5Udo9K
-	 2yvhogx3J8MSA==
-From: Nathan Chancellor <nathan@kernel.org>
-To: Nicolas Schier <nsc@kernel.org>, Nathan Chancellor <nathan@kernel.org>
-Cc: Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Vineet Gupta <vgupta@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
- Brian Cain <bcain@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, 
- Sam Creasey <sammy@sammy.net>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Kees Cook <kees@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
- Masahiro Yamada <masahiroy@kernel.org>, Alexey Gladkov <legion@kernel.org>, 
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-um@lists.infradead.org, linux-kbuild@vger.kernel.org, 
- stable@vger.kernel.org, Ed W <lists@wildgooses.com>
-In-Reply-To: <20260225-separate-modinfo-from-elf-details-v1-1-387ced6baf4b@kernel.org>
-References: <20260225-separate-modinfo-from-elf-details-v1-1-387ced6baf4b@kernel.org>
-Subject: Re: [PATCH] kbuild: Split .modinfo out from ELF_DETAILS
-Message-Id: <177267099220.1730256.13119170390082704508.b4-ty@kernel.org>
-Date: Wed, 04 Mar 2026 17:36:32 -0700
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HOIfHqAO"
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfout.phl.internal (Postfix) with ESMTP id 9D8E2EC0084;
+	Thu,  5 Mar 2026 18:01:45 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Thu, 05 Mar 2026 18:01:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1772751705; x=1772838105; bh=tJRv/tg4/k+69VMmc6YQYggL3mVU
+	mTf0EUVNr4buHhs=; b=HOIfHqAOuf5vZeNXDJlDNOdSq0IuXRPNiYm4x+PgISYh
+	VlXyaeVGxI8MLER7DYKmV0e9mPHhsZDUCq0Bs1FzQF9ACa6AfNVXoR7KeBLXDNFw
+	Kwc9OIp7DO2tVxNfM/sBt2fup5ywIJyVYTW2md1wOj+gXjyxx0LFICOZRFw01aIx
+	DDK/eltnRagNaEqnUtsDlNgbYsErSoYBFzrFgoyss/1XXlv/l0OFcsdXwUTnk2ao
+	FnMupSi4EHcjLY5N3a7rTsyJJBghDt3EePpMysMSekPzAA6Rmv/VORPQTn/OvQRV
+	+QQJzvbWSf/HqiAWDlMfEKODsKgZMaEbbpxY+Gw2SQ==
+X-ME-Sender: <xms:WAuqaWyFCI_4w0NDu0NX5NJ9oWjHFM6lHp6PX7Lo7zNmLSrO77OJBQ>
+    <xme:WAuqaYROEg9U_yaxfTp48lskL3YoQBIWA9_IdQZt46GGRuopAk46OlUBWT9_4aIcj
+    ueUDRD3VqeCQDmtie-BPIgC3rZbXOvSElNoPK9MMFtzx8Oorb1F04U>
+X-ME-Received: <xmr:WAuqaTJvxkrIgTlhtySk3ouPaTq975RP10_lXNXMedDC8VlJ0kfUPQ-qnAsyCwOzZfEfhRgfOc0k4Tj-tysXFqLCXhYepDlIEF4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvieejieejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepvfevkffhufffsedttdertddttddtnecuhfhrohhmpefhihhnnhcuvfhhrghinhcu
+    oehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtthgvrhhnpe
+    ekffejgfehheehkeekffffveekteevvddvveelhffgffetteefgfeutdehleetheenucff
+    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrghdp
+    nhgspghrtghpthhtohepuddtpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehnjh
+    grvhgrlhhisehmrghrvhgvlhhlrdgtohhmpdhrtghpthhtohepghhrqdhqlhhoghhitgdq
+    shhtohhrrghgvgdquhhpshhtrhgvrghmsehmrghrvhgvlhhlrdgtohhmpdhrtghpthhtoh
+    epjhgrmhgvshdrsghothhtohhmlhgvhieshhgrnhhsvghnphgrrhhtnhgvrhhshhhiphdr
+    tghomhdprhgtphhtthhopehmrghrthhinhdrphgvthgvrhhsvghnsehorhgrtghlvgdrtg
+    homhdprhgtphhtthhopehtohhnhigssegthigsvghrnhgvthhitghsrdgtohhmpdhrtghp
+    thhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtihhonhdrohhrghdprhgtphhtth
+    hopegrrhhnugesrghrnhgusgdruggvpdhrtghpthhtoheplhhinhhugidqmheikehksehl
+    ihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhstg
+    hsihesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:WAuqafVU7r5pjIQGszhIDxtolC-VQG4u3ngRZL6m4FPiVXAq0KNJzA>
+    <xmx:WAuqaXQMJb0VJyYVzdKLezkq4z45kDHgP2DPlAKshlc50M3CYZsDpQ>
+    <xmx:WAuqaXALX0duMlYG8CLwptbHsE59OLUyprgXjnlPVYflJksbFz4XNw>
+    <xmx:WAuqaWLCTGpQraCgQkaP24YpPDfLK1RzGCxpCCJvWltaP_sKU1yMog>
+    <xmx:WQuqabE4ZgHZ4wcTxWXu_3LPVnen2tdNM1G6bjrOiAE2H6oIfQUPJt8t>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 5 Mar 2026 18:01:42 -0500 (EST)
+To: Nilesh Javali <njavali@marvell.com>,
+    GR-QLogic-Storage-Upstream@marvell.com,
+    "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+    "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Tony Battersby <tonyb@cybernetics.com>,
+    Andrew Morton <akpm@linux-foundation.org>,
+    Arnd Bergmann <arnd@arndb.de>,
+    linux-m68k@lists.linux-m68k.org,
+    linux-scsi@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Message-ID: <550e7d7bb8c2620ca4f6c9e809a4f853bdfa4c67.1772751689.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] scsi: qla2xxx: Remove problematic BUILD_BUG_ON() assertion
+Date: Fri, 06 Mar 2026 10:01:29 +1100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev
 
-On Wed, 25 Feb 2026 15:02:51 -0700, Nathan Chancellor wrote:
-> Commit 3e86e4d74c04 ("kbuild: keep .modinfo section in
-> vmlinux.unstripped") added .modinfo to ELF_DETAILS while removing it
-> from DISCARDS, as it was needed in vmlinux.unstripped and ELF_DETAILS
-> was present in all architecture specific vmlinux linker scripts. While
-> this shuffle is fine for vmlinux, ELF_DETAILS and DISCARDS may be used
-> by other linker scripts, such as the s390 and x86 compressed boot
-> images, which may not expect to have a modinfo section. In certain
-> circumstances, this could result in a bootloader failing to load the
-> compressed kernel [1].
-> 
-> [...]
+The LKP bot reported a build failure with CONFIG_COLDFIRE=y together with
+CONFIG_SCSI_QLA_FC=y, that's attributable to the BUILD_BUG_ON() in
+qlt_queue_unknown_atio().
 
-Applied to
+That function uses kzalloc() to obtain memory for the following struct,
+plus some extra bytes at the end.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/kbuild/linux.git kbuild-fixes
+struct qla_tgt_sess_op {
+        struct scsi_qla_host *vha;
+        uint32_t chip_reset;
+        struct work_struct work;
+        struct list_head cmd_list;
+        bool aborted;
+        struct rsp_que *rsp;
 
-Thanks!
+        struct atio_from_isp atio;
+        /* DO NOT ADD ANYTHING ELSE HERE - atio must be last member */
+};
 
-[1/1] kbuild: Split .modinfo out from ELF_DETAILS
-      https://git.kernel.org/kbuild/c/8678591b47469
+The location of the 'atio' member is subsequently used as the destination
+for a memcpy() that's expected to fill in the extra bytes beyond the end
+of the struct.
 
-Please look out for regression or issue reports or other follow up
-comments, as they may result in the patch/series getting dropped or
-reverted. Patches applied to an "unstable" branch are accepted pending
-wider testing in -next and any post-commit review; they will generally
-be moved to the main branch in a week if no issues are found.
+That explains the loud warning in the comment above, which ought to be
+sufficient to prevent some newly-added member from accidentally getting
+clobbered. But, in case that warning was missed somehow, we also have the
+failing assertion,
 
-Best regards,
+BUILD_BUG_ON(offsetof(struct qla_tgt_sess_op, atio) + sizeof(u->atio) !=
+             sizeof(*u));
+
+Unfortunately, this size assertion doesn't guarantee that 'atio' is the
+last member. Indeed, adding a zero-length array member at the end does
+not increase the struct size.
+
+Moreover, this assertion can fail even when 'atio' really is the last
+member, and that's what happened with commit e428b013d9df ("atomic:
+specify alignment for atomic_t and atomic64_t"), which added 2 bytes of
+harmless padding to the end of the struct.
+
+Remove the problematic assertion. The comments alone should be enough to
+prevent mistakes.
+
+Cc: Tony Battersby <tonyb@cybernetics.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-m68k@lists.linux-m68k.org
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202603030747.VX0v4otS-lkp@intel.com/
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+---
+I don't know of a good way to encode an invariant like "the last member of
+struct qla_tgt_sess_op is named atio" such that it might be statically
+checked. But perhaps there is a good way to do that (?)
+
+There's no Fixes tag here because there's no need to backport.
+The BUILD_BUG_ON() comes from commit 091719c21d5a ("scsi: qla2xxx: target:
+Fix invalid memory access with big CDBs") which appeared in v6.19-rc1.
+The build failure first appeared in v7.0-rc1 with commit e428b013d9df
+("atomic: specify alignment for atomic_t and atomic64_t").
+---
+ drivers/scsi/qla2xxx/qla_target.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+index d772136984c9..06c1f3b577c4 100644
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -213,7 +213,6 @@ static void qlt_queue_unknown_atio(scsi_qla_host_t *vha,
+ 	unsigned int add_cdb_len = 0;
+ 
+ 	/* atio must be the last member of qla_tgt_sess_op for add_cdb_len */
+-	BUILD_BUG_ON(offsetof(struct qla_tgt_sess_op, atio) + sizeof(u->atio) != sizeof(*u));
+ 
+ 	if (tgt->tgt_stop) {
+ 		ql_dbg(ql_dbg_async, vha, 0x502c,
 -- 
-Nathan Chancellor <nathan@kernel.org>
+2.49.1
 
