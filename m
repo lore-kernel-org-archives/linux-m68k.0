@@ -1,131 +1,143 @@
-Received: from mail.cybernetics.com (mail.cybernetics.com [72.215.153.18])
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBD93F074B
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Mar 2026 16:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.215.153.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA90132ABCA
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Mar 2026 22:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772815463; cv=none; b=SZ/m7xrt05F0aaOmZSKCQBchdYi+fvLMMTQtvqtTOqltDznnEMgLHOw4W18AdWR1Ja2eaJ50fDSjqGuW7wg9NZrVBooo+bSDjXDp90mLcxWLZpLHnX/973eY674IitsTu3WrrBdl26SjZSiCYtPVlP8Ze6LAQ0gKFhfEv/rSLmo=
+	t=1772837540; cv=none; b=HUodMXuYswUbRbhb2Qtvhb4nPbcZB023fQVOOQB8hJD3qzP+Vum/JawKbc8x2Utz8nJQK5A+/ix9FgEwjSxAru2ZsQAN7ceaQ1z4nRoa4/TDfTiqW1YHFN8wbzocoetnEVz0apKiVHDX3AXXxy6I0l6VBQX16QUTOoABBQsHMIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772815463; c=relaxed/simple;
-	bh=cOQutnMuWPDAVk3zo7eIzYx5aU00kd5NNsyvvZTBtjQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o5nM/hZriLudzOcMX5PUCq5GClmWLmNNUWgZeksRlqJmpur8U8HvFDnn2z+QuJYWQHhDrsI5eJoxuwmW7lllTAB7k21f5tT9Mh4PAJSV8XrndVr+UAxjx74C+VUjgYUZkxgdssevBM6WynQugAnUctEkMkASvDT1OZRGkmOzMKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cybernetics.com; spf=pass smtp.mailfrom=cybernetics.com; dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b=jS9FPzow; arc=none smtp.client-ip=72.215.153.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cybernetics.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cybernetics.com
+	s=arc-20240116; t=1772837540; c=relaxed/simple;
+	bh=ueSxhuFfXVTZmPnCypuDKPfsx1ObPB34vjdrZQoDXxk=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=EXPIbhy5WMdPJDUx7cuy5V1H7HJcN9SV8o1LTlqIZOxzAEIPh+6F6UoT0jgVvWXb+XmIsRfnTsH+tlcXGGKDzl0KGcx7qEfLkRMW0uvdS/6qDTfq8/qt+m/sS/sYxcxUz/89zujegEBGqB4s5kvM+NqfpnEiOQnGG/CrqoWy65s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=s3iJX0ga; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b="jS9FPzow"
-Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id QaDvRB5Ucpny5hxR; Fri, 06 Mar 2026 11:32:57 -0500 (EST)
-X-Barracuda-Envelope-From: tonyb@cybernetics.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.10.4.126
-X-ASG-Whitelist: Client
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cybernetics.com; s=mail;
-	bh=8wEmeU1zB6chAGv2cB+8/88qXb3hAbn3QwMt0KRm3GY=;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:
-	Content-Language:Subject:MIME-Version:Date:Message-ID; b=jS9FPzowI2w9nRwmpVq3
-	HNcQFr+HjOWoEy/4ijHxZCfXkUEjJZ19FSjFkK/3Uy6TNBCIEl1tWiN6BEY34UMVVUCpHlsNLQO3R
-	NmXRSN/qnESzTPlCFy6yhmuwTn1NoOEuZEvScKyardUanESTTkBLlPH02irJmNSUv12njHjJdw=
-Received: from [10.157.2.224] (HELO [192.168.200.1])
-  by cybernetics.com (CommuniGate SPEC SMTP 8.0.5)
-  with ESMTPS id 14447498; Fri, 06 Mar 2026 11:32:57 -0500
-Message-ID: <ac99d3b6-0537-49c2-826b-118694056b93@cybernetics.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.157.2.224
-Date: Fri, 6 Mar 2026 11:32:57 -0500
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="s3iJX0ga"
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id DC1141400224;
+	Fri,  6 Mar 2026 17:52:17 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Fri, 06 Mar 2026 17:52:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1772837537; x=1772923937; bh=J4ttQBQyxcdE0l/xLJs1ENyVImrG4/R+VQV
+	++FoX8vo=; b=s3iJX0gavR5LVGKHXLmuHj2Se8Saiw/6Yb186QPPeb2Cq1jnkGj
+	kyy6q6nNKd1c6kr7oei9AQHRSykN4WDGvoqixauPt3UfcF94c0l9QHD+FaswUS1i
+	XBapyiLRHE8hORWz+E8BaN/UWk/6OXQlcbPt3MwrBkzxgTvM0LcVInxfpSmMBYst
+	B2Vs7rr1sYzFUeTtBwopnDY6zaBZxn5KDObCXk54zkcONKEB4rzJVp1VBS4Avmcn
+	iPeXAW+YZKMQgeuQogbGdX0V3x9FvV/H+n+EE1muQfHcUbfBJ/82ikOQgZr25A6i
+	0iZv6A65miGWVTtBCtb0PbG7o8iQdzQI1Ng==
+X-ME-Sender: <xms:oVqraSuSlG0YT_bjtA2sNtXWW-R9aWWDOYkM_3F9m5dyhAB1mLzhhA>
+    <xme:oVqraTWxHSTp6gz34wYzvpPTWqi-FuzMQbzmdDTUIyBD1ixqDaMrp3lTRH969CVZ0
+    VyRRONGkhAMeZohzeu3STnBluuSV5HhGLYghgbhdViNOg6J1gT1J5o>
+X-ME-Received: <xmr:oVqraawsgTA_hj93kK50uYkEuDZMCyecHvBO1sXDTnB2r6D7b6IDE0rSeqvM9rJ3ezG07J2L54jecYCOZ6wYUrTSyKmTrbqBTEI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvjedtheehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeu
+    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeduuddpmhho
+    uggvpehsmhhtphhouhhtpdhrtghpthhtohepghgvvghrtheslhhinhhugidqmheikehkrd
+    horhhgpdhrtghpthhtohepnhhjrghvrghlihesmhgrrhhvvghllhdrtghomhdprhgtphht
+    thhopehgrhdqqhhlohhgihgtqdhsthhorhgrghgvqdhuphhsthhrvggrmhesmhgrrhhvvg
+    hllhdrtghomhdprhgtphhtthhopehjrghmvghsrdgsohhtthhomhhlvgihsehhrghnshgv
+    nhhprghrthhnvghrshhhihhprdgtohhmpdhrtghpthhtohepmhgrrhhtihhnrdhpvghtvg
+    hrshgvnhesohhrrggtlhgvrdgtohhmpdhrtghpthhtohepthhonhihsgestgihsggvrhhn
+    vghtihgtshdrtghomhdprhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrth
+    hiohhnrdhorhhgpdhrtghpthhtoheprghrnhgusegrrhhnuggsrdguvgdprhgtphhtthho
+    pehlihhnuhigqdhmieekkheslhhishhtshdrlhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:oVqraSH448iEHqSLMaQUvp_F9TnYyp7UnYKbBnrHNnv-X-hMum5dJA>
+    <xmx:oVqraXuFu34XmM7oS1cQ77GWRF83E-_mWhM2Ry5d6abYOtqFfoJoWg>
+    <xmx:oVqraaCU1ln99CPhpFMNNvgD9-YxYIn9tQA0deLwpk6Syqb9h_g53Q>
+    <xmx:oVqraaCe7xOb4oOWAuDw0XD4r5RBpmhRIg5PG3w9l3OOm-CXrFQElw>
+    <xmx:oVqraR07JqqvTYolFQX84YEWz3EiwFdGoGNRQpQyI5ZnZ5G1sHM1Fg-J>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 Mar 2026 17:52:14 -0500 (EST)
+Date: Sat, 7 Mar 2026 09:53:16 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+cc: Nilesh Javali <njavali@marvell.com>, 
+    GR-QLogic-Storage-Upstream@marvell.com, 
+    "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+    "Martin K. Petersen" <martin.petersen@oracle.com>, 
+    Tony Battersby <tonyb@cybernetics.com>, 
+    Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+    linux-m68k@lists.linux-m68k.org, linux-scsi@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: qla2xxx: Remove problematic BUILD_BUG_ON()
+ assertion
+In-Reply-To: <CAMuHMdV4=t5G8fz1ARO7oKA86RwZP6T6yNXm5D7JgVtdaq5Rqg@mail.gmail.com>
+Message-ID: <90212eb8-434a-1b04-02c1-03410b483e1c@linux-m68k.org>
+References: <550e7d7bb8c2620ca4f6c9e809a4f853bdfa4c67.1772751689.git.fthain@linux-m68k.org> <CAMuHMdV4=t5G8fz1ARO7oKA86RwZP6T6yNXm5D7JgVtdaq5Rqg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: qla2xxx: Remove problematic BUILD_BUG_ON()
- assertion
-Content-Language: en-US
-X-ASG-Orig-Subj: Re: [PATCH] scsi: qla2xxx: Remove problematic BUILD_BUG_ON()
- assertion
-To: Finn Thain <fthain@linux-m68k.org>, Nilesh Javali <njavali@marvell.com>,
- GR-QLogic-Storage-Upstream@marvell.com,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>,
- linux-m68k@lists.linux-m68k.org, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <550e7d7bb8c2620ca4f6c9e809a4f853bdfa4c67.1772751689.git.fthain@linux-m68k.org>
-From: Tony Battersby <tonyb@cybernetics.com>
-In-Reply-To: <550e7d7bb8c2620ca4f6c9e809a4f853bdfa4c67.1772751689.git.fthain@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Barracuda-Connect: UNKNOWN[10.10.4.126]
-X-Barracuda-Start-Time: 1772814777
-X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
-X-Barracuda-BRTS-Status: 0
-X-Virus-Scanned: by bsmtpd at cybernetics.com
-X-Barracuda-Scan-Msg-Size: 2423
-X-ASG-Debug-ID: 1772814777-1cf43940a6a58f0001-a3InNf
+Content-Type: text/plain; charset=us-ascii
 
-On 3/5/26 18:01, Finn Thain wrote:
-> The LKP bot reported a build failure with CONFIG_COLDFIRE=y together with
-> CONFIG_SCSI_QLA_FC=y, that's attributable to the BUILD_BUG_ON() in
-> qlt_queue_unknown_atio().
->
-> That function uses kzalloc() to obtain memory for the following struct,
-> plus some extra bytes at the end.
->
-> struct qla_tgt_sess_op {
->         struct scsi_qla_host *vha;
->         uint32_t chip_reset;
->         struct work_struct work;
->         struct list_head cmd_list;
->         bool aborted;
->         struct rsp_que *rsp;
->
->         struct atio_from_isp atio;
->         /* DO NOT ADD ANYTHING ELSE HERE - atio must be last member */
-> };
->
-> The location of the 'atio' member is subsequently used as the destination
-> for a memcpy() that's expected to fill in the extra bytes beyond the end
-> of the struct.
->
-> That explains the loud warning in the comment above, which ought to be
-> sufficient to prevent some newly-added member from accidentally getting
-> clobbered. But, in case that warning was missed somehow, we also have the
-> failing assertion,
->
-> BUILD_BUG_ON(offsetof(struct qla_tgt_sess_op, atio) + sizeof(u->atio) !=
->              sizeof(*u));
->
-> Unfortunately, this size assertion doesn't guarantee that 'atio' is the
-> last member. Indeed, adding a zero-length array member at the end does
-> not increase the struct size.
->
-> Moreover, this assertion can fail even when 'atio' really is the last
-> member, and that's what happened with commit e428b013d9df ("atomic:
-> specify alignment for atomic_t and atomic64_t"), which added 2 bytes of
-> harmless padding to the end of the struct.
-...
-> I don't know of a good way to encode an invariant like "the last member of
-> struct qla_tgt_sess_op is named atio" such that it might be statically
-> checked. But perhaps there is a good way to do that (?)
 
-It might work better to add a flex array:
+On Fri, 6 Mar 2026, Geert Uytterhoeven wrote:
 
-struct qla_tgt_sess_op {
-	...
+> > I don't know of a good way to encode an invariant like "the last 
+> > member of struct qla_tgt_sess_op is named atio" such that it might be 
+> > statically checked. But perhaps there is a good way to do that (?)
+> 
+> Keeping the BUILD_BUG_ON(), but adding "__aligned(8);" to the ratio 
+> member, as suggested by Arnd, would do that?
+> 
 
-	struct atio_from_isp atio;
-	/*
-	atio.u.isp24.fcp_cmnd.add_cdb may extend past end of atio;
-	DO NOT DELETE; DO NOT ADD ANYTHING ELSE HERE.
-	*/
-	uint8_t atio_isp24_fcp_cmnd_add_cdb[];
-};
+No, that would merely limit the possibilities for tail padding in the 
+future. Again, the tail padding is harmless. The assertion is bogus, not 
+the struct layout.
 
-/* atio_isp24_fcp_cmnd_add_cdb must come immediately after atio */
-BUILD_BUG_ON(offsetof(struct qla_tgt_sess_op, atio) +
-             sizeof(struct atio_from_isp) !=
-             offsetof(struct qla_tgt_sess_op, atio_isp24_fcp_cmnd_add_cdb));
+Like I said to Arnd in that thread, the kind of twisted logic that would 
+add an alignment rule here requires a comment to explain it (there is an 
+example of this elsewhere in the same driver).
 
-Tony Battersby
+So now we're writing comments to explain code that exists solely to 
+support a spurious assertion, which itself exists solely to allow an 
+inadequate checker to prevent accidents that were already prevented by the 
+warning in the comments. Why? Fear of regression.
+
+It's true what they say -- "fear is the mind killer".
+
+> > There's no Fixes tag here because there's no need to backport.
+> > The BUILD_BUG_ON() comes from commit 091719c21d5a ("scsi: qla2xxx: target:
+> > Fix invalid memory access with big CDBs") which appeared in v6.19-rc1.
+> > The build failure first appeared in v7.0-rc1 with commit e428b013d9df
+> > ("atomic: specify alignment for atomic_t and atomic64_t").
+> 
+> I would add both in Fixes, just in case anyone ever wants to backport
+> e428b013d9df (which looks like a valid bugfix to me).
+> 
+
+Good point. I will add both.
+
+> > --- a/drivers/scsi/qla2xxx/qla_target.c
+> > +++ b/drivers/scsi/qla2xxx/qla_target.c
+> > @@ -213,7 +213,6 @@ static void qlt_queue_unknown_atio(scsi_qla_host_t *vha,
+> >         unsigned int add_cdb_len = 0;
+> >
+> >         /* atio must be the last member of qla_tgt_sess_op for add_cdb_len */
+> > -       BUILD_BUG_ON(offsetof(struct qla_tgt_sess_op, atio) + sizeof(u->atio) != sizeof(*u));
+> 
+> Iff you remove the BUILD_BUG_ON(), you should remove the comment, too.
+> 
+
+Again, the comment refers to an assertion about the name of the last 
+member. The BUILD_BUG_ON is an assertion about the size of the struct. 
+These are not the same thing. If they were, I could agree with you: 
+"remove both or neither".
+
+Thanks for your review.
