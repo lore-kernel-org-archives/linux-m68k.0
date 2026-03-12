@@ -1,158 +1,261 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2729A39B96F
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Mar 2026 11:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D92B3BD25E
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Mar 2026 15:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773316720; cv=none; b=MTWXt45tMd2/mENqtDIDKfojLxk9xHHkYpK375awG8wR6MYxwmDvAnaJ2i8TzzwCdhxBdvZHNtr2HN5txHTK0AETsApbk6mOMI42GpyMAnDt8i8oebeywuSNWuJE15kmRxnfhCtvBUllcekFUfPsMXwJtGCUFBJ0klQym5T10Uo=
+	t=1773328342; cv=none; b=nualjqcNpxf5fbT9JZFZZEf34Jnd+6/NC8OiE/fxdkeyDN//qzs1HHWYErlSGPX82DV6bbOJXz8fK0ZBJnOexI4rl8bbNG54VE+os5X6o4cu27CderA0iBjZ1wfF7brPaAeX++1NH3h/uoHghfwG+jmf8x0JSyPuvq+bol8ZYD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773316720; c=relaxed/simple;
-	bh=wUn5pymdTtFXWFvlujRseeLPyLbQJxJdDiLiRCC0Sgw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mpFwiheNafmJQAVoGQBGe2vkPbAf52u3kMU1TRNEImez7DC5hcXqk+1IUFiuGp8vDW97t7VuWArnVMMCjeDRwiTFUOwBWS4NTfdsI59xts0n3Z5ZcQJcvi78uo6YZHn5BgR1YSr/ldfJP7SdA9ARZ0xUJ/NHwa7Viy63lnuO230=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=MGhNgkRl; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	s=arc-20240116; t=1773328342; c=relaxed/simple;
+	bh=/OlB2wYXzxx2lhu8Gs9ALiFJ9KIIcAJs+OvO6vGrCEY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qYw+JbOCsjC2dh+4nri2zmepPJfdBkaj2aTfR9KM3k3AkXjRZ5azPK81MAv4iSUEJApqlmCHHBvedmjGVFE4j110q/5ZSwz6m3TqlNoOXWamSP8B+O/s9koCaZwjf9Py4kyiEiqiGoA8FNbNm2phx6P0Y/oFtSXhSEDhCUvIBlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xRu6vREz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=RojeaC+1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xRu6vREz; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=RojeaC+1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="MGhNgkRl"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2ae5423b02aso6799535ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Mar 2026 04:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1773316717; x=1773921517; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=InznCMohyHvQsM0e9D1LmmneJnqL55hfHvoIRkqaAsA=;
-        b=MGhNgkRlwjqp7uqzcbW+0qT4gE1yIM6MHwqF7yrpiPZK/es90f0AYa6obXItLtWav3
-         /Wx4C6i2XyTaIgbFUP37Kb9C8OnbpIxo3v60Jgd+xsn8xOk+6sptkaOmo1fUCRFiWrnl
-         N7Zfq62h8fSvrfwLuVTx18UZtRpxnSUP4EhJ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773316717; x=1773921517;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=InznCMohyHvQsM0e9D1LmmneJnqL55hfHvoIRkqaAsA=;
-        b=WvT32Xdp1yKXi5/jqj5dQ3OgZ8Lo12oJff+enOLqqaxbW9FDTa5IEP15+PiOGd2w1k
-         /emuj5y7YxGzqF0dGDs1J6ydb1FY2X3lP+tlPYVJFHnclgdWutVDuOATkaJJRmaj0Cqa
-         jZXx0apqvSxi55RkpCgZUvhw172lh8+/N9HbpmneVHU3Rx7JP/IPaTz9ZZE8i5NIHUoV
-         X7UJghNBSR9JbOLyZvKKbPxZD4YKzGzv/ZPs/fUF57YkYWFjN8BODY1VEZdv/pbMw/E9
-         XsHuaaNR9h32IILFCfd+bXsyy3OH3hT7tMtKYAYlRJIpNQTvTYdK4F3o+t7WSVUYKtqQ
-         Htmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUY4uubTXdLH5/k6pPCtNBuvGF2MiIpud/hGE+xZE4LxnvJXDmFyE4ftMjhsd+5W1DZyfEGSu86LxJH@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxcD7BRy402PjgtYCEwtcC1JN3iBplQhIWerIkDQZImVObdCTfx
-	9DcQ55laSMDG20XBQAzKn/ooTv7WsOr0/kF/Q4dI2qWxb+ZUw4zH8Mg2QCpWlx2rcgk=
-X-Gm-Gg: ATEYQzwZKeQAJwBcYtd2Dp/g3otaNHF3158qyJDdGd3niFP9YdMO/rcIl0A07TwMSZk
-	227IadOYmgyqofb+Z7geNmgQosk4qJrXkPuqcOZCYCg10Z+vfTc0mdglTlgtauMrtDGDFcZRXw4
-	hZMobpjjcyzikTupVBLa1OPO3VLIJyt1pVKmv1VZiEZ0PrZcJKTorNYwLg7KNDOdiARL8nsLGQQ
-	zU9mdtIEd4eP/Q2ZiywQvJTG17mFxVm/ccH+yFNy0+oAeGCIcelUcwNRB++p3AuWfZuzRk7PuUF
-	maPUF1KsmDSZoSnVYt04sRxAAy/IT/oCvKr4bgGBcTCHQtOLJPQF+wwNm90+SCoEOPosNlB02Le
-	kCtdz4WuYT5tOEhbivbvU9nj7xvtLJVAHo8/WzwzFnsduCSPWxdrkgghS3F/F0Etm0jFnM5O3XF
-	xgybB7m0bgrR9fB3lCCkNudHcYFtYKguJ/T/hQhM/9lwSbnrPXspFQUApTXkX27dkXC/Mg+ffQq
-	5De
-X-Received: by 2002:a17:902:f60f:b0:2ae:48a0:33e3 with SMTP id d9443c01a7336-2aeae904609mr63156545ad.45.1773316717331;
-        Thu, 12 Mar 2026 04:58:37 -0700 (PDT)
-Received: from shiro (p1766150-ipxg00e01sizuokaden.shizuoka.ocn.ne.jp. [153.167.218.150])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2aeae3614aasm55087655ad.75.2026.03.12.04.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2026 04:58:37 -0700 (PDT)
-From: Daniel Palmer <daniel@0x0f.com>
-To: gerg@linux-m68k.org,
-	geert@linux-m68k.org,
-	christoph.plattner@gmx.at,
-	linux-m68k@lists.linux-m68k.org
-Cc: sashal@kernel.org,
-	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH] m68k: Fix task info flags handling for 68000
-Date: Thu, 12 Mar 2026 20:58:32 +0900
-Message-ID: <20260312115832.835968-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.51.0
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xRu6vREz";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="RojeaC+1";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xRu6vREz";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="RojeaC+1"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 574945BD0E;
+	Thu, 12 Mar 2026 15:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773328337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YMN3lOpSDeHzFKXg/7He8rMHmT0WmpOMpEjVHXqTdfM=;
+	b=xRu6vREzGoHgGA2fUdRtHBjA2bI6+qRvJ+qzs72hVNkf5rofPyioB74jN3qYC0SeFB1juk
+	+uMPAE6Ps4ODzS5/FRsPQ609BczthN1Q2WOoDjd3ZX+buc/kjfgEVhdsZXmDnOKnR96QbK
+	21KoogoFiYYWcg5v4GiQO/x3chITNFk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773328337;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YMN3lOpSDeHzFKXg/7He8rMHmT0WmpOMpEjVHXqTdfM=;
+	b=RojeaC+1VkbWVze91xYdCKbNG6aIJzoN8TYBSjL2bj11VaV2q1HRH+YFNqtt2k6oiP5Uqo
+	I+qIkjWcskTktIBg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=xRu6vREz;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=RojeaC+1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1773328337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YMN3lOpSDeHzFKXg/7He8rMHmT0WmpOMpEjVHXqTdfM=;
+	b=xRu6vREzGoHgGA2fUdRtHBjA2bI6+qRvJ+qzs72hVNkf5rofPyioB74jN3qYC0SeFB1juk
+	+uMPAE6Ps4ODzS5/FRsPQ609BczthN1Q2WOoDjd3ZX+buc/kjfgEVhdsZXmDnOKnR96QbK
+	21KoogoFiYYWcg5v4GiQO/x3chITNFk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1773328337;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YMN3lOpSDeHzFKXg/7He8rMHmT0WmpOMpEjVHXqTdfM=;
+	b=RojeaC+1VkbWVze91xYdCKbNG6aIJzoN8TYBSjL2bj11VaV2q1HRH+YFNqtt2k6oiP5Uqo
+	I+qIkjWcskTktIBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CDA7B40022;
+	Thu, 12 Mar 2026 15:12:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VQkzL83XsmnAJAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Thu, 12 Mar 2026 15:12:13 +0000
+Message-ID: <aebac89f-f3b9-4983-8139-353a3ff19c98@suse.de>
+Date: Thu, 12 Mar 2026 16:12:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/10 net-next v2] ipv6: convert CONFIG_IPV6 to built-in
+ only and clean up Kconfigs
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, rbm@suse.com,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, Selvin Xavier
+ <selvin.xavier@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Ido Schimmel <idosch@nvidia.com>,
+ Petr Machata <petrm@nvidia.com>, Simon Horman <horms@kernel.org>,
+ Saurav Kashyap <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>,
+ "maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
+ <GR-QLogic-Storage-Upstream@marvell.com>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Nilesh Javali <njavali@marvell.com>,
+ Manish Rangankar <mrangankar@marvell.com>, Varun Prakash
+ <varun@chelsio.com>, Alexander Aring <aahringo@redhat.com>,
+ David Teigland <teigland@redhat.com>,
+ Andreas Gruenbacher <agruenba@redhat.com>,
+ Nikolay Aleksandrov <razor@blackwall.org>, David Ahern <dsahern@kernel.org>,
+ Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
+ Phil Sutter <phil@nwl.cc>, David Howells <dhowells@redhat.com>,
+ Marc Dionne <marc.dionne@auristor.com>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+ Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Eric Biggers <ebiggers@kernel.org>,
+ Michal Simek <michal.simek@amd.com>, Luca Weiss <luca.weiss@fairphone.com>,
+ Sven Peter <sven@kernel.org>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Andrew Morton <akpm@linux-foundation.org>, David Gow <david@davidgow.net>,
+ Kuan-Wei Chiu <visitorckw@gmail.com>, Ryota Sakamoto
+ <sakamo.ryota@gmail.com>, Kir Chou <note351@hotmail.com>,
+ Kuniyuki Iwashima <kuniyu@google.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Vikas Gupta <vikas.gupta@broadcom.com>,
+ Bhargava Marreddy <bhargava.marreddy@broadcom.com>,
+ Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>,
+ =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>,
+ Heiner Kallweit <hkallweit1@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+ "open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>,
+ "open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>,
+ "open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
+ <linux-scsi@vger.kernel.org>,
+ "open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>,
+ "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>,
+ "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+ "open list:NETFILTER" <coreteam@netfilter.org>,
+ "open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>,
+ "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>,
+ "open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
+References: <20260310153506.5181-1-fmancera@suse.de>
+ <20260310153506.5181-2-fmancera@suse.de> <20260311200219.45796ec4@kernel.org>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <20260311200219.45796ec4@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,linux-m68k.org,ziepe.ca,kernel.org,broadcom.com,lunn.ch,davemloft.net,google.com,redhat.com,nvidia.com,marvell.com,HansenPartnership.com,oracle.com,chelsio.com,blackwall.org,netfilter.org,strlen.de,nwl.cc,auristor.com,gmail.com,oss.qualcomm.com,arndb.de,amd.com,fairphone.com,bp.renesas.com,renesas.com,linux-foundation.org,davidgow.net,hotmail.com,gondor.apana.org.au,blochl.de,lists.linux-m68k.org,corigine.com,lists.linux.dev,lists.infradead.org,lists.sourceforge.net];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,hotmail.com];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLbmsefbte5zghgbj1huehz7pq)];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[68];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[netdev];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 574945BD0E
 
-The logic for deciding what to do after a syscall should be checking
-if any of the lower word bits are set and then checking if the reschedule
-bit is set.
+On 3/12/26 4:02 AM, Jakub Kicinski wrote:
+> On Tue, 10 Mar 2026 16:34:24 +0100 Fernando Fernandez Mancera wrote:
+>> Maintaining a modular IPv6 stack offers image size and memory savings
+>> for specific setups, this benefit is outweighed by the architectural
+>> burden it imposes on the subsystems on implementation and maintenance.
+>> Therefore, drop it.
+>>
+>> Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
+>> dependencies across the tree that explicitly checked for IPV6=m. In
+>> addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
+>> and MODULE_LICENSE().
+>>
+>> This is also replacing module_init() by device_initcall(). It is not
+>> possible to use fs_initcall() as IPv4 does because that creates a race
+>> condition on IPv6 addrconf.
+>>
+>> Finally, modify the default configs from CONFIG_IPV6=m to CONFIG_IPV6=y
+>> except for m68k as according to the bloat-o-meter the image is
+>> increasing by 330KB~ and that isn't acceptable. Instead, disable IPv6 on
+>> this architecture by default. This is aligned with m68k RAM requirements
+>> and recommendations [1].
+> 
+> AI has spotted:
+> 
+>> diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+>> index 31d16cba9879..de088071dde4 100644
+>> --- a/arch/m68k/configs/amiga_defconfig
+>> +++ b/arch/m68k/configs/amiga_defconfig
+>> @@ -64,7 +64,6 @@ CONFIG_NET_IPIP=m
+>>   CONFIG_NET_IPGRE_DEMUX=m
+>>   CONFIG_NET_IPGRE=m
+>>   CONFIG_NET_IPVTI=m
+>> -CONFIG_NET_FOU_IP_TUNNELS=y
+>>   CONFIG_INET_AH=m
+> 
+> Is CONFIG_NET_FOU_IP_TUNNELS=y removed intentionally? This option
+> provides FOU/GUE encapsulation for IP tunnels and has 'depends on
+> NET_IPIP || NET_IPGRE || IPV6_SIT' as its Kconfig dependency. With IPv6
+> disabled, IPV6_SIT becomes unavailable, but CONFIG_NET_IPIP=m and
+> CONFIG_NET_IPGRE=m are both still present in the defconfig, so the
+> dependency remains satisfiable.
+> 
+> Since CONFIG_NET_FOU_IP_TUNNELS has no 'default y', removing it from the
+> defconfig means FOU/GUE encapsulation for IP tunnels will be silently
+> disabled by default on m68k. The commit message describes only disabling
+> IPv6 on m68k, not removing IPv4 FOU tunnel support.
+> 
 
-Currently we are loading the top word, checking if any bits are set
-(which never seems to be true) and thus jumping over loading the
-whole long and checking if the reschedule bit is set.
+I noticed that when running
 
-We get the thread info in two places so split that logic out in
-a macro and then fix the code so that it just loads the whole
-of the flags, checks if anything is set and then checks if
-the reschedule bit in particular is set.
+./scripts/config --disable CONFIG_IPV6
 
-Reported-by: Christoph Plattner <christoph.plattner@gmx.at>
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
+for the m68k, the script was adding CONFIG_LWTUNNEL=y and CONFIG_NET_FOU=y.
 
-I have had a variation of this patch for ages and haven't
-gotten around to sending it. Christoph e-mailed us (Greg, Sasha and me)
-to report this issue with a similar patch. Apparently this is an
-issue all the way back to 5.15.
+CONFIG_LWTUNNEL was selected by multiple IPV6 features. I do not think 
+it makes sense to keep it for m68k given the information there is on 
+http://www.linux-m68k.org/faq/platinfo.html.
 
-Christoph, can you check this works for you? I took this out of my
-personal branch and made sure it built but I have a bunch of other
-junk I need to actually boot it on the things I have.
+CONFIG_NET_FOU was something IPV6_FOU required, probably it should be 
+just dropped from the config instead of explicitly turn it off as it 
+turns off FOU_IP_TUNNELS too. It will be selected by FOU_IP_TUNNELS too 
+anyway.
 
- arch/m68k/68000/entry.S | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+I will update the config and also the commit message about CONFIG_LWTUNNEL.
 
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 72e95663b62f..cd193fd34c19 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -18,6 +18,13 @@
- 
- .text
- 
-+/* get thread_info pointer into a2 */
-+ .macro getthreadinfo
-+	movel	%sp,%d1
-+	andl	#-THREAD_SIZE,%d1
-+	movel	%d1,%a2
-+ .endm
-+
- .globl system_call
- .globl resume
- .globl ret_from_exception
-@@ -70,9 +77,8 @@ ENTRY(system_call)
- 
- 	movel	%sp@(PT_OFF_ORIG_D0),%d0
- 
--	movel	%sp,%d1			/* get thread_info pointer */
--	andl	#-THREAD_SIZE,%d1
--	movel	%d1,%a2
-+	/* Doing a trace ? */
-+	getthreadinfo
- 	btst	#(TIF_SYSCALL_TRACE%8),%a2@(TINFO_FLAGS+(31-TIF_SYSCALL_TRACE)/8)
- 	jne	do_trace
- 	cmpl	#NR_syscalls,%d0
-@@ -96,16 +102,15 @@ Luser_return:
- 	/* heavy interrupt load*/
- 	andw	#ALLOWINT,%sr
- 
--	movel	%sp,%d1			/* get thread_info pointer */
--	andl	#-THREAD_SIZE,%d1
--	movel	%d1,%a2
-+	getthreadinfo
- 1:
--	move	%a2@(TINFO_FLAGS),%d1	/* thread_info->flags */
-+	/* check if any of the flags are set */
-+	movel	%a2@(TINFO_FLAGS),%d1	/* thread_info->flags */
- 	jne	Lwork_to_do
- 	RESTORE_ALL
- 
- Lwork_to_do:
--	movel	%a2@(TINFO_FLAGS),%d1	/* thread_info->flags */
-+	/* check if reschedule needs to be called */
- 	btst	#TIF_NEED_RESCHED,%d1
- 	jne	reschedule
- 
--- 
-2.51.0
+FTR; I doubt anyone is running Foo over UDP in m68k but let's avoid 
+doing extra undocumented changes.
+
+Thanks,
+Fernando.
+
+> This affects four m68k defconfigs:
+> - amiga_defconfig
+> - apollo_defconfig
+> - atari_defconfig
+> - bvme6000_defconfig
+> 
 
