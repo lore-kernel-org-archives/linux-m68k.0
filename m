@@ -1,205 +1,145 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FE239FCC3
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Mar 2026 15:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773675859; cv=none; b=GOwc+j499aAozU4Gwo142V0UMNxTJOr08J82tdMjuicRlgSb0ECb+l2PJWeJZ/vQLo6A/YaqjLV04TpX9brZxGby85NZFhZXxvB+IokDg6NFOGRr6GcXHcyH1qCNBRqF9/o7YY24EvbjR83WHhsJK+UnQpEM9W1cbHqDQ5kxf8I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773675859; c=relaxed/simple;
-	bh=rdPrmaCVzwqoOdH/w9Rq+WAUu6772RowRxAGuiDTynE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WMqY5V9QKNQVdI4gasH2thiECTrVTMmppSVoN02pzHAvDeuRCfs4BFExcE+/dwQP9AvbBBJK3CGaKNu2XvvLz2POWp+wGypVY4fCqCUb2H/2ydzm08P8+cYgR70xenBD7KFXaVLEWI3XK9kxtJkdEQRdl4Qp+5x//u/Rb3d9zQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dItczp0J; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F336535A392
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Mar 2026 22:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773698717; cv=pass; b=jh+AGSK9pPh08E7zi1wYpUgka1WdFVXLBWvNKd8+Qwnf8SKsjiehysLUbDmmTgLrcA2Juj2yLDD04tHZtzhw9qvihmJcpWfvMJXnkcTxYKVkzJiqXTSrLJp5mSmhGJJtXQEk6dMUppyoWmzUpPDoYkXHIxHkyUniDllZXDBxH08=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773698717; c=relaxed/simple;
+	bh=Nf7AYnrioxynQ7VBNSCFWZ9m3bJw4GYd3gdeoIDa5L4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=evXC94zHJsEidFdArWUmAUnXvAEMEE0KGvMPl/goGr1xM+z8rj+vGr7740W9f6A7qFCWl91nKZnjYZhP5Bol/urMFWwPg7NVQHIAxrHkEQJPwZMZC3d8Uio4BaglkTSR5aZmKAZYHGwPmn/nlMngpr8qOwI3X2OaIGL26AKsSew=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=hATRcES1; arc=pass smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dItczp0J"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4A11D43B85;
-	Mon, 16 Mar 2026 15:44:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D886C19421;
-	Mon, 16 Mar 2026 15:44:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773675857;
-	bh=rdPrmaCVzwqoOdH/w9Rq+WAUu6772RowRxAGuiDTynE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dItczp0J7s3JbcmLYw6T+eYP8v6IxOLER3X08QrxDCF7vJ+LChgARvJWxxMSq9mCQ
-	 Zvuu6WN0xxAIrCiYX3UmyTUT614rpbkHr3r/yT8q0XC21gxKHkqVJZlgGailW5/21/
-	 QnpDs/s4WjNZVsHLJ5zbQngX0+8gkrOcdZxxp3Brg4jcKLq0te5gRz65FbOzKutoY3
-	 2Q+YgJinfB+TdSi6Nr/D8JVYKF9nvtK9VMjXrYqpxPRIl/ocOqmmZSUdZo9vqfd9N9
-	 QWuF7U4K2TuyKe1Sd2b+nTJgX2qIkGklDPE210SPSgeBnjUIkvvYtYwfRmpTL9Tuqe
-	 U3/fQMbmPNMMA==
-Message-ID: <f62948c5-8e40-4bb6-af30-c63b79112904@kernel.org>
-Date: Mon, 16 Mar 2026 16:44:01 +0100
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="hATRcES1"
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-82a3d3235c9so1369664b3a.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Mar 2026 15:05:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773698715; cv=none;
+        d=google.com; s=arc-20240605;
+        b=WpEiF/vT1jV7sC63zX8Ilvk62kldjcPkrEi1j0AUiIHxbvFESJvaQPcoSFBdCed4jR
+         UugEGHjj49GX7TzzFluUg+KUTj9UtcXStDfRaNcin48CbFtG+z2c/aKXdnwTvdkk5R83
+         9BQs5y8iP2wVHWuIYQQHQsYhJIM08stLvPfI3UxmY8SAm4jrg5IV0rM4lBYV/5NWT0rT
+         nLOX7PZb/LQpi4Hn9zKRxzk+93kl7eLud7RAroSR7oaRvsTVD/cz/+6xXJVNbQI+BYh9
+         5QyAjI4wU7RDrsjfZI0W4zuYbBgO6wy/F51TzIwTbcpDbiR3QOOqlMLZITdhPUZQGPTo
+         dLcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=gPXCOSxswj5Wu41kCz4fvWvrzJiCjzxNclfPJLTOd5c=;
+        fh=kyJd2KTiS/IuEEqBE/3tbV9LTh0tz4lrLhO4Jpg+oxE=;
+        b=ZhKDvQ4cosZP50JWCm78Rn32QY7/OrcQ8FMrZVhrgvR6dCURVHfhAnbf1uEgbZ7wvl
+         /keWYq6z4QRM49au0oBKihjGLYpcxCertKiauzOR0kVA5aA5/N9coCpPhpcv0n5V47Xm
+         UiH87277aLQMGYId5Nafeuj4iILcTaHNK4Vm7C8QlQ1I5FiPNoYyE0xSrmcRRG9Shg3Y
+         zTEYrgor7u2f6y4QMVXEir0FkXccekxZpGp1Gboqxq4mZsBnWki36lelSP8IhAhpbvjj
+         eZaCtkbnA7nxEbgz2nKa7Qajh4LisCdN89+0T0UA8o2wM+iwOFksUPjG8kShhFlrRcgr
+         u12g==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1773698715; x=1774303515; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gPXCOSxswj5Wu41kCz4fvWvrzJiCjzxNclfPJLTOd5c=;
+        b=hATRcES1FnnWyZnemKYjVJRpjVUZObOg3QOaspvsImlto4ljpVmxDKKLJBm1qdh4Uv
+         /zME9NWalPJKG/GqRKgH4lJ3DaV/kCDIXOSGKPJHBPJTd3n/M9sGei+aB9myKf/mLNHJ
+         FwRd2dTXG4lotywq7OxowR/JwDpeEjpGiqdQA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773698715; x=1774303515;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gPXCOSxswj5Wu41kCz4fvWvrzJiCjzxNclfPJLTOd5c=;
+        b=KW27cUBrxWES6JfvI8GByBhM3/qzb1PzcKcfJl8d9/zln0qCUcMz9I66DByjNisqVb
+         J97ZyL9OGd13fTRVBXtZckjF30ZB6oFQ/Vd9r0J5vs//5LFeTlytDaJ0wahSMnS0k4SA
+         /F2M/SfVisBZIT8BE25iDxpJKLwzuxX+2tc1rImcVMv96OcyzqC9RAEywVBVUDKOda5h
+         7nSuOPRXoknKPXsgebNcX/dwqF/LkEMn+L8dQxwHvN+U9QdQy/Dk2GsxHdpGCSc1Fcrs
+         h/Z6cIYCkwasNhQ7ilG3XiBQHZgKiTAIZ0jYa2rkMJI1ua9E58oDSO38Ay/E6AhX7EQ5
+         dH5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXim2oL1EyF/HL0ZmPEONNs/wA+fXVcmvej+mRvdTDoghN1pqd+1e76sIexGzbVl6MQqhf3r/QAwPJJ@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxxHZtLPdDyUYSpXxsSBYkBJLrrT0Wsh3jmNSKY3N46KlMqQYM2
+	5XF+SAPcxr25lirhKcM0ftDTE37Jo8EVb47y1waaW78okrNNkl8t50CR7bCnQOp1+6ixVkxHgkY
+	AkZwd59pq6fApQrv/eUV4MpGA5byFA/5HbXjqrylkig==
+X-Gm-Gg: ATEYQzwSoXJeGdUPTmjhgdjElHdxiM8VLb/3E9tm0K+GmiT3/mEsYZ0hHIIX8u9c2ip
+	I0kntn4+opOBpzgNdGh3R1neQDc3MPLHA/sfYUQfEwp3/HEKWhJE8DOp8sul/KgRDgiyLYDAS6I
+	vjXFiwe+foLKSDcEysjscj5OWxsdWFjSE0tM2I8T1UwfskykAhe0JgCvWMT4s7PqGYWP0HmDWV2
+	OFmR7w/YsKsYBj/0Ltwr6x53sCA4Snyy0NIWzfAfsBTgxpLYB30SypkenG+1g4L4f7Vs58kTnhb
+	H69lR4MhRxktfpyA8NeGYPxrcOAcFFpWVpoQE5M=
+X-Received: by 2002:a05:6a00:1a15:b0:829:7692:cddc with SMTP id
+ d2e1a72fcca58-82a1984e588mr9780629b3a.21.1773698715047; Mon, 16 Mar 2026
+ 15:05:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/10 net-next v2] ipv6: convert CONFIG_IPV6 to built-in
- only and clean up Kconfigs
-To: Fernando Fernandez Mancera <fmancera@suse.de>, netdev@vger.kernel.org
-Cc: rbm@suse.com, Geert Uytterhoeven <geert@linux-m68k.org>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Selvin Xavier <selvin.xavier@broadcom.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Simon Horman <horms@kernel.org>, Saurav Kashyap <skashyap@marvell.com>,
- Javed Hasan <jhasan@marvell.com>,
- "maintainer:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
- <GR-QLogic-Storage-Upstream@marvell.com>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Nilesh Javali <njavali@marvell.com>,
- Manish Rangankar <mrangankar@marvell.com>, Varun Prakash
- <varun@chelsio.com>, Alexander Aring <aahringo@redhat.com>,
- David Teigland <teigland@redhat.com>,
- Andreas Gruenbacher <agruenba@redhat.com>,
- Nikolay Aleksandrov <razor@blackwall.org>, David Ahern <dsahern@kernel.org>,
- Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>,
- Phil Sutter <phil@nwl.cc>, David Howells <dhowells@redhat.com>,
- Marc Dionne <marc.dionne@auristor.com>,
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
- Xin Long <lucien.xin@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
- Bjorn Andersson <bjorn.andersson@oss.qualcomm.com>,
- Arnd Bergmann <arnd@arndb.de>, Eric Biggers <ebiggers@kernel.org>,
- Michal Simek <michal.simek@amd.com>, Luca Weiss <luca.weiss@fairphone.com>,
- Sven Peter <sven@kernel.org>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Andrew Morton <akpm@linux-foundation.org>, David Gow <david@davidgow.net>,
- Kuan-Wei Chiu <visitorckw@gmail.com>, Ryota Sakamoto
- <sakamo.ryota@gmail.com>, Kir Chou <note351@hotmail.com>,
- Kuniyuki Iwashima <kuniyu@google.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Vikas Gupta <vikas.gupta@broadcom.com>,
- Bhargava Marreddy <bhargava.marreddy@broadcom.com>,
- Rajashekar Hudumula <rajashekar.hudumula@broadcom.com>,
- =?UTF-8?Q?Markus_Bl=C3=B6chl?= <markus@blochl.de>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
- "open list:INFINIBAND SUBSYSTEM" <linux-rdma@vger.kernel.org>,
- "open list:NETRONOME ETHERNET DRIVERS" <oss-drivers@corigine.com>,
- "open list:BROADCOM BNX2FC 10 GIGABIT FCOE DRIVER"
- <linux-scsi@vger.kernel.org>,
- "open list:DISTRIBUTED LOCK MANAGER (DLM)" <gfs2@lists.linux.dev>,
- "open list:ETHERNET BRIDGE" <bridge@lists.linux.dev>,
- "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
- "open list:NETFILTER" <coreteam@netfilter.org>,
- "open list:RXRPC SOCKETS (AF_RXRPC)" <linux-afs@lists.infradead.org>,
- "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>,
- "open list:TIPC NETWORK LAYER" <tipc-discussion@lists.sourceforge.net>
-References: <20260310153506.5181-1-fmancera@suse.de>
- <20260310153506.5181-2-fmancera@suse.de>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 a/A=
-In-Reply-To: <20260310153506.5181-2-fmancera@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260312115832.835968-1-daniel@0x0f.com> <10efa219-f7d7-4655-9a48-b4094bf97d47@linux-m68k.org>
+In-Reply-To: <10efa219-f7d7-4655-9a48-b4094bf97d47@linux-m68k.org>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Tue, 17 Mar 2026 07:05:03 +0900
+X-Gm-Features: AaiRm51ToRXHzwwr9fQdzz5XZ0FR-UXjxgnkyI1QLAHB_LpixxPWw07wjZ6AcLs
+Message-ID: <CAFr9PXnO7y=PUPELb78qA1nN+4qsYqmk036PqXPLogk+L3Sv+A@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix task info flags handling for 68000
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: geert@linux-m68k.org, christoph.plattner@gmx.at, 
+	linux-m68k@lists.linux-m68k.org, sashal@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/03/2026 16:34, Fernando Fernandez Mancera wrote:
-> Maintaining a modular IPv6 stack offers image size and memory savings
-> for specific setups, this benefit is outweighed by the architectural
-> burden it imposes on the subsystems on implementation and maintenance.
-> Therefore, drop it.
-> 
-> Change CONFIG_IPV6 from tristate to bool. Remove all Kconfig
-> dependencies across the tree that explicitly checked for IPV6=m. In
-> addition, remove MODULE_DESCRIPTION(), MODULE_ALIAS(), MODULE_AUTHOR()
-> and MODULE_LICENSE().
-> 
-> This is also replacing module_init() by device_initcall(). It is not
-> possible to use fs_initcall() as IPv4 does because that creates a race
-> condition on IPv6 addrconf.
-> 
-> Finally, modify the default configs from CONFIG_IPV6=m to CONFIG_IPV6=y
-> except for m68k as according to the bloat-o-meter the image is
-> increasing by 330KB~ and that isn't acceptable. Instead, disable IPv6 on
-> this architecture by default. This is aligned with m68k RAM requirements
-> and recommendations [1].
-> 
-> [1] http://www.linux-m68k.org/faq/ram.html
-> 
-> Signed-off-by: Fernando Fernandez Mancera <fmancera@suse.de>
-> ---
-> v2: updated m68k default configuration to CONFIG_IPV6=n and used
-> device_initcall() instead fs_initcall() to avoid a race condition.
+Hi Greg,
 
-Don't know exavtly netdev policy about merging cover letters, but if the
-cover letter does not end up merged (e.g. with b4), then please move
-other bloatometer stats here. Although the best if cover letter is
-simply merged.
+On Mon, 16 Mar 2026 at 23:08, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>
+> The comments from arch/m68k/include/asm/thread_info.h are this:
+>
+> /* entry.S relies on these definitions!
+>   * bits 0-7 are tested at every exception exit
+>   * bits 8-15 are also tested at syscall exit
+>   */
+>
+> So looking at what check is in arch/m68k/coldfire/entry.S:
+>
+>      moveb   %a0@(TINFO_FLAGS+3),%d1 /* thread_info->flags (low 8 bits) */
+>
+> In arch/m68k/kernel/entry.S it looks to be doing basically the same thing:
+>
+>      moveb   %a1@(TINFO_FLAGS+3),%d0
+>
+> So they do really only check bits 0-7 here.
+>
+> If you code the check like that do you still get correct running behavior?
 
-> ---
->  arch/arm64/configs/defconfig                |  2 +-
+That seems to work. One thing I'm unsure about is this in the coldfire version:
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org> # arm64
+Luser_return:
+movel %sp,%d1 /* get thread_info pointer */
+andl #-THREAD_SIZE,%d1 /* at base of kernel stack */
+movel %d1,%a0
+moveb %a0@(TINFO_FLAGS+3),%d1 /* thread_info->flags (low 8 bits) */
 
->  arch/m68k/configs/amiga_defconfig           | 45 +-------------------
->  arch/m68k/configs/apollo_defconfig          | 46 +-------------------
->  arch/m68k/configs/atari_defconfig           | 45 +-------------------
->  arch/m68k/configs/bvme6000_defconfig        | 45 +-------------------
->  arch/m68k/configs/hp300_defconfig           | 47 +--------------------
->  arch/m68k/configs/mac_defconfig             | 45 +-------------------
->  arch/m68k/configs/multi_defconfig           | 45 +-------------------
->  arch/m68k/configs/mvme147_defconfig         | 45 +-------------------
->  arch/m68k/configs/mvme16x_defconfig         | 45 +-------------------
->  arch/m68k/configs/q40_defconfig             | 45 +-------------------
->  arch/m68k/configs/sun3_defconfig            | 45 +-------------------
->  arch/m68k/configs/sun3x_defconfig           | 45 +-------------------
+^^^^^^
+So the bottom 8 bits are in d1
 
-Thanks Fernando for addressing the comments. Great job!
+jne Lwork_to_do /* still work to do */
 
-Best regards,
-Krzysztof
+Lreturn:
+RESTORE_USER
+
+Lwork_to_do:
+movel %a0@(TINFO_FLAGS),%d1 /* get thread_info->flags */
+
+^^^^^^^
+Now the whole value is loaded into d1 to do the bit test.. but the
+value needed is already in d1 as we'll be testing bit 7?
+
+move #0x2000,%sr /* enable intrs again */
+btst #TIF_NEED_RESCHED,%d1
+jne reschedule
+
+
+Thanks,
+
+Daniel
