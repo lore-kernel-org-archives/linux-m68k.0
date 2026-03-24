@@ -1,48 +1,48 @@
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9533F65FC
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Mar 2026 17:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C6A407561
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Mar 2026 17:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774371609; cv=none; b=o39a7TtOj6yNGmFrGp0BDv7MmujKcOOFjaAo3LRafuPVE6TPLEaXRWyn4A7jg+vNVz+WHVGjcOmPWp4BNwziMYqkHCjTJ3w5sgrHWZMaP/A7yJWDRSA9YS9lA2tvLDfzRjfynVRbkck/nhQf9x8PUfqNU7rwt4AJfANGAu8BNtY=
+	t=1774371621; cv=none; b=hPq12S+mxTJtSs8pjWvQSi9UFHgn3dxho8ocFwFV0ng0jVx3iI2L3HUrHhU25tUhri0vKNnvxfKmQhWejYdKZJNAIBNuqDE6LfxzEvK6hqYo55GTkizQ2VA+jA2b3uJnHRocSUi0ocE2Xau2RQhFXHkEjhWdh3U3OSln4hfrprE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774371609; c=relaxed/simple;
-	bh=9hvV8PDAdyGkHU10me7VyjfjKt6p0yD22QH58KrfakU=;
+	s=arc-20240116; t=1774371621; c=relaxed/simple;
+	bh=d6KLxSDgRcKiLzDY+NMiMRY2jmIC2rw/9NmZTIuAx/o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SWdnOF9MjhNyx/v4Vn+o8GGnuxvhCG64XirlpMWGX6sOQ0UE44yyQR5Ue2D+Yg83/jF3HydXITG2dCpN44C54GtxDfKKYuTUXGCEVhsyDNWwz05zRRu8UbRlNm/bE6saylOFJXvBbUKlN27qvCd4UCO5TGoE75mxmLb3jHGqmCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gpEHST9P; arc=none smtp.client-ip=198.175.65.19
+	 MIME-Version:Content-Type; b=ZqgH1h8PQ+TGiEkNBcpPH1b0BZBB+/ssnmsGmlmSTIvP7I8BypMFqnbDHNUIxOCB7El/yHIFSj7HeH3OvM5oEX6MPoPI9DyzlJhaPyHBFgGFS8z0gHxLkYbos21L2F1xLI4DjU/1WryqoKlqab4P+2oBtPoHUTNOAgcTh4JhTwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=easix1+R; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gpEHST9P"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="easix1+R"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774371607; x=1805907607;
+  t=1774371619; x=1805907619;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9hvV8PDAdyGkHU10me7VyjfjKt6p0yD22QH58KrfakU=;
-  b=gpEHST9P1UugeaS32z4rzTOOKQ9kQj4bIIQ7osxvVXJxWCmJ9ddnBqSp
-   H9E8F2CV5VUEmNyesdo3O4RNI4sgeGnoI+7QP2aaJjoyPVY+We+FXuLmt
-   7+gLB87ce3pnwfGQ51eaBGeg1yn8j4MJS/7ruQ0Im3YaHVEA8n4ujALmD
-   1NS3qMdWW/H6yx9O7+Q8GIrBbhCBzqIDCRm+HDJ0J35jFdHh9Vo+IK2LI
-   FPn0XXe/WImSbsCSIu3UtlqPMKxs2C8BEVxjEILdnAVr0DpcM3Wb5//9r
-   sjpapG5eGao8ltTti4DPhqKFhvgV2oJzIUgwVgLFqOX182Ycx01Z31hqF
+  bh=d6KLxSDgRcKiLzDY+NMiMRY2jmIC2rw/9NmZTIuAx/o=;
+  b=easix1+RlY9rqMRBuoMLb2wAAfgSDz3ibtQyVj4mqKpmFLMQgTbIPCX4
+   gAA2tEX3xYIEto8+AkrxOuTPGzuP2j4e4VBVuKeGGwITBZ8oflbfV8Hkp
+   5VYbtgI5lBaHcrIDfpxq6mOnlCqa++w7ugTD3Nk8+ARqI+dmONSZvjXIR
+   /p5fvft8c5Wa8UUJjzOkzuqezOLRv0raQAEbuHgWEc3mxJhsvClnVn1zP
+   ZLy2GBHQZVVO7TOXnmjvfKgm9fv/GmNgMpWiRR/gxry7bYZfuF+hIbWXy
+   vir35/haHx/+1Gs8DkkVK7Y7QH/pjiUkI44eIBNl3xTlmN+Yeovb/CpTL
    g==;
-X-CSE-ConnectionGUID: iywcv3YBQi2bwS/CH3Jf1A==
-X-CSE-MsgGUID: l1tnAIIYS+2X+gdth5qN8w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="75281391"
+X-CSE-ConnectionGUID: nUnU6aoWQo2pnsxJyPFYOw==
+X-CSE-MsgGUID: jBwyIQ2rTj6lPAcoDtiAQg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="75281440"
 X-IronPort-AV: E=Sophos;i="6.23,138,1770624000"; 
-   d="scan'208";a="75281391"
+   d="scan'208";a="75281440"
 Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2026 10:00:06 -0700
-X-CSE-ConnectionGUID: ZabKv/GtRfqHh4rMbY+IrQ==
-X-CSE-MsgGUID: KjVhSRgDSkWdd+eayrpYDg==
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2026 10:00:18 -0700
+X-CSE-ConnectionGUID: ib4xzWKRSNm/cm3wyP1vbg==
+X-CSE-MsgGUID: WCv5QcPyT7OGGuY23A4d9Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,138,1770624000"; 
-   d="scan'208";a="219540084"
+   d="scan'208";a="219540242"
 Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.217])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2026 09:59:57 -0700
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2026 10:00:10 -0700
 From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
 To: linux-pci@vger.kernel.org,
 	Bjorn Helgaas <bhelgaas@google.com>,
@@ -74,9 +74,9 @@ To: linux-pci@vger.kernel.org,
 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
 	linux-kernel@vger.kernel.org
 Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 06/10] MIPS: PCI: Remove unnecessary second application of align
-Date: Tue, 24 Mar 2026 18:56:29 +0200
-Message-Id: <20260324165633.4583-7-ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 07/10] parisc/PCI: Cleanup align handling
+Date: Tue, 24 Mar 2026 18:56:30 +0200
+Message-Id: <20260324165633.4583-8-ilpo.jarvinen@linux.intel.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260324165633.4583-1-ilpo.jarvinen@linux.intel.com>
 References: <20260324165633.4583-1-ilpo.jarvinen@linux.intel.com>
@@ -89,36 +89,52 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Aligning res->start by align inside pcibios_align_resource() is
-unnecessary because caller of pcibios_align_resource() is
-__find_resource_space() that aligns res->start with align before
-calling pcibios_align_resource().
+Caller of pcibios_align_resource() (__find_resource_space()) already
+aligns the start address by 'alignment' so aligning is only necessary
+if align > alignment.
 
-Aligning by align in case of IORESOURCE_IO && start & 0x300 cannot ever
-result in changing start either because 0x300 bits would have not
-survived the earlier alignment if align was large enough to have an
-impact.
-
-Thus, remove the duplicated aligning from pcibios_align_resource().
+Change also to use ALIGN() instead of open-coding.
 
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
- arch/mips/pci/pci-generic.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/parisc/kernel/pci.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
-index f4957c26efc7..aaa1d6de8bef 100644
---- a/arch/mips/pci/pci-generic.c
-+++ b/arch/mips/pci/pci-generic.c
-@@ -32,8 +32,6 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
- 	if (res->flags & IORESOURCE_IO && start & 0x300)
- 		start = (start + 0x3ff) & ~0x3ff;
+diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
+index f99b20795d5a..f50be1a63c4c 100644
+--- a/arch/parisc/kernel/pci.c
++++ b/arch/parisc/kernel/pci.c
+@@ -8,6 +8,7 @@
+  * Copyright (C) 1999-2001 Hewlett-Packard Company
+  * Copyright (C) 1999-2001 Grant Grundler
+  */
++#include <linux/align.h>
+ #include <linux/eisa.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+@@ -200,7 +201,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t alignment)
+ {
+-	resource_size_t mask, align, start = res->start;
++	resource_size_t align, start = res->start;
  
--	start = (start + align - 1) & ~(align - 1);
+ 	DBG_RES("pcibios_align_resource(%s, (%p) [%lx,%lx]/%x, 0x%lx, 0x%lx)\n",
+ 		pci_name(((struct pci_dev *) data)),
+@@ -209,11 +210,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 
+ 	/* If it's not IO, then it's gotta be MEM */
+ 	align = (res->flags & IORESOURCE_IO) ? PCIBIOS_MIN_IO : PCIBIOS_MIN_MEM;
 -
- 	host_bridge = pci_find_host_bridge(dev->bus);
+-	/* Align to largest of MIN or input size */
+-	mask = max(alignment, align) - 1;
+-	start += mask;
+-	start &= ~mask;
++	if (align > alignment)
++		start = ALIGN(start, align);
  
- 	if (host_bridge->align_resource)
+ 	return start;
+ }
 -- 
 2.39.5
 
