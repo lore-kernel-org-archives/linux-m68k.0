@@ -1,134 +1,123 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DE03502B8;
-	Tue, 24 Mar 2026 18:36:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D8F62E401
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Mar 2026 11:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774377400; cv=none; b=OTtULeil9IspmJ8+Za1S6TgYjDju88XLPCxpBB6VpI6G777C30FxMrBgowZHEN5NPUqGuOjVCIEqV65H1uXTaSLcCgK3wLapL4GI86xVWmA/nCq2wNQu8NEynCoqi2QSvBeM1ATvt/+FhfQ2/GmVN426ZCBqU1KU65ibjao84Ak=
+	t=1774437953; cv=none; b=Yb9XjZr0S0uf6QdegdWFQwFv/SMcX9eyrYhNkm1XgxF1plLjK9oU2qSPZJ5ErsrZKuTjpvXYPupTQ5IaoB6xWpPvWZItGdQ3fO5vX9iXo0To8rLXMIxtUFmVlZX3Zcc+3SLknVeUeoCvz6qMwA03Mp7qswW+O5A2h1RCaBHrQTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774377400; c=relaxed/simple;
-	bh=CR5/H6jk/spqZtGbl3vbbrLXD63pd8iURB3okeroTcY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=TGST2GRVCyCuUT6OeCmbcsVmHH/9/E8099P22QPIhmHYmZh/U3M3rKhfuN0kFDBm+fMYHZjNHetV4hi/oWYaV67a9FXIhneNoJq8O31G1pFNzgqpC+vyLwTPBzoXaxnVsZTt2fbiJjNDANwu2GQyqPefcwyO11QmNBPr6xArBWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=ROAR34qq; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="ROAR34qq"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=TMacGYMUcDU/ZfxMzZ5qB4lAQfMCgWI9xYNANb/3NJE=; t=1774377398;
-	x=1774982198; b=ROAR34qq8LtotAQ+z4eU9DUiOLRXMu1qt6BEJUtvAGwBMkEua9GWWTE8Nq5o1
-	DQDO8gj44BlzhvHxqcy4Fe9Qd7jEPAM+JDU70D9BbWuGLXDbviVa8lb3VBc2aG8Hu4Jd7ZS85o1RL
-	3vfS+JSQbjGL3IHDDFj0aSeoBe/qBt/lroiAaKfTUeug6ULI9EX3O146goonePpahvPga5SASG6kY
-	eF3cOFQvyHiND9/QgwhG/QOJzIYDiRFC539PiJWx/m7F65i2JlBQAlBXLn6kfyEDffe8rvX2AL78p
-	MiO0St9DBDptfiY+hHmBZdImb1jjrOvCQbqPST5EUo6SCXrjHw==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.99)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1w56c9-00000000BcZ-2HRb; Tue, 24 Mar 2026 19:36:29 +0100
-Received: from p5dc55f29.dip0.t-ipconnect.de ([93.197.95.41] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.99)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1w56c9-00000001y8z-0w0E; Tue, 24 Mar 2026 19:36:29 +0100
-Message-ID: <de9bf8fef8e311f37335507f0e715d113cd91bc5.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH 05/10] am68k/PCI: Remove unnecessary second application
- of align
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, Guenter
- Roeck <linux@roeck-us.net>, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, 	linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, 	linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, 	linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, Russell King	 <linux@armlinux.org.uk>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>,  Helge Deller	 <deller@gmx.de>,
- Michael Ellerman <mpe@ellerman.id.au>, Thomas Gleixner	 <tglx@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,  Dave
- Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Chris Zankel <chris@zankel.net>,  Max Filippov <jcmvbkbc@gmail.com>,
- Madhavan Srinivasan <maddy@linux.ibm.com>, Yoshinori Sato	
- <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, LKML	
- <linux-kernel@vger.kernel.org>
-Date: Tue, 24 Mar 2026 19:36:27 +0100
-In-Reply-To: <1c08efcd-25e8-6436-52ab-ac3d50dcf58f@linux.intel.com>
-References: <20260324165633.4583-1-ilpo.jarvinen@linux.intel.com>
-	  <20260324165633.4583-6-ilpo.jarvinen@linux.intel.com>
-	 <5de97ed9556bfcc3b1f26bd71e09fa4016ae3ff8.camel@physik.fu-berlin.de>
-	 <1c08efcd-25e8-6436-52ab-ac3d50dcf58f@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 
+	s=arc-20240116; t=1774437953; c=relaxed/simple;
+	bh=ihSFBqegysCkqTbv155gSYJA1ImxRZIlMeZc6pyFR4I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KwJuC3h0IgaCLBlgwGwDTX8ihAuJAHTQXDmlzDZpgdPf6iMgv/w1D2ERZa+jl8179J7QtDR1D7lP+xW7LiDAjBlUm+tLLOhiA+gb97iZhFB6BKIpBPG7P69uK3lai9L9dVUOxWFFEeJIW0iJAiJSCEX/YG76JMVT0gksRPZKnGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id B9EE260123;
+	Wed, 25 Mar 2026 11:25:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A69C4CEF7;
+	Wed, 25 Mar 2026 11:25:49 +0000 (UTC)
+Message-ID: <c31b5288-7b1c-4139-8ae2-fbcb93411be5@linux-m68k.org>
+Date: Wed, 25 Mar 2026 21:25:31 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: Fix task info flags handling for 68000
+To: Daniel Palmer <daniel@0x0f.com>
+Cc: geert@linux-m68k.org, christoph.plattner@gmx.at,
+ linux-m68k@lists.linux-m68k.org, sashal@kernel.org
+References: <20260312115832.835968-1-daniel@0x0f.com>
+ <10efa219-f7d7-4655-9a48-b4094bf97d47@linux-m68k.org>
+ <CAFr9PXnO7y=PUPELb78qA1nN+4qsYqmk036PqXPLogk+L3Sv+A@mail.gmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <CAFr9PXnO7y=PUPELb78qA1nN+4qsYqmk036PqXPLogk+L3Sv+A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2026-03-24 at 19:55 +0200, Ilpo J=C3=A4rvinen wrote:
-> On Tue, 24 Mar 2026, John Paul Adrian Glaubitz wrote:
->=20
-> > Hi Ilpo,
-> >=20
-> > On Tue, 2026-03-24 at 18:56 +0200, Ilpo J=C3=A4rvinen wrote:
-> > > Aligning res->start by align inside pcibios_align_resource() is
-> > > unnecessary because caller of pcibios_align_resource() is
-> > > __find_resource_space() that aligns res->start with align before
-> > > calling pcibios_align_resource().
-> > >=20
-> > > Aligning by align in case of IORESOURCE_IO && start & 0x300 cannot ev=
-er
-> > > result in changing start either because 0x300 bits would have not
-> > > survived the earlier alignment if align was large enough to have an
-> > > impact.
-> > >=20
-> > > Thus, remove the duplicated aligning from pcibios_align_resource().
-> > >=20
-> > > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > > ---
-> > >  arch/m68k/kernel/pcibios.c | 2 --
-> > >  1 file changed, 2 deletions(-)
-> > >=20
-> > > diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
-> > > index 1415f6e4e5ce..7e286ee1976b 100644
-> > > --- a/arch/m68k/kernel/pcibios.c
-> > > +++ b/arch/m68k/kernel/pcibios.c
-> > > @@ -36,8 +36,6 @@ resource_size_t pcibios_align_resource(void *data, =
-const struct resource *res,
-> > >  	if ((res->flags & IORESOURCE_IO) && (start & 0x300))
-> > >  		start =3D (start + 0x3ff) & ~0x3ff;
-> > > =20
-> > > -	start =3D (start + align - 1) & ~(align - 1);
-> > > -
-> > >  	return start;
-> > >  }
-> > >=20
-> >=20
-> > Sorry if it's a stupid question, but what does "am68k" in the subject r=
-efer to?
->=20
-> The extra "a" is a typo. I'm sorry about that.
+Hi Daniel,
 
-No worries, I just thought I missed something obvious and felt stupid to as=
-k ;-).
+On 17/3/26 08:05, Daniel Palmer wrote:
+> Hi Greg,
+> 
+> On Mon, 16 Mar 2026 at 23:08, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>>
+>> The comments from arch/m68k/include/asm/thread_info.h are this:
+>>
+>> /* entry.S relies on these definitions!
+>>    * bits 0-7 are tested at every exception exit
+>>    * bits 8-15 are also tested at syscall exit
+>>    */
+>>
+>> So looking at what check is in arch/m68k/coldfire/entry.S:
+>>
+>>       moveb   %a0@(TINFO_FLAGS+3),%d1 /* thread_info->flags (low 8 bits) */
+>>
+>> In arch/m68k/kernel/entry.S it looks to be doing basically the same thing:
+>>
+>>       moveb   %a1@(TINFO_FLAGS+3),%d0
+>>
+>> So they do really only check bits 0-7 here.
+>>
+>> If you code the check like that do you still get correct running behavior?
+> 
+> That seems to work.
 
-Adrian
+Thanks for the confirmation.
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
+> One thing I'm unsure about is this in the coldfire version:
+> 
+> Luser_return:
+> movel %sp,%d1 /* get thread_info pointer */
+> andl #-THREAD_SIZE,%d1 /* at base of kernel stack */
+> movel %d1,%a0
+> moveb %a0@(TINFO_FLAGS+3),%d1 /* thread_info->flags (low 8 bits) */
+> 
+> ^^^^^^
+> So the bottom 8 bits are in d1
+> 
+> jne Lwork_to_do /* still work to do */
+> 
+> Lreturn:
+> RESTORE_USER
+> 
+> Lwork_to_do:
+> movel %a0@(TINFO_FLAGS),%d1 /* get thread_info->flags */
+> 
+> ^^^^^^^
+> Now the whole value is loaded into d1 to do the bit test.. but the
+> value needed is already in d1 as we'll be testing bit 7?
+
+Yeah, agreed. The more I look at the ColdFire version the more I think it
+may not be totally correct. Its flow here doesn't match the comments from
+arch/m68k/include/asm/thread_info.h. The legacy MMU m68k code does appear
+to do as the comments say with respect to the TINFO flag bits.
+
+The ColdFire code was forked from the original arch/m68k/kernel/entry.S
+a very long time back - there was some differences that needed to be dealt
+with.
+
+Anyway what I am looking more closely at is if the higher TINFO flag bits
+are actually not being checked at all - so things like single stepping.
+
+Regards
+Greg
+
+
+
+> move #0x2000,%sr /* enable intrs again */
+> btst #TIF_NEED_RESCHED,%d1
+> jne reschedule
+> 
+> 
+> Thanks,
+> 
+> Daniel
+
