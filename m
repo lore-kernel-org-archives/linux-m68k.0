@@ -1,123 +1,156 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D8F62E401
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Mar 2026 11:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DB63D1707
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Mar 2026 12:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774437953; cv=none; b=Yb9XjZr0S0uf6QdegdWFQwFv/SMcX9eyrYhNkm1XgxF1plLjK9oU2qSPZJ5ErsrZKuTjpvXYPupTQ5IaoB6xWpPvWZItGdQ3fO5vX9iXo0To8rLXMIxtUFmVlZX3Zcc+3SLknVeUeoCvz6qMwA03Mp7qswW+O5A2h1RCaBHrQTw=
+	t=1774440259; cv=none; b=Ms162DNvrNi4+amAgPdb+EDSE/HsN7elQnG7wgNSKPFwXBHWLZ4w2vXB02Ej/H1dwb5fV96qyb+Qbaeh64htEyrwJ+JnpQpS21l/BO1Qf+oEwITsDOcCZBUNtdjva9WWMkQn/M3bu3UiNyuWkJfbvgUlgvUWjX883O9vs6Qy94s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774437953; c=relaxed/simple;
-	bh=ihSFBqegysCkqTbv155gSYJA1ImxRZIlMeZc6pyFR4I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KwJuC3h0IgaCLBlgwGwDTX8ihAuJAHTQXDmlzDZpgdPf6iMgv/w1D2ERZa+jl8179J7QtDR1D7lP+xW7LiDAjBlUm+tLLOhiA+gb97iZhFB6BKIpBPG7P69uK3lai9L9dVUOxWFFEeJIW0iJAiJSCEX/YG76JMVT0gksRPZKnGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id B9EE260123;
-	Wed, 25 Mar 2026 11:25:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A69C4CEF7;
-	Wed, 25 Mar 2026 11:25:49 +0000 (UTC)
-Message-ID: <c31b5288-7b1c-4139-8ae2-fbcb93411be5@linux-m68k.org>
-Date: Wed, 25 Mar 2026 21:25:31 +1000
+	s=arc-20240116; t=1774440259; c=relaxed/simple;
+	bh=pthnvpb4bRgKrgjRM/7gqeUF0giUw3hMBAx3mtd0Tfk=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=psrEMLwk0qcuOb5CrUoTfuQEoksiJ629MiSu+Bp77Iu1iVV4T/GO8BU9jp+OHwsGpPadw5vHPJhukvNcM7PwReGY0KoizkW8FRSCa7jIVrA2+NkbHZzjZEtqAzM75xnlE9q7xfNRse46dgCaoA4DRihJVMscUn23zi9QpYMEjmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J7tmz/ea; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J7tmz/ea"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774440257; x=1805976257;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=pthnvpb4bRgKrgjRM/7gqeUF0giUw3hMBAx3mtd0Tfk=;
+  b=J7tmz/eaTd05OL5Uk7c6f1Kz8pD8vJdRkgQWOqDIGV0pFDBcdRBCkn5L
+   CHF0T6xDxbbPlkkMcFQ5srdSF3zl6wg/kncaLmsQAOzReECtzOOSn9tHA
+   inEXGYEhqWoW7sxM7rBars5x1z7pJHS9y2ujTi3YG6RW47526m7HdSFNK
+   uc0J5+6qPA05S8bFz5l0rUjFhsYQD3Q+EHHd1TdX9Z5/Rrb4XBiLBqEu/
+   u5yJRH0WjjoSCRThOZjnWjA2bPXqdVGwbajeUIsS5WETRkPM/TElJxRS3
+   1xKJJYjeyEjD9TvZy6SnkpcjaF94s7DRIOuUW23s462znQhMdhy7V+6hw
+   g==;
+X-CSE-ConnectionGUID: Jt5gQNbTR1efLUxQYrMbFQ==
+X-CSE-MsgGUID: UqHAnXQ/QoC3ZexiV6OMnw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11739"; a="79381335"
+X-IronPort-AV: E=Sophos;i="6.23,140,1770624000"; 
+   d="scan'208";a="79381335"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2026 05:04:15 -0700
+X-CSE-ConnectionGUID: GDVCGG5yQPG4XMQBFBjvAw==
+X-CSE-MsgGUID: 2mzDZ70tTHGJhYkLqZAkRA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,140,1770624000"; 
+   d="scan'208";a="255160046"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.125])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2026 05:04:07 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 25 Mar 2026 14:04:03 +0200 (EET)
+To: linux-pci@vger.kernel.org
+cc: Bjorn Helgaas <bhelgaas@google.com>, Guenter Roeck <linux@roeck-us.net>, 
+    linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+    linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+    linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+    linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+    Russell King <linux@armlinux.org.uk>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+    Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, 
+    Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+    "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, 
+    Max Filippov <jcmvbkbc@gmail.com>, 
+    Madhavan Srinivasan <maddy@linux.ibm.com>, 
+    Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+    Nicholas Piggin <npiggin@gmail.com>, 
+    "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, x86@kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 09/10] PCI: Align head space better
+In-Reply-To: <20260324165633.4583-10-ilpo.jarvinen@linux.intel.com>
+Message-ID: <3a51ad39-558f-860d-4920-9f757b7d5131@linux.intel.com>
+References: <20260324165633.4583-1-ilpo.jarvinen@linux.intel.com> <20260324165633.4583-10-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: Fix task info flags handling for 68000
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: geert@linux-m68k.org, christoph.plattner@gmx.at,
- linux-m68k@lists.linux-m68k.org, sashal@kernel.org
-References: <20260312115832.835968-1-daniel@0x0f.com>
- <10efa219-f7d7-4655-9a48-b4094bf97d47@linux-m68k.org>
- <CAFr9PXnO7y=PUPELb78qA1nN+4qsYqmk036PqXPLogk+L3Sv+A@mail.gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <CAFr9PXnO7y=PUPELb78qA1nN+4qsYqmk036PqXPLogk+L3Sv+A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="8323328-1062646629-1774440243=:976"
 
-Hi Daniel,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On 17/3/26 08:05, Daniel Palmer wrote:
-> Hi Greg,
-> 
-> On Mon, 16 Mar 2026 at 23:08, Greg Ungerer <gerg@linux-m68k.org> wrote:
->>
->> The comments from arch/m68k/include/asm/thread_info.h are this:
->>
->> /* entry.S relies on these definitions!
->>    * bits 0-7 are tested at every exception exit
->>    * bits 8-15 are also tested at syscall exit
->>    */
->>
->> So looking at what check is in arch/m68k/coldfire/entry.S:
->>
->>       moveb   %a0@(TINFO_FLAGS+3),%d1 /* thread_info->flags (low 8 bits) */
->>
->> In arch/m68k/kernel/entry.S it looks to be doing basically the same thing:
->>
->>       moveb   %a1@(TINFO_FLAGS+3),%d0
->>
->> So they do really only check bits 0-7 here.
->>
->> If you code the check like that do you still get correct running behavior?
-> 
-> That seems to work.
+--8323328-1062646629-1774440243=:976
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Thanks for the confirmation.
+On Tue, 24 Mar 2026, Ilpo J=C3=A4rvinen wrote:
 
+> When a bridge window contains big and small resource(s), the small
+> resource(s) may not amount to the half of the size of the big resource
+> which would allow calculate_head_align() to shrink the head alignment.
+> This results in always placing the small resource(s) after the big
+> resource.
+>=20
+> In general, it would be good to be able to place the small resource(s)
+> before the big resource to achieve better utilization of the address
+> space. In the cases where the large resource can only fit at the end
+> of the window, it is even required.
+>=20
+> However, carrying the information over from pbus_size_mem() and
+> calculate_head_align() to __pci_assign_resource() and
+> pcibios_align_resource() is not easy with the current data structures.
+>=20
+> A somewhat hacky way to move the non-aligning tail part to the head is
+> possible within pcibios_align_resource(). The free space between the
+> start of the free space span and the aligned start address can be
+> compared with the non-aligning remainder of the size. If the free space
+> is larger than the remainder, placing the remainder before the start
+> address is possible. This relocation should generally work, because PCI
+> resources consist only power-of-2 atoms.
+>=20
+> Various arch requirements may still need to override the relocation, so
+> the relocation is only applied selectively in such cases.
+>=20
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D221205
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  arch/arm/kernel/bios32.c         |  3 +++
+>  arch/m68k/kernel/pcibios.c       |  4 ++++
+>  arch/mips/pci/pci-generic.c      |  3 +++
+>  arch/mips/pci/pci-legacy.c       |  2 ++
+>  arch/parisc/kernel/pci.c         |  3 +++
+>  arch/powerpc/kernel/pci-common.c |  2 ++
+>  arch/sh/drivers/pci/pci.c        |  2 ++
+>  arch/x86/pci/i386.c              |  2 ++
+>  arch/xtensa/kernel/pci.c         |  2 ++
+>  drivers/pci/setup-res.c          | 39 +++++++++++++++++++++++++++++++-
+>  include/linux/pci.h              |  5 ++++
+>  kernel/resource.c                |  2 +-
+>  12 files changed, 67 insertions(+), 2 deletions(-)
 
-> One thing I'm unsure about is this in the coldfire version:
-> 
-> Luser_return:
-> movel %sp,%d1 /* get thread_info pointer */
-> andl #-THREAD_SIZE,%d1 /* at base of kernel stack */
-> movel %d1,%a0
-> moveb %a0@(TINFO_FLAGS+3),%d1 /* thread_info->flags (low 8 bits) */
-> 
-> ^^^^^^
-> So the bottom 8 bits are in d1
-> 
-> jne Lwork_to_do /* still work to do */
-> 
-> Lreturn:
-> RESTORE_USER
-> 
-> Lwork_to_do:
-> movel %a0@(TINFO_FLAGS),%d1 /* get thread_info->flags */
-> 
-> ^^^^^^^
-> Now the whole value is loaded into d1 to do the bit test.. but the
-> value needed is already in d1 as we'll be testing bit 7?
+> diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
+> index 7a0522316ee3..994c3bd36ef2 100644
+> --- a/arch/sh/drivers/pci/pci.c
+> +++ b/arch/sh/drivers/pci/pci.c
+> @@ -185,6 +185,8 @@ resource_size_t pcibios_align_resource(void *data, co=
+nst struct resource *res,
+>  =09=09 */
+>  =09=09if (start & 0x300)
+>  =09=09=09start =3D (start + 0x3ff) & ~0x3ff;
+> +=09} else (res->flags & IORESOURCE_MEM) {
 
-Yeah, agreed. The more I look at the ColdFire version the more I think it
-may not be totally correct. Its flow here doesn't match the comments from
-arch/m68k/include/asm/thread_info.h. The legacy MMU m68k code does appear
-to do as the comments say with respect to the TINFO flag bits.
+I'll be adding the missing if into this in v2 (found by sashiko). It seems=
+=20
+lkp didn't test this so it was not caught earlier.
 
-The ColdFire code was forked from the original arch/m68k/kernel/entry.S
-a very long time back - there was some differences that needed to be dealt
-with.
+> +=09=09start =3D pci_align_resource(dev, res, empty_res, size, align);
+>  =09}
+> =20
+>  =09return start;
 
-Anyway what I am looking more closely at is if the higher TINFO flag bits
-are actually not being checked at all - so things like single stepping.
+--=20
+ i.
 
-Regards
-Greg
-
-
-
-> move #0x2000,%sr /* enable intrs again */
-> btst #TIF_NEED_RESCHED,%d1
-> jne reschedule
-> 
-> 
-> Thanks,
-> 
-> Daniel
-
+--8323328-1062646629-1774440243=:976--
