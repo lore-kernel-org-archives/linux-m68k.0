@@ -1,63 +1,63 @@
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60CA03CE49F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7163CE49D
 	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Mar 2026 08:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774598466; cv=none; b=RkKFq4go0Xaf5MpXHa2Aj0i54TMxEF+oGdaPNfvImfHn+Va/CYWScTKGR2epjYMXRYEXyzx/OQd9ojPzFWsKt4UyEDbT43jLYiGn5z/TU+2JJj9yDOuOJzSLoEXrHlHOiI1qNEK6TusngZPDAiwztV9BK3uRhIzlnx4SE8Wvbbc=
+	t=1774598467; cv=none; b=aGZ2K99KguLoaugzTvhtA/Oi5MLEMCUllEnGU4cEcaWA3kwmBzXoAjAUqoKs7n6M1KCRuRdfZ5G6kaN1KZK/mHa426gmtJvZN8C4theUksXyahq0r55pKCb4cyXdJp0i6rkTCX+Bk1j4UyfeK3XesDpOa9jN3M0S7PXIIE46of0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774598466; c=relaxed/simple;
-	bh=VuK/A2SKkIB8gq+5+JMkruh64JklcZWA+VF4xG65caU=;
+	s=arc-20240116; t=1774598467; c=relaxed/simple;
+	bh=b4EA7Cjd+Rmu3jUMpgHSoP8C+KLtgyFkpMfPCKIjeuM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uCRMzzf09vYzGoacr7S1B7H1NXhf9Wzb8+ntXEOnTj7WTbShbZdXL5qxDUOwjy5DPCmQq4YbEuEkrZR68NtSPpcq32whBzlFTDjjUuXkHBaSbHLNnYk2pJ0C5F5XOlstQ1yRRbyHJEHb9g42ozZeXKv0O6k7qkkAW0GahZ9VnJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fQtaaoYW; arc=none smtp.client-ip=209.85.221.49
+	 MIME-Version; b=nC3lhhFKiIFlKJDCGwtSF1DKuPOsB/mdPfwMo0pUaaII0TxvjPVxR86Zy4B5xNoDzmMpByNjnBVzjIjDAqpeOVzGwkc6TXg6SPw9ncxuG/+usl6/mFGtGAOH4R9VhpSzIFcoVEmHSv8m28YtET5vCyfYpAPNQcZIP+IfMOR9188=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kvos50gM; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fQtaaoYW"
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-43b87970468so1765212f8f.3
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kvos50gM"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-486fda2a389so14460125e9.1
         for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Mar 2026 01:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=suse.com; s=google; t=1774598459; x=1775203259; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/maIRRXWsco2YLlNLQIg+54XR4CJ2LAx0k8sLQQpIyQ=;
-        b=fQtaaoYW8MyAfERexYL6FgcxQ4MOdT2O0me4YdGgXTHV1A+NMliv+e6AUqndEERftk
-         PfPuWbV4NKn1oOQqU4NLavxobzWYHfyHdHdpOfxpJY4hd9gt2qF5Bo7WQmS/QBtO1Ee8
-         DkyYlfKP+vTAFQQKoKZQA2cCVc3TkVmE4sMhweuUHjCO36/Lp19Cswbq72cm/GKjWL2u
-         sG7GqTpF93iW0GLV9x0pot4COwpU378Ni6VqwqeF/MNj62DSj5WsxB/rVshrh95V5ni3
-         tVSITSSUan2u2bILmqajlicwx18gzZlqRrKBHdpPOImnUUFZLMxPZATX1F+urdlUMACW
-         aDqA==
+        bh=QlVyZgwbk35jZ7E4LjSb7Hh9QtkNRjrn39+Y58oA5YM=;
+        b=Kvos50gMn/frLPQre5ndx5zDGetNrtLlmwq73CpMzJAIoWDyPgA/yc+tTB3yASsdpB
+         GLEYYElWq07gEdKiJa6+Yfnat++lIO0gpmTNt6SOlLRmc1UC5rFcpDVxyGOLu4SJMIVn
+         548+rdBpOhe60XujakJCAWGpg7JOxttRkWSUmr52arHvdNZHa/xzNAa48GOpqk3kjLva
+         rTh/9x0JOVdIK63ne7jeN4zmSXr3r9eyiCqASa/33Q1PmPPq4A+GPc2y/w900Bp3vKGG
+         ZWd9zDKg8xjlgyoxXWczxaw9gjIwcELLmH6JaJvsHPAk/w7DPvqCG0yT1bxVPFcW3CVf
+         e3dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20251104; t=1774598459; x=1775203259;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=/maIRRXWsco2YLlNLQIg+54XR4CJ2LAx0k8sLQQpIyQ=;
-        b=cCfrPuYZNwc84CyUs9RAK/Io6TnzMLMFx4wXeLr3kNq4309dV5TMplGak6lsQNJ38F
-         AR7yScoyOpRd1a5ukWO7oSnYuR3esfYp5XCuUwSrGIAtb9G/7SdMkwrdvzevzDFbZwdi
-         yCe+7a0sOalya3S8rC8Bb7q0QQTmvc8P3HPpJvjpZXQtAHNz6RZFhnTV/IzqgXZI1YJg
-         4xNQgGRbpOVnEiKjOqUgjZ/j6+1m7SsYhANsnUB1cmJ5YmqLzmL6uLHkMovY3rvoBXdu
-         GFnOscmlWDx+M6r5xNYjzoLuDUlarPDYtNpZx2Y0hYT8w/UxVuWrtRWHsE7o+i/9zIHS
-         ZpDw==
-X-Forwarded-Encrypted: i=1; AJvYcCXnhK3imnDi2BTHxwr2RQALgoUFeZyl3O0cC+jNzgKDcV6JJMOkyS3Yan1esGLObNcNeEfDLAzdMokg@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzvOCZbaKwmG9di6U8S8w2oxU50HNXIPaLMvATg2bdoObrZUV14
-	mTZtjt2TALnGQo37CK6olrI+bnZGXnkzuJbuU69xLnacKrUJo5sc/y5yq1R1WZGunsA=
-X-Gm-Gg: ATEYQzyP1hXsSbH7rIRSPxJyfOFxgbs5S7RvisdY3qJO71AhLmsUrndX3VNiKlyKbZf
-	5mP9g9Cg952dGE058paogz/B2hdXvQufFgaqt0l8aqnc0aF16PXDAJ/LYYKL/vtZPHXEBnJsJEB
-	IcKjidh1t7kOB70kbUk0vXUDuEKc54meKcUopemAkJg0JCYfajoM+3Jv2cdHO1dc0XIbLeL3T5Q
-	Knb0hsBXk0r+eh2BEtEPHnZ7AZ/wV8XbCSWUnQLYJx4OVxN1JAKMc1Nj9F4L/dkngYR/f5c2AbE
-	lq5vhLCUx+zQl6IJuE5OxTR3N/itATikuykekraG24Co0lrDX+t61BWwX9p8gN+aluwYmcLCG2v
-	YwyK31U9RlMCiY58ewLvo6H1AtMW37TfAkBdRooWpadkuYazrLa/O7DFH1Az0E6B0gOsR5j8iu3
-	g7lHZVJq00+HAAWnE2BQK4Kz40wc/2taNkESsx7UnM
-X-Received: by 2002:a05:600c:828a:b0:487:338:b4df with SMTP id 5b1f17b1804b1-48727d8818cmr22261095e9.15.1774598457203;
-        Fri, 27 Mar 2026 01:00:57 -0700 (PDT)
+        bh=QlVyZgwbk35jZ7E4LjSb7Hh9QtkNRjrn39+Y58oA5YM=;
+        b=RDVNU7UnawhWQLvr1a3PEEqB93U0H0+Lc8MjDKA9UrmFSCyI6bp0NDyvba6rVlgXif
+         HtmNSAs/IfkcbKVq0JK7qmfFsh0IMm6/cupsJL/G+uyMZzMG31AH2kOSfFSd1ZtlgvIi
+         XI12qoSiZbMi8PDB9DrjLBXNT/v5xi4TnxKq0fOmCTzsbXUcVH9fgUjZAqf1iTY3zVUe
+         /uwFG8F5zrMqKV9vagXeiYFSvxmOsa4hz6ICuxWRGwHs+cCWQEb4L663a3M/ow9U05NW
+         arOUeb1wxpDJUEFwcDhmi/fnkDIWDwBp4NBphjlL9LoCiCAY+HB7kXxRwSCvnBwLaOwl
+         Y/nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVY9wgqaTmAxWSnALr8nZicsU/AJE49tis0QW1Xsdgl6xRgEwLXX2rXefg8iUPIfGjNqanLV7MpESIh@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy82Wu1iYdM6oDLmC+LzyjZxcyxTKO15ASKfzRUXl2tHtPrVlY3
+	E+dqNawcJvOKgu3uCQ7riHvU73FI9nnYg6VP0ZiBVDGrZLb+gqpXFZp7C8hVVB8qmfk=
+X-Gm-Gg: ATEYQzx8KLW18piHUfdbZDETilqqrmJkVpmLTD6Nh+CbdvDWL2g/BqY7qmsPrxo5hKa
+	fiSaqVFC7Z8bLZv/IJTCD4nIF6UAmWofKTxpndDPrsypaBWXk/w0ha0dRet2WPoKcEQZLdKJ/WU
+	qRCICRJlwRN6zP0QcfXC/avtGKZ4zl5hzhnqo3AqKLzGvLJZ47/dwFtzfi/d9gEnXufqczhlnA3
+	zNQKm3W57Pu9A581ELW+rISvoT/tz+ZdoWmPNx2dujSiJ6MnfU00Ff83a1MVZ3Y40XM1rdvv0SN
+	JFuCL6FF4IQ9rwC+/q3I/eq9D0eg29uyV5tpSIpaCDfwQHgvUofu8j8Am+o8Uq2pYUX0HWOs99I
+	9d4L43NQCnHprWPljjpktDDNO/noOxWD3H+9l+g8+Sww08elmr5kt3JGQwqcBxBVFNKAhZjFkd6
+	U2s/0qY4vxi9+/RTQ/ARYHOlQv65CW6X0wYlFBACdA
+X-Received: by 2002:a05:600c:5304:b0:485:f1d1:8f3d with SMTP id 5b1f17b1804b1-48727d67a43mr23844745e9.6.1774598458837;
+        Fri, 27 Mar 2026 01:00:58 -0700 (PDT)
 Received: from zovi.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48725fc4827sm12089735e9.11.2026.03.27.01.00.56
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48725fc4827sm12089735e9.11.2026.03.27.01.00.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Mar 2026 01:00:56 -0700 (PDT)
+        Fri, 27 Mar 2026 01:00:58 -0700 (PDT)
 From: Petr Pavlu <petr.pavlu@suse.com>
 To: Russell King <linux@armlinux.org.uk>,
 	Catalin Marinas <catalin.marinas@arm.com>,
@@ -78,9 +78,9 @@ Cc: Alexandre Ghiti <alex@ghiti.fr>,
 	linux-riscv@lists.infradead.org,
 	linux-modules@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] module, arm64: force sh_addr=0 for arch-specific sections
-Date: Fri, 27 Mar 2026 08:59:01 +0100
-Message-ID: <20260327080023.861105-3-petr.pavlu@suse.com>
+Subject: [PATCH 4/4] module, riscv: force sh_addr=0 for arch-specific sections
+Date: Fri, 27 Mar 2026 08:59:03 +0100
+Message-ID: <20260327080023.861105-5-petr.pavlu@suse.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260327080023.861105-1-petr.pavlu@suse.com>
 References: <20260327080023.861105-1-petr.pavlu@suse.com>
@@ -98,46 +98,30 @@ resulting .ko files. Relocatable objects are expected to have sh_addr=0 for
 all sections. Non-zero addresses are confusing in this context, typically
 worse compressible, and may cause tools to misbehave [1].
 
-Force sh_addr=0 for all arm64-specific module sections.
+Force sh_addr=0 for all riscv-specific module sections.
 
 Link: https://sourceware.org/bugzilla/show_bug.cgi?id=33958 [1]
 Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
 ---
-Note that the definition of .text.hot hasn't matched any input sections
-since commit 1ba9f8979426 ("vmlinux.lds: Unify TEXT_MAIN, DATA_MAIN, and
-related macros"), and even before that with CONFIG_LTO_CLANG=y.
+ arch/riscv/include/asm/module.lds.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-The preceding comment also explains that the directive is necessary to
-merge section groups. However, this approach seems suboptimal. A better
-method would be to link modules using --force-group-allocation to retain
-only one copy of each group.
-
-I plan to look at this separately.
----
- arch/arm64/include/asm/module.lds.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/include/asm/module.lds.h b/arch/arm64/include/asm/module.lds.h
-index fb944b46846d..0b3aacd22c59 100644
---- a/arch/arm64/include/asm/module.lds.h
-+++ b/arch/arm64/include/asm/module.lds.h
-@@ -14,7 +14,7 @@ SECTIONS {
- 	 * directive to force them into a single section and silence the
- 	 * warning.
- 	 */
--	.text.hot : { *(.text.hot) }
-+	.text.hot 0 : { *(.text.hot) }
- #endif
- 
- #ifdef CONFIG_UNWIND_TABLES
-@@ -22,6 +22,6 @@ SECTIONS {
- 	 * Currently, we only use unwind info at module load time, so we can
- 	 * put it into the .init allocation.
- 	 */
--	.init.eh_frame : { *(.eh_frame) }
-+	.init.eh_frame 0 : { *(.eh_frame) }
- #endif
+diff --git a/arch/riscv/include/asm/module.lds.h b/arch/riscv/include/asm/module.lds.h
+index 1075beae1ac6..9ced27c8ccb6 100644
+--- a/arch/riscv/include/asm/module.lds.h
++++ b/arch/riscv/include/asm/module.lds.h
+@@ -2,8 +2,8 @@
+ /* Copyright (C) 2017 Andes Technology Corporation */
+ #ifdef CONFIG_MODULE_SECTIONS
+ SECTIONS {
+-	.plt : { BYTE(0) }
+-	.got : { BYTE(0) }
+-	.got.plt : { BYTE(0) }
++	.plt 0 : { BYTE(0) }
++	.got 0 : { BYTE(0) }
++	.got.plt 0 : { BYTE(0) }
  }
+ #endif
 -- 
 2.53.0
 
