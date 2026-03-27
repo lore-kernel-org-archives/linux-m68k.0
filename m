@@ -1,63 +1,63 @@
 Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7163CE49D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3CC3C1961
 	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Mar 2026 08:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774598467; cv=none; b=aGZ2K99KguLoaugzTvhtA/Oi5MLEMCUllEnGU4cEcaWA3kwmBzXoAjAUqoKs7n6M1KCRuRdfZ5G6kaN1KZK/mHa426gmtJvZN8C4theUksXyahq0r55pKCb4cyXdJp0i6rkTCX+Bk1j4UyfeK3XesDpOa9jN3M0S7PXIIE46of0=
+	t=1774598467; cv=none; b=WF31b/S5oq0RFw7RyYA1HWDWJ7/eSeFFAG59mwdtNf+mMWTtWEiRAPV104EGp41seZICHFIAUAv2FY8xGxVXbd/ExPIJHvZcqBak9WBMkybOyd+kSsfleAHg6yubx26ss0irbVTaEX//lQZ6cCYqhROXbvD8wIVE3RG7SC7T8gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1774598467; c=relaxed/simple;
-	bh=b4EA7Cjd+Rmu3jUMpgHSoP8C+KLtgyFkpMfPCKIjeuM=;
+	bh=JWfjR/RTCXmZyEk+4Tx2iEnYpR1e4qTFsejI1js9qmM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nC3lhhFKiIFlKJDCGwtSF1DKuPOsB/mdPfwMo0pUaaII0TxvjPVxR86Zy4B5xNoDzmMpByNjnBVzjIjDAqpeOVzGwkc6TXg6SPw9ncxuG/+usl6/mFGtGAOH4R9VhpSzIFcoVEmHSv8m28YtET5vCyfYpAPNQcZIP+IfMOR9188=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kvos50gM; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version; b=KES+891Q7GI3mwzi8UPispJrRAfOUaxSDreNFEW339vpMivv7n0sURwKKJxTdX2Dvu45bdkgDMZ7MuLnR4jhUTFE3zdxu4CzVzmuQJ21pNVHNUeJqplTP1NknhaTc72GcFGoqPOn5vlk2aZ5yoKJyeTGQjw8TtK69l1CTpDgnmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A82P2CaB; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kvos50gM"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-486fda2a389so14460125e9.1
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A82P2CaB"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-486b9675d36so15983335e9.0
         for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Mar 2026 01:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1774598459; x=1775203259; darn=lists.linux-m68k.org;
+        d=suse.com; s=google; t=1774598458; x=1775203258; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QlVyZgwbk35jZ7E4LjSb7Hh9QtkNRjrn39+Y58oA5YM=;
-        b=Kvos50gMn/frLPQre5ndx5zDGetNrtLlmwq73CpMzJAIoWDyPgA/yc+tTB3yASsdpB
-         GLEYYElWq07gEdKiJa6+Yfnat++lIO0gpmTNt6SOlLRmc1UC5rFcpDVxyGOLu4SJMIVn
-         548+rdBpOhe60XujakJCAWGpg7JOxttRkWSUmr52arHvdNZHa/xzNAa48GOpqk3kjLva
-         rTh/9x0JOVdIK63ne7jeN4zmSXr3r9eyiCqASa/33Q1PmPPq4A+GPc2y/w900Bp3vKGG
-         ZWd9zDKg8xjlgyoxXWczxaw9gjIwcELLmH6JaJvsHPAk/w7DPvqCG0yT1bxVPFcW3CVf
-         e3dA==
+        bh=K4moBxHVs6SiILsKE/Pxveo5RaXduWTr95oeVQa3H18=;
+        b=A82P2CaBJdywIoADnzT+CUt4VPzbcGGaNXMB4pqtOFv+HlKDespav3x57vOtATZ0Zu
+         PkoNBxOVCKnJAol/Iqneoc7iQGcAyPy4zm0lcfLaLedCrih8yzlO767sDIDjUSi088PI
+         o6wy23806u1yFb4NhtFeebJ+dWKE5fQZK0rL9J63xsmrG3JLJZxjE/wlyItLlBccucyQ
+         +wMyJfGr+xpvKttdg5CwLWqp6F0TKPyz25FYs+VwPs6yUEnc07TzEasZfCHnbvScY7Ro
+         F1saZGbm8pfD14ifOiGIeExJ9omXoX/1fnwLqVtgkVy/YJ3Aljp3ll7doIRPC1bXhGyC
+         BCOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774598459; x=1775203259;
+        d=1e100.net; s=20251104; t=1774598458; x=1775203258;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=QlVyZgwbk35jZ7E4LjSb7Hh9QtkNRjrn39+Y58oA5YM=;
-        b=RDVNU7UnawhWQLvr1a3PEEqB93U0H0+Lc8MjDKA9UrmFSCyI6bp0NDyvba6rVlgXif
-         HtmNSAs/IfkcbKVq0JK7qmfFsh0IMm6/cupsJL/G+uyMZzMG31AH2kOSfFSd1ZtlgvIi
-         XI12qoSiZbMi8PDB9DrjLBXNT/v5xi4TnxKq0fOmCTzsbXUcVH9fgUjZAqf1iTY3zVUe
-         /uwFG8F5zrMqKV9vagXeiYFSvxmOsa4hz6ICuxWRGwHs+cCWQEb4L663a3M/ow9U05NW
-         arOUeb1wxpDJUEFwcDhmi/fnkDIWDwBp4NBphjlL9LoCiCAY+HB7kXxRwSCvnBwLaOwl
-         Y/nQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVY9wgqaTmAxWSnALr8nZicsU/AJE49tis0QW1Xsdgl6xRgEwLXX2rXefg8iUPIfGjNqanLV7MpESIh@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy82Wu1iYdM6oDLmC+LzyjZxcyxTKO15ASKfzRUXl2tHtPrVlY3
-	E+dqNawcJvOKgu3uCQ7riHvU73FI9nnYg6VP0ZiBVDGrZLb+gqpXFZp7C8hVVB8qmfk=
-X-Gm-Gg: ATEYQzx8KLW18piHUfdbZDETilqqrmJkVpmLTD6Nh+CbdvDWL2g/BqY7qmsPrxo5hKa
-	fiSaqVFC7Z8bLZv/IJTCD4nIF6UAmWofKTxpndDPrsypaBWXk/w0ha0dRet2WPoKcEQZLdKJ/WU
-	qRCICRJlwRN6zP0QcfXC/avtGKZ4zl5hzhnqo3AqKLzGvLJZ47/dwFtzfi/d9gEnXufqczhlnA3
-	zNQKm3W57Pu9A581ELW+rISvoT/tz+ZdoWmPNx2dujSiJ6MnfU00Ff83a1MVZ3Y40XM1rdvv0SN
-	JFuCL6FF4IQ9rwC+/q3I/eq9D0eg29uyV5tpSIpaCDfwQHgvUofu8j8Am+o8Uq2pYUX0HWOs99I
-	9d4L43NQCnHprWPljjpktDDNO/noOxWD3H+9l+g8+Sww08elmr5kt3JGQwqcBxBVFNKAhZjFkd6
-	U2s/0qY4vxi9+/RTQ/ARYHOlQv65CW6X0wYlFBACdA
-X-Received: by 2002:a05:600c:5304:b0:485:f1d1:8f3d with SMTP id 5b1f17b1804b1-48727d67a43mr23844745e9.6.1774598458837;
+        bh=K4moBxHVs6SiILsKE/Pxveo5RaXduWTr95oeVQa3H18=;
+        b=lN2ADItZsjmlsbsOJIO6fjsNPZ+GNP9K7n3f4mRtI2Z1CEQ/vHGDIIny3RRIBP8PMw
+         iumiNwQ5V6VIu1kUHILh8Y+eDwr9G85zqV4KmsaVsRVALxjbE5f17ay9dvKxOPIYH8F2
+         00Xr7gAigs6v5Zr7xlxY92bs6I0hqp1Dc5E5uP3MQqkKaeh3C6p0uonhcferCwK4IFfm
+         TANh0tkG3tYgFUqub2a+NVBS8JJn5umeq6xXt4XHDwWmz0slEZu/qsW27pnmaZvMmHUP
+         mnznZ1gJEaPXbERMmXuON7v/WOpWimpXunWb8cQELEYRoddOQEMVjLf5kMstmQYPk9L0
+         mBGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX6At8oHJ5HmRiJZ0vxAbxNum3gVzHxf+lUk47G0wz0eSgoJyd7sx5FLIDE3+u94jptH+ievvD8Etkr@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yx1xRohtg2Lprq/RGYrLKFB1f41opZQItP6Vav/1NtvCmPkyv7M
+	GHyEcZdWj4YcHSrg2kZTyalVrT2kIAIhYVp14UUWJJra8sJrrl/oLcj+rrLxQyiOQqQ=
+X-Gm-Gg: ATEYQzwRbCLWSTHuHFK56EfdTNPLyD0Mcn7E0wsFlbwLSY9uV6a76ipvZ5tXZBc5GZj
+	nt9EJHCNNzFjwXGCP+WT0Qr32AXzEs43xMAq42Ute91WINaiCYBiU5eplaV/PFZqHXIpYLWAtCI
+	+LB5AlHYO3jFcRYxWeqyVCqyiLMBe3l2O/E/hjZoda4vIu0fWe3Kjk4d4AH6P0c9ls88085/ti2
+	YqvtyuEhiQ4OOYyE6+gmD9Xpe/Vo8HundppIdUgVZN+ZoJzGvIu595xFhkGFzSkCONByE3GzmBl
+	H3kAmeP2/iSdZ877wPy4oUQTbjGDa6hqisOYX1HjEHcbvtE3UEWelZsJEvWAtS0QWfYWqATd0yB
+	lQhpIuur19sIxexCz/HRM7dyKT/zjB3sQe2aND3YzfPFlGWUNKNvojdD3FbameDi6Oep5W9KQex
+	NK0U7W4NJr4huI2wmhKnXH9uC5o5ZTZZFSpBwyPjyt
+X-Received: by 2002:a05:600c:19cf:b0:487:1108:48bc with SMTP id 5b1f17b1804b1-48727ec7695mr24399785e9.17.1774598458048;
         Fri, 27 Mar 2026 01:00:58 -0700 (PDT)
 Received: from zovi.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48725fc4827sm12089735e9.11.2026.03.27.01.00.58
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48725fc4827sm12089735e9.11.2026.03.27.01.00.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Mar 2026 01:00:58 -0700 (PDT)
+        Fri, 27 Mar 2026 01:00:57 -0700 (PDT)
 From: Petr Pavlu <petr.pavlu@suse.com>
 To: Russell King <linux@armlinux.org.uk>,
 	Catalin Marinas <catalin.marinas@arm.com>,
@@ -78,9 +78,9 @@ Cc: Alexandre Ghiti <alex@ghiti.fr>,
 	linux-riscv@lists.infradead.org,
 	linux-modules@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] module, riscv: force sh_addr=0 for arch-specific sections
-Date: Fri, 27 Mar 2026 08:59:03 +0100
-Message-ID: <20260327080023.861105-5-petr.pavlu@suse.com>
+Subject: [PATCH 3/4] module, m68k: force sh_addr=0 for arch-specific sections
+Date: Fri, 27 Mar 2026 08:59:02 +0100
+Message-ID: <20260327080023.861105-4-petr.pavlu@suse.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260327080023.861105-1-petr.pavlu@suse.com>
 References: <20260327080023.861105-1-petr.pavlu@suse.com>
@@ -98,30 +98,25 @@ resulting .ko files. Relocatable objects are expected to have sh_addr=0 for
 all sections. Non-zero addresses are confusing in this context, typically
 worse compressible, and may cause tools to misbehave [1].
 
-Force sh_addr=0 for all riscv-specific module sections.
+Force sh_addr=0 for all m68k-specific module sections.
 
 Link: https://sourceware.org/bugzilla/show_bug.cgi?id=33958 [1]
 Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
 ---
- arch/riscv/include/asm/module.lds.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/m68k/include/asm/module.lds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/include/asm/module.lds.h b/arch/riscv/include/asm/module.lds.h
-index 1075beae1ac6..9ced27c8ccb6 100644
---- a/arch/riscv/include/asm/module.lds.h
-+++ b/arch/riscv/include/asm/module.lds.h
-@@ -2,8 +2,8 @@
- /* Copyright (C) 2017 Andes Technology Corporation */
- #ifdef CONFIG_MODULE_SECTIONS
+diff --git a/arch/m68k/include/asm/module.lds.h b/arch/m68k/include/asm/module.lds.h
+index fda94fa38243..fcd08689b282 100644
+--- a/arch/m68k/include/asm/module.lds.h
++++ b/arch/m68k/include/asm/module.lds.h
+@@ -1,5 +1,5 @@
  SECTIONS {
--	.plt : { BYTE(0) }
--	.got : { BYTE(0) }
--	.got.plt : { BYTE(0) }
-+	.plt 0 : { BYTE(0) }
-+	.got 0 : { BYTE(0) }
-+	.got.plt 0 : { BYTE(0) }
- }
- #endif
+-	.m68k_fixup : {
++	.m68k_fixup 0 : {
+ 		__start_fixup = .;
+ 		*(.m68k_fixup)
+ 		__stop_fixup = .;
 -- 
 2.53.0
 
