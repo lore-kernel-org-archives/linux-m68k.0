@@ -1,168 +1,91 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB303AE6E9
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 27 Mar 2026 10:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3665622A817
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Mar 2026 09:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774607354; cv=none; b=keG8S0eKOtsDy0M2UMRN9cCH5OcCbjOkusojCHtgdeKcW9FhoH+u0IPEBCsJqhHaAv7amQ9xRm2zpXgk/+9+fSyfA4TzzY/NuPwhj+n/DSykYbUyTunllF5QF5vzAQYZQjuRoVllfnAwPsr+yX6KVyp6JdEV1ZixPBetu9pYYeY=
+	t=1774863992; cv=none; b=lQA1b0/lYIIfYVnZgsf4OdMxIeLyl3s7lzfePM6CavrL+mqPpjZL27fCL+7jlXNN1qHmyG8D3klh4NBx9tgsEXYSZIUjcOUBDH1EqZyBVZa6VdTwNEtp+QFM6QNT7B1pXgyHc285xp1mt5w9DzZhExMa10gdPhdumb5HSAH5xuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774607354; c=relaxed/simple;
-	bh=AQrZsYS87uRLSAUzR2yt6e8HOvPMEsktxMC+0rqw0oY=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nVuYhg6gY5IMwE6tnlqy3yOoA4E2e+6tsyvnzitFBWc03tx1m2so0L45gAxs8Zxl1htN/84Xhr/YxkkpcsfiaD8d361Cf0Y3qlcWJ8tyr7BV1N+GDH5FpD7d1TrGotUtEoLjDsijTUnJx6ZXbBSUx3FxUSGSvKEnY6dvn/TuKW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SX0nzWlZ; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SX0nzWlZ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1774607353; x=1806143353;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=AQrZsYS87uRLSAUzR2yt6e8HOvPMEsktxMC+0rqw0oY=;
-  b=SX0nzWlZIY0Lg4fyXJy1hem2uUevSvI1nbx91bp0jZYYqRr93GaLksaE
-   L6XLJWuLACGbs/Obo0LLfiusLKSxmX5HOfj2BR/OfzI5RUmPnAEbJxWGx
-   H8arvWKQ7iOn+koxe3/GEJt4fFT8S6HWH9xg10wBXdgqPJanVKkEt1Qyx
-   /7B2xb2jl7faADXEGMBpdI28tH79/++kh/ol8X0TPBLWYG1sA2mCqBcZa
-   QJQsSA1iMaFdyaMsTkz2wpp39pZGfRPODNn6QqAM5cXjkgXj8CJ1e7gn9
-   0Li0W7WV2EDfk6lWNjEzVO4kFjsRIUYdrV6xXvg6gkCesf5RAzv+5UkW8
-   Q==;
-X-CSE-ConnectionGUID: a0kBhp0xQRiw+1xdrKxOUw==
-X-CSE-MsgGUID: i8gVj/yVStCr/KJj2rsJFw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11741"; a="93259315"
-X-IronPort-AV: E=Sophos;i="6.23,144,1770624000"; 
-   d="scan'208";a="93259315"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2026 03:29:11 -0700
-X-CSE-ConnectionGUID: tBARr7F7SaCXrVZYlacT+g==
-X-CSE-MsgGUID: 6iZuzsYWQBOngO/GpRvA3A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,144,1770624000"; 
-   d="scan'208";a="263218208"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2026 03:29:01 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 27 Mar 2026 12:28:56 +0200 (EET)
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
-    Guenter Roeck <linux@roeck-us.net>, linux-alpha@vger.kernel.org, 
-    linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, 
-    linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-    linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-    linux-sh@vger.kernel.org, Russell King <linux@armlinux.org.uk>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-    Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, 
-    Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-    "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, 
-    Max Filippov <jcmvbkbc@gmail.com>, 
-    Madhavan Srinivasan <maddy@linux.ibm.com>, 
-    Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-    John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    LKML <linux-kernel@vger.kernel.org>, Xifer <xiferdev@gmail.com>
-Subject: Re: [PATCH 00/10] PCI: Improve head free space usage
-In-Reply-To: <20260326192520.GA1337681@bhelgaas>
-Message-ID: <7207cde7-d47e-f79c-afe9-9b1daa79140c@linux.intel.com>
-References: <20260326192520.GA1337681@bhelgaas>
+	s=arc-20240116; t=1774863992; c=relaxed/simple;
+	bh=N76M8B2cuquWBYlnvKTyGxeGhd7gottRZ+t4XIrCe9c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SFgrKXo/T4tojPMmIank+sgCilCdezeqxGgUi/QeJ2RMMXiMTTIDsjPV6tjSDPLJqBWWMORtGl6/U5bwpU4Sq+ZVf1Uo4g5LcDb58WiiycHKFNnTmoFVU73eBXDMDklXgS0kz0Xcyu+EInXZU3gFKRQOHnAsf/cjIO8vbvR7jr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-56cc8a021e2so3059999e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Mar 2026 02:46:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774863990; x=1775468790;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fHMHJHQe/ri5b2eYwY69393V1zVWTax/fvz9Pb2Qttc=;
+        b=qGMxEPD0IUTwYBEmDoOELdmE81YhfaU7YSH+AVsogvRbXEHUvIV5EMiQTgrzvoAnQE
+         wTVZPw9FIneMRWJxArQEnDiXtw9aITMvS1AAaxGtkvsvNT7l1LsifVBGSjoW2gOIrV5+
+         dLrAarF0k+enS4QqT5NVwqNAqEbLwQuVlqemGwU02O8Y5J47dgtUAoxTMEIS3s6yUG07
+         J6btleOLifdztNjTwUawL/d5ax5Rofcu8kPejApv2X7CGgitUQvD2hBqHQfFkmgsUmD8
+         +x3zdfKNU7A/rLub+EAPNN/l2IUwRtcZfKu4KSM17qz3g+ytAY2XXkrvj6ajVcOXhMsr
+         6RzA==
+X-Forwarded-Encrypted: i=1; AJvYcCVJuWTKJWLDr/2TEmKZXu7WZq1Penfz5K/b8RCNjv/E0PLNY9YpV0SDNLPV1m7H7RiVsWKDdvuoZhyT@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy71ToqPPZ84DNOnTFW7WqzMyf6QIDxR97gPLyyA0jIDsboH0hn
+	JmJMXmrJ6ZY8mLM6dBw+hMwF/cc+qvND6fMh9GfpPTU90ZtKkb7jUn6ByLOVRG6J
+X-Gm-Gg: ATEYQzwU98RPLpGmxKM3C3er1ediiveffQxrmjlNwpycH7Giaw2vtrTJBU9cl8wnI9I
+	sXPomQCzx/hUL/nc3OWhg2PBFOXFEkyNYNCC+jiJGKoPBlB+eUE7RycCyr4cSyOf8N0z5TUtJZv
+	8gegh9bThKFeHIfUWOzEO307vxTUHZWblUG8oI9ZzlRa1aNGjzsJ5l06LeDoYnXg4HSFwE4Vhwz
+	1DdAMUPEOKiwyD009qWssnUYbn8qMpDHSs6ZVJNRtyAwt/aTCCJf88sf63Vs1FsV1r3LfByWFIu
+	S/k7T0yvhhN2N3y2UPBlCVi3JAwXo4ld5KEL9mRi3ZABbDdJWnemyYkjD0NnBBTU9GVqLMPxXDq
+	qNwAsHyDrkKNzdGsbsq1NKpwn1CxSYSRcESvQzUpAeB92rC2JK7k6Xz8Cwi+GDk0AYPbOG0yDON
+	wYJAUY1/C+eci6m3BvJ/6ncjSel2r2HdSYjEw8tcOZPaQVUGNJeKA/n3zGDIJA5Mcb
+X-Received: by 2002:ac5:c92a:0:b0:56c:f222:7d7e with SMTP id 71dfb90a1353d-56d3d7d6ed1mr3890149e0c.10.1774863989933;
+        Mon, 30 Mar 2026 02:46:29 -0700 (PDT)
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com. [209.85.221.169])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-56d588bb725sm7721791e0c.7.2026.03.30.02.46.28
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Mar 2026 02:46:29 -0700 (PDT)
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-56ccdd0044dso3801359e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 30 Mar 2026 02:46:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCURjWac8N0INIhmi+/MVF4N8Ga4JzmhfduV+qAjiu+7ZmbY0VQn63+zb8gDh/AWxk/OX7dzqGBcNwVr@lists.linux-m68k.org
+X-Received: by 2002:a05:6122:2790:b0:56b:a7de:7129 with SMTP id
+ 71dfb90a1353d-56d3d72d2a5mr4404048e0c.7.1774863988597; Mon, 30 Mar 2026
+ 02:46:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-307680389-1774607336=:1037"
+References: <20260318001632.2974-3-thorsten.blum@linux.dev>
+In-Reply-To: <20260318001632.2974-3-thorsten.blum@linux.dev>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 30 Mar 2026 11:46:17 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV_YzMnZZJPAmi43U29D_ROnjNNskEaKZiWa3vaHy52wA@mail.gmail.com>
+X-Gm-Features: AQROBzAX0THSoEnjZGcbV45enHg0-aIKInYjxaj2qWO6L9bEp-YukENpvtt1I3o
+Message-ID: <CAMuHMdV_YzMnZZJPAmi43U29D_ROnjNNskEaKZiWa3vaHy52wA@mail.gmail.com>
+Subject: Re: [PATCH RESEND] m68k: emu: Replace unbounded sprintf in nfhd_init_one
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Kees Cook <kees@kernel.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, 18 Mar 2026 at 01:17, Thorsten Blum <thorsten.blum@linux.dev> wrote:
+> Replace unbounded sprintf() with the safer snprintf().
+>
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 
---8323328-307680389-1774607336=:1037
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v7.1.
 
-On Thu, 26 Mar 2026, Bjorn Helgaas wrote:
+Gr{oetje,eeting}s,
 
-> [+cc Xifer; thanks very much for reporting and testing!]
->=20
-> On Tue, Mar 24, 2026 at 06:56:23PM +0200, Ilpo J=C3=A4rvinen wrote:
-> > Hi all,
-> >=20
-> > This series attempts to take advantage of free head space (the free
-> > space before the aligned start address) in order to generally produce a
-> > tighter packing of the resources/bridge windows.
-> >=20
-> > The recent changes to the resource fitting algorithm caused resource
-> > allocation failures in some cases where a bridge window that is sized
-> > to be gapless could no longer be assigned. The previous algorithm left
-> > a huge gaps which allowed it to place the remainder (non-aligning part
-> > of the size) before the start address of used for the gapless fit,
-> > whereas the new gapless approach always had to place the remainder
-> > after the aligning part of the resources. There is not always space
-> > for the remainder triggering those failures (e.g., when the aligning
-> > part must be placed at the top of the window).
-> >=20
-> > This series attempts to allow placing the remainder once again before
-> > the aligning part, but now without leaving huge gaps to retain the
-> > benefits of the gapless bridge windows. The approach is somewhat hacky
-> > but should work thanks to PCI resources fundamentally consisting only
-> > power-of-two atoms.
-> >=20
-> > There maybe cases where architecture would not want to do such
-> > relocation. This series adds the relocation to arch
-> > pcibios_align_resource() functions to allow all of them taking
-> > advantage of the better resource packing but if somebody objects doing
-> > this relocation for a particular arch, I can remove it, please just let
-> > me know (this relocation doesn't seem critical unless there are
-> > regressions).
-> >=20
-> > Ilpo J=C3=A4rvinen (10):
-> >   resource: Add __resource_contains_unbound() for internal contains
-> >     checks
-> >   resource: Pass full extent of empty space to resource_alignf CB
-> >   resource: Rename 'tmp' variable to 'full_avail'
-> >   ARM/PCI: Remove unnecessary second application of align
-> >   am68k/PCI: Remove unnecessary second application of align
-> >   MIPS: PCI: Remove unnecessary second application of align
-> >   parisc/PCI: Cleanup align handling
-> >   PCI: Rename window_alignment() to pci_min_window_alignment()
-> >   PCI: Align head space better
-> >   PCI: Fix alignment calculation for resource size larger than align
-> >=20
-> >  arch/alpha/kernel/pci.c          |  1 +
-> >  arch/arm/kernel/bios32.c         |  9 ++++---
-> >  arch/m68k/kernel/pcibios.c       |  8 +++++--
-> >  arch/mips/pci/pci-generic.c      |  8 ++++---
-> >  arch/mips/pci/pci-legacy.c       |  3 +++
-> >  arch/parisc/kernel/pci.c         | 17 ++++++++------
-> >  arch/powerpc/kernel/pci-common.c |  6 ++++-
-> >  arch/s390/pci/pci.c              |  1 +
-> >  arch/sh/drivers/pci/pci.c        |  6 ++++-
-> >  arch/x86/pci/i386.c              |  5 +++-
-> >  arch/xtensa/kernel/pci.c         |  3 +++
-> >  drivers/pci/pci.h                |  3 +++
-> >  drivers/pci/setup-bus.c          | 15 ++++++++----
-> >  drivers/pci/setup-res.c          | 40 +++++++++++++++++++++++++++++++-
-> >  drivers/pcmcia/rsrc_nonstatic.c  |  3 ++-
-> >  include/linux/ioport.h           | 22 +++++++++++++++---
-> >  include/linux/pci.h              | 12 +++++++---
-> >  kernel/resource.c                | 33 +++++++++++++-------------
-> >  18 files changed, 149 insertions(+), 46 deletions(-)
->=20
-> I added Xifer's tested-by, fixed the "am68k" and missing "if"
-> typos, and applied these to pci/resource for v7.1.
->=20
-> Ilpo, if you post a v2 with more changes, I'll update to it.  I
-> applied the series now to get a head start on 0-day building and into
-> next.
+                        Geert
 
-Thanks.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I don't have anything in addition to those.
-
---=20
- i.
-
---8323328-307680389-1774607336=:1037--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
