@@ -1,69 +1,70 @@
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE18014EC73
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  4 Apr 2026 02:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B841DE4F1
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  4 Apr 2026 02:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775269904; cv=none; b=EllRQAZ81f3P2T63YXvAkvhRhb45cXc4/xUMwFqUH+7KeHH7NHy8XwykR0xpE5bCGAlfH5CAPO23DUL0YRtG/exRCIc1jNAOdUgWXRi+FSY/4ECHYr0Ddf3d/kyoUEbthlqAi79ILy5FZ0ZKZuXH9DXzmuOgajdaccfqLTKCusA=
+	t=1775270897; cv=none; b=ACpZ7wNb8D9JNZ0+9W25t5czpYd1ROXWz9tb5rbz/6FE1dvMY/gALj+BURRbASwtKO9pELtFbweQsmgCTPMHrq3CVavyFrt8ONE9ujCq26CDgTcSrMQ/Ofa6IL/oXq0VLhjBmznUL+8eSj1hLoChhAYgiwy445Y/T9eW+e9MlxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775269904; c=relaxed/simple;
-	bh=uEdG4RE9oAAy1I1CrVj9QNxkodCET/GAH86iVq0Up78=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b2LMC2ojLzioGKoCImbUGmMMY8i70f9puc9OVGOUSwKx5P1rPawz0ae2DQT9DQU2h/2UYo02n4nNVdENaVOC2AjbujRPjBKuBIoaGRCZv8qX7YZgQo5IAjp/F+RwjSgrowsoBfJHw6gxezXBQLrf93W1Qf46JXZU/d/hHn6g+6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=aLAOGZJe; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1775270897; c=relaxed/simple;
+	bh=fgQQNOKuMueE/ZyLNmfMw1R9kcNQ7aWmpI5+3SGW3xA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u7dDOCQ25j3NPQUaQ1/CK+gotZ4PNnJX8yDIoI5TDWBdqpPvg3xm0Bivo6lItHE78QbuHtJN8W6gxz37iU49ly40mX8WVZB5n/42oPxrtK8VlGuHfqGVoGoD28Ad5cIgwt/bxk8BGaGNOqDXx0hQU7XfnEKz5kP4ewVEqw+hafc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=lg2tlgBd; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="aLAOGZJe"
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-35dac556bb2so1531332a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 03 Apr 2026 19:31:42 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="lg2tlgBd"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2a9296b3926so13035595ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 03 Apr 2026 19:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1775269902; x=1775874702; darn=lists.linux-m68k.org;
+        d=0x0f.com; s=google; t=1775270896; x=1775875696; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=h5NziYcKOVo7Uumfi9SQ/ACvnOT/ieelouTjz/KaE3M=;
-        b=aLAOGZJecTwTsPrxmYFwVjiYmvH1JBL1+GY47PfJbaUmIYk5X1SFAA0ADvJFD3f5Rd
-         eHltfuzD0Q21RIBkiJKjZQLl7tFEzYS+HvBgGHUn9e7Eiy/MwFmpQWlwFZeZpGmhYsEX
-         Pzx9qHgN/PLadpXpgzytluLouy9VupqY8p8bM=
+        bh=u5S8YJhXct8ojk8Eesx8KNau+uZSviPOz1KIfLqMfKg=;
+        b=lg2tlgBdrVWgrJRg0kHH3OFFBjmsF5nIWfAyW+71eTpz2U09Ywg25zGtrorhb6Zy/t
+         fgp4A0s6FFTRfjJd0glA7/p4TZ7x6bRgb6fKSrBl5GzeGaFZ0iSahivf840fjxzEbQC6
+         Y6wDGRv4tYEnWoyMwvvGTMJaievbrd5OUZDaY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775269902; x=1775874702;
+        d=1e100.net; s=20251104; t=1775270896; x=1775875696;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h5NziYcKOVo7Uumfi9SQ/ACvnOT/ieelouTjz/KaE3M=;
-        b=D8xI82BS5PZ+RTuieTvxgYutQLrt4aCUwLanaQAM7x8uqWRGdVTv6KSNgj90UZataW
-         l7KrEZRqFQ+WLOtpATRY6gpckPDulYeIlZ+oBXR1w24sTPF5PwYG7Qaf66fjDvduQ3By
-         Zkz0JZCyGzoMYAPLlDONP68QohQ8vVpAG2Ym7gJXBE9SYkuPGlLxV4/HkHUEQ6rYa7tL
-         qKTVm7LTYjFg/WuSNJss9q9HUE980qV2YDotwwjqcVV11Fe1gEUqqA7bg6hseKgMM+/m
-         zIxLdAhyUXKeg56IbEtFUJf2Q1jSBnw2Kfl7oZZOT1OEmbRyOCuegVh5nZfsPaqum/tu
-         uFvA==
-X-Forwarded-Encrypted: i=1; AJvYcCVHnxDRC3Kei9bcV7vI6QeAI4wWw005DUm9wBQN4dM8HCN9bUAHnsCxSg8VREbMUhEkQSkG+/oprQyu@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yw8IGIa4BhHYZP8+q5g3DAGAz+kKdQLVDdmZZ8iHGaDOEA2qOce
-	8AGYa0syEk2p3CgXlqHNCPN/Es/3A+lW06rrnmA6AoweimgxH2LDs+731061ckg9vHc=
-X-Gm-Gg: AeBDievEiMb6tPd/wD+Hwe0ei9Gn/Z4R7RzuFpEtIErQYGemjdLIHWDhCsn3sDqd/W1
-	aLRGgNJDkDXd6T4A4oDvJZPDOd7AMo/HlK4RqFceo3gPpNO5ToS0ZZg6MN0JaysA6uy36dfCXcq
-	3/cHfWw4Qps6wj5w3odT8n0va8JDmGPrK5jlK470DWZ/n4xtw45XrApixJ3/fENAalSI62Y9pRV
-	hVV611FsBwBjgjrG04fwQp9H9U+ladc1dTBfVs8/XFSLYQMXf7Qiy52D1/MnL3PMnTb8moc3/Io
-	Mxsr0iUsOHaxSvl+olfSl1LBEjE5fpVxtyChV/nFhNC9St6H80+EoHe8K1BQLXQwQqAUMI/d7sW
-	hMiSJcXDbI/f6io9yQc5at/HR8D8YSIw7lf7CwSfmW6LuMSEykgyK6DFVY9fkqBeoTkT6WUPrmX
-	x3Vw22pboaBtYlcX+AApWNoMgbrQX9ZJ/Xo8UbQNW+veIgjuz3mhek3q4vUZ/E
-X-Received: by 2002:a17:90b:48c6:b0:35b:9ab6:1d4a with SMTP id 98e67ed59e1d1-35de697359emr4372534a91.18.1775269902154;
-        Fri, 03 Apr 2026 19:31:42 -0700 (PDT)
+        bh=u5S8YJhXct8ojk8Eesx8KNau+uZSviPOz1KIfLqMfKg=;
+        b=UJgXwXIeOpjgyCG7WoTplZK05ibkDwnXNsOIuILkqwIMUo5H233mgXTXdJYpcnFoWr
+         FU8L7pnrBA+SIiJScrcFBNVfqwQuEGMfwJKYAV4za94Bni1LmNsqKgzztKVm5BpZQJNP
+         L6BFFwyTEDJ2x3a6T9NYcPjKLxrjfAfcBycqJAgADCQExRyW2D2hoHUoKgAQGnaIRCHw
+         agIYBTu22wC2zz+sy8D8lpa76rew3QcxejUkXYyO25SjuxS4+IXXA9BbRxdvrxQ2syvB
+         OZCU+wSPoj9fe0evKvnd32O2tsVF5dxuIla3+iNNZVTGVo5pwPm8HTEyRmipBNn3iFg2
+         fdJA==
+X-Forwarded-Encrypted: i=1; AJvYcCWsf+Osg/FTFZ01pIwBfQH3XJTU05671mgJDWyLkhO1SPUjcsBz3W18Nv0jWWgZVhKsutMLGTeZLKwR@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YznbRTW66kmwvJQ92zORLdQhsxslG61VyPMiqk91ectmdB4FMbP
+	dC8ilgIcDfyN3keKs7vPWUPbL2DasIVFeotgkcnxxvkovjprtlyvHyT+lTmK7pod4NUExLkyMbx
+	FJLu9QxI=
+X-Gm-Gg: AeBDiesD4zMaGIkVrP4tfo/2yXa4qQR1NEOzr4Q6Pom1vk9kv3m2HJ30LkaJr2kKemJ
+	W/JZ8WzMS8ggxCJ8KE84PuUuquLy3AnTYC60a3wRM8CinbNpLBmOdz1zX/rXLppWEiDEskueO8Z
+	v+IdJHmJaFRx5QSWy2MiaJv6tzUmlu73fYl21SANaLD2q5deZJicV7YSstapWdetELUbmlqxYNl
+	h1l8gARyiPYrtK84C2E9Ilz7gJBExpw057th1npOPE4bawmR8I7ffmBKR+l6F2qouqtFwf2nF3y
+	USUmyNErjKYtefLer3IOHFu24pNNqUQx5dY/MSq4BeHri4aNOg9ovy911SB+8aT3Fg84t3sTltm
+	osALIsIoO7R1JoB3rNaooRbf8TfNPMqyP2kaBnGZOofPaK/vd40GtAOCCJz1PgAHvrYX1ripb5Q
+	2aFEJkd4E8do6FmO3ss4DDBc3NWsf07i8UppuAhRQE2l21LWox7eMxknlsYQCl
+X-Received: by 2002:a17:903:1968:b0:2b2:4fc1:f657 with SMTP id d9443c01a7336-2b2817d8be9mr51638695ad.6.1775270895908;
+        Fri, 03 Apr 2026 19:48:15 -0700 (PDT)
 Received: from shiro (p1866070-ipxg00f01sizuokaden.shizuoka.ocn.ne.jp. [180.1.30.70])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-35dbe937925sm16440543a91.12.2026.04.03.19.31.40
+        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-2b27479d0fbsm91568895ad.35.2026.04.03.19.48.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2026 19:31:41 -0700 (PDT)
+        Fri, 03 Apr 2026 19:48:15 -0700 (PDT)
 From: Daniel Palmer <daniel@0x0f.com>
-To: gerg@linux-m68k.org,
-	christoph.plattner@gmx.at
+To: gerg@linux-m68k.org
 Cc: geert@linux-m68k.org,
+	christoph.plattner@gmx.at,
 	linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org,
-	sashal@kernel.org,
+	arnd@kernel.org,
 	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2] m68k: Fix task info flags handling for 68000
-Date: Sat,  4 Apr 2026 11:31:08 +0900
-Message-ID: <20260404023108.2495351-1-daniel@0x0f.com>
+Subject: [RFC PATCH] m68k: nommu: Fix behaviour of io macros on non-CF
+Date: Sat,  4 Apr 2026 11:46:58 +0900
+Message-ID: <20260404024658.2496519-1-daniel@0x0f.com>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -73,80 +74,46 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The logic for deciding what to do after a syscall should be checking
-if any of the lower byte bits are set and then checking if the reschedule
-bit is set.
+Currently for 68000 readl() and friends are broken in that they
+return the value from the bus as-is but should be reading a little
+endian value and swapping it to big endian.
 
-Currently we are loading the top word, checking if any bits are set
-(which never seems to be true) and thus jumping over loading the
-whole long and checking if the reschedule bit is set.
+This was found using virtio-mmio on a 68000 virt machine. virtio-mmio
+is little endian even if the emulated machine is big endian. This works
+for MMU m68k because the io macros do what is expected there, but if
+the kernel was built for nommu it breaks.
 
-We get the thread info in two places so split that logic out in
-a macro and then fix the code so that it loads the byte of the flags
-we need to check, checks if anything is set and then checks if
-the reschedule bit in particular is set.
+Potentially this will break some stuff for nommu non-CF m68k users
+but since there are probably 2 or 3 of us in the world I think we
+can work it out.
 
-Reported-by: Christoph Plattner <christoph.plattner@gmx.at>
+Suggested-by: Arnd Bergmann <arnd@kernel.org>
+Link: https://lore.kernel.org/lkml/ada73dc9-edf5-458c-8849-9f9db23ff304@app.fastmail.com/
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
-v2: Only load the lower byte of the flags as that's all we need.
-    This change was suggested by Greg and I tested it still works.
+ arch/m68k/include/asm/io_no.h | 9 ---------
+ 1 file changed, 9 deletions(-)
 
- arch/m68k/68000/entry.S | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-index 72e95663b62f..c257cc415c47 100644
---- a/arch/m68k/68000/entry.S
-+++ b/arch/m68k/68000/entry.S
-@@ -18,6 +18,13 @@
+diff --git a/arch/m68k/include/asm/io_no.h b/arch/m68k/include/asm/io_no.h
+index 516371d5587a..c39db8798ef2 100644
+--- a/arch/m68k/include/asm/io_no.h
++++ b/arch/m68k/include/asm/io_no.h
+@@ -96,15 +96,6 @@ static inline void writel(u32 value, volatile void __iomem *addr)
+ 		__raw_writel(swab32(value), addr);
+ }
  
- .text
+-#else
+-
+-#define readb __raw_readb
+-#define readw __raw_readw
+-#define readl __raw_readl
+-#define writeb __raw_writeb
+-#define writew __raw_writew
+-#define writel __raw_writel
+-
+ #endif /* IOMEMBASE */
  
-+/* get thread_info pointer into a2 */
-+ .macro getthreadinfo
-+	movel	%sp,%d1
-+	andl	#-THREAD_SIZE,%d1
-+	movel	%d1,%a2
-+ .endm
-+
- .globl system_call
- .globl resume
- .globl ret_from_exception
-@@ -70,9 +77,8 @@ ENTRY(system_call)
- 
- 	movel	%sp@(PT_OFF_ORIG_D0),%d0
- 
--	movel	%sp,%d1			/* get thread_info pointer */
--	andl	#-THREAD_SIZE,%d1
--	movel	%d1,%a2
-+	/* Doing a trace ? */
-+	getthreadinfo
- 	btst	#(TIF_SYSCALL_TRACE%8),%a2@(TINFO_FLAGS+(31-TIF_SYSCALL_TRACE)/8)
- 	jne	do_trace
- 	cmpl	#NR_syscalls,%d0
-@@ -96,16 +102,15 @@ Luser_return:
- 	/* heavy interrupt load*/
- 	andw	#ALLOWINT,%sr
- 
--	movel	%sp,%d1			/* get thread_info pointer */
--	andl	#-THREAD_SIZE,%d1
--	movel	%d1,%a2
-+	getthreadinfo
- 1:
--	move	%a2@(TINFO_FLAGS),%d1	/* thread_info->flags */
-+	/* check if any of the flags are set */
-+	moveb	%a2@(TINFO_FLAGS + 3),%d1	/* thread_info->flags (low 8 bits) */
- 	jne	Lwork_to_do
- 	RESTORE_ALL
- 
- Lwork_to_do:
--	movel	%a2@(TINFO_FLAGS),%d1	/* thread_info->flags */
-+	/* check if reschedule needs to be called */
- 	btst	#TIF_NEED_RESCHED,%d1
- 	jne	reschedule
- 
+ #if defined(CONFIG_PCI)
 -- 
 2.51.0
-
 
