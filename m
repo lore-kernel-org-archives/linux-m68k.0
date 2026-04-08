@@ -1,105 +1,104 @@
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+Received: from mail-dl1-f52.google.com (mail-dl1-f52.google.com [74.125.82.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6BC52DB789
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Apr 2026 09:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775639557; cv=none; b=kLfhhR/xZQbMSBYGmFiomlgIFHzXxKcoMx54u4HXZrdP5XIoxXgaNT7QO4bUM8CXgqbzO0tMY6v87fLBXLuEmycrGZUHTtbdF/36hbxmoFL0L82FpY6BQGW3aoL9kGOERKTi0v+7YZt1V+9dvrlXoxM1XX5K0offPA7gLKT8D9E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775639557; c=relaxed/simple;
-	bh=Q2G7W1Or0owdtI91ZRcx6VNbMUQ8in8tYFieOZJhux0=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14663B2FC1
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  8 Apr 2026 10:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1775642822; cv=pass; b=NCrWbwh73nVfSFw5WObBGIBMB7yyGLREPUfXpZDxwxYr0uZUDr9x5xgUqv83nhXoSF+WRCygQEA3/2ICkypriZkmPOR/pHa0DgaRzD3fM3A6BUfxj+HeGLw0zxxp4fdgiwqgDCLoc65Kif1qPO9OzCV48QtyBDhzo1JhRhBuisc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1775642822; c=relaxed/simple;
+	bh=NmfdlC+fOdbM062XOnISQnilH4sDd4VOk23c6LvwgyE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GU3B9x4vkgDAe0e7WbYU/ov1+CqRFFFUdX4xxMYsMHT5NkgMjmWgInGzIlyQUktSfbiTeGdJZpqNmTaHgDXyE81iuAnkKsUq9vRFbaH8s4n65Hz6hGmGkoaBfp366n2YRA6xErBGST/XiHWWkhSu9HKErADJmFpcVztHdgLBiAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-56a857578a8so2257596e0c.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Apr 2026 02:12:35 -0700 (PDT)
+	 To:Cc:Content-Type; b=jleY5Q3acIpeH0sdLYERQIGEBItwLT/DYNtwiviUfYwrKS/ZMFSUmkICnfn+MiOUkm/aHV2aBhZzkRN8xcNMl8CgehCLC/yWocVy7wr1xGwAMdU9I8y5k4hvIULOBnb8zr8um/Zl6U+5rP1R9VPF276uMiViGRRVQMs/13NEPSU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=dufB8H67; arc=pass smtp.client-ip=74.125.82.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="dufB8H67"
+Received: by mail-dl1-f52.google.com with SMTP id a92af1059eb24-12bfa7fe691so215443c88.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Apr 2026 03:06:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1775642815; cv=none;
+        d=google.com; s=arc-20240605;
+        b=PbA2Fb4qgZAmBA2mnZVQ4S3RRIQRPBeySsLCY1vYjmD3ryvJKCv56ae6wYLKIcQNLE
+         XPuhqhocZObJ/aqY4QYQA5MJQbNMeUdw+TCL6aw8Yt/8VsLxrY/RJihGdYIWEuMUCwIC
+         UjCZ2Izlh1BhFhnHNm8hUEUZ6OGvYLRIMzYWUtTJ6Uks5Dwg2fBjHYj5cjdJTyJ+D1v0
+         nsXocBPof+yOlGZIe1A4pvHlnd4WsmQ0zT5FxClRS5sqJJ8LHx3x8IBh/IuGXdfKxmwT
+         F057/AT7t2bI8MX1Cf81RLU5WTUvhrxkxto+b1wT6yYQepih8EvJ+ksZTeC/42Jsd8BQ
+         OafA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=NmfdlC+fOdbM062XOnISQnilH4sDd4VOk23c6LvwgyE=;
+        fh=Ybg35QSErELZWiR6GDPd1mBSLzAyPTtHdd365Lpxw2Y=;
+        b=lTLNXl84B9obIWYrLuIlkp/5vApgPxGXywbgwv/M6nlp2i9np76AXxsx8EFK9g747x
+         79c6ybt//dLP7hwNnoukx1lcj8JZuxWPLqrbg7190rpCqoecqqu+t7oDLZ1WzYwNxtGA
+         WdxwuyU8EqzX91YnyTiWve/FnflG1inLMVSe0wJf90B7RRjhkz28qTQGevPYd+RIUlCj
+         Q2VJ7xxKVIUQXlm97aj8Yp9VXc+1ITqaJ1/gj6uce3QMjgg87xVykjEkLV31MEwsWK6o
+         KAagyvvgCSldwQelStNa07pLy5+trCws3jWgSkjJfUy0+auSsMgeWlWgpxS1BbapI9jq
+         /AuA==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1775642815; x=1776247615; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NmfdlC+fOdbM062XOnISQnilH4sDd4VOk23c6LvwgyE=;
+        b=dufB8H67VXNV3ukHJanmejCX5CeDbFHmNLjKHurnHiTn8JXDn1QnlW3dLjRlNL/85a
+         wQQcr01C3iP8B3480yMnawKpHVYi/mfE9JkMPds7ttMRzuQmGJfW2ZDvj3F5SLd+YpiM
+         pUyC6Ymv88pVhzQUKZz1MPPwMwrhdTcawOt5Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775639555; x=1776244355;
+        d=1e100.net; s=20251104; t=1775642815; x=1776247615;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w1RXcXFvV97L6lA8OeKNobEBQHOghflyQaM3zAQGEVw=;
-        b=k9AZEOn+4JJoaFYjZ9qDwIT09QqW3glZVydVm/JyPYBjr/7mCNinXVHIrWLiZSu1pJ
-         71PcK/TqAggsP5zW6Ytt2/HgJsyPgSETNM1IQ2CrhLDXdTtyZr0+NLaGoYuoyMVTUS7Q
-         8AT1Vxj/G1Y3eGjBpUyk832t4ubOC6yKQZQl12bV9jq+qxuQYBu2bKMZI+BFZLaXfyLk
-         fNs2mHt6k3O9rnAzMRazEoXJ2t0mJ94878mNfJvbuvERLsWRgI0n//07e1/gIJS8MZEx
-         feV0Od9J24H4UEZNF365t5Cb3trFdk6Dn5XDtOKHiaTvMgkOmes3UfB6k3NiUL1b743i
-         8vCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWNPfNIm2+v3pyNQrvX3Mphg7jNMcuzmmh0vDGXXEpFmtiHrgOhtLK4HzTDQIVuUslFeXIpIuMbbJ5v@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwRBk86LS28ScXnQygLOetadY2KbPCULhMvwgSSpd8IfH+LcqUL
-	HCQq9zWFHsWIxP8ec6/V4BUi/7/jpHuD63X7lErS22MxHI7dZiirjCZVuAw/NQ7B
-X-Gm-Gg: AeBDietUn3s3rCM1q9G1Gf1IVtGb1S4mmmL4AJjDW9wzdz2sFzbIIoyoA8l24KF6gsJ
-	cD1HlNGmHaYp3CQTgEhfYbmKkSWE4k6e72SyieTNfgweJfWwlcXJbuftcFs83XRbw0FvWurGIJc
-	LlISHrUXBaL8xN55Q0o5oUcsR/t8Ym8rkEAXxw33gtNiZ9rNOahdWqrWy0wZMmU9lAmRWGdikCK
-	G/wOX322spvk5bTkATQ7hlKlz2LMf25HugfqObTOkHyEvJp8dcjlIjMQTp8ShYI14sr5Lre0YBi
-	pYTaCJhTSGzAwehrc9PswfxBRSTBeO+q/lx2/Y0yLeiT3zFSNQVRqWP66Zaob8fT5bzPtZvyTqb
-	CsIvwyoa5R/yq7TWBdxFO+KMDwjEC408g1aevkE9Jl2jSTDyYn8214SJZBxyKTMlx7gnsS5B+JI
-	NmsBolmGs5htQSj6exMr/xrYAgarTp+2WxgxvYU8Chczgu2F+aLstBXYwsfeyi
-X-Received: by 2002:a05:6122:1817:b0:56e:f262:9113 with SMTP id 71dfb90a1353d-56ef2629433mr5004687e0c.14.1775639554730;
-        Wed, 08 Apr 2026 02:12:34 -0700 (PDT)
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com. [209.85.217.52])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-56d9bcd5ca1sm19618862e0c.13.2026.04.08.02.12.34
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2026 02:12:34 -0700 (PDT)
-Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-5ff05af29b4so1990453137.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 08 Apr 2026 02:12:34 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWCQyzFP0v9pWFc+967vDJJuO8n9THZ8yk2KqFuX/smT67UNTTBKpjQKklBgEPanO+qR48qWMXIvFVK@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:6443:b0:602:8c16:b24c with SMTP id
- ada2fe7eead31-605a4fa88f4mr7481687137.19.1775639554157; Wed, 08 Apr 2026
- 02:12:34 -0700 (PDT)
+        bh=NmfdlC+fOdbM062XOnISQnilH4sDd4VOk23c6LvwgyE=;
+        b=cPWHDNJEPRppw58vG21SV7AQNgikYiEAj72TkCD18Y+a0x5qVTB2851xMISgQ4q5kc
+         4q1ysRbm+JQzdLTmbawodVh6bXXaVOjA/PL/dYbe+aKQZ4x8iisGHfDWtaQ4iqKhrzHz
+         10tdOlgSLc2Z/8ySm29cfXNAcpAMqdO+1DbgiAjLbS81cQyvWzDpLIfRVilZHni5s/bF
+         oxe5SMA3r91lJl5afiPVRxI2JhnkWJZicu6DNsaH8rLhGv58H2ip3xy4fhUaSgX/Nz1O
+         eEbKekZYytvQ4jH4Dg6KSw7uGkTVwTKKXPBIBUF79FcnWwqJcsBIGUgeVTyrk4zu8a82
+         /rkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgTR1bF8NFhSlZk3sVoCONXLFGpuXBK2PfspzveeL8UP0S46FTsk2N9WLT77WARWbdbU3dlCk/nV5e@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yw048sOfmIiYa6SvF/R7CyIZT1Z8/t28fT0SAVBBxsU8J8zeo98
+	h7s3atS6L650Tt7v+Rgs7ZMsDMU0oKIHqIMf72IDqXVweGh01eP3ZTWyROLcnfybjlXtHvpS986
+	LXlGjWIC6Eu+5qwZYqNH25zuaAanB5q/o48VzyyK8WQ==
+X-Gm-Gg: AeBDietFmdetvxpr/z0c8pPQqu6rk5j2GNZwbwmVEhSfXigvOnHSm5tjaTyhJjlZWUE
+	1rjFO0lemwWHf5/Q19QhR5zxqRpCjs/L4pqSQsTlIdDc9kSf2HmyQzg+woL6U5DLzYx6uSXiWoO
+	KJQkWtPtHRGYHKB+sX0xMohfrrqKL+31m18oOjl0jiV1E56EjoQEzb+D8rfrrTVpF73w70FZqmo
+	cJBqlD7weFg5z0BYc7+bfyssgfBQWjZ0jgh7MxDKKkUI1Q1gMBaAA1/v/jGl76QWbpeagvhaK2Q
+	M1Ok4eRjUTARJQnxGaXwzQMIi3s6+1Ve51pFsyil
+X-Received: by 2002:a05:7022:fe08:b0:119:e56b:c74b with SMTP id
+ a92af1059eb24-12bfb708680mr11654025c88.16.1775642815160; Wed, 08 Apr 2026
+ 03:06:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260222173225.1105572-1-visitorckw@gmail.com> <20260222173225.1105572-3-visitorckw@gmail.com>
-In-Reply-To: <20260222173225.1105572-3-visitorckw@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 8 Apr 2026 11:12:23 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW11i=un_A=JPas1k-jROJg9rhgSPVwbuvpZUBUsc4mVA@mail.gmail.com>
-X-Gm-Features: AQROBzAaKops8_lV7H3mM8_tpi90ZdHT60MZINI8ktN2lE8IabpY_mK044Ym5uc
-Message-ID: <CAMuHMdW11i=un_A=JPas1k-jROJg9rhgSPVwbuvpZUBUsc4mVA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] m68k: virt: Switch to qemu-virt-ctrl driver
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: sre@kernel.org, jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com, 
-	daniel@0x0f.com, laurent@vivier.eu, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org
+References: <20260406172512.6693-1-pedratscher.stefan@gmail.com>
+In-Reply-To: <20260406172512.6693-1-pedratscher.stefan@gmail.com>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Wed, 8 Apr 2026 19:06:43 +0900
+X-Gm-Features: AQROBzBXCX5ZOSw6OfG5fa_MtCA5pJPHKM-FLrTQZg9vZh8ffgS_99bDEbYaN3g
+Message-ID: <CAFr9PXnATzNhkg9DtJ6YEweEU7juaOOuH4QC2h9S=5iAK6AqMQ@mail.gmail.com>
+Subject: Re: [PATCH] zorro: sysfs: replace sprintf with sysfs_emit
+To: Stefan Pedratscher <pedratscher.stefan@gmail.com>
+Cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 22 Feb 2026 at 18:32, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-> Register the "qemu-virt-ctrl" platform device during board
-> initialization to utilize the new generic power/reset driver.
+Hi Stefan,
+
+On Tue, 7 Apr 2026 at 02:26, Stefan Pedratscher
+<pedratscher.stefan@gmail.com> wrote:
 >
-> Consequently, remove the legacy reset and power-off implementations
-> specific to the virt machine. The platform's mach_reset callback is
-> updated to call do_kernel_restart(), bridging the legacy m68k reboot
-> path to the generic kernel restart handler framework for this machine.
->
-> To prevent any regressions in reboot or power-off functionality when
-> the driver is not built-in, explicitly select POWER_RESET and
-> POWER_RESET_QEMU_VIRT_CTRL for the VIRT machine in Kconfig.machine.
->
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
-> Changes in v3:
-> - Add 'select POWER_RESET' and 'select POWER_RESET_QEMU_VIRT_CTRL' in
->   Kconfig.machine to avoid restart/power-off regressions.
+> Convert sysfs show functions from sprintf to sysfs_emit as recommended
+> by Documentation/filesystems/sysfs.rst. This ensures proper buffer
+> handling and avoids potential buffer overflows.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v7.1.
+Build, boot and poked around in /sys/bus/zorro tested on my Amiga
+4000. Amiga is still in one piece so:
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Tested-by: Daniel Palmer <daniel@thingy.jp>
