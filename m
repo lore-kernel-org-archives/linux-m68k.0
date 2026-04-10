@@ -1,38 +1,38 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F753E1226
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52163E2761
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775823670; cv=none; b=heMM8wQXy/gnD7GIjrJ/5dAxSb15tq0EE1smHEZi6gLPPC7Nlysyy2ewkwvPNikum4UPQNcpOkp+OIsp/T1OKkwIdVTCiOLvA2UZW6Zb5ijzPM9qBqxqnPF9Ux/ohhaSDaMfIFB2esplilBuhSB90cSaBPMyfVi6JLiUATfwFCc=
+	t=1775823673; cv=none; b=q11jgTNhS8xe2MuXjz8HnHy5in6yAGor2Ve2O1FX7/YeKNBLcK9WIJFGkuudA/ACi2jkUjm38x6uH6cvjxJLWSTx7yJG/lDCRmss74Mz7jaOJG9jw3+YxHoDmOtCRx53rIsLfMg/hgTSVbfJBgE7Nj1dLXsBfzPY2KopCRJFtYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775823670; c=relaxed/simple;
-	bh=ql5fkS0UEXw/nBMHEudu1ngsgqvxlZvUknLeTtAAGUU=;
+	s=arc-20240116; t=1775823673; c=relaxed/simple;
+	bh=tpcbJjrROej8+Ep0S4yh9w/0viNOJRSIBsQtj9nrduE=;
 	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=uNZTYlX1ATZwx02lF8IHiDKDzhG4Q72M9cluTozdkqSjRR2p0X7ayj+BuFZ9FPJ2ZIIM1r5YydLRbnmMnTm0eymRqQlB0gTVEGYgfUEheRLy6tOcucuyyvIU4DY61EgKyxqYtOp3gnTAz8O2DMMB/mF0QnFHcTD01455jei4jIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uoiHjWjo; arc=none smtp.client-ip=172.105.4.254
+	 Content-Type; b=OSe5lxjZEkqwrORILGnXO/0jjzUB80OCf5ulu9r1hE85Vb8Ilzk5lnJ6oIDEtlC1o/3Ynbw/ALQg5q5lHzFkfINJ9qtleQr/QNjrosUm5LwzxwRFSV/i+M2dabGt0i9yGwTQ6/wvZAMpGFZfuiF8HCxJHR0Yz4Opk7VyBPI6sTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t+6BdojJ; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uoiHjWjo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t+6BdojJ"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0E98D6091C;
-	Fri, 10 Apr 2026 12:21:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7FAAC19421;
-	Fri, 10 Apr 2026 12:21:06 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 6E75043A9E;
+	Fri, 10 Apr 2026 12:21:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E4B2C2BC87;
+	Fri, 10 Apr 2026 12:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775823667;
-	bh=ql5fkS0UEXw/nBMHEudu1ngsgqvxlZvUknLeTtAAGUU=;
+	s=k20201202; t=1775823672;
+	bh=tpcbJjrROej8+Ep0S4yh9w/0viNOJRSIBsQtj9nrduE=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=uoiHjWjoWcWN7Tw6xiUbL/Io/RlHzIChPqiGJJ7RtYjsrncirPNTd0U6jsMefBLBl
-	 PuEP8rIYZGWPrDUGiB7D/1OZBxXBypGlDQEoNlUgfhKncfE0Vht3vVd8dR09fIJYz6
-	 LaRap+OM72T7ij93UcDxrSAuxRJvyqDUwai7p79fd01gYNQNCFb6LttF4gur8fMl1Z
-	 TmanYlU2xNYAREOAaMNh8AIeZ2WEpNPx/37VkP03IexczKkHFgtDwEiwY8TvmgoUyG
-	 zdqSX2TqLhRdpCyZVVz2iZYLDeqcR5cB1pNHnjTlrpzblDMQ8i7KXktiKriMpSMGuM
-	 +dQ/qJxaC9obA==
-Date: Fri, 10 Apr 2026 14:21:04 +0200
-Message-ID: <20260410120319.723429844@kernel.org>
+	b=t+6BdojJde/UDdVdrSTxElEId1Y48xNZSVlMYQlGTL0WHNGFs3HWPQxpINyMlW0Tp
+	 I6cN87TfGyJy1fhgMX3eHxGWXyIRGEfK+oj+v7ZqgSkuHT9TIqDSO48kfeefrr2R+6
+	 RZvls6BOQPsjm5E39PGBUAxS3ybrYUwTjTmhDryNFYGgOGgmcHGql9J5M/vSFS9Dpm
+	 Ps3dk0/gjV2/aMyaPlsNujNJN/7qos+7ycvHmAQEpnPn1tOePEJ6rKipC5ku3IQ4UE
+	 ud6vC+9M6N71X0VBW7hJfjso4CmI7VrrHXujC0k5eBTPHkHx5czFPyyVnepx/5Zgc1
+	 GRj7R63OiiEsA==
+Date: Fri, 10 Apr 2026 14:21:09 +0200
+Message-ID: <20260410120319.789114053@kernel.org>
 User-Agent: quilt/0.68
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
@@ -83,7 +83,7 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
  linux-s390@vger.kernel.org,
  "David S. Miller" <davem@davemloft.net>,
  sparclinux@vger.kernel.org
-Subject: [patch 32/38] powerpc/spufs: Use mftb() directly
+Subject: [patch 33/38] powerpc: Select ARCH_HAS_RANDOM_ENTROPY
 References: <20260410120044.031381086@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -93,44 +93,70 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-There is no reason to indirect via get_cycles(), which is about to be
-removed.
+The only remaining usage of get_cycles() is to provide random_get_entropy().
 
-Use mftb() directly.
+Switch powerpc over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY
+and providing random_get_entropy() in asm/random.h.
+
+Remove asm/timex.h as it has no functionality anymore.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 Cc: Michael Ellerman <mpe@ellerman.id.au>
 Cc: linuxppc-dev@lists.ozlabs.org
 ---
- arch/powerpc/platforms/cell/spufs/switch.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/powerpc/Kconfig              |    1 +
+ arch/powerpc/include/asm/random.h |   13 +++++++++++++
+ arch/powerpc/include/asm/timex.h  |   21 ---------------------
+ 3 files changed, 14 insertions(+), 21 deletions(-)
 
---- a/arch/powerpc/platforms/cell/spufs/switch.c
-+++ b/arch/powerpc/platforms/cell/spufs/switch.c
-@@ -34,6 +34,7 @@
- #include <asm/spu_priv1.h>
- #include <asm/spu_csa.h>
- #include <asm/mmu_context.h>
-+#include <asm/time.h>
- 
- #include "spufs.h"
- 
-@@ -279,7 +280,7 @@ static inline void save_timebase(struct
- 	 *    Read PPE Timebase High and Timebase low registers
- 	 *    and save in CSA.  TBD.
- 	 */
--	csa->suspend_time = get_cycles();
-+	csa->suspend_time = mftb();
- }
- 
- static inline void remove_other_spu_access(struct spu_state *csa,
-@@ -1261,7 +1262,7 @@ static inline void setup_decr(struct spu
- 	 *     in LSCSA.
- 	 */
- 	if (csa->priv2.mfc_control_RW & MFC_CNTL_DECREMENTER_RUNNING) {
--		cycles_t resume_time = get_cycles();
-+		cycles_t resume_time = mftb();
- 		cycles_t delta_time = resume_time - csa->suspend_time;
- 
- 		csa->lscsa->decr_status.slot[0] = SPU_DECR_STATUS_RUNNING;
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -150,6 +150,7 @@ config PPC
+ 	select ARCH_HAS_PREEMPT_LAZY
+ 	select ARCH_HAS_PTDUMP
+ 	select ARCH_HAS_PTE_SPECIAL
++	select ARCH_HAS_RANDOM_ENTROPY
+ 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
+ 	select ARCH_HAS_SET_MEMORY
+ 	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx) && !HIBERNATION
+--- /dev/null
++++ b/arch/powerpc/include/asm/random.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_POWERPC_RANDOM_H
++#define _ASM_POWERPC_RANDOM_H
++
++#include <asm/cputable.h>
++#include <asm/vdso/timebase.h>
++
++static inline unsigned long random_get_entropy(void)
++{
++	return mftb();
++}
++
++#endif	/* _ASM_POWERPC_RANDOM_H */
+--- a/arch/powerpc/include/asm/timex.h
++++ b/arch/powerpc/include/asm/timex.h
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ASM_POWERPC_TIMEX_H
+-#define _ASM_POWERPC_TIMEX_H
+-
+-#ifdef __KERNEL__
+-
+-/*
+- * PowerPC architecture timex specifications
+- */
+-
+-#include <asm/cputable.h>
+-#include <asm/vdso/timebase.h>
+-
+-ostatic inline cycles_t get_cycles(void)
+-{
+-	return mftb();
+-}
+-#define get_cycles get_cycles
+-
+-#endif	/* __KERNEL__ */
+-#endif	/* _ASM_POWERPC_TIMEX_H */
 
