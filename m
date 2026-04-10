@@ -1,43 +1,43 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52163E2761
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E393E3C51
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775823673; cv=none; b=q11jgTNhS8xe2MuXjz8HnHy5in6yAGor2Ve2O1FX7/YeKNBLcK9WIJFGkuudA/ACi2jkUjm38x6uH6cvjxJLWSTx7yJG/lDCRmss74Mz7jaOJG9jw3+YxHoDmOtCRx53rIsLfMg/hgTSVbfJBgE7Nj1dLXsBfzPY2KopCRJFtYo=
+	t=1775823679; cv=none; b=hgVE95+m02TxFQqI+YnK4cSGFnH/yZdU4UNXtb5RausKx4p4q7lTJ6EOjG8OTcvLyKuMOgGu10IRbm4HJlpuDrPn/Tln4ygsZM0r3caQ5ITd5sHVKjSE/DwqwCl6KIuQgQlxUHQBZC7V67ExeslRozQoiZ0k4pNqYKUASgTISp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775823673; c=relaxed/simple;
-	bh=tpcbJjrROej8+Ep0S4yh9w/0viNOJRSIBsQtj9nrduE=;
+	s=arc-20240116; t=1775823679; c=relaxed/simple;
+	bh=8aVhqN+bsjtC+8iOVhItTcCo4nE5t4ex+cjOCvHOROg=;
 	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=OSe5lxjZEkqwrORILGnXO/0jjzUB80OCf5ulu9r1hE85Vb8Ilzk5lnJ6oIDEtlC1o/3Ynbw/ALQg5q5lHzFkfINJ9qtleQr/QNjrosUm5LwzxwRFSV/i+M2dabGt0i9yGwTQ6/wvZAMpGFZfuiF8HCxJHR0Yz4Opk7VyBPI6sTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t+6BdojJ; arc=none smtp.client-ip=172.234.252.31
+	 Content-Type; b=CLXGyGLCZsG/46vztMdX+IbxCfjgdWhjh8wNayz+Q3zRtQgSrjlaJ6XdGDSCa6djUm8ecYQIBJ9TjNQhqP32cR1bPZu5y7K2zjoA9JQbuIBdngWzZn1h2XJsh9mSeTX/4JmjejSqbEacvUfMi70Ue99oNkM4RuYPuJP4L/Wi3gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OA4RjUak; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t+6BdojJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OA4RjUak"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6E75043A9E;
-	Fri, 10 Apr 2026 12:21:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E4B2C2BC87;
-	Fri, 10 Apr 2026 12:21:11 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A5F7D6111B;
+	Fri, 10 Apr 2026 12:21:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57879C2BCB3;
+	Fri, 10 Apr 2026 12:21:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775823672;
-	bh=tpcbJjrROej8+Ep0S4yh9w/0viNOJRSIBsQtj9nrduE=;
+	s=k20201202; t=1775823677;
+	bh=8aVhqN+bsjtC+8iOVhItTcCo4nE5t4ex+cjOCvHOROg=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=t+6BdojJde/UDdVdrSTxElEId1Y48xNZSVlMYQlGTL0WHNGFs3HWPQxpINyMlW0Tp
-	 I6cN87TfGyJy1fhgMX3eHxGWXyIRGEfK+oj+v7ZqgSkuHT9TIqDSO48kfeefrr2R+6
-	 RZvls6BOQPsjm5E39PGBUAxS3ybrYUwTjTmhDryNFYGgOGgmcHGql9J5M/vSFS9Dpm
-	 Ps3dk0/gjV2/aMyaPlsNujNJN/7qos+7ycvHmAQEpnPn1tOePEJ6rKipC5ku3IQ4UE
-	 ud6vC+9M6N71X0VBW7hJfjso4CmI7VrrHXujC0k5eBTPHkHx5czFPyyVnepx/5Zgc1
-	 GRj7R63OiiEsA==
-Date: Fri, 10 Apr 2026 14:21:09 +0200
-Message-ID: <20260410120319.789114053@kernel.org>
+	b=OA4RjUakSKbHP7uZl9Rn6aI/7Qts08y1gdCxG4212yNJdVKaYLulTRlHhQ1giBOu6
+	 tARhrIBIltPo7n2ZqupgbCjM222ynMbD+JMBXCcsIED9ns8vEth54JFbieyU26o9rm
+	 KoQTgfYyoH0jSRf5j3OQodGQDBBjhAykp4Hy5bQdfGP0P88P76fnb883frBXWWU03q
+	 P/YOEYqjXf/L4ccO74xjFbM3qOQBRFdrvTUVXM6TfNVPJX1ACluXAp6rS0x+D02XQB
+	 ZfqSCQC8dN3KdQ34VmPvfFKRcfafCQ6soBJ+KtAS56vLrMJXpWDVh/K6XVrYMUGmaP
+	 YaxQP6ppalRew==
+Date: Fri, 10 Apr 2026 14:21:14 +0200
+Message-ID: <20260410120319.853669871@kernel.org>
 User-Agent: quilt/0.68
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>,
- linuxppc-dev@lists.ozlabs.org,
+Cc: Paul Walmsley <pjw@kernel.org>,
+ linux-riscv@lists.infradead.org,
  Arnd Bergmann <arnd@arndb.de>,
  x86@kernel.org,
  Lu Baolu <baolu.lu@linux.intel.com>,
@@ -77,13 +77,13 @@ Cc: Michael Ellerman <mpe@ellerman.id.au>,
  linux-openrisc@vger.kernel.org,
  Helge Deller <deller@gmx.de>,
  linux-parisc@vger.kernel.org,
- Paul Walmsley <pjw@kernel.org>,
- linux-riscv@lists.infradead.org,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ linuxppc-dev@lists.ozlabs.org,
  Heiko Carstens <hca@linux.ibm.com>,
  linux-s390@vger.kernel.org,
  "David S. Miller" <davem@davemloft.net>,
  sparclinux@vger.kernel.org
-Subject: [patch 33/38] powerpc: Select ARCH_HAS_RANDOM_ENTROPY
+Subject: [patch 34/38] riscv: Select ARCH_HAS_RANDOM_ENTROPY
 References: <20260410120044.031381086@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -93,70 +93,115 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-The only remaining usage of get_cycles() is to provide random_get_entropy().
+The only remaining non-architecture usage of get_cycles() is to provide
+random_get_entropy().
 
-Switch powerpc over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY
+Switch riscv over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY
 and providing random_get_entropy() in asm/random.h.
 
-Remove asm/timex.h as it has no functionality anymore.
+Add 'asm/timex.h' includes to the relevant files, so the global include can
+be removed once all architectures are converted over.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Paul Walmsley <pjw@kernel.org>
+Cc: linux-riscv@lists.infradead.org
 ---
- arch/powerpc/Kconfig              |    1 +
- arch/powerpc/include/asm/random.h |   13 +++++++++++++
- arch/powerpc/include/asm/timex.h  |   21 ---------------------
- 3 files changed, 14 insertions(+), 21 deletions(-)
+ arch/riscv/Kconfig                         |    1 +
+ arch/riscv/include/asm/random.h            |   25 +++++++++++++++++++++++++
+ arch/riscv/include/asm/timex.h             |   13 -------------
+ arch/riscv/kernel/unaligned_access_speed.c |    1 +
+ arch/riscv/kvm/vcpu_timer.c                |    1 +
+ arch/riscv/lib/delay.c                     |    1 +
+ 6 files changed, 29 insertions(+), 13 deletions(-)
 
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -150,6 +150,7 @@ config PPC
- 	select ARCH_HAS_PREEMPT_LAZY
- 	select ARCH_HAS_PTDUMP
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -47,6 +47,7 @@ config RISCV
+ 	select ARCH_HAS_PREPARE_SYNC_CORE_CMD
+ 	select ARCH_HAS_PTDUMP if MMU
  	select ARCH_HAS_PTE_SPECIAL
 +	select ARCH_HAS_RANDOM_ENTROPY
- 	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
- 	select ARCH_HAS_SET_MEMORY
- 	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx) && !HIBERNATION
+ 	select ARCH_HAS_SET_DIRECT_MAP if MMU
+ 	select ARCH_HAS_SET_MEMORY if MMU
+ 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
 --- /dev/null
-+++ b/arch/powerpc/include/asm/random.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_POWERPC_RANDOM_H
-+#define _ASM_POWERPC_RANDOM_H
++++ b/arch/riscv/include/asm/random.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _ASM_RISCV_RANDOM_H
++#define _ASM_RISCV_RANDOM_H
 +
-+#include <asm/cputable.h>
-+#include <asm/vdso/timebase.h>
++#include <asm/timex.h>
 +
++#ifdef CONFIG_RISCV_M_MODE
++/*
++ * Much like MIPS, we may not have a viable counter to use at an early point
++ * in the boot process. Unfortunately we don't have a fallback, so instead
++ * invoke the fallback function.
++ */
 +static inline unsigned long random_get_entropy(void)
 +{
-+	return mftb();
++	if (unlikely(clint_time_val == NULL))
++		return random_get_entropy_fallback();
++	return get_cycles();
 +}
-+
-+#endif	/* _ASM_POWERPC_RANDOM_H */
---- a/arch/powerpc/include/asm/timex.h
-+++ b/arch/powerpc/include/asm/timex.h
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_POWERPC_TIMEX_H
--#define _ASM_POWERPC_TIMEX_H
--
--#ifdef __KERNEL__
--
++#else  /* !CONFIG_RISCV_M_MODE */
++static inline unsigned long random_get_entropy(void)
++{
++	return get_cycles();
++}
++#endif /* CONFIG_RISCV_M_MODE */
++#endif /* _ASM_RISCV_RANDOM_H */
+--- a/arch/riscv/include/asm/timex.h
++++ b/arch/riscv/include/asm/timex.h
+@@ -31,19 +31,6 @@ static inline u32 get_cycles_hi(void)
+ #define get_cycles_hi get_cycles_hi
+ #endif /* CONFIG_64BIT */
+ 
 -/*
-- * PowerPC architecture timex specifications
+- * Much like MIPS, we may not have a viable counter to use at an early point
+- * in the boot process. Unfortunately we don't have a fallback, so instead
+- * we just return 0.
 - */
--
--#include <asm/cputable.h>
--#include <asm/vdso/timebase.h>
--
--ostatic inline cycles_t get_cycles(void)
+-static inline unsigned long random_get_entropy(void)
 -{
--	return mftb();
+-	if (unlikely(clint_time_val == NULL))
+-		return random_get_entropy_fallback();
+-	return get_cycles();
 -}
--#define get_cycles get_cycles
+-#define random_get_entropy()	random_get_entropy()
 -
--#endif	/* __KERNEL__ */
--#endif	/* _ASM_POWERPC_TIMEX_H */
+ #else /* CONFIG_RISCV_M_MODE */
+ 
+ static inline cycles_t get_cycles(void)
+--- a/arch/riscv/kernel/unaligned_access_speed.c
++++ b/arch/riscv/kernel/unaligned_access_speed.c
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ #include <asm/cpufeature.h>
+ #include <asm/hwprobe.h>
++#include <asm/timex.h>
+ #include <asm/vector.h>
+ 
+ #include "copy-unaligned.h"
+--- a/arch/riscv/kvm/vcpu_timer.c
++++ b/arch/riscv/kvm/vcpu_timer.c
+@@ -14,6 +14,7 @@
+ #include <asm/delay.h>
+ #include <asm/kvm_nacl.h>
+ #include <asm/kvm_vcpu_timer.h>
++#include <asm/timex.h>
+ 
+ static u64 kvm_riscv_current_cycles(struct kvm_guest_timer *gt)
+ {
+--- a/arch/riscv/lib/delay.c
++++ b/arch/riscv/lib/delay.c
+@@ -10,6 +10,7 @@
+ #include <linux/export.h>
+ 
+ #include <asm/processor.h>
++#include <asm/timex.h>
+ 
+ /*
+  * This is copies from arch/arm/include/asm/delay.h
 
