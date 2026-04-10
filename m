@@ -1,57 +1,48 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7643D0917
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BAF53D3492
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775823566; cv=none; b=erccxbhO2B0JcPlm28fA4FK/QWBOtMkQTBPvFl4eKotxyyaRpLyWBfyHeqDKEVO4JtvfgVgKtZjqE0G7HkmJsuFMnnWvjnGIP8pBhhPIGZCkpSDfjYBFQ9gBdLxiyxrmnSLpSdwhSFZ+n6ASu/iLF8NX/3TNTSwQMe8qwjk+Q28=
+	t=1775823572; cv=none; b=ArHRWjaIO7aNF+8x9zH8hvc7mv/TDIhQSdGVOELmfdKGPrB2NhWGwCw0hZoxr7oqHej7pTduxrJYoL3GPvxCxZMwn1s/L9BozegbA15nwsEuzASzwxb+AbsI/Y5JBTMdYe0Q0pZDweDvsUzOXNc2qaLDu4CPv6p/uidkPSqxre0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775823566; c=relaxed/simple;
-	bh=tLIpqPCaUi8Lfeqau43+rfn7UZ8vuvPykTPYNUPuuyU=;
-	h=Date:Message-ID:From:To:Subject:References:MIME-Version:
-	 Content-Type:cc; b=sg1GPHlYrSv2Qi/QeNN5vb7dVAGQi47fOXfd2hcPIffVC+r2a/TQp0k9/v+ZHVayqATaa463J9NXV0WqMpURJVtwc/xW9jScsE9Jbd71r269wfuTtFYhl9rxSR8iBB1r4aclIOZJK8wPdFNVxMou2UevcoamngrwRmJgebvgouo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uunn/bCq; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1775823572; c=relaxed/simple;
+	bh=gx3RztExl/RgjhE+RVjeBSM72TbSvLK5CUYrt3EY96I=;
+	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=eUUpsdHwQTJQ0l7kxYXlpaoc7TnMydEhBDCAYPgB+zpaRiqq7Hz9pkt2FP6Kbg6So+dezsytLTSbf+1ToOLdCCCm2Jd24807u6b5ui0huAufDZScZIxTuKlwWZFtWA4fFg37Tze7D00RCAu1yty6qe9vPWBG6LhO0TooHJc3+Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bpuk5rSR; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uunn/bCq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bpuk5rSR"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5633E444F1;
-	Fri, 10 Apr 2026 12:19:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A057C2BCB3;
-	Fri, 10 Apr 2026 12:19:24 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 51A166091C;
+	Fri, 10 Apr 2026 12:19:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B4F4C2BCB0;
+	Fri, 10 Apr 2026 12:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775823565;
-	bh=tLIpqPCaUi8Lfeqau43+rfn7UZ8vuvPykTPYNUPuuyU=;
-	h=Date:From:To:Subject:References:cc:From;
-	b=uunn/bCqpDYdqH3aqiI0+2U/qm27AeTQwxnXbKYibcvcv2ZEX2J7abPlER3gpmuTw
-	 CBdP5mMh40n2zp7Tno2Q99U//gHXFdOV0IBNQapDNZb3rSYwBD5TySsxa/Td7SLyaZ
-	 p+uL6Iv9jGq9ZtmZnt8i06X/J571L31cWnZuiDLMRsOKbpHdih8iJDMdVxjdr+94oH
-	 +kfrO2pFRZtB2b/jp8TX3WQWaL7ksYC/uaT6tTAybV37imt1fhiAkDjh2EPTnuViku
-	 1P4aDmEJtrdQSxbhtiFRIYbjrzGEHTE4V2Fb8MxeAUFtdhNoavN7essScQIWwWoRqs
-	 j/BFBM5JmmtDw==
-Date: Fri, 10 Apr 2026 14:19:21 +0200
-Message-ID: <20260410120318.320727701@kernel.org>
+	s=k20201202; t=1775823570;
+	bh=gx3RztExl/RgjhE+RVjeBSM72TbSvLK5CUYrt3EY96I=;
+	h=Date:From:To:Cc:Subject:References:From;
+	b=Bpuk5rSRR/rs1jSmitZH/KfJL+3TNuP+dz9xwjVC8e1YVix0oW3s2Pp/y+L8X9oHD
+	 FfGXk8B3TY0jbEAZNS2FVq5qwscSTPNozRdmP6S1az7QsSRwh37CnHDegYmWg/dUhl
+	 oXkQ09dlNxtpDlZfCfFVBtb5yeQYcj5dZxd8vIShSLkbr1gWWPlcdAHe/FZpu8mplV
+	 u5Y93dLHQf7k/6QZkYgksDu7FYlgnX/m++LNPEYIEnDd7dRmUlTkWsJQwVidroG1Bi
+	 MdGUi4KzTqg9X+Zn0ce3HiuHIaE9YE1XVzPbK1ak8XvacDL5nVhYnRULjmYf5QSMQ0
+	 DvaPTMl303Xmg==
+Date: Fri, 10 Apr 2026 14:19:27 +0200
+Message-ID: <20260410120318.386500288@kernel.org>
 User-Agent: quilt/0.68
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
-Subject: [patch 11/38] misc: sgi-gru: Remove get_cycles() [ab]use
-References: <20260410120044.031381086@kernel.org>
-Precedence: bulk
-X-Mailing-List: linux-m68k@vger.kernel.org
-List-Id: <linux-m68k.vger.kernel.org>
-List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-cc: Arnd Bergmann <arnd@arndb.de>,
+Cc: linux-wireless@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>,
  x86@kernel.org,
  Lu Baolu <baolu.lu@linux.intel.com>,
  iommu@lists.linux.dev,
  Michael Grzeschik <m.grzeschik@pengutronix.de>,
  netdev@vger.kernel.org,
- linux-wireless@vger.kernel.org,
  Herbert Xu <herbert@gondor.apana.org.au>,
  linux-crypto@vger.kernel.org,
  Vlastimil Babka <vbabka@kernel.org>,
@@ -92,121 +83,107 @@ cc: Arnd Bergmann <arnd@arndb.de>,
  linux-s390@vger.kernel.org,
  "David S. Miller" <davem@davemloft.net>,
  sparclinux@vger.kernel.org
+Subject: [patch 12/38] wifi: wil6210: Replace get_cyles() usage
+References: <20260410120044.031381086@kernel.org>
+Precedence: bulk
+X-Mailing-List: linux-m68k@vger.kernel.org
+List-Id: <linux-m68k.vger.kernel.org>
+List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 
-Calculating a timeout from get_cycles() is a historical leftover without
-any functional requirement.
+There is no reason why this debug code requires to use get_cycles() for
+timing purposes.
 
 Use ktime_get() instead.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+Cc: linux-wireless@vger.kernel.org
 ---
- drivers/misc/sgi-gru/gruhandles.c   |   20 ++++++++------------
- drivers/misc/sgi-gru/grukservices.c |    3 ++-
- drivers/misc/sgi-gru/grutlbpurge.c  |    5 ++---
- 3 files changed, 12 insertions(+), 16 deletions(-)
+ drivers/net/wireless/ath/wil6210/debugfs.c   |    2 +-
+ drivers/net/wireless/ath/wil6210/txrx.c      |    6 +++---
+ drivers/net/wireless/ath/wil6210/txrx_edma.c |    4 ++--
+ drivers/net/wireless/ath/wil6210/wil6210.h   |    3 ++-
+ 4 files changed, 8 insertions(+), 7 deletions(-)
 
---- a/drivers/misc/sgi-gru/gruhandles.c
-+++ b/drivers/misc/sgi-gru/gruhandles.c
-@@ -6,26 +6,22 @@
-  */
+--- a/drivers/net/wireless/ath/wil6210/debugfs.c
++++ b/drivers/net/wireless/ath/wil6210/debugfs.c
+@@ -151,7 +151,7 @@ static int ring_show(struct seq_file *s,
+ 			char name[10];
+ 			char sidle[10];
+ 			/* performance monitoring */
+-			cycles_t now = get_cycles();
++			ktime_t now = ktime_get();
+ 			uint64_t idle = txdata->idle * 100;
+ 			uint64_t total = now - txdata->begin;
  
- #include <linux/kernel.h>
-+#include <linux/timekeeping.h>
- #include "gru.h"
- #include "grulib.h"
- #include "grutables.h"
- 
--/* 10 sec */
- #include <linux/sync_core.h>
--#include <asm/tsc.h>
--#define GRU_OPERATION_TIMEOUT	((cycles_t) tsc_khz*10*1000)
--#define CLKS2NSEC(c)		((c) * 1000000 / tsc_khz)
-+
-+#define GRU_OPERATION_TIMEOUT_NSEC	(((ktime_t)10 * NSEC_PER_SEC))
- 
- /* Extract the status field from a kernel handle */
- #define GET_MSEG_HANDLE_STATUS(h)	(((*(unsigned long *)(h)) >> 16) & 3)
- 
- struct mcs_op_statistic mcs_op_statistics[mcsop_last];
- 
--static void update_mcs_stats(enum mcs_op op, unsigned long clks)
-+static void update_mcs_stats(enum mcs_op op, unsigned long nsec)
- {
--	unsigned long nsec;
--
--	nsec = CLKS2NSEC(clks);
- 	atomic_long_inc(&mcs_op_statistics[op].count);
- 	atomic_long_add(nsec, &mcs_op_statistics[op].total);
- 	if (mcs_op_statistics[op].max < nsec)
-@@ -58,21 +54,21 @@ static void report_instruction_timeout(v
- 
- static int wait_instruction_complete(void *h, enum mcs_op opc)
- {
-+	ktime_t start_time = ktime_get();
- 	int status;
--	unsigned long start_time = get_cycles();
- 
- 	while (1) {
- 		cpu_relax();
- 		status = GET_MSEG_HANDLE_STATUS(h);
- 		if (status != CCHSTATUS_ACTIVE)
- 			break;
--		if (GRU_OPERATION_TIMEOUT < (get_cycles() - start_time)) {
-+		if (GRU_OP_TIMEOUT_NSEC < (ktime_get() - start_time)) {
- 			report_instruction_timeout(h);
--			start_time = get_cycles();
-+			start_time = ktime_get();
- 		}
+--- a/drivers/net/wireless/ath/wil6210/txrx.c
++++ b/drivers/net/wireless/ath/wil6210/txrx.c
+@@ -1976,7 +1976,7 @@ static int __wil_tx_vring_tso(struct wil
+ 	used = wil_ring_used_tx(vring);
+ 	if (wil_val_in_range(wil->ring_idle_trsh,
+ 			     used, used + descs_used)) {
+-		txdata->idle += get_cycles() - txdata->last_idle;
++		txdata->idle += ktime_get() - txdata->last_idle;
+ 		wil_dbg_txrx(wil,  "Ring[%2d] not idle %d -> %d\n",
+ 			     vring_index, used, used + descs_used);
  	}
- 	if (gru_options & OPT_STATS)
--		update_mcs_stats(opc, get_cycles() - start_time);
-+		update_mcs_stats(opc, (unsigned long)(ktime_get() - start_time));
- 	return status;
- }
+@@ -2129,7 +2129,7 @@ static int __wil_tx_ring(struct wil6210_
+ 	used = wil_ring_used_tx(ring);
+ 	if (wil_val_in_range(wil->ring_idle_trsh,
+ 			     used, used + nr_frags + 1)) {
+-		txdata->idle += get_cycles() - txdata->last_idle;
++		txdata->idle += ktime_get() - txdata->last_idle;
+ 		wil_dbg_txrx(wil,  "Ring[%2d] not idle %d -> %d\n",
+ 			     ring_index, used, used + nr_frags + 1);
+ 	}
+@@ -2531,7 +2531,7 @@ int wil_tx_complete(struct wil6210_vif *
+ 			     used_new, used_before_complete)) {
+ 		wil_dbg_txrx(wil, "Ring[%2d] idle %d -> %d\n",
+ 			     ringid, used_before_complete, used_new);
+-		txdata->last_idle = get_cycles();
++		txdata->last_idle = ktime_get();
+ 	}
  
---- a/drivers/misc/sgi-gru/grukservices.c
-+++ b/drivers/misc/sgi-gru/grukservices.c
-@@ -20,6 +20,7 @@
- #include <linux/uaccess.h>
- #include <linux/delay.h>
- #include <linux/export.h>
-+#include <linux/random.h>
- #include <asm/io_apic.h>
- #include "gru.h"
- #include "grulib.h"
-@@ -1106,7 +1107,7 @@ static int quicktest3(unsigned long arg)
- 	int ret = 0;
+ 	/* shall we wake net queues? */
+--- a/drivers/net/wireless/ath/wil6210/txrx_edma.c
++++ b/drivers/net/wireless/ath/wil6210/txrx_edma.c
+@@ -1286,7 +1286,7 @@ int wil_tx_sring_handler(struct wil6210_
+ 				     used_new, used_before_complete)) {
+ 			wil_dbg_txrx(wil, "Ring[%2d] idle %d -> %d\n",
+ 				     ring_id, used_before_complete, used_new);
+-			txdata->last_idle = get_cycles();
++			txdata->last_idle = ktime_get();
+ 		}
  
- 	memset(buf2, 0, sizeof(buf2));
--	memset(buf1, get_cycles() & 255, sizeof(buf1));
-+	memset(buf1, get_random_u32() & 255, sizeof(buf1));
- 	gru_copy_gpa(uv_gpa(buf2), uv_gpa(buf1), BUFSIZE);
- 	if (memcmp(buf1, buf2, BUFSIZE)) {
- 		printk(KERN_DEBUG "GRU:%d quicktest3 error\n", smp_processor_id());
---- a/drivers/misc/sgi-gru/grutlbpurge.c
-+++ b/drivers/misc/sgi-gru/grutlbpurge.c
-@@ -22,13 +22,12 @@
- #include <linux/delay.h>
+ again:
+@@ -1499,7 +1499,7 @@ static int __wil_tx_ring_tso_edma(struct
+ 	used = wil_ring_used_tx(ring);
+ 	if (wil_val_in_range(wil->ring_idle_trsh,
+ 			     used, used + descs_used)) {
+-		txdata->idle += get_cycles() - txdata->last_idle;
++		txdata->idle += ktime_get() - txdata->last_idle;
+ 		wil_dbg_txrx(wil,  "Ring[%2d] not idle %d -> %d\n",
+ 			     ring_index, used, used + descs_used);
+ 	}
+--- a/drivers/net/wireless/ath/wil6210/wil6210.h
++++ b/drivers/net/wireless/ath/wil6210/wil6210.h
+@@ -14,6 +14,7 @@
  #include <linux/timex.h>
- #include <linux/srcu.h>
-+#include <linux/random.h>
- #include <asm/processor.h>
- #include "gru.h"
- #include "grutables.h"
- #include <asm/uv/uv_hub.h>
- 
--#define gru_random()	get_cycles()
--
- /* ---------------------------------- TLB Invalidation functions --------
-  * get_tgh_handle
-  *
-@@ -49,7 +48,7 @@ static inline int get_off_blade_tgh(stru
- 	int n;
- 
- 	n = GRU_NUM_TGH - gru->gs_tgh_first_remote;
--	n = gru_random() % n;
-+	n = get_random_u32() % n;
- 	n += gru->gs_tgh_first_remote;
- 	return n;
- }
+ #include <linux/types.h>
+ #include <linux/irqreturn.h>
++#include <linux/timekeeping.h>
+ #include "wmi.h"
+ #include "wil_platform.h"
+ #include "fw.h"
+@@ -632,7 +633,7 @@ struct wil_txrx_ops {
+ struct wil_ring_tx_data {
+ 	bool dot1x_open;
+ 	int enabled;
+-	cycles_t idle, last_idle, begin;
++	ktime_t idle, last_idle, begin;
+ 	u8 agg_wsize; /* agreed aggregation window, 0 - no agg */
+ 	u16 agg_timeout;
+ 	u8 agg_amsdu;
 
