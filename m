@@ -1,125 +1,216 @@
-Received: from mail-dl1-f49.google.com (mail-dl1-f49.google.com [74.125.82.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE903DA7F4
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 15:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775835133; cv=pass; b=bcn7/oBiQDPDpm/2oRS1uGpTQS2vYQWdfDfc104sqJegT9sOVZsnFgI33JFdAfZ4bExsqF213Xr9UspTg53TUGBTwAF0OUBDe9gvfkPxbjJR7AyYyjcXIjdB+yGC85ZNn4tLFxAS560bvUiBs/A2X6AHn0eAnxxW4VsYQxF/wBg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775835133; c=relaxed/simple;
-	bh=OBQJPBhzAm5teFuL1it4zrQEsej5woZw67yMwyO4d8U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mQEcVluRzq/5194PqeO3Fq4KS1hdM8QQklAzH6EXvmELEJOkk/1IUrKU/qYvXcFoet0d7se4RccrkB3GE7w5l5NDLSDXahzDWE1z8wKbl6vuv4Rsp5wqhp1cDf/GG8hjmUgB7vhWZJOYcUSC97IsNhhQLdRZektrrlB+M938yqs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=OawHYIr3; arc=pass smtp.client-ip=74.125.82.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D3C3A75BB
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 20:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1775854531; cv=none; b=OIZWrehkLePdeX2YyQ26o9KQPNjys8tAtqFhrnqcPCnUmAlXra19VN8gvnCgeb0dLRVIwRgwEqGNlMIWemFM+c9vGIaZSmbcSLI5Vyejp592S3Tirz16UoL5wGC0eiFr3k+YmYDxVK8scncjuI0RPJXukuupJKT5bf6Y5DkGcmM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1775854531; c=relaxed/simple;
+	bh=NCLwUcavida6lTRmcWsaKb5HSspL1nWNySBxMvO4hO8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=JcO0B7nFwhCeT+D8NQbMkT0A219ccFFnP//kpiXmY4CEJSVkBidOqzxOfCWhcPDSgoH1FR2sonoyzMEn8pIWqBs82ik6yCxMpkYE6p7mTbNkldJVuWC46EOwxrR1r3SggBNy9C9X+6uBQRlOSO5KqNpYbbHefp245u3R6yz54UU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uBb+aK4w; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="OawHYIr3"
-Received: by mail-dl1-f49.google.com with SMTP id a92af1059eb24-1271257ae53so9590782c88.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 08:32:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1775835131; cv=none;
-        d=google.com; s=arc-20240605;
-        b=DFHIMz3Rd1xOlHdPO+LSorJnvfiWY4dqZ2erw0X7CCXnZg2FdUHlahZ/wKHgsOYut/
-         pybJDUYlOKlvfiC7Uo6IC4wWsjyUQPSbwJ1JBteCLHkY0N/J8dCSmPNmDfQe4T2XLa4S
-         64eDU05FGnXXk/8CLUmBwyf6bz2RFY8lc036oPmPjflEC5uB2giKMNdWWCPDZl4v4SjM
-         PALpjn/Rz1nYQnLusFgpi4D+YMqJcJxwVRz1v5BoF8nzN59fYteTBItIHsi0Q6v6gIQQ
-         IgLlH7COYoigsFx614LXdfZMqKNcTEWtg4PqRiy4fBhY1TmVO+z++OZiowwP4VN+MUHf
-         +t8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=OBQJPBhzAm5teFuL1it4zrQEsej5woZw67yMwyO4d8U=;
-        fh=cjAVfbSPdFfC8awDjGhPMuVfh4mU5Z4T4nSNaZJ0sjg=;
-        b=RPvK12qyj6/y29G/ca3+SPeFvrTmzCSPIIvKCh30m88OIEqu329R1OPr7hz/0Uk9vG
-         i5rrAfXPv3kc5vdMbyTFJ+YamxtPYrsovYMCa33KMvhhipFKkPOQvNq2Pg3Gk24ckUq/
-         TMK0viVCdllHRhJqERBdpn5JiGQ+xPP2s0ln/vRyJsyWQ0u41b3pww17wjR/lAvBbFGG
-         LQlhTGxnw3YgHz1rSazI2tzpArMKWqa8REmPp1yRc2yzoQSq+2TMb4tmFxG+WCBc6uIF
-         FRzIM48f/U+ZI4yK6vd8+oaT3rqwjJlZnDZ8uaFgXgVYIO2CUeeoG4zO/wMj+kdxscAG
-         jV6w==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1775835131; x=1776439931; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OBQJPBhzAm5teFuL1it4zrQEsej5woZw67yMwyO4d8U=;
-        b=OawHYIr38dwRLE0DZN+wW9NjAU5pDbU0sOc3xZ8uI+JYK5jxbe1wv9zfxmjwznHJG/
-         zQnBViBWG1EwrjlNQ3OqnkMOeZZRozwN2oCMvgT4mYzms9WXYQTehnddK1wdhH8u2hdD
-         a47aCaV7h+461s9c3iV3hmZBbRVR1wJ212vQE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775835131; x=1776439931;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OBQJPBhzAm5teFuL1it4zrQEsej5woZw67yMwyO4d8U=;
-        b=ZvTZ9O++eKZhy6/QGdmPS7FVFAySuI3FQLaZ+MB9fdaLrY4+APr3+dRK/qDkTPKic/
-         cINUq1eVnqlEUN7YMjKdm+qZWhGLvZkHOPVHG6XmX5zJjfsJxSURR2OQwfW910j9dNdM
-         I1iASfag55MS2OerVLUMQIFmtITNEwpiMopHxO7sMvxUWsVWsau/fSOi1DH2fb+s9hsW
-         qNlRBIOPPqIkkZ3tZiShe0ELEPctSr4Wah5LIAYofPaHVQD+t9sKhLjXz+JHD/IdqvuS
-         Y41LsJD3VYLFVPOx138LLbk371z8CRoU4YQ2NGpcPwvjJO32/fK2N3AFh4IamTtjoRR9
-         M8UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNSkgWwWQ+lWhOISBlCc6Xgurhk1D4FzUQWdjFjcAr0BHLinddRjEdYfKMQZS3z3r1SbgQheSWtatM@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwSMDT9X4e3YWZdb/E/t3MGBMlFS5jmwYx2JVZ7id8Nsow9TW1V
-	C0AMHYnoEBY97/TMD4l44jC7uMYIN23o8wo1XM1bo5WOsNaGvcLeIE0oQiRU0yKMtEtP3Tr917p
-	Pr+Vd/7VlpOTd9XXXXK8Vrq4JUY1jg1cvcoKhXLMx/A==
-X-Gm-Gg: AeBDiesh9DSi10LkNHciEkU2Wf91wAVu3YhTJadgzms6Oc9dx6uSSigY/3CQ/MH75Hy
-	1db1zL63yjHw0u9xOa/TBg7uacSyHwR30nAKKvqlJm409UlAqT2VZfJUzhdrmsv3qvuPuSuxOGu
-	+1miicAMPc9KPHsBRf32zJSCi5LsPpjoPL4C+A8xrGWOqDW5E+TpBuxD12cjFWurzj7EtW1tct7
-	CQEq/Jybd0/IYgriVJnumkvoZuB9UcVoE6dqEX/tdBH0Yr9Vv27RQ+UOcxU6QCV/im3AUEcSU6g
-	lw+r
-X-Received: by 2002:a05:7022:6097:b0:128:ccb7:7fa3 with SMTP id
- a92af1059eb24-12c34f069f8mr2159203c88.34.1775835130696; Fri, 10 Apr 2026
- 08:32:10 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uBb+aK4w"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 6479E4031C;
+	Fri, 10 Apr 2026 20:55:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D0DC19421;
+	Fri, 10 Apr 2026 20:55:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775854529;
+	bh=NCLwUcavida6lTRmcWsaKb5HSspL1nWNySBxMvO4hO8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=uBb+aK4w3/2u4kyVJBiptzM0/JeHVU+h0LyuAGmXhRBB/wmY8nVPEGLrH6PIUauly
+	 xZ5jhTx/pd4jDAH6N0E8699fbCvDPdRPvQ/1U9PBOdvPEbxrui2vDJcfwacrKBJbAt
+	 K2KgH8S8N6W61I5bQqua5TC/HTbe1JJBDb2jmaIXqh11mio1s1ulWsCUgh1TEd2HU0
+	 +ZMxNL6Px/beH32xwdxJ9u73C9h58Vy+EiUKACVtBOcR0D3eWoYoTnffZnDWdkv8Q1
+	 Jq57olSI26FETBnKfPSYv2rHfBfCG49DcVZq8FGFKIXdb41avCYxrEXRj1YRJAzkeo
+	 CA0Wg7vMsMitA==
+From: Thomas Gleixner <tglx@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, Lu Baolu
+ <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, Michael Grzeschik
+ <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
+ linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
+ linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>, Bernie Thompson
+ <bernie@plugable.com>, linux-fbdev@vger.kernel.org, Theodore Tso
+ <tytso@mit.edu>, linux-ext4@vger.kernel.org, Andrew Morton
+ <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, Marco
+ Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
+ kasan-dev@googlegroups.com, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>, Richard Henderson
+ <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, Russell King
+ <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Catalin
+ Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, Dinh Nguyen <dinguyen@kernel.org>, Jonas
+ Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, Helge Deller
+ <deller@gmx.de>, linux-parisc@vger.kernel.org, Michael Ellerman
+ <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, Paul Walmsley
+ <pjw@kernel.org>, linux-riscv@lists.infradead.org, Heiko Carstens
+ <hca@linux.ibm.com>, linux-s390@vger.kernel.org, "David S. Miller"
+ <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: [patch V1.1 02/38] x86: Cleanup include recursion hell
+In-Reply-To: <20260410120317.709923681@kernel.org>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120317.709923681@kernel.org>
+Date: Fri, 10 Apr 2026 22:55:25 +0200
+Message-ID: <87ldeuzgaq.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260410120044.031381086@kernel.org> <20260410120319.397219631@kernel.org>
-In-Reply-To: <20260410120319.397219631@kernel.org>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Sat, 11 Apr 2026 00:31:59 +0900
-X-Gm-Features: AQROBzAnX-XEClLFV-qWYFUzCuq4P43sNZviESiWFI1yCPXm2VtVZ2QkaUGJoPY
-Message-ID: <CAFr9PXk7qK8-2JWrrfgXHoS9JWTRL+WobLjmAesyCE9VLL8ZyQ@mail.gmail.com>
-Subject: Re: [patch 27/38] m68k: Select ARCH_HAS_RANDOM_ENTROPY
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, 
-	Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, 
-	Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
-	linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org, 
-	David Woodhouse <dwmw2@infradead.org>, Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, 
-	Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer <t.sailer@alumni.ethz.ch>, 
-	linux-hams@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, 
-	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	loongarch@lists.linux.dev, Dinh Nguyen <dinguyen@kernel.org>, 
-	Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, 
-	Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, 
-	Paul Walmsley <pjw@kernel.org>, linux-riscv@lists.infradead.org, 
-	Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-Hi
+Including a random architecture specific header which requires global
+headers just to avoid including that header at the two usage sites is
+really beyond lazy and tasteless. Including global headers just to get the
+__percpu macro from linux/compiler_types.h falls into the same category.
 
-On Fri, 10 Apr 2026 at 21:39, Thomas Gleixner <tglx@kernel.org> wrote:
->
-> The only remaining usage of get_cycles() is to provide
-> random_get_entropy().
->
-> Switch m68k over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY and
-> providing random_get_entropy() in asm/random.h.
+Remove the linux/percpu.h and asm/cpumask.h includes from msr.h and smp.h
+and fix the resulting fallout by a simple forward struct declaration and by
+including the x86 specific asm/cpumask.h header where it is actually
+required.
 
-I have built and booted this on my Amiga 4000 and it apparently still
-works so FWIW:
+Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+---
+V1.1: Fix PARAVIRT_XXL fallout....
+---
+ arch/x86/include/asm/cache.h             |    1 +
+ arch/x86/include/asm/msr.h               |    5 +++--
+ arch/x86/include/asm/paravirt.h          |    3 ++-
+ arch/x86/include/asm/pvclock.h           |    1 +
+ arch/x86/include/asm/smp.h               |    2 --
+ arch/x86/include/asm/vdso/gettimeofday.h |    5 ++---
+ arch/x86/kernel/cpu/mce/core.c           |    1 +
+ arch/x86/kernel/nmi.c                    |    1 +
+ arch/x86/kernel/smpboot.c                |    1 +
+ 9 files changed, 12 insertions(+), 8 deletions(-)
 
-Tested-by: Daniel Palmer <daniel@thingy.jp>
+--- a/arch/x86/include/asm/cache.h
++++ b/arch/x86/include/asm/cache.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_X86_CACHE_H
+ #define _ASM_X86_CACHE_H
+ 
++#include <vdso/page.h>
+ #include <linux/linkage.h>
+ 
+ /* L1 cache line size */
+--- a/arch/x86/include/asm/msr.h
++++ b/arch/x86/include/asm/msr.h
+@@ -8,12 +8,11 @@
+ 
+ #include <asm/asm.h>
+ #include <asm/errno.h>
+-#include <asm/cpumask.h>
+ #include <uapi/asm/msr.h>
+ #include <asm/shared/msr.h>
+ 
++#include <linux/compiler_types.h>
+ #include <linux/types.h>
+-#include <linux/percpu.h>
+ 
+ struct msr_info {
+ 	u32			msr_no;
+@@ -256,6 +255,8 @@ int msr_set_bit(u32 msr, u8 bit);
+ int msr_clear_bit(u32 msr, u8 bit);
+ 
+ #ifdef CONFIG_SMP
++struct cpumask;
++
+ int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+ int wrmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 l, u32 h);
+ int rdmsrq_on_cpu(unsigned int cpu, u32 msr_no, u64 *q);
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -16,9 +16,10 @@
+ 
+ #ifndef __ASSEMBLER__
+ #include <linux/types.h>
+-#include <linux/cpumask.h>
+ #include <asm/frame.h>
+ 
++struct cpumask;
++
+ /* The paravirtualized I/O functions */
+ static inline void slow_down_io(void)
+ {
+--- a/arch/x86/include/asm/pvclock.h
++++ b/arch/x86/include/asm/pvclock.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_X86_PVCLOCK_H
+ #define _ASM_X86_PVCLOCK_H
+ 
++#include <asm/barrier.h>
+ #include <asm/clocksource.h>
+ #include <asm/pvclock-abi.h>
+ 
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -5,8 +5,6 @@
+ #include <linux/cpumask.h>
+ #include <linux/thread_info.h>
+ 
+-#include <asm/cpumask.h>
+-
+ DECLARE_PER_CPU_CACHE_HOT(int, cpu_number);
+ 
+ DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
+--- a/arch/x86/include/asm/vdso/gettimeofday.h
++++ b/arch/x86/include/asm/vdso/gettimeofday.h
+@@ -11,13 +11,12 @@
+ #define __ASM_VDSO_GETTIMEOFDAY_H
+ 
+ #ifndef __ASSEMBLER__
+-
++#include <clocksource/hyperv_timer.h>
+ #include <uapi/linux/time.h>
++
+ #include <asm/vgtod.h>
+ #include <asm/unistd.h>
+-#include <asm/msr.h>
+ #include <asm/pvclock.h>
+-#include <clocksource/hyperv_timer.h>
+ #include <asm/vdso/sys_call.h>
+ 
+ #define VDSO_HAS_TIME 1
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -48,6 +48,7 @@
+ #include <linux/vmcore_info.h>
+ 
+ #include <asm/fred.h>
++#include <asm/cpumask.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/processor.h>
+ #include <asm/traps.h>
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -26,6 +26,7 @@
+ #include <linux/sched/clock.h>
+ #include <linux/kvm_types.h>
+ 
++#include <asm/cpumask.h>
+ #include <asm/cpu_entry_area.h>
+ #include <asm/traps.h>
+ #include <asm/mach_traps.h>
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -70,6 +70,7 @@
+ #include <asm/irq.h>
+ #include <asm/realmode.h>
+ #include <asm/cpu.h>
++#include <asm/cpumask.h>
+ #include <asm/numa.h>
+ #include <asm/tlbflush.h>
+ #include <asm/mtrr.h>
