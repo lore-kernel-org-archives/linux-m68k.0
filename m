@@ -1,43 +1,42 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4AB13D9DD1
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814EC3DA5C6
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Apr 2026 12:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775823607; cv=none; b=k7WaN7BjuU/rPbWN4hFQCJMSPVkPKUIQ3+23bTbjPbPJA3bKlFtGo36rz/mx7xmvea72DXP2FDU0L4qohWRoVQ668u4++HbR72hkkVHvBrElhqVAREz2KlYKWj+mCYnS6ZUJ18XH9SuF62Plr9PmHGZ9WeHn1WFAeyAJHaGnWE8=
+	t=1775823611; cv=none; b=JBDuYeVIztbcpIhH1aGd/awjGfDIMEbspLA7mkpdHLP/qON8/41BOZmr/D9xkuKMMSQlweeF9gImXVKzab/gnI3pHM3IxnEFExu01YVz1K7tFmDZDBaJhLqMU6ocxKZHmAUc/XsNPdg7pXilTyB3N5J9itt4pIWR6hkhJ9qwy+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775823607; c=relaxed/simple;
-	bh=OJyrwmrX6lIri0LIdsFu5GdqSG8VG/nHQeslgTl5R4k=;
+	s=arc-20240116; t=1775823611; c=relaxed/simple;
+	bh=UKj6WoZFsTQfNpLsa4hK9AJwWp/c6TyAgfAmmgBM2Aw=;
 	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=culgWJOzQgcuJ9bvMZJj4pNlS3UNFTSb7Gso6b8hTLK2tEyA35l9ZbGNRul6w1/S2CFUZJHZukYCtrX8tGHMDv/FUislmYqZjecqafs7JOm6xadjZij4vy6lfrdanVYxHnrql9t45dcF2MkvpCxuzcgRAIMxIFGXKq+yOxQvaBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SQFHopbF; arc=none smtp.client-ip=172.105.4.254
+	 Content-Type; b=T8iZsCHWJAZ9LegPebwpGt1lZUDVltLuCD/SpptwLlRH4tyXVNVcEnGjksZ5ZYH4aj/oU1LmPaB9rUSudCmZGJKEbDjvu07lTukf7OFfAx+SvYDh+nyadMblFhmrwZ4U2mCl/lG0BFdJc7rwJdk50wD0CubcVE0uSvbEkxxw9Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SEmycwX5; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SQFHopbF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SEmycwX5"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0D8F661332;
-	Fri, 10 Apr 2026 12:20:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1939C19425;
-	Fri, 10 Apr 2026 12:20:03 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id BC2056132F;
+	Fri, 10 Apr 2026 12:20:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97CA3C19425;
+	Fri, 10 Apr 2026 12:20:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1775823604;
-	bh=OJyrwmrX6lIri0LIdsFu5GdqSG8VG/nHQeslgTl5R4k=;
+	s=k20201202; t=1775823609;
+	bh=UKj6WoZFsTQfNpLsa4hK9AJwWp/c6TyAgfAmmgBM2Aw=;
 	h=Date:From:To:Cc:Subject:References:From;
-	b=SQFHopbFA4avzkQltPCDvONKOyWmV73pxkcg27G4tKW1mNfy7PYVk0h6FRJhlowhk
-	 TQQGbFN8xcNa+loyfTw/Ao/LMW9fb2z9STU9hSKk0Q9e4TyhUmpic8YPBLcUkWvS5H
-	 AbfS/R5YsMQyaoKc/WDlm6lhBx4bXYBfs3B4LA3Z/Y/SjzAwbFrEIx6rz/PfITLKPl
-	 d1tT7WhENbDQpyhAelqaE4x97qqSWFBpW6gFyL/Wzy4bWcES9cochVgZgvdNMg3UtL
-	 W9F79+f3Gx3pjpImzUkKb/YiEF7KogJM+PPf5Wjs2H8jaVYTBcG1Ittd3E5H9zOpng
-	 +M493bQX3+83g==
-Date: Fri, 10 Apr 2026 14:20:01 +0200
-Message-ID: <20260410120318.862164111@kernel.org>
+	b=SEmycwX5s0//+gtSPktg47GJS+8sJlwAPsv65Bq7Wv5tg7uQL3Gpghd9FaOczcWIN
+	 ZQaCuA/qh+jNH/riNYpmVLmwYhqyjM2JbqnNtt1yhbGBg3HT7iCiqP6g94wS0wTPIA
+	 99ougHo5Nu9h67SjSnTNqyHC+/lIAAGR6p7tHCAck6aAnXmlbTDue5R1sT+DZ/waOZ
+	 GXIvFpg3p1ueseORBf9eozHpgJ3jpkMWN+atB0UvtcxRk8vKXhCteFgdwrDai6rThh
+	 FHU0CtO/nkzQnAaFOlH62oLpy9zcH9gwc0II0cebCdnPQhGplJ3L9nz1drcdz9bKdB
+	 3Oc5+96qoKgtw==
+Date: Fri, 10 Apr 2026 14:20:06 +0200
+Message-ID: <20260410120318.929806643@kernel.org>
 User-Agent: quilt/0.68
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
-Cc: Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>,
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>,
  kasan-dev@googlegroups.com,
  Arnd Bergmann <arnd@arndb.de>,
  x86@kernel.org,
@@ -57,7 +56,8 @@ Cc: Marco Elver <elver@google.com>,
  linux-ext4@vger.kernel.org,
  Andrew Morton <akpm@linux-foundation.org>,
  Uladzislau Rezki <urezki@gmail.com>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>,
  Thomas Sailer <t.sailer@alumni.ethz.ch>,
  linux-hams@vger.kernel.org,
  "Jason A. Donenfeld" <Jason@zx2c4.com>,
@@ -83,7 +83,8 @@ Cc: Marco Elver <elver@google.com>,
  linux-s390@vger.kernel.org,
  "David S. Miller" <davem@davemloft.net>,
  sparclinux@vger.kernel.org
-Subject: [patch 19/38] kcsan: Replace get_cycles() usage
+Subject: [patch 20/38] kasan: sw_tags: Replace get_cycles() by
+ random_get_entropy()
 References: <20260410120044.031381086@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -93,69 +94,31 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-KCSAN uses get_cycles() for two purposes:
+Seeding the random state with get_cycles() is functionally equivalent on
+the architectures which provide get_cycles(), but it does not make sense
+semantically.
 
-  1) Seeding the random state with get_cycles() is a historical leftover.
-
-  2) The microbenchmark uses get_cycles(), which provides an unit less
-     counter value and is not guaranteed to be functional on all
-     systems/platforms.
-
-Use random_get_entropy() for seeding the random state and ktime_get() which
-is universaly functional and provides at least a comprehensible unit.
+Use random_get_entropy() instead, which is the proper interface.
 
 This is part of a larger effort to remove get_cycles() usage from
 non-architecture code.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 Cc: kasan-dev@googlegroups.com
 ---
- kernel/kcsan/core.c    |    2 +-
- kernel/kcsan/debugfs.c |    8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ mm/kasan/sw_tags.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -798,7 +798,7 @@ void __init kcsan_init(void)
- 	BUG_ON(!in_task());
+--- a/mm/kasan/sw_tags.c
++++ b/mm/kasan/sw_tags.c
+@@ -41,7 +41,7 @@ void __init kasan_init_sw_tags(void)
+ 	int cpu;
  
  	for_each_possible_cpu(cpu)
--		per_cpu(kcsan_rand_state, cpu) = (u32)get_cycles();
-+		per_cpu(kcsan_rand_state, cpu) = (u32)random_get_entropy();
+-		per_cpu(prng_state, cpu) = (u32)get_cycles();
++		per_cpu(prng_state, cpu) = (u32)random_get_entropy();
  
- 	/*
- 	 * We are in the init task, and no other tasks should be running;
---- a/kernel/kcsan/debugfs.c
-+++ b/kernel/kcsan/debugfs.c
-@@ -58,7 +58,7 @@ static noinline void microbenchmark(unsi
- {
- 	const struct kcsan_ctx ctx_save = current->kcsan_ctx;
- 	const bool was_enabled = READ_ONCE(kcsan_enabled);
--	u64 cycles;
-+	ktime_t nsecs;
- 
- 	/* We may have been called from an atomic region; reset context. */
- 	memset(&current->kcsan_ctx, 0, sizeof(current->kcsan_ctx));
-@@ -70,16 +70,16 @@ static noinline void microbenchmark(unsi
- 
- 	pr_info("%s begin | iters: %lu\n", __func__, iters);
- 
--	cycles = get_cycles();
-+	nsecs = ktime_get();
- 	while (iters--) {
- 		unsigned long addr = iters & ((PAGE_SIZE << 8) - 1);
- 		int type = !(iters & 0x7f) ? KCSAN_ACCESS_ATOMIC :
- 				(!(iters & 0xf) ? KCSAN_ACCESS_WRITE : 0);
- 		__kcsan_check_access((void *)addr, sizeof(long), type);
- 	}
--	cycles = get_cycles() - cycles;
-+	nsecs = ktime_get() - nsecs;
- 
--	pr_info("%s end   | cycles: %llu\n", __func__, cycles);
-+	pr_info("%s end   | nsecs: %llu\n", __func__, nsecs);
- 
- 	WRITE_ONCE(kcsan_enabled, was_enabled);
- 	/* restore context */
+ 	kasan_init_tags();
+ 	kasan_enable();
 
