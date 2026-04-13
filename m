@@ -1,68 +1,78 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from flow-a4-smtp.messagingengine.com (flow-a4-smtp.messagingengine.com [103.168.172.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9DA318ED6
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 16:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDAA35DA56
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 19:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776099168; cv=none; b=r9m+v2qnu+IX/b55tcSq6eAMhwPQPltMxAnbj8KNNdDMq61Q8J/9NDUN3nyoLxYmSCSQhF2XG5M7cR7WoFmExS3ci3v+hm0G9bIEo7PRzzbe7fRVAlTSZqwptu0XHOH0ZirEro/HOasellc9echMDQa+FiCew0uXICmLJYM7els=
+	t=1776108701; cv=none; b=Wwv7ysAI3pZa7lDmJhUWwipeGdvAQG/VIJHrVKio0YixISKcp4kFNSwJuI+cF04dMmLnjN1bNEPjAkhySfUuWAhcnMaTFdQW1GsQGiGI9UDDxNJUYgMSU4d/m+xnPPgy4QL812kozcop5wedzTQxfknEW7TYLwA7uUfBdYGk1b0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776099168; c=relaxed/simple;
-	bh=euVo7nnFAzz1AdYnT65yR2VKwBKEniSBlvYEPttVFY8=;
+	s=arc-20240116; t=1776108701; c=relaxed/simple;
+	bh=WrrLF4ZuZDSSPdaipSZzrKXRH2qtrS74BAAAonCIRps=;
 	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=Z4jNjyllbyJl5XexYbJWqE14s1/k4Ysl6OrG+cbn2H9tc+62yiRU3NnF3ctiuHkAyiy85M8XFfWwxzioS8jZuRNVG8CTLQrX8yJ/eQmkH7+KHrGZv3wqNr91yBmjryKgKG+3tbnqSXeZR+MF89yPOemlbUg19x7rG2u43uTKGT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AwU9OkXE; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	 Subject:Content-Type; b=n7g1Yx5W6plpXKy+rkozQ6xEgTTaO1xCblNw3ix8fDOKnFfVL16O7SZh497soJj3f4zqp/zSWU+KxfR5iG2eT19N4YiEsFirX1mWgV9neXuPLaq+B1XzLfWKQzwRina3cMiqA4CdgmYDmme3QAv4sOaeHSA6ZSdvV11+Z0V8qUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=eBEb3+z4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fK2XbJ97; arc=none smtp.client-ip=103.168.172.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AwU9OkXE"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 603A16183C;
-	Mon, 13 Apr 2026 16:52:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1C43C2BCB0;
-	Mon, 13 Apr 2026 16:52:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776099166;
-	bh=euVo7nnFAzz1AdYnT65yR2VKwBKEniSBlvYEPttVFY8=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=AwU9OkXEl1KG1okaBfaCvaLzE/aqn5N7zqBg2PPVWYnM7kfolslDoY5nL5DW4+W/i
-	 JWfwxchx3U7vNy7KUcDvi2Gvk60YUx4DZpVzaugJP+uzs1uQi8ASx7Xyomno12nPZ0
-	 AwKod9A907DnsEgmqvXFtbivxB/XhYw6B2LzhJ3gjNuOFcLNrJq0WeG03+fodcF2km
-	 pLS7P9yM7vVNfcV2BnIK9eS1JbXbvQUGQFsI4slJ0LG7VmiRyCPctjeRcLp6NQ9Lwk
-	 FbPzx1TObRKzFmsdOumPS0G968QaC3C4u0plkw1jvVX1AuVxN2KIih3O/mHC3v2Dht
-	 F1rLCs1MEWqqQ==
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="eBEb3+z4";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fK2XbJ97"
 Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id DA590F4006A;
-	Mon, 13 Apr 2026 12:52:44 -0400 (EDT)
+	by mailflow.phl.internal (Postfix) with ESMTP id 9BAA81380415;
+	Mon, 13 Apr 2026 15:31:38 -0400 (EDT)
 Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Mon, 13 Apr 2026 12:52:44 -0400
-X-ME-Sender: <xms:XB_daegE4umSP3e6A7-bgWwyo5B3tVmzY61lsseZYGSipiryyBZ83A>
-    <xme:XB_daZ1aEzfteqXTYa2VT3lnoaVjRz0rGA1sZcPXI-5LRM3X-vmmuKobe7ZfdLxXe
-    KLzlg4lQaVLams7_Oy_CGTXAz2Js0LOlBBX8jJXt7h6TNazMwn2Uw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdefkeejiecutefuodetggdotefrod
+  by phl-compute-04.internal (MEProxy); Mon, 13 Apr 2026 15:31:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1776108698;
+	 x=1776115898; bh=oF7+4SGRAImH9WMGSId2dJm+4RdrBt2YGrt25aFUZUA=; b=
+	eBEb3+z4uCJ5XpVJfmMDtd+Hz4pTmn4rIKoszU8vf+435LUmCEc3EJdi4K0/oVv8
+	C+yjXVYuraejFdA/rcQOSN6Zfi5pNlS43GslApllsudgHnK44npvkIwaUHWVTtuh
+	Dw/4I/j/UNeqyr1LQlKmH5vdXZciz/2GPqFtFHFDNoaInKEsvm7hwh9DYdVnGoah
+	lMAIbVhEjH95sryDmrUzci3AfaiCDHHYDZH3oXJ/R4+VlvsfKJPopXWx0JE7CxaE
+	ognvTjwa06PAMT31z/DBGKMGBcoGUsjb6Y3k+6cm618rMbyQ7yCpT6T6pE5XH3Hf
+	w2SGXNdq7Abx7TrcOF+CrA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1776108698; x=
+	1776115898; bh=oF7+4SGRAImH9WMGSId2dJm+4RdrBt2YGrt25aFUZUA=; b=f
+	K2XbJ97Y0jsbU1s6LswXOEcaT2AuIJQsZKTCiqB2bsDjsavXFxXjXN24HUjqmHPV
+	30lUfZzPVJ0GZrRSLZsyTrPlhAwj+oOp7rzHIcW4Q+ggBxcGWjNT+roTWJQkS80p
+	muhmPfZao8pyrAslQS6xE9YgbnnrpBmxpEViK0VuBn5kyHZfCSLFSApLiy8hZEkj
+	X3o7U4xt3roWjYEf/0QsKGiNqeP3myXk/e3+BEa4KYIE59wmYsrhudiDwV46CB5d
+	E8K4OFv0fHuOdK14nnUUxfff3rCPKj8vJw3X7p6M4i0BpN1E8RSwySIEaUf5sCqK
+	alHtK1Rc5jgsKIF8k3s0A==
+X-ME-Sender: <xms:l0TdaRMQ1ovC5UjXw9wB_riUJbJZBZQ47VcEC4ozPMlWVwTWyL-hPg>
+    <xme:l0Tdaey9qAPkMkkSsq5ZowyLiVSaVZg3Aabqq1QUbhdAX-Y8VC29U600TE9HTIGWj
+    W-h6ka_l-N0bKYGG_W-3bzXlHGY0ZcjcSbZR_zuoL-6Ds0X7Q55CQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdefledtkecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
     ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
-    uegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeejteeguefhffevgfehueetudevieeuueffhedvvefhjedthfdutdethefgfeek
-    leenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhguodhmvghsmhhtphgruhhthhhpvghr
-    shhonhgrlhhithihqdduvdekhedujedtvdegqddvkeejtddtvdeigedqrghrnhgupeepkh
-    gvrhhnvghlrdhorhhgsegrrhhnuggsrdguvgdpnhgspghrtghpthhtohepiedpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepuggrnhhivghlsedtgidtfhdrtghomhdprhgtph
-    htthhopegthhhrihhsthhophhhrdhplhgrthhtnhgvrhesghhmgidrrghtpdhrtghpthht
-    ohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgvrhhgse
-    hlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhi
-    shhtshdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrh
-    hnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:XB_daYiTPAIlEfEP204Sti1_qDfCOkrEAGtC4YjXcdzyjUNUucSKLw>
-    <xmx:XB_dab8f5-CA3cDHe6zEfGjmV-ysOTImaC8OGXrUeo2Qk6pJbpDYVg>
-    <xmx:XB_dafGUCl3hmF0Ds8PQy6wsc3BBkpLE_FEZCqMajVP4YXiC46BAZg>
-    <xmx:XB_daen0S2qkvSLX2XqC7rgFQn81hkfIpQive4XXa_VujhgZEO3LbQ>
-    <xmx:XB_daTZ5cEAJuqFO59gydH65mV5ZEIdKieJyk571_KEn_ksb4ZGQCVp2>
-Feedback-ID: i36794607:Fastmail
+    hrpefoggffhffvvefkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpedvhfdvkeeuudevfffftefgvdevfedvleehvddvgeejvdefhedtgeegveehfeeljeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
+    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeegkedpmhhouggvpehsmhhtphhouhht
+    pdhrtghpthhtohepthdrshgrihhlvghrsegrlhhumhhnihdrvghthhiirdgthhdprhgtph
+    htthhopegtrghtrghlihhnrdhmrghrihhnrghssegrrhhmrdgtohhmpdhrtghpthhtohep
+    lhhinhhugiesrghrmhhlihhnuhigrdhorhhgrdhukhdprhgtphhtthhopegurghvvghmse
+    gurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepmhhpvgesvghllhgvrhhmrghnrdhi
+    ugdrrghupdhrtghpthhtoheprhihrggsihhnihhnrdgrrdgrsehgmhgrihhlrdgtohhmpd
+    hrtghpthhtohepuhhrvgiikhhisehgmhgrihhlrdgtohhmpdhrtghpthhtohepuggvlhhl
+    vghrsehgmhigrdguvgdprhgtphhtthhopehhvghrsggvrhhtsehgohhnughorhdrrghprg
+    hnrgdrohhrghdrrghu
+X-ME-Proxy: <xmx:l0TdaTelOssYXt15-FK9p6saYLM_nmrvIO6c-_F3ZyF6_xfZywmCYA>
+    <xmx:l0TdaUxOkh6ozfKMIVT4v_qdW_i5Tss0CLMqkf2F01TBmahdCnZo_w>
+    <xmx:l0TdaUWn-LdWx2_7oUHRu6zzNshE3wCLw-aFKzbUUXN26D6Q-_6vLw>
+    <xmx:l0TdacTwYVtUWJnf_Fdh14nt-sYvlNq7AaQbOTvOw2Uu221fQyzEjQ>
+    <xmx:mkTdaTH5uGiAlbaAI17-uSN6CKxYeQsdeWCm3ruscf_j0l2LK_Chakad>
+Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id B85C2700065; Mon, 13 Apr 2026 12:52:44 -0400 (EDT)
+	id 04818700069; Mon, 13 Apr 2026 15:31:35 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -70,45 +80,81 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AbTBWCF3eo87
-Date: Mon, 13 Apr 2026 18:52:23 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Daniel Palmer" <daniel@0x0f.com>, "Greg Ungerer" <gerg@linux-m68k.org>
-Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, christoph.plattner@gmx.at,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Message-Id: <2ee820a1-4169-4345-97cf-d481fa3679bd@app.fastmail.com>
-In-Reply-To: <20260404024658.2496519-1-daniel@0x0f.com>
-References: <20260404024658.2496519-1-daniel@0x0f.com>
-Subject: Re: [RFC PATCH] m68k: nommu: Fix behaviour of io macros on non-CF
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+X-ThreadId: AMdy4yCH1GcR
+Date: Mon, 13 Apr 2026 21:30:11 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+ "Thomas Gleixner" <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, "Baolu Lu" <baolu.lu@linux.intel.com>,
+ iommu@lists.linux.dev, "Michael Grzeschik" <m.grzeschik@pengutronix.de>,
+ Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org,
+ "Herbert Xu" <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org,
+ "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, linux-mm@kvack.org,
+ "Bernie Thompson" <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
+ "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ "Marco Elver" <elver@google.com>, "Dmitry Vyukov" <dvyukov@google.com>,
+ kasan-dev@googlegroups.com, "Andrey Ryabinin" <ryabinin.a.a@gmail.com>,
+ "Thomas Sailer" <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
+ "Jason A . Donenfeld" <Jason@zx2c4.com>,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ linux-alpha@vger.kernel.org, "Russell King" <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Huacai Chen" <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, "Dinh Nguyen" <dinguyen@kernel.org>,
+ "Jonas Bonn" <jonas@southpole.se>,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+ "Helge Deller" <deller@gmx.de>, linux-parisc@vger.kernel.org,
+ "Michael Ellerman" <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
+ "Paul Walmsley" <pjw@kernel.org>, linux-riscv@lists.infradead.org,
+ "Heiko Carstens" <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
+ "David S . Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Message-Id: <07df88e5-208d-4aac-9668-a3b0c65ae529@app.fastmail.com>
+In-Reply-To: <7a48b636cb3146f4f7134c6d4fe42070ac2edb43.camel@infradead.org>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120318.592237447@kernel.org>
+ <7a48b636cb3146f4f7134c6d4fe42070ac2edb43.camel@infradead.org>
+Subject: Re: [patch 15/38] ptp: ptp_vmclock: Replace get_cycles() usage
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 4, 2026, at 04:46, Daniel Palmer wrote:
-> Currently for 68000 readl() and friends are broken in that they
-> return the value from the bus as-is but should be reading a little
-> endian value and swapping it to big endian.
+On Mon, Apr 13, 2026, at 17:33, David Woodhouse wrote:
+> On Fri, 2026-04-10 at 14:19 +0200, Thomas Gleixner wrote:
 >
-> This was found using virtio-mmio on a 68000 virt machine. virtio-mmio
-> is little endian even if the emulated machine is big endian. This works
-> for MMU m68k because the io macros do what is expected there, but if
-> the kernel was built for nommu it breaks.
+> ... depend on TSC_RELIABLE=C2=B9, since if the guest doesn't believe t=
+hat it
+> is, then the guest shouldn't be trying to use it as the basis for
+> precise timing.
 >
-> Potentially this will break some stuff for nommu non-CF m68k users
-> but since there are probably 2 or 3 of us in the world I think we
-> can work it out.
->
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Link: 
-> https://lore.kernel.org/lkml/ada73dc9-edf5-458c-8849-9f9db23ff304@app.fastmail.com/
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> =C2=B9 (Or... one of the other zoo of TSC flags for the gradually redu=
+cing
+> brokenness over the years...)
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+It looks like this is sufficiently handled in the caller:
 
-It looks like the non-swapping readl() on nommu-m68k predates
-the git history, but apparently the coldfire version was fixed
-in 4d5303787627 ("m68k: fix read/write multi-byte IO for PCI
-on ColdFire") to behave like everything else, and dragonball
-appears does not support ISA or PCI buses, so it never used
-them.
+static int vmclock_get_crosststamp(struct vmclock_state *st,
+                                   struct ptp_system_timestamp *sts,
+                                   struct system_counterval_t *system_co=
+unter,
+                                   struct timespec64 *tspec)
+{
+....
+#ifdef CONFIG_X86
+        /*
+         * We'd expect the hypervisor to know this and to report the clo=
+ck
+         * status as VMCLOCK_STATUS_UNRELIABLE. But be paranoid.
+         */
+        if (check_tsc_unstable())
+                return -EINVAL;
+#endif
+
+With 486 and ELAN out of the way, Winchip6 seems to be the only
+one without X86_FEATURE_TSC, so I think the next logical step would
+be to turn off Winchip6 as well and remove all X86_FEATURE_TSC
+and CONFIG_X86_TSC checks.
 
       Arnd
