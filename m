@@ -1,114 +1,206 @@
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [160.30.148.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDC63AE191
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 10:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5164E3C343A
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 13:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.30.148.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776075601; cv=none; b=CBVrzXr7/xHAJhwzIYej8F/1eJMmHfELuM8mhZ5/t+7vmkRhOLxK+9kWjPeugOgzpnP92jS4FVRCA44iIY0dq68CwmQlPVhU/g9PpSk7gUIg1xXZqfKCvAgRvr1xX2lnpVn7bKpM0q4rgSxHrk+xJal3GBgnFxjNX44Su4ySOwY=
+	t=1776085384; cv=none; b=JvizOQf6qoySwPIrTOuczccxmOWlTyADpx7wWn3MeXbgFPMYiJpoS4aqgtqEjPKI+td0SxQMsn27F/NoR3PT9/++ptu7Y5xKSVj1xqjLSTFGhWAwBSkxAtzU0rYSvifaUX9vsQJHb6MxArK3NrS3e8xIsHeSyOv7613XjJQ5f8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776075601; c=relaxed/simple;
-	bh=28QyJjbyjZeUJ+wyftjAtIoISEcj3EZvHKoSQjTW3+o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b/T4DI7EgVlQeqCeV+xF29X8rxr2SDGM5LzHXg3P7YeTG95DxrmTy3H6EpF86Ck9SiB49VxHOEsuQOMsPW0DYFQsckQ1uQyj+0Ki/1FWDWoyTd2fuYhbyRs9deQHRzgeOvdgYSN2ftKpJ6UlXQfWsuIP+fVuBLUt/HihKO1aJXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-56eee0ba462so2818946e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 03:20:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776075599; x=1776680399;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nPZdxz1u7ZIBqJLL1PcAHjT28ZRbPEEYLoW5ZWK78q8=;
-        b=N1QlDd9N7QPpQkYrV2tBDspo+Bqmjm+JZkgT/dYnov26diQleGG0qOwQOgy9FlNph4
-         SgHGwnyMD88y8Bs1c9L/gexHN+y+Pqmal8rRQmwWVPQCMCZfQ4UkucDAMKGJsyN6ZCkR
-         Favah6ewXa8ZIl0IzmSe7FHn4nuDmdRVKRSAupJGr85XyJ3/jcZoF3Uj1hA+Dq8dhai6
-         n9gJBOHIFp1uF5RTwIUUfctATZEqXFKORK2mPNe1ZVi0w/8zOPUL3olERIsHLnOaYaPt
-         xaNr+Nf2s1uHgdUHpnDfa6xOXoWLj6VHNMXGjw/c8xDYmOnTzPtzRH4H5YZhvW+dFmx/
-         riBg==
-X-Forwarded-Encrypted: i=1; AFNElJ+x0kx1ChcG1WTOuFDE4JH92wY3+B2rkqhwC8rqV9sxp0cV+P/XouTfpPjy79cdald+VVwx48cPYzYw@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxmDwWIGtXWlc8XSstzdXr1Jp9M25buxVf61zmwPS97dQR0UPAE
-	2iugSVjNVE/mh48p2UyJGx9rRnZIBklBCUCBqXxIKm9HWLKyyay7zcELigaw+rli
-X-Gm-Gg: AeBDiesGnVrMh78iUwGmpN0Nt9ruoyLngHvZRPUY8v9+exrvabE7HR4O0oaNWr80HAv
-	W6FRLLIonWRqKeVlBId/19hqwy9nUUt/EhFBnNvcu/HjlpKW0WiuSagKCRFHkSsXRTfLbIz9RDD
-	+Ie5wYZs8ThGiy81l3O0pXQ1Lhp6gdrhaELJtLk1Xtr8u4lIxvPralLjpUe94gqphs0maOR/Y6N
-	OhpU8/PJl4+7UHD4472n6CucSxKeS3mFdHPnL2fQpgwOQRcqowA7BTxPTUp0b/8wdGwnmrrHRXe
-	wG+gSDbfy5WiBa2d7Q6zLyVlfApLcsMmzmd0XjY1C8665MGbpOgoUu8HGLFikoWvPzts0z+CBgH
-	2PbSiureyknLjjsHnHrdQZuTt2FbXNvfMaRULot9e8nvESA5F0ObeuKC9v7D0yP3+R6sQp4IuYf
-	t8hHXpU6JIz6lLLFsm5iT5fEG5/djE3oe9YddFxoD9iw28ZOgow9wdqg3x6wZQ
-X-Received: by 2002:a05:6122:d19:b0:559:6788:7b55 with SMTP id 71dfb90a1353d-56f59038c7dmr1641048e0c.3.1776075599016;
-        Mon, 13 Apr 2026 03:19:59 -0700 (PDT)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-56f6a97b5ecsm856901e0c.2.2026.04.13.03.19.58
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2026 03:19:58 -0700 (PDT)
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-60fea0840f3so261022137.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 03:19:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ/QE/89r0dhvP0dxLKT9/6HpydzVTBONV+EsXmRlVHVjUcXqK+0Pfsi1pWHK0cf/EsGlxgihDyR0UHy@lists.linux-m68k.org
-X-Received: by 2002:a67:c50a:0:b0:608:cdd9:2bcd with SMTP id
- ada2fe7eead31-608cdd932d0mr4295352137.15.1776075597965; Mon, 13 Apr 2026
- 03:19:57 -0700 (PDT)
+	s=arc-20240116; t=1776085384; c=relaxed/simple;
+	bh=EaqCVYb3mYfVBkGOFXvjwb/3rY9FtA9tCj0m3HXl1VM=;
+	h=Message-ID:In-Reply-To:References:Date:Mime-Version:From:To:Cc:
+	 Subject:Content-Type; b=GaUhZEm0ieoiChJTqkgzrnggGRvWLCWh9+wS0MdeZs1UpFgZFdE2wLgbnbXXEqHi17UqNX45X8fCZxk2MGF0VIP41KnuBVDwpZyLzRTVH4FQJB6rJT6Ny1PBDmsj1uaGECOWmGjhU8SYmjO/TZwudaHDVOZflB9HhwavhTTD82U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=160.30.148.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4fvSJ26Vzyz8Xs70;
+	Mon, 13 Apr 2026 21:02:58 +0800 (CST)
+Received: from xaxapp05.zte.com.cn ([10.99.98.109])
+	by mse-fl2.zte.com.cn with SMTP id 63DD2n3P010875;
+	Mon, 13 Apr 2026 21:02:49 +0800 (+08)
+	(envelope-from hu.shengming@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Mon, 13 Apr 2026 21:02:52 +0800 (CST)
+X-Zmail-TransId: 2af969dce97c49e-2c715
+X-Mailer: Zmail v1.0
+Message-ID: <20260413210252672ZfdcegJLJtyvlYdFAUBlr@zte.com.cn>
+In-Reply-To: <adyyNeVTkXQlnh_2@hyeyoo>
+References: 20260410120044.031381086@kernel.org,20260410120318.525653921@kernel.org,adyyNeVTkXQlnh_2@hyeyoo
+Date: Mon, 13 Apr 2026 21:02:52 +0800 (CST)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260412211952.3564033-1-visitorckw@gmail.com>
-In-Reply-To: <20260412211952.3564033-1-visitorckw@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 13 Apr 2026 12:19:46 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW6ZqQbofuXb7s6TpDWkyj4yDR-gvOVHVn0FfAahV8V4g@mail.gmail.com>
-X-Gm-Features: AQROBzCazP8swmPqp25ZtXfW2wKEeJuq4VjtnjIDuNuOVbsgdU63ePr45b0CQfo
-Message-ID: <CAMuHMdW6ZqQbofuXb7s6TpDWkyj4yDR-gvOVHVn0FfAahV8V4g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] Add QEMU virt-ctrl driver and update m68k virt
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: sre@kernel.org, jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com, 
-	daniel@0x0f.com, laurent@vivier.eu, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+From: <hu.shengming@zte.com.cn>
+To: <harry@kernel.org>
+Cc: <tglx@kernel.org>, <linux-kernel@vger.kernel.org>, <vbabka@kernel.org>,
+        <linux-mm@kvack.org>, <arnd@arndb.de>, <x86@kernel.org>,
+        <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>,
+        <m.grzeschik@pengutronix.de>, <netdev@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <herbert@gondor.apana.org.au>,
+        <linux-crypto@vger.kernel.org>, <dwmw2@infradead.org>,
+        <bernie@plugable.com>, <linux-fbdev@vger.kernel.org>, <tytso@mit.edu>,
+        <linux-ext4@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <urezki@gmail.com>, <elver@google.com>, <dvyukov@google.com>,
+        <kasan-dev@googlegroups.com>, <ryabinin.a.a@gmail.com>,
+        <t.sailer@alumni.ethz.ch>, <linux-hams@vger.kernel.org>,
+        <Jason@zx2c4.com>, <richard.henderson@linaro.org>,
+        <linux-alpha@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>, <catalin.marinas@arm.com>,
+        <chenhuacai@kernel.org>, <loongarch@lists.linux.dev>,
+        <geert@linux-m68k.org>, <linux-m68k@lists.linux-m68k.org>,
+        <dinguyen@kernel.org>, <jonas@southpole.se>,
+        <linux-openrisc@vger.kernel.org>, <deller@gmx.de>,
+        <linux-parisc@vger.kernel.org>, <mpe@ellerman.id.au>,
+        <linuxppc-dev@lists.ozlabs.org>, <pjw@kernel.org>,
+        <linux-riscv@lists.infradead.org>, <hca@linux.ibm.com>,
+        <linux-s390@vger.kernel.org>, <davem@davemloft.net>,
+        <sparclinux@vger.kernel.org>, <hao.li@linux.dev>, <cl@gentwo.org>,
+        <rientjes@google.com>, <roman.gushchin@linux.dev>
+Subject: =?UTF-8?B?UmU6IFtwYXRjaCAxNC8zOF0gc2x1YjogVXNlIHByYW5kb20gaW5zdGVhZCBvZiBnZXRfY3ljbGVzKCk=?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl2.zte.com.cn 63DD2n3P010875
+X-TLS: YES
+X-SPF-DOMAIN: zte.com.cn
+X-ENVELOPE-SENDER: hu.shengming@zte.com.cn
+X-SPF: None
+X-SOURCE-IP: 10.5.228.133 unknown Mon, 13 Apr 2026 21:02:58 +0800
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 69DCE982.001/4fvSJ26Vzyz8Xs70
 
-Hi Kuan-Wei,
+Harry wrote:
+> [Resending after fixing broken email headers]
+> 
+> On Fri, Apr 10, 2026 at 02:19:37PM +0200, Thomas Gleixner wrote:
+> > The decision whether to scan remote nodes is based on a 'random' number
+> > retrieved via get_cycles(). get_cycles() is about to be removed.
+> > 
+> > There is already prandom state in the code, so use that instead.
+> > 
+> > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> > Cc: Vlastimil Babka <vbabka@kernel.org>
+> > Cc: linux-mm@kvack.org
+> > ---
+> 
+> Acked-by: Harry Yoo (Oracle) <harry@kernel.org>
+> 
+> Is this for this merge window?
+> 
+> This may conflict with upcoming changes on freelist shuffling [1]
+> (not queued for slab/for-next yet though), but it should be easy to
+> resolve.
+> 
 
-On Sun, 12 Apr 2026 at 23:20, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-> Introduce a generic platform driver for the QEMU 'virt-ctrl' device [1]
-> and transitions the m68k 'virt' machine to use it, replacing
-> architecture-specific hooks.
->
-> The new driver ('qemu-virt-ctrl') registers a restart handler and
-> populates the global 'pm_power_off' callback.
->
-> On the m68k side, the platform initialization is updated to register
-> the 'qemu-virt-ctrl' platform device. Additionally, the 'mach_reset'
-> hook is bridged to 'do_kernel_restart()' to ensure the kernel's restart
-> handler chain is correctly invoked.
->
-> Verified on QEMU m68k virt. Both system reset and power-off were
-> confirmed functional by invoking 'reboot(LINUX_REBOOT_CMD_RESTART)',
-> 'reboot(LINUX_REBOOT_CMD_POWER_OFF)', and
-> 'reboot(LINUX_REBOOT_CMD_HALT)' from userspace.
->
-> Link: https://gitlab.com/qemu-project/qemu/-/blob/v10.2.0/hw/misc/virt_ctrl.c [1]
-> ---
-> Changes in v4:
-> - Fix sparse warning caught by kernel test robot.
-> - Pass the struct qemu_virt_ctrl context to sys-off handlers instead of
->   the __iomem pointer.
+Hi Harry,
 
-Thanks I replaced v3 with v4 in my queue in the m68k tree for v7.1,
-and will postpone my PR by a few days to give it some coverage in
-linux-next.
+Would you like me to wait for this patch to land linux-next and then
+rebase and send v6 on top?
 
-Gr{oetje,eeting}s,
+Thanks,
 
-                        Geert
+--
+With Best Regards,
+Shengming
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> [Cc'ing Shengming and SLAB ALLOCATOR folks]
+> [1] https://lore.kernel.org/linux-mm/20260409204352095kKWVYKtZImN59ybO6iRNj@zte.com.cn
+> 
+> -- 
+> Cheers,
+> Harry / Hyeonggon
+> 
+> >  mm/slub.c |   37 +++++++++++++++++++++++--------------
+> >  1 file changed, 23 insertions(+), 14 deletions(-)
+> > 
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -3302,6 +3302,25 @@ static inline struct slab *alloc_slab_pa
+> >      return slab;
+> >  }
+> >  
+> > +#if defined(CONFIG_SLAB_FREELIST_RANDOM) || defined(CONFIG_NUMA)
+> > +static DEFINE_PER_CPU(struct rnd_state, slab_rnd_state);
+> > +
+> > +static unsigned int slab_get_prandom_state(unsigned int limit)
+> > +{
+> > +    struct rnd_state *state;
+> > +    unsigned int res;
+> > +
+> > +    /*
+> > +     * An interrupt or NMI handler might interrupt and change
+> > +     * the state in the middle, but that's safe.
+> > +     */
+> > +    state = &get_cpu_var(slab_rnd_state);
+> > +    res = prandom_u32_state(state) % limit;
+> > +    put_cpu_var(slab_rnd_state);
+> > +    return res;
+> > +}
+> > +#endif
+> > +
+> >  #ifdef CONFIG_SLAB_FREELIST_RANDOM
+> >  /* Pre-initialize the random sequence cache */
+> >  static int init_cache_random_seq(struct kmem_cache *s)
+> > @@ -3365,8 +3384,6 @@ static void *next_freelist_entry(struct
+> >      return (char *)start + idx;
+> >  }
+> >  
+> > -static DEFINE_PER_CPU(struct rnd_state, slab_rnd_state);
+> > -
+> >  /* Shuffle the single linked freelist based on a random pre-computed sequence */
+> >  static bool shuffle_freelist(struct kmem_cache *s, struct slab *slab,
+> >                   bool allow_spin)
+> > @@ -3383,15 +3400,7 @@ static bool shuffle_freelist(struct kmem
+> >      if (allow_spin) {
+> >          pos = get_random_u32_below(freelist_count);
+> >      } else {
+> > -        struct rnd_state *state;
+> > -
+> > -        /*
+> > -         * An interrupt or NMI handler might interrupt and change
+> > -         * the state in the middle, but that's safe.
+> > -         */
+> > -        state = &get_cpu_var(slab_rnd_state);
+> > -        pos = prandom_u32_state(state) % freelist_count;
+> > -        put_cpu_var(slab_rnd_state);
+> > +        pos = slab_get_prandom_state(freelist_count);
+> >      }
+> >  
+> >      page_limit = slab->objects * s->size;
+> > @@ -3882,7 +3891,7 @@ static void *get_from_any_partial(struct
+> >       * with available objects.
+> >       */
+> >      if (!s->remote_node_defrag_ratio ||
+> > -            get_cycles() % 1024 > s->remote_node_defrag_ratio)
+> > +        slab_get_prandom_state(1024) > s->remote_node_defrag_ratio)
+> >          return NULL;
+> >  
+> >      do {
+> > @@ -7102,7 +7111,7 @@ static unsigned int
+> >  
+> >      /* see get_from_any_partial() for the defrag ratio description */
+> >      if (!s->remote_node_defrag_ratio ||
+> > -            get_cycles() % 1024 > s->remote_node_defrag_ratio)
+> > +        slab_get_prandom_state(1024) > s->remote_node_defrag_ratio)
+> >          return 0;
+> >  
+> >      do {
+> > @@ -8421,7 +8430,7 @@ void __init kmem_cache_init_late(void)
+> >      flushwq = alloc_workqueue("slub_flushwq", WQ_MEM_RECLAIM | WQ_PERCPU,
+> >                    0);
+> >      WARN_ON(!flushwq);
+> > -#ifdef CONFIG_SLAB_FREELIST_RANDOM
+> > +#if defined(CONFIG_SLAB_FREELIST_RANDOM) || defined(CONFIG_NUMA)
+> >      prandom_init_once(&slab_rnd_state);
+> >  #endif
+> >  }
+> > 
+> >
