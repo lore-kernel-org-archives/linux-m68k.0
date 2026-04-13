@@ -1,183 +1,114 @@
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4895F30E83A;
-	Mon, 13 Apr 2026 09:16:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDC63AE191
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 10:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776071762; cv=none; b=Qhv7bYxaF/vurpDN9NkcvusmxUfocDCLzKQ8a4NuSkU6nF6XrupP43vPNiTg82BlOodJ8Ua00/Jxc1iXbjkgZVeySxMx/icckwQdqnwqi54d9sgxPaUNdfNn6awaCVZBJEP2G/rvrSZL/sR8XXqemIXWbIXowj/gTZB6zAOeqks=
+	t=1776075601; cv=none; b=CBVrzXr7/xHAJhwzIYej8F/1eJMmHfELuM8mhZ5/t+7vmkRhOLxK+9kWjPeugOgzpnP92jS4FVRCA44iIY0dq68CwmQlPVhU/g9PpSk7gUIg1xXZqfKCvAgRvr1xX2lnpVn7bKpM0q4rgSxHrk+xJal3GBgnFxjNX44Su4ySOwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776071762; c=relaxed/simple;
-	bh=j/tYEurlHNq5kx1yV6D47wbOZhhwgvOxlSSa1P5IOeM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hmr5I0ESWyLiNV/S5/HX7YQrswH+BaH3DQctPWMa7kYfhRhG5n+SpLEAgPUZi8xOSePbICZE0jN47bhbTrEvhuC+QOdyhqK3DkTz1tG6be91nJa7Dscqayvtt1hJvYjQMRnHorz7EJAeKNzd92inY190VEidVJDmdF05earYIEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oY+vEH1n; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oY+vEH1n"
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63CNQ6Rp3649347;
-	Mon, 13 Apr 2026 09:15:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=3hYK9Ei+d9kVH0VV/CR68CUDnV5UVC
-	rS18XI/2Q3GjY=; b=oY+vEH1nHYm21zR7dKdG+rMVbiAs+2M4pSYJYH25H3Q/WQ
-	S5pbibNxKHXRtCU5RA4BZpoAC/CsLV14kYSk9HD7BI83gpVLqIVXm+N3/UD3mtFb
-	VGL3bfwkoS+MFSXp/7ksAXz/d/43BdzYyNe+WU94qMB7+oTAY5jMdy/aC1rg5QU1
-	UhBzNrX2r1ZHEsamBr6j/bYRaaLxasa1WWuLDHkVDfa2K6RkMY6wizvw26f4v3Pw
-	kdUQa11kKa0O4lHqHX35TBGaxo9cfSk8h/UtwhMbDVaUgMt8SMltIpECwIrRGVKB
-	KeirN6PqfMTEor0kXcjWPcrhlHvR883P23ApPmxw==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dfdt3px1j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Apr 2026 09:15:17 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63D80WMC015153;
-	Mon, 13 Apr 2026 09:15:16 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4dg0mscku7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 13 Apr 2026 09:15:16 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63D9FEC727328866
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 Apr 2026 09:15:14 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 70F6620043;
-	Mon, 13 Apr 2026 09:15:14 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B712A2004F;
-	Mon, 13 Apr 2026 09:15:04 +0000 (GMT)
-Received: from li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com (unknown [9.123.13.2])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 13 Apr 2026 09:15:04 +0000 (GMT)
-Date: Mon, 13 Apr 2026 14:45:02 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux.dev, Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org,
-        Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
-        Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
-        Paul Walmsley <pjw@kernel.org>, linux-riscv@lists.infradead.org,
-        Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: Re: [patch 07/38] treewide: Consolidate cycles_t
-Message-ID: <ady0Ft_tDrbGlu2o@li-dc0c254c-257c-11b2-a85c-98b6c1322444.ibm.com>
-References: <20260410120044.031381086@kernel.org>
- <20260410120318.045532623@kernel.org>
+	s=arc-20240116; t=1776075601; c=relaxed/simple;
+	bh=28QyJjbyjZeUJ+wyftjAtIoISEcj3EZvHKoSQjTW3+o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b/T4DI7EgVlQeqCeV+xF29X8rxr2SDGM5LzHXg3P7YeTG95DxrmTy3H6EpF86Ck9SiB49VxHOEsuQOMsPW0DYFQsckQ1uQyj+0Ki/1FWDWoyTd2fuYhbyRs9deQHRzgeOvdgYSN2ftKpJ6UlXQfWsuIP+fVuBLUt/HihKO1aJXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-56eee0ba462so2818946e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 03:20:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776075599; x=1776680399;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nPZdxz1u7ZIBqJLL1PcAHjT28ZRbPEEYLoW5ZWK78q8=;
+        b=N1QlDd9N7QPpQkYrV2tBDspo+Bqmjm+JZkgT/dYnov26diQleGG0qOwQOgy9FlNph4
+         SgHGwnyMD88y8Bs1c9L/gexHN+y+Pqmal8rRQmwWVPQCMCZfQ4UkucDAMKGJsyN6ZCkR
+         Favah6ewXa8ZIl0IzmSe7FHn4nuDmdRVKRSAupJGr85XyJ3/jcZoF3Uj1hA+Dq8dhai6
+         n9gJBOHIFp1uF5RTwIUUfctATZEqXFKORK2mPNe1ZVi0w/8zOPUL3olERIsHLnOaYaPt
+         xaNr+Nf2s1uHgdUHpnDfa6xOXoWLj6VHNMXGjw/c8xDYmOnTzPtzRH4H5YZhvW+dFmx/
+         riBg==
+X-Forwarded-Encrypted: i=1; AFNElJ+x0kx1ChcG1WTOuFDE4JH92wY3+B2rkqhwC8rqV9sxp0cV+P/XouTfpPjy79cdald+VVwx48cPYzYw@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxmDwWIGtXWlc8XSstzdXr1Jp9M25buxVf61zmwPS97dQR0UPAE
+	2iugSVjNVE/mh48p2UyJGx9rRnZIBklBCUCBqXxIKm9HWLKyyay7zcELigaw+rli
+X-Gm-Gg: AeBDiesGnVrMh78iUwGmpN0Nt9ruoyLngHvZRPUY8v9+exrvabE7HR4O0oaNWr80HAv
+	W6FRLLIonWRqKeVlBId/19hqwy9nUUt/EhFBnNvcu/HjlpKW0WiuSagKCRFHkSsXRTfLbIz9RDD
+	+Ie5wYZs8ThGiy81l3O0pXQ1Lhp6gdrhaELJtLk1Xtr8u4lIxvPralLjpUe94gqphs0maOR/Y6N
+	OhpU8/PJl4+7UHD4472n6CucSxKeS3mFdHPnL2fQpgwOQRcqowA7BTxPTUp0b/8wdGwnmrrHRXe
+	wG+gSDbfy5WiBa2d7Q6zLyVlfApLcsMmzmd0XjY1C8665MGbpOgoUu8HGLFikoWvPzts0z+CBgH
+	2PbSiureyknLjjsHnHrdQZuTt2FbXNvfMaRULot9e8nvESA5F0ObeuKC9v7D0yP3+R6sQp4IuYf
+	t8hHXpU6JIz6lLLFsm5iT5fEG5/djE3oe9YddFxoD9iw28ZOgow9wdqg3x6wZQ
+X-Received: by 2002:a05:6122:d19:b0:559:6788:7b55 with SMTP id 71dfb90a1353d-56f59038c7dmr1641048e0c.3.1776075599016;
+        Mon, 13 Apr 2026 03:19:59 -0700 (PDT)
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-56f6a97b5ecsm856901e0c.2.2026.04.13.03.19.58
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Apr 2026 03:19:58 -0700 (PDT)
+Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-60fea0840f3so261022137.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Apr 2026 03:19:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ/QE/89r0dhvP0dxLKT9/6HpydzVTBONV+EsXmRlVHVjUcXqK+0Pfsi1pWHK0cf/EsGlxgihDyR0UHy@lists.linux-m68k.org
+X-Received: by 2002:a67:c50a:0:b0:608:cdd9:2bcd with SMTP id
+ ada2fe7eead31-608cdd932d0mr4295352137.15.1776075597965; Mon, 13 Apr 2026
+ 03:19:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260410120318.045532623@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: r6KN03kK1HZaoam71kVl5aHZm9BfgAQ4
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDEzMDA4NSBTYWx0ZWRfX+Gwbo0yddZP/
- ED3CWrVQNFFw/TECS1M9+tSS57FYBZnMmG79KmJVnAwBWc3o5BgyeadFZ9maSHI4Tv+/+VHQiXF
- uu6/EAbMsVnRYIXugjj6TyQBBqRyeSoPbLxIVX8tqr0goumkz0lPJ9Y4Y3a3ECfM9WbzUtOSm5u
- eNbyrRMw+nuwi0Afz/QuxwA0FuazktkFPrSziYKfNEV92tR6ksCbhLbdKwZfOQ6IaUNAK3mHh04
- Z9ZuJvFG4+5R/DIJQ8v5H1fE5bYExgqIL1hC1HoekBef4/UHL3Jav5jU5Ty8ib2gAESLlopFcCb
- VttV6mxWXomhvrcFDBgGSdweqIiLio3UyKWRaxfdCdf1K3UdP0nDdx3LiWp/XKSUCxaso/02xav
- PADy/jEsrag0vsgcCLG1/jcBcJ3bFL3cNcYlDCC6JXFySGCPKTcpDMOtfvLh9vv4Vg7VR02ItSs
- a0USozVz3do3GTBrHkA==
-X-Proofpoint-GUID: iwEVNX-0n_YmGG6iAARt9TRRoEhRuwqE
-X-Authority-Analysis: v=2.4 cv=WpEb99fv c=1 sm=1 tr=0 ts=69dcb426 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=kj9zAlcOel0A:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=VwQbUJbxAAAA:8
- a=9Pz4rRoAHiK5H5RfW9YA:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-13_02,2026-04-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
- malwarescore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604010000
- definitions=main-2604130085
+References: <20260412211952.3564033-1-visitorckw@gmail.com>
+In-Reply-To: <20260412211952.3564033-1-visitorckw@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 13 Apr 2026 12:19:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW6ZqQbofuXb7s6TpDWkyj4yDR-gvOVHVn0FfAahV8V4g@mail.gmail.com>
+X-Gm-Features: AQROBzCazP8swmPqp25ZtXfW2wKEeJuq4VjtnjIDuNuOVbsgdU63ePr45b0CQfo
+Message-ID: <CAMuHMdW6ZqQbofuXb7s6TpDWkyj4yDR-gvOVHVn0FfAahV8V4g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Add QEMU virt-ctrl driver and update m68k virt
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: sre@kernel.org, jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com, 
+	daniel@0x0f.com, laurent@vivier.eu, linux-kernel@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 10, 2026 at 02:19:03PM +0200, Thomas Gleixner wrote:
-> Most architectures define cycles_t as unsigned long execpt:
-> 
->  - x86 requires it to be 64-bit independent of the 32-bit/64-bit build.
-> 
->  - parisc and mips define it as unsigned int
-> 
->    parisc has no real reason to do so as there are only a few usage sites
->    which either expand it to a 64-bit value or utilize only the lower
->    32bits.
-> 
->    mips has no real requirement either.
-> 
-> Move the typedef to types.h and provide a config switch to enforce the
-> 64-bit type for x86.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+Hi Kuan-Wei,
+
+On Sun, 12 Apr 2026 at 23:20, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> Introduce a generic platform driver for the QEMU 'virt-ctrl' device [1]
+> and transitions the m68k 'virt' machine to use it, replacing
+> architecture-specific hooks.
+>
+> The new driver ('qemu-virt-ctrl') registers a restart handler and
+> populates the global 'pm_power_off' callback.
+>
+> On the m68k side, the platform initialization is updated to register
+> the 'qemu-virt-ctrl' platform device. Additionally, the 'mach_reset'
+> hook is bridged to 'do_kernel_restart()' to ensure the kernel's restart
+> handler chain is correctly invoked.
+>
+> Verified on QEMU m68k virt. Both system reset and power-off were
+> confirmed functional by invoking 'reboot(LINUX_REBOOT_CMD_RESTART)',
+> 'reboot(LINUX_REBOOT_CMD_POWER_OFF)', and
+> 'reboot(LINUX_REBOOT_CMD_HALT)' from userspace.
+>
+> Link: https://gitlab.com/qemu-project/qemu/-/blob/v10.2.0/hw/misc/virt_ctrl.c [1]
 > ---
->  arch/Kconfig                       |    4 ++++
->  arch/alpha/include/asm/timex.h     |    3 ---
->  arch/arm/include/asm/timex.h       |    1 -
->  arch/loongarch/include/asm/timex.h |    2 --
->  arch/m68k/include/asm/timex.h      |    2 --
->  arch/mips/include/asm/timex.h      |    2 --
->  arch/nios2/include/asm/timex.h     |    2 --
->  arch/parisc/include/asm/timex.h    |    2 --
->  arch/powerpc/include/asm/timex.h   |    4 +---
->  arch/riscv/include/asm/timex.h     |    2 --
->  arch/s390/include/asm/timex.h      |    2 --
->  arch/sparc/include/asm/timex_64.h  |    1 -
->  arch/x86/Kconfig                   |    1 +
->  arch/x86/include/asm/tsc.h         |    2 --
->  include/asm-generic/timex.h        |    1 -
->  include/linux/types.h              |    6 ++++++
->  16 files changed, 12 insertions(+), 25 deletions(-)
-> 
-<...>
+> Changes in v4:
+> - Fix sparse warning caught by kernel test robot.
+> - Pass the struct qemu_virt_ctrl context to sys-off handlers instead of
+>   the __iomem pointer.
 
-> --- a/arch/powerpc/include/asm/timex.h
-> +++ b/arch/powerpc/include/asm/timex.h
-> @@ -11,9 +11,7 @@
->  #include <asm/cputable.h>
->  #include <asm/vdso/timebase.h>
->  
-> -typedef unsigned long cycles_t;
-> -
-> -static inline cycles_t get_cycles(void)
-> +ostatic inline cycles_t get_cycles(void)
+Thanks I replaced v3 with v4 in my queue in the m68k tree for v7.1,
+and will postpone my PR by a few days to give it some coverage in
+linux-next.
 
-Hi Thomas, I'm in middle of testing this series on powerpc. In the meantime I
-noticed that there's probably a small typo here (althrough this is fixed
-later)
+Gr{oetje,eeting}s,
 
-Regards,
-ojaswin
->  {
->  	return mftb();
->  }
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
