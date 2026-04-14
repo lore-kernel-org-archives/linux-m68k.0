@@ -1,164 +1,120 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5913537F2
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Apr 2026 07:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE63370D5A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Apr 2026 07:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776150023; cv=none; b=bNdJDH3uDqrnXrS2AB6/H9GTMABQzEMEK6IReSImuRDOnt1++QXIFgIfjHEEshOTJKS7uQIExcwaSgYCdbyE7gjgbDRgMvPomtG4vJphm406aHhoeBhSfQyaELi0/fYfnn9gnv6jafSvpIE54j/7oczeW2ak2Q6ckQSvFuTkO4E=
+	t=1776150914; cv=none; b=DtiDrCXT/eovzyvE7ZCSTb+DO3+rex8WLlEeYC7Exeg7TbVZtUXmvZNYgCUYseb3eriIGR5kD0RF71wM7xI0FDfivEJuqxtkzi4RemvTyfRzNv//NrWKVdvMJd4AUh6UI2FdyIH46tB8zHMmHOfYBoFHwn5YeTrX+eTGq6tagy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776150023; c=relaxed/simple;
-	bh=K+HOfWIioP06Pp/lEf9yLdmTdaJd60Nk8unXjyXxl2U=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=kl0lTrpDcReoWiLXCCGG4lSUtNngejhMrbjIMqyUtRExh2bi0VrudonaFv16vxF8XoqdevCrJS+0t1GqjlAgdqGQHT7ug5sGW7OwAZCYtWnxXeaM0UBtY+M4Wz0u/vK+FMR1KzcD1AY5Av9SAbryIxFNFDHMHXhpuJq5yu4zQPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hk6iFz7N; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hk6iFz7N"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1776150022; x=1807686022;
-  h=date:from:to:cc:subject:message-id;
-  bh=K+HOfWIioP06Pp/lEf9yLdmTdaJd60Nk8unXjyXxl2U=;
-  b=Hk6iFz7NPUDI/rAJld/Hhh7Mj3Mh/TLKKtNoGJ1d5WglMs1ZZjIYjW/Z
-   3EcTR3/QKbO/1TnkQh9eGIkPMQgKjNsn5QY2jp1k+oMK1tNK2YVX1dR1j
-   e+ut5UyyCN5B+wksJxwGlJ/qSMkwVTLj4zTU9OYjQoymTxUuZKRD94NVR
-   ApjNZHJUKuhjWLWcmXmhLiBhkmSZEXVrxhg8s/e2+TklUfD9GF7gU9Rfz
-   +AGdC2s5IfAl6YddG5GGbGhJL+pdIYMc55qwUrO6eE7k/k7OAxQEVY5uL
-   z0DlHd0CZ3LmAnE4yy+uTUPxC8mvtsMdnrNa29Nyn0LM59cB6MiwQojgL
-   A==;
-X-CSE-ConnectionGUID: HIxLs8E7RUm+yiZo9LM9rw==
-X-CSE-MsgGUID: yH0tUjG7Rp2OsmTzRlK0Ew==
-X-IronPort-AV: E=McAfee;i="6800,10657,11758"; a="76975513"
-X-IronPort-AV: E=Sophos;i="6.23,179,1770624000"; 
-   d="scan'208";a="76975513"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2026 00:00:20 -0700
-X-CSE-ConnectionGUID: +Ai0yKayQEC1CqZkpFRtGw==
-X-CSE-MsgGUID: MNgSmocnQWiFacE6ywnqvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,179,1770624000"; 
-   d="scan'208";a="227349906"
-Received: from lkp-server01.sh.intel.com (HELO 7b0b59b3a0d4) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 14 Apr 2026 00:00:14 -0700
-Received: from kbuild by 7b0b59b3a0d4 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wCXkp-000000001D7-39Lh;
-	Tue, 14 Apr 2026 07:00:11 +0000
-Date: Tue, 14 Apr 2026 14:59:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:for-v7.1] BUILD SUCCESS
- 56f295853f38d3202c20fd0d98939e7a4c56c3fb
-Message-ID: <202604141421.aiGQaVvE-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1776150914; c=relaxed/simple;
+	bh=qMIdqmi2sc9qZNkuZKvLD9HwZ4KLHQoEe5VNMfi4bbk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ok6r6aqKOpwCjDTGl1JUbpgPHnHmqo81meJFDVhhSvNumTZ/An2ZhQwxVztZ/f7PDiJuKBMhHTO1TZQ8tOZNTC8Z7sdy1VR8NcK98pZeIxWVfc2n4BWPhE5txTwH7pxxW2lwWf5Aks6oSPhsX10ekNFS1UThWTmZb0Ba0ebFHjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-56f72d27e7eso840884e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Apr 2026 00:15:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776150911; x=1776755711;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YN4rbgAYp1mE8oFPfPME05NkCvNa36r6TXaXQWSDlC0=;
+        b=aHLYt0ZUVXcMbMyZb3t41k86pVU7k9KLzAPoUjo8UUy5/p+X4UtQKeCFwHoA/A7B6Q
+         u62E3UXlXXsZlnnULDwwjexnxqNt2FHOIcfpmYQVKXQjFak2ZDNR2IYu5zoNs1v60Xpo
+         Pbv+B3HNeNLkPg90lDr5jGQzAYvHknMhmF1UyfmC/8AR+NPsOJeM6rYgkawzJgSf0ICJ
+         U/LDHeYvTSViHxsaTU3QQTru1Jps4bgYXezb4YlsuBQGcOWtRP1j1s8qIyElohs7mHS6
+         F9in7PO31Jp28ls4csQaMzlOd4MJpN+VqNodlb/+Gbms1RH9jy/QX+64GJHy7WNuwLfy
+         7YjQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9gylTlohN/BlPD3WswB6Rb3JxYcWGT0xZyWx/csvuTV4qVZP5giiNjfUpb9Ijom8y6oa7d46rap8AT@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyQPz0tkV/vtkRYEy7CrrTvy3cruOeN87U1JsxWNSwdsIz+W2fZ
+	iUGsR3aWRakaCGasK0zHlyX1aIrFUSgwZtnDArKz+G8avk/UgmEVgtPyeHlxGDBT
+X-Gm-Gg: AeBDietGtBdn1MkGjdnAVHGMwrkgtVb7MEsc5awrn5CWzrUy7p7ih5lFlZGqGbpLxFm
+	vuMzn3hPGJKr8dgFzbkEjiGAMAs0D17h8zRa2E5ini8dluMgYo5DmNtMUaWUrnca47JuJbcvQTF
+	43GE8wWzcRo3PJKIeXvHU9PZ7DjyTp9cdXa+NpCLvT5yFl6ithvpvzoNKDg3RVZum5jd6qQaPNe
+	s28Pt7axmJ0OgbJFUusIMXI15FVr1RF/n/rMM5NZ8VrNkyq7zvUZ5aB+XRw9X4VcyuKccS0912y
+	AgFP/N8nPSiO898VKVVx42RlUa3XKm41pi6N4OFjgg2jY6w4ntC5WuZMzRlQhJhcs31pHgNmNKB
+	EGvu+f+ECZngyzrHeNsWpPbKGTlw0BhVkFQvoofZHgS5OY4ttIrLekp+JJpmdBukm174wZ9hN4K
+	Y2PyTExwk4Q/SwZdJXj9jgt/yZeL/AfzdA0wTw9lgZv9mH0kAxZ8BGZPTb6tTE
+X-Received: by 2002:a05:6122:6301:b0:56b:9534:c06f with SMTP id 71dfb90a1353d-56f2906fedfmr6099802e0c.3.1776150910835;
+        Tue, 14 Apr 2026 00:15:10 -0700 (PDT)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-9568dfe51a0sm2712031241.12.2026.04.14.00.15.10
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Apr 2026 00:15:10 -0700 (PDT)
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-953a5defbbdso3036455241.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Apr 2026 00:15:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ9vcvihY/sDMqV8FpWjpSZTmQasTCzhXU2Q/FmGnnmp1hcKGjti/lVGXR87LhE66XdamEZDLXR0uFCq@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:8015:b0:602:8742:1fa with SMTP id
+ ada2fe7eead31-6086efedd35mr7122144137.9.1776150910233; Tue, 14 Apr 2026
+ 00:15:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20260404024658.2496519-1-daniel@0x0f.com> <2ee820a1-4169-4345-97cf-d481fa3679bd@app.fastmail.com>
+In-Reply-To: <2ee820a1-4169-4345-97cf-d481fa3679bd@app.fastmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 14 Apr 2026 09:14:58 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVj3YJowoYhxnW094MeAz4UX0CCC=d63N5SxTRAK2gw9w@mail.gmail.com>
+X-Gm-Features: AQROBzDyKB8OCL6zrqN7JKQ48a4rJ4-udJv3n5CeiWeZMo6uhVAOE7BQvPKCdxw
+Message-ID: <CAMuHMdVj3YJowoYhxnW094MeAz4UX0CCC=d63N5SxTRAK2gw9w@mail.gmail.com>
+Subject: Re: [RFC PATCH] m68k: nommu: Fix behaviour of io macros on non-CF
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Daniel Palmer <daniel@0x0f.com>, Greg Ungerer <gerg@linux-m68k.org>, christoph.plattner@gmx.at, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-v7.1
-branch HEAD: 56f295853f38d3202c20fd0d98939e7a4c56c3fb  m68k: virt: Switch to qemu-virt-ctrl driver
+Hi Arnd,
 
-elapsed time: 724m
+On Mon, 13 Apr 2026 at 18:52, Arnd Bergmann <arnd@kernel.org> wrote:
+> On Sat, Apr 4, 2026, at 04:46, Daniel Palmer wrote:
+> > Currently for 68000 readl() and friends are broken in that they
+> > return the value from the bus as-is but should be reading a little
+> > endian value and swapping it to big endian.
+> >
+> > This was found using virtio-mmio on a 68000 virt machine. virtio-mmio
+> > is little endian even if the emulated machine is big endian. This works
+> > for MMU m68k because the io macros do what is expected there, but if
+> > the kernel was built for nommu it breaks.
+> >
+> > Potentially this will break some stuff for nommu non-CF m68k users
+> > but since there are probably 2 or 3 of us in the world I think we
+> > can work it out.
+> >
+> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> > Link:
+> > https://lore.kernel.org/lkml/ada73dc9-edf5-458c-8849-9f9db23ff304@app.fastmail.com/
+> > Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+>
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+>
+> It looks like the non-swapping readl() on nommu-m68k predates
+> the git history, but apparently the coldfire version was fixed
+> in 4d5303787627 ("m68k: fix read/write multi-byte IO for PCI
+> on ColdFire") to behave like everything else, and dragonball
+> appears does not support ISA or PCI buses, so it never used
+> them.
 
-configs tested: 87
-configs skipped: 2
+Correct.  readl() and friends were introduced when it was deemed better
+to use accessor functions instead of dereferencing volatile pointers
+directly (which is what several m68k drivers are still doing), but
+before it was decided that readl() is little endian for PCI everywhere
+(there was no PCI on m68k at that point in time). And of course that
+was long before the introduction of ioread32be()...
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Gr{oetje,eeting}s,
 
-tested configs:
-alpha                   allnoconfig    gcc-15.2.0
-alpha                  allyesconfig    gcc-15.2.0
-arc                    allmodconfig    gcc-15.2.0
-arc                     allnoconfig    gcc-15.2.0
-arc                    allyesconfig    gcc-15.2.0
-arm                     allnoconfig    clang-23
-arm                    allyesconfig    gcc-15.2.0
-arm64                  allmodconfig    clang-19
-arm64                   allnoconfig    gcc-15.2.0
-csky                   allmodconfig    gcc-15.2.0
-csky                    allnoconfig    gcc-15.2.0
-hexagon                allmodconfig    clang-17
-hexagon                 allnoconfig    clang-23
-hexagon     randconfig-001-20260414    clang-23
-hexagon     randconfig-002-20260414    clang-16
-i386                   allmodconfig    gcc-14
-i386                    allnoconfig    gcc-14
-i386                   allyesconfig    gcc-14
-loongarch              allmodconfig    clang-19
-loongarch               allnoconfig    clang-23
-loongarch   randconfig-001-20260414    clang-18
-loongarch   randconfig-002-20260414    clang-23
-m68k                   allmodconfig    gcc-15.2.0
-m68k                    allnoconfig    gcc-15.2.0
-m68k                   allyesconfig    gcc-15.2.0
-microblaze              allnoconfig    gcc-15.2.0
-microblaze             allyesconfig    gcc-15.2.0
-mips                   allmodconfig    gcc-15.2.0
-mips                    allnoconfig    gcc-15.2.0
-mips                   allyesconfig    gcc-15.2.0
-nios2                  allmodconfig    gcc-11.5.0
-nios2                   allnoconfig    gcc-11.5.0
-nios2       randconfig-001-20260414    gcc-11.5.0
-nios2       randconfig-002-20260414    gcc-11.5.0
-openrisc               allmodconfig    gcc-15.2.0
-openrisc                allnoconfig    gcc-15.2.0
-openrisc                  defconfig    gcc-15.2.0
-parisc                 allmodconfig    gcc-15.2.0
-parisc                  allnoconfig    gcc-15.2.0
-parisc                 allyesconfig    gcc-15.2.0
-parisc                    defconfig    gcc-15.2.0
-parisc      randconfig-001-20260414    gcc-8.5.0
-parisc      randconfig-002-20260414    gcc-14.3.0
-powerpc                allmodconfig    gcc-15.2.0
-powerpc                 allnoconfig    gcc-15.2.0
-powerpc     randconfig-001-20260414    gcc-8.5.0
-powerpc     randconfig-002-20260414    gcc-8.5.0
-powerpc64   randconfig-001-20260414    gcc-13.4.0
-powerpc64   randconfig-002-20260414    gcc-12.5.0
-riscv                  allmodconfig    clang-23
-riscv                   allnoconfig    gcc-15.2.0
-riscv                  allyesconfig    clang-16
-riscv                     defconfig    clang-23
-riscv       randconfig-001-20260414    clang-23
-riscv       randconfig-002-20260414    gcc-8.5.0
-s390                   allmodconfig    clang-18
-s390                    allnoconfig    clang-23
-s390                   allyesconfig    gcc-15.2.0
-s390                      defconfig    clang-23
-s390        randconfig-001-20260414    clang-23
-s390        randconfig-002-20260414    clang-23
-sh                     allmodconfig    gcc-15.2.0
-sh                      allnoconfig    gcc-15.2.0
-sh                     allyesconfig    gcc-15.2.0
-sh                        defconfig    gcc-15.2.0
-sh          randconfig-001-20260414    gcc-15.2.0
-sh          randconfig-002-20260414    gcc-15.2.0
-sparc                   allnoconfig    gcc-15.2.0
-sparc                     defconfig    gcc-15.2.0
-sparc       randconfig-001-20260414    gcc-15.2.0
-sparc       randconfig-002-20260414    gcc-14.3.0
-sparc64                allmodconfig    clang-23
-sparc64                   defconfig    clang-20
-sparc64     randconfig-001-20260414    gcc-8.5.0
-um                     allmodconfig    clang-19
-um                      allnoconfig    clang-23
-um                     allyesconfig    gcc-14
-um                        defconfig    clang-23
-um                   i386_defconfig    gcc-14
-um                 x86_64_defconfig    clang-23
-x86_64                 allmodconfig    clang-20
-x86_64                  allnoconfig    clang-20
-x86_64                 allyesconfig    clang-20
-x86_64                    defconfig    gcc-14
-x86_64                rhel-9.4-rust    clang-20
-xtensa                  allnoconfig    gcc-15.2.0
-xtensa                 allyesconfig    gcc-15.2.0
+                        Geert
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
