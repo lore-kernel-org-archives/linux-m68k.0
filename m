@@ -1,130 +1,84 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B413CF03F
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Apr 2026 13:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300783446C9
+	for <linux-m68k@vger.kernel.org>; Wed, 15 Apr 2026 14:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776261151; cv=none; b=AB3JTHAVXfA6Lr1q5ip0YMKDsHbEP2JPEKIAvso3UQumCpFzbA0Bd6ED+dc/inCS0Z+WFm/96TjOlvoam5bJSGhbRug5qM9ElZULzm691MJqWVCyEuB/En1ibNGczKMvQvGuy7hFl2cOaRq8NbGb1yko8yvX+3ywk3/CqhwzYc4=
+	t=1776264543; cv=none; b=Aj9qdcRnksiglpp9ZG5XUkp9/AZY186KZ9bdGIiSft0eaSh8pItgmQYb1gYgB7R1afQgFIaHLQ7ygNVhRpPEIWnypf84YaznA1XzaS/W2LiBShOi97coavFrWrvpayUqOdeAm+/4/mmgI7OzBAaK4192ywTdEyHC8Z4ngYfxsPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776261151; c=relaxed/simple;
-	bh=p3Zg8v3oezdHZzuUCBSbYPc+6DH07gyew07cGOO6ys8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XnM+4ZEKBgIMvXoTUoANZjmGzK7gX7WG9KMn8CJ1Oxn15/nLTJy1CVPwoBc5e6jr7QACF0cZhaTK9Br8kMhzu4Y836rZtjaDT2o6lSzbKBsz/QDqXFv1al7Xr6r48XIdNDgwzp/UdYGyxudjtBoLDq/sTVNAm00oWKz7l4M0jnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8A8F0600AE;
-	Wed, 15 Apr 2026 13:52:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBC21C19424;
-	Wed, 15 Apr 2026 13:52:26 +0000 (UTC)
-Message-ID: <25448303-a816-429d-851b-d827fc8f26fb@linux-m68k.org>
-Date: Wed, 15 Apr 2026 23:52:09 +1000
+	s=arc-20240116; t=1776264543; c=relaxed/simple;
+	bh=TZ2rjMDvbYb0Wwm5w+OOA0I+5751rFJbPJIRxMLyqLk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ElpnHUyfSviaufnzKuvHwpgTCq6fbLHICPiSaWtF7fH+GB26akGxTdpHPrHCrKg+L2xDHMuT/XMVqHbpSOscJ/lnAFURxwDQZL16txu4Brh68FE5dUfyo5wxLwA4WQj2nyvntC+LQ4B9j8yx4YvksK8jruAQ/rHpbA832t3Iu4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=G2nVIilv; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="G2nVIilv"
+Received: from macsyma.thunk.org (pool-173-48-114-3.bstnma.fios.verizon.net [173.48.114.3])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 63FEmNYA014717
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 15 Apr 2026 10:48:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1776264506; bh=nQ9glAGkVLTsHcEX6jYMIwYpN+dE9n1KzADOVYBlM3M=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=G2nVIilv8Iol8KbQOdellaDmC/Jej42z8Kb42pHV3smGimTOn3EB++isjiGYAOlRB
+	 kTSF2Z7yTmmVIh3nV2wI+dyBrErhQjhcXljgpH32lnv4vislr9r3xRTqS72994AJ6/
+	 fmhamq6xA91V1JfFtQgny4WRfaVfOlgPCj0DgpHQ2n51Qu1ALXNay4LtU7FnOQOLyf
+	 YiiG77iyVi1RsPX+eYvkX2D+oUJ29wjg0n4SAuK5bgW1H93lFi8bksxsTDsPc61Z3l
+	 EE3r2wznCBMZbye46qjc893WV+L9qUyS+nR7yot2CoQp8rFw3ETt3yG5DwMrnXlnh8
+	 XIpfwLyELc+oA==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id CCEBE631AF6B; Wed, 15 Apr 2026 10:47:22 -0400 (EDT)
+Date: Wed, 15 Apr 2026 10:47:22 -0400
+From: "Theodore Tso" <tytso@mit.edu>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Jeff Layton <jlayton@kernel.org>, lsf-pc@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-m68k <linux-m68k@vger.kernel.org>,
+        linux-sh <linux-sh@vger.kernel.org>
+Subject: Re: [LSF/MM/BPF TOPIC] Should we make inode->i_ino a u64?
+Message-ID: <20260415144722.GB74178@macsyma-wired.lan>
+References: <08f8444c7237566ffb4ba8c9eb0ab4b4a5f14440.camel@kernel.org>
+ <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] m68k: nommu: Fix behaviour of io macros on non-CF
-To: Arnd Bergmann <arnd@kernel.org>, Daniel Palmer <daniel@0x0f.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, christoph.plattner@gmx.at,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20260404024658.2496519-1-daniel@0x0f.com>
- <ec4945ec-84fd-4462-b35d-79a04673107d@linux-m68k.org>
- <CAFr9PXnfh6p_ajGSGX-MnKgToEdAW-3rPgOLKgaDXziKXNGfFQ@mail.gmail.com>
- <0ca82015-820d-4002-a65d-0888804db3cc@app.fastmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <0ca82015-820d-4002-a65d-0888804db3cc@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de>
 
-Hi Arnd,
-
-On 14/4/26 23:24, Arnd Bergmann wrote:
-> On Tue, Apr 14, 2026, at 14:55, Daniel Palmer wrote:
->>
->> On Tue, 14 Apr 2026 at 21:18, Greg Ungerer <gerg@linux-m68k.org> wrote:
->>> This change, in this form at least, breaks most of the non-MMU ColdFire targets.
->>> Try compiling any of m5208evb, m5249evb, m5272c3, m5275evb, m5307c3 or
->>> m5407c3 defconfigs and you get build failures. Targets that do not have
->>> a PCI bus and so do not define IOMEMBASE will fail, which is most of them.
+On Wed, Apr 15, 2026 at 11:11:32AM +0200, John Paul Adrian Glaubitz wrote:
+>
+> So, this went just over Phoronix [1] and as someone who is still invested
+> in 32-bit architectures, I'm only notified about the performance impact on
+> these systems now as the pull request has already been sent to Linus.
 > 
-> Indeed, I had assumed that coldfire just uses the regular semantics
-> here since it has PCI support, but I see now that it actually relies
-> on both the big-endian access and on passing a physical address as
-> an integer instead of an '__iomem' pointer into writel(), which
-> is something we should probably fix.
+> I'm frustrated by this poor communication style. If your change
+> affects certain users negatively, it should be openly communicated
+> to them on the appropriate mailing lists so that they at least get
+> to raise concerns. Disclosing these news to a limited set of mailing
+> lists only is not okay.
 
-Yeah, it feels like a real kludge.
+Adrian,
 
+I note that you are a Debian Maintainer.  Like Debian, the Linux
+kernel development community is very much a do-ocracy --- only more
+so.  If the 32-bit community really cares about Linux support, they
+need to be providing volunteer labor to kernel development, instead of
+demanding that everyone else pay the overhead tax of supporting 32-bit
+platforms which are rapidly disappearing.  I will note that Debian
+itself has made the decision to stop supporting the Debian Installer
+for i386 and the 32-bit armel platform in Debian Trixie.
 
->> Oof, that's the second time I broke coldfire this week (I broke it
->> trying to make virtio work for m68k in u-boot too).
->> Your patch works for my mc68000 virt and dragonball builds. I will
->> build/boot test nommu CF in QEMU.
-> 
-> Right, this is hopefully fine as a quick fix.
-> 
-> In order to have coldfire behave more like other targets
-> (now including 68000/68328), I would suggest removing the
-> custom readl/writel helpers for coldfire as well, and changing
-> the few callers to something else. A new set of helpers that
-> takes a phys_addr_t would work, or possibly just using
-> the existing __raw_readl()/__raw_writel() or
-> ioread32be()/iowrite32be() where appropriate, see the patch
-> below for the arch/m68k portion of that.
+Best regards,
 
-I like the idea of a specific set if internal register read/write helpers.
-I would like to move in that direction.
-
-
-> There are other coldfire specific drivers (fec, spi, ...)
-> that would need a similar change.
-
-Right, and this is really the work that needs to be done first before
-we will be able to remove the io_no.h specific readl/write code.
-This is what I see:
-
-Drivers that are used on ColdFire targets that use some of
-readb/readw/readl and writeb/writew/writel:
-
-     drivers/net/ethernet/freescale/fec*
-     drivers/net/ethernet/smsc/smc9x.[hc]
-     drivers/net/ethernet/davicom/dm9000.c
-     drivers/spi/spi-coldfire-qspi.c
-
-Obviously spi-coldfire-qspi.c is ColdFire specific, so easy to change
-and not affect anything else. The FEC ethernet driver is widely used on
-ARM and ColdFire, though the change to a register reading helper looks
-pretty strait forward but will be a largish patch. Changing the smc91x
-driver looks easy enough, the ColdFire multi-byte access macros in the
-header are specific to ColdFire. Need to give some thought to changes
-to the dm9000 driver.
-
-Drivers that are used on ColdFire that use only 8-bit readb and writeb:
-
-     drivers/tty/serial/mcf.c
-     drivers/i2c/busses/i2c-imx.c
-
-We could ignore these for now I guess, since readb and writeb will always
-work the same. Though it might be nice to clean them up with proper helpers.
-mcf.c is only used on ColdFire so won't affect anything else.
-
-Drivers that are used on ColdFire that use iowrite32/iowrite32be:
-
-     drivers/net/can/flexcan/flexcan-core.c
-
-Although this driver has support for differentiating big and little endian
-access I think for ColdFire it is relying on the kludgy overrides in io_no.h
-to actually work right. So will need a fix too.
-
-Did I miss any?
-
-Regards
-Greg
-
-
+					- Ted
