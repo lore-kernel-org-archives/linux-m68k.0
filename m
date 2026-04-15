@@ -1,71 +1,63 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39ED2765C4;
-	Tue, 14 Apr 2026 23:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE53923182D;
+	Wed, 15 Apr 2026 00:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776209913; cv=none; b=Oh2Py8x/QqHo+/F4x1320cCLNjixhkDkT9wD7OKreW+ZYoVOtenuNars1XPZjXmIqPqbQDa8cflP9HVtDpTt2OSXvE0ugcWNZr3vxCx+efwhI66RCKygPO9k+BTHQNen7EuNSjhk6TqNKDfVGvK5Sp0UCkYr2ATDaK74MyoOT3Q=
+	t=1776212168; cv=none; b=uPYEp7Q5P2wDAdwfLRqhro8qnYDDi7htK9nTXscQYOIebEjsMduEIjVLiMn/gHbkeO1wJaRjv77zvDlRfsQLjgJKKfW/E5F26evlI0WtK74xMsLN68d7nr9GxMg4ZMbgbcA1G5qKE8YCJxm9VglA59W45pwZ+wlLM3VeuG6z9MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776209913; c=relaxed/simple;
-	bh=4cnjDUFAlJnHlhb9oyk1oVWXfxJ7kF38q/i87GWfKoo=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=qJ2yW8XtJiyGGRaWur+F4ym2cg/mhaF887C3WAFZIC9A+BNvLVGqsE7bkdYu4p8mOof3U52VcmakijkhCKAbh0fwS8bBqnwQWcQJUxEmWiKb2eP1+ur/0MAG18rHJlETgTelAxeDeOCDkqhEOKhQvv0u8J/wmDVNuNpgqpeP/OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506C0C19425;
-	Tue, 14 Apr 2026 23:38:32 +0000 (UTC)
-Message-ID: <d98c3944-5739-4eb6-ab89-8eae46343634@linux-m68k.org>
-Date: Wed, 15 Apr 2026 09:38:28 +1000
+	s=arc-20240116; t=1776212168; c=relaxed/simple;
+	bh=KiwtBmWn/IVaVlH7Z7pRwhTJMu59EdF+j/bLBYuHTrI=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=eWr1TG/RYjcE+XCM2hsBLRA6mrocY3HXtA29/vJaAERr62PcxkA5eD6npXcyLLs6tBThG21ZphBUAFjUO6cZwNCenF+5LK73ii46B5FGyP+/EXPDWTCYTcrDK5aRff1N+i/eE8beTAeL9139J0ls+JjYbs+oqZ7jco34cqmdH5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LtWF+YNv; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LtWF+YNv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93174C2BCB3;
+	Wed, 15 Apr 2026 00:16:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776212168;
+	bh=KiwtBmWn/IVaVlH7Z7pRwhTJMu59EdF+j/bLBYuHTrI=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=LtWF+YNvnOhHXxSfoVo9n3Vo2QI6lHFFFM1b6NAuSmR8uThqbnAkOcJ6rRFHEDMUx
+	 ug5Z3OXo9DlsQ3kvPt9OrH1zflk6BY/upWwiEBkghdMmKeAVHW0bAl3fNtI2HcLDqD
+	 u4ltjCWb6a/ybh27k8B7vnEEfrjdK3FH9ITVCI6Zwes2jVnyRzXbVgWgF/eKZRs5lo
+	 0CUGpjtDB3kvW40bB9VuA365ep0T22RNxhg7mv/S9PK3k6KkT9T+G5cdM2ghW1LiOq
+	 d6p0NAm8QCMeUQcmEqnetxPGKqBttPDOrbpnj7xuuBRfd1N1GmLHh5GMrbRTesUeYQ
+	 f6Z3INWqix+mA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 02DF73809A29;
+	Wed, 15 Apr 2026 00:15:40 +0000 (UTC)
+Subject: Re: [git pull] m68knommu changes for v7.1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <d98c3944-5739-4eb6-ab89-8eae46343634@linux-m68k.org>
+References: <d98c3944-5739-4eb6-ab89-8eae46343634@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <d98c3944-5739-4eb6-ab89-8eae46343634@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.1
+X-PR-Tracked-Commit-Id: 2c6805145e1605cef39459f78979f7edee251b41
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e6b162a63f9b6d14473d9433ba8035c6351f35b2
+Message-Id: <177621213841.1531497.7019775881148821919.pr-tracker-bot@kernel.org>
+Date: Wed, 15 Apr 2026 00:15:38 +0000
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: torvalds@linux-foundation.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v7.1
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux/m68k <linux-m68k@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+The pull request you sent on Wed, 15 Apr 2026 09:38:28 +1000:
 
-Hi Linus,
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.1
 
-Please pull the m68knommu git tree changes for v7.1.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e6b162a63f9b6d14473d9433ba8035c6351f35b2
 
-It contains a fix for broken task info flag checking on system call
-handling exit. This only affected traditional 68000 nommu targets.
+Thank you!
 
-Regards
-Greg
-
-
-
-
-The following changes since commit 591cd656a1bf5ea94a222af5ef2ee76df029c1d2:
-   
-   Linux 7.0-rc7 (2026-04-05 15:26:23 -0700)
-
-are available in the Git repository at:
-   
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.1
-
-for you to fetch changes up to 2c6805145e1605cef39459f78979f7edee251b41:
-   
-   m68k: Fix task info flags handling for 68000 (2026-04-06 08:46:14 +1000)
-
-----------------------------------------------------------------
-m68knommu: updates and fixes for v7.1
-
-. fix task info flags handling for 68000 nommu
-
-----------------------------------------------------------------
-Daniel Palmer (1):
-       m68k: Fix task info flags handling for 68000
-  
-  arch/m68k/68000/entry.S | 21 +++++++++++++--------
-  1 file changed, 13 insertions(+), 8 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
