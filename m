@@ -1,63 +1,128 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE53923182D;
-	Wed, 15 Apr 2026 00:16:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02678390C80
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Apr 2026 06:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776212168; cv=none; b=uPYEp7Q5P2wDAdwfLRqhro8qnYDDi7htK9nTXscQYOIebEjsMduEIjVLiMn/gHbkeO1wJaRjv77zvDlRfsQLjgJKKfW/E5F26evlI0WtK74xMsLN68d7nr9GxMg4ZMbgbcA1G5qKE8YCJxm9VglA59W45pwZ+wlLM3VeuG6z9MM=
+	t=1776235119; cv=none; b=W5uJMq8HnCMWDfsHTGK1bR6aEBi8xnnLWl7cQINxHrfbpb4at2Clj8dY2tNGLJFJjO2OzyYIOAX5rqeXS3AAMfL8dtpAMLMeJovtwHQUvcqMo32PtHGOiDFnSbtV5vWCLbMgUzLIH1oc0N0TfjRooB9zTEWPZIZDYlG6gfgu9eQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776212168; c=relaxed/simple;
-	bh=KiwtBmWn/IVaVlH7Z7pRwhTJMu59EdF+j/bLBYuHTrI=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=eWr1TG/RYjcE+XCM2hsBLRA6mrocY3HXtA29/vJaAERr62PcxkA5eD6npXcyLLs6tBThG21ZphBUAFjUO6cZwNCenF+5LK73ii46B5FGyP+/EXPDWTCYTcrDK5aRff1N+i/eE8beTAeL9139J0ls+JjYbs+oqZ7jco34cqmdH5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LtWF+YNv; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1776235119; c=relaxed/simple;
+	bh=oJA3I+zKvq9KD+ojZoVICzDS05lI3MCnC5Rlh6cn04Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HH/fmAs14QNkwLQT3knb5AXtNrplDlkyLPn6npvLqEkt9Z9ik5cLDeRcot4obZMKlpnpKQAytPFL5tYKB9DQtAdlGf5RJ2TVvOV83d/Pijmc69N9cJxhZN4ngv1rNiWELwBoDJzGc4pCrJ953Cucx2jWA1zedCbl4PpgX4Wn6Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CW1zPJNS; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LtWF+YNv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93174C2BCB3;
-	Wed, 15 Apr 2026 00:16:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CW1zPJNS"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 540C64369E;
+	Wed, 15 Apr 2026 06:38:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4603C19424;
+	Wed, 15 Apr 2026 06:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776212168;
-	bh=KiwtBmWn/IVaVlH7Z7pRwhTJMu59EdF+j/bLBYuHTrI=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=LtWF+YNvnOhHXxSfoVo9n3Vo2QI6lHFFFM1b6NAuSmR8uThqbnAkOcJ6rRFHEDMUx
-	 ug5Z3OXo9DlsQ3kvPt9OrH1zflk6BY/upWwiEBkghdMmKeAVHW0bAl3fNtI2HcLDqD
-	 u4ltjCWb6a/ybh27k8B7vnEEfrjdK3FH9ITVCI6Zwes2jVnyRzXbVgWgF/eKZRs5lo
-	 0CUGpjtDB3kvW40bB9VuA365ep0T22RNxhg7mv/S9PK3k6KkT9T+G5cdM2ghW1LiOq
-	 d6p0NAm8QCMeUQcmEqnetxPGKqBttPDOrbpnj7xuuBRfd1N1GmLHh5GMrbRTesUeYQ
-	 f6Z3INWqix+mA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 02DF73809A29;
-	Wed, 15 Apr 2026 00:15:40 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v7.1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <d98c3944-5739-4eb6-ab89-8eae46343634@linux-m68k.org>
-References: <d98c3944-5739-4eb6-ab89-8eae46343634@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <d98c3944-5739-4eb6-ab89-8eae46343634@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.1
-X-PR-Tracked-Commit-Id: 2c6805145e1605cef39459f78979f7edee251b41
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e6b162a63f9b6d14473d9433ba8035c6351f35b2
-Message-Id: <177621213841.1531497.7019775881148821919.pr-tracker-bot@kernel.org>
-Date: Wed, 15 Apr 2026 00:15:38 +0000
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: torvalds@linux-foundation.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+	s=k20201202; t=1776235117;
+	bh=oJA3I+zKvq9KD+ojZoVICzDS05lI3MCnC5Rlh6cn04Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=CW1zPJNSJCGtniBmy6uyWDY71JAL0i4dK/N5qkFlNYs3kz0wXN03HHuHTh1S4hKQi
+	 e2yWcwq5RclCcCVX6A0Lopstyv1iJwvVwNRsKmdSs6NBxbKPvhq3apDF5Mh9EQ73Js
+	 q6/zItY3OOkWbN+i3+Ng0jCLJkMAwhrFhYQnM+LI0mETHNwewJwuPg1EQX95XcPKNN
+	 j2R4mf89jj4nr2TUgQRoKIUpiIuUlriELzBuol0ebMztd/ZZRtnQ1qtW+tQ2/QgIAp
+	 oYZF1auoZqP0e9mHU9TqSeeI5ff2Bxo+lnB6gCW6VWEs5KrEifF6NFFvP+OSWCop4o
+	 Cz3scEaJinP/g==
+Message-ID: <f6e6f630-07f1-46b4-888d-324a62a41070@kernel.org>
+Date: Wed, 15 Apr 2026 08:38:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [patch 32/38] powerpc/spufs: Use mftb() directly
+To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
+ Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+ Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
+ linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
+ linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>,
+ Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
+ Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
+ Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+ linux-openrisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ linux-parisc@vger.kernel.org, Paul Walmsley <pjw@kernel.org>,
+ linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>,
+ linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ sparclinux@vger.kernel.org
+References: <20260410120044.031381086@kernel.org>
+ <20260410120319.723429844@kernel.org>
+Content-Language: fr-FR
+From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+In-Reply-To: <20260410120319.723429844@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Wed, 15 Apr 2026 09:38:28 +1000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.1
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e6b162a63f9b6d14473d9433ba8035c6351f35b2
+Le 10/04/2026 à 14:21, Thomas Gleixner a écrit :
+> There is no reason to indirect via get_cycles(), which is about to be
+> removed.
+> 
+> Use mftb() directly.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
 
-Thank you!
+Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> ---
+>   arch/powerpc/platforms/cell/spufs/switch.c |    5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> --- a/arch/powerpc/platforms/cell/spufs/switch.c
+> +++ b/arch/powerpc/platforms/cell/spufs/switch.c
+> @@ -34,6 +34,7 @@
+>   #include <asm/spu_priv1.h>
+>   #include <asm/spu_csa.h>
+>   #include <asm/mmu_context.h>
+> +#include <asm/time.h>
+>   
+>   #include "spufs.h"
+>   
+> @@ -279,7 +280,7 @@ static inline void save_timebase(struct
+>   	 *    Read PPE Timebase High and Timebase low registers
+>   	 *    and save in CSA.  TBD.
+>   	 */
+> -	csa->suspend_time = get_cycles();
+> +	csa->suspend_time = mftb();
+>   }
+>   
+>   static inline void remove_other_spu_access(struct spu_state *csa,
+> @@ -1261,7 +1262,7 @@ static inline void setup_decr(struct spu
+>   	 *     in LSCSA.
+>   	 */
+>   	if (csa->priv2.mfc_control_RW & MFC_CNTL_DECREMENTER_RUNNING) {
+> -		cycles_t resume_time = get_cycles();
+> +		cycles_t resume_time = mftb();
+>   		cycles_t delta_time = resume_time - csa->suspend_time;
+>   
+>   		csa->lscsa->decr_status.slot[0] = SPU_DECR_STATUS_RUNNING;
+> 
+> 
+
