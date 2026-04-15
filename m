@@ -1,154 +1,113 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1AA3264C4
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Apr 2026 06:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7ADF507;
+	Wed, 15 Apr 2026 09:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776235689; cv=none; b=C6CSuDjCU6muIi51+U6JYhTny5n8i3aDoyPVpZY1E/YMjpvGHqjDou/rfDhlD7NOp0e1ji/TNxlX7Skes3cwDPyEXY2+mpJ7teNVlgjfK/yl9V1kFELaF8/xBredQXGxqP4a4DH/JBjGFOnvffM5/A/RBYuX1tUy/iOjSOugFYU=
+	t=1776244305; cv=none; b=euSKONmm1I2DvD4NWBPBgggVrjIZ3gtao8PZs/XAdLjGXmV+ogq1U6KtGh9RHE4kqoGaOXtApa2YrKO/ZgXioIr5fcWXZQD91GrwB4gbBAOhkaJsIkbS0iXSWZwE8nV1hTttKvqeB3xEpEIvd3chyd4cP9lkSRLi+haG5O+jhDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776235689; c=relaxed/simple;
-	bh=uO1fFgRaYkEaX03uIGSllbIp0KmN4e8uhrxbiL7j6JA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TG7188c2Ohcla8hzoT1ccSmhCWzAfJ8iPwstYeyL2EMBTTuPo8iDskhONAkdRhY3LafLUNJVNgjtLuW7huSAt3jLlypIWMmWnerOEUmoasHtmWUtXXzoFVZngUxleTt+EfxBD7NWzwkDcNRO4DmA/FwosPTaImzX558TPlyGE8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wn6Hr/rv; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1776244305; c=relaxed/simple;
+	bh=FM60Cc+RMZ1Ci/6xQYKWbpb2loHJQJNwtImo2YQmoPw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=tHONyK0Fcen/m0UQzh0JTL99VADe4FaNGgP8g+1ebax8KDa8fYJP/Mbjs3prXmy3TGxGjv6Mad9QiC27XufKUaURROaUxAGCjV+Y/1WEXbk+bi1lwk/dEhPo0Jd1XxZPEszUmkfjH8foM538Mh98TeV8QvPETn2ivfCeGFP3AiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=V31O2XYd; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wn6Hr/rv"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id C884D41A70;
-	Wed, 15 Apr 2026 06:48:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E1D1C19424;
-	Wed, 15 Apr 2026 06:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776235687;
-	bh=uO1fFgRaYkEaX03uIGSllbIp0KmN4e8uhrxbiL7j6JA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Wn6Hr/rv7RQ0mjmBpBGnHzSLGoawtRWrJKf8Yulby+TTpp7z1W2m+/e3q+cBeZYn8
-	 9EULstKmB1P1aIGBA/hM7NfdL90zPADnWSMrSZUOJgfBI2Y0gYKo15ZH/8SN+3BCpi
-	 LFdpD3kIOkfmc5kLWHOPn/7qJv2G9rdoWFZcqmWwEJGa7DK0r7DBeorJlYNCKX5hcM
-	 Q22Qw/tg/rR1esDPVyaYxqkxnFQnTVF5/bVWUROMriQiIMAWyo9xVZRAIqfM9NCvMV
-	 JvPvhMbjPkTiWVz5ZUzK2DMWWd8bbim3aFcilo4uxvNCEcTYhNnaiu0tF2t4jRv/Q5
-	 DezCa9n7clYBA==
-Message-ID: <9c33afea-7a64-456e-aa2f-bdcf7459b567@kernel.org>
-Date: Wed, 15 Apr 2026 08:47:55 +0200
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="V31O2XYd"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
+	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=RR4jDF3OH1EBcbm0Ei4yVB1tLADjBhkBAZR0bHEtox8=; t=1776244301;
+	x=1776849101; b=V31O2XYd4i53HPPl0K1aYOdY/ycTM5msUoGo7W7R5Xgysorn8qnyYJs8P+Yne
+	JnKwXWphAg1vi4jEWjMAUjSOkv3SNi39Ehj4233o9HQDHvfytMhyZlVSUOEJzWi0doyKcQ1TxLCJr
+	gT1D/4d4vqK5UNdgqT7lZEKFZ+HMD/jAWE3bia/G9EVrgtwxatOKXYNP8G93lM8v7V5oR/Myql9We
+	e5eoHA+xIoiwCjJfx0j7b0zQpKZhntzRPuxFNosq2h8/05oruQWQMvjjSgRZmgm+39B3iRpuiTQZn
+	1L9QLvgxtYEjl8L9dlg8kCMHVfNDD3BjQUAh44VDLeHllh+3lA==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.99)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1wCwHV-00000002Ugp-239B; Wed, 15 Apr 2026 11:11:33 +0200
+Received: from p5dc559e1.dip0.t-ipconnect.de ([93.197.89.225] helo=[192.168.178.61])
+          by inpost2.zedat.fu-berlin.de (Exim 4.99)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1wCwHV-000000020Eo-11eI; Wed, 15 Apr 2026 11:11:33 +0200
+Message-ID: <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de>
+Subject: Re: [LSF/MM/BPF TOPIC] Should we make inode->i_ino a u64?
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Jeff Layton <jlayton@kernel.org>, lsf-pc@lists.linux-foundation.org
+Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+ Christoph Hellwig	 <hch@lst.de>, Jan Kara <jack@suse.cz>, Al Viro
+ <viro@zeniv.linux.org.uk>,  linux-m68k <linux-m68k@vger.kernel.org>,
+ linux-sh <linux-sh@vger.kernel.org>
+Date: Wed, 15 Apr 2026 11:11:32 +0200
+In-Reply-To: <08f8444c7237566ffb4ba8c9eb0ab4b4a5f14440.camel@kernel.org>
+References: <08f8444c7237566ffb4ba8c9eb0ab4b4a5f14440.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.0 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [patch 33/38] powerpc: Select ARCH_HAS_RANDOM_ENTROPY
-To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
- Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
- Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev,
- Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
- linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
- linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>,
- Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
- Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
- "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Richard Henderson <richard.henderson@linaro.org>,
- linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org,
- Catalin Marinas <catalin.marinas@arm.com>,
- Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
- Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
- linux-openrisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
- linux-parisc@vger.kernel.org, Paul Walmsley <pjw@kernel.org>,
- linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>,
- linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- sparclinux@vger.kernel.org
-References: <20260410120044.031381086@kernel.org>
- <20260410120319.789114053@kernel.org>
-Content-Language: fr-FR
-From: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
-In-Reply-To: <20260410120319.789114053@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
+Hello,
 
+On Wed, 2026-02-18 at 10:36 -0500, Jeff Layton wrote:
+> For historical reasons, the inode->i_ino field is an unsigned long.
+> Because it's only 32 bits on 32-bit CPUs, this has caused a lot of fs-
+> specific hacks on filesystems that have native 64-bit inode numbers
+> when running a 32-bit arch.
+>=20
+> It would be a lot simpler if we just converted i_ino to be 64-bits and
+> dealt with the conversion at the kernel's edges. This would be a non-
+> event for the most part on 64-bit arches since unsigned long is already
+> 64 bits there.
+>=20
+> The kernel itself doesn't deal much with i_ino, so the internal changes
+> look fairly straightforward. The bulk of the patches will be to format
+> strings and to tracepoints.
+>=20
+> I think that the biggest problem will be that this will grow struct
+> inode on 32-bit arches by at least 4 bytes. That may have cacheline
+> alignment and slab sizing implications. We're actively talking about
+> deprecating 32-bit arches in the future however, so maybe we can
+> rationalize that away.
+>=20
+> FWIW, I had Claude spin up a plan to do this (attached). It's not bad.
+> I'm tempted to tell it generate patches for this, since this is mostly
+> a mechanical change, but I'm curious whether anyone else might have
+> reasons that we shouldn't go ahead and do it.
 
-Le 10/04/2026 à 14:21, Thomas Gleixner a écrit :
-> The only remaining usage of get_cycles() is to provide random_get_entropy().
-> 
-> Switch powerpc over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY
-> and providing random_get_entropy() in asm/random.h.
-> 
-> Remove asm/timex.h as it has no functionality anymore.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: linuxppc-dev@lists.ozlabs.org
+So, this went just over Phoronix [1] and as someone who is still invested
+in 32-bit architectures, I'm only notified about the performance impact on
+these systems now as the pull request has already been sent to Linus.
 
-Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
+I'm frustrated by this poor communication style. If your change affects cer=
+tain
+users negatively, it should be openly communicated to them on the appropria=
+te
+mailing lists so that they at least get to raise concerns. Disclosing these
+news to a limited set of mailing lists only is not okay.
 
-> ---
->   arch/powerpc/Kconfig              |    1 +
->   arch/powerpc/include/asm/random.h |   13 +++++++++++++
->   arch/powerpc/include/asm/timex.h  |   21 ---------------------
->   3 files changed, 14 insertions(+), 21 deletions(-)
-> 
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -150,6 +150,7 @@ config PPC
->   	select ARCH_HAS_PREEMPT_LAZY
->   	select ARCH_HAS_PTDUMP
->   	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_RANDOM_ENTROPY
->   	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
->   	select ARCH_HAS_SET_MEMORY
->   	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx) && !HIBERNATION
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/random.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_POWERPC_RANDOM_H
-> +#define _ASM_POWERPC_RANDOM_H
-> +
-> +#include <asm/cputable.h>
-> +#include <asm/vdso/timebase.h>
-> +
-> +static inline unsigned long random_get_entropy(void)
-> +{
-> +	return mftb();
-> +}
-> +
-> +#endif	/* _ASM_POWERPC_RANDOM_H */
-> --- a/arch/powerpc/include/asm/timex.h
-> +++ b/arch/powerpc/include/asm/timex.h
-> @@ -1,21 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef _ASM_POWERPC_TIMEX_H
-> -#define _ASM_POWERPC_TIMEX_H
-> -
-> -#ifdef __KERNEL__
-> -
-> -/*
-> - * PowerPC architecture timex specifications
-> - */
-> -
-> -#include <asm/cputable.h>
-> -#include <asm/vdso/timebase.h>
-> -
-> -ostatic inline cycles_t get_cycles(void)
-> -{
-> -	return mftb();
-> -}
-> -#define get_cycles get_cycles
-> -
-> -#endif	/* __KERNEL__ */
-> -#endif	/* _ASM_POWERPC_TIMEX_H */
-> 
-> 
+Thanks,
+Adrian
 
+> [1] https://www.phoronix.com/news/Linux-7.1-VFS-Kino-32-bit
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
