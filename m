@@ -1,59 +1,113 @@
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B51361DAB;
-	Thu, 16 Apr 2026 05:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA3A26560B
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Apr 2026 07:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776317588; cv=none; b=QOdnNk+Bs3nVpYj2R5OQNrrncaqjhY8saTBkPPECcBw1pff/JVns0ebzCi+l/Wio5tWXl/quuc+zeRp1KzlFxBGWcEkw+y7ur+Y+nI4Oox+CBpb1S9jk2W5hcV25AueXfbfcNFhnIFfs1KUC+8nw+fnHWLWiMpB9da82K094b74=
+	t=1776326199; cv=none; b=WkkoWPrJTwH4ecroja6RKg0NW5XUxSrEE317tJeB3gdnYINt1ZWoF4rHB6gpkJD1oiQaCuZqKN7rNot6dyt9MXVs5YrU6rON5jAv0u7JNaHf85N3qpDnV5ytkbtRJ9AwzOzcwFvAGnN170P91/AvRT8CF/8FUiF6HDv82cqt4eE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776317588; c=relaxed/simple;
-	bh=Zj053W2L6VYyb24EkKRhlQyzYxJS34mO9Zw3VVawDiI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N1SA704CjjJ6B7wMqT3TNp3USsuvWpFs+qLjFHHDjCZw7ueaMxS+RVqLW8Ti59H2KLYSrXgzBzwXgXnyVAhcO5L+yjytkcWrmXo9FozqjlqPinnK4cuHEwg5Al854cu2rnvHmyNO1fqEb115cyHewIXOzREr4bD6ryrJ8SiazpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id C21E76732A; Thu, 16 Apr 2026 07:33:03 +0200 (CEST)
-Date: Thu, 16 Apr 2026 07:33:03 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Jeff Layton <jlayton@kernel.org>, lsf-pc@lists.linux-foundation.org,
-	linux-fsdevel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>,
-	Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	linux-m68k <linux-m68k@vger.kernel.org>,
-	linux-sh <linux-sh@vger.kernel.org>
-Subject: Re: [LSF/MM/BPF TOPIC] Should we make inode->i_ino a u64?
-Message-ID: <20260416053303.GA15238@lst.de>
-References: <08f8444c7237566ffb4ba8c9eb0ab4b4a5f14440.camel@kernel.org> <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de>
+	s=arc-20240116; t=1776326199; c=relaxed/simple;
+	bh=mk8alaE3b0fBaIs6jRWaRucveKZqGih2pFkhWMCc/ck=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=a2vxNwabqmIqXzxK/+0DT41WvJASjAnuS7/f54wa1MYlY4E1KDeuQVhTRXXhLYG1rvpnkJ84Gzw9LERHXl8iArzp4s+KEahAbU4ws4+ajBtSmpdTmeFyEEB9VKg6oqLqCqTsuAjoRv5unRjCQbI800pipRZAphLlNfWSDn+IdE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 003EF42E20;
+	Thu, 16 Apr 2026 07:56:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F90C2BCAF;
+	Thu, 16 Apr 2026 07:56:35 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v7.1
+Date: Thu, 16 Apr 2026 09:56:27 +0200
+Message-ID: <20260416075627.3110360-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 15, 2026 at 11:11:32AM +0200, John Paul Adrian Glaubitz wrote:
-> So, this went just over Phoronix [1] and as someone who is still invested
-> in 32-bit architectures, I'm only notified about the performance impact on
-> these systems now as the pull request has already been sent to Linus.
+	Hi Linus,
 
-What performance impact do you see?  When using modern file systems
-reducing the memory usage should eventually improve performance, although
-this change will require additional file system changes to get there.
-btrfs already has a series out, and I'm working on the XFS conversion
-to remove the duplicate 64-bit inode information.
+The following changes since commit 6de23f81a5e08be8fbf5e8d7e9febc72a5b5f27f:
 
-Either way 7.0 will reduce the inode size already, as the shrinking
-mutex/rw_semaphore (and for the XFS inode semaphore) cuts a lot of space,
-which even on 32-bit by far overshadows the increased size of i_ino.
+  Linux 7.0-rc1 (2026-02-22 13:18:59 -0800)
 
-I'm also not sure what personal notification you expect?  This has been
-discussion in-and-out on linux-fsdevel.
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v7.1-tag1
+
+for you to fetch changes up to 56f295853f38d3202c20fd0d98939e7a4c56c3fb:
+
+  m68k: virt: Switch to qemu-virt-ctrl driver (2026-04-13 12:16:10 +0200)
+
+----------------------------------------------------------------
+m68k updates for v7.1
+
+  - Add support for QEMU virt-ctrl, and use it for system reset and
+    power off on the virt platform,
+  - Defconfig updates,
+  - Miscellaneous fixes and improvements.
+
+Thanks for pulling!
+
+P.S. This PR is sent out a bit later than usual, due to the build
+     bots reporting an issue last weekend, which is now fixed.
+----------------------------------------------------------------
+Geert Uytterhoeven (2):
+      m68k: defconfig: hp300: Enable monochrome and 16-color linux logos
+      m68k: defconfig: Update defconfigs for v7.0-rc1
+
+Kuan-Wei Chiu (2):
+      power: reset: Add QEMU virt-ctrl driver
+      m68k: virt: Switch to qemu-virt-ctrl driver
+
+Thomas Weißschuh (1):
+      m68k: uapi: Add ucontext.h
+
+Thorsten Blum (2):
+      m68k: q40: Remove commented out code
+      m68k: emu: Replace unbounded sprintf() in nfhd_init_one()
+
+ MAINTAINERS                                 |   6 ++
+ arch/m68k/Kconfig.machine                   |   2 +
+ arch/m68k/configs/amiga_defconfig           |   2 +
+ arch/m68k/configs/apollo_defconfig          |   2 +-
+ arch/m68k/configs/atari_defconfig           |   2 +
+ arch/m68k/configs/hp300_defconfig           |   4 +-
+ arch/m68k/configs/mac_defconfig             |   2 +
+ arch/m68k/configs/multi_defconfig           |   2 +
+ arch/m68k/configs/q40_defconfig             |   2 +
+ arch/m68k/emu/nfblock.c                     |   3 +-
+ arch/m68k/include/{ => uapi}/asm/ucontext.h |   5 +-
+ arch/m68k/q40/config.c                      |  15 ----
+ arch/m68k/virt/config.c                     |  42 +---------
+ arch/m68k/virt/platform.c                   |  20 ++++-
+ drivers/power/reset/Kconfig                 |  10 +++
+ drivers/power/reset/Makefile                |   1 +
+ drivers/power/reset/qemu-virt-ctrl.c        | 122 ++++++++++++++++++++++++++++
+ 17 files changed, 178 insertions(+), 64 deletions(-)
+ rename arch/m68k/include/{ => uapi}/asm/ucontext.h (82%)
+ create mode 100644 drivers/power/reset/qemu-virt-ctrl.c
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
