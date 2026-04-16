@@ -1,40 +1,40 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD56C34FF7A
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Apr 2026 19:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E7C388E7B
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Apr 2026 19:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776367795; cv=none; b=CXlGSu8C2rsEGJFEpqUVICMYlEXT8zc4ZEfwZp8re6k8+jbuWWtVCCJffVgdCDlf0l00pUyDio0KM9Thj8B+Fs4we+HSocqppOOnEn2y4gVmz+TK36kDlT1aecIQ7IChc7/Ot5+sJDE8/0/JICjH9M60EWXYhbF+W3GvaM5JpmU=
+	t=1776367971; cv=none; b=nPBw7O4tpytMZ6cFe187pol4wAvezRkX8IZFIYwGzJMXFyXNqNzzTOXuugXRmZRVLQcFf3AKqlGppVVol6z8VYXuoFY1V1iDvlqQ2FdF9K8RTtOAzrVkiN9Is8+9CV6cHR1cWPNavLMqs1E27glUAR7yoZFO26vVDVJmAYe2qRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776367795; c=relaxed/simple;
-	bh=IYYhpzvOPkjnKmWSOWOV2gjFmCyUK20pzUwsrPCl5+c=;
+	s=arc-20240116; t=1776367971; c=relaxed/simple;
+	bh=92ERkl7IqZ3D3ZBskV2Dg9cLo0xCsyjyPbt0J7jJ1bo=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AXJzI/d3Wna5cr4rMzzV9djEoqoHlTipmdq+wYBvGFF/QC0HLRsZZmSA8i5i7Z8cbyKrc4sogOyJZ9c+cRhyDmZa0nLMEjQUJrAJg7gbSdvOEB/iHSXqw8f7W62ED1hENoqvxG55RWzXwDt1Ouv7qTYfKFcADhDEQTO+smLbjq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TjiRJ3JY; arc=none smtp.client-ip=172.105.4.254
+	 MIME-Version:Content-Type; b=E10WTXxanX9L3pP9kdcL4el9L0QfUfaOL1bAiqwK3PTEnUW+xzGc62Sb+yKWT5qHpUY/h4PYkP26dXFr1U6Q7s0NR0ry35JEz2yl5twKeuQ6jw2P6LM65zeL/YIHAnSFDs+l/ACR75J7IY8oJ0YfHph7HMePbUhNCLmP23Ryp4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rw1vIfWy; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TjiRJ3JY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rw1vIfWy"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id CA94660127;
-	Thu, 16 Apr 2026 19:29:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F0EC2BCAF;
-	Thu, 16 Apr 2026 19:29:49 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 4CDE860128;
+	Thu, 16 Apr 2026 19:32:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E8AC2BCB0;
+	Thu, 16 Apr 2026 19:32:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776367790;
-	bh=IYYhpzvOPkjnKmWSOWOV2gjFmCyUK20pzUwsrPCl5+c=;
+	s=k20201202; t=1776367969;
+	bh=92ERkl7IqZ3D3ZBskV2Dg9cLo0xCsyjyPbt0J7jJ1bo=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=TjiRJ3JYC6H6QODlRe73weMWqu2ToVyxgZaKwDYZeUuXvTFyEukiq8tmP1ejDxYzD
-	 rmrx12vxM0g7ZC9obrRxDAfB+VnhJNvbWfFDZNFPe0bmQhLp4LsxxAr5syn+ysbEnb
-	 CJFNwSq3IzVphxzvT3UyUKOg1K7FQt/yAeF/6TILljylkaralKACrM4Mn6BgOOeIKv
-	 wGHlIow7JIanfsrwpPNBBsFvw34FcmmRQCfrRZvueDO/yyXUoANoGReW/3j6l4sYGi
-	 SDFU6WZgysyVavWZIkFYQOfBKcrZOljXUSUoxloeAjzhJrasftfXxGpcy4vC+O3xsf
-	 ay/dWzrcNvMPQ==
+	b=Rw1vIfWy5g39RTrQBVfk7P8+0yZErGWNG5UA9/vEtpQjlFkvwDTSfy9DcHen7/CI1
+	 yvB26rPsstyEixHeRP2kRFTYsbED9hoqdAx8pp9JCjVGtqsECj0BmLbEADz/j0Ea1z
+	 cuKaCVwjWLvXDg/CryubhnWhKyfuiuUjmH8fhvqeL/w/0cvoWWHyuhgdCpeuqDPtkC
+	 KhOKnJGX3lMBUei6zDvHwn/e429dg5HpUaKZZFagDf5a9Cwpgy1mEmtIvUBtm2UV8a
+	 d3rsfZkg4WL5nt8ssrtLumcRxpUUuH7CR13mk1NCsH3yKQQbT7v7wh+ISgR1TJLd7z
+	 vH5LnF1y8pygA==
 From: Thomas Gleixner <tglx@kernel.org>
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org, Arnd
- Bergmann <arnd@arndb.de>, x86@kernel.org, Lu Baolu
+To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, Lu Baolu
  <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, Michael Grzeschik
  <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
  linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
@@ -55,15 +55,16 @@ Cc: LKML <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org, Arnd
  Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, Helge Deller
  <deller@gmx.de>, linux-parisc@vger.kernel.org, Michael Ellerman
  <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, Paul Walmsley
- <pjw@kernel.org>, linux-riscv@lists.infradead.org, "David S. Miller"
+ <pjw@kernel.org>, linux-riscv@lists.infradead.org, Heiko Carstens
+ <hca@linux.ibm.com>, linux-s390@vger.kernel.org, "David S. Miller"
  <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: Re: [patch 35/38] s390: Select ARCH_HAS_RANDOM_ENTROPY
-In-Reply-To: <20260416134238.9230Ba6-hca@linux.ibm.com>
+Subject: Re: [patch 07/38] treewide: Consolidate cycles_t
+In-Reply-To: <0758843e-8f75-4c82-b9c0-25fab502e62f@kernel.org>
 References: <20260410120044.031381086@kernel.org>
- <20260410120319.924028412@kernel.org>
- <20260416134238.9230Ba6-hca@linux.ibm.com>
-Date: Thu, 16 Apr 2026 21:29:46 +0200
-Message-ID: <87y0imemad.ffs@tglx>
+ <20260410120318.045532623@kernel.org>
+ <0758843e-8f75-4c82-b9c0-25fab502e62f@kernel.org>
+Date: Thu, 16 Apr 2026 21:32:45 +0200
+Message-ID: <87v7dqem5e.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -72,31 +73,12 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-On Thu, Apr 16 2026 at 15:42, Heiko Carstens wrote:
-> On Fri, Apr 10, 2026 at 02:21:19PM +0200, Thomas Gleixner wrote:
->> The only remaining non-architecture usage of get_cycles() is to provide
->> random_get_entropy().
->> 
->> Switch s390 over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY and
->> providing random_get_entropy() in asm/random.h.
->> 
->> Add 'asm/timex.h' includes to the relevant files, so the global include can
->> be removed once all architectures are converted over.
->> 
->> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
->> Cc: Heiko Carstens <hca@linux.ibm.com>
->> Cc: linux-s390@vger.kernel.org
->> ---
->>  arch/s390/Kconfig              |    1 +
->>  arch/s390/include/asm/random.h |   12 ++++++++++++
->>  arch/s390/include/asm/timex.h  |    6 ------
->>  arch/s390/kernel/time.c        |    1 +
->>  arch/s390/kernel/vtime.c       |    1 +
->>  5 files changed, 15 insertions(+), 6 deletions(-)
+On Wed, Apr 15 2026 at 08:43, Christophe Leroy wrote:
+>> -typedef unsigned long cycles_t;
+>> -
+>> -static inline cycles_t get_cycles(void)
+>> +ostatic inline cycles_t get_cycles(void)
 >
-> Acked-by: Heiko Carstens <hca@linux.ibm.com>
->
-> Thomas, would you mind adding the below as minor improvement to this
-> series?
+> What is 'ostatic' ?
 
-Sure. I'll respin it next week.
+That's a really good question :)
