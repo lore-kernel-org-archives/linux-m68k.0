@@ -1,117 +1,186 @@
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C2D39F184
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Apr 2026 11:22:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3E83B7A8;
+	Thu, 16 Apr 2026 13:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776338553; cv=none; b=G0jev87FNb8xXF+QgAEpbnl7xUtqdoJwguZ2InqLEgGJq1s15W4PGgg++h4utwusLOcl89dqZEPZt6yZQdY6ESnvxNSgdJq128s4xTceqQAzQKSueGX/kdupwlntQ2VDA/wk97HcVVux7y5utKkxsGwGly3W0hC9B6c2RkMLWOE=
+	t=1776347010; cv=none; b=DJZtAVMagi22rRFw0Pqhn9cy/4kUC+reY66nkkLZxLei6eDDz+HYFk40Wox4zcWgXxXBYSeCp+Nzn+i29qIR9+hgZeigosUQ4dXs2/tFu/zaXSlntGQ+lPne2MKz8RvN6vz/or3YGMmjg+vKHa0nGMR7w++jKlkOCf2BGDO4Yz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776338553; c=relaxed/simple;
-	bh=5RcGmn3E6IkK/4PLTUVN24XJ2jAiV11BodM4t9S5uGE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pWQCh9R8alncsbayo0Dnt97zKaJMqUo4tWAi1XG7AWyeH10yOy7B7hLGT/Zuj6inqHELel1zA7r29zzZd+RsDc2TefZO82mbTa02JsWtw9maG02WUNAKbruQphDlK0ZVT053wWbRfcIxXSsn4uKK2M54LwNsPJmpj15OJVzZ7ZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-6137374b106so812565137.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Apr 2026 04:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776338547; x=1776943347;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I6jqlHRyBmHp78NPQbVn/INUSPCxYZ/sUXVIyq1nXfE=;
-        b=j5I9HdM2ZRp63pAnFR4rHTA9+NEbeonDz+I562SRMLDci/UC/FWEHUuEnQNaElMQ2t
-         +nlGQudqFrEMPQEDfbhtt5atlJ3YGG+yezGcypOU7ASeBZhWf2Ay2rNoLt8ALiapnQXz
-         huv9Ya1yryBzz1Qo3INI/s431DE2d1DxEDrLJHAxwx++S2R90gfugif7OJwGp2AuyFSh
-         Ly0iYirTetFq3KCA1JYujSsd4aCmFOiwMV1OOVvavAR0OixhjSBsNr+8Y/MdCIXc10Ml
-         3/Y4bR84XdqGxq1/bsrwHTsgbA7EvjAqNSa48wmXATVRgJftGgE8xQ9sR26NOoNvbr1I
-         Q2/g==
-X-Forwarded-Encrypted: i=1; AFNElJ/pPad7peE/16AgNzUE4gFYgC1d8wl8lFCUBfDBnsMp2V3nvmyHBn4REsyF3Gv/yYt70EVVhVKQudnV@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwmVoGdi4hAopJEAJOKf4g6yVJ5ANUlLtlMlF76jfEc2KeSPYF7
-	SusdmmmaK/H9L4f6Q8fyo/Xx9sZ1rmnGm4IqBOuOSa9QTBEnhljHGYZYsaj3QbZ9
-X-Gm-Gg: AeBDievF0O51mAn3Ve17kK1wmN7TMneJI8iH7wTVPztRZp1B7V7zaYsOm1XU77mdIn8
-	BJJlqIsXPTyn1ETvxtT4uluZQg7EgSxVdS+SdBBT1sf/75I52mCxd0Zsl4qDoeEA/4maWMYs0kH
-	TaIqTWjILOvq9CU5uDcaQL3oerlanPjfOZXDuGxkO8D9/XTcYiHRbMUy+KYKOCe6VQACSBCWXF7
-	ADMLu77yaR0TCLuZQvgPH+BUmhoDL2NFstNufJSH27SMIPWNEJYF8ApAkd9tPO9Nn8v1EldSwUs
-	EbDnOxi4OGqXYecUT4e5o/dMvebBn5wxQbCpYtmNEs5bEGkMbvP3H7JrvojL9Ao1/jEvTXw9Xik
-	Hossa4GYo7Z80HCw5UklkBKl+sAirf/ykij3qbXxAJf6DaNIDu7SKxzC1et97AmwGv0jnyyrBcN
-	kyvCRaV90XV1TvYMESl8AflQSMgKw6EG1fwrcleBNo5QVj6GNd9MR6fAR8JiwRu8on5isSFr/HJ
-	Ur0UaBWHQ==
-X-Received: by 2002:a05:6102:3fab:b0:5eb:fc32:935c with SMTP id ada2fe7eead31-609fe8a3033mr12491421137.3.1776338547628;
-        Thu, 16 Apr 2026 04:22:27 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-958656c0b4dsm2097085241.10.2026.04.16.04.22.27
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Apr 2026 04:22:27 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-60579b9c0ccso6368690137.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Apr 2026 04:22:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ/w5jREuKCQ4mNmp2CLFZ4kT7lYz8kCrsmHoVVV0NlgNfZNpj+Cnx5heWFZQHClswaw4HyPQ/QFAQKi@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:6044:b0:5ff:c64d:2283 with SMTP id
- ada2fe7eead31-60a0157295cmr11348128137.30.1776338547396; Thu, 16 Apr 2026
- 04:22:27 -0700 (PDT)
+	s=arc-20240116; t=1776347010; c=relaxed/simple;
+	bh=qfia6f7p2mrxliu/5Lfsw6GThkGbZSkpMOlHgUNain4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rbyJAb9jSGgucHz+e6UWNKYgL1UzwF2/YrxTVxN/iVAy1sp+kO2I8tGxIJjFSJ/I74OBn2qygVh9t/Syq5seoiBXi99+ZJ9yoD/t90c0P6T1vOtkuaSCfA/gJoVizeG56fD0LSaOnhszxPd7CO4FQlw0J7CJ/UhFmjZfkhjPD6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oxq0L3dy; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oxq0L3dy"
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63G7sGgI1833152;
+	Thu, 16 Apr 2026 13:42:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=f/UjitU2IRDQkjyHmpVEhuknZxwT4y
+	OWmcb/zMeZnjE=; b=oxq0L3dyylrzBDUlyV4jJBA8jSxvo6zyTFu2eZGBSWIf1F
+	0ksXNAaZF1WFKO90vuj3ti8LrXkR4WMFD+veRWCanALiSvqIPx5mj6AiZqVUTeh6
+	tnOUDFD8eG7uVm2ujOQXyKpmzLTf5Owa4nae6JyebU1il+cvOG4GPAishf31nirE
+	QHj8T3NZ/YPFd6hNRv9PVtfbIxtnQmC5vDBXeXZfk1L1NOqO7IX91VEsi/on5hTf
+	swPZjWAsNymtPrfj22h1nP6023klHtGdpOwHkZzHB+qFWDGTjvfilGSiiCmKXonp
+	ZKuwp6xlgpdmgU9LP0G+HpY0nEqSmz/YWYI5xffQ==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dh89rnpks-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 16 Apr 2026 13:42:45 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 63GCrstO003393;
+	Thu, 16 Apr 2026 13:42:44 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4djbh94p47-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 16 Apr 2026 13:42:44 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 63GDggEf46530868
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 16 Apr 2026 13:42:42 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6D9BD20040;
+	Thu, 16 Apr 2026 13:42:42 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E411920043;
+	Thu, 16 Apr 2026 13:42:41 +0000 (GMT)
+Received: from osiris (unknown [9.52.214.206])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 16 Apr 2026 13:42:41 +0000 (GMT)
+Date: Thu, 16 Apr 2026 15:42:38 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-s390@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org,
+        Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
+        Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org,
+        Paul Walmsley <pjw@kernel.org>, linux-riscv@lists.infradead.org,
+        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: Re: [patch 35/38] s390: Select ARCH_HAS_RANDOM_ENTROPY
+Message-ID: <20260416134238.9230Ba6-hca@linux.ibm.com>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120319.924028412@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260410120044.031381086@kernel.org> <20260410120319.397219631@kernel.org>
-In-Reply-To: <20260410120319.397219631@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 16 Apr 2026 13:22:16 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVoo_6i9=2oQj-=yjW7nK8eL4og08bdYvk_EGj=_cQvQA@mail.gmail.com>
-X-Gm-Features: AQROBzCJ6rVnwwfhi99PI36wWXAFQ5DEgo1zw3RhVwYNSXoxkTYAcgIxt5Z0K1g
-Message-ID: <CAMuHMdVoo_6i9=2oQj-=yjW7nK8eL4og08bdYvk_EGj=_cQvQA@mail.gmail.com>
-Subject: Re: [patch 27/38] m68k: Select ARCH_HAS_RANDOM_ENTROPY
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, 
-	Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>, 
-	iommu@lists.linux.dev, Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
-	linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org, 
-	David Woodhouse <dwmw2@infradead.org>, Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, 
-	Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
-	Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer <t.sailer@alumni.ethz.ch>, 
-	linux-hams@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, 
-	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	loongarch@lists.linux.dev, Dinh Nguyen <dinguyen@kernel.org>, 
-	Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, 
-	Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, 
-	Paul Walmsley <pjw@kernel.org>, linux-riscv@lists.infradead.org, 
-	Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260410120319.924028412@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDE2MDEyNyBTYWx0ZWRfX8JpaMjFpMFNj
+ wT/gcAkcZviN6PAKMrtow2zaUGLfcmRJE1Hmlajk6nmzRCOPN3b0RjfUSbBfZ4kcpBQKzFkFpH2
+ rBdoNFGP+ENma7o4H4KbJVfdl551lLtrUhXHjq9OwNJzXZ+me9M1v1uiIYgnebcgn173Z5tfoDR
+ wlQdz0La24p7XZm2254oSjajXGSASA40rSmgRE/jrWjf8LX+uVSsnpdh3XNIiRv8V/PTkKj6EBp
+ iBYTVRyCnznRY5uSBKmAQ36JyfUCJkrEoSNgw47/6thxuZYcD3Vho/t2EjbWxo9/yoIVwBhLMiA
+ KDHNz3gXJ52J3z8Lw3ApjdhxznJ9LyQJp5nCQBfITC+W8sZcyql8UU+3NCgtkDEKALiOvDUmzX8
+ cTJk9dj+/qvxdwTfyZTWoW7vy+HckV57wQs+QYABEOJZttft9F9OCKr+PfGIpmBZixsJntlLk+Y
+ lz3L+7/h8eZbcTrAKmg==
+X-Proofpoint-ORIG-GUID: rje87_dJEfU9HQ1lSMRsbGj9D9EjeiT6
+X-Proofpoint-GUID: mvWCwZrNw9W7TL82vJ98uT3DrwWfuFPP
+X-Authority-Analysis: v=2.4 cv=fYidDUQF c=1 sm=1 tr=0 ts=69e0e756 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=kj9zAlcOel0A:10 a=A5OVakUREuEA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=1gfdoSPoDaBUdwTi8XQA:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-04-16_03,2026-04-16_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 impostorscore=0 clxscore=1011 malwarescore=0 phishscore=0
+ bulkscore=0 priorityscore=1501 spamscore=0 suspectscore=0 lowpriorityscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604070000 definitions=main-2604160127
 
-On Fri, 10 Apr 2026 at 14:20, Thomas Gleixner <tglx@kernel.org> wrote:
-> The only remaining usage of get_cycles() is to provide
+On Fri, Apr 10, 2026 at 02:21:19PM +0200, Thomas Gleixner wrote:
+> The only remaining non-architecture usage of get_cycles() is to provide
 > random_get_entropy().
->
-> Switch m68k over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY and
+> 
+> Switch s390 over to the new scheme of selecting ARCH_HAS_RANDOM_ENTROPY and
 > providing random_get_entropy() in asm/random.h.
->
-> Remove asm/timex.h as it has no functionality anymore.
->
+> 
+> Add 'asm/timex.h' includes to the relevant files, so the global include can
+> be removed once all architectures are converted over.
+> 
 > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: linux-s390@vger.kernel.org
+> ---
+>  arch/s390/Kconfig              |    1 +
+>  arch/s390/include/asm/random.h |   12 ++++++++++++
+>  arch/s390/include/asm/timex.h  |    6 ------
+>  arch/s390/kernel/time.c        |    1 +
+>  arch/s390/kernel/vtime.c       |    1 +
+>  5 files changed, 15 insertions(+), 6 deletions(-)
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
-Gr{oetje,eeting}s,
+Thomas, would you mind adding the below as minor improvement to this
+series?
 
-                        Geert
+From 7072e5d66b99a7fa666d17c6ad8cb254f2d8f473 Mon Sep 17 00:00:00 2001
+From: Heiko Carstens <hca@linux.ibm.com>
+Date: Thu, 16 Apr 2026 15:08:15 +0200
+Subject: [PATCH] s390: Use get_tod_clock_fast() for random_get_entropy()
 
+Use get_tod_clock_fast() instead of get_tod_clock_monotonic() to implement
+random_get_entropy().
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+There is no need for random_get_entropy() to provide monotonic increasing
+values, nor is there any need to provide (close to) nanosecond granularity
+timestamps by shifting the result.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+This slightly reduces the execution time of random_get_entropy() and adds
+two bits of randomness.
+
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+---
+ arch/s390/include/asm/random.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/s390/include/asm/random.h b/arch/s390/include/asm/random.h
+index 7daf42dbed32..f6d9312efdbf 100644
+--- a/arch/s390/include/asm/random.h
++++ b/arch/s390/include/asm/random.h
+@@ -6,7 +6,7 @@
+ 
+ static inline unsigned long random_get_entropy(void)
+ {
+-	return (unsigned long)get_tod_clock_monotonic() >> 2;
++	return get_tod_clock_fast();
+ }
+ 
+ #endif
+-- 
+2.51.0
+
