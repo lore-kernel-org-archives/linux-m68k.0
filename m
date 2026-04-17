@@ -1,21 +1,26 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A803286D4D
-	for <linux-m68k@vger.kernel.org>; Fri, 17 Apr 2026 14:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA693ACA64
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Apr 2026 14:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776434724; cv=none; b=jEMmS+HjoBYs3c03GEdgN3xvncrV+aZwoWaA8MkJ68zxbqeSyT0Iqa21N5P5jJ0FATwd7g5ODK+9uEeGzQ44oPxxiSHjmgHJHsWjdFofAsvJTIEWRfnHWXVgowszY2tvP4LNIH71V669kqstHFD0LMq6rJdd6PufPiah2F6O2Yk=
+	t=1776435113; cv=none; b=puHXsSKpcDGqCr2HQgLlAjwRbGO72fvLE+eWXyrlHk7mDBcsP1NIyWp1ZF8b47j4xP1Br/f2B40ViDKyG3O4746mYPlQXKv7pUP4PTmFGC2X5Iu2WyGwPOSLSgnsUYPwNI9g/Qlqn4Hsox1bkSB29hdyeAg6+iX2hQ3UIQWtM34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776434724; c=relaxed/simple;
-	bh=XE+sXG40k+uslf9G+j09nxdU4tbn40ch7F4vP1SOtbQ=;
+	s=arc-20240116; t=1776435113; c=relaxed/simple;
+	bh=cDplyoUSFf4MOu8o5s5tDxXmGem7sjGmVPD4z4NwDsw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KpAYlj11S5tyLnk3rmr59991H9+q8VHyxPtkpzTnbqR0jGQnf5G1oSKtpVH6AdzCBBodYO9PcS09GxLkY+vgQV363Z8kxKdo8VhCVGAEJh6tr80opb6NLzAFsLPy3T2wjrhTVjLKDKs/zIMh7Gh/6dQ+/zN43n4tnGFpKY8sRrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2D7C19425;
-	Fri, 17 Apr 2026 14:05:23 +0000 (UTC)
-Message-ID: <fce3b4c5-f5c2-4d9c-abfa-6f028c93df61@linux-m68k.org>
-Date: Sat, 18 Apr 2026 00:05:19 +1000
+	 In-Reply-To:Content-Type; b=UqKc0SADqphuz9IDiV3sndMGhQ3MRd9qYZtedIWrVSJXa4L1k83uI10aATASmD8YfuICf6VH7HiKS/ouOd8I4XBi/W/Onz/wepuudW+dqwOyfpBzK2qONploF3QzsgSZAKstDfZN34ENTehariQVbBTTktkPzUpRLE+Hi1iKToQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id A841B60138;
+	Fri, 17 Apr 2026 14:11:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB42DC19425;
+	Fri, 17 Apr 2026 14:11:48 +0000 (UTC)
+Message-ID: <e1871e42-6d1f-4753-a830-9c7dda99f75b@linux-m68k.org>
+Date: Sat, 18 Apr 2026 00:11:46 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -23,124 +28,140 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] config: stmark2: defconfig updates
-To: Angelo Dureghello <angelo@kernel-space.org>
-Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
-References: <20260415205042.20930-1-angelo@kernel-space.org>
+Subject: Re: [RFC PATCH] m68k: nommu: Fix behaviour of io macros on non-CF
+To: Arnd Bergmann <arnd@kernel.org>, Daniel Palmer <daniel@0x0f.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, christoph.plattner@gmx.at,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <20260404024658.2496519-1-daniel@0x0f.com>
+ <ec4945ec-84fd-4462-b35d-79a04673107d@linux-m68k.org>
+ <CAFr9PXnfh6p_ajGSGX-MnKgToEdAW-3rPgOLKgaDXziKXNGfFQ@mail.gmail.com>
+ <0ca82015-820d-4002-a65d-0888804db3cc@app.fastmail.com>
+ <25448303-a816-429d-851b-d827fc8f26fb@linux-m68k.org>
+ <4ec2b9f3-8420-4f77-9373-7ae4df83404d@app.fastmail.com>
 Content-Language: en-US
 From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260415205042.20930-1-angelo@kernel-space.org>
+In-Reply-To: <4ec2b9f3-8420-4f77-9373-7ae4df83404d@app.fastmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Angelo,
+Hi Arnd,
 
-I will apply these updates to the m68knommu git tree when the current merge window closes.
+On 16/4/26 00:54, Arnd Bergmann wrote:
+> On Wed, Apr 15, 2026, at 15:52, Greg Ungerer wrote:
+>> On 14/4/26 23:24, Arnd Bergmann wrote:
+>>> On Tue, Apr 14, 2026, at 14:55, Daniel Palmer wrote:
+>>>
+>>> There are other coldfire specific drivers (fec, spi, ...)
+>>> that would need a similar change.
+>>
+>> Right, and this is really the work that needs to be done first before
+>> we will be able to remove the io_no.h specific readl/write code.
+>> This is what I see:
+>>
+>> Drivers that are used on ColdFire targets that use some of
+>> readb/readw/readl and writeb/writew/writel:
+>>
+>>       drivers/net/ethernet/freescale/fec*
+>>       drivers/net/ethernet/smsc/smc9x.[hc]
+>>       drivers/net/ethernet/davicom/dm9000.c
+>>       drivers/spi/spi-coldfire-qspi.c
+> 
+>> Obviously spi-coldfire-qspi.c is ColdFire specific, so easy to change
+>> and not affect anything else.
+> 
+>> The FEC ethernet driver is widely used on
+>> ARM and ColdFire, though the change to a register reading helper looks
+>> pretty strait forward but will be a largish patch.
+> 
+> Agreed.
+
+I am testing a change for this one now.
+
+
+>> Changing the smc91x driver looks easy enough, the ColdFire
+>> multi-byte access macros in the header are specific to ColdFire.
+> 
+> smc91x is a bit weird because this uses a readw() loop
+> for byte streams but ioread16be() for register accesses.
+> I think what is going on here is that this is in fact
+> a little-endian device, and ioread16be() ends up working
+> because this does a byteswap on coldfire while readl()
+> does not. With the normal io.h semantics, these should be
+> readsw() or ioread16_rep() for the bytestream and readw()
+> or ioread16() for the LE register instead, same as the
+> #else path in the header.
+
+I will create a patch for this one too.
+
+
+>> Need to give some thought to changes
+>> to the dm9000 driver.
+>> The dm9000.c driver should not need any changes, as it only
+> deals with 8-bit registers and iowrite32_rep()/ioread32_rep()
+> byte stream transfers, but no 16-bit or 32-bit register
+> accesses, so no byteswap is needed here.
+
+Ah, yes, that is right. Nothing to do here then ;-)
+
+
+>> Drivers that are used on ColdFire that use only 8-bit readb and writeb:
+>>
+>>       drivers/tty/serial/mcf.c
+>>       drivers/i2c/busses/i2c-imx.c
+>>
+>> We could ignore these for now I guess, since readb and writeb will always
+>> work the same. Though it might be nice to clean them up with proper helpers.
+>> mcf.c is only used on ColdFire so won't affect anything else.
+> 
+> Right
+> 
+>> Drivers that are used on ColdFire that use iowrite32/iowrite32be:
+>>
+>>       drivers/net/can/flexcan/flexcan-core.c
+>>
+>> Although this driver has support for differentiating big and little endian
+>> access I think for ColdFire it is relying on the kludgy overrides in io_no.h
+>> to actually work right. So will need a fix too.
+> 
+> Makes sense. So the FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN flag
+> should be flipped at the same time as flipping the endianess
+> of iowrite32be()/iowrite32().
+
+I will do this one too.
+
+
+>> Did I miss any?
+> 
+> I test-built all the defconfigs, with readX/writeX/ioreadXX/iowriteXX
+> commented out and found three more for mcf5441x:
+> 
+> drivers/mmc/host/sdhci-esdhc-mcf.c
+> 
+>   -> needs to be flipped to explicit big-endian accessors
+> 
+> drivers/dma/mcf-edma-main.c
+> 
+>   -> same, but confusingly this also has edma_readl()/edma_writel()
+>      helpers that try to handle this. As far as I can tell, this
+>      is currently broken because coldfire sets edma->big_endian=true
+>      but then uses ioread32be() that appears to flip the BE
+>      register contents to LE. I'm either missing something here,
+>      or the upstream version never worked.
+> 
+> drivers/spi/spi-fsl-dspi.c
+> 
+>    -> this one uses regmap_mmio without specifying an endianess,
+>       so this should get the default LE helpers everywhere, which
+>       would be wrong on coldfire after the change. I think the
+>       correct solution here is to set explict endianess in the
+>       regmap setup for coldfire.
+
+Good catch, thanks. I will look at these too.
+
+I have some changes I am testing to do a blanket change of the arch specific code
+to use newly create IO access functions too. Simple enough (like your example patch)
+but of course it does cause of bit of churn.
 
 Regards
 Greg
-
-
-On 16/4/26 06:50, Angelo Dureghello wrote:
-> Various updates, mainly to reduce kernel size.
-> 
-> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
-> ---
->   arch/m68k/configs/stmark2_defconfig | 33 +++++++++++++++++------------
->   1 file changed, 20 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
-> index 515d9b208b10..b3fb95f73a95 100644
-> --- a/arch/m68k/configs/stmark2_defconfig
-> +++ b/arch/m68k/configs/stmark2_defconfig
-> @@ -2,16 +2,20 @@ CONFIG_LOCALVERSION="stmark2-001"
->   CONFIG_DEFAULT_HOSTNAME="stmark2"
->   CONFIG_SYSVIPC=y
->   CONFIG_LOG_BUF_SHIFT=14
-> -CONFIG_NAMESPACES=y
->   CONFIG_BLK_DEV_INITRD=y
-> +# CONFIG_RD_BZIP2 is not set
-> +# CONFIG_RD_LZMA is not set
-> +# CONFIG_RD_XZ is not set
-> +# CONFIG_RD_LZO is not set
-> +# CONFIG_RD_LZ4 is not set
-> +# CONFIG_RD_ZSTD is not set
->   CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-> +CONFIG_EXPERT=y
->   # CONFIG_FHANDLE is not set
->   # CONFIG_AIO is not set
->   # CONFIG_ADVISE_SYSCALLS is not set
->   # CONFIG_MEMBARRIER is not set
-> -CONFIG_EXPERT=y
-> -# CONFIG_VM_EVENT_COUNTERS is not set
-> -# CONFIG_COMPAT_BRK is not set
-> +# CONFIG_KALLSYMS is not set
->   CONFIG_COLDFIRE=y
->   CONFIG_M5441x=y
->   CONFIG_CLOCK_FREQ=240000000
-> @@ -21,10 +25,12 @@ CONFIG_RAMBASE=0x40000000
->   CONFIG_RAMSIZE=0x8000000
->   CONFIG_VECTORBASE=0x40000000
->   CONFIG_KERNELBASE=0x40001000
-> -# CONFIG_BLK_DEV_BSG is not set
->   CONFIG_BINFMT_FLAT=y
->   CONFIG_BINFMT_ZFLAT=y
->   CONFIG_BINFMT_MISC=y
-> +# CONFIG_COREDUMP is not set
-> +# CONFIG_COMPAT_BRK is not set
-> +# CONFIG_VM_EVENT_COUNTERS is not set
->   CONFIG_DEVTMPFS=y
->   CONFIG_DEVTMPFS_MOUNT=y
->   # CONFIG_ALLOW_DEV_COREDUMP is not set
-> @@ -47,11 +53,11 @@ CONFIG_MTD_SPI_NOR=y
->   # CONFIG_INPUT_MOUSE is not set
->   CONFIG_SERIO_LIBPS2=y
->   # CONFIG_UNIX98_PTYS is not set
-> -# CONFIG_DEVMEM is not set
->   CONFIG_SERIAL_MCF=y
->   CONFIG_SERIAL_MCF_BAUDRATE=115200
->   CONFIG_SERIAL_MCF_CONSOLE=y
->   # CONFIG_HW_RANDOM is not set
-> +# CONFIG_DEVMEM is not set
->   CONFIG_SPI=y
->   CONFIG_SPI_DEBUG=y
->   CONFIG_SPI_FSL_DSPI=y
-> @@ -59,7 +65,7 @@ CONFIG_DEBUG_GPIO=y
->   CONFIG_GPIO_SYSFS=y
->   CONFIG_GPIO_GENERIC_PLATFORM=y
->   # CONFIG_HWMON is not set
-> -# CONFIG_HID is not set
-> +# CONFIG_HID_SUPPORT is not set
->   # CONFIG_USB_SUPPORT is not set
->   CONFIG_MMC=y
->   CONFIG_MMC_DEBUG=y
-> @@ -68,6 +74,8 @@ CONFIG_MMC_SDHCI_PLTFM=y
->   CONFIG_MMC_SDHCI_ESDHC_MCF=y
->   CONFIG_DMADEVICES=y
->   CONFIG_MCF_EDMA=y
-> +# CONFIG_VIRTIO_MENU is not set
-> +# CONFIG_VHOST_MENU is not set
->   CONFIG_EXT2_FS=y
->   CONFIG_EXT2_FS_XATTR=y
->   CONFIG_EXT2_FS_POSIX_ACL=y
-> @@ -79,14 +87,13 @@ CONFIG_EXT4_FS_SECURITY=y
->   # CONFIG_DNOTIFY is not set
->   # CONFIG_INOTIFY_USER is not set
->   CONFIG_OVERLAY_FS=y
-> -CONFIG_FSCACHE=y
->   # CONFIG_PROC_SYSCTL is not set
-> -CONFIG_CRAMFS=y
->   CONFIG_SQUASHFS=y
-> -CONFIG_ROMFS_FS=y
-> -# CONFIG_CRYPTO_HW is not set
-> +CONFIG_XZ_DEC=y
->   CONFIG_PRINTK_TIME=y
-> -# CONFIG_DEBUG_BUGVERBOSE is not set
-> +CONFIG_DYNAMIC_DEBUG_CORE=y
-> +# CONFIG_DEBUG_MISC is not set
->   # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-> -CONFIG_SLUB_DEBUG_ON=y
-> +# CONFIG_SLUB_DEBUG is not set
->   CONFIG_PANIC_ON_OOPS=y
-> +# CONFIG_RUNTIME_TESTING_MENU is not set
 
