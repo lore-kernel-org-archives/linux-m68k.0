@@ -1,88 +1,104 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B53434753F
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Apr 2026 16:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322391E0DE8
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Apr 2026 16:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776442163; cv=none; b=aC1izwrfP11+RZv8lnKNXLHa2r2DRHtWWSkBec+vMRW+DspYjmAqVYI5LJS4G3aqpSo17kxLz541zhFSY4aIG/WnkAefJ7w7f+bNOf0b7q8Nouz0hxBju7Me5+vJ5G5G6r7gtlx13Jc0P20DG5Xw4LL7Wj2MEICC41fBCZ8/yMw=
+	t=1776443824; cv=none; b=hFqWH/q+qC7WnrcRQlUvWySJDe9EbQrzGIuvWZ46aNFdZZLu/Bi087jU0q7kx2wgBNgAWtn3rHFzrYr/hdCJ0ZOuEvqpiovHHhLhfj4t/6kCsJZ09PwLsHOjjAHs/dZsx2He2zm7nfvXdkSbTpkQrPM2RA/MEiPB52yQ2rPUqrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776442163; c=relaxed/simple;
-	bh=MFHe/JodABoKXerKi3atV7xZGaeASc16N8fsC8Nf3QY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QJGF2hlDe99Iupbzlwyy7yb05TyuU/9qWyufh+S0qnFAgOBnTAGIFBhm5P+7lvy5k3QTRiJqAqR1JjzYJ0yDvzvyjhahrnwgr2sbzAsJsBzdLRB3yVmXEcrrsmuGtq2wz0Cm/wOewEzGxam/t/hObZt+Bkg2MhTIVt78lUsvMm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EfGr/WSp; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1776443824; c=relaxed/simple;
+	bh=RMcixTISFlhYZCQho5uTHeI1d3sBgL4paWNdoeSkCsY=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=Az9NcFTU48MvULyGZTfytykgpLuopwAFEaq5DfQ70kVvXIS8cjaxWlQrxvEb89rJ5eyfEHtUKdwRpcaaXO7tB6pIG7bDMEmUXXsEWVGA0FGxU2B9AMoksyjOVRU5q+9Z8Og5gzrYzX548rXhoxXVxvWl0dpLEnXAkarEQl+zpA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=APGlZdkE; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EfGr/WSp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="APGlZdkE"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id BDC8A40673;
-	Fri, 17 Apr 2026 16:09:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0146C19425;
-	Fri, 17 Apr 2026 16:09:19 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 4F69E60138;
+	Fri, 17 Apr 2026 16:37:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D132FC19425;
+	Fri, 17 Apr 2026 16:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776442161;
-	bh=MFHe/JodABoKXerKi3atV7xZGaeASc16N8fsC8Nf3QY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EfGr/WSpV76MKFAJdAlX8fWJ6OXLwxRuUDkaAyDOY0S+TPFyyxaHPV+rUxyH+sWky
-	 m/g/bk6uXffxV6m8fMvmPHxM6gkiDXOm+NazvVXMvyJOsc4ftX7/ofZy4qdGWTggA8
-	 lYYpfhX7blhzkPeuHg9YeZwz+oCsEQIRFNHca1ZAdRzBbalMTlPGdHb6VATDRSeTIh
-	 +zfZQO+FH23fRXbH+fuBT+n0rcTNIY96Apxpn7jUmqtdbN7/rb5czLli6oNqgJ6xgr
-	 Jjhis9/jHYZlFECOg3L4unzPG7z4i5P/D0nTZXIOZ2uY+6/LBvGOhkM/oAR8rmGp9F
-	 4iwPeGhPAW5ew==
-Date: Fri, 17 Apr 2026 17:09:17 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Thierry Reding <thierry.reding@kernel.org>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-pm@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] dt-bindings: reserved-memory: Change maintainer
- for BPMP SHMEM
-Message-ID: <20260417-molecule-pending-b6a181b49abd@spud>
-References: <20260417131549.3154534-1-thierry.reding@kernel.org>
- <20260417131549.3154534-3-thierry.reding@kernel.org>
+	s=k20201202; t=1776443822;
+	bh=RMcixTISFlhYZCQho5uTHeI1d3sBgL4paWNdoeSkCsY=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=APGlZdkE9SEbfV4fb4SgAtbhKr3GWkreHu/ZL0W+AEw5P2xPhtWBq69rvpnER4ogp
+	 ZZFYB22YpqcSJuZxtksozhLmK+ievF0djc4rrgKAJZ9WcEXJG1TK114NXdWnKoBqEe
+	 2WQkDccQftpBXjE9YXuN99bcPQMQQdGQM/mk7BrtzpMERTAnX8vS6QRzisjDim9EDI
+	 n1Qw7dDkPg//k2sNtpBmtJ5MAo/4SavOat9aRWu9Tk3cx967waUhsv0yEaLV85CamZ
+	 0UBJKFZNylUVdyKuNoZ5tNwfrls5eQM+0vwS5xFPeADJq/Y9QF9PI38k2FmSVFmOMX
+	 AsYdDDtphXEhA==
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfauth.phl.internal (Postfix) with ESMTP id D3560F4006C;
+	Fri, 17 Apr 2026 12:37:00 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-04.internal (MEProxy); Fri, 17 Apr 2026 12:37:00 -0400
+X-ME-Sender: <xms:rGHiaePNMHafJNUDl2zteap36I0khVb7JeQv9qUuk6x657DfnhYOTw>
+    <xme:rGHiaXxvlK5kbLNLQ29aoDBLnTLymmHW-3ZjYJ0K2GCOTmmClEvuXcX1Y4MJqQO03
+    hshfzRMWqbr9Jg4nHMMHbGZCey9aOEXrGqiTM5HyKEu3XgHaR7gsAI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdehtdefkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeejjeffteetfeetkeeijedugeeuvdfgfeefiedtudeikeeggeefkefhudfhlefh
+    veenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudejtddvgedq
+    vdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusgdruggvpd
+    hnsggprhgtphhtthhopeeipdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegurghn
+    ihgvlhestdigtdhfrdgtohhmpdhrtghpthhtoheptghhrhhishhtohhphhdrphhlrghtth
+    hnvghrsehgmhigrdgrthdprhgtphhtthhopehgvggvrhhtsehlihhnuhigqdhmieekkhdr
+    ohhrghdprhgtphhtthhopehgvghrgheslhhinhhugidqmheikehkrdhorhhgpdhrtghpth
+    htoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrghdp
+    rhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:rGHiaVsBKkK-ZINFs8yy1Z6BR20ZZ35jPm3s3FS5kzA8WzxN_KwzKA>
+    <xmx:rGHiaZZ0LqIFA370RWfUERlHNdLg2mEHy_vxB_P5n6SKi_DI2uWJGg>
+    <xmx:rGHiaXze1mYIiNZcPlMtXSCn_kdJwDMN2Nw1l6JpcunRzF8Oo8FfGg>
+    <xmx:rGHiaRgnfnYPxyQzfDbsmrklISaARxO9K46tIb8e-1poPb6AnFSdTg>
+    <xmx:rGHiaTkROpC5N5LZYdKnu7evROhSBUET7Y8u4x4bitX4BscDO-XIv9Ca>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id A8868700065; Fri, 17 Apr 2026 12:37:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nuU7S7AzXyEfyP0v"
-Content-Disposition: inline
-In-Reply-To: <20260417131549.3154534-3-thierry.reding@kernel.org>
+X-ThreadId: AbTBWCF3eo87
+Date: Fri, 17 Apr 2026 18:36:20 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Greg Ungerer" <gerg@linux-m68k.org>, "Daniel Palmer" <daniel@0x0f.com>
+Cc: "Geert Uytterhoeven" <geert@linux-m68k.org>, christoph.plattner@gmx.at,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Message-Id: <a93c448f-32fd-48aa-b4be-124278ca0a02@app.fastmail.com>
+In-Reply-To: <e1871e42-6d1f-4753-a830-9c7dda99f75b@linux-m68k.org>
+References: <20260404024658.2496519-1-daniel@0x0f.com>
+ <ec4945ec-84fd-4462-b35d-79a04673107d@linux-m68k.org>
+ <CAFr9PXnfh6p_ajGSGX-MnKgToEdAW-3rPgOLKgaDXziKXNGfFQ@mail.gmail.com>
+ <0ca82015-820d-4002-a65d-0888804db3cc@app.fastmail.com>
+ <25448303-a816-429d-851b-d827fc8f26fb@linux-m68k.org>
+ <4ec2b9f3-8420-4f77-9373-7ae4df83404d@app.fastmail.com>
+ <e1871e42-6d1f-4753-a830-9c7dda99f75b@linux-m68k.org>
+Subject: Re: [RFC PATCH] m68k: nommu: Fix behaviour of io macros on non-CF
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
+On Fri, Apr 17, 2026, at 16:11, Greg Ungerer wrote:
+>
+> I have some changes I am testing to do a blanket change of the arch 
+> specific code to use newly create IO access functions too. Simple
+> enough (like your example patch) but of course it does cause of
+> bit of churn.
 
---nuU7S7AzXyEfyP0v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sounds good, yes. The hardest part I think is going to be the
+shared drivers that currently rely on the flipped meaning of
+readl()/ioread32be() like the regmap. These may need to get an
+atomic patch that flips around the users at the same time
+as removing the flipped readl().
 
-On Fri, Apr 17, 2026 at 03:15:48PM +0200, Thierry Reding wrote:
-> From: Thierry Reding <treding@nvidia.com>
->=20
-> Peter sadly passed away a while ago, so change the maintainers for BPMP
-> SHMEM to Jon and myself.
->=20
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-pw-bot: not-applicable
-
---nuU7S7AzXyEfyP0v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCaeJbLQAKCRB4tDGHoIJi
-0sjcAQDBUAS4q8bdLt4473Lh07kzn84oMHmG+AK7zOJ4U5NsFwD/aO7wDYB3REwc
-/p7ATF7mluF/bwqsdq3R/8rZL/p42AU=
-=1eL7
------END PGP SIGNATURE-----
-
---nuU7S7AzXyEfyP0v--
+     Arnd
