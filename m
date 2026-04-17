@@ -1,86 +1,146 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F6D3B27EF
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 17 Apr 2026 13:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A803286D4D
+	for <linux-m68k@vger.kernel.org>; Fri, 17 Apr 2026 14:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776431767; cv=none; b=qxJtI1L45T1FRUnB1BZ/dVrLyZQSK5lAYiJA8tBZnDaSuNnvn5HcdkS95gBM+TtIUWEZ50mO+Bfpt9QOY4ohEECtpVq1JT/BzfLnTOOUx5NM0WEPBZCxdQaUqRBkCLzuU4skybMA46oy1sJR4LfU8gOot/L0HMXwTgV2FB3L9uo=
+	t=1776434724; cv=none; b=jEMmS+HjoBYs3c03GEdgN3xvncrV+aZwoWaA8MkJ68zxbqeSyT0Iqa21N5P5jJ0FATwd7g5ODK+9uEeGzQ44oPxxiSHjmgHJHsWjdFofAsvJTIEWRfnHWXVgowszY2tvP4LNIH71V669kqstHFD0LMq6rJdd6PufPiah2F6O2Yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776431767; c=relaxed/simple;
-	bh=ZwXQ0B97mAqYw+Pj4q1qkn3w0VEkp8PC3RW3zFe6OsA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hJJiIPmtpDUBw4oiUtTw+Gd0buxfHtdQU53hNF43pD/LlXJ+8DDooqIl5CcEKFmm7V7UXRkhxyewilTG5Vi8bi01QMMBNv3AHxi+5WquX54Vr67/0RLakkXdy2IBBm0D8um6xazrV2MdMpP8crhApmTh4hBxBDJ9t+tSoZhGaa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cas8tNl9; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cas8tNl9"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id AB4A56013B;
-	Fri, 17 Apr 2026 13:16:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0C3CC2BCB0;
-	Fri, 17 Apr 2026 13:16:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776431762;
-	bh=ZwXQ0B97mAqYw+Pj4q1qkn3w0VEkp8PC3RW3zFe6OsA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cas8tNl9CxmcLPr+klpYOiOUpWw43pvARwfWzkMhAldp4ZiMUUD85xhwTjq7t6hVg
-	 bIcshTUeASvThAOLJ6gi/HwyuE/Dir1wBYF/Hj5q8lgD/slBp7IQ7i63f0qexpV3wJ
-	 Dpdik+ZOT2LUCaDE9CzA3t21t9MAph0JK/phP//57EZbMMfSI9howf1iEOjXKH+sGI
-	 wHm+HbRaq2FdZdHUEirPh/MOgchAVjivRph3vR+xdxflx0o/dn8vCQediYu6KxEK78
-	 e7BzDvigmM3Xpx9AtOQL++z/+7AN13/idhGEszTreTBLHfZ6xObY5Sgu3f+zx0TmNO
-	 CMyLhJqHZ9Drw==
-From: Thierry Reding <thierry.reding@kernel.org>
-To: Thierry Reding <thierry.reding@kernel.org>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-tegra@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-pm@vger.kernel.org,
-	linux-omap@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] dt-bindings: reserved-memory: Change maintainer for BPMP SHMEM
-Date: Fri, 17 Apr 2026 15:15:48 +0200
-Message-ID: <20260417131549.3154534-3-thierry.reding@kernel.org>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260417131549.3154534-1-thierry.reding@kernel.org>
-References: <20260417131549.3154534-1-thierry.reding@kernel.org>
+	s=arc-20240116; t=1776434724; c=relaxed/simple;
+	bh=XE+sXG40k+uslf9G+j09nxdU4tbn40ch7F4vP1SOtbQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KpAYlj11S5tyLnk3rmr59991H9+q8VHyxPtkpzTnbqR0jGQnf5G1oSKtpVH6AdzCBBodYO9PcS09GxLkY+vgQV363Z8kxKdo8VhCVGAEJh6tr80opb6NLzAFsLPy3T2wjrhTVjLKDKs/zIMh7Gh/6dQ+/zN43n4tnGFpKY8sRrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2D7C19425;
+	Fri, 17 Apr 2026 14:05:23 +0000 (UTC)
+Message-ID: <fce3b4c5-f5c2-4d9c-abfa-6f028c93df61@linux-m68k.org>
+Date: Sat, 18 Apr 2026 00:05:19 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] config: stmark2: defconfig updates
+To: Angelo Dureghello <angelo@kernel-space.org>
+Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
+References: <20260415205042.20930-1-angelo@kernel-space.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20260415205042.20930-1-angelo@kernel-space.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Thierry Reding <treding@nvidia.com>
+Hi Angelo,
 
-Peter sadly passed away a while ago, so change the maintainers for BPMP
-SHMEM to Jon and myself.
+I will apply these updates to the m68knommu git tree when the current merge window closes.
 
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- .../bindings/reserved-memory/nvidia,tegra264-bpmp-shmem.yaml   | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Regards
+Greg
 
-diff --git a/Documentation/devicetree/bindings/reserved-memory/nvidia,tegra264-bpmp-shmem.yaml b/Documentation/devicetree/bindings/reserved-memory/nvidia,tegra264-bpmp-shmem.yaml
-index 4380f622f9a9..6efadc5f8078 100644
---- a/Documentation/devicetree/bindings/reserved-memory/nvidia,tegra264-bpmp-shmem.yaml
-+++ b/Documentation/devicetree/bindings/reserved-memory/nvidia,tegra264-bpmp-shmem.yaml
-@@ -7,7 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Tegra CPU-NS - BPMP IPC reserved memory
- 
- maintainers:
--  - Peter De Schrijver <pdeschrijver@nvidia.com>
-+  - Thierry Reding <thierry.reding@kernel.org>
-+  - Jonathan Hunter <jonathanh@nvidia.com>
- 
- description: |
-   Define a memory region used for communication between CPU-NS and BPMP.
--- 
-2.52.0
+
+On 16/4/26 06:50, Angelo Dureghello wrote:
+> Various updates, mainly to reduce kernel size.
+> 
+> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
+> ---
+>   arch/m68k/configs/stmark2_defconfig | 33 +++++++++++++++++------------
+>   1 file changed, 20 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
+> index 515d9b208b10..b3fb95f73a95 100644
+> --- a/arch/m68k/configs/stmark2_defconfig
+> +++ b/arch/m68k/configs/stmark2_defconfig
+> @@ -2,16 +2,20 @@ CONFIG_LOCALVERSION="stmark2-001"
+>   CONFIG_DEFAULT_HOSTNAME="stmark2"
+>   CONFIG_SYSVIPC=y
+>   CONFIG_LOG_BUF_SHIFT=14
+> -CONFIG_NAMESPACES=y
+>   CONFIG_BLK_DEV_INITRD=y
+> +# CONFIG_RD_BZIP2 is not set
+> +# CONFIG_RD_LZMA is not set
+> +# CONFIG_RD_XZ is not set
+> +# CONFIG_RD_LZO is not set
+> +# CONFIG_RD_LZ4 is not set
+> +# CONFIG_RD_ZSTD is not set
+>   CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+> +CONFIG_EXPERT=y
+>   # CONFIG_FHANDLE is not set
+>   # CONFIG_AIO is not set
+>   # CONFIG_ADVISE_SYSCALLS is not set
+>   # CONFIG_MEMBARRIER is not set
+> -CONFIG_EXPERT=y
+> -# CONFIG_VM_EVENT_COUNTERS is not set
+> -# CONFIG_COMPAT_BRK is not set
+> +# CONFIG_KALLSYMS is not set
+>   CONFIG_COLDFIRE=y
+>   CONFIG_M5441x=y
+>   CONFIG_CLOCK_FREQ=240000000
+> @@ -21,10 +25,12 @@ CONFIG_RAMBASE=0x40000000
+>   CONFIG_RAMSIZE=0x8000000
+>   CONFIG_VECTORBASE=0x40000000
+>   CONFIG_KERNELBASE=0x40001000
+> -# CONFIG_BLK_DEV_BSG is not set
+>   CONFIG_BINFMT_FLAT=y
+>   CONFIG_BINFMT_ZFLAT=y
+>   CONFIG_BINFMT_MISC=y
+> +# CONFIG_COREDUMP is not set
+> +# CONFIG_COMPAT_BRK is not set
+> +# CONFIG_VM_EVENT_COUNTERS is not set
+>   CONFIG_DEVTMPFS=y
+>   CONFIG_DEVTMPFS_MOUNT=y
+>   # CONFIG_ALLOW_DEV_COREDUMP is not set
+> @@ -47,11 +53,11 @@ CONFIG_MTD_SPI_NOR=y
+>   # CONFIG_INPUT_MOUSE is not set
+>   CONFIG_SERIO_LIBPS2=y
+>   # CONFIG_UNIX98_PTYS is not set
+> -# CONFIG_DEVMEM is not set
+>   CONFIG_SERIAL_MCF=y
+>   CONFIG_SERIAL_MCF_BAUDRATE=115200
+>   CONFIG_SERIAL_MCF_CONSOLE=y
+>   # CONFIG_HW_RANDOM is not set
+> +# CONFIG_DEVMEM is not set
+>   CONFIG_SPI=y
+>   CONFIG_SPI_DEBUG=y
+>   CONFIG_SPI_FSL_DSPI=y
+> @@ -59,7 +65,7 @@ CONFIG_DEBUG_GPIO=y
+>   CONFIG_GPIO_SYSFS=y
+>   CONFIG_GPIO_GENERIC_PLATFORM=y
+>   # CONFIG_HWMON is not set
+> -# CONFIG_HID is not set
+> +# CONFIG_HID_SUPPORT is not set
+>   # CONFIG_USB_SUPPORT is not set
+>   CONFIG_MMC=y
+>   CONFIG_MMC_DEBUG=y
+> @@ -68,6 +74,8 @@ CONFIG_MMC_SDHCI_PLTFM=y
+>   CONFIG_MMC_SDHCI_ESDHC_MCF=y
+>   CONFIG_DMADEVICES=y
+>   CONFIG_MCF_EDMA=y
+> +# CONFIG_VIRTIO_MENU is not set
+> +# CONFIG_VHOST_MENU is not set
+>   CONFIG_EXT2_FS=y
+>   CONFIG_EXT2_FS_XATTR=y
+>   CONFIG_EXT2_FS_POSIX_ACL=y
+> @@ -79,14 +87,13 @@ CONFIG_EXT4_FS_SECURITY=y
+>   # CONFIG_DNOTIFY is not set
+>   # CONFIG_INOTIFY_USER is not set
+>   CONFIG_OVERLAY_FS=y
+> -CONFIG_FSCACHE=y
+>   # CONFIG_PROC_SYSCTL is not set
+> -CONFIG_CRAMFS=y
+>   CONFIG_SQUASHFS=y
+> -CONFIG_ROMFS_FS=y
+> -# CONFIG_CRYPTO_HW is not set
+> +CONFIG_XZ_DEC=y
+>   CONFIG_PRINTK_TIME=y
+> -# CONFIG_DEBUG_BUGVERBOSE is not set
+> +CONFIG_DYNAMIC_DEBUG_CORE=y
+> +# CONFIG_DEBUG_MISC is not set
+>   # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+> -CONFIG_SLUB_DEBUG_ON=y
+> +# CONFIG_SLUB_DEBUG is not set
+>   CONFIG_PANIC_ON_OOPS=y
+> +# CONFIG_RUNTIME_TESTING_MENU is not set
 
