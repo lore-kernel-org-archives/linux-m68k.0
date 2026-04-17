@@ -1,235 +1,132 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFF4373BEC
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Apr 2026 20:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F4F37C109;
+	Fri, 17 Apr 2026 08:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776371424; cv=none; b=d6a7H3qbqjcbiLaw4sk6/8WnXfdLEKk//q0GsZeQtaT4unWL6RBbZhP65QCtmWSEPN2DSIlaHJ4JbhfYb+0m5iNVg1GrjcWVSICHSKDc8JG/BzpvAhW1E6L1TceiXeM7ZaH8k7cRbDm5Jlxi+aBcT1WetVxJqlvcoyT20Ughy60=
+	t=1776415095; cv=none; b=nDkulQ43dEw6UFjyqCrscLpCHmVmKtqh1KrsJMnzgrpSqKypL2zYJKYlbjBU9bxjQfqLhNK/04qW74yo7adHi9sUdSp/oTod2YqCXNszyb8clKjnqAac4E5FWofpxxFrDnA4inaf1aZJeEGJ6uNtHEqSrkC8W2vaLItx34A1nIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776371424; c=relaxed/simple;
-	bh=ALPnb6mRnngQfHB6o7hJLW74PmHQufvlybcN0iZyGjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=aPHX6OHa1/iBRbyuqhi/JTxZsHnBrwwKBYRoa+/zEbp8K71oynycT3FuYtn80OoHk9E+5qJItjrYNB0VoQFL/DS83uQVhDlToYz3u4NWIEDhkbFngtq+RcJQXI1khqfELbMC8pG4I3oKfBauG5K5UOLBslfSfV00FhZrRiO1dsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UGPkQcdH; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1776415095; c=relaxed/simple;
+	bh=Byuc10OFJu8O2tqDUNfckOXNJnppoxR0FD/taaXxTkQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nIDkqpJZmeWldRmv5oxUSWaWbmVsaBGhNkF3Lfhgef68VtZtuIbkfW0mCRrGmvOCle1qidKStrYSBak5oc7mMrhbc1HJ5HtjMSMjEQerHfwnOMfjQPrsYFA1nUWclCP/AXP7nxVIsh1mWAOVNsfYetz086wskYpjs0DHPFu2rCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=bYDJqKkr; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UGPkQcdH"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1776371421; x=1807907421;
-  h=date:from:to:cc:subject:message-id;
-  bh=ALPnb6mRnngQfHB6o7hJLW74PmHQufvlybcN0iZyGjQ=;
-  b=UGPkQcdHgJB3amSeAbG3P6s9PSenJXZVCJseRRT6nzYfF5avFsSS8wW7
-   dGoCcwOMkL7GEeClvv1s9NiRk8r8Ox4/X+tCCP4hmxDVDk4AD25vFcS2U
-   JW5nf6Ax9LA/2Q2OVaIRgiz9dC+RUwAQxMcQMQAebof7L4vgWuajgw+PP
-   HxtiKJwbsAoOVe4YyqPJ6993kGq96Bysr68/Ep8njfJRqhBq/i2uBiPor
-   bjV7UEYrSlBxfGtDhJRmjW3muk0p3P+ja2zQFpjIRyHO8O1ZERGi+C3X5
-   ym+LWpe0E2hBT/4mzYoGgXvQ0BShRVNd4H3eX3qSlwjDXZIDumgUudVVm
-   g==;
-X-CSE-ConnectionGUID: 7iOlQrbCRRibPdlwNy2Fuw==
-X-CSE-MsgGUID: y3LfX8HYRGSbMujP/ho4fA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11761"; a="81256117"
-X-IronPort-AV: E=Sophos;i="6.23,181,1770624000"; 
-   d="scan'208";a="81256117"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2026 13:30:20 -0700
-X-CSE-ConnectionGUID: Onhcl0U4Qa2AQHK1DJmvEA==
-X-CSE-MsgGUID: LFZ2WRTrS3CbjT+jcbXOkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,181,1770624000"; 
-   d="scan'208";a="228166822"
-Received: from lkp-server01.sh.intel.com (HELO 7f3b36e5d6a5) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 16 Apr 2026 13:30:18 -0700
-Received: from kbuild by 7f3b36e5d6a5 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wDTLs-000000001v0-0i1a;
-	Thu, 16 Apr 2026 20:30:16 +0000
-Date: Fri, 17 Apr 2026 04:29:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:m68k-v7.0] BUILD SUCCESS
- 924f5158af6b6b049ca54bc1601d313feb270f6d
-Message-ID: <202604170417.eM9aNAE3-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="bYDJqKkr"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
+	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=pHk/jLQMGHz7fnqdKlFUiKmCBiHe34nyuDOwOZa7yL0=; t=1776415090;
+	x=1777019890; b=bYDJqKkrCUNiOH85Ns/lsx4cmW89DUoY+lS1h6B/VcB2+2gqH9va+Tll2V9T0
+	pkSTn2weR7VKRZ6onHkcDg0eK1K1alNcfYpNmeuaXNdGX1uKQerjyNNlUkj4KAFFwTcnlqB9M53u5
+	KaQqcPCEht04JwXUMOfu17k70mT9eB96Dl/zxkfEmm0pAq4gEXVrlBWgvihE9yyT88t2U3HHUxKYx
+	m+FtvHF5KPXhXhyWjg4MTIr6F3mlcQen9NC5taSUgdjNojmcF/Qt1XnjNDeGrlrAYqpWtnBkAF04k
+	k9NibWB3WXN51QzJkeyZm/f/6FPvzyRTwkX86L1YV202igjtoQ==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.99)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1wDef4-00000000Pbh-3o7V; Fri, 17 Apr 2026 10:34:50 +0200
+Received: from dynamic-002-245-058-104.2.245.pool.telefonica.de ([2.245.58.104] helo=[192.168.178.50])
+          by inpost2.zedat.fu-berlin.de (Exim 4.99)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1wDef4-00000004BcF-2tHX; Fri, 17 Apr 2026 10:34:50 +0200
+Message-ID: <54b7990fc554ef446b094bf37b785d91ea68b075.camel@physik.fu-berlin.de>
+Subject: Re: [LSF/MM/BPF TOPIC] Should we make inode->i_ino a u64?
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Jeff Layton <jlayton@kernel.org>, lsf-pc@lists.linux-foundation.org
+Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+ Christoph Hellwig	 <hch@lst.de>, Jan Kara <jack@suse.cz>, Al Viro
+ <viro@zeniv.linux.org.uk>,  linux-m68k <linux-m68k@vger.kernel.org>,
+ linux-sh <linux-sh@vger.kernel.org>
+Date: Fri, 17 Apr 2026 10:34:49 +0200
+In-Reply-To: <9d8eda244e79b3b1c43c45277f225b130e88fa70.camel@kernel.org>
+References: <08f8444c7237566ffb4ba8c9eb0ab4b4a5f14440.camel@kernel.org>
+		 <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de>
+	 <9d8eda244e79b3b1c43c45277f225b130e88fa70.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.0 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-v7.0
-branch HEAD: 924f5158af6b6b049ca54bc1601d313feb270f6d  m68k: defconfig: Enable Atari EtherNAT and NetUSBee USB support
+On Wed, 2026-04-15 at 06:44 -0700, Jeff Layton wrote:
+> You're pointing me at Phoronix and complaining about clear
+> communication? That headline is made to generate clicks. It doesn't
+> represent the reality.
 
-elapsed time: 753m
+Well, your own justification was that 32-bit architectures will be killed
+anyway in the future, so it's okay if they are affected by a negative
+impact:
 
-configs tested: 158
-configs skipped: 5
+> > I think that the biggest problem will be that this will grow struct
+> > inode on 32-bit arches by at least 4 bytes. That may have cacheline
+> > alignment and slab sizing implications. We're actively talking about
+> > deprecating 32-bit arches in the future however, so maybe we can
+> > rationalize that away.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> The mention of potential performance impact on 32 bit hosts is entirely
+> speculative and not likely to be measurable anywhere. I only mentioned
+> it at all in the interest of full disclosure.
 
-tested configs:
-alpha                             allnoconfig    gcc-15.2.0
-alpha                            allyesconfig    gcc-15.2.0
-alpha                               defconfig    gcc-15.2.0
-arc                              allmodconfig    gcc-15.2.0
-arc                               allnoconfig    gcc-15.2.0
-arc                              allyesconfig    gcc-15.2.0
-arc                                 defconfig    gcc-15.2.0
-arc                   randconfig-001-20260416    gcc-14.3.0
-arc                   randconfig-002-20260416    gcc-10.5.0
-arm                               allnoconfig    clang-23
-arm                              allyesconfig    gcc-15.2.0
-arm                                 defconfig    clang-23
-arm                   randconfig-001-20260416    clang-23
-arm                   randconfig-002-20260416    gcc-8.5.0
-arm                   randconfig-003-20260416    gcc-8.5.0
-arm                   randconfig-004-20260416    gcc-11.5.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.2.0
-arm64                               defconfig    gcc-15.2.0
-arm64                 randconfig-001-20260417    clang-19
-arm64                 randconfig-002-20260417    clang-23
-arm64                 randconfig-003-20260417    clang-23
-arm64                 randconfig-004-20260417    gcc-15.2.0
-csky                             allmodconfig    gcc-15.2.0
-csky                              allnoconfig    gcc-15.2.0
-csky                                defconfig    gcc-15.2.0
-csky                  randconfig-001-20260417    gcc-13.4.0
-csky                  randconfig-002-20260417    gcc-14.3.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-23
-hexagon                             defconfig    clang-23
-hexagon               randconfig-001-20260416    clang-23
-hexagon               randconfig-002-20260416    clang-23
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386                             allyesconfig    gcc-14
-i386        buildonly-randconfig-001-20260416    gcc-14
-i386        buildonly-randconfig-002-20260416    gcc-12
-i386        buildonly-randconfig-003-20260416    clang-20
-i386        buildonly-randconfig-004-20260416    clang-20
-i386        buildonly-randconfig-005-20260416    clang-20
-i386        buildonly-randconfig-006-20260416    gcc-14
-i386                                defconfig    clang-20
-i386                  randconfig-001-20260416    gcc-14
-i386                  randconfig-002-20260416    clang-20
-i386                  randconfig-003-20260416    clang-20
-i386                  randconfig-004-20260416    clang-20
-i386                  randconfig-005-20260416    clang-20
-i386                  randconfig-006-20260416    clang-20
-i386                  randconfig-007-20260416    gcc-14
-i386                  randconfig-011-20260416    gcc-14
-i386                  randconfig-012-20260416    gcc-14
-i386                  randconfig-013-20260416    clang-20
-i386                  randconfig-014-20260416    clang-20
-i386                  randconfig-015-20260416    clang-20
-i386                  randconfig-016-20260416    clang-20
-i386                  randconfig-017-20260416    gcc-14
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-23
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20260416    gcc-15.2.0
-loongarch             randconfig-002-20260416    gcc-15.2.0
-m68k                             allmodconfig    gcc-15.2.0
-m68k                              allnoconfig    gcc-15.2.0
-m68k                             allyesconfig    gcc-15.2.0
-m68k                                defconfig    gcc-15.2.0
-microblaze                        allnoconfig    gcc-15.2.0
-microblaze                       allyesconfig    gcc-15.2.0
-microblaze                          defconfig    gcc-15.2.0
-mips                             allmodconfig    gcc-15.2.0
-mips                              allnoconfig    gcc-15.2.0
-mips                             allyesconfig    gcc-15.2.0
-nios2                            allmodconfig    gcc-11.5.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20260416    gcc-8.5.0
-nios2                 randconfig-002-20260416    gcc-8.5.0
-openrisc                         allmodconfig    gcc-15.2.0
-openrisc                          allnoconfig    gcc-15.2.0
-openrisc                            defconfig    gcc-15.2.0
-parisc                           allmodconfig    gcc-15.2.0
-parisc                            allnoconfig    gcc-15.2.0
-parisc                           allyesconfig    gcc-15.2.0
-parisc                              defconfig    gcc-15.2.0
-parisc                randconfig-001-20260416    gcc-10.5.0
-parisc                randconfig-002-20260416    gcc-8.5.0
-parisc64                            defconfig    gcc-15.2.0
-powerpc                           allnoconfig    gcc-15.2.0
-powerpc               randconfig-001-20260416    clang-23
-powerpc               randconfig-002-20260416    gcc-8.5.0
-powerpc64             randconfig-001-20260416    clang-16
-powerpc64             randconfig-002-20260416    gcc-8.5.0
-riscv                            allmodconfig    clang-23
-riscv                             allnoconfig    gcc-15.2.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-23
-riscv                 randconfig-001-20260416    gcc-11.5.0
-riscv                 randconfig-002-20260416    clang-23
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-23
-s390                             allyesconfig    gcc-15.2.0
-s390                                defconfig    clang-23
-s390                  randconfig-001-20260416    clang-23
-s390                  randconfig-002-20260416    clang-20
-sh                               allmodconfig    gcc-15.2.0
-sh                                allnoconfig    gcc-15.2.0
-sh                               allyesconfig    gcc-15.2.0
-sh                                  defconfig    gcc-15.2.0
-sh                    randconfig-001-20260416    gcc-9.5.0
-sh                    randconfig-002-20260416    gcc-15.2.0
-sparc                             allnoconfig    gcc-15.2.0
-sparc                               defconfig    gcc-15.2.0
-sparc                 randconfig-001-20260416    gcc-15.2.0
-sparc                 randconfig-002-20260416    gcc-15.2.0
-sparc64                          allmodconfig    clang-23
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20260416    clang-23
-sparc64               randconfig-002-20260416    gcc-8.5.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-23
-um                               allyesconfig    gcc-14
-um                                  defconfig    clang-23
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20260416    clang-23
-um                    randconfig-002-20260416    clang-23
-um                           x86_64_defconfig    clang-23
-x86_64                           allmodconfig    clang-20
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20260416    gcc-12
-x86_64      buildonly-randconfig-002-20260416    gcc-14
-x86_64      buildonly-randconfig-003-20260416    clang-20
-x86_64      buildonly-randconfig-004-20260416    gcc-14
-x86_64      buildonly-randconfig-005-20260416    clang-20
-x86_64      buildonly-randconfig-006-20260416    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                randconfig-001-20260416    gcc-13
-x86_64                randconfig-002-20260416    gcc-14
-x86_64                randconfig-003-20260416    clang-20
-x86_64                randconfig-004-20260416    clang-20
-x86_64                randconfig-005-20260416    gcc-14
-x86_64                randconfig-006-20260416    gcc-14
-x86_64                randconfig-011-20260416    clang-20
-x86_64                randconfig-012-20260416    gcc-14
-x86_64                randconfig-013-20260416    gcc-14
-x86_64                randconfig-014-20260416    gcc-12
-x86_64                randconfig-015-20260416    clang-20
-x86_64                randconfig-016-20260416    gcc-12
-x86_64                randconfig-071-20260416    gcc-14
-x86_64                randconfig-072-20260416    gcc-14
-x86_64                randconfig-073-20260416    gcc-14
-x86_64                randconfig-074-20260416    clang-20
-x86_64                randconfig-075-20260416    clang-20
-x86_64                randconfig-076-20260416    clang-20
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.2.0
-xtensa                randconfig-001-20260416    gcc-11.5.0
-xtensa                randconfig-002-20260416    gcc-10.5.0
+It didn't sound like that when you argued it won't be problem because they'=
+re
+going way. If you think it's not going to be a real impact, why even bring
+up the argument that it will only affect targets that "we" want to get rid =
+of?
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> We're widening the i_ino field from 32 to 64 bits on 32-bit hosts. This
+> means that we're adding 4 more bytes to every inode there. Sounds bad
+> right?=20
+
+That's not the point here though. Please re-read your own argument.
+
+Phoronix's headline might be somewhat clickbait, but it's not a complete
+misrepresentation of what you wrote.
+
+> The reality is more complicated...
+>=20
+> struct inode is (almost) always embedded in another structure that
+> contains the fs-specific fields for it. Many of those (nfs, xfs, etc.)
+> have had to carry a separate 64 bit field to hold the "real" inode
+> number since we couldn't count on i_ino being big enough on 32-bit
+> arches.
+>=20
+> Those fields can now go away, and once they do, that will represent a
+> 4-byte _reduction_ in size of the inode on those filesystems. So there
+> are potential upsides here for 32-bit arches as well.
+
+Then why not mention this? Why communicate a message that seems to imply
+that performance will be degraded on 32-bit targets?
+
+> The bottom line is that we add and remove fields in struct inode all
+> the time. It grows and shrinks as we do this. This change will almost
+> certainly not be measurable anywhere.
+
+I'm not arguing against that. All that I am saying that I am not happy when
+a change is communicated within a small audience with the assumption that
+no one will care. I mean, if you don't notify the audience that might be
+affected by the change, it's a self-fulfilling prophecy that you won't hear
+from them.
+
+Adrian
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
