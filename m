@@ -1,143 +1,114 @@
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084D8231A41
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 18 Apr 2026 20:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.185.170.37
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776542844; cv=pass; b=N7PgPQByyvDVUnTL3hQ6hj/XbBSI1EfSvILQxSuYSBFNHwy1E3RNspTNtgPse0O3+Fp66r33+Rd8erLnPwunCnclDwZv8wIoLBbCuqCILcXtpUZ9+VPGwCktrBaLbLtxUL6uLegae1rOE2MKF4NsoThdhGgfH/5223Oz8zXihj0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776542844; c=relaxed/simple;
-	bh=22w2I5NLd6Oc4e7UYBpDdZFyx3gOidmynxa+EEOsljE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NK3QI39Wn99iHphtsAWkWRfNFHDI53n3x0ESFV5ss5BO8xJ5w9LfgvUsYXukXFTz+EdxFUJzLl9ub/fDEPSEczVkTrzCKyNGECPgHMxMUQ0l2dYbjZvZLZAGkqQhiHwDWXitqCF8a6WoQb+huJk/fP5CulqtUEGM3tnm0okIXHk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b=Kb/eSYaT; arc=pass smtp.client-ip=185.185.170.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="Kb/eSYaT"
-Received: from darkstar.musicnaut.iki.fi (unknown [83.245.248.121])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange secp256r1 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: aaro.koskinen)
-	by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4fyjTG4pT0z49PyQ;
-	Sat, 18 Apr 2026 23:07:14 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-	t=1776542836;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bbLXe4Og5GCtNFoJgU/iohm65MD7uV97LErFdEaEF7E=;
-	b=Kb/eSYaTGUs55bvEsMxccKvCe1lUD/sC5KPz52uNr/U8hOF93wi3MJ/ppCQzVraZzFgRSf
-	NpbRguOwXxqkeAal1VE5DkM0YUkMeOOSm0b2kbTRx5Wn+bX6swZUBHk4lh29SsSTZk77jQ
-	Mzv3ulGDMEVOV5fx744CmMbp0OwNLWupT+/2EXWypmaU20OQXi/cqeD8BhJGXrc7daAZ0O
-	3a497Evvq0bC3XQVGjzncJo95Nxp64oByLOahYDQPAjtfkJ4RAxPEUdXH1K6047WHeGFCt
-	cTnzSg7cYlVtnN8bqzTZWwbHbuIHQ5JYsjgVx2Ldhh56Sb2FWpuG5/Ew6OVcLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-	s=lahtoruutu; t=1776542836;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bbLXe4Og5GCtNFoJgU/iohm65MD7uV97LErFdEaEF7E=;
-	b=OzG0N6MLYgpi1aRsblyHfoGw+pLJtJWCg2i8myzuMiQHgjQpE1b3ERF/7QzQ+DVFBBV98S
-	eZFBGjKghztB7FKssj0DxIHoOAq02h1PDRTB4ILQtVrdOa4GfO8HpVjzOveNlPqCvZKjHf
-	uUR1QP9Mm7sWsbpbhmzi7ylUWdy79YGZw0NMaA1Pe9OhaoFiBqj6IJxykjbGrw5TTLyACi
-	Vef8no+A8Oe1cbnG2sNk40s2M6pefcWSxkk7ohZsWG3wgMkBhdIpY1ovKPCJSwAMu+bgaf
-	T/qWkC9ydIY9j3wIvP8ffGOiAGX5n9OAKRiK1pZkS9TlRMdyDH2uvZyI/INq9Q==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=aaro.koskinen smtp.mailfrom=aaro.koskinen@iki.fi
-ARC-Seal: i=1; a=rsa-sha256; d=iki.fi; s=lahtoruutu; cv=none; t=1776542836;
-	b=eshlC+o2K2l5qT1L/SCjR+WV73Bxk3OnqYzN/ng9ZtWmLTCyGx4qWO0cj+sY3un7wD+DWF
-	MIP3JwY4ccDiOSgOBlDBrCiDbsuKg5rQfQRsHgPRr2U6MQ3X8fQhxnqSfdAtPVXB6faeIN
-	16RlXbFjoaeE0McGG6MI1iZ2Q3RmknYSgKIffA8i/SDklYeP4I2UHkA5sigaZmBd5Fr02U
-	pXCen5Yb7Y2rCQya5YQLIRq3jKAY7ZrLVPIjThjfrC+Zjqn4GNR8QJdgko2rkq9FRWbRBi
-	5/rhq39AbpRw5jUl2aGeuR57k23EZq+je5P9F9ullBxU4UZlhJ9erQa5rmyl7Q==
-Date: Sat, 18 Apr 2026 23:07:11 +0300
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Thierry Reding <thierry.reding@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-tegra@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-	linux-omap@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Paul Walmsley <pjw@kernel.org>
-Subject: Re: [PATCH v2 1/3] MAINTAINERS: Move Peter De Schrijver to CREDITS
-Message-ID: <aePkb1qTEvnMhkDg@darkstar.musicnaut.iki.fi>
-References: <20260417131549.3154534-1-thierry.reding@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788C1382F09
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Apr 2026 06:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776667822; cv=none; b=jjW5xeYOms8PyejXCWHzk7/NXX3++1+j+5jTc0D2ph92t/38VZAkueIf0MfrzvZAHcWqBJdl5MBblRHc8sL4NVJ/enxnK0MI7XNxkzxxCc88IlkAKvNJLHx5Nh1Nz4QR0y0DfcpbBYWq4gehLkZNFZwqUUhQppeWx2VYG0wwoBU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776667822; c=relaxed/simple;
+	bh=66683rtKBPWrf7C4XTuvMiaBte65Hl+xhzNuAjnDIic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xl1L5yagdqqBK40ewp9JTSj6s4oPv2xcFhIIQi5uBrwuxlgxxz4KBHZPHlE5lTlAypeEJImIw6/dJLaT6FGLOXR5nks94KA+NIpzcp5xRiHgeiU5Vo02+Rbd8tDQAixZdeo6GHIEnTk4hGuw3uKbakqGWOUzkrL79Y5VKrtAqgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-56f3e6bbecdso809967e0c.2
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Apr 2026 23:50:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776667820; x=1777272620;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ev7Q2PR+MzeC42yfPBg+fufDGNaPf4avnQMcEXwV9q4=;
+        b=geVyvtCZWZTtEzufqUdtpFFhagYWy2c3/bgyJEz4aqUjeEfSBuD9o99kYZ/d6pBaIt
+         Uf08D3Lok+tgRoWgl+0u7YjV76FYlP88LddLz+mdo637XR5MR62gNHeZomg2+FZnHMs6
+         RUIBYTQ11Y13sL/sbkG1IHE6gUzO5937aEJCfZ44Y0hkjuGU4hmDmhIFkfwWDtm8XK1k
+         +g53i0LGVHhywC468vrKZQaygoDq2liGzMqo2Z4zidLQj/ot0wuO/ECfQcjfESjyicz/
+         iQz1HNH+zigoANZIPQPu6uVZABx7VySpsXIgfHiT16dJGqqs0IZjocFv60GYYoOZdeqS
+         u9tw==
+X-Forwarded-Encrypted: i=1; AFNElJ894oL7YYqcDNls+P1jCZSO0n5TUy5iWIrAiJqHdNuCwSu4f7HxHFi4EJpuJniGCe0wYjLNHOXLN9Mj@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxIjbNN9Y94PF5RrJqOnU5etQVAjz3kzWFKwFmrJinkFy3anubt
+	QIp/sryBx06jtJQbH3wspRlZTX2onH0aAYSBkFdpRbSTvKiGCVEgeVzunmq2Uob5
+X-Gm-Gg: AeBDietXzW4bNSbXrKc10Zpx6xYI58bfBCB+KeEiLJO9m5BX3xqupjf9IYBFy2NQE+Q
+	K4CDqDBo8xCSnWWUJY5ynkyWOopA+MojU+kNiYJhU2vsazA18t2UaR/aaxGv+aP2fh8SIFduIa2
+	6I7sj3UWjINV0VBAuTtVLfP47IQND9RYafKJjCemQbJEQiz1Q0Cj7UsrFlaVdk7OLxi1mPx5Gbg
+	M0t/fUdvFmi43fBw5QiO5Af+EVz1ubp/zskoCJeI2L6uQDi3EjsUE5v2eyn8v+SlKX3fNdbo3LL
+	ruCoS0yCZ9pYuqXazExvmgDdP/r/cq82gZHl2g4ofPqgFeTTJcBbMqofh0azy4yEoLy3ZW9pGPr
+	G7UH5c5ZXxeN/VyOPO5cSkMIpWOYdjVxaTF9BsJ6hntm/ygsKlhaVk7pD8jYZIKPUkwZklmsApl
+	e1RhxFLbOejm+ncRg6ZPmaCHCYrrOWDnFNo14l9GC7rBEq6xdCyJf9jrU0jN8LMe7LruFQb+w=
+X-Received: by 2002:a05:6122:4fa2:b0:56e:ded3:98eb with SMTP id 71dfb90a1353d-56fa585d299mr5227033e0c.6.1776667820247;
+        Sun, 19 Apr 2026 23:50:20 -0700 (PDT)
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com. [209.85.217.41])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-56fa93513c6sm5601700e0c.17.2026.04.19.23.50.18
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Apr 2026 23:50:19 -0700 (PDT)
+Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-60580b17793so839606137.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 19 Apr 2026 23:50:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ/7MYxNDaSNsluDmJPw1vI+FcuDwin2cCEEkMocS1lFdOpfH+EU/RZ2gz/AEcc7JClWc11f18xeJ4a3@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:6051:b0:60f:7499:9b6b with SMTP id
+ ada2fe7eead31-616f859752fmr3673069137.29.1776667818181; Sun, 19 Apr 2026
+ 23:50:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20260417131549.3154534-1-thierry.reding@kernel.org>
 In-Reply-To: <20260417131549.3154534-1-thierry.reding@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 20 Apr 2026 08:50:06 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWeXS3ytgozp-mSrW4jcMRCW7_tbDTbMoEdXdbVj0dqJA@mail.gmail.com>
+X-Gm-Features: AQROBzDvJRShLyy63Y8y4xm5mUkGqHiHZxGK82_lU0-LEkdWIcvZD7MEx0w1d6U
+Message-ID: <CAMuHMdWeXS3ytgozp-mSrW4jcMRCW7_tbDTbMoEdXdbVj0dqJA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] MAINTAINERS: Move Peter De Schrijver to CREDITS
+To: Thierry Reding <thierry.reding@kernel.org>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, linux-tegra@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org, 
+	linux-omap@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Paul Walmsley <pjw@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Hi Thierry,
 
-On Fri, Apr 17, 2026 at 03:15:46PM +0200, Thierry Reding wrote:
+On Fri, 17 Apr 2026 at 15:15, Thierry Reding <thierry.reding@kernel.org> wrote:
 > From: Thierry Reding <treding@nvidia.com>
-> 
+>
 > Peter sadly passed away a while back. Paul did a much better job at
 > finding the right words to mourn this loss than I ever could, so I will
 > leave this link here:
-> 
+>
 >   https://lore.kernel.org/lkml/alpine.DEB.2.21.999.2407240345480.11116@utopia.booyaka.com/T/#u
-> 
+>
 > Co-developed-by: Paul Walmsley <pjw@kernel.org>
 > Co-developed-by: Aaro Koskinen <aaro.koskinen@iki.fi>
 > Co-developed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+   "every Co-developed-by: must be immediately
+    followed by a Signed-off-by: of the associated co-author."
+
+https://elixir.bootlin.com/linux/v7.0/source/Documentation/process/submitting-patches.rst#L506
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
 > Signed-off-by: Thierry Reding <treding@nvidia.com>
-
-Reviewed-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-
-A.
-
 > ---
 > Changes in v2:
 > - add more missing entries
-> 
->  CREDITS     | 10 ++++++++++
->  MAINTAINERS |  1 -
->  2 files changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/CREDITS b/CREDITS
-> index 885fb05d8816..afd1f70b41cf 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -3645,7 +3645,17 @@ D: Macintosh IDE Driver
->  
->  N: Peter De Schrijver
->  E: stud11@cc4.kuleuven.ac.be
-> +E: p2@mind.be
-> +E: peter.de-schrijver@nokia.com
-> +E: pdeschrijver@nvidia.com
-> +E: p2@psychaos.be
-> +D: Apollo Domain workstations
-> +D: Ariadne and Hydra Amiga Ethernet drivers
-> +D: IBM PS/2, Microchannel, and Token Ring support
->  D: Mitsumi CD-ROM driver patches March version
-> +D: TWL4030 power management and audio codec driver
-> +D: OMAP power management
-> +D: NVIDIA Tegra clock and BPMP drivers, among many other things
->  S: Molenbaan 29
->  S: B2240 Zandhoven
->  S: Belgium
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ef978bfca514..ffe20d770249 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -26145,7 +26145,6 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git
->  N:	[^a-z]tegra
->  
->  TEGRA CLOCK DRIVER
-> -M:	Peter De Schrijver <pdeschrijver@nvidia.com>
->  M:	Prashant Gaikwad <pgaikwad@nvidia.com>
->  S:	Supported
->  F:	drivers/clk/tegra/
-> -- 
-> 2.52.0
-> 
-> 
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
