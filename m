@@ -1,140 +1,142 @@
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 353D532C94B
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Apr 2026 06:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D2C34676F
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Apr 2026 10:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776754156; cv=none; b=G3iHYPCc9XsABpteP706qzz3et3e7K66t/qpz/Iu/5Gp6DqUPfOQV0KTRR+B6asozUmlZdjdUM1fup3rxZbwb/0vc1fAgMfoDJs9FYovxb8rc6PeMlAK7diCXwdobt4omwfpSSsU06khzrSIAfJwpff2SkiZDos6PC5ETAJv908=
+	t=1776766240; cv=none; b=t9vjzk21c3H1Y/8uUwJo0QxvD8T2GIG44LMr3dj9pBblHM2ibUBneZvVPQWJOndmdw76X2hY+VrTmxK+C//AXucPZmhWJgCUFJK0+9NXacQs5RzyRjYwtmjdQde0ndz3HelR23kkZ8O3npiDM+Eyyre9fRm26UzWTHIH6zTUw9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776754156; c=relaxed/simple;
-	bh=am3smhs96M1Iz0Y0JDciE1ZjrAK1dDbEC7UccjVq/eg=;
+	s=arc-20240116; t=1776766240; c=relaxed/simple;
+	bh=f40Z2T6UXslhgeqPT0SLEpc3IntV+bpVpgRMsiLEyn4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fM1ODxoP6B9w3OWRJofvwsB6JAxmetUtBF6t/Kgwg5mOFDmzrcyLHj+C9qcberyJ84qvogcqKVU4bNpf+B2YRvPMOQafyU9TD7PniTUsqG1NVyx9a9Ja5KFQ94QD1/b3ly9RMf9Y/ZTs6wDQaYG/8pvFm1f+U2zh8QjAKjVIqaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HkFrg18y; arc=none smtp.client-ip=209.85.216.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=j/d4O2ModUnPd+mZKZbLMNyddSLLTaCzZrh7lsYyqYjJUDSDUCGSZpPSYtwv1bGWzLXQdLJR2SjQPOOcX5OSekI5Rd0eg+jsDzddw8M/3/oYDp47Ck+dfQCjK5coLzc1P6MsZBSlS4rtP5MjecK+IbmX0zPxI7pKNcT7l8zgBQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JO4lV9/d; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HkFrg18y"
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-35fc0d7c310so2678094a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Apr 2026 23:49:14 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JO4lV9/d"
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4852b81c73aso34450415e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Apr 2026 03:10:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776754153; x=1777358953; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20251104; t=1776766237; x=1777371037; darn=lists.linux-m68k.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VdNywBu7apdyTFV9cnt3GZxXLndr1pBULjY0WptzCm8=;
-        b=HkFrg18yJTc3X1B4jylb4e0yLpj72DIbvNKWWyXfWrsqWgBHAs2iQBO+jwhVBCpizo
-         ROXM+4lQ9U9AreWSps2hh3uY9y9gl68fw1cck8xsgunzVdY7XFsfFuoKCIcOveJOUpJz
-         moBBBxFeTowVHEPJyCdyAMJwnmFjdaybAd5aLeUK2wKtQS8trKiGNluWCJTBTeRfVRQT
-         AggPLVKQ8uKHy2HIJ5k6c7lfDBeueVOPcEfU5YOv8etTTtnm1Okr7MSlogUlHXsC6INk
-         yBEw8+sxfzZ8lAcR3haS36vLo+e8Z+bntLQ450QW41SEnlisu2YM5Sl9St2X5WvVHC/7
-         uxsA==
+        bh=J8i26WnvEzqtjggoSSbd+ZCeLOG6Y3DS7nQqRJJ4EJQ=;
+        b=JO4lV9/dxX5RZ/Em+Icgaqh82IvXKmJSyh6ToSis4tQ53N4pkt2YLV8F/M6jE7wsD9
+         lBgb5gJzMcswIJsIHUnMMrj20yIuig1/98scBd3WbWoeqlgfBDDlkFZsE9c2oEfGqErY
+         vnxIl872/zMZYU4ELBvt/FwOQz27V0wAAdQ4TGGjk0bfvdElGB+SXYhOcyPU6sWKGVez
+         YZFBPWJTr+8qKwF9NoSYaGGmy35/clVg+A1y8W1ImAETEf9P3AYPhfutQ4UbndNszP5p
+         nZ2lgfoYn63/jQh8gAybwHhWTn0HfgBQp50b5tn3cR5Wzp+aE0HWgR1WaotIlspROyX8
+         96UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776754153; x=1777358953;
+        d=1e100.net; s=20251104; t=1776766237; x=1777371037;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VdNywBu7apdyTFV9cnt3GZxXLndr1pBULjY0WptzCm8=;
-        b=Bn5eP+W8rEzH+X5SXEuz9I0fnOwQDuyXAeRWGeUqb4ZuntDf1f+Vpsx5wWen9p5I1F
-         Ogw7Of1NDaiC7YEvh4iCWlf/lPHCa9szkna0RI/pGOTpNL4qTK8OfHbgaAWdYU9U57LO
-         6mBuvRNlNgPTiM0EPki3Jhkd8uJH3bu3Js9lc2ykJnbQqxkoGOnNBvoYVVXFcxSUEknq
-         dr2sVd1i213IRaRvcBakjpaj8DYcZZD6P7XR6wk5+D480B06+CklfvYEB7YVbGqj9Fha
-         I5lEE+HSVJ10jquAXMNFa3V6WcXNicTf46ujMFt22QeNU1XwPubPQKffL5JhzSFQWF+6
-         1ZZQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/doLE07cLUC6uWRp1PmtC8o4EgXbU6KbFXaLUSSPdE4X+LlVNgKs+O1gd5KhWxkMCl7goApeRxlZPk@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyvdqABdCkVbmAdc5l6I6Wul0UfSTCSiNEZE+zCO+S0PcZ8fYMz
-	1pAqiR2gkjX1Of8My5tde46M94Rq92Vg9JN9PwdeymDQh3XNKKW/zSTh
-X-Gm-Gg: AeBDieukzsCWIRABQxgfb0G2M/P+zZvYsJnV+J9gI7OY2fYh1cAEtX8pM0/GkEhZd92
-	qDUvdSdYsoNrSL1T33FN78PEx7RoyVWjeY7Va1rw/jHdWW8ysXc0UG44ntCCjdHTv6pscTqA+N5
-	khXStphbdwaVJsNTS4hEMG5M1A6DmDspdq6VZgh8GUF1mhPXsCF3IuGJXoWnlmAFerDRnfWuqnS
-	xKEtaCeborl7moB0XC9D6ZuWv0wMJ6zRIoFE+kwA/vF8yRrnkBUrFlnuujKv2cZ8MBOOuvj5lW9
-	lwk2weNaVcf9lgBZ45qGTcAnfw0F9CqaBv+yFtO9fXpLqc+tPbeEAEMvoP/IpgodYGoTkc+30Nx
-	Hp2z2y6kwzyIcAYDmvvB9E2ADVcgY0beSPr0aoKg7xQChkdZ/5Kp55vsLRlsXxX62Em6i0WhaFt
-	3jxzHTfYQmMFbHXEW3dhxylz0HJMu4fKmKKZxL+RdNhVGFvKBMK81QqIJSbOO5KWM2NcD31//q3
-	Ez8/S7GVH0fDIRJ
-X-Received: by 2002:a17:90a:dfd0:b0:35e:30bc:96ed with SMTP id 98e67ed59e1d1-36140402361mr16891174a91.10.1776754153374;
-        Mon, 20 Apr 2026 23:49:13 -0700 (PDT)
-Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([129.41.58.4])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3614195a8f0sm12278674a91.12.2026.04.20.23.48.57
+        bh=J8i26WnvEzqtjggoSSbd+ZCeLOG6Y3DS7nQqRJJ4EJQ=;
+        b=ACQBzM7HwAJdOBRdnOSUM1P86rUVfwNSxFrTSlNd3g2xDCsKY+7w1SN14B9QobF78a
+         wIUgAxKTGSHtfK+5Vsqm2VZc2tpsL0Z4Kf+jd3Tu38ZQnuNaw/M/iwMYGLJo9GpHS9pO
+         LUm1iWpp04hxvYi/bXVpGVqBTIn1VNcbOZzs82g7BRFy0eTcade5MDjU4npbxcT8KwOP
+         lxQF4yqP/+k9CLAV58fPY9O8las1u84eUyKv2fvyjI+Wm5/81QFuHw7eWO/aTzyT47lW
+         +yarM4xNx4Hmhheo4sdG7VVBpr8AsgpRhOE9kNBzfsxJvQgYF7Irp5DNC/ZX/bDYD82R
+         sCAw==
+X-Forwarded-Encrypted: i=1; AFNElJ/y+aN/AHkJ8U0UPKso3CJfT00/Rcaio0rSaAquYSL0R5hCsK0+z7A84N2MgWs0o6KMtKkzefE65sEC@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwWYQw6Qpwq/RjAF+3lTbnHokVkyAklQVg3DtWRD3W5m1C0gqJ5
+	K77jlZsFDryBUYm4gDuK9xi9LPwBZy+/t0ddqsnWxvtW1Okse1V/IwV0
+X-Gm-Gg: AeBDiet/NgFNpwxvkizpfGRaS5Eb1TzJv9clFurHkxbXcyWoHhc4Ib6uO6ojuPgx1yy
+	wPUd+boENuFxPlvVBgaThLeo/dVGg8+ZEke9HgaPwkTZslKCIDRn4h7y3dLbtnTUeRdhkDLlT7H
+	2BSwxwawIo9aAwPqd7LrTgpqh98mDz/CkDZ8Py4qM2ONQmUFevIM9XCed2K4wM9MZxzjOJFHm21
+	sj/vMdPPZZVNYvXkwWt2eKtLn6ULt2R+EUNZu7Fe6BjxViC/Op5eWiwroEgmUT3XVHtKxG3FW86
+	KErGCoZmkWXEd9O/QXeAnwvbe4SwJQVfJUGk+n7O5vtYuJGmHYbVdRcslKmKdD7n9y1hqHuMkRp
+	XD3xjmQfIUMBykTa2nfoLLHhqVwpkxTqG0CyZxjayRmFhipOrYf2/GM/3DdZcBeTe5BOaCPAk+3
+	LeR1vSekP/n05p60jZ83NkhStetYnuGysL+0jI+0iZaRqwIG9X38s2xavdyc6b0lANsqnQx9FhJ
+	gnwYrjj1w1lOdnuC4MhIKnX
+X-Received: by 2002:a05:600c:890c:b0:485:3ff1:d5ed with SMTP id 5b1f17b1804b1-488fb739cd9mr198783905e9.1.1776766237036;
+        Tue, 21 Apr 2026 03:10:37 -0700 (PDT)
+Received: from orome (p200300e41f131500f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f13:1500:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4891cca5743sm149377755e9.9.2026.04.21.03.10.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Apr 2026 23:49:13 -0700 (PDT)
-Date: Tue, 21 Apr 2026 12:18:55 +0530
-From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, Arnd Bergmann <arnd@arndb.de>, 
-	x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev, 
-	Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org, 
-	Vlastimil Babka <vbabka@kernel.org>, linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>, 
-	Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org, Theodore Tso <tytso@mit.edu>, 
-	linux-ext4@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>, Thomas Sailer <t.sailer@alumni.ethz.ch>, 
-	linux-hams@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, linux-alpha@vger.kernel.org, 
-	Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, 
-	Catalin Marinas <catalin.marinas@arm.com>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, linux-openrisc@vger.kernel.org, 
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org, Paul Walmsley <pjw@kernel.org>, 
-	linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, linux-s390@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: Re: [patch 32/38] powerpc/spufs: Use mftb() directly
-Message-ID: <aecdpyvTLJOjCdFp@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
-References: <20260410120044.031381086@kernel.org>
- <20260410120319.723429844@kernel.org>
+        Tue, 21 Apr 2026 03:10:35 -0700 (PDT)
+Date: Tue, 21 Apr 2026 12:10:32 +0200
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thierry Reding <thierry.reding@kernel.org>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, linux-tegra@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org, linux-omap@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Paul Walmsley <pjw@kernel.org>
+Subject: Re: [PATCH v2 1/3] MAINTAINERS: Move Peter De Schrijver to CREDITS
+Message-ID: <aedM9A5vZSpg2ejS@orome>
+References: <20260417131549.3154534-1-thierry.reding@kernel.org>
+ <CAMuHMdWeXS3ytgozp-mSrW4jcMRCW7_tbDTbMoEdXdbVj0dqJA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="iljpeusu54227slh"
 Content-Disposition: inline
-In-Reply-To: <20260410120319.723429844@kernel.org>
+In-Reply-To: <CAMuHMdWeXS3ytgozp-mSrW4jcMRCW7_tbDTbMoEdXdbVj0dqJA@mail.gmail.com>
 
-On Fri, Apr 10, 2026 at 02:21:04PM +0200, Thomas Gleixner wrote:
-> There is no reason to indirect via get_cycles(), which is about to be
-> removed.
-> 
-> Use mftb() directly.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> ---
->  arch/powerpc/platforms/cell/spufs/switch.c |    5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> --- a/arch/powerpc/platforms/cell/spufs/switch.c
-> +++ b/arch/powerpc/platforms/cell/spufs/switch.c
-> @@ -34,6 +34,7 @@
->  #include <asm/spu_priv1.h>
->  #include <asm/spu_csa.h>
->  #include <asm/mmu_context.h>
-> +#include <asm/time.h>
->  
->  #include "spufs.h"
->  
-> @@ -279,7 +280,7 @@ static inline void save_timebase(struct
->  	 *    Read PPE Timebase High and Timebase low registers
->  	 *    and save in CSA.  TBD.
->  	 */
-> -	csa->suspend_time = get_cycles();
-> +	csa->suspend_time = mftb();
->  }
->  
->  static inline void remove_other_spu_access(struct spu_state *csa,
-> @@ -1261,7 +1262,7 @@ static inline void setup_decr(struct spu
->  	 *     in LSCSA.
->  	 */
->  	if (csa->priv2.mfc_control_RW & MFC_CNTL_DECREMENTER_RUNNING) {
-> -		cycles_t resume_time = get_cycles();
-> +		cycles_t resume_time = mftb();
->  		cycles_t delta_time = resume_time - csa->suspend_time;
->  
->  		csa->lscsa->decr_status.slot[0] = SPU_DECR_STATUS_RUNNING;
-> 
-Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
+
+--iljpeusu54227slh
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 1/3] MAINTAINERS: Move Peter De Schrijver to CREDITS
+MIME-Version: 1.0
+
+On Mon, Apr 20, 2026 at 08:50:06AM +0200, Geert Uytterhoeven wrote:
+> Hi Thierry,
+>=20
+> On Fri, 17 Apr 2026 at 15:15, Thierry Reding <thierry.reding@kernel.org> =
+wrote:
+> > From: Thierry Reding <treding@nvidia.com>
+> >
+> > Peter sadly passed away a while back. Paul did a much better job at
+> > finding the right words to mourn this loss than I ever could, so I will
+> > leave this link here:
+> >
+> >   https://lore.kernel.org/lkml/alpine.DEB.2.21.999.2407240345480.11116@=
+utopia.booyaka.com/T/#u
+> >
+> > Co-developed-by: Paul Walmsley <pjw@kernel.org>
+> > Co-developed-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+> > Co-developed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>=20
+>    "every Co-developed-by: must be immediately
+>     followed by a Signed-off-by: of the associated co-author."
+>=20
+> https://elixir.bootlin.com/linux/v7.0/source/Documentation/process/submit=
+ting-patches.rst#L506
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Good point. Thanks, I'll add that to the patch.
+
+Thierry
+
+--iljpeusu54227slh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmnnTRUACgkQ3SOs138+
+s6FtNA/+IOGgvf2lEqydkdm2yLiSq9mf9BZV7RmX1tRK5PKD53tIx45Jr6VhFbsA
+lUfLPKoMJaUJvC+a4SglqYSgjVTR/OXgqWIN8PkWlF7DedUL2pFsF68A8RY0Zz9H
+INvSyIIKld2hbW6rMvclNX9G3NKbYoGjNdO/+iBZ5Yg1rNN9fG6BP+QUFmA3TrCy
+5x45YruOqPkCcE6/9JslSP8F3xibDt30ZrR01QyBL3GawSrlR24+EpN9WxTlOT+M
+eo74keyH71q6J3tT2EiBXJXkB28XSh9ZSlEe0nfcERy0xxFFu9BoGrwCQaLIOGQR
+QWMu4eX/U58VInPR6ltYCv7prkAZf9bcrVE25ym3A8TtsdmK27KYbwWKND5Sjlhd
+R3p5/Hrtkjuyg1c06co4BUc+vu73LJ6hktpY9Iu2KLOIPRCC+Oh9TOcpkhmPrSK2
+JUpmvDinXx6XjUNVGrkfzcdbm6JUGMQiX4i0YEtR6uAb7zfi9VS5Ow5cfoQJu5ZP
+OvlcJt0vPbSUhNP4Sqg7xdvqU6g2/soQuh9Kf6Wt0MJPQQrtr0C20HhRxfDwNcId
+SIuS8X8BqPv63mRwVSAu0ENlqs4X3qD0059UV+cK+JhLf89cz51OgAFwguzBDX5p
+KS2X4VY3cTIEvF3AKA5/ZjcCPYtkJOkXqheTUcfvQuhuy9rHR4g=
+=YfYq
+-----END PGP SIGNATURE-----
+
+--iljpeusu54227slh--
