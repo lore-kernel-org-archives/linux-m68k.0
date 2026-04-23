@@ -1,110 +1,84 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715C93BF673;
-	Thu, 23 Apr 2026 09:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A611A3921E0
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 23 Apr 2026 19:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776936505; cv=none; b=c7bTzqJ1iBLkHOxoDGNjH0/NLST7Qx97enKc0stZg8YR6agjkxBkuWXW5IhuYRiQOHWaCCFiwrSY5eaIO+kVCVzs798mUWKtKHew83IF281KnuDI9GJ0heT3K35zpxhj5CUNkO9gvdlsgSg0c/La0h6qEGWL0o6SABPQQRrQqCo=
+	t=1776971465; cv=none; b=twudyItrPUM1FzOzCzkzp7K/p4Ngem3RLRddhw8avTvz67LUDOzjHtC740VTYZDViTdfN2MXiGdMkugSlBmo9E5ERiwryIT8L4MVJocq4RZP6sABr8l2Rft2OYwTiiGSI4/fBKvrVpDdjTR1+Xmqq7wQL48hb1mr9DXjNU7wm2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776936505; c=relaxed/simple;
-	bh=HuBA0Qzq/DYd0rcngJlieMV/XLHFFCqFQhkapYaGSQw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ArgDXBNPFHybZ8XPIePaSqc/fHww1KgluGLSrsag27kGM4n0hsDM4dobAKDdT4RTVTD41Cl1uHG1WlFTAWETFkqQqbru5Pccccil19i4TqshctCHhuJljOShL6BtBD+Z4YJEL92DMO1ZVwCIpY3ej0s9wuq54YJQjgOPZUd0Pac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=IuUl4oxF; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1776971465; c=relaxed/simple;
+	bh=Q15wjI4L+GDtPyPLOIpP5Jb7yon43H5DjAYWC32kJZo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=UsPnat9LSYKTBJ0A9iNVIf+ycQcs3ZBNiQX9yUAg43oRXVCMfanY4yuSr07BPZJDzUSvJnbl6J5NZZ/TIk60ySwXVkbjnYOzTd1F0EZOFpLw4GWbbh3HkEvcP+bCJxLWvctZhkdp3e/CepB8vmrr9nPvhHjHSy77fn6MfGgpLxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TfdliwrP; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="IuUl4oxF"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=zeWo4E4PlcntrIRoAt4bWIDzaFjt/YqZgC2/aPWnV5w=; t=1776936502;
-	x=1777541302; b=IuUl4oxFjrX7RAQBfg6A9FUElSPdccwLFvOxZMchQmLQ/xT1gt3lyyAHfOPhP
-	bo1Pk7p2WYLFWG5BQ0lQyBpTdD8t0ydCMsnNLlIg7m7hYYECVuTv0KY9cVGa328bKIL+xfE+RlJxP
-	JhIslN1QEDRf3EuFypWWkag3Z+7RFRvC/R/Ibmw9M/Saih/VnEe239eP0arZftkkoS4cwH66S9QWb
-	7mlbZTqKf6hQATgsXAzK6gmwiVytzZs1fdi0uwWL9mW6D7gzqv99x+W2MKV8GSsY0NEVk/VQlr+lu
-	zBIzur5yuKhje9+FyAeTRUFffNiURygjzxXo0naDiu11V0LnQQ==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.99)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1wFqM1-000000004TA-0qZk; Thu, 23 Apr 2026 11:28:13 +0200
-Received: from p5dc559e1.dip0.t-ipconnect.de ([93.197.89.225] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.99)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1wFqM0-000000033VG-3woU; Thu, 23 Apr 2026 11:28:13 +0200
-Message-ID: <aee0393e2a2bd5a5d0bf8aee758122633e54aa06.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH net v2 10/15] drivers: net: cirrus: mac89x0: Remove this
- driver
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Lunn <andrew@lunn.ch>,
-  Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet	 <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni	 <pabeni@redhat.com>, Simon Horman
- <horms@kernel.org>, Jonathan Corbet	 <corbet@lwn.net>, Shuah Khan
- <skhan@linuxfoundation.org>, Michael Fritscher	 <michael@fritscher.net>,
- Byron Stanoszek <gandalf@winds.org>, 	linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,  linux-m68k
- <linux-m68k@lists.linux-m68k.org>
-Date: Thu, 23 Apr 2026 11:28:11 +0200
-In-Reply-To: <CAFr9PXnECog56b+Jq9TBohhQ4oBB3hGV1pHj6OstOSLqkOpcTQ@mail.gmail.com>
-References: 
-	<20260422-v7-0-0-net-next-driver-removal-v1-v2-0-08a5b59784d5@lunn.ch>
-	 <20260422-v7-0-0-net-next-driver-removal-v1-v2-10-08a5b59784d5@lunn.ch>
-	 <CAMuHMdV-vF6sTvAi8kKzxGwZ9YUSBO1Qta5PDCRbA0zr-LEp_w@mail.gmail.com>
-	 <c0c80113af470b265650405fa24deefe2d82ea24.camel@physik.fu-berlin.de>
-	 <CAFr9PXnECog56b+Jq9TBohhQ4oBB3hGV1pHj6OstOSLqkOpcTQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.1 
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TfdliwrP"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 5415944701;
+	Thu, 23 Apr 2026 19:10:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB18C2BCB4;
+	Thu, 23 Apr 2026 19:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776971459;
+	bh=Q15wjI4L+GDtPyPLOIpP5Jb7yon43H5DjAYWC32kJZo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=TfdliwrPjAmrzu1lmi5tKcDFWeEQPyLVWK1A/F2VT89qrMIKnzdsE/yro/06H8K4u
+	 /q5zNxdtZa3WRD8bB40PS/rBKhd+joEcXuSNVJ0nzgzvRaGgscVDegQ88arv65VVhF
+	 usVMAfRd0ZiqQvR9HKeFyRHbdqmUUhVmKG7XHjRq8BIMUtPvRZ+LD+tNHomeGQXX1o
+	 K8yfq2soowJsl4Q5elXzSj70grqjedeBPWLCp1Y5LTjjcR0eyG8jLRGlbVd4Vu23Nf
+	 YJdHvATMSYoQvIH3I3qdggWwF810Vphgh9/O3hqP62RFyfvyOkoNrF+S3OT3Xuh5De
+	 ySq22P/v0mLIw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B9F223809A90;
+	Thu, 23 Apr 2026 19:10:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] m68k: mvme147: Make me the maintainer
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <177697142055.724716.5140307398411201203.git-patchwork-notify@kernel.org>
+Date: Thu, 23 Apr 2026 19:10:20 +0000
+References: <20260422132710.2855826-1-daniel@thingy.jp>
+In-Reply-To: <20260422132710.2855826-1-daniel@thingy.jp>
+To: Daniel Palmer <daniel@thingy.jp>
+Cc: andrew+netdev@lunn.ch, geert@linux-m68k.org,
+ James.Bottomley@HansenPartnership.com, martin.petersen@oracle.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ linux-m68k@lists.linux-m68k.org, linux-scsi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hello:
 
-On Thu, 2026-04-23 at 17:52 +0900, Daniel Palmer wrote:
-> Hi Adrian,
->=20
-> On Thu, 23 Apr 2026 at 16:10, John Paul Adrian Glaubitz
-> <glaubitz@physik.fu-berlin.de> wrote:
-> > > Macs do run modern kernels.
-> >=20
-> > Retrocomputing still is not well regarded by some maintainers, it seems=
- :-(.
->=20
-> I've found bugs in drivers by plugging those things into exotic
-> hardware like my Amiga 4000 and Ultra5 [0].
-> So, it's not totally pointless. And having a shader capable Amiga[1]
-> is pretty cool.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Not only that. Those exotic architectures also help iron out generic kernel
-bugs and give new maintainers an possibility to get their feet wet.
+On Wed, 22 Apr 2026 22:27:10 +0900 you wrote:
+> I'm actively using mainline + patches on this board as a bootloader
+> for another VME board and as a terminal server using a multiport
+> serial board in the same VME backplane. I even have mainline u-boot
+> on real EPROMs.
+> 
+> Make me the maintainer of its ethernet, scsi and arch code so I get
+> an email before one or more of them get deleted.
+> 
+> [...]
 
-> Sad to see fun stuff getting pushed out by basically spam bots. :(
+Here is the summary with links:
+  - m68k: mvme147: Make me the maintainer
+    https://git.kernel.org/netdev/net/c/7256eb3e0909
 
-It's not so much pushed out by spam bots but by the commercialization of th=
-e
-Linux kernel. Many developers think that the sole purpose of the Linux kern=
-el
-is to run on modern commodity hardware.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Adrian
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
