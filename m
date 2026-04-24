@@ -1,122 +1,59 @@
-Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
+Received: from melduny.fyrkat.no (melduny.fyrkat.no [217.144.76.212])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8308145A1F
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 24 Apr 2026 01:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB10216F288;
+	Fri, 24 Apr 2026 06:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.144.76.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776992639; cv=none; b=emZxkGazKDvzuUwci4AHp9hqH9PQDTLTEMWkIKOcyiSidfH1RjLGnSXSq7azi2QBTSpLui/VRYfiG/4AvfLozxKBVxDhUS+tAD8iFn7FXdImDkeANqeZ6TDx1/gpPxNu/Uoe6qSWfCnESa3v/H1lQlc5r7CaHSx+GJI1Y4Pe4Aw=
+	t=1777013167; cv=none; b=KLt2W7jfJp3ZBM5IuwbgltDpuZZilXqAtFR8Wb541w31X86XdYsdF1YHiSb+ZkNJkym9g86cbdN33fPLPKiTYwTJyKjgGXONVN67zHLGFpc6zbku1pHLussWP0I+97fNF5PizlwQCTHLmqxVpyznO3g/4dvSv2Pju3Z2XvCnyes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776992639; c=relaxed/simple;
-	bh=uT7gY4BRtjgaPX9PaajJO75AEADj3vGoYf34NRUkepE=;
+	s=arc-20240116; t=1777013167; c=relaxed/simple;
+	bh=aAsQrsI8WmUNYzvfNEcf4Z3Ho2f+7TgGzDdBJJPdwAU=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=uQ4qq/E1SXRIUIHmctNX6WapdXEiXRVlZavdNtUWR4sc1KcP9aBq247n8CE671QSuVAJN5/XarXnfJs/xL+wtiXXE06cwtx3XqPdMK0sYXVfDSmQtqycrbxCgjbBJR5sDWFd7JtFasEF5Npfn9kiLNS+qNLIB60swXE9CSpp9eI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DkkSk2sZ; arc=none smtp.client-ip=202.12.124.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DkkSk2sZ"
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 23B767A0184;
-	Thu, 23 Apr 2026 21:03:55 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Thu, 23 Apr 2026 21:03:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1776992634; x=1777079034; bh=rXMg7ku8R+JFnmla+6SGcWBeA0b7hTg/AD+
-	QEyM9OnE=; b=DkkSk2sZMghdgvHOCh2vJqPFixGiQYiF/pPQBAIBhyDG/jCucsB
-	lq7BJofCWG0pYPqhzIt4NP54Q0owled+gydYNhb+IPkFrxh1D2x7I/hcNTUWHCip
-	sj97mQSBxopfg74854n+KEuzPhM5Fn7Rzc+UT0R+R264Ai4n3Tc/wHVXKmTlhNZ6
-	eLBdD/JaiwjHQ2zp8qR9GukdmSzujQpCK+t/03QVk67/i6YCRipuwiNmRDLGBxrn
-	dT7W443tTovkKwQY+nUSyEVqXak8aBQIUzAKw7OpWc73fFEo5Nbdcnx7DuXAcIq5
-	wNSmp5+oQav6nZgAPQE+6YML0n+Oo0RHg0w==
-X-ME-Sender: <xms:eMHqaQQObEnmHyjxO9SmcFPARqnDhlNSje4pWmaBRcEzCEmkyxt8dg>
-    <xme:eMHqafImZB2uOsfTRJv4iBIernwUSSibtdQ5FgVQb4v_6_Rv8TamjvPljZdA5Jx7V
-    lzpx7wkhs6vOps7L8nZxirjt102Fs96s75XyCe8TEmGKffqVr_jUng>
-X-ME-Received: <xmr:eMHqaXHAcN2-R24bCe4acyhvj_ieBX1Nda-6-qIST52PaquMRtplNqdO0LEgMezE3IMU737EumstSD8EmefzuG6A-uPMK5Sdp1U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdeikeeiiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
-    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
-    hrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueehueel
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthh
-    grihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepudekpdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpdhrtg
-    hpthhtohepghhlrghusghithiisehphhihshhikhdrfhhuqdgsvghrlhhinhdruggvpdhr
-    tghpthhtohepuggrnhhivghlsedtgidtfhdrtghomhdprhgtphhtthhopehgvggvrhhtse
-    hlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopegrnhgurhgvfieslhhunhhnrdgt
-    hhdprhgtphhtthhopegrnhgurhgvfidonhgvthguvghvsehluhhnnhdrtghhpdhrtghpth
-    htohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopegvughumhgr
-    iigvthesghhoohhglhgvrdgtohhmpdhrtghpthhtohepphgrsggvnhhisehrvgguhhgrth
-    drtghomh
-X-ME-Proxy: <xmx:eMHqacQsCgDgUpkdMpJ7lRjIDDACgZ4OqRerysW9vkEYisKXaRCvTw>
-    <xmx:ecHqaQUx43qxvgiwPWL9Y139sZ98TQrP5aAwvvoIUe7McFxGpR3sGA>
-    <xmx:ecHqabi6RQxL0-iHr-8xqmA0SiYO2obMIXVcG9IfDaaMIXEUpMROTw>
-    <xmx:ecHqaZciAUM081Ydoa2dPBMCTN0_hLONMIL3_b01EXuoiF2p5IQEzg>
-    <xmx:esHqaSk2g-35ngOG1BQQKF3w17i9wTrZeZ3lSrneWIqz2g5wtBEVSH5B>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 23 Apr 2026 21:03:50 -0400 (EDT)
-Date: Fri, 24 Apr 2026 11:04:02 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Jakub Kicinski <kuba@kernel.org>
+	 MIME-Version:Content-Type; b=qS7J1K1CejCzxmWIIzBxFL9/vqG87XdUnKtaZtdbEXkFYDdo6A3SpPzY3e/hEtbYqQa5XByk+RWM/dXlbhrjtB0vIf/00UDmCpbUKrA1+HGiw3sN0vP7E3/L/AHhUVJt/nCbkzCE8Gno8Mf6ysd7mu3SHCjvrQTWQYNNE5UTtr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kolla.no; spf=pass smtp.mailfrom=kolla.no; arc=none smtp.client-ip=217.144.76.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kolla.no
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kolla.no
+Received: by melduny.fyrkat.no (Postfix) with ESMTPSA id 06A0A17119;
+	Fri, 24 Apr 2026 06:38:56 +0000 (UTC)
+Date: Fri, 24 Apr 2026 08:38:56 +0200 (CEST)
+From: =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>
+To: Theodore Tso <tytso@mit.edu>
 cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-    Daniel Palmer <daniel@0x0f.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Andrew Lunn <andrew@lunn.ch>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-    Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-    Shuah Khan <skhan@linuxfoundation.org>, 
-    Michael Fritscher <michael@fritscher.net>, 
-    Byron Stanoszek <gandalf@winds.org>, linux-kernel@vger.kernel.org, 
-    netdev@vger.kernel.org, linux-doc@vger.kernel.org, 
-    linux-m68k <linux-m68k@lists.linux-m68k.org>
-Subject: Re: [PATCH net v2 10/15] drivers: net: cirrus: mac89x0: Remove this
- driver
-In-Reply-To: <20260423150240.07c350a2@kernel.org>
-Message-ID: <31926a28-658a-1df9-d5bc-2b010891e7e7@linux-m68k.org>
-References: <20260422-v7-0-0-net-next-driver-removal-v1-v2-0-08a5b59784d5@lunn.ch> <20260422-v7-0-0-net-next-driver-removal-v1-v2-10-08a5b59784d5@lunn.ch> <CAMuHMdV-vF6sTvAi8kKzxGwZ9YUSBO1Qta5PDCRbA0zr-LEp_w@mail.gmail.com>
- <c0c80113af470b265650405fa24deefe2d82ea24.camel@physik.fu-berlin.de> <CAFr9PXnECog56b+Jq9TBohhQ4oBB3hGV1pHj6OstOSLqkOpcTQ@mail.gmail.com> <aee0393e2a2bd5a5d0bf8aee758122633e54aa06.camel@physik.fu-berlin.de> <20260423150240.07c350a2@kernel.org>
+    Jeff Layton <jlayton@kernel.org>, lsf-pc@lists.linux-foundation.org, 
+    linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+    Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>, 
+    Al Viro <viro@zeniv.linux.org.uk>, linux-m68k <linux-m68k@vger.kernel.org>, 
+    linux-sh <linux-sh@vger.kernel.org>
+Subject: Re: [LSF/MM/BPF TOPIC] Should we make inode->i_ino a u64?
+In-Reply-To: <20260415144722.GB74178@macsyma-wired.lan>
+Message-ID: <f48c40f6-ae26-d16b-5332-554042cd85fa@kolla.no>
+References: <08f8444c7237566ffb4ba8c9eb0ab4b4a5f14440.camel@kernel.org> <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de> <20260415144722.GB74178@macsyma-wired.lan>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 
+On Wed, 15 Apr 2026, Theodore Tso wrote:
 
-On Thu, 23 Apr 2026, Jakub Kicinski wrote:
+> Like Debian, the Linux kernel development community is very much a
+> do-ocracy --- only more so.  If the 32-bit community really cares about
+> Linux support, they need to be providing volunteer labor to kernel
+> development, instead of demanding that everyone else pay the overhead
+> tax of supporting 32-bit platforms which are rapidly disappearing.
 
-> We want to be welcoming in the community. But being a part of the 
-> community means participating in _work_.
-> 
+This tells me that it is time for "the 32-bit community" (wtf) to either
+look elsewhere, or start thinking of forking the Linux kernel perhaps
+sooner rather than later, so we don't bother "the 64-bit community" so
+much.
 
-The work of testing drivers requires that maintainers have ready access to 
-actual hardware. Behavioural simulation like QEMU does not cut it.  
-Therefore, it sounds like you're going to need someone with actual clout 
-to mandate that drivers must have maintainers and those maintainers must 
-have access to working hardware, or those drivers get placed on a removal 
-schedule along with _every_ other orphaned module across the entire tree.
+> I will note that Debian itself has made the decision to stop supporting
+> the Debian Installer for i386 and the 32-bit armel platform in Debian Trixie.
 
-That way, you get to chase _all_ freeloaders regardless of whether they 
-are unpaid enthusiasts or foundation sponsors. Surely you'd find out what 
-"welcoming" really means -- but you would get to remove a _lot_ of code.
+Which is why (for example) Raspberry Pi is maintaining their own Raspberry Pi OS,
+as they have 32-bit systems that aren't EOL for another 3-4 years.
 
-Far more likely, you'd find out that the typical Linux user is actually a 
-retro computing enthusiast because he's using some device that's over 5 
-years old, and the employer of the maintainer of the relevant driver got 
-assigned to something more profitable years ago and all their old hardware 
-got tossed out in the last office move. (What was that saying about those 
-who live in silica houses?)
-
-Anyway, I think there is a better way. Let's score every module based on 
-cost/benefit to the "community". We can use retail sales volume as a proxy 
-for the former quantity (in unadjusted dollars) and use module size (in 
-lines of code) as proxy for the latter. If nothing else, that would show 
-us which modules are more or less valuable to the community, relative to 
-the average module.
+-- kolla
