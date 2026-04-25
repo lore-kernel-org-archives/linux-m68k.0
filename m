@@ -1,89 +1,103 @@
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDF036F414
-	for <linux-m68k@vger.kernel.org>; Fri, 24 Apr 2026 11:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EF0E13FEE
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 25 Apr 2026 04:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777031935; cv=none; b=peU81832HtW+Z6iiBgZqhCFpBfyPp2X/BRk2I0g6ByN0DRSAZy2uI5FhMQB3qaR5yZ0y+dVqx8+3HxKwbxpGn88TTGfPK4IVjp3GCp2SwcE/3f8JhdVXSBG7TWxwUUuVTcJ1xenzhXByo+kgEOOt4uBPPADeHw+heofBii+h7EM=
+	t=1777090021; cv=none; b=VcvQCeNDMzr8jDXFPJ8d1q/vJgeAysucVp3nDkERmg/9R+Ah+W24/0AmU45lz87axsFF81wBfFpB86Ol2YTnpFMyBwduUZNNxd7xqZiA9n80vXHT/6e4rzjEHJ3pRDLO3JFtP6ECSg13KT0Mx9YIfpb9CSyubFZGn6mBCy8Wrfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777031935; c=relaxed/simple;
-	bh=cwXw/hk7xxL51Y+Zsrzjz0CLFN9hpTQm4SQyyAX0yCw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iu8SKy9BPL8bPKKa2j66AXgB5v4K9RHGwGgr1XC3JiwpTItxa+agP7wPA24Pw/AuDipP3mcHazYty8SPDlt5FOcRDYgPIz7mXhAYM03g2/ud0ImH6TMb+mH3JW1yh5Z3pFlMPwIO0/NxBqYgPGKWye2yyXJQm1GsqbtQ/TIxS3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=mKdNEitJ; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+	s=arc-20240116; t=1777090021; c=relaxed/simple;
+	bh=4/5EMmCwj2u98XLfBEk71GDg6eiV0nhb5trYJOrc6aI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=KZYssGa/WSf1lZwUOZeJhTINsnwQnCsB3LZSKNc9eQn0d7TnbEop43UY2eIjzZYgZ2kJSCocyxU6NEjA2T/QcRiPm2jyIZtN+t50J3xQpKCfAM+SmWmlz1Ho7J/wMxfXwex7HcHcI2IzA1RBt/2HeSNw0OqebAEsgUpStAyaEWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SWZpETH7; arc=none smtp.client-ip=202.12.124.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="mKdNEitJ"
-Received: from macsyma.thunk.org (pool-173-48-114-3.bstnma.fios.verizon.net [173.48.114.3])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 63OBwFh3025426
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 24 Apr 2026 07:58:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1777031898; bh=7Do7ZOMPRUWDQKzANcmTBnWE/rKlX816lGdx5pwJjw4=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=mKdNEitJOMuylAGTjSYqUb5sJ/1wAK74lkSwm0FClBm52cDqN57RuGxYNZ94a/xm6
-	 5NimJpUyuPimpLJdxGDhK5PkNx/Gw0J6qQrgZ7D4UPbS5/BC9BIwcKNCg5ixF4TcZL
-	 LYFQM8fmhsKwLspPnYXBEKV31v56kB28uSPLYbsUhpqbCZCGXyw/hbVov/vVF5XOkU
-	 naqFmltjK+BWmfXpt1FO5BNN7ohRz87YcsBrgoVCOnq6phQm6vHModmHGkdgd6C3nJ
-	 /V/1gdgoFgFPruJ5Y5ViW3Pk8+9ud5esBHMOJ5FxpFtvUc8VioDHaqNPYMb3dnCcyg
-	 UtSjdJkUdyMNw==
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 3642064E1102; Fri, 24 Apr 2026 07:57:15 -0400 (EDT)
-Date: Fri, 24 Apr 2026 07:57:15 -0400
-From: "Theodore Tso" <tytso@mit.edu>
-To: =?iso-8859-1?Q?Kolbj=F8rn?= Barmen <linux-m68k@kolla.no>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Jeff Layton <jlayton@kernel.org>, lsf-pc@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-m68k <linux-m68k@vger.kernel.org>,
-        linux-sh <linux-sh@vger.kernel.org>
-Subject: Re: [LSF/MM/BPF TOPIC] Should we make inode->i_ino a u64?
-Message-ID: <20260424115715.GC11127@macsyma-wired.lan>
-References: <08f8444c7237566ffb4ba8c9eb0ab4b4a5f14440.camel@kernel.org>
- <1b340c4e635dcab3bed8c52d6381b4c341c0741a.camel@physik.fu-berlin.de>
- <20260415144722.GB74178@macsyma-wired.lan>
- <f48c40f6-ae26-d16b-5332-554042cd85fa@kolla.no>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SWZpETH7"
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 4AEF47A006B;
+	Sat, 25 Apr 2026 00:06:58 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Sat, 25 Apr 2026 00:06:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1777090018; x=1777176418; bh=zIB4pj1Boj92lNqYzPoS2wcag3UdCbneSh/
+	Islg9uXU=; b=SWZpETH7K2yvdrrKQoJCmMXP4THMKxlm+kPWVeox+32pOXCI+i3
+	fCvw+XO0Ma1XeglIFuJd5KmkQJxUjPPi0oNmpiDFTSClXYX2sgq37tXec9rXpDLJ
+	XVmqvBBBEd5lTpcf/3T22mx74ZlxMv0GGLW/nS9/d6ZLXPiI1zSOX0IqwnsLbWW9
+	0xZOg7p7v0xSA6229cevzHZ30TKDXaSCn0lEupOsNbp5ljuIDpjvKJ2CWqkKYbVe
+	AerCRJ4EzOEhPe7krIqdmFaOj+cyapkRC76mcecaafLTw+zpT70J28raFmCpPEm3
+	Rqx2eZov39i9iQrsCDPiuI8EQJv+q1Fsb8Q==
+X-ME-Sender: <xms:4T3safOQ_Pq6dtb0jYV5MWjsWVC28dU0aeJxGd-nc7vpsAG83jmAoA>
+    <xme:4T3saRuNkgp6kzg9k2kfg_ETNqpcYlrmP0S5MRl3MV2TVY6oOMxpt3fjeZyenTU7a
+    0ETc5hxp4gAzbiOG_yRhqcH3GXl-aUIbn13R4XlHNUh_hnaouAJ1A>
+X-ME-Received: <xmr:4T3saRXScRR5iCHfi1mBE7BbA8yGv6R3nmnQPpwVMFnVzDTuLWNUAmvZX-yLhGX-xQftj2fORAJbclTBGOXm0MxrNXH5Y6kFlAg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdejudeludcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
+    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueehueel
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthh
+    grihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepfedpmhhouggv
+    pehsmhhtphhouhhtpdhrtghpthhtohepjhhohhgrnheskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhr
+    ghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdroh
+    hrgh
+X-ME-Proxy: <xmx:4T3saRvSIuMlbl4Ec4IqB1olOrqVX5WQ4YLG8oMlHIMZ7R94rGuGSg>
+    <xmx:4T3saVXBTocHmqOdXNsTrIvhttn8VzC9WCDyWwyzgYvHrkAHZRD0EA>
+    <xmx:4T3saclvxbETjm5WKLSj3hE7Z0XAC5e03eACg0R4-przdnxz3bbtWg>
+    <xmx:4T3saWY8tdxYiC7D7RnzxfSpdhKYP0-uMa9sMSkhASulWLH8PuGjwA>
+    <xmx:4j3sadDbVmTdpVxDo57BB102-BjfxwBFV9pbwwoxkbG3X3oEANGVaPwo>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 25 Apr 2026 00:06:56 -0400 (EDT)
+Date: Sat, 25 Apr 2026 14:07:10 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Johan Hovold <johan@kernel.org>
+cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nubus: switch to dynamic root device
+In-Reply-To: <20260424104011.2616970-1-johan@kernel.org>
+Message-ID: <92e2b920-041a-78a4-e4b6-c5a7c579ade7@linux-m68k.org>
+References: <20260424104011.2616970-1-johan@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f48c40f6-ae26-d16b-5332-554042cd85fa@kolla.no>
+Content-Type: text/plain; charset=us-ascii
 
-On Fri, Apr 24, 2026 at 08:38:56AM +0200, Kolbjørn Barmen wrote:
+
+On Fri, 24 Apr 2026, Johan Hovold wrote:
+
+> Driver core expects devices to be dynamically allocated and will, for
+> example, complain loudly if a device that lacks a release function is
+> ever freed.
 > 
-> This tells me that it is time for "the 32-bit community" (wtf) to either
-> look elsewhere, or start thinking of forking the Linux kernel perhaps
-> sooner rather than later, so we don't bother "the 64-bit community" so
-> much.
 
-My point was that having people whine about a decision isn't a
-particularly productive way to engage with the kernel development
-community.  Especiually when the person who was complaining was the
-HFS maintainer, and the mailing list that he *should* have been paying
-attention to was linux-fsdevel, since it's marked as the primary list
-where HFS bugs and development issues should be discussed, and
-linux-fsdevel was one of the mailing lists where the 64-bit inode
-proposal was cc'ed --- maybe that says something about how engaged he
-*really* was with Linux Kernel development.
+Yes, in drivers/base/core.c, there is a warning in device_release().
 
-But hey, it's open source.  Forking is always allowed.  My guess is
-that a fork would involve a stagnating code base that won't be to keep
-up with bug fixes, including security bugs.  This is especially if
-most people working on 32-bit architectures are as engaged as the OP.
-Most forked projects don't end up working well, but everyone has the
-right to find that out for themselves.
+WARN(1, KERN_ERR "Device '%s' does not have a release() 
+	function, it is broken and must be fixed. See 
+	Documentation/core-api/kobject.rst.\n",
 
-Cheers,
+But there's no way for the refcount for the nubus parent device to reach 
+zero that I can see. Did I miss something?
 
-						- Ted
+> Use root_device_register() to allocate and register the root device
+> instead of open coding using a static device.
+> 
+
+Well, dynamic allocation makes sense for busses that might be instantiated 
+more than once. But I don't know of any hardware like that. The nubus 
+parent device is a singleton.
+
+I suppose I could see some benefit to converting CONFIG_NUBUS into a 
+tristate. Maybe the module link in root_device_register() would become 
+applicable if someone wanted to do that conversion.
