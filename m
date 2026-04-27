@@ -1,92 +1,119 @@
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com [74.125.82.174])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AE4391505
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 21:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5716137F009
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 21:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777326295; cv=none; b=gdwHxPviR28RjGIYG1UstMa13lfzfoVWvLEaoL9AUMq4pdyhW6VI9vj5G62PFmuscLpXGQVOOBSkBV6/IvTwmZg3kGXGb3d/nssayfJ0lcNdzqeB4+aVwnge15dG6CxMcA8Yw/WLHf+ZZ4I6qvw6t/YubOJRhegiCiUDCmCQpfw=
+	t=1777326449; cv=none; b=PyNlAnPeWbXqCP70ikSt+dvvK6SOLZ6hM4V61zLlFTO+PY8DpvgPQr3Dw6VVN62Vgu/MeLVu6j8rrQrG29x/MW9U598IuBj1F1HV17/1ORYSY7Z/nIqXOd8+Bq8vGSVZxp0PksphXGuqcb2B4p0SBEmUn5G49u9aD3TybFbk0iI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777326295; c=relaxed/simple;
-	bh=FyPB63wt21dCSlA1V93ZxwKVM5EVA3FyVToqQROiiGM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZZ2pCVlbLCzmmfB5fUFkuGiXsJNo0yavwF4ZyRgGlIc1bjV+C6pQxrG/ZLRvA1ozBb1bCrIE7jbiMLZoxobtqDk32Gi3OszoheF6cld/hUh+Ee6m93pUUylUT7FdXpV/NiUyArwlTTanTuuiCjwR5l3d9R/5AL/a52dhsOh7vVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QKTpYXR2; arc=none smtp.client-ip=74.125.82.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1777326449; c=relaxed/simple;
+	bh=i/k46YQbNxc6jmDhpSrBTZQploRe2hY24KQV/uGHVj8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p7hkMxZ0w/5GAxZJ+D3Y3DoZg8lv3j5iOmTZZuoBjQG3ud/8Mh1IQCBSih2L8Mv78NsdfXVCZ0bOtFsTMLyunxFVfhtBE2WylwcXhI+QQG/j6Sxe4hXOkyromHJZYMDvsOqKcvInT9SpgYo8U0/nebuBPwmZN6QgDlCP93fbcRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=RsHvqbZf; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QKTpYXR2"
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-2d96243c91fso17452315eec.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 14:44:53 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RsHvqbZf"
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-67389cf78b0so18829168a12.2
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 14:47:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777326292; x=1777931092; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ks2Lt6yJ3ah4mtlHpB3bqT5HUFjdEUDMpMI/GdsyYSI=;
-        b=QKTpYXR2uJC8UMlAUTVLIKiiVCfrBELZyOtGMJtUJfi5XIPmQFisDrdVaJnQysVwpa
-         pXzi3Kh/64L3qi7rGCmoilF7nPJmgFFcNHqdxibsptB0f6nwKseqbVkuz89+zJLTNTYY
-         E0jjZd831XpqlEVW1bJFA96bHOtpxeLaOpNWue0VF5vUHhHpqE66eIIhjSSXb7LHxzKC
-         WE4F+IipJvwNo73KfkCz78HM94Qa9AkClfIPNMOU5oOxLjncJXIqGwjeVvCpl2n9T6yg
-         wY03N1kuB89gPk+aHA3rEZwFY1W14afqDUJG+ddSD59/WazJCFBu0Od7AqdYXy2DXNx5
-         8pWQ==
+        d=linux-foundation.org; s=google; t=1777326447; x=1777931247; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DjF1Jdn4Kp6xFyaBmAP2391GfFF2q7kuOVlruTChM90=;
+        b=RsHvqbZfufZ6jEI1/jKiqrlKFgREqsbR53sAJ1ne0bEAM5g/lW4o86Uf9iqslXlgL8
+         sCouSRbvN5Bu983ytM6mhILTOVg9FPcXYQcwaRuHtjLP1f6hvfE0apVo5fvEvbWZpn+E
+         6Zwjtxy0xz6IzuyRvvQlNuy4u/en0cC+9SVWQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777326292; x=1777931092;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ks2Lt6yJ3ah4mtlHpB3bqT5HUFjdEUDMpMI/GdsyYSI=;
-        b=MYtLyDW0GI/c3K/5tsx/QB4d6AQBFPcOGuPU8wyZ47BFwXGS3wYcPAs5fZPRKb1adu
-         dPGwbGy0iL54H8lAIfRVvxJNE9MToomrbRNNH3uUoUXPO4b3pdg1UzYfIG1Q93euxoPI
-         vnqwb9aLUQKYoLjeh0ZVrrYEGrF3bQCdm5pqxEAig+h0XqX+oykoonQ7y3rk6+M2+vQ4
-         +d0971Fa2BnBvExAo+wOEr3couhVS8wMrHI9l/3Rc0tbdAIaPyZuyAV84us2hB8Gb5s1
-         DYaJrFIvwgL49eHi78W8n7Sipf+8Zp26oB20pGFDLt7OhNXZNL49zOWIA+u+eQlTkINS
-         efBA==
-X-Forwarded-Encrypted: i=1; AFNElJ+/2wDg9Hign9W1DAoS+MX8aSNfaT4KXUBkHLiwwcjRoQhR1mlSlBf/owhgqahF9nE3AAIkvMyN50yG@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Ywmh6hyIrTK53KNsKr8Aay6Ry39Nfy7aQjEqIj5yZZpUVbGyMKD
-	GBiPTeeNnRpiPousleTKdEUxJKzjhcB8SO+dlhsv6eWyX5mjFDfBQQz+
-X-Gm-Gg: AeBDieuiHRwRa9eLU3P7vzYMA7gywk82EdlKJC2mm8H5Hn47Ietb9TZvgCwofaNZw2T
-	y4mejnD3RuqtAYqksOlHv+GGKofz39Y6E9v/C55aiHqGmgaVD+bf60377bwmk7XQfhlehkO659t
-	0dgmAe2aLF4xDZjSlDrjc9758rYHfGtvGPDKbxlgoS0Xg4nXshr7zwG22jGxe1O79kcT/aS3b/r
-	9cWiw2pHu4o/72bTMB28uXfSZZ1CTgcXKxE3ZRoWefv0IGswVmIGCYH93mcp89i8jJVS2yWyYYj
-	tjOIngPimPf8wuN9Il29KxHtk0ESHshv9pdZQuK7Rd1j11ybY+YRzky5A7XgdnLs75vnpVRLDcs
-	7Py9PSoogoX5oQ0WfFUSxcrGG7EvZlhkg1h52UsSfLkuHtdID2PAYh4KNE0Swk/I6o8kKxYzDfK
-	KR8iXaiDAE1jL0o4e/qCyZAcNoMXzZS6Z2lMePu+2xQbzuiPo=
-X-Received: by 2002:a05:7301:128d:b0:2e6:4d6e:2cbd with SMTP id 5a478bee46e88-2ed0a03bbbdmr354798eec.8.1777326292467;
-        Mon, 27 Apr 2026 14:44:52 -0700 (PDT)
-Received: from fedora ([2601:644:937c:6c90::47b5])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2ed0a13f915sm649354eec.31.2026.04.27.14.44.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2026 14:44:51 -0700 (PDT)
-Date: Mon, 27 Apr 2026 14:44:49 -0700
-From: Vishal Moola <vishal.moola@gmail.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	linux-m68k@lists.linux-m68k.org,
-	"David Hildenbrand (Arm)" <david@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] mm_types: remove references to s390 gmap
-Message-ID: <ae_Y0V8WsHPfQSJk@fedora>
-References: <20260427105810.23761-1-pbonzini@redhat.com>
+        d=1e100.net; s=20251104; t=1777326447; x=1777931247;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DjF1Jdn4Kp6xFyaBmAP2391GfFF2q7kuOVlruTChM90=;
+        b=GH69EY1xUW7kf4n1AT4/fcWPm8D/cFYfABL1NrRO9TCwhKezUwWr6/fj9o6qQGJ3Ia
+         oFWEdDNW/MnTKez8duxPQEp9G8zccBpoWGL5/dg7oanbrZQmAPkiBdbO/Lzt28/m0x3S
+         LnGfW6E7q+aGMIh4DB7fkl4MzGYlkczxtCzkLk/KpyhpsbkEWhSZTrUkB9DXe+1TOP4D
+         Kw+7KD4W2ZFxf1pn6zK9oW4hPObrUAbrvqQ9RKQ5OeoF8M/auSVs7BZl9dsKrgJMrjOv
+         ZEWYcqF017Us2RZekInLNDRHa/2qa0/NFpGdKM/Z4oZVOHdZxeizow8fPzYc9KjQlD6q
+         sTfg==
+X-Forwarded-Encrypted: i=1; AFNElJ+XApRkV2XP7so5VEzU5sRebr4WMQtLZe5JdpqquwUnzYuDEBsLiWclTrNZ0Y8sXgT5KV+EexRz/ILJ@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyaexTENF2vjZLp+JuL0mcXkd0iEqFSuxDa9hZf0QcDNWSg2uBx
+	QYsWOhU+Cn8+X/ekVf+pB/nI62AzT7cMD7ILRUxaOBBPeEJ3/2AxKlDc5PARM9Pn9p8poVlnkuj
+	dqwztRD9yfw==
+X-Gm-Gg: AeBDietHKShPm66YKa5tDxYvF3Lwy1pj8SubDEmYnTrcWMrE+lI9CcTyOlKUrrryOvo
+	2BumnSYzLpIM+9VxErrz7dR1s7CVnwHR6OMsDetBC9y6bGZOzMqeYnE8loYsZjFcqfVrqLEFZoh
+	VMpqzxCeihN2qHwpE+Ygg9Q7LjiBAJceH0NjFRALDT4q9+tt/9pKZBBWzSYit6tWkH3l2JHmdcU
+	oMjvIBH7CJpveFLzWxaDhwKyytLTyjJxYFf8XXTOHY1XlkdfHtgnBJlAG8egvFmneFV6tFXYLbl
+	wDg93yL5Z1sSJ0K8UfhOZVX91Z4VROJNRb76he4efwVQWnaz+TajRy/HkHoQPUua/xGD/bwq/n4
+	5zEjbev6jexTfqxj9fkiQ/qDHpC3LyHiU5uAOK3KO5fqp5ZtqQVyQlk5DEn2qn4ogdE7IU6NW26
+	VLV32S3xi9/99q/Tr+f0Y0Y8tvw0qVrhB6sXC8bca4QfJ5VktgGjSqfEMJi5T9C4AcTRziDRzPx
+	Zew5Kpo3J/s9+NvayOiCw==
+X-Received: by 2002:a05:6402:381a:b0:66a:8002:fe17 with SMTP id 4fb4d7f45d1cf-679bb08f337mr149245a12.13.1777326446520;
+        Mon, 27 Apr 2026 14:47:26 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-679b67d5eb1sm141371a12.10.2026.04.27.14.47.26
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2026 14:47:26 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b9c01854477so696838666b.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 14:47:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ/ol1OB6OdEz9uHK1BxF3g1MX5jiT0e7Pj77VRuqDLa65lxoOzyxIyO9LCqN8v2xWicqpNw4aWLhNnD@lists.linux-m68k.org
+X-Received: by 2002:a05:6402:5216:b0:679:1f4f:9d30 with SMTP id
+ 4fb4d7f45d1cf-679bb04c1a2mr179970a12.4.1777325976937; Mon, 27 Apr 2026
+ 14:39:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260427105810.23761-1-pbonzini@redhat.com>
+References: <cover.1777306795.git.chleroy@kernel.org> <289b424e243ba2c4139ea04009cf8b9c448a87ff.1777306795.git.chleroy@kernel.org>
+ <CAHk-=whC1DZojwdMB1=sJWG2=dsCdfyU8N6tDE1qx50HRZ-WJQ@mail.gmail.com> <20260427222914.1cb2dd3b@pumpkin>
+In-Reply-To: <20260427222914.1cb2dd3b@pumpkin>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 27 Apr 2026 14:39:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg0SGbRYhdZ1kvJUTv1HEvmRJyQauFtBGV_fMcZVF8UpQ@mail.gmail.com>
+X-Gm-Features: AVHnY4I-AxqvQRk42MegvhKMp_z4sSEpEzhzpgw2GyV2bV8dezSPoI0JTlwB18Y
+Message-ID: <CAHk-=wg0SGbRYhdZ1kvJUTv1HEvmRJyQauFtBGV_fMcZVF8UpQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 5/9] uaccess: Switch to copy_{to/from}_user_partial()
+ when relevant
+To: David Laight <david.laight.linux@gmail.com>
+Cc: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Yury Norov <ynorov@nvidia.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	kvm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, dmaengine@vger.kernel.org, 
+	linux-efi@vger.kernel.org, linux-fsi@lists.ozlabs.org, 
+	amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	intel-gfx@lists.freedesktop.org, linux-wpan@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-media@vger.kernel.org, 
+	linux-staging@lists.linux.dev, linux-serial@vger.kernel.org, 
+	linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org, 
+	linux-fsdevel@vger.kernel.org, ocfs2-devel@lists.linux.dev, 
+	bpf@vger.kernel.org, kasan-dev@googlegroups.com, linux-mm@kvack.org, 
+	linux-x25@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	linux-sound@vger.kernel.org, sound-open-firmware@alsa-project.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 27, 2026 at 12:58:10PM +0200, Paolo Bonzini wrote:
-> s390 does not anymore use special struct page for its shadow page tables.
-> The honor of giving a special meaning to pt_index is now m68k's, so
-> rename the fields and adjust them for the desired type.
-> 
-> Cc: linux-mm@kvack.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: David Hildenbrand (Arm) <david@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
+On Mon, 27 Apr 2026 at 14:29, David Laight <david.laight.linux@gmail.com> wrote:
+>
+> I think there is a slight difference in that the normal copy_to_user()
+> will determine the exact offset of the error by retrying with byte copies.
 
-Acked-by: Vishal Moola <vishal.moola@gmail.com>
+I have this dim memory that we decided that you can't reply on byte
+exactness anyway, because not all architectures gave that guarantee
+for the user copies.
+
+But that thing came up many years ago, I might mis-remember.
+
+            Linus
