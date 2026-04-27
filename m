@@ -1,116 +1,963 @@
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34703B0AE5
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 11:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1941B39A07C
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 11:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777290698; cv=none; b=EVmCLlIKe4kRIqPxPoRkP4P0f1MVYw09OZ6hhvgC0M7Xb8ILApvdUPgVobMj6xCTUDfbF1gZzeluhfkVsuInxBJ4q3ncIWs1PemZJsi+A+igaOvf3TZT3lYcajWeJ4wq4tmM7qQzmyMi/qs591DgGnj1QYTUcQ0nDLmeVe1dM2Y=
+	t=1777291054; cv=none; b=OY01MAHMZWkBX3Y0uFnnMahznJo5viwJ5zwUMSry1CVL7USgRtfg5J+GolNbSqq5koQyqyUjRyuxpOynprUV+/UgeSoY8KeeOtnVt7M3lDXQNlBeH4PihPd8O6NEfhDStCVQRNRfCKeVxeLYw4E1EQchod+UFWodRK9tUBzyEQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777290698; c=relaxed/simple;
-	bh=n+GYShFZltmq5kVKLHeNk06raTnAyMmBZZMAol4UafA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ghLeWp2gAbGNgV1EqdGJp/Y5B5+eGC+avWJ9/6dkIujAlNyTGMqkumqNVjGZkZK3iSZBkw09sebnx6Nvjq3iHRfgWVrubdDdl5wRk3ShRahOZR/It2ys9kbpq/cZh87kK0O3RvMLXL0YxjISNiKIwKRwKuswo+kj4Wf7xosYUaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+	s=arc-20240116; t=1777291054; c=relaxed/simple;
+	bh=RvwXl6B194wmR8ZWB1hijnQNTcrOERcLvdx6UuP8nuE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WQIq7iHTThlv/kIx7d3qyLGySPzfANKzCTZYwU6lGViPyuPBjiYQhcTDagRU5/f/ucjTsCtXUDvPNaQZqPIcxJJh3Z03aibagQJr79KnMGss14YyS70K+JdduCXWPwb2tUAFG1sT0RyEUJ/Wvr0FMBI/SSg/IUVjuwHVZwHRbGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-56739adfa1aso6893158e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 04:51:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777290695; x=1777895495;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lf4z4wGA14PfBosRZS445poJArh720oajEmNhHLf8uQ=;
-        b=bxHPmunGeOeUl5nWabpLzJn2YfbQYnTe8OaC/ZcDqC5JUE7OtozpZXcEngn/Jx+3l4
-         T3o/yK8xntbxSP8L2WfLNP5UstzkOA1PN7GD14eJo8k9kKMYclaS1o58V0ZmETDoJotY
-         rfGgppFd4XWv+FhkP8gKqQBxbzxCM+wE8I2BcTydyJ3dhzgLF93+X3vqLxaahLfUV3ec
-         3PcldlyT16VKAmabQAUCLadXMbJ+f5PLEyg5Amz6I5SEMJhlJtMluDXxqeM3onmONrfM
-         NDPyS9vZqNENWX1+s8FF4t+7dLVkYTqofSntwCCwc5bzYfHmlVZttyDXrKcNM/umksqw
-         +wSA==
-X-Gm-Message-State: AOJu0YwaKzxNJpqImq+YB1RVaN6PthG3C8yaC5hJuU17FkG/G+RRr16/
-	LsVCQ529qB5v3BtEVJErl741PTvxUFg9g/LdawgP9cyIZAHk/lFYc/2tEGe4mW3XlPY=
-X-Gm-Gg: AeBDiesvT7lHxEa3f+ClKNcSifqlzglznXyVFJgXr/YT8VsHS2ErR7KXtph17Z0heq/
-	X3WXF/nLJVB47W4vTVAXx3CK7HF5CBxZX2c6+4I+hO3gs+lPrPxRDqoRDcXFefv+L1P5ejClBEQ
-	Vx5P7zKqH7Z8eMPXt4Jdbk55dCNYOxd6zUm354sN+4biYJNkIAjcM5x9/BMvzEC8nb30GxJCJLX
-	GRYaFrSBd8XwW29jtPzhm4i537zWbDhuWz+xCszYqndR4oOqA0sRN7j0fV0vg8KVgr8zUcmPQ1x
-	sY75p6/UmlyKni+bpvOccOFeCk2o9nkn9zo+4fkLmLOdvhvk1Ts4nCZLJ44tQbKug8mojDW+Vzs
-	T1PWgfTK7pI+BnoTO9UZyxZUOlLHZ2uun+TglMZCT/gbWajeuBqMREiJDkDFJ/C+Ph+VtDn3kyZ
-	gnOnIjBuunmQmt/ERnMgSoqbxAkZfIb67My0nXBiuwYFf0wLWy0t0U/t16E1npW2aYKYKVP2I=
-X-Received: by 2002:a05:6123:5d9:10b0:56f:bb91:4861 with SMTP id 71dfb90a1353d-572278284b4mr8727827e0c.0.1777290695488;
-        Mon, 27 Apr 2026 04:51:35 -0700 (PDT)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-56fa93513c6sm18852823e0c.17.2026.04.27.04.51.34
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2026 04:51:34 -0700 (PDT)
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-612d8a59ca0so6638970137.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 04:51:34 -0700 (PDT)
-X-Received: by 2002:a05:6102:4a92:b0:607:4fe2:d3e1 with SMTP id
- ada2fe7eead31-616f54a1970mr23123014137.13.1777290694494; Mon, 27 Apr 2026
- 04:51:34 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 006186014B;
+	Mon, 27 Apr 2026 11:57:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE5CC19425;
+	Mon, 27 Apr 2026 11:57:29 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] m68k: defconfig: Update defconfigs for v7.1-rc1
+Date: Mon, 27 Apr 2026 13:57:25 +0200
+Message-ID: <d20ee047f2133570673e108d1ffb0c6400a2e240.1777290987.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260406172512.6693-1-pedratscher.stefan@gmail.com>
-In-Reply-To: <20260406172512.6693-1-pedratscher.stefan@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 27 Apr 2026 13:51:23 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU9D7i5ty5Gdj=ynuezwLJg6qH3-rV7Kp1AWVv-7Maw1Q@mail.gmail.com>
-X-Gm-Features: AVHnY4IPkjWnMM6atzuSnKH_4nOqYdi1dlOZ4afhBqY8q9Wzgfp2i7Pd7JCjxHI
-Message-ID: <CAMuHMdU9D7i5ty5Gdj=ynuezwLJg6qH3-rV7Kp1AWVv-7Maw1Q@mail.gmail.com>
-Subject: Re: [PATCH] zorro: sysfs: replace sprintf with sysfs_emit
-To: Stefan Pedratscher <pedratscher.stefan@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Stefan,
+  - Drop CONFIG_MPLS_IPTUNNEL=m (depends on LWTUNNEL, which is no longer
+    auto-enabled since since commit 309b905deee59561 ("ipv6: convert
+    CONFIG_IPV6 to built-in only and clean up Kconfigs")),
+  - Drop CONFIG_HID_ITE=n and CONFIG_HID_REDRAGON=n (disabled by default
+    since commit 3d39be2a76d1dfed ("HID: drop 'default !EXPERT' from
+    tristate symbols")),
+  - Enable modular build of the CMAC, MD5, SHA-512, and SHA-3 algorithms
+    (no longer auto-enabled since commits 4c1c07820a0e4d82 ("smb:
+    client: Remove obsolete cmac(aes) allocation"), 7aa0f56d4b48fb1a
+    ("scsi: iscsi_tcp: Remove unneeded selections of CRYPTO and
+    CRYPTO_MD5"), commit 4061bc8c03975e64 ("crypto: rng - Don't pull in
+    DRBG when CRYPTO_FIPS=n"), resp. ce260754bb435aea ("crypto:
+    jitterentropy - Use SHA-3 library")),
+  - Drop CONFIG_CRYPTO_DRBG_HASH=y and CONFIG_CRYPTO_DRBG_CTR=y (depend
+    on CRYPTO_DRBG_MENU, which is no longer auto-enabled since commit
+    4061bc8c03975e64 ("crypto: rng - Don't pull in DRBG when
+    CRYPTO_FIPS=n")),
+  - Enable modular build of all CRC functions and crypto library code
+    for KUnit tests,
+  - Enable benchmarking in the (modular) string functions KUnit test,
+  - Enable modular build of the new test module for stress/performance
+    analysis of workqueue.
 
-On Mon, 6 Apr 2026 at 19:26, Stefan Pedratscher
-<pedratscher.stefan@gmail.com> wrote:
-> Convert sysfs show functions from sprintf to sysfs_emit as recommended
-> by Documentation/filesystems/sysfs.rst. This ensures proper buffer
-> handling and avoids potential buffer overflows.
->
-> Signed-off-by: Stefan Pedratscher <pedratscher.stefan@gmail.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+To be queued in the m68k tree for v7.2.
 
-Thanks for your patch!
+Perhaps we want to:
+  1. Enable LWTUNNEL, to keep MPLS_IPTUNNEL available?
+  2. Enable CRYPTO_DRBG_MENU, to keep DRBG available?
+  3. Re-enable IPv6 as built-in?
 
-> --- a/drivers/zorro/zorro-sysfs.c
-> +++ b/drivers/zorro/zorro-sysfs.c
-> @@ -53,10 +54,10 @@ static ssize_t resource_show(struct device *dev, struct device_attribute *attr,
->  {
->         struct zorro_dev *z = to_zorro_dev(dev);
->
-> -       return sprintf(buf, "0x%08lx 0x%08lx 0x%08lx\n",
-> -                      (unsigned long)zorro_resource_start(z),
-> -                      (unsigned long)zorro_resource_end(z),
-> -                      zorro_resource_flags(z));
-> +       return sysfs_emit(buf, "0x%08lx 0x%08lx 0x%08lx\n",
-> +                       (unsigned long)zorro_resource_start(z),
-> +                       (unsigned long)zorro_resource_end(z),
-> +                       zorro_resource_flags(z));
+Thanks for your comments!
+---
+ arch/m68k/configs/amiga_defconfig    | 13 ++++++++-----
+ arch/m68k/configs/apollo_defconfig   | 13 ++++++++-----
+ arch/m68k/configs/atari_defconfig    | 13 ++++++++-----
+ arch/m68k/configs/bvme6000_defconfig | 13 ++++++++-----
+ arch/m68k/configs/hp300_defconfig    | 13 ++++++++-----
+ arch/m68k/configs/mac_defconfig      | 13 ++++++++-----
+ arch/m68k/configs/multi_defconfig    | 13 ++++++++-----
+ arch/m68k/configs/mvme147_defconfig  | 13 ++++++++-----
+ arch/m68k/configs/mvme16x_defconfig  | 13 ++++++++-----
+ arch/m68k/configs/q40_defconfig      | 13 ++++++++-----
+ arch/m68k/configs/sun3_defconfig     | 13 ++++++++-----
+ arch/m68k/configs/sun3x_defconfig    | 13 ++++++++-----
+ 12 files changed, 96 insertions(+), 60 deletions(-)
 
-Wrong indentation.
-
->  }
->  static DEVICE_ATTR_RO(resource);
->
-
-The rest LGTM, so
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v7.2, with the above fixed.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
+index a50a3891f5ba0f8a..0d15418b7f3d9553 100644
+--- a/arch/m68k/configs/amiga_defconfig
++++ b/arch/m68k/configs/amiga_defconfig
+@@ -244,7 +244,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -395,8 +394,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -540,9 +537,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -551,14 +552,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -575,6 +575,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -583,11 +584,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
+index 161586d611ab0f4a..dacce863e37f888b 100644
+--- a/arch/m68k/configs/apollo_defconfig
++++ b/arch/m68k/configs/apollo_defconfig
+@@ -240,7 +240,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -350,8 +349,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -494,9 +491,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -505,14 +506,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -529,6 +529,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -537,11 +538,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
+index 07532763a96db334..f136c7efad783ad9 100644
+--- a/arch/m68k/configs/atari_defconfig
++++ b/arch/m68k/configs/atari_defconfig
+@@ -247,7 +247,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -374,8 +373,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ CONFIG_HID_ACCUTOUCH=m
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ CONFIG_USB_HIDDEV=y
+ CONFIG_USB=m
+ CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+@@ -527,9 +524,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -538,14 +539,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -562,6 +562,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -570,11 +571,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
+index d4f3f94b61ff34d4..f1d0acf2afba07cd 100644
+--- a/arch/m68k/configs/bvme6000_defconfig
++++ b/arch/m68k/configs/bvme6000_defconfig
+@@ -237,7 +237,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -342,8 +341,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -486,9 +483,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -497,14 +498,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -521,6 +521,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -529,11 +530,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
+index 58288f83349d25d1..d808468f803baf0d 100644
+--- a/arch/m68k/configs/hp300_defconfig
++++ b/arch/m68k/configs/hp300_defconfig
+@@ -239,7 +239,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -352,8 +351,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -496,9 +493,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -507,14 +508,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -531,6 +531,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -539,11 +540,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
+index abb369fd1f556302..e594b644c0a6536e 100644
+--- a/arch/m68k/configs/mac_defconfig
++++ b/arch/m68k/configs/mac_defconfig
+@@ -238,7 +238,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -371,8 +370,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -515,9 +512,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -526,14 +527,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -550,6 +550,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -558,11 +559,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
+index 52888fbbdd5ddf11..446d9c0c0b4f32ef 100644
+--- a/arch/m68k/configs/multi_defconfig
++++ b/arch/m68k/configs/multi_defconfig
+@@ -258,7 +258,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -456,8 +455,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -603,9 +600,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -614,14 +615,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -638,6 +638,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -646,11 +647,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
+index 176540bd5074119b..a17e771b47601f2f 100644
+--- a/arch/m68k/configs/mvme147_defconfig
++++ b/arch/m68k/configs/mvme147_defconfig
+@@ -236,7 +236,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -341,8 +340,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -486,9 +483,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -497,14 +498,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -521,6 +521,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -529,11 +530,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
+index 8b2e5cf4d2f21d84..34e48a518cccd2e1 100644
+--- a/arch/m68k/configs/mvme16x_defconfig
++++ b/arch/m68k/configs/mvme16x_defconfig
+@@ -237,7 +237,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -342,8 +341,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -487,9 +484,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -498,14 +499,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -522,6 +522,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -530,11 +531,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
+index d48f3cf5285bc0cc..8294c1533bda7dda 100644
+--- a/arch/m68k/configs/q40_defconfig
++++ b/arch/m68k/configs/q40_defconfig
+@@ -238,7 +238,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -361,8 +360,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -505,9 +502,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -516,14 +517,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -540,6 +540,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -548,11 +549,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
+index 0b96428f25d4029c..53fa21deb7bd49fe 100644
+--- a/arch/m68k/configs/sun3_defconfig
++++ b/arch/m68k/configs/sun3_defconfig
+@@ -233,7 +233,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -340,8 +339,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -484,9 +481,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -495,14 +496,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -518,6 +518,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -526,11 +527,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
+diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
+index 6140e18244a16973..6c58d82276e88912 100644
+--- a/arch/m68k/configs/sun3x_defconfig
++++ b/arch/m68k/configs/sun3x_defconfig
+@@ -234,7 +234,6 @@ CONFIG_NETLINK_DIAG=m
+ CONFIG_MPLS=y
+ CONFIG_NET_MPLS_GSO=m
+ CONFIG_MPLS_ROUTING=m
+-CONFIG_MPLS_IPTUNNEL=m
+ CONFIG_NET_NSH=m
+ CONFIG_AF_KCM=m
+ # CONFIG_WIRELESS is not set
+@@ -340,8 +339,6 @@ CONFIG_HID=m
+ CONFIG_HIDRAW=y
+ CONFIG_UHID=m
+ # CONFIG_HID_GENERIC is not set
+-# CONFIG_HID_ITE is not set
+-# CONFIG_HID_REDRAGON is not set
+ # CONFIG_USB_SUPPORT is not set
+ CONFIG_RTC_CLASS=y
+ # CONFIG_RTC_NVMEM is not set
+@@ -484,9 +481,13 @@ CONFIG_CRYPTO_LRW=m
+ CONFIG_CRYPTO_PCBC=m
+ CONFIG_CRYPTO_XTS=m
+ CONFIG_CRYPTO_AEGIS128=m
++CONFIG_CRYPTO_CMAC=m
+ CONFIG_CRYPTO_MD4=m
++CONFIG_CRYPTO_MD5=m
+ CONFIG_CRYPTO_RMD160=m
+ CONFIG_CRYPTO_SHA1=m
++CONFIG_CRYPTO_SHA512=m
++CONFIG_CRYPTO_SHA3=m
+ CONFIG_CRYPTO_SM3=m
+ CONFIG_CRYPTO_WP512=m
+ CONFIG_CRYPTO_XCBC=m
+@@ -495,14 +496,13 @@ CONFIG_CRYPTO_842=m
+ CONFIG_CRYPTO_LZ4=m
+ CONFIG_CRYPTO_LZ4HC=m
+ CONFIG_CRYPTO_ZSTD=m
+-CONFIG_CRYPTO_DRBG_HASH=y
+-CONFIG_CRYPTO_DRBG_CTR=y
+ CONFIG_CRYPTO_USER_API_HASH=m
+ CONFIG_CRYPTO_USER_API_SKCIPHER=m
+ CONFIG_CRYPTO_USER_API_RNG=m
+ CONFIG_CRYPTO_USER_API_AEAD=m
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_PRIME_NUMBERS=m
++CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_CRC_BENCHMARK=y
+ CONFIG_XZ_DEC_TEST=m
+ # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+@@ -519,6 +519,7 @@ CONFIG_REED_SOLOMON_TEST=m
+ CONFIG_ATOMIC64_SELFTEST=m
+ CONFIG_ASYNC_RAID6_TEST=m
+ CONFIG_TEST_HEXDUMP=m
++CONFIG_STRING_KUNIT_BENCH=y
+ CONFIG_TEST_KSTRTOX=m
+ CONFIG_TEST_BITMAP=m
+ CONFIG_TEST_XARRAY=m
+@@ -527,11 +528,13 @@ CONFIG_TEST_RHASHTABLE=m
+ CONFIG_TEST_IDA=m
+ CONFIG_TEST_BITOPS=m
+ CONFIG_TEST_VMALLOC=m
++CONFIG_TEST_WORKQUEUE=m
+ CONFIG_TEST_BPF=m
+ CONFIG_FIND_BIT_BENCHMARK=m
+ CONFIG_TEST_FIRMWARE=m
+ CONFIG_TEST_SYSCTL=m
+ CONFIG_LINEAR_RANGES_TEST=m
++CONFIG_CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT=m
+ CONFIG_TEST_UDELAY=m
+ CONFIG_TEST_STATIC_KEYS=m
+ CONFIG_TEST_KMOD=m
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.43.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
