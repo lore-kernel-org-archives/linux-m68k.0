@@ -1,159 +1,116 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA85639A052
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 10:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CBDA158DCF
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 11:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777287500; cv=none; b=VIlxzKH2sQs6I0zbJ0p+AoeYO4O02TMr8jZq3zxfA6lSNOX5kObLrsNTZ8r64JM9AOD3vCE9pYJ/Zl96kWbfSAfDEEh80YjKd201Ne/ZoYC7DD15PuIbSgbRR9npuV7PV2gFbEnBzsJ/ZQxj6popv3E93r7CnyfV1gnWzhYEhFg=
+	t=1777289966; cv=none; b=B8RgdZeBmlaSAEOD+d8zb3WsFXFxRwNhIU0uxunES6eM4umyZRvpMh/1dYouTg7+891UdBJkGofB89ij8tYKPcdsVWibO6XhSZ8YRx1CTtFkTuPxHrAcrrMMYRgh9A+86Drs+y/zhxz+xEu7lAQIhH1/vmERPRrZRu+WrNKgLro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777287500; c=relaxed/simple;
-	bh=dyPAr09lWlR/RQ4fkkDMb+zOF+584aQzExR/1zdUeaY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:content-type; b=QGuxbPwGCqu3v1yMDPMogmN1BFEiNnjKsdfapBI3bqyfgpQaEau2kQmTWdHtT8IGKnUbplVJrCLiMfcMccTfNDW6P5HvLQbbFNYc0X9UnUr3V0kcuBDUiTINM4QuT8Jq6rzr+NxOf9BckTqIi0IUAvrNfvudrjIZ7Q5TTBlnAxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=epul+09A; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1777289966; c=relaxed/simple;
+	bh=5p/+BJw364LpBg2TW5B7Hb/TLyJRCIFAcAv/CoEAiC4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MyNnr6MawsG33xedSonks3wnAuMecTs661RR6k2T9OpU/7ElCX4Ohq1nZV70UftKq3YXWDV6QfXeRHFqe08Rs8ApekS7126Hrmhrt/S+9C/QQeWPKy7s1+ePpoQKaaCkGXj8496KF0GbNeH2LHZu2fjIq9n3NduhqWqUvcKiSgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKo0bjg1; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="epul+09A"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1777287497;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=wclsbCz45VsM77RlQTKKMaoJPnWAhWJRZZhkjEMod8Q=;
-	b=epul+09A3xs1eIlbUsDc6gqzbnCq411+TPKrycRcd4l70QRbkTz7lFuZYz5H7VQ3IN688u
-	UwO4weV5Pl5nNTwNPTSJ+YSLD0zBEJW3kSv8AUiBwnzhfZN10I2/aBHUFt8laru+QyhxXh
-	m2rtc7XEWe8VfV4KHwqNyFzamxejj70=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-0Boxj8COMueXVLucSytcRA-1; Mon, 27 Apr 2026 06:58:16 -0400
-X-MC-Unique: 0Boxj8COMueXVLucSytcRA-1
-X-Mimecast-MFC-AGG-ID: 0Boxj8COMueXVLucSytcRA_1777287496
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-50e136aff17so184330241cf.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 03:58:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777287496; x=1777892296;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wclsbCz45VsM77RlQTKKMaoJPnWAhWJRZZhkjEMod8Q=;
-        b=Y1aBtuNDew9BgWR8zOXCgKr6qksjKMaVIEJE2vPYbPYEFMEnatF8xQlBJDVClya0Lb
-         3aMVuxUTFLitVzhWORw0t4X0GI0apjIabIiWeF5m4Gi2aBXkftygrTb/cK56WSXv1pLo
-         ypXH4B9KChzdlakzPLPfQNR0K9oRnXW0SPX0e0IMcQeAPXmiolHRKKpDqoavMr1tMLAw
-         Q+w4QisDlLoSfkwH8gV2BWEhb4fDxosP9xclnU3etn9NKDifKD19HTAZWbQYcHWkKHlK
-         R+8fDFMFwCDPEz/6Tm2Ir+34Lz3we9VoXQf5Llw9yqnQAh92R5gtVNcHyqAZU2u7hVBu
-         IoTg==
-X-Forwarded-Encrypted: i=1; AFNElJ+pbgpdgMX4+86UjKBQ1Cg1qoutGRkznLDQXt1w5KRT2uRxmT6lmaSUF+o3R+rd0YZYDantdVxEx0Q9@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Ywr6eN0wqPRjUsDzJFx4ZxKaTM+PVUa7DYuOYxpeqZBRXU4vpHB
-	GND0huP77reNPr3ss0lWlp71jlg63JkCipMNWYVc6P151XAmBw83T8iLytqqRo2kzvjmmCT4Cbb
-	nZ8SNE0Krqw1e5llixbTULKqj0bTZGqWP17JqdKfwOK0pT0jZzNXAxqIebqkeAqpM1TYLQQ==
-X-Gm-Gg: AeBDiet4EgrNaWMqA5cDbHGHgQsZq7n6UsipfhbSN0Mey7g2IRPlTF0fL4aoZax/7gc
-	01taZLGW+fF6CZ7uZ9nS2ubGejDyvJ3dC0zck4xOutdXbw6BbZL+vTn/IyoF0eyVskD9mvQ25LM
-	lG4Cd7vh+xNp3KEiooZRxbfRE68ELG1wG1DAYS3PyCwvBJ5PkbfEPzdsAMbmS6MIdor9a18P5N9
-	fZKBpmLO3Xf7SUeSQ9xMK2W9JRqZmd6yBVoaTlGe9uLmL6y0I9FhboylZijV/aHxlaRGM+wYkz9
-	m7v/bCN6+0LSuV1k2d+Syzc4c+DhzB80wnYJ+PZMwayU+90+8+jpsCBLBvYf23I8uPO4S+KvPdu
-	rEUln9xDJTJvcoBYHEN1OCbOQuUMryj+3CoVZNjysXrK9auK/k2/d1VbE/NRyvHWHXIcwR7kFS5
-	15EdL5G61CDvsfH0kpZncWNzigZXQ50KfkXGM=
-X-Received: by 2002:ac8:7d56:0:b0:50e:ca38:e219 with SMTP id d75a77b69052e-50eca390557mr474867711cf.45.1777287495898;
-        Mon, 27 Apr 2026 03:58:15 -0700 (PDT)
-X-Received: by 2002:ac8:7d56:0:b0:50e:ca38:e219 with SMTP id d75a77b69052e-50eca390557mr474867401cf.45.1777287495453;
-        Mon, 27 Apr 2026 03:58:15 -0700 (PDT)
-Received: from [192.168.10.48] ([151.49.85.67])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50e39495192sm263471871cf.27.2026.04.27.03.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2026 03:58:14 -0700 (PDT)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	linux-m68k@lists.linux-m68k.org,
-	"David Hildenbrand (Arm)" <david@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] mm_types: remove references to s390 gmap
-Date: Mon, 27 Apr 2026 12:58:10 +0200
-Message-ID: <20260427105810.23761-1-pbonzini@redhat.com>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKo0bjg1"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 1941F40DEE;
+	Mon, 27 Apr 2026 11:39:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23A3BC19425;
+	Mon, 27 Apr 2026 11:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777289964;
+	bh=5p/+BJw364LpBg2TW5B7Hb/TLyJRCIFAcAv/CoEAiC4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MKo0bjg1kFuTImzP+X9JZ7jTXfrIDV8HBEDsocf4wcyVyL/T2swotqNw0+zmOOOm+
+	 fh0QUwcusXnwMZZqxSDTZohj/qSw5QKEDGp3SwlOCyagvHishSDJ+/WB1zm83l1aap
+	 iNSaUQJALajTDYeULElowTiTtaeVCrjL+eLHyklWy9REKT2hGyys1jFclYkR0Vx61v
+	 xVSCmGX7A0rZwU+yTMyHKGoNaDC/sTVxFjogaGcKMAtAzFX+mXEUpo5ykrCl+3tQQk
+	 gHYZOzmUWwOt9I52UPiCAvR04DW3gTGgl18XvXUvNe8clR469jqUe5iUlmNLrKGa6U
+	 KPWRR7q2HJWCA==
+Message-ID: <f4fd0c56-6541-4cc5-9b7e-d4fdc5eb4f5b@kernel.org>
+Date: Mon, 27 Apr 2026 13:39:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: cko70RiaYzOq0ZvK8ak1wuqziP3kscaqQz3rPGF7yXg_1777287496
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-content-type: text/plain; charset="US-ASCII"; x-default=true
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm_types: remove references to s390 gmap
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20260427105810.23761-1-pbonzini@redhat.com>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260427105810.23761-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-s390 does not anymore use special struct page for its shadow page tables.
-The honor of giving a special meaning to pt_index is now m68k's, so
-rename the fields and adjust them for the desired type.
+On 4/27/26 12:58, Paolo Bonzini wrote:
+> s390 does not anymore use special struct page for its shadow page tables.
+> The honor of giving a special meaning to pt_index is now m68k's, so
+> rename the fields and adjust them for the desired type.
+> 
+> Cc: linux-mm@kvack.org
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: David Hildenbrand (Arm) <david@kernel.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
 
-Cc: linux-mm@kvack.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: David Hildenbrand (Arm) <david@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
-	Compile-tested only.
+Acked-by: David Hildenbrand (Arm) <david@kernel.org>
 
- arch/m68k/mm/motorola.c  |  2 +-
- include/linux/mm_types.h | 11 +++++------
- 2 files changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index b30aa69a73a6..67e8a2cf4c41 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -105,7 +105,7 @@ static struct list_head ptable_list[3] = {
- 
- #define PD_PTABLE(ptdesc) ((ptable_desc *)&(virt_to_ptdesc((void *)(ptdesc))->pt_list))
- #define PD_PTDESC(ptable) (list_entry(ptable, struct ptdesc, pt_list))
--#define PD_MARKBITS(dp) (*(unsigned int *)&PD_PTDESC(dp)->pt_index)
-+#define PD_MARKBITS(dp)   (PD_PTDESC(dp)->pt_markbits)
- 
- static const int ptable_shift[3] = {
- 	7+2, /* PGD */
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index a308e2c23b82..9e4dbcddaf33 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -550,13 +550,12 @@ FOLIO_MATCH(compound_info, _head_3);
-  * struct ptdesc -    Memory descriptor for page tables.
-  * @pt_flags: enum pt_flags plus zone/node/section.
-  * @pt_rcu_head:      For freeing page table pages.
-- * @pt_list:          List of used page tables. Used for s390 gmap shadow pages
-- *                    (which are not linked into the user page tables) and x86
-- *                    pgds.
-+ * @pt_list:          List of used page tables. Used by m68k pointer tables
-+ *                    and x86 pgds.
-  * @_pt_pad_1:        Padding that aliases with page's compound head.
-  * @pmd_huge_pte:     Protected by ptdesc->ptl, used for THPs.
-  * @__page_mapping:   Aliases with page->mapping. Unused for page tables.
-- * @pt_index:         Used for s390 gmap.
-+ * @pt_markbits:      Used for m68k pointer tables.
-  * @pt_mm:            Used for x86 pgds.
-  * @pt_frag_refcount: For fragmented page table tracking. Powerpc only.
-  * @pt_share_count:   Used for HugeTLB PMD page table share count.
-@@ -583,7 +582,7 @@ struct ptdesc {
- 	unsigned long __page_mapping;
- 
- 	union {
--		pgoff_t pt_index;
-+		unsigned int pt_markbits;
- 		struct mm_struct *pt_mm;
- 		atomic_t pt_frag_refcount;
- #ifdef CONFIG_HUGETLB_PMD_PAGE_TABLE_SHARING
-@@ -612,7 +611,7 @@ TABLE_MATCH(flags, pt_flags);
- TABLE_MATCH(compound_info, pt_list);
- TABLE_MATCH(compound_info, _pt_pad_1);
- TABLE_MATCH(mapping, __page_mapping);
--TABLE_MATCH(__folio_index, pt_index);
-+TABLE_MATCH(__folio_index, pt_markbits);
- TABLE_MATCH(rcu_head, pt_rcu_head);
- TABLE_MATCH(page_type, __page_type);
- TABLE_MATCH(_refcount, __page_refcount);
 -- 
-2.53.0
+Cheers,
 
+David
