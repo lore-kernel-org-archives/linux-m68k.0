@@ -1,146 +1,159 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3AE4502F
-	for <linux-m68k@vger.kernel.org>; Mon, 27 Apr 2026 00:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA85639A052
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 10:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777251526; cv=none; b=FLT7kXIe3vHVHSm/wX43r8CTyN1DW/m4Dkd7P1ydLmwHR2z7FrHjLnUle2iqEJ4HGkcToj/4+Rqd/VgXbpElh38wwzzRH6k22yBlHL9ZIfsSNTEDfQlquG/DhRNsucFBu4/nBWeREiDJy8LNy8f9D/8aS0EDQmpKqWctUfmnIXs=
+	t=1777287500; cv=none; b=VIlxzKH2sQs6I0zbJ0p+AoeYO4O02TMr8jZq3zxfA6lSNOX5kObLrsNTZ8r64JM9AOD3vCE9pYJ/Zl96kWbfSAfDEEh80YjKd201Ne/ZoYC7DD15PuIbSgbRR9npuV7PV2gFbEnBzsJ/ZQxj6popv3E93r7CnyfV1gnWzhYEhFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777251526; c=relaxed/simple;
-	bh=SxFZCoUvQSy7fbfpyi7sxeASqcaxk6vAf4lqzaD3/RI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KM0OdLmrau19hwalSe1KlW4Q6AAavueAJPfvas2X0p8wwJWNe44EBMy9VTD2k5wby+zyFtODO4SnrzwtIFM93JcDlIC0Op29fW102VFqPQZUJr5kRw768bHwAy4O6X/lSU+M/hU6IYoDYbwxb5thtEsG77CRwEETJZf9e3uJw2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E2DC2BCAF;
-	Mon, 27 Apr 2026 00:58:45 +0000 (UTC)
-Message-ID: <dbaa7733-aa87-49bd-8098-6b6336f3b59b@linux-m68k.org>
-Date: Mon, 27 Apr 2026 10:58:42 +1000
+	s=arc-20240116; t=1777287500; c=relaxed/simple;
+	bh=dyPAr09lWlR/RQ4fkkDMb+zOF+584aQzExR/1zdUeaY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:content-type; b=QGuxbPwGCqu3v1yMDPMogmN1BFEiNnjKsdfapBI3bqyfgpQaEau2kQmTWdHtT8IGKnUbplVJrCLiMfcMccTfNDW6P5HvLQbbFNYc0X9UnUr3V0kcuBDUiTINM4QuT8Jq6rzr+NxOf9BckTqIi0IUAvrNfvudrjIZ7Q5TTBlnAxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=epul+09A; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="epul+09A"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1777287497;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wclsbCz45VsM77RlQTKKMaoJPnWAhWJRZZhkjEMod8Q=;
+	b=epul+09A3xs1eIlbUsDc6gqzbnCq411+TPKrycRcd4l70QRbkTz7lFuZYz5H7VQ3IN688u
+	UwO4weV5Pl5nNTwNPTSJ+YSLD0zBEJW3kSv8AUiBwnzhfZN10I2/aBHUFt8laru+QyhxXh
+	m2rtc7XEWe8VfV4KHwqNyFzamxejj70=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-653-0Boxj8COMueXVLucSytcRA-1; Mon, 27 Apr 2026 06:58:16 -0400
+X-MC-Unique: 0Boxj8COMueXVLucSytcRA-1
+X-Mimecast-MFC-AGG-ID: 0Boxj8COMueXVLucSytcRA_1777287496
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-50e136aff17so184330241cf.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 03:58:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777287496; x=1777892296;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wclsbCz45VsM77RlQTKKMaoJPnWAhWJRZZhkjEMod8Q=;
+        b=Y1aBtuNDew9BgWR8zOXCgKr6qksjKMaVIEJE2vPYbPYEFMEnatF8xQlBJDVClya0Lb
+         3aMVuxUTFLitVzhWORw0t4X0GI0apjIabIiWeF5m4Gi2aBXkftygrTb/cK56WSXv1pLo
+         ypXH4B9KChzdlakzPLPfQNR0K9oRnXW0SPX0e0IMcQeAPXmiolHRKKpDqoavMr1tMLAw
+         Q+w4QisDlLoSfkwH8gV2BWEhb4fDxosP9xclnU3etn9NKDifKD19HTAZWbQYcHWkKHlK
+         R+8fDFMFwCDPEz/6Tm2Ir+34Lz3we9VoXQf5Llw9yqnQAh92R5gtVNcHyqAZU2u7hVBu
+         IoTg==
+X-Forwarded-Encrypted: i=1; AFNElJ+pbgpdgMX4+86UjKBQ1Cg1qoutGRkznLDQXt1w5KRT2uRxmT6lmaSUF+o3R+rd0YZYDantdVxEx0Q9@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Ywr6eN0wqPRjUsDzJFx4ZxKaTM+PVUa7DYuOYxpeqZBRXU4vpHB
+	GND0huP77reNPr3ss0lWlp71jlg63JkCipMNWYVc6P151XAmBw83T8iLytqqRo2kzvjmmCT4Cbb
+	nZ8SNE0Krqw1e5llixbTULKqj0bTZGqWP17JqdKfwOK0pT0jZzNXAxqIebqkeAqpM1TYLQQ==
+X-Gm-Gg: AeBDiet4EgrNaWMqA5cDbHGHgQsZq7n6UsipfhbSN0Mey7g2IRPlTF0fL4aoZax/7gc
+	01taZLGW+fF6CZ7uZ9nS2ubGejDyvJ3dC0zck4xOutdXbw6BbZL+vTn/IyoF0eyVskD9mvQ25LM
+	lG4Cd7vh+xNp3KEiooZRxbfRE68ELG1wG1DAYS3PyCwvBJ5PkbfEPzdsAMbmS6MIdor9a18P5N9
+	fZKBpmLO3Xf7SUeSQ9xMK2W9JRqZmd6yBVoaTlGe9uLmL6y0I9FhboylZijV/aHxlaRGM+wYkz9
+	m7v/bCN6+0LSuV1k2d+Syzc4c+DhzB80wnYJ+PZMwayU+90+8+jpsCBLBvYf23I8uPO4S+KvPdu
+	rEUln9xDJTJvcoBYHEN1OCbOQuUMryj+3CoVZNjysXrK9auK/k2/d1VbE/NRyvHWHXIcwR7kFS5
+	15EdL5G61CDvsfH0kpZncWNzigZXQ50KfkXGM=
+X-Received: by 2002:ac8:7d56:0:b0:50e:ca38:e219 with SMTP id d75a77b69052e-50eca390557mr474867711cf.45.1777287495898;
+        Mon, 27 Apr 2026 03:58:15 -0700 (PDT)
+X-Received: by 2002:ac8:7d56:0:b0:50e:ca38:e219 with SMTP id d75a77b69052e-50eca390557mr474867401cf.45.1777287495453;
+        Mon, 27 Apr 2026 03:58:15 -0700 (PDT)
+Received: from [192.168.10.48] ([151.49.85.67])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50e39495192sm263471871cf.27.2026.04.27.03.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2026 03:58:14 -0700 (PDT)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	linux-m68k@lists.linux-m68k.org,
+	"David Hildenbrand (Arm)" <david@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] mm_types: remove references to s390 gmap
+Date: Mon, 27 Apr 2026 12:58:10 +0200
+Message-ID: <20260427105810.23761-1-pbonzini@redhat.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] config: stmark2: defconfig updates
-To: Angelo Dureghello <angelo@kernel-space.org>
-Cc: geert@linux-m68k.org, linux-m68k@vger.kernel.org
-References: <20260415205042.20930-1-angelo@kernel-space.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260415205042.20930-1-angelo@kernel-space.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: cko70RiaYzOq0ZvK8ak1wuqziP3kscaqQz3rPGF7yXg_1777287496
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+content-type: text/plain; charset="US-ASCII"; x-default=true
 
-Hi Angelo,
+s390 does not anymore use special struct page for its shadow page tables.
+The honor of giving a special meaning to pt_index is now m68k's, so
+rename the fields and adjust them for the desired type.
 
-Both patches applied to m68knommu git tree, for-next branch.
+Cc: linux-mm@kvack.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: David Hildenbrand (Arm) <david@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+	Compile-tested only.
 
-Thanks
-Greg
+ arch/m68k/mm/motorola.c  |  2 +-
+ include/linux/mm_types.h | 11 +++++------
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-
-On 16/4/26 06:50, Angelo Dureghello wrote:
-> Various updates, mainly to reduce kernel size.
-> 
-> Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
-> ---
->   arch/m68k/configs/stmark2_defconfig | 33 +++++++++++++++++------------
->   1 file changed, 20 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
-> index 515d9b208b10..b3fb95f73a95 100644
-> --- a/arch/m68k/configs/stmark2_defconfig
-> +++ b/arch/m68k/configs/stmark2_defconfig
-> @@ -2,16 +2,20 @@ CONFIG_LOCALVERSION="stmark2-001"
->   CONFIG_DEFAULT_HOSTNAME="stmark2"
->   CONFIG_SYSVIPC=y
->   CONFIG_LOG_BUF_SHIFT=14
-> -CONFIG_NAMESPACES=y
->   CONFIG_BLK_DEV_INITRD=y
-> +# CONFIG_RD_BZIP2 is not set
-> +# CONFIG_RD_LZMA is not set
-> +# CONFIG_RD_XZ is not set
-> +# CONFIG_RD_LZO is not set
-> +# CONFIG_RD_LZ4 is not set
-> +# CONFIG_RD_ZSTD is not set
->   CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-> +CONFIG_EXPERT=y
->   # CONFIG_FHANDLE is not set
->   # CONFIG_AIO is not set
->   # CONFIG_ADVISE_SYSCALLS is not set
->   # CONFIG_MEMBARRIER is not set
-> -CONFIG_EXPERT=y
-> -# CONFIG_VM_EVENT_COUNTERS is not set
-> -# CONFIG_COMPAT_BRK is not set
-> +# CONFIG_KALLSYMS is not set
->   CONFIG_COLDFIRE=y
->   CONFIG_M5441x=y
->   CONFIG_CLOCK_FREQ=240000000
-> @@ -21,10 +25,12 @@ CONFIG_RAMBASE=0x40000000
->   CONFIG_RAMSIZE=0x8000000
->   CONFIG_VECTORBASE=0x40000000
->   CONFIG_KERNELBASE=0x40001000
-> -# CONFIG_BLK_DEV_BSG is not set
->   CONFIG_BINFMT_FLAT=y
->   CONFIG_BINFMT_ZFLAT=y
->   CONFIG_BINFMT_MISC=y
-> +# CONFIG_COREDUMP is not set
-> +# CONFIG_COMPAT_BRK is not set
-> +# CONFIG_VM_EVENT_COUNTERS is not set
->   CONFIG_DEVTMPFS=y
->   CONFIG_DEVTMPFS_MOUNT=y
->   # CONFIG_ALLOW_DEV_COREDUMP is not set
-> @@ -47,11 +53,11 @@ CONFIG_MTD_SPI_NOR=y
->   # CONFIG_INPUT_MOUSE is not set
->   CONFIG_SERIO_LIBPS2=y
->   # CONFIG_UNIX98_PTYS is not set
-> -# CONFIG_DEVMEM is not set
->   CONFIG_SERIAL_MCF=y
->   CONFIG_SERIAL_MCF_BAUDRATE=115200
->   CONFIG_SERIAL_MCF_CONSOLE=y
->   # CONFIG_HW_RANDOM is not set
-> +# CONFIG_DEVMEM is not set
->   CONFIG_SPI=y
->   CONFIG_SPI_DEBUG=y
->   CONFIG_SPI_FSL_DSPI=y
-> @@ -59,7 +65,7 @@ CONFIG_DEBUG_GPIO=y
->   CONFIG_GPIO_SYSFS=y
->   CONFIG_GPIO_GENERIC_PLATFORM=y
->   # CONFIG_HWMON is not set
-> -# CONFIG_HID is not set
-> +# CONFIG_HID_SUPPORT is not set
->   # CONFIG_USB_SUPPORT is not set
->   CONFIG_MMC=y
->   CONFIG_MMC_DEBUG=y
-> @@ -68,6 +74,8 @@ CONFIG_MMC_SDHCI_PLTFM=y
->   CONFIG_MMC_SDHCI_ESDHC_MCF=y
->   CONFIG_DMADEVICES=y
->   CONFIG_MCF_EDMA=y
-> +# CONFIG_VIRTIO_MENU is not set
-> +# CONFIG_VHOST_MENU is not set
->   CONFIG_EXT2_FS=y
->   CONFIG_EXT2_FS_XATTR=y
->   CONFIG_EXT2_FS_POSIX_ACL=y
-> @@ -79,14 +87,13 @@ CONFIG_EXT4_FS_SECURITY=y
->   # CONFIG_DNOTIFY is not set
->   # CONFIG_INOTIFY_USER is not set
->   CONFIG_OVERLAY_FS=y
-> -CONFIG_FSCACHE=y
->   # CONFIG_PROC_SYSCTL is not set
-> -CONFIG_CRAMFS=y
->   CONFIG_SQUASHFS=y
-> -CONFIG_ROMFS_FS=y
-> -# CONFIG_CRYPTO_HW is not set
-> +CONFIG_XZ_DEC=y
->   CONFIG_PRINTK_TIME=y
-> -# CONFIG_DEBUG_BUGVERBOSE is not set
-> +CONFIG_DYNAMIC_DEBUG_CORE=y
-> +# CONFIG_DEBUG_MISC is not set
->   # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
-> -CONFIG_SLUB_DEBUG_ON=y
-> +# CONFIG_SLUB_DEBUG is not set
->   CONFIG_PANIC_ON_OOPS=y
-> +# CONFIG_RUNTIME_TESTING_MENU is not set
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index b30aa69a73a6..67e8a2cf4c41 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -105,7 +105,7 @@ static struct list_head ptable_list[3] = {
+ 
+ #define PD_PTABLE(ptdesc) ((ptable_desc *)&(virt_to_ptdesc((void *)(ptdesc))->pt_list))
+ #define PD_PTDESC(ptable) (list_entry(ptable, struct ptdesc, pt_list))
+-#define PD_MARKBITS(dp) (*(unsigned int *)&PD_PTDESC(dp)->pt_index)
++#define PD_MARKBITS(dp)   (PD_PTDESC(dp)->pt_markbits)
+ 
+ static const int ptable_shift[3] = {
+ 	7+2, /* PGD */
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index a308e2c23b82..9e4dbcddaf33 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -550,13 +550,12 @@ FOLIO_MATCH(compound_info, _head_3);
+  * struct ptdesc -    Memory descriptor for page tables.
+  * @pt_flags: enum pt_flags plus zone/node/section.
+  * @pt_rcu_head:      For freeing page table pages.
+- * @pt_list:          List of used page tables. Used for s390 gmap shadow pages
+- *                    (which are not linked into the user page tables) and x86
+- *                    pgds.
++ * @pt_list:          List of used page tables. Used by m68k pointer tables
++ *                    and x86 pgds.
+  * @_pt_pad_1:        Padding that aliases with page's compound head.
+  * @pmd_huge_pte:     Protected by ptdesc->ptl, used for THPs.
+  * @__page_mapping:   Aliases with page->mapping. Unused for page tables.
+- * @pt_index:         Used for s390 gmap.
++ * @pt_markbits:      Used for m68k pointer tables.
+  * @pt_mm:            Used for x86 pgds.
+  * @pt_frag_refcount: For fragmented page table tracking. Powerpc only.
+  * @pt_share_count:   Used for HugeTLB PMD page table share count.
+@@ -583,7 +582,7 @@ struct ptdesc {
+ 	unsigned long __page_mapping;
+ 
+ 	union {
+-		pgoff_t pt_index;
++		unsigned int pt_markbits;
+ 		struct mm_struct *pt_mm;
+ 		atomic_t pt_frag_refcount;
+ #ifdef CONFIG_HUGETLB_PMD_PAGE_TABLE_SHARING
+@@ -612,7 +611,7 @@ TABLE_MATCH(flags, pt_flags);
+ TABLE_MATCH(compound_info, pt_list);
+ TABLE_MATCH(compound_info, _pt_pad_1);
+ TABLE_MATCH(mapping, __page_mapping);
+-TABLE_MATCH(__folio_index, pt_index);
++TABLE_MATCH(__folio_index, pt_markbits);
+ TABLE_MATCH(rcu_head, pt_rcu_head);
+ TABLE_MATCH(page_type, __page_type);
+ TABLE_MATCH(_refcount, __page_refcount);
+-- 
+2.53.0
 
