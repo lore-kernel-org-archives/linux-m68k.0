@@ -1,98 +1,112 @@
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8512128B4E2
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Apr 2026 06:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE29D3CBE91
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Apr 2026 07:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777359529; cv=none; b=XZO1QNPBwT/jk0geCejfFtRrwhzubMtfntbZ2QL5mjELf4fwJ7HtnBmxvsvz7V1wIeGvbsOjsXD0GmVG4Lk2KRJknxcRkR+y6XLi+pYIPJFI/Sh4kSkjU0s8Afn8bQXJdOJUkLUR1BCzobeGN8nIYtNQs92AiyIj+S3uk1Gc8wI=
+	t=1777361084; cv=none; b=uo5wtwluavItLBgCK4701rPOFN0dsJWJ59R+eUBA/Zk66AKE1gf1O3zhwrCrU1KmAadyaosa8emc7zRrZJfW/xdaLytsanR+ZVk8HuaB0/QaeO1xwZ15e7IqVg/IaLVfCe4OW5LLjC1xu3Ct8gQ0QXjz92Dnux6tPB0aHL8/whE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777359529; c=relaxed/simple;
-	bh=Ke8bRUdqBfahDaxMnO0T+9k2veTih85VQpLRCZqciuE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iPwP4l/9HcrBDE1bEO8ZPkfE54rvXSVV6tsTSyWwg4mEDmk145hrYFGkXDHzRDt4RM5IxzFcfQp+554Pdd0hD9KA2d0zwYtDis5i1IbYrqr0nQR/bkuE0N0oKmtXCF5OmsASdv0wurijWJsffBNjusMCo2+ChmhxSMSFcfndNKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.175
+	s=arc-20240116; t=1777361084; c=relaxed/simple;
+	bh=T012Lg/LretUy5zEU9UqTvSjNKVcRz55VykcAznJp3Y=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=CygTkKakpDdqleddUHwlVWnZvpLYVzYUTlFjCZRqcqqJqlUX+0dx0mmGgAMKolxxdy4JYD9zz60EPSpJGxnWRbgE2JzwHhAYRMclELr9z5YKsT6lhLLGdWfd8N0DLUyy22HgVSoB8cK/KzCv6iJdszdQIuSxUQzFuuvgK1+qly8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZXmmbzXa; arc=none smtp.client-ip=202.12.124.148
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-56a86f0a23bso10588215e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 23:58:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777359525; x=1777964325;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1PF3j+sY6VDn/b3XG1Y7Z+9M+AzE58WOK8UHU23nNvI=;
-        b=faZraRw2gZr/0cOeg+DaRA2yOzile7FmaeaOQ/7uBaeFfmOg8D8pBxMRT3q/7SqFbj
-         KbwKJZQqmbJuxfkMq3NeWymD7othfRAC1Lo6UYSnIEdgAgNnrsbcow+jjFiA1P1W18Jx
-         Z22Tw5QBa6bs/TdtG7niysQtmMhqIDsOvXxzi+OZZzpLNeJOBBlLR6z49/28f8yckd3d
-         onpm+Z5UvODvBDs7b+Q6NIuUiVOI+XoG0HCLuBR9RvfksbFWYoRkM3bHyvxRs9vM+3oX
-         7ZW8gU2bUDjbEnLMhWHyOx5kfoHAU1j9fkwR4Zbi3GEyYytI31zupCyM5RClDX9lTJ8W
-         BrBQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8Hycm/pRVkXRfckvNaZCzVOiK294EYu/WjSYZczzkUaBUyF/zuMrkp3GmC1/A6koAgrMBnTgV9f4rX@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy2+ZBezIH4eLaqErvMXSOHubjl43kzGtKCrRyVEtGHFOAVn/Mi
-	2s6ipn5kSMcYkNg0suJ6qPBeKe3ubhYJOdBGGiKTCXB+Cg36hcbw38zfeyJENowGjLM=
-X-Gm-Gg: AeBDiet+pzlUhoDheBXw0W/PamT8JOGLFip1H944e6MUN5Tm7ZH9ubguod0g2GK99CS
-	oalliRDLTidUtP+e8vSwF1kvDVZJxfsmakNmEN3EF8U9aHhaMIQIWhgySEm9cbWGqSqHOaY3ErP
-	fjEGbyfJFJax36K4Z9tBY1hKfakaGd+eedikW23t3wKX/IoN6v0W2Q+CD5XeXmzas8h3M8mgBOL
-	cqwA3EpdEgkIO+xhl9WKaePG8oFSuVexPA3VukkZF648eL+tBye9U+Z0560m9G2FoMo8BiUn/L3
-	bOfQjofmFFuRoRAwzJW5u46zWuQbWfFMkB8x8H/BFhNFXGoogZLUNMVVQiIob2etsIzdvkGB6aw
-	ZdGG6P7Ry6aYtL1TIiyCsI064jjf5PyjLNzfcHq+VRuCp7/LLQjpdls2hj6TxPGtKn0di8MYmb+
-	x/40APCHWM3K0ea6jNGErjD64w/HhgOmRKfQjWz8/a8Vy9WLwlArsKDDzhZ4mRLMur/OTGbWoYj
-	16DcC5uDw==
-X-Received: by 2002:a05:6122:288c:b0:56f:1bbb:83d6 with SMTP id 71dfb90a1353d-573a566e5f1mr804342e0c.10.1777359525223;
-        Mon, 27 Apr 2026 23:58:45 -0700 (PDT)
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-573a4630970sm1018201e0c.16.2026.04.27.23.58.45
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2026 23:58:45 -0700 (PDT)
-Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-628086439b6so342230137.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 27 Apr 2026 23:58:45 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ8uvz5khNzsb4DmBQhxdhXUSrhEyiiMz7wkRk0JReHgWpc6UmswHxIwkXOa5uiNOHa0HkwgZHavnds2@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:950:b0:607:7991:8edd with SMTP id
- ada2fe7eead31-6280a8c5705mr640942137.19.1777359524824; Mon, 27 Apr 2026
- 23:58:44 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZXmmbzXa"
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfout.stl.internal (Postfix) with ESMTP id 1AABC1D00279;
+	Tue, 28 Apr 2026 03:24:42 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-06.internal (MEProxy); Tue, 28 Apr 2026 03:24:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1777361081; x=1777447481; bh=fSxf3RRCV2WQhkfCi9gqMhnDflF22fIbX4z
+	L/+c8Z+c=; b=ZXmmbzXaQqcSV+fuMSnFGgsCHsvzi1GXOn1kxkj2btxjfs0JlGZ
+	1RU4HZINaLAF1Kauu8SIQfUumzVDv/cdktNbqOOPB23rqpGL/Oo2cedtKTJz58p/
+	xudqAMTNHA+jUtqKpq1rjHsNGuTuw4RLT6UhuSKxmXLVheP0NzW77HggXdSWvBPg
+	tgZ9c5ru7FLXgT5krTm2S2XY6Bu7JYlxX9gYhJDVqaUUlESDI2TdqpPXFgeKDSZ/
+	CcnciHudiMLwqg/+Rch7fSVF7MgdOISvZdSvQahJq8d42ohCi/ZCP6NMUkUgrQJ9
+	srLfTsW7as6+3jn7So9GYbaycy26/CwJr5g==
+X-ME-Sender: <xms:uWDwaTSBCWianerFEAHAhgoFUzgqwoolI64GrS3flui_gaCjzC8CnQ>
+    <xme:uWDwacg-2_IRCvYpTZgTQDD66dOsRRG_YgNp7wiSxHZu5hCghHzyieqQ41hJMvuHp
+    CYYHt8TZBrWkdc5SoKPtwwNbqdcAvh3wQSaI40zZhJt7NnwQ5XgnwE>
+X-ME-Received: <xmr:uWDwab7mghytGkGGK4dl4ygYR_aYUHl86heVKsIvdJ6GQy4bX8cp1V3RECGZ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdektdelhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfvhhgr
+    ihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueehueel
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthh
+    grihhnsehlihhnuhigqdhmieekkhdrohhrghdpnhgspghrtghpthhtohepfedpmhhouggv
+    pehsmhhtphhouhhtpdhrtghpthhtohepjhhohhgrnheskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhr
+    ghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdroh
+    hrgh
+X-ME-Proxy: <xmx:uWDwaRB0xEQ7fin-BOJ9KY3A3SPe_OnXG1mZw5nLtiLVSggRag6S2Q>
+    <xmx:uWDwaabUfhSDy28HrPaVsNapuXbMuz4l4SoOKMVNgcmeS8tDjRCKuA>
+    <xmx:uWDwaUZvRA3y9vzsqy08rGZXyhm4ARmI2-nqzRVTTHEaYjwWsZfQhA>
+    <xmx:uWDwaZ9Sjti97DD3LUZ5A1qfiA7p3vxse0ROw4S5eyZMKPaTbPUdxQ>
+    <xmx:uWDwaYmCPM831vezPXJSJphQUL91UhlelgRP4yYkYB4oMoDz2maVhKOL>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 28 Apr 2026 03:24:39 -0400 (EDT)
+Date: Tue, 28 Apr 2026 17:24:31 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Johan Hovold <johan@kernel.org>
+cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nubus: switch to dynamic root device
+In-Reply-To: <ae-BCxxLFkzEvw63@hovoldconsulting.com>
+Message-ID: <a05b0f75-87b8-5478-3480-be545c905c83@linux-m68k.org>
+References: <20260424104011.2616970-1-johan@kernel.org> <92e2b920-041a-78a4-e4b6-c5a7c579ade7@linux-m68k.org> <ae-BCxxLFkzEvw63@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260427105810.23761-1-pbonzini@redhat.com>
-In-Reply-To: <20260427105810.23761-1-pbonzini@redhat.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 28 Apr 2026 08:58:33 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUvehWeTwdN1czjvv7OjGsu_XaaYS1R6Tg557mDqP+fSg@mail.gmail.com>
-X-Gm-Features: AVHnY4IUbWltZt4Nuljx-hPEgpXnbRcqSixeYk6RCQC_1EScDCPPRIuQFIAQkWQ
-Message-ID: <CAMuHMdUvehWeTwdN1czjvv7OjGsu_XaaYS1R6Tg557mDqP+fSg@mail.gmail.com>
-Subject: Re: [PATCH] mm_types: remove references to s390 gmap
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org, 
-	linux-m68k@lists.linux-m68k.org, "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 
-On Mon, 27 Apr 2026 at 12:58, Paolo Bonzini <pbonzini@redhat.com> wrote:
-> s390 does not anymore use special struct page for its shadow page tables.
-> The honor of giving a special meaning to pt_index is now m68k's, so
-> rename the fields and adjust them for the desired type.
->
-> Cc: linux-mm@kvack.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: David Hildenbrand (Arm) <david@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
->  arch/m68k/mm/motorola.c  |  2 +-
+On Mon, 27 Apr 2026, Johan Hovold wrote:
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+> On Sat, Apr 25, 2026 at 02:07:10PM +1000, Finn Thain wrote:
+> > On Fri, 24 Apr 2026, Johan Hovold wrote:
+> > 
+> > > Driver core expects devices to be dynamically allocated and will, 
+> > > for example, complain loudly if a device that lacks a release 
+> > > function is ever freed.
+> > > 
+> > 
+> > Yes, in drivers/base/core.c, there is a warning in device_release().
+> > 
+> > WARN(1, KERN_ERR "Device '%s' does not have a release()
+> > 	function, it is broken and must be fixed. See 
+> > 	Documentation/core-api/kobject.rst.\n",
+> > 
+> > But there's no way for the refcount for the nubus parent device to 
+> > reach zero that I can see. Did I miss something?
+> 
+> It will if registration ever fails (e.g. due to fault injection or name 
+> collision):
+> 
+> 	err = device_register(&nubus_parent);
+> 	if (err) {
+> 		put_device(&nubus_parent);
+> 		return err;
+> 	}
+> 
 
-Gr{oetje,eeting}s,
+In that situation the kernel error message would say the device "is broken 
+and must be fixed" when it was deliberately broken by fault injection.
+I think the commit log should state that the aim of your patch is to avoid 
+that error message for that use-case.
+Aside from that quibble, the patch looks fine to me.
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Acked-by: Finn Thain <fthain@linux-m68k.org>
