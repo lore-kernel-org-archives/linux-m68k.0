@@ -1,91 +1,78 @@
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0EAF3914E8;
-	Tue, 28 Apr 2026 11:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.228.1.57
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD4543DA4F
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Apr 2026 15:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777376082; cv=none; b=gFEykjUwBqBHr8Ht2WmfT1dJJrIY8qYeBOCIzrPJU6rncOpGCdZS1EWdzY8VTJbpi67Gu7Dh36rz5sy6fgV8ZNatQeMjUh3ON7gl490+Jv12QAXQFv8qS6eyMMxYgKsA0WNnZYKKtQTJ1ml/NIm86ZUi9IwOm/G3PkE/OkLUwJM=
+	t=1777391856; cv=none; b=lyW8IMp4ny1J0JecX33QUPdsI9ElxiOFEfU+vgCSZGxln9B9I6+im4efijTXRQDNO425+j/8DsVQvz1mE4IexuL71lgrw9RD+IB/KEgBKtOr656xiVcauQxk7jleuavd39EnSZ86gYvOPPGOuJfi4cns1yBj30VS6Apqq3e6MV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777376082; c=relaxed/simple;
-	bh=hyfrXCz4cakoGqEZMfZnxEs8TTQzFbHPgNHVJxhRWN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jnn94cM/o0HiOSruXStCQtUYg2jtlOmYJTM+tMLMcDXRMCG+lK2UjENZt0PgtAWSKkxIjSc56uYeacZaWuX69xh+JCg0ohPoDxo3fIKM21CBEpXwkQ7xjGlH9Sbtp57SQZhwuO6NpnD08s9unbu/usyuuOlnKbT+Bhy2gAKyZgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.crashing.org; spf=pass smtp.mailfrom=kernel.crashing.org; arc=none smtp.client-ip=63.228.1.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.crashing.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.crashing.org
-Received: from gate.crashing.org (localhost [127.0.0.1])
-	by gate.crashing.org (8.18.1/8.18.1/Debian-2) with ESMTP id 63SBY0U31059939;
-	Tue, 28 Apr 2026 06:34:00 -0500
-Received: (from segher@localhost)
-	by gate.crashing.org (8.18.1/8.18.1/Submit) id 63SBY0B51059937;
-	Tue, 28 Apr 2026 06:34:00 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date: Tue, 28 Apr 2026 06:34:00 -0500
-From: Segher Boessenkool <segher@kernel.crashing.org>
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: Yury Norov <ynorov@nvidia.com>,
-        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Laight <david.laight.linux@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>, linux-alpha@vger.kernel.org,
-        Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        dmaengine@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-fsi@lists.ozlabs.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-fsdevel@vger.kernel.org,
-        ocfs2-devel@lists.linux.dev, bpf@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-x25@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        linux-sound@vger.kernel.org, sound-open-firmware@alsa-project.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH v1 2/9] uaccess: Convert INLINE_COPY_{TO/FROM}_USER
- to kconfig and reduce ifdefery
-Message-ID: <afCbKJg_Cq7yNO9j@gate>
-References: <cover.1777306795.git.chleroy@kernel.org>
- <9fe875d2f55af59c12708336c571a46038528678.1777306795.git.chleroy@kernel.org>
- <ae-tVFVfx72oCC_i@yury>
- <f54c3c2b-33da-42a0-80b7-0f6615d930ce@citrix.com>
+	s=arc-20240116; t=1777391856; c=relaxed/simple;
+	bh=ELPLNWEdhv27CtXGcowWE2M8MhTaAbuHQctUhBNkFz0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=U+XIJGKg0ouAckz1ea7EQlAWo12X3JJOoKSZ05E1Ol6rAH5NMlv/GdnfiqEgS60mCSW1Np0C+4srMNfB57Rhrdisyz+dgbBmHh7T6ynpL8g6A9hV1tUO9FSqXp9sIqd8H/sQMuq1q+6vAtSBzSUKjDgOyqOew9mkwVsA5r/0M60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jTkLtESf; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jTkLtESf"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 8CACF4168C;
+	Tue, 28 Apr 2026 15:57:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51560C2BCFD;
+	Tue, 28 Apr 2026 15:57:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777391854;
+	bh=ELPLNWEdhv27CtXGcowWE2M8MhTaAbuHQctUhBNkFz0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jTkLtESfu2NhI33JhkYsCFkaGuycQb1Ytm9Iipm8gTYfuc5loa4jMpeOkNAJxOIkT
+	 udotOULtGBEt1aecqCCe6I+O09YUsE8VEg/MR9vLPMDrRWL8T041paQuwTsdS3/8R7
+	 0QzLnfXJnQpFjucr8i8ygLX1CXB6t8ayV49Iawoo9/EuM5TskvLMYaFJYkxBL3qPAU
+	 +n5yDGAmMcbjZTOj8hL/EYMyOqmGZ9UlqHj4pW9Hz5ZYi86rfeou6ZoSwU+aW+2QBn
+	 HemgiIiLLUiO+P1fYipaxmPlUn5WEvf3+hrk/FdHiuKWf8b3+pIwvcXIXlrt3wR1dR
+	 E+q7KpDnSAhMQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: coldfire: select legacy gpiolib interface for mcfqspi
+Date: Tue, 28 Apr 2026 17:57:19 +0200
+Message-Id: <20260428155729.3278685-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f54c3c2b-33da-42a0-80b7-0f6615d930ce@citrix.com>
 
-On Mon, Apr 27, 2026 at 09:39:33PM +0100, Andrew Cooper wrote:
-> On 27/04/2026 7:39 pm, Yury Norov wrote:
-> > On Mon, Apr 27, 2026 at 07:13:43PM +0200, Christophe Leroy (CS GROUP) wrote:
-> >> Among the 21 architectures supported by the kernel, 16 define both
-> >> INLINE_COPY_TO_USER and INLINE_COPY_FROM_USER while the 5 other ones
-> >> don't define any of the two.
-> >>
-> >> To simplify and reduce risk of mistakes, convert them to a single
-> >> kconfig item named CONFIG_ARCH_WANTS_NOINLINE_COPY which will be
-> > We've got a special word for it: outline. Can you name it
-> > CONFIG_OUTLINE_USERCOPY, or similar?
-> 
-> You can't swap the "in" for "out" like this.  "out of line" is the
-> opposite of "inline" in this context, while "outline" means something
-> different and unrelated.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Yeah.  Technically much more correct for it is inline vs. functional.
-Not that that term won't be misunderstood as well :-)
+The common coldfire code uses the old GPIO number based interfaces for
+at least the QSPI chipselect lines. Select the required Kconfig symbol
+to keep it building when that becomes optional.
 
+Apparently there are no devices attached to a QSPI controller in any of
+the coldfire boards, so this is not actually used in upstream kernels.
 
-Segher
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/m68k/Kconfig.cpu | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+index c9a7e602d8a4..148f8a79d206 100644
+--- a/arch/m68k/Kconfig.cpu
++++ b/arch/m68k/Kconfig.cpu
+@@ -30,6 +30,7 @@ config COLDFIRE
+ 	select CPU_HAS_NO_MULDIV64
+ 	select GENERIC_CSUM
+ 	select GPIOLIB
++	select GPIOLIB_LEGACY if SPI_COLDFIRE_QSPI
+ 	select HAVE_LEGACY_CLK
+ 	select HAVE_PAGE_SIZE_8KB if !MMU
+ 
+-- 
+2.39.5
+
