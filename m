@@ -1,97 +1,64 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74582E175F;
-	Wed, 29 Apr 2026 13:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2547E3328FA
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 29 Apr 2026 14:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777471201; cv=none; b=VHY0XOVUXMxvfWjxQKTKkVyrtktIs89TdLyur3Zns2vqSFTGeVIQV7DEPA1ZyeCPMuh7liPYdpgUgvfxqFrbDSnDasgE7ci1i/J/wpeuhw7ZfHdq8JLNEEZSvBQGTifJgBqxF5+gP+TUp64lbOB23WSN06KuX9vG/VYRU5byIrA=
+	t=1777472699; cv=none; b=luenk+c0jULZGEwlx5m01tf4KCFYttfuaThi9IIAJ5Ff8+0XoVqv6aADzJvUYfyZOYLKGboWTZImocANwU5s8Dk0Ngqqo0mN6X4Ob3fUMh3Yn1mBICvpVxxNr5eMJGNj5el4+aQGpjbMHYYi7T7XUuVzBbPINcoPoMZsI8oZ5l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777471201; c=relaxed/simple;
-	bh=dZ2w+VBEAA/EDBR+p4OKVtvlFbQQBIlNpD3rCJ1Nj/A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kK2MySu45SAfu6sbVFstugL7530lMoJ8feUeXqXKRI9nGBP20Qz1AwD8Bfs+W49unIXICRNSMyT5tKzSJo8RmSU1SkY1zxMakBbKHbyJ55dX/Ygbo0JWvIW+H9s+N2MLDUw+IpJJinzrsbS8prHFCXQQKYQPmfKKx7g7wVhWvP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=nStlt2/r; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="nStlt2/r"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=bAs6dfUXcn2uCjBe32SgzLgy8d0Iw4HpdZIPVuE09RA=; t=1777471198;
-	x=1778075998; b=nStlt2/roUJcXCvwn+rmLO354wdlgPXH3qq607PLUHAJn7SWcKNF8fglKneL2
-	K3TQfLOlx632vrG2L5Q1zRvq6Wr+zEXuxpEgptJZ4jtTOMESyh+7f5DbyGvoyYstbufK4C67BI6Db
-	tbJqxCTIvffpTsFo1xKIPSpYbdtevoARMw/9kBQWJXULiMiS6zJeYuX22CutIBKhqNUlYaaIckzj1
-	CPy2G6nWARCFgiDSeXW2xLBM7uHanINYhg0aTh0OvLbSs2mWidiEyd0R8fNgO9EPBTaVczBMlKQgJ
-	cHjRYPLJhYYJfXCctEaPn3VOWoEPHubetTNaSqvZ97WV6Cx43w==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.99)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1wI5S7-000000028jO-0mzo; Wed, 29 Apr 2026 15:59:47 +0200
-Received: from p5dc559e1.dip0.t-ipconnect.de ([93.197.89.225] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.99)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1wI5S6-00000002a8I-3vYK; Wed, 29 Apr 2026 15:59:47 +0200
-Message-ID: <98dfc3ebe6bf519aec70bf629acae897903d8146.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH bpf-next] m68k, bpf: Add initial BPF JIT compiler support
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, geert@linux-m68k.org,
- ast@kernel.org, 	daniel@iogearbox.net, andrii@kernel.org,
- eddyz87@gmail.com, memxor@gmail.com
-Cc: martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	jolsa@kernel.org, jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	bpf@vger.kernel.org
-Date: Wed, 29 Apr 2026 15:59:44 +0200
-In-Reply-To: <20260429124046.3480827-1-visitorckw@gmail.com>
-References: <20260429124046.3480827-1-visitorckw@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.1 
+	s=arc-20240116; t=1777472699; c=relaxed/simple;
+	bh=+ouDMAS1aqCBGJAQEs9JB1VV55M0fDpzKkeNPIOuPSo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iePHyP5G9wh6lWV+nb5ZMYl/U20Vm1vNmsXguvlBW03dSokvAtoVCObwU79ImtzFH5yZWux9ZUL2ELhF09i8m9LeA4ot1pHuMLkZX0nxth050xXhkB0LJlJZyl5fHzAWgSJXYbfThgYRLVBh3U+r+1Ld3BSHidOaSSKsE9cwdI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id 873D1441AF;
+	Wed, 29 Apr 2026 14:24:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFDC8C2BCC4;
+	Wed, 29 Apr 2026 14:24:56 +0000 (UTC)
+From: Greg Ungerer <gerg@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Subject: m68k: defconfig: new and updated ColdFire defconfigs
+Date: Thu, 30 Apr 2026 00:24:04 +1000
+Message-ID: <20260429142452.1200856-1-gerg@linux-m68k.org>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Transfer-Encoding: 8bit
 
-Hi Kuan-Wei,
 
-On Wed, 2026-04-29 at 12:40 +0000, Kuan-Wei Chiu wrote:
-> Add a BPF JIT compiler for the m68k architecture.
->=20
-> The JIT generates m68k machine code targeting m68020+ processors. It
-> currently excludes 68000/68010 and coldfire processors, as it relies on
-> 32 bit branch displacements (b<cc>.l) to handle large bpf programs.
+Add new defconfigs for platforms based on the 5329 and 54118 ColdFire
+SoC devices. There is no existing defconfig support that covers these
+long time supported SoC parts, so this is to improve test and build
+coverage for those.
 
-First of all, this is extremely cool! Thanks a lot for the work!
+Add a defconfig for the NETtel 5307 ColdFire based board. The 5307
+ColdFire SoC has been supported from the start, but some platforms
+like the NETtel have some quirks and extra hardware peripheral support
+not used on other ColdFire platforms. So a defconfig for it improves
+test and build coverage.
 
-Secondly, since you seem to be well-versed in compiler-related stuff on
-m68k, may I ask you whether you would be interested in helping to fix a
-stopper bug in the LLVM M68k backend?
+Lastly refresh the existing ColdFire defconfigs, making sure that
+modules is enabled on all platforms.
 
-I have outlined the problem in [1], maybe you could help getting this fixed
-as this would fully enable LLVM on M68k which means we could finally use
-Rust on the architecture and maybe also build the Linux kernel on m68k
-with clang.
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/configs/m5208evb_defconfig  |    9 ++-
+ arch/m68k/configs/m5249evb_defconfig  |    9 ++-
+ arch/m68k/configs/m5272c3_defconfig   |    9 ++-
+ arch/m68k/configs/m5275evb_defconfig  |    9 ++-
+ arch/m68k/configs/m5307c3_defconfig   |   10 ++--
+ arch/m68k/configs/m5329evb_defconfig  |   77 ++++++++++++++++++++++++++++++++++
+ arch/m68k/configs/m5407c3_defconfig   |    9 +--
+ arch/m68k/configs/m54418evb_defconfig |   70 ++++++++++++++++++++++++++++++
+ arch/m68k/configs/m5475evb_defconfig  |   12 ++---
+ arch/m68k/configs/nettel_defconfig    |   56 ++++++++++++++++++++++++
+ 10 files changed, 238 insertions(+), 32 deletions(-)
 
-Thanks,
-Adrian
-
-> [1] https://discourse.llvm.org/t/rfh-m68k-implementing-support-for-32-bit=
--relocations/90660
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
