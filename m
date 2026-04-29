@@ -1,103 +1,161 @@
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9510947CC9C
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Apr 2026 16:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF2B39B4A6
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 29 Apr 2026 10:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777392388; cv=none; b=d7Rl7uaiAFkpNydHjVdOBTRAiMwQbQDv/O25kAQoYvw78oBmU3XJbVRqjzupn11AADbQXATRMfBtjga3YkspciEX+qdelywGZ2PPF2jHchd3/I+XdJcnLKEmsvwRo/3+Cenccl0yglbGxOmXanHsVhDPu+VcaQLQVRa4wd/CUI8=
+	t=1777458338; cv=none; b=jREEAkfb1wn8jB7gkB9KKU6jJxNqbRoSW+4/tZbnYrQzkkK2Y1PkIayigqq2K/lRmAkwSO6KiDWoCoiD9jHHFZEMTXJCLs0Gxdf14hK5XpYPq9kg8AywV7VWsoA+v83S8D4BDtFeFRrQ9X+fWrpVrf6cYNwaSzX5eW/8Oki2K6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777392388; c=relaxed/simple;
-	bh=u44CNsq+HsXNvoQ7TTz+Rln6IYTiPOUNWXBwk3PI8Dw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pn3sy5ytz53KLMTsXobHR/Fe1py1zR9pK9Tt4OBXvMpSYh6FhmRK9jTot1GY7MT4wUKYQ2f+udPSxi3K2EfWDM5rTMPyxDviYWmZZDaSMP71T+2dF2jk2dnTaGCPAVq4+DiagvB3g6SefNc3JGdjNDgJfRsZrQPbqSZUmoTYDjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-56eee0ba462so7054499e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Apr 2026 09:06:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777392384; x=1777997184;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3vDFH3Rke6oTAGwGvqkoH6zWo9F4usIGXnZ74R1IDuY=;
-        b=cT60r6i9XZ1WcTkJBca4SIgpD6PEcRrcsB4JvwRGIluqP4uWg2/2t4pcLnYvfjKXBQ
-         +jmlKJO0x9TS5Ja1b7FmSVWlk1jxwqZ/KgRNJZWM1PHo64lvUQG11/QgYioHx1GpEfv1
-         raKk+fzfEVGU5tJQCiRtZvocNymXyLondk7v3+9L+B++dupnFnZgKV5/bc52RDmOZJfi
-         WPbBnvZ6hSWjFMPAqsV2gT0crZu8JPsq7NQ5BqInDQSNtawN/Xoi57VQJG2Ml82TCsrb
-         h8GCHPRAhaykStWzQaSyYIB8BGVRWlYYN7GNILUZh2URkgTmpAUE+Z5Ad8XKoVjapQa6
-         2MsQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9Yb/yzm11GUuzSHFrn3dZwFTdji3OFTccQjVmiyuWAaDiDGFh5Z9hUOiqekLGB0GJ66vtTNAHTVeQJ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyPoMtu1qs1YFu4zvEgewpQQci5GQvOgZMX4dzSmKri2hKMP5U8
-	VuFetB6HkqXcNhTGN3bw7KJOSobPhrtz+BXq5QpnZwOLSs+OFkUla9aIa2Pbvz1jK1s=
-X-Gm-Gg: AeBDieulmes9gqCvOsNi6LFFZ64Afk318YKN9Msi3T6zJF+CoCGa8hMROKDYDqMm56+
-	4UWYr6J3Ya3l6pA5mDTwpteeFYujKMmmyBxOoL82vtDYe6iTdKIoFfl6DEy+3DexAswBWoHsdj2
-	rSu+2HEOZDNsheFkXkncMTuwPa39GFVBMpz2LhVmGsl6qwGGPKReVMBoCPMj2kSJR3FX81MfG7X
-	95PBdL4khpWyK9FPhC+0Vmmi+jyzwPxKmctHIIR6xzMaw80UbJv+Rpc0TNrcOkD23XsGz17siX8
-	pfxPcUp5mXygcizl78z3g1zB5plL0u6x1XQ7g0BymU7RQT5mmkmXUigjYF3xVXJVQuVMlwI4f1R
-	g/+t2Xuih3W8Eljp5udQObJCtkbYdW7rGANVQVs73UIfvH5glkjXZE6ltmI/E1R+0maAAW9MCpg
-	ZhZnLR5vyAuLg+cNhJ+tLXEdRizMZMQ4ZmEdULXpXiQ/rb+prX3rQMMSYdcZaH0IUDf31TKaI=
-X-Received: by 2002:a05:6122:da7:b0:56d:3451:4cc0 with SMTP id 71dfb90a1353d-573a5af424amr1443336e0c.7.1777392384266;
-        Tue, 28 Apr 2026 09:06:24 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-573a433630fsm1859436e0c.2.2026.04.28.09.06.23
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2026 09:06:23 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-6058a955e04so7445857137.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 28 Apr 2026 09:06:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ/+HKUvd403wNJmW90vqTES5+vG1iTWGn/USCOEJ6YNBXOZZM9+hWWASTvfWIzaXdge4SuNJrIEBpgO@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:809a:b0:602:8894:b76c with SMTP id
- ada2fe7eead31-628060be74dmr1337471137.5.1777392383058; Tue, 28 Apr 2026
- 09:06:23 -0700 (PDT)
+	s=arc-20240116; t=1777458338; c=relaxed/simple;
+	bh=uKx2BLK4SWtORQ3Y1X9QU+u3JmhryAfpmr007sf8OrM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=fgnPxhGfxGx0yj6ZrG/OE8VZdB3dqkRGI4DHgLXOoK8r7qy/GlGoIpraH3Msuj4OUSpsf9dfipUfJ5Ved7Zrsi+TTzyFhHFMVpWkccRElMKQHPsp2v+Tsf38kbZuQDiD6VGjkxomhuyG1J8rkGbS1kAZts/FT+3xiaGe5kuIYnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=syDuJ2eb; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="syDuJ2eb"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777458333;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ubnPqyEuUH+bb9tWP9+TOUp+n6C5onOR58LCuBDEiw=;
+	b=syDuJ2ebh9z2sjffREH58o0aT6Ajjew8W5I8ReEUtvp2EQkdghmYv8iT9JcU1iX87oMIbX
+	D+xmbMoFNHgWVKDoL6XEe6kPFjJgAeA5FQrv1tK/6uUbSyjmFqItMdxDS/n3eJA5ihtrWC
+	pDy1LXDxeyfrSgRVjezaD0bM6Fa+Scc=
+From: Usama Arif <usama.arif@linux.dev>
+To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: Usama Arif <usama.arif@linux.dev>,
+	Yury Norov <ynorov@nvidia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	David Laight <david.laight.linux@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	kvm@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	dmaengine@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-fsi@lists.ozlabs.org,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	linux-wpan@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-serial@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-fsdevel@vger.kernel.org,
+	ocfs2-devel@lists.linux.dev,
+	bpf@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	linux-mm@kvack.org,
+	linux-x25@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	sound-open-firmware@alsa-project.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-arch@vger.kernel.org
+Subject: Re: [RFC PATCH v1 7/9] x86: Add unsafe_copy_from_user()
+Date: Wed, 29 Apr 2026 03:25:19 -0700
+Message-ID: <20260429102520.1617327-1-usama.arif@linux.dev>
+In-Reply-To: <0ee46bb228d97163fbdc14f2a7c52b93d8bc34ce.1777306795.git.chleroy@kernel.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260428155729.3278685-1-arnd@kernel.org>
-In-Reply-To: <20260428155729.3278685-1-arnd@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 28 Apr 2026 18:06:08 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVgMtps2gAsx1RQ3Q8NkdqyzNuPTNeqHVC-EwJM3HK3Bw@mail.gmail.com>
-X-Gm-Features: AVHnY4IdeIt9o9au0VQBhgu5jxODDXjwiJHrzOv1nNKAkPpgLmOAPuG60I0oOJ0
-Message-ID: <CAMuHMdVgMtps2gAsx1RQ3Q8NkdqyzNuPTNeqHVC-EwJM3HK3Bw@mail.gmail.com>
-Subject: Re: [PATCH] m68k: coldfire: select legacy gpiolib interface for mcfqspi
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, Greg Ungerer <gerg@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-CC Greg
+On Mon, 27 Apr 2026 19:13:48 +0200 "Christophe Leroy (CS GROUP)" <chleroy@kernel.org> wrote:
 
-On Tue, 28 Apr 2026 at 17:57, Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The common coldfire code uses the old GPIO number based interfaces for
-> at least the QSPI chipselect lines. Select the required Kconfig symbol
-> to keep it building when that becomes optional.
->
-> Apparently there are no devices attached to a QSPI controller in any of
-> the coldfire boards, so this is not actually used in upstream kernels.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> At the time being, x86 and arm64 are missing unsafe_copy_from_user().
+> 
+> Add it.
+> 
+> Signed-off-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
 > ---
->  arch/m68k/Kconfig.cpu | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index c9a7e602d8a4..148f8a79d206 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -30,6 +30,7 @@ config COLDFIRE
->         select CPU_HAS_NO_MULDIV64
->         select GENERIC_CSUM
->         select GPIOLIB
-> +       select GPIOLIB_LEGACY if SPI_COLDFIRE_QSPI
->         select HAVE_LEGACY_CLK
->         select HAVE_PAGE_SIZE_8KB if !MMU
->
-> --
-> 2.39.5
+>  arch/x86/include/asm/uaccess.h | 29 ++++++++++++++++++++++++-----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+> index 3a0dd3c2b233..10c458ffa399 100644
+> --- a/arch/x86/include/asm/uaccess.h
+> +++ b/arch/x86/include/asm/uaccess.h
+> @@ -598,7 +598,7 @@ _label:									\
+>   * We want the unsafe accessors to always be inlined and use
+>   * the error labels - thus the macro games.
+>   */
+> -#define unsafe_copy_loop(dst, src, len, type, label)				\
+> +#define unsafe_put_loop(dst, src, len, type, label)				\
+>  	while (len >= sizeof(type)) {						\
+>  		unsafe_put_user(*(type *)(src),(type __user *)(dst),label);	\
+>  		dst += sizeof(type);						\
+> @@ -611,10 +611,29 @@ do {									\
+>  	char __user *__ucu_dst = (_dst);				\
+>  	const char *__ucu_src = (_src);					\
+>  	size_t __ucu_len = (_len);					\
+> -	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u64, label);	\
+> -	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
+> -	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
+> -	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
+> +	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u64, label);	\
+> +	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
+> +	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
+> +	unsafe_put_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
+> +} while (0)
+> +
+> +#define unsafe_get_loop(dst, src, len, type, label)				\
+> +	while (len >= sizeof(type)) {						\
+> +		unsafe_get_user(*(type __user *)(src),(type *)(dst),label);	\
+
+Hi,
+
+Just wanted to check if src and dst need to be swapped? Same for arm64 patch.
+
+> +		dst += sizeof(type);						\
+> +		src += sizeof(type);						\
+> +		len -= sizeof(type);						\
+> +	}
+> +
+> +#define unsafe_copy_from_user(_dst,_src,_len,label)			\
+> +do {									\
+> +	char *__ucu_dst = (_dst);					\
+> +	const char __user *__ucu_src = (_src);				\
+> +	size_t __ucu_len = (_len);					\
+> +	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u64, label);	\
+> +	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
+> +	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
+> +	unsafe_get_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
+>  } while (0)
+>  
+>  #ifdef CONFIG_CC_HAS_ASM_GOTO_OUTPUT
+> -- 
+> 2.49.0
+> 
+> 
