@@ -1,31 +1,32 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950C61FF1B5
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 05:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0312C2349
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 05:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777526598; cv=none; b=jxCnvBCUV66l8T7QAD7ohtOj194aho+AvljpoQloxK1FUEwQ+MFPf+lbuU8VjzZu1Wkr/DOsRXyxYEY8ceepznBcNGq+iuPKqydUd+9L+Am1WckmZRby4wRnt8vLC1WgvxbBYzu396WbxmqbYGunmq7+pdGPmK43PmxzpH7e1YI=
+	t=1777526599; cv=none; b=WCvq/nanHse7dIVK4vot+v6PCDuvYa+gPptQ5SPkix6Vh7pU8cGMTJlRaGOvCCWIE09e91moUKnpzI9e97y/vYWFp42jDLXJTETfOm0nbAnvLIbdmPOEPX4ZeWEVcl9fNG0rlnfJ5EVyh4t2a7CseaecQYXg9inh09MS6zvfF1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777526598; c=relaxed/simple;
-	bh=AG5o7RA3gE3UdYLQtzIlyOBck/VP9W8WPXu27Gv5Ok4=;
+	s=arc-20240116; t=1777526599; c=relaxed/simple;
+	bh=aIvX8dwR16aBRZte3c3dMTqWfNZu7f4HPnRlBNlBxEg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nNEJqVpwavzZDDICq76Byy5Wfc87vdHEBh64i+iaYJ0Vjsurg1wMQwwctkCR5ov56KMCJvFcry8AUeDIhh562b69hXC9Ny8U+MkFcWHYbZZg51t22s4cp9ZCzob2mEh8wepzOQ8nBSup184cZYRJ/TAdLQ5LyB50tunF6UTuzl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+	 MIME-Version; b=u1YRwSUTzNN9mCCiEyOnty6+7CZETPHFRKBCC/ESJjFO8ulh5V+ttkZSkFBXSGzz3JrkntEtz8vBXjVnxsYKDzXTwNjgb2Yus/QU2ohYeiNFrRS76KB1F+IRAgh6gd9HH3apWb2x/xJpPc5WaKj2AKdg0cH2Qzd9iZNUhZpAZEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7B0D960582
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 05:23:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44A20C2BCB8;
-	Thu, 30 Apr 2026 05:23:15 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id DF0D042E2E;
+	Thu, 30 Apr 2026 05:23:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A639BC2BCB8;
+	Thu, 30 Apr 2026 05:23:16 +0000 (UTC)
 From: Greg Ungerer <gerg@linux-m68k.org>
 To: linux-m68k@lists.linux-m68k.org
 Cc: arnd@kernel.org,
-	Greg Ungerer <gerg@kernel.org>
-Subject: [PATCH 1/7] m68k: coldfire: create IO access functions for internal registers
-Date: Thu, 30 Apr 2026 15:19:17 +1000
-Message-ID: <20260430052047.1827575-2-gerg@linux-m68k.org>
+	Greg Ungerer <gerg@kernel.org>,
+	Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH 2/7] m68k: coldfire: use ColdFire specific IO access in headers
+Date: Thu, 30 Apr 2026 15:19:18 +1000
+Message-ID: <20260430052047.1827575-3-gerg@linux-m68k.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260430052047.1827575-1-gerg@linux-m68k.org>
 References: <20260430052047.1827575-1-gerg@linux-m68k.org>
@@ -39,57 +40,73 @@ Content-Transfer-Encoding: 8bit
 
 From: Greg Ungerer <gerg@kernel.org>
 
-The internal peripheral registers contained in all varieties of ColdFire
-SoCs require simple big endian access ranging in sizes from 8, 16 and 32
-bit. Currently there is a mixture of IO access methods used across the
-various CPU support code, some using readx/writex and some using the
-simpler __raw_readx/__raw_writew.
+Convert all m68k/coldfire specific header file code to only use the
+newly created internal register access methods. This is replacing the
+mixed and inconsistent use of readx/writex and __raw_readx/__raw_writex
+for internal SoC registers.
 
-The readx/writex use cases are particularly kludgy in that they contain
-code to differentiate internal register access and other general attached
-peripheral register access - say on a PCI bus. In effect this means that
-the readx/writex family for ColdFire is non-standard. This ultimately
-ends up causing problems with definitions of other IO access support
-functions like ioreadx/ioreadxbe/iowritex/iowritexbe which in the
-generic case are defined in terms of readx/writex.
-
-Create a set of internal only register access methods to ultimately
-replace all internal register access code. The new access functions
-mirror the existing readx/writex family but using the preferred 8/16/32
-suffixes.
-
-Signed-off-by: Greg Ungerer <gerg@kernel.org>
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 ---
- arch/m68k/include/asm/io_no.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/m68k/include/asm/mcfgpio.h | 12 ++++++------
+ arch/m68k/include/asm/nettel.h  |  4 ++--
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/m68k/include/asm/io_no.h b/arch/m68k/include/asm/io_no.h
-index 516371d5587a..4f0f34b06e37 100644
---- a/arch/m68k/include/asm/io_no.h
-+++ b/arch/m68k/include/asm/io_no.h
-@@ -107,6 +107,22 @@ static inline void writel(u32 value, volatile void __iomem *addr)
+diff --git a/arch/m68k/include/asm/mcfgpio.h b/arch/m68k/include/asm/mcfgpio.h
+index 9c91ecdafc45..7103cfa4edb6 100644
+--- a/arch/m68k/include/asm/mcfgpio.h
++++ b/arch/m68k/include/asm/mcfgpio.h
+@@ -95,8 +95,8 @@ static inline void gpio_free(unsigned gpio)
  
- #endif /* IOMEMBASE */
+ #define MCFGPIO_PORTTYPE		u8
+ #define MCFGPIO_PORTSIZE		8
+-#define mcfgpio_read(port)		__raw_readb(port)
+-#define mcfgpio_write(data, port)	__raw_writeb(data, port)
++#define mcfgpio_read(port)		mcf_read8(port)
++#define mcfgpio_write(data, port)	mcf_write8(data, port)
  
-+#if defined(CONFIG_COLDFIRE)
-+/*
-+ * The ColdFire internal peripheral registers are big-endian, so you
-+ * cannot use the conventional little-endian readb/readw/readl and
-+ * writeb/writew/writel access functions. Define a family of access
-+ * functions to give correct endian access that can be used by all
-+ * architecture code.
-+ */
-+#define mcf_read8	__raw_readb
-+#define mcf_read16	__raw_readw
-+#define mcf_read32	__raw_readl
-+#define mcf_write8	__raw_writeb
-+#define mcf_write16	__raw_writew
-+#define mcf_write32	__raw_writel
-+#endif /* CONFIG_COLDFIRE */
-+
- #if defined(CONFIG_PCI)
- /*
-  * Support for PCI bus access uses the asm-generic access functions.
+ #elif defined(CONFIG_M5307) || defined(CONFIG_M5407) || defined(CONFIG_M5272)
+ 
+@@ -104,8 +104,8 @@ static inline void gpio_free(unsigned gpio)
+ 
+ #define MCFGPIO_PORTTYPE		u16
+ #define MCFGPIO_PORTSIZE		16
+-#define mcfgpio_read(port)		__raw_readw(port)
+-#define mcfgpio_write(data, port)	__raw_writew(data, port)
++#define mcfgpio_read(port)		mcf_read16(port)
++#define mcfgpio_write(data, port)	mcf_write16(data, port)
+ 
+ #elif defined(CONFIG_M5249) || defined(CONFIG_M525x)
+ 
+@@ -113,8 +113,8 @@ static inline void gpio_free(unsigned gpio)
+ 
+ #define MCFGPIO_PORTTYPE		u32
+ #define MCFGPIO_PORTSIZE		32
+-#define mcfgpio_read(port)		__raw_readl(port)
+-#define mcfgpio_write(data, port)	__raw_writel(data, port)
++#define mcfgpio_read(port)		mcf_read32(port)
++#define mcfgpio_write(data, port)	mcf_write32(data, port)
+ 
+ #endif
+ 
+diff --git a/arch/m68k/include/asm/nettel.h b/arch/m68k/include/asm/nettel.h
+index 9bf55cef119e..30bc915c3d97 100644
+--- a/arch/m68k/include/asm/nettel.h
++++ b/arch/m68k/include/asm/nettel.h
+@@ -87,12 +87,12 @@ static __inline__ void mcf_setppdata(unsigned int mask, unsigned int bits)
+  */
+ static __inline__ unsigned int mcf_getppdata(void)
+ {
+-	return readw(MCFSIM_PBDAT);
++	return mcf_read16(MCFSIM_PBDAT);
+ }
+ 
+ static __inline__ void mcf_setppdata(unsigned int mask, unsigned int bits)
+ {
+-	writew((readw(MCFSIM_PBDAT) & ~mask) | bits, MCFSIM_PBDAT);
++	mcf_write16((mcf_read16(MCFSIM_PBDAT) & ~mask) | bits, MCFSIM_PBDAT);
+ }
+ #endif
+ 
 -- 
 2.54.0
 
