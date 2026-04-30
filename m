@@ -1,57 +1,57 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102BB1DF72C
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 14:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17C3EACD
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 15:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777557633; cv=none; b=L4VRGwe9gHABI+PoQAD9MmsmI7HhFANILeSn8BVopX3Zkx2SbJlen330gfNaRnWgI7Vb9FMQwaXe+jPB8X3L8bqSIwIJ6yXzqDp8NzsSPSWEXAc7hVhlgEKcTrDnbiuWOBKwvknKRYxTIO5ki+NAiQwKvg0EAOl0pQnHC5adtXo=
+	t=1777561238; cv=none; b=mBokEjOlMzD1O1f6s5+5msw2KHGdtMsQqLZFMXST+G3nJSoq0dyv1HfzyeoPnX+CoefEfjBTf02MHAsLboc6i7hODTUv7EsgNqy6dPM10rxGqF1Hi7buyszvZx6sBq1ojpIOHj6GNjIe/FIw/euaZuo0ahQjJ5EQDjiEzMPzzxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777557633; c=relaxed/simple;
-	bh=JYqRw0qtP6Pi37fjAhH7otGQZgVDAKxdcaluz1eaV+8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=WYON4i1JoazkjM1FfykyqWHaaGcG98lCZL8HpwmTEc24H4bJ74VZlvZqtjP2Dv0H+dO21CkMRpk1mkDEZtUEllk10lIA+9ZJASd12GatvZRDj+Xu66Y7jjLpXFoHs7hZ1HY0YFyoQsSlbIBF6d3TFnOq+F4CBo8VjzIlkxzKBdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jDAqszdw; arc=none smtp.client-ip=198.175.65.19
+	s=arc-20240116; t=1777561238; c=relaxed/simple;
+	bh=5ysIS/WuRimLMoSrUCeLlSQakPHwygQfLmthxlfpSHE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=ADPjR51uSPKQAWrnJC8ZQaT1g8o/PlhrOKOn4kEvDcVo3+6jz9IMCl6YZPd6pOhiY7zi0UzGGc6HGFkwGGLl9q0jYiSkYhppuezFzRmwZ6PjhAPHtPFW1TaQvrLcueQUE++1T8HebaenHSHQVmVENyQH0WdEzDP7iGDUrkwBh8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WKVxKVcZ; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jDAqszdw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WKVxKVcZ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1777557632; x=1809093632;
+  t=1777561236; x=1809097236;
   h=date:from:to:cc:subject:message-id;
-  bh=JYqRw0qtP6Pi37fjAhH7otGQZgVDAKxdcaluz1eaV+8=;
-  b=jDAqszdwRLwE1uq6EldWuqRUJhH392b4Xj7jrRYVu+iMElJ903YX6Cvt
-   SlmlhkDQffXCpY1l2AKjnmK7hTumkDX66vMVgdgV5sIvRwu28VAz1fzBZ
-   DE0Mw1LXY8V4rUr/bWWEfeHW1dFJwh1qBUJWXcGReuPMwc73gbLONrWhg
-   kZLDhK4gdM4S1VFh+rz4RucRzVhrshJ4fLIKuTnP9eHbJyy2UR9fXeBwK
-   fP936OC/hejCcGI3QsIjOgn+8EVT9NvtEf4eYp/bo6FAOkdFp+jjGa4nj
-   qBjZZX/BAKXu4QGALiHCSKpfS5pytfoaz3umlafMFbiEHuLYuPEdL4SM4
-   w==;
-X-CSE-ConnectionGUID: tTZksIAeQIaksV9gnYRSNw==
-X-CSE-MsgGUID: JjoDkaz4RV6IZi2Dw3Welw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11772"; a="78429951"
+  bh=5ysIS/WuRimLMoSrUCeLlSQakPHwygQfLmthxlfpSHE=;
+  b=WKVxKVcZZtDozHo9o1cC4lBJ2RQy+cnhUuGMW2gAMZWjMV8XgTeBhbc1
+   93m7aZSWX/v/NMaYnao03viWoUvgEOxlrxt9RAInKxPMSDjfcSyYYV9IT
+   DyFsFQdPHujDG8wjOEY8zS5wWbCzCjXnzgSpxLXUr12LBL8FT23BM5JfK
+   d6VSqs00bmzJVqPstPasOAZXj24Mt7muCuW0PAzWhXWcWbaaDFfZsbsWU
+   7XeDsYL/zSQIOHcocLIwCrM7vQ4+Hw+04x26dqQQ7D6bssm671C4LnCXJ
+   hxPWLwuDl1opAh2InsPSrqEefkfWJXzQfZtyZ2CK/acqeHwPj/x2KkXyl
+   A==;
+X-CSE-ConnectionGUID: IfeQ4QEHQOuMMASwXM+rAA==
+X-CSE-MsgGUID: emn/NJTJTqOQ8kRCogUukA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11772"; a="66045920"
 X-IronPort-AV: E=Sophos;i="6.23,208,1770624000"; 
-   d="scan'208";a="78429951"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2026 07:00:31 -0700
-X-CSE-ConnectionGUID: oVET1MOPRxiNUgQf286f5Q==
-X-CSE-MsgGUID: LzAiWTUkQguKPaxXB1uhgg==
+   d="scan'208";a="66045920"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2026 08:00:35 -0700
+X-CSE-ConnectionGUID: Orl6pW86Q5W8dTqO5aJJEg==
+X-CSE-MsgGUID: /yvuT25iR/uDZFltPh2ncA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.23,208,1770624000"; 
-   d="scan'208";a="258171086"
+   d="scan'208";a="228100863"
 Received: from lkp-server01.sh.intel.com (HELO aa799cca880d) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 30 Apr 2026 07:00:29 -0700
+  by fmviesa009.fm.intel.com with ESMTP; 30 Apr 2026 08:00:33 -0700
 Received: from kbuild by aa799cca880d with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1wIRwJ-00000000CRE-0kjq;
-	Thu, 30 Apr 2026 14:00:27 +0000
-Date: Thu, 30 Apr 2026 22:00:17 +0800
+	id 1wISsQ-00000000CV2-41Aw;
+	Thu, 30 Apr 2026 15:00:30 +0000
+Date: Thu, 30 Apr 2026 23:00:29 +0800
 From: kernel test robot <lkp@intel.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 4ff8e797fed0b018ffde6e942d467884b846ecd9
-Message-ID: <202604302208.jeqH8v7T-lkp@intel.com>
+Subject: [geert-m68k:for-next] BUILD SUCCESS
+ 99a680bed60428175ff9c5c95d579826ca2ff3f8
+Message-ID: <202604302320.CXSw8sVx-lkp@intel.com>
 User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -59,10 +59,10 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 4ff8e797fed0b018ffde6e942d467884b846ecd9  zorro: sysfs: Replace sprintf() by sysfs_emit()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
+branch HEAD: 99a680bed60428175ff9c5c95d579826ca2ff3f8  zorro: sysfs: Replace sprintf() by sysfs_emit()
 
-elapsed time: 4093m
+elapsed time: 4153m
 
 configs tested: 191
 configs skipped: 2
