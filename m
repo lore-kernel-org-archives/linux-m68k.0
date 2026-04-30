@@ -1,26 +1,26 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E66023EA89
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 11:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2398619E839
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 11:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777547446; cv=none; b=F4VfkwVS9YUFM88n05KuV+/EkIiWX0FwxDTwrX9MWlGBCEuK1DP+GfqCnkJ9raMm08ktAxJ1igJDMgwUgSV0qW/OFgyZs2sISMOoVYlpZlR+4zQkU3Ohp3PjmgJ64QOx8RbM9Sbopxx+icipjbnrCsoBlERG55nxBxpfqUWn0bM=
+	t=1777548155; cv=none; b=ejf4kccOBP1gCIqXKxG4QXJVdjMPK7r2y1gIVyny61NnoJpWQyU1Ck9IFo/j28jUUj5ss7o03uvWQNTSdDIKB1M4CncE9j2tcpUPOgxkOf3DyrHLR4rqpmUOgiaNukr24uuVPhXfc42Bt7gAq/Ldl9Te0mzNxk7/fx2STCF23Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777547446; c=relaxed/simple;
-	bh=w/w2cfpiAXylMNpYNvsFygxcoYNuw//0Bb2+YZ7MZWc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CLYTg8xU7oiVT5TLGQE1EdgIfQIuKq2IktaQIWh5FiezQ+PT38P1L0fTpVZjbR8xI9M1pojg9eSnQEInZIzuWi7NDwFig7TeHv3eSUA//9qc0a943dkbaCWI6sAATskODJ9AR64TqXmiXOz2iJE+eRAwA+1tZI53338rwwxVOWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1777548155; c=relaxed/simple;
+	bh=8qMQ72Ed9RdflETlICS/1G+Gfjomo0MmW5SIY8+R4iE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=s2sB4hP1zz+nKSS/BqzewIwow+JyLM10+dNXySZewkiyTIhIKsvhHM/1QOYW9BYNFvjAAKEE+0yPj0qO092agunjnkJKQ3bSrKh9NACRSa2RBl8IuCdqjmdTnv8urUeIxbINdevLXuVyA0yKr8r1se6SdHCndOzSgfsQFtXc1M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 18D4941A45;
-	Thu, 30 Apr 2026 11:10:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 048CAC2BCB3;
-	Thu, 30 Apr 2026 11:10:43 +0000 (UTC)
-Message-ID: <00c4920e-46a7-4e60-af0a-a2aec7d2699f@linux-m68k.org>
-Date: Thu, 30 Apr 2026 21:10:41 +1000
+	by tor.source.kernel.org (Postfix) with ESMTP id 039B560142
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 11:22:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 276EAC2BCB3;
+	Thu, 30 Apr 2026 11:22:31 +0000 (UTC)
+Message-ID: <476d1913-b9dd-4462-956a-a2f2fe8c9a24@linux-m68k.org>
+Date: Thu, 30 Apr 2026 21:22:29 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -28,70 +28,76 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] m68k: coldfire: create IO access functions for
- internal registers
-To: Arnd Bergmann <arnd@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@kernel.org>
+Subject: Re: m68k: coldfire: create internal register access defines
+To: Arnd Bergmann <arnd@kernel.org>, linux-m68k@lists.linux-m68k.org
 References: <20260430052047.1827575-1-gerg@linux-m68k.org>
- <20260430052047.1827575-2-gerg@linux-m68k.org>
- <CAMuHMdVDMnxkF+eKwtSoBt7g_5sqY_O4zLT_icD9zTNuS8ou0Q@mail.gmail.com>
- <b7bac366-f9f5-408b-9359-ae6a4c8cab44@app.fastmail.com>
+ <18b7cda0-98b5-46fc-8a6b-926138853b6a@app.fastmail.com>
 Content-Language: en-US
 From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <b7bac366-f9f5-408b-9359-ae6a4c8cab44@app.fastmail.com>
+In-Reply-To: <18b7cda0-98b5-46fc-8a6b-926138853b6a@app.fastmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Arnd, Geert,
+Hi Arnd,
 
-On 30/4/26 17:20, Arnd Bergmann wrote:
-> On Thu, Apr 30, 2026, at 09:13, Geert Uytterhoeven wrote:
->> On Thu, 30 Apr 2026 at 07:23, Greg Ungerer <gerg@linux-m68k.org> wrote:
->>> --- a/arch/m68k/include/asm/io_no.h
->>> +++ b/arch/m68k/include/asm/io_no.h
->>> @@ -107,6 +107,22 @@ static inline void writel(u32 value, volatile void __iomem *addr)
->>>
->>>   #endif /* IOMEMBASE */
->>>
->>> +#if defined(CONFIG_COLDFIRE)
->>> +/*
->>> + * The ColdFire internal peripheral registers are big-endian, so you
->>> + * cannot use the conventional little-endian readb/readw/readl and
->>> + * writeb/writew/writel access functions. Define a family of access
->>> + * functions to give correct endian access that can be used by all
->>> + * architecture code.
->>> + */
->>> +#define mcf_read8      __raw_readb
->>> +#define mcf_read16     __raw_readw
->>> +#define mcf_read32     __raw_readl
->>> +#define mcf_write8     __raw_writeb
->>> +#define mcf_write16    __raw_writew
->>> +#define mcf_write32    __raw_writel
+On 30/4/26 17:39, Arnd Bergmann wrote:
+> On Thu, Apr 30, 2026, at 07:19, Greg Ungerer wrote:
+>> The readx/writex family of IO access functions for ColdFire are
+>> non-standard. They return native endian data for multi-byte access,
+>> which on m68k/ColdFire is big-endian byte order. A number of places
+>> need fixing to change readx/writex to be more standard - a lot of
+>> the CPU/SoC architecture specific code and a number of drivers.
 >>
->> Why not call them io{read,write}{8,16be,32be}(), like parisc, powerpc,
->> and sparc, do?  Sparc seems to be the closest match:
->> https://elixir.bootlin.com/linux/v7.0.1/source/arch/sparc/include/asm/io_64.h#L439
+>> The existing ColdFire CPU/SoC architecture code is inconsistent in
+>> how it accesses SoC hardware module registers. Both readx/writex
+>> and __raw_readx/__raw_writex are used across the code base. To clean
+>> this up this set of patches moves to an internal set of access
+>> defines for the CPU/SoC architecture code. The following are defined
+>> and used for all internal register access:
+>>
+>>      8 bit read  -->  mcf_read8
+>>      8 bit write -->  mcf_write8
+>>     16 bit read  -->  mcf_read16
+>>     16 bit write -->  mcf_write16
+>>     32 bit read  -->  mcf_read32
+>>     32 bit write -->  mcf_write32
+>>
+>> To ease review I have broken the changes up a little, grouping major
+>> blocks together instead of one huge patch.
 > 
-> I think that would be the right choice for introducing these from
-> scratch, but we can't easily change the existing code in small steps,
-> for two reasons:
+> These all look good to me,
 > 
-> - the asm-generic/io.h already provides ioread32be() etc functions,
->    and these are used today on some of the coldfire drivers, but by
->    accident these have little-endian semantics (since readl() is
->    big-endian here), and at least one driver relies on it being that
->    way.
-> 
-> - readl32be() really wants an 'void __iomem *' pointer, and we should
->    not have architectures that do something different here. The coldfire
->    __raw_readl() accepts both pointer and integer (phys_addr_t etc)
->    addresses at the moment, and the arch/m68k/coldfire code for nommu
->    targets uses that. Changing these to use ioremap() and pass pointers
->    would be a much bigger change.
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Yes, exactly. I steered clear of reusing anything that already existed.
-Especially since the existing broken ones are actually used in drivers.
+Thanks.
+
+
+> There are still open questions about how to continue from here
+> to change the existing readl() and ioread32be() style helpers
+> to have normal endianess and type characteristics without
+> breaking things, but this is a good step in that direction.
+
+I have been playing with one idea. I have been working through the affected
+drivers and changing them to use raw primitives only for their IO access
+on ColdFire (so only the __raw_readx/__raw_writex macros). My thinking is
+that these can then be pushed via driver subsystem maintainers if and when
+they are ready. When all are affected drivers are fixed then we can correct
+the definitions in arch/m68k/include/asm/io_no.h. At a later time if we choose
+we can then make changes to effected drivers again to use the now corrected
+readx/writex family.
+
+At least this way we can keep everything working and avoid a single patch that
+makes changes to io_no.h and drivers across multiple subsystems in one go.
+What do you think?
+
+So far I have modified the fec and smc91x ethernet drivers in this way.
+That was strait forward, though I may get a little resistance in the fec
+driver since I abstracted the IO access from readl/writel to local internal
+functions to keep it clean and avoid redefining readl/wrtel. But the change
+is simple in concept. I am working through the handful of other drivers
+that we identified.
 
 Regards
 Greg
+
 
