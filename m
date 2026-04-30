@@ -1,141 +1,132 @@
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26ED71A5B84
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 07:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501B2377553
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 07:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777533194; cv=none; b=o8uOOa1cVj8vwbWrLF1t5JPLvbXdAWGa0IR1D1b9K63aMyj90agnIHyN1+le+wzvbLXarm+JEOcFGvnsHE5vbPmswMOUQMt9nichZilFlP9FYsIzap0ahreWq7vfv2utgLwJj0Xpu4oLNj4vLqgqvWfuJkDWOUEHUmpMR8TfbzU=
+	t=1777533681; cv=none; b=SzcVnbl7NxVP9ci4BLZ/5dSin7qoGtc5KFWqMElvtA43jN7RTne4kMuojVpJG+o6OUnGTLR/jTrID6TrXwmO6JagwlRGC8h0vPV1LptsdBk+oLmULvLJOB0UWIHhMlUjCEWB0oBp3f/m3HdSuXGjX2FOs2w1IGDOfEaB/SxRrDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777533194; c=relaxed/simple;
-	bh=4tTuNJ/UY6ixdAqxKZMUTeSwlAwYLRWhEA10zHOEAKg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pbdUlCGauG4j18LE9GSJQAx90iWhkNFFiEHhHjDwBY+HlLEalo3UhETc5iiDPILbEUMAqMVm2n3PYePo/bzSfDK43P2uLj7vjgDQHm1Wbte5vN2KSRteMGSSCG9CBymLVef7VourSWYL1Dnlg3tMY/Yn0AoaNu0PGCN7kqqfI6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-944168e8c5fso376046241.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 00:13:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777533192; x=1778137992;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=svEWzGjvs7yvcR/Ma0SX4d0JWidv/PFWVn4RGxglD7M=;
-        b=PtgIYgJIDnXBFOiFCyWA1ZueOliY1V6XlDyKbEHN8999fhIZQubV5P2rfgrHm9l6NW
-         4J37CklwmP3vFRd61AC37jDZa7eLgF+y1jn8jF6MULggXHbjyleFNAy6mAh50xT3+IN2
-         SUw51OEy+g3dX8KHkbWieOxYl6CUjb7c42S4/K3Qcaj1ztxCLJyWUiHEn++q3SVtPPKK
-         F7c/Vn5rK7hLqldFdUYtMjwoV0NVtnZpFXVXoiuaIIuVYClIbnORSihYkFewhSnxSRfO
-         Cb6moMrW/Q1f0rrLWYQd5MEHc/xBvKREeGKm+JBBU9DM+86CLkeOP0gIs+4lHQQf/clS
-         frUQ==
-X-Gm-Message-State: AOJu0YxqcF9BLhvxzKq9T0b0z8+WZdtJTSz+V+jULy6M1SXU/JuaHZ3S
-	paWRCUHBDByUnctMZBKZ+tZEKCo+r6MctCVnNae4zzBDbGYyw0sfm2Q+7dxa5G6LKuI=
-X-Gm-Gg: AeBDievto7ieNmPtYvYiWHnZiVIBFjgok2/j2Hjcdl0I9kkwqtxUmmigWrCTn3CbkaJ
-	S1sBKNOJ0U82qE4fAzJsbfOa4MBEepkx4R91UiOUZG/fCfQ8cevjAIcKFhbLziKQFudZVZZtP68
-	W256qq93bCbBtCBANrNjIh5zq23QeyyPWVjhrC/uZG1JSbni20xICmRD2Zsoedx9f3ozQuDPdP/
-	dxa+Y7YfVSF1c5XUYTrATI18/c/2zl2uBYac8Uukab/4qGNm+1J4kenAN2RxKqP7oMD/vDhXneY
-	fZILf4BYOYUX/4l3wETbGcOicUmPpG+ObyDBOk/1a5+WX66CQjug6JLR3fNsQ3EUNG94eNxQiKh
-	8C3eXcB6KVUYx3Pr6Z0xRy3X5InXk695g441IN23pz5ZZzdovg4WkwVuBrC6O94DEcrCOdpCun/
-	b3hsZwj1GEsMH+N+szYNmC56b3oKAog180f5d6EH/eIJd+IZU/B5s+MQIYvvYQiX0BPSDxPRQYx
-	pw=
-X-Received: by 2002:a05:6102:d94:b0:608:7b2e:4160 with SMTP id ada2fe7eead31-62ad21380bfmr806384137.5.1777533192077;
-        Thu, 30 Apr 2026 00:13:12 -0700 (PDT)
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-95cb7765acasm2333456241.8.2026.04.30.00.13.11
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2026 00:13:11 -0700 (PDT)
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-56a86f0a23bso579666e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 00:13:11 -0700 (PDT)
-X-Received: by 2002:a05:6102:2c8a:b0:60a:cd0e:5cee with SMTP id
- ada2fe7eead31-62ad2b44be6mr745557137.12.1777533191421; Thu, 30 Apr 2026
- 00:13:11 -0700 (PDT)
+	s=arc-20240116; t=1777533681; c=relaxed/simple;
+	bh=aYI61VNLItW0T+fqFxejokseBuaVwAtUHG7b3UEI3RA=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=BpWs8qp4jxA36cCzjBhY0/UYSzdnrnZo9z+e9roxuu8sw5VLuXSjoibcONfce4mIcYPMiNhaB9J+NfMc7YPn8g0mfC4vWATDWy6V26Uck16s2hHchh8o977z91GJHfhhAOwAur3crofQCJYhU0EiHQlTGwk6SZurnucdlT9PWxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ji2wj/cK; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ji2wj/cK"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id 69A5C60582
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 07:21:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06DDFC2BCB3
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 07:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777533679;
+	bh=aYI61VNLItW0T+fqFxejokseBuaVwAtUHG7b3UEI3RA=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=Ji2wj/cKITT9UgnfCwg4tOOKNlJJPJLEL0hLFbml4mhHa+ikd5SogQSJnSaM3MRB/
+	 bEdN8Gy84c48I1djNBqbvVSLeTeSOzluo9rBv44gCqrUnQj71KCibFvHErCdvYI4xN
+	 kyyHyYutB/SYfUWpYIyV7riFdavhPcfXr7r0Y3Zzh8tPYxMgjUbTn1l4JcS09QF9q8
+	 w1J6sCpLkw+/x1pweNeK97YmxnjJAASYt/NP2BaalGM+ilsBJE9d4Nn4U7fYXfC634
+	 bJORNxDyBww1N+O/+jwXEMbCZBT0S597bSxh7++z6JWajWhjytcQ44uFoTyxVDrX/U
+	 nB+GT0d1md5Zw==
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfauth.phl.internal (Postfix) with ESMTP id F1C4DF40078;
+	Thu, 30 Apr 2026 03:21:17 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-04.internal (MEProxy); Thu, 30 Apr 2026 03:21:17 -0400
+X-ME-Sender: <xms:7QLzaRoKlOdSi6o029JX9I4y6O7hIuCsGIqSZj6DW_l9Jj-6rEv8vw>
+    <xme:7QLzaed8olLE-SR3SEz4MBPfsQe6Hd2GJwdjrf8h4lrwmGX5fq2xKZTVwo5t4MhN4
+    AcCX0-RT8V5VM7PkEqTiu7ZCDB3bgTPKZglLQXujX0FS0Gf1DGDG18>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdekieejudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeeivddvfffhfeejfefhtdffteejvdegheefvdevtdekkeefjeegkedvheetuefh
+    gfenucffohhmrghinhepsghoohhtlhhinhdrtghomhenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhhphgv
+    rhhsohhnrghlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnugeppe
+    hkvghrnhgvlhdrohhrghesrghrnhgusgdruggvpdhnsggprhgtphhtthhopeegpdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehgvghrgheskhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtohepghgvvghrtheslhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtohepghgv
+    rhhgsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhmieekkh
+    eslhhishhtshdrlhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:7QLzaSSXaMRLWtpgsmJK93mEckUBI5C3kuaqVrVSfCv7Kkc2V78hdA>
+    <xmx:7QLzaVnAov6cGxEVb1fS6g4uKfBZpQQkyH0WQG8uAsAfUvrF8kckTg>
+    <xmx:7QLzaaQRadGZDvp_Z1Yl9vcNDdM7Ef13iCeTMPFjKRWH2TNdiHU5cQ>
+    <xmx:7QLzabMoXFmd-KTPXKZYe0o20v529YrIVkdCKnkQXWuwX5GnCVZdLQ>
+    <xmx:7QLzabU5vR8Cz2hL3ZQlgP_AC5vn9ov0h2EGXjwAMKmbYIl9_nXXCZRJ>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id D2F70700065; Thu, 30 Apr 2026 03:21:17 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260430052047.1827575-1-gerg@linux-m68k.org> <20260430052047.1827575-2-gerg@linux-m68k.org>
-In-Reply-To: <20260430052047.1827575-2-gerg@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 30 Apr 2026 09:13:00 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVDMnxkF+eKwtSoBt7g_5sqY_O4zLT_icD9zTNuS8ou0Q@mail.gmail.com>
-X-Gm-Features: AVHnY4ISEiHnCBIgSDyGj14KNZbB59EHWVP2VfkUGZtO8v4ckTu1WYl1Zo2I4zU
-Message-ID: <CAMuHMdVDMnxkF+eKwtSoBt7g_5sqY_O4zLT_icD9zTNuS8ou0Q@mail.gmail.com>
-Subject: Re: [PATCH 1/7] m68k: coldfire: create IO access functions for
- internal registers
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, arnd@kernel.org, 
-	Greg Ungerer <gerg@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-ThreadId: AWNyG37R7Ib-
+Date: Thu, 30 Apr 2026 09:20:57 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Greg Ungerer" <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, "Greg Ungerer" <gerg@kernel.org>
+Message-Id: <b7bac366-f9f5-408b-9359-ae6a4c8cab44@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdVDMnxkF+eKwtSoBt7g_5sqY_O4zLT_icD9zTNuS8ou0Q@mail.gmail.com>
+References: <20260430052047.1827575-1-gerg@linux-m68k.org>
+ <20260430052047.1827575-2-gerg@linux-m68k.org>
+ <CAMuHMdVDMnxkF+eKwtSoBt7g_5sqY_O4zLT_icD9zTNuS8ou0Q@mail.gmail.com>
+Subject: Re: [PATCH 1/7] m68k: coldfire: create IO access functions for internal
+ registers
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Hi Greg,
-
-On Thu, 30 Apr 2026 at 07:23, Greg Ungerer <gerg@linux-m68k.org> wrote:
-> From: Greg Ungerer <gerg@kernel.org>
+On Thu, Apr 30, 2026, at 09:13, Geert Uytterhoeven wrote:
+> On Thu, 30 Apr 2026 at 07:23, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> --- a/arch/m68k/include/asm/io_no.h
+>> +++ b/arch/m68k/include/asm/io_no.h
+>> @@ -107,6 +107,22 @@ static inline void writel(u32 value, volatile void __iomem *addr)
+>>
+>>  #endif /* IOMEMBASE */
+>>
+>> +#if defined(CONFIG_COLDFIRE)
+>> +/*
+>> + * The ColdFire internal peripheral registers are big-endian, so you
+>> + * cannot use the conventional little-endian readb/readw/readl and
+>> + * writeb/writew/writel access functions. Define a family of access
+>> + * functions to give correct endian access that can be used by all
+>> + * architecture code.
+>> + */
+>> +#define mcf_read8      __raw_readb
+>> +#define mcf_read16     __raw_readw
+>> +#define mcf_read32     __raw_readl
+>> +#define mcf_write8     __raw_writeb
+>> +#define mcf_write16    __raw_writew
+>> +#define mcf_write32    __raw_writel
 >
-> The internal peripheral registers contained in all varieties of ColdFire
-> SoCs require simple big endian access ranging in sizes from 8, 16 and 32
-> bit. Currently there is a mixture of IO access methods used across the
-> various CPU support code, some using readx/writex and some using the
-> simpler __raw_readx/__raw_writew.
->
-> The readx/writex use cases are particularly kludgy in that they contain
-> code to differentiate internal register access and other general attached
-> peripheral register access - say on a PCI bus. In effect this means that
-> the readx/writex family for ColdFire is non-standard. This ultimately
-> ends up causing problems with definitions of other IO access support
-> functions like ioreadx/ioreadxbe/iowritex/iowritexbe which in the
-> generic case are defined in terms of readx/writex.
->
-> Create a set of internal only register access methods to ultimately
-> replace all internal register access code. The new access functions
-> mirror the existing readx/writex family but using the preferred 8/16/32
-> suffixes.
->
-> Signed-off-by: Greg Ungerer <gerg@kernel.org>
+> Why not call them io{read,write}{8,16be,32be}(), like parisc, powerpc,
+> and sparc, do?  Sparc seems to be the closest match:
+> https://elixir.bootlin.com/linux/v7.0.1/source/arch/sparc/include/asm/io_64.h#L439
 
-Thanks for your patch!
+I think that would be the right choice for introducing these from
+scratch, but we can't easily change the existing code in small steps,
+for two reasons:
 
-> --- a/arch/m68k/include/asm/io_no.h
-> +++ b/arch/m68k/include/asm/io_no.h
-> @@ -107,6 +107,22 @@ static inline void writel(u32 value, volatile void __iomem *addr)
->
->  #endif /* IOMEMBASE */
->
-> +#if defined(CONFIG_COLDFIRE)
-> +/*
-> + * The ColdFire internal peripheral registers are big-endian, so you
-> + * cannot use the conventional little-endian readb/readw/readl and
-> + * writeb/writew/writel access functions. Define a family of access
-> + * functions to give correct endian access that can be used by all
-> + * architecture code.
-> + */
-> +#define mcf_read8      __raw_readb
-> +#define mcf_read16     __raw_readw
-> +#define mcf_read32     __raw_readl
-> +#define mcf_write8     __raw_writeb
-> +#define mcf_write16    __raw_writew
-> +#define mcf_write32    __raw_writel
+- the asm-generic/io.h already provides ioread32be() etc functions,
+  and these are used today on some of the coldfire drivers, but by
+  accident these have little-endian semantics (since readl() is
+  big-endian here), and at least one driver relies on it being that
+  way.
 
-Why not call them io{read,write}{8,16be,32be}(), like parisc, powerpc,
-and sparc, do?  Sparc seems to be the closest match:
-https://elixir.bootlin.com/linux/v7.0.1/source/arch/sparc/include/asm/io_64.h#L439
+- readl32be() really wants an 'void __iomem *' pointer, and we should
+  not have architectures that do something different here. The coldfire
+  __raw_readl() accepts both pointer and integer (phys_addr_t etc)
+  addresses at the moment, and the arch/m68k/coldfire code for nommu
+  targets uses that. Changing these to use ioremap() and pass pointers
+  would be a much bigger change.
 
-> +#endif /* CONFIG_COLDFIRE */
-> +
->  #if defined(CONFIG_PCI)
->  /*
->   * Support for PCI bus access uses the asm-generic access functions.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Arnd
