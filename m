@@ -1,112 +1,95 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20F93BED19
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 07:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0659837B03F
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 10:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777534806; cv=none; b=UWNNzxq8BaE9kKrqx614rGbdz3nQqYjqMe0RvTPRst7X4arSUYZhPheMavmBKV8eId+1sP7bEK5zoy/cUzsQ9Ld0Z4GX7oyzlhg993/yHIcxgCtfmUajBZZ4pl2xP+ChOq2ZzDcvVtTEsW7s5XknV7WwdkpZOHlxFtLI+FxbBgk=
+	t=1777545736; cv=none; b=th+fr7CdV2y2AmNww9ktolqg0gviJENtIrDkEmBV7RzHO5VVoFQ1RLJCHzNm4iXRV/co0InvgCOqHVJk5eavI41nTcbCe5abavsdf/P1M5+IG/0knDbhq8H9e3oKTEI87HV5Uo9gwKinaUimais2NplLSKxnHyELK1sgNn0cDpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777534806; c=relaxed/simple;
-	bh=yCT1vnVYGSijOZMxjTAfWYmJvGze24lqkpQDeabjJ/E=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=CUpC4Rl3NLi+H6hMNB6iGJD3/shcb1+cULzlgIKr+uuuaHicLWGbr4WpStyhTkzQHpD0X15lJdyVT4zkPUskAUHkiQIuKVNfJ/1r1oD34MF/lpVnkGrN1dqTP8Q5OYBV/Vmvt9ru05DoA0kpuxVC+IZcDFI98CR3PduyKvn+NxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tE3rumZL; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	s=arc-20240116; t=1777545736; c=relaxed/simple;
+	bh=se6CaQEg5P9h/Of+cF00Dej9Vq8Xx6D+viwDM/HA4Wo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AhaddQp4U28NbFipM1lsBdhXviD4Whtyn4mPspfNObT3TG7i2QYKqZfOja0EE8D9N6fQCNDBTsayy6+ZvCvzbihagrtvghK6/6j4n7tBhkhTIxYg12ViW0LWV9Wj6p/nfJGV4Y43E746lw2QKytJKpNigZaFKhD+M9Mqvq+59c8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tE3rumZL"
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id E990761145
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 07:39:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 881E4C2BCB4
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 07:39:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777534795;
-	bh=yCT1vnVYGSijOZMxjTAfWYmJvGze24lqkpQDeabjJ/E=;
-	h=Date:From:To:In-Reply-To:References:Subject:From;
-	b=tE3rumZLIvoSJhY2OlZJPKkSgDLEjTPkDouawaviOo9NXQY7+KymIhPJPUcoJjg00
-	 0X3M55hz072Wxlg9C+lh4Xlait3SsJTQNDMHhPgUAgQebZjnYZYuRPC3FH2jx5kEYm
-	 yEqYqchfBSaITmykWRtiF4GquiXGSKgJ0QNn7fSqt5bjozUpaYBelG3BX1ikINzaoC
-	 +k+HFMjHphyFT/YV7htFjWU03KVNtnipZs0Jtqr6QTPMX7dkz4PfFJh+FPwToDnRUr
-	 HjoeDiTPp509g6w3KD/cA68VYJLp8o4JFIDcHxhBq8p5cMGNTCQmLsbPBaWvJ+nFJw
-	 oBD2aDw/WqAeQ==
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 9A4DEF40068;
-	Thu, 30 Apr 2026 03:39:54 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Thu, 30 Apr 2026 03:39:54 -0400
-X-ME-Sender: <xms:SgfzadfH0MOg7Wv8ihZbU7OOQ9IqwJZjPES2zWxZ2rK9rg7wmdmMNw>
-    <xme:SgfzaWAUM3sghlZawiSdW3-x_ivqObIhdGokI8_nUZKjxw2piLVPFYFjRXIZ58y0D
-    Y9_JIc2Tte7LuaqKBNr4jLKEAFjcUqM18zuqeb0QJyWzMPDZtDl4v0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdekieejgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhepofggfffhvffkjghfufgtgfesthejredtre
-    dttdenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhn
-    vghlrdhorhhgqeenucggtffrrghtthgvrhhnpeeiueevffehieetgeefkeetkeekvedute
-    ejffetudffgeefieeufeejjeejieevudenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrg
-    hlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgv
-    lhdrohhrghesrghrnhgusgdruggvpdhnsggprhgtphhtthhopedvpdhmohguvgepshhmth
-    hpohhuthdprhgtphhtthhopehgvghrgheslhhinhhugidqmheikehkrdhorhhgpdhrtghp
-    thhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:SgfzacLSSIKUBrAx_GB5-6MVAPANLFOEx5aWtwdlqLi7zR04JB-avw>
-    <xmx:SgfzaaFRDpW0v4o5GrdEY1T4VElma1vYglbq026lox-iu0yeWvuUzQ>
-    <xmx:SgfzaUTloRxT5V0hKB4FFb1-C1zCSTIby_X1HYpF5kBh8TJHFTeRhw>
-    <xmx:SgfzaWGhMZUjwNh2Ea-SytWVYThUPQvK3FELJdHvdIqgPrxpeMSVCw>
-    <xmx:SgfzaQ-PH9x0_pHYVvPXhoD_oMHtX7K1LohVzNI6RhFpRLmERZLj9o52>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 7916E70006B; Thu, 30 Apr 2026 03:39:54 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	by sea.source.kernel.org (Postfix) with ESMTP id 9ACE4408DC;
+	Thu, 30 Apr 2026 10:42:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1633C2BCB3;
+	Thu, 30 Apr 2026 10:42:13 +0000 (UTC)
+Message-ID: <85975a4a-e0f9-4925-821b-194776236d9e@linux-m68k.org>
+Date: Thu, 30 Apr 2026 20:42:10 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Ayu6HKOn_iMR
-Date: Thu, 30 Apr 2026 09:39:34 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Greg Ungerer" <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Message-Id: <18b7cda0-98b5-46fc-8a6b-926138853b6a@app.fastmail.com>
-In-Reply-To: <20260430052047.1827575-1-gerg@linux-m68k.org>
-References: <20260430052047.1827575-1-gerg@linux-m68k.org>
-Subject: Re: m68k: coldfire: create internal register access defines
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] m68k: defconfig: add config for M5329EVB board
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, Greg Ungerer <gerg@kernel.org>
+References: <20260429142452.1200856-1-gerg@linux-m68k.org>
+ <20260429142452.1200856-2-gerg@linux-m68k.org>
+ <CAMuHMdW25fL+SHCH=kK3dRHCoa0HWDWa4EMBfGsH9NWWS7psPQ@mail.gmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <CAMuHMdW25fL+SHCH=kK3dRHCoa0HWDWa4EMBfGsH9NWWS7psPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 30, 2026, at 07:19, Greg Ungerer wrote:
-> The readx/writex family of IO access functions for ColdFire are
-> non-standard. They return native endian data for multi-byte access,
-> which on m68k/ColdFire is big-endian byte order. A number of places
-> need fixing to change readx/writex to be more standard - a lot of
-> the CPU/SoC architecture specific code and a number of drivers.
->
-> The existing ColdFire CPU/SoC architecture code is inconsistent in
-> how it accesses SoC hardware module registers. Both readx/writex
-> and __raw_readx/__raw_writex are used across the code base. To clean
-> this up this set of patches moves to an internal set of access
-> defines for the CPU/SoC architecture code. The following are defined
-> and used for all internal register access:
->
->     8 bit read  -->  mcf_read8
->     8 bit write -->  mcf_write8
->    16 bit read  -->  mcf_read16
->    16 bit write -->  mcf_write16
->    32 bit read  -->  mcf_read32
->    32 bit write -->  mcf_write32
->
-> To ease review I have broken the changes up a little, grouping major
-> blocks together instead of one huge patch.
+Hi Geert,
 
-These all look good to me,
+On 30/4/26 17:04, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Wed, 29 Apr 2026 at 16:27, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> From: Greg Ungerer <gerg@kernel.org>
+>>
+>> Add a default configuration file for the Freescale M5329EVB board.
+>> Although the SoC type has been supported for a long time there has been
+>> no defconfig for the base platform. Create one to give better build
+>> and test coverage.
+>>
+>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> 
+> Thanks for your patch!
+> 
+>> --- /dev/null
+>> +++ b/arch/m68k/configs/m5329evb_defconfig
+> 
+> [...]
+> 
+>> +CONFIG_FB=y
+>> +CONFIG_FRAMEBUFFER_CONSOLE=y
+>> +CONFIG_LOGO=y
+>> +CONFIG_LOGO_LINUX_MONO=y
+>> +CONFIG_LOGO_LINUX_VGA16=y
+> 
+> [...]
+> 
+>> +CONFIG_FONTS=y
+>> +CONFIG_FONT_8x8=y
+>> +CONFIG_FONT_8x16=y
+>> +CONFIG_FONT_MINI_4x6=y
+> 
+> Given you don't enable any fbdev drivers, there is no point in
+> enabling CONFIG_FB and derivatives...
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+The original config this came from had an out of tree fb driver for this device.
+So I left these on when importing this. But really probably nothing gained
+by leaving them enabled. Will remove.
 
-There are still open questions about how to continue from here
-to change the existing readl() and ioread32be() style helpers
-to have normal endianess and type characteristics without
-breaking things, but this is a good step in that direction.
 
-      Arnd
+>> +CONFIG_FRAME_WARN=1024
+> 
+> Better stick to the default?
+
+Sure, yep.
+
+Regards
+Greg
+
+
