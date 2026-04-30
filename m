@@ -1,120 +1,100 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3643C1979
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 11:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8466D3D6472
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 12:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777549053; cv=none; b=THQmw51Jh0ITJ29cwORpeUzdKgDazO0FG1e4nnhdTICyAUW/XMocFo1FTgBFL/MdCEr1y/1HwLCkzR7OFPsRMdd9Oa/IGB/8sfNWF1rP7dHJyhwMNS/0rTMwrMlMFKx1FgtCtuUw2+0ZJ6yQLRYgCGEjjTqgQNKE3kLbMlL57+o=
+	t=1777550838; cv=none; b=CY3OwatEl16NrG4WvBm6aHlYSYQbPM0e3UmBsrFUIuKtGKglYr8PMPWU+J/Mtx8FtBObNyKDKJ+9SK8qbBC5sGZFk6Wzj0NckJZe6wFicXjUJQh8NnRWdNxzs5gWrD58EgSitsTz0PsDixQAmn1IUJPBxXrwSJOnaT3lQefofr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777549053; c=relaxed/simple;
-	bh=vpQ9hNJ2UJkF6LBl0YcWOW/bbwRZxuD9KSs+MuXrNLw=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=t+sZ1KXzVRN6ZGuHeVGuSgGnL0shAw/CdApQFLl8mqvcKZJTnxsy+jvR3Z+29WpLdvFcoPPLHIkeBkiBijoByAo699IaRZlRg5jB+jES3oLusQqNGyzPu8M1kfaDSCNEDH7fwzo3IBd8ZuRRuszfiVroiEFaz3r0oW/e7wP22/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qvfHMPww; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1777550838; c=relaxed/simple;
+	bh=7jlXsmJc4BF0VLC5LLPdZEyEcLFjpPpZnB2Q4QbS4A0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fkCmTtAvwEM+FCpYQymgPD9H8a1Yx2h9TK6LFJJ4fD0N0qM4aqeKasuE5yk7gs21sH3uO5v4Jn5hTvvtSXc/E4kYWWQJwDPtYcan0eJ3MRc8egMy06GW4QORCHul9MIldCuu0STUNC2evPpxzoXPXCYAa6lr9tiz7hTjz5sGJCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s1HR+L6g; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qvfHMPww"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id E7AEB43518
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 11:37:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B23F8C2BCB4
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 30 Apr 2026 11:37:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777549049;
-	bh=vpQ9hNJ2UJkF6LBl0YcWOW/bbwRZxuD9KSs+MuXrNLw=;
-	h=Date:From:To:In-Reply-To:References:Subject:From;
-	b=qvfHMPwwHf95Q0P/gQvx6tb3M6dQpEDgopq5ePMtl0/zZz0QjCzFs4Pvusr5ahQxe
-	 jHLpLpkbkbYbDiui8MN60QqZAqqKipgyJGDLINwmlAVKjn7LZjkbo/8UURC+bKtwIx
-	 GpRvL+vSx4Zjgu18loWa8h6nqp/L0DCV1eWSBZjdYb6jf+t+6nwqRyAn/XsPNJP3jn
-	 MBntbbRX8lUumv1XRAhgGa/Nn2CtKasK4YbTxd/yMycW2P+gBXbRbPgPoREr9gN236
-	 K8TevTePAQ91pJjbm5VoogDWLbBnKlfwkwc5WBsqXaqHzvEfP3V7QrdEufY8I+FlnD
-	 44A48WzeKmegQ==
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfauth.phl.internal (Postfix) with ESMTP id A700DF40080;
-	Thu, 30 Apr 2026 07:37:28 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Thu, 30 Apr 2026 07:37:28 -0400
-X-ME-Sender: <xms:-D7zaYE4mr8NX2p-xCs6sBsCcfEh7VUZY196vVpbmXPOlr6RZHnf6Q>
-    <xme:-D7zacLI6PPukUaVghFp1hjTKSVCSBfHlHKgEYqUDsC8UnrdiWX8viXRGk0yQTwcm
-    RfiUSK7ptiE2AxiCbWQmANL6S6dIMsOK3KHKdCeicz2CP2T7ka4DtM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdekjedvvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhepofggfffhvffkjghfufgtgfesthejredtre
-    dttdenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhn
-    vghlrdhorhhgqeenucggtffrrghtthgvrhhnpeeiueevffehieetgeefkeetkeekvedute
-    ejffetudffgeefieeufeejjeejieevudenucevlhhushhtvghrufhiiigvpedtnecurfgr
-    rhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrg
-    hlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgv
-    lhdrohhrghesrghrnhgusgdruggvpdhnsggprhgtphhtthhopedvpdhmohguvgepshhmth
-    hpohhuthdprhgtphhtthhopehgvghrgheslhhinhhugidqmheikehkrdhorhhgpdhrtghp
-    thhtoheplhhinhhugidqmheikehksehlihhsthhsrdhlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:-D7zaezBV9BpGna8TZhsEc_UnkS1uT7gtdP3jJzGVudZ8iH5B-MiOQ>
-    <xmx:-D7zaYPiASNZQoJQvSJGct2E5HnSI5-etQfL7SPXb3ZQHKu37LnsiQ>
-    <xmx:-D7zaX6h2e1ZZsSPYAzsEVMtnKb9xdGyRkab7wn-ElkayBCXvIvixA>
-    <xmx:-D7zaRPigI4iXcDaemEr9ahscbcjUDPFXsfT2Z--OR127Sz2_CF0Kg>
-    <xmx:-D7zadkGFjci9yO_Of4Ws3s38wHi15bzNxfYxDvujYi-xfUgtUHJebxF>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 8783B700065; Thu, 30 Apr 2026 07:37:28 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s1HR+L6g"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777550834;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gaB0PzuLnEll2e8UzoUAA+smU2pZUE/uNIu/IG17Q3M=;
+	b=s1HR+L6g3ysmEyy7UNqPzXsi38S87EJdQt/uHtLzG1mmVhG2eZ/4SIAswnixHIQtDL9hBr
+	r9rhj1lkT6sk/KgeQ+QMSBrraPwHFC4gOJ7j0b2PtGUZfWdnBQxoC2zYhgR2tVHQ0VPEL+
+	9eyn1TIIUNUx1eOIrFoZkgZ9hPIBnOM=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Kees Cook <kees@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	Thorsten Blum <thorsten.blum@linux.dev>
+Subject: [PATCH] drivers: dio: replace deprecated strcpy with strscpy in dio_init
+Date: Thu, 30 Apr 2026 14:05:33 +0200
+Message-ID: <20260430120532.305308-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: Ayu6HKOn_iMR
-Date: Thu, 30 Apr 2026 13:37:08 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Greg Ungerer" <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Message-Id: <209d0653-6386-4b64-9e15-e358f84453ab@app.fastmail.com>
-In-Reply-To: <476d1913-b9dd-4462-956a-a2f2fe8c9a24@linux-m68k.org>
-References: <20260430052047.1827575-1-gerg@linux-m68k.org>
- <18b7cda0-98b5-46fc-8a6b-926138853b6a@app.fastmail.com>
- <476d1913-b9dd-4462-956a-a2f2fe8c9a24@linux-m68k.org>
-Subject: Re: m68k: coldfire: create internal register access defines
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1970; i=thorsten.blum@linux.dev; h=from:subject; bh=7jlXsmJc4BF0VLC5LLPdZEyEcLFjpPpZnB2Q4QbS4A0=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJmfXXvK2FRyVPzNBeoeR0WJBisHmRX0Ounciz92nWceV +VHo8iOUhYGMS4GWTFFlgezfszwLa2p3GQSsRNmDisTyBAGLk4BmMh/dYZfzHxLL38+feUF/5k9 H/zfL9rd9fb0OaHfSQoLz8TtPC6kLMrwP6lo69xlpWy3Ocq+RZy2ZhFbG+t/zdmh3CZAJTDES9a IDwA=
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 30, 2026, at 13:22, Greg Ungerer wrote:
-> On 30/4/26 17:39, Arnd Bergmann wrote:
->
->> There are still open questions about how to continue from here
->> to change the existing readl() and ioread32be() style helpers
->> to have normal endianess and type characteristics without
->> breaking things, but this is a good step in that direction.
->
-> I have been playing with one idea. I have been working through the affected
-> drivers and changing them to use raw primitives only for their IO access
-> on ColdFire (so only the __raw_readx/__raw_writex macros). My thinking is
-> that these can then be pushed via driver subsystem maintainers if and when
-> they are ready. When all are affected drivers are fixed then we can correct
-> the definitions in arch/m68k/include/asm/io_no.h. At a later time if we choose
-> we can then make changes to effected drivers again to use the now corrected
-> readx/writex family.
->
-> At least this way we can keep everything working and avoid a single patch that
-> makes changes to io_no.h and drivers across multiple subsystems in one go.
-> What do you think?
+strcpy() has been deprecated [1] because it performs no bounds checking
+on the destination buffer, which can lead to buffer overflows. While the
+current code works correctly, replace strcpy() with the safer strscpy()
+to follow secure coding best practices.
 
-I think that should work for most of them, but perhaps not for the
-spi-fsl-dspi with its extra abstraction through regmap-mmio.
+Indent multiple lines using tabs instead of spaces, and use pr_info()
+and avoid continuation logging while at it.
 
-I would probably still do an atomic change for that one, adding
-the explict regmap endianess flag at the same time as redefining
-the readl() function. As long as it's only one or two drivers that
-need this, the change should still be simple enough to merge with
-the respective subsystem maintainer Ack.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
 
-> So far I have modified the fec and smc91x ethernet drivers in this way.
-> That was strait forward, though I may get a little resistance in the fec
-> driver since I abstracted the IO access from readl/writel to local internal
-> functions to keep it clean and avoid redefining readl/wrtel. But the change
-> is simple in concept. I am working through the handful of other drivers
-> that we identified.
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ drivers/dio/dio.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Ok.
-
-     Arnd
+diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
+index 419b3c13d491..b39ae25d060e 100644
+--- a/drivers/dio/dio.c
++++ b/drivers/dio/dio.c
+@@ -178,7 +178,7 @@ static int __init dio_init(void)
+ 	if (!MACH_IS_HP300)
+ 		return 0;
+ 
+-        printk(KERN_INFO "Scanning for DIO devices...\n");
++	pr_info("Scanning for DIO devices...\n");
+ 
+ 	/* Initialize the DIO bus */
+ 	INIT_LIST_HEAD(&dio_bus.devices);
+@@ -247,18 +247,19 @@ static int __init dio_init(void)
+ 			dev->id = prid;
+ 
+ 		dev->ipl = DIO_IPL(va);
+-		strcpy(dev->name, dio_getname(dev->id));
+-                printk(KERN_INFO "select code %3d: ipl %d: ID %02X", dev->scode, dev->ipl, prid);
++		strscpy(dev->name, dio_getname(dev->id));
+ 		if (DIO_NEEDSSECID(prid))
+-                        printk(":%02X", secid);
+-                printk(": %s\n", dev->name);
++			pr_info("select code %3d: ipl %d: ID %02X:%02X: %s\n",
++				dev->scode, dev->ipl, prid, secid, dev->name);
++		else
++			pr_info("select code %3d: ipl %d: ID %02X: %s\n",
++				dev->scode, dev->ipl, prid, dev->name);
+ 
+ 		if (scode >= DIOII_SCBASE)
+ 			iounmap(va);
+ 		error = device_register(&dev->dev);
+ 		if (error) {
+-			pr_err("DIO: Error registering device %s\n",
+-			       dev->name);
++			pr_err("DIO: Error registering device %s\n", dev->name);
+ 			put_device(&dev->dev);
+ 			continue;
+ 		}
