@@ -1,38 +1,37 @@
 Received: from mail.kernel-space.org (v2202511311555398556.powersrv.de [46.38.245.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C923DFC65
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 17:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D948334753F
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 17:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.245.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777915409; cv=none; b=plGOrJY8cmNSPc0y6VjC8S9gFhPJwuC2phum6B1QefVgNdyW6VQB7EN+OU2TURK+0wy3H9L/V4CkPvWkUQrG/QmRfjGo6C0iXhDN+LeMIp7zkbITqSOTpWEKVzxvBKzx3RiPgr7WvnQhN+bqhV54AouUSHcKcifl397RRj6vAJs=
+	t=1777915411; cv=none; b=MBtqVPc38HNeZU7B/+MlRy5C0UbzO1jFladK1mC5KnQiMsic1EpVuT++XHOHBN92K0BMIHP+4IPnOjtr+WPYGAny54D/A9UraVSntuEiw765/dNbi44fXCGENpdKQ1RGcz3BwXW8mHVH842DKV8hI4OP0eF4cIgxRuG2WmGTBBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777915409; c=relaxed/simple;
-	bh=XK4gbLCyPxDWg3kaxQ80NPr0aOIc2JZzkkU8Yu7ETVM=;
+	s=arc-20240116; t=1777915411; c=relaxed/simple;
+	bh=BTzMq5e9Ct1iS05RorpLyh1aN78tCIlpP86CvhH3+is=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BtouL0IlE8utj1su+ZzBa+nE1mmCrflXGFrGzo2/zaxKPfw67i0znReqrlntmqmZVMxb4TFtJgSrbbv8HuOm+sJhRFXdevD5lYmgUgdCbVUOjVCpwB7+P+pEvROxzDR1jpMlurqbHxWqS2eyVONMqDuE0PALN17/mREU64AgiCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org; spf=pass smtp.mailfrom=kernel-space.org; dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b=vqktDZFo; arc=none smtp.client-ip=46.38.245.6
+	 In-Reply-To:To:Cc; b=b5v2Mwk53PwiaOcpnmP2glcSNV7adgLEjW3MLjFijkPpu+j6mNS+1zxV+d4ZZ06Os/Lw120PUTIKZxh14Tky/xkxJbRLeSwntJ+j9XF0aEh/iIEyPsjADBx6goyfZ2l4Tzofm2wPLopBMRFHqiccPSqJjxsCOr9ZbNDuJGpK1CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org; spf=pass smtp.mailfrom=kernel-space.org; dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b=BF4e+y+F; arc=none smtp.client-ip=46.38.245.6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel-space.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b="vqktDZFo"
+	dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b="BF4e+y+F"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-	s=s1; t=1777915003;
+	s=s1; t=1777915004;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=j9fbcKoaqme5Vz1fCTzuqtyu8Za4tl10mh+oXgKUmQo=;
-	b=vqktDZFoJYnKsBv7Qg3+jR2KORdYcXNDAAApS5NXnpUaTfHbLvr8OfuEzxzckPuibuLM5u
-	eaFoMh+hPSMYYR8kKZoNrCBtFIhAgqK7d/m6cjzE/ccJGbTgGKxse//ia/IZKONSmkl/3g
-	60Rhk+UlCDDKSdYz0PKhuwt/S+WP+L4=
+	bh=66sbIWl/UECZcngzqfN9gySpU5b7WSWy5FgqX8acPdE=;
+	b=BF4e+y+FI93bmhmBDVYOS9Ywi3UsNwZ9B+nk/SFmHSkqT4n/jl++VpZSEEgYjk786kgiWq
+	3+YgTbehRHNoNXXR+coeZLVsbMqaPAQgho3Tk1wlwOhIqHTt98tJRn/bWv9jMwYhFqs6/B
+	dYJJVVEHO2P347vzmmkLM4ucda/T3u0=
 Received: from [192.168.0.2] (<unknown> [2a07:7e81:7daa:0:62cf:84ff:feee:627])
-	by oreshnik (OpenSMTPD) with ESMTPSA id 2e036497 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Mon, 4 May 2026 17:16:43 +0000 (UTC)
+	by oreshnik (OpenSMTPD) with ESMTPSA id 31d53e53 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Mon, 4 May 2026 17:16:44 +0000 (UTC)
 From: Angelo Dureghello <angelo@kernel-space.org>
-Date: Mon, 04 May 2026 19:16:41 +0200
-Subject: [PATCH 03/10] m68k: mcf5441x: setup DAC clock name as per driver
- name
+Date: Mon, 04 May 2026 19:16:43 +0200
+Subject: [PATCH 05/10] m68k: add DAC modules base addresses
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -41,7 +40,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260504-wip-stmark2-dac-v1-3-874c36a4910d@baylibre.com>
+Message-Id: <20260504-wip-stmark2-dac-v1-5-874c36a4910d@baylibre.com>
 References: <20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com>
 In-Reply-To: <20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com>
 To: Greg Ungerer <gerg@linux-m68k.org>, 
@@ -59,44 +58,29 @@ X-Mailer: b4 0.15.2
 
 From: Angelo Dureghello <adureghello@baylibre.com>
 
-Later in this patchset, the mcf54415 DAC driver is added.
-Considering some other different ColdFire cpu DACs exists, the DAC driver
-is named as "mcf54415_dac", related to the mcf5441x family SoCs with
-DACs (mcf54415/6/7/8).
-
-So updating DAC clock names to bind with proper driver name.
+Add DAC controller 0 and 1 base addresses.
 
 Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
- arch/m68k/coldfire/m5441x.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/m68k/include/asm/m5441xsim.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-index 5c33d3896cf7..b21638844fd4 100644
---- a/arch/m68k/coldfire/m5441x.c
-+++ b/arch/m68k/coldfire/m5441x.c
-@@ -43,8 +43,8 @@ DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
- DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
--DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
--DEFINE_CLK(0, "mcfdac.1", 39, MCF_CLK);
-+DEFINE_CLK(0, "mcf54415_dac.0", 38, MCF_CLK);
-+DEFINE_CLK(0, "mcf54415_dac.1", 39, MCF_CLK);
- DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
- DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
- DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
-@@ -106,8 +106,8 @@ static struct clk_lookup m5411x_clk_lookup[] = {
- 	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
- 	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
- 	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
--	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
--	CLKDEV_INIT("mcfdac.1", NULL, &__clk_0_39),
-+	CLKDEV_INIT("mcf54415_dac.0", NULL, &__clk_0_38),
-+	CLKDEV_INIT("mcf54415_dac.1", NULL, &__clk_0_39),
- 	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
- 	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
- 	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
+diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+index f48cf63bd782..f5acc962bb95 100644
+--- a/arch/m68k/include/asm/m5441xsim.h
++++ b/arch/m68k/include/asm/m5441xsim.h
+@@ -191,6 +191,11 @@
+ #define MCFEPORT_EPPAR		0xfc090000
+ #define MCFEPORT_EPIER		0xfc090003
+ #define MCFEPORT_EPFR		0xfc090006
++/*
++ * DAC Modules.
++ */
++#define MCFDAC_BASE0		0xfc098000
++#define MCFDAC_BASE1		0xfc09c000
+ /*
+  *  RTC Module.
+  */
 
 -- 
 2.54.0
