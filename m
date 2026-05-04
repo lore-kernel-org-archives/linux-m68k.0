@@ -1,37 +1,37 @@
 Received: from mail.kernel-space.org (v2202511311555398556.powersrv.de [46.38.245.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3033DFC65
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 17:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8C034CFDD
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 17:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.245.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777915413; cv=none; b=NcGZ3ok2XwhFWpEbAQC0Y6KGByIoocpRDJX1aXgl2og++HVlw4r0FqBecBH2yr/8/7r4g1urcZlpTMn+ZHHvj4GdJui9yR0jzHXtDEJ38rfnhUtiGdTDwh8vJMsaa8uy9IcJrCwoWr5ba4Tr9R47yc803v/R1RyDvCOxO77zvAY=
+	t=1777915414; cv=none; b=GJ0vtUWzgGLQbWYzl2rXgI9HcZS9weoMd5bYor5DDMLRc45Xi3bZMDlglcPSKp55fBwCUAy+iHs966QIuJWJCtsglbB8jKfupKmw3w1Fr18PFFobHkiYvY5Ijx1GCxGNRiQef/W4wkq80r3eEH85rkFtFxG9B9HMuwCHWAaRZcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777915413; c=relaxed/simple;
-	bh=n0b364dDBrWM4RGQrGIAbMsbTV+2t0ZGtLdE7nGAO9Q=;
+	s=arc-20240116; t=1777915414; c=relaxed/simple;
+	bh=DdiJJP6JWxTYdbbRr6DCUunKojbBZ9SL5aGjDPR7h54=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EafYPa2W9snik2OvZvrikXiX9/Asgl3gJOQh+wPsJ7860OWH/jRKjHnR/u9QIWQYk+8zZzImaM4S19X84pyaacDWvHH78SnoHPRp985I/UwjaXJXNza8G1XOcd/ao1kmTU37CfnITDfWJYJpY6eIaW0ekjcrE+DtfcfmMk4JtDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org; spf=pass smtp.mailfrom=kernel-space.org; dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b=MldD+GhP; arc=none smtp.client-ip=46.38.245.6
+	 In-Reply-To:To:Cc; b=bq1RWOPHFKmgarpVHDh/iYDUDs8fgIhR/zlES195yg82wiqifv7tj0qLD3g4fJ3osPHyNVRztQMTMOB0CRPs0ORc0MaXRNJbnURW04COy0L8ovwd6f96IDcKqRrjGYgi9CCQGGL/kU3uTwGxeguOFovJQ0RALmXEy5k6452O78Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org; spf=pass smtp.mailfrom=kernel-space.org; dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b=AdIGNAC/; arc=none smtp.client-ip=46.38.245.6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel-space.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b="MldD+GhP"
+	dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b="AdIGNAC/"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-	s=s1; t=1777915005;
+	s=s1; t=1777915006;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mqVoCiMOeXwzd334lL+Kbbn+xeppyD+CHd7jRk3nty8=;
-	b=MldD+GhPDuS3G03v762xI38Yl1c0ElHUytTd6dJ/Qw2i98k1hfKxzTaRliQ/L4c/fLMelm
-	AF4w86WrbY52ZHA6+j71C340r4AmmG8OHOlKO9yAvredhdcBu7V1/s+6ZslXic7IMDvJ3d
-	dCFfMWi4WYoQ1FRt7sZg9j7cMF97kvE=
+	bh=htwcYAHQIOqaxElDjDYg+njAl/ofitRP9nvq1PHSWrQ=;
+	b=AdIGNAC/f8eX5Nk4/DYRKJ47wDOaG5+Tm6BE7r0ce9U566IdBy2yLs6p8pj3MvelWbnPLz
+	7Eok+5yzAdilxJ2cWdXWxP3de5HbS4RP7rcRyCLLUWkjYv8xQ2o6d/rSHkh1zxK0TP8xd/
+	4Dj3Hvu8ShfBwj6Cyg9g7ZITiB/Q0Jw=
 Received: from [192.168.0.2] (<unknown> [2a07:7e81:7daa:0:62cf:84ff:feee:627])
-	by oreshnik (OpenSMTPD) with ESMTPSA id ffaf193d (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Mon, 4 May 2026 17:16:45 +0000 (UTC)
+	by oreshnik (OpenSMTPD) with ESMTPSA id 2d248f23 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Mon, 4 May 2026 17:16:46 +0000 (UTC)
 From: Angelo Dureghello <angelo@kernel-space.org>
-Date: Mon, 04 May 2026 19:16:44 +0200
-Subject: [PATCH 06/10] m68k: mcf5441x: add CCM registers
+Date: Mon, 04 May 2026 19:16:46 +0200
+Subject: [PATCH 08/10] m68k: stmark2: add mcf5441x DAC platform devices
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260504-wip-stmark2-dac-v1-6-874c36a4910d@baylibre.com>
+Message-Id: <20260504-wip-stmark2-dac-v1-8-874c36a4910d@baylibre.com>
 References: <20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com>
 In-Reply-To: <20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com>
 To: Greg Ungerer <gerg@linux-m68k.org>, 
@@ -58,44 +58,60 @@ X-Mailer: b4 0.15.2
 
 From: Angelo Dureghello <adureghello@baylibre.com>
 
-Add CCM module register offsets.
+Add mcf5441x DAC platform devices.
 
 Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
- arch/m68k/include/asm/m5441xsim.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ arch/m68k/coldfire/stmark2.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-index f5acc962bb95..9ce2cbb05316 100644
---- a/arch/m68k/include/asm/m5441xsim.h
-+++ b/arch/m68k/include/asm/m5441xsim.h
-@@ -125,6 +125,26 @@
- #define MCFPM_PPMHR1		0xfc040038
- #define MCFPM_PPMLR1		0xfc04003c
- #define MCFPM_LPCR		0xec090007
+diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
+index 85502b81175e..30da9bcbfd63 100644
+--- a/arch/m68k/coldfire/stmark2.c
++++ b/arch/m68k/coldfire/stmark2.c
+@@ -94,8 +94,42 @@ static struct platform_device dspi_spi0_device = {
+ 	},
+ };
+ 
++static struct resource dspi_dac0_resource[] = {
++	[0] = {
++		.start = MCFDAC_BASE0,
++		.end   = MCFDAC_BASE0 + 0xFF,
++		.flags = IORESOURCE_MEM,
++	},
++};
 +
-+/*
-+ * Chip Configuration Module (CCM).
-+ */
-+#define MCF_CCM_CCR		0xec090004
-+#define MCF_CCM_RCON		0xec090008
-+#define MCF_CCM_CIR		0xec09000a
-+#define MCF_CCM_MISCCR		0xec09000e
-+#define MCF_CCM_CDRH		0xec090010
-+#define MCF_CCM_CDRL		0xec090012
-+#define MCF_CCM_UOCSR		0xec090014
-+#define MCF_CCM_UHCSR		0xec090016
-+#define MCF_CCM_MISCCR3		0xec090018
-+#define MCF_CCM_MISCCR2		0xec09001a
-+#define MCF_CCM_ADCTSR		0xec09001c
-+#define MCF_CCM_DACTSR		0xec09001e
-+#define MCF_CCM_SBFSR		0xec090020
-+#define MCF_CCM_SBFCR		0xec090022
-+#define MCF_CCM_FNACR		0xec090024
++/* DAC controller, id = bus number */
++static struct platform_device dac0_device = {
++	.name = "mcf54415_dac",
++	.id = 0,
++	.num_resources = ARRAY_SIZE(dspi_dac0_resource),
++	.resource = dspi_dac0_resource,
++};
 +
++static struct resource dspi_dac1_resource[] = {
++	[0] = {
++		.start = MCFDAC_BASE1,
++		.end   = MCFDAC_BASE1 + 0xFF,
++		.flags = IORESOURCE_MEM,
++	},
++};
++
++/* DAC controller, id = bus number */
++static struct platform_device dac1_device = {
++	.name = "mcf54415_dac",
++	.id = 1,
++	.num_resources = ARRAY_SIZE(dspi_dac1_resource),
++	.resource = dspi_dac1_resource,
++};
++
+ static struct platform_device *stmark2_devices[] __initdata = {
+ 	&dspi_spi0_device,
++	&dac0_device,
++	&dac1_device,
+ };
+ 
  /*
-  *  UART module.
-  */
 
 -- 
 2.54.0
