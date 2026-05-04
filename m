@@ -1,130 +1,88 @@
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BFC2D780E
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 07:18:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCA33033C0
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 07:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777879084; cv=none; b=aE2wzQTG0lELkpUBKF1kKVEEXttXX4bVC5uFMscE4XvZEgoChhJzpJY+lvoC678gUgoC6zdKmvPIx2iwaHZgqCZFVS6vSrHcpBiEmeKck5V+NhFPZrLJh2pO30gE1gAl6Cs5PJ57bkIxZH/rabOft7I7sfjGffXjVHITPL4etUo=
+	t=1777880480; cv=none; b=mpMBWVJlqx3FbuwZ9HreuPFHI6OIFECEwQ+UhVOZUNzHJcg/fbGE0JQxmQvo0P/YW479ys80VEa10PvNojhoKUQL+k5Cam1EKV4H8KAoilV7LZa6cx+vCOA5bAnxa6bbI2jchah7Q1efDIwYR2fu6cKLyoMkOZ6PAG/w16H1mUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777879084; c=relaxed/simple;
-	bh=CMrJsvIhP01E1Mw80JOSLylNMYl0j59WTaxBub2X+Tg=;
+	s=arc-20240116; t=1777880480; c=relaxed/simple;
+	bh=I8nSwelY096TgXzlNsEKd2VhMa2fBN+hHLBja/Px3q8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P9/VhLwS/xpFltR9WJzWxEmlzqMkfH9V7vXKnWN3F7UXZ3qypwbHHFuflJ1QVjw2A0rBBvpEabbMzxnPj3/LlIVjnWeMfO6bU9mx1IVxMz6xAGaTxvTJlMtZ4yWZzT0UcDZhGToUrOBtymGLX5Gh2SEvcuCcLn1E0xBH83Gpuc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.170
+	 To:Cc:Content-Type; b=orOI56H/Qye+YCozvOT66blGWhPzdR9JXiK8JqFVXfZR++YCgN2EFgxOcOqIlA/1oP8jhuegE5lzIyGYGp5Q0EQd5078FHWoYSwkeYTirS490aD15cjbjHPPt+Z2QboJ6OgQbYVfF63knlLF87mKcug9p4SZFsuFBzrSMdKj3Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-5751136c561so1223773e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:18:02 -0700 (PDT)
+Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-5673804da95so1246060e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:41:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777879082; x=1778483882;
+        d=1e100.net; s=20251104; t=1777880478; x=1778485278;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EqJnH27Nqs4Tge038gpHam0aW3zoxzMcWOn5yIYA1EE=;
-        b=BcjY+dAygVDWCji2FHO/va1O4StL6L1HZuvMERbJLrzsPTC55VP3rdlcDK7RL8IlAj
-         KOo8aKoV6PhnVVSZXGbXrkJ1pKfk2eHQzrbDOhQK8myO0RmDCL6MVWOD82TxcieAMJJH
-         pqx01wtKWVgin+ucNjUUy6vhTyzOf4QSBMziPHlvahUo/bSC72L+kRh4LSOi7bZj1M7t
-         YvAb24VHijWeANyPeZ9i2I/XQN/EFSQ4ksH28F515GUwDRYFLH2U0yirL+R04G0+9n7H
-         SqlyxHhX6hGOV0G98pZ3U0bwh0LSiVBRxP95JnwpX9q358omjLjB8ZdX8bQz9s+dPB/7
-         4mqw==
-X-Forwarded-Encrypted: i=1; AFNElJ8+dZ+qdQWr15QX5WzVLEPki3xhn+ux1mkZJJRHZ3Pqwoec8o0x9n7w2IdW3C6bioP0OkTK2dIHvpyR@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzHRHdG+xaICba9iC/vlJ0pxcelTR7U+FJNP7TB0lah+JftXXCL
-	WdfFwEHHrEcypGjd3NMLOAGIoN9OqPfPYOWfRh58M+8k7S1Z08M9qGxbU1CPU5Jr
-X-Gm-Gg: AeBDies/8F02uc4VXR1lo861KlnIFLedLJy/CYqoWc6rmQyOBIE07xYO81+ulr1lPch
-	HHo0jeVk2gTzsA6QHaPH0khYZjfdGLBjBr/CPnba0weQxDL0mzpd4X6j66CmmpBvTyQodF4J3sh
-	lb0QrHOrbjPcdXyZmqyoa3YZbd1Hjh/vKz2sLauR9CQNFoorlyI1hPkkONonJZDr6XY+9wZo1N7
-	pcF5o/Kh4BNsDiq5q7W0bz6wIGQFYKTPHEXe4jca8KlXcGRYK0nST30YxyWqOTnqZ3wwNdBeABa
-	2gk63O6g9c/nvJivSDYIgutU6He570vGBtikBhp/R6LxIaFTsZ88yet1VpE6s0bgF5CFCRfQ2h2
-	5oqoyTOLhHQHa3ctWCYaThwWQW6T7d8c2VAOOlXIX4G0UMh2GFu42MoJM7YDi2GpOIBGWTKWeOJ
-	sCcpOx5t6zjhaaHbtSOFLdTVLtHWRPmHo4DVKywXK7DylGUhjnpcNcf4uylOgAmgt89eKLct8=
-X-Received: by 2002:a05:6102:104f:b0:62f:365c:fa00 with SMTP id ada2fe7eead31-62f365cfd3bmr663601137.12.1777879081690;
-        Mon, 04 May 2026 00:18:01 -0700 (PDT)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-62ef2b9720asm2016811137.6.2026.05.04.00.18.01
+        bh=4YHiOEXi+KwmonXdJIlmmmZ9Y2XThFqvNCCLSv1OhNI=;
+        b=ejw1mD150fUKLAajApkXZfV3uPidfctlfwQTYjtA1f5dAbHGaKV3g4VrjLDb17G2ZK
+         fgIiDgJZpg0vZoNR+DxX3rx0s+0CJI5L7THWLqnF+dn2/wveEqD/vwkHSo8VRilsUurZ
+         Hx5SI9IY82Wb372nnIfY073GVm2V7Fxk7o/jE6W0RUReo/YW2Pv2uO92GjzrCjKiRMmG
+         rTG3h8wEYTV6e46MhRkrhqNj8BHjCyWxPRZc+yB+or21JP+vhHYaX4SzsJ8JTN0/+0Mg
+         xe5IKHVKx+8e8i3FdgF+psau+QDsGGRb8BiL48znK+X7f5UhbJdTKnrGsywLc/PlDeKT
+         a4eg==
+X-Forwarded-Encrypted: i=1; AFNElJ+ElhdnXTQm5GYhKaai5h3RWpKZtslMBYTqy8N+DoDPScwj2vDxzQwxDYMxlNfRyz5R2ItfjhvpQ3rl@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyqLwp03ItVLSY20sk/Z2L36G71jLRxdLQErXXsUxa4irqaPkNA
+	M81tc37+7RZu7mrOGcOqeX36u2UOhJsuxryykYHxHp2Go3ujTmbLUecHv4oIEs2t
+X-Gm-Gg: AeBDievIQe93CcuoHWbt/N3cfNlmDTOtHVGue+lF4XLyjS3ojVH/jkeHiZ9NdxmjoEz
+	N9TcQfT28y8o90VeAZlw4UIzb2+V1Y/sBHwQJtvH/sayba26kXqzbHd6JL6TcqYdNRHSu25zS5w
+	PVIJM1fSZyqL3JYGoCTsqjqjCQNzl7ehEHFQqAmoh+KI3i/ldOtSUs/Lb8DPdXiFHQMA7WQrfPj
+	P6Psbk3XK+c6umORg3UHc5d0YlLTorDNns13nv+4xCIwKhioX4FJZplPisRqS59RjAy4d8cx40z
+	gN2bNnGvuSMN7/YgIyuYWtw8Q7vGVwPhSZJKYna0g23Z55ASsVlQWTiO6YMq/k4E01AVd5KSaAq
+	ClojGTnF7zkk42mfGl3EhhYnhVd4u1JT3+ibjfP6+1gmugyS66dtvB6m0xGxXkcxd23YU3ZUVLP
+	SdHdHV7jzoqLd4e5DeDagHIS7tujd6tYemU5NXxDPrJLJG5XSA+q76w5qeFOsK59wbTyBBqd8bQ
+	4Q=
+X-Received: by 2002:a05:6102:4a8a:b0:607:b901:5d71 with SMTP id ada2fe7eead31-62d874496ecmr2643894137.24.1777880477978;
+        Mon, 04 May 2026 00:41:17 -0700 (PDT)
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-95ce0894dc8sm4874748241.2.2026.05.04.00.41.17
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2026 00:18:01 -0700 (PDT)
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-95ce0cf2d4bso1658235241.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:18:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ9yOLZKMX4FiA/THGVPLlA5p8e7KPHFfH/CDsQiQXrkcQEbv+HcwxufBRpCHtLIDPWrDmK8LHdWdQ7u@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:5793:b0:5ff:ecd0:1d1f with SMTP id
- ada2fe7eead31-62aff203d00mr6650977137.19.1777879081069; Mon, 04 May 2026
- 00:18:01 -0700 (PDT)
+        Mon, 04 May 2026 00:41:17 -0700 (PDT)
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-57513733658so269552e0c.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:41:17 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+cZ6wgG3JugbYQ0tzgmp7wR4dkLXqX0M/IbzsgkDtapVWWBgLm/x9eAiNup6HykdBcYzwwox+K957z@lists.linux-m68k.org
+X-Received: by 2002:a05:6122:a5c7:20b0:575:3433:bb34 with SMTP id
+ 71dfb90a1353d-5753433bdafmr291581e0c.7.1777880477350; Mon, 04 May 2026
+ 00:41:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260430120532.305308-3-thorsten.blum@linux.dev>
-In-Reply-To: <20260430120532.305308-3-thorsten.blum@linux.dev>
+References: <20260424104011.2616970-1-johan@kernel.org>
+In-Reply-To: <20260424104011.2616970-1-johan@kernel.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 4 May 2026 09:17:50 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUiMMXrWtsZ5erkoQoYh_4dq1CYD-RiSkZXSVwQAtxo6A@mail.gmail.com>
-X-Gm-Features: AVHnY4KAWLEHTrfWUh9qfqDhcLkCBJuZ6fXDZ0LL_eTxBV38W6Tbr9dm-7gys74
-Message-ID: <CAMuHMdUiMMXrWtsZ5erkoQoYh_4dq1CYD-RiSkZXSVwQAtxo6A@mail.gmail.com>
-Subject: Re: [PATCH] drivers: dio: replace deprecated strcpy with strscpy in dio_init
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org
+Date: Mon, 4 May 2026 09:41:05 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWbe-8MiTSe1t3tRmgAcOPC94yDM1xyogtKogswba=JCQ@mail.gmail.com>
+X-Gm-Features: AVHnY4IQ9cO1LnOsqdYvMTxRYY8Rz74a0P7uco-JVFQQMiwBl1yntxULnjYYcKo
+Message-ID: <CAMuHMdWbe-8MiTSe1t3tRmgAcOPC94yDM1xyogtKogswba=JCQ@mail.gmail.com>
+Subject: Re: [PATCH] nubus: switch to dynamic root device
+To: Johan Hovold <johan@kernel.org>
+Cc: Finn Thain <fthain@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hi Thorsten,
-
-On Thu, 30 Apr 2026 at 14:09, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> strcpy() has been deprecated [1] because it performs no bounds checking
-> on the destination buffer, which can lead to buffer overflows. While the
-> current code works correctly, replace strcpy() with the safer strscpy()
-> to follow secure coding best practices.
+On Fri, 24 Apr 2026 at 12:40, Johan Hovold <johan@kernel.org> wrote:
+> Driver core expects devices to be dynamically allocated and will, for
+> example, complain loudly if a device that lacks a release function is
+> ever freed.
 >
-> Indent multiple lines using tabs instead of spaces, and use pr_info()
-> and avoid continuation logging while at it.
+> Use root_device_register() to allocate and register the root device
+> instead of open coding using a static device.
 >
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
-Thanks for your patch!
-
-Please split this in two patches, as the "while at it" became much
-larger than the main change.
-
-> --- a/drivers/dio/dio.c
-> +++ b/drivers/dio/dio.c
-> @@ -178,7 +178,7 @@ static int __init dio_init(void)
->         if (!MACH_IS_HP300)
->                 return 0;
->
-> -        printk(KERN_INFO "Scanning for DIO devices...\n");
-> +       pr_info("Scanning for DIO devices...\n");
->
->         /* Initialize the DIO bus */
->         INIT_LIST_HEAD(&dio_bus.devices);
-> @@ -247,18 +247,19 @@ static int __init dio_init(void)
->                         dev->id = prid;
->
->                 dev->ipl = DIO_IPL(va);
-> -               strcpy(dev->name, dio_getname(dev->id));
-> -                printk(KERN_INFO "select code %3d: ipl %d: ID %02X", dev->scode, dev->ipl, prid);
-> +               strscpy(dev->name, dio_getname(dev->id));
->                 if (DIO_NEEDSSECID(prid))
-> -                        printk(":%02X", secid);
-> -                printk(": %s\n", dev->name);
-> +                       pr_info("select code %3d: ipl %d: ID %02X:%02X: %s\n",
-> +                               dev->scode, dev->ipl, prid, secid, dev->name);
-> +               else
-> +                       pr_info("select code %3d: ipl %d: ID %02X: %s\n",
-> +                               dev->scode, dev->ipl, prid, dev->name);
-
-Looks like a good opportunity to start using "%u" to print dev->ipl,
-which is u8.
-
->
->                 if (scode >= DIOII_SCBASE)
->                         iounmap(va);
-
-The rest LGTM to me.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v7.2.
 
 Gr{oetje,eeting}s,
 
