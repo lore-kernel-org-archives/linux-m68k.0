@@ -1,96 +1,71 @@
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCA33033C0
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 07:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2C229D264
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 08:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777880480; cv=none; b=mpMBWVJlqx3FbuwZ9HreuPFHI6OIFECEwQ+UhVOZUNzHJcg/fbGE0JQxmQvo0P/YW479ys80VEa10PvNojhoKUQL+k5Cam1EKV4H8KAoilV7LZa6cx+vCOA5bAnxa6bbI2jchah7Q1efDIwYR2fu6cKLyoMkOZ6PAG/w16H1mUA=
+	t=1777882722; cv=none; b=Dvu35XdRSnZvPNaxbY29wh76fMx0pnhviQsNsvOXEfj9DCyzRNEJZNfMPlC6gFg01f/Qs8rO77vjjEMlqJ0EXTOhDNsTdj+ryhxCHyK8v4rwaZ1wGF5rWD7x1BvoPoEjOHrNhMU0hBA9hX1Z/k5SrDnFxSwHJJl8bHvGRqjmiLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777880480; c=relaxed/simple;
-	bh=I8nSwelY096TgXzlNsEKd2VhMa2fBN+hHLBja/Px3q8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=orOI56H/Qye+YCozvOT66blGWhPzdR9JXiK8JqFVXfZR++YCgN2EFgxOcOqIlA/1oP8jhuegE5lzIyGYGp5Q0EQd5078FHWoYSwkeYTirS490aD15cjbjHPPt+Z2QboJ6OgQbYVfF63knlLF87mKcug9p4SZFsuFBzrSMdKj3Ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-5673804da95so1246060e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:41:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777880478; x=1778485278;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4YHiOEXi+KwmonXdJIlmmmZ9Y2XThFqvNCCLSv1OhNI=;
-        b=ejw1mD150fUKLAajApkXZfV3uPidfctlfwQTYjtA1f5dAbHGaKV3g4VrjLDb17G2ZK
-         fgIiDgJZpg0vZoNR+DxX3rx0s+0CJI5L7THWLqnF+dn2/wveEqD/vwkHSo8VRilsUurZ
-         Hx5SI9IY82Wb372nnIfY073GVm2V7Fxk7o/jE6W0RUReo/YW2Pv2uO92GjzrCjKiRMmG
-         rTG3h8wEYTV6e46MhRkrhqNj8BHjCyWxPRZc+yB+or21JP+vhHYaX4SzsJ8JTN0/+0Mg
-         xe5IKHVKx+8e8i3FdgF+psau+QDsGGRb8BiL48znK+X7f5UhbJdTKnrGsywLc/PlDeKT
-         a4eg==
-X-Forwarded-Encrypted: i=1; AFNElJ+ElhdnXTQm5GYhKaai5h3RWpKZtslMBYTqy8N+DoDPScwj2vDxzQwxDYMxlNfRyz5R2ItfjhvpQ3rl@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YyqLwp03ItVLSY20sk/Z2L36G71jLRxdLQErXXsUxa4irqaPkNA
-	M81tc37+7RZu7mrOGcOqeX36u2UOhJsuxryykYHxHp2Go3ujTmbLUecHv4oIEs2t
-X-Gm-Gg: AeBDievIQe93CcuoHWbt/N3cfNlmDTOtHVGue+lF4XLyjS3ojVH/jkeHiZ9NdxmjoEz
-	N9TcQfT28y8o90VeAZlw4UIzb2+V1Y/sBHwQJtvH/sayba26kXqzbHd6JL6TcqYdNRHSu25zS5w
-	PVIJM1fSZyqL3JYGoCTsqjqjCQNzl7ehEHFQqAmoh+KI3i/ldOtSUs/Lb8DPdXiFHQMA7WQrfPj
-	P6Psbk3XK+c6umORg3UHc5d0YlLTorDNns13nv+4xCIwKhioX4FJZplPisRqS59RjAy4d8cx40z
-	gN2bNnGvuSMN7/YgIyuYWtw8Q7vGVwPhSZJKYna0g23Z55ASsVlQWTiO6YMq/k4E01AVd5KSaAq
-	ClojGTnF7zkk42mfGl3EhhYnhVd4u1JT3+ibjfP6+1gmugyS66dtvB6m0xGxXkcxd23YU3ZUVLP
-	SdHdHV7jzoqLd4e5DeDagHIS7tujd6tYemU5NXxDPrJLJG5XSA+q76w5qeFOsK59wbTyBBqd8bQ
-	4Q=
-X-Received: by 2002:a05:6102:4a8a:b0:607:b901:5d71 with SMTP id ada2fe7eead31-62d874496ecmr2643894137.24.1777880477978;
-        Mon, 04 May 2026 00:41:17 -0700 (PDT)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-95ce0894dc8sm4874748241.2.2026.05.04.00.41.17
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2026 00:41:17 -0700 (PDT)
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-57513733658so269552e0c.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:41:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ+cZ6wgG3JugbYQ0tzgmp7wR4dkLXqX0M/IbzsgkDtapVWWBgLm/x9eAiNup6HykdBcYzwwox+K957z@lists.linux-m68k.org
-X-Received: by 2002:a05:6122:a5c7:20b0:575:3433:bb34 with SMTP id
- 71dfb90a1353d-5753433bdafmr291581e0c.7.1777880477350; Mon, 04 May 2026
- 00:41:17 -0700 (PDT)
+	s=arc-20240116; t=1777882722; c=relaxed/simple;
+	bh=I5SoRnRUuF0pXijnClkOqsxVX1XLeY7vJznUXS0/Fuc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WfW7oa0dE4J7KGBz1TlluZ4vrYAtAfn0zo0vw2bbXv1PI2UCFt/bCPa1BIib21e/feImpnqwnjY0IiMl/a1A4Qc7Gqvvlr37gEdcsf+UQHsIseC/yajGutGFUp5VwIBL/x3Nfl5vLjUZLbVaWFOOniKBx1UTC9oHx07cylkySoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mqmW72dK; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mqmW72dK"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777882708;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FsdDbjL/I/GfR4PgeKsq5RsMwq2Lrat0fGV9Z1xVEws=;
+	b=mqmW72dKf6NT0ISyS0YGGaCiJq2Ba71Dg4HN7qUiykVpOc4N2pM+HJLAJkJB2QB0SW+Sr3
+	jV2l0xSboavxusa9Hm3EJobjGbiEs3ZUEG6Mz47mCfji3a+u7EC8k6d4MIjlqstwKTewj5
+	xH8Vre8hJLJ149SX67WxQdCpsEglVP0=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	Thorsten Blum <thorsten.blum@linux.dev>
+Subject: [PATCH v2 1/2] drivers: dio: replace deprecated strcpy with strscpy in dio_init
+Date: Mon,  4 May 2026 10:18:05 +0200
+Message-ID: <20260504081804.3260-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260424104011.2616970-1-johan@kernel.org>
-In-Reply-To: <20260424104011.2616970-1-johan@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 4 May 2026 09:41:05 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWbe-8MiTSe1t3tRmgAcOPC94yDM1xyogtKogswba=JCQ@mail.gmail.com>
-X-Gm-Features: AVHnY4IQ9cO1LnOsqdYvMTxRYY8Rz74a0P7uco-JVFQQMiwBl1yntxULnjYYcKo
-Message-ID: <CAMuHMdWbe-8MiTSe1t3tRmgAcOPC94yDM1xyogtKogswba=JCQ@mail.gmail.com>
-Subject: Re: [PATCH] nubus: switch to dynamic root device
-To: Johan Hovold <johan@kernel.org>
-Cc: Finn Thain <fthain@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=998; i=thorsten.blum@linux.dev; h=from:subject; bh=I5SoRnRUuF0pXijnClkOqsxVX1XLeY7vJznUXS0/Fuc=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJk/wmx2xgns+ury/aPEkiOHAl7Nf5JkmnBpQsQ6HvFiw 3qDVZ2vO0pZGMS4GGTFFFkezPoxw7e0pnKTScROmDmsTCBDGLg4BWAiT5MYGU4KnjWO/1M3US9Y Ze/kOXV2RjI7W9ZdZLinNPHCqXkpokEM/wxmVM3xMFti3H/oRvimb1LM7vVxbA+WtEk03JX/fdt Nhx8A
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 24 Apr 2026 at 12:40, Johan Hovold <johan@kernel.org> wrote:
-> Driver core expects devices to be dynamically allocated and will, for
-> example, complain loudly if a device that lacks a release function is
-> ever freed.
->
-> Use root_device_register() to allocate and register the root device
-> instead of open coding using a static device.
->
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+strcpy() has been deprecated [1] because it performs no bounds checking
+on the destination buffer, which can lead to buffer overflows. While the
+current code works correctly, replace strcpy() with the safer strscpy()
+to follow secure coding best practices.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v7.2.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
 
-Gr{oetje,eeting}s,
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ drivers/dio/dio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/drivers/dio/dio.c b/drivers/dio/dio.c
+index 419b3c13d491..4a3ddda97d7c 100644
+--- a/drivers/dio/dio.c
++++ b/drivers/dio/dio.c
+@@ -247,7 +247,7 @@ static int __init dio_init(void)
+ 			dev->id = prid;
+ 
+ 		dev->ipl = DIO_IPL(va);
+-		strcpy(dev->name, dio_getname(dev->id));
++		strscpy(dev->name, dio_getname(dev->id));
+                 printk(KERN_INFO "select code %3d: ipl %d: ID %02X", dev->scode, dev->ipl, prid);
+ 		if (DIO_NEEDSSECID(prid))
+                         printk(":%02X", secid);
