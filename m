@@ -1,89 +1,138 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3E639F166
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  3 May 2026 18:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BFC2D780E
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  4 May 2026 07:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777834616; cv=none; b=Zq6Uiy7LOwZrDV3Zojpn1e5PftI4dnpND2ZXcIC2wbDkNogxZn8Uhipf3LCLwkG4IcRkG3WTBMstaBVfx1nJHGz5umnNERiWemyeh+f4BTWnX4pBo5qnHSPWZmozWSj8ObIDjlqK81gCCG5As9drtw4kfgPiHbzl+GyKebb7bko=
+	t=1777879084; cv=none; b=aE2wzQTG0lELkpUBKF1kKVEEXttXX4bVC5uFMscE4XvZEgoChhJzpJY+lvoC678gUgoC6zdKmvPIx2iwaHZgqCZFVS6vSrHcpBiEmeKck5V+NhFPZrLJh2pO30gE1gAl6Cs5PJ57bkIxZH/rabOft7I7sfjGffXjVHITPL4etUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777834616; c=relaxed/simple;
-	bh=j0cGVdSb3OeGntjLHUrj1ZEV10ZXbzcrg9F87RGjd3k=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=MyPjdFuQLOs5THemLcFtBDwOA2v3bT8kt4mVvA5EeOqde2V6mhLdN/F5uxQwCNj8Ni2dorcJDVHiKoteLYuQVIRYF+fef+EVEwf4c9Iev6DtdpzB2Eyl22oi5MgvQLrxqj7vm5uuH/XBLICKclTjQgQpDYBRVEKVf9+ERWVAxqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HZD4DbOC; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HZD4DbOC"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7B2574001F;
-	Sun,  3 May 2026 18:56:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76D34C2BCB4;
-	Sun,  3 May 2026 18:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777834614;
-	bh=j0cGVdSb3OeGntjLHUrj1ZEV10ZXbzcrg9F87RGjd3k=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=HZD4DbOCPrrmz1ovHQ3NoWLxws92xtp8vIscxMR6R7KwaZEcERTeWd5MK0mWVd8rc
-	 vChhWKAhnnpHsDRXVaoBw6b6Fn70s2dk1Wd3Xh1XZy/9D90Km4z4nhRb+KPG1IaC7T
-	 nK8VpkMDwZjVjsuQxfXF0tVHRXRSpjpgNAHk5V4YPmPo7/Bd/CE9wEDOzz+MXMHYay
-	 47TeWTAV9nQEPr1eJ0bNwQDwK7rAoWs/Drc1DNVXZaA4JNZ2pck/EoL9qvTcZHGALv
-	 9/CSp2DGZcLsDhjNFzqpkBMHpwWLDtLSbobQcOmcgyumOf4ZPbN0S8PDWbhIC1X73l
-	 1VAho1nmQfE9A==
-Content-Type: multipart/mixed; boundary="===============3581486322790846567=="
+	s=arc-20240116; t=1777879084; c=relaxed/simple;
+	bh=CMrJsvIhP01E1Mw80JOSLylNMYl0j59WTaxBub2X+Tg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P9/VhLwS/xpFltR9WJzWxEmlzqMkfH9V7vXKnWN3F7UXZ3qypwbHHFuflJ1QVjw2A0rBBvpEabbMzxnPj3/LlIVjnWeMfO6bU9mx1IVxMz6xAGaTxvTJlMtZ4yWZzT0UcDZhGToUrOBtymGLX5Gh2SEvcuCcLn1E0xBH83Gpuc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-5751136c561so1223773e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:18:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777879082; x=1778483882;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EqJnH27Nqs4Tge038gpHam0aW3zoxzMcWOn5yIYA1EE=;
+        b=BcjY+dAygVDWCji2FHO/va1O4StL6L1HZuvMERbJLrzsPTC55VP3rdlcDK7RL8IlAj
+         KOo8aKoV6PhnVVSZXGbXrkJ1pKfk2eHQzrbDOhQK8myO0RmDCL6MVWOD82TxcieAMJJH
+         pqx01wtKWVgin+ucNjUUy6vhTyzOf4QSBMziPHlvahUo/bSC72L+kRh4LSOi7bZj1M7t
+         YvAb24VHijWeANyPeZ9i2I/XQN/EFSQ4ksH28F515GUwDRYFLH2U0yirL+R04G0+9n7H
+         SqlyxHhX6hGOV0G98pZ3U0bwh0LSiVBRxP95JnwpX9q358omjLjB8ZdX8bQz9s+dPB/7
+         4mqw==
+X-Forwarded-Encrypted: i=1; AFNElJ8+dZ+qdQWr15QX5WzVLEPki3xhn+ux1mkZJJRHZ3Pqwoec8o0x9n7w2IdW3C6bioP0OkTK2dIHvpyR@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzHRHdG+xaICba9iC/vlJ0pxcelTR7U+FJNP7TB0lah+JftXXCL
+	WdfFwEHHrEcypGjd3NMLOAGIoN9OqPfPYOWfRh58M+8k7S1Z08M9qGxbU1CPU5Jr
+X-Gm-Gg: AeBDies/8F02uc4VXR1lo861KlnIFLedLJy/CYqoWc6rmQyOBIE07xYO81+ulr1lPch
+	HHo0jeVk2gTzsA6QHaPH0khYZjfdGLBjBr/CPnba0weQxDL0mzpd4X6j66CmmpBvTyQodF4J3sh
+	lb0QrHOrbjPcdXyZmqyoa3YZbd1Hjh/vKz2sLauR9CQNFoorlyI1hPkkONonJZDr6XY+9wZo1N7
+	pcF5o/Kh4BNsDiq5q7W0bz6wIGQFYKTPHEXe4jca8KlXcGRYK0nST30YxyWqOTnqZ3wwNdBeABa
+	2gk63O6g9c/nvJivSDYIgutU6He570vGBtikBhp/R6LxIaFTsZ88yet1VpE6s0bgF5CFCRfQ2h2
+	5oqoyTOLhHQHa3ctWCYaThwWQW6T7d8c2VAOOlXIX4G0UMh2GFu42MoJM7YDi2GpOIBGWTKWeOJ
+	sCcpOx5t6zjhaaHbtSOFLdTVLtHWRPmHo4DVKywXK7DylGUhjnpcNcf4uylOgAmgt89eKLct8=
+X-Received: by 2002:a05:6102:104f:b0:62f:365c:fa00 with SMTP id ada2fe7eead31-62f365cfd3bmr663601137.12.1777879081690;
+        Mon, 04 May 2026 00:18:01 -0700 (PDT)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-62ef2b9720asm2016811137.6.2026.05.04.00.18.01
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 May 2026 00:18:01 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-95ce0cf2d4bso1658235241.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 04 May 2026 00:18:01 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ9yOLZKMX4FiA/THGVPLlA5p8e7KPHFfH/CDsQiQXrkcQEbv+HcwxufBRpCHtLIDPWrDmK8LHdWdQ7u@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:5793:b0:5ff:ecd0:1d1f with SMTP id
+ ada2fe7eead31-62aff203d00mr6650977137.19.1777879081069; Mon, 04 May 2026
+ 00:18:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <035d5a7abbcdf71699e0252146338f553088d642979676250306c47d55aa4003@mail.kernel.org>
-In-Reply-To: <20260503181504.1037640-1-visitorckw@gmail.com>
-References: <20260503181504.1037640-1-visitorckw@gmail.com>
-Subject: Re: [PATCH bpf-next v2] m68k, bpf: Add initial BPF JIT compiler support
-From: bot+bpf-ci@kernel.org
-To: visitorckw@gmail.com,geert@linux-m68k.org,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,eddyz87@gmail.com,memxor@gmail.com
-Cc: martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,jserv@ccns.ncku.edu.tw,eleanor15x@gmail.com,marscheng@google.com,daniel@0x0f.com,linux-kernel@vger.kernel.org,linux-m68k@lists.linux-m68k.org,bpf@vger.kernel.org,visitorckw@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Sun,  3 May 2026 18:56:52 +0000 (UTC)
+References: <20260430120532.305308-3-thorsten.blum@linux.dev>
+In-Reply-To: <20260430120532.305308-3-thorsten.blum@linux.dev>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 4 May 2026 09:17:50 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUiMMXrWtsZ5erkoQoYh_4dq1CYD-RiSkZXSVwQAtxo6A@mail.gmail.com>
+X-Gm-Features: AVHnY4KAWLEHTrfWUh9qfqDhcLkCBJuZ6fXDZ0LL_eTxBV38W6Tbr9dm-7gys74
+Message-ID: <CAMuHMdUiMMXrWtsZ5erkoQoYh_4dq1CYD-RiSkZXSVwQAtxo6A@mail.gmail.com>
+Subject: Re: [PATCH] drivers: dio: replace deprecated strcpy with strscpy in dio_init
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 
---===============3581486322790846567==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Hi Thorsten,
 
-> diff --git a/arch/m68k/net/bpf_jit_comp.c b/arch/m68k/net/bpf_jit_comp.c
-> new file mode 100644
-> index 000000000000..98cef53c6f39
-> --- /dev/null
-> +++ b/arch/m68k/net/bpf_jit_comp.c
+On Thu, 30 Apr 2026 at 14:09, Thorsten Blum <thorsten.blum@linux.dev> wrote:
+> strcpy() has been deprecated [1] because it performs no bounds checking
+> on the destination buffer, which can lead to buffer overflows. While the
+> current code works correctly, replace strcpy() with the safer strscpy()
+> to follow secure coding best practices.
+>
+> Indent multiple lines using tabs instead of spaces, and use pr_info()
+> and avoid continuation logging while at it.
+>
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
+>
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 
-[ ... ]
+Thanks for your patch!
 
-> +static void emit_alu64_k(const struct bpf_insn *insn, struct jit_ctx *ctx)
-> +{
+Please split this in two patches, as the "while at it" became much
+larger than the main change.
 
-[ ... ]
+> --- a/drivers/dio/dio.c
+> +++ b/drivers/dio/dio.c
+> @@ -178,7 +178,7 @@ static int __init dio_init(void)
+>         if (!MACH_IS_HP300)
+>                 return 0;
+>
+> -        printk(KERN_INFO "Scanning for DIO devices...\n");
+> +       pr_info("Scanning for DIO devices...\n");
+>
+>         /* Initialize the DIO bus */
+>         INIT_LIST_HEAD(&dio_bus.devices);
+> @@ -247,18 +247,19 @@ static int __init dio_init(void)
+>                         dev->id = prid;
+>
+>                 dev->ipl = DIO_IPL(va);
+> -               strcpy(dev->name, dio_getname(dev->id));
+> -                printk(KERN_INFO "select code %3d: ipl %d: ID %02X", dev->scode, dev->ipl, prid);
+> +               strscpy(dev->name, dio_getname(dev->id));
+>                 if (DIO_NEEDSSECID(prid))
+> -                        printk(":%02X", secid);
+> -                printk(": %s\n", dev->name);
+> +                       pr_info("select code %3d: ipl %d: ID %02X:%02X: %s\n",
+> +                               dev->scode, dev->ipl, prid, secid, dev->name);
+> +               else
+> +                       pr_info("select code %3d: ipl %d: ID %02X: %s\n",
+> +                               dev->scode, dev->ipl, prid, dev->name);
 
-> +	switch (BPF_OP(insn->code)) {
+Looks like a good opportunity to start using "%u" to print dev->ipl,
+which is u8.
 
-[ ... ]
+>
+>                 if (scode >= DIOII_SCBASE)
+>                         iounmap(va);
 
-> +	case BPF_XOR:
-> +		emit_16(ctx, 0xb180 | (s_lo << 9) | d_lo);		/* eor.l d_lo, s_lo */
-> +		emit_16(ctx, 0xb180 | (s_hi << 9) | d_hi);		/* eor.l d_hi, s_hi */
-> +		break;
+The rest LGTM to me.
 
-This isn't a bug, but the operand order in these comments is reversed.
-The m68k encoding 0xb180 | (s_lo << 9) | d_lo represents 'eor.l s_lo,
-d_lo', not 'eor.l d_lo, s_lo'. Compare with the identical bytecode in
-emit_alu64_x's BPF_XOR case which correctly comments it as 'eor.l s_lo,
-d_lo', and emit_alu32_x's BPF_XOR which uses 'eor.l src, dst'.
+Gr{oetje,eeting}s,
 
+                        Geert
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/25287107687
---===============3581486322790846567==--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
