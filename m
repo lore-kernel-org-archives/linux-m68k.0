@@ -1,130 +1,130 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE943A2549
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 May 2026 05:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777960775; cv=none; b=Xucdx4G/wrUrJ5Qdiq1oU7wx5p2LSIzOZPPSf/Gq4HhmAbvCNHroOBgevCxJzb9aU4QPV2LeckCpDIGpeiEGad+sRQjsLH5LQa1N9tKMHD81vQcES7x5wnSrxfJ0XkWNBAJST9DKW5dEQk946jEqdwHqgkc2iwt3fjSJGwMd2Wk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777960775; c=relaxed/simple;
-	bh=Q6UR0nXygzncp+cEUQMRQ/hFxEDvVJYvt06LEKxyFwk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=emW16Oqwp8TqHCunObJIyo1MYsP8I1sj+6TTpUU8jKZG3ixGSHtplL1MWS18taGnNHhy+4LAOKRZUExUARX5lECGZ8rtsN8v5Tw+oDfDF5ZB3a9UPTIb4PIZ63ikn6HmGLLgtXbb9RquUFjnfx+jABWxSWGv5BHe3p1zz7jr200=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bO2xRBfC; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BAA3DB646
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  5 May 2026 07:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777964449; cv=pass; b=iiz5wx1AnD9g7zHAqWIinCBxFJgRC1TT7E5hO14XjBnGwxH3yrL+r+5ZXx2aP2014EdVB7nFno34xGOD5az8MwKtp8FiMg4AnVrJv9LfYB5Qwd+19f4rTPSrfJSbaqvr6lBmZSp8eh8VP7rWSsIF/oO8KpUAewm54qdhrEPC7IM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777964449; c=relaxed/simple;
+	bh=fNaUy4JEgd7bwzjsrzd2PI7TZG2tO9lgcuJ/vKp6wQo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c+G25jkzglN8RoSZ3enExX7Ni3MvzYyTr1TWE1MVtwmjJxvmjLcRGXo3SAwI/BfgmbHwTx9tVdeJZajO7pM9rP8l00JNx0lwHzv/Q5S2UqVUI8wofs8jTI3iy3QVgEtoyEFPpzUFsqPVM6Fzsx157kx9yWnTOSrcKJ40pwFdQyU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=Cz8VRRow; arc=pass smtp.client-ip=74.125.82.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bO2xRBfC"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id D4CE360128;
-	Tue,  5 May 2026 05:59:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DC5C2BCB4;
-	Tue,  5 May 2026 05:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777960773;
-	bh=Q6UR0nXygzncp+cEUQMRQ/hFxEDvVJYvt06LEKxyFwk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bO2xRBfCfC7kUQbMCcuWXafXrtXa4SSJL1UAtjUlUX5cjgaRSGbygCf84hWKzQOqb
-	 FEYsPrRymt5EB7qXYvgHiQsb03yGRsGNmnphQMNkc67Xkjisy0ag4Wz6DYVYKQxBt4
-	 qQ/5QUTrVFBu8qFT4Q3ZQ/NcGHdwPwJesFNnEgLb99NYHqi89UQGD4kpRD56x38UMV
-	 Qk2fo4pJDVhgE5E37FytmO0ZjpctooIM2xwVHO8p2Ho4jOLShtasbkCEGLNPTKk4ZD
-	 N/bxkKX1nnwjctfqJztkHl23w1pWDhwHvWWND75ef+ygI/8Dpgysqxe1Lq05qzO6Iu
-	 mkojWqAK6ODyA==
-Message-ID: <ed6dce34-2207-4403-bbcf-080db2614241@kernel.org>
-Date: Tue, 5 May 2026 07:59:29 +0200
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Cz8VRRow"
+Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-130a4aae5ccso2527586c88.1
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 05 May 2026 00:00:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1777964445; cv=none;
+        d=google.com; s=arc-20240605;
+        b=CRP18ZUuQ1YdKvTospLLJliWJjCQUyf6vfsqYVCcDed7Z0Z33JzpU22HZy+LRESkeU
+         otr2Oy591DtR7URrcj5ohD+afuF6wUjLxiH+mMFhL77vHnKntFG5EKolp8yerhxP+T9s
+         ki73n1JG8JC98mSyLu9mDTgWJFfD6wAkvrR1Y8e5MKXNy1Kq09yNNiS8bdeyGjeLoI2/
+         C5Jny2RQJ6jmr6Um8RbsgUJ860JF9K9TQ+kGzYQ6SRhKxXvENXSL631AgwiGC72jLN5V
+         ONI5w12UvqT4ElrFGuclc+zrraS2lJX04y7ecgBmsjRaeVNyLY4LeEatfO/5ev+1rYz+
+         FH1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=Jm+rYaIrVP077A6xaWFYDY91HFVdV+ekVVmFuHZ77ac=;
+        fh=w7GfZ7yerWl6newJ6ZQnvIwqcGDnTg54xXtTsHhWroA=;
+        b=IpvJt/LvSSUyFhQYXWuJkBQbBhKmYCwdXXYURbP4S/0+bg/sjvNQ+0ubGv5PlhmDY6
+         3kU3G4fpQsQo2ylz5ubYsqsPIA+1Bu73xLb7op+LrtJS0DzgEy4vU0ovePGGiz3R2kZr
+         sephMPAow49s3r86HepUfyI1JGDsb0/GDD9S2IoWupwtZDL3iOzdZSIxEplBCE8UmuTZ
+         /CL/hH3orq3XgD6w5xw/bNI+NhaPBqs08aZx5YQ+iSJEPNlfS4G4L7ASvmhbERCapCXg
+         axQvNPmsvihfZ/G1NTB8ZhnEvfIl6MNDRUvRXJAGp6Zf60S8sCoKvgRcRZGwbTlFmVvb
+         RCiw==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1777964445; x=1778569245; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jm+rYaIrVP077A6xaWFYDY91HFVdV+ekVVmFuHZ77ac=;
+        b=Cz8VRRowRVGW69cRRfIIqIIoN+s1/GqHYlkUEy7R2TPA+ocALTFWs8FRtyGzJsVkTZ
+         zuElYUcjiWhlUhuNo5H0luwNveD908G7H2qTjiYgCGjVHtv/KoHwc/AK19I3jp6MKbp/
+         ZX5EdyQhnkuRq7aja3ZqJeVkLmS7DJmroBZ3g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777964445; x=1778569245;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jm+rYaIrVP077A6xaWFYDY91HFVdV+ekVVmFuHZ77ac=;
+        b=XTsT+25hmzd+BPABcK7i740xQh282nvtiLWBHiqjBSqhl/WN1Vw/SN0G5yuuBXMLP4
+         sksXEuHsdUvZlXdAfckw9X8906Jc6AbVp7exTMvg7ETqotLAGxz6RsbxhzUmBfjtqufF
+         SzsCrwbRiwfAkT0QiyaLa9w8EjmKqEZaO1U7wlaTToambAFZ9MxwRJpLV4aTi6ouz3bV
+         ZR4RC4KkWnV0wl4O/iJUBsrr+XJCs5CflD5DTNnEwjYuG1qQHih1qw08nE9IjSZmqqYM
+         LhPsXTFF0zbmt7EWy64BZ/JzfGGBXARIem0D/DR8psnS51x9ZoZr6x4Bkz7/em7DGO8d
+         hCTA==
+X-Forwarded-Encrypted: i=1; AFNElJ8K+/sYknT+l9N3Lyd0NwBL4yIhrpeQ/yhOosUuDfPAKs5fonHP0nGUeDnOryvkJNPiRIYdHLNfg4Pp@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyZ85t71sSfthqECDB8KFklfC1z3k/YIT/K1qNjN0mk7z4r55nn
+	I0f1UoKRbeZb6gc6K1IWVBSPqMVkmNRZAklFcjnD7tKCLQTMzFDhpbQrdgOJiigZo0LwyLa2sr8
+	VA6/NyOYK+pBdnYUU5Jv9pnU8K+aSvd3kvHJJ3lBr7A==
+X-Gm-Gg: AeBDiesX+kQ6NenGGjSC42bMUkpmLTAWCB9OiviTkb44yFfQmn42KFWX+oQuQKFHnW9
+	jIYqbqbWNdeM+4RFxbEVr2A6jOfYnRAwQsRNt89NPgYTdCHooxKMaki6BgQUdupsUnSeKIHStYb
+	+m4/CCwBlhWPs9j4ylQFRl+azAzN+QAGNbOrn9J/zV3jaiCauEgJLD4vzaR8BhJGksNlW16uLHC
+	wf2WX+ksoHcySOvkcqU9MIu+e2x+13jBKZ4bs6dfbXfNopvm0zx5hmlV7roojrtHWU5SjJ+GoMp
+	ojMIEb/PcWmeEna4xi94
+X-Received: by 2002:a05:7022:327:b0:12d:ce34:3f92 with SMTP id
+ a92af1059eb24-12dfd83a401mr5902092c88.31.1777964445094; Tue, 05 May 2026
+ 00:00:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] tty: move remaining serial drivers into the serial/
- directory
-To: Ethan Nelson-Moore <enelsonmoore@gmail.com>, linux-serial@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- =?UTF-8?B?UmF5IENoZW4gKOmZs+advuaYsSk=?= <Ray.Chen@moxa.com>,
- Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
- linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
-References: <cover.1777943090.git.enelsonmoore@gmail.com>
- <042d993686c87fdfd4130f11b57c3b559944603d.1777943090.git.enelsonmoore@gmail.com>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <042d993686c87fdfd4130f11b57c3b559944603d.1777943090.git.enelsonmoore@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20260503181504.1037640-1-visitorckw@gmail.com>
+In-Reply-To: <20260503181504.1037640-1-visitorckw@gmail.com>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Tue, 5 May 2026 16:00:33 +0900
+X-Gm-Features: AVHnY4Knljmbad1uAV-c-Ej0bF2s3_zZ_vBMVSTnG6PT4pfSJpN8GeS8OCMKyKk
+Message-ID: <CAFr9PXnLSM8PA6zhLY0z4ck79EZtEwcduY=K2kLbzRh8QrfP_w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] m68k, bpf: Add initial BPF JIT compiler support
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: geert@linux-m68k.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, eddyz87@gmail.com, memxor@gmail.com, martin.lau@linux.dev, 
+	song@kernel.org, yonghong.song@linux.dev, jolsa@kernel.org, 
+	jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com, marscheng@google.com, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 05. 05. 26, 3:20, Ethan Nelson-Moore wrote:
-> A few TTY drivers are outside the serial/ directory despite being for
-> serial devices.
+Hi Kuan-Wei,
 
-Yes, but serial/ (historically) contains drivers using serial_core. tty/ 
-contains drivers using tty_driver (which all of three unfortunately do).
+On Mon, 4 May 2026 at 03:15, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+>
+> Add a BPF JIT compiler for the m68k architecture.
+>
+> The JIT generates m68k machine code targeting m68020+ processors. It
+> currently excludes 68000/68010 and coldfire processors, as it relies on
+> 32 bit branch displacements (b<cc>.l) to handle large bpf programs.
+>
+> Tested with the test_bpf.ko:
+> test_bpf: Summary: 1053 PASSED, 0 FAILED, [1041/1041 JIT'ed]
+> test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
 
-There was a patchset from Crescent Hsieh (Moxa) to convert mxser [1]. 
-Amiserial should be likely converted too -- Amiga users still around? 
-There is no MAINTAINERS entry for Amiga, trying to CC m68k...
+Results match on a real 68040 (Apple Macintosh LC475, 1993 vintage):
 
-I am not sure even about users of Moxa Intellio. I think I prompted long 
-time ago. Oh yes, Ray Chen (CCed) from Moxa wrote me back in 2021:
-=== 8< ===
-For the Intellio cards, we phased them out in 2017.
-You may find the discontinuance notification as attached.
-We will keep the software support for 5 years, to 2023.
-=== 8< ===
+test_bpf: Summary: 1053 PASSED, 0 FAILED, [1041/1041 JIT'ed]
+test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+# uname -a
+Linux buildroot 7.1.0-rc1-multi-00465-g1f6c5a18ddbd #26 Tue May  5
+12:25:51 JST 2026 m68k GNU/Linux
+# cat /proc/cpuinfo
+CPU:            68040
+MMU:            68040
+FPU:            68040
+Clocking:       32.3MHz
+BogoMips:       21.55
+Calibration:    107776 loops
 
-I believe we can mark it as BROKEN to let someone convert it to 
-serial_core. Or drop it for good already.
+Also the time the test took seems to be considerably shorter with JIT.
 
-[1] 
-https://lore.kernel.org/all/20251130104222.63077-1-crescentcy.hsieh@moxa.com/
+So:
 
-thanks,
--- 
-js
-suse labs
+Tested-by: Daniel Palmer <daniel@thingy.jp>
