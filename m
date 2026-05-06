@@ -1,403 +1,173 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazon11010060.outbound.protection.outlook.com [52.101.84.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4D24266B1
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 May 2026 15:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778080821; cv=none; b=W92CKesw4qmE5o5O3M+QpAGFbY7u+Pp/y0NNSiKR6XW9LCN/94qWRzZ1cx/abTdK/GoYrHt8S4CrNQ6pm/DI7IwTTDF3kbVamGfxBsWtrA45w+Y4hSl1zdq/+IffW0ZZtDdpWsj8ecoh0IueOfYgcgTiFLU89OiTj01rp+4F9sU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778080821; c=relaxed/simple;
-	bh=Z6fQ0YAqtLbGIy9ba3h1aZ5bW6uBRB8+wtS8/48DFo4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Wo/dovLYGa55BCDwmLke9RtDWlD7SXuRD09KuwMCzw/ONpPRst7I9m2cuzYyqRvUK8LaaynOGN407vFuADmF8sEM6RbgMHbl0vnUznbpo8TJoy52SLBoKSKNIiHmNm3aQAvFWe79JZuzdO12ycyODK/tiiO82xR7x0xiNUZaf9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CFnwSGKN; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F44E3F7A87
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 May 2026 16:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.84.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778084083; cv=fail; b=AF44R8+fLI6iR2K5wZzYznnwJP3dHcUrNUVl6TuV221UQh9b20a1dt+r5gLCUfFxHLMsDctwFPNK6AV3HQrE6KCF4Qt4MJERrSywJ0cKKmvGLEzXnpgHjisZsPgVSRu1XZ0CrIdEYnPqLZzNs7O4lrIfp5loy6WxgF9F4lITawc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778084083; c=relaxed/simple;
+	bh=WJIEImC+1Je3usUyKw5wSEGhr2+w+jUzR7Cwjmguxks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=fZCGLH7Aq7ks6srRZYiv7x8jTjZmI4Fy8WkWolI2c5zz8bsrY38ZDcjMolVhwo9pI12ag99iyp2ZnD7shZdeIM67dyU85YHieleNx5s0HlIdLuMOu+8Vrk9HccG5S3z2jYk4I0bIPFvErZRV7OktgxmnyAWG5UueDKY6V1vow2s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=KhKz4oqT; arc=fail smtp.client-ip=52.101.84.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CFnwSGKN"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8818D440D3;
-	Wed,  6 May 2026 15:20:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1932C2BCB0;
-	Wed,  6 May 2026 15:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778080816;
-	bh=Z6fQ0YAqtLbGIy9ba3h1aZ5bW6uBRB8+wtS8/48DFo4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CFnwSGKNuFLNRZcK4eZ7wIM2U4JnaLUW7a54+wwIkyrq7/rkSteWfKxwdeLo1IWk/
-	 YrFL/E0KCegfcG5p1cWT76ctk8sjGTIq+gVOA20/AYDThn/izCNEMWgUpVowQui7Pp
-	 kE3ve223x6bqkb4queH1HSIkK9nc/7+lyKvAEYX1XnyU5WFMs12VL1ps+0zSWhhf/0
-	 m8BuPR5ynvoRua8puN5oMnELw/v18vm6E8JWLL58zCqvF+RvKuYcTXPpFv+Lo5w5wz
-	 t3Iz1RJQ/eMs2N6KRIhiEKwgsjjxhJI6LKA3de4DqGbj2WaAvn/gVCHM6VQ/vlecEv
-	 DWVG5FA8YC0/A==
-Date: Wed, 6 May 2026 16:20:05 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Angelo Dureghello <angelo@kernel-space.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann
- <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
- Torgue <alexandre.torgue@foss.st.com>, David Lechner
- <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Andy
- Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org, Angelo
- Dureghello <adureghello@baylibre.com>
-Subject: Re: [PATCH 10/10] iio: dac: add mcf54415 DAC
-Message-ID: <20260506162005.50408fde@jic23-huawei>
-In-Reply-To: <20260504-wip-stmark2-dac-v1-10-874c36a4910d@baylibre.com>
-References: <20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com>
-	<20260504-wip-stmark2-dac-v1-10-874c36a4910d@baylibre.com>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
+	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="KhKz4oqT"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=JN9CkfIxiGlnTuWhXuHo2v6Zczt2GpnOjSEw8jfn2kvyklI6xIpXLlJKUzIzkXsuEh83a5PY1/x0NUber3Nq1y1hWVXpGNTuECer1krR2t69DqaFaT45zMsX1WjwRiHJBEq6aEs9zs5uB1tbLorhSFIymacVpsXcN7152HrAYaq6AmSG2n/YEw7oV9HZ6/TzZjX3zzorUMBRn5BdhBJKI9nOaPpQjyP/RVwEEphlXr5XmU4nlVgDr+3xmMYIreAuYOEIh7MfKdidOxu+gXzAdOqSLSh36E3FmbkZkZuRGgr4RagcxuMmz/JDiA2v3G1nM3q7VDOGlGJ7yEtqExd/tQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pRaX83Y2+naYAgFERuHydt7fXvIyBWMsdjRxS4TM6EE=;
+ b=e6oI2kHAhwJsI+VUoMZGpvdv7EsaniFLhhQgihGrzPSDBQxo6pugMeTZsZJBUEDY696XCuTQML2U+Hnv+bg4NRTbuRRh2I2P9XeH1EdJpQwKc4aY5riBua2I7N4/R4SJA31y8vrmBqrDSa8arF5GUsoqaVxY5E0cuccDt1/OTzDCnJNkgGk1pkF4+Mx8Y35uhUjDfo/W2RVcLddAQwYsQOavLDtJXYYJbGxqaRcsBwPiEb1kX50FqQvf1kvtfYHUMOUbgow4a9/CrYtAa1WJOaESjCUFPODFGHUeYuV7bL9V6atp4hbc7a7IEtxVfBgcu0f7xWu3BKPfooXlwUMU/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pRaX83Y2+naYAgFERuHydt7fXvIyBWMsdjRxS4TM6EE=;
+ b=KhKz4oqTb3XMcZe+uAt+Z8uOxFLBNnlf1QqOvCrNibyw7ezTlikSH/5Xpixgh7c2nnwpRsFmKqfV0HJUl0mroTo1aIL5rT1QYvIBc5Od4/9pEuZHxsvWDEBMZVx5tnO+YU4+dpeQKlYbRtDzzgQbmqSg36Padl344zMPndF2DDXe567aPWcfcCLbBQ5uaBzcuFhKrP2/4xczBDJQ1x1A2ZGQckXQ1bXpJtm5sM/AoLZpvYzNRsnP8ygTlBVl9QGircBFvHeiDKE/RvPbsukDrntMGG2qX4uZUX6kKe3B+nxGkp6fG+PcJXQ0v/Uzj28qhULPUNzKSXjenkCYEFdROg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PA4PR04MB9366.eurprd04.prod.outlook.com (2603:10a6:102:2a9::8)
+ by DUZPR04MB9848.eurprd04.prod.outlook.com (2603:10a6:10:4dd::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.15; Wed, 6 May
+ 2026 16:14:31 +0000
+Received: from PA4PR04MB9366.eurprd04.prod.outlook.com
+ ([fe80::75e4:8143:ddbc:6588]) by PA4PR04MB9366.eurprd04.prod.outlook.com
+ ([fe80::75e4:8143:ddbc:6588%6]) with mapi id 15.20.9870.023; Wed, 6 May 2026
+ 16:14:31 +0000
+Date: Wed, 6 May 2026 12:14:25 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Greg Ungerer <gerg@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	arnd@kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
+	dmaengine@vger.kernel.org, linux-can@vger.kernel.org,
+	linux-spi@vger.kernel.org, olteanv@gmail.com,
+	adureghello@baylibre.com
+Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
+ functions
+Message-ID: <afto4fL0CVVNtHDQ@lizhi-Precision-Tower-5810>
+References: <20260506142644.3234270-2-gerg@kernel.org>
+ <20260506142644.3234270-8-gerg@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260506142644.3234270-8-gerg@kernel.org>
+X-ClientProxiedBy: SA9P223CA0022.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:806:26::27) To PA4PR04MB9366.eurprd04.prod.outlook.com
+ (2603:10a6:102:2a9::8)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR04MB9366:EE_|DUZPR04MB9848:EE_
+X-MS-Office365-Filtering-Correlation-Id: f7f81151-4fc8-4218-b53d-08deab8a8df1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|52116014|19092799006|1800799024|366016|7416014|376014|38350700014|22082099003|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	LPdN9kBnP+0LLDdNHXv0gxLjwP2FsSomTSPJHMECA4wojcwz/O22gultwvWQ3/O28+QYSr7VJohNcy2xsxMcyZ5Wb6VEl6YpM5T2AJEnNh/rpWz5ZMR6UZfmGFPdutiB9228A360EIeTnPyhDAzPuFT5VlnGe1MAdbzHjbDAmm8uZcLaW4qKfm5l+N9LvSlQohGhPqTWJ6y/aLUTEr3RY2rqsGIVAO8pyzaIWivN8qDYIUQXfJzCPy0qi/fbLPHjuFhfxh7AqLQkixWh9A+7uFJrNR1Q56iG3rm+7GSxhlxALXg05n6ym4/z3nthWNokS0QOqHUF4mck/fu1oYR+AHqCr/frbzB8o4WG956NeUxhvTboGYfC5H9+juCP6qp0/JJagVIFiHEl1q1UH8lWIQuK1dU7suztIJBYS/sXCHYxP/F+Z6pdiry3jtMsUUK1qcnUrLJvadttsVQ3R8KcxUE+vJ9EnKjbAdsq6vaw2eqSbFpM92Zz4G7nNyDUlJBdh/WSTNRNEBuITvZ6+hEV+mffTpGEuJmTciJ/0YvyDFJ4xcgZf8gSaGfQKhiBbK+fw+y0JdsnK1oXQEML9aIwjN+FjsAewCgJqTR3rjF87bVho113C1QW110lEpa6k7Yk65p23vbt1kolb/LKb79X3GNUW1ChylifnCoPlgKSbxM/mc+lqaE1yrYQbEaR82R5ZtvcQG5qG1tFbdxEO7OK2PphA/suUTsTWok0XY0CAtww8y9imD78jj22U85B0shg
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9366.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(52116014)(19092799006)(1800799024)(366016)(7416014)(376014)(38350700014)(22082099003)(56012099003)(18002099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?116iICr6z1Z3Ci13kfktK3pb1iDefHT/kBJOt9ls3ffmyUXXGNMHEItpNWmx?=
+ =?us-ascii?Q?qb29y2nDOfjykubre8+0mgumK7qNSe0UKeskbkpq98JAZlXDdIQZlsUS9WFH?=
+ =?us-ascii?Q?CE0NHcbt7nE/LgVwxg8mj95PPsz3GBbnXJjisgqKq7wXCXGR/BNHFBm0p1RT?=
+ =?us-ascii?Q?tS0iCsM9dh1wmt2BjLxMaoOQDlb+U6svBxPU95kTSBpC7NljMAkWkxNq5eui?=
+ =?us-ascii?Q?OG6zI4VKEX1PlrdmStGfUPW2teS31+F9K1PymRyl6wQlMjl6UGfO5zQTsSxg?=
+ =?us-ascii?Q?KmBnlQ6UYo5rH+Um4kA9DItXM8TR0WaNQY6bf6Un6NL/3a4C4NoVs0fX9Gfi?=
+ =?us-ascii?Q?nMq5VQpMGmsr8UgDQYcUT/Z+x+PaR7pOjQlX/V2XKQHHVwdWdatD3VRYVgTR?=
+ =?us-ascii?Q?3EGbR8+nadnYwv729JDExpfeC/V/YH9O9f/ioGsdsEVfZgTn/lreiZRahFo8?=
+ =?us-ascii?Q?AJ7/7O6Ned2B4y6cT0/Ae4hNpKvGcGhG+hj+IRQhxtDn/vHU+J30MxOWIveS?=
+ =?us-ascii?Q?ImeGAUkPDrQmpW+Q0kcXuPFhz1rc+9n0Np+YvLxPtDWaLRYthXBxMxiNhGEP?=
+ =?us-ascii?Q?vQIKZpcWePm1va8bkNVnimIHpeTR5XgCsHTeJZj9Kb6gcDE3qVLGNv6dfi4n?=
+ =?us-ascii?Q?7PFN3b72ToPTH7J7EpLonbPIcNv+57Unl/tIMXSni5Y4JrlAsZc0UOZjnLP0?=
+ =?us-ascii?Q?wmF9IZTCP+swrgJb5uGarSmuTITkXUI6BwC/S0u4tLskhokThY7mwjxF47T0?=
+ =?us-ascii?Q?Nv/66oJVjdd+I8J0VmkQSb+htVAgq15E2i8oFDOww76PQeg/j6byWwmuY0G4?=
+ =?us-ascii?Q?RlLftuuknTXvr9Muhb8LpkbXfJEKKzOZtqiH0zrZrcF4TT9wTETnPkBebw8U?=
+ =?us-ascii?Q?e+8JuMrYYxIj1Ry6ZFMcREQED+VuekjS82Q4QTwlnYzB3HbBtuXIiYY5Fxyc?=
+ =?us-ascii?Q?ISu5ZV/eAyIch3VM/K3PdIafB5yQ3g9BtA4SlEwT0X5EZNr8bu0O/5Nfdk4I?=
+ =?us-ascii?Q?IC6JiYzv/bCtmZeY/D0qiJmzbiPoXvczYVHr1fMYsahfOkB83pYZ1//Z3g6M?=
+ =?us-ascii?Q?/fh72jDhxtvEtuoqxNOy1tHf7WCQUj65Za5asVfNWMAcsYJMrJLR15UeSis7?=
+ =?us-ascii?Q?P+cx80Xi4HxImcjTy/wdoHOCYBX9szMCn8GcXmhDTPW+cGiezW8zh3DzzHbg?=
+ =?us-ascii?Q?8ANrtohONDplwGgrlxQrxM4HN00b6QMzj1x+YlJJZBxThkpEWKD4FLlFAoeR?=
+ =?us-ascii?Q?S/gCJPAdd04gUrV+ub9j6QNwcCOVnc9bNeBtmN2GSH7H32qYa4vD/k4E+VCV?=
+ =?us-ascii?Q?MNrw6wS9awxggDrsSFO3/jPfluhgJS/gQU3L+bwJr6ucEvUqk8JDNn4iavBs?=
+ =?us-ascii?Q?VFLcipJR6KhHYQbN4DMq8CFlmq79u71Gidzd8quExi9gRZBcmZ6VP085TA4S?=
+ =?us-ascii?Q?Da+mOtglWYCdQ4Uhr5h8TAgVL9lXC9liUrChQKCrpMHpWzyX6jNG7urkoirg?=
+ =?us-ascii?Q?12/bWePoiEC180pxW+ar0pQrK3jproOtqqrDOAb1I70tt6JjEyJ+YvwkDMTv?=
+ =?us-ascii?Q?bnHD+qRT3e/4FmLoxBP5y/oFsr90rs6vEu3fRnZPMa+TPWMatDMlbTl8dTff?=
+ =?us-ascii?Q?Ah0BxyRI/1fwQYGyFjWiQcLIPF9B/32jRyqNkHnM5uU60Mkz8zyNnP3W6CP8?=
+ =?us-ascii?Q?mRiHzyGIuB1icO7Aj+yzY2YzB3PnpdonRDsshRq3dhrt5Mfd?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7f81151-4fc8-4218-b53d-08deab8a8df1
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9366.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2026 16:14:31.0441
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s2SuuVUQxbDi80Qx84QunaGp3MQLJlPoelqRibK79N+KXRxb6Ub21GJFDBD+L7FVL5LPGgPw7YDUtxV4s7ahFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB9848
 
-On Mon, 04 May 2026 19:16:48 +0200
-Angelo Dureghello <angelo@kernel-space.org> wrote:
-
-> From: Angelo Dureghello <adureghello@baylibre.com>
-> 
-> Add basic version of mcf54415 DAC driver. DAC is embedded in the cpu and
-> DAC configuration registers are mapped in the internal IO address space.
-> 
-> The DAC accepts a 12-bit digital signal and creates a monotonic 12-bit
-> analog output varying from ~DAC_VREFL to ~DAC_VREFH. The DAC module
-> consists of a conversion unit, an output amplifier, and the associated
-> digital control blocks. DAC_VREFL and DAC_VREFH defaults respectivley to
-Spell check.
-
-> 0 and 0xfff.
-
-is DAC_VFEFL == 0? If not should have an _offset based on what it is. If
-it's common floating line then we can think about whether we need to describe
-it or it's just implicit as should be tied to whatever passes for 0V locally.
-
-> 
-> This initial version of the driver is minimalistic, "output raw" only, to
-> be extended in the future. DMA and external sync are disabled, default mode
-> is high speed, default format is right-justified 12bit on 16bit word.
-> 
-> Basic tests done on stmark2 mcf54415-based board, voltage check on DAC0:
-> 
-> /sys/bus/iio/devices/iio:device0 # ls
-> name                 out_voltage_raw      subsystem
-> out_conversion_mode  out_voltage_scale    uevent
-https://sashiko.dev/#/patchset/20260504-wip-stmark2-dac-v1-0-874c36a4910d%40baylibre.com
-
-Sashiko noted this.  Doesn't seem to be such a thing as out_conversion_mode
-which is good given I'd have moaned about custom ABI without docs.
-On the other hand it did hallucinate IIO_CHAN_INFO_CONVERSION_MODE when
-there is no such thing.
-
-As noted though too much for a patch description given most of this is entirely standard.
-
-> 
-> /sys/bus/iio/devices/iio:device0 # cat name
-> mcf54415_dac.0
-> 
-> /sys/bus/iio/devices/iio:device0 #
-> 
-> echo 4095 > out_voltage_raw     => voltage abt 3.3V by oscilloscope
-> echo 4096 > out_voltage_raw     => roll over to 0V
-Why?  Should be bounds checked and return -EINVAL or -ERANGE
-(we aren't particularly fixed on which)
-
-> echo 0 > out_voltage_raw        => voltage is 0V
-> echo 2048 > out_voltage_raw     => voltage is abt 1.7V, mid scale
-> 
-> Same behavior for /sys/bus/iio/devices/iio:device1.
-> 
-> Generated a sine wave by shell script, sine shape is good.
-> 
-> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
+On Thu, May 07, 2026 at 12:26:48AM +1000, Greg Ungerer wrote:
+> From: Greg Ungerer <gerg@linux-m68k.org>
+>
+> Remove the local ColdFire definitions of readb()/readw()/readl() and
+> writeb()/writew()/writel() and use the asm-generic versions of them.
+>
+> The implementation of the readX()/writeX() family of IO access functions
+> is non-standard on ColdFire platforms. They either return big-endian (that
+> is native endian) data, or on platforms with PCI bus support check the
+> supplied address and return either big or little endian data based on that
+> check. This is non-standard, they are expected to always return
+> little-endian byte ordered data. Unfortunately this behavior also means
+> that ioreadX()/iowroteX() and their big-endian counter parts
+> ioreadXbe()/iowriteXbe() are currently broken because they are implemented
+> using the readX()/writeX() functions.
+>
+> The change to use the asm-generic versions of readX()/writeX() itself is
+> quite strait forward, just remove the ColdFire local versions of them.  But
+> this of course has implications for any remaining drivers that use any of
+> these IO access functions. A number of drivers can be independently fixed,
+> before this final fix to readX()/writeX() for ColdFire. A small number of
+> drivers cannot easily be independently fixed and remain in a working
+> state. Those drivers are fixed here as well:
+>
+> drivers/dma/mcf-edma-main.c
+>   Supports big-endian access by setting the big-endian flag of
+>   the drivers struct fsl_edma_engine. But locally should be using
+>   ioread32be() and iowrite32be() instead of ioread32() and iowrite32().
+>
+> drivers/net/can/flexcan/flexcan-core.c
+>   Setting the driver quirks flag for big-endian access will force
+>   driver to use correct access functions.
+>
+> drivers/spi/spi-fsl-dspi.c
+>   Setting the regmap format_endian flags to use native endian will
+>   force driver to use appropriate big or little endian access on
+>   whatever platform it is built for.
+>
+> These drivers have only been compile tested.
+>
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 > ---
->  drivers/iio/dac/Kconfig        |  10 +++
->  drivers/iio/dac/Makefile       |   1 +
->  drivers/iio/dac/mcf54415_dac.c | 200 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 211 insertions(+)
-> 
-> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-> index cd4870b65415..17550e99cfdd 100644
-> --- a/drivers/iio/dac/Kconfig
-> +++ b/drivers/iio/dac/Kconfig
-> @@ -516,6 +516,16 @@ config MAX5821
->  	  Say yes here to build support for Maxim MAX5821
->  	  10 bits DAC.
->  
-> +config MCF54415_DAC
-> +	tristate "NXP MCF54415 DAC driver"
-> +	depends on M5441x
+>  arch/m68k/include/asm/io_no.h          | 68 +++-----------------------
+>  drivers/dma/mcf-edma-main.c            | 14 +++---
 
-If we can add a || COMPIlE_TEST that would be much appreciated as
-then we'll get some better build coverage.
+Suppose it is correct, but I have not such platform to test it. it should
+be correct if disassembly code is the same at access register.
 
-May need some stubs if there is anything not already stubbed out.
+Frank
 
-> +	help
-> +	  Say yes here to build support for NXP MCF54415
-> +	  12bit DAC.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called mcf54415_dac.
-> +
->  config MCP4725
->  	tristate "MCP4725/6 DAC driver"
->  	depends on I2C
-> diff --git a/drivers/iio/dac/Makefile b/drivers/iio/dac/Makefile
-> index 2a80bbf4e80a..1cb93e83d0eb 100644
-> --- a/drivers/iio/dac/Makefile
-> +++ b/drivers/iio/dac/Makefile
-> @@ -51,6 +51,7 @@ obj-$(CONFIG_MAX517) += max517.o
->  obj-$(CONFIG_MAX22007) += max22007.o
->  obj-$(CONFIG_MAX5522) += max5522.o
->  obj-$(CONFIG_MAX5821) += max5821.o
-> +obj-$(CONFIG_MCF54415_DAC) += mcf54415_dac.o
->  obj-$(CONFIG_MCP4725) += mcp4725.o
->  obj-$(CONFIG_MCP4728) += mcp4728.o
->  obj-$(CONFIG_MCP47FEB02) += mcp47feb02.o
-> diff --git a/drivers/iio/dac/mcf54415_dac.c b/drivers/iio/dac/mcf54415_dac.c
-> new file mode 100644
-> index 000000000000..4031a5dc1f9d
-> --- /dev/null
-> +++ b/drivers/iio/dac/mcf54415_dac.c
-> @@ -0,0 +1,200 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * NXP mcf54415 DAC driver
-> + *
-> + * Copyright 2026 BayLibre - adureghello@baylibre.com
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include <linux/iio/iio.h>
-> +
-> +#define MCF54415_DAC_CR			0x00
-> +#define MCF54415_DAC_CR_PDN		BIT(0)
-> +#define MCF54415_DAC_CR_HSLS		BIT(6)
-> +#define MCF54415_DAC_CR_WMLVL		GENMASK(9, 8)
-> +#define MCF54415_DAC_CR_FILT		BIT(12)
-> +
-> +#define MCF54415_DAC_DATA		0x02
-> +
-> +#define MCF54415_DAC_READY_US		12
-
-I'd put this inline instead of having a define given it's only used in one
-place and  the documentation on why it is 12 is there.
-
-> +
-> +struct mcf54415_dac {
-> +	struct clk *clk;
-> +	struct device *dev;
-
-Sashiko noted dev isn't used after assignment so drop it.
-
-> +	void __iomem *regs;
-> +};
-> +
-> +static void mcf54415_dac_init(struct mcf54415_dac *info)
-> +{
-> +	int val;
-> +
-> +	/* Keeping defaults and enable DAC (bit 0 set to 0) */
-> +	val = MCF54415_DAC_CR_FILT;
-> +	val |= FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1);
-> +
-> +	writew(val, info->regs + MCF54415_DAC_CR);
-> +
-> +	/* DAC is ready after 12us, from RM table 40-3  */
-> +	fsleep(MCF54415_DAC_READY_US);
-> +}
-> +
-> +static void mcf54415_dac_exit(void *data)
-> +{
-> +	struct mcf54415_dac *info = data;
-> +	int val;
-> +
-> +	val = readw(info->regs + MCF54415_DAC_CR);
-> +	val |= MCF54415_DAC_CR_PDN;
-
-Even though simple, might be worth using regmap and
-taking advantage of regmaps rich set of RMW operations.
-
-> +	writew(val, info->regs + MCF54415_DAC_CR);
-> +}
-> +
-> +#define MCF54415_DAC_CHAN { \
-> +	.type = IIO_VOLTAGE, \
-> +	.output = 1, \
-> +	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW), \
-> +	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE), \
-> +}
-> +
-> +static const struct iio_chan_spec mcf54415_dac_iio_channels[] = {
-> +	MCF54415_DAC_CHAN
-> +};
-> +
-> +static int mcf54415_read_raw(struct iio_dev *indio_dev,
-> +			struct iio_chan_spec const *chan,
-> +			int *val, int *val2,
-> +			long mask)
-> +{
-> +	struct mcf54415_dac *info = iio_priv(indio_dev);
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		*val = readw(info->regs + MCF54415_DAC_DATA);
-Any chance there is anything in higher bits?  Maybe mask to be sure
-(sashiko moaned about this)
-
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		/* Reference voltage as per ColdFire datasheet is 3.3V */
-> +		*val = 3300 /* mV */;
-> +		*val2 = 12;
-> +		return IIO_VAL_FRACTIONAL_LOG2;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int mcf54415_write_raw(struct iio_dev *indio_dev,
-> +			struct iio_chan_spec const *chan,
-> +			int val, int val2,
-> +			long mask)
-> +{
-> +	struct mcf54415_dac *info = iio_priv(indio_dev);
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		writew(val, info->regs + MCF54415_DAC_DATA);
-
-Should return an error if val is too large. Same thing as the overflow
-thing in the commit message that I commented on above. 
-
-> +		return 0;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static const struct iio_info mcf54415_dac_iio_info = {
-> +	.read_raw = &mcf54415_read_raw,
-> +	.write_raw = &mcf54415_write_raw,
-> +};
-> +
-> +static int mcf54415_dac_probe(struct platform_device *pdev)
-> +{
-> +	struct iio_dev *indio_dev;
-> +	struct mcf54415_dac *info;
-> +	int ret;
-> +
-> +	indio_dev = devm_iio_device_alloc(&pdev->dev,
-
-Quite a lot of use of pdev->dev. I'd introduce a local
-struct device *dev = &pdev->dev;
-and use that.
-
-> +					  sizeof(struct mcf54415_dac));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	info = iio_priv(indio_dev);
-> +	info->dev = &pdev->dev;
-As noted above, this doesn't seem to be used.
-> +
-> +	info->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(info->regs))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(info->regs),
-> +				     "failed to get io regs\n");
-> +
-> +	info->clk = devm_clk_get_enabled(&pdev->dev, "dac");
-> +	if (IS_ERR(info->clk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(info->clk),
-> +				     "failed getting clock\n");
-> +
-> +	platform_set_drvdata(pdev, indio_dev);
-> +
-> +	indio_dev->name = dev_name(&pdev->dev);
-
-This should be the part number.  dev_name has an irritating habit
-of being something more complex. What is it here? Just hard coding
-it probably simpler even if it happens to be something that works in
-this case.
-
-If you need to differentiate between multiple instances, use a label
-instead of name.
-
-> +	indio_dev->info = &mcf54415_dac_iio_info;
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +	indio_dev->channels = mcf54415_dac_iio_channels;
-> +	indio_dev->num_channels = ARRAY_SIZE(mcf54415_dac_iio_channels);
-> +
-> +	mcf54415_dac_init(info);
-> +
-> +	ret = devm_add_action_or_reset(&pdev->dev, mcf54415_dac_exit, info);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = devm_iio_device_register(&pdev->dev, indio_dev);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "couldn't register the device\n");
-
-I think this was already pointed out.  It's really easy to see if this
-failed (the device isn't there) so we tend not to bother printing
-an error on it happening.  Thus
-	return devm_iio_device_register()
-
-> +
-> +	return ret;
-> +}
-
-> +
-> +static DEFINE_SIMPLE_DEV_PM_OPS(mcf54415_dac_pm_ops, mcf54415_dac_suspend,
-> +				mcf54415_dac_resume);
-> +
-> +static struct platform_driver mcf54415_dac_driver = {
-> +	.probe          = mcf54415_dac_probe,
-> +	.driver         = {
-> +		.name   = "mcf54415_dac",
-> +		.pm     = pm_sleep_ptr(&mcf54415_dac_pm_ops),
-> +	},
-> +};
-To me the alignment of this structure is misleading to the eye as stuff
-in the substructure aligns with the main one.  I'd prefer
-
-static struct platform_driver mcf54415_dac_driver = {
-	.probe = mcf54415_dac_probe,
-	.driver = {
-		.name = "mcf54415_dac",
-		.pm = pm_sleep_ptr(&mcf54415_dac_pm_ops),
-	},
-};
-
-Because this sort of alignment forcing is a common source of annoying
-churn in follow up patches for very little in readability gains.
-When it's arrays of numeric data it is worth doing but not for fields
-of a structure.
-
-
-> +module_platform_driver(mcf54415_dac_driver);
-> +
-> +MODULE_AUTHOR("Angelo Dureghello <angelo@kernel-space.org>");
-> +MODULE_DESCRIPTION("NXP MCF54415 DAC driver");
-> +MODULE_LICENSE("GPL");
-> 
-
+>
