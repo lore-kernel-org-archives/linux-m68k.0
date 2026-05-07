@@ -1,36 +1,38 @@
-Received: from mail.kernel-space.org (v2202511311555398556.powersrv.de [46.38.245.6])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD2F3B38B0
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  6 May 2026 21:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.245.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59F9C3ED5AE
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 May 2026 12:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778101677; cv=none; b=t5fDb88umfSLPmLmPxNNrdh2iK0+4X4bzoGiZrvBtPE0FC31Kj5/omPNQIvDtgLuoaAih7S2lixeyfeUeTvjgLO+QjUE94qx2DzwMlBr9caVbxGUkrXnnS/iibORPvnp2cpTWj/b817CJU3c2B9o6rAP7M/6uiJRrpdmxG6pGI8=
+	t=1778157788; cv=none; b=aN6IZ77ysPX1x2O+NVXufgN5JyR8eODr2CfPjWWR6fu5ZRoqAAc3aPi/tsQuRnTU10qEAslXzni9aWzlgUU7eWUfUQXLqHKyvNP5zEPEtLmIdGYgBqItBUcNyPLSvSeazncuFThN1mhmBtJzjZBgcGtyZJGu/nR/AycFNsrZwwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778101677; c=relaxed/simple;
-	bh=a/q+d44xQawWjegyh9bRKxMI6jfRop1zwgGnaHrIr1A=;
+	s=arc-20240116; t=1778157788; c=relaxed/simple;
+	bh=KcJZ2tQuXM3g8y12mvLrPHW/18cvpRwsmiGbk6LCNUw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Slzeg5lVEmE8Y8THkNvQ2k5I0PNbQ+DdVTZ/iZiUSLLmm61i7KStWg+VAu6LpJWbiZqZ8wImLhMfkhZLi4KtD177Wsy6E51BTwVWOBWbvG5wxYcLYr8no5NLfCYZqqYr0/ycEMtcu0y3mwr2KoQ/uivlV9s4hzPgE9toigrW2ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org; spf=pass smtp.mailfrom=kernel-space.org; dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b=xNTXpScV; arc=none smtp.client-ip=46.38.245.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kernel-space.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel-space.org
+	 In-Reply-To:Content-Type; b=MTNY0lKZpXaM4k0/Nwr6icAs7vLU5oC0FhsJetWUGPtNi1/fYcTQmRdI/8glavs5byvlaneGkAhu1xJw9KyHJQ8WS7iJKQPeWciKRGNhWCFyL2pCNaK8H1ZpQxMztDiszVf8jH6srQa6ThfCopPl3vTWIFWsfgFi8erfbG0loYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivYdaGlo; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kernel-space.org header.i=@kernel-space.org header.b="xNTXpScV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel-space.org;
-	s=s1; t=1778101662;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P03wL+yRq2fhnonG0hKGi8A1NVc+WdVspICjAGZDnnM=;
-	b=xNTXpScVBMmNpq6KjpNcbP5A2luevAYVXAlrWKSUV8m+Y1+kyCpJR4LVof1+DCV7wYm3SD
-	L2xqe2tRGpTRdK9f/4q8HcsiPGsjx0F35c2n2kD08AyvGtd0SzvY7epjURQCJWoaz85+A8
-	x3Hf0Leg3nNamgr5zgea75Ae9AOZepM=
-Received: from [IPV6:2a07:7e81:7daa:0:62cf:84ff:feee:627] (<unknown> [2a07:7e81:7daa:0:62cf:84ff:feee:627])
-	by oreshnik (OpenSMTPD) with ESMTPSA id 15c256de (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Wed, 6 May 2026 21:07:42 +0000 (UTC)
-Message-ID: <a4b53dc6-e89d-46a5-b4c1-460b0d90ae30@kernel-space.org>
-Date: Wed, 6 May 2026 23:07:41 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivYdaGlo"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sea.source.kernel.org (Postfix) with ESMTP id F1DFC4024C;
+	Thu,  7 May 2026 12:43:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8C71C2BCB2;
+	Thu,  7 May 2026 12:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778157786;
+	bh=KcJZ2tQuXM3g8y12mvLrPHW/18cvpRwsmiGbk6LCNUw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ivYdaGloqHxvmfWXSxe1ELUU+RwECDQ3Ot2aFXb4yrVAQge39ukfDNjlED2qvSaZs
+	 oSt9fjlj41wvhoEbVNAed0bzuECz1Oa95CYmBbYRw0rA0lZ8l9e/vqg/NeLtwbC19N
+	 3hYoFNUyTffpG57XqltsjWbSULV11ZgH5g7UwlzF1x7ugsFp30oZACYww61xrFhatG
+	 KoRJQygv77yLSMgafEG2DAH28LcK6ci1wOLt30Yz6lU12saNClOW9EhizsmcbNgdgT
+	 jT4aUZyOu/eFs9CUbXRH7QpgIJoU/ZtJIIgNJ7J0HyBjmQjfOVOs6ABn8AUS1lo8s4
+	 e7SElQxE0X/ug==
+Message-ID: <fdd6fc14-f607-4186-8db4-25de973ac322@kernel.org>
+Date: Thu, 7 May 2026 22:43:01 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -38,94 +40,64 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/10] m68k: stmark2: add mcf5441x DAC platform devices
-To: Jonathan Cameron <jic23@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- David Lechner <dlechner@baylibre.com>, =?UTF-8?Q?Nuno_S=C3=A1?=
- <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>,
- Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
+ functions
+To: Arnd Bergmann <arnd@kernel.org>, linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-spi@vger.kernel.org,
+ Vladimir Oltean <olteanv@gmail.com>,
  Angelo Dureghello <adureghello@baylibre.com>
-References: <20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com>
- <20260504-wip-stmark2-dac-v1-8-874c36a4910d@baylibre.com>
- <ef773bbd-1cf2-4cc2-96a8-fccd3355d6b1@app.fastmail.com>
- <20260506155737.6cd625a5@jic23-huawei>
-Content-Language: en-US, it
-From: Angelo Dureghello <angelo@kernel-space.org>
-In-Reply-To: <20260506155737.6cd625a5@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8
+References: <20260506142644.3234270-2-gerg@kernel.org>
+ <20260506142644.3234270-8-gerg@kernel.org>
+ <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Jonathan,
+Hi Arnd,
 
-On 5/6/26 16:57, Jonathan Cameron wrote:
-> On Mon, 04 May 2026 19:28:28 +0200
-> "Arnd Bergmann" <arnd@arndb.de> wrote:
+On 7/5/26 05:12, Arnd Bergmann wrote:
+> On Wed, May 6, 2026, at 16:26, Greg Ungerer wrote:
 > 
->> On Mon, May 4, 2026, at 19:16, Angelo Dureghello wrote:
->>> @@ -94,8 +94,42 @@ static struct platform_device dspi_spi0_device = {  
->> ...
->>> +static struct resource dspi_dac1_resource[] = {
->>> +	[0] = {  
->>
->> This looks like the name has a copy-paste error: this is not
->> related to the 'dspi' controller at all but is just the dac, right?
->>
->>       Arnd
->>
+>> drivers/dma/mcf-edma-main.c
+>>    Supports big-endian access by setting the big-endian flag of
+>>    the drivers struct fsl_edma_engine. But locally should be using
+>>    ioread32be() and iowrite32be() instead of ioread32() and iowrite32().
 > 
-> https://sashiko.dev/#/patchset/20260504-wip-stmark2-dac-v1-0-874c36a4910d%40baylibre.com
-> Has noted some more alongside this one.
-> Seems unlikely a DAC has a bus number.
+> I'm still a bit confused about how this works at the moment,
+> since the drivers/dma/fsl-edma-common.h file already contains
+> checks for the edma->big_endian flag, which is set in
+> mcf_edma_probe(). The version after your patch makes sense
+> to me, but it looks like the existing code cannot work.
+
+Yes, it certainly doesn't look right to me either.
+
+Angelo: you look to be the original author of this driver, can you shed any
+light on its working status in mainline currently?
+
+
+>> drivers/spi/spi-fsl-dspi.c
+>>    Setting the regmap format_endian flags to use native endian will
+>>    force driver to use appropriate big or little endian access on
+>>    whatever platform it is built for.
+>>
+>> These drivers have only been compile tested.
 > 
+> I would suggest marking these as explicit BIG_ENDIAN rather than
+> NATIVE_ENDIAN. The effect should be the same since coldfire CPUs
+> cannot run little-endian code, but the way that hardware usually
+> works is that the endianess is fixed at the bus level to one way
+> or the other. NATIVE_ENDIAN to me implies that the registers
+> have configurable endianess that is switched along with the CPU
+> mode.
 
-that sashiko comment is not clear to me, maybe was related to the comment
-i copy/pasted from dspi.
+Ok, will change. I chose native endian in this case since the regmap config
+entry used for the m5441x family is also used by the vf610 devce (which looks
+to be an ARM imx SoC). So it will need a duplicate setup with those endian
+flags set to BIG_ENDIAN. But that is no problem.
 
-I have now fixed this as:
-
-+static struct resource dac0_resource[] = {
-+	DEFINE_RES_MEM(MCFDAC_BASE0, 0x100),
-+};
-+
-+static struct platform_device dac0_device = {
-+	.name = "mcf54415_dac",
-+	.id = 0,
-+	.num_resources = ARRAY_SIZE(dac0_resource),
-+	.resource = dac0_resource,
-+};
-+
-+static struct resource dac1_resource[] = {
-+	DEFINE_RES_MEM(MCFDAC_BASE1, 0x100),
-+};
-+
-+static struct platform_device dac1_device = {
-+	.name = "mcf54415_dac",
-+	.id = 1,
-+	.num_resources = ARRAY_SIZE(dac1_resource),
-+	.resource = dac1_resource,
-+};
-+
- static struct platform_device *stmark2_devices[] __initdata = {
- 	&dspi_spi0_device,
-+	&dac0_device,
-+	&dac1_device,
- };
-
-It should be fine for sashiko too.
-
-Regards,
-angelo
-
-> Jonathan
-
-
-
-
-
--- Angelo
+Thanks
+Greg
 
