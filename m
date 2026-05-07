@@ -1,119 +1,91 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D1230E0F2
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 May 2026 13:31:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95FB2406277
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 May 2026 14:33:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778160667; cv=none; b=DpTE135hOjKO73IPCNvZBeGgvPsdFmvdfYytWfNqsnJaGWTUP8WERrsGhR2dhu0e1cnIktnJMn6UfbKE2T3wa7dYTIf65VRKFQOsAsrNCdPD/LxhtyMZOmrcgapsnJyC/Vk08D38eEHirtEHf6+8dOtr7v5qr/RJRHaQIGq8Gs4=
+	t=1778164427; cv=none; b=az6aArRJrNWEaAm28TDlRRh3OdC++czJL4WhRoOk+hs2yYLRALj5IWXVNevcD4SsjnEHC33LVuvJTg3isPnSChuUw43lBuAPqnhTy3h49W4bpaE14gIh+hN9saM4pzZOXHDsTblCvz/BiqBGyckk2AmS35mYynRt+xjo8v7xfcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778160667; c=relaxed/simple;
-	bh=0r6hk/aWmDACR5dNtufyI9Sz3ggteObbzx6/5TofXE8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IQRtzmGXHOgrDWzyouetKIoRahvrS8VNNNTdBoy+QDFR+NL6LBPPxicppCuv+R7R62PB4ai5swqzjwE1ijc2Q2vQStANTCIeIG81xxieqV/gnJbJ/q/r65USz6q2CLV4mgxN0vNPXZ1XwrRXB+h1FPFnontOxKn4ilOzLoKUJA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKyoT-0007GM-N6; Thu, 07 May 2026 15:30:49 +0200
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1wKyoS-000viD-1I;
-	Thu, 07 May 2026 15:30:48 +0200
-Received: from pengutronix.de (p4ffb2dc6.dip0.t-ipconnect.de [79.251.45.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 8C2725305FF;
-	Thu, 07 May 2026 13:30:48 +0000 (UTC)
-Date: Thu, 7 May 2026 15:30:48 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Greg Ungerer <gerg@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	arnd@kernel.org, Greg Ungerer <gerg@linux-m68k.org>, dmaengine@vger.kernel.org, 
-	linux-can@vger.kernel.org, linux-spi@vger.kernel.org, olteanv@gmail.com, 
-	adureghello@baylibre.com
-Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
- functions
-Message-ID: <20260507-masterful-pegasus-of-science-c408e0-mkl@pengutronix.de>
-X-AI: stop_reason: "refusal"
-References: <20260506142644.3234270-2-gerg@kernel.org>
- <20260506142644.3234270-8-gerg@kernel.org>
+	s=arc-20240116; t=1778164427; c=relaxed/simple;
+	bh=4h47Z6ML2wUmiSm067qKXqglBqLvg1eK31qkZ+Ft+/M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h7bWawwftQ7gZNOfzk1vECKaLvZq3iWnTiDzr21uFTVri6jFNwZVYzcUSN5MmaBPNiczSsuIHEOYYJqvxqOCX3ct2kh/tb9oyB2iajyK9TnaP6IzZgSUloG0IX9To+/grXTsBj/5rlLwFieonbQPNpj0XHTaETzFwQ2XKxjf12I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oeFNGBs/; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oeFNGBs/"
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by tor.source.kernel.org (Postfix) with ESMTP id D207E60181;
+	Thu,  7 May 2026 14:33:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29D63C2BCB2;
+	Thu,  7 May 2026 14:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778164425;
+	bh=4h47Z6ML2wUmiSm067qKXqglBqLvg1eK31qkZ+Ft+/M=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=oeFNGBs/orp6cCxb0HHNCkON/3uF18AuQK/w23afJiRNnQJzTEE17mH6NRRk85PRX
+	 oHoNL3bBGEfL+N5fYKeYhLAwFBaQAHPCFXQKKu31lWD2wDNrw7ERx/aDzERBNWMWHB
+	 fhQKUZMB7yVgM/TnM3Rt5aXhpkHV0IKy2UkGwrjxO8UzFR69gPbSXz8QTDpfvMJdbz
+	 oJpk1/7htDYqWB5AaftvhKtVeqUu/q1GkdelKIhRb35Wi1o3nFGB2HDaTTwQJ7br6S
+	 bRl5+TzDt83ChPkxn/6Wsmw3enejW/i0+IAKZLYKBjIIWZXbUKmVXy+CD6E+zcD8vc
+	 z547l1n/896iQ==
+Message-ID: <7bc9e2c2-3646-43bc-8405-c4367d99d8bc@kernel.org>
+Date: Fri, 8 May 2026 00:33:40 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wannj6m2lemejz2p"
-Content-Disposition: inline
-In-Reply-To: <20260506142644.3234270-8-gerg@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-m68k@lists.linux-m68k.org
-
-
---wannj6m2lemejz2p
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
  functions
-MIME-Version: 1.0
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ arnd@kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
+ dmaengine@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-spi@vger.kernel.org, olteanv@gmail.com, adureghello@baylibre.com
+References: <20260506142644.3234270-2-gerg@kernel.org>
+ <20260506142644.3234270-8-gerg@kernel.org>
+ <20260507-masterful-pegasus-of-science-c408e0-mkl@pengutronix.de>
+Content-Language: en-US
+From: Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <20260507-masterful-pegasus-of-science-c408e0-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 07.05.2026 00:26:48, Greg Ungerer wrote:
-> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
-xcan/flexcan-core.c
-> index f5d22c61503f..a682f02d2c43 100644
-> --- a/drivers/net/can/flexcan/flexcan-core.c
-> +++ b/drivers/net/can/flexcan/flexcan-core.c
-> @@ -296,6 +296,7 @@ static_assert(sizeof(struct flexcan_regs) =3D=3D  0x4=
- * 18 + 0xfb8);
->  static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data =3D {
->  	.quirks =3D FLEXCAN_QUIRK_BROKEN_PERR_STATE |
 
-Nitpick:
-Can you move it here, so that the quirks stay sorted?
+On 7/5/26 23:30, Marc Kleine-Budde wrote:
+> On 07.05.2026 00:26:48, Greg Ungerer wrote:
+>> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+>> index f5d22c61503f..a682f02d2c43 100644
+>> --- a/drivers/net/can/flexcan/flexcan-core.c
+>> +++ b/drivers/net/can/flexcan/flexcan-core.c
+>> @@ -296,6 +296,7 @@ static_assert(sizeof(struct flexcan_regs) ==  0x4 * 18 + 0xfb8);
+>>   static const struct flexcan_devtype_data fsl_mcf5441x_devtype_data = {
+>>   	.quirks = FLEXCAN_QUIRK_BROKEN_PERR_STATE |
+> 
+> Nitpick:
+> Can you move it here, so that the quirks stay sorted?
 
-		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN |
+Yep, sure thing.
 
->  		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
-> +		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN |
->  		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX |
->  		FLEXCAN_QUIRK_SUPPORT_RX_FIFO,
->  };
 
-With that change:
+> 		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN |
+> 
+>>   		FLEXCAN_QUIRK_NR_IRQ_3 | FLEXCAN_QUIRK_NR_MB_16 |
+>> +		FLEXCAN_QUIRK_DEFAULT_BIG_ENDIAN |
+>>   		FLEXCAN_QUIRK_SUPPORT_RX_MAILBOX |
+>>   		FLEXCAN_QUIRK_SUPPORT_RX_FIFO,
+>>   };
+> 
+> With that change:
+> 
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for drivers/net/can/flexcan
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for drivers/net/can/flex=
-can
+Thanks
+Greg
 
-regards,
-Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---wannj6m2lemejz2p
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCafyUBQAKCRDMOmT6rpmt
-0h1/AQD8fPQ9qBfBV4KsyZ2O2YslluG3RnplOxiorG4vbWXGngD/dQ7s6kWp1KKP
-rLIS55PAZs60zOx+c7AxCJhLScFIvAw=
-=fD+P
------END PGP SIGNATURE-----
-
---wannj6m2lemejz2p--
