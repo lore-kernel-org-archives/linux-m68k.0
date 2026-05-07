@@ -1,139 +1,181 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D6B44B663
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 May 2026 15:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C733976BB
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  7 May 2026 22:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778167709; cv=none; b=c6sEEnVXMbGXZ/yJlJllP/u/T50DQxXYFA5P97cD5Eec5lq01lR7xVjNYqUkhbySloi/dz5Br7b0vbVqByGCR1HKBmQkvjiYPbvc+5mFanzVUCiSQLGybZuwXPnptPactSgjw6/D5eHCX1GxDFH8g8N9SPMLXZeu6DdoP3y9pYM=
+	t=1778192595; cv=none; b=Jad8iBKCuk2ZXRNqaIajO6LaqzdDJWS0tPGz0393XJmmG9PiH9thIcwUNeTj2ZDr+N/7G2J00lpPlLHRRlux4cn21l9kvahd164qVJP79tNF2jI0fhlvMgwEyYWG9CY44oRaqN4ED3yumyUwOLxRRX3Za2I/1j925WhsQunplcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778167709; c=relaxed/simple;
-	bh=4eOAk7Jab8Qd0kCNwcOZLlm6jgPUdg90LEM6kZcx/eo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VJ2o8Y7bwBGTkUghdtpqwpU0AbI8WY9QsIN8r1P/IJXOjbJWLLcxOh/mXAlCTA0Nn1Em3iGKsEvvUH9/+OZQ7XdhimjqPg7SOhB4fqLsjYW9X2YMODA6q9N0YdyAsxjbpQoDeQEcZcS8KCDoFVQsLqwB9kQx+bjj2vFAskRJk/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tsKTlNuO; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1778192595; c=relaxed/simple;
+	bh=o+vhOTjLhvS47fv9tom+Yt3TM9vgXV0mo+tAnh6qa+g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 In-Reply-To:Content-Type:Content-Disposition; b=tw+EmEdzQb/3A2X6h/oeNPx1+WiBDi5ckPxKzIXazK7+vF+U3XddmpuYrCQ24S/6dMTOBnDYABh6cLpPeQYH7Uwjwd5bknMR0lob/00nQ+YgR9gfcY/ZpbF936cfHj7R5byr3WViF0Dbi3a0oZJ/VTlkhl0FwScZitcQJWDc6t4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fMPxiWFF; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tsKTlNuO"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3A1C0406BA;
-	Thu,  7 May 2026 15:28:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA90C2BCB2;
-	Thu,  7 May 2026 15:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778167707;
-	bh=4eOAk7Jab8Qd0kCNwcOZLlm6jgPUdg90LEM6kZcx/eo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tsKTlNuOWmgG9OLtgI/cSdYxSyxXfVLEBh/Hx32ww+52sozgT2D19X9rI4dnCrZYZ
-	 3KlxKsvyAhnRA38+ONp1wmPUDLN0GP04w6w+l8vft+lGDOhn78JAGJVMgipLYMcivc
-	 fToIuml6bRnmQYKd954N9uirjQcMVJhroSFWR729xxxg32rASs+NQkub4hhYXE0h60
-	 NHb+svpZkuJgyi0dKwHLgUc37J17blwvMc8t7Ydf123NGnclFbTULRBjJtT4Ly1Ptq
-	 G9YOWeaOMCmB5XTF4GZjMlRP2MXq5nmNv3LneHX4yBzs7aILSrwtralDGUMzOKY4LI
-	 ukigsNFZWVJig==
-Date: Thu, 7 May 2026 16:28:15 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Angelo Dureghello <angelo@kernel-space.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Greg Ungerer <gerg@linux-m68k.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Maxime
- Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, David Lechner <dlechner@baylibre.com>, Nuno
- =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>,
- Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org, Angelo
- Dureghello <adureghello@baylibre.com>
-Subject: Re: [PATCH 08/10] m68k: stmark2: add mcf5441x DAC platform devices
-Message-ID: <20260507162815.1135618e@jic23-huawei>
-In-Reply-To: <a4b53dc6-e89d-46a5-b4c1-460b0d90ae30@kernel-space.org>
-References: <20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com>
-	<20260504-wip-stmark2-dac-v1-8-874c36a4910d@baylibre.com>
-	<ef773bbd-1cf2-4cc2-96a8-fccd3355d6b1@app.fastmail.com>
-	<20260506155737.6cd625a5@jic23-huawei>
-	<a4b53dc6-e89d-46a5-b4c1-460b0d90ae30@kernel-space.org>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fMPxiWFF"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1778192592;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KxxPeFo8b5YQQgq6okT6k4ODeRwXIuGSW0SUh4EUnR0=;
+	b=fMPxiWFFKO7CDfP+E0sQ1M2fWieK5xj46zWVZCKNrCzlBdDvFHfFracoloroagNAoA6hXE
+	a9b184/W6SBkUH3tvdKMfVw6iaP6u0JcPJyrV20F/Panm3DP1vJbdPCSPb5ngvICqphMmK
+	skd9ctBVt0/qsMrIVphmMAyXfmOLvQ8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-100-65t169jaN5OtMsN_nF-zkw-1; Thu, 07 May 2026 18:23:08 -0400
+X-MC-Unique: 65t169jaN5OtMsN_nF-zkw-1
+X-Mimecast-MFC-AGG-ID: 65t169jaN5OtMsN_nF-zkw_1778192587
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-48a7994e8ddso8976235e9.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 07 May 2026 15:23:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778192587; x=1778797387;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KxxPeFo8b5YQQgq6okT6k4ODeRwXIuGSW0SUh4EUnR0=;
+        b=J7ryrbvh0qUYGptQjlzMMcNTvK0ZN1bjVyWqrai1ERVIik6oh/gTe0yt9sL/650CA4
+         rjJckew2P/WQ2tu3obv6B0sddBfIGuQ1RaZDyvPt0h4VI2XPs2LQNKepLS/N+FjORKaN
+         W6112/GQZ4T8Vq9NU8Hl39epPFuNXkTD/xtTSzZLJBQ2/PzvHBu9bmfs2eeVC40Sa6gK
+         96rg9qvY7c6ql2vRKyxverCZK7Ds+7HsOZZNF6y5p6ixjM0+zvFxJobj9v7vNu2G1cfL
+         H3d7Ae2vn3imZVLH9/Vd/wq4E5Hw4yzTnCyMHRFKwUXQa47ehf+qg1MyWJIxSUM58X//
+         j/TA==
+X-Forwarded-Encrypted: i=1; AFNElJ9LT2ZhXeNwo5Btf8eUnweY1brmb4W0MnLeqU0nrjnXmRCzJOx2bA7AOxJL1om1reExkU2DBy0jUSGn@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yz8eJmnYYLBtJ240nxKM+tanYk9DuqyJi9cYKLN/RNHO3Ft1woy
+	NIdgnZMlU/eJzynt14eYG1mvWPIWccYGQh/iQkx+0AsknhqZA4jdyElhzBugBE91perm7MUdhSX
+	nQ3ZN1Fup8XHEZ29l+FK+hgjXgNsONxyqN6frHvGzLsy1Qrmi8EfEspDu/dtaW/7r2jCqHA==
+X-Gm-Gg: AeBDietGd2hlphNhZ3FhQh5VHqPFvo9pBgwYFxPN1mgCGQzG9HLlYuxiiQ2iixl8YS8
+	ZXUKgFxRxWnoqrfCJFNdhQmh3/Nv29T2F/TSx+yg9ScW1isxJaCGYZnn2swrRakKJKlLsDiHPlQ
+	Rx98wKnIUaW1skC0uBuWwC6sN73NckTY40rH0Gj5bCW+FCL/9W9pFIa7luC5GWvFkCBJCTm+30N
+	PJLNbd8T5QBzFISwyhuVsjYuQoP0EwdEbzcGijGvXkhiFpybxztu10Q0IoRILfmjFzOXkXQKvgT
+	Tvy1llJlOj2lS+P/rU3JwovKKdYtGsHK8RXrVx8Aim534W93rxF2E6Xz+cANhRAXwiTrBZhPLVn
+	x9CgqB5zpj/BmEgMXI2FwlX3blngSmG0r7m53Pz8u
+X-Received: by 2002:a05:600c:1c0f:b0:48a:5342:36b5 with SMTP id 5b1f17b1804b1-48e51f3deddmr177389105e9.21.1778192586769;
+        Thu, 07 May 2026 15:23:06 -0700 (PDT)
+X-Received: by 2002:a05:600c:1c0f:b0:48a:5342:36b5 with SMTP id 5b1f17b1804b1-48e51f3deddmr177388435e9.21.1778192586184;
+        Thu, 07 May 2026 15:23:06 -0700 (PDT)
+Received: from redhat.com (IGLD-80-230-48-7.inter.net.il. [80.230.48.7])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45412820303sm2289369f8f.4.2026.05.07.15.23.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2026 15:23:05 -0700 (PDT)
+Date: Thu, 7 May 2026 18:23:03 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: David Hildenbrand <david@kernel.org>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-alpha@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
+Subject: [PATCH v5 13/28] mm: remove arch vma_alloc_zeroed_movable_folio
+ overrides
+Message-ID: <44d46ba982b39e53a2b5f978dd7239836e535196.1778192416.git.mst@redhat.com>
+References: <cover.1778192416.git.mst@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <cover.1778192416.git.mst@redhat.com>
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: UYKoIsv8nm15BwQAUAYx7FAsggVMz5WoZc06srmXsyQ_1778192587
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, 6 May 2026 23:07:41 +0200
-Angelo Dureghello <angelo@kernel-space.org> wrote:
+Now that the generic vma_alloc_zeroed_movable_folio() uses
+__GFP_ZERO, the arch-specific macros on alpha, m68k, s390, and
+x86 that did the same thing are redundant.  Remove them.
 
-> Hi Jonathan,
-> 
-> On 5/6/26 16:57, Jonathan Cameron wrote:
-> > On Mon, 04 May 2026 19:28:28 +0200
-> > "Arnd Bergmann" <arnd@arndb.de> wrote:
-> >   
-> >> On Mon, May 4, 2026, at 19:16, Angelo Dureghello wrote:  
-> >>> @@ -94,8 +94,42 @@ static struct platform_device dspi_spi0_device = {    
-> >> ...  
-> >>> +static struct resource dspi_dac1_resource[] = {
-> >>> +	[0] = {    
-> >>
-> >> This looks like the name has a copy-paste error: this is not
-> >> related to the 'dspi' controller at all but is just the dac, right?
-> >>
-> >>       Arnd
-> >>  
-> > 
-> > https://sashiko.dev/#/patchset/20260504-wip-stmark2-dac-v1-0-874c36a4910d%40baylibre.com
-> > Has noted some more alongside this one.
-> > Seems unlikely a DAC has a bus number.
-> >   
-> 
-> that sashiko comment is not clear to me, maybe was related to the comment
-> i copy/pasted from dspi.
+arm64 is not affected: it has a real function override that
+handles MTE tag zeroing, not just __GFP_ZERO.
 
-Yes.  i think that is what it was referring to.
+Suggested-by: David Hildenbrand <david@kernel.org>
+Acked-by: Magnus Lindholm <linmag7@gmail.com>
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ arch/alpha/include/asm/page.h   | 3 ---
+ arch/m68k/include/asm/page_no.h | 3 ---
+ arch/s390/include/asm/page.h    | 3 ---
+ arch/x86/include/asm/page.h     | 3 ---
+ 4 files changed, 12 deletions(-)
 
-> 
-> I have now fixed this as:
-> 
-> +static struct resource dac0_resource[] = {
-> +	DEFINE_RES_MEM(MCFDAC_BASE0, 0x100),
-> +};
-> +
-> +static struct platform_device dac0_device = {
-> +	.name = "mcf54415_dac",
-> +	.id = 0,
-> +	.num_resources = ARRAY_SIZE(dac0_resource),
-> +	.resource = dac0_resource,
-> +};
-> +
-> +static struct resource dac1_resource[] = {
-> +	DEFINE_RES_MEM(MCFDAC_BASE1, 0x100),
-> +};
-> +
-> +static struct platform_device dac1_device = {
-> +	.name = "mcf54415_dac",
-> +	.id = 1,
-> +	.num_resources = ARRAY_SIZE(dac1_resource),
-> +	.resource = dac1_resource,
-> +};
-> +
->  static struct platform_device *stmark2_devices[] __initdata = {
->  	&dspi_spi0_device,
-> +	&dac0_device,
-> +	&dac1_device,
->  };
-> 
-> It should be fine for sashiko too.
-> 
-> Regards,
-> angelo
-> 
-> > Jonathan  
-> 
-> 
-> 
-> 
-> 
-> -- Angelo
-> 
+diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.h
+index 59d01f9b77f6..4327029cd660 100644
+--- a/arch/alpha/include/asm/page.h
++++ b/arch/alpha/include/asm/page.h
+@@ -12,9 +12,6 @@
+ 
+ extern void clear_page(void *page);
+ 
+-#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
+-	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
+-
+ extern void copy_page(void * _to, void * _from);
+ #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+ 
+diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
+index d2532bc407ef..f511b763a235 100644
+--- a/arch/m68k/include/asm/page_no.h
++++ b/arch/m68k/include/asm/page_no.h
+@@ -12,9 +12,6 @@ extern unsigned long memory_end;
+ 
+ #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+ 
+-#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
+-	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
+-
+ #define __pa(vaddr)		((unsigned long)(vaddr))
+ #define __va(paddr)		((void *)((unsigned long)(paddr)))
+ 
+diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
+index f339258135f7..04020a19a5cf 100644
+--- a/arch/s390/include/asm/page.h
++++ b/arch/s390/include/asm/page.h
+@@ -67,9 +67,6 @@ static inline void copy_page(void *to, void *from)
+ 
+ #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
+ 
+-#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
+-	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
+-
+ #ifdef CONFIG_STRICT_MM_TYPECHECKS
+ #define STRICT_MM_TYPECHECKS
+ #endif
+diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
+index 416dc88e35c1..92fa975b46f3 100644
+--- a/arch/x86/include/asm/page.h
++++ b/arch/x86/include/asm/page.h
+@@ -28,9 +28,6 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
+ 	copy_page(to, from);
+ }
+ 
+-#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
+-	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
+-
+ #ifndef __pa
+ #define __pa(x)		__phys_addr((unsigned long)(x))
+ #endif
+-- 
+MST
 
