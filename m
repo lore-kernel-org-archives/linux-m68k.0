@@ -1,150 +1,121 @@
-Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazon11010057.outbound.protection.outlook.com [52.101.84.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5361BC08F
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  8 May 2026 02:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.84.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778208402; cv=fail; b=q8cmXZddWpKLaxmYqO7ath66f44EMiPQJteEMWhni+XIG5IgJzHG5Zh0Wb5zFtZDmY0OpMCkJaPL0pt6dDas2BbrkyZe5x4FxJ5Rrn/jzWd6/X+jMFURFyZGwmq4MkRSH8o2IMlVVt7nxadijidmD0BExvEwFov3+tNZ2FCe/W8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778208402; c=relaxed/simple;
-	bh=0XYVpomz5GifiFKEwxuErgW3K8U905z7MuhJZpQT0sA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=I5mSs6R6jfqSI87cf7ihOjxF6Yt1FSPbgYKDGHYKsNJVj+N5jayjtpfJjgm2AQmVzhbPnQ3BHU11NgKDx5ZKa9OoKmFBeYmssM65u6X05a1bJ2abKQhCqo53wIE0ZL3lbbwZ5upv28EDp0bJvVYYeLEQmSjKRdIQd2gaJz0RTVg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b=imXsrakc; arc=fail smtp.client-ip=52.101.84.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB852EBBB9
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  8 May 2026 08:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778229648; cv=none; b=SxR+tyeWWkJI3eXo8X/TmCpVHVgaB5IBYJqyP+xhVT3XOi+i1LQKuMhiVBFHdMEMmqvtZ+Mg2AnderrzmzZ6SVeyKHcdKeM4seV8rlDieHYaebquVj+dgBNGIodCvLLZdfGonl09Lk39gNHkKrNY/7lM271ad+9qSHSxAS2338I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778229648; c=relaxed/simple;
+	bh=EYq2LaRS7/wE9O5fN1xxBdxqWDcVL5HSo4IraNzRrbY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jdQYgRB5AkYzWhsSevd+kO1dmYF+dn88YIN9Knuf2kWvEt7ZDj9jtXj6F3KzDyt+D2mrDQS3zlKbtEkLhbf+xivheKZGOP0cVg2EMtW3qJ2TOuEvnZ9uz938o9wjhehVQJXWjy1dS8urJa3eWa6mv4KtUxh+LSDmjhtuMQ7fOCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mvdbax10; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nxp.com header.i=@nxp.com header.b="imXsrakc"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Pe/Qs5RUTbMmF/uy3HCFeMIZR2ca48AfAiVSrpYuRttLt+9tO6o1l3ztR2MyfNK6EXZYp9+t1Tx9TdcJ/IZB7WVvyqIUf7hD/iIwMOVotmtbwmrmuqI2DEAYDC9RyvTI7uufonl2MyVU446HJRfoiiHi8eHdN09ioBRvMlHysGyh5e6lNeovf8kALKqpmTzOKZ9xgC9L2jwsnnxrF5uLKhYKgm0j6fI67h4kv1ZNVpvPR1MwOS4hWK/Y/wBRzrPMnqXR5ySYAhPF0PABZGeoh+cLBBUEQTtDloRDszg5p8aijNsqNzh+oQ/HJZ2wOlLX/BQPaypR++5Cli8+FKF5NQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NzBSorI8DJlvFga46QUPv4tnQQuOgsSCk7XFQY7kUUA=;
- b=GDdqoFCLWROK4ZZwZo/sUKH6MP5zpa6P0QE/lK6VsU41uQnXJMKoOe5n2khAw5B2MONTlqWdGA3RT+a1abhaZxiqd9qNcf3Ck2Szb/y40unLvfxvhZBFfl0MZFhMOehO5t2HPKaDPFMk2CGTADxkcylWESV161mHhV2Wqp1S1Ygyn5Z05mQpDyrXzB2opyR/0CGhC9DDnV/NehsyyPXpvKbxPQqESVWyMxxBX9UHiCR75rNcOw6qiCKzIhGXWPbdg+tVAl/iDDCUOZSy0LCBq2y+lkmLGRK8Ris/73Nf737bamWwbO/PR0Nxi3AQ3ix2TV0ThgtlLSXCOGDmZdeNVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NzBSorI8DJlvFga46QUPv4tnQQuOgsSCk7XFQY7kUUA=;
- b=imXsrakc4cH9cpDHv8+M9qBBgsOrHMoDHbPf0ayZ4GAyaJfD+mk+ggBFJt/kXPcjwT2NHqQyLvwCu0etL52jBlxoPgM5wmUArpqMfqbVHM8FAtPnevy/tZTBTwcG8CU7DWCDMWLsXZD3npnj4+mRFtoKV6ncrRjOz3t0HgaAHlELAt3MKxp7X08YChIMI72AdmcES/Tm0SpFLhbKVEJyHfN34cK4ZApBlCFFQ1L7rxwPOShUPY01mc921fA9By8GUU/v52EwuWEp6g1AAx9C56YAfYWrG3zewU1pqa+kvwK+YsyYyMUGbAo5x2sAKcKulGYVPvv1WRlumXCoR7CNzg==
-Received: from DBBPR04MB7500.eurprd04.prod.outlook.com (2603:10a6:10:1f4::16)
- by AM7PR04MB7096.eurprd04.prod.outlook.com (2603:10a6:20b:113::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.19; Fri, 8 May
- 2026 02:46:38 +0000
-Received: from DBBPR04MB7500.eurprd04.prod.outlook.com
- ([fe80::c291:543b:4bde:cee7]) by DBBPR04MB7500.eurprd04.prod.outlook.com
- ([fe80::c291:543b:4bde:cee7%6]) with mapi id 15.20.9891.019; Fri, 8 May 2026
- 02:46:38 +0000
-From: Wei Fang <wei.fang@nxp.com>
-To: Greg Ungerer <gerg@kernel.org>, "linux-m68k@lists.linux-m68k.org"
-	<linux-m68k@lists.linux-m68k.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"arnd@kernel.org" <arnd@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>,
-	Frank Li <frank.li@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [RFC 1/4] net: fec: do not use readl()/writel() for ColdFire
-Thread-Topic: [RFC 1/4] net: fec: do not use readl()/writel() for ColdFire
-Thread-Index: AQHc3WSQFQftmBcNm0etAxstaTRQurYDaxsQ
-Date: Fri, 8 May 2026 02:46:38 +0000
-Message-ID:
- <DBBPR04MB750044F98B1E719AD9DBD93E883D2@DBBPR04MB7500.eurprd04.prod.outlook.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mvdbax10"
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-48d102471a4so17326565e9.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 08 May 2026 01:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778229645; x=1778834445; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MBrLMbZ1kBG0nwZ7F1fosUl/09LgLiME1ma02b9cG8I=;
+        b=mvdbax10UeiOaOHSd3rKvKHP1ETmueCoQQIVRFnGcIg3S8t5QJSUlkysgnjPjd2Obv
+         CRgSPC9XRV+lNt6g+jN8ujGUlG7ASs8jhoxodwQw35D58Rd/dswsIcxmGRSPX8++o4Oz
+         /zHog8OnR9miQxOuEiFjktJ/yuz5EtaqU9PoJ0lRuWh4CrCU3+95xnH5p1xZ1pBUkxRM
+         CFm7piUcTDQhT6Sy8i6ZIfJZiuBAhbBBJRTH+s4CvKErxQrKYWKuYfXHpgz3n1tLYPUx
+         Riyr4vLvL+jkdH2ZoAF/txcgkUOERMD9UI0Itb8Gr2Hf2wcFr6+odCnpFftUejbwjcbq
+         5Reg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778229645; x=1778834445;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=MBrLMbZ1kBG0nwZ7F1fosUl/09LgLiME1ma02b9cG8I=;
+        b=CnxaP7UZNtVRDZgdEN78/waZdMO6IAVatxxf0rMtalS3SuKF3V7IVduNZgrSf8XH+J
+         jzfQzgAE0Xasuru+MysI7mJBCjSXLtsrIiaD9Sx4wTBN9ydFiOcNDictR9+iE9WBchiQ
+         iifl2/ZrckvhUqBo24HTn+RhK1zzbPM6EUa0mFmWPm2mEFz3sXDkXMMAwR7KJpfdkUtr
+         6DBQeHWp+LqyZK3v7nliKrX9QlrJp8NToTaLVU0vJe1ATz8meXThoQA1oo56KcVXOJAU
+         HeoG6jP+fwYuKB4FM3zq1ZtIb37vVEdq6eXClhhnjMZUJmM4HKQy8Oax9yqVLo7ohJoj
+         eNsw==
+X-Forwarded-Encrypted: i=1; AFNElJ8tDVm2Oz7iVPZ3BNRTnZyqhTxW4fN8IAcEancW0enzgBi/2wrZ1LjnnplzeA5V8mAwy7JSfH+/lzRy@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwKHS0YocI4003L6kp1hVya9QZxyp0UZiNp+UYkBGPoAhfgXVqo
+	u7eup7ywDmtf/bOBK3TzBbPHJb0dKtCR0GbFlcmku/9wVBf6e9MMOmPVQA32xpro
+X-Gm-Gg: AeBDiesWGUVUqVhPer0SrIVbJ2j/PkHgr0aKtZ8ktRNDkpleX667sq0HAHV3UTGNOLc
+	CaEhrCxO+lgdk+/zOdGRANYfLGLq3t5VExlqLorROwCfkttJHvIq4HREwjj8GIzzF13udTzh6jq
+	C4oQE4GiuOryV7L947GiAjrUtgNUjluL3+vMMAPCsvqv9rLdc1RAQQxOGv8rj+GFgBU6iCnHoN8
+	tOL74I5Gq0N23HbJUIaPELJLa4EifwEEkO0WnxL/kCICKdm8dDHEo6NAhGbeOJwOAmDErsOwdM8
+	JdsdETWy1nbNdFwVN3rZyEbY8nMXiFjNhZcE4KEvfuh1bM29CPv5ZIOdFTmz48yD8kCP7QbN4bR
+	XxrKkxBVrpw8kkg8GAwizS8WmWvh6QFipxUpQro1XUdWBpfrvIMcC6rYMMw4N17LgmCy+Nj5Icf
+	A1nigOoChOcUmC08Cc/C4PIh4Bkvzr8Z9t0sOV5OHXPz1cZ5RC747pz9q9XC2nmd77
+X-Received: by 2002:a05:600c:4703:b0:488:936a:6220 with SMTP id 5b1f17b1804b1-48e676ac055mr25431025e9.21.1778229645361;
+        Fri, 08 May 2026 01:40:45 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45491bae13csm2688386f8f.29.2026.05.08.01.40.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 May 2026 01:40:45 -0700 (PDT)
+Date: Fri, 8 May 2026 09:40:43 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Wei Fang <wei.fang@nxp.com>
+Cc: Greg Ungerer <gerg@kernel.org>, "linux-m68k@lists.linux-m68k.org"
+ <linux-m68k@lists.linux-m68k.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "arnd@kernel.org" <arnd@kernel.org>, Greg
+ Ungerer <gerg@linux-m68k.org>, Frank Li <frank.li@nxp.com>, Shenwei Wang
+ <shenwei.wang@nxp.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [RFC 1/4] net: fec: do not use readl()/writel() for ColdFire
+Message-ID: <20260508094043.20f5f3fc@pumpkin>
+In-Reply-To: <DBBPR04MB750044F98B1E719AD9DBD93E883D2@DBBPR04MB7500.eurprd04.prod.outlook.com>
 References: <20260506142644.3234270-2-gerg@kernel.org>
-In-Reply-To: <20260506142644.3234270-2-gerg@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DBBPR04MB7500:EE_|AM7PR04MB7096:EE_
-x-ms-office365-filtering-correlation-id: 8af19e3f-3b3c-4967-e3df-08deacac06ec
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|19092799006|1800799024|376014|38070700021|18002099003|22082099003|56012099003;
-x-microsoft-antispam-message-info:
- 9dDarhdbAfys7/92IeVnsQbnycNBxMVkFJvfCWv9L4Rm4cnGsOWvgmbpxtvQQ8oSiyRVMbskvo9r4J/CQnsKZpcjKMKLrexn4o+CqqKl0j9Pv13MoFRjkD8cd+kmMtNF0nj5Aq3upgaTlBq1m7U8cbILAVXgK5XvOI/XOIOt5dxt5hnxWIHiqSZq71rPpie/TPnk9LmR2RMadS2h5BsdDGUbbC2MdjlSuITbm4ZTOPDyLcag60LZqFqR+BP8/rA/nD4kEokQJuARB/9+CM63C76+iaPrXxt7uao1KRw0t+/Gz53Uo4y/a8ICK1ybfA2EOn7eW2CRSfNBzclwaWYtcKcgzBpWO8JoKEZ6X/+k26QdENcVFHa4ERdgBjUnXROdU0RWFLSmK83evl1hYuy1Rx9WoyOmWdPsMN8w+HVdU81Au7WAPEHfgYquFgtSyCOSnXPtYW7i3pX+/YmlJ/hPCh91HRNgLspNrSyTpiNxpmd/f2dSx3MZZKi4rtMqMQWqCmNydkzbCqqQJKzDMoXpe1hC7pbuRMwMYv+dxKBYcx3uSHy7LKAttMU0A0UvbwA11aej1T87nHh1W3wB57MO7Ugyylp5RDvDaml8ONpNR2p+xq5QKfsTbZ0V/MKrWjCvru7zrk04a0fibCrcqJqDW9aVsQO5g2uDjzurM8+LhuaedaSL9xbzyMXNRceY/VuTvjB4mF4KZpvIh6DXh2HLiw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7500.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(19092799006)(1800799024)(376014)(38070700021)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?pDNyhnrLXBHHX65BWR3URWmf18C4ADnQcwKp2PrfuxxMPocWOC7Wf3H+1FE7?=
- =?us-ascii?Q?26lZQlC/TuQk2y+zLcQRvY4i9Kxr05kt9XqnBAE9VPMKfxw5xlie4MVF2gCG?=
- =?us-ascii?Q?noJ6dJVqhUeoK7z5ymcLc2fAegqa0VBdv9z7VSSaSMcPtHHyvcTy535/lwBp?=
- =?us-ascii?Q?6muifqOwla8IIeqNS9NWKrZGZnRwmcCozb7yQCuu84y/7qedioEYdnBTHZcN?=
- =?us-ascii?Q?I+aySbKEkxF1nfkwUlzZx63nh+zXm53548NVmH2TN5H0KMUzSt6P6cydl80K?=
- =?us-ascii?Q?6ci6OGvD45L+nFlX8hU6HZiB5r1SH7Tep3DgKo0nHeLwy8EiyJcUydgVpb/A?=
- =?us-ascii?Q?JAP1DCV0FZ/IZQjGSgWStQh0yPa/8ZezQiVeMLZc1stS3D38Gl/xDhomR9Ys?=
- =?us-ascii?Q?ypYFxrCV89blISqJE1A7DWok7VSl6ZVuNpb2ZxsB4WbF6QbUkd0mbQqjsrm4?=
- =?us-ascii?Q?kEw2Kwm93N4N3EL/qEKmkOPtPeHTshfnlgIa8madYnrPCfnFzGyCwyAAJfi9?=
- =?us-ascii?Q?0G02zSFuK78/Z69kk4hRmFmzQgF2EGs9zVuSlv7HleGmCe3Vx3I+mWe2uwcz?=
- =?us-ascii?Q?GWQu1sPtuw4EfwiRhqMFQxqtEDGVZVWWWCWZkjPYSEARSYznDK1+HlKiB+82?=
- =?us-ascii?Q?+pSSCVmASNTCxA/eKn7MZtLVzmpF6VXPy5rZ2e1L6owg7+y7JvdF9+E++GDJ?=
- =?us-ascii?Q?MZyCs006b0vLxT8zTIEGkWZVHkebpeeVq2llXKCDMKvHs7uMKFiUWgIS3imq?=
- =?us-ascii?Q?gwpkE/O37dk1xW7I7V1DahlL4NTQ8i1iN2e/AqFVnJhi7oR4M1F1AkXjYdD/?=
- =?us-ascii?Q?dzQVW3ePkOPCn0y5IthgJhPmoXPjBeVgv+hQABGmTp0U6Je9mrN/HW4pASE+?=
- =?us-ascii?Q?YxFURSaftnCzM1q4SrLRhIZ0RkhewLWb34l7nVFbd6R8sv3yHVcgc9MKVnu5?=
- =?us-ascii?Q?pa0NTlm/g5lUt+z3lLMDcq9QQ6CF66CARgLAt2/rMx2nYwoLYBd11yx1Vtdm?=
- =?us-ascii?Q?z0mXcr2vgRmx9a0n5cLoTVkKvuhYm/gHTa8SUhXu9QQOwCzZ1r40KDXa7e+a?=
- =?us-ascii?Q?1f3A1P1JAy3KLjxT7+8ox2YlrDEMFvO5U5Rrv730p2HBT0WgVjBCMIe7fM3E?=
- =?us-ascii?Q?boOYWv23FtwHiLfY9VgbYwW1cA+qqRpz/7ioFrB7IToE0EL42LyD8Lo2vbzl?=
- =?us-ascii?Q?ZLwbBbEYs1nMoJDkIsSpqCz520MpQ18gAOPCuEMOCqLH17wQQKExxKFeH/Dc?=
- =?us-ascii?Q?fogsTlfUtUnharnP/nXWhFowg30ejNEJwb7wwhgPOZBsF4ct++CK+pt/wH42?=
- =?us-ascii?Q?sc0B+S5/zB7bO30SdUwagyrYVHlLQ+sQIjY6zjoTZmztV5Yjaa6b7FCMR0ry?=
- =?us-ascii?Q?7yVm+MyJT3lCqxRL9PxVYflz56Z5x94cxDymeZdYYlm9pF2uj8p3koXViCQX?=
- =?us-ascii?Q?t+LUrudLvd8CwIM0vmCOZgHaOh0q4ospO754haqc2JeDPqYeht2vf+Xgo6N0?=
- =?us-ascii?Q?faOQK5byXLS5GTqJIxc+lCJFxY2K065BGlxGsCgxibT9L6xZfcvT/JD6RgWP?=
- =?us-ascii?Q?+ohaiekOuF4jXFEDoecbfWxc/Naj4psrvLV1dNqv/djVEBOn1XEiDq+MToZT?=
- =?us-ascii?Q?PuW3AyWSWQ8ltOS8f+hGnlrkqLeWxZkDx/9lNyHI18WRbgIiBJercTBJAN+H?=
- =?us-ascii?Q?M5bVYoYjgdOyD6ev6431ZsYt5MJAMkiRFTcQpJd6uwx1jynH?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	<DBBPR04MB750044F98B1E719AD9DBD93E883D2@DBBPR04MB7500.eurprd04.prod.outlook.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7500.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8af19e3f-3b3c-4967-e3df-08deacac06ec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2026 02:46:38.3485
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vW2XvlpoZAqplsKYyGaTuyxxIhoinYcYL4xBljSpzy0kN1jYS+YMYcQVpw552gdYtS8NPRwHyJx45HvFgWJNVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7096
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
->  static void
->  fec_stop(struct net_device *ndev)
->  {
->  	struct fec_enet_private *fep =3D netdev_priv(ndev);
-> -	u32 rmii_mode =3D readl(fep->hwp + FEC_R_CNTRL) & FEC_RCR_RMII;
-> +	u32 rmii_mode =3D fec_readl(fep->hwp + FEC_R_CNTRL) & FEC_RCR_RMII;
+On Fri, 8 May 2026 02:46:38 +0000
+Wei Fang <wei.fang@nxp.com> wrote:
 
-This is not an issue, but since you changed this line, the new code should
-follow the "reverse xmas tree" style.
+> >  static void
+> >  fec_stop(struct net_device *ndev)
+> >  {
+> >  	struct fec_enet_private *fep = netdev_priv(ndev);
+> > -	u32 rmii_mode = readl(fep->hwp + FEC_R_CNTRL) & FEC_RCR_RMII;
+> > +	u32 rmii_mode = fec_readl(fep->hwp + FEC_R_CNTRL) & FEC_RCR_RMII;  
+> 
+> This is not an issue, but since you changed this line, the new code should
+> follow the "reverse xmas tree" style.
 
-See: https://elixir.bootlin.com/linux/v7.0.1/source/Documentation/process/m=
-aintainer-netdev.rst#L380
+Looking rmii_mode isn't even used until much later in the function.
+(and then not very often)
+Much better to read it just before it is needed.
 
->  	u32 val;
->=20
->  	/* We cannot expect a graceful transmit stop without link !!! */
->  	if (fep->link) {
-> -		writel(1, fep->hwp + FEC_X_CNTRL); /* Graceful transmit stop */
-> +		fec_writel(1, fep->hwp + FEC_X_CNTRL); /* Graceful transmit stop */
->  		udelay(10);
-> -		if (!(readl(fep->hwp + FEC_IEVENT) & FEC_ENET_GRA))
-> +		if (!(fec_readl(fep->hwp + FEC_IEVENT) & FEC_ENET_GRA))
->  			netdev_err(ndev, "Graceful transmit stop did not complete!\n");
->  	}
->=20
+	David
+
+
+> 
+> See: https://elixir.bootlin.com/linux/v7.0.1/source/Documentation/process/maintainer-netdev.rst#L380
+> 
+> >  	u32 val;
+> > 
+> >  	/* We cannot expect a graceful transmit stop without link !!! */
+> >  	if (fep->link) {
+> > -		writel(1, fep->hwp + FEC_X_CNTRL); /* Graceful transmit stop */
+> > +		fec_writel(1, fep->hwp + FEC_X_CNTRL); /* Graceful transmit stop */
+> >  		udelay(10);
+> > -		if (!(readl(fep->hwp + FEC_IEVENT) & FEC_ENET_GRA))
+> > +		if (!(fec_readl(fep->hwp + FEC_IEVENT) & FEC_ENET_GRA))
+> >  			netdev_err(ndev, "Graceful transmit stop did not complete!\n");
+> >  	}
+> >   
+> 
+> 
 
