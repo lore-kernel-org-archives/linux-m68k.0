@@ -1,107 +1,105 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC0D3E277B
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  8 May 2026 13:14:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778246054; cv=none; b=Nu2JSR5xwxNQ356pGD/IwK4lLXRSjK/IsO2zhqOC2e7nA+EZdd3Z5Y46vxqA7RsU68K5XWrBsVEWcROBRf3sQaelnNx8uKGExkWRhlBFLNisxoSzvuN2AYaFT0dtuHeazFrbxXxIz6tt+J5bVXJABXGObz3fJoxaZ3AB1BgLEEA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778246054; c=relaxed/simple;
-	bh=T9xjqblfP5Kt4p73w+ZmacLEOzrmjcyyAl7jfGRQ15k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dMhK82FyLnLuxbZ9fGiyvttDzYd1T8dSZ58Fi7Xn5phKiYnLpuoTHZyRjf/qedfBvmYnuzbL/zOqWpcLAecwncLBz4hgPNMCDSxYEYai5esdMrbIxHZQXv51wjhGfkigLn+YrAsgo5+bCwNU+3zFuLhCToCm1sUwEItrKuEGqNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B3E6Jmj3; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4243E38759C
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  9 May 2026 10:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778321013; cv=pass; b=GDBAK/RVJGENvBfW8qQmztjbPzeRpQJGCccNxHM/GMYZkgQEl+E5CBTHqSnlFnuRLhAUJ4ezyv2G8CKivjqxM/9Nz1/sejZmTgyuLGKUuLSzWriCnhfr+gdOxHP4KcGnYDLCGggbkDOU5Hhl5s7DwqUrY1MI7rPKNbTI/y2ALS8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778321013; c=relaxed/simple;
+	bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W0V3CY5S452ZvVOv3aJ7qBAkkoKY6385ZyqXEspi+V0kGmikmY2WjvBP1ycFtZGynf1C3mot8P7wxGUmy7W/QCsrSbTXuWX+LmPaaRknFjbbJ77qcKtnZv5q3V04dLseuSS8u1VwEGKF2kfToDiasd/DCinjr9lTXol1OIxhlrU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=oUISE9ZQ; arc=pass smtp.client-ip=74.125.82.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B3E6Jmj3"
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sea.source.kernel.org (Postfix) with ESMTP id 2F48B406C4;
-	Fri,  8 May 2026 13:14:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0F36C2BCB0;
-	Fri,  8 May 2026 13:14:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778246052;
-	bh=T9xjqblfP5Kt4p73w+ZmacLEOzrmjcyyAl7jfGRQ15k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=B3E6Jmj3TZY8Q+W7JPq2bwUryqyxvF1JQXv5kB1vCMgyhwSrYca1MwK6/xQtzQFN7
-	 I7pnjEbnBlsifSii6MAtOoShUJqh6jHeR53SrTO0swPEmmzfjEvdhy2EyqNQkD/YqP
-	 BaM+VQCHH3eBl4Uhrd8W3OmdU8pAFUpo1eUuem3S6vRZT0XrNPHZv1I/XzkD3K7jBj
-	 vzdifR3loJ1AN4OUg5oOLt0qZXjZclPDpIqB8cH0sn1EWZ7niidcK8V0Z5hfONUwoF
-	 gtmbqy5Q/7VEJdz2iuLnNIAPbDVWVTDmmQ2obSCzQYnzN2WHm4GeZEPXJeYANRUcsN
-	 JRb50yW9mxANQ==
-Message-ID: <151f5b1b-8a82-4d7b-b1c9-67da07853806@kernel.org>
-Date: Fri, 8 May 2026 23:14:07 +1000
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="oUISE9ZQ"
+Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-12c45281a06so4808832c88.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 May 2026 03:03:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778321010; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Y44nE0/nRhhm84uoLwgvJrds7PNQesX3uW6TjbK2GUJZfz7TxoIXjnTCjTiNaipnNd
+         Z5G04Wgrft1HDGprSBqV2NXKO2PdqyJTjvpilgnBXaT8ycyAPdhlZZX6t5WYmGxAtju0
+         YG1pfYyL6+8rjp6IFFZUBSoOjCFUPHC7nPGckNBeP2D1wALAD9Bw1ET4fqFxiYuSvuPC
+         VoPFq2vCZdLI5b+eXkzeP6a5z6jRVZ7XOL+86xixZJAnHk45W131IROkQjypU5Eh2ty1
+         3nZTRiJA22YyQqF/KpSANpXTZgb3oSrTpatpunT1K8MK5DR8xsolvtfdpTnquANMMTYg
+         9xkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
+        fh=64BbPmHw8EY0p6WJ6aGZGB+nEwsd6BX3x1+ARS8k+wc=;
+        b=YHED6KkpxB5vbD9V2xFGtLrs13YJeoYD0gxBO3TWuD703s89F3/lzp3PirRYhcbN7X
+         PtiHBsUZWbXWZ1C7CsHEk5XNjvVEESYBUUU2Gt/PorF7cM+EwG9iudgZn/tFkAOJ/Rli
+         2LgweBtDa1SBuQiJVYZJQEIKuJQny/e+Rrf4mVidyG/CtjpbJDzFpThTnf7gHCWmf5Nz
+         BS81oWprKBHdmNmd5w/lZRXRXhbKBd5GJFZ6TOBvUsLGkYKy2PH2KrgmdsCg4rhY7LAn
+         f3gmii5EeW+S9G1WGZQgDb3LlE2cIcZPayMTZhhv8N/UZV2me8iUyWyOlm3Ln2Vt5rTq
+         LX5Q==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1778321010; x=1778925810; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
+        b=oUISE9ZQkhB8q3Y/Zzbzis8+ty08cn0KXGFO/zyOWCvUFjZpVGVWEglK62+4rfqTdM
+         1q6XbpkckNE/mEM2wSZJuRkQhjNveltvE80JyMdwCS86KzKHHC+p4wYZYgFtEKlXgJ+w
+         vcO9BwUOy8deJJ+7pxpfKHVn+zBcIp3ZxvUBQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778321010; x=1778925810;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
+        b=HXhq3dqGWOV7nH4HzVh83t3vu/dNc1JoZZj/mVbL8eUXZQ86I7q/DGhr358ccIEijD
+         ja3sM40qRK3xxDDDd0I1xV2SaDZGDaIZiqZak3vKxb7EsenS1b+T9AiFJGBDKK0FwznT
+         Jj6JCYS0LVjHS3Tggrbf5hojto34E7lUX2hrG60pqIhKnFyynGN7i0yHEt+6QgjwAwIg
+         +GfGgxxtyQMnRY3H4t+N0Tb7SalSTHoN2QsSaJEv35BQDyJmWboVWl+/ZJsm8Aw9FYK3
+         LYurG2epAT+OrQpev6URxc6BtWo/qJIw5IYQ3sFXYKr5oyzG/yqrS0l5ZauUQ34mr69K
+         gbqA==
+X-Forwarded-Encrypted: i=1; AFNElJ/OIMNNHCIhzgt1sIWPKMV1is8sz49CMoyJctuJ2C9aLeZR7NCpji6yhoiq5/MwyW1lCkKQrWkDYKtB@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzITjAnuA50zXUHGO3d2iCXD61MZ+mTyWyqIOOk+Q0UYVTwmC61
+	InfqOXsHwx1u0ZRz+JmGC7hzvGM1i6rSDQGHhLycw9EEHDVWPfP1Hu5f4DKydbiBj45i4dsIe8N
+	43WBHeIRLs/mQ5z75SIj7a1/6hgEReFoecQQwTKk37A==
+X-Gm-Gg: Acq92OFYqmZPzBigz2VAutdF8rxe9tkX+KnloG2WxLxuDJpxxryOSSmJTYEk/mlZCIg
+	RYHDoC3mR359E1zdOXc0gVlmjvv2gLEPDuhItwWjtsB16O6x554nw93Z7XRqBUDv1HoBbXwqZ91
+	ePdPdLhayJ4EqDuf0cQswMawk9CvHiTmqJIQO2S0CXRfSmcotv6jtysNY4R/IIHWCZ3DLPj5jFm
+	La1Ag7+z0jKcAC87IFWzKuToNQqft9+N35km1wXENTonoJQxhcmhwZQZJ63yrQWxSdmVF8c0PTp
+	zB+3J6OY/Q==
+X-Received: by 2002:a05:7022:52b:b0:128:d752:e074 with SMTP id
+ a92af1059eb24-1317d8939f7mr8343391c88.1.1778321010065; Sat, 09 May 2026
+ 03:03:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 1/4] net: fec: do not use readl()/writel() for ColdFire
-To: David Laight <david.laight.linux@gmail.com>, Wei Fang <wei.fang@nxp.com>
-Cc: "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "arnd@kernel.org" <arnd@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>,
- Frank Li <frank.li@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20260506142644.3234270-2-gerg@kernel.org>
- <DBBPR04MB750044F98B1E719AD9DBD93E883D2@DBBPR04MB7500.eurprd04.prod.outlook.com>
- <20260508094043.20f5f3fc@pumpkin>
-Content-Language: en-US
-From: Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <20260508094043.20f5f3fc@pumpkin>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1ed9c4c753395510c1a8df9c35e2ad4c31c90f95.1714265926.git.fthain@linux-m68k.org>
+ <fb2ca693-1f99-2c5a-7ff0-9bcf22f89de0@linux-m68k.org>
+In-Reply-To: <fb2ca693-1f99-2c5a-7ff0-9bcf22f89de0@linux-m68k.org>
+From: Daniel Palmer <daniel@0x0f.com>
+Date: Sat, 9 May 2026 19:03:18 +0900
+X-Gm-Features: AVHnY4LhoKg88HI2Tfy7uNObTSjK_JnEFeiD_RwXtpj4cUYWf9VQFj5VXJy6a9I
+Message-ID: <CAFr9PX=V-Hw2yCw8x=++n8KA5Vbd=ZeFpFwJ6j_hJmRgHcpaeA@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Handle put_user() faults more carefully
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Finn,
 
-On 8/5/26 18:40, David Laight wrote:
-> On Fri, 8 May 2026 02:46:38 +0000
-> Wei Fang <wei.fang@nxp.com> wrote:
-> 
->>>   static void
->>>   fec_stop(struct net_device *ndev)
->>>   {
->>>   	struct fec_enet_private *fep = netdev_priv(ndev);
->>> -	u32 rmii_mode = readl(fep->hwp + FEC_R_CNTRL) & FEC_RCR_RMII;
->>> +	u32 rmii_mode = fec_readl(fep->hwp + FEC_R_CNTRL) & FEC_RCR_RMII;
->>
->> This is not an issue, but since you changed this line, the new code should
->> follow the "reverse xmas tree" style.
-> 
-> Looking rmii_mode isn't even used until much later in the function.
-> (and then not very often)
-> Much better to read it just before it is needed.
+On Mon, 4 May 2026 at 18:07, Finn Thain <fthain@linux-m68k.org> wrote:
+> >
+> > So far this has only been tested on Motorola 68030 and 68040 systems
+> > and still needs testing on the other MMU-enabled processors.
 
-Sure, but that feels like a change for a separate patch.
-The changes to this file are a global search and replace.
-The final produced object is identical before and after.
+Would testing on an 060 amiga be helpful? I just need to run the
+stress-ng --sysbadaddr -1 thing before and after and collect the logs?
 
-Regards
-Greg
+Cheers,
 
-
-> 	David
-> 
-> 
->>
->> See: https://elixir.bootlin.com/linux/v7.0.1/source/Documentation/process/maintainer-netdev.rst#L380
->>
->>>   	u32 val;
->>>
->>>   	/* We cannot expect a graceful transmit stop without link !!! */
->>>   	if (fep->link) {
->>> -		writel(1, fep->hwp + FEC_X_CNTRL); /* Graceful transmit stop */
->>> +		fec_writel(1, fep->hwp + FEC_X_CNTRL); /* Graceful transmit stop */
->>>   		udelay(10);
->>> -		if (!(readl(fep->hwp + FEC_IEVENT) & FEC_ENET_GRA))
->>> +		if (!(fec_readl(fep->hwp + FEC_IEVENT) & FEC_ENET_GRA))
->>>   			netdev_err(ndev, "Graceful transmit stop did not complete!\n");
->>>   	}
->>>    
->>
->>
-> 
-
+Daniel
