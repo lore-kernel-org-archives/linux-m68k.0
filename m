@@ -1,105 +1,102 @@
-Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4243E38759C
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  9 May 2026 10:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778321013; cv=pass; b=GDBAK/RVJGENvBfW8qQmztjbPzeRpQJGCccNxHM/GMYZkgQEl+E5CBTHqSnlFnuRLhAUJ4ezyv2G8CKivjqxM/9Nz1/sejZmTgyuLGKUuLSzWriCnhfr+gdOxHP4KcGnYDLCGggbkDOU5Hhl5s7DwqUrY1MI7rPKNbTI/y2ALS8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778321013; c=relaxed/simple;
-	bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W0V3CY5S452ZvVOv3aJ7qBAkkoKY6385ZyqXEspi+V0kGmikmY2WjvBP1ycFtZGynf1C3mot8P7wxGUmy7W/QCsrSbTXuWX+LmPaaRknFjbbJ77qcKtnZv5q3V04dLseuSS8u1VwEGKF2kfToDiasd/DCinjr9lTXol1OIxhlrU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=oUISE9ZQ; arc=pass smtp.client-ip=74.125.82.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6AA881732
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 10 May 2026 03:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778384870; cv=none; b=VxK+82lNmjXfD2DlOIyY936LMpAJCfkYJGBCrMiK5BMO4dFHS5GylILisOZXTU9E6mSqfbVslctuhs4yns5usxk6LfwUafaIS56neNvhX7KMlc0DKBofcwWjgKu1+loHmuM3+VPI56GCZE89yAjKab3rVnL+GjZL7107wB0N8Uk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778384870; c=relaxed/simple;
+	bh=S7obI9D+iTeil7FNPuT7cagodI3X6OM7WMYHWR/+u9Q=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=W+AHsXLZn8h3T20s80fpBwcvlg9zAbL/QGKRRsXn+Zhgw6SfZJBD6oeBzQfDgIc8n2zAJOawPwOgDYc4yOi5RIEG11mo4WBIx2PsFRam5RRQoVsAQn2CnLtoSbumxncS7FsKwauIvC5gGlxHQ+t91qfGExtsgmqHBwcDSlkcv9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VHGpf5qO; arc=none smtp.client-ip=103.168.172.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="oUISE9ZQ"
-Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-12c45281a06so4808832c88.1
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 09 May 2026 03:03:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778321010; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Y44nE0/nRhhm84uoLwgvJrds7PNQesX3uW6TjbK2GUJZfz7TxoIXjnTCjTiNaipnNd
-         Z5G04Wgrft1HDGprSBqV2NXKO2PdqyJTjvpilgnBXaT8ycyAPdhlZZX6t5WYmGxAtju0
-         YG1pfYyL6+8rjp6IFFZUBSoOjCFUPHC7nPGckNBeP2D1wALAD9Bw1ET4fqFxiYuSvuPC
-         VoPFq2vCZdLI5b+eXkzeP6a5z6jRVZ7XOL+86xixZJAnHk45W131IROkQjypU5Eh2ty1
-         3nZTRiJA22YyQqF/KpSANpXTZgb3oSrTpatpunT1K8MK5DR8xsolvtfdpTnquANMMTYg
-         9xkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
-        fh=64BbPmHw8EY0p6WJ6aGZGB+nEwsd6BX3x1+ARS8k+wc=;
-        b=YHED6KkpxB5vbD9V2xFGtLrs13YJeoYD0gxBO3TWuD703s89F3/lzp3PirRYhcbN7X
-         PtiHBsUZWbXWZ1C7CsHEk5XNjvVEESYBUUU2Gt/PorF7cM+EwG9iudgZn/tFkAOJ/Rli
-         2LgweBtDa1SBuQiJVYZJQEIKuJQny/e+Rrf4mVidyG/CtjpbJDzFpThTnf7gHCWmf5Nz
-         BS81oWprKBHdmNmd5w/lZRXRXhbKBd5GJFZ6TOBvUsLGkYKy2PH2KrgmdsCg4rhY7LAn
-         f3gmii5EeW+S9G1WGZQgDb3LlE2cIcZPayMTZhhv8N/UZV2me8iUyWyOlm3Ln2Vt5rTq
-         LX5Q==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1778321010; x=1778925810; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
-        b=oUISE9ZQkhB8q3Y/Zzbzis8+ty08cn0KXGFO/zyOWCvUFjZpVGVWEglK62+4rfqTdM
-         1q6XbpkckNE/mEM2wSZJuRkQhjNveltvE80JyMdwCS86KzKHHC+p4wYZYgFtEKlXgJ+w
-         vcO9BwUOy8deJJ+7pxpfKHVn+zBcIp3ZxvUBQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778321010; x=1778925810;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LyfF0UgOqxJDyWr63b4yPScMJnB6ZcMUY+e4AyvMA1w=;
-        b=HXhq3dqGWOV7nH4HzVh83t3vu/dNc1JoZZj/mVbL8eUXZQ86I7q/DGhr358ccIEijD
-         ja3sM40qRK3xxDDDd0I1xV2SaDZGDaIZiqZak3vKxb7EsenS1b+T9AiFJGBDKK0FwznT
-         Jj6JCYS0LVjHS3Tggrbf5hojto34E7lUX2hrG60pqIhKnFyynGN7i0yHEt+6QgjwAwIg
-         +GfGgxxtyQMnRY3H4t+N0Tb7SalSTHoN2QsSaJEv35BQDyJmWboVWl+/ZJsm8Aw9FYK3
-         LYurG2epAT+OrQpev6URxc6BtWo/qJIw5IYQ3sFXYKr5oyzG/yqrS0l5ZauUQ34mr69K
-         gbqA==
-X-Forwarded-Encrypted: i=1; AFNElJ/OIMNNHCIhzgt1sIWPKMV1is8sz49CMoyJctuJ2C9aLeZR7NCpji6yhoiq5/MwyW1lCkKQrWkDYKtB@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzITjAnuA50zXUHGO3d2iCXD61MZ+mTyWyqIOOk+Q0UYVTwmC61
-	InfqOXsHwx1u0ZRz+JmGC7hzvGM1i6rSDQGHhLycw9EEHDVWPfP1Hu5f4DKydbiBj45i4dsIe8N
-	43WBHeIRLs/mQ5z75SIj7a1/6hgEReFoecQQwTKk37A==
-X-Gm-Gg: Acq92OFYqmZPzBigz2VAutdF8rxe9tkX+KnloG2WxLxuDJpxxryOSSmJTYEk/mlZCIg
-	RYHDoC3mR359E1zdOXc0gVlmjvv2gLEPDuhItwWjtsB16O6x554nw93Z7XRqBUDv1HoBbXwqZ91
-	ePdPdLhayJ4EqDuf0cQswMawk9CvHiTmqJIQO2S0CXRfSmcotv6jtysNY4R/IIHWCZ3DLPj5jFm
-	La1Ag7+z0jKcAC87IFWzKuToNQqft9+N35km1wXENTonoJQxhcmhwZQZJ63yrQWxSdmVF8c0PTp
-	zB+3J6OY/Q==
-X-Received: by 2002:a05:7022:52b:b0:128:d752:e074 with SMTP id
- a92af1059eb24-1317d8939f7mr8343391c88.1.1778321010065; Sat, 09 May 2026
- 03:03:30 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VHGpf5qO"
+Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
+	by mailfout.phl.internal (Postfix) with ESMTP id DA385EC00A0;
+	Sat,  9 May 2026 23:47:46 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-07.internal (MEProxy); Sat, 09 May 2026 23:47:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1778384866; x=1778471266; bh=XiZlh3DlK6DeCRWIibDXKALhcUuwSW8g70o
+	iT2nC7H0=; b=VHGpf5qOLOzZI542gBuxNzbK/35Pp6+YGcsN4ckNuBKbASvFSVd
+	sUd270WqV1QMRv+t+m15LJ0D5L3EkiYRDGDFYISO8omymhkaaabH+zPA8bSwo/y/
+	TllS2NLqllOLSxTHZGajGAikxhLtIWFaBumLJH+Bx1NmZgrONuuy4XjA7Rmk43S2
+	jV1upZArHdSoQLtrezygyQiQYM6cQgE4e+r6K5/nD/7Z7pMplZfeQxUq3MGEukg8
+	y7/X8vHWGV9sP6ANpgPAVCS09BoROfKpM+GvZZgZwFNeAP44chO20pKmfxN7bbj3
+	QXc42G0EldIw7Q03UYtq3DuVq1lZqKiPKQA==
+X-ME-Sender: <xms:4f__aVqTU9p-vkxN1FXYyxDugAXKS5RA4OzESkYD2YKQ0-QhIlF4UA>
+    <xme:4f__aQ8J3tLvy4tgbfs8o13bP44rgJTZSPGWcKoSZVmNJPMabgoyuxcWNA1KDtCUd
+    NNVwSJlnIXOnmUM5UFjvjgCUHcXhKAkN2m2OBQWl8oadfnlaWd6ER1T>
+X-ME-Received: <xmr:4f__aZck9wYWByH8kh6Mm4oOQCL-B3BA97SZCjqmLcz_Qd5-HVaxZpTduJg6PV0rqJsHJkrN5gqpnG44typUVRYKEDTe_aJG7TU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefhedrtddtgdduudehtdejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeuheeu
+    leenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhgpdhnsggprhgtphhtthhopeeipdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopegurghnihgvlhestdigtdhfrdgtohhmpdhrtg
+    hpthhtohepshgthhifrggssehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehg
+    vggvrhhtsehlihhnuhigqdhmieekkhdrohhrghdprhgtphhtthhopehstghhmhhithiimh
+    hitgesghhmrghilhdrtghomhdprhgtphhtthhopehlihhnuhigqdhmieekkheslhhishht
+    shdrlhhinhhugidqmheikehkrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvg
+    hlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:4f__aSJdfj6K71qOW9IvPPvO18voVBzHtH2a6KpT13LFELHw2_Z53g>
+    <xmx:4f__aRiq2oiU54bu_w4zTxiz3iWta5RWdu_8KnLwfhD4pSc7W-Pm6g>
+    <xmx:4f__aYQA2lYfWxw-l-UCC471-MGCDNSotV1uKI3VifVQbBWNzmMkxQ>
+    <xmx:4f__aTWsPLQSfwH98dRgk1k5uSNLee_qtbbvHMEC-LBDYU9jA9ehwQ>
+    <xmx:4v__aSZFONhg-Eaocj45zQAJFnDa50cSHFDZfHpN2gW3kwCe2OBtJj5G>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 9 May 2026 23:47:44 -0400 (EDT)
+Date: Sun, 10 May 2026 13:47:47 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Daniel Palmer <daniel@0x0f.com>, Andreas Schwab <schwab@linux-m68k.org>
+cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@lists.linux-m68k.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: Handle put_user() faults more carefully
+In-Reply-To: <CAFr9PX=V-Hw2yCw8x=++n8KA5Vbd=ZeFpFwJ6j_hJmRgHcpaeA@mail.gmail.com>
+Message-ID: <c5bf4a4c-6756-26b5-36c5-062d66b10033@linux-m68k.org>
+References: <1ed9c4c753395510c1a8df9c35e2ad4c31c90f95.1714265926.git.fthain@linux-m68k.org> <fb2ca693-1f99-2c5a-7ff0-9bcf22f89de0@linux-m68k.org> <CAFr9PX=V-Hw2yCw8x=++n8KA5Vbd=ZeFpFwJ6j_hJmRgHcpaeA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1ed9c4c753395510c1a8df9c35e2ad4c31c90f95.1714265926.git.fthain@linux-m68k.org>
- <fb2ca693-1f99-2c5a-7ff0-9bcf22f89de0@linux-m68k.org>
-In-Reply-To: <fb2ca693-1f99-2c5a-7ff0-9bcf22f89de0@linux-m68k.org>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Sat, 9 May 2026 19:03:18 +0900
-X-Gm-Features: AVHnY4LhoKg88HI2Tfy7uNObTSjK_JnEFeiD_RwXtpj4cUYWf9VQFj5VXJy6a9I
-Message-ID: <CAFr9PX=V-Hw2yCw8x=++n8KA5Vbd=ZeFpFwJ6j_hJmRgHcpaeA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Handle put_user() faults more carefully
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Michael Schmitz <schmitzmic@gmail.com>, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 
-Hi Finn,
 
-On Mon, 4 May 2026 at 18:07, Finn Thain <fthain@linux-m68k.org> wrote:
-> >
-> > So far this has only been tested on Motorola 68030 and 68040 systems
-> > and still needs testing on the other MMU-enabled processors.
+On Sat, 9 May 2026, Daniel Palmer wrote:
 
-Would testing on an 060 amiga be helpful? I just need to run the
-stress-ng --sysbadaddr -1 thing before and after and collect the logs?
+> On Mon, 4 May 2026 at 18:07, Finn Thain <fthain@linux-m68k.org> wrote:
+> > >
+> > > So far this has only been tested on Motorola 68030 and 68040 systems 
+> > > and still needs testing on the other MMU-enabled processors.
+> 
+> Would testing on an 060 amiga be helpful?
 
-Cheers,
+Testing on 68060 hardware could be helpful (not emulators though). If the 
+NOP failed to solve the problem on some CPU device or other then we could 
+look for a more broadly applicable solution. I suppose there may be a 
+faster solution too. Perhaps an architecture expert could comment.
 
-Daniel
+> I just need to run the stress-ng --sysbadaddr -1 thing before and after 
+> and collect the logs?
+> 
+
+That would work. I've been using an old static build of stress-ng 0.12.12 
+but I imagine that newer versions would be just as effective. Note that 
+the stressor runs for one day by default. You can use ^C or set a 
+different duration with -t N.
