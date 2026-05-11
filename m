@@ -1,216 +1,240 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B72C226863
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2026 09:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778490158; cv=none; b=ndFwvrJJ58eWiMX1WbVgtHSkaqB4xqmUu2BrwGicMLWnJtwiihuRguNZh/DXm+gkrmD5QPGqObPL1lLHoXydjP5aCvpkL6aAN8vwvVq61D0scn1joh7pcFONdfT7WowOqD0YQWvhNIIawfdkzxwdEmayl+6o6JNFE7BTt1VMiJY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778490158; c=relaxed/simple;
-	bh=xVZpENOTPSkcCw9H72WToBvwV1ZsJAWZkigdtcUbLLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 In-Reply-To:Content-Type:Content-Disposition; b=FgB/VAF/lOMwu7FfLUDYmAQRVoKkKAW/WpX/zqG6lq61gg3LbB4Jg9WE13yr1IsAB9N0j4/Zjm9i0Vd3E2Gfm4Nkv3IzCbMYxsWDFqIYKtY4bvL0Dq/8ZJwfa3heNdrw9JL3PpBl+HiSOGEUKdF1H/KRRV3BsWeeFc0T7EkcZbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LhUUdbXU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F00E310784
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2026 15:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.177
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778512336; cv=pass; b=dCsIshTOs0DM6fChiC/roUgqhxiX/JnHkXi6Qsy5vvK4h+UXi1QScHLOgzKfKO7afKzqVL0KEtFDuaM+YQF2Oh2oB2TfxgztLSkzbcpkW4h52F+9t3M0uMgB02+Vwc7OT8hKBiprRoUdfPf9x/hFb6UTQN+d+rPeuHcVSu+6J+4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778512336; c=relaxed/simple;
+	bh=1H7Xf7d2is7GVflTECcZFEqt6F6L+thydK7Be71uvw8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h3ugGx0o2H6VBKctsKjIK3n3kali39jrSYlGSyz/LmqN1bMn4YD+DaSp/IyCDZ8HAR5O8IGWfhaKcgohPwJTFUfvax4+Cqd+U90ZJW/3VSeaMX06SJWmKuzpEnHagZhoT66kbNh6mZbgyy/Y1N9/OOd135W2WXeNM2KvBLxmfLA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IC6nYdGp; arc=pass smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LhUUdbXU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778490156;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+4kzhpMcne9QL/iUfytpcOnuwyhDfw3DKjMmXnNjefM=;
-	b=LhUUdbXU5rLV8LcGjKMJ7r6KcdK7v0VpU8kl2gujOLfEBw1QcpFZdU6JKHVXp4MytvGz30
-	+y5eg9IbWLKL9LXyBi6mjJwCJ6W1WtJLqPjv/iGnJ12xGqKZgn2ppJxahTHKMc6w/iweU7
-	iGCkJvSUZhFRT6AySbmuZVbnoaDdzwE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-19-TMLperB5PDuIZZrTQodzVg-1; Mon, 11 May 2026 05:02:34 -0400
-X-MC-Unique: TMLperB5PDuIZZrTQodzVg-1
-X-Mimecast-MFC-AGG-ID: TMLperB5PDuIZZrTQodzVg_1778490153
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-48e60b55de2so35339835e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2026 02:02:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IC6nYdGp"
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-7bf0b1a47b1so41949307b3.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 11 May 2026 08:12:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778512334; cv=none;
+        d=google.com; s=arc-20240605;
+        b=JNdy79JGMWFsY63qPNh01BU3Lscp68eIIHYmOvp9sXO+zc81iiRddXBHZQrcsXKTHO
+         wUqgJc4FJkUHVvhCzMcslSDqh61tGfUlEcX2ULMEbc720jC8/ENhhZv0jJ/Cv53ywMQO
+         4uXSDzuoQF1/IRQ+VtUN3VxY3JMrW/MXJphp+pTRTKhng+XGT2+E0kykxf+6LBuMceN0
+         qRjKt2BSaZ2dvss0iKZl7/zAAwSDCozYe4rxDe8gYcfxKLbutO9ntTBJHgaUWgFr3Mtl
+         YVwJWiUpkLtuPA0N5mdAg2wrTO6knlq9/uCta4hM8OQlHj+5KH779M3zmwVDdW80uMcu
+         Se1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=/f5pcVVRZpgPLr1zYSd/Poxqpg4qBOt7BIeSZNx3Fjo=;
+        fh=0ltLx/nqIXM0y6+/dxLailUHhidtBWyTCbKf/ZC8YHM=;
+        b=DZ7A+RmdhDEWTFhUo8+/nY+nfMO5ZA0v9cZ3teRBATe7n2fHYzl1NI1TICjrVlQeXN
+         iyGGgIvb034hef15o3U1GE+BKrg0bQB2pfOsa3Rj8xF2Lx5Y7x72/HhY87cTNIdjxBFb
+         tbrofr5TgqD3MSAyyYstYYxePsNyHkfE9Cn1nYEENcu0r2/0wVu3SfkwRk2hrKtBGrpI
+         AhT7uy+bt41JCL0hdM/JvuTdkOniXJijs+2A4q7VQhU7wNzEG0wf5O9LzlLH71+jABLa
+         uiY8FWl4J7RuNN6+YbykGitrOtyd7D5jvi7eGX3F5/S9kfvtgnCgewvCla4MFsw73Kxr
+         v6Nw==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1778512333; x=1779117133; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/f5pcVVRZpgPLr1zYSd/Poxqpg4qBOt7BIeSZNx3Fjo=;
+        b=IC6nYdGpwgmQO7+vIky75H3/QobYwg98ZcjmN4ZFVeJbbl4MOswfZfS0PwMAEHkWBr
+         c4X4Y9XjIs0/TT1WpfH+GcCcGW2muIRln3zHPB5znROyy8pv1Zu+Y7WsYMnjXcjUIWY/
+         75iu6OeaCZQCSwmZDE+qKdxG2ODGEYzsuzoNDUBYIpaEZGgwpUHRtSja0+cqGiOe9hEH
+         EPbZ876pxCSoQEGg6yePDMQ5a0S13QSariX0oYtOQ9iYdIxGarII+uUf+pwqB1ISY1V/
+         YWR5KQRzYSwK5npAAHPm8T6FrxgQhEF0SQQHbPGqQkWy4o0wKH/xuq3l7t1/vTRO6cAU
+         l3Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778490153; x=1779094953;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+4kzhpMcne9QL/iUfytpcOnuwyhDfw3DKjMmXnNjefM=;
-        b=ZnKbvnKABCEjgymV5Oco3vV/gxiNGFNU/vYFBJfte6CvG9L2DOvSn7TATN+qGjQOZW
-         JlIusQcnpGgka5xwMadfX0XyS3ETX50SGoCoFMIWc9yTgg47iggqaRHTDsg/PnxALvI2
-         QdSzcwKeThZbT2UlDLKDuo1+KildDpl41Vlg6c64NRnv4luaZMVZ+2R5lUqiJB2A8WzK
-         ITxtqF6C1/cFaIQgM39wsxZcTRz5/sWWaQqkeSUSrep7qY9fYjNMVTKFkBps3cvxgjEf
-         iYuzlLnGXGwWoaXKfLHgg5H4IbQpIB1B8xiFhS9ePaWC7Rks/5TUWqnWf8B+KAfT5ZtH
-         QzyA==
-X-Forwarded-Encrypted: i=1; AFNElJ89iD5MPXoWKa4kRhWx+fn3m9uq1j+Af3yt2N1xm/OZcT8eqSWY2d+aiFPnDNN4kFEKoT8pzMFZr3wp@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwfvbwL6/8IF4cM8WD1E/aYLe5RtHnBTxzpVVK293wcuXgqppOL
-	xxqiAocwnmFsUIr5rnIlHxkK1qnHe1Jnd40KSzpYgBVGxD7OiAnLOnAqUAGIes1uJortAtDEm/F
-	OHIx2puzYcAtt6v+M6C0Y0kn+DCzy0WYeMdIeU+8GCxZYjciCw6nhzBcplyVScrw/UgcY0g==
-X-Gm-Gg: Acq92OGmLXsyZO1P/hszUo2/AUGo5Neipg/EayBlu/5uv4RFtofPBdGDR0lUIn2nUsz
-	FS4F/Y3LDju+PAvit2mAPIR4y3OwJClQXGLuAoby1TL7d21ehxGoYA0hZZAeaUkirNHj3VmP65R
-	aV0B1X3g4ODcCjs7ZGsO4RyUpDXx4BPV56pbtdBCF9igSyzHrBlkiysrK7UXeeKDJZ/UzgjnpOf
-	i43mExK8WT0/2v7W037/CiZgzYyRV6mUYU8Hbom/hY3i/CV7pj2lLjmF+70dHxbwwq+tODHpzqV
-	vahjj8IFbtr3XKR/0wre2ftOH7rkm9JjB14j0p65knMESXs/DIZw35SWC61bRfCIdy9PvB37mJg
-	VK3uUPCjmCbGtg50UZmX3PPbnVR9j3B+PkCgWTzg4
-X-Received: by 2002:a05:600c:1d18:b0:48a:906b:14ca with SMTP id 5b1f17b1804b1-48e51f46e46mr365112375e9.20.1778490153205;
-        Mon, 11 May 2026 02:02:33 -0700 (PDT)
-X-Received: by 2002:a05:600c:1d18:b0:48a:906b:14ca with SMTP id 5b1f17b1804b1-48e51f46e46mr365111235e9.20.1778490152468;
-        Mon, 11 May 2026 02:02:32 -0700 (PDT)
-Received: from redhat.com (IGLD-80-230-48-7.inter.net.il. [80.230.48.7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e7040a9a9sm297049045e9.9.2026.05.11.02.02.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2026 02:02:32 -0700 (PDT)
-Date: Mon, 11 May 2026 05:02:25 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: "David Hildenbrand (Arm)" <david@kernel.org>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Brendan Jackman <jackmanb@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
-	Lance Yang <lance.yang@linux.dev>, Hugh Dickins <hughd@google.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
-	Byungchul Park <byungchul@sk.com>,
-	Gregory Price <gourry@gourry.net>,
-	Ying Huang <ying.huang@linux.alibaba.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
-	virtualization@lists.linux.dev, linux-mm@kvack.org,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-alpha@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
-Subject: [PATCH resend v6 08/30] mm: remove arch
- vma_alloc_zeroed_movable_folio overrides
-Message-ID: <24a1b25f4f1cf31fc5bc053e475958ed5e1bf8bd.1778489843.git.mst@redhat.com>
-References: <cover.1778489843.git.mst@redhat.com>
+        d=1e100.net; s=20251104; t=1778512334; x=1779117134;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/f5pcVVRZpgPLr1zYSd/Poxqpg4qBOt7BIeSZNx3Fjo=;
+        b=S95KWDWBwzorPPrL8T48cOCbDVIdlqnj/N2zFsXITVBmvrg89HVMMJ2/Q4vQQawPHk
+         AzfJqqN7fZI63fOmUlK59ESOF7OjfbrkjE72ftOELLC1aMhTNG9GYx2H5iAbBraBAKss
+         d67jChf2aDeKRJBLLKI9MRTQF7+Z1W+19eGjb19lHz4atr5YkgcIo5fWPF+s0OWCefwD
+         oWg4EYqeIoQFfvX7yrAiXgVCNmPSt27fVQHv3+KcpwLSdevSrAFt1t5Ac/zpT0ilvZgM
+         EtWL5emayWokyWPe6jUggKJBGTO0Jlqh4mJcgm9yVQUJ/DM9z+Q1SSs+4AB9WK+YgGWX
+         wX1w==
+X-Gm-Message-State: AOJu0Yz8bqZS5TCaRyJjy1Pn2xxHFnACNDxGeQTD6AZCtWzMDrclHaAo
+	vDJfoKZWrx0TmbbQXgUY3PCAcgwuXzahAnpGufbP2gdqgOEo2yE1DayHUxBR6ZRdQdBUjFmEqsQ
+	EgCUiTHr+hTHW+IOwX5Rw7mCrsNoNULtAaS8hJH5cdg==
+X-Gm-Gg: Acq92OHutBdhLQovuriFpYJDcGjrBJr1VqfPdF1wMq6hNYo97rjM6FhjVGXEQGHpNdg
+	7ky3ZBmDrtjYC9o4jlO81JdMMwVVtK/B6k1S8uUj1/iJVkPZd5S6cUtPNAejlUSQcvQVD7BgoET
+	bGjkW1Rx6BxpyX8GAHq3wDXC8VnA5/9C/KxIrK0X8P/E3S0GXZBb6JJcBg9nNzDNbStoTz+NYi3
+	8bNdAOS6vvqInPrkpe6zYci6RyFTNYm/S97WdEBrU8RkaeUGiSc3h5dtvf7vtIxPIv3NezSKjV4
+	0fcrlHFw
+X-Received: by 2002:a05:690c:d96:b0:7b3:a5ae:4214 with SMTP id
+ 00721157ae682-7bdf5eb538amr251461777b3.24.1778512333347; Mon, 11 May 2026
+ 08:12:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1778489843.git.mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: p2rylRyu-nbEIvm0HorfwQn-vpBP3ME8EC8-E5CP-MQ_1778490153
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20260506142644.3234270-2-gerg@kernel.org> <20260506142644.3234270-6-gerg@kernel.org>
+In-Reply-To: <20260506142644.3234270-6-gerg@kernel.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Mon, 11 May 2026 17:11:35 +0200
+X-Gm-Features: AVHnY4JoT13V3074zVSJJIYRxUbzF897uIv-DHEkMY19qZbI5HkBtp9YPaUtMi4
+Message-ID: <CAPDyKFpZ3h7Kx845K+f1EZs2ijgjBmKsLOX8GCuP=C5WV-d8KQ@mail.gmail.com>
+Subject: Re: [RFC 3/4] mmc: sdhci-esdhc-mcf: do not use readl()/writel() on ColdFire
+To: Greg Ungerer <gerg@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	arnd@kernel.org, Greg Ungerer <gerg@linux-m68k.org>, adureghello@baylibre.com, 
+	linux-mmc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Now that the generic vma_alloc_zeroed_movable_folio() uses
-__GFP_ZERO, the arch-specific macros on alpha, m68k, s390, and
-x86 that did the same thing are redundant.  Remove them.
+On Wed, 6 May 2026 at 16:34, Greg Ungerer <gerg@kernel.org> wrote:
+>
+> From: Greg Ungerer <gerg@linux-m68k.org>
+>
+> The implementation of the readX() and writeX() family of IO access
+> functions is non-standard on ColdFire platforms. They check the supplied
+> IO address and will return either big or little endian results based on
+> that check. This is non-standard, they are expected to always return
+> little-endian byte ordered data. Unfortunately this behavior also means
+> that ioreadX()/iowroteX() and their big-endian counter parts
+> ioreadXbe()/iowriteXbe() are wrong. This is now in the process of being
+> cleaned up and fixed.
+>
+> Change the use of the readX() and writeX() access functions in this driver
+> to use the recently defined specific ColdFire internal SoC hardware IO
+> access functions mcf_read8()/mcf_read16()/mcf_read32() and
+> mcf_write8()/mcf_write16()/mcf_write32().
+>
+> There is no functional change to the driver. Though it does have the
+> effect of making the IO access slightly more efficient, since there is
+> no longer a need to do the address check at every register access.
+>
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> ---
+>  drivers/mmc/host/sdhci-esdhc-mcf.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> Note that the patches to introduce mcf_readX() and mcf_writeX functions
+> are not in mainline yet. They are currently in the m68knommu git tree
+> for-next branch, and so should also be in linux-next.
 
-arm64 is not affected: it has a real function override that
-handles MTE tag zeroing, not just __GFP_ZERO.
+Okay, so please resubmit the $subject patch when the mcf_readX|writeX
+functions are available in a v7.x-rc so I can pick it up.
 
-Suggested-by: David Hildenbrand <david@kernel.org>
-Acked-by: Magnus Lindholm <linmag7@gmail.com>
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/alpha/include/asm/page.h   | 3 ---
- arch/m68k/include/asm/page_no.h | 3 ---
- arch/s390/include/asm/page.h    | 3 ---
- arch/x86/include/asm/page.h     | 3 ---
- 4 files changed, 12 deletions(-)
+Another option is if someone can host an immutable branch for me to
+pull in the changes for mcf_readX|writeX.
 
-diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.h
-index 59d01f9b77f6..4327029cd660 100644
---- a/arch/alpha/include/asm/page.h
-+++ b/arch/alpha/include/asm/page.h
-@@ -12,9 +12,6 @@
- 
- extern void clear_page(void *page);
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- extern void copy_page(void * _to, void * _from);
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
-diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-index d2532bc407ef..f511b763a235 100644
---- a/arch/m68k/include/asm/page_no.h
-+++ b/arch/m68k/include/asm/page_no.h
-@@ -12,9 +12,6 @@ extern unsigned long memory_end;
- 
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #define __pa(vaddr)		((unsigned long)(vaddr))
- #define __va(paddr)		((void *)((unsigned long)(paddr)))
- 
-diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-index 56da819a79e6..e995d2a413f9 100644
---- a/arch/s390/include/asm/page.h
-+++ b/arch/s390/include/asm/page.h
-@@ -67,9 +67,6 @@ static inline void copy_page(void *to, void *from)
- 
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #ifdef CONFIG_STRICT_MM_TYPECHECKS
- #define STRICT_MM_TYPECHECKS
- #endif
-diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
-index 416dc88e35c1..92fa975b46f3 100644
---- a/arch/x86/include/asm/page.h
-+++ b/arch/x86/include/asm/page.h
-@@ -28,9 +28,6 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
- 	copy_page(to, from);
- }
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #ifndef __pa
- #define __pa(x)		__phys_addr((unsigned long)(x))
- #endif
--- 
-MST
+Kind regards
+Uffe
 
+>
+> diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-esdhc-mcf.c
+> index 375fce5639d7..6853521e8b2c 100644
+> --- a/drivers/mmc/host/sdhci-esdhc-mcf.c
+> +++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
+> @@ -55,7 +55,7 @@ static inline void esdhc_clrset_be(struct sdhci_host *host,
+>         if (reg == SDHCI_HOST_CONTROL)
+>                 val |= ESDHC_PROCTL_D3CD;
+>
+> -       writel((readl(base) & ~mask) | val, base);
+> +       mcf_write32((mcf_read32(base) & ~mask) | val, base);
+>  }
+>
+>  /*
+> @@ -71,7 +71,7 @@ static void esdhc_mcf_writeb_be(struct sdhci_host *host, u8 val, int reg)
+>         if (reg == SDHCI_HOST_CONTROL) {
+>                 u32 host_ctrl = ESDHC_DEFAULT_HOST_CONTROL;
+>                 u8 dma_bits = (val & SDHCI_CTRL_DMA_MASK) >> 3;
+> -               u8 tmp = readb(host->ioaddr + SDHCI_HOST_CONTROL + 1);
+> +               u8 tmp = mcf_read8(host->ioaddr + SDHCI_HOST_CONTROL + 1);
+>
+>                 tmp &= ~0x03;
+>                 tmp |= dma_bits;
+> @@ -82,12 +82,12 @@ static void esdhc_mcf_writeb_be(struct sdhci_host *host, u8 val, int reg)
+>                  */
+>                 host_ctrl |= val;
+>                 host_ctrl |= (dma_bits << 8);
+> -               writel(host_ctrl, host->ioaddr + SDHCI_HOST_CONTROL);
+> +               mcf_write32(host_ctrl, host->ioaddr + SDHCI_HOST_CONTROL);
+>
+>                 return;
+>         }
+>
+> -       writel((readl(base) & mask) | (val << shift), base);
+> +       mcf_write32((mcf_read32(base) & mask) | (val << shift), base);
+>  }
+>
+>  static void esdhc_mcf_writew_be(struct sdhci_host *host, u16 val, int reg)
+> @@ -110,24 +110,24 @@ static void esdhc_mcf_writew_be(struct sdhci_host *host, u16 val, int reg)
+>                  * As for the fsl driver,
+>                  * we have to set the mode in a single write here.
+>                  */
+> -               writel(val << 16 | mcf_data->aside,
+> +               mcf_write32(val << 16 | mcf_data->aside,
+>                        host->ioaddr + SDHCI_TRANSFER_MODE);
+>                 return;
+>         }
+>
+> -       writel((readl(base) & mask) | (val << shift), base);
+> +       mcf_write32((mcf_read32(base) & mask) | (val << shift), base);
+>  }
+>
+>  static void esdhc_mcf_writel_be(struct sdhci_host *host, u32 val, int reg)
+>  {
+> -       writel(val, host->ioaddr + reg);
+> +       mcf_write32(val, host->ioaddr + reg);
+>  }
+>
+>  static u8 esdhc_mcf_readb_be(struct sdhci_host *host, int reg)
+>  {
+>         if (reg == SDHCI_HOST_CONTROL) {
+>                 u8 __iomem *base = host->ioaddr + (reg & ~3);
+> -               u16 val = readw(base + 2);
+> +               u16 val = mcf_read16(base + 2);
+>                 u8 dma_bits = (val >> 5) & SDHCI_CTRL_DMA_MASK;
+>                 u8 host_ctrl = val & 0xff;
+>
+> @@ -137,7 +137,7 @@ static u8 esdhc_mcf_readb_be(struct sdhci_host *host, int reg)
+>                 return host_ctrl;
+>         }
+>
+> -       return readb(host->ioaddr + (reg ^ 0x3));
+> +       return mcf_read8(host->ioaddr + (reg ^ 0x3));
+>  }
+>
+>  static u16 esdhc_mcf_readw_be(struct sdhci_host *host, int reg)
+> @@ -149,14 +149,14 @@ static u16 esdhc_mcf_readw_be(struct sdhci_host *host, int reg)
+>         if (reg == SDHCI_HOST_VERSION)
+>                 reg -= 2;
+>
+> -       return readw(host->ioaddr + (reg ^ 0x2));
+> +       return mcf_read16(host->ioaddr + (reg ^ 0x2));
+>  }
+>
+>  static u32 esdhc_mcf_readl_be(struct sdhci_host *host, int reg)
+>  {
+>         u32 val;
+>
+> -       val = readl(host->ioaddr + reg);
+> +       val = mcf_read32(host->ioaddr + reg);
+>
+>         /*
+>          * RM (25.3.9) sd pin clock must never exceed 25Mhz.
+> @@ -245,7 +245,7 @@ static void esdhc_mcf_pltfm_set_clock(struct sdhci_host *host,
+>          * fvco = fsys * outdvi1 + 1
+>          * fshdc = fvco / outdiv3 + 1
+>          */
+> -       temp = readl(pll_dr);
+> +       temp = mcf_read32(pll_dr);
+>         fsys = pltfm_host->clock;
+>         fvco = fsys * ((temp & 0x1f) + 1);
+>         fesdhc = fvco / (((temp >> 10) & 0x1f) + 1);
+> --
+> 2.54.0
+>
+>
