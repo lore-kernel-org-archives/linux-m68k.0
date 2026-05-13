@@ -1,47 +1,49 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856EF3A6EE4
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 20:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5721838CFE9
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 20:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778703384; cv=none; b=XUlt6bJcQjcWJaRXC/eVbbZewMOhjFKNYYOjFnFlrlzxbIyQnYyETCkeXIad4/GsP8hyPeRuoVWpDNROaTPppkZBjxmMLFVL0Ut099EzbRzTXixaYf6z8gwxmKvMqK1kn/kYfeBfyKU1hY94z1FdxVNzGnIL6lceXR1DgXQfkls=
+	t=1778703529; cv=none; b=Dva3JJ9Lc6AfuQrWslxXAPptdeFFYoboSSAR/Iw3kdCFwGF69YKcxMvQTBsiiSZ6lK8wWnCVuQKHLV6hPJRWyNK0wmuvQN14H3fx6lPtOUsKHeG0IW2MukiIgJIPWRrsv/kqu+v4ri/ks5UlFoEtGMVu49I2dkCrzon1/vEncwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778703384; c=relaxed/simple;
-	bh=mIQ+1K+1Vc9lN+OORTOgLG1EPzXtmw6+x8IuxCo8fsw=;
+	s=arc-20240116; t=1778703529; c=relaxed/simple;
+	bh=IfW99YHYzpUh373QPEOA4K2s4hb7mUdbwWNMEdE9QzM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ueMNPaDWtE7GDVYtfGoc5BpE84kx73qTeIiVRE4RHe+rfNfxw74FY+O5YQmsaNMHnzTSdttDf6fsJAvRUzfYaM5M4OKXGpKe+jnCf2zG2l9SEWJX/yXNFWW4hbZmhJUHA7l7VbyNMcFX/5PLLF8pLY1E+E0Hebkb+NHPR7ZIueM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IMB8fiAm; arc=none smtp.client-ip=192.198.163.16
+	 Content-Type:Content-Disposition:In-Reply-To; b=oEoqZ9QUpzI2FERBbg5cv/Q+tu+u+bD3OEPqOA6Ds0qL2pqqsoC8+r3WsigW4JXS0dmhpjCcDr4SKCQIP1JqMAc7v34+kB6291gA4ZQkiz84hTB6LkyBA3aS0ssASWgJgAEi/MtYfvSHqFqqn8vuO9utSq46uTKgtSXbtMfJh1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hU8ora/k; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IMB8fiAm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hU8ora/k"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1778703383; x=1810239383;
+  t=1778703528; x=1810239528;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=mIQ+1K+1Vc9lN+OORTOgLG1EPzXtmw6+x8IuxCo8fsw=;
-  b=IMB8fiAm4nKePIgwGrePsti3B1HE4nRyy4vDIua7fSP9xMjAzwgP62q9
-   b5M+lNAC9/DcjwUcIiWLCkK1qVCygrLAtpUKaiKuh9oYNs1BtYcPO4xkx
-   FaPnzLcspbH4ASl6Fs7EA7KrtNQ64ceajKKwchxfeKN7L7y9hVi8wz3jo
-   PCHf0LEn2ujudmzCoyr3M4eKpcfrusr6tGOBLwl7DQEwjECYRiXCeeEtC
-   OrjP+yLqzPh4JXB3Vi0ISIsPylkfL9ws6NlIGN88eO8JzpkNKlqHiLf1O
-   a5bad5N+/UZaSG+gFRZ0JHKiTOJur6jhKOPYgTnSDe+HOjgVT2pWSyi71
-   Q==;
-X-CSE-ConnectionGUID: vxm9+MK6RF+oqX6YS+ldnQ==
-X-CSE-MsgGUID: aZ/zmN7JTkCOf8hPHtUQyA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11785"; a="67172024"
+  bh=IfW99YHYzpUh373QPEOA4K2s4hb7mUdbwWNMEdE9QzM=;
+  b=hU8ora/k4EcAKUrjmFMfrnqK/pdivGJ8SeSUViksv3MkzVAh55CRpxs4
+   Oyt14XLYQ2fE4uQ1V+bOt0tNEtjV0Ds0hVTDx1ks1MnkZfdFstqpIy5nU
+   rU6AU8xq4OX/TMg1zCQRi8VLahrxyQyJ7SUn/JMcaRb/Y3yzc/5lhRgaF
+   DXxnpVakg8xFc2pmXWMAxTNOFWAgJFJ2YfdwhW2FT4++VeGLMioj+61rU
+   WBtXm+XRLOKD8qliFv9JCrGE0B3gsGJcpFn6pCozkEtF9Diep4kG7nh0E
+   5l5NXiavj6wloA1JeGC5FLRk5wyFwvd6EAttPzr6GQLD1+fmd+r07+1zY
+   w==;
+X-CSE-ConnectionGUID: z+R7Q3a2Qk2EwwcE3wT0fQ==
+X-CSE-MsgGUID: glwTr/3aTfiOAAjhCiZcsA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11785"; a="102309109"
 X-IronPort-AV: E=Sophos;i="6.23,233,1770624000"; 
-   d="scan'208";a="67172024"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2026 13:16:22 -0700
-X-CSE-ConnectionGUID: 6/JJXADcRba65k/N30FZZg==
-X-CSE-MsgGUID: Mvsw+TwPTt6nTk/svVCyig==
+   d="scan'208";a="102309109"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2026 13:18:47 -0700
+X-CSE-ConnectionGUID: Er/26GkHRvy20O47F9TRWA==
+X-CSE-MsgGUID: heEwA0y0TH2LkOXC67+U+w==
 X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,233,1770624000"; 
+   d="scan'208";a="261934359"
 Received: from slindbla-desk.ger.corp.intel.com (HELO localhost) ([10.245.244.106])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2026 13:16:18 -0700
-Date: Wed, 13 May 2026 23:16:16 +0300
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2026 13:18:43 -0700
+Date: Wed, 13 May 2026 23:18:41 +0300
 From: Andy Shevchenko <andriy.shevchenko@intel.com>
 To: Angelo Dureghello <adureghello@baylibre.com>
 Cc: Greg Ungerer <gerg@linux-m68k.org>,
@@ -56,10 +58,10 @@ Cc: Greg Ungerer <gerg@linux-m68k.org>,
 	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2 08/11] m68k: stmark2: add mcf5441x DAC platform devices
-Message-ID: <agTcEECgJvBydhe2@ashevche-desk.local>
+Subject: Re: [PATCH v2 09/11] m68k: stmark2: use ioport.h macros for resources
+Message-ID: <agTcoVbImqMgfQy5@ashevche-desk.local>
 References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
- <20260513-wip-stmark2-dac-v2-8-fcdae50cf51a@baylibre.com>
+ <20260513-wip-stmark2-dac-v2-9-fcdae50cf51a@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -68,43 +70,45 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260513-wip-stmark2-dac-v2-8-fcdae50cf51a@baylibre.com>
+In-Reply-To: <20260513-wip-stmark2-dac-v2-9-fcdae50cf51a@baylibre.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
  krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-On Wed, May 13, 2026 at 11:14:32AM +0200, Angelo Dureghello wrote:
+On Wed, May 13, 2026 at 11:14:33AM +0200, Angelo Dureghello wrote:
 
-> Add mcf5441x DAC platform devices.
+> Align also other resource declaration using DEFINE_RES_.
 
-...
-
-> +static struct resource dac0_resource[] = {
-> +	DEFINE_RES_MEM(MCFDAC_BASE0, 0x100),
-> +};
-> +
-> +static struct platform_device dac0_device = {
-> +	.name = "mcf54415_dac",
-> +	.id = 0,
-> +	.num_resources = ARRAY_SIZE(dac0_resource),
-> +	.resource = dac0_resource,
-> +};
-
-It can be
-
-static struct resource dac0_resource = DEFINE_RES_MEM(MCFDAC_BASE0, 0x100);
-
-static struct platform_device dac0_device = {
-	.name = "mcf54415_dac",
-	.id = 0,
-	.num_resources = 1,
-	.resource = &dac0_resource,
-};
+DEFINE_RES_*()
 
 ...
 
-Same for the rest. But I haven't seen the followups and don't know if those
-structures are going to be expanded. The commit message doesn't say anything
-about that. So I assume my suggestion valid.
+>  static struct resource dspi_spi0_resource[] = {
+> -	[0] = {
+> -		.start = MCFDSPI_BASE0,
+> -		.end   = MCFDSPI_BASE0 + 0xFF,
+> -		.flags = IORESOURCE_MEM,
+> -		},
+> -	[1] = {
+> -		.start = 12,
+> -		.end   = 13,
+> -		.flags = IORESOURCE_DMA,
+> -	},
+> -	[2] = {
+> -		.start = MCF_IRQ_DSPI0,
+> -		.end   = MCF_IRQ_DSPI0,
+> -		.flags = IORESOURCE_IRQ,
+> -	},
+> +	DEFINE_RES_MEM(MCFDSPI_BASE0, 0x100),
+> +	DEFINE_RES_DMA(12),
+> +	DEFINE_RES_DMA(13),
+> +	DEFINE_RES_IRQ(MCF_IRQ_DSPI0),
+>  };
+
+This conversion drops hard indices, would it be a problem (for example,
+some code modifies the fields based on the [hard coded] index...)?
+
+If not, perhaps good to mention in the commit message and move IRQ to be the
+second one?
 
 -- 
 With Best Regards,
