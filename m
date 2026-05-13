@@ -1,68 +1,66 @@
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C4926FD93
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 09:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F9B3C4547
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 09:14:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778663684; cv=none; b=VQH/1FWnl3Z9I1d4y6/IJgPRfrDUYPbk7MS3OnT6aheCqg7zSeFLFqKTCt+8+42Pgpmhz3lHsHnbVRGofuN9OzttTAols/LVzOLM+WbF2WxteEIf0cM/zCuuBOEAy6B76I7b/4bUwDcE3mfSb5uVxZhcUYJuOiochvly1y99/bc=
+	t=1778663684; cv=none; b=QsuKBAEIZJpKUGZjuHeagR6xI63NJDbsice243oZsp1luyuXEFXCB9bjBxjlTwRUFg7pDjp0ijUwd90qRPVDaDMVRwpkuwjr5ypttM1oRlZwjQNkHBQE8eNVVI8cj8UNaei3/mp5fTzk6d2k+qZIcGrItsRDHsdTJY293R1EEv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1778663684; c=relaxed/simple;
-	bh=MIaaE/2mzFPAjGyRfiNactxhQ4J82Q69lpAJVLJ9J+4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mKVmMyZkNr+ywZHu47Po0oJMhj5IaTxXtaKms/hTNpu2NWyWlDBsOhAHvvDdP5wnLZhiji4JuzLl+cPNvqGDW/3TJmpF8D7hNI40O4nDwqwYpE1VQhJErsHEHWYxuytKnXnrJ2xxReotSaZz5rxhPUP5m8ohXjN2Bc3708vbktU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=xoP1dA/m; arc=none smtp.client-ip=209.85.221.43
+	bh=+Yx1Zg5rFuonF5evcV4LLzCgrpfxwRi5dFqTUCk4UQY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=El+yXzzY5w4Cz2EFH9cRi5Abzj6kBzMhF95V3GGHJADTrYGNwcTyb2Mdgyk5/10kJlLKOpfIJF09Kns3rNh/rDd1IM2P4eB9CxIAbvVCZaNPJkf/5dyAkgH5Cp4Svn7Z0O8goPaslZV3sM3TYM9eDsv3x1lJkmKVfQ5p0g5o0Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=hgaMoWzH; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="xoP1dA/m"
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-449d6c68ed8so5590201f8f.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 02:14:42 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="hgaMoWzH"
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-48896199cbaso57492265e9.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 02:14:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1778663681; x=1779268481; darn=lists.linux-m68k.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1oxdFj4Oh6M9kXl1w5/7S95bL1PgDTh+f8B3yZnortM=;
-        b=xoP1dA/m1KX5CKC2y6qTrYaU9fcRze5ZLFuEFWOVYnNGRu99KKIiX2HR9fDbWtwFYo
-         +s9klL2j5oxhiaI9w1RHEIKhcJZaBqSkNbCs5o+0b+rX7g11dbCkt3lCVrpejtta/Ghe
-         yjTyWpXh7IJedhFw1a224tgpdpI/dk5XX2hp3ofLCtnU+whNYoi1BCw4ReG5TW2BO0e+
-         n1o1LUe6JOTbQLG4LqHupvjX9oFOZg960u+0DigO7TFnCAQwyIELuMPThRUqWER+l4t+
-         jWakpDm+2uLOyQqkR9O95bGwGjWzx+crneXPRnWdC6x3woRJotAghymk40/k6RSZ/EFC
-         AdJA==
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1778663680; x=1779268480; darn=lists.linux-m68k.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3M6rRLTQ9CGPGf8NA7+4xvB1DmVHioIYgHph20eH9Ks=;
+        b=hgaMoWzHU2Yd/RSQi0RqfLUw34Bzf/SmDAzLRaSoZ90CQ9FmRRU+agopPZ9/xC4jiQ
+         DU7KJ7ao/PVDHrs6vyw45n3tSNfxia7+Pbt1vjyemCL0GCE/CpaV8kJqbpOZYVZI5eTX
+         jwceNY83Z5kRaFSIiEVv0B6dFjRA5pc570T6M38b5AQNx26TxbgzjXzfmj1lNQ0qQdE7
+         1+473lsw8a5Yq6OH0ICaYS4vgG1H/kTI6NNjjsqxYeDIK3CJTltgK74tmXimixLAtN6o
+         AYavTy2c5qWCnCoQ7LlavP4O4on/RRqAbI6ak6NB85Lei25NJKPQxxNY7Dw5WvJw5sch
+         vJtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778663681; x=1779268481;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1oxdFj4Oh6M9kXl1w5/7S95bL1PgDTh+f8B3yZnortM=;
-        b=m+/0T6SU0QUQx9M4GKxzsZlrNbTpYbuXYjKbkRC58wj9rKHPeeNYndX2q7EFTLaUQK
-         5vFCtXBf3JM8KZDy/+MUKOe26V5FWy3KDePLOQvCM25QMPQb0f5UefmIFQIIrE2QpLGI
-         qczO/oyXkfZFTxOcFfvpIj+b3kvGPHjfiuIiTBaNBQMkrIhh6I/ocN2KyJyO4WqKJMib
-         2jAPLw7xwoTLTrCDdnzvrMtSNXvo0o6mVIJ8x+Gg6tbUF2b4hD4L5i4m6Ki4T7wPUhPI
-         5pfd/RkWnfMLQHoE0exeonq9AbCSXjRQQfdQZj8jbGwd9/RDOeoHYI6/kZoSGViy26bG
-         HYAg==
-X-Forwarded-Encrypted: i=1; AFNElJ9alKDqMxRjxiP/AUOAk3L/z0Dm2lugEb+g4Ef5q0x1W6vXY+d6wfKo7NeGLlhUAuRaWxdhBczFJKsC@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwzAovuRgwbHQ5PEmfLfewfIg0zETebRPSBMQHSNIe1KBcUU0s2
-	eu3mSslGmJbrBWUjZHYY8W3YIUUYFzHctxo9GLOp4twVLUYcYkIrNP2fAJ3Oas3iQel8sAR90XG
-	F4Q/D9v4=
-X-Gm-Gg: Acq92OEva9c/uwWw4TrA6xP4Utw1Uo97gmtDYV0jHez+i3E2lygiw/AZWrT1BbabQ7l
-	3e/h40KHYI+zqRD7ZHw9LIdjiKHbh0HC9DaxQXwuY6uerYAxudElxIUdgKSJxjr92nYea97qFAa
-	wmFnFUBVBfSJK+32J9a8B0iF1G6ZETuZmL2iMPruGlLr15USQ5Y6uu/TcJ/MYMhdGEb5ej5v8Rr
-	06M5JylYMAdFac1kk1cT0FrVm4OLAWcGQPDVsORFA4U/Rqa7lSPpMEYMXcapGjH9UCVWrIwPyrO
-	wcN4i0Mdw4PgUgGNaZRCre2m/YNpYcznq9QVCsl4nxGfgEZwnm9rjDL6xfDSRbhwRJADOyqgA4V
-	A3kulFiMIZztka90HuCDmkJqQilA8sqajzrfKbGoD13cAI0/mWEnKgs2tPXGMNK6r1Yjz9f86L/
-	PocfMH1y6vHalYyeLIchLwt+kMn5F3iW4=
-X-Received: by 2002:a5d:5f51:0:b0:453:f951:4e5b with SMTP id ffacd0b85a97d-45c584a86acmr3767577f8f.13.1778663680934;
-        Wed, 13 May 2026 02:14:40 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1778663680; x=1779268480;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3M6rRLTQ9CGPGf8NA7+4xvB1DmVHioIYgHph20eH9Ks=;
+        b=MqjDZykpq5Q2NAmfpS0GbRUEO1PRblihLUWbPJVqXyeYvF4SVR+bqhNnO9FCxC24gC
+         M/Om8VPdHVvGH3RGgHL85ILuktPJjxLcW+tVuUNkOovaYqL1cUOgNW0sGi7QsT37wwyL
+         4O+I1+yLbGXERwx8NaqxnZuJ5/RzF00izeQUZnD2aTmEsph0HsokiHJvP53zBu//s9IO
+         GesPt+PoRsjWy0tDuDwr8gooo9VZ99DuVmYJpN8SUt/mW3TpeVMSgmen7/764mCtw/Fu
+         8Qs2dw2WDok87go9/lH6l1UJqG+XC/QrkM73tLe74ugSLhb41PQW/DtR7756mNMvk7WH
+         aiJQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8B4HE3T/YNBVaiIa1g1CZD/GD1hu43JUJGdBEsPoXI6U1aekVkv7k57KURTUf4VmgQ3age4IWJg66f@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxbwViZg95reMHrky2BUngUpZ/A/QxqLDgWJHIgioNbdoKgWSgI
+	JppF/LvLTMtA1ap90HfjiVrcjloe6iuWvevKQO57BcWRXmj/tj10Av5QEzrA2mfb4k4=
+X-Gm-Gg: Acq92OGRXsSzgVKaDRd72kkSE7+d3edHAg0DI9vNfg9WEXQTQYbzoxhkSsG3eE1kpan
+	osE0pEoDDSSIMeQEG3mwfz4nH/28NcdWMMyUpHe04WXww296yxRsRT/Apbk7l0HcT/5c1re1lws
+	vTgIz1g6Lv3o/mUOsIZkiLmKfMO9AFmJ7n4u/p3dO1HWsvB4UNJNybpLdMDDABeQHeV51MWhVyG
+	nfJwY9G196wvq+S+gDAHToU5J6gXbcZ2tW7r1H6Rh8JDGDmMWRbVp94Tp7wC5JFW+bt+dSVZCdL
+	atph2+Y+8E0Eoch1DcBk7EMMxWtwZoYpJOvx2mMKMRCDBaseIWemXRxH13O7bm8lcK3PNxgEtkN
+	DbFn+gf2Ry8a3jkKz4EGtKqrpvtgxQohTo+HN1XbJGV0snYM+R0DcHctsXXKgQl/zq4wte2s5i+
+	98wmxwQvE57c7LAdlHVc48hhtzfKVrdae7E1fXsBQprA==
+X-Received: by 2002:a05:600c:c4ab:b0:485:30d4:6b9e with SMTP id 5b1f17b1804b1-48fc9a3c1ffmr38082135e9.21.1778663679846;
+        Wed, 13 May 2026 02:14:39 -0700 (PDT)
 Received: from [192.168.0.2] ([2a07:7e81:7daa:0:62cf:84ff:feee:627])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4548e6a66bfsm34590821f8f.4.2026.05.13.02.14.40
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4548e6a66bfsm34590821f8f.4.2026.05.13.02.14.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2026 02:14:40 -0700 (PDT)
+        Wed, 13 May 2026 02:14:39 -0700 (PDT)
 From: Angelo Dureghello <adureghello@baylibre.com>
 X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
-Date: Wed, 13 May 2026 11:14:25 +0200
-Subject: [PATCH v2 01/11] m68k: mcf5441x: fix clocks numbering
+Subject: [PATCH v2 00/11] add mcf54415 DAC driver
+Date: Wed, 13 May 2026 11:14:24 +0200
+Message-Id: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -71,9 +69,11 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260513-wip-stmark2-dac-v2-1-fcdae50cf51a@baylibre.com>
-References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
-In-Reply-To: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/4XNyQrCMBgE4FeRnI38Wbp58j3EQ5rFRu1CUqul9
+ N1N6kFwwePAzDcT8tpZ7dF2NSGnB+tt24RA1yskK9EcNbYqZESBpsAZ4JvtsO9r4c4UKyFxBik
+ YXihVcIPCqnPa2Psi7g/P7K/lScs+MrFRWd+3blwuBxp7v/WBYsCaCZOnueQgyK4U48WWTm9kW
+ 6N4MLAXkQD/JFggIKFcECOJZN8I8ocggcgzLlkqeEFAvRHzPD8AnWT3ykkBAAA=
+X-Change-ID: 20260430-wip-stmark2-dac-7060f49dd94f
 To: Greg Ungerer <gerg@linux-m68k.org>, 
  Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, 
  Arnd Bergmann <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
@@ -87,69 +87,74 @@ Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org,
  Angelo Dureghello <adureghello@baylibre.com>
 X-Mailer: b4 0.15.2
 
-From: Angelo Dureghello <adureghello@baylibre.com>
+This patchset adds a minimalistic DAC driver for the NXP mcf54415/6/7/8
+ibuiltin DACs.
 
-Fix clocks numbering, set correct values for eport and DAC,
-as per RM Rev 5, 05/2018, table 9.5.
+Currently the driver enables the raw write only. Feature as dma, sync, or
+format are not supoprted for this version.
 
-Fixes: bea8bcb12da09 ("m68knommu: Add support for the Coldfire m5441x.")
-Fixes: 007f84ede6e3e ("m68k: coldfire: remove private clk_get/clk_put")
-Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
+Additional options suppoerted by the DAC module will be added to the driver
+later on, as needed.
+
+The same patchset prepares the m68k/coldfire architecture to support
+the driver.
+
+Below soem basic tests done on stmark2 mcf54415-based board, voltage check
+on DAC0 and DAC1:
+
+~ # cd /sys/bus/iio/devices/iio:device0/
+/sys/bus/iio/devices/iio:device0 # ls
+name               out_voltage_scale  uevent
+out_voltage_raw    subsystem
+/sys/bus/iio/devices/iio:device0 # cat name
+mcf54415
+/sys/bus/iio/devices/iio:device0 # echo 4095 > out_voltage_raw 
+/sys/bus/iio/devices/iio:device0 # echo 2048 > out_voltage_raw 
+/sys/bus/iio/devices/iio:device0 # echo 4096 > out_voltage_raw 
+sh: write error: Invalid argument
+/sys/bus/iio/devices/iio:device0 # cat out_voltage_raw 
+2048
+/sys/bus/iio/devices/iio:device0 # 
+
+Same behavior for /sys/bus/iio/devices/iio:device1.
+
+Generated a sine wave by shell script, sine shape is good.
+
+Note: this patchset depends on mew mcf_read/mcf_write implementation:
+Link: https://lore.kernel.org/linux-m68k/209d0653-6386-4b64-9e15-e358f84453ab@app.fastmail.com/T/#t
+
 ---
- arch/m68k/coldfire/m5441x.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Changes in v2:
+- keeping changelog in each single patch, where any
+- Link to v1: https://patch.msgid.link/20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com
 
-diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-index 6ce730098ff6..613b0275d9d8 100644
---- a/arch/m68k/coldfire/m5441x.c
-+++ b/arch/m68k/coldfire/m5441x.c
-@@ -41,9 +41,9 @@ DEFINE_CLK(0, "mcfpit.0", 32, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfpit.1", 33, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
- DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
--DEFINE_CLK(0, "mcfeport.0", 37, MCF_CLK);
--DEFINE_CLK(0, "mcfadc.0", 38, MCF_CLK);
--DEFINE_CLK(0, "mcfdac.0", 39, MCF_CLK);
-+DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
-+DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
-+DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
- DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
- DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
- DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
-@@ -103,9 +103,9 @@ static struct clk_lookup m5411x_clk_lookup[] = {
- 	CLKDEV_INIT("mcfpit.1", NULL, &__clk_0_33),
- 	CLKDEV_INIT("mcfpit.2", NULL, &__clk_0_34),
- 	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
--	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_37),
--	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_38),
--	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_39),
-+	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
-+	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
-+	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
- 	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
- 	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
- 	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
-@@ -156,7 +156,7 @@ static struct clk * const enable_clks[] __initconst = {
- 	&__clk_0_27, /* uart3 */
- 
- 	&__clk_0_33, /* pit.1 */
--	&__clk_0_37, /* eport */
-+	&__clk_0_36, /* eport */
- 	&__clk_0_48, /* pll */
- 	&__clk_0_51, /* esdhc */
- 
-@@ -174,8 +174,8 @@ static struct clk * const disable_clks[] __initconst = {
- 	&__clk_0_32, /* pit.0 */
- 	&__clk_0_34, /* pit.2 */
- 	&__clk_0_35, /* pit.3 */
--	&__clk_0_38, /* adc */
--	&__clk_0_39, /* dac */
-+	&__clk_0_37, /* adc */
-+	&__clk_0_38, /* dac.0 */
- 	&__clk_0_44, /* usb otg */
- 	&__clk_0_45, /* usb host */
- 	&__clk_0_47, /* ssi.0 */
+---
+Angelo Dureghello (11):
+      m68k: mcf5441x: fix clocks numbering
+      m68k: mcf5441x: add clock for DAC channel 1
+      m68k: mcf5441x: setup DAC clock name as per driver name
+      m68k: defconfig: update stmark2 defconfig
+      m68k: add DAC modules base addresses
+      m68k: mcf5441x: add CCM registers
+      m68k: mcf5441x: add CCR MISCCR2 bitfields
+      m68k: stmark2: add mcf5441x DAC platform devices
+      m68k: stmark2: use ioport.h macros for resources
+      m68k: stmark2: enable DACs outputs
+      iio: dac: add mcf54415 DAC
 
--- 
-2.54.0
+ arch/m68k/coldfire/m5441x.c         |  21 ++--
+ arch/m68k/coldfire/stmark2.c        |  51 ++++++---
+ arch/m68k/configs/stmark2_defconfig |   2 +
+ arch/m68k/include/asm/m5441xsim.h   |  42 ++++++++
+ drivers/iio/dac/Kconfig             |  10 ++
+ drivers/iio/dac/Makefile            |   1 +
+ drivers/iio/dac/mcf54415_dac.c      | 203 ++++++++++++++++++++++++++++++++++++
+ 7 files changed, 306 insertions(+), 24 deletions(-)
+---
+base-commit: 25c66a1b49f3c5463ee8266a3fd5256cbc794610
+change-id: 20260430-wip-stmark2-dac-7060f49dd94f
+
+Best regards,
+--  
+Angelo Dureghello <adureghello@baylibre.com>
 
