@@ -1,216 +1,155 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E133C4555
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 12 May 2026 21:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C4926FD93
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 09:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778619977; cv=none; b=Qsh6FA2aHDUM2zR8WQaduFnSGnO9m5CZPczSqOGS3TsEuUaZLR5m4aLldoyRar47AEuQoWjMOuIx+E9gpx8wqtwFbXBIOSiiW9DK9c3pNXy0auQd92IAWUh5hn1wDwh4ukTGLBYeHwZoEHLLgzQ1ZIPFuVJS/bMTTCy/tw+nTS4=
+	t=1778663684; cv=none; b=VQH/1FWnl3Z9I1d4y6/IJgPRfrDUYPbk7MS3OnT6aheCqg7zSeFLFqKTCt+8+42Pgpmhz3lHsHnbVRGofuN9OzttTAols/LVzOLM+WbF2WxteEIf0cM/zCuuBOEAy6B76I7b/4bUwDcE3mfSb5uVxZhcUYJuOiochvly1y99/bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778619977; c=relaxed/simple;
-	bh=xVZpENOTPSkcCw9H72WToBvwV1ZsJAWZkigdtcUbLLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 In-Reply-To:Content-Type:Content-Disposition; b=g0w46DQ3hBeB7twXgrVjRSNjXm6gioPpRTnrcAFmKh9+SfOZs0RsfSrHYHifyCWerz5L74BGwV3bcRleoyB1Q9ga3wYZUvngvVcqRAClarQf9IF8KSngiuVdDHrlDmdqFLkvQr6Jx2+9HxRr07/cp2WlsdeJBGnS1XVhImhgDgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=izoxYKXl; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	s=arc-20240116; t=1778663684; c=relaxed/simple;
+	bh=MIaaE/2mzFPAjGyRfiNactxhQ4J82Q69lpAJVLJ9J+4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=mKVmMyZkNr+ywZHu47Po0oJMhj5IaTxXtaKms/hTNpu2NWyWlDBsOhAHvvDdP5wnLZhiji4JuzLl+cPNvqGDW/3TJmpF8D7hNI40O4nDwqwYpE1VQhJErsHEHWYxuytKnXnrJ2xxReotSaZz5rxhPUP5m8ohXjN2Bc3708vbktU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=xoP1dA/m; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="izoxYKXl"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778619974;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+4kzhpMcne9QL/iUfytpcOnuwyhDfw3DKjMmXnNjefM=;
-	b=izoxYKXlLv3ukMyoF2ZCqzDJ4Y6Jz9tu2NDqdEbxrj6xZQbs9JrY524rfmYKwZ1v/hGILO
-	bSNUFX1j20Ex/RhKsKZSnaOup6LJO/S3/gk+xdZ0552Qe0EkmYq2Cgn1qYFxK09qqZibos
-	J1HawoAmm3bioUu7sj1mwyXsiSzLFpM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-344-JjtiFZDpO82UyXqFHsftRw-1; Tue, 12 May 2026 17:06:13 -0400
-X-MC-Unique: JjtiFZDpO82UyXqFHsftRw-1
-X-Mimecast-MFC-AGG-ID: JjtiFZDpO82UyXqFHsftRw_1778619972
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-488c0120047so34768975e9.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 12 May 2026 14:06:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="xoP1dA/m"
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-449d6c68ed8so5590201f8f.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 13 May 2026 02:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1778663681; x=1779268481; darn=lists.linux-m68k.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1oxdFj4Oh6M9kXl1w5/7S95bL1PgDTh+f8B3yZnortM=;
+        b=xoP1dA/m1KX5CKC2y6qTrYaU9fcRze5ZLFuEFWOVYnNGRu99KKIiX2HR9fDbWtwFYo
+         +s9klL2j5oxhiaI9w1RHEIKhcJZaBqSkNbCs5o+0b+rX7g11dbCkt3lCVrpejtta/Ghe
+         yjTyWpXh7IJedhFw1a224tgpdpI/dk5XX2hp3ofLCtnU+whNYoi1BCw4ReG5TW2BO0e+
+         n1o1LUe6JOTbQLG4LqHupvjX9oFOZg960u+0DigO7TFnCAQwyIELuMPThRUqWER+l4t+
+         jWakpDm+2uLOyQqkR9O95bGwGjWzx+crneXPRnWdC6x3woRJotAghymk40/k6RSZ/EFC
+         AdJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778619972; x=1779224772;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+4kzhpMcne9QL/iUfytpcOnuwyhDfw3DKjMmXnNjefM=;
-        b=PFAtBUATKZSXsHSCheyd/XiiRODUbVrQ5d62YshSFWtgW5pYLnXActeIoQZQkOuQK4
-         0gGny9YSOOnIdbssJ6bNsiR8gKcSDLXmzUFrL2Tz1O3X6jrAWVpR3JDCgxmHm9u4x7Ry
-         p5mfGeftm2n2ck9Xi0CwQnQVYjWLqbpR1SxRsQh5aTThi95oWYkosJFXFvsUt5AkCiwI
-         rEP5uROiGXdJbf7IZ+4pCDvXsQ1Nn3J3+M6nWTf+Rx+aAcxxTAM2o5+owRyNsCPP7/9V
-         EhtVgpA0mHg9FaE/R0yMkT6wCQfavmQ3nyFFlp2MA9pzBGYE5Nc5xUHmKWTXm6bR5liC
-         P7yQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/4EpmsqhQAl5j52jcSHy9u7ty6BZ9WeguMw6ijIZ0L+W+H61YP4O7vu02YZaluL7un8D5USWvpk9OX@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yz3j27L010W21GI3dRP3sfvYTVfC1pOak3I2BfoO03a25PJ16gH
-	CRDPBoaph/wdhuTVmQuhYrkekzm22n6bQTl93AepukMo6rs4k1uWGFxuqbJ0LGmY+p45QpmoWDe
-	IQybs33eSUr4k1jYCyU7XMdVGhQIip8IbvoQlwmHjVOP3/TlD4SluTEWmYWHwA6cBq70Jsw==
-X-Gm-Gg: Acq92OF6wZvLWU8NXQk+Y3ge5kHboWYpBeT/9WO6c5sDHzxd005nlU1yoTG5TOE8riY
-	+q8dNyu7qfljUDKhos4p4tthshMknR1cK4p9JUlGvDFTCjNjrBz36ZoYt8LuxNPONsk9jxSmJ4p
-	ZRNFXYsdn4F4+TwY/6bsbEsBeZ+aH8i5n9EEnBLBA8hXLTBPKrNzw3cb0++ain4OrOX0agROSgh
-	KBmynOzCL6iQevK7VxURNo1OYE31MxCKfy9hcvcRH+klqlwATxh/6aGHVrC/lyurtEG6JkSexes
-	JDPHkFuosvl8rUV+yyc8mZQN8y9jxeCEFppdIb0nJbUFFK66tT2iV/DnWqUqu0WwvFm4KFyd/Vl
-	s76NCWie92Emt9Zt1R3Y+76kbiXpZNph2DcwCABmO
-X-Received: by 2002:a05:600c:3f1b:b0:48a:6fd4:d3d4 with SMTP id 5b1f17b1804b1-48fc9a50d32mr5863045e9.29.1778619971834;
-        Tue, 12 May 2026 14:06:11 -0700 (PDT)
-X-Received: by 2002:a05:600c:3f1b:b0:48a:6fd4:d3d4 with SMTP id 5b1f17b1804b1-48fc9a50d32mr5862425e9.29.1778619971141;
-        Tue, 12 May 2026 14:06:11 -0700 (PDT)
-Received: from redhat.com (IGLD-80-230-48-7.inter.net.il. [80.230.48.7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4548ec6c221sm36066581f8f.13.2026.05.12.14.06.05
+        d=1e100.net; s=20251104; t=1778663681; x=1779268481;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1oxdFj4Oh6M9kXl1w5/7S95bL1PgDTh+f8B3yZnortM=;
+        b=m+/0T6SU0QUQx9M4GKxzsZlrNbTpYbuXYjKbkRC58wj9rKHPeeNYndX2q7EFTLaUQK
+         5vFCtXBf3JM8KZDy/+MUKOe26V5FWy3KDePLOQvCM25QMPQb0f5UefmIFQIIrE2QpLGI
+         qczO/oyXkfZFTxOcFfvpIj+b3kvGPHjfiuIiTBaNBQMkrIhh6I/ocN2KyJyO4WqKJMib
+         2jAPLw7xwoTLTrCDdnzvrMtSNXvo0o6mVIJ8x+Gg6tbUF2b4hD4L5i4m6Ki4T7wPUhPI
+         5pfd/RkWnfMLQHoE0exeonq9AbCSXjRQQfdQZj8jbGwd9/RDOeoHYI6/kZoSGViy26bG
+         HYAg==
+X-Forwarded-Encrypted: i=1; AFNElJ9alKDqMxRjxiP/AUOAk3L/z0Dm2lugEb+g4Ef5q0x1W6vXY+d6wfKo7NeGLlhUAuRaWxdhBczFJKsC@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwzAovuRgwbHQ5PEmfLfewfIg0zETebRPSBMQHSNIe1KBcUU0s2
+	eu3mSslGmJbrBWUjZHYY8W3YIUUYFzHctxo9GLOp4twVLUYcYkIrNP2fAJ3Oas3iQel8sAR90XG
+	F4Q/D9v4=
+X-Gm-Gg: Acq92OEva9c/uwWw4TrA6xP4Utw1Uo97gmtDYV0jHez+i3E2lygiw/AZWrT1BbabQ7l
+	3e/h40KHYI+zqRD7ZHw9LIdjiKHbh0HC9DaxQXwuY6uerYAxudElxIUdgKSJxjr92nYea97qFAa
+	wmFnFUBVBfSJK+32J9a8B0iF1G6ZETuZmL2iMPruGlLr15USQ5Y6uu/TcJ/MYMhdGEb5ej5v8Rr
+	06M5JylYMAdFac1kk1cT0FrVm4OLAWcGQPDVsORFA4U/Rqa7lSPpMEYMXcapGjH9UCVWrIwPyrO
+	wcN4i0Mdw4PgUgGNaZRCre2m/YNpYcznq9QVCsl4nxGfgEZwnm9rjDL6xfDSRbhwRJADOyqgA4V
+	A3kulFiMIZztka90HuCDmkJqQilA8sqajzrfKbGoD13cAI0/mWEnKgs2tPXGMNK6r1Yjz9f86L/
+	PocfMH1y6vHalYyeLIchLwt+kMn5F3iW4=
+X-Received: by 2002:a5d:5f51:0:b0:453:f951:4e5b with SMTP id ffacd0b85a97d-45c584a86acmr3767577f8f.13.1778663680934;
+        Wed, 13 May 2026 02:14:40 -0700 (PDT)
+Received: from [192.168.0.2] ([2a07:7e81:7daa:0:62cf:84ff:feee:627])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4548e6a66bfsm34590821f8f.4.2026.05.13.02.14.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2026 14:06:10 -0700 (PDT)
-Date: Tue, 12 May 2026 17:06:04 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: "David Hildenbrand (Arm)" <david@kernel.org>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R. Howlett" <liam@infradead.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Brendan Jackman <jackmanb@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
-	Lance Yang <lance.yang@linux.dev>, Hugh Dickins <hughd@google.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
-	Byungchul Park <byungchul@sk.com>,
-	Gregory Price <gourry@gourry.net>,
-	Ying Huang <ying.huang@linux.alibaba.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
-	virtualization@lists.linux.dev, linux-mm@kvack.org,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-alpha@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
-Subject: [PATCH v7 11/31] mm: remove arch vma_alloc_zeroed_movable_folio
- overrides
-Message-ID: <7d637bcac4bb5705388136a75f0fdfe2881e5f20.1778616612.git.mst@redhat.com>
-References: <cover.1778616612.git.mst@redhat.com>
+        Wed, 13 May 2026 02:14:40 -0700 (PDT)
+From: Angelo Dureghello <adureghello@baylibre.com>
+X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
+Date: Wed, 13 May 2026 11:14:25 +0200
+Subject: [PATCH v2 01/11] m68k: mcf5441x: fix clocks numbering
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1778616612.git.mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: RINErZfloMOxBw6Qos1Izy4eJD2SwAZRr9ORBJ-rS3k_1778619972
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260513-wip-stmark2-dac-v2-1-fcdae50cf51a@baylibre.com>
+References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
+In-Reply-To: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
+To: Greg Ungerer <gerg@linux-m68k.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, 
+ Arnd Bergmann <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+ =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, 
+ Andy Shevchenko <andy@kernel.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org, 
+ Angelo Dureghello <adureghello@baylibre.com>
+X-Mailer: b4 0.15.2
 
-Now that the generic vma_alloc_zeroed_movable_folio() uses
-__GFP_ZERO, the arch-specific macros on alpha, m68k, s390, and
-x86 that did the same thing are redundant.  Remove them.
+From: Angelo Dureghello <adureghello@baylibre.com>
 
-arm64 is not affected: it has a real function override that
-handles MTE tag zeroing, not just __GFP_ZERO.
+Fix clocks numbering, set correct values for eport and DAC,
+as per RM Rev 5, 05/2018, table 9.5.
 
-Suggested-by: David Hildenbrand <david@kernel.org>
-Acked-by: Magnus Lindholm <linmag7@gmail.com>
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Fixes: bea8bcb12da09 ("m68knommu: Add support for the Coldfire m5441x.")
+Fixes: 007f84ede6e3e ("m68k: coldfire: remove private clk_get/clk_put")
+Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
- arch/alpha/include/asm/page.h   | 3 ---
- arch/m68k/include/asm/page_no.h | 3 ---
- arch/s390/include/asm/page.h    | 3 ---
- arch/x86/include/asm/page.h     | 3 ---
- 4 files changed, 12 deletions(-)
+ arch/m68k/coldfire/m5441x.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.h
-index 59d01f9b77f6..4327029cd660 100644
---- a/arch/alpha/include/asm/page.h
-+++ b/arch/alpha/include/asm/page.h
-@@ -12,9 +12,6 @@
+diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+index 6ce730098ff6..613b0275d9d8 100644
+--- a/arch/m68k/coldfire/m5441x.c
++++ b/arch/m68k/coldfire/m5441x.c
+@@ -41,9 +41,9 @@ DEFINE_CLK(0, "mcfpit.0", 32, MCF_BUSCLK);
+ DEFINE_CLK(0, "mcfpit.1", 33, MCF_BUSCLK);
+ DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
+ DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
+-DEFINE_CLK(0, "mcfeport.0", 37, MCF_CLK);
+-DEFINE_CLK(0, "mcfadc.0", 38, MCF_CLK);
+-DEFINE_CLK(0, "mcfdac.0", 39, MCF_CLK);
++DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
++DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
++DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
+ DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
+ DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
+ DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
+@@ -103,9 +103,9 @@ static struct clk_lookup m5411x_clk_lookup[] = {
+ 	CLKDEV_INIT("mcfpit.1", NULL, &__clk_0_33),
+ 	CLKDEV_INIT("mcfpit.2", NULL, &__clk_0_34),
+ 	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
+-	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_37),
+-	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_38),
+-	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_39),
++	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
++	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
++	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
+ 	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
+ 	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
+ 	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
+@@ -156,7 +156,7 @@ static struct clk * const enable_clks[] __initconst = {
+ 	&__clk_0_27, /* uart3 */
  
- extern void clear_page(void *page);
+ 	&__clk_0_33, /* pit.1 */
+-	&__clk_0_37, /* eport */
++	&__clk_0_36, /* eport */
+ 	&__clk_0_48, /* pll */
+ 	&__clk_0_51, /* esdhc */
  
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- extern void copy_page(void * _to, void * _from);
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
-diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-index d2532bc407ef..f511b763a235 100644
---- a/arch/m68k/include/asm/page_no.h
-+++ b/arch/m68k/include/asm/page_no.h
-@@ -12,9 +12,6 @@ extern unsigned long memory_end;
- 
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #define __pa(vaddr)		((unsigned long)(vaddr))
- #define __va(paddr)		((void *)((unsigned long)(paddr)))
- 
-diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-index 56da819a79e6..e995d2a413f9 100644
---- a/arch/s390/include/asm/page.h
-+++ b/arch/s390/include/asm/page.h
-@@ -67,9 +67,6 @@ static inline void copy_page(void *to, void *from)
- 
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #ifdef CONFIG_STRICT_MM_TYPECHECKS
- #define STRICT_MM_TYPECHECKS
- #endif
-diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
-index 416dc88e35c1..92fa975b46f3 100644
---- a/arch/x86/include/asm/page.h
-+++ b/arch/x86/include/asm/page.h
-@@ -28,9 +28,6 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
- 	copy_page(to, from);
- }
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #ifndef __pa
- #define __pa(x)		__phys_addr((unsigned long)(x))
- #endif
+@@ -174,8 +174,8 @@ static struct clk * const disable_clks[] __initconst = {
+ 	&__clk_0_32, /* pit.0 */
+ 	&__clk_0_34, /* pit.2 */
+ 	&__clk_0_35, /* pit.3 */
+-	&__clk_0_38, /* adc */
+-	&__clk_0_39, /* dac */
++	&__clk_0_37, /* adc */
++	&__clk_0_38, /* dac.0 */
+ 	&__clk_0_44, /* usb otg */
+ 	&__clk_0_45, /* usb host */
+ 	&__clk_0_47, /* ssi.0 */
+
 -- 
-MST
+2.54.0
 
