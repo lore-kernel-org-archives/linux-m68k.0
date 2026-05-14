@@ -1,108 +1,165 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A04530CDAE
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 14 May 2026 01:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594693A4275
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 14 May 2026 07:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778722071; cv=none; b=gCM6zZfDdOA4aY9roj2bIUkX8R1lg3pDBu2ihQun7lvvn8Rdo5nVF01JObz0FJuKCAGjedXE5PgprRG/TFKAyKWqzSo2T42RaC0p0/vfT3RvpttjJqhqbwAU5Zs99Kl62iv4JbmI+4LyCa813o87IHivmcPJG2limrznFAqV9Mc=
+	t=1778742318; cv=none; b=s2BtgiLAN7YURMNpacrQz6bGxPSddUnERM4vEY5xP2QpEbBEmGLovI2mEUDFYjDpGkk9bvouZDxvUcX7Up2nYLFpq07QQ38R5lyxq388wzlr4sv/JoDDkQr5yre+GiQJyTyhdYVJBPB+W+61jxNJjiX2MT2gAs2Rcnz0teOaTQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778722071; c=relaxed/simple;
-	bh=pAifKDZ/lY13PdVBCJ1cpztblQ59eRzHqYlVLG9Z+9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YOij1Gzg3YCz5mFDV6/ofYizjtCn3o3tGyZYJ2wNuUzKpsSkAV1ov2ozSCfsDZhmW85U0o4bXvsrrhEwf7eA+pvaaVNdoUNIjsMfUr4cIfTfUGw21ROzwKy57speObJAEl7YyTRX7kuD4P2CdgqUieOZhTi/DyVigKqf7n6Gats=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6225760052;
-	Thu, 14 May 2026 01:27:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F48C19425;
-	Thu, 14 May 2026 01:27:44 +0000 (UTC)
-Message-ID: <734e2323-78dc-43c7-b5fc-0a35cc72e035@linux-m68k.org>
-Date: Thu, 14 May 2026 11:27:40 +1000
+	s=arc-20240116; t=1778742318; c=relaxed/simple;
+	bh=rgFCXaiUGdzul7ROj3/Th0U/wrS3D9xf5VgX37RsF7A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JXvokTstlmC6rADAXaNxY/8QDhB9pzaDhs2KLazgrspTqOwNvJ2ahTRehlZtiWDU69hFjarHSdDWSTGzf0HIBulXkNrAy3xhYlwSmVyqMpuSgwKFavnegX8niyfa/kP2u3IOveQt95CBa2HCQhBc6giERGZ7nnefnAVQu5piogo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=OsRVJTfR; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="OsRVJTfR"
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-48a3e9862f0so51096865e9.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 May 2026 00:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1778742314; x=1779347114; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HJwj6Gg8AyMk563HlPprgVFnntCvbQJUPOML6jrMsks=;
+        b=OsRVJTfRogNdjZ+qqd3sDWbhkCl5CCnF1D/0bHOEIzGaFWfsx081yoYb35Pj5sB5Fh
+         DyOI6mjPoCQIHDNR4PPQ5h1/lT9dqyABExBTpQ+fu5yFvWMmoT6uH1XySLYOhsvvrff5
+         jkHBxbqgxipppn+yPfG/8xy71Igrn/l8n+swI6GMkZN96G2hFhl/kTqvcjJ7g5l0iWr4
+         G2Huev8Omtk+eY2L+9PTZjuqA9eZTbgi7L4j85HAJxj1lNyqb7WZd5f4DNiLcWGQmzjv
+         XlBOS7ujHxYcZjysFD+A4LXvwBHduOnHu/zimIJAliDlFXk3yx6hOsAKFE8I/r55BP1l
+         eXww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778742314; x=1779347114;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HJwj6Gg8AyMk563HlPprgVFnntCvbQJUPOML6jrMsks=;
+        b=o1C/QaiH1/l90iCdr7CTLLOjcp0L5hOC56DpHsD4pD7/qEVt7tM6XFzZFveCC22VC6
+         W79/yhuc2buSX73VC6UA/53eDdH2k/aciDbGwM4nFvJdJzrchRXO3UE25A6TVopFLkAY
+         Que3oCWamjvPGuCT0FlNj4XwUbZELjY06yZG9G45+9+vLYsspJL8n8WR9McYoYYBofzd
+         +RwVQqwE1AK34XbdBaHC39hDqb1+G+8CDArmQ+DgNW2Ujj/AZPH2r4R7Bzc8aIfizveq
+         3+Qwe5rbe7GtnMMBE90hvPGRW/uqpP71zjFuGcsCIV8VdeROZO/t7q/aj2vnKoxDs/Vh
+         G6JQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+K2AAFEaAOmsmC2cciYqeWmpIwWJJiwL5YZ0vMuw8bcO1Mxn/N2Dfdsfn2auh+B5x21wsBEVVvNIrb@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyeoK7sUleNPNfp3mZcpdSC/Jxa7NrMuHNRsbiUCuB1WUy2bQb5
+	HJVg1RIQytopiPNN6aZ4EtDGl/hMLt16SYCaVnlk/RdOLDS5QC57AtXOVX26Bd5Q81s=
+X-Gm-Gg: Acq92OEL3I+IajttByYTC1zZcBXufyT7Rqkmxyw9w0AzmmnnUbJxawErLAYTKkEeTJP
+	Z1MnyfD3YkeASJu/G3WQ8tl0PnjjH2FfEwtkUtOnSgu/1ioDGDDZTZCnzrULzpMQjxki5Q5Iu5k
+	K7LecoteNbaKVk0uS+rcG0QEBBCHCSKGGZi3k5ofLsTFT3gzxHa861Abs5rFpQ+A4FICiqApb2V
+	jL53mZ+XGLXVBqO3Ewn0HQPfK566LN/I0NFO0JfLgT1qlMtVgDg5jwHvXAcDaFvcLqJ62mAzmUC
+	iQVjcb2oHKeeasUbU1P41X+XapCISDrF7XR/hL49fNSSMrj6SpxyB6zp0CQAkhV4B9hMAz+hL3g
+	XiI0BcraXWxAIgJFq9QIRCe0bJjlNxJVgT384YywIHqMqQuHQMH5sawvy7wLvgPhuykYSizQZT1
+	iFNwXVSLerAENXGqckV6TEBJTwKA==
+X-Received: by 2002:a05:600c:41c7:b0:488:a502:8955 with SMTP id 5b1f17b1804b1-48fd6325dc2mr20118035e9.4.1778742313527;
+        Thu, 14 May 2026 00:05:13 -0700 (PDT)
+Received: from archlinux ([2a07:7e81:7daa:0:62cf:84ff:feee:627])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45d9e767d0bsm4041073f8f.3.2026.05.14.00.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2026 00:05:13 -0700 (PDT)
+Date: Thu, 14 May 2026 09:05:12 +0200
+From: Angelo Dureghello <adureghello@baylibre.com>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+	Nuno =?utf-8?B?U8Oh?= <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>, 
+	Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v2 03/11] m68k: mcf5441x: setup DAC clock name as per
+ driver name
+Message-ID: <ugda72734f6vn67jp6cz6hpkif55a5m4yey3yo2dswicqbyrdx@zk4lhc7k4dxu>
+Mail-Followup-To: Greg Ungerer <gerg@linux-m68k.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+	Nuno =?utf-8?B?U8Oh?= <nuno.sa@analog.com>, Andy Shevchenko <andy@kernel.org>, 
+	Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
+ <20260513-wip-stmark2-dac-v2-3-fcdae50cf51a@baylibre.com>
+ <734e2323-78dc-43c7-b5fc-0a35cc72e035@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/11] m68k: mcf5441x: setup DAC clock name as per
- driver name
-To: Angelo Dureghello <adureghello@baylibre.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>,
- Arnd Bergmann <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>,
- =?UTF-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
- Andy Shevchenko <andy@kernel.org>
-Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
- <20260513-wip-stmark2-dac-v2-3-fcdae50cf51a@baylibre.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260513-wip-stmark2-dac-v2-3-fcdae50cf51a@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <734e2323-78dc-43c7-b5fc-0a35cc72e035@linux-m68k.org>
 
-Hi Angelo,
+Hi Greg,
 
-On 13/5/26 19:14, Angelo Dureghello wrote:
-> From: Angelo Dureghello <adureghello@baylibre.com>
+On 14.05.2026 11:27, Greg Ungerer wrote:
+> Hi Angelo,
 > 
-> Later in this patchset, the mcf54415 DAC driver is added.
-> Considering some other different ColdFire cpu DACs exists, the DAC driver
-> is named as "mcf54415_dac", related to the mcf5441x family SoCs with
-> DACs (mcf54415/6/7/8).
+> On 13/5/26 19:14, Angelo Dureghello wrote:
+> > From: Angelo Dureghello <adureghello@baylibre.com>
+> > 
+> > Later in this patchset, the mcf54415 DAC driver is added.
+> > Considering some other different ColdFire cpu DACs exists, the DAC driver
+> > is named as "mcf54415_dac", related to the mcf5441x family SoCs with
+> > DACs (mcf54415/6/7/8).
+> > 
+> > So updating DAC clock names to bind with proper driver name.
 > 
-> So updating DAC clock names to bind with proper driver name.
-
-I am not sure I like naming the clocks here with a prefix for the
-specific SoC part number this is in. It might be unlikely now, but
-what if another ColdFire family SoC member uses this same hardware block?
-That is very common amongst other hardware blocks within the ColdFire
-family. Can we come up with a name more specific to just this type
-of DAC hardware block?
-
-Regards
-Greg
-
-
-
-
-> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
-> ---
->   arch/m68k/coldfire/m5441x.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-> index 5b5e09ecf487..b724d7fc1a08 100644
-> --- a/arch/m68k/coldfire/m5441x.c
-> +++ b/arch/m68k/coldfire/m5441x.c
-> @@ -43,8 +43,8 @@ DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
->   DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
->   DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
->   DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
-> -DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
-> -DEFINE_CLK(0, "mcfdac.1", 39, MCF_CLK);
-> +DEFINE_CLK(0, "mcf54415_dac.0", 38, MCF_CLK);
-> +DEFINE_CLK(0, "mcf54415_dac.1", 39, MCF_CLK);
->   DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
->   DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
->   DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
-> @@ -106,8 +106,8 @@ static struct clk_lookup m5411x_clk_lookup[] = {
->   	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
->   	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
->   	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
-> -	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
-> -	CLKDEV_INIT("mcfdac.1", NULL, &__clk_0_39),
-> +	CLKDEV_INIT("mcf54415_dac.0", NULL, &__clk_0_38),
-> +	CLKDEV_INIT("mcf54415_dac.1", NULL, &__clk_0_39),
->   	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
->   	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
->   	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
+> I am not sure I like naming the clocks here with a prefix for the
+> specific SoC part number this is in. It might be unlikely now, but
+> what if another ColdFire family SoC member uses this same hardware block?
+> That is very common amongst other hardware blocks within the ColdFire
+> family. Can we come up with a name more specific to just this type
+> of DAC hardware block?
 > 
 
+from a brief study, this 12bit DAC, and DAC module in general, is only on
+this mcf45441x family. There are some ColdFire with ADC only, as those
+mcf5249/53/82. 
+The mcf51mm/ag/je are the opnly to have a 5bit dacs, but these are mcus.
+So, if i don't miss any existing model, the name may be correct,
+unless we want rename it to a more generic mcf_dac.
+
+> Regards
+> Greg
+> 
+> 
+
+Regards,
+angelo
+> 
+> 
+> > Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
+> > ---
+> >   arch/m68k/coldfire/m5441x.c | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+> > index 5b5e09ecf487..b724d7fc1a08 100644
+> > --- a/arch/m68k/coldfire/m5441x.c
+> > +++ b/arch/m68k/coldfire/m5441x.c
+> > @@ -43,8 +43,8 @@ DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
+> >   DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
+> >   DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
+> >   DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
+> > -DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
+> > -DEFINE_CLK(0, "mcfdac.1", 39, MCF_CLK);
+> > +DEFINE_CLK(0, "mcf54415_dac.0", 38, MCF_CLK);
+> > +DEFINE_CLK(0, "mcf54415_dac.1", 39, MCF_CLK);
+> >   DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
+> >   DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
+> >   DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
+> > @@ -106,8 +106,8 @@ static struct clk_lookup m5411x_clk_lookup[] = {
+> >   	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
+> >   	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
+> >   	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
+> > -	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
+> > -	CLKDEV_INIT("mcfdac.1", NULL, &__clk_0_39),
+> > +	CLKDEV_INIT("mcf54415_dac.0", NULL, &__clk_0_38),
+> > +	CLKDEV_INIT("mcf54415_dac.1", NULL, &__clk_0_39),
+> >   	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
+> >   	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
+> >   	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
+> > 
+> 
