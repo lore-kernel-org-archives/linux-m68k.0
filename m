@@ -1,137 +1,145 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF4F3C09F8
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 14 May 2026 12:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A37673E5583
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 14 May 2026 13:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778763282; cv=none; b=prwYIx5OmMBviEp6pqQiVpugJ44Nx0v4jt6CyqaS0EO9DTHNVZE+0uW3ca/6/RTnKC8rIb2V9Gsn8RqRcLPWr2nkT8foAHS+tskit3Skv8kJ74IcyufwLsmuvC5GFSpAxXIcb94KBaTe+/rNGXOqNB0lg9vSQkzbLE+APSRAhRA=
+	t=1778766829; cv=none; b=MeMLZ8gTR4UjVUspWSJZUKnk6PAlKjJF0BS0A/Vuw/aRT41fPUzSQIjHs4/Y9mruzufFFbrr+BVDZsaliTF8k8CzkNP9LLyurqvxVxSf4ViWOGsp5ZqdfK7bNoAbLFP1j+iQ+H8N5UkI36vlgA1RGt3GXFqarhhZvMvYzb2JDEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778763282; c=relaxed/simple;
-	bh=lSk3G+QHk1Ze3TYsR9oWBIFR2A3P/FtUa3w/uYn9mCc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tfzZGfjdxSeF3jMTO6n7E3z2UHFKLJzzCKrEv9zYBNmpTuujMXTWfCrcD4OITIx2OYi9CkFO9xA7Vfie9clzss5sGX23P3rOAgbFYl5Z2SFSKcE0r8j+rWFOgXD9KPnuqXSzf1MyXA7NcgdExHt/vPfCCSetYzLlPVwrGUs/o+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 949716012B;
-	Thu, 14 May 2026 12:54:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D47C5C2BCB3;
-	Thu, 14 May 2026 12:54:35 +0000 (UTC)
-Message-ID: <f9050955-72fd-4e4a-aa0a-f699142fc146@linux-m68k.org>
-Date: Thu, 14 May 2026 22:54:32 +1000
+	s=arc-20240116; t=1778766829; c=relaxed/simple;
+	bh=csuW3myMDRTwfSkVr/fGJ+LdsWf9iBuZuAecKJ3RvRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=irNWSQ0f39bw/Fct5UZyFYeH0YW70quMaPz0L5mH8+JMdSKgYmDvcQJuleY1iEfREafs7qcnpr8sVusfqiWnEFYM+1DzNgXp3jSD+JbDsHuyNcg1quclfVewavpMl3sM/FF9yUSKelaH+tSBGrkaGQGXpZ3fcg5cx9cNgX9JwB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=EjBplXYt; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="EjBplXYt"
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-90d13fa59e8so337239985a.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 14 May 2026 06:53:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1778766827; x=1779371627; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P+SudBIcbJEYVdXIJisNlY3md8aZgEue8Fntr+vI0eA=;
+        b=EjBplXYtI9rwkSvRBbAjk1yXuUsjAYLx2byfJLIb66fOwmSL5vVngd5Y4ZA2uW1u1b
+         Ax81Z371m6U7+uKeg76qr3qgBd2P18kpqM1QZF4mh1uP8bcBW04In4wLmrcZ90ZbdnYw
+         VRfdHMWmJ7zAVUPMWYGCYvfRmIjZhBB6EKfagU4+6BDZxVfZwkunA6R42d4R7mq/Lf0G
+         w5DCnD4XyYHb0nSPFvcUu20NeuuA/N5eULD+60n9zcRK2iwNAUopEgyusgvN+8GB10Ix
+         SIzWxK4GjaYAfLmJkBbn/a6uonfS1x5s13zuflEI3zn9l++gXeX9zCowpLXCvy24TRbi
+         q49g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778766827; x=1779371627;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P+SudBIcbJEYVdXIJisNlY3md8aZgEue8Fntr+vI0eA=;
+        b=Wi52v11yRtT+QSGPYRuvnsjIJ+kleJkPE3fEKJfyAqGOnsxgKcQwk3yIW30yobAGOL
+         Bd+JFzXUe7CiJFA4cBl0KOjF+PGt1nh+D1ojclpG1AbqEvczNbmAPtSw2N0U7Z3yHW7d
+         KHtaYS6MLeZRvCX9aqGBddQUOAYL9r+t4uueWt6w1QjLpVuCDdfKIGEByq65IdSE++Oz
+         nfbPJtO8SKbBV3BHg9lWlLTl6fEwbJTPn/IEESPH05gDmqXUGYT8SRCuF/wpYDoHSQk2
+         HbxMwozG6KVAN0TbWKJu/VX59hRqsh7e6Q6Qgry4/UTxh0vXq1e84UKdf1WlXIqdg2eX
+         EFDg==
+X-Forwarded-Encrypted: i=1; AFNElJ/Eoc9jdR9yzt008jcJ/nde6YbHRDTS6CHZYYk0D4usmU/R5j+e+AAiGkusKo1zXzu4lDXJ5ma01xwe@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yy03WD8nsCVnTy5NP8IeYyUgJyUG0nEYaMKbRtVwq6vvopViTFN
+	IAf4g8jZcoz1j5fLOlkJhesNaz/tmplSxZ1t7YZnGSiNaade6XPdFUnkEeodGB0R6bI=
+X-Gm-Gg: Acq92OHDgX2zNuv5/4IBV7LKb7Aj2OXCEEd/6cs6r4ZxZBlRJlRJ+w6KVvOOASwoS08
+	LN1xewFdQbJ8VgNChDx28qoP0CiMNjSq6zE/0CsLr4S8mDP7b80E81HDap6qZiFPhYUtCLyyzkA
+	FkhBH523oKck+EIhvZKl+hAB3Wu3XlEo+HbWbFLbwHHRQu3S/vM3pi9RS38lF7pzZd4DRFBNsOf
+	YL+wgfoRsFF9CHA2sw6NyTZCBYCQaf23CfwQMjTAopxyFxToPoS4fls+aj/dsUrlqUcqYJZ6OcB
+	p/14HuE2/UTWtrTJG7AtLNRwXnfFAA+LEL1myBxY8/jH6TZhlyfw6x+XIkItjM4Db2PAFvhTGtv
+	hA9H7ZpfmWN6ctaHUBe86/4v8CaHuBvCrkT1f6XYL9G3s8olkn69wR5WdXsCcCr/xacCfP85s4G
+	EziUy8qV8GRvFPk1Y4BLDA8fcq9lLAjx95F6REmHAXMUAiv7bB44VqJN0fWTzCTac7BNeM3F5/+
+	lvphUqFHh8h
+X-Received: by 2002:a05:620a:7283:b0:90f:d004:5480 with SMTP id af79cd13be357-90fd0045772mr809098685a.6.1778766826553;
+        Thu, 14 May 2026 06:53:46 -0700 (PDT)
+Received: from gourry-fedora-PF4VCD3F (pool-100-36-248-188.washdc.fios.verizon.net. [100.36.248.188])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-910ba9454basm253697485a.12.2026.05.14.06.53.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 May 2026 06:53:46 -0700 (PDT)
+Date: Thu, 14 May 2026 09:53:42 -0400
+From: Gregory Price <gourry@gourry.net>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	"David Hildenbrand (Arm)" <david@kernel.org>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	"Liam R. Howlett" <liam@infradead.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Brendan Jackman <jackmanb@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+	Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
+	Lance Yang <lance.yang@linux.dev>, Hugh Dickins <hughd@google.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+	Byungchul Park <byungchul@sk.com>,
+	Ying Huang <ying.huang@linux.alibaba.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Christoph Lameter <cl@gentwo.org>,
+	David Rientjes <rientjes@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Harry Yoo <harry.yoo@oracle.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
+	virtualization@lists.linux.dev, linux-mm@kvack.org,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-alpha@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH v7 11/31] mm: remove arch vma_alloc_zeroed_movable_folio
+ overrides
+Message-ID: <agXT5s4FLL54MS-e@gourry-fedora-PF4VCD3F>
+References: <cover.1778616612.git.mst@redhat.com>
+ <7d637bcac4bb5705388136a75f0fdfe2881e5f20.1778616612.git.mst@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/11] m68k: mcf5441x: setup DAC clock name as per
- driver name
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Steven King
- <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>,
- =?UTF-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
- Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
- <20260513-wip-stmark2-dac-v2-3-fcdae50cf51a@baylibre.com>
- <734e2323-78dc-43c7-b5fc-0a35cc72e035@linux-m68k.org>
- <ugda72734f6vn67jp6cz6hpkif55a5m4yey3yo2dswicqbyrdx@zk4lhc7k4dxu>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <ugda72734f6vn67jp6cz6hpkif55a5m4yey3yo2dswicqbyrdx@zk4lhc7k4dxu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d637bcac4bb5705388136a75f0fdfe2881e5f20.1778616612.git.mst@redhat.com>
 
-Hi Angelo,
-
-On 14/5/26 17:05, Angelo Dureghello wrote:
-> Hi Greg,
+On Tue, May 12, 2026 at 05:06:04PM -0400, Michael S. Tsirkin wrote:
+> Now that the generic vma_alloc_zeroed_movable_folio() uses
+> __GFP_ZERO, the arch-specific macros on alpha, m68k, s390, and
+> x86 that did the same thing are redundant.  Remove them.
 > 
-> On 14.05.2026 11:27, Greg Ungerer wrote:
->> Hi Angelo,
->>
->> On 13/5/26 19:14, Angelo Dureghello wrote:
->>> From: Angelo Dureghello <adureghello@baylibre.com>
->>>
->>> Later in this patchset, the mcf54415 DAC driver is added.
->>> Considering some other different ColdFire cpu DACs exists, the DAC driver
->>> is named as "mcf54415_dac", related to the mcf5441x family SoCs with
->>> DACs (mcf54415/6/7/8).
->>>
->>> So updating DAC clock names to bind with proper driver name.
->>
->> I am not sure I like naming the clocks here with a prefix for the
->> specific SoC part number this is in. It might be unlikely now, but
->> what if another ColdFire family SoC member uses this same hardware block?
->> That is very common amongst other hardware blocks within the ColdFire
->> family. Can we come up with a name more specific to just this type
->> of DAC hardware block?
->>
+> arm64 is not affected: it has a real function override that
+> handles MTE tag zeroing, not just __GFP_ZERO.
 > 
-> from a brief study, this 12bit DAC, and DAC module in general, is only on
-> this mcf45441x family. There are some ColdFire with ADC only, as those
-> mcf5249/53/82.
-> The mcf51mm/ag/je are the opnly to have a 5bit dacs, but these are mcus.
-> So, if i don't miss any existing model, the name may be correct,
-> unless we want rename it to a more generic mcf_dac.
+> Suggested-by: David Hildenbrand <david@kernel.org>
+> Acked-by: Magnus Lindholm <linmag7@gmail.com>
+> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-Yes, I would suggest just leaving it as is, "mcfdac".
-That is not currently used by any other ColdFire variants supported by
-the kernel.
-
-Regards
-Greg
-
-
-
->> Regards
->> Greg
->>
->>
-> 
-> Regards,
-> angelo
->>
->>
->>> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
->>> ---
->>>    arch/m68k/coldfire/m5441x.c | 8 ++++----
->>>    1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
->>> index 5b5e09ecf487..b724d7fc1a08 100644
->>> --- a/arch/m68k/coldfire/m5441x.c
->>> +++ b/arch/m68k/coldfire/m5441x.c
->>> @@ -43,8 +43,8 @@ DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
->>>    DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
->>>    DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
->>>    DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
->>> -DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
->>> -DEFINE_CLK(0, "mcfdac.1", 39, MCF_CLK);
->>> +DEFINE_CLK(0, "mcf54415_dac.0", 38, MCF_CLK);
->>> +DEFINE_CLK(0, "mcf54415_dac.1", 39, MCF_CLK);
->>>    DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
->>>    DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
->>>    DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
->>> @@ -106,8 +106,8 @@ static struct clk_lookup m5411x_clk_lookup[] = {
->>>    	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
->>>    	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
->>>    	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
->>> -	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
->>> -	CLKDEV_INIT("mcfdac.1", NULL, &__clk_0_39),
->>> +	CLKDEV_INIT("mcf54415_dac.0", NULL, &__clk_0_38),
->>> +	CLKDEV_INIT("mcf54415_dac.1", NULL, &__clk_0_39),
->>>    	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
->>>    	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
->>>    	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
->>>
->>
+Reviewed-by: Gregory Price <gourry@gourry.net>
 
