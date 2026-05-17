@@ -1,222 +1,244 @@
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8CF283FC4
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 17 May 2026 17:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61465F507
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 17 May 2026 19:00:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779038578; cv=pass; b=UR4duzT/1Hl5ifz7rr96qKxjJt8kzmAKT78oyBBf4N9RJtdSTBEVzOqRXVDchIgwg+2g+PcdrYSO+R84Cyg9LUjVMbkoBt8NWrQCMT23tyKOsRVoo7Ohcze+JIAYykT1iLhIOBSSbt37kOZLL+NMKetgwwzHm/1TyO0YKMCl/Zo=
+	t=1779044441; cv=pass; b=BpizI6rp13+SQ6bc/pZwpmPpMa+FJ47Qnsy+Aw99N56zbaLoTKpdJGRZ6aZR+IUnEF1kXlv96UpaadYKvKf4hnPKEqmogS4LPDXNlyoETNgA8HSCiJAQAhr89j/v0T+UWp/Igi+tam5NSVqpN+E4WfNSu3CsCMkU6BXqXUYmVVU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779038578; c=relaxed/simple;
-	bh=9fkNUobK9tqmFCI1XWvGAdvhDFf8Vke0+JZv3ZM2vQo=;
+	s=arc-20240116; t=1779044441; c=relaxed/simple;
+	bh=6Pu8ZFw5nRrpXUt8iauCXEouB2tgpYnUpfnYcSMw3nM=;
 	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sgtc4FlCcwMBDCFvt20NV57bh7gkVklfzQcvg/HrPq0j1lfIgapRgWdHbZIlICLckf5dHJNAQ53ZWl1V1+S82zkMuUNH8HUmYBGbCIPe81ulE75dIhf6YtcaR/a6bcg7HMKqHAIydpS0YJzOUxEOtJrwGWO5hZVnxzpIBCP+wbY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=vNkaMqAR; arc=pass smtp.client-ip=209.85.218.48
+	 To:Cc:Content-Type; b=ePxZ2ysNSQv7qpd4qdW/6z39aYOyKyiqgFLmFFlKnAmjC2kY4N2AEkpZjuwZh3kK9hAvF1mhj7knox6Q66Dyf7vNDr9qM+dD2lpu36pMAkBOSLElGEYxFD2yoPe8TK9eDxE+YlLVeKRSKNQ+Bi+CgPX8uCIQOG9S7ujHoTxy6UU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=0VnyK5yO; arc=pass smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="vNkaMqAR"
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-bb91b426e40so323352866b.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 May 2026 10:22:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779038575; cv=none;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="0VnyK5yO"
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-bd5126a5e0fso247429666b.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 17 May 2026 12:00:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779044437; cv=none;
         d=google.com; s=arc-20240605;
-        b=CypBaL1dqQoIO0Fh6NHYwy7vGJqiEFfw7Fi2jD05LIZv+AkRGQtjKDURdPTj4nZ6lr
-         D3yEfWsD7VhVcq1/CLN8mVwHiilmJUDVd6NoLNW06EGGWOtlCCHRYQ6GzSv9ZLRhvFkr
-         Ja3riF7T4ZIERzrH/cfEeWVZ3Z3FH4ZbkNAmelv5iLlQCWiJcUHdr29bTWLkvuQZU3Kv
-         3s1vxhf1iHNKvIRA64ZdU/GN36urqJY8Cxip+WvU9D6gWw1DQ7ZS0zGbCUSnJ4sn+V6L
-         kpMmfWQh5fdVcJchhup2BLsbF/A9p6B02Tg9ayLOCIu30PlIBY3UQsxy1WGpjeSLlDZ6
-         BBKA==
+        b=l1knNbKALliI7FXZRUbrGxLbAG3APXvQgJJDU2/Qq8iBOeIpPJ1zyf7H5QxA2ou9UH
+         lqIQyffVGnAntuwB/tXXnlzUm5K5PsVXzU6YuKbsUBrJWLoucD91FXgVWPbfyLwg4o6B
+         IplFMfS9GiGg7q2lFGUqm8cEpuZO2zmTSZHKs3xgrZSyzTcquGjjTcUQYYsS/T3oSQIH
+         D/MWRPdDVrSdkgAqNXMKEa/980H9SqtLOYYrvPV6ri7UasWfLmaq+0k5tL52vRnwd4lx
+         E+UToP1VHWPpeeUoFohxLyTXgQRcpBQSVMcd67rbF/c+WgYCyleKFiHV7+oiE7c6aZpT
+         VViA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :mail-followup-to:from:dkim-signature;
-        bh=BLmdCKMgbw8MBhwcDBHMbfL3wvck7U926c1rh+9BXmI=;
-        fh=tnqMrsAq82vpB1hhvRLLOVy39VJBzzz01eL8av2C8PA=;
-        b=POdTP8QlxCVXEObNDnXbNw6wIJGlis03FnvYgWYWKSkWz6SiF7imXZ1XRvSvS8DiSt
-         xqP30vZMUS8oVqYdqTlrO+tw+moXk7H61eQUpB7w7Woe77DgqhHAI2WkEYnvKAS4anAI
-         LeW6nEvBLmthSpDSbCDNMQjU9UiSCZs5WZN9cxKqAlj06aC51yUO1ONyMDJMDxpV4DFQ
-         Yp3ZH+O1I18HTJ6+sfsXsMWH/j4J5DxCplfMF0yzJQ0VkkA7KS6aruvl4IFbTJHYPl/0
-         7BvimlkN+lPe3p3u8WH1No+sAHMBeoFWofQmJ9Q7F+GuKxHDM8fV9/0IZpzhIZKHKvOF
-         qooA==;
+         :from:dkim-signature;
+        bh=1JphhE5f2R3RqqlFjJRdSApyosT8RlyHaJ2EQJNTHbI=;
+        fh=0ltLx/nqIXM0y6+/dxLailUHhidtBWyTCbKf/ZC8YHM=;
+        b=ecl6PjssqUWf26bOX8QEAbgMcaBjO+1TJTKDtCjH3FE3pX0cwHR6uzyluaQPp2s7TY
+         5azjswyE5c5k2uPkjRTO9humLlfn3SrfgfGqGn0emqo8H/MlI/heDz5eINj7HETS9jpI
+         KHP6C8615iNm+i7EEn2S4YB/liPP1fmCaTLI6jCgjRMMMm/bwSLs9F62q9Fu9fBqiPu7
+         ipLrTBGNBQq6R8KSFbQ8vXjpU+uum/SQafVooWjVXrkNY8sy0ADN8fzq11gKjybkyY5I
+         V4LZtr8WzuXiCCxWALHWQoGYg+mL8H6SHIgoExievtT5JvYMvxm8snOLek9qclqJ/iwG
+         oOgQ==;
         darn=lists.linux-m68k.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1779038575; x=1779643375; darn=lists.linux-m68k.org;
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1779044437; x=1779649237; darn=lists.linux-m68k.org;
         h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :mail-followup-to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BLmdCKMgbw8MBhwcDBHMbfL3wvck7U926c1rh+9BXmI=;
-        b=vNkaMqAR4z0NZKWJ1+51X5O5CTRo4g++D/QveV4HmZMi5mKM70m2jC6Q5Rn34rnUZe
-         DKCG0jHEvVDehjpzT24X60Y+L8zJbPDc0E4a/TZGTCqsAcaa3EMqjejPh2X+pDUdgAn6
-         evsix/aCMnkp9MGjtNWnijJYp1x+JpQwUsWC/VgjUo9UTolTn3dleV8WdANZe2G1XfsF
-         ss1CvY4ZvVrzoYOp3LoHgzrr0SbYjPXEW2q3VfaVyVTsvIV5hhS/Dv+AsVk++G6hmMXW
-         oDhRk2IHTz0s0ZwgPv1lmDc9mYe/4RsILM4FvkkHqMmU2TLP62mmn5K9sU0+CfcsTpJx
-         tX9g==
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1JphhE5f2R3RqqlFjJRdSApyosT8RlyHaJ2EQJNTHbI=;
+        b=0VnyK5yOBC9ft+mbamx/Vt85JtzIK66BZ4UalfhfVZ4qhLP9jbJrTXzqnqggL8TTdI
+         wIZOY0tiCz0fYUOIatU3Cj53lJhWKJ+DlkuwbSHWLA6WUiSAkhewUYz9xxxakwOKRgtF
+         n8nNeO5Bxl1y061fskbyaL4UHbfrcTAWIb3PvlK6L01muOGK5rWCeSGV1yO9SBTMbeXr
+         RmudUxi2jADCczyEwADcRA3VAgA1N3NxhaSqs1oP/zIJFrmWeAO+dtMmEDKrcntyiz0F
+         a7jXRNHZubSlVUVQUR/jsk8arkp38wkBJXMbBMlhMfAU/W4fdgNi6rUjc7JNSmWNZ/1D
+         7YBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779038575; x=1779643375;
+        d=1e100.net; s=20251104; t=1779044437; x=1779649237;
         h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :mail-followup-to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BLmdCKMgbw8MBhwcDBHMbfL3wvck7U926c1rh+9BXmI=;
-        b=mqck0y/OFhX+tz9H7VhxIERi7DJTC51R5MV2GwsZJNk8TUUzmzI4peJWq+2bxyh3lD
-         W7KW3D00r3z8ZGKqINxfQpwr0hf1bgZe8MNxFWHgCCJ57Y2V0I1tVm/d9ECy5McqJZLl
-         txlj75XzIqyS2JMRUE2yUlsM/QkE5mbepox8pvoZawrXoYjVtN8riSmUJtl80CmfL5aI
-         WLUx2YNvpJeXTo+pFkZDk2lCd/qflZ4aYg7o4A2lsOplyLTM0U8yIN0/jYQYe+udRpIX
-         x79FxArgts1RoMgW2AXL6JZ22TdgtkAwhbGcPJ52hdaI6enQND4xxog44yWBoNAZlrof
-         jyow==
-X-Forwarded-Encrypted: i=1; AFNElJ8BjT8dmLqPIe7ODbsQjhNUyjlYrrAROi5dj7HAPZZSgmeAf/TcOsOIOXfrSRL3Ayih37iyzNbtZJs9@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzaqhjiHpVu28zMJc2ed9I5nEkNuJU01s37rm7/WDv1/P/3U1OC
-	LWSaJAH8JiJCyHEWKJjBz2Xy/bAoE9qG07GkG+DebpUAsMYJBzHqZcbi+cKU5YhKGHxo9dd7Epr
-	tM1E4QewSD+3mDQf6YhtHZPKQapx+X6cXc1xC4FH0Ng==
-X-Gm-Gg: Acq92OHyf/5UEMwZkv8o2+rOK1lCYqmRpYWS51rOePhDbY9nWQiK0vJmhsKAArwCnrt
-	k7ntoHos/Kc2i9kiLhKNvRfnhE9v3xfZpWSZDrYN4KCW1TqYXv80c5Z/ONAZWerXRXUyocJKr5R
-	3+6IuMxvEtp0T157m5m69jyfirgZsiwmkpCzBLOH49W0iUdvsEAZw7OW8R0AaZf7MSO0Uq9t9Xu
-	a3lQ7YmEmlUSXL9Pv4sOlBCTo/tkwOS63R9C3VHv7NL/mnRkAn6I765xS0eEk3374dqIGeRzK5J
-	fwIHxdW/S3PxeMu6DGU4XkaBikGNATLzTmrm
-X-Received: by 2002:a17:907:94c8:b0:bab:d8e9:53a7 with SMTP id
- a640c23a62f3a-bd5178fa6eemr564439666b.29.1779038574485; Sun, 17 May 2026
- 10:22:54 -0700 (PDT)
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1JphhE5f2R3RqqlFjJRdSApyosT8RlyHaJ2EQJNTHbI=;
+        b=fm6ckcps7fTNwDu5C6FLRBaFtzFy/Scxa/sud6nG0AQPkMk8KFHyJwZ5AaiKoDctjH
+         MGIgfJa4o9rGDvgFjzUJUfp260m47j98BIHR1gJxK97MFeoATDhvbChuUeNBsUk1NqOx
+         mvXgch3iIH43ba+EA27hFMogxV3YMHBKYfRdKaVLzdkNoub8NQub6fGbzhR5RC4ZVpp4
+         iRKV11slmza9L0fm3u7FZMwiv06wGAVXdbAxOoHfCxLNHJy35CBmNatkFmKddu7Oq+Hd
+         BExPjDuOaNnnV9YrmCicMNIGLWMQKP89uHi2hY/CQ+SNXla7HtM9PZdEgNN+4UJBkZQq
+         DUUA==
+X-Gm-Message-State: AOJu0YwAq+ZEzDKKzcuvFj3o27w8glMqxtFq1WOyB9d0aKDHbcyTM9PQ
+	dWhBs37rPpyvx69EBdb7gjge+BKJ7ImwFoYbR+gw3lLnwQe9vZbYFtXPlzHGmvgCfILB3vLIcC8
+	2ouVWQanc+xbLtWPxm7g6vvGWl2j7Or3/Fh+CN+rw3Q==
+X-Gm-Gg: Acq92OGWObwTXS/poCIvcABNeMVhe2f2PL+wYyqUMNKivgNYk8XnHGj9tQpMVeUrjb/
+	2YawcjaJojIAn0yZ1/Q6H/njgcFxNzc3Ll3KEkYQWoBmG5ewE1kf70CxmgjVY/mFcThJLYG8u3Q
+	ktpuHUdmZyzG/LW88oOth21v3tbVbf10dib2OQ1Ij/sJHPtO5zfw7FVb41+1M409yNN8INmP1+7
+	hkLttae+BOLvJwFC39oGcFTFTB55EcPPVOe0FdxRgJr7s338IdKsuF7EjSN3nlb2RX9fG06WPFb
+	r3+7aym/iFmDBLuI9ZSfPzVC5eMUQ/zPnrBO
+X-Received: by 2002:a17:907:2da1:b0:bd5:b26:52d6 with SMTP id
+ a640c23a62f3a-bd5177d78c9mr654774966b.5.1779044436258; Sun, 17 May 2026
+ 12:00:36 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 17 May 2026 10:22:53 -0700
+ HTTPREST; Sun, 17 May 2026 12:00:35 -0700
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 17 May 2026 10:22:53 -0700
+ HTTPREST; Sun, 17 May 2026 12:00:35 -0700
 From: Angelo Dureghello <adureghello@baylibre.com>
-Mail-Followup-To: Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Angelo Dureghello <adureghello@baylibre.com>, Steven King <sfking@fdwdc.com>, 
-	Greg Ungerer <gerg@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
-	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-References: <CALSJ-wAqFni+OwSUcQS+KESfe7SbWMxc0aCURHtTZ93Rx6GZhw@mail.gmail.com>
- <CAMuHMdUMvoODD4huxqPb+Hj6Rdid1cSgvzuJdqvg_hRzviyFuA@mail.gmail.com>
+References: <20260506142644.3234270-2-gerg@kernel.org> <20260506142644.3234270-6-gerg@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdUMvoODD4huxqPb+Hj6Rdid1cSgvzuJdqvg_hRzviyFuA@mail.gmail.com>
-Date: Sun, 17 May 2026 10:22:53 -0700
-X-Gm-Features: AVHnY4LXmzt2FYulHGvc5U-cYyRCzVXS4ho7o5lb3LZyGzYNxvZblCBbDnNF3UY
-Message-ID: <CALSJ-wAX_dBYYzLPOPxKZXQQPFQXhW0Oad6FezdZE2bXWfaBcA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/11] m68k: mcf5441x: setup DAC clock name as per
- driver name
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Angelo Dureghello <adureghello@baylibre.com>, Steven King <sfking@fdwdc.com>, 
-	Greg Ungerer <gerg@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
-	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+In-Reply-To: <20260506142644.3234270-6-gerg@kernel.org>
+Date: Sun, 17 May 2026 12:00:35 -0700
+X-Gm-Features: AVHnY4JWE7dTwHmdk1WFCo-5y5V_ABFrYGVfcGaUQK_jNNfZ8FP0HbytljKloS0
+Message-ID: <CALSJ-wDuXfMzV=Ydic-2S=2v+jbe034gqmy+wr-R1d14LBxuFQ@mail.gmail.com>
+Subject: Re: [RFC 3/4] mmc: sdhci-esdhc-mcf: do not use readl()/writel() on ColdFire
+To: Greg Ungerer <gerg@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	arnd@kernel.org, Greg Ungerer <gerg@linux-m68k.org>, adureghello@baylibre.com, 
+	linux-mmc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Hi Greg,
 
-On Sun, May 17, 2026 at 01:45:44PM +0200, Geert Uytterhoeven wrote:
-> Hi Angelo,
+On Thu, May 07, 2026 at 12:26:46AM +1000, Greg Ungerer wrote:
+> From: Greg Ungerer <gerg@linux-m68k.org>
 >
-> There's something wrong with "Mail-Followup-To:", which lists everyone,
-> except for you...
+> The implementation of the readX() and writeX() family of IO access
+> functions is non-standard on ColdFire platforms. They check the supplied
+> IO address and will return either big or little endian results based on
+> that check. This is non-standard, they are expected to always return
+> little-endian byte ordered data. Unfortunately this behavior also means
+> that ioreadX()/iowroteX() and their big-endian counter parts
+> ioreadXbe()/iowriteXbe() are wrong. This is now in the process of being
+> cleaned up and fixed.
 >
-> On Sun, 17 May 2026 at 11:11, Angelo Dureghello
-> <adureghello@baylibre.com> wrote:
-> > jfyi, for some reason i was not in to/cc, but i could grab the message
-> > in lore.
+> Change the use of the readX() and writeX() access functions in this driver
+> to use the recently defined specific ColdFire internal SoC hardware IO
+> access functions mcf_read8()/mcf_read16()/mcf_read32() and
+> mcf_write8()/mcf_write16()/mcf_write32().
 >
-> Might be related...
+> There is no functional change to the driver. Though it does have the
+> effect of making the IO access slightly more efficient, since there is
+> no longer a need to do the address check at every register access.
 >
-
-yes, imported the raw msg from lore but was not allowed to send from
-lieer, so i removed In-Reply-To:, anyway, thread seems back ok now.
-
-> > On Thu, May 14, 2026 at 10:54:32PM +1000, Greg Ungerer wrote:
-> > > On 14/5/26 17:05, Angelo Dureghello wrote:
-> > > > On 14.05.2026 11:27, Greg Ungerer wrote:
-> > > > > On 13/5/26 19:14, Angelo Dureghello wrote:
-> > > > > > From: Angelo Dureghello <adureghello@baylibre.com>
-> > > > > >
-> > > > > > Later in this patchset, the mcf54415 DAC driver is added.
-> > > > > > Considering some other different ColdFire cpu DACs exists, the DAC driver
-> > > > > > is named as "mcf54415_dac", related to the mcf5441x family SoCs with
-> > > > > > DACs (mcf54415/6/7/8).
-> > > > > >
-> > > > > > So updating DAC clock names to bind with proper driver name.
-> > > > >
-> > > > > I am not sure I like naming the clocks here with a prefix for the
-> > > > > specific SoC part number this is in. It might be unlikely now, but
-> > > > > what if another ColdFire family SoC member uses this same hardware block?
-> > > > > That is very common amongst other hardware blocks within the ColdFire
-> > > > > family. Can we come up with a name more specific to just this type
-> > > > > of DAC hardware block?
-> > > > >
-> > > >
-> > > > from a brief study, this 12bit DAC, and DAC module in general, is only on
-> > > > this mcf45441x family. There are some ColdFire with ADC only, as those
-> > > > mcf5249/53/82.
-> > > > The mcf51mm/ag/je are the opnly to have a 5bit dacs, but these are mcus.
-> > > > So, if i don't miss any existing model, the name may be correct,
-> > > > unless we want rename it to a more generic mcf_dac.
-> > >
-> > > Yes, I would suggest just leaving it as is, "mcfdac".
-> > > That is not currently used by any other ColdFire variants supported by
-> > > the kernel.
-> > >
-> >
-> > Ok, will fix this in a v3, just asking confirmation on the name to
-> > Jonathan and all, since it involves iio too.
-> >
-> > Chaches are:
-> > mcfdac
-> > mcf-dac  or mcf_dac (we have drivers as vf610_dac and cio-dac)
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> ---
+>  drivers/mmc/host/sdhci-esdhc-mcf.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 >
-> The clock names in arch/m68k/coldfire/m5441x.c are the names as
-> specified by the producer side, not by the consumer side.
-
-yes sorry, i confused DEFINE_CLK with CLKDEV_INIT where the driver name
-must be set.
-
-So sure, thanks, fixing clock names back as mcfdac in v3.
-
+> Note that the patches to introduce mcf_readX() and mcf_writeX functions
+> are not in mainline yet. They are currently in the m68knommu git tree
+> for-next branch, and so should also be in linux-next.
 >
-> > > > > > --- a/arch/m68k/coldfire/m5441x.c
-> > > > > > +++ b/arch/m68k/coldfire/m5441x.c
-> > > > > > @@ -43,8 +43,8 @@ DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
-> > > > > >    DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
-> > > > > >    DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
-> > > > > >    DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
-> > > > > > -DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
-> > > > > > -DEFINE_CLK(0, "mcfdac.1", 39, MCF_CLK);
-> > > > > > +DEFINE_CLK(0, "mcf54415_dac.0", 38, MCF_CLK);
-> > > > > > +DEFINE_CLK(0, "mcf54415_dac.1", 39, MCF_CLK);
-> > > > > >    DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
-> > > > > >    DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
-> > > > > >    DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
-> > > > > > @@ -106,8 +106,8 @@ static struct clk_lookup m5411x_clk_lookup[] = {
-> > > > > >         CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
-> > > > > >         CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
-> > > > > >         CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
-> > > > > > -       CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
-> > > > > > -       CLKDEV_INIT("mcfdac.1", NULL, &__clk_0_39),
-> > > > > > +       CLKDEV_INIT("mcf54415_dac.0", NULL, &__clk_0_38),
-> > > > > > +       CLKDEV_INIT("mcf54415_dac.1", NULL, &__clk_0_39),
-> > > > > >         CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
-> > > > > >         CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
-> > > > > >         CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
+> diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-esdhc-mcf.c
+> index 375fce5639d7..6853521e8b2c 100644
+> --- a/drivers/mmc/host/sdhci-esdhc-mcf.c
+> +++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
+> @@ -55,7 +55,7 @@ static inline void esdhc_clrset_be(struct sdhci_host *host,
+>  	if (reg == SDHCI_HOST_CONTROL)
+>  		val |= ESDHC_PROCTL_D3CD;
 >
-> Gr{oetje,eeting}s,
+> -	writel((readl(base) & ~mask) | val, base);
+> +	mcf_write32((mcf_read32(base) & ~mask) | val, base);
+>  }
 >
->                         Geert
+>  /*
+> @@ -71,7 +71,7 @@ static void esdhc_mcf_writeb_be(struct sdhci_host *host, u8 val, int reg)
+>  	if (reg == SDHCI_HOST_CONTROL) {
+>  		u32 host_ctrl = ESDHC_DEFAULT_HOST_CONTROL;
+>  		u8 dma_bits = (val & SDHCI_CTRL_DMA_MASK) >> 3;
+> -		u8 tmp = readb(host->ioaddr + SDHCI_HOST_CONTROL + 1);
+> +		u8 tmp = mcf_read8(host->ioaddr + SDHCI_HOST_CONTROL + 1);
 >
-
-Regards,
-angelo
-
+>  		tmp &= ~0x03;
+>  		tmp |= dma_bits;
+> @@ -82,12 +82,12 @@ static void esdhc_mcf_writeb_be(struct sdhci_host *host, u8 val, int reg)
+>  		 */
+>  		host_ctrl |= val;
+>  		host_ctrl |= (dma_bits << 8);
+> -		writel(host_ctrl, host->ioaddr + SDHCI_HOST_CONTROL);
+> +		mcf_write32(host_ctrl, host->ioaddr + SDHCI_HOST_CONTROL);
+>
+>  		return;
+>  	}
+>
+> -	writel((readl(base) & mask) | (val << shift), base);
+> +	mcf_write32((mcf_read32(base) & mask) | (val << shift), base);
+>  }
+>
+>  static void esdhc_mcf_writew_be(struct sdhci_host *host, u16 val, int reg)
+> @@ -110,24 +110,24 @@ static void esdhc_mcf_writew_be(struct sdhci_host *host, u16 val, int reg)
+>  		 * As for the fsl driver,
+>  		 * we have to set the mode in a single write here.
+>  		 */
+> -		writel(val << 16 | mcf_data->aside,
+> +		mcf_write32(val << 16 | mcf_data->aside,
+>  		       host->ioaddr + SDHCI_TRANSFER_MODE);
+>  		return;
+>  	}
+>
+> -	writel((readl(base) & mask) | (val << shift), base);
+> +	mcf_write32((mcf_read32(base) & mask) | (val << shift), base);
+>  }
+>
+>  static void esdhc_mcf_writel_be(struct sdhci_host *host, u32 val, int reg)
+>  {
+> -	writel(val, host->ioaddr + reg);
+> +	mcf_write32(val, host->ioaddr + reg);
+>  }
+>
+>  static u8 esdhc_mcf_readb_be(struct sdhci_host *host, int reg)
+>  {
+>  	if (reg == SDHCI_HOST_CONTROL) {
+>  		u8 __iomem *base = host->ioaddr + (reg & ~3);
+> -		u16 val = readw(base + 2);
+> +		u16 val = mcf_read16(base + 2);
+>  		u8 dma_bits = (val >> 5) & SDHCI_CTRL_DMA_MASK;
+>  		u8 host_ctrl = val & 0xff;
+>
+> @@ -137,7 +137,7 @@ static u8 esdhc_mcf_readb_be(struct sdhci_host *host, int reg)
+>  		return host_ctrl;
+>  	}
+>
+> -	return readb(host->ioaddr + (reg ^ 0x3));
+> +	return mcf_read8(host->ioaddr + (reg ^ 0x3));
+>  }
+>
+>  static u16 esdhc_mcf_readw_be(struct sdhci_host *host, int reg)
+> @@ -149,14 +149,14 @@ static u16 esdhc_mcf_readw_be(struct sdhci_host *host, int reg)
+>  	if (reg == SDHCI_HOST_VERSION)
+>  		reg -= 2;
+>
+> -	return readw(host->ioaddr + (reg ^ 0x2));
+> +	return mcf_read16(host->ioaddr + (reg ^ 0x2));
+>  }
+>
+>  static u32 esdhc_mcf_readl_be(struct sdhci_host *host, int reg)
+>  {
+>  	u32 val;
+>
+> -	val = readl(host->ioaddr + reg);
+> +	val = mcf_read32(host->ioaddr + reg);
+>
+>  	/*
+>  	 * RM (25.3.9) sd pin clock must never exceed 25Mhz.
+> @@ -245,7 +245,7 @@ static void esdhc_mcf_pltfm_set_clock(struct sdhci_host *host,
+>  	 * fvco = fsys * outdvi1 + 1
+>  	 * fshdc = fvco / outdiv3 + 1
+>  	 */
+> -	temp = readl(pll_dr);
+> +	temp = mcf_read32(pll_dr);
+>  	fsys = pltfm_host->clock;
+>  	fvco = fsys * ((temp & 0x1f) + 1);
+>  	fesdhc = fvco / (((temp >> 10) & 0x1f) + 1);
 > --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 2.54.0
 >
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+
+Tested this now on stmark2, sdcard mount/umount/read/write/erase works
+as usual. Thanks.
+
+Acked-by: Angelo Dureghello <adureghello@baylibre.com>
+Tested-by: Angelo Dureghello <adureghello@baylibre.com>
+
+
+reagrds,
+angelo
