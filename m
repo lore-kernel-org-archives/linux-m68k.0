@@ -1,106 +1,117 @@
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B803126DF
-	for <linux-m68k@vger.kernel.org>; Mon, 18 May 2026 13:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F78352C4E
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 18 May 2026 17:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779109409; cv=none; b=jG3D2kbumys+PXZg/bxj2hjr7jAcd4kPBXBsG/1VvVLN56uCezXORrOKUk3D4EmVOi7gwk1Z8iaU5uWQPnIp7upffBIQ7sa/PL6Uo07evUDHt4cPN94lO49iCWNfCo7+kL8MUiEhFPQ7ryC/r/GtSrIgqTTPRfc7+SnSshnT1bg=
+	t=1779124042; cv=none; b=cvG/G1eataG07KriZKp8Sc92f0tNdhzD5vjsZTyUqt69/G6zA2qx9+Wk9h4He6GGjy7WTk/KJ2N81+G216NT2NazCoRtcyeSkjPaFB2tzcSZEVcW1Qx7K/L/ngKbr5R+ChMAlfsh5ULQFhpOI0zy+JuWs0cSF9opwG/f/1+1z0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779109409; c=relaxed/simple;
-	bh=yQK2tuEC7Lq6jwB22azXJQuOAGqsuv/WML2Kw6s4yto=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YseXCeSu79GjRtzXQs20mKwyTM64ZZEhDZFWG2xveUIT+klTFFOaEwXvQT6+rtN0heVDFMSMZ7BaSPxTs2cFacHM5wsqG50G2/DOolyboSFJREppYWPjTE7YNBCJ9n0WnUyb0gX3aalj6Vegb5qgJC8120Ghv5h11xmzqr6f/qY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=fcKF+RGy; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+	s=arc-20240116; t=1779124042; c=relaxed/simple;
+	bh=0d92nKsILldaG5KcgGwmxuWMoDm+8edMkHW2YKbN2Og=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Scw3zziPLQshZMUHMATJOFE0+tUkTR0kDn1vAzjaA/wt948tG+IUcYav30BAqIT9wQDq5iNf5OFi+VCRSYKeYN7xe5DD/ESWktiM0pnLgWKnYXHhfV1E3SyhLitnqYdmOjnXpM4Tg2dFoGTIR4he+EaYyBO5zdUjy1rrS89+WP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=niE2NcJc; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="fcKF+RGy"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:From:
-	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=JbL8tpEWKS8eF3BCKcaQSMKar1yKaIiFoadVqTKK0zQ=; t=1779109407;
-	x=1779714207; b=fcKF+RGyQfzo+ulXJlGy3DokQRMDg+g/PnQqwHz4sqxRvUzuYwzCbFIMxFTwq
-	cQo/ok8/uPvfgK+f+OW79Sb6YaJT+iDRB9MWjvh2AsEK9UOIPdWqjHA7J8ja8D6FPHTvisZ9325Wt
-	Gric6nse99GKGdJYTTaPfwwYMyDAUEBn2+LqgF/dCpPJ/Zf4KrTCSOg/JnZK+9P92ySum4dpBuIdd
-	m/6UZ8clr/lWsd6w/WAlczXH19+7v9f6lkB+QutwzbxjcgXW5GamehzvypOyN1Px0dAZpzxAaRQfV
-	L7pmvX4GjQn/sAh9tKE7hPFnvXpZnCZle+MBMMf2hT7+9r833g==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.99)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1wOxcz-00000002z5r-2RTs; Mon, 18 May 2026 15:03:25 +0200
-Received: from p5b13a134.dip0.t-ipconnect.de ([91.19.161.52] helo=[192.168.178.61])
-          by inpost2.zedat.fu-berlin.de (Exim 4.99)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1wOxcz-00000003O9U-16DD; Mon, 18 May 2026 15:03:25 +0200
-Message-ID: <6efb67b12fd971c6d38a692d7b391ce4a75b0f4a.camel@physik.fu-berlin.de>
-Subject: Re: Summary on what's blocking full Rust support on m68k
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: debian-68k <debian-68k@lists.debian.org>, linux-m68k
-	 <linux-m68k@vger.kernel.org>, port-m68k <port-m68k@netbsd.org>
-Date: Mon, 18 May 2026 15:03:24 +0200
-In-Reply-To: <29d725b5647c176b8cef0d3442d1b3440e6a1a9a.camel@physik.fu-berlin.de>
-References: 
-	<29d725b5647c176b8cef0d3442d1b3440e6a1a9a.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.1 
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="niE2NcJc"
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-c80291e6237so1937389a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 18 May 2026 10:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779124040; x=1779728840; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pQBD1pOu6yZoCHpJ70rmlGRDmngML/+8uAz5xw0+M0Q=;
+        b=niE2NcJcCMUC/wypC2mRv1fY1QmowshHXRn6j4loUdlFRgvnIV+pn/v098VL9EZnVU
+         KiCpTWXizzEXSVu5qzSKuB44ro64WTQ6QmLlmV4cwk7pd1BlDTp1XDnMtwG1VnAWvFET
+         5b0KYwd5TTsD4VYhaSsFwa7+d0w/p3f37yhAZ7lqc4OnO+43nW5flq1fU3pffuWQStoQ
+         Xs92f2G0m3jG9YAewXHm33xHEkbdRG3iEEuTH55mcOLUIgCwY9MxAFsYjtDmBi5tL99b
+         e/Gqghbw80DEp7vAjqdfcaqVCLAqyvJww9Cv+ix/N0r7zpTEpyuiMgzk3i+4TQk1vzgU
+         ZIuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779124040; x=1779728840;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pQBD1pOu6yZoCHpJ70rmlGRDmngML/+8uAz5xw0+M0Q=;
+        b=Kbwi6+NTmXHpUzBjqz88vGOj+JPpI6BSZ5s9/ErIyZDVJN2PCbWYQEgaGuuUeKgtmW
+         2ILOJaX4esNrl5VBDnfO6cXRtr4FbR3kqQFQPsr4RhGet0/uWpFNuPjWWiU+Non1MMi5
+         taj5oyTMrDQzQd3XEkBLI0G1uqEuQ50ZS8AIeXoF0GmiR81UT1TGgVRPYC9OdBHdF9YN
+         W2tfVpWRuIfqEt8GBlBmayg2V7yDzeiG75mpmslduzEVQ+uF8szc6t3n7/1icfX4jK4C
+         +bvZJwClZB63bynyRYTP/+A3dHz11r0yVPQcmvFqs1CeUEYIM2SuamIRCysmlmxncSyu
+         BktQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8T7ha+t9rkeZGn0O9km5TrzDMpYzzLgHVWQ9wvEDN/Agz4iBoTpcDU63JjNymspJrVv/0OxJVbHklK@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yw8v/kAzeYyqVvU2GFqIrKpGcqSjpAPB1CPFP4iozXeOK4UvZ07
+	XkQ5a6EX1H8neXnm5gNpLjeP628GBYRbG80w0J592cLFKGzIvxx8TaVH
+X-Gm-Gg: Acq92OEe7Y6MUzssg/h9tflnkiCBhlhfzS5Zea1Ki98awI2KUfnsNQlH9uG85WdQDD7
+	/cNIGK8MeZ13utrub6iMfAaYM4NwFsMT5dmU6d2q6Jtd1GcA+XOI6SH5Jyccz+jc4OzqBIoe6cI
+	Q2OSZ6B/77wHhItzL3cHSZJBwk7PhqKcxVf4ZRvQ9zb2km4yUf0Ntt4Om6aCiBgmQlY8Sm+K0zj
+	o5VyOPojRxvscrTlXvblSI2uewucIxN1G5Pf0xkDk6Ce00WAIZIp298qyBAJLI9RWB2E0hNJWHV
+	4QPTYfUzhJAPGFKRojslk5nG6QYY39FFvzXEU89q4LccBTjFfP8Pl0zlCGmORal0a/seouKrDjj
+	lxTmKVetlxUn2K7+3L3gC4W5x758C5FFHSoGZ91dswyGrVjUFaugze7KdT0A5Ka111kHFdVOgcl
+	3g3Ut0ATGYIbHuCknDIcPRvOPIrHDWmuXahA==
+X-Received: by 2002:a05:6a20:748d:b0:3a3:1164:c7a6 with SMTP id adf61e73a8af0-3b22e81f7a7mr17501052637.14.1779124040350;
+        Mon, 18 May 2026 10:07:20 -0700 (PDT)
+Received: from google.com ([118.150.148.19])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c82bb0fef5esm13229899a12.15.2026.05.18.10.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 May 2026 10:07:20 -0700 (PDT)
+Date: Tue, 19 May 2026 01:07:09 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Greg Ungerer <gerg@kernel.org>
+Cc: geert@linux-m68k.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, eddyz87@gmail.com, memxor@gmail.com,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	jolsa@kernel.org, jserv@ccns.ncku.edu.tw, eleanor15x@gmail.com,
+	marscheng@google.com, linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, bpf@vger.kernel.org,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: Re: [PATCH bpf-next v3] m68k, bpf: Add initial BPF JIT compiler
+ support
+Message-ID: <agtHPT7Oo4MZ6CBc@google.com>
+References: <20260511212756.3163955-1-visitorckw@gmail.com>
+ <f30f7e98-4749-4925-b999-2653941b42ee@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f30f7e98-4749-4925-b999-2653941b42ee@kernel.org>
 
-Hi,
+Hi greg,
 
-On Thu, 2026-04-23 at 09:39 +0200, John Paul Adrian Glaubitz wrote:
-> Once the alignment issue has been sorted out, the next issue to address i=
-s the lack of the
-> M68k backend in LLVM to handle 32-bit offsets for variables and jumps [4]=
-. Currently, the
-> backend will always generate 16-bit offsets which is not enough to compil=
-e all Rust code,
-> although some Rust code compiles also with 16-bit offsets.
->=20
-> I have created a rough patch to add support for 32-bit offsets with the h=
-elp of Gemini but
-> the patch has multiple problems as outlined in the GitHub issue in [4]. O=
-ne of the problems
-> is that it creates the 32-bit offsets in an inefficient way as if the tar=
-get was a ColdFire
-> CPU. However, the original 680x0 CPUs can actually use more efficient cod=
-e to address 32-bit
-> variables and jumps. The inefficient way would still be used when ColdFir=
-e support gets added
-> to LLVM though [5].
+On Tue, May 12, 2026 at 09:57:11PM +1000, Greg Ungerer wrote:
+> Hi Kuan-Wei,
+> 
+> On 12/5/26 07:27, Kuan-Wei Chiu wrote:
+> > Add a BPF JIT compiler for the m68k architecture.
+> > 
+> > The JIT generates m68k machine code targeting m68020+ processors. It
+> > currently excludes 68000/68010 and coldfire processors, as it relies on
+> > 32 bit branch displacements (b<cc>.l) to handle large bpf programs.
+> 
+> FWIW the ColdFire ISA_B and newer instruction set extensions do support
+> the 32 bit branch displacement instruction forms. So that would mean that
+> at least the MMU based version 4 cores may be able to be supported
+> without too much extra effort.
+> 
+Sorry for getting back to you so late, and thanks for the info!
 
-I have used Google Gemini Code Assist now [1] in order to create a patch to=
- add support for 32-bit
-relocations to the LLVM M68k backend. This time, the code makes use of the =
-full capabilities of
-68020+ CPUs and does not the inefficient four-instruction method to impleme=
-nt 32-bit accesses.
+I haven't thoroughly checked what else the current implementation might
+lack for coldfire support, but I suspect it won't be as simple as just
+modifying the kconfig. For instance, at least the exg instruction I'm
+currently using is not supported on coldfire.
 
-I'm hesitant to send this in for review as this was basically written by Ge=
-mini under my supervision
-with a lot of testing of build tests.
+Since the current patch is already quite large, I'm inclined to focus
+on getting everything running correctly on classic m68k first. Once
+this initial support is merged in-tree, we can revisit it and figure
+out the necessary adjustments for coldfire.
 
-Adrian
+That being said, getting coldfire supported would definitely be cool!
 
-> [1] https://github.com/llvm/llvm-project/issues/181481#issuecomment-44769=
-33700
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Regards,
+Kuan-Wei
