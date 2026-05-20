@@ -1,113 +1,99 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 282733F8EB7
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 19 May 2026 12:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DBA3370AC1
+	for <linux-m68k@vger.kernel.org>; Wed, 20 May 2026 08:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779193625; cv=none; b=O+0fMzGhivdQYtN8Zhg373Mms4ReHvqs6pWCG9KB0LbrdrFlPcP6NIE5sTMGRu6GbRPo0fAenNymnspAYSQfE8cC7I8p+SIdzC0JgwFNz2PzTAss32+tjjRlz2qLFPr6UChzsR6Hg3YsOeSYKApI8qdAWHEOuPbhWcpxEYgK1e0=
+	t=1779266230; cv=none; b=jLzk4bU0C3qrSLjgQE4t8cHAEM827nr0FK1t7sbCLlw+grPYF/mhaGJkJLqKYZ3tO6dogqCoPJgg5Ww1lu0yRpeeqa2xGuasNjvQkWw2zmcECirxA1YV7OJOT8L2ERtZAeHgwsN2ob6R/UYG52Wq7Z/4jbh0e5B9vsKlV4mr5OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779193625; c=relaxed/simple;
-	bh=wDydDBmGC/KYBQBpFNBdkQgWWJShdVpgIUDA4hocT88=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=q081EdeNam7nM2JkPM0h/uLjBJ1/KUiiHA/upMCeQXbAxPxciktfH09PAH97msKWnpxzEETzMwi77UD2BBkt6+TYbmxuXu7m4VCCTsRaVm9Fr8TDfHNHoymfN9AxC8eQhALKbVqtcyLCNMBEz56f8hMLW4xlPYgb6dDpNnMGIT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lWEaAZgj; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1779266230; c=relaxed/simple;
+	bh=vEfEforBf+HuiU6fVT9GqbXgfTpWQ26iankghu3cJlI=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rpJi+WcCd3X/QGCy8jmrq4G7mVnneUPiYnp624Dv6TJAPTaCE8JYkL0N+7GAHHIQoXnOqhoW9SosVHSGNaEUMC+3oWnheUgcyuFyDAHOpNPd0OoBxK4pH4wcfQYtTpMmTar+kl3PzmQhs/sEWmkFvQvZMn4cMU/n1yJtv/5J1+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=L7vqm+wb; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lWEaAZgj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1779193624; x=1810729624;
-  h=date:from:to:cc:subject:message-id;
-  bh=wDydDBmGC/KYBQBpFNBdkQgWWJShdVpgIUDA4hocT88=;
-  b=lWEaAZgjeDTv+L9TWNW1nvhN3bvEppERssU21N+mVcaFBJ6A62YoWQgL
-   v5C39uJrWgYu3fFaAiyRTzXeF0Q0u1XyjiAc0yURfrskqJNo2LRyxdV97
-   yNk2iW/0ocSojaqaoSaBYVp8BDq+0fUJLXBetlACi5zon98wZ200aK2Bk
-   hhOKEZKBHga36aLTx00/Ph6eNpxPCW+t3SHabzGg1yHi70L7PqRi2y4sY
-   c19zTurWoQ03ikszt0XC+sWsgbgS8/jblDEl5EoKrZSZnu14OXhfyYVAC
-   4htxXKDD/IrxR095/q+hzkpfU3ECUg2JMuoUjd51esRRM/UYMAl170YcQ
-   Q==;
-X-CSE-ConnectionGUID: hLKdXZMVRcmBjBH5/U3p/Q==
-X-CSE-MsgGUID: iyz/WKmDRsCB8hGgxShQwQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11791"; a="90649051"
-X-IronPort-AV: E=Sophos;i="6.23,243,1770624000"; 
-   d="scan'208";a="90649051"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2026 05:26:52 -0700
-X-CSE-ConnectionGUID: tGmwnIK4TxKillaSaMLOIQ==
-X-CSE-MsgGUID: xslZhum9RF+jjDhX1yxZ2A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,243,1770624000"; 
-   d="scan'208";a="239813857"
-Received: from lkp-server02.sh.intel.com (HELO 30e86e9c1927) ([10.239.97.151])
-  by orviesa009.jf.intel.com with ESMTP; 19 May 2026 05:26:50 -0700
-Received: from kbuild by 30e86e9c1927 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wPJX5-0000000012f-0HAJ;
-	Tue, 19 May 2026 12:26:47 +0000
-Date: Tue, 19 May 2026 20:25:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:dt 12/14]
- arch/m68k/kernel/setup_mm.c:211:35: error: '__dtb_start' undeclared; did you
- mean '__bss_start'?
-Message-ID: <202605192049.GzCMNtkl-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="L7vqm+wb"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:From:
+	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=j1A/IetnurQuedKuwhYIfOfPsUBN5x5d0Ek3VK2lgLc=; t=1779266225;
+	x=1779871025; b=L7vqm+wbLwma1BZOcVZG9ljJ7aeuVy/DdzHWf2n1H2obZsu8zMakvHxxS/IyK
+	oSsx5kMmsEglQIMZlJhxtVHgs65cB6/0dyxBk12IpWfMgCHLgH6DhCJZ/QLDwTfPV++rfG2ElzB7V
+	iVLZlxD44VZvl1vvAUqHDqDMJr9zSaUONzHfPsB15V9HTs77ipCoyaFZMYOqjA4wI6PVgxxy8OV+e
+	7drX+oKSBbjk/d4NZwXgwEe1nDfSRz+pt+B7uiHtXLLKbW0k0V2X51RE1x0NajPb8Dsf1gx0EeEte
+	C26qz/KrUeBsqBo/3mH+6UmcjOix2cNFVevmWaUzbUpS4p3PhQ==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.99)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1wPcQC-00000000xTe-3NMs; Wed, 20 May 2026 10:36:56 +0200
+Received: from p5b13a134.dip0.t-ipconnect.de ([91.19.161.52] helo=[192.168.178.61])
+          by inpost2.zedat.fu-berlin.de (Exim 4.99)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1wPcQC-000000045Cs-2U0i; Wed, 20 May 2026 10:36:56 +0200
+Message-ID: <e6e99dd2a47881aaf34ea8d1dbc5ea8d6080c1c1.camel@physik.fu-berlin.de>
+Subject: First successful cargo build - Re: Summary on what's blocking full
+ Rust support on m68k
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: debian-68k <debian-68k@lists.debian.org>, linux-m68k
+	 <linux-m68k@vger.kernel.org>, port-m68k <port-m68k@netbsd.org>
+Date: Wed, 20 May 2026 10:36:55 +0200
+In-Reply-To: <6efb67b12fd971c6d38a692d7b391ce4a75b0f4a.camel@physik.fu-berlin.de>
+References: 
+	<29d725b5647c176b8cef0d3442d1b3440e6a1a9a.camel@physik.fu-berlin.de>
+	 <6efb67b12fd971c6d38a692d7b391ce4a75b0f4a.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.1 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
-head:   3173490642db7ab3c9f15b139b19a633a2ac2d5e
-commit: c9921b3e98eab8277d9aa71cc084cc821fd14213 [12/14] m68k: implement a builtin devicetree for mm targets
-config: m68k-randconfig-r051-20260519 (https://download.01.org/0day-ci/archive/20260519/202605192049.GzCMNtkl-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260519/202605192049.GzCMNtkl-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202605192049.GzCMNtkl-lkp@intel.com/
+On Mon, 2026-05-18 at 15:03 +0200, John Paul Adrian Glaubitz wrote:
+> I have used Google Gemini Code Assist now [1] in order to create a patch =
+to add support for 32-bit
+> relocations to the LLVM M68k backend. This time, the code makes use of th=
+e full capabilities of
+> 68020+ CPUs and does not the inefficient four-instruction method to imple=
+ment 32-bit accesses.
+>=20
+> I'm hesitant to send this in for review as this was basically written by =
+Gemini under my supervision
+> with a lot of testing of build tests.
 
-All errors (new ones prefixed by >>):
+I was eventually able to build cargo for m68k-unknown-linux-gnu:
 
-   In file included from arch/m68k/kernel/setup.c:3:
-   arch/m68k/kernel/setup_mm.c: In function 'm68k_setup_fdt':
->> arch/m68k/kernel/setup_mm.c:211:35: error: '__dtb_start' undeclared (first use in this function); did you mean '__bss_start'?
-     phys_addr_t fdt = (phys_addr_t) &__dtb_start;
-                                      ^~~~~~~~~~~
-                                      __bss_start
-   arch/m68k/kernel/setup_mm.c:211:35: note: each undeclared identifier is reported only once for each function it appears in
+(unstable-amd64-sbuild)glaubitz@esk:~/rust/build$ file ./x86_64-unknown-lin=
+ux-gnu/stage2-tools/m68k-unknown-linux-gnu/release/cargo
+./x86_64-unknown-linux-gnu/stage2-tools/m68k-unknown-linux-gnu/release/carg=
+o: ELF 32-bit MSB pie executable, Motorola m68k, 68020, version 1 (SYSV), d=
+ynamically linked, interpreter /lib/ld.so.1,
+BuildID[sha1]=3D7e5bf08930f87b9eaee173cf163b067f620cb841, for GNU/Linux 3.2=
+.0, not stripped
+(unstable-amd64-sbuild)glaubitz@esk:~/rust/build$
 
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for OF_EARLY_FLATTREE
-   Depends on [n]: OF [=n]
-   Selected by [y]:
-   - BUILTIN_DTB [=y]
+The binary runs on m68k but there is no output, unfortunately. Needs more d=
+ebugging.
 
+Adrian
 
-vim +211 arch/m68k/kernel/setup_mm.c
-
-   207	
-   208	#ifdef CONFIG_BUILTIN_DTB
-   209	static void __init m68k_setup_fdt(void)
-   210	{
- > 211		phys_addr_t fdt = (phys_addr_t) &__dtb_start;
-   212	
-   213		pr_info("m68k generic DT machine support, FDT blob at 0x%08x\n", fdt);
-   214		if (!early_init_dt_verify(__va(fdt), fdt)) {
-   215			pr_err("FDT blob is bad?!\n");
-   216			return;
-   217		}
-   218		early_init_dt_scan_nodes();
-   219		unflatten_device_tree();
-   220	}
-   221	
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
