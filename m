@@ -1,249 +1,294 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF5A3264E7
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 20 May 2026 22:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779315713; cv=none; b=qOZGxt4lxQzeTlQ14OZWoQAf3LMDBpOkS8RdZnqPZ6pNybutgUArUWKkt8EM9NKuI80vv27S0r1G96pAQSFJwswm85DUQcXXAbNeKw9WRGOgDSbQvPjiweVR1YVR3K0A4ZlHbozixxWIEJ91sidSyLyaDjGWbGOGRGQvG59+YSw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779315713; c=relaxed/simple;
-	bh=+lLqKB25GJ8Nk/N/QA5/TP30kbyhPVpqAySiqciCa4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 In-Reply-To:Content-Type:Content-Disposition; b=LlmpYRq7hJS1Y+xMAAWtu72ce+3oDAelm3n9zEXcyrmIuoiSI4JNebWfEAMTiSuhdJIKMQV9ox6zhjc0ZLXaUqDOzHIXCN4oP8bKuRJZ2xVVOJ/atrkFVKJ5oKI3x0uxVGBh+I56cGfOGCLbuT3Bk7f99wK6oIISg5axLuo+rVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H8s/niaU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35883CB907
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 21 May 2026 12:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779365656; cv=pass; b=KfCvv3NkRcimzW3h5uKeeQaZuXx9KA1sc8EKnKzHznF8gHfjd1soKOKKsxP00A7eIUcq/hYJqtoMEa2kZlpyPddaj0PSH5vCbMmHvVZGzBEI8ejVmHZziIVD5oNJiLc6KckJyv1jjhQ/l4Dx/fPfchTCMcB3gqFo3Peal96UAHU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779365656; c=relaxed/simple;
+	bh=XcwwmNFeGKOz5wm9C4M8dp6d2E7Hb2byMKXE7ZZMrtw=;
+	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TSQPWBO6ZL0AOd0J1hav8672qPE0EvtWSZQAoz+/VX46/WjO104OFr3WQPYA0lKQY7ujMpYM64Xr+VEK8iKuzpBUDVW/1DPDZ/1RQbRQcxAExj8yGp2+q09s5MHBt+GqFfWhXjcCFbhsKqhsDaCnuFRjfef3mDNB5X3P8EIxJMw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=KNvMwqW5; arc=pass smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H8s/niaU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1779315710;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yTMC7Vi3qz2eQrpu1XXxCoOuK0TKvwPfinMf53HH2Ps=;
-	b=H8s/niaUSlwgCXb8cNTwCx40TANcIJzhBG9I7bKwRkv+ryP1TSsoivQJEh2sfPC8xIpvRq
-	xWvVcHstXqbsmrTk/27E2eEEKLVMrcpROzGUDZ4mVu5EA2kzlJBBI0oFnNBAS9jX+Cxz9I
-	uCsOOwsq0Eh2DT8P6RR90u1fkVoFU24=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-8EhLixasO4OWetbjnXuYWQ-1; Wed, 20 May 2026 18:21:47 -0400
-X-MC-Unique: 8EhLixasO4OWetbjnXuYWQ-1
-X-Mimecast-MFC-AGG-ID: 8EhLixasO4OWetbjnXuYWQ_1779315706
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-488d3eec9bcso37126925e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 20 May 2026 15:21:47 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="KNvMwqW5"
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-bd8f9725b30so550907166b.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 21 May 2026 05:14:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779365650; cv=none;
+        d=google.com; s=arc-20240605;
+        b=DxNX5JcCToZmudgJDNyxOSxCgEaEHVGBesNpp2DXxOsjenY3vVO9c61P+BdpgoQ/Yq
+         /019NGI2kaeAh8yHdR6RQxiN2eTqFu0N6uxgJQkLluXx0E1hutlCPzReYsYaFHJc3req
+         paAAoR+aBL/L1/0V1etm8VN0OzRDc+57AcvRHetQMKe6DQ44tD2rV1w2eeMwK8NKAmYe
+         lKrnqL2DavJkMCmVnVQV0HWGn2g/7CNaz/Xn4I6/G5IAEkQjTUgmfnPpKJpX8vVsvenO
+         G/luhgTnOTVW6oXdXAGQ1QwZVGzqBC6J4yHoLKsysC22MJY7UMLvNxGcYWx6pDkrFgQV
+         RJsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
+         :mail-followup-to:from:dkim-signature;
+        bh=kCAT/FSMB8tJhmNGpR3NQBa4aJk54FUzKfLnS0Vjt6c=;
+        fh=dTnndKGKanHQLVnecC8HJOYa988C/RC9L8ML1r46Dqs=;
+        b=dAPWk3lLL+u25lVgKX6EQuw50cqFvkscucZ2XhKpIzfkl0odvklPjoCL/EM7Ifgtt6
+         LSknoX/eUahJS1iOtZPJBXoVjO07sBEnjh/4iQ0XH3j/wFX8KYAvkIOaAOglRkUt1Pof
+         oDFeu++U0TVyk7RJnkbIYvjFx+SjyHpGLJ744gJmOriHFmdwsgCuX8qjj1TJ+qRLR3ru
+         Bn6lccK096cNk11ltT/LfPx3qLD6Q1RYmJUK0mPhGbfLOSbWfDCYNNNIytLpaqIPYiPX
+         +BBwOyc6dJmjEusPJw7lHBdPrY+KL9WxCDeAFHiosPr8PGq0DOkxEdLb7sBYLMJdaOH0
+         udxg==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1779365650; x=1779970450; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
+         :mail-followup-to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kCAT/FSMB8tJhmNGpR3NQBa4aJk54FUzKfLnS0Vjt6c=;
+        b=KNvMwqW57gR28ivVmMI03qMHlYh16O6V1itCzgYjBmAQdywjNd+icry37Pwqybhqim
+         u+LyUu0YOB8HM+nHdlXg0g3T1wFU3iMqFZwZCzqub893wMH1k3aRS3cBXcn1iXP5HVTc
+         Cqe75N7xK1IUNqo59uo5e6XdR/yHBqsHbPSitD+mTzu+iUAHEqR91/pYW//7p32rP0fq
+         I6q0r9tfEUGJ/rqZx+aBH6a/efxkq1Szii/HCY/h9tm70KhYTxw1O+dItmTfXi6aUDem
+         JkeJYXXsnZY5pP8SisOXdvdrwDver0+v+s64XV2R91WPDk+iPnr2erugUiTa+pJvv3jt
+         wkkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779315706; x=1779920506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yTMC7Vi3qz2eQrpu1XXxCoOuK0TKvwPfinMf53HH2Ps=;
-        b=HuXYXLnlrl8Vn8yOUWFFQvH3GagTmiqnlRGpRv8llmeYXCzl5tM26QdyM3XD+U8dGT
-         +OkfeeJNq63DiN2diLqDPL3tA91CHVM+9IoPw8km7u770LZjuzpYNXY4Run6AEQitSUM
-         aBgC8UtVBZQ9BpSwPrJlZ7DJGQ2+orgHAAHy0jCeGTSrsJWMV6jfle5bH869Dowgc5/p
-         HCmAE7YMH5ySe8eiEpCe+mjCwGaE4rAaENpf3imRHxmb20SI4ePQ0gRdaZNDQEXubDuL
-         2Y6tdFZBZP1KsdPTVnvVrUgNEvjBXyevZjJHiU8TF/bGrPQPkNnIWWMjHYCKLdm5sw6G
-         957g==
-X-Forwarded-Encrypted: i=1; AFNElJ+ydbwqIbtRGOuSY9eF6J/rWL3PaK7ugP0CcK+ehxE6h78kM0797r3y6LYnYgra6EPpJJy25+GIBwey@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzUZlNRmHbQDSj5l561ix0oVjv8ygaUToNHO8TJKsbixIwBZVIp
-	jbioUNbL60HzaL+vKtUBMFcjhcuBTa5sxoqjkA3nyw3tny4gXLc5XASWeCI6j34hm41B7cUyxZk
-	SD8Pmp4NNONfLdzykFaliBYqgjbtfkmDBYCwcvENyfYxpephv91pf9TnCMuqB5m5aqbuefg==
-X-Gm-Gg: Acq92OFTegMjsD02hewywlMD7dbHjWrHcbEg/z7wCnv13/vsNbOyPCPX59NB8BMtKW+
-	T0tuLz0Aq8lUq/hvP+ru8J8RrW40ysLSLfveWWGHexIRpzJZLaX4v6NHXrGCfOm2BiX86Ld8MWs
-	kGsJV6CN2Molb98Nehiviu+HA1ZgWb91AnXJnS5FN6AeRP7Vz448/bRoR2NR2dypJLIc+X1KpAf
-	S+6pKLhJGOQc5r0+BXhTMLVirI0XKsiBkw3pRueCiJ8ufj7ygjp4o/DJKZPZvneotKtCI0mhMdl
-	EZEzjGLrXhlKKj88ymMm1dtz4tWGBvZDmiUi72oVRJT9qu1VRFddi4GHiU5c5h2CwIO88bhotN8
-	zQowzQj5xErYnri64TbzRdy2e6nvBG2ZY1Q+D/78QuAefE6htpiHcKQ==
-X-Received: by 2002:a05:600c:492f:b0:48f:dfe3:dae3 with SMTP id 5b1f17b1804b1-490360af200mr1566955e9.17.1779315706112;
-        Wed, 20 May 2026 15:21:46 -0700 (PDT)
-X-Received: by 2002:a05:600c:492f:b0:48f:dfe3:dae3 with SMTP id 5b1f17b1804b1-490360af200mr1566725e9.17.1779315705516;
-        Wed, 20 May 2026 15:21:45 -0700 (PDT)
-Received: from redhat.com (IGLD-80-230-25-45.inter.net.il. [80.230.25.45])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49033d8e24bsm20846035e9.10.2026.05.20.15.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2026 15:21:44 -0700 (PDT)
-Date: Wed, 20 May 2026 18:21:38 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: "David Hildenbrand (Arm)" <david@kernel.org>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R. Howlett" <liam@infradead.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Brendan Jackman <jackmanb@google.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
-	Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
-	Lance Yang <lance.yang@linux.dev>, Hugh Dickins <hughd@google.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
-	Byungchul Park <byungchul@sk.com>,
-	Gregory Price <gourry@gourry.net>,
-	Ying Huang <ying.huang@linux.alibaba.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
-	virtualization@lists.linux.dev, linux-mm@kvack.org,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-alpha@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-s390@vger.kernel.org
-Subject: [PATCH v8 14/37] mm: remove arch vma_alloc_zeroed_movable_folio
- overrides
-Message-ID: <9c2ac9d2fc159822b9fd6cb1304bf222324d70a3.1779315441.git.mst@redhat.com>
-References: <cover.1779315441.git.mst@redhat.com>
+        d=1e100.net; s=20251104; t=1779365650; x=1779970450;
+        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
+         :mail-followup-to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kCAT/FSMB8tJhmNGpR3NQBa4aJk54FUzKfLnS0Vjt6c=;
+        b=mZ6UWDeeiMWqczLByFb1dsIAbSR3IsSf1NC1R+MYV0YSNsa5Xxavw7AXw3dwHR0+F1
+         m2NVfz+mZ6OHQdXwuPC3SbrMS6jQwKpwipUWgoy7AZaEufz9Nius29DkzRoSupbyNoWO
+         rraZa5N14elIi07s/UBLPGAaUuLCv0g8ct1W84xKKJSAV43c5C6fI5ehoY0ETLrGXapq
+         +iALlRjjwY14x/iOJtVKkop82OpUHqKA4Ujklhpy75OQUP67/KdpflFjbQafAa9wspff
+         0OgX5RLdAeF6KeeXBb1WZ0GJ7W4Z2FYWIR4G9L3DCNXUAeHdqJyvD+EbMo5UbqTDUR41
+         07yA==
+X-Forwarded-Encrypted: i=1; AFNElJ8M8dgN7FzW/WsUL+Kz8RPDeucJNXpSx/TMzcKA44sJHPQeqOj6NbM4M5KlKG8317YpjxhCP/qCATS2@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwQFyxR84pknwiwtflG99m0wj8GyWPYKCwcN7eR1PU7dGR8C6+2
+	ZYB6s1WSvW44U8R/zukwuGoT/R6TyyA1TYpobd9yF/1PsCnfsN27GpVBAqYcTuB3UfKMZManycN
+	RG7B+MmqQGFwpQxKgJ/lRP0ct9ZrD5O6Qvpe+1+V7aw==
+X-Gm-Gg: Acq92OHdPFv4hKp4ez9sRWunRVd7mV5pZO8m+Tc4mND+FNL+w5PwCVrm1hdflgGYOEP
+	yOjZ5LyG3ejewzfXzNm3xjktHF3eQUTCg/y6ch9kXerZQwNr7g/li9TNwBsUXhlS0I+benlfiUS
+	r57/xw6kGs7+Z3xS9vN49dVoBcAFqOjM7lMPs2fLXfXFaUZ7m1ciggggwnoccCxdVVS/O2hX4MX
+	L9LfXzPLnhfcPMSaam1F7wOmsTWWvgd3V35adBFrZ6p+TJoj56ukjha3uvKpry76wVw5mTG1efJ
+	vPr1pgXQtL90KRBp2p4XHfdJQBy2Hfu6YDAT
+X-Received: by 2002:a17:907:6d27:b0:bd2:e940:db38 with SMTP id
+ a640c23a62f3a-bdc17d23987mr141007766b.28.1779365650245; Thu, 21 May 2026
+ 05:14:10 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 21 May 2026 05:14:07 -0700
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 21 May 2026 05:14:07 -0700
+From: Angelo Dureghello <adureghello@baylibre.com>
+Mail-Followup-To: Andy Shevchenko <andriy.shevchenko@intel.com>, 
+	Angelo Dureghello <adureghello@baylibre.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
+ <20260513-wip-stmark2-dac-v2-11-fcdae50cf51a@baylibre.com> <agTe7vZ94DnmD4Ed@ashevche-desk.local>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1779315441.git.mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
-X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: w8rPF1d6o7--isTarpPtyZYcoWv4rX5DGF8U76MuOz8_1779315706
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <agTe7vZ94DnmD4Ed@ashevche-desk.local>
+Date: Thu, 21 May 2026 05:14:07 -0700
+X-Gm-Features: AVHnY4KQ9snIXNmFVw7beAhQpkjp4lsWxF_SmKnG6LJVzoen_-CkRZHjCww1Cio
+Message-ID: <CALSJ-wBbjwrhTEpfKm-JHox7-E1YRQ=kTj1JN+KyiucTTu7c3A@mail.gmail.com>
+Subject: Re: [PATCH v2 11/11] iio: dac: add mcf54415 DAC
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Angelo Dureghello <adureghello@baylibre.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Now that the generic vma_alloc_zeroed_movable_folio() uses
-__GFP_ZERO, the arch-specific macros on alpha, m68k, s390, and
-x86 that did the same thing are redundant.  Remove them.
+Hi Andy,
 
-arm64 is not affected: it has a real function override that
-handles MTE tag zeroing, not just __GFP_ZERO.
+just few points below, the rest has been fixed:
 
-Suggested-by: David Hildenbrand <david@kernel.org>
-Acked-by: Magnus Lindholm <linmag7@gmail.com>
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Assisted-by: Claude:claude-opus-4-6
-Reviewed-by: Gregory Price <gourry@gourry.net>
----
- arch/alpha/include/asm/page.h   | 3 ---
- arch/m68k/include/asm/page_no.h | 3 ---
- arch/s390/include/asm/page.h    | 3 ---
- arch/x86/include/asm/page.h     | 3 ---
- include/linux/highmem.h         | 8 +++++---
- 5 files changed, 5 insertions(+), 15 deletions(-)
+On Wed, May 13, 2026 at 11:28:30PM +0300, Andy Shevchenko wrote:
+> On Wed, May 13, 2026 at 11:14:35AM +0200, Angelo Dureghello wrote:
+> >
+> > Add basic version of mcf54415 DAC driver. DAC is embedded in the cpu and
+> > DAC configuration registers are mapped in the internal IO address space.
+> >
+> > The DAC accepts a 12-bit digital signal and creates a monotonic 12-bit
+> > analog output varying from DAC_VREFL to DAC_VREFH. The DAC module
+> > consists of a conversion unit, an output amplifier, and the associated
+> > digital control blocks. Default register values for DAC_VREFL and DAC_VREFH
+> > are respectively 0 and 0xfff, left untouched in this initial version.
+> >
+> > This initial version of the driver is minimalistic, "output raw" only, to
+> > be extended in the future. DMA and external sync are disabled, default mode
+> > is high speed, default format is right-justified 12bit on 16bit word.
+>
+> ...
+>
+> > +#include <linux/array_size.h>
+> > +#include <linux/bitfield.h>
+> > +#include <linux/bits.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/compiler_types.h>
+> > +#include <linux/delay.h>
+>
+> + err.h
+>
+> > +#include <linux/io.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regmap.h>
+>
+> ...
+>
+> > +struct mcf54415_dac {
+> > +	struct clk *clk;
+> > +	struct regmap *map;
+>
+> I believe that regmap pointer is used more often, can you check with
+> bloat-o-meter that swapping these two (by the order) gives any benefit in
+> object size?
+>
 
-diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.h
-index 59d01f9b77f6..4327029cd660 100644
---- a/arch/alpha/include/asm/page.h
-+++ b/arch/alpha/include/asm/page.h
-@@ -12,9 +12,6 @@
- 
- extern void clear_page(void *page);
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- extern void copy_page(void * _to, void * _from);
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
-diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-index d2532bc407ef..f511b763a235 100644
---- a/arch/m68k/include/asm/page_no.h
-+++ b/arch/m68k/include/asm/page_no.h
-@@ -12,9 +12,6 @@ extern unsigned long memory_end;
- 
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #define __pa(vaddr)		((unsigned long)(vaddr))
- #define __va(paddr)		((void *)((unsigned long)(paddr)))
- 
-diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-index 56da819a79e6..e995d2a413f9 100644
---- a/arch/s390/include/asm/page.h
-+++ b/arch/s390/include/asm/page.h
-@@ -67,9 +67,6 @@ static inline void copy_page(void *to, void *from)
- 
- #define copy_user_page(to, from, vaddr, pg)	copy_page(to, from)
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #ifdef CONFIG_STRICT_MM_TYPECHECKS
- #define STRICT_MM_TYPECHECKS
- #endif
-diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
-index 416dc88e35c1..92fa975b46f3 100644
---- a/arch/x86/include/asm/page.h
-+++ b/arch/x86/include/asm/page.h
-@@ -28,9 +28,6 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
- 	copy_page(to, from);
- }
- 
--#define vma_alloc_zeroed_movable_folio(vma, vaddr) \
--	vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO, 0, vma, vaddr)
--
- #ifndef __pa
- #define __pa(x)		__phys_addr((unsigned long)(x))
- #endif
-diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-index ffa683f64f1d..7b5955bf9336 100644
---- a/include/linux/highmem.h
-+++ b/include/linux/highmem.h
-@@ -303,7 +303,6 @@ static inline void clear_user_highpages(struct page *page, unsigned long vaddr,
- #endif
- }
- 
--#ifndef vma_alloc_zeroed_movable_folio
- /**
-  * vma_alloc_zeroed_movable_folio - Allocate a zeroed page for a VMA.
-  * @vma: The VMA the page is to be allocated for.
-@@ -317,12 +316,15 @@ static inline void clear_user_highpages(struct page *page, unsigned long vaddr,
-  * we are out of memory.
-  */
- static inline
--struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struct *vma,
-+struct folio *vma_alloc_zeroed_movable_folio_noprof(struct vm_area_struct *vma,
- 				   unsigned long vaddr)
- {
--	return vma_alloc_folio(GFP_HIGHUSER_MOVABLE | __GFP_ZERO,
-+	return vma_alloc_folio_noprof(GFP_HIGHUSER_MOVABLE | __GFP_ZERO,
- 			      0, vma, vaddr);
- }
-+#ifndef vma_alloc_zeroed_movable_folio
-+#define vma_alloc_zeroed_movable_folio(...) \
-+	alloc_hooks(vma_alloc_zeroed_movable_folio_noprof(__VA_ARGS__))
- #endif
- 
- static inline void clear_highpage(struct page *page)
--- 
-MST
+checking size in ColdFire arch with last kernel.org gcc had no benefit,
+anyway put regmap before
 
+> > +};
+>
+> ...
+>
+> > +	.max_register = 0x1F,
+>
+> No definition? What datasheet says about this? Perhaps define the MAX as per
+> last defined register in the datasheet?
+>
+> > +};
+>
+> ...
+>
+> > +static void mcf54415_dac_init(struct mcf54415_dac *info)
+> > +{
+> > +	/* Keeping defaults and enable DAC (bit 0 set to 0) */
+> > +	regmap_write(info->map, MCF54415_DAC_CR, MCF54415_DAC_CR_FILT |
+> > +		     FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1));
+>
+> Seems the whole driver ignores IO errors, why?
+>
+> > +	/* DAC is ready after 12us, from RM table 40-3  */
+> > +	fsleep(12);
+> > +}
+>
+> ...
+>
+> > +static void mcf54415_dac_exit(void *data)
+> > +{
+> > +	struct mcf54415_dac *info = data;
+> > +
+> > +	regmap_update_bits(info->map, MCF54415_DAC_CR, MCF54415_DAC_CR_PDN,
+> > +			   MCF54415_DAC_CR_PDN);
+>
+> regmap_set_bits()
+>
+> > +}
+>
+> ...
+>
+> > +static int mcf54415_write_raw(struct iio_dev *indio_dev,
+> > +			      struct iio_chan_spec const *chan,
+> > +			      int val, int val2, long mask)
+> > +{
+> > +	struct mcf54415_dac *info = iio_priv(indio_dev);
+> > +
+> > +	switch (mask) {
+> > +	case IIO_CHAN_INFO_RAW:
+> > +		if (val < 0 || val > 4095)
+>
+> Do we have a definition for the resolution? I'm fine with the plain numbers,
+> but it's better to add a short comment to say that this is "based on the
+> resolution of XXX register per datasheet".
+>
+> > +			return -EINVAL;
+> > +		regmap_write(info->map, MCF54415_DAC_DATA, val);
+> > +		return 0;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+>
+> ...
+>
+> > +static int mcf54415_dac_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct iio_dev *indio_dev;
+> > +	struct mcf54415_dac *info;
+> > +	void __iomem *regs;
+> > +	int ret;
+> > +
+> > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*info));
+> > +	if (!indio_dev)
+> > +		return -ENOMEM;
+> > +
+> > +	info = iio_priv(indio_dev);
+> > +
+> > +	regs = devm_platform_ioremap_resource(pdev, 0);
+> > +	if (IS_ERR(regs))
+> > +		return dev_err_probe(dev, PTR_ERR(regs),
+> > +				     "failed to get io regs\n");
+>
+> One line.
+>
+
+i decided to stay inside 80 in all the file, is it ok ?
+
+> > +
+> > +	info->map = devm_regmap_init_mmio(dev, regs,
+> > +					  &mcf54415_dac_regmap_config);
+> > +	if (IS_ERR(info->map))
+> > +		return PTR_ERR(info->map);
+> > +
+> > +	info->clk = devm_clk_get_enabled(dev, "dac");
+> > +	if (IS_ERR(info->clk))
+> > +		return dev_err_probe(dev, PTR_ERR(info->clk),
+> > +				     "failed getting clock\n");
+>
+> Also can be a single line, but this one a bit longer than above, gives
+> 88 characters.
+
+same as above
+
+>
+> > +	platform_set_drvdata(pdev, indio_dev);
+> > +
+> > +	indio_dev->name = "mcf54415";
+> > +	indio_dev->info = &mcf54415_dac_iio_info;
+> > +	indio_dev->modes = INDIO_DIRECT_MODE;
+> > +	indio_dev->channels = mcf54415_dac_iio_channels;
+> > +	indio_dev->num_channels = ARRAY_SIZE(mcf54415_dac_iio_channels);
+> > +
+> > +	mcf54415_dac_init(info);
+> > +
+> > +	ret = devm_add_action_or_reset(dev, mcf54415_dac_exit, info);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return devm_iio_device_register(dev, indio_dev);
+> > +}
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+Regards,
+angelo
