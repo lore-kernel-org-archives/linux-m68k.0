@@ -1,67 +1,67 @@
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E94C38E8A1
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 22 May 2026 21:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E88388881
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 22 May 2026 21:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779484888; cv=none; b=Mlc482uzPVUEb4dav5Lv/zJCxd2lc7cqq9jcGC2e0SoJO6DZgMTh9SjqE3bVBIqeTbdtdmydidGS9XvJxfnADgyTd1LNaxn28Tzc/y4kQpmnS83x5lE56VBWjFnzMD83UEBPDILzhlD7C5Kz7SbWgWlon3aJdTlKRt+3+o7t6us=
+	t=1779484889; cv=none; b=KJQFcWQiyBYRc9NzCmJYXwewMRlSdDZ3gmIfnBoXUiqIDiPd35pLy1YTbhR878CoWkLPETF/MDoQwmxGsASetIWkpXmjFkoUtYhzhXTP1Vu9qE82TUZJ7aatk5egNUBx4yBeSa3oKtted6SPxdpdsEwKz8c6quIrIOdGEqUsts4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779484888; c=relaxed/simple;
-	bh=iFBnWNy9SV4SAcwunY1yH81YlisibbWmCe18BpxZkj4=;
+	s=arc-20240116; t=1779484889; c=relaxed/simple;
+	bh=48aemOcrWCaMuI9OaLb1kPeXmDDnY3b+T5yp/gEBE7s=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hO/Jz+528BeIRKkWSiMeOYcGHnRXPQLhlwbYzizC3lmql1HCbQ2MSRhaK7exo2ii29eyZQAK0f/XLt7d1IvUyWOyfMWDYx81HOrDCoukE+B3O7fcM6tzk2fb/ovG3QVZICPthmzd6azPbLNOYPDpJRfWRR2UBBhQxUqOxiLMVJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=Cgtg4u6x; arc=none smtp.client-ip=209.85.128.47
+	 In-Reply-To:To:Cc; b=HMtB/+UEq7YauLCXwsnLKI2us48G3bfsepmyoo9wSt989wPGfMJobrNoYTbMprrSNnWgZvd111SMGsOaVj31abdCfWeHx7B/Yj9u476+f5AsM9UcTasY4A2mphT2s5E9dIz0F6JKEG7mRMvsL5U/2iV+2z4G95eXMYuEpAC7/rI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=YyPTL4sA; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="Cgtg4u6x"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-49048e043e5so5875165e9.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 May 2026 14:21:26 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="YyPTL4sA"
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-49040362e4aso18616365e9.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 22 May 2026 14:21:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1779484885; x=1780089685; darn=lists.linux-m68k.org;
+        d=baylibre.com; s=google; t=1779484886; x=1780089686; darn=lists.linux-m68k.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VkH/fl0oDwirECp71YLEqMq9AkaqaSB6/Kul4n+Czac=;
-        b=Cgtg4u6xcQ77PG8RUyqNOhbh4F6bru4TbW9KV4VSuvPJ9K7T+aMHj7G1XI92i+Q/mm
-         HPr9xnMjX8ZRDBxbptpT98ZjZ0Owc12HB1gQ4baEBevvuxw4T5vP6D3q5KboIewxLH8P
-         sYpVHUf8ThPPZHj7HR1bEEF2T3OXxXrsL2hCVOTW0HcnLZ4+50Cf07jBZ4L9jOcZqRuF
-         2bopXSTlAmAoSi9rn4XDs6OKpl+OexaQLz1F+wpNvKgnqz7X/tbhJNAV3pQmUHULnI4H
-         GLqGPl6RHbrf4xNgrLG1PscJwZ5RyGaa+nRHtLvS2zzk4ZdFcWdbR/pOhBWxwWdvsq41
-         VyhQ==
+        bh=PT9tXjqszedmkm8utnuW3FRNsoSqZ3umHWBcRjh1WUU=;
+        b=YyPTL4sAGXfL2whN2+OiCHptGIOiH4CNrBv6c3kmrCPPMYK8phrE+ZR/N9OA+R/48Z
+         UQBbiaRP/DIjHYokAzogFUGNNAOW1E/g9csXerGJSJNtzGOyyEQCIy4yFT147PBBj6h9
+         7zlglO9xbVExOuWmQ1WplYARGnie4VSQOrcP2v+Zg+ZRtx14+/Ktk8gPx8AwkCmphZEr
+         VO1hoqJqmhzH8JjkDTwMYxqydseXQRmqBTlZ4ZL/SLttSSWYCnyw3QEoq1n+dbyJIw3e
+         QHoXg7PnPw+I0yjQFqbGW7k4FUxCYK0jWgwV5Dz6X7BEKPAPD1jTP6OM5ERTwKmy0Rmo
+         LbYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779484885; x=1780089685;
+        d=1e100.net; s=20251104; t=1779484886; x=1780089686;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=VkH/fl0oDwirECp71YLEqMq9AkaqaSB6/Kul4n+Czac=;
-        b=VLOlswTU7RG847fETYifCL6nBn6ojhl4UatKR66mQot365tNShjERo9FOAfoalSLoD
-         aYHOFqZhSyGLbpgRFYC4zJyHSzg5B7QebJk2NXBu+tKgRbcICIUXtnEcjSom9cSJxw3Z
-         PRYoM3us3hZuj6fIK3dhaSBdNf7BHkXJ3UdzGuV500YEzMEV6zQM/LNACeFWW8ov014j
-         i9RgnGjvwOh5rCYyaItreHqtrNMyljwqTxSfxIeQPP55nAnZtAlx/o8DELTflvgCJzpk
-         SaT5URPfXmEiJ95PMqi3cSFLPqmYhpeprVEqC/D8HqGlMuKhEkEgMWE52h7pXKOUxWXo
-         iWcg==
-X-Forwarded-Encrypted: i=1; AFNElJ8dT+m3hrxZ3vDLTsKaKqoHRPV84HiCFbrYFLaAhQgmAnsI8lNP5oQWw9EpNTFU6U/c0OCWPWw0ahlt@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzeyMDvqlcY8vvPRO3NWqosqx48RGC/ejtdqiteJGtNFWlRYg+O
-	MD+sufFd2rq/kdKaqND7DFpSs+344v5UB7vbQLMoOKXpjoiqfEpvs7xk26GKQ81ZOyk=
-X-Gm-Gg: Acq92OHsJbP+CBR/rP+ua3dBLlwRbbRcEuEnUrMq3bEiZ6hX/+zOymeYcRgPTeRGAYL
-	S361/kwdFFazsW/4oUUDEvZ4tYXNqiKiGNkefvxg4oF04CgKXlp1/4CrqxDjQSUsB+gFL3bq7CA
-	gYK0nkj1dLw0q8MO6/8K5Zp0qTFsSuRCZ+l5xUPXewSnFc5xIXgbJ24RV5nxC4QnFvySa7cYi9/
-	Nzc6fl5+NEWywp9J3+9wWZpjR+Qefrj9anp/QX7VdiBcnuZUK8ruxz7wwDwi0EJFH1VeWR+vwVz
-	6zFztlY9IDvZi3c6VLSTwGNjqNuDNNrMt5Zvp2vrul+0q+GQdDb6ul2DjnX56HyxXDtqG4vZB4p
-	VxLFQnoHv/ShzbAWqT13kYNGNl3v66fBtIGtrolnORpM9d83CCrTNjenew7f3G5KtYXH6efxltG
-	RHUD6+1h3bUNAqLWpA4Bj8e/XuGJr3WgE=
-X-Received: by 2002:a05:600c:1c0b:b0:490:44eb:c1dc with SMTP id 5b1f17b1804b1-49044ebc2e0mr79758455e9.20.1779484884911;
-        Fri, 22 May 2026 14:21:24 -0700 (PDT)
+        bh=PT9tXjqszedmkm8utnuW3FRNsoSqZ3umHWBcRjh1WUU=;
+        b=LWsqaQcz4jX3d+maeIFl8uqkChCW6LbDquQm0Z4me4peKmXWdNBwo2CbLv58jVzPAl
+         g98pIbigiJfPrJI+v4lbUToRlDN6tBQRqu37PyuOeliJuknJ8WK661vCoIyLKSHLFhFd
+         hu9ADBpn2jpnSrA8gxU6vpjcVbCytopshi5huDIZESf2qYuAgyGpiwysNeIOY9dqcYc7
+         Xv9DA6bDNYZS41wEiYJhxoGkoNAhy58EiwByKIvCA19cyHTyyx/jn7IZVXjQSHEvJfFQ
+         wrgNawFDSpMM6gqOciLmJryQVLH3WdrJp1R4ZG3P93dV8j/emyvz7pXQNjT9Xz6IH7cZ
+         C1kQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+c9yrAdPb4PQZHScEmN6Fgz+FTFbtcRh16PyrqHXbc7M8xYB06pNmQ/NwZltnrMMrMuyXp/u5I7BYY@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwDfU9bmPGNSn52Mi/tw3ZtknxrCJ/hIrRQ1np2aePZ8deVEWWX
+	Ip7/lOGyDNmH2EfeBauPjXujrJKI9Jua+XcVH9O9EwZsH+/zhql1QudeCj8zydZnUP0=
+X-Gm-Gg: Acq92OFXcgbu55wDXVS/VTcb3Y7qPu0yiy1eCCMw4Pri14dxATUmei3o1fw3GY2lgF3
+	/SDXfUZtARFUr0g6oCTKWTFAEK55cXRm/q59e+CTv69n+/InIAsZeoy4rQuawVkS4kdcAdYIeSd
+	Z56vGtOe1ZHT5BmOiLxKhHOZcTmPpqU55lHtsVJRu0W9hvZNjoHzB9hglnCJR0UzdhSmkyDuPDZ
+	z6S/7rWdDH3qskkZIaXsRqqFBSt63IF0O5qoYTxMwJV7q7Jg01NMgXXv+nhZHZGx8lycnQOYFqB
+	c6zsj50HorpQW8V+dUeArpxc26PUukZtWPvyMLXfJ6xHfEIX84Ua6l41lu+o7lFUpP/rxAN7KQi
+	jDmnHsd69UbP8wPU/LPP7W68UgIRSgMMqioGJ/gr3ADWMMujl+tGPShZT8Kr+FVCCoCKyO+tOyG
+	PFiACKouxWHuQDBDGLwwUE9iHpwJP0Al0OTNkQ5Fm35ZuFB6O6V93T
+X-Received: by 2002:a05:600c:474d:b0:490:467e:a3d7 with SMTP id 5b1f17b1804b1-490467ea4a4mr57405925e9.30.1779484886067;
+        Fri, 22 May 2026 14:21:26 -0700 (PDT)
 Received: from [192.168.0.2] ([2a07:7e81:7daa:0:62cf:84ff:feee:627])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490454a0b82sm73312225e9.9.2026.05.22.14.21.24
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490454a0b82sm73312225e9.9.2026.05.22.14.21.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2026 14:21:24 -0700 (PDT)
+        Fri, 22 May 2026 14:21:25 -0700 (PDT)
 From: Angelo Dureghello <adureghello@baylibre.com>
 X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
-Date: Fri, 22 May 2026 23:20:36 +0200
-Subject: [PATCH v3 08/11] m68k: stmark2: use ioport.h macros for resources
+Date: Fri, 22 May 2026 23:20:37 +0200
+Subject: [PATCH v3 09/11] m68k: stmark2: add mcf5441x DAC platform devices
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260522-wip-stmark2-dac-v3-8-16be0ad35a67@baylibre.com>
+Message-Id: <20260522-wip-stmark2-dac-v3-9-16be0ad35a67@baylibre.com>
 References: <20260522-wip-stmark2-dac-v3-0-16be0ad35a67@baylibre.com>
 In-Reply-To: <20260522-wip-stmark2-dac-v3-0-16be0ad35a67@baylibre.com>
 To: Greg Ungerer <gerg@linux-m68k.org>, 
@@ -88,53 +88,61 @@ X-Mailer: b4 0.15.2
 
 From: Angelo Dureghello <adureghello@baylibre.com>
 
-Change resource declaration using DEFINE_RES_*() macros.
-DEFINE_DMA_RES() is for a single dma channel, not a range, so used twice.
+Add mcf5441x DAC platform devices.
 
-Also, some drivers assume IRQ resources are from index 1, so just to stay
-uniform, moved IRQ resource at index 1.
-
+Reviewed-by: Jonathan Cameron <jic23@kernel.org>
 Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
 Changes in v2:
-- none
+- fix copy-paste error on naming
+- use DEFINE_RES()
 Changes in v3:
-- moved this patch (cleanup) before adding new resources
-- moved IRQ resource to index pos 1
+- simplified DACs as single resource entries in place of an array
 ---
- arch/m68k/coldfire/stmark2.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ arch/m68k/coldfire/stmark2.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
-index 9263b77bd09a..536252ccb87e 100644
+index 536252ccb87e..d3be4b2953fd 100644
 --- a/arch/m68k/coldfire/stmark2.c
 +++ b/arch/m68k/coldfire/stmark2.c
-@@ -62,21 +62,10 @@ static struct fsl_dspi_platform_data dspi_spi0_info = {
+@@ -8,6 +8,7 @@
+  * for more details.
+  */
+ 
++#include <linux/ioport.h>
+ #include <linux/platform_device.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/spi/spi.h>
+@@ -83,8 +84,28 @@ static struct platform_device dspi_spi0_device = {
+ 	},
  };
  
- static struct resource dspi_spi0_resource[] = {
--	[0] = {
--		.start = MCFDSPI_BASE0,
--		.end   = MCFDSPI_BASE0 + 0xFF,
--		.flags = IORESOURCE_MEM,
--		},
--	[1] = {
--		.start = 12,
--		.end   = 13,
--		.flags = IORESOURCE_DMA,
--	},
--	[2] = {
--		.start = MCF_IRQ_DSPI0,
--		.end   = MCF_IRQ_DSPI0,
--		.flags = IORESOURCE_IRQ,
--	},
-+	DEFINE_RES_MEM(MCFDSPI_BASE0, 0x100),
-+	DEFINE_RES_IRQ(MCF_IRQ_DSPI0),
-+	DEFINE_RES_DMA(12),
-+	DEFINE_RES_DMA(13),
++static struct resource dac0_resource = DEFINE_RES_MEM(MCFDAC_BASE0, 0x100);
++
++static struct platform_device dac0_device = {
++	.name = "mcf54415_dac",
++	.id = 0,
++	.num_resources = 1,
++	.resource = &dac0_resource,
++};
++
++static struct resource dac1_resource = DEFINE_RES_MEM(MCFDAC_BASE1, 0x100);
++
++static struct platform_device dac1_device = {
++	.name = "mcf54415_dac",
++	.id = 1,
++	.num_resources = 1,
++	.resource = &dac1_resource,
++};
++
+ static struct platform_device *stmark2_devices[] __initdata = {
+ 	&dspi_spi0_device,
++	&dac0_device,
++	&dac1_device,
  };
  
- static u64 stmark2_dspi_mask = DMA_BIT_MASK(32);
+ /*
 
 -- 
 2.54.0
