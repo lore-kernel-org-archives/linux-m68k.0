@@ -1,263 +1,147 @@
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418571CD1E4
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 24 May 2026 21:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779658447; cv=pass; b=ajSrn8LBLOt9XOzHj4LZXkNhP1/e4qudNee4YxVrgygQQsrjjoTXqzi9r9ICQUU02UOAB8RBv6GOWKkDEdykAaUTDJRx8En9KEhfbCrqHg8Yknj4RB+vR5ddfpekXrq5ysTOJ3Vh324BYW/NhDcGBExpim0pmDJ/xnvvQ8rxJcI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779658447; c=relaxed/simple;
-	bh=scbTGzWKrkbb2tr2ByuUctuCpzVcmORNYkqkGCRtn9g=;
-	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HTTcVbuZnKglijBV6Id2NYd0TU8tg0b0ywv3xWzYuhyVdENrd7htAScqe21yX6TBLkz2wUeIwvcMX/rf9g6ZLFmiSJG5bGsIcvdAcdX3/G8IWtmujo9tcPZejDkdfEx/+ZojArTyoLcZT3jyxxoEuqZ2kUnTWNTWgQs8xWOL7eI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=PuNz6MIc; arc=pass smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC6F37C0FE
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 24 May 2026 22:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779662432; cv=none; b=OewLD0X0vK4uYSwnqvTooLRMykFsqTJJ5i/QKno9eHDmnrxK+IGrCU04AWiGSRGP5/33wWvpf8U0UR09wZB8Q6VVHAGMzQUruaZHca1Sb+AUAzHVdkuFGz9Ij88yqUe3MFsrgwBh7w84kmB9Yv5aznsgqa7BAiQS6HzIF1mhkDY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779662432; c=relaxed/simple;
+	bh=r1UOA6QDMVbLt10TpU5riUnUKzso2VHkTZeHu02qA0E=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=sXlAU1szo6pjjLmRquX1wv7aFhrY5f9F/wA3F74UAZaP+qpObV5xkn4UZIxLVqi8AR+hHfkdyBJ4Aw06H2oNtzupQdEfG5FiDgClAjqbBZ5x2MGzCQGaJ1h46gxkZeN3qvKAnNVZkp6WialcLV/HnWTVn8vrX/ymOMOReD3M2PQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de; spf=pass smtp.mailfrom=posteo.de; dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b=kmKKGbl7; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="PuNz6MIc"
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-bd8f6ef4ba6so1320352066b.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 24 May 2026 14:34:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779658444; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Cz8b0o2kg4Wtt3hDmwfUzz80CRmypXUgOW12zs86ro+7J7l25QYkKf3NmKPXiJtzQN
-         SEzGx9a+GGC5huRm92+XyHfX5cf2hlTUZqRjbjhCsxYbyb8DQtouBuCfP23Mn5fSDc8w
-         iIEwGSpu3B8wTvqjLox04bSqk0Dssj1DS4WuEDCnKnupLhnzKenWmtkXnjyMaQ06ckUX
-         HXBi58eypOpA8jzRxAYZBtAQDsBisSv+e5Qr6LdKoDWHLhB1VIwUidMNSGScgRK8y+OL
-         Db+3chMAnwp9StEeRVmJ2ITLGQB38XTpnGvgvGibi6hP4ZBpZTv6nJzGL/dKwPA8DKMn
-         UyZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:dkim-signature;
-        bh=4v82pm3nplUGvi0gYlaKk5FJ7bsCM62ozlNkSbZa6Zs=;
-        fh=DO3YlUa3EFseMHcIoXqU4QPAtRN5OD8XgtUFKc5yoTs=;
-        b=UA0HThTTUIEEmDSZzhwEQRsR8mbHVyJxodVYcOIf2B/O8FFPUN2ht44siilaIHuhiy
-         HC+dLBYPVaUQyv5dKPCGDVdcCpkE1QdWCAEcv4sv4vPFEIzusDn8yoKg1Ksw5QIOJrHc
-         e7umrXi/J+BKFKnYpuwO0QPqyA5O86yoLr21rYhNcyarv8jd/GCKvNZ1HH4hNSpn0fjo
-         YqgH4NmRMwzS4pBQxJGRZ7iSLXusi6nhFD2LttqjgF09bt+CVWtjRDrZEDh56x2wku3P
-         s5ggAzU3uRXwp9miKDpfTeMAfGgo3/Xit1gOEqgeGaARb2DDccDRAjFvjCj2LC1hjGgu
-         mtWA==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1779658444; x=1780263244; darn=lists.linux-m68k.org;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4v82pm3nplUGvi0gYlaKk5FJ7bsCM62ozlNkSbZa6Zs=;
-        b=PuNz6MIcXRydisyPJ9ua8bdsybq4p5t8I0zvjyKRemyC9HK/7qCxB1X+0+W3nI/w7B
-         PTvf+XJPD6VNxUasGJatXZ74iZ9ZaZJ4posR0cNO+999kBgNY/k+4rZ0tIzrbKjKSBZ4
-         SSpV+MVcedNbs/80cESkcJWurnnGTDX8ssIwVgdEkjgWCljglaqCzJjxKoBimNHcgR+k
-         hwUc0nPdryMI71vLZuojoJnkwfTWQBkd1quPA0z3lzKBN5ajaLfrmfl6kOhl5fgzs18E
-         867m8+KvnUuV3deufJd7aq50eeYjssZip2W3nhqvVTlWqcrYITWkaaVBHjCqwr/ZYB2a
-         9ZdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779658444; x=1780263244;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4v82pm3nplUGvi0gYlaKk5FJ7bsCM62ozlNkSbZa6Zs=;
-        b=R/BpYrUp3BwwU4mKcVVaIbfFgcWo8cgqz+h4zUVA6PmiOUFZxVwgEexgvAZUk2CHRi
-         XZqzMNhwXM/aY8psAx3kXL60Th8vlHuPtL5rsu59f/mR+kSt0HhaawWkt0sT9//38IXV
-         SxJGWgoDL2ypCWJKWlvJzEwhKhSJi4hynuehpucGIiBCi8uWTjTJG3UEjDQ4Nw/Rnnhr
-         kB3+jy94ftMHg0O2hRX5h9Gbi7e4nluKya7oVPjjq9CgOvTH0iYSgoNzOJSqv+K1wydR
-         XrdP+umXHyuJdOHEJ1rxHpcKr32LiLsYd/tV+ORH/MkbSMaasuE9X0Nou84TNTTN7mbE
-         yMww==
-X-Forwarded-Encrypted: i=1; AFNElJ91Egeh0lSNhgR0wIQoATHCc5e4xMvrFiTTyNwV1ecDW3xGOJLGGCjR475XQGZ5moR7AJFSPCW8cq2A@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxDNf06g63OQ6vSUnxn/wg1Dne+vKzHAiIui2dKtsZukVsH9a2B
-	ER0KwUnXhiHnO06FIJlvznKbskLfClyKgP4qQkdH6YAwrDukkqrGqLksfveL7Aif9RBQpJkreZf
-	BG4XCEK4TkA6+edqUWeuKJ2WQ+UH7e7yyNQUmiS+eiQ==
-X-Gm-Gg: Acq92OH/CY4y5lABNAtjxEG4cj5S5L3sYwBu/rO70Yl9yToZ140k3hDc1bhQhvXoxz2
-	oUSnG03QDeOtE+xUCMeZDYXqYCmzUvte/ubD6RpZ0owRXxHY2KabFd8D2U3dxuwtCAhTR2Guy+H
-	yP1USBu24jyiqIYVagYUqJ6wpvFVw+cd7BMuJNieCjHB62ugYuVa7yK59SeY3Y/bx5D6q9JYIfV
-	o1Dbzkn9gjN3pJFCP2e8W2srUEoDbdG2/Hz55zQRPeKB1DVZ4gAyZ7FJVhh5k1bM/eio1a8tk5q
-	3BG3Px3liY36YH+t/5VSeRe7buZhE6ve0/BcVg9VjqfCb2E=
-X-Received: by 2002:a17:907:75f8:b0:bc6:1c2:ee46 with SMTP id
- a640c23a62f3a-bdd22e30ca3mr532419766b.11.1779658443593; Sun, 24 May 2026
- 14:34:03 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 24 May 2026 16:34:03 -0500
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 24 May 2026 16:34:03 -0500
-From: Angelo Dureghello <adureghello@baylibre.com>
-References: <20260506142644.3234270-2-gerg@kernel.org> <20260506142644.3234270-8-gerg@kernel.org>
- <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com> <fdd6fc14-f607-4186-8db4-25de973ac322@kernel.org>
- <CALSJ-wCrNDv3N2Kdo0uoXsKGtp0GthJRBeYTNQA1gGE2akUWFg@mail.gmail.com>
- <9391b782-7727-47fa-ac37-05cd50821d35@app.fastmail.com> <CALSJ-wBRmUpjz-_ehZ0U0Gu+fPqRUeAn47E0_pwpXQa0tCNzVA@mail.gmail.com>
- <CALSJ-wCuZs9cBJsuOOYMEYM6xOXZbdOm_pr=70d3HRYYSYJ0KA@mail.gmail.com> <CALSJ-wDm8NoB8mF3KSx49XMSWz1vjwFhSmgJZWq8pN2pCf12mw@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b="kmKKGbl7"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id BFA3D240029
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 25 May 2026 00:35:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.de; s=2017;
+	t=1779662115; bh=21o/xwwmDVfuFXFMoGsY/mGvvY5gAZ5X0zqmGuYe3QU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:To:Cc:Autocrypt:OpenPGP:From;
+	b=kmKKGbl796le6XQKyxazsuiiu46rwE10xlWpl3DAbc6jpMR5UEQ5GnQiwDqRoPXhJ
+	 xdXs+FNoRuMzAMpeAw51+B6fIw2MA7TOlR6foJtKRmwDffNWApcE/h3l/gTBZeyVS4
+	 yM54Zb4NF+XfVITMuOhKAe1uAsP+Xgxbaxpve1w/rcZKjLAOR2q5VKuOdb+HZy8wT7
+	 cS1pIa0xiRI3LeoCEYaJKHd8nB7AaDyiL2UnuOnyVDC9w3zGEUMiVtvA+payODE0oF
+	 aUyj0vr6T0OMjkYz0wk1/mUbzrJ3C0Cmp5B//+Ur4I+NOlUH73KQXgxFVKGxaly0Tw
+	 Mv47bYzokYqLQ==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4gNv3P53smz6twQ;
+	Mon, 25 May 2026 00:35:13 +0200 (CEST)
+From: Markus Probst <markus.probst@posteo.de>
+Date: Sun, 24 May 2026 22:35:15 +0000
+Subject: [PATCH v2 2/2] ACPI: SPCR: Support UART clock frequency field
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALSJ-wDm8NoB8mF3KSx49XMSWz1vjwFhSmgJZWq8pN2pCf12mw@mail.gmail.com>
-Date: Sun, 24 May 2026 16:34:03 -0500
-X-Gm-Features: AVHnY4KPts6giB7v-VLhDVFgaj3UBt2D1rd6Lp0dLsbZHZD9ROK0A3o-BziA5dQ
-Message-ID: <CALSJ-wDY_8SMAvKT0L6wMbH1=w5pZNmV=xyeX1REb=BMRZWj-g@mail.gmail.com>
-Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX() functions
-To: Angelo Dureghello <adureghello@baylibre.com>
-Cc: Arnd Bergmann <arnd@kernel.org>, Greg Ungerer <gerg@kernel.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, 
-	linux-can@vger.kernel.org, linux-spi@vger.kernel.org, 
-	Vladimir Oltean <olteanv@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260525-acpi_spcr-v2-2-c042089d73ca@posteo.de>
+References: <20260525-acpi_spcr-v2-0-c042089d73ca@posteo.de>
+In-Reply-To: <20260525-acpi_spcr-v2-0-c042089d73ca@posteo.de>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Ard Biesheuvel <ardb@kernel.org>, 
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+ linux-efi@vger.kernel.org, linux-serial@vger.kernel.org, 
+ Markus Probst <markus.probst@posteo.de>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=994;
+ i=markus.probst@posteo.de; h=from:subject:message-id;
+ bh=r1UOA6QDMVbLt10TpU5riUnUKzso2VHkTZeHu02qA0E=;
+ b=owEBiQJ2/ZANAwAIATR2H/jnrUPSAcsmYgBqE30d/Ky535kkEs+jKKn8OQQkNdVumjA0gDnkP
+ gQRdkNXGcOJAk8EAAEIADkWIQSCdBjE9KxY53IwxHM0dh/4561D0gUCahN9HRsUgAAAAAAEAA5t
+ YW51MiwyLjUrMS4xMiwyLDIACgkQNHYf+OetQ9LWgRAAvdrM4XZHCaojJl1n3pJlb87437N7Ysl
+ cNkiSgsUT45gB6Eh9s+7sx02CKP4udH4Xd4oUHA1y4qPfoEsoaULCTmr7xhB9GxUQrxdjumhQpv
+ 0P5dh8/m2fOEDanPTKIabSUOB8dwywtABfg8AoZMQLN1XMrwgh7HrFZqOVjYmwv0pcWzDY9KqkQ
+ iZ7e3pW6P2ZNmo2KMbGAYVVSRUIn+u0+qx2r4opkHThg/UCLXQxyhPtudXlMLW0lMByUd9XlmVz
+ fsnaNuro4fWVZiRiuqeEL5BJ7OmYiK/LjJchgX2WJZJUJDEwbSG99IDP+86735QCcLZtc0HRrs0
+ 6jPy0YzCL6BznKvT30IvuK3o+cz036XXCa7dgfkPt5pUBD0Az/Q5vDCWnidSh9uYm0RM2p/yBAp
+ WzEfolY0wxFGjJui5maHYcac91qgVEmJDJDH0iXltBe9VoTerHKmSUl+dU7fecJ1n/x+YWcFNRC
+ aeTlXwnseN7mCc76bxLnc7IuJHf0BoWgb7b9Yw+C/+59u5qb7ejArucymV7sF8cJX6ZHixQjPSQ
+ QS02GYsjcWWWsK5PeJISbt+Tceu5OiQ0lSVMntbLzlti6x3OfQ2qaLtAymEtMtMx57a+YNcRdWB
+ fzBf1iHIImPl8CZ2ZX96MVW2VsWVsLR3RghguBCp1Bm0BGyDYODM=
+X-Developer-Key: i=markus.probst@posteo.de; a=openpgp;
+ fpr=827418C4F4AC58E77230C47334761FF8E7AD43D2
+Autocrypt: addr=markus.probst@posteo.de; prefer-encrypt=mutual;
+  keydata=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
+  aBeNN4ijKZchBXHPgVx+YtWRHfcm4l8=
+OpenPGP: url=https://posteo.de/keys/markus.probst@posteo.de.asc; preference=encrypt
 
-On Sun, May 24, 2026 at 02:17:07PM -0700, Angelo Dureghello wrote:
-> Hi All,
->
-> On Sun, May 17, 2026 at 03:41:31PM -0700, Angelo Dureghello wrote:
-> > Hi,
-> >
-> > On Sun, May 17, 2026 at 03:04:23PM -0700, Angelo Dureghello wrote:
-> > > Hi Arnd,
-> > >
-> > > On Sun, May 17, 2026 at 10:08:22PM +0200, Arnd Bergmann wrote:
-> > > > On Sun, May 17, 2026, at 21:43, Angelo Dureghello wrote:
-> > > > > On Thu, May 07, 2026 at 10:43:01PM +1000, Greg Ungerer wrote:
-> > > > >> On 7/5/26 05:12, Arnd Bergmann wrote:
-> > > > >> > On Wed, May 6, 2026, at 16:26, Greg Ungerer wrote:
-> > > > >
-> > > > > [    2.270000] fsl-dspi fsl-dspi.0: Not able to get desc for DMA xfer
-> > > > > [    2.280000] fsl-dspi fsl-dspi.0: DMA transfer failed
-> > > > > [    2.280000] spi_master spi0: failed to transfer one message from queue
-> > > > > [    2.290000] spi_master spi0: noqueue transfer failed
-> > > > > [    2.290000] spi-nor spi0.1: probe with driver spi-nor failed with error -5
-> > > > >
-> >
-> > About this issue, it fails on dma_pool_alloc(), so tomorrow will check,
-> > i probably lost some dma config option.
-> >
->
-> so i worked on this open issue above:
->
-> - moved to master and rebased,
-> - crated a wip/edma branch,
-> - bisected and found the offending commit, before this, mcf-edma driver
->   and connected spi-fsl-dspi (using edma) was both working correctly.
->
-> 7a360df941a4bd60847208de59f1ac8b166265a2 is the first bad commit
-> commit 7a360df941a4bd60847208de59f1ac8b166265a2 (HEAD)
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Thu Oct 12 09:52:27 2023 +0200
->
->     m68k: don't provide arch_dma_alloc for nommu/coldfire
->
->     Coldfire cores configured with a data cache can't provide coherent
->     DMA allocations at all.
->
->     Instead of returning non-coherent kernel memory in this case,
->     return NULL and fail the allocation.
->
->     The only driver that used to rely on the previous behavior (fec) has
->     been switched to use non-coherent allocations for this case recently.
->
->     Signed-off-by: Christoph Hellwig <hch@lst.de>
->     Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
->     Tested-by: Greg Ungerer <gerg@linux-m68k.org>
->
->  arch/m68k/Kconfig      |  1 -
->  arch/m68k/kernel/dma.c | 23 -----------------------
->  2 files changed, 24 deletions(-)
->
-> So i can try next week a patch for edma looking what has been done
-> in fec, and since i am probably the only with mcf54415, will test it
-> here.
->
+The Microsoft Serial Port Console Redirection (SPCR) specification
+revision 1.08 comprises additional field: UART Clock Frequency [1].
 
-Looking into this better, looks like the above commit was meant for the
-majority on non-mmu ColdFire. I think mcf5441x and some other with mmu
-enabled can flag pages as "page cache disabled".
+It contains a non-zero value indicating the UART clock frequency in Hz.
 
-So i would re-enabled that code only for such mmu families.
+Link: https://learn.microsoft.com/en-us/windows-hardware/drivers/serports/serial-port-console-redirection-table [1]
+Signed-off-by: Markus Probst <markus.probst@posteo.de>
+---
+ drivers/acpi/spcr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please let me know if i am correct.
-Thanks.
+diff --git a/drivers/acpi/spcr.c b/drivers/acpi/spcr.c
+index cfacbe53f279..16f94073fde6 100644
+--- a/drivers/acpi/spcr.c
++++ b/drivers/acpi/spcr.c
+@@ -228,7 +228,7 @@ int __init acpi_parse_spcr(bool enable_earlycon, bool enable_console)
+ 	pr_info("console: %s\n", opts);
+ 
+ 	if (enable_earlycon)
+-		setup_earlycon(opts, 0);
++		setup_earlycon(opts, table->header.revision >= 3 ? table->uart_clk_freq : 0);
+ 
+ 	if (enable_console)
+ 		err = add_preferred_console(uart, 0, opts + strlen(uart) + 1);
 
-> > > > > DSPI is using edma, i will try to understand where the issue is asap.
-> > > > >
-> > > > > About how it works:
-> > > > > - for accesses to edma module (IP) mmio registers, must be native
-> > > > > big_endian, so using the "be" suffix in "mcf"_edma looks ok for me.
-> > > >
-> > > > The twist here is that with the way that readl() is defined on
-> > > > coldfire as a non-swapping operation, and the generic
-> > > > definition assuming the opposite in
-> > > >
-> > > > static inline u32 ioread32be(const void __iomem *addr)
-> > > > {
-> > > >         return swab32(readl(addr));
-> > > > }
-> > > >
-> > > > the function called ioread32be() actually tries to access
-> > > > the registers as little-endian. I can see two possible ways
-> > > > we got here, but don't know which one is currect:
-> > > >
-> > > > a) the device actually has little-endian registers (like it
-> > > >    does on i.MX, but unlike all other coldfire devices), and
-> > > >    you just never noticed because using ioread32be() worked
-> > > >    as you expected.
-> > > >
-> > > > b) you tested the driver using an ioread32be() definition that
-> > > >    did not have a byteswap and it correctly accessed big-endian
-> > > >    registers at the time, but the version in mainline today does
-> > > >    not.
-> > >
-> > > Ok. The ioread32be now works properly since i had applied Greg patches.
-> > > I generated an error in _probe on edma channel 2, reading status reg.
-> > > looks consistent:
-> > >
-> > > 	iowrite16(2121, regs->erqh);
-> > > 	iowrite8(0x77, regs->serq);
-> > > 	iowrite8(0x12, regs->ssrt);
-> > > 	
-> > > 	u32 status = ioread32be(regs->es);
-> > > 	printk("%s() status: %04x\n", __func__, status);
-> > >
-> > > [    0.140000] mcf_edma_probe() entering
-> > > [    0.140000] mcf_edma_probe(): allocating data
-> > > [    0.140000] mcf_edma_probe() status: 800012f8
-> > >
-> > > If i am not loosing myself in this r/w labyrinth, the path should be:
-> > >
-> > > 1) Greg removed coldfire readl/writel, leaving now the standard LE r/w,
-> > > 2) So the ioread32be swaps the standard LE read giving BE.
-> > >
-> > > Am i correct ?
-> > >
-> > >
-> > > >
-> > > > > - for accessing the "tcd" memory structure, that must be, from what i
-> > > > > remember, anyway in little endian, independently from the cpu core
-> > > > > endiannes, this is the reason that big_endian flag is needed, it is
-> > > > > used for tcd area accesses, so the IP module was built.
-> > > > > The tcd area may be similar to pci accesses (see mcf54415 RM 19.4.16).
-> > > >
-> > > > edma_read_tcdreg() calls into edma_readl(), which is the same function
-> > > > that is used for normal register access, so from what I can tell,
-> > > > they always use the same endianess here.
-> > > >
-> > >
-> > > If edma_readl was using
-> > >
-> > >         if (edma->big_endian)
-> > >                 val = ioread32be(addr);
-> > >
-> > > and never changed, without Greg patch, it was likely returning little
-> > > endian for coldfire and correct LE for other arch ? :)
-> > >
-> > > I remember something about tcd area was coded LE, but will investigate
-> > > better, now i am over midnight.
-> > >
-> > > Regards,
-> > > angelo
-> > >
-> > > >       Arnd
-> >
-> > Regards,
-> > angelo
->
-> Regards,
-> angelo
+-- 
+2.53.0
 
-Regards,
-angelo
