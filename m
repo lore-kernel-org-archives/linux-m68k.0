@@ -1,136 +1,276 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F3237B00E
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 07:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E103D8101
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 13:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779781932; cv=none; b=NYC5uOl2AmT61pYl5wTezWabPhxYoYPwJtBYmOtuSfzigUS7lhMkeKRRBSL7YVgF1WhhMmaO9nw7K7rZ2ChiiOigVyXRdN7RxzDgMbDZRatIpCRIaHnf69/sGyrhl+1sPglq5Fm52u2JCfpnFb1RMElcJpqSD3HIwEOPMnkK/iQ=
+	t=1779802263; cv=none; b=Qc6fomCx4hF810USag5TyX5rAWeT3bb/SE/j3cEcTSRVtx6Wgp1qTjsD5gSwP8buC9E/DqHcMDSbhpQaHumdax4paOdNbIL2DMzoTQd4ClPDSHa+nt25yjdkSFN3fcAOuOkXBLnCi2kYWMpkzTTMB7ijnxIJz1nIrouKGvjl59k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779781932; c=relaxed/simple;
-	bh=Pvh2PlS6jmGoGriGe4/DRNNI1EijkmN8VHb/ZRF0Rjo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=QhEn8Ey6bfRuQDaQNMyodBcIZUc1j85D0ecXDQ8FxnjzttM7V6FCiZNIokcafdhswl/IuFAEKOMMdsBAPyq1S3ai6mfb35j+ji8OhmyXLHCt82/0OKAqYkMATtygMttntTuKKlUdoiYiGqfpIFdpBVDP5o6TQ7iie02FWfULYg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jZn2TFKO; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1779802263; c=relaxed/simple;
+	bh=BeT+RqhNkn0jpJ+SIU/uSUnaiPTDO+bspvY4tL8ckrc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bkaJx58j4JfyoDdE8JJOgYIlA1IlN4aL4C1rxdc+YN4p8SoCjwz7GJEk2qS6GmmfZxLBwVzbNCRQOM5e3TwDl8qTCIcm55BHRZRASiM3qHZgDGkMy7h6F5pXBDxCrk83TEtwnlt5fpVgkzvog9wsM7jnnki8gdh+EGyxglts3Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gu9Fx7SK; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jZn2TFKO"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1779781931; x=1811317931;
-  h=date:from:to:cc:subject:message-id;
-  bh=Pvh2PlS6jmGoGriGe4/DRNNI1EijkmN8VHb/ZRF0Rjo=;
-  b=jZn2TFKOqC6z7Auxunvm7HlTg9CiHkssNN1cxD8N3KT+jv4QxTuNMb62
-   DUmKEhCn8EIbfxm3F40U/u+ezjlLi/imnXoKhobxcNCHCSXLQLnPxzlTl
-   WT3pAoolAVZHsb4U61HQhVVInY/69u/8ZeOPg51fMWOMLNNGU10JUzfEk
-   VhyjsRewPPM+jP1c9lI0ejLmyVKIRpGczTrxqyhRCNkeTHX+LNsH0sjpV
-   sxlhshw0oEu8hJY/K8ryH8lO2ef5LHbDF52mbRbKq4P731o4ZwaJaxxyM
-   PseHxXA1HsBUJ/ojEiVx723ZBYXGGwVeuajtC/4ItyTPtq8D/keGwNccR
-   Q==;
-X-CSE-ConnectionGUID: /sziXzHKTpmzPalmriQurQ==
-X-CSE-MsgGUID: Nkhn8VjUQPOIAge/KzA3Eg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11797"; a="80622584"
-X-IronPort-AV: E=Sophos;i="6.24,169,1774335600"; 
-   d="scan'208";a="80622584"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2026 00:52:10 -0700
-X-CSE-ConnectionGUID: vLqhH9K4RomCsx9KFw2MBg==
-X-CSE-MsgGUID: Y+MZLmQSRVydGdOBe0wqZg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,169,1774335600"; 
-   d="scan'208";a="246115044"
-Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 26 May 2026 00:52:08 -0700
-Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wRma5-000000002EI-2iG4;
-	Tue, 26 May 2026 07:52:05 +0000
-Date: Tue, 26 May 2026 15:51:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- 26b3f6c06bb2e4c5e933736324b70b732c06ba64
-Message-ID: <202605261506.VnQLBj5J-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gu9Fx7SK"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id DF274434D6;
+	Tue, 26 May 2026 13:31:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B3F1F000E9;
+	Tue, 26 May 2026 13:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779802261;
+	bh=zfr++GQ9MeThNDBnulZ1nizhOi2AUmBRDj/hKcyQDuo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=Gu9Fx7SKsgDY8eiEi5lPhYAtl7pZ9gbntJXKhldJtPOI0OhUJ7yWD06iitx9PFJ+X
+	 WNLsvTyWw8R7KXU5pLQJQd8QW8ZVQXSygHThTurzvv1czd3z4H3ZMybywz6AOGctXp
+	 107j6PWFsRaDNh4M/45uoSG8rJJgdNlixmLqMkGTif9sG/8W1+Y/HgchuZtgu7klVB
+	 VxdzX09FVRxE0BxdbUXzEBoRM+JvJmktPwY3l+gwOQTivbp898Zmn8c2pMegqFkTvD
+	 xdUzi+L/9X5ruqxe7uZgSgHBwqJxJjUObtuI4EcFqwzVLnsdIyHMIamF0x1TsyWd5h
+	 J7n4Lska0KPFw==
+Date: Tue, 26 May 2026 14:30:50 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Angelo Dureghello <adureghello@baylibre.com>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann
+ <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
+ Torgue <alexandre.torgue@foss.st.com>, David Lechner
+ <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Andy
+ Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v3 11/11] iio: dac: add mcf54415 DAC
+Message-ID: <20260526143050.5fca6514@jic23-huawei>
+In-Reply-To: <20260522-wip-stmark2-dac-v3-11-16be0ad35a67@baylibre.com>
+References: <20260522-wip-stmark2-dac-v3-0-16be0ad35a67@baylibre.com>
+	<20260522-wip-stmark2-dac-v3-11-16be0ad35a67@baylibre.com>
+X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: 26b3f6c06bb2e4c5e933736324b70b732c06ba64  Merge tag 'v7.1-rc5'
+On Fri, 22 May 2026 23:20:39 +0200
+Angelo Dureghello <adureghello@baylibre.com> wrote:
 
-elapsed time: 947m
+> From: Angelo Dureghello <adureghello@baylibre.com>
+> 
+> Add basic version of mcf54415 DAC driver. DAC is embedded in the cpu and
+> DAC configuration registers are mapped in the internal IO address space.
+> 
+> The DAC accepts a 12-bit digital signal and creates a monotonic 12-bit
+> analog output varying from DAC_VREFL to DAC_VREFH. The DAC module
+> consists of a conversion unit, an output amplifier, and the associated
+> digital control blocks. Default register values for DAC_VREFL and DAC_VREFH
+> are respectively 0 and 0xfff, left untouched in this initial version.
+> 
+> This initial version of the driver is minimalistic, "output raw" only, to
+> be extended in the future. DMA and external sync are disabled, default mode
+> is high speed, default format is right-justified 12bit on 16bit word.
+> 
+> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
+https://sashiko.dev/#/patchset/20260522-wip-stmark2-dac-v3-0-16be0ad35a67%40baylibre.com
 
-configs tested: 59
-configs skipped: 4
+Given there were only a couple of comments I've included them below alongside
+my review.  All minor stuff.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks,
 
-tested configs:
-alpha                   allnoconfig    gcc-15.2.0
-alpha                  allyesconfig    gcc-15.2.0
-arc                    allmodconfig    gcc-15.2.0
-arc                     allnoconfig    gcc-15.2.0
-arc                    allyesconfig    gcc-15.2.0
-arm                     allnoconfig    clang-23
-arm                    allyesconfig    gcc-15.2.0
-arm64                  allmodconfig    clang-19
-arm64                   allnoconfig    gcc-15.2.0
-arm64       randconfig-002-20260526    gcc-8.5.0
-csky                   allmodconfig    gcc-15.2.0
-csky                    allnoconfig    gcc-15.2.0
-csky        randconfig-001-20260526    gcc-15.2.0
-csky        randconfig-002-20260526    gcc-13.4.0
-hexagon                allmodconfig    clang-17
-hexagon                 allnoconfig    clang-23
-i386                   allmodconfig    gcc-14
-i386                    allnoconfig    gcc-14
-i386                   allyesconfig    gcc-14
-loongarch               allnoconfig    clang-23
-loongarch   randconfig-001-20260526    gcc-15.2.0
-m68k                   allmodconfig    gcc-15.2.0
-m68k                    allnoconfig    gcc-15.2.0
-m68k                   allyesconfig    gcc-15.2.0
-microblaze              allnoconfig    gcc-15.2.0
-microblaze             allyesconfig    gcc-15.2.0
-mips                    allnoconfig    gcc-15.2.0
-mips                   allyesconfig    gcc-15.2.0
-nios2                  allmodconfig    gcc-11.5.0
-nios2                   allnoconfig    gcc-11.5.0
-openrisc               allmodconfig    gcc-15.2.0
-openrisc                allnoconfig    gcc-15.2.0
-parisc                 allmodconfig    gcc-15.2.0
-parisc                  allnoconfig    gcc-15.2.0
-parisc                 allyesconfig    gcc-15.2.0
-parisc      randconfig-001-20260526    gcc-15.2.0
-powerpc                allmodconfig    gcc-15.2.0
-powerpc                 allnoconfig    gcc-15.2.0
-riscv                  allmodconfig    clang-23
-riscv                   allnoconfig    gcc-15.2.0
-riscv                  allyesconfig    clang-16
-s390                    allnoconfig    clang-23
-s390                   allyesconfig    gcc-15.2.0
-sh                     allmodconfig    gcc-15.2.0
-sh                      allnoconfig    gcc-15.2.0
-sh                     allyesconfig    gcc-15.2.0
-sparc                   allnoconfig    gcc-15.2.0
-sparc64                allmodconfig    clang-23
-um                     allmodconfig    clang-19
-um                      allnoconfig    clang-23
-um                     allyesconfig    gcc-14
-x86_64                 allmodconfig    clang-20
-x86_64                  allnoconfig    clang-20
-x86_64                 allyesconfig    clang-20
-x86_64      randconfig-001-20260526    gcc-14
-x86_64      randconfig-003-20260526    gcc-14
-x86_64      randconfig-005-20260526    gcc-14
-x86_64                rhel-9.4-rust    clang-20
-xtensa                  allnoconfig    gcc-15.2.0
+Jonathan
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+> Changes in v2:
+> - remove tests from commit message, moved to patch 0
+> - remove additional blank lines
+> - remove dead code and unused definitions
+> - use regmap
+> - add limit check on raw write
+> - non functional style fixes
+> - add COMPILE_TEST to Kconfig
+> Changes in v3:
+> - add comments where needed
+> - code style changes
+> - remove unneeded variables
+> - use regmap_set_bits where possible
+> - remove macro not needed to define a single channel
+> - set up regmap to big_endian accesses for next patches that will come,
+>   that will adjust ColdFire readx/writex as standard LE (links in 0/x).
+> - add return value check on regmap calls
+> - sashiko: remove unneeded .io_port from regmap init.
+> - sashiko: add select REGMAP_MMIO in Kconfig
+
+Looks like you missed or disagreed with the previous sashiko comment on v2 about
+type passed to regmap_read()
+
+> ---
+>  drivers/iio/dac/Kconfig        |  11 +++
+>  drivers/iio/dac/Makefile       |   1 +
+>  drivers/iio/dac/mcf54415_dac.c | 207 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 219 insertions(+)
+> 
+> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
+> index cd4870b65415..b1a578076188 100644
+> --- a/drivers/iio/dac/Kconfig
+> +++ b/drivers/iio/dac/Kconfig
+> @@ -516,6 +516,17 @@ config MAX5821
+>  	  Say yes here to build support for Maxim MAX5821
+>  	  10 bits DAC.
+>  
+> +config MCF54415_DAC
+> +	tristate "NXP MCF54415 DAC driver"
+> +	depends on M5441x || COMPILE_TEST
+> +	select REGMAP_MMIO
+> +	help
+> +	  Say yes here to build support for NXP MCF54415
+> +	  12bit DAC.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called mcf54415_dac.
+> +
+
+> diff --git a/drivers/iio/dac/mcf54415_dac.c b/drivers/iio/dac/mcf54415_dac.c
+> new file mode 100644
+> index 000000000000..c8c87572d43d
+> --- /dev/null
+> +++ b/drivers/iio/dac/mcf54415_dac.c
+> @@ -0,0 +1,207 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * NXP mcf54415 DAC driver
+> + *
+> + * Copyright 2026 BayLibre - adureghello@baylibre.com
+> + */
+> +
+> +#include <linux/array_size.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/bits.h>
+> +#include <linux/clk.h>
+> +#include <linux/compiler_types.h>
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+
+not seeing any use of this. I guess it 'evolved' away.
+Anyhow, please sanity check these all one more time for v4.
+
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <linux/iio/iio.h>
+> +
+> +#define MCF54415_DAC_CR			0x00
+> +#define MCF54415_DAC_CR_PDN		BIT(0)
+> +#define MCF54415_DAC_CR_HSLS		BIT(6)
+> +#define MCF54415_DAC_CR_WMLVL		GENMASK(9, 8)
+> +#define MCF54415_DAC_CR_FILT		BIT(12)
+> +
+> +#define MCF54415_DAC_DATA		0x02
+> +
+> +struct mcf54415_dac {
+> +	struct regmap *map;
+> +	struct clk *clk;
+> +};
+> +
+> +static const struct regmap_config mcf54415_dac_regmap_config = {
+> +	.reg_bits = 16,
+> +	.reg_stride = 2,
+> +	.val_bits = 16,
+> +	.max_register = 0x0c, /* DACX_FILTCNT,  R.M. Table 30-2 */
+> +	.val_format_endian = REGMAP_ENDIAN_BIG,
+> +	.reg_format_endian = REGMAP_ENDIAN_BIG,
+> +};
+> +
+> +static int mcf54415_dac_init(struct mcf54415_dac *info)
+> +{
+> +	int ret;
+> +
+> +	/* Keeping defaults and enable DAC (bit 0 set to 0) */
+> +	ret = regmap_write(info->map, MCF54415_DAC_CR, MCF54415_DAC_CR_FILT |
+> +			   FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1));
+
+Perhaps use a local variable. It is a tiny bit too easy to miss that
+parameter being split over two lines.
+
+	u16 val = MCF54415_DAC_CR_FILT | FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1);
+
+would avoid that.
+
+Alternatively perhaps just reflowing as:
+	ret = regmap_write(info->map, MCF54415_DAC_CR,
+			   MCF54415_DAC_CR_FILT |
+			   FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1));
+
+avoids that reading issue (I read it wrong ;)
+
+
+
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* DAC is ready after 12us, from RM table 40-3  */
+> +	fsleep(12);
+> +
+> +	return 0;
+> +}
+
+> +
+> +static int mcf54415_read_raw(struct iio_dev *indio_dev,
+> +			     struct iio_chan_spec const *chan,
+> +			     int *val, int *val2, long mask)
+> +{
+> +	struct mcf54415_dac *info = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		ret = regmap_read(info->map, MCF54415_DAC_DATA, val);
+
+Sashiko pointed out that regmap_read() expects a u32* so this should use
+a local variable for the read.
+
+> +		if (ret)
+> +			return -EIO;
+
+Another one sashiko got. Why is this eating the possibly more useful error
+code from regmap_read()?
+
+> +		*val &= 0xfff;
+> +		return IIO_VAL_INT;
+> +	case IIO_CHAN_INFO_SCALE:
+> +		/* Reference voltage as per ColdFire datasheet is 3.3V */
+> +		*val = 3300 /* mV */;
+> +		*val2 = 12;
+> +		return IIO_VAL_FRACTIONAL_LOG2;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+
+> +static int mcf54415_dac_resume(struct device *dev)
+> +{
+> +	struct mcf54415_dac *info = iio_priv(dev_get_drvdata(dev));
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(info->clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mcf54415_dac_init(info);
+If this fails should we report it?  I think you'd at least want
+some print to help with debug. (Sashiko got this)
+
+> +
+> +	return 0;
+> +}
+
+
