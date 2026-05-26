@@ -1,276 +1,168 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E103D8101
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 13:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BF03D47C5
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 14:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779802263; cv=none; b=Qc6fomCx4hF810USag5TyX5rAWeT3bb/SE/j3cEcTSRVtx6Wgp1qTjsD5gSwP8buC9E/DqHcMDSbhpQaHumdax4paOdNbIL2DMzoTQd4ClPDSHa+nt25yjdkSFN3fcAOuOkXBLnCi2kYWMpkzTTMB7ijnxIJz1nIrouKGvjl59k=
+	t=1779805082; cv=none; b=PRoK0T6b5CwpF90ubiNbL5lxgpuzyvr2ygWqo0+4LTaz+kx2uiJ3QEGaeYukrHYXpHQd5weg33M+KxG3cRXn6lmil0gMkT1HG3ooqlLRxAEcmCjUM340WyOaX1O6sbenbNxw8+WIjatg8aPZ9QVg94vooMpjqMiuXdCQJYpIVxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779802263; c=relaxed/simple;
-	bh=BeT+RqhNkn0jpJ+SIU/uSUnaiPTDO+bspvY4tL8ckrc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bkaJx58j4JfyoDdE8JJOgYIlA1IlN4aL4C1rxdc+YN4p8SoCjwz7GJEk2qS6GmmfZxLBwVzbNCRQOM5e3TwDl8qTCIcm55BHRZRASiM3qHZgDGkMy7h6F5pXBDxCrk83TEtwnlt5fpVgkzvog9wsM7jnnki8gdh+EGyxglts3Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gu9Fx7SK; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1779805082; c=relaxed/simple;
+	bh=Kybdz7vMHfQVHVOh6L5fYiSlCH/4zeDGpuUchAH7Tmw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DZEa7aHelPyMfhIuRlTJZxgMWzwnin25dcyQsoHz6q+6QjbqNnghfytiZGikQzLNLqsbP8VtTaNj6GjKBGNNBIjNt2BOcK9XNO0TY1tmVkMiZ9/Ale92GBhLQP4GYC3kBM6kmyA+YEbhKKoligzeDEnV2N8lngnQm9KhSp8iuwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=muscwXrb; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gu9Fx7SK"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id DF274434D6;
-	Tue, 26 May 2026 13:31:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B3F1F000E9;
-	Tue, 26 May 2026 13:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779802261;
-	bh=zfr++GQ9MeThNDBnulZ1nizhOi2AUmBRDj/hKcyQDuo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=Gu9Fx7SKsgDY8eiEi5lPhYAtl7pZ9gbntJXKhldJtPOI0OhUJ7yWD06iitx9PFJ+X
-	 WNLsvTyWw8R7KXU5pLQJQd8QW8ZVQXSygHThTurzvv1czd3z4H3ZMybywz6AOGctXp
-	 107j6PWFsRaDNh4M/45uoSG8rJJgdNlixmLqMkGTif9sG/8W1+Y/HgchuZtgu7klVB
-	 VxdzX09FVRxE0BxdbUXzEBoRM+JvJmktPwY3l+gwOQTivbp898Zmn8c2pMegqFkTvD
-	 xdUzi+L/9X5ruqxe7uZgSgHBwqJxJjUObtuI4EcFqwzVLnsdIyHMIamF0x1TsyWd5h
-	 J7n4Lska0KPFw==
-Date: Tue, 26 May 2026 14:30:50 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Angelo Dureghello <adureghello@baylibre.com>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann
- <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
- Torgue <alexandre.torgue@foss.st.com>, David Lechner
- <dlechner@baylibre.com>, Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Andy
- Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v3 11/11] iio: dac: add mcf54415 DAC
-Message-ID: <20260526143050.5fca6514@jic23-huawei>
-In-Reply-To: <20260522-wip-stmark2-dac-v3-11-16be0ad35a67@baylibre.com>
-References: <20260522-wip-stmark2-dac-v3-0-16be0ad35a67@baylibre.com>
-	<20260522-wip-stmark2-dac-v3-11-16be0ad35a67@baylibre.com>
-X-Mailer: Claws Mail 4.4.0 (GTK 3.24.52; x86_64-pc-linux-gnu)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="muscwXrb"
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4903d730b1fso42538755e9.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 07:17:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1779805077; x=1780409877; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g7+ZEzN34eEHBV2XeA10qliUnFt9aIEOrlvbEy+ooC0=;
+        b=muscwXrbP/PG6xIpZfNXeM1Ippd2BqeaYvxoZgkX49rcx44hF/FwQNhiElfiAsypSL
+         AXIGOR60bvDZVO0euGK7nXH2IHx5FEaUbThv65qNhd6dVftPgoUVZExdk49DG7Mzv6a5
+         iyz2I4ERXiA/G/jfVOYDG4O1N/xVxk2/uNFVwSZaognIxH/JuKjfrm61NAe3G9yFknSi
+         eZfAZIB3v0ZqcPzw2UXqgL+BhDz0qE2EWIHGcKMjJQIMz/MRLHNdCinRY3ytliCsPlYt
+         +HymC4SPDgD5L99/f+AQivhO/sTaQDMJTVUhpJdVBmFXQ5nMWEehbVWSv3mG9zhtkqHS
+         akkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779805077; x=1780409877;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g7+ZEzN34eEHBV2XeA10qliUnFt9aIEOrlvbEy+ooC0=;
+        b=lsjTN9n0P2qmC8LZ2ffRywt3AU5P6rKGJxECM+mgjltILPkngw8MRhTL1N/3bjT5pz
+         Pnoi4s7t9RrnfRe09MrXXgYwPcFfLWcIvi4TltPqZuebBMrIsF2kna0+ho2wkA1n/oTZ
+         4AiNHWqxmILgDynrhxYUVv/hkVe+cUuT3s+qUZLL46EERmo5AZvfSed7mDTUiKmW3oya
+         wWjSjyEylZFJqrPL+PRfG8hrPfLGuAvPSpmph9VldPWWnG91A5WU5wWntI0R1VNsn4xL
+         dHOm8+bIcJ5HGQdStoslOBH1sHH/92e1L0V3Wn5Re0AP8FXWAnVqDc3kO3tsv3ZlG+K3
+         y26Q==
+X-Forwarded-Encrypted: i=1; AFNElJ/7AaCkT1gjH0lCoxpvvE6YW3Vhts9McgQ00IFyCRgs8ZrS8Yt36c7+XxFgZZPMOvlcqMtOxGo0Zasq@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyN+3UL9+Tk5rzAbleJunHq46sq/KCgqHBBLuxDXFr4WKwm+4ji
+	D3B7BNTm2K2fV6M4f3tbjpVU14CVYZhWGuudtjI3opcNE5rMFCqPZl49qffF/AuLjdY=
+X-Gm-Gg: Acq92OGSv/a2sKtEowxYksiYNj/elqvmr6boZhpKZDeZbZZuzxxtHeDFZqkGtUtsprx
+	BSJ4XBgPZ2RQX47kny8OOqkm4TYZN3Yq68ebFPoH4BGmboaBPm47jAf3mCjeiud01/ZYSX0QksQ
+	jBR9qEDRfgqe14hBMO/o/TRxaAwwwK/zdYBiaNjBdn90ljXsMTpq3RuvO5oYQLFa5oLYfpAO22M
+	WAm9yHfGHdGh46zGINtURoaW4AiNeJ/YHt0oskR+EPh7h1y2lbFkT4SL/1y8rj4mUoob0rir3QV
+	bnBS7GRmhaRxvgpbn/Sd3Uwx26RwlHCixUV1ifizZoLKM9pfNMhnj9u5JxTC9tLPkaMq4hEBLrf
+	mAwMqrdaASRrmFEmcBOBTUOV67/65a+JUjfQ+opxqM3K6IcJrQa+WN8j7j0MtYnQjkJcKLE+uvB
+	+r6au81pKYlSGXylCNA6IuiODvVYWpg/g15VJMof7/ILeeaOYEXNanrSDjTvFk/+N9OTJwQk9ln
+	mEX9c3vsI9YKJSl4p2DQ1YOEQ==
+X-Received: by 2002:a05:600c:8484:b0:48a:906b:14ca with SMTP id 5b1f17b1804b1-490426cd8c4mr332344195e9.20.1779805076904;
+        Tue, 26 May 2026 07:17:56 -0700 (PDT)
+Received: from localhost (p200300f65f47db04a716d2bdeddb4813.dip0.t-ipconnect.de. [2003:f6:5f47:db04:a716:d2bd:eddb:4813])
+        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-4904526ca21sm323690885e9.3.2026.05.26.07.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2026 07:17:56 -0700 (PDT)
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Max Staudt <max@enpas.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Helge Deller <deller@gmx.de>
+Cc: linux-ide@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>,
+	"Christian A. Ehrhardt" <lk@c--e.de>
+Subject: [PATCH v1 0/8] zorro: Improve handling of pointers in zorro_device_id::driver_data
+Date: Tue, 26 May 2026 16:17:26 +0200
+Message-ID: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2934; i=u.kleine-koenig@baylibre.com; h=from:subject:message-id; bh=Kybdz7vMHfQVHVOh6L5fYiSlCH/4zeDGpuUchAH7Tmw=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBqFat2pwUr5NuB2EXH5DJBMYu0MFsCRZClzwm2T O9dYlR4RvKJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCahWrdgAKCRCPgPtYfRL+ TkGXB/437E8f30EKdaE8q56oaJt5WlihQ7/3LiGG3zpapj74Iu08O8/GcyZKo9eVo8NUFaoQUo0 0hif3fK8HhAxSruKgus+1EQhLy4QeBS7zZsfKLyQOA2B83qRv2SA46ZptWCnVfQXneJtq5rnt/p z+XAhB5HNmZ0vPCrnsT8fL9BH8Yuh3zYqxT9eUnhr+pmthPLdEZiphMZPNHOU/10eCiEJb0TQUX jspmFLtmTRiWApFBZdcAJAZ22LyP1Ls51jKz1i9KFNk3U1cVVN3KNX/HmgRm8an2jPEYqs0Aq03 oaSi8UN/pRU/wOeZjcBFx1K5Dq0XXmkIHLJB0BQbJ8js9PWI
+X-Developer-Key: i=u.kleine-koenig@baylibre.com; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
 
-On Fri, 22 May 2026 23:20:39 +0200
-Angelo Dureghello <adureghello@baylibre.com> wrote:
+Hello,
 
-> From: Angelo Dureghello <adureghello@baylibre.com>
-> 
-> Add basic version of mcf54415 DAC driver. DAC is embedded in the cpu and
-> DAC configuration registers are mapped in the internal IO address space.
-> 
-> The DAC accepts a 12-bit digital signal and creates a monotonic 12-bit
-> analog output varying from DAC_VREFL to DAC_VREFH. The DAC module
-> consists of a conversion unit, an output amplifier, and the associated
-> digital control blocks. Default register values for DAC_VREFL and DAC_VREFH
-> are respectively 0 and 0xfff, left untouched in this initial version.
-> 
-> This initial version of the driver is minimalistic, "output raw" only, to
-> be extended in the future. DMA and external sync are disabled, default mode
-> is high speed, default format is right-justified 12bit on 16bit word.
-> 
-> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
-https://sashiko.dev/#/patchset/20260522-wip-stmark2-dac-v3-0-16be0ad35a67%40baylibre.com
+this series is about improving the handling of pointers in struct
+zorro_device_id's driver_data.
 
-Given there were only a couple of comments I've included them below alongside
-my review.  All minor stuff.
+While it's ok on all current Linux platforms to store a pointer in an
+unsigned long variable, it involves casting that loses type information.
+This can be nicely seen in patch #7 where after profiting from patch #6
+the compiler notices a missing const.
 
-Thanks,
+Preparing for that change, all zorro_device_ids are converted to use
+named initializers, which is also a nice cleanup that could stand for
+itself, as it improves readability for humans. (That is necessary
+because an anonymous union can be initialized by name, but not using a
+list initializer.)
 
-Jonathan
+My motivation for this series is the CHERI hardware extension. With that
+pointers are bigger than longs and thus you cannot store pointers in
+zorro_device_id::driver_data. So this series is also about getting
+support for CHERI into the mainline, but I hope the clean up effects
+mentioned above are justification enough to accept this series.
 
-> ---
-> Changes in v2:
-> - remove tests from commit message, moved to patch 0
-> - remove additional blank lines
-> - remove dead code and unused definitions
-> - use regmap
-> - add limit check on raw write
-> - non functional style fixes
-> - add COMPILE_TEST to Kconfig
-> Changes in v3:
-> - add comments where needed
-> - code style changes
-> - remove unneeded variables
-> - use regmap_set_bits where possible
-> - remove macro not needed to define a single channel
-> - set up regmap to big_endian accesses for next patches that will come,
->   that will adjust ColdFire readx/writex as standard LE (links in 0/x).
-> - add return value check on regmap calls
-> - sashiko: remove unneeded .io_port from regmap init.
-> - sashiko: add select REGMAP_MMIO in Kconfig
+The dependencies in this series are as follows:
 
-Looks like you missed or disagreed with the previous sashiko comment on v2 about
-type passed to regmap_read()
+ - Patch #5 depends on #1, #2
+ - Patches #7 and #8 depend on patch #6.
 
-> ---
->  drivers/iio/dac/Kconfig        |  11 +++
->  drivers/iio/dac/Makefile       |   1 +
->  drivers/iio/dac/mcf54415_dac.c | 207 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 219 insertions(+)
-> 
-> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-> index cd4870b65415..b1a578076188 100644
-> --- a/drivers/iio/dac/Kconfig
-> +++ b/drivers/iio/dac/Kconfig
-> @@ -516,6 +516,17 @@ config MAX5821
->  	  Say yes here to build support for Maxim MAX5821
->  	  10 bits DAC.
->  
-> +config MCF54415_DAC
-> +	tristate "NXP MCF54415 DAC driver"
-> +	depends on M5441x || COMPILE_TEST
-> +	select REGMAP_MMIO
-> +	help
-> +	  Say yes here to build support for NXP MCF54415
-> +	  12bit DAC.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called mcf54415_dac.
-> +
+So if the ata maintainers agreed to merge their patch #1 via scsi, and
+Geert agrees to patch #5 and that it's also merged via scsi, patches #1,
+#2, #6 and #7 can go in without further coordination.
 
-> diff --git a/drivers/iio/dac/mcf54415_dac.c b/drivers/iio/dac/mcf54415_dac.c
-> new file mode 100644
-> index 000000000000..c8c87572d43d
-> --- /dev/null
-> +++ b/drivers/iio/dac/mcf54415_dac.c
-> @@ -0,0 +1,207 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * NXP mcf54415 DAC driver
-> + *
-> + * Copyright 2026 BayLibre - adureghello@baylibre.com
-> + */
-> +
-> +#include <linux/array_size.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/compiler_types.h>
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
+Patches #3, #4 and #5 are only about using the same initialization style
+for all zorro_device_id and can go in without coordination.
 
-not seeing any use of this. I guess it 'evolved' away.
-Anyhow, please sanity check these all one more time for v4.
+Best regards
+Uwe
 
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <linux/iio/iio.h>
-> +
-> +#define MCF54415_DAC_CR			0x00
-> +#define MCF54415_DAC_CR_PDN		BIT(0)
-> +#define MCF54415_DAC_CR_HSLS		BIT(6)
-> +#define MCF54415_DAC_CR_WMLVL		GENMASK(9, 8)
-> +#define MCF54415_DAC_CR_FILT		BIT(12)
-> +
-> +#define MCF54415_DAC_DATA		0x02
-> +
-> +struct mcf54415_dac {
-> +	struct regmap *map;
-> +	struct clk *clk;
-> +};
-> +
-> +static const struct regmap_config mcf54415_dac_regmap_config = {
-> +	.reg_bits = 16,
-> +	.reg_stride = 2,
-> +	.val_bits = 16,
-> +	.max_register = 0x0c, /* DACX_FILTCNT,  R.M. Table 30-2 */
-> +	.val_format_endian = REGMAP_ENDIAN_BIG,
-> +	.reg_format_endian = REGMAP_ENDIAN_BIG,
-> +};
-> +
-> +static int mcf54415_dac_init(struct mcf54415_dac *info)
-> +{
-> +	int ret;
-> +
-> +	/* Keeping defaults and enable DAC (bit 0 set to 0) */
-> +	ret = regmap_write(info->map, MCF54415_DAC_CR, MCF54415_DAC_CR_FILT |
-> +			   FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1));
+Uwe Kleine-König (The Capable Hub) (8):
+  ata: pata_budda: Use named initializer for zorro_device_id
+  scsi: Use named initializer for zorro_device_id
+  net: Use named initializer for zorro_device_id arrays
+  i2c: icy: Use named initializer for zorro_device_id arrays
+  video: fm2fb: Use named initializer for zorro_device_id array
+  zorro: Simplify storing pointers in device id struct
+  scsi: zorro7xx: Make use of struct zorro_device_id::driver_data_ptr
+  video: cirrusfb: Make use of struct zorro_device_id::driver_data_ptr
 
-Perhaps use a local variable. It is a tiny bit too easy to miss that
-parameter being split over two lines.
-
-	u16 val = MCF54415_DAC_CR_FILT | FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1);
-
-would avoid that.
-
-Alternatively perhaps just reflowing as:
-	ret = regmap_write(info->map, MCF54415_DAC_CR,
-			   MCF54415_DAC_CR_FILT |
-			   FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1));
-
-avoids that reading issue (I read it wrong ;)
+ drivers/ata/pata_buddha.c             |  8 ++++----
+ drivers/i2c/busses/i2c-icy.c          |  4 ++--
+ drivers/net/ethernet/8390/hydra.c     |  4 ++--
+ drivers/net/ethernet/8390/xsurf100.c  |  4 ++--
+ drivers/net/ethernet/8390/zorro8390.c |  6 +++---
+ drivers/net/ethernet/amd/a2065.c      |  8 ++++----
+ drivers/net/ethernet/amd/ariadne.c    |  4 ++--
+ drivers/scsi/a2091.c                  |  6 +++---
+ drivers/scsi/gvp11.c                  | 17 ++++++++--------
+ drivers/scsi/zorro7xx.c               | 16 +++++++--------
+ drivers/scsi/zorro_esp.c              |  2 +-
+ drivers/video/fbdev/cirrusfb.c        | 28 +++++++++++++--------------
+ drivers/video/fbdev/fm2fb.c           |  6 +++---
+ include/linux/mod_devicetable.h       |  6 +++++-
+ 14 files changed, 62 insertions(+), 57 deletions(-)
 
 
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* DAC is ready after 12us, from RM table 40-3  */
-> +	fsleep(12);
-> +
-> +	return 0;
-> +}
-
-> +
-> +static int mcf54415_read_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan,
-> +			     int *val, int *val2, long mask)
-> +{
-> +	struct mcf54415_dac *info = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		ret = regmap_read(info->map, MCF54415_DAC_DATA, val);
-
-Sashiko pointed out that regmap_read() expects a u32* so this should use
-a local variable for the read.
-
-> +		if (ret)
-> +			return -EIO;
-
-Another one sashiko got. Why is this eating the possibly more useful error
-code from regmap_read()?
-
-> +		*val &= 0xfff;
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		/* Reference voltage as per ColdFire datasheet is 3.3V */
-> +		*val = 3300 /* mV */;
-> +		*val2 = 12;
-> +		return IIO_VAL_FRACTIONAL_LOG2;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-
-> +static int mcf54415_dac_resume(struct device *dev)
-> +{
-> +	struct mcf54415_dac *info = iio_priv(dev_get_drvdata(dev));
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(info->clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mcf54415_dac_init(info);
-If this fails should we report it?  I think you'd at least want
-some print to help with debug. (Sashiko got this)
-
-> +
-> +	return 0;
-> +}
-
+base-commit: d387b06f7c15b4639244ad66b4b0900c6a02b430
+-- 
+2.47.3
 
