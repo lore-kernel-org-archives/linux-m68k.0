@@ -1,79 +1,81 @@
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D35253FF1C3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC7D3FD15C
 	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 14:18:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779805084; cv=none; b=lxFfNMrJe4sL4o8pShmVIw6XwgSlmzYnx7Au255rdhkhllajGI+HrNlkTMy/WzNr+B0q5FrRq5j2s+wFBSfFtrrh96A2ghrui912MOFI49/7Pp6CYHyhpeH0lOp2nxa8mi0LdBCx8EzAQYAuT9S2ypGgWrtNyX6kWWtI6r4NQ3Q=
+	t=1779805085; cv=none; b=h9r99JWPVPjj/S+Y8WYiqBvJMk34hDmec6sb2FsXXZrAee7lnt4bUpTdgBBUAvc4KFEWbpyNwta2Rh1IIWOmAsegmaPOYkEkeeXEs5XfxiqUdoOKwo6ylqn9Vi9+y+qA6NbFv8nak33XYLryVzP2q7+cjXHcPanixqvXyVpG/ZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779805084; c=relaxed/simple;
-	bh=Ix8wMTvjRj2V15S2wbpbWWczlxynGaC6L6zz/D+au5c=;
+	s=arc-20240116; t=1779805085; c=relaxed/simple;
+	bh=c0RNn5qb9vT6IIijXBbTxELaRyRjMTkDCyVB2jC4SqM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OqyNFmHfprkbwM/CU0cu4HAXKg8pJBaMYXkBdJvbL5U1/TOWPfyPyaJv4rzkVSSdURyyVBDfde/vQGBcsP9fu7ct/SJviHvcHsRhtZiIyUivemnl8Rt/nzbLMgm358kf6K1VzYSmCO2oib4mOXFvsAgm39PXCVkmUz+jWWXULKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=BYu9tXdk; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version:Content-Type; b=GEWi0Rglq2q4CgYXwYciN6g7bhKDJi8T1DtooKBWhWUUTLN029aeGUqUCOnRa/M6EffmTlLegvDwsJJM+7xPYe9RbFLbztemJ2Cu5sdMuswCv01fPuIT1RxszWzah+PTfjBFeUzi6PjVueHByrwpKgTcwtEuNOTQa/0JtknyrZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=gY9zBBnv; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="BYu9tXdk"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4905e190c71so26175435e9.3
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="gY9zBBnv"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4896c22fcbaso90971385e9.0
         for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 07:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre.com; s=google; t=1779805081; x=1780409881; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LKGgUH1fX9QGB4ANVtGN3iVgHTq5bfM46OO8lv6SkzA=;
-        b=BYu9tXdksTdG6zKjD6deIXGJtwJEjPX+/8IRwEwMQbMwbSD49978Ble7bhuMxbnauR
-         3IlTfcB2+6s+59uZfsIxZeFNEqUxmgLGATKq8v280m3gUEjXIcmRBWrSQi+66UipBQ8i
-         hwkECOfVQ5yyyjiC1TouxWrKpamLd+dn8dmAcZkfIrNjEcVRZVRBe2jDte/f4aq5gMVU
-         Wi/F65GGLVPV0hamHz4kn3/OHlDPLuH4vnRDy2ufppkFtNYqJRxujoTeiHkiy2nT/Kiz
-         R8RsmL6e7jXPfNrBErzPxRmbgaRPQnZkDCZh8XIVC3hSxnAlO6rcbHFiUYyghJe5G3me
-         6Vvg==
+        bh=NRc0rg9JcNLCZHd/xhMyDX0vGds8lGNNIFHieXRVgTg=;
+        b=gY9zBBnvGvBq4DM9xvxv94KjIUgYrLJJOSAiy8xTMfxqGHPXWeaAkR3KVAcIrQLhY1
+         lO8HY674913MG5t7908IEvVUDXunRsjsVEsl9qB7DmuIDkAM9XSG4+/M/O8GzXxbVjkE
+         2J4Vwp12PGsHnOtszGJOJGHftvVHDHjBUs73afADfWMcuwz2vOiPJGSowEDBz1WJpa/8
+         ho/dF7PDm/YU0WWDSuKJ3LEqXOYDE138Q/gXj9LxPLuAVuMor8jlDCPZocM6GZ1WFdpd
+         8CavOiCu/fFTkEMSupOJjb7BAolaRRRdhj5Gxd0D3xo7klwcZuWmfR7HSRe5qRo3cBqo
+         3Wow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20251104; t=1779805081; x=1780409881;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=LKGgUH1fX9QGB4ANVtGN3iVgHTq5bfM46OO8lv6SkzA=;
-        b=CnSnC1vOBOGZFZ06bu9SO0KYOBonndN767uAOeNHdNI5RlhFZ5p9fyFO1t5xXJS52p
-         d8cW31ski9gnY31yArlMrsntiCk5buJOJ5lXU8PK511vHucy1OSrsOwurctmW7+A9ALr
-         GDsekcpWAvwmKaGU034YLCf7vCJDToFARabnm2nvUygyzF3U6A+WC9yVCVQhKPvmmTFs
-         f2vFR6vK/qhFC0+U6NV0+FbPTqbBde3OCd9QD8DbXFHh7iHr/ur+B1kamlxC2YYY5Bcp
-         kyEA6QZJIVAirzw5mHTeo5CSa0t6LgQWVlHOeZQbj934NP6Xb5RB6gMT24ifaCDWlkYk
-         Ez1w==
-X-Forwarded-Encrypted: i=1; AFNElJ8rQbLfjalY0g45YrSAliBEFMY6fX1PCgVH5fXfr1ms/IR92KIA/F9e23VH90cVqcPFusnH+Zxlp7JD@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwzX5lOFU82dk7PqSRI0YgTgVfiy3LwriUulNHLcgqZP9x1iMK4
-	mXefR/4YGv8joKxG5UUePDedCeQKToLfRfUBpjxAsQ3nQXqY3BlNCproK9qFGUk77jc=
-X-Gm-Gg: Acq92OFvQiGuwhaq9aodxEsk2jwpa7UJFQw5mng/tFbPoKDjK+Jp1QZA5QosAhEqsK1
-	jDM3AGwGbst8kTglG4rEw6/IWEfOcaGUKaXet6tTkQcc1ZkYtzaKWnO5dsIr6FvT4C4m7908hio
-	+e6cVkmSjM6PDCwW4vwlAkoi3nVIqkNSK2Z1AZbS3PCcVc9A9OVekavw4NIMYhunwiHXvLtFW5N
-	37RVPC61WeOPQbUesMoghTnnfI2y/kNWSX0JP7RzTtF5zjMro6bIEhz0h/UtPpmXwftAGG5lTbQ
-	DGCKcQKvftrHIHpxz0htomHB0f4hsWmWlg2zSR+3/73Vkr0uxAJmt/JGkRCtjQ9bC9LC2XHbyeD
-	4LUg57KxU69HpgMJHB6qroPnG+tHBWVasDkHfk9ZlNOxk8WHUzerjtSH51rDz6PAHDvUakER6uL
-	i4tK7jw6IPvogu//xTk+/dVZx0COZpC+uP/sk6CPCj+tkm20xqHRvNxP18b9VzBL2UoN4fH//Ce
-	RV1NnfcyMZWbCeqDZx2okqwhw==
-X-Received: by 2002:a05:600c:45d2:b0:490:6237:521d with SMTP id 5b1f17b1804b1-490623753admr156647735e9.13.1779805078453;
-        Tue, 26 May 2026 07:17:58 -0700 (PDT)
+        bh=NRc0rg9JcNLCZHd/xhMyDX0vGds8lGNNIFHieXRVgTg=;
+        b=aWPAcn2VQzLrR2e1E2A95PLb/YuLvaEC5K0KvM9kVUiGhUagM+IEtkRbTBFjsZxCol
+         f2k+N1mHFBNB+wOxBy3qcz3guuF03dxsa5P6d/STH4mqLwJEz5Z0qUsFVl4a/zV70ckN
+         CYhO9VRKwTNQjqvlsnpE0X8QZpzlKrwL5ZEPgTxLUIW6Gfb6M36issDI1VZCOcn5tyix
+         E17/tGVwQyEne1PawSH2keTQapswe2sgIAPcp5vEvb0krrraq/f0AEXj1Y9b6s/t1R8n
+         skyF9IrVgU4isezTG3kL36r4qSYnkSTLx8ZEafZSuQj4OE8h9W6EDYX3kpymPoTvcS0K
+         rqhg==
+X-Forwarded-Encrypted: i=1; AFNElJ+Zge1JiTQjSNkS+dTwcqfbT/9P9AX9DDTzks3UvHDT8Ds+mAX3i47+1t7EOMMnm3TvSB5ibnyez7Fs@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxlTe1aNKyJTClBsNoFzCirnNdZK3aTGuoQKcT03aFID6Gt/EdD
+	XK+ikOSwJUQNbLP41RiNyU0pkhPqxHYAxTn1Dy4Nq3djCn9sj0M9a8+sCZbmeF2vW1o=
+X-Gm-Gg: Acq92OEA1NXAwusugd+8I9XTKivPjMF2V0549j7rvFeDNq4ZMybmiPuQKL17FNAcy7j
+	Xw1C4gU/8wH8LcCq7+6j3hlkfhpIMAq1o/mLlHmeJNCS8keaf9ABevax+esFBInZIKt0nAPXTn8
+	5RQqcRM+GtRPS5dqDzWkzrOanUitUXtkhGhnLgtpf6uoLjXulyMZPI+yxOLrBiIdbPvg9jDzS2S
+	0faMjdW5JoNm+A6Cy9/UtQcqCngTUDI5b5r4JiKLSBMDJC9TINal9gVG+rik+KKmrW6ObyOkmHs
+	yg4CzKEBfFHdeub8sxWy7GvXzaoNjrufctWyptJ5X7n+JTHKn8hYAHyPzgAB8b7rCp//sl4DNdG
+	NrZyns3LSoQt6HAwHPRv8UP8uMOu+a+vXYeQO9AdU7eCsG4cD3T9HyN5vduLM95qEI+r6gy04et
+	j+r+GZUHQHzxRHrMi9/t9hH+yYSrdog0/i3nwJEu8yX0jnFD4IGC+4gvr3lzcnxm/Qvx6L4T4nN
+	jxJk7bh2Q/3ct0=
+X-Received: by 2002:a05:600c:1992:b0:48a:76a3:2b9b with SMTP id 5b1f17b1804b1-490426c5416mr299770605e9.17.1779805081242;
+        Tue, 26 May 2026 07:18:01 -0700 (PDT)
 Received: from localhost (p200300f65f47db04a716d2bdeddb4813.dip0.t-ipconnect.de. [2003:f6:5f47:db04:a716:d2bd:eddb:4813])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-49044775266sm110761365e9.33.2026.05.26.07.17.57
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-45eb6cd10acsm29951620f8f.15.2026.05.26.07.18.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2026 07:17:58 -0700 (PDT)
+        Tue, 26 May 2026 07:18:00 -0700 (PDT)
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-ide@vger.kernel.org,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>
+Cc: netdev@vger.kernel.org,
 	linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org,
 	"Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>,
-	"Christian A. Ehrhardt" <lk@c--e.de>,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH v1 1/8] ata: pata_budda: Use named initializer for zorro_device_id
-Date: Tue, 26 May 2026 16:17:27 +0200
-Message-ID:  <a20f52aeee9dfcacfaea43ff280fa1867878cbbe.1779803053.git.u.kleine-koenig@baylibre.com>
+	"Christian A. Ehrhardt" <lk@c--e.de>
+Subject: [PATCH v1 net-next 3/8] net: Use named initializer for zorro_device_id arrays
+Date: Tue, 26 May 2026 16:17:29 +0200
+Message-ID:  <2243204c0f57f79750de00c072914354d4f65707.1779803053.git.u.kleine-koenig@baylibre.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
 References: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
@@ -84,51 +86,108 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1664; i=u.kleine-koenig@baylibre.com; h=from:subject:message-id; bh=Ix8wMTvjRj2V15S2wbpbWWczlxynGaC6L6zz/D+au5c=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBqFat4RsEUJs+JP0DdUtGO65bC9TW+TPwCfDBUt sqTR8XPzt2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCahWreAAKCRCPgPtYfRL+ Tq4NB/9LKL4P0fU7zq69zjKPXadEJbooMHKv4U0LmaNdculFVwVabt8d8w/eqfDxh0BTGkj6+mj rtEGQtd0ApMuqmujeug2au73Dj6Fbbc67P5DdIduNpVw9WugHne8/P8PFzhLqxw6z8P68S+ulIu EddgRkD6XHblmHbUvvoPZn+hVYE4HjiShEps34/3uuwnWaok5Q7ijUXK1dcKq77CzKQfMlxaP5r astqTQrhQIxuA4gMp9NgoY1e9YmbwiznIU7sWgE+vmD77ynaZKcnziO3ZfJMJDUDMhi6Xqtkygo 4idZaG8w2AK10QwAA7lBSc92/69CdBf2z19hS6Crn2NWTCjX
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3543; i=u.kleine-koenig@baylibre.com; h=from:subject:message-id; bh=c0RNn5qb9vT6IIijXBbTxELaRyRjMTkDCyVB2jC4SqM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBqFat9t5Xx1kUno4MeYd8jN4x+EH0x/XZLCiAiA QYtErFip2mJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCahWrfQAKCRCPgPtYfRL+ TnlXB/9uag6CPS55Tq9egoS+k41Y6rFMtl62uNYC0TUlGM9uOKwjfMasmqsDfNj1IolJs8i1x1h NDdjNg8SUnyw9vBBvdpVZkts+PWd4Ls7wYgqioZTWu2jncx/t38Zp88blXJxW5IYW0Qao++0CID OfQk2MLqOmkMOSJ98Dh2HJUyK10UC7H3Dg2PXot79yLY8NYai0+AwW3Wt0dEACfHJYOswUPx0l2 ykalikN7h2MK1AvxQZpbvZnKR9K82plh+P0z4KOSSXwxvMARTUpegSipQGfHeezmXDckky13etF Eg0mFhHpFGuX4GXZQqQabD238N+yk9uRxRnYsHmyzmjDZo/a
 X-Developer-Key: i=u.kleine-koenig@baylibre.com; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 
 Using named initializers is more explicit and thus easier to parse for a
 human.
 
-It's also more robust to changes in the struct definition. This robustness
-is relevant for a planned change to struct zorro_device_id that replaces
-.driver_data by an anonymous union.
+While touching these arrays, drop explicit zeros from the list terminator.
 
 This change doesn't introduce changes to the compiled zorro_device_id
-array.
+arrays.
 
 Signed-off-by: Uwe Kleine-König (The Capable Hub) <u.kleine-koenig@baylibre.com>
 ---
- drivers/ata/pata_buddha.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/8390/hydra.c     | 4 ++--
+ drivers/net/ethernet/8390/xsurf100.c  | 4 ++--
+ drivers/net/ethernet/8390/zorro8390.c | 6 +++---
+ drivers/net/ethernet/amd/a2065.c      | 8 ++++----
+ drivers/net/ethernet/amd/ariadne.c    | 4 ++--
+ 5 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/ata/pata_buddha.c b/drivers/ata/pata_buddha.c
-index c36ee991d5e5..3b1f0ee2f875 100644
---- a/drivers/ata/pata_buddha.c
-+++ b/drivers/ata/pata_buddha.c
-@@ -253,9 +253,9 @@ static void pata_buddha_remove(struct zorro_dev *z)
+diff --git a/drivers/net/ethernet/8390/hydra.c b/drivers/net/ethernet/8390/hydra.c
+index fd9dcdc356e6..9a59915436d2 100644
+--- a/drivers/net/ethernet/8390/hydra.c
++++ b/drivers/net/ethernet/8390/hydra.c
+@@ -66,8 +66,8 @@ static void hydra_block_output(struct net_device *dev, int count,
+ static void hydra_remove_one(struct zorro_dev *z);
+ 
+ static struct zorro_device_id hydra_zorro_tbl[] = {
+-    { ZORRO_PROD_HYDRA_SYSTEMS_AMIGANET },
+-    { 0 }
++    { .id = ZORRO_PROD_HYDRA_SYSTEMS_AMIGANET },
++    { }
+ };
+ MODULE_DEVICE_TABLE(zorro, hydra_zorro_tbl);
+ 
+diff --git a/drivers/net/ethernet/8390/xsurf100.c b/drivers/net/ethernet/8390/xsurf100.c
+index fe7a74707aa4..370c19aa5fb9 100644
+--- a/drivers/net/ethernet/8390/xsurf100.c
++++ b/drivers/net/ethernet/8390/xsurf100.c
+@@ -357,8 +357,8 @@ static void xsurf100_remove(struct zorro_dev *zdev)
  }
  
- static const struct zorro_device_id pata_buddha_zorro_tbl[] = {
--	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_BUDDHA, BOARD_BUDDHA},
--	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_CATWEASEL, BOARD_CATWEASEL},
+ static const struct zorro_device_id xsurf100_zorro_tbl[] = {
+-	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100, },
 -	{ 0 }
-+	{ .id = ZORRO_PROD_INDIVIDUAL_COMPUTERS_BUDDHA, .driver_data = BOARD_BUDDHA },
-+	{ .id = ZORRO_PROD_INDIVIDUAL_COMPUTERS_CATWEASEL, .driver_data = BOARD_CATWEASEL },
++	{ .id = ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF100 },
 +	{ }
  };
- MODULE_DEVICE_TABLE(zorro, pata_buddha_zorro_tbl);
  
-@@ -282,7 +282,7 @@ static int __init pata_buddha_late_init(void)
- 	/* Manually bind to all X-Surf boards */
- 	while ((z = zorro_find_device(ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, z))) {
- 		static struct zorro_device_id xsurf_ent = {
--			ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, BOARD_XSURF
-+			.id = ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, .driver_data = BOARD_XSURF
- 		};
+ MODULE_DEVICE_TABLE(zorro, xsurf100_zorro_tbl);
+diff --git a/drivers/net/ethernet/8390/zorro8390.c b/drivers/net/ethernet/8390/zorro8390.c
+index c24dd4fe7a10..cb1d5ed20874 100644
+--- a/drivers/net/ethernet/8390/zorro8390.c
++++ b/drivers/net/ethernet/8390/zorro8390.c
+@@ -262,9 +262,9 @@ static void zorro8390_remove_one(struct zorro_dev *z)
+ }
  
- 		pata_buddha_probe(z, &xsurf_ent);
+ static struct zorro_device_id zorro8390_zorro_tbl[] = {
+-	{ ZORRO_PROD_VILLAGE_TRONIC_ARIADNE2, },
+-	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, },
+-	{ 0 }
++	{ .id = ZORRO_PROD_VILLAGE_TRONIC_ARIADNE2 },
++	{ .id = ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF },
++	{ }
+ };
+ MODULE_DEVICE_TABLE(zorro, zorro8390_zorro_tbl);
+ 
+diff --git a/drivers/net/ethernet/amd/a2065.c b/drivers/net/ethernet/amd/a2065.c
+index ce9445425045..672c4996b30e 100644
+--- a/drivers/net/ethernet/amd/a2065.c
++++ b/drivers/net/ethernet/amd/a2065.c
+@@ -647,10 +647,10 @@ static void a2065_remove_one(struct zorro_dev *z);
+ 
+ 
+ static const struct zorro_device_id a2065_zorro_tbl[] = {
+-	{ ZORRO_PROD_CBM_A2065_1 },
+-	{ ZORRO_PROD_CBM_A2065_2 },
+-	{ ZORRO_PROD_AMERISTAR_A2065 },
+-	{ 0 }
++	{ .id = ZORRO_PROD_CBM_A2065_1 },
++	{ .id = ZORRO_PROD_CBM_A2065_2 },
++	{ .id = ZORRO_PROD_AMERISTAR_A2065 },
++	{ }
+ };
+ MODULE_DEVICE_TABLE(zorro, a2065_zorro_tbl);
+ 
+diff --git a/drivers/net/ethernet/amd/ariadne.c b/drivers/net/ethernet/amd/ariadne.c
+index fa201da567ed..ec6e7e8c14fe 100644
+--- a/drivers/net/ethernet/amd/ariadne.c
++++ b/drivers/net/ethernet/amd/ariadne.c
+@@ -693,8 +693,8 @@ static void ariadne_remove_one(struct zorro_dev *z)
+ }
+ 
+ static const struct zorro_device_id ariadne_zorro_tbl[] = {
+-	{ ZORRO_PROD_VILLAGE_TRONIC_ARIADNE },
+-	{ 0 }
++	{ .id = ZORRO_PROD_VILLAGE_TRONIC_ARIADNE },
++	{ }
+ };
+ MODULE_DEVICE_TABLE(zorro, ariadne_zorro_tbl);
+ 
 -- 
 2.47.3
 
