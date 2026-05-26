@@ -1,159 +1,380 @@
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B983C6A43
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 16:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779813501; cv=none; b=JKutKgfj87yuvKq155RIhFyBcTywYblwBGrNRhfimANP2HIdNjAtoumWtVLQ7+It0MnAFf8iifnrBAS21/5hjcV5+ahevnNV7NwENfKyWuMink58LKQTJAHDi5LRlhum3l1v7ebHuFrlZiMzi8Vz1ZUlNUL83k+MvbA7TwBgsjg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779813501; c=relaxed/simple;
-	bh=4V0/hRzQM3QPZtd9ciEuGpakZz9BDAJEY1Xq/95IEYA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TP/aL+E9JpF7xMq2OWVWnOWzYgVVSePWr9nbkfZMjvk0EbDHKlEWG+kTv0FvS6gfX2z4VVT7TkggaWqgywPLOEUVu38MD2Yr54iuGTZRJqPLMtplviiHqQ8xcOXrBKGdr2VyvhRtVHZJsl+e6UN1PFYZ5gpDidXRS0ZglkyxHb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=EY+aPtRw; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBF93C277C
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 21:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779830756; cv=pass; b=kubAReTqFfwdl9TQLfwfFdmneR+KmjQdUBAkDzpj3tdnB4oYi+bzQ0SBTDUEyBBjaoEe4gujh7n9mzdlyWua7aTKnxRkalPW4ksZjITRRa7FQTfqeSI+YdkHMgwNXsQ6nOzClLPWHiE1K9Z2dWaC7+Yqn0FCMgc6CbOpPuSHHQg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779830756; c=relaxed/simple;
+	bh=Cd7zWI0lsrOqHdRBbulkjvyPOD3GT6JDE8z7Rpv3/Cw=;
+	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XILYnaWF6q4eNhF3LMkkx3OUaM6erdIWOtO3NjZBgY6inhGKgeHP+ZVH8y8e7q/7cuKhvN3wRcSe8MfGi94riG8975Xc/FRzmzkybMkB3yxyFWhY7ZU1Qe7cvIBnYC5/4sD9Ol7nDwqkmzWbHN0GyYKX5cccgbWFpuKSleBXlfw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=GBPXHh+H; arc=pass smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="EY+aPtRw"
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-49050ff7cbdso31969305e9.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 09:38:18 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="GBPXHh+H"
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-bd8f6ef4ba6so1660796966b.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 26 May 2026 14:25:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779830751; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Z7TWQSh4UIZW2G4/XTb8PRle6pzSOnoioAdakM40wHZCovL+hqry4mtPLZPQ+va+f9
+         eAGWjbdRk7kBjRy8xCeXf5YNjDgiVBJxBDbmi3LOEoJmjtoX9NsM/uljmuThJW808rnM
+         HYzDfsDWRL1+U9h4LwdZJ1d2JvUnItrigT21vugOv7I1qA7XnRJGYUbbHXdmMTdJYTwL
+         lPgOC/xNDWfqBLVty4VjJR6nnlSqGWjY4ghs9IEOLCLgqPAUFxl35mLXE3YstuZ+JKAp
+         V4ExFtkgOsbZBq9LkfewjN5ny5TzUTCcHbh90cQI9dlOffkd9MjIxcH6hWo+nANkEUW0
+         j36A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
+         :mail-followup-to:from:dkim-signature;
+        bh=dn3CDjIt2vIiMqs+R+BPuA4q7fB48nnalDkVYsI1XXk=;
+        fh=BQxhV9WQQXrEhmvl+uYuNI806dbV/ZpB+JJmlGM+/QI=;
+        b=GjVwZRiYsGu+UaEpaYAPReAro6OPvHyyXlZqdVZIIihwqtGHThCtSgd94sOst4p29c
+         urJiirDUIzi44FM/OC05vPjA7RNe7qKOBbRq7hcKN6kElAbbQ/1qeSlPbUNx4NfLVxJQ
+         +98l0rvY/UZ/DHsLT44/4VXzAknctUHAe5U5UVfCJx4dHPGAYA3XJztREVg4kb0qTJOL
+         6hUWvuJ++/UaYm6G/f2aOUiT7aSdUJCmuVAVT/g/UkXD5p3cvIX+iNZOEk3A3JUzgp8U
+         EYWPEq3zr1SHisadTEMbm715svA0YcMCzuv+5b4bNRTFz7z0cs6aYRot81is2Rj1pgPG
+         se4A==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1779813497; x=1780418297; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+neT3f/iOdkns4E+8cxUHIEwouFFRC5e7pB2NZRvaQM=;
-        b=EY+aPtRwhWvEXZaZ2Mlji/SWDD1bI2cwtBFzoPR9JZgDCfEbwFPtCfsCLSHmogOG1X
-         i0RzdCoxBQdn+U/C165yQt3zmstOUcn20bkbRRqW4uCrq9PnNy0ZT4wFRWb66uDILVi5
-         yy8jR8KlLWFotIRPASa8tq7nCL+Hx0dl8t3PTJqXD57uh9pb+auTRYgg7+l8S5YO3f9g
-         vScUgul5fu65ftVpr4DtoMFs1bIp0VcydDpiq5Jgaegu/I6aG6Rb0Wmt48t46gYoY+JD
-         5MRKz/PTkWZ5dLo3JTaB8UA/xYM2qYdnPWMiIxcKTbmmr1K3lqOQEYEtugSETUMK/ybw
-         F+Lw==
+        d=baylibre.com; s=google; t=1779830751; x=1780435551; darn=lists.linux-m68k.org;
+        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
+         :mail-followup-to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dn3CDjIt2vIiMqs+R+BPuA4q7fB48nnalDkVYsI1XXk=;
+        b=GBPXHh+Hj83PK409DI8wq+DVdr3kneGijt7xuwiFc/Uxsc4SfigM0YZZ92qKlxpStW
+         cZOZjqkS+TiSOO4lAEZr1DIpxnUwX2CzDaOTthgTjgL0jl7lkWLLYwjreIobO5BWZE1k
+         UhWPC9yHDabzvbZsLwyx7jwsN/YVAI2h0bD2bnDGfIW5PYmPgQOjixNN4Hth/W2uUMHl
+         Pjz+zb0dTpAoGm1QhImG8fubCTL3+1GFe6Jk2Cz1p+VLBva4EdL0ITz/FtAgp3ftl1JD
+         6YshMDDuxGZH5kbnLFYDOShJ/g0GtYWTG2qMyItQ7ibpHAQhFabjePol2c0cA5b2sNdi
+         spdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779813497; x=1780418297;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+neT3f/iOdkns4E+8cxUHIEwouFFRC5e7pB2NZRvaQM=;
-        b=onmTShN7O0684N43ytoW1of7ngTqqbby1srqRExIF9JUKmAe2pzH8Rop2ziwJ34FDx
-         JovFQnwOqOAHe0rdyWY0BdLUVD91BKatGQMr9+UX0EyAilFtzdQfJ4zCob4OCmFg+GfG
-         XveCzNHFPOzuQf4Tqyk/0sg3a2gZjWx+QekX0aljzm0IYXX6oSczJxRkUr5gL4M3LV0i
-         uonYK6ab8us+VKUPv0BZXaEV1Qa0k+FyzT3GR+KKR3z7khNcpoGqaBWiU0Arill7CE/U
-         9xzsj52icsd0hWo3TRmFvpj+tZjdyQyQD9CSBW8oUvJbpDI7G9w619CdhVRf27gswCKN
-         /A/w==
-X-Forwarded-Encrypted: i=1; AFNElJ+ieU2rgweCslDA71GKWfbUBy3Ml4JTbSjhccmInZvi8Ks+y+iJYZ5rQcsdASG9tsymbO8t/4RR/qgx@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwXwbt6EIOh5AtX/48bigj8AgDQ9zKE9BFlOldjS5F3LRbUNPja
-	R2vDkND6x/lld+7cxgGm8BVkYZRsJlBoaNuMU48MEZBZInA5zrVSwStzt6CbKlY8F5M=
-X-Gm-Gg: Acq92OFP6SqHoMqxt197ZEvjHx0hXTxjE9P3/MS8U+9vXKdcNNlBtk09Klu5BG7gJ67
-	MRZY6c+mMe426WMFMMKuLJYqmWJ2vV5wd00dfMBM9yuA6inCOv7uKDvlkDJvi5cGbKeatjyNMGQ
-	SEqBhugLyI3pcsnRkUK9vZs0FDfPnhpaZKLODi4LbVb+PVfQm8pfetkIuYhSRKDlQgx8eeG3cvo
-	va3yM8PN6jOzZvx9K/mcn5IiSQdNxgb1iCk1lGYtrdai19MP6kcEdom76pgScukpwNh26unK3ih
-	t/P1oQ0Z2MYr6hEwgzsPOBgYhwrt1ULLeN7fs7XlNewAS+nd87aFPHAjZZDzYiPAYmXs0hnujQO
-	dB2uz+I21NUoKnD4DundVRpQ1T8L9ZhaUFp+8nebKjTCAxoKx70XB3YpDZ0cGjBecaJh2goDozs
-	XY3nQYvtZ/ukNnKb14fHTqD6asU1Q7EyHcNHjM3uRTJK4CPPR4zrC55/J39v76+bYoqyltxGQr4
-	g8v662IZAgNFBY=
-X-Received: by 2002:a05:600c:4ecc:b0:485:4388:3492 with SMTP id 5b1f17b1804b1-490424b25abmr314126765e9.11.1779813497306;
-        Tue, 26 May 2026 09:38:17 -0700 (PDT)
-Received: from localhost (p200300f65f47db04a716d2bdeddb4813.dip0.t-ipconnect.de. [2003:f6:5f47:db04:a716:d2bd:eddb:4813])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-45eb6d493dfsm37901229f8f.23.2026.05.26.09.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2026 09:38:16 -0700 (PDT)
-Date: Tue, 26 May 2026 18:38:15 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Thomas Gleixner <tglx@kernel.org>, 
-	Ingo Molnar <mingo@kernel.org>, Max Staudt <max@enpas.org>, Andi Shyti <andi.shyti@kernel.org>, 
-	Helge Deller <deller@gmx.de>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	"Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>, "Christian A. Ehrhardt" <lk@c--e.de>
-Subject: Re: [PATCH v1 0/8] zorro: Improve handling of pointers in
- zorro_device_id::driver_data
-Message-ID: <ahXMGtBv_pQXM7YS@monoceros>
-References: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
- <CAMuHMdUVoNg-rSV_hDcvi6KCosmE=SMcxUj2Y8fkoJ=33zMSXw@mail.gmail.com>
+        d=1e100.net; s=20251104; t=1779830751; x=1780435551;
+        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
+         :mail-followup-to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dn3CDjIt2vIiMqs+R+BPuA4q7fB48nnalDkVYsI1XXk=;
+        b=HshWzpQ+fpnlceXy/kkSBRCA1Og4DxEhbcnf5Qaj0H0IPJYnKvSIsbB3+8lek7G8TZ
+         BZ6bnxMmvZAxmKsba02M/UG5koTRThfaP7UUmP50mCKBMOYGXtovHno6w8tw9zsl8uAs
+         15Oc+rbmDlKZsPbMRwIfgAfsclPz4LkWE5jgwgzYk+mT9OPQQQHsW+ZgmOpZX6lSCAU/
+         Pgc4ByVHN/FXmIzY5KRH9rEsgUt15JuPXT9Y4Uoe+59uBFrsEuK4YdVl4CgAAx2Fs/56
+         QyqnEJam7/yMcfQKLLgYsPcrBG/GKAV3qfv93x1r56X6aMlhr16DCWV/do82USEAe0sd
+         /mGQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/omQVEQ0TyMjOu9MXyseC6+aPtlMJUeQN7qE6AttYYGjB6s1r4KtjrP9nF//vAV14U7QpHcqj/wmVU@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxdURy/Btt9DSnHstVZLX/ei5jZ5eh25P/ZPSGHIyNQ676+7WxZ
+	FlXOqkYP+cYWIHhBV9/z52odBiLWprY3fv4Tv6nyoyiC4OsIo/FcyAKiyFHxBqnEd8PTkLsQJ5Y
+	79rLsLB6x96VINeakwzvzOg20L2aAWleZZmR8YCbfHg==
+X-Gm-Gg: Acq92OFogrCFshCIzZatEirhAAjbMnxpXn/MkHszQkfrRZvZggd7Hj3k2SPKqbS9f/g
+	HQTvCQNpsVY+khftkTepOlkrg+HQXYiUWSsvOEuv6qqzG8tGiUxWNIYeV6JFdaFRwNs7C8qH11/
+	tCx/vpqVLlEvPw6Mo6cCJbWYNMv9dR5rPZCO6LPK/L7/+OnbCskuPdx9Pq1DjpESwWTr7bVfIcf
+	Fz+iR6ZgoToxDxf+Yd1lJxmtZlE3Y3CpK2XW634nMgJnDTZ/4Vmdij2JJQEfiR2LeGx8JBdqJrF
+	2JZBo+Ipjnql9YjcHpYK8RrMal2ZwRupLEZd
+X-Received: by 2002:a17:907:fd8a:b0:bd5:18ee:a54a with SMTP id
+ a640c23a62f3a-bdd2293ec75mr1247285466b.8.1779830751354; Tue, 26 May 2026
+ 14:25:51 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 26 May 2026 23:25:50 +0200
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 26 May 2026 23:25:50 +0200
+From: Angelo Dureghello <adureghello@baylibre.com>
+Mail-Followup-To: Jonathan Cameron <jic23@kernel.org>, 
+	Angelo Dureghello <adureghello@baylibre.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	David Lechner <dlechner@baylibre.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+References: <20260522-wip-stmark2-dac-v3-0-16be0ad35a67@baylibre.com>
+ <20260522-wip-stmark2-dac-v3-11-16be0ad35a67@baylibre.com> <20260526143050.5fca6514@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="26ssrqftvvoyehs2"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUVoNg-rSV_hDcvi6KCosmE=SMcxUj2Y8fkoJ=33zMSXw@mail.gmail.com>
+In-Reply-To: <20260526143050.5fca6514@jic23-huawei>
+Date: Tue, 26 May 2026 23:25:50 +0200
+X-Gm-Features: AVHnY4K4EVRlMYVfttR7ggQcjq5xwYPhtPTl_I0B1Kvzgy2_6s0yq2t2OwfFyUw
+Message-ID: <CALSJ-wAqOkQ0j-rKb7Oju9BVqWuE1_Y-D5WQSHeaiV6JPQngRQ@mail.gmail.com>
+Subject: Re: [PATCH v3 11/11] iio: dac: add mcf54415 DAC
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Angelo Dureghello <adureghello@baylibre.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	David Lechner <dlechner@baylibre.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Jonathan,
 
---26ssrqftvvoyehs2
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1 0/8] zorro: Improve handling of pointers in
- zorro_device_id::driver_data
-MIME-Version: 1.0
-
-On Tue, May 26, 2026 at 05:01:48PM +0200, Geert Uytterhoeven wrote:
-> Hi Uwe,
->=20
-> On Tue, 26 May 2026 at 16:17, Uwe Kleine-K=F6nig (The Capable Hub)
-> <u.kleine-koenig@baylibre.com> wrote:
-> > this series is about improving the handling of pointers in struct
-> > zorro_device_id's driver_data.
+On Tue, May 26, 2026 at 02:30:50PM +0100, Jonathan Cameron wrote:
+> On Fri, 22 May 2026 23:20:39 +0200
+> Angelo Dureghello <adureghello@baylibre.com> wrote:
+>
+> > From: Angelo Dureghello <adureghello@baylibre.com>
 > >
-> > While it's ok on all current Linux platforms to store a pointer in an
-> > unsigned long variable, it involves casting that loses type information.
-> > This can be nicely seen in patch #7 where after profiting from patch #6
-> > the compiler notices a missing const.
+> > Add basic version of mcf54415 DAC driver. DAC is embedded in the cpu and
+> > DAC configuration registers are mapped in the internal IO address space.
 > >
-> > Preparing for that change, all zorro_device_ids are converted to use
-> > named initializers, which is also a nice cleanup that could stand for
-> > itself, as it improves readability for humans. (That is necessary
-> > because an anonymous union can be initialized by name, but not using a
-> > list initializer.)
+> > The DAC accepts a 12-bit digital signal and creates a monotonic 12-bit
+> > analog output varying from DAC_VREFL to DAC_VREFH. The DAC module
+> > consists of a conversion unit, an output amplifier, and the associated
+> > digital control blocks. Default register values for DAC_VREFL and DAC_VREFH
+> > are respectively 0 and 0xfff, left untouched in this initial version.
 > >
-> > My motivation for this series is the CHERI hardware extension. With that
-> > pointers are bigger than longs and thus you cannot store pointers in
-> > zorro_device_id::driver_data. So this series is also about getting
-> > support for CHERI into the mainline, but I hope the clean up effects
-> > mentioned above are justification enough to accept this series.
->=20
-> Thanks for your series!
->=20
-> > The dependencies in this series are as follows:
+> > This initial version of the driver is minimalistic, "output raw" only, to
+> > be extended in the future. DMA and external sync are disabled, default mode
+> > is high speed, default format is right-justified 12bit on 16bit word.
 > >
-> >  - Patch #5 depends on #1, #2
->=20
-> s/5/6/?
->=20
-> >  - Patches #7 and #8 depend on patch #6.
+> > Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
+> https://sashiko.dev/#/patchset/20260522-wip-stmark2-dac-v3-0-16be0ad35a67%40baylibre.com
+>
+> Given there were only a couple of comments I've included them below alongside
+> my review.  All minor stuff.
+>
+> Thanks,
+>
+> Jonathan
+>
+> > ---
+> > Changes in v2:
+> > - remove tests from commit message, moved to patch 0
+> > - remove additional blank lines
+> > - remove dead code and unused definitions
+> > - use regmap
+> > - add limit check on raw write
+> > - non functional style fixes
+> > - add COMPILE_TEST to Kconfig
+> > Changes in v3:
+> > - add comments where needed
+> > - code style changes
+> > - remove unneeded variables
+> > - use regmap_set_bits where possible
+> > - remove macro not needed to define a single channel
+> > - set up regmap to big_endian accesses for next patches that will come,
+> >   that will adjust ColdFire readx/writex as standard LE (links in 0/x).
+> > - add return value check on regmap calls
+> > - sashiko: remove unneeded .io_port from regmap init.
+> > - sashiko: add select REGMAP_MMIO in Kconfig
+>
+> Looks like you missed or disagreed with the previous sashiko comment on v2 about
+> type passed to regmap_read()
+>
+
+Sahiko asks if regmap_read produces a compiler watning.
+I don't see any,
+
+> > ---
+> >  drivers/iio/dac/Kconfig        |  11 +++
+> >  drivers/iio/dac/Makefile       |   1 +
+> >  drivers/iio/dac/mcf54415_dac.c | 207 +++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 219 insertions(+)
 > >
-> > So if the ata maintainers agreed to merge their patch #1 via scsi, and
-> > Geert agrees to patch #5 and that it's also merged via scsi, patches #1,
->=20
-> s/5/6/?
+> > diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
+> > index cd4870b65415..b1a578076188 100644
+> > --- a/drivers/iio/dac/Kconfig
+> > +++ b/drivers/iio/dac/Kconfig
+> > @@ -516,6 +516,17 @@ config MAX5821
+> >  	  Say yes here to build support for Maxim MAX5821
+> >  	  10 bits DAC.
+> >
+> > +config MCF54415_DAC
+> > +	tristate "NXP MCF54415 DAC driver"
+> > +	depends on M5441x || COMPILE_TEST
+> > +	select REGMAP_MMIO
+> > +	help
+> > +	  Say yes here to build support for NXP MCF54415
+> > +	  12bit DAC.
+> > +
+> > +	  To compile this driver as a module, choose M here: the module
+> > +	  will be called mcf54415_dac.
+> > +
+>
+> > diff --git a/drivers/iio/dac/mcf54415_dac.c b/drivers/iio/dac/mcf54415_dac.c
+> > new file mode 100644
+> > index 000000000000..c8c87572d43d
+> > --- /dev/null
+> > +++ b/drivers/iio/dac/mcf54415_dac.c
+> > @@ -0,0 +1,207 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * NXP mcf54415 DAC driver
+> > + *
+> > + * Copyright 2026 BayLibre - adureghello@baylibre.com
+> > + */
+> > +
+> > +#include <linux/array_size.h>
+> > +#include <linux/bitfield.h>
+> > +#include <linux/bits.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/compiler_types.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/err.h>
+> > +#include <linux/io.h>
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+>
+> not seeing any use of this. I guess it 'evolved' away.
+> Anyhow, please sanity check these all one more time for v4.
+>
 
-Yes, indeed. And I tried so hard to get all the numbers right :-\
+thanks,
+removed it and also linux/array_size.h that's unused now.
 
-Best regards
-Uwe
+> > +#include <linux/platform_device.h>
+> > +#include <linux/regmap.h>
+> > +
+> > +#include <linux/iio/iio.h>
+> > +
+> > +#define MCF54415_DAC_CR			0x00
+> > +#define MCF54415_DAC_CR_PDN		BIT(0)
+> > +#define MCF54415_DAC_CR_HSLS		BIT(6)
+> > +#define MCF54415_DAC_CR_WMLVL		GENMASK(9, 8)
+> > +#define MCF54415_DAC_CR_FILT		BIT(12)
+> > +
+> > +#define MCF54415_DAC_DATA		0x02
+> > +
+> > +struct mcf54415_dac {
+> > +	struct regmap *map;
+> > +	struct clk *clk;
+> > +};
+> > +
+> > +static const struct regmap_config mcf54415_dac_regmap_config = {
+> > +	.reg_bits = 16,
+> > +	.reg_stride = 2,
+> > +	.val_bits = 16,
+> > +	.max_register = 0x0c, /* DACX_FILTCNT,  R.M. Table 30-2 */
+> > +	.val_format_endian = REGMAP_ENDIAN_BIG,
+> > +	.reg_format_endian = REGMAP_ENDIAN_BIG,
+> > +};
+> > +
+> > +static int mcf54415_dac_init(struct mcf54415_dac *info)
+> > +{
+> > +	int ret;
+> > +
+> > +	/* Keeping defaults and enable DAC (bit 0 set to 0) */
+> > +	ret = regmap_write(info->map, MCF54415_DAC_CR, MCF54415_DAC_CR_FILT |
+> > +			   FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1));
+>
+> Perhaps use a local variable. It is a tiny bit too easy to miss that
+> parameter being split over two lines.
+>
+> 	u16 val = MCF54415_DAC_CR_FILT | FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1);
+>
+> would avoid that.
 
---26ssrqftvvoyehs2
-Content-Type: application/pgp-signature; name="signature.asc"
+ack, done.
 
------BEGIN PGP SIGNATURE-----
+>
+> Alternatively perhaps just reflowing as:
+> 	ret = regmap_write(info->map, MCF54415_DAC_CR,
+> 			   MCF54415_DAC_CR_FILT |
+> 			   FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1));
+>
+> avoids that reading issue (I read it wrong ;)
+>
+>
+>
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* DAC is ready after 12us, from RM table 40-3  */
+> > +	fsleep(12);
+> > +
+> > +	return 0;
+> > +}
+>
+> > +
+> > +static int mcf54415_read_raw(struct iio_dev *indio_dev,
+> > +			     struct iio_chan_spec const *chan,
+> > +			     int *val, int *val2, long mask)
+> > +{
+> > +	struct mcf54415_dac *info = iio_priv(indio_dev);
+> > +	int ret;
+> > +
+> > +	switch (mask) {
+> > +	case IIO_CHAN_INFO_RAW:
+> > +		ret = regmap_read(info->map, MCF54415_DAC_DATA, val);
+>
+> Sashiko pointed out that regmap_read() expects a u32* so this should use
+> a local variable for the read.
+>
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmoVzHQACgkQj4D7WH0S
-/k4BXggAoAuTCgxPow5/rQYRxSTj+kNc4XmxhIlX39wkjq4KJoBOkfK1zOhQISV1
-4HHCqWa9m9dov4bu6Kg8LwbKa2UChzh7HIDanvg0FuTjuR2DvZAqQ1h3KlZHQj4H
-Dh1fxxwA9H2mAUN8tHgeBxUVZ6qajflOjKFHpsQbdgTyoj2LkR1szY77e5P4QdmS
-0UJbs5rWuTPA+ErMqqdl4SkAygYx8SEw84ch7byHO4yx9rpUCp8zJk95dKJCgAir
-L38wVLJUZNR7sQVkPKakWtv34niUdKWjqIXa8yB4GHOQFX65uFKEzrvodPCyE2J/
-vgh7fbUvdt3OqTL+DpSduQS2l1F1qA==
-=W3Nr
------END PGP SIGNATURE-----
+Sashiko asked if this is causing a warning. I don't see any.
+Register read is a 16bit reg, and the valid 12bits are masked just after
+to ensure returned value is always correct.
 
---26ssrqftvvoyehs2--
+So can stay as is, or to make sashiko happy i can do something as:
+
+	struct mcf54415_dac *info = iio_priv(indio_dev);
+	int ret;
+	u32 reg;
+
+	switch (mask) {
+	case IIO_CHAN_INFO_RAW:
+		ret = regmap_read(info->map, MCF54415_DAC_DATA, &reg);
+		if (ret)
+			return -EIO;
+		*val = reg & 0xfff;
+		return IIO_VAL_INT;
+
+> > +		if (ret)
+> > +			return -EIO;
+>
+> Another one sashiko got. Why is this eating the possibly more useful error
+> code from regmap_read()?
+>
+
+fixed with return ret
+
+> > +		*val &= 0xfff;
+> > +		return IIO_VAL_INT;
+> > +	case IIO_CHAN_INFO_SCALE:
+> > +		/* Reference voltage as per ColdFire datasheet is 3.3V */
+> > +		*val = 3300 /* mV */;
+> > +		*val2 = 12;
+> > +		return IIO_VAL_FRACTIONAL_LOG2;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +}
+>
+> > +static int mcf54415_dac_resume(struct device *dev)
+> > +{
+> > +	struct mcf54415_dac *info = iio_priv(dev_get_drvdata(dev));
+> > +	int ret;
+> > +
+> > +	ret = clk_prepare_enable(info->clk);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	mcf54415_dac_init(info);
+> If this fails should we report it?  I think you'd at least want
+> some print to help with debug. (Sashiko got this)
+>
+
+Ok, so doing
+
+
+	ret = mcf54415_dac_init(info);
+
+	if (ret) {
+		dev_err(dev, "could not resume device\n");
+		return ret;
+	}
+
+
+
+> > +
+> > +	return 0;
+> > +}
+>
+>
+
+Regards,
+angelo
