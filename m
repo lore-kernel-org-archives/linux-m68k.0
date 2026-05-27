@@ -1,76 +1,76 @@
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0206630C171
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2026 13:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA2230C35E
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2026 13:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779887716; cv=none; b=YjERgM94DgalDs6042qJ2cPy7E24H2J1AaHgSeyARJ7Dib0o8efmC5Wn/yaNW4WFnRJrwXoUyuwPJ5rLeS162iRXrz6Ram5lNmn1cidpG6gIGMFGXtFPqi86xMwHcCht8lUfyV3sBbdutrirvFN7g+eQNzmra48+SCgEW4HlqLg=
+	t=1779887738; cv=none; b=O8M9eWJPENzdGv/HKtDDjg12R+mfvhr0YObo4C0LaO0ck1adaIAF6YVKfwLeO66ZPWpDEfVqMeT42+WPgJsx34LqucPzvMYD5mkWqzoXEo/+nlExXk3tesC9MKt1uB7WMb2vvgzHQBhelaBFRAngIDGStvz70OQERwyw0HW36Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779887716; c=relaxed/simple;
-	bh=NuNvxIHEMMpLcTwcLN317lzyiSS9qhMROyeREEechDs=;
+	s=arc-20240116; t=1779887738; c=relaxed/simple;
+	bh=L4LMy3/5PcD6JOd8qFsTzkz6YlTgBQwkJtsYILkNLkk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YaWL5M9o9Nc720XkioguNCDa11sfvtj09gs3L3DQYIhciFdbzTYoJtXb+OjrIrJt4xtWdL/yUu0MGWkOauv2kDzSHUjNEMqeH7t8oo7+DI3mMx0nHzR5o5D00rMxHdOMTMwGkthQbk8E7ovKtgFaO03nGgKt7KrPRagfYvRg9KM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.174
+	 To:Cc:Content-Type; b=B0Py3zNDO3p7HYDG9mF5msZh0BmTa8bWTd0uqCm+yBqMJhbSEs/z1IhWHwnHcsCJHmws/O0AkorincsP+Hhg1MDi7BAlQKLEZso5hYQrXh+evxhChGwlXxVX0VFRv6lfsNgMrnkIrXaZVm6F8Jfgb16Wjm62UaFgSeKSxcsLo1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-5945b781ddfso564216e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2026 06:15:14 -0700 (PDT)
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-56f70865797so7335497e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2026 06:15:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779887714; x=1780492514;
+        d=1e100.net; s=20251104; t=1779887736; x=1780492536;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=VJbyg3CmiTY5UdW1iNZoeveCs0jnc1uKWTBV/g2Zt+o=;
-        b=MvouX7dJBQ53lwLPoChBOVCSYHxihCyoVXSb/Yc3Knfq+EdjJSaIxsA+fT89GcDYLE
-         rqpWbnpdLzMBnVV8oFyJ29wiofAbYjg8XydqstyCBK0MVHpst+EYYXk0+mYxWjCn3+E9
-         HKVaG/PGHanSs96vUyay5cLll29isO+8tXpzqzTOEeYHCTjT9+9mK64Cz/a5UZVMIjBj
-         wzClklsOCuKsm+GL5wU4E4wBxFrcJbeLrIUn7xNiZ/TZ/EAuZK414Y0nlVYhaZ6BTNNm
-         BXNOTgHk2UdwjWaeeDdLtNrr9Z0w5yRI+j+De9SHNkIatwVib4Cxo8CkRruEYx0N8o4z
-         4XKg==
-X-Forwarded-Encrypted: i=1; AFNElJ9ryeTIyPI+U6/k5WBG7ZyNVkiRVj4IoG+SwZYMvaBydB8X0mSsQFkJp2daGUqj0PrkWpLeaUU6kPcW@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy4MJnE8lVn5yBWeX9/VBrbcpdOw6dJy1te3ArGdlcX1ya/hIyJ
-	tKJwalsTnzk0PgNTNsdQQwRyvlAAcUxZ8xAm5wSTymjT4uB3Il36HgtpC4J7QvUM1DM=
-X-Gm-Gg: Acq92OEyhrtsZnDqvQRYwL4xizweUNVUtN69V7pcoMXj7NKNoBJsy/qIIo954547pp0
-	Vq/8Wf/Ekw1NoDAJE7BmCjQWXNQKgRonSCbFbZ6uHdyt7mCYNlcewd9q3n57oKcBwVJ1RMFy+OH
-	zS0ssJTb8vR7YMMxf3Lpj8KL4F1CIzgVMVYTHbUPmqesncBTSWGkshWX3sdTk3fHr4vFQHr8G95
-	ozMdEuIwrePki0v8I2+OreKaVKZLXYwRpTKFKwowZx/tue6M7miU/F0jksvrM0draZycztRW5lE
-	H/OSClmiejAwf7JmYWDFg2llliuWu6ywbLXsxAI7SZmKBEr+ticNVQbLwdyB2V5e50DddiB55RO
-	hu8Uv2i0EsX5Q4vj+x3XuJM9nw4m0TqvDMjKQL8x32WOB2mUA6dZEOpXjCEJWyL30KsVxjhNA1y
-	wRNIiBOXHth85Z/7cbiMsF8kiTWJoq64h5XYE6ja+Ygmle/DHQ5nDcXjLYo4xsKjSJ52GxZNE=
-X-Received: by 2002:a05:6122:ec9:b0:56d:3451:4cc0 with SMTP id 71dfb90a1353d-5868f88e6cemr9974278e0c.7.1779887713430;
-        Wed, 27 May 2026 06:15:13 -0700 (PDT)
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-586f791f70esm19929063e0c.10.2026.05.27.06.15.13
+        bh=mhuosztxaYqV9SvM0bBA8kuIl21DSYO1vCjtfXxvD04=;
+        b=EdmDQFxN1xbXvNpGt2pKlNPVKNzwdJSagSEZz4m6r87XGRt1Z75TjCXa5D/XpQqjoV
+         p3RxblCsO0eHcKWfoAgwhmZmuNbO2pYGfDK9TJ+GAy+syD95N6JjXl+B4Ep2O2WgTN3J
+         Nm05VULfXxj/RgGxHWnUbQX/5rGzWr2ssl2fFPBYNaUFMMUGVUqzqPOfMKZGE2GSEWQF
+         TnM9KawIkPsEvsdbNPNUZUNgB4b7qxDEVWjLOMVY9CGMWa72odr13+Bs90KHEdkhoTVg
+         fOeVbJqfzzvzqDNrvPKHbLn1l6O6UlA4C8ZTtUOepEepWyJhixWWy1lP4CNhbVyEvKSu
+         +xOA==
+X-Forwarded-Encrypted: i=1; AFNElJ/9S+INqYhPDKKfwmPpBclX1ey3XGjQcsXIcVbk7TuYzkZ5X0RMGDXsRz3kPtAjiFzia6cgglFxwTYe@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Yx3zWRXyouOA7ce9mBVY0aXbtLGwBXQZpTA3UCw6zYkcDl9idY8
+	e9lIC8b8szSROjIRvmhwLxiM2U/EZWnHzfS+Q9l3b1vYvCnh8lUbQznA3+YXoCzJCvs=
+X-Gm-Gg: Acq92OFrF+SJdzfadXWfxWeAillQhl4oLN4uCPGJtO6ye+hDHfgysGIZaLy1gs2s6tc
+	n2TNMshdrtoPLz50tYQ1aQlJUjihB1TyaRymisdIF3M/MNgT2R8g5OJlAvnrpKfHp75bbtMw8ee
+	NJ61iihFwvtoNk5JkzYYRhktI1PtdRKtrEcE/CyvmL3+ujM4Xsbva2ukmiZyktPtwmLQakiEUBe
+	7yEbQoHJnQalvPvPeT2WI2SxcmxBibLI2i8YkKH14Qtk1tCI/7SV09nFwl6Wdn5wpcwDvMfiOWv
+	npiOBDf5Knx+o4afZYO2FCaoPd8Xb3YFh+qOHC59qVnECONB7pX0koKI6O16Hoimgcw/ht67r6V
+	VFpjVjtqq+c1UsAuH4zmI9ne8Wvg0KhmOj/dFF3+SczV/ch8acmhOStBdgGd4FwcX1fdg96rBc+
+	turrAGZdhcB/BnXEQbaqJcXLDxEkXbdOt8iNfVhZaSmThcz+tU7rEIEm2St3GX75i3VBa0Z5rH3
+	j8=
+X-Received: by 2002:a05:6122:469d:b0:56f:6b46:28be with SMTP id 71dfb90a1353d-58661b20011mr12164629e0c.8.1779887736527;
+        Wed, 27 May 2026 06:15:36 -0700 (PDT)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-961737bbf42sm16820419241.2.2026.05.27.06.15.35
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 May 2026 06:15:13 -0700 (PDT)
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-636970cf66cso8992737137.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2026 06:15:13 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ/9HXwXc6Qp3PJZ/cTLlUKxLEOM+9dkGrX8NS+uFXADBtcZGDWPrDNo5W8TeKvSmZgu1O0Qll3q2TRj@lists.linux-m68k.org
-X-Received: by 2002:a67:e905:0:b0:6b1:c09:4202 with SMTP id
- ada2fe7eead31-6b10c094452mr280240137.5.1779887712838; Wed, 27 May 2026
- 06:15:12 -0700 (PDT)
+        Wed, 27 May 2026 06:15:35 -0700 (PDT)
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-57512a429d1so9575250e0c.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 27 May 2026 06:15:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ9pP3FgqEYiP0AUONNy5rij5GgKc33ayruB/psM7CEAWkXWg/KheuBLrvm5pAKj96TtyrJ/QCF5bypc@lists.linux-m68k.org
+X-Received: by 2002:a05:6122:1310:b0:56b:1eb:d396 with SMTP id
+ 71dfb90a1353d-58664ddc313mr12044467e0c.14.1779887734873; Wed, 27 May 2026
+ 06:15:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1779803053.git.u.kleine-koenig@baylibre.com> <a20f52aeee9dfcacfaea43ff280fa1867878cbbe.1779803053.git.u.kleine-koenig@baylibre.com>
-In-Reply-To: <a20f52aeee9dfcacfaea43ff280fa1867878cbbe.1779803053.git.u.kleine-koenig@baylibre.com>
+References: <cover.1779803053.git.u.kleine-koenig@baylibre.com> <9602004a447b474b15ca1e110d6d3c277f669e20.1779803053.git.u.kleine-koenig@baylibre.com>
+In-Reply-To: <9602004a447b474b15ca1e110d6d3c277f669e20.1779803053.git.u.kleine-koenig@baylibre.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 27 May 2026 15:15:00 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWJpPZ2DhrUE7cpF20Dg2+wWqXRL4D6cfDca8XLQegOVw@mail.gmail.com>
-X-Gm-Features: AVHnY4JNlHO3xU2ToNfirnyHdNDRJnjKIw-cP8vUt0A5y3NPzppIp4JL0RDJSno
-Message-ID: <CAMuHMdWJpPZ2DhrUE7cpF20Dg2+wWqXRL4D6cfDca8XLQegOVw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/8] ata: pata_budda: Use named initializer for zorro_device_id
+Date: Wed, 27 May 2026 15:15:23 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUWUHRBT-MmHv6bKH5arNZu7MvpxykkHs2Y_VFY=YUnUg@mail.gmail.com>
+X-Gm-Features: AVHnY4LQIVhtSrsik3alzJbVavFB4QDxiPF_aBdmr6zoiQVhz2g6cNLGL9_4zEw
+Message-ID: <CAMuHMdUWUHRBT-MmHv6bKH5arNZu7MvpxykkHs2Y_VFY=YUnUg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/8] scsi: Use named initializer for zorro_device_id
 To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, linux-ide@vger.kernel.org, 
+Cc: "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, linux-scsi@vger.kernel.org, 
 	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	"Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>, "Christian A. Ehrhardt" <lk@c--e.de>, linux-scsi@vger.kernel.org
+	"Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>, "Christian A. Ehrhardt" <lk@c--e.de>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -84,8 +84,11 @@ s
 > is relevant for a planned change to struct zorro_device_id that replaces
 > .driver_data by an anonymous union.
 >
+> While touching these arrays, drop explicit zeros from the list terminator=
+.
+>
 > This change doesn't introduce changes to the compiled zorro_device_id
-> array.
+> arrays.
 >
 > Signed-off-by: Uwe Kleine-K=C3=B6nig (The Capable Hub) <u.kleine-koenig@b=
 aylibre.com>
