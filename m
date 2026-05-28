@@ -1,125 +1,165 @@
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A39C3F39F8
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 28 May 2026 13:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCFB26E70E
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 28 May 2026 15:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779974796; cv=none; b=iDkRKddgb8+lxWRrtueNfoWi1Bb2uljMPXFv89Y7Z7eKE9+zByiL7sJplzeeDnOwx12pTi+Zt+0vrFwTxADJleEoPreLYg8gepmUSSa7G35Y5AJEKP7XfIUHyJOH0Xw1nXmNu91Y7wGZ6gQYPdS5LEfwQQ2fwwBy/suELzpbf5Q=
+	t=1779982117; cv=none; b=JKKTjuwQxASN4gzBtiQpXdp5gA9p48Uk/kceZ8NPtDDilrcES8EP+TCWiBLjgsZ2crBkF+tAuQgpLSsCno+TsdjVLqqgafaMF/FnpjO1eQM8Ca/48GAusiZ1HxgvWAqCW1dblghLJM4ay4jEa41Riwa64TB+XLg1e8U3WQWNQQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779974796; c=relaxed/simple;
-	bh=03lGqlF+0BEi21i0yMRj08s+nfpxN0o2kGLw0gW00Qg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eXyzBAIedJCuGFAaM7b49LNlVIgzk1vncmE1mlK7A1NiRw2266zgnodjE1Wr26cO4wcJm1NsXXeTi2iuktuIcOPZcgYLvQThfeYNf4go1voaBPGxgh2ZYRHtesYiExF9I7+b/dglKDVjM8LVtbsKgZeyEGeY5iHfbzh95UDq5Nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=FI/45MV9; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	s=arc-20240116; t=1779982117; c=relaxed/simple;
+	bh=vdHJI+EMjLxZD/QaMi7GqZ8jwR8Jf+ewiX6tUNrtCyU=;
+	h=Date:From:Cc:Subject:Message-ID; b=L80QB0cg3D9hy2UbRO9Gy+oHG5AMPHAN1zzjsaCyqbhnYKkPt9t1R1IZF35SYb+O0nbYIBTD3bxqY4DygU8GsR5Uuf4wKJcYfck+RJn9McjzL4zV20k+UaK0diNHA2iv+bzM6XLGxswJJDPgQ+FP+nbXsuBdmoWMkf8AePr9KCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EQeQfw5F; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="FI/45MV9"
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4904c1ce4c1so66520185e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 28 May 2026 06:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1779974790; x=1780579590; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=03lGqlF+0BEi21i0yMRj08s+nfpxN0o2kGLw0gW00Qg=;
-        b=FI/45MV9yPpZjV+AmeUQa2Z/IycXQho3zPmbbbUPQh7NP3lWeHv0N1DBBUV//Ih1dq
-         q2DWrq92kTn8ei9AtOwx+ACn9W/8EmjInVUDbE8g9RRl+ZB7nuxFnvIfpSM8grQmF2qU
-         1x4hhT8X9zMlRq7XC+GS2krZc92K6aoJyYuf7/oQiZsa/zYEFMCOUcmSR1C6Orw5kWkU
-         Jg4DLYwwboUiqdX8ieFKPI8clNMTZap/qPgKwzGyex96f1lFYEayUn8VUz+ojwTcnY4m
-         7THnJeUvwgRZPMu8CTwtwvayQZu/vmUQcdg2kufmwCO+EJC5Hx4zMJS8Z4qGZEGLZP3B
-         +f2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779974790; x=1780579590;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=03lGqlF+0BEi21i0yMRj08s+nfpxN0o2kGLw0gW00Qg=;
-        b=izOeX6nPegfqQutKz5sdVRp/5maUSO6SFlrea+GkrolatWCkKsUkEN5VmT52q6ADAD
-         h7PZPCF1QbQ99vjPk6zt7AIk/MCxB6+78MWrzDS8UC4sUgJ/O4eerMF+1CuTPTpd4Una
-         SC+Gp1hPGwwGhoyPa0l9HXaVGbPd2Vr2gP06KrkwJw150bwtNe1o1X2C6eLxw6eKlXrl
-         t5tKoZXLxKmaADjwArVQENXsvVss7GCw7PeWHjnlZQOHF/ZmDCeEuQ9GMHX6JgyKjY3x
-         3/22DYkCueT4HY7Cpleb8FnQ6lQu4rkOhz/LsdRY9LDtKJu7OYwXGOU9C3hzJWtIofF2
-         arbA==
-X-Forwarded-Encrypted: i=1; AFNElJ8bC8QQHWCItXfwyFVW1mXeupZkC1CDrFAXmDBWKSKT9xNBqq/oKEeKRPAOx+aCcUREaiGpTmwjjNed@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzCcH0hkWAqNPinShsdL3HkGX/RDZ+GZSONXuIEmnWEDMGBWB6e
-	jg4V0+4XuGDXfYVimIAPEouBy3F611qTGGSoPk1xoecpGtxayRdbsIrs4vy4038g9GQ=
-X-Gm-Gg: Acq92OHcNKg5N6ABlXKfmcYvC1f7A/4uKpE2QEKwsBYPY4Xz0Z/PC8ZDJdFoBSjp0/P
-	1EWU0GJto+kA698BOb2uymoTZnMAc2tNht4jJryqdR4NLcFebXkhLt/iEeOPZuZW2CN9+AdSOiW
-	2JNrqIubfRq0zBTE+6ews9Kf8TbAK+DTV2LSakzTLM0yR3DHAzpni8aC331hhi2S4aG+t8ai6X/
-	bHHMe5OloC/h2JxUDYxgXq+rlMOGwBnXC9mn7POhdRPsFzjTAABVzB5MeuX4hsCvVAJ47ivewbq
-	c/W7PVqZuweP0YM9qTtGTUYZNe3LuVFCrhY+rD971VTAuQj/8Ca7u3zQzsZqsWPSxbiEXRbJG83
-	/xYdLxpypjvwM0XKqCMYYh/Xv1kFzEf2axHWyhobyJlCS5Loqb5timUbY4o4smnEjVT83Ed8tQS
-	o+13Xj85MIW9YXcxTbLephttjbUu8InNDGkwgux7DIY4WA/C/PFukIrBKLjC+uWlCOuoqB26ORa
-	KRGS4Z5RKZZjalQM6GGZp2Qeg==
-X-Received: by 2002:a05:600c:8210:b0:490:4663:691b with SMTP id 5b1f17b1804b1-490466369f4mr444171865e9.7.1779974789615;
-        Thu, 28 May 2026 06:26:29 -0700 (PDT)
-Received: from localhost (p200300f65f47db04e567da92d09b3dda.dip0.t-ipconnect.de. [2003:f6:5f47:db04:e567:da92:d09b:3dda])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-49092a82ea2sm71703465e9.9.2026.05.28.06.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2026 06:26:28 -0700 (PDT)
-Date: Thu, 28 May 2026 15:26:27 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v1] can: flexcan: Drop unused platform driver data
-Message-ID: <ahhAhZ76nLc-eZg8@monoceros>
-References: <20260528094540.1867783-2-u.kleine-koenig@baylibre.com>
- <20260528-fluorescent-sage-ladybug-43261b-mkl@pengutronix.de>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EQeQfw5F"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1779982117; x=1811518117;
+  h=date:from:cc:subject:message-id;
+  bh=vdHJI+EMjLxZD/QaMi7GqZ8jwR8Jf+ewiX6tUNrtCyU=;
+  b=EQeQfw5FjmlT1LdPCzeVww4fp7fjosu7DaLGjtda71VIeC+Fl/mGZwfR
+   pHTVpBG6NkvMwMSEHEnrc97BJyPQpvGqkzfwLup+eklvuZz24RmNtUaLi
+   3hp2MYGI1lp6UTGEawZzjHaHk+3grXjkiDLyhZFX7/1T44RXxAaQlqsQ+
+   B7yqu2Z225jcKcAv0B79gYA4Rp8uNJOGsSzgNGdYjpFtT/bsqkCAkvsZ1
+   dOAGQd5qJm0boLo07QWSovVBmdkkI55vsm3JFENQh+IjOCpAhl15bck50
+   ejW2EhrKqUUGpBuRpgnPaxg24qTRY7fg4xR2u9gsbDVJiJnoSmO2bO679
+   Q==;
+X-CSE-ConnectionGUID: u8K7TQr8QiK/+pvnabCzVg==
+X-CSE-MsgGUID: YJrW3QNpRQ2zA4x+sAUViQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11800"; a="80550568"
+X-IronPort-AV: E=Sophos;i="6.24,173,1774335600"; 
+   d="scan'208";a="80550568"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2026 08:28:36 -0700
+X-CSE-ConnectionGUID: vcBNx5zxQQq2ScMdzb3kAA==
+X-CSE-MsgGUID: ak2IMtUWT5Wv1NSCLHI+fA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,173,1774335600"; 
+   d="scan'208";a="239565937"
+Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 28 May 2026 08:28:34 -0700
+Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wSceu-0000000064i-0YNE;
+	Thu, 28 May 2026 15:28:32 +0000
+Date: Thu, 28 May 2026 23:28:26 +0800
+From: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [geert-m68k:master 1282/1440]
+ drivers/usb/host/isp116x.h:411:15: sparse: sparse: cast removes address space
+ '__iomem' of expression
+Message-ID: <202605282355.uB9GDd2J-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jr5ezym2bbxklprz"
-Content-Disposition: inline
-In-Reply-To: <20260528-fluorescent-sage-ladybug-43261b-mkl@pengutronix.de>
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+head:   26b3f6c06bb2e4c5e933736324b70b732c06ba64
+commit: b971c823ecb945e93fbe49e98884e4ef9ee5e859 [1282/1440] Merge tag 'v5.8-rc2'
+config: m68k-randconfig-r132-20260528 (https://download.01.org/0day-ci/archive/20260528/202605282355.uB9GDd2J-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 9.5.0
+sparse: v0.6.5-rc1
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260528/202605282355.uB9GDd2J-lkp@intel.com/reproduce)
 
---jr5ezym2bbxklprz
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1] can: flexcan: Drop unused platform driver data
-MIME-Version: 1.0
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202605282355.uB9GDd2J-lkp@intel.com/
 
-Hello Marc,
+sparse warnings: (new ones prefixed by >>)
+   drivers/usb/host/isp116x-hcd.c:137:55: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   drivers/usb/host/isp116x-hcd.c:137:55: sparse:     expected unsigned short [usertype] val
+   drivers/usb/host/isp116x-hcd.c:137:55: sparse:     got restricted __le16 [usertype]
+   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c: note: in included file:
+>> drivers/usb/host/isp116x.h:411:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:411:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:391:9: sparse:    void
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:391:9: sparse:    void
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:391:9: sparse:    void
+   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:397:9: sparse:    void
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:391:9: sparse:    void
+   drivers/usb/host/isp116x.h:427:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:427:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:427:9: sparse:    void
+   drivers/usb/host/isp116x.h:429:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:429:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:429:9: sparse:    void
+   drivers/usb/host/isp116x.h:403:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:403:9: sparse:    int
+   drivers/usb/host/isp116x.h:403:9: sparse:    void
+   drivers/usb/host/isp116x.h:403:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:403:9: sparse:    int
+   drivers/usb/host/isp116x.h:403:9: sparse:    void
+   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:397:9: sparse:    void
+   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:397:9: sparse:    void
+   drivers/usb/host/isp116x.h:403:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:403:9: sparse:    int
+   drivers/usb/host/isp116x.h:403:9: sparse:    void
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:391:9: sparse:    void
+   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:397:9: sparse:    void
+   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:397:9: sparse:    void
+   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:397:9: sparse:    void
+   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:397:9: sparse:    void
+   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
+   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
+   drivers/usb/host/isp116x.h:391:9: sparse:    void
 
-On Thu, May 28, 2026 at 01:00:15PM +0200, Marc Kleine-Budde wrote:
-> On 28.05.2026 11:45:39, Uwe Kleine-K=F6nig (The Capable Hub) wrote:
-> > No function in the flexcan driver ever accesses the .driver_data member
-> > of its .id_table array as device_get_match_data() returns NULL for
-> > non-of platform devices. So drop that unused assignment.
-> >
-> > While touching that array, drop the trailing comma after the terminator
-> > entry.
->=20
-> Does this mean that commit 5e6c3454b405 ("net: can: Use
-> device_get_match_data()") introduced a regression?
+vim +/__iomem +411 drivers/usb/host/isp116x.h
 
-Yes, I'd claim that this commit introduces a null pointer exception when
-mcf_flexcan0 (defined in arch/m68k/coldfire/device.c) probes.
+4808a1c0261176 Olav Kongas     2005-04-09  406  
+4808a1c0261176 Olav Kongas     2005-04-09  407  static inline u16 isp116x_read_data16(struct isp116x *isp116x)
+4808a1c0261176 Olav Kongas     2005-04-09  408  {
+4808a1c0261176 Olav Kongas     2005-04-09  409  	u16 val;
+4808a1c0261176 Olav Kongas     2005-04-09  410  
+2f0f9fcd96fa8d Michael Schmitz 2013-04-06 @411  	val = isp_readw(isp116x->data_reg);
+4808a1c0261176 Olav Kongas     2005-04-09  412  	isp116x_delay(isp116x, 150);
+4808a1c0261176 Olav Kongas     2005-04-09  413  	return val;
+4808a1c0261176 Olav Kongas     2005-04-09  414  }
+4808a1c0261176 Olav Kongas     2005-04-09  415  
 
-Best regards
-Uwe
+:::::: The code at line 411 was first introduced by commit
+:::::: 2f0f9fcd96fa8dbeec54cce98170985f7b384a41 m68k/atari: USB - add ISP1160 USB host controller support
 
---jr5ezym2bbxklprz
-Content-Type: application/pgp-signature; name="signature.asc"
+:::::: TO: Michael Schmitz <schmitzmic@gmail.com>
+:::::: CC: Geert Uytterhoeven <geert@linux-m68k.org>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmoYQm0ACgkQj4D7WH0S
-/k6P5Af/RigOk1qBi0phQGZoqolZBtvjNCOPhXdtTXZsPHFrRSQHlnNNrCwumgF4
-gXsU30alRevFmOywvJQjR20jiQdfyqOz/Lh4rLmTP3/I7kfhEHsQHe35v2Rartas
-20cbq4rj8aeF1jFaHth7acd0i0vpLMDS228PzL2qlnNTam51AZWKBqj6GoOzGsmt
-00cRVpIB3ZYd8S5sI5g1go5xSeDGFaUgtPMYzzZoBrhzAsqYb+ypG/qSNLvDgn5l
-6D4LUQLaDD+Ds6gwzkFPPXfAEmxMQwnT07u6+PQCfPbuGmSNye7H4KEFgdStSD95
-6tdn5MsdA99T+oswj7W1DmgD27Gbwg==
-=UgOY
------END PGP SIGNATURE-----
-
---jr5ezym2bbxklprz--
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
