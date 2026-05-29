@@ -1,72 +1,95 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA1833F8C1
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 28 May 2026 22:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BBF35B634
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 29 May 2026 01:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780007747; cv=none; b=Z9aGOgQv2vMIog991ggqBpS2m3HeL43z7aE9KY/DEVO5ne4jLjvSzLOSOP1WQaaolZWOoxaS2ulN6crZlDqP/zVkVW+Q9fijQhq+YEGKp9UGirueeGTy1RsLupZ01Pgc+t99pQFBR3DEH/TooPrpkAJxvlWAyGmiYSTJBaiKDAc=
+	t=1780017616; cv=none; b=IEeWhBONZCh+y+UpGJUGDM3zt6qTjKbW5Wbqs/DVwcuZXzNa7bTgjUOsxvh1UFP//ikrlGvJ+5ircZPYf7sI16M24awpZzTczIQ9yyhwkeR3QDNFAjyW7VaiS5Zg2lUoI96K0ZFhyA7qMoXDEeDad/IwwJwG5EKtfoICmwYsUGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780007747; c=relaxed/simple;
-	bh=L2IXn7tokzDlv8zKzHfT7rQcYMUlHu8dS7WVQ8PiaXQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bo1//NDJRFMcg3pcFZ7Y0dJDOxY0vyP7zMG6l4hA0AzYLyhxBnMiTbn74wuD02pXEyljUfo5uX87qrjuzL1MVcVxdZySXFlzu140Imc5nwL3xPX9JkT+N359TOl/RAfU+z4UZAbmh4hZDCq/v8BDsI+dT05r4rsFuL63uy+Xs1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SD+52fTb; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1780017616; c=relaxed/simple;
+	bh=kc6nYMTZ15ADkL2c3/owXt8ybjc/HA+x3q8GPHZ/JeY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Yl/HXujoZfyzuJsmEBa6w+1X/pUyrvNOJmmCIrTufMK9PTS2iG7OfLEInqN8+HaiOykUIicwX6QRKvE/NSYNc6eA+NJwW8+N3nROn7rmNDkUnIfn/7UeKHBye7pwkISbmkkLyB2EP9xJ4fVgt2JKfdEORIddPi44ae+Ge0BlbBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cbd4O6b2; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SD+52fTb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cbd4O6b2"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id CE8DA42A79;
-	Thu, 28 May 2026 22:35:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C937E1F000E9;
-	Thu, 28 May 2026 22:35:43 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 1D29C60565;
+	Fri, 29 May 2026 01:20:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C48BB1F00A3A;
+	Fri, 29 May 2026 01:20:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780007745;
-	bh=8kLBx4ckmbM0dMOnHMAVzp6zE5GX3IeNoPhLyXOA4VE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=SD+52fTbEX1WT4tWRpyMhXdSq+n+131KEEtso/qUJM3+jfvE6hrIUbmgHGbMPgUkO
-	 K5deGNGOScSV/bF+pMr4zugPdCj0v4FIg+dc0qqOFalCUhInPDftbpu+h6tGoM0ruK
-	 +WOfEz7fY3taIR8jaIZ24MUj665fyLpCLHLEd6hlaAA/En96IZWt7FiehVGdmD65ve
-	 OMNkHFEuYXDqzdVkEQPP/5VptKA8rZkdO1At43tVcnohFaiM7xqhbAkD6iTZtFsJRZ
-	 Lcy/iK0oWSJnECLnyYUZDN61sM7vxqjGPZl8z48RBCzej5XF8MYtfVuSulWR3PjxMt
-	 AJJBNFi2M0Iqw==
-Date: Fri, 29 May 2026 00:35:35 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Max Staudt <max@enpas.org>, 
-	linux-i2c@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	"Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>, "Christian A. Ehrhardt" <lk@c--e.de>
-Subject: Re: [PATCH v1 4/8] i2c: icy:pick  Use named initializer for
- zorro_device_id arrays
-Message-ID: <ahjDIH9UlDicPYLB@zenone.zhora.eu>
-References: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
- <3d7690c7a8948f977d6c50bd0c8010efb715fbdc.1779803053.git.u.kleine-koenig@baylibre.com>
+	s=k20260515; t=1780017613;
+	bh=daVD7h+JJCInltDYMlUpsr01UGPhOz1107R+/8g1GTw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc;
+	b=cbd4O6b25jNSiwHzC9tH6sPaVqcHXPLvjJ47C9KcyfA6pUwKpLaiRsnTbXEF0UZKr
+	 NrkjKXHLp0yRDGS9Rc1RvUVmTSicK8iip/MbWWcx6I0cixnzJ1gCYmHHNKPKI27pME
+	 O0BKTzvxvD+MnDvZteCkF9w2MHTxsW2nY7xuTrv0/KIjy+te1K+T4hf4Zf9H8fY8v6
+	 FNBLyqcQmGOA1a1fls+y+g9MyxD80XFJKCok+8FtEF2/TwRLzQpDdujoVR6UycPPDL
+	 LKYxReBnDyG81Fi54bLu+NuYxzFiyCrpY1Sj6s2rxY2Vky1JRbKF4eTOGouic2eG/+
+	 7hd0dj5MCeAYA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 19BC1392FFFE;
+	Fri, 29 May 2026 01:20:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d7690c7a8948f977d6c50bd0c8010efb715fbdc.1779803053.git.u.kleine-koenig@baylibre.com>
+Subject: Re: [PATCH v1 0/8] zorro: Improve handling of pointers in
+ zorro_device_id::driver_data
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <178001761763.1584301.12785828078106314359.git-patchwork-notify@kernel.org>
+Date: Fri, 29 May 2026 01:20:17 +0000
+References: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
+In-Reply-To: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
+To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig_=28The_Capable_Hub=29_=3Cu=2Ekleine-koenig?=@aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org,
+	=?utf-8?q?=40baylibre=2Ecom=3E?=@aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org
+Cc: geert@linux-m68k.org, dlemoal@kernel.org, cassel@kernel.org,
+ James.Bottomley@HansenPartnership.com, martin.petersen@oracle.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, tglx@kernel.org, mingo@kernel.org,
+ max@enpas.org, andi.shyti@kernel.org, deller@gmx.de,
+ linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ christian.ehrhardt@codasip.com, lk@c--e.de
 
-Hi Uwe,
+Hello:
 
-On Tue, May 26, 2026 at 04:17:30PM +0200, Uwe Kleine-König (The Capable Hub) wrote:
-> Using named initializers is more explicit and thus easier to parse for a
-> human.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 26 May 2026 16:17:26 +0200 you wrote:
+> Hello,
 > 
-> While touching this array, drop explicit zeros from the list terminator.
+> this series is about improving the handling of pointers in struct
+> zorro_device_id's driver_data.
 > 
-> This change doesn't introduce changes to the compiled zorro_device_id
-> array.
+> While it's ok on all current Linux platforms to store a pointer in an
+> unsigned long variable, it involves casting that loses type information.
+> This can be nicely seen in patch #7 where after profiting from patch #6
+> the compiler notices a missing const.
 > 
-> Signed-off-by: Uwe Kleine-König (The Capable Hub) <u.kleine-koenig@baylibre.com>
+> [...]
 
-just this patch merged to i2c/i2c-host.
+Here is the summary with links:
+  - [v1,net-next,3/8] net: Use named initializer for zorro_device_id arrays
+    https://git.kernel.org/netdev/net-next/c/4933a658369a
+  - [v1,6/8] zorro: Simplify storing pointers in device id struct
+    (no matching commit)
 
-Thanks,
-Andi
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
