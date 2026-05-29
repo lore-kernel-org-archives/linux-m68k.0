@@ -1,40 +1,69 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01BBF35B634
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 29 May 2026 01:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1D71F130B
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 29 May 2026 09:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780017616; cv=none; b=IEeWhBONZCh+y+UpGJUGDM3zt6qTjKbW5Wbqs/DVwcuZXzNa7bTgjUOsxvh1UFP//ikrlGvJ+5ircZPYf7sI16M24awpZzTczIQ9yyhwkeR3QDNFAjyW7VaiS5Zg2lUoI96K0ZFhyA7qMoXDEeDad/IwwJwG5EKtfoICmwYsUGA=
+	t=1780047661; cv=none; b=SeZXUp3RsYg+9AOf7zLuNLQQTI4pfy+IEOYJbWikV+eK9XcDj02vF/osQF6r5yzO1tHhO+eF67dAV9vB/oR64sOhFpOMjby3EWnHZ2ZwtOhgEljgJrs3UTPiNJWBkC28acFLj5aLQNGWy2ELXiaPMcNpSuNCv878QNrHWuUW9HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780017616; c=relaxed/simple;
-	bh=kc6nYMTZ15ADkL2c3/owXt8ybjc/HA+x3q8GPHZ/JeY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Yl/HXujoZfyzuJsmEBa6w+1X/pUyrvNOJmmCIrTufMK9PTS2iG7OfLEInqN8+HaiOykUIicwX6QRKvE/NSYNc6eA+NJwW8+N3nROn7rmNDkUnIfn/7UeKHBye7pwkISbmkkLyB2EP9xJ4fVgt2JKfdEORIddPi44ae+Ge0BlbBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cbd4O6b2; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1780047661; c=relaxed/simple;
+	bh=0uZqe+NXUPzk9AoU29J90aR6YOlih3MkIkmZzO997ik=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=loghdFLfoEpn7+um9WxBnE8eO2ar8Sgmd6miiQtxx+F8AB9t0BYQhfBCwwcLXC9yCZGjUyvwJjO8muIr51K/QF3q/bngC1lNJApv6XPvqDv43iqTfFSKo6BvqpXZwsjicoGO0tKX9ounlEdESBlxBRONQE8dNq+fH2ad126oaEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AYheVQqQ; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cbd4O6b2"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1D29C60565;
-	Fri, 29 May 2026 01:20:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C48BB1F00A3A;
-	Fri, 29 May 2026 01:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780017613;
-	bh=daVD7h+JJCInltDYMlUpsr01UGPhOz1107R+/8g1GTw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=cbd4O6b25jNSiwHzC9tH6sPaVqcHXPLvjJ47C9KcyfA6pUwKpLaiRsnTbXEF0UZKr
-	 NrkjKXHLp0yRDGS9Rc1RvUVmTSicK8iip/MbWWcx6I0cixnzJ1gCYmHHNKPKI27pME
-	 O0BKTzvxvD+MnDvZteCkF9w2MHTxsW2nY7xuTrv0/KIjy+te1K+T4hf4Zf9H8fY8v6
-	 FNBLyqcQmGOA1a1fls+y+g9MyxD80XFJKCok+8FtEF2/TwRLzQpDdujoVR6UycPPDL
-	 LKYxReBnDyG81Fi54bLu+NuYxzFiyCrpY1Sj6s2rxY2Vky1JRbKF4eTOGouic2eG/+
-	 7hd0dj5MCeAYA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 19BC1392FFFE;
-	Fri, 29 May 2026 01:20:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AYheVQqQ"
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-837b704783bso1249398b3a.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 29 May 2026 02:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780047657; x=1780652457; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vnw0/SoZFAvCCGA9LWkYqPGq7SPvUsRGSkJoKPybuIc=;
+        b=AYheVQqQGV8YLbAGRRkeV+lQnqLER4G8qGS57Rld4uEJT3AzDezlb3g2y/VrRntnq+
+         fSH1db8TC+6VCn6+bmEWuS4M0olGEy6vdxz8gnxYzvKWdJdjK7Xe9ZTXCgiGb9Jbr/Dv
+         VULKltRZRyT1iy+YDOrR122tepcLL6TdgqTWX1H6wmaon0ybo9KUwdFJXNA0WcMedjmy
+         5BSZ0rwGbGPNUMMQS2KqbxpzOexhQHoZZxXMiHTLr4fOku9KdS4TgP3nDq8YIMI36iJH
+         L3JyM7JCp3WYTWmEqBuoE25jRs59tuKbwh5YG1BYyIbdQ+dkuSQ8FE3otY8nR4r0/xIk
+         ExUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780047657; x=1780652457;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vnw0/SoZFAvCCGA9LWkYqPGq7SPvUsRGSkJoKPybuIc=;
+        b=FZrQhFCc0dPaQmlwAUuAmtpnwDWQkTIPyxxrFwXvfEY32d7OluMflpicRRDK7YIeeE
+         wkedG8bz1GfxhW+5VwsvIYuaIfdm+8lwH5FB0XXs8wyqHAQ1ECYmkEsyX2Ei4uBQYV6f
+         RXXbAc2janUUkcepbKg8QvipDs5dMNcBRU8cPfZx/kRZyEEg+uMcgyDZKwu4Xe616PBu
+         fF8dIDl5jxUlBjTj8Pso5jJqzrrKSjhmSGrIXLHUHbCA1ov/2bTJwpRAfYwPblqeR0l4
+         Wbb16+GNW/oNag/g7sGvKvEXs8i+6JmKUVXDnS2JZn7sGkQ4E5YghIAHeZs200YJkrlN
+         XRkw==
+X-Gm-Message-State: AOJu0YwwP6Kk25unULaT/rXk/p3RwXa1QPz/7pEbJ4fQ7YVSdXUIZpnV
+	yvs6O4rgtJVNEeNVZ+sgK4YgameFz+XPe8qI2LVS2s8WszWAWNHP9Isnh/jCe6aE
+X-Gm-Gg: Acq92OHZ/EIE+9Q4t+iV92qtSdiT6gz0RUjf15kAKqAObgXtYA3jAbuMfLk2QAkfDke
+	3MzyHECRwytsNS41JP3nrDpJmlggZ6CAJqdylUkRxUDnplIZeM+yAhpS22jPjEvAze3blHHmNAI
+	+nqHGiHDSRuWiPIIbMIPMbF4AQDdnjFjCa9S4iV/5Ix2FcXHey8dPvml/f+P9eO1qRDRC6FwRaU
+	4s20fHN+2DdhPEDImyRqJPPaJM/Ui2rjmT5VpiXhljXcUHg1rfAzyXIQFxh2lKgqcHliYF7fpZv
+	Zcbl7UezIHnfrruzEl/g47m9U5eOQ25sMyBbXQL6ACfS9kEVBbTmXJTd4Wuyrd4ImnZBIQETaHC
+	V/2F0o3KqZwSrGuUM/mlmIC0xsFRDtqIbcBFHD7AkPpxPZd+go0XVBuW4b+T8pxfuZ3z3PxOOjs
+	0+merhi6p02mRWj5myhGn4BT+dDIok1UJ0LA7BJlrfo3o=
+X-Received: by 2002:a05:6a21:46c5:b0:3a2:ea40:c93c with SMTP id adf61e73a8af0-3b411c9dc49mr1089250637.1.1780047657247;
+        Fri, 29 May 2026 02:40:57 -0700 (PDT)
+Received: from localhost.localdomain ([189.1.242.96])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84214b32f2fsm1292233b3a.22.2026.05.29.02.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 May 2026 02:40:56 -0700 (PDT)
+From: Yiqi Sun <sunyiqixm@gmail.com>
+To: linux-m68k@lists.linux-m68k.org,
+	geert@linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Yiqi Sun <sunyiqixm@gmail.com>
+Subject: [PATCH] m68k: syscall: fix syscall_get_arguments() argument mapping
+Date: Fri, 29 May 2026 17:40:23 +0800
+Message-Id: <20260529094023.1428008-1-sunyiqixm@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -42,54 +71,38 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1 0/8] zorro: Improve handling of pointers in
- zorro_device_id::driver_data
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <178001761763.1584301.12785828078106314359.git-patchwork-notify@kernel.org>
-Date: Fri, 29 May 2026 01:20:17 +0000
-References: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
-In-Reply-To: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
-To: =?utf-8?q?Uwe_Kleine-K=C3=B6nig_=28The_Capable_Hub=29_=3Cu=2Ekleine-koenig?=@aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org,
-	=?utf-8?q?=40baylibre=2Ecom=3E?=@aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org
-Cc: geert@linux-m68k.org, dlemoal@kernel.org, cassel@kernel.org,
- James.Bottomley@HansenPartnership.com, martin.petersen@oracle.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, tglx@kernel.org, mingo@kernel.org,
- max@enpas.org, andi.shyti@kernel.org, deller@gmx.de,
- linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
- netdev@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- christian.ehrhardt@codasip.com, lk@c--e.de
 
-Hello:
+On m68k, syscall_get_arguments() currently returns orig_d0 as args[0],
+followed by d1-d5 as args[1..5].
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+However, syscall arguments are passed in d1-d5 and a0, so args[0]
+should reflect d1, and the full argument set should include a0.
 
-On Tue, 26 May 2026 16:17:26 +0200 you wrote:
-> Hello,
-> 
-> this series is about improving the handling of pointers in struct
-> zorro_device_id's driver_data.
-> 
-> While it's ok on all current Linux platforms to store a pointer in an
-> unsigned long variable, it involves casting that loses type information.
-> This can be nicely seen in patch #7 where after profiting from patch #6
-> the compiler notices a missing const.
-> 
-> [...]
+Fix the mapping by copying all six arguments from the saved register
+block starting at d1.
 
-Here is the summary with links:
-  - [v1,net-next,3/8] net: Use named initializer for zorro_device_id arrays
-    https://git.kernel.org/netdev/net-next/c/4933a658369a
-  - [v1,6/8] zorro: Simplify storing pointers in device id struct
-    (no matching commit)
+Fixes: 6baaade15594 ("m68k: Add kernel seccomp support")
+Signed-off-by: Yiqi Sun <sunyiqixm@gmail.com>
+---
+ arch/m68k/include/asm/syscall.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-You are awesome, thank you!
+diff --git a/arch/m68k/include/asm/syscall.h b/arch/m68k/include/asm/syscall.h
+index bf84b160c2eb..2e268eeedad3 100644
+--- a/arch/m68k/include/asm/syscall.h
++++ b/arch/m68k/include/asm/syscall.h
+@@ -52,10 +52,7 @@ static inline void syscall_get_arguments(struct task_struct *task,
+ 					 struct pt_regs *regs,
+ 					 unsigned long *args)
+ {
+-	args[0] = regs->orig_d0;
+-	args++;
+-
+-	memcpy(args, &regs->d1, 5 * sizeof(args[0]));
++	memcpy(args, &regs->d1, 6 * sizeof(args[0]));
+ }
+ 
+ static inline void syscall_set_arguments(struct task_struct *task,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
