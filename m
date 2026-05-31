@@ -1,26 +1,38 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC23838C2AE
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2026 13:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19F42BD587
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2026 13:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780233354; cv=none; b=pXBzsAWyN7d8eb5SboaTPRgdjDNcYA2UUuNmDEAt9sIedCwgE7y/rgbtKmx3KA87/SCuj5VY4RS6KkGeMLkv69Dp93syHusg9B7ByNF1A+0gTqvZ022ApBjDZC3ViGuKdHM8xVwVPIhRvA8vEUEqk+SHtyqE+CTPMeWjRs97oqw=
+	t=1780234953; cv=none; b=hNZvelLfBDII9+JIe6BoeK9z0Kg3Ua7PfAc4Vx+z4b8lVO0ETUyCkU6FkyOQUQgTwuVKmBKymzeG0P0JkG8JOc1dmo7uASTBNPe+g1UVs2n6M/k5FVK3/HSBlvcxEEVC0lHvDUGgfQ0tmgPqjQDB/N4U0UpKde5BCpf/UnsG5eE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780233354; c=relaxed/simple;
-	bh=nj129rjUByaIy9o0FSopNQk9RD+FeU54z1Cbh8ZBbdg=;
+	s=arc-20240116; t=1780234953; c=relaxed/simple;
+	bh=zR05hWiH8Rlw66oNAUtRAX4ISbevpkF+05gVF+o8TOI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rf7gdxrysXJhoHP/3i0n5jVpUklLcSmTDpglVVlTrEv6+vJRgOAITAz25GgvqlyLhxXbjfQobARSu8Ja8weuS0tsiWP+b8vqP0g4h8RMlJuRr9hWvIY9acY2OMkh2lFz82P4dLzE7W8P+EW36q4bGw74rO/2hwulpvgL5jXvFGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	 In-Reply-To:Content-Type; b=WxT0nMGSfub0iYpU1/C8FGmIqmbElcuiXEKsw+gICc2PcsR5s0GjNQy39GXC9dElf4CWK+HYa2Y6U6DF6IBEIZEigPP9KomWUJEJRvXwX12Pfebj2GMNuR9CvtR8F15Axn6ABIJypGKR40ikQMoDCeScrRiaPPNk8/u397V3LPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cXsRDvi/; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cXsRDvi/"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3154442D6D;
-	Sun, 31 May 2026 13:15:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE3D21F00898;
-	Sun, 31 May 2026 13:15:47 +0000 (UTC)
-Message-ID: <ecf346d5-a65f-4507-b277-40e75ae89442@linux-m68k.org>
-Date: Sun, 31 May 2026 23:15:43 +1000
+	by sea.source.kernel.org (Postfix) with ESMTP id 6373940027;
+	Sun, 31 May 2026 13:42:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 292F41F00893;
+	Sun, 31 May 2026 13:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780234951;
+	bh=dSjHAroP5+L4GQyBa+FNhJO3ihTn8ULsRc3iTGS7mDA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=cXsRDvi/iiCxcm/KxbaJf9zvaok8JsIXFHPo0E7kunRCe3kAoGRmggGMBZhV3+J1M
+	 aBtew1idHllMUPngx2cKEvhiUqvyMeJvHto5gwOoIy/NM/J6qCviVP+j8mT9/+esaI
+	 I19uZ/k1Qk8zp/neDywXwiSTtYAHgdjDrteA2ukGXtYtf1sGIPhgtOx5onzx0vbRGu
+	 uRtxcrgygRELyKumKRmwQIZP03gzFGUarcsHAB8nVrjXyp8Eb1DizwAdhr3mtefN8L
+	 /g/YB8P4e8WgBkLOzO5H4SsGU9/4mlGAA0uXE+ts7cKNJeMh2//ZoZD5qsNEF4pUL0
+	 fdr2Fo8BEoOzA==
+Message-ID: <2b532d56-dce4-4f6d-84e0-2fd87d5494f8@kernel.org>
+Date: Sun, 31 May 2026 23:42:26 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -28,71 +40,205 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/11] m68k: mcf5441x: initialize DAC clocks by iio DAC
- driver name
-To: Angelo Dureghello <adureghello@baylibre.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>,
- Arnd Bergmann <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>,
- =?UTF-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
- Andy Shevchenko <andy@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-References: <20260522-wip-stmark2-dac-v3-0-16be0ad35a67@baylibre.com>
- <20260522-wip-stmark2-dac-v3-3-16be0ad35a67@baylibre.com>
+Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
+ functions
+To: Angelo Dureghello <adureghello@baylibre.com>
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-spi@vger.kernel.org,
+ Vladimir Oltean <olteanv@gmail.com>, Christoph Hellwig <hch@lst.de>
+References: <20260506142644.3234270-2-gerg@kernel.org>
+ <20260506142644.3234270-8-gerg@kernel.org>
+ <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com>
+ <fdd6fc14-f607-4186-8db4-25de973ac322@kernel.org>
+ <CALSJ-wCrNDv3N2Kdo0uoXsKGtp0GthJRBeYTNQA1gGE2akUWFg@mail.gmail.com>
+ <9391b782-7727-47fa-ac37-05cd50821d35@app.fastmail.com>
+ <CALSJ-wBRmUpjz-_ehZ0U0Gu+fPqRUeAn47E0_pwpXQa0tCNzVA@mail.gmail.com>
+ <CALSJ-wCuZs9cBJsuOOYMEYM6xOXZbdOm_pr=70d3HRYYSYJ0KA@mail.gmail.com>
+ <CALSJ-wDm8NoB8mF3KSx49XMSWz1vjwFhSmgJZWq8pN2pCf12mw@mail.gmail.com>
+ <CALSJ-wDY_8SMAvKT0L6wMbH1=w5pZNmV=xyeX1REb=BMRZWj-g@mail.gmail.com>
 Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260522-wip-stmark2-dac-v3-3-16be0ad35a67@baylibre.com>
+From: Greg Ungerer <gerg@kernel.org>
+In-Reply-To: <CALSJ-wDY_8SMAvKT0L6wMbH1=w5pZNmV=xyeX1REb=BMRZWj-g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi Angelo,
 
-On 23/5/26 07:20, Angelo Dureghello wrote:
-> From: Angelo Dureghello <adureghello@baylibre.com>
-> 
-> Later in this patchset, the mcf54415 DAC driver is added.
-> Considering some other different ColdFire cpu DACs exists, the DAC driver
-> is named as "mcf54415_dac", related to the mcf5441x family SoCs with
-> DACs (mcf54415/6/7/8).
-> 
-> So updating DAC CLKDEDV_INIT with proper driver name.
-> 
-> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
-> ---
-> Changes in v2:
-> - none
-> Changes in v3
-> - roll back clock names as they was originally
-> ---
->   arch/m68k/coldfire/m5441x.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-> index 5b5e09ecf487..b02ca2eb55a4 100644
-> --- a/arch/m68k/coldfire/m5441x.c
-> +++ b/arch/m68k/coldfire/m5441x.c
-> @@ -106,8 +106,8 @@ static struct clk_lookup m5411x_clk_lookup[] = {
->   	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
->   	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
->   	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
-> -	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
-> -	CLKDEV_INIT("mcfdac.1", NULL, &__clk_0_39),
-> +	CLKDEV_INIT("mcf54415_dac.0", NULL, &__clk_0_38),
-> +	CLKDEV_INIT("mcf54415_dac.1", NULL, &__clk_0_39),
+(Adding Christoph to CC list)
 
-I thought after the last discussion on this that we would not change these
-clock names?
+On 25/5/26 07:34, Angelo Dureghello wrote:
+> On Sun, May 24, 2026 at 02:17:07PM -0700, Angelo Dureghello wrote:
+>> Hi All,
+>>
+>> On Sun, May 17, 2026 at 03:41:31PM -0700, Angelo Dureghello wrote:
+>>> Hi,
+>>>
+>>> On Sun, May 17, 2026 at 03:04:23PM -0700, Angelo Dureghello wrote:
+>>>> Hi Arnd,
+>>>>
+>>>> On Sun, May 17, 2026 at 10:08:22PM +0200, Arnd Bergmann wrote:
+>>>>> On Sun, May 17, 2026, at 21:43, Angelo Dureghello wrote:
+>>>>>> On Thu, May 07, 2026 at 10:43:01PM +1000, Greg Ungerer wrote:
+>>>>>>> On 7/5/26 05:12, Arnd Bergmann wrote:
+>>>>>>>> On Wed, May 6, 2026, at 16:26, Greg Ungerer wrote:
+>>>>>>
+>>>>>> [    2.270000] fsl-dspi fsl-dspi.0: Not able to get desc for DMA xfer
+>>>>>> [    2.280000] fsl-dspi fsl-dspi.0: DMA transfer failed
+>>>>>> [    2.280000] spi_master spi0: failed to transfer one message from queue
+>>>>>> [    2.290000] spi_master spi0: noqueue transfer failed
+>>>>>> [    2.290000] spi-nor spi0.1: probe with driver spi-nor failed with error -5
+>>>>>>
+>>>
+>>> About this issue, it fails on dma_pool_alloc(), so tomorrow will check,
+>>> i probably lost some dma config option.
+>>>
+>>
+>> so i worked on this open issue above:
+>>
+>> - moved to master and rebased,
+>> - crated a wip/edma branch,
+>> - bisected and found the offending commit, before this, mcf-edma driver
+>>    and connected spi-fsl-dspi (using edma) was both working correctly.
+>>
+>> 7a360df941a4bd60847208de59f1ac8b166265a2 is the first bad commit
+>> commit 7a360df941a4bd60847208de59f1ac8b166265a2 (HEAD)
+>> Author: Christoph Hellwig <hch@lst.de>
+>> Date:   Thu Oct 12 09:52:27 2023 +0200
+>>
+>>      m68k: don't provide arch_dma_alloc for nommu/coldfire
+>>
+>>      Coldfire cores configured with a data cache can't provide coherent
+>>      DMA allocations at all.
+>>
+>>      Instead of returning non-coherent kernel memory in this case,
+>>      return NULL and fail the allocation.
+>>
+>>      The only driver that used to rely on the previous behavior (fec) has
+>>      been switched to use non-coherent allocations for this case recently.
+>>
+>>      Signed-off-by: Christoph Hellwig <hch@lst.de>
+>>      Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
+>>      Tested-by: Greg Ungerer <gerg@linux-m68k.org>
+>>
+>>   arch/m68k/Kconfig      |  1 -
+>>   arch/m68k/kernel/dma.c | 23 -----------------------
+>>   2 files changed, 24 deletions(-)
+>>
+>> So i can try next week a patch for edma looking what has been done
+>> in fec, and since i am probably the only with mcf54415, will test it
+>> here.
+>>
+> 
+> Looking into this better, looks like the above commit was meant for the
+> majority on non-mmu ColdFire. I think mcf5441x and some other with mmu
+> enabled can flag pages as "page cache disabled".
+
+I don't think that is right. The way the underlying data cache is setup for
+MMU ColdFire (via the ACR/CACR registers) means that individual pages cannot
+be marked as non-cached. So coherent memory allocations are not possible -
+at least the way things are today.
+
+It would be possible to set aside a chunk of RAM at kernel startup time
+to use as a pool for coherent allocations (since it could be marked as
+non-cached via the ACR/CACR registers), but there is no code to support doing
+that today.
 
 Regards
 Greg
 
 
-
->   	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
->   	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
->   	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
+> So i would re-enabled that code only for such mmu families.
 > 
+> Please let me know if i am correct.
+> Thanks.
+> 
+>>>>>> DSPI is using edma, i will try to understand where the issue is asap.
+>>>>>>
+>>>>>> About how it works:
+>>>>>> - for accesses to edma module (IP) mmio registers, must be native
+>>>>>> big_endian, so using the "be" suffix in "mcf"_edma looks ok for me.
+>>>>>
+>>>>> The twist here is that with the way that readl() is defined on
+>>>>> coldfire as a non-swapping operation, and the generic
+>>>>> definition assuming the opposite in
+>>>>>
+>>>>> static inline u32 ioread32be(const void __iomem *addr)
+>>>>> {
+>>>>>          return swab32(readl(addr));
+>>>>> }
+>>>>>
+>>>>> the function called ioread32be() actually tries to access
+>>>>> the registers as little-endian. I can see two possible ways
+>>>>> we got here, but don't know which one is currect:
+>>>>>
+>>>>> a) the device actually has little-endian registers (like it
+>>>>>     does on i.MX, but unlike all other coldfire devices), and
+>>>>>     you just never noticed because using ioread32be() worked
+>>>>>     as you expected.
+>>>>>
+>>>>> b) you tested the driver using an ioread32be() definition that
+>>>>>     did not have a byteswap and it correctly accessed big-endian
+>>>>>     registers at the time, but the version in mainline today does
+>>>>>     not.
+>>>>
+>>>> Ok. The ioread32be now works properly since i had applied Greg patches.
+>>>> I generated an error in _probe on edma channel 2, reading status reg.
+>>>> looks consistent:
+>>>>
+>>>> 	iowrite16(2121, regs->erqh);
+>>>> 	iowrite8(0x77, regs->serq);
+>>>> 	iowrite8(0x12, regs->ssrt);
+>>>> 	
+>>>> 	u32 status = ioread32be(regs->es);
+>>>> 	printk("%s() status: %04x\n", __func__, status);
+>>>>
+>>>> [    0.140000] mcf_edma_probe() entering
+>>>> [    0.140000] mcf_edma_probe(): allocating data
+>>>> [    0.140000] mcf_edma_probe() status: 800012f8
+>>>>
+>>>> If i am not loosing myself in this r/w labyrinth, the path should be:
+>>>>
+>>>> 1) Greg removed coldfire readl/writel, leaving now the standard LE r/w,
+>>>> 2) So the ioread32be swaps the standard LE read giving BE.
+>>>>
+>>>> Am i correct ?
+>>>>
+>>>>
+>>>>>
+>>>>>> - for accessing the "tcd" memory structure, that must be, from what i
+>>>>>> remember, anyway in little endian, independently from the cpu core
+>>>>>> endiannes, this is the reason that big_endian flag is needed, it is
+>>>>>> used for tcd area accesses, so the IP module was built.
+>>>>>> The tcd area may be similar to pci accesses (see mcf54415 RM 19.4.16).
+>>>>>
+>>>>> edma_read_tcdreg() calls into edma_readl(), which is the same function
+>>>>> that is used for normal register access, so from what I can tell,
+>>>>> they always use the same endianess here.
+>>>>>
+>>>>
+>>>> If edma_readl was using
+>>>>
+>>>>          if (edma->big_endian)
+>>>>                  val = ioread32be(addr);
+>>>>
+>>>> and never changed, without Greg patch, it was likely returning little
+>>>> endian for coldfire and correct LE for other arch ? :)
+>>>>
+>>>> I remember something about tcd area was coded LE, but will investigate
+>>>> better, now i am over midnight.
+>>>>
+>>>> Regards,
+>>>> angelo
+>>>>
+>>>>>        Arnd
+>>>
+>>> Regards,
+>>> angelo
+>>
+>> Regards,
+>> angelo
+> 
+> Regards,
+> angelo
 
