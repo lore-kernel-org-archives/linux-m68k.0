@@ -1,67 +1,67 @@
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3138A3914E4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5FF390CB5
 	for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2026 15:26:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780241173; cv=none; b=DRKXDnN5hOX0vuy+WGBNwkCRNTmSlAx8hQh6ftUKlgZHlMU5wjHKWLIMuvanZLo95maAI/KQCmYOl16U2rYB5frzm+ib+k0tm7nrLNjJjL6o1VBDvVsOWWcAuDFuROW5MgfyGhmTHwQmeCpDJ3+dY0bcH4FPcvfAaLgkUB9jqB4=
+	t=1780241174; cv=none; b=o0g+DkzwBg1RaBW17IYc5dQ04v9hTq6bdCFnMn4dBKs7x1ApPf/Q3YuRyygiXH8t6rTjYykxk5xYffH9QAF9VQWfZpwumG04Q8WKvsmksa/81SRW7FesQx3h25kYLzKX4LqCOEdyYiM+jVstxfi4LKxyInPa5YsMVMurvDMlvj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780241173; c=relaxed/simple;
-	bh=48aemOcrWCaMuI9OaLb1kPeXmDDnY3b+T5yp/gEBE7s=;
+	s=arc-20240116; t=1780241174; c=relaxed/simple;
+	bh=23oTPBHvXItUdTs2c6G8aZFherUEjBkcOigiHSGyId4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=F70MX4USBjhqgxGWcs4KP8ZFvjWilU3qKvytANUkuV+c9mJSLBlJlthbaMxyvw36ta3vi9dZSdG/kL3D1E+MEkxiLMiqXTZ3WBY7GI1ZI+gRUhTT2njsLf80rlK2cKjeBLjc7xNpFnt/3DlX2zEJYNW8tWSN/L06urG5rCphj0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=dKwi+Nk+; arc=none smtp.client-ip=209.85.221.47
+	 In-Reply-To:To:Cc; b=pmy3uM/nsVhRBXL0ydU6neZ968jdB0mIHUpJfuba8BMQ0GnJNouM1aZnjH6+0LUK0nHGNNgQuL46+NXs3GDpoDeq7fVriduquymZJM1rOn/UFOyl83cdLzuO+kL9v8/OsnyrC2FtSjbc5KnwmIL82zsvEiBcQiFoiZ0W4L5+nxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=fH+eRiTi; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="dKwi+Nk+"
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-45ef1198766so1192247f8f.0
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="fH+eRiTi"
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-45ef616daf6so1847199f8f.3
         for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2026 08:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1780241168; x=1780845968; darn=lists.linux-m68k.org;
+        d=baylibre.com; s=google; t=1780241170; x=1780845970; darn=lists.linux-m68k.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=PT9tXjqszedmkm8utnuW3FRNsoSqZ3umHWBcRjh1WUU=;
-        b=dKwi+Nk+28bPUYrhZ5yJcUSM846p2KCf7q6ZUyMSZPik8MqTP6mH1Dme2KI02BVHb/
-         5hZ9LyAZ32gfreZ969hHd3meVs1JM9wALr3ws8R1NFWfDzt7l6KKS3/SfPZZWyBaaK4W
-         3lv0/YqHPm6zHW97nC1JVTZwpzKE1y45v7xC5Eu0k/1v0Km8OobWjqW/Wg1RFFsO/ux0
-         4AdE0CtSGsVL0b8RN/O7wDpEyZcdn0m0y87ltUdVoLsCrbjV7NIzjcNrVQP3gymllPHu
-         qp5/GIedth0dETsHu5Rj9ngWkBEQZzCdeZiBRk0NRaIRitIXGGmkoDlAbT0Q2oXyC0c6
-         Z4cg==
+        bh=vbLPyTAr/7pOES4+QYKflXQW79LkqiEBBw61edcaLvY=;
+        b=fH+eRiTiIQog+6d0YrDuB0PZ3BYv23hAPJZavkPBzbcvE+i2GmBylSv35dB+9cP+Zw
+         N3UD98sEbVX4EtoNsCHEVCXpGNOqZ3vgENRONNKebB1XOTSDS0vdO2GPgTVu9b9FsAWb
+         7Ab078B3ddJxMJVruQMIderki8Nme1wcB406HG3RC6WYAL6XQjXDM01wId+xxauWQz0D
+         XbPvAvBqHGYPSQbfBoHMKfxREeAEypp+yVNz0WRljrNTDVwV6v2LZ5NNMYo+BM5px4he
+         6VnhbslBrdvZ88jo0Q35gBX8/oUmja6ZcZUT4ofnrEuX+lA8PUB3m2KC3tGZSBUR2Nas
+         WZvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780241168; x=1780845968;
+        d=1e100.net; s=20251104; t=1780241170; x=1780845970;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=PT9tXjqszedmkm8utnuW3FRNsoSqZ3umHWBcRjh1WUU=;
-        b=ZGXRYDz293Qilty+qU+t2PXh6AKqlNIVmBLc1fMfVGeBV/zuO8lB8v1Tf1Z9INtHOQ
-         bf/aU/R7hMPE0UcFQvosILRAwtQ0VfXYjyFNYqRPS8guFgrlidpUJRWVBKxo39Y7teTN
-         DieAqFH+Zbp/ukcdnT00l7zlyxx1Axus1bxvUWiuVqlCUuenihLNJclVEshlPOeqHwvH
-         Q4ITEog04KasQmgtWkappYYqjM2g+ojNgmSrGCBCXheBDDkFsKsMlZLfK0AS+9QvAii4
-         GBdLrr5m6CL9m8Tg190Ki26ezuTPjf4yL/ueuQGPLk6aukvfScr2yeOdhri5F+5pV2wQ
-         jXEA==
-X-Forwarded-Encrypted: i=1; AFNElJ+Ayptn2cwRp1eAAQSOc/RBsnnWTTlfoQHWdqm9MpQPQFCChBG4oCQ/oSE7OJE1czj30lHUg1gLNw71@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YygFeDB+D5NcXiiyVDo+TuOYJRO+E/icFk75bpTGn9kE83LEQ9H
-	OBYc5qlzmtev4oqzDW6Dibv2E3mDge3E4oQjy/qRNaSEBxN3rAi2xl1Tvsf/uqSLCHw=
-X-Gm-Gg: Acq92OEpUtVTsNOY1DQl4dqjS+3MrTB74Wk2iCtULmsTubQcB6YVLLni8FywyuagYAH
-	90CqivsGRun0+D5zOSs7waAqVxz10WHH3ptcynIMHHCxHUCRK5IY6a0FnauzQrxLMv+eVk6LNjT
-	zejI7XQn+h5HpO/PQv2+jjVofHclblEXPdnsDiucyVnJauEx7NFomEJZhpUab+cYbbWocDCAUFV
-	0wDk7TwC5H9f6YYgbJPaUV5pTtlTSfVNOeflNX69XuFIpnnrcxlvCKsePEOv4pRrwEaE84nxQSc
-	9OUCLF9zS4xhI2fj7o9MxigBKWcpVj9JmY72dTNJaL6jqiszE9TALQYz3mWDVzYHnTd+f7zmAdL
-	ZeMfbcRLRxVjRKPBuYV9ix5ymFlclxIZ6adzfWOxYrBsWRQQUYJVq1PTchOAAtaDxlHzOqSYHUc
-	JqplrGvzHVGuo5vCIeHX1GJyFs95VXqkp9d8gi7HbqfQ==
-X-Received: by 2002:adf:eacc:0:b0:45e:dc0a:bcb with SMTP id ffacd0b85a97d-45ef1385deamr11155719f8f.22.1780241167790;
-        Sun, 31 May 2026 08:26:07 -0700 (PDT)
+        bh=vbLPyTAr/7pOES4+QYKflXQW79LkqiEBBw61edcaLvY=;
+        b=hloN7Me9lE+LwuiP1VD1es+2LDJA5CBtjjnY5vM8dlln1znUxODcc9NFBvJc80xjEe
+         ttAm8DozlgRhJLfNB3kjYULfpPdqqJtBSCD/d5W1m/t0naG7EBIqzmv+an+MEtNXbZCE
+         aVPLk/RH83Uj/5kueWQEWvQDt7FLRHo4y/nI4DiIOFL8QrVfKLMXUkrgtphgK7SncIos
+         NeT49jSbpnZG8a0VjL9xLJRT+imHmlAkE5UznDq+txLCvhEyMbbf1AWbHVz+LZ4BP1wm
+         nh9YbVX18gWj8TX01upWIsaHrkFD+mWvH9w9QDUKBQrNiYRVdJnlra5eRb/joLgl30v/
+         LONg==
+X-Forwarded-Encrypted: i=1; AFNElJ/M0yTuiIJRfoKg90QZgHmTjTGbxgtpeqi0+LtwOe44nqbQALFdwm3L42A6EPatfbe9rh1y3Pfviazx@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxKNUQD48YObCf4CcPPpbElftimx7kNV5rwh6bMGT3L9fIKK1GN
+	T+fcrpJBJio/4+S1sAbYq5Mr4OdA39fuaqJZpQj2PikxZLaNa/XG4DlVXPssnRX8HBQ=
+X-Gm-Gg: Acq92OElXfSYKn32MyeaSASvWHRqEG/Qqge/oY/L2xrSEPZYK+XpbwtnpP4YwfiEOpa
+	GHeLvPXsIUJnRKwUJrI8CytMyUR1kDPs2Uufy6zFlmxWS1IqxUZFIErq0WJhOw4/fKiWbHMQ/so
+	plNGJ6NsdaHupPVwOU/5jCALj7Vij1HH/v4NMf9GFYL27ASsetHNgsycXvnlX8sQCsv/+2K7r9d
+	pMIVJOsMnKC0B4zQ214qrxbSla/Knt+JWQ3zslPv+tVrZfjK/t+3mOPOmmPA1I3SUsqxX9CnP9d
+	ly543pYM7aj3UYp8944lagQDiiO1C7Y1rJg27k4MWyJRwK1V0FkEjROmrL0JUN3Nx1niSDPCpoh
+	1HpxEQIXvkUWA6Mo2Aj5DGWvHNzt2vRcC6bYkRc2ZZRxaLzwCB4WrbMaLzJUuD6ZYh7Y+GRu4i6
+	zFfJxofJmQbyckXail66RYloolHCT+9cUg/xsuYbNLcQ==
+X-Received: by 2002:a05:6000:e11:b0:45e:73b3:8118 with SMTP id ffacd0b85a97d-45ef6b79fa7mr8922789f8f.29.1780241169883;
+        Sun, 31 May 2026 08:26:09 -0700 (PDT)
 Received: from [192.168.0.2] ([2a07:7e81:7daa:0:202:c9ff:fe53:eda4])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45ef354cf0dsm18526622f8f.17.2026.05.31.08.26.06
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45ef354cf0dsm18526622f8f.17.2026.05.31.08.26.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2026 08:26:07 -0700 (PDT)
+        Sun, 31 May 2026 08:26:09 -0700 (PDT)
 From: Angelo Dureghello <adureghello@baylibre.com>
 X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
-Date: Sun, 31 May 2026 17:26:02 +0200
-Subject: [PATCH v4 09/11] m68k: stmark2: add mcf5441x DAC platform devices
+Date: Sun, 31 May 2026 17:26:04 +0200
+Subject: [PATCH v4 11/11] iio: dac: add mcf54415 DAC
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260531-wip-stmark2-dac-v4-9-7e65ab4215dd@baylibre.com>
+Message-Id: <20260531-wip-stmark2-dac-v4-11-7e65ab4215dd@baylibre.com>
 References: <20260531-wip-stmark2-dac-v4-0-7e65ab4215dd@baylibre.com>
 In-Reply-To: <20260531-wip-stmark2-dac-v4-0-7e65ab4215dd@baylibre.com>
 To: Greg Ungerer <gerg@linux-m68k.org>, 
@@ -88,61 +88,303 @@ X-Mailer: b4 0.15.2
 
 From: Angelo Dureghello <adureghello@baylibre.com>
 
-Add mcf5441x DAC platform devices.
+Add basic version of mcf54415 DAC driver. DAC is embedded in the cpu and
+DAC configuration registers are mapped in the internal IO address space.
 
-Reviewed-by: Jonathan Cameron <jic23@kernel.org>
+The DAC accepts a 12-bit digital signal and creates a monotonic 12-bit
+analog output varying from DAC_VREFL to DAC_VREFH. The DAC module
+consists of a conversion unit, an output amplifier, and the associated
+digital control blocks. Default register values for DAC_VREFL and DAC_VREFH
+are respectively 0 and 0xfff, left untouched in this initial version.
+
+This initial version of the driver is minimalistic, "output raw" only, to
+be extended in the future. DMA and external sync are disabled, default mode
+is high speed, default format is right-justified 12bit on 16bit word.
+
 Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
 Changes in v2:
-- fix copy-paste error on naming
-- use DEFINE_RES()
+- remove tests from commit message, moved to patch 0
+- remove additional blank lines
+- remove dead code and unused definitions
+- use regmap
+- add limit check on raw write
+- non functional style fixes
+- add COMPILE_TEST to Kconfig
 Changes in v3:
-- simplified DACs as single resource entries in place of an array
+- add comments where needed
+- code style changes
+- remove unneeded variables
+- use regmap_set_bits where possible
+- remove macro not needed to define a single channel
+- set up regmap to big_endian accesses for next patches that will come,
+  that will adjust ColdFire readx/writex as standard LE (links in 0/x).
+- add return value check on regmap calls
+- sashiko: remove unneeded .io_port from regmap init.
+- sashiko: add select REGMAP_MMIO in Kconfig
+Changes in v4:
+- remove unused includes
+- sashiko: return "ret" as regmap_read ret value in case of error
+- sashiko: using u32 as regmap_read value
+- use local variable in mcf54415_dac_init() for better readability
+- sashiko: check mcf54415_dac_init return value also in resume()
 ---
- arch/m68k/coldfire/stmark2.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/iio/dac/Kconfig        |  11 +++
+ drivers/iio/dac/Makefile       |   1 +
+ drivers/iio/dac/mcf54415_dac.c | 211 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 223 insertions(+)
 
-diff --git a/arch/m68k/coldfire/stmark2.c b/arch/m68k/coldfire/stmark2.c
-index 536252ccb87e..d3be4b2953fd 100644
---- a/arch/m68k/coldfire/stmark2.c
-+++ b/arch/m68k/coldfire/stmark2.c
-@@ -8,6 +8,7 @@
-  * for more details.
-  */
+diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
+index cd4870b65415..b1a578076188 100644
+--- a/drivers/iio/dac/Kconfig
++++ b/drivers/iio/dac/Kconfig
+@@ -516,6 +516,17 @@ config MAX5821
+ 	  Say yes here to build support for Maxim MAX5821
+ 	  10 bits DAC.
  
-+#include <linux/ioport.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/partitions.h>
- #include <linux/spi/spi.h>
-@@ -83,8 +84,28 @@ static struct platform_device dspi_spi0_device = {
- 	},
- };
- 
-+static struct resource dac0_resource = DEFINE_RES_MEM(MCFDAC_BASE0, 0x100);
++config MCF54415_DAC
++	tristate "NXP MCF54415 DAC driver"
++	depends on M5441x || COMPILE_TEST
++	select REGMAP_MMIO
++	help
++	  Say yes here to build support for NXP MCF54415
++	  12bit DAC.
 +
-+static struct platform_device dac0_device = {
-+	.name = "mcf54415_dac",
-+	.id = 0,
-+	.num_resources = 1,
-+	.resource = &dac0_resource,
++	  To compile this driver as a module, choose M here: the module
++	  will be called mcf54415_dac.
++
+ config MCP4725
+ 	tristate "MCP4725/6 DAC driver"
+ 	depends on I2C
+diff --git a/drivers/iio/dac/Makefile b/drivers/iio/dac/Makefile
+index 2a80bbf4e80a..1cb93e83d0eb 100644
+--- a/drivers/iio/dac/Makefile
++++ b/drivers/iio/dac/Makefile
+@@ -51,6 +51,7 @@ obj-$(CONFIG_MAX517) += max517.o
+ obj-$(CONFIG_MAX22007) += max22007.o
+ obj-$(CONFIG_MAX5522) += max5522.o
+ obj-$(CONFIG_MAX5821) += max5821.o
++obj-$(CONFIG_MCF54415_DAC) += mcf54415_dac.o
+ obj-$(CONFIG_MCP4725) += mcp4725.o
+ obj-$(CONFIG_MCP4728) += mcp4728.o
+ obj-$(CONFIG_MCP47FEB02) += mcp47feb02.o
+diff --git a/drivers/iio/dac/mcf54415_dac.c b/drivers/iio/dac/mcf54415_dac.c
+new file mode 100644
+index 000000000000..474a2c327fcd
+--- /dev/null
++++ b/drivers/iio/dac/mcf54415_dac.c
+@@ -0,0 +1,211 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * NXP mcf54415 DAC driver
++ *
++ * Copyright 2026 BayLibre - adureghello@baylibre.com
++ */
++
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/clk.h>
++#include <linux/compiler_types.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++
++#include <linux/iio/iio.h>
++
++#define MCF54415_DAC_CR			0x00
++#define MCF54415_DAC_CR_PDN		BIT(0)
++#define MCF54415_DAC_CR_HSLS		BIT(6)
++#define MCF54415_DAC_CR_WMLVL		GENMASK(9, 8)
++#define MCF54415_DAC_CR_FILT		BIT(12)
++
++#define MCF54415_DAC_DATA		0x02
++
++struct mcf54415_dac {
++	struct regmap *map;
++	struct clk *clk;
 +};
 +
-+static struct resource dac1_resource = DEFINE_RES_MEM(MCFDAC_BASE1, 0x100);
-+
-+static struct platform_device dac1_device = {
-+	.name = "mcf54415_dac",
-+	.id = 1,
-+	.num_resources = 1,
-+	.resource = &dac1_resource,
++static const struct regmap_config mcf54415_dac_regmap_config = {
++	.reg_bits = 16,
++	.reg_stride = 2,
++	.val_bits = 16,
++	.max_register = 0x0c, /* DACX_FILTCNT,  R.M. Table 30-2 */
++	.val_format_endian = REGMAP_ENDIAN_BIG,
++	.reg_format_endian = REGMAP_ENDIAN_BIG,
 +};
 +
- static struct platform_device *stmark2_devices[] __initdata = {
- 	&dspi_spi0_device,
-+	&dac0_device,
-+	&dac1_device,
- };
- 
- /*
++static int mcf54415_dac_init(struct mcf54415_dac *info)
++{
++	int ret;
++	u16 val = MCF54415_DAC_CR_FILT | FIELD_PREP(MCF54415_DAC_CR_WMLVL, 1);
++
++	/* Fixed defaults and enable DAC (bit 0 set to 0) */
++	ret = regmap_write(info->map, MCF54415_DAC_CR, val);
++	if (ret)
++		return ret;
++
++	/* DAC is ready after 12us, from RM table 40-3  */
++	fsleep(12);
++
++	return 0;
++}
++
++static void mcf54415_dac_exit(void *data)
++{
++	struct mcf54415_dac *info = data;
++
++	regmap_set_bits(info->map, MCF54415_DAC_CR, MCF54415_DAC_CR_PDN);
++}
++
++static const struct iio_chan_spec mcf54415_dac_iio_channel = {
++	.type = IIO_VOLTAGE,
++	.output = 1,
++	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
++	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
++};
++
++static int mcf54415_read_raw(struct iio_dev *indio_dev,
++			     struct iio_chan_spec const *chan,
++			     int *val, int *val2, long mask)
++{
++	struct mcf54415_dac *info = iio_priv(indio_dev);
++	int ret;
++	u32 reg;
++
++	switch (mask) {
++	case IIO_CHAN_INFO_RAW:
++		ret = regmap_read(info->map, MCF54415_DAC_DATA, &reg);
++		if (ret)
++			return ret;
++		*val = (int)reg & 0xfff;
++		return IIO_VAL_INT;
++	case IIO_CHAN_INFO_SCALE:
++		/* Reference voltage as per ColdFire datasheet is 3.3V */
++		*val = 3300 /* mV */;
++		*val2 = 12;
++		return IIO_VAL_FRACTIONAL_LOG2;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int mcf54415_write_raw(struct iio_dev *indio_dev,
++			      struct iio_chan_spec const *chan,
++			      int val, int val2, long mask)
++{
++	struct mcf54415_dac *info = iio_priv(indio_dev);
++
++	switch (mask) {
++	case IIO_CHAN_INFO_RAW:
++		/* Check based on RM 30.3.2 (DACn_DATA) reg. resolution */
++		if (val < 0 || val > 4095)
++			return -EINVAL;
++		return regmap_write(info->map, MCF54415_DAC_DATA, val);
++	default:
++		return -EINVAL;
++	}
++}
++
++static const struct iio_info mcf54415_dac_iio_info = {
++	.read_raw = &mcf54415_read_raw,
++	.write_raw = &mcf54415_write_raw,
++};
++
++static int mcf54415_dac_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct iio_dev *indio_dev;
++	struct mcf54415_dac *info;
++	void __iomem *regs;
++	int ret;
++
++	indio_dev = devm_iio_device_alloc(dev, sizeof(*info));
++	if (!indio_dev)
++		return -ENOMEM;
++
++	info = iio_priv(indio_dev);
++
++	regs = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(regs))
++		return dev_err_probe(dev, PTR_ERR(regs),
++				     "failed to get io regs\n");
++
++	info->map = devm_regmap_init_mmio(dev, regs,
++					  &mcf54415_dac_regmap_config);
++	if (IS_ERR(info->map))
++		return PTR_ERR(info->map);
++
++	info->clk = devm_clk_get_enabled(dev, "dac");
++	if (IS_ERR(info->clk))
++		return dev_err_probe(dev, PTR_ERR(info->clk),
++				     "failed getting clock\n");
++
++	platform_set_drvdata(pdev, indio_dev);
++
++	indio_dev->name = "mcf54415";
++	indio_dev->info = &mcf54415_dac_iio_info;
++	indio_dev->modes = INDIO_DIRECT_MODE;
++	indio_dev->channels = &mcf54415_dac_iio_channel;
++	indio_dev->num_channels = 1;
++
++	ret = mcf54415_dac_init(info);
++	if (ret)
++		return ret;
++
++	ret = devm_add_action_or_reset(dev, mcf54415_dac_exit, info);
++	if (ret)
++		return ret;
++
++	return devm_iio_device_register(dev, indio_dev);
++}
++
++static int mcf54415_dac_suspend(struct device *dev)
++{
++	struct mcf54415_dac *info = iio_priv(dev_get_drvdata(dev));
++
++	mcf54415_dac_exit(info);
++	clk_disable_unprepare(info->clk);
++
++	return 0;
++}
++
++static int mcf54415_dac_resume(struct device *dev)
++{
++	struct mcf54415_dac *info = iio_priv(dev_get_drvdata(dev));
++	int ret;
++
++	ret = clk_prepare_enable(info->clk);
++	if (ret)
++		return ret;
++
++	ret = mcf54415_dac_init(info);
++	if (ret) {
++		dev_err(dev, "could not resume device\n");
++		return ret;
++	}
++
++	return 0;
++
++}
++
++static DEFINE_SIMPLE_DEV_PM_OPS(mcf54415_dac_pm_ops,
++				mcf54415_dac_suspend, mcf54415_dac_resume);
++
++static struct platform_driver mcf54415_dac_driver = {
++	.probe = mcf54415_dac_probe,
++	.driver = {
++		.name = "mcf54415_dac",
++		.pm = pm_sleep_ptr(&mcf54415_dac_pm_ops),
++	},
++};
++module_platform_driver(mcf54415_dac_driver);
++
++MODULE_AUTHOR("Angelo Dureghello <angelo@kernel-space.org>");
++MODULE_DESCRIPTION("NXP MCF54415 DAC driver");
++MODULE_LICENSE("GPL");
 
 -- 
 2.54.0
