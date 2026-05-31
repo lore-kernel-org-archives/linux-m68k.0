@@ -1,244 +1,154 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19F42BD587
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2026 13:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB1E345CBC
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2026 15:26:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780234953; cv=none; b=hNZvelLfBDII9+JIe6BoeK9z0Kg3Ua7PfAc4Vx+z4b8lVO0ETUyCkU6FkyOQUQgTwuVKmBKymzeG0P0JkG8JOc1dmo7uASTBNPe+g1UVs2n6M/k5FVK3/HSBlvcxEEVC0lHvDUGgfQ0tmgPqjQDB/N4U0UpKde5BCpf/UnsG5eE=
+	t=1780241162; cv=none; b=b+VHwuNXtbqBzUamz2fLeE2lCWlrAWCnNlmXgrUOFXp0ajPi73SZ6iu6uazoUkGy3GVjCrsVR/FuARlSHVdB7vf69+BjAvoKBoRCmj1FbhvLgG0DYCMsMIxU9QeJpiYT5Lrr6ocbXp47QCQmjKbPyXqBofPjTwhSA/23abgpWdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780234953; c=relaxed/simple;
-	bh=zR05hWiH8Rlw66oNAUtRAX4ISbevpkF+05gVF+o8TOI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WxT0nMGSfub0iYpU1/C8FGmIqmbElcuiXEKsw+gICc2PcsR5s0GjNQy39GXC9dElf4CWK+HYa2Y6U6DF6IBEIZEigPP9KomWUJEJRvXwX12Pfebj2GMNuR9CvtR8F15Axn6ABIJypGKR40ikQMoDCeScrRiaPPNk8/u397V3LPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cXsRDvi/; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1780241162; c=relaxed/simple;
+	bh=MIaaE/2mzFPAjGyRfiNactxhQ4J82Q69lpAJVLJ9J+4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=lBaNmzYZFHDRaMm4tTevYdCs4OPHBdhzFUt+Pg94HbyVQfXCUu6O9pNVPPNLALZZLz83+FqzdeZlGBpxGEkbrls/dYq+AoBOHxM9Fg1xDuH1ufQavZWsx/1OeLTBZg6d71aFvSOGKvgqB5k/ZjYRp7Z/rDJvWuLmFR8o7vaalT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=e1qfnpLI; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cXsRDvi/"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6373940027;
-	Sun, 31 May 2026 13:42:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 292F41F00893;
-	Sun, 31 May 2026 13:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780234951;
-	bh=dSjHAroP5+L4GQyBa+FNhJO3ihTn8ULsRc3iTGS7mDA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=cXsRDvi/iiCxcm/KxbaJf9zvaok8JsIXFHPo0E7kunRCe3kAoGRmggGMBZhV3+J1M
-	 aBtew1idHllMUPngx2cKEvhiUqvyMeJvHto5gwOoIy/NM/J6qCviVP+j8mT9/+esaI
-	 I19uZ/k1Qk8zp/neDywXwiSTtYAHgdjDrteA2ukGXtYtf1sGIPhgtOx5onzx0vbRGu
-	 uRtxcrgygRELyKumKRmwQIZP03gzFGUarcsHAB8nVrjXyp8Eb1DizwAdhr3mtefN8L
-	 /g/YB8P4e8WgBkLOzO5H4SsGU9/4mlGAA0uXE+ts7cKNJeMh2//ZoZD5qsNEF4pUL0
-	 fdr2Fo8BEoOzA==
-Message-ID: <2b532d56-dce4-4f6d-84e0-2fd87d5494f8@kernel.org>
-Date: Sun, 31 May 2026 23:42:26 +1000
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="e1qfnpLI"
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4904c1ce4c1so101567975e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 31 May 2026 08:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1780241159; x=1780845959; darn=lists.linux-m68k.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1oxdFj4Oh6M9kXl1w5/7S95bL1PgDTh+f8B3yZnortM=;
+        b=e1qfnpLIoHp2cxsWmPcakDCOStZnSuK2NNPC7VE1HzEE2xoGluKbzYUNwmqk9f6b6V
+         dg2tJHLJErjoQD5e0TlHwhdUSmH42vdb+6ul8xBPC8Ix/Pnkzsf0J33CB5C6Cu40MUMQ
+         hfIJQD3I28wQ0bMfV8iq2PU2KAcP1OFGMzMtOWR+l/ezwgFzpCY31+jtDJ4vq4NXKf7m
+         xmOcsRDdEdACXhm5YQl2ik90ZpUkZaD3sUYh+loVxt9qE7fFVndWOv7UBZCui1OUZhDv
+         au0hsFQ4rEnlbnaSvU6KfKYyHiAbAkrN32XsN7vjABlgRqMSpabX/wHUQiygQuiM13Hx
+         4NCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780241159; x=1780845959;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1oxdFj4Oh6M9kXl1w5/7S95bL1PgDTh+f8B3yZnortM=;
+        b=KXMuvLzkFfpXnpcJt5WQKr9amjJWcTN7ugmnnWT1dL/VdNZ35Y/6Qi9uz6x+T3nGOJ
+         r7TbOxhv9+jZn7yVH9EBJyBeBboQl76gQwKeXYynK1fpBNr6K6nhgnUxypEXMPdeNTB8
+         ioa0J0da79igRZB50pa0ajtk6PNATMUbF9qTYfgDHyTp+V0GAHcOWuaXOzk30beS2TBf
+         wmhLp/vuhIRg5iZyeM/GFvrmWxPGIPLcaVyeVxV3RQ1yZtiVBGKmlkJg1doXCLIZ7Tnc
+         wXXyFZ3jsHx3h1EUWQtGncfjtoFMuKRiCrCoLtkTus+jauqOgNBLI46quhzfeRLQWcql
+         SJTQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+1iJAILYrUocwSgdxPvpZp+73ET0fFaprGK7ti3jbW15Gl7IcYKf9eK8Eb6Lk6qsTVFty/WDvWQH3t@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzGK17TkVZdpUPXral3JPjiRFslU2i/cqOdoQYIqDpjocRW1rEQ
+	ENKmCnoPkepQmzKcK06K1oLKlZV7GACQXE4mMtHy6h5Vm2htIuR9vpjpxdVGjcP/8F0=
+X-Gm-Gg: Acq92OFJEjDMEMb6UAxIzrhxe//C8jgdMXmU8ukPk7/8u5xG+9U9a7fzlw0rrjireGv
+	027Y1QbTBVL3UbVOJF+Zny2P6YreWY896LFUarDlZtGZAIxV4Zl3T7eInUAn+Pl8OVSApj/kHOH
+	iLGA8odkEZTlm2RaEaZ9IQFhEDTgY4t+7jaYIXrfu6ZkEVWhQT7Q/X2aSh8ADwM1TRAWErPbq1w
+	7Za4ZG5/1Kasw/aheJZnDm+bP0wEbwTwukll+bq0FMIoFPWcf4LcM1NsNREdgc67X8VByt9CCb+
+	1ByomPC5M0+wDMykN6qZoYX5SoSsBPI8g/j/WrXNdjgUJ7iDxC4dXbO+JMXzaWOC79Di+TQOyFE
+	cid2J6cesAq4sHPyax/sm2tl3VMJmU8NwCmx5bNM46ux4cyEx/TTD0xf4SLuruLfRmjhQL/GX4G
+	4I+149q7b1TDBxQNFAL9mJsu5guQXbxt6S1arqAYqbAw==
+X-Received: by 2002:a05:600c:5306:b0:490:a455:f882 with SMTP id 5b1f17b1804b1-490a455f915mr130621895e9.24.1780241158784;
+        Sun, 31 May 2026 08:25:58 -0700 (PDT)
+Received: from [192.168.0.2] ([2a07:7e81:7daa:0:202:c9ff:fe53:eda4])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45ef354cf0dsm18526622f8f.17.2026.05.31.08.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2026 08:25:58 -0700 (PDT)
+From: Angelo Dureghello <adureghello@baylibre.com>
+X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
+Date: Sun, 31 May 2026 17:25:54 +0200
+Subject: [PATCH v4 01/11] m68k: mcf5441x: fix clocks numbering
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
- functions
-To: Angelo Dureghello <adureghello@baylibre.com>
-Cc: Arnd Bergmann <arnd@kernel.org>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-can@vger.kernel.org, linux-spi@vger.kernel.org,
- Vladimir Oltean <olteanv@gmail.com>, Christoph Hellwig <hch@lst.de>
-References: <20260506142644.3234270-2-gerg@kernel.org>
- <20260506142644.3234270-8-gerg@kernel.org>
- <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com>
- <fdd6fc14-f607-4186-8db4-25de973ac322@kernel.org>
- <CALSJ-wCrNDv3N2Kdo0uoXsKGtp0GthJRBeYTNQA1gGE2akUWFg@mail.gmail.com>
- <9391b782-7727-47fa-ac37-05cd50821d35@app.fastmail.com>
- <CALSJ-wBRmUpjz-_ehZ0U0Gu+fPqRUeAn47E0_pwpXQa0tCNzVA@mail.gmail.com>
- <CALSJ-wCuZs9cBJsuOOYMEYM6xOXZbdOm_pr=70d3HRYYSYJ0KA@mail.gmail.com>
- <CALSJ-wDm8NoB8mF3KSx49XMSWz1vjwFhSmgJZWq8pN2pCf12mw@mail.gmail.com>
- <CALSJ-wDY_8SMAvKT0L6wMbH1=w5pZNmV=xyeX1REb=BMRZWj-g@mail.gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <CALSJ-wDY_8SMAvKT0L6wMbH1=w5pZNmV=xyeX1REb=BMRZWj-g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20260531-wip-stmark2-dac-v4-1-7e65ab4215dd@baylibre.com>
+References: <20260531-wip-stmark2-dac-v4-0-7e65ab4215dd@baylibre.com>
+In-Reply-To: <20260531-wip-stmark2-dac-v4-0-7e65ab4215dd@baylibre.com>
+To: Greg Ungerer <gerg@linux-m68k.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, Steven King <sfking@fdwdc.com>, 
+ Arnd Bergmann <arnd@arndb.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+ =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, 
+ Andy Shevchenko <andy@kernel.org>
+Cc: Greg Ungerer <gerg@uclinux.org>, linux-m68k@lists.linux-m68k.org, 
+ linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org, 
+ Angelo Dureghello <adureghello@baylibre.com>
+X-Mailer: b4 0.15.2
 
-Hi Angelo,
+From: Angelo Dureghello <adureghello@baylibre.com>
 
-(Adding Christoph to CC list)
+Fix clocks numbering, set correct values for eport and DAC,
+as per RM Rev 5, 05/2018, table 9.5.
 
-On 25/5/26 07:34, Angelo Dureghello wrote:
-> On Sun, May 24, 2026 at 02:17:07PM -0700, Angelo Dureghello wrote:
->> Hi All,
->>
->> On Sun, May 17, 2026 at 03:41:31PM -0700, Angelo Dureghello wrote:
->>> Hi,
->>>
->>> On Sun, May 17, 2026 at 03:04:23PM -0700, Angelo Dureghello wrote:
->>>> Hi Arnd,
->>>>
->>>> On Sun, May 17, 2026 at 10:08:22PM +0200, Arnd Bergmann wrote:
->>>>> On Sun, May 17, 2026, at 21:43, Angelo Dureghello wrote:
->>>>>> On Thu, May 07, 2026 at 10:43:01PM +1000, Greg Ungerer wrote:
->>>>>>> On 7/5/26 05:12, Arnd Bergmann wrote:
->>>>>>>> On Wed, May 6, 2026, at 16:26, Greg Ungerer wrote:
->>>>>>
->>>>>> [    2.270000] fsl-dspi fsl-dspi.0: Not able to get desc for DMA xfer
->>>>>> [    2.280000] fsl-dspi fsl-dspi.0: DMA transfer failed
->>>>>> [    2.280000] spi_master spi0: failed to transfer one message from queue
->>>>>> [    2.290000] spi_master spi0: noqueue transfer failed
->>>>>> [    2.290000] spi-nor spi0.1: probe with driver spi-nor failed with error -5
->>>>>>
->>>
->>> About this issue, it fails on dma_pool_alloc(), so tomorrow will check,
->>> i probably lost some dma config option.
->>>
->>
->> so i worked on this open issue above:
->>
->> - moved to master and rebased,
->> - crated a wip/edma branch,
->> - bisected and found the offending commit, before this, mcf-edma driver
->>    and connected spi-fsl-dspi (using edma) was both working correctly.
->>
->> 7a360df941a4bd60847208de59f1ac8b166265a2 is the first bad commit
->> commit 7a360df941a4bd60847208de59f1ac8b166265a2 (HEAD)
->> Author: Christoph Hellwig <hch@lst.de>
->> Date:   Thu Oct 12 09:52:27 2023 +0200
->>
->>      m68k: don't provide arch_dma_alloc for nommu/coldfire
->>
->>      Coldfire cores configured with a data cache can't provide coherent
->>      DMA allocations at all.
->>
->>      Instead of returning non-coherent kernel memory in this case,
->>      return NULL and fail the allocation.
->>
->>      The only driver that used to rely on the previous behavior (fec) has
->>      been switched to use non-coherent allocations for this case recently.
->>
->>      Signed-off-by: Christoph Hellwig <hch@lst.de>
->>      Reviewed-by: Greg Ungerer <gerg@linux-m68k.org>
->>      Tested-by: Greg Ungerer <gerg@linux-m68k.org>
->>
->>   arch/m68k/Kconfig      |  1 -
->>   arch/m68k/kernel/dma.c | 23 -----------------------
->>   2 files changed, 24 deletions(-)
->>
->> So i can try next week a patch for edma looking what has been done
->> in fec, and since i am probably the only with mcf54415, will test it
->> here.
->>
-> 
-> Looking into this better, looks like the above commit was meant for the
-> majority on non-mmu ColdFire. I think mcf5441x and some other with mmu
-> enabled can flag pages as "page cache disabled".
+Fixes: bea8bcb12da09 ("m68knommu: Add support for the Coldfire m5441x.")
+Fixes: 007f84ede6e3e ("m68k: coldfire: remove private clk_get/clk_put")
+Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
+---
+ arch/m68k/coldfire/m5441x.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-I don't think that is right. The way the underlying data cache is setup for
-MMU ColdFire (via the ACR/CACR registers) means that individual pages cannot
-be marked as non-cached. So coherent memory allocations are not possible -
-at least the way things are today.
+diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+index 6ce730098ff6..613b0275d9d8 100644
+--- a/arch/m68k/coldfire/m5441x.c
++++ b/arch/m68k/coldfire/m5441x.c
+@@ -41,9 +41,9 @@ DEFINE_CLK(0, "mcfpit.0", 32, MCF_BUSCLK);
+ DEFINE_CLK(0, "mcfpit.1", 33, MCF_BUSCLK);
+ DEFINE_CLK(0, "mcfpit.2", 34, MCF_BUSCLK);
+ DEFINE_CLK(0, "mcfpit.3", 35, MCF_BUSCLK);
+-DEFINE_CLK(0, "mcfeport.0", 37, MCF_CLK);
+-DEFINE_CLK(0, "mcfadc.0", 38, MCF_CLK);
+-DEFINE_CLK(0, "mcfdac.0", 39, MCF_CLK);
++DEFINE_CLK(0, "mcfeport.0", 36, MCF_CLK);
++DEFINE_CLK(0, "mcfadc.0", 37, MCF_CLK);
++DEFINE_CLK(0, "mcfdac.0", 38, MCF_CLK);
+ DEFINE_CLK(0, "mcfrtc.0", 42, MCF_CLK);
+ DEFINE_CLK(0, "mcfsim.0", 43, MCF_CLK);
+ DEFINE_CLK(0, "mcfusb-otg.0", 44, MCF_CLK);
+@@ -103,9 +103,9 @@ static struct clk_lookup m5411x_clk_lookup[] = {
+ 	CLKDEV_INIT("mcfpit.1", NULL, &__clk_0_33),
+ 	CLKDEV_INIT("mcfpit.2", NULL, &__clk_0_34),
+ 	CLKDEV_INIT("mcfpit.3", NULL, &__clk_0_35),
+-	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_37),
+-	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_38),
+-	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_39),
++	CLKDEV_INIT("mcfeport.0", NULL, &__clk_0_36),
++	CLKDEV_INIT("mcfadc.0", NULL, &__clk_0_37),
++	CLKDEV_INIT("mcfdac.0", NULL, &__clk_0_38),
+ 	CLKDEV_INIT("mcfrtc.0", NULL, &__clk_0_42),
+ 	CLKDEV_INIT("mcfsim.0", NULL, &__clk_0_43),
+ 	CLKDEV_INIT("mcfusb-otg.0", NULL, &__clk_0_44),
+@@ -156,7 +156,7 @@ static struct clk * const enable_clks[] __initconst = {
+ 	&__clk_0_27, /* uart3 */
+ 
+ 	&__clk_0_33, /* pit.1 */
+-	&__clk_0_37, /* eport */
++	&__clk_0_36, /* eport */
+ 	&__clk_0_48, /* pll */
+ 	&__clk_0_51, /* esdhc */
+ 
+@@ -174,8 +174,8 @@ static struct clk * const disable_clks[] __initconst = {
+ 	&__clk_0_32, /* pit.0 */
+ 	&__clk_0_34, /* pit.2 */
+ 	&__clk_0_35, /* pit.3 */
+-	&__clk_0_38, /* adc */
+-	&__clk_0_39, /* dac */
++	&__clk_0_37, /* adc */
++	&__clk_0_38, /* dac.0 */
+ 	&__clk_0_44, /* usb otg */
+ 	&__clk_0_45, /* usb host */
+ 	&__clk_0_47, /* ssi.0 */
 
-It would be possible to set aside a chunk of RAM at kernel startup time
-to use as a pool for coherent allocations (since it could be marked as
-non-cached via the ACR/CACR registers), but there is no code to support doing
-that today.
-
-Regards
-Greg
-
-
-> So i would re-enabled that code only for such mmu families.
-> 
-> Please let me know if i am correct.
-> Thanks.
-> 
->>>>>> DSPI is using edma, i will try to understand where the issue is asap.
->>>>>>
->>>>>> About how it works:
->>>>>> - for accesses to edma module (IP) mmio registers, must be native
->>>>>> big_endian, so using the "be" suffix in "mcf"_edma looks ok for me.
->>>>>
->>>>> The twist here is that with the way that readl() is defined on
->>>>> coldfire as a non-swapping operation, and the generic
->>>>> definition assuming the opposite in
->>>>>
->>>>> static inline u32 ioread32be(const void __iomem *addr)
->>>>> {
->>>>>          return swab32(readl(addr));
->>>>> }
->>>>>
->>>>> the function called ioread32be() actually tries to access
->>>>> the registers as little-endian. I can see two possible ways
->>>>> we got here, but don't know which one is currect:
->>>>>
->>>>> a) the device actually has little-endian registers (like it
->>>>>     does on i.MX, but unlike all other coldfire devices), and
->>>>>     you just never noticed because using ioread32be() worked
->>>>>     as you expected.
->>>>>
->>>>> b) you tested the driver using an ioread32be() definition that
->>>>>     did not have a byteswap and it correctly accessed big-endian
->>>>>     registers at the time, but the version in mainline today does
->>>>>     not.
->>>>
->>>> Ok. The ioread32be now works properly since i had applied Greg patches.
->>>> I generated an error in _probe on edma channel 2, reading status reg.
->>>> looks consistent:
->>>>
->>>> 	iowrite16(2121, regs->erqh);
->>>> 	iowrite8(0x77, regs->serq);
->>>> 	iowrite8(0x12, regs->ssrt);
->>>> 	
->>>> 	u32 status = ioread32be(regs->es);
->>>> 	printk("%s() status: %04x\n", __func__, status);
->>>>
->>>> [    0.140000] mcf_edma_probe() entering
->>>> [    0.140000] mcf_edma_probe(): allocating data
->>>> [    0.140000] mcf_edma_probe() status: 800012f8
->>>>
->>>> If i am not loosing myself in this r/w labyrinth, the path should be:
->>>>
->>>> 1) Greg removed coldfire readl/writel, leaving now the standard LE r/w,
->>>> 2) So the ioread32be swaps the standard LE read giving BE.
->>>>
->>>> Am i correct ?
->>>>
->>>>
->>>>>
->>>>>> - for accessing the "tcd" memory structure, that must be, from what i
->>>>>> remember, anyway in little endian, independently from the cpu core
->>>>>> endiannes, this is the reason that big_endian flag is needed, it is
->>>>>> used for tcd area accesses, so the IP module was built.
->>>>>> The tcd area may be similar to pci accesses (see mcf54415 RM 19.4.16).
->>>>>
->>>>> edma_read_tcdreg() calls into edma_readl(), which is the same function
->>>>> that is used for normal register access, so from what I can tell,
->>>>> they always use the same endianess here.
->>>>>
->>>>
->>>> If edma_readl was using
->>>>
->>>>          if (edma->big_endian)
->>>>                  val = ioread32be(addr);
->>>>
->>>> and never changed, without Greg patch, it was likely returning little
->>>> endian for coldfire and correct LE for other arch ? :)
->>>>
->>>> I remember something about tcd area was coded LE, but will investigate
->>>> better, now i am over midnight.
->>>>
->>>> Regards,
->>>> angelo
->>>>
->>>>>        Arnd
->>>
->>> Regards,
->>> angelo
->>
->> Regards,
->> angelo
-> 
-> Regards,
-> angelo
+-- 
+2.54.0
 
