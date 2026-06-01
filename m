@@ -1,57 +1,60 @@
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from mx01lb.world4you.com (mx01lb.world4you.com [81.19.149.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE373AFB07
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Jun 2026 14:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42343E274D
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Jun 2026 18:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.19.149.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780325017; cv=none; b=gNoP+6AuYZ1qiaCdHf3h3plWjGTrHVxs5fyuHZ9hLLiLYWSbl75fPpUsCT/jme7H+DMS4fo01ok6VaZ+LasqWio1ygiST+ZC++dMw7tUQX2iXdvDuiaTDccNxFFFHmNKes8+jiaBqGorRjC74vjWK6i/PWNBDHydmOdC8bMK25w=
+	t=1780337360; cv=none; b=pPl0r49qtUWXksXRg9MNDoIYMXnkXErNFEQ/7yWRRdn5PeFSoJq5sAf0TPuCKEq0SjPpdN+xP/AK44BwXzdskWwyduvEy3Ynzkyb8qBMYzsa9m8OhB69mZPYZyjeJBA5vKUYcqnehz75T8J38HcHGOBgMPgKtzlCohb8bQNRL0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780325017; c=relaxed/simple;
-	bh=m5ZUc4gAQRze2UVAcz5pyvxHsM4wU7vTSIol0yQAQwc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hiMox9BHMJLlwKxA+j6iRpU193t/oMSWmWiTgcBYYehupGFBbcUyriYA5hafNk7HinP31/m+aUOHQXOkJ5Xiw6tkbsxyAJZXyQX554lMd+xS35fs1b4an6DRyMxQ/rHObjKhivCPdF2IZ2xhmqe0pLExxN86KnoIPv0lEwCp4T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id DB2CC68B05; Mon,  1 Jun 2026 16:43:32 +0200 (CEST)
-Date: Mon, 1 Jun 2026 16:43:32 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Greg Ungerer <gerg@kernel.org>
-Cc: Angelo Dureghello <adureghello@baylibre.com>,
-	Arnd Bergmann <arnd@kernel.org>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-can@vger.kernel.org, linux-spi@vger.kernel.org,
-	Vladimir Oltean <olteanv@gmail.com>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
- functions
-Message-ID: <20260601144332.GC4918@lst.de>
-References: <20260506142644.3234270-8-gerg@kernel.org> <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com> <fdd6fc14-f607-4186-8db4-25de973ac322@kernel.org> <CALSJ-wCrNDv3N2Kdo0uoXsKGtp0GthJRBeYTNQA1gGE2akUWFg@mail.gmail.com> <9391b782-7727-47fa-ac37-05cd50821d35@app.fastmail.com> <CALSJ-wBRmUpjz-_ehZ0U0Gu+fPqRUeAn47E0_pwpXQa0tCNzVA@mail.gmail.com> <CALSJ-wCuZs9cBJsuOOYMEYM6xOXZbdOm_pr=70d3HRYYSYJ0KA@mail.gmail.com> <CALSJ-wDm8NoB8mF3KSx49XMSWz1vjwFhSmgJZWq8pN2pCf12mw@mail.gmail.com> <CALSJ-wDY_8SMAvKT0L6wMbH1=w5pZNmV=xyeX1REb=BMRZWj-g@mail.gmail.com> <2b532d56-dce4-4f6d-84e0-2fd87d5494f8@kernel.org>
+	s=arc-20240116; t=1780337360; c=relaxed/simple;
+	bh=9q183NFC9fS2JbtBL36Ugl1YrAbf8Ci2YCyn/eMtdUU=;
+	h=From:To:Subject:Message-ID:Date:MIME-Version:Content-Type; b=YAy2WIA93ONAqPfsfp+yDgtSD37Ycj9fJQwSoeMkkCPoaO2TZCzUhgmtvZWY6EiHrKgCFUaAO4zyMk1/VpeHCMW52hU9bFbesTp22OSVvlrQPnAGb0Xkm61sy4z9Gu0a3FLWrKChIC5IDF1A00VCRKxoaIA9rJkHN4DmNDRwb9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ciaorelated.com; spf=pass smtp.mailfrom=ciaorelated.com; arc=none smtp.client-ip=81.19.149.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ciaorelated.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ciaorelated.com
+Received: from 89-26-47-193.stat.cablelink.at ([89.26.47.193] helo=[127.0.0.1])
+	by mx01lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <info@ciaorelated.com>)
+	id 1wU74e-0000000043c-3YA7
+	for linux-m68k@lists.linux-m68k.org;
+	Mon, 01 Jun 2026 20:09:17 +0200
+From: Dogan Karaarslan <info@ciaorelated.com>
+To: linux-m68k@lists.linux-m68k.org
+Subject: Open source social media project from Salzburg
+Message-ID: <93819d59-b2e1-fc36-f69e-c57a78ad7f07@ciaorelated.com>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 01 Jun 2026 18:09:16 +0000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b532d56-dce4-4f6d-84e0-2fd87d5494f8@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=utf-8
+X-AV-Do-Run: Yes
 
-On Sun, May 31, 2026 at 11:42:26PM +1000, Greg Ungerer wrote:
-> I don't think that is right. The way the underlying data cache is setup for
-> MMU ColdFire (via the ACR/CACR registers) means that individual pages cannot
-> be marked as non-cached. So coherent memory allocations are not possible -
-> at least the way things are today.
->
-> It would be possible to set aside a chunk of RAM at kernel startup time
-> to use as a pool for coherent allocations (since it could be marked as
-> non-cached via the ACR/CACR registers), but there is no code to support doing
-> that today.
+Hello,
 
-With CONFIG_DMA_GLOBAL_POOL there is some generic code dealing with
-most of this.  But if this driver worked on coldfire in the past,
-it must have been fine with non-coherent memory and could use the
-non-coherent allocator.
+I found your contact through GitHub.
 
+I=E2=80=99m a developer based=
+ in Salzburg, and I=E2=80=99ve created an open source social media project =
+focused on communities and meaningful connections.
+
+I=E2=80=99d love to share it with you. If you like the idea of an open =
+source social media project, I would really appreciate it if you could take=
+ a look and maybe star the repository.
+
+I=E2=80=99ve put a lot of heart =
+into this project, so any kind of support, feedback, contribution, or =
+simply sharing it would mean a lot to me.
+
+Here is the project:
+https://github.com/dogankaraarslan1/ciaorelated
+
+Thank you for your time.
+
+Best regards,
+Dogan Karaarslan
