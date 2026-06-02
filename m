@@ -1,104 +1,110 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from mslow3.mail.gandi.net (mslow3.mail.gandi.net [217.70.178.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5CB35F193
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  1 Jun 2026 19:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 811493C9EEF
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 09:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780343238; cv=none; b=XdgK1hwF4oJZOdCPzU+iwcIi+TV8IXfFyMZI+neVfhwblSCk37/8WXAFjsCHCjh3YUrsO8BM9sntrzfy1r9MbcBWj0bF6rh1Sj9DKWYOefdq/ud8YWpOesOJK9aeTI7nVKPU/5/K1wbzo8IglPi1P6d95Q3DRZuxdhmds6a0IlE=
+	t=1780391047; cv=none; b=DZJfHoLS8KrNrBK5UV/l2Spg/ED+mtwaWpbeyv/vpC3deZPuP590Mm56ipImfG7ydA3+ktVc/xIsw82T3KMmSIiT2W8pw/5+gmtt+sIBTBGhDy97XMjNVRpc44B6rKEVc+XvgvFgNcFKYl3TX/MkAAEPPagjxBv97OkhSOTaO98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780343238; c=relaxed/simple;
-	bh=XrDninaDmwSyd+Ny5hkH9Us0nuzSziFzIm1jBsWhNmk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Xgil/ybRevBVSY0s/Km0QZdnFs2Qgm3M5sk4KXi29COdF8xpFbkX+dkvZnJ2QjKDGxrjNznWzoEfgFmLXDOZ6yGybs3lh9HkeeNQGDpooANpU6ifxYeneZe9ePtVGeKFb0qZlcYWEk+LW3IW5wNB/ZkAIfawCt6S657Y5t6IPJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jJO90LHS; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1780391047; c=relaxed/simple;
+	bh=BGfRpCziLoFkxXw1IWBGIjETJmsIEuWBg7unSPf5Keg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=HqgZeZzX00KAWUtRIXiC3O5zA+CnDc8u6PaK4Uj/CyIcoXdqn9r4PTFpIfU6QYf86IkQAwQAWHtMPq4Gm5LLC3x+8jyPjI9MoXOAyyqpGYupewbMxWSDp5Or+vROmJumx148T9IAK/GQdStT5qrkPXDvyxyY9plhAWCfSkxhflU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=ADqK8bKI; arc=none smtp.client-ip=217.70.178.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jJO90LHS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780343237; x=1811879237;
-  h=date:from:to:cc:subject:message-id;
-  bh=XrDninaDmwSyd+Ny5hkH9Us0nuzSziFzIm1jBsWhNmk=;
-  b=jJO90LHS+UxKzIkQN7V50dNBQ6gMMe71doTcS4ev0WdZTLLzoWnKXMB0
-   bkVYkg82UTWzBNQTSMWRe9JEFsIRdakGhyv5qvRLDl+jrmAORquBytBcu
-   FIqds/v55ZekXZEcpeLFzMTq8XDxiXWvUOlXR96ycgxVFqSJudPfaQA8c
-   qCo7mP4jw4gdiJz67vvqUGp/OCUJYQqF/LRxB4JgMJTC4r4CFc5SYwFCf
-   IfHEuA0VCanDg2MBya2MbToV27NqOk9EoX25aW5ZbxitTU5Kc8yKQrOJD
-   8BZzgpoUnnOOHFjCMZcTmhP6o2ifr6Ow+IRwcMIEKIREP9BcNszpRVo8N
-   w==;
-X-CSE-ConnectionGUID: /kAOwMyMSP6j0+yGFPbrNA==
-X-CSE-MsgGUID: 8tGvcLywSA6/U8n4nRVeow==
-X-IronPort-AV: E=McAfee;i="6800,10657,11804"; a="81141043"
-X-IronPort-AV: E=Sophos;i="6.24,181,1774335600"; 
-   d="scan'208";a="81141043"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2026 12:47:16 -0700
-X-CSE-ConnectionGUID: wGVNwSCnQiWnd+Mir0agtA==
-X-CSE-MsgGUID: cvwvMVB4TjeQG+7AA64iBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,181,1774335600"; 
-   d="scan'208";a="240676855"
-Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 01 Jun 2026 12:47:14 -0700
-Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wU8bP-00000000B1S-3FGh;
-	Mon, 01 Jun 2026 19:47:11 +0000
-Date: Tue, 02 Jun 2026 03:46:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:armnommu 3/3]
- arch/arm/mach-versatile/versatile.c:89:23: sparse: sparse: symbol
- 'versatile_auxdata_lookup' was not declared. Should it be static?
-Message-ID: <202606020323.kLHaRcqX-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="ADqK8bKI"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+	by mslow3.mail.gandi.net (Postfix) with ESMTP id 6F220583062
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 08:36:42 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B0E1A3EB1D;
+	Tue,  2 Jun 2026 08:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1780389395;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=d/l5rvA/a40QIu3rhbiP/pZ1jgz6zGNVh6aFboZ+MYw=;
+	b=ADqK8bKIMGw1pZtEWhnOgHmFdfE4n+DtB6Kj4LHTb9A78iwLsPTwNXG28JcwWmH71TjV0/
+	XfCsR1GYKre0J1xcPQWVgao2Znz8y4OXVK/iRot+APfoM6zbinPZgLmvaKpC7wiA3xzQ1A
+	Y7M51zgtwtba+30A3c97TeYQTaUND1QT2vxRoKo8wct+JZNE8A4hDpo3clcc62ADVOOjlR
+	kkf2Ou8A7j4h2ILHL+2ildZ331LhfcfqXEflQVfj2aQGG//+DzHInXzBSCF5j5AIITlWlM
+	ej5+BHfMKmv6EH3MhfK5DMRtFxOGpnA+KaYulA/LegsEDcPw7ebSykwUPsW1vA==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: [PATCH 0/2] rtc: add a driver for the Freescale MCF5441x on-chip
+ RTC
+Date: Tue, 02 Jun 2026 10:36:16 +0200
+Message-Id: <20260602-jmh-upstream-coldfire-rtc-v1-0-1e129a177d2f@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAACWHmoC/yXMTQqDQAxA4atI1g1MA5axVyldODFTI/WHzFgK4
+ t072uW3eG+DJKaS4F5tYPLRpPNUcL1UwH07vQS1KwZydHM1NTiMPa5LyibtiDy/u6gmaJnR++C
+ aOhBH8lD6xSTq93w/nn+nNQzC+RjCvv8AKxSxM30AAAA=
+X-Change-ID: 20260529-jmh-upstream-coldfire-rtc-88b095b2cf28
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Greg Ungerer <gerg@linux-m68k.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.15-dev-47773
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1780389394; l=1832;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=BGfRpCziLoFkxXw1IWBGIjETJmsIEuWBg7unSPf5Keg=;
+ b=1tTsRXbKifjj5ZG5IuOSmeVX5O+RxaNkhnId8yDKf3k3EM0pmoGkXUmuRoMYsuqfOaSWv08mM
+ 7XyjFCZ4eNWAJmgqwq2xNnVgldkhjEtqAczTKbt6Ir/06Y23jREzI5H
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: dmFkZTE29EoZmkXhu/xQtkxQaa0kHijKM01RTghUKVBKBIcVlzcrYFVuyXUNxNf9FZmwubASaLi7n+lgMYv0R7A8AAkNTqQDRMNAzlT42sG40ar65UhwE1PMc6GbyDclX4g0QQsp9UOpLIHqyaUXWl+Ds0VavrEAU3rRZ/CpKAR+upsKqaNRihcn9EiAMU/7mtmAf3zEXLoWPGjaw1Nd5NePFYgEO1OxtC0twdNpfB6VoEHWlwHDNukueX+wkoWk+o1YsiT5zloIKqufFaDRfVlAxuIb72Xc+MaGa2xW168G2Ky1HzFXPPeYPevmMkIoTtTiMkPWIlSOBAZ0dZVY/rzfqmDnqGETg+yL1xs5YVIWF9Xk5a3cPnG3FjSzIsKv2UeKIW2HZdy5BEtfaBjk09cuGMVyoTxLoj4wX2MtuirSboO4unJJ5vr6dtOITnSIcjrEekWqH6FJyIeK3b9Svl2oG99jXRh5r805fIvDMXUAIvPSQ8IMY5E7oiRN7hM3MU/iMGxRzru6ie7vOo+SdVrSN+a7mjqIQbFAwYLIK9lMAuSp4DxAEkMiBDds1O7WababosQ0WU0Zh8qf53oDThqxEKAjKgVtjb4B/C/kO0OpzN5Alj6HqJ4f3yA0nY7jDDuXAZIcMXArxj01hAYRl5ljv/LFoa0BKR45nwGZJECFyi0IIA
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   4dd9730e9bed27b56f15e10eb787b468fb5b9343
-commit: 4dd9730e9bed27b56f15e10eb787b468fb5b9343 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-r113-20260601 (https://download.01.org/0day-ci/archive/20260602/202606020323.kLHaRcqX-lkp@intel.com/config)
-compiler: clang version 23.0.0git (https://github.com/llvm/llvm-project e5ab4f8a1f766febdc65ce89c00dec85393cfd68)
-sparse: v0.6.5-rc1
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260602/202606020323.kLHaRcqX-lkp@intel.com/reproduce)
+This series adds support for the "robust" real time clock found on the
+Freescale MCF5441x family of ColdFire SoCs.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202606020323.kLHaRcqX-lkp@intel.com/
+Patch 1 adds the rtc-class driver. Besides the usual time/calendar and a
+one-shot alarm, the block contains 2KB of battery-backed standby RAM that
+survives a main-power loss while VSTBY_RTC is supplied; the driver exposes
+it through the nvmem framework so userspace can persist data (for example a
+reset/reboot counter) across power cycles. Register and standby-RAM writes
+go through the RTC_CR[WE] knock sequence, the time counters are read under
+the RTC_SR[INVAL] guard described in the reference manual, and the time/date
+encoding is forced to binary at probe.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm/mach-versatile/versatile.c:89:23: sparse: sparse: symbol 'versatile_auxdata_lookup' was not declared. Should it be static?
+Patch 2 registers the platform device from the m5441x ColdFire SoC support
+code so that every MCF5441x board gets the RTC. The MCFRTC_BASE, MCFRTC_SIZE
+and MCF_IRQ_RTC definitions it relies on already exist in
+arch/m68k/include/asm/m5441xsim.h.
 
-vim +/versatile_auxdata_lookup +89 arch/arm/mach-versatile/versatile.c
+The driver has been exercised on an MCF54418-based board: it registers
+as an rtc device, exposes the standby RAM as an nvmem device, and a value
+written to the standby RAM survives a mains power-cycle.
 
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  82  
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  83  /*
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  84   * Lookup table for attaching a specific name and platform_data pointer to
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  85   * devices as they get created by of_platform_populate().  Ideally this table
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  86   * would not exist, but the current clock implementation depends on some devices
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  87   * having a specific name.
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  88   */
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08 @89  struct of_dev_auxdata versatile_auxdata_lookup[] __initdata = {
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  90  	OF_DEV_AUXDATA("arm,primecell", VERSATILE_MMCI0_BASE, "fpga:05", &mmc0_plat_data),
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  91  	OF_DEV_AUXDATA("arm,primecell", VERSATILE_MMCI1_BASE, "fpga:0b", &mmc1_plat_data),
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  92  	{}
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  93  };
-a7096789211193 arch/arm/mach-versatile/versatile_dt.c Rob Herring 2015-12-08  94  
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+Jean-Michel Hautbois (2):
+      rtc: m5441x: add MCF5441x on-chip RTC driver
+      m68k: coldfire/m5441x: register the on-chip RTC
 
-:::::: The code at line 89 was first introduced by commit
-:::::: a70967892111934e292485ce84f1bab38cc55380 ARM: versatile: merge mach code into a single file
+ MAINTAINERS                 |   6 +
+ arch/m68k/coldfire/m5441x.c |  29 +++
+ drivers/rtc/Kconfig         |  12 +
+ drivers/rtc/Makefile        |   1 +
+ drivers/rtc/rtc-m5441x.c    | 582 ++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 630 insertions(+)
+---
+base-commit: 6f3ed7fec72fc8979b2a8c7219c0a9fcfc8d07b5
+change-id: 20260529-jmh-upstream-coldfire-rtc-88b095b2cf28
 
-:::::: TO: Rob Herring <robh@kernel.org>
-:::::: CC: Arnd Bergmann <arnd@arndb.de>
+Best regards,
+--  
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
