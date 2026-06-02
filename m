@@ -1,165 +1,142 @@
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DC53911DC
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 11:05:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DB73C73E1
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 11:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780398342; cv=none; b=Pm5XXDLu+L7fbmw/XEKWGAZYsJVnoSS3GaQKq4Fb5e1Fgm9IIAqPMWpFIOMMPMR0j8J41HKMUCE4pEpDm5uB79Go4Fd81RwT44X1OrgAFAhGwwBvZlYsAPu2SgasxEyZjz6x1PIfbbX0CjxrYJYV4JPqjGVlFJpKOXhi5NETKHA=
+	t=1780398510; cv=none; b=ZQOvU5Zteu1WrxDz87vBjhq1o1/51XTLcJI/fIdqecmuIQv/4Dpi0Q+xp5ks4Jmr+l08LGNK2ivxURhjRFWsE3Gk2EH7uJsC/ksxlYv3+4LvsZ5+XP33ZR7BbaTzw3Yl/cyJcpvbE92hK8PKRNcS0U4MIUgm9Xmn4U468Uc3z74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780398342; c=relaxed/simple;
-	bh=vwk9+cBRkK2usiaFeQTio8+tkmlQJXS4/f8NZBElt/E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A/4S6wIdWFYvLUcYRBRBODP6yq0EIzCHmQFPckQb4k/VZ53LYs+NxmkwNl+dHzs1sr4tbDsSwA58vyNFQdW8GYpCvmkD+k+SzsgWCouPxvAGGlqBJ9DsqHhwLeEFCZYPQxJnkOEliIg1ysHYIeOinjcocAMigHc2z5xFpg/kRuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=CoXk3Q/y; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="CoXk3Q/y"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E814E3EC1B;
-	Tue,  2 Jun 2026 11:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1780398338;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/E8Pxu55h/IOr2rd4xG69ogvihNigV/nQrA0kc5pdx0=;
-	b=CoXk3Q/yO9jFPDb6CZQMLoEuJMXmQTSOqCu9c+eBP4TEOLMJMlHD+zYULEN3G/QT5KIetX
-	4YIXJ3YCD6u6BFv/5hrwepOX8OLqGFzmN+q3SJWcaMgNi3OCbBdZO8Ua5Xeo3pPdqFSC+7
-	0KPJzO+abrR1vmUw+o2myWkv4Z6rmOvmlgvZIMTzXqqW5zDbPRLjeiezBhj/AvWlf5cu+h
-	OCzom8AVOfbaBbPTem1nM714BPZ49r06eente2qGfaHB89LXLbC/th1AJ91Aj2Crjtgw2O
-	kvxD+GNn1b8AAeaSyq3RM4hCRm4cunNCC3tw3Kzp5aYln2dC0vW/dM94/bjJzw==
-Message-ID: <42ab8311-0bd1-4094-aca7-0ca108c3a919@yoseli.org>
-Date: Tue, 2 Jun 2026 13:05:37 +0200
+	s=arc-20240116; t=1780398510; c=relaxed/simple;
+	bh=w4cVZ+GEEmsXcvgIG+638F4NIv19Md0kqYcXlU7oLSA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=O6cGhEW5dbMyStZfYzucuoege/LQNhHyxbN8q3aQuQX9OqYCx+vsVmS63x42GgPzAUYL1891WhzcvjRQNHt173jSDpf7JDf771zcZw2kFKnbFsmUWeLu3XPkGJ8gQ1wQgqTUPc9LyvCMEkApPQBncK20p834q6wehOJmivE8XkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-59eb57ed4cbso942634e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 Jun 2026 04:08:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780398508; x=1781003308;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=qmBJp0H5QWVh7p9vKLYuhNsufNBwSQXXDZceAK3VLwQ=;
+        b=MXtJ3hBn9+tL720TgfwlR00qjjehNnxtzxXsXMnAQAZ19kLMqSOKW6y4tGAvzW8q8E
+         hLoOf0f+hEokMAT1Ix/U1yiUxRNRxa2Awrxv/spcBMPUbykorcIIcssHJIOJcSDxokML
+         0aaNENzkSpVhbw2+vbLAFSLsZIVBmEPNlhn6+8cRYzgGr+zh11cCoXvyDZbMg1O/AUrv
+         UGvbUrjqxSBnywTqARjEbzqdotyPhztSVaY7jyoOKs97XbWzL0yqzVgGZpLjvS4Qif0J
+         aXVeY+VUbrr7jfw6kOPCo55Lp0VBllFEAxFdhx5/KtQZjrQLZCJCvLbusi2KAE+rwJQn
+         Abxw==
+X-Forwarded-Encrypted: i=1; AFNElJ9rBXSx42/hnw4KeADprW4D2jre2MNOCovkqM0FZbUZm5DjuQCXi6XjTh7qjSO20QZ2ZUfIVrv9zUGH@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwOeYkuoVn8ctFWAk7/m//hkv+lNt2FPUHSEhcNqN2NIMl3zdu2
+	Pxv1AaDIIivYnVMDqMuN8DFPyb3aUn6CiryEKswOmAYsW0Z8Mz85/ibNqXyxdWlm5LU=
+X-Gm-Gg: Acq92OGcRJ30zqZGTAHYvj46k8Q4tfjP4XyyO0KgV3LRaoCfdxktgIenBpiy+qyiAtd
+	PJ1LbkHDJp5YOYAFO7KhzwBvLdZXmselK/MTIHB+1/Tinq9kSHmqi0zB86IfHMcRpSh9244Mt8X
+	1DImEVQMTST/9AToFIpHr17FJET/TaYHuRY4FUoq191CzlIX24UpK2XvzKQTL/1a5CXbb/gldvh
+	L6E+x9ahe3MBIn0l8og7ZYVkJv19yRh/ZKhWeN/iX4cvdatUrn+vghK8s61aQCrlJ2nzhqsYMpz
+	3V3dGQHgovQirus4tXy2WSuRXoNQqmYVrLzENbOjT10PIzSS8WXw0oX140dKkvSjy0XqTHLM+zr
+	moEiznRXU+DOxZDeby/MR0d0KCy9y3CMFA+2MxoHGcTUD4IjmLUgM09D+P6jsFxG91VWjGW6tjw
+	O3U1l9TeMV6tKfpk9DkrO0PLMDyKVnUhAPSKi+yBrQr3hCj2w29pub+u1haoPXX0LLMSGzanI=
+X-Received: by 2002:a05:6122:311d:b0:576:c4b:460a with SMTP id 71dfb90a1353d-59bf29e8769mr6875869e0c.8.1780398507631;
+        Tue, 02 Jun 2026 04:08:27 -0700 (PDT)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5a3e15e30c9sm2818926e0c.16.2026.06.02.04.08.24
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jun 2026 04:08:25 -0700 (PDT)
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-963ebce7076so340038241.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 Jun 2026 04:08:24 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+LZ3CPfKbXJVJCNXowzB79cjKEt0kIaPl8q8fmdHWEoQs+QdSmNwS+fUXfoyLkdjuTSmYQIGC81TKW@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:508b:b0:62f:4387:fcb4 with SMTP id
+ ada2fe7eead31-6c67138855amr5868354137.0.1780398503695; Tue, 02 Jun 2026
+ 04:08:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] rtc: m5441x: add MCF5441x on-chip RTC driver
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Greg Ungerer <gerg@linux-m68k.org>, linux-kernel@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-m68k@lists.linux-m68k.org
 References: <20260602-jmh-upstream-coldfire-rtc-v1-0-1e129a177d2f@yoseli.org>
  <20260602-jmh-upstream-coldfire-rtc-v1-1-1e129a177d2f@yoseli.org>
- <CAMuHMdX=njpXOQu=LZCba0PjHRKbcbpCDMHjat-e+atMtNmSRQ@mail.gmail.com>
-Content-Language: fr-FR, en-US, en-GB
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <CAMuHMdX=njpXOQu=LZCba0PjHRKbcbpCDMHjat-e+atMtNmSRQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: dmFkZTEyo8HM8CQDFsZ8EhXEuKhK8nnqwiOHEjp/onqKeCqua1A2l8xYQiAgMkVkLpTv/OwbTQj65xYBxt9KgmN5a29Vtai70oqnyTQAYIb1oBUzIdQ5dvG4fXoK+9HAbD4hmsf/N7mUylgL8rE71S1zkCumihYx5YnXC/oN7dIdkZOwwMMaxQBjQrkUA8HSlpOWbeS/FCburg5NO5U1X90Aht6uyJ7YHfvA86HTvlE5pBrrzjZzmRXAovOIwpl49ELwKlpEGkS8UmDUX9/CbHNnUpVY4nys6bl6hhXlj8kxUO2C/FTo6PcdyaozYE1YvYmXfez2X9kl0dek3hhSgcuPyCHuI3E+V9XO3gaFg9sKEu9KDK08SJgE53qV+wjaNWiRrMcreBkF/QzhF5QLLjZRyKWSpHiEERqLupMdXDVn1u/i7CR3fxQCINq254Lc8JNhJ1XXKDXThkpTtTA+Ee5WQ7r9GAWwrf5+RilOYOhVaaKSBkKWKft+8bjsNID7LpWt2/YZx04q/KsKrbMcKqBuaL7oGi6NG3kPg3Y9RSuWfGhbQNutcQF8fznk1/VGvpWXPSMioLmKZ2LQnBcrnSUmEnUNHa8cIG18rzrB3bCJUVOMqiqDehDmEFhsM4jnV1wPeBAOyNCfy3KvCs52QEPWz+7PTN5SH1AciKUFTuPlA1FS2w
+ <CAMuHMdX=njpXOQu=LZCba0PjHRKbcbpCDMHjat-e+atMtNmSRQ@mail.gmail.com> <42ab8311-0bd1-4094-aca7-0ca108c3a919@yoseli.org>
+In-Reply-To: <42ab8311-0bd1-4094-aca7-0ca108c3a919@yoseli.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Jun 2026 13:08:10 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUNiUGnjRkhwVGpgHcjTSzoLsFmaPR_TfROsFhDbYqUUw@mail.gmail.com>
+X-Gm-Features: AVHnY4JVCja7EHQPoaeG9BcOIzzhjoN-O0H6mzbdbiubMmzzjv1Hj931kn5hpzs
+Message-ID: <CAMuHMdUNiUGnjRkhwVGpgHcjTSzoLsFmaPR_TfROsFhDbYqUUw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rtc: m5441x: add MCF5441x on-chip RTC driver
+To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Greg Ungerer <gerg@linux-m68k.org>, 
+	linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Geert,
+Hi Jean-Michel,
 
-Le 02/06/2026 à 12:04, Geert Uytterhoeven a écrit :
-> Hi Jean-Michel,
-> 
-> On Tue, 2 Jun 2026 at 10:36, Jean-Michel Hautbois
-> <jeanmichel.hautbois@yoseli.org> wrote:
->> Add an rtc-class driver for the Freescale MCF5441x on-chip "robust" RTC.
->> It provides the time/calendar and alarm, and exposes the 2KB
->> battery-backed standby RAM through the nvmem framework so userspace can
->> preserve data across a main-power loss (the RAM is retained while
->> VSTBY_RTC is supplied).
->>
->> Register and standby-RAM writes go through the RTC_CR[WE] knock
->> sequence; the base-2112 year encoding and register map follow the
->> MCF54418 reference manual. Based on the out-of-tree Freescale 3.0.x
->> rtc-m5441x driver, rewritten for the current RTC and nvmem APIs.
->>
->> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> 
-> Thanks for your patch!
-> 
->> +/*
->> + * The time counters are unstable for an oscillator cycle either side of
->> + * the one-second boundary. RTC_SR[INVAL] flags this; reads during the
->> + * window return 0xffff and writes are nullified. Spin until it clears.
->> + * The window is only a couple of 32kHz cycles (~60us), so bound the
->> + * busy-wait tightly: it runs with the lock held and interrupts off.
->> + * Caller holds p->lock.
->> + */
->> +static int m5441x_rtc_wait_valid(struct m5441x_rtc *p)
->> +{
->> +       unsigned int tries = 10;
->> +
->> +       while (rtc_rd(p, M5441X_RTC_SR) & M5441X_RTC_SR_INVAL) {
->> +               if (!--tries)
->> +                       return -EIO;
->> +               udelay(10);
->> +       }
-> 
-> Please use read_poll_timeout().
+On Tue, 2 Jun 2026 at 13:05, Jean-Michel Hautbois
+<jeanmichel.hautbois@yoseli.org> wrote:
+> Le 02/06/2026 =C3=A0 12:04, Geert Uytterhoeven a =C3=A9crit :
+> > On Tue, 2 Jun 2026 at 10:36, Jean-Michel Hautbois
+> > <jeanmichel.hautbois@yoseli.org> wrote:
+> >> Add an rtc-class driver for the Freescale MCF5441x on-chip "robust" RT=
+C.
+> >> It provides the time/calendar and alarm, and exposes the 2KB
+> >> battery-backed standby RAM through the nvmem framework so userspace ca=
+n
+> >> preserve data across a main-power loss (the RAM is retained while
+> >> VSTBY_RTC is supplied).
+> >>
+> >> Register and standby-RAM writes go through the RTC_CR[WE] knock
+> >> sequence; the base-2112 year encoding and register map follow the
+> >> MCF54418 reference manual. Based on the out-of-tree Freescale 3.0.x
+> >> rtc-m5441x driver, rewritten for the current RTC and nvmem APIs.
+> >>
+> >> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> >
+> > Thanks for your patch!
+> >
+> >> +/*
+> >> + * The time counters are unstable for an oscillator cycle either side=
+ of
+> >> + * the one-second boundary. RTC_SR[INVAL] flags this; reads during th=
+e
+> >> + * window return 0xffff and writes are nullified. Spin until it clear=
+s.
+> >> + * The window is only a couple of 32kHz cycles (~60us), so bound the
+> >> + * busy-wait tightly: it runs with the lock held and interrupts off.
+> >> + * Caller holds p->lock.
+> >> + */
+> >> +static int m5441x_rtc_wait_valid(struct m5441x_rtc *p)
+> >> +{
+> >> +       unsigned int tries =3D 10;
+> >> +
+> >> +       while (rtc_rd(p, M5441X_RTC_SR) & M5441X_RTC_SR_INVAL) {
+> >> +               if (!--tries)
+> >> +                       return -EIO;
+> >> +               udelay(10);
+> >> +       }
+> >
+> > Please use read_poll_timeout().
+>
+> As wait_valid() is called after spin_lock_irqsave() is called, I suppose
+> I should use read_poll_timeout_atomic() ? Because read_poll_timeout()
+> sleeps ?
 
-As wait_valid() is called after spin_lock_irqsave() is called, I suppose 
-I should use read_poll_timeout_atomic() ? Because read_poll_timeout() 
-sleeps ?
+Sorry, I copy and pasted the wrong function name, so you're right.
 
-> 
->> +
->> +       return 0;
->> +}
-> 
->> +static int m5441x_rtc_nvram_read(void *priv, unsigned int offset,
->> +                                void *val, size_t bytes)
->> +{
->> +       struct m5441x_rtc *p = priv;
->> +       u8 *buf = val;
->> +       size_t done;
->> +
->> +       /*
->> +        * In-kernel nvmem_device_read() forwards offset/bytes verbatim, so
->> +        * range-check here rather than trust the caller.
->> +        */
->> +       if (offset >= M5441X_RTC_SRAM_SIZE ||
->> +           bytes > M5441X_RTC_SRAM_SIZE - offset)
->> +               return -EINVAL;
->> +
->> +       /*
->> +        * Process the transfer in chunks, releasing the lock between them, so
->> +        * a full 2KB access does not keep hard interrupts disabled across
->> +        * thousands of slow on-chip MMIO cycles and wreck IRQ latency.
->> +        */
->> +       for (done = 0; done < bytes; done += M5441X_RTC_SRAM_CHUNK) {
->> +               size_t chunk = min_t(size_t, bytes - done, M5441X_RTC_SRAM_CHUNK);
-> 
-> size_t looks like overkill to me.
-> 
->> +               unsigned long flags;
->> +               size_t i;
-> 
-> Likewise
-> 
+Gr{oetje,eeting}s,
 
-Done.
+                        Geert
 
->> +
->> +               spin_lock_irqsave(&p->lock, flags);
-> 
-> scoped_guard(spinlock, &p->lock)?
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-Sure, thanks !
-
-> 
->> +               for (i = 0; i < chunk; i++)
->> +                       buf[done + i] = ioread8(p->base + M5441X_RTC_SRAM_OFFSET +
->> +                                               offset + done + i);
->> +               spin_unlock_irqrestore(&p->lock, flags);
->> +       }
->> +
->> +       return 0;
->> +}
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
