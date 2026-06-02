@@ -1,142 +1,129 @@
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DB73C73E1
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 11:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD5139281B
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 18:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780398510; cv=none; b=ZQOvU5Zteu1WrxDz87vBjhq1o1/51XTLcJI/fIdqecmuIQv/4Dpi0Q+xp5ks4Jmr+l08LGNK2ivxURhjRFWsE3Gk2EH7uJsC/ksxlYv3+4LvsZ5+XP33ZR7BbaTzw3Yl/cyJcpvbE92hK8PKRNcS0U4MIUgm9Xmn4U468Uc3z74=
+	t=1780424872; cv=none; b=ENpbQHU4LaKTfmd/6K/fd4CLzqT2YuajcBHwvimFQVbFXyA2WqDEnu0ZspHsRfUx/OiV4FMbYh7wQ1+Gz5yYvPcfSJbsoupKvkhb1HfMD/WIhOckCEZpGBYFN/u5CdywDjramy06H/3IimRpqINID0gzKtr1q5XNgxzsphls8cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780398510; c=relaxed/simple;
-	bh=w4cVZ+GEEmsXcvgIG+638F4NIv19Md0kqYcXlU7oLSA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=O6cGhEW5dbMyStZfYzucuoege/LQNhHyxbN8q3aQuQX9OqYCx+vsVmS63x42GgPzAUYL1891WhzcvjRQNHt173jSDpf7JDf771zcZw2kFKnbFsmUWeLu3XPkGJ8gQ1wQgqTUPc9LyvCMEkApPQBncK20p834q6wehOJmivE8XkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-59eb57ed4cbso942634e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 Jun 2026 04:08:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780398508; x=1781003308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qmBJp0H5QWVh7p9vKLYuhNsufNBwSQXXDZceAK3VLwQ=;
-        b=MXtJ3hBn9+tL720TgfwlR00qjjehNnxtzxXsXMnAQAZ19kLMqSOKW6y4tGAvzW8q8E
-         hLoOf0f+hEokMAT1Ix/U1yiUxRNRxa2Awrxv/spcBMPUbykorcIIcssHJIOJcSDxokML
-         0aaNENzkSpVhbw2+vbLAFSLsZIVBmEPNlhn6+8cRYzgGr+zh11cCoXvyDZbMg1O/AUrv
-         UGvbUrjqxSBnywTqARjEbzqdotyPhztSVaY7jyoOKs97XbWzL0yqzVgGZpLjvS4Qif0J
-         aXVeY+VUbrr7jfw6kOPCo55Lp0VBllFEAxFdhx5/KtQZjrQLZCJCvLbusi2KAE+rwJQn
-         Abxw==
-X-Forwarded-Encrypted: i=1; AFNElJ9rBXSx42/hnw4KeADprW4D2jre2MNOCovkqM0FZbUZm5DjuQCXi6XjTh7qjSO20QZ2ZUfIVrv9zUGH@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwOeYkuoVn8ctFWAk7/m//hkv+lNt2FPUHSEhcNqN2NIMl3zdu2
-	Pxv1AaDIIivYnVMDqMuN8DFPyb3aUn6CiryEKswOmAYsW0Z8Mz85/ibNqXyxdWlm5LU=
-X-Gm-Gg: Acq92OGcRJ30zqZGTAHYvj46k8Q4tfjP4XyyO0KgV3LRaoCfdxktgIenBpiy+qyiAtd
-	PJ1LbkHDJp5YOYAFO7KhzwBvLdZXmselK/MTIHB+1/Tinq9kSHmqi0zB86IfHMcRpSh9244Mt8X
-	1DImEVQMTST/9AToFIpHr17FJET/TaYHuRY4FUoq191CzlIX24UpK2XvzKQTL/1a5CXbb/gldvh
-	L6E+x9ahe3MBIn0l8og7ZYVkJv19yRh/ZKhWeN/iX4cvdatUrn+vghK8s61aQCrlJ2nzhqsYMpz
-	3V3dGQHgovQirus4tXy2WSuRXoNQqmYVrLzENbOjT10PIzSS8WXw0oX140dKkvSjy0XqTHLM+zr
-	moEiznRXU+DOxZDeby/MR0d0KCy9y3CMFA+2MxoHGcTUD4IjmLUgM09D+P6jsFxG91VWjGW6tjw
-	O3U1l9TeMV6tKfpk9DkrO0PLMDyKVnUhAPSKi+yBrQr3hCj2w29pub+u1haoPXX0LLMSGzanI=
-X-Received: by 2002:a05:6122:311d:b0:576:c4b:460a with SMTP id 71dfb90a1353d-59bf29e8769mr6875869e0c.8.1780398507631;
-        Tue, 02 Jun 2026 04:08:27 -0700 (PDT)
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com. [209.85.222.41])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5a3e15e30c9sm2818926e0c.16.2026.06.02.04.08.24
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jun 2026 04:08:25 -0700 (PDT)
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-963ebce7076so340038241.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 02 Jun 2026 04:08:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ+LZ3CPfKbXJVJCNXowzB79cjKEt0kIaPl8q8fmdHWEoQs+QdSmNwS+fUXfoyLkdjuTSmYQIGC81TKW@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:508b:b0:62f:4387:fcb4 with SMTP id
- ada2fe7eead31-6c67138855amr5868354137.0.1780398503695; Tue, 02 Jun 2026
- 04:08:23 -0700 (PDT)
+	s=arc-20240116; t=1780424872; c=relaxed/simple;
+	bh=JAKACGblmVp0qOtTpZKUe7ENVsK0mSqAwKq+52Y/t/s=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DizhrsYoZenK0/fXHfM8ORvuZE9w46NMOgUOwpza8T69B2iwfk/6GWz8JyWwMhuhW81RX5qQUCWDckIH70XPJMkvRJu8XJWdLdbWxtFXPPk+CpT6rHHBKJttq3XfZrz3TlX4FOqhP0EVAT+EykNyhrvxUcdA9G0s3tgZZFDXSe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LQzMXtkl; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LQzMXtkl"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1780424870; x=1811960870;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=JAKACGblmVp0qOtTpZKUe7ENVsK0mSqAwKq+52Y/t/s=;
+  b=LQzMXtklDSr3IbECYCKXkYlP6w4QEnffPHQiaXY4uAnTWHbADWjFkfhQ
+   zaTHLkE9ZEwsTTSIxWtoiqrYT4GT/c24YDUdV/9X9dzYz21kiNBbucXFh
+   xnRMyipFBDTKtVlVPvGmZ7V/itbzR0E3H85vm1AZ6h1W6NB0VNYMBUxtm
+   MHjfD/ncRNzo0DQKIGiMDRyOaWLg/fjc7YBbYPv3GV6mYvDbl8Ybbt981
+   Qoqi+EBnrRC2hv9dZcoK2TpAQZ79/hqUas0DwiHAz3IPSIkIU+8AKAIOc
+   mEArmrvEJndPolr3a3IUKRx4lvJEoI87EuAlTXz6rZpunbo0EZr/SU/pz
+   w==;
+X-CSE-ConnectionGUID: BS14nxtXRcSJGQSkF+GL5A==
+X-CSE-MsgGUID: bTWcvam4S1C4Y8z9ruFPBw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11805"; a="81348607"
+X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
+   d="scan'208";a="81348607"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 11:27:49 -0700
+X-CSE-ConnectionGUID: X7dJPcHIRBuGkxCgZ6zc6A==
+X-CSE-MsgGUID: f3PWSRppTeGC+zCSm+pprg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
+   d="scan'208";a="237634600"
+Received: from mkosciow-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.229])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 11:27:46 -0700
+Date: Tue, 2 Jun 2026 21:27:43 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Angelo Dureghello <adureghello@baylibre.com>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	David Lechner <dlechner@baylibre.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>,
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v2 11/11] iio: dac: add mcf54415 DAC
+Message-ID: <ah8gn3g3_-cY1kbQ@ashevche-desk.local>
+References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
+ <20260513-wip-stmark2-dac-v2-11-fcdae50cf51a@baylibre.com>
+ <agTe7vZ94DnmD4Ed@ashevche-desk.local>
+ <CALSJ-wBbjwrhTEpfKm-JHox7-E1YRQ=kTj1JN+KyiucTTu7c3A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260602-jmh-upstream-coldfire-rtc-v1-0-1e129a177d2f@yoseli.org>
- <20260602-jmh-upstream-coldfire-rtc-v1-1-1e129a177d2f@yoseli.org>
- <CAMuHMdX=njpXOQu=LZCba0PjHRKbcbpCDMHjat-e+atMtNmSRQ@mail.gmail.com> <42ab8311-0bd1-4094-aca7-0ca108c3a919@yoseli.org>
-In-Reply-To: <42ab8311-0bd1-4094-aca7-0ca108c3a919@yoseli.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 2 Jun 2026 13:08:10 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUNiUGnjRkhwVGpgHcjTSzoLsFmaPR_TfROsFhDbYqUUw@mail.gmail.com>
-X-Gm-Features: AVHnY4JVCja7EHQPoaeG9BcOIzzhjoN-O0H6mzbdbiubMmzzjv1Hj931kn5hpzs
-Message-ID: <CAMuHMdUNiUGnjRkhwVGpgHcjTSzoLsFmaPR_TfROsFhDbYqUUw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rtc: m5441x: add MCF5441x on-chip RTC driver
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Greg Ungerer <gerg@linux-m68k.org>, 
-	linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALSJ-wBbjwrhTEpfKm-JHox7-E1YRQ=kTj1JN+KyiucTTu7c3A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-Hi Jean-Michel,
+On Thu, May 21, 2026 at 05:14:07AM -0700, Angelo Dureghello wrote:
+> On Wed, May 13, 2026 at 11:28:30PM +0300, Andy Shevchenko wrote:
+> > On Wed, May 13, 2026 at 11:14:35AM +0200, Angelo Dureghello wrote:
 
-On Tue, 2 Jun 2026 at 13:05, Jean-Michel Hautbois
-<jeanmichel.hautbois@yoseli.org> wrote:
-> Le 02/06/2026 =C3=A0 12:04, Geert Uytterhoeven a =C3=A9crit :
-> > On Tue, 2 Jun 2026 at 10:36, Jean-Michel Hautbois
-> > <jeanmichel.hautbois@yoseli.org> wrote:
-> >> Add an rtc-class driver for the Freescale MCF5441x on-chip "robust" RT=
-C.
-> >> It provides the time/calendar and alarm, and exposes the 2KB
-> >> battery-backed standby RAM through the nvmem framework so userspace ca=
-n
-> >> preserve data across a main-power loss (the RAM is retained while
-> >> VSTBY_RTC is supplied).
-> >>
-> >> Register and standby-RAM writes go through the RTC_CR[WE] knock
-> >> sequence; the base-2112 year encoding and register map follow the
-> >> MCF54418 reference manual. Based on the out-of-tree Freescale 3.0.x
-> >> rtc-m5441x driver, rewritten for the current RTC and nvmem APIs.
-> >>
-> >> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+...
+
+> > > +struct mcf54415_dac {
+> > > +	struct clk *clk;
+> > > +	struct regmap *map;
 > >
-> > Thanks for your patch!
+> > I believe that regmap pointer is used more often, can you check with
+> > bloat-o-meter that swapping these two (by the order) gives any benefit in
+> > object size?
 > >
-> >> +/*
-> >> + * The time counters are unstable for an oscillator cycle either side=
- of
-> >> + * the one-second boundary. RTC_SR[INVAL] flags this; reads during th=
-e
-> >> + * window return 0xffff and writes are nullified. Spin until it clear=
-s.
-> >> + * The window is only a couple of 32kHz cycles (~60us), so bound the
-> >> + * busy-wait tightly: it runs with the lock held and interrupts off.
-> >> + * Caller holds p->lock.
-> >> + */
-> >> +static int m5441x_rtc_wait_valid(struct m5441x_rtc *p)
-> >> +{
-> >> +       unsigned int tries =3D 10;
-> >> +
-> >> +       while (rtc_rd(p, M5441X_RTC_SR) & M5441X_RTC_SR_INVAL) {
-> >> +               if (!--tries)
-> >> +                       return -EIO;
-> >> +               udelay(10);
-> >> +       }
+> 
+> checking size in ColdFire arch with last kernel.org gcc had no benefit,
+> anyway put regmap before
+
+Thanks for checking.
+
+> > > +};
+
+...
+
+> > > +		return dev_err_probe(dev, PTR_ERR(regs),
+> > > +				     "failed to get io regs\n");
 > >
-> > Please use read_poll_timeout().
->
-> As wait_valid() is called after spin_lock_irqsave() is called, I suppose
-> I should use read_poll_timeout_atomic() ? Because read_poll_timeout()
-> sleeps ?
+> > One line.
+> 
+> i decided to stay inside 80 in all the file, is it ok ?
 
-Sorry, I copy and pasted the wrong function name, so you're right.
+It's fine, but for trailing string literals like this the limit was lifted more
+than ten years ago. I leave it to the maintainer.
 
-Gr{oetje,eeting}s,
+...
 
-                        Geert
+> > > +		return dev_err_probe(dev, PTR_ERR(info->clk),
+> > > +				     "failed getting clock\n");
+> >
+> > Also can be a single line, but this one a bit longer than above, gives
+> > 88 characters.
+> 
+> same as above
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Ditto.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
