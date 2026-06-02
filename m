@@ -1,41 +1,37 @@
-Received: from mslow3.mail.gandi.net (mslow3.mail.gandi.net [217.70.178.249])
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E673C9899
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 09:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA3F387359
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 09:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780391050; cv=none; b=UPFDZgQ/0B2zS1ZqHxrjzmEC1jE1KlG3SlPASWQzdhvZ2kh7UCf6Bz+12u7QZRkEA12y7eiuUBpNIsbbTjuzf1TJ4tyWxM9cjWXkswKjRvQBDqJYW1JkkmHOnTKQfebxcuRMrzsMzgKPoVlTcwXJF2j/I19tQE34et8vxOKsydI=
+	t=1780392125; cv=none; b=irasvETH4Xk8rHmRhUxrRSd7cmnrNJgtL5ffEZstTSUknB4SREWvPaTISkJmC9ofRnCkn8WtpO6CLV+JEEescGMwAXYEgDoSTw40JtgU+Sa2jnw9lRKzPjIlvDyYOwvWpPPNgcremqaPqEfd+P+KBF/J0vfbz/bygraYT+6m5n4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780391050; c=relaxed/simple;
-	bh=TmwNvRU5JGmuk7QhxlzVsKnPW8fkOD3xhGVhBTM2hrQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OZI5Xx+4hrfMhVRJpPA2trwvff/KLeJGB7UUiyviKe1kOvtgfbWbfUfMpuKmq1CtsfDXdPx6OHYxKUJcqDdIQtG4N1b08P3mWYEGGmLtJ3LS85qNzBfmeoZdu3zlnjSXfBVPmw4P/W/Qq9HYIJ5zMVSGmMR3+lyeLsOhY+nQRK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=EI0Za1s5; arc=none smtp.client-ip=217.70.178.249
+	s=arc-20240116; t=1780392125; c=relaxed/simple;
+	bh=e1GXYkTT+pNj3iFhoK0cj3JzERHnPLixrXmlDzP0l6U=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=aKww7pakQXGvVcAH7wTHVbuxnIKIl/rewPWek/r7vG4F0ltZvraOhnWXKAzoU9+yyMlaH7XbFGQUZsbEPeZwhOMeT0LlM+AJzShhrx8Hu6357uYoYK+akfVuXRybwhy66Meblv4eTJrcgjNEy8oJaSwke5ATB0y02fYBns2cfS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=H10NT0uq; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="EI0Za1s5"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	by mslow3.mail.gandi.net (Postfix) with ESMTP id 6D7A7583078
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 08:36:45 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BACF53E9F5;
-	Tue,  2 Jun 2026 08:36:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="H10NT0uq"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 127D53EBB2;
+	Tue,  2 Jun 2026 09:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1780389397;
+	t=1780392116;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2StCb0XxuWRTxii1OsJ7SwSKkwi3VYbBfMK9IvuOBs8=;
-	b=EI0Za1s539XXcbzJBV91lODyBEe427IGklIpvTyJBmiT6Xpuq8gGFmwRbNaQpFmN30t64E
-	l0WROorbefEcDtSLiZmpBz1a0HY8pddHrkFDuZCgci7xdXJSqFRZVyrQaWngumJbD3yquc
-	h748jn7nxk2gtxhqC7rpH9aYnYY4EKYEG1rtFwTlEdx2JrKQTFLzBueHyYEjZf7MRNWxrI
-	jdKNiY2y+yveyJgeVva+HKSaIqH9bmCI7b3AHXQt8O0D/dmkRbbHFlpFVEsj3cCimat49b
-	QtewVgfxXfM/2QQaz16k+0SFitKl4MuXpWLEIzJftlR5WEDkn3kY5le9fS+Ujg==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=U5SXVWru94nUnp1CxWlF/p9xFRwMGpNSwle5C6hnRNk=;
+	b=H10NT0uqx8sfBkd5XcWHFX4tW7yPnSfwPF3O1cDEM9aQGruVe28BmKsmnbXF4KuYu0yLLr
+	ZqWNcscyeo9lEnNYXNrW+qc7ls1FzQs50OwhP4qWJfWJ+YftrXQeknUiP9CU2o7oWZRcbq
+	Gp1nuAI/B+gnaLhsZhxB954vt/BRvDZ1BZAGqYJxtZL+Ogvgb8BWxu/ANFpOR/iHzzY9mR
+	4aH3LKyagd50OwHshh/bK+WzTr69+dR5crH7Fry3GLsgIUyMv6ngYyB0bDmvst1aiJaChr
+	sL0ZsHJ7oWgn9y+eFPlaVd4lz32vDT98WcBZbmYJxhXOEm3PkFrnFFujT/N01Q==
 From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Tue, 02 Jun 2026 10:36:18 +0200
-Subject: [PATCH 2/2] m68k: coldfire/m5441x: register the on-chip RTC
+Subject: [PATCH 0/3] Coldfire m5441x: add RCM power-on reason driver
+Date: Tue, 02 Jun 2026 11:21:20 +0200
+Message-Id: <20260602-coldfire-rcm-power-on-reason-v1-0-fbc3eab0c016@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -44,85 +40,67 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260602-jmh-upstream-coldfire-rtc-v1-2-1e129a177d2f@yoseli.org>
-References: <20260602-jmh-upstream-coldfire-rtc-v1-0-1e129a177d2f@yoseli.org>
-In-Reply-To: <20260602-jmh-upstream-coldfire-rtc-v1-0-1e129a177d2f@yoseli.org>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Greg Ungerer <gerg@linux-m68k.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, 
+X-B4-Tracking: v=1; b=H4sIAJGgHmoC/yXMQQrCQAyF4auUrA3UqVbxKuJizGRqRGdKYlUov
+ btR3+bxb74ZjFXY4NDMoPwUk1o81qsG6BLLwCjJG0Ib+nYb9kj1lrIoo9Idx/pixVpQOZrfLoZ
+ uEyknHzgxKmd5//jj6d82na9Mj68Jy/IBVLFtToAAAAA=
+X-Change-ID: 20260528-coldfire-rcm-power-on-reason-7a234acfdddd
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Sebastian Reichel <sre@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-pm@vger.kernel.org, 
  Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1780389394; l=1672;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1780392115; l=1785;
  i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=TmwNvRU5JGmuk7QhxlzVsKnPW8fkOD3xhGVhBTM2hrQ=;
- b=+ZMktkeaBEl4mUAlWw8z2OCWI9g1nhRUCzhSy/1Bg1zdW3dXlHeA+j9FtM6/IradO5loOavKJ
- FHYu7r7xqywCYq8uqeZ9N2l5pJpN0PBv8e+Ha40GkRs1C5YG5OVGCz6
+ bh=e1GXYkTT+pNj3iFhoK0cj3JzERHnPLixrXmlDzP0l6U=;
+ b=eJEvwhIBLJINlRUreB9w86XTeg1Y4fMFCCdupTXDcuaxZuqJsPsPoqPp7iNSU+I1UxABBR8Az
+ 4JNEZVPcc9SB0Sa+jeNXQRWsPd/X2UYlzqWZ3QH5FDjIoTBeWEfhGfy
 X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
  pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
-X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: dmFkZTEsnfONNs296jSZuB3SroO9mv8NDw0zsJVF00UexSuwOsMW85G0//OCxbGa+0b/Pc7F4frE2obwOtkyy7cUUtBCoxR+DtZRV3KYgq2nWJ61fO6JvHVMcGwfQQlPQ61H1g2ybjvkwfHtAbn4BFLjC2BgSkmClKA1Rq4RPH2qUXuAxpvXhVzQ8X0e9oPyFovYzOvj/+M/CUiboM+bPWlKwEgSHrSG5ifeFVfOSPTUEBE7yKrZPV62zERrnZUgX1kb3rWcYUP1GNs/AC9rz/7bUsBd0iZyWWDYLCqLCx2e9wi6/iDBJjPZnhyGnVKh3l/A3uf7s4roGFRW068pQYd2jgHbs26YItc8h1n4gzSRAKtxinCFFaR8slG+4ei8dlxyz6M28mR8zso+Mmi3thRxX/IbnFVUbVjfWHl0QezXlJsCM207nqPiIRo7aqaV7Mzm963Z4rwTeUeBMIxbYPQRAXNedsGxWDRTvSY7VEEwtJ3fMDwkPmNxKvEZOWkIQsJAEBm35ybfUJbLzC4qYSMwqlGclONU2XJjM58FshqrmRPv0YIVz2QlWUVoqwsduYkVKL+I3yOwvToWYF8wvaOy/rqM/NFhg+nIIrLVvGNb24Wp+BdA7se2Ss5yXGDgttDm0OWm4yTJHwM+enc2NiwGVMYI0tdJdflMGCFgvzU3jq33CA
+X-GND-Cause: dmFkZTERJZFZG6+u01DQBF/5oB/s72cTyoFPjAkymOgoT3NvTUx8ajzasNraN7wtgfqvI3erxTM2Qrgx0Z1Ra3y7tSaVnMoykRU+PW6XxhrR0+TLtTyhk15VOxJ/96svHu73Dqke3IMgvs0NuwL1mp67Bpb7K1Vf0yGqLQkaGMY2XdLo9bJVjxXefIhLRwELgNzDxtTaemux2ACLL5huo72fW6Vv5KNyoHAy+uk7zS0/iPhjLPZ1nUeajnqFlPxzoMPxTf68K8gJ7Alsoa/XIyDG74WU+alICr/KO7Mrx2CHGj996iE46BB6UJuFG7bGkAuXDWswLkyD9+rwmq7dfQZ2yn+1YZ3EDWSBiiyVfldmcXG7G6sUtHJTI67zaG+SmID4vsRmKMKj/crn3sVgMbyciq8kVm387wqt/J05An6nReaMWJnidtaMtfIRFy+ECyh3VbLeJwnutttDzDp7QEnXghSCovVaOoRQ/vWNoe/baKgiAqS7+D131xLjxwDAxgRf7Frx2gBeemLbCI6KpM3+tdBRA1my+yhhfUgF1HSIQOt2ozXfo6+UrE7TbbKHvYBlwPaE9VRnrpQMJa57SpDi0yoz4R9gICNlKVJMlHAEaT618G8xYW+ePWbc7MWtpzJHfYG6G2TtS8IFHdGFoJqYHsPCgXrgeybygFQqGNWrBs4/DQ
+X-GND-State: clean
 
-Register the MCF5441x on-chip RTC platform device from the SoC code so
-every MCF5441x board gets the rtc-m5441x driver (time/calendar plus the
-battery-backed standby RAM via nvmem) without a per-board file.
+This series adds a power_on_reason driver for the Freescale ColdFire
+MCF5441x Reset Controller Module.
+
+The MCF5441x has six documented sources of reset (power-on, external
+pin, software, PLL loss-of-clock, PLL loss-of-lock and core watchdog
+timeout). They are latched in the Reset Status Register (RSR) at
+0xec090001. The new driver decodes that register once at probe time
+and exposes the result through the power_on_reason sysfs ABI.
+
+Patch 1 adds the missing RSR bit definitions. Patch 2 is the driver.
+Patch 3 registers the platform device at the SoC level so every
+MCF5441x board picks the driver up automatically.
+
+The driver is scoped to MCF5441x. Other ColdFire variants document an
+RSR at different addresses with different bit layouts; covering them
+is left for follow-up patches by anyone with the relevant boards.
+
+Tested on a MCF5441x board: after sysrq-b, the sysfs attribute
+reports "software reset".
 
 Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- arch/m68k/coldfire/m5441x.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Jean-Michel Hautbois (3):
+      m68k: coldfire/5441x: define RSR cause bits
+      power: reset: add MCF5441x RCM power-on reason driver
+      m68k: coldfire/5441x: register mcf-rcm-reset platform device
 
-diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-index 7a25cfc7ac07..b79aebdfd567 100644
---- a/arch/m68k/coldfire/m5441x.c
-+++ b/arch/m68k/coldfire/m5441x.c
-@@ -10,6 +10,7 @@
- #include <linux/param.h>
- #include <linux/init.h>
- #include <linux/io.h>
-+#include <linux/platform_device.h>
- #include <linux/clk.h>
- #include <asm/machdep.h>
- #include <asm/coldfire.h>
-@@ -239,6 +240,34 @@ static void __init m5441x_fec_init(void)
- 	__raw_writeb(0x03, MCFGPIO_PAR_FEC);
- }
- 
-+/*
-+ * On-chip "robust" RTC. Exposes the time/calendar and the 2KB
-+ * battery-backed standby RAM (rtc-m5441x driver).
-+ */
-+static struct resource m5441x_rtc_resource[] = {
-+	{
-+		.start	= MCFRTC_BASE,
-+		.end	= MCFRTC_BASE + MCFRTC_SIZE - 1,
-+		.flags	= IORESOURCE_MEM,
-+	},
-+	{
-+		.start	= MCF_IRQ_RTC,
-+		.end	= MCF_IRQ_RTC,
-+		.flags	= IORESOURCE_IRQ,
-+	},
-+};
-+
-+static int __init m5441x_rtc_init(void)
-+{
-+	struct platform_device *pdev;
-+
-+	pdev = platform_device_register_simple("rtc-m5441x", -1,
-+					       m5441x_rtc_resource,
-+					       ARRAY_SIZE(m5441x_rtc_resource));
-+	return PTR_ERR_OR_ZERO(pdev);
-+}
-+arch_initcall(m5441x_rtc_init);
-+
- void __init config_BSP(char *commandp, int size)
- {
- 	m5441x_clk_init();
+ MAINTAINERS                         |   6 ++
+ arch/m68k/coldfire/m5441x.c         |  25 +++++++++
+ arch/m68k/include/asm/m5441xsim.h   |   7 +++
+ drivers/power/reset/Kconfig         |  12 ++++
+ drivers/power/reset/Makefile        |   1 +
+ drivers/power/reset/mcf-rcm-reset.c | 109 ++++++++++++++++++++++++++++++++++++
+ 6 files changed, 160 insertions(+)
+---
+base-commit: eb3f4b7426cfd2b79d65b7d37155480b32259a11
+change-id: 20260528-coldfire-rcm-power-on-reason-7a234acfdddd
 
--- 
-2.39.5
+Best regards,
+--  
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
