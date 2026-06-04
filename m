@@ -1,129 +1,85 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD5139281B
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  2 Jun 2026 18:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C58E3DD86F
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Jun 2026 07:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780424872; cv=none; b=ENpbQHU4LaKTfmd/6K/fd4CLzqT2YuajcBHwvimFQVbFXyA2WqDEnu0ZspHsRfUx/OiV4FMbYh7wQ1+Gz5yYvPcfSJbsoupKvkhb1HfMD/WIhOckCEZpGBYFN/u5CdywDjramy06H/3IimRpqINID0gzKtr1q5XNgxzsphls8cs=
+	t=1780559681; cv=none; b=p7ruJ4YtWgG8MDnS4pC9edsObbtkb8Ko3iwnoP1btxSNKS33NqZ/WdMllqELnk7Ude5lIdisQCBcspkBpIeeddZWeV3uzDdwamzt3Hnmtp5HIX/V1U8oTgiyHhYcT/PjIOGz2cTwbcqLqOhbGov1RNGG/mX/0yVoSJ2kOZh/rL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780424872; c=relaxed/simple;
-	bh=JAKACGblmVp0qOtTpZKUe7ENVsK0mSqAwKq+52Y/t/s=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DizhrsYoZenK0/fXHfM8ORvuZE9w46NMOgUOwpza8T69B2iwfk/6GWz8JyWwMhuhW81RX5qQUCWDckIH70XPJMkvRJu8XJWdLdbWxtFXPPk+CpT6rHHBKJttq3XfZrz3TlX4FOqhP0EVAT+EykNyhrvxUcdA9G0s3tgZZFDXSe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LQzMXtkl; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LQzMXtkl"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780424870; x=1811960870;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=JAKACGblmVp0qOtTpZKUe7ENVsK0mSqAwKq+52Y/t/s=;
-  b=LQzMXtklDSr3IbECYCKXkYlP6w4QEnffPHQiaXY4uAnTWHbADWjFkfhQ
-   zaTHLkE9ZEwsTTSIxWtoiqrYT4GT/c24YDUdV/9X9dzYz21kiNBbucXFh
-   xnRMyipFBDTKtVlVPvGmZ7V/itbzR0E3H85vm1AZ6h1W6NB0VNYMBUxtm
-   MHjfD/ncRNzo0DQKIGiMDRyOaWLg/fjc7YBbYPv3GV6mYvDbl8Ybbt981
-   Qoqi+EBnrRC2hv9dZcoK2TpAQZ79/hqUas0DwiHAz3IPSIkIU+8AKAIOc
-   mEArmrvEJndPolr3a3IUKRx4lvJEoI87EuAlTXz6rZpunbo0EZr/SU/pz
-   w==;
-X-CSE-ConnectionGUID: BS14nxtXRcSJGQSkF+GL5A==
-X-CSE-MsgGUID: bTWcvam4S1C4Y8z9ruFPBw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11805"; a="81348607"
-X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
-   d="scan'208";a="81348607"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 11:27:49 -0700
-X-CSE-ConnectionGUID: X7dJPcHIRBuGkxCgZ6zc6A==
-X-CSE-MsgGUID: f3PWSRppTeGC+zCSm+pprg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,183,1774335600"; 
-   d="scan'208";a="237634600"
-Received: from mkosciow-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.229])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jun 2026 11:27:46 -0700
-Date: Tue, 2 Jun 2026 21:27:43 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Angelo Dureghello <adureghello@baylibre.com>,
-	Greg Ungerer <gerg@linux-m68k.org>,
+	s=arc-20240116; t=1780559681; c=relaxed/simple;
+	bh=vzfJ0HkMnzphBA/Q+krZgViH67qneR/YM3XK3ioMtg8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KVPCRIBtlbFaETRg75zz0YdClx79rIdHh4tXwydgvaOZ+R+bojQivy+STOKUBia/SyJNcWKg4DjrEmf9IvmGU3HOrOAe0jHTE/CrnTqltJeeMOp1I70ZRs1V9p7AdxEyJDnKkAKGGzI55JTBeaBqQ/onxrFO64R1WDVcnLyPOzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id AF74C6014B;
+	Thu,  4 Jun 2026 07:54:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5381F00898;
+	Thu,  4 Jun 2026 07:54:37 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Greg Ungerer <gerg@linux-m68k.org>,
+	Heiko Stuebner <heiko@sntech.de>
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
 	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Steven King <sfking@fdwdc.com>, Arnd Bergmann <arnd@arndb.de>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	David Lechner <dlechner@baylibre.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Andy Shevchenko <andy@kernel.org>, Greg Ungerer <gerg@uclinux.org>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2 11/11] iio: dac: add mcf54415 DAC
-Message-ID: <ah8gn3g3_-cY1kbQ@ashevche-desk.local>
-References: <20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com>
- <20260513-wip-stmark2-dac-v2-11-fcdae50cf51a@baylibre.com>
- <agTe7vZ94DnmD4Ed@ashevche-desk.local>
- <CALSJ-wBbjwrhTEpfKm-JHox7-E1YRQ=kTj1JN+KyiucTTu7c3A@mail.gmail.com>
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] m68k: hash: Use lower_16_bits() helper
+Date: Thu,  4 Jun 2026 09:54:23 +0200
+Message-ID: <b55e9bd0532c0cad519809c86e0a8400060d75a1.1780559561.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALSJ-wBbjwrhTEpfKm-JHox7-E1YRQ=kTj1JN+KyiucTTu7c3A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 21, 2026 at 05:14:07AM -0700, Angelo Dureghello wrote:
-> On Wed, May 13, 2026 at 11:28:30PM +0300, Andy Shevchenko wrote:
-> > On Wed, May 13, 2026 at 11:14:35AM +0200, Angelo Dureghello wrote:
+When building for m68k with CONFIG_M68000=y and C=1:
 
-...
+    drivers/clk/rockchip/clk-rk3528.c: note: in included file (through include/linux/hash.h, include/linux/slab.h):
+    arch/m68k/include/asm/hash.h:57:24: warning: cast truncates bits from constant value (18720 becomes 8720)
+    arch/m68k/include/asm/hash.h:57:24: warning: cast truncates bits from constant value (1e8e8 becomes e8e8)
 
-> > > +struct mcf54415_dac {
-> > > +	struct clk *clk;
-> > > +	struct regmap *map;
-> >
-> > I believe that regmap pointer is used more often, can you check with
-> > bloat-o-meter that swapping these two (by the order) gives any benefit in
-> > object size?
-> >
-> 
-> checking size in ColdFire arch with last kernel.org gcc had no benefit,
-> anyway put regmap before
+Sparse does not realize the truncation is intentional.
+Make this explicit by using the lower_16_bits() helper instead, which
+also masks the unwanted bits.
 
-Thanks for checking.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202605191434.PQkj2Rki-lkp@intel.com/
+Reported-by: Heiko Stuebner <heiko@sntech.de>
+Closes: https://lore.kernel.org/20260603213726.1025094-1-heiko@sntech.de/
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+No change in generated code.
 
-> > > +};
+ arch/m68k/include/asm/hash.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-...
-
-> > > +		return dev_err_probe(dev, PTR_ERR(regs),
-> > > +				     "failed to get io regs\n");
-> >
-> > One line.
-> 
-> i decided to stay inside 80 in all the file, is it ok ?
-
-It's fine, but for trailing string literals like this the limit was lifted more
-than ten years ago. I leave it to the maintainer.
-
-...
-
-> > > +		return dev_err_probe(dev, PTR_ERR(info->clk),
-> > > +				     "failed getting clock\n");
-> >
-> > Also can be a single line, but this one a bit longer than above, gives
-> > 88 characters.
-> 
-> same as above
-
-Ditto.
-
+diff --git a/arch/m68k/include/asm/hash.h b/arch/m68k/include/asm/hash.h
+index 6d0d0c893f16dd49..6dadf493706632f5 100644
+--- a/arch/m68k/include/asm/hash.h
++++ b/arch/m68k/include/asm/hash.h
+@@ -2,6 +2,8 @@
+ #ifndef _ASM_HASH_H
+ #define _ASM_HASH_H
+ 
++#include <linux/wordpart.h>
++
+ /*
+  * If CONFIG_M68000=y (original mc68000/010), this file is #included
+  * to work around the lack of a MULU.L instruction.
+@@ -54,7 +56,7 @@ static inline u32 __attribute_const__ __hash_32(u32 x)
+ 	: "=&d,d" (a), "=&r,r" (b)
+ 	: "r,roi?" (x));	/* a+b = x*0x8647 */
+ 
+-	return ((u16)(x*0x61c8) << 16) + a + b;
++	return (lower_16_bits(x * 0x61c8) << 16) + a + b;
+ }
+ 
+ #endif	/* _ASM_HASH_H */
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0
 
