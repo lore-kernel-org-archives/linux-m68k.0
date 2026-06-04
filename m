@@ -1,305 +1,263 @@
-Received: from sender4-op-o11.zoho.com (sender4-op-o11.zoho.com [136.143.188.11])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF86F3B3C05
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Jun 2026 17:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780592518; cv=pass; b=n0QshzVxf71bjV0GbII+CL0uPZ9pFzig3zQiZFQiv3h39IqKZCR5R8yW0ohFSVF9at0XRTil/XtWZxRsCfQ5Bh6CZIqXfUgVk+RBg33SJEirda97IEZ2dzYf+V5fMabogkQzDqLlSmahbI7mOqAERTTrjg4BJYa+qGrxKKCM5zI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780592518; c=relaxed/simple;
-	bh=ulw4bYxl7A4dnEUGReRqHL4Dx19seTlEFvgiUAX9nhY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LHobhYlu1baWIKQ5Pih+Rar9CXkjwnTWyRfLiSRNvHetMh3hu90GaVf04f5qFCMCW74RCrfh+JUSMtjy8uoCznXOC5+8HTSHx/RiIogUGzaeGVT8pBKOKiNODbOSkTMS+yNGd552DX1d1eFl8hQwF52SxKZmxKfj/vliqu64lo4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=sebastian.reichel@collabora.com header.b=BuAIj3rR; arc=pass smtp.client-ip=136.143.188.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ECB2EEE60
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  4 Jun 2026 22:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780613052; cv=none; b=iII4/gkyGIpMRGoilLKa5mehFCaXgtDdw7vYprOReDtFDVDZrh8lT2WnCATy5NW/VteohY9cT3eEkMie0+y8FjaTt6xb/TD61xexG/exIocEzYvzvbzhtQ2CxJCC7chjuSg4lwxT1SB81OB9E0vSuRXk4RhMMEPu93dPnMg6oOk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780613052; c=relaxed/simple;
+	bh=8yG3hmJeXfhOki6iEgnszcBPwjW87nMiZVym7d7NkmE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QGUu6sLIQoS3odtRBpg4Eeum8TSI150VYN8189VW+nVJ1fEYNbRAUHkleEEUzmFaqaTEhggZRICnQEKPkDdswBTZR0xpDTzPTWQgCrLAIGpIZm6UxxmhRXnyOI08S3tvbQuo2kWcMM2U87E2NMGTFOYHbK88U5/tAX95p0vl8sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=bKVkdvyY; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=collabora.com header.i=sebastian.reichel@collabora.com header.b="BuAIj3rR"
-ARC-Seal: i=1; a=rsa-sha256; t=1780592506; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=lUhS9b/Ur/EfEu7aC60bEkCAQ1b0pLqUYQf3OSGM+ASx0Dlz7MkmpteDgOI+pxSk/2aZFknRfZiUzVDiG++66Sv014vn2HWngYVqR/LOCkIrIy//A4AsxtPZL5IzTtad2oZsnAXAPbEZhY0WZanyxf7JPuARR3CAU8TeQg9RpAE=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1780592506; h=Content-Type:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=+0J34Rp7ODzpOZH+ghPY3PieFCy8fxn1AB+uMTKMrIA=; 
-	b=NpffucHUPuf0RTloBGP8mptYighx9n2JrkejNuWx2kI4yDH3PBHBA4jQSn056nZSARDM2YK4szajqgKKnHwfJIhRiu+SrWEjSUV0LwTKi8wyalXCUf6LAKhx5uVKFzuIAP1qFLhuJTlucZAuOxrdLcvAqOKk/Ww6jss7NNefODY=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=collabora.com;
-	spf=pass  smtp.mailfrom=sebastian.reichel@collabora.com;
-	dmarc=pass header.from=<sebastian.reichel@collabora.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1780592506;
-	s=zohomail; d=collabora.com; i=sebastian.reichel@collabora.com;
-	h=Date:Date:From:From:To:To:Cc:Cc:Subject:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To:Message-Id:Reply-To;
-	bh=+0J34Rp7ODzpOZH+ghPY3PieFCy8fxn1AB+uMTKMrIA=;
-	b=BuAIj3rRip8HOuRyFIpmMbfrHsk9Z80m4bT/ZGF26/z+1ikiS5fO0y5wO9F3rrdb
-	ZExk6HAoAmdvZHoKWDWRPtUO7B3Y/k594kJ9JzF5x6TCCK9IK/UwXvrpf04BIW6Adxc
-	f3zQbPd5k82kh3WvcS1R/daY1YCAQKusk3Et1ULk=
-Received: by mx.zohomail.com with SMTPS id 1780592503928741.7148016284211;
-	Thu, 4 Jun 2026 10:01:43 -0700 (PDT)
-Received: by venus (Postfix, from userid 1000)
-	id C90B6181D80; Thu, 04 Jun 2026 19:01:40 +0200 (CEST)
-Date: Thu, 4 Jun 2026 19:01:40 +0200
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 2/3] power: reset: add MCF5441x RCM power-on reason driver
-Message-ID: <aiGseFwWJkjCZrfB@venus>
-References: <20260602-coldfire-rcm-power-on-reason-v1-0-fbc3eab0c016@yoseli.org>
- <20260602-coldfire-rcm-power-on-reason-v1-2-fbc3eab0c016@yoseli.org>
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="bKVkdvyY"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1780613045; x=1781217845; i=deller@gmx.de;
+	bh=PFMsaYqUkIvJcMLTpZQf1DqgjSH1Dec2993/mJDniwE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=bKVkdvyYWOMD039fytO+OTDkxbqYPSbXpK3Z7FwB6f+w4YmPln6oQAHZNs4PvXV2
+	 1r2KXjhR/8Fe0kWMegg+0mXVFjkUuE24vz80TjRWlIu7+HtTO6624mjujRRvRW/Mp
+	 CU4bZH8wNRJdXWNgshJUaZZHnY29tDx/zPQVcdd/uA9EVB2AzlcWzwlZoEK+t6D4R
+	 PpwTUJXhUYRmA7MMndFC8qPvwcrTG+p76ptalLkWWaSB4nq1AkxSBVfgVUyP7hlUU
+	 wZi47lVfB8o95TTtOBmVjoxLE1yhUOOvYW503e4v9wg6zbYsxsxjDrZuFGyy6vCv3
+	 khq7JznSszoVP17+0g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MwQXH-1xMgC02Ukv-00yTHx; Fri, 05
+ Jun 2026 00:44:05 +0200
+Message-ID: <a3f9e96e-3bbb-4cfc-845c-58649405a1cf@gmx.de>
+Date: Fri, 5 Jun 2026 00:44:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="weaaxdxhy55xrgky"
-Content-Disposition: inline
-In-Reply-To: <20260602-coldfire-rcm-power-on-reason-v1-2-fbc3eab0c016@yoseli.org>
-X-Zoho-Virus-Status: 1
-X-Zoho-AV-Stamp: zmail-av-0.2.2.1.5.2/280.581.16
-X-ZohoMailClient: External
-
-
---weaaxdxhy55xrgky
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/8] zorro: Improve handling of pointers in
+ zorro_device_id::driver_data
+To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig_=28The_Capable_Hub=29?=
+ <u.kleine-koenig@baylibre.com>
+Cc: linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ "Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>,
+ "Christian A. Ehrhardt" <lk@c--e.de>
+References: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
+Content-Language: en-US
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 2/3] power: reset: add MCF5441x RCM power-on reason driver
-MIME-Version: 1.0
+X-Provags-ID: V03:K1:/b4ONhQClKbvxFm5HU0vfhRh79gGv/xtJ55Vi39S7by3cEpwjgY
+ J80qonyXA3O7qgdTCSZXjFSqItahaZMZ+hEinZmtxId7dnI5rIDUi0jn1teNkRtH3f+4J2d
+ BuCK0DJsMOMI19D3EqwyIP9P50P637WuIjdp5AE6pQKoCKx2+t30DLBloY2oXzXLyUALLNc
+ X7TRNir3eFev9ubrXTxvw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:G2MXmyA/vFU=;zZfIg8BCGWf2Dqj0H2tSQBqiD+/
+ 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
+ LTriLKyuAOzyfqUYlo=
 
-Hi,
+Hi Uwe,
 
-On Tue, Jun 02, 2026 at 11:21:22AM +0200, Jean-Michel Hautbois wrote:
-> Add a driver that decodes the Reset Status Register (RSR) of the
-> Freescale ColdFire MCF5441x Reset Controller Module at probe time
-> and exposes the cause via the power_on_reason sysfs ABI.
+On 5/26/26 16:17, Uwe Kleine-K=C3=83=C2=B6nig (The Capable Hub) wrote:
+> Hello,
 >=20
-> The RSR can latch several cause bits simultaneously (Reference
-> Manual chapter 12.3.2); the driver picks one cause per a priority
-> that favours the most explanatory diagnostic.
+> this series is about improving the handling of pointers in struct
+> zorro_device_id's driver_data.
 >=20
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> ---
->  MAINTAINERS                         |   6 ++
->  drivers/power/reset/Kconfig         |  12 ++++
->  drivers/power/reset/Makefile        |   1 +
->  drivers/power/reset/mcf-rcm-reset.c | 109 ++++++++++++++++++++++++++++++=
-++++++
->  4 files changed, 128 insertions(+)
+> While it's ok on all current Linux platforms to store a pointer in an
+> unsigned long variable, it involves casting that loses type information.
+> This can be nicely seen in patch #7 where after profiting from patch #6
+> the compiler notices a missing const.
 >=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 461a3eed6129..1109bff23ec1 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10195,6 +10195,12 @@ S:	Maintained
->  F:	drivers/mmc/host/sdhci-esdhc-mcf.c
->  F:	include/linux/platform_data/mmc-esdhc-mcf.h
-> =20
-> +FREESCALE COLDFIRE M5441X RCM POWER-ON REASON DRIVER
-> +M:	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> +L:	linux-m68k@lists.linux-m68k.org
-> +S:	Maintained
-> +F:	drivers/power/reset/mcf-rcm-reset.c
-> +
->  FREESCALE DIU FRAMEBUFFER DRIVER
->  M:	Timur Tabi <timur@kernel.org>
->  L:	linux-fbdev@vger.kernel.org
-> diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-> index 124afb99febe..003638f652fa 100644
-> --- a/drivers/power/reset/Kconfig
-> +++ b/drivers/power/reset/Kconfig
-> @@ -128,6 +128,18 @@ config POWER_RESET_LINKSTATION
-> =20
->  	  Say Y here if you have a Buffalo LinkStation LS421D/E.
-> =20
-> +config POWER_RESET_MCF_RCM
-> +	tristate "Freescale ColdFire RCM power-on reason driver"
-> +	depends on M5441x
+> Preparing for that change, all zorro_device_ids are converted to use
+> named initializers, which is also a nice cleanup that could stand for
+> itself, as it improves readability for humans. (That is necessary
+> because an anonymous union can be initialized by name, but not using a
+> list initializer.)
+>=20
+> My motivation for this series is the CHERI hardware extension. With that
+> pointers are bigger than longs and thus you cannot store pointers in
+> zorro_device_id::driver_data. So this series is also about getting
+> support for CHERI into the mainline, but I hope the clean up effects
+> mentioned above are justification enough to accept this series.
+>=20
+> The dependencies in this series are as follows:
+>=20
+>   - Patch #5 depends on #1, #2
+>   - Patches #7 and #8 depend on patch #6.
+>=20
+> So if the ata maintainers agreed to merge their patch #1 via scsi, and
+> Geert agrees to patch #5 and that it's also merged via scsi, patches #1,
+> #2, #6 and #7 can go in without further coordination.
+>=20
+> Patches #3, #4 and #5 are only about using the same initialization style
+> for all zorro_device_id and can go in without coordination.
+>=20
+> Best regards
+> Uwe
+>=20
+> Uwe Kleine-K=C3=B6nig (The Capable Hub) (8):
+>    ata: pata_budda: Use named initializer for zorro_device_id
+>    scsi: Use named initializer for zorro_device_id
+>    net: Use named initializer for zorro_device_id arrays
+>    i2c: icy: Use named initializer for zorro_device_id arrays
+>    video: fm2fb: Use named initializer for zorro_device_id array
+>    zorro: Simplify storing pointers in device id struct
+>    scsi: zorro7xx: Make use of struct zorro_device_id::driver_data_ptr
+>    video: cirrusfb: Make use of struct zorro_device_id::driver_data_ptr
+>=20
+>   drivers/ata/pata_buddha.c             |  8 ++++----
+>   drivers/i2c/busses/i2c-icy.c          |  4 ++--
+>   drivers/net/ethernet/8390/hydra.c     |  4 ++--
+>   drivers/net/ethernet/8390/xsurf100.c  |  4 ++--
+>   drivers/net/ethernet/8390/zorro8390.c |  6 +++---
+>   drivers/net/ethernet/amd/a2065.c      |  8 ++++----
+>   drivers/net/ethernet/amd/ariadne.c    |  4 ++--
+>   drivers/scsi/a2091.c                  |  6 +++---
+>   drivers/scsi/gvp11.c                  | 17 ++++++++--------
+>   drivers/scsi/zorro7xx.c               | 16 +++++++--------
+>   drivers/scsi/zorro_esp.c              |  2 +-
+>   drivers/video/fbdev/cirrusfb.c        | 28 +++++++++++++--------------
+>   drivers/video/fbdev/fm2fb.c           |  6 +++---
+>   include/linux/mod_devicetable.h       |  6 +++++-
+>   14 files changed, 62 insertions(+), 57 deletions(-)
 
-If you describe the register layout in the driver, you
-could add "|| COMPILE_TEST" resulting in much better
-test coverage.
+you may add to the series:
+Acked-by: Helge Deller <deller@gmx.de>
 
-> +	depends on HAS_IOMEM
-> +	help
-> +	  This driver exposes the cause of the last reset on Freescale
-> +	  ColdFire 5441x SoCs through the standard power_on_reason sysfs
-> +	  ABI. It reads the Reset Status Register (RSR) of the Reset
-> +	  Controller Module once at probe time and reports a normalised
-> +	  string (regular power-up, reset button action, software reset
-> +	  or unknown reason).
-> +
->  config POWER_RESET_MACSMC
->  	tristate "Apple SMC reset/power-off driver"
->  	depends on MFD_MACSMC
-> diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
-> index d7ae97241a83..e31cab4ba78e 100644
-> --- a/drivers/power/reset/Makefile
-> +++ b/drivers/power/reset/Makefile
-> @@ -13,6 +13,7 @@ obj-$(CONFIG_POWER_RESET_GPIO) +=3D gpio-poweroff.o
->  obj-$(CONFIG_POWER_RESET_GPIO_RESTART) +=3D gpio-restart.o
->  obj-$(CONFIG_POWER_RESET_HISI) +=3D hisi-reboot.o
->  obj-$(CONFIG_POWER_RESET_LINKSTATION) +=3D linkstation-poweroff.o
-> +obj-$(CONFIG_POWER_RESET_MCF_RCM) +=3D mcf-rcm-reset.o
->  obj-$(CONFIG_POWER_RESET_MACSMC) +=3D macsmc-reboot.o
->  obj-$(CONFIG_POWER_RESET_MSM) +=3D msm-poweroff.o
->  obj-$(CONFIG_POWER_RESET_MT6323) +=3D mt6323-poweroff.o
-> diff --git a/drivers/power/reset/mcf-rcm-reset.c b/drivers/power/reset/mc=
-f-rcm-reset.c
-> new file mode 100644
-> index 000000000000..666ae1455be1
-> --- /dev/null
-> +++ b/drivers/power/reset/mcf-rcm-reset.c
-> @@ -0,0 +1,109 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Freescale ColdFire MCF5441x RCM power-on reason driver
-> + *
-> + * Copyright (C) 2026 Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.o=
-rg>
-> + */
-> +
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/power/power_on_reason.h>
-> +
-> +#include <asm/m5441xsim.h>
-> +
-> +#define MCF_RSR_KNOWN_CAUSES	(MCF_RSR_POR | MCF_RSR_EXT | MCF_RSR_WDRCOR=
-E | \
-> +				 MCF_RSR_LOC | MCF_RSR_LOL | MCF_RSR_SOFT)
-> +
-> +struct mcf_rcm {
-> +	const char *reason;
-> +};
-> +
-> +/*
-> + * Decode RSR into a power_on_reason string.
-> + *
-> + * The MCF5441x Reset Status Register can latch several cause bits at the
-> + * same time (Reference Manual chapter 12.3.2: "one or more status bits
-> + * may be set at the same time"). A power-on, for example, also resets
-> + * the PLL and may co-flag LOC and LOL during the boot sequence. The
-> + * power_on_reason ABI carries a single string, so this routine picks
-> + * one cause; the chosen priority surfaces the most explanatory one for
-> + * diagnostics:
-> + *
-> + *   POR              cold boot dominates any spurious co-flagged cause
-> + *   EXT              operator action via the RESET pin
-> + *   WDRCORE          core watchdog timeout, a fault to investigate
-> + *   LOC, LOL         PLL clock or lock failure, hardware fault
-> + *   SOFT             explicit software-requested reset
-> + */
-> +static const char *mcf_rcm_decode(u8 rsr)
-> +{
-> +	if (rsr & MCF_RSR_POR)
-> +		return POWER_ON_REASON_REGULAR;
-> +	if (rsr & MCF_RSR_EXT)
-> +		return POWER_ON_REASON_RST_BTN;
-> +	if (rsr & MCF_RSR_WDRCORE)
-> +		return POWER_ON_REASON_WATCHDOG;
-> +	if (rsr & (MCF_RSR_LOC | MCF_RSR_LOL))
-> +		return POWER_ON_REASON_CPU_CLK_FAIL;
-> +	if (rsr & MCF_RSR_SOFT)
-> +		return POWER_ON_REASON_SOFTWARE;
-> +	return POWER_ON_REASON_UNKNOWN;
-> +}
-> +
-> +static ssize_t power_on_reason_show(struct device *dev,
-> +				    struct device_attribute *attr, char *buf)
-> +{
-> +	struct mcf_rcm *rcm =3D platform_get_drvdata(to_platform_device(dev));
-> +
-> +	return sysfs_emit(buf, "%s\n", rcm->reason);
-> +}
-> +static DEVICE_ATTR_RO(power_on_reason);
-> +
-> +static struct attribute *mcf_rcm_attrs[] =3D {
-> +	&dev_attr_power_on_reason.attr,
-> +	NULL,
-> +};
-> +ATTRIBUTE_GROUPS(mcf_rcm);
-> +
-> +static int mcf_rcm_probe(struct platform_device *pdev)
-> +{
-> +	struct mcf_rcm *rcm;
-> +	void __iomem *base;
-> +	u8 rsr;
-> +
-> +	rcm =3D devm_kzalloc(&pdev->dev, sizeof(*rcm), GFP_KERNEL);
-> +	if (!rcm)
-> +		return -ENOMEM;
-> +
-> +	base =3D devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	rsr =3D readb_relaxed(base);
-> +	rcm->reason =3D mcf_rcm_decode(rsr);
-> +
-> +	platform_set_drvdata(pdev, rcm);
-> +
-> +	if (!(rsr & MCF_RSR_KNOWN_CAUSES))
-> +		dev_warn(&pdev->dev, "Unknown reset cause (RSR=3D0x%02x)\n", rsr);
-> +	else
-> +		dev_info(&pdev->dev, "Starting after %s (RSR=3D0x%02x)\n",
-> +			 rcm->reason, rsr);
-> +
-> +	return 0;
-> +}
+Since it touches various subtrees, I assume you will merge it though your =
+tree?
 
-static const struct platform_device_id mcf_rcm_id[] =3D {
-    { "mcf-rcm-reset", 0, },
-    { }
-};
-MODULE_DEVICE_TABLE(platform, mcf_rcm_id);
-
-> +static struct platform_driver mcf_rcm_driver =3D {
-> +	.probe =3D mcf_rcm_probe,
-> +	.driver =3D {
-> +		.name =3D "mcf-rcm-reset",
-> +		.dev_groups =3D mcf_rcm_groups,
-> +	},
-
-=2Eid_table =3D mcf_rcm_id,
-
-> +};
-> +module_platform_driver(mcf_rcm_driver);
-> +
-> +MODULE_AUTHOR("Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>");
-> +MODULE_DESCRIPTION("Freescale ColdFire RCM power-on reason driver");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:mcf-rcm-reset");
-
-You can drop the MODULE_ALIAS with the platform ID table being
-done properly.
-
-Otherwise LGTM.
-
--- Sebastian
-
---weaaxdxhy55xrgky
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmohr2gACgkQ2O7X88g7
-+prA3xAAhtx7s9ZMrDvndLLu4dNHrOT72Dd8tdogegErykWXaQIf7Q83yb78wLG/
-kjXnJqnmzS8Fv25syQPWIgQbxfzQzr4Y4wCMo0FFSGfN0fAezhokxJ1H/rxJ53h3
-ZpiRaTGfwae4rfm/xaKaFabZoj2mSJYN4aZKQrqmg/3+73p8QZsWyInQViI0/Gah
-eQ3c6i0oX3bkePnyx2wVMSUxLAifTxJG2/tj2q87D1QAcgnQm9xXiyd6A+uqxGIs
-m6V9Xa6m5eIbSk6gD8LE9dHhGa2gpjeZpIjaMLKJhwqkQpWWUrplgOlSZRqc0xcl
-ssFbSWvkUNJepZlD54z4pvHTvQLw2l3gtUjObzYSZEkaP0mPq/c+s3VFCl/DmnNX
-evrH3hGaZUc7TJnk+6SDiyuk6sT7YbAsygcZKxeK783evgC+ZKy5TIlJ+NWAGTMu
-g/KcvecrUEtINz7VJEtYwMqIZHCMb8wAzqcTd8KhWj4KlEqR9FiIVSGmBPVJ/L63
-0a9AfnOgGWK0DpVzs0J2wFRo3EP0J3OXx1QQsZ8SkhigmGY0sxbeme8dHhpbjGPQ
-wxrXKLUggFtaXze0qAApT+mtKOXwfTi6n5oNOikPOAlIUrYDqEyQ6Z7Z6+QuKcAJ
-QkyqUKAmrSdGHfjfbLDvs/ck8mC2PjthApW+bR5gFxP10y1sElY=
-=Eg/S
------END PGP SIGNATURE-----
-
---weaaxdxhy55xrgky--
+Helge
