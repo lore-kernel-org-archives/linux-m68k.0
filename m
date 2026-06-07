@@ -1,206 +1,121 @@
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B664D2EDA
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  5 Jun 2026 11:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B1436F90E
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jun 2026 08:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780660584; cv=none; b=NFo825Iuh+nLAabUXzdvWN/Xu95Kp1lRlYoDIAMIagyma376WgqX1lqKsKehGStlMw+nugnee3i2DpGmDmkoCxjUilypPGi7m0nrNq+4WtlaTFYSXnYxKxNNCQsqgjYwF9lr3vN1/d4/FHxd9yCtc1Dego+ThEmDKkADXgcrk7Q=
+	t=1780822223; cv=none; b=iyUYQNmxGmKbR6o1poNPGxowT8AnRKngotGqGTcjwZz9rOkM/HixZzA6zkcPxWx9vUaaDNQbd3QaePiUQ55mDbHThhWO34uEClzjt78BK4vRso4+995bFyKlfgjBKvTm1/KSOln0fvcpwfpk1Mam8lUKMC5fBey+8Te6jzYlqgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780660584; c=relaxed/simple;
-	bh=RUeXkJiOC5YOIHyl10EHg1neCRlJCG9AqHP1nNGld8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ickve2pQO9JkUV/T9ZHZ6K5ryjjOF20w9Nod6I7zWwZdg+eaK9AXJLHS7aHDALTdSevLu4Gt1BQFr4K1lj3sg8QFesmrbboTaqMvHoL5GY3FdwhgxqC3/c0IRu/s9K8NxOwE7NQf3DP+iVBADzfrcFZdymrRiWIwgyMR0gznTB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=fbm46WHn; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	s=arc-20240116; t=1780822223; c=relaxed/simple;
+	bh=zUgHmdCIbq96Oaq4a+AaK+m2Z7xxV3Y0tQmoT3nrPIo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=PGThXTUlMI2KsShfsvHIAUuGLnUbpZywKPRV/BgjpWY82P6kReNRSkiMZJ+QDR+7QpMfrPmY+9d8jJezhczpf1yCR2ay/wLAbWiix6zETTBPtp5ZTTiTK1n/nf9bJuNJUAMgWY4QGySCqyKN/hy7zFJ0+Mp1sdaORNXMaIzACGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=aak0GRcc; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="fbm46WHn"
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-490be03d47bso15064845e9.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 05 Jun 2026 04:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1780660581; x=1781265381; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+kMxhX4dP4R/LjY4CwrRq2xMY3d+unBriPLMp8xLnLc=;
-        b=fbm46WHn2lueqZZnH/fmxIX4u56mWAqEeFkBFpwHKVJXh/N/aj+/hj3nCH11OMexow
-         do+HuYLkkJqFXLBgW1+0OacwpiooLmHfeqhVvc2IMpgYdVPeK9/fQm0vvu9WaeBV61br
-         37FyZ0oCOOiChDDlFeFGHkcEMiqkCOM1bUDrmoxa3CCmH2Itin9ZfBL191UIPxobAhb2
-         58Wf8rny1brUOe1VKLv0mYaawM21mmuPClYVkN5EFVNAzOsxa+UL0xl3r21GwSxb57rR
-         VusKSfepOldjgXfpvdTTh7trEz3y6LMx6eKfEnv1AWiCOuZ9g6qWbNY5kb2ji5tyny0Z
-         cupw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780660581; x=1781265381;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+kMxhX4dP4R/LjY4CwrRq2xMY3d+unBriPLMp8xLnLc=;
-        b=SSXupjIPGecE2t43VRs3oqv/d3PTJ1UMA9UkoKhX9hh1eNvBO+f3ueXoCHyYnnq+l9
-         qjUick+3oQnXZqAoUK8MA9l77O02ErUgPPc/LbyClwuMye+tcA0UcDnOkBaT7g8At8vh
-         b0ZDKlhcwHWR7Bk/pqN4sYoOOwZ+4Yx2/f6IAjiQkGomTzlyWtsVamqMTKb/18fuozkc
-         i74yG/x3wURoCV1IfI4syTUQA5gNTyQ3kUjkEHybne3R17FmQX9Crj+KTlM//XSxBvTr
-         6YZe/knTQ4wYcLLz+el5pycQ54LwqTdOXvwxCmlRbgErHnthAzDmrQTPpU/pfpZR34Oe
-         85FA==
-X-Forwarded-Encrypted: i=1; AFNElJ83gxJCpnACy+Fb4UmN9kxqQWfPd4BG+ozKgrBNNfklcOCptZqXCo6g6xYldBbvYQHSQQpovXc7LJht@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwL7ruF4dYX8MOnkNYiHiut8lIhzZ3jnE8hnczdL5ub0GiJXggU
-	vHbMSeN5w4hWD+Ih5fed4J6ARc/l49+eMA7+/YIJWWQ03aH4u2XcWGIXozoEkcZ0WrU=
-X-Gm-Gg: Acq92OGUl+srGcZ4VJeYv/eIKLUDNAUDJIweu1U0CGABrdRlgl5aR3SQGcmvB8f/XnP
-	6Zq62vzWfoRrWcBZyjLJHYFyprKtuU94v/ibn7ErGcSxpWB3fGFGtFANKnTbkSttPqalGLzzDtg
-	sNyvdQWAJMnW07z2oxhYlHhoZuvJ70ydiN8Cqc1jIQVoradThnDrV4fxL4iwYvKnofH0V15IRvP
-	UmywhDGutEKgrDhcg6Vp64mJl7H7neKGMAN/vrFJ2Hrqit2pR6uP0HqXm7809QZ3rundGDgHfNu
-	ET4BTvqmC8F6vsYyyKSmUbIrJqKhlltR6QbVns9KwpGEtqf3S5OGnEDz8LR/CQzCwL4U9TjkDLr
-	Q2jWQlEXoY46I+2jiEBlbCAZ9aco+Za1J8G0ji53eKACD/X/1RDpL+2fS962EAU9Vs5QF0ia7qw
-	5ZHjZSnhbrRuwPY3IW4473i7wO8rzkiwd9
-X-Received: by 2002:a05:600c:8705:b0:488:ac01:72de with SMTP id 5b1f17b1804b1-490c25898efmr60737855e9.5.1780660580944;
-        Fri, 05 Jun 2026 04:56:20 -0700 (PDT)
-Received: from localhost ([212.133.41.47])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-490bc3fd502sm147344695e9.11.2026.06.05.04.56.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jun 2026 04:56:20 -0700 (PDT)
-Date: Fri, 5 Jun 2026 13:56:17 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-To: Helge Deller <deller@gmx.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	"Christian A. Ehrhardt" <christian.ehrhardt@codasip.com>, "Christian A. Ehrhardt" <lk@c--e.de>
-Subject: Re: [PATCH v1 0/8] zorro: Improve handling of pointers in
- zorro_device_id::driver_data
-Message-ID: <aiKyB-28VEg1kp7W@monoceros>
-References: <cover.1779803053.git.u.kleine-koenig@baylibre.com>
- <a3f9e96e-3bbb-4cfc-845c-58649405a1cf@gmx.de>
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="aak0GRcc"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6DDC83EBD7;
+	Sun,  7 Jun 2026 08:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1780822215;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uOpn8q/e9KDHjuTADsI/LP/WXhz5xWte6Jyh1YnSbuE=;
+	b=aak0GRccrqSH+I7NJ9zUjiQh1v02aljznqVW+lXbVxHVSp1jJlll97qogw8PcGI+qT5i1z
+	zDfgaR5WJopc1Vndt8oIncttXCGSHQ0OM6YhUOImhyJT9MEpQIWBV9KjyI+TfQG3NOofQz
+	lXhXY6uM4fjTP1VUyUgQpyT9ZSnzCCO4xdAeDJN+jA1TUnmWpGsCvDBwRgHsw9bmmqAmBu
+	TP4S0jDmmYOQA8wpmMcjEjhQyE9tD9PJR0GP98+hJCO0PkVXweSGcPGT/TvBlX7ZbPr4Rc
+	3yJyELrR3wug6m1SIqJrLI6dKXr5b0bZAAbOUH23cflOGAJpdkA8p4P7JwCXFQ==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Date: Sun, 07 Jun 2026 10:49:54 +0200
+Subject: [PATCH v2 2/2] m68k: coldfire/5441x: register mcf-rcm-reset
+ platform device
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="22tuv3cnyx6wf3bq"
-Content-Disposition: inline
-In-Reply-To: <a3f9e96e-3bbb-4cfc-845c-58649405a1cf@gmx.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260607-coldfire-rcm-power-on-reason-v2-2-d0039d8a91e8@yoseli.org>
+References: <20260607-coldfire-rcm-power-on-reason-v2-0-d0039d8a91e8@yoseli.org>
+In-Reply-To: <20260607-coldfire-rcm-power-on-reason-v2-0-d0039d8a91e8@yoseli.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Sebastian Reichel <sre@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ linux-pm@vger.kernel.org, 
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+X-Mailer: b4 0.15-dev-47773
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1780822212; l=1597;
+ i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
+ bh=zUgHmdCIbq96Oaq4a+AaK+m2Z7xxV3Y0tQmoT3nrPIo=;
+ b=S2X8D1QTDem3Xjm0UwPwHc3TPctfvrZpb3u4v7nUzpfehjTfunNaSDhZdDI2sxFkar6rPfCca
+ MkSW1eQyIQSAGBAXoQ+6RhrgYTnyllAN8NMzkWqspBVQwTZrXBX6GX1
+X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
+ pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
+X-GND-Cause: dmFkZTFldwCH71C+v2YYvFuRL4mrh8ih0HMatuEUlJ3Jb/cmFklBaRSavyh1YvFiF13uJp7pcb0hhjGGR9+aRmIdVUYOKqU9+ysKpfF+qkHFgFhN5Y2g1j1U1yON033zyP26kxooifHuva0Dh1/cSBj3k8v/i6iU/aBsjID67dDrubDO/mcjKAAp1iULu2Y5YADlEtjFH6Io6GartUqzqR6GDCewy57W7pwMe0kE6OANwgkvaHWgdcIZW81GodCH6V2wTjGfvcAeDncZm7TUMmkXR3N17x2c6/ey5QI0LuYWsnv8hwWxzZbMhIXdkqECKbKn3LL+EYPqIW2UZ95+V5KzczoGjtNTUcbCuf3tkHNTlz63sglknGa55QKMI9+i177DfH3ex5Y2dpoAi+MX/eBtIt0aTJ3CVNwTF5wXesKD060zDBZglnhT2hk32M5DcQk56B3nsVEIncsIfP5+WIrOX3N3QyRjf//Svr3SybOX5iNmhgWeKLKOJhMFudJbev0vlR9uTUa7HThkJRvNkV5fqVLAS84PswKD5u07Hws9t5TLK3wjkZDlHylwSni7aXUhxdz4QiM2zjq42uvchEVIadlAZZ3lmEQHWqxP0nN4aSuJRnu1w3inz4vmResR0HEmqAhvPshmZog7IgOajHPyGcxzr6cIYci5PNJ0VKZGOBZ/uw
+X-GND-State: clean
+X-GND-Score: -100
 
+Add SoC-level registration of the mcf-rcm-reset platform device so the
+power_on_reason sysfs attribute is created on every MCF5441x board
+without per-board boilerplate.
 
---22tuv3cnyx6wf3bq
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1 0/8] zorro: Improve handling of pointers in
- zorro_device_id::driver_data
-MIME-Version: 1.0
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ arch/m68k/coldfire/m5441x.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-Hello Helge,
+diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
+index 7a25cfc7ac07..852e52d95eaf 100644
+--- a/arch/m68k/coldfire/m5441x.c
++++ b/arch/m68k/coldfire/m5441x.c
+@@ -11,6 +11,7 @@
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
++#include <linux/platform_device.h>
+ #include <asm/machdep.h>
+ #include <asm/coldfire.h>
+ #include <asm/mcfsim.h>
+@@ -239,6 +240,30 @@ static void __init m5441x_fec_init(void)
+ 	__raw_writeb(0x03, MCFGPIO_PAR_FEC);
+ }
+ 
++/*
++ * Reset Controller Module status register. Exposed to userspace as
++ * /sys/devices/platform/mcf-rcm-reset/power_on_reason by the mcf-rcm-reset
++ * driver (drivers/power/reset/mcf-rcm-reset.c).
++ */
++static struct resource m5441x_rcm_resource[] = {
++	{
++		.start	= MCF_RSR,
++		.end	= MCF_RSR,
++		.flags	= IORESOURCE_MEM,
++	},
++};
++
++static int __init m5441x_rcm_init(void)
++{
++	struct platform_device *pdev;
++
++	pdev = platform_device_register_simple("mcf-rcm-reset", -1,
++					       m5441x_rcm_resource,
++					       ARRAY_SIZE(m5441x_rcm_resource));
++	return PTR_ERR_OR_ZERO(pdev);
++}
++arch_initcall(m5441x_rcm_init);
++
+ void __init config_BSP(char *commandp, int size)
+ {
+ 	m5441x_clk_init();
 
-On Fri, Jun 05, 2026 at 12:44:04AM +0200, Helge Deller wrote:
-> On 5/26/26 16:17, Uwe Kleine-K=C3=B6nig (The Capable Hub) wrote:
+-- 
+2.39.5
 
-Your MUA seems to interpret my UTF-8 encoded name as latin1 and
-converted it to UTF-8 making my =F6 appear as =C3=B6. I *think* the problem=
- is
-on your side.
-
-> > this series is about improving the handling of pointers in struct
-> > zorro_device_id's driver_data.
-> >=20
-> > While it's ok on all current Linux platforms to store a pointer in an
-> > unsigned long variable, it involves casting that loses type information.
-> > This can be nicely seen in patch #7 where after profiting from patch #6
-> > the compiler notices a missing const.
-> >=20
-> > Preparing for that change, all zorro_device_ids are converted to use
-> > named initializers, which is also a nice cleanup that could stand for
-> > itself, as it improves readability for humans. (That is necessary
-> > because an anonymous union can be initialized by name, but not using a
-> > list initializer.)
-> >=20
-> > My motivation for this series is the CHERI hardware extension. With that
-> > pointers are bigger than longs and thus you cannot store pointers in
-> > zorro_device_id::driver_data. So this series is also about getting
-> > support for CHERI into the mainline, but I hope the clean up effects
-> > mentioned above are justification enough to accept this series.
-> >=20
-> > The dependencies in this series are as follows:
-> >=20
-> >   - Patch #5 depends on #1, #2
-> >   - Patches #7 and #8 depend on patch #6.
-> >=20
-> > So if the ata maintainers agreed to merge their patch #1 via scsi, and
-> > Geert agrees to patch #5 and that it's also merged via scsi, patches #1,
-> > #2, #6 and #7 can go in without further coordination.
-> >=20
-> > Patches #3, #4 and #5 are only about using the same initialization style
-> > for all zorro_device_id and can go in without coordination.
-> >=20
-> > Best regards
-> > Uwe
-> >=20
-> > Uwe Kleine-K=F6nig (The Capable Hub) (8):
-> >    ata: pata_budda: Use named initializer for zorro_device_id
-> >    scsi: Use named initializer for zorro_device_id
-> >    net: Use named initializer for zorro_device_id arrays
-> >    i2c: icy: Use named initializer for zorro_device_id arrays
-> >    video: fm2fb: Use named initializer for zorro_device_id array
-> >    zorro: Simplify storing pointers in device id struct
-> >    scsi: zorro7xx: Make use of struct zorro_device_id::driver_data_ptr
-> >    video: cirrusfb: Make use of struct zorro_device_id::driver_data_ptr
-> >=20
-> >   drivers/ata/pata_buddha.c             |  8 ++++----
-> >   drivers/i2c/busses/i2c-icy.c          |  4 ++--
-> >   drivers/net/ethernet/8390/hydra.c     |  4 ++--
-> >   drivers/net/ethernet/8390/xsurf100.c  |  4 ++--
-> >   drivers/net/ethernet/8390/zorro8390.c |  6 +++---
-> >   drivers/net/ethernet/amd/a2065.c      |  8 ++++----
-> >   drivers/net/ethernet/amd/ariadne.c    |  4 ++--
-> >   drivers/scsi/a2091.c                  |  6 +++---
-> >   drivers/scsi/gvp11.c                  | 17 ++++++++--------
-> >   drivers/scsi/zorro7xx.c               | 16 +++++++--------
-> >   drivers/scsi/zorro_esp.c              |  2 +-
-> >   drivers/video/fbdev/cirrusfb.c        | 28 +++++++++++++--------------
-> >   drivers/video/fbdev/fm2fb.c           |  6 +++---
-> >   include/linux/mod_devicetable.h       |  6 +++++-
-> >   14 files changed, 62 insertions(+), 57 deletions(-)
->=20
-> you may add to the series:
-> Acked-by: Helge Deller <deller@gmx.de>
-
-Thanks!
-
-> Since it touches various subtrees, I assume you will merge it though your=
- tree?
-
-Well, my plan is that the scsi maintainers pick up patches #1, #2, #6
-and #7 and I remind you once #6 (i.e. the dependency for #8) is in
-Linus' tree. But with your ack the two fb patches can also go in via
-scsi.
-
-To James and Martin: I didn't hear from you about my merge suggestion up
-to now. The other affected maintainers agreed so far that (assuming
-you're using b4) and interpreting Helge's ack as agreement that you also
-pick up the fb patches, you can go for
-
-	b4 am -l -t -3 -P1,2,5-8 cover.1779803053.git.u.kleine-koenig@baylibre.com
-
-If you like I can also pick up these patches (then with your ack please)
-and send them to Linus for the next merge window. Just tell me about
-your preference.
-
-Best regards
-Uwe
-
---22tuv3cnyx6wf3bq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmoiuV8ACgkQj4D7WH0S
-/k6cwgf+IBJ8XPNUSo4d38q7fIjSN9Kio+eF/i1F0XZFkTXu/snZAgAhVec4a9nQ
-0tReoiNbPZL5k1kFhyjqoVSmH2A6Oe8hDK/rHeszhxosEzgOuGyGVmM1cDKfUkNQ
-+nhcan81Bf43fZgyFWoOlxns+20U6kjBBAksZHGYgm6L41w0tjVYLHTN9Pv1jTWz
-TK+k3WMkM0Sln7O6Rk2DBDBNJ8/lz82tGZkcfgmaM8P8WffD91LeUDcXvTBNYFJR
-9P0mISJgM+Qt5WaJwzW0k/h0Vu3HPh3P3wPIGiYQGLV7jfcHFG2xvWIwxONopqV5
-MD78q/W31G+Q1Z796Ms01uQxrzyWaQ==
-=ZKbW
------END PGP SIGNATURE-----
-
---22tuv3cnyx6wf3bq--
