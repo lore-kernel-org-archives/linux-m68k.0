@@ -1,125 +1,129 @@
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4692C37BE7A
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jun 2026 09:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9960D370ADC
+	for <linux-m68k@vger.kernel.org>; Sun,  7 Jun 2026 09:08:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780822859; cv=none; b=AwMP8iuH/BIX7CUhlWL5XZbPG0tDIZFunvklf2pzuKG180NuENRs+LwPb0U8YJ6daqH5RH5oyWpw9+JpCXtSnIeFfqMZnfPBtcUv2ywArKKEomajBefC9bp2+bIzeM5cSjT/GneO4TOCpWxD5go9XHmY7fgjLlVEy6nDpNgI4es=
+	t=1780823299; cv=none; b=Mts4zPXNc/XfLLwEXlLQ2mlDTSzj4RscaUj5vQocKk0XxCqz3tZ50/I+JJo/EnnwwrED53OXDOIxna310OVfMfWonW8Qe9xJQ4hQERoQAVg0F8CCJfmsDGvabNHI7YPmdkgwXviUpEI+j6jH5tf/t3Q4cd/Qn5fe+cLbXT+NDHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780822859; c=relaxed/simple;
-	bh=TmwNvRU5JGmuk7QhxlzVsKnPW8fkOD3xhGVhBTM2hrQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nb/NECpGm09org92g/sP/oOEdnj12ilaov2U851X8OkaNyX1U9/UNyuT1yTEBer9GR95RGXXBqKiyTl7P7LZQ7KWAfNjNbL14DMn96weejoG2xv4tfEjWRfGaM/YaolNp1Xsdn60AUV9Az5JAnuspV5QN0vD88IHZs0Pini2T9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=Py6KEpw1; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1780823299; c=relaxed/simple;
+	bh=JR5lL+lAqec4ZHKAMW5N5dqzGyNabZE182vkGiAllbs=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=N4ttpDH3Bsof5cacC0qIraSTePbmdSfm2+dz4qxZam8n/naOJ/SbAqq2iycxnImXj8x9S+6EVNOH737/tXEHNB4rjJ2i6qgsf4fkE0VuOPRnKuolHYguKaBAhFzEuFznXiUXzo4ylaq7KEuC6BqOuNWZa6bYtFGPpRh8How26us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=DlJLJGn9; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="Py6KEpw1"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 91C023EBBE;
-	Sun,  7 Jun 2026 09:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1780822851;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2StCb0XxuWRTxii1OsJ7SwSKkwi3VYbBfMK9IvuOBs8=;
-	b=Py6KEpw1sr7fhj9+TFBrezQiR1bHGkZqG9iJqhf4Ujrb3MLtBGklmGC0g3EWXX3/RWytmI
-	M+BC1BqlJmob7u0Wqp9pAoQMm3DBvsxBbz7pDIp0gcvknqjn8zpDsHkprlpk8jQGw0tfMB
-	FtgYJjN2dPpTG9LCv6T52OqsIiZxRSn9yDdljOEd5fp2QH3h5D8ZJZZKd8f+pmzF+sX58Q
-	0GL0UWV48y+JroBtcORKyyPeVrmvXLzOjZwhT6/i98KghxPB8TM5S4Vv+hWcm6pv2viPuw
-	lpUcQNpPJMxNgo4tMm6U+UJhCPcfMdmrSu4SvuQC1DAJWmf9cAL+6VNUJEKLrw==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Sun, 07 Jun 2026 11:00:41 +0200
-Subject: [PATCH v2 2/2] m68k: coldfire/m5441x: register the on-chip RTC
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="DlJLJGn9"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:From:
+	Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=iAi3brcyWT3+PnCFVV0/aNjF6JYcqC0tLwVJ+pRcWoM=; t=1780823295;
+	x=1781428095; b=DlJLJGn9rt5C3vtgCd/vuQndmYKq0dox18Y5DPfJm8jSYLa+bcvFuF3qeZm9R
+	LqtqMvjsPgXEl84+zvEvAJ2fPZV+yYuy7Q+ijR8GzVbASK3+vKUrKIB0H+5KyjqUKMaX5HT//qYuy
+	CiUJhoTGFMTjYItdaN0C42MYVrYS8LhyeJltavgt7lvHTHn8QYJv0fGaNVcwKsackCpHCbFd861NL
+	JzltvP3Gyv7hcUzCTzBtnXQ2fvruVVOebHNo7JD5NxP/mYbDfGIa+RdcMJkw41/c5l19A9coFfvlB
+	eHkNUuLZ7ODrhiVQdnscqn0mFxs9Xf9fFmawuNKi8+6YYVYDBA==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.99)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1wW9RG-00000000qA2-3OGl; Sun, 07 Jun 2026 11:05:02 +0200
+Received: from pd9f74f36.dip0.t-ipconnect.de ([217.247.79.54] helo=[192.168.178.52])
+          by inpost2.zedat.fu-berlin.de (Exim 4.99)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1wW9RG-00000000xPy-2VZa; Sun, 07 Jun 2026 11:05:02 +0200
+Message-ID: <49e6f18c2eed28743afb4d22717a93af8fb9089d.camel@physik.fu-berlin.de>
+Subject: Re: First successful cargo build - Re: Summary on what's blocking
+ full Rust support on m68k
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: debian-68k <debian-68k@lists.debian.org>, linux-m68k
+	 <linux-m68k@vger.kernel.org>, port-m68k <port-m68k@netbsd.org>
+Date: Sun, 07 Jun 2026 11:05:01 +0200
+In-Reply-To: <e6e99dd2a47881aaf34ea8d1dbc5ea8d6080c1c1.camel@physik.fu-berlin.de>
+References: 
+	<29d725b5647c176b8cef0d3442d1b3440e6a1a9a.camel@physik.fu-berlin.de>
+		 <6efb67b12fd971c6d38a692d7b391ce4a75b0f4a.camel@physik.fu-berlin.de>
+	 <e6e99dd2a47881aaf34ea8d1dbc5ea8d6080c1c1.camel@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260607-jmh-upstream-coldfire-rtc-v2-2-948d2b1ed146@yoseli.org>
-References: <20260607-jmh-upstream-coldfire-rtc-v2-0-948d2b1ed146@yoseli.org>
-In-Reply-To: <20260607-jmh-upstream-coldfire-rtc-v2-0-948d2b1ed146@yoseli.org>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Greg Ungerer <gerg@linux-m68k.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, 
- Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1780822848; l=1672;
- i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=TmwNvRU5JGmuk7QhxlzVsKnPW8fkOD3xhGVhBTM2hrQ=;
- b=DqiwmRxpR+FMhcKWs4RA21CK2tyx/AVIIAqqNp1YyOECD49zYFgUxSShAjjSagjt1i4bSSEsE
- vPzQXtUrqZ7CUUlB38XPis999PryeDM2s+1AaUJiPfMR4Jxk8BZ02dQ
-X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
- pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
-X-GND-State: clean
-X-GND-Score: -100
-X-GND-Cause: dmFkZTF1TTRBcwaWifjVSrwe9mcCWHfParg3qaEeBR+S59vOXOng4ykswcR4GwrhLLfGiMz3fuxk/8ZJVH7BoZ090lEXP1rZYHIQsNh2iH53gOAMR7nN/ZK8NvJQ2fdg/XHZhCfIJaQ9H3/XEt6U8gYIyTA2JhCKJrKlN5Iq0c8MXkvILXkALUOFATJU3RX9d9TV9x6Ekh+GMGC/pOdkeFvpjnTud3nS434KrBAGpTsARqQQmu2B9vtNzHoqtsRqtRZXweBDSxklhtGurxtBhSwxL0cWiCuUNtueGREaCW/QpvswEoSvpIa87pDhkwpYuN2UO4TY8k7OZO44vBB50TTD3Zl+l53wHiawdIA18LzWiY0I1Xv8c1CodbRbSzCbX/+TVJ9Jcev6XV9ZnA6ft2eirRME2Ql4O9HuaYpsVkfyeme5LzyFi+Msrd76Up1F6pkOwbAjiUj2rVdtrBaV9GWt9/Ab/SPa9NkRnFuaJfmmVGfu3kRQqxbGeenQd3VNx4+9UNAwziO0DPfgA6qp4ZvoNJopW7Ohxlp2bFhd1HiYvFsGDjkpzQ+C6s4rcGYIcvEQwJEyG8Yzh2d1CC+31OcODqis1vHtPxgIk+vJmIvnxhKaLrSuw9+q5NRFFY131pCIzlX9I6AW8ICxZ61z2dntIf7WLUv4zLIfywBgjF3aTSuvpg
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
-Register the MCF5441x on-chip RTC platform device from the SoC code so
-every MCF5441x board gets the rtc-m5441x driver (time/calendar plus the
-battery-backed standby RAM via nvmem) without a per-board file.
+Hi,
 
-Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
----
- arch/m68k/coldfire/m5441x.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+On Wed, 2026-05-20 at 10:36 +0200, John Paul Adrian Glaubitz wrote:
+> I was eventually able to build cargo for m68k-unknown-linux-gnu:
+>=20
+> (unstable-amd64-sbuild)glaubitz@esk:~/rust/build$ file ./x86_64-unknown-l=
+inux-gnu/stage2-tools/m68k-unknown-linux-gnu/release/cargo
+> ./x86_64-unknown-linux-gnu/stage2-tools/m68k-unknown-linux-gnu/release/ca=
+rgo: ELF 32-bit MSB pie executable, Motorola m68k, 68020, version 1 (SYSV),=
+ dynamically linked, interpreter /lib/ld.so.1,
+> BuildID[sha1]=3D7e5bf08930f87b9eaee173cf163b067f620cb841, for GNU/Linux 3=
+.2.0, not stripped
+> (unstable-amd64-sbuild)glaubitz@esk:~/rust/build$
+>=20
+> The binary runs on m68k but there is no output, unfortunately. Needs more=
+ debugging.
 
-diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-index 7a25cfc7ac07..b79aebdfd567 100644
---- a/arch/m68k/coldfire/m5441x.c
-+++ b/arch/m68k/coldfire/m5441x.c
-@@ -10,6 +10,7 @@
- #include <linux/param.h>
- #include <linux/init.h>
- #include <linux/io.h>
-+#include <linux/platform_device.h>
- #include <linux/clk.h>
- #include <asm/machdep.h>
- #include <asm/coldfire.h>
-@@ -239,6 +240,34 @@ static void __init m5441x_fec_init(void)
- 	__raw_writeb(0x03, MCFGPIO_PAR_FEC);
- }
- 
-+/*
-+ * On-chip "robust" RTC. Exposes the time/calendar and the 2KB
-+ * battery-backed standby RAM (rtc-m5441x driver).
-+ */
-+static struct resource m5441x_rtc_resource[] = {
-+	{
-+		.start	= MCFRTC_BASE,
-+		.end	= MCFRTC_BASE + MCFRTC_SIZE - 1,
-+		.flags	= IORESOURCE_MEM,
-+	},
-+	{
-+		.start	= MCF_IRQ_RTC,
-+		.end	= MCF_IRQ_RTC,
-+		.flags	= IORESOURCE_IRQ,
-+	},
-+};
-+
-+static int __init m5441x_rtc_init(void)
-+{
-+	struct platform_device *pdev;
-+
-+	pdev = platform_device_register_simple("rtc-m5441x", -1,
-+					       m5441x_rtc_resource,
-+					       ARRAY_SIZE(m5441x_rtc_resource));
-+	return PTR_ERR_OR_ZERO(pdev);
-+}
-+arch_initcall(m5441x_rtc_init);
-+
- void __init config_BSP(char *commandp, int size)
- {
- 	m5441x_clk_init();
+Some more progress. I managed to cross-compile "Hello World" in Rust for m6=
+8k and it
+actually runs. The issues which prevented this are two bugs in the LLVM bac=
+kend, one
+is already known upstream [1]. I will file a bug report for the second one.
 
--- 
-2.39.5
+(unstable-amd64-sbuild)glaubitz@esk:~/rust$ uname -a
+Linux esk 6.18.12+deb14-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.18.12-1 (2026=
+-02-17) x86_64 GNU/Linux
+(unstable-amd64-sbuild)glaubitz@esk:~/rust$ cat ~/main.rs
+fn main() {
+    println!("Hello, m68k Linux world!");
+}
+(unstable-amd64-sbuild)glaubitz@esk:~/rust$ ./build/x86_64-unknown-linux-gn=
+u/stage2/bin/rustc --target m68k-unknown-linux-gnu -C linker=3Dm68k-linux-g=
+nu-gcc ~/main.rs -o ~/hello_world
+(unstable-amd64-sbuild)glaubitz@esk:~/rust$ file ~/hello_world=20
+/home/glaubitz/hello_world: ELF 32-bit MSB pie executable, Motorola m68k, 6=
+8020, version 1 (SYSV), dynamically linked, interpreter /lib/ld.so.1, Build=
+ID[sha1]=3D819625f88d263c358cbf7ff37d660bc453eca931,
+for GNU/Linux 3.2.0, not stripped
+(unstable-amd64-sbuild)glaubitz@esk:~/rust$ md5sum ~/hello_world=20
+c12f86b37b301331e14499b573e45955  /home/glaubitz/hello_world
+(unstable-amd64-sbuild)glaubitz@esk:~/rust$
 
+glaubitz@mitchy:~$ uname -a
+Linux mitchy 6.15.0-rc2-virt #1 Thu May  1 10:27:28 UTC 2025 m68k GNU/Linux
+glaubitz@mitchy:~$ file ./hello_world=20
+./hello_world: ELF 32-bit MSB pie executable, Motorola m68k, 68020, version=
+ 1 (SYSV), dynamically linked, interpreter /lib/ld.so.1, BuildID[sha1]=3D81=
+9625f88d263c358cbf7ff37d660bc453eca931, for
+GNU/Linux 3.2.0, not stripped
+glaubitz@mitchy:~$ md5sum ./hello_world=20
+c12f86b37b301331e14499b573e45955  ./hello_world
+glaubitz@mitchy:~$ ./hello_world=20
+Hello, m68k Linux world!
+glaubitz@mitchy:~$
+
+Adrian
+
+> [1] https://github.com/llvm/llvm-project/issues/152816
+
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
