@@ -1,37 +1,39 @@
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF157404E
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jun 2026 08:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9244136E494
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jun 2026 08:50:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780822224; cv=none; b=IUYo179syL5GN1Xz+ND+s/+Wc9nW0kEE/oiCd7PRtbpyEdla1sAS4Qh5fBrf6pQZmLeP7hxwVstaonI/tlx7pMnX9iROvvHStQUpTDMx2WaKCwCxReXwavDaAkMxD6di198N11119EeoO6nvy1ux0iQ36mdJmaxJ4Kott3im0Uw=
+	t=1780822224; cv=none; b=etc6247avtOqmNff5aO7ezQdbXcOdoI45/1UxS6WT+MTKASOMBn7MbyGX+NUI1Tu48wv0VAxAhCjOwGky2zfQILKl9lmqzJIVBxPUh7DT/gTraZhKX3y5sl3ecLqf0L07d4MNbZb/FeB3NErIHZbUQTK9IQBLDRhU8OHhkvPICI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1780822224; c=relaxed/simple;
-	bh=7igOXwPnpOWHMqoDc6U+K4SmuPSgX7Hm0Oe1g8JwWCw=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=twh02A1Fret3vms5Wo5mSvcUIOaNJ6IQTZGrnFxFvvzSX3f4BSS2v48SuOSJ8Tm9rqHVQowJgqVMJAVCqIrU/QBRjnFXUasn63I4OzOJ4Vp5Yy2XwEDE8t62P7Aqyq5gcBvzA698tZxtBbuH/evQkKHtd4tCSdtjJQGUfXybmCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=B1vpY+UJ; arc=none smtp.client-ip=217.70.183.194
+	bh=gUeJPt4wa+X19kBRX2INzHwAP4HUW5hrNAe6NujEUyw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=KzEYWRatOmXXrCu9YJFL8fCqA1h7dYEAKMK2MnirkgIZ81L+ssImUDQ3839sVO7koe+1ADbVEtFm8Vx9mnvD3y0PS4DcvXsShRRiPNVgDPfauBeevVupfjBqcScMr63WLfEmXxOKlc8l9lrILPip07fZ/OzBGiKIrXMkOPQVtH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=dFfvNazm; arc=none smtp.client-ip=217.70.183.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="B1vpY+UJ"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6BF563EBD0;
-	Sun,  7 Jun 2026 08:50:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="dFfvNazm"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 748DE3EBD2;
+	Sun,  7 Jun 2026 08:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1780822213;
+	t=1780822214;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=lt0lnx3w5K83zsPENHH5wJBJzrlA+3l2roeV/d1OdbM=;
-	b=B1vpY+UJPikZA5Nhedf8ayGxc/NZX3PU2MesP0NoX5CjUD5mX/TwujgHQgNzVPkXLNE4va
-	eSX6oDzsfdxKw+d3f3lDwm9GuG06fmHBk54c3k6RFtYZNqPuvHMhzIWvhvaCes12eqVdxF
-	avQpuscvsksmHuz71voSx25BD5iSP2SR4dp1swP4UCqe3Yh1m41UwsFr/ruRuBw+Vw1PZ2
-	8UpdEGa9ZB/YltWQ1RLcTOH7vFJ5SP9O+EcVEQ1hFSWJ5ucxol3O2havgS1dIpbP9Hb329
-	E4Hi+TCgekCr9D9qY7Sc6t0IeFhWBpSgCXHmQc04Dl7/ZrkGuOhYOyC0WBiw6A==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TykClniNvh2ivjjob+1T1w+oZ7+He2Bbxyt6cZe6aVk=;
+	b=dFfvNazmEQITniEkrtIqHEtyEEog+uWh1UFS0evhZjFDpfPoTiT05VSWVfg+HWfDE5LLET
+	/nY7hrjCFPgvl3AaYSgjdLRM+2LXyWkkOTFFAsekhB5wMiITn4kzRIFmpJ72sMZHmyihMO
+	yCAZhlEu9MNUHkhPYsQWXxxVicthMqMvTgojwrRQ8PJfbAU+Hiu6nZnSgGAbX9scwP2CZM
+	dPJoxrO7u0zSrHWEHwi6W5FEcwOoKO9DmujA+sNBSggIEZTZCqby2odJZV7jbA5ilYU89l
+	5AwWn1qyEZByh0LBqvVfEMoMQHWGB8vPOiuVrjPS/Vqhg3YXltUCSuedK442sg==
 From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Subject: [PATCH v2 0/2] Coldfire m5441x: add RCM power-on reason driver
-Date: Sun, 07 Jun 2026 10:49:52 +0200
-Message-Id: <20260607-coldfire-rcm-power-on-reason-v2-0-d0039d8a91e8@yoseli.org>
+Date: Sun, 07 Jun 2026 10:49:53 +0200
+Subject: [PATCH v2 1/2] power: reset: add MCF5441x RCM power-on reason
+ driver
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -40,76 +42,231 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIALAwJWoC/32NQQ6CMBBFr0K6dkwpisaV9zAsSpnCGGTIFFFCu
- LsF9s5m8pKf92YVUAiDuiWzEhwpEHcRzCFRrrFdjUBVZGW0yfXZXMFxW3kSBHEv6PmDAtyBoA3
- xXazJTtb5Kp6Kil7Q03fTP4qdw7t8ohtW57poKAws09Yf03W3p3Jt/qfGFDT40mVoS+10mt8nD
- tjSkaVWxbIsP8SL6HXbAAAA
-X-Change-ID: 20260528-coldfire-rcm-power-on-reason-7a234acfdddd
+Message-Id: <20260607-coldfire-rcm-power-on-reason-v2-1-d0039d8a91e8@yoseli.org>
+References: <20260607-coldfire-rcm-power-on-reason-v2-0-d0039d8a91e8@yoseli.org>
+In-Reply-To: <20260607-coldfire-rcm-power-on-reason-v2-0-d0039d8a91e8@yoseli.org>
 To: Geert Uytterhoeven <geert@linux-m68k.org>, 
  Sebastian Reichel <sre@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
  linux-pm@vger.kernel.org, 
  Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1780822212; l=2207;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1780822212; l=7277;
  i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=7igOXwPnpOWHMqoDc6U+K4SmuPSgX7Hm0Oe1g8JwWCw=;
- b=Yr1l3gToWtPealJl6KFHCErLwB/NZJqKV1Cz9b8d9jjY3wCveCPOFAV//YVWg+MiefQ2OX2Wl
- I2q/1s9z+muAiQiQ3kPLERz6kSV6PxHZqlWVcL4xs+xBjVI1rOrNZeN
+ bh=gUeJPt4wa+X19kBRX2INzHwAP4HUW5hrNAe6NujEUyw=;
+ b=31EVJ+lFP/6qBgI8A0ePW8pDrOOcN00Wrfh+kzYYMTp2nvjgCwhzmDIqhjwUUPSE4HlhhXTnR
+ 0Rj5KDZFZv6DcfxKtjB4a5U7rintqOjKUPGVY5EwjIYwD9b32JbwHJz
 X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
  pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
-X-GND-Cause: dmFkZTExTqZXNkV4RRmC7uFTkEyWgDrz8tBqxlnDCUcINRyGmeWvHH99VE61o2HkM4u76lz5azF1mXFu6unBgTGdvLGsT97wYZVN/2mWp4EvVnsVxfQSFmlE/PZ4U4Oi7T9/5BuzlRVZlypq9bHHJg6mLdV7uQwHvFtWhEWQ83reJYPnePyckgJxY8qQUsLL1jWwmMjRRC8uD/D64/dQMVVryXdUCorHWQLMVs/QV/xYYR27NCgy908JzCYVVCsWlVrbnS/nfbi10yq1PNuBSUKpUmnfdbXZSFFrGbNOjIUZEZcfavE0daV/b5/HJHHHwXbS9VfvwjoGBhjIIxMErK0xOqj5oNJEKvecyJJyhCC7Sc8BLu3IPG7s+dtmCTGiR8Yllpy8VfOtZbLBIpSREXR7A+panGeKNJFJbeV3w/DsBAcJ+vlKY96eSyrWYWeDgsr2AKVVOdJUt2v08XK9O4BILKoDwo6UzRouPUumzdYgiHA1G1SwBtTp9XVek0eTepdibi1dwB328j/gB4AzlF/kdGmkuia5O/llhLA9T89Zfcl5EuQnCKckfCw0Z8lLJ8tjj0mEtjKjXuu5i6ddyBQmhQrozhRhv22WKZaLGkfBPDOLSbAVZ5JKtOOfBo95m8jeamGvpY3AjH+iYL6cmVjJ2acBtG5MWIAhVKzy9IucmUx0XQ
+X-GND-Cause: dmFkZTGhtrL9Cb7uXPcR0LTL1O368UyEJSwtX/Zu71dpZyZpj0jlt0XceXpcFcjR2zJ4LSptuE61jCNBVz5vpVF6q9/uRYXOBTbSFRtDdfGAEgahic3rCbEDR1mcuLfTqiO+ZdvWIUWmT9QN0SkA6Sky2pMCuzw/DY8Ab5DGRafQNI1lm87TIzjbmrt4xF99IpmlvLBnMqXrBmqxTUNlKCqUEELExWWXE0KOyOuqntunZ8UoaH6witT72ayGvDh77v+Iy06CqDcucZxphIM8eyja6H8N5aoJASQ3Mr4M5hYSFAa000052AQoIm7jSFwWbzyxtqtXH8Pa5gRdXDDxXfc6JV63REsHkwGxBnvBebBEpbgN63LzaXKSD4zuxN9MeByOXJW+KnWK5s7+bpzr/AG9xjh77B9avBg40y9xvOdQEm1oWOaEBOi5qHMUzvHOc1uD51jLU4ftmL6L+qF5D8OliTAY0M5ojsphohpLTSCdt58P/0o1zx9Jo0JH3lmcN/wELW75+pPg2sKjt5j3QZDuZMg4Bc5PeMkfnQgXm2vDCnT+pDH3S3ozzFVnTYCRXHWqpAlr0SbiQvtVEoZ2ayrtHMQ3iM4r8WP5Hc6aQMl0q3oNeOMT+MOoUK+b4EOtEWYldhl6hgVbeLPzblCvU06Ns83vzkRRpJZxBBM1UPJ6P5cySQ
 X-GND-State: clean
 X-GND-Score: -100
 
-This series adds a power_on_reason driver for the Freescale ColdFire
-MCF5441x Reset Controller Module.
+Add a driver that decodes the Reset Status Register (RSR) of the
+Freescale ColdFire MCF5441x Reset Controller Module at probe time
+and exposes the cause via the power_on_reason sysfs ABI.
 
-The MCF5441x has six documented sources of reset (power-on, external
-pin, software, PLL loss-of-clock, PLL loss-of-lock and core watchdog
-timeout). They are latched in the Reset Status Register (RSR) at
-0xec090001. The new driver decodes that register once at probe time
-and exposes the result through the power_on_reason sysfs ABI.
+The RSR can latch several cause bits simultaneously (Reference
+Manual chapter 12.3.2); the driver picks one cause per a priority
+that favours the most explanatory diagnostic.
 
-Patch 1 is the driver. Patch 2 registers the platform device at the
-SoC level so every MCF5441x board picks the driver up automatically.
-
-The driver is scoped to MCF5441x. Other ColdFire variants document an
-RSR at different addresses with different bit layouts; covering them
-is left for follow-up patches by anyone with the relevant boards.
-
-Tested on a MCF5441x board: after sysrq-b, the sysfs attribute
-reports "software reset".
+The register layout is described in the driver so it can be built
+with COMPILE_TEST on any architecture.
 
 Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
-Changes in v2:
-- Describe the RSR layout in the driver instead of a separate m68k
-  header patch, so the driver can be built with COMPILE_TEST.
-- Allow building under COMPILE_TEST (depends on M5441x || COMPILE_TEST).
-- Add a platform_device_id table and drop the now-redundant
-  MODULE_ALIAS (Sebastian Reichel).
-- Drop the standalone "define RSR cause bits" patch; the layout now
-  lives in the driver. The series is two patches instead of three.
-- Link to v1: https://patch.msgid.link/20260602-coldfire-rcm-power-on-reason-v1-0-fbc3eab0c016@yoseli.org
-
----
-Jean-Michel Hautbois (2):
-      power: reset: add MCF5441x RCM power-on reason driver
-      m68k: coldfire/5441x: register mcf-rcm-reset platform device
-
  MAINTAINERS                         |   6 ++
- arch/m68k/coldfire/m5441x.c         |  25 +++++++
  drivers/power/reset/Kconfig         |  12 ++++
  drivers/power/reset/Makefile        |   1 +
  drivers/power/reset/mcf-rcm-reset.c | 126 ++++++++++++++++++++++++++++++++++++
- 5 files changed, 170 insertions(+)
----
-base-commit: 979c294509f9248fe1e7c358d582fb37dd5ca12d
-change-id: 20260528-coldfire-rcm-power-on-reason-7a234acfdddd
+ 4 files changed, 145 insertions(+)
 
-Best regards,
---  
-Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e035a3be797c..a82adb6fa40f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10196,6 +10196,12 @@ S:	Maintained
+ F:	drivers/mmc/host/sdhci-esdhc-mcf.c
+ F:	include/linux/platform_data/mmc-esdhc-mcf.h
+ 
++FREESCALE COLDFIRE M5441X RCM POWER-ON REASON DRIVER
++M:	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
++L:	linux-m68k@lists.linux-m68k.org
++S:	Maintained
++F:	drivers/power/reset/mcf-rcm-reset.c
++
+ FREESCALE DIU FRAMEBUFFER DRIVER
+ M:	Timur Tabi <timur@kernel.org>
+ L:	linux-fbdev@vger.kernel.org
+diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
+index 124afb99febe..bce996bbef28 100644
+--- a/drivers/power/reset/Kconfig
++++ b/drivers/power/reset/Kconfig
+@@ -128,6 +128,18 @@ config POWER_RESET_LINKSTATION
+ 
+ 	  Say Y here if you have a Buffalo LinkStation LS421D/E.
+ 
++config POWER_RESET_MCF_RCM
++	tristate "Freescale ColdFire RCM power-on reason driver"
++	depends on M5441x || COMPILE_TEST
++	depends on HAS_IOMEM
++	help
++	  This driver exposes the cause of the last reset on Freescale
++	  ColdFire 5441x SoCs through the standard power_on_reason sysfs
++	  ABI. It reads the Reset Status Register (RSR) of the Reset
++	  Controller Module once at probe time and reports a normalised
++	  string (regular power-up, reset button action, software reset
++	  or unknown reason).
++
+ config POWER_RESET_MACSMC
+ 	tristate "Apple SMC reset/power-off driver"
+ 	depends on MFD_MACSMC
+diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
+index d7ae97241a83..e31cab4ba78e 100644
+--- a/drivers/power/reset/Makefile
++++ b/drivers/power/reset/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_POWER_RESET_GPIO) += gpio-poweroff.o
+ obj-$(CONFIG_POWER_RESET_GPIO_RESTART) += gpio-restart.o
+ obj-$(CONFIG_POWER_RESET_HISI) += hisi-reboot.o
+ obj-$(CONFIG_POWER_RESET_LINKSTATION) += linkstation-poweroff.o
++obj-$(CONFIG_POWER_RESET_MCF_RCM) += mcf-rcm-reset.o
+ obj-$(CONFIG_POWER_RESET_MACSMC) += macsmc-reboot.o
+ obj-$(CONFIG_POWER_RESET_MSM) += msm-poweroff.o
+ obj-$(CONFIG_POWER_RESET_MT6323) += mt6323-poweroff.o
+diff --git a/drivers/power/reset/mcf-rcm-reset.c b/drivers/power/reset/mcf-rcm-reset.c
+new file mode 100644
+index 000000000000..a3164bdcdfb3
+--- /dev/null
++++ b/drivers/power/reset/mcf-rcm-reset.c
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Freescale ColdFire MCF5441x RCM power-on reason driver
++ *
++ * Copyright (C) 2026 Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
++ */
++
++#include <linux/io.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/power/power_on_reason.h>
++
++/*
++ * Reset Status Register (RSR) layout, MCF54418 Reference Manual chapter
++ * 12.3.2. The register is 8-bit read-only and latches the cause (or
++ * causes) of the most recent reset until the next one occurs.
++ */
++#define MCF_RSR_SOFT		0x20	/* Last reset caused by software */
++#define MCF_RSR_LOC		0x10	/* Last reset caused by PLL loss of clock */
++#define MCF_RSR_POR		0x08	/* Last reset caused by power-on */
++#define MCF_RSR_EXT		0x04	/* Last reset caused by external pin */
++#define MCF_RSR_WDRCORE		0x02	/* Last reset caused by core watchdog */
++#define MCF_RSR_LOL		0x01	/* Last reset caused by PLL loss of lock */
++
++#define MCF_RSR_KNOWN_CAUSES	(MCF_RSR_POR | MCF_RSR_EXT | MCF_RSR_WDRCORE | \
++				 MCF_RSR_LOC | MCF_RSR_LOL | MCF_RSR_SOFT)
++
++struct mcf_rcm {
++	const char *reason;
++};
++
++/*
++ * Decode RSR into a power_on_reason string.
++ *
++ * The MCF5441x Reset Status Register can latch several cause bits at the
++ * same time (Reference Manual chapter 12.3.2: "one or more status bits
++ * may be set at the same time"). A power-on, for example, also resets
++ * the PLL and may co-flag LOC and LOL during the boot sequence. The
++ * power_on_reason ABI carries a single string, so this routine picks
++ * one cause; the chosen priority surfaces the most explanatory one for
++ * diagnostics:
++ *
++ *   POR              cold boot dominates any spurious co-flagged cause
++ *   EXT              operator action via the RESET pin
++ *   WDRCORE          core watchdog timeout, a fault to investigate
++ *   LOC, LOL         PLL clock or lock failure, hardware fault
++ *   SOFT             explicit software-requested reset
++ */
++static const char *mcf_rcm_decode(u8 rsr)
++{
++	if (rsr & MCF_RSR_POR)
++		return POWER_ON_REASON_REGULAR;
++	if (rsr & MCF_RSR_EXT)
++		return POWER_ON_REASON_RST_BTN;
++	if (rsr & MCF_RSR_WDRCORE)
++		return POWER_ON_REASON_WATCHDOG;
++	if (rsr & (MCF_RSR_LOC | MCF_RSR_LOL))
++		return POWER_ON_REASON_CPU_CLK_FAIL;
++	if (rsr & MCF_RSR_SOFT)
++		return POWER_ON_REASON_SOFTWARE;
++	return POWER_ON_REASON_UNKNOWN;
++}
++
++static ssize_t power_on_reason_show(struct device *dev,
++				    struct device_attribute *attr, char *buf)
++{
++	struct mcf_rcm *rcm = platform_get_drvdata(to_platform_device(dev));
++
++	return sysfs_emit(buf, "%s\n", rcm->reason);
++}
++static DEVICE_ATTR_RO(power_on_reason);
++
++static struct attribute *mcf_rcm_attrs[] = {
++	&dev_attr_power_on_reason.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(mcf_rcm);
++
++static int mcf_rcm_probe(struct platform_device *pdev)
++{
++	struct mcf_rcm *rcm;
++	void __iomem *base;
++	u8 rsr;
++
++	rcm = devm_kzalloc(&pdev->dev, sizeof(*rcm), GFP_KERNEL);
++	if (!rcm)
++		return -ENOMEM;
++
++	base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(base))
++		return PTR_ERR(base);
++
++	rsr = readb_relaxed(base);
++	rcm->reason = mcf_rcm_decode(rsr);
++
++	platform_set_drvdata(pdev, rcm);
++
++	if (!(rsr & MCF_RSR_KNOWN_CAUSES))
++		dev_warn(&pdev->dev, "Unknown reset cause (RSR=0x%02x)\n", rsr);
++	else
++		dev_info(&pdev->dev, "Starting after %s (RSR=0x%02x)\n",
++			 rcm->reason, rsr);
++
++	return 0;
++}
++
++static const struct platform_device_id mcf_rcm_id[] = {
++	{ "mcf-rcm-reset", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(platform, mcf_rcm_id);
++
++static struct platform_driver mcf_rcm_driver = {
++	.probe = mcf_rcm_probe,
++	.id_table = mcf_rcm_id,
++	.driver = {
++		.name = "mcf-rcm-reset",
++		.dev_groups = mcf_rcm_groups,
++	},
++};
++module_platform_driver(mcf_rcm_driver);
++
++MODULE_AUTHOR("Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>");
++MODULE_DESCRIPTION("Freescale ColdFire RCM power-on reason driver");
++MODULE_LICENSE("GPL");
+
+-- 
+2.39.5
 
