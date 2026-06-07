@@ -1,39 +1,38 @@
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9244136E494
-	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jun 2026 08:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6759E37BE86
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  7 Jun 2026 09:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780822224; cv=none; b=etc6247avtOqmNff5aO7ezQdbXcOdoI45/1UxS6WT+MTKASOMBn7MbyGX+NUI1Tu48wv0VAxAhCjOwGky2zfQILKl9lmqzJIVBxPUh7DT/gTraZhKX3y5sl3ecLqf0L07d4MNbZb/FeB3NErIHZbUQTK9IQBLDRhU8OHhkvPICI=
+	t=1780822858; cv=none; b=IUlGDNAGYqmgjTtwyv5GhGs5JVX/k/Er0kVYb4fWOhgaL/CWxsTVUdWiWhqxEGwpqJR4V31meEtCEPP1Dgz/XayYjTSr6HFjpl87L8lRx0K//1K3nyntnhExaoCtA6flS/5cA9IDwQYDtl926K0pNRQ48Hjeyjsht7b6mfwgWIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780822224; c=relaxed/simple;
-	bh=gUeJPt4wa+X19kBRX2INzHwAP4HUW5hrNAe6NujEUyw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=KzEYWRatOmXXrCu9YJFL8fCqA1h7dYEAKMK2MnirkgIZ81L+ssImUDQ3839sVO7koe+1ADbVEtFm8Vx9mnvD3y0PS4DcvXsShRRiPNVgDPfauBeevVupfjBqcScMr63WLfEmXxOKlc8l9lrILPip07fZ/OzBGiKIrXMkOPQVtH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=dFfvNazm; arc=none smtp.client-ip=217.70.183.194
+	s=arc-20240116; t=1780822858; c=relaxed/simple;
+	bh=lZlmYjhH5lcKC+wcaIyZsZolPJosiL9oQdkaC2Tj37c=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=eX79Q+YVylfmGgKDwor3WMw02O5JrasA47y8+tgRHP9OAKiqtSchh7G8I1vjxbNmhzJp4FTkl/ustfaPgfLunlOhX7P9NNOyrwcSE5ct8MRoH/ufeZNAHN6JHrBA4uWIgpU8lmUofv8Ut8B/ios6hFQQug7tMW6f+OuNkpxeZhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=ifxKt4OF; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="dFfvNazm"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 748DE3EBD2;
-	Sun,  7 Jun 2026 08:50:13 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="ifxKt4OF"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 973393EBBC;
+	Sun,  7 Jun 2026 09:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1780822214;
+	t=1780822849;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TykClniNvh2ivjjob+1T1w+oZ7+He2Bbxyt6cZe6aVk=;
-	b=dFfvNazmEQITniEkrtIqHEtyEEog+uWh1UFS0evhZjFDpfPoTiT05VSWVfg+HWfDE5LLET
-	/nY7hrjCFPgvl3AaYSgjdLRM+2LXyWkkOTFFAsekhB5wMiITn4kzRIFmpJ72sMZHmyihMO
-	yCAZhlEu9MNUHkhPYsQWXxxVicthMqMvTgojwrRQ8PJfbAU+Hiu6nZnSgGAbX9scwP2CZM
-	dPJoxrO7u0zSrHWEHwi6W5FEcwOoKO9DmujA+sNBSggIEZTZCqby2odJZV7jbA5ilYU89l
-	5AwWn1qyEZByh0LBqvVfEMoMQHWGB8vPOiuVrjPS/Vqhg3YXltUCSuedK442sg==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6xcpIg2hT8E09rThYFsm1gWVtrpT8JJHtcR5VBXH8zc=;
+	b=ifxKt4OFaUa9aQeMVpUGx5hr47FIj6a/qiJnB7uTWrNCpm3O7U1fde9UDyLzEeBN6vRGpT
+	jQGKSL5tZSSiQHQ4xtezTAHq7S4M9RfmQlXi5G0I0f858xpecYYK2vduzYQFn0fcCyCpZ3
+	nG1wxlD+wFQ4RBBNc4bXvOzR7GZXp52Ao6Hk4DqRfRZF6wNJzyUc1g+V7lj1fOj9pO97NP
+	x9S+QvvY0shkfCHR02mYs7PhdImJDQJDryuJzXrLFxvBNlM0dmPhpCSrM7iFBTexB1b4gh
+	03nRm5KjPoaX3dk8rkJCWw9zk/vgJGpjQpmjFUx132L4Hsm1FSjlyWMuSQL4tQ==
 From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Date: Sun, 07 Jun 2026 10:49:53 +0200
-Subject: [PATCH v2 1/2] power: reset: add MCF5441x RCM power-on reason
- driver
+Subject: [PATCH v2 0/2] rtc: add a driver for the Freescale MCF5441x
+ on-chip RTC
+Date: Sun, 07 Jun 2026 11:00:39 +0200
+Message-Id: <20260607-jmh-upstream-coldfire-rtc-v2-0-948d2b1ed146@yoseli.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -42,231 +41,78 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260607-coldfire-rcm-power-on-reason-v2-1-d0039d8a91e8@yoseli.org>
-References: <20260607-coldfire-rcm-power-on-reason-v2-0-d0039d8a91e8@yoseli.org>
-In-Reply-To: <20260607-coldfire-rcm-power-on-reason-v2-0-d0039d8a91e8@yoseli.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, 
- Sebastian Reichel <sre@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- linux-pm@vger.kernel.org, 
+X-B4-Tracking: v=1; b=H4sIADczJWoC/32NywqDMBBFf0Wybkoy4Kur/kdxoXGiI2pkEqUi/
+ nt97Ls8cO85m/DIhF68ok0wLuTJjQfAIxKmLccGJdUHC1CQqBhy2Q2tnCcfGMtBGtfXlhglByO
+ zrFJ5XIGxkInjPzFa+l7uT3Gzn6sOTTiF56IlHxyvV3zR5+7uJAr+dBYtldSoIS91mtZg36vz2
+ NPTcSOKfd9/PoTQuNUAAAA=
+X-Change-ID: 20260529-jmh-upstream-coldfire-rtc-88b095b2cf28
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Greg Ungerer <gerg@linux-m68k.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, 
  Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1780822212; l=7277;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1780822848; l=2399;
  i=jeanmichel.hautbois@yoseli.org; s=20240925; h=from:subject:message-id;
- bh=gUeJPt4wa+X19kBRX2INzHwAP4HUW5hrNAe6NujEUyw=;
- b=31EVJ+lFP/6qBgI8A0ePW8pDrOOcN00Wrfh+kzYYMTp2nvjgCwhzmDIqhjwUUPSE4HlhhXTnR
- 0Rj5KDZFZv6DcfxKtjB4a5U7rintqOjKUPGVY5EwjIYwD9b32JbwHJz
+ bh=lZlmYjhH5lcKC+wcaIyZsZolPJosiL9oQdkaC2Tj37c=;
+ b=nXPoCiWDDm+KVdnPhuc67qCNDATPekHijnSK8i7CON6IUY5iv3zUytimNwtGSWI166XY6/1Nb
+ 080KsUvQLQICcHUmw8AQlY1o54Nd2NMPMlHCXpSeRizTNycYpB06GfS
 X-Developer-Key: i=jeanmichel.hautbois@yoseli.org; a=ed25519;
  pk=MsMTVmoV69wLIlSkHlFoACIMVNQFyvJzvsJSQsn/kq4=
 X-GND-Sasl: jeanmichel.hautbois@yoseli.org
-X-GND-Cause: dmFkZTGhtrL9Cb7uXPcR0LTL1O368UyEJSwtX/Zu71dpZyZpj0jlt0XceXpcFcjR2zJ4LSptuE61jCNBVz5vpVF6q9/uRYXOBTbSFRtDdfGAEgahic3rCbEDR1mcuLfTqiO+ZdvWIUWmT9QN0SkA6Sky2pMCuzw/DY8Ab5DGRafQNI1lm87TIzjbmrt4xF99IpmlvLBnMqXrBmqxTUNlKCqUEELExWWXE0KOyOuqntunZ8UoaH6witT72ayGvDh77v+Iy06CqDcucZxphIM8eyja6H8N5aoJASQ3Mr4M5hYSFAa000052AQoIm7jSFwWbzyxtqtXH8Pa5gRdXDDxXfc6JV63REsHkwGxBnvBebBEpbgN63LzaXKSD4zuxN9MeByOXJW+KnWK5s7+bpzr/AG9xjh77B9avBg40y9xvOdQEm1oWOaEBOi5qHMUzvHOc1uD51jLU4ftmL6L+qF5D8OliTAY0M5ojsphohpLTSCdt58P/0o1zx9Jo0JH3lmcN/wELW75+pPg2sKjt5j3QZDuZMg4Bc5PeMkfnQgXm2vDCnT+pDH3S3ozzFVnTYCRXHWqpAlr0SbiQvtVEoZ2ayrtHMQ3iM4r8WP5Hc6aQMl0q3oNeOMT+MOoUK+b4EOtEWYldhl6hgVbeLPzblCvU06Ns83vzkRRpJZxBBM1UPJ6P5cySQ
 X-GND-State: clean
 X-GND-Score: -100
+X-GND-Cause: dmFkZTFDk84YLy1veZXYw5Wq2Rsrn4DWp01f6DDUbIlK8WrRsH+Zr5YRmoRn6Ob+XIPpijCvRE2GRDUgU+6IG4FnmtRoj0x6QuP7W6KVYQovCadkZIP+dI/+IMUFVOR3OgZEdtYpwP7GCvvBggBevFALHZrTabA2Zvz2XhLnXbUxUquGWDUpYIhuVj4Ki13LksxmBRv7/i44Z1JmbLAOBCVbm6g4AtR8D6xf5uqZkKrAPR605UmeusD1MNgiT+NXTfkSKq0zDyWB1dVTvqcB39DP9o+y1fYgQvQ80XnnOM9Vy1QJzt0hASTA8Saa6lrihM6RuIcRjY/VBckZ93G0xdXqFFjHf3xxM1W30ru0gSc6W4K4DdWPo1N25kUkuEE2SQS0JN2aLlKHEq9rYpEuPJ/w+sDTk8W0sUsFNvAOa3xdbBGXFuCP1ARyHSrB2h/pw0Z7YjWhAo/ucLQ9PbViKOdJAV5gTZDpgfpyLv/VPsPRARjhoWNXqxjtxxt1zl9fVfmmyLuDtaVPyx5V5iTT6oHtMfUGJ3YY1grjqL2EGCHd+VaVjA/8a48zrKvuH6AUwyK82muqKhiY1qzKl2Q4Yn2Wj0i7cgnZmoTHH+UM9iu9BO8dWyAtPE3ZAzaR+f5Q7Fr6rtgTuXDXWbfHAAlwFrs4nqTmuRUT0u90eyFHLhZ1M0xOeg
 
-Add a driver that decodes the Reset Status Register (RSR) of the
-Freescale ColdFire MCF5441x Reset Controller Module at probe time
-and exposes the cause via the power_on_reason sysfs ABI.
+This series adds support for the "robust" real time clock found on the
+Freescale MCF5441x family of ColdFire SoCs.
 
-The RSR can latch several cause bits simultaneously (Reference
-Manual chapter 12.3.2); the driver picks one cause per a priority
-that favours the most explanatory diagnostic.
+Patch 1 adds the rtc-class driver. Besides the usual time/calendar and a
+one-shot alarm, the block contains 2KB of battery-backed standby RAM that
+survives a main-power loss while VSTBY_RTC is supplied; the driver exposes
+it through the nvmem framework so userspace can persist data (for example a
+reset/reboot counter) across power cycles. Register and standby-RAM writes
+go through the RTC_CR[WE] knock sequence, the time counters are read under
+the RTC_SR[INVAL] guard described in the reference manual, and the time/date
+encoding is forced to binary at probe.
 
-The register layout is described in the driver so it can be built
-with COMPILE_TEST on any architecture.
+Patch 2 registers the platform device from the m5441x ColdFire SoC support
+code so that every MCF5441x board gets the RTC. The MCFRTC_BASE, MCFRTC_SIZE
+and MCF_IRQ_RTC definitions it relies on already exist in
+arch/m68k/include/asm/m5441xsim.h.
+
+The driver has been exercised on an MCF54418-based board: it registers
+as an rtc device, exposes the standby RAM as an nvmem device, and a value
+written to the standby RAM survives a mains power-cycle.
 
 Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 ---
- MAINTAINERS                         |   6 ++
- drivers/power/reset/Kconfig         |  12 ++++
- drivers/power/reset/Makefile        |   1 +
- drivers/power/reset/mcf-rcm-reset.c | 126 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 145 insertions(+)
+Changes in v2:
+- Patch 1: wait_valid() now uses read_poll_timeout_atomic() instead of an
+  open-coded busy-wait. The atomic variant is required because it runs with
+  p->lock held and interrupts off. (Geert Uytterhoeven)
+- Patch 1: nvram_read()/nvram_write() use unsigned int rather than size_t
+  for the chunk/index locals, and scoped_guard(spinlock_irqsave) instead of
+  explicit spin_lock_irqsave()/spin_unlock_irqrestore(). (Geert Uytterhoeven)
+- Link to v1: https://patch.msgid.link/20260602-jmh-upstream-coldfire-rtc-v1-0-1e129a177d2f@yoseli.org
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e035a3be797c..a82adb6fa40f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10196,6 +10196,12 @@ S:	Maintained
- F:	drivers/mmc/host/sdhci-esdhc-mcf.c
- F:	include/linux/platform_data/mmc-esdhc-mcf.h
- 
-+FREESCALE COLDFIRE M5441X RCM POWER-ON REASON DRIVER
-+M:	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-+L:	linux-m68k@lists.linux-m68k.org
-+S:	Maintained
-+F:	drivers/power/reset/mcf-rcm-reset.c
-+
- FREESCALE DIU FRAMEBUFFER DRIVER
- M:	Timur Tabi <timur@kernel.org>
- L:	linux-fbdev@vger.kernel.org
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index 124afb99febe..bce996bbef28 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -128,6 +128,18 @@ config POWER_RESET_LINKSTATION
- 
- 	  Say Y here if you have a Buffalo LinkStation LS421D/E.
- 
-+config POWER_RESET_MCF_RCM
-+	tristate "Freescale ColdFire RCM power-on reason driver"
-+	depends on M5441x || COMPILE_TEST
-+	depends on HAS_IOMEM
-+	help
-+	  This driver exposes the cause of the last reset on Freescale
-+	  ColdFire 5441x SoCs through the standard power_on_reason sysfs
-+	  ABI. It reads the Reset Status Register (RSR) of the Reset
-+	  Controller Module once at probe time and reports a normalised
-+	  string (regular power-up, reset button action, software reset
-+	  or unknown reason).
-+
- config POWER_RESET_MACSMC
- 	tristate "Apple SMC reset/power-off driver"
- 	depends on MFD_MACSMC
-diff --git a/drivers/power/reset/Makefile b/drivers/power/reset/Makefile
-index d7ae97241a83..e31cab4ba78e 100644
---- a/drivers/power/reset/Makefile
-+++ b/drivers/power/reset/Makefile
-@@ -13,6 +13,7 @@ obj-$(CONFIG_POWER_RESET_GPIO) += gpio-poweroff.o
- obj-$(CONFIG_POWER_RESET_GPIO_RESTART) += gpio-restart.o
- obj-$(CONFIG_POWER_RESET_HISI) += hisi-reboot.o
- obj-$(CONFIG_POWER_RESET_LINKSTATION) += linkstation-poweroff.o
-+obj-$(CONFIG_POWER_RESET_MCF_RCM) += mcf-rcm-reset.o
- obj-$(CONFIG_POWER_RESET_MACSMC) += macsmc-reboot.o
- obj-$(CONFIG_POWER_RESET_MSM) += msm-poweroff.o
- obj-$(CONFIG_POWER_RESET_MT6323) += mt6323-poweroff.o
-diff --git a/drivers/power/reset/mcf-rcm-reset.c b/drivers/power/reset/mcf-rcm-reset.c
-new file mode 100644
-index 000000000000..a3164bdcdfb3
---- /dev/null
-+++ b/drivers/power/reset/mcf-rcm-reset.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Freescale ColdFire MCF5441x RCM power-on reason driver
-+ *
-+ * Copyright (C) 2026 Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/power/power_on_reason.h>
-+
-+/*
-+ * Reset Status Register (RSR) layout, MCF54418 Reference Manual chapter
-+ * 12.3.2. The register is 8-bit read-only and latches the cause (or
-+ * causes) of the most recent reset until the next one occurs.
-+ */
-+#define MCF_RSR_SOFT		0x20	/* Last reset caused by software */
-+#define MCF_RSR_LOC		0x10	/* Last reset caused by PLL loss of clock */
-+#define MCF_RSR_POR		0x08	/* Last reset caused by power-on */
-+#define MCF_RSR_EXT		0x04	/* Last reset caused by external pin */
-+#define MCF_RSR_WDRCORE		0x02	/* Last reset caused by core watchdog */
-+#define MCF_RSR_LOL		0x01	/* Last reset caused by PLL loss of lock */
-+
-+#define MCF_RSR_KNOWN_CAUSES	(MCF_RSR_POR | MCF_RSR_EXT | MCF_RSR_WDRCORE | \
-+				 MCF_RSR_LOC | MCF_RSR_LOL | MCF_RSR_SOFT)
-+
-+struct mcf_rcm {
-+	const char *reason;
-+};
-+
-+/*
-+ * Decode RSR into a power_on_reason string.
-+ *
-+ * The MCF5441x Reset Status Register can latch several cause bits at the
-+ * same time (Reference Manual chapter 12.3.2: "one or more status bits
-+ * may be set at the same time"). A power-on, for example, also resets
-+ * the PLL and may co-flag LOC and LOL during the boot sequence. The
-+ * power_on_reason ABI carries a single string, so this routine picks
-+ * one cause; the chosen priority surfaces the most explanatory one for
-+ * diagnostics:
-+ *
-+ *   POR              cold boot dominates any spurious co-flagged cause
-+ *   EXT              operator action via the RESET pin
-+ *   WDRCORE          core watchdog timeout, a fault to investigate
-+ *   LOC, LOL         PLL clock or lock failure, hardware fault
-+ *   SOFT             explicit software-requested reset
-+ */
-+static const char *mcf_rcm_decode(u8 rsr)
-+{
-+	if (rsr & MCF_RSR_POR)
-+		return POWER_ON_REASON_REGULAR;
-+	if (rsr & MCF_RSR_EXT)
-+		return POWER_ON_REASON_RST_BTN;
-+	if (rsr & MCF_RSR_WDRCORE)
-+		return POWER_ON_REASON_WATCHDOG;
-+	if (rsr & (MCF_RSR_LOC | MCF_RSR_LOL))
-+		return POWER_ON_REASON_CPU_CLK_FAIL;
-+	if (rsr & MCF_RSR_SOFT)
-+		return POWER_ON_REASON_SOFTWARE;
-+	return POWER_ON_REASON_UNKNOWN;
-+}
-+
-+static ssize_t power_on_reason_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	struct mcf_rcm *rcm = platform_get_drvdata(to_platform_device(dev));
-+
-+	return sysfs_emit(buf, "%s\n", rcm->reason);
-+}
-+static DEVICE_ATTR_RO(power_on_reason);
-+
-+static struct attribute *mcf_rcm_attrs[] = {
-+	&dev_attr_power_on_reason.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(mcf_rcm);
-+
-+static int mcf_rcm_probe(struct platform_device *pdev)
-+{
-+	struct mcf_rcm *rcm;
-+	void __iomem *base;
-+	u8 rsr;
-+
-+	rcm = devm_kzalloc(&pdev->dev, sizeof(*rcm), GFP_KERNEL);
-+	if (!rcm)
-+		return -ENOMEM;
-+
-+	base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
-+
-+	rsr = readb_relaxed(base);
-+	rcm->reason = mcf_rcm_decode(rsr);
-+
-+	platform_set_drvdata(pdev, rcm);
-+
-+	if (!(rsr & MCF_RSR_KNOWN_CAUSES))
-+		dev_warn(&pdev->dev, "Unknown reset cause (RSR=0x%02x)\n", rsr);
-+	else
-+		dev_info(&pdev->dev, "Starting after %s (RSR=0x%02x)\n",
-+			 rcm->reason, rsr);
-+
-+	return 0;
-+}
-+
-+static const struct platform_device_id mcf_rcm_id[] = {
-+	{ "mcf-rcm-reset", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(platform, mcf_rcm_id);
-+
-+static struct platform_driver mcf_rcm_driver = {
-+	.probe = mcf_rcm_probe,
-+	.id_table = mcf_rcm_id,
-+	.driver = {
-+		.name = "mcf-rcm-reset",
-+		.dev_groups = mcf_rcm_groups,
-+	},
-+};
-+module_platform_driver(mcf_rcm_driver);
-+
-+MODULE_AUTHOR("Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>");
-+MODULE_DESCRIPTION("Freescale ColdFire RCM power-on reason driver");
-+MODULE_LICENSE("GPL");
+---
+Jean-Michel Hautbois (2):
+      rtc: m5441x: add MCF5441x on-chip RTC driver
+      m68k: coldfire/m5441x: register the on-chip RTC
 
--- 
-2.39.5
+ MAINTAINERS                 |   6 +
+ arch/m68k/coldfire/m5441x.c |  29 +++
+ drivers/rtc/Kconfig         |  12 +
+ drivers/rtc/Makefile        |   1 +
+ drivers/rtc/rtc-m5441x.c    | 579 ++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 627 insertions(+)
+---
+base-commit: 979c294509f9248fe1e7c358d582fb37dd5ca12d
+change-id: 20260529-jmh-upstream-coldfire-rtc-88b095b2cf28
+
+Best regards,
+--  
+Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 
