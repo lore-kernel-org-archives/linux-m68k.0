@@ -1,100 +1,161 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554A72DECDE
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jun 2026 10:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9C03B38A9
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  8 Jun 2026 22:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780916019; cv=none; b=JJt5SVFAEVvC9/0L0m83dAOpASUVVOeyCsPNi0IrVrlI3b1l1yjipJ37isGvUFw/jswpkXsCeEQOpHfhq5aH/c/tu4vOEJ4ijgWYhPiWfUn5ol+g/zhfeJgWyzrSc4pF5Ev7GDaPM/Pl7xCRCzKsWRA7/XX3F17QB//GFU03zto=
+	t=1780958429; cv=none; b=BpG85r8JMZIHDgQghivMTUohKs+N73d0rpU0aewXRJeRqagw8gBoEsbfsyIhhsM3MquwKMFYvK5CieP3S7cvLsn5J0TNmun8bRNOLc5rink+pqEGESCBQmbHpn06czixw/XvppdyFrIv3Te94PufekAXaz6vsLgEOgcmpbpH7zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780916019; c=relaxed/simple;
-	bh=Ta1ZsCqpRUZti2Vq9Z+hPPEtIydKAG4B2o//fkeZ52g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sQjEJ8rtrWf3/LVaNLls5FopRICzjvQFKkh2mdnOEfj0Z+ULiyi5QNYuFKlpkJFyhB4E/8sbgqoi7E/b25QWLvYOcpW/2jy/4LC3FwSzM9KIsqec7VQwdlVnMhFGjxIVqIJRDPVygm0FpLyivYv3WowTFTRhb/51y2nxcYshtjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id ED707437D3;
-	Mon,  8 Jun 2026 10:53:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BB21F00893;
-	Mon,  8 Jun 2026 10:53:35 +0000 (UTC)
-Message-ID: <5ef09276-0b04-4e5a-a472-c73d01ee6ac2@linux-m68k.org>
-Date: Mon, 8 Jun 2026 20:53:31 +1000
+	s=arc-20240116; t=1780958429; c=relaxed/simple;
+	bh=gEPVrds7gEFEphX/SOjUp9gfWo9lcAIcZ3iOZ4q4VtY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=r1nTQ/CgtljVn9TH/2bzh0Q74JXPfOFoECfaklg9heIa4/c8QXK2OTtHRoY/T/t3QG4WRIKdUDxkWceXY5i5ZSGGLkT2DD49+RV6meZXlIm9ManxiB3y3T7hwUw9aisOQRzNeSuUBhb0w0++0R+Dgu7toM1gaHr4hosUWIStlUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de; spf=pass smtp.mailfrom=posteo.de; dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b=Mtf0VsGG; arc=none smtp.client-ip=185.67.36.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b="Mtf0VsGG"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id 7A491240105
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jun 2026 00:40:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.de; s=2017;
+	t=1780958420; bh=hxGcOhFq9zW6pO8J0EHOVLLdkeJxAjYoFEDoPUqkzwM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:To:Cc:Autocrypt:OpenPGP:From;
+	b=Mtf0VsGG0ht0VJVYlrFD6J8Jizmmkc3tfYvj9owBDmZpej6WRO1eQ5hhWURXJGNkW
+	 RXTbfsIEuzW5t87sLIEP/4VC4w8mf3ePSeGy4ybtwUYntuMxuwJfBkUUNYKWb4QDjG
+	 gxHqMw5tMxlpeKYMKo+zsfKh5Pbtyvc25yE4GDI0I0qqVqCU9hFdSvWEH/GRwpgH6A
+	 Z3fTYhzIMCSkLrkzyHXKDe645yMbYUQ2Pb50jfjRFK9H/IiuJGUVplxlDdxt1HoI8r
+	 ey99tQFsiWgtuw03MbhNKtVJF1qzessL8QJ67T+QSIKoDmmjWrEmOodBfoGEx+LMnN
+	 NHhY/G5YrsE1Q==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4gZ6SK5Scvz6twP;
+	Tue,  9 Jun 2026 00:40:17 +0200 (CEST)
+From: Markus Probst <markus.probst@posteo.de>
+Subject: [PATCH RESEND v2 0/2] ACPI: SPCR: Support UART clock frequency
+ field
+Date: Mon, 08 Jun 2026 22:40:19 +0000
+Message-Id: <20260609-acpi_spcr-v2-0-3cd9a3bda727@posteo.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: hash: Use lower_16_bits() helper
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Heiko Stuebner <heiko@sntech.de>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- kernel test robot <lkp@intel.com>
-References: <b55e9bd0532c0cad519809c86e0a8400060d75a1.1780559561.git.geert@linux-m68k.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <b55e9bd0532c0cad519809c86e0a8400060d75a1.1780559561.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Ard Biesheuvel <ardb@kernel.org>, 
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jiri Slaby <jirislaby@kernel.org>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+ linux-efi@vger.kernel.org, linux-serial@vger.kernel.org, 
+ Markus Probst <markus.probst@posteo.de>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1829;
+ i=markus.probst@posteo.de; h=from:subject:message-id;
+ bh=gEPVrds7gEFEphX/SOjUp9gfWo9lcAIcZ3iOZ4q4VtY=;
+ b=owEBiQJ2/ZANAwAIATR2H/jnrUPSAcsmYgBqJ0TRWmlvS+iDS4RaSZNSpOZsbtyV/w/di3ow9
+ 7LoRPNRVoyJAk8EAAEIADkWIQSCdBjE9KxY53IwxHM0dh/4561D0gUCaidE0RsUgAAAAAAEAA5t
+ YW51MiwyLjUrMS4xMiwyLDIACgkQNHYf+OetQ9ICTxAAoLF2wHMzEaFxFyLVErT+NGnWvAUTc2h
+ XoJw9ab7gk1Htg3Ym3idaaIHSd/8f4H2377uAiHwRNNTu1BgexGnCNr3eOqfgy/BuS8AgfWHCtF
+ StUFpYLqx+h6ic/aTkGBQ0Fu9ytfX9Cnk1J6XL3fhYtuV93WcYxHm0RACxhYG9WNA/Z58MnBnS+
+ xxyxYlIP8vbXcB5v190h1SEsz3D6xtWECj5Bwh4aoGgOP4GIdO2dVec/fxwrHdzt6NobClJ0rbq
+ 0+OYSIaq54cmOgjvDauZRkwCDbkmWBHX2N3UWApOImMd2JcGm92wzfmjpPNaM+AIPiLkpPlaiMZ
+ eIwQEVhz4xY0UkuvDMF2fjXLVDcIiPQhR1263QBTe7O+grzbRzRsaWg1SKkgqarKqkbLtKrh4n/
+ qnaS2yjhIM9qR4TqZ+0fDXn0/b0HZw8PCUxZUbB3TMlufX4LQHFq4ax3qn8G4eKjTIecg6ELir0
+ E+jsxVqBu8JSLWc0QatoCnLM7OhPPA59KjDecJjACciUbqoMdbFqu1EJA4te4njJzLJySlVZlJa
+ cztayl0PSF2qPeBHA7lnBqgXYwkZ2IBbXSC6bLSSmZiHF9IWw67EjwaVIcqlRQ5mdNnjmeclPfx
+ QNHUd8P9HcgIgKvcfWx8baOAZQtajiYneBxguKLYQE3V1avqdjPE=
+X-Developer-Key: i=markus.probst@posteo.de; a=openpgp;
+ fpr=827418C4F4AC58E77230C47334761FF8E7AD43D2
+Autocrypt: addr=markus.probst@posteo.de; prefer-encrypt=mutual;
+  keydata=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
+  aBeNN4ijKZchBXHPgVx+YtWRHfcm4l8=
+OpenPGP: url=https://posteo.de/keys/markus.probst@posteo.de.asc; preference=encrypt
 
-Hi Geert,
+Support the uart clock frequency in the SPCR table.
+See the commit messages for details.
 
-On 4/6/26 17:54, Geert Uytterhoeven wrote:
-> When building for m68k with CONFIG_M68000=y and C=1:
-> 
->      drivers/clk/rockchip/clk-rk3528.c: note: in included file (through include/linux/hash.h, include/linux/slab.h):
->      arch/m68k/include/asm/hash.h:57:24: warning: cast truncates bits from constant value (18720 becomes 8720)
->      arch/m68k/include/asm/hash.h:57:24: warning: cast truncates bits from constant value (1e8e8 becomes e8e8)
-> 
-> Sparse does not realize the truncation is intentional.
-> Make this explicit by using the lower_16_bits() helper instead, which
-> also masks the unwanted bits.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202605191434.PQkj2Rki-lkp@intel.com/
-> Reported-by: Heiko Stuebner <heiko@sntech.de>
-> Closes: https://lore.kernel.org/20260603213726.1025094-1-heiko@sntech.de/
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Markus Probst <markus.probst@posteo.de>
+---
+Changes in v2:
+- fix uart_clk_freq possibly being interpreted as parity/bits/flow
+- Link to v1: https://patch.msgid.link/20260505-acpi_spcr-v1-1-fd4bc6f4eb53@posteo.de
 
-FWIW:
+---
+Markus Probst (2):
+      serial: earlycon: add uart_clk_freq parameter
+      ACPI: SPCR: Support UART clock frequency field
 
-Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+ arch/m68k/virt/config.c          |  2 +-
+ arch/mips/mti-malta/malta-init.c |  2 +-
+ drivers/acpi/spcr.c              |  2 +-
+ drivers/firmware/efi/earlycon.c  |  2 +-
+ drivers/tty/serial/earlycon.c    | 17 ++++++++++++-----
+ include/linux/serial_core.h      |  7 +++++--
+ 6 files changed, 21 insertions(+), 11 deletions(-)
+---
+base-commit: aa61612ab641d7d62b0b6889f2c7c9251489f6e3
+change-id: 20260430-acpi_spcr-61902fd923f2
+-----BEGIN PGP SIGNATURE-----
 
-Regards
-Greg
-
-
-
-
-> ---
-> No change in generated code.
-> 
->   arch/m68k/include/asm/hash.h | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/m68k/include/asm/hash.h b/arch/m68k/include/asm/hash.h
-> index 6d0d0c893f16dd49..6dadf493706632f5 100644
-> --- a/arch/m68k/include/asm/hash.h
-> +++ b/arch/m68k/include/asm/hash.h
-> @@ -2,6 +2,8 @@
->   #ifndef _ASM_HASH_H
->   #define _ASM_HASH_H
->   
-> +#include <linux/wordpart.h>
-> +
->   /*
->    * If CONFIG_M68000=y (original mc68000/010), this file is #included
->    * to work around the lack of a MULU.L instruction.
-> @@ -54,7 +56,7 @@ static inline u32 __attribute_const__ __hash_32(u32 x)
->   	: "=&d,d" (a), "=&r,r" (b)
->   	: "r,roi?" (x));	/* a+b = x*0x8647 */
->   
-> -	return ((u16)(x*0x61c8) << 16) + a + b;
-> +	return (lower_16_bits(x * 0x61c8) << 16) + a + b;
->   }
->   
->   #endif	/* _ASM_HASH_H */
+iQJPBAABCAA5FiEEgnQYxPSsWOdyMMRzNHYf+OetQ9IFAmoTfSQbFIAAAAAABAAO
+bWFudTIsMi41KzEuMTIsMiwyAAoJEDR2H/jnrUPS9e4P/3ObHEJDC0UywwA9xj1z
+kzoUrs/iZrus7ROb6ri7MzHVY8riTrzHZrvMOkdWBAxuMXrnzdLwDx96qnQuiaHm
+GJBDNBAxoRzBxVkkQJi9Osa+zr8DOEC3+gsv3dCqNqI4DT1wXsBEMi4zgg5dJ5Ye
+oFFjEXN/EAiFVa6DHeNMaoJ69sLbYjvWUxAvU74Zpa6zjQMc1n9oCcJFc5D6cvkx
+9/WozDV7rTNjmqDy9kcmyb3geeEMd14/y3j8adIe6qB0kkIJQwQr671eIWzGA7pg
+353gxRmbLaT9YCKJvHsP32N7Z2EUhrp/o3U6Od/Q0I+qDz13RBSuDLUTogi/mhAw
+U7i9a2WHaD2LvwQdt5azLjuo7etx5si84E/cT5G2xJBwUeC2ftYjZulJZs8BMKZp
+Oac3Ln/qWCEVw52DWOcxPPIkxlGfjEZOqWBajkRI4NdY3+d0o0/nBK+RYfOt30sf
+L3+yLnMmqBjF1RkF1Lm3kTZ589K2KSxGOKMGoYKZqyvV4Ato4w4EoIwL+MQJw7SD
+De/BNNpFpTDqJxqgnl4HuELZRzmiKAQCGMwDq285I0Ng1r7xlxFCDYBJnyjnm2Qd
+LbD/ZH5yl0beq/S1qZla+JIRjYdbRNQlLUSh3MqBxgll0Xg5GYLk2qeeF+xJJDCq
+LkXKR59axau1efToWKWn7CBZ
+=EGzU
+-----END PGP SIGNATURE-----
+-- 
+Markus Probst <markus.probst@posteo.de>
 
