@@ -1,221 +1,198 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCF6C3E3D9D
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jun 2026 14:31:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD4143C05D
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jun 2026 14:56:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781015500; cv=none; b=KAapzpkBoDpV7qhxCLWdnGK0fl8pjZYYr62t1j9CDozjatpdVyTNR0t29iqrQ8JM/5Tn3PiyhRl65ClSP+sV1xY9UlbF1/ulYcNeleOnnnvJmN4dJ2DaygP4SQMBum4hwt6OMXthjAdqDWYgDp8lA+GAiZVnjZGcr3htR+VwOs8=
+	t=1781017012; cv=none; b=iDXBtktsM6lI+xdfNd5dwbu3y/qXkbWvxxIYh7qP5/cTt4/dGV1qfCDE+SVvBY/XSGgMpKS3kQMw0fDIHX+JXBIiWs4Z7YZXxY1GfoB3ZlN6R7aED6fZIf6R273RlnKUOf3cACoessFAiw4Kdn0yoRME+IadU/pYjAOzFuYALW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781015500; c=relaxed/simple;
-	bh=Pw9+4Mrp9WsQ7Y6Tm5fYDG9zf9NzBasMKVvWut0G1s4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N/AdeKQjx76Ot3MZtkNrNbOF5q0qrFWSGMuS1qQNoASrNaFfgmSbwVrv3IhRG4lh6ISp5zkzW9hDf1lpSztLBUFzymW0xYLZIlCh4/KzDM/8kgTUGvnW71IBbwkbOwyifAbhse5l3Kd0YfU9qxwTKSCKAU/tmvxRiUuAmzOuRjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbLl1CPO; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1781017012; c=relaxed/simple;
+	bh=zj9Wu73Ltk1sOzoQhTIe1zSxGj1RV23OuqYlJJxGKB0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=q5FC7lsW1ZmHKPgSkbRiPNA0j5R18anw7GZv8AB/58gEKoMi6pkHE5RVV5T2WCotSg2dXZMpgMekVd7oDvK1L+2xWVfwFbYi8N3y0koArvjBKZz45Ra8md1MBSKnkUVVFqDfyIsGVBDJVaEXilMokoRC2zPkI9NY2PnaMDFzgGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de; spf=pass smtp.mailfrom=posteo.de; dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b=aQ9CXDh1; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbLl1CPO"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1D9D3601D6;
-	Tue,  9 Jun 2026 14:31:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B2601F0089B;
-	Tue,  9 Jun 2026 14:31:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781015497;
-	bh=wnHCt9onRqoY+cbLWgHyZIs8YweKMqJpPWB0NBmJh2E=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=hbLl1CPOPdBa9wwSIomEqpEB19Sog2GlcWZzvi+192TOFGd0tHaqnXzjO+ttFDkBS
-	 qh+Q846IKjyEOyPDlo7AXxgSfRr5icx44xSRVQP7idXOk99r3eLnqU9bvVlGDiWp00
-	 /0fIEkM3abVn/YnOuToHmxTRG6DfTH5Lhzqkhw9EU8jsltzWfMiGaR0PogWTxQabwJ
-	 DbL+jxATM1WTbDBOyEKFFcUHwtNNDQpPsK7HGx41pXyVsTfzyR1JG+GnmXINndd3mY
-	 RUTPXeg7chvWQZN5Fzpa/QwzmKLbY8m90ELYKTX4vZTBj2etG/4Xj+Ic+B9MtrbGDB
-	 H56uWIZ+5hvmA==
-Message-ID: <490153c1-b6e4-4933-99e6-0f0ee96bb500@kernel.org>
-Date: Wed, 10 Jun 2026 00:31:33 +1000
+	dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b="aQ9CXDh1"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 18029240028
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  9 Jun 2026 16:56:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=posteo.de; s=2017;
+	t=1781017004; bh=TkCq9T8Scv4lUIRS90x1KMGa7qnjIlxLdGrH7gewdXk=;
+	h=Message-ID:Subject:From:To:Cc:Date:Autocrypt:Content-Type:
+	 MIME-Version:OpenPGP:From;
+	b=aQ9CXDh120YKFaeBkxSGZWEMwoUezQ90aFYnHQjOzWsERTlS1L8fj5zd4aVKajIhg
+	 dWq1k8TiHkEjBq+W25d7ScC8Pfh/lXcd0ux/pDemyaB93atdj2L8hNUgZ3q23W9lgP
+	 iOhFIZbpGER7850bUyj0uLY1NxopjD4v+kYtgK+eiXXxRGjuuOl3d/hIxqIXMwGITt
+	 GGnzg5uEa1nyws/xtraiyrDbbp/RBEjhxyIMncMS4ZqQCUAyUHbgOXEmueiv+nLUZT
+	 mnegwzfVMGxWZpgiQvK4QfRuEocZr3MR4RlkMtQvlaycASUAPr9hbvCasPsDxLwClD
+	 TzzvYvOwvyl3A==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4gZX6x5xJkz6txs;
+	Tue,  9 Jun 2026 16:56:41 +0200 (CEST)
+Message-ID: <44a6e266e6ead9b7cbbb6c9c11f18f21a13d8c2a.camel@posteo.de>
+Subject: Re: [PATCH RESEND v2 1/2] serial: earlycon: add uart_clk_freq
+ parameter
+From: Markus Probst <markus.probst@posteo.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Ard Biesheuvel
+ <ardb@kernel.org>, Ilias Apalodimas	 <ilias.apalodimas@linaro.org>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>,  Jiri Slaby
+ <jirislaby@kernel.org>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, 	linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, 	linux-efi@vger.kernel.org,
+ linux-serial@vger.kernel.org
+Date: Tue, 09 Jun 2026 14:56:43 +0000
+In-Reply-To: <CAMuHMdXH0mR9Sr+ze2_m94uc46_7gubApzWOkf+vUO+w=DmNoQ@mail.gmail.com>
+References: <20260609-acpi_spcr-v2-0-3cd9a3bda727@posteo.de>
+	 <20260609-acpi_spcr-v2-1-3cd9a3bda727@posteo.de>
+	 <CAMuHMdXH0mR9Sr+ze2_m94uc46_7gubApzWOkf+vUO+w=DmNoQ@mail.gmail.com>
+Autocrypt: addr=markus.probst@posteo.de; prefer-encrypt=mutual;
+ keydata=mQINBGiDvXgBEADAXUceKafpl46S35UmDh2wRvvx+UfZbcTjeQOlSwKP7YVJ4JOZrVs93
+ qReNLkOWguIqPBxR9blQ4nyYrqSCV+MMw/3ifyXIm6Pw2YRUDg+WTEOjTixRCoWDgUj1nOsvJ9tVA
+ m76Ww+/pAnepVRafMID0rqEfD9oGv1YrfpeFJhyE2zUw3SyyNLIKWD6QeLRhKQRbSnsXhGLFBXCqt
+ 9k5JARhgQof9zvztcCVlT5KVvuyfC4H+HzeGmu9201BVyihJwKdcKPq+n/aY5FUVxNTgtI9f8wIbm
+ fAjaoT1pjXSp+dszakA98fhONM98pOq723o/1ZGMZukyXFfsDGtA3BB79HoopHKujLGWAGskzClwT
+ jRQxBqxh/U/lL1pc+0xPWikTNCmtziCOvv0KA0arDOMQlyFvImzX6oGVgE4ksKQYbMZ3Ikw6L1Rv1
+ J+FvN0aNwOKgL2ztBRYscUGcQvA0Zo1fGCAn/BLEJvQYShWKeKqjyncVGoXFsz2AcuFKe1pwETSsN
+ 6OZncjy32e4ktgs07cWBfx0v62b8md36jau+B6RVnnodaA8++oXl3FRwiEW8XfXWIjy4umIv93tb8
+ 8ekYsfOfWkTSewZYXGoqe4RtK80ulMHb/dh2FZQIFyRdN4HOmB4FYO5sEYFr9YjHLmDkrUgNodJCX
+ CeMe4BO4iaxUQARAQABtCdNYXJrdXMgUHJvYnN0IDxtYXJrdXMucHJvYnN0QHBvc3Rlby5kZT6JAl
+ QEEwEIAD4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AWIQSCdBjE9KxY53IwxHM0dh/4561
+ D0gUCaIZ9HQIZAQAKCRA0dh/4561D0pKmD/92zsCfbD+SrvBpNWtbit7J9wFBNr9qSFFm2n/65qen
+ NNWKDrCzDsjRbALMHSO8nigMWzjofbVjj8Nf7SDcdapRjrMCnidS0DuW3pZBo6W0sZqV/fLx+AzgQ
+ 7PAr6jtBbUoKW/GCGHLLtb6Hv+zjL17KGVO0DdQeoHEXMa48mJh8rS7VlUzVtpbxsWbb1wRZJTD88
+ ALDOLTWGqMbCTFDKFfGcqBLdUT13vx706Q29wrDiogmQhLGYKc6fQzpHhCLNhHTl8ZVLuKVY3wTT+
+ f9TzW1BDzFTAe3ZXsKhrzF+ud7vr6ff9p1Zl+Nujz94EDYHi/5Yrtp//+N/ZjDGDmqZOEA86/Gybu
+ 6XE/v4S85ls0cAe37WTqsMCJjVRMP52r7Y1AuOONJDe3sIsDge++XFhwfGPbZwBnwd4gEVcdrKhnO
+ ntuP9TvBMFWeTvtLqlWJUt7n8f/ELCcGoO5acai1iZ59GC81GLl2izObOLNjyv3G6hia/w50Mw9MU
+ dAdZQ2MxM6k+x4L5XeysdcR/2AydVLtu2LGFOrKyEe0M9XmlE6OvziWXvVVwomvTN3LaNUmaINhr7
+ pHTFwDiZCSWKnwnvD2+jA1trKq1xKUQY1uGW9XgSj98pKyixHWoeEpydr+alSTB43c3m0351/9rYT
+ TTi4KSk73wtapPKtaoIR3rOFHLQXbWFya3VzLnByb2JzdEBwb3N0ZW8uZGWJAlEEEwEIADsWIQSCd
+ BjE9KxY53IwxHM0dh/4561D0gUCaIO9eAIbAwULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIXgAAKCR
+ A0dh/4561D0oHZEACEmk5Ng9+OXoVxJJ+c9slBI2lYxyBO84qkWjoJ/0GpwoHk1IpyL+i+kF1Bb7y
+ Hx9Tiz8ENYX7xIPTZzS8hXs1ksuo76FQUyD6onA/69xZIrYZ0NSA5HUo62qzzMSZL7od5e12R6OPR
+ lR0PIuc4ecOGCEq3BLRPfZSYrL54tiase8HubXsvb6EBQ8jPI8ZUlr96ZqFEwrQZF/3ihyV6LILLk
+ geExgwlTzo5Wv3piOXPTITBuzuFhBJqEnT25q2j8OumGQ+ri8oVeAzx24g1kc11pwpR0sowfa5MvZ
+ WrrBcaIL7uJfR/ig7FyGnTQ1nS3btf3p0v8A3fc4eUu/K2No3l2huJp3+LHhCmpmeykOhSB63Mj3s
+ 3Q87LD0HE0HBkTEMwp+sD97ZRpO67H5shzJRanUaDTb/mREfzpJmRT1uuec0X2zItL7a6itgMJvYI
+ KG29aJLX3fTzzVzFGPgzVZYEdhu4y53p0qEGrrC1JtKR6DRPE1hb/OdWOkjmJ75+PPLD9U5IuRd6y
+ sHJWsEBR1F0wkMPkEofWsvMYJzWXx/rvTWO8N4D6HigTgBXAXNgbc3IHpHlkvKoBJptv6DRVRtIrz
+ 0G0cfBY0Sm7he4N2IYDWWdGnPBZ3rlLSdj5EiBU2YWgIgtLrb8ZNJ3ZlhYluGnBJDGRqy2jC9s1jY
+ 66sLA9rQZMHhJTzMyIDwweGlvMzJAcG9zdGVvLmV1PokCbQQTAQgAVxYhBIJ0GMT0rFjncjDEczR2
+ H/jnrUPSBQJpa71VGxSAAAAAAAQADm1hbnUyLDIuNSsxLjExLDIsMgIbAwULCQgHAgIiAgYVCgkIC
+ wIEFgIDAQIeBwIXgAAKCRA0dh/4561D0gKJD/9uOQKYlsDoQX65Gd0LiMT0C+5vXgr3VI0PHDOwcv
+ 51fJ3A1vNyPZRFPGrz8+mDEXUQOF/INfnz5Tu1QHwf+iYcWcTGAN/FHgVR6ET6VBNU2hJaKhu+Ggo
+ kjYyJTOvyX+3yNRUfSny0GjTjIPuPTErjqmHF+BtjXslpgwqnNMznf3lRIuUjRORupos6p3k1DndE
+ 5vzUTmXSvMyXyOD2KhBl/kL76k0bHYyAQytZPag12pltrtFbA/r2phDGN2si8PooDT99bSTJjaM45
+ MTAAHbHKJfvgfK41bNFD5mMtpWpL195XRtS0Nrxdg3PaYBxN5gtTG0RyZfpYRlkdEhm+jj/8RxuSG
+ i/qdhRdbiI7K2IELWeQVHSNDi9JabR/UzlR4NSnhfAjRIVlRM+eFbUl8XwxwVrAkojF5IraH2qRvg
+ VCmuFsHUW07FUlrDrzpjXsD73cKppoFGDCdDR0BHJepXbFLS9+AqkT+guRJlnCTg2p+TQtnbwPgKp
+ Vj98JixovCl99zRYTsL2bRNU5+q8iET65VMJ1ydyNanvLd5vI/NqDkXhlXLsGmdaDTtu4R21PkToX
+ dQNGrZ91M9nlIBKw8Y7c7xZ4098qX2b8JX/CxD+gC1r4C8vuA3GkhFLx+KlkON7LyiJPkrePp6Qky
+ jfGillcaQOqFZ3WwVqyzG1BUfTow==
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-eHB9O6aTLRCXTUNZoAwj"
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 3/4] mmc: sdhci-esdhc-mcf: do not use readl()/writel() on
- ColdFire
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- arnd@kernel.org, Greg Ungerer <gerg@linux-m68k.org>,
- adureghello@baylibre.com, linux-mmc@vger.kernel.org
-References: <20260506142644.3234270-2-gerg@kernel.org>
- <20260506142644.3234270-6-gerg@kernel.org>
- <CAPDyKFpZ3h7Kx845K+f1EZs2ijgjBmKsLOX8GCuP=C5WV-d8KQ@mail.gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@kernel.org>
-In-Reply-To: <CAPDyKFpZ3h7Kx845K+f1EZs2ijgjBmKsLOX8GCuP=C5WV-d8KQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+OpenPGP: url=https://posteo.de/keys/markus.probst@posteo.de.asc; preference=encrypt
 
 
-On 12/5/26 01:11, Ulf Hansson wrote:
-> On Wed, 6 May 2026 at 16:34, Greg Ungerer <gerg@kernel.org> wrote:
->>
->> From: Greg Ungerer <gerg@linux-m68k.org>
->>
->> The implementation of the readX() and writeX() family of IO access
->> functions is non-standard on ColdFire platforms. They check the supplied
->> IO address and will return either big or little endian results based on
->> that check. This is non-standard, they are expected to always return
->> little-endian byte ordered data. Unfortunately this behavior also means
->> that ioreadX()/iowroteX() and their big-endian counter parts
->> ioreadXbe()/iowriteXbe() are wrong. This is now in the process of being
->> cleaned up and fixed.
->>
->> Change the use of the readX() and writeX() access functions in this driver
->> to use the recently defined specific ColdFire internal SoC hardware IO
->> access functions mcf_read8()/mcf_read16()/mcf_read32() and
->> mcf_write8()/mcf_write16()/mcf_write32().
->>
->> There is no functional change to the driver. Though it does have the
->> effect of making the IO access slightly more efficient, since there is
->> no longer a need to do the address check at every register access.
->>
->> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
->> ---
->>   drivers/mmc/host/sdhci-esdhc-mcf.c | 24 ++++++++++++------------
->>   1 file changed, 12 insertions(+), 12 deletions(-)
->>
->> Note that the patches to introduce mcf_readX() and mcf_writeX functions
->> are not in mainline yet. They are currently in the m68knommu git tree
->> for-next branch, and so should also be in linux-next.
-> 
-> Okay, so please resubmit the $subject patch when the mcf_readX|writeX
-> functions are available in a v7.x-rc so I can pick it up.
-> 
-> Another option is if someone can host an immutable branch for me to
-> pull in the changes for mcf_readX|writeX.
+--=-eHB9O6aTLRCXTUNZoAwj
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Those changes are now on an immutable branch at:
+On Tue, 2026-06-09 at 08:53 +0200, Geert Uytterhoeven wrote:
+> Hi Markus,
+>=20
+> On Tue, 9 Jun 2026 at 00:40, Markus Probst <markus.probst@posteo.de> wrot=
+e:
+> > Add `uart_clk_freq` parameter to `setup_earlycon`. This allows the
+> > options string to be reused with `add_preferred_console`, while still
+> > allowing to set the uart clock frequency. This will be used in the
+> > following commit ("ACPI: SPCR: Support UART clock frequency field").
+> >=20
+> > No logical change intended.
+> >=20
+> > Signed-off-by: Markus Probst <markus.probst@posteo.de>
+>=20
+> > --- a/drivers/tty/serial/earlycon.c
+> > +++ b/drivers/tty/serial/earlycon.c
+> > @@ -135,11 +135,14 @@ static int __init parse_options(struct earlycon_d=
+evice *device, char *options)
+> >         return 0;
+> >  }
+> >=20
+> > -static int __init register_earlycon(char *buf, const struct earlycon_i=
+d *match)
+> > +static int __init register_earlycon(char *buf, unsigned int uart_clk_f=
+req,
+> > +                                   const struct earlycon_id *match)
+> >  {
+> >         int err;
+> >         struct uart_port *port =3D &early_console_dev.port;
+> >=20
+> > +       port->uartclk =3D uart_clk_freq;
+>=20
+> Who is actually consuming this value?
 
-git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git
-cf-internal-io branch
+I think primarily init_port in drivers/tty/serial/8250/8250_early.c.
 
-I will follow up after 7.2-rc1 is out with this patch set as well.
+> Earlycon typically works with the serial console, as configured before
+> Linux boot by the firmware.
+Thats defined in the SPCR table. If "Configured Baud Rate" is set to 0,
+it will use it as is [1]. If not, it will configure it.
 
-Regards
-Greg
+Thanks
+- Markus Probst
 
+[1]https://learn.microsoft.com/en-us/windows-hardware/drivers/bringup/seria=
+l-port-console-redirection-table
 
+> The Microsoft doc referenced in patch 2 seem to agree with that:
+>=20
+>    "On a system where the BIOS or system firmware uses the serial
+>     port for console input/output, this table should be used to convey
+>     information about the settings, to ensure a seamless transition
+>     between the firmware console output and Windows EMS output."
+>=20
+> > +
+> >         /* On parsing error, pass the options buf to the setup function=
+ */
+> >         if (buf && !parse_options(&early_console_dev, buf))
+> >                 buf =3D NULL;
+>=20
+> Gr{oetje,eeting}s,
+>=20
+>                         Geert
 
-     
+--=-eHB9O6aTLRCXTUNZoAwj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-> Kind regards
-> Uffe
-> 
->>
->> diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-esdhc-mcf.c
->> index 375fce5639d7..6853521e8b2c 100644
->> --- a/drivers/mmc/host/sdhci-esdhc-mcf.c
->> +++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
->> @@ -55,7 +55,7 @@ static inline void esdhc_clrset_be(struct sdhci_host *host,
->>          if (reg == SDHCI_HOST_CONTROL)
->>                  val |= ESDHC_PROCTL_D3CD;
->>
->> -       writel((readl(base) & ~mask) | val, base);
->> +       mcf_write32((mcf_read32(base) & ~mask) | val, base);
->>   }
->>
->>   /*
->> @@ -71,7 +71,7 @@ static void esdhc_mcf_writeb_be(struct sdhci_host *host, u8 val, int reg)
->>          if (reg == SDHCI_HOST_CONTROL) {
->>                  u32 host_ctrl = ESDHC_DEFAULT_HOST_CONTROL;
->>                  u8 dma_bits = (val & SDHCI_CTRL_DMA_MASK) >> 3;
->> -               u8 tmp = readb(host->ioaddr + SDHCI_HOST_CONTROL + 1);
->> +               u8 tmp = mcf_read8(host->ioaddr + SDHCI_HOST_CONTROL + 1);
->>
->>                  tmp &= ~0x03;
->>                  tmp |= dma_bits;
->> @@ -82,12 +82,12 @@ static void esdhc_mcf_writeb_be(struct sdhci_host *host, u8 val, int reg)
->>                   */
->>                  host_ctrl |= val;
->>                  host_ctrl |= (dma_bits << 8);
->> -               writel(host_ctrl, host->ioaddr + SDHCI_HOST_CONTROL);
->> +               mcf_write32(host_ctrl, host->ioaddr + SDHCI_HOST_CONTROL);
->>
->>                  return;
->>          }
->>
->> -       writel((readl(base) & mask) | (val << shift), base);
->> +       mcf_write32((mcf_read32(base) & mask) | (val << shift), base);
->>   }
->>
->>   static void esdhc_mcf_writew_be(struct sdhci_host *host, u16 val, int reg)
->> @@ -110,24 +110,24 @@ static void esdhc_mcf_writew_be(struct sdhci_host *host, u16 val, int reg)
->>                   * As for the fsl driver,
->>                   * we have to set the mode in a single write here.
->>                   */
->> -               writel(val << 16 | mcf_data->aside,
->> +               mcf_write32(val << 16 | mcf_data->aside,
->>                         host->ioaddr + SDHCI_TRANSFER_MODE);
->>                  return;
->>          }
->>
->> -       writel((readl(base) & mask) | (val << shift), base);
->> +       mcf_write32((mcf_read32(base) & mask) | (val << shift), base);
->>   }
->>
->>   static void esdhc_mcf_writel_be(struct sdhci_host *host, u32 val, int reg)
->>   {
->> -       writel(val, host->ioaddr + reg);
->> +       mcf_write32(val, host->ioaddr + reg);
->>   }
->>
->>   static u8 esdhc_mcf_readb_be(struct sdhci_host *host, int reg)
->>   {
->>          if (reg == SDHCI_HOST_CONTROL) {
->>                  u8 __iomem *base = host->ioaddr + (reg & ~3);
->> -               u16 val = readw(base + 2);
->> +               u16 val = mcf_read16(base + 2);
->>                  u8 dma_bits = (val >> 5) & SDHCI_CTRL_DMA_MASK;
->>                  u8 host_ctrl = val & 0xff;
->>
->> @@ -137,7 +137,7 @@ static u8 esdhc_mcf_readb_be(struct sdhci_host *host, int reg)
->>                  return host_ctrl;
->>          }
->>
->> -       return readb(host->ioaddr + (reg ^ 0x3));
->> +       return mcf_read8(host->ioaddr + (reg ^ 0x3));
->>   }
->>
->>   static u16 esdhc_mcf_readw_be(struct sdhci_host *host, int reg)
->> @@ -149,14 +149,14 @@ static u16 esdhc_mcf_readw_be(struct sdhci_host *host, int reg)
->>          if (reg == SDHCI_HOST_VERSION)
->>                  reg -= 2;
->>
->> -       return readw(host->ioaddr + (reg ^ 0x2));
->> +       return mcf_read16(host->ioaddr + (reg ^ 0x2));
->>   }
->>
->>   static u32 esdhc_mcf_readl_be(struct sdhci_host *host, int reg)
->>   {
->>          u32 val;
->>
->> -       val = readl(host->ioaddr + reg);
->> +       val = mcf_read32(host->ioaddr + reg);
->>
->>          /*
->>           * RM (25.3.9) sd pin clock must never exceed 25Mhz.
->> @@ -245,7 +245,7 @@ static void esdhc_mcf_pltfm_set_clock(struct sdhci_host *host,
->>           * fvco = fsys * outdvi1 + 1
->>           * fshdc = fvco / outdiv3 + 1
->>           */
->> -       temp = readl(pll_dr);
->> +       temp = mcf_read32(pll_dr);
->>          fsys = pltfm_host->clock;
->>          fvco = fsys * ((temp & 0x1f) + 1);
->>          fesdhc = fvco / (((temp >> 10) & 0x1f) + 1);
->> --
->> 2.54.0
->>
->>
-> 
+-----BEGIN PGP SIGNATURE-----
 
+iQJPBAABCAA5FiEEgnQYxPSsWOdyMMRzNHYf+OetQ9IFAmooKakbFIAAAAAABAAO
+bWFudTIsMi41KzEuMTIsMiwyAAoJEDR2H/jnrUPSTOQP/3lOjjeD4rihyrtDkGdA
+vD1xzqthwYFbU2fa+qQ1yTgmbp+z5+h7rcbx8T5S2Y7HkuLbilRDe7Q8SGJocpIg
+T9085pQlUhA9lCVY+5s0oXqUp+8rSaUSwXYp+MJH8ZXSwPVdr4kDJoAOs8t+PUt0
+i9EGA6/6vW2ccRJwYLaCDxmJowfeQZJJG0cjG5ZWLPj2pOOwbXc3Tm8ZWrtfzADd
+sS9irtr/CjlO4L6CBUZ2qEIAT1QylOZTOat/B0Xw0VmupSK0ib31FfEzZsxOoCnR
+0Dx16p95q+DMLIKa7zgAhrUyvrJjxI2pDpALJfXrbwhjMbjhB+d6lIfL0kEJF8F3
+JJg5y5X9ixNdfWomlDFFn6IyLzcuTqrymCLcW14h/lIuGlAv4CDg3OS/i4T+wBW+
+raRTVeakyeBUxxwS499UN0EmcFuxI6CuYiEd9it6kbBJU/4w4mfsbB5Lr2eoWh3m
+OSuACvoFlS84V3+SQbbziaTFRo+eLtyNfHHpKNM4d2n2Pdn5tWdoXKkoGacl5hhJ
+maQmavGZGDX2pWcpdmoB8fDys9gHkhVdMPUPWSdA8KQ3YG01u2gF98UeClteWJOW
+tWr4TpLpsrH/5rzFgz4usuMXaetG7wyeMdjVq+7LjG1pGjbeEifYux73o2CxjPkg
+6DHab0pVROd5cS1MZIXwtSA/
+=g1gl
+-----END PGP SIGNATURE-----
+
+--=-eHB9O6aTLRCXTUNZoAwj--
