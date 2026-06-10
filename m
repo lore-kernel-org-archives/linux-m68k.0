@@ -1,135 +1,93 @@
-Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5703215C14F
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2026 00:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F803876BD
+	for <linux-m68k@vger.kernel.org>; Wed, 10 Jun 2026 07:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781051981; cv=none; b=Yvq2SPEL33GABk0bWKSOVP2gZ7aurC7Wk864FOYo8Jr85NB7Wgr28EkLz/1fcv4On79HQcTLPNeLc+Gbf6bogIkHQc91Qo6AKZv84jH9bAFWS/bVjDpfNhO9cXDL6Y44a8r3Gy7889OuWPGG+W+F0B347KjxjR5OS41LSQcYAN4=
+	t=1781075160; cv=none; b=b971r0seJxndjAdte+XPHE8mM7LiyGW21wMItwj/CidMMWoU+2HFldnttRz/XdZMzbGRxENrFIfFai8yLRqimmGnYUiPgznYzSM+hLzXBu5lXYbMWEFsjhxqukJ6e6qq+e1cpi3YQPuduVb7stSPTU0QQV699MtI/NRyXQSxaTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781051981; c=relaxed/simple;
-	bh=ms75ffeU1inQ6MIWweBPYlVxfpf6Yx9LxALBHB8c4TM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OpZ8SybOWR15LUc55edgek+tvRNSg6+6pevO7rAuwl/YLh2tTpe2oYVBwzWWtNzZ7rkS+HDFQQtvaahrq2BagsniLGBEsy3FH6HLFCGzy48lOdAZaL4POaoDu3Uf9yl/W7g2VNzT1rc1Q0OjavBUPFsGPP9VSTdlqdETxY0MNso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com; spf=pass smtp.mailfrom=polyxeno.com; dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b=VyY2ENsq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jo1hgMeq; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=polyxeno.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b="VyY2ENsq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jo1hgMeq"
-Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 6E9361400186;
-	Tue,  9 Jun 2026 20:39:38 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Tue, 09 Jun 2026 20:39:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polyxeno.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1781051978;
-	 x=1781138378; bh=ZoDG4RUYnd/6YoHo/7tTv5h9HmMcyuxk57DAPYJvsyc=; b=
-	VyY2ENsqGpLWqZXygS21mjA6njp5hIY1KPtwvNOw3eAmxHEhlOdh0qNu3AbFKvZL
-	rOrqYgk6hQC83xX7dWHVF0t5gZJjkg6ZRgK6XaPlus/eWiuZVKBG3+hfKgbzWPWV
-	XDF/gDIR9jOSzQKVI857neyqqN8i3piIX3c/XbP859fDPkg31nhQG/oQ71Ws0Y9/
-	gis1vBs3DDhHWO062Eiju33aWpG/pdiV4jZJwDifZGXFJB+V2Wu2A7gbZM7MeeAf
-	xI/84DnvKbnhIC/0es5/87neRKI/kvpJsj+aQjlyLsQy7nlZMr6f3LOwY7rhOESb
-	HrIQyT8KCbXZuIum54w7ZQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1781051978; x=
-	1781138378; bh=ZoDG4RUYnd/6YoHo/7tTv5h9HmMcyuxk57DAPYJvsyc=; b=j
-	o1hgMeqAyVvCkjcOTyZKzMufdH6mIz6KlzeiOPwKMA5Hq0aSfFlMkT48YexlQ4Sk
-	vdQb5rLKDmA0iNiW11Vbeb2B+CYPtcENTJ9tl6ecqTDq8dSAK6+Rk84fRXdcdoHY
-	DGiTT058rvBD3nE3u/qIXqWShutRvZVh7dsp8yHedL94HhgDi+rt18wK/ByTmg0B
-	bjMY23atWtrzyrCFnBWpr64g1a0wdEvPn94wUXhdUGotufKs7LDyQ4gq56C/+Okr
-	e03opGJ+cwNlcvbLYVz4Y22GHzCnwTGpGiybr5APzbJSX+jgcQPz+w98a8VuQK9a
-	te5JOhdJODjFQe+antPWQ==
-X-ME-Sender: <xms:SbIoajA9Zb4wp5h5r3U6oBIdze_eGPCdWwL8ZgHA3JLZlJO9sTqTiw>
-    <xme:SbIoanyzzHC1vE37T1lvHWdEk6RgVOF-x8WBcvlZbAAe4_vK77fKh3NGMeu4RsQWD
-    YHZlnXu0NWrsm1v347m1Q1Kz7XEBKh6kFV_8FBVf1haAd4tn-nYaCE>
-X-ME-Received: <xmr:SbIoan4XCOYIKXBi7l0K3kCSu7DCU73yI4LkSrxjNuLq3C9rRuh98tjCZbro6gze9Q>
-X-ME-Proxy-Cause: dmFkZTENRcTCDCEfam9c4btFwQZieytA23CVeQPOIhXFJ1QJG62h+oJ5jiDuvm4NMKBAzi
-    +Vt9FL6yf5y/fSMuycru8cswZas2P/Ck4dOCNgbridrPDK9W77tfcPkum8+lXpi52bEjSZ
-    b4mxJbr/ZxA1ilRIDYb4GBzwALE6+uCrhcRIEVai9moerGDry1uGwC82x6g+l8NIQ/QMs3
-    1pRtnx8Verb5zEyehCWywyEFIkzb6i+hsa8XgsNB58yTpyYlqg3WLuIo7ZnxWgR2rAATub
-    AZHnm+UEEBWpq9dgtQcZEkH+2U7fhmqN87WqfS0MSNh0tgJpAFezUi4FkMxZBmnMIy5Bc3
-    2lecCiRMrJSgZ5Z7DNRrE635YwuIIBOffbrMwtXtZXEqqRj6QB6z5Bb3cD3zHgCgnVKUAi
-    1WJdKL2Vhj6nbRguASZEEuPGPMZuTLIahtI4O5w2a2wcGaY1yYkDE1wYlYQnmmwOp+tiOi
-    5irysCSZhQSw1BHMO0e0V2eCRozu0m4/x3i2WRNiLtYgQ0drL208Bjhh891stu9uANOPPs
-    SLzSGRFN0DpxdTzJYbEpgFHWznKnRTpJpPPPSfHIp4/c2PYLUQr37agi5BFAcfM5GZc2wB
-    +09OmqZOFHFhyz86L9HULZ1CzL4sdOYSxCoPdiBGVopyHS+jnywpzXkIxZzw
-X-ME-Proxy: <xmx:SbIoaowHmhnJRthQmafjaG9yD7VLpL3j80FqBpJihHtcM8WYhtDTPA>
-    <xmx:SbIoarcZOHYELpbx3YiI7qMicu42G_LJ8KU0UK76QNGtSMvIBGM4Yg>
-    <xmx:SbIoatDH4uDLLZ_iFMz5BU2FU4A-tRM7tzFEdm9CvngPi_5e7lXUAw>
-    <xmx:SbIoav4sJdz0ipmO1rzuSx0EIm8AsDEglyvgDDexNfYrVShMsyROtw>
-    <xmx:SrIoamP5JsAW6hYp7GrTPBr-09L8JI_-4OZ7tDcaE4BHO4i--4khS8hq>
-Feedback-ID: i09fe4b60:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 9 Jun 2026 20:39:34 -0400 (EDT)
-Message-ID: <350e54ed-45f9-4022-ac79-85f980e1a298@polyxeno.com>
-Date: Wed, 10 Jun 2026 10:39:31 +1000
+	s=arc-20240116; t=1781075160; c=relaxed/simple;
+	bh=aC6gxO6DF4Un+4vCRFV56ypuj0LB02pxjNs+XFWH4DA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U6C2Ys/DDGyyVxPiXOGkIGhu4Xz6FPiLTCY7Ah3QIXOCsExQCSxKCBOEkNIVdobSdsL6bfN0ScK0eOc1P+heIQjDn3hQm7UVRjm5P7tbMdXKirMKHW5yTErnMuBuxFJpmHcS5TTN0sVZtzDZr5iT44SK8vZsDSCN7KNhW9Ps7n8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-6c3099b11a9so2523576137.2
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Jun 2026 00:05:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781075156; x=1781679956;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/C4uouLzzta8jybomfiYLS+MSW3qkR3oc9h/bVVgdK0=;
+        b=m0K0AFZAbDYlJU+LGsu9Fi8HyykBUTISxtYj7ZtL571wULNqjGkObIvjc0yTteb/hw
+         UqUYXRjOjklYs4mBZeX8miftRxtaiYuNB6x8QKl3uIvwvhc36TLD61FUeXBI1kdmT9nq
+         Zs3lmQg0wX9Fkm9zEzXWOWebvpNDzlZ6xEp9K2L94F2zz20feSWJEcoxjrZP3GhKoCBb
+         U5CUepuf8XQDZsv+oGvPnGkQDXtufpMIA8LtyRrTLqVkEaQ05ed5YrSagsZlqMRXhDnM
+         uaDmrQ7LacfvepZDmq6I6e9s8pEJ1i/IeKyI/LkI++alqgymlk+o8QhASyfxNgWkjc/D
+         OKug==
+X-Gm-Message-State: AOJu0YwocQitgiCYDmjtlcSeJJ7I7Rmuu4JTnJ3M14cyTUCSJ/aPullf
+	o41j0SKtwu44o00KtLicJRInskQsnotkuz5Wp9s1sUTR08WMUJ8RnFM80OGP6v57Qd8=
+X-Gm-Gg: Acq92OFZcEdkmc3sNIG+oCIi8j1/8YR/tVTaIqKQxMNii9tCnNCDNbFX6X0d8c/hM4Y
+	Vn/WnG6rSHfLj4kwRFal/zH1yuVEaMBJoGKM+iRVtWBGnhE/NuxzE1EeVhHllpw09AMPDlDOuyi
+	cN5Zlsv/LtYtsE0bY/VdDnrgkeg0OizHTkyCdPNhphBgRpGIka6lUjiJMmEXfer4ixkEQ8/LNJR
+	GiHSoDbgINQGZVH3CZPxvmJtTmzR1oLTsZ2ZVPty0FS4zerD9zHYBSp81crPWlMKL4LyAiziiut
+	5ZTxDiwFFC82OLxCC61t2hnOjjrg54hpm38j44J5vU9u3SWnnt75WlEMIWAs6WovMne7Zbc5f0T
+	RcfmMiwum1EUr5unGx0XIjze0Eg9v2I1kPF3Ap9zG5VzxYSTZRilSndLJR0TasjytSEKvWoqNlK
+	XzN+1RYhSXPKu7bn/rxwF0VsDDgZfDLKlft+SA6a0vgwWaMyloOn5awNYo2Fko6juVXN2nETfbE
+	j+uoyvcNHM+uQ==
+X-Received: by 2002:a05:6102:3e21:b0:632:5628:6d8e with SMTP id ada2fe7eead31-6fefe3c38bbmr11781390137.21.1781075156091;
+        Wed, 10 Jun 2026 00:05:56 -0700 (PDT)
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-6eb5745d325sm19261168137.4.2026.06.10.00.05.54
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jun 2026 00:05:55 -0700 (PDT)
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-59eb501bcf0so2129236e0c.0
+        for <linux-m68k@vger.kernel.org>; Wed, 10 Jun 2026 00:05:54 -0700 (PDT)
+X-Received: by 2002:a05:6123:10b:b0:59b:1012:3f42 with SMTP id
+ 71dfb90a1353d-5ac4ff2b341mr10944696e0c.10.1781075154405; Wed, 10 Jun 2026
+ 00:05:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 4/4] m68k: coldfire: fix non-standard readX()/writeX()
- functions
-To: Angelo Dureghello <adureghello@baylibre.com>,
- Christoph Hellwig <hch@lst.de>
-Cc: Greg Ungerer <gerg@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-can@vger.kernel.org,
- linux-spi@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>
-References: <40aefc39-bd98-460d-8aa7-5dd79f562e0d@app.fastmail.com>
- <fdd6fc14-f607-4186-8db4-25de973ac322@kernel.org>
- <CALSJ-wCrNDv3N2Kdo0uoXsKGtp0GthJRBeYTNQA1gGE2akUWFg@mail.gmail.com>
- <9391b782-7727-47fa-ac37-05cd50821d35@app.fastmail.com>
- <CALSJ-wBRmUpjz-_ehZ0U0Gu+fPqRUeAn47E0_pwpXQa0tCNzVA@mail.gmail.com>
- <CALSJ-wCuZs9cBJsuOOYMEYM6xOXZbdOm_pr=70d3HRYYSYJ0KA@mail.gmail.com>
- <CALSJ-wDm8NoB8mF3KSx49XMSWz1vjwFhSmgJZWq8pN2pCf12mw@mail.gmail.com>
- <CALSJ-wDY_8SMAvKT0L6wMbH1=w5pZNmV=xyeX1REb=BMRZWj-g@mail.gmail.com>
- <2b532d56-dce4-4f6d-84e0-2fd87d5494f8@kernel.org>
- <20260601144332.GC4918@lst.de>
- <CALSJ-wAaOsizvHGiCdL_mSKS-LQGJKgbnUeBAnE8H+h-7xOGhg@mail.gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@polyxeno.com>
-In-Reply-To: <CALSJ-wAaOsizvHGiCdL_mSKS-LQGJKgbnUeBAnE8H+h-7xOGhg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20260609201211.173438-1-enelsonmoore@gmail.com>
+In-Reply-To: <20260609201211.173438-1-enelsonmoore@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 10 Jun 2026 09:05:43 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUVBAH89ACn-VDOO3Do2tNn16QdGSeQk=-esHn0CEnkFQ@mail.gmail.com>
+X-Gm-Features: AVVi8CdNk8PJpsBc6-ipH7V3ntVTbDh16NQQLyrREWfkwZsIAfBSwkoD84Ykv_I
+Message-ID: <CAMuHMdUVBAH89ACn-VDOO3Do2tNn16QdGSeQk=-esHn0CEnkFQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: correct CONFIG_MVME16x macro name in #endif comment
+To: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Finn Thain <fthain@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Angelo,
+On Tue, 9 Jun 2026 at 22:12, Ethan Nelson-Moore <enelsonmoore@gmail.com> wrote:
+> A comment in arch/m68k/kernel/head.S incorrectly refers to
+> CONFIG_MVME162 and CONFIG_MVME167 instead of CONFIG_MVME16x. Correct it.
+>
+> Discovered while searching for CONFIG_* symbols referenced in code but
+> not defined in any Kconfig file.
+>
+> Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
 
-On 10/6/26 07:30, Angelo Dureghello wrote:
-> On Mon, Jun 01, 2026 at 04:43:32PM +0200, Christoph Hellwig wrote:
->> On Sun, May 31, 2026 at 11:42:26PM +1000, Greg Ungerer wrote:
->>> I don't think that is right. The way the underlying data cache is setup for
->>> MMU ColdFire (via the ACR/CACR registers) means that individual pages cannot
->>> be marked as non-cached. So coherent memory allocations are not possible -
->>> at least the way things are today.
->>>
->>> It would be possible to set aside a chunk of RAM at kernel startup time
->>> to use as a pool for coherent allocations (since it could be marked as
->>> non-cached via the ACR/CACR registers), but there is no code to support doing
->>> that today.
->>
->> With CONFIG_DMA_GLOBAL_POOL there is some generic code dealing with
->> most of this.  But if this driver worked on coldfire in the past,
->> it must have been fine with non-coherent memory and could use the
->> non-coherent allocator.
->>
-> 
-> Ok, thanks, so the driver is working fine with non coherent memory but may
-> be just for a case. I will try to setup a better SD test. And will send
-> another patch to have dma enabled with non coherent allocator.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v7.2.
 
-Sounds good. Thanks for taking the time to look into this.
+Gr{oetje,eeting}s,
 
-Regards
-Greg
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
