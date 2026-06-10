@@ -1,85 +1,134 @@
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA3430676E;
-	Wed, 10 Jun 2026 08:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A92A3446BC
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2026 17:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781078736; cv=none; b=GvQO6VVTsge6T4AvqvzGx/MAH2w5e+CJmzTG8YvifSPN0VvGmu6wTqreVezHsdzpCUA8jtCx79Jhy+pdxVYxv/k9vBo4xkZyRg9Lf/E20DZulOrh8j9Z0bHZjeCfwwT4iNneYQgKvkXClgu850DE0cDB5mkQUTMyhtJuB3GzJkY=
+	t=1781112454; cv=none; b=j2uUtWjWrfzmp3hj9lqLomsG1hZGgJ5e37JPkaecnJQIsgUztadonWauhAmnrIHgwuTuEtiDK8EUa2/NH3W+rny9lT3S1JACuyFmNU2PW12Lyy8iMIzoBUFQlM7jf9dOjbbS48vkfS8A2Efh6adROYCEYSdqr1jOUVWpQ9VcIB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781078736; c=relaxed/simple;
-	bh=Bku6vmbnfsIPF3upfNi33A0lpAy6UNfcQHI8Xaj7jk8=;
+	s=arc-20240116; t=1781112454; c=relaxed/simple;
+	bh=kzErf+z7JSp8P7msfJBxTyBqs3Tz4zofU5rff5W0bhY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cGXazB/ZmJHdl5moDoxSYi2yGQSicZfT4rFwIEu4eqxqJyb31Yswt37wHQ7WT6ynDSeihufiF6rETYjkAm+t4Mqzu2z3Ptla/Xsm52naLo8E8LrhDCWBMiW6r8c6aA1ZiQ/ane4uim2EudcUTY5VBn8haStT04eKn2V30CYZ80E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=AVc9mwDe; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+	 Content-Type:Content-Disposition:In-Reply-To; b=hclYuhUN0jCva1lg6V2+RYpB8xH41eOFUDfWpOnreOPI+XJMLuKstf+zVS4mkLSQWcJ77+eSFscUIGPN5jIcdkWegWjKnZMmzDpFHkeN+G9EwbAiaBAzXPD+UYxBOFy1Hd0uxp3/mVxJbWP4hhJjNiQj5neb9PjCa/rCkMS44aY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=AxrQeQ08; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="AVc9mwDe"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=SUBiUHt/0iiIKa8WSEzuAV3b4OE0sNSco6iZTF/7BsU=; b=AVc9mwDezYfcqmBMiqIwUCYUoM
-	Q7WdYxiJugJww1//sevc6nVN3YNGEIb1ab91J5FltT9bMo6KZKb9chMrSpLN+21EaPtwzcdK5FJhH
-	+TdA+GLaIdZE928yP4zk/+QF20dc/7uoTpRzXl9spIgb/+zWebK53U5SHIK6LIvjui2E=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1wXDwI-006wZA-Ak; Wed, 10 Jun 2026 10:05:30 +0200
-Date: Wed, 10 Jun 2026 10:05:30 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	arnd@kernel.org, wei.fang@nxp.com, frank.li@nxp.com,
-	shenwei.wang@nxp.com, imx@lists.linux.dev, netdev@vger.kernel.org,
-	nico@fluxnic.net, adureghello@baylibre.com, ulfh@kernel.org,
-	linux-mmc@vger.kernel.org, linux-can@vger.kernel.org,
-	linux-spi@vger.kernel.org, olteanv@gmail.com
-Subject: Re: [PATCHv2 1/4] net: fec: do not use readl()/writel() for ColdFire
-Message-ID: <caa2a34c-5a73-4075-9f7f-77b30673a4e2@lunn.ch>
-References: <20260609142139.1563360-1-gerg@linux-m68k.org>
- <20260609142139.1563360-3-gerg@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="AxrQeQ08"
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-45eecb8bf67so5341101f8f.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2026 10:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1781112451; x=1781717251; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kzErf+z7JSp8P7msfJBxTyBqs3Tz4zofU5rff5W0bhY=;
+        b=AxrQeQ084U+0Poim6LPncYbFKd02sTof3zEn7x1FTntShndOIH7SBpz7o5ciF+k1b6
+         LJT4keNFWy/Jdc8Qi3SrpvZEOZMF13FAzOK22uEJHZ/czlVXXlRixxBz4mXluxnzmNS0
+         QfvzwFiesqs4C1RfUHLumVmNJHmS2kPoKjnW64AicXGRtVvz+mf2MlTlzrvXuIpCFUns
+         epKZJjIB6YGFGKBdD3C6N3XaUYmOge3/SHPCA6DntlnaK/oDso0TYHFRsyJbLMb8i8fU
+         kIkVZC7lAIoOOfM9b44zajFMMr7JgqWsi53ezej/UI9Uqe/d9rYiTxOMo9tJd7q9joH7
+         UjTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781112451; x=1781717251;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kzErf+z7JSp8P7msfJBxTyBqs3Tz4zofU5rff5W0bhY=;
+        b=rmPgR0JlEV69Vt7bF7pEMu6uKwTaU+e+m0PNLr5kgtL18dkvb3phDKKV0CCNd300Rq
+         U2chBr0PlMIEDt/5LGUgGHKrPBmXh9NbmMKZfSdoRw034BhTEwGTMgmnONcVMHtyyLG4
+         /aDuG+iXL8E/hO+SqXLhVsy8RNR19gFkN91gniE3OFkO0mDOzADfL0u/muCp2pJIWI2p
+         5Q2OUs4iLAooVbeQnvd39CeRxjPOhjQejEvl4gMWqXNRB387pHe0jnrqorDHzW5p+beA
+         CNHDKnmL2vmVCPuR4MmfkbOjVQd4+sYIpanZA3OkwwFJGrJBqIPlUXSBm0x83Jcue5Sh
+         0kyQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9FYphBOk+bBibWyB/eBDbjOF56uqX1vsqJo88jq864iQ97Zr3vXNlUfsOYL6p9RatVK6VJjEiHTOog@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzgyI5GOAP8S5+xa/0vujgIOuM894dCNxFjw6XQX4dvbL641iIG
+	W5FWqIEzEKBMcobWvy4V7t9RJD12QMoDh0zJHy6KCoNGleo20KveaIj5DelwLX3TuYU=
+X-Gm-Gg: Acq92OEAOTYJ7yW5sT8eIQ/OvJZmGUf0qZVQe2ao2dsd8YHvQlbdzeHo7ippF4J9stz
+	5VzAoMJRICEzQXvMlL/kQsDGauRtFyBcoixVU5gqI7SbZ8yWucR/fSZ8kOOaDQBwOF19cZ/ERuF
+	uuvuKUnX4p5BLpCHen1eNvxtB5Eu0DrI1jyQk+AENCUWk2gl03JHrPWxSjFLIC7ZXgMYGaoJVa+
+	1hmInMYqmiPH0Oo8YwQwL4FLK4eMPm+oryy9+bt5b8PN66Nhmh8lOw3ukphcE8QRs/sArlm3nwW
+	kt6XJrX/BjzO1OMwpySDF0mZojbuwvXIWMzHxVdQXsSuSvVrZyeXXiPxfy1A3OVfD0Pxm6TJMlS
+	xMhkEBw+ptQA4vV+23mJmhcd/kkIA7Zk3xcKXJQ0CVyNVdRLW8+nSo43OarjdMtylvPmwRXO7b8
+	0aHgxpF7/BlZPuLuYz+WTgRMarpxWBLKFOmFNO717JsZGcDy7KWoqVLG1xdh8joPo++0wpaA6Uh
+	ysKSnNQGXP6RpDpeSeu7n3sQg==
+X-Received: by 2002:a05:6000:29d6:b0:45e:e509:d2fa with SMTP id ffacd0b85a97d-460302dc8cemr29014867f8f.3.1781112451467;
+        Wed, 10 Jun 2026 10:27:31 -0700 (PDT)
+Received: from localhost (p200300f65f47db046aec8c3a4b621e71.dip0.t-ipconnect.de. [2003:f6:5f47:db04:6aec:8c3a:4b62:1e71])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-4601f34413csm72375859f8f.21.2026.06.10.10.27.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2026 10:27:30 -0700 (PDT)
+Date: Wed, 10 Jun 2026 19:27:28 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH v1] can: flexcan: Drop unused platform driver data
+Message-ID: <aimeLxHiQ74wwlR3@monoceros>
+References: <20260528094540.1867783-2-u.kleine-koenig@baylibre.com>
+ <20260528-fluorescent-sage-ladybug-43261b-mkl@pengutronix.de>
+ <ahhAhZ76nLc-eZg8@monoceros>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="va5ro6u5yud5cge3"
 Content-Disposition: inline
-In-Reply-To: <20260609142139.1563360-3-gerg@linux-m68k.org>
+In-Reply-To: <ahhAhZ76nLc-eZg8@monoceros>
 
-On Wed, Jun 10, 2026 at 12:12:58AM +1000, Greg Ungerer wrote:
-> Modify the FEC driver to not directly use readl() and writel() to access
-> hardware registers but instead local fec_readl() and fec_writel() methods.
-> This allows for different architecture users of this driver to have
-> different underlying access functions - to support both little and big
-> endian hardware.
-> 
-> The FEC hardware block in ColdFire SoC parts is accessed big-endian.
-> The usual kernel readl()/writel() IO memory access methods are defined to
-> access little endian data. Change access for ColdFire to use __raw_readl()
-> and __raw_writel() access methods - which do not modify or swap bytes
-> on access.
-> 
-> The FEC driver works today because the m68k architecture io.h has a
-> kludge in the definitions of the readl() and writel() functions for
-> ColdFire that allow big-endian access if the address of the register to
-> access is within the SoC's internal peripheral registers. This is being
-> fixed in the near future to define readl() and writel() correctly - with
-> no byte swapping. Thus the motivation for this fix here.
-> 
-> __raw_readl()/__raw_writel() access methods are used instead of the more
-> commonly used ioread32be()/iowrite32be() here because those are broken too,
-> because of the current readl()/writel() kludge. They are implemented in
-> asm-generic/io.h in terms of readl()/writel().
-> 
-> Note that even when readl() and writel() are fixed on ColdFire they will
-> not be the right thing to use within the FEC driver on ColdFire hardware.
-> 
-> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+--va5ro6u5yud5cge3
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v1] can: flexcan: Drop unused platform driver data
+MIME-Version: 1.0
 
-    Andrew
+Hey Marc,
+
+On Thu, May 28, 2026 at 03:26:29PM +0200, Uwe Kleine-K=F6nig (The Capable H=
+ub) wrote:
+> On Thu, May 28, 2026 at 01:00:15PM +0200, Marc Kleine-Budde wrote:
+> > On 28.05.2026 11:45:39, Uwe Kleine-K=F6nig (The Capable Hub) wrote:
+> > > No function in the flexcan driver ever accesses the .driver_data memb=
+er
+> > > of its .id_table array as device_get_match_data() returns NULL for
+> > > non-of platform devices. So drop that unused assignment.
+> > >
+> > > While touching that array, drop the trailing comma after the terminat=
+or
+> > > entry.
+> >=20
+> > Does this mean that commit 5e6c3454b405 ("net: can: Use
+> > device_get_match_data()") introduced a regression?
+>=20
+> Yes, I'd claim that this commit introduces a null pointer exception when
+> mcf_flexcan0 (defined in arch/m68k/coldfire/device.c) probes.
+
+I wonder what your plan is here. Should I send a v2 that also drops the
+unused variable that I missed in my v1, or do you want this NPE
+addressed first?
+
+Best regards
+Uwe
+
+--va5ro6u5yud5cge3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmopnn0ACgkQj4D7WH0S
+/k6vGAf+P07h8wiZcTaqCGFDv3/2aYJax+UlwADLeBRQ17i1kGZEG57kJGO/DtG3
+AJ3UwGF1EmwGKsZe0o1RY2aslrGi/H+9/YoB6DmZVyG+tox+0yvi4bM18XZOyllV
+mklJFAB1Zm7Lbavlmq7U0WsaQ5JcNIOn5VvRTBuJsyGluJfMHr+F0n8qrzqEtMYY
+XR/+Iaexegpe75VAXdLqPnlKPC6FzStBYkOWr1jLgIKJj5BrvXmlkAoL90+4yiJy
+zv4gtclllsXd5q8/Btjclk5kPNVk1HYYVVVZDPRZ1VXeWg4zK5E8a8Gktu8SHbri
+co1ZFXcx/TxF9w1oYwXWBdkD4jWZ3A==
+=yx/5
+-----END PGP SIGNATURE-----
+
+--va5ro6u5yud5cge3--
