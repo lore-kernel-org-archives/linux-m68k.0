@@ -1,134 +1,184 @@
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A92A3446BC
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2026 17:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB0138D416
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2026 20:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781112454; cv=none; b=j2uUtWjWrfzmp3hj9lqLomsG1hZGgJ5e37JPkaecnJQIsgUztadonWauhAmnrIHgwuTuEtiDK8EUa2/NH3W+rny9lT3S1JACuyFmNU2PW12Lyy8iMIzoBUFQlM7jf9dOjbbS48vkfS8A2Efh6adROYCEYSdqr1jOUVWpQ9VcIB0=
+	t=1781123036; cv=none; b=CxlumkZKtgfykCMPL+iyp+ZOwvy/mfrX4ygT1FQgR59vS+9ZpNO9LlCd0yw8Ofab2zpPs66+J//KigdeolBz4BOYrgppjGUe9f9wtdBJR8ynzA0NdxpCz87H7Ct9W+YkKrhOz0s4/9M3LMFrDHydxy+v3c2T0bSM4CfTG1hTKus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781112454; c=relaxed/simple;
-	bh=kzErf+z7JSp8P7msfJBxTyBqs3Tz4zofU5rff5W0bhY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hclYuhUN0jCva1lg6V2+RYpB8xH41eOFUDfWpOnreOPI+XJMLuKstf+zVS4mkLSQWcJ77+eSFscUIGPN5jIcdkWegWjKnZMmzDpFHkeN+G9EwbAiaBAzXPD+UYxBOFy1Hd0uxp3/mVxJbWP4hhJjNiQj5neb9PjCa/rCkMS44aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=AxrQeQ08; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	s=arc-20240116; t=1781123036; c=relaxed/simple;
+	bh=0uHYJ6GoKnkD/82MJkztHyRKjLqu8upLD4CDsWqVi5Q=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=HtLvFClGxs8TKxTXhnx31xXORD16jU4d8zFVCEJ8ZPzRqZ/0TThEiUBD92vL4l7aUF6i3rzDZBt7Mk5h2sXVXyBJB1jMY9Q8uXKErR1jCEz24bjah+UwDa6dDE2QRXnij6A2Po7p3G5TjMNDXANernmnoGdsX74C5pNU0jrIZ3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cGrDwuVc; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="AxrQeQ08"
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-45eecb8bf67so5341101f8f.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 10 Jun 2026 10:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1781112451; x=1781717251; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kzErf+z7JSp8P7msfJBxTyBqs3Tz4zofU5rff5W0bhY=;
-        b=AxrQeQ084U+0Poim6LPncYbFKd02sTof3zEn7x1FTntShndOIH7SBpz7o5ciF+k1b6
-         LJT4keNFWy/Jdc8Qi3SrpvZEOZMF13FAzOK22uEJHZ/czlVXXlRixxBz4mXluxnzmNS0
-         QfvzwFiesqs4C1RfUHLumVmNJHmS2kPoKjnW64AicXGRtVvz+mf2MlTlzrvXuIpCFUns
-         epKZJjIB6YGFGKBdD3C6N3XaUYmOge3/SHPCA6DntlnaK/oDso0TYHFRsyJbLMb8i8fU
-         kIkVZC7lAIoOOfM9b44zajFMMr7JgqWsi53ezej/UI9Uqe/d9rYiTxOMo9tJd7q9joH7
-         UjTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781112451; x=1781717251;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kzErf+z7JSp8P7msfJBxTyBqs3Tz4zofU5rff5W0bhY=;
-        b=rmPgR0JlEV69Vt7bF7pEMu6uKwTaU+e+m0PNLr5kgtL18dkvb3phDKKV0CCNd300Rq
-         U2chBr0PlMIEDt/5LGUgGHKrPBmXh9NbmMKZfSdoRw034BhTEwGTMgmnONcVMHtyyLG4
-         /aDuG+iXL8E/hO+SqXLhVsy8RNR19gFkN91gniE3OFkO0mDOzADfL0u/muCp2pJIWI2p
-         5Q2OUs4iLAooVbeQnvd39CeRxjPOhjQejEvl4gMWqXNRB387pHe0jnrqorDHzW5p+beA
-         CNHDKnmL2vmVCPuR4MmfkbOjVQd4+sYIpanZA3OkwwFJGrJBqIPlUXSBm0x83Jcue5Sh
-         0kyQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9FYphBOk+bBibWyB/eBDbjOF56uqX1vsqJo88jq864iQ97Zr3vXNlUfsOYL6p9RatVK6VJjEiHTOog@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzgyI5GOAP8S5+xa/0vujgIOuM894dCNxFjw6XQX4dvbL641iIG
-	W5FWqIEzEKBMcobWvy4V7t9RJD12QMoDh0zJHy6KCoNGleo20KveaIj5DelwLX3TuYU=
-X-Gm-Gg: Acq92OEAOTYJ7yW5sT8eIQ/OvJZmGUf0qZVQe2ao2dsd8YHvQlbdzeHo7ippF4J9stz
-	5VzAoMJRICEzQXvMlL/kQsDGauRtFyBcoixVU5gqI7SbZ8yWucR/fSZ8kOOaDQBwOF19cZ/ERuF
-	uuvuKUnX4p5BLpCHen1eNvxtB5Eu0DrI1jyQk+AENCUWk2gl03JHrPWxSjFLIC7ZXgMYGaoJVa+
-	1hmInMYqmiPH0Oo8YwQwL4FLK4eMPm+oryy9+bt5b8PN66Nhmh8lOw3ukphcE8QRs/sArlm3nwW
-	kt6XJrX/BjzO1OMwpySDF0mZojbuwvXIWMzHxVdQXsSuSvVrZyeXXiPxfy1A3OVfD0Pxm6TJMlS
-	xMhkEBw+ptQA4vV+23mJmhcd/kkIA7Zk3xcKXJQ0CVyNVdRLW8+nSo43OarjdMtylvPmwRXO7b8
-	0aHgxpF7/BlZPuLuYz+WTgRMarpxWBLKFOmFNO717JsZGcDy7KWoqVLG1xdh8joPo++0wpaA6Uh
-	ysKSnNQGXP6RpDpeSeu7n3sQg==
-X-Received: by 2002:a05:6000:29d6:b0:45e:e509:d2fa with SMTP id ffacd0b85a97d-460302dc8cemr29014867f8f.3.1781112451467;
-        Wed, 10 Jun 2026 10:27:31 -0700 (PDT)
-Received: from localhost (p200300f65f47db046aec8c3a4b621e71.dip0.t-ipconnect.de. [2003:f6:5f47:db04:6aec:8c3a:4b62:1e71])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-4601f34413csm72375859f8f.21.2026.06.10.10.27.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2026 10:27:30 -0700 (PDT)
-Date: Wed, 10 Jun 2026 19:27:28 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v1] can: flexcan: Drop unused platform driver data
-Message-ID: <aimeLxHiQ74wwlR3@monoceros>
-References: <20260528094540.1867783-2-u.kleine-koenig@baylibre.com>
- <20260528-fluorescent-sage-ladybug-43261b-mkl@pengutronix.de>
- <ahhAhZ76nLc-eZg8@monoceros>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cGrDwuVc"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1781123034; x=1812659034;
+  h=date:from:to:cc:subject:message-id;
+  bh=0uHYJ6GoKnkD/82MJkztHyRKjLqu8upLD4CDsWqVi5Q=;
+  b=cGrDwuVcobD7GmaxMlTpxMLY6VhkoBG1TubYLe0af/Q9/3ytHs24YWRQ
+   ZlVf5b9WblImoOYn3qzV+mn7iNnUxXbp4PQlg6gPqMqjtq4tnVrztLNhX
+   TU+HPnVmaCi/L5LgF04792bT+iu+tCsinPH9U8DCgr2XETQMgpc94zTIV
+   NhbzpPQFViZShLlqLhcDNxhP7lerA/7MAsNoxyiXVeN+TLAg4k84rQw5g
+   /nKC36NuhNX+S+PRctB0Qz+ndyR+VkDsDxpRFYLeKBgtX/8QjCE9SRXcw
+   ZgXBLeIfC1G4GdUOG9YOd1cXWwj37BXjxI++iAFW0fDBx0+d2JdBSioNO
+   Q==;
+X-CSE-ConnectionGUID: xgZa0N14Rm+4M85qtbaouQ==
+X-CSE-MsgGUID: aP0X29Y3R1+gMUkP8yjD/w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11813"; a="104592154"
+X-IronPort-AV: E=Sophos;i="6.24,197,1774335600"; 
+   d="scan'208";a="104592154"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2026 13:23:53 -0700
+X-CSE-ConnectionGUID: NpP24xwTQHyxUtUqUFMdeg==
+X-CSE-MsgGUID: vOn5J5HxSkupDMTfHfbXbw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,197,1774335600"; 
+   d="scan'208";a="241854318"
+Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 10 Jun 2026 13:23:51 -0700
+Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wXPSm-00000000Lso-1wBH;
+	Wed, 10 Jun 2026 20:23:48 +0000
+Date: Thu, 11 Jun 2026 04:23:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 06711a7235a6e2f2bc4499dc1384c0cf3de5b188
+Message-ID: <202606110417.dVHRkMm2-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="va5ro6u5yud5cge3"
-Content-Disposition: inline
-In-Reply-To: <ahhAhZ76nLc-eZg8@monoceros>
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 06711a7235a6e2f2bc4499dc1384c0cf3de5b188  m68k: Correct CONFIG_MVME16x macro name in #endif comment
 
---va5ro6u5yud5cge3
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v1] can: flexcan: Drop unused platform driver data
-MIME-Version: 1.0
+elapsed time: 780m
 
-Hey Marc,
+configs tested: 107
+configs skipped: 1
 
-On Thu, May 28, 2026 at 03:26:29PM +0200, Uwe Kleine-K=F6nig (The Capable H=
-ub) wrote:
-> On Thu, May 28, 2026 at 01:00:15PM +0200, Marc Kleine-Budde wrote:
-> > On 28.05.2026 11:45:39, Uwe Kleine-K=F6nig (The Capable Hub) wrote:
-> > > No function in the flexcan driver ever accesses the .driver_data memb=
-er
-> > > of its .id_table array as device_get_match_data() returns NULL for
-> > > non-of platform devices. So drop that unused assignment.
-> > >
-> > > While touching that array, drop the trailing comma after the terminat=
-or
-> > > entry.
-> >=20
-> > Does this mean that commit 5e6c3454b405 ("net: can: Use
-> > device_get_match_data()") introduced a regression?
->=20
-> Yes, I'd claim that this commit introduces a null pointer exception when
-> mcf_flexcan0 (defined in arch/m68k/coldfire/device.c) probes.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I wonder what your plan is here. Should I send a v2 that also drops the
-unused variable that I missed in my v1, or do you want this NPE
-addressed first?
+tested configs:
+alpha                             allnoconfig    gcc-16.1.0
+alpha                            allyesconfig    gcc-16.1.0
+arc                              allmodconfig    gcc-16.1.0
+arc                               allnoconfig    gcc-16.1.0
+arc                              allyesconfig    gcc-16.1.0
+arc                   randconfig-001-20260611    gcc-14.3.0
+arc                   randconfig-002-20260611    gcc-8.5.0
+arm                               allnoconfig    clang-23
+arm                              allyesconfig    gcc-16.1.0
+arm                   randconfig-001-20260611    clang-16
+arm                   randconfig-002-20260611    gcc-10.5.0
+arm                   randconfig-003-20260611    gcc-12.5.0
+arm                   randconfig-004-20260611    clang-17
+arm64                            allmodconfig    clang-23
+arm64                             allnoconfig    gcc-16.1.0
+csky                             allmodconfig    gcc-16.1.0
+csky                              allnoconfig    gcc-16.1.0
+hexagon                          allmodconfig    clang-23
+hexagon                           allnoconfig    clang-23
+hexagon               randconfig-001-20260610    clang-23
+hexagon               randconfig-002-20260610    clang-22
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20260611    clang-22
+i386        buildonly-randconfig-002-20260611    clang-22
+i386        buildonly-randconfig-003-20260611    clang-22
+i386        buildonly-randconfig-004-20260611    clang-22
+i386        buildonly-randconfig-005-20260611    gcc-14
+i386        buildonly-randconfig-006-20260611    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-20
+loongarch             randconfig-001-20260610    gcc-16.1.0
+loongarch             randconfig-002-20260610    gcc-16.1.0
+m68k                             allmodconfig    gcc-16.1.0
+m68k                              allnoconfig    gcc-16.1.0
+m68k                             allyesconfig    gcc-16.1.0
+microblaze                        allnoconfig    gcc-16.1.0
+microblaze                       allyesconfig    gcc-16.1.0
+mips                             allmodconfig    gcc-16.1.0
+mips                              allnoconfig    gcc-16.1.0
+mips                             allyesconfig    gcc-16.1.0
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                 randconfig-001-20260610    gcc-11.5.0
+nios2                 randconfig-002-20260610    gcc-11.5.0
+openrisc                         allmodconfig    gcc-16.1.0
+openrisc                          allnoconfig    gcc-16.1.0
+openrisc                            defconfig    gcc-16.1.0
+parisc                           allmodconfig    gcc-16.1.0
+parisc                            allnoconfig    gcc-16.1.0
+parisc                           allyesconfig    gcc-16.1.0
+parisc                              defconfig    gcc-16.1.0
+parisc                randconfig-001-20260610    gcc-8.5.0
+parisc                randconfig-002-20260610    gcc-8.5.0
+powerpc                          allmodconfig    gcc-16.1.0
+powerpc                           allnoconfig    gcc-16.1.0
+powerpc               randconfig-001-20260610    gcc-9.5.0
+powerpc               randconfig-002-20260610    clang-23
+powerpc64             randconfig-001-20260610    clang-23
+powerpc64             randconfig-002-20260610    gcc-10.5.0
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    gcc-16.1.0
+riscv                            allyesconfig    clang-23
+riscv                               defconfig    clang-23
+riscv                 randconfig-001-20260610    gcc-15.2.0
+riscv                 randconfig-002-20260610    gcc-8.5.0
+s390                             allmodconfig    clang-23
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-16.1.0
+s390                                defconfig    clang-18
+s390                  randconfig-001-20260610    clang-23
+s390                  randconfig-002-20260610    clang-23
+sh                               allmodconfig    gcc-16.1.0
+sh                                allnoconfig    gcc-16.1.0
+sh                               allyesconfig    gcc-16.1.0
+sh                    randconfig-001-20260610    gcc-16.1.0
+sh                    randconfig-002-20260610    gcc-16.1.0
+sparc                             allnoconfig    gcc-16.1.0
+sparc                               defconfig    gcc-16.1.0
+sparc                 randconfig-001-20260610    gcc-8.5.0
+sparc                 randconfig-002-20260610    gcc-14.3.0
+sparc64                          allmodconfig    clang-20
+sparc64               randconfig-001-20260610    gcc-12.5.0
+sparc64               randconfig-002-20260610    clang-23
+um                               allmodconfig    clang-23
+um                                allnoconfig    clang-16
+um                               allyesconfig    gcc-14
+um                    randconfig-001-20260610    clang-23
+um                    randconfig-002-20260610    clang-18
+x86_64                           allmodconfig    clang-22
+x86_64                            allnoconfig    clang-22
+x86_64                           allyesconfig    clang-22
+x86_64               buildonly-randconfig-001    gcc-12
+x86_64      buildonly-randconfig-001-20260610    clang-22
+x86_64               buildonly-randconfig-002    clang-22
+x86_64      buildonly-randconfig-002-20260610    gcc-14
+x86_64               buildonly-randconfig-003    gcc-14
+x86_64      buildonly-randconfig-003-20260610    clang-22
+x86_64               buildonly-randconfig-004    gcc-14
+x86_64      buildonly-randconfig-004-20260610    clang-22
+x86_64               buildonly-randconfig-005    gcc-14
+x86_64                          rhel-9.4-rust    clang-22
+xtensa                            allnoconfig    gcc-16.1.0
+xtensa                           allyesconfig    gcc-16.1.0
+xtensa                randconfig-001-20260610    gcc-8.5.0
+xtensa                randconfig-002-20260610    gcc-8.5.0
 
-Best regards
-Uwe
-
---va5ro6u5yud5cge3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmopnn0ACgkQj4D7WH0S
-/k6vGAf+P07h8wiZcTaqCGFDv3/2aYJax+UlwADLeBRQ17i1kGZEG57kJGO/DtG3
-AJ3UwGF1EmwGKsZe0o1RY2aslrGi/H+9/YoB6DmZVyG+tox+0yvi4bM18XZOyllV
-mklJFAB1Zm7Lbavlmq7U0WsaQ5JcNIOn5VvRTBuJsyGluJfMHr+F0n8qrzqEtMYY
-XR/+Iaexegpe75VAXdLqPnlKPC6FzStBYkOWr1jLgIKJj5BrvXmlkAoL90+4yiJy
-zv4gtclllsXd5q8/Btjclk5kPNVk1HYYVVVZDPRZ1VXeWg4zK5E8a8Gktu8SHbri
-co1ZFXcx/TxF9w1oYwXWBdkD4jWZ3A==
-=yx/5
------END PGP SIGNATURE-----
-
---va5ro6u5yud5cge3--
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
