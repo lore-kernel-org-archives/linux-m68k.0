@@ -1,93 +1,85 @@
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F803876BD
-	for <linux-m68k@vger.kernel.org>; Wed, 10 Jun 2026 07:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEA3430676E;
+	Wed, 10 Jun 2026 08:05:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781075160; cv=none; b=b971r0seJxndjAdte+XPHE8mM7LiyGW21wMItwj/CidMMWoU+2HFldnttRz/XdZMzbGRxENrFIfFai8yLRqimmGnYUiPgznYzSM+hLzXBu5lXYbMWEFsjhxqukJ6e6qq+e1cpi3YQPuduVb7stSPTU0QQV699MtI/NRyXQSxaTk=
+	t=1781078736; cv=none; b=GvQO6VVTsge6T4AvqvzGx/MAH2w5e+CJmzTG8YvifSPN0VvGmu6wTqreVezHsdzpCUA8jtCx79Jhy+pdxVYxv/k9vBo4xkZyRg9Lf/E20DZulOrh8j9Z0bHZjeCfwwT4iNneYQgKvkXClgu850DE0cDB5mkQUTMyhtJuB3GzJkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781075160; c=relaxed/simple;
-	bh=aC6gxO6DF4Un+4vCRFV56ypuj0LB02pxjNs+XFWH4DA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U6C2Ys/DDGyyVxPiXOGkIGhu4Xz6FPiLTCY7Ah3QIXOCsExQCSxKCBOEkNIVdobSdsL6bfN0ScK0eOc1P+heIQjDn3hQm7UVRjm5P7tbMdXKirMKHW5yTErnMuBuxFJpmHcS5TTN0sVZtzDZr5iT44SK8vZsDSCN7KNhW9Ps7n8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-6c3099b11a9so2523576137.2
-        for <linux-m68k@vger.kernel.org>; Wed, 10 Jun 2026 00:05:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781075156; x=1781679956;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/C4uouLzzta8jybomfiYLS+MSW3qkR3oc9h/bVVgdK0=;
-        b=m0K0AFZAbDYlJU+LGsu9Fi8HyykBUTISxtYj7ZtL571wULNqjGkObIvjc0yTteb/hw
-         UqUYXRjOjklYs4mBZeX8miftRxtaiYuNB6x8QKl3uIvwvhc36TLD61FUeXBI1kdmT9nq
-         Zs3lmQg0wX9Fkm9zEzXWOWebvpNDzlZ6xEp9K2L94F2zz20feSWJEcoxjrZP3GhKoCBb
-         U5CUepuf8XQDZsv+oGvPnGkQDXtufpMIA8LtyRrTLqVkEaQ05ed5YrSagsZlqMRXhDnM
-         uaDmrQ7LacfvepZDmq6I6e9s8pEJ1i/IeKyI/LkI++alqgymlk+o8QhASyfxNgWkjc/D
-         OKug==
-X-Gm-Message-State: AOJu0YwocQitgiCYDmjtlcSeJJ7I7Rmuu4JTnJ3M14cyTUCSJ/aPullf
-	o41j0SKtwu44o00KtLicJRInskQsnotkuz5Wp9s1sUTR08WMUJ8RnFM80OGP6v57Qd8=
-X-Gm-Gg: Acq92OFZcEdkmc3sNIG+oCIi8j1/8YR/tVTaIqKQxMNii9tCnNCDNbFX6X0d8c/hM4Y
-	Vn/WnG6rSHfLj4kwRFal/zH1yuVEaMBJoGKM+iRVtWBGnhE/NuxzE1EeVhHllpw09AMPDlDOuyi
-	cN5Zlsv/LtYtsE0bY/VdDnrgkeg0OizHTkyCdPNhphBgRpGIka6lUjiJMmEXfer4ixkEQ8/LNJR
-	GiHSoDbgINQGZVH3CZPxvmJtTmzR1oLTsZ2ZVPty0FS4zerD9zHYBSp81crPWlMKL4LyAiziiut
-	5ZTxDiwFFC82OLxCC61t2hnOjjrg54hpm38j44J5vU9u3SWnnt75WlEMIWAs6WovMne7Zbc5f0T
-	RcfmMiwum1EUr5unGx0XIjze0Eg9v2I1kPF3Ap9zG5VzxYSTZRilSndLJR0TasjytSEKvWoqNlK
-	XzN+1RYhSXPKu7bn/rxwF0VsDDgZfDLKlft+SA6a0vgwWaMyloOn5awNYo2Fko6juVXN2nETfbE
-	j+uoyvcNHM+uQ==
-X-Received: by 2002:a05:6102:3e21:b0:632:5628:6d8e with SMTP id ada2fe7eead31-6fefe3c38bbmr11781390137.21.1781075156091;
-        Wed, 10 Jun 2026 00:05:56 -0700 (PDT)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-6eb5745d325sm19261168137.4.2026.06.10.00.05.54
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2026 00:05:55 -0700 (PDT)
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-59eb501bcf0so2129236e0c.0
-        for <linux-m68k@vger.kernel.org>; Wed, 10 Jun 2026 00:05:54 -0700 (PDT)
-X-Received: by 2002:a05:6123:10b:b0:59b:1012:3f42 with SMTP id
- 71dfb90a1353d-5ac4ff2b341mr10944696e0c.10.1781075154405; Wed, 10 Jun 2026
- 00:05:54 -0700 (PDT)
+	s=arc-20240116; t=1781078736; c=relaxed/simple;
+	bh=Bku6vmbnfsIPF3upfNi33A0lpAy6UNfcQHI8Xaj7jk8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cGXazB/ZmJHdl5moDoxSYi2yGQSicZfT4rFwIEu4eqxqJyb31Yswt37wHQ7WT6ynDSeihufiF6rETYjkAm+t4Mqzu2z3Ptla/Xsm52naLo8E8LrhDCWBMiW6r8c6aA1ZiQ/ane4uim2EudcUTY5VBn8haStT04eKn2V30CYZ80E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=AVc9mwDe; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="AVc9mwDe"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=SUBiUHt/0iiIKa8WSEzuAV3b4OE0sNSco6iZTF/7BsU=; b=AVc9mwDezYfcqmBMiqIwUCYUoM
+	Q7WdYxiJugJww1//sevc6nVN3YNGEIb1ab91J5FltT9bMo6KZKb9chMrSpLN+21EaPtwzcdK5FJhH
+	+TdA+GLaIdZE928yP4zk/+QF20dc/7uoTpRzXl9spIgb/+zWebK53U5SHIK6LIvjui2E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1wXDwI-006wZA-Ak; Wed, 10 Jun 2026 10:05:30 +0200
+Date: Wed, 10 Jun 2026 10:05:30 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	arnd@kernel.org, wei.fang@nxp.com, frank.li@nxp.com,
+	shenwei.wang@nxp.com, imx@lists.linux.dev, netdev@vger.kernel.org,
+	nico@fluxnic.net, adureghello@baylibre.com, ulfh@kernel.org,
+	linux-mmc@vger.kernel.org, linux-can@vger.kernel.org,
+	linux-spi@vger.kernel.org, olteanv@gmail.com
+Subject: Re: [PATCHv2 1/4] net: fec: do not use readl()/writel() for ColdFire
+Message-ID: <caa2a34c-5a73-4075-9f7f-77b30673a4e2@lunn.ch>
+References: <20260609142139.1563360-1-gerg@linux-m68k.org>
+ <20260609142139.1563360-3-gerg@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260609201211.173438-1-enelsonmoore@gmail.com>
-In-Reply-To: <20260609201211.173438-1-enelsonmoore@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 10 Jun 2026 09:05:43 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUVBAH89ACn-VDOO3Do2tNn16QdGSeQk=-esHn0CEnkFQ@mail.gmail.com>
-X-Gm-Features: AVVi8CdNk8PJpsBc6-ipH7V3ntVTbDh16NQQLyrREWfkwZsIAfBSwkoD84Ykv_I
-Message-ID: <CAMuHMdUVBAH89ACn-VDOO3Do2tNn16QdGSeQk=-esHn0CEnkFQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: correct CONFIG_MVME16x macro name in #endif comment
-To: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Finn Thain <fthain@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260609142139.1563360-3-gerg@linux-m68k.org>
 
-On Tue, 9 Jun 2026 at 22:12, Ethan Nelson-Moore <enelsonmoore@gmail.com> wrote:
-> A comment in arch/m68k/kernel/head.S incorrectly refers to
-> CONFIG_MVME162 and CONFIG_MVME167 instead of CONFIG_MVME16x. Correct it.
->
-> Discovered while searching for CONFIG_* symbols referenced in code but
-> not defined in any Kconfig file.
->
-> Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+On Wed, Jun 10, 2026 at 12:12:58AM +1000, Greg Ungerer wrote:
+> Modify the FEC driver to not directly use readl() and writel() to access
+> hardware registers but instead local fec_readl() and fec_writel() methods.
+> This allows for different architecture users of this driver to have
+> different underlying access functions - to support both little and big
+> endian hardware.
+> 
+> The FEC hardware block in ColdFire SoC parts is accessed big-endian.
+> The usual kernel readl()/writel() IO memory access methods are defined to
+> access little endian data. Change access for ColdFire to use __raw_readl()
+> and __raw_writel() access methods - which do not modify or swap bytes
+> on access.
+> 
+> The FEC driver works today because the m68k architecture io.h has a
+> kludge in the definitions of the readl() and writel() functions for
+> ColdFire that allow big-endian access if the address of the register to
+> access is within the SoC's internal peripheral registers. This is being
+> fixed in the near future to define readl() and writel() correctly - with
+> no byte swapping. Thus the motivation for this fix here.
+> 
+> __raw_readl()/__raw_writel() access methods are used instead of the more
+> commonly used ioread32be()/iowrite32be() here because those are broken too,
+> because of the current readl()/writel() kludge. They are implemented in
+> asm-generic/io.h in terms of readl()/writel().
+> 
+> Note that even when readl() and writel() are fixed on ColdFire they will
+> not be the right thing to use within the FEC driver on ColdFire hardware.
+> 
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v7.2.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+    Andrew
