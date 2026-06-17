@@ -1,86 +1,97 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from strotmann.de (smtp3.strotmann.de [46.38.233.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0CD35EDBD
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 16 Jun 2026 22:00:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7B12E2840
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 17 Jun 2026 11:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.233.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781647220; cv=none; b=pgGvgQiMbrUUochGGCDPDIRXcIsYidJImamHleAZi3g8iYNlROuZtcuUPymote/3fjeO2FXpGBKovN7xcxzkXJdKglL2/OQPt10ln6jsGLo3+f3hFmg1ZZ0d0teJw56kUR/TM6cW2zGkQEMZ8urCBe92/QvPGmpi1LXDgyP1tFs=
+	t=1781695916; cv=none; b=OHT5p8QBK9ah0CUF9j4rPnp22rvRRFtoYlTIhJzRQe0Ygunct0u5FKLWXNbGAL8bZoY/JqDb/CWLZczTJWiF5xze2cj5jpjnk1cO3WaEvj70n9c7S9xKcEyk0WhAV80Iv0JU6NksHcckYA8fIQHDlr6G0E/2Byssn3On1Y4OmSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781647220; c=relaxed/simple;
-	bh=7a+p+OyXk5sFsbk1C1Cq816Ny9n0Mkp9sVLu/7ongXE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=rHGI26B0Nhfrh8rL16lu9j4vsW0ODa+bsEbI9+3njQCl5cQK1fHK30V0JnLyb4/e1M09gcms592i6WHVe4nGJQmdimhpgztZfB8/msQ29tT7jAUeUmP1L0lW/f3SPezwvBMS9NU0Ii/54lLunQ1kFvualvGmo53UQlBkAUziy1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m1H0XPZ/; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m1H0XPZ/"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 38D61600AA;
-	Tue, 16 Jun 2026 22:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E11601F000E9;
-	Tue, 16 Jun 2026 22:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781647217;
-	bh=ga1OeZSzR83I+bdZkALtFqlm11Tz5ZprDN2LnllVuuo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=m1H0XPZ/YZbBgyH3tnrJ6j1r2M6+6elhCGuK0pN6k5a+sJSKsxxgIBnYMzgNBg+aw
-	 8al1mUPkhgyi2bTVabXIYMFi/z5l4yV3wd6csAqc8I2mwclV8BxOmBPlGOcMtIo/ZG
-	 wEg/r+6LoZPDh2ODMtYPbSPzrG48yfugOVhBI97AdZ7c8txuTlA276H8jaEnUntKSY
-	 KgWy5tWRv1vQI8NErJqgroIv1pfhFiKdw2BZck/RCdw7Phs4t5+P6SaatWwO4rYFIQ
-	 HTGCnonB9DyI7WfMUOqJG00HcUeqNVm1R+0aEbhZQHFrTqOfaICHHS4LarNk2bCyyi
-	 Nrq80K5Jm6ssA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 938A13930C2B;
-	Tue, 16 Jun 2026 22:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1781695916; c=relaxed/simple;
+	bh=YH7ckNVCV7GvfOt04xpsONXUNkezZP13ClayWtUh03c=;
+	h=Content-Type:Message-Id:From:To:Cc:Subject:Date:In-Reply-To:
+	 References:MIME-Version; b=ZdH3asMKPVZRtl3/nOc4SvsPZd4vR9geIIDRoIYOJ2XSZAKx14nOYuLYYBTU8e3urygG0aV+nAz3B9A8luytp+HpJVBPhsQLZLq0EbXUWbSjZmdrE/+MXaDgLdLUpRtacIBUVYhH7+7oie26RvS8SozIbwRKefImYGtZDmLV2Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=strotmann.de; spf=pass smtp.mailfrom=strotmann.de; arc=none smtp.client-ip=46.38.233.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=strotmann.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strotmann.de
+Received: from smtp2.strotmann.de (unknown [IPv6:fd01::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp3.strotmann.de (Postfix) with ESMTPS id CB0837FD72;
+	Wed, 17 Jun 2026 13:31:43 +0200 (CEST)
+Received: from noip.localdomain (unknown [IPv6:fd00::1000])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp2.strotmann.de (Postfix) with ESMTPSA id 4ggLrR65XHzJZmg;
+	Wed, 17 Jun 2026 13:15:51 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Message-Id: <1781694488854.956546368.818588236@strotmann.de>
+From: Carsten Strotmann <carsten@strotmann.de>
+To: Jakub Kicinski <kuba@kernel.org>, Carsten Strotmann <cas@strotmann.de>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+ pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
+ geert@linux-m68k.org, chleroy@kernel.org, npiggin@gmail.com,
+ mpe@ellerman.id.au, maddy@linux.ibm.com, linux-mips@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH net-next 0/2] appletalk: move the protocol out of tree
+Date: Wed, 17 Jun 2026 11:15:50 +0000
+In-Reply-To: <20260616084901.3319d82e@kernel.org>
+References: <20260616084901.3319d82e@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] appletalk: move the protocol out of tree
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <178164721213.1257010.7015290603652926955.git-patchwork-notify@kernel.org>
-Date: Tue, 16 Jun 2026 22:00:12 +0000
-References: <20260615222935.947233-1-kuba@kernel.org>
-In-Reply-To: <20260615222935.947233-1-kuba@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
- pabeni@redhat.com, andrew+netdev@lunn.ch, horms@kernel.org,
- geert@linux-m68k.org, chleroy@kernel.org, npiggin@gmail.com,
- mpe@ellerman.id.au, maddy@linux.ibm.com, linux-mips@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org
 
-Hello:
+Hi Jakub,
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+On Tuesday 16 June 2026 05:49:01 PM (+02:00), Jakub Kicinski wrote:
 
-On Mon, 15 Jun 2026 15:29:33 -0700 you wrote:
-> This tiny series moves appletalk out of tree, to:
-> 
->   https://github.com/linux-netdev/mod-orphan
-> 
-> Core maintainainers are unable to keep up with the rate of security
-> bug reports and fixes. Nobody seems to care about appletalk enough
-> to review the patches.
-> 
-> [...]
+ > > the solution, as Adrian pointed out, is to leave these features in
+ > > the Linux kernel but have them disabled by default.
+ > 
+ > I think y'all need to internalize that "just leave it in" means work.
+ > _Someone_ has to handle the reports and patches. And since nobody is
+ > doing that the code is going to GitHub, where it can continue to "just
+ > be left" or whatever, without racking up CVEs for the Linux kernel
+ > and leading to maintainer burn out :/
+ > 
 
-Here is the summary with links:
-  - [net-next,1/2] appletalk: stop storing per-interface state in struct net_device
-    https://git.kernel.org/netdev/net-next/c/023f9b0f2f4f
-  - [net-next,2/2] appletalk: move the protocol out of tree
-    https://git.kernel.org/netdev/net-next/c/8a398a0c189e
+That's a good point. The large influx of reports is a problem, 
+and burn out of maintainers is a too high cost.
 
-You are awesome, thank you!
+ > > Maybe put a warning message in the kernel config tools that people
+ > > should only enable these if they know what they are doing.
+ > > 
+ > > These "retro"-features should not pose any security risk of they are
+ > > not compiled into a kernel.
+ > 
+ > Nobody is stopping you from using this code! It's perfectly suitable 
+ > to be an out of tree module. Maybe it'd be harder if someone wanted to
+ > remove a CPU architecture you want to use, but protocols are perfectly
+ > fine as loadable modules. You can continue to use the code from:
+ >  https://github.com/linux-netdev/mod-orphan
+ > 
+ > Presumably you could get Debian to package that and you wouldn't even
+ > know the sources no longer live in the kernel tree.
+ > 
+
+It seems the current situation is the price of success (of Linux, which is 
+good).
+
+I guess the way to go would be to move these old drivers to userspace in 
+order to 
+reduce dependencies on the Linux Kernel. But that is not a task for the 
+Linux-Maintainers, but for the Retro-Community.
+
+Thanks for your work and the background information
+
+Carsten
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+https://strotmann.de
