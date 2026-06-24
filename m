@@ -1,124 +1,132 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1D83AD530
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 23 Jun 2026 21:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A04538D6AD
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Jun 2026 08:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782249779; cv=none; b=jMXf5yHYx9ZC9rxAJjWdflSFioHB9chMchLRYxpErNNcfLHXOAnGfNsNidBGAdyBvhnQIlT6CtLsK0gU1lVGv0FmU4atqmDAsdfhgi6PjT3S4HoX5tDEZvK5NET+Fn6aFr2J0nZpfZAf2dKBFmSC64gwq+lsRc6rKOuSyDLo7Tg=
+	t=1782291077; cv=none; b=BVxP2GtBpP15Gtpa4BCE7GseSQ+TpewqaFAHUsfBvRl7S+LBbDlUeKGCdbA/c8KBfmLaXKql2DwuNiPhbaZ4HKcgAXCZO+WOd3eIrESeCaBjUPGbLHnyjujeQQ26Je2QHPKTFDZVIVeleWHk2JNYVLSZdEmDiDvhjIa8RY89IoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782249779; c=relaxed/simple;
-	bh=AKXV4muuFBAbGj4jCPBZwKR37ivYTelH5ksj5TS5Clg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bSDgJH5z5YgQUC+LXG5dRvKMKlIuRWf9zUvpCo7740gVTfcn21I5c/m3Yv3tHJ0TIx3t+azi3sZVecApV8DA8f5Xdc4cCUjZ4E4iwBmfy3pMfnFFsEFvgTzEcFHbuzs/c1fc/RvhH9Hq69ESwUxyOvsAnUGS7vmSul94SPzVKiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mu0Ln98g; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mu0Ln98g"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1782249777; x=1813785777;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AKXV4muuFBAbGj4jCPBZwKR37ivYTelH5ksj5TS5Clg=;
-  b=mu0Ln98gMREQMjbYutYG3WZsL+6tBzOYcXf/hKBA7QN6QDeoVhQc4nIO
-   oH1Xnr06DY0xU86s4O0oVTfYYmUNxzIAgcgpRu6HKS2f12QKB4O1AL6h7
-   euBnhkX6IMwOkjfOWf/pkUaabHtt2dGp356iwZm3jArQbqTkHFPadIJsO
-   lIdE2B7mhAGTlMFdtlqkE2cW6T8T42woqfAWdNjM/1rph401I1s74l1kn
-   DEtkSr3CC0FXd+eHLq4GCfA71eJMLoOlEQdoWJBn3sgW1OvdpwYMnqg9Z
-   TXABavBvLs5UiMxAiy4vQ1PpQZfg3e5OlXfWxQyxTKq7nO7Q56cYwy4Zz
-   Q==;
-X-CSE-ConnectionGUID: izesEoNETYe7WndBBA92dw==
-X-CSE-MsgGUID: U03Fl9Z6SZCJ+623iCdCbw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11826"; a="83044945"
-X-IronPort-AV: E=Sophos;i="6.24,221,1774335600"; 
-   d="scan'208";a="83044945"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2026 14:22:56 -0700
-X-CSE-ConnectionGUID: +O/5Yu9XRy2OyPRl9TD3QA==
-X-CSE-MsgGUID: kJADlDnMQamLWZjchZ8MYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,221,1774335600"; 
-   d="scan'208";a="287753248"
-Received: from klitkey1-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.7])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2026 14:22:53 -0700
-Date: Wed, 24 Jun 2026 00:22:50 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Angelo Dureghello <adureghello@baylibre.com>
-Cc: Jonathan Cameron <jic23@kernel.org>,
-	David Lechner <dlechner@baylibre.com>,
-	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-	Andy Shevchenko <andy@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 1/2] iio: dac: add mcf54415 DAC
-Message-ID: <ajr5Kj1GH-z9x2_k@ashevche-desk.local>
-References: <20260618-wip-stmark2-dac-v6-0-48761dbb96d7@baylibre.com>
- <20260618-wip-stmark2-dac-v6-1-48761dbb96d7@baylibre.com>
+	s=arc-20240116; t=1782291077; c=relaxed/simple;
+	bh=I23H8PBd+djMh4SrB4v4JdwvU9KzRMoMagFE7hs+N1w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aBfs6JE5iFSjO7A+bnDyql57OPq48pu9FO2w/OJuSBJZC9bsNHfOejvKXR7PYHZ0Sz9XO0fi1LBCLPMRybTOm6tgAzKxYsrC2Ehjbvnb9fHDYFLn8R6H6726AHQEYe9dNQ19p0qt83wSKH2MXQrANINSCkpEfZLlHI+fhHi14Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-59d4aa96ef2so499007e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Jun 2026 01:51:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782291076; x=1782895876;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BqytCPnwBH27Ys1F84xwvi9+7+D3fwtua39hc9A5h9k=;
+        b=sI3/2DE4tnCDjH9xM0LyKyJeSvop7GUmqHwArFr22Wp+4fNypfYPqKT53vm3K5TAuQ
+         5eNjwmvBL2/AbDKML9PPZJ+2CaqUd6Blp9s4DoD5WfmJMEyYqFQsXNGY96moKYlW2Gib
+         Fv3SyUo9MxKa8GQKn8SlZBmTxGRv8ei4ZrY8xsbsRn3HLNl+/BPe9isLCmgz6UKLj7qC
+         gMaG3Xa2DeJ3pRZG83ClDbKXVWg1iBcBVJtN6ktS/VbGMoHFlzEiradAyWmc7uI4dmGD
+         /1120k/ynEIo+YlR/MrKtNEC7lnzxmuDlmtI2zUdSysHWEoJPFqflHbdN95kWk3mHkJP
+         D/TA==
+X-Forwarded-Encrypted: i=1; AFNElJ/I/8tfFILp4PrOOJWYNp68x36KydUSHwyznJfvid/3vUlv8beFst3yepd0IaaV44SOuzZjFhzCO8hx@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxJAihuPyk/Ln4Ui1U6ZBYRyLCYpwHLhF1WlehIclzkOHP0pyxe
+	OMKs+jqCmnN94nqOo+E7m4h4mi5lvrqhb8N9ffmK2/bwJv+twD6Pcl/YQ+7sIa5H
+X-Gm-Gg: AfdE7ck1AraQ94Aa/puPFB8sX6IalQ6DmFPCTxgrFaULFISWxzxxve+A3vR23fgG15X
+	FDoIJ3gUtGAJhvT/e9zTKFjVKSb6NZRH0SlBy6X9m+dRIbaQU9dY0zP9eA+m03fWwb+Xinqvwh9
+	tyZf43/8Ad0ldpoxO5xEkiDYIDJcgwSyGws1ZPDF1QgDQGTcuBsFo/Yz7ClNJ3tQqh7q3nLX5AB
+	yb30QEwVy1c2w6ni4d3VDu1qDa8hyV1LeHJ/1YQK8D8d0E2T1Id4K0Ct7RZkeuE9QqswT+ttwIn
+	VzlD9wMPusPVIp1Ajm448XgF46tawlsskiH39rLqoogmPis3cn2SiXrDwZOd0xHMTEGpbP2nFzb
+	S5yqG0BZWTb5Ig0NGQo8zkzcvnEC/E1TfWx+sr1v/TRDpGXzzQKz5sc+2ns7YUlQmAEuZKPL6je
+	O9YDUHFrLSvo0uoSE7KnqhIhBskjLD+vQrlhCdWKmgDdrmHAQ48A==
+X-Received: by 2002:a05:6122:46aa:b0:5a4:b637:286f with SMTP id 71dfb90a1353d-5bc3ef637damr873592e0c.12.1782291075570;
+        Wed, 24 Jun 2026 01:51:15 -0700 (PDT)
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5bbfb878c91sm10275615e0c.6.2026.06.24.01.51.13
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jun 2026 01:51:14 -0700 (PDT)
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-96710629eb1so537590241.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 24 Jun 2026 01:51:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ/v15Zd0Bt5yX7b84Iz6TnYn3qqgYc73nHlaXIiNtjK5Bw3/ez+dTfK5OdtNwk1fWDiY8a0Vs10kERi@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:1628:b0:726:cd42:d039 with SMTP id
+ ada2fe7eead31-7311593bc40mr980150137.24.1782291073707; Wed, 24 Jun 2026
+ 01:51:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260618-wip-stmark2-dac-v6-1-48761dbb96d7@baylibre.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
+References: <20260622064915.767194-1-haoxiang_li2024@163.com>
+In-Reply-To: <20260622064915.767194-1-haoxiang_li2024@163.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 24 Jun 2026 10:51:02 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUSVacMR2Lb-VwkeZMrS=wKz9y+XtF=nAOCuSLbDs-HdQ@mail.gmail.com>
+X-Gm-Features: AVVi8CdAnFBD23v1TZLF1N6maP__8rBsA0F0VCuhXPs6KKGubkqUcrjbf5oJASY
+Message-ID: <CAMuHMdUSVacMR2Lb-VwkeZMrS=wKz9y+XtF=nAOCuSLbDs-HdQ@mail.gmail.com>
+Subject: Re: [PATCH] video: hpfb: Unregister DIO driver on init failure
+To: Haoxiang Li <haoxiang_li2024@163.com>
+Cc: deller@gmx.de, linux-fbdev@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Philip Blundell <philb@gnu.org>, Kars de Jong <jongk@linux-m68k.org>, 
+	linux-m68k <linux-m68k@lists.linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jun 18, 2026 at 11:04:15PM +0200, Angelo Dureghello wrote:
+Hi Haoxiang,
 
-> Add basic version of mcf54415 DAC driver. DAC is embedded in the SoC and
-> DAC configuration registers are mapped in the internal IO address space.
-> 
-> The DAC accepts a 12-bit digital signal and creates a monotonic 12-bit
-> analog output varying from DAC_VREFL to DAC_VREFH. The DAC module
-> consists of a conversion unit, an output amplifier, and the associated
-> digital control blocks. Default register values for DAC_VREFL and DAC_VREFH
-> are respectively 0 and 0xfff, left untouched in this initial version.
-> 
-> This initial version of the driver is minimalistic, "output raw" only, to
-> be extended in the future. DMA and external sync are disabled, default mode
-> is high speed, default format is right-justified 12-bit on 16-bit word.
+CC hp300
 
-...
+On Tue, 23 Jun 2026 at 06:41, Haoxiang Li <haoxiang_li2024@163.com> wrote:
+> hpfb_init() registers the DIO driver via dio_register_driver().
+> If a later error occurs, the function returns directly without
+> unregistering the DIO driver. Unregister the DIO driver before
+> returning from these error paths.
+>
+> Signed-off-by: Haoxiang Li <haoxiang_li2024@163.com>
 
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
+Thanks for your patch, which is now commit d6c3e2402523ce01 ("fbdev:
+hpfb: Unregister DIO driver on init failure") in fbdev/for-next
 
-> +#include <linux/io.h>
+> --- a/drivers/video/fbdev/hpfb.c
+> +++ b/drivers/video/fbdev/hpfb.c
+> @@ -407,10 +407,13 @@ static int __init hpfb_init(void)
 
-Is it used now?
+As per the comment out-of-context above, this driver supports devices
+on two types of buses:
 
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/types.h>
+        /* Topcats can be on the internal IO bus or real DIO devices.
+         * The internal variant sits at 0x560000; it has primary
+         * and secondary ID registers just like the DIO version.
+         * So we merge the two detection routines.
 
-...
+>         err = copy_from_kernel_nofault(&i, (unsigned char *)INTFBVADDR + DIO_IDOFF, 1);
+>
+>         if (!err && (i == DIO_ID_FBUFFER) && topcat_sid_ok(sid = DIO_SECID(INTFBVADDR))) {
+> -               if (!request_mem_region(INTFBPADDR, DIO_DEVSIZE, "Internal Topcat"))
+> +               if (!request_mem_region(INTFBPADDR, DIO_DEVSIZE, "Internal Topcat")) {
+> +                       dio_unregister_driver(&hpfb_driver);
+>                         return -EBUSY;
+> +               }
+>                 printk(KERN_INFO "Internal Topcat found (secondary id %02x)\n", sid);
+>                 if (hpfb_init_one(INTFBPADDR, INTFBVADDR)) {
+> +                       dio_unregister_driver(&hpfb_driver);
+>                         return -ENOMEM;
+>                 }
+>         }
 
-> +	platform_set_drvdata(pdev, indio_dev);
+Hence if the detection or initialization on the internal bus fails,
+other devices on the DIO bus must not be force-unbound.
 
-Is it used?
+This is also the reason why any error returned by
+copy_from_kernel_nofault() is not considered fatal.
 
-...
+Gr{oetje,eeting}s,
 
-Otherwise LGTM,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
