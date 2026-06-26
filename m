@@ -1,41 +1,56 @@
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C47A3BB118
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Jun 2026 13:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8FE3F65E6
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Jun 2026 14:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782482266; cv=none; b=GNCEgKSMwNttkK1qibLuPmBWkqfehk7i7X4+puQJ7C0p7GAuVxcdUGYpznnhO/3H+xFE4/+kK26PWCFEgzMh5i6S6VcWWZhsr6bbXHFFmjMmJ9WAgmU6as06xn36HJt6pVxlf8AV0SzUPyeKgaSndHApJb9XZmTNEVLZmKXdxrE=
+	t=1782483720; cv=none; b=Ktr2LnnSI+EuiJ1LmzN5C8SG3RMtfu13xh+lIzib6W/1kL4ockWLxdWrbeHiqYnXfdUGnoCyrN8nLTiEMWMLgMaLbtragB4ZhwBvxnmJdd2CtgSO4ZnL5vWxEhhTD97aIRSnIs37aHrruCc7/9ExNxCFJFEfWNjvDRhnXVTCJcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782482266; c=relaxed/simple;
-	bh=1VKnUyniMVKcXs/4ut82ZjvjieqxPWqbwQrUSPcK3JI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d4fwSWH0HgwjOhv4gtXjXmYTC/SqgpetmOITrY7gQ70HQ7dvJ5u0HhHH4ZxV/oC+I7xybVgJI2f9Hq+0S2naKtLZX/tJqlSDFLK/IRF/kxIU4ZI79c5a7Ls1Vcomk17MJtnvGLP8pyVCp0MBBe7Kyg5G7dP/uYyr3whoftiZkXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ERCegwEz; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1782483720; c=relaxed/simple;
+	bh=nuxf2cfS2nCVAFVu7/RkvHjeobxsvhOt+OH98R0cm+o=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=BUaxO6m1DpdZ+7v8Zgetn/JUJ8MPzVVbRYFd3DugahJUN3eLpkaxBjZsl+7z3l58fhFfYZjqcpWMfjWeSucWRJziIFfWqmuZre+wGhk6ocLPRGXLexF6DLaayfJBtPsDK9Z1K6Ol92jiTNBew8rqBoxr2uQrYX5ADodEIyMOK9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=D5Rv63Oq; arc=none smtp.client-ip=185.171.202.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ERCegwEz"
-Date: Fri, 26 Jun 2026 15:57:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782482262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3XgJt/IJ/jkqlrwNP1jMZ6sD3E1khT+DtdmeSi74vhQ=;
-	b=ERCegwEzuc5g22Tl4JbBlAd1a07idmFQy68p8AvYsFNZj4dAsCADLUxWb3aDzyNlZ7Mmzh
-	rz/8WUVqtqEOO2fjSFDhOw/Je26JosWf6w4wRwCO4/5MGxCJ9wXVIPMBMJhD+FjhC3XSOk
-	mdapCteVqWySfExmfOKEM1iESV9Vobk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: amiga: Mark amiga_reset() as __noreturn
-Message-ID: <aj6FTgJ6mL36WrKV@linux.dev>
-References: <20260626104142.3782-2-thorsten.blum@linux.dev>
- <CAFr9PX=gTnsBi4X+cFzMM3vfWE2mXO2ARPOEYe+ZWVJ4JWzPvg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="D5Rv63Oq"
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 5E7C1C6344B;
+	Fri, 26 Jun 2026 14:22:06 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 75E2F60232;
+	Fri, 26 Jun 2026 14:21:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4086C104C9767;
+	Fri, 26 Jun 2026 16:21:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1782483716; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=nuxf2cfS2nCVAFVu7/RkvHjeobxsvhOt+OH98R0cm+o=;
+	b=D5Rv63OqSdY6oH5OArGLroKQhy2N5Y99QQnpyrAXeHwTQYFnQbu83iypZbUceI836U7rgI
+	KlPZlwbvjFbkHy2Rpk5uEaEFNLnzSr5wMBvmoUjjksPa57I/qzqsl1b+0Jb2qstm7TKlxY
+	8KJ7AHC/DfQruOLtW+/XjjknwWYttA5xeaY1GqKWBmx7IAqXK2W5ddt2IklLc7GsU2jgLm
+	Hq6T1WRvSITvwSoKmgKnib3gGQxlfFv8HKaj98VDLmWF1DAWmL36xXJakMi/rSS0B7alVm
+	luMPRqQMn7W1n6iSaIi2bP0fG1b3VQzTHn+3+gXwC5Vk6xV6y19jtgM4gLfAHA==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Greg Ungerer" <gregungerer@westnet.com.au>,  "Arnd Bergmann"
+ <arnd@kernel.org>,  "Richard Weinberger" <richard@nod.at>,  "Vignesh
+ Raghavendra" <vigneshr@ti.com>,  "Randy Dunlap" <rdunlap@infradead.org>,
+  "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org,  linux-m68k
+ <linux-m68k@lists.linux-m68k.org>,  "Pengpeng Hou" <pengpeng@iscas.ac.cn>
+Subject: Re: [PATCH 2/3] mtd: maps: remove uclinux map driver
+In-Reply-To: <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com> (Arnd
+	Bergmann's message of "Thu, 25 Jun 2026 16:10:54 +0200")
+References: <20260526103227.3152003-1-arnd@kernel.org>
+	<20260526103227.3152003-2-arnd@kernel.org>
+	<b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
+	<f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Fri, 26 Jun 2026 16:21:50 +0200
+Message-ID: <87ik75l6v5.fsf@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -43,46 +58,27 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFr9PX=gTnsBi4X+cFzMM3vfWE2mXO2ARPOEYe+ZWVJ4JWzPvg@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: quoted-printable
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Daniel,
+Hello Arnd,
 
-On Fri, Jun 26, 2026 at 10:49:59PM +0900, Daniel Palmer wrote:
-> Hi Thorsten,
-> 
-> On Fri, 26 Jun 2026 at 19:43, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> >
-> > Mark both the forward declaration and the function definition as
-> > __noreturn, and remove the redundant redeclaration.
-> >
-> <snip>
-> 
-> I tried to build and boot test this on my Amiga 4000 but the build is borken:
-> 
->   UPD     include/config/kernel.release
->  UPD     include/generated/utsrelease.h
->  CC      init/version.o
->  AR      init/built-in.a
->  CC      arch/m68k/amiga/config.o
-> arch/m68k/amiga/config.c:546:1: error: attributes should be specified
-> before the declarator in a function definition
->  546 | static void amiga_reset(void) __noreturn
->      | ^~~~~~
-> arch/m68k/amiga/config.c:99:13: warning: ‘amiga_reset’ used but never defined
->   99 | static void amiga_reset(void) __noreturn;
->      |             ^~~~~~~~~~~
-> 
-> GCC version is:  m68k-linux-gnu-gcc (Debian 15.2.0-17) 15.2.0
+>> No out of tree code is required. Most of the ColdFire defconfigs have
+>> CONFIG_MTD_UCLINUX enabled, since it is commonly used.
+>
+> I see, this is surprising from reading the source and
+> git history, but I can see exactly how it got there.
+>
+> So this is not actually a device but rather a replacement
+> for CONFIG_BLK_DEV_INITRD that does can work with CONFIG_BLOCK=3Dy,
+> right?
+>
+>> Can we get this reverted?
+>
+> Yes, of course. Miquel/Richard/Vignesh, should I send a revert or
+> can you just apply one with Greg's explanation and my Ack?
 
-I also compiled it, but then moved the __noreturn to the end which is
-apparently not allowed. Feel free to try:
-
-	static void __noreturn amiga_reset(void);
-
-That should work. I'll send a v2 later.
+I'll try to come up with something next week :-)
 
 Thanks,
-Thorsten
+Miqu=C3=A8l
