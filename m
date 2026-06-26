@@ -1,78 +1,100 @@
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C1C3812EB
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Jun 2026 10:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81913F44EF
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Jun 2026 12:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782470549; cv=none; b=q5nrToiD0pXxOTAv50uegDa/vBDqBGdWDDUqWcpBBKJvlSnIADlZTtaOKgzDbfVYjHrGhjuXlUNwlned1AhDugF+PsVW0DfbIzVVjXzU+6nBktP07QjAvgFtWpEggTi2mjDAknTypUW9QE695+SinL+5VjRz+sXEsRoNe4yAVk4=
+	t=1782476327; cv=none; b=a4dJdvAf0cj4dRoJLMRBh+Jb2Hk0SufjXrXN+O3ShWX3RBeqR5VSh+5OE16WFUqiOF89QfD9iv52ZfYGpAWA0uoRRP62aku/w3xUPu2q0ibzqnfrNmkAkCtZvM6UvXC6RZdtiF2Vl+mONzJfUJwhVfuYtIoctdnHjUxCCbZd1/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782470549; c=relaxed/simple;
-	bh=dr9KhOzfEUc6hl7W6rkhWtjCs3Av2mWSu77/j+AffD0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WrQ/y/k6OLoQ5z4QLXfVAYSwNYf8HPKMOsU1meGwIFlc8Pd+mMNsRV73M578v6SNEhnoTCyusqmXO9FRCHmvK4mN3YDr9cFeIaaHjaJ2sm+D/y8mC7KsB6yiY9hlHI3eMup3ooe8G7eqpELjEAwhtWP7aDGwy6/mLjxAPfIl1Qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xHuQ2bfv; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1782476327; c=relaxed/simple;
+	bh=GQdkiFYQJIel4Gg360i3/xZux3oAYTuuUHnkPqH4GqA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iTkJcXeGjDe5fAZYYNN/+cle23ICFMiI5WN8QN7rR6B+A56HmcsM4AmyGxGhTqpvQZpRPJa7b0IBUREqvpFUzNLCcs3Jgd7svw4kV3Ov0rlvoESTakCoTz9g66JX3zk0qPik5t4dw6pM5N8HjtNWvTjm278NviAR4AZmn476ihQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jLU0C6zi; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xHuQ2bfv"
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782470545;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=Dfv0jBcCTscZE7mKBNTeCCie5if0XdeznLFF3LjoMVI=;
-	b=xHuQ2bfvM+rRgHOd3nZDulZqM8kcV9KkRQZk7g1VpCpyhMi+LsXK07QRGL9yYji0OjSjr8
-	uzIZXuy1m1a4C4vviG+bkEikLYjoyyrpvTlipd47hSTPiUKOotpi8xL8KiSYs9AdpOvE9A
-	gqI5A99czqaKypvLcxgiy1mL4+4EBRA=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] m68k: amiga: Mark amiga_reset() as __noreturn
-Date: Fri, 26 Jun 2026 12:41:42 +0200
-Message-ID: <20260626104142.3782-2-thorsten.blum@linux.dev>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jLU0C6zi"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1782476326; x=1814012326;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GQdkiFYQJIel4Gg360i3/xZux3oAYTuuUHnkPqH4GqA=;
+  b=jLU0C6zijklb4nFVoJxwe2j4aeeP5BF9jyZx88itnQVXJRv8xgon032t
+   +UzVgmnAHlY4Swo5dX+2p+oUWnHIPA+S3udXXnzD0+mano1/Ly3r9wtCk
+   uthK9kXK2Lx+HG8CL+Z8MC8H7JQMx2Jm80yUZMCdXYBYfJUNJMKE3mEj/
+   rSvZVg9Rd8sDaCcqkDSTyEf5ehqdOrUgXYosxf58Ldl5oJ4EJimErmeAm
+   Ehh43CYwnIZWlSb+48P74hRh/uyQrNXvJK1gre1qaec5xz8WHq7OCOoZm
+   pQ5bR0kCS7YUfN6rMAKIUzO9/yOCef7EmIhH1hV3OweQmEXTmf1ZUConU
+   w==;
+X-CSE-ConnectionGUID: eVscWeoITaC+Oyimx1IbkQ==
+X-CSE-MsgGUID: H4VfH+EbS5aBIWlJrImPoA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11828"; a="83037503"
+X-IronPort-AV: E=Sophos;i="6.24,226,1774335600"; 
+   d="scan'208";a="83037503"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2026 05:18:44 -0700
+X-CSE-ConnectionGUID: ili9L0J/Sr6VR/zo02vtpg==
+X-CSE-MsgGUID: NKlMMr9hSSaFez4psVLROA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,226,1774335600"; 
+   d="scan'208";a="251468981"
+Received: from conormcd-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.244.1])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2026 05:18:42 -0700
+Date: Fri, 26 Jun 2026 15:18:39 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-m68k <linux-m68k@lists.linux-m68k.org>,
+	Pengpeng Hou <pengpeng@iscas.ac.cn>
+Subject: Re: [PATCH 2/3] mtd: maps: remove uclinux map driver
+Message-ID: <aj5uH-7WfM4BPXbc@ashevche-desk.local>
+References: <20260526103227.3152003-1-arnd@kernel.org>
+ <20260526103227.3152003-2-arnd@kernel.org>
+ <b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
+ <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
+ <5dd8cf26-533f-4a32-8885-3eaad7c57ed6@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1203; i=thorsten.blum@linux.dev; h=from:subject; bh=dr9KhOzfEUc6hl7W6rkhWtjCs3Av2mWSu77/j+AffD0=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFl24WkvmVNupZ9Z/eNl5P6gJymTXZqv6XbHRh4K+/y+y LyhJHtaRykLgxgXg6yYIsuDWT9m+JbWVG4yidgJM4eVCWQIAxenAExE+yDD/8LG+mubmVgqt/+p c2Wvkn+XkfrEzrb7tFve9t5Nm2XM2xkZ9l/Un36Js+ZJzoMnFuabBAUO2iw79qN4h3XCqUWHWf/ 5sgAA
-X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5dd8cf26-533f-4a32-8885-3eaad7c57ed6@linux-m68k.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
+ krs, Bertel Jungin Aukio 5, 02600 Espoo
 
-Mark both the forward declaration and the function definition as
-__noreturn, and remove the redundant redeclaration.
+On Fri, Jun 26, 2026 at 08:15:42AM +1000, Greg Ungerer wrote:
+> On 26/6/26 00:10, Arnd Bergmann wrote:
+> > On Thu, Jun 25, 2026, at 14:07, Greg Ungerer wrote:
+> > > On 26/5/26 20:32, Arnd Bergmann wrote:
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- arch/m68k/amiga/config.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+...
 
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index 242d18e750b0..7b72d964577a 100644
---- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -96,7 +96,7 @@ static char amiga_model_name[13] = "Amiga ";
- static void amiga_sched_init(void);
- static void amiga_get_model(char *model);
- static void amiga_get_hardware_list(struct seq_file *m);
--static void amiga_reset(void);
-+static void amiga_reset(void) __noreturn;
- static void amiga_mem_console_write(struct console *co, const char *b,
- 				    unsigned int count);
- #ifdef CONFIG_HEARTBEAT
-@@ -543,9 +543,7 @@ static u64 amiga_read_clk(struct clocksource *cs)
- 	return ticks;
- }
- 
--static void amiga_reset(void)  __noreturn;
--
--static void amiga_reset(void)
-+static void amiga_reset(void) __noreturn
- {
- 	unsigned long jmp_addr040 = virt_to_phys(&&jmp_addr_label040);
- 	unsigned long jmp_addr = virt_to_phys(&&jmp_addr_label);
+> > > No out of tree code is required. Most of the ColdFire defconfigs have
+> > > CONFIG_MTD_UCLINUX enabled, since it is commonly used.
+> > 
+> > I see, this is surprising from reading the source and
+> > git history, but I can see exactly how it got there.
+> 
+> The early, and probably more interesting history, predates git.
+> It has always "just worked" on ColdFire platforms, so it really hasn't
+> needed alot of change over the years for this use case.
+
+If connect history.git and use `git replace`, one can get a history till
+to the very begin of Linux kernel (yeah, some as tags and patch bombs, but...).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
