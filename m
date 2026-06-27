@@ -1,40 +1,69 @@
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E0437B032
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 26 Jun 2026 15:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A0AC1EEA54
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 27 Jun 2026 00:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782486770; cv=none; b=Swl/+ou21/Kh8xW3lN2Eys8SJrQqZ2Vhmu88asfaoxJ5IYp0x/fO82KH+mV4zRJ7FtHBm0QUqz/gmhgajbJ10BMSouja89+kOsz0Qk6DiXiI5RQcfXN+w/qaQG2+IZk41MkNEIO0mjK8YsQPwBm8sf94HUoa255yfPqKbZpXJhY=
+	t=1782521124; cv=none; b=Evjye07gzUu4e6gIFItbNrnTaKdZLxox2sln1BdMZ2AWrrc97vf7CmLaogmWK/mpwyYLGBKrWYvw36SFdBn0gYNNnVWhvOxCyPId2pbLGBcjrDW+67myZjRkB3KnVEGbZtmtE+/r2CGl4rXHGTnPu8xwNq4hoSxMvk8+KoBJs6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782486770; c=relaxed/simple;
-	bh=URVGzuHIflYeNJz6g9E3Ox4vIR8LOpddiDa8EjwitvM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J6T4NZXM7VgF5eUC29iKPYg+MzKzopb+ROxn2/H1gEd2HIVVIydg02FgoQ2PrtXvjRyJD9E0ojM7bsWU5xeidSoYE+a4yAbHcd5qTL9a5FfnwNGgkUQB82RGv+iKQHOIVaqHy3GhfvGDQIQJZcSsWVb5csROxPyRjMN+qPM04D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=h1EIacxe; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1782521124; c=relaxed/simple;
+	bh=kcCoudtrYsi9IUF09xctIw4mLA0D1BJn13vGl73pscA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=pqr/z+TliblL2HJhb5qSmVAk/fE5+/01M2/M2TN1K2faT4G2xliSWeszifRRm9aIzffi7IPSukplH/U1ysmTe2wSU1gLLAXclE2vwNoDTMnwbjNNJiZlloyOGv7TvZe7cWd2smrwRD9n8tFS6ki618+rr7Om0DrhGXmP2Qetbj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MVd2/gzA; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="h1EIacxe"
-Date: Fri, 26 Jun 2026 17:12:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782486761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t6iIeO6NV5lFndJuAEd9nbzQsVfSydk9GdGnQOtrpxI=;
-	b=h1EIacxeE1w3CXf0nhSDyShDtAtEQyP6Kpc8zVG5NYKBTpXbAaF4GTLckrORF6jZArbogl
-	WZ46jps0h/OXFk0dzwWXSMSZb4w0534I2vRHDgjqRsCDJJSI64iGtJ8LSpH6zxxxyt87Bt
-	0JSgHq9Bem/lrLlfR8IymJn9ZPfwGz4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] m68k: amiga: Mark amiga_reset() as __noreturn
-Message-ID: <aj6W5U98q3wWCFqO@linux.dev>
-References: <20260626145731.64010-2-thorsten.blum@linux.dev>
- <CAFr9PXn8b8ZUk_OFLTum6Q_a19XNRwu61usgda61jfxMVvZqYQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MVd2/gzA"
+Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 6479A7A0116;
+	Fri, 26 Jun 2026 20:45:21 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Fri, 26 Jun 2026 20:45:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1782521121; x=1782607521; bh=WGww39iwULt6ZlD/7NofSFXvCzUOG8tos9N
+	qKW1CsYA=; b=MVd2/gzAN36C5ckEbTddg0pQRrFpmUwYmujCDPdVvCmceKD2uTS
+	o9kQ0iesmdxH16EHReyRyxNc31cImVyolIvALcGnuD99OXLJXo2qehIDm/WXwsX5
+	I6ud1vGqPbbDdLMacodYeFQfol3GLkxgxm0V+CE3sAawy61lgiJp91Q+lawOWyK4
+	Mm/+GnbowkMBzWSwcQN4FtxVpYit76z7UiZWX15iAAxoeLEuYMkeZB80f9Eo202s
+	5aiWH5dpqJyjVDUKrtchKzXNWTTv0STxpPCSunpyIEEUJTfFeiCx5e+Z/IDV64og
+	Vp3Da9OsN/ot3YKWfYG00RZqqOd9uqaxP+g==
+X-ME-Sender: <xms:IB0_aiTR0yt4cpYUJfEwKcQjmzCJ2k2KF2OCq0yHsxc4-4Jj7dbAPQ>
+    <xme:IB0_avjnEOUtnKzdQLpJrhkvBXYUtKAtS74a_MYOy0UhPGEN2XW8Ekwrsg44nXHh1
+    pZ_Z32kBai9ufuVRETRafwUEN2On-gAzX9HT-OY1F6MJJHq646RSh_O>
+X-ME-Received: <xmr:IB0_ai4QnQsHky_E9ATZfVH1i3TyKDEh3--uHC8MXnQwV5VYEvDpdInvGMaRv2X1ovqYNW53cR3or4qmS9TM6emC1oG9vhsLw7w>
+X-ME-Proxy-Cause: dmFkZTE5/9u51qarr5EcoODav0NajgqjJQKYnKAMQtEPG2/U3ExtJMDsrRIp/7SovmULle
+    R9ttFwJEtZ+7eDQb5vqieXj3dYS3gSVBR7w/2UhIbzKH6ifsgtAJThdDzTd116i2wly6L4
+    pNUas4kF7ISQ+7OmrrfAjEOolcxiRfHqGjaCwzcZx4T6tO4fyknByyfoDnyVNMbV4hQWg4
+    D70LoeRoNT1/rQ/WcL+NdTxDak8k7nTtQGB9aaHe2x/fqf7Aaik7Hr+MZhAmdrTARIOrM0
+    LZwUJNSsPTQ5x2CqgKO0wyzUL7waVY+gL9AsUEoK4nvD4Ml4z4w9RWCeLAaeWRmu/81JhQ
+    4nApxrTMDafDetPxhWMD9PPAdNsTiypCEyBDcI0dRFnHK8I0YLIpK/vE3T+YCeS1gaWiyn
+    7+n6NCEdcg4xykDOsGK9G5qPkAUBFxkuhr2j890Xkr3bV7gnm7+pbOmqlwDrEwQ/1wpJMp
+    pfJ9HJ+VFllVNpvblsfiBtwAja/5hQ44dYVDIQcxhvygaqTQ2ibkaYZ0rPLHgen9wrojlB
+    R3PeOI3TqSSKklRE/LUB7aJXNxvixLi0jGtBxMbOHfaEkGSnFLOQTFwsLRZMYwdfH8aW79
+    wH4PfaWxKKj6ph1ir8hekzPYh3lwDZ1+Qq8ztm30OVWJYO+gp32DvVR/Rodw
+X-ME-Proxy: <xmx:IB0_asC4YuexpT8luJDXCvIEPB46g3R1vMH6svjZu1BIT-WTkZ575w>
+    <xmx:IB0_apYz2HUXPLK_IYYtz02lMXs8H5q1VxH-deUYjS3yTqoQIa9gWA>
+    <xmx:IB0_anZ73XDzFUehz4jl-Mxu-m8OvYQ9zUefpBiMoukb60ZUmejB7Q>
+    <xmx:IB0_ag-j650m1mnvKo1LNYaETgUyWtdD_s1pQcNCedsurzHQ-8-RCg>
+    <xmx:IR0_apN95MQbuYY0GjyGFn5BVK-SGQ8Z1VBhAmQ88wdgI8Y5IumNtEX3>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 26 Jun 2026 20:45:17 -0400 (EDT)
+Date: Sat, 27 Jun 2026 10:45:22 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Daniel Palmer <daniel@thingy.jp>
+cc: linux-m68k <linux-m68k@lists.linux-m68k.org>, 
+    Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: m68k: 68000 port for megadrive
+In-Reply-To: <CAFr9PXnh7cxzLYpkxXDx9UVrxZmywmbByU386XdijAtVKECzXg@mail.gmail.com>
+Message-ID: <8c8fc514-0a95-e25d-9af5-c9329134b11f@linux-m68k.org>
+References: <CAFr9PXnh7cxzLYpkxXDx9UVrxZmywmbByU386XdijAtVKECzXg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -42,21 +71,35 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFr9PXn8b8ZUk_OFLTum6Q_a19XNRwu61usgda61jfxMVvZqYQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Sat, Jun 27, 2026 at 12:07:30AM +0900, Daniel Palmer wrote:
-> Hi Thorsten,
-> 
-> On Fri, 26 Jun 2026 at 23:58, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> >
-> > Mark both the forward declaration and the function definition as
-> > __noreturn, and remove the redundant redeclaration.
-> <snip>
-> 
-> Boot tested on my A4000, rebooting still works. So FWIW:
-> 
-> Tested-by: Daniel Palmer <daniel@thingy.jp>
 
-Thank you!
+On Fri, 26 Jun 2026, Daniel Palmer wrote:
+
+> I'm not going to send patches* for this but I thought it'd at least be
+> funny to someone.
+
+Not funny to me. I think it's valuable work.
+
+> I've used my DeviceTree enabled version of the 68000 code to do a
+> quick port to the megadrive.
+> 
+> https://github.com/LinuxMD/linuxmd (screenshot is near the end)
+> 
+
+...
+
+> Calibrating delay loop... 0.72 BogoMIPS (lpj=5984)
+
+...
+
+> Memory: 2532K/4096K available (1002K kernel code, 54K rwdata, 108K rodata, 
+> 72K init, 39K bss, 1368K reserved, 0K cma-reserved)
+
+
+My old laptop has about 1000x the bogomips and 1000x the memory shown in 
+your console log. Your work shows me what 1000 virtual machines might look 
+like here.
+
+Shrinking the operating system in that way (no block layer, no network 
+stack etc.) is important work and is a real step towards comfortably 
+hosting a million busy containers on a single system.
