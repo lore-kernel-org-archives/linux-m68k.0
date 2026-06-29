@@ -1,36 +1,36 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D493A4071FF
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 13:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8E6407590
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 13:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782739651; cv=none; b=GhuGjiY2RTnM+6zM/t0v1bPaZWW//iX6Z9jMHVCE0i/gHlY4CEA+32vjnI1r2onxr85dxwL/HksQfdfagaOGSKiIDRvZx0z54uPGGEVsz3rwKTTUwXk1I16eqSXwa+49lL6z0DQS9u0UYkvgSc7f4S527AQiGKR1uBPP0Vo6nWI=
+	t=1782739658; cv=none; b=VBewxsGdeNoYro470Mn8AIvnAFzRxz+bmcW5oPrvsFerLfBAmG/xU6sM+ZpubRh6hX+z4OILKo82tYu9O08s0HQUR5NEVVQZJC1S6hTQ8gTDHKl1t1q5OPjUurW52J/w8uhhhmBcsZwDeGY7qIpOXnp2fx7t/Fe8x87Sou8LItA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782739651; c=relaxed/simple;
-	bh=RAP4+Nkt32LFcpYRq+QfiZIEhW5kj+D8pewdiemsoN0=;
+	s=arc-20240116; t=1782739658; c=relaxed/simple;
+	bh=CltlL4gLl6R/aUyo3NNWu4aPN7uRAiEFCORu6U1GoVI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=p8XCJJuDM/C69G3AAeDRfhdRKwXdghnvMWC2LJl4sDkjLw62sqJu6VEcklXNlb/2ylHbFr0Nz8So81rofTFGxubHeQ3AkK/7NGVchj3pGhO0HEQAVi1Bs1Zu9XX96QKfpPYcnl8AVLsIYjAdrDHSXAuTGDLn7bB9dxsPh9s4oT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FK3JXy8U; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=cirYUXhbBKXOIsgApQfLM2xmJbW5oibNRNC0zyFwK1cFzfARiXRBnxJsUlu3wkt7GIleWZgwIc4JkfvpCli/H0nbaGD47Mm9Ac6jHFaNnrmWnP5XaVK9H6F8K3zX17BYOoK3+56c4Tl+mC2LndliZM7yxzVYxmgIK76oUZmrk8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W3XxLeAX; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FK3JXy8U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W3XxLeAX"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9737A41A3A;
+	by tor.source.kernel.org (Postfix) with ESMTP id BE5C760008;
+	Mon, 29 Jun 2026 13:27:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB7A51F00A3A;
 	Mon, 29 Jun 2026 13:27:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1AC31F000E9;
-	Mon, 29 Jun 2026 13:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782739649;
-	bh=eOck3k2GHZO/S3AlTEUqocjsRNiDXqKCWowdRT7XkWQ=;
+	s=k20260515; t=1782739656;
+	bh=qVU/cQLnaenh7G2gzskwzWByJ5M8lYz7G2KTZBNaXl0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=FK3JXy8U0qoXEQw7Ia7A2VdPMA6etYZxLO5R1hO0eG2bDFs9j3KWyic/u9Tbb30/T
-	 0i4fbanW/FC5tBTOgKJSvN1vOquOpY2w/EZ4GNYNP/mk9OSCxR0jP9MBWkCjojecAM
-	 QYf4OTn1oTrUX5tBhX91NPhYsWVc784JDB962NXCnay9DMWPkS4ab9jv6tRfUcz040
-	 umhw+xmYJT3fQVGynYhdDfPo+x9vMpMWCnnSbr41bSHpwTdm0N8kL72KM0yqxHw5g3
-	 rOigYSqSChhHf+P+lMgYawL7s91VVuZ6V+JINIHcElahI3LOVWmhse0Bb5sE7lMy+C
-	 ewwreLb4k13Dg==
+	b=W3XxLeAX94oAJwi6KccusZYNep78lyadH1eGcnGUUrL8zeW/m5ri9nxkqGDZRVcob
+	 uG/2mwq0oEhrUpgvYlMUhA3Hn5e6ilprAecYZlavcYxGt6RxCLr6ZNWbi0lLGO7M8w
+	 c6SLMjx6ofeUljl4HXzXKp883719e6wAMUAfKDx8R9PQuEFLSobHJ8ut89AIBVSa39
+	 6N7miTIf1RiXSvruCB9D4e6uyU8ULFKrNz4Tnr1co4c9L3Vk1jsaW2gNYufFcgpvl4
+	 WaJhLoivp0gvakiWmOrUevc7Ne1ZfGmIknu6R8MWz6qBGSe8WltGzyUuzHPzJ1TdF+
+	 7naoLS346ECgg==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-gpio@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -66,9 +66,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-phy@lists.infradead.org,
 	linux-rockchip@lists.infradead.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH 06/13] [net-next] net: replace linux/gpio.h inclusions
-Date: Mon, 29 Jun 2026 15:26:26 +0200
-Message-Id: <20260629132633.1300009-7-arnd@kernel.org>
+Subject: [PATCH 07/13] ASoC: replace linux/gpio.h inclusions
+Date: Mon, 29 Jun 2026 15:26:27 +0200
+Message-Id: <20260629132633.1300009-8-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260629132633.1300009-1-arnd@kernel.org>
 References: <20260629132633.1300009-1-arnd@kernel.org>
@@ -82,106 +82,54 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-linux/gpio.h should no longer be used, change these in drivers/net to
-linux/gpio/consumer.h where possible, with b53 being the only one still
-using linux/gpio/legacy.h.
+linux/gpio.h is going away,s o use linux/gpio/consumer.h instead.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/dsa/b53/b53_priv.h                       | 3 ++-
- drivers/net/dsa/microchip/ksz8.c                     | 2 +-
- drivers/net/ethernet/allwinner/sun4i-emac.c          | 2 +-
- drivers/net/ethernet/apm/xgene/xgene_enet_main.c     | 2 +-
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 2 +-
- drivers/net/phy/mdio_device.c                        | 2 +-
- 6 files changed, 7 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs42l84.c | 2 +-
+ sound/soc/codecs/cx2072x.c | 2 +-
+ sound/soc/codecs/dmic.c    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_priv.h b/drivers/net/dsa/b53/b53_priv.h
-index cd27a7344e89..29cca7945df7 100644
---- a/drivers/net/dsa/b53/b53_priv.h
-+++ b/drivers/net/dsa/b53/b53_priv.h
-@@ -23,6 +23,7 @@
- #include <linux/mutex.h>
- #include <linux/phylink.h>
- #include <linux/etherdevice.h>
-+#include <linux/gpio/consumer.h>
- #include <net/dsa.h>
- 
- #include "b53_regs.h"
-@@ -467,7 +468,7 @@ static inline void b53_arl_search_read(struct b53_device *dev, u8 idx,
- #ifdef CONFIG_BCM47XX
- 
- #include <linux/bcm47xx_nvram.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/legacy.h>
- #include <bcm47xx_board.h>
- static inline struct gpio_desc *b53_switch_get_reset_gpio(struct b53_device *dev)
- {
-diff --git a/drivers/net/dsa/microchip/ksz8.c b/drivers/net/dsa/microchip/ksz8.c
-index 138f2ab0774e..586916570a84 100644
---- a/drivers/net/dsa/microchip/ksz8.c
-+++ b/drivers/net/dsa/microchip/ksz8.c
-@@ -18,7 +18,7 @@
+diff --git a/sound/soc/codecs/cs42l84.c b/sound/soc/codecs/cs42l84.c
+index f2a58163de0e..36c3abc21fed 100644
+--- a/sound/soc/codecs/cs42l84.c
++++ b/sound/soc/codecs/cs42l84.c
+@@ -16,7 +16,7 @@
+ #include <linux/init.h>
  #include <linux/delay.h>
- #include <linux/dsa/ksz_common.h>
- #include <linux/export.h>
+ #include <linux/i2c.h>
 -#include <linux/gpio.h>
 +#include <linux/gpio/consumer.h>
- #include <linux/if_vlan.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
-index fc7341a5cbb7..42174249ef61 100644
---- a/drivers/net/ethernet/allwinner/sun4i-emac.c
-+++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
-@@ -15,7 +15,7 @@
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <linux/acpi.h>
+diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
+index 83c6cbd40804..0dd35fa86cc5 100644
+--- a/sound/soc/codecs/cx2072x.c
++++ b/sound/soc/codecs/cx2072x.c
+@@ -11,7 +11,7 @@
+ #include <linux/acpi.h>
  #include <linux/clk.h>
- #include <linux/etherdevice.h>
- #include <linux/ethtool.h>
+ #include <linux/delay.h>
 -#include <linux/gpio.h>
 +#include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/mii.h>
-diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
-index 3b2951030a38..507db46daf2b 100644
---- a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
-+++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
-@@ -7,7 +7,7 @@
-  *	    Keyur Chudgar <kchudgar@apm.com>
+ #include <linux/init.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index 61e1bf1b3c9e..8b05d6f9b429 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -6,7 +6,7 @@
   */
  
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include "xgene_enet_main.h"
- #include "xgene_enet_hw.h"
- #include "xgene_enet_sgmac.h"
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index 48b94ce77490..88c5c52e0e38 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -16,7 +16,7 @@
- #include <linux/net_tstamp.h>
- #include <linux/ptp_classify.h>
- #include <linux/ptp_pch.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- 
- #define PCH_GBE_MAR_ENTRIES		16
- #define PCH_GBE_SHORT_PKT		64
-diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-index 56080d3d2d25..a18263d5bb02 100644
---- a/drivers/net/phy/mdio_device.c
-+++ b/drivers/net/phy/mdio_device.c
-@@ -8,7 +8,7 @@
- 
  #include <linux/delay.h>
- #include <linux/errno.h>
 -#include <linux/gpio.h>
 +#include <linux/gpio/consumer.h>
  #include <linux/gpio/consumer.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+ #include <linux/regulator/consumer.h>
 -- 
 2.39.5
 
