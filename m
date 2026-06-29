@@ -1,306 +1,124 @@
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646C73290DE
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 28 Jun 2026 12:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F813D6692
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 07:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782650427; cv=none; b=TQAx49bvnw7wmfaNNDk9LQRiP7zLqefsY2QnG3ZckZaVrOlSkBG9L7Lxs6eqx9VJH5n5shxSoo0AxmpFw5GU/gdjtqiTEMMWeO532TRjCtIAYkdaahWweq1S07u55OTqf/T7T4xnrddqAopZUuwI3aovyvDYBD2VfgGZCSaB0QM=
+	t=1782717965; cv=none; b=h92FrO3MjinE2fO8KkEbqYDxss8pL7UyEDNsV3MTKiaTyAZLDKFngR8aPg7DXsTHlA8l6QGRNvN0ntwiLtExmSeQBYd5AVznQR2j/bwKqS4fLtSn25cemF+hnn4pN9S3JQAo/nZBKKtHV3QrkNiKY3kLrNX+zy+p6UtTSn+yazw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782650427; c=relaxed/simple;
-	bh=UZmgrhU1B5jt3o/iWxMq8eBPSxrDtrzbKdiZZ8elzXM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qZtoJdnWdkWzBlnjnQeNVMF4LqJymuvuxXq8W9SDCeDzR28MZH9ZbCxRnxPpcQZTcBF5YtBjOIbLHzL0o+Ser8YqMi+Ow2QlyZtETCQ0ErmHCbhWZkCk0lGqkmk5xJgBvxketVdQkB48b3SeyuJWblWltqjTrVdhx28GnRsXCOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DCqDw6wb; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DCqDw6wb"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id E54A9C5846B;
-	Sun, 28 Jun 2026 12:40:25 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 2B97D5FF79;
-	Sun, 28 Jun 2026 12:40:16 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8B957106F0DB7;
-	Sun, 28 Jun 2026 14:40:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1782650415; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=1rLRCS8D8wJB9YfOeDSZWLIo+1Ft4jeCXNnks+hWR/o=;
-	b=DCqDw6wbGGYCr8YF7Fg57zOuNb1J1GpVW3MZqOhGmGivqbU6J+DxWhQi1mjXU2QECKnVn9
-	9xJ5VpUr/DQZ3EuVBl1qhsFyDwwM+jqvfIAuckB0kbjXR+ctdp9jTK71iB2OxM2IhqYTLe
-	cY0QLvU6emKnWATRq4lVfBTe7a1wwV+fxsHKif02mHVYO/xHO+uYscV19xDJfT+R05fels
-	6Gd6EZc6Oe6Fj2ZjLhJ2jmUU4aLSBjpuh6tE1wYpEOvsZRqM7w0u9zZtkBRj5KdvhjsUKl
-	I0sohga5ibQ2HELgF3yBh5PZ/kbNFHQ40o2WJP/DiD62fqpf2zWsb6cVkH/6GA==
-Date: Sun, 28 Jun 2026 14:40:13 +0200
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org
-Subject: Re: [PATCH v2 1/2] rtc: m5441x: add MCF5441x on-chip RTC driver
-Message-ID: <2026062812401322c1a565@mail.local>
-References: <20260607-jmh-upstream-coldfire-rtc-v2-0-948d2b1ed146@yoseli.org>
- <20260607-jmh-upstream-coldfire-rtc-v2-1-948d2b1ed146@yoseli.org>
+	s=arc-20240116; t=1782717965; c=relaxed/simple;
+	bh=6mj11ONA82swByvI86CZ50z/i5eqn92TdarhP941L9E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SQHABAWXXmasKbH7Jdm+5/TG+Djknuc6Y1+S6KZqPkZZfXquFivBbjqY6D5SA/xPUUHiCVwn22KAi8TXDmIgATlSBtrAZKkbYVqvBPNqgdGfxATm6zBgKe4oz50tFbqWTetC3gd9YI+LTjF8FtuiGLkKERSia++2I2dI7o3aTEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-59d4aa96ef2so2482046e0c.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 00:26:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782717961; x=1783322761;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fby5dyw2GEEKWbuN7p+fOm3O26YgBvyosItdnIdm+7Y=;
+        b=acuECsqS4YX4tBFHEZP5UwBUNFnNavvA+XI5/FZO3MtsowETs5UwwMti7qHyXBRKjm
+         bWVDkKN2vSFF24/NqDAo4MCYQFGbjD4+Tz4Z+bsBTowW7GgDkZZO506TBax+HmEFYADj
+         Z56QKnxz0+c0K1lqYu7z8zMmWG2IpVpfQme+5+JtwUnk826a9OcrV6BXxdNVVmP6N2D1
+         LeW6m4GOS3XaU3xei1BnjknOfSUVykaYesvYtewVxLtkDRGrK4GuOIHD+IMF3qPhTvGA
+         xvEEmYt0sB6fjuxeflWesdyVioQ1wqe62h+X7x2v2zEiP0XAXVj0buPbbsWVevY8LCbw
+         hYEA==
+X-Forwarded-Encrypted: i=1; AHgh+RpXYxy9Whhjwf1mXWRt8qk5lSeue0HTRtpR+nrbT1r412l7RliBzgtJX3cMuE9Co7WBNPt9sw8DnszO@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxUSfysyin4A/iWtwdIflL84Eg/K+V+SHKKfLR+ct7W2T6yAYEX
+	Z84WbkfdxgZ9esS2U8uYhWDGQtM6Ahjw+aiVdtIAEx3IZFBRndyK2E/H2Dpw33d+
+X-Gm-Gg: AfdE7cnFvaVmD/D8Cuc3eDSl6XpG0YsLFR5L18HCm2ikamuMnJS6Us7AUQBVwl0V4dx
+	dwiiE9C9yWClEt+qp4IFPeTGl/eYR60aB3vkKYnqUh0Wg+4JkPlL47GSJHAwU/o0e/t5lCvHWjR
+	BnpgSaYadP6GUnqACp59oy/TJNo1zrO/CPOBUSG/HqHEb2EKHzhIf4BcM8wzjfIveUMaU1y+o4w
+	AcZqpSv2e0uakHkBtMG70exh2akQ+wogpVgjDgJeMnCbnzNa2LOFEmw7kWfbUGCQxS6F2Wra6np
+	8s46eKB7lNIhKBnco3181vwwo3OWr76J5UK4BL8X4+fgVBKt+CKqlkiOs8rGW46qua674OGCxhs
+	0zYvaqFbUkjqRaXTfcM8RN3g13z9dX3+upFecUGdMFXzNtbWLvUDxrN+HR4jsFvEE5FjYndteuW
+	SvlrInwrGdfkj3emCPFKcDi3JwPBdfq+94kH9u8ro8zrV7uW+uFw==
+X-Received: by 2002:a05:6122:1782:b0:5a0:2018:4dfa with SMTP id 71dfb90a1353d-5bd69c2f7e2mr6713670e0c.3.1782717960839;
+        Mon, 29 Jun 2026 00:26:00 -0700 (PDT)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-969220da94asm4044470241.1.2026.06.29.00.26.00
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Jun 2026 00:26:00 -0700 (PDT)
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-96358d0a024so2953834241.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 00:26:00 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RqBNV7Huv3LSMpxYzI0xLJVLPsUhy5Bdl+D98A0XNWSyhlERkOVQZXddxQNMiMGXSyiNEF/HDKAsUoZ@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:41a4:b0:738:2a8c:736b with SMTP id
+ ada2fe7eead31-7382a8c74aamr1680948137.20.1782717960187; Mon, 29 Jun 2026
+ 00:26:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260607-jmh-upstream-coldfire-rtc-v2-1-948d2b1ed146@yoseli.org>
-X-Last-TLS-Session-Version: TLSv1.3
+References: <20260626145731.64010-2-thorsten.blum@linux.dev>
+In-Reply-To: <20260626145731.64010-2-thorsten.blum@linux.dev>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 29 Jun 2026 09:25:48 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVMkDOK6baAm9cjYyuUCOWxu_OHE8+ftNwEU1rFfet7Ag@mail.gmail.com>
+X-Gm-Features: AVVi8CcS_eySQlDOYUMs7W30gXP1il4aqNVm1H49E6NomfTSErsOLRB0nSlUuCc
+Message-ID: <CAMuHMdVMkDOK6baAm9cjYyuUCOWxu_OHE8+ftNwEU1rFfet7Ag@mail.gmail.com>
+Subject: Re: [PATCH v2] m68k: amiga: Mark amiga_reset() as __noreturn
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Daniel Palmer <daniel@0x0f.com>, linux-m68k@lists.linux-m68k.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Hi Thorsten,
 
-On 07/06/2026 11:00:40+0200, Jean-Michel Hautbois wrote:
-> +static int m5441x_rtc_read_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct m5441x_rtc *p = dev_get_drvdata(dev);
-> +	u16 yearmon, days, hourmin, seconds;
-> +	unsigned int tries = 3;
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	/*
-> +	 * Without a running oscillator the counters are frozen; refuse the
-> +	 * read rather than hand userspace a stale time that hwclock --hctosys
-> +	 * would propagate into the system clock.
-> +	 */
-> +	if (p->osc_dead)
-> +		return -ENODATA;
+Thanks for your patch!
 
-While not ideal, the current standard is to return -EINVAL in this case.
+On Fri, 26 Jun 2026 at 16:58, Thorsten Blum <thorsten.blum@linux.dev> wrote:
+> [PATCH v2] m68k: amiga: Mark amiga_reset() as __noreturn
 
-> +
-> +static int m5441x_rtc_set_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct m5441x_rtc *p = dev_get_drvdata(dev);
-> +	s8 yoff = (tm->tm_year + 1900) - M5441X_RTC_YEAR_BASE;
-> +	unsigned int tries = 3;
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	/* A frozen oscillator would never latch the new time; reject it. */
-> +	if (p->osc_dead)
-> +		return -ENODATA;
+This is not what this patch does, as amiga_reset() is already marked
+__noreturn.
 
-set_time is a good location to actually restart the oscillator instead
-of failing.
+> Mark both the forward declaration and the function definition as
+> __noreturn, and remove the redundant redeclaration.
 
+Why both? No other static function (except for xen_pv_play_dead)
+is tagged __noreturn in both the forward declaration and the
+implementation.
 
-> +
-> +	/*
-> +	 * Writes are nullified while INVAL is asserted. wait_valid() clears
-> +	 * the path before the burst, but the knock plus four writes can cross
-> +	 * a second boundary on a slow RTC bus, silently dropping fields.
-> +	 * Re-check INVAL afterwards and rewrite on observed re-entry.
-> +	 */
-> +	spin_lock_irqsave(&p->lock, flags);
-> +	do {
-> +		ret = m5441x_rtc_wait_valid(p);
-> +		if (ret)
-> +			break;
-> +		m5441x_rtc_unlock(p);
-> +		rtc_wr(p, M5441X_RTC_YEARMON,
-> +		       ((u16)((u8)yoff) << 8) | ((tm->tm_mon + 1) & 0xff));
-> +		rtc_wr(p, M5441X_RTC_DAYS,
-> +		       ((tm->tm_wday & 0x7) << 8) | (tm->tm_mday & 0x1f));
-> +		rtc_wr(p, M5441X_RTC_HOURMIN,
-> +		       ((tm->tm_hour & 0x1f) << 8) | (tm->tm_min & 0x3f));
-> +		rtc_wr(p, M5441X_RTC_SECONDS, tm->tm_sec & 0x3f);
-> +		/* No boundary crossed mid-burst -> the writes all took. */
-> +		if (!(rtc_rd(p, M5441X_RTC_SR) & M5441X_RTC_SR_INVAL))
-> +			break;
-> +		ret = -EAGAIN;
-> +	} while (--tries);
-> +	spin_unlock_irqrestore(&p->lock, flags);
-> +
-> +	return ret;
-> +}
-> +
-> +
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 
+> --- a/arch/m68k/amiga/config.c
+> +++ b/arch/m68k/amiga/config.c
+> @@ -96,7 +96,7 @@ static char amiga_model_name[13] = "Amiga ";
+>  static void amiga_sched_init(void);
+>  static void amiga_get_model(char *model);
+>  static void amiga_get_hardware_list(struct seq_file *m);
+> -static void amiga_reset(void);
+> +static void __noreturn amiga_reset(void);
+>  static void amiga_mem_console_write(struct console *co, const char *b,
+>                                     unsigned int count);
+>  #ifdef CONFIG_HEARTBEAT
+> @@ -543,9 +543,7 @@ static u64 amiga_read_clk(struct clocksource *cs)
+>         return ticks;
+>  }
+>
+> -static void amiga_reset(void)  __noreturn;
+> -
+> -static void amiga_reset(void)
+> +static void __noreturn amiga_reset(void)
+>  {
+>         unsigned long jmp_addr040 = virt_to_phys(&&jmp_addr_label040);
+>         unsigned long jmp_addr = virt_to_phys(&&jmp_addr_label);
 
+Gr{oetje,eeting}s,
 
-> +static int m5441x_rtc_probe(struct platform_device *pdev)
-> +{
-> +	struct nvmem_config nvmem_cfg = {
-> +		.name		= "m5441x_rtc_sram",
-> +		.type		= NVMEM_TYPE_BATTERY_BACKED,
-> +		.word_size	= 1,
-> +		.stride		= 1,
-> +		.size		= M5441X_RTC_SRAM_SIZE,
-> +		.reg_read	= m5441x_rtc_nvram_read,
-> +		.reg_write	= m5441x_rtc_nvram_write,
-> +	};
-> +	struct m5441x_rtc *p;
-> +	unsigned long flags;
-> +	bool osc_dead = false;
-> +	int irq, ret;
-> +	u16 cr, cfg;
-> +
-> +	p = devm_kzalloc(&pdev->dev, sizeof(*p), GFP_KERNEL);
-> +	if (!p)
-> +		return -ENOMEM;
-> +	spin_lock_init(&p->lock);
-> +
-> +	p->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(p->base))
-> +		return PTR_ERR(p->base);
-> +
-> +	platform_set_drvdata(pdev, p);
-> +
-> +	/* Enable the oscillator if needed and mask/clear stale interrupts. */
-> +	spin_lock_irqsave(&p->lock, flags);
-> +	m5441x_rtc_unlock(p);
-> +	/*
-> +	 * Force binary, DST-free time/date encoding. The driver does not
-> +	 * handle the BCD format, and Linux expects the RTC to keep monotonic
-> +	 * time with local-time/DST conversion done in userspace, so clear
-> +	 * BCDEN and DSTEN in case a bootloader or prior OS left them set. Also
-> +	 * default the alarm match field to a full one-shot match: the reset
-> +	 * value (AM=00) is a daily hh:mm:ss match, which would fire on the
-> +	 * wrong day if userspace enables the alarm via RTC_AIE_ON without
-> +	 * first programming it through set_alarm().
-> +	 */
-> +	cr = rtc_rd(p, M5441X_RTC_CR);
-> +	cr &= ~(M5441X_RTC_CR_BCDEN | M5441X_RTC_CR_DSTEN | M5441X_RTC_CR_AM_MASK);
-> +	cr |= M5441X_RTC_CR_AM_FULL;
-> +	m5441x_rtc_write_cr(p, cr);
-
-You must not enable the oscillator in probe as then you lose the
-important information of whether the RTC has ever been set. Also,
-forcefully setting DST here may destroy the existing date/time, don't do
-this unless you know what is the current time (i.e. in set_time)
-
-> +
-> +	/*
-> +	 * The alarm registers are battery-backed and survive a power cycle,
-> +	 * so a previously armed match could re-fire before set_alarm() runs.
-> +	 * Clear them now (the write window is open).
-> +	 */
-> +	rtc_wr(p, M5441X_RTC_ALM_YRMON, 0);
-> +	rtc_wr(p, M5441X_RTC_ALM_DAYS, 0);
-> +	rtc_wr(p, M5441X_RTC_ALM_HM, 0);
-> +	rtc_wr(p, M5441X_RTC_ALM_SEC, 0);
-
-Why wouldn't you want an existing alarm to fire? The registers are
-battery backed exactly for this purpose.
-
-> +
-> +	/*
-> +	 * Enable the 32kHz oscillator that drives the time counters. This only
-> +	 * checks that the OSCEN enable bit latches: when it reads back clear
-> +	 * the oscillator block rejected the enable, which in practice means no
-> +	 * RTC crystal is fitted and the counters will never advance. It cannot
-> +	 * tell a dead crystal from one still starting up, so it is a best-
-> +	 * effort hint, not a liveness guarantee. Warn but keep probing, since
-> +	 * the battery-backed standby RAM stays usable without the oscillator.
-> +	 */
-> +	cfg = rtc_rd(p, M5441X_RTC_CFG_DATA);
-> +	if (!(cfg & M5441X_RTC_CFG_OSCEN)) {
-> +		rtc_wr(p, M5441X_RTC_CFG_DATA, cfg | M5441X_RTC_CFG_OSCEN);
-> +		if (!(rtc_rd(p, M5441X_RTC_CFG_DATA) & M5441X_RTC_CFG_OSCEN))
-> +			osc_dead = true;
-> +	}
-> +
-> +	/* Mask every source but keep the reserved bit 0 set as required. */
-> +	rtc_wr(p, M5441X_RTC_IER, M5441X_RTC_IER_RSVD);
-> +	rtc_wr(p, M5441X_RTC_ISR, rtc_rd(p, M5441X_RTC_ISR));
-
-An existing alarm needs to be kept enabled.
-
-> +	spin_unlock_irqrestore(&p->lock, flags);
-
-I'm pretty sure locking here is useless until you register the interrupt.
-
-> +
-> +	/*
-> +	 * Keep the device (and its standby-RAM nvmem) usable, but record the
-> +	 * dead oscillator so read_time/set_time refuse to expose a clock that
-> +	 * cannot tick.
-> +	 */
-> +	p->osc_dead = osc_dead;
-> +	if (osc_dead)
-> +		dev_warn(&pdev->dev,
-> +			 "RTC oscillator enable did not latch; timekeeping unavailable (no 32kHz crystal?)\n");
-> +
-> +	p->rtc = devm_rtc_allocate_device(&pdev->dev);
-> +	if (IS_ERR(p->rtc))
-> +		return PTR_ERR(p->rtc);
-> +
-> +	p->rtc->ops = &m5441x_rtc_ops;
-> +	p->rtc->range_min = mktime64(1984, 1, 1, 0, 0, 0);
-> +	p->rtc->range_max = mktime64(2239, 12, 31, 23, 59, 59);
-> +
-> +	irq = platform_get_irq_optional(pdev, 0);
-> +	if (irq > 0) {
-> +		ret = devm_request_irq(&pdev->dev, irq, m5441x_rtc_irq, 0,
-> +				       dev_name(&pdev->dev), p);
-
-If this interrupt can be threaded, the spinlock becomes useless as long
-as you lock the RTC with rtc_lock/rtc_unlock in the interrupt handler.
-
-> +		if (ret) {
-> +			dev_err(&pdev->dev,
-> +				"failed to request IRQ %d: %d, alarm disabled\n",
-> +				irq, ret);
-> +			clear_bit(RTC_FEATURE_ALARM, p->rtc->features);
-> +		} else {
-> +			/*
-> +			 * The alarm comparator runs on standby power, so let it
-> +			 * wake a suspended system. The PM core keeps the IRQ
-> +			 * enabled across suspend once it is the device's wake
-> +			 * IRQ; both are device-managed.
-> +			 */
-> +			devm_device_init_wakeup(&pdev->dev);
-> +			devm_pm_set_wake_irq(&pdev->dev, irq);
-> +		}
-> +	} else {
-> +		clear_bit(RTC_FEATURE_ALARM, p->rtc->features);
-> +	}
-> +
-> +	/*
-> +	 * Register the RTC device before the nvmem provider:
-> +	 * devm_rtc_nvmem_register() copies rtc->owner into the nvmem config,
-> +	 * and that field is only assigned by devm_rtc_register_device().
-> +	 * Registering nvmem first would leave its owner NULL and fail to pin
-> +	 * this module while standby-RAM consumers hold references.
-> +	 */
-> +	ret = devm_rtc_register_device(p->rtc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	nvmem_cfg.priv = p;
-> +	ret = devm_rtc_nvmem_register(p->rtc, &nvmem_cfg);
-> +	if (ret)
-> +		dev_warn(&pdev->dev, "standby RAM nvmem unavailable: %d\n", ret);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver m5441x_rtc_driver = {
-> +	.driver = {
-> +		.name = "rtc-m5441x",
-> +	},
-> +	.probe = m5441x_rtc_probe,
-> +};
-> +module_platform_driver(m5441x_rtc_driver);
-> +
-> +MODULE_DESCRIPTION("Freescale MCF5441x on-chip RTC driver");
-> +MODULE_AUTHOR("Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>");
-> +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:rtc-m5441x");
-> 
-> -- 
-> 2.39.5
-> 
+                        Geert
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
