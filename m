@@ -1,36 +1,36 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179E54071FE
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 13:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8300406804
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 13:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782739623; cv=none; b=mizYzbyQAObB73TVz+wGaGyirH/WOMt74/LYx+qlHpT0imo9VhqrGZuXxuYmOBWBo9S/OcMlCrxVFm3SnprDalmOQ06Qg4CFAuKtB3eu0z0mErQdH2a5WnND7a1i89ZmvkNoj9p0IVIhEnJyNDCwapX9OayBkvKR2iRJzTK3dno=
+	t=1782739630; cv=none; b=QAWr1cn9fd7E0aou/yKqL6y3c5XhopbSdRBOFgP4JQt5VKbZ/qQi/ZzL07cleIMOD2jaHO9ClLQ54coAhbWEnZJRVJUw5OiH3y57jQic49q0evkdWk/rJWdDyUVOWaxLrKRamSmMkaqrfbdWd0MKS9yFHb9cqozbk/xA0R0dVX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782739623; c=relaxed/simple;
-	bh=CIFo4F/TjZjdkEK1iFh6Btyi92KncgJpmBu1pe50EbU=;
+	s=arc-20240116; t=1782739630; c=relaxed/simple;
+	bh=5acYa0ZoYpXgFd74OpuDYDv+fD90Kh3hM0lRiBJ372I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QQwg+n3CrZqIZauvNfp02KV7nPwgZjDsrk9bkZRROREtywidpU5EUsovBze7Z8MeG2en9MVgFA05iT+WJJU1MDAhACIzZBMg6wr6uVt/bJnHhrCZv4T+PaXRrGwDmthTJJ2Zf6+1+3oqO3DdzWMm+sEb25GTsKAqO0a/8rvusYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W6BP/j9N; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=Otnn3pMBxyu2EdeBZ0s0X8I3NwOmCSWEvr0LFXYdsep/Mn/qwnKU/+pH1WB5NWSmxCN0bYOmxs1whFuKfyplYuVasZg51pq8enVx5yUuEByzM78RBBC9Eug+N7IGlTSfhUiCXqRpARqxT5rFDRx/iG+Ngz3/Yud006ENuIzAp5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UEQ0X67V; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W6BP/j9N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UEQ0X67V"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id A423E42B71;
+	by sea.source.kernel.org (Postfix) with ESMTP id A72D7435A6;
+	Mon, 29 Jun 2026 13:27:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0851A1F00A3A;
 	Mon, 29 Jun 2026 13:27:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09BAC1F000E9;
-	Mon, 29 Jun 2026 13:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782739621;
-	bh=gJ4maxiAXobdPO+NS6v/OujD2A0IbSgp/KMy9aEd41M=;
+	s=k20260515; t=1782739628;
+	bh=RRI7jNvPFyQpS7zOEEl7B7kF4pjjfqk9wi6+0+gH6Bk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=W6BP/j9N3GBFGPNigPrWAIbO/5nFDLZKX/6xwWXCjCmGhCj6ArmnL8YaJPj9gS5wF
-	 aGTzjEE20dtij3g3R+fUalNIcOfpKF2XbWBnq3dYuE6JYCS0w07Tqt87yunavUwBOT
-	 W7G/QPhzqgqU9vmTJl/qfELGhqSD0syCs863CqZk6RaFACSODBgl5VObZNTNmB/YeW
-	 7YOElEXVRTbynXC+mNchNlK6pipG/cMpc1sfSf1bpbY4wr0G2gDaPt32O7l0GIVDA1
-	 18KsNmI9TxTvS3iwOH1d7qnESZR9uheZvkXM93Rr9VcL+qoICw5cmRG+nXk52msfOU
-	 ep2bttKM+1R7A==
+	b=UEQ0X67VEm8ciDJ9TdO9sxBWlSQIMfDeVfIFl65WE4R/b9jU9PIcJs9bPQVD6rBZ3
+	 hte7IUI1C18tPOgiCfgFfcUeC5AOed4qCETYxDJku7dK1T77vJ6f/mv06NGDWvMyyk
+	 GzLRRM938qBXKQkT6itynEvGwpgqAqPDl2acCZMvCmnKqcVsQCMeNjhdopgnxlM6Dn
+	 1aAKRxAxPNov2Sn3HpqOAx3YvkoDN6KGFtCmXd6/2yg+ShGNw9KpLjmYCl+piybV1k
+	 dkELGDfU6TjuS0ub3vApi36f66SIKEsjsJD4sTV1l2o6/KiG3mVeEtt2Ao6i1imLJg
+	 fcn9N2/hKwJoA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-gpio@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -66,9 +66,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-phy@lists.infradead.org,
 	linux-rockchip@lists.infradead.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH 02/13] m68k/coldfire: replace linux/gpio.h inclusions
-Date: Mon, 29 Jun 2026 15:26:22 +0200
-Message-Id: <20260629132633.1300009-3-arnd@kernel.org>
+Subject: [PATCH 03/13] mips: replace linux/gpio.h inclusions
+Date: Mon, 29 Jun 2026 15:26:23 +0200
+Message-Id: <20260629132633.1300009-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260629132633.1300009-1-arnd@kernel.org>
 References: <20260629132633.1300009-1-arnd@kernel.org>
@@ -83,40 +83,123 @@ Content-Transfer-Encoding: 8bit
 From: Arnd Bergmann <arnd@arndb.de>
 
 linux/gpio.h should no longer be used, convert these instead to
-linux/gpio/legacy.h for coldfire.
+either linux/gpio/consumer.h or linux/gpio/legacy.h as needed.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/m68k/coldfire/device.c     | 2 +-
- arch/m68k/include/asm/mcfgpio.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/alchemy/board-xxs1500.c                   | 2 +-
+ arch/mips/alchemy/devboards/db1000.c                | 2 +-
+ arch/mips/alchemy/devboards/db1200.c                | 2 +-
+ arch/mips/alchemy/devboards/db1550.c                | 2 +-
+ arch/mips/bcm47xx/workarounds.c                     | 2 +-
+ arch/mips/bcm63xx/boards/board_bcm963xx.c           | 1 +
+ arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h | 2 +-
+ arch/mips/txx9/rbtx4927/setup.c                     | 2 +-
+ 8 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
-index 1420bae0964f..9a0258acd998 100644
---- a/arch/m68k/coldfire/device.c
-+++ b/arch/m68k/coldfire/device.c
-@@ -12,7 +12,7 @@
+diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
+index f175bce2987f..a03762dde4e7 100644
+--- a/arch/mips/alchemy/board-xxs1500.c
++++ b/arch/mips/alchemy/board-xxs1500.c
+@@ -11,7 +11,7 @@
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+ #include <asm/bootinfo.h>
+diff --git a/arch/mips/alchemy/devboards/db1000.c b/arch/mips/alchemy/devboards/db1000.c
+index 8fb24b220e3a..5eff34a8683b 100644
+--- a/arch/mips/alchemy/devboards/db1000.c
++++ b/arch/mips/alchemy/devboards/db1000.c
+@@ -8,7 +8,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/legacy.h>
+ #include <linux/gpio/machine.h>
+ #include <linux/gpio/property.h>
+ #include <linux/init.h>
+diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
+index de2a9083ed9a..539b311fc8af 100644
+--- a/arch/mips/alchemy/devboards/db1200.c
++++ b/arch/mips/alchemy/devboards/db1200.c
+@@ -7,7 +7,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/legacy.h>
+ #include <linux/i2c.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+diff --git a/arch/mips/alchemy/devboards/db1550.c b/arch/mips/alchemy/devboards/db1550.c
+index b8295a5c2e9a..579fc8f1eaed 100644
+--- a/arch/mips/alchemy/devboards/db1550.c
++++ b/arch/mips/alchemy/devboards/db1550.c
+@@ -7,7 +7,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/legacy.h>
+ #include <linux/i2c.h>
  #include <linux/init.h>
  #include <linux/io.h>
- #include <linux/spi/spi.h>
+diff --git a/arch/mips/bcm47xx/workarounds.c b/arch/mips/bcm47xx/workarounds.c
+index 745c6228eb2c..dc9e5483347d 100644
+--- a/arch/mips/bcm47xx/workarounds.c
++++ b/arch/mips/bcm47xx/workarounds.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include "bcm47xx_private.h"
+ 
 -#include <linux/gpio.h>
 +#include <linux/gpio/legacy.h>
- #include <linux/fec.h>
- #include <linux/dmaengine.h>
- #include <asm/traps.h>
-diff --git a/arch/m68k/include/asm/mcfgpio.h b/arch/m68k/include/asm/mcfgpio.h
-index 7103cfa4edb6..29726aa40eb6 100644
---- a/arch/m68k/include/asm/mcfgpio.h
-+++ b/arch/m68k/include/asm/mcfgpio.h
-@@ -16,7 +16,7 @@ int __mcfgpio_request(unsigned gpio);
- void __mcfgpio_free(unsigned gpio);
+ #include <bcm47xx_board.h>
+ #include <bcm47xx.h>
  
- #ifdef CONFIG_GPIOLIB
+diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+index c5617b889b1c..71628dac6c26 100644
+--- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
++++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+@@ -7,6 +7,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/init.h>
++#include <linux/gpio/legacy.h>
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <linux/platform_device.h>
+diff --git a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+index 830f53f28e3f..428cf4508f9a 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
++++ b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+@@ -3,7 +3,7 @@
+ #define BOARD_BCM963XX_H_
+ 
+ #include <linux/types.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/leds.h>
+ #include <bcm63xx_dev_enet.h>
+ #include <bcm63xx_dev_usb_usbd.h>
+diff --git a/arch/mips/txx9/rbtx4927/setup.c b/arch/mips/txx9/rbtx4927/setup.c
+index 31955c1d5555..b4fbe6a2a73a 100644
+--- a/arch/mips/txx9/rbtx4927/setup.c
++++ b/arch/mips/txx9/rbtx4927/setup.c
+@@ -48,7 +48,7 @@
+ #include <linux/ioport.h>
+ #include <linux/platform_device.h>
+ #include <linux/delay.h>
 -#include <linux/gpio.h>
 +#include <linux/gpio/legacy.h>
- #else
- 
- /* our alternate 'gpiolib' functions */
+ #include <linux/leds.h>
+ #include <asm/io.h>
+ #include <asm/reboot.h>
 -- 
 2.39.5
 
