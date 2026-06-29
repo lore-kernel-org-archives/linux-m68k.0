@@ -1,36 +1,36 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F08408602
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 13:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884004071CA
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 29 Jun 2026 13:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782739678; cv=none; b=QIqnAFnT951fEMIskCBOe/nJfVgnLYpnvJSeigfosl65ma1igYdF2v7fQyAiTk6IjKnMD8CvYZlIoOqUIwD8AJxiTZ7tmUmCPQ8C/yB9t5EES/gZvvC2W+5RTC3RwKMKBqpu9UhPFmNbbtR0sP/Fma1oOOeLfkklYCRmBeDLQDI=
+	t=1782739686; cv=none; b=scH58J0SuPq9FN50ItpNoBAL2sNNPlm2hsb4ZdZnZbkWYe3W/EMlVydSNuWeBYgX26/kFVsTZP7Gsd9aelW+X/S8uMelxPR0agJ/wbZdauDT7Bkuy/mDuK0MqyMJ9wgVh7sk9l6XL7HCwsUUaWtY/R/j9FiJ3CbCRhL2hEnzU8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782739678; c=relaxed/simple;
-	bh=72uRd1AeE4T9AuRdko8PY70YVYhCdOP3faXv7Q9n66s=;
+	s=arc-20240116; t=1782739686; c=relaxed/simple;
+	bh=obNPcB+BaZsnpRHlcsBGxQCruLKZ5xXtfc+XJI2PSpg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QI9V6Rs/8okEU4LuC+vG5DQJwQ1RYhggL3v/Q0s6OCucTmQaY8yUz6MFiYvcmCTtjZxUuL1E53kt3CVZnqkYY1MZdhbAs9OSTY6cl6ZFIwLNg3YfDfUxvrby5J5QPU0vpMjmXeAm45Bj+8uJN4W/YSkRk4Bj2foU0OPRSyk+kA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TZSmSeEL; arc=none smtp.client-ip=172.234.252.31
+	 MIME-Version; b=d8WiENgy7iSiVAy3bSlvEPe7+yKOpUsuAgQUWxSz0q/OVd50V7wKu7p09rc4sNhhGKlE41n2U99J1QPjS8unRS+LA0OKIGuZO/IxWG2v/aV910nal0IwL+qaJvfS+apjgwehtXBEYmU/aWnQ5gpe7Heijtxu838DXJdntKc/jJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MdfFbWJ+; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TZSmSeEL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MdfFbWJ+"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id A6F3941B4D;
+	by tor.source.kernel.org (Postfix) with ESMTP id D0C60600AA;
+	Mon, 29 Jun 2026 13:28:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 095261F00A3D;
 	Mon, 29 Jun 2026 13:27:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B4591F000E9;
-	Mon, 29 Jun 2026 13:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782739677;
-	bh=0ZjvdwSdJ07ba044RbmZ4lMBBWJONpd196bqsB07784=;
+	s=k20260515; t=1782739684;
+	bh=NrdLJGMFs8wtvc4BJiEXLk7S18TXVPww8hdTab/uPp0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=TZSmSeEL8sgvKsxzLVBT5TAIjiq50BaPGDH7s6aEVKHGJRfuuPn4I/iMdFZDjO53s
-	 jqFhtjgdtyqoLwVzS4xubyYSELpN36RhrBRpwJo8DQkOgWrrOPC+z26qkMypse9F5k
-	 JeSFvd8+QvoAjI4e1Adm9VOXH218T6FSYJ+f0PJr+Un77+NcEmdFFDtWjbIW0XjWJL
-	 HqFuYsCmeYlDnygLpo1DE4N4k7c710ECsxCTB4zSt8LxG2F8o5RGv1WoM63YONijSy
-	 V9+fsbUjy3dn8OowicDs5tvTDj4qE5Ymu09oumTTMON9uiDZ6FQY5x//Ts+fT2oR8n
-	 KW1WQ8U7hPrhg==
+	b=MdfFbWJ+eRFMBqPEa0RaoTx93bwz14wfILPGSeLWLBjlLfc3/sLoXDbWrIj5zm02+
+	 Cf2hMRjwSDX/HAe9LEvEYerCFkB4Bk3PXB3dCOCCjACDoUXoZNbg8bIRYUlO4u3fYA
+	 d+1jW1L/FhTyHKMjueY3fNJ+ZEn6tUHmVKdynuygFjwpm+i13U8Rgg7ESeNFEllxMf
+	 MEenB1SREnePNOyBX0VPdLwMnOs4/5gV6TKMZk/7FolVupBaKJWIqfsANDATpC5cz+
+	 GtYRhxo3yuIHrBGuNzZr02FwMfR28H0gTO6X9o6PxTogIxu8yfoYD9nvIRoXYg4F/d
+	 k2IOqV+EaupRw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-gpio@vger.kernel.org
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -66,9 +66,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	linux-phy@lists.infradead.org,
 	linux-rockchip@lists.infradead.org,
 	linux-sound@vger.kernel.org
-Subject: [PATCH 10/13] media: replace linux/gpio.h inclusions
-Date: Mon, 29 Jun 2026 15:26:30 +0200
-Message-Id: <20260629132633.1300009-11-arnd@kernel.org>
+Subject: [PATCH 11/13] Input: matrix_keyboard - replace linux/gpio.h inclusion
+Date: Mon, 29 Jun 2026 15:26:31 +0200
+Message-Id: <20260629132633.1300009-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260629132633.1300009-1-arnd@kernel.org>
 References: <20260629132633.1300009-1-arnd@kernel.org>
@@ -82,55 +82,26 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-linux/gpio.h should no longer be used, convert these instead to
-either linux/gpio/consumer.h or linux/gpio/legacy.h as needed.
+linux/gpio.h is going away, so use linux/gpio/consumer.h instead.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/media/pci/ddbridge/ddbridge.h                 | 2 +-
- drivers/media/platform/samsung/s3c-camif/camif-core.c | 2 +-
- drivers/media/usb/em28xx/em28xx-dvb.c                 | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/input/keyboard/matrix_keypad.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/pci/ddbridge/ddbridge.h b/drivers/media/pci/ddbridge/ddbridge.h
-index f01ecdb0b627..cf50898f9a92 100644
---- a/drivers/media/pci/ddbridge/ddbridge.h
-+++ b/drivers/media/pci/ddbridge/ddbridge.h
-@@ -14,7 +14,7 @@
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/dvb/ca.h>
+diff --git a/drivers/input/keyboard/matrix_keypad.c b/drivers/input/keyboard/matrix_keypad.c
+index e50a6fea9a60..98d0269a978f 100644
+--- a/drivers/input/keyboard/matrix_keypad.c
++++ b/drivers/input/keyboard/matrix_keypad.c
+@@ -16,7 +16,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/jiffies.h>
+ #include <linux/module.h>
 -#include <linux/gpio.h>
 +#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-diff --git a/drivers/media/platform/samsung/s3c-camif/camif-core.c b/drivers/media/platform/samsung/s3c-camif/camif-core.c
-index 221e3c447f36..c3d059224844 100644
---- a/drivers/media/platform/samsung/s3c-camif/camif-core.c
-+++ b/drivers/media/platform/samsung/s3c-camif/camif-core.c
-@@ -12,7 +12,7 @@
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/errno.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 938f1980d448..8482fc4045ea 100644
---- a/drivers/media/usb/em28xx/em28xx-dvb.c
-+++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-@@ -29,7 +29,7 @@
- #include <media/dmxdev.h>
- #include <media/tuner.h>
- #include "tuner-simple.h"
--#include <linux/gpio.h>
-+#include <linux/gpio/legacy.h>
- 
- #include "lgdt330x.h"
- #include "lgdt3305.h"
+ #include <linux/input/matrix_keypad.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
 -- 
 2.39.5
 
