@@ -1,151 +1,188 @@
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EB03F5BE3
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  1 Jul 2026 09:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6E833F8DC
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  1 Jul 2026 14:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782899333; cv=none; b=LxkR+cvkpHBOuVQRr5hvC2z05DA1cqYi6eE/ZH5EmRfHv4xKV+95bOX4Pa/OFPjmvVpeUYTzXg/8x48LNuQEG+g4hV3cFiMFEhK1xYysalCtXjeRryT+IR6MpHIXIGql6JWmk8NO1CqRoa4fk+VWvwGrmKtd4U2C/1djBRzNKdY=
+	t=1782915453; cv=none; b=DqILGu+gJ9BTx6PkM1Ky7X7gl3tuBqeLRVr5CWuGWTa+4qGwN5dCldK+FnYD870TovB1ftYOygqbdKLlWX72riOgB4ZCNa8UcRi672o9gWyP75Z5g8boOj1GCZikenO/td/DhTGc2grly9jxzq/GwbnadteL4cwKcdCQdNpHNP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782899333; c=relaxed/simple;
-	bh=VguWA+JZcbBuPsldUmZGSqh5R48z849umH9Mfg+vDk4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HbPQvIg1QZDd4MibUXxyabYkcfMKYN1niVhoMG2drG7tkphQ6X7buO4nmeFJOZhNOdh4PK/Gvf6uNg2ZGKp7kKJCmMx0+lAFgH0wVxbcz62DKwR/yYdstCntkh6dMj3NHhtXzU75G7uDuj+RsNSYH1KizDRRtyuawKowiJoWAlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-59ebb89109aso247851e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Jul 2026 02:48:50 -0700 (PDT)
+	s=arc-20240116; t=1782915453; c=relaxed/simple;
+	bh=uxpkze4mO0R/ciNnUW9aPg3o8zyZI3JR3YM28nP5gR4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ntW8hVCS+FochGzF8savFvWjibSeu6yVk3v61mO/A46Sz3xNHJK/Uu49ypborM0E7B66Pqyg2/QfHppeoHtUagJnbmIQFhkcmiroZ+nl0FmH/w7gshTXH2drSf2hFWdI4uIyqRghtZdy0xkL9zZsGpv9a1908BBUA/PBoj9e9EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=RwSnm7IT; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="RwSnm7IT"
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-493ba729dbdso3761555e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Jul 2026 07:17:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1782915447; x=1783520247; darn=lists.linux-m68k.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZW8+spma2S67V6miLcBHdIf2ZY8X/GF3gl5p74l3kDU=;
+        b=RwSnm7ITbR0XnSi/KBk7fGkCrq9ITZ0neyRflfiucy3RcTcsIjomMF0KAaU//GhwaG
+         Fuvr4qHahOQVpFJxqP/+5f2frmLt2eEEEd5Cj0EQ5tCjojvlYX2952mynlKaS6OGXSeF
+         X75KLn+RsUrGc4FFtSXTHTJdwdzcQ3FC7PERBcYOl9egUBlFmEe6e98I4rToSncHaAVQ
+         2AJICFtDFok0sNooyVS0yQ17n1V7T+A6sID67GXoVf70boXGI+qEwercwEaBMNJgxpyD
+         jWZJVspq/ntRFsyl3cHFDWlNp1bdhvzd+qUVear0u0ofpH3N5XeozFEk2LYAHRjmTcmF
+         Iwsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782899329; x=1783504129;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=m5qxPUoE0Iv24xl7jBl2/E4QLXx7b2viT34r66JFJIQ=;
-        b=Bb4IobCNkKptLU/A/j3vvwzYonLKX+55SfmXYuoJCmLE87JGcsJTHXRDGsJRsYd/7w
-         lMWpr7F3MlHJVX5Uz7xLfEynBY3q2CHRNNEuM9iiZvSBypXFI2gpnMn8zsfr3dg94h5c
-         G3me67/Dw9y80ys+ouVEykxs29joqK5emHGHXTHY1z2lHIzN1ILY4+LOzfAdlfSeNdCS
-         NG4OQvUOG34Z1J4RGL57E6/fmAwP+uT9+IAV8poKQF5J5VpgJSk8bmuniYBhzqRtmmqk
-         Q4Qfi49w0ZZFhAaahLfHNY+t1wbQmBGrah29d6CwSCgqOkx2MtRqGnq0gxcijDOqYOjz
-         +1Xw==
-X-Forwarded-Encrypted: i=1; AHgh+RoxXTPbbDbnY7AV1fKmiY21R2oy2Wq+dDNRH/tSiAbaBq03u5XOyAn2KI5HspaDEMl98avo4TB+HTFJ@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YxA+3RKbS1K55NxrYzB9klRyINcN/V68Uf8hehFC8kdzN5eT1FA
-	MXcqXPrJj81xiI67VdQmtUn6yElsD2UcsgO3WrbRf6FMvuap0vp5TdpdYMFQVKu8VJg=
-X-Gm-Gg: AfdE7cmhFcWMb9qXtGIAqVEwJQd+nvkS0Wgt/EOtOtxsBXBNTgSnp8fbWGbrEFgp2te
-	wSX9C+Vgtzm3uHLCf6h6t8be3pBpTDutCEN059F5eqt9M2aQmhYDTnTbQ6HK1AvGFnGZg4oXIRm
-	XlHiMQ0PKbFYxTtPCHl/3aQkqDGVSyJipLu7mLSedVKw/LHWuoGy2/unMLC7zBROGHhHWPP84M9
-	RUGpS/C8lAnLv+KhnSz6MIrpzMhhg/WEx0TiMHnq/Qn4V94UFidbgSHZLSP//KjxTnvmw6SdXOh
-	E8dgomqbOejDTJPRL1O/xqfJyPy9TZ6HNvuSyoxhsMZGCLtLDUA8LvHsc9bvHqhS9AVOTM5XAeV
-	tOfMusvqtsJsHSxYvxgtyXdDDN9E/lagFViVy6gbAKAl1MdI5/HSiocFGEsWsamSHXhtoicIVke
-	Ak0O3da/fIKzNgnZAIKA4o22P/smXzMXYkpt1nmb1bMXIo3rm+QA==
-X-Received: by 2002:a05:6122:1d41:b0:5a5:3eea:4513 with SMTP id 71dfb90a1353d-5bddf6adaf7mr229114e0c.12.1782899329147;
-        Wed, 01 Jul 2026 02:48:49 -0700 (PDT)
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5bdc189bfc0sm2910902e0c.7.2026.07.01.02.48.48
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jul 2026 02:48:48 -0700 (PDT)
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-7383cdb7800so356710137.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 01 Jul 2026 02:48:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RpdIFZfFQBOG/wo6z2KnFY3rlcaSg5ZF8dMaxzUCf9/dViw1nO2s+xmX7Y6rL5rurZbfZMZ4uvmUjxp@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:508f:b0:738:472f:2cb3 with SMTP id
- ada2fe7eead31-73dbe24f67amr47696137.8.1782899326458; Wed, 01 Jul 2026
- 02:48:46 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1782915447; x=1783520247;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZW8+spma2S67V6miLcBHdIf2ZY8X/GF3gl5p74l3kDU=;
+        b=j2PyIAgTcgLeXogQ3Ss3lV5rMEXT9c8iDFKOvrpSBaV8r3wWUyZamW/lnOgTqfptfH
+         4/qaDbSbnR6Fd07HlKtIoUePPeyuHOY/bSt/c9Btxd/nu+z+jdoWuf2JJcNwUR+84Qse
+         KboHTxKEbdD6jdPY63MHj+LQKPlwZgEIqnB2bBe0dEDcpqftQclXSyiSFjAKY3lux0TZ
+         I2VUPU2lN2XXloZJ89PoJgM7XSpGpEr3Yrg5H7y3vcg9QPLFCXxUIlptko28W7u6O5y3
+         wmrkFqQEcwm++YRHC1fABMvSO4wN3fPJsB0Xa4aumg7HrYOvMUictmCeB2ubFJkNYHQA
+         THIg==
+X-Forwarded-Encrypted: i=1; AFNElJ9aM1eT/H4LMx9iK4Kpbrtq/KJwCzbW6dOwpSZLcJqdKDRY6PZuC2ZBQznNXGSgKyaJbEB6g7H4QFoR@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwZewq0y32UC/2YWXO7ouMf2R0FeNWQPXOqxTEGoFnSZDGDIr9K
+	zibJJ3syTt60I01NJukfeYU5T0wo5kVRqczG9XrEWyOTramVO1QpAEZobVm5h6fXl60=
+X-Gm-Gg: AfdE7ckvp+ggUn3oOav+yroCoB6p52JxZ1qWUt2af6xB0NyMZV9jldAHgbosZVlF6C8
+	bScMYAh02J4w2Q70zdrxp5ti/NO3Rzk7QZXICBC+vI0CuQYpgOiB3GTwrMtHv/ENo0XmdK6pi1u
+	F/NQzXRyDnCBCpB10m5EJqO+spdyNq6RVSQFLBnchGXKWrIa75AnKxACBgfuOBJKKyGXPdYSzjB
+	LBxh+kMVy/7vf2iK4s2L8EFEiAx0CDx0tqg8DqM+lOJ/TfA/uOovnWInWOanXRi8VB9cBwv4dny
+	eILX0z9jaoV/d21AzSTRQ0whwgoeznD++MYOM/duVcka3wggvtKNJCr4XYsh5WdduZBMKipFlAN
+	o6hmSrQuFK8dh/RPbP+VgoGdsSC7kHeMjmQqL7omqVNUrYfY9egoCFrr10duDqmU95ORX/Vrx0m
+	WVV+YwEPb+JErGL9M8VwyMeitN+qH8OFpi0GUU/nhBSm7wvWOYRbL1
+X-Received: by 2002:a05:600c:524a:b0:493:af0d:484c with SMTP id 5b1f17b1804b1-493c3df2fb5mr12527785e9.34.1782915447358;
+        Wed, 01 Jul 2026 07:17:27 -0700 (PDT)
+Received: from [192.168.0.2] (host93-7-32-195.dimensionesrl.eu. [195.32.7.93])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493be81df2asm152552155e9.12.2026.07.01.07.17.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2026 07:17:26 -0700 (PDT)
+From: Angelo Dureghello <adureghello@baylibre.com>
+X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
+Subject: [PATCH v7 0/2] add mcf54415 DAC driver
+Date: Wed, 01 Jul 2026 16:17:22 +0200
+Message-Id: <20260701-wip-stmark2-dac-v7-0-ff8fdcc8010a@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260525-m68k-clear_user_page-v2-1-0c8981c6eca1@weissschuh.net> <20260525125441.6a3a74300d73f1e0d32db4f8@linux-foundation.org>
-In-Reply-To: <20260525125441.6a3a74300d73f1e0d32db4f8@linux-foundation.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 1 Jul 2026 11:48:35 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXsfo=BR-e7gBKvTx=cH84vQoNXN8hZv9+8E+EmirMpEQ@mail.gmail.com>
-X-Gm-Features: AVVi8CdZu0Y31up0ht2N_qd9X98wB0ld19cPP35FoEceyh9uTYoAYJPqjs1tuPA
-Message-ID: <CAMuHMdXsfo=BR-e7gBKvTx=cH84vQoNXN8hZv9+8E+EmirMpEQ@mail.gmail.com>
-Subject: Re: [PATCH v2] m68k: Avoid -Wunused-but-set-parameter in clear_user_page()
-To: Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc: "David Hildenbrand (Red Hat)" <david@kernel.org>, Ankur Arora <ankur.a.arora@oracle.com>, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	Andreas Schwab <schwab@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/4XRy07DMBAF0F+pssbI48c4YcV/IBbjFzXQpnJCo
+ Kry7zhh0UJdsRxp7rmW59QMIacwNA+bU5PDlIbU78tg7jaN29L+JbDky9wILpArydlnOrBh3FF
+ +E8yTY4Yjj6rzvlOxKalDDjF9reLT8888fNjX4MaFWTa2aRj7fFwrJ7Hs3dYnwTgLkmKLrVOc4
+ NHS8T3ZHO5dv1u0NapB1qPReQqau6iBfkeXt03y3K65uiZkIbgWiiA6cPJWuxD1KKANnLzUhKb
+ SDv+0QyFao5xEUh1wXyHUBSHhmlCFMAE1WSVA+xqhzwRC5QK6ENagbaVE9NpVCLwk2msCC6Fag
+ +Ct7dD//Yt5nr8Bqq48OogCAAA=
+X-Change-ID: 20260430-wip-stmark2-dac-7060f49dd94f
+To: Jonathan Cameron <jic23@kernel.org>, 
+ David Lechner <dlechner@baylibre.com>, 
+ =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, 
+ Andy Shevchenko <andy@kernel.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, 
+ Angelo Dureghello <adureghello@baylibre.com>, 
+ Andy Shevchenko <andriy.shevchenko@intel.com>
+X-Mailer: b4 0.15.2
 
-Hi Andrew, Thomas,
+This patchset adds a minimalistic DAC driver for the NXP mcf54415/6/7/8
+builtin DACs.
 
-On Mon, 25 May 2026 at 21:54, Andrew Morton <akpm@linux-foundation.org> wro=
-te:
-> On Mon, 25 May 2026 10:33:52 +0200 Thomas Wei=C3=9Fschuh <linux@weissschu=
-h.net> wrote:
-> > The loop in clear_user_pages() iterates over all pages and calls
-> > clear_user_page() for each of them. During the loop "vaddr" is modified=
-.
-> > However on m68k clear_user() is a macro which does not use "vaddr".
-> > The compiler sees a variable which is modified but never used and emits
-> > a warning for that:
-> >
-> > include/linux/highmem.h: In function 'clear_user_pages':
-> > include/linux/highmem.h:234:63: warning: parameter 'vaddr' set but not =
-used [-Wunused-but-set-parameter=3D]
-> >     static inline void clear_user_pages(void *addr, unsigned long vaddr=
-,
-> >
-> > Other architectures use an inline function for clear_user_page() which
-> > avoids the warning. This is not possible on m68k, as dlush_dcache_page(=
-)
-> > is another macro which is not yet defined where clear_user_page() is
-> > defined. Including cacheflush_mm.h will trigger recursive and lots of
-> > other issues.
-> >
-> > So hide the warning with a cast to (void) instead.
-> >
-> > While we are here, do the same for copy_user_page().
-> >
->
-> As with sparc, can this be addressed by converting these macros into
-> static inline C functions?
+Currently the driver enables the raw write only. Feature as dma, sync, or
+format are not supoprted for this version.
 
-That would fail for similar reasons as on sparc: flush_dcache_page() is
-not yet defined, and trying to include <asm/page.h> causes include hell.
+Additional options suppoerted by the DAC module will be added to the driver
+later on, as needed.
 
-> > --- a/arch/m68k/include/asm/page_mm.h
-> > +++ b/arch/m68k/include/asm/page_mm.h
-> > @@ -55,10 +55,12 @@ static inline void clear_page(void *page)
-> >  #define clear_user_page(addr, vaddr, page)   \
-> >       do {    clear_page(addr);               \
-> >               flush_dcache_page(page);        \
-> > +             (void)(vaddr);                  \
-> >       } while (0)
-> >  #define copy_user_page(to, from, vaddr, page)        \
-> >       do {    copy_page(to, from);            \
-> >               flush_dcache_page(page);        \
-> > +             (void)(vaddr);                  \
-> >       } while (0)
-> >
-> >  extern unsigned long m68k_memoffset;
+The same patchset prepares the m68k/coldfire architecture to support
+the driver.
 
-People are starting to report this, now gcc-16 is getting more
-widespread use.
+Below some basic tests done on stmark2 mcf54415-based board, voltage check
+on DAC0 and DAC1:
 
-Andrew: can you please take this, or shall I queue it for m68k fixes
-(I don't have any other fixes at the moment)?
+~ # cd /sys/bus/iio/devices/iio:device0/
+/sys/bus/iio/devices/iio:device0 # ls
+name               out_voltage_scale  uevent
+out_voltage_raw    subsystem
+/sys/bus/iio/devices/iio:device0 # cat name
+mcf54415
+/sys/bus/iio/devices/iio:device0 # echo 4095 > out_voltage_raw 
+/sys/bus/iio/devices/iio:device0 # echo 2048 > out_voltage_raw 
+/sys/bus/iio/devices/iio:device0 # echo 4096 > out_voltage_raw 
+sh: write error: Invalid argument
+/sys/bus/iio/devices/iio:device0 # cat out_voltage_raw 
+2048
+/sys/bus/iio/devices/iio:device0 # 
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Same behavior for /sys/bus/iio/devices/iio:device1.
 
-Thanks!
+Generated a sine wave by shell script, sine shape is good.
 
-Gr{oetje,eeting}s,
+is actually in progress:
 
-                        Geert
+Note: this patchset depends on mew mcf_read/mcf_write implementation that
+Link: https://lore.kernel.org/linux-m68k/209d0653-6386-4b64-9e15-e358f84453ab@app.fastmail.com/T/#t
+Link: https://lore.kernel.org/linux-m68k/20260506142644.3234270-2-gerg@kernel.org/
+---
+Changes in v7:
+- keeping changelog in each single patch, where any
+- Link to v6: https://patch.msgid.link/20260618-wip-stmark2-dac-v6-0-48761dbb96d7@baylibre.com
 
+Changes in v6:
+- Removed patches 1 to 8, already pushed in m68knommu for-next by
+  Greg Ungerer <gerg@linux-m68k.org>
+- keeping changelog in each single patch, where any
+- Link to v5: https://patch.msgid.link/20260610-wip-stmark2-dac-v5-0-b76b83366d5c@baylibre.com
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Changes in v5:
+- keeping changelog in each single patch, where any
+- Link to v4: https://patch.msgid.link/20260531-wip-stmark2-dac-v4-0-7e65ab4215dd@baylibre.com
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Changes in v4:
+- keeping changelog in each single patch, where any
+- Link to v3: https://patch.msgid.link/20260522-wip-stmark2-dac-v3-0-16be0ad35a67@baylibre.com
+
+Changes in v3:
+- keeping changelog in each single patch, where any
+- Link to v2: https://patch.msgid.link/20260513-wip-stmark2-dac-v2-0-fcdae50cf51a@baylibre.com
+
+Changes in v2:
+- keeping changelog in each single patch, where any
+- Link to v1: https://patch.msgid.link/20260504-wip-stmark2-dac-v1-0-874c36a4910d@baylibre.com
+
+To: Jonathan Cameron <jic23@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+To: Nuno Sá <nuno.sa@analog.com>
+To: Andy Shevchenko <andy@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+To: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-iio@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
+
+---
+Angelo Dureghello (2):
+      iio: dac: add mcf54415 DAC
+      m68k: defconfig: update stmark2 defconfig
+
+ arch/m68k/configs/stmark2_defconfig |   2 +
+ drivers/iio/dac/Kconfig             |  11 +++
+ drivers/iio/dac/Makefile            |   1 +
+ drivers/iio/dac/mcf54415_dac.c      | 180 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 194 insertions(+)
+---
+base-commit: bc5a85a5441632f4bd7acd38620fdcbe4852a44f
+change-id: 20260430-wip-stmark2-dac-7060f49dd94f
+
+Best regards,
+--  
+Angelo Dureghello <adureghello@baylibre.com>
+
