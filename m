@@ -1,79 +1,117 @@
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3746343D86
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  3 Jul 2026 11:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8BA38E8A0
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  3 Jul 2026 11:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783078680; cv=none; b=AhfaGCkArai1qgJTO6h8dIeo4l5JwFTHlooUCjJbmcIzv5kzyjbdhMDPAPtbox129yStlSPENNC5coawRg8dxqUtRY5TIASmXaC0lfEq0yyFS5PcXQC9AcacOF4V6b4Jm3dMWFl+sTa92uQaoSIQHX0eQUEV7lhCLr+v+YkBhLo=
+	t=1783078775; cv=none; b=DRFGwFXuhpuX1y4vduJaDXEuG/SZCiheZ+RPGgjqKppkwFIH3QgG7Zq9sVAoXj7w8o3r5jnprllEmvH7wwUU/hXr8Sf7ikM/lVLMi2JxnZq8+/xKCNWTbo9iYhlyKTfX4KUuTLBbqY2jEmQudoTwEFA5UBHZlyFBdErZP5MCCj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783078680; c=relaxed/simple;
-	bh=UdrLlKa9TZUre5Va31uaPVxpw/dKVTtkgfVpvxkVSwY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JPa1dx6mpDB36lUB0o5B6K/8Zs06cJeEmbhlhDdU9uyHUs9qz2pKX7SM/rPqgpd19lJhuE7vRijgZk4TRI6VbLH8jQBhxvptGssgoMqvJFDjHVyQKhF94cseJAFOwCYvGhIstHxms7RxHAB+KAP7ocXpwucyxgK4mXDYZBvdSDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=T0olp4BW; arc=none smtp.client-ip=185.171.202.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1783078775; c=relaxed/simple;
+	bh=KkOwaVl4W7LaUB5t8Gd9OUMtS8gn1ZwPuKo/3LEkLjw=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=mUcDO2QHKoX5p82Tx8kT760lTBiCHZtpzOUlhGMcfS92KoA/+ZZdF20N4Ly4G+lQSyFoKiVNYJieHqnQBlOdVubaB+vqSf7nFageEJlQk6ztkUMLvcewGuzmFWwLSF8aOkRLUoSblcmsHqbdjg4Xa7ahNWLJO+hrR4aP1y5gWfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=eXSb42ZT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Zsui55ez; arc=none smtp.client-ip=202.12.124.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="T0olp4BW"
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 128E3C79ABE;
-	Fri,  3 Jul 2026 11:38:09 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 47CE660300;
-	Fri,  3 Jul 2026 11:37:57 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 69BCB104C948C;
-	Fri,  3 Jul 2026 13:37:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1783078676; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=UG+zoCgKPEafKRYJiQQaqScXAazAfh69SykFGcgr/A4=;
-	b=T0olp4BWSqvPj19tQuYezFaQIFkeDO8uatlBlmcFjda6F3hlgchYay/CLWUAG43Mb4uPX+
-	jRruOug1LwBwWM7d6KH7bEFxG+Ebiab29OrsYMLp1WKN1+5DiqGMZPAL5vXyoWqmmTXjEW
-	bkfFOG26I7ZlUxsOZ9eyAta68Rz15VwfZX5WbCR3q73NU9keH/S2jE/FBIwBgp5GY8m4Wc
-	eoOiqSGka7s8QtaLvMZ+W3Yvnl6cfpwhP19ULAJo2Q27TcPH7GFcxEeUG1THvARPHdeKk8
-	69iV8Pcl8OiPnegCHS6+Mqa3fuo5bsLyzC91QqQbDsJVJ4ADb8EBxlG72MYNXw==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: "Greg Ungerer" <gregungerer@westnet.com.au>,  "Arnd Bergmann"
- <arnd@kernel.org>,  "Richard Weinberger" <richard@nod.at>,  "Vignesh
- Raghavendra" <vigneshr@ti.com>,  "Randy Dunlap" <rdunlap@infradead.org>,
-  "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-  linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org,  linux-m68k
- <linux-m68k@lists.linux-m68k.org>,  "Pengpeng Hou" <pengpeng@iscas.ac.cn>
-Subject: Re: [PATCH 2/3] mtd: maps: remove uclinux map driver
-In-Reply-To: <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com> (Arnd
-	Bergmann's message of "Thu, 25 Jun 2026 16:10:54 +0200")
-References: <20260526103227.3152003-1-arnd@kernel.org>
-	<20260526103227.3152003-2-arnd@kernel.org>
-	<b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
-	<f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
-User-Agent: mu4e 1.12.7; emacs 30.2
-Date: Fri, 03 Jul 2026 13:37:51 +0200
-Message-ID: <871pdknw1c.fsf@bootlin.com>
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="eXSb42ZT";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Zsui55ez"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.stl.internal (Postfix) with ESMTP id 516501D000D8;
+	Fri,  3 Jul 2026 07:39:33 -0400 (EDT)
+Received: from phl-imap-05 ([10.202.2.95])
+  by phl-compute-04.internal (MEProxy); Fri, 03 Jul 2026 07:39:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1783078773;
+	 x=1783165173; bh=E0DUuVBe706Y0g0OP2l7n9pogSykeei7BnhKPzmbPGk=; b=
+	eXSb42ZTvuUf1tp0olMbxF9i7XQUElDr41ppZnliAGgpyyn3LLWicBFAHDOe+SI8
+	wETror884risZZqCppeqr6Iw/afXWLtTi5TqIuKIwY1NRrtPhwi82mh6dasfBFbl
+	jKAImYGXr/9yyCG03TO2puoE26NLy3ACqD4RX41Wy8yGONZ+Li8kQi+FnU1n4Onu
+	0hIbto+YfqdHQdXuOlJPojcpolT241XC2Z6yerEofTqPfu43gvpjbQLD7rZCVboh
+	J5IXQ8/Fb3M2HBuDcfwf6nsHqtrv/DPNLoYce0zOUgBh480D+AUa2p/CzQchum6L
+	tmvSs4JkeeM/z9mEL0dXmQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1783078773; x=
+	1783165173; bh=E0DUuVBe706Y0g0OP2l7n9pogSykeei7BnhKPzmbPGk=; b=Z
+	sui55ezBi8ahCVNnQZJwUdJ+ZTie+M5Nz6K23c6Uqs3t3VhJpVIznFbitteIsYGP
+	HENhEUhsyVcEnWaPmOd/6C53NYK5ZdgQh+yWQmYVra8sqWLQCKkEx1KE8MDvyfJu
+	H6OOdQPmm+TMCx5MTcoaP+ThlGlzzrIZeqVJK5LQotRMh2hFKrBQH2jX0KNQtRwX
+	kXu/d3/+zrBRE07v54BH6i//k3iSF3eZ1xF6AOYS/ioXwN865OQayagn3fvGS0qT
+	op6uI2dx7zlTybqZ7C/ESHk1djykov4Q3WRNechUmCSsi8Ycof7Ahvmjp4TvFnYp
+	SdP/ZD61lPVympKbUMS4g==
+X-ME-Sender: <xms:cp9HaqmCqQUi9QCBl4Wv3wWlUOy_y5ZHzFBIZnrF00gUbCfg9cgEdA>
+    <xme:cp9HaspL65GNIaZRf04yRavtm49JuBN7p-iliBaBPh-WK36U__hxhQo1g5C5oLaXa
+    kOvQGmBanhIA3cmcdbSW8eAtiOS1Jiv6Q_AyhdVAWMKZ_FObNr93g>
+X-ME-Proxy-Cause: dmFkZTFE3P5996lWf29oNJB+TDEEv3GwUoSUvht5WquyZrpG3f1YCGHJ4pq8IWBsiKxf7j
+    HWZjmlfyPrgEMqF90Ynk89A0Jt9cy/2FKpOwnf4eq5DLlOKt+ti+kDBWRLZwUOdHbYD6kh
+    dKBGfm1fmOJoF3v8iOrhzIFO3tMMo6BQl4lNIR8FGwywxQ1rVTYbCykPhm6E3LuydMYE3g
+    3Zl5h6sZCPxJqqd4vUMKSoftfTmQnnfLnb6Ipm911jHT7sfeAgabsA5u30m/nJONGIUBGf
+    yw6LNhqqWUOyPBeF6LKSeoIcGPKIfq+onh6t+w0QkW6zffHc8Gg4VQ0qw1SC/OPUaKR6t9
+    LnvOVRLkE9ZLjXL9sN/KvYv6i11l4DPwHHSZt9ekTZZw4D93lkgj3onaG5zp1IfhENdoKC
+    5TYPcLxGisdVbVVNKGwEtj1S+6bal4z5skv9YVJOj0EDlqbwU01yIzF6eQGBXdzLLLdSJT
+    Wbl9nlnb2AwvWOiDeUKQZVWhZQi0qk7+y5M7iqKAsSgScaAQiclnUosPc4Ji5V0uNVmsKw
+    iv5qEEn8mf6AZHRKJ/Qr8C5hcLUNIPOA1SGtX8U8nNZIJhEkK4FPJMIROTBINF2Nz7hPqa
+    w4qvVMI0rCA6ApFXDl409idflR106R4XgEEkZtxAGh0CQtBMuDoOj3knj72w
+X-ME-Proxy: <xmx:c59HaigBV8LYxziXcfJCGowhlRJFZDhUJZZ2evPOO-sVfBfislqsYA>
+    <xmx:c59HapbsX_3ge3p11imjg9jO3bDrsfllL5M5Xg2anyypnWv6VAbrLw>
+    <xmx:c59HamWhnrujTU-31QzRFN5F0iPn3prgQ6-Kqz9cMLU2Ls_t0KxNUA>
+    <xmx:c59HapEVFSxzrx661tf5bLHl-O7tqohr8Cecw3kCsLBssI5gAnv_JA>
+    <xmx:dZ9Hau7p2fONJaFx1aF4Jg10u1mODPCghghczJeJsDGKf1FBhiayClt7>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id E4F48182007E; Fri,  3 Jul 2026 07:39:30 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Last-TLS-Session-Version: TLSv1.3
+X-ThreadId: ASdx1_WPg8_k
+Date: Fri, 03 Jul 2026 13:39:10 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Miquel Raynal" <miquel.raynal@bootlin.com>
+Cc: "Greg Ungerer" <gregungerer@westnet.com.au>,
+ "Arnd Bergmann" <arnd@kernel.org>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Randy Dunlap" <rdunlap@infradead.org>,
+ "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-m68k <linux-m68k@lists.linux-m68k.org>,
+ "Pengpeng Hou" <pengpeng@iscas.ac.cn>
+Message-Id: <51944741-dbd3-4d4a-aeef-e2de2ff942f7@app.fastmail.com>
+In-Reply-To: <871pdknw1c.fsf@bootlin.com>
+References: <20260526103227.3152003-1-arnd@kernel.org>
+ <20260526103227.3152003-2-arnd@kernel.org>
+ <b55ac37f-4523-46d0-8e77-3a17d7235ffe@westnet.com.au>
+ <f3e984cd-0614-48d1-b03f-e0670b87e282@app.fastmail.com>
+ <871pdknw1c.fsf@bootlin.com>
+Subject: Re: [PATCH 2/3] mtd: maps: remove uclinux map driver
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Hello,
-
->> Can we get this reverted?
+On Fri, Jul 3, 2026, at 13:37, Miquel Raynal wrote:
+> Hello,
 >
-> Yes, of course. Miquel/Richard/Vignesh, should I send a revert or
-> can you just apply one with Greg's explanation and my Ack?
+>>> Can we get this reverted?
+>>
+>> Yes, of course. Miquel/Richard/Vignesh, should I send a revert or
+>> can you just apply one with Greg's explanation and my Ack?
+>>
+>>      Arnd
 >
->      Arnd
+> Just sent a revert, I hope I got it all right.
+>
+> Link: 
+> https://lore.kernel.org/linux-mtd/20260703-perso-revert-uclinux-map-v1-1-2b7d46f20465@bootlin.com/T/#u
 
-Just sent a revert, I hope I got it all right.
+Looks good to me, thanks!
 
-Link: https://lore.kernel.org/linux-mtd/20260703-perso-revert-uclinux-map-v=
-1-1-2b7d46f20465@bootlin.com/T/#u
-
-Cheers,
-Miqu=C3=A8l
+      Arnd
