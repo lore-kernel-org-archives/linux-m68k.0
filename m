@@ -1,38 +1,38 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF3E3AB292
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jul 2026 19:06:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7397547F2D3
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jul 2026 19:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783451216; cv=none; b=PHTlAyPZgSgIxS/Ro70jrkj9IEA4kcgsF/5LJS7cP/GLUuJ5RfNb0VSLuN9KqrOrpm+Ll3QI5nyUseW383oDowgT23x0+1aLla7LGVHhmO6Ta1vVbegE+kppTfl94vsehu2PiHAcM91JxfErOlbrs/fSUZ8OTDHMmHVo62vTYGI=
+	t=1783451220; cv=none; b=oQzztIOBlNCrkCNAZuUEE2PBtNFjMo0uYsXWx8o6LDCdgDTzkmR06x6SDPOyPo8Oq0F3IG1uotHqE2VJ0A0/8iw9NHiw7SYrPojLy6F7iNzVT61LxWB7iqwxg3KUUELfLfbBe0YPHA2iopRDNY5thfLeeD3azs4u8r/GkPfJ61s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783451216; c=relaxed/simple;
-	bh=Kd+px02StZMbwQ7TKPgRkHPqsuwdU2Idw88bWNwsXCk=;
+	s=arc-20240116; t=1783451220; c=relaxed/simple;
+	bh=goRZ6vdAUAoHJn+SETkvvubjhiA9uSuH9ibZRWnISuU=;
 	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=Q0qEcQzlWATLs6togUL0W4g3AaEi/F2wXwAOPU3fVfFSqsC+pNmeqeIKXyvpBrC/abgEGu6O4JA4MH1AD3vkx+PsctIqzPxxsxWIkvFLlHO0F2L53ZnCGUH8nlYuzg2/7+J7EBysdQCGnsegCyPqISSJ0taMI8p5xD0ZQjsBQjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GX8UQNU5; arc=none smtp.client-ip=172.105.4.254
+	 Content-Type; b=dYOYY2Zq2zdMhsSIyiwrTa+uFqgGmbX3taVPVjIlZEYlv0Yr8XwVx3b0256n2WFdWYCswIEheUZvUo68pG6gaUgGVORIEaiYHhp6UGBRdqL6/z9bLheD9ZqaN8voj6J5lWL3ByETW4nDMMBr8zNIAbHqZVvgyZGQyU+49rvsZWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z9pGvu6H; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GX8UQNU5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z9pGvu6H"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id B33606138B;
-	Tue,  7 Jul 2026 19:06:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 997691F00A3F;
-	Tue,  7 Jul 2026 19:06:50 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id BB45E40166;
+	Tue,  7 Jul 2026 19:06:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF4E71F00A3D;
+	Tue,  7 Jul 2026 19:06:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783451211;
-	bh=2hP2B4F9qeeUXuU3XysbmgOwdSnbN4nPIvEqn4Tc+Vc=;
+	s=k20260515; t=1783451215;
+	bh=M6M79H685AEiWZ8EuGvrBs5I7Y5P9Ee9ippfe5S1H4o=;
 	h=Date:From:To:Cc:Subject:References;
-	b=GX8UQNU5eotoxcPBLwgb2dREYSYCaobbI7j41EIjeAQbZxYCGuF9DAt9CuKdWhml5
-	 sKLqvJU7OLLMsewiAA5UrA2UnmhlrFwfEUGzISBe2Jat9AL4izazWtNtXgKtBBNbzS
-	 Pk/Ylkh8qbCDazP5INDbcRzOErFrWroa9+BlpD5E0YXaC/H3Z3JkwneB2JtFInyqn1
-	 9UUW7cznoP9Sj9JShH/9STHt6/MiC/5xbpW1rEBQWCbAjEVvJGIuJwCWYWkkgnIyrX
-	 3Z+Nm44fpA3fg/FSFwJd+2UjfCZ/sMDtcZhjx7lFIz/M/97exj3ilz3ZoFUpMhhgHk
-	 1wiFALaxAM02A==
-Date: Tue, 07 Jul 2026 21:06:48 +0200
-Message-ID: <20260707190254.338083894@kernel.org>
+	b=Z9pGvu6HNUZ1HEZ1iYllaavjjFKOFgTqadPIozXIv9JGgx2jiaihgSbjZ3dmUzUJU
+	 hfjd2RhwbRCe4/RE6GxyfPq09ROnl/NCd1HaUQk2oMKLyHrrLWVUfmEQIWNgG4H0yV
+	 BATAOIL2AA4szex3DJbzo2snz+LuHQ5mvQ28B8yiZeSewg4gWEoZdYSbZCcErqheQA
+	 uNsdYnJB/6z23NzIIqnXgmHg+EkSOB5aumXG9do1DJbSPpj9mBvOvIqZlR1k7iJd+n
+	 ifnsuEaoUlbMIslTJD3wtnmpXeWlKWS3cwSDNZNKQCEZLL2h2iYwy4NYNlzBrzTYMO
+	 XibetjyLr85WQ==
+Date: Tue, 07 Jul 2026 21:06:53 +0200
+Message-ID: <20260707190254.392010241@kernel.org>
 User-Agent: quilt/0.69
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
@@ -87,7 +87,7 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
  =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
  Jonathan Corbet <corbet@lwn.net>,
  linux-doc@vger.kernel.org
-Subject: [patch 13/18] entry: Make trace_syscall_enter() return type bool
+Subject: [patch 14/18] entry: Make return type of syscall_trace_enter() bool
 References: <20260707181957.433213175@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -97,71 +97,90 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-In preparation of converting the return value of
-syscall_enter_from_user_mode[_work]() bool, rework trace_syscall_enter() to
-
- - update the syscall number via a pointer argument
-
- - Return True if the syscall number is != -1, False otherwise
-
-That aligns with ptrace_report_syscall_permit_enter() and
-seccomp_permit_syscall().
-
-The only difference is that this also returns False, when the syscall
-number was already -1 to begin with, but there is not much which can be
-done about that. As the architecture has to preset the return value to
--ENOSYS anyway, that results in the correct return value for such an
-invalid syscall.
+This prepares for changing the return types of
+syscall_enter_from_user_mode[_work]() to bool, which in turn separates the
+decision of invoking the syscall from the syscall number, which might have
+been changed in the call by ptrace, seccomp, tracing.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
 ---
- include/linux/entry-common.h  |    8 +++++---
- kernel/entry/syscall-common.c |    7 ++++---
- 2 files changed, 9 insertions(+), 6 deletions(-)
+ include/linux/entry-common.h |   28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
 --- a/include/linux/entry-common.h
 +++ b/include/linux/entry-common.h
-@@ -58,7 +58,7 @@ static __always_inline bool arch_ptrace_
- #endif
+@@ -71,8 +71,8 @@ static inline void syscall_enter_audit(s
+ 	}
+ }
  
- bool syscall_user_dispatch(struct pt_regs *regs);
--long trace_syscall_enter(struct pt_regs *regs, long syscall);
-+bool trace_syscall_enter(struct pt_regs *regs, long *syscall);
- void trace_syscall_exit(struct pt_regs *regs, long ret);
+-static __always_inline long syscall_trace_enter(struct pt_regs *regs, unsigned long work,
+-						long syscall)
++static __always_inline bool syscall_trace_enter(struct pt_regs *regs, unsigned long work,
++						long *syscall)
+ {
+ 	/*
+ 	 * Handle Syscall User Dispatch.  This must comes first, since
+@@ -81,7 +81,7 @@ static __always_inline long syscall_trac
+ 	 */
+ 	if (work & SYSCALL_WORK_SYSCALL_USER_DISPATCH) {
+ 		if (syscall_user_dispatch(regs))
+-			return -1L;
++			return false;
+ 	}
  
- static inline void syscall_enter_audit(struct pt_regs *regs, long syscall)
-@@ -108,8 +108,10 @@ static __always_inline long syscall_trac
+ 	/*
+@@ -90,32 +90,32 @@ static __always_inline long syscall_trac
+ 	 * through hrtimer_interrupt().
+ 	 */
+ 	if (work & SYSCALL_WORK_SYSCALL_RSEQ_SLICE)
+-		rseq_syscall_enter_work(syscall);
++		rseq_syscall_enter_work(*syscall);
+ 
+ 	/* Handle ptrace */
+ 	if (work & (SYSCALL_WORK_SYSCALL_TRACE | SYSCALL_WORK_SYSCALL_EMU)) {
+ 		if (!arch_ptrace_report_syscall_permit_entry(regs) ||
+ 		    (work & SYSCALL_WORK_SYSCALL_EMU))
+-			return -1L;
++			return false;
+ 	}
+ 
+ 	/* Do seccomp after ptrace, to catch any tracer changes. */
+ 	if (work & SYSCALL_WORK_SECCOMP) {
+ 		if (!__seccomp_permit_syscall())
+-			return -1L;
++			return false;
+ 	}
+ 
  	/* Either of the above might have changed the syscall number */
- 	syscall = syscall_get_nr(current, regs);
+-	syscall = syscall_get_nr(current, regs);
++	*syscall = syscall_get_nr(current, regs);
  
--	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
--		syscall = trace_syscall_enter(regs, syscall);
-+	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT)) {
-+		if (!trace_syscall_enter(regs, &syscall))
+ 	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT)) {
+-		if (!trace_syscall_enter(regs, &syscall))
+-			return -1L;
++		if (!trace_syscall_enter(regs, syscall))
++			return false;
+ 	}
+ 
+-	syscall_enter_audit(regs, syscall);
++	syscall_enter_audit(regs, *syscall);
+ 
+-	return syscall;
++	return true;
+ }
+ 
+ /**
+@@ -145,8 +145,10 @@ static __always_inline long syscall_ente
+ {
+ 	unsigned long work = READ_ONCE(current_thread_info()->syscall_work);
+ 
+-	if (work & SYSCALL_WORK_ENTER)
+-		syscall = syscall_trace_enter(regs, work, syscall);
++	if (work & SYSCALL_WORK_ENTER) {
++		if (!syscall_trace_enter(regs, work, &syscall))
 +			return -1L;
 +	}
  
- 	syscall_enter_audit(regs, syscall);
- 
---- a/kernel/entry/syscall-common.c
-+++ b/kernel/entry/syscall-common.c
-@@ -7,14 +7,15 @@
- 
- /* Out of line to prevent tracepoint code duplication */
- 
--long trace_syscall_enter(struct pt_regs *regs, long syscall)
-+bool trace_syscall_enter(struct pt_regs *regs, long *syscall)
- {
--	trace_sys_enter(regs, syscall);
-+	trace_sys_enter(regs, *syscall);
- 	/*
- 	 * Probes or BPF hooks in the tracepoint may have changed the
- 	 * system call number. Reread it.
- 	 */
--	return syscall_get_nr(current, regs);
-+	*syscall = syscall_get_nr(current, regs);
-+	return *syscall != -1L;
+ 	return syscall;
  }
- 
- void trace_syscall_exit(struct pt_regs *regs, long ret)
 
