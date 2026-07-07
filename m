@@ -1,119 +1,108 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38323F99ED
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jul 2026 13:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5561542A7B9
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jul 2026 14:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783429848; cv=none; b=c4wI95YIgTICob5UCgFchYoILZ34ueBFnNm0bfeF1cAVY+a+kNjn2f/EZvQnmeTB6juzd+S0LRFhHtv+TiLW8v498Ge9H9pIN5Fvnyre5jsQ4CSu3sFFGiq1gTncR6PQ7NSqKd0yakwFpR9s/EGizMncKPt4ps8mlaoyzXz0pqs=
+	t=1783435112; cv=none; b=EbQU3sSh+OO1N3TQ2fpfJXF4hDNp7vTumqiLxleshxHCiOXAr6SZV3LfuWjYTQgB/2yKC6Ic+PXx7dDFVOPBwZW0xrrqmEOkEr2ZCBd71zmJp1KVLr8tfEQQ+SRT/33xRWptxd/gPxINDTwfzIBRBSkhNWnk9bW6MKgvq27wM+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783429848; c=relaxed/simple;
-	bh=r1CibfDlLIizzp1KFfPyqgM9Ln627zTM8sR6d95xVmE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UzcaIBz8O4ojySSYPI89azhJhrlTBd74AavxSqEr9rZmRuFvoTAqDXxdXQmihJiTBIvdF0to0xRt5S1xeF2OL3hI1Smo4DU8hPj4dpRhKmsRG/5fW8voEwr2yMrUv8ssMYc4QHaYaOIm2G1KdkMvxtUV+iwTNRwl/6p9nbQDLhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bGYoMdCt; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1783435112; c=relaxed/simple;
+	bh=dOu+R6Ou6hC8DtqgKnfmghOSm/cIKRgBB2eu/KY/txo=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=LtYZOM2epCtuDFDDHwmopqUV+QrEXYKA+kz2MQUgpufhm3A5tGO/OkMGMRJN4OtIRpCP28hLh2nAp33jYqQx7GEvol6m4w9iHAGxdb+iCo+9t229G6lK2B1l4XbUqzDp0B5P9jMzb2pi1QL+rxz8x4utundbZllhaXTG3dq//Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=oKQAu9/V; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=aTkuKzmk; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bGYoMdCt"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2BD9260018;
-	Tue,  7 Jul 2026 13:10:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 109EC1F000E9;
-	Tue,  7 Jul 2026 13:10:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783429845;
-	bh=QiC9ufNjBXY0qojfR83y3Db/3q5EQizqdZU46z2U4WI=;
-	h=From:To:Cc:Subject:Date;
-	b=bGYoMdCtEAsfxkyDB8d++V7SrjrzlER8EFkaYBVOofI2RrBkofefssQcvb+4ckHH6
-	 0qtOj+Q3SsumJrT6TJvHny+FUQ0U1TbxCUwAzmnEt35SIxIEv6RYW7ofYIQeZMxWT6
-	 8gLXClonoUze5LSM3gztKGxj5kSrvwiihYscOLi1XA/ySocSo98VycdB7+vJi0NxYO
-	 GY1aCT9/9egcboz3hCv55B2YwMZq6v74k7ng6APjN/P6yS5wIRCHdI3mwt9E2uIDsK
-	 xxUlGh2oHU3XRYep3DslKfXyDH2ELDkPc1AZSCcMQCEKJ9Rd7jYBneFGPO8JWMMqN/
-	 tPmTBB8HP4yiw==
-From: Greg Ungerer <gerg@kernel.org>
-To: linux-m68k@lists.linux-m68k.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: add config for M5282EVB board
-Date: Tue,  7 Jul 2026 23:10:41 +1000
-Message-ID: <20260707131041.2631541-1-gerg@kernel.org>
-X-Mailer: git-send-email 2.54.0
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="oKQAu9/V";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="aTkuKzmk"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id AAC5D1400068;
+	Tue,  7 Jul 2026 10:38:30 -0400 (EDT)
+Received: from phl-imap-05 ([10.202.2.95])
+  by phl-compute-04.internal (MEProxy); Tue, 07 Jul 2026 10:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1783435110;
+	 x=1783521510; bh=O/o+jhtKyqNPXRz5AWmbe5eGCk745anSsMpmf0vI9tg=; b=
+	oKQAu9/VmsyrM3UGyO7Za94PL4nbDtJb4vkG7Az73SCCdoAta7qMV53ck5BA9YcJ
+	lVWOCbue0T41D2EGs/dyoamjr1kRuyz8MccdN5V/ukQJhx0F7SCDlLSYgdGBzTls
+	TRwUwUSxAEY+SRFqisupfIg/OJUXtWVSqQNNyHMtdPLtT0NxfVdNW370Fc4GnsX1
+	3EWdPVs825/ValSu69IATBFn3TDBkUihoa2tJjB05rAprvj5QFsispKaijdDoOL/
+	KUW8DISOL0/TAlef0W4Fnt84mqMBV2132VhzS52OHtaKBTIJHoE0PGFYyR18GyCE
+	wNUMp/XG7g02R3Vn5zdFGw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1783435110; x=
+	1783521510; bh=O/o+jhtKyqNPXRz5AWmbe5eGCk745anSsMpmf0vI9tg=; b=a
+	TkuKzmkmqM4gK+nPfO5TUg0bOX8Om3d2IG8yWBCgRM1lPoi9sEXCyKQPxnYt3Lje
+	Abr3/29v+/ri+l2rdjtxnNTbgOAuqq0FYJZNgHO45mxn8oe24DXPGAyTCrjejnPn
+	iWFG6/N0zz2zm6DLZf/UjhcvXFz/1Ah7nfEf1Yu+CrHqv3oxLOaoalYRWnI1FRd2
+	xbWSRXVYlAYg6WzsFKNzlymrCcEzpF+JxIHomWKQBDOD+a4nQu88rGToHvgOMeCk
+	lx/cYGgxs35rIza40lR+Hh8j3DXdcuT8Cszt+nNJ+qtZxiLp3gCLGME1xoWUGTTo
+	qtdqLez9ZQrUE+Z8OFJFQ==
+X-ME-Sender: <xms:Zg9NaroBoeytbtxgO0O4ywB8QVeMnkwCobJZvxnquF3Lj9LZ5FGh1w>
+    <xme:Zg9NagesIScLrvTnPOcIaVvCJ8O5vCojYSYsjF36WfTuCruYSJ3CSbJFLA0WNTnC8
+    24K1kkXoJsQ1KGomPWmaJF3bw5BE1zNtFrHpElY8xV9QVNm5gXlCnH7>
+X-ME-Proxy-Cause: dmFkZTG1gK/N3b43Oc2Ad/g+KiCVND0TZG2dj1BLw5rDD6djJ/CHGKSvzekWaYavdfpS9V
+    rIcDx6YdAN/hqB30UvAG05D9Y88L6xsEHttUoaTikICmGrnWHYcBZeXfGZKgXgIiTgDUaP
+    /hWx3x5R87yVhAk75pyn9dVOW6sPG6rKa3+qb36ePxbu98RhnLbHKDzve0ek9RzmCu+0L6
+    o67kcjRlh5Vb0vk1aIAzPhZdArNqq8zWq7PE4ZfNbX6m7WWLSLfWlJ3Oa/IRpRL6yeho59
+    xXGO8/MGJm1slxsA25TbUaFbJ8d77MxLhCuiXBuFFvKSJaP5jc+TKDMPlkTnhcx1FeAOKu
+    TRKI+j2zE3iqrf0VULyL8xanIS8Q7lPAs1YhEyU8jEIG3/OC3N4i6Kgd5wWHHNe2dfrz8A
+    0VYDmXukEoF8EJ0vNaTXDZbpFe3oNxsjzgicX+4ffgSKSX87NV9p4ZUdz5TFgLOSVZkAet
+    t8hoG7rYMf1QIvXYnrBLe4bvOyseY1MtVmed874JgaXkdeQJkQrephpWNMe9FWbQXaNW6H
+    wJ8uc7QGDsXnER+o3w7fmceZ0tTCiVsdKKHwy3wm8pMVxHoA+57QRuOCICQLEgZrYfpFmp
+    dTTd2vAD7ihE6ahJVlef4LQ/LwLim78SIpgGZd4ReXZxTDO1VaD5R+0tEasA
+X-ME-Proxy: <xmx:Zg9Nas05bFpqdBsPp0KMPDiHnNvbTbkaAdMBOB8E3-OfPaF6pn--lw>
+    <xmx:Zg9NagAk-851sGKGxCXAkYmZtCrcLgprU9h-jmqIYVWTJtqcU_B59Q>
+    <xmx:Zg9Nagecf0kwnjzPbW3HvDO0ZLl_OJxdcdwZ0gFUgNYEHaySJstMfg>
+    <xmx:Zg9Nal76aNFhxvXW5ePLkRwmcRVpPWVcgBvL9VbHt533hUM7SAKFSw>
+    <xmx:Zg9NauvuyoGO2Ft7zp00-jLraI1al-ix7zjybxgtALTOcO3p7sYKpcf2>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 4B664182007E; Tue,  7 Jul 2026 10:38:30 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-ThreadId: Ak0q067GEFdk
+Date: Tue, 07 Jul 2026 16:38:09 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Greg Ungerer" <gerg@kernel.org>, linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, "Greg Ungerer" <gerg@linux-m68k.org>,
+ "kernel test robot" <lkp@intel.com>
+Message-Id: <7a1071bd-073e-489f-836d-fc9c737bdd0e@app.fastmail.com>
+In-Reply-To: <20260707124124.2604211-1-gerg@kernel.org>
+References: <20260707124124.2604211-1-gerg@kernel.org>
+Subject: Re: [PATCH] m68k: coldfire: fix breakage of missed IO access updates
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-From: Greg Ungerer <gerg@linux-m68k.org>
+On Tue, Jul 7, 2026, at 14:41, Greg Ungerer wrote:
+> From: Greg Ungerer <gerg@linux-m68k.org>
+>
+> Commit e1f3a00670d1 ("m68k: coldfire: use ColdFire specifc IO access in
+> SoC code") incorrectly updated a couple of local IO access uses. They
+> use "read8" when they should be using the new "mcf_read8". Fix them.
+>
+> This causes compile time breakage for two specific SoC types, the ColdFire
+> 5235 and 5282. They got missed in original testing due to not having
+> any defconfigs for these specific parts.
+>
+> Fixes: e1f3a00670d1 ("m68k: coldfire: use ColdFire specifc IO access in 
+> SoC code")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: 
+> https://lore.kernel.org/oe-kbuild-all/202607040536.BiSGmESw-lkp@intel.com/
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Add a default configuration for a basic M5282 based EVB board.
-The SoC has been supported for a long time but there is no default
-configuration. Create one to improve build and test coverage.
-
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
----
- arch/m68k/configs/m5282evb_defconfig | 51 ++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 arch/m68k/configs/m5282evb_defconfig
-
-diff --git a/arch/m68k/configs/m5282evb_defconfig b/arch/m68k/configs/m5282evb_defconfig
-new file mode 100644
-index 000000000000..85040dc3e45e
---- /dev/null
-+++ b/arch/m68k/configs/m5282evb_defconfig
-@@ -0,0 +1,51 @@
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_EXPERT=y
-+# CONFIG_FUTEX is not set
-+# CONFIG_EPOLL is not set
-+# CONFIG_SIGNALFD is not set
-+# CONFIG_TIMERFD is not set
-+# CONFIG_EVENTFD is not set
-+# CONFIG_AIO is not set
-+# CONFIG_KALLSYMS is not set
-+# CONFIG_MMU is not set
-+CONFIG_M528x=y
-+CONFIG_RAMBASE=0x00000000
-+CONFIG_RAMSIZE=0x00800000
-+CONFIG_VECTORBASE=0x00000000
-+CONFIG_IPSBAR=0x40000000
-+CONFIG_KERNELBASE=0x00020000
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_BINFMT_FLAT=y
-+# CONFIG_VM_EVENT_COUNTERS is not set
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+# CONFIG_INET_DIAG is not set
-+# CONFIG_IPV6 is not set
-+# CONFIG_FW_LOADER is not set
-+CONFIG_MTD=y
-+CONFIG_MTD_BLOCK=y
-+CONFIG_MTD_RAM=y
-+CONFIG_MTD_UCLINUX=y
-+CONFIG_BLK_DEV_RAM=y
-+CONFIG_NETDEVICES=y
-+CONFIG_FEC=y
-+# CONFIG_INPUT is not set
-+# CONFIG_SERIO is not set
-+# CONFIG_VT is not set
-+# CONFIG_UNIX98_PTYS is not set
-+CONFIG_SERIAL_MCF=y
-+CONFIG_SERIAL_MCF_CONSOLE=y
-+# CONFIG_HWMON is not set
-+# CONFIG_USB_SUPPORT is not set
-+CONFIG_EXT2_FS=y
-+# CONFIG_FILE_LOCKING is not set
-+# CONFIG_DNOTIFY is not set
-+CONFIG_ROMFS_FS=y
-+CONFIG_ROMFS_BACKED_BY_MTD=y
-+# CONFIG_NETWORK_FILESYSTEMS is not set
-+# CONFIG_SLUB_DEBUG is not set
-+CONFIG_BOOTPARAM=y
-+CONFIG_BOOTPARAM_STRING="root=/dev/mtdblock0"
--- 
-2.54.0
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
