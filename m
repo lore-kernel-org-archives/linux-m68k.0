@@ -1,46 +1,46 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE6E3AB480
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jul 2026 19:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D3B3EBF36
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  7 Jul 2026 19:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783451171; cv=none; b=u5Xv8yvSvIEv8iuF8o2FOkl2AtPe8lPKAYgQ4R6/s6fE5QQk67Y3IAiWr4Hz4DFcgvBUtG2PZlMI2B+du3SXOkveoDxCVvuIAzwn3NUVQlXWKCGfi86dUEwHZEBC5IbeK0Hjd2VTr7pqaUB13FGUXiR0yVstnGXWhMV1GRcJL7I=
+	t=1783451175; cv=none; b=a78y3aIF4bI0oLEZpAusvNxN8NdArAh6z/7PC7KqxJ2La9D4hCEDlEiUKAN+FJlSaVZeh723AgoRccWLG9XC39b43xNb00aE9Or+Zf6kTX2nz7hgzskevgFTALGqV8847sslgFBuWLpE1qb0brgbNgidQxMWqk32vgICxmTwLME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783451171; c=relaxed/simple;
-	bh=qrUDMK+tO0td1M+9uTSBVbuTLyMfyy+qTZirrEP77uU=;
+	s=arc-20240116; t=1783451175; c=relaxed/simple;
+	bh=ihmrVJArIw5Arei7GCnzmo+eXzjadSV5bTzArssQBXw=;
 	h=Date:Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=cogOp02aqt2mR3BFU6pJ6mG0aVQ/C/CrsAgLiuA7eedfUAAxrD0AgryRd1eA7OPg9RSbj1rTxyOtxXBtN494uNcQCyHFnINvarzmfI8UngUckEBZZRzpGGGP6ws6YLBP8dbgplCkeCYFz8vWn753BbmXJpSYChKOgfIsOcs3lac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kyf4FHpF; arc=none smtp.client-ip=172.105.4.254
+	 Content-Type; b=tWu8ln0DwTp0NWA6CSyBgqnstl8If5VPL5BcuyJf6ElvLJnnHm6QqpCwdD3mUVMe1nycuVKr4mhekzWa+KtZwomw9PEjsP5eHIDeAHI0WJ9ozPSgSrVXahp4RTxGj0Egetq9qR8gJzquraFlW4Qepbhv5UYj3RFCli4gYabtKcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VY1zowse; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kyf4FHpF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VY1zowse"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id A2DD86138A;
-	Tue,  7 Jul 2026 19:06:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 836131F00A3A;
-	Tue,  7 Jul 2026 19:06:04 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id CAD1561384;
+	Tue,  7 Jul 2026 19:06:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B438D1F00A3D;
+	Tue,  7 Jul 2026 19:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783451165;
-	bh=On6NfRZNP83GQAwWkJi2QY5gy7RW6c7PPEtomv7P1Dc=;
+	s=k20260515; t=1783451169;
+	bh=LBj+ZkGRdAQN74z4D94PD8p6NaRtGe8kKF18FGUoSBc=;
 	h=Date:From:To:Cc:Subject:References;
-	b=Kyf4FHpFsIS+Ydmvpd4dDjaw6LA3z5qA3tk9jQCRiEW5qX1inNO9gy7FOgieh3baY
-	 hYOJJlHaPUBmLHJ7GT1+snJJu9GDe/I9LBY8DO5JtbHEjuAUTNBhEUGadk4Jt3mT6M
-	 jfM460+qa8cBdINqLxhonst5REsB87hmc78d5eqMEOoD5gBYWK0lJNv1XzAl9UsuvK
-	 VcyLhfQ5RZnjt+w12lkO4zxWbhBNKXx+std7IviKWtj5txrPrCsYKXUlRXGm9L5b6C
-	 x3lWCb9/6igNz1lMUWNia6Ofl2ESSU4en1Tc99OlWes1QnxVBl0HIc9O5ffHHzCd75
-	 Lv0AL/D7KjB7Q==
-Date: Tue, 07 Jul 2026 21:06:02 +0200
-Message-ID: <20260707190253.768842729@kernel.org>
+	b=VY1zowsespAaLkdQfjN21WoDu0I2bpmruM24iQyJPomLBoNcfhRcxHp71u2Qaoz8w
+	 2Y6R/xVT7Yp0jxQTc8E5PWuftOuCpOuAgoGxlRSnJZdeLFmp/X5t3iL3htCKZRfn3+
+	 ZILTZaA9qyxubwDpKLYazC72ZykMomE0EWqkxhprvJrhHU6PoirMY9t5PUOI4e22OR
+	 1Mzlboe/bN4bCNA4g1TTcbgSS+G0cMdMv/Ny3g+iZse0ddGOTpczuxmdM6Qdp/eE7e
+	 Cdr45b4mkb4xZpki9QM7BPX+TNtyRnQRDjpUHUDvask5gaQC50oiZ/ZZKDlC+8+3Ru
+	 MjqY28jZMNheA==
+Date: Tue, 07 Jul 2026 21:06:07 +0200
+Message-ID: <20260707190253.816918647@kernel.org>
 User-Agent: quilt/0.69
 From: Thomas Gleixner <tglx@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>,
- Kees Cook <kees@kernel.org>,
  Michael Ellerman <mpe@ellerman.id.au>,
  Shrikanth Hegde <sshegde@linux.ibm.com>,
  linuxppc-dev@lists.ozlabs.org,
+ Kees Cook <kees@kernel.org>,
  Huacai Chen <chenhuacai@kernel.org>,
  loongarch@lists.linux.dev,
  Paul Walmsley <pjw@kernel.org>,
@@ -87,8 +87,8 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
  =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
  Jonathan Corbet <corbet@lwn.net>,
  linux-doc@vger.kernel.org
-Subject: [patch 02/18] randomize_kstack: Provide
- add_random_kstack_offset_irqsoff()
+Subject: [patch 03/18] entry: Provide
+ [syscall_]enter_from_user_mode_randomize_stack()
 References: <20260707181957.433213175@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -98,46 +98,100 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-add_random_kstack_offset() uses get/put_cpu_var() which is pointless
-overhead when it is invoked from low level entry code with interrupts
-disabled.
+Randomizing the syscall stack can only happen after state is established
+via enter_from_user_mode() or syscall_enter_from_user_mode(). The earlier
+it happens the better.
 
-Provide a irqsoff() variant, which avoids that.
+Provide two new macros to consolidate that:
+
+  - enter_from_user_mode_randomize_stack()
+	enter_from_user_mode();
+	add_random_kstack_offset_irqsoff();
+
+  - syscall_enter_from_user_mode_randomize_stack()
+	enter_from_user_mode_randomize_stack();
+	syscall_enter_from_user_mode_work();
+    
+to reduce boiler plate code.
+
+Those are macros and not inline functions as the latter would limit the
+stack randomization scope to the inline function itself.
 
 Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-Cc: Kees Cook <kees@kernel.org>
 ---
- include/linux/randomize_kstack.h |   19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ include/linux/entry-common.h |   56 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
---- a/include/linux/randomize_kstack.h
-+++ b/include/linux/randomize_kstack.h
-@@ -77,8 +77,27 @@ static __always_inline u32 get_kstack_of
- 	}								\
- } while (0)
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -6,6 +6,7 @@
+ #include <linux/irq-entry-common.h>
+ #include <linux/livepatch.h>
+ #include <linux/ptrace.h>
++#include <linux/randomize_kstack.h>
+ #include <linux/resume_user_mode.h>
+ #include <linux/seccomp.h>
+ #include <linux/sched.h>
+@@ -150,6 +151,61 @@ static __always_inline long syscall_ente
+ }
  
-+/**
-+ * add_random_kstack_offset_irqsoff - Increase stack utilization by a random offset.
+ /**
++ * enter_from_user_mode_randomize_stack - Establish state and add stack randomization
++ *					  before invoking syscall_enter_from_user_mode_work()
++ * @regs:	Pointer to currents pt_regs
 + *
-+ * This should be used in the syscall entry path after user registers have been
-+ * stored to the stack. Interrupts must be still disabled.
++ * Invoked from architecture specific syscall entry code with interrupts
++ * disabled. The calling code has to be non-instrumentable. When the function
++ * returns all state is correct, interrupts are still disabled and the
++ * subsequent functions can be instrumented.
++ *
++ * Implemented as a macro so that the stack randomization is effective
++ * throughout the function in which it is invoked. An inline would only make it
++ * effective in the scope of the inline function.
 + */
-+#define add_random_kstack_offset_irqsoff()					\
-+do {										\
-+	lockdep_assert_irqs_disabled();						\
-+	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,		\
-+				&randomize_kstack_offset)) {			\
-+		u32 offset = prandom_u32_state(raw_cpu_ptr(&kstack_rnd_state));	\
-+		u8 *ptr = __kstack_alloca(KSTACK_OFFSET_MAX(offset));		\
-+		/* Keep allocation even after "ptr" loses scope. */		\
-+		asm volatile("" :: "r"(ptr) : "memory");			\
-+	}									\
++#define enter_from_user_mode_randomize_stack(regs)			\
++do {									\
++	enter_from_user_mode(regs);					\
++	instrumentation_begin();					\
++	add_random_kstack_offset_irqsoff();				\
++	instrumentation_end();						\
 +} while (0)
 +
- #else /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
- #define add_random_kstack_offset()		do { } while (0)
-+#define add_random_kstack_offset_irqsoff()	do { } while (0)
- #endif /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
- 
- #endif
++/**
++ * syscall_enter_from_user_mode_randomize_stack - Establish state and check and handle work
++ *						  before invoking a syscall
++ * @regs:	Pointer to currents pt_regs
++ * @syscall:	The syscall number
++ *
++ * Invoked from architecture specific syscall entry code with interrupts
++ * disabled. The calling code has to be non-instrumentable. When the
++ * function returns all state is correct, interrupts are enabled and the
++ * subsequent functions can be instrumented.
++ *
++ * This is the combination of enter_from_user_mode_randomize_stack() and
++ * syscall_enter_from_user_mode_work() to be used when there is no
++ * architecture specific work to be done between the two.
++ *
++ * Returns: The original or a modified syscall number. See
++ * syscall_enter_from_user_mode_work() for further explanation.
++ *
++ * Implemented as a macro to make stack randomization effective in the calling
++ * scope.
++ */
++#define syscall_enter_from_user_mode_randomize_stack(regs, syscall)	\
++({									\
++	enter_from_user_mode_randomize_stack(regs);			\
++									\
++	instrumentation_begin();					\
++	local_irq_enable();						\
++	long _ret = syscall_enter_from_user_mode_work(regs, syscall);	\
++	instrumentation_end();						\
++									\
++	_ret;								\
++})
++
++/**
+  * syscall_enter_from_user_mode - Establish state and check and handle work
+  *				  before invoking a syscall
+  * @regs:	Pointer to currents pt_regs
 
