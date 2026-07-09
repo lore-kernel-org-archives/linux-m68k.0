@@ -1,74 +1,76 @@
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43833C10A8
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jul 2026 19:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA2F3C2B82
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jul 2026 19:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783626218; cv=none; b=KL/twGkHeoLR/Hjoj9fMAMt0mbeor90evCtNQzy7eOcdNQgndnhdpJMtLtanXK5ABu6JsjejGEA3Py65v3VV3XzuPMW7oPt5mdB+gr9EVQnWGHseBc53W/yxxuYamWeK/yP3vgATYCr833hHxx7xsgGAQpE38iUdKZL/IbLALuQ=
+	t=1783626593; cv=none; b=X1KOPtCXjeS6PO4ssAEpl4zd5bghSTLWCDx7x+2HT1Hl5YsYxC8ee4B43uYwc8VAlZL34qGSDruT/FNVxhispSt4OafqnhsjDCJVCePpmEteo11Leo5b+Fq1mZiwEbnqGOq/PSmu8cg/4hpFJQk2NXOWOfa4/2SNlv+/ktbJNJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783626218; c=relaxed/simple;
-	bh=jWS6CuM01KL0TKzupA5IpoB96YuuBOzox4OyTj5L3ho=;
+	s=arc-20240116; t=1783626593; c=relaxed/simple;
+	bh=O3SPqd0FCeHdHAXnIs2zdCH8B3mqG0zpsrqZGFxlKyo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=etNzbFKGmHQHXPi6IWD57ivhoP8nrEK8ZcPM3yzscEO95nwEVPJ8sNwniOt92LM4cuGG6ZmRYJdXadfT8wNWclKS/lxro7IuVGRbzqOxksyDJdysJcv5J8eDKVawtv7OUAPR652vYLoy8YyMbTrKreUZahRjviGJ/NxM8f4wyrs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DwM0+1Ya; arc=none smtp.client-ip=209.85.215.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=G0Z5jF6b5hL5mGa5oQoynixM9n0GkEJhtoiybQNGF8BS3xFu/p+2RQ/ULmdo+6WhwYOK3l3dwTY00wDIk/EA17SoZDyHVKAFXdgKh1P2ITCVSIaS85p00MJxQz5nVKbJbQypNvnUfGBR2NIbQnrEOzn5tIUQKWCNSryUgKCBKWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XbyecOQV; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DwM0+1Ya"
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-c9e0b89e228so126800a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jul 2026 12:43:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XbyecOQV"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2cc6dd436c6so1626745ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jul 2026 12:49:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783626215; x=1784231015; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=vcViCEZV9Tm/crNMdaH3VAbncnTvlz/mpQaPDKjBGxQ=;
-        b=DwM0+1YaFwNNs+2SJIgqh0vFaNdKYRDbrdC4hO0qqEy5Tej8qO2LnRD0euCEVl/nbw
-         DIneoPrr67uIcSGBGJlvz+OVtJc3kWR6YZNjOr44iuxKurGiGWJu5A4XR8hwykybXvm4
-         RUxJ9gnd/1qJ9L6I3osh4ZECpHiMUQOJ2IPJPuC1C+DeZoQhWdpaYSNMNeVW2IiNzrxW
-         R5Er6SKqOU0+537J/GXAnAzlKzLT3CVbtY74PvIGQOq1/XIURF17EMtrv8TxTcN9BQme
-         qoa5m96RiZVf8CXPKNXkV74eHuB/iw+KXe5q9EU0gC3NbDHBzsYc8TyEDtc2iST2Sihl
-         03Tg==
+        d=gmail.com; s=20251104; t=1783626588; x=1784231388; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=wZIZ82kjBIDu2ZrVW8MGg3L6TnunPhQvQy9pezlSzDk=;
+        b=XbyecOQVaRaX48eKgU5c+mas+ikQosgUGzFiDlHLjtC98LicRdTlvjBFzDReyTPRSH
+         UJGNNxtSWo2cCPhBHRSoJ53t1ZGKmtraBm+N9ou9/CbEPaTR3hlOh1XrvUuWoFOoTPZY
+         VajB8KjP7f5NmUmOrjqdopkKmib4g93t7F5z+o6iJ++8RHuJARisI1yXOkl9WYOuAO5I
+         oReNY+PUBJR4AmpeWYHyLJ5wIkXnt+2ceab6yDLPTKmgRDmIMJvofed9MiHctGA26hrd
+         YioUttLIiVDtnP0yUOxu7GTkep20thk9jsd8or4lVoD+xhhQc6SAZ1Ck5DtIR78nz40T
+         ffNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783626215; x=1784231015;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=vcViCEZV9Tm/crNMdaH3VAbncnTvlz/mpQaPDKjBGxQ=;
-        b=s0gCY9i1XXImAgPp0zvQdLaUXDxMabeyqfV5WO8BC0XGBS8jHBmKHRfD3dd5OGwsEE
-         CO9V/dBwlBjYH5CAr5u0XPhotP+2gk0x4mQtzCrTqEsvlgbBJYFZ9SPtlw8BpKcfS8Fn
-         Ex17z6HQ2Y7mwDVgPkY/qIrY06c9S9ghwh+Yt4vldMDqqBjuyxsdq95YXAdFNmuA5Ef3
-         ucbnj6p/t89232/t1drH9sBkr6A1j4iwVCzh1l+9OqzFY7P+e4jf5ykf6eu0fJ00VW4T
-         rhw8Dhv78gIdyj2PH8ga3569i+tGr2+lCg1ayYRxTGNlM+jTdYvEuR0a0RFOew+m9n8p
-         aKwA==
-X-Forwarded-Encrypted: i=1; AHgh+RrOz27oVr5vvKhAcZOavcWLpdaF02KDsy0rKwWAQ8+b9N3+aONVD9rm0YmT8AK5/dqvS7XP/CZL1ebT@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YwssEWz1SabKLKs9HtlCw0nLGgNEzI2h7QSye74VQnQ11WszbXU
-	Gc19vFSIMXJBih4fVFg01c0oygme83DaHf2CrkoikGJP6sCeG1pveukI
-X-Gm-Gg: AfdE7cnJmf0sEqMD25w/8qk81yMMsfBjMR11PEDpexw3CnG4s67TtFLLh5LQkwlU1uw
-	RmjpiimL9tV7Lp+tNKRNcC4mLhr011LWH3wMxltkLjdMR3iENShKFzsKbu9+clbdmJ0Ncnuh9jL
-	HjBQQg7B4wSvfGSOcI+mtXgJGlHxozwgNbrFSrk8v6JYJ3K/btjX3jABVbcacqBl2+/Mvc9s7V+
-	BnpqQ9F8yIafao6uHL6J8rNI7tQ9Vagr8T1zR/mYWLe1OZK3fd42uXzKofIO5qXI8th+Fm1m10O
-	7Qlos838jmmBkYwbnA1yOGxcA9DRBHSHHqoiQ4aSICes5zRouYWj4YKGadnTCyQYPV0R29VtXSa
-	opA2mBRdCfJZF0efGf0bHogcq9TrxiFDRvKt4go7fzcV/zmJGH8iXlgE01g44HJciDRcIz62+22
-	aqMPZPnBp5BnGyO3Pa6YRVrlPzXoKqyQQ5c9v7XUVktci1RTkGWjFvHMyhwyCZ
-X-Received: by 2002:a05:6a21:6daa:b0:3c0:9c1a:8949 with SMTP id adf61e73a8af0-3c0bd287dd3mr11145411637.65.1783626215188;
-        Thu, 09 Jul 2026 12:43:35 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783626588; x=1784231388;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=wZIZ82kjBIDu2ZrVW8MGg3L6TnunPhQvQy9pezlSzDk=;
+        b=paKcxiyuC4VA/e1DeQfnlDPNPVCa5Re/GEvfcuHtclEJ7n9QHpU1nx8vtpeU160C7/
+         /ksVckYQSLgS5C0w9oGOn8afloBVvIuX7hPc7QIb55c4GKLtOChL2fwJhjJMNkH2oo7M
+         1jb8hNDqcoMo7w6ZzCycy0NHIioNw+Iuhp31lsPZmT+th9ySUKR6XINr+oRH7gqgtnTD
+         OTkUQ8ebhNBE0qHm9VSTxnuZZoZTHmI9mXmjd+RZywXyguxpH+EtUIC0IjbQDMI58PLh
+         XL8D3pMDEXf37WHrc/mOqqrLjjVU1A0zGTKIlbDvzq1zjXVCdmXYIyrRUp0SFBzs3Ub8
+         +4VA==
+X-Forwarded-Encrypted: i=1; AHgh+RrpGCJ+DpkKwM676jDISTKFYCVXYVvXI8lTiW7dMG2sDgtI2CL1YhEt3t+E3lxs0yDe7jcCXoGw95p2@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YzBvryZiZKWl++7IBOUX+thnn5BU8uffRM6ib0kToLBOg9rpPIf
+	uPBMAUfdPEKS6+Fg6wIZGjde8mLazvnk+R05YDvZ8apto0yxzXPVaQSC
+X-Gm-Gg: AfdE7clnzfQBQ64tkgNXNL4iJ7WVvYzj6EsHEl40O2nCVRBT5IiaXgNCRDjNeWf5cWm
+	8Dg2xkOOKcWuLWuspzw0jMgEJ9ESY04dcnrKFJDjTrD7wVu/hAjKCkD6r4RI2El5LPV/2Y9deiV
+	dIpS1GvU34v3y1nNAkziIj6YWTDVx8jC1vvhcTLzWcTCm2F4EtyN+jFTMB9oopQCQdG1IZ0z6pd
+	wxoTuhu04dRQIig2QzSGUlxnch/r8rrVG7OHI3yv9qA2s6RlZHk3jSsnkpSGzXHTlHkdh5MpmYK
+	EeGCshAYqUdaKdpM3A4Ny90aG27taU9Qbvf8yDo0TSTpcjXJd0Hvbm2nZ95tsHTmebyTfHt22d0
+	LC7zxlP7rpium6UVtpeW769l1LlBPiXdoVubBY/sBzojTXrOQyWHrjv6GlMjEkwsSjGVkgcOi1N
+	hb6hOc7igwCHqXyor/GZpZ+sqizYP+Sil7Jlznm3MS5uV6ZgybIuyC4bTYEdey
+X-Received: by 2002:a05:6a21:512:b0:3bf:a0e5:999f with SMTP id adf61e73a8af0-3c0bcfab03dmr10300238637.22.1783626587867;
+        Thu, 09 Jul 2026 12:49:47 -0700 (PDT)
 Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([106.51.160.236])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-13b6593c9a1sm39667491c88.2.2026.07.09.12.43.18
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-31174a56848sm34548981eec.16.2026.07.09.12.49.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 12:43:34 -0700 (PDT)
-Date: Fri, 10 Jul 2026 01:13:15 +0530
+        Thu, 09 Jul 2026 12:49:47 -0700 (PDT)
+Date: Fri, 10 Jul 2026 01:19:28 +0530
 From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
 To: Thomas Gleixner <tglx@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, 
-	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
-	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>, 
+	Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>, 
+	Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, linux-doc@vger.kernel.org, loongarch@lists.linux.dev, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	Kees Cook <kees@kernel.org>, x86@kernel.org, Jinjie Ruan <ruanjinjie@huawei.com>, 
 	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
 	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
 	Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, 
@@ -77,97 +79,120 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, 
 	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
 	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, 
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, 
-	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 15/18] x86/entry: Make syscall functions static
-Message-ID: <ak_5y-p4DPztR-CH@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
+	linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Vineet Gupta <vgupta@kernel.org>, 
+	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek <monstr@monstr.eu>, 
+	Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Andreas Larsson <andreas@gaisler.com>, linux-snps-arc@lists.infradead.org, 
+	linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-arch@vger.kernel.org
+Subject: Re: [patch 18/18] entry, treewide: Make
+ syscall_enter_from_user_mode[_work]() indicate syscall execution
+Message-ID: <ak_63WGVz28C2dc0@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
 References: <20260707181957.433213175@kernel.org>
- <20260707190254.438361565@kernel.org>
+ <20260707190254.603111179@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20260707190254.438361565@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260707190254.603111179@kernel.org>
 
-On Tue, Jul 07, 2026 at 09:06:57PM +0200, Thomas Gleixner wrote:
-> They are only used in the respective source files. No point in exposing
-> them.
+On Tue, Jul 07, 2026 at 09:07:09PM +0200, Thomas Gleixner wrote:
+> From: Michal Suchánek <msuchanek@suse.de>
 > 
+> The return values of syscall_enter_from_user_mode[_work]() are
+> non-intuitive. Both functions return the syscall number which should be
+> invoked by the architecture specific syscall entry code. The returned
+> number can be:
+> 
+>   - the unmodified syscall number which was handed in by the caller
+> 
+>   - a modified syscall number (ptrace, seccomp, trace/probe/bpf)
+> 
+> That has an additional twist. If the return value is -1L then the caller is
+> not allowed to modify the return value as that indicates that the modifying
+> entity requests to abort the syscall and set the return value already. That
+> can obviously not be differentiated from a syscall which handed in -1 as
+> syscall number.
+> 
+> The established way to deal with that is:
+> 
+>     set_return_value(regs, -ENOSYS);
+>     nr = syscall_enter_from_user_mode(regs, nr);
+>     if ((unsigned)nr < SYSCALLNR_MAX)
+>     	handle_syscall(regs, nr);
+>     else if (nr != -1)
+>     	set_return_value(regs, -ENOSYS);
+> 
+> The latter is obviously redundant, but that's just a leftover of the
+> historical evolution of this code. S390 has some special requirements here,
+> which can be avoided when the return value is not ambiguous.
+> 
+> Now that the functions which modify the syscall number and want to abort
+> are converted to indicate that with a boolean return value, it's obvious to
+> hand this through to the callers.
+> 
+> Rework syscall_enter_from_user_mode[_work]) so they take a pointer to the
+> syscall number and return a boolean, which indicates whether the syscall
+> should be handled or not.
+> 
+> That's not only more intuitive, it also results in slightly denser
+> executable code on x86 at least, but perf results are neutral and within
+> the noise.
+> 
+> [ tglx: Adopted it to the changes in the generic entry code, fixed up the
+>   	32-bit fallout and rewrote change log ]
+> 
+> Signed-off-by: Michal Suchánek <msuchanek@suse.de>
 > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Shrikanth Hegde <sshegde@linux.ibm.com>
+> Cc: Paul Walmsley <pjw@kernel.org>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Sven Schnelle <svens@linux.ibm.com>
+> Cc: linux-doc@vger.kernel.org
+> Cc: loongarch@lists.linux.dev
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-s390@vger.kernel.org
 > ---
->  arch/x86/entry/syscall_32.c    |    2 +-
->  arch/x86/entry/syscall_64.c    |   10 ++++++----
->  arch/x86/include/asm/syscall.h |    8 --------
->  3 files changed, 7 insertions(+), 13 deletions(-)
+>  Documentation/core-api/entry.rst |   18 +++++++++++-------
+>  arch/loongarch/kernel/syscall.c  |   14 +++++++-------
+>  arch/powerpc/kernel/syscall.c    |    3 ++-
+>  arch/riscv/kernel/traps.c        |   11 +++++------
+>  arch/s390/kernel/syscall.c       |    7 +++++--
+>  arch/x86/entry/syscall_32.c      |   25 ++++++++++++-------------
+>  arch/x86/entry/syscall_64.c      |   12 ++++++------
+>  include/linux/entry-common.h     |   12 +++++-------
+>  8 files changed, 53 insertions(+), 49 deletions(-)
 > 
-> --- a/arch/x86/entry/syscall_32.c
-> +++ b/arch/x86/entry/syscall_32.c
-> @@ -41,7 +41,7 @@ const sys_call_ptr_t sys_call_table[] =
->  #endif
 >  
->  #define __SYSCALL(nr, sym) case nr: return __ia32_##sym(regs);
-> -long ia32_sys_call(const struct pt_regs *regs, unsigned int nr)
-> +static noinline long ia32_sys_call(const struct pt_regs *regs, unsigned int nr)
->  {
->  	switch (nr) {
->  	#include <asm/syscalls_32.h>
-> --- a/arch/x86/entry/syscall_64.c
-> +++ b/arch/x86/entry/syscall_64.c
-> @@ -32,7 +32,7 @@ const sys_call_ptr_t sys_call_table[] =
->  #undef  __SYSCALL
+[...]
+>  	syscall_exit_to_user_mode(regs);
+> --- a/arch/powerpc/kernel/syscall.c
+> +++ b/arch/powerpc/kernel/syscall.c
+> @@ -18,7 +18,8 @@ notrace long system_call_exception(struc
+>  	long ret;
+>  	syscall_fn f;
 >  
->  #define __SYSCALL(nr, sym) case nr: return __x64_##sym(regs);
-> -long x64_sys_call(const struct pt_regs *regs, unsigned int nr)
-> +static noinline long x64_sys_call(const struct pt_regs *regs, unsigned int nr)
->  {
->  	switch (nr) {
->  	#include <asm/syscalls_64.h>
-> @@ -40,15 +40,17 @@ long x64_sys_call(const struct pt_regs *
->  	}
->  }
+> -	r0 = syscall_enter_from_user_mode_randomize_stack(regs, r0);
+> +	if (unlikely(!syscall_enter_from_user_mode_randomize_stack(regs, &r0))
+Missing one closing ')'.
+
+> +		return syscall_get_error(current, regs);
 >  
-> -#ifdef CONFIG_X86_X32_ABI
-> -long x32_sys_call(const struct pt_regs *regs, unsigned int nr)
-> +static noinline long x32_sys_call(const struct pt_regs *regs, unsigned int nr)
->  {
-> +#ifdef CONFIG_X86_X32_ABI
->  	switch (nr) {
->  	#include <asm/syscalls_x32.h>
->  	default: return __x64_sys_ni_syscall(regs);
->  	}
-> -}
-> +#else
-> +	return -ENOSYS;
->  #endif
-> +}
->  
->  static __always_inline bool do_syscall_x64(struct pt_regs *regs, int nr)
->  {
-> --- a/arch/x86/include/asm/syscall.h
-> +++ b/arch/x86/include/asm/syscall.h
-> @@ -21,14 +21,6 @@ typedef long (*sys_call_ptr_t)(const str
->  extern const sys_call_ptr_t sys_call_table[];
->  
->  /*
-> - * These may not exist, but still put the prototypes in so we
-> - * can use IS_ENABLED().
-> - */
-> -extern long ia32_sys_call(const struct pt_regs *, unsigned int nr);
-> -extern long x32_sys_call(const struct pt_regs *, unsigned int nr);
-> -extern long x64_sys_call(const struct pt_regs *, unsigned int nr);
-> -
-> -/*
->   * Only the low 32 bits of orig_ax are meaningful, so we return int.
->   * This importantly ignores the high bits on 64-bit, so comparisons
->   * sign-extend the low 32 bits.
-> 
+>  	if (unlikely(r0 >= NR_syscalls)) {
+>  		if (unlikely(trap_is_unsupported_scv(regs))) {
+
+Apart from this.
+
+
 Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
