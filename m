@@ -1,95 +1,94 @@
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF42F4D990F
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jul 2026 18:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F6B437467
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  9 Jul 2026 18:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783622084; cv=none; b=KspaMqr7Ee6O1igemvy+YUmKGN4WjG5xJL1v51CGxXW2OJHJZdAjQdTvlXCS7ti1WpBL9WQ2qWfUAS9pSmdynea559kWtNd6GZKTo8y5pRUkwJjWx3lgugjjvyqFXCSeetibMEjU99ZpjJHMyCEd8ZmSKUV+62plVrSNoxCsVJ4=
+	t=1783622421; cv=none; b=lQlSRzbpatErEDV+WcR6I4UpG6yFZ2FoxqZawQ7o3Jr+cN7iI7EFJGsyn5wY6opcWsgFDF14mVU7mK6VvcGUCiWFTbySjcnSgqINr/XvCoOjh72Lo/CHXc4UYKuNRTT5i75JSI3Tcv+i2deVBghPOE5JNuJrvHwVSOMYIKBrYZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783622084; c=relaxed/simple;
-	bh=jgoYslbmrTXQwTFPwDFZi/esOXDuFRs3hpbsZJU8/Hs=;
+	s=arc-20240116; t=1783622421; c=relaxed/simple;
+	bh=rnI8Mtk7zFh67ToOxrITQJjhD2smVc7SMC3A0Srfn7A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Adwbnq01vGgmddD6A1oJG4WgsrdCFEnMN2vqe9n1cbmEyJGsU25PlMbQuBsFhoHBBnyrVUx0sznSIj9vEtyNrrlwDckmIfHnN+Mg17IdWiqUmg6/F2BkXWv9JdcC2HmYN6v2CBiT3/1IfnmlCzZFszrdrQjeZuLaAMRb+9KJUoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TU0KH01F; arc=none smtp.client-ip=209.85.216.41
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kr6kkOlcKuRdp8bGaZR8Rbae8QyQUErQGTf+8waUqhqXLn0OSdMmBR1cLlv7SuzPsR8PEV0OyuvxQHPMl0+FyB0a+faHBbw7XyIkLPElcbHuApbj7vxyeoJ2o61cwZeQODkJah3ORQDWZ6me/qIK3sLTVnJOC5jFqpg8PLNSDW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XBG5+U0t; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TU0KH01F"
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-3856d6fbcb3so195432a91.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jul 2026 11:34:41 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XBG5+U0t"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2cc6dd436c6so943325ad.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 09 Jul 2026 11:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783622081; x=1784226881; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20251104; t=1783622419; x=1784227219; darn=lists.linux-m68k.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=yghYN6q10g6FdWlsVt4/TtDo8QYt/j/TS6a9b2++LOM=;
-        b=TU0KH01F3uH//2hhmRAxhYzC9IfksgChqwm1ONwGFVeZk0JfRyMXCw0WOaVz3P0ydG
-         qbm8ryVuyQRXlWKVneTYbansdLkIf7ZSZmI5y6VMZoIylnXI8WCuNDP5zs/xV3sIREtK
-         eHrXMvOzaT+F4ST9Hisw2LxuehyY9IQZrSbvzWlJWNBtw74GMFqAiMXa1cKcbdEx9Xn9
-         8IYRPxABt1iT37U4OfRGlSwBgmr+SijwqSj+l5pEqx8gY5Py3A/agGXQKAMKxaUI2ovE
-         YbVQTLbVoEvsx4Al8IhxpwO3vzUQBmu//X2sBtvAbpRJKofAhydMYY/vqnKDpKMxC5ka
-         Dl9g==
+        bh=v3NWG3nzWzn0lD5brSEphHHDIxNRitNNFv0e1po41sA=;
+        b=XBG5+U0tyKEzJzK3PAru4BMLnYejgj+LLbU1AxqfBqPzmBvPYru64R8Ujgy9ToU4p7
+         D1VdN5frlyX1T4BJV4nZmPCWI53IE+42qkjstUesm77UuP+oTbKUru8N5FadsQ+Ew/EK
+         A6Lf0HrStAiONgAwdCQK4igXAqHgX04EH2/2EEjcjUzKoJJzmpL9xy8Jk+oKXQdGiETt
+         uyywxUGLOXXRgXARazCUTiGd3v8LLU0LCXdq06C+CNsUfw9e4C5uL5cj3ZM1YD9jkPTA
+         35sYPUcICnCkmYUhCvheh/AG3oGPoAwr728s1lPv9WCUlG49eEZGPxfsfmt0eti0NmxG
+         wwaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783622081; x=1784226881;
+        d=1e100.net; s=20251104; t=1783622419; x=1784227219;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=yghYN6q10g6FdWlsVt4/TtDo8QYt/j/TS6a9b2++LOM=;
-        b=ggb6R/Zxj6DBb5GaF6AO4rpFyaprmBhFMjny9Ee3mVlhDQ1dmzKnwj+ujXq4GVI/in
-         zmdvfGQWZ6m+DcloSOfYsc5vrCUeBxQnZwmlr4bIXGbN4UJ560ZbNwRaCDoJDb+70B1K
-         S5DrSXEBsY+gjht17MgD/Tm4XnxG6wHm50gBryVHsj9y7pox80epQZQUCVSfFlM9UWcA
-         yRyB1Ds/oPZFr4+150QoqtLoIgcvxG//EBd64TLekQaWK9pI8t4+DmwZQtE3qKELTVgZ
-         FErbvpI1xfOh8aW4ibZ3lnCfL872OiNFmBES5sktt6Vkd/BDOXM6hKfv/GUeWg0C0tvU
-         3xMA==
-X-Forwarded-Encrypted: i=1; AHgh+Rrt8WMkJSCfrxtvYtGAXCS4iOBMHLI1yPcrpNLQ6QyHjZ7nZJost8Tx4CEZZnnEF7PcgR7s6uk29X2X@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yy7Y3UCgTkFWU2gwWcUs6JbfpGDCv/v7ndkfZn1mnys8Psh0JD7
-	WnH6WKBl3CUpldqY7oBpkDSUnGJU2EqkppYRUcCWrAydc9R+z4qs6L/Y
-X-Gm-Gg: AfdE7ckSr6KZGIXN14Iar1n8Px1zlx/k8EbYcLIejP+AEdvA4A6aRjryxfih4DWfbG7
-	a/rbdhtlHD1SAXXW/H+H9cofqNYztmYDQeYENjT9TpBtkLIPjbgCNGAsz1Vw44qOwKBKvdy4znS
-	PHkX8PXy45P5fF6s3Qpsm8CzpJy1WwEE797xXmJ6HAuj+yOCSwwiNlRQuXbzq0CG3cgPCHnYw/r
-	G8u+blAD7HbYPedFkZe0LqVkgBZhLlcq3MKDjTeziHXBGaAFrDw/lJn8FzvJfGi7hLxp4FLLn3I
-	UHY1P1Mp1U3r4qGTy72wscJ7DVDOxwM+bE6/md2V6EUxLG2P6ePFjxgWOh1V2L56ZA8Y+LElGwz
-	yCJQVg3c2CQ82D3g4mvm01+seOM5E4b1KmHjM4tcDqQtJ3Brr7JEIUgXCi4+pVW1Zsj2/jugPwD
-	52MbF5snU+o8g3bVj8qFOoHpCveZuXCsZhhwhR4WaH0Koc/M+GSf6ilz2L/PkP
-X-Received: by 2002:a17:90b:2752:b0:37e:10d1:c05b with SMTP id 98e67ed59e1d1-389417e4858mr8140301a91.22.1783622081049;
-        Thu, 09 Jul 2026 11:34:41 -0700 (PDT)
+        bh=v3NWG3nzWzn0lD5brSEphHHDIxNRitNNFv0e1po41sA=;
+        b=adt/ZmadSSAKf8EHqVEUvQdoDnzMHEUv/iqonT3E72BlsS6i9sSJCN5thus5ZpydC/
+         IrnqQxG2VG2MXUNKzaRMEFzujMHW1nyR3pxThZwIvTw1ILGrlo8tfZ+E8auBIC3nt6BR
+         R+aSKuZR+crg3CGB7XFxmQuJJXnelZI+rwxfFG37UF/aoWy/+qN7p7kFWU4vL4r3I+Rn
+         QHVAm6RXXvogd5E7sFEWRtI3Uf3lvPIp0rNb03rFR8FKvi08eJriTliAwmfpZE8eJDIc
+         s4EvCE3/rS//RvPxBeMF2TG1cDNSg5HnGhhB5ivMvlWcOGA48D2gVGdacc4Bn5UAEKYG
+         1RRQ==
+X-Forwarded-Encrypted: i=1; AHgh+RrpOYObBFl5eQEPtkqL1mMc05jRkd3dCYAORjVS/XGasxW42cvTLRQrNTMDrv+UwB89SsOYH+Y0+87/@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YxcItR258Dt54l+pZKu/ukJeZrbpDyUbFesqdFEYugud1n+HBL1
+	enLN2nhCzozcygL22MzAvQftn6PN4yo0nv9r41gseGfRjtxOXSxBe+Vf
+X-Gm-Gg: AfdE7clK9kmHVzZ0cqR5xfVd3ZnznYt1TMil2+9MpXyQ1w6B2ChtszyKA71s+1Ob7E+
+	CKHGwaNLb3ebQu93t+UvqRqAKpCTbB4a6q6Lk8THCJD6ZzYy1xY6ybDqLcYGlXisAqq4Y8QKSsj
+	g54YDn3hxvC88X78eKrnblYeZL3K3LuvCC+0nY7U8Q/9w688muRl6DguxzWDGyxqdhVVl4HP12f
+	2whuP6tt84OGZYDNuK6Lq1hC7peORMXKuT+UxmLUm//1h19J3dESGLFvW9LkHlJ8SmTkl9JUxeU
+	1YTnkiZN1kZi2eeM4GvEKChSj4+GCs+oRXLfd4VyUyIjwPViadZ18VLDlojaxqV2N41ghfnwlbl
+	G63QEFKYRA9I3mzNTMquESf4PpQD7D9aJmDEkqyWYeVt39+glJimtLjRlJGStCwlo21iY6n54NU
+	vX2Tn+zunhoJZhgb2BdTTUBxtgU8tMo0RA6IHX/7lVFP26N/xeNfZdfQ0GuxB1
+X-Received: by 2002:a05:6a21:4902:b0:3b4:8300:7019 with SMTP id adf61e73a8af0-3c0bcf656a1mr10343651637.18.1783622418932;
+        Thu, 09 Jul 2026 11:40:18 -0700 (PDT)
 Received: from li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com ([106.51.160.236])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-311a6115e61sm11123455eec.22.2026.07.09.11.34.23
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3118ee6091dsm28653518eec.14.2026.07.09.11.40.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 11:34:40 -0700 (PDT)
-Date: Fri, 10 Jul 2026 00:04:21 +0530
+        Thu, 09 Jul 2026 11:40:18 -0700 (PDT)
+Date: Fri, 10 Jul 2026 00:10:01 +0530
 From: Mukesh Kumar Chaurasiya <mkchauras@gmail.com>
 To: Thomas Gleixner <tglx@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Kees Cook <kees@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
 	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
-	linuxppc-dev@lists.ozlabs.org, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	linux-riscv@lists.infradead.org, Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, 
-	x86@kernel.org, Mark Rutland <mark.rutland@arm.com>, 
-	Jinjie Ruan <ruanjinjie@huawei.com>, Andy Lutomirski <luto@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Guo Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger <richard@nod.at>, 
-	Chris Zankel <chris@zankel.net>, linux-arm-kernel@lists.infradead.org, 
-	linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, 
-	Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek <monstr@monstr.eu>, 
-	Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, linux-snps-arc@lists.infradead.org, 
-	linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-arch@vger.kernel.org, Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>, 
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [patch 02/18] randomize_kstack: Provide
- add_random_kstack_offset_irqsoff()
-Message-ID: <ak_piRRvfiMc9m7N@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
+	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, Paul Walmsley <pjw@kernel.org>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
+	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
+	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, 
+	linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, 
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, 
+	Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>, Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [patch 04/18] loongarch/syscall: Use
+ syscall_enter_from_user_mode_randomize_stack()
+Message-ID: <ak_q9qWuifFdo_9S@li-1a3e774c-28e4-11b2-a85c-acc9f2883e29.ibm.com>
 References: <20260707181957.433213175@kernel.org>
- <20260707190253.768842729@kernel.org>
+ <20260707190253.865955911@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -98,56 +97,50 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260707190253.768842729@kernel.org>
+In-Reply-To: <20260707190253.865955911@kernel.org>
 
-On Tue, Jul 07, 2026 at 09:06:02PM +0200, Thomas Gleixner wrote:
-> add_random_kstack_offset() uses get/put_cpu_var() which is pointless
-> overhead when it is invoked from low level entry code with interrupts
-> disabled.
+On Tue, Jul 07, 2026 at 09:06:11PM +0200, Thomas Gleixner wrote:
+> syscall_enter_from_user_mode_randomize_stack() replaces
+> syscall_enter_from_user_mode() and the subsequent invocation of
+> add_random_kstack_offset().
 > 
-> Provide a irqsoff() variant, which avoids that.
+> The advantage is that it applies the stack randomization right after
+> enter_from_user_mode() and thereby avoids the overhead of get/put_cpu_var()
+> as that code is invoked with interrupts disabled.
+> 
+> No functional change.
 > 
 > Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Kees Cook <kees@kernel.org>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: loongarch@lists.linux.dev
 > ---
->  include/linux/randomize_kstack.h |   19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+>  arch/loongarch/kernel/syscall.c |    5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> --- a/include/linux/randomize_kstack.h
-> +++ b/include/linux/randomize_kstack.h
-> @@ -77,8 +77,27 @@ static __always_inline u32 get_kstack_of
->  	}								\
->  } while (0)
+> --- a/arch/loongarch/kernel/syscall.c
+> +++ b/arch/loongarch/kernel/syscall.c
+> @@ -11,7 +11,6 @@
+>  #include <linux/linkage.h>
+>  #include <linux/nospec.h>
+>  #include <linux/objtool.h>
+> -#include <linux/randomize_kstack.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/unistd.h>
 >  
-> +/**
-> + * add_random_kstack_offset_irqsoff - Increase stack utilization by a random offset.
-> + *
-> + * This should be used in the syscall entry path after user registers have been
-> + * stored to the stack. Interrupts must be still disabled.
-> + */
-> +#define add_random_kstack_offset_irqsoff()					\
-> +do {										\
-> +	lockdep_assert_irqs_disabled();						\
-> +	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,		\
-> +				&randomize_kstack_offset)) {			\
-> +		u32 offset = prandom_u32_state(raw_cpu_ptr(&kstack_rnd_state));	\
-> +		u8 *ptr = __kstack_alloca(KSTACK_OFFSET_MAX(offset));		\
-> +		/* Keep allocation even after "ptr" loses scope. */		\
-> +		asm volatile("" :: "r"(ptr) : "memory");			\
-> +	}									\
-> +} while (0)
-> +
->  #else /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
->  #define add_random_kstack_offset()		do { } while (0)
-> +#define add_random_kstack_offset_irqsoff()	do { } while (0)
->  #endif /* CONFIG_RANDOMIZE_KSTACK_OFFSET */
+> @@ -70,9 +69,7 @@ void noinstr __no_stack_protector do_sys
+>  	regs->orig_a0 = regs->regs[4];
+>  	regs->regs[4] = -ENOSYS;
 >  
->  #endif
+> -	nr = syscall_enter_from_user_mode(regs, nr);
+> -
+> -	add_random_kstack_offset();
+> +	nr = syscall_enter_from_user_mode_randomize_stack(regs, nr);
+>  
+>  	if (nr < NR_syscalls) {
+>  		syscall_fn = sys_call_table[array_index_nospec(nr, NR_syscalls)];
 > 
-LGTM.
-
+> 
 Reviewed-by: Mukesh Kumar Chaurasiya (IBM) <mkchauras@gmail.com>
-> 
 > _______________________________________________
 > linux-snps-arc mailing list
 > linux-snps-arc@lists.infradead.org
