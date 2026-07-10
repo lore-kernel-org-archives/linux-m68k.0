@@ -1,52 +1,30 @@
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E65423A80
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jul 2026 11:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527BA4266B3
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 10 Jul 2026 12:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783683692; cv=none; b=ty8qSsUS5Q68696HpptJtJhpCaBVpSEG9lymAkElbGvE7ixTkbuQZE/2gLX09af5JAtkSoE5HBnznbSRkdh+OL5KHR5qW1i8lEyGvGWimbCKCld9dNDpUJzJIzB1k33BJmwhMUqoz6wvOJEPsXjkc+wrdlh+TqQqHy2FVix2Cmw=
+	t=1783686740; cv=none; b=ZtCF2GMygY7tKAmSpf/Zg1LOh8wSnBlV/33cpxVkjm7zXYctKyh9eOvyWenvmMP9jGXxaMBRks7341gWm46/W4YyuAHplJVeISklY+KIlvcpLsaLXGkqaFNdFI0CdtcfPk3AKFQ/clkZa+MUfD4Xgf4X+d6bnC9vrEp1KddqNrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783683692; c=relaxed/simple;
-	bh=yn22xVYmK++EhinRZRQNCMhLcj+IBqHTKVWiPIkBZ3c=;
+	s=arc-20240116; t=1783686740; c=relaxed/simple;
+	bh=ys9eY4ViqB4VHoA/lZua2Zw3TzyK+DqDveJx1YabTEI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 In-Reply-To:Content-Type:Content-Disposition; b=rpkFAgNKhjaNBmxdbVjX68TeU0l26tUIq/M3dWEwNXYy6YfJzQZMGazqKK3eTfz40+h9319669Kddel8w86bpOrBDB/06PiHQJNvvNm+L649CPDLwFW0UXGExcdRrWwtP6REh2CMGzbDMcmgGNUKq0yIuH9rKbua6oqkLCJSi60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=irYNBYOP; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="irYNBYOP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1783683675;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=okIzKFIsL/4R4vmkR+TFByt5pFrNsTBzPM+Bl8mNt+c=;
-	b=irYNBYOPH3KA1tNtJoaP4cvoz+B4M303DtxZQ82Zy1nT4jNi1jBQ1cNlX7qRpQzo5ucvCv
-	bXP40t5WaIPxHZFxiOXUc8yTujzCHnZGQZOl0G3k75eLea4WTQR0T20/47j1mroE4fMJNn
-	DfCHbiEafjfiBBByO/vWPBblfZi4zYk=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-21-qfsr_rx-O6mPQrP7hF_qjQ-1; Fri,
- 10 Jul 2026 07:41:12 -0400
-X-MC-Unique: qfsr_rx-O6mPQrP7hF_qjQ-1
-X-Mimecast-MFC-AGG-ID: qfsr_rx-O6mPQrP7hF_qjQ_1783683667
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	 Content-Type:Content-Disposition:In-Reply-To; b=SIrC7lhzzr4HWv9iaoZVsdryoyKNRns3HX3bucpFj87vG2L0JUKf9U9XTI8LxMDRH/f8XapumKr/4GpG6kt4kum2I+dV4M6uOj0yUWmLU3JmSMxjTHKlob2rmEGr39llrhFLRVby6+9+DZfc4HwzA4u0g7DWqKiQsIPP41YrDr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from kunlun.suse.cz (unknown [IPv6:2a07:de40:b306:2000::2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B188F1800844;
-	Fri, 10 Jul 2026 11:41:03 +0000 (UTC)
-Received: from fedora (unknown [10.44.49.164])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8F127195419F;
-	Fri, 10 Jul 2026 11:40:45 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 10 Jul 2026 13:41:03 +0200 (CEST)
-Date: Fri, 10 Jul 2026 13:40:43 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AE9AB764C1;
+	Fri, 10 Jul 2026 12:32:14 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Date: Fri, 10 Jul 2026 14:32:13 +0200
+From: Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To: Oleg Nesterov <oleg@redhat.com>
 Cc: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Michael Ellerman <mpe@ellerman.id.au>,
@@ -83,57 +61,89 @@ Cc: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
 	linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
 	linux-doc@vger.kernel.org
 Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
-Message-ID: <alDaOw8t-e3rxIPm@redhat.com>
+Message-ID: <alDmTcgzMlKiio9H@kunlun.suse.cz>
 References: <20260707181957.433213175@kernel.org>
  <20260707190254.338083894@kernel.org>
  <ak5ySpil83TNWxeq@kunlun.suse.cz>
  <87se5tqkyp.ffs@fw13>
  <alDQ7isUKJFl8Va4@kunlun.suse.cz>
+ <alDaOw8t-e3rxIPm@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <alDQ7isUKJFl8Va4@kunlun.suse.cz>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Mimecast-MFC-PROC-ID: Vmh4OIJYc1CPbJe_71omdjWtcSAToZd-R1qIkvy7TSs_1783683667
-X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <alDaOw8t-e3rxIPm@redhat.com>
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spam-Flag: NO
+X-Spam-Score: -2.00
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.00 / 50.00];
+	REPLY(-4.00)[];
+	RDNS_NONE(2.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLrpyf51xp5ujasy9bitsaikab)]
+X-Rspamd-Queue-Id: AE9AB764C1
+X-Rspamd-Action: no action
 
-On 07/10, Michal Suchánek wrote:
->
-> On Wed, Jul 08, 2026 at 10:34:38PM +0200, Thomas Gleixner wrote:
+On Fri, Jul 10, 2026 at 01:40:43PM +0200, Oleg Nesterov wrote:
+> On 07/10, Michal Suchánek wrote:
 > >
-> >   1) The set in stone rule is that if the entry code returns -1L as the
-> >      syscall number then the architecture code has to skip the syscall
-> >      invocation _and_ is not supposed to change the return value.
->
-> Which stone?
->
-> Pics or it did not happen.
->
+> > On Wed, Jul 08, 2026 at 10:34:38PM +0200, Thomas Gleixner wrote:
+> > >
+> > >   1) The set in stone rule is that if the entry code returns -1L as the
+> > >      syscall number then the architecture code has to skip the syscall
+> > >      invocation _and_ is not supposed to change the return value.
 > >
-> >   2) There is no guarantee and never has been that any of the involved
-> >      mechanisms (ptrace, seccomp, tracing) will change the return value
-> >      when it sets the syscall number to -1L.
->
-> For ptrace to correctly emulate a syscall it needs to set the syscall nr
-> to an invalid value on entry, and the desired result if the syscall on
-> exit AFAICT.
+> > Which stone?
+> >
+> > Pics or it did not happen.
+> >
+> > >
+> > >   2) There is no guarantee and never has been that any of the involved
+> > >      mechanisms (ptrace, seccomp, tracing) will change the return value
+> > >      when it sets the syscall number to -1L.
+> >
+> > For ptrace to correctly emulate a syscall it needs to set the syscall nr
+> > to an invalid value on entry, and the desired result if the syscall on
+> > exit AFAICT.
+> 
+> I can only say that ptrace users do want to skip the syscall and set the
+> return value on entry.
+> 
+> See
+> 	[PATCH v5 1/2] ptrace: add PTRACE_SET_SYSCALL_INFO syscall skipping support
+> 	https://lore.kernel.org/all/20260709100949.94345-2-renzo@cs.unibo.it/
+> 
+> The changelog explains that currently this doesn't work because
+> among the arches which define HAVE_ARCH_TRACEHOOK (at least) arch/mips is
+> broken in this regard.
 
-I can only say that ptrace users do want to skip the syscall and set the
-return value on entry.
+Or it could be documented that setting the return value has to be done
+in the exit trace, and that would than work on any architecture AFAICT.
 
-See
-	[PATCH v5 1/2] ptrace: add PTRACE_SET_SYSCALL_INFO syscall skipping support
-	https://lore.kernel.org/all/20260709100949.94345-2-renzo@cs.unibo.it/
+With ppc and s390 using the same register for the syscall number and
+syscall return value it's very much impossible to poke the return value
+on entry into a register using the generic register access function. As
+of now there is no place to store the value ot of the return value
+outside of the registers, either.
 
-The changelog explains that currently this doesn't work because
-among the arches which define HAVE_ARCH_TRACEHOOK (at least) arch/mips is
-broken in this regard.
+And the current PTRACE_SET_SYSCALL_INFO indeed sets the syscall nr and
+arguments on entry and the syscall return value on exit, that
+disctincion is implemented.
 
-Oleg.
+Not sure how the patchset you point out is relevant, it only adds
+changes in the exit case.
 
+Thanks
+
+Michal
