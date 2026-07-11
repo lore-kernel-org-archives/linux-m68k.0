@@ -1,114 +1,162 @@
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27FD53603C9
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 11 Jul 2026 07:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783755268; cv=none; b=pfKo6um/rKk8hHrL6eAirU8ourMgi776MIzUJXUDRJbqhXSV0TaFvqAD1AevW640kg/FMSZa/ybWhOb+WXPBzernd1cR7QXYpOzWKdPTrbZ7MPkCzDGr1MOhuWFUktwh24XuRpxeH7qes588lfrtaNtARkp4ZYLu2vsAG88M1So=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783755268; c=relaxed/simple;
-	bh=gUnPJvqa+6hCH/9HCtTO8STc6X6BWHZ70c5H6AKWsOg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tYrLNKk/T4z785UMJLC/Idu5DHXo/5GlML9FO3vW7bbL0wjY3/k0M/ucM2Q/JhVkF15nIwcHvHQSbDzBOJbLgJChitjXILJ5X+JBJWNkB+rVTZz+AdRho7jLtwa12EUuUGMGqI4vDaYA22sXEyFWuQffgV9trJ0KzvsLenrSCtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KnTsRKxl; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2ECF3C4B89
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 11 Jul 2026 12:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783772967; cv=pass; b=ivtiDYnrDy7kRF29P8T+IE4FSd1fsQ68ZGoxqkJSHvn5KGvMAEbyxEfSSif5Jh5ZoOzHSCAAWXWw+qXOSgfbjxUfGvxZUNatqpUrD8IuIaqeF7/T+nj1VL6GD7bOeFhqMlvXkaywvhn4pPGrt5nJMCrtrYHC4gocJR/u5ox9mgM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783772967; c=relaxed/simple;
+	bh=lgplXt8OmmYK0O5s0vGlPCfavq5E5GB8C7ljQ3QichI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n51OnNR2EJHP6s4FDY8ikpgPAfV7O7yhLpcGNGV5g4QsQyZegb/jJS34phenhluhgkKbDSxBbeVrqJ2i3Qice+kZCgzeszscz9cad28kh/Qqq8/1EgLfKWozEDx5ovyoO8NdKCvifA+7RR5WFkMD0OT5PxOs9yl9qZYpU2G3wu8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IyAyxwV4; arc=pass smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KnTsRKxl"
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-39c9bb9d2fbso9755701fa.2
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 11 Jul 2026 00:34:26 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IyAyxwV4"
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-698bf053053so2732028a12.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 11 Jul 2026 05:29:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1783772964; cv=none;
+        d=google.com; s=arc-20260327;
+        b=eRt0EiEZ1CkL8rTKfs0wxpsxk0cxonFau/QY2X3XYW8Kkj1SvpDBX2U1r57dckT8oc
+         k0qGSjjBaBjZHaGLnW0yzmfMVlN8BS80CmqyLskvfONcQzn3uwiGoHm0CDI44YaMq89C
+         yMKxYzFxVh8uMLkQQJXWADGmLZA3G0MQOMjv5bBlYhiaLckbUOpqOp1m6s+HNHVOoLgu
+         AR0LFU1UNQQ1DHhAmAkzvBwvhRLwqeUSDMpqLyNbgVMP0Nckg7XlZoabvekFE7Owbxew
+         xuDSxdhKgSyWmYWyH2UPR1deZE3tZPBmO1OOGTQQn3bCgoZpzvXfoRuJFEo5qJTFjqpj
+         VQPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=83oOaaTreHaoFIhiDoHcddDWSjKDujW9xu9zE75la/o=;
+        fh=ytBE+kgKScJotqP2YIrG9KupIM7MkMe/v2nirRsbF7Y=;
+        b=cYI6W6EsKCkYjPIYE0/wU5iKsilmboxRhVQnE7biY3/zO1BCNTnxiQEXJVvhbUGg+j
+         LDA9vumQLpFJqeDMbXHCe/GDLWL4CLZho2h/6QZ9rixMDbsTJ7FKwYx7fa+Nwn6JbfQ6
+         1MZGBzRN4e1K6xmF8VTAWZn0bg9XYIhduB2EcrZk7+iXIdL9vLdIZs7qrSoP+l4/mn7i
+         HpzP8UGDNOVZAjBNc4Fj+GB7rayBE7brMCzLIlxIK54xHGO2XVLfIocbV78NA19ZuTes
+         mVd2OKbUDIF5gEgn7akY35OduKzqpYyJ15bfLiSD2P7W51DsNBgMxLUDzg/1KdUWfLEh
+         46tQ==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783755265; x=1784360065; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+        d=gmail.com; s=20251104; t=1783772964; x=1784377764; darn=lists.linux-m68k.org;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=aBafLctpeA1AoyzErbEa9EGgxzwRbfKFWoPKc6c7bv4=;
-        b=KnTsRKxlMXyRvN2+glZyNNlSbOupZy3G2JIUE7Od8QQ5h7imgdt0kKJlS+UA9MJF8k
-         FSy+m+HFZjMqkXcyUkYPAAy93kF67ekxi308u1UYaO04cudCtQs7F3bZAdR3T0Hw6W/r
-         n5B/SXhly2FQtrgLLZ4vfifk4OINcSYx0J+uoTAJ1FeHnoEHBsWJl3bzhgNvJeTb2kAd
-         qM3rF4xKL6vGog6/ENhqDETSozwcs95907CSYxVEQkcxvhycQ0DWCfIj7zquAz2whJ9t
-         1NuIvQwJ/drsTcAFPP2WY+sFNoI5Qaug69RTCTzkf0W2isY+pd8iTbuhEI6kWMk+XXwx
-         CrSQ==
+        bh=83oOaaTreHaoFIhiDoHcddDWSjKDujW9xu9zE75la/o=;
+        b=IyAyxwV4Edcq/DWxRGquffcOtHyod29cgcjDhTqkQYRHuJKbdjvOBImh8MTuorg1eq
+         vSb9TLN1WWZHTmJQOCdKrulJy0Q/3NaORg/l1xQ/taH2Y8oWzkaOifST2DcBT8IMbf/a
+         +vfHCKHCjuzu1RGxOAkeyTpcmpSYKPe7mVpHOq7wWS2HragYwDJRvDRSB74EigzeSwmS
+         4ZYIQh59Q30EDonRYUqozeGvaRhb9A2Dt5uLRfYOh0Et4gSK+LpqlvKCbumkyhbkHvnt
+         CuOhyoS25cQ90NCYD7m+5LJBjUBkiWVULhTLk1MrtStIPQSSxz8IH7BvH+3/r0ak0Ufu
+         120A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783755265; x=1784360065;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=aBafLctpeA1AoyzErbEa9EGgxzwRbfKFWoPKc6c7bv4=;
-        b=N+vkstErPfPKewrvy0Zn8NupWez65EDiaTsQpvwIsGcAsQiw5bicFX1SAtvFIZtCVa
-         Kqu/tIMOlSGHzxB5HpFQUlhnmvAWs2+aQBFE5Vbk7XZCIQA2GMJTpmISUnCleQqrGctC
-         5OwP/EuDzKOEedJJmWg7EPZaXmY/hCj2l9jsMtvSCcIyWaVD0if3hkdD+a3lRlcxAvVV
-         NDDIm2Ccq2UlOTGSxm4Qd7UMArHrK5bbp/vOfgx3YLdf9ijiKqQ3ZK2UcNqa/rFKofKn
-         XgJGbqGpbQeFQx5Rc4h0dqsfTP8NS0woYmJz9/wTU0hiwtgcB2wGEzgvH6yswt56B+hi
-         79wA==
-X-Forwarded-Encrypted: i=1; AHgh+Rq/YFmkpmioQ6arHvlcLfzG7DUsio8qc+sFq9C+tL1TYUCO6LNoZ5Alp3aK4iB1dJBJ35Ac6C7uD/oq@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0Yxqyfo34vRLhUPo4opU93aUpbYp0YXbcOF6yhQsSdQiavOxD9O7
-	4NDcH+3f4mOZ+aytNKLb9wv56FS3XkZBNCcygMvgCp8vyuiJ6E2N286s
-X-Gm-Gg: AfdE7cl2DWhgibBJ1qsx01S76CzWU7PCStV6BjfDLKyTRn2CJU97pqlOQjLF/ICEx0o
-	OCU33v1sYyyHFV9/hU8FA6itnZ6iGyqm050NmHZCEb6hUZleChD6qVGuEvDt/LTZPTfbFeOIWtt
-	SH0z+iEaxh4IrzRFUhchcJX7ZSON8Ls3Uo8D37XRcug61vOVXTRvGQMcvCKXZmPR2GWuYvMEpG9
-	KZ8OUkjJy296T+6nEJlaa/uPDcAN0jM1kEU0dlIP9XDKPuPmMXn+x9J4nt5uNA/UK+HAF0CTx+c
-	Vc5n8yjofgyHfx5hahIvWxtEdwTXZ5eRjKa2ryy7EP9cduKDv1xG+qZbM2gcbOyg188ZcOzb/N5
-	01v/uBLr2PklzVaUNdFfUB6i6Ockndc2jCEEKxefYMEBVCYKmBod+Vhz8jOWRUdZweHmRhFveep
-	NmKKq1IHw3XC8P5gi60xIUuvZ7pBX9BE7XwLFQSEFRA9HqGCXBgfgO3LdZzJ/xhSBioY5jJw==
-X-Received: by 2002:a05:6512:3f8:b0:5ae:bf45:e3be with SMTP id 2adb3069b0e04-5b0236689cdmr321070e87.21.1783755264967;
-        Sat, 11 Jul 2026 00:34:24 -0700 (PDT)
-Received: from ?IPV6:2a00:1fa0:4322:18e2:4e2b:60a6:4ce2:33fb? ([2a00:1fa0:4322:18e2:4e2b:60a6:4ce2:33fb])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5b01ca9dd41sm1117527e87.48.2026.07.11.00.34.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Jul 2026 00:34:23 -0700 (PDT)
-Message-ID: <de1d491e-159e-41c2-b145-4d09db091031@gmail.com>
-Date: Sat, 11 Jul 2026 10:34:19 +0300
+        d=1e100.net; s=20251104; t=1783772964; x=1784377764;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=83oOaaTreHaoFIhiDoHcddDWSjKDujW9xu9zE75la/o=;
+        b=Ns5mk8fz5lXQOpAQi4xNGVegBOCy83FbR2YbF6dbGGLfPRwfRPXUnLPjEcEdDOoDxN
+         zth8LVV8fjH5kHEKvucmo11ocVaIoz+PdF5aFu9Jkm5PLrwjWRXQMIoppkMxauJGuKsF
+         VQasBiO1436CYyndzp9CrphEbAU3Qv7UfvwSpaFZ0nPU1xwkDBl61sv/1ZQItEryf4LB
+         md04b0vAfFXIP5YRIWrhJ8dG7jp6ESPMIX/MR22powoLHrzuwZfDzKQ6CSthCXMoO5Ab
+         xK23htVT1iTwCdGJt2RcdPY/65HzvQwLGuwQLMn7DX7FNuleJ/9BRNKJpd0YvYVxrrMa
+         d06g==
+X-Forwarded-Encrypted: i=1; AHgh+Rr6C7dEw+v314rwGfvu4Z1L6XQ6vaE607HWNIs+89soWFtT2uSnt9zkfxm0VApWUCwWBzstAWXhJojG@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0Ywhqn2W5EjNUIM+YBz3tpUJNLO5ab4e/qEeVKpdQyIbu4y5Nb8Q
+	r9Jmt5jN8wHp307OYDJeWMF0Od3vueLANOxCqA8g7RaU9yYRAQT38RrVmf/OPyxpkGxb9pJahNJ
+	Rx7vUDprfPE0MIIBAVvEyDFCNn15cmaU=
+X-Gm-Gg: AfdE7clMX7OkfEMZuWRwGhsBUU197bV1Y3kQ5CuD0sAWuiVoG0HKdWyCfrdC6TyI9CF
+	2phFl0B2qZelpz/DGmDKP2MMZ4owmwTTu0snWqyvOHLBrDddGZAFdUi52qAgYNOaJvLighxOgO7
+	18cD6e7lDI/4VlLIy7kBJYTEnMyDcdQLl+0rkoEJeyIRTnd6XLTCUVxdIW2NUIvJt+xkxHgsG6v
+	2CKcwitYiCNGynVW1bfXV5t+ANhx7kD8LicUI/3VmJfomic3lUAry/XNImJMimIYQ8i9EiNFA8d
+	DN98ABtBuPgzWs1Qx9NVQ6AMtOyWsQ0bcotLacIf5JxtTEByYDKCG1RK78QgBBI=
+X-Received: by 2002:a05:6402:3512:b0:699:728e:48b9 with SMTP id
+ 4fb4d7f45d1cf-69c5edb9cb3mr1210325a12.0.1783772963919; Sat, 11 Jul 2026
+ 05:29:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/10] ASoC: replace linux/gpio.h inclusions
-To: Arnd Bergmann <arnd@kernel.org>, linux-gpio@vger.kernel.org,
- Linus Walleij <linusw@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@bootlin.com>, Frank Li <Frank.Li@nxp.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Krzysztof Kozlowski <krzk@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Dominik Brodowski <linux@dominikbrodowski.net>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, patches@opensource.cirrus.com,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-input@vger.kernel.org,
- linux-sunxi@lists.linux.dev, linux-phy@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-sound@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-References: <20260710211954.1373336-1-arnd@kernel.org>
- <20260710211954.1373336-7-arnd@kernel.org>
-Content-Language: en-US
-From: Sergey Shtylyov <sergei.shtylyov@gmail.com>
-In-Reply-To: <20260710211954.1373336-7-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260707181957.433213175@kernel.org>
+In-Reply-To: <20260707181957.433213175@kernel.org>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Sat, 11 Jul 2026 14:29:12 +0200
+X-Gm-Features: AUfX_mzOlRB8ana7x7qPQc4frMU9J060tNH0Z2GPCNvL1LYqDKQBjM-XzHbrvno
+Message-ID: <CA+=Fv5RpgQ-UeGAT+VcLufte2gAp0H=J5GqZEFR_SuQsmnzy=A@mail.gmail.com>
+Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Shrikanth Hegde <sshegde@linux.ibm.com>, 
+	linuxppc-dev@lists.ozlabs.org, Kees Cook <kees@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, 
+	Mark Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, 
+	Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, linux-arm-kernel@lists.infradead.org, 
+	linux-alpha@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-um@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>, 
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>, 
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
+	linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-arch@vger.kernel.org, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 7/11/26 12:19 AM, Arnd Bergmann wrote:
+>
+> With that all architectures using the generic syscall entry code follow the
+> same scheme, apply stack randomization at the correct and earliest possible
+> place and skip syscall processing depending on the boolean return value of
+> syscall_enter_from_user_mode[_work]().
+>
+> There should be no functional changes, at least there are none intended.
+>
+> The resulting text size for the syscall entry code on x8664 is slightly
+> smaller than before these changes.
+>
+> Testing syscall heavy workloads and micro benchmarks shows a small
+> performance gain for the general rework, but the last patch, which changes
+> the logic to be more understandable has no measurable impact in either
+> direction.
+>
+> The series applies on Linus tree and is also available from git:
+>
+>         git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry-rework-v1
+>
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> linux/gpio.h is going away,s o use linux/gpio/consumer.h instead.
 
-   s/s o/ so/?
+Hi Thomas,
 
-> 
-> Acked-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>[...]
+Thanks for the series.
 
-MBR, Sergey
+I have an Alpha GENERIC_ENTRY series posted and planned for the next
+merge window:
 
+https://lore.kernel.org/linux-alpha/20260706170019.2941459-1-linmag7@gmail.com/T/#t
+
+Only its final patch intersects with this work.
+
+That patch removes Alpha's architecture-specific syscall_trace_enter()
+and syscall_trace_leave() implementations, so the Alpha changes in
+patches 11 and 12 will disappear once the GENERIC_ENTRY conversion is
+applied.
+
+It also currently uses syscall_enter_from_user_mode(), so I will need to
+rebase it onto the new entry interface introduced by this series. I
+expect the integration to be confined to the final GENERIC_ENTRY patch.
+
+The Alpha-specific changes in patches 11 and 12 look correct to me.
+
+Acked-by: Magnus Lindholm <linmag7@gmail.com>
