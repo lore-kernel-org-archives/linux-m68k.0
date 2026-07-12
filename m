@@ -1,209 +1,108 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A751B27874F
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 11 Jul 2026 20:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16500370D5E
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 12 Jul 2026 12:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783802002; cv=none; b=aqoVPkT2UrqoZdnfLbZn9Z0J4PKUYeFGNqQghJtaIba7+p/57LDzJ/aJayxKOpa88nNIXsS47Mc6316m8DgldzbxeJBCCDYd1CbF35i6oHWSSHjufJHuSRH3O3rL0GY2avZkpWfNtPB8TKEbLftPOkphm8WeluJqqRBnTIfVe/s=
+	t=1783859252; cv=none; b=sjiuVA70oE4M4rw6tWl6sBgox/aG6qZB2ozrLx9cIGx7+3wv/Ca48cqeKaL9HIPnjfp0NywnYZYcEciSsKrC+ITQLuEXbQD6fqfUvFh2fMs9g++nFSee7UWIpCwiFCx3Lu2H0ZC2wNQbpKgSatpudUGY2BRlhXfhwqyY0FC2u2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783802002; c=relaxed/simple;
-	bh=f4WDAwb3qO/KWOBB6gOahvRfdXJNvVppVvPoOxm1wS8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QUjrOHkR1AIma2gfLWQnPKg0aLDW4COL8uQ77fdAYlCR2ZZEs0SBdxjccXMQasumIlQGq6S3KV4so1RqaZEGFHoqqfpBagpZa42eRwA6KZw+XjkSdgywcW9MeznJuPr2ph2QTK2NueKsPp3WUfUrVvkb8K8YhNJbcSqq50QUj24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6nPQIDW; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	s=arc-20240116; t=1783859252; c=relaxed/simple;
+	bh=L/n4SezSWQATpwU6IRgOEvEHHHUBkOmPMdj879cIAIg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VReQfKDoDwIkTKUCLNGRDn1RkmWS1coAEdujIsyIT0Ha3af0V8l2bourpDCwpZrRl9nmapvmosrxsd5RuRGMfS6RLZtHaZVoGZFiLkBNSmPeb7wnca9IzDeGNd0W7Fwp2UFHQCdZEh832Rlx9/eS30m+LfJX5EjWccprXi4GKfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6nPQIDW"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id CB80242ADA;
-	Sat, 11 Jul 2026 20:33:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C74601F000E9;
-	Sat, 11 Jul 2026 20:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783801999;
-	bh=vf0x/sVLTVCL/PCgyuZ8JagPvunPhYIkJoaxGkdlgsg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=f6nPQIDWb921zxEmTCJayCTDOfYZdi0+7zYrhf0upuiSWI9j5AZ2jA4rhsOs29HYT
-	 WC65M3P5E0Ndczi1cDcuiv7hGhsQJHbzIeCfUAQhsb3BAmdz9sIRmrV3HJM1BFxfHh
-	 Aux4CNd9IAvECdD+RCjW44j4iuQp1Him2INHy0sHP/oX42qlbB/BPDPlYwuwpyf330
-	 fm02VsUCvmZUjjgJlLWziVrF+imgTjTEQzqm6tpMlL+GLiRFtJSumKDpDKIPCbMwb6
-	 NV1PwwP0Vo7BFl96u+JrYXmWPko75piPEvZ0MdoWxo/dPZ46b1HjcordjvvVp5/9ci
-	 U6Hw/ms11EcEw==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
- Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
- <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
- <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
- Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
- Henderson <richard.henderson@linaro.org>, Russell King
- <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
- Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
- <richard@nod.at>, Chris Zankel <chris@zankel.net>,
- linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
- <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
- <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
- <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
- linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
- linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-arch@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org
-Subject: Re: [patch 13/18] entry: Make trace_syscall_enter() return type bool
-In-Reply-To: <alDQ7isUKJFl8Va4@kunlun.suse.cz>
-References: <20260707181957.433213175@kernel.org>
- <20260707190254.338083894@kernel.org> <ak5ySpil83TNWxeq@kunlun.suse.cz>
- <87se5tqkyp.ffs@fw13> <alDQ7isUKJFl8Va4@kunlun.suse.cz>
-Date: Sat, 11 Jul 2026 22:33:16 +0200
-Message-ID: <87a4rxqnar.ffs@fw13>
+	by tor.source.kernel.org (Postfix) with ESMTP id EAB096004E;
+	Sun, 12 Jul 2026 12:27:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C37F81F000E9;
+	Sun, 12 Jul 2026 12:27:21 +0000 (UTC)
+Message-ID: <ec9e62c8-3c1d-4493-a876-82432575b381@linux-m68k.org>
+Date: Sun, 12 Jul 2026 22:27:19 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/10] m68k/coldfire: replace linux/gpio.h inclusions
+To: Arnd Bergmann <arnd@kernel.org>, linux-gpio@vger.kernel.org,
+ Linus Walleij <linusw@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Gregory Clement <gregory.clement@bootlin.com>, Frank Li <Frank.Li@nxp.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, patches@opensource.cirrus.com,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, linux-phy@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-sound@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+References: <20260710211954.1373336-1-arnd@kernel.org>
+ <20260710211954.1373336-3-arnd@kernel.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20260710211954.1373336-3-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Michal!
+Hi Arnd,
 
-On Fri, Jul 10 2026 at 13:01, Michal Such=C3=A1nek wrote:
-> On Wed, Jul 08, 2026 at 10:34:38PM +0200, Thomas Gleixner wrote:
->> does not make #2 magically go away. It's still the same problem whether
->> you like it or not.
->
-> However, reading the syscall number from pt_regs only after
-> syscall_enter_from_user_mode exits does.
+On 11/7/26 07:19, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> linux/gpio.h should no longer be used, convert these instead to
+> linux/gpio/legacy.h for coldfire.
+> 
+> Acked-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-That does not solve anything at all.
+I have applied this one to the for-next branch of the m68knommu git tree.
 
-TBH, your communication style is annoying as hell. You fail to provide
-any useful arguments and explanations despite me giving you a proper
-analysis. And I'm absolutely tired of this.
+Thanks
+Greg
 
-So let me try again for _ONE_ last time to explain you why your ppc/s390
-world view is broken and let's look at the current code (irrelevant
-portions omitted).
 
-static __always_inline long syscall_trace_enter(struct pt_regs *regs, unsig=
-ned long work)
-{
-	if (work & SYSCALL_WORK_SYSCALL_USER_DISPATCH) {
-#1		if (syscall_user_dispatch(regs))
-			return -1L;
-	}
-=20=20=20=20=20=20=20=20
-	if (work & (SYSCALL_WORK_SYSCALL_TRACE | SYSCALL_WORK_SYSCALL_EMU)) {
-#2		ret =3D arch_ptrace_report_syscall_entry(regs);
-		if (ret || (work & SYSCALL_WORK_SYSCALL_EMU))
-			return -1L;
-	}
+> ---
+>   arch/m68k/coldfire/device.c     | 2 +-
+>   arch/m68k/include/asm/mcfgpio.h | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
+> index 1420bae0964f..9a0258acd998 100644
+> --- a/arch/m68k/coldfire/device.c
+> +++ b/arch/m68k/coldfire/device.c
+> @@ -12,7 +12,7 @@
+>   #include <linux/init.h>
+>   #include <linux/io.h>
+>   #include <linux/spi/spi.h>
+> -#include <linux/gpio.h>
+> +#include <linux/gpio/legacy.h>
+>   #include <linux/fec.h>
+>   #include <linux/dmaengine.h>
+>   #include <asm/traps.h>
+> diff --git a/arch/m68k/include/asm/mcfgpio.h b/arch/m68k/include/asm/mcfgpio.h
+> index 7103cfa4edb6..29726aa40eb6 100644
+> --- a/arch/m68k/include/asm/mcfgpio.h
+> +++ b/arch/m68k/include/asm/mcfgpio.h
+> @@ -16,7 +16,7 @@ int __mcfgpio_request(unsigned gpio);
+>   void __mcfgpio_free(unsigned gpio);
+>   
+>   #ifdef CONFIG_GPIOLIB
+> -#include <linux/gpio.h>
+> +#include <linux/gpio/legacy.h>
+>   #else
+>   
+>   /* our alternate 'gpiolib' functions */
 
-	/* Do seccomp after ptrace, to catch any tracer changes. */
-	if (work & SYSCALL_WORK_SECCOMP) {
-#3		ret =3D __secure_computing();
-		if (ret =3D=3D -1L)
-			return ret;
-	}
-
-	/* Either of the above might have changed the syscall number */
-#4	syscall =3D syscall_get_nr(current, regs);
-
-	if (unlikely(work & SYSCALL_WORK_SYSCALL_TRACEPOINT))
-#5		syscall =3D trace_syscall_enter(regs, syscall);
-
-        return syscall;
-}
-
-#1) The user dispatch mechanism does not modify the syscall return
-    value, but it can rollback the syscall and tell the call site to
-    skip the invocation.
-
-    The mechanism used in upstream today is to return -1L as the syscall
-    number which makes the architecture specific entry code skip the
-    syscall and refrain from touching the return value.
-
-#2) ptrace
-
-    ptrace can poke whatever it wants into the syscall number storage
-    via ptrace_set_syscall_info_entry() -> syscall_set_nr()
-
-    It does not set the return code.
-
-    It does not abort the syscall when the poked syscall number is -1L.
-
-    It only aborts when a fatal signal is pending.
-
-#3) seccomp
-
-    seccomp reads the syscall number, which might have been modified by
-    ptrace and acts upon it.
-
-    It can rewrite the syscall number even if it is -1 to begin with.
-
-    It can rewrite the return code if it decides to refuse the syscall
-    to be executed.
-
-    If it refuses the syscall to be executed it returns -1L.
-
-#4) Rereading the syscall number after ptrace/seccomp
-
-    That's required to give the eventually modified number to the
-    tracer.
-
-    Obviously the tracer could do that on it's own, but with the current
-    implementation it expects the eventually modified syscall number
-
-    Changing that to make the tracer do it, is possible but does not
-    change any of the actual expectations. That's just cosmetic wankery.
-
-#5) tracing
-
-    tracing can have a probe or bpf attached, which in turn can
-
-      - rewrite the syscall number
-
-      - set the return code in case that it sets the syscall number to
-        -1L
-
-        It can even set it in case it sets it to some other value, but
-        the architecture code has to be resilent against that no matter
-        what.
-
-      - if it does not set the return code when it sets the syscall
-        number to -1L then it has a historical expectation that the
-        syscall returns -ENOSYS
-
-        That's how it is and you can argue in circles and it's not going
-        away unless you have a great argument why you can break existing
-        user space probes/bpf scripts.
-
-So now please provide in coherent sentences the argument why this solves
-anything:
-
-> However, reading the syscall number from pt_regs only after
-> syscall_enter_from_user_mode exits does.
-
-If you can, which I doubt, then please send a patch [series] against:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git entry/rework
-
-with proper change logs explaining the superiour solution.
-
-If not, please spare us the next set of incoherent "I wan't a pony"
-mails.
-
-Thanks,
-
-        tglx
