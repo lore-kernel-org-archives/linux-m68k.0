@@ -1,31 +1,31 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D30023909C
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Jul 2026 14:00:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3020B21FF25
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 13 Jul 2026 14:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783951216; cv=none; b=AvsO5dADnGApK+fkLEPb0RzQl2voR6f+YbVm3NZRkHp9lzN9/J5vy3tS62svtXUUxBxg8LbHX42qbjc60x0kIHZe3ok6+ogZVvAPHFkdUlMdxiIQRRzCIbXS+V4YsPBM2Z6jb5saHI3IA6RECLRFK5p0l7G2cEiRtG43wGkDt2I=
+	t=1783951230; cv=none; b=ZawGu/iQpsUXNM2hhRPZQelJzAQq0s/KJ4j1I8Zw3hhRjHXLjHHIyUq9+S2k2UKC0dRJg29f2ItVeC9isrJfP6N/4OQRfO86JWd5YA8iYc2v56mzPkpwMRQl7UNtqfL2tIseYqv/n7ewIp74qHS/HfJSNdzaAYlMf9HG2o+hc5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783951216; c=relaxed/simple;
-	bh=Paq3n4cO8HdYy4FFfkUp6FGCvWu1boCvdBHEQkzpEzo=;
+	s=arc-20240116; t=1783951230; c=relaxed/simple;
+	bh=LTSOz6r8IXywEsuWgl9722tiR9WcqjiHFXGXDRX3spM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=o4Av2U1k5gHFdwXLX/S2LGgfdqN3ccQuYpu8lTJp6JyEfpJqtvoc2k/Kq8U5s5xpguS4OUbDmyku3fwp4B52JOre9c5Av9GknvFHaD0fGnQhlBPqf29RB8XGVWldVvWFlY0XAWxsXqqGE2UmERlBMjVKxgIV5M2I2hP1Q+tiEWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=f7EldcMF; arc=none smtp.client-ip=217.140.110.172
+	 MIME-Version; b=AJsZ8arm+fsaNuN8+1/TX/Mod+u/L8Ep8Ab3XtHi0wZe5azaN3DseJQaDSJbkvkg1KwHrf9MLKmhSsfTyFJlLlxL/363nQnaQtUxIa/YMoQYoR+MOtqVsa+UQqmwSKPqRzcDY0X/LtGAbUoBMQVsmnWIfYGLh7OYrp3nH3lza9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=pGt+wVwX; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="f7EldcMF"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="pGt+wVwX"
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C824B202C;
-	Mon, 13 Jul 2026 07:00:10 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F1DC2103;
+	Mon, 13 Jul 2026 07:00:23 -0700 (PDT)
 Received: from e129823.cambridge.arm.com (e129823.arm.com [10.2.213.3])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CD5DA3F7B4;
-	Mon, 13 Jul 2026 07:00:02 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 651783F7B4;
+	Mon, 13 Jul 2026 07:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1783951215; bh=Paq3n4cO8HdYy4FFfkUp6FGCvWu1boCvdBHEQkzpEzo=;
+	t=1783951227; bh=LTSOz6r8IXywEsuWgl9722tiR9WcqjiHFXGXDRX3spM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f7EldcMFAotp2m+ZhFGMuVYzDzUE1W3xYD2M61Z32+4Lp6LM2uG0bFpTaMxAUabky
-	 GXRnAFeDJZQABUA65JAt+2/I+UMycHxGaMD0oKMyNfBY1Wx5aC0cEO7Fj/aGoXMZAY
-	 tYNv5K6voYS794ZDDPyqysxYS3g7IcY1aTIJ4qUY=
+	b=pGt+wVwXPP9bqbNiSoGoTQf7vUj9+h+rjcGEu7v6x9h5jUGGL61je/MuOfCB0IGbL
+	 MCwtdgvHi9xbeiGHPrEgzoOWMgwuAwIORymTP+QSMvNXbWLSJ5lnVb/8rcQcLGe2HS
+	 V32gOsFvzZEGe9nESYJjvb3kHILH3HN1uCBfzjGg=
 From: Yeoreum Yun <yeoreum.yun@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -122,9 +122,9 @@ Cc: david@kernel.org,
 	jonas@southpole.se,
 	stefan.kristiansson@saunalahti.fi,
 	Yeoreum Yun <yeoreum.yun@arm.com>
-Subject: [RFC PATCH 18/34] riscv: mm: use proper set_pXd() for generic compile-time folded patable in setup_vm_final()
-Date: Mon, 13 Jul 2026 14:55:57 +0100
-Message-ID: <20260713135614.1618183-19-yeoreum.yun@arm.com>
+Subject: [RFC PATCH 19/34] x86: power: use proper set_pXd() for generic compile-time folded patable in resume_one_md_table_init()
+Date: Mon, 13 Jul 2026 14:55:58 +0100
+Message-ID: <20260713135614.1618183-20-yeoreum.yun@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260713135614.1618183-1-yeoreum.yun@arm.com>
 References: <20260713135614.1618183-1-yeoreum.yun@arm.com>
@@ -138,37 +138,64 @@ Content-Transfer-Encoding: 8bit
 
 We want to rework how set_pXd() behaves for generic compile-time folded
 page tables by disallowing its use and triggering a compile-time error
-when it is used improperly, ensuring that the actual first-level
-set_pXd() function is used instead.
+when it is used improperly, ensuring that the actual first-level set_pXd()
+function is used instead.
 
-Therefore, replace set_pgd() with set_pmd() to setup swapper_pg_dir
-in setup_vm_final() since PGTABLE_LEVELS is always 2 in CONFIG_32BIT.
+Therefore, replace set_pgd() with set_pud() to setup first-level pgtable
+in case of X86_PAE.
 
 There should be no functional change.
 
 Signed-off-by: Yeoreum Yun <yeoreum.yun@arm.com>
 ---
- arch/riscv/mm/init.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/power/hibernate_32.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 5b1b3c88b4d13..78017edf7c343 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -1264,7 +1264,12 @@ static void __init setup_vm_final(void)
- 	 */
- 	unsigned long idx = pgd_index(__fix_to_virt(FIX_FDT));
+diff --git a/arch/x86/power/hibernate_32.c b/arch/x86/power/hibernate_32.c
+index 223d5bca29b86..ab5a203b45cb3 100644
+--- a/arch/x86/power/hibernate_32.c
++++ b/arch/x86/power/hibernate_32.c
+@@ -29,8 +29,7 @@ pgd_t *resume_pg_dir;
+  */
+ static pmd_t *resume_one_md_table_init(pgd_t *pgd)
+ {
+-	p4d_t *p4d;
+-	pud_t *pud;
++	pud_t *pud = pud_offset(p4d_offset(pgd, 0), 0);
+ 	pmd_t *pmd_table;
  
--	set_pgd(&swapper_pg_dir[idx], early_pg_dir[idx]);
-+	BUILD_BUG_ON (CONFIG_PGTABLE_LEVELS != 2);
-+
-+	pmd_t *pmdp_s = (void *)&swapper_pg_dir[idx];
-+	pmd_t *pmdp = (void *)&early_pg_dir[idx];
-+
-+	set_pmd(pmdp_s, pmdp_get(pmdp));
+ #ifdef CONFIG_X86_PAE
+@@ -38,14 +37,10 @@ static pmd_t *resume_one_md_table_init(pgd_t *pgd)
+ 	if (!pmd_table)
+ 		return NULL;
+ 
+-	set_pgd(pgd, __pgd(__pa(pmd_table) | _PAGE_PRESENT));
+-	p4d = p4d_offset(pgd, 0);
+-	pud = pud_offset(p4d, 0);
++	set_pud(pud, __pud(__pa(pmd_table) | _PAGE_PRESENT));
+ 
+ 	BUG_ON(pmd_table != pmd_offset(pud, 0));
+ #else
+-	p4d = p4d_offset(pgd, 0);
+-	pud = pud_offset(p4d, 0);
+ 	pmd_table = pmd_offset(pud, 0);
  #endif
- 	create_pgd_mapping(swapper_pg_dir, FIXADDR_START,
- 			   __pa_symbol(fixmap_pgd_next),
+ 
+@@ -134,11 +129,12 @@ static inline void resume_init_first_level_page_table(pgd_t *pg_dir)
+ {
+ #ifdef CONFIG_X86_PAE
+ 	int i;
++	pud_t *pud = pud_offset(p4d_offset(pg_dir, 0), 0);
+ 
+ 	/* Init entries of the first-level page table to the zero page */
+ 	for (i = 0; i < PTRS_PER_PGD; i++)
+-		set_pgd(pg_dir + i,
+-			__pgd(__pa(empty_zero_page) | _PAGE_PRESENT));
++		set_pud(pud + i,
++			__pud(__pa(empty_zero_page) | _PAGE_PRESENT));
+ #endif
+ }
+ 
 -- 
 LEVI:{C3F47F37-75D8-414A-A8BA-3980EC8A46D7}
 
