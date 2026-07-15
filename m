@@ -1,38 +1,38 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFDA3AFAF9
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Jul 2026 09:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4AE43A7FC
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Jul 2026 09:45:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784108631; cv=none; b=O5w0oXR8xG5FrAsVCeYr5Un3VPJFwAdXE+vFBwVi5gor1tJMXT3Wfu00m6V1H7OZ/Bj6BmANF+5D4m3Q9A7LQmCP4LBm+EGywkZb/dBBM1LFZp58IV1hvY3ZvLZMugKIV7KD65DL8xcuqHYo9ooqTFcE4EMV4Z3kwN5JfFdS0e0=
+	t=1784108716; cv=none; b=DG1jQu5Az55L8cRrXE0fhsoCYH1HgxMNG+Qnmy4u8C7qnEbzdc2wrXByeB/hPspxcvUS/icSbI4jJBnxWX4ITiXMMSxxA8joWCSLr/aDN22sDTONGufkeiSFNFtlzrSLig2OXP8yYnWEX0y6xNhvPirJgXcEp8f7htRhszwoKio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784108631; c=relaxed/simple;
-	bh=u3wwU/z4C89zqWRgwncGfnBh+kphBpJ0n+qjY6S/8oY=;
+	s=arc-20240116; t=1784108716; c=relaxed/simple;
+	bh=GjPm0PZsz7Yv0WXVjSPtGDBSmUAdQb8nKdaUKqyWd5g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Oodfv1Bwn2o2Onc0kBiFojuNUiZwu54Ze8BSNSGw2VSwUi9zJ2zyXWUV/CSANRWNXWa9r+WqcUkslITYlDGdk4EkTof394DbaqCyixZ5VnoCEhtsJZonx+rlXIhA5ARXtECh6pL3IWivIpJP/Hr6gRh71UZGeGNvqjFFC5NEYQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DBliIrs1; arc=none smtp.client-ip=172.105.4.254
+	 In-Reply-To:Content-Type; b=JC1v2kucY15MNMzcBjX/+e4jnfKqAJLLeMmjWRqqskhiPlvT2XQfAZTuthGfybJnjPpXtZngJ0LEaOizhLQSi1WGxlC5d520KDPDZnhK8nU83q5nPVjsvFBijEzRMg3GMUSvJKJJm1kjQQVakwNje5QaiBch17cdg6Il1PtlaeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gRbAD1iK; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBliIrs1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gRbAD1iK"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5E2CC601C6;
-	Wed, 15 Jul 2026 09:43:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 464261F000E9;
-	Wed, 15 Jul 2026 09:43:21 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 3AF4D601E0;
+	Wed, 15 Jul 2026 09:45:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 854EF1F000E9;
+	Wed, 15 Jul 2026 09:44:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784108616;
-	bh=CC+e/Z0BaeZIfuy0GA+8f2VQ0SUjP7mL+FiN+wpHZDM=;
+	s=k20260515; t=1784108706;
+	bh=LuVl8Gp4FOi0jul12AJHuxapg87GtfqNqhigUNaC5y0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=DBliIrs1Vie421HB7pFithfaf6+UeS3O6z2aoh/aN1WWGPjXflmiUACQdZ3xpskBY
-	 xMfYSp2UqXDvXFvK55J+NuyWH3rQs+JwYDOnaQ0FnmpRHN6bsvs75KwaUdohNozQJj
-	 XSf940SX0+vO09aO3jHGkAXGyO7J8nwLLVm3PGMTkrAf2Uj/RNJe0WW9mYrpDx4w16
-	 2hht1+fq5ju7pSYbsa+Git3edPTDAqecJ+sV2mJ0+WNWq7ptmUxMNEQvPoQ3QcSlCp
-	 m9Teaq/0qIGpP303+Rl9w/iFPHMOESoof6nsGY/ZidS26od+bMOS/kWhVtaM7LyALb
-	 j4kx/9RfCKujg==
-Message-ID: <14019379-1725-4cad-8158-322714b19ace@kernel.org>
-Date: Wed, 15 Jul 2026 11:43:20 +0200
+	b=gRbAD1iKDkw8yDV8gg3Q5r0WLx5WQmVYoXzpFDvbOAHPayy6Xnl1W1FB43wZImKG+
+	 Ao3GuNYf6pHDWn7/p8Z3OzNqxyoIMoMBrrcCFfTg2a2SinBtcEIfX+OC10qnOewNUT
+	 pEdW/nlFbFU1rQO82xZ+Ybr1ChhKGliB1ExbjfzzKQ3sJxpFICyYAsPOMko2zRfLxI
+	 VxuwLDhn+wRc63Fnf/SxkJCL90jXU+8tH4qlSqSR8Ga8erwhGTPzRRJK+9BUojazIW
+	 zwBuRZVN6wEIFyxddHMo+ITnMYgb3u05rViivHqtYGfoH1BGZtIX94KYyszByXrhcK
+	 Lk3hWyndjrjvQ==
+Message-ID: <a7e6a281-d1a4-42a6-9672-b1304107f888@kernel.org>
+Date: Wed, 15 Jul 2026 11:44:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -77,17 +77,16 @@ Cc: Dave Hansen <dave.hansen@intel.com>,
  liam@infradead.org, vbabka@kernel.org, surenb@google.com, mhocko@suse.com,
  geert@linux-m68k.org, shorne@gmail.com, jonas@southpole.se,
  stefan.kristiansson@saunalahti.fi
-References: <32d459d1-ad19-4baf-bbb1-0565458001d2@intel.com>
- <3ea30f8a-bb29-4bf5-8400-1c4840d46a88@kernel.org>
+References: <3ea30f8a-bb29-4bf5-8400-1c4840d46a88@kernel.org>
  <7e84b200-25eb-43a6-b5e2-5f27f2d82a77@intel.com>
  <31988089-095a-4eed-b5e2-c677c70f79f6@kernel.org>
  <14e250db-1641-4085-8d13-02f819657d5f@intel.com>
  <d83c76b3-ea4d-4c41-b4c5-f5ae558ace55@kernel.org>
  <alYgMxKqRnF6_X0A@e129823.arm.com>
  <6df814c9-405c-48d8-96ea-929c4b28949b@intel.com>
- <alZe-Cu7yQw9qRXU@e129823.arm.com>
- <2d51a1ad-85be-46bf-ac36-18eca199b449@kernel.org>
- <alZ_6HFc56zC7tt0@e129823.arm.com>
+ <alZe-Cu7yQw9qRXU@e129823.arm.com> <alZo9feSrSB_StfO@e129823.arm.com>
+ <7cff02d6-d3ce-4315-b667-34911fc6f321@kernel.org>
+ <alZ44XdgTEVFX6jU@e129823.arm.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -134,32 +133,38 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <alZ_6HFc56zC7tt0@e129823.arm.com>
+In-Reply-To: <alZ44XdgTEVFX6jU@e129823.arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 7/14/26 20:28, Yeoreum Yun wrote:
-> On Tue, Jul 14, 2026 at 06:31:22PM +0200, David Hildenbrand (Arm) wrote:
->>
+On 7/14/26 19:58, Yeoreum Yun wrote:
+> On Tue, Jul 14, 2026 at 07:29:38PM +0200, David Hildenbrand (Arm) wrote:
+>> On 7/14/26 18:51, Yeoreum Yun wrote:
 >>>
->>> Agree. Calling a pXd_entry() about folded one seems meaningless.
->>> But seems enough to check mm_pXd_folded() before calling pXd_entry()
->>> in each walk_pXd_range().
+>>> Furthermore, the effective_prot() need to require to identify whether
+>>> it's the first pgtable to prevent the inheriting from dummy value.
+>>> So I think it seems to make a ptdump_pt_level_first() like:
+>>>
+>>> diff --git a/mm/ptdump.c b/mm/ptdump.c
+>>> index 973020000096c..2ec5700e4be5e 100644
+>>> --- a/mm/ptdump.c
+>>> +++ b/mm/ptdump.c
+>>> @@ -190,6 +190,23 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
+>>>         st->note_page_flush(st);
+>>>  }
+>>>
+>>> +bool pdtump_pt_level_first(struct mm_struct *mm, int level)
+>>> +{
+>>> +       if (!mm || level > CONFIG_PGTABLE_LEVELS)
+>>> +               return false;
 >>
->> Needs some double-checking that callers can handle it (like effective_prot()
->> would currently not), but certainly something to look into!
+>> Do we actually ever get !mm ?
 > 
-> Most of mm_walk_ops *implicitly* handles the folded pgtable case
-> (e.x) pXd_none() / pXd_present() and other can handle explicitly in
-> its own handler.
-> 
-> But, IMHO, It would be better to skip calling pXd_entry() in the
-> walk_pXd_range() by checking the folded and this is clearer conceptually.
-> 
-> For this, it  requires the rewrite the walk_mm() where use only *p4d_entry()*
-> to gather the leaf/non-leaf information for MGLRU.
+> Yes. for the case of s390 use mm anyway for folded check.
+That's not what I meant, let me clarify.
 
-Yeah, this needs a thought indeed.
+I think in ptdump_walk_pgd() it is guaranteed that mm != NULL, so I am wondering
+why you are handling mm == NULL.
 
 -- 
 Cheers,
