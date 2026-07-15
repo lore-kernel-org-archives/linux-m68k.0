@@ -1,206 +1,183 @@
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-a6-smtp.messagingengine.com (flow-a6-smtp.messagingengine.com [103.168.172.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE7D429CF8
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jul 2026 21:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E7230674B
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 15 Jul 2026 06:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784065559; cv=none; b=K1EDarpzfnAbG2R7+dq9WblH/Jn6a+y4yphdJa1ncL8R2wj6IITseNvuLSmE+8RE9nPUPuIr1fdOW3ZgIoa2msSlA0/pdSypFkQESDvUyF0WFm20si66IUguIopQB9ep4vlJwZIGDGI1us06/KAkFqrgrddTm2ZG4AHaVB0UIdY=
+	t=1784095927; cv=none; b=GCuba8a/ZruyB+Nxwmby3UAmQrTMCFrDL8PKO/YitsnjtWYFLGE54Vp3aaINHCrVr1TQRWIPSDfBSe/Cs/7e2KJsRSZRdLMlL9DdIz02jZT4UTSMey33yXrK6ftJ6aPaV0Ed6EV3qNpAZrkRV8HO7hmRXUgL8n57YvunOdmugOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784065559; c=relaxed/simple;
-	bh=cAVW45uqQg2SRPEYKmKtszJRvMO//7p4A7xPCiBzVyY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PnP6cQ271+YGv9XrJ+L69oWAfbfo0vS9a2ElcsEy84LSge37Lo/KLXvsCJp8YyXqd3vGowNj90gAuuEwn4QXVNk11lUhNl36HsF7a7KQPD5DbB83IlDfNo77oWErFNPpGD8UDTBkfxFCSDToPoElh/ubHuobqjSRYqCaDjYJMHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zr7PV47V; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1784095927; c=relaxed/simple;
+	bh=/NwvcGOFd2qRl7ff0UZ/P5oojljx0vFAqe2dxfnyqx4=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=uEK3U97cfg/MYUZ38oBb4ordTttRmzM0YDDpqUSznVIaeullbXIOYigok2AuGBVKIrGOOUStunZho6Cf4D5nZOYp7i//Uuta+BQki6/nuGnesvkdPMSS6UlGz8QvTDANDQ5YgTTMRfmzgDQ29ywEXrn61KgtCyuMuad7852aHOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=a8RAtuNH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Jr1iBAn+; arc=none smtp.client-ip=103.168.172.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zr7PV47V"
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-493f2e39e81so19477095e9.2
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 14 Jul 2026 14:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784065556; x=1784670356; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=lsgDUhCPZi1cUpPkNQ/I7/JmqQLLDAJpIhlyKeHE0tE=;
-        b=Zr7PV47VdxmLQoPxk/G1Ybg0HkvEl+rgD8CPABPyKOIjpdysNXx8sLQb69hGBfC09y
-         I7jvxqmqiXVtoDKap3a2IMKNF+4KyVbeGFY4lI7I8Gg4PutOHCNvXeYhhHwRSD8q8oh9
-         neesf2FU3IBcK2U1UXUqmxh+ktyBqfJKdNOD72hl2enXUz2lQUA/PiDYqIEceCUVt4gx
-         C0RzDPlnHI6xRvt4FvkKiumOyrOFXte4HQKE4VMQ6LWrTMLJ9hx3yBb6dnZ0XTcz/DKB
-         aJXBsFNNNNnQPNu65m57Z9Tr74iZE5M44oOlXTHdD/SI9E1K7JQLNhz/TMTnSXgiRi/r
-         stGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784065556; x=1784670356;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=lsgDUhCPZi1cUpPkNQ/I7/JmqQLLDAJpIhlyKeHE0tE=;
-        b=qa2Y1wmcemNASEVDd37nmWNDMZ05I+GYkk/xrjIOjVrn9oQYz87N8IEfgBuIV03DC/
-         Fi3YC0B6cYOGS/QeDFz283Wyyj2ZXY4BQuZXLoDRfJ47X5gMkskhDZ1w84iN+Ks68/W6
-         ooNUEx1EzzKNXuHREX4mUgI2MxnzTguqjhAZ2SuawMEWQfww/1QI1kitUBStkdZM9WGZ
-         0RKg10SHNaZGn1m/6qGBl1zGX0zFpPJHNai5nP8MKaOlyx+8odAEona54HuzuwuuKIZX
-         KuDiWPAF46QdNAu9ZiLgm4CGlAuevlJM9Z8K1D4RHsz/fTSBRnONVIP5GLiO601enenO
-         HzMA==
-X-Forwarded-Encrypted: i=1; AHgh+RpBswYheLs75N5KAA/gJTyY4hAuFllmNlvdkGGiOSEmX1owut7xvd0J41xkZw02wxywvFEJVWO3K5n1@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzZKB8UnWc57kMIQuyX3tRp782ir8uAGJd5ELxSYfjyNvRwbFmj
-	51ZocHlbMymhc37mtQ2MqTd05yWSVwLgwk3ejvR6X29l7gCPlsoOkoIJ
-X-Gm-Gg: AfdE7ckykDmS8zj4j9mQA5Ry8X9kzaPsXZEmbSgkxSQnhVJWtw3aD0Vb6pq3SMBG/df
-	2ra0+ewVEb0bLisSq091XOVJXEBvm9CB4+LC2oZSv0hYpA4CRm/cnZl806qU1hCH7RTBkotJnrH
-	QCE0CmlE52ER6tQsen3k6JSY4XhTQlWc4Fr/7MN3SeHUp53UvP0JOAIFcAfCfBAp8mhBA81LmKk
-	y1NBiKv0v3SKwlTz57ZKKIV0ABXPisILaP/BZGB7Ekmx+ObnTsydpeGSLqqd8rgzE9wgzKxd3k8
-	F+uMmYJDHrObkrngWpoc5F893JKekjOY4KD9WFlBRlNqNBU88YGw/UHU0AyhMtVPHzaI4+wtful
-	QVzm0bDRbSaXEZ0TgXZEIxle4LrefZl6vChxcFOz8COQZ2KttXAUriVk/0JC2l8HCe5bmut4ZmN
-	7r8cYu6bUfZjtO4oHWgsYgdGCdAk8AiwyZzthfb+Rp+b2687ZvpQ==
-X-Received: by 2002:a05:600c:4e8f:b0:493:b307:6777 with SMTP id 5b1f17b1804b1-4953c273de7mr4061435e9.22.1784065556082;
-        Tue, 14 Jul 2026 14:45:56 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4950a32b9f3sm118533945e9.13.2026.07.14.14.45.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 14:45:55 -0700 (PDT)
-Date: Tue, 14 Jul 2026 22:45:53 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: "Pedro Falcato" <pfalcato@suse.de>, "Yeoreum Yun" <yeoreum.yun@arm.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org, Linux-Arch
- <linux-arch@vger.kernel.org>, kvm-riscv@lists.infradead.org,
- linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org,
- kasan-dev@googlegroups.com, "linux-csky@vger.kernel.org"
- <linux-csky@vger.kernel.org>, linux-m68k@lists.linux-m68k.org,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>, "David
- Hildenbrand (Red Hat)" <david@kernel.org>, "Russell King"
- <linux@armlinux.org.uk>, "Andrew Morton" <akpm@linux-foundation.org>,
- "Ankur Arora" <ankur.a.arora@oracle.com>, "Mike Rapoport"
- <rppt@kernel.org>, "Magnus Lindholm" <linmag7@gmail.com>, "Christophe
- Leroy" <chleroy@kernel.org>, "Klara Modin" <klarasmodin@gmail.com>, "Huacai
- Chen" <chenhuacai@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>, "Kirill
- A. Shutemov" <kas@kernel.org>, zhangtianyang@loongson.cn, wangyuli@aosc.io,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Lorenzo Stoakes"
- <ljs@kernel.org>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Catalin Marinas"
- <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>, "Ryan Roberts"
- <ryan.roberts@arm.com>, "Pasha Tatashin" <pasha.tatashin@soleen.com>,
- "Rohan McLure" <rmclure@linux.ibm.com>, "Baolin Wang"
- <baolin.wang@linux.alibaba.com>, "Tejun Heo" <tj@kernel.org>, "Kevin
- Brodsky" <kevin.brodsky@arm.com>, "Anup Patel" <anup@brainfault.org>,
- atish.patra@linux.dev, "Paul Walmsley" <pjw@kernel.org>, "Palmer Dabbelt"
- <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>, "Alexandre
- Ghiti" <alex@ghiti.fr>, "Dave Hansen" <dave.hansen@linux.intel.com>, "Andy
- Lutomirski" <luto@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
- "Thomas Gleixner" <tglx@kernel.org>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- "Johannes Weiner" <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>,
- qi.zheng@linux.dev, "Shakeel Butt" <shakeel.butt@linux.dev>, "Kairui Song"
- <kasong@tencent.com>, "Barry Song" <baohua@kernel.org>, "Axel Rasmussen"
- <axelrasmussen@google.com>, "Yuanchu Xie" <yuanchu@google.com>, "Wei Xu"
- <weixugc@google.com>, "Andrey Ryabinin" <ryabinin.a.a@gmail.com>,
- "Alexander Potapenko" <glider@google.com>, "Andrey Konovalov"
- <andreyknvl@gmail.com>, "Dmitry Vyukov" <dvyukov@google.com>, "Vincenzo
- Frascino" <vincenzo.frascino@arm.com>, "Anshuman Khandual"
- <anshuman.khandual@arm.com>, "Yang Shi" <yang@os.amperecomputing.com>,
- chaitanyas.prakash@arm.com, "Ard Biesheuvel" <ardb@kernel.org>, guoren
- <guoren@kernel.org>, yang.li85200@gmail.com, "Alexander Viro"
- <viro@zeniv.linux.org.uk>, "Dinh Nguyen" <dinguyen@kernel.org>,
- "schuster.simon@siemens-energy.com" <schuster.simon@siemens-energy.com>,
- "Vivian Wang" <wangruikang@iscas.ac.cn>, junhui.liu@pigmoral.tech, "Muchun
- Song" <muchun.song@linux.dev>, "Vishal Moola (Oracle)"
- <vishal.moola@gmail.com>, "Nam Cao" <namcao@linutronix.de>, "Pavel Machek"
- <pavel@kernel.org>, djbw@kernel.org, yu-cheng.yu@intel.com, "Baolu Lu"
- <baolu.lu@linux.intel.com>, "Jonathan Cameron"
- <Jonathan.Cameron@huawei.com>, "Coiby Xu" <coxu@redhat.com>, "Andreas
- Larsson" <andreas@gaisler.com>, "Liam R. Howlett" <liam@infradead.org>,
- "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, "Suren Baghdasaryan"
- <surenb@google.com>, "Michal Hocko" <mhocko@suse.com>, "Geert Uytterhoeven"
- <geert@linux-m68k.org>, "Stafford Horne" <shorne@gmail.com>, "Jonas Bonn"
- <jonas@southpole.se>, "Stefan Kristiansson"
- <stefan.kristiansson@saunalahti.fi>
-Subject: Re: [RFC PATCH 02/34] ARM: mm: make 2-level pgd_t a scalar
-Message-ID: <20260714224553.583c8445@pumpkin>
-In-Reply-To: <aceb8582-bafa-41b3-8f56-77fec89a4d90@app.fastmail.com>
-References: <20260713135614.1618183-1-yeoreum.yun@arm.com>
-	<20260713135614.1618183-3-yeoreum.yun@arm.com>
-	<alYL7B0HAvmLVHGU@pedro-suse>
-	<b7dbc476-1477-4004-93b3-c5e667e24df8@app.fastmail.com>
-	<20260714143450.61a94085@pumpkin>
-	<aceb8582-bafa-41b3-8f56-77fec89a4d90@app.fastmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="a8RAtuNH";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Jr1iBAn+"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailflow.phl.internal (Postfix) with ESMTP id B2B0C1380119;
+	Wed, 15 Jul 2026 02:12:04 -0400 (EDT)
+Received: from phl-imap-05 ([10.202.2.95])
+  by phl-compute-04.internal (MEProxy); Wed, 15 Jul 2026 02:12:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1784095924;
+	 x=1784103124; bh=EUNLiWQIu7iTIlSyfAVZR84DufWom2g2RocOGGt7G9c=; b=
+	a8RAtuNHzJgQpRc7/V/O9hKgDUcjQuU4FAYwrHP9pWXQ1LGjnWdufjScf0CPwLXl
+	ebuDD6/m8uMBMtjsmLyRxDwVm1W5D0UJ0qFrV0ql5UaaznPi/OAuQsTYCEfebhpp
+	JHIhGETCVDZx0JCaK9T9XiGI+2yaxkBs8jBbV10wvybX7j6xe0sWdssCQibesp9r
+	8ZMwvxPimz5JxUH87zSSHB/s3y19KyXU5yXlSf0yZzwka5szmKRHrUeXKTOPvbxu
+	8UFr61JQoQs0kR0U0732WlMu3psRIJPB7il4skw3eB3PnoehddPNJJ7Z6aIeeXcJ
+	ul6zn0HGzKLpoMSy/XjsvA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1784095924; x=
+	1784103124; bh=EUNLiWQIu7iTIlSyfAVZR84DufWom2g2RocOGGt7G9c=; b=J
+	r1iBAn+v7XqSR2sRD6G+XUnRGoxSwquZxwHfJPlKD5bUqHSELpk97BYD0EI7qYuB
+	tWPI68KHKqboodxMu2iPmU+7Uedw5ij7bDSpzusWe1PzwiizuSoR7PsPJkwFOAQr
+	7TPp2tbWpukaZ8XIir6cdpKNlalTJRq9E4cNzSIIAGTgF6mrZH25az8g3Hd2T4NB
+	azOIXT0CQfO2WJ/tJg/fW7aTy/7uAKCIs9WoNMGmYLB1hshS6J5WksM8AcR43gHn
+	Snwxa1Y/HFo9DknVQUJNoJ9eaM7isTSaAOA9nPwbhGSy8SQYoHrXcnJDBDL/x/Yy
+	PUj7y749VmENuoYCyqf4w==
+X-ME-Sender: <xms:ryRXamxegDT7PDmJNNPgLswItiV1L0wADqQ55UdRMZ1ltF3sBg21_w>
+    <xme:ryRXatEPnD47JuD9gtMrdA80Zx5AuYb_KJjzokHu0vEJRORd3VW5eC0IF6w3LN35z
+    51IafVJylssdT0E2yYiYe0hVEKysEzyz3cHKOnAoA9mfqtNj47zCyiI>
+X-ME-Proxy-Cause: dmFkZTGFJUT9q0RQslH+2LbGJNpjb93/J6MhXke5wQ0bwjzy+neOq13hjf56wjlruzpSKf
+    YmQ8WX1FNCCuKclqu4rBYjdK+D9Fgwgeg5Cv9tvMeiYLsueu8zGPzHHzgdW8nhVvRSu7sd
+    Adqa+XD8nn68rTK01FmplsUZnMHbxOBRt/Onegc1p4/ensfrizVXWshbh6naWEPhzyQb/h
+    ZU3V0wHuBvzTGhcjIY7HBhH4r1pbDyidwblxIuDazjX/A64isrjWWp33IvQYz2XBSkFm2z
+    vXCH/0NzPAchHQOC4XNZPKm1lTi0avCvBxltVxR8oZ5vaE5uQ/r8uxDe6hFyc5XAHHPMP1
+    Ca3gLCSlhDaJMXMB/cNV90FOM/5FsDVccx+UMiFyGSSOCZH1gLSBoeRsW+OB8cS8yHkX9P
+    0oxzCUds8E++pvQSsElVI1d6rJw7dSCHBSo1I+Ra1KDy2P7SgXUbS1AsPzIUBbxY8XxaDX
+    rJt/bMPTYoQte8pVgPCNmTjaADKFnid+D+Hi9XFCuMQdsX8uYEx6JY/ru3lwl4mxF/21O4
+    1LJGVV+PHrWsBtp6R6m3VX9gyDeiH/sJW2YGARSv6w1T0Vp3iqzKE58cKA467FvKs/R1MT
+    QFAnYmCsN4PVXVZLmJvc0YtS1dw86/rcfWf9MV22qTW9UKDOpN9kexkBYKKQ
+X-ME-Proxy: <xmx:sCRXahm_eEKhKv0bT_bm3ckpgyWzIY0tMOn02kO6iYQkbS1lslkAHg>
+    <xmx:sCRXaqizgUvqruPJ3B5irYcNhpEnpTDlGmnQKfe63XHaekM5e1IlaQ>
+    <xmx:sCRXavtVEWvBAmUP25RuhVS1F5dVNlz5NZeNWYAatfQ0I-E2bXxEDQ>
+    <xmx:sCRXap8AdlLW1OLuSsMNrFn9w4kjhfhTG_k4v-qvGOs35ggJ6BXMJw>
+    <xmx:tCRXanaMRI-1Cl0xSo1dwVai7gVVaK0YQWMAziD5wV1tzfGL7RowtiwY>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id DA915182007E; Wed, 15 Jul 2026 02:11:59 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-ThreadId: ASU80-mPZ9gg
+Date: Wed, 15 Jul 2026 08:11:39 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "David Laight" <david.laight.linux@gmail.com>
+Cc: "Pedro Falcato" <pfalcato@suse.de>, "Yeoreum Yun" <yeoreum.yun@arm.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ Linux-Arch <linux-arch@vger.kernel.org>, kvm-riscv@lists.infradead.org,
+ linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org,
+ kasan-dev@googlegroups.com,
+ "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+ linux-m68k@lists.linux-m68k.org,
+ "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+ "David Hildenbrand (Red Hat)" <david@kernel.org>,
+ "Russell King" <linux@armlinux.org.uk>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Ankur Arora" <ankur.a.arora@oracle.com>,
+ "Mike Rapoport" <rppt@kernel.org>, "Magnus Lindholm" <linmag7@gmail.com>,
+ "Christophe Leroy" <chleroy@kernel.org>,
+ "Klara Modin" <klarasmodin@gmail.com>,
+ "Huacai Chen" <chenhuacai@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>,
+ "Kirill A. Shutemov" <kas@kernel.org>, zhangtianyang@loongson.cn,
+ wangyuli@aosc.io, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "Lorenzo Stoakes" <ljs@kernel.org>, "Jason Gunthorpe" <jgg@ziepe.ca>,
+ "Catalin Marinas" <catalin.marinas@arm.com>,
+ "Will Deacon" <will@kernel.org>, "Ryan Roberts" <ryan.roberts@arm.com>,
+ "Pasha Tatashin" <pasha.tatashin@soleen.com>,
+ "Rohan McLure" <rmclure@linux.ibm.com>,
+ "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+ "Tejun Heo" <tj@kernel.org>, "Kevin Brodsky" <kevin.brodsky@arm.com>,
+ "Anup Patel" <anup@brainfault.org>, atish.patra@linux.dev,
+ "Paul Walmsley" <pjw@kernel.org>, "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "Albert Ou" <aou@eecs.berkeley.edu>, "Alexandre Ghiti" <alex@ghiti.fr>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>,
+ "Andy Lutomirski" <luto@kernel.org>,
+ "Peter Zijlstra" <peterz@infradead.org>,
+ "Thomas Gleixner" <tglx@kernel.org>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+ "Johannes Weiner" <hannes@cmpxchg.org>,
+ "Michal Hocko" <mhocko@kernel.org>, qi.zheng@linux.dev,
+ "Shakeel Butt" <shakeel.butt@linux.dev>,
+ "Kairui Song" <kasong@tencent.com>, "Barry Song" <baohua@kernel.org>,
+ "Axel Rasmussen" <axelrasmussen@google.com>,
+ "Yuanchu Xie" <yuanchu@google.com>, "Wei Xu" <weixugc@google.com>,
+ "Andrey Ryabinin" <ryabinin.a.a@gmail.com>,
+ "Alexander Potapenko" <glider@google.com>,
+ "Andrey Konovalov" <andreyknvl@gmail.com>,
+ "Dmitry Vyukov" <dvyukov@google.com>,
+ "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+ "Anshuman Khandual" <anshuman.khandual@arm.com>,
+ "Yang Shi" <yang@os.amperecomputing.com>, chaitanyas.prakash@arm.com,
+ "Ard Biesheuvel" <ardb@kernel.org>, guoren <guoren@kernel.org>,
+ yang.li85200@gmail.com, "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Dinh Nguyen" <dinguyen@kernel.org>,
+ "schuster.simon@siemens-energy.com" <schuster.simon@siemens-energy.com>,
+ "Vivian Wang" <wangruikang@iscas.ac.cn>, junhui.liu@pigmoral.tech,
+ "Muchun Song" <muchun.song@linux.dev>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+ "Nam Cao" <namcao@linutronix.de>, "Pavel Machek" <pavel@kernel.org>,
+ djbw@kernel.org, yu-cheng.yu@intel.com,
+ "Baolu Lu" <baolu.lu@linux.intel.com>,
+ "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
+ "Coiby Xu" <coxu@redhat.com>, "Andreas Larsson" <andreas@gaisler.com>,
+ "Liam R. Howlett" <liam@infradead.org>,
+ "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ "Suren Baghdasaryan" <surenb@google.com>,
+ "Michal Hocko" <mhocko@suse.com>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Stafford Horne" <shorne@gmail.com>, "Jonas Bonn" <jonas@southpole.se>,
+ "Stefan Kristiansson" <stefan.kristiansson@saunalahti.fi>
+Message-Id: <d0b34b90-fb12-4579-a965-ea5b90284f18@app.fastmail.com>
+In-Reply-To: <20260714224553.583c8445@pumpkin>
+References: <20260713135614.1618183-1-yeoreum.yun@arm.com>
+ <20260713135614.1618183-3-yeoreum.yun@arm.com> <alYL7B0HAvmLVHGU@pedro-suse>
+ <b7dbc476-1477-4004-93b3-c5e667e24df8@app.fastmail.com>
+ <20260714143450.61a94085@pumpkin>
+ <aceb8582-bafa-41b3-8f56-77fec89a4d90@app.fastmail.com>
+ <20260714224553.583c8445@pumpkin>
+Subject: Re: [RFC PATCH 02/34] ARM: mm: make 2-level pgd_t a scalar
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Tue, 14 Jul 2026 17:06:00 +0200
-"Arnd Bergmann" <arnd@arndb.de> wrote:
+On Tue, Jul 14, 2026, at 23:45, David Laight wrote:
+> On Tue, 14 Jul 2026 17:06:00 +0200
+> "Arnd Bergmann" <arnd@arndb.de> wrote:
+> > For the 2-level page table, this only concerns pgd_t, which is
+> > rarely passed around or returned by value. The 3-level page
+> > table has a 64-bit pte_t, which means we probably won't
+> > want STRICT_MM_TYPECHECKS there.
+>
+> Is the 64bit pte_t needed to get the extra modified and accessed
+> flags there aren't free bits for in the hardware pte?
+> Would it have been possible to use bits that are fixed in the hardware
+> pte for the extra bits and write the value to pte[0] and pte[256] fixing
+> up the value written to pte[0] (that the hardware reads).
 
-> On Tue, Jul 14, 2026, at 15:34, David Laight wrote:
-> > On Tue, 14 Jul 2026 13:55:18 +0200
-> > "Arnd Bergmann" <arnd@arndb.de> wrote:  
-> >> > I see the compiler has an awkward time returning a u64 struct (see
-> >> > https://godbolt.org/z/qejbv6j9a), but if this doesn't work maybe we should
-> >> > get rid of the STRICT_MM_TYPECHECKS stuff? I seriously doubt anyone is
-> >> > purposefully toggling it on for testing from time to time.    
-> >> 
-> >> As far as I can tell, the #ifdef was originally in i386 and
-> >> got copied to all other architectures at the time, but was
-> >> removed in linux-2.3.23 from the original copy when CONFIG_X86_PAE
-> >> was introduced.  
-> >
-> > For x86-32 the makefiles request 64bit structures be returned in registers
-> > (at the same place regparm=3 is set - probably added at the same time
-> > between 2.4 and 2.6).
-> >
-> > Note that arm32 can will return a 32bit struct in a register and
-> > arm64 will return a 128bit struct in two registers.
-> >
-> > The only problem is returning a 64bit struct in 32bit mode.
-> >
-> > I'm sure this code is arm64 only.  
-> 
-> The file we are talking about is arch/arm/include/asm/pgtable-2level-types.h,
-> which is definitely 32-bit only and force a 64-bit struct return
-> on the stack.
+The 64-bit pte_t for 3-level tables (armv7ve/lpae) is the hardware
+table entry, following the same format as arm64, and similar to
+how x86/pae works.
 
-I've clearly failed to detect the environment :-(
-The 'struct return by reference' is part of the ABI.
+The special cases with double pmd_t entries four 1024 byte tables to
+hold hardware and software entries that David Hildenbrand cited
+is only for the old 2-level tables (armv3 through armv7-a).
+The Linux pte_t is only 32-bit wide here, and gets copied into
+the CPU specific hardware pte in the cpu_*_set_pte_ext() function.
 
-> I checked some trivial tests that show that arm-linux-gnueabihf-gcc-16
-> also still produces badly optimized object code with structures
-> passed by value, and will spill those to the stack for no apparent
-> reason. clang handles those just fine as a pair of registers.
-
-I'd have thought it would be ok if the structure had two 32bit values
-and they were directly accessed.
-The silly test I did earlier didn't spill.
-Taking the address could easily force a spill in the function itself.
-So that ((int (*)[2])&var)[0] (which is just ((int *)&var)[0]) is likely
-to be problematic - or certainly heading in that direction.
-
-> For the 2-level page table, this only concerns pgd_t, which is
-> rarely passed around or returned by value. The 3-level page
-> table has a 64-bit pte_t, which means we probably won't
-> want STRICT_MM_TYPECHECKS there.
-
-I did do some mmu setup for a strongarm a long time ago.
-I do remember in being odd.
-But I was only moving the software frame buffer away from the physical
-frame buffer to steal a load of screen rows for a keyboard.
-
-Is the 64bit pte_t needed to get the extra modified and accessed
-flags there aren't free bits for in the hardware pte?
-Would it have been possible to use bits that are fixed in the hardware
-pte for the extra bits and write the value to pte[0] and pte[256] fixing
-up the value written to pte[0] (that the hardware reads).
-
-The arm docs seem hard to read...
-(the left-right scroll doesn't help!)
-
-	David
-
-> 
->       Arnd
-
+    Arnd
