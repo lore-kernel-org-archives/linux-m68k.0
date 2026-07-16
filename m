@@ -1,192 +1,139 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91B93F39CE
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Jul 2026 08:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E85B40097D
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 16 Jul 2026 10:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784191684; cv=none; b=mkanDC/2og/gxOVvmQW7rFngUG4G/+30hqxTIXuCRSSa626G5zrncE9tC0lqWGbJbpFZCpMXcGgTdE5VbtyM2d2VIle6ZjwfMt1mEoqYhJPotLm4Omn0L5KCnGKf7radA1XIr0g/XpYXraQtpKsePdcIGV1I5Jx3hkywr54vnaM=
+	t=1784197040; cv=none; b=SOMSAsFT5aXUxZ5npBFbwtGZ2wt/FBPB+DLISybDdDNu/5cah2bx5CyDqjmkPYV0XNjQRZGhYFFTNAizwul7r7g+NFHpfGaipjL0QRvjM/daRRpgR97XMYJytxGK4aLZsgxPe9yXRYRZ9qpWL1S+dxE7I2jGo674S1twUod5v0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784191684; c=relaxed/simple;
-	bh=7QMKKDkHs0y71hejlsCYJzHb+xCedfa9P65PLvvFIKc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GAL6NQubAWyQO+dkQzQ6edXc6R9jlTnXbP92qhlQ1OtuN+Y+u+d2Wo821nffDMCWzzwrukiEduAlbndkglUCytm+0mpYKhWrJ3hC1Yf7qFuDmhw7OyK9JLcfvgn+7YLDtBY6Xwdn/TiFx5FFPv65BYUB/PpeqqJDxAkxGY7ycVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=axdTxfnd; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+	s=arc-20240116; t=1784197040; c=relaxed/simple;
+	bh=6/eckOiWFh6Pr5UTfrcyRgKkQih3gyse2papWRUcEaQ=;
+	h=Message-ID:From:Subject:Date:To:Cc; b=pATWVcuBsbLl/1nvw2rezkbmpqrX4U0oORTXTP+u+hGeG6K/xqB4WgXiiNIPd/YVTZfLjTLxjqXylR6UJk/KmzqEfSmTUiI06Q1C+5EQrgPVs5LgfQTF4r85Gs8N5Gp5kmX+EXH2pQiNPEaXEerCasWYSOIhkfObbD14kP1g83g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oR/EYreY; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="axdTxfnd"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B9A21477;
-	Thu, 16 Jul 2026 01:47:54 -0700 (PDT)
-Received: from e129823.arm.com (e129823.arm.com [10.2.213.3])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49F693F7B4;
-	Thu, 16 Jul 2026 01:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1784191678; bh=7QMKKDkHs0y71hejlsCYJzHb+xCedfa9P65PLvvFIKc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=axdTxfndxhIm2l9wF115JT8EyHK0aYwwshKm81eWDFzjzgjVJJ7BS+4WpMIvME3P1
-	 uIFkxgagimtncp13PjU0JSxgZ0WhcaaecC63vGJVGl7xPiIi3KUjXJnW5Hw9bPiUOw
-	 JESTB8MB3ZDJ0nw4fAi/iJ9gtqgqsVDoZ01LWgek=
-Date: Thu, 16 Jul 2026 09:47:43 +0100
-From: Yeoreum Yun <yeoreum.yun@arm.com>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Yeoreum Yun <yeoreum.yun@arm.com>, Dave Hansen <dave.hansen@intel.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-	linux-arch@vger.kernel.org, kvm-riscv@lists.infradead.org,
-	linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org,
-	kasan-dev@googlegroups.com, linux-csky@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
-	linux@armlinux.org.uk, akpm@linux-foundation.org,
-	ankur.a.arora@oracle.com, rppt@kernel.org, linmag7@gmail.com,
-	chleroy@kernel.org, klarasmodin@gmail.com, chenhuacai@kernel.org,
-	kernel@xen0n.name, kas@kernel.org, zhangtianyang@loongson.cn,
-	wangyuli@aosc.io, tsbogend@alpha.franken.de, ljs@kernel.org,
-	jgg@ziepe.ca, catalin.marinas@arm.com, will@kernel.org,
-	arnd@arndb.de, ryan.roberts@arm.com, pasha.tatashin@soleen.com,
-	rmclure@linux.ibm.com, baolin.wang@linux.alibaba.com, tj@kernel.org,
-	kevin.brodsky@arm.com, anup@brainfault.org, atish.patra@linux.dev,
-	pjw@kernel.org, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	alex@ghiti.fr, dave.hansen@linux.intel.com, luto@kernel.org,
-	peterz@infradead.org, tglx@kernel.org, mingo@redhat.com,
-	bp@alien8.de, hpa@zytor.com, hannes@cmpxchg.org, mhocko@kernel.org,
-	qi.zheng@linux.dev, shakeel.butt@linux.dev, kasong@tencent.com,
-	baohua@kernel.org, axelrasmussen@google.com, yuanchu@google.com,
-	weixugc@google.com, ryabinin.a.a@gmail.com, glider@google.com,
-	andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com,
-	anshuman.khandual@arm.com, yang@os.amperecomputing.com,
-	chaitanyas.prakash@arm.com, ardb@kernel.org, guoren@kernel.org,
-	yang.li85200@gmail.com, viro@zeniv.linux.org.uk,
-	dinguyen@kernel.org, schuster.simon@siemens-energy.com,
-	wangruikang@iscas.ac.cn, junhui.liu@pigmoral.tech,
-	muchun.song@linux.dev, vishal.moola@gmail.com, namcao@linutronix.de,
-	pavel@kernel.org, djbw@kernel.org, yu-cheng.yu@intel.com,
-	baolu.lu@linux.intel.com, Jonathan.Cameron@huawei.com,
-	coxu@redhat.com, andreas@gaisler.com, liam@infradead.org,
-	vbabka@kernel.org, surenb@google.com, mhocko@suse.com,
-	geert@linux-m68k.org, shorne@gmail.com, jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi
-Subject: Re: [RFC PATCH 10/34] x86: mm: carve out the generic compile-time
- folded pgtable case in effective_prot()
-Message-ID: <aliar2eyG2WMFWMz@e129823.arm.com>
-References: <31988089-095a-4eed-b5e2-c677c70f79f6@kernel.org>
- <14e250db-1641-4085-8d13-02f819657d5f@intel.com>
- <d83c76b3-ea4d-4c41-b4c5-f5ae558ace55@kernel.org>
- <alYgMxKqRnF6_X0A@e129823.arm.com>
- <6df814c9-405c-48d8-96ea-929c4b28949b@intel.com>
- <alZe-Cu7yQw9qRXU@e129823.arm.com>
- <alZo9feSrSB_StfO@e129823.arm.com>
- <7cff02d6-d3ce-4315-b667-34911fc6f321@kernel.org>
- <alZ44XdgTEVFX6jU@e129823.arm.com>
- <a7e6a281-d1a4-42a6-9672-b1304107f888@kernel.org>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oR/EYreY"
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfout.phl.internal (Postfix) with ESMTP id ED0D0EC0178;
+	Thu, 16 Jul 2026 06:17:13 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Thu, 16 Jul 2026 06:17:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1784197033; x=1784283433; bh=HT8d07KWmpWRn3nVrLzBYFmE/8xd
+	lMWGqbhR+fWeSHc=; b=oR/EYreY379S7JfxH+PXKC0MVQ1h2EaYdfF+xBuoVlXs
+	f/zuZ36hix43bAbCUzq3iExdxGxS/vcY1kbwPK/8b4FF3pqUViHuEVfOTLo/Berv
+	gmuE3bQYwgTdEhrZWV+1mSnIojaLHadnbPI4SBbMDx+TfdlHTyZAuOJ3brHQ453b
+	cboWG+KUic/xp7Y2+pu3LxZ4BUn/pQJcQGZOKRabk77bL2UDaokuXahc4Z1ZDdqN
+	vZpWUEMmBCI22hWol/toR8YMMwC+wEXYkiNmr4D66PBsEO82b8FRTqfXPjTgUbAd
+	la9+JaqBwwt6JO68ZWyfhjFa5vlurY8tiw/XNL/suw==
+X-ME-Sender: <xms:qa9YavI-oE3UIyoFIvyQHz7Hyl-3Wd6PRz2Z_ZQtLxtkCcM3BFY0vA>
+    <xme:qa9Yap6Jo2vEBqlSv7NwPMWBmoK8wB_n_QIHp3YZLw9afaQdNIgPrjchgzSRzd5GN
+    3LRvVxa2HpW9c-V8Ggh-5lKcNem2mAdkFET3AmVpNebe2F4LqQ-k84>
+X-ME-Received: <xmr:qa9YapdsodZWIJaJFTu9NdR0tF7YA2rWZhgTOSRoEJLyC1kEbOr9HHLl2ASjmng_Ea1QBqYIoONJDsQNQkmC_5pq0n_wLrud8PM>
+X-ME-Proxy-Cause: dmFkZTEFlgfSsIHEissvjoRolBasER+BSmQiztZ764mRrzQppVasRNhlClHBGkhne1GBK7
+    esIV/FqfyjcceS+t+kRxSFHsEeeAjX1OI0YyRDJDlGav7qajaLofWyFdKKd+RHCk+VIyB6
+    vf685T9Zlb/2BsDCF/oGGV1v9pYX7UTWBl8mxrULRdWcmZsTJJ8cp72qLQxumFca2I34/5
+    dBWV5jAti7rvoDVLZjCLCqFWuyS6aJnJCNlfwD7DvGPdTd7UhjD7p43/XKUSyVHMuiUHfh
+    Ut1XlGf+NJ93KVVL/RnXEpER+XQyLJQlIIT+oIEJaWlL2bpJEzKnnHs5RzwDNY4dQu35ls
+    Jd+F1pZ+0xx1QIWExfCyJjkhAoYbzr+Ei2fMVfcH2vyqP7kgXP1g2WRPb5mA+EdSxBXZ7l
+    1qtYQmznjJc0tNSTSA/2zo5VVKtdrV2LVC/ys8QYLeF9YY0R4Cwtzg2hFg9NppJ2Cgja6x
+    j6VCb/akdGz06M2BCHxPDpcIJ4r8Mm3BwbGVXyAnrW2Gli2E7CuI76pseckGoo/5xgHhnP
+    tKezmDUTDWQnukNmhuSyj49h3TF80QNbdbrVmRiH85qsFUWgu9ynV7USJLYZ/bIl+Do4xA
+    FG7YBtIrT/QYO2Ocnyyx/UKQ1BMiQai1gTYnaxcoaSU70xcKhc3VzgKleGNw
+X-ME-Proxy: <xmx:qa9YakG7nP78d19Cct29j3E9yPOWjzNgXH5487uCXujBIssT-TcDog>
+    <xmx:qa9YaiTWcEQ2r2RepQhyCWYWI28Ze3tthgfC6oqzH4lJY8haPzQB8Q>
+    <xmx:qa9Yaia1H6d-z7MdQqZLDq3iEAfzQHJZE2T42UOYPOR5rLwHcoZiZg>
+    <xmx:qa9Yal376akCnPuKlW1S3vPP5Qmy2U7-QpVklIYxfrqNgzi9nqcbiA>
+    <xmx:qa9YaveG-uwbFlLAskClYUXqpn_jzMA7XOw6dx3EtLUB_4LchdYdPycw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 16 Jul 2026 06:17:10 -0400 (EDT)
+Message-ID: <cover.1784196135.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH 00/31] block/swim: Fixes and improvements
+Date: Thu, 16 Jul 2026 20:02:15 +1000
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Joshua Thompson <funaho@jurai.org>,
+    Geert Uytterhoeven <geert@linux-m68k.org>,
+    Laurent Vivier <laurent@vivier.eu>,
+    linux-block@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    Omar Sandoval <osandov@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7e6a281-d1a4-42a6-9672-b1304107f888@kernel.org>
 
-On Wed, Jul 15, 2026 at 11:44:51AM +0200, David Hildenbrand (Arm) wrote:
-> On 7/14/26 19:58, Yeoreum Yun wrote:
-> > On Tue, Jul 14, 2026 at 07:29:38PM +0200, David Hildenbrand (Arm) wrote:
-> >> On 7/14/26 18:51, Yeoreum Yun wrote:
-> >>>
-> >>> Furthermore, the effective_prot() need to require to identify whether
-> >>> it's the first pgtable to prevent the inheriting from dummy value.
-> >>> So I think it seems to make a ptdump_pt_level_first() like:
-> >>>
-> >>> diff --git a/mm/ptdump.c b/mm/ptdump.c
-> >>> index 973020000096c..2ec5700e4be5e 100644
-> >>> --- a/mm/ptdump.c
-> >>> +++ b/mm/ptdump.c
-> >>> @@ -190,6 +190,23 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
-> >>>         st->note_page_flush(st);
-> >>>  }
-> >>>
-> >>> +bool pdtump_pt_level_first(struct mm_struct *mm, int level)
-> >>> +{
-> >>> +       if (!mm || level > CONFIG_PGTABLE_LEVELS)
-> >>> +               return false;
-> >>
-> >> Do we actually ever get !mm ?
-> > 
-> > Yes. for the case of s390 use mm anyway for folded check.
-> That's not what I meant, let me clarify.
-> 
-> I think in ptdump_walk_pgd() it is guaranteed that mm != NULL, so I am wondering
-> why you are handling mm == NULL.
+I recently had a need for the 'swim' driver but found that it was too buggy
+to be useful for my purposes. I had two aims in mind--
 
-Agree. I'll remove it.
-BTW, this helper is incorrect because it returns true even for folded
-upper-level page tables. For example, if p4d is folded,
-level 0 would still be treated as the first level.
+Firstly, I needed this driver to help me test my new BMoW Floppy Emu for 
+emulation correctness. Being that Linux is open source and MacOS is not,
+this driver should be ideal for that.
 
-So, it would better to the following:
+Secondly, I needed to realign the heads in some disk drives. The swim driver
+has most of the code needed for a feedback loop for manual re-alignment, so
+I wrote the remaining code and pushed it to a repo here:
+https://github.com/fthain/linux/commits/swim/
 
-diff --git a/arch/x86/mm/dump_pagetables.c b/arch/x86/mm/dump_pagetables.c
-index 2afa7a23340e9..4e545988953a0 100644
---- a/arch/x86/mm/dump_pagetables.c
-+++ b/arch/x86/mm/dump_pagetables.c
-@@ -27,6 +27,7 @@
-  */
- struct pg_state {
-        struct ptdump_state ptdump;
-+       int first_level;
-        int level;
-        pgprotval_t current_prot;
-        pgprotval_t effective_prot;
-@@ -254,7 +255,7 @@ static void effective_prot(struct ptdump_state *pt_st, int level, u64 val)
-        pgprotval_t prot = val & PTE_FLAGS_MASK;
-        pgprotval_t effective;
+These patches fix all the bugs I found. They improve stability,
+compatibility and performance. Additional patches improve source code
+quality by removing redundant code and cleaning up a bit.
 
--       if (level > 0) {
-+       if (level > st->first_level) {
-                pgprotval_t higher_prot = st->prot_levels[level - 1];
+This patch series was successfully tested on the following systems.
 
-                effective = (higher_prot & prot & (_PAGE_USER | _PAGE_RW)) |
-@@ -455,6 +456,8 @@ bool ptdump_walk_pgd_level_core(struct seq_file *m,
-                .seq            = m
-        };
+Mac Quadra 650 - SWIM 2 with Mitsubishi FDD
+Mac LC III     - SWIM 2 with Mitsubishi FDD and Sony FDD
+Mac Quadra 700 - SWIM with Sony FDD
+Mac IIvx       - SWIM with Sony FDD
 
-+       st.first_level = ptdump_pt_level_first(mm);
-+
-        ptdump_walk_pgd(&st.ptdump, mm, pgd);
+---
 
-        if (!checkwx)
-diff --git a/include/linux/ptdump.h b/include/linux/ptdump.h
-index 240bd3bff18dd..26fa624eac44e 100644
---- a/include/linux/ptdump.h
-+++ b/include/linux/ptdump.h
-@@ -29,6 +29,7 @@ bool ptdump_walk_pgd_level_core(struct seq_file *m,
-                                struct mm_struct *mm, pgd_t *pgd,
-                                bool checkwx, bool dmesg);
- void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd);
-+int ptdump_pt_level_first(struct mm_struct *mm);
- bool ptdump_check_wx(void);
+Finn Thain (31):
+  swim: Assert strobe with stable outputs
+  swim: Select appropriate drive once only
+  swim: Enable the drive when probing
+  swim: Don't disable drive after every sector
+  swim: Perform ISM/IWM mode switching according to specs
+  swim: Configure parameter memory
+  swim: Enable clock divider only where appropriate
+  swim: Don't start motor until medium is present
+  swim: Recalibrate when drive is probed
+  swim: Add track zero recalibration delay
+  swim: Handle FIFO timeout error
+  swim: Simplify return value initialization
+  swim: Check for CRC errors
+  swim: Check error register during sector read
+  swim: Don't use the mark register to read data
+  swim: Fix buffer overflow
+  swim: Convert to blocking queue
+  swim: Remove redundant RELAX actions
+  swim: Deduplicate polling loops
+  swim: Check drive ready bit
+  swim: Revisit delays
+  swim: Remove pointless mode0 register write
+  swim: Don't needlessly re-read sectors
+  swim: Remove pointless specifiers
+  swim: Move swd initialization
+  swim: Add some helpful references
+  swim: Remove unused macro definitions
+  swim: Clean up whitespace
+  swim: Define macros for constants
+  swim: Define symbols for constants
+  swim: Unexport global symbols
 
- static inline void debug_checkwx(void)
-diff --git a/mm/ptdump.c b/mm/ptdump.c
-index 973020000096c..b1d06ac4c0555 100644
---- a/mm/ptdump.c
-+++ b/mm/ptdump.c
-@@ -190,6 +190,17 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
-        st->note_page_flush(st);
- }
-
-+int ptdump_pt_level_first(struct mm_struct *mm)
-+{
-+       if (mm_pmd_folded(mm))
-+               return 3;
-+       if (mm_pud_folded(mm))
-+               return 2;
-+       if (mm_p4d_folded(mm))
-+               return 1;
-+       return 0;
-+}
-+
+ arch/m68k/mac/config.c   |  31 ++-
+ drivers/block/swim.c     | 422 ++++++++++++++++++++-------------------
+ drivers/block/swim_asm.S | 306 ++++++++++++++--------------
+ 3 files changed, 403 insertions(+), 356 deletions(-)
 
 -- 
-Sincerely,
-Yeoreum Yun
+2.52.0
+
