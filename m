@@ -1,169 +1,111 @@
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9975F26F46F
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Jul 2026 19:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D45D31B83B
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Jul 2026 19:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784575081; cv=none; b=IZn46A1L+CIPW17mbjQyoTZ0eqpiemvHa9ehWB7WvnnSvrYOJaIn+CzPAk6ZmCh4RYWNw49AIjv2NpG5J4EMVEdCkW6DM7wERfBd2dRDPB6BQYz1f2vkZNkFME+LmhJS6SpKwymwrQjeNY8p7NxEjZZH7249RAXypiLrQws1Fm8=
+	t=1784575272; cv=none; b=Ln6S9BNUzVJMlaSN6zfMpQWTpzx39bSUS9v06LlOPW2FgeCqnmxypFqonUBuY9+fXblbJzC4PMacmWYrSCDkLrLo3aqziHdP9u/L5BSQ0YI32gwzrWjE5QeT9b/v3ymwFZ4yIYntVUYFtHeczh2ql3tFMNj0OiEQmfove3aZKD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784575081; c=relaxed/simple;
-	bh=YNOD1dSeV6ea2Db4CdlfQNtsq//UwYu4UwKaQsEsWd0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IeORysNHA6pDcjawqvLGqKdN85o3N1hd78XBZ6yLNxSfst56cWSLNkfEEzlOHer3grf/eNOFuyCBiXiEZagpkv+bOfHirdBjqvWXGoWaGvGgKYWqg6xmusPLXCf/PuN37E6Vxn4ISY0iQumIqxHx1gK2maWFGdPv2FSZfQR45Iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vivier.eu; spf=pass smtp.mailfrom=vivier.eu; dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b=16tobNKp; arc=none smtp.client-ip=217.72.192.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vivier.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivier.eu
+	s=arc-20240116; t=1784575272; c=relaxed/simple;
+	bh=H/vKTqmynWJ9xGLYIa8zO75nqGaobj6R+UxbFnLBdNk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kO7/E3PQsAenW90xwYRAulAWN4Iq2++zTpAGeKxPxg8mswDzdNq9aZTDsfWXybotsm9qS+wnF683mSOE3GnN/9j6KubfFDYC0qA2LIOPt+oX86y5mRmuossD6J2/aldBakrX6mCQ+274X3xs4YdQgREZzmR0O7E4EqzpH5AFoP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Spav0GWz; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b="16tobNKp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivier.eu;
-	s=s1-ionos; t=1784575071; x=1785179871; i=laurent@vivier.eu;
-	bh=MRDYg2gFO1hubxx+v6oMgaIyLqarb65CN772wyVb7kg=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=16tobNKp1X3SkDcUqz+mxMVzrJPrUDRKdny5TxA4AfFk8gXwn6p1ycWUj+Q7oBBc
-	 wMxAQL9IfLZ28Ds0gJBCvueAOsqGpz2M8XytQdorLTLNAqM+3m4iblaj9YdZCcBtV
-	 dCbCEEPUxRvrW8iPztniuwAL8BSP9Xso395aiH+J2TSc1PriFzSV7Bvy5Z5DZihwA
-	 2Z7aztuXCLIu3Sr97myIGiAXDQ2pZce7eIJx7DsQi9aTBgtFM3r+S9ZEcZsF8/HsM
-	 C9i2gRMJKhDFPZotezx2qj6rI/NVqIu/WHhKoP6WymvoePfsHNSwndWl0cAxk9lpC
-	 5GDYIXh+Bx95sG3ckg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from client.hidden.invalid by mrelayeu.kundenserver.de (mreue108
- [213.165.67.119]) with ESMTPSA (Nemesis) id 1MvsR7-1x2Baq06qN-011kwx; Mon, 20
- Jul 2026 21:17:51 +0200
-Message-ID: <56132071-16d0-41c6-b133-5dbfdf054142@vivier.eu>
-Date: Mon, 20 Jul 2026 21:17:50 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Spav0GWz"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id A5984433B7;
+	Mon, 20 Jul 2026 19:21:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC12B1F000E9;
+	Mon, 20 Jul 2026 19:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784575270;
+	bh=y4vTZRCmYUoacTgRQeb9iD10u8BLXmQ5njXvIgguyco=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=Spav0GWz3rWmeiOvTkSHmoLaFmA0dsmghrTMMUGIy7BsnbqtE0r1vEIJpGCtqeWB+
+	 BpTJQ6xzB/KOaDAAkoTPfDvyF002TmAYBtSyKK5uExFq/Cj1mLr43Z33qJ2sRMi9Nf
+	 nJuZqLg2J7TvcdvdFpFOL3PuoTONb0yf3DbORivGivTO7zCY0H72Bu+OkktKpqh03L
+	 Vksh67h0wy7gmPYEI4mwGb9sleMrzw8Jsb1sLuHLmScVy2tv/f+VR08LYTxzvzqe4C
+	 b/ZkM/7+AGeKxhezpkSh009TVoxiBEuZvcET+KD3PE+3fxGAVYAS/3R9Y8DzfgWlkp
+	 U2Lg+Wsg/dkOQ==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Magnus Lindholm <linmag7@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>, Shrikanth
+ Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Kees Cook
+ <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt
+ <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, Sven Schnelle
+ <svens@linux.ibm.com>, linux-s390@vger.kernel.org, x86@kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Jinjie Ruan <ruanjinjie@huawei.com>, Andy
+ Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Richard
+ Henderson <richard.henderson@linaro.org>, Russell King
+ <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Guo
+ Ren <guoren@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Weinberger
+ <richard@nod.at>, Chris Zankel <chris@zankel.net>,
+ linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Arnd Bergmann
+ <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>, Will Deacon
+ <will@kernel.org>, Brian Cain <bcain@kernel.org>, Michal Simek
+ <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>,
+ linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-arch@vger.kernel.org, Michal =?utf-8?Q?Such=C3=A1nek?=
+ <msuchanek@suse.de>, Jonathan
+ Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry handling
+In-Reply-To: <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
+References: <20260707181957.433213175@kernel.org>
+ <CA+=Fv5TDNH8+JAojV9_W36kUkEE68uiA00FQ7i0vJunebqs1sA@mail.gmail.com>
+Date: Mon, 20 Jul 2026 21:21:07 +0200
+Message-ID: <87wluplb6k.ffs@fw13>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/31] swim: Handle FIFO timeout error
-To: Finn Thain <fthain@linux-m68k.org>, Jens Axboe <axboe@kernel.dk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Joshua Thompson <funaho@jurai.org>, linux-block@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <cover.1784196135.git.fthain@linux-m68k.org>
- <8e4b8cbf93d5091df2fa3d652eaeb3793a2388b0.1784196135.git.fthain@linux-m68k.org>
-Content-Language: fr
-From: Laurent Vivier <laurent@vivier.eu>
-Autocrypt: addr=laurent@vivier.eu; keydata=
- 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
-In-Reply-To: <8e4b8cbf93d5091df2fa3d652eaeb3793a2388b0.1784196135.git.fthain@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1BbTU49HIAZv3YRUSaQtTaYTyTQaOxtz8KR2SCxlP+aMD7t424Q
- qf0PsQ5ub+yIqc2bn8whPKghIm/C80bR0u3Q2pOVoc66g82H7CXok1FloN9Mnsl10mo9r/a
- xMFyS/Wnqoqy/qgAKnKe4X9PvMCU67U1V7vujmozWNzBwjUnK8JM3TCvCJdVuneOnB9bTtD
- +Tyql8vdHCVw4aJhqzM0A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dIkY1coljRs=;1U0kY15ku+kFP1k4rW30gGHGAb+
- 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
- EQiU2xyjyCIJImWMDyNdEq7zu1ORM=
+Content-Type: text/plain
 
-Le 16/07/2026 =C3=A0 12:02, Finn Thain a =C3=A9crit=C2=A0:
-> When polling the FIFO for a mark byte in the sector header, don't
-> return zero if the timeout counter has expired, return an error code.
->=20
-> Fixes: 8852ecd97488 ("m68k: mac - Add SWIM floppy support")
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> ---
->   drivers/block/swim_asm.S | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+Magnus!
 
-Reviewed-by: Laurent Vivier <laurent@vivier.eu>
+On Sun, Jul 19 2026 at 13:25, Magnus Lindholm wrote:
+> One Alpha-specific wrinkle I hit while rebasing the GENERIC_ENTRY patch is
+> that Alpha cannot unconditionally pre-seed the normal -ENOSYS return state
+> before calling into the generic entry code: syscall_set_return_value() also
+> updates r19/a3, which is still syscall argument 4 on the normal entry path.
+> Doing that too early broke early userspace mmap() during boot.
 
->=20
-> diff --git a/drivers/block/swim_asm.S b/drivers/block/swim_asm.S
-> index 3d7a2d87595a..208622ac4aeb 100644
-> --- a/drivers/block/swim_asm.S
-> +++ b/drivers/block/swim_asm.S
-> @@ -79,7 +79,7 @@ wait_addr_mark_byte:
->  =20
->   	tstb	%a2@
->   	dbmi	%d2, wait_addr_mark_byte
-> -	bpl	header_exit
-> +	bpl	signal_nonyb
->  =20
->   	moveb	%a3@, %d3
->   	cmpb	%a0@+, %d3
-> @@ -136,7 +136,6 @@ crc1:	tstb	%a2@
->  =20
->   	tstb	%a3@(read_error - read_mark)
->  =20
-> -header_exit:
->   	moveq	#0, %d0
->   	moveb	#0x18, %a3@(write_mode0 - read_mark)
->   	rts
+Similar to what Peter and me suggested in the related discussion
+vs. s390 which has a similar issue, you can just have a dedicated
+syscall_return member in your pt_regs struct, which is preset to -ENOSYS
+and operate on that. You have an unused padding entry there which means
+it won't even change the size.
+
+> Are you planning to send a v2 with the seccomp recheck fix and any other
+> review fixups folded in? Is the intention to route this upstream
+> during the next merge window?
+
+You were on CC for the V2, no?
+
+The whole pile including Jinjie's seccomp bypass fix is in
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core/entry
+
+and is targeted for the 7.3 merge window.
+
+If you want to base your stuff on that for 7.3, I can add a tag which
+makes it immutable so it can be pulled into the alpha tree.
+
+Thanks,
+
+        tglx
 
