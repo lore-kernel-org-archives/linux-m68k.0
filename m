@@ -1,110 +1,114 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from fout-a8-smtp.messagingengine.com (fout-a8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D163D3CE4
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 20 Jul 2026 23:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2C13A544A
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 21 Jul 2026 05:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784590514; cv=none; b=b8l1X/51E2KzR4j0daElJ4N66+bzJHsM/YIDccYwj0BZw897/ARhzA0RgU686nWgwqMOurQYYRJjOQQxd+DhLDn0wBKioqZiZ/5Ld+AxZIEr1r5Qb8yM37CcQ/vkNcO51eqMNy8BWfo97PBwoTvMVoMFds0Ru438n4EFJgZkU8w=
+	t=1784612489; cv=none; b=LU8Mkonnr3hAyvMGFEvFhqApjlrenout9IxNVU7l8B3QdTB1ZUf+LrMQydElBWbE/FX91tQiSWX2/0IyNMyrJEGkRXctW1zL8+mqk8PZ4NmRFnHNjai97HCau14WY1kVUxy3UpSSDNMvCL05KSALf41plqIOlf8md9kh1GDBn3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784590514; c=relaxed/simple;
-	bh=3UZJyqS4SkDBpo96H1dOLfjQP7S/w5kMckz9eVcw/9M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T5PrkTRjKvaFJxjIW/4jyqoWpiWGYG6rHX2qkKeZnhSWtI0+M0Vf8flUc+SQSj7ManjOFuw/I6DJxuKeQahxFmkdFrlyqcGDGJjYhUkRiVbQAxvg3TX+vbckFFwxve7WH4+DFypVKrwk7qXOxmpzMU4q9yv7IW2ae5CklVcX9Sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+	s=arc-20240116; t=1784612489; c=relaxed/simple;
+	bh=Vh+U6JLSvtEdR8WATfUbuB+HHgdDf1CQDsLw9THJWbk=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=j6qdwRBi05kRr2v5dDYi6P+gxUiQtnvSEnktV2cGZxEJJp8S2k44q9XA0aMxscfp4T0g5N5dPOJBlCWUZToKHQV7MRvSSKNcxF4+IsDGAQ5L+wHa6yKNNMr5V2cl8svtwshiH/x2ovxLfH/l9tC4ia0Evdreirewf2M0AGsYZcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ikV6X/NM; arc=none smtp.client-ip=103.168.172.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7FA2360A7A;
-	Mon, 20 Jul 2026 23:35:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 957B91F000E9;
-	Mon, 20 Jul 2026 23:35:10 +0000 (UTC)
-Message-ID: <5c2e9641-fdb7-4a97-b4a9-fad11ccf837e@linux-m68k.org>
-Date: Tue, 21 Jul 2026 09:35:05 +1000
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ikV6X/NM"
+Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
+	by mailfout.phl.internal (Postfix) with ESMTP id 88685EC018D;
+	Tue, 21 Jul 2026 01:41:26 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-12.internal (MEProxy); Tue, 21 Jul 2026 01:41:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1784612486; x=1784698886; bh=VLCB2DVP9ByWy2L8v0TkNg7rwkRF4Ihf98h
+	D2z56m/Y=; b=ikV6X/NM5p+Tep/coX/4NIdG2NI6wDsDIQICscM3rHvR7XiqJe0
+	u6UaaE7FpHZf5a72/LEazEenaz4TMqhlWsomxTI/UGUtOEN/V7TQI8bYy7vQ29kZ
+	WOBKVrP0TxNhgcw4JGX/tCluoH4FxMY05NEbkTSEteREOs20DqT/vW3IRA53wHhR
+	98qbL8DdUoY7KOAg8Yt0ThGwk77SDomGx0+DSBkXF1tiYQAn6qMUB8LDt0nVS17C
+	Lkm+DD9mOXeM9FnhG6J677gojtQaGpAIJkskVNaBnPh34abpoYJ/VcL7v3MBsMqY
+	+HteuTuT+XDFtQ5zBM/FkMwko6pLCe1WXVg==
+X-ME-Sender: <xms:hQZfatCqVVoXwDZNRUtztMjtcR4Imu5PKB_lHFNKpa60LcxndJgLaA>
+    <xme:hQZfaln6_ZdYUuMv-UL2M1PhRX_TiGx0qcm5gEXM07f-cGdX9RN9nZj12VnFbQVt7
+    ZPgokTs6l9eSaxRAEZ4xN1a1TtQ0_2v40A_pBXZ3NnxRiPXKRzNncE>
+X-ME-Received: <xmr:hQZfaofp9VFtA0XWXcUp4-b4YBqrNjduwRcZS692n6FdmAgHrJ52yukouvT18lA11BNmeerTBiQ-_spQDvAf5Kokwmaz8Qa0ge0>
+X-ME-Proxy-Cause: dmFkZTFFciaP0ZRRztuGf6MZJnolj8rNJ/UrnbkRDtJ6bNBWVnZKVBntNDlEuKNPdjS7CF
+    ZGEu8CVAHKDd/L115XOt9GdlBGzMQNemVt+t3rPzSRqcKlCyWR7xdbTUChfZsVTHnBI5RW
+    fLCeK4paByH6z5hNbeNSYhu3ka5c3L31HGaZBVZsWVjbL+vFGJFzyuvUE/rbRsiT4qR3No
+    DbrW5Od6q1OzVWQHKm7XtlIh75NvoSKpsGak3tBijFv+WMOLp1FgZX6Rh7abfmcer3wWUj
+    pnFLRE/s4L2QdXfW18zVtc/xKA/9Hd87JEujnoHtZoBSlbHEsOmDIT09MXkop4RWLn7UWO
+    dAG1aKP8tz/juXetVMGdPiPyQq7k6zLfOT/8w/JH7jMSgQ4lsev+pcTcwmSeHWZpOV2AX6
+    avMn2u/0SGcM3a/OBp1Ofh91kWw27BZxQBjRrWh103A2ZhGbMQbIoPQ1kgMDg9SggcPfiW
+    rsdFs69mluZeAmVMK7KXw5UA6vz2oijjZzVORwCIqqUHm90GYIidDuuCLTEIro9m75gUpK
+    X7dLlD+wVFGVefK1tsnSlEusFZYx4zVbroi1YqA3MI8rnbwnuF9OYCDURc7ZPP9CNuayfO
+    I/YnlkV0lFkyKCeruxH7B/EP+JH2Co/tvKCipI6nY3jKdBMCukvkLUiItnQg
+X-ME-Proxy: <xmx:hQZfapSzYL4d5xtQ83fgFigx8aTzdI0VMg5fmdzH-D5R12PfgWIw3A>
+    <xmx:hQZfavsrgGh1ExbKPchbF5Mh-FWC7z6svq5unl8S2mCV5oBdwNvB6Q>
+    <xmx:hQZfaqdZY1AQ0aiwtcN6wzfacposmek-RMh7bATgc565T_C6r9IsJA>
+    <xmx:hQZfapbECx2K8hFWxnB5O3a07UqT9Fim7tN11pyTOBB-YhKj6hmiag>
+    <xmx:hgZfalzSH5cAuic7lzwVHNbcpVl7Jk3_370HdVPD2KK2IAevuOT-u2cM>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 21 Jul 2026 01:41:22 -0400 (EDT)
+Date: Tue, 21 Jul 2026 15:41:36 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Laurent Vivier <laurent@vivier.eu>
+cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+    Joshua Thompson <funaho@jurai.org>, linux-block@vger.kernel.org, 
+    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/31] swim: Assert strobe with stable outputs
+In-Reply-To: <c71fd9de-6379-4d45-9443-b3036aab889b@vivier.eu>
+Message-ID: <cd820359-cdd4-de54-d397-54094f6571ca@linux-m68k.org>
+References: <cover.1784196135.git.fthain@linux-m68k.org> <998aeb6ae4536503516df34ae38709835c61c8cb.1784196135.git.fthain@linux-m68k.org> <c71fd9de-6379-4d45-9443-b3036aab889b@vivier.eu>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] m68k: coldfire/5441x: register mcf-rcm-reset
- platform device
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Sebastian Reichel <sre@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
- <u.kleine-koenig@baylibre.com>
-References: <20260617-coldfire-rcm-power-on-reason-v3-0-1a7c7b6b14e7@yoseli.org>
- <20260617-coldfire-rcm-power-on-reason-v3-2-1a7c7b6b14e7@yoseli.org>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260617-coldfire-rcm-power-on-reason-v3-2-1a7c7b6b14e7@yoseli.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=83233281301483187178461245638
 
-Hi Jean-Michel,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On 18/6/26 05:17, Jean-Michel Hautbois wrote:
-> Add SoC-level registration of the mcf-rcm-reset platform device so the
-> power_on_reason sysfs attribute is created on every MCF5441x board
-> without per-board boilerplate.
-> 
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-
-Applied to m68knommu git tree, for-next branch.
-
-Thanks
-Greg
+--83233281301483187178461245638
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
 
+On Mon, 20 Jul 2026, Laurent Vivier wrote:
 
-> ---
->   arch/m68k/coldfire/m5441x.c | 25 +++++++++++++++++++++++++
->   1 file changed, 25 insertions(+)
-> 
-> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
-> index 7a25cfc7ac07..852e52d95eaf 100644
-> --- a/arch/m68k/coldfire/m5441x.c
-> +++ b/arch/m68k/coldfire/m5441x.c
-> @@ -11,6 +11,7 @@
->   #include <linux/init.h>
->   #include <linux/io.h>
->   #include <linux/clk.h>
-> +#include <linux/platform_device.h>
->   #include <asm/machdep.h>
->   #include <asm/coldfire.h>
->   #include <asm/mcfsim.h>
-> @@ -239,6 +240,30 @@ static void __init m5441x_fec_init(void)
->   	__raw_writeb(0x03, MCFGPIO_PAR_FEC);
->   }
->   
-> +/*
-> + * Reset Controller Module status register. Exposed to userspace as
-> + * /sys/devices/platform/mcf-rcm-reset/power_on_reason by the mcf-rcm-reset
-> + * driver (drivers/power/reset/mcf-rcm-reset.c).
-> + */
-> +static struct resource m5441x_rcm_resource[] = {
-> +	{
-> +		.start	= MCF_RSR,
-> +		.end	= MCF_RSR,
-> +		.flags	= IORESOURCE_MEM,
-> +	},
-> +};
-> +
-> +static int __init m5441x_rcm_init(void)
-> +{
-> +	struct platform_device *pdev;
-> +
-> +	pdev = platform_device_register_simple("mcf-rcm-reset", -1,
-> +					       m5441x_rcm_resource,
-> +					       ARRAY_SIZE(m5441x_rcm_resource));
-> +	return PTR_ERR_OR_ZERO(pdev);
-> +}
-> +arch_initcall(m5441x_rcm_init);
-> +
->   void __init config_BSP(char *commandp, int size)
->   {
->   	m5441x_clk_init();
-> 
+> Le 16/07/2026 =C3=A0 12:02, Finn Thain a =C3=A9crit=C2=A0:
+>=20
+> > Keep the four phase pin directions set to output and hold their levels=
+=20
+> > constant during LSTRB signalling.
+>=20
+> Perhaps you can also add a short comment to describe the changes you=20
+> made to the defines.
+>=20
 
+Can you clarify please? I think what you're asking is, shouldn't the PH3=20
+pin be an input when it's not being used for LSTRB signalling?
+
+It would be nice if we had specs for the relevant FDD models, to show that=
+=20
+no FDD ever drives the phase lines. Then I could write something more=20
+authoritative. I don't have that information but I do have the chip specs.
+
+The swim3.c driver never sets phase pin direction because the SWIM3 chip=20
+doesn't implement that i.e. the four phase pins are permanently outputs.=20
+Similary, the programming model for the IWM chip offers no way to use=20
+phase lines as inputs, AFAICT. Same for the uPD72070 FDC chip.
+
+I will add some of these observations to the commit log or the commentary=
+=20
+in the source code if you think it would help.
+
+Thanks for your review.
+--83233281301483187178461245638--
