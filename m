@@ -1,41 +1,41 @@
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188322BB13
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jul 2026 14:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A471624DF
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 26 Jul 2026 14:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785077322; cv=none; b=nQ98fs/EhJ40NY75nMxvPDRuhsScBTfI3RGdyp1lCykQmMO+2Yht/58YWLLFz43g86EVGcStXIWs8dRTFtHCWkQ0DcZ2Huf335PYFxIHIzaXiwr5l8OOHjYbqWv2sKOevOSUQ4R440ZSAgZ5woyCdtQOyih1pSwr99W1wqSkt5U=
+	t=1785077452; cv=none; b=qbOip1EY+Q+goCn9Z/zI1Eroq11Hl5iIWVhFO+ho51x9Rp+lmJMNG+gDbC9HTsbHeZTMk3N3LAnuMnJd0BTdUJPu1bZwx6Q7XhHbDgxZa9nslNAZPD/xRvHZYcWlwWIy0JT6brb3RrfGusIHPaPvOUg3IULgkWwOObD3qVP+pCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785077322; c=relaxed/simple;
-	bh=9gyEWOfgN2YoZ8IJHSoxfcbee3uP8QQrBnFaa1rPjG8=;
+	s=arc-20240116; t=1785077452; c=relaxed/simple;
+	bh=08cuKxFadpEJH2uFPJnxyWJ+73+BMYmFkYEaVGh2rbM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TBQGuLB4SSlnpj7hL1n/GkjF31bccNs8+0ElHypQiJryfRqWO4mF1j1+4Wv/0TwK2PV4k/Pgd6Linvx/ET5PQ643hc914Q9lPJVficD7KpaGxCnaD1/ta2D84RQDfeMpIpSUhJLPtjNavyg7ERWdSan/Jkc0MGSw06TMBV7++K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vivier.eu; spf=pass smtp.mailfrom=vivier.eu; dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b=LFqSShbg; arc=none smtp.client-ip=212.227.17.13
+	 In-Reply-To:Content-Type; b=SvYaukvv6dW4s6SR0O+4T1t3VXfB1OO2k6gSDxDv56ASjOTcjAr+0hmr74hKtIRcOr0L9mr3ehxVUlL7w9SN0wstKDtsfpvuaDX8Kteh369/MbAPnOmIFbwf9E1I55GUziYl8O9iY0Jg+vT4DH1u4HZfRqqELCaTymGr7bE24Zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vivier.eu; spf=pass smtp.mailfrom=vivier.eu; dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b=F6No3Ir+; arc=none smtp.client-ip=217.72.192.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vivier.eu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivier.eu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b="LFqSShbg"
+	dkim=pass (2048-bit key) header.d=vivier.eu header.i=laurent@vivier.eu header.b="F6No3Ir+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivier.eu;
-	s=s1-ionos; t=1785077309; x=1785682109; i=laurent@vivier.eu;
-	bh=jDfvjNkFiQ+OasTIFOxuiHP06iaOb2UHNsfTATkk9Lo=;
+	s=s1-ionos; t=1785077437; x=1785682237; i=laurent@vivier.eu;
+	bh=VQucAnJH4ck7mAHU/GOsQPUHgJGgj0b98CTyrnSuar4=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=LFqSShbgVnqkAkWIO8JZguhMLZAS11cQD42r8jxJVpIWT/zB1SCYEolYDVDH3j+Z
-	 YzFpP+cWUoTZe8fo59t7hokne8KYYKDpek23hiBszqAtMDQCifvWBeMpCGyzJj/V5
-	 HyptyRyQJ0BmYvDNeNNEUxSOqSYmf8sTa1Qv0TK5k0fCdaY38gubX7tnJQLNTJSZK
-	 IEyKlX76j1QQ4fIDs/Q51UnoS4U+E3aGti6ABWNoRjzOG4S9al/4Hu1cZhzBZh1qR
-	 evkqNLtFdPkYjHtLxP95/OwvH3OCoc07xbwiB9kxPDEL6OJ4s1ybX+a3f1zS4kEbk
-	 /T7BRuPhW21oXJyMTg==
+	b=F6No3Ir+YGVBmi6omikqpQ9NUcVcvFsWGfzbdedxQ0nFKE+vHcMyAnJ1xZW2IQOn
+	 nJZK8jTnhPNznclStj+1Rb04zYlkYLiAR/Ftkll2wA+Q5bjv2RHA8GTKTMD1GkBUa
+	 r7FI0D0d0rswgbpeyDQZO96G95V80W1a1OjE5tEwGZxM4sTF+VQ3sEdGkquOtZA3C
+	 5VDXH7j6sSNUA4WPsV7XkP4ZdQoHUaOPkjSFqVurTXbkvmot3lDn/jBYpAN2UgWHF
+	 WVI7xmzYZbmWU2hKxNtuvaAHSfsC5/GnFOyfYyQKluhus/+q/+BNqB+e0LP7ETLJn
+	 dpPzdV45ykeVd9P+SA==
 X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from client.hidden.invalid by mrelayeu.kundenserver.de (mreue108
- [213.165.67.119]) with ESMTPSA (Nemesis) id 1Mzz2e-1x8X8d3Uxi-015roa; Sun, 26
- Jul 2026 16:48:29 +0200
-Message-ID: <39a7d036-8459-4d01-9114-6c5545b9f303@vivier.eu>
-Date: Sun, 26 Jul 2026 16:48:29 +0200
+Received: from client.hidden.invalid by mrelayeu.kundenserver.de (mreue109
+ [213.165.67.119]) with ESMTPSA (Nemesis) id 1MfYHW-1xTuVR08Uq-00areL; Sun, 26
+ Jul 2026 16:50:37 +0200
+Message-ID: <2d9accb5-74fb-4513-a484-7176b57da91e@vivier.eu>
+Date: Sun, 26 Jul 2026 16:50:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -43,13 +43,13 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 20/31] swim: Check drive ready bit
+Subject: Re: [PATCH 21/31] swim: Revisit delays
 To: Finn Thain <fthain@linux-m68k.org>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Joshua Thompson <funaho@jurai.org>, linux-block@vger.kernel.org,
  linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 References: <cover.1784196135.git.fthain@linux-m68k.org>
- <627247b3983941eef4d5a4ccf60ba7963b46e887.1784196135.git.fthain@linux-m68k.org>
+ <71ee4a9aea796a452a32366cc1305fe33113c8fa.1784196135.git.fthain@linux-m68k.org>
 Content-Language: fr
 From: Laurent Vivier <laurent@vivier.eu>
 Autocrypt: addr=laurent@vivier.eu; keydata=
@@ -94,153 +94,117 @@ Autocrypt: addr=laurent@vivier.eu; keydata=
  OpKgu3nD0ahBDqANU/ZmNNarBJEwvM2vfusmNnWm3QMIwxNuJghRyuFfx694Im1js0ZY3LEU
  JGSHFG4ZynA+ZFUPA6Xf0wHeJOxGKCGIyeKORsteIqgnkINW9fnKJw2pgk8qHkwVc3Vu+wGS
  ZiJK0xFusPQehjWTHn9WjMG1zvQ5TQQHxau/2FkP45+nRPco6vVFQe8JmgtRF8WFJA==
-In-Reply-To: <627247b3983941eef4d5a4ccf60ba7963b46e887.1784196135.git.fthain@linux-m68k.org>
+In-Reply-To: <71ee4a9aea796a452a32366cc1305fe33113c8fa.1784196135.git.fthain@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jMOrLgDvJxzvd71FjJqqqK3wrsq45w02Pc5NWMCm6Tj1H+zAGtU
- 4rYS/DTOnk9QrJYk9g/Ej2eQKkl+mUcR5NR+NA+X1Z0eq3I4M6P9TtTQbc1XddUt5PCOvCl
- NUfFiJYtrWthTWzVFJV2+JTtMT2o4NHOpKNJeFAzFvMbn1NC+zoao5VL7BHtVDnBDYeFUBS
- TnFgvZHaMGOl5qQ56D/2g==
+X-Provags-ID: V03:K1:PvTGewgSLA6eNGZZJrHdXReKqXpbe1GwKW808BJf9ZwK9+8FDil
+ OZ5RomC8TGTzHdt5QL5VJUPDRzDy28f8AMKgsndQncPwdF5UqU+xLaMoqVlQl6APaPIa7Sb
+ vAXxDt1NtGurWFpWxKIi6fZINBvKE61vAQc1akD/U64LdzCYkOFMLgZD6uQUIBxrM9w5TS+
+ 2PFA3CuVTqCRfKeeNU7Fg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:FCWhGgJruGQ=;zG4CVyZrO2bJdDHh6eJSPjOHePu
- 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
- LUdLl9XAq41OYdSIdVEKX0ENjcmfE=
+UI-OutboundReport: notjunk:1;M01:P0:pkAvSACFtA4=;mD1obTg98x/SJm3NyFfCqBmnIQp
+ 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
 
 Le 16/07/2026 =C3=A0 12:02, Finn Thain a =C3=A9crit=C2=A0:
-> The drive provides a readiness signal that has to be tested before
-> certain commands are issued to the drive. Rename the SEEK_COMPLETE flag
-> as READY because that's how it's known in the documentation as well as
-> the mkLinux source code.
+> AFAIK, timing requirements for the various FDHD drive mechanisms aren't
+> well documented. But we do have the UPD72070 spec and secondary sources
+> like swim3.c and mkLinux source code. This patch is needed to satisfy
+> the requirements in the UPD72070 spec and follows mkLinux.
 >=20
-> Poll for that signal after stepping the heads and also after switching
-> to MFM mode, as that's what mkLinux does. Check for readiness when
-> stepping because testing shows that some drives require this.
+> Change the LSTRB pulse to 2 microseconds, because this is what mkLinux
+> does. Inside Macintosh says, "Hold LSTRB high for at least one usec but
+> not more than one msec".
+>=20
+> When a disk is ejected, pause before de-asserting /ENBL. Wait 150 us aft=
+er
+> the STEP command for valid signalling. Pause for 1 us after setting the
+> step direction before sending the STEP command.
 >=20
 > Fixes: 8852ecd97488 ("m68k: mac - Add SWIM floppy support")
 > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 > ---
->   drivers/block/swim.c | 29 ++++++++++++++++++++++-------
->   1 file changed, 22 insertions(+), 7 deletions(-)
+>   drivers/block/swim.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
 
 Reviewed-by: Laurent Vivier <laurent@vivier.eu>
 
 >=20
 > diff --git a/drivers/block/swim.c b/drivers/block/swim.c
-> index c10ad1266c3b..77d7ac3765ae 100644
+> index 77d7ac3765ae..44fe7a79059c 100644
 > --- a/drivers/block/swim.c
 > +++ b/drivers/block/swim.c
-> @@ -117,7 +117,7 @@ struct iwm {
->   #define TACHO		0x1F3
->   #define READ_DATA_1	0x1F4
->   #define GCR_MODE	0x1F5
-> -#define SEEK_COMPLETE	0x1F6
-> +#define READY		0x1F6
->   #define TWOMEG_MEDIA	0x1F7
+> @@ -290,7 +290,7 @@ static inline void swim_action(struct swim __iomem *=
+base, int action)
+>   	swim_select(base, action);
+>   	udelay(1);
+>   	swim_write(base, phase, action | LSTRB);
+> -	udelay(1);
+> +	udelay(2);
+>   	swim_write(base, phase, action);
+>   	udelay(1);
 >  =20
->   /* Bits in handshake register */
-> @@ -316,6 +316,14 @@ static inline bool swim_readbit(struct swim __iomem=
- *base, int bit)
->   #define swim_readbit_timeout_atomic(base, bit, val, timeout_us) \
->   	poll_timeout_us_atomic(, swim_readbit(base, bit) =3D=3D val, 1, timeo=
-ut_us, false)
+> @@ -340,6 +340,7 @@ static inline void swim_drive(struct swim __iomem *b=
+ase,
+>   		swim_write(base, mode0, EXTERNAL_DRIVE);
+>   		swim_write(base, mode0, MOTON);
+>   	}
+> +	udelay(1);
+>   }
 >  =20
-> +#define swim_READY_timeout(base) \
-> +({ \
-> +	int ret =3D swim_readbit_timeout(base, READY, true, 1000 * 1000); \
-> +	if (ret) \
-> +		printk(KERN_DEBUG "%s: drive not ready\n", __func__); \
-> +	ret; \
-> +})
-> +
->   static inline void swim_drive(struct swim __iomem *base,
->   			      enum drive_location location)
->   {
-> @@ -354,8 +362,6 @@ static inline void swim_eject(struct swim __iomem *b=
+>   static inline void swim_motor(struct swim __iomem *base,
+> @@ -358,6 +359,7 @@ static inline void swim_eject(struct swim __iomem *b=
 ase)
+>   {
+>   	swim_action(base, EJECT);
+>   	swim_readbit_timeout(base, DISK_IN, false, 2000 * 1000);
+> +	msleep(1);
+>   }
 >  =20
 >   static inline void swim_head(struct swim __iomem *base, enum head head=
 )
+> @@ -371,6 +373,7 @@ static inline void swim_head(struct swim __iomem *ba=
+se, enum head head)
+>   static inline int swim_step(struct swim __iomem *base)
 >   {
-> -	/* wait drive is ready */
-> -
->   	if (head =3D=3D UPPER_HEAD)
->   		swim_select(base, READ_DATA_1);
->   	else if (head =3D=3D LOWER_HEAD)
-> @@ -390,20 +396,25 @@ static inline int swim_track00(struct swim __iomem=
- *base)
->  =20
->   static inline int swim_seek(struct swim __iomem *base, int step)
->   {
-> -	if (step =3D=3D 0)
-> -		return 0;
-> -
->   	if (step < 0) {
->   		swim_action(base, SEEK_NEGATIVE);
->   		step =3D -step;
-> -	} else
-> +	} else if (step > 0)
->   		swim_action(base, SEEK_POSITIVE);
->  =20
-> +	swim_READY_timeout(base);
-> +
-> +	if (step =3D=3D 0)
-> +		return 0;
-> +
->   	for ( ; step > 0; step--) {
->   		if (swim_step(base))
->   			return -1;
->   	}
->  =20
-> +	msleep(30);
-> +	swim_READY_timeout(base);
-> +
->   	return 0;
+>   	swim_action(base, STEP);
+> +	udelay(150);
+>   	return swim_readbit_timeout_atomic(base, STEP, false, 20 * 1000);
 >   }
 >  =20
-> @@ -485,6 +496,8 @@ static blk_status_t floppy_read_sectors(struct flopp=
-y_state *fs,
+> @@ -401,6 +404,7 @@ static inline int swim_seek(struct swim __iomem *bas=
+e, int step)
+>   		step =3D -step;
+>   	} else if (step > 0)
+>   		swim_action(base, SEEK_POSITIVE);
+> +	udelay(1);
 >  =20
->  =20
->   	swim_drive(base, fs->location);
-> +	swim_READY_timeout(base);
-> +
->   	for (i =3D req_sector; i < req_sector + sectors_nb; i++) {
->   		int x;
->   		track =3D i / fs->secpercyl;
-> @@ -605,6 +618,8 @@ static int floppy_open(struct gendisk *disk, blk_mod=
-e_t mode)
->  =20
->   	swim_motor(base, ON);
->   	swim_action(base, SETMFM);
-> +	msleep(30);
-> +	swim_READY_timeout(base);
->  =20
->   	set_capacity(fs->disk, fs->total_secs);
+>   	swim_READY_timeout(base);
 >  =20
 
