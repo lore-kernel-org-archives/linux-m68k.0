@@ -1,111 +1,75 @@
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4153B059F
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 29 Jul 2026 15:43:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.18.0.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B21D3B7742
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 31 Jul 2026 09:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785339828; cv=none; b=Da+GO8U2tmkdBMrlDWDTlXH0l+R3Kg6ZObGd3VdW23GpfE/73FpPWSj0wFfBytqdR0MB8YNfcW7UQDvrbmL3jNMbN6UI6wXxY+NkPEP/JYvAaxOAVcWRV2MgVBo80UQ3+gBxNuatVXnAhZP8hjYRC9beIiOlH3GoMuGBkDaI/0I=
+	t=1785491073; cv=none; b=Q3Rr/dRIFyASeBWExiL+ibQUMzWRsHQaePZoIKGdn8f4+NvoUvulU544DE16S5o1KpmapbM/Xje10ezvRJ+mNUvHfyXvrRWQJEyDh/CbgAtdeHLDcgJy9htOTG+F6DIlBIbbjLGADPLbeDWd5fDNGmVozqI6mz95o6OrQLra0U8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785339828; c=relaxed/simple;
-	bh=n+OIYeEljDWlRl0C6Am1X/IEiYXD24oHIXdVO6kiqhM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qc/t+iNysBPnel4zGGFJgxQEtPbvGRIKkwpKkpoxgyxvL7OoOWzNBc69uipJofq8sTUwkolmdiuYhvyUIduLk8mqp4apJmgKh4CvmzzgN8H01u1RQSt7yx+Hw4/Om4oo5mkp/zYY4OGUB6l59bR5fzR4loilJs9Pub+rKY6cIx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=nefkom.net; arc=none smtp.client-ip=212.18.0.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nefkom.net
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.9])
-	by mail-out.m-online.net (Postfix) with ESMTP id 4h9GZf4tnSz1r76q;
-	Wed, 29 Jul 2026 17:33:46 +0200 (CEST)
-Received: from frontend03.mail.m-online.net (unknown [192.168.6.182])
-	by mail-out.m-online.net (Postfix) with ESMTP id 4h9GZd5PxKz1r76N;
-	Wed, 29 Jul 2026 17:33:45 +0200 (CEST)
-Received: from localhost (dynscan3.mnet-online.de [192.168.6.87])
-	by mail.m-online.net (Postfix) with ESMTP id 4h9GZc6bK4z1qqlR;
-	Wed, 29 Jul 2026 17:33:44 +0200 (CEST)
-X-Virus-Scanned: amavis at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.6.182])
- by localhost (dynscan3.mail.m-online.net [192.168.6.87]) (amavis, port 10024)
- with ESMTP id 2RfyXQOV-4tV; Wed, 29 Jul 2026 17:33:42 +0200 (CEST)
-X-Auth-Info: VCaU+Zseds5u9u17y8N+aMLm8e/BxzICWNOqLIomY/S/yBOX39UsP47/EU2cR1FB
-Received: from igel.home (aftr-62-216-202-129.dynamic.mnet-online.de [62.216.202.129])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.mnet-online.de (Postfix) with ESMTPSA;
-	Wed, 29 Jul 2026 17:33:42 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-	id 741042C0B95; Wed, 29 Jul 2026 17:33:41 +0200 (CEST)
-From: Andreas Schwab <schwab@linux-m68k.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: geert@linux-m68k.org,  ast@kernel.org,  daniel@iogearbox.net,
-  andrii@kernel.org,  eddyz87@gmail.com,  memxor@gmail.com,
-  martin.lau@linux.dev,  song@kernel.org,  yonghong.song@linux.dev,
-  jolsa@kernel.org,  jserv@ccns.ncku.edu.tw,  eleanor15x@gmail.com,
-  marscheng@google.com,  linux-kernel@vger.kernel.org,
-  linux-m68k@lists.linux-m68k.org,  bpf@vger.kernel.org,  Daniel Palmer
- <daniel@thingy.jp>
-Subject: Re: [PATCH bpf-next v4 RESEND] m68k, bpf: Add initial BPF JIT
- compiler support
-In-Reply-To: <20260729002737.1008358-1-visitorckw@gmail.com>
-References: <20260729002737.1008358-1-visitorckw@gmail.com>
-Date: Wed, 29 Jul 2026 17:33:41 +0200
-Message-ID: <871pclresq.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1785491073; c=relaxed/simple;
+	bh=izNGDiObYmWQYaDCCL26mHeBsTBRhTSqSA48xbXznmc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=egzxaaiByeeuyTTDJO1Vlh5RIdKX5nawSYYm14o9H7KNqUng20YNV6ZZUhmENJCyO0u6GKNcFPW+eUTCMNE3ullCmZj0CPo+AqI4GJNJVrX1bs2pDw7WMnUb3GR9SHDxqqtPTo1fZRPWKizr1ygeki+xGh1EEHapfhSZHMYqk1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RNz+XWIj; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RNz+XWIj"
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1785491068;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gpMu4RNb2kjI8UxUymbZX5KkVz3zQvsUUOv48i+J2MM=;
+	b=RNz+XWIjD8/2SPnfdtvEGqTDiBRZ/MbyjEWKUi32ODxY9LoWTncWB2OqiWEfa6KgHQeESB
+	SumBAGwRoTrzvNzOeDKZsDk+tH+VD+qORiywgsmbfBFd5oQjm+XZgQCTnPzlTGQjUBY5sg
+	zKky4ziiBvWBzo8U5QKY7rnl0A5nNsY=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] m68k/serial: Use generic BASE_BAUD in asm/serial.h
+Date: Fri, 31 Jul 2026 11:44:00 +0200
+Message-ID: <20260731094402.741645-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Developer-Signature: v=1; a=openpgp-sha256; l=951; i=thorsten.blum@linux.dev; h=from:subject; bh=izNGDiObYmWQYaDCCL26mHeBsTBRhTSqSA48xbXznmc=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFk5eUlhR07rhpdatUxbYan7vyx+u5NhzD9bj0Qbyf/tj Hximw51lLIwiHExyIopsjyY9WOGb2lN5SaTiJ0wc1iZQIYwcHEKwERieBkZbs/216nZZPzFWSX+ rb/2tBuLP7AkVK4x0Vv+WinpDMMdJkaGmff/PLiua5bR5xAa6O9slcG2Z3X+ojf7NT+WbAhc8C+ OHwA=
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Jul 29 2026, Kuan-Wei Chiu wrote:
+Include asm-generic/serial.h and use the generic BASE_BAUD definition
+instead of redefining it.
 
-> +static void emit_alu32_k(const struct bpf_insn *insn, struct jit_ctx *ctx)
-> +{
-> +	const s8 *dst = bpf2m68k[insn->dst_reg];
-> +	const s8 *tmp1 = bpf2m68k[TMP_REG_1];
-> +	const s8 *tmp2 = bpf2m68k[TMP_REG_2];
-> +	s8 d_reg;
-> +
-> +	d_reg = bpf_get_reg32(dst[1], tmp1[1], ctx);
-> +
-> +	switch (BPF_OP(insn->code)) {
-> +	case BPF_MOV:
-> +		emit_16(ctx, 0x203c | (d_reg << 9));		/* move.l #imm, dst */
-> +		emit_32(ctx, insn->imm);
-> +		break;
-> +	case BPF_ADD:
-> +		emit_16(ctx, 0x0680 | d_reg);			/* addi.l #imm, dst */
-> +		emit_32(ctx, insn->imm);
-> +		break;
-> +	case BPF_SUB:
-> +		emit_16(ctx, 0x0480 | d_reg);			/* subi.l #imm, dst */
-> +		emit_32(ctx, insn->imm);
-> +		break;
-> +	case BPF_AND:
-> +		emit_16(ctx, 0x0280 | d_reg);			/* andi.l #imm, dst */
-> +		emit_32(ctx, insn->imm);
-> +		break;
-> +	case BPF_OR:
-> +		emit_16(ctx, 0x0080 | d_reg);			/* ori.l #imm, dst */
-> +		emit_32(ctx, insn->imm);
-> +		break;
-> +	case BPF_XOR:
-> +		emit_16(ctx, 0x0a80 | d_reg);			/* eori.l #imm, dst */
-> +		emit_32(ctx, insn->imm);
-> +		break;
-> +	case BPF_LSH:
-> +	case BPF_RSH:
-> +	case BPF_ARSH:
-> +		emit_16(ctx, 0x203c | (tmp2[1] << 9));		/* move.l #imm, count */
-> +		emit_32(ctx, insn->imm & 0x1f);
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ arch/m68k/include/asm/serial.h | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-That can be moveq.  Also, for the other cases, if imm is in the range of
-moveq it is worthwhile to load it into a temporary register.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+diff --git a/arch/m68k/include/asm/serial.h b/arch/m68k/include/asm/serial.h
+index 3f76bc7b9edb..e215b48975d5 100644
+--- a/arch/m68k/include/asm/serial.h
++++ b/arch/m68k/include/asm/serial.h
+@@ -7,15 +7,7 @@
+  *
+  */
+ 
+-
+-/*
+- * This assumes you have a 1.8432 MHz clock for your UART.
+- *
+- * It'd be nice if someone built a serial card with a 24.576 MHz
+- * clock, since the 16550A is capable of handling a top speed of 1.5
+- * megabits/second; but this requires the faster clock.
+- */
+-#define BASE_BAUD ( 1843200 / 16 )
++#include <asm-generic/serial.h>
+ 
+ /* Standard COM flags (except for COM4, because of the 8514 problem) */
+ #ifdef CONFIG_SERIAL_8250_DETECT_IRQ
