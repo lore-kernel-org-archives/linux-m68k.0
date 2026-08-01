@@ -1,59 +1,57 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FC02F3C3E
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 31 Jul 2026 20:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ACE334B1A7
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  1 Aug 2026 05:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785529807; cv=none; b=h0D0Sgv28TxqANTIWMUVWJeF68S287jxEeNjikdTAwHOgRap2xietvZlwUyaQkb69h0UJ/Gu/J5WobRyUBG7fLgIHFn0HXl57GGshqO5opibudcEzSsu04ydxEQfymue0/qZTS2/mdMm2Rok9Lu7zHTv5dhOOO9dEHEn+qVTlWM=
+	t=1785562482; cv=none; b=Td0eWnamfwOE0dOp8T73kTTCad0hO3zXxiFOJv4ADaAi2DJdFQx7Ks5Pbs4pZKsTGzV9i52a6NgNonYkZrkrP0H6MfZky+YokxErc1i+8NYPQTvTsVib3PDVLTS0DUzMD1KlZeCmc4gaJgqmXavw5kcIZdfUiM4nrgW+eXokEVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785529807; c=relaxed/simple;
-	bh=RULOuNty4gLh4Av03kezlPA23T7RK4XQ6m679Ta/JC0=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=iETJtIX6XKfHse9rvWLS4wvzjdmBnjTl8He6nu2Z2mijAwlk20UV5fLk3dyNjEn9cd8RWhY5hEeDpVt9d6JJOk3ozDBU62xjvE4tTs1/oS6r0fr93o6E6PBDKKArJewEPVPNr1p24l8oih9oNPTwPZDDBkeRIuI712GJ/uYB2X0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YMqTFogq; arc=none smtp.client-ip=198.175.65.17
+	s=arc-20240116; t=1785562482; c=relaxed/simple;
+	bh=nqpPRylQfvbD2AeMNVhBGXuSZAXt0SdEluxe7CiFew8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=heNj5w3+BYVVZcz8V4jaXX8F6tSau+C8ncgpKcumK/Bm1y9bibdLAy/iuxUcYSGx54MGUXTEsySDXjs4KTIjnwS/BsbR8VLizjucjp2G0GaOr2kKKdb4UAN4ZEChA0sCxoBOEv9T1V0/GdjwdAbKQ45PBYZgijTPf54sJaNyRmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TX8fjSLN; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YMqTFogq"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TX8fjSLN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1785529806; x=1817065806;
+  t=1785562480; x=1817098480;
   h=date:from:to:cc:subject:message-id;
-  bh=RULOuNty4gLh4Av03kezlPA23T7RK4XQ6m679Ta/JC0=;
-  b=YMqTFogq8kR0tpH62u+dfQ2q+plhAWAsHQ2V+u4F+1DAfBMmp2q3SC71
-   CukOtpke0Gy1F8kV/XSx/HiPNg5ZzFXzqJJBozeGqRXuxm9ylywcYMbWe
-   kWhbLqkfV29Ftjk+R34zOVoWZfPLXujSTAqmotdTLuR09YZQn0XhkfjMu
-   ctQQWLql3ODzMMwPZ3mEyL7EAH9QDVbtXQVf7+bxPDGo/yJRVelYMyPzQ
-   05JgcdeJWI412tUq3/NxxS9+n+KM9dT715ElNS536CTEmXo6ePFcoIfaV
-   RDpEeT5tsmqcqD6iNaIO416dFzrHPEU38ZT9cX0RH86mUe8rV7FVpT9rR
-   g==;
-X-CSE-ConnectionGUID: 3YRbCSIhTBKA4YL+hHZhEw==
-X-CSE-MsgGUID: Mx8eGaMOQGyswvqeEx9ttw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11861"; a="86175764"
+  bh=nqpPRylQfvbD2AeMNVhBGXuSZAXt0SdEluxe7CiFew8=;
+  b=TX8fjSLNBbMCFDtn6ND3y+47rdaqNIj8qzSGZSzZ+mO5GRuoM3hUIxQp
+   0Cph3IYfC4BtR7Da07Nc9HvpozE05hjCM8xVsj52MI72CGUx0/pK/bb9h
+   nH+x/FXF4q1N+QtzWA0/kUXBZsJJ+8UXcuPcuf8d1ATu3BscTXFWHcLAl
+   wJSbrBzFY1vjnTnFWlDmnUt1nXkHdBUY2TDgeGd+BnIrIEXXIsUroide6
+   F+antF/c0GBR7drJmyw1RVRtR+D1bgTBfES4R6xUn5ghWSSDLoX8WQsO9
+   t1ODGZaI+w+jtWlIopWRacqRVhrsU8W8q/ekOR6TFMst2ll6Y+3UCA7qS
+   A==;
+X-CSE-ConnectionGUID: xKI43cKnRw25XC1VjGrStA==
+X-CSE-MsgGUID: CmdZlSscT36pRQSXF1NXqw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11861"; a="89994350"
 X-IronPort-AV: E=Sophos;i="6.25,197,1779174000"; 
-   d="scan'208";a="86175764"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2026 13:30:04 -0700
-X-CSE-ConnectionGUID: Ou2xad8RQ1WRLraWEPjgPg==
-X-CSE-MsgGUID: aTt5vhkyR2W46VUvPfNc+A==
+   d="scan'208";a="89994350"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2026 22:34:39 -0700
+X-CSE-ConnectionGUID: g0NXV5uDQUKiLxnk6UyF9g==
+X-CSE-MsgGUID: yO+mjD+XR72EXDL/XqAKHQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.25,197,1779174000"; 
-   d="scan'208";a="258869353"
+   d="scan'208";a="256834578"
 Received: from lkp-server01.sh.intel.com (HELO 6eda058d650d) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 31 Jul 2026 13:30:02 -0700
+  by fmviesa010.fm.intel.com with ESMTP; 31 Jul 2026 22:34:38 -0700
 Received: from kbuild by 6eda058d650d with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1wptrj-000000002C7-3KlE;
-	Fri, 31 Jul 2026 20:29:59 +0000
-Date: Sat, 01 Aug 2026 04:29:09 +0800
+	id 1wq2Ml-000000002nt-1Bc1;
+	Sat, 01 Aug 2026 05:34:35 +0000
+Date: Sat, 01 Aug 2026 13:34:30 +0800
 From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:armnommu 3/3]
- arch/arm/mm/alignment.c:776:25: sparse: sparse: incorrect type in argument 1
- (different address spaces)
-Message-ID: <202608010410.aN1TXznM-lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ ab20614793ab50f900e655be38b7b9ab2241fbdb
+Message-ID: <202608011316.8ud9CDrZ-lkp@intel.com>
 User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -61,66 +59,66 @@ List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   c3abc5777e04ce2e70f0d1f870409b9332e3b8ea
-commit: c3abc5777e04ce2e70f0d1f870409b9332e3b8ea [3/3] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-r133-20260731 (https://download.01.org/0day-ci/archive/20260801/202608010410.aN1TXznM-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 8.5.0
-sparse: v0.6.5-rc1
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260801/202608010410.aN1TXznM-lkp@intel.com/reproduce)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: ab20614793ab50f900e655be38b7b9ab2241fbdb  Merge tag 'v7.2-rc5'
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202608010410.aN1TXznM-lkp@intel.com/
+elapsed time: 751m
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm/mm/alignment.c:776:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int [usertype] *ip @@
-   arch/arm/mm/alignment.c:776:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:776:25: sparse:     got unsigned int [usertype] *ip
->> arch/arm/mm/alignment.c:791:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short [usertype] *ip @@
-   arch/arm/mm/alignment.c:791:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:791:25: sparse:     got unsigned short [usertype] *ip
+configs tested: 48
+configs skipped: 1
 
-vim +776 arch/arm/mm/alignment.c
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-c2860d43f5dfab George G. Davis   2009-06-04  769  
-1bb9fb0a147f9d Russell King      2019-09-06  770  static int alignment_get_arm(struct pt_regs *regs, u32 *ip, u32 *inst)
-67e15fa5b487ad Russell King      2019-08-31  771  {
-67e15fa5b487ad Russell King      2019-08-31  772  	u32 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  773  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  774  
-67e15fa5b487ad Russell King      2019-08-31  775  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @776  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  777  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  778  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  779  
-67e15fa5b487ad Russell King      2019-08-31  780  	*inst = __mem_to_opcode_arm(instr);
-67e15fa5b487ad Russell King      2019-08-31  781  
-67e15fa5b487ad Russell King      2019-08-31  782  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  783  }
-67e15fa5b487ad Russell King      2019-08-31  784  
-67e15fa5b487ad Russell King      2019-08-31  785  static int alignment_get_thumb(struct pt_regs *regs, u16 *ip, u16 *inst)
-67e15fa5b487ad Russell King      2019-08-31  786  {
-67e15fa5b487ad Russell King      2019-08-31  787  	u16 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  788  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  789  
-67e15fa5b487ad Russell King      2019-08-31  790  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @791  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  792  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  793  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  794  
-67e15fa5b487ad Russell King      2019-08-31  795  	*inst = __mem_to_opcode_thumb16(instr);
-67e15fa5b487ad Russell King      2019-08-31  796  
-67e15fa5b487ad Russell King      2019-08-31  797  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  798  }
-67e15fa5b487ad Russell King      2019-08-31  799  
-
-:::::: The code at line 776 was first introduced by commit
-:::::: 67e15fa5b487adb9b78a92789eeff2d6ec8f5cee ARM: mm: fix alignment handler faults under memory pressure
-
-:::::: TO: Russell King <rmk+kernel@armlinux.org.uk>
-:::::: CC: Russell King <rmk+kernel@armlinux.org.uk>
+tested configs:
+alpha                            allnoconfig    gcc-16.1.0
+alpha                           allyesconfig    gcc-16.1.0
+alpha                              defconfig    gcc-16.1.0
+arc                             allmodconfig    gcc-16.1.0
+arc                             allyesconfig    gcc-16.1.0
+arc                           randconfig-001    gcc-12.5.0
+arc                  randconfig-001-20260801    gcc-12.5.0
+arc                  randconfig-002-20260801    gcc-12.5.0
+arm                  randconfig-001-20260801    gcc-12.5.0
+arm                  randconfig-002-20260801    gcc-12.5.0
+arm                  randconfig-003-20260801    gcc-12.5.0
+arm                  randconfig-004-20260801    gcc-12.5.0
+arm                          u8500_defconfig    gcc-16.1.0
+arm64                randconfig-002-20260801    clang-21
+csky                            allmodconfig    gcc-16.1.0
+csky                 randconfig-001-20260801    gcc-12.5.0
+csky                 randconfig-002-20260801    gcc-10.5.0
+i386                            allmodconfig    gcc-14
+i386                buildonly-randconfig-001    gcc-14
+i386       buildonly-randconfig-001-20260801    gcc-14
+i386       buildonly-randconfig-002-20260801    gcc-14
+i386       buildonly-randconfig-003-20260801    gcc-14
+i386       buildonly-randconfig-004-20260801    gcc-14
+i386       buildonly-randconfig-005-20260801    gcc-14
+i386       buildonly-randconfig-006-20260801    gcc-14
+i386                 randconfig-011-20260801    gcc-14
+i386                 randconfig-012-20260801    gcc-14
+i386                 randconfig-013-20260801    gcc-14
+i386                 randconfig-014-20260801    gcc-14
+i386                 randconfig-015-20260801    gcc-14
+i386                 randconfig-016-20260801    gcc-14
+i386                 randconfig-017-20260801    gcc-14
+loongarch                          defconfig    clang-24
+nios2                           allmodconfig    gcc-11.5.0
+nios2                            allnoconfig    gcc-11.5.0
+parisc                          allmodconfig    gcc-16.1.0
+parisc                          allyesconfig    gcc-16.1.0
+parisc                             defconfig    gcc-16.1.0
+powerpc                    mpc83xx_defconfig    clang-21
+sh                                 defconfig    gcc-16.1.0
+x86_64     buildonly-randconfig-001-20260801    clang-22
+x86_64     buildonly-randconfig-002-20260801    clang-22
+x86_64     buildonly-randconfig-003-20260801    gcc-13
+x86_64     buildonly-randconfig-004-20260801    clang-22
+x86_64     buildonly-randconfig-005-20260801    clang-22
+x86_64     buildonly-randconfig-006-20260801    clang-22
+x86_64                                 kexec    clang-22
+x86_64                          rhel-9.4-bpf    gcc-14
 
 --
 0-DAY CI Kernel Test Service
