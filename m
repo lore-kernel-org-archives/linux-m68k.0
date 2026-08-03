@@ -1,125 +1,131 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ACE334B1A7
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  1 Aug 2026 05:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147D438A70A
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Aug 2026 06:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785562482; cv=none; b=Td0eWnamfwOE0dOp8T73kTTCad0hO3zXxiFOJv4ADaAi2DJdFQx7Ks5Pbs4pZKsTGzV9i52a6NgNonYkZrkrP0H6MfZky+YokxErc1i+8NYPQTvTsVib3PDVLTS0DUzMD1KlZeCmc4gaJgqmXavw5kcIZdfUiM4nrgW+eXokEVo=
+	t=1785737169; cv=none; b=MjJG6QVN8gdvKESrTQxKfUDAvoWKPnKrQWAe4M1vMhVfde0rSxFh2XOXZ67rQa8hFKzjEAYIabiThcXoGhR5MlUsaLcHxjf/dEKBzSog7la7QORM4eeQo0cjRC1wt0X2eN8neacAPstF13H+zF8M1O1SOoVcHgn6kAcxFp1xlYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785562482; c=relaxed/simple;
-	bh=nqpPRylQfvbD2AeMNVhBGXuSZAXt0SdEluxe7CiFew8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=heNj5w3+BYVVZcz8V4jaXX8F6tSau+C8ncgpKcumK/Bm1y9bibdLAy/iuxUcYSGx54MGUXTEsySDXjs4KTIjnwS/BsbR8VLizjucjp2G0GaOr2kKKdb4UAN4ZEChA0sCxoBOEv9T1V0/GdjwdAbKQ45PBYZgijTPf54sJaNyRmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TX8fjSLN; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1785737169; c=relaxed/simple;
+	bh=r69rBuEp71F0c6ql8cAoRfWxmSj1YFCB+STWrQVoyy4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pmtaIyfs1bAkfInPANuVUQ+J8tRcOLLKsXF5JGhFP8ihX/ILQ/MbKALZJ43ek9YlMHUTncPs6TwbxegllTeCzzItsOeIMoHBuilpx5ZNWJkrBb19bSNK9/J1us2G4i1J9BKeFgPwU0Mm0I/gHEJ42pGfJGGWD+mFAQZNCFr7QZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VDJoGguI; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TX8fjSLN"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1785562480; x=1817098480;
-  h=date:from:to:cc:subject:message-id;
-  bh=nqpPRylQfvbD2AeMNVhBGXuSZAXt0SdEluxe7CiFew8=;
-  b=TX8fjSLNBbMCFDtn6ND3y+47rdaqNIj8qzSGZSzZ+mO5GRuoM3hUIxQp
-   0Cph3IYfC4BtR7Da07Nc9HvpozE05hjCM8xVsj52MI72CGUx0/pK/bb9h
-   nH+x/FXF4q1N+QtzWA0/kUXBZsJJ+8UXcuPcuf8d1ATu3BscTXFWHcLAl
-   wJSbrBzFY1vjnTnFWlDmnUt1nXkHdBUY2TDgeGd+BnIrIEXXIsUroide6
-   F+antF/c0GBR7drJmyw1RVRtR+D1bgTBfES4R6xUn5ghWSSDLoX8WQsO9
-   t1ODGZaI+w+jtWlIopWRacqRVhrsU8W8q/ekOR6TFMst2ll6Y+3UCA7qS
-   A==;
-X-CSE-ConnectionGUID: xKI43cKnRw25XC1VjGrStA==
-X-CSE-MsgGUID: CmdZlSscT36pRQSXF1NXqw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11861"; a="89994350"
-X-IronPort-AV: E=Sophos;i="6.25,197,1779174000"; 
-   d="scan'208";a="89994350"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2026 22:34:39 -0700
-X-CSE-ConnectionGUID: g0NXV5uDQUKiLxnk6UyF9g==
-X-CSE-MsgGUID: yO+mjD+XR72EXDL/XqAKHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,197,1779174000"; 
-   d="scan'208";a="256834578"
-Received: from lkp-server01.sh.intel.com (HELO 6eda058d650d) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 31 Jul 2026 22:34:38 -0700
-Received: from kbuild by 6eda058d650d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wq2Ml-000000002nt-1Bc1;
-	Sat, 01 Aug 2026 05:34:35 +0000
-Date: Sat, 01 Aug 2026 13:34:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Subject: [geert-m68k:master] BUILD SUCCESS
- ab20614793ab50f900e655be38b7b9ab2241fbdb
-Message-ID: <202608011316.8ud9CDrZ-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VDJoGguI"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 7828140092;
+	Mon,  3 Aug 2026 06:06:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F241F000E9;
+	Mon,  3 Aug 2026 06:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1785737167;
+	bh=vIglg9TVP4Lfn2h21BAFUMWlEDsJgWWXUWsr0eQBHQ8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=VDJoGguINSpXK2zN4vBlk6C99lR3v6b3Dw0evb4o7EN5+brmc3LGhQOGnOUsMsFeA
+	 y7+b+LTbd93Rnn7iVAvidBhwmC8o7znmaRkfzH4LcRD3IQxBCg4yO/leLepcagIixK
+	 blGCKhNxkoDhCLNePK+wWThNAcBlow9EDebVQ9VK1bYv4lhFTc2U3DuRVrBTggc/1J
+	 v+d0QehGqfm4KdK0Ngl3MyOnGplPlGQ4liGkt5BwSpEoBz/pY8E1VgYMfdBPjgbcQg
+	 RxxdbaPajKiBcc1ZE81xbDb4i3rC9zZLO/yoWN66z6Mifd5Ibyk591BIQPLD9yQdyg
+	 FxQ9ejc3aQm8w==
+Message-ID: <2da84e36-7ac6-407d-8e08-edca82f4cbce@kernel.org>
+Date: Mon, 3 Aug 2026 08:06:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] tty: move remaining serial drivers into the serial/
+ directory
+To: Crescent Hsieh <crescentcy.hsieh@moxa.com>
+Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+ linux-serial@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ =?UTF-8?B?UmF5IENoZW4gKOmZs+advuaYsSk=?= <Ray.Chen@moxa.com>,
+ linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
+References: <cover.1777943090.git.enelsonmoore@gmail.com>
+ <042d993686c87fdfd4130f11b57c3b559944603d.1777943090.git.enelsonmoore@gmail.com>
+ <ed6dce34-2207-4403-bbcf-080db2614241@kernel.org>
+ <afqyY8FQ8ZfpH48_@moxa-ThinkCentre-M90t>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <afqyY8FQ8ZfpH48_@moxa-ThinkCentre-M90t>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-branch HEAD: ab20614793ab50f900e655be38b7b9ab2241fbdb  Merge tag 'v7.2-rc5'
+On 06. 05. 26, 5:15, Crescent Hsieh wrote:
+>> I am not sure even about users of Moxa Intellio. I think I prompted long
+>> time ago. Oh yes, Ray Chen (CCed) from Moxa wrote me back in 2021:
+>> === 8< ===
+>> For the Intellio cards, we phased them out in 2017.
+>> You may find the discontinuance notification as attached.
+>> We will keep the software support for 5 years, to 2023.
+>> === 8< ===
+>>
+>> I believe we can mark it as BROKEN to let someone convert it to serial_core.
+>> Or drop it for good already.
+> 
+> As for Moxa Intellio (moxa.c), I have confirmed internally that both the
+> hardware and software support have already been phased out.
+> 
+> Therefore, it would be reasonable to drop it at this point. I can help
+> with preparing a removal patch if this is the preferred direction.
 
-elapsed time: 751m
+Let me revive this one.
 
-configs tested: 48
-configs skipped: 1
+I think we should proceed -- so could you remove the intellio driver, 
+please?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allnoconfig    gcc-16.1.0
-alpha                           allyesconfig    gcc-16.1.0
-alpha                              defconfig    gcc-16.1.0
-arc                             allmodconfig    gcc-16.1.0
-arc                             allyesconfig    gcc-16.1.0
-arc                           randconfig-001    gcc-12.5.0
-arc                  randconfig-001-20260801    gcc-12.5.0
-arc                  randconfig-002-20260801    gcc-12.5.0
-arm                  randconfig-001-20260801    gcc-12.5.0
-arm                  randconfig-002-20260801    gcc-12.5.0
-arm                  randconfig-003-20260801    gcc-12.5.0
-arm                  randconfig-004-20260801    gcc-12.5.0
-arm                          u8500_defconfig    gcc-16.1.0
-arm64                randconfig-002-20260801    clang-21
-csky                            allmodconfig    gcc-16.1.0
-csky                 randconfig-001-20260801    gcc-12.5.0
-csky                 randconfig-002-20260801    gcc-10.5.0
-i386                            allmodconfig    gcc-14
-i386                buildonly-randconfig-001    gcc-14
-i386       buildonly-randconfig-001-20260801    gcc-14
-i386       buildonly-randconfig-002-20260801    gcc-14
-i386       buildonly-randconfig-003-20260801    gcc-14
-i386       buildonly-randconfig-004-20260801    gcc-14
-i386       buildonly-randconfig-005-20260801    gcc-14
-i386       buildonly-randconfig-006-20260801    gcc-14
-i386                 randconfig-011-20260801    gcc-14
-i386                 randconfig-012-20260801    gcc-14
-i386                 randconfig-013-20260801    gcc-14
-i386                 randconfig-014-20260801    gcc-14
-i386                 randconfig-015-20260801    gcc-14
-i386                 randconfig-016-20260801    gcc-14
-i386                 randconfig-017-20260801    gcc-14
-loongarch                          defconfig    clang-24
-nios2                           allmodconfig    gcc-11.5.0
-nios2                            allnoconfig    gcc-11.5.0
-parisc                          allmodconfig    gcc-16.1.0
-parisc                          allyesconfig    gcc-16.1.0
-parisc                             defconfig    gcc-16.1.0
-powerpc                    mpc83xx_defconfig    clang-21
-sh                                 defconfig    gcc-16.1.0
-x86_64     buildonly-randconfig-001-20260801    clang-22
-x86_64     buildonly-randconfig-002-20260801    clang-22
-x86_64     buildonly-randconfig-003-20260801    gcc-13
-x86_64     buildonly-randconfig-004-20260801    clang-22
-x86_64     buildonly-randconfig-005-20260801    clang-22
-x86_64     buildonly-randconfig-006-20260801    clang-22
-x86_64                                 kexec    clang-22
-x86_64                          rhel-9.4-bpf    gcc-14
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+thanks,
+-- 
+js
+suse labs
