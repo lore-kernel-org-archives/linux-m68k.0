@@ -1,131 +1,133 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 147D438A70A
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Aug 2026 06:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FD23845D5
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  3 Aug 2026 07:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1785737169; cv=none; b=MjJG6QVN8gdvKESrTQxKfUDAvoWKPnKrQWAe4M1vMhVfde0rSxFh2XOXZ67rQa8hFKzjEAYIabiThcXoGhR5MlUsaLcHxjf/dEKBzSog7la7QORM4eeQo0cjRC1wt0X2eN8neacAPstF13H+zF8M1O1SOoVcHgn6kAcxFp1xlYQ=
+	t=1785743910; cv=none; b=kWaqz9S+Je0oFsepRWVDuS3gILvrsiTu6dTA/9zEgA7j3g7mCrSTQSOqSkymL9uBPx0FFxk7JX6oB8xvlKYp+qghcTVetujfSyrLG1kO9+CBQmiqbm07OWJCIDVC/3kgBbT5q69WC3MHUsMBGMlLaaYWUe6dCXfuuU24ex/LbdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1785737169; c=relaxed/simple;
-	bh=r69rBuEp71F0c6ql8cAoRfWxmSj1YFCB+STWrQVoyy4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pmtaIyfs1bAkfInPANuVUQ+J8tRcOLLKsXF5JGhFP8ihX/ILQ/MbKALZJ43ek9YlMHUTncPs6TwbxegllTeCzzItsOeIMoHBuilpx5ZNWJkrBb19bSNK9/J1us2G4i1J9BKeFgPwU0Mm0I/gHEJ42pGfJGGWD+mFAQZNCFr7QZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VDJoGguI; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VDJoGguI"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7828140092;
-	Mon,  3 Aug 2026 06:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F241F000E9;
-	Mon,  3 Aug 2026 06:06:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1785737167;
-	bh=vIglg9TVP4Lfn2h21BAFUMWlEDsJgWWXUWsr0eQBHQ8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=VDJoGguINSpXK2zN4vBlk6C99lR3v6b3Dw0evb4o7EN5+brmc3LGhQOGnOUsMsFeA
-	 y7+b+LTbd93Rnn7iVAvidBhwmC8o7znmaRkfzH4LcRD3IQxBCg4yO/leLepcagIixK
-	 blGCKhNxkoDhCLNePK+wWThNAcBlow9EDebVQ9VK1bYv4lhFTc2U3DuRVrBTggc/1J
-	 v+d0QehGqfm4KdK0Ngl3MyOnGplPlGQ4liGkt5BwSpEoBz/pY8E1VgYMfdBPjgbcQg
-	 RxxdbaPajKiBcc1ZE81xbDb4i3rC9zZLO/yoWN66z6Mifd5Ibyk591BIQPLD9yQdyg
-	 FxQ9ejc3aQm8w==
-Message-ID: <2da84e36-7ac6-407d-8e08-edca82f4cbce@kernel.org>
-Date: Mon, 3 Aug 2026 08:06:03 +0200
+	s=arc-20240116; t=1785743910; c=relaxed/simple;
+	bh=8V+wpSjSJxV2AAeXfghH3agN5TnxowPHY0yZNqBqvqo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uJISNw2xd08jg4VzCfIGJqwE/Dj0uZ/5hNh5QXuIo6hCtX8gKfpTor+Y716A8xs2DgFeS7O/zfmtdoeobTNzMDQ155j/4Qmj5ZwCjb05SFdIcudRO8QUjqQ4gn71yHV2IxRmD4Fgjan4OqmTr2uM4UxDZhHzA/expbdO7PBHWo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-75609e844faso1809839137.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Aug 2026 00:58:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1785743907; x=1786348707;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=MXCo4RuUxd0lbnvmUYal4SwmjMg62SVJ980l3UhWMsE=;
+        b=T/c+cVP41PZQpKU7RgtFqOHRpoNjl+a2sKMTTGaxTz9jfEsYcgS4TQhA0m5uHhYc/l
+         zxhk1txtb6JOuuPFojpbC2d0UOLjhG5fuLTWeE0N7rSAh0usKISCjWCG7Gep19lCiCbi
+         DcplocbEOXFp1Kdcnv3eWuOwQM/JBDo0uv2GtI37n7OMPCh74Jll8luGGbbbE02wFjd5
+         JahJu4Wj5ARcD37hQkxN52Y3MbCRRMhuAG44fqUq2irBe+D/p5D6zYYtQ+e5VcM3CbO+
+         3WQFMQZyLtc7sYa1fOUznuTsJQFSIMEltl9Utw5L148I35jV8S7Dj7U/9mFwOQDO1yV3
+         os9Q==
+X-Forwarded-Encrypted: i=1; AHgh+RqL8n9q4d0m2XCrW6ZIz9xI8do5TL51f9v0XW43x/pGFHHQupvXmcGZHAoT7XKoF18EObn8mrGu5TzR@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YwUO5dbIVKOmSYr9iSbxCkDCGW/AdI+q3B7c+TAIg+KIAdIbReX
+	wtnHvmHvH0OmQfPjaALDLODJqE/QffJHeZqsb+PDQvzbi9/C9bVWwoN6PxuleBNB
+X-Gm-Gg: AR+sD108arUni0m4BoJL20TDmQnKJv/8/Fv6YhHmeKpJMxRAeoAl1xmmG66XvIAKdYv
+	dA2cn5/w+WxA+nTh7gzyrtVL3yqBbJiTc/FDGKS1qkaIDfH425NtrehWOd5P2YaLeWlcIV3LF3O
+	2rseRnfHZWTijTpCTGPjLsjg72Crv+pG8ZR7rQY9vinzEPTMIFjoq4KEKMQOveZLU+EpFX+VBuj
+	0E/wch6VNvQSV9Y1+pFL94AXpevgg1bzfSSrZDma7JVybqpBLUSeWykrpi+sR7IFu57qUXkaADS
+	HkTMN+u4YPufnqeMMk9at5cYG0WVbmsgGhvVvJxC3wsPI2w7RaJvwaglxLe6tuVwllAWeXLtFJI
+	9eOCv+UJdf2Bkw1S89Lrhcoh2bQbGnDQTdCkrWZGoPNmdu9UkKCPN+lPU3VP+Drjbngp0f9aMMJ
+	7ZfsoTNP8oclymzNyKlje/dN2s/+6U1gEYQxlYPADNsIP7tS6zLK1JrchmQS3MFhsyfFI13Z41v
+	9rlgLRPr+LJXXmnAhaXJQPOhw==
+X-Received: by 2002:a05:6102:a82:b0:747:560c:e7e0 with SMTP id ada2fe7eead31-758f8774aebmr2313457137.1.1785743907526;
+        Mon, 03 Aug 2026 00:58:27 -0700 (PDT)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-977e61dc0a3sm6147622241.4.2026.08.03.00.58.26
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 Aug 2026 00:58:26 -0700 (PDT)
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-9674d727c0aso2324869241.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 03 Aug 2026 00:58:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RoyFj+J0sVTcMxrHuF1pzxrk+nAGOOdu6dlxA5lBmgILhYbPHgO95uBi4wKMiPeiW8STTF3090aSrGI@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:34cc:b0:734:54fa:971d with SMTP id
+ ada2fe7eead31-758f8e7bac6mr2500996137.7.1785743906274; Mon, 03 Aug 2026
+ 00:58:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] tty: move remaining serial drivers into the serial/
- directory
-To: Crescent Hsieh <crescentcy.hsieh@moxa.com>
-Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
- linux-serial@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- =?UTF-8?B?UmF5IENoZW4gKOmZs+advuaYsSk=?= <Ray.Chen@moxa.com>,
- linux-m68k@lists.linux-m68k.org, Geert Uytterhoeven <geert@linux-m68k.org>
-References: <cover.1777943090.git.enelsonmoore@gmail.com>
- <042d993686c87fdfd4130f11b57c3b559944603d.1777943090.git.enelsonmoore@gmail.com>
- <ed6dce34-2207-4403-bbcf-080db2614241@kernel.org>
- <afqyY8FQ8ZfpH48_@moxa-ThinkCentre-M90t>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <afqyY8FQ8ZfpH48_@moxa-ThinkCentre-M90t>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20260731094950.1988084-2-ukleinek@kernel.org>
+In-Reply-To: <20260731094950.1988084-2-ukleinek@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 3 Aug 2026 09:58:14 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVGKX=3cfOrLWp1uSHX76xf1-=C0+GVCXkA8JTqNPg-ew@mail.gmail.com>
+X-Gm-Features: AUfX_myMd8uGu8VFyUdqwUmkIhPBf84bjH1LOjlUrarN31zaAecqhqVwKBevqro
+Message-ID: <CAMuHMdVGKX=3cfOrLWp1uSHX76xf1-=C0+GVCXkA8JTqNPg-ew@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Define NR_CPUS to 1
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <ukleinek@kernel.org>
+Cc: Gao Xiang <xiang@kernel.org>, Michael Bommarito <michael.bommarito@gmail.com>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 06. 05. 26, 5:15, Crescent Hsieh wrote:
->> I am not sure even about users of Moxa Intellio. I think I prompted long
->> time ago. Oh yes, Ray Chen (CCed) from Moxa wrote me back in 2021:
->> === 8< ===
->> For the Intellio cards, we phased them out in 2017.
->> You may find the discontinuance notification as attached.
->> We will keep the software support for 5 years, to 2023.
->> === 8< ===
->>
->> I believe we can mark it as BROKEN to let someone convert it to serial_core.
->> Or drop it for good already.
-> 
-> As for Moxa Intellio (moxa.c), I have confirmed internally that both the
-> hardware and software support have already been phased out.
-> 
-> Therefore, it would be reasonable to drop it at this point. I can help
-> with preparing a removal patch if this is the preferred direction.
+Hi Uwe,
 
-Let me revive this one.
+Thanks for your patch!
 
-I think we should proceed -- so could you remove the intellio driver, 
-please?
+On Fri, 31 Jul 2026 at 11:50, Uwe Kleine-K=C3=B6nig <ukleinek@kernel.org> w=
+rote:
+> This fixes a Kconfig warning
+>
+>         fs/erofs/Kconfig:137:warning: range is invalid
+>
+> which originates from EROFS_FS_ZIP_LZMA_DEFAULT_MAX_STREAMS using
+> NR_CPUS which up to now didn't exist for ARCH=3Dm68k. All other
+> architectures define this symbol, so fix the outlier.
 
-thanks,
--- 
-js
-suse labs
+Apart from the Kconfig warning, this also
+  1. Breaks pressing "ENTER" in "make oldconfig" to apply a sensible
+     default value, just repeating the question ad infinitum instead
+     (the default is 16),
+  2. "make olddefconfig" sets it to literal NR_CPUS, which is invalid, too.
+
+> Fixes: c9b47e6b2311 ("erofs: cap LZMA stream pool size")
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <ukleinek@kernel.org>
+
+> --- a/arch/m68k/Kconfig.cpu
+> +++ b/arch/m68k/Kconfig.cpu
+> @@ -549,6 +549,10 @@ config CACHE_COPYBACK
+>  endchoice
+>  endif # HAVE_CACHE_CB
+>
+> +config NR_CPUS
+> +       int
+> +       default "1"
+
+While this does fix the issues on m68k, I don't think this is the
+right fix:
+  - NR_CPUS depends on SMP on most architectures, so you do not get
+     the "range is invalid" warning on non-SMP, but NR_CPUS is zero.
+    Hence I managed to reproduce the two issues above (albeit 2 with
+    CONFIG_EROFS_FS_ZIP_LZMA_DEFAULT_MAX_STREAMS=3D0) with a non-SMP
+    ARM config.
+  - Kconfig logic using NR_CPUS typically includes a check for SMP, too.
+
+So I think EROFS_FS_ZIP_LZMA_DEFAULT_MAX_STREAMS should be fixed
+instead.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
