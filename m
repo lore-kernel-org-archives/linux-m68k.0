@@ -1,74 +1,26 @@
-Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB9743B48C
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Aug 2026 15:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0D530C16E
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  6 Aug 2026 23:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786030115; cv=none; b=di35OSGvIVYYZ1xBSwKhvaWrSY97/mt+ppKuvhHbuNQNwfuhTuaY4hwvYnCO7xJlBQ8I85Gt9Rya4UH30anFv/rgOVQgJVKhsvj3LeqC838navRlzvDnX0ulL2GmPGwMbSgC5iiTO2B2za4AuaNrOey1O7NO9WwpQH8ePUuFD2Q=
+	t=1786059303; cv=none; b=tZca77BvxYdN8j3Jle5kXUvB0fe3mtKXzIWHnjwLE4rikHAh5KzduexA/J10DyMNPcXXB8sdZMxQzJSe6NGr4Gw2OHcGVcLnq6jsg8TpVNDtr7IudiZUSya9tO2UOfxWGE/7nsKCXXuU62f/Cjk3A4Fm3xJTbLXPJV2jaPmqEhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786030115; c=relaxed/simple;
-	bh=0jJ23dvuxvYAq2xC/lCsJ3sEah5w1JY5G7CLSSeTA0c=;
-	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To; b=HfPvH45Q96aZ01qoZ3g2XAkzVEe9nrsPC5UkjwSAGMun7AOkFRFt4IclWbnReLe09GdBrljZYaYEWBKH4omVCv35lCqC/vjVaUXL9rRKXfXmoD5QXtsACcV8kWKhWpYbvEMptu+yLG6JN2+OiYiS//u1S0gj5cZz6OTiEP+IIqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com; spf=pass smtp.mailfrom=polyxeno.com; dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b=CBUE7oLr; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ejERj+8g; arc=none smtp.client-ip=202.12.124.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=polyxeno.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b="CBUE7oLr";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ejERj+8g"
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id E433A7A004D;
-	Thu,  6 Aug 2026 11:28:30 -0400 (EDT)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Thu, 06 Aug 2026 11:28:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polyxeno.com; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1786030110; x=1786116510; bh=aL0arfZyQE
-	K76JIj3SIf/2oTS1Ke2RF9iWNgfamJ3BI=; b=CBUE7oLrEHESQpc0XEQ+8XvV91
-	Hy0Nb5OrEEkPjWTFCQq+1YB5T8o+6LFWQuVDi5PT6pSPAzj7HYDfW3rAXm1DQqkV
-	6iGEeVwAciNL8lnUoYu0lQVZeFcdaKNe91xn/KPbuYtZdgAkpInaC8ce5ocSy1AC
-	KB7F/0arDS25TEONgTQroDExsOaiZvpHWfHPr+7cFUKM0+dbPNLIdALhg5i1tC4m
-	bLmPsFjR5ceIfMWD7pXszdV7RMOwECJovX3Vs0xrK0Hqgn2RukxqX0QQ2H6fF6Dm
-	VxE1MY6OWcCPag6PuFZjzL6ubkhMdNysbrPJAnL8cjh5SbGgfhiDmcKw97dg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1786030110; x=1786116510; bh=aL0arfZyQEK76JIj3SIf/2oTS1Ke2RF9iWN
-	gfamJ3BI=; b=ejERj+8gKyow9CBJ5l6rj4hk7kpPfXrrsQy9wWN6MhDGenRrNMv
-	sTA4vpUrRGAzELRQyTl7ypeEuDwQf4xn/oz0AAjU28VCRcKblujIVO9li9m17aHp
-	RwgomEwJ//YxQ0v1D+DwECEC8kn5PvgUX4IsDqacu0huSUbyvhGs/PA/rWRnDEBB
-	bT5Z+9b+G0Q8P5mFMdZLtjXTaseqnJvXTA4mSjo15AT1YjEBBDR5gLDyY0lpMgny
-	myJG89CFGy88aPT3eO7AWSoLFbfWjAYpaaFwkY1ElZ94DzDL5I6ukI6jtcEqYXg6
-	JS5KgOGeLVFXmiQ6W5XDjMCmZ7t1b9+3UkQ==
-X-ME-Sender: <xms:Hah0agvpJbGmMzYCmo6BLMEcrh1PTy69PgoI5d9gxVRksu2-MEgcew>
-    <xme:Hah0au2ywj4ovFaCaaa3PTRxOPjNoDtHDRCk9hF_higyGPj6deo-wELHYPIbBOHFa
-    n2ApO0NSq0qOEo0hNauOyPoTJyBV_HGtwI2ysAAipbxjP2kBC4a2oKJ>
-X-ME-Received: <xmr:Hah0alDc2bmyRjD_mvESxDcfM1vYTRILGyDtSzwnvEjXWa9HyP6XIvw9YMkgRy0CKw>
-X-ME-Proxy-Cause: dmFkZTGr4Bc1hRDxt/VED3F0kcKhOhwkScjZwyERJuTUKWJC74amNp4dAcaOPvSU83NlPz
-    60m73kUVy3zoxguIVgtNpAI6hC1cQLE4laV8Db1HONh0V1yz0in3jDSYV3osd/UXuTYbqu
-    2cDIe3tZh0l8gSbcitj4+YE5QDyM+GtWCzHfardARk5FOtd1QxAYZm0fbfGaQf9ALFmwSK
-    jVFsK+Xzhs0282TlCfPz961Ey7wtykXZs+RGNV2zBgTwTJ92iO4Zm/lEkU1H7mAl8Fp3kf
-    M5BDHQN5s5cc3bOpVEbHFxteLbCYcfK9qU3Czk11cZOsIqYIib0ZeFqERdbTqFBQSchhGc
-    X2KE/+ngF9n1UU59tcwhvmcDgzxuCS/v5F8yOV05AuCZwfHr2D2gO6QieGDNn/8ebjeNCP
-    r6xtZPL9zZ4lkBFncwpN8sAjd1A2aKir32tRNVjD9ZVbiyzplbd+tUadUN9o/CO36kiqmE
-    kr2gvIt6iK10GaG+uHHgEkJKIRvd+GA5hzqKwF+3HN7uSodlP8CS2nR7m5awXuS6u7BO4/
-    /7iwVnxFwHtLBFPbAufVrZNGg1FlsI6faILiQm0wxSnv3fiq+3iX5HJMTL7QCiKqhhzzZt
-    S50ohhQTmzJ7TNzGA48N+vmnVJ0YiAmVcIM6Uj+m0kI3YzxJuyf2pDJqKB8w
-X-ME-Proxy: <xmx:Hah0ardkaVtNcDSKfqm0zSR_xZZ_KltXUeWpEt0x3qhZgq3_5KPyMg>
-    <xmx:Hah0anxVtjzRA14tMWsczoPaZLIaOuLkbAsLsBIHwaSI5Xqk7mlehg>
-    <xmx:Hah0amMroxVCUNqq5_HtjYHcO05gO2P9X6Ld1tRp-_Rc6XDvByD9YA>
-    <xmx:Hah0ama9p1oL-uV0vRnmbF2K1EJlhwxRIWSaPPIUJpPrhWJ5kDvbvg>
-    <xmx:Hqh0alAMqJSxbxDIZHD0QM-n6m3Vd5aXPlekQZau7YQvCSCqRqt3n2dj>
-Feedback-ID: i09fe4b60:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 6 Aug 2026 11:28:23 -0400 (EDT)
-Content-Type: multipart/mixed; boundary="------------aPZ88F0pvkjouaGYy7fre0E7"
-Message-ID: <1ade6c35-7f8a-406d-9c89-8d10218258c6@polyxeno.com>
-Date: Fri, 7 Aug 2026 01:28:20 +1000
+	s=arc-20240116; t=1786059303; c=relaxed/simple;
+	bh=rwZxX2aYuTq0KbG//m4mDXbX8BaAfzEbDwU9fj6JrXo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k+MXUNV4k5YtxBZBtLeSrZhzZcqr1ESoyAkhwN9Q+tKRdBjv8/iw/gMP7jHxCPX9YgF7Nn4lK5VCLC2FZ5pEONR+CD8nzhZe7tMkZ2d+fk/IUCiEIIV8947H1LH2dRmuFUEeJzKmF9rPmo41t7aFTqch7yso5sLzie+3w2FYp+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 0EF6241157;
+	Thu,  6 Aug 2026 23:35:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF4821F000E9;
+	Thu,  6 Aug 2026 23:34:55 +0000 (UTC)
+Message-ID: <3b1d571f-c44e-4131-b684-8a2311040bce@linux-m68k.org>
+Date: Fri, 7 Aug 2026 09:34:52 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -77,7 +29,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH bpf-next v4 RESEND] m68k, bpf: Add initial BPF JIT
- compiler support
+ compiler support (resend)
 To: Kuan-Wei Chiu <visitorckw@gmail.com>, geert@linux-m68k.org,
  ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
  memxor@gmail.com
@@ -88,13 +40,13 @@ Cc: martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
  Daniel Palmer <daniel@thingy.jp>
 References: <20260729002737.1008358-1-visitorckw@gmail.com>
 Content-Language: en-US
-From: Greg Ungerer <gerg@polyxeno.com>
+From: Greg Ungerer <gerg@linux-m68k.org>
 In-Reply-To: <20260729002737.1008358-1-visitorckw@gmail.com>
-
-This is a multi-part message in MIME format.
---------------aPZ88F0pvkjouaGYy7fre0E7
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+
+(Resend, sorry, this will be easier to digest and comment on with the patch inline)
+
 
 Hi Kuan-Wei,
 
@@ -115,21 +67,23 @@ a problem.
 The following are issues I hit:
 
 1. lack of movem with pre-decrement and post-increment modes
-    used in quite a few places
+   used in quite a few places
 
 2. lack of register exchange instruction ("exg")
-    used in emit_atomic()
-    used in emit_call()
-    used in 64bit bpf shitf operations in emit_alu64_shift()
+   used in emit_atomic()
+   used in emit_call()
+   used in 64bit bpf shitf operations in emit_alu64_shift()
 
 3. lack of rotate instructions ("ror" and "rox")
-    used for bpf shift operations in emit_alu64_shift()
-    used for endian transformation in emit_bpf_end()
+   used for bpf shift operations in emit_alu64_shift()
+   used for endian transformation in emit_bpf_end()
 
 Issue (1) is easy to work around, manually manipulating %sp as required
 with an extra instruction.
 
-Issue (2) also is easy enough, needing temporary storage.
+Issue (2) also is easy enough, needing temporary storage. I just used the
+stack here, but I am not familiar enough with the internals here to see
+if there is any "d" processor registers that can be used for temporarily.
 
 Issue (3) is annoying and means a bunch more instructions to carry
 out the equivalent operations. None the less it is not too difficult to
@@ -142,8 +96,8 @@ test_bpf.ko module with no failures(*). Surely could be optimized a little
 more, but good enough to get it working. Tested and running on an
 M5475 ColdFire target.
 
-     test_bpf: Summary: 1061 PASSED, 0 FAILED, [1049/1049 JIT'ed]
-     test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+    test_bpf: Summary: 1061 PASSED, 0 FAILED, [1049/1049 JIT'ed]
+    test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
 
 
 (*) I did come across a cache flush issue specific to ColdFire - but it
@@ -154,264 +108,379 @@ Greg
 
 
 
---------------aPZ88F0pvkjouaGYy7fre0E7
-Content-Type: text/x-patch; charset=UTF-8; name="coldfire-bpf-jit.patch"
-Content-Disposition: attachment; filename="coldfire-bpf-jit.patch"
-Content-Transfer-Encoding: base64
 
-LS0tIGEvYXJjaC9tNjhrL25ldC9icGZfaml0X2NvbXAuYworKysgYi9hcmNoL202OGsvbmV0
-L2JwZl9qaXRfY29tcC5jCkBAIC01MTgsNiArNTE4LDQ3IEBACiAJYnBmX3B1dF9yZWczMihk
-c3RbMF0sIGRfaGksIGN0eCk7CiB9CiAKK3N0YXRpYyBpbmxpbmUgdm9pZCBlbWl0X2xzaDY0
-KHN0cnVjdCBqaXRfY3R4ICpjdHgsIHM4IGRfbG8sIHM4IGRfaGkpCit7CisJaWYgKENQVV9J
-U19DT0xERklSRSkgeworCQllbWl0XzE2KGN0eCwgMHhkMDgwIHwgKGRfbG8gPDwgOSkgfCBk
-X2xvKTsJCS8qIGFkZC5sIGRfbG8sIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4ZDE4MCB8
-IChkX2hpIDw8IDkpIHwgZF9oaSk7CQkvKiBhZGR4LmwgZF9oaSwgZF9oaSAqLworCX0gZWxz
-ZSB7CisJCWVtaXRfMTYoY3R4LCAweGUzODggfCBkX2xvKTsJCQkJLyogbHNsbCAjMSwgZF9s
-byAqLworCQllbWl0XzE2KGN0eCwgMHhlMzkwIHwgZF9oaSk7CQkJCS8qIHJveGwubCAjMSwg
-ZF9oaSAqLworCX0KK30KKworc3RhdGljIGlubGluZSB2b2lkIGVtaXRfcnNoNjQoc3RydWN0
-IGppdF9jdHggKmN0eCwgczggZF9sbywgczggZF9oaSkKK3sKKwlpZiAoQ1BVX0lTX0NPTERG
-SVJFKSB7CisJCWVtaXRfMTYoY3R4LCAweGUyODggfCBkX2xvKTsJCQkJLyogbHNyLmwgIzEs
-IGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4ZTI4OCB8IGRfaGkpOwkJCQkvKiBsc3IubCAj
-MSwgZF9oaSAqLworCQllbWl0XzE2KGN0eCwgMHg2NDAwKTsJCQkJCS8qIGJjYyAxZiAqLwor
-CQllbWl0XzE2KGN0eCwgMHgwMDA2KTsKKwkJZW1pdF8xNihjdHgsIDB4MDhjMCB8IGRfbG8p
-OwkJCQkvKiBic2V0ICMzMSwgZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHgwMDFmKTsKKwl9
-IGVsc2UgeworCQllbWl0XzE2KGN0eCwgMHhlMjg4IHwgZF9oaSk7CQkJCS8qIGxzcmwgIzEs
-IGRfaGkgKi8KKwkJZW1pdF8xNihjdHgsIDB4ZTI5MCB8IGRfbG8pOwkJCQkvKiByb3hyLmwg
-IzEsIGRfbG8gKi8KKwl9Cit9CisKK3N0YXRpYyBpbmxpbmUgdm9pZCBlbWl0X2Fyc2g2NChz
-dHJ1Y3Qgaml0X2N0eCAqY3R4LCBzOCBkX2xvLCBzOCBkX2hpKQoreworCWlmIChDUFVfSVNf
-Q09MREZJUkUpIHsKKwkJZW1pdF8xNihjdHgsIDB4ZTI4OCB8IGRfbG8pOwkJCQkvKiBsc3Iu
-bCAjMSwgZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHhlMjgwIHwgZF9oaSk7CQkJCS8qIGFz
-ci5sICMxLCBkX2hpICovCisJCWVtaXRfMTYoY3R4LCAweDY0MDApOwkJCQkJLyogYmNjIDFm
-ICovCisJCWVtaXRfMTYoY3R4LCAweDAwMDYpOworCQllbWl0XzE2KGN0eCwgMHgwOGMwIHwg
-ZF9sbyk7CQkJCS8qIGJzZXQgIzMxLCBkX2xvICovCisJCWVtaXRfMTYoY3R4LCAweDAwMWYp
-OworCX0gZWxzZSB7CisJCWVtaXRfMTYoY3R4LCAweGUyODAgfCBkX2hpKTsJCQkJLyogYXNy
-bCAjMSwgZF9oaSAqLworCQllbWl0XzE2KGN0eCwgMHhlMjkwIHwgZF9sbyk7CQkJCS8qIHJv
-eHIubCAjMSwgZF9sbyAqLworCX0KK30KKwogc3RhdGljIHZvaWQgZW1pdF9hbHU2NF9zaGlm
-dChjb25zdCBzdHJ1Y3QgYnBmX2luc24gKmluc24sIHN0cnVjdCBqaXRfY3R4ICpjdHgsIGJv
-b2wgaXNfaW1tKQogewogCWNvbnN0IHM4ICpkc3QgPSBicGYybTY4a1tpbnNuLT5kc3RfcmVn
-XTsKQEAgLTU1MSwxNiArNTkyLDEyIEBACiAKIAlsb29wX3N0YXJ0ID0gY3R4LT5pZHg7CiAK
-LQlpZiAoQlBGX09QKGluc24tPmNvZGUpID09IEJQRl9MU0gpIHsKLQkJZW1pdF8xNihjdHgs
-IDB4ZTM4OCB8IGRfbG8pOwkJCQkvKiBsc2xsICMxLCBkX2xvICovCi0JCWVtaXRfMTYoY3R4
-LCAweGUzOTAgfCBkX2hpKTsJCQkJLyogcm94bC5sICMxLCBkX2hpICovCi0JfSBlbHNlIGlm
-IChCUEZfT1AoaW5zbi0+Y29kZSkgPT0gQlBGX1JTSCkgewotCQllbWl0XzE2KGN0eCwgMHhl
-Mjg4IHwgZF9oaSk7CQkJCS8qIGxzcmwgIzEsIGRfaGkgKi8KLQkJZW1pdF8xNihjdHgsIDB4
-ZTI5MCB8IGRfbG8pOwkJCQkvKiByb3hyLmwgIzEsIGRfbG8gKi8KLQl9IGVsc2UgaWYgKEJQ
-Rl9PUChpbnNuLT5jb2RlKSA9PSBCUEZfQVJTSCkgewotCQllbWl0XzE2KGN0eCwgMHhlMjgw
-IHwgZF9oaSk7CQkJCS8qIGFzcmwgIzEsIGRfaGkgKi8KLQkJZW1pdF8xNihjdHgsIDB4ZTI5
-MCB8IGRfbG8pOwkJCQkvKiByb3hyLmwgIzEsIGRfbG8gKi8KLQl9CisJaWYgKEJQRl9PUChp
-bnNuLT5jb2RlKSA9PSBCUEZfTFNIKQorCQllbWl0X2xzaDY0KGN0eCwgZF9sbywgZF9oaSk7
-CisJZWxzZSBpZiAoQlBGX09QKGluc24tPmNvZGUpID09IEJQRl9SU0gpCisJCWVtaXRfcnNo
-NjQoY3R4LCBkX2xvLCBkX2hpKTsKKwllbHNlIGlmIChCUEZfT1AoaW5zbi0+Y29kZSkgPT0g
-QlBGX0FSU0gpCisJCWVtaXRfYXJzaDY0KGN0eCwgZF9sbywgZF9oaSk7CiAKIAllbWl0XzE2
-KGN0eCwgMHg1MzgwIHwgY291bnRfcmVnKTsJCQkJLyogc3VicS5sICMxLCBjb3VudF9yZWcg
-Ki8KIAllbWl0XzE2KGN0eCwgMHg2NjAwKTsJCQkJCQkvKiBibmUudyBsb29wX3N0YXJ0ICov
-CkBAIC01NzMsNiArNjEwLDEwNyBAQAogCWJwZl9wdXRfcmVnMzIoZHN0WzBdLCBkX2hpLCBj
-dHgpOwogfQogCitzdGF0aWMgaW5saW5lIHZvaWQgZW1pdF90b19sZTE2KHN0cnVjdCBqaXRf
-Y3R4ICpjdHgsIHM4IGRfbG8sIHM4IGRfaGkpCit7CisJaWYgKENQVV9JU19DT0xERklSRSkg
-eworCQllbWl0XzE2KGN0eCwgMHg3MWMwIHwgKGRfbG8gPDwgOSkgfCBkX2xvKTsJCS8qIG12
-ei53IGRfbG8sIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4NzE4MCB8IChkX2hpIDw8IDkp
-IHwgZF9sbyk7CQkvKiBtdnouYiBkX2xvLCBkX2hpICovCisJCWVtaXRfMTYoY3R4LCAweGUw
-ODggfCBkX2xvKTsJCQkJLyogbHNyLmwgIzgsIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4
-ZTE4OCB8IGRfaGkpOwkJCQkvKiBsc2wubCAjOCwgZF9oaSAqLworCQllbWl0XzE2KGN0eCwg
-MHg4MDgwIHwgKGRfbG8gPDwgOSkgfCBkX2hpKTsJCS8qIG9yLmwgZF9oaSwgZF9sbyAqLwor
-CX0gZWxzZSB7CisJCWVtaXRfMTYoY3R4LCAweDAyODAgfCBkX2xvKTsJCQkJLyogYW5kaS5s
-ICMweGZmZmYsIGRfbG8gKi8KKwkJZW1pdF8zMihjdHgsIDB4ZmZmZik7CisJCWVtaXRfMTYo
-Y3R4LCAweGUwNTggfCBkX2xvKTsJCQkJLyogcm9yLncgIzgsIGRfbG8gKi8KKwl9CisKKwll
-bWl0XzE2KGN0eCwgMHg3MDAwIHwgKGRfaGkgPDwgOSkpOwkJCQkvKiBtb3ZlcSAjMCwgZF9o
-aSAqLworfQorCitzdGF0aWMgaW5saW5lIHZvaWQgZW1pdF90b19sZTMyKHN0cnVjdCBqaXRf
-Y3R4ICpjdHgsIHM4IGRfbG8sIHM4IGRfaGkpCit7CisJaWYgKENQVV9JU19DT0xERklSRSkg
-eworCQllbWl0XzE2KGN0eCwgMHgyZjAwIHwgZF9sbyk7CQkJCS8qIG1vdmUubCBkX2xvLCAt
-KCVzcCkgKi8KKwkJZW1pdF8xNihjdHgsIDB4NDg0MCB8IGRfbG8pOwkJCQkvKiBzd2FwIGRf
-bG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4NzFjMCB8IChkX2xvIDw8IDkpIHwgZF9sbyk7CQkv
-KiBtdnoudyBkX2xvLCBkX2xvICovCisJCWVtaXRfMTYoY3R4LCAweDcxODAgfCAoZF9oaSA8
-PCA5KSB8IGRfbG8pOwkJLyogbXZ6LmIgZF9sbywgZF9oaSAqLworCQllbWl0XzE2KGN0eCwg
-MHhlMDg4IHwgZF9sbyk7CQkJCS8qIGxzci5sICM4LCBkX2xvICovCisJCWVtaXRfMTYoY3R4
-LCAweGUxODggfCBkX2hpKTsJCQkJLyogbHNsLmwgIzgsIGRfaGkgKi8KKwkJZW1pdF8xNihj
-dHgsIDB4ODA4MCB8IChkX2hpIDw8IDkpIHwgZF9sbyk7CQkvKiBvci5sIGRfbG8sIGRfaGkg
-Ki8KKwkJZW1pdF8xNihjdHgsIDB4MjAxNyB8IChkX2xvIDw8IDkpKTsJCQkvKiBtb3ZlLmwg
-KCVzcCksIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4MmU4MCB8IGRfaGkpOwkJCQkvKiBt
-b3ZlLmwgZF9oaSwgKCVzcCkgKi8KKwkJZW1pdF8xNihjdHgsIDB4NzFjMCB8IChkX2xvIDw8
-IDkpIHwgZF9sbyk7CQkvKiBtdnoudyBkX2xvLCBkX2xvICovCisJCWVtaXRfMTYoY3R4LCAw
-eDcxODAgfCAoZF9oaSA8PCA5KSB8IGRfbG8pOwkJLyogbXZ6LmIgZF9sbywgZF9oaSAqLwor
-CQllbWl0XzE2KGN0eCwgMHhlMDg4IHwgZF9sbyk7CQkJCS8qIGxzci5sICM4LCBkX2xvICov
-CisJCWVtaXRfMTYoY3R4LCAweGUxODggfCBkX2hpKTsJCQkJLyogbHNsLmwgIzgsIGRfaGkg
-Ki8KKwkJZW1pdF8xNihjdHgsIDB4ODA4MCB8IChkX2xvIDw8IDkpIHwgZF9oaSk7CQkvKiBv
-ci5sIGRfaGksIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4NDg0MCB8IGRfbG8pOwkJCQkv
-KiBzd2FwIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4ODA5ZiB8IChkX2xvIDw8IDkpKTsJ
-CQkvKiBvci5sICglc3ApKywgZF9sbyAqLworCX0gZWxzZSB7CisJCWVtaXRfMTYoY3R4LCAw
-eGUwNTggfCBkX2xvKTsJCQkJLyogcm9yLncgIzgsIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgs
-IDB4NDg0MCB8IGRfbG8pOwkJCQkvKiBzd2FwIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4
-ZTA1OCB8IGRfbG8pOwkJCQkvKiByb3IudyAjOCwgZF9sbyAqLworCX0KKworCWVtaXRfMTYo
-Y3R4LCAweDcwMDAgfCAoZF9oaSA8PCA5KSk7CQkJCS8qIG1vdmVxICMwLCBkX2hpICovCit9
-CisKK3N0YXRpYyBpbmxpbmUgdm9pZCBlbWl0X3RvX2xlNjQoc3RydWN0IGppdF9jdHggKmN0
-eCwgczggZF9sbywgczggZF9oaSkKK3sKKwlpZiAoQ1BVX0lTX0NPTERGSVJFKSB7CisJCWVt
-aXRfMTYoY3R4LCAweDJmMDAgfCBkX2xvKTsJCQkJLyogbW92ZS5sIGRfbG8sIC0oJXNwKSAq
-LworCQllbWl0XzE2KGN0eCwgMHgyZjAwIHwgZF9oaSk7CQkJCS8qIG1vdmUubCBkX2hpLCAt
-KCVzcCkgKi8KKworCQllbWl0XzE2KGN0eCwgMHg0ODQwIHwgZF9sbyk7CQkJCS8qIHN3YXAg
-ZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHg3MWMwIHwgKGRfbG8gPDwgOSkgfCBkX2xvKTsJ
-CS8qIG12ei53IGRfbG8sIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4NzE4MCB8IChkX2hp
-IDw8IDkpIHwgZF9sbyk7CQkvKiBtdnouYiBkX2xvLCBkX2hpICovCisJCWVtaXRfMTYoY3R4
-LCAweGUwODggfCBkX2xvKTsJCQkJLyogbHNyLmwgIzgsIGRfbG8gKi8KKwkJZW1pdF8xNihj
-dHgsIDB4ZTE4OCB8IGRfaGkpOwkJCQkvKiBsc2wubCAjOCwgZF9oaSAqLworCQllbWl0XzE2
-KGN0eCwgMHg4MDgwIHwgKGRfaGkgPDwgOSkgfCBkX2xvKTsJCS8qIG9yLmwgZF9sbywgZF9o
-aSAqLworCQllbWl0XzE2KGN0eCwgMHgyMDJmIHwgKGRfbG8gPDwgOSkpOwkJCS8qIG1vdmUu
-bCA0KCVzcCksIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4MDAwNCk7CisJCWVtaXRfMTYo
-Y3R4LCAweDJmNDAgfCBkX2hpKTsJCQkJLyogbW92ZS5sIGRfaGksIDQoJXNwKSAqLworCQll
-bWl0XzE2KGN0eCwgMHgwMDA0KTsKKwkJZW1pdF8xNihjdHgsIDB4NzFjMCB8IChkX2xvIDw8
-IDkpIHwgZF9sbyk7CQkvKiBtdnoudyBkX2xvLCBkX2xvICovCisJCWVtaXRfMTYoY3R4LCAw
-eDcxODAgfCAoZF9oaSA8PCA5KSB8IGRfbG8pOwkJLyogbXZ6LmIgZF9sbywgZF9oaSAqLwor
-CQllbWl0XzE2KGN0eCwgMHhlMDg4IHwgZF9sbyk7CQkJCS8qIGxzci5sICM4LCBkX2xvICov
-CisJCWVtaXRfMTYoY3R4LCAweGUxODggfCBkX2hpKTsJCQkJLyogbHNsLmwgIzgsIGRfaGkg
-Ki8KKwkJZW1pdF8xNihjdHgsIDB4ODA4MCB8IChkX2xvIDw8IDkpIHwgZF9oaSk7CQkvKiBv
-ci5sIGRfaGksIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4NDg0MCB8IGRfbG8pOwkJCQkv
-KiBzd2FwIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4ODFhZiB8IChkX2xvIDw8IDkpKTsJ
-CQkvKiBvci5sIGRfbG8sIDQoJXNwKSAqLworCQllbWl0XzE2KGN0eCwgMHgwMDA0KTsKKwor
-CQllbWl0XzE2KGN0eCwgMHgyMDE3IHwgKGRfbG8gPDwgOSkpOwkJCS8qIG1vdmUubCAoJXNw
-KSwgZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHg0ODQwIHwgZF9sbyk7CQkJCS8qIHN3YXAg
-ZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHg3MWMwIHwgKGRfbG8gPDwgOSkgfCBkX2xvKTsJ
-CS8qIG12ei53IGRfbG8sIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgsIDB4NzE4MCB8IChkX2hp
-IDw8IDkpIHwgZF9sbyk7CQkvKiBtdnouYiBkX2xvLCBkX2hpICovCisJCWVtaXRfMTYoY3R4
-LCAweGUwODggfCBkX2xvKTsJCQkJLyogbHNyLmwgIzgsIGRfbG8gKi8KKwkJZW1pdF8xNihj
-dHgsIDB4ZTE4OCB8IGRfaGkpOwkJCQkvKiBsc2wubCAjOCwgZF9oaSAqLworCQllbWl0XzE2
-KGN0eCwgMHg4MDgwIHwgKGRfaGkgPDwgOSkgfCBkX2xvKTsJCS8qIG9yLmwgZF9sbywgZF9o
-aSAqLworCQllbWl0XzE2KGN0eCwgMHgyMDE3IHwgKGRfbG8gPDwgOSkpOwkJCS8qIG1vdmUu
-bCAoJXNwKSwgZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHgyZTgwIHwgZF9oaSk7CQkJCS8q
-IG1vdmUubCBkX2hpLCAoJXNwKSAqLworCQllbWl0XzE2KGN0eCwgMHg3MWMwIHwgKGRfbG8g
-PDwgOSkgfCBkX2xvKTsJCS8qIG12ei53IGRfbG8sIGRfbG8gKi8KKwkJZW1pdF8xNihjdHgs
-IDB4NzE4MCB8IChkX2hpIDw8IDkpIHwgZF9sbyk7CQkvKiBtdnouYiBkX2xvLCBkX2hpICov
-CisJCWVtaXRfMTYoY3R4LCAweGUwODggfCBkX2xvKTsJCQkJLyogbHNyLmwgIzgsIGRfbG8g
-Ki8KKwkJZW1pdF8xNihjdHgsIDB4ZTE4OCB8IGRfaGkpOwkJCQkvKiBsc2wubCAjOCwgZF9o
-aSAqLworCQllbWl0XzE2KGN0eCwgMHg4MDgwIHwgKGRfbG8gPDwgOSkgfCBkX2hpKTsJCS8q
-IG9yLmwgZF9oaSwgZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHg0ODQwIHwgZF9sbyk7CQkJ
-CS8qIHN3YXAgZF9sbyAqLworCQllbWl0XzE2KGN0eCwgMHg4MDlmIHwgKGRfbG8gPDwgOSkp
-OwkJCS8qIG9yLmwgKCVzcCkrLCBkX2xvICovCisKKwkJZW1pdF8xNihjdHgsIDB4MjAxZiB8
-IChkX2hpIDw8IDkpKTsJCQkvKiBtb3ZlLmwgKCVzcCkrLCBkX2hpICovCisJfSBlbHNlIHsK
-KwkJZW1pdF8xNihjdHgsIDB4ZTA1OCB8IGRfbG8pOwkJCQkvKiByb3IudyAjOCwgZF9sbyAq
-LworCQllbWl0XzE2KGN0eCwgMHg0ODQwIHwgZF9sbyk7CQkJCS8qIHN3YXAgZF9sbyAqLwor
-CQllbWl0XzE2KGN0eCwgMHhlMDU4IHwgZF9sbyk7CQkJCS8qIHJvci53ICM4LCBkX2xvICov
-CisKKwkJZW1pdF8xNihjdHgsIDB4ZTA1OCB8IGRfaGkpOwkJCQkvKiByb3IudyAjOCwgZF9o
-aSAqLworCQllbWl0XzE2KGN0eCwgMHg0ODQwIHwgZF9oaSk7CQkJCS8qIHN3YXAgZF9oaSAq
-LworCQllbWl0XzE2KGN0eCwgMHhlMDU4IHwgZF9oaSk7CQkJCS8qIHJvci53ICM4LCBkX2hp
-ICovCisKKwkJZW1pdF8xNihjdHgsIDB4YzE0MCB8IChkX2hpIDw8IDkpIHwgZF9sbyk7CQkv
-KiBleGcgZF9sbywgZF9oaSAqLworCX0KK30KKwogc3RhdGljIHZvaWQgZW1pdF9icGZfZW5k
-KGNvbnN0IHN0cnVjdCBicGZfaW5zbiAqaW5zbiwgc3RydWN0IGppdF9jdHggKmN0eCkKIHsK
-IAljb25zdCBzOCAqZHN0ID0gYnBmMm02OGtbaW5zbi0+ZHN0X3JlZ107CkBAIC01ODcsMjcg
-KzcyNSwxMyBAQAogCWlmICh0b19sZSkgewogCQlzd2l0Y2ggKGltbSkgewogCQljYXNlIDE2
-OgotCQkJZW1pdF8xNihjdHgsIDB4MDI4MCB8IGRfbG8pOwkJCS8qIGFuZGkubCAjMHhmZmZm
-LCBkX2xvICovCi0JCQllbWl0XzMyKGN0eCwgMHhmZmZmKTsKLQkJCWVtaXRfMTYoY3R4LCAw
-eGUwNTggfCBkX2xvKTsJCQkvKiByb3IudyAjOCwgZF9sbyAqLwotCQkJZW1pdF8xNihjdHgs
-IDB4NzAwMCB8IChkX2hpIDw8IDkpKTsJCS8qIG1vdmVxICMwLCBkX2hpICovCisJCQllbWl0
-X3RvX2xlMTYoY3R4LCBkX2xvLCBkX2hpKTsKIAkJCWJyZWFrOwogCQljYXNlIDMyOgotCQkJ
-ZW1pdF8xNihjdHgsIDB4ZTA1OCB8IGRfbG8pOwkJCS8qIHJvci53ICM4LCBkX2xvICovCi0J
-CQllbWl0XzE2KGN0eCwgMHg0ODQwIHwgZF9sbyk7CQkJLyogc3dhcCBkX2xvICovCi0JCQll
-bWl0XzE2KGN0eCwgMHhlMDU4IHwgZF9sbyk7CQkJLyogcm9yLncgIzgsIGRfbG8gKi8KLQkJ
-CWVtaXRfMTYoY3R4LCAweDcwMDAgfCAoZF9oaSA8PCA5KSk7CQkvKiBtb3ZlcSAjMCwgZF9o
-aSAqLworCQkJZW1pdF90b19sZTMyKGN0eCwgZF9sbywgZF9oaSk7CiAJCQlicmVhazsKIAkJ
-Y2FzZSA2NDoKLQkJCWVtaXRfMTYoY3R4LCAweGUwNTggfCBkX2xvKTsJCQkvKiByb3IudyAj
-OCwgZF9sbyAqLwotCQkJZW1pdF8xNihjdHgsIDB4NDg0MCB8IGRfbG8pOwkJCS8qIHN3YXAg
-ZF9sbyAqLwotCQkJZW1pdF8xNihjdHgsIDB4ZTA1OCB8IGRfbG8pOwkJCS8qIHJvci53ICM4
-LCBkX2xvICovCi0KLQkJCWVtaXRfMTYoY3R4LCAweGUwNTggfCBkX2hpKTsJCQkvKiByb3Iu
-dyAjOCwgZF9oaSAqLwotCQkJZW1pdF8xNihjdHgsIDB4NDg0MCB8IGRfaGkpOwkJCS8qIHN3
-YXAgZF9oaSAqLwotCQkJZW1pdF8xNihjdHgsIDB4ZTA1OCB8IGRfaGkpOwkJCS8qIHJvci53
-ICM4LCBkX2hpICovCi0KLQkJCWVtaXRfMTYoY3R4LCAweGMxNDAgfCAoZF9oaSA8PCA5KSB8
-IGRfbG8pOwkvKiBleGcgZF9sbywgZF9oaSAqLworCQkJZW1pdF90b19sZTY0KGN0eCwgZF9s
-bywgZF9oaSk7CiAJCQlicmVhazsKIAkJfQogCX0gZWxzZSB7CkBAIC02OTIsOCArODE2LDgg
-QEAKIAl9CiAKIAlpZiAoaXNfNjQpIHsKLQkJZW1pdF8xNihjdHgsIDB4NDhlNyk7CQkJCQkv
-KiBtb3ZlbS5sIGQwLWQxLCAtKCVzcCkgKi8KLQkJZW1pdF8xNihjdHgsIDB4YzAwMCk7CisJ
-CWVtaXRfMTYoY3R4LCAweDJmMDEpOwkJCQkJLyogbW92ZS5sIGQxLCAtKCVzcCkgKi8KKwkJ
-ZW1pdF8xNihjdHgsIDB4MmYwMCk7CQkJCQkvKiBtb3ZlLmwgZDAsIC0oJXNwKSAqLwogCiAJ
-CWVtaXRfMTYoY3R4LCAweDJmMDAgfCBzX2xvKTsJCQkJLyogbW92ZS5sIHNfbG8sIC0oJXNw
-KSAqLwogCQllbWl0XzE2KGN0eCwgMHgyZjAwIHwgc19oaSk7CQkJCS8qIG1vdmUubCBzX2hp
-LCAtKCVzcCkgKi8KQEAgLTcxMCwxMSArODM0LDExIEBACiAJCWVtaXRfMTYoY3R4LCAweDI2
-MDEpOwkJCQkJLyogbW92ZS5sICVkMSwgJWQzICovCiAJCWVtaXRfMTYoY3R4LCAweDI0MDAp
-OwkJCQkJLyogbW92ZS5sICVkMCwgJWQyICovCiAKLQkJZW1pdF8xNihjdHgsIDB4NGNkZik7
-CQkJCQkvKiBtb3ZlbS5sICglc3ApKywgZDAtZDEgKi8KLQkJZW1pdF8xNihjdHgsIDB4MDAw
-Myk7CisJCWVtaXRfMTYoY3R4LCAweDIwMWYpOwkJCQkJLyogbW92ZS5sICglc3ApKywgZDAg
-Ki8KKwkJZW1pdF8xNihjdHgsIDB4MjIxZik7CQkJCQkvKiBtb3ZlLmwgKCVzcCkrLCBkMSAq
-LwogCX0gZWxzZSB7Ci0JCWVtaXRfMTYoY3R4LCAweDQ4ZTcpOwkJCQkJLyogbW92ZW0ubCBk
-MC1kMSwgLSglc3ApICovCi0JCWVtaXRfMTYoY3R4LCAweGMwMDApOworCQllbWl0XzE2KGN0
-eCwgMHgyZjAxKTsJCQkJCS8qIG1vdmUubCBkMSwgLSglc3ApICovCisJCWVtaXRfMTYoY3R4
-LCAweDJmMDApOwkJCQkJLyogbW92ZS5sIGQwLCAtKCVzcCkgKi8KIAogCQllbWl0XzE2KGN0
-eCwgMHgyZjAwIHwgc19sbyk7CQkJCS8qIG1vdmUubCBzX2xvLCAtKCVzcCkgKi8KIAkJZW1p
-dF8xNihjdHgsIDB4MmYwMCB8IGRfbG8pOwkJCQkvKiBtb3ZlLmwgZF9sbywgLSglc3ApICov
-CkBAIC03MjksOCArODUzLDggQEAKIAkJZW1pdF8xNihjdHgsIDB4MjYwMCk7CQkJCQkvKiBt
-b3ZlLmwgJWQwLCAlZDMgKi8KIAkJZW1pdF8xNihjdHgsIDB4NzQwMCk7CQkJCQkvKiBtb3Zl
-cSAjMCwgJWQyICovCiAKLQkJZW1pdF8xNihjdHgsIDB4NGNkZik7CQkJCQkvKiBtb3ZlbS5s
-ICglc3ApKywgZDAtZDEgKi8KLQkJZW1pdF8xNihjdHgsIDB4MDAwMyk7CisJCWVtaXRfMTYo
-Y3R4LCAweDIwMWYpOwkJCQkJLyogbW92ZS5sICglc3ApKywgZDAgKi8KKwkJZW1pdF8xNihj
-dHgsIDB4MjIxZik7CQkJCQkvKiBtb3ZlLmwgKCVzcCkrLCBkMSAqLwogCX0KIAogCWJwZl9w
-dXRfcmVnMzIoZHN0WzFdLCBNNjhLX0QzLCBjdHgpOwpAQCAtOTA1LDggKzEwMjksOCBAQAog
-CQlzOCBzX2xvID0gYnBmX2dldF9yZWczMihzcmNbMV0sIHRtcDJbMV0sIGN0eCk7CiAKIAkJ
-aWYgKGluc24tPmltbSAhPSBCUEZfQ01QWENIRykgewotCQkJZW1pdF8xNihjdHgsIDB4NDhl
-Nyk7CQkJLyogbW92ZW0ubCBkMC1kMSwgLSglc3ApICovCi0JCQllbWl0XzE2KGN0eCwgMHhj
-MDAwKTsKKwkJCWVtaXRfMTYoY3R4LCAweDJmMDEpOwkJCS8qIG1vdmUubCBkMSwgLSglc3Ap
-ICovCisJCQllbWl0XzE2KGN0eCwgMHgyZjAwKTsJCQkvKiBtb3ZlLmwgZDAsIC0oJXNwKSAq
-LwogCQl9CiAKIAkJZW1pdF8xNihjdHgsIDB4MmYwMCB8IE02OEtfRDApOwkJCS8qIG1vdmUu
-bCAlZDAsIC0oJXNwKSAqLwpAQCAtOTMwLDggKzEwNTQsOCBAQAogCQkJaWYgKGlzX2ZldGNo
-KQogCQkJCWVtaXRfMTYoY3R4LCAweDI2MDApOwkJLyogbW92ZS5sICVkMCwgJWQzICovCiAK
-LQkJCWVtaXRfMTYoY3R4LCAweDRjZGYpOwkJCS8qIG1vdmVtLmwgKCVzcCkrLCBkMC1kMSAq
-LwotCQkJZW1pdF8xNihjdHgsIDB4MDAwMyk7CisJCQllbWl0XzE2KGN0eCwgMHgyMDFmKTsJ
-CQkvKiBtb3ZlLmwgKCVzcCkrLCBkMCAqLworCQkJZW1pdF8xNihjdHgsIDB4MjIxZik7CQkJ
-LyogbW92ZS5sICglc3ApKywgZDEgKi8KIAogCQkJaWYgKGlzX2ZldGNoKSB7CiAJCQkJYnBm
-X3B1dF9yZWczMihzcmNbMV0sIE02OEtfRDMsIGN0eCk7CkBAIC05NDUsOCArMTA2OSw4IEBA
-CiAJCXM4IHNfaGkgPSBicGZfZ2V0X3JlZzMyKHNyY1swXSwgdG1wMlswXSwgY3R4KTsKIAog
-CQlpZiAoaW5zbi0+aW1tICE9IEJQRl9DTVBYQ0hHKSB7Ci0JCQllbWl0XzE2KGN0eCwgMHg0
-OGU3KTsJCQkvKiBtb3ZlbS5sIGQwLWQxLCAtKCVzcCkgKi8KLQkJCWVtaXRfMTYoY3R4LCAw
-eGMwMDApOworCQkJZW1pdF8xNihjdHgsIDB4MmYwMSk7CQkJLyogbW92ZS5sIGQxLCAtKCVz
-cCkgKi8KKwkJCWVtaXRfMTYoY3R4LCAweDJmMDApOwkJCS8qIG1vdmUubCBkMCwgLSglc3Ap
-ICovCiAJCX0KIAogCQllbWl0XzE2KGN0eCwgMHgyZjAwIHwgTTY4S19EMCk7CQkJLyogbW92
-ZS5sICVkMCwgLSglc3ApICovCkBAIC05NjUsNyArMTA4OSwxMyBAQAogCQllbWl0XzE2KGN0
-eCwgMjQpOwogCiAJCWlmIChpbnNuLT5pbW0gPT0gQlBGX0NNUFhDSEcpIHsKLQkJCWVtaXRf
-MTYoY3R4LCAweGMxNDEpOwkJCS8qIGV4ZyAlZDAsICVkMSAqLworCQkJaWYgKENQVV9JU19D
-T0xERklSRSkgeworCQkJCWVtaXRfMTYoY3R4LCAweDJmMDApOwkJLyogbW92ZS5sICVkMCwg
-LSglc3ApICovCisJCQkJZW1pdF8xNihjdHgsIDB4MjAwMSk7CQkvKiBtb3ZlLmwgJWQxLCAl
-ZDAgKi8KKwkJCQllbWl0XzE2KGN0eCwgMHgyMjFmKTsJCS8qIG1vdmUubCAoJXNwKSssICVk
-MSAqLworCQkJfSBlbHNlIHsKKwkJCQllbWl0XzE2KGN0eCwgMHhjMTQxKTsJCS8qIGV4ZyAl
-ZDAsICVkMSAqLworCQkJfQogCQl9IGVsc2UgewogCQkJYm9vbCBpc19mZXRjaCA9IChpbnNu
-LT5pbW0gJiBCUEZfRkVUQ0gpIHx8IGluc24tPmltbSA9PSBCUEZfWENIRzsKIApAQCAtOTc0
-LDggKzExMDQsOCBAQAogCQkJCWVtaXRfMTYoY3R4LCAweDI0MDEpOwkJLyogbW92ZS5sICVk
-MSwgJWQyICovCiAJCQl9CiAKLQkJCWVtaXRfMTYoY3R4LCAweDRjZGYpOwkJCS8qIG1vdmVt
-LmwgKCVzcCkrLCBkMC1kMSAqLwotCQkJZW1pdF8xNihjdHgsIDB4MDAwMyk7CisJCQllbWl0
-XzE2KGN0eCwgMHgyMDFmKTsJCQkvKiBtb3ZlLmwgKCVzcCkrLCBkMCAqLworCQkJZW1pdF8x
-NihjdHgsIDB4MjIxZik7CQkJLyogbW92ZS5sICglc3ApKywgZDEgKi8KIAogCQkJaWYgKGlz
-X2ZldGNoKSB7CiAJCQkJYnBmX3B1dF9yZWczMihzcmNbMV0sIE02OEtfRDIsIGN0eCk7CkBA
-IC0xMjQ0LDggKzEzNzQsMTUgQEAKIAllbWl0XzE2KGN0eCwgMHg0ZmVmKTsJCQkJCS8qIGxl
-YSA0MCglc3ApLCAlc3AgKi8KIAllbWl0XzE2KGN0eCwgNDApOwogCi0JaWYgKGluc24tPnNy
-Y19yZWcgIT0gQlBGX1BTRVVET19DQUxMKQotCQllbWl0XzE2KGN0eCwgMHhjMzQwKTsJCQkJ
-CS8qIGV4ZyAlZDAsICVkMSAqLworCWlmIChpbnNuLT5zcmNfcmVnICE9IEJQRl9QU0VVRE9f
-Q0FMTCkgeworCQlpZiAoQ1BVX0lTX0NPTERGSVJFKSB7CisJCQllbWl0XzE2KGN0eCwgMHgy
-ZjAwKTsJCQkvKiBtb3ZlLmwgJWQwLCAtKCVzcCkgKi8KKwkJCWVtaXRfMTYoY3R4LCAweDIw
-MDEpOwkJCS8qIG1vdmUubCAlZDEsICVkMCAqLworCQkJZW1pdF8xNihjdHgsIDB4MjIxZik7
-CQkJLyogbW92ZS5sICglc3ApKywgJWQxICovCisJCX0gZWxzZSB7CisJCQllbWl0XzE2KGN0
-eCwgMHhjMzQwKTsJCQkvKiBleGcgJWQwLCAlZDEgKi8KKwkJfQorCX0KIAogCXJldHVybiAw
-OwogfQpAQCAtMTI2MSw4ICsxMzk4LDE1IEBACiAJZW1pdF8xNihjdHgsIDB4NGU1Nik7CQkJ
-CQkvKiBsaW5rICVhNiwgIy10b3RhbF9zdGFjayAqLwogCWVtaXRfMTYoY3R4LCAtdG90YWxf
-c3RhY2spOwogCi0JZW1pdF8xNihjdHgsIDB4NDhlNyk7CQkJCQkvKiBtb3ZlbS5sIGQyLWQ1
-LCAtKCVzcCkgKi8KLQllbWl0XzE2KGN0eCwgMHgzYzAwKTsKKwlpZiAoQ1BVX0lTX0NPTERG
-SVJFKSB7CisJCWVtaXRfMTYoY3R4LCAweDRmZWYpOwkJCQkvKiBsZWEgLTE2KCVzcCksICVz
-cCAqLworCQllbWl0XzE2KGN0eCwgMHhmZmYwKTsKKwkJZW1pdF8xNihjdHgsIDB4NDhkNyk7
-CQkJCS8qIG1vdmVtLmwgZDItZDUsICglc3ApICovCisJCWVtaXRfMTYoY3R4LCAweDAwM2Mp
-OworCX0gZWxzZSB7CisJCWVtaXRfMTYoY3R4LCAweDQ4ZTcpOwkJCQkvKiBtb3ZlbS5sIGQy
-LWQ1LCAtKCVzcCkgKi8KKwkJZW1pdF8xNihjdHgsIDB4M2MwMCk7CisJfQogCiAJZW1pdF8x
-NihjdHgsIDB4MmQ0MCk7CQkJCQkvKiBtb3ZlLmwgJWQwLCBvZmYoJWZwKSAqLwogCWVtaXRf
-MTYoY3R4LCAodTE2KVNUQUNLX09GRlNFVChCUEZfVENfTE8pKTsKQEAgLTEzMDIsOCArMTQ0
-NiwxNSBAQAogCiBzdGF0aWMgdm9pZCBidWlsZF9lcGlsb2d1ZShzdHJ1Y3Qgaml0X2N0eCAq
-Y3R4KQogewotCWVtaXRfMTYoY3R4LCAweDRjZGYpOwkJCQkJLyogbW92ZW0ubCAoJXNwKSss
-IGQyLWQ1ICovCi0JZW1pdF8xNihjdHgsIDB4MDAzYyk7CisJaWYgKENQVV9JU19DT0xERklS
-RSkgeworCQllbWl0XzE2KGN0eCwgMHg0Y2Q3KTsJCQkJLyogbW92ZW0ubCAoJXNwKSwgZDIt
-ZDUgKi8KKwkJZW1pdF8xNihjdHgsIDB4MDAzYyk7CisJCWVtaXRfMTYoY3R4LCAweDRmZWYp
-OwkJCQkvKiBsZWEgMTYoJXNwKSwgJXNwICovCisJCWVtaXRfMTYoY3R4LCAweDAwMTApOwor
-CX0gZWxzZSB7CisJCWVtaXRfMTYoY3R4LCAweDRjZGYpOwkJCQkvKiBtb3ZlbS5sICglc3Ap
-KywgZDItZDUgKi8KKwkJZW1pdF8xNihjdHgsIDB4MDAzYyk7CisJfQogCiAJZW1pdF8xNihj
-dHgsIDB4NGU1ZSk7CQkJCQkvKiB1bmxrICVmcCAqLwogCWVtaXRfMTYoY3R4LCAweDRlNzUp
-OwkJCQkJLyogcnRzICovCi0tLSBhL2FyY2gvbTY4ay9LY29uZmlnCisrKyBiL2FyY2gvbTY4
-ay9LY29uZmlnCkBAIC04LDcgKzgsNyBAQAogCXNlbGVjdCBBUkNIX0hBU19DUFVfRklOQUxJ
-WkVfSU5JVCBpZiBNTVUKIAlzZWxlY3QgQVJDSF9IQVNfQ1VSUkVOVF9TVEFDS19QT0lOVEVS
-CiAJc2VsZWN0IEFSQ0hfSEFTX0RNQV9QUkVQX0NPSEVSRU5UIGlmIE02OEtfTk9OQ09IRVJF
-TlRfRE1BICYmICFDT0xERklSRQotCXNlbGVjdCBIQVZFX0VCUEZfSklUIGlmICghQ09MREZJ
-UkUgJiYgIU02ODAwMCkKKwlzZWxlY3QgSEFWRV9FQlBGX0pJVCBpZiBNTVUKIAlzZWxlY3Qg
-QVJDSF9IQVNfU1lOQ19ETUFfRk9SX0RFVklDRSBpZiBNNjhLX05PTkNPSEVSRU5UX0RNQQog
-CXNlbGVjdCBBUkNIX0hBVkVfTk1JX1NBRkVfQ01QWENIRyBpZiBSTVdfSU5TTlMKIAlzZWxl
-Y3QgQVJDSF9NSUdIVF9IQVZFX1BDX1BBUlBPUlQgaWYgSVNBCg==
+--- a/arch/m68k/net/bpf_jit_comp.c
++++ b/arch/m68k/net/bpf_jit_comp.c
+@@ -518,6 +518,47 @@
+ 	bpf_put_reg32(dst[0], d_hi, ctx);
+ }
+ 
++static inline void emit_lsh64(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
++{
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0xd080 | (d_lo << 9) | d_lo);		/* add.l d_lo, d_lo */
++		emit_16(ctx, 0xd180 | (d_hi << 9) | d_hi);		/* addx.l d_hi, d_hi */
++	} else {
++		emit_16(ctx, 0xe388 | d_lo);				/* lsll #1, d_lo */
++		emit_16(ctx, 0xe390 | d_hi);				/* roxl.l #1, d_hi */
++	}
++}
++
++static inline void emit_rsh64(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
++{
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0xe288 | d_lo);				/* lsr.l #1, d_lo */
++		emit_16(ctx, 0xe288 | d_hi);				/* lsr.l #1, d_hi */
++		emit_16(ctx, 0x6400);					/* bcc 1f */
++		emit_16(ctx, 0x0006);
++		emit_16(ctx, 0x08c0 | d_lo);				/* bset #31, d_lo */
++		emit_16(ctx, 0x001f);
++	} else {
++		emit_16(ctx, 0xe288 | d_hi);				/* lsrl #1, d_hi */
++		emit_16(ctx, 0xe290 | d_lo);				/* roxr.l #1, d_lo */
++	}
++}
++
++static inline void emit_arsh64(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
++{
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0xe288 | d_lo);				/* lsr.l #1, d_lo */
++		emit_16(ctx, 0xe280 | d_hi);				/* asr.l #1, d_hi */
++		emit_16(ctx, 0x6400);					/* bcc 1f */
++		emit_16(ctx, 0x0006);
++		emit_16(ctx, 0x08c0 | d_lo);				/* bset #31, d_lo */
++		emit_16(ctx, 0x001f);
++	} else {
++		emit_16(ctx, 0xe280 | d_hi);				/* asrl #1, d_hi */
++		emit_16(ctx, 0xe290 | d_lo);				/* roxr.l #1, d_lo */
++	}
++}
++
+ static void emit_alu64_shift(const struct bpf_insn *insn, struct jit_ctx *ctx, bool is_imm)
+ {
+ 	const s8 *dst = bpf2m68k[insn->dst_reg];
+@@ -551,16 +592,12 @@
+ 
+ 	loop_start = ctx->idx;
+ 
+-	if (BPF_OP(insn->code) == BPF_LSH) {
+-		emit_16(ctx, 0xe388 | d_lo);				/* lsll #1, d_lo */
+-		emit_16(ctx, 0xe390 | d_hi);				/* roxl.l #1, d_hi */
+-	} else if (BPF_OP(insn->code) == BPF_RSH) {
+-		emit_16(ctx, 0xe288 | d_hi);				/* lsrl #1, d_hi */
+-		emit_16(ctx, 0xe290 | d_lo);				/* roxr.l #1, d_lo */
+-	} else if (BPF_OP(insn->code) == BPF_ARSH) {
+-		emit_16(ctx, 0xe280 | d_hi);				/* asrl #1, d_hi */
+-		emit_16(ctx, 0xe290 | d_lo);				/* roxr.l #1, d_lo */
+-	}
++	if (BPF_OP(insn->code) == BPF_LSH)
++		emit_lsh64(ctx, d_lo, d_hi);
++	else if (BPF_OP(insn->code) == BPF_RSH)
++		emit_rsh64(ctx, d_lo, d_hi);
++	else if (BPF_OP(insn->code) == BPF_ARSH)
++		emit_arsh64(ctx, d_lo, d_hi);
+ 
+ 	emit_16(ctx, 0x5380 | count_reg);				/* subq.l #1, count_reg */
+ 	emit_16(ctx, 0x6600);						/* bne.w loop_start */
+@@ -573,6 +610,107 @@
+ 	bpf_put_reg32(dst[0], d_hi, ctx);
+ }
+ 
++static inline void emit_to_le16(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
++{
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
++		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
++		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
++		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
++		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
++	} else {
++		emit_16(ctx, 0x0280 | d_lo);				/* andi.l #0xffff, d_lo */
++		emit_32(ctx, 0xffff);
++		emit_16(ctx, 0xe058 | d_lo);				/* ror.w #8, d_lo */
++	}
++
++	emit_16(ctx, 0x7000 | (d_hi << 9));				/* moveq #0, d_hi */
++}
++
++static inline void emit_to_le32(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
++{
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0x2f00 | d_lo);				/* move.l d_lo, -(%sp) */
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
++		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
++		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
++		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
++		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
++		emit_16(ctx, 0x2017 | (d_lo << 9));			/* move.l (%sp), d_lo */
++		emit_16(ctx, 0x2e80 | d_hi);				/* move.l d_hi, (%sp) */
++		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
++		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
++		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
++		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
++		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0x809f | (d_lo << 9));			/* or.l (%sp)+, d_lo */
++	} else {
++		emit_16(ctx, 0xe058 | d_lo);				/* ror.w #8, d_lo */
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0xe058 | d_lo);				/* ror.w #8, d_lo */
++	}
++
++	emit_16(ctx, 0x7000 | (d_hi << 9));				/* moveq #0, d_hi */
++}
++
++static inline void emit_to_le64(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
++{
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0x2f00 | d_lo);				/* move.l d_lo, -(%sp) */
++		emit_16(ctx, 0x2f00 | d_hi);				/* move.l d_hi, -(%sp) */
++
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
++		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
++		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
++		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
++		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
++		emit_16(ctx, 0x202f | (d_lo << 9));			/* move.l 4(%sp), d_lo */
++		emit_16(ctx, 0x0004);
++		emit_16(ctx, 0x2f40 | d_hi);				/* move.l d_hi, 4(%sp) */
++		emit_16(ctx, 0x0004);
++		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
++		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
++		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
++		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
++		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0x81af | (d_lo << 9));			/* or.l d_lo, 4(%sp) */
++		emit_16(ctx, 0x0004);
++
++		emit_16(ctx, 0x2017 | (d_lo << 9));			/* move.l (%sp), d_lo */
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
++		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
++		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
++		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
++		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
++		emit_16(ctx, 0x2017 | (d_lo << 9));			/* move.l (%sp), d_lo */
++		emit_16(ctx, 0x2e80 | d_hi);				/* move.l d_hi, (%sp) */
++		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
++		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
++		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
++		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
++		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0x809f | (d_lo << 9));			/* or.l (%sp)+, d_lo */
++
++		emit_16(ctx, 0x201f | (d_hi << 9));			/* move.l (%sp)+, d_hi */
++	} else {
++		emit_16(ctx, 0xe058 | d_lo);				/* ror.w #8, d_lo */
++		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
++		emit_16(ctx, 0xe058 | d_lo);				/* ror.w #8, d_lo */
++
++		emit_16(ctx, 0xe058 | d_hi);				/* ror.w #8, d_hi */
++		emit_16(ctx, 0x4840 | d_hi);				/* swap d_hi */
++		emit_16(ctx, 0xe058 | d_hi);				/* ror.w #8, d_hi */
++
++		emit_16(ctx, 0xc140 | (d_hi << 9) | d_lo);		/* exg d_lo, d_hi */
++	}
++}
++
+ static void emit_bpf_end(const struct bpf_insn *insn, struct jit_ctx *ctx)
+ {
+ 	const s8 *dst = bpf2m68k[insn->dst_reg];
+@@ -587,27 +725,13 @@
+ 	if (to_le) {
+ 		switch (imm) {
+ 		case 16:
+-			emit_16(ctx, 0x0280 | d_lo);			/* andi.l #0xffff, d_lo */
+-			emit_32(ctx, 0xffff);
+-			emit_16(ctx, 0xe058 | d_lo);			/* ror.w #8, d_lo */
+-			emit_16(ctx, 0x7000 | (d_hi << 9));		/* moveq #0, d_hi */
++			emit_to_le16(ctx, d_lo, d_hi);
+ 			break;
+ 		case 32:
+-			emit_16(ctx, 0xe058 | d_lo);			/* ror.w #8, d_lo */
+-			emit_16(ctx, 0x4840 | d_lo);			/* swap d_lo */
+-			emit_16(ctx, 0xe058 | d_lo);			/* ror.w #8, d_lo */
+-			emit_16(ctx, 0x7000 | (d_hi << 9));		/* moveq #0, d_hi */
++			emit_to_le32(ctx, d_lo, d_hi);
+ 			break;
+ 		case 64:
+-			emit_16(ctx, 0xe058 | d_lo);			/* ror.w #8, d_lo */
+-			emit_16(ctx, 0x4840 | d_lo);			/* swap d_lo */
+-			emit_16(ctx, 0xe058 | d_lo);			/* ror.w #8, d_lo */
+-
+-			emit_16(ctx, 0xe058 | d_hi);			/* ror.w #8, d_hi */
+-			emit_16(ctx, 0x4840 | d_hi);			/* swap d_hi */
+-			emit_16(ctx, 0xe058 | d_hi);			/* ror.w #8, d_hi */
+-
+-			emit_16(ctx, 0xc140 | (d_hi << 9) | d_lo);	/* exg d_lo, d_hi */
++			emit_to_le64(ctx, d_lo, d_hi);
+ 			break;
+ 		}
+ 	} else {
+@@ -692,8 +816,8 @@
+ 	}
+ 
+ 	if (is_64) {
+-		emit_16(ctx, 0x48e7);					/* movem.l d0-d1, -(%sp) */
+-		emit_16(ctx, 0xc000);
++		emit_16(ctx, 0x2f01);					/* move.l d1, -(%sp) */
++		emit_16(ctx, 0x2f00);					/* move.l d0, -(%sp) */
+ 
+ 		emit_16(ctx, 0x2f00 | s_lo);				/* move.l s_lo, -(%sp) */
+ 		emit_16(ctx, 0x2f00 | s_hi);				/* move.l s_hi, -(%sp) */
+@@ -710,11 +834,11 @@
+ 		emit_16(ctx, 0x2601);					/* move.l %d1, %d3 */
+ 		emit_16(ctx, 0x2400);					/* move.l %d0, %d2 */
+ 
+-		emit_16(ctx, 0x4cdf);					/* movem.l (%sp)+, d0-d1 */
+-		emit_16(ctx, 0x0003);
++		emit_16(ctx, 0x201f);					/* move.l (%sp)+, d0 */
++		emit_16(ctx, 0x221f);					/* move.l (%sp)+, d1 */
+ 	} else {
+-		emit_16(ctx, 0x48e7);					/* movem.l d0-d1, -(%sp) */
+-		emit_16(ctx, 0xc000);
++		emit_16(ctx, 0x2f01);					/* move.l d1, -(%sp) */
++		emit_16(ctx, 0x2f00);					/* move.l d0, -(%sp) */
+ 
+ 		emit_16(ctx, 0x2f00 | s_lo);				/* move.l s_lo, -(%sp) */
+ 		emit_16(ctx, 0x2f00 | d_lo);				/* move.l d_lo, -(%sp) */
+@@ -729,8 +853,8 @@
+ 		emit_16(ctx, 0x2600);					/* move.l %d0, %d3 */
+ 		emit_16(ctx, 0x7400);					/* moveq #0, %d2 */
+ 
+-		emit_16(ctx, 0x4cdf);					/* movem.l (%sp)+, d0-d1 */
+-		emit_16(ctx, 0x0003);
++		emit_16(ctx, 0x201f);					/* move.l (%sp)+, d0 */
++		emit_16(ctx, 0x221f);					/* move.l (%sp)+, d1 */
+ 	}
+ 
+ 	bpf_put_reg32(dst[1], M68K_D3, ctx);
+@@ -905,8 +1029,8 @@
+ 		s8 s_lo = bpf_get_reg32(src[1], tmp2[1], ctx);
+ 
+ 		if (insn->imm != BPF_CMPXCHG) {
+-			emit_16(ctx, 0x48e7);			/* movem.l d0-d1, -(%sp) */
+-			emit_16(ctx, 0xc000);
++			emit_16(ctx, 0x2f01);			/* move.l d1, -(%sp) */
++			emit_16(ctx, 0x2f00);			/* move.l d0, -(%sp) */
+ 		}
+ 
+ 		emit_16(ctx, 0x2f00 | M68K_D0);			/* move.l %d0, -(%sp) */
+@@ -930,8 +1054,8 @@
+ 			if (is_fetch)
+ 				emit_16(ctx, 0x2600);		/* move.l %d0, %d3 */
+ 
+-			emit_16(ctx, 0x4cdf);			/* movem.l (%sp)+, d0-d1 */
+-			emit_16(ctx, 0x0003);
++			emit_16(ctx, 0x201f);			/* move.l (%sp)+, d0 */
++			emit_16(ctx, 0x221f);			/* move.l (%sp)+, d1 */
+ 
+ 			if (is_fetch) {
+ 				bpf_put_reg32(src[1], M68K_D3, ctx);
+@@ -945,8 +1069,8 @@
+ 		s8 s_hi = bpf_get_reg32(src[0], tmp2[0], ctx);
+ 
+ 		if (insn->imm != BPF_CMPXCHG) {
+-			emit_16(ctx, 0x48e7);			/* movem.l d0-d1, -(%sp) */
+-			emit_16(ctx, 0xc000);
++			emit_16(ctx, 0x2f01);			/* move.l d1, -(%sp) */
++			emit_16(ctx, 0x2f00);			/* move.l d0, -(%sp) */
+ 		}
+ 
+ 		emit_16(ctx, 0x2f00 | M68K_D0);			/* move.l %d0, -(%sp) */
+@@ -965,7 +1089,13 @@
+ 		emit_16(ctx, 24);
+ 
+ 		if (insn->imm == BPF_CMPXCHG) {
+-			emit_16(ctx, 0xc141);			/* exg %d0, %d1 */
++			if (CPU_IS_COLDFIRE) {
++				emit_16(ctx, 0x2f00);		/* move.l %d0, -(%sp) */
++				emit_16(ctx, 0x2001);		/* move.l %d1, %d0 */
++				emit_16(ctx, 0x221f);		/* move.l (%sp)+, %d1 */
++			} else {
++				emit_16(ctx, 0xc141);		/* exg %d0, %d1 */
++			}
+ 		} else {
+ 			bool is_fetch = (insn->imm & BPF_FETCH) || insn->imm == BPF_XCHG;
+ 
+@@ -974,8 +1104,8 @@
+ 				emit_16(ctx, 0x2401);		/* move.l %d1, %d2 */
+ 			}
+ 
+-			emit_16(ctx, 0x4cdf);			/* movem.l (%sp)+, d0-d1 */
+-			emit_16(ctx, 0x0003);
++			emit_16(ctx, 0x201f);			/* move.l (%sp)+, d0 */
++			emit_16(ctx, 0x221f);			/* move.l (%sp)+, d1 */
+ 
+ 			if (is_fetch) {
+ 				bpf_put_reg32(src[1], M68K_D2, ctx);
+@@ -1244,8 +1374,15 @@
+ 	emit_16(ctx, 0x4fef);					/* lea 40(%sp), %sp */
+ 	emit_16(ctx, 40);
+ 
+-	if (insn->src_reg != BPF_PSEUDO_CALL)
+-		emit_16(ctx, 0xc340);					/* exg %d0, %d1 */
++	if (insn->src_reg != BPF_PSEUDO_CALL) {
++		if (CPU_IS_COLDFIRE) {
++			emit_16(ctx, 0x2f00);			/* move.l %d0, -(%sp) */
++			emit_16(ctx, 0x2001);			/* move.l %d1, %d0 */
++			emit_16(ctx, 0x221f);			/* move.l (%sp)+, %d1 */
++		} else {
++			emit_16(ctx, 0xc340);			/* exg %d0, %d1 */
++		}
++	}
+ 
+ 	return 0;
+ }
+@@ -1261,8 +1398,15 @@
+ 	emit_16(ctx, 0x4e56);					/* link %a6, #-total_stack */
+ 	emit_16(ctx, -total_stack);
+ 
+-	emit_16(ctx, 0x48e7);					/* movem.l d2-d5, -(%sp) */
+-	emit_16(ctx, 0x3c00);
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0x4fef);				/* lea -16(%sp), %sp */
++		emit_16(ctx, 0xfff0);
++		emit_16(ctx, 0x48d7);				/* movem.l d2-d5, (%sp) */
++		emit_16(ctx, 0x003c);
++	} else {
++		emit_16(ctx, 0x48e7);				/* movem.l d2-d5, -(%sp) */
++		emit_16(ctx, 0x3c00);
++	}
+ 
+ 	emit_16(ctx, 0x2d40);					/* move.l %d0, off(%fp) */
+ 	emit_16(ctx, (u16)STACK_OFFSET(BPF_TC_LO));
+@@ -1302,8 +1446,15 @@
+ 
+ static void build_epilogue(struct jit_ctx *ctx)
+ {
+-	emit_16(ctx, 0x4cdf);					/* movem.l (%sp)+, d2-d5 */
+-	emit_16(ctx, 0x003c);
++	if (CPU_IS_COLDFIRE) {
++		emit_16(ctx, 0x4cd7);				/* movem.l (%sp), d2-d5 */
++		emit_16(ctx, 0x003c);
++		emit_16(ctx, 0x4fef);				/* lea 16(%sp), %sp */
++		emit_16(ctx, 0x0010);
++	} else {
++		emit_16(ctx, 0x4cdf);				/* movem.l (%sp)+, d2-d5 */
++		emit_16(ctx, 0x003c);
++	}
+ 
+ 	emit_16(ctx, 0x4e5e);					/* unlk %fp */
+ 	emit_16(ctx, 0x4e75);					/* rts */
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -8,7 +8,7 @@
+ 	select ARCH_HAS_CPU_FINALIZE_INIT if MMU
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
+ 	select ARCH_HAS_DMA_PREP_COHERENT if M68K_NONCOHERENT_DMA && !COLDFIRE
+-	select HAVE_EBPF_JIT if (!COLDFIRE && !M68000)
++	select HAVE_EBPF_JIT if MMU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if M68K_NONCOHERENT_DMA
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
 
---------------aPZ88F0pvkjouaGYy7fre0E7--
