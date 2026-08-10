@@ -1,87 +1,95 @@
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5207E3AFD08
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Aug 2026 09:30:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E853803C7
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Aug 2026 09:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786354213; cv=none; b=FV5O/c6R/VtS7JaqAtI7vYvf+BDccAoajgoCWVDSGb+9cEpuZLG7E9zTZZSJY14ySRbgPXv/bltoun4bfQbUjrlw5q/b9olucCfkbMjKw4F8bI+YNt24tyb8ZGjODs9F/MKQAEpd/aQAQq97N9ymL6N9f+BOWdA+j26NJCIPjzY=
+	t=1786354349; cv=none; b=aJMahRsA/vzAFHij8+NLdIw662bB5p6muH2o8TzmCWMJK4ukWxdU0twIFm3Zj454OG0NuRnQF5ubyhxZ98/c4gaEj2p4a/8ulVwvlVr6XP+Q4d57KhoTXtqvobPNnxsB6bwqb3uIieNb+T1WC2MiCdZO7UIPgkXSElPZDG+Gld0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786354213; c=relaxed/simple;
-	bh=yzK9eqeqHRkkqsX9vLJsn5ZD05Ikx0+9dfcHrM485oU=;
+	s=arc-20240116; t=1786354349; c=relaxed/simple;
+	bh=6HmBU3g9zX4/EeGKq0T5oS5ffeyl9I0wrf9IE3dRnz8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QBDp8n3zgzgIDEUuPtedJ89Ua9yI1Avxf2+v+zkxKDzdwyIURzt2QR8FLdnGd74ogxXEYfa79e4ToolqFaim//giSHiQCbniHVU40wAx8svMWuaWbY8sKMkAfr/6n1GBSwKNRhtbK/eiLYkYS4TS1qke5U71ijU65EFQsrkNYeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.172
+	 To:Cc:Content-Type; b=R1ZFs1BuB0tp55u9Rchybd/WiixbF6CXG31qqjBFP8rua7b4HcqtWK62telddWaXPxyFMwflQ+vCp5KgBR0KbQDZCmL8vQb028IJzgNmAwak8qsVsKlDVj/vJwLiWicRlHc885PqvL/5pzP0Pzrsp4DMPEGzKZgwcQ+nbxNbv+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-5c2c0df0b45so491599e0c.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Aug 2026 02:30:11 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-74ac3ea9c60so381548137.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Aug 2026 02:32:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786354210; x=1786959010;
+        d=1e100.net; s=20251104; t=1786354347; x=1786959147;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=1Q3olUszZHPHSfKycoK9HWlmYEYUmdKW7ddfv+lMVws=;
-        b=EW+yAf1MZVO0VZ5YUkBfoQtYoRfrPe6B09kfJbAHvNg0q4wmSqW7+le+44jHnQN7Vc
-         4A06jIjI1LQufby32WeWzz3QutmNLuSaO0yEYK9zoj8kOI7QagO/pJzIsgWvR1aEYLCV
-         kqsE6DqveTxqh9HXeiNyJL0172O54JPOEhCWfQoW1g8O2jmujgQoddrIbjY8EgeaTpFQ
-         Cf3ehJVgJ2ghw0/yz+k29+bC+Vf+VnDJlByPPDPcJjb+qcZ0A03M6IjeJQk/V9wHIfgP
-         CQAkyN3B4dwu6HSJkJuWengXk1sMxTDK1FdHkxC539p8h6VK+Jv4v9LHKZXRk12yL+0P
-         pa4g==
-X-Forwarded-Encrypted: i=1; AHgh+RpttMfwumDkqhuPsJWAQyOU1ahflq0ZbzcXInNfMuvXckGC5g8JOpcG3ow3NN1iWX6TUbKRYaSHT1Ty@lists.linux-m68k.org
-X-Gm-Message-State: AOJu0YzL98ybHz5/M2p+sSByzhi7QFZzgV4GemZesnxzn2osfon9IIbW
-	0k7Z/GIEA5FR0MBsecB0HHytRZ/rp8YA2IrdA7JtdlOq37tg5vsgnTbPTpA1FeT5
-X-Gm-Gg: AR+sD12aSNRSs0I/G1BKqCUzgbi9NWxVftzTn1UQhk00WJ3GZZtkyJMJFwzASNtIiRH
-	9CXlSMl/4R7mHv5MoRVkNouQwe7FSnUYXkXREvQfSxinGTQ9IsvecgAQcH9Lg2N3cBp3u1Owa1I
-	1ngQUQGv2M1tpFCnisGOcbpMwL5zRYJXQFB/kK8KCNokBju14gRuJsoclxpYV8hrsKjqL3FWdHO
-	xYUhsFUiThDjgIUOTDgwVLkcgvCPg9BmAfQ3yoKois9fHlUKuLpAPJdsETAIYhFCksFMJT2FI+y
-	9kTL06FZKJ3prQhm+Ymt9j32K726jqhBO1fXMbKeaYDuKspD4Fm3AEfWmdNUqdfbfx8eLzIRFNF
-	e26dzj/N5ey71Yq7BpRlV9Odd6l72EkUvQJluJ9touOYbcLM9v0Bzg7c+q/7MpZz3C1jTHJuck2
-	8ajK6nGGxEjcoRo3t7ujrq/aa1li47EOnpqoC2Kjuz/YeAN2SGaunfzYXt2ZD8DivnoOGzgpZ/+
-	SMPSB2/0j6554zsiuugiNN7wBSiiA==
-X-Received: by 2002:a05:6122:1d93:b0:5c1:1965:6243 with SMTP id 71dfb90a1353d-5c3d9272795mr4169031e0c.13.1786354209931;
-        Mon, 10 Aug 2026 02:30:09 -0700 (PDT)
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5c40ae6a78esm3980703e0c.4.2026.08.10.02.30.09
+        bh=iWpKryeVmKmKhBYQWps9hhi3GQAPoNmmBMB/3gK4ivo=;
+        b=O+3isHQs0HdAQulTTMOfdb7hPdi3Q0n2WOIEUx77r+ogn/bCliTmPVDxbDLJS9HLWv
+         5v6BRwpYwGYpCi/8z7L52aC8YHTx6FXW/P80CKpO4dK2wx/8qgKarkChw3+MGpWrjiwj
+         6Kh6Qr8x44FtLy8A/lr/Bsb1QeFcxvjq98wEcmgqTMscsGp/WK5i/EH+Ya5Fnr8J9XE4
+         x07zQQtLGSH8gnT3+XBy3L0gHmYQ9O+ArozbADQw0LaXDySZSRzvXa4n0DFm4XLmiuKe
+         tVZPIJrFpenIO3g75R/4BDQNZEfxSdnGdYPr1hHGXGk5GKxt+AkQSvGf0Jbpc0t25IUc
+         ZSVA==
+X-Gm-Message-State: AOJu0Yy6K+OEzX3BWobZC+qVBOuZ+hoAcSKWoEBjxffqYNns8grkww1J
+	zRnm5nex58smTyCj++TghsgEEBOy2IaBtmxyaS8egFbTxFEbQsnGuVgzYh02Mr15
+X-Gm-Gg: AR+sD10nph+n47wZki7m4NRWchiNse/t1hX89qZlnfxeLZadAT+aUd2Yc8S6D7ArhuT
+	2EPOBvDuIKUpmGuJJMuMK+YWFbnmUK35SUncWkCO2tkLrxMhIyw5kqK8n4JDA7M7dzJT2jqSvZo
+	pt5ZSGQ2FSz5UxqGaywakUWi6sDs3rc6uRy1bcSjkQGasWf6wVZ/r95QP9YxnpV+fkavhdXE29u
+	AoSh2iAyw1T6SYsHbPA2N6o3qd18SLdDKwtCtsxG9k/BG0CG6HKM3KmqeoWK1FBoebcvsmAsw6f
+	il/EaNyUxOGTeAram1j0jhhJG7Xh91a2g0aEZ8pvCd9rjYv1LmGz8wuJpBALlAESD8dU8L8vP1Y
+	TyCP19J+6nMSKh/eRk5HgRZptB49sXW4kA1HcPripgJNcZ/BZIWXREQhHunms+2gFihRVaIMydO
+	cUWic+GSqM500wNjVH1PfIgL/R1lInkcNXKuaKXUvGYDIJgzr62kk+09tDj3FQjpGnitoSQx/3A
+	V1a75iQLqUuXRULTX9K0OO30B7B/Q==
+X-Received: by 2002:a05:6102:f82:b0:745:7f23:a876 with SMTP id ada2fe7eead31-7642d16f34emr5160084137.1.1786354346593;
+        Mon, 10 Aug 2026 02:32:26 -0700 (PDT)
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-979ffbdd8besm2479509241.2.2026.08.10.02.32.26
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Aug 2026 02:30:09 -0700 (PDT)
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-5bfaa014978so629353e0c.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Aug 2026 02:30:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rp0211dxFasCWCNvDmjvyDd+ENxStrCEQD8loPAFRbWUxWMrRYafFnxPD9xFrrziwYihG/l1kDzh2VX@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:f84:b0:73a:128b:ea07 with SMTP id
- ada2fe7eead31-760e8f3a718mr9755418137.14.1786354209457; Mon, 10 Aug 2026
- 02:30:09 -0700 (PDT)
+        Mon, 10 Aug 2026 02:32:26 -0700 (PDT)
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-5c2c96286f0so681219e0c.3
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 10 Aug 2026 02:32:26 -0700 (PDT)
+X-Received: by 2002:a05:6102:f82:b0:745:7f23:a876 with SMTP id
+ ada2fe7eead31-7642d16f34emr5160066137.1.1786354345814; Mon, 10 Aug 2026
+ 02:32:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260629120426.680032-4-thorsten.blum@linux.dev>
-In-Reply-To: <20260629120426.680032-4-thorsten.blum@linux.dev>
+References: <20260723041055.47289-1-kmehltretter@gmail.com>
+In-Reply-To: <20260723041055.47289-1-kmehltretter@gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 10 Aug 2026 11:29:58 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdV853eQggc4kxsqhJZo0AyAMmOBKEFD8AmTYsx-p6kUSw@mail.gmail.com>
-X-Gm-Features: AUfX_mwKTXBa909rqrY--imLkxMvJJAMbaygjwcoDOc8Hgoc_M8DyPR1iT18cv8
-Message-ID: <CAMuHMdV853eQggc4kxsqhJZo0AyAMmOBKEFD8AmTYsx-p6kUSw@mail.gmail.com>
-Subject: Re: [PATCH v3] m68k: amiga: remove redundant amiga_reset prototype
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Daniel Palmer <daniel@thingy.jp>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org
+Date: Mon, 10 Aug 2026 11:32:14 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWb2+-poTFV28i5EtcSuxFuoPJnEdSoVm78LY_eeazm8A@mail.gmail.com>
+X-Gm-Features: AUfX_myU115DT0o_o9ELAZmE-18Oi91D-b3dslXg2mJDQnwwyTH_vVEbtZhlP4c
+Message-ID: <CAMuHMdWb2+-poTFV28i5EtcSuxFuoPJnEdSoVm78LY_eeazm8A@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix backtraces for non-running tasks
+To: Karl Mehltretter <kmehltretter@gmail.com>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 29 Jun 2026 at 14:05, Thorsten Blum <thorsten.blum@linux.dev> wrote:
-> Remove the redundant amiga_reset() prototype and mark the first one as
-> __noreturn instead.
->
-> Tested-by: Daniel Palmer <daniel@thingy.jp>
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
-> ---
-> Changes in v3:
-> - Fix patch description and drop __noreturn from the definition (Geert)
+Hi Karl,
 
+On Thu, 23 Jul 2026 at 06:12, Karl Mehltretter <kmehltretter@gmail.com> wrote:
+> When no stack pointer is supplied, show_stack() starts at thread.esp0.
+> This is the saved userspace register frame, not where a task was switched
+> out. For kernel threads it points to the zeroed frame created by
+> copy_thread(), so sched_show_task() prints no useful backtrace.
+>
+> Use thread.ksp for non-current tasks. It is saved by switch_to() and is
+> already used by __get_wchan(). For current, start at the current stack
+> frame, as is already done when no task is supplied.
+>
+> Tested on qemu-system-m68k -M virt using SysRq-t. All task dumps contained
+> resolved frames.
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Assisted-by: Claude:claude-opus-4-8
+> Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
+
+Thanks, LGTM, and does make all SysRq-t dumps look sensible, so
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 i.e. will queue in the m68k tree for v7.3.
 
 Gr{oetje,eeting}s,
