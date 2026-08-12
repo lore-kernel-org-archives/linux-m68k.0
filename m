@@ -1,148 +1,147 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79354341057
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Aug 2026 11:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180D930D3F4
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Aug 2026 11:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786534134; cv=none; b=KSW2IBGWTjlLf7Id7f+19hlaPOvSn68oCYXWvCXhDdjGPr1IZ64lw92+H5BfzT5KKw/SSLEVFIxBJsggcTv9p4ZQaoX0fc9CHhQM7/ZzUbG6UdzQDHOEQIbAAzYK1UbvvgGRd0we+s5blmvkewWhtDYcqdpfwatj+Kz6dF/Yvac=
+	t=1786534337; cv=none; b=fqGmq2QtKyXG4NamV3RcgvMAYJ2cHMCQd5FgcUmd3X9SOqnoaZRttlKMubpdT/IXHLsp4JP1o6uMcm09WrdgX8ogwLGscgicStT/utd16MUUFGAFrb60SaOCL/4SSC+pvKjxCLrJtp/ulp7fixBvfrl+08eEBrlcZUH8RJhjtfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786534134; c=relaxed/simple;
-	bh=6BchBZb9qGDTmLumfFgofLBMiJFwTHyIaQcNpTfE7TE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KRtT8fD0kwf+aUrwy2XfimyKn3tpF18/41IJGjixQ8Y1mNrXJIuLjjGvmHZrS84+VIpzpkw4cs3jqdXs/xuZztJWOpg2Hil59EOqykQBGwBpU/UeVPkyZOnyAJuQfPKOmjv9g4hughw2z0qkxfzsjpCiZhFm7PSBLXxpXPAqQqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Spd7Z52S; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Spd7Z52S"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 5169141447;
-	Wed, 12 Aug 2026 11:28:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662EA1F000E9;
-	Wed, 12 Aug 2026 11:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786534133;
-	bh=FcnwOpb20k56OlzwMG66aE8z23tMLTn0GX7RmNBbTuo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Spd7Z52S+anzxKYwnAgi/AtvjfESL5PwTKgIqubz4s2/gdBKPK1PBUL+UlGOLhMCN
-	 Gx9nQBExt2+4xzfpf19qghT7hdbZtU4r2pYjDOTTMKOgshUiKAvXf9X7JdXURMw0fH
-	 LgT83ZJzz7JUc2cD+zPnkxTRAw1/HGZPrammYkDmxGINgAjpR5xBV9YQn6w7l1PgnI
-	 4NNTDruHwZfVoRA+X5ZvwsdnHZZwvu2aICh2gWtdpmmvvDzh1VFJcxfUX/veCwqvAc
-	 0r7q5ksshsTKLeMxN29WYMJSFA8joiGkiYpaV39tgyHPTesTIKfhF8UTJiSXfjnGlQ
-	 dSxsr7d0sngOw==
-Message-ID: <7d8e17c2-9c9c-409e-ab4d-4e4fb0e51ec4@kernel.org>
-Date: Wed, 12 Aug 2026 13:28:44 +0200
+	s=arc-20240116; t=1786534337; c=relaxed/simple;
+	bh=ltC+ZVEYlSTfRZBVW8lQfxANGwyJT0GhDLBO3X538Qo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DHFpmuUedoV93gApb4jrB6nTaCnlFv9xjzrN5CMezUkP3CejeOilXrpbUJ0w59/wnHfGz1g9HghOcja6466NXoJw+OcM0X+4G7TQJbvMn7CLQ4wYZKkVrkYvh76Nfg/y3JGYYKPdo5WK3N3kekegUd67bs5diiQMpwW/+XYlUis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-5c3fabe908eso287856e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Aug 2026 04:32:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786534335; x=1787139135;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=ltt4dRZHOGk9kpthkHmWwYFyCokHwgfUAZZMRKLanCk=;
+        b=rZN2tdKZ/7SLbkZGP4LwqiyltNkwTD41yH7R2yJz6CZDyzxgk02AT2FgkDZab7nxlw
+         YPPdDED99lEkDbKIDGSrmUcBQl/GeBKF+CnUcV1iKvlUakfjOYVaMyVudeoKXb1KmQ+N
+         VKSj1pqL6DqLUqWMNqlopTKF5+NXtXWmn+bUsiK723G6qjJ7tYAwluxGPoBvPZFFWc+P
+         9qQ+rOKglqQdUkDjX8ZO/kmG+aRcRhtjXOAEJuzER9VVHBiTo9rVprjYjCeGA+xMtx1p
+         scpvfozeKWlwjf4mqQ3sU1tyYknOfgGZSTcsEj49VQyXPDRpuBK4obuThZTbjfIHOfXC
+         2VLA==
+X-Forwarded-Encrypted: i=1; AHgh+Ro52dmAWaWgdMvpKlmaspvRShsmRFMQVOzP81SHc6INyBX5xlpJ8JRSnsWQ+CkBBKYqd03XL8+6RUCS@lists.linux-m68k.org
+X-Gm-Message-State: AOJu0YyxaRtpQQYZT7cP5/EkethG4oSyTYkhoEHLFJLwE0G6jMAe4sUR
+	02k/X/ebIcq3SeGFfcSXPbGcQEhN2KdjgTElzMoMi9/jl2k8ZQJYjIOjAjWqBEt+
+X-Gm-Gg: AR+sD11i5B9RYBrSqBUX8mgYXeeKA8pT7AdASUMIMxMVq5z8pvyQ56rQUqcvP8ZZnaw
+	TGAtgPJX/z5DTWkEYjWH5K6yhePcOrxwrJE66NMz3ErVAVRrJGZw/N+6hG0byQ4WqJVJdb6q1S4
+	73Oc46uXsQpIF6N8vJWargqHW9I3SrxDQ/rIyE/bqg0kVwagTN/6hOjTKXZ90XkUggEPINXiCLh
+	04UzmLSOtDAXNbfIiHtp9eTyiXfK0wrOi9kqu1sBJ2grEiWxKj7uBKgRoGjUFg/dWPdnt/hII5Y
+	CsRwlY9jfxcpIYlxZ0wOmK3xKU/yZnzvJ0+hcdwIg1h9For4ejzx11rcCQeEvs9XsGphFoMcf/p
+	/SKuSRpc0Cwh8hVLfCIxQBXnz5QxDPQTWMmaYyWDP4/J5C9HhE4zQPtbXsM7+ZeBx1WvFROC5BX
+	JFcVJ6hqb4WJgrKd1RVdtHs0hNZuTwppxiJD5RFJwsxT9+bDcWXWQG/afkxGwNyJVwmIuY5Y44J
+	RAkWpX/vGQivq5M7cH2Fft9wQ==
+X-Received: by 2002:a05:6102:4189:b0:739:478b:5bf2 with SMTP id ada2fe7eead31-76c8ab681camr750701137.13.1786534334273;
+        Wed, 12 Aug 2026 04:32:14 -0700 (PDT)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-76caf5b6c49sm527219137.5.2026.08.12.04.32.13
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Aug 2026 04:32:13 -0700 (PDT)
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-967327a0c7dso215111241.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 12 Aug 2026 04:32:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RorDi0tXjWLaO5I0p9zqMFbBYqkVA+oyUMPnTLmsflWome1Nd8B2+4XOcFA4QH+S/CZDRpASidWPdEp@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:1625:b0:728:53be:7c87 with SMTP id
+ ada2fe7eead31-76c88d5f8femr821356137.7.1786534333253; Wed, 12 Aug 2026
+ 04:32:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V2 5/6] sh/mm: Stop using pgd_ERROR()
-To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
- akpm@linux-foundation.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
- <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-6-anshuman.khandual@arm.com>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20260811042119.3652929-6-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20260731094950.1988084-2-ukleinek@kernel.org> <CAMuHMdVGKX=3cfOrLWp1uSHX76xf1-=C0+GVCXkA8JTqNPg-ew@mail.gmail.com>
+ <anBXIAqwllKX-Sxx@monoceros>
+In-Reply-To: <anBXIAqwllKX-Sxx@monoceros>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 12 Aug 2026 13:32:01 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV6T0yu2NrFWCwe7QKmDYgY9u-sv21S=2r6jyb5j-=1FQ@mail.gmail.com>
+X-Gm-Features: AUfX_mzIg1N0z0vWWVyOFkLiFRp6xgwyikGRaLQczOJ4kWtb1pQ8OuOz0PaUMf8
+Message-ID: <CAMuHMdV6T0yu2NrFWCwe7QKmDYgY9u-sv21S=2r6jyb5j-=1FQ@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Define NR_CPUS to 1
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <ukleinek@kernel.org>
+Cc: Gao Xiang <xiang@kernel.org>, Michael Bommarito <michael.bommarito@gmail.com>, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/11/26 06:21, Anshuman Khandual wrote:
-> Stop using pgd_ERROR() in __get_pte_phys() when page table entry is already
-> known to be empty.
-> 
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/sh/mm/init.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-> index 0bb8555568a4..585012293632 100644
-> --- a/arch/sh/mm/init.c
-> +++ b/arch/sh/mm/init.c
-> @@ -52,10 +52,8 @@ static pte_t *__get_pte_phys(unsigned long addr)
->  	pmd_t *pmd;
->  
->  	pgd = pgd_offset_k(addr);
-> -	if (pgd_none(*pgd)) {
-> -		pgd_ERROR(*pgd);
-> +	if (pgd_none(*pgd))
->  		return NULL;
-> -	}
->  
->  	p4d = p4d_alloc(NULL, pgd, addr);
->  	if (unlikely(!p4d))
+On Mon, 3 Aug 2026 at 10:56, Uwe Kleine-K=C3=B6nig <ukleinek@kernel.org> wr=
+ote:
+> On Mon, Aug 03, 2026 at 09:58:14AM +0200, Geert Uytterhoeven wrote:
+> > On Fri, 31 Jul 2026 at 11:50, Uwe Kleine-K=C3=B6nig <ukleinek@kernel.or=
+g> wrote:
+> > > This fixes a Kconfig warning
+> > >
+> > >         fs/erofs/Kconfig:137:warning: range is invalid
+> > >
+> > > which originates from EROFS_FS_ZIP_LZMA_DEFAULT_MAX_STREAMS using
+> > > NR_CPUS which up to now didn't exist for ARCH=3Dm68k. All other
+> > > architectures define this symbol, so fix the outlier.
+> >
+> > Apart from the Kconfig warning, this also
+> >   1. Breaks pressing "ENTER" in "make oldconfig" to apply a sensible
+> >      default value, just repeating the question ad infinitum instead
+> >      (the default is 16),
+> >   2. "make olddefconfig" sets it to literal NR_CPUS, which is invalid, =
+too.
+> >
+> > > Fixes: c9b47e6b2311 ("erofs: cap LZMA stream pool size")
+> > > Signed-off-by: Uwe Kleine-K=C3=B6nig <ukleinek@kernel.org>
+> >
+> > > --- a/arch/m68k/Kconfig.cpu
+> > > +++ b/arch/m68k/Kconfig.cpu
+> > > @@ -549,6 +549,10 @@ config CACHE_COPYBACK
+> > >  endchoice
+> > >  endif # HAVE_CACHE_CB
+> > >
+> > > +config NR_CPUS
+> > > +       int
+> > > +       default "1"
+> >
+> > While this does fix the issues on m68k, I don't think this is the
+> > right fix:
+> >   - NR_CPUS depends on SMP on most architectures, so you do not get
+> >      the "range is invalid" warning on non-SMP, but NR_CPUS is zero.
+> >     Hence I managed to reproduce the two issues above (albeit 2 with
+> >     CONFIG_EROFS_FS_ZIP_LZMA_DEFAULT_MAX_STREAMS=3D0) with a non-SMP
+> >     ARM config.
+> >   - Kconfig logic using NR_CPUS typically includes a check for SMP, too=
+.
+> >
+> > So I think EROFS_FS_ZIP_LZMA_DEFAULT_MAX_STREAMS should be fixed
+> > instead.
+>
+> Agreed, probably it should depend on SMP, too.
 
-Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
+Since the underlying issue can be fixed by depending on SMP, but the
+warning would still be there[1], I decided to bite the bullet and take
+your patch as a fix for v7.2.
 
--- 
-Cheers,
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v7.2.
 
-David
+[1] https://lore.kernel.org/CAMuHMdWQLwgShMK7G-6soiZxtRPYWLizBLRdouwxFUcFXU=
+JM-Q@mail.gmail.com
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
