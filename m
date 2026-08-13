@@ -1,38 +1,38 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5623C2775
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Aug 2026 07:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD47E3E7BC6
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Aug 2026 07:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786605514; cv=none; b=QLhU8Xc0c/WEfhrVD1o/x0EqPqZAhf9XIU4sWvjCjDYuVwtD35G4lA9Sb5YVgqzlclzi1qoD3E3Teqb35s3JlRcGvRBvaA97h7J0zZ2L6OQbgTBKkGe2SyoIu93yyClSEUQb1OYkEIhvie3DuUlr5691NHWI1sW8Jm7cmvyk6GU=
+	t=1786605535; cv=none; b=gJ0i0Tdx4n34o9mnGkogYJxTNywXadTbLhfVF6m2tRxhItsM8nwJkYxrb1VQNaI/2pg6CjlCMOBzXtjkJ89cjAnAeyA0iBF7rVyUzOq7HdQF+CJMkYp04klr9+JqMiNSjrkxuJVnOD3IwHR6z7tPsE456o+7OPjC0bSrdJXLGaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786605514; c=relaxed/simple;
-	bh=/70U1xLxLLh50DzKDuXsZK5cGkY+OZalSbDTAAFAyTw=;
+	s=arc-20240116; t=1786605535; c=relaxed/simple;
+	bh=eQzPUn44O/tPkq47pjGpUtWgG67qF5D4jdglOJfzjZ8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t4QFWpe1S3edKJ/zbUdrXsg2weck4tVnAyXoG0JoXxUzSkUYgM+FEuWNgoyXb1o2Mdk4oG5KWH2DoCeRONakNiEKaLt7fgNztUV73gqxucxKkFsubD7tdCSmV/xXypcxFskuM2j2ygncuAU+/OeEatzB3IBxqNoqZ3x47hEB5QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KgSkwoV4; arc=none smtp.client-ip=172.234.252.31
+	 In-Reply-To:Content-Type; b=o4ujEqRj9BgZK56VoXgZJPMja7obVH7IjeIPJer7RhA13+9GDZNftRyOwZt/7QBBoUYwDZlHHQGFFoL6Ly+PKxZbsNp1lCEZHDfJ+MCTzzQG5mpa24Et9kQuxeMRJ6y9fN5Pv+ElYlXkymMqUm2ErkE+oB5pOCxXggMgKNGjghM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQoW8GUU; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KgSkwoV4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQoW8GUU"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id A2D4D4028A;
-	Thu, 13 Aug 2026 07:18:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F73D1F000E9;
-	Thu, 13 Aug 2026 07:18:23 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 6A282600AD;
+	Thu, 13 Aug 2026 07:18:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF6D91F00A3D;
+	Thu, 13 Aug 2026 07:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1786605510;
-	bh=+4Nk4hpoXdyCDEpgTJCUYHz6STV5yXnczBbKNxqEd8Y=;
+	s=k20260515; t=1786605532;
+	bh=FRu9n4mjHkdLoh1auc0+F0uq9mi4uQgSH6ITAa/iuvU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=KgSkwoV4K9o4VV6DTaBaMzd+EAKo55SPDBufVOr4jtdF8WGVJY9qVnPnAbI3I1B6j
-	 az8C/XSSDoXlk0EnunE7ZJ3R+6xP4/fSUta8T06VGRr3L26bEyCyEgUeHEmKkJvqJY
-	 QCn79g40aTQGCvCX4G87yiNCG8qTX/j27xasTOQDI3+ltHDG/v7cKPSGXGJ3zoNGhV
-	 2ifXr49y6ir3V6cAgvVl2jn8gM7jiebI63mAiexihe0CvGpwlzwxaRgcb8I+biJir5
-	 0d8v2Pn2zDhY20qsum4OrGqCQozh6WLpH9QUdJrmSftjGLHT2NAkoCBRW1fV21zxfN
-	 HX/j0k9hiLyeg==
-Message-ID: <f7bab5a5-76c9-4856-b314-49f19f54e229@kernel.org>
-Date: Thu, 13 Aug 2026 09:18:22 +0200
+	b=LQoW8GUUyQqsjsyMSCymikLCl0K/PpYaTCtOqE8smOcqa2DMyAwkHJlcjWeM1J3S+
+	 p7F7YTHDWjjGCL63HV5xpWRhAdsFHo0ku3RZp+dd7ECs9spcYVoBm+vyaaylpUF+PD
+	 H22qTcfvj4D5oNy89mJR0hbJjegsfONgrwhHmtzF+bBi+aGhDM9oGd0P2xzEDI2kou
+	 1E0HF2+DNVjJvv6cBBocYB1eb2SJm99VpExDuZUltvNNZREs8uFacDqc0tyd8Vhkzr
+	 RtyNl40a3quN8bMMpCL9V3232v/KWwZovejB57bX78GVNpy/nQciclUW97AqYJJX/W
+	 0jrUTV5cHJu/Q==
+Message-ID: <fc404670-7194-4ae9-8646-b543869738f3@kernel.org>
+Date: Thu, 13 Aug 2026 09:18:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V2 3/6] sh/mm: Stop using pte_ERROR()
+Subject: Re: [RFC V2 6/6] mm: Drop pxd_ERROR()
 To: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
@@ -58,9 +58,9 @@ Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
  linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-4-anshuman.khandual@arm.com>
- <28c24991-590f-4980-a92e-26c89288cae7@kernel.org>
- <azo46amarknescr2uotz77khpt6zakwex7sb52krsvakrzfdlq@qu2t3ahd4m5t>
+ <20260811042119.3652929-7-anshuman.khandual@arm.com>
+ <1fb9ed88-67d0-4ac1-878d-0dc8e1135d19@kernel.org>
+ <2ys7apbnfuj3ugfoqgbptgej3jjcyfpmdgbv6qbxupmwg6mefc@h5p33ua2nzlu>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -107,30 +107,37 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <azo46amarknescr2uotz77khpt6zakwex7sb52krsvakrzfdlq@qu2t3ahd4m5t>
+In-Reply-To: <2ys7apbnfuj3ugfoqgbptgej3jjcyfpmdgbv6qbxupmwg6mefc@h5p33ua2nzlu>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-
->>> +}
->>> +
->>>  static void set_pte_phys(unsigned long addr, unsigned long phys, pgprot_t prot)
->>>  {
->>>  	pte_t *pte;
->>>  
->>>  	pte = __get_pte_phys(addr);
->>>  	if (!pte_none(*pte)) {
->>> -		pte_ERROR(*pte);
->>> +		print_bad_pte(*pte);
+On 8/13/26 08:03, Anshuman Khandual wrote:
+> On Wed, Aug 12, 2026 at 01:33:14PM +0200, David Hildenbrand (Arm) wrote:
+>> On 8/11/26 06:21, Anshuman Khandual wrote:
+>>> pxd_ERROR() has been used in generic mm just to print the page table entry
+>>> in pxd_clear_bad() before clearing those out with pxd_clear() later. These
+>>> pxd_ERROR() macros have been provided by all platforms which basically did
+>>> the same thing.
+>>>
+>>> Make pxd_clear_bad() use recently added ptval_to_str() instead for printing
+>>> page table entries thus completely dropping dependency on platform provided
+>>> pxd_ERROR() macros which can then be dropped off. First move all required
+>>> helpers in core MM into a header file which could then be used else where.
+>>>
 >>
->> Maybe similar to my reply to patch #1, actually print something more useful than
->> just "bad pte" ? And possibly also just use ptval_to_str().
+>> It might make sense to split this patch further up to ease review:
+>>
+>> Patch 1) provide ptval_to_str() a header.
+>>
+>> Patch 2) Stop using pxd_ERROR() and friends in common code, converting to
+>> pteval_to_str()
+>>
+>> Patch 3) Remove now unused pxd_ERROR() and friends from arch code.
 > 
-> Probably #ifdef could be dropped here as ptval_to_str() should be able to
-> handle pte with two unsiged long elements in there i.e pte_high, pte_low
-> along with standard single unsiged long pte_low format.
+> Sure but the intiial platform changes which now use ptval_to_str() as well
+> will probably come after the Patch (2) but before the Patch (3).
 
-Yes, that should just work and clean this up!
+Exactly :)
 
 -- 
 Cheers,
