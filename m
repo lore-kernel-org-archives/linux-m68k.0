@@ -1,32 +1,32 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9908D2F7F13
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Aug 2026 04:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762493D3CF4
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 13 Aug 2026 05:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786595663; cv=none; b=bIpunywvDWNFELXyOjvdlM0DUBIEf9UkfyIgr4G8nrZ1/AtOW6PrEBDE99SVSiBc9KdcM7AhlOOIebaioLiKUlcVWheqbFwgVJhXl9rXTFvFEeQwAvMmZ7VcphMrgJ913DkKNI7mhVkLW/bVhoSlvS4inICVAUkiKOVRvHix8WE=
+	t=1786599066; cv=none; b=t4Yt2lPQMYRg/PGsN5WSEny9onHhE9vX+PG2tnsnBm/pAQZQdSZFvY5TvHXbxXzTRFY+NrjnFlzjgv9m7C95QmMwENx1g6ghMX/QnhVCRHm9l6KfVtdrn0nykTZet9ojchdCMxtjf1cwDNrIqO9gd5BWH4zTXN8T1S2rOhjT35k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786595663; c=relaxed/simple;
-	bh=mO6mrRKNqP+ykHI/mGROppdDnXxIwgWT7LgXJj+JezI=;
+	s=arc-20240116; t=1786599066; c=relaxed/simple;
+	bh=X+NKUVlHUgJ3ufurYsAc3c38TCMI9lTEYh/79PTkQxo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r9scN9mcGMRJXQk6ZLCr220jo0o8OQTao2So7VQoi/tmW+4z3VO6Tq9pv/B9Ff9Mj1cK0zU7kpziFcPWkYEzyljOVI0ErSxjTJ3R1QFVTSksUS+VmBG8Ky6feobErQeWWsz1ruca9LRgDqTV5v3wTaL2mUAmZFe6MPt2ASwSlP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=ucFab0TP; arc=none smtp.client-ip=217.140.110.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=TanAMsRAehzKUl8zs79b6S5NWreaIn9NPOgIlZfDm0q9NgQWBRoxwRG1ynMdChI2Ke5k2js1CCR49IPaAjeVRIEO+myce27SckakPZEgdiwcOEUVHfGj5HEwfG/L/45F3Sko5PkmwG3EoVwFvqcfBmE3KK3TyrvZ0KyHZCm9fVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=SrKE60uI; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="ucFab0TP"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="SrKE60uI"
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8A551596;
-	Wed, 12 Aug 2026 21:34:14 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A97B14BF;
+	Wed, 12 Aug 2026 22:30:53 -0700 (PDT)
 Received: from localhost (a085714.arm.com [10.164.19.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E593D3F632;
-	Wed, 12 Aug 2026 21:34:17 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B16D3F673;
+	Wed, 12 Aug 2026 22:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1786595658; bh=mO6mrRKNqP+ykHI/mGROppdDnXxIwgWT7LgXJj+JezI=;
+	t=1786599057; bh=X+NKUVlHUgJ3ufurYsAc3c38TCMI9lTEYh/79PTkQxo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ucFab0TPnxvbqz3KEVyBy+XPNcRzGlpGCroO3Eciy3LZ0+X/OxqSrfgUvooo+EVnM
-	 CkkbCWk5eaKn4RSc34lEp7tZQ4pnzvhzXI1BWphp8/e5uuWc6hv5uSnA/KhXLfZVFZ
-	 sIXAXG2CvPJZ7I27QA35Hy/JfVFzGZIK3afmsQfQ=
-Date: Thu, 13 Aug 2026 10:04:15 +0530
+	b=SrKE60uIrBnbijwn35bVkTCswfmosJsNxYIwRXmIDvDEYsUPL/XRaOQw4NTWq9+R8
+	 HTXCeA7afpFyAnPj1s0kOuibIeMGDLyy/hm/UQgt+OEqxfzPqBuw/BgmcxyZJ97m4P
+	 B3v5HjN56UBmNRhdGR3eqCOkRfuHaef7VMgKMqK0=
+Date: Thu, 13 Aug 2026 11:00:53 +0530
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: "David Hildenbrand (Arm)" <david@kernel.org>
 Cc: linux-mm@kvack.org, akpm@linux-foundation.org, 
@@ -40,12 +40,11 @@ Cc: linux-mm@kvack.org, akpm@linux-foundation.org,
 	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-arch@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
-Subject: Re: [RFC V2 1/6] loongarch/mm: Stop using pte_ERROR()
-Message-ID: <qymuy4grl654s6jwwyhlwwo6kfr3ongxpfnxifojkvism2ddwg@5lyq7iooel6b>
+Subject: Re: [RFC V2 3/6] sh/mm: Stop using pte_ERROR()
+Message-ID: <azo46amarknescr2uotz77khpt6zakwex7sb52krsvakrzfdlq@qu2t3ahd4m5t>
 References: <20260811042119.3652929-1-anshuman.khandual@arm.com>
- <20260811042119.3652929-2-anshuman.khandual@arm.com>
- <e0ada89f-26b2-4e82-8273-8ea7b391c147@kernel.org>
- <9a66d741-536e-44ac-b02f-395b5fc8ab6d@kernel.org>
+ <20260811042119.3652929-4-anshuman.khandual@arm.com>
+ <28c24991-590f-4980-a92e-26c89288cae7@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -54,89 +53,133 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a66d741-536e-44ac-b02f-395b5fc8ab6d@kernel.org>
+In-Reply-To: <28c24991-590f-4980-a92e-26c89288cae7@kernel.org>
 
-On Wed, Aug 12, 2026 at 01:27:54PM +0200, David Hildenbrand (Arm) wrote:
-> On 8/12/26 13:19, David Hildenbrand (Arm) wrote:
-> > On 8/11/26 06:21, Anshuman Khandual wrote:
-> >> Directly use pr_err() in __set_fixmap() and drop pte_ERROR() which helps in
-> >> eventually dropping pte_ERROR() macro across the tree. In this new printing
-> >> __FILE__ and __LINE__ has been dropped because they are always the same and
-> >> don't really add any value.
-> >>
-> >> Cc: Huacai Chen <chenhuacai@kernel.org>
-> >> Cc: WANG Xuerui <kernel@xen0n.name>
-> >> Cc: loongarch@lists.linux.dev
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> >> ---
-> >>  arch/loongarch/include/asm/pgtable.h | 2 --
-> >>  arch/loongarch/mm/init.c             | 2 +-
-> >>  2 files changed, 1 insertion(+), 3 deletions(-)
-> >>
-> >> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
-> >> index 223528c04d73..a32a8fff70c1 100644
-> >> --- a/arch/loongarch/include/asm/pgtable.h
-> >> +++ b/arch/loongarch/include/asm/pgtable.h
-> >> @@ -128,8 +128,6 @@ struct vm_area_struct;
-> >>  #define ptep_get(ptep) READ_ONCE(*(ptep))
-> >>  #define pmdp_get(pmdp) READ_ONCE(*(pmdp))
-> >>  
-> >> -#define pte_ERROR(e) \
-> >> -	pr_err("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
-> >>  #ifndef __PAGETABLE_PMD_FOLDED
-> >>  #define pmd_ERROR(e) \
-> >>  	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
-> >> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
-> >> index 3407030f3e7a..be9b127daef2 100644
-> >> --- a/arch/loongarch/mm/init.c
-> >> +++ b/arch/loongarch/mm/init.c
-> >> @@ -203,7 +203,7 @@ void __init __set_fixmap(enum fixed_addresses idx,
-> >>  
-> >>  	ptep = populate_kernel_pte(addr);
-> >>  	if (!pte_none(ptep_get(ptep))) {
-> >> -		pte_ERROR(*ptep);
-> >> +		pr_err("bad pte %016lx\n", pte_val(*ptep));
-> >>  		return;
-> >>  	}
-> >>  
+On Wed, Aug 12, 2026 at 01:28:23PM +0200, David Hildenbrand (Arm) wrote:
+> On 8/11/26 06:21, Anshuman Khandual wrote:
+> > Directly use pr_err() in set_pte_phys() and drop pte_ERROR() which helps in
+> > eventually dropping pte_ERROR() macro across the tree. In this new printing
+> > __FILE__ and __LINE__ has been dropped because they are always the same and
+> > don't really add any value.
 > > 
-> > Ah, I missed that we want to print actual values, I somehow thought that we
-> > would be printing pte_none() ...
+> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> > Cc: Rich Felker <dalias@libc.org>
+> > Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> > Cc: linux-sh@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > ---
+> >  arch/sh/include/asm/pgtable_32.h |  5 -----
+> >  arch/sh/mm/init.c                | 11 ++++++++++-
+> >  2 files changed, 10 insertions(+), 6 deletions(-)
 > > 
-> > Maybe we should just be more verbose while at it?
-
-Initially thought that these new prints should be right close to the
-original via pxd_ERROR() but I guess making them verbose while doing
-the replacements should be indeed acceptable.
-
-> > 
-> > pr_err("unexpected set PTE at %ul in __set_fixmap: %016lx\n",
-> >        addr, pte_val(*ptep));
-> > 
+> > diff --git a/arch/sh/include/asm/pgtable_32.h b/arch/sh/include/asm/pgtable_32.h
+> > index 5f51af18997b..c8eb9a7a4c4c 100644
+> > --- a/arch/sh/include/asm/pgtable_32.h
+> > +++ b/arch/sh/include/asm/pgtable_32.h
+> > @@ -401,14 +401,9 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+> >  #define pmd_page(pmd)		(virt_to_page(pmd_val(pmd)))
+> >  
+> >  #ifdef CONFIG_X2TLB
+> > -#define pte_ERROR(e) \
+> > -	printk("%s:%d: bad pte %p(%08lx%08lx).\n", __FILE__, __LINE__, \
+> > -	       &(e), (e).pte_high, (e).pte_low)
+> >  #define pgd_ERROR(e) \
+> >  	printk("%s:%d: bad pgd %016llx.\n", __FILE__, __LINE__, pgd_val(e))
+> >  #else
+> > -#define pte_ERROR(e) \
+> > -	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
+> >  #define pgd_ERROR(e) \
+> >  	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
+> >  #endif
+> > diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
+> > index 110308bdef01..b3c7fd84ceb4 100644
+> > --- a/arch/sh/mm/init.c
+> > +++ b/arch/sh/mm/init.c
+> > @@ -78,13 +78,22 @@ static pte_t *__get_pte_phys(unsigned long addr)
+> >  	return pte_offset_kernel(pmd, addr);
+> >  }
+> >  
+> > +static void print_bad_pte(pte_t pte)
+> > +{
+> > +#ifdef CONFIG_X2TLB
+> > +	printk("bad pte %p(%08lx%08lx).\n", &pte, pte.pte_high, pte.pte_low);
+> > +#else
+> > +	printk("bad pte %08lx.\n", pte_val(pte));
+> > +#endif
 > 
-> On second thought, why not simply use ptval_to_str() here as well?
+> I'd avoid that helper if possible, so we don't encourage new users.
+> 
+> Shouldn't we just switch to pr_err() right away?
 
-Sure will do the required changes - the following builds successfully.
+Yes we could move from printk() to pr_err(). The above helper
+just prevented an ugly #ifdef block inside if(!pte_none(*pte))
+conditional block, nothing more. Will just drop it then.
 
---- a/arch/loongarch/mm/init.c
-+++ b/arch/loongarch/mm/init.c
-@@ -197,13 +197,15 @@ void __init __set_fixmap(enum fixed_addresses idx,
-                               phys_addr_t phys, pgprot_t flags)
- {
-        unsigned long addr = __fix_to_virt(idx);
-+       char str[PTVAL_STR_MAX];
-        pte_t *ptep;
+> 
+> > +}
+> > +
+> >  static void set_pte_phys(unsigned long addr, unsigned long phys, pgprot_t prot)
+> >  {
+> >  	pte_t *pte;
+> >  
+> >  	pte = __get_pte_phys(addr);
+> >  	if (!pte_none(*pte)) {
+> > -		pte_ERROR(*pte);
+> > +		print_bad_pte(*pte);
+> 
+> Maybe similar to my reply to patch #1, actually print something more useful than
+> just "bad pte" ? And possibly also just use ptval_to_str().
 
-        BUG_ON(idx <= FIX_HOLE || idx >= __end_of_fixed_addresses);
+Probably #ifdef could be dropped here as ptval_to_str() should be able to
+handle pte with two unsiged long elements in there i.e pte_high, pte_low
+along with standard single unsiged long pte_low format.
 
-        ptep = populate_kernel_pte(addr);
-        if (!pte_none(ptep_get(ptep))) {
--               pr_err("bad pte %016lx\n", pte_val(*ptep));
-+               ptval_to_str(str, pte_val(*ptep));
-+               pr_err("unexpected set PTE at %lx in __set_fixmap: %s\n", addr, str);
+#ifdef CONFIG_X2TLB
+typedef struct { unsigned long pte_low, pte_high; } pte_t;
+#define pte_val(x) \
+        ((x).pte_low | ((unsigned long long)(x).pte_high << 32))
+#define __pte(x) \
+        ({ pte_t __pte = {(x), ((unsigned long long)(x)) >> 32}; __pte; })
+#else
+typedef struct { unsigned long pte_low; } pte_t;
+#define pte_val(x)      ((x).pte_low)
+#define __pte(x)        ((pte_t) { (x) } )
+#endif
+
+static void set_pte_phys(unsigned long addr, unsigned long phys, pgprot_t prot)
+{
+        pte_t *pte;
+
+        pte = __get_pte_phys(addr);
+        if (!pte_none(*pte)) {
+                char str[PTVAL_STR_MAX];
+
+                ptval_to_str(str, pte_val(*pte));
+                pr_err("unexpected set PTE at %lx in set_pte_phys: bad pte %p(%s).\n",
+                        addr, pte, str);
                 return;
         }
+
+        set_pte(pte, pfn_pte(phys >> PAGE_SHIFT, prot));
+        local_flush_tlb_one(get_asid(), addr);
+
+        if (pgprot_val(prot) & _PAGE_WIRED)
+                tlb_wire_entry(NULL, addr, *pte);
+}
+
+But if this does not work revert back printing both pte formats separately
+like before.
+
+#ifdef CONFIG_X2TLB
+               pr_err("unexpected set PTE at %lx in set_pte_phys: bad pte %p(%08lx%08lx).\n",
+                       addr, pte, pte->pte_high, pte->pte_low);
+#else
+               char str[PTVAL_STR_MAX];
+
+               ptval_to_str(str, pte_val(*pte));
+               pr_err("unexpected set PTE at %lx in set_pte_phys: bad pte %s.\n", addr, str);
+#endif
 
 > 
 > -- 
