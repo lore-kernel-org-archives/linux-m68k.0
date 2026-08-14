@@ -1,75 +1,71 @@
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F445397930
-	for <linux-m68k@vger.kernel.org>; Fri, 14 Aug 2026 03:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B027326FA60
+	for <linux-m68k@vger.kernel.org>; Fri, 14 Aug 2026 03:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786677479; cv=none; b=h/9VatucDBE3IllmZG+M5SFPwTIT8lewpYb0OPsIUCledDiRSPejP5XYYyzNSiNf+x+CSlR9QGgTALPBehN2NoW5Y+wgR7ehdAgvbu3MGunQj3xkwrueCJYQUb2Xu+WNkAQg1eUzjUqltdq14l4VxWmbFDUWtpnp38mqKTKk0lM=
+	t=1786677481; cv=none; b=NXws6hSN4yvivXz7iYsFsr3aQND1zpjDBipw3GKU5mpp3UjOgn1CarmNgvbsfNjDTAtVF4ETK0NZcH5OoN4v9+KmxOecdtUT+U4wv0uLZu4eqDXaYBWm+4mBxADDmnRrCpKgay0NBiED9kbFG2ZcAkySoJhUCU6Z5zTsBDZe8TI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786677479; c=relaxed/simple;
-	bh=QNmyyL1GqfrVQiXIMeRQdFao14rPCgVeW3j0oCbtQVw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r18lykmbmHuLUmi29yIxwkwCdAcrhtUC0cOHnICaE9ji+QDXP2FduhcloeyKwzA8ylw2kvHRvhHDiMQLDvI5lQ3m3IyhiX/KmagTk6GwqszlKOL5+aQoqs3pZcaW7WT17dTBYYDpRa351DBrFr3ZiTJ/v6gLaKDjuV3JgYuGbjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JRMQiT7F; arc=none smtp.client-ip=209.85.215.180
+	s=arc-20240116; t=1786677481; c=relaxed/simple;
+	bh=Xr8ia8WJL/YURnXPLk9+0d2cIwEhZr0NwO5wva9d34c=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=LwpC5CBJtCbtoPLrqbp85f0WzQuBrkZ8t9Beg8oFZ64GtUy6+7md69uuDinrI9Jq7A/kLmfWbCTYd/boZxW2V8oE43kn7ueCTxCUBN3BL/i4iX6OOLmXnr0TMwW1vkOTk/Hl41wVjxoHOZy8yu7yZGVmPCH3dlyEC+qzaQl6sVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kqtaN3cK; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRMQiT7F"
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-ca97d139d5fso468116a12.0
-        for <linux-m68k@vger.kernel.org>; Thu, 13 Aug 2026 20:17:58 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqtaN3cK"
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-cbb8b54fcf8so416249a12.0
+        for <linux-m68k@vger.kernel.org>; Thu, 13 Aug 2026 20:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786677478; x=1787282278; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=hhmZfEYf2i2o+O/iZ2UIpbbQaUJ3FHTsoQzHWHNjkTM=;
-        b=JRMQiT7FOaYEP9cRiyEKHa9ZH66b/PcOdQA9SaogU86zjVUKpG+5h6oQEMN4Wgn5aT
-         tCWHvWFLWhDQrj8wq+Phfx/2WsqUHEzpk9g1L5jjaO63LEo88GkgFkmqhtQrTy/5EJCN
-         8ZlgfssEY9R4snMO8J/GsgsdyWCVL1WswlvKUX7kVqRUeK3Y2OSzAV/GqpEZPKBv9JgS
-         okX4Nw61+tFQyfnhqNXU9fJlUiVJXYYvcz8wK95n7gPmfNeXTrRSfGGbbdl3s54DLYOQ
-         OXkvS/9bx3fWsvAekVhrE+1RHGFXbsXludVxqbErM+APO73rcrSVlyw7hSiRVMsDvbk8
-         zKfQ==
+        d=gmail.com; s=20251104; t=1786677479; x=1787282279; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=YKDPy/LxEO2NVElPbmKidRkQxBYUmhdseW1CDs/g+/I=;
+        b=kqtaN3cKDiuzHE3dlAPDIMZM0pIOfTuo8dDinyMfLv7Q/cs4mA6pH8RNr6WsVzIa9o
+         aBdao6A6KI4KksZFegPv3NRjmqmG1j+HJDLcGDcDOcRJdF4EWv67ocYOs24guTbKXHow
+         BOgqcNiY1IoO6QtR1R9rz5JirG6zBCBpIm2YP8O97RPYVowxH+CZ73jEOHTYwRS0mK1r
+         0EyL9J5qT+MYEHDYe0bc2tDkU8y9fmOCWmIBHqgDJoaaoby4rhbJ2Bk02Xi+IUb2duEs
+         U7dgnSEZ2eRpgUdhMPqzCT3kR7O1/ZxLgWRWjYB0ZnTX+ubCrc5XP+/6uewfDeO7Qu4x
+         Zq0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786677478; x=1787282278;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+        d=1e100.net; s=20251104; t=1786677479; x=1787282279;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=hhmZfEYf2i2o+O/iZ2UIpbbQaUJ3FHTsoQzHWHNjkTM=;
-        b=haA/VzWyvxWESMBffr++M8g6sgoqZJuhIkBrdMbovWZH5uFbPhMy3wq0pRck4yFete
-         5ZghZuar33QlPNuwt6Z0D0alxcHKqSJDQvi4E8khXQ/8zO1psMs//VOZkkWkQlTid7Fx
-         lnd4f9dO5awDZPEWGqrHCNBZkWiKS6OIQFBYTtPKCSW09Yo9l+5x7FUHw88qA3TClZuc
-         CRZu2YWTNTXg87cJpA/NxBT/MwWgRXn3qUcNqPuJCDOghQ7uAnxMRAywi5nqeN9BluvF
-         jNjuv6kvhEF3HtlFPCnmPyRxO6+AyAQJ6424mES8oeJuZ4lwcl2ojQWJXvNaziZCdYQA
-         a7MA==
-X-Gm-Message-State: AOJu0Yx5HjdGI8BSaZS82aRprYUWPn85Sy1l2gNDIe9DbTAHmL2KzsZs
-	6KQYtBxJVAFKCY/UyXjUvQcPX9GqXJsrxygvGu/h3bxjHvnIX39UOQ77xaZEGA==
-X-Gm-Gg: AR+sD13p6QvsqE+4zJjEXZO+WFifNNda1r0/pab8J6alwPG104VzrRfyJo163jBPVpq
-	u0eXEp7HsasoSPT7D68w0RlnBPgWz7GsNfOm2CCL/at3jk0uNTipp820UvROyEnLlsQ4vrqw5uo
-	+rdrMJwtTM7Fe5U/H/thuhYXROHhQj3HweDofHNHNtBY6hHeaB3GERaID94T0kENwjd4x2Vgg24
-	5TohEfsj1QYyyuhJp6z+/ZrQoj3/j5kOtyZWzgQexl7aFrhrVzWXqV/RHvmbcf01NKFo1goV4Z6
-	WRmRI+4zQVtLC+37JQiNcsHxT6MCzsHKtEcvGnP1LzMdbWae+z7JBP6Ij2Re4EnyFEC2SRdJGOw
-	Kzl0GjLOezpELgIztRQhuH8k2SuaqmukGTY89org0NQUQmWOViwQPeDm83dwFTCilnau4qGbMVk
-	EPLNlPM2QymJbELseCf//ZTXmo7hZPymYrSUGRz1+2UvzHeV5BjEw2VD8DasckIX+kfyWIs1iMk
-	v1K7AKH2Eq2cxzboW1mX2stlVRxEO5LyEknTW7RKrrc3hsbBzFMyA==
-X-Received: by 2002:a05:6a21:d86:b0:3bf:a7d5:df38 with SMTP id adf61e73a8af0-3cc71b41dcbmr2969802637.9.1786677477807;
-        Thu, 13 Aug 2026 20:17:57 -0700 (PDT)
+        bh=YKDPy/LxEO2NVElPbmKidRkQxBYUmhdseW1CDs/g+/I=;
+        b=RwqpscA+Lg1SCkJrAZ5MJg2KPVqmIF7cP4LCixLse8b6Doli5upQPRLU5r5rCNqSE3
+         2elnOts2zB0tWOzgr4K+ssRkgeDv/MhnYRmPBPwSc9kPEm39Z2Rua/j4NQBUHxO2kGMM
+         oIcsM2yoc6vx0rUk5djxVCp+Yc96tIOJbrC/M4QvZUbO3Ko3aT+ZFCVJvNO1d1jySCvR
+         CY5HlVhEQ8YB69HrKRMBLoPJCkaUFH5+sZsml7+E+2ATxxHYCbtlwcu3zUoK7RlrptP9
+         +ByA7p4v2J0kv21ezZWMi8rmUFjT5e0IvICwKmeWd2Cz43kQo/ngpMVyb+RgEjqFv4J1
+         ST1g==
+X-Gm-Message-State: AOJu0YxeGTor0l5iIk1nfG8hBDilW5Gvr4ThuxEEdmXWAKsXZfmwOKNK
+	NhpcMhLPgvOdcmTE2j3j/8PkitX5pcQ4Db4MWj3oNojnUZSd3qcSEyKT
+X-Gm-Gg: AR+sD12MolFznJObtW601lbFzdTAFglgTvHB0M0SnGUf76SX9axGC0tapOjt8+TYvGX
+	cYYwSAFxoBJRT6FpHvaTmfNwCPEznUCND0k0oQaG/DDeotiNiF0zQN6f4MIeH8aj4X/QrEoI9AG
+	ycpyaM2VutMnmFQIt6rIaQtzm5klfIbfmEVEV3SZ64R17P7oJH6cL/E8rV6miwDMkiDVG+GvAKH
+	U0apPCGXk47+/J+kNfqxkNZBQ77WPdXFWt4J0bMov8SkyeVTfqYUxb120LN8sOIpFa3ihruZdIs
+	YuyE7zQ+P9AZgKqOlQqb5PmhrVRpLIXZjS4Q5DrmoeaocwgAFvUbe7ujhKArSTfUhQnzQTGVtWA
+	63tvTicbBlNf39Xk207kQftP0bfELDaAVPb6ImCVAWNwZXtX3RkpkQJueCwAOnUtyHcz+QNMNJn
+	Q6hgeQAXuPRiP/Pl2AeNVJIriIpZvTZLgfkvljU211AZSCM+1NCnDC5T1kDiGni8Cb4BX8tth4f
+	W63IoX+iYs3TARgMdiscvhcwkb4cHHMoaDaX9oUSXzqvAFeusmNFQ==
+X-Received: by 2002:a05:6a20:2589:b0:3c3:8d86:9856 with SMTP id adf61e73a8af0-3cc71b3eaacmr2693304637.14.1786677478938;
+        Thu, 13 Aug 2026 20:17:58 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-152-170-159-fibre.sparkbb.co.nz. [222.152.170.159])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-31f7c8018cdsm7292872eec.13.2026.08.13.20.17.57
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-31ebc75d8casm14990225eec.3.2026.08.13.20.17.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Aug 2026 20:17:57 -0700 (PDT)
+        Thu, 13 Aug 2026 20:17:58 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-	id 08AA53604D1; Fri, 14 Aug 2026 15:17:54 +1200 (NZST)
+	id E690D3604D5; Fri, 14 Aug 2026 15:17:54 +1200 (NZST)
 From: Michael Schmitz <schmitzmic@gmail.com>
 To: linux-m68k@vger.kernel.org,
 	geert@linux-m68k.org
 Cc: schmitzmic@gmail.com,
-	Miro Kropacek <miro.kropacek@gmail.com>,
-	linux-fbdev@vger.kernel.org
-Subject: [PATCH 4/5] fbdev: Add support for SuperVidel's SuperBlitter
-Date: Fri, 14 Aug 2026 15:17:44 +1200
-Message-Id: <20260814031745.17140-5-schmitzmic@gmail.com>
+	Miro Kropacek <miro.kropacek@gmail.com>
+Subject: [PATCH 5/5] m68k: Add support for Svethlana
+Date: Fri, 14 Aug 2026 15:17:45 +1200
+Message-Id: <20260814031745.17140-6-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20260814031745.17140-1-schmitzmic@gmail.com>
 References: <20260814031745.17140-1-schmitzmic@gmail.com>
@@ -78,246 +74,181 @@ X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
 From: Miro Kropacek <miro.kropacek@gmail.com>
 
-The SuperVidel graphics FPGA includes a hardware blitter (bit block
-transfer engine) operating within the SuperVidel DDR2 video RAM.
+The SuperVidel FPGA contains an OpenCore ethernet package. Add
+platform device data and other necessary definitions to support
+this device on Atari.
 
-Two versions of this blitter exist. Later versions (>= 9) of the
-SuperVidel firmware support an asynchronous command FIFO, older
-versions must be polled for command completion.
-
-Add hardware-accelerated copyarea, fillrect and imageblit fb
-operations (falling back to the non-accelerated versions for
-anything that exceeds blitter capabilities).
+The ethoc module must be enabled separately by the user.
 
 Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
 Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
-Cc: <linux-fbdev@vger.kernel.org>
 Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
 ---
- drivers/video/fbdev/atafb.c | 197 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 197 insertions(+)
+ arch/m68k/Kconfig.devices         | 12 ++++++
+ arch/m68k/atari/config.c          | 71 +++++++++++++++++++++++++++++++
+ arch/m68k/include/asm/atariints.h |  2 +-
+ arch/m68k/include/asm/irq.h       |  6 +--
+ 4 files changed, 87 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-index 50853d7a08e3..dc2d4154e1b6 100644
---- a/drivers/video/fbdev/atafb.c
-+++ b/drivers/video/fbdev/atafb.c
-@@ -2304,6 +2304,185 @@ static int ext_detect(void)
- 	return 1;
- }
+diff --git a/arch/m68k/Kconfig.devices b/arch/m68k/Kconfig.devices
+index e6e3efac1840..48f964d1615e 100644
+--- a/arch/m68k/Kconfig.devices
++++ b/arch/m68k/Kconfig.devices
+@@ -67,6 +67,18 @@ config ATARI_ETHERNAT
+ 	  To compile the actual ethernet driver, choose Y or M for the SMC91X
+ 	  option in the network device section; the module will be called smc91x.
  
-+/* ------------------- SuperVidel SuperBlitter ---------------------- */
++config ATARI_SVETHLANA
++	bool "Atari SuperVidel SVEthlana Ethernet support"
++	depends on ATARI
++	help
++	  Say Y to include support for the SVEthlana network adapter built
++	  into the SuperVidel FPGA. SuperVidel firmware version 10 or newer
++	  is required (older firmware lacks the Ethernet DMA).
 +
++	  To compile the actual ethernet driver, choose Y or M for the ETHOC
++	  option in the network device section; the module will be called
++	  ethoc.
++
+ config ATARI_ETHERNEC
+ 	bool "Atari EtherNEC Ethernet support"
+ 	depends on ATARI_ROM_ISA
+diff --git a/arch/m68k/atari/config.c b/arch/m68k/atari/config.c
+index ee2d061efb2a..86f07d0b85e0 100644
+--- a/arch/m68k/atari/config.c
++++ b/arch/m68k/atari/config.c
+@@ -34,6 +34,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/usb/isp116x.h>
+ #include <linux/module.h>
++#include <net/ethoc.h>
+ 
+ #include <asm/bootinfo.h>
+ #include <asm/bootinfo-atari.h>
+@@ -748,6 +749,62 @@ static struct platform_device *atari_ethernat_devices[] __initdata = {
+ };
+ #endif /* CONFIG_ATARI_ETHERNAT */
+ 
++#ifdef CONFIG_ATARI_SVETHLANA
 +/*
-+ * Hardware blitter in the SuperVidel FPGA, operating within SV DDR2 RAM.
-+ * FW revision >= 9 provides a command FIFO (async operation); older
-+ * revisions are programmed directly with busy-polling.
-+ */
-+#define SVBLIT_REGS_PHYS	0x80010000
-+#define SVBLIT_SRC1		0x58	/* bits 26:0 */
-+#define SVBLIT_SRC2		0x5c
-+#define SVBLIT_DST		0x60
-+#define SVBLIT_COUNT		0x64	/* bytes per line - 1 */
-+#define SVBLIT_SRC1_OFFSET	0x68	/* line start to next line start */
-+#define SVBLIT_SRC2_OFFSET	0x6c
-+#define SVBLIT_DST_OFFSET	0x70
-+#define SVBLIT_MASK_AND_LINES	0x74	/* bits 11:0: number of lines */
-+#define SVBLIT_CONTROL		0x78	/* bit 0: busy/start, bits 4:1: mode */
-+#define SVBLIT_VERSION		0x7c	/* bits 9:0: FW revision */
-+#define SVBLIT_FIFO		0x80	/* wr: data; rd: bit 0 empty, bit 1 full */
-+
-+/*
-+ * SuperBlitter bug: Instead of declared 2048 bytes, 2032 is the real maximum.
-+ */
-+#define SVBLIT_MAX_SPAN	2032
-+
-+static void __iomem *svblit_regs;
-+static int svblit_fw;
-+
-+static inline u32 svblit_rd(unsigned int reg)
-+{
-+	return __raw_readl(svblit_regs + reg);
-+}
-+
-+static inline void svblit_wr(unsigned int reg, u32 val)
-+{
-+	__raw_writel(val, svblit_regs + reg);
-+}
-+
-+/* wait until all queued blits have finished */
-+static void svblit_wait(void)
-+{
-+	if (svblit_fw >= 9)
-+		/* FIFO empty flag = fewer than 9 longwords queued */
-+		while (!(svblit_rd(SVBLIT_FIFO) & 1))
-+			cpu_relax();
-+	while (svblit_rd(SVBLIT_CONTROL) & 1)
-+		cpu_relax();
-+}
-+
-+/*
-+ * FW >= 9 queues commands through the 512-longword FIFO: a command is
-+ * 9 longwords (registers 0x58..0x78 in order), executed whenever >= 9
-+ * words are queued and the blitter is idle. The full flag rises at
-+ * >= 500 queued words, so below it there is always room for a whole
-+ * command — one flag check per command prevents overflow (dropped
-+ * words would desync the 9-word framing until an SV reinit, which is
-+ * exactly what overflowing did before this guard existed). Older FW
-+ * is programmed directly with busy-polling.
++ * SVEthlana: OpenCores 10/100 Mbps Ethernet MAC in the SuperVidel FPGA,
++ * handled by the ethoc driver. Requires SuperVidel firmware version 10
++ * or newer (Ethernet DMA).
 + *
-+ * The line byte count field is 11 bits but see SVBLIT_MAX_SPAN.
++ * The MAC can only DMA within the SuperVidel DDR RAM, so the packet
++ * buffers are carved out of the top of the DDR; the framebuffer lives
++ * at the bottom.
 + */
-+static void svblit_copy(u32 src, u32 dst, u32 nbytes, u32 src_offset,
-+			u32 dst_offset, u32 lines)
-+{
-+	while (nbytes) {
-+		u32 chunk = min(nbytes, SVBLIT_MAX_SPAN);
 +
-+		if (svblit_fw >= 9) {
-+			while (svblit_rd(SVBLIT_FIFO) & 2)
-+				cpu_relax();
-+			svblit_wr(SVBLIT_FIFO, src);
-+			svblit_wr(SVBLIT_FIFO, 0);
-+			svblit_wr(SVBLIT_FIFO, dst);
-+			svblit_wr(SVBLIT_FIFO, chunk - 1);
-+			svblit_wr(SVBLIT_FIFO, src_offset);
-+			svblit_wr(SVBLIT_FIFO, 0);
-+			svblit_wr(SVBLIT_FIFO, dst_offset);
-+			svblit_wr(SVBLIT_FIFO, lines);
-+			svblit_wr(SVBLIT_FIFO, 0x01);
-+		} else {
-+			while (svblit_rd(SVBLIT_CONTROL) & 1)
-+				cpu_relax();
-+			svblit_wr(SVBLIT_SRC1, src);
-+			svblit_wr(SVBLIT_SRC2, 0);
-+			svblit_wr(SVBLIT_DST, dst);
-+			svblit_wr(SVBLIT_COUNT, chunk - 1);
-+			svblit_wr(SVBLIT_SRC1_OFFSET, src_offset);
-+			svblit_wr(SVBLIT_SRC2_OFFSET, 0);
-+			svblit_wr(SVBLIT_DST_OFFSET, dst_offset);
-+			svblit_wr(SVBLIT_MASK_AND_LINES, lines);
-+			svblit_wr(SVBLIT_CONTROL, 0x01);
-+		}
++#define ATARI_SVETHLANA_PHYS_ADDR	0x80012000
++#define ATARI_SVETHLANA_IRQ		141	/* vector 0xc5 */
 +
-+		src += chunk;
-+		dst += chunk;
-+		nbytes -= chunk;
-+	}
-+}
++#define ATARI_SV_VERSION_PHYS_ADDR	0x8001007c
++#define ATARI_SV_DDR_END		0xa8000000
++/* 128 packet buffers of 1536 bytes each, the maximum ethoc supports */
++#define SVETHLANA_BUF_SIZE		(128 * 1536)
 +
-+static int svblit_sync(struct fb_info *info)
-+{
-+	svblit_wait();
-+	return 0;
-+}
++static struct resource svethlana_resources[] = {
++	[0] = {
++		.name	= "ethoc-regs",
++		.start	= ATARI_SVETHLANA_PHYS_ADDR,
++		.end	= ATARI_SVETHLANA_PHYS_ADDR + 0x7ff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.name	= "ethoc-buf",
++		.start	= ATARI_SV_DDR_END - SVETHLANA_BUF_SIZE,
++		.end	= ATARI_SV_DDR_END - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	[2] = {
++		.name	= "ethoc-irq",
++		.start	= ATARI_SVETHLANA_IRQ,
++		.end	= ATARI_SVETHLANA_IRQ,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
 +
-+static void svblit_copyarea(struct fb_info *info,
-+			    const struct fb_copyarea *area)
-+{
-+	u32 bytespp = info->var.bits_per_pixel / 8;
-+	u32 pitch = info->fix.line_length;
++static struct ethoc_platform_data svethlana_platform_data = {
++	.phy_id		= -1,
++	.big_endian	= true,
++};
 +
-+	/*
-+	 * The blitter walks lines in ascending order, so overlapping
-+	 * moves down/right would read already overwritten data. Those
-+	 * are rare for fbcon (scrolling backwards); leave them and
-+	 * oversized areas to the CPU.
-+	 */
-+	if (area->height > 4095 ||
-+	    area->dy > area->sy ||
-+	    (area->dy == area->sy && area->dx > area->sx)) {
-+		svblit_wait();
-+		cfb_copyarea(info, area);
-+		return;
-+	}
++static struct platform_device svethlana_device = {
++	.name		= "ethoc",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(svethlana_resources),
++	.resource	= svethlana_resources,
++	.dev		= {
++		.platform_data	= &svethlana_platform_data,
++	},
++};
++#endif /* CONFIG_ATARI_SVETHLANA */
 +
-+	svblit_copy(external_addr + area->sy * pitch + area->sx * bytespp,
-+		    external_addr + area->dy * pitch + area->dx * bytespp,
-+		    area->width * bytespp, pitch, pitch, area->height);
-+	/* async: every CPU access to the fb goes through svblit_wait() */
-+}
-+
-+static void svblit_fillrect(struct fb_info *info,
-+			    const struct fb_fillrect *rect)
-+{
-+	u32 bytespp = info->var.bits_per_pixel / 8;
-+	u32 pitch = info->fix.line_length;
-+	u8 *line;
-+	u32 pix;
-+
-+	svblit_wait();		/* the CPU is about to touch the fb */
-+
-+	if (rect->rop != ROP_COPY || rect->height <= 1 ||
-+	    rect->height > 4096) {
-+		cfb_fillrect(info, rect);
-+		return;
-+	}
-+
-+	pix = (info->fix.visual == FB_VISUAL_TRUECOLOR) ?
-+		((u32 *)info->pseudo_palette)[rect->color] : rect->color;
-+
-+	/* draw the first line with the CPU ... */
-+	line = (u8 *)info->screen_base + rect->dy * pitch +
-+	       rect->dx * bytespp;
-+	switch (bytespp) {
-+	case 1:
-+		memset(line, pix, rect->width);
-+		break;
-+	case 2:
-+		memset16((u16 *)line, pix, rect->width);
-+		break;
-+	default:
-+		memset32((u32 *)line, pix, rect->width);
-+		break;
-+	}
-+
-+	/* ... and let the blitter replicate it into the other lines */
-+	svblit_copy(external_addr + rect->dy * pitch + rect->dx * bytespp,
-+		    external_addr + (rect->dy + 1) * pitch +
-+		    rect->dx * bytespp,
-+		    rect->width * bytespp, 0, pitch, rect->height - 1);
-+}
-+
-+static void svblit_imageblit(struct fb_info *info,
-+			     const struct fb_image *image)
-+{
-+	svblit_wait();		/* CPU rendering must not race queued blits */
-+	cfb_imageblit(info, image);
-+}
-+
- #endif /* ATAFB_EXT */
- 
- /* ------ This is the same for most hardware types -------- */
-@@ -3168,6 +3347,24 @@ static int __init atafb_probe(struct platform_device *pdev)
- 		phys_screen_base = external_addr;
- 		screen_len = external_len & PAGE_MASK;
- 		memset (screen_base, 0, external_len);
-+
-+		/* framebuffer in SV RAM: enable the SuperBlitter */
-+		if (external_addr >= 0xa0000000) {
-+			svblit_regs = ioremap(SVBLIT_REGS_PHYS, 0x100);
-+			if (svblit_regs) {
-+				svblit_fw = svblit_rd(SVBLIT_VERSION) & 0x1ff;
-+				atafb_ops.fb_fillrect = svblit_fillrect;
-+				atafb_ops.fb_copyarea = svblit_copyarea;
-+				atafb_ops.fb_imageblit = svblit_imageblit;
-+				atafb_ops.fb_sync = svblit_sync;
-+				fb_info.flags |= FBINFO_HWACCEL_COPYAREA |
-+						 FBINFO_HWACCEL_FILLRECT;
-+				dev_info(&pdev->dev,
-+					 "SuperBlitter enabled, FW revision %d (%s)\n",
-+					 svblit_fw, svblit_fw >= 9 ?
-+					 "async FIFO" : "sync");
-+			}
-+		}
+ #ifdef CONFIG_ATARI_ETHERNEC
+ /*
+  * EtherNEC: RTL8019 (NE2000 compatible) Ethernet chipset,
+@@ -892,6 +949,20 @@ static int __init atari_platform_init(void)
  	}
- #endif /* ATAFB_EXT */
+ #endif
  
++#ifdef CONFIG_ATARI_SVETHLANA
++	{
++		void __iomem *sv_version;
++
++		sv_version = ioremap(ATARI_SV_VERSION_PHYS_ADDR, 4);
++		if (sv_version) {
++			if (hwreg_present(sv_version) &&
++			    (__raw_readl(sv_version) & 0x3ff) >= 10)
++				rv = platform_device_register(&svethlana_device);
++			iounmap(sv_version);
++		}
++	}
++#endif
++
+ #ifdef CONFIG_ATARI_ETHERNEC
+ 	{
+ 		int error;
+diff --git a/arch/m68k/include/asm/atariints.h b/arch/m68k/include/asm/atariints.h
+index 6321c4495620..cb15361d14e9 100644
+--- a/arch/m68k/include/asm/atariints.h
++++ b/arch/m68k/include/asm/atariints.h
+@@ -32,7 +32,7 @@
+ #define VME_SOURCE_BASE    56
+ #define VME_MAX_SOURCES    16
+ 
+-#define NUM_ATARI_SOURCES  141
++#define NUM_ATARI_SOURCES  142
+ 
+ /* convert vector number to int source number */
+ #define IRQ_VECTOR_TO_SOURCE(v)	((v) - ((v) < 0x20 ? 0x18 : (0x40-8)))
+diff --git a/arch/m68k/include/asm/irq.h b/arch/m68k/include/asm/irq.h
+index 2263e92d418a..8bac43d0f49d 100644
+--- a/arch/m68k/include/asm/irq.h
++++ b/arch/m68k/include/asm/irq.h
+@@ -10,8 +10,8 @@
+  * different m68k hosts compiled into the kernel.
+  * Currently the Atari has 72 and the Amiga 24, but if both are
+  * supported in the kernel it is better to make room for 72.
+- * With EtherNAT add-on card on Atari, the highest interrupt
+- * number is 140 so NR_IRQS needs to be 141.
++ * With the SVEthlana adapter in the SuperVidel on Atari, the highest
++ * interrupt number is 141 so NR_IRQS needs to be 142.
+  */
+ #if defined(CONFIG_COLDFIRE)
+ #define NR_IRQS 256
+@@ -19,7 +19,7 @@
+       defined(CONFIG_SUN3X) || defined(CONFIG_VIRT)
+ #define NR_IRQS 200
+ #elif defined(CONFIG_ATARI)
+-#define NR_IRQS 141
++#define NR_IRQS 142
+ #elif defined(CONFIG_MAC)
+ #define NR_IRQS 72
+ #elif defined(CONFIG_Q40)
 -- 
 2.17.1
 
