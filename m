@@ -1,75 +1,75 @@
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72CA3D565A
-	for <linux-m68k@vger.kernel.org>; Sun, 16 Aug 2026 07:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A103D522C
+	for <linux-m68k@vger.kernel.org>; Sun, 16 Aug 2026 07:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786865885; cv=none; b=kiuJhVS9XI0mlfzqvud7kZMDNPP88izzBfygEiuJ9HTXcimO5R3HlyrO7P4d58mN38ta/g+G2RI19L3OmtSVxgEwdKecHY+zIz+nb/ZysYrpMmd+9/pYMRZGrL94uzBYdUebM9pEGBl3hIajbXW7zbbLdYY4QeCIE/u1PMNahUs=
+	t=1786865886; cv=none; b=It6Y9gAAUA9veCUy/VhcIEha2fVoOUotgdboqFcdbQD0U8oR7LLJZwHfPvJ0FPd36M60zuK570aWJC+9k6cqhFKyv1+OpLZnSk8zfl1AhcAxYGpTxBuomeHiDpIt6J9uNWxmHNHu1t8lr9YZF6mK+Mk5dxRDtentTb+T5gv8l1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786865885; c=relaxed/simple;
-	bh=emsftyw5wyoadJa+IORXBvBSvTjmZyYai6RX0k/JApg=;
+	s=arc-20240116; t=1786865886; c=relaxed/simple;
+	bh=eeWVDwEacRSJnz7aoqjRiOchVpKPLLINO8827HPeYyI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W1ft+mGUp+f1+HU0nuIcIGCjWayx2MIWdkIltLabgVU58gyLI2dEMCiHasYj7kmHU3oKJQL4qHRtumO0v2s9B10iQPzCv/76TnJOje37cZddR2x+TjnhADjjMOUUCbw1wZuuzVW3Ta//OAG7tOkVWcsf4Z/FSEzLsFK8jJJlkBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xau7D2Pw; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version:Content-Type; b=YnO4ov99SIfFOUOuV1Eyi/pm06uF7VvWbGggf5cJHZtnGDJLs5gPDQlKbuSlAzcedzl34ecMuMWBcp16jMAuCW64ff+yJpgLf97En/k2+VcPgmAhRsSb3Cx9/LYbUDYBkQB3XMrVrqh0ickGoh3t7OdyA5S+1EyEMA2UaDHnOKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mTSRSwo4; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xau7D2Pw"
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2ccf2360620so23932135ad.3
-        for <linux-m68k@vger.kernel.org>; Sun, 16 Aug 2026 00:38:02 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mTSRSwo4"
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2caced6038eso26777135ad.0
+        for <linux-m68k@vger.kernel.org>; Sun, 16 Aug 2026 00:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786865882; x=1787470682; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1786865884; x=1787470684; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=eivPPKqM37O/esXZcj/rxFYzR0cZV1VDclO2F/dhLtM=;
-        b=Xau7D2PwnCKn21ymO8YlRFeVQbIHbABk+xISVpVHlDwi8MwXDvJxR9XhFndl/WyPtj
-         9oc90OTBhYEWTJPg7AYjdceQjMHJx/vIVt+cWgrFiaJjeCgsXyF+APMxsTvASu4oDKzD
-         Y8pB9eC3qFAHyonT60Hs/vf+1Noh/AHV1S/DuWRgAfW+Gn1aSIz/HPRNF1SCMQ/n9sY7
-         yyzzj85Po4cxOnKrYwCXrEm1QhGJm07NEdV4JCdRgMSezsnB+I5HGHMwHVzmJeLK88+7
-         72vrJu+wqYDKcSre8tNgbjMTlY7hdlxyeVNpssmTMJO0iywO4EvCsVZLiyqalqWJ4YZa
-         NjzQ==
+        bh=RQI3AyX99exIaNSvIi7NmGMw2tFAjvIHhhh2QgMhw7g=;
+        b=mTSRSwo42XnCWdCi0IA9E0RXIxUZ7IO9rsX48emeq/CjviDQT+fcXF7oM5oc4RXfCy
+         oO++VXFrwbyoKnJx9ZBeocReCfF0TkYyDmK+FjbN0N44078FMW6zNRV2uHt7Q8F2IrU6
+         clkT3/XMJsQIUkifV7UK2qj0jFod1I8HzScwCqeLbxA6sd+dYQeaq+Bqt6jl+Xtw5fLO
+         QlnGxzY0ngNTUGUOzDH7xf0atH+forx9qqQIkQyRqZC78blchpFPAuLxHJM4lJTn+rwO
+         GHipLO2F5UVB2OI2ocVsO1uGR2xoUv6StXu2k8iy1jX7Nb+gZD097pcgzmU6W2YryZhg
+         h/tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786865882; x=1787470682;
+        d=1e100.net; s=20251104; t=1786865884; x=1787470684;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=eivPPKqM37O/esXZcj/rxFYzR0cZV1VDclO2F/dhLtM=;
-        b=XD0mr5QwUjdXBe5n7gEkmKuZfLUmbyJYopOgfk/Dk64Aj/jrbAqEy335gDHoxhCIEb
-         5C1o+6rBuf9FZXFN649qsrIVQMbCmOsoFsmC3uK8gyHnDnIf2hwvsGTubBpsNeAffdET
-         KTLI5Tt5GuP3wf56xXj9wqgoR3hQGEnMKo/sLvOS95CI5So6XOA7ds0p4MGIfuSndxCJ
-         ShShnK1RxpNhEcgJpPgXPSl7RvuaJTAQKmC7C6QGT0ZnRc+7YgiCWxnK2sYMOYTh+n9s
-         FmAirToFlI5gZttH9AZu6WYCMCVXoGi5zZB5EeMs2+/02CvgDN164Xhgtlbfa655chWx
-         dpeQ==
-X-Gm-Message-State: AOJu0YzgAwFqojuUfHMidl6pS6/rPwNtu8dpg33+n36dKD4bnguveJY7
-	jZ2kiCfkS/1ddDFjUVh17ipId/7GsLSqJpy97kzH/RUYavyEpfx5RszB
-X-Gm-Gg: AR+sD10+spOUaKiJp/Q2dsVF1ZqChH/YkbcU3R7ZSuLtdcYw5g1jdEvQoQfFcGgokrI
-	7Y2SylytqgJPmbe6jhInklN0Nv33ULBrG0eO5zjIuuTw0xH3/XKYc9Xo2OGxnsP9Yo9p4Vdx6/J
-	OhB/WU+ulPShqWt6b5Wt3dQxiag0MGk7KdXAMI+OLsfdKMp1RMfAm6oWKf1kOYixWzPOVSMtpUe
-	xmabOCR/o9jMrLOo7D1ABDFjotmHV2r+/6lI1lpmb0hMCi08t8kSEMJAk8JhuGT8j94ArHYX6Ig
-	5GDN4+S2V7BjFa3UKHlH1taV/nNWtaUT0YJOgBdb8DxgFIGYHdKLRbG/I3ilXVPg2Ps+mpTO4SU
-	xvsJi4s5EP6fkmyfMgcj+LtwxNXEEpeA1PwhCRSaLuU++n1+N7Qp0JpyQRtsnBuKFj+DN+FR+V3
-	hwyFg67dR2KKuuKCZbIYX6QS8Jxh4hwi4ZsjBN+MIS4H1bzz4j+JNpUHNxCw1KzFqqA0agDC5Y1
-	YnJ0Ez9pyz0a9sy/EOe3BJjUq+hGssfYiUfG5NwrSd1S/LVOFywrA==
-X-Received: by 2002:a17:90b:3d48:b0:381:528a:808c with SMTP id 98e67ed59e1d1-3933b8939dfmr18940629a91.12.1786865882042;
-        Sun, 16 Aug 2026 00:38:02 -0700 (PDT)
+        bh=RQI3AyX99exIaNSvIi7NmGMw2tFAjvIHhhh2QgMhw7g=;
+        b=fMMC4MaJsq50Sst1FiZ1GMiHVS1tdhfHl0K7o/O78o+oPkInx3QbcmFy49bIGK9MxT
+         S6ZujmmAM+lKgH+FL+9Ge6K7AGDgbnrGnaZeI458b1HIV1KndB7cT5rYPhyWROU9/6fl
+         dCo9w+m5YuDqZgaI5deolKZjSGRge1lYcfHFSJHOuTljPfAScPg3EbK7zvAt0IhXr7A9
+         vvcVmiU0avV/rLP7gNEsFuVSGiLy/l0v1SI9UwpGpGN2m9YdNAnFJfo6gHVeI70J/sov
+         RpRbAfMTgi+rKX4PG4UtHgF5nzSBasNsIK0N3F7B7CJRiEhZ9u2AsliNaOnHoMl3Qwa2
+         yMLA==
+X-Gm-Message-State: AOJu0YzjQdcs9F1CgsxHf4iBZh84eFJTko0cYFQ1F9L5bre8nOowU/Au
+	YchwPwXC5YHwd+jGeeghdYjrEpgxxQ0iqWYj7XugJtzXw6nWegwnkkeT
+X-Gm-Gg: AR+sD13LcOj7FZeKy9g7+XsRBK/85f+ZhpWOSmRKIizJD/IHqRZ6hL+m1EJFY+CEN07
+	EeWrSymD/1+DqyTKTEOdl1/MAua8GQBqaSlWAmuXCiRZLEQtvq0QcYUkfMCMqvRwslN2LrI9X0U
+	a3a8w6sgFZf26Uz24ubik5d84VDnudsnNBoyoGjpCE0D1+MO6ZOEZgi4dJWuciaIFLOYiOK04ow
+	FW562NpxQVClU9j3Pu4/sR+jXgGFVlDuofKunhHSwC5ocCKPVsBYyBu6FmZEnyAlDnBm/SI40bz
+	k2VVIZRFiQykPYo8llOqur5W22Qgx2HO50AbUfHe2XH7/Rri/N0XOZUHX+LkNY19zP1V6aVeliQ
+	0RDz+InYF7jmQnDR/cLytQsgOw3BjMbTDZuryeGFOtREHpwsGkojQH4celIHm9iv0c69vIeFHQP
+	KgEwnmIOYUT4cWLadranOifoMIC89FkQ02osZpZeFW9b3gzT80LLz9wJG3U/M7QgI5WG9UqWxTO
+	A/7fSd5lhxW0g98PjobseHGnmFjS4cCb3L/npgVm8TPge0gVbnBAg==
+X-Received: by 2002:a17:902:f68a:b0:2cc:fa13:dcab with SMTP id d9443c01a7336-2d3afe6fe0dmr131629665ad.8.1786865884435;
+        Sun, 16 Aug 2026 00:38:04 -0700 (PDT)
 Received: from xplor.waratah.dyndns.org (222-152-170-159-fibre.sparkbb.co.nz. [222.152.170.159])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39531e84244sm843306a91.6.2026.08.16.00.38.01
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2d563165e19sm5381745ad.42.2026.08.16.00.38.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Aug 2026 00:38:01 -0700 (PDT)
+        Sun, 16 Aug 2026 00:38:04 -0700 (PDT)
 Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
-	id 11BB3360495; Sun, 16 Aug 2026 19:37:58 +1200 (NZST)
+	id C2DFE3604D1; Sun, 16 Aug 2026 19:37:58 +1200 (NZST)
 From: Michael Schmitz <schmitzmic@gmail.com>
 To: linux-m68k@vger.kernel.org,
 	geert@linux-m68k.org
 Cc: schmitzmic@gmail.com,
 	Miro Kropacek <miro.kropacek@gmail.com>,
 	linux-fbdev@vger.kernel.org
-Subject: [PATCH v2 3/5] fbdev: Add support for further video bit depths on atafb:external
-Date: Sun, 16 Aug 2026 19:37:50 +1200
-Message-Id: <20260816073752.16656-4-schmitzmic@gmail.com>
+Subject: [PATCH v2 4/5] fbdev: Add support for SuperVidel's SuperBlitter
+Date: Sun, 16 Aug 2026 19:37:51 +1200
+Message-Id: <20260816073752.16656-5-schmitzmic@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20260816073752.16656-1-schmitzmic@gmail.com>
 References: <20260816073752.16656-1-schmitzmic@gmail.com>
@@ -84,10 +84,16 @@ Content-Transfer-Encoding: 8bit
 
 From: Miro Kropacek <miro.kropacek@gmail.com>
 
-Supervidel offers additional video bit depths (8-bit chunky, 16-bit
-RGB565 (also on the originaln Videl) and ARGB888.
+The SuperVidel graphics FPGA includes a hardware blitter (bit block
+transfer engine) operating within the SuperVidel DDR2 video RAM.
 
-Add code to support these bit depths.
+Two versions of this blitter exist. Later versions (>= 9) of the
+SuperVidel firmware support an asynchronous command FIFO, older
+versions must be polled for command completion.
+
+Add hardware-accelerated copyarea, fillrect and imageblit fb
+operations (falling back to the non-accelerated versions for
+anything that exceeds blitter capabilities).
 
 Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
 Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
@@ -95,158 +101,224 @@ Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
 Cc: <linux-fbdev@vger.kernel.org>
 Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
 ---
- drivers/video/fbdev/atafb.c | 89 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 82 insertions(+), 7 deletions(-)
+ drivers/video/fbdev/atafb.c | 197 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 197 insertions(+)
 
 diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-index 3d540803dc2b..50853d7a08e3 100644
+index 50853d7a08e3..dc2d4154e1b6 100644
 --- a/drivers/video/fbdev/atafb.c
 +++ b/drivers/video/fbdev/atafb.c
-@@ -2081,8 +2081,12 @@ static int ext_encode_fix(struct fb_fix_screeninfo *fix, struct atafb_par *par)
- 			 external_pmode == FB_TYPE_PACKED_PIXELS) ?
- 				FB_VISUAL_MONO10 : FB_VISUAL_MONO01;
- 	} else {
--		/* Use STATIC if we don't know how to access color registers */
--		int visual = external_vgaiobase ?
-+		/* Use STATIC if we don't know how to access color registers;
-+		 * SuperVidel 8bpp chunky (fb in SV RAM) uses the Falcon palette
-+		 */
-+		int visual = (external_vgaiobase ||
-+			      (external_depth == 8 &&
-+			       external_addr >= 0xa0000000)) ?
- 					 FB_VISUAL_PSEUDOCOLOR :
- 					 FB_VISUAL_STATIC_PSEUDOCOLOR;
- 		switch (external_pmode) {
-@@ -2159,6 +2163,35 @@ static int ext_encode_var(struct fb_var_screeninfo *var, struct atafb_par *par)
- 	var->transp.offset = 0;
- 	var->transp.length = 0;
- 	var->transp.msb_right = 0;
-+	if (external_pmode == -1 && external_depth == 16) {
-+		/* RGB565 truecolor (e.g. SuperVidel native mode) */
-+		var->red.offset = 11;
-+		var->red.length = 5;
-+		var->green.offset = 5;
-+		var->green.length = 6;
-+		var->blue.offset = 0;
-+		var->blue.length = 5;
-+	} else if (external_pmode == -1 && external_depth == 32) {
-+		/* ARGB8888 truecolor (e.g. SuperVidel native mode) */
-+		var->red.offset = 16;
-+		var->red.length = 8;
-+		var->green.offset = 8;
-+		var->green.length = 8;
-+		var->blue.offset = 0;
-+		var->blue.length = 8;
-+		var->transp.offset = 24;
-+		var->transp.length = 8;
-+	} else if (external_pmode == FB_TYPE_PACKED_PIXELS &&
-+		   external_depth == 8 && external_addr >= 0xa0000000) {
-+		/* SuperVidel 8bpp chunky: palette has 8 bits per channel.
-+		 * Without this, fb_get_color_depth() sees length 0 and
-+		 * fbcon falls back to its 2-color palette — the console
-+		 * text (color 7) stays black on black.
-+		 */
-+		var->red.length = 8;
-+		var->green.length = 8;
-+		var->blue.length = 8;
-+	}
- 	var->yres_virtual = var->yres;
- 	var->xoffset = 0;
- 	var->yoffset = 0;
-@@ -2193,6 +2226,38 @@ static int ext_setcolreg(unsigned int regno, unsigned int red,
- {
- 	unsigned char colmask = (1 << external_bitspercol) - 1;
+@@ -2304,6 +2304,185 @@ static int ext_detect(void)
+ 	return 1;
+ }
  
-+	if (external_pmode == -1 && external_depth == 16) {
-+		/* truecolor: only the pseudo palette for fbcon is needed */
-+		if (regno > 15)
-+			return 1;
-+		((u32 *)info->pseudo_palette)[regno] = (red & 0xf800) |
-+						       ((green & 0xfc00) >> 5) |
-+						       ((blue & 0xf800) >> 11);
-+		return 0;
++/* ------------------- SuperVidel SuperBlitter ---------------------- */
++
++/*
++ * Hardware blitter in the SuperVidel FPGA, operating within SV DDR2 RAM.
++ * FW revision >= 9 provides a command FIFO (async operation); older
++ * revisions are programmed directly with busy-polling.
++ */
++#define SVBLIT_REGS_PHYS	0x80010000
++#define SVBLIT_SRC1		0x58	/* bits 26:0 */
++#define SVBLIT_SRC2		0x5c
++#define SVBLIT_DST		0x60
++#define SVBLIT_COUNT		0x64	/* bytes per line - 1 */
++#define SVBLIT_SRC1_OFFSET	0x68	/* line start to next line start */
++#define SVBLIT_SRC2_OFFSET	0x6c
++#define SVBLIT_DST_OFFSET	0x70
++#define SVBLIT_MASK_AND_LINES	0x74	/* bits 11:0: number of lines */
++#define SVBLIT_CONTROL		0x78	/* bit 0: busy/start, bits 4:1: mode */
++#define SVBLIT_VERSION		0x7c	/* bits 9:0: FW revision */
++#define SVBLIT_FIFO		0x80	/* wr: data; rd: bit 0 empty, bit 1 full */
++
++/*
++ * SuperBlitter bug: Instead of declared 2048 bytes, 2032 is the real maximum.
++ */
++#define SVBLIT_MAX_SPAN	2032
++
++static void __iomem *svblit_regs;
++static int svblit_fw;
++
++static inline u32 svblit_rd(unsigned int reg)
++{
++	return __raw_readl(svblit_regs + reg);
++}
++
++static inline void svblit_wr(unsigned int reg, u32 val)
++{
++	__raw_writel(val, svblit_regs + reg);
++}
++
++/* wait until all queued blits have finished */
++static void svblit_wait(void)
++{
++	if (svblit_fw >= 9)
++		/* FIFO empty flag = fewer than 9 longwords queued */
++		while (!(svblit_rd(SVBLIT_FIFO) & 1))
++			cpu_relax();
++	while (svblit_rd(SVBLIT_CONTROL) & 1)
++		cpu_relax();
++}
++
++/*
++ * FW >= 9 queues commands through the 512-longword FIFO: a command is
++ * 9 longwords (registers 0x58..0x78 in order), executed whenever >= 9
++ * words are queued and the blitter is idle. The full flag rises at
++ * >= 500 queued words, so below it there is always room for a whole
++ * command — one flag check per command prevents overflow (dropped
++ * words would desync the 9-word framing until an SV reinit, which is
++ * exactly what overflowing did before this guard existed). Older FW
++ * is programmed directly with busy-polling.
++ *
++ * The line byte count field is 11 bits but see SVBLIT_MAX_SPAN.
++ */
++static void svblit_copy(u32 src, u32 dst, u32 nbytes, u32 src_offset,
++			u32 dst_offset, u32 lines)
++{
++	while (nbytes) {
++		u32 chunk = min(nbytes, SVBLIT_MAX_SPAN);
++
++		if (svblit_fw >= 9) {
++			while (svblit_rd(SVBLIT_FIFO) & 2)
++				cpu_relax();
++			svblit_wr(SVBLIT_FIFO, src);
++			svblit_wr(SVBLIT_FIFO, 0);
++			svblit_wr(SVBLIT_FIFO, dst);
++			svblit_wr(SVBLIT_FIFO, chunk - 1);
++			svblit_wr(SVBLIT_FIFO, src_offset);
++			svblit_wr(SVBLIT_FIFO, 0);
++			svblit_wr(SVBLIT_FIFO, dst_offset);
++			svblit_wr(SVBLIT_FIFO, lines);
++			svblit_wr(SVBLIT_FIFO, 0x01);
++		} else {
++			while (svblit_rd(SVBLIT_CONTROL) & 1)
++				cpu_relax();
++			svblit_wr(SVBLIT_SRC1, src);
++			svblit_wr(SVBLIT_SRC2, 0);
++			svblit_wr(SVBLIT_DST, dst);
++			svblit_wr(SVBLIT_COUNT, chunk - 1);
++			svblit_wr(SVBLIT_SRC1_OFFSET, src_offset);
++			svblit_wr(SVBLIT_SRC2_OFFSET, 0);
++			svblit_wr(SVBLIT_DST_OFFSET, dst_offset);
++			svblit_wr(SVBLIT_MASK_AND_LINES, lines);
++			svblit_wr(SVBLIT_CONTROL, 0x01);
++		}
++
++		src += chunk;
++		dst += chunk;
++		nbytes -= chunk;
 +	}
-+	if (external_pmode == -1 && external_depth == 32) {
-+		/* ARGB8888, alpha forced opaque */
-+		if (regno > 15)
-+			return 1;
-+		((u32 *)info->pseudo_palette)[regno] = 0xff000000 |
-+						       ((red & 0xff00) << 8) |
-+						       (green & 0xff00) |
-+						       ((blue & 0xff00) >> 8);
-+		return 0;
-+	}
-+	if (external_pmode == FB_TYPE_PACKED_PIXELS && external_depth == 8 &&
-+	    external_addr >= 0xa0000000) {
-+		/* SuperVidel native 8bpp chunky scans out via the Falcon
-+		 * palette registers, honoring all 8 bits per channel
-+		 */
-+		if (regno > 255)
-+			return 1;
-+		f030_col[regno] = ((red & 0xff00) << 16) |
-+				  ((green & 0xff00) << 8) |
-+				  ((blue & 0xff00) >> 8);
-+		return 0;
++}
++
++static int svblit_sync(struct fb_info *info)
++{
++	svblit_wait();
++	return 0;
++}
++
++static void svblit_copyarea(struct fb_info *info,
++			    const struct fb_copyarea *area)
++{
++	u32 bytespp = info->var.bits_per_pixel / 8;
++	u32 pitch = info->fix.line_length;
++
++	/*
++	 * The blitter walks lines in ascending order, so overlapping
++	 * moves down/right would read already overwritten data. Those
++	 * are rare for fbcon (scrolling backwards); leave them and
++	 * oversized areas to the CPU.
++	 */
++	if (area->height > 4095 ||
++	    area->dy > area->sy ||
++	    (area->dy == area->sy && area->dx > area->sx)) {
++		svblit_wait();
++		cfb_copyarea(info, area);
++		return;
 +	}
 +
- 	if (!external_vgaiobase)
- 		return 1;
++	svblit_copy(external_addr + area->sy * pitch + area->sx * bytespp,
++		    external_addr + area->dy * pitch + area->dx * bytespp,
++		    area->width * bytespp, pitch, pitch, area->height);
++	/* async: every CPU access to the fb goes through svblit_wait() */
++}
++
++static void svblit_fillrect(struct fb_info *info,
++			    const struct fb_fillrect *rect)
++{
++	u32 bytespp = info->var.bits_per_pixel / 8;
++	u32 pitch = info->fix.line_length;
++	u8 *line;
++	u32 pix;
++
++	svblit_wait();		/* the CPU is about to touch the fb */
++
++	if (rect->rop != ROP_COPY || rect->height <= 1 ||
++	    rect->height > 4096) {
++		cfb_fillrect(info, rect);
++		return;
++	}
++
++	pix = (info->fix.visual == FB_VISUAL_TRUECOLOR) ?
++		((u32 *)info->pseudo_palette)[rect->color] : rect->color;
++
++	/* draw the first line with the CPU ... */
++	line = (u8 *)info->screen_base + rect->dy * pitch +
++	       rect->dx * bytespp;
++	switch (bytespp) {
++	case 1:
++		memset(line, pix, rect->width);
++		break;
++	case 2:
++		memset16((u16 *)line, pix, rect->width);
++		break;
++	default:
++		memset32((u32 *)line, pix, rect->width);
++		break;
++	}
++
++	/* ... and let the blitter replicate it into the other lines */
++	svblit_copy(external_addr + rect->dy * pitch + rect->dx * bytespp,
++		    external_addr + (rect->dy + 1) * pitch +
++		    rect->dx * bytespp,
++		    rect->width * bytespp, 0, pitch, rect->height - 1);
++}
++
++static void svblit_imageblit(struct fb_info *info,
++			     const struct fb_image *image)
++{
++	svblit_wait();		/* CPU rendering must not race queued blits */
++	cfb_imageblit(info, image);
++}
++
+ #endif /* ATAFB_EXT */
  
-@@ -2422,7 +2487,9 @@ static void atafb_fillrect(struct fb_info *info, const struct fb_fillrect *rect)
- 		return;
- 
- #ifdef ATAFB_FALCON
--	if (info->var.bits_per_pixel == 16) {
-+	/* chunky modes (Falcon hicolor, external packed/truecolor) */
-+	if (info->fix.type == FB_TYPE_PACKED_PIXELS &&
-+	    info->var.bits_per_pixel > 1) {
- 		cfb_fillrect(info, rect);
- 		return;
+ /* ------ This is the same for most hardware types -------- */
+@@ -3168,6 +3347,24 @@ static int __init atafb_probe(struct platform_device *pdev)
+ 		phys_screen_base = external_addr;
+ 		screen_len = external_len & PAGE_MASK;
+ 		memset (screen_base, 0, external_len);
++
++		/* framebuffer in SV RAM: enable the SuperBlitter */
++		if (external_addr >= 0xa0000000) {
++			svblit_regs = ioremap(SVBLIT_REGS_PHYS, 0x100);
++			if (svblit_regs) {
++				svblit_fw = svblit_rd(SVBLIT_VERSION) & 0x1ff;
++				atafb_ops.fb_fillrect = svblit_fillrect;
++				atafb_ops.fb_copyarea = svblit_copyarea;
++				atafb_ops.fb_imageblit = svblit_imageblit;
++				atafb_ops.fb_sync = svblit_sync;
++				fb_info.flags |= FBINFO_HWACCEL_COPYAREA |
++						 FBINFO_HWACCEL_FILLRECT;
++				dev_info(&pdev->dev,
++					 "SuperBlitter enabled, FW revision %d (%s)\n",
++					 svblit_fw, svblit_fw >= 9 ?
++					 "async FIFO" : "sync");
++			}
++		}
  	}
-@@ -2463,7 +2530,9 @@ static void atafb_copyarea(struct fb_info *info, const struct fb_copyarea *area)
- 	int rev_copy = 0;
+ #endif /* ATAFB_EXT */
  
- #ifdef ATAFB_FALCON
--	if (info->var.bits_per_pixel == 16) {
-+	/* chunky modes (Falcon hicolor, external packed/truecolor) */
-+	if (info->fix.type == FB_TYPE_PACKED_PIXELS &&
-+	    info->var.bits_per_pixel > 1) {
- 		cfb_copyarea(info, area);
- 		return;
- 	}
-@@ -2517,7 +2586,9 @@ static void atafb_imageblit(struct fb_info *info, const struct fb_image *image)
- 	u32 dx, dy, width, height, pitch;
- 
- #ifdef ATAFB_FALCON
--	if (info->var.bits_per_pixel == 16) {
-+	/* chunky modes (Falcon hicolor, external packed/truecolor) */
-+	if (info->fix.type == FB_TYPE_PACKED_PIXELS &&
-+	    info->var.bits_per_pixel > 1) {
- 		cfb_imageblit(info, image);
- 		return;
- 	}
-@@ -2753,7 +2824,7 @@ static void __init atafb_setup_ext(char *spec)
- 		return;
- 	depth = simple_strtoul(p, NULL, 10);
- 	if (depth != 1 && depth != 2 && depth != 4 && depth != 8 &&
--	    depth != 16 && depth != 24)
-+	    depth != 16 && depth != 24 && depth != 32)
- 		return;
- 
- 	p = strsep(&spec, ";");
-@@ -3131,7 +3202,11 @@ static int __init atafb_probe(struct platform_device *pdev)
- 
- 	atafb_set_disp(&fb_info);
- 
--	fb_alloc_cmap(&(fb_info.cmap), 1 << fb_info.var.bits_per_pixel, 0);
-+	/* truecolor visuals only need the 16-entry console palette; this
-+	 * also avoids 1 << 32 overflowing at 32bpp
-+	 */
-+	fb_alloc_cmap(&(fb_info.cmap), fb_info.var.bits_per_pixel > 8 ?
-+		      16 : 1 << fb_info.var.bits_per_pixel, 0);
- 
- 
- 	dev_info(&pdev->dev, "Determined %dx%d, depth %d\n", fb_info.var.xres,
 -- 
 2.17.1
 
