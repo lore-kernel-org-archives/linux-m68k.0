@@ -1,407 +1,210 @@
-Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A04313E21
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Aug 2026 01:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC7C30EF86;
+	Mon, 17 Aug 2026 06:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786931967; cv=none; b=sg3Be+NOjaJ7CQi+/CmJWHTfstUejE4p1uCkSSQZEmyIiu1qQGCdQbAKklW32qYoJ1aWFAO5krnYKzWudAKSf8HvJX2w4RJknPCBR84z5tDH+RFG1h164ByC/46pkQd4iGCd8aSYBGQDA6ttkJ5m8tIcugtips+YS9RtTp5OuL8=
+	t=1786948454; cv=none; b=VCso1KfdcaiMbh3YVAr2oD+JdFHX8Nr0Sw5UA/uwq1ITvnAGJcCGiX7j0kNWdZ65eKSWVNroM3PPPEFnOUXxptwhzGahsnw8pXkQ9SeXAh+S2K/NHPB26p1KcgffZrooOqEs4QQkb5VTfkBX9cg+6kMFVediToJ90eB9dPWqT2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786931967; c=relaxed/simple;
-	bh=JYVQf7fvkOCuD70ckUZ+Tee6mr6YFgeSoCDb6lseL1A=;
-	h=To:Cc:Message-ID:In-Reply-To:References:From:Subject:Date; b=U/hiAw4V/aEuuuOvRHm8jlLyQVcQ/I/M03qwekAu6TZRlXzKfpSGCZSyEYkk3sn7wuoWGYTkylh+TX2/agJt1z6F/Ip3XEzbIx0Fe2Og/7FNw2e+2PBbEouC3/iZuUq3PvHzCamqakMRcxWBW3fQBqe1lB5l8ZrmvSWFCt7Dr+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Mv+6PQx2; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1786948454; c=relaxed/simple;
+	bh=JmUGL5z3QYSeBaYggYZxygsC53hmDd8zW0/9FEDyPbg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y9hNECFNQwHTYwDX1nqPnwIauDTrsFcMTdooIhn8mZ50yeR2hxTgZs4T3MGInKRkqBv6URzVQCPFiPtQLE28jiU/pd+Jf/nHa/Y73BU4KqnaqdEaqKqr+zghpoAM4XT0TqtADO3hfVu1Y/ZJWzThxHvqfmOv26dQIVTOQJm8jWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tIcAnPon; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=tI28GBDf; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pyWGG0Mr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vJDm+D0M; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Mv+6PQx2"
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfout.phl.internal (Postfix) with ESMTP id C7DB2EC021D;
-	Sun, 16 Aug 2026 21:59:25 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Sun, 16 Aug 2026 21:59:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1786931965; x=
-	1787018365; bh=DGXMdRF6S+MQtxWj5yA6UrDhKzcAAQ+/+Mg5sleoC6I=; b=M
-	v+6PQx2vffMy5ECKgElbP4Rd/RvReXlC8U3TkKvgokigN7wkwUeyR/ti5TAsEKUa
-	Wp4yJO8soyJRxSL7RY7Jw7D1kHwYNubQfWuR3ECCT4Gxg4W4y3nKqZqGT7u65ZqD
-	bAB80Ga2lWGzAfqbIdKImRbx8Y7ohXT0JByElgRC1c1+U6u3cUse3clR+dQI97cX
-	ZOFaZ9/4UIWgkgxAs4Uay2eedSVNIZ7jIrXJXwtpnpOQ6AldqLdoFzJV6WfADckm
-	gTkN540Q81/OjLLuvpenlPT0pnXrf2qexsFXXPG62pPsiJD8EVPt1TkAoNaeginR
-	GltYLDO0OVa1MHPuTw2Yg==
-X-ME-Sender: <xms:_WqCaq65R1qyUDa20lZIwVr0hmnfffSZuIbqewuvAiEeiU2xRoxMCQ>
-    <xme:_WqCat_CEUTSko7SrM9mX0Ge_lqBTkMBkun2CEcYxFfuu21Cc50e8sSU1iA-QtVf8
-    Djvljhc_Rr9X_kUlM7neFSk8dG46fYuWvCvpkImiIf4bLjYGmZRWaL5>
-X-ME-Received: <xmr:_WqCapWuEmwKYL5SwoILvXiVLWb0lEAKXD99EriHe0m8bqm11462qtDTUqOm>
-X-ME-Proxy-Cause: dmFkZTEwVqJtQHEwNT59EY0ApYPfZBP0Ja94nLydKMHdJKlh4zUdbhZ4q8N1TJVlNLX3Jv
-    UG9KBkDhcBzUW3289fayQ1J+ppWFRD446qIAFVyGuquh32EhwbVebEJGoODlbz4hP14Erq
-    Tcjcfi9/5+2rPPMs1Rkxsj0k0e2xO2GH5lY4VVdKIG8VeU2vajU+FMxwg/fEJDgrz1L6RJ
-    d1Tth/Mq5Cy68H4bxVP4faz7GKaqaQIynBu/2nSxBla0bgf41aEpoAjjJxWypL04u/vTxK
-    x5WjWw0TaNT770B0rDvEjO+uKu7yRxr/X4qfgY6A9PKgCt1ahfj+WIbkeb4e64+QxwGFeX
-    I/a70E8XKZ9xXPToGU9y/PQOq5Q3hyGTPt+U19pStskbaUwXw+jyTjWCR6BiUzvm4UbHrQ
-    fQkAJ8719M9buy3cYJ/r/NYASuaAcoMTMpuySaZ8oIsAeyCB+RFlUR5iUiSsbXDdWT424W
-    D+QT595HxkLGQ3xFnGafXj+6rrjTIPDMYH3t4Z4BczPTgexx+HsYqEcN+R/D4AcmKabZ9F
-    4GgBVFnKBNZUdMw62oGZ5sfrX/tutWcCZWPt+iKLu/rywc20780PD+GKtAha7CXkgo5Dfo
-    cZlJgRPI1JW4WJqaPCJkupRWrc7tWYXibx54AWDkNxdLBndz+ta8RCY8AEkQ
-X-ME-Proxy: <xmx:_WqCaoouk4IvQRZegRcxkP9P4cm_x8J_nT0RDTs40EfmB4XcY0lFCw>
-    <xmx:_WqCarmKP_vdbOomEe7wx3VoH4D-Y8bDNJKAN5uS9tbRAcb_neSO9g>
-    <xmx:_WqCao1kJdY4VPXRyuxNZhqSBOLbQ11tkiAFrkRW3u8KVUBYH8lMfQ>
-    <xmx:_WqCaoQMfeanBK5GJKWMSXVK3gGMdGnYS2svgEwW_nWjUjXc-F7AMA>
-    <xmx:_WqCavoT_iLT2GyV7v_fqhexKMgf3J3-rk9stzidVN9oJpdHRTybgurD>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 16 Aug 2026 21:59:23 -0400 (EDT)
-To: Jens Axboe <axboe@kernel.dk>,
-    Laurent Vivier <laurent@vivier.eu>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-    Joshua Thompson <funaho@jurai.org>,
-    linux-block@vger.kernel.org,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <771c797816910eac8e89646dbe35fc0604c64c5b.1786929430.git.fthain@linux-m68k.org>
-In-Reply-To: <cover.1786929430.git.fthain@linux-m68k.org>
-References: <cover.1786929430.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH v2 32/32] swim: Unexport global symbols
-Date: Mon, 17 Aug 2026 11:17:10 +1000
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tIcAnPon";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="tI28GBDf";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pyWGG0Mr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vJDm+D0M"
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BC9A083E78;
+	Mon, 17 Aug 2026 06:34:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1786948446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kvzQhZn/pCu/8w/Lod6xQbw+DBDD2ctgEr8Hqm5FR64=;
+	b=tIcAnPonf7KsTU4SrDjD7rYPK2Tm/karuY8bqWvYrMhD4dlQNeno0ebKHj0cZXeksTqjKJ
+	mfo4hxcZvO5HsbjQAnpZMfIXVldV/BL8MKP1y90Sw/KHD/rUuJUAHFw7q7VT0kiJTQyRaV
+	hkkCXHKXU41Qwdf2Z+dUv0VA/yWXN5U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1786948446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kvzQhZn/pCu/8w/Lod6xQbw+DBDD2ctgEr8Hqm5FR64=;
+	b=tI28GBDfXKjjrxzW390mc/Uu4BgaMEj5nJqAN0hSaKg5G83nbTuQIaQI0pBYnQpcFa1EY0
+	pufgHfvKVF36IoAQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=pyWGG0Mr;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vJDm+D0M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1786948441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kvzQhZn/pCu/8w/Lod6xQbw+DBDD2ctgEr8Hqm5FR64=;
+	b=pyWGG0MrQ5YvhB3qV1oIpfnMha/itxgmmSJnGMmKPm/OcG1fQ682akpvcque7SSsIx6kUf
+	TE5leFugCkwRUw+wmzvUKGKgR7TqVuo1KhOlPzKy7Si8zN7NptA5oqg6H/kBlmUQ0+gTFh
+	Fvu/TnOP7aj6U3o/pygXwQbn2r7+7j4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1786948441;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kvzQhZn/pCu/8w/Lod6xQbw+DBDD2ctgEr8Hqm5FR64=;
+	b=vJDm+D0MTaUJzQ37As3J4LIqNjG3Wcv247cUitYwc6ojj/NFt+PpSLjiqhynsQStLxDCzG
+	6VRPDmcjNmbw1lBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 972E279310;
+	Mon, 17 Aug 2026 06:34:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mDuoI1mrgmpdFgAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Mon, 17 Aug 2026 06:34:01 +0000
+Message-ID: <a486820d-8500-41b1-bc32-a23d908c9f86@suse.de>
+Date: Mon, 17 Aug 2026 08:34:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] fbdev: Give atafb proper parent
+To: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org,
+ geert@linux-m68k.org
+Cc: Miro Kropacek <miro.kropacek@gmail.com>, linux-fbdev@vger.kernel.org
+References: <20260816073752.16656-1-schmitzmic@gmail.com>
+ <20260816073752.16656-3-schmitzmic@gmail.com>
+Content-Language: en-US
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20260816073752.16656-3-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TAGGED_RCPT(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,linux-m68k.org];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim,suse.com:url];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Spam-Flag: NO
+X-Spam-Score: -4.51
+X-Spam-Level: 
+X-Rspamd-Queue-Id: BC9A083E78
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 
-These symbols aren't used outside of this file so use local ones.
-No functional change.
+Hi
 
-Reviewed-by: Laurent Vivier <laurent@vivier.eu>
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- drivers/block/swim_asm.S | 218 ++++++++++++++++++++-------------------
- 1 file changed, 112 insertions(+), 106 deletions(-)
+Am 16.08.26 um 09:37 schrieb Michael Schmitz:
+> From: Miro Kropacek <miro.kropacek@gmail.com>
+>
+> The atafb fb device registers no parent, causing a missing symlink
+> (/sys/class/graphics/fb0/device). Xorg fbdevhw driver looks for that
+> symlink when scanning for devices, so add a parent node for atafb.
 
-diff --git a/drivers/block/swim_asm.S b/drivers/block/swim_asm.S
-index c78efc30082a..c3f1476948b5 100644
---- a/drivers/block/swim_asm.S
-+++ b/drivers/block/swim_asm.S
-@@ -14,33 +14,33 @@
-  * 2008-11-05 (lv) - add get_swim_mode
-  */
- 
--	.equ	write_data,	0x0000
--	.equ	write_mark,	0x0200
--	.equ	write_CRC,	0x0400
--	.equ	write_parameter,0x0600
--	.equ	write_phase,	0x0800
--	.equ	write_setup,	0x0a00
--	.equ	write_mode0,	0x0c00
--	.equ	write_mode1,	0x0e00
--	.equ	read_data,	0x1000
--	.equ	read_mark,	0x1200
--	.equ	read_error,	0x1400
--	.equ	read_parameter,	0x1600
--	.equ	read_phase,	0x1800
--	.equ	read_setup,	0x1a00
--	.equ	read_status,	0x1c00
--	.equ	read_handshake,	0x1e00
--
--	.equ	o_side, 0
--	.equ	o_track, 1
--	.equ	o_sector, 2
--	.equ	o_size, 3
--	.equ	o_crc0, 4
--	.equ	o_crc1, 5
--
--	.equ	seek_time, 30000
--	.equ	max_retry, 40
--	.equ	sector_size, 512
-+	.equ	.Lwrite_data,		0x0000
-+	.equ	.Lwrite_mark,		0x0200
-+	.equ	.Lwrite_CRC,		0x0400
-+	.equ	.Lwrite_parameter,	0x0600
-+	.equ	.Lwrite_phase,		0x0800
-+	.equ	.Lwrite_setup,		0x0a00
-+	.equ	.Lwrite_mode0,		0x0c00
-+	.equ	.Lwrite_mode1,		0x0e00
-+	.equ	.Lread_data,		0x1000
-+	.equ	.Lread_mark,		0x1200
-+	.equ	.Lread_error,		0x1400
-+	.equ	.Lread_parameter,	0x1600
-+	.equ	.Lread_phase,		0x1800
-+	.equ	.Lread_setup,		0x1a00
-+	.equ	.Lread_status,		0x1c00
-+	.equ	.Lread_handshake,	0x1e00
-+
-+	.equ	.Lo_side,		0
-+	.equ	.Lo_track,		1
-+	.equ	.Lo_sector,		2
-+	.equ	.Lo_size,		3
-+	.equ	.Lo_crc0,		4
-+	.equ	.Lo_crc1,		5
-+
-+	.equ	.Lseek_time,		30000
-+	.equ	.Lmax_retry,		40
-+	.equ	.Lsector_size,		512
- 	.equ	.Lmark_sequence_len,	4
- 
- 	.equ	.Lmr_clear_fifo,	0x01
-@@ -63,7 +63,7 @@
- 
- 	moveq	#-1, %d1
- 	subq	#1, %d4
--	movew	#seek_time, %d2
-+	movew	#.Lseek_time, %d2
- 
- 5:	tstb	%a2@
- 	dbmi	%d2, 5b
-@@ -88,80 +88,86 @@ swim_read_sector_header:
- 	unlk	%a6
- 	rts
- 
--sector_address_mark:
-+.Lsector_address_mark:
- 	.byte	0xa1, 0xa1, 0xa1, 0xfe
--sector_data_mark:
-+.Lsector_data_mark:
- 	.byte	0xa1, 0xa1, 0xa1, 0xfb
- 
- .Lmfm_read_header:
- 	movel	%a6@(0x08), %a3
--	lea	%a3@(read_handshake), %a2
--	lea	%a3@(read_data), %a5
--	lea	%a3@(read_mark), %a3
-+	lea	%a3@(.Lread_handshake), %a2
-+	lea	%a3@(.Lread_data), %a5
-+	lea	%a3@(.Lread_mark), %a3
- 
--	moveb	#.Lmr_write_action, %a3@(write_mode0 - read_mark)
--	moveb	#.Lmr_clear_fifo, %a3@(write_mode1 - read_mark)
--	moveb	#.Lmr_clear_fifo, %a3@(write_mode0 - read_mark)
--	tstb	%a3@(read_error - read_mark)
--	moveb	#.Lmr_action, %a3@(write_mode1 - read_mark)
-+	moveb	#.Lmr_write_action, %a3@(.Lwrite_mode0 - .Lread_mark)
-+	moveb	#.Lmr_clear_fifo, %a3@(.Lwrite_mode1 - .Lread_mark)
-+	moveb	#.Lmr_clear_fifo, %a3@(.Lwrite_mode0 - .Lread_mark)
-+	tstb	%a3@(.Lread_error - .Lread_mark)
-+	moveb	#.Lmr_action, %a3@(.Lwrite_mode1 - .Lread_mark)
- 
--	lea	sector_address_mark, %a1
-+	lea	.Lsector_address_mark, %a1
- 	moveq	#.Lmark_sequence_len, %d4
- 	bsr	.Lmfm_mark_check
- 	tstl	%d1
--	bne	signal_nonyb
-+	bne	.Lsignal_nonyb
- 
- 	/* read header */
- 
--	moveq	#max_retry, %d2
--amark0:	tstb	%a2@
--	dbmi	%d2, amark0
--	bpl	signal_nonyb
-+	moveq	#.Lmax_retry, %d2
-+.Lamark0:
-+	tstb	%a2@
-+	dbmi	%d2, .Lamark0
-+	bpl	.Lsignal_nonyb
- 
--	moveb	%a5@, %a4@(o_track)
-+	moveb	%a5@, %a4@(.Lo_track)
- 
--	moveq	#max_retry, %d2
--amark1:	tstb	%a2@
--	dbmi	%d2, amark1
--	bpl	signal_nonyb
-+	moveq	#.Lmax_retry, %d2
-+.Lamark1:
-+	tstb	%a2@
-+	dbmi	%d2, .Lamark1
-+	bpl	.Lsignal_nonyb
- 
--	moveb	%a5@, %a4@(o_side)
-+	moveb	%a5@, %a4@(.Lo_side)
- 
--	moveq	#max_retry, %d2
--amark2:	tstb	%a2@
--	dbmi	%d2, amark2
--	bpl	signal_nonyb
-+	moveq	#.Lmax_retry, %d2
-+.Lamark2:
-+	tstb	%a2@
-+	dbmi	%d2, .Lamark2
-+	bpl	.Lsignal_nonyb
- 
--	moveb	%a5@, %a4@(o_sector)
-+	moveb	%a5@, %a4@(.Lo_sector)
- 
--	moveq	#max_retry, %d2
--amark3:	tstb	%a2@
--	dbmi	%d2, amark3
--	bpl	signal_nonyb
-+	moveq	#.Lmax_retry, %d2
-+.Lamark3:
-+	tstb	%a2@
-+	dbmi	%d2, .Lamark3
-+	bpl	.Lsignal_nonyb
- 
--	moveb	%a5@, %a4@(o_size)
-+	moveb	%a5@, %a4@(.Lo_size)
- 
--	moveq	#max_retry, %d2
--crc0:	tstb	%a2@
--	dbmi	%d2, crc0
--	bpl	signal_nonyb
-+	moveq	#.Lmax_retry, %d2
-+.Lcrc0:
-+	tstb	%a2@
-+	dbmi	%d2, .Lcrc0
-+	bpl	.Lsignal_nonyb
- 
--	moveb	%a5@, %a4@(o_crc0)
-+	moveb	%a5@, %a4@(.Lo_crc0)
- 
--	moveq	#max_retry, %d2
--crc1:	moveb	%a2@, %d5
--	dbmi	%d2, crc1
--	bpl	signal_nonyb
-+	moveq	#.Lmax_retry, %d2
-+.Lcrc1:
-+	moveb	%a2@, %d5
-+	dbmi	%d2, .Lcrc1
-+	bpl	.Lsignal_nonyb
- 
--	moveb	%a5@, %a4@(o_crc1)
-+	moveb	%a5@, %a4@(.Lo_crc1)
- 
- 	moveb	%a2@, %d5
- 	andb	#.Lhr_crc_error, %d5
--	bne	signal_nonyb
-+	bne	.Lsignal_nonyb
- 
- 	moveq	#0, %d0
--signal_nonyb:
--	moveb	#.Lmr_write_action, %a3@(write_mode0 - read_mark)
-+.Lsignal_nonyb:
-+	moveb	#.Lmr_write_action, %a3@(.Lwrite_mode0 - .Lread_mark)
- 	rts
- 
- 	.global swim_read_sector_data
-@@ -170,80 +176,80 @@ swim_read_sector_data:
- 	moveml	%d1-%d5/%a0-%a5,%sp@-
- 	movel	%a6@(0x0c), %a4
- 	moveq	#-1, %d0
--	bsr	mfm_read_data
-+	bsr	.Lmfm_read_data
- 	moveml	%sp@+, %d1-%d5/%a0-%a5
- 	unlk	%a6
- 	rts
- 
--mfm_read_data:
-+.Lmfm_read_data:
- 	movel	%a6@(0x08), %a3
--	lea	%a3@(read_handshake), %a2
--	lea	%a3@(read_data), %a5
--	lea	%a3@(read_mark), %a3
-+	lea	%a3@(.Lread_handshake), %a2
-+	lea	%a3@(.Lread_data), %a5
-+	lea	%a3@(.Lread_mark), %a3
- 
--	moveb	#.Lmr_write_action, %a3@(write_mode0 - read_mark)
--	moveb	#.Lmr_clear_fifo, %a3@(write_mode1 - read_mark)
--	moveb	#.Lmr_clear_fifo, %a3@(write_mode0 - read_mark)
--	tstb	%a3@(read_error - read_mark)
--	moveb	#.Lmr_action, %a3@(write_mode1 - read_mark)
-+	moveb	#.Lmr_write_action, %a3@(.Lwrite_mode0 - .Lread_mark)
-+	moveb	#.Lmr_clear_fifo, %a3@(.Lwrite_mode1 - .Lread_mark)
-+	moveb	#.Lmr_clear_fifo, %a3@(.Lwrite_mode0 - .Lread_mark)
-+	tstb	%a3@(.Lread_error - .Lread_mark)
-+	moveb	#.Lmr_action, %a3@(.Lwrite_mode1 - .Lread_mark)
- 
--	lea	sector_data_mark, %a1
-+	lea	.Lsector_data_mark, %a1
- 	moveq	#.Lmark_sequence_len, %d4
- 	bsr	.Lmfm_mark_check
- 	tstl	%d1
--	bne	data_exit
-+	bne	.Ldata_exit
- 
- 	/* read data */
- 
--	movel	#sector_size - 1, %d4		/* sector size */
--	movew	#max_retry, %d2
--read_data_loop:
-+	movel	#.Lsector_size - 1, %d4		/* sector size */
-+	movew	#.Lmax_retry, %d2
-+.Lread_data_loop:
- 	moveb	%a2@, %d5
- 	andb	#(.Lhr_fifo_1byte + .Lhr_fifo_2bytes), %d5
--	dbne	%d2, read_data_loop
--	beq	data_exit
-+	dbne	%d2, .Lread_data_loop
-+	beq	.Ldata_exit
- 
--	moveq	#max_retry, %d2
-+	moveq	#.Lmax_retry, %d2
- 	moveb	%a5@, %d3
- 	bsr	.Lmaybe_store
- 	dbra	%d4, 1f
--	bra	data_crc0
-+	bra	.Ldata_crc0
- 1:	andb	#.Lhr_fifo_2bytes, %d5
--	beq	read_data_loop
-+	beq	.Lread_data_loop
- 	moveb	%a5@, %d3
- 	bsr	.Lmaybe_store
--	dbra	%d4, read_data_loop
-+	dbra	%d4, .Lread_data_loop
- 
- 	/* read CRC */
- 
--	movew	#max_retry, %d2
--data_crc0:
-+	movew	#.Lmax_retry, %d2
-+.Ldata_crc0:
- 	tstb	%a2@
--	dbmi	%d2, data_crc0
--	bpl	data_exit
-+	dbmi	%d2, .Ldata_crc0
-+	bpl	.Ldata_exit
- 
- 	moveb	%a5@, %d2
- 
--	moveq	#max_retry, %d2
--data_crc1:
-+	moveq	#.Lmax_retry, %d2
-+.Ldata_crc1:
- 	moveb	%a2@, %d5
--	dbmi	%d2, data_crc1
--	bpl	data_exit
-+	dbmi	%d2, .Ldata_crc1
-+	bpl	.Ldata_exit
- 
- 	moveb	%a5@, %d2
- 
- 	moveb	%a2@, %d5
- 	andb	#.Lhr_crc_error, %d5
--	bne	data_exit
-+	bne	.Ldata_exit
- 
- 	/* return number of bytes read */
- 
--	movel	#sector_size, %d0
-+	movel	#.Lsector_size, %d0
- 	addw	#1, %d4
- 	subl	%d4, %d0
- 
--data_exit:
--	moveb	#.Lmr_write_action, %a3@(write_mode0 - read_mark)
-+.Ldata_exit:
-+	moveb	#.Lmr_write_action, %a3@(.Lwrite_mode0 - .Lread_mark)
- 	rts
- 
- .Lmaybe_store:
+Do you really have these devices to test with?
+
+If so, could you also replace the hard coded fb_info with a call to 
+framebuffer_alloc()?
+
+>
+> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
+> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Cc: <linux-fbdev@vger.kernel.org>
+> Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
+> ---
+>   drivers/video/fbdev/atafb.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+> index b8ed1c537293..3d540803dc2b 100644
+> --- a/drivers/video/fbdev/atafb.c
+> +++ b/drivers/video/fbdev/atafb.c
+> @@ -3101,6 +3101,11 @@ static int __init atafb_probe(struct platform_device *pdev)
+>   #endif /* ATAFB_EXT */
+>   
+>   //	strcpy(fb_info.mode->name, "Atari Builtin ");
+> +	/* Parent the fb device properly: without this fb0 registers as a
+> +	 * virtual sysfs device with no /sys/class/graphics/fb0/device link,
+> +	 * which makes Xorg's fbdevhw reject it ("No devices detected").
+> +	 */
+> +	fb_info.device = &pdev->dev;
+
+Because this is supposed to happen in framebuffer_alloc() and keeping it 
+there would be preferable.
+
+Best regards
+Thomas
+
+>   	fb_info.fbops = &atafb_ops;
+>   	// try to set default (detected; requested) var
+>   	do_fb_set_var(&atafb_predefined[default_par - 1], 1);
+
 -- 
-2.52.0
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstr. 146, 90461 Nürnberg, Germany, www.suse.com
+GF: Jochen Jaser, Andrew McDonald, (HRB 36809, AG Nürnberg)
+
 
