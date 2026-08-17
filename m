@@ -1,96 +1,146 @@
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA8B3B6C05
-	for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 07:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF6B3B5847
+	for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 07:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786950881; cv=none; b=uY9tmM2aa9/7EETBYQg9qGtYx1B05HaINbi+Gq3aO3szdc7I8MmMqAaW7b23tXW/dh//oiLNYVM052NhAvyjoCgiavSeGDHAwQ3YogrepiYW4pElCpnEZsoTS+YZI9Lrl3mQ4Oha7BBP1SP1pC5WU1r7pRW4ilqVPlAPcMgMUHY=
+	t=1786953003; cv=none; b=at5OuIsWUNcaWPnnGcgDGUO/Y9Xf9m0OTEgLWPFC2bH4Why/IqGwEo4yBcWInWNDSkxw3xC2A2+b8C+gfasE32IejPaLqSOFRfww1S0aah67tnxncd0xlqetTHGunDWzkimMxCqscE8Z84hhtckBXT25sN2Hkbfym21mF6iWURU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786950881; c=relaxed/simple;
-	bh=rhcKn7P7+daroZ0EymJrJyh5GDUjK55CBlCJ6zc0XXQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RYKehocE2fhsfdSpcK2CtM76ytQw5MyQWvHxSrQUhBKkGCbyLQRZPs5BCUDdgU/tS3WuXuIkaGgJvFuV4lEIn/pC+yKIgLtbjWCd4XdxnlpOcp55aPvvQj4bTGqSU/y1BmcteGx6QfS+lhb7c1PkjcTdSWEM/zMfmu76Nbn4irE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1786953003; c=relaxed/simple;
+	bh=/zmJ9BFPPHIbKCfybViLKCfSPdQ79uTNj/erKkfU2EI=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=YKwzrFe6hFL7wn6LW+6M7h5cbrQc+eWZ05qstXrMrd9OTbE8zipYBqfB1l0FnCoy1QVNVi12id5SUcjxd67ydsbYZSVAzt4SBl+EEXtAcijYq3mADPIY+A/wBnXSW5zX1mLMEwhPVJU85tuUz+ElkJrVN+Dy8EgACl8NlD+O8sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XFtqAI5S; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-9696319e14dso900691241.3
-        for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 00:14:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786950879; x=1787555679;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XFtqAI5S"
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-84830c774a0so2620373b3a.1
+        for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 00:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1786953001; x=1787557801; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version
+         :user-agent:date:message-id:from:cc:references:to:subject:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=ITsAABxAI5h0El64I4dev9aDBbByb7ZVn99HnruYO/M=;
-        b=ZwpK7doqAVbUS1upCVGcjPHKpVIGC3UUMRzhED9GTFgJ/FSuSPrUBNRImnIviw8J5c
-         ouiqXKbFFNmsjqbjtBLGRPVD6/QRYfxWXevJbFOeyGqxm8OSlWP+iAxZkU4VGFoi88dC
-         ++UffLJtynTlmtf373ck9Zd7y+N/bVimaQYA6m+SK7Jui4hOJ0XlCN0YwbU4FSQdM1hK
-         8zy5hd2b6C3X9hELRAh4atsDwl//rONV9kox2NYfNVHqrv0aL8hGlZaFg11Vvw5WHNLe
-         sunX9Cr1rnQd1DpFTtn4a+rSFNswRQns9dU4d9itSt3NYLbYuPSzO/eK7f5qfbyFnOUv
-         ZeLw==
-X-Gm-Message-State: AOJu0YzeWxElNw9ovNaiQ7fI/LZwjE3CG73i+hJXDQr5PFvJXc1gcjs5
-	u0+72n2BM1qYz+xzPPazS6rNWsmpqE6fQDie4iLyeI7mAmNhkK9/vwfAn6xCADS+
-X-Gm-Gg: AR+sD122rDDMBTzTcN5yb7HCLZjYlU43+iRw3+9WGSz3lPCzBnpsSYP5FadQaHJy2Cv
-	0i0ybnTgmouMG4oqlI1cc6jjG9/Zv9rBOGtWAAR4Yy52gEkZhkgC68uzePywzYOUMcaVtwHcrbP
-	8lrBy1Ph7uL9Y9/OvtRZ+5BVAaN2HKIRn9jFoy/5ZO2jfQFr9agw3XEdsqIDWB9wfaqc8u2WvUX
-	69AwUw+rKO7sKFnnuKOd9ADZ+pjiBDAIvesgbRP2wsblfYnI0GAsNoEDznRX8HA6XRG8/SvGzj6
-	Q2bx0iODuARnEcsq3GVHGGRbaQ2gshZuKci06N4JzFg4QtqoiNjXvgDgqgmOFCVQv4yzQ0DT++b
-	C4WquvmCYTEo9xwhygpZS4DOgCiEQl2fyAA27etwH9ctbxlK+ztL51SU4tmNI+54rZ07W/CSMgM
-	wVMRetnBC+sWLETGkD0/OFAAUVgMrcTb0G9uOI/YDb1QL4YllarEMJagWKtvw9Ncfh63Cv4vYBf
-	KjG/S2TMPAbFfC9/b2jl7TiUx79nQ==
-X-Received: by 2002:a05:6102:5e90:b0:76e:e529:2fcf with SMTP id ada2fe7eead31-76f2a9eeef3mr3527814137.6.1786950878801;
-        Mon, 17 Aug 2026 00:14:38 -0700 (PDT)
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com. [209.85.221.176])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-773c2cf06e7sm352548137.1.2026.08.17.00.14.38
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2026 00:14:38 -0700 (PDT)
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-5bfb3347ce0so1038500e0c.2
-        for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 00:14:38 -0700 (PDT)
-X-Received: by 2002:a05:6122:c93:b0:5c2:c0b2:9889 with SMTP id
- 71dfb90a1353d-5c591cb424fmr4347333e0c.4.1786950878387; Mon, 17 Aug 2026
- 00:14:38 -0700 (PDT)
+        bh=aQw1TvO5XRpuuMfAXQKqkWSsISmWRtdigp+ZyOvdx1w=;
+        b=XFtqAI5SCslcpr1sAyEJf3arvZS1ZfUuBHWDhCbzj7xTPEyNoNDE6H0/Mv81sgg2+W
+         SPWs+31/HY+OSgr9KbWQcPmUE9Yn5ZsZa27b3DA7feFjymtZS77aUA2mjcEfeaXJci+c
+         LvKYCrwNAT/mwlowVsGsRfF/4GFCfPnh/veejOwdPD/1AQBMPtTZLh65pH8O2PpTizTu
+         jJFJeH3h/gnkgZFX51wwMLOSzjCyttePEMFBcZmqBwC/181AGp+R8HdBRnIOhHTF0wdk
+         41dtIq37lv4yyxTnoxwoVfmBFbMjxPwCDaqa+wM6eNCy8vCEeGEef11CZlE/xbdn7+kr
+         Myhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786953001; x=1787557801;
+        h=content-transfer-encoding:content-type:in-reply-to:mime-version
+         :user-agent:date:message-id:from:cc:references:to:subject:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=aQw1TvO5XRpuuMfAXQKqkWSsISmWRtdigp+ZyOvdx1w=;
+        b=IXwfsFNTcWEjgeWXd6JkP82e6plnhVOyogNIpxF7eITv5TTFZtvrFcKxxewavRYZND
+         ZVqJEFth24sxg59xAhMu9UtrPEB55LyFs7Z/UHJyg+ZySF1eLRAiN52RKcOhMyknR20i
+         vh4XBOqtv5EmnM8sfOv27+6lEgYfCwWw+8KPGtYYNofi/1Ch1gjdeK0MZ4Zl7EPyKzvr
+         jQwMfd7z/ETa2yBMnnaxnjbJ6mJMQ4qVDxA66u+jKTSV0sZjfKh3Dp2ZrlQ9G8bDGVK0
+         lFae6FH6nc+WHJiiYt7liolQCXR2bC1DhuX7F81R/LT7a/4JgZcDQDDpqaIQw5+q9yZL
+         06og==
+X-Forwarded-Encrypted: i=1; AHgh+RpDslFHHAPcH3MV43xs8IHkgpnjtNVhu9RyZuX99HbVsV7iNHdtAdZGccFEb/kHqWdYXdlZNoEjNojj@vger.kernel.org
+X-Gm-Message-State: AOJu0YzikxBrM0S3RanmPgVjfnCaNnd77zHH7aPuKZbbN+dY2Y6//M6m
+	OvK3yg7Rfhmct1kQZXxLtlbPwMxpixN52sVvIhJwtHko0JcZbiKpMw4b3UCjXQ==
+X-Gm-Gg: AR+sD13jnsAz9vu6swdrGo4d+CmWInMr8dF6g+4xMwxVFp/l9i5NoHPbfkAg0Wg0cm/
+	uwjHj8Y5kPmPCibihi+kDD2fY2l1ZakB4ed4xs6dbM/rZ8GjkioipZmTYd1NcyL4qfnUXdLcLMx
+	yXIBznKveIo+4tXnAQvFls75bcV+PCxpkHoxDiBt9UlICMXX3Fvlug5LZsvteHA4dWmdvOrrOQY
+	JU78OVOIDxA1GlGW1vBmM66lP6SvsSVSC+ls1jgHdQmSX1TvqeoFZ+Yv62QMYdD5Gp+/F26wXos
+	1fNtLR/YtkrwS9twubtUSumM+vVxSd5znnVayss57HGa8OlNf8ouuA+Vn9/UI78dcvXWQ9Fs1sS
+	HijbML50Xs2hM/6wawTw3PfnQHmg5IP1SJpLoal3JPGxZxbdbLdCcHl3hO441hCU+KFpesVLIWn
+	PNqVPl7YuRVI1SBOMO7z+n5eUnkdIdmFYxOpPLvWbA4gdyHM4rDa0ahEvb0PSZj1HCUn2jzxnVn
+	P0qom08hXRsYEeXPmJ5m97fZaszeh6vng4=
+X-Received: by 2002:a05:6a21:998c:b0:3c1:d78:6457 with SMTP id adf61e73a8af0-3cc71d50736mr23113952637.32.1786953000940;
+        Mon, 17 Aug 2026 00:50:00 -0700 (PDT)
+Received: from [10.1.1.24] (222-152-170-159-fibre.sparkbb.co.nz. [222.152.170.159])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc13c036c50sm311257a12.26.2026.08.17.00.49.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 Aug 2026 00:50:00 -0700 (PDT)
+Subject: Re: [PATCH v2 2/5] fbdev: Give atafb proper parent
+To: Thomas Zimmermann <tzimmermann@suse.de>, linux-m68k@vger.kernel.org,
+ geert@linux-m68k.org
+References: <20260816073752.16656-1-schmitzmic@gmail.com>
+ <20260816073752.16656-3-schmitzmic@gmail.com>
+ <a486820d-8500-41b1-bc32-a23d908c9f86@suse.de>
+Cc: Miro Kropacek <miro.kropacek@gmail.com>, linux-fbdev@vger.kernel.org
+From: Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <5a2d0139-84db-cab8-c7fb-7806a71c53b2@gmail.com>
+Date: Mon, 17 Aug 2026 19:49:53 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260816073752.16656-1-schmitzmic@gmail.com> <20260816073752.16656-6-schmitzmic@gmail.com>
-In-Reply-To: <20260816073752.16656-6-schmitzmic@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 17 Aug 2026 09:14:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWKqtNd1iGNsXcF6NUQjF6bZPp8YMPWB3y7++2VpwZd-w@mail.gmail.com>
-X-Gm-Features: AcwNN1VxB0H0J7CwWzTSAsQ0j36Jm2ROOwQdcHKrVvjdI_q52SwjuI6CywI54LI
-Message-ID: <CAMuHMdWKqtNd1iGNsXcF6NUQjF6bZPp8YMPWB3y7++2VpwZd-w@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] m68k: Add support for Svethlana
-To: Miro Kropacek <miro.kropacek@gmail.com>
-Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a486820d-8500-41b1-bc32-a23d908c9f86@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Miro,
+Hi Thomas,
 
-On Sun, 16 Aug 2026 at 09:38, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> From: Miro Kropacek <miro.kropacek@gmail.com>
+Am 17.08.2026 um 18:34 schrieb Thomas Zimmermann:
+> Hi
 >
-> The SuperVidel FPGA contains an OpenCore ethernet package. Add
-> platform device data and other necessary definitions to support
-> this device on Atari.
+> Am 16.08.26 um 09:37 schrieb Michael Schmitz:
+>> From: Miro Kropacek <miro.kropacek@gmail.com>
+>>
+>> The atafb fb device registers no parent, causing a missing symlink
+>> (/sys/class/graphics/fb0/device). Xorg fbdevhw driver looks for that
+>> symlink when scanning for devices, so add a parent node for atafb.
 >
-> The ethoc module must be enabled separately by the user.
+> Do you really have these devices to test with?
 
-ETHOC selects MII and PHYLIB. Do you need to enable any MDIO or PHY
-drivers?  I don't have the hardware, just asking for {atari,multi}_defconfig.
+Not the particular hardware that patches 3 and 4 add support for, but 
+the 'normal' Videl that is found in every Falcon, yes.
 
-Thanks!
+> If so, could you also replace the hard coded fb_info with a call to
+> framebuffer_alloc()?
 
-Gr{oetje,eeting}s,
+Can't see how that would work - fb_info isn't passed to all functions 
+that need to use it, especially in the hardware detection phase (hence 
+the use of a static fb_info struct)?
 
-                        Geert
+Cheers,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+	Michael
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>>
+>> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
+>> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+>> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+>> Cc: <linux-fbdev@vger.kernel.org>
+>> Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
+>> ---
+>>   drivers/video/fbdev/atafb.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+>> index b8ed1c537293..3d540803dc2b 100644
+>> --- a/drivers/video/fbdev/atafb.c
+>> +++ b/drivers/video/fbdev/atafb.c
+>> @@ -3101,6 +3101,11 @@ static int __init atafb_probe(struct
+>> platform_device *pdev)
+>>   #endif /* ATAFB_EXT */
+>>     //    strcpy(fb_info.mode->name, "Atari Builtin ");
+>> +    /* Parent the fb device properly: without this fb0 registers as a
+>> +     * virtual sysfs device with no /sys/class/graphics/fb0/device link,
+>> +     * which makes Xorg's fbdevhw reject it ("No devices detected").
+>> +     */
+>> +    fb_info.device = &pdev->dev;
+>
+> Because this is supposed to happen in framebuffer_alloc() and keeping it
+> there would be preferable.
+>
+> Best regards
+> Thomas
+>
+>>       fb_info.fbops = &atafb_ops;
+>>       // try to set default (detected; requested) var
+>>       do_fb_set_var(&atafb_predefined[default_par - 1], 1);
+>
