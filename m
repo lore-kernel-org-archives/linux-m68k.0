@@ -1,112 +1,147 @@
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B63A301709
-	for <linux-m68k@vger.kernel.org>; Sun, 16 Aug 2026 18:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D522C30D40E
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 17 Aug 2026 01:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786905431; cv=none; b=OwK0Kb/s9f3zdvDKshWIIOuV2bodi+Mp4M8lK610yUbEzz+cH9D6tP2PLnHpJB3tXH2v+5d5JZombCyhsc22Yck6qQwt4SrwsxaODgNlOSkNHMfqLQuVZj6NdA78m6+Tj44aulf0fdXyqA4l4uxQt6RaEY+vXWuM1bIVo2iT2yg=
+	t=1786931661; cv=none; b=SkFJH/ZFhr8Njz1unMfsYucKZNVSmc1Im8Tc4NCzzbADX+3967m040hHyduUJK53R5rrL+f6CopgsvBN+hWDAfSjR0sNVZHy2sJkJRKOAgek+sqwgYZTVBtxO3AjC2crEFYE196dJ37evMJ0O7sVav4UKzHoXYFv9Or20iyZM7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786905431; c=relaxed/simple;
-	bh=N7HLf6d8Nz/syMV5s4Yf1rLjD0Nzt2vlpMLy8MmIWxg=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=QPv//XELlGdZFaCOYH30Pq+SsXhIUEfw2UXa+8dalRlYPTllY+7NhV9h/EEOK1AZ1HDRW+p+2+wfafggRKFXBfCuHzWk5q4WWwLtMUSiI7rgUACSn2gypZWAmfvQJ/agf2RqBU4xw29uCsgbCJKdoV+RgD/QbB6TUPbo6K1lLyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k25WEdQs; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1786931661; c=relaxed/simple;
+	bh=ji/tyqGcon233QSJflPcXwKpoQczkCDbfQE2u1wqlbc=;
+	h=Message-ID:From:Subject:Date:To:Cc; b=Jmtmxi7DsUG5/jW7Bn3qui0lumM91vcIxBP4pLVE9y+UFj3jdzgDYAbmwv+i21+dp1v6d0qRhC5pbZ2Vw+3EX8fW1LW21ZWcfxHtPox2pkZR0x9j0suiQmuCGDn/Y0Xeyk5ZFFnNPpd0j/MlQ+95oDbc6WDtkzyHAINrAb1SznA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HuTIbPRd; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k25WEdQs"
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-c9ef3e1337fso2078101a12.2
-        for <linux-m68k@vger.kernel.org>; Sun, 16 Aug 2026 11:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1786905429; x=1787510229; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version
-         :user-agent:date:message-id:from:cc:references:to:subject:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=Z4mIpJZjhlFuJPRbLBdNZD1k6jhDvLqRCr4L0uQaP6Y=;
-        b=k25WEdQskIByKwzICRyDi3yy9v30r/WGecjJuxCCyYjoKdvwAL6uX4+QPyhdpearbX
-         YndMWwqQm7d7dgwdxTlDFz4Q48C+0lGcy7F/nJCVallq1dAzyqc5XjSlcf9729JGBpEa
-         xn2ZpC4q5hMKfLxz0o5zFwIcuYxhiC16m3Ke377oXp5bfFmutVg5OEQom7mr1EiG7wQv
-         mTViN668iWKteJIbDST/WS1Js0bebS8yQKE7MXBccv9EQDq0GBGwwYf3O1uWrbGpf5jB
-         lBnNfkWu3i+RMGSdeQi3bPAPH8GO75l40x8z5ANbYIIcK4XSMKG86UaFZLkmCk9nb2gO
-         a/Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786905429; x=1787510229;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version
-         :user-agent:date:message-id:from:cc:references:to:subject:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Z4mIpJZjhlFuJPRbLBdNZD1k6jhDvLqRCr4L0uQaP6Y=;
-        b=p8E9Puaiw+1wAP8gwpcztDZSZ2CZbdbcQPe8/9U9ktAbQjMx8zj9LAtik6xOgUoLKR
-         aex2vOlWz1/vgZ7oI5ZHZ8SCgkCkz54vTyRks1FHyR9TjzqXYr8gK4WPhieuwz9+piHA
-         Fs0fH8zzmUKD0voWK9so2tUrANHs/WP5KgC52l9ZuGdTelAQ4sWwO1PuLzqGli1iAUy+
-         3h0z9dENDDl42lTar6HhE7nzDdczkXNYVPzOClrdfcvuL+/BqbvcUTJI0ACE+jX0tT/f
-         9zChI8IQPBsVeW9664iZH9Cfn5u7/qYmnDWQFJT0351bAqUPaCJaKkePS+iHN8eZccIG
-         6d6Q==
-X-Forwarded-Encrypted: i=1; AHgh+RoI2UyTLBPJDCocd3SOdUA2qzBCKrZGJJ8oNqsej3g+MxVa5yhgi4kf9Hn/G6PgQbrmZYtcrOji2SCW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx21t3Q6rcRzDTunS8smLqyhEcLpj8R6eZWqUxfUipf9He4pgx2
-	hGWRpndBcKvNGa2o4jkSzSjgZZ+sbjqrWoeKGN6bTKp0KB/Fttf00sYR9muXWg==
-X-Gm-Gg: AR+sD11wPsU9ohMe/5qMt23j+EmFsejkKx2DUEWH28DlQBTzRj5bXkWzEOHAIOw061q
-	L3zTAQD6EwIEBDlNF7HIGz/0fxIdyD9RWk+M06aIy5e+WIzgnuOUaWmzmYpkoRM30utPbM6vSlp
-	yhUogunt2kuO4+G51uDPSTDPxhu5tNdy1CYeMcYvf9rR1Dgz59cn5BgE6lvZJzG51vRDed01HRT
-	IxIwWsdKWIuZwxRFwA0mRV3ZvKm+jerL2fUBi1cBsH8TQ6juGkqtluwgzmzIoESjz0t9VWDuaS7
-	XxQGtBmyHQ9U/JVmSpUH/fLIXgPv0KqnSsgU3shq9paa8M7d9e4nFftIsfdu/WTCH0imaSRNyTk
-	HSNarIYGRfJn6FyrXzSn22h9BNYv7uE0VPRC427m3ejJlYageI7yZTSJhmI9Sc5mYLAHjKfiEWZ
-	uBG3Rho6+9rUi/F+nDG4TU7d53Hi+QHrloTwXLdw0lj46MLTx6SM0aW7hYC+KzqAO2/9UmWgVBB
-	W7mZY0D1cAzNRxcUlkPBP5aCsjopLnuAek=
-X-Received: by 2002:a05:6a20:7345:b0:3c3:b57b:6291 with SMTP id adf61e73a8af0-3cc71d1e819mr20982093637.18.1786905429167;
-        Sun, 16 Aug 2026 11:37:09 -0700 (PDT)
-Received: from [10.1.1.24] (222-152-170-159-fibre.sparkbb.co.nz. [222.152.170.159])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-320d5bd9fd3sm27777096eec.4.2026.08.16.11.37.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Aug 2026 11:37:08 -0700 (PDT)
-Subject: Re: [PATCH v2 2/5] fbdev: Give atafb proper parent
-To: Helge Deller <deller@gmx.de>, linux-m68k@vger.kernel.org,
- geert@linux-m68k.org
-References: <20260816073752.16656-1-schmitzmic@gmail.com>
- <20260816073752.16656-3-schmitzmic@gmail.com>
- <3d215ce1-6298-491e-81ef-b19bed7f1d9a@gmx.de>
-Cc: Miro Kropacek <miro.kropacek@gmail.com>, linux-fbdev@vger.kernel.org
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <41ca1d69-9a5e-7f4e-62a8-6f697e87e8f1@gmail.com>
-Date: Mon, 17 Aug 2026 06:37:02 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HuTIbPRd"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfout.phl.internal (Postfix) with ESMTP id D94FFEC0218;
+	Sun, 16 Aug 2026 21:54:16 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Sun, 16 Aug 2026 21:54:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1786931656; x=1787018056; bh=His8knTytrzQThMDL3SL/PU827Fn
+	BOezKTrC33j3YGU=; b=HuTIbPRdvEWtCSzKbMdhJj8AeDPMWpS/vKmWA+kWzaJV
+	WdJtx7SatlKPdeEBcfrgVqTto2oyE2sFZVzBuBIWg+6gWWDXUXFLznCWC0oq+lHk
+	4Rl/3zefX50MJHdM4PRVXy4LpEWyhJZOzYaERPBSyrw0HL29s0tmwToxqb+Nn6jH
+	Cz9gYOmYMXq6EyaYvPFsq5v4WE3nxh/7quRVX+uJI3hwuuUoqvGRR1/F2nLtPbVP
+	Edp4K9fo+311ZUucP06FvmAo72SiF7rO9b9Lg/I2dmNO4gODjXeiMeGP8zZtSvrZ
+	dAlPaYjmDHGCF2CfMKJTnQPVCTOzHDDmq7V1xmqMgg==
+X-ME-Sender: <xms:x2mCagEHFw3LFU6ffDuGcxBl1qaslq7lXHCk5Xt1s9b7A4872-WDdQ>
+    <xme:x2mCalXfvHZAeaV34biahvq9zqXsVi0vcAnfyHi7KQn2BJYJZvX6uPbyREg6JoG3B
+    RRCGUiHvhv4dHaFpJvoMoEYU3CcY739kt1eJbkfWUB6V83yqKA3jUl0>
+X-ME-Received: <xmr:x2mCasXFMFq4AJTicfc6qUr3-FmJhRKfQdJdSnJH4ho06V6-11n4Ju6BATaIVktrV-zs1zJUe8KLZRRhSEqIrtVv9bBEFn4lvZc>
+X-ME-Proxy-Cause: dmFkZTGyfXgNOQEqrRudDkzZqtQ6tyZT3wZgVsrGBATePRJYx0N6BKRpbH8SmCJMi4OFGM
+    uGwRgtmvt2cEPbqXvzd9ixrnBxYdDQ1OlCMafTPFIBVNEm2bwKv7njKuteCs24usi83wB4
+    BiFM6gso3Otwv6Prg17FtugB24Odd8+gfgONVs44oi9DIwcHfy1nIbDyhS59h/XBx//CCF
+    sIE6qMkoI3NgIffKLLWh9rS3yRGolXB9Q3j3w6KQNXAeA4x9BC2o96MhSnpT25NKm808kn
+    6C950bmj8dXRCM2/i1Vfght8AjxrvMOqYkXSlPUFGSdXYUkvvd2TXjD58A6HhHUf7QLEYD
+    aXxOhKrOIKjxFk+5jjaFBhFPf8vcSa9UQBwAm5aDlMOuF8wiSG7RIueZ9lB2NOPfG9RdAQ
+    ePLS/qFJ6+ImWyOcvkYkOaVktFzLo18BapMLiuGXEAut0yQR6A0aOSqo4E2HJFrJxAlpef
+    hL276wbx6cHEWOiq0iA5in+ZwyUETQCTqD/RBUkDDG10LVLxKidexU5QBMxnnfNBRu8ftD
+    sHTVDG9Z/DaRLh+Bdfo7eDMYKVs4Qf+3ORAJ59sP0vHCQM5E3dRI07pNcEi8gblTweFkXn
+    oaZU0OhKkNYdGKN1A4S9otdNp+LfSL7GkF3eZfcBwpOm1PWhY9EMhIEA3NRg
+X-ME-Proxy: <xmx:x2mCajITw5LO8ECVM-ICXzdZbm7UIoDRDRzfKwlNdpYY77Ss9pEGuA>
+    <xmx:x2mCakDtg1U7loDe52bF1GUx7bGEztziv0el0Gk46OgooITmKTkmBg>
+    <xmx:x2mCarc54DQ_wxYOVoQ2BNeCjPcSiALw3tMsCIqxxT6XNOukyMmAbw>
+    <xmx:x2mCar0sh19zMe6aDfFJb-W6klqWXyMYUQH687ajeXro3bp20lbCVA>
+    <xmx:yGmCaoSZFUlHXgRbRGrAKpxUfvcf5AK9ZqgFkPW4r_iwys4AkcgMaVBM>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 16 Aug 2026 21:54:12 -0400 (EDT)
+Message-ID: <cover.1786929430.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v2 00/32] block/swim: Fixes and improvements
+Date: Mon, 17 Aug 2026 11:17:10 +1000
+To: Jens Axboe <axboe@kernel.dk>,
+    Laurent Vivier <laurent@vivier.eu>
+Cc: Joshua Thompson <funaho@jurai.org>,
+    Geert Uytterhoeven <geert@linux-m68k.org>,
+    linux-block@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    Omar Sandoval <osandov@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <3d215ce1-6298-491e-81ef-b19bed7f1d9a@gmx.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Helge,
+I recently had a need for the 'swim' driver but found that it was too buggy
+to be useful for my purposes. I had two aims in mind--
 
-no changes to the fbdev patches - just didn't know how else to avoid 
-issues with b4.
+Firstly, I needed this driver to help me test my new BMoW Floppy Emu for 
+emulation correctness. Being that Linux is open source and MacOS is not,
+this driver should be ideal for that.
 
-Cheers,
+Secondly, I needed to realign the heads in some disk drives. The swim driver
+has most of the code needed for a feedback loop for manual re-alignment, so
+I wrote the remaining code and pushed it to a repo here:
+https://github.com/fthain/linux/commits/swim/
 
-	Michael
+These patches fix all the bugs I found. They improve stability,
+compatibility and performance. Additional patches improve source code
+quality by removing redundant code and cleaning up a bit.
 
+This patch series was successfully tested on the following systems.
 
-Am 17.08.2026 um 02:38 schrieb Helge Deller:
-> On 8/16/26 09:37, Michael Schmitz wrote:
->> From: Miro Kropacek <miro.kropacek@gmail.com>
->>
->> The atafb fb device registers no parent, causing a missing symlink
->> (/sys/class/graphics/fb0/device). Xorg fbdevhw driver looks for that
->> symlink when scanning for devices, so add a parent node for atafb.
->>
->> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
->> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
->> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
->> Cc: <linux-fbdev@vger.kernel.org>
->> Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
->
-> Did anything on the fbdev patches (#2-#4) changed between v1 and v2?
->
-> Helge
->
+Mac Quadra 650 - SWIM 2 with Mitsubishi FDD
+Mac LC III     - SWIM 2 with Mitsubishi FDD and Sony FDD
+Mac Quadra 700 - SWIM with Sony FDD
+Mac IIvx       - SWIM with Sony FDD
+
+---
+Changed since v1:
+ - Patches 1/31, 19/31, 23/31 were revised as per Laurent's remarks.
+ - Some minor improvements to patches 9/31, 13/31 and 16/31.
+ - Added patch 24/32 to fix a bug causing silent IO corruption instead
+   of an IO error.
+
+---
+
+Finn Thain (32):
+  swim: Assert strobe with stable outputs
+  swim: Select appropriate drive once only
+  swim: Enable the drive when probing
+  swim: Don't disable drive after every sector
+  swim: Perform ISM/IWM mode switching according to specs
+  swim: Configure parameter memory
+  swim: Enable clock divider only where appropriate
+  swim: Don't start motor until medium is present
+  swim: Recalibrate when drive is probed
+  swim: Add track zero recalibration delay
+  swim: Handle FIFO timeout error
+  swim: Simplify return value initialization
+  swim: Check for CRC errors
+  swim: Check error register during sector read
+  swim: Don't use the mark register to read data
+  swim: Fix buffer overflow
+  swim: Convert to blocking queue
+  swim: Remove redundant RELAX actions
+  swim: Deduplicate polling loops
+  swim: Check drive ready bit
+  swim: Revisit delays
+  swim: Remove pointless mode0 register write
+  swim: Don't needlessly re-read sectors
+  swim: Don't search beyond the first data mark
+  swim: Remove pointless specifiers
+  swim: Move swd initialization
+  swim: Add some helpful references
+  swim: Remove unused macro definitions
+  swim: Clean up whitespace
+  swim: Define macros for constants
+  swim: Define symbols for constants
+  swim: Unexport global symbols
+
+ arch/m68k/mac/config.c   |  31 ++-
+ drivers/block/swim.c     | 447 ++++++++++++++++++++-------------------
+ drivers/block/swim_asm.S | 358 ++++++++++++++++---------------
+ 3 files changed, 449 insertions(+), 387 deletions(-)
+
+-- 
+2.52.0
+
