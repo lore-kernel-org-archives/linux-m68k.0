@@ -1,55 +1,56 @@
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C7F3BA235
-	for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 08:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A804B04B6
+	for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 08:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1786956666; cv=none; b=WiE78Y69Pwpc2cLSn2nsrC/a09tBj2l/viIESfugjMktNUBrG+FVMvxPNP14SM1O0icMAfSI+EY0yeMw12PP5ZXQK7gFflnMt/nVzRxumONlAIobI6TzU2xjyQ8sRy7hpqNIqrCzfn6zIMCSTKtmpZAe2/uWosGy6Tgr9B0yibo=
+	t=1786956742; cv=none; b=AkmbU17Cu8OBmbaXUJmW5wh+KFpL1W9FtPGvRaAMoWitNqyIGNsGRvacz2kI5MvmQALpxaVHhzQkzpzTuwsykGlnTfg7vSvF8c2a4oUPnkVSQaSuNylq5CxbEanAQ56xf+smiT0/DSoL3Uoua8j3hcvpxaMxPidRvtTECtR1I7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1786956666; c=relaxed/simple;
-	bh=oIQkD2dfUzBuDRWWMkSP5p49Gr07cGfqKwxWsP0BCd0=;
+	s=arc-20240116; t=1786956742; c=relaxed/simple;
+	bh=BcHuOfcLD6771lQsjeCwYllckWcAZfdbrMwC937etMQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aMhbNVqGGK53K/EpdFnXW+ZhBGoHb/MOdxQ04nA5pnC5vU5XE+W9G2jY2ayyA60ywbg9uJqx5jAgsozlmsuWX4xMSuflVuWV8QxpJfSy2wnwRzvoXFfdT1mCq35YqyhaWSVIkIypkykiySvIXaH0LETKn5VFYEvqTqh72uLYHXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.46
+	 To:Cc:Content-Type; b=uHJbN2/XyclO7TRaMLsYQ8AI5ByBQlGKYKDbh32j36cI0G87XCXvaVgLfuBypCNTO2PFrzNhnJvSiUb9fBdm8Q6X7Ynxsfi1BBl6mF/EZ3FM978sfjw17qks90HXoJnsIfSKfa1PyorV699kZWDUKvUlJPAsBrzaW2HXZLFPbVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-97bf8775803so1918185241.0
-        for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 01:51:04 -0700 (PDT)
+Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-746d77537f8so1615168137.0
+        for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 01:52:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1786956663; x=1787561463;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=3FI4ZGpZLzWpq6noUTbY+pmsayJtO9ydjcgco8UjiuQ=;
-        b=f7LPmk93RcmtbNCKD8vXu6Sm8WcJG7Nxmc+CILLmMrl7SCzDJhKd5Nx9fCOcMa4Txr
-         5PViwFsHw86geHt2rvYQLLlyCs4Q8Ee6vqMcThhXoAdmIAHJ+bR1ertOYZBNXuE5hsmn
-         JH/4oQvB9b/uTK9BFMoEbhnDjx59FL5T6eUciqKAZgIJIoMlSnOgugCGi9fEZDGUx/tc
-         hfIwPgK3c33wim/+sH5YrH9kgs1v6eu2jxJeDBaZy2xo6H/126332TxfUlx2NXh3jGlz
-         LTaqMg2rBhNWPsmRkhnc72dvIKXvbxjlNWZtm1TvhqkuWuRYQEGYptJ5MEdW4j1/4qJi
-         GK8Q==
-X-Gm-Message-State: AOJu0Yx+tjEbqeRKPszQvQ+GjAdWMELUHs18tksO+JZrkn9IZXtT4XSh
-	nLG/UjhzOBQA9k3tgV+E2N/4Z4YOPDJMoD/UIMdkOO05cRmZIr31vwMvnaN9+Z0J
-X-Gm-Gg: AR+sD13TsNMJKYFuWxRDhXelEm4WLh4P0E/qCa7TNJCECFHjveZIC90YjlPfRJJHB3F
-	uTB/2JKkmCaUr40q6+auMSnhlpLp7TbRWgmpQLAvM4rVzvD/zj+zEvPU13LMsh5jJOY94VDHmIB
-	JX01/qJ5SUZeb9TY7KJQ7plupRTh0UV+5WnKYNuKkCT3zLGo3u4z4/s89MU1VHqUa+vId7s3Gcz
-	cpUgj4z2cKDsZFmH7BMxDGrWPFqTC0luOGmABGlJC2S4ZHLUIyTDGuqyBIgUlKVYYBq/no43ZY+
-	AZC4Y2tyHlu+V0WCtGKtfHfJ6N3njlh5St8YTpHDQ3fL/gnvad0xGGeAtbRFftR3VvhamAk9qWu
-	d4yIG2jqF0ESqo9tsMRKd5GwpwMWXHO+RcDemuedvhVDctfm9WboRsOK268LoXivxP8g6AJzhL9
-	qokSsyo5LLywPxFqiFe/4SmaHXp6KpAzYfq/mRa1B7j4jHBlL8dtGqo0je9ihia5qKC1RFnCqkt
-	FTnhvC6ddSsL+FE19oBpQCXz7zvgOiEdmmFeGLq
-X-Received: by 2002:a05:6102:3943:b0:760:330:312f with SMTP id ada2fe7eead31-76dd3bc43d6mr2626126137.15.1786956663484;
-        Mon, 17 Aug 2026 01:51:03 -0700 (PDT)
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-773c2cf06a6sm443208137.2.2026.08.17.01.51.02
+        d=1e100.net; s=20251104; t=1786956740; x=1787561540;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=vlAhBpDEmXXa5qEbv6Yj+sTzNqdVkRvMBBzeF+OGu9Y=;
+        b=c+C8mY+So3MIfC4yG069XgdQ83IVAl0PnOug/Q6lLp3ZeQ2ytrKGulQZCouWzz1jjZ
+         oIuRWK51Z1gGEN7dmeJHxrBAfAslYjPNymvN5il4EItYszYs14ArgxzMi6ymmRV9/mhx
+         agvYKcJ+gk1C/tiowr/+1ORZOFF2sRRn0VQInH+WQfREGaCjEF5VYQz16FmJzij6orLr
+         BHnD/7RCn8m8zxjQk13rRfJvrZ+Ey/Vs1J0IA5kq77L/FjTHP5ZqlhOKKzWn0r6Yr97O
+         //Rd6uVehZkQy9b6PYykSz2HoZNsxAfOOArL+wQGMqj4HVna06SdZe1ZdRQ4n+i7TobA
+         HmbQ==
+X-Gm-Message-State: AOJu0YxnrhogIZueQuD9PE39uocKjvx/JzzLiFBWAJkcdkb1u2jdQpzo
+	5+TaN00VH764yDu/z8fJzTPLIc1gA6SH2VGL2oxPY3xzgSgN8ipc3gkgDmb9myir
+X-Gm-Gg: AR+sD13vQDnj4TmDhAYTtU0854CwJBhvTZworja2IVSgg8R/GXb5rVuIXpLrGIOwvg5
+	ixlzT/TWyR6SFen/nF2S8BbK+rUzkIxvqGhnHPChyxgkko1TbTb/ur8lPd7LsO2GjfwHkI1ACJO
+	mZUcKoF6yndF72L8O975f/2nGcUlUK1IxgqoIOc6rhCGsjb5vZGr9TKICu1dSO8E/JeS8utUyjs
+	AHMcCYrYOnetYsh+erLo0SEh4hex3+vSOjySUtTtZnRvBdIzblJiwld6eTawLXNqRhEwYtGULSG
+	OGnL9MkBR4+JYjDL5VCaKKdQJxkwR9MBoYktz7L+pSNVsapUrzhDS+Chq+4pd7VxTuWxAKvyEMQ
+	++EmiK/ka3bSOjD3vYSLUThfv1Lomb9waT6+YRJ6bgBo8ny/VDrEL0uFhyk5sBBkIM8988CpvrM
+	nPbnUkLYhIeWkPUJKQ2QCKA0N6GLEgDGGF00tahxrQREI7xCGA8pW+h8DBR3XchGjWY6OmMEDYG
+	gNX/Q6ciGebHbS60uLPQgaMGg==
+X-Received: by 2002:a05:6102:8096:b0:74c:11b2:a944 with SMTP id ada2fe7eead31-76f2cd68fcfmr4751320137.14.1786956739962;
+        Mon, 17 Aug 2026 01:52:19 -0700 (PDT)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-773c2cf0673sm450758137.3.2026.08.17.01.52.19
         for <linux-m68k@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Aug 2026 01:51:02 -0700 (PDT)
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-5c39cb2115cso2999878e0c.1
-        for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 01:51:02 -0700 (PDT)
-X-Received: by 2002:a67:fe48:0:b0:773:2805:4ad1 with SMTP id
- ada2fe7eead31-773280569abmr400286137.11.1786956662527; Mon, 17 Aug 2026
- 01:51:02 -0700 (PDT)
+        Mon, 17 Aug 2026 01:52:19 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-746d77537f8so1615164137.0
+        for <linux-m68k@vger.kernel.org>; Mon, 17 Aug 2026 01:52:19 -0700 (PDT)
+X-Received: by 2002:a05:6102:442c:b0:772:9979:cbc5 with SMTP id
+ ada2fe7eead31-7729979fc53mr1311940137.2.1786956739503; Mon, 17 Aug 2026
+ 01:52:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -57,40 +58,86 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260816073752.16656-1-schmitzmic@gmail.com> <20260816073752.16656-6-schmitzmic@gmail.com>
- <CAMuHMdWKqtNd1iGNsXcF6NUQjF6bZPp8YMPWB3y7++2VpwZd-w@mail.gmail.com>
-In-Reply-To: <CAMuHMdWKqtNd1iGNsXcF6NUQjF6bZPp8YMPWB3y7++2VpwZd-w@mail.gmail.com>
+In-Reply-To: <20260816073752.16656-6-schmitzmic@gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 17 Aug 2026 10:50:51 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXCAtp6yRsHuUnALm=Fak8xAqHhCOfH-99emF7hDDzxVA@mail.gmail.com>
-X-Gm-Features: AcwNN1XjoxAVeb02ZPzBJcRTKdBtRoe8ONHtXOudx_5magW1rtprmqm3xU_N6Es
-Message-ID: <CAMuHMdXCAtp6yRsHuUnALm=Fak8xAqHhCOfH-99emF7hDDzxVA@mail.gmail.com>
+Date: Mon, 17 Aug 2026 10:52:08 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXPiizRPkT3ukiNoc-26dnqAKgkomsR8mYNxqSyh5bQ+g@mail.gmail.com>
+X-Gm-Features: AcwNN1U-18MobXucNLAUafMCXQUVHfJylxjEUstlfi5NG0L1GYGMG6hLVADhkFQ
+Message-ID: <CAMuHMdXPiizRPkT3ukiNoc-26dnqAKgkomsR8mYNxqSyh5bQ+g@mail.gmail.com>
 Subject: Re: [PATCH v2 5/5] m68k: Add support for Svethlana
-To: Miro Kropacek <miro.kropacek@gmail.com>
-Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k@vger.kernel.org, Miro Kropacek <miro.kropacek@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 17 Aug 2026 at 09:14, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Sun, 16 Aug 2026 at 09:38, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> > From: Miro Kropacek <miro.kropacek@gmail.com>
-> >
-> > The SuperVidel FPGA contains an OpenCore ethernet package. Add
-> > platform device data and other necessary definitions to support
-> > this device on Atari.
-> >
-> > The ethoc module must be enabled separately by the user.
+Hi Michael,
+
+On Sun, 16 Aug 2026 at 09:38, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> From: Miro Kropacek <miro.kropacek@gmail.com>
 >
-> ETHOC selects MII and PHYLIB. Do you need to enable any MDIO or PHY
-> drivers?  I don't have the hardware, just asking for {atari,multi}_defconfig.
+> The SuperVidel FPGA contains an OpenCore ethernet package. Add
+> platform device data and other necessary definitions to support
+> this device on Atari.
+>
+> The ethoc module must be enabled separately by the user.
+>
+> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
+> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
+>
+> ---
+> Changes in v2:
+>
+> - fix svethlana platform register error handling (Geert)
 
-FTR, this increases kernel size by ca. 52 KiB.
+Thanks for the update!
+
+> --- a/arch/m68k/atari/config.c
+> +++ b/arch/m68k/atari/config.c
+
+> @@ -892,6 +949,23 @@ static int __init atari_platform_init(void)
+>         }
+>  #endif
+>
+> +#ifdef CONFIG_ATARI_SVETHLANA
+> +       {
+> +               int error;
+> +               void __iomem *sv_version;
+> +
+> +               sv_version =3D ioremap(ATARI_SV_VERSION_PHYS_ADDR, 4);
+> +               if (sv_version) {
+> +                       if (hwreg_present(sv_version) &&
+> +                           (__raw_readl(sv_version) & 0x3ff) >=3D 10)
+> +                               error =3D platform_device_register(&sveth=
+lana_device);
+> +                               if (error && !rv)
+> +                                       rv =3D error;
+
+Missing curly braces:
+
+    error: this =E2=80=98if=E2=80=99 clause does not guard... [-Werror=3Dmi=
+sleading-indentation]:
+
+> +                       iounmap(sv_version);
+> +               }
+> +       }
+> +#endif
+> +
+>  #ifdef CONFIG_ATARI_ETHERNEC
+>         {
+>                 int error;
 
 Gr{oetje,eeting}s,
 
                         Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
                                 -- Linus Torvalds
