@@ -1,37 +1,38 @@
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6ED23A9002
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Aug 2026 15:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB4E429033
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Aug 2026 17:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787065761; cv=none; b=KK52DvZBQoKqi4pG0q2iFKkqOqHFem3QPHCzHOCNNISjdu9ZMHKAJoYPXanf5x02/+hNtTMqOlaoRPBjkOZvSUS70t8GP1F/EzAt286qcKK3biLLjgCgO9nNw3uIH5Dzxxc09xsroayAohVe2yUILUCf+TAw8uLlUrsh2sTqa9o=
+	t=1787073919; cv=none; b=Oa6fEPRFBIXX4TE5J3StPfQty7IgSqcmdqnqyMXl3Gi16HUvm4BkD3OmSKyh9dK5pGYjkbL3eAuq1jtBRCRUx1QaH1YcVVuFNC2bu5lii/lPD5HrcrA95gHHPGnumHINtSwawNcxWzApUgSlLnIKeJOK35KcNqmucuOUptybS6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787065761; c=relaxed/simple;
-	bh=8r8ATR9ygIbjjKyhtEPIiReb0qgATLz5U8RqiELlZpY=;
+	s=arc-20240116; t=1787073919; c=relaxed/simple;
+	bh=UsyiP6uczL8lxNasR7yxPsTKZ8/aZxcPz1JoV+Bk3Dc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G+g8Szo88B0EhKNcJccXL37/9dm1Nndsst0uReUemOQ+PLcv0rdfhKX6lOZi0WhOub0fRUQsbT+xEBrPQr4osviz4N01wcJKxTBuUBzhsEJXc+Jw8Kjqv7LqCo4nIMk8l/T+HhFA3BODcEp2kleHGL0NVR5u9eGHCPbsySM11SA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=nlXUJEF6; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
+	 In-Reply-To:Content-Type; b=jYa/db6OzEyJ5ZOIe+UfRT7ztUQ+skC11qAhbl0HdngFJYh8WibksDDp6I3IeSSxIgTz66Xnkxhg31iJmYsd8Lgo2tSBdr+ZypyLkwR/yqgE2GzOit1iTJwERas9mHbXfyHGtW9JAscMhsgHVqZeyXTR1i/ISJjUJ4FXf3uyrJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HHYuHZuq; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="nlXUJEF6"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 073713EDF7;
-	Tue, 18 Aug 2026 15:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1787065756;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1HEORH5xQKD3xAagCv48cPmJt85qUOLS0mSV17EcIJY=;
-	b=nlXUJEF6GS5z6kHjeafT4VZnxCMqb9L6UA+/lN6VFodbpvbwdg0/1SSVWaftLosM5OAQak
-	pYCHysmJTrauqr+gXuqQnSk/EEJ0KymfSAVAvrAVddllrVx8JSRx+lxQW+YvDNKXY5ob7K
-	rk2iwwX1h1+rLnl8pmCm1TTOf2Ef1FDGE4n4yShY3qH9lGYkxMrAAK6lRN5clMAWANYWUJ
-	/X8jlif8SM44rGLycnEHSoYYqJUt/dYj0YHMYJ4EsFmqUuykFi9X0TpJ7cq/dnDNJs1zKD
-	tqS+2UiXt0WS1h03jpkgOTaHdsaWUdpRfQdR8VrhtIL6MObIdLp7WGQ9+/1r3A==
-Message-ID: <ddf0ab32-5b66-453e-b7aa-1722aeaf2aa0@yoseli.org>
-Date: Tue, 18 Aug 2026 17:09:10 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HHYuHZuq"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 7C14943F63;
+	Tue, 18 Aug 2026 17:25:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A28E1F00A3A;
+	Tue, 18 Aug 2026 17:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1787073917;
+	bh=AShWrs852J7IkStssEoEst3JiywPYlSikQUVe7RTkRk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=HHYuHZuq5zMXG+8OeZcsNEd1kunHyn8X+QRRdpazCD+PrQnY2MD+Ve9C7MoKwru4x
+	 dbBzkW2cGWbBN3m3D8evXSCxOc8q2AyH3nSXNiWo+xrK2TdFxAIivDqioG1XAtwxtF
+	 aMCegUXmfY55bD/l0MdwxRF/+47ynTjAj26vHT4KSJZRH0qcQ7HSLgqNnkGJ4K3+/W
+	 crGr6GNfZ3DAGAYgRt1N7RBfRYxh3dfuxofB0XlSNCLCsppsmpUwmMlxXD5gurFGnn
+	 9/OAXbxSo02M2icN//fOoDQwicorrXfhbp04ZPJhViHl6uwc6nkSncuJyuWweMLpgg
+	 uyhaHGoSxMwtA==
+Message-ID: <55d92b3e-ad3f-464f-b2db-a2552353223e@kernel.org>
+Date: Tue, 18 Aug 2026 19:25:07 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -39,206 +40,94 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] m68k: coldfire: Add RNG support for MCF54418
-To: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Olivia Mackall <olivia@selenic.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, Frank Li <Frank.Li@nxp.com>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
- <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
- <bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org>
-Content-Language: fr-FR, en-US, en-GB
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
-X-GND-Cause: dmFkZTF0GOZonn7fzNqAfnCUw2jviVr9cVO2aEOq2qqvySqTZqejiEHo3UZPhg2MYpG0dEz22m19qjaWiJ+gFXyju6P8uP35WU04mRCTz1h5qF1U2T0B4e8SXglMjUV+6E4JIpxLceYh1TXAKV2KVZrH27yvb2I++Ps4QSs/Y98Pevs9zSwyqhWuilvPay+BM1+NvTEkZbclWUhDRk0mA1Uelx9dLJr+OSzL6e3kL+hclwdRGjaKpb1Fl/6p4B15H/CwBGN2OVg1jWX4KBRF4o5XeDXLDb0SIzzPmnVeDmZu2MVD2AsUuk78siG8K7gR7AgyIwl0O0EpA2gfmo5A77grrDmIbcMrj1ZGdElxP096FvmpVfTY97+paGqeIuonISjquivsEM9AQK+HpH+rTdtuvamL86b37TpBmaMteZyWrzTRpAVCh8XEEuWugxC5my141VbUxnevX2kHIu3lBD7pLDS+2PLmgzmZ3MotjzF8zaXGCCJFXBUo1sSHeuXCmGTOvaz03GF9KjgKnbLvLmAj6tTF4Dc49VIruCYH7oEf4lx+7Om6EIkPLcsOshOkHn/9Uymm0IMz5FzuYU17SKfC69iG2ERxoo3x/8zAXjMfyr5r9oaK9HWAqsxdFAGD043lc3iC9YUMB1iDYz/PXp9QnKaPiJBhwDj78i8U68LCNEXvVg
-X-GND-State: clean
-X-GND-Score: -100
+Subject: Re: [RFC V3 1/8] mm: Make ptrval_to_str() generally available
+To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+ akpm@linux-foundation.org
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
+ <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Lorenzo Stoakes <ljs@kernel.org>
+References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
+ <20260818040041.1891769-2-anshuman.khandual@arm.com>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260818040041.1891769-2-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Greg,
+On 8/18/26 06:00, Anshuman Khandual wrote:
+> Move ptrval_to_str() inside a header thus making the helper more generally
+> available for new users which are being added later. While here, also move
+> another related string size macro PTVAL_STR_MAX inside the header as well.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Hildenbrand <david@kernel.org>
+> Cc: Lorenzo Stoakes <ljs@kernel.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
 
-Sorry for the very long silence on this one, it fell off my radar...
+I would have placed that into include/linux/pgtable.h. Any particular reason for
+mm_types?
 
-Le 03/12/2025 à 13:15, Greg Ungerer a écrit :
-> Hi Jean-Michel,
-> 
-> On 26/11/25 17:08, Jean-Michel Hautbois via B4 Relay wrote:
->> From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>
->> Add support for the hardware Random Number Generator (RNGB) found on
->> MCF54418 ColdFire processors with clock enabled at platform
->> initialization.
->>
->> The RNGB block is compatible with the imx-rngc driver.
->>
->> Reviewed-by: Frank Li <Frank.Li@nxp.com>
->> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->> ---
->>   arch/m68k/coldfire/device.c       | 28 ++++++++++++++++++++++++++++
->>   arch/m68k/coldfire/m5441x.c       |  2 +-
->>   arch/m68k/include/asm/m5441xsim.h |  9 +++++++++
->>   drivers/char/hw_random/Kconfig    |  3 ++-
->>   drivers/char/hw_random/imx-rngc.c |  7 +++++++
->>   5 files changed, 47 insertions(+), 2 deletions(-)
-> 
-> I am happy with the ColdFire arch parts, so from me:
-> 
->      Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-> 
-> I don't mind taking this commit via the m68knommu git tree if the hw_rng
-> maintainers are ok with that. Otherwise if you break out the arch/m68k
-> parts I can apply those on their own.
+Acked-by: David Hildenbrand (Arm) <david@kernel.org>
 
-I think Herbert acked ?
-Do you need another ack ?
+-- 
+Cheers,
 
-Thanks !
-JM
-
-> Regards
-> Greg
-> 
-> 
-> 
->> diff --git a/arch/m68k/coldfire/device.c b/arch/m68k/coldfire/device.c
->> index b6958ec2a220..9d8f844e319a 100644
->> --- a/arch/m68k/coldfire/device.c
->> +++ b/arch/m68k/coldfire/device.c
->> @@ -622,6 +622,31 @@ static struct platform_device mcf_flexcan0 = {
->>   };
->>   #endif /* MCFFLEXCAN_SIZE */
->> +#ifdef MCF_RNG_BASE
->> +/*
->> + * Random Number Generator (RNG) - only on MCF54418
->> + */
->> +static struct resource mcf_rng_resource[] = {
->> +    {
->> +        .start = MCF_RNG_BASE,
->> +        .end   = MCF_RNG_BASE + MCF_RNG_SIZE - 1,
->> +        .flags = IORESOURCE_MEM,
->> +    },
->> +    {
->> +        .start = MCF_IRQ_RNG,
->> +        .end   = MCF_IRQ_RNG,
->> +        .flags = IORESOURCE_IRQ,
->> +    },
->> +};
->> +
->> +static struct platform_device mcf_rng = {
->> +    .name           = "imx-rngc",
->> +    .id             = -1,
->> +    .num_resources  = ARRAY_SIZE(mcf_rng_resource),
->> +    .resource       = mcf_rng_resource,
->> +};
->> +#endif /* MCF_RNG_BASE */
->> +
->>   static struct platform_device *mcf_devices[] __initdata = {
->>       &mcf_uart,
->>   #ifdef MCFFEC_BASE0
->> @@ -660,6 +685,9 @@ static struct platform_device *mcf_devices[] 
->> __initdata = {
->>   #ifdef MCFFLEXCAN_SIZE
->>       &mcf_flexcan0,
->>   #endif
->> +#ifdef MCF_RNG_BASE
->> +    &mcf_rng,
->> +#endif
->>   };
->>   /*
->> diff --git a/arch/m68k/coldfire/m5441x.c b/arch/m68k/coldfire/m5441x.c
->> index 7a25cfc7ac07..ab5b00637237 100644
->> --- a/arch/m68k/coldfire/m5441x.c
->> +++ b/arch/m68k/coldfire/m5441x.c
->> @@ -158,6 +158,7 @@ static struct clk * const enable_clks[] 
->> __initconst = {
->>       &__clk_0_33, /* pit.1 */
->>       &__clk_0_37, /* eport */
->>       &__clk_0_48, /* pll */
->> +    &__clk_0_49, /* rng */
->>       &__clk_0_51, /* esdhc */
->>       &__clk_1_36, /* CCM/reset module/Power management */
->> @@ -179,7 +180,6 @@ static struct clk * const disable_clks[] 
->> __initconst = {
->>       &__clk_0_44, /* usb otg */
->>       &__clk_0_45, /* usb host */
->>       &__clk_0_47, /* ssi.0 */
->> -    &__clk_0_49, /* rng */
->>       &__clk_0_50, /* ssi.1 */
->>       &__clk_0_53, /* enet-fec */
->>       &__clk_0_54, /* enet-fec */
->> diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/ 
->> asm/m5441xsim.h
->> index f48cf63bd782..dd64cdfcad3e 100644
->> --- a/arch/m68k/include/asm/m5441xsim.h
->> +++ b/arch/m68k/include/asm/m5441xsim.h
->> @@ -198,6 +198,15 @@
->>   #define MCFRTC_SIZE        (0xfc0a8840 - 0xfc0a8000)
->>   #define MCF_IRQ_RTC        (MCFINT2_VECBASE + MCFINT2_RTC)
->> +/*
->> + *  Random Number Generator (RNG) Module.
->> + *  Note: Only present in MCF54418, not in MCF54410/54415/54417
->> + */
->> +#define MCF_RNG_BASE        0xfc0c4000
->> +#define MCF_RNG_SIZE        0x1c
->> +#define MCFINT2_RNG        28
->> +#define MCF_IRQ_RNG        (MCFINT2_VECBASE + MCFINT2_RNG)
->> +
->>   /*
->>    *  GPIO Module.
->>    */
->> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/ 
->> Kconfig
->> index 492a2a61a65b..2f301e43db84 100644
->> --- a/drivers/char/hw_random/Kconfig
->> +++ b/drivers/char/hw_random/Kconfig
->> @@ -270,12 +270,13 @@ config HW_RANDOM_MXC_RNGA
->>   config HW_RANDOM_IMX_RNGC
->>       tristate "Freescale i.MX RNGC Random Number Generator"
->>       depends on HAS_IOMEM
->> -    depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL 
->> || COMPILE_TEST
->> +    depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL 
->> || COLDFIRE || COMPILE_TEST
->>       default HW_RANDOM
->>       help
->>         This driver provides kernel-side support for the Random Number
->>         Generator Version C hardware found on some Freescale i.MX
->>         processors. Version B is also supported by this driver.
->> +      Also supports RNGB on Freescale MCF54418 (Coldfire V4e).
->>         To compile this driver as a module, choose M here: the
->>         module will be called imx-rngc.
->> diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/ 
->> hw_random/imx-rngc.c
->> index d6a847e48339..44f20a05de0a 100644
->> --- a/drivers/char/hw_random/imx-rngc.c
->> +++ b/drivers/char/hw_random/imx-rngc.c
->> @@ -353,12 +353,19 @@ static const struct of_device_id 
->> imx_rngc_dt_ids[] = {
->>   };
->>   MODULE_DEVICE_TABLE(of, imx_rngc_dt_ids);
->> +static const struct platform_device_id imx_rngc_devtype[] = {
->> +    { .name = "imx-rngc" },
->> +    { /* sentinel */ }
->> +};
->> +MODULE_DEVICE_TABLE(platform, imx_rngc_devtype);
->> +
->>   static struct platform_driver imx_rngc_driver = {
->>       .driver = {
->>           .name = KBUILD_MODNAME,
->>           .pm = pm_ptr(&imx_rngc_pm_ops),
->>           .of_match_table = imx_rngc_dt_ids,
->>       },
->> +    .id_table = imx_rngc_devtype,
->>   };
->>   module_platform_driver_probe(imx_rngc_driver, imx_rngc_probe);
->>
-> 
-
+David
