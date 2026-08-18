@@ -1,31 +1,31 @@
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E533A4F51
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Aug 2026 04:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76863D668F
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 18 Aug 2026 04:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787025662; cv=none; b=eUks/wVWECgCt/nk9rE24/YDlBTrYfxK5WwymiI+Y+j16xRK2UgvER4ku0kbGrOsgS147SGaG7RIp8a2fzoszIEd3ShcLZ4JhfRutj2dAi4kpbSR6Dn7X3zT8YmWTMqlhkDUXucckDMyibYcKzuABsJQdWzAkPpe61e9VHCMa9I=
+	t=1787025669; cv=none; b=H74vIh1CwpF2Vbp0Y2C56H1cSMdlfkY03kPPDYYHStyrUeZn5pgZa1vJUJBKU0yu0wsp5H4u7wjGaLT2uqHAwQ50AaotciWnMusH3hNSRbQ9KXNM1lm37dyNnJeRfRPeeEy4J9E8vfYpagnNNhYCszLB6xINnxiBBGVSrVhpDBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787025662; c=relaxed/simple;
-	bh=jNvZ3ph4tfzqvfYMPDWyq7xHUxNcpHCKh93HJ34Xlag=;
+	s=arc-20240116; t=1787025669; c=relaxed/simple;
+	bh=+IOKlajyDGmq0sYEfpdSj8LTjC//Z3kh760ik0Or7T0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CfMWdoQzT2ZUU6XCPgGE+YDIDNs19joWDLtqae0Xr/VKV9rmvUxXz0GfgHRKj0ajn1A5AqnIRQ2s9aJRiNN/Qr5QQq5RWRuaZhbXoVnj+NcbvHUX0hTgCxzilES929imFK7LPZcwFneAp6ZdJdrTQreWiy69J4Zb6CKJ1ZgMia8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=utTgpugZ; arc=none smtp.client-ip=217.140.110.172
+	 MIME-Version; b=dL3lwDkj+8cBzMot+78VJrofwEBmS3jRhuU/5IPeCtpOfjyYj27LpATxY17LKI6/c5DP1BWe+PpczN0xLFRVhPhmdb6s24IrG5HFGKGRQmbSloMM7qhDLKi/8Kzb5uVhrJS+B+ioGalTGCw8Ygz6Iv+z+OGsfYDdQn5ImMWScMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=RwYiQyZ1; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="utTgpugZ"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="RwYiQyZ1"
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 552C0176C;
-	Mon, 17 Aug 2026 21:00:56 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B6A619F6;
+	Mon, 17 Aug 2026 21:01:00 -0700 (PDT)
 Received: from localhost (a085714.arm.com [10.164.19.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 439313F66F;
-	Mon, 17 Aug 2026 21:00:59 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 18FEC3F66F;
+	Mon, 17 Aug 2026 21:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1787025660; bh=jNvZ3ph4tfzqvfYMPDWyq7xHUxNcpHCKh93HJ34Xlag=;
+	t=1787025664; bh=+IOKlajyDGmq0sYEfpdSj8LTjC//Z3kh760ik0Or7T0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=utTgpugZygTuDjhpwxzKPuJMIDZz0EKonCrgJRpvQKS6INxHgHOfXIDFV+nOSQ7jF
-	 7Bgl85I45aBhnw6MHWp+5DDIFHvHyFt07H8kgzKVC+zsqZqfrwYRzS13GPJp69yMK5
-	 AJqMStMFmVH1+FyJHrLz9sBA+2QOVy632/sBTjjU=
+	b=RwYiQyZ1+Gm65Beru//SBDmjn+yw3OE19u+NNLDDYSJEmLRaTwxULRvx1BeUbv2jK
+	 RMrPw8oBILsTv6WNVwRvec7ZHbG3DUf5WAPvJbhSBJcW8jGsVmR0JNTmxttvAgrdYU
+	 j6l5G+LrXUhY083h6l2N3RQI/Kw9J2+W+viSZqTY=
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-mm@kvack.org,
 	akpm@linux-foundation.org,
@@ -56,9 +56,9 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	linux-um@lists.infradead.org,
 	linux-arch@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC V3 4/8] parisc/mm: Directly use generic [pmd|pgd]_clear_bad()
-Date: Tue, 18 Aug 2026 09:30:37 +0530
-Message-ID: <20260818040041.1891769-5-anshuman.khandual@arm.com>
+Subject: [RFC V3 5/8] sh/mm: Stop using pte_ERROR()
+Date: Tue, 18 Aug 2026 09:30:38 +0530
+Message-ID: <20260818040041.1891769-6-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260818040041.1891769-1-anshuman.khandual@arm.com>
 References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
@@ -70,45 +70,64 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Drop [pmd|pgd]_ERROR() followed by [pmd|pgd]_clear() instances. But instead
-directly use semantically equivalent generic helpers [pmd|pgd]_clear_bad()
-in unmap_uncached_[pte|pmd]() which helps in dropping their corresponding
-[pmd|pgd]_ERROR() macros across the tree.
+Directly use pr_err() in set_pte_phys() and drop pte_ERROR() which helps in
+eventually dropping pte_ERROR() macro across the tree. In this new printing
+__FILE__ and __LINE__ has been dropped because they are always the same and
+don't really add any value. Besides ptrval_to_str() has been able to handle
+different PTE representation with and without CONFIG_X2TLB, which helped in
+unifying error message printing.
 
-Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: linux-sh@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/parisc/kernel/pci-dma.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Changes in RFC V3
 
-diff --git a/arch/parisc/kernel/pci-dma.c b/arch/parisc/kernel/pci-dma.c
-index bf9f192c826e..84e7309a8266 100644
---- a/arch/parisc/kernel/pci-dma.c
-+++ b/arch/parisc/kernel/pci-dma.c
-@@ -160,8 +160,7 @@ static inline void unmap_uncached_pte(pmd_t * pmd, unsigned long vaddr,
- 	if (pmd_none(*pmd))
- 		return;
- 	if (pmd_bad(*pmd)) {
--		pmd_ERROR(*pmd);
--		pmd_clear(pmd);
-+		pmd_clear_bad(pmd);
+- Cleaned up the error the message and used ptrval_to_str()
+
+ arch/sh/include/asm/pgtable_32.h | 5 -----
+ arch/sh/mm/init.c                | 6 +++++-
+ 2 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/arch/sh/include/asm/pgtable_32.h b/arch/sh/include/asm/pgtable_32.h
+index 5f51af18997b..c8eb9a7a4c4c 100644
+--- a/arch/sh/include/asm/pgtable_32.h
++++ b/arch/sh/include/asm/pgtable_32.h
+@@ -401,14 +401,9 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+ #define pmd_page(pmd)		(virt_to_page(pmd_val(pmd)))
+ 
+ #ifdef CONFIG_X2TLB
+-#define pte_ERROR(e) \
+-	printk("%s:%d: bad pte %p(%08lx%08lx).\n", __FILE__, __LINE__, \
+-	       &(e), (e).pte_high, (e).pte_low)
+ #define pgd_ERROR(e) \
+ 	printk("%s:%d: bad pgd %016llx.\n", __FILE__, __LINE__, pgd_val(e))
+ #else
+-#define pte_ERROR(e) \
+-	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
+ #define pgd_ERROR(e) \
+ 	printk("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
+ #endif
+diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
+index 110308bdef01..9466ae6f9f16 100644
+--- a/arch/sh/mm/init.c
++++ b/arch/sh/mm/init.c
+@@ -84,7 +84,11 @@ static void set_pte_phys(unsigned long addr, unsigned long phys, pgprot_t prot)
+ 
+ 	pte = __get_pte_phys(addr);
+ 	if (!pte_none(*pte)) {
+-		pte_ERROR(*pte);
++		char str[PTVAL_STR_MAX];
++
++		ptval_to_str(str, pte_val(*pte));
++		pr_err("unexpected set PTE at %lx in %s: bad pte %p(%s).\n",
++			addr, __func__, pte, str);
  		return;
  	}
- 	pte = pte_offset_kernel(pmd, vaddr);
-@@ -196,8 +195,7 @@ static inline void unmap_uncached_pmd(pgd_t * dir, unsigned long vaddr,
- 	if (pgd_none(*dir))
- 		return;
- 	if (pgd_bad(*dir)) {
--		pgd_ERROR(*dir);
--		pgd_clear(dir);
-+		pgd_clear_bad(dir);
- 		return;
- 	}
- 	pmd = pmd_offset(pud_offset(p4d_offset(dir, vaddr), vaddr), vaddr);
+ 
 -- 
 2.43.0
 
