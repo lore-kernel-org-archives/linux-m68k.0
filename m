@@ -1,85 +1,103 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7812E229F
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Aug 2026 02:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13240367B8B
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Aug 2026 09:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787107766; cv=none; b=TM1/WnlJzGmldI5h6v7jgUR+Si2Y1rqW13SaP+BvxNm7COPx9DiUbPhN5a4E+wvRytTnPFavIhgsctVBXyRdfyDK62yIWfwK5bIJxEheMs06uONvVljGzoWzKzsug1STXR4JwCQV64em+MyfbltOmb9Vf/YtpIowm2Qh6fZlvmg=
+	t=1787131287; cv=none; b=T3IXE0JiVvOl50d6WcnVmcO4yHNzah1HB0Nne3JMhJNGgZdVf53ZLDxAA/NiXoxlJrpAKGrvyhcFyCyN/xF5RAoJiMiZ8Afn3zrUJKVYcxk5AiOMJb4l3dGSH4s36F8QRLTT8lDqmQE+yYBuxLft5BOcz/3wvu5xWB8ODr6Y8UQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787107766; c=relaxed/simple;
-	bh=oAq7LZNVfuWLyY8F6bgNDhoqq4F1x7DlAd3a+zTStqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f6IOvGoL2VQRlVWAA/y9T8xBMnD9XawYgM9Aw34xNX5PnCfpHlxM/sppW4cxsi8T7NeInj8jo5lrDvab+cI1L6PU0wCnRW6uZds6piBf2FNmhqTszs3MQmu036ak7hjeQGCKQ1p9b+7VQZkAgG+DO5zGTHtbNK2FMMpOYyRo3tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=vJl0n3O7; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="vJl0n3O7"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B7DA416A3;
-	Tue, 18 Aug 2026 19:49:18 -0700 (PDT)
-Received: from localhost (a085714.arm.com [10.164.19.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E01DD3F66F;
-	Tue, 18 Aug 2026 19:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1787107762; bh=oAq7LZNVfuWLyY8F6bgNDhoqq4F1x7DlAd3a+zTStqs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vJl0n3O768ihB63yzY/C3psnBKMwgj31m+kzmZIZlkySfUrUB1m+qr/j5JU5c9Afe
-	 eXlqYLfwodRGlGGDBoPRCFbNWaxAndC9cqljsF8lDwcjTwNIut2KUoxp62ngsl8nn1
-	 zy9caih5g0LTIVBgKUQNdkShhYRX1qD1/PYrFpfg=
-Date: Wed, 19 Aug 2026 08:19:19 +0530
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Lorenzo Stoakes <ljs@kernel.org>
-Subject: Re: [RFC V3 1/8] mm: Make ptrval_to_str() generally available
-Message-ID: <mc5cbirsrv24mwu4bg35ksxjyzfoydlgewq4tt7uu3ij7f642o@m4w7dm37nmdh>
-References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
- <20260818040041.1891769-2-anshuman.khandual@arm.com>
- <55d92b3e-ad3f-464f-b2db-a2552353223e@kernel.org>
+	s=arc-20240116; t=1787131287; c=relaxed/simple;
+	bh=wVpfH1JZYr4EDSk1uZuByWVB28y3/IFtDj70CFhoOWE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dbAbFUT7jgxKGrH2aCFKTgIV405V7TjHj6CJ8z7BReyYY4vPjWYHoJJEs5E5IdSqOVyJuJQA39bPnRtmcKGCXOfUfQIrw75v+4lWxQvNttRYTolkWznAaUq9dghBxtTHKko+eKZ0FqHaKtdIcK0uUU7ktaHk5D8upkROBio9UvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id E6B7360A59;
+	Wed, 19 Aug 2026 09:21:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36B1E1F000E9;
+	Wed, 19 Aug 2026 09:21:10 +0000 (UTC)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for v7.3
+Date: Wed, 19 Aug 2026 11:21:05 +0200
+Message-ID: <20260819092105.1232550-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <55d92b3e-ad3f-464f-b2db-a2552353223e@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 18, 2026 at 07:25:07PM +0200, David Hildenbrand (Arm) wrote:
-> On 8/18/26 06:00, Anshuman Khandual wrote:
-> > Move ptrval_to_str() inside a header thus making the helper more generally
-> > available for new users which are being added later. While here, also move
-> > another related string size macro PTVAL_STR_MAX inside the header as well.
-> > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: David Hildenbrand <david@kernel.org>
-> > Cc: Lorenzo Stoakes <ljs@kernel.org>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > ---
-> 
-> I would have placed that into include/linux/pgtable.h. Any particular reason for
-> mm_types?
+	Hi Linus,
 
-Yes - that works as well. These declaration and macros need to be moved inside
-#ifndef __ASSEMBLY__ block in include/linux/pgtable.h file. Will do the change
-as suggested while dropping the RFC tag once v7.3-rc1 is released.
+The following changes since commit dc59e4fea9d83f03bad6bddf3fa2e52491777482:
 
-> 
-> Acked-by: David Hildenbrand (Arm) <david@kernel.org>
-> 
-> -- 
-> Cheers,
-> 
-> David
+  Linux 7.2-rc1 (2026-06-28 12:01:31 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v7.3-tag1
+
+for you to fetch changes up to 2f8e3cad53b5c36ab0ed5d3195bfc55c59ea61a5:
+
+  m68k: nfcon: Do not call console_is_registered() in nfcon_device() (2026-08-17 11:33:19 +0200)
+
+----------------------------------------------------------------
+m68k updates for v7.3
+
+  - Fix backtraces for non-running tasks,
+  - Fix deadlock in show_cons_active(),
+  - Defconfig updates,
+  - Miscellaneous fixes and improvements.
+
+Thanks for pulling!
+
+----------------------------------------------------------------
+Andreas Schwab (1):
+      m68k: nfcon: Do not call console_is_registered() in nfcon_device()
+
+Geert Uytterhoeven (1):
+      m68k: defconfig: Update defconfigs for v7.2-rc1
+
+Karl Mehltretter (1):
+      m68k: Fix backtraces for non-running tasks
+
+Thorsten Blum (1):
+      m68k: amiga: Remove redundant amiga_reset() prototype
+
+ arch/m68k/amiga/config.c             | 4 +---
+ arch/m68k/configs/amiga_defconfig    | 5 -----
+ arch/m68k/configs/apollo_defconfig   | 5 -----
+ arch/m68k/configs/atari_defconfig    | 5 -----
+ arch/m68k/configs/bvme6000_defconfig | 5 -----
+ arch/m68k/configs/hp300_defconfig    | 5 -----
+ arch/m68k/configs/mac_defconfig      | 5 -----
+ arch/m68k/configs/multi_defconfig    | 5 -----
+ arch/m68k/configs/mvme147_defconfig  | 5 -----
+ arch/m68k/configs/mvme16x_defconfig  | 5 -----
+ arch/m68k/configs/q40_defconfig      | 5 -----
+ arch/m68k/configs/sun3_defconfig     | 5 -----
+ arch/m68k/configs/sun3x_defconfig    | 5 -----
+ arch/m68k/emu/nfcon.c                | 2 +-
+ arch/m68k/kernel/traps.c             | 4 ++--
+ 15 files changed, 4 insertions(+), 66 deletions(-)
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
