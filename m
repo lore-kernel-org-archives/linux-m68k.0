@@ -1,165 +1,100 @@
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB5447A896
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 19 Aug 2026 16:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF18D3A16B9
+	for <linux-m68k@vger.kernel.org>; Wed, 19 Aug 2026 22:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787157514; cv=none; b=q6RD2vxGNJ1vi3+wFudi3SCwiGKesVJgtLjdanEW0VTc6flW7gQBrj6OTkCtjILHe2tlhK/Op21SOkVkCX6qLqJ7EBMe8Os36xzADDruM25LB9stRUlHa98E382ef8W7p6cBwiujyKpsPo1+XEseb2uwq9ozy4vpRf7dIk4MyDM=
+	t=1787178535; cv=none; b=tOPoECmXyQdpuOaokRm9ExhY//1IA/wdvj+U3VmzTHS97WJtuRyBvU7dKNBIsGrtAMrOObTByaSFweNG3GFL7GgLRrPycdZ4hOIBI38df/MmEWtGgyt6CyAAhLAZb8sZq8/ZsGFvLZvMCo2pZgkUZU6oGJHEhQo47z2A3m2EjaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787157514; c=relaxed/simple;
-	bh=wUF8AfVP3BQhMQpaxhV1uASfzgC4O3gmQhhmd2lT7so=;
-	h=Date:From:Cc:Subject:Message-ID; b=FtaLgVP2kYghg+CTWyEN02C2oOI/p+IBMgoiuMXdtjbvJZFaF8+X6VLxXfT/EqYGHdgXo/BTuHcPX1JbxEcfVF5ohRu8Ys4vEUE4ha5l/jNfdPj0TMA66nsSAjcAOxPnwLroXvdnE0cJmB1291nG9ablywXGXintbwmNNiIU2Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nj2Vs6zx; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1787178535; c=relaxed/simple;
+	bh=zY+gW1lXxfK7kqtIXgYpm9NhsrQnedavPShq5FhgfcE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Ve7wvFKSb2BQHA8Fe9e99JURbzhEKriyzgrywkN1NBTzXqBnoW1vDn2uSid49Mx1NPUjT+P6wuqu4sTwfosPfV6dWKxuInA0gvRI/SAORBQmr3LJEaxofdYK+wp/lKd4C1O/LMwnVZ/ggXeLGSJQAITwJBcxfsoL2SPMifOJ21Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NoqZQC7A; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nj2Vs6zx"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1787157513; x=1818693513;
-  h=date:from:cc:subject:message-id;
-  bh=wUF8AfVP3BQhMQpaxhV1uASfzgC4O3gmQhhmd2lT7so=;
-  b=nj2Vs6zx2kHkauGpxq4qNBRLutAplYLmBqfjYIODnq4DGqsoYY1XNjdp
-   Fd8ktKIbcgaJ5rJ306S9rfHalmN1ryD4aWrFXsUxIVPVbG9OX7L/4qOTc
-   KMxb+oIIAZ3OFycEgbrTPJuEmXyuW5YYAGF2my1w5jjcX9X/idJMVPjqW
-   HWovJoju604RsnSz+Fu+J0tHIU4OKNE8A0OvAHH9DJ1hBuxZcJ7mzUnkA
-   kWBK7iKxVl0wRvEZkEF5RmTuoOtIY0VKooMyeh1TsDiB5hy0zn0gJlPQP
-   KwKubaJ2xNjX7vcI71jTzEJm2lFusaHLvdujMjv6D3SyDv78Sd0w1uRay
-   Q==;
-X-CSE-ConnectionGUID: tQTcUfQuT/u9ZKBHyMA1EA==
-X-CSE-MsgGUID: GqO5k2vARYSkMSWUO+rB+w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11880"; a="87442103"
-X-IronPort-AV: E=Sophos;i="6.25,231,1779174000"; 
-   d="scan'208";a="87442103"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2026 09:38:32 -0700
-X-CSE-ConnectionGUID: 6fWOPkW2RdepTMG6Pk9qlw==
-X-CSE-MsgGUID: Cj8eP7jNRtyBJ9ewAl/uwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,231,1779174000"; 
-   d="scan'208";a="290397345"
-Received: from lkp-server01.sh.intel.com (HELO 6eda058d650d) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 19 Aug 2026 09:38:30 -0700
-Received: from kbuild by 6eda058d650d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wwjJ5-00000000fnS-30lW;
-	Wed, 19 Aug 2026 16:38:27 +0000
-Date: Thu, 20 Aug 2026 00:38:12 +0800
-From: kernel test robot <lkp@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [geert-m68k:master 1282/1440]
- drivers/usb/host/isp116x.h:411:15: sparse: sparse: cast removes address space
- '__iomem' of expression
-Message-ID: <202608200042.if81217K-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NoqZQC7A"
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2d530328efbso13742875ad.0
+        for <linux-m68k@vger.kernel.org>; Wed, 19 Aug 2026 15:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1787178534; x=1787783334; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=yyf8P0B/y8zIH+Mmhiq8iXp175Fg2OnIXEWNkWxUosA=;
+        b=NoqZQC7AN1VOjGunB+DXvheM2lqStZmscomDxYqCca5uAOn3sQy9GYy70XVGN0WQgv
+         g0C5Et8CurQoWg//zBfQIyKl9HHPGiCzUxpgfqR7NdOHFdYJiwdf50AZkS1HezglKxpr
+         yoeONI+oZX3ItzLCtf3ccQmECX9JcXT8r033Ud+5bWUQm4iC2+4+oc6uejWQDHqP5Ugs
+         Y4Tv4Pt7R8q2GXGOH8fxBc8YNgdvRl8qKF0TALeGvikgniRq08pX6KXrDjRyKw38mJPw
+         5P+3vNtwyXaEAZTCFaTQFXPHXEOzOiAPO8ehGJbGT8GtJFlwujbvmOL71Zc/qszBUdGk
+         VWNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787178534; x=1787783334;
+        h=message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=yyf8P0B/y8zIH+Mmhiq8iXp175Fg2OnIXEWNkWxUosA=;
+        b=qeItSW26+KQUHa4ZpTzD680cKAx2zznGlLkLyuoPVdeQ6uZnxTo9M1RWX2pt6w4Esv
+         ONPLiaJBjYQck94kuMcSM5l03qPUIG+VSxZgA4d2rci3CZ/JJ1GkOEZRffDmFOFfYFYt
+         ax+wfjg9yBR56Zs4tifq6mPrdiLIN/lJvnFvWXxn33iO+uA3N53V83bAf0bLmIHkc4PB
+         NQoXtW0w0XxC/5/h3vEVb4Yw+77ZC2T8lVL26oRsowCvJBCs/tBPsMxpLBiMFunPMyRI
+         AG2Z68hfvGuybypF4C/7M9bUwbhwONm7OYUxiwa+5+XYzK8br3JIWaAwp1JHhOCw5kAV
+         uqUw==
+X-Gm-Message-State: AFuF++nRa6wnmeYoWZRz5Yd8pBcjnFr90gPqa82M+eh15Rv9hrsIxgDl
+	B/KBXHMaibF8+A12SMCBdvhCk6fhPVAO13MZ0K0ANxYp15KJVIX68a+qLGMqJQ==
+X-Gm-Gg: AR+sD12lUvvwxlO7XBe+ASp840Jjb0rGpUs6zC/pRpiMzTo8BCliagBl0EtdTf76g69
+	e4ZsjTccJGQUJp2VxyIaQmSwFdoxEKIPEaLzzwx3v2rZo5AdMGjgBt66VWecdTYLq/SywdKYzb4
+	/tlwZfS4U+qr1tlUtYWN3sFaVX0ZmGyxOFm7n5Lslbxfy+qU0XcwPOf9qzEKs+s0nFDTOvgd88+
+	I3I7idyMr1QbrjTX4pM46lUA5vmyTTIseAJXl4aPy3IAYkBZi6kkYhuuwF8TIdWG/0F+pEvZnu/
+	lcTe0OqE4CXQ9O1ZrGVAnAu6c/B2r43QioRnEEELNT/f62hEHHGJnWuMmheyovuJZ4M3LzQEAZc
+	F3ts4rALZswP9eVyoYxPovEzW6K9flXDm5qy1gDSJQHK3PzEmPG+AiqO2hgAcf5GV0Lc7izKWwI
+	pVzgmHybUROw4eQFOoVzxw7SkExDWHGG+9fHuBK366r1eYxfZEd4WQ8KN+sdaljW4gnCWKFC8JQ
+	hdiGBiZTHic8t7APj9pjZPmM2sSJuDSVUORDzRXxPUpXlNUVA==
+X-Received: by 2002:a17:90b:5624:b0:38e:e9b:ffa4 with SMTP id 98e67ed59e1d1-39580a7c3dbmr15590880a91.6.1787178533810;
+        Wed, 19 Aug 2026 15:28:53 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (122-59-250-182-adsl.sparkbb.co.nz. [122.59.250.182])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1416ad564bcsm10629116c88.5.2026.08.19.15.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Aug 2026 15:28:53 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+	id 810D436035C; Thu, 20 Aug 2026 10:28:48 +1200 (NZST)
+From: Michael Schmitz <schmitzmic@gmail.com>
+To: linux-m68k@vger.kernel.org,
+	geert@linux-m68k.org
+Cc: schmitzmic@gmail.com,
+	Helge Deller <deller@gmx.de>,
+	linux-fbdev@vger.kernel.org
+Subject: [PATCH v3 0/5] m68k SuperVidel patches
+Date: Thu, 20 Aug 2026 10:28:33 +1200
+Message-Id: <20260819222838.21256-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
-head:   430075db163607e33af279ef7e246e1a460c6293
-commit: b971c823ecb945e93fbe49e98884e4ef9ee5e859 [1282/1440] Merge tag 'v5.8-rc2'
-config: m68k-randconfig-r113-20260819 (https://download.01.org/0day-ci/archive/20260820/202608200042.if81217K-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.2.0
-sparse: v0.6.5-rc1
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260820/202608200042.if81217K-lkp@intel.com/reproduce)
+Version 3 of Miro Kropacek's patches for Atari SuperVidel.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202608200042.if81217K-lkp@intel.com/
+Patch 1 is a bugfix for the Atari mouse input device driver
+(miscompiled since v6.2 with use of -funsigned_char). Geert's
+suggestion to change the mouse interrupt function signature
+adopted (generates equivalent code as seen by inspection and
+testing on my 030 Falcon).
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/usb/host/isp116x-hcd.c:137:55: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
-   drivers/usb/host/isp116x-hcd.c:137:55: sparse:     expected unsigned short [usertype] val
-   drivers/usb/host/isp116x-hcd.c:137:55: sparse:     got restricted __le16 [usertype]
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c:184:34: sparse: sparse: cast to restricted __le16
-   drivers/usb/host/isp116x-hcd.c: note: in included file:
->> drivers/usb/host/isp116x.h:411:15: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/usb/host/isp116x.h:411:15: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:391:9: sparse:    void
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:391:9: sparse:    void
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:391:9: sparse:    void
-   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:397:9: sparse:    void
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:391:9: sparse:    void
-   drivers/usb/host/isp116x.h:427:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:427:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:427:9: sparse:    void
-   drivers/usb/host/isp116x.h:429:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:429:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:429:9: sparse:    void
-   drivers/usb/host/isp116x.h:403:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:403:9: sparse:    int
-   drivers/usb/host/isp116x.h:403:9: sparse:    void
-   drivers/usb/host/isp116x.h:403:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:403:9: sparse:    int
-   drivers/usb/host/isp116x.h:403:9: sparse:    void
-   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:397:9: sparse:    void
-   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:397:9: sparse:    void
-   drivers/usb/host/isp116x.h:403:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:403:9: sparse:    int
-   drivers/usb/host/isp116x.h:403:9: sparse:    void
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:391:9: sparse:    void
-   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:397:9: sparse:    void
-   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:397:9: sparse:    void
-   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:397:9: sparse:    void
-   drivers/usb/host/isp116x.h:397:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:397:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:397:9: sparse:    void
-   drivers/usb/host/isp116x.h:391:9: sparse: sparse: incompatible types in conditional expression (different base types):
-   drivers/usb/host/isp116x.h:391:9: sparse:    unsigned short
-   drivers/usb/host/isp116x.h:391:9: sparse:    void
+Patches 2-4 are fbdev hardware support patches for the SuperVidel
+blitter hardware. Patch 2 has been replaced by a version addressing
+the root cause of the missing parent device (i.e. atafb failing
+to use framebuffer_alloc()). Patches 3 and 4 have been updated
+to reflect changes introduced by patch 2.
 
-vim +/__iomem +411 drivers/usb/host/isp116x.h
+Patch 5 is adding support to make use of the ethoc hardware also
+in the SuperVidel. Platform device register error handling (reported
+by Geert) hopefully fixed.
 
-4808a1c0261176f Olav Kongas     2005-04-09  406  
-4808a1c0261176f Olav Kongas     2005-04-09  407  static inline u16 isp116x_read_data16(struct isp116x *isp116x)
-4808a1c0261176f Olav Kongas     2005-04-09  408  {
-4808a1c0261176f Olav Kongas     2005-04-09  409  	u16 val;
-4808a1c0261176f Olav Kongas     2005-04-09  410  
-2f0f9fcd96fa8db Michael Schmitz 2013-04-06 @411  	val = isp_readw(isp116x->data_reg);
-4808a1c0261176f Olav Kongas     2005-04-09  412  	isp116x_delay(isp116x, 150);
-4808a1c0261176f Olav Kongas     2005-04-09  413  	return val;
-4808a1c0261176f Olav Kongas     2005-04-09  414  }
-4808a1c0261176f Olav Kongas     2005-04-09  415  
+Cheers,
 
-:::::: The code at line 411 was first introduced by commit
-:::::: 2f0f9fcd96fa8dbeec54cce98170985f7b384a41 m68k/atari: USB - add ISP1160 USB host controller support
+   Michael
 
-:::::: TO: Michael Schmitz <schmitzmic@gmail.com>
-:::::: CC: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: <linux-fbdev@vger.kernel.org>GIT: [PATCH v3 1/5] m68k: Fix atari mouse movement
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
