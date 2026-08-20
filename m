@@ -1,282 +1,213 @@
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012003.outbound.protection.outlook.com [40.107.209.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EDEC42A164
-	for <linux-m68k@vger.kernel.org>; Thu, 20 Aug 2026 15:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787241443; cv=none; b=HDIlHYWnYecdoHCjBZR8HdvSYfL+xZnQFgCdgpsnw9KrbkgEbIZ6F5vGeW+fJXUARc5mLUe7ddwGIH+mEiS6lHmVfs1817N6TsqtmV0giZz/Ll3zWd/ZZH/X3QaWBNUP5B4GvrRlbm5ClvHhoUYWt44yUd2oDRwEnUGFp1ABOwQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787241443; c=relaxed/simple;
-	bh=Omgeh++36r5FzNu0QTWKwx3ug1Da8sx0Wm/UFkVgBn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WLYbJ0bQ6F7k7ah4VBsKNQ8C4/QNlF86+3MJke3S6KoetW8vFMla6iydst5sNjNmSQ2EkP++tN1MnnWp3OenQzYD8nPFWYulW12h7+PzLSOnoZIFsWY12BjOTmk+NdrFQGUokLuSylkVet6BLGRdEVBxzom6sbr+3azca5fvhzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TbVQh9UW; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8582E37BE64
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Aug 2026 16:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.3
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787242380; cv=fail; b=ZYYtKG8mMpyvxAoiheNX2xtbKgctELXgNOHnmAdyk5uMayY6dEGXNjaty/CK3BU8l47jAZx0Hh2vttbZNmlAMknLrrSaLG7t8lTir1XerHNa53a+GyAXNFfKaMDkDff0bYMXgNcujAlXJCANTSe7fF1oLxERr1ZbFO/KkZTD8OM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787242380; c=relaxed/simple;
+	bh=GQwNxZNRb7QfVL5uH97DO+3qCLdKNGVBBEl7WltKtn8=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=GBw57CquUuJAeuoRVyB8GSHEnDtZedS5a0IYcHj3RkV7u86ArzSgvIilOjIIVQfbNFaweR3kRHEu8Qd83ewieEOVWHQ9j9sk7Pp47OCwmHjGXzjCY/22XkMRGLSytu7uttELc9drqwW+1hF7NCRkm9vPWu0BEcpRNPAT5+IW9ik=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=m+vO74j6; arc=fail smtp.client-ip=40.107.209.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TbVQh9UW"
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4953de5be0aso21086455e9.0
-        for <linux-m68k@vger.kernel.org>; Thu, 20 Aug 2026 08:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1787241439; x=1787846239; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=bEGGRctuk3jxpffNjzwGMa/ipJqCPuiOj7uzHDEaJPc=;
-        b=TbVQh9UWeox+YlG3dFTD6kSiUQbjWOlvOgoqZEiucTQx8e5uQpMQB2TdwhFMRaOTTZ
-         zfwy99cKHAXtjl0kiIHd2Cf91gVzF1lqf3+0qFGdPXjt8sqfWa+F5uEShq0mxr5Av4qV
-         h5tLX/O8+1VQ9s+ixFrSh45qyubLma0NgsKQ0w8DAFrfxjbdU8bHl3CrJkUOTckz6HTV
-         9cg63c/h6ZMhyGbfotAsLdPd0YMWbNjq4GGeackFVPo7/75kYV8Lck+knT31Mj6ymkJb
-         O9W/+fqdoUKAbmrgVgG2/8rZWBWorWcS8Uc1AIyTijZOr39jfvm3hwyZsmf3Cv2ACLLA
-         Bt4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787241439; x=1787846239;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=bEGGRctuk3jxpffNjzwGMa/ipJqCPuiOj7uzHDEaJPc=;
-        b=MXO9dqMNqwyS2P77ZTxY0nDCXxwtOOCa5eRIClElq0qh7XtJiU3xeLPYarzYM/I+Ch
-         eSzYoDyU5iZaJ+/2hlb+h/b+mDeKPckCbkhM/4iKVHMQBIn5TjjDNw3DVRF2HVrPLoCG
-         kAlMC3K7X+bJ8qT5hdN7XqoXwfuCXVKqR1dH3HPUf9x3BjQod391W7+kMDMlHdUvH0/Y
-         wo8iiAHux+RqoDIKnn1LyJWyNmVJmgNARO2eAgQROxrR64qCPLihLSCFEy8M6FR+uf5s
-         nq65DDJzepTYZnyewk6M1wk6ox05OcEQYvidWpU4jm2AvdfPRzEo+J7b0ic9aewZLHcO
-         zWjA==
-X-Forwarded-Encrypted: i=1; AHgh+RrZDapAfU6QcTSItGBLovLVNh3kBfPypw4hhrezElgKxOXDCeN9pcfq4Q6+XL9l6884tHQ/yJl4eiDj@vger.kernel.org
-X-Gm-Message-State: AOJu0YylP4j7bz9ygf6A11g/Do0aaeL8udOCGf1EWb5Ia0L5IpldJmv8
-	enL1Rv3lrhmzDF1i4P12Acb91ZJYfihSVUyNMkpExskFkWmJ5eWBqr4eYtSPpu+RoXo=
-X-Gm-Gg: AR+sD13rCrJjpF541j/dUHKf47QDvZ8oggIMxCMLum2PGeeia8OeGquvuNU4W/0hq8B
-	heys1flocjJ5ZdaPSA6cEaSUlujTReOSgUQ+roxfe81TCW7hwuMSpTyAab1X7wsLzOH6qqlJSsD
-	DmUn9uSwl4mcTsltNCLFAr+gaHejCcg2fhENQF/mxlN1V174qmc/xlzNSdUnp14FPcgnYlSdov1
-	2xNWpeQQ2Bu2hZDpWa6HOjxYNWbUCtptLMaH/gxrqq2hyWhv/8201hPibjPUE//RGaA6KHGCDvQ
-	Ym4qoQqs4SMDDzGhpWR9zaIWhyiFypS5fPc6Qvm/8QFJrufZI6MtY6/+dTA3Ni1PP/5Wub3Gpda
-	3HVG+Vx8dxP2fYV4udQ7HWG3z7gb54T+SaicRtY+Kkk2a5ZAHv1Ca9D5s5dC6tuQ3T0V9T5jY1m
-	HwjZzDzlZntNhbqIIx1CEWTcg6Tz5BBTCf7rHewFOClUR0rUTuMt4w0FmYVOboyw==
-X-Received: by 2002:a05:600c:8b62:b0:499:a6ae:20a1 with SMTP id 5b1f17b1804b1-499aa1dc5b6mr266379765e9.14.1787241438992;
-        Thu, 20 Aug 2026 08:57:18 -0700 (PDT)
-Received: from pathway.suse.cz ([176.114.240.130])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-499b7193b23sm2569205e9.12.2026.08.20.08.57.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Aug 2026 08:57:18 -0700 (PDT)
-Date: Thu, 20 Aug 2026 17:57:16 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org,
-	"open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH] m68k: nfcon: don't call console_is_registered in
- nfcon_device
-Message-ID: <aocj3HO9uxmarq7A@pathway.suse.cz>
-References: <87ecfzsv6h.fsf@igel.home>
- <CAMuHMdU4C+W6Tpsn3Vr_kqmuU2Vzg7ExXhspmB5qNWMZ3Wnfeg@mail.gmail.com>
- <aob5oO_7qxII_qTB@pathway.suse.cz>
- <874igoap45.fsf@jogness.linutronix.de>
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="m+vO74j6"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=f3Uc5FdNgXa/DWjk8UUj7JgJQBpAvUIhou3ndjHFD6ixU1lLrWEAFXE5BcI4LDZ+6tWa95B1/6tLHftEl1NzXSk9cjNJCGlJF4pY794+/SX8bpY07HoRMRyRIQxQFOEyVxMf4unobpLhOAsQ41JXw03eP8ULqwxEKkMSE9BwFaLA76zZeh4LLmlMfUOZHDCxtiTOu0r3/I7mTRjlBXPLifBjQ2vjIuXUTETq/nhyFCcKpO3LGEcp94DuWKyaWeBxbFfGG/+soKyxKhhwAL9CdFaZrZQdDjY6flcdE4u/xx7Nbqs1UcTthKY6LeCLiiREMS4nEBfim/LzkBpHKLYDtg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dXQACOlMqYttdwf87+MdT+hgACB1lVKrO6r8CW4/KWU=;
+ b=oi4foruBDTxzCm5vPGH2kNphFqYT/GM0953Ftl5dLyNgyB8lwXy3fTTb6rAmvKAPUG7ye8KQuQYENzFHWjRHLabgvpZz2P6nywUG6zsVJTCHNYGkbDD+0KCyjpysZbaqwhuSkP5PiFSIFzRSy7eIOaYnMSqlX37WH0DXeJhsjcHDmoWr9l63Du+gZKywMt4CWYn+6VgOTRY6NER7dD8XUzbQML8e16SdaCQYS/YKE6d4VkiykrNiMXs8e6PrUmzn6mBMaO3uF++vxqwNHs5rRVZ+xWkqYXWSNI8tcZ7GwdZ+5X5hE80IfXz2JsFNgoCXBBOwyRZfSt23WCfQN0RAng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dXQACOlMqYttdwf87+MdT+hgACB1lVKrO6r8CW4/KWU=;
+ b=m+vO74j6BdUSjBj9JJqSTFitMc3/WKuIUYplZHoaHToDpuLZAFuspnhpDliJtg+krMFHpARp5V+JADFacIFFcMWnB4s39hT8QJ5NYiqptIukyWWdJ+YXBWuQijL9ZOQRbhJG0Xja/L9Jno5AavzKs2ylZqUpnSEc2RzZEGSPsThuf41eorCZugY0lTo0U0/56Ak5LwK86IcBxon3Uu7Hdq+bfDIK0a/PbkLc9lMgmV5nh+aK8lUUex0am0ui9fniHxo2ePBZQZjwbV4m/pmCKTA/y90pmuFnCKIrbGznsLrA997W1MfkaHpdsKHVTTRo0lZ/YUUCwuHNFyv5v4rcrQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SJ1PR12MB6051.namprd12.prod.outlook.com (2603:10b6:a03:48a::18)
+ by DS7PR12MB5936.namprd12.prod.outlook.com (2603:10b6:8:7f::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.339.10; Thu, 20 Aug 2026 16:12:45 +0000
+Received: from SJ1PR12MB6051.namprd12.prod.outlook.com
+ ([fe80::96e1:b300:7b78:d3a9]) by SJ1PR12MB6051.namprd12.prod.outlook.com
+ ([fe80::96e1:b300:7b78:d3a9%6]) with mapi id 15.21.0339.007; Thu, 20 Aug 2026
+ 16:12:45 +0000
+Message-ID: <c8a8ed26-973a-4fb3-a72a-f595cccaf1bb@nvidia.com>
+Date: Thu, 20 Aug 2026 17:12:30 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [patch 06/38] calibrate: Rework delay timer calibration
+To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+ Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
+ linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
+ linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>,
+ Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
+ Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
+ "Jason A. Donenfeld" <Jason@zx2c4.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
+ Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+ linux-openrisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ linux-parisc@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+ linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>,
+ linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>,
+ linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ sparclinux@vger.kernel.org,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20260410120044.031381086@kernel.org>
+ <20260410120317.978403520@kernel.org>
+Content-Language: en-US
+From: Jon Hunter <jonathanh@nvidia.com>
+In-Reply-To: <20260410120317.978403520@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0205.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ad::19) To SJ1PR12MB6051.namprd12.prod.outlook.com
+ (2603:10b6:a03:48a::18)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874igoap45.fsf@jogness.linutronix.de>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PR12MB6051:EE_|DS7PR12MB5936:EE_
+X-MS-Office365-Filtering-Correlation-Id: 403b744e-fd37-478d-d403-08defed5dea4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|1800799024|23010399003|366016|10067099003|11063799006|4143699003|56012099006|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	Hku/AQpoDLljpIsWMTOh6NT0b3M4gjVgbDMQtZDjU7lXVe14SpA6/bMJ/hEkj9LRXMDZc7FgK5B7dIFn/CHKklGKQjQcJ5HpNDzmN4TKY20Ud1Ntw/F/UJRIbfErCGYCpzKCbnsGv5Rsmspv/qDZZMPDLYteMPrfcm9qcqIou386zjVU0KOD6ACvP7kcbIDxFnr2GqtbdqL8bY8sUXWqGUlv4c6fhxY2xVpptb0nBK3djNHVjf/NAv2yl+67I7weZjtdPKG04+hEBivIYgrgCFoogdONpMrqUAfSOafaB3UDz20/5WomVhqmSpYtrB1RHBs95+qY0mcngiyx02QJ89MoeuMuCg8spER2kwX5y8JR5TLeEBUjo/dxShi7fZFNO8nZluTUWeJ5s+dPpfjqhCBfsgwXWTYeRxsOmvw7HoZh1XUWJawnikpP1z7aso0Uw4+C+NnaK7ooXLl41q4ivktSsWadUaPhPbbaflbgUFM6l7fVWJ0oNy0Ml4vnpgTHsf3EhEUAF4byfE3GlG8sVSkbqqV6/ALcKCAsibKQVvo8XE5OQzN+lSLP6tVIEqcx90W3eZbmKOd+fvU/1uqsXkhdsQ9hHhmqrP9vzYi/pz9OQgvoKKo7+mZyPERQMtInUTYJd1znCNef1XIVfITbXvd8OCnivO5+I4a/LRJsI7s=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR12MB6051.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(23010399003)(366016)(10067099003)(11063799006)(4143699003)(56012099006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?d2pNYVJsZ09NOVNLY0hqVlNKYTB6cmFCSHZ1dUdIcHRKVS9ldzlPZ1c1TjFk?=
+ =?utf-8?B?b3RHYzZKSDk3Tm45d3Z3UGl6RENmYVpOcDhibUorY0dDa2s3NG4rRWZ1S0du?=
+ =?utf-8?B?Mk4wNVBGb1Z5ajRsZFQyZmJGSGFCZnVhaUplOGwvNWxFVUVkdTNDNSt4Y0Vz?=
+ =?utf-8?B?SE0zWGptVlBBTUlRdUIvTWdHeVVNelpmVjlKWHA1ZG0xdEpaOVd6dWdoTWEw?=
+ =?utf-8?B?b0tOR0NFVlVoNllLMitzLzNhSk1UU2NoNWJ3NFhKSklRMXBKYlhqY2pDdE45?=
+ =?utf-8?B?QzlJTnBXRzZQdFZIV3hKaENqTEs4Nkx1UzB5NmlBZUJUekY5dDAxQ0lJVllH?=
+ =?utf-8?B?K1VaajRPUHlwUm0zbUdLSnVhU0RJUFJSL2JwdW9XNTBYVzJYRGNsNG8vSHgy?=
+ =?utf-8?B?STc2TnE1TzBWRmIxMEpHNW1PbVZtWUxnQ0owa0FsbUhORnBlNjh6L1J5MnJF?=
+ =?utf-8?B?OTBtOGsvMitsSVFoVHU2b1R3TEpBNW1TUXdGZXdqcmc0TzBobkJ0UFpibU1F?=
+ =?utf-8?B?WUdFaFpzV1lvRVg4ZmRZRXRWdEY0bXV6c1Y0c1MyWktqSWNUVHNtditXaFdN?=
+ =?utf-8?B?b0UvUEUzTUlndEhPSDhjSXVydkN4MktGcGZaUHlwbHRvQ3AwbWt0ZCtvQ3JT?=
+ =?utf-8?B?b0R0WkYzT1ROZ1FBYU1rRkhpejJlcjRBekRRejBkK29pRUd2UXlqb2oybndV?=
+ =?utf-8?B?WWV4Q1U3KzFobitJaW0vMHBDdk9hV3JHUVVBdWRzS3lURXFNNzdHN1B4eEYy?=
+ =?utf-8?B?c3k0M1RNK0VUK1lLYi80YUhsQmhTMzVWeHkyZTQ4QVh5U1ZhRmJVcFZUa3ky?=
+ =?utf-8?B?aDRmeHlSckRnUHFOZmZFRkJoNDl6eThaTkM3Ry83S1hnckhycU9JSzBQL2Mw?=
+ =?utf-8?B?VjZvYW5ndGEya0Q0THhlQlZwNkNmOWdtZDEyVUoybDc5SSt4b0VPcnV3Ri93?=
+ =?utf-8?B?bkc5Si82UW5vaWp6NDk1cy9KenQ4QWliRkQ3SHJRNkhVc1g4MmMyZjJXRHVz?=
+ =?utf-8?B?RFJ4QXI0Vmx0SkRQTnVWZk5TelgxQmF4dHdMaFlvKzQvdXo2Nm5IcjNvby9O?=
+ =?utf-8?B?NThMVVlIMHptZE9jK3dIeVhrLzJ4VFhWS0Y0cGpaZlMzb0JQT2JrdzN3eVI3?=
+ =?utf-8?B?dDRnaW9ZNDFwVWlmKzYwL1hLekpYNEZET0RETGRDMlVqQ2ZlVXBTd2NOQWlx?=
+ =?utf-8?B?MDdiZytFeSthWjh2V0FQSzV1aWUzNUtURDNyZTVKVWlUSkxjNTFiYWkxc05T?=
+ =?utf-8?B?bUk3cnBjZXkzSEdPTDRCY0JkOXoyTGtxeXR5Mm9UOEFFMzhUSkg2QXBKSW84?=
+ =?utf-8?B?aHdvR3pHcDNsRXppdEo4YU5tWDc3ZGxPY2tpeVhPS0ttNS9aeDkyUWppR0dG?=
+ =?utf-8?B?VkxwWExqUlRRNWNMZ21IdXBCR3BSY0cxTjM0Z1J1eHoxcGdINFRvS1BhWjRx?=
+ =?utf-8?B?aXJIK2pRUHJFNU1LUUpiTldwYWdFd2dDK1R5Z296R2w5N09IdTJNZXQ4N05t?=
+ =?utf-8?B?SHJDS0JEMVZKMjdmNDY2Vzh0emtGRExTNVJkQlB2OEJoR3FXMVBGa0w3WE9C?=
+ =?utf-8?B?cHdLYnZIbFFSc1JqVE1vNHkyakVMV3VMajVqaEcvSkdtYjdhUWErVlBoMW9W?=
+ =?utf-8?B?TGNpR1YxSkdUc0s5bTFUejlESmVleXVwSnhNM0RLZEhueUFQckhLUW9oejJU?=
+ =?utf-8?B?bUljV3M3eVJ0eVpjN3ZKWE9hWkduVk5FMndZU3BLdHRldUdPcHZtSmtRd296?=
+ =?utf-8?B?KzloVzROdDQ3V08rR0pnU0kzTVFVcmJBeFRtM0pSL0dxcldkWmhvRUFHYThy?=
+ =?utf-8?B?Um9DTlF6dE1JenhNUDZZcHRBelB1K1VrNHdTYXpwS3N1OXZVRnU1bHRGb1ZV?=
+ =?utf-8?B?TW0venp3eHM2R2xpMDVadFRNOU43ZWhTbEIxVlFkV2pxNGQwdXd5MlJjcXVE?=
+ =?utf-8?B?N3BHQUMzVHo4cUJGSnFBUzkrYWIzTEI5b1prUmtUZTJ5d0tjRmRwRS9oREhN?=
+ =?utf-8?B?NkVlOWJoNjJUdTNOWmNNYXRzelZDc0s1cTVvalVQaW5pVEpCMm9tYjI2eDh5?=
+ =?utf-8?B?SDl2Nzdibk9sNVR0LzVNUXFZSENKa0J0Q0l0Ym1UQXhWd2RYdFE3NU5aS0Ew?=
+ =?utf-8?B?Ri9Ha0dvb0x4RlNBSExObEEwQjl5MXNKVEJpdGZtSkxGR2NzbFpqNGlWVlNZ?=
+ =?utf-8?B?bitWS1NzRVFlbW51YUVRS0RWWDc1aTdleTdZQWxub2tIVDJ4b0w2eGJ3OXc3?=
+ =?utf-8?B?R1ZCZmJrbWlYOGF5aUFvTVN5VDJ3SVRXQXRNQVFFVXFvTFNSOG5IdGRlZDE5?=
+ =?utf-8?B?Z0xUOGxEOGRkVVJMVHgzUUNoTHJOQ0YySDNWbVJhcE5RNDVBWHBkUT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 403b744e-fd37-478d-d403-08defed5dea4
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR12MB6051.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2026 16:12:45.1194
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ye8rvQlQdxke1Cm1o4X47OnoHKOhjeOLZqyz+t1/mQTrGPAo/TLtIte6ObxvJ5yITO80ujas5jc+bmfZJt3IoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5936
 
-On Thu 2026-08-20 15:44:34, John Ogness wrote:
-> On 2026-08-20, Petr Mladek <pmladek@suse.com> wrote:
-> >> > --- a/arch/m68k/emu/nfcon.c
-> >> > +++ b/arch/m68k/emu/nfcon.c
-> >> > @@ -49,7 +49,7 @@ static void nfcon_write(struct console *con, const char *str,
-> >> >  static struct tty_driver *nfcon_device(struct console *con, int *index)
-> >> >  {
-> >> >         *index = 0;
-> >> > -       return console_is_registered(con) ? nfcon_tty_driver : NULL;
-> >> 
-> >> Interestingly, that call to console_is_registered() was added in
-> >> commit de61a1a3a0830710 ("tty: nfcon: use console_is_registered()"),
-> >> i.e. in the same series that added the extra locking...
-> >
-> > Sigh, we clearly did not check the callers of this function properly
-> > at that time :/
-> >
-> >> > +       return nfcon_tty_driver;
-> >
-> > Honestly, I do not feel comfortable with removing the check
-> > completely.
-> >
-> > The commit de61a1a3a083071 ("tty: nfcon: use console_is_registered()"
-> > used console_is_registered() instead of (con->flags & CON_ENABLED).
-> > And CON_ENABLED is historically cleared when the console is suspended,
-> > see console_suspend().
+Hi Thomas,
+
+On 10/04/2026 13:18, Thomas Gleixner wrote:
+> The header define in asm/timex,h and the naming of the function to read the
+> delay timer are confusing at best.
 > 
-> Since the NatFeat console driver never implemented suspend/resume
-> callbacks, I assume it was intended to identify if the console was
-> registered.
-
-Good point!
-
-> > Is is OK to return a valid struct tty_driver for a non-registered
-> > or suspended console for all con->device() callers?
-> >
-> > I have found only 4 callers:
-> >
-> >   $> git grep "\->device("
-> >   drivers/tty/serial/kgdboc.c:            if (cons->device && cons->device(cons, &idx) == p &&
-> >   drivers/tty/tty_io.c:           struct tty_driver *drv = cs[i]->device(cs[i], &index);
-> >   fs/proc/consoles.c:             driver = con->device(con, &index);
-> >   kernel/printk/printk.c:         driver = c->device(c, index);
-> >
-> > These are:
-> >
-> >   + configure_kgdboc() in drivers/tty/serial/kgdboc.c
-> >   + show_cons_active() in drivers/tty/tty_io.c
-> >   + show_console_dev() in fs/proc/consoles.c
-> >   + console_device() in kernel/printk/printk.c
-> >
-> > , where
-> >
-> >   + configure_kgdboc() is used during the system initialization
-> >     when the console should not be suspended
-> >
-> >   + show_cons_active() and show_console_dev() are questionable.
-> >     Maybe, we should not advertise the device to the userspace
-> >     when it is suspended.
-> >
-> >   + console_device() is used in tty_kopen() -> tty_lookup_driver().
-> >     Also here we likely should not allow to open a suspended device.
+> Convert it to a config switch selected by the archictures, which provide
+> the functionality, and rename the function to delay_read_timer(), which
+> makes the purpose clear. Move the declaration to linux/delay.h where it
+> belongs.
 > 
-> All of these callbacks are done when the console is guaranteed to be
-> registered (or not yet fully unregistered).
-
-Ditto.
-
-> > Let's take a step back:
-> >
-> > We should define the locking context for con->device() callback.
-> > It seems that it is called under console_lock() and
-> > console_srcu_read_lock() in:
-> >
-> >   + configure_kgdboc()
-> >   + console_device()
-> >
-> > and under console_list_lock() and console_lock() in
-> >
-> >   + show_console_dev()
-> >   + show_cons_active()
-> >
-> > I would put aside the console_lock(). We are trying to obsolete it.
-> > So it is down to
-> >
-> >    console_srcu_read_lock() vs console_list_lock()
-> >
-> > Both of them look reasonable. So, I think about adding a variant
-> > of console_is_registered_srcu_read_locked() which would work
-> > with both locking. Something like:
-> >
-> > diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
-> > index d41260672e24..d211b6c4da26 100644
-> > --- a/arch/m68k/emu/nfcon.c
-> > +++ b/arch/m68k/emu/nfcon.c
-> > @@ -49,7 +49,7 @@ static void nfcon_write(struct console *con, const char *str,
-> >  static struct tty_driver *nfcon_device(struct console *con, int *index)
-> >  {
-> >  	*index = 0;
-> > -	return console_is_registered(con) ? nfcon_tty_driver : NULL;
-> > +	return console_is_registered_srcu_read_locked(con) ? nfcon_tty_driver : NULL;
-> >  }
-> >  
-> >  static struct console nf_console = {
-> > diff --git a/include/linux/console.h b/include/linux/console.h
-> > index d624200cfc17..b90527db4eca 100644
-> > --- a/include/linux/console.h
-> > +++ b/include/linux/console.h
-> > @@ -311,7 +311,7 @@ struct nbcon_write_context {
-> >   * @name:		The name of the console driver
-> >   * @write:		Legacy write callback to output messages (Optional)
-> >   * @read:		Read callback for console input (Optional)
-> > - * @device:		The underlying TTY device driver (Optional)
-> > + * @device:		The underlying TTY device driver (Optional) [1]
-> >   * @unblank:		Callback to unblank the console (Optional)
-> >   * @setup:		Callback for initializing the console (Optional)
-> >   * @exit:		Callback for teardown of the console (Optional)
-> > @@ -334,6 +334,9 @@ struct nbcon_write_context {
-> >   * @kthread:		Printer kthread for this console
-> >   * @rcuwait:		RCU-safe wait object for @kthread waking
-> >   * @irq_work:		Defer @kthread waking to IRQ work context
-> > + *
-> > + * [1] The @device callback must be called under either console_list_lock()
-> > + *     or console_srcu_read_lock().
-> >   */
-> >  struct console {
-> >  	char			name[16];
-> > @@ -473,8 +476,13 @@ struct console {
-> >  };
-> >  
-> >  #ifdef CONFIG_LOCKDEP
-> > +extern bool console_list_lock_is_held(void);
-> >  extern void lockdep_assert_console_list_lock_held(void);
-> >  #else
-> > +static inline bool console_list_lock_is_held(void)
-> > +{
-> > +	return 1;
-> > +}
-> >  static inline void lockdep_assert_console_list_lock_held(void)
-> >  {
-> >  }
-> > @@ -555,6 +563,16 @@ static inline bool console_is_registered_locked(const struct console *con)
-> >  	return !hlist_unhashed(&con->node);
-> >  }
-> >  
-> > +/*
-> > + * Variant of console_is_registered() when either the console_srcu_read_lock
-> > + * or console_list_lock is held.
-> > +*/
-> > +static inline bool console_is_registered_srcu_read_locked(const struct console *con)
-> > +{
-> > +	lockdep_assert(console_srcu_read_lock_is_held() || console_list_lock_is_held());
-> > +	return !hlist_unhashed(&con->node);
-> > +}
-> > +
-> >  /*
-> >   * console_is_registered - Check if the console is registered
-> >   * @con:	struct console pointer of console to check
-> > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> > index 2fe9a963c823..9b632b91f096 100644
-> > --- a/kernel/printk/printk.c
-> > +++ b/kernel/printk/printk.c
-> > @@ -109,6 +109,12 @@ static struct lockdep_map console_lock_dep_map = {
-> >  	.name = "console_lock"
-> >  };
-> >  
-> > +bool console_list_lock_is_held(void)
-> > +{
-> > +	return lockdep_is_held(&console_mutex);
-> > +}
-> > +EXPORT_SYMBOL(console_list_lock_is_held);
-> > +
-> >  void lockdep_assert_console_list_lock_held(void)
-> >  {
-> >  	lockdep_assert_held(&console_mutex);
-> >
-> >
-> > Alternative solution would be to require the srcu locking.
-> > IMHO, it should be perfectly fine to use the srcu_read_lock in
-> > both show_console_dev() and show_cons_active().
-> >
-> > What do you think, please?
-> > John?
+> Remove the resulting empty asm/timex.h files as well.
 > 
-> I do not think any of that is necessary. I think it is enough to allow
-> the ->device() callback to assume it is registered. I see no reason why
-> the _callback_ should ever need to take the console_list_lock or the
-> console_srcu_read_lock.
+> No functional change.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
 
-Fair enough. I see that other con->device() callbacks just return
-the pointer without checking anything.
+...
 
-So, the fix looks good after all.
+> --- a/arch/arm/include/asm/timex.h
+> +++ b/arch/arm/include/asm/timex.h
+> @@ -10,7 +10,10 @@
+>   #define _ASMARM_TIMEX_H
+>   
+>   typedef unsigned long cycles_t;
+> -#define get_cycles()	({ cycles_t c; read_current_timer(&c) ? 0 : c; })
+> +// Temporary workaround
+> +bool delay_read_timer(unsigned long *t);
+> +
+> +#define get_cycles()	({ cycles_t c; delay_read_timer(&c) ? 0 : c; })
+>   #define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Best Regards,
-Petr
+I have noticed a boot regression on some of our 32-bit Tegra platforms. 
+Bisect is pointing to this commit. Making the following change does fix 
+it, as delay_read_timer() now returns a valid value when true ...
+
+diff --git a/arch/arm/include/asm/timex.h b/arch/arm/include/asm/timex.h
+index 94e40c19cfc5..4d31eab9dba2 100644
+--- a/arch/arm/include/asm/timex.h
++++ b/arch/arm/include/asm/timex.h
+@@ -13,7 +13,7 @@ typedef unsigned long cycles_t;
+  // Temporary workaround until timex.h is cleaned up
+  bool delay_read_timer(unsigned long *t);
+
+-#define get_cycles()   ({ cycles_t c; delay_read_timer(&c) ? 0 : c; })
++#define get_cycles()   ({ cycles_t c; delay_read_timer(&c) ? c : 0; })
+  #define random_get_entropy() (((unsigned long)get_cycles()) ?: 
+random_get_entropy_fallback())
+
+Cheers
+Jon
+
+-- 
+nvpublic
+
