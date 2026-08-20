@@ -1,131 +1,282 @@
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32E1367B9F
-	for <linux-m68k@vger.kernel.org>; Thu, 20 Aug 2026 15:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EDEC42A164
+	for <linux-m68k@vger.kernel.org>; Thu, 20 Aug 2026 15:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787238634; cv=none; b=ie5AD0xrOge0v2YWC1++ADZ0TqDhRdH8zn+EkAz5o2XMkA52EaN4+I6hq++70xiG3sGjOKD9j7PWwehjq66OjdYt2ApN3jvjVNi08IlVzjkZD4i6nnRtLnSEwMdThGezQ9SKw0y1TI5TVQNCDJD9kRe+3Q1Z9IxVYOYMvkMyl9Y=
+	t=1787241443; cv=none; b=HDIlHYWnYecdoHCjBZR8HdvSYfL+xZnQFgCdgpsnw9KrbkgEbIZ6F5vGeW+fJXUARc5mLUe7ddwGIH+mEiS6lHmVfs1817N6TsqtmV0giZz/Ll3zWd/ZZH/X3QaWBNUP5B4GvrRlbm5ClvHhoUYWt44yUd2oDRwEnUGFp1ABOwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787238634; c=relaxed/simple;
-	bh=0xGzvEFAKexIpr3Jx5ebi+/8luqdIQ61Je5mM7EfCko=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e4bz7gpeDa7vAAmecsELml9MPFbV/zMLnLp1xXW7Ynbgs0z30tyXUX94vFbdsONsg4dJX8/mnXptd49CJ1p46EtHX2pi65k1oDabyEZx4uFg60u1rDbpjFaNXbrODjPQHOadmBPDcefyA/AqVrj6gYgW3px+0QcO30fYiq7gH90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-9773c6ea885so806096241.3
-        for <linux-m68k@vger.kernel.org>; Thu, 20 Aug 2026 08:10:32 -0700 (PDT)
+	s=arc-20240116; t=1787241443; c=relaxed/simple;
+	bh=Omgeh++36r5FzNu0QTWKwx3ug1Da8sx0Wm/UFkVgBn0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WLYbJ0bQ6F7k7ah4VBsKNQ8C4/QNlF86+3MJke3S6KoetW8vFMla6iydst5sNjNmSQ2EkP++tN1MnnWp3OenQzYD8nPFWYulW12h7+PzLSOnoZIFsWY12BjOTmk+NdrFQGUokLuSylkVet6BLGRdEVBxzom6sbr+3azca5fvhzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TbVQh9UW; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TbVQh9UW"
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4953de5be0aso21086455e9.0
+        for <linux-m68k@vger.kernel.org>; Thu, 20 Aug 2026 08:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1787241439; x=1787846239; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=bEGGRctuk3jxpffNjzwGMa/ipJqCPuiOj7uzHDEaJPc=;
+        b=TbVQh9UWeox+YlG3dFTD6kSiUQbjWOlvOgoqZEiucTQx8e5uQpMQB2TdwhFMRaOTTZ
+         zfwy99cKHAXtjl0kiIHd2Cf91gVzF1lqf3+0qFGdPXjt8sqfWa+F5uEShq0mxr5Av4qV
+         h5tLX/O8+1VQ9s+ixFrSh45qyubLma0NgsKQ0w8DAFrfxjbdU8bHl3CrJkUOTckz6HTV
+         9cg63c/h6ZMhyGbfotAsLdPd0YMWbNjq4GGeackFVPo7/75kYV8Lck+knT31Mj6ymkJb
+         O9W/+fqdoUKAbmrgVgG2/8rZWBWorWcS8Uc1AIyTijZOr39jfvm3hwyZsmf3Cv2ACLLA
+         Bt4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787238631; x=1787843431;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
+        d=1e100.net; s=20251104; t=1787241439; x=1787846239;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=1uyan5Na1nldJOKdYAmcF66jzIgYcyWvTRUudUs86HI=;
-        b=h1bwyFRFky91fhqX7XgpRt9Qm+JMOR97y605EFnXv0RjEzAPzyx35u5nMr/lWxjJEa
-         RGK5RK4TeqswtC+jzKQ0+Fo0KTgEEraBYlKX+u8zRe8AT+FxBPzAa3JxLNPKWUvsUkUi
-         eAXSm1cZO5UuEVa/g1NRRONU+Y96YE1CcEr5JfBRCGLu0/2Miy55/6yNBrk40fRlJckM
-         vPvuHf15BqN+b0goaNvs+bv0qQ5vnSdC9xWztjiWSHpyC4HimQpvgg30j/OhCo8p3IW2
-         kTDWU0EFfXqVGrTpF8rmmh99jn6QEjakndMj35yIaJTmtv17oOdJWlpD6vXtzo6qrnui
-         KpGw==
-X-Forwarded-Encrypted: i=1; AHgh+Rp+9z9oKSckWd04sUdR9TRIaUBv1Ifu/P781DM0BHh7VJ/En9mttmchqiGB9EQZ2+JNdy3G3KPD8OTQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfYsqQHBHegAVummwBEGczZ/GuVAFfMld5WT8Bx852uVmD0MZm
-	G/WfpfL5gAryDoGAPsL0qnSkFTq/bPaqj5mttDqZT9HcdljTOpzIwQfm3iHoxJxk
-X-Gm-Gg: AR+sD12gNfB/YRhgj4tWnQKrTi8Dc5P0bNNETP7Dy3ufrA8KJ/LzO6SZUpB47c3jvCP
-	BPFEuBgEvLeCHErFK4+T8h33l4bO00TcRGPo8dR15Y8IN/vbV8cDDXjAe8mUgRfvLPvUCFIyaEg
-	v1NGHxkqjyVdcxbcZY6MkUEQVs6i7Fq1riYlJPAmvLBBXxpFxumySpvEMEM36Ta/7FmbSKUQPBN
-	JmXlKpxWlF6ptdlA3u/6zAIJ/QFtcbwoh8Xc8DlkBemvPkM41q/VzWhMUebArl6HeQ70ZU0iWXq
-	gYhj6j+zPoeVtzakaUv8zihnpBM8nqjAvdfYo/Ga5fs3/8T25YtXnBwc0ib04w0Ptqv7UKFc53S
-	Ez7O+8pIeCAHUTwWAnH9X2Qd89OtgnCJrO+SX5BbNtnlBm8PJ/f4o9/1XHnJNrj4QnHtE2QX/g1
-	h9wxj/ENKjKHhektwMpGykGTh3Wd2j5PdhY16LZB4JMBOrTBaj1Qwn17S/M1zGh+raHlc3Xqhhy
-	dHGxc6WU4qV8Md0iksSfydTZQ==
-X-Received: by 2002:a05:6102:4403:b0:6f0:3ba3:7d84 with SMTP id ada2fe7eead31-777f8b836a0mr4330304137.5.1787238631497;
-        Thu, 20 Aug 2026 08:10:31 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-97c4e76040fsm5986681241.3.2026.08.20.08.10.28
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2026 08:10:29 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-777ae5e5caeso862607137.2
-        for <linux-m68k@vger.kernel.org>; Thu, 20 Aug 2026 08:10:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RrEmv0JQhU0z1HpBXBiPQwFphMCx7AWv5Pm08KYFGEyNDIe025F2LszUDiPv+upNtdFSP6oOakpDK89@vger.kernel.org
-X-Received: by 2002:a05:6102:3592:b0:778:71e5:45d3 with SMTP id
- ada2fe7eead31-77871e55076mr3420713137.9.1787238628474; Thu, 20 Aug 2026
- 08:10:28 -0700 (PDT)
+        bh=bEGGRctuk3jxpffNjzwGMa/ipJqCPuiOj7uzHDEaJPc=;
+        b=MXO9dqMNqwyS2P77ZTxY0nDCXxwtOOCa5eRIClElq0qh7XtJiU3xeLPYarzYM/I+Ch
+         eSzYoDyU5iZaJ+/2hlb+h/b+mDeKPckCbkhM/4iKVHMQBIn5TjjDNw3DVRF2HVrPLoCG
+         kAlMC3K7X+bJ8qT5hdN7XqoXwfuCXVKqR1dH3HPUf9x3BjQod391W7+kMDMlHdUvH0/Y
+         wo8iiAHux+RqoDIKnn1LyJWyNmVJmgNARO2eAgQROxrR64qCPLihLSCFEy8M6FR+uf5s
+         nq65DDJzepTYZnyewk6M1wk6ox05OcEQYvidWpU4jm2AvdfPRzEo+J7b0ic9aewZLHcO
+         zWjA==
+X-Forwarded-Encrypted: i=1; AHgh+RrZDapAfU6QcTSItGBLovLVNh3kBfPypw4hhrezElgKxOXDCeN9pcfq4Q6+XL9l6884tHQ/yJl4eiDj@vger.kernel.org
+X-Gm-Message-State: AOJu0YylP4j7bz9ygf6A11g/Do0aaeL8udOCGf1EWb5Ia0L5IpldJmv8
+	enL1Rv3lrhmzDF1i4P12Acb91ZJYfihSVUyNMkpExskFkWmJ5eWBqr4eYtSPpu+RoXo=
+X-Gm-Gg: AR+sD13rCrJjpF541j/dUHKf47QDvZ8oggIMxCMLum2PGeeia8OeGquvuNU4W/0hq8B
+	heys1flocjJ5ZdaPSA6cEaSUlujTReOSgUQ+roxfe81TCW7hwuMSpTyAab1X7wsLzOH6qqlJSsD
+	DmUn9uSwl4mcTsltNCLFAr+gaHejCcg2fhENQF/mxlN1V174qmc/xlzNSdUnp14FPcgnYlSdov1
+	2xNWpeQQ2Bu2hZDpWa6HOjxYNWbUCtptLMaH/gxrqq2hyWhv/8201hPibjPUE//RGaA6KHGCDvQ
+	Ym4qoQqs4SMDDzGhpWR9zaIWhyiFypS5fPc6Qvm/8QFJrufZI6MtY6/+dTA3Ni1PP/5Wub3Gpda
+	3HVG+Vx8dxP2fYV4udQ7HWG3z7gb54T+SaicRtY+Kkk2a5ZAHv1Ca9D5s5dC6tuQ3T0V9T5jY1m
+	HwjZzDzlZntNhbqIIx1CEWTcg6Tz5BBTCf7rHewFOClUR0rUTuMt4w0FmYVOboyw==
+X-Received: by 2002:a05:600c:8b62:b0:499:a6ae:20a1 with SMTP id 5b1f17b1804b1-499aa1dc5b6mr266379765e9.14.1787241438992;
+        Thu, 20 Aug 2026 08:57:18 -0700 (PDT)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-499b7193b23sm2569205e9.12.2026.08.20.08.57.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2026 08:57:18 -0700 (PDT)
+Date: Thu, 20 Aug 2026 17:57:16 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@vger.kernel.org,
+	"open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Subject: Re: [PATCH] m68k: nfcon: don't call console_is_registered in
+ nfcon_device
+Message-ID: <aocj3HO9uxmarq7A@pathway.suse.cz>
+References: <87ecfzsv6h.fsf@igel.home>
+ <CAMuHMdU4C+W6Tpsn3Vr_kqmuU2Vzg7ExXhspmB5qNWMZ3Wnfeg@mail.gmail.com>
+ <aob5oO_7qxII_qTB@pathway.suse.cz>
+ <874igoap45.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ae61eb01a3d323b61ee340919971725bed59ddef.camel@physik.fu-berlin.de>
- <8e0186f61cc9bbed2373ae215e80ab7e70042793.camel@physik.fu-berlin.de>
- <48ebcafa-467d-05a4-17f6-7cc078596d88@linux-m68k.org> <48af5d8ed5b1546cb3db3b2c2314b1e41de38aad.camel@physik.fu-berlin.de>
- <0d7b5c87-f0f7-70a4-cf75-5147e67904da@yahoo.com> <131b33a26efd2b0e21dfee784821dcaf3aeddad4.camel@physik.fu-berlin.de>
- <7d9d8c95-1b06-c6c5-0932-7ba3af55829a@linux-m68k.org> <CABq5eXH8S9MVoRi5znU+u7EJPmaRA+8yOyd-QKBJMQa10UoAmw@mail.gmail.com>
- <6c1d08bf4cd4d7c92338357bd61dca8a23559ad0.camel@physik.fu-berlin.de>
- <WtNQmVJr3uIeOkUfpStavGscYvoTLpprxvowAOsqJKw8V7XCOZqKDi3Qw7Z1m8JVMsv71f0VZCVqZ3MiKnjLYp-VwSvtvTLkoVtJpAkA0gA=@r-v-e.co>
- <c4f086207e68843ea154b5d41950957fa11c6837.camel@physik.fu-berlin.de>
- <CAMuHMdU7Px7bT4XCZC=vF6aUFGj8=cd=refOf2u17mRjp2FUSA@mail.gmail.com>
- <2c10a9539a82b534e4a815361bb24c04d30b7e67.camel@physik.fu-berlin.de>
- <CAMuHMdXnebgBVWp-uxrmxTFKZkQVU2h-OW7H+7hJ+4beN9DFLg@mail.gmail.com>
- <9f1613138de30db0248649e6a36c2b063693057f.camel@physik.fu-berlin.de>
- <f1f4afab-51a4-10b5-106c-e9e6e5528e6f@kolla.no> <9277b6ef0478bc6651c03b4220004a4c8a2e1cdb.camel@physik.fu-berlin.de>
- <e01dfc6d-a45f-4d17-a27c-67f913dc614c@app.fastmail.com> <CAMuHMdWVwXq+PzW_K1Lkn3hCAZuL4ps2VPEng4tB4wuhT+oytA@mail.gmail.com>
- <baadfe05-0893-4182-8c7e-7ea816aee905@app.fastmail.com> <CAMuHMdUjOw2VJTNM97+8iiG6uB5_2XuksSxF=1AMWNR4WsyD0A@mail.gmail.com>
- <CAMuHMdWdHVMdcAPgsgoRshY4nrQnnMHp9BCpo7SHnik37oySrg@mail.gmail.com>
-In-Reply-To: <CAMuHMdWdHVMdcAPgsgoRshY4nrQnnMHp9BCpo7SHnik37oySrg@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 20 Aug 2026 17:10:16 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVWQF+U1S5+nz5U4AFBJ3Uff2kykqyL_MF0vPA=CAKMsw@mail.gmail.com>
-X-Gm-Features: AcwNN1UwMf8mfpiHRv-BpI4-gRH2SXcU0Aru1wrLDpVsQcDeGlxpFBcTSY6E8l0
-Message-ID: <CAMuHMdVWQF+U1S5+nz5U4AFBJ3Uff2kykqyL_MF0vPA=CAKMsw@mail.gmail.com>
-Subject: Re: Preliminary results - was: Re: Question on BIGGEST_ALIGNMENT in
- GCC on NetBSD/m68k
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, =?UTF-8?Q?Kolbj=C3=B8rn_Barmen?= <linux-m68k@kolla.no>, 
-	"port-m68k@netbsd.org" <port-m68k@netbsd.org>, 
-	"debian-68k@lists.debian.org" <debian-68k@lists.debian.org>, 
-	"linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>, 
-	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874igoap45.fsf@jogness.linutronix.de>
 
-On Thu, 2 Jul 2026 at 14:43, Geert Uytterhoeven <geert@linux-m68k.org> wrot=
-e:
-> On Mon, 2 Feb 2026 at 11:53, Geert Uytterhoeven <geert@linux-m68k.org> wr=
-ote:
-> > On Wed, 7 Jan 2026 at 09:20, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Tue, Jan 6, 2026, at 20:31, Geert Uytterhoeven wrote:
-> > > > On Tue, 6 Jan 2026 at 16:38, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > >> On Tue, Jan 6, 2026, at 14:40, John Paul Adrian Glaubitz wrote:
-> > > >> > On Tue, 2026-01-06 at 14:34 +0100, Kolbj=C3=B8rn Barmen wrote:
-> > > >> The diffstat is
-> > > >>
-> > > >>  407 files changed, 2433 insertions(+), 754 deletions(-)
-> > > >>
-> > > >> and I think this touches around 1500 structures, though
-> > > >> most files only have a single one.
-> > > >
-> > > > Thanks, this seems to work fine for atari_defconfig, and generates
-> > > > the exact same code as before.
->
-> I kept on updating this during the last few months (I guess/hope you
-> did the same?)
+On Thu 2026-08-20 15:44:34, John Ogness wrote:
+> On 2026-08-20, Petr Mladek <pmladek@suse.com> wrote:
+> >> > --- a/arch/m68k/emu/nfcon.c
+> >> > +++ b/arch/m68k/emu/nfcon.c
+> >> > @@ -49,7 +49,7 @@ static void nfcon_write(struct console *con, const char *str,
+> >> >  static struct tty_driver *nfcon_device(struct console *con, int *index)
+> >> >  {
+> >> >         *index = 0;
+> >> > -       return console_is_registered(con) ? nfcon_tty_driver : NULL;
+> >> 
+> >> Interestingly, that call to console_is_registered() was added in
+> >> commit de61a1a3a0830710 ("tty: nfcon: use console_is_registered()"),
+> >> i.e. in the same series that added the extra locking...
+> >
+> > Sigh, we clearly did not check the callers of this function properly
+> > at that time :/
+> >
+> >> > +       return nfcon_tty_driver;
+> >
+> > Honestly, I do not feel comfortable with removing the check
+> > completely.
+> >
+> > The commit de61a1a3a083071 ("tty: nfcon: use console_is_registered()"
+> > used console_is_registered() instead of (con->flags & CON_ENABLED).
+> > And CON_ENABLED is historically cleared when the console is suspended,
+> > see console_suspend().
+> 
+> Since the NatFeat console driver never implemented suspend/resume
+> callbacks, I assume it was intended to identify if the console was
+> registered.
 
-New one: struct mali_c55_params_ccm: Add __u16 :16;
+Good point!
 
-Gr{oetje,eeting}s,
+> > Is is OK to return a valid struct tty_driver for a non-registered
+> > or suspended console for all con->device() callers?
+> >
+> > I have found only 4 callers:
+> >
+> >   $> git grep "\->device("
+> >   drivers/tty/serial/kgdboc.c:            if (cons->device && cons->device(cons, &idx) == p &&
+> >   drivers/tty/tty_io.c:           struct tty_driver *drv = cs[i]->device(cs[i], &index);
+> >   fs/proc/consoles.c:             driver = con->device(con, &index);
+> >   kernel/printk/printk.c:         driver = c->device(c, index);
+> >
+> > These are:
+> >
+> >   + configure_kgdboc() in drivers/tty/serial/kgdboc.c
+> >   + show_cons_active() in drivers/tty/tty_io.c
+> >   + show_console_dev() in fs/proc/consoles.c
+> >   + console_device() in kernel/printk/printk.c
+> >
+> > , where
+> >
+> >   + configure_kgdboc() is used during the system initialization
+> >     when the console should not be suspended
+> >
+> >   + show_cons_active() and show_console_dev() are questionable.
+> >     Maybe, we should not advertise the device to the userspace
+> >     when it is suspended.
+> >
+> >   + console_device() is used in tty_kopen() -> tty_lookup_driver().
+> >     Also here we likely should not allow to open a suspended device.
+> 
+> All of these callbacks are done when the console is guaranteed to be
+> registered (or not yet fully unregistered).
 
-                        Geert
+Ditto.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+> > Let's take a step back:
+> >
+> > We should define the locking context for con->device() callback.
+> > It seems that it is called under console_lock() and
+> > console_srcu_read_lock() in:
+> >
+> >   + configure_kgdboc()
+> >   + console_device()
+> >
+> > and under console_list_lock() and console_lock() in
+> >
+> >   + show_console_dev()
+> >   + show_cons_active()
+> >
+> > I would put aside the console_lock(). We are trying to obsolete it.
+> > So it is down to
+> >
+> >    console_srcu_read_lock() vs console_list_lock()
+> >
+> > Both of them look reasonable. So, I think about adding a variant
+> > of console_is_registered_srcu_read_locked() which would work
+> > with both locking. Something like:
+> >
+> > diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
+> > index d41260672e24..d211b6c4da26 100644
+> > --- a/arch/m68k/emu/nfcon.c
+> > +++ b/arch/m68k/emu/nfcon.c
+> > @@ -49,7 +49,7 @@ static void nfcon_write(struct console *con, const char *str,
+> >  static struct tty_driver *nfcon_device(struct console *con, int *index)
+> >  {
+> >  	*index = 0;
+> > -	return console_is_registered(con) ? nfcon_tty_driver : NULL;
+> > +	return console_is_registered_srcu_read_locked(con) ? nfcon_tty_driver : NULL;
+> >  }
+> >  
+> >  static struct console nf_console = {
+> > diff --git a/include/linux/console.h b/include/linux/console.h
+> > index d624200cfc17..b90527db4eca 100644
+> > --- a/include/linux/console.h
+> > +++ b/include/linux/console.h
+> > @@ -311,7 +311,7 @@ struct nbcon_write_context {
+> >   * @name:		The name of the console driver
+> >   * @write:		Legacy write callback to output messages (Optional)
+> >   * @read:		Read callback for console input (Optional)
+> > - * @device:		The underlying TTY device driver (Optional)
+> > + * @device:		The underlying TTY device driver (Optional) [1]
+> >   * @unblank:		Callback to unblank the console (Optional)
+> >   * @setup:		Callback for initializing the console (Optional)
+> >   * @exit:		Callback for teardown of the console (Optional)
+> > @@ -334,6 +334,9 @@ struct nbcon_write_context {
+> >   * @kthread:		Printer kthread for this console
+> >   * @rcuwait:		RCU-safe wait object for @kthread waking
+> >   * @irq_work:		Defer @kthread waking to IRQ work context
+> > + *
+> > + * [1] The @device callback must be called under either console_list_lock()
+> > + *     or console_srcu_read_lock().
+> >   */
+> >  struct console {
+> >  	char			name[16];
+> > @@ -473,8 +476,13 @@ struct console {
+> >  };
+> >  
+> >  #ifdef CONFIG_LOCKDEP
+> > +extern bool console_list_lock_is_held(void);
+> >  extern void lockdep_assert_console_list_lock_held(void);
+> >  #else
+> > +static inline bool console_list_lock_is_held(void)
+> > +{
+> > +	return 1;
+> > +}
+> >  static inline void lockdep_assert_console_list_lock_held(void)
+> >  {
+> >  }
+> > @@ -555,6 +563,16 @@ static inline bool console_is_registered_locked(const struct console *con)
+> >  	return !hlist_unhashed(&con->node);
+> >  }
+> >  
+> > +/*
+> > + * Variant of console_is_registered() when either the console_srcu_read_lock
+> > + * or console_list_lock is held.
+> > +*/
+> > +static inline bool console_is_registered_srcu_read_locked(const struct console *con)
+> > +{
+> > +	lockdep_assert(console_srcu_read_lock_is_held() || console_list_lock_is_held());
+> > +	return !hlist_unhashed(&con->node);
+> > +}
+> > +
+> >  /*
+> >   * console_is_registered - Check if the console is registered
+> >   * @con:	struct console pointer of console to check
+> > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> > index 2fe9a963c823..9b632b91f096 100644
+> > --- a/kernel/printk/printk.c
+> > +++ b/kernel/printk/printk.c
+> > @@ -109,6 +109,12 @@ static struct lockdep_map console_lock_dep_map = {
+> >  	.name = "console_lock"
+> >  };
+> >  
+> > +bool console_list_lock_is_held(void)
+> > +{
+> > +	return lockdep_is_held(&console_mutex);
+> > +}
+> > +EXPORT_SYMBOL(console_list_lock_is_held);
+> > +
+> >  void lockdep_assert_console_list_lock_held(void)
+> >  {
+> >  	lockdep_assert_held(&console_mutex);
+> >
+> >
+> > Alternative solution would be to require the srcu locking.
+> > IMHO, it should be perfectly fine to use the srcu_read_lock in
+> > both show_console_dev() and show_cons_active().
+> >
+> > What do you think, please?
+> > John?
+> 
+> I do not think any of that is necessary. I think it is enough to allow
+> the ->device() callback to assume it is registered. I see no reason why
+> the _callback_ should ever need to take the console_list_lock or the
+> console_srcu_read_lock.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Fair enough. I see that other con->device() callbacks just return
+the pointer without checking anything.
+
+So, the fix looks good after all.
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
