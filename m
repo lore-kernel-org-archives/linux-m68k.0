@@ -1,213 +1,280 @@
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012003.outbound.protection.outlook.com [40.107.209.3])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8582E37BE64
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 20 Aug 2026 16:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.3
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787242380; cv=fail; b=ZYYtKG8mMpyvxAoiheNX2xtbKgctELXgNOHnmAdyk5uMayY6dEGXNjaty/CK3BU8l47jAZx0Hh2vttbZNmlAMknLrrSaLG7t8lTir1XerHNa53a+GyAXNFfKaMDkDff0bYMXgNcujAlXJCANTSe7fF1oLxERr1ZbFO/KkZTD8OM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787242380; c=relaxed/simple;
-	bh=GQwNxZNRb7QfVL5uH97DO+3qCLdKNGVBBEl7WltKtn8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=GBw57CquUuJAeuoRVyB8GSHEnDtZedS5a0IYcHj3RkV7u86ArzSgvIilOjIIVQfbNFaweR3kRHEu8Qd83ewieEOVWHQ9j9sk7Pp47OCwmHjGXzjCY/22XkMRGLSytu7uttELc9drqwW+1hF7NCRkm9vPWu0BEcpRNPAT5+IW9ik=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=m+vO74j6; arc=fail smtp.client-ip=40.107.209.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2BB3769F5;
+	Thu, 20 Aug 2026 21:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1787262719; cv=none; b=TGMN7hlP7Z6giNeiAmR1LtvTgIKNuq4GhRJClhHwfv+qvDwIoxRyLL7T0HBcyEttGS5W0r57wHxVKi7jkrQWYnBRhVJV87wCayYIFb9nWRQiJRdhyftkvDRsKkvPp7y8km90LflnUVqThANbSAyz6qqrGno8GKK55UAjHhmLutE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1787262719; c=relaxed/simple;
+	bh=QWyBc0H26GFgf1RyM0STPDkEnsoP61fZNEDogEATWZg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IvNN4mzEH7SgqBcI2iey5By0K/+w4WllKAvK9mRg1wJi7Mbmir6aR7x6SDpaYu2ar8YEoIZ3A8XXvQ2LGbb98+5VeVwgmDMXuPE9kPIY4fYFsXzm8SrrMAdYo9UqvwwioZx+YgwojkXN10v/iql3pbQXU0yvvGe1LL4z3CG+RTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=EYRsKFs9; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="m+vO74j6"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=f3Uc5FdNgXa/DWjk8UUj7JgJQBpAvUIhou3ndjHFD6ixU1lLrWEAFXE5BcI4LDZ+6tWa95B1/6tLHftEl1NzXSk9cjNJCGlJF4pY794+/SX8bpY07HoRMRyRIQxQFOEyVxMf4unobpLhOAsQ41JXw03eP8ULqwxEKkMSE9BwFaLA76zZeh4LLmlMfUOZHDCxtiTOu0r3/I7mTRjlBXPLifBjQ2vjIuXUTETq/nhyFCcKpO3LGEcp94DuWKyaWeBxbFfGG/+soKyxKhhwAL9CdFaZrZQdDjY6flcdE4u/xx7Nbqs1UcTthKY6LeCLiiREMS4nEBfim/LzkBpHKLYDtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dXQACOlMqYttdwf87+MdT+hgACB1lVKrO6r8CW4/KWU=;
- b=oi4foruBDTxzCm5vPGH2kNphFqYT/GM0953Ftl5dLyNgyB8lwXy3fTTb6rAmvKAPUG7ye8KQuQYENzFHWjRHLabgvpZz2P6nywUG6zsVJTCHNYGkbDD+0KCyjpysZbaqwhuSkP5PiFSIFzRSy7eIOaYnMSqlX37WH0DXeJhsjcHDmoWr9l63Du+gZKywMt4CWYn+6VgOTRY6NER7dD8XUzbQML8e16SdaCQYS/YKE6d4VkiykrNiMXs8e6PrUmzn6mBMaO3uF++vxqwNHs5rRVZ+xWkqYXWSNI8tcZ7GwdZ+5X5hE80IfXz2JsFNgoCXBBOwyRZfSt23WCfQN0RAng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dXQACOlMqYttdwf87+MdT+hgACB1lVKrO6r8CW4/KWU=;
- b=m+vO74j6BdUSjBj9JJqSTFitMc3/WKuIUYplZHoaHToDpuLZAFuspnhpDliJtg+krMFHpARp5V+JADFacIFFcMWnB4s39hT8QJ5NYiqptIukyWWdJ+YXBWuQijL9ZOQRbhJG0Xja/L9Jno5AavzKs2ylZqUpnSEc2RzZEGSPsThuf41eorCZugY0lTo0U0/56Ak5LwK86IcBxon3Uu7Hdq+bfDIK0a/PbkLc9lMgmV5nh+aK8lUUex0am0ui9fniHxo2ePBZQZjwbV4m/pmCKTA/y90pmuFnCKIrbGznsLrA997W1MfkaHpdsKHVTTRo0lZ/YUUCwuHNFyv5v4rcrQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from SJ1PR12MB6051.namprd12.prod.outlook.com (2603:10b6:a03:48a::18)
- by DS7PR12MB5936.namprd12.prod.outlook.com (2603:10b6:8:7f::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.339.10; Thu, 20 Aug 2026 16:12:45 +0000
-Received: from SJ1PR12MB6051.namprd12.prod.outlook.com
- ([fe80::96e1:b300:7b78:d3a9]) by SJ1PR12MB6051.namprd12.prod.outlook.com
- ([fe80::96e1:b300:7b78:d3a9%6]) with mapi id 15.21.0339.007; Thu, 20 Aug 2026
- 16:12:45 +0000
-Message-ID: <c8a8ed26-973a-4fb3-a72a-f595cccaf1bb@nvidia.com>
-Date: Thu, 20 Aug 2026 17:12:30 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [patch 06/38] calibrate: Rework delay timer calibration
-To: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
- Lu Baolu <baolu.lu@linux.intel.com>, iommu@lists.linux.dev,
- Michael Grzeschik <m.grzeschik@pengutronix.de>, netdev@vger.kernel.org,
- linux-wireless@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-crypto@vger.kernel.org, Vlastimil Babka <vbabka@kernel.org>,
- linux-mm@kvack.org, David Woodhouse <dwmw2@infradead.org>,
- Bernie Thompson <bernie@plugable.com>, linux-fbdev@vger.kernel.org,
- Theodore Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Uladzislau Rezki <urezki@gmail.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Thomas Sailer <t.sailer@alumni.ethz.ch>, linux-hams@vger.kernel.org,
- "Jason A. Donenfeld" <Jason@zx2c4.com>,
- Richard Henderson <richard.henderson@linaro.org>,
- linux-alpha@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org,
- Catalin Marinas <catalin.marinas@arm.com>,
- Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
- Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
- linux-openrisc@vger.kernel.org, Helge Deller <deller@gmx.de>,
- linux-parisc@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
- linuxppc-dev@lists.ozlabs.org, Paul Walmsley <pjw@kernel.org>,
- linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>,
- linux-s390@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- sparclinux@vger.kernel.org,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20260410120044.031381086@kernel.org>
- <20260410120317.978403520@kernel.org>
-Content-Language: en-US
-From: Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20260410120317.978403520@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0205.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ad::19) To SJ1PR12MB6051.namprd12.prod.outlook.com
- (2603:10b6:a03:48a::18)
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="EYRsKFs9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1787262715; x=1787867515; i=deller@gmx.de;
+	bh=hZo8R4xReF5K3mqK5wCV9/8YRsAfBVvhiBhxBhGFoUo=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=EYRsKFs9TZ62QTYvcZoZnvoMvZLSQXl/V8e+ddMGW5VFYLYCUto/M4g2SGLZhHpB
+	 tCn6wZaJ5UfYXcdlJhsyOBdmXyfXdj6SRs4jDKoP2ohk7w4OALnirOwRUCLLq9X/z
+	 FSewLgEW+pXAaCwi3+7/gz6DvebH1i5PJfAd43QgZq+8A8cvbmMS7hUXecMaCczmv
+	 feQKBrFJpJ1ZCwg1t6hOIVgrp8s97KyLsIFs7+sXkjjqiUearTczeU34Vi73svLJg
+	 9KxHD2Jdsdxa1ZUfDoCO2rO+mjJjrIhMvm7LsA56WVAEVlCdMaHo5xyTtD16J4YaP
+	 W8SsdBhv+lWpdyoSow==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mi2Jn-1wSDdb3uFd-00qACf; Thu, 20
+ Aug 2026 23:51:55 +0200
+Message-ID: <aa508c70-ccd3-4fc0-86fc-e45746e68405@gmx.de>
+Date: Thu, 20 Aug 2026 23:51:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PR12MB6051:EE_|DS7PR12MB5936:EE_
-X-MS-Office365-Filtering-Correlation-Id: 403b744e-fd37-478d-d403-08defed5dea4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|1800799024|23010399003|366016|10067099003|11063799006|4143699003|56012099006|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	Hku/AQpoDLljpIsWMTOh6NT0b3M4gjVgbDMQtZDjU7lXVe14SpA6/bMJ/hEkj9LRXMDZc7FgK5B7dIFn/CHKklGKQjQcJ5HpNDzmN4TKY20Ud1Ntw/F/UJRIbfErCGYCpzKCbnsGv5Rsmspv/qDZZMPDLYteMPrfcm9qcqIou386zjVU0KOD6ACvP7kcbIDxFnr2GqtbdqL8bY8sUXWqGUlv4c6fhxY2xVpptb0nBK3djNHVjf/NAv2yl+67I7weZjtdPKG04+hEBivIYgrgCFoogdONpMrqUAfSOafaB3UDz20/5WomVhqmSpYtrB1RHBs95+qY0mcngiyx02QJ89MoeuMuCg8spER2kwX5y8JR5TLeEBUjo/dxShi7fZFNO8nZluTUWeJ5s+dPpfjqhCBfsgwXWTYeRxsOmvw7HoZh1XUWJawnikpP1z7aso0Uw4+C+NnaK7ooXLl41q4ivktSsWadUaPhPbbaflbgUFM6l7fVWJ0oNy0Ml4vnpgTHsf3EhEUAF4byfE3GlG8sVSkbqqV6/ALcKCAsibKQVvo8XE5OQzN+lSLP6tVIEqcx90W3eZbmKOd+fvU/1uqsXkhdsQ9hHhmqrP9vzYi/pz9OQgvoKKo7+mZyPERQMtInUTYJd1znCNef1XIVfITbXvd8OCnivO5+I4a/LRJsI7s=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR12MB6051.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(23010399003)(366016)(10067099003)(11063799006)(4143699003)(56012099006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?d2pNYVJsZ09NOVNLY0hqVlNKYTB6cmFCSHZ1dUdIcHRKVS9ldzlPZ1c1TjFk?=
- =?utf-8?B?b3RHYzZKSDk3Tm45d3Z3UGl6RENmYVpOcDhibUorY0dDa2s3NG4rRWZ1S0du?=
- =?utf-8?B?Mk4wNVBGb1Z5ajRsZFQyZmJGSGFCZnVhaUplOGwvNWxFVUVkdTNDNSt4Y0Vz?=
- =?utf-8?B?SE0zWGptVlBBTUlRdUIvTWdHeVVNelpmVjlKWHA1ZG0xdEpaOVd6dWdoTWEw?=
- =?utf-8?B?b0tOR0NFVlVoNllLMitzLzNhSk1UU2NoNWJ3NFhKSklRMXBKYlhqY2pDdE45?=
- =?utf-8?B?QzlJTnBXRzZQdFZIV3hKaENqTEs4Nkx1UzB5NmlBZUJUekY5dDAxQ0lJVllH?=
- =?utf-8?B?K1VaajRPUHlwUm0zbUdLSnVhU0RJUFJSL2JwdW9XNTBYVzJYRGNsNG8vSHgy?=
- =?utf-8?B?STc2TnE1TzBWRmIxMEpHNW1PbVZtWUxnQ0owa0FsbUhORnBlNjh6L1J5MnJF?=
- =?utf-8?B?OTBtOGsvMitsSVFoVHU2b1R3TEpBNW1TUXdGZXdqcmc0TzBobkJ0UFpibU1F?=
- =?utf-8?B?WUdFaFpzV1lvRVg4ZmRZRXRWdEY0bXV6c1Y0c1MyWktqSWNUVHNtditXaFdN?=
- =?utf-8?B?b0UvUEUzTUlndEhPSDhjSXVydkN4MktGcGZaUHlwbHRvQ3AwbWt0ZCtvQ3JT?=
- =?utf-8?B?b0R0WkYzT1ROZ1FBYU1rRkhpejJlcjRBekRRejBkK29pRUd2UXlqb2oybndV?=
- =?utf-8?B?WWV4Q1U3KzFobitJaW0vMHBDdk9hV3JHUVVBdWRzS3lURXFNNzdHN1B4eEYy?=
- =?utf-8?B?c3k0M1RNK0VUK1lLYi80YUhsQmhTMzVWeHkyZTQ4QVh5U1ZhRmJVcFZUa3ky?=
- =?utf-8?B?aDRmeHlSckRnUHFOZmZFRkJoNDl6eThaTkM3Ry83S1hnckhycU9JSzBQL2Mw?=
- =?utf-8?B?VjZvYW5ndGEya0Q0THhlQlZwNkNmOWdtZDEyVUoybDc5SSt4b0VPcnV3Ri93?=
- =?utf-8?B?bkc5Si82UW5vaWp6NDk1cy9KenQ4QWliRkQ3SHJRNkhVc1g4MmMyZjJXRHVz?=
- =?utf-8?B?RFJ4QXI0Vmx0SkRQTnVWZk5TelgxQmF4dHdMaFlvKzQvdXo2Nm5IcjNvby9O?=
- =?utf-8?B?NThMVVlIMHptZE9jK3dIeVhrLzJ4VFhWS0Y0cGpaZlMzb0JQT2JrdzN3eVI3?=
- =?utf-8?B?dDRnaW9ZNDFwVWlmKzYwL1hLekpYNEZET0RETGRDMlVqQ2ZlVXBTd2NOQWlx?=
- =?utf-8?B?MDdiZytFeSthWjh2V0FQSzV1aWUzNUtURDNyZTVKVWlUSkxjNTFiYWkxc05T?=
- =?utf-8?B?bUk3cnBjZXkzSEdPTDRCY0JkOXoyTGtxeXR5Mm9UOEFFMzhUSkg2QXBKSW84?=
- =?utf-8?B?aHdvR3pHcDNsRXppdEo4YU5tWDc3ZGxPY2tpeVhPS0ttNS9aeDkyUWppR0dG?=
- =?utf-8?B?VkxwWExqUlRRNWNMZ21IdXBCR3BSY0cxTjM0Z1J1eHoxcGdINFRvS1BhWjRx?=
- =?utf-8?B?aXJIK2pRUHJFNU1LUUpiTldwYWdFd2dDK1R5Z296R2w5N09IdTJNZXQ4N05t?=
- =?utf-8?B?SHJDS0JEMVZKMjdmNDY2Vzh0emtGRExTNVJkQlB2OEJoR3FXMVBGa0w3WE9C?=
- =?utf-8?B?cHdLYnZIbFFSc1JqVE1vNHkyakVMV3VMajVqaEcvSkdtYjdhUWErVlBoMW9W?=
- =?utf-8?B?TGNpR1YxSkdUc0s5bTFUejlESmVleXVwSnhNM0RLZEhueUFQckhLUW9oejJU?=
- =?utf-8?B?bUljV3M3eVJ0eVpjN3ZKWE9hWkduVk5FMndZU3BLdHRldUdPcHZtSmtRd296?=
- =?utf-8?B?KzloVzROdDQ3V08rR0pnU0kzTVFVcmJBeFRtM0pSL0dxcldkWmhvRUFHYThy?=
- =?utf-8?B?Um9DTlF6dE1JenhNUDZZcHRBelB1K1VrNHdTYXpwS3N1OXZVRnU1bHRGb1ZV?=
- =?utf-8?B?TW0venp3eHM2R2xpMDVadFRNOU43ZWhTbEIxVlFkV2pxNGQwdXd5MlJjcXVE?=
- =?utf-8?B?N3BHQUMzVHo4cUJGSnFBUzkrYWIzTEI5b1prUmtUZTJ5d0tjRmRwRS9oREhN?=
- =?utf-8?B?NkVlOWJoNjJUdTNOWmNNYXRzelZDc0s1cTVvalVQaW5pVEpCMm9tYjI2eDh5?=
- =?utf-8?B?SDl2Nzdibk9sNVR0LzVNUXFZSENKa0J0Q0l0Ym1UQXhWd2RYdFE3NU5aS0Ew?=
- =?utf-8?B?Ri9Ha0dvb0x4RlNBSExObEEwQjl5MXNKVEJpdGZtSkxGR2NzbFpqNGlWVlNZ?=
- =?utf-8?B?bitWS1NzRVFlbW51YUVRS0RWWDc1aTdleTdZQWxub2tIVDJ4b0w2eGJ3OXc3?=
- =?utf-8?B?R1ZCZmJrbWlYOGF5aUFvTVN5VDJ3SVRXQXRNQVFFVXFvTFNSOG5IdGRlZDE5?=
- =?utf-8?B?Z0xUOGxEOGRkVVJMVHgzUUNoTHJOQ0YySDNWbVJhcE5RNDVBWHBkUT09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 403b744e-fd37-478d-d403-08defed5dea4
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR12MB6051.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2026 16:12:45.1194
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ye8rvQlQdxke1Cm1o4X47OnoHKOhjeOLZqyz+t1/mQTrGPAo/TLtIte6ObxvJ5yITO80ujas5jc+bmfZJt3IoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5936
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/5] fbdev: Give atafb proper parent
+To: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org,
+ geert@linux-m68k.org
+Cc: Miro Kropacek <miro.kropacek@gmail.com>, linux-fbdev@vger.kernel.org
+References: <20260819222838.21256-1-schmitzmic@gmail.com>
+ <20260819222838.21256-3-schmitzmic@gmail.com>
+Content-Language: en-US
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20260819222838.21256-3-schmitzmic@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QjjnHiOJ6H9GdqjbBSb1efdiVtxQ7qXAvxV4vbLyNKGjZY9l9PB
+ 3Uq5jw+rrcwB41kocyc3vkFY5EzADxGuw3KnRRf/F3Cd3dRUi7O1dJelsWiS+21EgCOAEPa
+ Wg7NnxD6yi9DMmX3i1Bkd81CXyZN3FnAoXBgg+WAK2/bVWOqy3tgWmcTpFc+1Dh6pmZcK6K
+ SGIzhlC4bhhaxorMkDmMg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ZCwW3UdGXEc=;EaoZpxrH13pHKkrtDigsaH4vaML
+ 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
 
-Hi Thomas,
-
-On 10/04/2026 13:18, Thomas Gleixner wrote:
-> The header define in asm/timex,h and the naming of the function to read the
-> delay timer are confusing at best.
-> 
-> Convert it to a config switch selected by the archictures, which provide
-> the functionality, and rename the function to delay_read_timer(), which
-> makes the purpose clear. Move the declaration to linux/delay.h where it
-> belongs.
-> 
-> Remove the resulting empty asm/timex.h files as well.
-> 
-> No functional change.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-
-...
-
-> --- a/arch/arm/include/asm/timex.h
-> +++ b/arch/arm/include/asm/timex.h
-> @@ -10,7 +10,10 @@
->   #define _ASMARM_TIMEX_H
->   
->   typedef unsigned long cycles_t;
-> -#define get_cycles()	({ cycles_t c; read_current_timer(&c) ? 0 : c; })
-> +// Temporary workaround
-> +bool delay_read_timer(unsigned long *t);
+On 8/20/26 00:28, Michael Schmitz wrote:
+> From: Miro Kropacek <miro.kropacek@gmail.com>
+>=20
+> The atafb fb device registers no parent, causing a missing symlink
+> (/sys/class/graphics/fb0/device). Xorg fbdevhw driver looks for that
+> symlink when scanning for devices, so add a parent node for atafb.
+>=20
+> The proper way to do that is use of framebuffer_alloc(), which
+> requries refactoring atafb to move from static fb_info to allocation
+> of fb_info by framebuffer_alloc().
+> About the only location where a fb_info pointer cannot be passed
+> is monspec setup in atafb_setup(). Store static monspecs there
+> and copy into place after framebuffer_alloc().
+>=20
+> Pass fb_info everywhere it's needed (detect, decode_var and
+> do_fb_set_var functions), and remove the static fb_info struct.
+>=20
+> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
+> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Cc: <linux-fbdev@vger.kernel.org>
+> Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
+>=20
+> ---
+>=20
+> Changes in v3:
+>=20
+> - fbdev: refactor atafb fb_info use to allow use of framebuffer_alloc()
+>    (Thomas Zimmermann)
+> ---
+>   drivers/video/fbdev/atafb.c | 174 +++++++++++++++++++-----------------
+>   1 file changed, 92 insertions(+), 82 deletions(-)
+>=20
+> diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
+> index b8ed1c537293..a9be06ded5c9 100644
+> --- a/drivers/video/fbdev/atafb.c
+> +++ b/drivers/video/fbdev/atafb.c
+> @@ -158,14 +158,6 @@ static int DontCalcRes =3D 0;
+>   #define VMO_PREMASK		0x0c
+>   #endif
+>  =20
+> -static struct fb_info fb_info =3D {
+> -	.fix =3D {
+> -		.id	=3D "Atari ",
+> -		.visual	=3D FB_VISUAL_PSEUDOCOLOR,
+> -		.accel	=3D FB_ACCEL_NONE,
+> -	}
+> -};
+> -
+>   static void *screen_base;	/* base address of screen */
+>   static unsigned long phys_screen_base;	/* (only for Overscan) */
+>  =20
+> @@ -175,6 +167,12 @@ static int current_par_valid;
+>  =20
+>   static int mono_moni;
+>  =20
+> +/* monspecs passed by user */
 > +
-> +#define get_cycles()	({ cycles_t c; delay_read_timer(&c) ? 0 : c; })
->   #define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
+> +static __u32 mcap_hmin;		/* hfreq lower limit (Hz) */
+> +static __u32 mcap_hmax;		/* hfreq upper limit (Hz) */
+> +static __u16 mcap_vmin;		/* vfreq lower limit (Hz) */
+> +static __u16 mcap_vmax;		/* vfreq upper limit (Hz) */
+>  =20
+>   #ifdef ATAFB_EXT
+>  =20
+> @@ -299,7 +297,7 @@ static int *MV300_reg =3D MV300_reg_8bit;
+>   /* ++roman: This structure abstracts from the underlying hardware (ST(=
+e),
+>    * TT, or Falcon.
+>    *
+> - * int (*detect)(void)
+> + * int (*detect)(*fb_info)
 
+I fixed this comment up to become:
++ * int (*detect)(struct fb_info *info)
 
-I have noticed a boot regression on some of our 32-bit Tegra platforms. 
-Bisect is pointing to this commit. Making the following change does fix 
-it, as delay_read_timer() now returns a valid value when true ...
+Other than that I've replaced the latest patch series by this series in
+the fbdev for-next git tree.
 
-diff --git a/arch/arm/include/asm/timex.h b/arch/arm/include/asm/timex.h
-index 94e40c19cfc5..4d31eab9dba2 100644
---- a/arch/arm/include/asm/timex.h
-+++ b/arch/arm/include/asm/timex.h
-@@ -13,7 +13,7 @@ typedef unsigned long cycles_t;
-  // Temporary workaround until timex.h is cleaned up
-  bool delay_read_timer(unsigned long *t);
-
--#define get_cycles()   ({ cycles_t c; delay_read_timer(&c) ? 0 : c; })
-+#define get_cycles()   ({ cycles_t c; delay_read_timer(&c) ? c : 0; })
-  #define random_get_entropy() (((unsigned long)get_cycles()) ?: 
-random_get_entropy_fallback())
-
-Cheers
-Jon
-
--- 
-nvpublic
-
+Thanks!
+Helge
