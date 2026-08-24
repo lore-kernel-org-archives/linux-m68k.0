@@ -1,36 +1,36 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F3D387345
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Aug 2026 07:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C8D389453
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 24 Aug 2026 07:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787556468; cv=none; b=DQxkwOjTtLunTk7c1SPT6tOruzvarmtjqIWlF3vE5jjm633Gl+TYgZ7scx2JeGWiYJUh5UOkBeIsU9uTp83qJWC7pnmceI8fDYlDKAq8LJpQi8KKiiRcKR0p8CMsA3o9/wP61qWYMtIfrLzM12kjGImJCLMlxHvhHDQyyV+Q95I=
+	t=1787556474; cv=none; b=DiJw/5Klnj+ChTB35ccaZzkV44rgvLwfZvrEAm/1n5KiOrzpHbLtUnBa4v3nE2rP4ciagmxI4MFBeS3axL/gd0Nz7Ra+LPN3puEobVUA+JYQzp8XkfGmM8vlmPgC7FXFNlh0SW0K9rMX4ptY4aQk+ewemCPbcgqZpUYB64ltuoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787556468; c=relaxed/simple;
-	bh=KfXzxN/sCr/F7pK2AdyGUYO5OQQU04dyr7yb+QQZaKI=;
+	s=arc-20240116; t=1787556474; c=relaxed/simple;
+	bh=vyhOknni/uREA5s020eIPcwYgvoPFbIV6bT5YWB1Ot0=;
 	h=MIME-Version:Content-Type:Subject:From:To:Cc:In-Reply-To:
-	 References:Date:Message-Id; b=HjnT9xbFEBQo9X/u2bGlJPlELcSAMrq355ARyhzLQq2xwQ5Oopz6Sm0N/8h1ADknjdg0H/xSDIDh/+yjOE1nBrNGzSG1RXFRrH1PJUEJWNvFiJkf8yxQLhhzphAIlo+C+2OdgharH7iQeL85QeB1lTIENLDrUTN38hjaGie05Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hghfi3F3; arc=none smtp.client-ip=172.105.4.254
+	 References:Date:Message-Id; b=RQY9Oq3ZeHYCDX7qh+yj/QWlrRn3x5fPuSUESvn+hiVCaZKeXrf4YH/LlrNvKmVa0XbRD5EuNlxOEB8e609DpDaA66HYN94pZ/q35GFvQSt6SutC0PZDiyM05RenHcvXWmH5z0Af8arBDa4el6GyBuShbmdPEpd3SML6fZOI66g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LisqMsMw; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hghfi3F3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LisqMsMw"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 300B1600AD;
+	by tor.source.kernel.org (Postfix) with ESMTP id 1173E600AD;
+	Mon, 24 Aug 2026 07:27:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62AFC1F00A3A;
 	Mon, 24 Aug 2026 07:27:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B017B1F000E9;
-	Mon, 24 Aug 2026 07:27:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1787556464;
-	bh=hpXldSP37oQmlhckItfAzwUOG6JobW41WzP0kSdLesI=;
+	s=k20260515; t=1787556471;
+	bh=TDmng5bNiE+YiLBp1dwqj9DRhmUVXQIS/lif+VRO/fE=;
 	h=Subject:From:To:Cc:In-Reply-To:References:Date;
-	b=Hghfi3F3hhjgblfEVPUEEPHALjTTBAgKBK8MbewWtmMLpyrYB+8Jo29/224FAiShM
-	 0SLcU5txHHDDVRBQmZbs0Km1ZqbqYphsVzR3okw73rVZzhWFSwmbPshMJk+4ij8Gwk
-	 wBlW/tVqVoMXtxSb8VWH+7r37m/WC7KmAwdV5lxYZr50+jzu/iInwaVg4PoIgWPYV+
-	 C5co0jxq4J2+miGm/bYP5+zECjtlCOUz+jUuPUU4mw1mdcjIPjf5Qqh658+sfYqF50
-	 oCrhxE7AzAMSOiSyXc8TzEpXzk6qb68sZUnHfTQBzsRUMB6GzKuCnUN8V+wutnGyd3
-	 qgVllw8rmVK3Q==
+	b=LisqMsMwto/kBuZ7gdbcgEJrUKMCvB31iYajSaP8VSdLEt16BVkX4Oh7MmltHH6/x
+	 lgJMQ/bHIDKxJx2zSKHsCi53faclUGyXrEjtwgO9HglPDbBjmzSGM601uHETfiupKK
+	 k9L2jhdovk2XzuRexJe8lI2Ja3+L6F1zhgtZeR57y04iBM9ZTxAg8R4/0hzvBRU/1n
+	 j/yQ64IOrcqDTuW2xREKaopx2MCLiJJbnIajCPVW+gYaQ/oYq0qHnMHsDEPBeQlGIk
+	 UAUiHCdZACNNtFoUCqb60H6mqsfCFPiGb92umTHv0AOcuZ/mH0PdZQm1D5ksQY3O+D
+	 A0IEUUHfnBZfg==
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -39,7 +39,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Subject: Re: [RFC V3 0/8] mm: Drop pxd_ERROR()
+Subject: Re: [RFC V3 1/8] mm: Make ptrval_to_str() generally available
 From: Mike Rapoport <rppt@kernel.org>
 To: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: linux-mm@kvack.org, akpm@linux-foundation.org, david@kernel.org, 
@@ -56,25 +56,26 @@ Cc: linux-mm@kvack.org, akpm@linux-foundation.org, david@kernel.org,
  linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
  linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
  linux-um@lists.infradead.org, linux-arch@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20260818040041.1891769-1-anshuman.khandual@arm.com>
+ linux-kernel@vger.kernel.org, Lorenzo Stoakes <ljs@kernel.org>
+In-Reply-To: <20260818040041.1891769-2-anshuman.khandual@arm.com>
 References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
+ <20260818040041.1891769-2-anshuman.khandual@arm.com>
 Date: Mon, 24 Aug 2026 10:27:34 +0300
-Message-Id: <178755645423.3606540.14531883744138096395.b4-review@b4>
+Message-Id: <178755645423.3606540.12945780031100652573.b4-review@b4>
 X-Mailer: b4 0.17-dev
 
-On Tue, 18 Aug 2026 09:30:33 +0530, Anshuman Khandual <anshuman.khandual@arm.com> wrote:
-> mm: Drop pxd_ERROR()
+> Move ptrval_to_str() inside a header thus making the helper more generally
+> available for new users which are being added later. While here, also move
+> another related string size macro PTVAL_STR_MAX inside the header as well.
 > 
-> pxd_ERROR() macros have been provided by all platforms, which are very much
-> identical and can be dropped off completely if these pgtable printing could
-> be moved to callers in generic MM aka all pxd_clear_bad().
-> 
-> But first cleanups and re-organizations are required in some platforms that
-> are using these macros internally. Afterwards [pte|pmd|pud|p4d|pgd]_ERROR()
-> macros have been completely dropped from the entire tree.
-> 
-> [...]
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Hildenbrand <david@kernel.org>
+> Cc: Lorenzo Stoakes <ljs@kernel.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
+I agree with David, include/linux/pgtable.h is better.
 
 Acked-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 
