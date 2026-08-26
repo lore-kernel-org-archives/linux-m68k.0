@@ -1,62 +1,64 @@
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F3131619C
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 16:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF202236F2
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 16:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787760556; cv=none; b=VNiL258s6tu+5Ev6IENhSZ4Fen35tvJ7JHndhTmc1JGwPeoyEh+JCzEYIEO/ivyxu+EJeRdm6OyZH0UWSe5k8j9655xlFt1YJgZRKPhl8+JybwWJCifI2HH7ISB1fJxJhJDPO3DNYZfLj8ad5IHpfusKbIalFp2ULvQduY36IzU=
+	t=1787760558; cv=none; b=Ec3JB/422jlHS3Bhjq5/yID2RdwcgKvRARBgIjwEyq8a4tj6EimvJA4Rml+OiW7mVUqNYTS01p0sAH3oD+k3bqcS/arhhdaqljzPK3uryNW2OJYlCZ8W+dFCQVEzstg/WyUB1+kqVrRbBTTpVZozO29QshKBr7TKCMBlUneEUpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787760556; c=relaxed/simple;
-	bh=VdYiVlAaEz21Hi+q/JsnUD7U1RNcR3aPRlDlKQ3I68g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D3Fc7pZRxTlhGlJxJ7MRCjT+irTLR7Syi+skFdhBnsTcUdDBxPBAOhdvO1ix7bAL9ceyNjB63D82P0pKNjFEaJK7xLDCF0pSuRdCIB0u3Ab8i5o9M3eOoS8qHfhwxnqaZ5CCkZ/Ef7DeOSxp+2/u8/V6ASPD1wxRry6IAJ4yeRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fDv8ZRlr; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1787760558; c=relaxed/simple;
+	bh=L4+/ZQw3YHf0BCOhgBrZwXFZUwSTK2iDO/3+BWEZN5U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=XfBTnCq8Vbb0+83e1iL2SrbsMwn2HWwijJfWAK3eCHoLhfd/sSEQ/7uhggiIkFjl+kXZRmihL3WIY0mY44wzyh3zLtyzeY05VrpCEKD9TPZreSjn6I7aL3pd0mXO52Kll8Wne0tB7hV7MgnaUu7qzW35iJDILMqb1pWhqdcOHCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fnoGu2fS; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fDv8ZRlr"
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-c1c26d7e951so169530066b.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 09:09:14 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fnoGu2fS"
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-c1c26d7e951so169536266b.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 09:09:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787760553; x=1788365353; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=zVZDnx8w1K3i56E12CadQZF3S/QBfdgckzz9SPQi62o=;
-        b=fDv8ZRlrTvTLycx+PeKddPTLug2S555IFIk/kDmBA5eZIGEUSi6zWh7Ih88fCoJURb
-         3WhfaOMNzW8cjGc0IaRO0p+wQO/4DXl5fpBGP5KD7l0xXXTi6bY1V+SwXn3w5DGUOiup
-         2OqVbBtJk+kQfFFN8/oKUwgCNuvxB3nl8GxCdHTQ4nP/pJ/D63nGBqZCSJY6zS3XTpUb
-         F46J6fLQ3BQtua+Ic3VGq6jOMyOvjSE8DG548HGIVjgqvU9VI1l7cbQOJI4RRDJFlV1l
-         /Sf7ZYtHjCDtyBX0wR4OVne3q6mnBw1cKqy/POyWcF4q4FlUezgBJrbPhwwIG2A+uEaI
-         0NCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787760553; x=1788365353;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1787760555; x=1788365355; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=zVZDnx8w1K3i56E12CadQZF3S/QBfdgckzz9SPQi62o=;
-        b=HD12V3OAIGpQZ48sRgWYITvyBv2A+m0OblB0NTHEFwqFP23J5HLKq2JBs7Vqh8bzXa
-         KmI6mcmZ6TPl/dFlbZRF0FRLUPzJfRZLkE6H5hNFw+H9YWruA8joogfIso+9yFqkYn/s
-         /+YDY3Y3f5Ljlq7kGrtyScIZFVLffRTFmg30rz4oAI1dUM2cZaTc8IBna1jHJVlR5nOD
-         EtIqkDPJgcZZItjbPomJqPRVXXOUiQULH0Mm4n1EuYx0G9wLCVOG+C8HY8/k2WI84uSl
-         kdXEh3TIlBZ5//m5w7KXLn2pGs8ljdSLKlJmjjNdMN8zMWiayDB7OrQ2Q87VI7QYlJzV
-         Vi2g==
-X-Forwarded-Encrypted: i=1; AHgh+RqtFNHiWNXXL4d6GuC99oVVvRwmolnOMoqHznEnVTRKIzEIvgvFEi6RJLFJp2sofJUnc9v6nSf0FCfl@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++n7KWltpmYG3bjgRrn5uYDnQA51RLdMkkroq7u8sW265Xzlc7Ln
-	Cz9a9/IPtxmDZcJ9sd0do9xhJVHjaSOMMrwzxS1+I7J0O7oo+Rh0hD2q
-X-Gm-Gg: AR+sD11Fytil2xlW4HFl4wOAaDZK6hdIv7D9PEgl18Guo1yRiv5vWIvSxSMIs/Ai0oG
-	1geFg4OBS7IzJffpyYYfPhNDxbiHzKSPjhEGEs0a2OqrmQ6FMblElQyPVafmJhm5qETZQDQRHdZ
-	c5qv7of80+35knmC+XuoqWNPjv/unOzNXCaargIjZFYUcMv3UqYoca4E794X1dXTD9dtffyEpfw
-	FM6tJjUgz6dtqkvEp1Ks6ZPheXg/ICpBGwACXCrwMF2leCGpIgaz/52iVEx+EM7gdeBjmb6CGcm
-	7Cc6d5Hab8LGCLwb+Gk9IwW+0badoB5m2yfejxg48kmNHhelkbVBRdL9wT3y73zIrAn5/BX5xgT
-	VWWJeJPNwMP1fASDrREcaDB3mbey84J3Edl5jLtHYh8n6GcXdFJGCpclUR5CULj17wvJtPZcYSW
-	KaCIptOP52Y9QWPPCEM2nlkmvUcAKven1xs7eVPKWBzB6GhmXDA+9z9xdQf+QiA4X1dCg+nWTIO
-	feuqi+Zzk0OLpS7w4V21cqZifP7AmlqZJ/6o0s0WSw71GU=
-X-Received: by 2002:a17:907:e1c4:20b0:c25:1b4f:6d95 with SMTP id a640c23a62f3a-c251b4f7a1fmr632539166b.6.1787760552958;
-        Wed, 26 Aug 2026 09:09:12 -0700 (PDT)
+        bh=hI3mYRdhlr5CeiAItzv4SK5OhRBppU0F4bFSHdSvzCA=;
+        b=fnoGu2fSFLGYqfvacmJ2VMjwtFFGlXkPDlTsEQr1nxMyio6A2ywvsV1aImXmzKKRPI
+         BxyJ/OT/yVOFkhpjo7oOFAgdZabLLxsi1klalUF380uKXgF3XuJinXRYOSU+18ukxg9P
+         9/4TCea1yGXf2AAZbzeWkOkA3c2V0yefuuQUSn2uYF8qEAkwdBLXH4Aun1FYfVAMiIKP
+         8Gywi9xOHyVMgROYVRFlMBdCK719Ifz5nOwAngWSw6NvPTPOUKFlv0QaW3VNJVbbIH0Q
+         Jro841ZyxHBeq6uwmBEbtIoP0Z5ImcDIms1UZF/YzXhaTJlC96SQLMNOHdgnoYhwDQOY
+         7XuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787760555; x=1788365355;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=hI3mYRdhlr5CeiAItzv4SK5OhRBppU0F4bFSHdSvzCA=;
+        b=IDXwZpFgMKzX+8xuUiDXsNvlHtG5G/8ZfsubxtW7P78pMgeXxYiHKuUwLpc2eMjBTK
+         idcdfLThtjQbwwVOAKFjDvIQZMOPWPRjLqX5lspFpHP0u6FRqDPj34x6c+60T1XAvaQ/
+         dPYV0wdKIxNnCTc0hjgJCsNG71OXbiLHIna4WEBin+hk91/qyrcU8dKcKvbDJxB97bcv
+         HntowDxwycpf/UaMF1Fxbcbd0IPz6MAyCybfXNTYNu2700vadsLAaRaOnZYN66Zs2npc
+         N+08m6kC54t18IuqbvJX/gkCirJ1fNeKfLuwxzWRb1eASLKTPYAAgiwXYaxHJ8Qm6fVL
+         doJQ==
+X-Forwarded-Encrypted: i=1; AHgh+RouN2Co05uhx4jS6yYCtNEawFBCipEA8dLBclDyEFvktSguLf/Cn9rw8TG5eajR0fK/PvnP0jihzLZf@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++k1ZHerOvYgyenXoywpMwTsJxU+kD/1vmkYWIof1MnpnpZRgxUK
+	sb3xoXrmGXlRpnMOSrXjb7dbKhXSOGBORb7buQJLly16/rG/KGpZDenA
+X-Gm-Gg: AR+sD10aMtsE48KhmSpMCPCdTj52DVPvJrqGWC5E7DrA4PtNMFwGYsbe61/gs6KUTpf
+	yPUPqXywMNgd/sU4M2yXQ7wWmxTmUjxwRxUiYWN3La/nDlRhX8L5LojH3mtBnQOJ9qVOOmOyVFu
+	L9ggauIBEzwfbERa39fUKZ8hE2HrkRcyTyMybj87HfyUCdPbAroWfZTsTcQvVUPxZUvLyC788vM
+	t+gXmBocFkeyQfJgCSmRaE5ST2Kxfk217QICkgODkZ1Jv86vnR2EAHF7nU9DaBmq+e6x9JDs4hX
+	d6qzllXn+bxoTWmjGf32VLu+R5wvznEmekkznlC8Jv/R654jvzMnMKVnzhqR8pXVX3rdAGw5XvK
+	IltLH46I3iyGVdZnoJkP6PDaDHH0UbLY6CPorb4Iki0EkcLnDulU785rXDVXDuz5xVz2YGM5O5W
+	OUB8dlgHxAlZhBHs8bNHIzzpllJBSSBCbPkdyR7xuVL6/gxhiv5C/2/+CaHZnKi/U1wVOOhut52
+	SpLL30w8t5n/SAgcAmfvhhDcAJKfMQXsO9RlWzdrtkDbiN+dEsKEWcvqg==
+X-Received: by 2002:a17:907:c22:b0:c21:4393:c41a with SMTP id a640c23a62f3a-c250c312bbbmr948010466b.11.1787760554568;
+        Wed, 26 Aug 2026 09:09:14 -0700 (PDT)
 Received: from gmail.com ([2a01:e11:1403:8620:78ce:12f6:160d:28db])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c25271e4cbcsm386050366b.18.2026.08.26.09.09.12
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c251b7a9936sm413925966b.49.2026.08.26.09.09.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2026 09:09:12 -0700 (PDT)
+        Wed, 26 Aug 2026 09:09:13 -0700 (PDT)
 From: Paolo Pisati <p.pisati@gmail.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>,
 	Damien Le Moal <dlemoal@kernel.org>,
@@ -64,10 +66,12 @@ To: Geert Uytterhoeven <geert@linux-m68k.org>,
 Cc: linux-ide@vger.kernel.org,
 	linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 0/2] m68k: pata_cswarp: Add Amiga cslab ata support
-Date: Wed, 26 Aug 2026 18:09:09 +0200
-Message-ID: <20260826160911.460165-1-p.pisati@gmail.com>
+Subject: [PATCH v6 1/2] ata: pata_cswarp: Add Amiga cslab ata support
+Date: Wed, 26 Aug 2026 18:09:10 +0200
+Message-ID: <20260826160911.460165-2-p.pisati@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260826160911.460165-1-p.pisati@gmail.com>
+References: <20260826160911.460165-1-p.pisati@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -76,54 +80,240 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Here is a driver (and the subsequent defconfig change) for the pata/CF socket in
-the CS-Lab Warp series of Amiga boards.
+Driver for the on-board IDE interface on CS-Lab Warp Expansion Card
+(NOTE that idemode=native has to be set in Warp Configuration)
 
-This is a respin of v5 addressing Geert's and sashiko-bot's review.
-
-Tested on real Warp hardware.
-
-v5: https://lore.kernel.org/linux-ide/20260824153339.512487-1-p.pisati@gmail.com/
-
-Changes in v6:
- - fix 7.3 FTBFS (include <linux/device-id/zorro.h>, and use named initializers in
-   the zorro_device_id table)
- - use devm_ioremap()
- - print the register window with %pR in ata_port_desc()
-
-Changes in v5:
- - return the number of bytes actually consumed on the bus
- - fix the trailing byte in pata_cswarp_data_xfer()
- - drop a blank line in Kconfig
- - fix the remaining checkpatch complaints
-
-Changes in v4:
- - refactor pata_cswarp_data_xfer()
- - ioremap WARP_OFFSET_ATA region
-
-Changes in v3:
- - suppress a comment
- - properly return ata_host_activate() error code
-
-Change in v2:
- - fix style, remove duplicate swap macro, driver version, etc
- - rework the zorro attach mechanism
- - remove the unnecessary zorro ids refactor
-
-Paolo Pisati (2):
-  ata: pata_cswarp: Add Amiga cslab ata support
-  m68k: defconfig: enable PATA_CSWARP
-
- arch/m68k/configs/amiga_defconfig |   1 +
- arch/m68k/configs/multi_defconfig |   1 +
- drivers/ata/Kconfig               |  10 ++
- drivers/ata/Makefile              |   1 +
- drivers/ata/pata_cswarp.c         | 183 ++++++++++++++++++++++++++++++
- 5 files changed, 196 insertions(+)
+Assisted-by: Claude_Code:claude-opus-5
+Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
+---
+ drivers/ata/Kconfig       |  10 +++
+ drivers/ata/Makefile      |   1 +
+ drivers/ata/pata_cswarp.c | 183 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 194 insertions(+)
  create mode 100644 drivers/ata/pata_cswarp.c
 
-
-base-commit: 66498c75b4f8017f62d720d9b59675bdf3abce91
+diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
+index 28ca856ecc75..86af89a9bfce 100644
+--- a/drivers/ata/Kconfig
++++ b/drivers/ata/Kconfig
+@@ -1040,6 +1040,16 @@ config PATA_GAYLE
+ 
+ 	  If unsure, say N.
+ 
++config PATA_CSWARP
++	tristate "Amiga CS Warp PATA support"
++	depends on M68K && AMIGA && ZORRO
++	help
++	  This option enables support for the on-board IDE interface on
++	  CS-Lab Warp Expansion Card (NOTE that idemode=native has to be
++	  set in Warp Configuration)
++
++	  If unsure, say N.
++
+ config PATA_BUDDHA
+ 	tristate "Buddha/Catweasel/X-Surf PATA support"
+ 	depends on ZORRO
+diff --git a/drivers/ata/Makefile b/drivers/ata/Makefile
+index b96025abd45e..647e3d4b6f75 100644
+--- a/drivers/ata/Makefile
++++ b/drivers/ata/Makefile
+@@ -100,6 +100,7 @@ obj-$(CONFIG_PATA_WINBOND)	+= pata_sl82c105.o
+ obj-$(CONFIG_PATA_CMD640_PCI)	+= pata_cmd640.o
+ obj-$(CONFIG_PATA_FALCON)	+= pata_falcon.o
+ obj-$(CONFIG_PATA_GAYLE)	+= pata_gayle.o
++obj-$(CONFIG_PATA_CSWARP)	+= pata_cswarp.o
+ obj-$(CONFIG_PATA_BUDDHA)	+= pata_buddha.o
+ obj-$(CONFIG_PATA_ISAPNP)	+= pata_isapnp.o
+ obj-$(CONFIG_PATA_IXP4XX_CF)	+= pata_ixp4xx_cf.o
+diff --git a/drivers/ata/pata_cswarp.c b/drivers/ata/pata_cswarp.c
+new file mode 100644
+index 000000000000..58fe6d0012dc
+--- /dev/null
++++ b/drivers/ata/pata_cswarp.c
+@@ -0,0 +1,183 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Amiga CS Warp PATA controller driver
++ *
++ * Copyright (c) 2024 CS-Lab s.c.
++ *		http://www.cs-lab.eu
++ *
++ * Based on pata_gayle.c, pata_buddha.c and warpATA.device:
++ *
++ *     Created 2 Jun 2024 by Andrzej Rogozynski
++ */
++
++#include <linux/ata.h>
++#include <linux/blkdev.h>
++#include <linux/delay.h>
++#include <linux/device-id/zorro.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/libata.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/zorro.h>
++#include <scsi/scsi_cmnd.h>
++#include <scsi/scsi_host.h>
++
++#include <asm/amigahw.h>
++#include <asm/amigaints.h>
++#include <asm/amigayle.h>
++#include <asm/setup.h>
++
++#define DRV_NAME "pata_cswarp"
++
++#define WARP_OFFSET_ATA         0x6000
++
++static const struct scsi_host_template pata_cswarp_sht = {
++	ATA_PIO_SHT(DRV_NAME),
++};
++
++static unsigned int pata_cswarp_data_xfer(struct ata_queued_cmd *qc,
++					  unsigned char *buf,
++					  unsigned int buflen, int rw)
++{
++	struct ata_device *dev = qc->dev;
++	struct ata_port *ap = dev->link->ap;
++	void __iomem *data_addr = ap->ioaddr.data_addr;
++	unsigned int words = buflen >> 1;
++	u16 *buf16 = (u16 *)buf;
++
++	/* Transfer multiple of 2 bytes */
++	if (rw == READ)
++		raw_insw(data_addr, buf16, words);
++	else
++		raw_outsw(data_addr, buf16, words);
++
++	/* Transfer trailing byte, if any. */
++	if (unlikely(buflen & 0x01)) {
++		if (rw == READ)
++			buf[buflen - 1] = raw_inw(data_addr) >> 8;
++		else
++			raw_outw(buf[buflen - 1] << 8, data_addr);
++		words++;
++	}
++
++	return words << 1;
++}
++
++/*
++ * Provide our own set_mode() as we don't want to change anything that has
++ * already been configured..
++ */
++static int pata_cswarp_set_mode(struct ata_link *link,
++				struct ata_device **unused)
++{
++	struct ata_device *dev;
++
++	ata_for_each_dev(dev, link, ENABLED) {
++		/* We don't really care */
++		dev->pio_mode = dev->xfer_mode = XFER_PIO_0;
++		dev->xfer_shift = ATA_SHIFT_PIO;
++		dev->flags |= ATA_DFLAG_PIO;
++		ata_dev_info(dev, "configured for PIO\n");
++	}
++	return 0;
++}
++
++static struct ata_port_operations pata_cswarp_ops = {
++	.inherits	= &ata_sff_port_ops,
++	.sff_data_xfer	= pata_cswarp_data_xfer,
++	.cable_detect	= ata_cable_unknown,
++	.set_mode	= pata_cswarp_set_mode,
++};
++
++static int pata_cswarp_probe(struct zorro_dev *z,
++			     const struct zorro_device_id *ent)
++{
++	static const char board_name[] = "csWarp";
++	struct ata_host *host;
++	struct ata_port *ap;
++	struct resource *res;
++	void __iomem *base;
++	unsigned long board = z->resource.start;
++
++	dev_info(&z->dev, "%s IDE controller (board: 0x%lx)\n", board_name,
++		 board);
++
++	res = devm_request_mem_region(&z->dev, board + WARP_OFFSET_ATA, 0x1800,
++				      DRV_NAME);
++	if (!res)
++		return -ENXIO;
++
++	host = ata_host_alloc(&z->dev, 1);
++	if (!host)
++		return -ENXIO;
++
++	ap = host->ports[0];
++	base = devm_ioremap(&z->dev, board + WARP_OFFSET_ATA, 0x1800);
++	if (!base)
++		return -ENOMEM;
++
++	ap->ops = &pata_cswarp_ops;
++
++	ap->pio_mask = ATA_PIO4;
++	ap->flags |= ATA_FLAG_SLAVE_POSS | ATA_FLAG_NO_IORDY |
++		ATA_FLAG_PIO_POLLING;
++
++	ap->ioaddr.data_addr		= base;
++	ap->ioaddr.error_addr		= base + 1 * 4;
++	ap->ioaddr.feature_addr		= base + 1 * 4;
++	ap->ioaddr.nsect_addr		= base + 2 * 4;
++	ap->ioaddr.lbal_addr		= base + 3 * 4;
++	ap->ioaddr.lbam_addr		= base + 4 * 4;
++	ap->ioaddr.lbah_addr		= base + 5 * 4;
++	ap->ioaddr.device_addr		= base + 6 * 4;
++	ap->ioaddr.status_addr		= base + 7 * 4;
++	ap->ioaddr.command_addr		= base + 7 * 4;
++
++	ap->ioaddr.altstatus_addr	= base + (0x1000 | (6UL << 2));
++	ap->ioaddr.ctl_addr		= base + (0x1000 | (6UL << 2));
++
++	ata_port_desc(ap, "mmio %pR", res);
++
++	return ata_host_activate(host, 0, NULL,
++			  IRQF_SHARED, &pata_cswarp_sht);
++}
++
++static void pata_cswarp_remove(struct zorro_dev *z)
++{
++	struct ata_host *host = dev_get_drvdata(&z->dev);
++
++	ata_host_detach(host);
++}
++
++static const struct zorro_device_id pata_cswarp_zorro_tbl[] = {
++	{ .id = ZORRO_PROD_CSLAB_WARP_1260 },
++	{ }
++};
++MODULE_DEVICE_TABLE(zorro, pata_cswarp_zorro_tbl);
++
++static struct zorro_driver pata_cswarp_driver = {
++	.name           = "pata_cswarp",
++	.id_table       = pata_cswarp_zorro_tbl,
++	.probe          = pata_cswarp_probe,
++	.remove         = pata_cswarp_remove,
++};
++
++static int __init pata_cswarp_init(void)
++{
++	return zorro_register_driver(&pata_cswarp_driver);
++}
++
++static void __exit pata_cswarp_unregister(void)
++{
++	zorro_unregister_driver(&pata_cswarp_driver);
++}
++
++module_init(pata_cswarp_init);
++module_exit(pata_cswarp_unregister);
++
++MODULE_AUTHOR("Andrzej Rogozynski");
++MODULE_DESCRIPTION("low-level driver for CSWarp PATA");
++MODULE_LICENSE("GPL");
 -- 
 2.43.0
 
