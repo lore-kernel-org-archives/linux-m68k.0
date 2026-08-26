@@ -1,122 +1,129 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7973F37B01E
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 08:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F3131619C
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 16:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787734516; cv=none; b=j8juOMtyuZeYpkTnek0JXMl2Jrmow/ulKHxcKEXhtBxG2JM1VQQ7EsnJ4AkPDNxUoeBDUDEdZ21K9uySJRFfgEfIj/qwYpwWZrlqiLADUPanfDoWiwVlHLkUVPXNBNuNqgeQlxDxPFI+eAaqRjN+MB5benfib61rk4ToJZtp0DE=
+	t=1787760556; cv=none; b=VNiL258s6tu+5Ev6IENhSZ4Fen35tvJ7JHndhTmc1JGwPeoyEh+JCzEYIEO/ivyxu+EJeRdm6OyZH0UWSe5k8j9655xlFt1YJgZRKPhl8+JybwWJCifI2HH7ISB1fJxJhJDPO3DNYZfLj8ad5IHpfusKbIalFp2ULvQduY36IzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787734516; c=relaxed/simple;
-	bh=O8GKQKz28ZNgMu7z5Eem7Zdo5G+exwtTeHN9QNCrjiI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qok9Tdkl0V8dzTNexslY0uK62++5MpxzjkxXvJRGzv4tV/h4V6lhLlSZewECBAJxywAj8QXg6G9BVRoxtHH9qaG9089mZSijo5We39xPYdrgahpyKjpOdszwOmVWNyY4vDY9YPK/lSVkPFXVFRilhYMvm1ZaapUOhNPPw60DrVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NlWHyt4q; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1787760556; c=relaxed/simple;
+	bh=VdYiVlAaEz21Hi+q/JsnUD7U1RNcR3aPRlDlKQ3I68g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D3Fc7pZRxTlhGlJxJ7MRCjT+irTLR7Syi+skFdhBnsTcUdDBxPBAOhdvO1ix7bAL9ceyNjB63D82P0pKNjFEaJK7xLDCF0pSuRdCIB0u3Ab8i5o9M3eOoS8qHfhwxnqaZ5CCkZ/Ef7DeOSxp+2/u8/V6ASPD1wxRry6IAJ4yeRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fDv8ZRlr; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NlWHyt4q"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-6a156627e22so3383859a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 01:55:13 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fDv8ZRlr"
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-c1c26d7e951so169530066b.0
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 26 Aug 2026 09:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1787734512; x=1788339312; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=2+CsASGyH2xOZDi3fuDOU1Hvcxr+b3Bmf36364fbVag=;
-        b=NlWHyt4qS8aXMlAUqW+FrsScRgj2TMI0V1NsbChZKder5WOnxlGP731Z244x3maydf
-         MgT7dBXk+IEsRr9DCGkP4OxpfByNr9Yag63sod77KxfZRiCB1kMFRNxYm02Ty0euL97O
-         e7SBzPEP5X1RGttY9zo279mjgI4jHXWekLvr1IVzi/aVfgUx0en2GhFTaF8F6118aeFv
-         YVa0lSSHEJPNpRHidKnedSZcNfQjdRuiQ0GVQne1JQNoxBBO0MiC2j90XS5uO+/HQkqw
-         Xq94zNzk8TMV6N9AQNac8OJMpjkN7UHhnLfp58lpyuuMZC+OXYKwsn4hwvdlUIy8EcCJ
-         nXkw==
+        d=gmail.com; s=20251104; t=1787760553; x=1788365353; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=zVZDnx8w1K3i56E12CadQZF3S/QBfdgckzz9SPQi62o=;
+        b=fDv8ZRlrTvTLycx+PeKddPTLug2S555IFIk/kDmBA5eZIGEUSi6zWh7Ih88fCoJURb
+         3WhfaOMNzW8cjGc0IaRO0p+wQO/4DXl5fpBGP5KD7l0xXXTi6bY1V+SwXn3w5DGUOiup
+         2OqVbBtJk+kQfFFN8/oKUwgCNuvxB3nl8GxCdHTQ4nP/pJ/D63nGBqZCSJY6zS3XTpUb
+         F46J6fLQ3BQtua+Ic3VGq6jOMyOvjSE8DG548HGIVjgqvU9VI1l7cbQOJI4RRDJFlV1l
+         /Sf7ZYtHjCDtyBX0wR4OVne3q6mnBw1cKqy/POyWcF4q4FlUezgBJrbPhwwIG2A+uEaI
+         0NCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1787734512; x=1788339312;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=2+CsASGyH2xOZDi3fuDOU1Hvcxr+b3Bmf36364fbVag=;
-        b=R47soL56JXT8VlFPfavZ2lPcws36H6ysgd8Q6spkDAbHwWWjUBgahgLFo6Er6v92O8
-         xy3X6dB+XQt8ZW5RDbWGWv4OtJH5oz8cjooksIgsZaMEEE/46OMIbIcKKfVEqn7gqiuB
-         DdjBpyYIFCwasOo9fyY2JCtoVFehGxO2WZW38gbPjCzvnwp6itKMiuTL8rULZkQVcpYV
-         MX1icQtmkD1FAivJHnINSsJIyXAsGUeiIo+PNqC/PfG7PYXktR3mZqrQ189Pq8vXYnQ9
-         E2dzEFeQ+SzzLDH2EVgk+ZNm2W/X4y/p3s3vMAcLu8UdQsCuC6YnGDzz11rdAcpzO5kg
-         JrOg==
-X-Forwarded-Encrypted: i=1; AHgh+RoP0v8MaIxiRM7D4gYCifbN5R8obAYtbAu54E853Szw+sTF0mPxr2gHPjfq+ISVu4jHIllGQUWmDnMn@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++moWheYAFWxEE/UGqTSGGrV/UonBrxxRyUcSDbCM95DqnUGylW0
-	wUWlOCQWisjUxhZd3DkMy9HjPDG8ZSYzq73VkenM1NB+VT4qZ/IQHZz8
-X-Gm-Gg: AR+sD13h2yPvWE18SBFXRDCuy6qNrDlj5y2hD6FE+sieiPaKhBs5lrPMxNlgB5M6pMS
-	veI3Ffg1kdD+Nu0/X2Z3cYXB5bHXG8sMpDX/vbfzxferJYK3xENCgCfszg6akpBP62tORVuvC4S
-	zUNhjBKcO1ZTIB4ZnliaS1nd73aDM4ihQPPc3pEkmILMfDVbmDjkkipLIVyh8kLBPo4CbuCNr1P
-	XqK/Xdv/kI789VO46HVnABh72/YM39imTVSTBQC/fYTJHMvb4y0xkZHoqAsg8KOqOVH1im6zklI
-	LcjBmr3Cvw23t/5afp3p0A2y6kSQzutMqAjFHsed8s4dWikd+WrblouUrEhv5s+yMY+IKVFpIyl
-	m2PakPHCyxy57gOhmHttdRDQka6xh3X5Emh/WR7WKXUw/AaNI7r71yUawmxuAZ3BpgfPnLvelF9
-	Br3ZWBAZRk2ejyNG0+yTpyp66S9Qe7FLeZiQaaxOLKlrAWsyqYDwt3iuq5QSYu0AKzlhrmg54bx
-	fBOhklIrzeL1LriJArrrLDGUSPqb/ds46TqhFyqUTlfLUE=
-X-Received: by 2002:a05:6402:a5d1:10b0:6a5:dfb6:360c with SMTP id 4fb4d7f45d1cf-6a5dfb63743mr3614000a12.2.1787734511805;
-        Wed, 26 Aug 2026 01:55:11 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1787760553; x=1788365353;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=zVZDnx8w1K3i56E12CadQZF3S/QBfdgckzz9SPQi62o=;
+        b=HD12V3OAIGpQZ48sRgWYITvyBv2A+m0OblB0NTHEFwqFP23J5HLKq2JBs7Vqh8bzXa
+         KmI6mcmZ6TPl/dFlbZRF0FRLUPzJfRZLkE6H5hNFw+H9YWruA8joogfIso+9yFqkYn/s
+         /+YDY3Y3f5Ljlq7kGrtyScIZFVLffRTFmg30rz4oAI1dUM2cZaTc8IBna1jHJVlR5nOD
+         EtIqkDPJgcZZItjbPomJqPRVXXOUiQULH0Mm4n1EuYx0G9wLCVOG+C8HY8/k2WI84uSl
+         kdXEh3TIlBZ5//m5w7KXLn2pGs8ljdSLKlJmjjNdMN8zMWiayDB7OrQ2Q87VI7QYlJzV
+         Vi2g==
+X-Forwarded-Encrypted: i=1; AHgh+RqtFNHiWNXXL4d6GuC99oVVvRwmolnOMoqHznEnVTRKIzEIvgvFEi6RJLFJp2sofJUnc9v6nSf0FCfl@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++n7KWltpmYG3bjgRrn5uYDnQA51RLdMkkroq7u8sW265Xzlc7Ln
+	Cz9a9/IPtxmDZcJ9sd0do9xhJVHjaSOMMrwzxS1+I7J0O7oo+Rh0hD2q
+X-Gm-Gg: AR+sD11Fytil2xlW4HFl4wOAaDZK6hdIv7D9PEgl18Guo1yRiv5vWIvSxSMIs/Ai0oG
+	1geFg4OBS7IzJffpyYYfPhNDxbiHzKSPjhEGEs0a2OqrmQ6FMblElQyPVafmJhm5qETZQDQRHdZ
+	c5qv7of80+35knmC+XuoqWNPjv/unOzNXCaargIjZFYUcMv3UqYoca4E794X1dXTD9dtffyEpfw
+	FM6tJjUgz6dtqkvEp1Ks6ZPheXg/ICpBGwACXCrwMF2leCGpIgaz/52iVEx+EM7gdeBjmb6CGcm
+	7Cc6d5Hab8LGCLwb+Gk9IwW+0badoB5m2yfejxg48kmNHhelkbVBRdL9wT3y73zIrAn5/BX5xgT
+	VWWJeJPNwMP1fASDrREcaDB3mbey84J3Edl5jLtHYh8n6GcXdFJGCpclUR5CULj17wvJtPZcYSW
+	KaCIptOP52Y9QWPPCEM2nlkmvUcAKven1xs7eVPKWBzB6GhmXDA+9z9xdQf+QiA4X1dCg+nWTIO
+	feuqi+Zzk0OLpS7w4V21cqZifP7AmlqZJ/6o0s0WSw71GU=
+X-Received: by 2002:a17:907:e1c4:20b0:c25:1b4f:6d95 with SMTP id a640c23a62f3a-c251b4f7a1fmr632539166b.6.1787760552958;
+        Wed, 26 Aug 2026 09:09:12 -0700 (PDT)
 Received: from gmail.com ([2a01:e11:1403:8620:78ce:12f6:160d:28db])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6a5de8b641fsm3643120a12.3.2026.08.26.01.55.11
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c25271e4cbcsm386050366b.18.2026.08.26.09.09.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2026 01:55:11 -0700 (PDT)
-Date: Wed, 26 Aug 2026 10:55:10 +0200
+        Wed, 26 Aug 2026 09:09:12 -0700 (PDT)
 From: Paolo Pisati <p.pisati@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Paolo Pisati <p.pisati@gmail.com>, Damien Le Moal <dlemoal@kernel.org>, 
-	Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>
+Cc: linux-ide@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] ata: pata_cswarp: Add Amiga cslab ata support
-Message-ID: <gsfi4glv5fnwzwdw3sm7r2evfwn7gl6xqzjvslxwghdfxvreeu@i6s3xc65iple>
-References: <20260824153339.512487-1-p.pisati@gmail.com>
- <20260824153339.512487-2-p.pisati@gmail.com>
- <CAMuHMdVBjxXNX19k55Yu4D5GD1nkb31TuBJN0uFDqD9Oe5Gtsw@mail.gmail.com>
+Subject: [PATCH v6 0/2] m68k: pata_cswarp: Add Amiga cslab ata support
+Date: Wed, 26 Aug 2026 18:09:09 +0200
+Message-ID: <20260826160911.460165-1-p.pisati@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVBjxXNX19k55Yu4D5GD1nkb31TuBJN0uFDqD9Oe5Gtsw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Aug 25, 2026 at 09:53:18AM +0200, Geert Uytterhoeven wrote:
-> > +static unsigned int pata_cswarp_data_xfer(struct ata_queued_cmd *qc,
-> > +                                         unsigned char *buf,
-> > +                                         unsigned int buflen, int rw)
-> > +{
-> > +       struct ata_device *dev = qc->dev;
-> > +       struct ata_port *ap = dev->link->ap;
-> > +       void __iomem *data_addr = ap->ioaddr.data_addr;
-> > +       unsigned int words = buflen >> 1;
-> > +       u16 *buf16 = (u16 *)buf;
-> > +
-> > +       /* Transfer multiple of 2 bytes */
-> > +       if (rw == READ)
-> > +               raw_insw(data_addr, buf16, words);
-> > +       else
-> > +               raw_outsw(data_addr, buf16, words);
-> > +
-> > +       /* Transfer trailing byte, if any. */
-> > +       if (unlikely(buflen & 0x01)) {
-> > +               if (rw == READ)
-> > +                       buf[buflen - 1] = raw_inw(data_addr) >> 8;
-> > +               else
-> > +                       raw_outw(buf[buflen - 1] << 8, data_addr);
-> > +               words++;
-> > +       }
-> > +
-> > +       return words << 1;
-> 
-> This may be one less than the actual number of bytes
-> Why not buflen?
+Here is a driver (and the subsequent defconfig change) for the pata/CF socket in
+the CS-Lab Warp series of Amiga boards.
 
-Cause every other driver (e.g. buddha, falcon, gayle, etc) is actually returning
-words << 1: i think we are returning the "whole number of bytes" read
-from the bus/ATA register here, or at least that's how i understood it.
+This is a respin of v5 addressing Geert's and sashiko-bot's review.
 
-Anyhow, thanks for the review, i'll send a V6 addressing all comments.
+Tested on real Warp hardware.
+
+v5: https://lore.kernel.org/linux-ide/20260824153339.512487-1-p.pisati@gmail.com/
+
+Changes in v6:
+ - fix 7.3 FTBFS (include <linux/device-id/zorro.h>, and use named initializers in
+   the zorro_device_id table)
+ - use devm_ioremap()
+ - print the register window with %pR in ata_port_desc()
+
+Changes in v5:
+ - return the number of bytes actually consumed on the bus
+ - fix the trailing byte in pata_cswarp_data_xfer()
+ - drop a blank line in Kconfig
+ - fix the remaining checkpatch complaints
+
+Changes in v4:
+ - refactor pata_cswarp_data_xfer()
+ - ioremap WARP_OFFSET_ATA region
+
+Changes in v3:
+ - suppress a comment
+ - properly return ata_host_activate() error code
+
+Change in v2:
+ - fix style, remove duplicate swap macro, driver version, etc
+ - rework the zorro attach mechanism
+ - remove the unnecessary zorro ids refactor
+
+Paolo Pisati (2):
+  ata: pata_cswarp: Add Amiga cslab ata support
+  m68k: defconfig: enable PATA_CSWARP
+
+ arch/m68k/configs/amiga_defconfig |   1 +
+ arch/m68k/configs/multi_defconfig |   1 +
+ drivers/ata/Kconfig               |  10 ++
+ drivers/ata/Makefile              |   1 +
+ drivers/ata/pata_cswarp.c         | 183 ++++++++++++++++++++++++++++++
+ 5 files changed, 196 insertions(+)
+ create mode 100644 drivers/ata/pata_cswarp.c
+
+
+base-commit: 66498c75b4f8017f62d720d9b59675bdf3abce91
 -- 
-bye,
-p.
+2.43.0
+
