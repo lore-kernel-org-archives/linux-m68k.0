@@ -1,92 +1,138 @@
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE032D249B
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Aug 2026 06:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C11D35CB81
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Aug 2026 07:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1787810795; cv=none; b=cY4cv+G8fEGGat+QHOVm2qBQvSgRvAh0w7Ipzf2suSz1PG2MpGinyE50YMZo9SMlRYne8cRzjtI7CLs6m8Y3Ix5SDRDEV+lGziAjjUQ4KAjB18t8tExYx7SHwqVWJjqsZui/ddUaSNMGIa0bVRAqrD4MGGMZFvrj6D+ih0bUGik=
+	t=1787815769; cv=none; b=GLaQRa64zC+wTPiilYjKjcxXgtOM7muzFa3OumckfRTj3JrJp53GUsGS0YzYlGnusj4YWMurC8bPA+PagbC5Zd61PwwoiyCktv8gIm2qgq4hyDCTZT6r1Eum321C0rwJojqXwAN6jKxViAiPlBcRZ6/sV3h6inIp8SOnaQq++o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1787810795; c=relaxed/simple;
-	bh=4MEVYAYSJL4cEovvPaUuVnqFB51awZSJxYddF6SWzro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gq69hnNIJU8hblxeQF44JDGZK894+0A1Zq6M7EGp5TZlkeO/rUOU5CvHk3nZYVLwgnaXloamI/89YEfmm0aekwfrTJ3vQsRyCTzTrP41zHStOV/G61uFMa55Fca2tjpvKMqwaExkSpqcayHxqBzq1fY3dTpcbrX5FP0o2lyzXSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=atxvd2MB; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="atxvd2MB"
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 343D01691;
-	Wed, 26 Aug 2026 23:06:29 -0700 (PDT)
-Received: from localhost (a085714.arm.com [10.164.19.28])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46D2D3F85F;
-	Wed, 26 Aug 2026 23:06:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
-	t=1787810793; bh=4MEVYAYSJL4cEovvPaUuVnqFB51awZSJxYddF6SWzro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=atxvd2MBYeFEkKGg88c3L5GRhXIVBg8ao3BgsUAsWkYA7ds0RiLYyyyMKGlCqEe4v
-	 MOEpEcQqGd8VjOnqn4rLw1NEKggOUfl9biN2Je1oGa1rmznEcLbhjXu1/IkCtDfkV+
-	 TlSm0YogFKVAPwPubmvtzGJxMq025DHHeIV/tBH0=
-Date: Thu, 27 Aug 2026 11:36:29 +0530
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Lorenzo Stoakes <ljs@kernel.org>, 
-	linux-mm@kvack.org, akpm@linux-foundation.org, david@kernel.org
-Subject: Re: [RFC V3 1/8] mm: Make ptrval_to_str() generally available
-Message-ID: <xj6w5re27lbtih3lxksk2jxv6kvnpek25urjjcoobwj5pgfqtr@z5loauvsw3jj>
-References: <20260818040041.1891769-1-anshuman.khandual@arm.com>
- <20260818040041.1891769-2-anshuman.khandual@arm.com>
- <029cfde8-74fc-4437-bc18-b1b53d44cab2@sifive.com>
+	s=arc-20240116; t=1787815769; c=relaxed/simple;
+	bh=mP+PND9MZnfOzg3J+drMZ/8E/kF9YudaTPVbTh6JzI4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=esyf6BU1tROufjNrZepQ5bHOxd/mU58/GJdCoaQJZiEL8FgGiIIbU8x3ILieyTj9lCz8caieUp9/Q31kFRqz1arDQa6Icv8IDF1EsG3xEWiZYvNvZ7JA8dV7ujrcgSxUFCWiF4Gv45BqrYgJ1nlGXtrs5YDhryGtWIEtln3P028=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-5bfc54558d5so697268e0c.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Aug 2026 00:29:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1787815767; x=1788420567;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=A0FUFGzTaYR2pVts5J1GWb7YxO4YjT4Q+LUng3iGalw=;
+        b=AI+e8rvJsslN8kKgjIqHDyBNOOmR0OI6vxjObcKjPY85oGj2yJnoOjWG4PqQmY/jAH
+         nrjh/Ocjan0u7954vdWIyqhqxZs8zEsFxOFd831t1DV04+afWJlggi8YWHFV6J9jrKsK
+         tP2IQUPs5rPQ5O2oPhwd7kfDXb+SNEz8Q7abTz7iefte+FXPZ9VhPLoIetBLyom1WlKo
+         itoaXnfC77DjJZs2jlg1asS9zYG0SMriEk/D0+3HMPtPciVJ9fA1wROpqIC5u6ZnhoWB
+         wIhmWcrNUT2TiML+8mI6NcOhUGnw7za1UjHzWjkh6XP+Tq8Hp9TpcdB5ntBPsz7Zejz4
+         j01Q==
+X-Forwarded-Encrypted: i=1; AHgh+RqQImo8lgCruTImkwUo6cxcIvRnOyyTd5ewsW953kWCEJOFGYu1mJviV1g7HhOfux9RDLnOLXbudxvy@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++lqWjLtCR+Hd9oN2H9hBtcOsMeXkRxjq46JGmVqfnsDR54Ijy9w
+	REd64uwjiKeEDa2P1cYr0FxEjZBOVnPKDV0VLnnPsLVEIDcI0pXKAQcRWiHgaOE+
+X-Gm-Gg: AR+sD12Ph6M2CUyMVcTFgRYAaOfG8hg2vevJ5GEX1uMOX7PYherI/jHMCMWqwTtCRFs
+	KlqbeTeGHO7q9++kn2F9WiQlwRCaH7Z2gNLDDRTEevuSXikh3mfkADOPLBBZhXf9DMaGdLZNtII
+	zj0DLJs78jMLdxz57MPTnfPdJPDDyMKIxcZMjPckhAJnyoRM3J540+En69SSzt8EO4S3DEWe25N
+	kXDAYWuu1WI4/Kr/U1+0wSaiuX7XDKQvwu1dhs97jVCRLO58crKIr2Kl4XWkt0ldssrYGvwzpl+
+	oeDsLo+byzc3/26xEwSgTMNs0dFD4yvH5mmU0RxCS3b3OVXm7pxdHxb43jiTxH4TwBH+PoA6y5Y
+	ql6fEWfFcOwPBnGQqroh6iHOVlBG2mdPc+T8cjaBM8a4FzyD1sOazelz4tnUw3763THfrCBKCLN
+	vVGOqUBXZjWyOXtbDUhs8zUamKCX2t7SOIG6jjbZr3sI1aFgpivG3m7U0D43XPW1JrZMUia+wOd
+	c96ihBQrJfbg9oESaQ5vYnlFA==
+X-Received: by 2002:a05:6122:d22:b0:5c6:65e5:99a8 with SMTP id 71dfb90a1353d-5c66e70fbcamr1373932e0c.3.1787815766779;
+        Thu, 27 Aug 2026 00:29:26 -0700 (PDT)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-97cbe084292sm4025456241.3.2026.08.27.00.29.26
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Aug 2026 00:29:26 -0700 (PDT)
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-97cc700fcf5so521135241.0
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 27 Aug 2026 00:29:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Rqf1dtQQK0ptSdEVcRdbe/HHskUJSUlDRl5bO7QT/Z5+NbDzii4XNOAbDFhprc2ytHb3r8B48aEnyMy@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:2253:b0:783:c17c:e7de with SMTP id
+ ada2fe7eead31-7841d55ca7bmr886817137.9.1787815766141; Thu, 27 Aug 2026
+ 00:29:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <029cfde8-74fc-4437-bc18-b1b53d44cab2@sifive.com>
+References: <20260824153339.512487-1-p.pisati@gmail.com> <20260824153339.512487-2-p.pisati@gmail.com>
+ <CAMuHMdVBjxXNX19k55Yu4D5GD1nkb31TuBJN0uFDqD9Oe5Gtsw@mail.gmail.com> <b010c98c-ecd5-439c-b07d-3efad26de7f2@gmail.com>
+In-Reply-To: <b010c98c-ecd5-439c-b07d-3efad26de7f2@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 27 Aug 2026 09:29:14 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVqu-ayQYeJTsA8LoAX-=hP1nVJRJDv0ovOM+D3eLxhnA@mail.gmail.com>
+X-Gm-Features: AcwNN1WfBH6kKUpC9SplHRabqGM1MYPdaAcm9zslNQlogkHifqiVLaGwh4s0nUM
+Message-ID: <CAMuHMdVqu-ayQYeJTsA8LoAX-=hP1nVJRJDv0ovOM+D3eLxhnA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] ata: pata_cswarp: Add Amiga cslab ata support
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Paolo Pisati <p.pisati@gmail.com>, Damien Le Moal <dlemoal@kernel.org>, 
+	Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Aug 24, 2026 at 10:45:09AM -0500, Samuel Holland wrote:
-> On 2026-08-17 11:00 PM, Anshuman Khandual wrote:
-> > Move ptrval_to_str() inside a header thus making the helper more generally
-> 
-> Typo here and in subject: ptrval -> ptval
+Hi Michael,
 
-Fixed.
+On Wed, 26 Aug 2026 at 21:31, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On 25/08/26 19:53, Geert Uytterhoeven wrote:
+> >> +static unsigned int pata_cswarp_data_xfer(struct ata_queued_cmd *qc,
+> >> +                                         unsigned char *buf,
+> >> +                                         unsigned int buflen, int rw)
+> >> +{
+> >> +       struct ata_device *dev = qc->dev;
+> >> +       struct ata_port *ap = dev->link->ap;
+> >> +       void __iomem *data_addr = ap->ioaddr.data_addr;
+> >> +       unsigned int words = buflen >> 1;
+> >> +       u16 *buf16 = (u16 *)buf;
+> >> +
+> >> +       /* Transfer multiple of 2 bytes */
+> >> +       if (rw == READ)
+> >> +               raw_insw(data_addr, buf16, words);
+> >> +       else
+> >> +               raw_outsw(data_addr, buf16, words);
+> >> +
+> >> +       /* Transfer trailing byte, if any. */
+> >> +       if (unlikely(buflen & 0x01)) {
+> >> +               if (rw == READ)
+> >> +                       buf[buflen - 1] = raw_inw(data_addr) >> 8;
+> >> +               else
+> >> +                       raw_outw(buf[buflen - 1] << 8, data_addr);
+> >> +               words++;
+> >> +       }
+> >> +
+> >> +       return words << 1;
+> > This may be one less than the actual number of bytes
+> > Why not buflen?
+> >
+> words = buflen >> 1;
+>
+> followed by
+>
+> if (buflen & 0x01) words++;
+>
+> makes 'words' the correct (i.e. rounded upwards if buflen was odd)
+> number of words transferred.
 
-> 
-> > available for new users which are being added later. While here, also move
-> > another related string size macro PTVAL_STR_MAX inside the header as well.
-> > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: David Hildenbrand <david@kernel.org>
-> > Cc: Lorenzo Stoakes <ljs@kernel.org>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > ---
-> >  include/linux/mm_types.h | 15 +++++++++++++++
-> >  mm/memory.c              | 16 ++--------------
-> >  2 files changed, 17 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index b18c2b2e7d2c..a5b514e55dd7 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -2001,4 +2001,19 @@ static inline unsigned long mmf_init_legacy_flags(unsigned long flags)
-> >  	return flags & MMF_INIT_LEGACY_MASK;
-> >  }
-> >  
-> > +void ptval_bytes_to_hex_str(char *buf, size_t buf_size, const void *entry, size_t entry_size);
-> > +
-> > +#define ptval_to_str(buf, val)								\
-> >...
+Thanks, I had completely missed that increment.
+
+> The return value is then either correct, or one larger than the actual
+> number of bytes?
+>
+> I believe the template for these functions was
+> drivers/ata/libata-sff.c:ata_sff_data_xfer() which follows the exact
+> same logic.
+
+Then Life's Good ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
