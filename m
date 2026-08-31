@@ -1,117 +1,112 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8493DCDA4
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 31 Aug 2026 09:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D532571DA;
+	Mon, 31 Aug 2026 20:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788169768; cv=none; b=Ee53XKNoePLy2lLp+zy20sDm65FjByGk2ithMJRji3+xtatJ70wIcfHayoN9hreGpdYl26LgtB/wJLg4rrRPyMmgzrBDiT1QzypiSOhY+ISXPDTgEKyDKCHgHuaMDqyC1DSY3lSaQoTtnS90AfonnCYijzKb1Pdzepz7QBi6MVc=
+	t=1788206494; cv=none; b=BkdMh9+Qt7oGMHDByyQo1mw//S3wg/LhNsianOPXgB2JL8ujFIdhXgxqzlyjI36ESi494hFC/4beXN7HowDNB/A0scyM38c5pRDRQk3qpUI1KWuIR0ZA6QFeD9pdwPNi/eSbndzp1Zzfoc0NwTxTLq/IieRSogA8r+naDHQ3Vcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788169768; c=relaxed/simple;
-	bh=BPSBHVHwtg6F6NTQNRQrL+63+1rXBP6TQlmVbo/fiMk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RqE61HglV82O7B67GABHtKLKhJ5SRE9PaOjE0inAYm5dPFyIs4bOo0/g1VrPo4o0wR3gVDur8zB/HN12iHqRVSJUlMX6URswmj97M2/IlWQ+mbg8K9ZJ8vfMp/jmg7qQv0TwgQhUOPqO4g2kpheYXR8oQ5wT5D7/sUlbJS0DtKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 0D87B6013A;
-	Mon, 31 Aug 2026 09:49:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC761F000E9;
-	Mon, 31 Aug 2026 09:49:23 +0000 (UTC)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"Martin K . Petersen" <mkp@kernel.org>
-Cc: linux-scsi@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] scsi: zorro7xx: Use individual zorro_driver_data structures
-Date: Mon, 31 Aug 2026 11:49:20 +0200
-Message-ID: <7deafe83754415c5beb280f3c1808e153029e890.1788169600.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1788206494; c=relaxed/simple;
+	bh=OeDDnqo1IRQEK4Js5nZgXclVX2MFMUyaSHTgtYCOrSo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=njkYA1k+ZugF+FEXl7H41FdDK//v8WgsTMQu88pQDcZWzSDn3lJOgnkwH5QLJYed6ubNo9OJFvzD+JJEYecctOiGVSzp6O+7EHGyER2c1R45arb0xRwhryBI1yGZ4tcyHVpe6uAgv5L72yQtj2UFgX6GVzupetlhW4qRiAgctho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=hRWHGA+w; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="hRWHGA+w"
+Received: from [IPV6:2601:646:8081:8d71:2faf:8150:30da:aafd] ([IPv6:2601:646:8081:8d71:2faf:8150:30da:aafd])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 67VJvbar3264483
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Mon, 31 Aug 2026 12:57:38 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 67VJvbar3264483
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2026082801; t=1788206263;
+	bh=Lfk4Zm0mu1VaJNyCW+feQLM2PduJnrH08+Q8uKNAglM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hRWHGA+w8FeyeULwEDoEDUDPGkwf8JT2eZmPRRthmhsNz9HWOb7HiXCTZLLUmuztp
+	 lWRv7ug1Z+kxGR18u2FB1NAFu/6cVMaURG6BetJiHKBnIMtH9EfefRvmdaf5cQcfWS
+	 Iv6R5AMN9t7OAQ114p39WCAynQY5oir3FFMoBbYdgUDXZtV4B07Wsr3e2OhubFmvQs
+	 ktT4EOmqNjonvu8hUPE3i1g0T9wDBDboBsSqe9LwY819N+bvUhSesPS4zzwQuLkCru
+	 dSZCFGqC+rA/gs0WgODW7ZBr87rVZStGsxS6+U65Nf/RVAnAJDMEX94B5D/OKkRTEH
+	 BWNnKAFiy16zQ==
+Message-ID: <1238a07e-ce04-47d9-b8ac-8b7f557b401f@zytor.com>
+Date: Mon, 31 Aug 2026 12:57:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [patch 00/18] entry: Consolidate and rework syscall entry
+ handling
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Thomas Gleixner <tglx@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michael Ellerman
+ <mpe@ellerman.id.au>,
+        Shrikanth Hegde <sshegde@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        Kees Cook <kees@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        loongarch@lists.linux.dev, Paul Walmsley <pjw@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+        x86@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Jinjie Ruan <ruanjinjie@huawei.com>, Andy Lutomirski <luto@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Helge Deller
+ <deller@gmx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>,
+        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-m68k@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, Vineet Gupta <vgupta@kernel.org>,
+        Will Deacon <will@kernel.org>, Brian Cain <bcain@kernel.org>,
+        Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andreas Larsson <andreas@gaisler.com>,
+        linux-snps-arc@lists.infradead.org, linux-hexagon@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+References: <20260707181957.433213175@kernel.org>
+ <ed8b99e6-4d90-4622-9d43-451bf6a8db2c@zytor.com>
+ <20260831085056.34274A00-hca@linux.ibm.com>
+Content-Language: en-US, sv-SE
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <20260831085056.34274A00-hca@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Using an array of zorro_driver_data objects and referring to its
-elements by index obfuscates the code and is error-prone.
+On 2026-08-31 01:50, Heiko Carstens wrote:
+> On Thu, Aug 27, 2026 at 03:22:35PM -0700, H. Peter Anvin wrote:
+>> This isn't a hard thing to solve in any way: replacing the pointer argument
+>> with a two-element structure return would do the trick. As far as I know,
+>> *all* architectures that support Linux support returning structures with two
+>> register-sized values in registers.
+> 
+> That is unfortunately not true. The s390 ABI defines that structures,
+> regardless of size, are returned in a return value buffer allocated by
+> the caller.
 
-Improve readability and reduce code size by replacing the array (which
-includes an unneeded sentinel) by individual zorro_driver_data objects.
+*Groan*
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Compile-tested + assembler output inspected.
----
- drivers/scsi/zorro7xx.c | 31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+You guys should use an improved ABI for the kernel like i386 does (different
+from the standard ABI used in user space)...
 
-diff --git a/drivers/scsi/zorro7xx.c b/drivers/scsi/zorro7xx.c
-index 21c769dc1ecbda49..89475632675c0fb1 100644
---- a/drivers/scsi/zorro7xx.c
-+++ b/drivers/scsi/zorro7xx.c
-@@ -35,38 +35,45 @@ static struct scsi_host_template zorro7xx_scsi_driver_template = {
- 	.module		= THIS_MODULE,
- };
- 
--static struct zorro_driver_data {
-+struct zorro_driver_data {
- 	const char *name;
- 	unsigned long offset;
- 	int absolute;	/* offset is absolute address */
--} zorro7xx_driver_data[] = {
--	{ .name = "PowerUP 603e+", .offset = 0xf40000, .absolute = 1 },
--	{ .name = "WarpEngine 40xx", .offset = 0x40000 },
--	{ .name = "A4091", .offset = 0x800000 },
--	{ .name = "GForce 040/060", .offset = 0x40000 },
--	{ 0 }
-+};
-+
-+static const struct zorro_driver_data zorro7xx_blizzard_603e_plus_data = {
-+	.name = "PowerUP 603e+", .offset = 0xf40000, .absolute = 1
-+};
-+static const struct zorro_driver_data zorro7xx_warp_engine_40xx_data = {
-+	.name = "WarpEngine 40xx", .offset = 0x40000
-+};
-+static const struct zorro_driver_data zorro7xx_a4091_data = {
-+	.name = "A4091", .offset = 0x800000
-+};
-+static const struct zorro_driver_data zorro7xx_gforce_040_060_data = {
-+	.name = "GForce 040/060", .offset = 0x40000
- };
- 
- static struct zorro_device_id zorro7xx_zorro_tbl[] = {
- 	{
- 		.id = ZORRO_PROD_PHASE5_BLIZZARD_603E_PLUS,
--		.driver_data_ptr = &zorro7xx_driver_data[0],
-+		.driver_data_ptr = &zorro7xx_blizzard_603e_plus_data,
- 	},
- 	{
- 		.id = ZORRO_PROD_MACROSYSTEMS_WARP_ENGINE_40xx,
--		.driver_data_ptr = &zorro7xx_driver_data[1],
-+		.driver_data_ptr = &zorro7xx_warp_engine_40xx_data,
- 	},
- 	{
- 		.id = ZORRO_PROD_CBM_A4091_1,
--		.driver_data_ptr = &zorro7xx_driver_data[2],
-+		.driver_data_ptr = &zorro7xx_a4091_data,
- 	},
- 	{
- 		.id = ZORRO_PROD_CBM_A4091_2,
--		.driver_data_ptr = &zorro7xx_driver_data[2],
-+		.driver_data_ptr = &zorro7xx_a4091_data,
- 	},
- 	{
- 		.id = ZORRO_PROD_GVP_GFORCE_040_060,
--		.driver_data_ptr = &zorro7xx_driver_data[3],
-+		.driver_data_ptr = &zorro7xx_gforce_040_060_data,
- 	},
- 	{ }
- };
--- 
-2.43.0
+That being said, perhaps s390(x) isn't affected by the underlying problem, and
+passing a pointer to a structure isn't any more expensive than passing a
+pointer to a variable...
+
+	-hpa
 
