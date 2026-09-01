@@ -1,186 +1,288 @@
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50CE4766BC
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Sep 2026 09:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA2A47D44B
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  1 Sep 2026 11:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788253835; cv=none; b=UR9umMYvpSwXE75/ZonQPZq7CBIrUD9v1xTzvjOjz5+hqnvbixayAKF9eK2PJn2ZqMFFxqnCzhnGKJIeIPKtaNxl0Cp10jF9Vmpx7moWEIMyhFl2rsIDAkhU0T4DheqOiJEmTb6Xqc9+ddSRj7K52zQ26khvt5Llh1heOIJ3DT0=
+	t=1788260715; cv=none; b=EmNzDKDDxFXmq4z7wKf7wVWyrAwqpuVFDO/J1EGVMeyK9do/67/GfHJ1MaEEQly9OWh9BD/eJVBCt5NjDc+ll5BerbxUlww1DoiLiuS/WJHcJxX5pfIAJE3U9QafZ9u4dKmcLfPGNsF2wTWk5H5MzF5Mr1iRDov2VRxebxjLNs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788253835; c=relaxed/simple;
-	bh=MbIyWVV1fDEvUhmmiJrRl8bgUScodrVy2todr24b9xg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YzdmU8xUAMZVFOwIxH3auGCujsKz6MAyz5aehdKxHMzx+RbfbgekPoHG4M8lDr8h7DLd6Hqi1XwZo3ggFDWxi32BkxgS7I1cbudASo/Pj/5q+X0hhBNRKGxTlIXJtPxSAzO9EX1HxAqAKMNF0KQq5kBNAIo45vWvi/lSmYQqH0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-977258a75d9so2734843241.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 01 Sep 2026 02:10:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788253825; x=1788858625;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=FAHBVIqCMd7JP6CfhiZjkc1474N3IhXqUrk37KgzKlc=;
-        b=Gj/qf5vHZpJroldw5MbLtCZxOL8lDcrLPGFsDzsvuEMl2sPYoMlsB9VqUSzQ27ll2P
-         y2GfxfXV9KCBrcPZGxq7C4kzNUz9tRGsJilJDao1euu1joOV1o4ZsgqSK4Cn5ZbAehgT
-         71dXzyiYwUf0OTjdug/6Q5ct6dK6hykW0jSihmvHTdo7k12WeLO7ECFOUjOiC9oXPNux
-         rNjPFepOGQpJlLKLjBniixbF8952MUMx+MTflM40PgOHOgzzsWz2cRcNKrdOoxGumqCA
-         PCjymBNTDWP/IEAdWyJtfRJHxXuXdRc8wI0ckziK6+1YYwlZImW9rpGTsjpjzcU//j1H
-         53rQ==
-X-Forwarded-Encrypted: i=1; AHgh+Rr8BZPj0Anjc7b7ECbb5Q2rfKn7tgJ66cb2Qv24ciOC6EXjJTPlC01SJZUSt8566lUssdUdu9aa44U5@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++nfwmK8CP6p/D5euYyposBsn086iK+CCh+JZa5zDKPbU8Gtc/ti
-	dGgjpA9bcnkF5tJlUd/reuwMs/HffvnFhWlRN/wxp8uLH4tirDAliPQcbfBweAQ+
-X-Gm-Gg: AR+sD11d6pD7RowVXSkqUj1Ql7wY3xthkYDwmI8GTQGXKbim+rj5MAaDqF0Bt8h7O0Q
-	2cOj7VBuszOP0gZT5FaK2bT00zLr2dyzpILhUZVeDO0YcZnZ0jEMixiBi18mEXG4O+7v+Fcq0FR
-	AB1YAOu0v9ZziYPY2+nHllJd6gRye1sBWWaxYgWkf42FvUcgWOlbOUmATvTflMQiGODsM5g/1A9
-	geS2ZbMQdoEVEDIlxwGeFy4xvMrafWn0QYNkwJs8fjmB1TVpz2kYL7gc+ZRxJ7rpbwjjv9TUKUo
-	smdztlLSqn8nZLXHPQ/ummvhc3um+sb+Akuvh75Tdq39XgYnB6G7JNheSx3WsZyCwWdTWL0S6Gd
-	WoSKQgdK0kQcFgXiS54AiS+ZDuuxo5+F2Arph86Apxb6RpPWKHrfCMoPAzOhKKGyP7DOU98RT06
-	0stoAw3v7E4YoPh3cDI5fFwAmIaUoQ9L5FeUz7QfHcfEyAW3UzYhClRtYXrK/pEO/POrvpIsbDn
-	DZ0RfLqltcdeIk+4ubg5o5q/BzjhA==
-X-Received: by 2002:a05:6102:5123:b0:786:c86c:8fe4 with SMTP id ada2fe7eead31-786c86c9122mr10225734137.13.1788253825242;
-        Tue, 01 Sep 2026 02:10:25 -0700 (PDT)
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com. [209.85.221.180])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-97e84b6d320sm9620088241.9.2026.09.01.02.10.25
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2026 02:10:25 -0700 (PDT)
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-5bfa6766cf6so2579404e0c.3
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 01 Sep 2026 02:10:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RoWexOxZUgQpT7gljZeCYoDWZLjJnXuESWqebz7+3rrAubqNBOghdklLzPo0BBgtzMivS9HsY5fetK2@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:3e83:b0:779:c38e:de53 with SMTP id
- ada2fe7eead31-7859956a1cdmr13463869137.10.1788253824841; Tue, 01 Sep 2026
- 02:10:24 -0700 (PDT)
+	s=arc-20240116; t=1788260715; c=relaxed/simple;
+	bh=nOobssw3s2ybzz17WgTPwcFF0UlLF/ay3MomYWqGLy4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IJSHKVwV5kBBLtkhpMCYppywn57rXmz6CmM0Lj00d/zBvGda64rVgE3WzojQMNvSODsF4XHKa6wuCsqqWOtZsqxLQEZA3J/hG6TcS4MYAZFi0M2edaFEacvaTu6fBagjD+LcgvlFrkDl9lWFsDFoEsST5gMFfjhCoexp5V87rv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aocYUNqM; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aocYUNqM"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 90DAA6013A;
+	Tue,  1 Sep 2026 11:05:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 188E71F000E9;
+	Tue,  1 Sep 2026 11:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788260711;
+	bh=gRmiVdG7zWf/GvbotLfM+46aH1AfJWGnO1OGWRPxU9E=;
+	h=From:Subject:Date:To:Cc;
+	b=aocYUNqMRbNIbR6s7Rg9UHR1UN1/ebvPynn8GpuDG2QdVDakyem/wqr3PXG73lTrw
+	 LRwJV+WxkKceCXprisvIxR3VWfUEANDIb29r9bo9cxnwu1RT88h7/r2oNGO6i4DLfA
+	 /1H00YbDEOwscD5LsRcrichbczg0w+PRJI3ol5M4Acd/RMmHVJ82SDlNk7qRSKQ6fv
+	 yZgIP4l8yq1hjJzoNIjNVErJih9+CIYXFkubFhrXJBYOwhfyQUHWcWiVYCHurHrUdp
+	 5I376A6qXa8usdLRXcRLGYqkpNqZlPMrocSBYL9TMfz13c76O+Hpawt3iY9CtV9EP1
+	 gw7MT7SmcXBiA==
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Subject: [PATCH 00/12] mm: make userland page table freeing RCU-safe
+Date: Tue, 01 Sep 2026 12:01:20 +0100
+Message-Id: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1786929430.git.fthain@linux-m68k.org> <1e349506a7cc6aa574aacbd4c69c240b5a1e3eb8.1786929430.git.fthain@linux-m68k.org>
- <CAMuHMdXgtstGtcbRkrtKtQ+d1c=mCe5zgYZCx4dyUQ_YnVhbbw@mail.gmail.com> <b0f20a10-78d4-e8e6-4001-99f076b99a8a@linux-m68k.org>
-In-Reply-To: <b0f20a10-78d4-e8e6-4001-99f076b99a8a@linux-m68k.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 1 Sep 2026 11:10:12 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXGBT+Xbm+zftBzQEaCgAY2CNUxqE9Swz03se4tVisENg@mail.gmail.com>
-X-Gm-Features: AcwNN1Vv8ix3n1nJubUXaePLSvTFNecD0g75FaaL-e1OfJQWQPFwaJuEm50wUr4
-Message-ID: <CAMuHMdXGBT+Xbm+zftBzQEaCgAY2CNUxqE9Swz03se4tVisENg@mail.gmail.com>
-Subject: Re: [PATCH v2 07/32] swim: Enable clock divider only where appropriate
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Laurent Vivier <laurent@vivier.eu>, 
-	Joshua Thompson <funaho@jurai.org>, linux-block@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAICwlmoC/yXMQQqDMBBG4avIrDsQY5HQq0gXSfobR0qUiZaCe
+ Pem7fJbvHdQgQoK3ZqDFC8psuSK9tJQnHxOYHlUkzW2N65rWePOq0/YfHiCRwUkJ3bX0Ae4zsA
+ aqu2qGOX9+w73v8seZsTtO6Pz/AAWVW4teQAAAA==
+X-Change-ID: 20260831-rcu-pagetable-freeing-84b6be830e20
+To: Andrew Morton <akpm@linux-foundation.org>, 
+ David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
+ Baolin Wang <baolin.wang@linux.alibaba.com>, 
+ "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
+ Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
+ Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
+ Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
+ Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Dinh Nguyen <dinguyen@kernel.org>, 
+ Simon Schuster <schuster.simon@siemens-energy.com>, 
+ Jonas Bonn <jonas@southpole.se>, 
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
+ Stafford Horne <shorne@gmail.com>, 
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
+ Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
+ Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
+ Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+ Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Andreas Larsson <andreas@gaisler.com>, 
+ Richard Henderson <richard.henderson@linaro.org>, 
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
+ Catalin Marinas <catalin.marinas@arm.com>, 
+ Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
+ WANG Xuerui <kernel@xen0n.name>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Johannes Berg <johannes@sipsolutions.net>, 
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+ Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+ Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
+ linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
+ linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
+ linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+ linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
+ Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7724; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=nOobssw3s2ybzz17WgTPwcFF0UlLF/ay3MomYWqGLy4=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKmbXRPzZlRe2dXWOSN5VOqw0LTPl0Mv/7n0cOKu9vTL
+ j4St330uqOUhUGMi0FWTJHl+Rfx/UEiYfM6L/i7wcxhZQIZwsDFKQATOfiUkWFF16YP/Tyvz6vt
+ NXmiVXQwt/+G8BbtXWvMJyYvqkt1jd7ByLDI/qRK5V1pmT/yjf2L/kXdcliok3bDpfT2pNb26wH
+ 9TxkB
+X-Developer-Key: i=ljs@kernel.org; a=openpgp;
+ fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 
-Hi Finn,
+The majority of architectures in the kernel defer page table freeing until
+an RCU grace period has elapsed, this series converts all remaining
+architectures to do so too and eliminates CONFIG_MMU_GATHER_RCU_TABLE_FREE
+altogether.
 
-On Tue, 1 Sept 2026 at 09:56, Finn Thain <fthain@linux-m68k.org> wrote:
-> On Mon, 31 Aug 2026, Geert Uytterhoeven wrote:
-> > On Mon, 17 Aug 2026 at 03:55, Finn Thain <fthain@linux-m68k.org> wrote:
-> > > Some models have a 16 MHz FCLK oscillator and others 32 MHz. Put this
-> > > information into the swim device platform_data so that the driver can
-> > > correctly enable the clock divider. When this is enabled incorrectly,
-> > > nothing can be read and failures from the Error Correction Machine are
-> > > flagged in the error register.
-> > >
-> > > This is chip initialization, so do this in swim_floppy_init() rather
-> > > than floppy_open(). Drop the udelay() which was apparently copied and
-> > > pasted from swim3.c, where it relates to interrupts (of which this chip
-> > > has none).
-> >
-> > > Cc: Joshua Thompson <funaho@jurai.org>
-> > > Reviewed-by: Laurent Vivier <laurent@vivier.eu>
-> > > Fixes: 8852ecd97488 ("m68k: mac - Add SWIM floppy support")
-> > > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+This is important because it enables safe lockless page table walking under
+RCU alone.
 
-> > > --- a/arch/m68k/mac/config.c
-> > > +++ b/arch/m68k/mac/config.c
-> > > @@ -984,8 +984,37 @@ static int __init mac_platform_init(void)
-> > >                         .start = swim_base,
-> > >                         .end   = swim_base + 0x1FFF,
-> > >                 };
-> > > +               unsigned int data = 0;
-> >
-> > Nit: in the absence of a real platform_data structure, please use a
-> > more explanatory name.
-> >
-> > Perhaps s/data/s_fclk/, and store S_FCLK_DIV2 or zero?
-> > Or s/data/setup/, and store the full register value?
->
-> I looked again at this but I still can't see any uses for the other bits.
-> So perhaps I should change it to:
->
-> +               bool fast_fclk = false;
+Doing so allows for reduced lock contention, avoids lock ordering concerns
+and enables fast, efficient and correct page table walking as a result.
 
-That's another option.
+Additionally it removes a bunch of code and architecture-specific behaviour
+which is always a beneficial thing to do.
 
-> > > --- a/drivers/block/swim.c
-> > > +++ b/drivers/block/swim.c
-> >
-> > > @@ -807,8 +806,10 @@ static void swim_set_parameters(struct swim __iomem *base)
-> > >                 swim_write(base, parameter, mem[i]);
-> > >  }
-> > >
-> > > -static int swim_floppy_init(struct swim_priv *swd)
-> > > +static int swim_floppy_init(struct platform_device *pdev)
-> > >  {
-> > > +       struct swim_priv *swd = platform_get_drvdata(pdev);
-> > > +       unsigned int *data = pdev->dev.platform_data;
-> >
-> > Likewise.
-> >
->
-> ... and change that to:
->
->         bool *data = pdev->dev.platform_data;
->         bool fast_fclk = data && *data;
->
-> I am unsure whether a NULL check is desirable here (?)
+There has been much recent work on this:
 
-In theory it cannot happen on a sane system. But recently people started
-hardening drivers against misuse through sysfs' driver_override and
-bind attributes, in which case the pointer would be NULL.
+* In 2023 Hugh Dickins RCU-deferred khugepaged page table retraction in
+  commit 13cf577e6b66 ("mm/pgtable: add pte_free_defer() for pgtable as
+  page").
 
-> Interestingly, that NULL check itself is sufficient and so we don't really
-> need the flag at all. Allocating memory for this bool is a completely
-> pointless kmalloc.
+* Qi Zheng has done most of the work that made this possible starting with
+  the critical commit 718b13861d22 ("x86: mm: free page table pages by RCU
+  instead of semi RCU").
 
-Sure, but readability and maintainability also matter.  In the absence
-of a proper driver-specific platform data structure, having a boolean
-variable with an explanatory name is better than an obscure NULL
-pointer check.
-And what if you need to add more data later? At least the bool can be
-safely replaced by a larger structure with a bool as its first member,
-without the need for a single atomic patch.
+* Qi then went on to convert a large number of architectures in commit
+  e3ecf7c7d082 ("mm: pgtable: convert some architectures to use
+  tlb_remove_ptdesc()"), commit 44b079583f7d ("alpha: mm: enable
+  MMU_GATHER_RCU_TABLE_FREE") and the series to which it belongs.
 
-> > >         struct queue_limits lim = {
-> > >                 .features               = BLK_FEAT_ROTATIONAL,
-> > >         };
-> > > @@ -816,6 +817,8 @@ static int swim_floppy_init(struct swim_priv *swd)
-> > >         int drive;
-> > >         struct swim __iomem *base = swd->base;
-> > >
-> > > +       swim_write(base, setup, S_IBM_DRIVE | (*data ? S_FCLK_DIV2 : 0));
-> > > +
->
->         swim_write(base, setup, S_IBM_DRIVE | (fast_fclk ? S_FCLK_DIV2 : 0));
->
-> Would the bool be more acceptable? TBH, I'm not sure it's an improvement.
->
-> Thanks for your review.
->
-> > >         swim_set_parameters(base);
-> > >
-> > >         /* scan floppy drives */
+* Qi then introduced the important CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE
+  option in commit 086498aed3f6 ("mm: convert __HAVE_ARCH_TLB_REMOVE_TABLE
+  to CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE config").
 
-Gr{oetje,eeting}s,
+* Finally, and critically, Lance Yang then converted the batch allocation
+  fallback case to be RCU-safe in commit 1fb3d8c20bfa ("mm/mmu_gather:
+  replace IPI with synchronize_rcu() when batch allocation fails").
 
-                        Geert
+The work I do here is only possible due to the work Hugh, Qi, Lance and
+others have done previously.
 
+An initial task this series addresses is to zap deposited page tables after
+an RCU grace period. Not doing so is currently safe, but for page table
+walkers relying on RCU alone, it would not be.
+
+The changes are largely mechanical - the majority of arches already have
+the machinery required to support CONFIG_MMU_GATHER_RCU_TABLE_FREE and
+simply needed configuration changes or small implementation changes to
+switch over.
+
+However some arches required extra attention - sh-X2, m68k-motorola and
+sparc32.
+
+sh-X2 allocates PMDs from the slab allocator and PTEs as normal. Therefore
+CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE is set to customise page table freeing
+and the LSB is used to encode which page table level is used, with
+__tlb_remove_table() doing the right thing depending on this.
+
+This pattern is repeated for m68k-motorola and sparc32 to account for
+different page table levels. In each case, the page tables are aligned such
+that sufficient bits are available in each case for encoding this
+information.
+
+m68k-motorola required the biggest change - since RCU page table freeing
+uses call_rcu(), this means page table freeing can arise from softirq
+context.
+
+This was fixed with an IRQ-safe spin lock used in both get_pointer_table()
+and free_pointer_table().
+
+As part of this change, the logic for allocation of a new pointer table was
+separated out into add_pointer_table() to make the locking more obviously
+correct.
+
+Finally, sparc32 was similar to m68k-motorola in that locking was required,
+however this was already implemented via a spinlock, and only had to be
+updated to be IRQ-safe.
+
+Additionally, the nocache pool's bit_map lock was updated to be IRQ-safe
+for softirq frees.
+
+Separately, the PTE path can't take mm->page_table_lock from softirq (no mm
+there), which is fine because the page reference count transitions are
+atomic and fully ordered.
+
+The series finally removes CONFIG_MMU_GATHER_RCU_TABLE_FREE and all related
+configurations and code that supported !CONFIG_MMU_GATHER_RCU_TABLE_FREE.
+
+As a result, page table walks can now be performed safely under RCU without
+any risk of page tables being freed underneath a walker.
+
+However, this is the only guarantee that this work provides - page table
+walkers must still ensure that page table entries are as expected
+throughout.
+
+All changes have been build tested. As most of the conversions are simply
+utilising existing mechanics that are known to work, this suffices for most
+cases.
+
+However those arches where significant changes have been made -
+m68k-motorola, sparc32 and sh-X2 - have been tested further.
+
+For each of these a boot test and stress test has been performed - fork 400
+children, each mmap()'ing 2 MiB and touching every page then partially
+munmap()'ing then exiting to trigger as much page table freeing as
+possible.
+
+All were found to be working correctly.
+
+Note that sparc32 LEON SMP is not emulated, Andreas - do you have a means
+of testing this?
+
+Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+---
+Lorenzo Stoakes (ARM) (12):
+      mm/huge_memory: zap deposited page tables after an RCU grace period
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for most 2-level architectures
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU riscv
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU arm
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for arc, microblaze, xtensa
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc64
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for m68k-coldfire
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for sh-X2
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for m68k-motorola
+      mm: enable MMU_GATHER_RCU_TABLE_FREE for sparc32
+      mm: make userland page table freeing RCU-safe
+      mm: change the contract for free_pgtables(), update docs
+
+ Documentation/mm/process_addrs.rst       |   6 ++
+ arch/Kconfig                             |   8 --
+ arch/alpha/Kconfig                       |   1 -
+ arch/arc/include/asm/pgalloc.h           |   6 +-
+ arch/arm/Kconfig                         |   1 -
+ arch/arm64/Kconfig                       |   1 -
+ arch/loongarch/Kconfig                   |   1 -
+ arch/m68k/Kconfig                        |   1 +
+ arch/m68k/include/asm/mcf_pgalloc.h      |   5 +-
+ arch/m68k/include/asm/motorola_pgalloc.h |   9 ++-
+ arch/m68k/mm/motorola.c                  | 121 ++++++++++++++++++++-----------
+ arch/microblaze/include/asm/pgalloc.h    |   2 +-
+ arch/mips/Kconfig                        |   1 -
+ arch/parisc/Kconfig                      |   1 -
+ arch/powerpc/Kconfig                     |   1 -
+ arch/riscv/Kconfig                       |   1 -
+ arch/s390/Kconfig                        |   1 -
+ arch/sh/Kconfig                          |   1 +
+ arch/sh/include/asm/pgalloc.h            |   6 +-
+ arch/sh/mm/pgtable.c                     |  20 +++++
+ arch/sparc/Kconfig                       |   4 +-
+ arch/sparc/include/asm/pgalloc_32.h      |   7 +-
+ arch/sparc/include/asm/pgalloc_64.h      |   8 --
+ arch/sparc/include/asm/tlb_64.h          |   2 -
+ arch/sparc/lib/bitext.c                  |  14 ++--
+ arch/sparc/mm/srmmu.c                    |  26 ++++++-
+ arch/um/Kconfig                          |   1 -
+ arch/x86/Kconfig                         |   1 -
+ arch/xtensa/include/asm/tlb.h            |   2 +-
+ include/asm-generic/tlb.h                |  66 +++--------------
+ mm/Kconfig                               |   2 +-
+ mm/gup.c                                 |   5 +-
+ mm/huge_memory.c                         |   2 +-
+ mm/mmu_gather.c                          |  30 ++------
+ mm/pgtable-generic.c                     |  18 ++++-
+ 35 files changed, 194 insertions(+), 188 deletions(-)
+---
+base-commit: 88297631d4d42f6004cb39c0ba3da7d2d10a616f
+change-id: 20260831-rcu-pagetable-freeing-84b6be830e20
+
+Cheers,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Lorenzo Stoakes (ARM) <ljs@kernel.org>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
