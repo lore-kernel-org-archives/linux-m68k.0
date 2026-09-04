@@ -1,115 +1,159 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E180E379EC4;
-	Tue,  1 Sep 2026 17:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0544C442389
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  4 Sep 2026 09:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788284926; cv=none; b=nRw44fybFluxUpS3KRt7kSsW6w/OGu3GXPu0so8YF/A4/X3lm6b9C39uqwoNXw4jEEW+86ji667yiQbpG+uZ+enhEq+DbEbrIBESKCTPnQ8mcqz5Z+BKh/4f2zePlE6KiHfgx2gG7gqdM6YA8a/o77ucMvuFcyhvG/YwuFeEHqw=
+	t=1788514289; cv=none; b=qJPtGIQJJQ90Rgvf39XUlB8VLjOyEFKOo241SWRxHvlbxXeMS6L92V4wHCqiX/NdErdGIj2NB0yrGVVobp09Oa1rCt692ZEU7HdjHjqCxBA0Id2GRsPDx25kHsVKf2KFMwc605+Vlrh4F1obBAZ9oxU4IJLktSlsZ6djqF3FWB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788284926; c=relaxed/simple;
-	bh=ILEgUta+XEN5A01rR7LjqPYu5e1vBHkVQXMhim+XKZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QL2a4/xJJ7CEboRu8aaKbIpBEqV6TOOxxB3hZZ/7NAGEclplMo33/wpPsHIYDHA1WT5xAarWWJ/o5aIXFEnUrfOXXJ3PePT8RFhwXklDSjaR3b2k1sXfK9Bi0HX3JkV6ZhUcrGuzOkbRdJosmkTgIuNLCIvZ3MkE31VtWPbpDik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=UVtis7e+; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1788514289; c=relaxed/simple;
+	bh=Bk6agGTkGhO17/ptxZFZm7ZXadBaOCtXHALvbNd4TI4=;
+	h=Message-ID:From:Subject:Date:To:Cc; b=XlFDCp7mnSWw5RCs/PB+N66/b+NSjrBxhAIGsn9sJStF6xnOkQM12qp2+/JdTPOCm/sLiTJKg7hWz1FbQwGGkzNJ5u6X/FIe4kmtO0U6sho2MDNUO83MgiGvqI6qtvn+xwdmQaLxXKLfNp4HmD5Q7VpWXR9oUGN62848JoqHTr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fzgNzAbv; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UVtis7e+"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=PQNx8cP7/H92zG22iJw5UI7f9yq7f8zWrRV0yPrbUWI=; b=UVtis7e+r5/G27TIqfxZ+en6iD
-	ewP14Pe2h9SnqatfXnO6L1fC4qcBnFOELp+V8WjW5RT1xwY3uZi3XSEv9Vu+4qZ1jP6BGVn7PXBEA
-	4Uw0Phr831M7R4vLdI8REUIOdbiINbJ1LMU5Mje2MkkXTCbCEn9Xn2ArP+y9asBIjud478+zn1SSo
-	lebc9FLfrg1/y0a6m2dAyJLJ3yltmw6G3+vcRUXeO4yRAwAxeKznEDSHVJJRWpAMX3il8mcbEeTWo
-	3139sv5kbIIlk0Z/E868rddoQ5sSESOXVT4ZQj4kMrc2J++kPSB2h0IKqxPLn0UnyiWT6B5SeVd+c
-	852DOAfw==;
-Received: from [38.23.173.23] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1x1SaY-0000000Crxj-16sr;
-	Tue, 01 Sep 2026 17:48:03 +0000
-Date: Tue, 1 Sep 2026 13:47:49 -0400
-From: "Liam R. Howlett" <liam@infradead.org>
-To: Kiryl Shutsemau <kas@kernel.org>
-Cc: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Nico Pache <nico.pache@linux.dev>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>, 
-	Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>, Guo Ren <guoren@kernel.org>, 
-	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
-	Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
-	Stafford Horne <shorne@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
-	Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
-	Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH 01/12] mm/huge_memory: zap deposited page tables after an
- RCU grace period
-Message-ID: <px4uwbuq4ixucmjzudxulldk5l2tbuymaoaheyc624jdznnac6@px5wkmxqjmfo>
-References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
- <20260901-rcu-pagetable-freeing-v1-1-5456a81c8212@kernel.org>
- <apbOlyF77yDCV4cF@thinkstation>
- <apbcoMTVlL42G5tg@gremlin>
- <20260901142408.GA56830@ziepe.ca>
- <apbiB51hjm-9pRzf@gremlin>
- <apbuO_QveZNAz3ns@thinkstation>
- <kasi4mkjkt56wxsrmphm5o2qfg2lwsdxf3tlmzx5tq6t7uez74@kozleoavd6r2>
- <apcHiE7jDQaFYXOM@thinkstation>
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fzgNzAbv"
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 079B51400134;
+	Fri,  4 Sep 2026 05:31:25 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-02.internal (MEProxy); Fri, 04 Sep 2026 05:31:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1788514285; x=1788600685; bh=kFam2UdvptTVTLhviPOo5NmOADy3
+	z5NhlFhoDE0Zn1c=; b=fzgNzAbvVfdcX7oMZC77CZ8xQfmMrEUimKRKIx+bjcjV
+	vKAkH6xPjjIl2+BrD8NMrieEKOCbTs9Mhb82vVwvJrBJs4JBjNbenrOYA4uVWPcV
+	KJwL8Uu78tqq+Wb2Wvsll4OxCEv41VDDzOLFikU/hBMMLov/N+Kl6eQqA6B3DLkU
+	OtPPGYH0cHgn8h37PKRjmmDAvvOsXzIAz8qrY6JceEBASuxZTLkgPYE+mU7kPCmM
+	K2F1+llcxNPfjsgIA2FW900YuoUaIo4lcZnOnDnaLICMdkrN3oA3Z/qTAztQMz7T
+	YLu5fM7uLfEbW3mxDes3BIPMvYxj0l+DaiU8nVgYYw==
+X-ME-Sender: <xms:7I-aak2Qn1tHmJnQacF06sW21wJPeYIj0biC7PqhDOHiqPNkPEQlSA>
+    <xme:7I-aarGcSQwwu2YraMv23t0qOMa-s18WZ_QqyxWGJpHhHGhtgB9NX2hBp45nKnCRC
+    GHJwWTQa0JHQuvon4E18rf36BajMYjyMTqGGh7YAMPyqxlGvtGLjuxH>
+X-ME-Received: <xmr:7I-aavENDtKgnkLM6Q3hsR60AhxlWJmjUCWY9t-265g-m0Q3PYlB9W2x1FkrjXOIk_Nb8NGZzVYRZxcIspmznB1b-Nyakz5Qeuk>
+X-ME-Proxy-Cause: dmFkZTFELX6SjhHYpZR1kZnJYO/LgLgTaX5N2tgvw93fcR7gEEcuRWFuJbijwLD005Uq36
+    QJ2P8BL7XCdXKNfltU44bZwXesEhRUEq0gHneJQICZ8m5MxjtYNXhQdbzeBF3+LhsHQqJm
+    rHa5pOra8D+tqJDZcIAVNmLYeII1d7wRaFZAwuDj7Nwtu1W5/i1VAsI0wYou6sIuwKmIW8
+    lb4BDDn+XPkDK/Nec5Os0JTw9PEmhfByU3nsT1uozsn4z7LsmXDPAf5gVIUsjzU0JVnN7S
+    10FulqtdDe/kq4lnOr3H+GpFABIPfomk16p+12VZXaxtfoZQwuseD2vi7KfbjRHog54MZI
+    DgKthaX/se2NTo+HB9XWzYuRtz9Sgeai7i+sFcagmP41Jp3MyNZEgp75U293So71Q5FxK7
+    vxkO6Ij9UJ7pZKPSxIaZTFG9PBi/ZpFxvSZ2qhBSexO5NK8e34ipPXB85y4RgrVSGbQ0aS
+    vRZ8Lb81/2ExwPnokfRg/h9eM4uSjylBuV9I4IscUoPrRGv6wa14PNgbMPG7jV/BbnDaX9
+    oJrA6UZiy4mf7w7/MSCUGZ0eDQpgmzKSYIR6aHVo0jAis9wjAK9Zyd7lMsfL7Ksen1p8mp
+    KrjY0VGVuVrI17c5VI4hf+GB+RkI7QNDiK+HUDSysuctRpnvxwwvc9JxPDRA
+X-ME-Proxy: <xmx:7I-aau5VYhsT6ERp3s4KR-DZ_PYMDEy_DVrrUkH4iXBqlIGAgFL56g>
+    <xmx:7I-aakw_mCQ8JL-I-iuwPu7QupTpW0Qsr-6yUFKfssM3URKsdim47w>
+    <xmx:7I-aatPwTa3r8hFDjNUgFo2zT7-GF8fpV1eJT7CceexThuBFzGCoow>
+    <xmx:7I-aaqlLkU4NqRLzvsphh20RoaqOoWlwW35k0c5eWm6t6mdAReXcpQ>
+    <xmx:7Y-aaupVBt_RGwH23Eb3AIi1PMTedcsXnhcx2GW_-WYSNruNh08B0NXc>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 4 Sep 2026 05:31:22 -0400 (EDT)
+Message-ID: <cover.1788513996.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v3 00/33] block/swim: Fixes and improvements
+Date: Fri, 04 Sep 2026 19:26:36 +1000
+To: Jens Axboe <axboe@kernel.dk>,
+    Laurent Vivier <laurent@vivier.eu>
+Cc: Joshua Thompson <funaho@jurai.org>,
+    Geert Uytterhoeven <geert@linux-m68k.org>,
+    linux-block@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org,
+    Omar Sandoval <osandov@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <apcHiE7jDQaFYXOM@thinkstation>
 
-On 26/09/01 06:13PM, Kiryl Shutsemau wrote:
-> On Tue, Sep 01, 2026 at 11:54:47AM -0400, Liam R. Howlett wrote:
-> > Do you have munmap() performance dependent workload that you are
-> > concerned about regressing?
-> 
-> exit(2) path is performance critical for many workloads. Like, if you
-> need to restart VM.
-> 
+I recently had a need for the 'swim' driver but found that it was too buggy
+to be useful for my purposes. I had two aims in mind--
 
-That is not enough to see any impact, although less overall work would
-be done during the exit call.
+Firstly, I needed this driver to help me test my new BMoW Floppy Emu for 
+emulation correctness. Being that Linux is open source and MacOS is not,
+this driver should be ideal for that.
 
-It would be very difficult to come up with a scenario that this would
-have a measurable difference and an even harder time to come up with one
-that is slower.
+Secondly, I needed to realign the heads in some disk drives. The swim driver
+has most of the code needed for a feedback loop for manual re-alignment, so
+I wrote the remaining code and pushed it to a repo here:
+https://github.com/fthain/linux/commits/swim/
+
+These patches fix all the bugs I found. They improve stability,
+compatibility and performance. Additional patches improve source code
+quality by removing redundant code and cleaning up a bit.
+
+This patch series was successfully tested on the following systems.
+
+Mac Quadra 650 - SWIM 2 with Mitsubishi FDD
+Mac LC III     - SWIM 2 with Mitsubishi FDD and Sony FDD
+Mac Quadra 700 - SWIM with Sony FDD
+Mac IIvx       - SWIM with Sony FDD
+
+---
+
+Changed since v1:
+ - Patches 1/31, 19/31, 23/31 were revised as per Laurent's remarks.
+ - Some minor improvements to patches 9/31, 13/31 and 16/31.
+ - Added patch 24/32 to fix a bug causing silent IO corruption instead
+   of an IO error.
+
+Changed since v2:
+ - Reviewed-by tags were dropped from patches 1/32, 9/32, 13/32 and 16/32
+   because of unreviewed changes.
+ - Better assembly code in patch 13/32.
+ - Patch 23/32 improved upon to reduce excessive interrupt latency when
+   medium errors are encountered.
+ - Patch 7/32 was split in two, and readability was improved as requested
+   by Geert.
+ - Geert's acked-by tag was added.
+
+---
+
+Finn Thain (33):
+  swim: Assert strobe with stable outputs
+  swim: Select appropriate drive once only
+  swim: Enable the drive when probing
+  swim: Don't disable drive after every sector
+  swim: Perform ISM/IWM mode switching according to specs
+  swim: Configure parameter memory
+  swim: Refactor SWIM setup
+  swim: Enable clock divider only where appropriate
+  swim: Don't start motor until medium is present
+  swim: Recalibrate when drive is probed
+  swim: Add track zero recalibration delay
+  swim: Handle FIFO timeout error
+  swim: Simplify return value initialization
+  swim: Check for CRC errors
+  swim: Check error register during sector read
+  swim: Don't use the mark register to read data
+  swim: Fix buffer overflow
+  swim: Convert to blocking queue
+  swim: Remove redundant RELAX actions
+  swim: Deduplicate polling loops
+  swim: Check drive ready bit
+  swim: Revisit delays
+  swim: Remove pointless mode0 register write
+  swim: Don't needlessly re-read sectors
+  swim: Don't search beyond the first data mark
+  swim: Remove pointless specifiers
+  swim: Move swd initialization
+  swim: Add some helpful references
+  swim: Remove unused macro definitions
+  swim: Clean up whitespace
+  swim: Define macros for constants
+  swim: Define symbols for constants
+  swim: Unexport global symbols
+
+ arch/m68k/mac/config.c   |  31 ++-
+ drivers/block/swim.c     | 451 ++++++++++++++++++++-------------------
+ drivers/block/swim_asm.S | 356 +++++++++++++++---------------
+ 3 files changed, 452 insertions(+), 386 deletions(-)
+
+-- 
+2.52.0
 
