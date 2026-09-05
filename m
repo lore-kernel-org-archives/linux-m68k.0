@@ -1,111 +1,101 @@
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F35B2320CD1
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 15:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BA335839C
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 15:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788621759; cv=none; b=SjkLYosDnuU1s6WxRgCMQYCI+AovZOL8eDSO3xvyJxoIT1MugQYWzRbaT9P0VQ4H9crK+Q/QUjdBxVsl1RdBeHQ20QsXtNJpu8nD2PIeckPed2zUO2PI0SvgG6LWz7tJFlRgObtPX1MG+fFuFG8wvKk+mAw+EkrSiNV0XXO+tLg=
+	t=1788622467; cv=none; b=CTRo7UBFWar84K93sPGVlQsglKQWwvGNtfi/UFffnOI5l2S9Sd1zKB7X7ZNfPLW8PlBsOGjiyV0hkhvlkplC8gTCHjqNBcKHwir6b1OAKBk2mUd5MNXrp6vuLupSpZcrNuPwWKQ0IDmJLhiJKDUpm5BAfKQGygoMFM4RQD7GcSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788621759; c=relaxed/simple;
-	bh=stE75XH+VoyliaLEVzRsIQuDTfaIfORb7fDDrzhIzIw=;
+	s=arc-20240116; t=1788622467; c=relaxed/simple;
+	bh=Rl6nFKx3ixn0IjNS7sUjrCBuTyy5Wi14vvgdemM8Bgs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X8sBAP4zWvxG7UYVMK+M3JI4v1YUMTfFe8SIxYib8sfeJBDzOP72UHTxCLXyiwKxh59ZtBzJ15mERyxUUCS1KJLUqPJCGSl4/m2XgQcnzijRP86g63mBeaZI3D8raqwHKCQTjJ0Avdgu8R1C8pfRl+S41OUMOigoS/c7C5Ff4Zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dz7r/V3p; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZvLEOOPFIThySrObXwqQ/XMlR84Ioctx4puUtbJO/i6WOXWMtV5S6TSwBUGlpo+gB3fzJdyUtBDHOB9zXC5IFQyC+IJq7RrFvVN7mKjndaiabxpFmPAudV61oqM1Zgu4i+cd9/vvjsajG1OyyA3y7bZyFaWFeO88H/OTbXgvkb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=TGQCkVys; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dz7r/V3p"
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-49b0eab380eso18035415e9.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Sep 2026 08:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788621756; x=1789226556; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=xiwfJ3u464HVWwKQuOirA1XlcYzmmwiUzq3bDqr5FyA=;
-        b=Dz7r/V3p+CfHFIFwIehfh3f7Vy7bOIEsviEArz9XiHEI//xknZENOjwAYPsgRf9puE
-         xjqRiuSwW64LWeHCgyp7bOXMD1E0tmBQ/L2Aly69ItUfv6p6AcBClmU7fnpYAOd3eYBX
-         VGkg8mYEyaTdgKLz1wE/ahF9JU7DxK1waLOuHk/WJDgWnzFCQlrQ66sQPIx+GcUmCiav
-         4zbvv9A1YpG1Ur3VGfmyjRsh+Rg9Smtkjm0GFehZIzj6VDwWZ6XLm6avWvYK7njIlK8T
-         w5poyzFVWV3dH6HfSLwHTSQ5Xn780GvdqMUY8IJMAFkG2EeGgtpMXKdfDS68RUV1s0S1
-         WQrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788621756; x=1789226556;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=xiwfJ3u464HVWwKQuOirA1XlcYzmmwiUzq3bDqr5FyA=;
-        b=N/ktNVfaPDmcaAG8RFDfQIHKF7IT0/oyNCxmSVzFst+KcLBkRWxfgfgOkRAyv++sJ2
-         hFRuq7P/0dVq6kyyXbZoounzOFh6Ty5CgOjm+476Ck78IqLUNycvyXfGMPM8fjwlkjHO
-         6M8TQ7EsX4ihKKN7XC8onZ/EJahCpCzJm4Wr8+2bntYvYWSPAcNrzHt6G4IV8jKeXXwX
-         Ps3p48wS9COJQLE8Oq4Ii148ksyYo8gM5igrQ3Ak1C4vcUxMB6qUuCZaWNrXzS1DlMoS
-         0MmYjwkJQSXPYhkNHa0+1ts2+OghJdm/jnTlxHEG9N8LrQvNZXUnQ18Wtm5hffhrIwBe
-         5njQ==
-X-Forwarded-Encrypted: i=1; AKwUvByKiA4Nsi3w8zELUQCQen1UvqO948ekPTMfs1J7ABNZHW8iL2+az0OArrhW3BZdDDMQxaA9fFOonXpa@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++lJRPK5nxyIxgmeXvzPNz5waHqhHV8JNfUDo7cRH4ary752kwSU
-	hK42Moa5Uw4uuL5C59ypXVW5iFCIMzSHpnlW+9Fw5cphCSKNTdEqs8I5
-X-Gm-Gg: AYBFou0xBN/XcFeoxxAFYNoU1rx7ebxNRloMwTEahhaOrHJ1SdKeB6vIGjEjyK+ef+L
-	e0j3bOfevE72JD0NeFkU6GANy9alAxlEPgB3F7Wrg7HI/Lz+FoZg2G7+e1Kg7KgK+17bBPVbFBD
-	AHzm2fnmzuwcbyiTG4CBjKyfW343q+usW3bxqJzMu6bE0mTmqouO+PBuzDqh8Vokpk4lrTrUmBZ
-	nj0vUW0R80nBLTya3AWTTGewtbyUrPooOv9umMielfqwrDOdX504KgtMN99SH3DkzZHqs/dF/Ju
-	RI3TjdouZ/cksE5xz5hpme1HuE/xcYT9oNF/TdqtZWtKd8eS5DzeOvIVLUvw4mzMvK6f8EBiVQl
-	ptRveijiCS6J15SDhZERjhz6i3oFPkRFWWho1serIjw0bVbPtsmCIryveFBaAQVCtsll9CzPXUo
-	eI6CA3++6Hj/tLLAPBP6ljcEkpFTxAtYDE5YEdXmJBagCu1Zm/ExHf0SIYg+xVtFZHX3EY/IwHV
-	d0FoYe/bmcpiwjNPIStDMNDXi1druB05z79w/qp9N7Tu6sdlzgrIi9bF8xxACmt2maeVTyMhHRU
-	kW5pYEuYzF4d2P7yTHzKPa2+znExGDuDTcNPXnuKnHQhoVj0K4JMpewAkhfVBXMd
-X-Received: by 2002:a05:600c:6303:b0:493:f783:c46a with SMTP id 5b1f17b1804b1-49cf82cbab5mr112017265e9.6.1788621756075;
-        Sat, 05 Sep 2026 08:22:36 -0700 (PDT)
-Received: from unknown748F3CBA5068 (dynamic-2a02-3100-a4eb-3001-c06d-af27-9fa2-ea53.310.pool.telefonica.de. [2a02:3100:a4eb:3001:c06d:af27:9fa2:ea53])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49ce5952560sm246185335e9.3.2026.09.05.08.22.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Sep 2026 08:22:35 -0700 (PDT)
-Date: Sat, 5 Sep 2026 17:22:33 +0200
-From: Karl Mehltretter <kmehltretter@gmail.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Jonathan Corbet <corbet@lwn.net>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>, 
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>, Mike Travis <mike.travis@hpe.com>, 
-	Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org, 
-	Krzysztof Kozlowski <krzk@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, Tony Lindgren <tony@atomide.com>, 
-	Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org, 
-	Dominik Brodowski <linux@dominikbrodowski.net>, Damien Le Moal <dlemoal@kernel.org>, 
-	Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
-	Ethan Nelson-Moore <enelsonmoore@gmail.com>, Michael Schmitz <schmitzmic@gmail.com>, 
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="TGQCkVys"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 837B340E039E;
+	Sat,  5 Sep 2026 15:34:22 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ULOSdY5268Q1; Sat,  5 Sep 2026 15:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1788622452; bh=C5qV9YRKbU///+gaY6staRDNAJPfLuOO2/9JFJF8rhE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TGQCkVysyMXAB87/+ol43xmiMSwThSsWet9I4UIylepz0fV2xir/vYc2o4DQnINpi
+	 4Vk4QVlAYCNhr22LajTQN71xRDL5fZpQDj8OOGMXA5iKczt27qYfb+OCqX6muSriKP
+	 ywQBrjTJPehGG9DwpYm/KRlD3wBUi6UjgVq82SiJZNR/EAPMIiKycHSk/oH33tM4/k
+	 116rLuX0d6+qAIHpe+WMrrmSO5QpdDXzCalcGGJPp330gQJ/f9q+8THqwfzZYOs3IW
+	 q8rheoYvdHhHSuN6fLU1DU0aSwx4/rIuZQHhEqXWtSntzGBt9a+7RL6EPMjeFFvSJm
+	 hjmUatERnV4DmZ1U99TGxewY8+zBAKUg2Zwv419UMnh8DzuZBvhokTa8mLmk7tQKNL
+	 BkRP/8r+GpeK+ccBD6XPO2t+SeTsMaobf1Ae5docKjcwC1ygAG2GuE1zIfoPurg/g0
+	 UiTn2mIkHpgKEgfl0ilxntuQfA5vEykAt9OXDIhs6eQiXcwRNbd++QEQUcrDv2zVja
+	 vJggKDyAgK2aRTSpxNSPEkvGteH/47g5zbjcq10XJRvvKa9rNBnSbJMYTYUb84rrYB
+	 3ZsBNc61jaopJ+j/I1afMVPDhfvXiG2dEpu6eZNvikLNVAaRDOMUHgkh7cLxGHa2jb
+	 zxv+hR1sv0OpkE/XW5atFbFw=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::1f])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 950F140E03BE;
+	Sat,  5 Sep 2026 15:33:39 +0000 (UTC)
+Date: Sat, 5 Sep 2026 08:33:36 -0700
+From: Borislav Petkov <bp@alien8.de>
+To: Karl Mehltretter <kmehltretter@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Steve Wahl <steve.wahl@hpe.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Mike Travis <mike.travis@hpe.com>, Tony Luck <tony.luck@intel.com>,
+	linux-edac@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Tony Lindgren <tony@atomide.com>,
+	Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Michael Schmitz <schmitzmic@gmail.com>,
 	Andreas Kemnade <andreas@kemnade.info>
 Subject: Re: [PATCH v2 3/9] docs: kernel-parameters: Drop the edac_report=
  entry
-Message-ID: <apwzmSr6b0WEkW86@gmail.com>
+Message-ID: <20260905153336.GBapw2UFa7Sdc0ve_A@fat_crate.local>
 References: <20260905094649.41996-1-kmehltretter@gmail.com>
  <20260905094649.41996-4-kmehltretter@gmail.com>
  <20260905151345.GAapwxqT93wPWHF7u4@fat_crate.local>
+ <apwzmSr6b0WEkW86@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260905151345.GAapwxqT93wPWHF7u4@fat_crate.local>
+In-Reply-To: <apwzmSr6b0WEkW86@gmail.com>
 
-On Sat, Sep 05, 2026 at 08:13:45AM +0100, Borislav Petkov wrote:
-> On Sat, Sep 05, 2026 at 11:46:43AM +0200, Karl Mehltretter wrote:
-> > edac_report= went away with commit fee27d7d9788 ("EDAC: Delete
-> > edac_stub.c"); nothing parses it any more.
-> 
-> Nope, it was:
-> 
-> 7fc0b9b995f2 ("EDAC: Drop the EDAC report status checks")
-> 
+On Sat, Sep 05, 2026 at 05:22:33PM +0200, Karl Mehltretter wrote:
+> Good catch! I will send a v3.
 
-Good catch! I will send a v3.
+Just don't send it immediately but wait a couple of days to gather review
+feedback first.
 
-Thanks,
-Karl
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
