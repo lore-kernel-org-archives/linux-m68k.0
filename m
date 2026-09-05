@@ -1,65 +1,65 @@
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ACD3DDAE9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37E63E274E
 	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 07:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788591853; cv=none; b=fP4aEAxlCvkiuKBwEvEJ4ui3u60epUZ9ptCGpBt4x3kxjrhGKnH9BD1dk8mzPsg8XIx00km5LEea0rLOaT/nzaLLt55XWZFLes8mcHQZau4cFVE091ooEdOSPi/Z4WNBhQGQpklt3AqZwVh/iJUTT2jlDpvwZYZ664dn3mPZDNU=
+	t=1788591854; cv=none; b=JfW09Dvmf4ItI2LVF3hklGEblRsthHrTsdX0+HAG71/n7WhApF/QeA6cZiixwlFT4Ck+nSZbp7GcSiQbgTP6vR/3PQk/6fFLgUXlLAY9rugvOjjC5JFpzYynHvzEN5ya+Db6J6vozEp9kNuo3YPQDiA76cK8yDfC1Qxk5TXaAM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788591853; c=relaxed/simple;
-	bh=snUd49mCf7brp4BBjf0T9QYSF39uzje6kt3MIufRgeg=;
+	s=arc-20240116; t=1788591854; c=relaxed/simple;
+	bh=8GOJ1bBhkXnXFQ/xtc+4fZdZejRnue5u+K5BgJsvQus=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MaFzf2nkrwpeaw3zrBWCqlVBx7VoK60wi5wfXffh0HHfHTfROfhxEQt2DQJbJJNndqHMaGc0DgYcCsHJeOD9tEAEzAzItuS1r843uEoOkevkf6Fc4f8Az+FhpMGeIWgwSZhIlpYCAGUJawSqKk122OtgeFPQU2LaT86LYuCPfBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dwqL0lx+; arc=none smtp.client-ip=209.85.221.42
+	 MIME-Version; b=Jir2OE4AiJs3mFDcmgb7t5Cf3KK0pfdgP8A1aZA5NrVbwE2qKnYXhwgMDbY/mUMRiSy9m17NdBZQV88mAtNoi4tDf2EI8RjDanRegNF2lWGI5PavVi7dtaL+S///EeLRmp3AwHm7sTaBns3/2HymvOmd+V0OVyFtuoqyDNvN2vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sTALNrVR; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dwqL0lx+"
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-482f2ee53e7so1208114f8f.1
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sTALNrVR"
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-49b0d78a801so16747905e9.2
         for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Sep 2026 00:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788591844; x=1789196644; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20251104; t=1788591846; x=1789196646; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=j5lgSAOpNjAXzpb467QfOiibQnaDkCl6BQceKsplpJE=;
-        b=dwqL0lx+4VzNRS6Y9VVHErt6GklivJHjYj9TykWNetbGpdmP3u+KNY908u2RKJ/KHf
-         ukC3ynM6+8Unukzex1dAbz0Vfv4iKaiKGQF/vtF/CQMsXK2cXRWaKRtjOauG4qMUnxS3
-         CC5tgRdiLasKJLZDMNkViyalZFN53qWxD92DgyHD7Vdu+kThJ6W8fQY3lsHQGKGQI7L1
-         Vdd6eo2OjCAPTNuzAjC6AfaKoYWAculS1v4eRKQul1IRMVgJiT5Z+ZumK85jsJvmhC4I
-         z3ZabxEQzVnXLzIYvzcb2oqW+lz/wA5aRCPxhmLIyUsl/XgVxIDKMh4zKlfVX1hUwu80
-         UHkg==
+        bh=OVDepIdvewIAkDae/qknvPHnA6zOWa1HlsWKZdzZmcw=;
+        b=sTALNrVRrdkbxRiRUB9X29n+h+kHP817QvyXMB+M+/n0Q9nbxLS1ydnAhgPyuYq0S5
+         erZnM7rn/EcfKXUJ+MfNw+4NFcwF1QqA88O566a/lP99I9aN5ar0MJ0HSXvBFOmIcFse
+         MRMyaINPaNA6kWQofuHg9Vs3i1c8GwFwhpDVm5qC9yss2OV2soOxcIhenXotIbHmJZdI
+         zeSuiT78BGAsW3Qs8r8TKHJfboVYSb5PQTsb7e1AY3RO4z0ZGwTWA6GLXgXMvgFROqDk
+         NoYYvVg23420TDX5g+EJy+lvqFlzmAOqmH8aeX2jyn8hPZKOaRcQb1AtraZ7XjCBIo8M
+         /THA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788591844; x=1789196644;
+        d=1e100.net; s=20251104; t=1788591846; x=1789196646;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=j5lgSAOpNjAXzpb467QfOiibQnaDkCl6BQceKsplpJE=;
-        b=fGateStUecOxuaWrOShDkvgkwzaaVSaT9Fpop5afjaLsajrQ7pNN/0eQjQrR23DdU8
-         nwYeLAn1TIsV4PV5uG6SgmPGzWZKCb+bxJndCdj5s0XHE8PCP1AfsrB2QlC0Mg7mOxnJ
-         5cqSRDitTH2Mwcabe1wrOF2ufE3g5MTmIA1zzSFNG3LHDfZKFYRBuk6DHD6EU7h12Rui
-         XkQdz2V1Joj8vKZNkOT2yOLTI/WPDeBlmtELjiyyBeP3pX1ManTvy5X7TXMHKNtxbQoc
-         7A7wtaRproEZ9SIl2z8d7QDwlEC/h1iR5tt6707J5oXkNCTXBVLWuONd+WYk9Y7sglFm
-         FzGg==
-X-Forwarded-Encrypted: i=1; AKwUvBwauCACb5KBJMPnKI1sIVq9vRmpudYdM6fg5JQuzhoRn5RgBh0oeQrkB6hsMcbEoHT1o+TqCePCycmH@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++nyJBqE8C3WckmiTp364iRWw6et68BjHMNWKdBTyIcXdyvaEhwr
-	TVhtWLQyE7SKT2rDuHB3tCC3YXSXb5YSos/DXhfw9fWmcKBOKHKZjBQ7
-X-Gm-Gg: AYBFou2UXxYpN4QjnoBtqj1tJCCXzd8p/4cUEBvEnehLm0bNSVVRnKbIafIBwT96mJ1
-	bzYuLMh+T5kBfJjdF9RpFhMd4z48eq5/mqlMrReDdrYQ3FQ+tIF/W1MmYE7L16E/aRDZ2m4qdcr
-	iyi+MG7NGo+ZazI2RvNzbY42JaKaCL4uf9pcf5rBu9408AlEcNN+dAHTYoyQfahoqxwH2AE9wxW
-	uCq2NQkcn0BTRHePEJthhzbBTBsEo1cs4lBHmryPvDMvlHWVIS5V91+uUePKVcb9WKaoNaOAUhB
-	rtHlimIRu+f+y2h3MbQYPZcQ0ssV73kNdqmFmt9cQdlnbg+E2ZtQbsvGU+sLogjDbeg6kMZ/h/j
-	uUuqlmJ0wVOsTfu1mVC+jaZ14z+V1/0YELV2xme05s7KqTl46XwPS7+lM3+iPOeO/D4OI20TKyk
-	tMX6z6L6qHM4+QgTi5vrwpSHozjmJsyZqzubh/yqJQQv/h1SB9oRC4L/KFlXb3rOpUh85yUujM8
-	bw++qGlaU5O70IcyaMTkKivmCw/QbJq01/yjSP0UmnXOmv7CNVHSGy2yZNmD/JRvAa8X80FSzQa
-	TRwE/AmXHOBFmDZ9EUxvUZ2r4W3FPEO1Mv/O23zt5UAggfAexWPmaNBJp+DHT0a3WeDTtkjN
-X-Received: by 2002:a05:6000:1843:b0:485:8c17:9767 with SMTP id ffacd0b85a97d-4858c179a7emr8752866f8f.41.1788591844264;
-        Sat, 05 Sep 2026 00:04:04 -0700 (PDT)
+        bh=OVDepIdvewIAkDae/qknvPHnA6zOWa1HlsWKZdzZmcw=;
+        b=kBULCRb1wtk15FsLZDFLWwH1DT2dGGnMRzgOyB3/X+C33TWw+SI4q/WMtv+9whOg9Q
+         J+AvH4HwN5X8iEHiyrE7vUTA79a9Q09495ZEOioDlPVWe3Hw9p7IyNruAjyxiVlcwPh0
+         Hz+15nhS5/cYKE+ZtTwusqw8vN2bh0335knWqWtD3V3fGiKJ6jluyoCbfQydZBhi78lp
+         WHAMXxjElvIzbWXqjOMW2VVPqtYR/i+gybCgSju3t11Ql3lPD5bKoVc8axxRaXcOzsa6
+         tzRBMJyDvmRiALRB+yRyiJUSuLSahnTbogNe5ZVo4xrZ5/Viv3BNgGl39jDq0MmQ1Fkg
+         Za1Q==
+X-Forwarded-Encrypted: i=1; AKwUvBw5vDnkPfeMaqoad82e20VegG8jqy1uDIKePHHS3nOnlsLC9P6k8QTWMbqdY+SzS264nGTJdHNzR1Zl@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++nea/pKRaV+rmPI0T+CagITdAitNv3WqDYMBelnOhPYTtyujlb2
+	aXhYHMdoVDYiefCexMy8+OOHu9jGrK563gOgebZtr9YOWEmF85YkjolP
+X-Gm-Gg: AYBFou0l2JZuGXJCBPyQBlK6TGom6CEuFrHFMgPnI7Qm/YDI6SIXZUgyDeP7+2bvk01
+	jqWE1AnpwtPi9Q/EClxIREN2zPJ5xlTRTNN0WP4VdtOFWO52mWav490K8LgpHuTVCcOY+9C7MFA
+	2U9XodeQ0oXpYg0jHB76uYUH8Y7ZsWJBFqlQzTBFuOK2MQSRYkX2Agob8b9q4+n90E9r2vNazk1
+	6e1NBhDFH47sZuxxWRXh2B7n9BBp0RUXyw5MHyTuNygbFoM1JBmx9u62vnvV2UNIGMUpVbfGjAs
+	ZZKhiM/el/El/nAJjV9xZGGt6EnWvNqDqq9kFPqSFEa06OwSQRL1nPsl97bo5duQxshIijW+uQd
+	aUV/IAFk41cJ8oDv8fvBkcDv88Jneymjguw0ZM/kh9Yze4s+evmK10zwqR4awChPQAW4wfaqD9F
+	UC4JbEJdKlLrlVbuyfmBFaerWP6py0t+ULC8mBkWhxb5DrYFomTjED/dlqZp2mV2rNjIHQgtdDw
+	isiBNzZ+iCuWfie/FnUI2gbl2ui+Rfzc053KLmEhB9aUmtKpde+W2t9ltWBGF2/86JEZPBFKjwj
+	yt6oxGJIcPK//MfRRJC+W9Ozz7M+ZHhtTMWO98Gur8RHvSz5nYXEm91PJqbDkbavTNy2aJxV
+X-Received: by 2002:a05:600c:46d5:b0:49c:fc6c:be06 with SMTP id 5b1f17b1804b1-49cfc6cc142mr76992175e9.29.1788591845868;
+        Sat, 05 Sep 2026 00:04:05 -0700 (PDT)
 Received: from localhost.localdomain (dynamic-2a02-3100-a4eb-3001-c06d-af27-9fa2-ea53.310.pool.telefonica.de. [2a02:3100:a4eb:3001:c06d:af27:9fa2:ea53])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485885bfdf6sm12011719f8f.34.2026.09.05.00.04.02
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485885bfdf6sm12011719f8f.34.2026.09.05.00.04.04
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 05 Sep 2026 00:04:03 -0700 (PDT)
+        Sat, 05 Sep 2026 00:04:05 -0700 (PDT)
 From: Karl Mehltretter <kmehltretter@gmail.com>
 To: Jonathan Corbet <corbet@lwn.net>
 Cc: Karl Mehltretter <kmehltretter@gmail.com>,
@@ -88,9 +88,9 @@ Cc: Karl Mehltretter <kmehltretter@gmail.com>,
 	Damien Le Moal <dlemoal@kernel.org>,
 	Niklas Cassel <cassel@kernel.org>,
 	linux-ide@vger.kernel.org
-Subject: [PATCH 5/9] docs: kernel-parameters: Drop the mini2440= entry
-Date: Sat,  5 Sep 2026 09:03:43 +0200
-Message-Id: <20260905070347.25902-6-kmehltretter@gmail.com>
+Subject: [PATCH 6/9] docs: kernel-parameters: Drop the nomfgpt entry
+Date: Sat,  5 Sep 2026 09:03:44 +0200
+Message-Id: <20260905070347.25902-7-kmehltretter@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20260905070347.25902-1-kmehltretter@gmail.com>
 References: <20260905070347.25902-1-kmehltretter@gmail.com>
@@ -102,53 +102,35 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-mini2440= went away with commit 61b7f8920b17 ("ARM: s3c: remove all
-s3c24xx support"); nothing parses it any more.
+nomfgpt went away with commit c95d1e53ed89 ("cs5535: drop the
+Geode-specific MFGPT/GPIO code"); nothing parses it any more.
 
 Drop the entry.
 
 Found by cross-checking every documented name against the __setup(),
 early_param() and core_param() registrations in the tree.
 
-Fixes: 61b7f8920b17 ("ARM: s3c: remove all s3c24xx support")
+Fixes: c95d1e53ed89 ("cs5535: drop the Geode-specific MFGPT/GPIO code")
 Assisted-by: LLM
 Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
 ---
- .../admin-guide/kernel-parameters.txt         | 21 -------------------
- 1 file changed, 21 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index f4314492953d..2ed1e2c03c61 100644
+index 2ed1e2c03c61..d44728a45506 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4052,27 +4052,6 @@ Kernel parameters
- 			Enable or disable the microcode minimal revision
- 			enforcement for the runtime microcode loader.
+@@ -4553,9 +4553,6 @@ Kernel parameters
  
--	mini2440=	[ARM,HW,KNL]
--			Format:[0..2][b][c][t]
--			Default: "0tb"
--			MINI2440 configuration specification:
--			0 - The attached screen is the 3.5" TFT
--			1 - The attached screen is the 7" TFT
--			2 - The VGA Shield is attached (1024x768)
--			Leaving out the screen size parameter will not load
--			the TFT driver, and the framebuffer will be left
--			unconfigured.
--			b - Enable backlight. The TFT backlight pin will be
--			linked to the kernel VESA blanking code and a GPIO
--			LED. This parameter is not necessary when using the
--			VGA shield.
--			c - Enable the s3c camera interface.
--			t - Reserved for enabling touchscreen support. The
--			touchscreen support is not enabled in the mainstream
--			kernel as of 2.6.30, a preliminary port can be found
--			in the "bleeding edge" mini2440 support kernel at
--			https://repo.or.cz/w/linux-2.6/mini2440.git
+ 	nomce		[X86-32] Disable Machine Check Exception
+ 
+-	nomfgpt		[X86-32] Disable Multi-Function General Purpose
+-			Timer usage (for AMD Geode machines).
 -
- 	mitigations=
- 			[X86,PPC,S390,ARM64,EARLY] Control optional mitigations for
- 			CPU vulnerabilities.  This is a set of curated,
+ 	nomodeset	Disable kernel modesetting. Most systems' firmware
+ 			sets up a display mode and provides framebuffer memory
+ 			for output. With nomodeset, DRM and fbdev drivers will
 -- 
 2.53.0
 
