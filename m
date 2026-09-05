@@ -1,148 +1,127 @@
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4963E1232
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 07:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0673F1079
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 07:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788591860; cv=none; b=XoIu/gBgUTRHpbOBFVsyOkwUQh7hclYL71FgpsI6GIo1Mf6dSF07vrZAXFGlxA3shJ8x1FwvETxEMP7yO0C3xyeWjJIeqYct3JHVbbu0pV2mThtlFnISdXXPp3etzX9eWHX6bN3gGxENFvn1h6Pw3F7v893fck2JCg7a1/971uY=
+	t=1788592987; cv=none; b=f/hTvbdg5UsGqbWK6l0RcBil0xF3AFpTDjRyxC3YKhtAeuOI4VZRZoez9o4Whhq6J7W/Ij6FDGkGmcVMmgOMQvgmpEwNv2GsRIq7Xk6l3ZkHQhBCMr56jxHlzA1gKxPlhUaZ/YYYPAPLNw1fTBOd+y/EALvegooqlyOzjvdEIlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788591860; c=relaxed/simple;
-	bh=pPxPTNpM/nAKvWxY9H5AEsCMADngEkeEEOle128cyr0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KL1OACxq9bWUIfryqPMQN86EuSLJ6lobM7APVTLVO6BiUeXQNRU0+wXfvhp3J4VrSkYoy9CkwZ1b4DNF/ufAhuIzZbzAtysgKdRwcaWBOB4lYcUAfn/3V9IpKkg60AtHxcqfmvyWviECSP3c8agB5vWEXp0DRm3+Bts6/T9+v90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tu26p85j; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1788592987; c=relaxed/simple;
+	bh=2Lc/+LHF7FC+A7GkhLVo4p/7yA6tuI9V89TpTKNy2Lo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E55Y/6l3v/ZWzpXoag3kpxTp98NAezGo3uOuwcxzUXsJrEy9V5uHT/bNKFyINw4n+SNMVo1XOoLw21cPVg6Zz8BTMjsFmkUdZ6CgZhc86CwPKXIR98eyP3QRu8gkRueXDWL9Aab4AnAfPpcpAzTPxOTqlK7CcQIhX79WOWMTKvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=niel0sHF; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tu26p85j"
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-48589798dbbso1378207f8f.3
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Sep 2026 00:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788591851; x=1789196651; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=r0TEPPXgHP97qr/cFTbi2WII06m9YnzLfHQVRRK4PYs=;
-        b=Tu26p85ju9LSwPbYpmDwW4R7Eij94JaaGWW6tt1lrTB5JOJTAdPkNzyJryRb4mstF/
-         w1xwtlBYiOVzIdOKlZL+CziYEKtBgFYAibe548SuYLlHgo1Tf0J+1bc3vUsvYD86djzd
-         yYMm6IJFj44YybbvuDbhZnddybV4CJilD85Rr0ridTDpsmLGsQ0NC9LcFJ0RbTzeNvvJ
-         5KGbzeoVDWrBecNT74D00OH/80ZWfCqIn2CXW2JGkIe9lSlQsCSUWytLx6hI0kDU3FXk
-         nE096Qsqj19xOjLLz58bsz9acQItwBorRL17iWpfIvY/1HajRWzkFn/i+dtbq5SgBBZS
-         Vx2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788591851; x=1789196651;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=r0TEPPXgHP97qr/cFTbi2WII06m9YnzLfHQVRRK4PYs=;
-        b=fgn5gUOLC7hnnWE58Kupiidqv3+MFMIJP+u/eZVxRgPTSlz6QyqB+ISLWhuRhFyv8K
-         n+/+zrGDQ3raOWPZnxDHFKKRgfyE9SgFB5Odugdm327dNYTKvY06KmDTcIKzLrXeGxn0
-         wFMLCxlYI7FqBisYdWEvYC6stX5AJue1HtP7kZnSehFK1jF+3DmSiIkm6NfcicMRtbnd
-         jdgbxLVNIspeYOSrtJQZ9LRe+XM7o4GTINufp4TtlxE7T9bHhFt/msBsOBUGlM8SRTVp
-         3wvvNUzsnmBylMSmRGDd/o9Nlo7v9D22jyz2TSUF33yDN5Qnic0mRCSwpNWx/GPp0V8+
-         jJQg==
-X-Forwarded-Encrypted: i=1; AKwUvByJL5gfVNM0J81zXPiUG8XeXoWtHbJWP8blEmgw1eLcYVzdNr6hSHvccTgdbNED1D1VtQ8BYIEccXwP@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++mK1MJz+AwI0rzs7DPvIGtAX6IIP5dYrB4Um2I7WgJKGSbCg+ZD
-	alAI8YTJYafzjMsO2d4u6+k4O5JEd5mFIUPLOXC5bpymDBxQer5KPDpo
-X-Gm-Gg: AYBFou1aRZanmzvDWVp2iW+9YxYb2oaemX6zMXRROX9DYUmxaDjBrsZXV12SGBVMaK+
-	hWjrDV/eVolkQQD6ZS+b1U47Xyt5zzvdWSnYwbMQ+DnrE7m5jMXGWivPv8mC7xHViVKSoS73AaV
-	FkyCVrNKiQ/3GRP3CGXTW0/gpeY0+KJPxUk8HUBQFaGRI1wDqquLdM8jcXy8h/CJK3fR1yEwJ+L
-	57bDIzY3C/vr2dJCEu9nbBlpQ9pHegEQaBcTYgmGaBDEChsTlF1gfvlgl4nkjDxlm/0PZMOSDvI
-	tva/PuUtiFnEpa4C2R8vzlo6bhfiv+nlQXSO1HAlLO9tv6TouVVyXvDtkkBpjRmyhSNOmfPQkS3
-	dBs9BCOFAWYVGURjnrckGTTIXSGhvJ2cT2LXrDzBmrUNRKIFZ6dBzKldhfj6BrphU3YykEqwi+I
-	23a/ydI54AVgJmW6ugrDNp/J/YVEovvkRo5GW/y8aIOYtPIoT33SgUwO1qvLvEJMGCOOlOc/uWl
-	oB1Rt+dWZ+9J4aALOw6pdGBktuGU9TGbSOl1wt7PdGn4SVeJ0NNc2Osqs84fNxpRIBTwMpB4l49
-	i6x4aRrZ4AxWkv9IdyN2aJyUTa/elnIFWf9cancHraO2ITsOKAZeMc3WTcuIXpYWQB8TrOoe
-X-Received: by 2002:a05:6000:24c4:b0:485:8a46:7053 with SMTP id ffacd0b85a97d-4858a467176mr9452131f8f.37.1788591850939;
-        Sat, 05 Sep 2026 00:04:10 -0700 (PDT)
-Received: from localhost.localdomain (dynamic-2a02-3100-a4eb-3001-c06d-af27-9fa2-ea53.310.pool.telefonica.de. [2a02:3100:a4eb:3001:c06d:af27:9fa2:ea53])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485885bfdf6sm12011719f8f.34.2026.09.05.00.04.09
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 05 Sep 2026 00:04:10 -0700 (PDT)
-From: Karl Mehltretter <kmehltretter@gmail.com>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Karl Mehltretter <kmehltretter@gmail.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-input@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Thomas Gleixner <tglx@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	Steve Wahl <steve.wahl@hpe.com>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Tony Luck <tony.luck@intel.com>,
-	linux-edac@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Tony Lindgren <tony@atomide.com>,
-	Kevin Hilman <khilman@baylibre.com>,
-	linux-omap@vger.kernel.org,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	linux-ide@vger.kernel.org
-Subject: [PATCH 9/9] docs: kernel-parameters: Drop the pata_legacy.qdi and pata_legacy.winbond entries
-Date: Sat,  5 Sep 2026 09:03:47 +0200
-Message-Id: <20260905070347.25902-10-kmehltretter@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <20260905070347.25902-1-kmehltretter@gmail.com>
-References: <20260905070347.25902-1-kmehltretter@gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="niel0sHF"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 6303C600E2;
+	Sat,  5 Sep 2026 07:23:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AB681F00A3D;
+	Sat,  5 Sep 2026 07:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788592985;
+	bh=k1laQkaalUiiF2l+66NpDYtabQQgOZ1QcHsX78DjjSw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=niel0sHFt0Lxtr9ouMrbKivusUVBVR1+QzLB4GBfwWnIm//ToNqZDJS4RbqhGgG1w
+	 x7vQy76dlYIcDg2RHBev5sguK6nx1CmpvB2OqSYh+e/BHvmoeo5fkZIZDgi5elY+AE
+	 Xehu9ZyJZT0X2N554z8aiHQBQpv1g29fvKTFjqGcSGKXam+mdL2dfet7qx1HdwUt65
+	 EW0WxOXeXWNN7QOfwGyhojxW7gN3J+WY7LEjpgtzaO8N/y5LopwUzNQYw3GVh2zDIo
+	 GruKbgL4KIaJvB8of+xIXfEnwQVwM3y8npvBTO/DmNihm8D33/Yv6QewdtkDMab8DR
+	 qgNPXtmMyneqw==
+Message-ID: <3aa50c6b-6a8b-4323-b291-d2fa6f8bce0d@kernel.org>
+Date: Sat, 5 Sep 2026 09:22:55 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/9] docs: kernel-parameters: Drop the mini2440= entry
+To: Karl Mehltretter <kmehltretter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, Dmitry Torokhov
+ <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org,
+ linux-doc@vger.kernel.org, Thomas Gleixner <tglx@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ Steve Wahl <steve.wahl@hpe.com>, Dimitri Sivanich
+ <dimitri.sivanich@hpe.com>, Tony Luck <tony.luck@intel.com>,
+ linux-edac@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Tony Lindgren <tony@atomide.com>, Kevin Hilman <khilman@baylibre.com>,
+ linux-omap@vger.kernel.org, Dominik Brodowski <linux@dominikbrodowski.net>,
+ Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+ linux-ide@vger.kernel.org
+References: <20260905070347.25902-1-kmehltretter@gmail.com>
+ <20260905070347.25902-6-kmehltretter@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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
+In-Reply-To: <20260905070347.25902-6-kmehltretter@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-pata_legacy no longer has qdi or winbond module parameters. The QDI
-support went away with commit 0dcd0a76370a ("libata: remove no longer
-needed pata_qdi driver") and the Winbond VLB support with commit
-3c4d783f6922 ("ata: pata_legacy: remove VLB support"). The entries also
-refer to CONFIG_PATA_QDI_MODULE and CONFIG_PATA_WINBOND_VLB_MODULE,
-which do not exist either.
+On 05/09/2026 09:03, Karl Mehltretter wrote:
+> mini2440= went away with commit 61b7f8920b17 ("ARM: s3c: remove all
+> s3c24xx support"); nothing parses it any more.
+> 
+> Drop the entry.
+> 
+> Found by cross-checking every documented name against the __setup(),
+> early_param() and core_param() registrations in the tree.
+> 
+> Fixes: 61b7f8920b17 ("ARM: s3c: remove all s3c24xx support")
 
-Drop both entries.
 
-Fixes: 0dcd0a76370a ("libata: remove no longer needed pata_qdi driver")
-Fixes: 3c4d783f6922 ("ata: pata_legacy: remove VLB support")
-Assisted-by: LLM
-Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 13 -------------
- 1 file changed, 13 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 4864e37005be..33298da28b55 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4994,19 +4994,6 @@ Kernel parameters
- 			the first port in the list above (0x1f0), and so on.
- 			By default all supported ports are probed.
- 
--	pata_legacy.qdi=	[HW,LIBATA]
--			Format: <int>
--			Set to non-zero to probe QDI controllers.  By default
--			set to 1 if CONFIG_PATA_QDI_MODULE, 0 otherwise.
--
--	pata_legacy.winbond=	[HW,LIBATA]
--			Format: <int>
--			Set to non-zero to probe Winbond controllers.  Use
--			the standard I/O port (0x130) if 1, otherwise the
--			value given is the I/O port to use (typically 0x1b0).
--			By default set to 1 if CONFIG_PATA_WINBOND_VLB_MODULE,
--			0 otherwise.
--
- 	pata_platform.pio_mask=	[HW,LIBATA]
- 			Format: <int>
- 			Supported PIO mode mask.  Set individual bits to allow
--- 
-2.53.0
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 
+Best regards,
+Krzysztof
