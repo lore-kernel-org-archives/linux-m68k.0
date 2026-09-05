@@ -1,66 +1,65 @@
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6533DB31D
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 07:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4963E1232
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 07:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788591856; cv=none; b=XX1gtJjdfrAN9PUZcreO9SDgxlmZyCglN2PalKsMS9vJDoj+FESJ1giETKQ0B5V/SuQRWrVFoKL/nf5b5th3FFzZ1MsHv1a/IBMjcr/sqoOKOJnrgn56BqfFQvjYCWxnkpzoZEtxNCL8nr3zFON+9E7lC/L3iDML/8sCAjkprRQ=
+	t=1788591860; cv=none; b=XoIu/gBgUTRHpbOBFVsyOkwUQh7hclYL71FgpsI6GIo1Mf6dSF07vrZAXFGlxA3shJ8x1FwvETxEMP7yO0C3xyeWjJIeqYct3JHVbbu0pV2mThtlFnISdXXPp3etzX9eWHX6bN3gGxENFvn1h6Pw3F7v893fck2JCg7a1/971uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788591856; c=relaxed/simple;
-	bh=ItZT5GNunHVnueIdaFQjAOk/BPjP1n6HkFAdihTWgYU=;
+	s=arc-20240116; t=1788591860; c=relaxed/simple;
+	bh=pPxPTNpM/nAKvWxY9H5AEsCMADngEkeEEOle128cyr0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VDteWkOveLS0sJwzf5pWv5MImf8N7uqigH7jw8gvH0mOLKPtuDuCcJG18JZUhp2e9mJ2WSdliN/Xx0v+16ewiSxw0SPgKATGRm4Afu/TcEmbqALTTnUSHgnnjVs8PkmxOHxJlPzF4J5vXMVkb4QV4AuRGU1q5rqEDzUWMrgjklI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lEYFud9m; arc=none smtp.client-ip=209.85.221.44
+	 MIME-Version; b=KL1OACxq9bWUIfryqPMQN86EuSLJ6lobM7APVTLVO6BiUeXQNRU0+wXfvhp3J4VrSkYoy9CkwZ1b4DNF/ufAhuIzZbzAtysgKdRwcaWBOB4lYcUAfn/3V9IpKkg60AtHxcqfmvyWviECSP3c8agB5vWEXp0DRm3+Bts6/T9+v90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tu26p85j; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lEYFud9m"
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-4858303de5dso2174008f8f.2
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Sep 2026 00:04:10 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tu26p85j"
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-48589798dbbso1378207f8f.3
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Sep 2026 00:04:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788591848; x=1789196648; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20251104; t=1788591851; x=1789196651; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=kFzQQFmCjPVcuR+l7FGQ0u8MffPmow8qd7a6fWjai5g=;
-        b=lEYFud9mxnI0MMP6rCW75OEfygWdkAoMIwZJAStEnXKfMbw8e+IgLaq0j4RezSGEs8
-         PhlC53p0WyG/QGld4tPfVsrQaQcra24EyDL2bNUPOxnz7DSABJcdXq1bpG2GuoyvuN7B
-         GWwtXc+3dJIUPJw2GqCPDW45ZckvGc/dA81OWqFGRtGjrdvsjoGcWFY9O8haFIc2Pzt5
-         wVvbNK8EJP8xxwTHH3J1wzFgeiYPgwK5VyIFXjUrhMrkfrRRDE9f8hi0bpE0qZexs7S6
-         aIr5ucpqyKRBLcoeRCZkuiBjtQ7X5SAqXyxsMd27aJFxDzAotJsZFTSpwkoYAkBgMnYY
-         DBgA==
+        bh=r0TEPPXgHP97qr/cFTbi2WII06m9YnzLfHQVRRK4PYs=;
+        b=Tu26p85ju9LSwPbYpmDwW4R7Eij94JaaGWW6tt1lrTB5JOJTAdPkNzyJryRb4mstF/
+         w1xwtlBYiOVzIdOKlZL+CziYEKtBgFYAibe548SuYLlHgo1Tf0J+1bc3vUsvYD86djzd
+         yYMm6IJFj44YybbvuDbhZnddybV4CJilD85Rr0ridTDpsmLGsQ0NC9LcFJ0RbTzeNvvJ
+         5KGbzeoVDWrBecNT74D00OH/80ZWfCqIn2CXW2JGkIe9lSlQsCSUWytLx6hI0kDU3FXk
+         nE096Qsqj19xOjLLz58bsz9acQItwBorRL17iWpfIvY/1HajRWzkFn/i+dtbq5SgBBZS
+         Vx2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788591848; x=1789196648;
+        d=1e100.net; s=20251104; t=1788591851; x=1789196651;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=kFzQQFmCjPVcuR+l7FGQ0u8MffPmow8qd7a6fWjai5g=;
-        b=jsR9rdQQvuEPzmQ3aowf9okFq3Rp6DXoPc/DqiaHFNtvV7MN4PFAOwWOs/ejPYNZPP
-         XrGKC2yyZvx72w3yc5DMWM9QqyziGcM1nD3xmJI5L71X54DYC7tfR/v8wrf/+YU0CkTK
-         jmHobOsfsvvdJshMDIqW7O119v1o6JyY4dOgpd7QxxgAFQpsNPgC/4yQzKgpCQzWFnD9
-         S1Isg3D3SkOmMetPCAWGBgfJuDGjGehVuWOm0NZRLJXr3SvWeZXB64xq+BtFHBJ4wGL4
-         UVl6yKEcNyfpFhe5QGRg/DrraEHBRVQ58jHvZwXv0h+sDhJMql1omwaK6uEGGrWFaaai
-         pHkw==
-X-Forwarded-Encrypted: i=1; AKwUvBwITJ//Peo32SgUmiE7ukUZSRUE5LUXeUs9xH64z7//PW7BJCOPeq1j4k1lX3K4psvuFun9OtDpcc3F@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++nUapB/qlVQhxlMzmvnHtwh49BJOVebcDU4v67ebnefngULAwqR
-	DXrLWUKW5T5Pjkr1WBjSNNfrVGRVledwyljVrsTmy5YXQojIXTLUiMlR
-X-Gm-Gg: AYBFou28wQYrCv2CVp0WNxgLM3HVvKvgjAzuxt2069TxDNbtqs7PTEdrJN8Rkc4BfaM
-	R6Tk+9aAUqLh7+KpDqKNf5Khf+n5Dj23Ndnd+Mw8IgW3Ea7ja3vpSO0xHUlaKj/ZdP1S+iDkEM0
-	oDJb/Puxs8Ztw5MvTnPOozuUEVZGFikz1kkgpRKWTYA3NfPczotNbNbss9YLP2p2zxWKoqtrFok
-	nRPAsJgE6cb89I+7F+oSOzIQMLeNPNQJ7Tl1eVFV076g9BczWGWoG+RzdF4S7AipWG23dFd8SYT
-	rkjw9hq74j/tPe6CzmCGtnzfKwxnoVqGIjuFQrrEda3q+qz2tANLM3nnoNCZ9d/ytdV5XHJr83g
-	7IftBZCr3hvl6DaTGWNdUhNv/riDowJzyD42+eUGLHCPdg+V8+eWUdGove+KcoeDxjx+7uMkMZH
-	85Z4GYGyeLBWbBqUh9wQjTNHXGz8cRyWXc8k3DkHgQR3opOJHao1hsndHKumUECnxtxzr3HMcvt
-	SbOQSY9xfngnMyBxKywgpAvfaiDhcKGrvT6JzBKYcX3ASX+s1DK31PR5A3qy8vqT9fI7SUj4/EQ
-	Iyi6Cnja8do+dNGzfiPcp+CpSXMPG8iHeXjxrOvEvkApieip9Q3hzr6r+Lw+wI2IWv2rPGyhH8Z
-	EwSCjKT4=
-X-Received: by 2002:a5d:5f55:0:b0:481:503b:b663 with SMTP id ffacd0b85a97d-48587091856mr13328658f8f.18.1788591847580;
-        Sat, 05 Sep 2026 00:04:07 -0700 (PDT)
+        bh=r0TEPPXgHP97qr/cFTbi2WII06m9YnzLfHQVRRK4PYs=;
+        b=fgn5gUOLC7hnnWE58Kupiidqv3+MFMIJP+u/eZVxRgPTSlz6QyqB+ISLWhuRhFyv8K
+         n+/+zrGDQ3raOWPZnxDHFKKRgfyE9SgFB5Odugdm327dNYTKvY06KmDTcIKzLrXeGxn0
+         wFMLCxlYI7FqBisYdWEvYC6stX5AJue1HtP7kZnSehFK1jF+3DmSiIkm6NfcicMRtbnd
+         jdgbxLVNIspeYOSrtJQZ9LRe+XM7o4GTINufp4TtlxE7T9bHhFt/msBsOBUGlM8SRTVp
+         3wvvNUzsnmBylMSmRGDd/o9Nlo7v9D22jyz2TSUF33yDN5Qnic0mRCSwpNWx/GPp0V8+
+         jJQg==
+X-Forwarded-Encrypted: i=1; AKwUvByJL5gfVNM0J81zXPiUG8XeXoWtHbJWP8blEmgw1eLcYVzdNr6hSHvccTgdbNED1D1VtQ8BYIEccXwP@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++mK1MJz+AwI0rzs7DPvIGtAX6IIP5dYrB4Um2I7WgJKGSbCg+ZD
+	alAI8YTJYafzjMsO2d4u6+k4O5JEd5mFIUPLOXC5bpymDBxQer5KPDpo
+X-Gm-Gg: AYBFou1aRZanmzvDWVp2iW+9YxYb2oaemX6zMXRROX9DYUmxaDjBrsZXV12SGBVMaK+
+	hWjrDV/eVolkQQD6ZS+b1U47Xyt5zzvdWSnYwbMQ+DnrE7m5jMXGWivPv8mC7xHViVKSoS73AaV
+	FkyCVrNKiQ/3GRP3CGXTW0/gpeY0+KJPxUk8HUBQFaGRI1wDqquLdM8jcXy8h/CJK3fR1yEwJ+L
+	57bDIzY3C/vr2dJCEu9nbBlpQ9pHegEQaBcTYgmGaBDEChsTlF1gfvlgl4nkjDxlm/0PZMOSDvI
+	tva/PuUtiFnEpa4C2R8vzlo6bhfiv+nlQXSO1HAlLO9tv6TouVVyXvDtkkBpjRmyhSNOmfPQkS3
+	dBs9BCOFAWYVGURjnrckGTTIXSGhvJ2cT2LXrDzBmrUNRKIFZ6dBzKldhfj6BrphU3YykEqwi+I
+	23a/ydI54AVgJmW6ugrDNp/J/YVEovvkRo5GW/y8aIOYtPIoT33SgUwO1qvLvEJMGCOOlOc/uWl
+	oB1Rt+dWZ+9J4aALOw6pdGBktuGU9TGbSOl1wt7PdGn4SVeJ0NNc2Osqs84fNxpRIBTwMpB4l49
+	i6x4aRrZ4AxWkv9IdyN2aJyUTa/elnIFWf9cancHraO2ITsOKAZeMc3WTcuIXpYWQB8TrOoe
+X-Received: by 2002:a05:6000:24c4:b0:485:8a46:7053 with SMTP id ffacd0b85a97d-4858a467176mr9452131f8f.37.1788591850939;
+        Sat, 05 Sep 2026 00:04:10 -0700 (PDT)
 Received: from localhost.localdomain (dynamic-2a02-3100-a4eb-3001-c06d-af27-9fa2-ea53.310.pool.telefonica.de. [2a02:3100:a4eb:3001:c06d:af27:9fa2:ea53])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485885bfdf6sm12011719f8f.34.2026.09.05.00.04.06
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-485885bfdf6sm12011719f8f.34.2026.09.05.00.04.09
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 05 Sep 2026 00:04:07 -0700 (PDT)
+        Sat, 05 Sep 2026 00:04:10 -0700 (PDT)
 From: Karl Mehltretter <kmehltretter@gmail.com>
 To: Jonathan Corbet <corbet@lwn.net>
 Cc: Karl Mehltretter <kmehltretter@gmail.com>,
@@ -89,9 +88,9 @@ Cc: Karl Mehltretter <kmehltretter@gmail.com>,
 	Damien Le Moal <dlemoal@kernel.org>,
 	Niklas Cassel <cassel@kernel.org>,
 	linux-ide@vger.kernel.org
-Subject: [PATCH 7/9] docs: kernel-parameters: Drop the omap_mux= entry
-Date: Sat,  5 Sep 2026 09:03:45 +0200
-Message-Id: <20260905070347.25902-8-kmehltretter@gmail.com>
+Subject: [PATCH 9/9] docs: kernel-parameters: Drop the pata_legacy.qdi and pata_legacy.winbond entries
+Date: Sat,  5 Sep 2026 09:03:47 +0200
+Message-Id: <20260905070347.25902-10-kmehltretter@gmail.com>
 X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 In-Reply-To: <20260905070347.25902-1-kmehltretter@gmail.com>
 References: <20260905070347.25902-1-kmehltretter@gmail.com>
@@ -103,37 +102,47 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-omap_mux= went away with commit e9f5f1e45608 ("ARM: OMAP2+: Remove
-legacy mux code"); nothing parses it any more.
+pata_legacy no longer has qdi or winbond module parameters. The QDI
+support went away with commit 0dcd0a76370a ("libata: remove no longer
+needed pata_qdi driver") and the Winbond VLB support with commit
+3c4d783f6922 ("ata: pata_legacy: remove VLB support"). The entries also
+refer to CONFIG_PATA_QDI_MODULE and CONFIG_PATA_WINBOND_VLB_MODULE,
+which do not exist either.
 
-Drop the entry.
+Drop both entries.
 
-Found by cross-checking every documented name against the __setup(),
-early_param() and core_param() registrations in the tree.
-
-Fixes: e9f5f1e45608 ("ARM: OMAP2+: Remove legacy mux code")
+Fixes: 0dcd0a76370a ("libata: remove no longer needed pata_qdi driver")
+Fixes: 3c4d783f6922 ("ata: pata_legacy: remove VLB support")
 Assisted-by: LLM
 Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 5 -----
- 1 file changed, 5 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 13 -------------
+ 1 file changed, 13 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index d44728a45506..48dd273eaf6c 100644
+index 4864e37005be..33298da28b55 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4765,11 +4765,6 @@ Kernel parameters
- 			waiting for the ACK, so if this is set too high
- 			interrupts *may* be lost!
+@@ -4994,19 +4994,6 @@ Kernel parameters
+ 			the first port in the list above (0x1f0), and so on.
+ 			By default all supported ports are probed.
  
--	omap_mux=	[OMAP] Override bootloader pin multiplexing.
--			Format: <mux_mode0.mode_name=value>...
--			For example, to override I2C bus2:
--			omap_mux=i2c2_scl.i2c2_scl=0x100,i2c2_sda.i2c2_sda=0x100
+-	pata_legacy.qdi=	[HW,LIBATA]
+-			Format: <int>
+-			Set to non-zero to probe QDI controllers.  By default
+-			set to 1 if CONFIG_PATA_QDI_MODULE, 0 otherwise.
 -
- 	onenand.bdry=	[HW,MTD] Flex-OneNAND Boundary Configuration
- 
- 			Format: [die0_boundary][,die0_lock][,die1_boundary][,die1_lock]
+-	pata_legacy.winbond=	[HW,LIBATA]
+-			Format: <int>
+-			Set to non-zero to probe Winbond controllers.  Use
+-			the standard I/O port (0x130) if 1, otherwise the
+-			value given is the I/O port to use (typically 0x1b0).
+-			By default set to 1 if CONFIG_PATA_WINBOND_VLB_MODULE,
+-			0 otherwise.
+-
+ 	pata_platform.pio_mask=	[HW,LIBATA]
+ 			Format: <int>
+ 			Supported PIO mode mask.  Set individual bits to allow
 -- 
 2.53.0
 
