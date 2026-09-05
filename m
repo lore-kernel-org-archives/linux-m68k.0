@@ -1,125 +1,111 @@
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E12492530
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 12:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E5A39021C
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  5 Sep 2026 15:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788611393; cv=none; b=P2a7oHDxcxeeapPoxoLfug3tuGKA5nlCdSaXwDQ/Dmx0DtGDoaATi8jcrckDDWUGuzA2RHL274WafrGI6llLRtCje3gx1jkV4hWKzdI4fnKD4oxLhVtwA2ihscXUz/9jTUdFYhVYg/KulyPqxgVCI6m8VvAWaZL4CDqI7+qCbbw=
+	t=1788621278; cv=none; b=rYPq7URhOHfbx+8FlTBCOtGHzqE6RmvUxmf9lRDQklC0QzQ/AlZLIku7QoXupkSohiar6uI6nSgGDnKqF/nsJa2VqBV2uD0O47fjI+rL+SlH45sX+FrUyoa2lV8J74FD2bKOROcT534W3Dc7lFw0b1gatlVGWof8beB+Lm1g/XQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788611393; c=relaxed/simple;
-	bh=hMg7RJefHBNDjWx7qlSUPFnIqApIedOx+ccA1coGGAs=;
+	s=arc-20240116; t=1788621278; c=relaxed/simple;
+	bh=ptQDlIgbLicnK80Gpqy0tzeZDRrQTFqIIQk9THXhks8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=onGgqVKKnZ26AcaO3eBeN3/WYW39xZ0Nb0ko72eVBrYcR5+m7CBuJtky1Wydv+UQMYJdLcW57oi/ZF06YuntIOulBeFNfULRYEbjdyXyFZn55EoTanHILXooNFpfIa4xio5f5ZuIw8+EZ3BSxZPJzC18J4a3z0LvAml0dF2iquw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b+ows/c4; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=jwZMSq20iCpqV04XF4Wm5wcZdD3ud++wM8s1WpfPdtR1oKnmW0PO+wCLrTFwr4c0F7LLTyAa90B/whYQBMSFtNfsccNKtAV99WbM3GtzVk3QYBpLZt9ZiRRaiQcV+QkPLAUz9YH0UWxKCGqH3Kcs5sbZlh9s9xSktOHlpLxSVZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Sqc2kxW5; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b+ows/c4"
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-49b8f86c6deso13601035e9.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 05 Sep 2026 05:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788611389; x=1789216189; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=IR0+lkethKHvrwCdwLXMATakzMSwaAKd6EpWxgPc0oQ=;
-        b=b+ows/c4B9y7ldKFTyKcEQs5WOXjPF3mmBhOqDB+a1Ge3RVUxp+u585HoGNgqTQ/Kl
-         5dQswaFZvxKYpgOsJutRJCLMdi1EnAOvcKXZ/VYlQMQweXxCYKCC5+tSoVkOns6TgoRN
-         76TGWSvtWIDApHUrmrO7cm1p/w5f0OarW19oytxUF+ToaJyFeUktqippLYZAGb3uPb55
-         qu9ajlJ5CSWjikvLKhb1IHLzT8Ukq5IOoXcFk+eKSTpdiGeuKWXSl3xzNqgHvb051YFi
-         QiPgYK9EdnprYUQelS/DcaNv50O4XWrxsAAHFbYkvwEJicPC8zBW/nSEEHAx5yA4uDlJ
-         CmnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788611389; x=1789216189;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=IR0+lkethKHvrwCdwLXMATakzMSwaAKd6EpWxgPc0oQ=;
-        b=gPMVOVlavItCaHt0qOWvdgQkXtiMCC3Rjpw8/7yP8gyI8ln13KrtNaWx1dQwtKRv6x
-         bn38LIYJlxsqO2A9qw4bTqMeszq/ebS5vYyDlZkpkg9lW85sj+NTSOanF4D6NaA6sdjI
-         IZP7GqeQmqxu/s+32kpOa259P5G4xJip155146BtY4NUZSk9an2cl94fKCpi+auUQ9qX
-         rvddpUOWvBOSy6eBYEXw51lfgh3LpFnz4+7gdtspETfNMEReXZqOYrG7p01aes6Bayjw
-         JjgelgUdO02MgCyJ1b9hziQPVaGgD5oYMrp8ZrdpeQpXXFHw6KYMod9soKo1/e0iM6dS
-         e2WQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwtjNL3KMIXkw/ANB7ZR1YurJ+FPs5Q1+cMjVgmLhG+NkQz5iLb0DvFvNB/esQqBL5g3bQ03F3vSI+I@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++lzoLcmJRJGOHrY4xwWfjCLmp/z3nYMIQFksY53QRSapO0Nm9/x
-	SwTuS6Lciq48+UI40hwniVUugZL7GVty9xENKUyfdK9ql5HipsVuLP7c
-X-Gm-Gg: AYBFou0zJUhTXApLYwePhtJOlo+y/fYArrgdL0CE+i2M91biWvtSQWcY33BroscMWr5
-	xb+Kt0loDe0nhevS91fClp0s3dMCZitk04nwLA7tc+2A+3YLfL08LGOCqoF0X3KkQq1PVCWXQUN
-	yvsx3R7bw5/3TcNzavyh4lf92wFWpzuybCIK3+MuSUnRXxv1qyxpiKU6J9PlLczf18xIVXLs9Qw
-	e+sfSLfJ/0iptQjonvzCMOlGF99S0KcIHx1khHlsYyUg0ogNYzuAMC8kWTUoIrIZakKnY96mxw6
-	XBtXa6iJXpGDJgZfcnqwNEY/+rUUzsgpnCstp3N2rEQXLLRvHxd0bW9eE8XSeKIRyEkLMGFQKCb
-	BcRRs097c1NbK6hT1F0zWBIopJCIrdL0iwWhDMmd5VAkhEAv+xaW9I/K/39BJO6k2KfHSLQLbit
-	cJ4A3moEWkWoFetOET0PJLcZiZIKms/NSSxvNbl/cLFKqwoZZn6Asl5D3TrAW/BOtmpVlf1j+x+
-	BmuE+ZO8FbaIKmSJp+pgVuQfrKXLCCmXOOA/avp9srjiOVH2ZQ3+j8uLdsC6UknJeqBDlke/SOL
-	FOvwy+Kyr+24Ui/BddRnFKwnYnmNOK5fPfRRj2e0VEX7qz5MGFf04Bx+AgkIcB5k
-X-Received: by 2002:a05:600c:3495:b0:496:c1f3:e8f8 with SMTP id 5b1f17b1804b1-49cf8244bc5mr116977535e9.7.1788611388275;
-        Sat, 05 Sep 2026 05:29:48 -0700 (PDT)
-Received: from unknown748F3CBA5068 (dynamic-2a02-3100-a4eb-3001-c06d-af27-9fa2-ea53.310.pool.telefonica.de. [2a02:3100:a4eb:3001:c06d:af27:9fa2:ea53])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49cfbdacc45sm118555475e9.11.2026.09.05.05.29.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Sep 2026 05:29:47 -0700 (PDT)
-Date: Sat, 5 Sep 2026 14:29:46 +0200
-From: Karl Mehltretter <kmehltretter@gmail.com>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
-	linux-m68k@lists.linux-m68k.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Shuah Khan <skhan@linuxfoundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Steve Wahl <steve.wahl@hpe.com>, 
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>, Mike Travis <mike.travis@hpe.com>, 
-	Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org, 
-	Krzysztof Kozlowski <krzk@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, Tony Lindgren <tony@atomide.com>, 
-	Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org, 
-	Dominik Brodowski <linux@dominikbrodowski.net>, Damien Le Moal <dlemoal@kernel.org>, 
-	Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
-	Ethan Nelson-Moore <enelsonmoore@gmail.com>, Michael Schmitz <schmitzmic@gmail.com>, 
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Sqc2kxW5"
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C914D40E02C2;
+	Sat,  5 Sep 2026 15:14:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 1HIhP_I34F-L; Sat,  5 Sep 2026 15:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1788621261; bh=FONSvainkhZyR+GqgqzxbgjHLuUUwJa+U3QdoTXH0vI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Sqc2kxW553DlZwdvzxxQAZLrbuEWzoW053Da06kVpvIMhG/w09Utt1KsME6FE8EA7
+	 4bmXqAlMUyiS4uSmS1AnVyUiRLtwqPt0nl8K3fVENBlwp7sgw/Tw0nEzcEG37loFCB
+	 mgS1PIm7zCP/0Ssn/kzUdG66hBPSm0DNJe9xDVY4AE7kTwhUz4YRybbAUhHTl4CDIH
+	 K+Y0Dh/gls5JwcexaHzpg1TJ69xD4QC1wBX0Ck1liC07o2RjsQ8z1rDigOfOrZXaRK
+	 g6mIAqrcmv4C2IjahRW7eWbaabrLpCqDUIf4zRGzXQzJknEeGu+AgcZvvP4xyYOIF3
+	 T3O8Fli+So/ZctqpvNK4agzCRKsqhdI5ZK/35dqJOlU9pZTgGG1waZhUSB+9pdm2ll
+	 2YsxS8nxe2/Wrl/GPvOOi8Ms+eJriGvs2xcuQJ5PufEPjZLGuWFAgsnBZEAmFifz5P
+	 OKSzs9s82ckTztlOpPziAO9GwuTvz+/g0aq3IweKR5/LpyQOrFiBzriR7ifp4fLMLR
+	 fcL3Dg2ckoPZpiK2BRFnc/3Js/PS4aQpBlni4PLwUgCM5zVYdOTcJnbb08M+iiG4BY
+	 Z4sS7sWpWoQ1FLxQRaX0Cq2oNJM4MaSH62nXcMiK2+xut+yoH2jAR+KL1eu0JokBJe
+	 Fop3BulcRULz8wF9jjCR7eag=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::1f])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D53D940E0301;
+	Sat,  5 Sep 2026 15:13:48 +0000 (UTC)
+Date: Sat, 5 Sep 2026 08:13:45 -0700
+From: Borislav Petkov <bp@alien8.de>
+To: Karl Mehltretter <kmehltretter@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Steve Wahl <steve.wahl@hpe.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Mike Travis <mike.travis@hpe.com>, Tony Luck <tony.luck@intel.com>,
+	linux-edac@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Tony Lindgren <tony@atomide.com>,
+	Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Michael Schmitz <schmitzmic@gmail.com>,
 	Andreas Kemnade <andreas@kemnade.info>
-Subject: Re: [PATCH v2 9/9] docs: kernel-parameters: Drop the pata_legacy.qdi
- and pata_legacy.winbond entries
-Message-ID: <apwKitEmOv3ZwLkd@gmail.com>
+Subject: Re: [PATCH v2 3/9] docs: kernel-parameters: Drop the edac_report=
+ entry
+Message-ID: <20260905151345.GAapwxqT93wPWHF7u4@fat_crate.local>
 References: <20260905094649.41996-1-kmehltretter@gmail.com>
- <20260905094649.41996-10-kmehltretter@gmail.com>
+ <20260905094649.41996-4-kmehltretter@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260905094649.41996-10-kmehltretter@gmail.com>
+In-Reply-To: <20260905094649.41996-4-kmehltretter@gmail.com>
 
-On Sat, Sep 05, 2026 at 11:46:49AM +0100, Karl Mehltretter wrote:
-> pata_legacy no longer has the qdi and winbond module parameters:
-> commit 3c4d783f6922 ("ata: pata_legacy: remove VLB support") removed
-> both together with the VLB controller support. The entries also refer
-> to CONFIG_PATA_QDI_MODULE and CONFIG_PATA_WINBOND_VLB_MODULE, which do
-> not exist either.
+On Sat, Sep 05, 2026 at 11:46:43AM +0200, Karl Mehltretter wrote:
+> edac_report= went away with commit fee27d7d9788 ("EDAC: Delete
+> edac_stub.c"); nothing parses it any more.
+
+Nope, it was:
+
+7fc0b9b995f2 ("EDAC: Drop the EDAC report status checks")
+
+> Drop the entry.
 > 
-> Drop both entries.
-> 
-> Fixes: 3c4d783f6922 ("ata: pata_legacy: remove VLB support")
-> Assisted-by: LLM
-> Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
-> Acked-by: Damien Le Moal <dlemoal@kernel.org>
+> Found by cross-checking every documented name against the __setup(),
+> early_param() and core_param() registrations in the tree.
 
-This one is actually a duplicate, I just found out. Ethan posted a more
-complete patch in June that removes all six pata_legacy entries which
-commit 3c4d783f6922 ("ata: pata_legacy: remove VLB support") left
-behind, this patch covers only two of them:
+If you look at fee27d7d9788, you'd read:
 
-  https://lore.kernel.org/r/20260607064053.195166-1-enelsonmoore@gmail.com/
+    Move the remaining functionality to edac_mc.c. Convert "edac_report=" to
+    a module parameter.
 
-It has a Reviewed-by tag from Randy, but does not seem to
-have been picked up yet. 
+-- 
+Regards/Gruss,
+    Boris.
 
-So I suggest: drop 9/9 and take Ethan's patch instead.
-The other patches of this series are not affected.
-
-Thanks,
-Karl
+https://people.kernel.org/tglx/notes-about-netiquette
