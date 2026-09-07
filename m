@@ -1,165 +1,108 @@
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79094432FD
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Sep 2026 08:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90463448B93
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Sep 2026 09:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788770347; cv=none; b=st5BJt7U2t5Ql2tRnL1j88//AbMWqbCnMhyIq8h1niD2ocgV/ZXcb3Epd80FQ1WEMj+unjYSfA7CiaUdqgDd0CVrVAS7D5iyZK12WIXl2nUB6yhEzsELyVqWaQlC+9tIisDgzJyLiLdFbKdntNsqi2ldt70KJiz6L+rgTRCQgE8=
+	t=1788772551; cv=none; b=bgNjJ9EEwuZoyyIfv5ZMjgFYYkvdEiddEO2U6V/5awchBpIsiTclRzO1oquh9x8t62WhDaGE5vSFZjMRR6/VzNd2z6bK3y5YX9l3uZXjsSeNe1drP90QegLObCea+rKBnqWmQQYPkxxgQPG9/DAy1qE6HiaojqwYXjKrONvgzKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788770347; c=relaxed/simple;
-	bh=Tm/d84wF7MfOvBgEC1xVi9lvNiCMRhmX1lrFGxn/CV0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LkxxmQEaHOVewa4QciFm5VjAvzMpd0QpWrM+DuEOAjBh91LM6Jrs9GviK7KtWqwVAaGCdV+8Acg34X6JcaW6FTzqepxTNp2E7lGgXziy+37qZGrhw7XTr8kthsGN4nyMd/L1w8reEqujtG7wlzXpsU9k5iORNWyATWjzelhCOno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1788772551; c=relaxed/simple;
+	bh=cotydOU2axbEAFuLHXGRT6+++/RL9NtHBZWqpZiF0S8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VXiAYwIs8T0kDw3hkLmUmUAR1/M18Yrf4mAvevGGbM/WTPyvWseOaTxWOrvzdbGKqpo+MiggUQm/eF8O8lCWUb88F0ae2pjsPMnqQuvsj+VMKEoEdis7IkLnP9iNgdrpfKv5Jne3VbfcOudeYGfYsuQR9GX3uIWdug9wj55o3Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZX3woP7i; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-782c22fbb1cso901033137.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Sep 2026 01:39:04 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZX3woP7i"
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-2db18e5cb56so29760245ad.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Sep 2026 02:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1788772550; x=1789377350; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=LVqwmOb1crWhYfKndwh2XaY160aqcbjm7eUeqdfFhfA=;
+        b=ZX3woP7icVIKz9f0/m3QrAycJiCGlK1Dh8nfOAMM1XtcQOSzsmD5irGWZKuhkhG4St
+         IbURIC0nfNmEIwl+jRUcmsu21OUOXLFgq3hDdM4M2lAWqyuEAzB8lFNamZYa0R5OIm63
+         JicEgjXV2rCBsrnqVWnOU97wPppaca4SlNnekvhh+hFqIdC4Vmc0OQavDpV17DkF6P48
+         EFuhXylUMpaTRCSBID0m/c5Va7uWaQOVpzKoPG3INiSBusYVxDQsbywQpAMpP1VPcIqk
+         VGPQbs4+lXCgv7LqiyWcSFH1+Dw2MA94ho2mpIRsyMPof8dV1hmKNP8zqbjxK2q8NKOD
+         iYQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788770343; x=1789375143;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=2br8BvQg9DJFd3H4ITYFtxQrEUyvo1i3TJw/l6L1bw4=;
-        b=lox9XYrSbPqUE3nSkKPODb7Ox0jYSL/InpvsJDGY1c3oXnvAJA+vBjvi8YFApguzam
-         Ywx2zwTZdQ7DyFT5BWhml7B27XGnzL+ZXa/KMO03LQV0CdzWzm40BNv1xkIi/WescIsd
-         gabVaSzmpchuH/Ufu2lSeCJwnIpNpxUMH87mg/EDdH5tp2e7OSkH+PutLU0qbWhpbSZ+
-         A0VIuUl0piP14Mg7A5oQ+v4sg5vwRkrAFzcWqlWvbldwh8FTdOqLr3UYLYmd9DiZm2RH
-         qFNV9YnjqrNN3WxcwJCpU1c4iZfxzDxfaivBZp0RVlJKXwhe0eQF1kEBcRTaoR+vdvuI
-         x9Ng==
-X-Forwarded-Encrypted: i=1; AKwUvByrWEtSmjrN7coNz8yw8OF2VU4BRQw9aKyyykIUBRQ649X2ZGPBOFKyAx+U/5iGFpib0X9jNIhpgMgc@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++kPax2XgWhGOllriVbzHytXeDhoNl0/xQdCVUUTsn2dAdikXtcp
-	3qCugx9BZqtkRnP4Yy1IxkU411I/fYoPTrbSVrbYCWp3uoo5HROUiJHbyPRQWx/Z
-X-Gm-Gg: AYBFou2BERKB6qbt9oLkzH8zcDmoMHRTGZJLi9F+8sP+PIKKA/aNoWIVn7j+dt4skd/
-	n3scOypDSFWrrLb/aY4ZGtX/upx0Ze4jBEQDDE+jNgZWsLw/plEhnaughbLNLXxlcbzJyMs8Fa7
-	aBAO8vlwnrYrLvhWuI46LksmdezXHmRkwpD9fzyXggYKI+0rCMbjXftik/GaT+i8RsxGTte7rHI
-	Uweu18QuB/Oz77sHOOFDtXnYZlKaW6Wmk0neb0txGR8rwrWWJcaQnmSmuUd1CFH9YIO74R6WTHv
-	7BbUKQejA4ncaWPdHNbtNsl7OgxZ9Z4QcJargpIWKq9slq+fUonqDVQm9h64moThlxqkFP96mw4
-	bTf76U0HgZpMjOw5s8wLGQ8jox1e7I9BW9wmnfopEGYObxtwKWD6mFwb5MtvwHB/cTBXxcafvBX
-	lGe0dBXNAYAIn5WYBZ59P50dWPrBHwsgPfOxOu5jLZMmlAmrcia6ZdSv8e/HQwMpetBs+ReuKzH
-	ueyPQbtVTnvTQuUDmsn1dRNag==
-X-Received: by 2002:a05:6102:38c7:b0:777:4e99:6f84 with SMTP id ada2fe7eead31-78a4a727bccmr6806602137.1.1788770343353;
-        Mon, 07 Sep 2026 01:39:03 -0700 (PDT)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-9808ee8039csm6979494241.11.2026.09.07.01.39.00
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2026 01:39:00 -0700 (PDT)
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-74ab6c88052so925996137.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Sep 2026 01:39:00 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBxItPdftRyQ6f6Z00pm4/uMIfwnhbVKZGUdzEMXaqwUautInjq1NL6hubcHVXWQhHW4A8f93erZYqtB@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:6d6:b0:737:783d:1916 with SMTP id
- ada2fe7eead31-78a4aa56803mr7111444137.11.1788770340448; Mon, 07 Sep 2026
- 01:39:00 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1788772550; x=1789377350;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=LVqwmOb1crWhYfKndwh2XaY160aqcbjm7eUeqdfFhfA=;
+        b=k/eiyUDS3+RUWcT8ejB/ttcyKtUly3X21q6ZQoge0I/TBqek/faaqF/+M2HhL5Ec0x
+         +Z6gNCeQOlBJs5uasRVQSoHxLnO2Oot7iOY2c0YMLa8ISG9qZSQmnbIabn7g7w7wtEIM
+         rHH38jeW8cqNX0xMAynGtE2f32lTUOVnJT5Is4KhwrhF3iJCoqnY27293Ll3dJ0DBV6G
+         QStyFvtwzZMz+zmiQOgf9YEagpBLIoHlC5gtdTGJzJ8rqiZwcG5vjngbqF/zGd7Wwu6L
+         d20BtOZsufAzH359vIaLslZzUfsf3s9ppueCktHo4KZuhUPN9FHYpKk/oqLkQ+d1981w
+         bVTQ==
+X-Forwarded-Encrypted: i=1; AKwUvBx1k2sJhS4ifpmVFcbZ9c13ar67jp3tzKlraoDqf/B2zJcHZsKSsaSw1Nay/sbkPyjXvGjaWuMvxm1j@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++kS1bm+xxD4xCgWMQABHNaUcpufgjwTwvBayXYf21v/jjpVFu4b
+	a5xHfGcYhvzfSp3zwkzHouRh+XE7xYzFo4/wyre0GCh5CJ9pRYUtc9Hd
+X-Gm-Gg: AYBFou0cgMOm7kDp6RzJjJFgOMjoz8GEvtGxWWNaStqhvZwaJwqUY6ofuEu4NR+9u7T
+	yQqU+3NOgKo82rLGzgS5pdRfgOTN6mvh5a9dvKYQeDfT/cBKhxbsznu+u04q7gg2it1xQhz1h3F
+	LvUMgYngoX0XdXjn8uXuMFrUHqCTwqDCfit03AIjCuDfkIjP6dn6SzDiLyRDKL0HtWwksdfoOJs
+	NVWfBZ19/Ij2EUSiBYWg4iER8uUzRkOm+tJ20+8VV/peZsesSEmYYWsBMHYIiTz8fgpwt8yPwmB
+	mSFdsxpEa+Rv2vSuTk5ZnCWGE6JbE55DsZYLGGOuHsgtejk3aKjpB2WmvfJn6EX+ga6z4EFbiFY
+	xohLGn94MBHKIVUgad8FOomH1Z1SBoXizdcZm5TbZ6x+DEZtP5TK1zW0+0zxM6LFUmJtiEAWKcI
+	rijgCyAim/5hHY76ZQdMtG2okuoLWqjZ1CXlRPjYv+BGK/FzsZEUPjm4vtw5rqIiqgGdCCDqOQu
+	O+wNJF/39pvDtLM+HqH9gLd
+X-Received: by 2002:a17:902:6ac3:b0:2ca:6c8:abd8 with SMTP id d9443c01a7336-2db127cde0fmr248183705ad.12.1788772549877;
+        Mon, 07 Sep 2026 02:15:49 -0700 (PDT)
+Received: from volcano9f6e-hostos.amd.com ([165.204.217.251])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3339af25062sm40959657eec.16.2026.09.07.02.15.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2026 02:15:49 -0700 (PDT)
+From: Hemanth Selam <hemanth.selam@gmail.com>
+To: Josh Juran <jjuran@gmail.com>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH] m68k: coldfire: fix typo "reseting" in comment
+Date: Mon,  7 Sep 2026 14:45:44 +0530
+Message-ID: <20260907091544.36558-1-hemanth.selam@gmail.com>
+X-Mailer: git-send-email 2.48.1
+In-Reply-To: <C901AA86-8D21-4E1E-A2E5-A6D99CDBD705@gmail.com>
+References: <20260904112336.38497-1-hemanth.selam@gmail.com> <9051ED9E-9257-41E8-B979-DB7716F516CC@gmail.com> <e038c283a0ee7a3932f3e3bfaed188280ff7188f.camel@physik.fu-berlin.de> <C901AA86-8D21-4E1E-A2E5-A6D99CDBD705@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260827093948.2825531-1-lilinmao@kylinos.cn> <e4a2ba2e-c533-04d8-0795-e3d43caf47b9@gmail.com>
-In-Reply-To: <e4a2ba2e-c533-04d8-0795-e3d43caf47b9@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 7 Sep 2026 10:38:48 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVOc-_hgWvu84EW7tyQx6WzPtabnBUJ1T0uoxa1QZA94Q@mail.gmail.com>
-X-Gm-Features: AcwNN1Wp_1PImUP-cNgneasiw6HMISUs78c56UfOAI5vNGTS0l_4VrpE9irLY4c
-Message-ID: <CAMuHMdVOc-_hgWvu84EW7tyQx6WzPtabnBUJ1T0uoxa1QZA94Q@mail.gmail.com>
-Subject: Re: [PATCH] fbdev: atafb: Restrict SuperBlitter to supported formats
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Linmao Li <lilinmao@kylinos.cn>, deller@gmx.de, linux-fbdev@vger.kernel.org, 
-	miro.kropacek@gmail.com, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-Hi Michael,
+On Sun, Sep 06, 2026 at 02:46:04AM -0400, Josh Juran wrote:
+> What about the human reviewing its output?  Or am I misunderstanding
+> the meaning of "Signed-off-by"?
 
-CC linux-m68k
+You are not misunderstanding it.  My Signed-off-by certifies the DCO,
+but sending the patch also means I am answerable for what is in it, and
+on this one I did not look hard enough.
 
-On Sun, 6 Sept 2026 at 03:49, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 27.08.2026 um 21:39 schrieb Linmao Li:
-> > The SuperBlitter operations derive an integer byte count per pixel.  The
-> > accelerated fill path handles only one-, two- and four-byte pixels.
-> > However, the operations are currently installed for every external
-> > framebuffer in SuperVidel RAM, including planar 1/2/4/8-bpp and 24-bpp
-> > truecolor modes accepted by the external video parser.
-> >
-> > For 1/2/4-bpp modes, the byte count becomes zero, so accelerated copies do
-> > nothing and fills fall through to 32-bit stores.  Planar 8-bpp uses an
-> > incompatible memory layout.  For 24-bpp modes, fills also use 32-bit stores
-> > despite advancing addresses by three bytes per pixel.  These cases can
-> > corrupt the framebuffer beyond the requested rectangle.
->
-> I believe 24 bpp mode can be rescued using something like this (entirely
-> untested):
->
-> --- a/drivers/video/fbdev/atafb.c
-> +++ b/drivers/video/fbdev/atafb.c
-> @@ -2463,6 +2463,11 @@ static void svblit_fillrect(struct fb_info *info,
->          case 2:
->                  memset16((u16 *)line, pix, rect->width);
->                  break;
-> +       case 3:
-> +               memset(line, pix, ((rect->width * bytespp) % 4));
-> +               line += ((rect->width * bytespp) % 4);
-> +               memset32((u32 *)line, pix, (rect->width * bytespp) / 4);
+The patch came out of a mechanical sweep: checkpatch.pl flags words
+listed in scripts/spelling.txt, "reseting" is in that list and
+"ColdFure" is not, so nothing pointed at it.  That explains why the
+tool stopped there.  It does not explain why I did not, because the two
+words are on the same line and reading the comment was my job.
 
-This uses unaligned writes for the largest part.
-You can avoid that by doing the memset32() first.
+You caught it, and the v2 fixes both words; Greg has since applied it.
 
-> +               break;
->          default:
->                  memset32((u32 *)line, pix, rect->width);
->                  break;
->
-> Can't test this on hardware, and would need Miro to confirm it works as
-> intended.
->
-> >
-> > Enable the SuperBlitter operations only for the layouts they implement:
-> > 8-bpp packed pixels and 16/32-bpp truecolor.  Keep the existing software
-> > operations for all other external formats.
-> >
-> > Fixes: d463633d63e6 ("fbdev: atafb: Add support for SuperVidel's SuperBlitter")
-> > Signed-off-by: Linmao Li <lilinmao@kylinos.cn>
-> > ---
-> >  drivers/video/fbdev/atafb.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-> > index 5bca34c45cef3..c3011b61a94b9 100644
-> > --- a/drivers/video/fbdev/atafb.c
-> > +++ b/drivers/video/fbdev/atafb.c
-> > @@ -3360,7 +3360,11 @@ static int __init atafb_probe(struct platform_device *pdev)
-> >               memset (screen_base, 0, external_len);
-> >
-> >               /* framebuffer in SV RAM: enable the SuperBlitter */
-> > -             if (external_addr >= 0xa0000000) {
-> > +             if (external_addr >= 0xa0000000 &&
-> > +                 ((external_pmode == FB_TYPE_PACKED_PIXELS &&
-> > +                   external_depth == 8) ||
-> > +                  (external_pmode == -1 &&
-> > +                   (external_depth == 16 || external_depth == 32)))) {
-> >                       svblit_regs = ioremap(SVBLIT_REGS_PHYS, 0x100);
-> >                       if (svblit_regs) {
-> >                               svblit_fw = svblit_rd(SVBLIT_VERSION) & 0x1ff;
-> >
->
-> Otherwise, LGTM.
->
-> @Geert: can you remember if pixel format or bit depth of an external
-> framebuffer can be changed at runtime using fbset??
+The wider lesson I am taking from this is that a large series does not
+get to be reviewed in bulk.  Each patch has to be read on its own, in
+context, before it goes out, and that is what I will be doing for the
+rest of this work.
 
-I am no Atari expert, but IIRC all external framebuffers rely on
-being fully set-up before Linux boots?
+Thanks for pushing on it rather than letting it through.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Hemanth
