@@ -1,125 +1,114 @@
-Received: from mail-yx2-f12.google.com (mail-yx2-f12.google.com [74.125.224.140])
+Received: from mail-yx1-f42.google.com (mail-yx1-f42.google.com [74.125.224.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41BFC46EF96
-	for <linux-m68k@vger.kernel.org>; Mon,  7 Sep 2026 10:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699A144C65C
+	for <linux-m68k@vger.kernel.org>; Mon,  7 Sep 2026 11:39:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.42
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788778402; cv=pass; b=P4I2KhlPFRMAnHaCzU9xZWNjKLWKbLK2VIsYkkDBtYzzNNgsKi3w2x0XbB97834IVk0J1bqZ8m4X2e1RfwhW4PJUu5DQP0CGqmIwf073w5PtmL+H66/NwEqBaIPeNOw5S1GUkdbm8cSwSLu1yXcvbYaAXYL6ZwzYRAQtqMtpbr4=
+	t=1788781169; cv=pass; b=cshXd6t9ELK9auH0bFp0F4CFhIOCQf2Vivmv/2XKwQ2nsiNoAMvzB0Y8A6i6w9YBh7Q4LYtiIgpviNEFg2hypKAA9cWnCzdYMD6BiJgpt+SPnLucBMDRSpMN5r8/OdA/kNWdF8Fa/JoucuXZUtOZK7vEqzxueDlkGbjW7euVgTI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788778402; c=relaxed/simple;
-	bh=peU35ZYj1X3Dgh+cySipeAPY9Jax8B5jb7s6N9e5cSw=;
+	s=arc-20240116; t=1788781169; c=relaxed/simple;
+	bh=SSLE1OamutVwjBeXcbye/sSgz5m8gUlm7JyB9t3AKqQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iovOSK7SBkKxNroZFaSvTmKW8/knHb6PKuldS5TP6m5ntEXaP0OS/Ig+2y5WFQrAosVxgvRgVKFeudAgLc6zJvXT8fVVfw0+0Va0+y+jL41C21sjjTYYL2pkgK/ksz68pSjQ0CEtccrRxmepUvwbGgT5tpI26AB3tMVKqhFSMxU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VLAdY+KO; arc=pass smtp.client-ip=74.125.224.140
+	 To:Cc:Content-Type; b=lw+P9EJ7C+TVA32VByGPo40ZA/eLbY7wZP/C4C+o+VQ83oV5HKOXtK4jTL06dlit3DccM045rM098N1dodLcxvmMP6hv9BrcwH9l1Z1MiQdno1Z3vw0oUWZUITgu3ZmfvaWm2R4APNySVd77B5kNPR7eCRehmVa0XZbg1CV8vhI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pSFRquYQ; arc=pass smtp.client-ip=74.125.224.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VLAdY+KO"
-Received: by mail-yx2-f12.google.com with SMTP id 956f58d0204a3-66e4ab1b9f7so23168d50.1
-        for <linux-m68k@vger.kernel.org>; Mon, 07 Sep 2026 03:53:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1788778400; cv=none;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pSFRquYQ"
+Received: by mail-yx1-f42.google.com with SMTP id 956f58d0204a3-66bd7857841so3001164d50.3
+        for <linux-m68k@vger.kernel.org>; Mon, 07 Sep 2026 04:39:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1788781167; cv=none;
         d=google.com; s=arc-20260327;
-        b=XGQZQSQTYtPUBPsM2aEdo9UP1sBRbSn9ot+0sWbUpmhYCa2P+DDiKxrFhjn3m2vnd4
-         gWWgoPo7lzG6/aUVME4pTl0hVTq5J2O9gLmb5L/z3FfPCG7uokUNJX5IOkg5gRpsRZj9
-         ltOStYUuafAbGsBPRJbobgUa4hRWjqqzeGFW0Nc5FqYl7hVrhuBm1BMiz9PSRHG3Fxqo
-         AuU0ZTj4C3NpKkv3MRPtgBNUYVIwFQPSpy4wieD4vVu6K9CXAIhe+dCHwZmVvRtgTW9L
-         NS7FRXn8e7Uelz1LJlFc1tQm1Fhqfa6Q4jI33Bq5N5RaijutBRTfIp6dCfqBKag++VFn
-         4toQ==
+        b=GJ+ptU5bb5dGskEEhPD+izkb3CdXxOU/s6Otf0TNCb/umkBrKqh53P6SNhvx79+Kub
+         9K3e4vs3Nu9ZBpfHjCXrOn4NA2DIe3hNfpOGwco8IIg4KKSmC8eMDt96hpk84PEcjrVx
+         rRgPl3BdGqwX14iZ1mMurNTkhCRTqCycqrpJlob48uAP1dqalXTQTbJ0bRdiCPuyw0sQ
+         hszocSN47x4ewpRqxXUPpZMwtI42HEKwzhwDjIx0gRwEmxW664b56sPC2kDMxUEtS4ec
+         2Foy8VpmJXL/XB4hEM7bDfehP3bHPxnxvsJFqtlgOIdW9eJf66JYlBSV56HKTVBcqmW0
+         tMFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=t0j/VD2Uqr2WAt83wy0LI9ikA6saZfXkervge2kpEdk=;
-        fh=3OY6Jci9GaThZkt92u2OEjVNmV8LDmsWnhwnRUyEs+Q=;
-        b=KFnE6QqEzKi/yknNWPVzZTebXXCjh4Xl3JifZdhVMKOVlzMjsbIkjnBzWH9qqCtcF6
-         wzrVnqwvr3erLDjRKrlc6bf+SsKRirKZVi7VF2cYiZioA63IqGJsqjytzppbq/009giP
-         npZyUikH11DNKei7RBEdT8OHDisrGDYLXfC7L5hiH+MjQjHbDhzCh2pveRzxAscFYWl6
-         o45ZnSpuCceybDjge2DI3+k+nThAMkeV0ra3aUqcdrpOt8N/U+ChdGirzcmOXKyK8aEg
-         J/caAqy7xnQO4yWN1ZDv6ByEPgjKQtdVAjL3Eu1uNzZ6hPARgB9F1t03mZttp14JNu+J
-         m2aQ==;
+        bh=gvn/5UwHYBqPMMFPFmFGu9hDeKbnn2ym8sNSpP3zJ9Y=;
+        fh=ZuP8xU52zD7vNMf9RI7xM+oa0tGYpErJgAnukUvi5qI=;
+        b=RwMP4G4BVvrymTBUZqLHLLIj65WbkcQowZ2KSfW5l5SE71tP+y8hSAJQiHPjoIm7GY
+         ey0pE4l3zbxcV/NjwEe54479lgqlpfamq3oV3bvWMwmjUlKADBir4V2GMxlhOwgJXjXg
+         lGCDm8e9f1UlNe3WncTBwwVxxzc3NJQzZf3pAHbSpJj8LUXR/Vxt6ivx9zzugJ9dBtf2
+         pTnrtLb1TIL6M3pqDgtZzde+hs4SySbsfwozgmMr1hQTf0cI2m3taMrh7M9yrRQ2T4Oc
+         JYUEltFPYzyUiBI0nI1bV9AhGmHhD53uOgt6QHuilKX190392Q+mIT9cWikm0PvnQhIe
+         3gyQ==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788778400; x=1789383200; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1788781167; x=1789385967; darn=vger.kernel.org;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=t0j/VD2Uqr2WAt83wy0LI9ikA6saZfXkervge2kpEdk=;
-        b=VLAdY+KOoI02B4bD/RMyWlliCzK9A0LTggajRixE4bocZs/LEDV9vXnZoS5cHzRGr+
-         99Y68ixDRnisw9Q06WndeDO1khuuW1ce46SaAiBc0a2PrUOYMWjrpOB0c4f3+sE8sWR8
-         Fsl1UppEEj1n+lzU0jKtRfVFSkb3Az1ju+JXt1p9K1J7buEr/AYxPWHHVtAVUxJeMa3E
-         8ZStjzyD0hZWfk9/FtYvB8aUc/wF/ZIZ3N0zGM3rTZoRJ//RQ6bQgQ2qrThPDCwkHi68
-         0XNkl1OhDDS3KlhRdjeDykuM/sRIiQxusqKY7LoZxCU6IHgeZ1IjOAEksjWEpsh6/kbM
-         oWbQ==
+        bh=gvn/5UwHYBqPMMFPFmFGu9hDeKbnn2ym8sNSpP3zJ9Y=;
+        b=pSFRquYQvOZDio31cXwAA8m1hVgyp0rUZEO7on4AZqgKwDPENkN5rzADmM7T6e0G1f
+         viDvHJBcaDD8ybg7S5wAPj5m9VfRP2BAflJ9morZeJs6oEkrFhG/pD+EDLQxeAheVc5n
+         7MSeiihikl1vD9ez2J9dnYbHPrQX04CuwDqjQ7qzL6tgBuqA0uPJ2bHyNZS6wPOrmG4U
+         13ESO7cI8cc1krt+ftazDcElvTW81vTPjz53vUqZR9q4R++RLXc2jsx9UNuQFXDA48ym
+         p/jvV9pVUrI3hdqJElMjJn3nMtK13x+6Qh+UrU9f452mK7Y/DpCwCGyGKOzUP9/sOhIi
+         2zrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788778400; x=1789383200;
+        d=1e100.net; s=20251104; t=1788781167; x=1789385967;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=t0j/VD2Uqr2WAt83wy0LI9ikA6saZfXkervge2kpEdk=;
-        b=CozTk+v1RxBCn+6sAaQYugJYeRgtQDDseWAVH74U9SMNPTzKJx4lR4s9gHNsWCQLxg
-         qQ1UVEEqm1GHFG6BuBLxCMfp9P6119ykglp3vqEOw5bnJ4OFPoEZsXvCek+DN5OstRuG
-         6/0JXNl5laKlU3+Drc+tHnZMpr5B2l1CGaBoX3uLmnx9hTN+4J9zcUVEnDzMZ0vR/pch
-         z+hDPt/MWF2//4griJ4Gc+4h2HBPXV0DZ0LnX0wnfZ2DNEpkYf5J2TF1XVWgubZ4BT8P
-         XNOFBzavqdIzG1uenGjIj6CykMGVoKuK3XO55Sa3FmENtYkn41JjejfHplP77Yyllpob
-         zE4w==
-X-Gm-Message-State: AFuF++m3DlZRX3WfBClUtRKV3GJ8GGqwm7D4ghoJMrpkN9XWczarTzTN
-	xDOS0TIqmp1Upf8T9iJcq+RcgRHhl0Hv3vyg3PrAfYVAJMrDDCh3zau6CbHvri3PftW1TDCKAqd
-	1dym4CAWDHt24Yx4kWl+j4dLNpq9d+t8=
-X-Gm-Gg: AYBFou0ojh7h6nOKnJ5t3pqHlFssH1P2zmfIVjF4IUCxetdH4SCe4wuWihkxc096pHw
-	iHTcscks43wH2GwWOntvyVl97xgGlQcpuAloXLmMCloGHNtJuBbGTV5fPglCkJFuuWzSMyzzUVY
-	NDXAMBZyPKs9anxCE4ehZ5kWrm0zLhzbj2CpBPkQT47KNgr8cJDiFsKqdL8xrOuYhZEb8ojXJRF
-	3X8hoGm505XdTH9M5Ahvq5uoxlj882Gzw6JQkZVXua8rkWAB+Nle2Jv7msxUX9JKOVboVG+e4Jn
-	N4PiM6ddA+SUBUqGek73nTGJ7DF0sWECA/LrqW4CHagi2FPlSN9Q24013y2EAsYnaBZsZtSVJTm
-	mk2wqNxvsOCXoM+YEIZ+w3jG/ENoUzSvC71tuuYvQsV4+DMttm1JlwM58W85Q1QMMwtoXDaAucs
-	CzjiXjwelEl02jpY1k8UXsVUB5DyUGYvxixLhwJ+NXV9U=
-X-Received: by 2002:a05:690e:d0e:b0:66e:3e4c:b764 with SMTP id
- 956f58d0204a3-670f49391c0mr41147d50.11.1788778400126; Mon, 07 Sep 2026
- 03:53:20 -0700 (PDT)
+        bh=gvn/5UwHYBqPMMFPFmFGu9hDeKbnn2ym8sNSpP3zJ9Y=;
+        b=DcYnb+5XTLyw/mTw7tXvGqqrNgE/xdjOnlXcPFJl8Zx3ydoRX3T4yoPdj3wQQGqVG2
+         3rk7s3Mdgq5OBvpeg755rrLuhWwVNGvjLZH5fpDCuzypp400UG8fH/GGyqQbtFWvZlHG
+         ea+wbzSH5z9Vo8fFGfYcrbgGTt78Wm3mFSMqEBwxv/wBi5DSzCSrc5MXuY2Al+pWu2Wh
+         8/vT+xQDqBzR/wFynFGgnshnPCgF6pogCef7MVeIeh5O5aB1PodTjMRt6awDHVAHlPF0
+         hZdjONcLRCj2xtwdytWZJHOb2b1tNn+LokwiXJ7m5gUKRVBdCeFbX0VoHJdGeATZOoRU
+         RQtQ==
+X-Forwarded-Encrypted: i=1; AKwUvBxHX0SvPokWa8UKlfIPhEZ0hS993UIqIqtCRC/42Wo2JHOW3u+tv0XpRPkWfElPpshlQ7HwRrVSz8BC@vger.kernel.org
+X-Gm-Message-State: AFuF++nz124pvLUsCtN1aV0uTCajEiLE/GYn7UicMTV37UCdnrC67fE+
+	WqHHCQJLPra5DQNhV1Q8LtQzsi/FkL5bCcalJadJZHbFE3ES61i8Tf5v3rJjWDkvFmCB/6UbUcM
+	pD4qX9XYPAjRiBzCJf3kFTWHnD1VG22n9xjgv
+X-Gm-Gg: AYBFou0gdsXfG5knlMS8NrrwqrYUIBrh1Ss0Bg5Nv0MmUc4nW3Hz+YqQoglOMjhLZP+
+	cfZhBmEInhjW7rOXTGk8tFTf8JHQyBpWDmmV6cOL827rq4eYJRNsr8lb1NRIgscFJOntl11ek/g
+	UkDq+vTsOtD7HbHPmKjZZSjwGJy1M4aE8dVYSf/FaukR2eUKlYwGOKPZZckFE+AQ/zCQdEyexIW
+	2DveEfVuUIs6LOq1K8BLpL3lJT0DdV04a1nUDSKfg4AjIxnhqxhJqDmIwCbSWRpK9x4eNa272OF
+	dQDW+s+aJnXUnf3kdaRz+XxFsRNKSE3QfesExKM1NryWReHFp15zME5kd/1pau48EhAZAnS9WsE
+	Tlfg9FnvmKvzgcCJIf/VyqBoEYZxpFZfurTsFsOJbHDi+bSyUrtrTg+wTtADSlAvLoh5ywahRLU
+	ssS++CHqIDkdyE39Xysa5OrBJbifTXr+DpIcMG/d4/QaI=
+X-Received: by 2002:a53:d013:0:b0:66f:d272:86b2 with SMTP id
+ 956f58d0204a3-66fd2728ac5mr1496947d50.43.1788781167393; Mon, 07 Sep 2026
+ 04:39:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260816073752.16656-1-schmitzmic@gmail.com> <20260816073752.16656-6-schmitzmic@gmail.com>
- <CAMuHMdWKqtNd1iGNsXcF6NUQjF6bZPp8YMPWB3y7++2VpwZd-w@mail.gmail.com>
-In-Reply-To: <CAMuHMdWKqtNd1iGNsXcF6NUQjF6bZPp8YMPWB3y7++2VpwZd-w@mail.gmail.com>
+References: <20260819222838.21256-1-schmitzmic@gmail.com> <20260819222838.21256-3-schmitzmic@gmail.com>
+ <aa508c70-ccd3-4fc0-86fc-e45746e68405@gmx.de>
+In-Reply-To: <aa508c70-ccd3-4fc0-86fc-e45746e68405@gmx.de>
 From: =?UTF-8?B?TWlybyBLcm9ww6HEjWVr?= <miro.kropacek@gmail.com>
-Date: Mon, 7 Sep 2026 20:53:03 +1000
-X-Gm-Features: AcwNN1VW28DiSg6h2GoX7aOqe4tFoA8eEamCDw0hT-Zs7SX8T4Q0f9MHzM42jQ8
-Message-ID: <CAN5rfbTuQj_EA7kNuNfNkTFadQ6gQTsPsf_XJkyQrM1CCcCMnw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] m68k: Add support for Svethlana
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>
+Date: Mon, 7 Sep 2026 21:39:10 +1000
+X-Gm-Features: AcwNN1VSWytA-tif6c_qAbMCo0wAQKVoGCOmnNw88oy-w9j4YCde-07QmOf5PAk
+Message-ID: <CAN5rfbSkLxZ79LasvCXPsg+HoXzU+xZALZBgxuor4Rc5YjNVhA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] fbdev: Give atafb proper parent
+To: Helge Deller <deller@gmx.de>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, geert@linux-m68k.org, 
+	linux-fbdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Hi Geert,
+Hi Helge, hi Michael,
 
-On Mon, 17 Aug 2026 at 17:14, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Fri, 21 Aug 2026 at 07:52, Helge Deller <deller@gmx.de> wrote:
+> I fixed this comment up to become:
+> + * int (*detect)(struct fb_info *info)
 >
-> Hi Miro,
->
-> On Sun, 16 Aug 2026 at 09:38, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> > From: Miro Kropacek <miro.kropacek@gmail.com>
-> >
-> > The SuperVidel FPGA contains an OpenCore ethernet package. Add
-> > platform device data and other necessary definitions to support
-> > this device on Atari.
-> >
-> > The ethoc module must be enabled separately by the user.
->
-> ETHOC selects MII and PHYLIB. Do you need to enable any MDIO or PHY
-> drivers?  I don't have the hardware, just asking for {atari,multi}_defconfig.
+> Other than that I've replaced the latest patch series by this series in
+> the fbdev for-next git tree.
 
-The PHY on the SVEthlana reports id 0x00221513, which is a Micrel
-KSZ8041 (PHY_ID_KSZ8041 = 0x00221510 plus revision 3). I tested both
-ways: phylib's Generic PHY fallback drives it fine at 100 Mbps/Full,
-so defconfig needs nothing beyond what ETHOC already selects, and with
-CONFIG_MICREL_PHY=y the Micrel KSZ8041 driver binds instead and the
-link is the same. So that is the symbol to add to
-{atari,multi}_defconfig if you want the dedicated driver rather than
-the fallback.
+I ran the reworked version on a Falcon (CT60, SuperVidel). The console
+comes up on the external path at 1920x1080 in 16bpp and 32bpp,
+/sys/class/graphics/fb0/device is there and Xorg fbdev starts, so no
+regression here.
 
 -- 
 http://mikro.atari.org
