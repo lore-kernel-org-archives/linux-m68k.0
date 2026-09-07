@@ -1,114 +1,99 @@
-Received: from mail-yx1-f42.google.com (mail-yx1-f42.google.com [74.125.224.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699A144C65C
-	for <linux-m68k@vger.kernel.org>; Mon,  7 Sep 2026 11:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788781169; cv=pass; b=cshXd6t9ELK9auH0bFp0F4CFhIOCQf2Vivmv/2XKwQ2nsiNoAMvzB0Y8A6i6w9YBh7Q4LYtiIgpviNEFg2hypKAA9cWnCzdYMD6BiJgpt+SPnLucBMDRSpMN5r8/OdA/kNWdF8Fa/JoucuXZUtOZK7vEqzxueDlkGbjW7euVgTI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788781169; c=relaxed/simple;
-	bh=SSLE1OamutVwjBeXcbye/sSgz5m8gUlm7JyB9t3AKqQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lw+P9EJ7C+TVA32VByGPo40ZA/eLbY7wZP/C4C+o+VQ83oV5HKOXtK4jTL06dlit3DccM045rM098N1dodLcxvmMP6hv9BrcwH9l1Z1MiQdno1Z3vw0oUWZUITgu3ZmfvaWm2R4APNySVd77B5kNPR7eCRehmVa0XZbg1CV8vhI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pSFRquYQ; arc=pass smtp.client-ip=74.125.224.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pSFRquYQ"
-Received: by mail-yx1-f42.google.com with SMTP id 956f58d0204a3-66bd7857841so3001164d50.3
-        for <linux-m68k@vger.kernel.org>; Mon, 07 Sep 2026 04:39:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1788781167; cv=none;
-        d=google.com; s=arc-20260327;
-        b=GJ+ptU5bb5dGskEEhPD+izkb3CdXxOU/s6Otf0TNCb/umkBrKqh53P6SNhvx79+Kub
-         9K3e4vs3Nu9ZBpfHjCXrOn4NA2DIe3hNfpOGwco8IIg4KKSmC8eMDt96hpk84PEcjrVx
-         rRgPl3BdGqwX14iZ1mMurNTkhCRTqCycqrpJlob48uAP1dqalXTQTbJ0bRdiCPuyw0sQ
-         hszocSN47x4ewpRqxXUPpZMwtI42HEKwzhwDjIx0gRwEmxW664b56sPC2kDMxUEtS4ec
-         2Foy8VpmJXL/XB4hEM7bDfehP3bHPxnxvsJFqtlgOIdW9eJf66JYlBSV56HKTVBcqmW0
-         tMFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=gvn/5UwHYBqPMMFPFmFGu9hDeKbnn2ym8sNSpP3zJ9Y=;
-        fh=ZuP8xU52zD7vNMf9RI7xM+oa0tGYpErJgAnukUvi5qI=;
-        b=RwMP4G4BVvrymTBUZqLHLLIj65WbkcQowZ2KSfW5l5SE71tP+y8hSAJQiHPjoIm7GY
-         ey0pE4l3zbxcV/NjwEe54479lgqlpfamq3oV3bvWMwmjUlKADBir4V2GMxlhOwgJXjXg
-         lGCDm8e9f1UlNe3WncTBwwVxxzc3NJQzZf3pAHbSpJj8LUXR/Vxt6ivx9zzugJ9dBtf2
-         pTnrtLb1TIL6M3pqDgtZzde+hs4SySbsfwozgmMr1hQTf0cI2m3taMrh7M9yrRQ2T4Oc
-         JYUEltFPYzyUiBI0nI1bV9AhGmHhD53uOgt6QHuilKX190392Q+mIT9cWikm0PvnQhIe
-         3gyQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788781167; x=1789385967; darn=vger.kernel.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=gvn/5UwHYBqPMMFPFmFGu9hDeKbnn2ym8sNSpP3zJ9Y=;
-        b=pSFRquYQvOZDio31cXwAA8m1hVgyp0rUZEO7on4AZqgKwDPENkN5rzADmM7T6e0G1f
-         viDvHJBcaDD8ybg7S5wAPj5m9VfRP2BAflJ9morZeJs6oEkrFhG/pD+EDLQxeAheVc5n
-         7MSeiihikl1vD9ez2J9dnYbHPrQX04CuwDqjQ7qzL6tgBuqA0uPJ2bHyNZS6wPOrmG4U
-         13ESO7cI8cc1krt+ftazDcElvTW81vTPjz53vUqZR9q4R++RLXc2jsx9UNuQFXDA48ym
-         p/jvV9pVUrI3hdqJElMjJn3nMtK13x+6Qh+UrU9f452mK7Y/DpCwCGyGKOzUP9/sOhIi
-         2zrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788781167; x=1789385967;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=gvn/5UwHYBqPMMFPFmFGu9hDeKbnn2ym8sNSpP3zJ9Y=;
-        b=DcYnb+5XTLyw/mTw7tXvGqqrNgE/xdjOnlXcPFJl8Zx3ydoRX3T4yoPdj3wQQGqVG2
-         3rk7s3Mdgq5OBvpeg755rrLuhWwVNGvjLZH5fpDCuzypp400UG8fH/GGyqQbtFWvZlHG
-         ea+wbzSH5z9Vo8fFGfYcrbgGTt78Wm3mFSMqEBwxv/wBi5DSzCSrc5MXuY2Al+pWu2Wh
-         8/vT+xQDqBzR/wFynFGgnshnPCgF6pogCef7MVeIeh5O5aB1PodTjMRt6awDHVAHlPF0
-         hZdjONcLRCj2xtwdytWZJHOb2b1tNn+LokwiXJ7m5gUKRVBdCeFbX0VoHJdGeATZOoRU
-         RQtQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxHX0SvPokWa8UKlfIPhEZ0hS993UIqIqtCRC/42Wo2JHOW3u+tv0XpRPkWfElPpshlQ7HwRrVSz8BC@vger.kernel.org
-X-Gm-Message-State: AFuF++nz124pvLUsCtN1aV0uTCajEiLE/GYn7UicMTV37UCdnrC67fE+
-	WqHHCQJLPra5DQNhV1Q8LtQzsi/FkL5bCcalJadJZHbFE3ES61i8Tf5v3rJjWDkvFmCB/6UbUcM
-	pD4qX9XYPAjRiBzCJf3kFTWHnD1VG22n9xjgv
-X-Gm-Gg: AYBFou0gdsXfG5knlMS8NrrwqrYUIBrh1Ss0Bg5Nv0MmUc4nW3Hz+YqQoglOMjhLZP+
-	cfZhBmEInhjW7rOXTGk8tFTf8JHQyBpWDmmV6cOL827rq4eYJRNsr8lb1NRIgscFJOntl11ek/g
-	UkDq+vTsOtD7HbHPmKjZZSjwGJy1M4aE8dVYSf/FaukR2eUKlYwGOKPZZckFE+AQ/zCQdEyexIW
-	2DveEfVuUIs6LOq1K8BLpL3lJT0DdV04a1nUDSKfg4AjIxnhqxhJqDmIwCbSWRpK9x4eNa272OF
-	dQDW+s+aJnXUnf3kdaRz+XxFsRNKSE3QfesExKM1NryWReHFp15zME5kd/1pau48EhAZAnS9WsE
-	Tlfg9FnvmKvzgcCJIf/VyqBoEYZxpFZfurTsFsOJbHDi+bSyUrtrTg+wTtADSlAvLoh5ywahRLU
-	ssS++CHqIDkdyE39Xysa5OrBJbifTXr+DpIcMG/d4/QaI=
-X-Received: by 2002:a53:d013:0:b0:66f:d272:86b2 with SMTP id
- 956f58d0204a3-66fd2728ac5mr1496947d50.43.1788781167393; Mon, 07 Sep 2026
- 04:39:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAE2483BC0
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Sep 2026 13:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788788522; cv=none; b=shF1cu4DK0DzX5CEIM5a8xTZwj1MIQALnyscWokaidzpWz0fuLWXOGY8h34nGJQ2zEccw5GJaZWiAXxaNmdjCQxyZvQk7wAEmw4GVmaNEaqLrX+YL3dmsaR4m0/5DI1nw70FpZFfhmEtt4v8aYaBJdKW2ENfKMVfOKt0sitUoJ0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788788522; c=relaxed/simple;
+	bh=k2rKP7HwoQdmY5JKGHPxTdOnhTrrrC8ZlJgg1gEffT0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KQaPZIxlWA4havjpvaPW1qfhDecfe9sscyxKz6EQOynjlvn3ZmHo6CaZWHxZ2IIw5p4mtJiKdBQVSuFxFuzJD/Z1f9FM6IDttuKrbBiFQX5j96bk2pm8RRKrXCSlNyee3XQfC05zKoG0Cvrz7IXz+pyH66JTAqBWX/krb8+8fU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 35366400B8;
+	Mon,  7 Sep 2026 13:42:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CC031F00A3A;
+	Mon,  7 Sep 2026 13:41:57 +0000 (UTC)
+From: Greg Ungerer <gerg@linux-m68k.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	arnd@kernel.org,
+	wei.fang@nxp.com,
+	frank.li@nxp.com,
+	shenwei.wang@nxp.com,
+	imx@lists.linux.dev,
+	netdev@vger.kernel.org,
+	nico@fluxnic.net,
+	linux-can@vger.kernel.org,
+	linux-spi@vger.kernel.org,
+	olteanv@gmail.com,
+	Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCHv3 0/3] m68k: coldfire: fix non-standard readX()/writeX() functions
+Date: Mon,  7 Sep 2026 23:37:08 +1000
+Message-ID: <20260907134037.1855408-1-gerg@linux-m68k.org>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260819222838.21256-1-schmitzmic@gmail.com> <20260819222838.21256-3-schmitzmic@gmail.com>
- <aa508c70-ccd3-4fc0-86fc-e45746e68405@gmx.de>
-In-Reply-To: <aa508c70-ccd3-4fc0-86fc-e45746e68405@gmx.de>
-From: =?UTF-8?B?TWlybyBLcm9ww6HEjWVr?= <miro.kropacek@gmail.com>
-Date: Mon, 7 Sep 2026 21:39:10 +1000
-X-Gm-Features: AcwNN1VSWytA-tif6c_qAbMCo0wAQKVoGCOmnNw88oy-w9j4YCde-07QmOf5PAk
-Message-ID: <CAN5rfbSkLxZ79LasvCXPsg+HoXzU+xZALZBgxuor4Rc5YjNVhA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] fbdev: Give atafb proper parent
-To: Helge Deller <deller@gmx.de>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, geert@linux-m68k.org, 
-	linux-fbdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Helge, hi Michael,
+This collection of patches is aimed at fixing the non-standard ColdFire
+set of readX()/writeX() IO access functions. Instead switching to using the
+asm-generic definitions in include/asm-generic/io.h. The difficulty comes
+in trying not to break any drivers with this change.
 
-On Fri, 21 Aug 2026 at 07:52, Helge Deller <deller@gmx.de> wrote:
-> I fixed this comment up to become:
-> + * int (*detect)(struct fb_info *info)
->
-> Other than that I've replaced the latest patch series by this series in
-> the fbdev for-next git tree.
+The implementation of the readX()/writeX() family of IO access functions
+is non-standard on ColdFire platforms. They either return big-endian (that
+is native endian) data, or on platforms with PCI bus support check the
+supplied address and return either big or little endian data based on that
+check. This is non-standard, they are expected to always return
+little-endian byte ordered data. Unfortunately this behavior also means
+that ioreadX()/iowroteX() and their big-endian counter parts
+ioreadXbe()/iowriteXbe() are currently broken because they are implemented
+using the readX()/writeX() functions.
 
-I ran the reworked version on a Falcon (CT60, SuperVidel). The console
-comes up on the external path at 1920x1080 in 16bpp and 32bpp,
-/sys/class/graphics/fb0/device is there and Xorg fbdev starts, so no
-regression here.
+Patches 1 and 2 in this series are specific net driver changes that can be
+applied independently of the final ColdFire readX()/writeX() change.
 
--- 
-http://mikro.atari.org
+Patch 3 is the actual switch to ColdFire building using asm-generic
+readX()/writeX(), but also contains three driver fixes that are not easily
+handled independently.
+
+Note that I don't have access to all supported hardware needed to fully
+test all these changes. I have tested what I have, a bunch of the standard
+Freescale ColdFire eval boards, and inspected generated code for differences.
+
+Note that the v1 and v2 versions of this series carried a change to the
+sdhci-esdhc-mcf.c driver that is now in mainline - so dropped from this
+current v3 series.
+
+The v2 series moved from an RFC to a patch series. There was only minor
+changes overall to address comments. Changes include formatting, separating
+out the mcf5441x regmap in spi-fsl-dspi.c (patch 3) and reordering the
+quirks in flexcan-core.c (patch 3).
+
+This v3 series has no new code changes. It is sent with an expanded CC
+list in the hope of getting the net driver changes (patches 1 and 2)
+picked up so the final readl/writel fix (patch 3) that depends on them
+can be applied.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/include/asm/io_no.h             |   68 -------
+ drivers/dma/mcf-edma-main.c               |   14 -
+ drivers/net/can/flexcan/flexcan-core.c    |    1 
+ drivers/net/ethernet/freescale/fec.h      |   15 +
+ drivers/net/ethernet/freescale/fec_main.c |  257 +++++++++++++++---------------
+ drivers/net/ethernet/freescale/fec_ptp.c  |   78 ++++-----
+ drivers/net/ethernet/smsc/smc91x.h        |   12 -
+ drivers/spi/spi-fsl-dspi.c                |   14 +
+ 8 files changed, 218 insertions(+), 241 deletions(-)
+
+
