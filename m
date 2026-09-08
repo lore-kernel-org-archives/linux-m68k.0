@@ -1,152 +1,124 @@
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0355E558205
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 14:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.143.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1816347FAEA
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 21:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788879205; cv=none; b=r05bSU9j8Cvax3ph5jaufZBk5V1THRM/qbltvzqIskx7qqHxvYuBRvMmgsccbGE/9MMni9DDj0I8DrXdILmcV1j9et3CkswKH1m7GHpxNKK3Pbd1apfbvFkAzyv2De9tqHJbf6AyOF7pG2epZ3+v7h6S+zJ4vscWecBodKU3+rU=
+	t=1788902151; cv=none; b=fajbIUXc5VytvN5OLVyEK7+RqrSMV0h+BmqxpZHOicgLeNsUgnXCGuJVxyHrSwGLNFACDwsIPQtLitfnl8XFH/JssHp7FH/6FT26x+Ldn3p/I5mB5AvdchGA9rGfwMLbE0DVgjmw0gN4TePrxBov8ShzUo+k0mCSemZHn1ElNMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788879205; c=relaxed/simple;
-	bh=TrSMQu2ZABHjU14yTvTji0c+6KQPSKtUqdvhvBoVBiY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=to3doLHGNuKetB+2zPYVUtkAdz4MWihQlYvGn3lRC777CxDawlpsYJGJMtQghxRSLOcoxmhXHI4a9Jfzd1bVsNGhcBKl3FjPE0YymYBCMtLoSlrG/B85wdg/Y9WpS1H5+0f6uijvaf9ozpDO1DquBNkUsJVInZEX5z6sffeT2Ts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=hhPeX5Wz; arc=none smtp.client-ip=148.163.143.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hpe.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+	s=arc-20240116; t=1788902151; c=relaxed/simple;
+	bh=zc0dRxXkAKZOT6fy9WXzVz+99ipKkrk9hWcPiEzdJAA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=dVimd4iM4/g8KSbnc9EpmxITp/tGR9fyqWAdRxLsrCEwWbwFBZ2ypvetxC7Q6ogeE7VUVhbRCFf5M3Hvn4dwBRDG6yZ2dv30B8yT9asmH3xHI1DRR/6HEn7ZR9S+6x3gqZ7ck1eAHM84lN+BN2pS0Lw1OydzOq91XZfXV1IwBfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linux-foundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=S61FQutZ; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="hhPeX5Wz"
-Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
-	by mx0b-002e3701.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 688EojEP1957252;
-	Tue, 8 Sep 2026 14:51:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pps0720; bh=/2M0juWJsGHfapNEjd9U5lOWq3
-	v+ZdSMdpMvEnhkfHE=; b=hhPeX5WzohW62sFh8ZoW+3snOonRnrGF0H5kU5+fks
-	6LvVPIN773hza/8u5G0hmPI27pFyB5X2OGHY66N4i6GlHMXHUYuCo9F1feMHfZfz
-	I6aByb3A3df+BDaYbd9G/r5//3KXV7oq9ghWiuZ1AzyAP78ASsAddCynPTNb4DZB
-	USVJrdgK2b926ovt3xFn3DFElV4mNPEW0jt/KBtcoN2fOXSzy81giDb4e6JYSLKT
-	JrjA4hoSjJcjxxT60TWqOJIQHWAozqA/cqB3cZxEHBNDT4qpoue88n80/C9YSMmZ
-	C+A3Uw2cmIrLBZEj737xq9oPYs67zD6oxJh5G9tYeYlg==
-Received: from p1lg14881.it.hpe.com (p1lg14881.it.hpe.com [16.230.97.202])
-	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 4gjgxuu56w-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Tue, 08 Sep 2026 14:51:45 +0000 (GMT)
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 31AE2806B10;
-	Tue,  8 Sep 2026 14:51:42 +0000 (UTC)
-Received: from ilogsc-qemu.local (unknown [16.231.227.39])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id BF964806B6F;
-	Tue,  8 Sep 2026 14:51:38 +0000 (UTC)
-Date: Tue, 8 Sep 2026 09:51:36 -0500
-From: Steve Wahl <steve.wahl@hpe.com>
-To: Karl Mehltretter <kmehltretter@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
-        Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Tony Lindgren <tony@atomide.com>,
-        Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
-        linux-ide@vger.kernel.org
-Subject: Re: [PATCH 2/9] docs: kernel-parameters: Drop the bau= entry
-Message-ID: <aqAgAjccvFQ8HSN8@ilogsc-qemu.local>
-References: <20260905070347.25902-1-kmehltretter@gmail.com>
- <20260905070347.25902-3-kmehltretter@gmail.com>
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="S61FQutZ"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 54B69601F9;
+	Tue,  8 Sep 2026 21:15:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E1EB1F00A3A;
+	Tue,  8 Sep 2026 21:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux-foundation.org; s=korg; t=1788902147;
+	bh=eVg9GefJyoXHHA5a69mXqnQLyloUJ4YxIPGGpLvgyr0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=S61FQutZ9GAkmusTuBm8tba1mRd5os9NdWI1OcYUdnUCilKfQqRFUpY9X0910S1CM
+	 WZ7yUO067yRvIkgkaa3uP271RNhAevtq90hMdQ5fuv0628aYooJ26Y2LotuEU39MiY
+	 QQuRFXCkF1Dzu+58mWFPPcGHJySDbzaovnewoTOY=
+Date: Tue, 8 Sep 2026 14:15:43 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, Baolin
+ Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett"
+ <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, Ryan Roberts
+ <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song
+ <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, Usama Arif
+ <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren
+ <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster
+ <schuster.simon@siemens-energy.com>, Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne
+ <shorne@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich
+ Felker <dalias@libc.org>, John Paul Adrian Glaubitz
+ <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Alexandre
+ Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>, Vineet Gupta
+ <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>, Chris Zankel
+ <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Will Deacon
+ <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick
+ Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>, Andreas Larsson
+ <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>,
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland
+ <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
+ <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge
+ Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
+ Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)"
+ <chleroy@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
+ Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
+ <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka
+ <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan
+ <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe
+ <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>, Peter Xu
+ <peterx@redhat.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-arch@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng
+ <qi.zheng@linux.dev>
+Subject: Re: [PATCH v2 00/12] mm: make userland page table freeing RCU-safe
+Message-Id: <20260908141543.8180b60400d38b70d249949b@linux-foundation.org>
+In-Reply-To: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
+References: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260905070347.25902-3-kmehltretter@gmail.com>
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTA4MDE1OSBTYWx0ZWRfX0OcXsb7+afNp
- Wxvoi/6GnqRjyOdOWgk8vmpil2xZ7/B6hWhMV7dZEOjoZSPtzmaNiet8nNLmitXJKAHZDYGRuiO
- +BnYV71I99h+Rv0Omy9lovZ2YHlrfp0w0MpRhtH+xctUaoYEVhh7CoQNwVwyvUE+hv3qEB5QrKa
- LESp8EkOVHaq5KHGAsKHiURSc8DuKwWQN0bbu8m5fZSsrvjMSeJcdu7nvtYo+EfYv/YutcytdIr
- J3kqcOqa7xeU6Hf9c9Yhz9QQ6oaEGx9vn4MuuW8u/sO2OabO7cN0b5s5/LS0RHcFjC9FvFI/1t/
- vS5PHN1O8aTK0owdYkLUGOZqoqPEZ7r19IQxyUL9gT1nXnmIjLYJCScSrWn0lsB1VI0Fhx7cnT9
- vuOBIEzSFsKsgDie7KK8pk3F0VLYWXPRS/R8GmfVI4yW6mzYvyCYTShMfAnYHe200LU3qSneVvW
- dhqkSlFuDup+THT56RQ==
-X-Proofpoint-ORIG-GUID: kSPi3CYtlGSGi8JBxY6XVTVrmRXF89VC
-X-Proofpoint-GUID: kSPi3CYtlGSGi8JBxY6XVTVrmRXF89VC
-X-Authority-Analysis: v=2.4 cv=EZT4hvmC c=1 sm=1 tr=0 ts=6aa02101 cx=c_pps
- a=FAnPgvRYq/vnBSvlTDCQOQ==:117 a=FAnPgvRYq/vnBSvlTDCQOQ==:17
- a=kj9zAlcOel0A:10 a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=gQcMVamqm3wCPoSYhaRC:22 a=3haJ9R1Aw3gUfsUHDaCR:22 a=pGLkceISAAAA:8
- a=MvuuwTCpAAAA:8 a=LHlW8V97vvmrU187Gq4A:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTA4MDE1OSBTYWx0ZWRfXzze0u1U5qUAw
- LOz2+0CMKZ2r0oPoOu4gI0Fso6RS3BpO9Mwiw8RJOUVIP2IixDqn1c0zi2x/V0l1ImOqzm7ENsI
- fgq3w6HAb/FOBYm4cigHRs/KW4j6ULE=
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-08_03,2026-09-08_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 spamscore=0 clxscore=1011 bulkscore=0 malwarescore=0
- phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2609080159
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sat, Sep 05, 2026 at 09:03:40AM +0200, Karl Mehltretter wrote:
-> bau= went away with commit 39297dde7390 ("x86/platform/uv: Remove UV
-> BAU TLB Shootdown Handler"); nothing parses it any more.
-> 
-> Drop the entry.
-> 
-> Found by cross-checking every documented name against the __setup(),
-> early_param() and core_param() registrations in the tree.
-> 
-> Fixes: 39297dde7390 ("x86/platform/uv: Remove UV BAU TLB Shootdown Handler")
-> Assisted-by: LLM
-> Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
+On Tue, 08 Sep 2026 13:32:09 +0100 "Lorenzo Stoakes (ARM)" <ljs@kernel.org> wrote:
 
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 7 -------
->  1 file changed, 7 deletions(-)
+> The majority of architectures in the kernel defer page table freeing until
+> an RCU grace period has elapsed, this series converts all remaining
+> architectures to do so too and eliminates CONFIG_MMU_GATHER_RCU_TABLE_FREE
+> altogether.
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index c8d96de4c00d..99d5bb68968a 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -624,13 +624,6 @@ Kernel parameters
->  			Format: <int> (must be >=0)
->  			Default: 64
->  
-> -	bau=		[X86_UV] Enable the BAU on SGI UV.  The default
-> -			behavior is to disable the BAU (i.e. bau=0).
-> -			Format: { "0" | "1" }
-> -			0 - Disable the BAU.
-> -			1 - Enable the BAU.
-> -			unset - Disable the BAU.
-> -
->  	bdev_allow_write_mounted=
->  			Format: <bool>
->  			Control the ability to open a mounted block device
-> -- 
-> 2.53.0
+> This is important because it enables safe lockless page table walking under
+> RCU alone.
 > 
+> Doing so allows for reduced lock contention, avoids lock ordering concerns
+> and enables fast, efficient and correct page table walking as a result.
+> 
+> Additionally it removes a bunch of code and architecture-specific behaviour
+> which is always a beneficial thing to do.
 
--- 
-Steve Wahl, Hewlett Packard Enterprise
+Thanks.  It's early and unreviewed, but this is mainly an
+if-it-compiles-its-good thing, so I'll add it for exposure to the
+build/checker universe.
+
+> However some arches required extra attention - sh-X2, m68k-motorola and
+> sparc32.
+
+OK.  Please lmk later if you think additional reviewer/tester attention
+is desirable in these areas.
+
