@@ -1,282 +1,115 @@
-Received: from mail-qk2-f12.google.com (mail-qk2-f12.google.com [74.125.230.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14974368D4F
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  7 Sep 2026 21:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.230.204
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788815273; cv=pass; b=GuRFYzMi3F+VQqHSBCktEczbRXulOH97BuYZ8kw83+5ZRLHrgI7FxwVXaMd6Utvi2+GxJ6VQ8Q2UWJeWanlevvDjuw45IUyU6EkK5/bmGIaMqJnpvOdQBDycbTPk2P0oVQT8x97LUBBa5jgoVblvAif3AGgwYJPXprIUVZt9dhE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788815273; c=relaxed/simple;
-	bh=OFnY5O2swjOM6Aa9822KWrZkE4mt65lLa95J2R/BasU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kbchnifa6Uf9PTKDQlmBOEtyBLJERIDTEmrevpnClZhwfUvUhCh5aw9ek7zTS2L0XOqugbv+G3okVo+W02ta0ecVs6UU16DzQv5Y6gAIiJKTFisQr5Go+M7nuyHlU/WBL71p2dnxfoif5/OntRc3JfBhJbPILZce4DcmGuEA5ho=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lCDx5F+a; arc=pass smtp.client-ip=74.125.230.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663EB2E282B
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 01:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788830389; cv=none; b=rfmQ77gWKPfB+7CcfYPZgbASn7fFHToY+V1PvqABltA6CDJRr5b1x6gV3uXIHuGeIfJNEgiGznWqOSMDRr7J7GbQwgvEni5Zn3ZddhGNApjae6Kx5TSthNWbRN5iWJaecUoABFYDrC7ttio/zqknGBll6neAO+IA4KfBkNwlW2w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788830389; c=relaxed/simple;
+	bh=yrAQz5yRwVsrhFPYfmnf4lJfV/jK9jHKu/crC5P34+o=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=i4O5e5FrajDBh7+DonNFNf6EUYfdDwQrYm826/MHRwlxr/4YDGfQdkbBLhckxY38aqVBGxEIzKhJxlrbpaaoa+0KfsEHf4LatQ2QTt/od8OLqDDSxJnnV/0pu4vHToNRt8KptTfKMkN2xYn26vLpHBVqe9ovwiOTrtFj+1A7TVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B3ggxgxE; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lCDx5F+a"
-Received: by mail-qk2-f12.google.com with SMTP id d75a77b69052e-5306706e89dso455671cf.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 07 Sep 2026 14:07:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1788815270; cv=none;
-        d=google.com; s=arc-20260327;
-        b=IeS3O6+ljO+qNlsIwDVFDABjSq03fKPBQyxmMxke8TMMyGCbBB06gN4IvugPoR4D4C
-         j8Qhwk+Ojl9hjB07RnLf6RQ1bz2vjhLm3IclTopQ9gyTdT2VIjqFIchFHOW7Hz6zfKv1
-         ifKwHlSPcmuuCeejFuLU1i3LEguSAf8YDdy3/IsEQWpaF86lmxMXwPL1a9Z1xNGy0SPY
-         CV0hQI8IA6+gQStcZghmtDxj+2OtwyjgPGEzTSjsra5tWr6FioYUqHRQU2BxqWqSDYs6
-         Ey4lNyEmmLRcYYbrg0sFpWdkBJ3X549lcQQNpq/3pOExfH2MYzTBoE3pfUr2nLKOTRPs
-         cwbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=j33dWXa87ubHe2rcHlgmZCfdvDttwcXovkMGxt/Pcfc=;
-        fh=mTLOJVCtgUwPJeYlAXjdRh++0zhmPqg8agSQ2AAgT28=;
-        b=m+B2aftFce+yOvlDiYNF+Gzoh058K1YaY5icPTS79V7E8xjUgURjp2KCKcxLvONIgR
-         qO/RGP6u5o/BW1ykXfxHiDoJcWpseEwNgbKwvGD/3X6jnQVXuMPbZfsyftAFkXmnK3Ud
-         POp8uo6/VZltmp4qXHdKtyUfXBXOVhwzADYguVQiw6/WWa8JZpGPRc9dYosg6+yXXJmC
-         leMfA3HwdXpQg/kz6eHrRz04+8QtjSURvim+qNlagUqLSJra8A7OLMmQHEC5rGq5AFpb
-         HDla2SksFaei/TOZ3aAeDKhEPh0XZo70MGzxfLfWoT0hnFrnhv+YrQiPUjoFKO+5lwgo
-         RYAQ==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1788815270; x=1789420070; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=j33dWXa87ubHe2rcHlgmZCfdvDttwcXovkMGxt/Pcfc=;
-        b=lCDx5F+aiXqbLD+F+W6WkO4EWl9cY4jXS16KkUChsutCnFTw/srzzJji8LC7HsY0NJ
-         SrPVYuDj3zPc4f4K3R1bG9J/l060yeckK55ghM5ueDMETvs7LL8vLvaD9Sah3Nbzg00b
-         48ZKi1NM9nnlmxFsmMLjRF3lsOgSSJCsDjrgZtBzRTIaqrViBBnEWCsUY2U2PQSzLtSX
-         ryHmbP0UrSp9OVUmDAUPArVD4Ip/B/ArlIMFq/d2y8HQ3p2Q1AHXF80tfbCYW3fmbXIk
-         qJ/i2XI/k/ZniOrNOlEVgrkKDltI7wXi2KKqhXSuZepPOiCSR7qi9FwluCuSRPRAo5ba
-         kD2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788815270; x=1789420070;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=j33dWXa87ubHe2rcHlgmZCfdvDttwcXovkMGxt/Pcfc=;
-        b=QIHksB9ekvtAJht1bm0gj0j799rRRpTmYeIFxtDz1YRrgYXcKtpgHrFv/sXWOFc1ZH
-         ZD55B+5XiaFnBlkdgsZ+gM9/ytQvooJqLosl2k60PWErdfCzXRbXXuExAIG0rTQIM+fd
-         kWubxnmAnz7DsR9ioV9eaRJCHRaEaHEGT5ZkDcGkfeywyk0qOOodz85LTFzkoUzmJhM2
-         kfaZPAfvsfhG/KrzZs1aNAcUOdIlZ3H9hbBwyBV9M1s1NpooX0YcUf7vswqU7twPUPf8
-         kwadZuLPdMC7u42LyP7RJfryNWChUo8QbyIXo/b92DpQayybuspbWHdv17EJiDu7b3Vf
-         HNcw==
-X-Forwarded-Encrypted: i=1; AKwUvBwqRnnRWMlDSB0Fm1N62zPdzUTQpNYpuVLdNWVVwC/p4WsHbnUX8GuAUmQdmgP6CMQWw+DG5KtWIrBv@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++nzx4uC4MokwnoYWNR4OQ6BuWphHQOws8e7i0JyU3XKxj/MWQuv
-	m2Au7mt/183bQW7GyoS/s+z1IU4BcUVImU4+3kcS0UMJeq0YzgzbYidImdRHWtpnR6vYuiiq/v/
-	Ffk6d8F0bt83YfPk91q7fYAvBkTQ9vm5/eL5Ex8jQ
-X-Gm-Gg: AYBFou0Y+GzoB1LWApxSizkxN+S0RocK+EvlkCo76DoIkv4jSNaj+4Lx1QJkCbgx3sz
-	NxalDnQfjEXs6W0zgJNeiAaUHwrw08y5Bt68ap6TlqGo0oaiKJzX1Fw6kRewxWYuuIMiRaFcEtu
-	K3vLv3CYkct7Ad7NDk8U6GRNQO5xCXFq60A9Ina0Xk1DXfAuaqw8vn5sDia8omwH/JMrij3wEQ4
-	YeR7mRN7wnu2cqGtm8Ul2VvTGHXmU4bAjGDQeu6lynnV4qeTjNDYvk1qerFTMfm2io35OkV8B9r
-	40iJqokLM0P55JoRJhGbzIvGbbdppVGroyI3q/tXthM=
-X-Received: by 2002:a05:622a:2589:b0:517:64f6:3365 with SMTP id
- d75a77b69052e-53065d7943emr35669061cf.4.1788815269129; Mon, 07 Sep 2026
- 14:07:49 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B3ggxgxE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1788830376; x=1820366376;
+  h=date:from:to:cc:subject:message-id;
+  bh=yrAQz5yRwVsrhFPYfmnf4lJfV/jK9jHKu/crC5P34+o=;
+  b=B3ggxgxEeYFIyzjKAHVc02zYt+lYGFA4ZN6lZvA7exgmAQMMDe8X75Wn
+   FZRAnFrH4fVhbdOc0WtJ0V7fBQrxTuepdKkBi8lN/Ys/CgSczv91BZIFd
+   NH25ZZAYUmkkte9lKF38OqlT8LiWN3mqzjuElCSWbCgAc7NQTRUE29Wyl
+   43FmzuOkmjvFHoDpA7oFR4aYCJvWZL8YnCeXYzb+HZRWS01wrfIRZHrI9
+   yrRf7ZSPjBgE6pA9tCv0NiTpWjmd7drd02ZAtXkuAbV4ioA9EGLdEX1Q7
+   gvaoNaxgpHqvElGHyneZG7nbfYanKBNeEagIgNjYAuZ7ythJozPTgpYDL
+   g==;
+X-CSE-ConnectionGUID: TuwgDllySlmJ+mD5/XO4vA==
+X-CSE-MsgGUID: /onZhtIdSu+UBKdRHHqE3A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11899"; a="99819237"
+X-IronPort-AV: E=Sophos;i="6.25,268,1779174000"; 
+   d="scan'208";a="99819237"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2026 18:19:32 -0700
+X-CSE-ConnectionGUID: qcjjeP8KSx6gJ8i7iguxCQ==
+X-CSE-MsgGUID: ou97aOixQUiNgLfHiEAHNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,268,1779174000"; 
+   d="scan'208";a="270814105"
+Received: from lkp-server01.sh.intel.com (HELO dff15f1b2031) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 07 Sep 2026 18:19:33 -0700
+Received: from kbuild by dff15f1b2031 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1x3kUk-000000001V5-14JW;
+	Tue, 08 Sep 2026 01:19:30 +0000
+Date: Tue, 08 Sep 2026 09:19:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:dt 22/22]
+ arch/m68k/coldfire/intc-simr.c:233:18: error: implicit declaration of
+ function 'irq_domain_add_linear'; did you mean 'irq_domain_create_linear'?
+Message-ID: <202609080948.oRYfaows-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org> <20260901-rcu-pagetable-freeing-v1-5-5456a81c8212@kernel.org>
-In-Reply-To: <20260901-rcu-pagetable-freeing-v1-5-5456a81c8212@kernel.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 7 Sep 2026 14:07:37 -0700
-X-Gm-Features: AcwNN1U8TkUrFVP6EqWbmqC7u-eOkQZui9u0urXe4uY9QHhCrt9ILjWVeJ-SJWo
-Message-ID: <CAJuCfpESe_BXihJh-8FhjQVKzsSpnS4zdMgg3e59byJTc8QViA@mail.gmail.com>
-Subject: Re: [PATCH 05/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for arc,
- microblaze, xtensa
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
-	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
-	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
-	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren <guoren@kernel.org>, 
-	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
-	Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
-	Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-	Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	"David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
-	Magnus Lindholm <linmag7@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, 
-	Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 1, 2026 at 4:06=E2=80=AFAM Lorenzo Stoakes (ARM) <ljs@kernel.or=
-g> wrote:
->
-> Each of these architectures directly free page tables without routing the=
-se
-> changes through tlb_remove_ptdesc().
->
-> The use of tlb_remove_ptdesc() is required for
-> CONFIG_MMU_GATHER_RCU_TABLE_FREE to correctly free page tables under RCU,
-> so simply update these architectures to use these functions.
->
-> Since none of the architectures share page tables or do anything unusual,
-> nothing complicated is required here.
->
-> Therefore this is simply a mechanical change - convert __pud_free_tlb(),
-> __pmd_free_tlb() and __pte_free_tlb() to use tlb_remove_ptdesc() as
-> required.
->
-> At the point this is in place, all mmu_gather page table freeing is
-> performed under RCU, and thus MMU_GATHER_RCU_TABLE_FREE is selected for
-> each architecture.
->
-> This forms part of an overall effort to switch every architecture to this
-> mode.
->
-> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
-> ---
->  arch/arc/Kconfig                      | 1 +
->  arch/arc/include/asm/pgalloc.h        | 6 +++---
->  arch/microblaze/Kconfig               | 1 +
->  arch/microblaze/include/asm/pgalloc.h | 2 +-
->  arch/xtensa/Kconfig                   | 1 +
->  arch/xtensa/include/asm/tlb.h         | 2 +-
->  6 files changed, 8 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-> index 2ed7186c81c5..7a7542b61823 100644
-> --- a/arch/arc/Kconfig
-> +++ b/arch/arc/Kconfig
-> @@ -47,6 +47,7 @@ config ARC
->         select HAVE_SYSCALL_TRACEPOINTS
->         select IRQ_DOMAIN
->         select LOCK_MM_AND_FIND_VMA
-> +       select MMU_GATHER_RCU_TABLE_FREE
->         select MODULES_USE_ELF_RELA
->         select OF
->         select OF_EARLY_FLATTREE
-> diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgallo=
-c.h
-> index dfae070fe8d5..9b6c37f92e97 100644
-> --- a/arch/arc/include/asm/pgalloc.h
-> +++ b/arch/arc/include/asm/pgalloc.h
-> @@ -72,7 +72,7 @@ static inline void p4d_populate(struct mm_struct *mm, p=
-4d_t *p4dp, pud_t *pudp)
->         set_p4d(p4dp, __p4d((unsigned long)pudp));
->  }
->
-> -#define __pud_free_tlb(tlb, pmd, addr)  pud_free((tlb)->mm, pmd)
-> +#define __pud_free_tlb(tlb, pmd, addr)  tlb_remove_ptdesc((tlb), virt_to=
-_ptdesc(pmd))
->
->  #endif
->
-> @@ -83,10 +83,10 @@ static inline void pud_populate(struct mm_struct *mm,=
- pud_t *pudp, pmd_t *pmdp)
->         set_pud(pudp, __pud((unsigned long)pmdp));
->  }
->
-> -#define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
-> +#define __pmd_free_tlb(tlb, pmd, addr)  tlb_remove_ptdesc((tlb), virt_to=
-_ptdesc(pmd))
->
->  #endif
->
-> -#define __pte_free_tlb(tlb, pte, addr)  pte_free((tlb)->mm, pte)
-> +#define __pte_free_tlb(tlb, pte, addr)  tlb_remove_ptdesc((tlb), page_pt=
-desc(pte))
->
->  #endif /* _ASM_ARC_PGALLOC_H */
-> diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-> index 484ebb3baedf..af7e821e96c1 100644
-> --- a/arch/microblaze/Kconfig
-> +++ b/arch/microblaze/Kconfig
-> @@ -41,6 +41,7 @@ config MICROBLAZE
->         select PCI_SYSCALL if PCI
->         select CPU_NO_EFFICIENT_FFS
->         select MMU_GATHER_NO_RANGE
-> +       select MMU_GATHER_RCU_TABLE_FREE
->         select SPARSE_IRQ
->         select ZONE_DMA
->         select TRACE_IRQFLAGS_SUPPORT
-> diff --git a/arch/microblaze/include/asm/pgalloc.h b/arch/microblaze/incl=
-ude/asm/pgalloc.h
-> index 084a8a0dc239..ffee6a009219 100644
-> --- a/arch/microblaze/include/asm/pgalloc.h
-> +++ b/arch/microblaze/include/asm/pgalloc.h
-> @@ -25,7 +25,7 @@ extern void __bad_pte(pmd_t *pmd);
->
->  extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm);
->
-> -#define __pte_free_tlb(tlb, pte, addr) pte_free((tlb)->mm, (pte))
-> +#define __pte_free_tlb(tlb, pte, addr) tlb_remove_ptdesc((tlb), page_ptd=
-esc(pte))
->
->  #define pmd_populate(mm, pmd, pte) \
->                         (pmd_val(*(pmd)) =3D (unsigned long)page_address(=
-pte))
-> diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-> index f2f9cd9cde50..33c4caee30e2 100644
-> --- a/arch/xtensa/Kconfig
-> +++ b/arch/xtensa/Kconfig
-> @@ -55,6 +55,7 @@ config XTENSA
->         select HAVE_VIRT_CPU_ACCOUNTING_GEN
->         select IRQ_DOMAIN
->         select LOCK_MM_AND_FIND_VMA
-> +       select MMU_GATHER_RCU_TABLE_FREE if MMU
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
+head:   693a23411a4e7b5d417226fe704ee36b32700bad
+commit: 693a23411a4e7b5d417226fe704ee36b32700bad [22/22] m68k: coldfire: enable devicetree use
+config: m68k-allnoconfig (https://download.01.org/0day-ci/archive/20260908/202609080948.oRYfaows-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 16.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260908/202609080948.oRYfaows-lkp@intel.com/reproduce)
 
-And MMU is required because NOMMU does not perform mmu_gather
-operations, same as in the previous patch? If so, maybe make a note of
-it in the changelog?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202609080948.oRYfaows-lkp@intel.com/
 
->         select MODULES_USE_ELF_RELA
->         select PERF_USE_VMALLOC
->         select TRACE_IRQFLAGS_SUPPORT
-> diff --git a/arch/xtensa/include/asm/tlb.h b/arch/xtensa/include/asm/tlb.=
-h
-> index 8c3ceb427018..6fb7b78154f6 100644
-> --- a/arch/xtensa/include/asm/tlb.h
-> +++ b/arch/xtensa/include/asm/tlb.h
-> @@ -16,7 +16,7 @@
->
->  #include <asm-generic/tlb.h>
->
-> -#define __pte_free_tlb(tlb, pte, address)      pte_free((tlb)->mm, pte)
-> +#define __pte_free_tlb(tlb, pte, address)      tlb_remove_ptdesc((tlb), =
-page_ptdesc(pte))
->
->  void check_tlb_sanity(void);
->
->
-> --
-> 2.55.0
->
+All errors (new ones prefixed by >>):
+
+   arch/m68k/coldfire/intc-simr.c: In function 'intc_of_init':
+>> arch/m68k/coldfire/intc-simr.c:233:18: error: implicit declaration of function 'irq_domain_add_linear'; did you mean 'irq_domain_create_linear'? [-Wimplicit-function-declaration]
+     233 |         domain = irq_domain_add_linear(np, num, &intc_irqdomain_ops, NULL);
+         |                  ^~~~~~~~~~~~~~~~~~~~~
+         |                  irq_domain_create_linear
+>> arch/m68k/coldfire/intc-simr.c:233:16: error: assignment to 'struct irq_domain *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+     233 |         domain = irq_domain_add_linear(np, num, &intc_irqdomain_ops, NULL);
+         |                ^
+
+
+vim +233 arch/m68k/coldfire/intc-simr.c
+
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  225  
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  226  static int __init intc_of_init(struct device_node *np,
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  227  			       struct device_node *parent)
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  228  {
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  229  	const unsigned int num = MCFINT_VECBASE + 64 + (MCFINTC1_ICR0 ? 64 : 0) + (MCFINTC2_ICR0 ? 64 : 0);
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  230  	struct irq_domain *domain;
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  231  	int irq;
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  232  
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26 @233  	domain = irq_domain_add_linear(np, num, &intc_irqdomain_ops, NULL);
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  234  
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  235  	for (irq = MCFINT_VECBASE; irq < num; irq++)
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  236  		irq_create_mapping(domain, irq);
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  237  
+8af562116a97dd arch/m68k/coldfire/intc-simr.c               Greg Ungerer 2025-01-26  238  	return 0;
+cd3dd4068db5e1 arch/m68knommu/platform/coldfire/intc-simr.c Greg Ungerer 2009-04-27  239  }
+cd3dd4068db5e1 arch/m68knommu/platform/coldfire/intc-simr.c Greg Ungerer 2009-04-27  240  
+
+:::::: The code at line 233 was first introduced by commit
+:::::: 8af562116a97ddd0966248dcde21b9123a86226c m68k: coldfire: support devicetree binding for intc-simr
+
+:::::: TO: Greg Ungerer <gerg@linux-m68k.org>
+:::::: CC: Greg Ungerer <gerg@kernel.org>
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
