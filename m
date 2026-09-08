@@ -1,122 +1,151 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCEC52FE2B
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 11:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6223353A8A7
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 12:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788867023; cv=none; b=tLu2Ko58eis0IPJDfqOf2PqljjmG8axsEqXbEiOd9rqFpFbgS1S7FPAYMHP4KDriN9/yeZn5K5H2JtygpkjehiBVxgt02c7exsQmJbGSHjVoHuEhTzTSuZ+cyx13hjNya6uScKPHZWh295OPOI/x01vdjqJRZAznemmgHRuiHC8=
+	t=1788869569; cv=none; b=qIJ8witRFe1zfdJHE4M7H9We4UKbXPQ1Tzh5ifPApbs4uBZYUZB0gQSgNHBtrNsUw6sUvvrbP8tkhZ7SPmTpiKoErtwm5UycpEKq7tSLUDZ1e47QZhSnzxoqCjdiev3odlcUN8QixbY49Rd/rzPBFsqMuG0E5CaqRLoo/PTUZaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788867023; c=relaxed/simple;
-	bh=ZdXaRe4HWFBmLd0LXW6U2l7QcS01R5ntbQH6pp65rHQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NoTRnXPvhDYFbVWV1i29uip/3WszfQqcOyQHmS643JF/N+gUIpqInEtoCFAdTyo9mEjFKpNiPbkBnX6a3uqC3fN6VQyZTbREGVmTmLY7jPZmFX9ksMo8G87hNs/AIwEAKwVu5s2xqdO/0wH8RnLJxXOp95SvQCnsAa/WFtsIflU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BbzZ3F73; arc=none smtp.client-ip=172.234.252.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1788869569; c=relaxed/simple;
+	bh=N57Q9jJ47NWM7wlKGf2Ka5HsUm6AQkZAuPET0AMf+kU=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=aKXlLxdaAHBC0dVwTq6zEQS2C3RosT5hNYlSQTIxaDUsTRojyFT1PrnwzrDNYv+WekOyuRcaPXQ8w4h5NKyTO5Jw0mlj/83Xx81nkTVtdMittylTfAxtlZ5PzVzZUP3yEafQumnz6So5CGMgSujAFSwy5dH1oGMCw3CYtdOVh7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aV9qEDhJ; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BbzZ3F73"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 74F4D43C1E;
-	Tue,  8 Sep 2026 11:30:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1CBD1F00A3A;
-	Tue,  8 Sep 2026 11:29:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788867009;
-	bh=mB8nfc2dyoUj8MneI5XtqKUJWAX+H2A9jp3sF5M1qbA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=BbzZ3F73x9vlPWvAcrfnuEIBJXW3qsffsRXzmqRI35CWZGCBYksgG+FZ6D4aufx7+
-	 sEVq9yImHXZGqNWFVp5OCg/tUPoqmbCnXM4gOVpEztvlmpfzA1qGnFHu5hqumBWzdY
-	 N5H85H7ubmL/KpLoi3BPX0MUJ8xr61MTWOAacXoR48MSTMJ0Wfiiqe1Y/y4kuLcp+l
-	 khOBR7+6+n4ltCTDSLtuvWLW78S/WOu2iBGYFFag5m3jqVXrl0QqQoIKHO1R75ph5X
-	 Qb1cRBjIYoRUQrLjUPvWxDGa1pvp8BiecTbRNMlM0odqliUSIGX+UuU4BPhFAXN8b9
-	 dTjdPKOeABgjg==
-Date: Tue, 8 Sep 2026 12:29:46 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Kiryl Shutsemau <kas@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
-	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
-	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
-	Usama Arif <usama.arif@linux.dev>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Simon Schuster <schuster.simon@siemens-energy.com>, Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>, 
-	Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH 12/12] mm: change the contract for free_pgtables(),
- update docs
-Message-ID: <ap_xj3W3SjsnRBXv@gremlin>
-References: <20260901-rcu-pagetable-freeing-v1-0-5456a81c8212@kernel.org>
- <20260901-rcu-pagetable-freeing-v1-12-5456a81c8212@kernel.org>
- <apbUpMDJglS99_yK@thinkstation>
- <apbfzUwBQyxe3P9R@gremlin>
- <apcH74QsR5I-DIbL@thinkstation>
- <apcJhtvnd45EkjJI@gremlin>
- <CAJuCfpH_v4YU+hsQDU_yQ4HZDf-2C6DuiJU5PGL+uVAsTwkZug@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aV9qEDhJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1788869560; x=1820405560;
+  h=date:from:to:cc:subject:message-id;
+  bh=N57Q9jJ47NWM7wlKGf2Ka5HsUm6AQkZAuPET0AMf+kU=;
+  b=aV9qEDhJYtSF4bhuU4jowpj8Q24O6RV2slsGWzZsuuPuVp5zYi/U8Q90
+   Mq87y4hWeLdBL5V8GcWFmMALiDKyYuZqoKrQ8gYVhnaKhaPErhytjOmAf
+   B8I7rT/UdV5vvCA3hVFsVNcyOricydecrhwDtX9jo0kPvEW3siv9t/OYW
+   +Us0c0/tWJ7D0H1j7wSPdU0qoGizgEnYEksWeMzD+0vviryZRK1ILAX3Z
+   8bRZuirJLNFVggQsp51AG3Zg5GvObjrJoguTHXcQ1VzpB/X6zdwS19xpG
+   tnh/E9CquSURblWfeXnDjy3b96DxmKuhVT5GvHOtMhPOpOW+h6n+hQTZA
+   w==;
+X-CSE-ConnectionGUID: CbRMet5DRR2N2l6K/t4N1w==
+X-CSE-MsgGUID: KxXQzq3nSTa+6sCkwhfImA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11899"; a="93132431"
+X-IronPort-AV: E=Sophos;i="6.25,268,1779174000"; 
+   d="scan'208";a="93132431"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2026 05:12:35 -0700
+X-CSE-ConnectionGUID: VqRfXSKdTNSw4fhZ8tMzXA==
+X-CSE-MsgGUID: 4qZ/2ZXuRYiwHwTeIsYpIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,268,1779174000"; 
+   d="scan'208";a="267308924"
+Received: from lkp-server01.sh.intel.com (HELO dc5b8f51e05b) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 08 Sep 2026 05:12:33 -0700
+Received: from kbuild by dc5b8f51e05b with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1x3ugh-0000000005t-1DF0;
+	Tue, 08 Sep 2026 12:12:31 +0000
+Date: Tue, 08 Sep 2026 20:11:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
+Subject: [geert-m68k:master] BUILD SUCCESS
+ 6c90d7cb82736d1f511676517240d37bff65112b
+Message-ID: <202609082049.OQK4uYPG-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpH_v4YU+hsQDU_yQ4HZDf-2C6DuiJU5PGL+uVAsTwkZug@mail.gmail.com>
 
-On Mon, Sep 07, 2026 at 09:53:43AM -0700, Suren Baghdasaryan wrote:
-> On Tue, Sep 1, 2026 at 10:25 AM Lorenzo Stoakes (ARM) <ljs@kernel.org> wrote:
-> > > > So, maybe something like:
-> > > >
-> > > >  * Note that free_pgtables(), used after unampping detached vmas, or when
-> > > >  * exiting the whoel mm, does not take a page table lock before freeing a page
-> > > >  * table.
-> > > >  *
-> > > >  * As page table freeing itself is RCU-safe, page table readers can safely run
-> > > >  * concurrently with page table teardown. However, writers cannot, as without
-> > > >  * a lock nothing prevents concurrent teardown.
-> > > >  */
-> > > >
-> > > > Instead? What do you think?
-> > >
-> > > s/whoel/whole/
-> >
-> > Haha yup the inevitable typo...
->
-> Also s/unampping/unmapping please.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git master
+branch HEAD: 6c90d7cb82736d1f511676517240d37bff65112b  Merge tag 'v7.3-rc2'
 
-Ack will fix on respin! I am the typo master ;)
+elapsed time: 1519m
+
+configs tested: 74
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha         allnoconfig    gcc-16.1.0
+alpha        allyesconfig    gcc-16.1.0
+arc          allmodconfig    clang-24
+arc           allnoconfig    gcc-16.1.0
+arc          allyesconfig    clang-24
+arc          allyesconfig    gcc-16.1.0
+arm           allnoconfig    clang-17
+arm           allnoconfig    gcc-16.1.0
+arm          allyesconfig    clang-24
+arm64        allmodconfig    clang-24
+arm64         allnoconfig    gcc-16.1.0
+csky         allmodconfig    gcc-16.1.0
+csky          allnoconfig    gcc-16.1.0
+hexagon      allmodconfig    gcc-16.1.0
+hexagon       allnoconfig    clang-24
+hexagon       allnoconfig    gcc-16.1.0
+i386         allmodconfig    clang-22
+i386          allnoconfig    gcc-14
+i386          allnoconfig    gcc-16.1.0
+i386         allyesconfig    clang-22
+loongarch    allmodconfig    clang-24
+loongarch     allnoconfig    clang-20
+loongarch     allnoconfig    gcc-16.1.0
+m68k         allmodconfig    gcc-16.1.0
+m68k          allnoconfig    gcc-16.1.0
+m68k         allyesconfig    clang-24
+m68k         allyesconfig    gcc-16.1.0
+microblaze    allnoconfig    gcc-16.1.0
+microblaze   allyesconfig    gcc-16.1.0
+mips         allmodconfig    gcc-16.1.0
+mips          allnoconfig    gcc-16.1.0
+mips         allyesconfig    gcc-16.1.0
+nios2        allmodconfig    clang-20
+nios2        allmodconfig    gcc-11.5.0
+nios2         allnoconfig    clang-24
+nios2         allnoconfig    gcc-11.5.0
+openrisc     allmodconfig    clang-20
+openrisc     allmodconfig    gcc-16.1.0
+openrisc      allnoconfig    clang-24
+openrisc      allnoconfig    gcc-16.1.0
+parisc       allmodconfig    gcc-16.1.0
+parisc        allnoconfig    clang-24
+parisc        allnoconfig    gcc-16.1.0
+parisc       allyesconfig    clang-17
+powerpc      allmodconfig    gcc-16.1.0
+powerpc       allnoconfig    clang-24
+powerpc       allnoconfig    gcc-16.1.0
+riscv        allmodconfig    clang-24
+riscv         allnoconfig    clang-24
+riscv         allnoconfig    gcc-16.1.0
+riscv        allyesconfig    clang-24
+s390         allmodconfig    clang-17
+s390          allnoconfig    clang-24
+s390         allyesconfig    gcc-16.1.0
+sh           allmodconfig    gcc-16.1.0
+sh            allnoconfig    clang-24
+sh            allnoconfig    gcc-16.1.0
+sh           allyesconfig    clang-17
+sparc         allnoconfig    clang-24
+sparc         allnoconfig    gcc-16.1.0
+sparc64      allmodconfig    clang-20
+um           allmodconfig    clang-17
+um            allnoconfig    clang-17
+um            allnoconfig    clang-24
+um           allyesconfig    gcc-16.1.0
+x86_64       allmodconfig    clang-22
+x86_64        allnoconfig    clang-22
+x86_64        allnoconfig    clang-24
+x86_64       allyesconfig    clang-22
+x86_64      rhel-9.4-rust    clang-22
+xtensa        allnoconfig    clang-24
+xtensa        allnoconfig    gcc-16.1.0
+xtensa       allyesconfig    clang-20
+xtensa       allyesconfig    gcc-16.1.0
 
 --
-Cheers, Lorenzo
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
