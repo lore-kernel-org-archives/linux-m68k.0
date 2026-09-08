@@ -1,40 +1,39 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF0D053CA71
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 12:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A4353B61A
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 12:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788870834; cv=none; b=EN7p3PRVg2XHxA17SMAV0OzChK7wAeW92NglsrW4xvTOX8jUoa5EOBhLSZcCa3XPlHahQgK7FYseAArQ6KGyNZQVjazQFZ2v9vTfexYHeRZt4ooEXJqVt0I4Dv5JcE+GjrzDjVSq4erVg1BnLplV8NmaSSj/0Dfo21wh4z8q4g8=
+	t=1788870854; cv=none; b=fKFOaQQ0OlUwC0g+qYTATHLQDhRXucI791stk+LgTAOYXK2rhNrUmC0SY69fJlKVmLd7ZnASOvrxBGFpKsHfB/Noqvvycvh4/VNFyR3jDDgN5SlfkpghJtfrkpHtCRSFSiapnBPpnMmRROiwXrXckv1b+pib5tDJeplOxCYTsKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788870834; c=relaxed/simple;
-	bh=mgr1uJE8DIP+D2hAcn/4VQ8oaO28pfdyIohSciDSfkU=;
+	s=arc-20240116; t=1788870854; c=relaxed/simple;
+	bh=0gkFDBwGD1EYsdFXWdaAMN6hHbo1XQYIk0QvwnU2gCY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ASNp2nQTKTXSZ9viYiHaNSdsUFTyZz6PkHXdqzN1v333bVbGKB6q/zuglul8ogrhOaIos/KAnuLW56RS3CR3M6845mD4lu5D/iTHxYY+TH8ren4BrSYQdxOjwDRkeTXG48PAVaJyHBaT00WeV/E0ZdhLXwOfOo3nohbXQ5ox3l4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=llQX4MW5; arc=none smtp.client-ip=172.105.4.254
+	 In-Reply-To:To:Cc; b=sLAQ6ZLfB27sO1qRhpXMSbE6gDtQyjBhT4ML1qXZ7wIxBCsw98WVHSs0KZIjoptynrR/WzvJ9Fzh7RsPKhTFgPBCoinUSTP55if7KrHuswzNGMKx0VZOLjsFJNrDf/cEIekR0M5+1ywMZYMqSjrTV5af0JmV156FdknsMS1PmuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DuqqYtKR; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="llQX4MW5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DuqqYtKR"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 01B83601DB;
+	by sea.source.kernel.org (Postfix) with ESMTP id 744D2413BB;
+	Tue,  8 Sep 2026 12:34:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3670E1F00A3A;
 	Tue,  8 Sep 2026 12:33:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65E821F00A3F;
-	Tue,  8 Sep 2026 12:33:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788870831;
-	bh=+MMfaleDm2ce+ucIbxA7OEsrjCLcZrtuUhG+cgJq5Q4=;
+	s=k20260515; t=1788870852;
+	bh=GKPgtCS/jb8sy+IgthnzqZkszffWbth2i2OdMiXJ3aY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=llQX4MW5oCBsfa1bNRnJU4DEvCvhPnI34ch0k0V9oeZcYx+cu4YdByza/2aSoCr/G
-	 CfKP5R2/194SkhjsLiDuF4q4rjsOGl5KRdxEMwR0IXQhsFfIOyBe59X4G7g8LM/dfc
-	 yD0HDu8VUB8mzYeVQsTdJd8B4y8T4ec2nV110GkhlYVT3ver1LeS+kzS1s1vK8HQ7i
-	 4s4fqrS7vIzDShvOFV+AdxVL+6R/SgQtPPZla750Bv5wgpnWFIWUQ85x5zEui6gtNH
-	 f+OEXJBeMwjnPby8KeTTneiAnFyOfMUP8dx9E7U0Q3GWJOHAXQDVVBIovssZ0RTYcT
-	 7IV4kIHKxD9cQ==
+	b=DuqqYtKRdPkUbQ3eLpnItXmpl/72VGO8yGhYo744uTtDUn0nGYJRZapfPMEUVdfL+
+	 YFEEtu10cYkLHxE7+T3K9S5ovSEx37Gd7dzfYUizdJ5E1L2ueuTFfaBJbMZlvapohh
+	 QOe6TbYNem8upiIMMMqig/eplDM6abEOl/F7RmUK+ByCZpn1hsR9iuNyevNhiaN6P8
+	 t2fJP4kb86eijV8rqQUqGnKX8JRCi6xMAxgaMoYzR2dBWXfSAGExXbVRWKzoeQLGqK
+	 Qy6iKBzE5IpSqebmKX5sCtoCkNLAd/h0UshfsIVSlA5uA3slomiGV/qOi6N3YOqtB/
+	 qCWVktRQFbhEQ==
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Tue, 08 Sep 2026 13:32:12 +0100
-Subject: [PATCH v2 03/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU
- riscv
+Date: Tue, 08 Sep 2026 13:32:13 +0100
+Subject: [PATCH v2 04/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU arm
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -43,7 +42,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260908-rcu-pagetable-freeing-v2-3-1f60b64e878e@kernel.org>
+Message-Id: <20260908-rcu-pagetable-freeing-v2-4-1f60b64e878e@kernel.org>
 References: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
 In-Reply-To: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -106,57 +105,62 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
  Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1550; i=ljs@kernel.org;
- h=from:subject:message-id; bh=mgr1uJE8DIP+D2hAcn/4VQ8oaO28pfdyIohSciDSfkU=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLIWMETbXblq+9Ih1fKpoW6rqWr7Fish54Yr7Y/+bb81/
- 9D7DD6FjlIWBjEuBlkxRZbnX8T3B4mEzeu84O8GM4eVCWQIAxenAEzE9B7DX6EdDA/kVnP83WYW
- d265mtIhyUU/Z/HO55j4ucyQ+eneN2aMDFNOXFunsOPssb3qfSlrPCwO3U+8JzlN3On28eWhk+y
- WhbEAAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1932; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=0gkFDBwGD1EYsdFXWdaAMN6hHbo1XQYIk0QvwnU2gCY=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLIWMETL7zpqoqQlfEtq6d99zG1V56Z3W8XPtDae8lz00
+ yO9UhaFjlIWBjEuBlkxRZbnX8T3B4mEzeu84O8GM4eVCWQIAxenAEzkSSTD/2gvCyEPNz27AFV5
+ l57E59WT72x9EJWqscNk/2EnrkWacQz/HYvuds+S7H/jHnKzKvv04Xu39pxfWpjCGbJhg4WfsGI
+ ENwA=
 X-Developer-Key: i=ljs@kernel.org; a=openpgp;
  fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 
-Currently riscv gates MMU_GATHER_RCU_TABLE_FREE on CONFIG_SMP and
-CONFIG_MMU.
+Commit a0ad5496b2b3 ("arm: mm: enable HAVE_RCU_TABLE_FREE logic") enabled
+CONFIG_MMU_GATHER_RCU_TABLE_FREE (then named HAVE_RCU_TABLE_FREE) for SMP
+arm architectures with LPAE enabled.
 
-Commit 69be3fb111e7 ("riscv: enable MMU_GATHER_RCU_TABLE_FREE for SMP &&
-MMU") enabled CONFIG_MMU_GATHER_RCU_TABLE_FREE for CONFIG_SMP, CONFIG_MMU
-riscv builds.
+Regardless of whether CONFIG_ARM_LPAE is enabled or not, the same page
+table freeing functions __pte_free_tlb() and __pmd_free_tlb() are used.
 
-This is expressly for the safety of GUP-fast walkers (CONFIG_HAVE_GUP_FAST
-is enabled if CONFIG_MMU is enabled).
+Non-LPAE PMD page tables are folded into the PGD and freed by
+pgd_free() (PGD freeing is not part of mmu_gather page table freeing in any
+case), so this is a noop in this case.
 
-Naturally a single core system does not encounter issues with software page
-table walkers being correctly synchronised across cores, as there is only a
-single core.
+Since commit 358d1c39c82a ("arm: convert various functions to use ptdescs")
+both LPAE and non-LPAE PTE page table freeing uses tlb_remove_ptdesc().
 
-However, CONFIG_PREEMPT_RCU is still available on a riscv UP system, so for
-a future RCU-only page table walker, this guarantee is required to prevent
-concurrent page table teardown.
+Thus all page table freeing is performed under RCU with
+CONFIG_MMU_GATHER_RCU_TABLE_FREE enabled for LPAE and non-LPAE and thus it
+need not be gated on LPAE.
 
-All page table freeing is already done via tlb_remove_ptdesc() so the
-conditions of CONFIG_MMU_GATHER_RCU_TABLE_FREE are already met.
+A UP arm system can set CONFIG_PREEMPT_RCU, so a future pure RCU page
+table walker requires MMU_GATHER_RCU_TABLE_FREE to be enabled on UP as
+well, even if concurrent GUP fast is not possible there.
+
+Therefore, it is both safe and desirable to set
+CONFIG_MMU_GATHER_RCU_TABLE_FREE for all MMU arm architectures (nommu does
+not perform mmu_gather operations).
 
 This forms part of an overall effort to switch every architecture to this
 mode.
 
 Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
- arch/riscv/Kconfig | 2 +-
+ arch/arm/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 505eed4af932..3529ed1861ce 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -208,7 +208,7 @@ config RISCV
- 	select IRQ_FORCED_THREADING
- 	select KASAN_VMALLOC if KASAN
- 	select LOCK_MM_AND_FIND_VMA
--	select MMU_GATHER_RCU_TABLE_FREE if SMP && MMU
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 408aa58a2a5b..72b9afc6ae10 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -134,7 +134,7 @@ config ARM
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
+-	select MMU_GATHER_RCU_TABLE_FREE if SMP && ARM_LPAE
 +	select MMU_GATHER_RCU_TABLE_FREE if MMU
- 	select MODULES_USE_ELF_RELA if MODULES
- 	select OF
- 	select OF_EARLY_FLATTREE
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RSEQ
+ 	select HAVE_RUST if CPU_LITTLE_ENDIAN && CPU_32v7 && !KASAN
 
 -- 
 2.55.0
