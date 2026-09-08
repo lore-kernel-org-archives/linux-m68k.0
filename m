@@ -1,64 +1,64 @@
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A29F51A733
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 09:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A1951D526
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 09:40:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788860449; cv=none; b=Tq3EnuvNLCylny7OroWE8zqOfO6gnViwL1zISNM2/Hz9F5qG2VbLkdsTvL4wB3ASRxJ4M0yVZwiov4h0gPBtTaNp0zRMxXrxH3omxN6FbRFfCkySGq5+1Zf2TwHENx6PT67qCzLF5i8UPVDHdFhZOEquxT37oeMeH3oNLNFYapc=
+	t=1788860455; cv=none; b=DOMkzvnr/rSzrcvQIEhTt9tMnECvsqW/vX3zdDFqwgnqRGw1BMrF/w0Xu1CkSguP3ZTnSQLBpNOx8HaIECc32taKv6LvdYErs3n02qaDso8h4KW9sPDh5tvJM0o/z4W65FTkK9kq0p46+3mfA7lAQPBxc8a5QcfWSC+LQgL/nG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788860449; c=relaxed/simple;
-	bh=QpFNHjfVXgJC/IwKsByobIapsXNmXN32X/aqquhMSYU=;
+	s=arc-20240116; t=1788860455; c=relaxed/simple;
+	bh=yV7fthqeihMaFTza7JqJdIeblZJsWjLB3f4+8mC5yxc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ut0I9WwK6hdlwugurNBsJCeCVxG3I5FFclt82Iqbm88MgrtvzwieIULadwYIMoamuNjkZAUblKGjEoWH00DQ04FZNhbX6zCjRgWZ3b1GolKJJ1UebE4ZQayfpKe7ynajeNaXSOUrIKSe2KJA2pDccdS/0KSlM1clnRxE1TvgEYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LGAuS3iK; arc=none smtp.client-ip=209.85.215.175
+	 MIME-Version; b=JndtVFNaUcjLl61jayylfpB5+I3Ca3L+Q8XSzUujlrMzNynHBzw567XtXBLE8dHpn1mxV2wPDqIq65G8YXIOi7/k3IfEBJGuQMN2YavgiKJmgQOM+0aI6JLtlkEttNwHsEIrfGyw1SxiN/yU2EJdMLdY3AVW0Wqu3kwWsBX50hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XjN+bcP1; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LGAuS3iK"
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-cc48fe04342so802506a12.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Sep 2026 02:40:48 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XjN+bcP1"
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-cc1c8d4a959so2874556a12.3
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 08 Sep 2026 02:40:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1788860448; x=1789465248; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20251104; t=1788860453; x=1789465253; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=yyeW8+b7nlSV0Lt9JCJpKIAuOzaL31bvQxWWs5y+0bM=;
-        b=LGAuS3iKBFIRkGi9GHC7LRWtoYd3NQsOAx/ZkM/norDHrrRNibbXw0R4Vp/U5lILBK
-         7U3xEyWNQM7+5DIk/Xcr/lNR0HG8xq18lwrdgnYXNdJ1twBrPx1pbLIoB6J296WPpZpR
-         AcJHc4x+oZp8x9ja+rGSdpIP+xUasf3k/p/v15ATM7sNryPfEmh8GEqmKCVRvJnnjSeX
-         YJgsnO42tTDP7JOC0oKL5Irjou6x5ZxOELvvjTLAJXB5kTzRui+e4FIcLVzP1fRfFT0q
-         dEir8Fy2sqNmesbFZ2F58uDvAO1C2qQJFqhH3l2LntrFPryVANtoPDrNeI3RNk88p7VP
-         Gmgg==
+        bh=bqYy1ey2qQ44WsfCEFpPhp0ddQp9qQBHXmGlUorARUU=;
+        b=XjN+bcP1Wt96z9aWqRtgAStfoU54L+HN3ohM8zhsXUWP5X6NRlHPaMUNdDZo3gSdoW
+         7/fAJn0/R7qpJEY7BxeUU0t/Ijun93rRMUWMCSWdMcskKDKAAhJcPpTQbRrHKFqV1Gy+
+         ShCP+oENj7rw9jJNZk5rg18g//KuIK+7K8NAlCdtN5CHx0DeemD4ike+W+i871VQ9aAD
+         jAQQ4wT278+VsdlF+X4RtCa8XA5VJuwY2inXfDl6uog5mlt8O63Eq9+kxeNiT21TjOzy
+         lWc6Wen/5oFoF9ag9QtvOEfPz3H7vEVDmJ/G+gra8TfPd3XP9Td07q8UEe1YIzKc6AxO
+         eroQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1788860448; x=1789465248;
+        d=1e100.net; s=20251104; t=1788860453; x=1789465253;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=yyeW8+b7nlSV0Lt9JCJpKIAuOzaL31bvQxWWs5y+0bM=;
-        b=Puo0Xh0G/46Frx6Hy25i5gLKZx/NvJyGkpgb39nFO3rGJoPFNDyYzZhGA2SZi3uv6X
-         HW6v9Q1lViKgVBsu9XQptoAy8JtM44uYVpixbVBzlaS/6VbQ7pM1c+0VYOL/eN8bojet
-         4qgJafI5PeFoM74Kjt3Xx+aYOHp5gheekHPdFP5xaEN6dWg9DfMxFy6fTbc6oFODflfg
-         Z75PhHJYnT6BKVs/oV+UQxVOjKunb5vj3gU/rz3yofR/6XYCNXQCBaBA5m//gKBGkcQm
-         TDn7sfAEZyhsdPpPnXT+uqKedMUr72rhAPd9CZz8+7eJECytopzWu/hRrxkYCDa7d2T/
-         AybQ==
-X-Forwarded-Encrypted: i=1; AKwUvBw4xKU6N380k+dDexqC58wwZmDROzVmGB5Hnwaj+nBP0r2YWb2LkLHvwq4J59qTZHrGngaXUtNR8hv1@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++lbNPCx2JlYfQMCTkYZfIA5q1uDqp94LOyW5mEKE3dNIW6HKYol
-	Tx9celSTOSVmT3rr67yDj6U6sYYEhMhyarSqsMntye8UjpXkkhnDMRRb
-X-Gm-Gg: AYBFou2qbIz9aeDdCVOb6AyBQyUK94Kd7DYcT/7eYRtg9z3Imi4UeSsydnAXYAZm/Te
-	0bMCf0XH2NcgPDvUTI8MWpZpfdeZgHXbgkaaxjR2Uydr3jTbki0xo/9ukO3L8ngqYNFwoIvfHZY
-	jyA8nXNSmzZKingQ8ffEQOlYicMW/LKPq8xSNDPP+F/9SQ1/TMoH/UFDMd+frQiTDa/Ym1UEWJh
-	R6V4IkQxElbWLVqS/NRD6J1oQt2SINyJcWtRKXB+KeV5fNSyGJpr8mbTpUuFb9o8+TsLuxuz1I/
-	Q/9Yltpk9HQAbj/BSknDS2Ywnfg8WiKwNBMvBOvYj+UZSRyyS2O0w4Q45hDex7MQFXvFHjavPF8
-	Jf6g/6oNKZvzd4r8EI5FG3nWf9w5In3WnOJ/OhFx1AWT/0+J445UiQGc703Y3NHMVw87pxHCK0A
-	yyw989RIxm4K3/S3gX2D/dB2oDQXXNbXdqi83jRET0q0VMorKIUrWvmP4AKh3bTREQCK3pWs7QK
-	MLb+ifZPc70jDpyYXA99XjNJ7LoFro9ji/Atem60K5oAgzQQZ+N29+xZNWEymaqJg==
-X-Received: by 2002:a17:90a:e703:b0:398:d843:cad9 with SMTP id 98e67ed59e1d1-39b26226de8mr44201364a91.19.1788860447592;
-        Tue, 08 Sep 2026 02:40:47 -0700 (PDT)
+        bh=bqYy1ey2qQ44WsfCEFpPhp0ddQp9qQBHXmGlUorARUU=;
+        b=E/99bkAmZ00TOheCYMlXlxDohY4Nqyl66qFDnBcwPZqJmtXnqgaVtcMWTTKtMLGjp6
+         Nchnx/NhoxTpVWyIEqtT8H9Gge3OCK29m/aoG85xcALCN9GDNFCPI6tGuJ+sz5p4uMEm
+         pF/3DJWhLhUnvKsrIRolKw+Mb/26xoB3xly0Rkhe1w/6ZxZr29cXirmjBpw8bcExEDxu
+         62cu+C/UGG9KPcb+fbp+k71B3P1KJtp3VpK2C6cNiAnAXl9WRUqjBMItIMqEcFLk4cOz
+         WjWM6z9h28Jyb235uHeGJl/ztayRrQxwzFKZH95OqrdmOH+LGwk8+hTqSzsySJiPoO/7
+         fFIQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzwz3prAwKLR2pDFvVtRwCyvpmy9svCwq7/7nXGF9MYttYI8nTV1qyVd0NxI5IzRqKYAZ+8kfQNBCev@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++n4B2pKrohhnpiFCaewKoSLeUiTvvuKtwrejeIwlmKvIH/lb800
+	LPyijxVoIvdEP45ndGu6KrSG9hxE0tmHNGOx7g6wbqp273iSY/f0+Ito
+X-Gm-Gg: AYBFou0rnhrLSNcTFDB2ZRxchDO7AhINO4E4ItcqQ8VMIBoHMr37jHDyPNjPf/1CwrV
+	usfzK7bPIK1yrclc3/XEEK7gG2WcFmOvg3Ldw0zY30CGcvRV1w62bGNZCHUGZcgT0/OLLdIJkRz
+	pzKEDEei+5+saCUX1r+pY+nchH6A87JeydSZ82js25SiVLDqSBntuDf5J6l7DUdGsqIrdZkCwCp
+	wYL56ekegb1baYOjTlxAHBT3oXqrvhTjMcjjz84MF3eNguzdsY/m8EO4edkM5kh6k6oSIPBfHQN
+	1l88VZfqTOBBpkXGZ6HSij112Cu0rQvD66vj2F6tpHMQCKc+/hVImM9DeL8E+8a67Qy9xFv3mUr
+	u60rYk6tK2/3h8AmfOP0zmFWVpCIx1lL1kimC3oZUJzzuMFd8qfzVpH5LYJt31lZrBrWmD3jlun
+	AeQFfq88FHzwETED0Sk/K69lePri2cHbcSmxY5YrztDejYmNsgdXpM9TVGJeMCBBI1hgITsH0nr
+	aeOerHrv1lLi85IGAm0wd3KC28zw+sXx8i5WMXfA3u/4U+NIESLCBptSbwRbBLSiw==
+X-Received: by 2002:a17:90b:264e:b0:398:9bd1:3215 with SMTP id 98e67ed59e1d1-39b262e28cdmr44675483a91.22.1788860453113;
+        Tue, 08 Sep 2026 02:40:53 -0700 (PDT)
 Received: from visitorckw-work01.c.googlers.com.com (202.176.229.35.bc.googleusercontent.com. [35.229.176.202])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39b08cacbb0sm31999240a91.13.2026.09.08.02.40.43
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39b08cacbb0sm31999240a91.13.2026.09.08.02.40.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2026 02:40:47 -0700 (PDT)
+        Tue, 08 Sep 2026 02:40:52 -0700 (PDT)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: geert@linux-m68k.org,
 	tglx@kernel.org,
@@ -73,9 +73,9 @@ Cc: radu@rendec.net,
 	linux-kernel@vger.kernel.org,
 	linux-m68k@lists.linux-m68k.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH 2/6] irqchip/goldfish-pic: Use for_each_set_bit() to iterate pending IRQ
-Date: Tue,  8 Sep 2026 09:40:12 +0000
-Message-ID: <20260908094016.1997918-3-visitorckw@gmail.com>
+Subject: [PATCH 3/6] irqchip/goldfish-pic: Allow selecting CONFIG_GOLDFISH_PIC on other architectures
+Date: Tue,  8 Sep 2026 09:40:13 +0000
+Message-ID: <20260908094016.1997918-4-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.55.0.979.g7e5102b832-goog
 In-Reply-To: <20260908094016.1997918-1-visitorckw@gmail.com>
 References: <20260908094016.1997918-1-visitorckw@gmail.com>
@@ -87,46 +87,41 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use for_each_set_bit() instead of open-coding the loop with __fls()
-in goldfish_pic_cascade() to simplify the code.
+Drop the MIPS dependency from CONFIG_GOLDFISH_PIC so that other
+architectures can use this driver. Also update the file header comment
+to remove the MIPS reference.
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/irqchip/irq-goldfish-pic.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/irqchip/Kconfig            | 2 +-
+ drivers/irqchip/irq-goldfish-pic.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 20b77fbc51ee..a0f0f3a0e8ea 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -513,7 +513,7 @@ config MESON_IRQ_GPIO
+ 
+ config GOLDFISH_PIC
+        bool "Goldfish programmable interrupt controller"
+-       depends on MIPS && (GOLDFISH || COMPILE_TEST)
++       depends on GOLDFISH || COMPILE_TEST
+        select GENERIC_IRQ_CHIP
+        select IRQ_DOMAIN
+        help
 diff --git a/drivers/irqchip/irq-goldfish-pic.c b/drivers/irqchip/irq-goldfish-pic.c
-index c3c33f066140..12113ca90872 100644
+index 12113ca90872..8d40df0e3a88 100644
 --- a/drivers/irqchip/irq-goldfish-pic.c
 +++ b/drivers/irqchip/irq-goldfish-pic.c
-@@ -7,6 +7,7 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <linux/bitops.h>
- #include <linux/goldfish.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-@@ -35,16 +36,14 @@ static void goldfish_pic_cascade(struct irq_desc *desc)
- {
- 	struct goldfish_pic_data *gfpic = irq_desc_get_handler_data(desc);
- 	struct irq_chip *host_chip = irq_desc_get_chip(desc);
--	u32 pending, hwirq;
-+	unsigned long pending;
-+	u32 hwirq;
- 
- 	chained_irq_enter(host_chip, desc);
- 
- 	pending = gf_ioread32(gfpic->base + GFPIC_REG_IRQ_PENDING);
--	while (pending) {
--		hwirq = __fls(pending);
-+	for_each_set_bit(hwirq, &pending, GFPIC_NR_IRQS)
- 		generic_handle_domain_irq(gfpic->irq_domain, hwirq);
--		pending &= ~(1 << hwirq);
--	}
- 
- 	chained_irq_exit(host_chip, desc);
- }
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Driver for MIPS Goldfish Programmable Interrupt Controller.
++ * Driver for Goldfish Programmable Interrupt Controller.
+  *
+  * Author: Miodrag Dinic <miodrag.dinic@mips.com>
+  */
 -- 
 2.55.0.979.g7e5102b832-goog
 
