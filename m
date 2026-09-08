@@ -1,181 +1,152 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7F453D0A1
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 12:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0355E558205
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  8 Sep 2026 14:53:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.143.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788871020; cv=none; b=u4mOVh+V718p1CXAfug//oKMhLgxL0rPiMuqRERsW/ySB14DjsO55d+EDfZuAbloXo50lXF9CaReQ6T+lHODpxT9BlPyFYIMtcz4w3ViyBFL0baCt93AXDZDqtq3uLUpLCp4TXfjzlOqCz/d11rheu91Gn1lc3c+kNGisDd/i90=
+	t=1788879205; cv=none; b=r05bSU9j8Cvax3ph5jaufZBk5V1THRM/qbltvzqIskx7qqHxvYuBRvMmgsccbGE/9MMni9DDj0I8DrXdILmcV1j9et3CkswKH1m7GHpxNKK3Pbd1apfbvFkAzyv2De9tqHJbf6AyOF7pG2epZ3+v7h6S+zJ4vscWecBodKU3+rU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788871020; c=relaxed/simple;
-	bh=Z3Spp3yZf9MDP8GI9lcTMaFp7We7mSk3CHVti4eQ8Kk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BYEFva8pROJ1myRicJf115QhJsXcHknGL4A9eojous6plIoO+R1zVzyH6bJZHVGfairToZrRNAPx5SoSq+r1XY+bkYiLq5/KFOrcq6lSPzt5m25kDWDAje9DlG78BTrCZGyzIexEbk7KlBOEOGZPRD3W+4fF36ZfSuHN4Dvnevk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+e1gF9H; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1788879205; c=relaxed/simple;
+	bh=TrSMQu2ZABHjU14yTvTji0c+6KQPSKtUqdvhvBoVBiY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=to3doLHGNuKetB+2zPYVUtkAdz4MWihQlYvGn3lRC777CxDawlpsYJGJMtQghxRSLOcoxmhXHI4a9Jfzd1bVsNGhcBKl3FjPE0YymYBCMtLoSlrG/B85wdg/Y9WpS1H5+0f6uijvaf9ozpDO1DquBNkUsJVInZEX5z6sffeT2Ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=hhPeX5Wz; arc=none smtp.client-ip=148.163.143.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+e1gF9H"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 97EE4601F6;
-	Tue,  8 Sep 2026 12:36:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34B341F00A3A;
-	Tue,  8 Sep 2026 12:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788871017;
-	bh=CROMFVbCukyMBi3KsqVLGHf8AAALUePfF8l3vUCFXhE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=m+e1gF9HAH60Vx1qwxMPowlrU6eO2azVERbApHj9g19Jub9o1b7t062ouaLe+afPM
-	 Pdpz4mTfhvIL6ad9/ZbcEZa1dwcpR87PdVabIS2tKSCkF5a0TjwVBSS4d27bobKBog
-	 58GgGbptltPuCClSQg/AH8Z3XN9kKi4dQbnmnRd95VmwpdTCkHuWJhGfGKqe/i/Q5L
-	 AJA5urYfLM6QaO1Uqs0BMxOI7yfZ3eilA2ektqZGKdrwL5wGWFm++sZLa5Pjkngzj0
-	 GPO21vSo38ptKCVdCHFOLCr2Y7aSnhpyq0PHDCd7vf6hJ32M5dclf0J0scZLQjSSbg
-	 eMlmrLVvYoejQ==
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Tue, 08 Sep 2026 13:32:21 +0100
-Subject: [PATCH v2 12/12] mm: change the contract for free_pgtables(),
- update docs
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="hhPeX5Wz"
+Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
+	by mx0b-002e3701.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 688EojEP1957252;
+	Tue, 8 Sep 2026 14:51:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pps0720; bh=/2M0juWJsGHfapNEjd9U5lOWq3
+	v+ZdSMdpMvEnhkfHE=; b=hhPeX5WzohW62sFh8ZoW+3snOonRnrGF0H5kU5+fks
+	6LvVPIN773hza/8u5G0hmPI27pFyB5X2OGHY66N4i6GlHMXHUYuCo9F1feMHfZfz
+	I6aByb3A3df+BDaYbd9G/r5//3KXV7oq9ghWiuZ1AzyAP78ASsAddCynPTNb4DZB
+	USVJrdgK2b926ovt3xFn3DFElV4mNPEW0jt/KBtcoN2fOXSzy81giDb4e6JYSLKT
+	JrjA4hoSjJcjxxT60TWqOJIQHWAozqA/cqB3cZxEHBNDT4qpoue88n80/C9YSMmZ
+	C+A3Uw2cmIrLBZEj737xq9oPYs67zD6oxJh5G9tYeYlg==
+Received: from p1lg14881.it.hpe.com (p1lg14881.it.hpe.com [16.230.97.202])
+	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 4gjgxuu56w-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Tue, 08 Sep 2026 14:51:45 +0000 (GMT)
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 31AE2806B10;
+	Tue,  8 Sep 2026 14:51:42 +0000 (UTC)
+Received: from ilogsc-qemu.local (unknown [16.231.227.39])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id BF964806B6F;
+	Tue,  8 Sep 2026 14:51:38 +0000 (UTC)
+Date: Tue, 8 Sep 2026 09:51:36 -0500
+From: Steve Wahl <steve.wahl@hpe.com>
+To: Karl Mehltretter <kmehltretter@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+        Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Tony Lindgren <tony@atomide.com>,
+        Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+        linux-ide@vger.kernel.org
+Subject: Re: [PATCH 2/9] docs: kernel-parameters: Drop the bau= entry
+Message-ID: <aqAgAjccvFQ8HSN8@ilogsc-qemu.local>
+References: <20260905070347.25902-1-kmehltretter@gmail.com>
+ <20260905070347.25902-3-kmehltretter@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260908-rcu-pagetable-freeing-v2-12-1f60b64e878e@kernel.org>
-References: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
-In-Reply-To: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, 
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Dinh Nguyen <dinguyen@kernel.org>, 
- Simon Schuster <schuster.simon@siemens-energy.com>, 
- Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
- linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
- Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3183; i=ljs@kernel.org;
- h=from:subject:message-id; bh=Z3Spp3yZf9MDP8GI9lcTMaFp7We7mSk3CHVti4eQ8Kk=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLIWMMR8PCxbzHxp/Yz1uQGnaswntkhbX2KLqyh2mjovm
- qNat1ino5SFQYyLQVZMkeX5F/H9QSJh8zov+LvBzGFlAhnCwMUpABPxvMbwT/XufKusteKnNrtN
- sON7/H0yywOjjd/4r2xj0Qt5o76Y/z3D/+JLmldsiq8UVM993a39V05NdEGx2I24otIKkTsVeV0
- nuQA=
-X-Developer-Key: i=ljs@kernel.org; a=openpgp;
- fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260905070347.25902-3-kmehltretter@gmail.com>
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTA4MDE1OSBTYWx0ZWRfX0OcXsb7+afNp
+ Wxvoi/6GnqRjyOdOWgk8vmpil2xZ7/B6hWhMV7dZEOjoZSPtzmaNiet8nNLmitXJKAHZDYGRuiO
+ +BnYV71I99h+Rv0Omy9lovZ2YHlrfp0w0MpRhtH+xctUaoYEVhh7CoQNwVwyvUE+hv3qEB5QrKa
+ LESp8EkOVHaq5KHGAsKHiURSc8DuKwWQN0bbu8m5fZSsrvjMSeJcdu7nvtYo+EfYv/YutcytdIr
+ J3kqcOqa7xeU6Hf9c9Yhz9QQ6oaEGx9vn4MuuW8u/sO2OabO7cN0b5s5/LS0RHcFjC9FvFI/1t/
+ vS5PHN1O8aTK0owdYkLUGOZqoqPEZ7r19IQxyUL9gT1nXnmIjLYJCScSrWn0lsB1VI0Fhx7cnT9
+ vuOBIEzSFsKsgDie7KK8pk3F0VLYWXPRS/R8GmfVI4yW6mzYvyCYTShMfAnYHe200LU3qSneVvW
+ dhqkSlFuDup+THT56RQ==
+X-Proofpoint-ORIG-GUID: kSPi3CYtlGSGi8JBxY6XVTVrmRXF89VC
+X-Proofpoint-GUID: kSPi3CYtlGSGi8JBxY6XVTVrmRXF89VC
+X-Authority-Analysis: v=2.4 cv=EZT4hvmC c=1 sm=1 tr=0 ts=6aa02101 cx=c_pps
+ a=FAnPgvRYq/vnBSvlTDCQOQ==:117 a=FAnPgvRYq/vnBSvlTDCQOQ==:17
+ a=kj9zAlcOel0A:10 a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=gQcMVamqm3wCPoSYhaRC:22 a=3haJ9R1Aw3gUfsUHDaCR:22 a=pGLkceISAAAA:8
+ a=MvuuwTCpAAAA:8 a=LHlW8V97vvmrU187Gq4A:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTA4MDE1OSBTYWx0ZWRfXzze0u1U5qUAw
+ LOz2+0CMKZ2r0oPoOu4gI0Fso6RS3BpO9Mwiw8RJOUVIP2IixDqn1c0zi2x/V0l1ImOqzm7ENsI
+ fgq3w6HAb/FOBYm4cigHRs/KW4j6ULE=
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-09-08_03,2026-09-08_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 spamscore=0 clxscore=1011 bulkscore=0 malwarescore=0
+ phishscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
+ definitions=main-2609080159
 
-Now that page tables are freed after an RCU grace period, it is safe for
-read-only page table walkers to walk page table ranges that are being
-concurrently torn down, provided the mm is kept alive via mmgrab().
+On Sat, Sep 05, 2026 at 09:03:40AM +0200, Karl Mehltretter wrote:
+> bau= went away with commit 39297dde7390 ("x86/platform/uv: Remove UV
+> BAU TLB Shootdown Handler"); nothing parses it any more.
+> 
+> Drop the entry.
+> 
+> Found by cross-checking every documented name against the __setup(),
+> early_param() and core_param() registrations in the tree.
+> 
+> Fixes: 39297dde7390 ("x86/platform/uv: Remove UV BAU TLB Shootdown Handler")
+> Assisted-by: LLM
+> Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
 
-It is however unsafe for writers to do so, as they must obtain an
-appropriate lock to do so safely.
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 
-Update the pte_offset_map_lock()'s comment block to reflect this.
-
-Similarly update the process addresses documentation.
-
-Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
----
- Documentation/mm/process_addrs.rst |  6 ++++++
- mm/pgtable-generic.c               | 15 +++++++++++----
- 2 files changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
-index a7296f251799..1e65b139f355 100644
---- a/Documentation/mm/process_addrs.rst
-+++ b/Documentation/mm/process_addrs.rst
-@@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
- * When changing a page table entry the page table lock for that page table
-   **must** be held, except if you can safely assume nobody can access the page
-   tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
-+* Page tables may be *walked* under RCU alone, as page tables are freed only
-+  after an RCU grace period has elapsed. However, any entry found must be
-+  revalidated after the page table lock is taken (such as the
-+  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
-+  before it is acted upon. Changing an entry always requires the page table
-+  lock.
- * Reads from and writes to page table entries must be *appropriately*
-   atomic. See the section on atomicity below for details.
- * Populating previously empty entries requires that the mmap or VMA locks are
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index b91b1a98029c..a127e3e8f9b9 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -385,10 +385,17 @@ pte_t *pte_offset_map_rw_nolock(struct mm_struct *mm, pmd_t *pmd,
-  * Note: "RO" / "RW" expresses the intended semantics, not that the *kmap* will
-  * be read-only/read-write protected.
-  *
-- * Note that free_pgtables(), used after unmapping detached vmas, or when
-- * exiting the whole mm, does not take page table lock before freeing a page
-- * table, and may not use RCU at all: "outsiders" like khugepaged should avoid
-- * pte_offset_map() and co once the vma is detached from mm or mm_users is zero.
-+ * Note that free_pgtables(), used after unmapping detached vmas or when exiting
-+ * the whole mm, does not take a page table lock before freeing a page table.
-+ *
-+ * As page table freeing itself is RCU-safe, page table readers can safely run
-+ * concurrently with page table teardown.
-+ *
-+ * However, writers CANNOT as, without a lock being held, nothing prevents
-+ * concurrent teardown.
-+ *
-+ * Also note that the PGD itself is freed at mmdrop() time, not under RCU - so
-+ * the walker must keep the mm alive either by pinning the mm or the VMA.
-  */
- pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
- 			   unsigned long addr, spinlock_t **ptlp)
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index c8d96de4c00d..99d5bb68968a 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -624,13 +624,6 @@ Kernel parameters
+>  			Format: <int> (must be >=0)
+>  			Default: 64
+>  
+> -	bau=		[X86_UV] Enable the BAU on SGI UV.  The default
+> -			behavior is to disable the BAU (i.e. bau=0).
+> -			Format: { "0" | "1" }
+> -			0 - Disable the BAU.
+> -			1 - Enable the BAU.
+> -			unset - Disable the BAU.
+> -
+>  	bdev_allow_write_mounted=
+>  			Format: <bool>
+>  			Control the ability to open a mounted block device
+> -- 
+> 2.53.0
+> 
 
 -- 
-2.55.0
-
+Steve Wahl, Hewlett Packard Enterprise
