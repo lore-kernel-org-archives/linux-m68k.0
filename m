@@ -1,66 +1,113 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1115033C536
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Sep 2026 01:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B993195FE
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Sep 2026 17:33:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789004931; cv=none; b=V/xdBpyE1JmuokZaWDkFD3BXsIv1KyTPfz0EZ1GbgpzSs7mo6HNysgTELmVA2UcQzqTNgzmF6AuXDfOF3Q+ppt1wLbleCHU8FHEabTIyFZNzVFwGmQiV0jcL5LwpbrrSy026bFF8G6GtLjaRLwtk7yoL04GMT/0qW0NrcUBEvrE=
+	t=1789061625; cv=none; b=nv7LNfdkvOhQVMZB/68T7u+zi9pCl46pP7j++X+UXH8No2MlKFoUmimecDHOrfj+bb1wtkdhAGTnu38RIZhLgofzD6AfnkyYuvyN8zLddRV/LAPpUjxF6DR/5hNzxHibviZKh3i+9GySxqEw6bQEa9VSWgYbxTafby5WDYKDoTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789004931; c=relaxed/simple;
-	bh=yBOgzpMMrxtv1IF+gmXxYrYjjbUQflXBd/lhjKk5ONs=;
-	h=To:Cc:Subject:From:In-Reply-To:Message-ID:References:Date:
-	 MIME-Version:Content-Type; b=ZSp9ACgAvH37cdHDWeYiNGc9tFnjIc5LVK7uGtuamgqE4/CA3xfulLMf7vP+JyryXjolBzOjSYdN8boc0B2gV9k+YsBWIt6ZW0Lohtx2umvHxcNl1oJHjeKXha4kvCABAYC6GPa3110NVj+DM/HGhKeTHFsrnUsMAsSiypgLGBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPAMNLHW; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1789061625; c=relaxed/simple;
+	bh=MCNOi9xIw5iRiR3EyFN0mMplUBmpBIeLYzXFr8Rll8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mbXVDjLHs4xog9Ng1qAWHokyU1N08wyDyH0AannE3i2X1YZmUMLtBRIiqz9TQb7V1gQymvsBnOvqeyc64Sd25gMTnlrX/ZYigQ+q39EDWhHjnqLa7AKRgKsXaD/74/WWzksjYmj5RtYKDyVqX1U4z1aLnH+bMm1zWICUb0eIwxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zr9Rrxkg; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPAMNLHW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zr9Rrxkg"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id EE0AF40645;
-	Thu, 10 Sep 2026 01:48:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 922061F000FF;
-	Thu, 10 Sep 2026 01:48:46 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id CC30B415F4;
+	Thu, 10 Sep 2026 17:33:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58A5A1F000FF;
+	Thu, 10 Sep 2026 17:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789004926;
-	bh=4PyBsnf1+ULG+pXM5gmo2KDbb1r7rtj8XmW5dqJR55k=;
-	h=To:Cc:Subject:From:In-Reply-To:References:Date;
-	b=BPAMNLHWYVVq/e+tKmyBGho/U2EdZc86zWdJpbWW4th70md5bOW7e0dl973NPCxgV
-	 KtRA6lD9fuYgwknMISYElvlM8VI4G9q4/EXEVoMUArSdRCil+3+XJy/aERYh6CnGwU
-	 aHYzCo+VupcRtQ7O1wli2FJrM2bycsRxQUbQzDdorUQiNnZLdjHZtRupOHi5A2QtPR
-	 /z8Jqwtd9Flqny096NaU6HaDmW69c1FpopBnfBjK7cpp3XxaTs33EPUfxb7+cl5fW5
-	 nYCVJHwGTKURYGcsdLMc5leiHdSJ+NcYMHEez1Uo4DTN+dNDgSJk4Hcl812i9Yke+N
-	 I6OXWnNs3JuXA==
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-  "Martin K . Petersen" <mkp@kernel.org>,  linux-scsi@vger.kernel.org,
-  linux-m68k@lists.linux-m68k.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: zorro7xx: Use individual zorro_driver_data
- structures
-From: "Martin K. Petersen (Oracle)" <mkp@kernel.org>
-In-Reply-To: <7deafe83754415c5beb280f3c1808e153029e890.1788169600.git.geert@linux-m68k.org>
-	(Geert Uytterhoeven's message of "Mon, 31 Aug 2026 11:49:20 +0200")
-Message-ID: <yq1pkylc1xp.fsf@mail.kernel.org>
-References: <7deafe83754415c5beb280f3c1808e153029e890.1788169600.git.geert@linux-m68k.org>
-Date: Wed, 09 Sep 2026 21:48:45 -0400
+	s=k20260515; t=1789061611;
+	bh=mc61jQ2p6vMPm9Sn/vjm/9Psk2xpnTlGysS95tscm7Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Zr9RrxkgLuPZ7amTj6iAzMB56dHM0XLgFYwJmbnZPBjEbC0mWN3C+hPkJMCekYy0w
+	 Fhe66bjAyi9wUJ1ryaP8OrJykX1XrnmuZFzPZB6YS7pWZRDw5jvSvnO72YjmRGYROH
+	 z4Tm19zswYDqKxRW7mPSyzYnvVDtHi31P0rtyk7bOg4j79nYpu/6i5lJr+v7qPzOvj
+	 A3NE9iZpFHlo2ONmbI1iz6sgHB5b94cRQ2nbAOjOMeecQzhwvn77Raj2xaf8vTh8H1
+	 8rHrjkWj1dDEVB8CybNDdtDUta6Z0wvbXgS7xrbJ02/j1svRIcFXRpNL7Rm+ypvtuO
+	 XHn2kXvUOeFNg==
+Date: Thu, 10 Sep 2026 19:33:22 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Karl Mehltretter <kmehltretter@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Steve Wahl <steve.wahl@hpe.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Mike Travis <mike.travis@hpe.com>, Tony Luck <tony.luck@intel.com>,
+	linux-edac@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Tony Lindgren <tony@atomide.com>,
+	Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org,
+	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
+	Michael Schmitz <schmitzmic@gmail.com>,
+	Andreas Kemnade <andreas@kemnade.info>
+Subject: Re: [PATCH v2 9/9] docs: kernel-parameters: Drop the pata_legacy.qdi
+ and pata_legacy.winbond entries
+Message-ID: <aqLp4p-CCi9sVDlb@ryzen>
+References: <20260905094649.41996-1-kmehltretter@gmail.com>
+ <20260905094649.41996-10-kmehltretter@gmail.com>
+ <apwKitEmOv3ZwLkd@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <apwKitEmOv3ZwLkd@gmail.com>
+
+On Sat, Sep 05, 2026 at 02:29:46PM +0200, Karl Mehltretter wrote:
+> On Sat, Sep 05, 2026 at 11:46:49AM +0100, Karl Mehltretter wrote:
+> > pata_legacy no longer has the qdi and winbond module parameters:
+> > commit 3c4d783f6922 ("ata: pata_legacy: remove VLB support") removed
+> > both together with the VLB controller support. The entries also refer
+> > to CONFIG_PATA_QDI_MODULE and CONFIG_PATA_WINBOND_VLB_MODULE, which do
+> > not exist either.
+> > 
+> > Drop both entries.
+> > 
+> > Fixes: 3c4d783f6922 ("ata: pata_legacy: remove VLB support")
+> > Assisted-by: LLM
+> > Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
+> > Acked-by: Damien Le Moal <dlemoal@kernel.org>
+> 
+> This one is actually a duplicate, I just found out. Ethan posted a more
+> complete patch in June that removes all six pata_legacy entries which
+> commit 3c4d783f6922 ("ata: pata_legacy: remove VLB support") left
+> behind, this patch covers only two of them:
+> 
+>   https://lore.kernel.org/r/20260607064053.195166-1-enelsonmoore@gmail.com/
+> 
+> It has a Reviewed-by tag from Randy, but does not seem to
+> have been picked up yet. 
+> 
+> So I suggest: drop 9/9 and take Ethan's patch instead.
+> The other patches of this series are not affected.
+
+I have picked up the patch that you linked to above:
+
+ata: pata_legacy: remove documentation for removed module parameters
+https://git.kernel.org/libata/linux/c/a19d4f9b
+
+Thank you for the ping!
 
 
-Geert,
-
-> Using an array of zorro_driver_data objects and referring to its
-> elements by index obfuscates the code and is error-prone.
->
-> Improve readability and reduce code size by replacing the array (which
-> includes an unneeded sentinel) by individual zorro_driver_data objects.
-
-Applied to 7.4/scsi-staging, thanks!
-
--- 
-Martin K. Petersen
+Kind regards,
+Niklas
