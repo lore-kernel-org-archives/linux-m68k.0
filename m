@@ -1,164 +1,149 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4C8333730
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  9 Sep 2026 16:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD14B35E1BC
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Sep 2026 01:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788972285; cv=none; b=jIib60azd/SQWWsQtA0QDHm/+Wb6N5qtSJVC4uG14ttKOekGR5cZ+N9H77kseKIbJtHxA7ksSPXFJo9UvBWw58QJaFS2M46DRYyWNvUWMrmgerwuUf7ZzVMaouBM+gaD8UADcAWqKeShb6x1HJKhNXz2mvpHdIS+bHOBVJHpS3M=
+	t=1789003975; cv=none; b=to5zON2sDTxrAHqvZ/qygYz0PM9G6sizuz8tOA3H6VuCz9XAORx/EJugqE58gjfP3fsfePfA8g7Sg4xYzVwx72niI2K+OEEclpPJ2lgJgVGy7lTrcxPe/d/aGGEAZL8WLi9GeGp2QlF235hN90BkIK70v+LoqUdFZn8rEDgzKEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788972285; c=relaxed/simple;
-	bh=h1TOCNSkj5R56lNH3DJ3hUBmUSsPSkXgQfnKFDYvvQg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L+sUjhcTP+DAKA9NF9a2fN30pgbET3lVA44p0rKhCHq8ytNPmek65tUKL4NHMeS5QSrlElqg6yapEdXq8aP5+sQKS1r+JD86GRMXOj5IEN0nve1YPGklpHmekcT0aQ7stTznxE1Z79KUUkHyJ1E9w53QTL9dhfrtwB+wbGS2FRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SvkfUBrj; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1789003975; c=relaxed/simple;
+	bh=XsI6Y/1sSLQp0adjnMZsyD3THyVMp5IicuC5nSeg3go=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y1GFSOfgdE680OAQhCJtdTQFzGrTMg2/tMW3EosUFcGdr9Z8nekoaBwYvzedj0WBQJ1sCy4YaLIRu+iytNxnBnswqx+wfxNItVBPGFO8SYjG0dCvwYi0ZJdb6CR7vf38wbDS6R95+E2yNrVdX3QXzrizQ7qvxnlRQUER1TexqWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ekXPfzv+; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SvkfUBrj"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id A729F60202;
-	Wed,  9 Sep 2026 16:44:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F14881F000FF;
-	Wed,  9 Sep 2026 16:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788972281;
-	bh=Bapc0YSkMfnvYk3VlSbyVwcwaxlxEF/qdP5fqXt2FVU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=SvkfUBrj+qqUCItjJr4thxIOtrO+WmcNQus9iN7o7fjn21Kjri7ciOsZZbXojK8eq
-	 ebmrsmEhjQ8lMe6NScH5NJJVO7FkHjSrPlMJAzs9SeDQJIL0euxfAANelWLDPoYw1X
-	 CcSIvP/FGlOivDpnH/QksUP428gC7WgcKMjXSRAyqMHuiTJd6wYCdFyF9iWecTST2l
-	 DPfn0SayJdOumRm8EjJ0YaCf7wOVn5AtF52jH/K7lyYBUkf1LvlE8O39pf5s+r01dw
-	 hpz3MZmyVQYZqDR+4GQ6n1zp4Q8/XwEUokZ3xCVu0XLtYHfY7rf+QXRgnY7M4GG9HF
-	 fN2FuuSzCKwhQ==
-Date: Wed, 9 Sep 2026 17:44:16 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Kiryl Shutsemau <kas@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
-	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
-	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
-	Usama Arif <usama.arif@linux.dev>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Simon Schuster <schuster.simon@siemens-energy.com>, Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
-	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>, 
-	Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
-	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH v2 11/12] mm: make userland page table freeing RCU-safe
-Message-ID: <aqGMqVxJCWbZePmW@gremlin>
-References: <20260908-rcu-pagetable-freeing-v2-0-1f60b64e878e@kernel.org>
- <20260908-rcu-pagetable-freeing-v2-11-1f60b64e878e@kernel.org>
- <aqEivRP0LmJZcgEx@thinkstation>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ekXPfzv+"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-49cd77e0f95so51258105e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 09 Sep 2026 18:32:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789003971; x=1789608771; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=VrhRS/M7q7pkTrLXrhmPne9tuf4NOHwrkARE6eFwxWk=;
+        b=ekXPfzv+64IlxHLSDNVTBNh6PIPhg9x7xq/plPokmtUTfAi8jTcY0431Ku+F5z/6hd
+         xBx4ymaHjHAFy/Tb4Sf/kCLMrLIskt87pcjUEejVyxDV/LUH8dAfPGF/om8R/EiYLVhT
+         EEZsCLLHkC2rUl86hWnOGc6oA2yuIReDtdsiwtNfoENnXNNyUf2Krhvc632mdo4zeH51
+         mpRuSrderlNTgl/qdvhxu7fuYebX2+pF/FN/+l6lqsbd94NovDAcHXt+wENpjARv1XKv
+         QU7nwmLxMX656xsu5IELpNVISVFyaAFXKn41SK4nLoeWoGvCKlxf/ynj4FZqLmVzZ9mf
+         cHPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1789003971; x=1789608771;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=VrhRS/M7q7pkTrLXrhmPne9tuf4NOHwrkARE6eFwxWk=;
+        b=IX3txm99LiIVLNvkrmst4uuOz03xr1U0FqSW5eo4tQBJGNkq2Wh+0cMMa/5v4iFh6t
+         QDoG7LyQr/5PqZn7Kv9eRsOlaCpeFkcSUP5i2WwMnoKsg7CwS65St+KN+pBwJGsWl92O
+         STr7H9txFyglUps/qKSjY6YQEWBjmezzDN4n/tsFierSDUi+jYhicnIx82knPFKac0y0
+         GpIS95QCvEqt7RhjGcfOPqru1PevwZLYYQGsUz4CpHMQLx+yLww8XXoAVfJAtl3fNSt0
+         eFg/iWrrvgitjYpX2+OBNnilJPIB6QayBXCMsL/9A3tlxhcWDenGXbn6Jx4FlBkUIeR9
+         2EPA==
+X-Forwarded-Encrypted: i=1; AKwUvBwrV49AkToI6kZuHUvCmAF685dZ1K1VcC3iTiyVrM/DM8rJkS7PpXdA7JKjJ2p5BbI9Gt0UotpcJQop@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++lW5VpcszspVPRAXZA+b9xST59cohPWGviATycVeupiMfeOgaQ3
+	Vg9qZYhbjBXuzayXDTdeBojc+lZHkJO6IhW8i6k5ZorWyW9Eleh6+z3d
+X-Gm-Gg: AYBFou1isqv8haPCc5tLWl5K9IA3gNEYIoBTcHYJqi+bfQ9+4IONCadl0HW0VVF9uG/
+	GClEZnQlbgsKNgy7KjH+brMBL9z/djbf1hSDo167APP/+1Qan416k3bQLIs1hEsoUURGjH5rsbH
+	1eJnAK7Za1pY9txJkHi5s2umVxcsEhGFMiMWmnn+PWQnWTKEOUp+yXQlVfwPz6W7y+SKtyFMryb
+	QFamsfFKv0krPdrykwzRzJ47dP3j0xpnhhI7vMgBmlDcQvwGFWBK2wWXpBDnd69X8DUUdq0BsbQ
+	VowoCvZB7P6cNRQd+K5tNmsFDxEE/5W/TYjsTQCq5GKwA1ZMt60TDelcnHnERTWtT0hmqNY6sZJ
+	pHvW4yb0KjMJWimiO5ce4H63309b2V8lqSD0hNVgDAuSkWr2Pmlm4eabWcU+k8pdstDltUljAvD
+	5AjyMzQ5mRjbNc3mibjv/tpj5YzQFQYh2o28cM794VgOCq9DB+E2c9ZhiZX0f9ckE3fivPP4Z7t
+	CJ1aks/s3/crIwvslkbULEkI6Bg/YFz/GDJbWMODbZgjyGUwAtR6lpNcHpVxaTSDXTeMpGdF4IZ
+	e2sV6ytcqGMZw9Xlbx+3XObsr8DbNPHo+Uje1kiMzYfYqhQvTDmKFBs0uUjgcqFlRk+EFsPfdLd
+	j9A==
+X-Received: by 2002:a05:600c:4e0e:b0:499:bf8c:cfd1 with SMTP id 5b1f17b1804b1-49cf81e6063mr368280035e9.2.1789003970778;
+        Wed, 09 Sep 2026 18:32:50 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a02-3100-b090-6201-5565-e933-e630-1831.310.pool.telefonica.de. [2a02:3100:b090:6201:5565:e933:e630:1831])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49d26d4e3f3sm35852735e9.15.2026.09.09.18.32.49
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 09 Sep 2026 18:32:50 -0700 (PDT)
+From: Karl Mehltretter <kmehltretter@gmail.com>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: Karl Mehltretter <kmehltretter@gmail.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-input@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	Steve Wahl <steve.wahl@hpe.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Mike Travis <mike.travis@hpe.com>,
+	Tony Luck <tony.luck@intel.com>,
+	linux-edac@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-samsung-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Tony Lindgren <tony@atomide.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	linux-omap@vger.kernel.org,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Michael Schmitz <schmitzmic@gmail.com>,
+	Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v3 0/8] docs: kernel-parameters: Remove eight entries for parameters that no longer exist
+Date: Thu, 10 Sep 2026 03:32:37 +0200
+Message-Id: <20260910013245.8619-1-kmehltretter@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aqEivRP0LmJZcgEx@thinkstation>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 09, 2026 at 10:15:13AM +0100, Kiryl Shutsemau wrote:
-> On Tue, Sep 08, 2026 at 01:32:20PM +0100, Lorenzo Stoakes (ARM) wrote:
-> > Now every architecture has been converted to support
-> > CONFIG_MMU_GATHER_RCU_TABLE_FREE, this configuration option no longer makes
-> > any sense to keep around.
-> >
-> > Therefore remove it, and remove all the dead code that existed for
-> > !CONFIG_MMU_GATHER_RCU_TABLE_FREE architectures previously.
-> >
-> > Additionally, CONFIG_MMU_GATHER_TABLE_FREE is no longer necessary, as all
-> > architectures instead use CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE when a custom
-> > __tlb_remove_table() is required, so remove this too.
-> >
-> > A number of architectures only enabled CONFIG_MMU_GATHER_RCU_TABLE_FREE if
-> > CONFIG_MMU was set, however the mmu_gather logic only actually does
-> > something meaningful if CONFIG_MMU is set (mmu_gather.c is only compiled in
-> > this case, for instance).
-> >
-> > As a result, there's no need to gate any of this logic on CONFIG_MMU
-> > explicitly.
-> >
-> > CONFIG_PT_RECLAIM however does have a strict dependency on CONFIG_MMU, so
-> > make this dependency explicit.
-> >
-> > Additionally, correct comments to remove references to non-RCU page table
-> > gathering and make it clear that this is not 'semi-RCU', nor has it been
-> > since commit 1fb3d8c20bfa ("mm/mmu_gather: replace IPI with
-> > synchronize_rcu() when batch allocation fails").
-> >
-> > With this change in place the kernel policy is now that all page tables are
->
-> You missed s/all/userspace/ from v1.
+kernel-parameters.txt still documents eight boot parameters whose parsing
+code was removed with the drivers or platforms that used them, one of
+them (atarimouse=) since before the git history. There is one patch per
+parameter, with a Fixes: tag where the removal is in git history.
+Each entry was checked with git grep for its __setup(), early_param()
+and module_param() handler and with git log -S for the removing commit,
+and the name is absent from the whole tree at that commit.
 
-Hmm I thought I got this... will fix on respin!
+Changes in v3:
+- patch 3: name the commit that turned edac_report= into a module
+  parameter (fee27d7d9788) and the one that removed it (7fc0b9b995f2),
+  Fixes: tag moved to the latter (Boris)
+- the pata_legacy patch is dropped, Ethan's patch from June covers all
+  six parameters that commit 3c4d783f6922 removed:
+  https://lore.kernel.org/r/20260607064053.195166-1-enelsonmoore@gmail.com/
+- collect Reviewed-by and Acked-by tags
+- the "Found by cross-checking ..." paragraph dropped from the messages
 
->
-> > freed after an RCU grace period, and thus it is now safe to unconditionally
-> > perform page table walks under RCU, safe in the knowledge that page tables
-> > will not be freed underneath the walker.
->
->
-> > @@ -151,24 +148,15 @@
-> >   *  This might be useful if your architecture has size specific TLB
-> >   *  invalidation instructions.
-> >   *
-> > - *  MMU_GATHER_TABLE_FREE
-> > - *
-> > - *  This provides tlb_remove_table(), to be used instead of tlb_remove_page()
-> > - *  for page directores (__p*_free_tlb()).
-> > - *
-> > - *  Useful if your architecture has non-page page directories.
-> > + *  Page directories (__p*_free_tlb()) are always freed via tlb_remove_table(),
-> > + *  after an RCU grace period (see mm/mmu_gather.c).
-> >   *
-> > - *  When used, an architecture is expected to provide __tlb_remove_table() or
-> > - *  use the generic __tlb_remove_table(), which does the actual freeing of these
-> > - *  pages.
-> > + * This serialises against software page-table walkers, including architectures
-> > + * which do not use IPIs for remote TLB invalidates.
->
-> Indentation is broken.
+The remaining eight patch diffs are unchanged since v2.
 
-Ugh I thought I fixed this before I respun too, doh!
+Changes in v2:
+- patch 9: drop the Fixes: tag for 0dcd0a76370a, which removed the
+  separate pata_qdi driver and not the pata_legacy parameter; both
+  parameters went away in 3c4d783f6922 alone
+- collect the Reviewed-by and Acked-by tags from v1
 
-Will fix.
+v2: https://lore.kernel.org/r/20260905094649.41996-1-kmehltretter@gmail.com/
+v1: https://lore.kernel.org/r/20260905070347.25902-1-kmehltretter@gmail.com/
 
->
-> --
->   Kiryl Shutsemau / Kirill A. Shutemov
+Karl Mehltretter (8):
+  docs: kernel-parameters: Drop the atarimouse= entry
+  docs: kernel-parameters: Drop the bau= entry
+  docs: kernel-parameters: Drop the edac_report= entry
+  docs: kernel-parameters: Drop the enable_timer_pin_1 entry
+  docs: kernel-parameters: Drop the mini2440= entry
+  docs: kernel-parameters: Drop the nomfgpt entry
+  docs: kernel-parameters: Drop the omap_mux= entry
+  docs: kernel-parameters: Drop the pcmv= entry
 
---
-Cheers, Lorenzo
+ .../admin-guide/kernel-parameters.txt         | 54 -------------------
+ 1 file changed, 54 deletions(-)
+
+
+base-commit: 986c24e0fe44f844b44d365b71ce831947f50298
+-- 
+2.53.0
