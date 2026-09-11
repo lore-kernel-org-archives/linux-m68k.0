@@ -1,182 +1,115 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3692757982C
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Sep 2026 19:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C6CD3002DC
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Sep 2026 23:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789155735; cv=none; b=fxgq2Oip0RGxsrl9TK1WJUxeBvV58AvONnx7lawDOhRRxKD7vg3SsATdKCz73EijlbRGOlbu7GxXi9yORlwO+4Puyn/9yRpTkoH0TODhOMXk76cRjPj9sTrYGJkeVTtSU6sy1GhVGb/TnBxpu8yMmPBiZaKcpupy1YVIwA/c0HU=
+	t=1789167892; cv=none; b=EUa7HwwAOS9jiNTOk3xFBdWzU5tJy1hUc9rQb4k6fAIiMJqqOqa3lihidWkgitreLYOvLxzxBgWIjpe45dBQanHyPAu/fSBYTuIBuSYmOzrB5ty10iTSZ4YFhqKaFmE4exNnZimbuiqnP2oDw+/s//a5pgcG0EODfsprcYKEvyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789155735; c=relaxed/simple;
-	bh=d4o8BvEhvbpmkAFDsmC7e/OS16AthPkW67coZubsUt0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eTc70mCDA7OE+0Y2YddwMfTpDlLyokvClf2/GBGw/J3vaJu5np7etr7YXbOa16Azbc/w9jpK+XV1j574oHbqqtiSCV0K9n3/jdVUxhAt56XTF5SaVRMhTeWXKUw6PHhriT6QFP17vugHoaRnhxE58XQpRmP0l+cU+D06rfp3A5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5hZkxPe; arc=none smtp.client-ip=172.105.4.254
+	s=arc-20240116; t=1789167892; c=relaxed/simple;
+	bh=xlWn8lsNQ74V6HS9v7MVPkrQMIN4eF0tWIk9IW2JCoc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Zf3vix5z2MujZihHpgYnOjVbxmDDQVHwVyLSmf13lfcbiVDUC+Iu82LtuT2CmlVXRkqjnF0hIyJrgySd8hF+jcEyOH9O8SNesgICRPwT4p/RLbKUvYdTcxK3I79GSOub3AvK1SK9PAeem+0dmnjubq30txmfX0/RR76o3OYzDEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WshzVBKh; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5hZkxPe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WshzVBKh"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1245E60202;
-	Fri, 11 Sep 2026 19:41:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE6EE1F00893;
-	Fri, 11 Sep 2026 19:41:35 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7F573600AA;
+	Fri, 11 Sep 2026 23:04:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AABF1F000FF;
+	Fri, 11 Sep 2026 23:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789155714;
-	bh=M7feebBV+4w0SqCnHHPUA0WnsaaqlXi4RbYO862HspA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=b5hZkxPeby4ytfMTJauKfEirdwvu+obLbvn3xWPzZcr0wBfX3w+c2kujWFIcDpY9n
-	 25FLBvyf42J+UZUzQbo4EoU7R+DQKAdV1weZ0+5Qm1djVUXn5MsNCrmeyoRpAkTbTJ
-	 siMNDnCxo7ntKpAO1aUHoIFfJkSGnCkmDedyGaQ3sl0jd3SZvqvmObc3YM/xNBonZf
-	 k+LnB3mpReS5jSnuryAr5mgkoBDh+B/eY8XbcD0SZAWiMwiGHobrF0ybz9sq0aO3oR
-	 P9ZtVpQUF5BFr3CO4oSylZnpjSWQo66V0pbELQZm+VUzxOw02NQkviAWzBGK9gChxZ
-	 3WaZrJuQhS4QQ==
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Fri, 11 Sep 2026 20:36:59 +0100
-Subject: [PATCH v3 12/12] mm: change the contract for free_pgtables(),
- update docs
+	s=k20260515; t=1789167889;
+	bh=N1LY4rKYOr27Ilt9sZo1N4WbqCnS6yVf+HmCQgzzvz8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=WshzVBKh1zOG3iQqHN9bXk6iMn3UhPjWI2o9We2q85J1a0xxuvetInEqSv+oLVBif
+	 oHixlX9hdnUTec+G9zk6kotK91VuauggK0rxfOR07BuXDSuVbPkPSgIKxAGEHnnOmt
+	 Th5abxIcAARPoeXzkg1RZuTPeY7skMICjLiysDWUlk6TbZuVGou1nBri98K3vkOFma
+	 +8WViZY9rRF0QyyYhVaVzRzVW1ce++rNpSS5X6VGBpU3jnuoYD43g/28KA7iJ0xah+
+	 8qQDOEfeqF+wATGMEexc8UPt37RQWJ1KDqUcKNK9vRaS38zBePsIn/L4mZk0RSFzOq
+	 tHA6h1BvCTugg==
+Date: Fri, 11 Sep 2026 16:04:47 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ arnd@kernel.org, wei.fang@nxp.com, frank.li@nxp.com, shenwei.wang@nxp.com,
+ imx@lists.linux.dev, netdev@vger.kernel.org, nico@fluxnic.net,
+ linux-can@vger.kernel.org, linux-spi@vger.kernel.org, olteanv@gmail.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCHv3 1/3] net: fec: do not use readl()/writel() for
+ ColdFire
+Message-ID: <20260911160447.2873a40f@kernel.org>
+In-Reply-To: <92ef814f-c207-44c1-9b7b-575980e29525@linux-m68k.org>
+References: <20260907134037.1855408-1-gerg@linux-m68k.org>
+	<20260907134037.1855408-2-gerg@linux-m68k.org>
+	<20260910174210.0f8a4ad2@kernel.org>
+	<92ef814f-c207-44c1-9b7b-575980e29525@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260911-rcu-pagetable-freeing-v3-12-7b8c86103821@kernel.org>
-References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
-In-Reply-To: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, 
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, 
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, 
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Dinh Nguyen <dinguyen@kernel.org>, 
- Simon Schuster <schuster.simon@siemens-energy.com>, 
- Jonas Bonn <jonas@southpole.se>, 
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
- Stafford Horne <shorne@gmail.com>, 
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>, 
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>, 
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>, 
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>, 
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
- Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
- "David S. Miller" <davem@davemloft.net>, 
- Andreas Larsson <andreas@gaisler.com>, 
- Richard Henderson <richard.henderson@linaro.org>, 
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, 
- WANG Xuerui <kernel@xen0n.name>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, 
- Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
- Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
- Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
- linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, 
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
- Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3290; i=ljs@kernel.org;
- h=from:subject:message-id; bh=d4o8BvEhvbpmkAFDsmC7e/OS16AthPkW67coZubsUt0=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKWRDRfPca+K1Qt69Vu3RSVu8e9Ur+x7Hbg6r6kKjhjQ
- tW2Xw17OkpZGMS4GGTFFFmefxHfHyQSNq/zgr8bzBxWJpAhDFycAjCRtYKMDKtcrE7Oe/bdKdOw
- QVRKubxP/maw6+Z2i5NRMyQLnn/8n8DIcLLhht/b1oOGNt4zuvVbs+/8t5WS4NfTdnZawiPYtGc
- JEwA=
-X-Developer-Key: i=ljs@kernel.org; a=openpgp;
- fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 
-Now that page tables are freed after an RCU grace period, it is safe for
-read-only page table walkers to walk page table ranges that are being
-concurrently torn down, provided the mm is kept alive via mmgrab().
+On Fri, 11 Sep 2026 23:03:56 +1000 Greg Ungerer wrote:
+> On 11/9/26 10:42, Jakub Kicinski wrote:
+> > On Mon,  7 Sep 2026 23:37:09 +1000 Greg Ungerer wrote:  
+> >> The FEC driver works today because the m68k architecture io.h has a
+> >> kludge in the definitions of the readl() and writel() functions for
+> >> ColdFire that allow big-endian access if the address of the register to
+> >> access is within the SoC's internal peripheral registers. This is being
+> >> fixed in the near future to define readl() and writel() correctly - with
+> >> no byte swapping. Thus the motivation for this fix here.  
+> > 
+> > What is the motivation for this cleanup?  
+> 
+> Sorry, maybe you were not in the CC list of the cover email. From that:
+> 
+>   This collection of patches is aimed at fixing the non-standard ColdFire
+>   set of readX()/writeX() IO access functions. Instead switching to using the
+>   asm-generic definitions in include/asm-generic/io.h. The difficulty comes
+>   in trying not to break any drivers with this change.
+> 
+>   The implementation of the readX()/writeX() family of IO access functions
+>   is non-standard on ColdFire platforms. They either return big-endian (that
+>   is native endian) data, or on platforms with PCI bus support check the
+>   supplied address and return either big or little endian data based on that
+>   check. This is non-standard, they are expected to always return
+>   little-endian byte ordered data. Unfortunately this behavior also means
+>   that ioreadX()/iowroteX() and their big-endian counter parts
+>   ioreadXbe()/iowriteXbe() are currently broken because they are implemented
+>   using the readX()/writeX() functions.
+> 
+>   Patches 1 and 2 in this series are specific net driver changes that can be
+>   applied independently of the final ColdFire readX()/writeX() change.
 
-It is however unsafe for writers to do so, as they must obtain an
-appropriate lock to do so safely.
+I read it, it doesn't really answer the question of priority.
 
-Update the pte_offset_map_lock()'s comment block to reflect this.
+> > Is someone still making
+> > new SKUs of Coldfire boards? Or (and please don't take this the wrong
+> > way) it was a long standing TODO that was tempting to feed to an LLM?  
+> 
+> It is a long standing todo/fix, but there is nothing LLM anywhere here.
+> This was all manually coded and tested. This patch is 95% textual
+> substitution, so it wasn't exactly very difficult.
+> 
+> > IMO keeping the hacks in m68k is a better choice. FEC was used on more
+> > modern SoCs, definitely on PPC ones. So we'll be able to get rid of
+> > m68k before we can get rid of FEC. Sprinkling m68k workarounds in 
+> > the FEC driver is backwards.  
+> 
+> These changes are not work arounds, they are made to make the FEC driver
+> explicitly aware of endianess of the underlying processor and FEC hardware
+> block. The code as it is now, that is carrying hacks inside readX and writeX
+> for m68k, is trying to hide that from the driver.
 
-Similarly update the process addresses documentation.
+Whatever, let me not waste any more time on this. 
+If Arnd thinks its worth it:
 
-Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
----
- Documentation/mm/process_addrs.rst |  6 ++++++
- mm/pgtable-generic.c               | 15 +++++++++++----
- 2 files changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/mm/process_addrs.rst b/Documentation/mm/process_addrs.rst
-index a7296f251799..b1f4f44d75eb 100644
---- a/Documentation/mm/process_addrs.rst
-+++ b/Documentation/mm/process_addrs.rst
-@@ -537,6 +537,12 @@ We establish basic locking rules when interacting with page tables:
- * When changing a page table entry the page table lock for that page table
-   **must** be held, except if you can safely assume nobody can access the page
-   tables concurrently (such as on invocation of :c:func:`!free_pgtables`).
-+* Page tables may be *walked* under RCU alone, as page tables are freed only
-+  after an RCU grace period has elapsed. However, any entry found must be
-+  revalidated after the page table lock is taken (such as the
-+  :c:func:`!pmd_same` recheck performed by :c:func:`!pte_offset_map_lock`)
-+  before it is acted upon. Changing an entry requires the page table
-+  lock and one of the locks that excludes teardown (mmap or VMA lock).
- * Reads from and writes to page table entries must be *appropriately*
-   atomic. See the section on atomicity below for details.
- * Populating previously empty entries requires that the mmap or VMA locks are
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index b91b1a98029c..a127e3e8f9b9 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -385,10 +385,17 @@ pte_t *pte_offset_map_rw_nolock(struct mm_struct *mm, pmd_t *pmd,
-  * Note: "RO" / "RW" expresses the intended semantics, not that the *kmap* will
-  * be read-only/read-write protected.
-  *
-- * Note that free_pgtables(), used after unmapping detached vmas, or when
-- * exiting the whole mm, does not take page table lock before freeing a page
-- * table, and may not use RCU at all: "outsiders" like khugepaged should avoid
-- * pte_offset_map() and co once the vma is detached from mm or mm_users is zero.
-+ * Note that free_pgtables(), used after unmapping detached vmas or when exiting
-+ * the whole mm, does not take a page table lock before freeing a page table.
-+ *
-+ * As page table freeing itself is RCU-safe, page table readers can safely run
-+ * concurrently with page table teardown.
-+ *
-+ * However, writers CANNOT as, without a lock being held, nothing prevents
-+ * concurrent teardown.
-+ *
-+ * Also note that the PGD itself is freed at mmdrop() time, not under RCU - so
-+ * the walker must keep the mm alive either by pinning the mm or the VMA.
-  */
- pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
- 			   unsigned long addr, spinlock_t **ptlp)
-
--- 
-2.55.0
-
+Acked-by: Jakub Kicinski <kuba@kernel.org>
