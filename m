@@ -1,40 +1,40 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D994A92FE
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Sep 2026 19:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D33B556B81
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Sep 2026 19:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789155525; cv=none; b=KFADdvhGf4sxNNTBoY0pmDZe+7jShNXNKfGq332J21t6O86ifzWeAizT2NY84ET4i4JT5aPkzPf/YV4KxmcX4f6wOPKqyDWcxLktddYlUoETh/pRkwZ+sjaH5W6ySNLVPF9Q8gG1aWqn2mpxCidW9muITs+FpH5bgQyWR4VEUic=
+	t=1789155555; cv=none; b=SWDD5XgdXrTzH4ckjdp9R6O9iczhpARc8MOaiem2n2QF5aOqZNFqgctKpnnqKx57Nkn68ZpNaSDLREQ92tcXBCQB9Hw6uqd8mbI14pouQwPfUSOOxCQnAlI4ddf4PA3RxZmIx7uDA2bBA91OmWxtFvledHKqyiWFeQ8Rl5MZZ0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789155525; c=relaxed/simple;
-	bh=bwuaeHFGwuLQFcHN0hOhjdTFxvn+j0g8fIWNrCdz0hk=;
+	s=arc-20240116; t=1789155555; c=relaxed/simple;
+	bh=Ejk+F/Wux5yTvQzPF878nAZnzdraz7QYUlz/y227QJE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=WdTOjPUJB/JcADYNo/bhZ0lSwbKMOYJfpjy4YmZxMI+z41F3PwsflS7qQgD7UQ1IXYF1EIYZb0XJmv8NQiPgiuC63P5Hh2oxgCzwd5SySo026ovR0dyhumTR09eOllUAEBe1PQKcv63mfXdJwcKwcbFlUwF+Pp2Wa+cIoCHeAjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScaQTg6L; arc=none smtp.client-ip=172.234.252.31
+	 In-Reply-To:To:Cc; b=mRXAVG8Z6co5cYYpGnGxAK7zjY3eidwWnTaTkaPzAQCaEKZu0uyE4mcJJ88CJFe6noRDqLFPpLwVIDf8jQ0aehSaDtDCk4rt7saXUqDaipx5Y4OXui4iUnzOK4u6VwT2gvpWAvCGJgj2/RJXLkpGhRZ3emqyqfYQh8JkL9/vCLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wp7RN6M0; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScaQTg6L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wp7RN6M0"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id CBB2041B3C;
+	by tor.source.kernel.org (Postfix) with ESMTP id 8237560008;
+	Fri, 11 Sep 2026 19:38:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B5FC1F00893;
 	Fri, 11 Sep 2026 19:38:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C7A31F000FF;
-	Fri, 11 Sep 2026 19:38:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789155518;
-	bh=EytwztXVP9+HAqnBzZ3KHLRHej5X7gcr6/abe7XoyR8=;
+	s=k20260515; t=1789155538;
+	bh=dWYqXXcVhqhum5QoL45NNyuXa4EfpjGCy/961eqdzvI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=ScaQTg6LWHkLfDWTvgNiTGyWgG05bd35hGPejMTWEMUNobHR4gDQdgVXMK3xizzT4
-	 Wqx+hhrZ3gMeNHbse7OmqImmqIiRn0jo9vtZMFEmdUqU8Y3oYlJr8upoXslpLoCsdD
-	 DEBiMHcKjth9mOpJnnXc8YgW/JxKV7IGYA+nRGAzpMW5ANaimCLuosk/XI7hbUwyA/
-	 wFFGmJKBa9MTxz5qGvtm5MOUMN6iE2F7lpBWydktKhBSuHbQQqg/TVbdZ/HtZicWbV
-	 LL56b1u0DcWj0+aC6KWgiL/0CS1cx46/NLKorS07OP5G8hQ6uVBfbtellrCLHnLlIk
-	 nNVnge1Nc5qhw==
+	b=Wp7RN6M0L86FeGpHvZcllj3vCIokf70FAQlmFb0my2TRWM0GhqqE6bZudKHCpCts0
+	 5IpQHrKGnnWG+bIkcDmlhu5o/JmejMP+vlO9qxLub0WI2aj33y/PXCJPrlfzzfaxgG
+	 wfRru/PZcDX0l+7ekjnU6l1mcPGVvMJ3mpbSQEgXseD9oWYK2HpnfidgjFf2FEnhUo
+	 0d8m2F+SGkk1LtOVbi5bZS0uY/wJ9sUmdKZv/QDSEHHuEP8F2v6wnYIaJdzOnH1AwW
+	 dXmazlu/e2Xtt/OtHX6TXnZmlwb6uGk3SvGj94GArHUevOjHDzBVbZ5E1AIBL8JCkG
+	 O/bo7EuxjGmZQ==
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Fri, 11 Sep 2026 20:36:49 +0100
-Subject: [PATCH v3 02/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for most
- 2-level architectures
+Date: Fri, 11 Sep 2026 20:36:50 +0100
+Subject: [PATCH v3 03/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for MMU
+ riscv
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -43,7 +43,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260911-rcu-pagetable-freeing-v3-2-7b8c86103821@kernel.org>
+Message-Id: <20260911-rcu-pagetable-freeing-v3-3-7b8c86103821@kernel.org>
 References: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
 In-Reply-To: <20260911-rcu-pagetable-freeing-v3-0-7b8c86103821@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>, 
@@ -106,30 +106,35 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
  Qi Zheng <qi.zheng@linux.dev>, "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3613; i=ljs@kernel.org;
- h=from:subject:message-id; bh=bwuaeHFGwuLQFcHN0hOhjdTFxvn+j0g8fIWNrCdz0hk=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKWRDRqXrZ8rz9bKy3gX57EijNZzLMyAt2Fzk5SXPMk4
- 2XQGwexjlIWBjEuBlkxRZbnX8T3B4mEzeu84O8GM4eVCWQIAxenAEzkXiMjw8Zi81dPuAKiNHg8
- JsyoZBXheOsRWVNu6hQWcdzdwKz8K8M/46Dkv8+CeXPLGQ4s1b+0mGelmXR26cTa00b1wqp3Dfe
- yAQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1601; i=ljs@kernel.org;
+ h=from:subject:message-id; bh=Ejk+F/Wux5yTvQzPF878nAZnzdraz7QYUlz/y227QJE=;
+ b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLKWRDQKqWW/WBRsHdFlr34u/0fhUyOJ1CeVl/kXd37xF
+ rtp8OpURykLgxgXg6yYIsvzL+L7g0TC5nVe8HeDmcPKBDKEgYtTACYiKMbw33PDqT2t9smPwr2+
+ fZN8x6M9uaJfqklmR1VSWuBq1ukKixj+6Zr+mF/rtsZF4KVQqofE5sKjjVceMvlwNHzdO7fXPke
+ EHQA=
 X-Developer-Key: i=ljs@kernel.org; a=openpgp;
  fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
 
-Commit e3ecf7c7d082 ("mm: pgtable: convert some architectures to use
-tlb_remove_ptdesc()") updated a number of architectures from using
-pagetable_dtor() + tlb_remove_page_ptdesc() to using tlb_remove_ptdesc() in
-__pte_free_tlb().
+Currently riscv gates MMU_GATHER_RCU_TABLE_FREE on CONFIG_SMP and
+CONFIG_MMU.
 
-This is meaningful as tlb_remove_ptdesc() allows for RCU page table
-freeing if CONFIG_MMU_GATHER_RCU_TABLE_FREE is specified.
+Commit 69be3fb111e7 ("riscv: enable MMU_GATHER_RCU_TABLE_FREE for SMP &&
+MMU") enabled CONFIG_MMU_GATHER_RCU_TABLE_FREE for CONFIG_SMP, CONFIG_MMU
+riscv builds.
 
-The csky, hexagon, nios2, openrisc, sh (except X2) and m68k-sun3
-architectures all have 2 levels of page tables, so the only page tables
-ever freed by mmu_gather are PTEs, so this update suffices to ensure that
-every page table freed by the mmu_gather mechanism is freed under RCU.
+This is expressly for the safety of GUP-fast walkers (CONFIG_HAVE_GUP_FAST
+is enabled if CONFIG_MMU is enabled).
 
-Therefore, update all of these architectures to select
-CONFIG_MMU_GATHER_RCU_TABLE_FREE.
+Naturally a single core system does not encounter issues with software page
+table walkers being correctly synchronised across cores, as there is only a
+single core.
+
+However, CONFIG_PREEMPT_RCU is still available on a riscv UP system, so for
+a future RCU-only page table walker, this guarantee is required to prevent
+concurrent page table teardown.
+
+All page table freeing is already done via tlb_remove_ptdesc() so the
+conditions of CONFIG_MMU_GATHER_RCU_TABLE_FREE are already met.
 
 This forms part of an overall effort to switch every architecture to this
 mode.
@@ -137,86 +142,22 @@ mode.
 Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
 Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 ---
- arch/csky/Kconfig     | 1 +
- arch/hexagon/Kconfig  | 1 +
- arch/m68k/Kconfig     | 1 +
- arch/nios2/Kconfig    | 1 +
- arch/openrisc/Kconfig | 1 +
- arch/sh/Kconfig       | 1 +
- 6 files changed, 6 insertions(+)
+ arch/riscv/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 4331313a42ff..80f89ef1d962 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -96,6 +96,7 @@ config CSKY
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 505eed4af932..3529ed1861ce 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -208,7 +208,7 @@ config RISCV
+ 	select IRQ_FORCED_THREADING
+ 	select KASAN_VMALLOC if KASAN
  	select LOCK_MM_AND_FIND_VMA
-+	select MMU_GATHER_RCU_TABLE_FREE
- 	select MAY_HAVE_SPARSE_IRQ
+-	select MMU_GATHER_RCU_TABLE_FREE if SMP && MMU
++	select MMU_GATHER_RCU_TABLE_FREE if MMU
  	select MODULES_USE_ELF_RELA if MODULES
  	select OF
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index b48491140013..d9b3fb86556b 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -23,6 +23,7 @@ config HEXAGON
- 	# select HAVE_CLK
- 	select GENERIC_ATOMIC64
- 	select HAVE_PERF_EVENTS
-+	select MMU_GATHER_RCU_TABLE_FREE
- 	# GENERIC_ALLOCATOR is used by dma_alloc_coherent()
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_IRQ_PROBE
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 11835eb59d94..e29610fd1240 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -36,6 +36,7 @@ config M68K
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_UID16
- 	select MMU_GATHER_NO_RANGE if MMU
-+	select MMU_GATHER_RCU_TABLE_FREE if MMU && SUN3
- 	select MODULES_USE_ELF_REL
- 	select MODULES_USE_ELF_RELA
- 	select NO_DMA if !MMU && !COLDFIRE
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 9c0e6eaeb005..b0ccfc3b7a7e 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -19,6 +19,7 @@ config NIOS2
- 	select HAVE_PAGE_SIZE_4KB
- 	select IRQ_DOMAIN
- 	select LOCK_MM_AND_FIND_VMA
-+	select MMU_GATHER_RCU_TABLE_FREE
- 	select MODULES_USE_ELF_RELA
- 	select OF
  	select OF_EARLY_FLATTREE
-diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
-index 5eb995c13074..d90b24dd3bce 100644
---- a/arch/openrisc/Kconfig
-+++ b/arch/openrisc/Kconfig
-@@ -35,6 +35,7 @@ config OPENRISC
- 	select GENERIC_ATOMIC64
- 	select GENERIC_CLOCKEVENTS_BROADCAST
- 	select GENERIC_SMP_IDLE_THREAD
-+	select MMU_GATHER_RCU_TABLE_FREE
- 	select MODULES_USE_ELF_RELA
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select OR1K_PIC
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index d60f1d5a94c0..204f64912f0e 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -61,6 +61,7 @@ config SUPERH
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select IRQ_FORCED_THREADING
- 	select LOCK_MM_AND_FIND_VMA
-+	select MMU_GATHER_RCU_TABLE_FREE if MMU && !X2TLB
- 	select MODULES_USE_ELF_RELA
- 	select NEED_SG_DMA_LENGTH
- 	select NO_DMA if !MMU && !DMA_COHERENT
 
 -- 
 2.55.0
