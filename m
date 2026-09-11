@@ -1,113 +1,73 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B993195FE
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 10 Sep 2026 17:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48ADEADC
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 11 Sep 2026 00:42:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789061625; cv=none; b=nv7LNfdkvOhQVMZB/68T7u+zi9pCl46pP7j++X+UXH8No2MlKFoUmimecDHOrfj+bb1wtkdhAGTnu38RIZhLgofzD6AfnkyYuvyN8zLddRV/LAPpUjxF6DR/5hNzxHibviZKh3i+9GySxqEw6bQEa9VSWgYbxTafby5WDYKDoTI=
+	t=1789087334; cv=none; b=gmdowuZOXMBeoWXWc3BLvwXAAbcysn2fVEvwkPTCOjZS9gQOuDZHB23CiEa5c/UYbdm1ZXSdiHxvxPMxaM5dwaNC8Yk5OmIz97MBdD/q1Gj1D0Puxtl4UE0U4UkRtKHa0fMDrre/zxmYmBIW33cbrTPBQtB6OMuK53LTAFpLURw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789061625; c=relaxed/simple;
-	bh=MCNOi9xIw5iRiR3EyFN0mMplUBmpBIeLYzXFr8Rll8k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mbXVDjLHs4xog9Ng1qAWHokyU1N08wyDyH0AannE3i2X1YZmUMLtBRIiqz9TQb7V1gQymvsBnOvqeyc64Sd25gMTnlrX/ZYigQ+q39EDWhHjnqLa7AKRgKsXaD/74/WWzksjYmj5RtYKDyVqX1U4z1aLnH+bMm1zWICUb0eIwxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zr9Rrxkg; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1789087334; c=relaxed/simple;
+	bh=ifwhu8qRshgYL3v+PSYoaQhUNJ9YbnEjID0Sa6yKFHQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=e3ZgUcNMYVRpdIrBvHnGgZALUjb60uldQnBYHyk6IkFgsQlBN7GvXqYuvtTYiy9v2hxbwM+UA4dJl48uR5I65XYljR6r9JP82WJSg9TNp2miAeSRlOYdzjyTmV9usjcSrO3ss9usmlr3sYpQSaTGOYchevh3v7/aPOj/bda9Ljo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TF+Elq0H; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zr9Rrxkg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TF+Elq0H"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id CC30B415F4;
-	Thu, 10 Sep 2026 17:33:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58A5A1F000FF;
-	Thu, 10 Sep 2026 17:33:25 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 322834171D;
+	Fri, 11 Sep 2026 00:42:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F1D1F000FF;
+	Fri, 11 Sep 2026 00:42:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789061611;
-	bh=mc61jQ2p6vMPm9Sn/vjm/9Psk2xpnTlGysS95tscm7Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=Zr9RrxkgLuPZ7amTj6iAzMB56dHM0XLgFYwJmbnZPBjEbC0mWN3C+hPkJMCekYy0w
-	 Fhe66bjAyi9wUJ1ryaP8OrJykX1XrnmuZFzPZB6YS7pWZRDw5jvSvnO72YjmRGYROH
-	 z4Tm19zswYDqKxRW7mPSyzYnvVDtHi31P0rtyk7bOg4j79nYpu/6i5lJr+v7qPzOvj
-	 A3NE9iZpFHlo2ONmbI1iz6sgHB5b94cRQ2nbAOjOMeecQzhwvn77Raj2xaf8vTh8H1
-	 8rHrjkWj1dDEVB8CybNDdtDUta6Z0wvbXgS7xrbJ02/j1svRIcFXRpNL7Rm+ypvtuO
-	 XHn2kXvUOeFNg==
-Date: Thu, 10 Sep 2026 19:33:22 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Karl Mehltretter <kmehltretter@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Steve Wahl <steve.wahl@hpe.com>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Mike Travis <mike.travis@hpe.com>, Tony Luck <tony.luck@intel.com>,
-	linux-edac@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Tony Lindgren <tony@atomide.com>,
-	Kevin Hilman <khilman@baylibre.com>, linux-omap@vger.kernel.org,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Damien Le Moal <dlemoal@kernel.org>, linux-ide@vger.kernel.org,
-	Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	Michael Schmitz <schmitzmic@gmail.com>,
-	Andreas Kemnade <andreas@kemnade.info>
-Subject: Re: [PATCH v2 9/9] docs: kernel-parameters: Drop the pata_legacy.qdi
- and pata_legacy.winbond entries
-Message-ID: <aqLp4p-CCi9sVDlb@ryzen>
-References: <20260905094649.41996-1-kmehltretter@gmail.com>
- <20260905094649.41996-10-kmehltretter@gmail.com>
- <apwKitEmOv3ZwLkd@gmail.com>
+	s=k20260515; t=1789087332;
+	bh=4COo+AepnDjGaBzFEu1pr+/w/FLjgeFSlX8uKK9eUrM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=TF+Elq0HsskrnOkrNPUnzocRSh6qm6Mj546ed6RKFfRs/YDSuduejlQxYAUNfguF+
+	 Rf6NCwXW+bzMKSDBgjWVz53eGRQ01OgQyGrtUE8tukSqzQqatYu/dLUgjbkvXiEFem
+	 +brumAPvBD09yKWr4K9UjxRk61mClBJaNkvhSiQhUFXHGUK2xMrY6kXzP8hlJsKlze
+	 dte8NVKY3czbDPr5mmwxXCktKp94RcRRNVAZIwCb3QLqHQBhq2gncYR3Opx4fcBRNa
+	 Ep7hAyAgKO7167mo4bIfdJ+3t544voqEpBUrlf6ttQ/IKyv9CNaZwnQR2fU97PVCQW
+	 ZOL3uvSUVAQKw==
+Date: Thu, 10 Sep 2026 17:42:10 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ arnd@kernel.org, wei.fang@nxp.com, frank.li@nxp.com, shenwei.wang@nxp.com,
+ imx@lists.linux.dev, netdev@vger.kernel.org, nico@fluxnic.net,
+ linux-can@vger.kernel.org, linux-spi@vger.kernel.org, olteanv@gmail.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCHv3 1/3] net: fec: do not use readl()/writel() for
+ ColdFire
+Message-ID: <20260910174210.0f8a4ad2@kernel.org>
+In-Reply-To: <20260907134037.1855408-2-gerg@linux-m68k.org>
+References: <20260907134037.1855408-1-gerg@linux-m68k.org>
+	<20260907134037.1855408-2-gerg@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <apwKitEmOv3ZwLkd@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sat, Sep 05, 2026 at 02:29:46PM +0200, Karl Mehltretter wrote:
-> On Sat, Sep 05, 2026 at 11:46:49AM +0100, Karl Mehltretter wrote:
-> > pata_legacy no longer has the qdi and winbond module parameters:
-> > commit 3c4d783f6922 ("ata: pata_legacy: remove VLB support") removed
-> > both together with the VLB controller support. The entries also refer
-> > to CONFIG_PATA_QDI_MODULE and CONFIG_PATA_WINBOND_VLB_MODULE, which do
-> > not exist either.
-> > 
-> > Drop both entries.
-> > 
-> > Fixes: 3c4d783f6922 ("ata: pata_legacy: remove VLB support")
-> > Assisted-by: LLM
-> > Signed-off-by: Karl Mehltretter <kmehltretter@gmail.com>
-> > Acked-by: Damien Le Moal <dlemoal@kernel.org>
-> 
-> This one is actually a duplicate, I just found out. Ethan posted a more
-> complete patch in June that removes all six pata_legacy entries which
-> commit 3c4d783f6922 ("ata: pata_legacy: remove VLB support") left
-> behind, this patch covers only two of them:
-> 
->   https://lore.kernel.org/r/20260607064053.195166-1-enelsonmoore@gmail.com/
-> 
-> It has a Reviewed-by tag from Randy, but does not seem to
-> have been picked up yet. 
-> 
-> So I suggest: drop 9/9 and take Ethan's patch instead.
-> The other patches of this series are not affected.
+On Mon,  7 Sep 2026 23:37:09 +1000 Greg Ungerer wrote:
+> The FEC driver works today because the m68k architecture io.h has a
+> kludge in the definitions of the readl() and writel() functions for
+> ColdFire that allow big-endian access if the address of the register to
+> access is within the SoC's internal peripheral registers. This is being
+> fixed in the near future to define readl() and writel() correctly - with
+> no byte swapping. Thus the motivation for this fix here.
 
-I have picked up the patch that you linked to above:
+What is the motivation for this cleanup? Is someone still making
+new SKUs of Coldfire boards? Or (and please don't take this the wrong
+way) it was a long standing TODO that was tempting to feed to an LLM?
 
-ata: pata_legacy: remove documentation for removed module parameters
-https://git.kernel.org/libata/linux/c/a19d4f9b
-
-Thank you for the ping!
-
-
-Kind regards,
-Niklas
+IMO keeping the hacks in m68k is a better choice. FEC was used on more
+modern SoCs, definitely on PPC ones. So we'll be able to get rid of
+m68k before we can get rid of FEC. Sprinkling m68k workarounds in 
+the FEC driver is backwards.
