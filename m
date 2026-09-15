@@ -1,57 +1,56 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2734A386C
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2026 12:11:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912613B27E8
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 15 Sep 2026 12:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789474288; cv=none; b=FnKkZqjZZMNMWZJRWTAw7KsqSBX2YPn7i/CDkQ3s47/i5QfVWNmjz9zyQ/rv+a4libHzDlsNHU+eVWt7cAFO4TQG46i0n90GYbO3Z0uY2C/Vkq3zUc62tmotzRnivecuK6pCd8e45CmFgbKu9Be6Jf+OO/JHedl4ahxmSTPspec=
+	t=1789474334; cv=none; b=UOvBQk58r1MJTN9142+OeELb8Z0ZZ/tcKzEWQ0KBRotsb4JrO02kdyqg962HsQELVBjs4K7A/POuK4YbHYIcpeqRjpZPG6TQbB/Ij8Yhls8JHPp432yZ1AjXMwDtVd3rVN3rv5Aw4wBkNUZ//2TOJlqYracDOi7sVlIsUz01aVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789474288; c=relaxed/simple;
-	bh=sOVPYbcZwP0qO0v/wyl6IpYJ7aj9qJBJUvOIh/HcLZU=;
+	s=arc-20240116; t=1789474334; c=relaxed/simple;
+	bh=dTvFOp6vSGe4AZsCgKO980b0BeYwtUxBQL5x62d5jw8=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=c/1BApkwMRBgEmCxBNZ2Ue+sGnIStJWaEmGvytZJwyRieYpjnjhFwYxs/8RRW5fZfXd0zgmF5oCrtN+rHorytbS5p+YEhctdAJSBpHR+jQpeUIkQtAJx2lbG6uYmYf73y1daZjI8brS/LI3DTi1Q6M2iQun5UyyeL9vVPWPfjWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RmyX0EJ1; arc=none smtp.client-ip=172.105.4.254
+	 Message-Id; b=KSjkVtJ25ClHzafuRGNnQw2M1/6mDeDC1Fh2VIrkXR6+QS6ad60DmnUwCLUN/2KbWPjsvyuOSWxmYcfjSrL1H4R91njSzmEofm8Nu5Lo7F88j/xMT2FaarmiW8hm8LScYUQ1rFHHj6U0DIb1cadw8Wpxue4klAEPZAf/cr1F2oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EFlkG4kl; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RmyX0EJ1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EFlkG4kl"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id CC954602A8;
-	Tue, 15 Sep 2026 12:11:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5D341F00893;
-	Tue, 15 Sep 2026 12:11:23 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 5A19240523;
+	Tue, 15 Sep 2026 12:12:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7195B1F000FF;
+	Tue, 15 Sep 2026 12:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789474285;
-	bh=sOVPYbcZwP0qO0v/wyl6IpYJ7aj9qJBJUvOIh/HcLZU=;
+	s=k20260515; t=1789474333;
+	bh=dTvFOp6vSGe4AZsCgKO980b0BeYwtUxBQL5x62d5jw8=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=RmyX0EJ1B0zOgT5ioEXRLk+o4F4Y5EudQ2MyBappoNbd4lClHN+PysLRe+lqvPVp5
-	 tBwJMbqCeZEv7naOUmB5POnQKn+dbX0K1SIPTGnovxWaK3d1hrbCQzt+QTOIjSS0jv
-	 ozOLD3b4lQSvA/CU30dXodluwPZzgV+Ca6K7iJVN6Vk+KD4JQXyjNYe7jK3mYcGLUH
-	 4XnCIyui6X4vRwCLNy4FaV+3AmDMv+qiX7nSh5emNDsXdPMr643qZCL0VouKa3ayzv
-	 pThUPgyUG/CP/C8WVCikSGDKsjSd8zkAPHVNK+58jF+szrJfKJpZ9+ygivmoI9WEAz
-	 pHHOzSGPpXmoQ==
+	b=EFlkG4klTh9q0ksv7M1hSJKTTDQQe7H5iyO2zHATvBU+UXti67y8RU1/odOq/zhGR
+	 VYQ/UthUrZvWy+XndwZ77DKsyT/9Ri6pFxYRhTSWuJI+DH+4yLpyuhu8mAIrHMk8t/
+	 6kDv1q8AwhLZ6F1rb+P8f3KP0PwnSljmvJWSc46nWvAQt32cRvhQ+HBCxLIdV4HK1y
+	 DBbf6pk3x8FN6xy4faUytIL4oO+ojk8F8MkK5f1LgG4gC4ZmwrIhyHU1W79T6CKby7
+	 mQNMHJsClSUixl8DuKxj7EGI22mNfTcwiHmk42y9GBCpJ9M/rUqbu9RbXfhHzUFMg4
+	 vNY+QKqLhGlQw==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC POC 29/50] drm/virtio: install the out-fence
- descriptor when the ioctl returns
+Subject: Re: [PATCH RFC POC 38/50] perf: stop putting the event descriptor
+ back on failure
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Linus Torvalds" <torvalds@linux-foundation.org>, "Christian Brauner" <brauner@kernel.org>
-Cc: kvm@vger.kernel.org, "Jan Kara" <jack@suse.cz>, linux-csky@vger.kernel.org, "Alexander
- Viro" <viro@zeniv.linux.org.uk>, dri-devel@lists.freedesktop.org, "Jann
- Horn" <jannh@google.com>, linux-parisc@vger.kernel.org, linux-snps-arc@lists.infradead.org, "Ingo
- Molnar" <mingo@redhat.com>, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linux-um@lists.infradead.org, linux-arm-msm@vger.kernel.org, virtualization@lists.linux.dev, io-uring@vger.kernel.org, "Michael
- S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, "Jens Axboe" <axboe@kernel.dk>, linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org, "David
- Airlie" <airlied@redhat.com>, "Peter Zijlstra" <peterz@infradead.org>, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-fsdevel@vger.kernel.org, sparclinux@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org, "Eugenio
- Perez" <eperezma@redhat.com>, kexec@lists.infradead.org, linux-gpio@vger.kernel.org, linux-m68k@lists.linux-m68k.org, "Oleg
- Nesterov" <oleg@redhat.com>, =?utf-8?b?Q2hyaXN0aWFuIEJyYXVuZXIgKEFtdXRh?=
- =?utf-8?b?YmxlKQ==?= <brauner@kernel.org>
-In-Reply-To: <20260915-work-fd-reserve-unify-folded-v1-29-4d5217d6b246@kernel.org>
+Cc: "Eugenio Perez" <eperezma@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, "Peter
+ Zijlstra" <peterz@infradead.org>, kexec@lists.infradead.org, linux-um@lists.infradead.org, linux-arm-msm@vger.kernel.org, linux-snps-arc@lists.infradead.org, io-uring@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+ =?utf-8?b?Q2hyaXN0aWFuIEJyYXVuZXIgKEFtdXRhYmxlKQ==?= <brauner@kernel.org>, "David
+ Airlie" <airlied@redhat.com>, "Ingo Molnar" <mingo@redhat.com>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-hyperv@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-alpha@vger.kernel.org, "Oleg
+ Nesterov" <oleg@redhat.com>, kvm@vger.kernel.org, bpf@vger.kernel.org, "Jens
+ Axboe" <axboe@kernel.dk>, linux-hexagon@vger.kernel.org, linux-mm@kvack.org, virtualization@lists.linux.dev, "Jann
+ Horn" <jannh@google.com>, linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org, linux-sh@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-csky@vger.kernel.org, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, "Jan Kara" <jack@suse.cz>
+In-Reply-To: <20260915-work-fd-reserve-unify-folded-v1-38-4d5217d6b246@kernel.org>
 References: <20260915-work-fd-reserve-unify-folded-v1-0-4d5217d6b246@kernel.org>
- <20260915-work-fd-reserve-unify-folded-v1-29-4d5217d6b246@kernel.org>
+ <20260915-work-fd-reserve-unify-folded-v1-38-4d5217d6b246@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 15 Sep 2026 12:11:23 +0000
-Message-Id: <20260915121123.B5D341F00893@smtp.kernel.org>
+Date: Tue, 15 Sep 2026 12:12:11 +0000
+Message-Id: <20260915121211.7195B1F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -66,5 +65,5 @@ Sashiko has reviewed this patch and found no issues. It looks great!
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260915-work-fd-re=
-serve-unify-folded-v1-0-4d5217d6b246@kernel.org?part=3D29
+serve-unify-folded-v1-0-4d5217d6b246@kernel.org?part=3D38
 
