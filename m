@@ -1,170 +1,220 @@
-Received: from mail-dy2-f43.google.com (mail-dy2-f43.google.com [74.125.229.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-a3-smtp.messagingengine.com (flow-a3-smtp.messagingengine.com [103.168.172.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204A3499F3C
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 11:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF5F49F111
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 11:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790162156; cv=none; b=q4Y8ifY78OwUWYLgbDRO0s8J7t86gwpQ4r/QDase7zwRq3gIDKlSVdfhsiipEvbj1YTDF0S8dwy59Kh4o2IMlN5uYzM+dmLLIda1A+Stx8Zicfk1WmavINBrWeCwHwBi+HcSJYkVfaHL/diPY65EqL9GNCkdl8Sruh17IkN81xU=
+	t=1790163152; cv=none; b=VMxvbDvaFHhDcU/wFL4aac0gzNMXCunU7yFkEIRQSBHCiyJRuBPzbOm5cHYQmcMwiksW5K/Nrpjw3zt8e125VZiVhWbPWZvLz59oCPcfB8e6EVKxls/rIkEgAxq/JYHuSir4KPiqmO2FLJ78ulJvzlksmQ+UCyHJVfrbwFK2HOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790162156; c=relaxed/simple;
-	bh=fpTgXc3xoF7NXSdZg3Az2P+X8RDV8yueEizFc2Q7iAQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=YtDfXpSMlRi6LkAdRBJDRP4YcUohpIZF/IrK0EBsHJoEhsOqqZX9ZyA45ieXF/BRhitD1H8NY/WmR86YOTch8DZll8TTrLJ9pWA18hmg2u2WlF0TGtacL8+cu5bbvH8v6HBvxsQ8y3w6VXJVnbuuDiE6ymFm2mStPuhAOS27Ybg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=JdDgUOXZ; arc=none smtp.client-ip=74.125.229.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+	s=arc-20240116; t=1790163152; c=relaxed/simple;
+	bh=7dRhUv5Cb6JfMfwHzinpOU3N/3JcKLHazA39ccPvV6w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lC6eAO/DhpAqRH9sznHoMg3Xml2jA9BBZa+nU0xMB5lf9QbMdqTQmdJBuCaMr4xbicB2wlv/CeFcjEsdcYpaCP5Nhl2d7thpE3QO/ChO02E1FZKeprC82PinqRreYZ/L0KamCo5GlzCSIKzUNempKu35lCyZOdk+BaolRXdfzhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com; spf=pass smtp.mailfrom=polyxeno.com; dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b=FIU18tVw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QE45n4yH; arc=none smtp.client-ip=103.168.172.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=polyxeno.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b="JdDgUOXZ"
-Received: by mail-dy2-f43.google.com with SMTP id 5a478bee46e88-33c24422d4dso897310eec.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 04:15:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1790162153; x=1790766953; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id
-         :subject:references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=k2RZKlHWzdwe4Eljq1oFXDUhjI0hVFgJE+l4Mm5J2Qk=;
-        b=JdDgUOXZ3jHDYLlM49VxxzS1yOXclN9rcnRAZ0c0P/1LvxU2PEJ5fOBk4XrGrfCkoo
-         LJUGiWyndAig+QsXCZzOHBze+XSTG3v/mPCxfDbSoh5pOhCumd+am6Q9M6MezD7gMZWx
-         RFM3Z41EUNQB8oNjDENfx43uIhEayzC8FeCYUKDXLYLfT/m8Af3Sbq9F/DCgATDcq2FM
-         ZCEnPBZE8nAq1XidFSbRFMGdBYMNdweLYS7X0e3ivEArPUZjOiHrs1ix7pWMQMFeIm+X
-         q76ee2hSYt2zJBsZqbvJl9sMFW/p14gESpAKqTSK9LSNrvDcdOrScWs6z5/DBTcOoE7T
-         vs3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790162153; x=1790766953;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id
-         :subject:references:in-reply-to:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=k2RZKlHWzdwe4Eljq1oFXDUhjI0hVFgJE+l4Mm5J2Qk=;
-        b=hXDlnO0ThBJzQ/J9QvP+OkuV1j1tkKcVVaPUQLIi/dL+SYk5t/K4zTG2gR6cQWDu26
-         E8Np5UNFWxA85iU9vaHOC28sJrwT2ot+QjptUYoEopwy1ZQNlANygZVlV6XhU9VrtVGN
-         6d7u1hPpNflPH0O9DFpCTUzFzHdQ+fQObXc4BH0R/2jFtx2j+NlsQEpRSe2Kbpfflxyj
-         Etb5GFMJ6plUzqAxMGuIYIg7dqBDHbP+TnIpE1r4jzZ532/+sEBiIehJdOJtR6C79ipf
-         +OZd0QzDj7n9dSi2ly4w/astxN8D3dgPNbBn+EOYq+EOk9Zkwe/rwoOcnn/+HaPHuYZ3
-         32OA==
-X-Forwarded-Encrypted: i=1; AKwUvBxTb9pXepfO0geZm+jnNFcZUuUN3vmRLnYTTLmer7HE/ZJGcYXgkI5BESP3/ixHN21UF8Wa9Stz7ZHL@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++ks/gM+iPgn9yO4lEdcY9UjXY7LY+X9ia/GhCKeYJyn+Q9G0s2S
-	dj3WBQCpMjaPbdem1GabG2MJkrXSjb3/J+b6s4kH9koxGiBKT+IOj3PVoUuXtnuvQUALJp5g3Z/
-	7B2lv3GA=
-X-Gm-Gg: AYBFou1WzPySvSHrmXnWhtx0a52bZTBdFtc9xWOEIy6487b3ox89Yn+mhmoBBLnR4Pi
-	XcKJHU2p1o/4/9SryQJOAx4Y48J+CmHFgq8q0EfZjhrPJUqDwIOo+9U/DDyt3AZWsqSUcvjDsMx
-	2TJTKbItWs8/yOzu/0zFOAu/1eHEo8jAV5/booOjEjt6ptC7PhUWnL8oVEhhYj5sokIp0HDZ664
-	g8jEu0WFtwOzqzvzJ4pgwhnOW8BCTJM+OQNd5WILY/+z/rgw66QbQTeTE5dVCPqX+XD+fB+bWpE
-	bC0ZpyuaJ1CHv4+B/pT3JjNLPnrlB8WIFA5MT8B6WtE8OVI0DLFs+wwZClZrKP/MIcVCr75kGAA
-	nCqOMbchxcrNGOqCfPdGDMwZ/IZUTYjXw5Yz54criosXX22CXEXNdl31YktsPesKgew73S+wP8b
-	rgQt5ua3vplbhEawlJ4L10kzbbOwCMxhLp4VSxCIvUTYk7W+ITMloCTrAWChXp7UvlhI5h0LqaI
-	F8HhH1hKwloShmAFaBpbFXT48oy2O2v1ZRLnlS5XQx4qX31h7oLkKFfla1viEj3rtCCb3UuMg==
-X-Received: by 2002:a05:7301:4e04:b0:33b:faec:b01e with SMTP id 5a478bee46e88-33e8c442e2amr3586526eec.17.1790162152023;
-        Wed, 23 Sep 2026 04:15:52 -0700 (PDT)
-Received: from xps16.local ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33e939fdd91sm6383650eec.4.2026.09.23.04.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2026 04:15:51 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Laurent Vivier <laurent@vivier.eu>, Finn Thain <fthain@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
- Omar Sandoval <osandov@fb.com>
-In-Reply-To: <cover.1788513996.git.fthain@linux-m68k.org>
-References: <cover.1788513996.git.fthain@linux-m68k.org>
-Subject: Re: [PATCH v3 00/33] block/swim: Fixes and improvements
-Message-Id: <179016215097.13005.11311816512162043252.b4-ty@b4>
-Date: Wed, 23 Sep 2026 05:15:50 -0600
+	dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b="FIU18tVw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QE45n4yH"
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailflow.phl.internal (Postfix) with ESMTP id 7955C1381530;
+	Wed, 23 Sep 2026 07:32:19 -0400 (EDT)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Wed, 23 Sep 2026 07:32:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polyxeno.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1790163139;
+	 x=1790170339; bh=RsXkzvKszGrRGCDlh+k7A1CegrFLd0BaszS3geZGuH8=; b=
+	FIU18tVwQ7tQ5cgG5noVM1dFphFNotY2b+0oBSLLNZ4oIoe+8HuJ9mlKgO/GGRHY
+	aPSkFjenSQmU/EZe67CINcqvhAbjSRbjYQrYey5IsmU/C5GK+7AGH8bL2xM+VsxK
+	KEEgL3qKUP1ax5XJdddWQI0SdRLPjb/rrzE5LP1P/PAhluNIl0Gwn6/ZGlNitjW1
+	Ny0h9FBjBCDLXPU6Gn9sNaToc66T4nsNUcuQNivF9ha5A0u/wd/EvSqhe6dW4+ED
+	7Fb4Ympv+eKDyEz59MFx2s37dwyl7FapxfhWdfhmihF1IxAp8QGebSu17ttCcrFC
+	DCNh/4j+IbhRNCApHSg1zg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1790163139; x=
+	1790170339; bh=RsXkzvKszGrRGCDlh+k7A1CegrFLd0BaszS3geZGuH8=; b=Q
+	E45n4yHCqrW8IlzRSzSnxNibm5ZdFG0VRsgwpq+gHiz9wuhG7gplwqlTfpu4YZUX
+	jrKta1jfOnMmuKB48JBo/1UEKfg8gsLB3tCCsKo3QtCJQ9rS80tjvqGsFa16tHTs
+	jEzOUC4svaw1rCJzrJpp3HyF5wysHcP+5TUYyN+qjOG1EXRicJcHtcJqvztCwuhj
+	dkd+SydOpx7yrZhsHv1vVlWvUir2wouFqPHIX1LcNWPf43QW/J52IG9xIVg9W/te
+	W0+ocKFUsJFzKD610ChoRqo+i66itHC5WBOl0C1Kaoi0zPQ7pCMN+aiaAN7lK0VH
+	yL7NcKUSKDBDu7UjXoS/Q==
+X-ME-Sender: <xms:vLizav20sKH2y4pao6lP-MUG-Nk2BgG8QLoegUP-KlGKEDejq5dZaw>
+    <xme:vLizagZFBVUttqWlhgN3oOh5snNNI_umgi4xQFwFS1h3w_ZDpBouQAQj9IwGZ4eqA
+    MfAHox64ejunzzmpavugDafLfwAeftAYx1i_w1US20agsEHtJLfLLOm>
+X-ME-Received: <xmr:vLizaviwwEnPUtVYi-73amBVWWGf1G_rQxDTo_yH58aVtCxNwz5q9Lr0sC7r4lT0GLWvp3ASjUwtdR-hthR2mbEq6Q>
+X-ME-Proxy-Cause: dmFkZTFauFHpdk6CRXyr0sNyjg5Q8lqSDpfGXQ0dNZO1X8Nwu1owiUGBTt5pcDU/oArVHw
+    tow1i/xQQpDe1DYVLAcqQL38ZwvqGvVsi3/HEQ0C2Tk6IoekZoaauNG6wt8xAqZRiRmyPk
+    FQyNwuhvVlF1CXMuv5K+MEk7imbG5TMe5tVGID2STX9i7WARmMQJ5ehbq7phGnUVuGU2i+
+    7w5buj0Tunr2WfT78YiY62Abzn9xZvlFIvj7Ucv486mUbowhqnNQviyHNi9tWxt3SkssSQ
+    8pVWQCbv2GdZzvAZxTL2BjC2dIiDYlMbW4A35i+8CjosKljeAMtvgm8Dil9gy0O39w/Esm
+    9ooJmviJqxX/zw8VK/vRbPPPs/zOz1pyL/+UjjjVwfBcA0PPNwnJeVcDaFLdOuo50dODxG
+    m1v8CodVwmm0HCIceRgikYmB4DspkcY7SklPPEsm3gvbekmaXfdX05CLYinrwRfogsHIIB
+    LaHZYB7FplsHX+LsqJlCDr+xYF7lXrXE5A6lmvgve41PJoqGChfQYtPpsBxmhFgrg/s72n
+    7ZUVXQfFjTNfzOxf/NzBxIREOn++Iw4GO2axZgieXvqCrPtLfEv2H0KH//gGKKcMY2+qkf
+    DREqx+SNPaK2C8xTPwYUU7UR5ASaEsxM4lye/JQbTQXfpTBIctE57IFV2jEQ
+X-ME-Proxy: <xmx:vLizas9WEVUzXca0498rI4duFEZw3grSo3xFJL0jk1GF3WHckM11yw>
+    <xmx:vLizam87wEttGx001O3APoe2cYhUYqpBimRj8pLdosFammZDa__JYA>
+    <xmx:vLizahtaJK-PbUnAUsd98esNaLxLkmlJ9hJNV2Ks1GT8IXFlBhTNEA>
+    <xmx:vLizapIFlAiM_fCG1eFO4NU8MFxMRdMJmF-nDkiWtMArsCibMfYv6g>
+    <xmx:w7izaqkT58Dn7pxVjr1mcQWSWKCweHvd_EoCcpOAFZHAqGma6BcwfGLs>
+Feedback-ID: i09fe4b60:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Sep 2026 07:31:46 -0400 (EDT)
+Message-ID: <3e6740e3-0515-4e29-9627-f554261daddb@polyxeno.com>
+Date: Wed, 23 Sep 2026 21:31:47 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 07/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for
+ m68k-coldfire
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ "Liam R. Howlett" <liam@infradead.org>,
+ Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>,
+ Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
+ Lance Yang <lance.yang@linux.dev>, Usama Arif <usama.arif@linux.dev>,
+ Kiryl Shutsemau <kas@kernel.org>, Guo Ren <guoren@kernel.org>,
+ Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Dinh Nguyen <dinguyen@kernel.org>,
+ Simon Schuster <schuster.simon@siemens-energy.com>,
+ Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+ Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>,
+ Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>,
+ Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+ Peter Xu <peterx@redhat.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>,
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-arch@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>,
+ Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org
+References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
+ <20260922-rcu-pagetable-freeing-v4-7-fe1ad1f1e303@kernel.org>
+Content-Language: en-US
+From: Greg Ungerer <gerg@polyxeno.com>
+In-Reply-To: <20260922-rcu-pagetable-freeing-v4-7-fe1ad1f1e303@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15.2
 
+Hi Lorenzo,
 
-On Fri, 04 Sep 2026 19:26:36 +1000, Finn Thain wrote:
-> I recently had a need for the 'swim' driver but found that it was too buggy
-> to be useful for my purposes. I had two aims in mind--
+On 23/9/26 01:35, Lorenzo Stoakes (ARM) wrote:
+> Similar to sun3, the coldfire variant of m68k uses 2-level page tables.
 > 
-> Firstly, I needed this driver to help me test my new BMoW Floppy Emu for
-> emulation correctness. Being that Linux is open source and MacOS is not,
-> this driver should be ideal for that.
+> Update its __pte_free_tlb() function to use tlb_remove_ptdesc() in order
+> that, with CONFIG_MMU_GATHER_RCU_TABLE_FREE, page tables are freed under
+> RCU.
 > 
-> [...]
+> The page tables occupy a page each and have no odd semantics, so this
+> change suffices to allow enabling of CONFIG_MMU_GATHER_RCU_TABLE_FREE for
+> m68k-coldfire, so do so.
+> 
+> This forms part of an overall effort to switch every architecture to this
+> mode.
+> 
+> Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
+> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 
-Applied, thanks!
+Looks good to me for ColdFire, so:
 
-[01/33] swim: Assert strobe with stable outputs
-        commit: adcc410bfb41715fef198a0975db4ed594a49bb7
-[02/33] swim: Select appropriate drive once only
-        commit: a2d22b3f25c388f9fbce7bf36a45a8900dce4aa3
-[03/33] swim: Enable the drive when probing
-        commit: 57d88c8f4ea34a4dd7c5351bd026e225c7283f3f
-[04/33] swim: Don't disable drive after every sector
-        commit: 05a7c4b197279cfb3ec3df26146ce085a2438aec
-[05/33] swim: Perform ISM/IWM mode switching according to specs
-        commit: 52981bb358d1b5c38040b00f81e2cf973f9148ad
-[06/33] swim: Configure parameter memory
-        commit: 994a778d966592d0e211deaf6e436fcb21413935
-[07/33] swim: Refactor SWIM setup
-        commit: 62977e8ea98e99dbf86609e65930e6607398e1c5
-[08/33] swim: Enable clock divider only where appropriate
-        commit: 3c02a14c89962c88ed0abb3cce4101021c63149c
-[09/33] swim: Don't start motor until medium is present
-        commit: dbbaaae83cb277d76e70426c0f0ce289e867ed77
-[10/33] swim: Recalibrate when drive is probed
-        commit: ba087774a1493ade524f8a783461fa8be9c75039
-[11/33] swim: Add track zero recalibration delay
-        commit: b9c1095048537cc9563f12d0a24f2f0df129e4d5
-[12/33] swim: Handle FIFO timeout error
-        commit: 2e9bcbecee68431b689d16b23bc5529db686f8d4
-[13/33] swim: Simplify return value initialization
-        commit: 385a44e78702762e2fce796cf37b6f465d86a87f
-[14/33] swim: Check for CRC errors
-        commit: 01bff87152e6748fbac9ccd645d3d5f490d75ddc
-[15/33] swim: Check error register during sector read
-        commit: d66bdef0a3083fed1a0fc4f0ee1c85b26476b21c
-[16/33] swim: Don't use the mark register to read data
-        commit: cb7923133ec18e67e2d6718e29426a4423af6b73
-[17/33] swim: Fix buffer overflow
-        commit: a54870a4ae4962acf341eb6ca010cae02af1a6ea
-[18/33] swim: Convert to blocking queue
-        commit: 92353a04763726f70fea6be90957c50fc18215e0
-[19/33] swim: Remove redundant RELAX actions
-        commit: 04cb277e6841b55b950b42063fe11501b5d1676a
-[20/33] swim: Deduplicate polling loops
-        commit: b736189c93c9ad1056521a4229ec2f252b714b5a
-[21/33] swim: Check drive ready bit
-        commit: abae04f5bed924590e98fe1519566a6e0144e6b5
-[22/33] swim: Revisit delays
-        commit: bbcd3e38a4f355d6b0320f3f6916df96c109f2ad
-[23/33] swim: Remove pointless mode0 register write
-        commit: 151848934fa4696067a8ca861cef5efe7aa1e046
-[24/33] swim: Don't needlessly re-read sectors
-        commit: 22fbea97bc18fd099730572bf9aeba9879d62b02
-[25/33] swim: Don't search beyond the first data mark
-        commit: 79eafa4ccb74be023fd2cae87d75425d6eb903bb
-[26/33] swim: Remove pointless specifiers
-        commit: c516ded6f6da38b64ce9f69c88e65a65927296bb
-[27/33] swim: Move swd initialization
-        commit: c0862cf48fae35571489b79b1c84db16691f2ad8
-[28/33] swim: Add some helpful references
-        commit: bd4a21b8452d48be48cbc66693d27ff3c1f88d9b
-[29/33] swim: Remove unused macro definitions
-        commit: 7d7c6d91f5657b2979cae7c7dcb49d2523efd894
-[30/33] swim: Clean up whitespace
-        commit: e97cbb470cf94ce018558c899bcad387f69c99f5
-[31/33] swim: Define macros for constants
-        commit: d4b2519065d6db2eb7cd36d178591058452da3e0
-[32/33] swim: Define symbols for constants
-        commit: 75f47f0910f4f4289c11409398c05999aec19f37
-[33/33] swim: Unexport global symbols
-        commit: e7a6727deab0d300171ee059b7dbcdbdb3c46797
+Acked-by: Greg Ungerer <gerg@linux-m68k.org>
 
-Best regards,
--- 
-Jens Axboe
+Tested and run with no issues I could see on a M5475 ColdFire system, so:
+
+Tested-by: Greg Ungerer <gerg@linux-m68k.org>
+
+Regards
+Greg
 
 
+
+> ---
+>  arch/m68k/Kconfig                   | 2 +-
+>  arch/m68k/include/asm/mcf_pgalloc.h | 5 +----
+>  2 files changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+> index e29610fd1240..6b8ec67c86fd 100644
+> --- a/arch/m68k/Kconfig
+> +++ b/arch/m68k/Kconfig
+> @@ -36,7 +36,7 @@ config M68K
+>  	select HAVE_MOD_ARCH_SPECIFIC
+>  	select HAVE_UID16
+>  	select MMU_GATHER_NO_RANGE if MMU
+> -	select MMU_GATHER_RCU_TABLE_FREE if MMU && SUN3
+> +	select MMU_GATHER_RCU_TABLE_FREE if MMU && (SUN3 || COLDFIRE)
+>  	select MODULES_USE_ELF_REL
+>  	select MODULES_USE_ELF_RELA
+>  	select NO_DMA if !MMU && !COLDFIRE
+> diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
+> index fc5454d37da3..b53ff0950db2 100644
+> --- a/arch/m68k/include/asm/mcf_pgalloc.h
+> +++ b/arch/m68k/include/asm/mcf_pgalloc.h
+> @@ -39,10 +39,7 @@ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
+>  static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
+>  				  unsigned long address)
+>  {
+> -	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
+> -
+> -	pagetable_dtor(ptdesc);
+> -	pagetable_free(ptdesc);
+> +	tlb_remove_ptdesc(tlb, virt_to_ptdesc(pgtable));
+>  }
+>  
+>  static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+> 
 
