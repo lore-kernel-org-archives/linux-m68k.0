@@ -1,110 +1,105 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F18569F3D
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 20:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70DB1476CFB
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 21:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790193676; cv=none; b=u8mpn0dueO5sNKXUvCdg9XVyjl3sI1aVEG4iaQwVfg/tEq1744rnmvqlbJtB6dfdtVcE9ct/Ev7OVfKjT0WokQkbzY0tWp/rFGKB+uQUpZ2JhqnegxFbvZ0buQNd0u3QldXbPSeR29apGizZW4t5ZU4lBOGpI+0N/vqIa6n2h4o=
+	t=1790199117; cv=none; b=lpTJKi8aXuUTtBX5/3tWn1CfCeGQJHF1AFksQhtKbEf4jHvrf0b2+2qbepBcysNYLeq+R711GQJ++vtoeM4LIK7vuiKOfqkJprEcp4vby4VuS/LwsjDvjURhzXxSJjh64etECyZ8fLTUmdceKAv5/vbOCTcGIAnBvaG8YMyxO/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790193676; c=relaxed/simple;
-	bh=EoAm9eQnkEX/Su8Tb54A8ZssNa84fNPugYrGvhxvhGs=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=TEMKocVg+rwGVZWDlhukLJ1xiiNt6rEJEaOtgO+CzxIlxeTdNIUzVpg5C45RqFfLkF9o6YINss5bfCC7aPFN1aW+SNxsWDQm4nDVMhzZyL7CrwL3pFU8W5XBXYhFQ7udiDWPw6dvUc8rrnQS+fyQvI1dLCvFntSaP5HMd0Kq6F0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linux-foundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=yukRbG0q; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux-foundation.org
+	s=arc-20240116; t=1790199117; c=relaxed/simple;
+	bh=5SAVxGmg7GnelrcPsgVtt3W2kFmCd8Tt9b2GZLTh4zY=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=Yn1m7CzPxPxNY/9aAQlVj+MvXStT9ycI/tbKSGicSmBDUxr5m3DJVgijonDpp+NWFIfeQ9Gzfg8o/b/sJhJUi/dHCVVSkznfzg8I2/9dp8aPNcjR/oLsZm9z1ybd8isAR4E5Zi3Bv50JKGFHi8E1jDCynsszU22uHxRoKxWFty8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LRHixrlv; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="yukRbG0q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LRHixrlv"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 961F5600AA;
-	Wed, 23 Sep 2026 20:01:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 976111F000FF;
-	Wed, 23 Sep 2026 20:01:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux-foundation.org; s=korg; t=1790193668;
-	bh=pvDDKbJOCHVNMBf6MfRG+XPEG43cFbYIZQUAS2hlVUA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=yukRbG0qkn30dWVsqij/SU5fM7nkPcs9gLdvOBDFKy6hSl5ItrFuR2BYdapipYrFp
-	 /ULALkETS2Hzxxifit/ssnY1WioE70raLvLXq6WSexLRbbzTwV3qRYdtF+xb4eB5wp
-	 1Lu+3tjEqSY8F42OSvK9noPy1qtRRMWcgWlWM4o4=
-Date: Wed, 23 Sep 2026 13:01:05 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Cc: David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, Baolin
- Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett"
- <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>, Ryan Roberts
- <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, Barry Song
- <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, Usama Arif
- <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>, Guo Ren
- <guoren@kernel.org>, Brian Cain <bcain@kernel.org>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster
- <schuster.simon@siemens-energy.com>, Jonas Bonn <jonas@southpole.se>,
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne
- <shorne@gmail.com>, Rich Felker <dalias@libc.org>, John Paul Adrian
- Glaubitz <glaubitz@physik.fu-berlin.de>, Paul Walmsley <pjw@kernel.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alex@ghiti.fr>, Russell King <linux@armlinux.org.uk>,
- Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>, Chris
- Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Will Deacon
- <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick
- Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- "David S. Miller" <davem@davemloft.net>, Andreas Larsson
- <andreas@gaisler.com>, Richard Henderson <richard.henderson@linaro.org>,
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge
- Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, Michael
- Ellerman <mpe@ellerman.id.au>, "Christophe Leroy (CS GROUP)"
- <chleroy@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
- Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
- <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Thomas Gleixner <tglx@kernel.org>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka
- <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan
- <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe
- <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>, Peter Xu
- <peterx@redhat.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Shakeel
- Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>, Randy
- Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-um@lists.infradead.org, Hugh Dickins
- <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>,
- linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 00/12] mm: make userland page table freeing RCU-safe
-Message-Id: <20260923130105.522942080238d133a36afc91@linux-foundation.org>
-In-Reply-To: <arN3iaw7VDIA-bWf@gremlin>
-References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
-	<20260922160021.a2fc65d05d9b867a141e5457@linux-foundation.org>
-	<arN3iaw7VDIA-bWf@gremlin>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by tor.source.kernel.org (Postfix) with ESMTP id D0F7560008;
+	Wed, 23 Sep 2026 21:31:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C63031F000FF;
+	Wed, 23 Sep 2026 21:31:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790199113;
+	bh=5SAVxGmg7GnelrcPsgVtt3W2kFmCd8Tt9b2GZLTh4zY=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject;
+	b=LRHixrlvCqA4DP04Yj/XSkiBYsMMYZlDbXvmoCxrq1HDhPJtk+LVGKjcQSv7tmDqO
+	 4fYu7FUCBiTYhpeMS/6aQbisEdSFCiopAELkp7kujX5ljUdBHIg7ra/pgY6Nb3uNeZ
+	 LgvJ+iXkvU8D6SJJSUEboJH6S6ui2qK1RaEyLRzEAHSBh6mcIUJNgybbpnfp4J88ce
+	 NoHfjItL+pt4PGXQ6KO1Ix1Jcwo/Y0/SmjC6WGZTwfCf92OYBXA+pauq7J8WzQjXYa
+	 b4+rkxY6ZtM6QZqyS6rRdFBv5RhKkBtHHEo4oQ0+2vLuUDgL/byVCRaddIYLm3POVd
+	 mcv758lKIjMtA==
+Received: from ams-compute-02.internal (ams-compute-02.internal [10.64.2.62])
+	by mailfauth.ams.internal (Postfix) with ESMTP id 18D991980059;
+	Wed, 23 Sep 2026 17:31:50 -0400 (EDT)
+Received: from ams-imap-03 ([10.64.2.23])
+  by ams-compute-02.internal (MEProxy); Wed, 23 Sep 2026 17:31:50 -0400
+X-ME-Sender: <xms:Q0W0aqgh93mvqMIz3Y4uAkRvcFCMlSrZJvQLJNS7bPVxk3BwqtGw6Q>
+    <xme:Q0W0al0Y5YiwqMZgHtmMwm84QKmHbvGj-nO-rK_go5KYC5df5DmtZZPq6X2YcRPsp
+    ETeCwEl9OTwP4CNXkEpyJX1Obt0gdOG2A3OBjnagcgh1jFZMAsG0ujt>
+X-ME-Proxy-Cause: dmFkZTGpc2w2ufMjmJ0kap8IYjs9DfPrMkSQFlAOzp0sPrwE/vrB6G6LACcNgsecPhcLyl
+    /g20MmAILQDVu0ZlSW7Lo9cigxl3519OTOgyM8UAyR1qlsSJMvP2OLuBuCYEy8vwV9/bNQ
+    WQh7FLbGr62pkxIMcPm4sXkf+skT0hS8S8/4fyusGJg9XxMo6tfZoxf/yeVuvn1UVSKtK+
+    yjpDxHjNgfv6GXN8E2hYbkrxiDycjOFqxFyHgKgVwyw2yLOS7dg0qc1A0/3PCZ0TVcW9qF
+    a8vS5CuOnbW9yqpETq/JNukDtE0dez70dGFdfo8YR4EcapOfSiMdt0JJhH/CoQYunZXEkx
+    4y7dbz0FO1BNf2ZSmwjaC1o72nLr4BOeYMmL5fn/EJxQkBS8ykwEjFHn3vNe6FqNtH7zih
+    4Qo6NHaODC5piVE+bwEL1bQ/GGvg5rPtcRTTRPeIGoCiRmmv4LJIk6tRJVtMquknDVezHJ
+    vWQbLQgtDaQvlrTFNM2YyIStqkeNju5IKd4OSczUWM7kL87z7nG7Z+zbUwMIv7rlagqy1v
+    /jnU8At4jogCsmDlfPrvmrtUXUie/We54VcYHwH0jNEnOLdUNAej1KTGMPyThdfDPqpXE9
+    L6tBNGaVbNgPTadl+LKcwDhKPMUp35itFGnikWAMDTXsn5WTXQrxO+n6zalA
+X-ME-Proxy: <xmx:RkW0atFaMfzn3umDR1s9bs-Kk3MkgaNPoyM6LolyQEp-hCjgS5FgNA>
+    <xmx:RkW0arEMcEzOzSkta4DLZ7mtyUwSqEAIzP5_zYGHmpBP5xNdZhf89Q>
+    <xmx:RkW0at2M57JbrSZQWBwlJEfJ3-I2xW3WcKTqGPE7WInrBOK5vBEe-g>
+    <xmx:RkW0alcf_Bhjxlov46iFTQW11wgGbri_oCK0uu0iVIKNEl4uzXKfgQ>
+    <xmx:RkW0anJBbBkol_rpPInw8zj5v303xcyAaRVcunZlrAoMOBChhJT4Rxg4>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.ams.internal (Postfix, from userid 501)
+	id 3BD3932A0087; Wed, 23 Sep 2026 17:31:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+X-ThreadId: AZl98to-mMhc
+Date: Wed, 23 Sep 2026 23:31:25 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Greg Ungerer" <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org, "Wei Fang" <wei.fang@nxp.com>,
+ "Frank Li" <frank.li@nxp.com>, "Shenwei Wang" <shenwei.wang@nxp.com>,
+ imx@lists.linux.dev, Netdev <netdev@vger.kernel.org>,
+ "Nicolas Pitre" <nico@fluxnic.net>, linux-can@vger.kernel.org,
+ linux-spi@vger.kernel.org, "Vladimir Oltean" <olteanv@gmail.com>,
+ andrew+netdev@lunn.ch, "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>
+Message-Id: <b6135a85-1f05-4ec4-a283-60e8dbcf0437@app.fastmail.com>
+In-Reply-To: <20260907134037.1855408-3-gerg@linux-m68k.org>
+References: <20260907134037.1855408-1-gerg@linux-m68k.org>
+ <20260907134037.1855408-3-gerg@linux-m68k.org>
+Subject: Re: [PATCHv3 2/3] net: smc91x: do not use readw()/writew() on ColdFire
+ platforms
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Wed, 23 Sep 2026 08:04:25 +0100 "Lorenzo Stoakes (ARM)" <ljs@kernel.org> wrote:
+On Mon, Sep 7, 2026, at 15:37, Greg Ungerer wrote:
+> Modify the access macros and functions used to access the smsc hardware
+> registers when used on ColdFire SoC platforms so they do not use readw()
+> or writew(), or derived functions like ioread16be() and iowrite16be().
+>
+> The current set of readX()/writeX() access methods for ColdFire have
+> historically been non-standard, in that they mostly access memory
+> big-endian instead of the expected little-endian. Before fixing the
+> ColdFire readX() and writeX() supporting code to properly work with
+> little-endian data existing driver uses need to be fixed. Convert the
+> smsc driver ColdFire uses of these to use the raw access macros - which
+> are well defined to be (native) big-endian on ColdFire. This change
+> requires some byte swapping at time of access to retain existing correct
+> behavior.
+>
+> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 
-> Err, Kiryl reviewed the entire series, I sent it in -rc1 of this cycle, and
-> it's been in -next forever?
-
-I'd failed to notice that v3 of this series was in mm.git, oops. 
-Thanks for cluebatting.
-
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
