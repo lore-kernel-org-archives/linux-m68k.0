@@ -1,38 +1,38 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A5E47D92B
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 09:14:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CB94334D0
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 09:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790154845; cv=none; b=BVWaqSVx+rW+Ur0wzIXRujrQlHgpdssKHjaDzls1c8zOixHOSJTPRhcqNf1FcB2fB7e3ND9ofJ3KOHVWKAMMNDleY1duCgfVIOOVAIpwmcLx9pEAhQCO4aotjGwOf05CbrYTgnCnCpFU6ubz24lauCcjwpDK+x5h+SAiCJXdxp0=
+	t=1790154955; cv=none; b=gvBUzMCc1JTz8D569HCSJOlLiBMb06E5zrj5xJ1y0HkMTFDc6bbDefC9c/rxau/IFUFOiHYxOgvNiO1Zd5KzLKXGwtCSSLw7zyjaYdFrEQl05Zi9rmlNVR+2tyZGgQ4vChqttiEW51D03JhosJEi4XxF3xPa+7AtnHXnAAXUML4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790154845; c=relaxed/simple;
-	bh=9Yr2MFNNK5nBFfvpk7+o+C24KSiQonLlgZfINpWMu1Y=;
+	s=arc-20240116; t=1790154955; c=relaxed/simple;
+	bh=+4lhZrXywx6Jdb4sYPn+ZjnLN5x++n5y51GyQVjNh+A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qAsnHDSuqxIlXa1NfQJZp9P++dncBMh7Hyin6zGeEExKF23c4sis0XSj0jKNfmozt3tYhsd4WwxrbKKlIQSia08GHHWdE6GqWRk1uJoylfjxIPMeijDGIPrsntrnEjqLYlr3TSXoAXbw2Sp6V1xmSKjP+BwvTRDsRTMQ9UuQwPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kWMCgiXL; arc=none smtp.client-ip=172.105.4.254
+	 In-Reply-To:Content-Type; b=D0KSIX6LVs6yzz0jqU6B7lrCropU6hWhq3c13AIY6gwQLwPNcsU3cRklMW7OrZF5nHuPE/6gcmMOfZGRCAncq64gQHDlg7DagDJvGk+xSl6hBkyRKf5HWZBUp2G1meVw/WWNSm0puMPum91jY4bzalcSUW5/oWSJ5Gr2tPIQPrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SMhlc0Vg; arc=none smtp.client-ip=172.105.4.254
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kWMCgiXL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SMhlc0Vg"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 51138601F0;
-	Wed, 23 Sep 2026 09:14:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72DD41F000FF;
-	Wed, 23 Sep 2026 09:13:40 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 23562601FB;
+	Wed, 23 Sep 2026 09:15:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC3B61F00899;
+	Wed, 23 Sep 2026 09:15:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790154842;
-	bh=Z+j1lHJE5F3iMb8nSY99OQtjlVOCv/aNXLt1f/fnIwI=;
+	s=k20260515; t=1790154951;
+	bh=O74zCChabJPGX/5FXG7XmXwrySBRD///uZE1gOiATno=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=kWMCgiXLIQ6wuVlwnnRx3lJKHDLxKLCH12IowjOX7efeQzZGOJawCaHUfqRK5YQRX
-	 eyw5xVCFRsKuaXNkT2f1HZDd8aaiBjUul7jvkwjO6j1afG61xfht5mCCPSKKp4Dhe9
-	 rzhiHvxgoP5JCx5uMMA6TbPPpBXNI0TvsBqy8ptvMlhuhl3LjdN19l8FOcusuHqGd6
-	 W/Lu00eio/hX6O8BOK5kdqlsJZJnYqJ8DQtyzzxsImYdJDJx13pZ4NSi9WHt1anikw
-	 dlxfFEX5t8FcpmSHMomNE+o4ZWePsDJ5WRA6GO3q2+DvMeaV13VT0Jhtfi25HVJqjf
-	 K7utRZ1UWwiog==
-Message-ID: <802d3999-95fe-4a09-89b4-d01b60f8e963@kernel.org>
-Date: Wed, 23 Sep 2026 11:13:36 +0200
+	b=SMhlc0VgRdQKdx0qwl14ANA68wVrXDsrycIDNbwUOrPzQGed7psejweuHvn9y0Upj
+	 oK9pF6NnduwDsnqfpjtJ/98OkmFP3+3GiOq1Gh9n/PtyI2qphy+ikJaaV9pWvwu/jb
+	 lgkfeUAJH/6wrnbIuYjLND8YDK30CL0Xmk3ZEGU/0LCGarFAZx7fHYPYSxTuBD/9Po
+	 M10D3egALYwoCwT9UTdFNWLlH9Bts/yO0DSd9ByK7feU9BZexVgvkgnX3iMjolsZ4N
+	 yD6SaWbdPJpvZOUAW1bcswar5pOH0YXD/VsfYA6P7+enqEtASX+lnYGFo0DZ63X3o1
+	 OTxrzvc6LwB5g==
+Message-ID: <77db2f8f-dfc2-49c6-82f6-8e6c4f7c1fd0@kernel.org>
+Date: Wed, 23 Sep 2026 11:15:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -40,7 +40,7 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 11/12] mm: make userland page table freeing RCU-safe
+Subject: Re: [PATCH v4 00/12] mm: make userland page table freeing RCU-safe
 To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
  Baolin Wang <baolin.wang@linux.alibaba.com>,
@@ -102,8 +102,8 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
  Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>,
  linux-doc@vger.kernel.org
 References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
- <20260922-rcu-pagetable-freeing-v4-11-fe1ad1f1e303@kernel.org>
- <72d1548a-a4ee-4832-b2ab-4bc82f1933f8@kernel.org> <arOWZCeV8FrkAvhK@gremlin>
+ <20260922160021.a2fc65d05d9b867a141e5457@linux-foundation.org>
+ <9dcde7e4-dadb-4644-9dff-7fd8a26e29a6@kernel.org> <arOVbT5B1FOMe1wb@gremlin>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -150,30 +150,43 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <arOWZCeV8FrkAvhK@gremlin>
+In-Reply-To: <arOVbT5B1FOMe1wb@gremlin>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 9/23/26 11:06, Lorenzo Stoakes (ARM) wrote:
-> On Wed, Sep 23, 2026 at 11:04:17AM +0200, David Hildenbrand (Arm) wrote:
->> On 9/22/26 17:35, Lorenzo Stoakes (ARM) wrote:
->>
->> The patch subject confused me at first: that's not what the patch is doing, no?
->> Previous patches did that, and now you're just removing the leftovers?
->>
->> Maybe I'm missing something that this patch does along the lines of teaching the
->> code to be RCU-safe.
+On 9/23/26 11:04, Lorenzo Stoakes (ARM) wrote:
+> On Wed, Sep 23, 2026 at 10:45:33AM +0200, David Hildenbrand (Arm) wrote:
+>> On 9/23/26 01:00, Andrew Morton wrote:
+>>>
+>>>
+>>> Do we have reason to believe that anyone is seeing any effects from
+>>> their arch's failure to rcu-free the page tables?
+>>>
+>>> This sounds like a rather long-standing wart, yes?
+>>>
+>>> The patchset is thinly reviewed and mm.git is bursting at the seams
+>>> again.  I'll play wait-and-see on this series.
+>> Do we want to nudge arch maintainers to review?
 > 
-> It is the final piece that makes that the case, so I think it's OK to allow
-> oneself a nice subject line? No? :)
+> (Just to note that I replied separately, 'thinly reviewed' is incorrect, it's
+> been in -next for weeks and the whole thing was reviewed by Kiryl.)
 
-Just took me longer to figure out if I am missing something important.
+Ack.
 
-E.g.,
+> 
+> The only places where that would be useful is m68k motorola, sparc32.
+> 
+> But in any case it has been heavily tested including on every single arch
+> listed with stress testing performed (I think I cover that in the cover
+> letter).
+> 
+> The changes are not controversial so I don't think that's a blocker, but
+> it'd be nice?
 
-	"mm: remove unused RCU-unsafe user page table freeing"
+I doubt we'll ever get sparc32 reviews :)
 
-would have been clearer to me. Anyhow, just stumbled over it, I don't care too much.
+I'd definitely appreciate some review on the arch bits from arch maintainers,
+but if they don't reply within the next weeks I wouldn't wait on that.
 
 -- 
 Cheers,
