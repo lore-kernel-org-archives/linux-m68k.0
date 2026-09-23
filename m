@@ -1,26 +1,26 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2B44A3407
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 12:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69FC14908B3
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 12:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790165051; cv=none; b=uEQSjSuBeIhGQofyHSboEImsrwirf8LcMAPyFE9pkD8qRH8JS3ydJGqp4zXJwoplMvv+BMimbyKH2+DWKyv6vJAEfkmxxk98nd18ZbXpnjhfgJFaUwl9Vd577WY7ulXT2fZPxyYtY44zBWw3nvk9GW7b2kwVR1yWhx1o8YKDSdE=
+	t=1790165289; cv=none; b=j/he/IMTYrpKKpyZXF/wApKrz3PTDwWm9LVXnQhpUIiyAZBuKvNEb+kBqHiWee+nSwASDfJ+qnH1VNkw1uQ1009YyJ2dxjchffKSp6DtR3+r7yeKGzZ/pN0Pa+6B3MlegVcwCgsrARtm+pOEOXzTau41ZZwtKNJU/JWM2tJzJRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790165051; c=relaxed/simple;
-	bh=O1byl75nyXgk1Xj7AS/Sdyk1a4bPSXL278xPHButlNc=;
+	s=arc-20240116; t=1790165289; c=relaxed/simple;
+	bh=j/pbjEEC+OxP910G3nTkBK9F+J82AG/EAEqPzgrrZmQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IYjmpNNvDR+RsiVvDAicBZVlK+2OEzrDcJJNzdIbw2wBoI9GatR/TUcFtYrFXAgsITIB5QWBNfGC5tUQqiN3TIvsabxZNWxkPd2pJ24EzCNl/bxgZXxGIlwp7bJvRbfQlQg/mKA6Vau83qbR+pC+nx5imcMM/EijxenKtDOZ3FM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+	 In-Reply-To:Content-Type; b=Za5tcNLYo/OX126UF/mhFRF6qilyHw5nKLXykAL4udSl3Te4YI+SAlcjoJHU+xtVUEyg79v8otJb0aMuysg/AxlcwesFINsFUS1QjV/QmaAJ77K1Dv+lsqgGpnHwi9NdDycT8Yp2it6IGXfqsFWTsQxkL2dYcUU5mwt4nRgM6kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 47378600AA;
-	Wed, 23 Sep 2026 12:04:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E9611F000FF;
-	Wed, 23 Sep 2026 12:04:05 +0000 (UTC)
-Message-ID: <e135863e-3057-42ab-9019-bb397ef320e6@linux-m68k.org>
-Date: Wed, 23 Sep 2026 22:04:06 +1000
+	by sea.source.kernel.org (Postfix) with ESMTP id C1DB643AEE;
+	Wed, 23 Sep 2026 12:08:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAEDC1F000FF;
+	Wed, 23 Sep 2026 12:08:03 +0000 (UTC)
+Message-ID: <a0dfd7f0-2949-4be1-bf1b-5a891256e5eb@linux-m68k.org>
+Date: Wed, 23 Sep 2026 22:08:05 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -28,51 +28,34 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] m68k: Fix seccomp filtering on ColdFire and 68000
-To: Christopher Lusk <clusk@northecho.dev>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Kees Cook <kees@kernel.org>, Andy Lutomirski <luto@kernel.org>,
- Will Drewry <wad@chromium.org>, Michael Schmitz <schmitzmic@gmail.com>,
- Andreas Schwab <schwab@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20260912230651.461269-1-clusk@northecho.dev>
- <20260913131753.605893-1-clusk@northecho.dev>
+Subject: Re: [PATCH v7 2/2] m68k: defconfig: update stmark2 defconfig
+To: Angelo Dureghello <adureghello@baylibre.com>,
+ Jonathan Cameron <jic23@kernel.org>, David Lechner <dlechner@baylibre.com>,
+ =?UTF-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+ Andy Shevchenko <andy@kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+References: <20260701-wip-stmark2-dac-v7-0-ff8fdcc8010a@baylibre.com>
+ <20260701-wip-stmark2-dac-v7-2-ff8fdcc8010a@baylibre.com>
 Content-Language: en-US
 From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260913131753.605893-1-clusk@northecho.dev>
+In-Reply-To: <20260701-wip-stmark2-dac-v7-2-ff8fdcc8010a@baylibre.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi Christopher,
+Hi Angelo,
 
-On 13/9/26 23:17, Christopher Lusk wrote:
-> m68k selects HAVE_ARCH_SECCOMP_FILTER for all configurations, but the
-> ColdFire and 68000 syscall entry paths only branch to
-> syscall_trace_enter() for TIF_SYSCALL_TRACE. TIF_SECCOMP alone falls
-> through to syscall dispatch, leaving installed filters ineffective.
+On 2/7/26 00:17, Angelo Dureghello wrote:
+> From: Angelo Dureghello <adureghello@baylibre.com>
 > 
-> Test the combined TIF_SYSCALL_TRACE and TIF_SECCOMP mask in both paths
-> and route either flag through the existing slow path. Leave the classic
-> MMU syscall entry implementation unchanged.
+> Update stmark2 defconfig enabling MCF5441X DACs.
 > 
-> Validated the combined test under QEMU mcf5208evb (ColdFire): filters
-> denying getpid, openat, unlinkat, and reboot each returned -EPERM. A
-> classic-MMU control (q800) denied the filtered getpid syscall both before
-> and after this change. The 68000 path shares the same source-level
-> omission and receives the identical masked test but was not separately
-> emulated. Compile-tested W=1 with CONFIG_SECCOMP_FILTER=y on both
-> m5208evb_defconfig and a custom no-MMU UCSIMM configuration; the latter
-> built arch/m68k/68000/entry.o and vmlinux.
-> 
-> Fixes: 6baaade15594 ("m68k: Add kernel seccomp support")
-> Cc: stable@vger.kernel.org # v6.3+
-> Suggested-by: Andreas Schwab <schwab@linux-m68k.org>
-> Assisted-by: Claude:claude-opus-4-8
-> Assisted-by: Codex:gpt-5.6-sol
-> Signed-off-by: Christopher Lusk <clusk@northecho.dev>
+> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 
-Looks good, thanks for the v2. I will push this into the m68knommu git tree,
-for-next branch.
+Thanks, I have applied this to the m68knommu git tree, for-next branch.
 
 Regards
 Greg
@@ -80,48 +63,24 @@ Greg
 
 
 > ---
+> Changes for v5:
+> - move this patch after new Kconfig symbols are added
+> ---
+>  arch/m68k/configs/stmark2_defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Notes:
->     Changes in v2:
->     - Combine the TRACE/SECCOMP tests into a single masked branch per Andreas
->       Schwab; scoped to the ColdFire/68000 paths, classic MMU unchanged.
->     
->     No in-tree m68k defconfig selects the pure-68000/DragonBall path.
->     Compile-tested W=1 with a custom no-MMU UCSIMM configuration and
->     CONFIG_SECCOMP_FILTER=y; arch/m68k/68000/entry.o and vmlinux both built
->     successfully. The combined gate uses the same flags byte as the classic-MMU
->     entry path.
+> diff --git a/arch/m68k/configs/stmark2_defconfig b/arch/m68k/configs/stmark2_defconfig
+> index b3fb95f73a95..3941113bc60b 100644
+> --- a/arch/m68k/configs/stmark2_defconfig
+> +++ b/arch/m68k/configs/stmark2_defconfig
+> @@ -76,6 +76,8 @@ CONFIG_DMADEVICES=y
+>  CONFIG_MCF_EDMA=y
+>  # CONFIG_VIRTIO_MENU is not set
+>  # CONFIG_VHOST_MENU is not set
+> +CONFIG_IIO=y
+> +CONFIG_MCF54415_DAC=y
+>  CONFIG_EXT2_FS=y
+>  CONFIG_EXT2_FS_XATTR=y
+>  CONFIG_EXT2_FS_POSIX_ACL=y
 > 
->  arch/m68k/68000/entry.S    | 3 ++-
->  arch/m68k/coldfire/entry.S | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/m68k/68000/entry.S b/arch/m68k/68000/entry.S
-> index c257cc415..0d3cbeded 100644
-> --- a/arch/m68k/68000/entry.S
-> +++ b/arch/m68k/68000/entry.S
-> @@ -79,7 +79,8 @@ ENTRY(system_call)
->  
->  	/* Doing a trace ? */
->  	getthreadinfo
-> -	btst	#(TIF_SYSCALL_TRACE%8),%a2@(TINFO_FLAGS+(31-TIF_SYSCALL_TRACE)/8)
-> +	moveb	%a2@(TINFO_FLAGS+2),%d1
-> +	andl	#((_TIF_SYSCALL_TRACE + _TIF_SECCOMP) >> 8),%d1
->  	jne	do_trace
->  	cmpl	#NR_syscalls,%d0
->  	jcc	badsys
-> diff --git a/arch/m68k/coldfire/entry.S b/arch/m68k/coldfire/entry.S
-> index 4ea08336e..d658abdc5 100644
-> --- a/arch/m68k/coldfire/entry.S
-> +++ b/arch/m68k/coldfire/entry.S
-> @@ -72,7 +72,8 @@ ENTRY(system_call)
->  	movel	%d2,%a0
->  	movel	%a0@,%a1		/* save top of frame */
->  	movel	%sp,%a1@(TASK_THREAD+THREAD_ESP0)
-> -	btst	#(TIF_SYSCALL_TRACE%8),%a0@(TINFO_FLAGS+(31-TIF_SYSCALL_TRACE)/8)
-> +	moveb	%a0@(TINFO_FLAGS+2),%d2
-> +	andl	#((_TIF_SYSCALL_TRACE + _TIF_SECCOMP) >> 8),%d2
->  	bnes	1f
->  
->  	movel	%d3,%a0
 
