@@ -1,169 +1,183 @@
-Received: from sonic303-20.consmr.mail.ne1.yahoo.com (sonic303-20.consmr.mail.ne1.yahoo.com [66.163.188.146])
+Received: from mta0.migadu.com (out-146.mta0.migadu.com [91.218.175.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633CB3C456B
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 08:37:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.188.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB067472083
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 08:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790152668; cv=none; b=VoGmDvOfDHXCH8Bksf9jT03s+YUBDRQoyhLLwyNhHdVXAbYJd3zq5LlNKDYEpzdDmQqDyWPIlB2M0Hdh8Nutfe3eyuXoP+YtB0lI1V17BHISO9TKGUdFVvbyPp28G9eidXPi6AuJGfzOiq0ZKhMbsbRJsy2A7UoyfLP2d2q98ok=
+	t=1790153011; cv=none; b=dKFqOLU0SRkwOikARl5i85j21c4es8iPd2T1si2284p7BP7393MuMJxUJ0dsUFEzMfakEm6Es9vRY/9XN1jWdvQDZokDFyOKvGI762RtNLnvJsY4EwKhYN+EJ8LG8C/OonDkvg4sOidqc5UKBYijijpo0q9FpB91r7GyJaX1l/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790152668; c=relaxed/simple;
-	bh=k5XBrirsewOk0bYeHl+mVt/drRgh529DkzvnTltjE7Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HlLe+tpHYC29DKtZD10FVK+Ll5JhE64CUwh48iWUfugj017qZbd46Mk5NvsQ5tkM9ERoTzqYPxVt87AUJX03vfmeIACVLNzMKbiSS54Qgymv3O/RvwxYGqTWGR1q37UwHxzMw0hj0zb+4yBRBy3qpda/7r4tUkBeTdvto3YqioU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=f6bP6mdj; arc=none smtp.client-ip=66.163.188.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
+	s=arc-20240116; t=1790153011; c=relaxed/simple;
+	bh=99+UKhu23KDHlR6Muc20Ly3uTrswjM+UPnqZD8Rdr68=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Wrj1lWQUFBT8oKO6yOdjx53X7/MuNrMRiK50Dq2sliBP1yWhCvLUmh6fcilJfsl4eLxVEARKwGoih/lCD6+TVKxY8DwxkbKV/YYZKjbus474YeLN1YAmAILGSpg+uiwf4kquAxD4aTVv//DC0n9Ic3mSyhqDqwiZTTrmf6fghOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LKqAQtVX; arc=none smtp.client-ip=91.218.175.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="f6bP6mdj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1790152627; bh=NcgmHyObDPpqZHRTCkJHAaY257ncqyTPIPwFVsPR8Zc=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=f6bP6mdjKKxE61+TBYS4bWFlW6wFpoyhzc9CBKiRogKcIhLoRJt9kiTybJ3sNsMgWS7dcsELJ9RoT5zc/ibgLdjmryQGhFHhMee6hx37iOsZbC36RnwpblTviCfmasb9kUFMfurlcx9bGACb1EU6cM2zfFn7YPiNNFFNULCCVo4u//Q9fs1L+BeoBbsREWQWUZy4NgncbzkBQI0shCPHlMUTLAqjYMt2R3wwypvD+ygDLCKEXhEP+Hq0QngaGZZWTQ4gUBcmHGPzPoymhQpQ4+EHQB/U4nWZvJsXyPTpAthI9i49n/b63KkOPT07iB18fb98ldrvTJ2/tJ7A0cghdw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1790152627; bh=y7sslBqXTkgaERUD+Qziax1oE/+Ux4g54+aQw9Z40I1=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=a3XxHZSK1wbBGwxEx6LRZKSQqhi03bC77/sAZv0D5Niacyi5SFGEOHuVFc8GZSh4nwm1ZIOVuGky3FqmktvYzJJBlfp7SClz2PHj+UYPLIKOvDVn4gC3uKagIX3i9JlMvTtmbKa1+lRQTDGBTKfsJfnH00Tl9fM9vqJf+T+Hi5eFO1I8lkt3j2Y/F+oYXP0nnGoDTK3JRo9EEi8vNhbOkM4eFIiDqtll75O/EzbcsLFXTfsvPLGFZzmyFxBpwMjUMRke5ziFGh6HriqAWOq+UREOeE1s19eKKx5Lb7/zQHSTvox8bsXQVJpoYONR8KhBKaFtrh3nIpvlBbSPn8YzQQ==
-X-YMail-OSG: hS7OkDYVM1lbk.K6tguf3xh5121gBNsnWCsM39FV1Pfq6rLABi2ZbVwI3lH9sI.
- 0pB2Pf0tH5ts_BlMmR2rcyajaeWAl_07jxiQFSjsJj.Ayv5up4B.DwrOpeyPgAQ_CNRUkjTUWKWr
- 7E3PDrt2L4r3zlJjvXy.QEHGfAETHoK4Kyu4xJnzzc0n7jyKXKTRUEpk3Aa9F.UBadlACGinWzEE
- CHcPBlLuSwOIMnrwC18KVD54HdGPpsoSTv7pZ3RADH3e1ztl8DClX313Aouw18A_K.yZ8Eg9mtOi
- kyzarGrkjM600r_q.kaegZ22N425y8tT_4kwYUp9IiEDqcwufhGHla.lCT33N0HbkYg4lRA_j66j
- LNOVwbM268rpRPOEhCJkHDZgXicGdt.TEG96rOVkRNV8A9JxH7o0cxAfSZaUZgACfvo7gYYDj8Pe
- FOOT.c0osIOuSU2NVJoz1J3nJ_uFA7SJzYnvgMy5kYKr6tSphyAq_5VZF18dsbZhJY3qFNtC5Zo_
- C5boSIutW02NkVflqZud.3KS9SU_PqAmuRbbxTm87q7ZhDYp1Ful48NH2bJzwv9DQYcy_B0apkrl
- gh2PKsntCgDylM6Za6ImbJZ5z3SHyxGXT.gFcMmd8OdZGxkCKoZyOq8_kRBkLfEfgxxLU6bgtHfN
- kGdFuipCM5e63eYRCxo0tMzNZhnPFihdBFDtIUjQRz8hzjIm3iJt14IuJU6iqbcBSDWxl0Q4f5E4
- eQ2sCAN75H.ToLzfFQk5CGa54W91WjP3zSZAIEYNPKndLQrTiCl0EYMIAw3Df3u24enV6vJO9Sb8
- NbeENDHfSt_h6DnBs9.vBw6MlWiDm1Pgw0cCPEWCcqICC6nR2EGAv4UeJO6pnK2o9pihZk7bfPJ1
- 6vR92dnv66fSsrIgXuOGYvUw8DghrqiLEx1Er37CVTR3xOiB4aE9k1Waozj4QNdFbKkP8G90GAGI
- P4Mlf45ABQAE2FbLkkqidjguq_5yWQqWPADjTRnEueCvEyHToYz7yOhVUYRv7x0LRJT4Rxs2wOGH
- 1dRRHImQuCJeA69H_YWWU_vrnwdMDOAi4O9MtHZfVQJOZfqjSZlfvTZ_UIE9k4iSQgIKcbH4jW.q
- 21FmC6BLIx3Vvg5SIZ4SoxOtRhvNsNh2unglRkDX0wlFHjTE.fBN4xOuKmYp06YVq9nJzljtKig7
- yWdziZDYKlnjigM1v.xY46MqHdXKQKy9YIy9cDKabKSWkcYRkfTPOsPvBYw.K00fG8saiUXvEAdN
- jI3StOkTeq3HI0eBbYWf9F0xALUJXkrN5r.hSqtgGDC98wzUXCyWUAE84yza8I71AOZfc8HwgGww
- _T45TO.kNeSIA4hUt_W13bvHZtCmLhCPXDeDFK3XHDZvXRrWYmgv1rgobwMyBziNV8kb.YqxShiI
- x_u2rNv0whgHkwxtlmbxQa46od1OL.1MsiaszAK33SDALqAz3sjYPIx3Nhg8jMFryAsnDwklobRE
- GqwoXrJPphrjiwnwbBExQ_M78dCL1kixwPDScszB5aypejQ05PsWP5bu3o13eOo_EpIe_u7Y7fJR
- 7tL1VATbUGnVYtCN6HQi7NQXY94oAoLIaQ7OA..WosHk2G_pPuxww.JhYqUzW4XDMv.hfZb6Itjz
- wnPHqzeAhJz5_62EDJ_biwRLnROrPQftNj2KnBBYwOj6c7Da7hv5rxxZ2X3zScAdZw_heAlQq7tk
- RdEHozqnEsDJkon_Z8szBk1.wR0V1jGUBzdUMgFGKeR4.JxD0mJMOOGc4hEqQpKUTzRBDux8xJn7
- CcoxExcVX0182VtzyKaC3x4WlCIRtovLWGS94tYP7oQNOM0lArR6b19NNoxW1ers2py53_IYYJai
- 9WjPLs2qkeG1K506fNkDcoqiOCUxsH33hlYNLacz_DlcTk9ZPQuOw3tm8P5hoV7W.tEgN6Wr_KlI
- NgkITyJuVdCPZsYEi9OetVMeW05ZOzexdzDn9BX8oY98rS18ByUK14_JsUHR4mhakmAb7jiZkM7C
- WYccDTdttkFJpjmvqx84Efn7s0KCe2A08sm_omLBTnS5QQTJ5_MwQVkc3o1uivAEvnmKnDGtO5gE
- cIYoloktCxQdROwI76WzzNSZRGWBDPfUQq9hYD56oqTZP1XrcQiX0EkJloppn_2JGavXc.zqxR2e
- vDL1yHLH.mRrZhPyo._lJ4JJwA9J44841CKv4RZZTkkB8QHgfKbslJQ6RdDTSS109.cEnZ24gVvZ
- cxW9aVm7RfYn9TdZADGwra19fwfg18ls7fznumWH9aXYGMbDqmpAR0n4iUe2AI.qpcK3BIF6gqbW
- SVW280CHSRAJ5E.C7hQ--
-X-Sonic-MF: <userm57@yahoo.com>
-X-Sonic-ID: 9a5224fb-181d-457d-8fa6-6b9c25e5ed5b
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.ne1.yahoo.com with HTTP; Wed, 23 Sep 2026 08:37:07 +0000
-Received: by hermes--production-ne1-6dbcb84f44-zgjzx (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 12d3746fbcd0ce1b59c1d9c5afd6d363;
-          Wed, 23 Sep 2026 08:26:50 +0000 (UTC)
-Message-ID: <cdb86fe1-8e5f-4781-8773-3e199e79a770@yahoo.com>
-Date: Wed, 23 Sep 2026 02:26:48 -0600
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LKqAQtVX"
+X-Envelope-To: linux-m68k@lists.linux-m68k.org
+DKIM-Signature: a=rsa-sha256; bh=99+UKhu23KDHlR6Muc20Ly3uTrswjM+UPnqZD8Rdr68=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1790153001; v=1; x=1790757801;
+ b=LKqAQtVXOlLmKHpUO4od0nDPyqEoVypGwsoYL+KVGsWDRoS6XYTzSzewuaRJ8xwL2FxX5Yp9
+ K0C+371ngzF9SMqPt9zuMt21GWGNNhfp7YU9zYDxy334ttiRwUnLUq1RoR1SVLv1tlWeGp+e7WW
+ 3EElvt0iuPAIL3y4VAs/5Y5Y=
+X-Envelope-To: linux-m68k@lists.linux-m68k.org
+Received: by smtp.migadu.com with ESMTPS id c8a1201785675537;
+	Wed, 23 Sep 2026 08:43:18 +0000
+X-Mizu-Trace-ID: c8a1201785675537
+X-Migadu-Flow: FLOW_OUT
+From: Lance Yang <lance.yang@linux.dev>
+To: ljs@kernel.org
+Cc: akpm@linux-foundation.org,
+	david@kernel.org,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	liam@infradead.org,
+	nico.pache@linux.dev,
+	ryan.roberts@arm.com,
+	dev.jain@arm.com,
+	baohua@kernel.org,
+	lance.yang@linux.dev,
+	usama.arif@linux.dev,
+	kas@kernel.org,
+	guoren@kernel.org,
+	bcain@kernel.org,
+	geert@linux-m68k.org,
+	dinguyen@kernel.org,
+	schuster.simon@siemens-energy.com,
+	jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi,
+	shorne@gmail.com,
+	dalias@libc.org,
+	glaubitz@physik.fu-berlin.de,
+	pjw@kernel.org,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	alex@ghiti.fr,
+	linux@armlinux.org.uk,
+	vgupta@kernel.org,
+	monstr@monstr.eu,
+	chris@zankel.net,
+	jcmvbkbc@gmail.com,
+	will@kernel.org,
+	aneesh.kumar@kernel.org,
+	npiggin@gmail.com,
+	peterz@infradead.org,
+	davem@davemloft.net,
+	andreas@gaisler.com,
+	richard.henderson@linaro.org,
+	mattst88@gmail.com,
+	linmag7@gmail.com,
+	catalin.marinas@arm.com,
+	mark.rutland@arm.com,
+	chenhuacai@kernel.org,
+	kernel@xen0n.name,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	deller@gmx.de,
+	maddy@linux.ibm.com,
+	mpe@ellerman.id.au,
+	chleroy@kernel.org,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	borntraeger@linux.ibm.com,
+	svens@linux.ibm.com,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	tglx@kernel.org,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	arnd@arndb.de,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	jgg@ziepe.ca,
+	jhubbard@nvidia.com,
+	peterx@redhat.com,
+	ysato@users.sourceforge.jp,
+	shakeel.butt@linux.dev,
+	corbet@lwn.net,
+	rdunlap@infradead.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-openrisc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	hughd@google.com,
+	qi.zheng@linux.dev,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 05/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for arc, microblaze, xtensa
+Date: Wed, 23 Sep 2026 16:43:11 +0800
+Message-ID: <20260923084311.15570-1-lance.yang@linux.dev>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20260922-rcu-pagetable-freeing-v4-5-fe1ad1f1e303@kernel.org>
+References: <20260922-rcu-pagetable-freeing-v4-5-fe1ad1f1e303@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/33] block/swim: Fixes and improvements
-To: Finn Thain <fthain@linux-m68k.org>, Jens Axboe <axboe@kernel.dk>,
- Laurent Vivier <laurent@vivier.eu>
-Cc: Joshua Thompson <funaho@jurai.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- Omar Sandoval <osandov@fb.com>
-References: <cover.1788513996.git.fthain@linux-m68k.org>
-Content-Language: en-US
-From: "Stanley J. Johnson" <userm57@yahoo.com>
-In-Reply-To: <cover.1788513996.git.fthain@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.26577 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Tested-by: Stan Johnson <userm57@yahoo.com>
 
-This patch series was successfully tested on a Mac IIci.
+On Tue, Sep 22, 2026 at 04:35:36PM +0100, Lorenzo Stoakes (ARM) wrote:
+>Each of these architectures directly free page tables without routing these
+>changes through tlb_remove_ptdesc().
+>
+>The use of tlb_remove_ptdesc() is required for
+>CONFIG_MMU_GATHER_RCU_TABLE_FREE to correctly free page tables under RCU,
+>so simply update these architectures to use these functions.
+>
+>Since none of the architectures share page tables or do anything unusual,
+>nothing complicated is required here.
+>
+>Therefore this is simply a mechanical change - convert __pud_free_tlb(),
+>__pmd_free_tlb() and __pte_free_tlb() to use tlb_remove_ptdesc() as
+>required.
+>
+>At the point this is in place, all mmu_gather page table freeing is
+>performed under RCU, and thus MMU_GATHER_RCU_TABLE_FREE is selected for
+>each architecture.
+>
+>Note that CONFIG_MMU_GATHER_RCU_TABLE_FREE is dependent on CONFIG_MMU for
+>xtensa to reflect the fact that nommu does not implement page table
+>gathering.
+>
+>This forms part of an overall effort to switch every architecture to this
+>mode.
+>
+>Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
+>Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+>---
 
-On 9/4/26 3:26 AM, Finn Thain wrote:
-> I recently had a need for the 'swim' driver but found that it was too buggy
-> to be useful for my purposes. I had two aims in mind--
-> 
-> Firstly, I needed this driver to help me test my new BMoW Floppy Emu for
-> emulation correctness. Being that Linux is open source and MacOS is not,
-> this driver should be ideal for that.
-> 
-> Secondly, I needed to realign the heads in some disk drives. The swim driver
-> has most of the code needed for a feedback loop for manual re-alignment, so
-> I wrote the remaining code and pushed it to a repo here:
-> https://github.com/fthain/linux/commits/swim/
-> 
-> These patches fix all the bugs I found. They improve stability,
-> compatibility and performance. Additional patches improve source code
-> quality by removing redundant code and cleaning up a bit.
-> 
-> This patch series was successfully tested on the following systems.
-> 
-> Mac Quadra 650 - SWIM 2 with Mitsubishi FDD
-> Mac LC III     - SWIM 2 with Mitsubishi FDD and Sony FDD
-> Mac Quadra 700 - SWIM with Sony FDD
-> Mac IIvx       - SWIM with Sony FDD
-> 
-> ---
-> 
-> Changed since v1:
->   - Patches 1/31, 19/31, 23/31 were revised as per Laurent's remarks.
->   - Some minor improvements to patches 9/31, 13/31 and 16/31.
->   - Added patch 24/32 to fix a bug causing silent IO corruption instead
->     of an IO error.
-> 
-> Changed since v2:
->   - Reviewed-by tags were dropped from patches 1/32, 9/32, 13/32 and 16/32
->     because of unreviewed changes.
->   - Better assembly code in patch 13/32.
->   - Patch 23/32 improved upon to reduce excessive interrupt latency when
->     medium errors are encountered.
->   - Patch 7/32 was split in two, and readability was improved as requested
->     by Geert.
->   - Geert's acked-by tag was added.
-> 
-> ---
-> 
-> Finn Thain (33):
->    swim: Assert strobe with stable outputs
->    swim: Select appropriate drive once only
->    swim: Enable the drive when probing
->    swim: Don't disable drive after every sector
->    swim: Perform ISM/IWM mode switching according to specs
->    swim: Configure parameter memory
->    swim: Refactor SWIM setup
->    swim: Enable clock divider only where appropriate
->    swim: Don't start motor until medium is present
->    swim: Recalibrate when drive is probed
->    swim: Add track zero recalibration delay
->    swim: Handle FIFO timeout error
->    swim: Simplify return value initialization
->    swim: Check for CRC errors
->    swim: Check error register during sector read
->    swim: Don't use the mark register to read data
->    swim: Fix buffer overflow
->    swim: Convert to blocking queue
->    swim: Remove redundant RELAX actions
->    swim: Deduplicate polling loops
->    swim: Check drive ready bit
->    swim: Revisit delays
->    swim: Remove pointless mode0 register write
->    swim: Don't needlessly re-read sectors
->    swim: Don't search beyond the first data mark
->    swim: Remove pointless specifiers
->    swim: Move swd initialization
->    swim: Add some helpful references
->    swim: Remove unused macro definitions
->    swim: Clean up whitespace
->    swim: Define macros for constants
->    swim: Define symbols for constants
->    swim: Unexport global symbols
-> 
->   arch/m68k/mac/config.c   |  31 ++-
->   drivers/block/swim.c     | 451 ++++++++++++++++++++-------------------
->   drivers/block/swim_asm.S | 356 +++++++++++++++---------------
->   3 files changed, 452 insertions(+), 386 deletions(-)
-> 
+Right, the old frees already end up in pagetable_dtor_free(). With
+tlb_remove_ptdesc(), the same cleanup happens after an RCU grace period.
+
+Makes sense to me, feel free to add:
+
+Acked-by: Lance Yang <lance.yang@linux.dev>
