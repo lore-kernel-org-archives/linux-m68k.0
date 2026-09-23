@@ -1,123 +1,133 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9AEE4BFE6A
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 11:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 391FF3A641D
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 11:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790164614; cv=none; b=mdeFqu05FavttY1M2OrnTtiFzlsiRLxV9Y1EBysi2iuxy3Qpgr1Uv0dVGUOfsXa70GDpZdDVmixX7o7pgAMo5f+keMpUY+y9V6VR35PuE3E0tBF01x87hkyFBkn9IRkoLXV6o3Uh83fK5BlBF2BxfqbfTWDnqMNzx0PoQUTJBJA=
+	t=1790164622; cv=none; b=Zw6NKShqa5BSRurs/+9emx3hUdFnb6nYDRWl7Zny/AjEki3T6QqkhDSo54qypA8q9dnZ/IzzvA2CBiJIWnMgRuFThGxCwNTODYDWF7mH9zUFYBIdJ0I/unRm9iUq51QRJ4e2i3uhCPO0B6he+1Omjiro/qpdxiSet+xDe79XOVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790164614; c=relaxed/simple;
-	bh=44ICWnorrCS43CkKDydTCwnSTJP909YuCfvv09dlXRw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tvc9DVjlVcZjD7HFbE50HR7w089mPvK9iAa0lY7jAACoPwfkNNG+Os5NeL5Liz1MjgCwfhhtrMYUy6pycsZuW/koKWyKGT96zfUQGLQp9UjFvTs/hykNTRLiK+qCY+G14qiU05wM0lAjH09AtiD/TTmk+BQqFbofPzwqNT3Eap4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1790164622; c=relaxed/simple;
+	bh=Ds2KAw8gvOa+tR2z36qGcwS8SV5iMl/blAUnmIflQkQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nRaAnsxShO56Miz/aPVwmh95OZX3C5C+4P+NUY7z0p/pTVyIn+I1vH2yXvrchjCxbLyQYd1jsSzO/orV2eTI/TJj9U6QcN65Jea+gTegAEiBW9M2nVyVcnoh7CWcbfCV2e1k7dmBl5HbK0IzwMh8682CyCg5AqvgurdJHK0cNXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLzOlpie; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLzOlpie"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 259B1600AA;
-	Wed, 23 Sep 2026 11:56:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A841F00893;
-	Wed, 23 Sep 2026 11:56:46 +0000 (UTC)
-Message-ID: <5cec8deb-bf42-451b-b37b-0a7d1df39bf1@linux-m68k.org>
-Date: Wed, 23 Sep 2026 21:56:45 +1000
+	by tor.source.kernel.org (Postfix) with ESMTP id 0D6BC600AA;
+	Wed, 23 Sep 2026 11:56:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2610A1F000FF;
+	Wed, 23 Sep 2026 11:56:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790164614;
+	bh=Ds2KAw8gvOa+tR2z36qGcwS8SV5iMl/blAUnmIflQkQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=MLzOlpiehBp7rmWLxJ9aplJ887M0HtvnTYcr7Feppz4GpXnrb891HqE1sAdH3CEdJ
+	 l+KxVqMBqRNoASgtK1ZWDhIV9vd6xSNNP12m6pFGj2BbzuxpBXMCxSHLYzmSxu6TWY
+	 VREKtAqIxlSX2XhdiU58tDKPP9A+aK2QQnnqLStGVJR1fPKeyEbSVAJVeAQ3VTMf9A
+	 d/C+oL9WdOE7XZZXqx582LOK0Vav7S1QSMg/Rx3fXHnkivLhsw3ynV4BU43Z8gVVyr
+	 XvvM4WhyacwSjjIwFyNJgXErigsiQzZKnEfV38NBbIL0nF4laCa9rcV0Y3Asd/YJ+G
+	 a8K3aXfd2AHzA==
+Date: Wed, 23 Sep 2026 12:56:30 +0100
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: Lance Yang <lance.yang@linux.dev>
+Cc: akpm@linux-foundation.org, david@kernel.org, ziy@nvidia.com, 
+	baolin.wang@linux.alibaba.com, liam@infradead.org, nico.pache@linux.dev, ryan.roberts@arm.com, 
+	dev.jain@arm.com, baohua@kernel.org, usama.arif@linux.dev, kas@kernel.org, 
+	guoren@kernel.org, bcain@kernel.org, geert@linux-m68k.org, dinguyen@kernel.org, 
+	schuster.simon@siemens-energy.com, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, 
+	shorne@gmail.com, dalias@libc.org, glaubitz@physik.fu-berlin.de, pjw@kernel.org, 
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr, linux@armlinux.org.uk, 
+	vgupta@kernel.org, monstr@monstr.eu, chris@zankel.net, jcmvbkbc@gmail.com, 
+	will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com, peterz@infradead.org, 
+	davem@davemloft.net, andreas@gaisler.com, richard.henderson@linaro.org, 
+	mattst88@gmail.com, linmag7@gmail.com, catalin.marinas@arm.com, mark.rutland@arm.com, 
+	chenhuacai@kernel.org, kernel@xen0n.name, tsbogend@alpha.franken.de, 
+	James.Bottomley@hansenpartnership.com, deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au, 
+	chleroy@kernel.org, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, 
+	borntraeger@linux.ibm.com, svens@linux.ibm.com, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@kernel.org, mingo@redhat.com, 
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	arnd@arndb.de, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
+	mhocko@suse.com, jgg@ziepe.ca, jhubbard@nvidia.com, peterx@redhat.com, 
+	ysato@users.sourceforge.jp, shakeel.butt@linux.dev, corbet@lwn.net, rdunlap@infradead.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
+	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, hughd@google.com, 
+	qi.zheng@linux.dev, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 08/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for sh-X2
+Message-ID: <arO-Y0qZpqpdqzwB@gremlin>
+References: <20260922-rcu-pagetable-freeing-v4-8-fe1ad1f1e303@kernel.org>
+ <20260923115417.34112-1-lance.yang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] m68k: remove unused <asm/quicc_simple.h> header
-To: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
- linux-m68k@lists.linux-m68k.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20260918034219.520193-1-enelsonmoore@gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <20260918034219.520193-1-enelsonmoore@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260923115417.34112-1-lance.yang@linux.dev>
 
-Hi Ethan,
+On Wed, Sep 23, 2026 at 07:54:17PM +0800, Lance Yang wrote:
+>
+> On Tue, Sep 22, 2026 at 04:35:39PM +0100, Lorenzo Stoakes (ARM) wrote:
+> >Currently, non-x2 sh specifies CONFIG_MMU_GATHER_RCU_TABLE_FREE allowing
+> >RCU page table freeing.
+> >
+> >sh-X2 is problematic because it utilises slab-allocated PMD page tables,
+> >and thus tlb_remove_ptdesc() cannot be used in these cases.
+> >
+> >All other sh variants are fine as commit e3ecf7c7d082 ("mm: pgtable:
+> >convert some architectures to use tlb_remove_ptdesc()") already converted
+> >page table freeing to use tlb_remove_ptdesc(), which does so after an RCU
+> >grace period when CONFIG_MMU_GATHER_RCU_TABLE_FREE is specified.
+> >
+> >Resolve this issue by firstly specifying CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE
+> >for sh-X2, so the arch can provide its own __tlb_remove_table()
+> >implementation (called after the RCU grace period).
+> >
+> >Then, convert __pmd_free_tlb() to tag the pointer to the PMD, and have
+> >__tlb_remove_table() check this tag to determine whether to free via the
+> >slab or to use pagetable_dtor_free().
+>
+> Makes sense to me, so RCU callback won't mistake a slab PMD for a PTE
+> page :)
 
-On 18/9/26 13:42, Ethan Nelson-Moore wrote:
-> arch/m68k/include/asm/quicc_simple.h has been unused since
-> commit a3595962d824 ("m68knommu: remove obsolete 68360 support").
-> Remove it.
-> 
-> Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
+Yes indeed :)
 
-Looks good, and since this is related to m68knommu I will push this into
-the m68knommu git tree for-next branch.
+>
+> >This follows the pattern used by sparc64 as implemented in commit
+> >4a0100f7546f ("sparc64: use RCU page table freeing").
+> >
+> >Previously __pmd_free_tlb() freed PMD page tables immediately, before any
+> >TLB flush IPI. This seems to be a pre-existing bug, which this change also
+> >resolves.
+> >
+> >CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE is only specified for sh-X2, as setting
+> >it disables CONFIG_PT_RECLAIM and causes __tlb_remove_table_one() to call
+> >tlb_remove_table_sync_rcu() and synchronize_rcu() in turn, and this is not
+> >necessary for other sh variants.
+> >
+> >This forms part of an overall effort to switch every architecture to this
+> >mode.
+> >
+> >Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
+> >Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+> >---
+>
+> LGTM, feel free to add:
+>
+> Acked-by: Lance Yang <lance.yang@linux.dev>
 
-Thanks
-Greg
+Thanks!
 
-
-
-> ---
->  arch/m68k/include/asm/quicc_simple.h | 53 ----------------------------
->  1 file changed, 53 deletions(-)
->  delete mode 100644 arch/m68k/include/asm/quicc_simple.h
-> 
-> diff --git a/arch/m68k/include/asm/quicc_simple.h b/arch/m68k/include/asm/quicc_simple.h
-> deleted file mode 100644
-> index b9e2808b44ac..000000000000
-> --- a/arch/m68k/include/asm/quicc_simple.h
-> +++ /dev/null
-> @@ -1,53 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -/***********************************
-> - * $Id: quicc_simple.h,v 1.1 2002/03/02 15:01:10 gerg Exp $
-> - ***********************************
-> - *
-> - ***************************************
-> - * Simple drivers common header
-> - ***************************************
-> - */
-> -
-> -#ifndef __SIMPLE_H
-> -#define __SIMPLE_H
-> -
-> -/* #include "quicc.h" */
-> -
-> -#define GLB_SCC_0   0
-> -#define GLB_SCC_1   1
-> -#define GLB_SCC_2   2
-> -#define GLB_SCC_3   3
-> -
-> -typedef void (int_routine)(unsigned short interrupt_event);
-> -typedef int_routine *int_routine_ptr; 
-> -typedef void *(alloc_routine)(int length);
-> -typedef void (free_routine)(int scc_num, int channel_num, void *buf);
-> -typedef void (store_rx_buffer_routine)(int scc_num, int channel_num, void *buff, int length);
-> -typedef int  (handle_tx_error_routine)(int scc_num, int channel_num, QUICC_BD *tbd);
-> -typedef void (handle_rx_error_routine)(int scc_num, int channel_num, QUICC_BD *rbd);
-> -typedef void (handle_lost_error_routine)(int scc_num, int channel_num);
-> -
-> -/* user defined functions for global errors */
-> -typedef void (handle_glob_overrun_routine)(int scc_number);
-> -typedef void (handle_glob_underrun_routine)(int scc_number);
-> -typedef void (glob_intr_q_overflow_routine)(int scc_number);
-> -
-> -/*
-> - * General initialization and command routines
-> - */
-> -void quicc_issue_cmd (unsigned short cmd, int scc_num);
-> -void quicc_init(void);
-> -void quicc_scc_init(int scc_number, int number_of_rx_buf, int number_of_tx_buf);
-> -void quicc_smc_init(int smc_number, int number_of_rx_buf, int number_of_tx_buf);
-> -void quicc_scc_start(int scc_num);
-> -void quicc_scc_loopback(int scc_num);
-> -
-> -/* Interrupt enable/disable routines for critical pieces of code*/
-> -unsigned short  IntrDis(void);
-> -void            IntrEna(unsigned short old_sr);
-> -
-> -/* For debugging */
-> -void print_rbd(int scc_num);
-> -void print_tbd(int scc_num);
-> -
-> -#endif
-
+--
+Cheers, Lorenzo
