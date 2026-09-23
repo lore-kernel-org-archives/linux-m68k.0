@@ -1,72 +1,47 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13CE75326C5
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 13:22:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49E75304CC;
+	Wed, 23 Sep 2026 13:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790169744; cv=none; b=buMtHnkQ8KbXOACVO15jbbZY5LmjSoxHlOtukfkdxs/H4PoyrcKfpMlQV4IXdfIJICfd5ql9Sd4zDBwVA9j5d7WsmCUuqm+Nb3QFt3c6gWFVCZfUGkFI4agLPs707FtTEqLB7k8u0YpGQYkdL1u+9WywOXcCC1IrNNA6ZIXtLug=
+	t=1790169815; cv=none; b=hPBU20JMaNQ6PT+JufibF+xwHk/Ghk1QQ5WYP6Q2vqFVdyhrpfMb+CE7bDinQEfgkX6+vJXhQ69bTvCbL2uiWQ6f8e3O3V9udGWP8T47EY8jbRxYZvF3+RlqJOFqamUZmi/dkiB27rLuQz3FB4b9niA5U/N8TQtlcEG7eTP9alU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790169744; c=relaxed/simple;
-	bh=fv/PJsh8Z0zTlCVSKOt2XBkxllgDkngoF7NIde+KnzE=;
+	s=arc-20240116; t=1790169815; c=relaxed/simple;
+	bh=BDOzWHIc90fxbewwvw0Rru5lz8XcqrZT7fTWgRXM4q0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qNocASt2JIE0jOxl9Nww2MZlVdbOuH8NyJ20d2t9kPpqP9CBUNdUKfwrEVsJSEOodgcSmUCxQSMAu6AxsKuktYiexE82O2mlO/A0NnDWOykq6nd3sow/Duv3vUP+FkxmpLCBpENtotI4Vq6Jfyu3if0I9ocxXIF+ezajP1tzMrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oQwWOQky; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	 Content-Type:Content-Disposition:In-Reply-To; b=RE5FW2mvFvOrbZ8lzZVplCejmyWRbXiUiVXcLDWw9rqLJDSJQ8v4C5C6fBRXuSJAcpRrB4ORqiwzthJLc8996NUew0WrSj/ldtsmDwx8LXWgAGrKeTlpdzRsG1mW4s7XtctDXm/XTTW5qBzJHtTyPvOYtYBk2jmse1Bcd73ytgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=IYrLApRq; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oQwWOQky"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 85A34600AA;
-	Wed, 23 Sep 2026 13:22:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B955C1F000FF;
-	Wed, 23 Sep 2026 13:21:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790169741;
-	bh=fv/PJsh8Z0zTlCVSKOt2XBkxllgDkngoF7NIde+KnzE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=oQwWOQkywYDf1JkmRsDbC/o6DR3oPInrHh+/leVHpzXY/fgKnBPlAbat4yOirXksi
-	 EWALa8XUeMd2tsIqTrSCJ0hISS3LcHe3D0i0Tgz4u8GN0a6ybM3BZinVZZLhG3Kwem
-	 I7b4mFWjjtLPtBFFyxKMPPiC1fv/6tqbKR6ms7bWmlQ8jqkRp5houN8+Tl0nlHq8Ok
-	 pNWxEWvRV+ENJCiZHISEOFERm2DQsybnZiI9c7WeH02xnMWwF75/9ODvNlEXLXkUxS
-	 1sCqPrGh63gyzzgORCeokaPT4Set6v00jX6f1b6hgWldcMbm+rJMuLtgU0iQ1Yzy3g
-	 sAGIwJhyz9HZg==
-Date: Wed, 23 Sep 2026 14:21:56 +0100
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Lance Yang <lance.yang@linux.dev>
-Cc: akpm@linux-foundation.org, david@kernel.org, ziy@nvidia.com, 
-	baolin.wang@linux.alibaba.com, liam@infradead.org, nico.pache@linux.dev, ryan.roberts@arm.com, 
-	dev.jain@arm.com, baohua@kernel.org, usama.arif@linux.dev, kas@kernel.org, 
-	guoren@kernel.org, bcain@kernel.org, geert@linux-m68k.org, dinguyen@kernel.org, 
-	schuster.simon@siemens-energy.com, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, 
-	shorne@gmail.com, dalias@libc.org, glaubitz@physik.fu-berlin.de, pjw@kernel.org, 
-	palmer@dabbelt.com, aou@eecs.berkeley.edu, alex@ghiti.fr, linux@armlinux.org.uk, 
-	vgupta@kernel.org, monstr@monstr.eu, chris@zankel.net, jcmvbkbc@gmail.com, 
-	will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com, peterz@infradead.org, 
-	davem@davemloft.net, andreas@gaisler.com, richard.henderson@linaro.org, 
-	mattst88@gmail.com, linmag7@gmail.com, catalin.marinas@arm.com, mark.rutland@arm.com, 
-	chenhuacai@kernel.org, kernel@xen0n.name, tsbogend@alpha.franken.de, 
-	James.Bottomley@hansenpartnership.com, deller@gmx.de, maddy@linux.ibm.com, mpe@ellerman.id.au, 
-	chleroy@kernel.org, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, 
-	borntraeger@linux.ibm.com, svens@linux.ibm.com, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@kernel.org, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	arnd@arndb.de, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, jgg@ziepe.ca, jhubbard@nvidia.com, peterx@redhat.com, 
-	ysato@users.sourceforge.jp, shakeel.butt@linux.dev, corbet@lwn.net, rdunlap@infradead.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, 
-	linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, hughd@google.com, 
-	qi.zheng@linux.dev, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 09/12] mm: enable MMU_GATHER_RCU_TABLE_FREE for
- m68k-motorola
-Message-ID: <arPSa1dVX3AOHAvM@gremlin>
-References: <20260922-rcu-pagetable-freeing-v4-9-fe1ad1f1e303@kernel.org>
- <20260923131634.47896-1-lance.yang@linux.dev>
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="IYrLApRq"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=EDnLi2pUMtS4xKymq2Gq5V18843JYuRVkIZ8gdUdVlU=; b=IYrLApRqgufL5H2QZLDcTZbkHg
+	SH1wQ72o6gWBFq0DYRoigcScJUYmEhPbBFgVFE41jDMDvIGF1tDTm0VEGwwxVK53dddVrv0VdQwgj
+	qjjMYNj67nAjJBy9bKdJ9wxkz8EkQ4v5f3kIp8l7jsp9vgh0u8JxazN8VGAfzFamZpyY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1x9Mwb-006oS1-F0; Wed, 23 Sep 2026 15:23:29 +0200
+Date: Wed, 23 Sep 2026 15:23:29 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+	arnd@kernel.org, wei.fang@nxp.com, frank.li@nxp.com,
+	shenwei.wang@nxp.com, imx@lists.linux.dev, netdev@vger.kernel.org,
+	nico@fluxnic.net, linux-can@vger.kernel.org,
+	linux-spi@vger.kernel.org, olteanv@gmail.com, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com
+Subject: Re: [PATCHv3 1/3] net: fec: do not use readl()/writel() for ColdFire
+Message-ID: <eb987eb9-f368-4d28-bdd0-c289c3039c3b@lunn.ch>
+References: <20260907134037.1855408-1-gerg@linux-m68k.org>
+ <20260907134037.1855408-2-gerg@linux-m68k.org>
+ <42ad1525-fceb-43d6-aa03-d17e844a9ad9@linux-m68k.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -75,71 +50,34 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260923131634.47896-1-lance.yang@linux.dev>
+In-Reply-To: <42ad1525-fceb-43d6-aa03-d17e844a9ad9@linux-m68k.org>
 
-On Wed, Sep 23, 2026 at 09:16:34PM +0800, Lance Yang wrote:
->
-> On Tue, Sep 22, 2026 at 04:35:40PM +0100, Lorenzo Stoakes (ARM) wrote:
-> >sun3 and coldfire are already supported, however motorola requires a little
-> >more care.
-> >
-> >Here, custom table removal logic is required, so
-> >CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE is enabled for m68k-motorola.
-> >
-> >Firstly as part of this change, the page table level must be communicated
-> >to the underlying __tlb_remove_table() implementation.
-> >
-> >Take advantage of the fact that page tables are aligned by more than enough
-> >to permit setting TABLE_PTE or TABLE_PMD in the low bits of the pointer,
-> >and store this there.
-> >
-> >Then update __pte_free_tlb() and __pmd_free_tlb() to pass this through,
-> >then have __tlb_remove_table() decode this and pass it to
-> >free_pointer_table().
-> >
-> >The page table freeing is performed via call_rcu(), so free_pointer_table()
-> >now will be invoked from softirq context, and as such may be re-entrant.
-> >
-> >Introduce an irq save/restore spinlock to handle this, and hold it over the
-> >time a given ptable entry is being referenced in both get_pointer_table()
-> >and free_pointer_table().
-> >
-> >In order to make things a little easier in this respect, separate out the
-> >logic for adding a new ptable entry into add_pointer_table() and only hold
-> >the lock during ptable entry insertion in this case.
-> >
-> >Note that original list_add_tail(new, dp) added new prior to dp, which is
-> >ptable_list[type].next, i.e. after ptable_list[type].
-> >
-> >The equivalent therefore is list_add(new, &ptable_list[type]), which adds
-> >new after ptable_list[type], only without needing to make reference to dp.
-> >
-> >Note that, as m68k-motorola specifies CONFIG_HAVE_ARCH_TLB_REMOVE_TABLE, it
-> >does not enable CONFIG_PT_RECLAIM. This isn't meaningfully impactful.
-> >
-> >With this applied, all of m68k implements CONFIG_MMU_GATHER_RCU_TABLE_FREE.
-> >
-> >This forms part of an overall effort to switch every architecture to this
-> >mode.
-> >
-> >Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
-> >Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
-> >---
->
-> I wondered about slot reuse during the RCU wait, but that can't happen :)
->
-> The slot stays marked busy until free_pointer_table() runs after RCU, and
-> the last free unlinks the page under ptable_lock.
->
-> Also ran page-table teardown stress and fork/exec churn on
-> qemu-system-m68k (virt, m68040, CONFIG_MMU_MOTOROLA=y). All 40 rounds ran
-> cleanly :D
->
-> Acked-by: Lance Yang <lance.yang@linux.dev>
->
-> Tested-by: Lance Yang <lance.yang@linux.dev>
+On Wed, Sep 23, 2026 at 11:07:17PM +1000, Greg Ungerer wrote:
+> Ping...
 
-Great, thanks! Really appreciate the testing :)
+To: linux-m68k@lists.linux-m68k.org
 
---
-Cheers, Lorenzo
+ICMP redirect.
+
+> > The FEC driver works today because the m68k architecture io.h has a
+> > kludge in the definitions of the readl() and writel() functions for
+> > ColdFire that allow big-endian access if the address of the register to
+> > access is within the SoC's internal peripheral registers. This is being
+> > fixed in the near future to define readl() and writel() correctly - with
+> > no byte swapping. Thus the motivation for this fix here.
+> > 
+> > __raw_readl()/__raw_writel() access methods are used instead of the more
+> > commonly used ioread32be()/iowrite32be() here because those are broken too,
+> > because of the current readl()/writel() kludge. They are implemented in
+> > asm-generic/io.h in terms of readl()/writel().
+> > 
+> > Note that even when readl() and writel() are fixed on ColdFire they will
+> > not be the right thing to use within the FEC driver on ColdFire hardware.
+
+So what is the end goal here? This patch. Then fix
+readl()/writel(). Then fix ioread32be()/iowrite32be()? And then change
+these macros to use ioread32be()/iowrite32be()?
+
+Are we always going to be using fec_read()/fec_write()?
+
+	Andrew
