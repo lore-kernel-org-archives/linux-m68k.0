@@ -1,189 +1,170 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dy2-f43.google.com (mail-dy2-f43.google.com [74.125.229.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780524503E2
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 09:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204A3499F3C
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 11:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790156393; cv=none; b=obvxn7Yky3CSJ7YSz8mqBocE9rG5VZ1eTjRwJdmQK1kMKYVVpfa3qK1wFQVYc778L5+ZwPecJScIyJXBY9oWsphNJLyJQbaRq9vLQj3dkRBvHTWzXr3PRFwt8N6UQ0RLXY0EjZtjkQSS1j2VwQwntcwImlQdIBcsFwbeCqs6dyk=
+	t=1790162156; cv=none; b=q4Y8ifY78OwUWYLgbDRO0s8J7t86gwpQ4r/QDase7zwRq3gIDKlSVdfhsiipEvbj1YTDF0S8dwy59Kh4o2IMlN5uYzM+dmLLIda1A+Stx8Zicfk1WmavINBrWeCwHwBi+HcSJYkVfaHL/diPY65EqL9GNCkdl8Sruh17IkN81xU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790156393; c=relaxed/simple;
-	bh=/QsHuDttxaRSyGmLHoMZpt76dk8UYL8eOUTAX3LYrxk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q8ImP3TESQYiXmXTMJiilftLvE+YAq61PD+keKJdS1MPeSx5btx/g6xrkdyploH3FMUMRADyvDfwFAQ2Gg3vgSvcQTVcTUT3j9Q+pHi6OR0wookN5B2OaTy1VZH15DtcucymgnodWGAJtg1uEgOUG3ydHglogZeZi8RMsNUt5wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYr7TIgW; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1790162156; c=relaxed/simple;
+	bh=fpTgXc3xoF7NXSdZg3Az2P+X8RDV8yueEizFc2Q7iAQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=YtDfXpSMlRi6LkAdRBJDRP4YcUohpIZF/IrK0EBsHJoEhsOqqZX9ZyA45ieXF/BRhitD1H8NY/WmR86YOTch8DZll8TTrLJ9pWA18hmg2u2WlF0TGtacL8+cu5bbvH8v6HBvxsQ8y3w6VXJVnbuuDiE6ymFm2mStPuhAOS27Ybg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=JdDgUOXZ; arc=none smtp.client-ip=74.125.229.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYr7TIgW"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id C7167600AA;
-	Wed, 23 Sep 2026 09:39:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC0771F000FF;
-	Wed, 23 Sep 2026 09:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790156389;
-	bh=Ky9c7fQZ/1RFu7l1ztUmuvVnX2EIpcy6aLCf8pDHQ2o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=KYr7TIgWfrXtSFuYVtPX6VTaibKpRDQE0xLEscffhdhRMZQB3sVyojKDpb3pvYX9a
-	 qfvIpI/SixGIFQ7jPSlfRpTXqHoSQw3e5NGtYoZ0sYH3oJ+xqsBI0jpKsys1S/JnYy
-	 IvQ5WEYwt2sHjNSrspaH0UnfT4l3XktBqmTgdQkVCWl9XgouOK5HxvYe5u055yDxRe
-	 RgCQcXcWZ6Lv0CUhhbVrDCdmnM1DAd3Ix6pJv/92RXmA/nzdCeEya6awHMsihGp3fa
-	 8OzKYVp4CPN2ar8c2+eqMrSU+ghKOu7oofCmSqVM5mgyS2NoW6ndtBPvRSr07sUjNj
-	 CvviJRLhMRoaQ==
-Message-ID: <300f92ef-1526-44d9-a01f-e9b8f3fc0cd1@kernel.org>
-Date: Wed, 23 Sep 2026 11:39:27 +0200
+	dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b="JdDgUOXZ"
+Received: by mail-dy2-f43.google.com with SMTP id 5a478bee46e88-33c24422d4dso897310eec.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 04:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1790162153; x=1790766953; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id
+         :subject:references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=k2RZKlHWzdwe4Eljq1oFXDUhjI0hVFgJE+l4Mm5J2Qk=;
+        b=JdDgUOXZ3jHDYLlM49VxxzS1yOXclN9rcnRAZ0c0P/1LvxU2PEJ5fOBk4XrGrfCkoo
+         LJUGiWyndAig+QsXCZzOHBze+XSTG3v/mPCxfDbSoh5pOhCumd+am6Q9M6MezD7gMZWx
+         RFM3Z41EUNQB8oNjDENfx43uIhEayzC8FeCYUKDXLYLfT/m8Af3Sbq9F/DCgATDcq2FM
+         ZCEnPBZE8nAq1XidFSbRFMGdBYMNdweLYS7X0e3ivEArPUZjOiHrs1ix7pWMQMFeIm+X
+         q76ee2hSYt2zJBsZqbvJl9sMFW/p14gESpAKqTSK9LSNrvDcdOrScWs6z5/DBTcOoE7T
+         vs3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790162153; x=1790766953;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id
+         :subject:references:in-reply-to:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=k2RZKlHWzdwe4Eljq1oFXDUhjI0hVFgJE+l4Mm5J2Qk=;
+        b=hXDlnO0ThBJzQ/J9QvP+OkuV1j1tkKcVVaPUQLIi/dL+SYk5t/K4zTG2gR6cQWDu26
+         E8Np5UNFWxA85iU9vaHOC28sJrwT2ot+QjptUYoEopwy1ZQNlANygZVlV6XhU9VrtVGN
+         6d7u1hPpNflPH0O9DFpCTUzFzHdQ+fQObXc4BH0R/2jFtx2j+NlsQEpRSe2Kbpfflxyj
+         Etb5GFMJ6plUzqAxMGuIYIg7dqBDHbP+TnIpE1r4jzZ532/+sEBiIehJdOJtR6C79ipf
+         +OZd0QzDj7n9dSi2ly4w/astxN8D3dgPNbBn+EOYq+EOk9Zkwe/rwoOcnn/+HaPHuYZ3
+         32OA==
+X-Forwarded-Encrypted: i=1; AKwUvBxTb9pXepfO0geZm+jnNFcZUuUN3vmRLnYTTLmer7HE/ZJGcYXgkI5BESP3/ixHN21UF8Wa9Stz7ZHL@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++ks/gM+iPgn9yO4lEdcY9UjXY7LY+X9ia/GhCKeYJyn+Q9G0s2S
+	dj3WBQCpMjaPbdem1GabG2MJkrXSjb3/J+b6s4kH9koxGiBKT+IOj3PVoUuXtnuvQUALJp5g3Z/
+	7B2lv3GA=
+X-Gm-Gg: AYBFou1WzPySvSHrmXnWhtx0a52bZTBdFtc9xWOEIy6487b3ox89Yn+mhmoBBLnR4Pi
+	XcKJHU2p1o/4/9SryQJOAx4Y48J+CmHFgq8q0EfZjhrPJUqDwIOo+9U/DDyt3AZWsqSUcvjDsMx
+	2TJTKbItWs8/yOzu/0zFOAu/1eHEo8jAV5/booOjEjt6ptC7PhUWnL8oVEhhYj5sokIp0HDZ664
+	g8jEu0WFtwOzqzvzJ4pgwhnOW8BCTJM+OQNd5WILY/+z/rgw66QbQTeTE5dVCPqX+XD+fB+bWpE
+	bC0ZpyuaJ1CHv4+B/pT3JjNLPnrlB8WIFA5MT8B6WtE8OVI0DLFs+wwZClZrKP/MIcVCr75kGAA
+	nCqOMbchxcrNGOqCfPdGDMwZ/IZUTYjXw5Yz54criosXX22CXEXNdl31YktsPesKgew73S+wP8b
+	rgQt5ua3vplbhEawlJ4L10kzbbOwCMxhLp4VSxCIvUTYk7W+ITMloCTrAWChXp7UvlhI5h0LqaI
+	F8HhH1hKwloShmAFaBpbFXT48oy2O2v1ZRLnlS5XQx4qX31h7oLkKFfla1viEj3rtCCb3UuMg==
+X-Received: by 2002:a05:7301:4e04:b0:33b:faec:b01e with SMTP id 5a478bee46e88-33e8c442e2amr3586526eec.17.1790162152023;
+        Wed, 23 Sep 2026 04:15:52 -0700 (PDT)
+Received: from xps16.local ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-33e939fdd91sm6383650eec.4.2026.09.23.04.15.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2026 04:15:51 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: Laurent Vivier <laurent@vivier.eu>, Finn Thain <fthain@linux-m68k.org>
+Cc: Joshua Thompson <funaho@jurai.org>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+ Omar Sandoval <osandov@fb.com>
+In-Reply-To: <cover.1788513996.git.fthain@linux-m68k.org>
+References: <cover.1788513996.git.fthain@linux-m68k.org>
+Subject: Re: [PATCH v3 00/33] block/swim: Fixes and improvements
+Message-Id: <179016215097.13005.11311816512162043252.b4-ty@b4>
+Date: Wed, 23 Sep 2026 05:15:50 -0600
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/12] mm: make userland page table freeing RCU-safe
-Content-Language: en-US
-To: "David Hildenbrand (Arm)" <david@kernel.org>,
- "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>,
- Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>,
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>,
- Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
- Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen
- <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>,
- Jonas Bonn <jonas@southpole.se>,
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
- Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
- Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>,
- Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>,
- Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin
- <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
- "David S. Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>,
- Richard Henderson <richard.henderson@linaro.org>,
- Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner
- <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
- Peter Xu <peterx@redhat.com>, Yoshinori Sato <ysato@users.sourceforge.jp>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>,
- Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
- linux-arch@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
- linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>,
- Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org
-References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
- <20260922160021.a2fc65d05d9b867a141e5457@linux-foundation.org>
- <9dcde7e4-dadb-4644-9dff-7fd8a26e29a6@kernel.org> <arOVbT5B1FOMe1wb@gremlin>
- <77db2f8f-dfc2-49c6-82f6-8e6c4f7c1fd0@kernel.org>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Autocrypt: addr=vbabka@kernel.org; keydata=
- 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
-In-Reply-To: <77db2f8f-dfc2-49c6-82f6-8e6c4f7c1fd0@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15.2
 
-On 9/23/26 11:15, David Hildenbrand (Arm) wrote:
-> On 9/23/26 11:04, Lorenzo Stoakes (ARM) wrote:
->> On Wed, Sep 23, 2026 at 10:45:33AM +0200, David Hildenbrand (Arm) wrote:
->>> On 9/23/26 01:00, Andrew Morton wrote:
->>>>
->>>>
->>>> Do we have reason to believe that anyone is seeing any effects from
->>>> their arch's failure to rcu-free the page tables?
->>>>
->>>> This sounds like a rather long-standing wart, yes?
->>>>
->>>> The patchset is thinly reviewed and mm.git is bursting at the seams
->>>> again.  I'll play wait-and-see on this series.
->>> Do we want to nudge arch maintainers to review?
->> 
->> (Just to note that I replied separately, 'thinly reviewed' is incorrect, it's
->> been in -next for weeks and the whole thing was reviewed by Kiryl.)
-> 
-> Ack.
-> 
->> 
->> The only places where that would be useful is m68k motorola, sparc32.
->> 
->> But in any case it has been heavily tested including on every single arch
->> listed with stress testing performed (I think I cover that in the cover
->> letter).
->> 
->> The changes are not controversial so I don't think that's a blocker, but
->> it'd be nice?
-> 
-> I doubt we'll ever get sparc32 reviews :)
-> 
-> I'd definitely appreciate some review on the arch bits from arch maintainers,
-> but if they don't reply within the next weeks I wouldn't wait on that.
 
-Indeed, for minor arches like this the lack of review (it would be a whole
-cycle by the merge window) shouldn't be a blocker for important tree-wide
-progress.
+On Fri, 04 Sep 2026 19:26:36 +1000, Finn Thain wrote:
+> I recently had a need for the 'swim' driver but found that it was too buggy
+> to be useful for my purposes. I had two aims in mind--
+> 
+> Firstly, I needed this driver to help me test my new BMoW Floppy Emu for
+> emulation correctness. Being that Linux is open source and MacOS is not,
+> this driver should be ideal for that.
+> 
+> [...]
+
+Applied, thanks!
+
+[01/33] swim: Assert strobe with stable outputs
+        commit: adcc410bfb41715fef198a0975db4ed594a49bb7
+[02/33] swim: Select appropriate drive once only
+        commit: a2d22b3f25c388f9fbce7bf36a45a8900dce4aa3
+[03/33] swim: Enable the drive when probing
+        commit: 57d88c8f4ea34a4dd7c5351bd026e225c7283f3f
+[04/33] swim: Don't disable drive after every sector
+        commit: 05a7c4b197279cfb3ec3df26146ce085a2438aec
+[05/33] swim: Perform ISM/IWM mode switching according to specs
+        commit: 52981bb358d1b5c38040b00f81e2cf973f9148ad
+[06/33] swim: Configure parameter memory
+        commit: 994a778d966592d0e211deaf6e436fcb21413935
+[07/33] swim: Refactor SWIM setup
+        commit: 62977e8ea98e99dbf86609e65930e6607398e1c5
+[08/33] swim: Enable clock divider only where appropriate
+        commit: 3c02a14c89962c88ed0abb3cce4101021c63149c
+[09/33] swim: Don't start motor until medium is present
+        commit: dbbaaae83cb277d76e70426c0f0ce289e867ed77
+[10/33] swim: Recalibrate when drive is probed
+        commit: ba087774a1493ade524f8a783461fa8be9c75039
+[11/33] swim: Add track zero recalibration delay
+        commit: b9c1095048537cc9563f12d0a24f2f0df129e4d5
+[12/33] swim: Handle FIFO timeout error
+        commit: 2e9bcbecee68431b689d16b23bc5529db686f8d4
+[13/33] swim: Simplify return value initialization
+        commit: 385a44e78702762e2fce796cf37b6f465d86a87f
+[14/33] swim: Check for CRC errors
+        commit: 01bff87152e6748fbac9ccd645d3d5f490d75ddc
+[15/33] swim: Check error register during sector read
+        commit: d66bdef0a3083fed1a0fc4f0ee1c85b26476b21c
+[16/33] swim: Don't use the mark register to read data
+        commit: cb7923133ec18e67e2d6718e29426a4423af6b73
+[17/33] swim: Fix buffer overflow
+        commit: a54870a4ae4962acf341eb6ca010cae02af1a6ea
+[18/33] swim: Convert to blocking queue
+        commit: 92353a04763726f70fea6be90957c50fc18215e0
+[19/33] swim: Remove redundant RELAX actions
+        commit: 04cb277e6841b55b950b42063fe11501b5d1676a
+[20/33] swim: Deduplicate polling loops
+        commit: b736189c93c9ad1056521a4229ec2f252b714b5a
+[21/33] swim: Check drive ready bit
+        commit: abae04f5bed924590e98fe1519566a6e0144e6b5
+[22/33] swim: Revisit delays
+        commit: bbcd3e38a4f355d6b0320f3f6916df96c109f2ad
+[23/33] swim: Remove pointless mode0 register write
+        commit: 151848934fa4696067a8ca861cef5efe7aa1e046
+[24/33] swim: Don't needlessly re-read sectors
+        commit: 22fbea97bc18fd099730572bf9aeba9879d62b02
+[25/33] swim: Don't search beyond the first data mark
+        commit: 79eafa4ccb74be023fd2cae87d75425d6eb903bb
+[26/33] swim: Remove pointless specifiers
+        commit: c516ded6f6da38b64ce9f69c88e65a65927296bb
+[27/33] swim: Move swd initialization
+        commit: c0862cf48fae35571489b79b1c84db16691f2ad8
+[28/33] swim: Add some helpful references
+        commit: bd4a21b8452d48be48cbc66693d27ff3c1f88d9b
+[29/33] swim: Remove unused macro definitions
+        commit: 7d7c6d91f5657b2979cae7c7dcb49d2523efd894
+[30/33] swim: Clean up whitespace
+        commit: e97cbb470cf94ce018558c899bcad387f69c99f5
+[31/33] swim: Define macros for constants
+        commit: d4b2519065d6db2eb7cd36d178591058452da3e0
+[32/33] swim: Define symbols for constants
+        commit: 75f47f0910f4f4289c11409398c05999aec19f37
+[33/33] swim: Unexport global symbols
+        commit: e7a6727deab0d300171ee059b7dbcdbdb3c46797
+
+Best regards,
+-- 
+Jens Axboe
+
+
+
