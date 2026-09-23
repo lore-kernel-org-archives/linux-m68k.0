@@ -1,41 +1,40 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E76481AA0
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 11:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABA04CCDCC
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 23 Sep 2026 11:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790163609; cv=none; b=qUy2ZFxeFozckgq30M9+U7C+m7779my/VazewSGq3bRmxBm6gZJjaq8/aS09PykK+MljK+lqC2a4+8d/ZOZIQUMGda3FFS9ysPVklKC4Zu8kIye0HrEC92bvuAW7kkWqtZGneJEZtu6zlRWt2pKoAh4tyPvhLZUub6HPOzakW0Q=
+	t=1790164167; cv=none; b=QanlgA/Knn7L8dD5ka1rB086MPV/f64S1b1te1Dfqu9uhHGS+GGL6dcAPAP0bH6Qy/gUVvbE/u0EY72N3QBWpOPi5oM74KXo70IWmC234dBQcVd6fuiO8kk9A6B1zNvQFGyClSLeiJerTBM/RVotkKT45wXaHH7I6NbtoJ1Jy7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790163609; c=relaxed/simple;
-	bh=C5FQQsa/PGM9gEcnFXmEQf+GRxFZlIhLER2772pZwy4=;
+	s=arc-20240116; t=1790164167; c=relaxed/simple;
+	bh=jwiqxrbsZtpA5Aylec/sBJv/MbEzwpdVd/4e2DbRM2Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PyWJjI4hsFy746xcVfT+pYBpyhQu5g3Amsc+vU/bBOmcpXG6z4VE4Jy+JoRuhzktrTpiWAlzR3E1k52QPVrJaTiPWkTS9Jq9di04ahSVulz5jRJEZKrjU2CKSoJEXKf27Nnhlaz4lLGbIorjpQVK0tma6cdtIQ60k3BxeHS9Xb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BVRkS6gt; arc=none smtp.client-ip=172.234.252.31
+	 Content-Type:Content-Disposition:In-Reply-To; b=pkJbyd5Lb8CtUqRr2Ci7iPuzwKa5ZuBrM954p/K8rYMU8NNPlHb7VjZ2CrPYdPcmU1TINwiC+chJRO62NXKZFIbrP32C3WrmCRamR9GrTq95Kll9eWSptYvt6mvxV6lKo3zCHeJ6u+teW2/d6k2b74MiK0SepWjZClidWfFBrhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D0HspulT; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BVRkS6gt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D0HspulT"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6993540DB0;
-	Wed, 23 Sep 2026 11:39:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D8711F000FF;
-	Wed, 23 Sep 2026 11:39:44 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 15EAD40A5F;
+	Wed, 23 Sep 2026 11:49:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B941F000FF;
+	Wed, 23 Sep 2026 11:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790163599;
-	bh=eLrpgKuhQkoqnu0vp0p8SbJmXaLTmBHhu9O+CiN2Vjw=;
+	s=k20260515; t=1790164151;
+	bh=Z18U4qa6LbbRW6yI1ebVsuAYdmDir8PYv46mTQmvxDM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=BVRkS6gt4XoYQOeCEfHPhRO7ByeHkhEEqQphfsSe4SuC1tCT0cXzY7rwECIeYfmTQ
-	 3re4dkJjl7SIZd81ZkMc56LvPd1cysERrJMNbmXFLXhsqS3rtneWLoeLPSSv6Uv8w9
-	 NqkNMMg1o3qPDa9QeTRxreqsGE9tRJkygczoThYC6QrTl2ldDxoW9x8DTR+mvQh2uK
-	 s2F7yV0/wbhQRtUjiExmkJXBbJDhmPYa+/Zos6QWnaG7zkq3Gk8Aeud5bark6jRmzS
-	 Xv0T5RU8A1tfwnKhxw4IPFOwigl65eC/Zok10skwSamz+CrUYHC1z0FbIRAVJRQIwx
-	 NnBagpGL/fxrQ==
-Date: Wed, 23 Sep 2026 12:39:41 +0100
+	b=D0HspulTyBdCQX+9DDqdK27FApcPCCvh0cfa5A2rbZhHewxbqqnqFfAC7nocs+kP2
+	 0mvVh8QH9qXFX6+3roRxbIQueQ3TPhzi292qpq9D3xRZZ5wrxeyaLz+2QvciRn8RF2
+	 FVQ8S8jycXpuDyJ9rlAicpdmH0A4zO0K41QTIIgv5uUQwQu8Cyh3/fZ149W1dOnWWV
+	 yYYskNeHf77UMMMQLOJF6vyT4QfBuWnpw9G3F145FYd/VJTxiJBTwTSUUZpHmcLZ58
+	 JQgdeq38PegQ/KA2Ovq2zM3pjhtITbOaI5GbiIAo2djGnpsU4gEkvZ674V/u+BfhWb
+	 OSemwb5O1SYug==
+Date: Wed, 23 Sep 2026 12:48:53 +0100
 From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: "David Hildenbrand (Arm)" <david@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>, 
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>, 
 	Baolin Wang <baolin.wang@linux.alibaba.com>, "Liam R. Howlett" <liam@infradead.org>, 
 	Nico Pache <nico.pache@linux.dev>, Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
 	Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>, 
@@ -64,26 +63,27 @@ Cc: "David Hildenbrand (Arm)" <david@kernel.org>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
 	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>, 
+	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
 	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
 	Yoshinori Sato <ysato@users.sourceforge.jp>, Shakeel Butt <shakeel.butt@linux.dev>, 
 	Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
 	linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, 
-	Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 00/12] mm: make userland page table freeing RCU-safe
-Message-ID: <arO6UpHLChZqAjBm@gremlin>
+	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-snps-arc@lists.infradead.org, linux-arch@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, 
+	linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>, Qi Zheng <qi.zheng@linux.dev>, 
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 11/12] mm: make userland page table freeing RCU-safe
+Message-ID: <arO7lSy71meks_sW@gremlin>
 References: <20260922-rcu-pagetable-freeing-v4-0-fe1ad1f1e303@kernel.org>
- <20260922160021.a2fc65d05d9b867a141e5457@linux-foundation.org>
- <9dcde7e4-dadb-4644-9dff-7fd8a26e29a6@kernel.org>
- <arOVbT5B1FOMe1wb@gremlin>
- <77db2f8f-dfc2-49c6-82f6-8e6c4f7c1fd0@kernel.org>
- <300f92ef-1526-44d9-a01f-e9b8f3fc0cd1@kernel.org>
+ <20260922-rcu-pagetable-freeing-v4-11-fe1ad1f1e303@kernel.org>
+ <72d1548a-a4ee-4832-b2ab-4bc82f1933f8@kernel.org>
+ <arOWZCeV8FrkAvhK@gremlin>
+ <802d3999-95fe-4a09-89b4-d01b60f8e963@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -92,51 +92,41 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <300f92ef-1526-44d9-a01f-e9b8f3fc0cd1@kernel.org>
+In-Reply-To: <802d3999-95fe-4a09-89b4-d01b60f8e963@kernel.org>
 
-On Wed, Sep 23, 2026 at 11:39:27AM +0200, Vlastimil Babka (SUSE) wrote:
-> On 9/23/26 11:15, David Hildenbrand (Arm) wrote:
-> > On 9/23/26 11:04, Lorenzo Stoakes (ARM) wrote:
-> >> On Wed, Sep 23, 2026 at 10:45:33AM +0200, David Hildenbrand (Arm) wrote:
-> >>> On 9/23/26 01:00, Andrew Morton wrote:
-> >>>>
-> >>>>
-> >>>> Do we have reason to believe that anyone is seeing any effects from
-> >>>> their arch's failure to rcu-free the page tables?
-> >>>>
-> >>>> This sounds like a rather long-standing wart, yes?
-> >>>>
-> >>>> The patchset is thinly reviewed and mm.git is bursting at the seams
-> >>>> again.  I'll play wait-and-see on this series.
-> >>> Do we want to nudge arch maintainers to review?
+On Wed, Sep 23, 2026 at 11:13:36AM +0200, David Hildenbrand (Arm) wrote:
+> On 9/23/26 11:06, Lorenzo Stoakes (ARM) wrote:
+> > On Wed, Sep 23, 2026 at 11:04:17AM +0200, David Hildenbrand (Arm) wrote:
+> >> On 9/22/26 17:35, Lorenzo Stoakes (ARM) wrote:
 > >>
-> >> (Just to note that I replied separately, 'thinly reviewed' is incorrect, it's
-> >> been in -next for weeks and the whole thing was reviewed by Kiryl.)
-> >
-> > Ack.
-> >
+> >> The patch subject confused me at first: that's not what the patch is doing, no?
+> >> Previous patches did that, and now you're just removing the leftovers?
 > >>
-> >> The only places where that would be useful is m68k motorola, sparc32.
-> >>
-> >> But in any case it has been heavily tested including on every single arch
-> >> listed with stress testing performed (I think I cover that in the cover
-> >> letter).
-> >>
-> >> The changes are not controversial so I don't think that's a blocker, but
-> >> it'd be nice?
+> >> Maybe I'm missing something that this patch does along the lines of teaching the
+> >> code to be RCU-safe.
 > >
-> > I doubt we'll ever get sparc32 reviews :)
-> >
-> > I'd definitely appreciate some review on the arch bits from arch maintainers,
-> > but if they don't reply within the next weeks I wouldn't wait on that.
+> > It is the final piece that makes that the case, so I think it's OK to allow
+> > oneself a nice subject line? No? :)
 >
-> Indeed, for minor arches like this the lack of review (it would be a whole
-> cycle by the merge window) shouldn't be a blocker for important tree-wide
-> progress.
+> Just took me longer to figure out if I am missing something important.
+>
+> E.g.,
+>
+> 	"mm: remove unused RCU-unsafe user page table freeing"
+>
+> would have been clearer to me. Anyhow, just stumbled over it, I don't care too much.
 
-Thanks appreciated!
+Compromise on:
 
-Greg from m68k has had a look so seems we have movement there anyway! :)
+mm: now userland pgtable freeing is safe, remove unused bits
+
+?
+
+>
+> --
+> Cheers,
+>
+> David
 
 --
 Cheers, Lorenzo
