@@ -1,119 +1,120 @@
-Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB493A544A
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 26 Sep 2026 07:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC4D330D35
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 26 Sep 2026 17:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790408963; cv=none; b=o2jVV9dIKdJDlQ0CEMY3A5PRdpMxgJAwZ92pmcZwQyX3Vx3nT7K/HwAt4APKCYTkLnDshpOFdxyGMQJxqMjHTazFj9xuNcVO+29wyLcO2P+tJI10mS4NOLihg9+80nMK+Cm54bep6FKSbBwb6i/1YiXvRscUaqAY/U7p5l158Mk=
+	t=1790444914; cv=none; b=sMOP9YllbaH/wlyk8BLTw2cuRWkm7zrL3GSdkaGsEuEIVNDDxxpsczpMQ1YwXNWEz0ojyro/gphYA51H+jrNc5Eu2/N79DX4kSYN0qSlOIiRU+JhdDsDc0EuAzS5yvr+ru/uSGgnFa9at1fziXWQfICwyY1CsKKTttTyKiyPhs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790408963; c=relaxed/simple;
-	bh=dn02Q7ecKJWz5B04rCwHbNrQH8D02KhFAwFllXMLtEk=;
-	h=To:Cc:Message-ID:In-Reply-To:References:From:Subject:Date; b=eMPDKaELIjaXXDIk7+3NVCwnzqOGQ/LfkZqhSOqXKsJmFBXr7UGnYoaq0lmSw95/NvCbD/Ein26ooJKFAn7w8nuZsWC6i+3FXh5K0jkYOk7Rhc4TC2aLo47PXLOt+GhV/ZrdttL0+Io2Jec1/1qtLJ1jjCkSXtTOFp2jB4Bt2I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Ezr+W6gY; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+	s=arc-20240116; t=1790444914; c=relaxed/simple;
+	bh=m9rcUbmznByf8GDhuCsNg7+iMckZPDk/baBhodK8tMU=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=jLrOc51QXlP2B/wjB9CGumaZpyZo6zzIFK1KtskNOnd7e74SO8mvRfKn06m8tsBOlffZJV2my1IIJGZgmKdeZ4eS0X1ZXl99ltADtKxZmT376RKlLyPdD/BPdjbPHAu1aldEN9gvjbi89W+gvOsjLWfptXMDcDphNtMmkiEzkY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fJFHJeQ2; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ezr+W6gY"
-Received: from phl-compute-12.internal (phl-compute-12.internal [10.202.2.52])
-	by mailfout.phl.internal (Postfix) with ESMTP id 5F1B9EC0118;
-	Sat, 26 Sep 2026 03:49:20 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-12.internal (MEProxy); Sat, 26 Sep 2026 03:49:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1790408960; x=
-	1790495360; bh=s/bTxCYVDE7uT2dDkanJ5+/0oTAO+Kb1T6rIVmbsr/s=; b=E
-	zr+W6gYHEkEDPx/6ko3x6RhySfTKNAh3BfYkqtjit0+JA82V/m9UjjghXyxPp8jE
-	kQ8wTQyMTPxcXx8WQm75S3jc8bZubYhoCIzv+bBKViBMWRtaGPevU8tz0QIYWRt6
-	o3afzndYbmvBCi/vZ4JNI84uT3BpfEYPvrPje0EMZZ6s2anj9HZwtd1ETiJgyJQN
-	x2iXnUIG9A7+wiC78dfSFhgUIG+oe6SZNjUJsufmENMiw4N5R/rLPw3BJvJLJkLm
-	NiL2ue/5R4dRZh6uVckt4qjSNC3ZRei9TgeW8mCurMI9fMqtiNBpR0kmbdSiqYmm
-	El9OE64WtscleAF8GR0Yg==
-X-ME-Sender: <xms:AHm3akI-UTiNvKx083NJFi30Q6cXfH05229hf9QJWUnEu-2Tl1BV9A>
-    <xme:AHm3agLMFnoJsiZ7UkAz1FWnqzofuEBq1bb4hG2O4Q-xQ5CYsOX7nOabSgABDe-77
-    gev_zGsGRCtjNIMoV_anJRCtLySqBwFA3hLLAPKQ7WCGYmiwcwvUZA>
-X-ME-Received: <xmr:AHm3am75mcdo8saOo5qkrQmknuHD2f0FOhEs9TaH6vzI6hBv8Hrc9ildlxVxZMCCKaORgFf4i6trcb2aYqKPvJT9fzS5-POyTLY>
-X-ME-Proxy-Cause: dmFkZTFhgbhGL2sj4pJrw+Bgdida+aoInjEU9BhPhvnEODw606EnVRu1dtUBIWrHIHekHs
-    iPFmOMYom+uzd2hm7ODvC6qvS+UrltZ0XbuNmj1TOpI+GdMrWxrTg3t+GZ6GD785M8BoqG
-    ivRuNhwFUuwPia8CRYlTHrpJrtmEN+VpLVaEepzBBL0JSMs3+k/3ZbVn5SPHFypbmXHlCF
-    /W3XnSpXVQOE4/0N+kMzFoXtLehqeVQNxh1mLFOUBeoDti+xLVk+77y+w0Y1sGJmCD8cH6
-    ZVDanVVOCaa/YJ0Xmo8pYEptujYeBEVtsXgGW6oXN39UlMk1lro9/ZLIuE6YaRrTiRFVop
-    Ex0LzygTHBndrS88jiVsLgBCV9M+XL0XDbnsFZmzimnoPptSY3Zok/u/oY3yDYD4uF8qin
-    ZUyi+cDeghiz1Z8+LdBL8peuPyK4EYkUANGhZ1eRijgE+8Ngb5V6S2MvGVx/FrPENNZp8m
-    2Vh0s/GTqe3xvZQiX7WtYZf32BxWX4f9TtS93guT/Gmlkbt6ZmSLsOAQYliGJ14307sp0I
-    Hv10TCkTnpNV1VKZWIABGigjnkbHVpLxF1YuGJXReWXemHEPGqB6oy/Ht5pjf2tlDXOhXx
-    WHOuhFv5rubLdhAmrYu/WtC9osSSxhpYgJ6/wcpOMlaaiBEFLNQ5y3J8gPkQ
-X-ME-Proxy: <xmx:AHm3aifow9qPK2ExwXLjDIdctuEgJVDPuEqN5-574SfYTnBXRWZiqQ>
-    <xmx:AHm3apG3DoWu6bbQat1k1Xyk3A8cpCnry5oyCCcVDgxGTZZgnRD7Fg>
-    <xmx:AHm3ajQkaeXVs_LiCo-DaznGvKXJ5CgfcaJcjLrldNX3-MjxMKyk6g>
-    <xmx:AHm3avZRux35nWNfz-9u_9RBEYJNv7Ss4HJhyXkA79eg2Xv5O9ONLg>
-    <xmx:AHm3am43WEmzrK91LfAH5QAHcNTN8DB3RSAXZiSe_ih2H6T0Db__cpHz>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 26 Sep 2026 03:49:17 -0400 (EDT)
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Laurent Vivier <laurent@vivier.eu>,
-    Stan Johnson <userm57@yahoo.com>,
-    Geert Uytterhoeven <geert@linux-m68k.org>,
-    Joshua Thompson <funaho@jurai.org>,
-    linux-block@vger.kernel.org,
-    linux-m68k@lists.linux-m68k.org,
-    linux-kernel@vger.kernel.org
-Message-ID: <418801832b878b9a3383aac4f7b9b9469ae494b0.1790408363.git.fthain@linux-m68k.org>
-In-Reply-To: <cover.1790408363.git.fthain@linux-m68k.org>
-References: <cover.1790408363.git.fthain@linux-m68k.org>
-From: Finn Thain <fthain@linux-m68k.org>
-Subject: [PATCH 2/2] swim, swim3: Fix FDEJECT ioctl for exclusive open
-Date: Sat, 26 Sep 2026 17:39:23 +1000
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fJFHJeQ2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1790444912; x=1821980912;
+  h=date:from:to:cc:subject:message-id;
+  bh=m9rcUbmznByf8GDhuCsNg7+iMckZPDk/baBhodK8tMU=;
+  b=fJFHJeQ2wZe44E4UlsSRZNh9+UWaLGg14rJ8rbolgul1CKSZLyO2xIb3
+   rk3kkTh6OH9FSe4wx+YSUF+BgW8HQNeLJ+fxkkRcNZ2tOPsPx2ox/hTka
+   wAg+rET5mUnVRmOC1EFPnxmhZYuJwADIrhhnYDG0RiQnj6STPQ0uUXwfO
+   N1bur1+gcoGba6VsrU7wkVFmqUjEVHwPLqAWyW9UcUtjdsBTtgK22n9Uk
+   dv5kFBAdliN7poeW4mUwEz/0D2Yz7tC1ITTluBw3Nwm+X9qFMN3/4zxJs
+   Gr2hYBD8Gvhu2YyXXerhW6NY/jmzys2/0WXvfzZx2YvGKNIdSY+G+Bfgf
+   g==;
+X-CSE-ConnectionGUID: EMZDxp4YRTqnYSjgBCgNDA==
+X-CSE-MsgGUID: +MY1SIejTNaCmtvqtbbDMQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11917"; a="101727920"
+X-IronPort-AV: E=Sophos;i="6.27,124,1787036400"; 
+   d="scan'208";a="101727920"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2026 10:48:31 -0700
+X-CSE-ConnectionGUID: J1ru9+e5RZSL58WIeR1J2w==
+X-CSE-MsgGUID: XEWmn/PlRaab3QKngTMiuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,124,1787036400"; 
+   d="scan'208";a="273244918"
+Received: from lkp-server01.sh.intel.com (HELO 462990a40a85) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 26 Sep 2026 10:48:29 -0700
+Received: from kbuild by 462990a40a85 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xAWVe-00000000M4D-1sfV;
+	Sat, 26 Sep 2026 17:48:26 +0000
+Date: Sun, 27 Sep 2026 01:47:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:dt 8/22] drivers/gpu/drm/tegra/hdmi.h:122:9:
+ warning: "ACR_ENABLE" redefined
+Message-ID: <202609270155.T6UyiOkH-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 
-The eject command from the util-linux package does not work with swim3 or
-swim drivers: the drive doesn't eject anything and the command fails.
-Apparently, ioctl(fd, FDEJECT) returns -EBUSY when fd is opened O_EXCL.
-Fix this by checking ref_count for either 1 or -1. Either value means that
-the caller is the sole user of the disk.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git dt
+head:   eafb2e6e489faacf921ddea1e9232e555f7abca6
+commit: 577d5b84921290953e5b4b19198eedea1fa2fcec [8/22] m68k: coldfire: enable common clock framework
+config: m68k-randconfig-r1305-20260926 (https://download.01.org/0day-ci/archive/20260927/202609270155.T6UyiOkH-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.3.0
+sparse: v0.6.5-rc1
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260927/202609270155.T6UyiOkH-lkp@intel.com/reproduce)
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: 8852ecd97488 ("m68k: mac - Add SWIM floppy support")
-Signed-off-by: Finn Thain <fthain@linux-m68k.org>
----
- drivers/block/swim.c  | 2 +-
- drivers/block/swim3.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202609270155.T6UyiOkH-lkp@intel.com/
 
-diff --git a/drivers/block/swim.c b/drivers/block/swim.c
-index 601b1ab1d32c..1552fee28eaa 100644
---- a/drivers/block/swim.c
-+++ b/drivers/block/swim.c
-@@ -696,7 +696,7 @@ static int floppy_ioctl(struct block_device *bdev, blk_mode_t mode,
- 
- 	switch (cmd) {
- 	case FDEJECT:
--		if (fs->ref_count != 1)
-+		if (fs->ref_count != -1 && fs->ref_count != 1)
- 			return -EBUSY;
- 		mutex_lock(&swim_mutex);
- 		err = floppy_eject(fs);
-diff --git a/drivers/block/swim3.c b/drivers/block/swim3.c
-index d4f0d43e0a72..aa27dfd2820e 100644
---- a/drivers/block/swim3.c
-+++ b/drivers/block/swim3.c
-@@ -898,7 +898,7 @@ static int floppy_locked_ioctl(struct block_device *bdev, blk_mode_t mode,
- 
- 	switch (cmd) {
- 	case FDEJECT:
--		if (fs->ref_count != 1)
-+		if (fs->ref_count != -1 && fs->ref_count != 1)
- 			return -EBUSY;
- 		err = fd_eject(fs);
- 		return err;
--- 
-2.52.0
+All warnings (new ones prefixed by >>):
 
+   In file included from drivers/gpu/drm/tegra/hdmi.c:36:
+>> drivers/gpu/drm/tegra/hdmi.h:122:9: warning: "ACR_ENABLE" redefined
+     122 | #define ACR_ENABLE         (1 << 31)
+         |         ^~~~~~~~~~
+   In file included from arch/m68k/include/asm/m54xxsim.h:17,
+                    from arch/m68k/include/asm/mcfsim.h:46,
+                    from arch/m68k/include/asm/io_no.h:35,
+                    from arch/m68k/include/asm/io.h:6,
+                    from include/linux/io.h:12,
+                    from include/linux/irq.h:20,
+                    from include/asm-generic/hardirq.h:17,
+                    from ./arch/m68k/include/generated/asm/hardirq.h:1,
+                    from include/linux/hardirq.h:11,
+                    from include/linux/interrupt.h:11,
+                    from include/linux/kernel_stat.h:8,
+                    from include/linux/cgroup.h:27,
+                    from include/linux/memcontrol.h:13,
+                    from include/linux/swap.h:9,
+                    from include/linux/suspend.h:5,
+                    from include/linux/regulator/consumer.h:35,
+                    from drivers/gpu/drm/tegra/hdmi.c:17:
+   arch/m68k/include/asm/m54xxacr.h:34:9: note: this is the location of the previous definition
+      34 | #define ACR_ENABLE      0x00008000      /* Enable address */
+         |         ^~~~~~~~~~
+
+
+vim +/ACR_ENABLE +122 drivers/gpu/drm/tegra/hdmi.h
+
+edec4af4c3d6d2 Thierry Reding 2012-11-15  119  
+edec4af4c3d6d2 Thierry Reding 2012-11-15  120  #define ACR_SUBPACK_CTS(x) (((x) & 0xffffff) << 8)
+edec4af4c3d6d2 Thierry Reding 2012-11-15  121  #define ACR_SUBPACK_N(x)   (((x) & 0xffffff) << 0)
+edec4af4c3d6d2 Thierry Reding 2012-11-15 @122  #define ACR_ENABLE         (1 << 31)
+edec4af4c3d6d2 Thierry Reding 2012-11-15  123  
+
+:::::: The code at line 122 was first introduced by commit
+:::::: edec4af4c3d6d225578290a9acc38c78147df55b drm: tegra: Add HDMI support
+
+:::::: TO: Thierry Reding <thierry.reding@avionic-design.de>
+:::::: CC: Dave Airlie <airlied@redhat.com>
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
