@@ -1,124 +1,93 @@
-Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 840042D8762
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 05:58:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519DB3C0624
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 09:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.226.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790488690; cv=none; b=r9gyTObM0I/+53U6x+0XSl1pj5EGOpHn2iZpU2Lniti3dkNFwwhWORsH0pqYt0IV804dOKREDmIVuZLVLsjIZZOZBc83dkJk0XMjxrki3GY1vrGGC90Hx0B3TBvIJpKA8VlOmvksYhtgfa2d71gekxveK+WlZNZAved909DO45c=
+	t=1790501343; cv=none; b=QwQEPDFdelNrv9px9ObVDMtDydPrzGPCYr/LCvhAPjKZWIOvvTaKV8aB9W9PEJX50/Rq/ejEpY+FTBUzjeS+eC2PPSmZ7/3uik5DNnRaMUAi6NnlOpizKl9P3P7Qzm/4zIRKnyPYsYgJri+oQcicMXv0OV7PEV0ACnMl37vRlv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790488690; c=relaxed/simple;
-	bh=MHXlgFNGXfMlqqNMN7q2hf6sq7E0XqwV6MaVUyCstC8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=LPyKDHC/1k3JeUIUIo0rRXc04d66vJOUHoecCUZqW4spGLJEUY+MlijNWLX9djkKNN0dQaJHLYZq/7UJqZeKXLhH2445pTB7UNZqcH+fZf45b8Dqcqy0aMqzio12V0WRzEb3AoY38XFU7GWg93v0ScYOP7lV7l0KFPSu3p04oLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=itnOLuHb; arc=none smtp.client-ip=202.12.124.158
+	s=arc-20240116; t=1790501343; c=relaxed/simple;
+	bh=4x8l5gtCNjd3MzbigudBvHHGyNlD8SUXdmY1T/ORuAc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OY7SaRqX0S2mlziXzYMgJKG8iPU7GJrVzzqecny+uGO9P4AC1QcnmEibcGoCk6Gk7be3KYjH81sYf7lJs2TvmF1Xk5eurkPsu3RlgmVBK3QsFDDBdLW9RelQjYbeLQw8llyECSuL4aL58uu8TERFDKDHeNwv67HEnkOr1dht+PA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.226.204
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="itnOLuHb"
-Received: from phl-compute-07.internal (phl-compute-07.internal [10.202.2.47])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 470877A0086;
-	Sun, 27 Sep 2026 01:58:06 -0400 (EDT)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Sun, 27 Sep 2026 01:58:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1790488686; x=1790575086; bh=7UIdIYSTXxBqPgE9ZZHZU23trwPAzxhsT3b
-	HRZIxTmk=; b=itnOLuHbzr/s5JzQvSMk7eRoRiL64jWHZikDpAjxvgZa+146xBg
-	jr2g2FLh8XqLHPHOGVXnpUReuEpRNLV3DSpyWYhOk8lFH2vNU3nSlr1j1RJd7luM
-	1hJHj5HxCGjAdRZ1M0lz+u4453NeozSm4TWEVnpqlbII9XByhgP7ImK2I53tmEYV
-	mmquiPfZRLb/Fn2VzrRTzhTRm87E4vpJTrgXntj92nU1DVr6dgHMyHMTyRicl0Ww
-	jP1SVqp01PjBP5pG2n/KOVpgvUVls2s3NfcUXN0qzm5voNn1ST/estQwJBsE0Sf6
-	q2dm+l4ZglEkL0a3j1qyvO1G968T0LZkDsw==
-X-ME-Sender: <xms:bbC4anUx1mxU3VRWgpZIxRFz-yHtLJjM0ibwS0oXHxBmVe9E3YAFiw>
-    <xme:bbC4arkqNrZjBlwaJTewHeomGetsaAs78ltz9y6KJ-w7iKwDqaV96rXShp2mpqt83
-    rTpbua-ZMMNvFuhJIdcCXXQ9BNu8wQDG5GeVaWPz2mma9y1Uolf5yI>
-X-ME-Received: <xmr:bbC4alm3wZIQhFdFX5Vn46cuHGiJYdevHLnPGkq-lbqh29mBC19j7651scfD>
-X-ME-Proxy-Cause: dmFkZTF5Q9nv+G+ovRAUCUecfX3b7qgsRDfMhnolwI8MngPQv0rDO017DFnkBrKdNUKJMJ
-    smZms+qTSdxSnAPRqvBU7xvoxcosAk/cI0Jc+ihskpkIeeeiw7poYXbrQSe7mOALV4ypp7
-    vT4bNVAGrdb5YZzSUx1DH/RaJIYUvrCDSZJoDBsQrB01eLj4NGdJMhtM5Mdl8hs3EM6d2u
-    pIcCRQM6XyFEsqydw2rB/xlQHWDXupjpovRN8aMJeDHMyY6cJOWaU66HqKbLM1Fo7eDbIK
-    J8XkZTjAkiAoTLo4ri7A35/FhktKzSydUeh4VPQQcvv3yd1U/TkOEOMI1KA64mpzkmUlhT
-    Q3jx0u9OxiWz1g5GBjzemq0ieAkUJVgibyM260Nr+IxfU9RxNN5Aj6SkyOn9l8s81EQx4T
-    c4ApdsqY5TjP0QcsTztAQNkRt+/+DYXS/wjuRKTe1MNgXZYUMxAlKeWGhlDKQxuvkGjIgM
-    hfmzALnXZRXk/KAoQuRokm9FQrCn9py9qzlT+tJDIMhuQjFLc+lnq1DpAx+VNCHLbWmS4s
-    frGBIlUTyn34utcPlTpFC3vTYJtyfUHP+AUo6sxLtIJaVabVUuhrLUcdzGpc5pbM+R6JW+
-    wUT3XrhBUVSzFq5WA5RlYbMnp5E1jkupG8ii4e3kpmSslqDhKNCn+X+khmZQ
-X-ME-Proxy: <xmx:bbC4ajbn9O1THAk-vICCEXUVHm0QnI7__lJiyESZv-xAuSb6sYgmDQ>
-    <xmx:bbC4avTK5tnKbt7dhBuqXZrbu-xhFcxRJwIi2OykkEdkFeXUF1YVog>
-    <xmx:bbC4altXGODSxYlo6ExIRwSJV-9U8pbFyr56hQlRS9Ub3BEEMl6n0Q>
-    <xmx:bbC4apEjPTztWw9vE3xDMGCyGhGcmAISeIr1RSgwAYPCuRpU8zwqag>
-    <xmx:brC4aiW0dHDOPWeD2wf0JJ6oiCnimU6itQGaB3rUkszLHtTP1ZUCvOY->
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 27 Sep 2026 01:58:03 -0400 (EDT)
-Date: Sun, 27 Sep 2026 15:58:05 +1000 (AEST)
-From: Finn Thain <fthain@linux-m68k.org>
-To: Jens Axboe <axboe@kernel.dk>
-cc: Laurent Vivier <laurent@vivier.eu>, Stan Johnson <userm57@yahoo.com>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Joshua Thompson <funaho@jurai.org>, linux-block@vger.kernel.org, 
-    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] swim, swim3: Fix FDEJECT ioctl for exclusive open
-In-Reply-To: <418801832b878b9a3383aac4f7b9b9469ae494b0.1790408363.git.fthain@linux-m68k.org>
-Message-ID: <e649cd04-ecd6-ed66-8c66-bedf41ea1d76@linux-m68k.org>
-References: <cover.1790408363.git.fthain@linux-m68k.org> <418801832b878b9a3383aac4f7b9b9469ae494b0.1790408363.git.fthain@linux-m68k.org>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e97e2c7d4so1255487241.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 02:29:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790501340; x=1791106140;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=csdD6jxORMZoat82NKXRRvNrkjCWmWkfxNOA751RjhY=;
+        b=ZNjdRUETEFJ5UGkYea6p3Yt6fLgj+Ec1Z9gGQCkAfwxOO6MdKxdHxoNWD81RJA2BSm
+         fEyGIiHTXdHRacoO8z75At7UrY0VuLtaoO2gF9/xRKLhhJ941eNk/Xo3egOxGP8BhgjT
+         2Fs5lfi7YASypStve1Yfcj7P57NpZoAsOz6byJxvwjLj/0Mg0HAQ7/SMcyOtO3Dy4OTG
+         +hISy8noi3V43JlQ+kKkOOTsB35eN1asn6wO85POOT+g3mG3s3VksBsRpzF1DtaMfhI+
+         2Io55FI8WOQPuWr15GM6t7IkMnGIZwCOVrmgyAbuNeevnFFaNXLB3c+RFnCfjPY3Vkqz
+         4b9w==
+X-Forwarded-Encrypted: i=1; AKwUvBxVlPoQKU7X6GAypVqJK6ohpLDlBSTGdvbdjRFb2uM+ML6USFp53EU/IFNN1O4c+elhPtxN9s99rL0+@lists.linux-m68k.org
+X-Gm-Message-State: AFq9FYKqxXPNNljHptaM5IvsONyVV9XNPpbr3uNEecFp30ga4/m3dK4+
+	fyTVtlcxdg2Fwj345S3XQUe4aCFk4v6o390veS6yE8pbxpesfsw87cfkq/0xjoT9
+X-Gm-Gg: AYBFou0Nq00u0+XsY945k8dW4R22aorRF7YqiDKukU6GTKJYmLt9EFVkqEws6Gaxy4W
+	WZYhNU/0aFdeH9bC46FfL/a1/PT23Ju+rPLuTJgdqBJK1pK7TVwnyGxTZQP8NkQKSlUEUX0LSka
+	rA7CNrN2lQmQS9LJR95hOIqKCJa7gYFoDADXnSUDJfmpI1BXqwR2en+E82cLgy8clSevbMRV42c
+	z0msJxQVTKTeI5IxJ2EA6x7UWeGCund9KxOyB/diXCi2I10cmnSKapHEn8LHVxNIoa6PhdMVArU
+	YhHxdIXUF/bvw4L6yQHBiHjFbXsean0lG+71lpu3ZOZEhmR2/ye2eL5McfjlD/oUMck4wrKb66S
+	fffJfoGwxtMe9+dtS+IED581rgADxmXPpzRquvABaR0q6gGcVr43A243zUn41yGCAnxYehK55pj
+	xw4BZkg+dC+JIShMqWXn9kJDlJCYBMrqJMcXEz01BuxD7T46aRgNrx++IHk/73YP+L3YmECyHHK
+	l5AUQliCId8JMYXK38J06df9OmSg3ha4gRgalPXYxzE57c0
+X-Received: by 2002:a05:6102:8096:b0:7a1:f7d2:e81a with SMTP id ada2fe7eead31-7af1e6ef2f8mr3961444137.19.1790501339996;
+        Sun, 27 Sep 2026 02:28:59 -0700 (PDT)
+Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com. [74.125.226.204])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5cde5d68034sm4764830e0c.11.2026.09.27.02.28.59
+        for <linux-m68k@lists.linux-m68k.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Sep 2026 02:28:59 -0700 (PDT)
+Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e7c8c8602so1202148241.0
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 02:28:59 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBxsq6vM5lLKCluMKbaHksTobOqhEHIrmcr8tLCFIm3oDMuhbvm74mXjMf+MnZgYJ2K+G6GDLkkuCMhG@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:2d04:b0:7a1:f7d2:e824 with SMTP id
+ ada2fe7eead31-7af1edec5famr4750030137.29.1790501339370; Sun, 27 Sep 2026
+ 02:28:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+References: <20260918141926.3023230-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20260918141926.3023230-1-peng.fan@oss.nxp.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 27 Sep 2026 11:28:48 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWMrBStfd8QAi4U2iZ99y=mDJOUhB58XJ9yaz0v8r4bKw@mail.gmail.com>
+X-Gm-Features: AclHuK_FNakOvnI35QAAk4owW-nxtMw0s1-lNczNFg7HJNVICSo26yhinb-7UTo
+Message-ID: <CAMuHMdWMrBStfd8QAi4U2iZ99y=mDJOUhB58XJ9yaz0v8r4bKw@mail.gmail.com>
+Subject: Re: [PATCH] zorro: use assign_bit() where applicable
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>, 
+	linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Fri, 18 Sept 2026 at 16:21, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> Convert open-coded if/else with set_bit/clear_bit to the assign_bit API.
+>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-Please disregard this patch. When I re-read it, I noticed that the 
-ref_count access should really be protected by the mutex. So I will fix 
-that and re-submit.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k tree for v7.4.
 
-On Sat, 26 Sep 2026, Finn Thain wrote:
+Gr{oetje,eeting}s,
 
-> The eject command from the util-linux package does not work with swim3 or
-> swim drivers: the drive doesn't eject anything and the command fails.
-> Apparently, ioctl(fd, FDEJECT) returns -EBUSY when fd is opened O_EXCL.
-> Fix this by checking ref_count for either 1 or -1. Either value means that
-> the caller is the sole user of the disk.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Fixes: 8852ecd97488 ("m68k: mac - Add SWIM floppy support")
-> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> ---
->  drivers/block/swim.c  | 2 +-
->  drivers/block/swim3.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/block/swim.c b/drivers/block/swim.c
-> index 601b1ab1d32c..1552fee28eaa 100644
-> --- a/drivers/block/swim.c
-> +++ b/drivers/block/swim.c
-> @@ -696,7 +696,7 @@ static int floppy_ioctl(struct block_device *bdev, blk_mode_t mode,
->  
->  	switch (cmd) {
->  	case FDEJECT:
-> -		if (fs->ref_count != 1)
-> +		if (fs->ref_count != -1 && fs->ref_count != 1)
->  			return -EBUSY;
->  		mutex_lock(&swim_mutex);
->  		err = floppy_eject(fs);
-> diff --git a/drivers/block/swim3.c b/drivers/block/swim3.c
-> index d4f0d43e0a72..aa27dfd2820e 100644
-> --- a/drivers/block/swim3.c
-> +++ b/drivers/block/swim3.c
-> @@ -898,7 +898,7 @@ static int floppy_locked_ioctl(struct block_device *bdev, blk_mode_t mode,
->  
->  	switch (cmd) {
->  	case FDEJECT:
-> -		if (fs->ref_count != 1)
-> +		if (fs->ref_count != -1 && fs->ref_count != 1)
->  			return -EBUSY;
->  		err = fd_eject(fs);
->  		return err;
-> 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
