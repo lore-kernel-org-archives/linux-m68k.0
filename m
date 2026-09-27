@@ -1,91 +1,111 @@
-Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
+Received: from mail-ua2-f43.google.com (mail-ua2-f43.google.com [74.125.226.235])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519DB3C0624
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 09:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.226.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777823C13F9
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 12:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.226.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790501343; cv=none; b=QwQEPDFdelNrv9px9ObVDMtDydPrzGPCYr/LCvhAPjKZWIOvvTaKV8aB9W9PEJX50/Rq/ejEpY+FTBUzjeS+eC2PPSmZ7/3uik5DNnRaMUAi6NnlOpizKl9P3P7Qzm/4zIRKnyPYsYgJri+oQcicMXv0OV7PEV0ACnMl37vRlv4=
+	t=1790512001; cv=none; b=W0ecjAmg7s1lzbYkBUv+h/IO+ZOGa3ey7pmGtRFr+bgLzYF4mzfuvIh06xU6/4GIJmlwuHPFHJeITdy+2chuzuiT6ifknNKIxYvzjlUIyChwh3UsIOV5ToGLek1GXwqk0ox/3fRkwWKlxHeV0AqudYfxXC5pc/2CQLjZNUyxjYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790501343; c=relaxed/simple;
-	bh=4x8l5gtCNjd3MzbigudBvHHGyNlD8SUXdmY1T/ORuAc=;
+	s=arc-20240116; t=1790512001; c=relaxed/simple;
+	bh=oNop5lBDeiAxiJltt4clkQ90VfgPeUptu2EMaN8H1Qk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OY7SaRqX0S2mlziXzYMgJKG8iPU7GJrVzzqecny+uGO9P4AC1QcnmEibcGoCk6Gk7be3KYjH81sYf7lJs2TvmF1Xk5eurkPsu3RlgmVBK3QsFDDBdLW9RelQjYbeLQw8llyECSuL4aL58uu8TERFDKDHeNwv67HEnkOr1dht+PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.226.204
+	 To:Cc:Content-Type; b=Jd0albFYumgVq7QYLh9X+B2XdEgW1fne8CFmlmNGIfHFsUiHjcHnnCHk0Ee8WTX0wjjTm1sROAaPK0OraTcLBnFzVnoDYVylhY63zGltnPE5HsglhgjabjU/0OUNOKHkMSePeyyz8QcRGuRxJ0thqxXmV9NJQBhAY6HnslCUGgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.226.235
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e97e2c7d4so1255487241.1
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 02:29:01 -0700 (PDT)
+Received: by mail-ua2-f43.google.com with SMTP id a1e0cc1a2514c-98514b4115eso1505687241.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 05:26:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790501340; x=1791106140;
+        d=1e100.net; s=20260707; t=1790511998; x=1791116798;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=csdD6jxORMZoat82NKXRRvNrkjCWmWkfxNOA751RjhY=;
-        b=ZNjdRUETEFJ5UGkYea6p3Yt6fLgj+Ec1Z9gGQCkAfwxOO6MdKxdHxoNWD81RJA2BSm
-         fEyGIiHTXdHRacoO8z75At7UrY0VuLtaoO2gF9/xRKLhhJ941eNk/Xo3egOxGP8BhgjT
-         2Fs5lfi7YASypStve1Yfcj7P57NpZoAsOz6byJxvwjLj/0Mg0HAQ7/SMcyOtO3Dy4OTG
-         +hISy8noi3V43JlQ+kKkOOTsB35eN1asn6wO85POOT+g3mG3s3VksBsRpzF1DtaMfhI+
-         2Io55FI8WOQPuWr15GM6t7IkMnGIZwCOVrmgyAbuNeevnFFaNXLB3c+RFnCfjPY3Vkqz
-         4b9w==
-X-Forwarded-Encrypted: i=1; AKwUvBxVlPoQKU7X6GAypVqJK6ohpLDlBSTGdvbdjRFb2uM+ML6USFp53EU/IFNN1O4c+elhPtxN9s99rL0+@lists.linux-m68k.org
-X-Gm-Message-State: AFq9FYKqxXPNNljHptaM5IvsONyVV9XNPpbr3uNEecFp30ga4/m3dK4+
-	fyTVtlcxdg2Fwj345S3XQUe4aCFk4v6o390veS6yE8pbxpesfsw87cfkq/0xjoT9
-X-Gm-Gg: AYBFou0Nq00u0+XsY945k8dW4R22aorRF7YqiDKukU6GTKJYmLt9EFVkqEws6Gaxy4W
-	WZYhNU/0aFdeH9bC46FfL/a1/PT23Ju+rPLuTJgdqBJK1pK7TVwnyGxTZQP8NkQKSlUEUX0LSka
-	rA7CNrN2lQmQS9LJR95hOIqKCJa7gYFoDADXnSUDJfmpI1BXqwR2en+E82cLgy8clSevbMRV42c
-	z0msJxQVTKTeI5IxJ2EA6x7UWeGCund9KxOyB/diXCi2I10cmnSKapHEn8LHVxNIoa6PhdMVArU
-	YhHxdIXUF/bvw4L6yQHBiHjFbXsean0lG+71lpu3ZOZEhmR2/ye2eL5McfjlD/oUMck4wrKb66S
-	fffJfoGwxtMe9+dtS+IED581rgADxmXPpzRquvABaR0q6gGcVr43A243zUn41yGCAnxYehK55pj
-	xw4BZkg+dC+JIShMqWXn9kJDlJCYBMrqJMcXEz01BuxD7T46aRgNrx++IHk/73YP+L3YmECyHHK
-	l5AUQliCId8JMYXK38J06df9OmSg3ha4gRgalPXYxzE57c0
-X-Received: by 2002:a05:6102:8096:b0:7a1:f7d2:e81a with SMTP id ada2fe7eead31-7af1e6ef2f8mr3961444137.19.1790501339996;
-        Sun, 27 Sep 2026 02:28:59 -0700 (PDT)
-Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com. [74.125.226.204])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5cde5d68034sm4764830e0c.11.2026.09.27.02.28.59
+        bh=rItpLa2n9MiIOqmyRK+ap1Hs0buU9Shrp4pBeop1lGE=;
+        b=gP3GS7MxuSR5lbUFo574qHx79oM3/4uUUSxpjK+Nf1rpk6SOxIwe+tFURxKFV40fI/
+         HMdahVLtzMUdFF5W6zJSUyYyguYEr8oBEc0IP+Ts5GF1yo2Y3mDmohSWKIr49umdzJbF
+         nDQ7sIebfDsGCKJ1yp1RZLoIe64dB4U5PKKXWfsbbFSj/5NdLLIqdhqUixFRv/7RiBVf
+         IklLO1noSV6EVMNmDikq9yHfB9+0epVnUuZEbHhjFZo4FfYIs7LRGFD7dWtbCRayJU1F
+         3u1gpsGRX0FDoFr9Dwxmkdj/CqmdeB+IxIOrLmgFQB9YMXX+tKL5jru1maCik+OcIsEj
+         GVHQ==
+X-Gm-Message-State: AFq9FYKGuMWSI0kJDKGtQBlxQB4qsTzRBBdBWBrsrsQn1BPsnu3G0xok
+	2froBM9GSMYtPxXQ82qLDDqHwf02KkLolSg7mYbA8vRhwFi4BBjgvdFX5amI1vGP
+X-Gm-Gg: AYBFou2dYY072fehXHrSHj46dk2eY9xaD5P7srjHJxJM3FvitSGfzQfzDqqxAww6FZj
+	FsmAjF4eGynnfzn5dfeSArpmTIU800+QH/gfQQmmgBKppYcgVOBNxjPB9gFppJIdXXIx/6RQA2Z
+	+4KTzE9T7Io9d1KEr7zZm1RokwbMJydG1iQziF7iNolMuBMalvniA5WtdWhVuFcFWUr3Q6xQEJy
+	kGOirSFZX722xZ5CyDW+jouUkek9tZ7rFt9CGzt+LdB9MgOySyJALqEzRcPNvRKd84JNIRh8GMG
+	95X9YKFXiBt+6hfCFNAaU1yT1ux91WoAJwABSrfzvZy88cl/xqw7XOvj8NZjwOu4RZF+quwB9bB
+	pCgUUDiuyJYCtf4wS+oB2zA1xf5ljMD127EinOhDr2cJAtOw7Bau0NoRJCkYHuxl13cO5QJMHx/
+	8k1V0/kHHDZQGkgWEifMflBx7bd67wedICpUBGs/GS5V0iOctFixksE/uhjs/nEGHQa9Xm9+fS/
+	CPQLaEgOuHLSbm4SVocrjU/hL71CRZrKcsrIg==
+X-Received: by 2002:a67:e703:0:b0:7a1:f7c3:3a42 with SMTP id ada2fe7eead31-7af1c17fd4amr4282991137.15.1790511998129;
+        Sun, 27 Sep 2026 05:26:38 -0700 (PDT)
+Received: from mail-vs2-f38.google.com (mail-vs2-f38.google.com. [74.125.227.38])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-9889b1f453bsm2515557241.11.2026.09.27.05.26.37
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2026 02:28:59 -0700 (PDT)
-Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e7c8c8602so1202148241.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 02:28:59 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBxsq6vM5lLKCluMKbaHksTobOqhEHIrmcr8tLCFIm3oDMuhbvm74mXjMf+MnZgYJ2K+G6GDLkkuCMhG@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:2d04:b0:7a1:f7d2:e824 with SMTP id
- ada2fe7eead31-7af1edec5famr4750030137.29.1790501339370; Sun, 27 Sep 2026
- 02:28:59 -0700 (PDT)
+        Sun, 27 Sep 2026 05:26:37 -0700 (PDT)
+Received: by mail-vs2-f38.google.com with SMTP id ada2fe7eead31-7b388ead5b1so410504137.1
+        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 05:26:37 -0700 (PDT)
+X-Received: by 2002:a05:6102:534a:b0:7a0:f7cc:5045 with SMTP id
+ ada2fe7eead31-7af1be75fa3mr4441712137.9.1790511996983; Sun, 27 Sep 2026
+ 05:26:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260918141926.3023230-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20260918141926.3023230-1-peng.fan@oss.nxp.com>
+References: <20260731094402.741645-3-thorsten.blum@linux.dev>
+In-Reply-To: <20260731094402.741645-3-thorsten.blum@linux.dev>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 27 Sep 2026 11:28:48 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWMrBStfd8QAi4U2iZ99y=mDJOUhB58XJ9yaz0v8r4bKw@mail.gmail.com>
-X-Gm-Features: AclHuK_FNakOvnI35QAAk4owW-nxtMw0s1-lNczNFg7HJNVICSo26yhinb-7UTo
-Message-ID: <CAMuHMdWMrBStfd8QAi4U2iZ99y=mDJOUhB58XJ9yaz0v8r4bKw@mail.gmail.com>
-Subject: Re: [PATCH] zorro: use assign_bit() where applicable
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>, 
-	linux-m68k@lists.linux-m68k.org
+Date: Sun, 27 Sep 2026 14:26:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXfst6urDAoSKQgbjB0j0vU7c0v=WM-gOe93iBEb0Li=w@mail.gmail.com>
+X-Gm-Features: AclHuK-UFiGOvR6vAhEVwRBFXl5YC0sr-Pa_dOlgtOwpSCPiLeaSpNnlvcyuv28
+Message-ID: <CAMuHMdXfst6urDAoSKQgbjB0j0vU7c0v=WM-gOe93iBEb0Li=w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] m68k/serial: Use generic BASE_BAUD in asm/serial.h
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+	"open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 18 Sept 2026 at 16:21, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Fri, 31 Jul 2026 at 11:44, Thorsten Blum <thorsten.blum@linux.dev> wrote:
+> Include asm-generic/serial.h and use the generic BASE_BAUD definition
+> instead of redefining it.
 >
-> Convert open-coded if/else with set_bit/clear_bit to the assign_bit API.
->
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k tree for v7.4.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+> --- a/arch/m68k/include/asm/serial.h
+> +++ b/arch/m68k/include/asm/serial.h
+> @@ -7,15 +7,7 @@
+>   *
+>   */
+>
+> -
+> -/*
+> - * This assumes you have a 1.8432 MHz clock for your UART.
+> - *
+> - * It'd be nice if someone built a serial card with a 24.576 MHz
+> - * clock, since the 16550A is capable of handling a top speed of 1.5
+> - * megabits/second; but this requires the faster clock.
+> - */
+> -#define BASE_BAUD ( 1843200 / 16 )
+> +#include <asm-generic/serial.h>
+>
+>  /* Standard COM flags (except for COM4, because of the 8514 problem) */
+>  #ifdef CONFIG_SERIAL_8250_DETECT_IRQ
+
+It would be good if this BASE_BAUD 8250-ism could be removed from
+drivers/tty/serial/earlycon.c.
 
 Gr{oetje,eeting}s,
 
                         Geert
 
--- 
+
+--
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
