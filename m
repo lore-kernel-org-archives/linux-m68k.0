@@ -1,86 +1,90 @@
-Received: from mail-vs2-f42.google.com (mail-vs2-f42.google.com [74.125.227.42])
+Received: from mail-vs2-f38.google.com (mail-vs2-f38.google.com [74.125.227.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31323B8D4F
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 12:29:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0853A1687
+	for <linux-m68k@vger.kernel.org>; Sun, 27 Sep 2026 12:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790512167; cv=none; b=rLdWHEK0KEiAh01GXzCoClQweP8PCIXylkjkgpZVqDH1Vyh+2nA3P1EFZ0BR/YAzXq7uft9gLLEluEUJNSERW6fKb84+5ePBB8PbKP7SGThYEv94dW8Nu6z/Avk5mjCy/0kqZT4lOrp3rMFU6w3DfdpnWSnoa1qJXGgs/mhtcHM=
+	t=1790512820; cv=none; b=gjT271PREZnMdRlkrKEJZyxrnKtjgoCRqEhVkq1Ol6yObM8lJsCxtnNUQSLOrxvudlPds3PoeyXo112pw9TJssDoeRYOJ2eFgh3ccuD/4mEIackPpjCQXmBM6rtwJXrw9J1FaFIVtpaMAXI8xGfGLgero631AAZTHG0NCe3wsJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790512167; c=relaxed/simple;
-	bh=HDboq6EhNxHP1SC0MpV70Cq5drBQD4KcY81w33QxDHQ=;
+	s=arc-20240116; t=1790512820; c=relaxed/simple;
+	bh=7VwhVfArbFHqppULMJ/c2+9BlkyqLEuIgOQ6CFZVsQg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ct3AtPmQYKQTaQSIdxspQ8NvxCb7xQ938anoPCFIkyifrSSawRwqKbH95U9iCQjcqakJRoEgjcKESsuuSOEztyCAs4uyqN8y6wcZUtOHnL8baktfWxvpr3BnIp6tOicBg9Gf0CR12fkDbWN6+jRmDT8BlxedHl7tgz8VpZi5p98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.227.42
+	 To:Cc:Content-Type; b=q+ugLmHaLNsABKwabpboZlQxIJELAbZIkYSXAS51x3COrtY9W1dFAm8fPQE/TlPelk4EeBjDojroohtL9hyA6rI69ftZDCCRZ9/OtGX7D9LbypRuFfLUOnQMFBYnAOclCKOeNa67y3NoSd6nvjCx6OVlGMgym4b1YkguKYGh0bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.227.38
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs2-f42.google.com with SMTP id 71dfb90a1353d-5c979c5eca8so1687130e0c.2
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 05:29:25 -0700 (PDT)
+Received: by mail-vs2-f38.google.com with SMTP id ada2fe7eead31-7b2eb9b9809so1003288137.3
+        for <linux-m68k@vger.kernel.org>; Sun, 27 Sep 2026 05:40:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790512164; x=1791116964;
+        d=1e100.net; s=20260707; t=1790512818; x=1791117618;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=Rt/VmvtxGRMo80r5H6ofmpt3nn/BIq11DVjtj9mgh+c=;
-        b=FP/1GIabp9M0r2boIK15QpjuM5hWSoB9c2fFDjD8JaC+YHfzOchZG16wGS70esABqO
-         A6LAd/7oBJB05MQROOXOzBEywe+LLIGuXqV5cPEhiUEfyPG/GvAwQFInTSPgjHxr9no1
-         1AbkGE2CjK7wWhyKL04zVKp0wACsy9YocXNB4JcN3pCxxPMqLpaTJLOz2wr09WPrt8EV
-         0BdRANjP22tQL5jZWzoU1ATw06D3aF16nWq+1WTpHnWeMwTGLclxWFfWhauLrq4VBxCH
-         oiJ3dGJl9YhPCWXOqSLbWhNwTSIgATLTjphefKEi46A8g6zZgLGq5gsh9+1aGa8g1eFE
-         ZROg==
-X-Forwarded-Encrypted: i=1; AKwUvBxQ/tAPwKkn4I7YI0IYcB1ITa42V+RAah/Y74x/57j6F8/UCKEPgauM3W1I5+zT4vi9jxAHmpBMk16B@lists.linux-m68k.org
-X-Gm-Message-State: AFq9FYJJTrFeKJ4Ek07nvcrpexxduayj9OURq5BH3A5DviOIJZ3CMPwx
-	iQfUOyl904Egg/g8Hj1zatTB+vTD8SYcC9uQGIqRdYz6WcQnvz9yPucLwTVIThDN
-X-Gm-Gg: AYBFou3vL+UnuMlaG0y8o8nEKY1CavxDis6b4miCNiSwOMizfHqCvn37cn63GsSM+kx
-	QL3tj2FTTH4euFPKJb7jbhiJV+sC0UIbuOQ9kBZl3QLiDD/eIa0VM3Ec9jIUcjUtk/Gk1Yr25VF
-	z50bphrqGrOtYFfyVebbjzHBgmaQbiOAGJoacFkPQins4CueqX5/Idd59GffNiw4qk0Lh/Tsg2F
-	X+ORUI5gzJN3X/o1o8wv10SoWBXg9er1hX4FcFjKma1tHcpfb8v2iRAHB+F+0z0L31+NXdZkj6K
-	YMXAI50gMehEGB4VtmZGPNssQR8fGgLd5smwV7Xo+k9e+Mfyx45C4/PC9JhQ0TTFDJr2Jd1ONhD
-	gv7+4fnJmE9lDpu4/Zj3TSnWkQK17xcIjnAj2QbWZcgHApUVtWhcubQzAeLvVwmd9l6qtniWfe2
-	Ukk79Cgeb0pQJqOvFcowDdt1dtj7wgtLKHoFLZ9VxbzK7FjnzAXZqm+PnpR3Ll1ukwPnZd3Eeqc
-	zGai5RQaOP9CMbE0yyaO1lDFRek/K8ulh2s
-X-Received: by 2002:a05:6122:32cf:b0:5c9:a60b:e5b4 with SMTP id 71dfb90a1353d-5cb0b48ab9dmr5250191e0c.13.1790512164317;
-        Sun, 27 Sep 2026 05:29:24 -0700 (PDT)
-Received: from mail-vs2-f38.google.com (mail-vs2-f38.google.com. [74.125.227.38])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5cde02784b7sm5103948e0c.0.2026.09.27.05.29.24
-        for <linux-m68k@lists.linux-m68k.org>
+        bh=s5dI9mpiEPC/crqbmdtswFSRfgC4/C8MFTWjRkq6RQE=;
+        b=hHAbZ9Pe5XFnLCaR1Kw2B/Crx6ogV+hzfJKUOL7mJYiCOJ2oG/bco8PXOttuizGbWh
+         OcJIiioACDh8lqW2ZLS0yseGKNRfZdQXPPfuiOUaNU1BF9r59a41hiy0UjpU4v4Oxm73
+         KrePHVsqkuu7DkXidD9dyGVcnFM39diODAyqM9l5lNmwimWudMZywuxsaefF32FW3jnF
+         jjpTqOjJePOfah4ud2WUhltaSVt+IJl77QbBBeKIjfpH3MCOfQILoE3lfRJxQJhG2fMt
+         +e/Hz0Qd5TVc8mnI04iMUbPMMfKrc579I4TnavbwZ+0m7zqh0p7ZPl8WLb5jMlDiUIPU
+         RTwA==
+X-Gm-Message-State: AFq9FYJRAfTBrGGgbXbmpIdw7YQjcqjPbO4bxKDmLNg2XaAMTrbl50sY
+	v8SUXz3Ub0V+eYC3Xs4MysIMWA1QadWjDFiaX2UO2FIssHbFHhyjUXeM08b1s7oV
+X-Gm-Gg: AYBFou2rXzm4fTtqKmZoFoOBPoUYJMfsEE2JsyWrNPMAwhegOaQs7uRS1ptFYcRC1WN
+	DYxrRH22/u3Ghlnu5eSaLsR297bj+qQJp84NAQC2lhQWbb+/2yCz9Esvu7gZ6P0vE9dsikTucXA
+	HC2xFHoVmGOCY8baddmPqtDIlAtf3vXM6xsCew3nidQTx3MlgUnoY9E2EHMAoi+9TPV1uZq7u6e
+	AV5UIk7bqX9AEwsLbjnccTD3pRgP+3ApLOSAkQvdsvPlpKKCI+9ACUMUuKudNmtcnyC37jZFz9q
+	7+LWAE2Ecfb7parJhpDpOI3TV1P6ckJnGTBhpGHAt4Cb12XdfXMkXiWrN2MvIyIx/m5U7wXYS9i
+	mRvvSRauVBcvj5dpt3hJysroE3BPaaXs0ZhM8Fk20BZTOuKnA0pfsdj1+UUNKE7mGdROH3QEOLG
+	ShMrxywmDYdSIfuZqZYwwzfbFhtfiyRZwUlWu0mAk6WamBiZqPi7j07/d3f3+LGZ1KjdWGtzZ19
+	vv0UVfdBGqQPW1hZt1V//6XBzzHLXJEW1uS
+X-Received: by 2002:a05:6102:5707:b0:7a1:f951:664f with SMTP id ada2fe7eead31-7af1e4f2ae5mr4094234137.22.1790512817941;
+        Sun, 27 Sep 2026 05:40:17 -0700 (PDT)
+Received: from mail-vs2-f37.google.com (mail-vs2-f37.google.com. [74.125.227.37])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-7b39bcb1f14sm5288050137.10.2026.09.27.05.40.17
+        for <linux-m68k@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2026 05:29:24 -0700 (PDT)
-Received: by mail-vs2-f38.google.com with SMTP id ada2fe7eead31-7b2eb9b9809so1000739137.3
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 05:29:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBy7/C/QonqeWf8gmNC1IvapOJVlj20H3HoRt7f0GI10J8xrtaS0gad2r9ApS1kspgAOd2cTKQ62V3IB@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:d8a:b0:7a7:19aa:8a86 with SMTP id
- ada2fe7eead31-7b38f5c21b2mr1195489137.33.1790512163780; Sun, 27 Sep 2026
- 05:29:23 -0700 (PDT)
+        Sun, 27 Sep 2026 05:40:17 -0700 (PDT)
+Received: by mail-vs2-f37.google.com with SMTP id ada2fe7eead31-7b42f1cbcf3so517347137.1
+        for <linux-m68k@vger.kernel.org>; Sun, 27 Sep 2026 05:40:17 -0700 (PDT)
+X-Received: by 2002:a05:6102:4422:b0:79e:373e:8216 with SMTP id
+ ada2fe7eead31-7af1973fc40mr4356884137.0.1790512817154; Sun, 27 Sep 2026
+ 05:40:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260826160911.460165-1-p.pisati@gmail.com> <20260826160911.460165-3-p.pisati@gmail.com>
- <b959b6d9-2fd1-4eeb-bc45-4968321b3ff1@kernel.org>
-In-Reply-To: <b959b6d9-2fd1-4eeb-bc45-4968321b3ff1@kernel.org>
+References: <20260819222838.21256-1-schmitzmic@gmail.com> <20260819222838.21256-6-schmitzmic@gmail.com>
+In-Reply-To: <20260819222838.21256-6-schmitzmic@gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 27 Sep 2026 14:29:12 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXNcDgK-3JTU_TO4V0uhQswR=yE6=pL46Z9gsP2PBnKyQ@mail.gmail.com>
-X-Gm-Features: AclHuK80N3Huj581BdS3l7h66uNHbFmlTSJwMV0kOgIhzBn2ANIPVZOF_CQgtV4
-Message-ID: <CAMuHMdXNcDgK-3JTU_TO4V0uhQswR=yE6=pL46Z9gsP2PBnKyQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] m68k: defconfig: enable PATA_CSWARP
-To: Damien Le Moal <dlemoal@kernel.org>
-Cc: Paolo Pisati <p.pisati@gmail.com>, Niklas Cassel <cassel@kernel.org>, linux-ide@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Date: Sun, 27 Sep 2026 14:40:05 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU-X=dPMDd1Be=p-NpjKJVwJybRknFkGcm4BXpYJaQzrw@mail.gmail.com>
+X-Gm-Features: AclHuK9luG9_pDvpN1isX4E9WKE_aOZ4oLyQn1QSkm9ztYEI_bvC9P7vxCemxn4
+Message-ID: <CAMuHMdU-X=dPMDd1Be=p-NpjKJVwJybRknFkGcm4BXpYJaQzrw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] m68k: Add support for Svethlana
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: linux-m68k@vger.kernel.org, Miro Kropacek <miro.kropacek@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 31 Aug 2026 at 04:45, Damien Le Moal <dlemoal@kernel.org> wrote:
-> On 8/27/26 01:09, Paolo Pisati wrote:
-> > Enable the new CS-Lab Warp PATA driver in the Amiga and multi defconfigs.
-> >
-> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > Assisted-by: Claude_Code:claude-opus-5
-> > Signed-off-by: Paolo Pisati <p.pisati@gmail.com>
+On Thu, 20 Aug 2026 at 00:29, Michael Schmitz <schmitzmic@gmail.com> wrote:
+> From: Miro Kropacek <miro.kropacek@gmail.com>
 >
-> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+> The SuperVidel FPGA contains an OpenCore ethernet package. Add
+> platform device data and other necessary definitions to support
+> this device on Atari.
+>
+> The ethoc module must be enabled separately by the user.
+>
+> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
+> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+> Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
+> ---
+> Changes in v2:
+>
+> - fix svethlana platform register error handling (Geert)
 
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 i.e. will queue in the m68k tree for v7.4.
