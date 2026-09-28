@@ -1,296 +1,178 @@
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13B5396D36
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 27 Sep 2026 21:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90B74B95A6
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Sep 2026 12:06:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790545388; cv=none; b=QXwvkoKGDuoJddxXOXi3Zme1My60YeBhoez6VAUY2A7t69Xi6pgWHNQDspCC+SxkBcEw9nSmCVBRZ8s2TMm1bsLUkOzsEjqGSD+vYFrmbHkqO4gRKGyNK6Ob6vT08dFcVjCzNXfs7cxbv1h1vEkJfvYZpFz8ZDY7V3hdqbMHSCA=
+	t=1790597216; cv=none; b=KQzDTE+IjhsSSUTAQNkYtly55/cmWS23gg6LyX5S4bxZ3Yfol+8iPT48Ah6AvKUZ46Q2St5wNwUvzVTtoirMuZTY5WiSb89zfykyKTQvcT0H8PtZkFnnreIaC9ZsZoGr7RgDJp/Dq4skTe9xvffoUVDTB1MxKFXQ9U9L20SSF7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790545388; c=relaxed/simple;
-	bh=n4DDGAK/8u1AuRg6WBpYGIC5R/YZsN31zuN1oi/vDD8=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=KkjobsF6G2sJ21IPLDuaPVMT+Fq4Yt7EShOvP6GgwZuHg5rzrsLJgnbd1DzUQJTcpNNta4lUy3ktAsvW7RCSHqfP79Zp8Vohnd6BYQXSC9GK1FBoUgfEFDkIRJwQ3A/TZbRk9mU84R20dgwc8dxtKHfHBjvMneEtEkyMICo3GxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zz0V6oF+; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1790597216; c=relaxed/simple;
+	bh=S5yNdhUpui5dZjR7bQ94ab55YzYTvEfFxod1Oow7EQc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MAyzyXOAhQVd12yAFidXbhqtaLoqV8ep0o3pV258kJvFyRIx3uhK5kuJvktT/o1kunycJJCBuc1+mBeITKOufwO+i2dAe9L4lqU8Hym9isA3GzSPUdxdwuBPfoN4U6ACEhE7NdU0uUNmqSYMKAt9WjTDnamqkY0MSPLq7QhJfz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZM4pATIs; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zz0V6oF+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZM4pATIs"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 4772641944;
-	Sun, 27 Sep 2026 21:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFAB91F000FF;
-	Sun, 27 Sep 2026 21:43:04 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id A678843D4A;
+	Mon, 28 Sep 2026 12:06:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F2D11F000FF;
+	Mon, 28 Sep 2026 12:06:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790545386;
-	bh=BVuWMZa259dxnjcZi7fHN6YYW1e8KlsPsvD+/UH+8Z0=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=Zz0V6oF+13UMKXCKD2VQoDSn+jsKcMncv5yM40z7aN0c0hlM9Oshflrs1D87phTIv
-	 Vzb0HlMdmMGZl0Oi0hOvHwOsXJj+SIAJ/nNBT9hgOxZr1c9n3jgtOrDXinCh6Mu7do
-	 bAhIBjYSdxz4IVSvlkzT7NuRJ1W7aWTaUZmiowcucuk2bk5+otQJrZpR1Urd6+a5Ex
-	 YDLb/a5zRkMQZo4KsUk7fQtjj06SOIYZKSoEc2CK3bx4PF1Oh2Yfm8bB2gQCRn684k
-	 4dvET8UdWqe09IseB36SdS8wJ2qAiGDFeUkuNOWpCxXQOROGpxGHFTziqtfBuwW3EL
-	 HyB2DV9aolmBQ==
-Content-Type: multipart/mixed; boundary="===============7163960345673193045=="
+	s=k20260515; t=1790597213;
+	bh=X+J2tmzVsgooMXBbKivE7bEvNfx2Ag9Y7fspt+jroYc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=ZM4pATIsX2hT8zVjh+/O7BaWcif1c4FeEots55BNVQ1Mx9iZ1bILJzL1cp3i+SxFL
+	 vDQ1FQFTOctpx4oEcNE41IjsJxt9Iu5JECieYmlGJDMh6fAwKZ38/yuPA+TLmmNwJQ
+	 5vyj8YgTP3Gjh9k1zZWvvSc6b1EEwjnRO8tk7IYj5gqdkMRHc0o3fvlQ36u2GJWF2E
+	 2cV8TbA4Ffe7iKukUkkOEq6+eRTjIaIyJKsBC8rqm3MQQ4xvzxT7Wh4R0cWK6i2ivc
+	 LHow86aIUs5raGniD+ujL659sTH1zZI7ncmRSs78xGgDeutYj0VsS2yWSjZemekhPS
+	 7o/JAv+f61zXQ==
+Message-ID: <232ea2c2-a594-4a31-8ec8-7884707f1bc9@kernel.org>
+Date: Mon, 28 Sep 2026 14:06:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3e07af39920f472e97ee3cf73eddc49a72a11dffb2e11e9b7c5b7cc1d80affef@mail.kernel.org>
-In-Reply-To: <20260927205501.672807-1-visitorckw@gmail.com>
-References: <20260927205501.672807-1-visitorckw@gmail.com>
-Subject: Re: [PATCH v6] m68k, bpf: Add initial BPF JIT compiler support
-From: bot+bpf-ci@kernel.org
-To: visitorckw@gmail.com,corbet@lwn.net,skhan@linuxfoundation.org,geert@linux-m68k.org,ast@kernel.org,daniel@iogearbox.net,eddyz87@gmail.com,memxor@gmail.com,andrii@kernel.org,gerg@linux-m68k.org
-Cc: rdunlap@infradead.org,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,ihor.solodrai@linux.dev,linux-doc@vger.kernel.org,linux-kernel@vger.kernel.org,linux-m68k@lists.linux-m68k.org,bpf@vger.kernel.org,jserv@ccns.ncku.edu.tw,marscheng@google.com,eleanor15x@gmail.com,visitorckw@gmail.com,daniel@thingy.jp,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
-Date: Sun, 27 Sep 2026 21:43:04 +0000 (UTC)
-
---===============7163960345673193045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 12/12] mm: change the contract for free_pgtables(),
+ update docs
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ "Liam R. Howlett" <liam@infradead.org>, Nico Pache <nico.pache@linux.dev>,
+ Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>,
+ Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>,
+ Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
+ Guo Ren <guoren@kernel.org>, Brian Cain <bcain@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Dinh Nguyen
+ <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>,
+ Jonas Bonn <jonas@southpole.se>,
+ Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+ Stafford Horne <shorne@gmail.com>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+ Russell King <linux@armlinux.org.uk>, Vineet Gupta <vgupta@kernel.org>,
+ Michal Simek <monstr@monstr.eu>, Chris Zankel <chris@zankel.net>,
+ Max Filippov <jcmvbkbc@gmail.com>, Will Deacon <will@kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin
+ <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Andreas Larsson <andreas@gaisler.com>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner
+ <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Michal Hocko <mhocko@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jonathan Corbet <corbet@lwn.net>,
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-openrisc@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-arch@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-um@lists.infradead.org, Hugh Dickins <hughd@google.com>,
+ Qi Zheng <qi.zheng@linux.dev>, linux-doc@vger.kernel.org
+References: <20260925-rcu-pagetable-freeing-v5-0-31e91065fea4@kernel.org>
+ <20260925-rcu-pagetable-freeing-v5-12-31e91065fea4@kernel.org>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260925-rcu-pagetable-freeing-v5-12-31e91065fea4@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-> diff --git a/arch/m68k/net/bpf_jit_comp.c b/arch/m68k/net/bpf_jit_comp.c
-> new file mode 100644
-> index 000000000000..a04ce91eb8e8
-> --- /dev/null
-> +++ b/arch/m68k/net/bpf_jit_comp.c
+On 9/25/26 22:09, Lorenzo Stoakes (ARM) wrote:
+> Now that page tables are freed after an RCU grace period, it is safe for
+> read-only page table walkers to walk page table ranges that are being
+> concurrently torn down, provided the mm is kept alive via mmgrab().
+> 
+> It is however unsafe for writers to do so, as they must obtain an
+> appropriate lock to do so safely.
+> 
+> Update the pte_offset_map_lock()'s comment block to reflect this.
+> 
+> Similarly update the process addresses documentation.
+> 
+> Acked-by: Kiryl Shutsemau (Meta) <kas@kernel.org>
+> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+> ---
 
-[ ... ]
+Acked-by: David Hildenbrand (Arm) <david@kernel.org>
 
-> +static int jit_atomic32(u32 *ptr, u32 val, int op, u32 cmp)
-> +{
-> +	unsigned long flags;
-> +	u32 old;
-> +
-> +	local_irq_save(flags);
-> +	old = *ptr;
-> +	switch (op) {
-> +	case BPF_ADD:
-> +		*ptr = old + val;
-> +		break;
-> +	case BPF_AND:
-> +		*ptr = old & val;
-> +		break;
-> +	case BPF_OR:
-> +		*ptr = old | val;
-> +		break;
-> +	case BPF_XOR:
-> +		*ptr = old ^ val;
-> +		break;
-> +	case BPF_XCHG:
-> +		*ptr = val;
-> +		break;
-> +	case BPF_CMPXCHG:
-> +		if (old == cmp)
-> +			*ptr = val;
-> +		break;
-> +	}
-> +	local_irq_restore(flags);
-> +
-> +	return old;
-> +}
+-- 
+Cheers,
 
-[ ... ]
-
-> +static void emit_atomic(const struct bpf_insn *insn, struct jit_ctx *ctx)
-> +{
-> +	const s8 *src = bpf_get_reg64_ref(insn->src_reg, tmp2, ctx);
-> +	const s8 *dst = bpf_get_reg64_ref(insn->dst_reg, tmp1, ctx);
-> +
-> +	if (BPF_SIZE(insn->code) == BPF_W) {
-> +		s8 s_lo = bpf_get_reg32(src[1], tmp2[1], ctx);
-> +
-> +		if (insn->imm != BPF_CMPXCHG) {
-> +			if (is_stacked(dst[1])) {
-> +				emit_16(ctx, 0x206e);		/* movea.l d16(%fp), %a0 */
-> +				emit_16(ctx, (u16)STACK_OFFSET(dst[1]));
-> +			} else {
-> +				emit_16(ctx, 0x2040 | dst[1]);	/* movea.l dst, %a0 */
-> +			}
-> +
-> +			emit_16(ctx, 0xd1fc);			/* adda.l #imm, %a0 */
-> +			emit_16(ctx, (u16)((s16)insn->off >> 16));
-> +			emit_16(ctx, (u16)insn->off);
-> +
-> +			if (BPF_OP(insn->code) == BPF_XCHG) {
-> +				emit_16(ctx, 0x4eb9);
-> +				emit_32(ctx, (u32)jit_atomic32);
-> +			} else {
-> +				emit_16(ctx, 0x2f00 | s_lo);
-> +				emit_16(ctx, 0x2f3c);
-> +				emit_32(ctx, insn->imm);
-> +				emit_16(ctx, 0x2f08);
-> +				emit_16(ctx, 0x4eb9);
-> +				emit_32(ctx, (u32)jit_atomic32);
-> +				emit_16(ctx, 0x4fef);
-> +				emit_16(ctx, 12);
-> +			}
-
-[ ... ]
-
-> +	case BPF_STX | BPF_ATOMIC | BPF_W:
-> +	case BPF_STX | BPF_ATOMIC | BPF_DW:
-> +		emit_atomic(insn, ctx);
-> +		break;
-
-Can this code handle 32-bit BPF_LOAD_ACQ and BPF_STORE_REL atomics?
-
-Looking at build_insn(), every BPF_STX | BPF_ATOMIC | BPF_W instruction is
-sent to emit_atomic() without checking insn->imm.
-
-On 32-bit arches, the verifier accepts BPF_W-sized BPF_LOAD_ACQ (0x100)
-and BPF_STORE_REL (0x110). In check_atomic() from kernel/bpf/verifier.c,
-these operations are only rejected when BPF_SIZE is BPF_DW and
-BITS_PER_LONG != 64:
-
-    case BPF_LOAD_ACQ:
-        if (BPF_SIZE(insn->code) == BPF_DW && BITS_PER_LONG != 64) {
-            ...
-            return -EOPNOTSUPP;
-        }
-        return check_atomic_load(env, insn);
-
-For BPF_LOAD_ACQ, emit_atomic() loads %a0 from dst_reg + off and calls
-jit_atomic32(ptr = dst_reg + off, val = src, op = 0x100, cmp). The switch
-in jit_atomic32() has no case for 0x100, so it only runs `old = *ptr;` on
-dst_reg + off.
-
-But dst_reg is the destination register for a load. check_load_mem() in
-the verifier only checks dst_reg with DST_OP_NO_MARK, so it can hold any
-scalar or be uninitialized. The resulting dereference of dst_reg + off
-(instead of src_reg + off) can read from an arbitrary address with no
-exception-table entry.
-
-Also, is_fetch is false (0x100 & BPF_FETCH == 0), so dst_reg is never
-written back. The verifier tracks dst_reg as holding the loaded value, but
-at runtime it keeps its old value.
-
-For BPF_STORE_REL, jit_atomic32() is called with op = 0x110. No case
-matches, so the store is silently dropped.
-
-Other 32-bit JITs (mips32, x86_32, riscv32, parisc32) reject unsupported
-atomic imm values. Could emit_atomic() or build_insn() accept only the
-imm values that jit_atomic32/jit_atomic64 implement and return -EOPNOTSUPP
-for the rest?
-
-[ ... ]
-
-> +static void build_prologue(struct jit_ctx *ctx)
-> +{
-> +	int bpf_stack = MAX_BPF_STACK;
-> +	int total_stack = SCRATCH_SIZE + bpf_stack;
-
-Can this stack reservation overflow the kernel stack?
-
-Every function reserves SCRATCH_SIZE + MAX_BPF_STACK = 96 + 512 = 608
-bytes, plus 16 bytes for d2-d5, 8 bytes for the return address and saved
-%fp, and emit_call() pushes 40 bytes of arguments for each bpf-to-bpf
-call.
-
-That's 632 bytes for the main frame and 672 bytes for each nested subprog
-frame, independent of prog->aux->stack_depth.
-
-The verifier allows MAX_CALL_FRAMES (16) nested frames. For CAP_BPF
-programs, it rounds each frame's stack_depth up to 16, so subprogs with no
-stack use cost nothing against the 512-byte combined limit.
-
-A program with a chain of 16 small static subprogs is therefore accepted
-and uses 632 + 15 * 672 = 10712 bytes of kernel stack on top of the
-caller's stack.
-
-On m68k, THREAD_SIZE is 8KB for every configuration where this JIT is
-enabled, thread_info sits at the base of the stack, and there is no guard
-page. Even 12 levels (632 + 11 * 672 = 8024 bytes) overflow by themselves.
-
-Shallower nesting can overflow when a program runs in softirq on top of an
-already deep stack. Callbacks invoked from helpers such as bpf_loop add a
-C frame plus another full JIT frame per level.
-
-The main entry needs MAX_BPF_STACK because a tail-call target reuses its
-frame. Subprogs can never be tail-call targets, and they cannot issue tail
-calls here because bpf_jit_supports_subprog_tailcalls() is the weak false
-default.
-
-Could subprog frames be sized from the actual stack_depth instead of always
-reserving MAX_BPF_STACK?
-
-[ ... ]
-
-> +	case BPF_JMP | BPF_CALL:
-> +		return emit_call(insn, ctx);
-
-Does this code copy back the callee's R2 for aggregate returns?
-
-For a subprog whose BTF return type is 9-16 bytes,
-bpf_compute_subprog_ret_regs() in kernel/bpf/verifier.c sets
-subprog_info->ret_reg_pair and prog->jit_required.
-
-On exit, prepare_func_exit() copies the callee's R2 state into the caller,
-including pointer types for static subprogs.
-
-In this JIT, BPF R2 is not a machine register. It is a slot at
-STACK_OFFSET() from %fp, so each frame has its own copy.
-
-The callee writes R2 into its own frame, BPF_EXIT runs build_epilogue(),
-and unlk discards that frame. emit_call() only fixes up d0/d1 for R0 and
-never copies R2 back.
-
-The caller's R2 slot keeps its old value (for example the argument it
-passed in).
-
-This creates a verifier/runtime mismatch. For example, after
-'r2 = 0xdeadbeef; call sub' where sub returns {r0, r2 = map_value_ptr},
-the verifier thinks r2 is a PTR_TO_MAP_VALUE in '*(u64 *)(r2 + 0) = x',
-but at run time the store goes to 0xdeadbeef.
-
-Because jit_required is set, there is no interpreter fallback.
-
-Every other JIT that supports BPF_PSEUDO_CALL keeps R2 in a hardware
-register, and arm32/x86_32 reject subprog calls.
-
-Could the callee's R2 be copied into the caller's R2 slot after a
-BPF_PSEUDO_CALL, for example by returning it in d2/d3 or through a scratch
-location?
-
-[ ... ]
-
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-
-Does this code handle the BPF_ST | BPF_NOSPEC instruction?
-
-build_insn() has no 'case BPF_ST | BPF_NOSPEC:', so the speculation
-barrier the verifier inserts falls to the default and returns -EOPNOTSUPP.
-
-m68k does not override bpf_jit_bypass_spec_v1() or v4(), which default to
-false.
-
-For any program loaded without CAP_PERFMON while mitigations are on
-(unprivileged, CAP_BPF-only, or through a BPF token), the verifier emits
-BPF_ST_NOSPEC() for speculative-path sanitation and after stack spills, in
-kernel/bpf/fixups.c:958-962 and 1035-1042.
-
-build_body() then fails and the whole program is not JITed. With
-CONFIG_BPF_JIT_ALWAYS_ON, which this patch makes selectable by adding
-HAVE_EBPF_JIT, and whenever prog->jit_required is set, the load fails with
--ENOTSUPP instead of falling back to the interpreter.
-
-test_bpf.ko runs as root and so never hits this.
-
-Every other eBPF JIT, including arm32, mips32 and x86_32, handles
-BPF_ST | BPF_NOSPEC as a no-op or a barrier.
-
-Could this case be added, or should bpf_jit_bypass_spec_v1/v4() be
-overridden if m68k does not speculate?
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/36350420232
---===============7163960345673193045==--
+David
