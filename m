@@ -1,159 +1,95 @@
-Received: from mail-yx2-f27.google.com (mail-yx2-f27.google.com [74.125.224.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CE32D592D
-	for <linux-m68k@vger.kernel.org>; Mon, 28 Sep 2026 23:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.155
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790639109; cv=pass; b=N81WFeSes8a6nfSPKVdhhAboK82DR10nPY3RXu7YzfHa9vUpCpCbPv89k5EKauCWXS5rTxNmQ7R5io8Onr1XY0adNJFB/IvxpZ9+xGE0TIF7sTbzzC8J9f9Lxny21rNQSZvh3/44+o6/d5eeKTWjgwkENMkwGZMZ+GpLt8SDWz8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790639109; c=relaxed/simple;
-	bh=2dW3KjRO43zQyQhXJDYouu00AL6Lvrd3NzAIkU41sfk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZdmTUIzgqRAWZGGyFPveLxAsKnqAky0fFCq85SxSttA+z3i0AnmSKi2+wGSz6juNmd3dbiC3tN0Z35EGJJAGj1Jkjnn20IZrNeoWbYknjmbbpfg3NKI183N1+atKKlp00Lco8hQiy68XTNOqTd3Y2xnP5fsNIV1JFNW0Yf3LXfo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rpr28FAy; arc=pass smtp.client-ip=74.125.224.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCA5364927
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Sep 2026 00:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790641698; cv=none; b=JbrIGKm/aMSwHVNDxmkkSGJP3+5RfxbZH60+bqPY0v8AS9RQIKw+cVQlwqwJH9QKBr2ytK6jibb/Vm4NwIrRrXbY2Aaduy0gWzI3LijPNv41C+9DMiUBK4CG7bOSDADSKOkPXnKb7cSb8bs5vPEtR5ip4Esy/uKOk9S8wT0usOA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790641698; c=relaxed/simple;
+	bh=yx3Z/Z1i1CZ/Nq8EU+wafaIB9IzL0HnFkYtRVMPTDqU=;
+	h=Message-ID:From:Subject:Date:To:Cc; b=SsmEBa0MGI8fIgbDivOMpmgY1VHRR9fBueivHd5ATjCHetFt/zq1s/ddA4k3ch3SoPdbKgefiQrKy/+wAl2wGzfFUYKx88sP9B/Xk1Su7mW/+y+uyPDCVJsM1P2Ngu+EnydFZdaYcLMVUMMUJH8xn16AHlKZCimY8rF9IllSLT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=s2bW4S14; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rpr28FAy"
-Received: by mail-yx2-f27.google.com with SMTP id 00721157ae682-895fd505832so30942967b3.3
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Sep 2026 16:45:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1790639107; cv=none;
-        d=google.com; s=arc-20260327;
-        b=rZaC+hLBVYac6A9JWsQ0MB5YbAVO8bLmGw8kr5LIskbd1ZMx2SVyCu2yWrUGVBc+Oo
-         XO00Ti847V+yljIYk8CENJCY6O7KMcGKbdNwU6mYxpaE8rwj8M8LdeC9oN1b22YUvNup
-         dZ8X1LDOCAf0cQ6Kj8UdZ5nf1lsqZza4QJEgpiKJLGr1+AxvZzES4DJFceKHjB1jEqYf
-         mE2CZDs369ycBVQhnH3FNf2Buw6yy5W7drBMrdOYZXRA+jEZWqCNIqKn7+AheZH+QTsV
-         oWo1N5jYNuAsfijgatta+/cWyosd7IyI76ZbJpg5f0xti/ZwRa9/u28d1vwspiJnWUkC
-         ZFyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=2dW3KjRO43zQyQhXJDYouu00AL6Lvrd3NzAIkU41sfk=;
-        fh=1x5qhT+h2nyp3WxCHFr6rfzVGvxmJaCsmS5KP4BFJak=;
-        b=HBu+aAMzzu3jE0lkXNVPebQO63V+MUHf1ZfowAPqq7fnsCuzemIXWUn+8wTDsJEgCw
-         gQsBOhddZ0yXrlGQeGXR3ZEEFZ0Fh4YpSHaIRDkwubP11oNaaHhjkaUpzhNYcWuioUbq
-         vTqAnZzA6NNXVmGAtB4p7GWoa9CW6TjZUnHDlRyhbBfGYNBcvwFtr/n+/ee6uh0LD9vH
-         4iXG5g14EqKTrsxY4lTihglQfvgwcXeb2xGCKfAkbBOsyCPlfhoqqatT70KTXRKDj7zK
-         8vJG53tMHxLuF8YJcwKMnwlN+MhTwgp7naDKa1O5wuKSC5TO9we5nFdt5jRuSaQJjBUW
-         KmeQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1790639107; x=1791243907; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=2dW3KjRO43zQyQhXJDYouu00AL6Lvrd3NzAIkU41sfk=;
-        b=Rpr28FAyMEEPF1NfMPgZSnN16YJdezL7Dn8o/1qL9a0cBQ92Cex1nyM02hxFNkatTq
-         mehEk29eV/piFtd+8XQ+y15tKysjtmRUAHqUJxfiwg4cyWUzIUOIwWCHyWNWkYi+zqPc
-         G6Xaa/Vs5I7v3racNIA1A+N6/Msbq7EGKfHr0n70Df0ZfXaUqTbq6qz9FtOe0GbcJ+m9
-         CxISC1wIA+B4E1epnXVD906d++RRPyZQRgmxWrHXkhcSniUjIsINMHDX/Q45pXCdC/8k
-         vDt6yj/pOJV+LCc8MYTfKUpGUzHTNH/NcKAYRQTojht2mcPq6alcYXhNe1IKqH0HIEF/
-         hsLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790639107; x=1791243907;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=2dW3KjRO43zQyQhXJDYouu00AL6Lvrd3NzAIkU41sfk=;
-        b=vgResQyCUwQd+8nUkCBfq8YrGlYCR8MpLJ5X1rQSPEEQmivQ+bIzGnuBbwSko7g6Fj
-         4SojTlXkfwsWLFq8ZeQrQsGzyFuk+/RapsjyPWwy1gyujmI3NmxQkmHt16AmkWA1kkkG
-         gF6AFHE73hCarwRBB+1JGfY8LpeOdqalrqxplSk4Z+aZtffp8JanIVzebX7BMVopYVsx
-         zmlqRjWHN6cBY7cwU93KI8qaX3CqKWLUrlR87DWuL8DrB2j4EN/GAJHWm2G18nHIlxQM
-         0kLtJKSHyW5urdgv9dERMGLhZm2LCXW8OFNYHQR0/71llgC8n+HAdR4xyxfcMLaDbddp
-         DqxQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxMjZyuS8CqRRYFnbcYXD6mb89sOWe39DqDehszm+76/zGVeGlGS2KE5JxROcsyyLzMhXwNE6A37Uc9@vger.kernel.org
-X-Gm-Message-State: AFq9FYLtOeYOPESukZaTsL+je7dZJK7WR1oEr8BzFBt2m3oba+VIQiZC
-	AT8msVLcKSUmglMMDA2GJUSgx12xsPqe2YPfaA/ntE7seBS84JTPXa1KyL4KhMnEuuqrx1Q3QBu
-	xydilV2f0lGr3WmwAOq6VYkm4bn8O/iroGQ==
-X-Gm-Gg: AYBFou3UWtRkSS7I+EQlb+/RxmtUaRjDpsutQ8F1ekoWzmOnIwJypAoy9fgRlv+22QX
-	58TOaCTZYUI2IYwXZhgtTbNhDA7fq5k0+ANbNfksqBiSOA8gpMvCun5Ksf13BSg2lZV7oFkKSus
-	H4cd6isGwFP/P33rfrI570K8PMlIUD3r/6DUT3eXgKP8ZQYh/ZdbidWD8K4ISQdMz+rcrrZJ16V
-	qEmmRbjj+YWItaW4oH3NGJqpM9HVu8tH3LZ5rKIJtYLBTK6ujWGK8GfqBaRQrvMkLwGua/CpgnV
-	2tLPfQyGKcSluLNQmuIIYG33nP3A0yeA0JfQFElhCv6WRLgxAgiRnJZcdcWVPbCKq8DVrToR9uP
-	XvXnW7QeMmRQ6n00f30rj7q7ONrEgOBLaI9jFRjoOzmj0GxOLUxO56qJZEvKWBhBun6IkORcmvJ
-	EUsPVoqS7wxPKq2qsSqB/fE30lS/w0f1Bdic6QBI512n2XHp77geutQw==
-X-Received: by 2002:a05:690e:4084:b0:674:170b:cb2d with SMTP id
- 956f58d0204a3-674170bcdc6mr4003364d50.74.1790639106668; Mon, 28 Sep 2026
- 16:45:06 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="s2bW4S14"
+Received: from phl-compute-09.internal (phl-compute-09.internal [10.202.2.49])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 003D2140011C;
+	Mon, 28 Sep 2026 20:28:14 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Mon, 28 Sep 2026 20:28:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:message-id:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1790641694; x=1790728094; bh=xu3utU9VereBzGVmyv/XDg81Gfuj
+	SCUAkLOrSNL3D4I=; b=s2bW4S14m9t6NWC5RHARxkDy8i8i6hSMXT6U+mox5nhY
+	cIQjyvtrG4Ia47imS8JYsbYDFh/KeM2YaW/GylMdvtKnyIMXlu6J3ihFAQsS7QT1
+	BHDo0VmOzNvcl7fYYQ2SUD1c0joAoW+QRHrsVMCCL2Ccbjxx42v6XPjsvqvUGFtj
+	2InnYZzvxb50/kAKHU8oIS2Lou1U+YW8L/X/DQxyFg/oXUphUACk2zPshDK3oATl
+	ghYwA6h+UksChRTMixdhDDopK0grOaytshSNvmAIY8fxwMKrXj4nzeCY5geEVmUp
+	rC8ranpKhd7qNCZsxSBTeSm98ZALxd1V1VVBHpM0mA==
+X-ME-Sender: <xms:HQa7as6to9zI_98JVPQtF3M9R2XszAqGzZ8VMxJA4IMeEYbI54z3NQ>
+    <xme:HQa7ap4SeL7QSMSJgdH4q-jRo71BwqDL2ktiunPWRbLiEl5GkZy79uoD__FFUhc7S
+    tLEh3vdmd77zLrCyBOU7p91_zhq9L32JtMVEcqL5TIQSwGH5Kl5KPY>
+X-ME-Received: <xmr:HQa7atoxRar-YAV2d06vi_ZW-4-ceRYoOcG6nLUUNnUh3vr1vm4xZzxQWG9IFoGgxH2E0wsLOoVkuvNFBsmkuez0GKvxee9uvWY>
+X-ME-Proxy-Cause: dmFkZTFzQtIth2WkhrKI+6+E4UcGi5XWbtp7l6Qnn6zjZLbyXTa0rQ2Iwz4ZANn6XgA6pE
+    Yy8oMu49X8YEQgnHj8KX5JSvOLjYM1YH2mbz3ZOI7baZodjqs4vQiceyIg8mGPVINy22Uh
+    ArlGbesjAe5dgvuWAxt4ey4RiWX4Cpyy1G41sr7B8DuyDrFVeq5mmvC1P3kSw6MQ9aD3VF
+    R4t2qj6UA9VZElaIX3XxqycY464Cs9T1Aod9vrHzcxTIhfSDAtZTU0yKoVVlJ5/m9hsFK2
+    h3zF6X8XPA5iM37S0Ka5lAXOb+AA6GDczC+iQ/kR0tAlKrF4ekH7C0QKjotg/cLzDFb/rU
+    waro3ZhCwXEZfnftv8eBmP/hWunFYfY7wlV3NquKbh+NN5OX5iQldFhtD2hhoCvMWLTSim
+    xSfE/DqLw+eU/9xMyoP/5ifDtJeBEG6Ki3i/WXkHCHkdo1Us0KLy0ae1PTgEc6ZBb9rQKH
+    XIvfQQNBsNL+y/c3cnJF/M86y+NuEvSlZh13o7wQBNZU1qZAohrLVl4T6F6xxXyJJ85AYo
+    tIdnNeFNIue7YeNvKPP1IFlxRpEbZfTjX6Bdj3vBZJG7Ux5f9WSjiDPk3aQNgx37bSFtYL
+    +Cl7txoBoKE1ivaSOi8iPq3P5auJxlnWoxKgWSbRXEK6xV/LtWPROv0qQfJw
+X-ME-Proxy: <xmx:HQa7aiP2691__pk8TTTlgxRUTWIkztvuUZR4vvlmNL656rpblI1U6A>
+    <xmx:HQa7at0T_UV8XL-qActyUQfDWk9oemw7aB2nrwMIuRaBVeXU130qAg>
+    <xmx:HQa7apC44i8gs5CQQdkJq-mdzKKRCe4ldfcYolMJTBOgZ8qEfJju3w>
+    <xmx:HQa7aiIlmpuSeybgbn7f4NOEHTpdMPYvuj9APiNvoGZvyw-zMNAvOg>
+    <xmx:Hga7agp2kW_KSt2Ok6r7oJ_FWSGWGjqYZb9kMWSN64DRlwjg5VeWtiB3>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 28 Sep 2026 20:28:12 -0400 (EDT)
+Message-ID: <cover.1790641175.git.fthain@linux-m68k.org>
+From: Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH v2 0/3] block/swim: Minor fixes
+Date: Tue, 29 Sep 2026 10:19:35 +1000
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Joshua Thompson <funaho@jurai.org>,
+    Geert Uytterhoeven <geert@linux-m68k.org>,
+    Laurent Vivier <laurent@vivier.eu>,
+    Stan Johnson <userm57@yahoo.com>,
+    linux-block@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    linux-m68k@lists.linux-m68k.org
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260814031745.17140-1-schmitzmic@gmail.com> <20260814031745.17140-2-schmitzmic@gmail.com>
- <CAMuHMdUDvsqT5t93-ZO413pwS3rPYPB1_uy+5iRHsii8CYTdgA@mail.gmail.com>
- <ef9e0128-6309-546a-715a-3e7eb476910e@gmail.com> <8c7863da-299f-8c77-0727-fb438467a7ba@gmail.com>
- <CAN5rfbQMTtcvmcgbDwhTQ-D9AGxP5yGqHc=JWbN7PPJXXKPGHg@mail.gmail.com>
-In-Reply-To: <CAN5rfbQMTtcvmcgbDwhTQ-D9AGxP5yGqHc=JWbN7PPJXXKPGHg@mail.gmail.com>
-From: =?UTF-8?B?TWlybyBLcm9ww6HEjWVr?= <miro.kropacek@gmail.com>
-Date: Tue, 29 Sep 2026 09:44:49 +1000
-X-Gm-Features: AclHuK9mefzTsnWcGVGq7BKDMJ7VEQKK0e6FJ0Ob2zlKdQoMEB8M1aNeQcESDS0
-Message-ID: <CAN5rfbTSiRqo9V1yscb04yckJxQ2z=4VP+G__4+kbTDXeGbj-Q@mail.gmail.com>
-Subject: Re: [PATCH 1/5] m68k: Fix atari mouse movement
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@vger.kernel.org, 
-	linux-input <linux-input@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi everyone,
+Two old bugs were reported to me by Stan Johnson while he was testing
+my recent patch series, "[PATCH v3] block/swim: Fixes and improvements".
+The following patches fix those bugs.
 
-this patch still seems to be pending, i.e. I can't see it included in
-any of the trees. If there is something more you'd like to know from
-me, I'm happy to help.
+---
 
-Thanks,
-Miro
+Changed since v1:
+ - Patch 2/2 was split into two such that each patch alters one driver.
+ - 2/3 and 3/3 were revised as described in the commit log entries.
+ - Tested-by tags were added.
 
-On Mon, 7 Sept 2026 at 19:39, Miro Krop=C3=A1=C4=8Dek <miro.kropacek@gmail.=
-com> wrote:
->
-> Hi,
->
-> On Sun, 16 Aug 2026 at 15:04, Michael Schmitz <schmitzmic@gmail.com> wrot=
-e:
-> >
-> > Hi Geert,
-> >
-> > Am 15.08.2026 um 11:15 schrieb Michael Schmitz:
-> > >>> --- a/drivers/input/mouse/atarimouse.c
-> > >>> +++ b/drivers/input/mouse/atarimouse.c
-> > >>> @@ -70,9 +70,12 @@ static void atamouse_interrupt(char *buf)
-> > >>
-> > >> Alternative, you could change/restore the function's signature to ta=
-ke a
-> > >> "signed char *".
-> > >
-> > > Agreed, but without a way to test this, I'd rather wait for Miro
-> > > confirming that change also fixed the issue.
-> I have just tested it. The new version works equally well,
->
-> I have just noticed that if I enable the pointer signedness warnings, I g=
-et:
->
-> make ARCH=3Dm68k CROSS_COMPILE=3Dm68k-linux-gnu- KCFLAGS=3D-Wpointer-sign
-> arch/m68k/atari/atakeyb.o
->
-> arch/m68k/atari/atakeyb.c: In function 'atari_keyboard_interrupt':
-> arch/m68k/atari/atakeyb.c:263:82: warning: pointer targets in
-> passing argument 1 of 'atari_input_mouse_interrupt_hook' differ in
-> signedness [-Wpointer-sign]
->
-> atari_input_mouse_interrupt_hook(kb_state.buf);
-> arch/m68k/atari/atakeyb.c:263:82: note: expected 'signed char *' but
-> argument is of type 'unsigned char *'
->
-> I guess this is expected but wanted to mention it just to be on the safe =
-side.
->
-> --
-> http://mikro.atari.org
+---
 
+Finn Thain (3):
+  swim: Return -EROFS when opened with BLK_OPEN_WRITE flag
+  swim: Fix FDEJECT ioctl for exclusive open
+  swim3: Fix FDEJECT ioctl for exclusive open
 
+ drivers/block/swim.c  | 10 ++++++----
+ drivers/block/swim3.c |  8 +++-----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
---=20
-http://mikro.atari.org
