@@ -1,105 +1,145 @@
-Received: from mail-dl2-f12.google.com (mail-dl2-f12.google.com [74.125.229.140])
+Received: from mail-vs2-f38.google.com (mail-vs2-f38.google.com [74.125.227.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CBC12E8DEB
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Sep 2026 02:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.229.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCF33DDDAF
+	for <linux-m68k@vger.kernel.org>; Tue, 29 Sep 2026 06:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790649046; cv=none; b=X/FkIxxeTn/+MlwPB3w0cRUqCTKeDT0AcMNdA4IXlEH3xXfsYYRo21OVUuXm4/W+bi0oKCVLjNGvuG1s3fyAF/lLM1i+t9d6hEDVMiT/wb1LDv7UyY2fYKgIiNNqoUx0WnE3TeQYB8iWW7dfPY2w/Tl4y+u1fe0OpyABnoRHnfo=
+	t=1790665095; cv=none; b=HCj5OieczwdB1qllRAuMxJ92gFrdv7NP1PNEx7uldBi14oAWuPk2DNP9YNt7HMj/yZyZzHuqwV/MDY2vf+OIVXQO/whZOoY8GNKLMUG8sbjzkaRz+tBxmNZ8D+ywJELT0iGj5HmhLLlJogAM86D8WqBeMxaRaclePyEyF1IkxBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790649046; c=relaxed/simple;
-	bh=RqMpdApkW8ajUvKlzsHEFDCamm8McSuEQxfv4BjZxdg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=WTx9IFz6ZZfxSOpuhWoootcIf4n7YodlUuTs5h1cdFd3jWJeNgiSGZi58K0iBpWp+05E9AU2uOMTCrnuBZjQpczmNOJ1Z8v5V0HocfcypLN4dTIXAoh4VNFxjhtg356cfm1yHjfzl6tV4ezf2O9Q4h5qJiwnd/dOaeK8j149Hs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=CJYww+YV; arc=none smtp.client-ip=74.125.229.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b="CJYww+YV"
-Received: by mail-dl2-f12.google.com with SMTP id a92af1059eb24-142dd04f7f2so2551444c88.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 28 Sep 2026 19:30:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1790649043; x=1791253843; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id
-         :subject:references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=UQ8x0qGG7PntgWtNVA3JU1IAHW0rcEHjE+FOFNOnDsY=;
-        b=CJYww+YVsWvaPlHlie6xuuXtgnApejpW/FftXnzIoC1AiFzfUb2JLYN1pGejrdyLpC
-         PC4gOuUM/w6BeCgy8NleWg0I+3RrOR5Mb3WGJ45eC4scrRB9K3wudCJn1XsHwRSMVBNT
-         z5ggQx0RlTP7iOvPWaCnQqVNnor1iHicAtowtexaJM3cJFInY+a9Nn+s01Pp4xWFhrMQ
-         ddp5w8gmgxGAituAeWxk2/yV982cRMA/FgD/GQW9MLECyqmApQ3toiZaG27IcYPx/ZVJ
-         FxOltqY1A3QPpzX2ua9b4Xsn/eWxGwYzyDR8XqyySZMnltTZuFmDGtuzdrfgHCDJz60Q
-         c45Q==
+	s=arc-20240116; t=1790665095; c=relaxed/simple;
+	bh=F/T7t7qSmK+GXitMSA7BLlhbCtT9VtAA7SAIzkQ/EMs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X9DSt5KEv7ae7yn8l8LvaM3O0mWdJtTV1Yn47FSHlIB4h4dHxLmD9iKkCu4DqKhwGMQ4dVl7WdoWQGKmI5DUcpLKdN8ow8EWObNxVcrof+JT8nu0VeHd2gfaGNEscSS7y0/Y7UWRB6Xq0nXxjBDDSR5lDclOG/PEDfUsLMPJ5QA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.227.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs2-f38.google.com with SMTP id ada2fe7eead31-7b3a6aa10c2so895364137.2
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Sep 2026 23:58:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790649043; x=1791253843;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id
-         :subject:references:in-reply-to:cc:to:from:x-gm-gg
+        d=1e100.net; s=20260707; t=1790665092; x=1791269892;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=UQ8x0qGG7PntgWtNVA3JU1IAHW0rcEHjE+FOFNOnDsY=;
-        b=uyzjUE8ZXOqSszyvDiF42tovS1xpQ75IhyTogzNU2H1A6DkjO5Kiib/yUOwOZpNaRx
-         4keGK56y2vvwl9XWU0Dj/aj4nH/oIebz3zEYiOOBj67SBUu2HN4xt1gEGik9LMNl7GcT
-         lytYwEu0HjqW5l+py3D83Fyu0j9iQ4wXV7UFF7bnncwo5I5RvtSh5EdzQrDdSBa9GXJr
-         Qerrf9VU3W+nSc9oBZY1enAAzpuk9TDNgSPPePRi+Uusg4HqcQRTlwke536ykym5Ralk
-         LER7CD1OeRUuEtkYm0oV5k6kwnLo/4UyaY16dXX+Ukaw1rCBwYFMJSkAhGYjbZnEDAzM
-         Mvyg==
-X-Forwarded-Encrypted: i=1; AKwUvBzLjX/L7v9D5FHam55zG1ZOTUyWmQSOta3vDIpjeK4sn8f6xvba+h/R9s4AOOwUBdiERRCbG+D+Wq8B@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++l4Z0L1X9dJC8bBx6yiHrev14f/HPbPQdaourR64HVbOdDFYTKG
-	auumGTRHJBu8cUizMWSz5BTXQHY97NYwS67FBeWUhDb6p78d8YICc62lKfdpakYyM78=
-X-Gm-Gg: AYBFou1mi47yFLAHS2pT4eiaQkczgPjfKGyZUnWy/zAg3CDZ+mGyq6vWzbG4H26Cn8C
-	Ipuq+0rf/icI8Af2bC2bluJM64P+LifRLc8RlEhihwqdkjbpsbo+XovJqP2gAhhDSWrAJTDKDAU
-	deKitQnjtr5UKcDziXtOPzxOnjW2VsGDdJnqnhPpGpcFV+AZ5ioo/+CeTaKOtsDp6VuH3pdZ8wS
-	aDrLxPS2DkgGKOPFwdYF8RvyciYdp8PWBCzCR4fV6E1xy0a+zOHQIKFU6pD1dS5zi7MGHrU9c7l
-	rfELWuGny03AR4K03yGbOg5M9bF4/EhIWTull0TTO2m+DEd9ZqG/27sqy/6rYD4tDKPW43oey+1
-	ZnTOASjmxbbMhdNbDeO774yuvdEI45lGb2oc48815ZR8HGCHLTAA9HOMYS7DuUPYQhOpxgmM+UR
-	MTeTDV8uF+EhXyB6R2CxmxL6vw9nFnoR+tEuntGzbygGRtxOJu95Mtzl0IPwHJPeWf82SYaFhrk
-	ewf72NIFgw7tjFLQnceeyTIamJsJkc9B8IQnG7GAPhb9cv8TkFayiGXHg==
-X-Received: by 2002:a05:7022:1187:b0:144:c128:4c4c with SMTP id a92af1059eb24-146d077b4e5mr11330684c88.37.1790649043076;
-        Mon, 28 Sep 2026 19:30:43 -0700 (PDT)
-Received: from [192.168.1.106] ([198.8.77.135])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-341460f5166sm33417380eec.29.2026.09.28.19.30.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2026 19:30:42 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Laurent Vivier <laurent@vivier.eu>, Stan Johnson <userm57@yahoo.com>, 
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-m68k@lists.linux-m68k.org
-In-Reply-To: <cover.1790641175.git.fthain@linux-m68k.org>
-References: <cover.1790641175.git.fthain@linux-m68k.org>
-Subject: Re: [PATCH v2 0/3] block/swim: Minor fixes
-Message-Id: <179064904203.1187619.6436512745094022925.b4-ty@b4>
-Date: Mon, 28 Sep 2026 20:30:42 -0600
+        bh=WOMI2hvRlpBUR+jfgUNfUFOEKzipIMIZarv00xrnPTE=;
+        b=qzdBUluhOgN9dX1y9oZ9pHNnPc8Q0bXDtWk30Nlqgz0wYOUiC93NJEi6DASWj7twj5
+         GNc/0xwgoLGmrBAFDm6NSCURc7/tQg/omnhBRQEJhPmCo2VtSiigyVxzUo7A3d6sBFK/
+         5E6/6jA+zD0HSueUsanrCXojPaGvt6aW9tKr3OcP/rcJ3mpjJO2m+v9JFlRwHgGYA3lw
+         e5+QaIOoowccNVwPyIxPAmG4YUVXxEOluJNwX0Lmm9x/Gd6Res//LvxSyyzWQiGPG8G4
+         fDkbRdclfU7h1GHAS4QIYxW9woU6kGydzUKcKbnDVHkg1isdCKqBp2mUhpQ5l9c2e3UL
+         PtYA==
+X-Forwarded-Encrypted: i=1; AKwUvBwHka2K5a+gbb6j8ojC3Eg3UL6r90QW4zHdhR/cN13qg0Dsg1LkfPCxRIphsELQpWJ8seF2BfUfbu/4@vger.kernel.org
+X-Gm-Message-State: AFq9FYK2ZwXpUXHdSBRM94rfA2IfnNqd45UU4sCywbI68BFbTocrjwZp
+	qEq4lLvZMSaMmiD1LUnXqkvbIVcgvlrTH52q6C6Yb9Gjc+d6NmdmxcUipc2OCkpM9r0=
+X-Gm-Gg: AYBFou0UULsz/IKyQ6TDHwOivyRrEPOvPo+eNu3PR2eueavW1zKC7bKBLUP4T2gKVgA
+	YEKYd0MeX2XO45HG3ZmIiZnKE2YHXebrHJPI6ZSp+mAI54CqS73QFSSdrLhCVqcShMzv+qUBwRl
+	n6BYpS2bB6uTwgGJ080xrSWfF3Ke1fCIZ+9kUSaFiwGKzWZyIsfkmFYOS2DoxImRjqYrsMxICFt
+	mBonrpBOZL7HgXLh9s43i0DvSP7O5Fr8sJ+zZguHhQZHeurFWxKaX5cFEMGlDbqMux2cK+ZwWUc
+	ElI8e6UNVHWNV0Y3RRrmNxXCbQQpgFGNdW3ubmdtaSPgs+lZiC0xbDQZtjVndKcG2Ww88GDMT56
+	fJEIOqEBnn0OPBSsHQU/OW4JFv/c3GlWCz64Yh5uMIP36A0q2KJf1cjS3ar2iwV8ig+07CRCo++
+	3xCAG6APejkTA29eNjPFq/Rr2QuStqfUH6tMP8IBdi5pKsGaEuNKV8Z1gXrv3sWGBCY6btXvSRE
+	VY6pAVFt/JrrQq6GWXlYxaBMRkoBbVntIxmxA==
+X-Received: by 2002:a05:6102:38ce:b0:7a1:f7d2:e80c with SMTP id ada2fe7eead31-7af1eae9f87mr4320467137.20.1790665091833;
+        Mon, 28 Sep 2026 23:58:11 -0700 (PDT)
+Received: from mail-ua2-f43.google.com (mail-ua2-f43.google.com. [74.125.226.235])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-7b398ee8b75sm12688761137.2.2026.09.28.23.58.11
+        for <linux-m68k@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2026 23:58:11 -0700 (PDT)
+Received: by mail-ua2-f43.google.com with SMTP id a1e0cc1a2514c-97eaa1155fdso929627241.2
+        for <linux-m68k@vger.kernel.org>; Mon, 28 Sep 2026 23:58:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvByQCNLH86+itwCbGJUwjRlFfsQK+4cweohFLBzKsXz3dEQQT4JtFdS9df7QBHGv8G7n33XVAnR2yuZR@vger.kernel.org
+X-Received: by 2002:a05:6102:4422:b0:7a1:f7d2:e80f with SMTP id
+ ada2fe7eead31-7af1e9f4234mr4711697137.23.1790665091194; Mon, 28 Sep 2026
+ 23:58:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15.2
+References: <20260814031745.17140-1-schmitzmic@gmail.com> <20260814031745.17140-2-schmitzmic@gmail.com>
+ <CAMuHMdUDvsqT5t93-ZO413pwS3rPYPB1_uy+5iRHsii8CYTdgA@mail.gmail.com>
+ <ef9e0128-6309-546a-715a-3e7eb476910e@gmail.com> <8c7863da-299f-8c77-0727-fb438467a7ba@gmail.com>
+ <CAN5rfbQMTtcvmcgbDwhTQ-D9AGxP5yGqHc=JWbN7PPJXXKPGHg@mail.gmail.com> <CAN5rfbTSiRqo9V1yscb04yckJxQ2z=4VP+G__4+kbTDXeGbj-Q@mail.gmail.com>
+In-Reply-To: <CAN5rfbTSiRqo9V1yscb04yckJxQ2z=4VP+G__4+kbTDXeGbj-Q@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 29 Sep 2026 08:58:00 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXJUmEPiJ9+Op2J=Ztu+QLJ1xhMN+w5hNRzQOEYPXkeKg@mail.gmail.com>
+X-Gm-Features: AclHuK8EpOJHD-yywKe_NeGfbRXmk7lvKGhNR-kl6OXZ4KLcR_ECuskix93sSx4
+Message-ID: <CAMuHMdXJUmEPiJ9+Op2J=Ztu+QLJ1xhMN+w5hNRzQOEYPXkeKg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] m68k: Fix atari mouse movement
+To: =?UTF-8?B?TWlybyBLcm9ww6HEjWVr?= <miro.kropacek@gmail.com>
+Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, 
+	linux-input <linux-input@vger.kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Miro,
 
-On Tue, 29 Sep 2026 10:19:35 +1000, Finn Thain wrote:
-> Two old bugs were reported to me by Stan Johnson while he was testing
-> my recent patch series, "[PATCH v3] block/swim: Fixes and improvements".
-> The following patches fix those bugs.
+CC Dmitry
 
-Applied, thanks!
+On Tue, 29 Sept 2026 at 01:45, Miro Krop=C3=A1=C4=8Dek <miro.kropacek@gmail=
+.com> wrote:
+> this patch still seems to be pending, i.e. I can't see it included in
+> any of the trees. If there is something more you'd like to know from
+> me, I'm happy to help.
 
-[1/3] swim: Return -EROFS when opened with BLK_OPEN_WRITE flag
-      commit: d8fe777978a12a96cb5d10d6d888720fcba2da2b
-[2/3] swim: Fix FDEJECT ioctl for exclusive open
-      commit: c76b93df9ae61d8ddebf6aa3bc218252f85e80c6
-[3/3] swim3: Fix FDEJECT ioctl for exclusive open
-      commit: ce054fbe9a4bf4ffefef0f8e2504ea54da058ed2
+I had expected v2[1] to go in through the input tree, hence I provided
+my Ab.
 
-Best regards,
--- 
-Jens Axboe
+Dmitry: if you want me to take it through the m68k tree, please ack v2.
+Thanks!
 
+[1] https://lore.kernel.org/all/20260816073752.16656-2-schmitzmic@gmail.com
 
+> On Mon, 7 Sept 2026 at 19:39, Miro Krop=C3=A1=C4=8Dek <miro.kropacek@gmai=
+l.com> wrote:
+> > On Sun, 16 Aug 2026 at 15:04, Michael Schmitz <schmitzmic@gmail.com> wr=
+ote:
+> > > Am 15.08.2026 um 11:15 schrieb Michael Schmitz:
+> > > >>> --- a/drivers/input/mouse/atarimouse.c
+> > > >>> +++ b/drivers/input/mouse/atarimouse.c
+> > > >>> @@ -70,9 +70,12 @@ static void atamouse_interrupt(char *buf)
+> > > >>
+> > > >> Alternative, you could change/restore the function's signature to =
+take a
+> > > >> "signed char *".
+> > > >
+> > > > Agreed, but without a way to test this, I'd rather wait for Miro
+> > > > confirming that change also fixed the issue.
+> > I have just tested it. The new version works equally well,
+> >
+> > I have just noticed that if I enable the pointer signedness warnings, I=
+ get:
+> >
+> > make ARCH=3Dm68k CROSS_COMPILE=3Dm68k-linux-gnu- KCFLAGS=3D-Wpointer-si=
+gn
+> > arch/m68k/atari/atakeyb.o
+> >
+> > arch/m68k/atari/atakeyb.c: In function 'atari_keyboard_interrupt':
+> > arch/m68k/atari/atakeyb.c:263:82: warning: pointer targets in
+> > passing argument 1 of 'atari_input_mouse_interrupt_hook' differ in
+> > signedness [-Wpointer-sign]
+> >
+> > atari_input_mouse_interrupt_hook(kb_state.buf);
+> > arch/m68k/atari/atakeyb.c:263:82: note: expected 'signed char *' but
+> > argument is of type 'unsigned char *'
+> >
+> > I guess this is expected but wanted to mention it just to be on the saf=
+e side.
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
