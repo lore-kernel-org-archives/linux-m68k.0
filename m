@@ -1,145 +1,122 @@
-Received: from mail-vs2-f38.google.com (mail-vs2-f38.google.com [74.125.227.38])
+Received: from mail-pz2-f12.google.com (mail-pz2-f12.google.com [74.125.228.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FCF33DDDAF
-	for <linux-m68k@vger.kernel.org>; Tue, 29 Sep 2026 06:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473153E49F5
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Sep 2026 14:33:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790665095; cv=none; b=HCj5OieczwdB1qllRAuMxJ92gFrdv7NP1PNEx7uldBi14oAWuPk2DNP9YNt7HMj/yZyZzHuqwV/MDY2vf+OIVXQO/whZOoY8GNKLMUG8sbjzkaRz+tBxmNZ8D+ywJELT0iGj5HmhLLlJogAM86D8WqBeMxaRaclePyEyF1IkxBM=
+	t=1790692434; cv=none; b=Ixag/rfyCtKmQ93tF6yKNq/d7DvE+LsqKTc01TIAzD2oi+j0orOKQFttgeqDYN0O/tFDYMo3IyX5oDs2muTYBYRpEloklE4Czjp+yQFhGJcifZ9KZDXIdhsnyNz9sJg704TCGjZ4AVt669dj7DvSCZLzIA56cverCc+ETJykW84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790665095; c=relaxed/simple;
-	bh=F/T7t7qSmK+GXitMSA7BLlhbCtT9VtAA7SAIzkQ/EMs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X9DSt5KEv7ae7yn8l8LvaM3O0mWdJtTV1Yn47FSHlIB4h4dHxLmD9iKkCu4DqKhwGMQ4dVl7WdoWQGKmI5DUcpLKdN8ow8EWObNxVcrof+JT8nu0VeHd2gfaGNEscSS7y0/Y7UWRB6Xq0nXxjBDDSR5lDclOG/PEDfUsLMPJ5QA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.227.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1790692434; c=relaxed/simple;
+	bh=Ictfo6ayTgeVzDX16BAuhDJZt7+ZVbpOljn2/hm1F4U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XyttQg49y2DArU8xpjO+Ks5YqTKiuWyUGJoJjtNUWaoZ4TiDAh5KtTquxzLNdKUeVw2O7YtWDCx2KZq7dBpCLkm/3JXn8At77EvPjynhK1Rx9h7pcQU7Js4cYEy2yav/0YfeBlrQsFuAZWsRxxn/7QowrkBB60m13is44OPVsEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MmqFO0ac; arc=none smtp.client-ip=74.125.228.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs2-f38.google.com with SMTP id ada2fe7eead31-7b3a6aa10c2so895364137.2
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Sep 2026 23:58:12 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MmqFO0ac"
+Received: by mail-pz2-f12.google.com with SMTP id 41be03b00d2f7-cc4aa0f1a94so1467614a12.2
+        for <linux-m68k@lists.linux-m68k.org>; Tue, 29 Sep 2026 07:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1790692433; x=1791297233; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=43/3dmeDG8ZHEWDYTwQfHePyNi6D0sJRBJ/5pN8ksjc=;
+        b=MmqFO0acEMNzI0QEBUJgKmIf3MH5wqinoBlqe64cbyOM0IJ2ErxsNFGQI1BQKCcGYa
+         +eAZbTA1AEXQFB2IXtJbNr4KKKm/ninfEqIc75UhJ8TXOt9xxI8IUR6fOfYY24385JSX
+         6g3sWfnGVxao9V2AiaUqby4yX74DGBATVB1EeSwL3yF2Ng8mpXlyzlVOQ1yqoO8KXrEd
+         auqMgyClOd0tntbi0RtWWVo5WikPQ14yfl+rNtZqVCDR3d48E33OP7hG7EsbVqoHeinI
+         bhxqxBQWoWBJ2u1YJG1SgyYx5fOmGlgLtQLoukzcriHOeps3DnsQSQaFIoi5TeuXs4af
+         NG2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790665092; x=1791269892;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
+        d=1e100.net; s=20260707; t=1790692433; x=1791297233;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=WOMI2hvRlpBUR+jfgUNfUFOEKzipIMIZarv00xrnPTE=;
-        b=qzdBUluhOgN9dX1y9oZ9pHNnPc8Q0bXDtWk30Nlqgz0wYOUiC93NJEi6DASWj7twj5
-         GNc/0xwgoLGmrBAFDm6NSCURc7/tQg/omnhBRQEJhPmCo2VtSiigyVxzUo7A3d6sBFK/
-         5E6/6jA+zD0HSueUsanrCXojPaGvt6aW9tKr3OcP/rcJ3mpjJO2m+v9JFlRwHgGYA3lw
-         e5+QaIOoowccNVwPyIxPAmG4YUVXxEOluJNwX0Lmm9x/Gd6Res//LvxSyyzWQiGPG8G4
-         fDkbRdclfU7h1GHAS4QIYxW9woU6kGydzUKcKbnDVHkg1isdCKqBp2mUhpQ5l9c2e3UL
-         PtYA==
-X-Forwarded-Encrypted: i=1; AKwUvBwHka2K5a+gbb6j8ojC3Eg3UL6r90QW4zHdhR/cN13qg0Dsg1LkfPCxRIphsELQpWJ8seF2BfUfbu/4@vger.kernel.org
-X-Gm-Message-State: AFq9FYK2ZwXpUXHdSBRM94rfA2IfnNqd45UU4sCywbI68BFbTocrjwZp
-	qEq4lLvZMSaMmiD1LUnXqkvbIVcgvlrTH52q6C6Yb9Gjc+d6NmdmxcUipc2OCkpM9r0=
-X-Gm-Gg: AYBFou0UULsz/IKyQ6TDHwOivyRrEPOvPo+eNu3PR2eueavW1zKC7bKBLUP4T2gKVgA
-	YEKYd0MeX2XO45HG3ZmIiZnKE2YHXebrHJPI6ZSp+mAI54CqS73QFSSdrLhCVqcShMzv+qUBwRl
-	n6BYpS2bB6uTwgGJ080xrSWfF3Ke1fCIZ+9kUSaFiwGKzWZyIsfkmFYOS2DoxImRjqYrsMxICFt
-	mBonrpBOZL7HgXLh9s43i0DvSP7O5Fr8sJ+zZguHhQZHeurFWxKaX5cFEMGlDbqMux2cK+ZwWUc
-	ElI8e6UNVHWNV0Y3RRrmNxXCbQQpgFGNdW3ubmdtaSPgs+lZiC0xbDQZtjVndKcG2Ww88GDMT56
-	fJEIOqEBnn0OPBSsHQU/OW4JFv/c3GlWCz64Yh5uMIP36A0q2KJf1cjS3ar2iwV8ig+07CRCo++
-	3xCAG6APejkTA29eNjPFq/Rr2QuStqfUH6tMP8IBdi5pKsGaEuNKV8Z1gXrv3sWGBCY6btXvSRE
-	VY6pAVFt/JrrQq6GWXlYxaBMRkoBbVntIxmxA==
-X-Received: by 2002:a05:6102:38ce:b0:7a1:f7d2:e80c with SMTP id ada2fe7eead31-7af1eae9f87mr4320467137.20.1790665091833;
-        Mon, 28 Sep 2026 23:58:11 -0700 (PDT)
-Received: from mail-ua2-f43.google.com (mail-ua2-f43.google.com. [74.125.226.235])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-7b398ee8b75sm12688761137.2.2026.09.28.23.58.11
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2026 23:58:11 -0700 (PDT)
-Received: by mail-ua2-f43.google.com with SMTP id a1e0cc1a2514c-97eaa1155fdso929627241.2
-        for <linux-m68k@vger.kernel.org>; Mon, 28 Sep 2026 23:58:11 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvByQCNLH86+itwCbGJUwjRlFfsQK+4cweohFLBzKsXz3dEQQT4JtFdS9df7QBHGv8G7n33XVAnR2yuZR@vger.kernel.org
-X-Received: by 2002:a05:6102:4422:b0:7a1:f7d2:e80f with SMTP id
- ada2fe7eead31-7af1e9f4234mr4711697137.23.1790665091194; Mon, 28 Sep 2026
- 23:58:11 -0700 (PDT)
+        bh=43/3dmeDG8ZHEWDYTwQfHePyNi6D0sJRBJ/5pN8ksjc=;
+        b=uq8sKlUhOmphbXWQgH5pckpt8/KpAj4mdT7j7zWjN9LCygP0OrWkI5K6zGW5YdlEZT
+         ACq2Kdhci04uUduOQ3dZY6Sqvxl9A5EmhwShrDXXUI8LaACd48D4GowkVfcBjW/Dwx0t
+         2mKvrl9DVFU9gAzM9lr9rkv24d9aLddr1knNjXWpt0V2nhXRd/N9bunURg7x7Du6iUoJ
+         0ZznD8FDaSGQ4AV6LEpUZj+vkCQDPQx6RQEM+s11kk6Px5clPYqr01jDmrmYGxO6F8y/
+         pRgCInUNEgKB8bL26f5+5OvuavFJq5Woc2pdr9cKvKteHha6t8Sog/9RkmTQVW/UghIS
+         eZWQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwpacr52l6V0287q8A3bnJ8sEm1y+/UVeskRB1qpVxbIuHDS1o3TIHd7CL1meg155tpaUePPJc/n/xg@lists.linux-m68k.org
+X-Gm-Message-State: AFuF++ltc4Wr4SZD3hdDpS4pMmOWHIW+F3DjTAeO9W+uiEyq7rvXdq3Z
+	MyUETCONI91zW5wR9D69Akms+vw1/jFVWdazr2VNxqECHe88Iloh7jRO
+X-Gm-Gg: AYBFou1W6vCdxCylK5QZhCQScSpEwVw/Q0aWYWguNoFUbPUoGDfl0dltNphig1nUBcQ
+	rZGYJOI7MQ+/WVLMA1UXpeVDCOBaZWIdniyytJESZ/C2G/zoqhRRYqMp7UD9/9dYmuS9ugT1kA5
+	2TbVo1XHgZ0FLrjURx8PssfwFK9dm+0hOZ9iM6sm2kVTjuTaBEcKJzFyjVH8YNxQOvjL1laqzf6
+	Ffn0XhTyIqVBWcELxt7s/gMFFn/17TWZgbv7nxa2KG93n6+BLVBEcLw4WXi/sryBgLtmU4nuCqj
+	PqgZN6SfOTiuh2mz4pt/PrhPEZliiqHbsjTXpjxP29du+tF6GiTMAv0alggCiCXpYhSGch8aQnP
+	2PNUAuMOCCbj1tJWB1F27owazmTwE2ZUPqz6WmlkNqsOpUG3NFtnHr1r1MVZo/0XbAaTP+rPwqA
+	Y8mfXsIh4Ugpc25JHJVb5EcT6wITdS1rTLCQyxkOCC4fxzesc9SDAk4xgEysMAb0tUH4E89Rk=
+X-Received: by 2002:a05:6a21:6089:b0:3b2:a809:1000 with SMTP id adf61e73a8af0-3de0e6f07edmr15049574637.3.1790692432560;
+        Tue, 29 Sep 2026 07:33:52 -0700 (PDT)
+Received: from google.com ([118.150.148.19])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cc7a3bb2d5asm4339524a12.17.2026.09.29.07.33.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2026 07:33:52 -0700 (PDT)
+Date: Tue, 29 Sep 2026 22:33:46 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: corbet@lwn.net, skhan@linuxfoundation.org, ast@kernel.org,
+	daniel@iogearbox.net, eddyz87@gmail.com, memxor@gmail.com,
+	andrii@kernel.org, gerg@linux-m68k.org, rdunlap@infradead.org,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org, bpf@vger.kernel.org,
+	jserv@ccns.ncku.edu.tw, marscheng@google.com, eleanor15x@gmail.com,
+	Daniel Palmer <daniel@thingy.jp>
+Subject: Re: [PATCH v6] m68k, bpf: Add initial BPF JIT compiler support
+Message-ID: <arvMSjbC23bPf3l-@google.com>
+References: <20260927205501.672807-1-visitorckw@gmail.com>
+ <CAMuHMdVcpHrxg_Kb1vpguSYbRg4CU4DxNuPAv3UqHNHZTNk33A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260814031745.17140-1-schmitzmic@gmail.com> <20260814031745.17140-2-schmitzmic@gmail.com>
- <CAMuHMdUDvsqT5t93-ZO413pwS3rPYPB1_uy+5iRHsii8CYTdgA@mail.gmail.com>
- <ef9e0128-6309-546a-715a-3e7eb476910e@gmail.com> <8c7863da-299f-8c77-0727-fb438467a7ba@gmail.com>
- <CAN5rfbQMTtcvmcgbDwhTQ-D9AGxP5yGqHc=JWbN7PPJXXKPGHg@mail.gmail.com> <CAN5rfbTSiRqo9V1yscb04yckJxQ2z=4VP+G__4+kbTDXeGbj-Q@mail.gmail.com>
-In-Reply-To: <CAN5rfbTSiRqo9V1yscb04yckJxQ2z=4VP+G__4+kbTDXeGbj-Q@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 29 Sep 2026 08:58:00 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXJUmEPiJ9+Op2J=Ztu+QLJ1xhMN+w5hNRzQOEYPXkeKg@mail.gmail.com>
-X-Gm-Features: AclHuK8EpOJHD-yywKe_NeGfbRXmk7lvKGhNR-kl6OXZ4KLcR_ECuskix93sSx4
-Message-ID: <CAMuHMdXJUmEPiJ9+Op2J=Ztu+QLJ1xhMN+w5hNRzQOEYPXkeKg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] m68k: Fix atari mouse movement
-To: =?UTF-8?B?TWlybyBLcm9ww6HEjWVr?= <miro.kropacek@gmail.com>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@vger.kernel.org, 
-	linux-input <linux-input@vger.kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVcpHrxg_Kb1vpguSYbRg4CU4DxNuPAv3UqHNHZTNk33A@mail.gmail.com>
 
-Hi Miro,
+Hi Geert,
 
-CC Dmitry
-
-On Tue, 29 Sept 2026 at 01:45, Miro Krop=C3=A1=C4=8Dek <miro.kropacek@gmail=
-.com> wrote:
-> this patch still seems to be pending, i.e. I can't see it included in
-> any of the trees. If there is something more you'd like to know from
-> me, I'm happy to help.
-
-I had expected v2[1] to go in through the input tree, hence I provided
-my Ab.
-
-Dmitry: if you want me to take it through the m68k tree, please ack v2.
-Thanks!
-
-[1] https://lore.kernel.org/all/20260816073752.16656-2-schmitzmic@gmail.com
-
-> On Mon, 7 Sept 2026 at 19:39, Miro Krop=C3=A1=C4=8Dek <miro.kropacek@gmai=
-l.com> wrote:
-> > On Sun, 16 Aug 2026 at 15:04, Michael Schmitz <schmitzmic@gmail.com> wr=
-ote:
-> > > Am 15.08.2026 um 11:15 schrieb Michael Schmitz:
-> > > >>> --- a/drivers/input/mouse/atarimouse.c
-> > > >>> +++ b/drivers/input/mouse/atarimouse.c
-> > > >>> @@ -70,9 +70,12 @@ static void atamouse_interrupt(char *buf)
-> > > >>
-> > > >> Alternative, you could change/restore the function's signature to =
-take a
-> > > >> "signed char *".
-> > > >
-> > > > Agreed, but without a way to test this, I'd rather wait for Miro
-> > > > confirming that change also fixed the issue.
-> > I have just tested it. The new version works equally well,
+On Mon, Sep 28, 2026 at 02:15:43PM +0200, Geert Uytterhoeven wrote:
+> Hi Kuwan-Wei,
+> 
+> On Sun, 27 Sept 2026 at 22:55, Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> > Add a BPF JIT compiler for the m68k architecture.
 > >
-> > I have just noticed that if I enable the pointer signedness warnings, I=
- get:
+> > The JIT generates m68k machine code targeting m68020+ processors and
+> > coldfire parts with an mmu (ISA_B/ISA_C). It excludes plain 68000/68010
+> > and non-mmu coldfire processors, as it relies on 32-bit branch
+> > displacements (b<cc>.l) to handle large bpf programs.
 > >
-> > make ARCH=3Dm68k CROSS_COMPILE=3Dm68k-linux-gnu- KCFLAGS=3D-Wpointer-si=
-gn
-> > arch/m68k/atari/atakeyb.o
+> > Tested with the test_bpf.ko:
+> > test_bpf: Summary: 1061 PASSED, 0 FAILED, [1049/1049 JIT'ed]
+> > test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
 > >
-> > arch/m68k/atari/atakeyb.c: In function 'atari_keyboard_interrupt':
-> > arch/m68k/atari/atakeyb.c:263:82: warning: pointer targets in
-> > passing argument 1 of 'atari_input_mouse_interrupt_hook' differ in
-> > signedness [-Wpointer-sign]
-> >
-> > atari_input_mouse_interrupt_hook(kb_state.buf);
-> > arch/m68k/atari/atakeyb.c:263:82: note: expected 'signed char *' but
-> > argument is of type 'unsigned char *'
-> >
-> > I guess this is expected but wanted to mention it just to be on the saf=
-e side.
+> > Tested-by: Daniel Palmer <daniel@thingy.jp>
+> > Co-developed-by: Greg Ungerer <gerg@linux-m68k.org>
+> > Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+> > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > ---
+> > Changes in v6:
+> > - Fix kconfig sort order for HAVE_EBPF_JIT.
+> > - Update eBPF-JIT/arch-support.txt
+> 
+> Thanks for the update!
+> 
+> Are any of the issues raised by the bpf-ci bot valid?
+> Thanks!
+> 
+Yeah, I'll address those and send out v7 shortly.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Regards,
+Kuan-Wei
