@@ -1,105 +1,95 @@
-Received: from mail-dl2-f41.google.com (mail-dl2-f41.google.com [74.125.229.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12B6343D8F
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  3 Oct 2026 01:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.229.169
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790990641; cv=pass; b=YXo1OiDu+dSx1LkDCi35GGVbpQus3TWu2350NFzRUmokifCy8K2yY2Uly3DsQPEsxq9pejJ8++GbvLRYt0ihlbPXmabp7aBttZXPvwqezrWskXNSvShzU3t1HLLPDkcTDP16wvoqFmDvruljr9O5llA/tJOmVRI60pkpd93AmZ0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790990641; c=relaxed/simple;
-	bh=qm3xtfAskO9px5QkPFtIomCq0X805lE3eXVqHS0pXzk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VSKA8Sjrm+bA/mVefx58MMWUm30KcPOoedUN1nc657O2cNxBYizK+dAyZ6SlL0wXN2C6p3+UTneCxccsH7pKjHrl/lcg1S2NAbU4pU4GcWVesJ7oQdZOijzHZpopZ8Bnp4X/hCcAOpbhQ0i3RXrL1XYasQx5swH+XwSy5GGBoWI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com; spf=pass smtp.mailfrom=0x0f.com; dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b=Ot6FQ5n3; arc=pass smtp.client-ip=74.125.229.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2233806B6
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  3 Oct 2026 05:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791005405; cv=none; b=VzgjL1oQUltkBnZYbvu21KhMXihvMqQMj1BcSltuV9ol4ZovHMAXFRLiT/hIRCjv66O2P0QNPnPol/tXR9a/yjPhia1TzTjH5LJou0ui1pe8SnLZho39v9ANAdYsFJssUN1x6r2c3JhEDQ5C6H8UKqbeI6ZGT/lR/wn6jVp11zE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791005405; c=relaxed/simple;
+	bh=Ghum7X5mykv/Vqq8KVmZBDIlNh49ac3eG59WlgGVhWU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=GDU0bqIBj1/Mh+upYEieLqMRBAJGbuloUDVC6buhYUYvtx7IEh7wiLmO3krDfS/BBsKeSKkvvF5cUkNWupa2g+FPjKhUp508Atn+LmrLI+zK/w0SF7ffy+PL87oEojM3hqILDekDCdK9joe6tWuX62xy6yfr+cEYKEW6rofRKd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=c2+27alM; arc=none smtp.client-ip=202.12.124.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.b="Ot6FQ5n3"
-Received: by mail-dl2-f41.google.com with SMTP id a92af1059eb24-149f2b3f2c9so6914c88.0
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 02 Oct 2026 18:23:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1790990635; cv=none;
-        d=google.com; s=arc-20260327;
-        b=FSZNK/BQT9MCxA9IKk7Ue090fTvjP2zjewYN5Q1FluG3yEpK7XRpcwN1gCw++uBter
-         vIlSm3MbkhHMU2mOJW4iHQp98Hmy+fkpgCsbFSxWcnTHOZAIMQASckB/7Mj292i+tCk6
-         urDw+FXMaLvO6mNIuBIkxEOUoXv/9nYXQDMXhyVu9oRUqIHZzrMmXdroZW7zRCChOeuQ
-         DdKSgWtGDDUPy1dFQZSqHWEGW3x7Gfu3M6V+hrxLhuG1wj8ip5n8tpkK6SqE0eC4yXib
-         RLEKSu0r0VXoVoGMdA0WiSq3EQjQO0htuCJQxAPncO4OkdWk2DuwpREqg4PnRVcm1WEX
-         +05g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=qm3xtfAskO9px5QkPFtIomCq0X805lE3eXVqHS0pXzk=;
-        fh=lMnoto3OoyeHnF1i7yFRMq+gfEZNaI0mpBiLtzITnaQ=;
-        b=XSnPxuKxz1E2TlsSdLtbVl5QtvpplVuSx6Q0/bSq8VGIHwK8cG/L76u22xzu+S5N4+
-         7yT/MjwraJPmo99PrU8kPmktONbOV+lBQ2Q585LcoCF81pP084DkCs6+ZVxw7l2df3tU
-         jBvYl7axzQIPmX91Sy615Q9w98WODEOVaBI15AdJaYQYAuzivtQ+NOzyx6evCwhTlHVn
-         4ELljQilS+YEsuN7oosT/Pyw2UHnQ0oUxAi3qLg7LXSgco3BGOiknedtNBbLUwRkKHxO
-         0rUGRq0vhxLxB9VHCCyeeJVbYROp8pc19f4dpPSQi5rUOb2+jJEuXlmN3LWCjJrn23Ok
-         GEng==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1790990635; x=1791595435; darn=lists.linux-m68k.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=qm3xtfAskO9px5QkPFtIomCq0X805lE3eXVqHS0pXzk=;
-        b=Ot6FQ5n3IpLTbeuQ2junwACkYL0TKlcDKIZsGGIQCRcoCKiD1EymP4LDxbQVgq84Y6
-         +5yZanLaxALztitAo/mSZ56XgY+/J/UjfUlVYHp6QqH+aXJrzg5hdsR8QvzVcMmbcnkd
-         pHpmtsz+Hj50prRhrNMNvUgDALt+LWYz/KIlE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790990635; x=1791595435;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=qm3xtfAskO9px5QkPFtIomCq0X805lE3eXVqHS0pXzk=;
-        b=l+jOmU9Gd2itOBrQDfA9keP1nT70Ffl+DL+0tY2u1laXvrhTlq9Q9q9c8mv0TUa8ET
-         E5AZ660oid5pYSKESxazI3XM1XdfL6fpXGJFkz8yp9QFJSM6XVbqh2tRzMcl/60QcDoE
-         xVm/cnA7jqByjTRNqibEVfOZRQbp7zFLuoWQ0fxzDcYsUne6kBTqCXMAs//aN8Hgzs3P
-         0gFRMW7j4mhur5Xav5PAuBpqrRzH5UfIDoWJ+QzC0i1eU6ZS2ag69CHjW292SGqibERU
-         edzAP5psLhl7SSYliC2AeblcqnHMOMop+aD5HtvQ93eqpNZ/YkpeTfVboVs60iD+Zx7W
-         3w5Q==
-X-Forwarded-Encrypted: i=1; AKwUvBw0jBtwv15jQr0orP+bPVSH1e+M75/Zs/LyJc+5dHZp2k0rvUAG6oKSdiV0OI2aU6zIP+gj1LCMTAx7@lists.linux-m68k.org
-X-Gm-Message-State: AFuF++muXH6uSoOluNNy+sLIzHv/s1M9R4WreJK0EEHTchN6mufS3bev
-	HRfzxRJhS4zil51JibxCYiZdSu8wq3Dxgqju9qyGb9oYg1sVcqB+huICicuxuYm/Dykrgrh/rZA
-	EfQ706boQjoXxUfgEwo6gPlqJBSQFXpKkcb67PT4tmg==
-X-Gm-Gg: AYBFou24Y4i9K8SS6H7n5eLRFmV5RegL2pX7rqincAIGS2va9Fqm0weLoKC1x/egbZf
-	gmGuj07fqkx/C1DNiiplGj2P+p9asljIBl0oimmtpWu8CwKBEDpuFueJ6KnA46JW3snEj1JrvzA
-	efze118w4oXBhe/HwlXUzyUi+fKmHxMIIcRyZQgTavzLkB8AWwtTfDBBuV5aQ4ZHMevnvi9IU57
-	t1uSE+sLPWb6esbmkA1I0gjfPEpjmXEkibQAl+6UC8BZF/FoCp0cD2kumnOa8iA2VE5HzUwwv3z
-	MICAl9QIzl8YxUsHVU1fnIb26BRI9zIbTrPVUOSjabMR0K+ozgdOfebu
-X-Received: by 2002:a05:701b:250a:b0:144:e59d:af02 with SMTP id
- a92af1059eb24-14f5b413640mr4772844c88.12.1790990634522; Fri, 02 Oct 2026
- 18:23:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="c2+27alM"
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 1BC907A0196;
+	Sat,  3 Oct 2026 01:30:02 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-11.internal (MEProxy); Sat, 03 Oct 2026 01:30:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1791005401; x=1791091801; bh=8q8NC0HYa3+0dBpiUvbPBqU8gp8EWFWGj26
+	S3lAx4L8=; b=c2+27alMS78V7wmCfw5sBh0YTuTGN3Mkb3gi4Jo+9Kvme0PvIo0
+	DLtrOV9XerlyQQegZcctlj6um8gHqN7EMhkjuJDXUfiGLiov8t24CktqeNi1uUba
+	pfkQg/JiXyn5Tmf77u9u1koxR/vDWvB7L4V9G4qsJhE5Cw6cC8k+Fw8HPPxn6vhq
+	+gYSjSQfzPlR+ZO0avAART9PWLUPiTkwEixsgh12v1AWKuzi4p+qrhdEB5VGkXDd
+	YhlKYQbdpQCXHGLIOq8ZO0jFo45K/ml4QKKYOlKRXQRTsIOnCEzH5mvYR8f3pfP1
+	OSLL3EL5Ocl2z14XED2ApNq1JgS+/9iFHJw==
+X-ME-Sender: <xms:2ZLAakBwkbGFCkjrhcDIrOS53L6gMI0wWI3bUYMPE6FoxxAdZS_1mA>
+    <xme:2ZLAakVZ5hl2wPRWDm2vqWcLS3RC9KbIDY6aZu70n5XEv71vpCKU_GdARvuhD1-Iq
+    SEpU2un56gahUYUK6YdBu9X4kqRHKbVncaOE3hHvrXVxIbrrGU0OfAj>
+X-ME-Received: <xmr:2ZLAaiA2JcoyMpvNNokohs2nTt5e8Gg6iSpMo1Bcgvs0ljy9_Vp7omKnfJxA>
+X-ME-Proxy-Cause: dmFkZTEBMGJ+IrClqC/mMWfLK0d7n+elZvbYD7ghLWGvEDFRoem9qRS3It+vQJQTTIUBki
+    WWk2Wq+M2ldlxMqfcVvPy01nKNUX4xfmy2OVRIKWljRUoziwhFlyclZ9NxexQyn2FtmSrs
+    z/rVXko2vfAagpMErbGOYN197oRgdEwnPJ1TtCKQCM3J083I/vJoIYSP9YD6V/J1YGFRE7
+    Vesp084rJVGQVsBy12VUGKkBSsSo3pk83RM+atWUWQpqyqMzoFLViDi9zphNxTrapnR8Tq
+    lKP+JU/DY46qgriwguDCmGVB4P2aqzUrsA5iEBgX1qfEwNRB1R0ntCmuk10XVsLWuPHcCj
+    mb0gdYZm0NcPalshkpg8ycy3UnmdkEjjilVWOd6EbN000/WXK+NZT4xd8JLQaemZ1oIXhj
+    0zY0Mnyo8HjpJmQtl677jLM+P3LWffxyI3gsI5TtS4TFcvcklAy6RJbsdZg1jQT7NUZ2d7
+    raRaM4h72XDnslu2CWt35qOjhRFBXblrZ1dvHKqJu+wLHod4BkPiG5vWue7UjrsGzr80vU
+    3v6ERi6GFFlY2PeqdMvJONL+aePR84w6Jq2noHENg1wKvUN5nceqcS7AjhFPWdFRk4TUk+
+    e79cpaJw0Li0QG75hE9+PMke5Vs7bSMjz4F9LZ4pcG//ZC1TjBYMouX7lAZQ
+X-ME-Proxy: <xmx:2ZLAan8Zj3TCXwpfLlZ2fhTcUlesUTUxpe7s3MHncRZZOML5gp4Azg>
+    <xmx:2ZLAapEI1VxmkH7eAqDiCZR-cko4dGAEftGsqT59Szi7IDsmnG8oiA>
+    <xmx:2ZLAalPSP6sFaNSryaHEiTveZ-SefxVvyWgTM7ztq4QcQzDWiJFzwQ>
+    <xmx:2ZLAajeyucLwati2Y_ZYBR08V8P9xCd72VFG1BHxhEk4s-IxJ02IiA>
+    <xmx:2ZLAaqwV2jg7XFFiqrux7Rm3QhOCVBzKQ-nZAYbZdUGwPOqQ507tJyR->
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 3 Oct 2026 01:29:58 -0400 (EDT)
+Date: Sat, 3 Oct 2026 15:30:09 +1000 (AEST)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+cc: Michael Schmitz <schmitzmic@gmail.com>, linux-m68k@lists.linux-m68k.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] m68k: Handle put_user faults more carefully
+In-Reply-To: <CAMuHMdVbfUH1ZoFcS64t=gyE_cskMWv6gGvL8pjGirSGvAKu2w@mail.gmail.com>
+Message-ID: <a62d1568-f59a-cd50-7518-12cf4ee54bd6@linux-m68k.org>
+References: <88e752e0bca92c7b65533cc1b334052dd272f8ef.1790842086.git.fthain@linux-m68k.org> <02c53c37-d2ee-4c03-a8f9-0a757c3af59e@gmail.com> <CAMuHMdVbfUH1ZoFcS64t=gyE_cskMWv6gGvL8pjGirSGvAKu2w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <88e752e0bca92c7b65533cc1b334052dd272f8ef.1790842086.git.fthain@linux-m68k.org>
- <02c53c37-d2ee-4c03-a8f9-0a757c3af59e@gmail.com> <CAMuHMdVbfUH1ZoFcS64t=gyE_cskMWv6gGvL8pjGirSGvAKu2w@mail.gmail.com>
- <dfcbbc59-4204-478b-b8da-867621056c62@gmail.com>
-In-Reply-To: <dfcbbc59-4204-478b-b8da-867621056c62@gmail.com>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Sat, 3 Oct 2026 10:23:42 +0900
-X-Gm-Features: AclHuK848pC5CD9UEaQvllBn96zCoeLE1p9yCx9zD8zRQMN6UIL-sqXECJvrsOw
-Message-ID: <CAFr9PXn1M3PJF=rcR8SDarYU77b9f_v6Bfq+6=pm_vEO28BjeA@mail.gmail.com>
-Subject: Re: [PATCH RESEND] m68k: Handle put_user faults more carefully
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 
-Hi,
+On Fri, 2 Oct 2026, Geert Uytterhoeven wrote:
 
-On Sat, 3 Oct 2026 at 08:55, Michael Schmitz <schmitzmic@gmail.com> wrote:
->060 tests are still missing.
+> > Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> >
+> > in case it helps.
+> >
+> > Anecdotally, I've seen similar uaccess faults causing kernel oops on 030
+> > as well, so this may not merely be an artificial unaligned access issue.
+> 
+> Shouldn't this include
+> https://lore.kernel.org/20240429030945.22451-3-schmitzmic@gmail.com
+> ?
+> 
 
-I meant to test this but my 060 Amiga was doing other things.. I will
-test this on when I get back from LPC next week.
+I don't see a dependency on other patches. I think this patch stands on 
+its own merits. It fixes two bugs: one is an annoyance for those of us who 
+use stress-ng and the other bug is purely theoretical (thus far).
 
-Thanks,
-
-Daniel
+This fix can be merged independently of related bugs, even if those bugs 
+have similar fixes, because separate patches are usually preferable, 
+because a 'git revert' is usually a possibility.
