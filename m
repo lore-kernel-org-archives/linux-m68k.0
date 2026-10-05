@@ -1,67 +1,68 @@
-Received: from mail-ed2-f12.google.com (mail-ed2-f12.google.com [74.125.228.76])
+Received: from mail-ej2-f41.google.com (mail-ej2-f41.google.com [74.125.228.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D445E41E6B6
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Oct 2026 10:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8D0443E43
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Oct 2026 10:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791194790; cv=none; b=C3PjszH6xqqvg8p8lZg9i1RvLeSw09ZtzQM5c00Pi/qYJFpnxYakw3zLeLqknFOGgeF8urbyIDpqtkjUlxmHPPanumTV1Fx1+MHeDIRorvVQYxuZUYH3XR8imf1zl5mbDsrFqIRQzNDE8TNRQsZ0nOuFeDYWw5wfmplC5u7xWCk=
+	t=1791194790; cv=none; b=tcS4qyYxNpZpyeARAvHSB8FpLev87yaCTeEF032z5si+zjIWurxUq9SaivqL4VNapPG2FhQbKH+cgS44W4tp/yvAq4lVFe48NDbuWYnuay4ED2U8p5IYMzaymn/uHYasC58o2/tRtMbdAEJla/XrEJ5NVuQHGv32UxiglnmSXtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791194790; c=relaxed/simple;
-	bh=tQRX/FLdNvERNHaTAed+MPY7J7geG2lCZiYEYToYdU4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IWjCROKfRVbkHULTYeNJNoLVDDWwzL0YnB7sURBivx0l0D1u+1ae9Vr3wXS3Imaca82Gk3swP607M1kEtXgsAGVx0S5w4U+YwtRCHHtaUM3adUiyNY+8rTefypeZKUrkDG8bfQw41edCG0prrANJCzfCRkffBrqaoarvKjwQ8gQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=XKk2iN4w; arc=none smtp.client-ip=74.125.228.76
+	bh=kkvQVRadmIQGTvKLcaujad4OYyUKVMAdBbtxh9GnyQw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ZjD2uvqpMBRF0hb37kG8wZg4cHl+ftoK7nXt0A9Dzd4jnpCcpyVhDx8argkiH9n1nNHi3TQUblsEY/F/RYaNlgofE2/+2rNpLAXDqcTA0K/qth2Z7X+CM734BKWKliJ21JpIZZHnSy34Tb3D0SCvIfEldAzrmMPEEEhXVKhS5Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=CvTycTSN; arc=none smtp.client-ip=74.125.228.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="XKk2iN4w"
-Received: by mail-ed2-f12.google.com with SMTP id 4fb4d7f45d1cf-6a6063d7dc4so1895337a12.3
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Oct 2026 03:06:27 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="CvTycTSN"
+Received: by mail-ej2-f41.google.com with SMTP id a640c23a62f3a-c2e32f913c3so249170566b.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Oct 2026 03:06:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre.com; s=google; t=1791194786; x=1791799586; darn=lists.linux-m68k.org;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=0tbK+LhZVoVA47l+6TUiqPvZnN/HfVJIxHV+cXh6bK0=;
-        b=XKk2iN4wZft08hEsZ8VNmTWoVOcFduyPppawkNVVaTaJD4zEKKKd5rnhdGQK93ndT2
-         vlA9TPc7EmkZNE2uv6Y27jMKMc4bIbQdoFvyBWgtsSveHHbaW3jsU66tzB2RAELsEolY
-         3Z036u4MfdTauDk54IE43hS2ULtzQUT9VYTknGORIHcKa2LjMMcqVp0ISfCblKn6MBLp
-         aYe7oyeMK7QMC5zz/+jOJ/1iL0KJi4kQFqgs4SEq9wMjLFowPfm/tsqHFjFzdUkvxolx
-         pU40Nc5mlDD2qIq8Y2zpI916x3PiYhhsY9nsojuEKV5z97BphgtawNWtqqWauig8cJnM
-         s2/A==
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=SsiKtn36BJ7XHGErl6qttUUVPC9Oz5hd7o1Pd38Jb+I=;
+        b=CvTycTSNSeUHL0NwypOK5YDmkmlOu/nWjvUOKt+o9CWSR7kponYScw7nbd/E7P7vXh
+         dtSmTcBs3y1b6up3kh/K1iOfl+jJRAQUKXUGGT1zFsQHO3rp98oDVTVM2mPh/xKP62iT
+         3TCyrV/4tYDBjW13pTEIY5TK3wHP2Yzbv1oyQsENLxtEqYfwPDUnYd0e8+IbJ1ad4RDc
+         5Z0bFj5QIOwMSOUWYl+xL3+M8pgAGhwx7EdyemrYFdYEUaRNSOBAuanOqPVVCbiitRoc
+         xW5ce3vNrgx2DhX6rGkS4FhOQP9iTbDW94oU+W59uNiQeQLwqPI1l+BVAb8nlpeeyRRG
+         2AzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20260707; t=1791194786; x=1791799586;
-        h=cc:to:content-transfer-encoding:content-type:mime-version
-         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=0tbK+LhZVoVA47l+6TUiqPvZnN/HfVJIxHV+cXh6bK0=;
-        b=DOZn7LulFMtwqfRagru/c3B8pabhkKLDPfrNUuC7SGDCBkTDtDnXNnvlxJBwa+pWpJ
-         iUkFo7uQDt6zAvkzwNkZ+O4iGFIi9hQO7JHux7qoiEoVMKqYwMAbTRhfyRS52uDFMN8d
-         6er6nD0MK0zYDXFHVFzF7qbSeBW1VyU0NPRsGKHNCL16RG0ue6kRN78tOxMXSq9Ok/wd
-         aR447UMicGCgCB++LM7evPua0dkQaO+UOQCvDFSRKVjXrHcQs3+jgSpRQyuJfblQ0HkC
-         E5xMdwtAkxz6Ly2BtPcKRFtj/v+zkctWsxhN6Szo8RZjeh+nyBEf/ATSn3K0QHW4xysk
-         d/nw==
-X-Gm-Message-State: AFuF++mQWmF9g3P9dGHTOU+d0mDS2zvhlfzLKKGUGHT/P9+CY31YGpE6
-	hzA7OgjzrnNnOi5D0NcLDUUwBw0CVQFRaPrzJLeaTFVlJ48XEmC4/dYrwHZgMFHV50k=
-X-Gm-Gg: AYBFou3Dzs+M0s77n5tngh8vY+nfcdrYSoCtQGUJW5ZCoZJjJ4M13p6BRShr2LGdahZ
-	rrzc2CjmGSAy8K3We+p4JcugRV5zD+kNyFv5nU+K00AqLtmI7jZGDgd+PUxFUZrsq3HsU/cP8HQ
-	aHO19pz2YeIQaK0BkOv4QQs5o1GLUsZX7UeGNxfSZRdWpoMfq9OjEL5OUvMYewGPUyklFu9BLZD
-	fkGoflWEGSDkk/N7JOW2IwZYzuUpphw0JvQ0nLj3W/D+w7JZ4535y+vJsYpMRJiVkkucQ7Qtrty
-	nc+rWOU1OMKZ7YjoNVg0/EX0ezj2Z78+cAiQdLgAMMtLM65Sfjwjp13PiKsNEoeYFJhGJGlks7M
-	Q1LzlwrnBS9vpO33bhQpBgYPeRO1GA/5mADYfFBXPxB8YCNTRgnQct34XbaAKFGGynxr7E2Bc3Y
-	nOAaR8ZqmKfa5Ewqmw2R5E+C0wk6alrSPuBLywe0PFmPOGm2pljCCsx7TWwLXXbiMxhmcrrmEhd
-	pSRxr7UOQ0tMeL61o4hyYhXS2CNIaj65Z9+XH1m0Qmee8KqAQ==
-X-Received: by 2002:a17:907:3f1b:b0:c2d:fade:e089 with SMTP id a640c23a62f3a-c2e4a7d4789mr841351266b.0.1791194785779;
-        Mon, 05 Oct 2026 03:06:25 -0700 (PDT)
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :content-type:mime-version:subject:date:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=SsiKtn36BJ7XHGErl6qttUUVPC9Oz5hd7o1Pd38Jb+I=;
+        b=FBw7kfSDxS4kb1pn2mv3OmaHsNDENdtXPzrSvusG4XFnuihhD4hhq+lsQ9eDoaGyWd
+         V4O8c8qRlOeVt9o9RqfO+U73GY+zvYx57mtVMZ3S7G7AEtJOV+BYyLR4hQPixY7bC1kU
+         NkRcj+gfnKSKuii3dZrZbiUNufczCm/TLq8A+dQC/F/+6EkLXxKvmWMjHvRIamRDnztJ
+         wie/+I9sDvSON+IBn7blBkG3M/bIXKrEBXMMg5B37laUEzB/IRw8Pwxdxd/jWmEzbQo3
+         B4oRq1LmnQMh8+DNwYWqqskSCUEbTw3EZ7KPqXaSqAdZd5ZZy6g6DU6kcy/W9dmyG5Mh
+         eesg==
+X-Gm-Message-State: AFuF++mwjr1hwVEQ9g67CkDa7l9EEyRw/71/kOq4tAeEMePiE/LpvemN
+	/lm6O5XJZqHSYJpTx77iWXUKt8zmpcsIbKkTnvocHKCYkhTblCxNTogYCkTABrY9jMY=
+X-Gm-Gg: AYBFou2zlJl7RWLjCN91HwxhdoBE26vElRx+kdbB/JddRI8Jq16fyF9BNSsPW/id5vG
+	/xAf+F3HWmenhaYxBJoIWeDq8tEUsTR5WWbz0GRiXKStxzcAnJs/axvEUQWADy1BrpjXPnM4aJ/
+	VFxSiDwu2euf0QmuKFZ7L8MEZ2wBqa7h9fFdDkyxy/TywyNvwmc8Yffx1iQ3eAYdY/Uz1iRgW/F
+	ozkvJXnXrsBVyK1dkXMwlNHL5S5hS9KWBiAPuhYGDap9qNQ+cbNcpU7lq0QfxB3Gp+PKlXYbYEo
+	eFJ5Yup1EpocAXNl5n8FAhIzFiXpK7FJg8O7uS6RaFP3uiwQtLC00D8xMslXiZVNXJ2NMhcp8MM
+	GDJTr5wXrkRJYozpDbaTqFjgF4grbh6TXlJU7aR/aR9sTnQ9ErsKa+9uJTIyL5VEI0KGcmaEsus
+	CQf0JMQHDkoeCcf8OJRG0Ch0cHP0SfJT7T0IqPlmLRwTZ6ixwVob9VoplRQu71WvD3x0/yC46Po
+	5sm4O/vSNWy6A90gLBDHvBbWdiLl6/GWLw/hm4=
+X-Received: by 2002:a17:907:7212:b0:c29:f5d5:5aa1 with SMTP id a640c23a62f3a-c2e4b295951mr836086766b.43.1791194786464;
+        Mon, 05 Oct 2026 03:06:26 -0700 (PDT)
 Received: from [192.168.0.42] (host93-7-32-195.dimensionesrl.eu. [195.32.7.93])
         by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c3156360832sm50800766b.75.2026.10.05.03.06.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2026 03:06:25 -0700 (PDT)
+        Mon, 05 Oct 2026 03:06:26 -0700 (PDT)
 From: Angelo Dureghello <adureghello@baylibre.com>
 X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
-Subject: [PATCH 0/2] drivers: pwm: add mcf5441X mcPWM support
-Date: Mon, 05 Oct 2026 12:06:22 +0200
-Message-Id: <20261005-wip-bl-stmark2-pwm-v1-0-168b9dc653f2@baylibre.com>
+Date: Mon, 05 Oct 2026 12:06:23 +0200
+Subject: [PATCH 1/2] m68k: mcf5441x: add PWM defines
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -70,59 +71,41 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/33NzQ7CIBAE4FcxnMWwgNh68j2Mh4VuFbU/gVo1p
- u8u1YPGNB4nmfnmwSIFT5GtZw8WqPfRN3UKMJ8xd8B6T9wXKTMppBGZzPjVt9yeeewqDCfJ22v
- F0RVgHZYqxxVLwzZQ6W8vdLt753ixR3LdKI2Ng49dE+6v1x7G3t+DHrjgRisLlBm9ytXG4v3sb
- aCFayo2fvTyo+RCTyoyKaQhU2JZgDJyQlFfCsCkopKiEaSyJaIz+KMMw/AEXAekVFUBAAA=
-X-Change-ID: 20260828-wip-bl-stmark2-pwm-acd1bcaf39a7
+Message-Id: <20261005-wip-bl-stmark2-pwm-v1-1-168b9dc653f2@baylibre.com>
+References: <20261005-wip-bl-stmark2-pwm-v1-0-168b9dc653f2@baylibre.com>
+In-Reply-To: <20261005-wip-bl-stmark2-pwm-v1-0-168b9dc653f2@baylibre.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>, 
  =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <ukleinek@kernel.org>
 Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
  linux-pwm@vger.kernel.org, Angelo Dureghello <adureghello@baylibre.com>
 X-Mailer: b4 0.15.2
 
-This patchset add mcf54415 (ColdFire SoC from NXP) mcPWM minimal support.
+From: Angelo Dureghello <adureghello@baylibre.com>
 
-The "motor control" (mc) pulse width modulator module (PWM) contains four
-PWM submodules, each able to control a single half-bridge power stage.
+Add PWM defines for the mcf5441x family.
 
-There are 4 independet 16bit counters, i.e. to drive 3-phases motors, the
-total counter range can be limited by SMnINIT (start) and SMnVAL1 (end),
-in ticks. SMnVAL0 must be set to the middle (half range).
-SMnVAL2/3 defines the positive PWM part for channel A, SMnVAL3/4 for B.
-
-In each example, R.M. uses signed values. Reason seems to be:
-
-"Control loop algorithms (like PID controllers or Vector Control matrices)
-natively calculate output corrections as signed error vectors (e.g., -50%
-to +50% torque or voltage correction)."
-
-So using the same numerical format from this algorithms (signed values)
-avoid to reformat values to be written in the VALx registers. This is of
-course useful for bare metal drivers programming, but i have to maintain
-signed values to have prescaler working (all-unsigned way works but only
-with prescaler 0). This seems to be a possible hw bug.
-
-In this initial implementation only output A of the dual-output (A and B)
-works for each of the 4 subchannels.
-
-Validation has been done on stmark2 open board, checks by oscilloscope.
-
+Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
-Angelo Dureghello (2):
-      m68k: mcf5441x: add PWM defines
-      drivers: pwm: add mcf54415 mcPWM support
+ arch/m68k/include/asm/m5441xsim.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
- arch/m68k/include/asm/m5441xsim.h |   7 +
- drivers/pwm/Kconfig               |  11 +
- drivers/pwm/Makefile              |   1 +
- drivers/pwm/pwm-mcf.c             | 646 ++++++++++++++++++++++++++++++++++++++
- 4 files changed, 665 insertions(+)
----
-base-commit: 02156c061b7dfe437f9054b3e353c69fde0f7a58
-change-id: 20260828-wip-bl-stmark2-pwm-acd1bcaf39a7
+diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
+index ea01c7753b7b..aa925fac87f4 100644
+--- a/arch/m68k/include/asm/m5441xsim.h
++++ b/arch/m68k/include/asm/m5441xsim.h
+@@ -375,4 +375,11 @@
+ #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
+ #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+ 
++/*
++ * PWM module
++ */
++#define MCFPWM_BASE		0xec088000
++#define MCFPWM_SIZE		0x150
++#define MCFPWM_SUB_SIZE		0x50
++
+ #endif /* m5441xsim_h */
 
-Best regards,
---  
-Angelo Dureghello <adureghello@baylibre.com>
+-- 
+2.55.0
 
