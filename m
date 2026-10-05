@@ -1,68 +1,68 @@
-Received: from mail-ej2-f41.google.com (mail-ej2-f41.google.com [74.125.228.169])
+Received: from mail-ej2-f43.google.com (mail-ej2-f43.google.com [74.125.228.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8D0443E43
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Oct 2026 10:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC0844A3F1
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Oct 2026 10:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791194790; cv=none; b=tcS4qyYxNpZpyeARAvHSB8FpLev87yaCTeEF032z5si+zjIWurxUq9SaivqL4VNapPG2FhQbKH+cgS44W4tp/yvAq4lVFe48NDbuWYnuay4ED2U8p5IYMzaymn/uHYasC58o2/tRtMbdAEJla/XrEJ5NVuQHGv32UxiglnmSXtU=
+	t=1791194792; cv=none; b=TeCTU+HLb/sik2AIbWbvn3HweAjJSyUTVBA1eVjNq9Xpex6EN49vt1skosSrscUJ3kiVE7YLd2KYDYMG94uyjVHYX8cy9NPAvzt8FrRIossLfYk2Z0tkLqIYzVXc/SrDunyI/5hcXkhQiisntnuq+yvahO6AHWyY4hy02ai9VuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791194790; c=relaxed/simple;
-	bh=kkvQVRadmIQGTvKLcaujad4OYyUKVMAdBbtxh9GnyQw=;
+	s=arc-20240116; t=1791194792; c=relaxed/simple;
+	bh=VB8BQ5itOA7qV7pL/JQGpmUuz7Pn5ML+e0XikXEwU/k=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZjD2uvqpMBRF0hb37kG8wZg4cHl+ftoK7nXt0A9Dzd4jnpCcpyVhDx8argkiH9n1nNHi3TQUblsEY/F/RYaNlgofE2/+2rNpLAXDqcTA0K/qth2Z7X+CM734BKWKliJ21JpIZZHnSy34Tb3D0SCvIfEldAzrmMPEEEhXVKhS5Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=CvTycTSN; arc=none smtp.client-ip=74.125.228.169
+	 In-Reply-To:To:Cc; b=sEDpSvb+lv2/R9k4B912Cy/pb3tMh51CKEY8z50PbmCWFYOoGchjACVjbmsFQ89fER8qe0WVWbAMwyHxhTj5nF3jgheYHfPobeaQuBAqcYzeml0HOMqZoTh7fD1Y8ODr3L7lGF6gvGG4cQAgpCs5jz2BTjn/x/fc19vagzTL0fE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=Ciai+zwt; arc=none smtp.client-ip=74.125.228.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="CvTycTSN"
-Received: by mail-ej2-f41.google.com with SMTP id a640c23a62f3a-c2e32f913c3so249170566b.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Oct 2026 03:06:28 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="Ciai+zwt"
+Received: by mail-ej2-f43.google.com with SMTP id a640c23a62f3a-c2a1f611461so107196066b.1
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Oct 2026 03:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1791194786; x=1791799586; darn=lists.linux-m68k.org;
+        d=baylibre.com; s=google; t=1791194787; x=1791799587; darn=lists.linux-m68k.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=SsiKtn36BJ7XHGErl6qttUUVPC9Oz5hd7o1Pd38Jb+I=;
-        b=CvTycTSNSeUHL0NwypOK5YDmkmlOu/nWjvUOKt+o9CWSR7kponYScw7nbd/E7P7vXh
-         dtSmTcBs3y1b6up3kh/K1iOfl+jJRAQUKXUGGT1zFsQHO3rp98oDVTVM2mPh/xKP62iT
-         3TCyrV/4tYDBjW13pTEIY5TK3wHP2Yzbv1oyQsENLxtEqYfwPDUnYd0e8+IbJ1ad4RDc
-         5Z0bFj5QIOwMSOUWYl+xL3+M8pgAGhwx7EdyemrYFdYEUaRNSOBAuanOqPVVCbiitRoc
-         xW5ce3vNrgx2DhX6rGkS4FhOQP9iTbDW94oU+W59uNiQeQLwqPI1l+BVAb8nlpeeyRRG
-         2AzA==
+        bh=7nURLu1/ElhpL7QPrHRaOTl98U+Qppw3030lnepkkiU=;
+        b=Ciai+zwtlK7jtjsxZ/r35/eiELumg+OxiHDmYFvBv2SFiUMYrOftflILap23y3cGhK
+         ZdbiXdrAPO4oLEDVy1AOS989PmrZYKtSf8Qu0mIWnQKOTyt33Uzi92bXIGvp/jj4ObAp
+         83ov+pbbtJufapC2qGLHVomIjLW6ABiw34kYX8XkO64a7HKQvI6dNAzkNXQW+E9ZtsbN
+         ZwpVmDo8PPicZ9em5nyM2xFZzsc1+KlGjhZlSD6IN3MVzayAWSk4klDNO6+C4aLJid35
+         +I3D9ydR7UsC1v9+PlFEz20vKbaMro28Kb78rx4skVetw4L0gf/+GO+pYbqTjeCOScJY
+         PNNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791194786; x=1791799586;
+        d=1e100.net; s=20260707; t=1791194787; x=1791799587;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=SsiKtn36BJ7XHGErl6qttUUVPC9Oz5hd7o1Pd38Jb+I=;
-        b=FBw7kfSDxS4kb1pn2mv3OmaHsNDENdtXPzrSvusG4XFnuihhD4hhq+lsQ9eDoaGyWd
-         V4O8c8qRlOeVt9o9RqfO+U73GY+zvYx57mtVMZ3S7G7AEtJOV+BYyLR4hQPixY7bC1kU
-         NkRcj+gfnKSKuii3dZrZbiUNufczCm/TLq8A+dQC/F/+6EkLXxKvmWMjHvRIamRDnztJ
-         wie/+I9sDvSON+IBn7blBkG3M/bIXKrEBXMMg5B37laUEzB/IRw8Pwxdxd/jWmEzbQo3
-         B4oRq1LmnQMh8+DNwYWqqskSCUEbTw3EZ7KPqXaSqAdZd5ZZy6g6DU6kcy/W9dmyG5Mh
-         eesg==
-X-Gm-Message-State: AFuF++mwjr1hwVEQ9g67CkDa7l9EEyRw/71/kOq4tAeEMePiE/LpvemN
-	/lm6O5XJZqHSYJpTx77iWXUKt8zmpcsIbKkTnvocHKCYkhTblCxNTogYCkTABrY9jMY=
-X-Gm-Gg: AYBFou2zlJl7RWLjCN91HwxhdoBE26vElRx+kdbB/JddRI8Jq16fyF9BNSsPW/id5vG
-	/xAf+F3HWmenhaYxBJoIWeDq8tEUsTR5WWbz0GRiXKStxzcAnJs/axvEUQWADy1BrpjXPnM4aJ/
-	VFxSiDwu2euf0QmuKFZ7L8MEZ2wBqa7h9fFdDkyxy/TywyNvwmc8Yffx1iQ3eAYdY/Uz1iRgW/F
-	ozkvJXnXrsBVyK1dkXMwlNHL5S5hS9KWBiAPuhYGDap9qNQ+cbNcpU7lq0QfxB3Gp+PKlXYbYEo
-	eFJ5Yup1EpocAXNl5n8FAhIzFiXpK7FJg8O7uS6RaFP3uiwQtLC00D8xMslXiZVNXJ2NMhcp8MM
-	GDJTr5wXrkRJYozpDbaTqFjgF4grbh6TXlJU7aR/aR9sTnQ9ErsKa+9uJTIyL5VEI0KGcmaEsus
-	CQf0JMQHDkoeCcf8OJRG0Ch0cHP0SfJT7T0IqPlmLRwTZ6ixwVob9VoplRQu71WvD3x0/yC46Po
-	5sm4O/vSNWy6A90gLBDHvBbWdiLl6/GWLw/hm4=
-X-Received: by 2002:a17:907:7212:b0:c29:f5d5:5aa1 with SMTP id a640c23a62f3a-c2e4b295951mr836086766b.43.1791194786464;
-        Mon, 05 Oct 2026 03:06:26 -0700 (PDT)
+        bh=7nURLu1/ElhpL7QPrHRaOTl98U+Qppw3030lnepkkiU=;
+        b=OPBxi5DQ1EDr3zF+B5e3DyN7+hwLLJVn+BhmFPzv6dfGuenPdqRTPs0/+ZdN9Z6PDL
+         r1Sjd0e4r73jKER5Fv8It17EA0s8A0iPdr1EoBJWW8nDOKPd2GBUdZIlhZ/BjnH9CUgj
+         qY8zooDbg9CbKOALrZ4yXWgG2hkx2HsRthEHVbaR/eu7rHZDaUS9OVfHmgqH+p4eJ7TS
+         2ijZfiLdGOA3FM7C04QqO/6MJwbtqE/vJzpl/IkpCXsE2lQ/X3oD+reyeb03NgAt6UR3
+         cQI46b3Y02tg/zfNFD5/4TF+oLh7TU0gNEylysFeohFl21cbacKsCrxog5luQBLtRPF8
+         JMLQ==
+X-Gm-Message-State: AFuF++merMmZbaasd1BJ0O2rpDyRV0VTLtwgAmPaOGLjlXlPdKg0JSV9
+	bAEe6QstrX8PazursVfjsBINMQ6oT8Xdv9omGKNa+rPXKhS6z2HGunHsXTWYgjrSCJk=
+X-Gm-Gg: AYBFou2RmI3VPw8nI+y8O/GF1d1foVkmAx5ii8RMzTC5McRiHVoJ9e49GYdAVdaU/WX
+	nbUyqCJneuC6SofTQeSVYELU5EGfxaOAfEM4z5sNV1a3HtbL9lIgzax2Ewb9f0VR1bwgobqghWC
+	SqJ0U3OHJwW6ToIGUCBsmWDv7yzmxuk5Mb7b503wyDluKaKttB+DcoEvFjfHm9+QCv3WusmNQB1
+	gYx2S/C48NvS7U+k2amQnbIQ3c4q+WSdRyiFaDWYn8NSe07VQd7Kq272LHIHSgTT/7pYmnIA7bd
+	/qbhsR99bjChImmtxS/xNBgFw1pFQEZ2mPrJoqK1LoTCIGFZcAT9Z119qwRJmvuZnzHuEn7mP9d
+	V+HEhxopakVDRhfkzQsteMVeclLA4gRlS9NOyre1UDrLJNbLQkZ5SkXpqH+MxMKzYqvPPeH5qha
+	ejPQrQ22MsIiGU5yFNj7xp2GI1updgYQ9iUrRGxJkNmaWfHItCxwrwIV5TJIwjbAfWJ/oNc7e8y
+	u6UuXAZANRy1oojg015XsQxzXOIUF7gwA8DrgHC6CpOTTNKEA==
+X-Received: by 2002:a17:907:e8c:b0:c25:f7db:4beb with SMTP id a640c23a62f3a-c2e4ad423b6mr861458166b.17.1791194787222;
+        Mon, 05 Oct 2026 03:06:27 -0700 (PDT)
 Received: from [192.168.0.42] (host93-7-32-195.dimensionesrl.eu. [195.32.7.93])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c3156360832sm50800766b.75.2026.10.05.03.06.25
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c3156360832sm50800766b.75.2026.10.05.03.06.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 05 Oct 2026 03:06:26 -0700 (PDT)
 From: Angelo Dureghello <adureghello@baylibre.com>
 X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
-Date: Mon, 05 Oct 2026 12:06:23 +0200
-Subject: [PATCH 1/2] m68k: mcf5441x: add PWM defines
+Date: Mon, 05 Oct 2026 12:06:24 +0200
+Subject: [PATCH 2/2] drivers: pwm: add mcf54415 mcPWM support
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -71,7 +71,7 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261005-wip-bl-stmark2-pwm-v1-1-168b9dc653f2@baylibre.com>
+Message-Id: <20261005-wip-bl-stmark2-pwm-v1-2-168b9dc653f2@baylibre.com>
 References: <20261005-wip-bl-stmark2-pwm-v1-0-168b9dc653f2@baylibre.com>
 In-Reply-To: <20261005-wip-bl-stmark2-pwm-v1-0-168b9dc653f2@baylibre.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>, 
@@ -82,29 +82,702 @@ X-Mailer: b4 0.15.2
 
 From: Angelo Dureghello <adureghello@baylibre.com>
 
-Add PWM defines for the mcf5441x family.
+Add initial basic mcf54415 mcPWM (motor control PWM) support, to be
+used with mcf54415/6/7/8 NXP SoCs.
 
 Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 ---
- arch/m68k/include/asm/m5441xsim.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/pwm/Kconfig   |  11 +
+ drivers/pwm/Makefile  |   1 +
+ drivers/pwm/pwm-mcf.c | 646 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 658 insertions(+)
 
-diff --git a/arch/m68k/include/asm/m5441xsim.h b/arch/m68k/include/asm/m5441xsim.h
-index ea01c7753b7b..aa925fac87f4 100644
---- a/arch/m68k/include/asm/m5441xsim.h
-+++ b/arch/m68k/include/asm/m5441xsim.h
-@@ -375,4 +375,11 @@
- #define MCF_IRQ_BOFF1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_BOFF)
- #define MCF_IRQ_ERR1		(MCFINT1_VECBASE + MCFINT1_FLEXCAN1_ERR)
+diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+index 729776086879..ddb98bec33d3 100644
+--- a/drivers/pwm/Kconfig
++++ b/drivers/pwm/Kconfig
+@@ -486,6 +486,17 @@ config PWM_MC33XS2410
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called pwm-mc33xs2410.
  
-+/*
-+ * PWM module
-+ */
-+#define MCFPWM_BASE		0xec088000
-+#define MCFPWM_SIZE		0x150
-+#define MCFPWM_SUB_SIZE		0x50
++config PWM_MCF
++	tristate "NXP ColdFire mcPWM support"
++	depends on M5441x || COMPILE_TEST
++	select REGMAP_MMIO
++	help
++	   NXP ColdFire mcPWM (motor control PWM) support. This module is
++	   available in the mcf5441x CPU family,
 +
- #endif /* m5441xsim_h */
++	   To compile this driver as a module, choose M here: the module
++	   will be called pwm-mcf.
++
+ config PWM_MEDIATEK
+ 	tristate "MediaTek PWM support"
+ 	depends on ARCH_MEDIATEK || RALINK || COMPILE_TEST
+diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+index 5630a521a7cf..471c29e25255 100644
+--- a/drivers/pwm/Makefile
++++ b/drivers/pwm/Makefile
+@@ -42,6 +42,7 @@ obj-$(CONFIG_PWM_LPSS_PCI)	+= pwm-lpss-pci.o
+ obj-$(CONFIG_PWM_LPSS_PLATFORM)	+= pwm-lpss-platform.o
+ obj-$(CONFIG_PWM_MAX7360)	+= pwm-max7360.o
+ obj-$(CONFIG_PWM_MC33XS2410)	+= pwm-mc33xs2410.o
++obj-$(CONFIG_PWM_MCF)		+= pwm-mcf.o
+ obj-$(CONFIG_PWM_MEDIATEK)	+= pwm-mediatek.o
+ obj-$(CONFIG_PWM_MESON)		+= pwm-meson.o
+ obj-$(CONFIG_PWM_MICROCHIP_CORE)	+= pwm-microchip-core.o
+diff --git a/drivers/pwm/pwm-mcf.c b/drivers/pwm/pwm-mcf.c
+new file mode 100644
+index 000000000000..b1dec215ef64
+--- /dev/null
++++ b/drivers/pwm/pwm-mcf.c
+@@ -0,0 +1,646 @@
++// SPDX-License-Identifier: GPL-2.0
++// SPDX-FileCopyrightText: 2026 BayLibre, SAS.
++/*
++ * Simple driver for mcPWM (Motor Control Pulse Width Modulation)
++ * controller, available on ColdFire SoCs mcf54415/6/7/8.
++ *
++ * Reference Manual:
++ * https://www.nxp.com/docs/en/reference-manual/MCF54418RM.pdf
++ *
++ */
++
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/clk.h>
++#include <linux/err.h>
++#include <linux/log2.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pwm.h>
++#include <linux/regmap.h>
++
++#define MCF_PWM_SUBMODS			0x04
++#define MCF_PWM_SUB_OFFS(n)		((n) * MCFPWM_SUB_SIZE)
++
++#define MCF_PWM_SM_CNT			0x00
++#define MCF_PWM_SM_INIT			0x02
++#define MCF_PWM_SM_CR2			0x04
++#define MCF_PWM_SM_CR2_IND		BIT(13)
++#define MCF_PWM_SM_CR1			0x06
++#define MCF_PWM_SM_CR1_FULL		BIT(10)
++#define MCF_PWM_SM_CR1_PRSC		GENMASK(6, 4)
++#define MCF_PWM_SM_VAL0			0x08
++#define MCF_PWM_SM_VAL1			0x0A
++#define MCF_PWM_SM_VAL2			0x0C
++#define MCF_PWM_SM_VAL3			0x0E
++#define MCF_PWM_SM_VAL4			0x10
++#define MCF_PWM_SM_VAL5			0x12
++#define MCF_PWM_SM_OCR			0x18
++#define MCF_PWM_SM_OCR_POL_A		BIT(10)
++#define MCF_PWM_SM_OCR_POL_B		BIT(9)
++#define MCF_PWM_SM_OCR_POL_X		BIT(8)
++#define MCF_PWM_SM_SR			0x1a
++#define MCF_PWM_SM_DISMAP		0x22
++
++#define MCF_PWM_OUTEN			0x140
++#define MCF_PWM_OUTEN_PWMA_EN		GENMASK(11, 8)
++#define MCF_PWM_MCR			0x148
++#define MCF_PWM_MCR_LDOK		GENMASK(3, 0)
++#define MCF_PWM_MCR_CLDOK		GENMASK(7, 4)
++#define MCF_PWM_MCR_RUN			GENMASK(11, 8)
++#define MCF_PWM_FSR			0x14e
++
++struct pwm_mcf {
++	struct regmap *map;
++	struct clk *clk;
++	unsigned long rate;
++	u64 period_ns_min;
++	u64 period_ns_max;
++};
++
++struct pwm_mcf_waveform {
++	u8 enable;
++	u8 prescaler;
++	s16 init;
++	s16 val0;
++	s16 val1;
++	s16 val2;
++	s16 val3;
++	s16 val4;
++	s16 val5;
++};
++
++static const struct regmap_config pwm_mcf_regmap_config = {
++	.reg_bits = 16,
++	.val_bits = 16,
++	.reg_stride = 2,
++	.max_register = MCFPWM_SIZE, /* R.M. Table 34-4, PWM Memory Map */
++	.val_format_endian = REGMAP_ENDIAN_BIG,
++	.reg_format_endian = REGMAP_ENDIAN_BIG,
++};
++
++static inline struct pwm_mcf *pwm_mcf_from_chip(struct pwm_chip *chip)
++{
++	return pwmchip_get_drvdata(chip);
++}
++
++static int pwm_mcf_regmap_read(struct regmap *map, int submod,
++			       unsigned int reg, unsigned int *val)
++{
++	/* Avoid any global configuration register overwrite. */
++	if (submod >= MCF_PWM_SUBMODS)
++		return -EINVAL;
++
++	return regmap_read(map, MCF_PWM_SUB_OFFS(submod) + reg, val);
++}
++
++static int pwm_mcf_regmap_write(struct regmap *map, int submod,
++				unsigned int reg, unsigned int val)
++{
++	if (submod >= MCF_PWM_SUBMODS)
++		return -EINVAL;
++
++	return regmap_write(map, MCF_PWM_SUB_OFFS(submod) + reg, val);
++}
++
++static int pwm_mcf_regmap_set_bits(struct regmap *map, int submod,
++				   unsigned int reg, unsigned int bits)
++{
++	if (submod >= MCF_PWM_SUBMODS)
++		return -EINVAL;
++
++	return regmap_set_bits(map, MCF_PWM_SUB_OFFS(submod) + reg, bits);
++}
++
++#ifdef DEBUG
++static void pwm_mcf_dump_regs(struct pwm_chip *chip, struct pwm_device *pwm)
++{
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	struct device *dev = pwmchip_parent(chip);
++	unsigned int val, ch;
++
++	ch = pwm->hwpwm;
++
++	dev_dbg(dev, "***** mcPWM register set       *****\n");
++	regmap_read(priv->map, MCF_PWM_MCR, &val);
++	dev_dbg(dev, "***** MCF_PWM_MCR:        %04x *****\n", val);
++	regmap_read(priv->map, MCF_PWM_FSR, &val);
++	dev_dbg(dev, "***** MCF_PWM_FSR:        %04x *****\n", val);
++	regmap_read(priv->map, MCF_PWM_OUTEN, &val);
++	dev_dbg(dev, "***** MCF_PWM_OUTEN:      %04x *****\n", val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CR1, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_CR1(%d):  %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CR2, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_CR2(%d):  %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CNT, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_CNT(%d):  %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_SR, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_SR(%d):   %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_OCR, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_OCR(%d):  %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_INIT, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_INIT(%d): %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL0, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_VAL0(%d): %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL1, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_VAL1(%d): %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL2, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_VAL2(%d): %04x *****\n", ch, val);
++	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL3, &val);
++	dev_dbg(dev, "***** MCF_PWM_SM_VAL3(%d): %04x *****\n", ch, val);
++}
++#endif
++
++/*
++ * From R.M. 34.3.21.
++ * Considering a submodule n, setting the n-th LDOK bit, PWM_SMnCR1[PRSC],
++ * PWM_SMnINIT, and PWM_SMnVAL are loaded into a set of buffers.
++ * The pulse width take effect at the next PWM reload if LDMOD is cleared, or
++ * immediately if LDMOD is set.
++ * As per R.M., any LDOK bit must be set only by reading it, checking if it is
++ * zero, and then writing a logic one to it.
++ */
++static int pwm_mcf_set_mcr_ldok(struct pwm_chip *chip, struct pwm_device *pwm)
++{
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	unsigned int val, bit;
++	int ch, ret;
++
++	ch = pwm->hwpwm;
++
++	bit = FIELD_PREP(MCF_PWM_MCR_LDOK, BIT(ch));
++	ret = regmap_read_poll_timeout(priv->map, MCF_PWM_MCR, val,
++				       !(val & bit), 10, 1000);
++	if (ret)
++		return ret;
++
++	return regmap_set_bits(priv->map, MCF_PWM_MCR,
++			       FIELD_PREP(MCF_PWM_MCR_LDOK, BIT(ch)));
++}
++
++/*
++ * Any LDOK PWM_MCF bit can be cleared manually setting respective CLDOK bit.
++ */
++static int pwm_mcf_clear_mcr_ldok(struct pwm_chip *chip, struct pwm_device *pwm)
++{
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	int val;
++
++	val = FIELD_PREP(MCF_PWM_MCR_CLDOK, BIT(pwm->hwpwm));
++
++	return regmap_set_bits(priv->map, MCF_PWM_MCR, val);
++}
++
++static int pwm_mcf_calc_prescaler(u64 period_ns, unsigned long *rate, u8 *presc)
++{
++	u64 ticks = mul_u64_u32_div(period_ns, *rate, NSEC_PER_SEC);
++	u32 pmin = max(1U, DIV_ROUND_UP_ULL(ticks, 65535ULL));
++	u32 ps = roundup_pow_of_two(pmin);
++
++	*rate /= ps;
++	/* Register asks a 3 bit bitmask to reach 128 max. */
++	*presc = ilog2(ps);
++
++	return 0;
++}
++
++static int pwm_mcf_enable(struct pwm_chip *chip, struct pwm_device *pwm)
++{
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	unsigned int ch;
++	int ret;
++
++	dev_dbg(pwmchip_parent(chip), "%s() enabling ch %d\n",
++		__func__, pwm->hwpwm);
++
++	ch = pwm->hwpwm;
++
++	/*
++	 * RUN specific submodule.
++	 * RM 34.5: initialize all registers and set the PWM_MCR[LDOK]
++	 * bit before setting the PWM_MCR[RUN] bit. We are here always after
++	 * apply, so LDOK bits has been always cleared before.
++	 */
++	ret = pwm_mcf_set_mcr_ldok(chip, pwm);
++	if (ret)
++		return ret;
++
++	/* Remove high impedance now. */
++	ret = regmap_set_bits(priv->map, MCF_PWM_OUTEN,
++			      FIELD_PREP(MCF_PWM_OUTEN_PWMA_EN, BIT(ch)));
++	if (ret)
++		return ret;
++
++	return regmap_set_bits(priv->map, MCF_PWM_MCR,
++			       FIELD_PREP(MCF_PWM_MCR_RUN, BIT(ch)));
++}
++
++static int pwm_mcf_disable(struct pwm_chip *chip, struct pwm_device *pwm)
++{
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	int ch, val, ret;
++
++	ch = pwm->hwpwm;
++
++	/* STOP specific submodule. */
++	ret = regmap_clear_bits(priv->map, MCF_PWM_MCR,
++				FIELD_PREP(MCF_PWM_MCR_RUN, BIT(ch)));
++	if (ret)
++		return ret;
++
++	/* Set high impedance. */
++	val = FIELD_PREP(MCF_PWM_OUTEN_PWMA_EN, BIT(ch));
++	ret = regmap_clear_bits(priv->map, MCF_PWM_OUTEN, val);
++	if (ret)
++		return ret;
++
++	clk_disable_unprepare(priv->clk);
++
++	return ret;
++}
++
++static int pwm_mcf_round_waveform_tohw(struct pwm_chip *chip,
++				       struct pwm_device *pwm,
++				       const struct pwm_waveform *wf,
++				       void *_wfhw)
++{
++	struct device *dev = pwmchip_parent(chip);
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	struct pwm_mcf_waveform *wfhw = _wfhw;
++	u16 half_period, duty;
++	unsigned long rate;
++	u64 period_ns;
++	u8 prescaler;
++	int ret, val;
++
++	/*
++	 * The MCF mcPWM (motor control) module allows to set up and down edges
++	 * separately, for each submodule (channel) and for each output line
++	 * (A and B). Each channel has his own counter.
++	 *
++	 * INIT and VAL0 defines the whole counter range (max steps 2^16) for
++	 *   both A and B channels,
++	 * VAL0 must be the "half" of the counter range,
++	 * VAL2/3, often referred in the R.M. as PWM23, are respectively
++	 *   turn-on and turn-off edges for channel A,
++	 * VAL4/5, often referred in the R.M. as PWM45 are the same for
++	 *   channel B and not used/set.
++	 *
++	 * Timer:      time ->
++	 *
++	 *  VAL1 0x0100            _/|            /.            /.
++	 *    VAL3               _/| |          /  .          /  .
++	 *    VAL5             _/| | |        /    .        /    .
++	 *  VAL0 0x0000 -----_+- |-|-|------+------.------+------. half range
++	 *    VAL4         _/ |  | | |    /        .    /        .    /
++	 *    VAL2       _/ | |  | | |  /          .  /          .  /
++	 *  INIT 0xff00 / | | |  | | |/            ./            ./
++	 *              | |________|    .________.    .________,    .__
++	 *  A out       ._| .____. |_.__| .____. |_.__| .____. |_.__|
++	 *  B out       .___|   |____.____|   |____.____|    |___.____|
++	 *
++	 * Fron R.M. 34.4.1: center aligning the signals is not restricted
++	 * to symmetry around the zero count value, as any other number
++	 * also works. However, centering on zero provides the greatest range
++	 * in signed mode and simplifies the calculations.
++	 *
++	 * Signed values are used to have the prescaler working, using unsigned
++	 * values no PWM signal get generated (hw bug ?) ?
++	 */
++
++	period_ns = wf->period_length_ns;
++
++	if (period_ns == 0) {
++		*wfhw = (typeof(*wfhw)){
++			.enable = 0,
++		};
++		return 0;
++	}
++
++	/* Check min and max nanoseconds limits now. */
++
++	if (period_ns < priv->period_ns_min + 1) {
++		period_ns = priv->period_ns_min + 1;
++		return 1;
++	}
++
++	if (period_ns > priv->period_ns_max) {
++		dev_dbg(dev, "%s() period_ns %llu\n", __func__, period_ns);
++		return -EINVAL;
++	}
++
++	/*
++	 * Setting prescaler here, same function returns correct divided rate
++	 * to calculate period and duty_cycle counts later on.
++	 */
++	rate = priv->rate;
++	ret = pwm_mcf_calc_prescaler(period_ns, &rate, &prescaler);
++	if (ret)
++		return ret;
++
++	/*
++	 * Minimal resolution in ns would be a number.reminder, so using a
++	 * mul_u64_u32_div operation, as period_ns * rate / NSEC_PER_SEC.
++	 */
++	val = mul_u64_u32_div(period_ns, rate, NSEC_PER_SEC);
++	dev_dbg(dev, "%s() period val (count) %u\n", __func__, val);
++
++	half_period = val >> 1;
++
++	duty = mul_u64_u32_div(wf->duty_length_ns, rate, NSEC_PER_SEC);
++	dev_dbg(dev, "%s() duty val (count) %u\n", __func__, duty);
++
++	*wfhw = (typeof(*wfhw)){
++		.enable = 1,
++		.prescaler = prescaler,
++		.init = -half_period,
++		.val0 = 0,
++		.val1 = half_period - 1,
++		.val2 = -half_period,
++		.val3 = -half_period + duty,
++	};
++
++	return 0;
++}
++
++static int pwm_mcf_round_waveform_fromhw(struct pwm_chip *chip,
++					 struct pwm_device *pwm,
++					 const void *_wfhw,
++					 struct pwm_waveform *wf)
++{
++	struct device *dev = pwmchip_parent(chip);
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	const struct pwm_mcf_waveform *wfhw = _wfhw;
++	unsigned long rate;
++
++	if (wfhw->enable) {
++		rate = priv->rate >> wfhw->prescaler;
++
++		*wf = (typeof(*wf)){
++			.period_length_ns =
++				DIV_ROUND_UP_ULL((u64)(-wfhw->init << 1)
++				* NSEC_PER_SEC, rate),
++			.duty_length_ns =
++				DIV_ROUND_UP_ULL((u64)(wfhw->val3 - wfhw->init)
++				* NSEC_PER_SEC, rate),
++		};
++	} else {
++		*wf = (typeof(*wf)){
++			.period_length_ns = 0,
++			.duty_length_ns = 0,
++		};
++	}
++
++	dev_dbg(dev, "pwm#%u: INIT: %04x, VAL0: %04x, VAL1: %04x, VAL2: %04x\n",
++		pwm->hwpwm, wfhw->init, wfhw->val0, wfhw->val1, wfhw->val2);
++	dev_dbg(dev, "VAL3 %04x @%lu -> %lld/%lld [+%lld]\n", wfhw->val3, rate,
++		wf->duty_length_ns, wf->period_length_ns, wf->duty_offset_ns);
++
++	return 0;
++}
++
++static int pwm_mcf_read_waveform(struct pwm_chip *chip, struct pwm_device *pwm,
++				 void *_wfhw)
++{
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	struct pwm_mcf_waveform *wfhw = _wfhw;
++	unsigned int val, ch;
++	int ret;
++
++	ch = pwm->hwpwm;
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
++
++	ret = regmap_read(priv->map, MCF_PWM_MCR, &val);
++	if (ret)
++		goto read_rw_exit;
++
++	wfhw->enable = FIELD_GET(MCF_PWM_MCR_RUN, val) & BIT(ch);
++
++	if (wfhw->enable) {
++		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_INIT, &val);
++		if (ret)
++			goto read_rw_exit;
++		wfhw->init = (s16)val;
++		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL0, &val);
++		if (ret)
++			goto read_rw_exit;
++		wfhw->val0 = (s16)val;
++		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL1, &val);
++		if (ret)
++			goto read_rw_exit;
++		wfhw->val1 = (s16)val;
++		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL2, &val);
++		if (ret)
++			goto read_rw_exit;
++		wfhw->val2 = (s16)val;
++		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL3, &val);
++		if (ret)
++			goto read_rw_exit;
++		wfhw->val3 = (s16)val;
++		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CR1, &val);
++		if (ret)
++			goto read_rw_exit;
++		wfhw->prescaler = FIELD_GET(MCF_PWM_SM_CR1_PRSC, val);
++	}
++
++read_rw_exit:
++	clk_disable_unprepare(priv->clk);
++
++	return ret;
++}
++
++static int pwm_mcf_write_waveform(struct pwm_chip *chip, struct pwm_device *pwm,
++				  const void *_wfhw)
++{
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	const struct pwm_mcf_waveform *wfhw = _wfhw;
++	unsigned int ch, val;
++	int ret;
++
++	ch = pwm->hwpwm;
++
++	if (!wfhw->enable) {
++		if (pwm->state.enabled)
++			pwm_mcf_disable(chip, pwm);
++
++		return 0;
++	}
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
++
++	/* Be sure MCF LDOK is cleared before finally load any value. */
++	ret = pwm_mcf_clear_mcr_ldok(chip, pwm);
++	if (ret)
++		goto out;
++
++	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_INIT, wfhw->init);
++	if (ret)
++		goto out;
++	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL0, wfhw->val0);
++	if (ret)
++		goto out;
++	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL1, wfhw->val1);
++	if (ret)
++		goto out;
++	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL2, wfhw->val2);
++	if (ret)
++		goto out;
++	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL3, wfhw->val3);
++	if (ret)
++		goto out;
++
++	/* Force independent mode (using sub-ch A only). */
++	ret = pwm_mcf_regmap_set_bits(priv->map, ch, MCF_PWM_SM_CR2,
++				      MCF_PWM_SM_CR2_IND);
++	if (ret)
++		goto out;
++
++	/* Set reload fixed at full cycle as more accurate mode. */
++	ret = pwm_mcf_regmap_set_bits(priv->map, ch, MCF_PWM_SM_CR1,
++				      MCF_PWM_SM_CR1_FULL);
++	if (ret)
++		goto out;
++
++	val = FIELD_PREP(MCF_PWM_SM_CR1_PRSC, wfhw->prescaler);
++	ret = pwm_mcf_regmap_set_bits(priv->map, ch, MCF_PWM_SM_CR1, val);
++	if (ret)
++		goto out;
++
++	ret = pwm_mcf_enable(chip, pwm);
++
++#ifdef DEBUG
++	pwm_mcf_dump_regs(chip, pwm);
++#endif
++	return ret;
++
++out:
++	clk_disable_unprepare(priv->clk);
++
++	return ret;
++}
++
++static int pwm_mcf_init(struct pwm_chip *chip)
++{
++	struct device *dev = pwmchip_parent(chip);
++	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
++	int i, ret;
++
++	ret = clk_prepare_enable(priv->clk);
++	if (ret)
++		return ret;
++
++	/*
++	 * To fast-up operations, calculating here all the values that cannot
++	 * change after hw power on.
++	 */
++	ret = clk_rate_exclusive_get(priv->clk);
++	if (ret)
++		goto exit_init;
++
++	priv->rate = clk_get_rate(priv->clk);
++	if (priv->rate == 0) {
++		ret = -EINVAL;
++		goto exit_init;
++	}
++
++	/*
++	 * Calculating fixed minimum/maximum nanosecs period possible,
++	 * considering the possible maximum prescaler value as 7 (fclk/128).
++	 */
++	priv->period_ns_min = div_u64(NSEC_PER_SEC, priv->rate) + 1;
++	priv->period_ns_max = mul_u64_u32_div(65535ULL, NSEC_PER_SEC,
++					      (priv->rate >> 7));
++
++	dev_dbg(dev, "%s() period limits: min %llu, max %llu\n",
++		__func__, priv->period_ns_min, priv->period_ns_max);
++
++	/*
++	 * Set independent mode for all submodules:
++	 * default is "complementary", and on apply only PWM "A" is used,
++	 * so in complementary mode, for safety reason (motor control with
++	 * a wrong complementary drive) the PWM is not started at all on RUN.
++	 */
++	for (i = 0, ret = 0; i < MCF_PWM_SUBMODS && ret == 0; i++) {
++		ret = pwm_mcf_regmap_set_bits(priv->map, i, MCF_PWM_SM_CR2,
++					      MCF_PWM_SM_CR2_IND);
++	}
++
++exit_init:
++	clk_disable_unprepare(priv->clk);
++
++	return ret;
++}
++
++static const struct pwm_ops pwm_mcf_ops = {
++	.sizeof_wfhw = sizeof(struct pwm_mcf_waveform),
++	.round_waveform_tohw = pwm_mcf_round_waveform_tohw,
++	.round_waveform_fromhw = pwm_mcf_round_waveform_fromhw,
++	.read_waveform = pwm_mcf_read_waveform,
++	.write_waveform = pwm_mcf_write_waveform,
++};
++
++static int pwm_mcf_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct pwm_chip *chip;
++	struct pwm_mcf *priv;
++	void __iomem *regs;
++	int ret;
++
++	chip = devm_pwmchip_alloc(dev, MCF_PWM_SUBMODS, sizeof(*priv));
++	if (IS_ERR(chip))
++		return dev_err_probe(dev, PTR_ERR(chip),
++				     "Failed to allocate priv memory.\n");
++
++	priv = pwm_mcf_from_chip(chip);
++
++	regs = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(regs))
++		return dev_err_probe(dev, PTR_ERR(regs),
++				     "Failed to get io regs\n");
++
++	priv->map = devm_regmap_init_mmio(dev, regs, &pwm_mcf_regmap_config);
++	if (IS_ERR(priv->map))
++		return dev_err_probe(dev, PTR_ERR(priv->map),
++				     "Failed mmio regmap init\n");
++
++	priv->clk = devm_clk_get(dev, "mcfpwm");
++	if (IS_ERR(priv->clk))
++		return dev_err_probe(dev, PTR_ERR(priv->clk),
++				     "Failed getting clock\n");
++
++	chip->ops = &pwm_mcf_ops;
++
++	ret = pwm_mcf_init(chip);
++	if (ret)
++		return dev_err_probe(dev, ret, "Failed to initialize PWM\n");
++
++	ret = devm_pwmchip_add(dev, chip);
++	if (ret < 0)
++		return dev_err_probe(dev, ret, "Failed to register pwmchip\n");
++
++	return 0;
++}
++
++static const struct platform_device_id pwm_mcf_ids[] = {
++	{ .name = "mcfpwm" },
++	{ }
++};
++
++static struct platform_driver pwm_mcf_driver = {
++	.driver = {
++		.name = "pwm-mcf",
++	},
++	.probe = pwm_mcf_probe,
++	.id_table = pwm_mcf_ids,
++};
++module_platform_driver(pwm_mcf_driver);
++
++MODULE_DESCRIPTION("mcf54415 Motor Control Pulse Width Modulation driver");
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Angelo Dureghello <adureghello@baylibre.com>");
 
 -- 
 2.55.0
