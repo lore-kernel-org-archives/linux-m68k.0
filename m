@@ -1,784 +1,351 @@
-Received: from mail-ej2-f43.google.com (mail-ej2-f43.google.com [74.125.228.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC0844A3F1
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Oct 2026 10:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA62F480DFC
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Oct 2026 12:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791194792; cv=none; b=TeCTU+HLb/sik2AIbWbvn3HweAjJSyUTVBA1eVjNq9Xpex6EN49vt1skosSrscUJ3kiVE7YLd2KYDYMG94uyjVHYX8cy9NPAvzt8FrRIossLfYk2Z0tkLqIYzVXc/SrDunyI/5hcXkhQiisntnuq+yvahO6AHWyY4hy02ai9VuY=
+	t=1791204178; cv=none; b=A1pEOC8+UxNplOhgq0kesF+m3yvzNZ94tItjYUjDpbABI3vxMTn+blI9IRdPFuDqyBubFD9Weg0qxjyzRuP9VJJmkh863ehdJ9du7vssXtolDCxs3h9T6PyHA0vvd3BBQGt551WCUE9JXacxWdJCQQs+mTa9hQeA65+9UDBa7Xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791194792; c=relaxed/simple;
-	bh=VB8BQ5itOA7qV7pL/JQGpmUuz7Pn5ML+e0XikXEwU/k=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sEDpSvb+lv2/R9k4B912Cy/pb3tMh51CKEY8z50PbmCWFYOoGchjACVjbmsFQ89fER8qe0WVWbAMwyHxhTj5nF3jgheYHfPobeaQuBAqcYzeml0HOMqZoTh7fD1Y8ODr3L7lGF6gvGG4cQAgpCs5jz2BTjn/x/fc19vagzTL0fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=Ciai+zwt; arc=none smtp.client-ip=74.125.228.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	s=arc-20240116; t=1791204178; c=relaxed/simple;
+	bh=MeeF+CrxXpmhlixg9jiu/837NW9C8nofsMS1C8K2YpY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K/sAnmoQ7ZsEvZgfh+5eChQBzz5oTSZPHY/VuCU///3MLvGNmSd8IhkACumALhhtgMEYROmrD51BQHs9Yh7fpPxH4XyzVYqwhiUprtdvSkEaT+OA2HwVshXdO6ZeTjS7mO4Na/LAgUKscwt+qcfcul3PUdQqiOqjbIpKND6FkpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com; spf=pass smtp.mailfrom=polyxeno.com; dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b=BTpjst6t; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=y91fhonA; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=polyxeno.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="Ciai+zwt"
-Received: by mail-ej2-f43.google.com with SMTP id a640c23a62f3a-c2a1f611461so107196066b.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 05 Oct 2026 03:06:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1791194787; x=1791799587; darn=lists.linux-m68k.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=7nURLu1/ElhpL7QPrHRaOTl98U+Qppw3030lnepkkiU=;
-        b=Ciai+zwtlK7jtjsxZ/r35/eiELumg+OxiHDmYFvBv2SFiUMYrOftflILap23y3cGhK
-         ZdbiXdrAPO4oLEDVy1AOS989PmrZYKtSf8Qu0mIWnQKOTyt33Uzi92bXIGvp/jj4ObAp
-         83ov+pbbtJufapC2qGLHVomIjLW6ABiw34kYX8XkO64a7HKQvI6dNAzkNXQW+E9ZtsbN
-         ZwpVmDo8PPicZ9em5nyM2xFZzsc1+KlGjhZlSD6IN3MVzayAWSk4klDNO6+C4aLJid35
-         +I3D9ydR7UsC1v9+PlFEz20vKbaMro28Kb78rx4skVetw4L0gf/+GO+pYbqTjeCOScJY
-         PNNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791194787; x=1791799587;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=7nURLu1/ElhpL7QPrHRaOTl98U+Qppw3030lnepkkiU=;
-        b=OPBxi5DQ1EDr3zF+B5e3DyN7+hwLLJVn+BhmFPzv6dfGuenPdqRTPs0/+ZdN9Z6PDL
-         r1Sjd0e4r73jKER5Fv8It17EA0s8A0iPdr1EoBJWW8nDOKPd2GBUdZIlhZ/BjnH9CUgj
-         qY8zooDbg9CbKOALrZ4yXWgG2hkx2HsRthEHVbaR/eu7rHZDaUS9OVfHmgqH+p4eJ7TS
-         2ijZfiLdGOA3FM7C04QqO/6MJwbtqE/vJzpl/IkpCXsE2lQ/X3oD+reyeb03NgAt6UR3
-         cQI46b3Y02tg/zfNFD5/4TF+oLh7TU0gNEylysFeohFl21cbacKsCrxog5luQBLtRPF8
-         JMLQ==
-X-Gm-Message-State: AFuF++merMmZbaasd1BJ0O2rpDyRV0VTLtwgAmPaOGLjlXlPdKg0JSV9
-	bAEe6QstrX8PazursVfjsBINMQ6oT8Xdv9omGKNa+rPXKhS6z2HGunHsXTWYgjrSCJk=
-X-Gm-Gg: AYBFou2RmI3VPw8nI+y8O/GF1d1foVkmAx5ii8RMzTC5McRiHVoJ9e49GYdAVdaU/WX
-	nbUyqCJneuC6SofTQeSVYELU5EGfxaOAfEM4z5sNV1a3HtbL9lIgzax2Ewb9f0VR1bwgobqghWC
-	SqJ0U3OHJwW6ToIGUCBsmWDv7yzmxuk5Mb7b503wyDluKaKttB+DcoEvFjfHm9+QCv3WusmNQB1
-	gYx2S/C48NvS7U+k2amQnbIQ3c4q+WSdRyiFaDWYn8NSe07VQd7Kq272LHIHSgTT/7pYmnIA7bd
-	/qbhsR99bjChImmtxS/xNBgFw1pFQEZ2mPrJoqK1LoTCIGFZcAT9Z119qwRJmvuZnzHuEn7mP9d
-	V+HEhxopakVDRhfkzQsteMVeclLA4gRlS9NOyre1UDrLJNbLQkZ5SkXpqH+MxMKzYqvPPeH5qha
-	ejPQrQ22MsIiGU5yFNj7xp2GI1updgYQ9iUrRGxJkNmaWfHItCxwrwIV5TJIwjbAfWJ/oNc7e8y
-	u6UuXAZANRy1oojg015XsQxzXOIUF7gwA8DrgHC6CpOTTNKEA==
-X-Received: by 2002:a17:907:e8c:b0:c25:f7db:4beb with SMTP id a640c23a62f3a-c2e4ad423b6mr861458166b.17.1791194787222;
-        Mon, 05 Oct 2026 03:06:27 -0700 (PDT)
-Received: from [192.168.0.42] (host93-7-32-195.dimensionesrl.eu. [195.32.7.93])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c3156360832sm50800766b.75.2026.10.05.03.06.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2026 03:06:26 -0700 (PDT)
-From: Angelo Dureghello <adureghello@baylibre.com>
-X-Google-Original-From: Angelo Dureghello <adureghello@baylibre.org>
-Date: Mon, 05 Oct 2026 12:06:24 +0200
-Subject: [PATCH 2/2] drivers: pwm: add mcf54415 mcPWM support
+	dkim=pass (2048-bit key) header.d=polyxeno.com header.i=@polyxeno.com header.b="BTpjst6t";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="y91fhonA"
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfout.phl.internal (Postfix) with ESMTP id A2281EC08C7
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  5 Oct 2026 08:42:53 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-10.internal (MEProxy); Mon, 05 Oct 2026 08:42:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polyxeno.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1791204173;
+	 x=1791290573; bh=/r+VbIM658CiC0hWNXkDFMWJuEF2FkNsawZszh5+cTs=; b=
+	BTpjst6tP3PTKNFtLmfkfatMqMOWmj3orwQZTTvY8Fb9BQMvYTishyCn+4zdDHXx
+	i5PEmBtpX06sjap88bvtxr6rNki6DljQw1e/jWWAO47mmMEcvTK2Ja28xUL+VI5/
+	FOuMWu0V6IyeCiLR8IXHp1q3Msf38mww19ZG9YrVQZopHB1+LkF0WYDR22iM7vF+
+	2Bkz6bYz6YULBvGb1f62fF+jHfPHQoWHl76HxFNWgqczIZwWu6l0bKjG94S+J5uk
+	AYF31CKqYjxDx5dK/YNIBw48kLhEdxZuQGkz4umCnbNCtD/mFoHYjLFXZI9+/8nH
+	OpA+1jb6Cxipz87wTUtbRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1791204173; x=
+	1791290573; bh=/r+VbIM658CiC0hWNXkDFMWJuEF2FkNsawZszh5+cTs=; b=y
+	91fhonArTNzuw/yaaN5ybjYgEhoq/MFi68y226hrMB4tG553C59lb0fTHbg+tDKs
+	qlGfrZnP7FguXTOA+Gy/VbUG9VAKezyt7enULBVTo2WpqvO2qwVk+9kxnnTIOPjd
+	BK7+HDA9gVkXATkvoPdkGxc/PZZWUKBd3EXPSfn410vMHxpeY2oEYYFe3j3JHv3g
+	VzgNjl2vqFt2KxGFkPnlAaC6gCzvmgyJK2m/uFgGGv748gN/ku9A+5OPwL5LLtq7
+	rUuowaBMLXALSfzNPSi+YO3/WbHNF6D0kSn1ILDPyskU/20Fx2OMbvhujVo9lkxK
+	l5k4ykJvVQwjGAvCluvSw==
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-09-30; sw=lmtpprox;
+	action=sign d=polyxeno.com a=rsa-sha256;
+DKIM2-Signature: i=1; m=1; t=1791204173; d=polyxeno.com;
+	mf=PGdlcmdAcG9seXhlbm8uY29tPg==;
+	rt=PGxpbnV4LW02OGtAbGlzdHMubGludXgtbTY4ay5vcmc+;
+	s=fm2:rsa-sha256:jIzqv3ZLuKDtvoE/svdspJt6ID5C/pheOBizFGCuW10lFxc
+	1wEAgqr9/bfWF+q44mrFYbrP4RE6bi23hFhwa1Q24AYdEkf7a2uYTU0BphcD5fBq
+	DRJ4HuorcU/sOnNAZQdd8d9V1IMl+MSMW/Zt8M1MwrSqYGsqV3bUatQLs0PW7gpA
+	Y4WutxVlWFVrZhdzx/5XEvLlsenRmmnYFmDNptMWA+NfiMRUeH8j0t0Bg5ehSVxO
+	kmCJGS2F93wuDczP41+ZgmKqW3IO5XfM9MuZkQsG8AnmbjsNE4OVEPs+/eOFhRs8
+	SIH/WGfio88yil5T7dlgLMGE1hg/wFpm0y52hjA==;
+X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-06;
+	repo=github.com/dkim2wg/interop; date=2026-09-30; sw=lmtpprox;
+	action=mi-m=1; hc=14;
+	hn=cc,content-language,content-transfer-encoding,content-type,
+	date,feedback-id,from,in-reply-to,message-id,mime-version,
+	references,subject,to,user-agent;
+Message-Instance: m=1; h=sha256:upo6ejqGADHgwgcDylnzrnqjKrzWLRgbPxDmK8ELjOE=:MeeF+CrxXpmhlixg9jiu/837NW9C8nofsMS1C8K2YpY=;
+X-ME-Sender: <xms:TZvDamKO-zZkbUUGU9Y1SmwaWeUoLk1wTRjuNLwatinCBZYpSuzT2w>
+    <xme:TZvDavrVAC9GqQ4dDNInzpmDG4wGbsl0XLRQ4rNEeao7CzLazmtXilICH775JmvhJ
+    Y9OnuhAD2UMVeGBSoQeKFnIc3DIUJKN0u8u5-mnafa1jG_-b758k7A>
+X-ME-Received: <xmr:TZvDamx0JwdHd9wY1OHVhxKf73DlauGG7Kwhbrff3UB8FaDiyT1AREZMekfOLQVJRwItnXs5BU34JNC4HkCSweAg5A>
+X-ME-Proxy-Cause: dmFkZTGkdktSZ2XjHZVQ3qlR2/hzwrvg5W3AwpNBai5bB8qNSpci0/YIAXHGjX8ji6LMVL
+    7WSqPYIdQqthOLpG9u3uVsbfPKC9rw8H4X+9PYFkyC1Vxag2Hi4ItG4H0tGd+EMpTMmt6W
+    cnKjHmLHpjbztw6Q+8HC2HHFH+aNCuSAAU3698dmCYwG8mfEZl7RS8ptvZrYzDb5oV9ZvG
+    WfPZ2qf12NUmXxSO962npqntMQ3RxK3K7ceqJeFhVxkn8T1IzHVUthcAXIaWkmDSBuAF2L
+    p8u7gQugY5Gaon9lB4//2g0nd/xQoQyJnytQC1fez297YBb9FmE0jW1MlVj7m1mHK+9TCG
+    aOy+MSZEaqZbr88kbtNiGx8xEfMxo1x496DGvB3g4cO6VK5rSTJtA6eoAFr82qlNSq+QxW
+    Bkvd+QrQpyAEIa0nwIfyg3Q0jcRRcZozaGpadzZ0W33XJMTqZCljbTWWrepY6xmVYvVG1a
+    tBFDS7+DvXx3DLK5s/aVwEgdov9T4JloJ+d4gp25Qih2Q2Qti1jSOoRYdINyAi3kdCsMMz
+    vZphqmm8Xy/IASawFZu6thYvU7LvxftNCCrCn0Oz1MXANwOYirFWVaXRSx1nsrJoRoy1bM
+    WYFoDY9fyz9PUtiW7BX98BG3v/LKVv+ugPP5m+0MsBuuujnzY7mI6YXBR74w
+X-ME-Proxy: <xmx:TZvDarPz8X1SCyE8ALBhKSxVGCXzdJLN3_t-HEUtEY_4lDyjN-DOpg>
+    <xmx:TZvDaj7dNDrfnTWWFK4m13-lVrdP50_hEvS9TOT6fDhX5jYbmQ7_XQ>
+    <xmx:TZvDasko4feZLTP3bZznssT8ma0hiGV_eK3iD-3QrufAFk91LNWiAg>
+    <xmx:TZvDakROkgVNZM5U6OLk6V2KyF9U0f8fKVzFi5REG5_rsbQAdJF2MQ>
+    <xmx:TZvDaj52xmhCfJgtDYZia217w9a9kVVM8cyBfwOWAzwW5TObuRywwbnf>
+Feedback-ID: i09fe4b60:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 5 Oct 2026 08:42:50 -0400 (EDT)
+Message-ID: <5bb9f586-6939-433e-9e06-a9bbc08a69a0@polyxeno.com>
+Date: Mon, 5 Oct 2026 22:42:47 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261005-wip-bl-stmark2-pwm-v1-2-168b9dc653f2@baylibre.com>
-References: <20261005-wip-bl-stmark2-pwm-v1-0-168b9dc653f2@baylibre.com>
-In-Reply-To: <20261005-wip-bl-stmark2-pwm-v1-0-168b9dc653f2@baylibre.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <ukleinek@kernel.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
- linux-pwm@vger.kernel.org, Angelo Dureghello <adureghello@baylibre.com>
-X-Mailer: b4 0.15.2
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND] m68k: Handle put_user faults more carefully
+To: Michael Schmitz <schmitzmic@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+References: <88e752e0bca92c7b65533cc1b334052dd272f8ef.1790842086.git.fthain@linux-m68k.org>
+ <02c53c37-d2ee-4c03-a8f9-0a757c3af59e@gmail.com>
+ <CAMuHMdVbfUH1ZoFcS64t=gyE_cskMWv6gGvL8pjGirSGvAKu2w@mail.gmail.com>
+ <dfcbbc59-4204-478b-b8da-867621056c62@gmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@polyxeno.com>
+In-Reply-To: <dfcbbc59-4204-478b-b8da-867621056c62@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-From: Angelo Dureghello <adureghello@baylibre.com>
+Hi Michael,
 
-Add initial basic mcf54415 mcPWM (motor control PWM) support, to be
-used with mcf54415/6/7/8 NXP SoCs.
+On 3/10/26 09:55, Michael Schmitz wrote:
+> Hi Geert,
+> 
+> On 03/10/2026 5:28 AM, Geert Uytterhoeven wrote:
+> 
+>> Hi Michael, Finn,
+>>
+>> On Thu, 1 Oct 2026 at 20:57, Michael Schmitz <schmitzmic@gmail.com> wrote:
+>>> On 1/10/26 22:08, Finn Thain wrote:
+>>>> Running 'stress-ng --sysbadaddr -1' on my MC68040 system immediately
+>>>> produces an oops:
+>>>>
+>>>>       Unable to handle kernel access at virtual address f1c422fb
+>>>>       Oops: 00000000
+>>>>       Modules linked in:
+>>>>       PC: [<00005a1a>] do_040writeback1+0xae/0x160
+>>>>       SR: 2010  SP: 96087dc2  a2: 01500000
+>>>>       d0: 00000000    d1: 014e8000    d2: 00000081    d3: 00000000
+>>>>       d4: 00000481    d5: c043dfff    a0: 014e8000    a1: 00632fd5
+>>>>       Process stress-ng (pid: 221, task=1b729d30)
+>>>>       Frame format=7 eff addr=014e9eb8 ssw=0c81 faddr=c043dfff
+>>>>       wb 1 stat/addr/data: 0001 00000481 c043dfff
+>>>>       wb 2 stat/addr/data: 0081 c043dfff 2f746d70
+>>>>       wb 3 stat/addr/data: 0005 014e9ed4 2f746d70
+>>>>       push data: c043dfff 800daa70 00000000 014e9f1c
+>>>>       Stack from 014e9ed4:
+>>>>         2f740000 8017c000 014e9f10 00006830 00000081 c043dfff 2f746d70 2f746d70
+>>>>         0081a000 00000400 c043dfff 800daa70 c043dfff 80016a20 00000003 014e9f88
+>>>>         000026c8 014e9f1c 00000001 2f746d70 0081a000 00000400 c043dfff 0081afff
+>>>>         c043dfff 01500000 00000001 ffffffff 00000000 20000046 41d67008 014e9f58
+>>>>         04810005 00810045 c043dfff 014e9f84 2f746d70 c043dfff 2f746d70 c043dfff
+>>>>         80016a20 8017c000 00000000 0081affb 00000005 014e9fc4 00128bc6 c043dfff
+>>>>       Call Trace: [<00006830>] buserr_c+0x510/0x698
+>>>>         [<000026c8>] buserr+0x20/0x28
+>>>>         [<00128bc6>] sys_getcwd+0xc8/0x15a
+>>>>         [<000027a2>] syscall+0x8/0xc
+>>>>         [<0008800d>] sanity_check_segment_list+0x17/0x11e
+>>>>
+>>>>       Code: 000c 0e90 1800 220f 0281 ffff e000 2041 <2228> 0008 0281 00ff
+>>>>             ff00 67a4 6026 4280 122e 0013 206e 000c 0e10 1800 220f 0281
+>>>>
+>>>> 0000596c <do_040writeback1>:
+>>>>       596c:       4e56 fffc       linkw %fp,#-4
+>>>>       5970:       2f02            movel %d2,%sp@-
+>>>>       5972:       202e 0008       movel %fp@(8),%d0
+>>>>       5976:       4282            clrl %d2
+>>>>       5978:       3400            movew %d0,%d2
+>>>>       597a:       220f            movel %sp,%d1
+>>>>       597c:       0281 ffff e000  andil #-8192,%d1
+>>>>       5982:       2041            moveal %d1,%a0
+>>>>       5984:       2228 0008       movel %a0@(8),%d1
+>>>>       5988:       0281 00ff ff00  andil #16776960,%d1
+>>>>       598e:       6600 0104       bnew 5a94 <do_040writeback1+0x128>
+>>>>       5992:       4e7b 2000       movec %d2,%sfc
+>>>>       5996:       4e7b 2001       movec %d2,%dfc
+>>>>       599a:       0240 0060       andiw #96,%d0
+>>>>       599e:       0c40 0020       cmpiw #32,%d0
+>>>>       59a2:       6700 0084       beqw 5a28 <do_040writeback1+0xbc>
+>>>>       59a6:       0c40 0040       cmpiw #64,%d0
+>>>>       59aa:       6730            beqs 59dc <do_040writeback1+0x70>
+>>>>       59ac:       4a40            tstw %d0
+>>>>       59ae:       6752            beqs 5a02 <do_040writeback1+0x96>
+>>>>       59b0:       4280            clrl %d0
+>>>>       59b2:       220f            movel %sp,%d1
+>>>>       59b4:       0281 ffff e000  andil #-8192,%d1
+>>>>       59ba:       2041            moveal %d1,%a0
+>>>>       59bc:       2228 0008       movel %a0@(8),%d1
+>>>>       59c0:       0281 00ff ff00  andil #16776960,%d1
+>>>>       59c6:       6600 0086       bnew 5a4e <do_040writeback1+0xe2>
+>>>>       59ca:       7201            moveq #1,%d1
+>>>>       59cc:       4e7b 1000       movec %d1,%sfc
+>>>>       59d0:       4e7b 1001       movec %d1,%dfc
+>>>>       59d4:       242e fff8       movel %fp@(-8),%d2
+>>>>       59d8:       4e5e            unlk %fp
+>>>>       59da:       4e75            rts
+>>>>       59dc:       4280            clrl %d0
+>>>>       59de:       322e 0012       movew %fp@(18),%d1
+>>>>       59e2:       206e 000c       moveal %fp@(12),%a0
+>>>>       59e6:       0e50 1800       movesw %d1,%a0@
+>>>>       59ea:       220f            movel %sp,%d1
+>>>>       59ec:       0281 ffff e000  andil #-8192,%d1
+>>>>       59f2:       2041            moveal %d1,%a0
+>>>>       59f4:       2228 0008       movel %a0@(8),%d1
+>>>>       59f8:       0281 00ff ff00  andil #16776960,%d1
+>>>>       59fe:       67ca            beqs 59ca <do_040writeback1+0x5e>
+>>>>       5a00:       604c            bras 5a4e <do_040writeback1+0xe2>
+>>>>       5a02:       4280            clrl %d0
+>>>>       5a04:       222e 0010       movel %fp@(16),%d1
+>>>>       5a08:       206e 000c       moveal %fp@(12),%a0
+>>>>       5a0c:       0e90 1800       movesl %d1,%a0@
+>>>>       5a10:       220f            movel %sp,%d1
+>>>>       5a12:       0281 ffff e000  andil #-8192,%d1
+>>>>       5a18:       2041            moveal %d1,%a0
+>>>>       5a1a:       2228 0008       movel %a0@(8),%d1
+>>>>       5a1e:       0281 00ff ff00  andil #16776960,%d1
+>>>>       5a24:       67a4            beqs 59ca <do_040writeback1+0x5e>
+>>>>       5a26:       6026            bras 5a4e <do_040writeback1+0xe2>
+>>>>       ...
+>>>>
+>>>> The cause is a deliberately misaligned access in the 'bad_end_addr' test
+>>>> case in the 'sysbadaddr' stressor. The location being accessed here,
+>>>> 0xc043dfff, was contrived to span the boundary between a r/w anonymous page
+>>>> and an unmapped page. The address was then passed to the getcwd syscall
+>>>> which faulted in copy_to_user().
+>>>>
+>>>> The fault for the mapped page appears to be handled okay -- up until
+>>>> do_040writeback1() called put_user() which produced a second fault due to
+>>>> the unmapped page.
+>>>>
+>>>> Michael Schmitz helpfully deciphered the oops and explained the exception
+>>>> processing leading up to it.
+>>>>
+>>>>       "regs->pc does point to the PC in the format 7 frame which is the PC
+>>>>       the fault was detected at, but not (in case of a writeback fault)
+>>>>       the PC of the faulting instruction [that is, MOVES.L].
+>>>>
+>>>>       "The writeback would still cross the page boundary, and fault if the
+>>>>       unmapped page still isn't present. We would not see the PC of the
+>>>>       movesl in that case, and fail to find the PC in the exception
+>>>>       table."
+>>>>
+>>>> One solution is to add a NOP instruction after the MOVES.L to flush the
+>>>> pipeline and take the fault. That way, the PC value in the exception frame
+>>>> becomes dependable so the exception table works.
+>>>>
+>>>> Theoretically, there seems to be another bug in the existing code. If
+>>>> the instruction following the MOVES faulted, then after the fixup,
+>>>> execution would resume at the instruction which caused the fault. This
+>>>> appears to be a loop. After this patch, that cannot happen.
+>>>>
+>>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>>>> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+>>>> ---
+>>>>    arch/m68k/include/asm/uaccess.h | 10 ++++++----
+>>>>    1 file changed, 6 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
+>>>> index 31d133faa45e..728a6dfb7414 100644
+>>>> --- a/arch/m68k/include/asm/uaccess.h
+>>>> +++ b/arch/m68k/include/asm/uaccess.h
+>>>> @@ -31,11 +31,12 @@
+>>>>    #define __put_user_asm(inst, res, x, ptr, bwl, reg, err) \
+>>>>    asm volatile ("\n"                                  \
+>>>>        "1:     "inst"."#bwl"   %2,%1\n"                \
+>>>> -     "2:\n"                                          \
+>>>> +     "2:     nop\n"                                  \
+>>>> +     "3:\n"                                          \
+>>>>        "       .section .fixup,\"ax\"\n"               \
+>>>>        "       .even\n"                                \
+>>>>        "10:    moveq.l %3,%0\n"                        \
+>>>> -     "       jra 2b\n"                               \
+>>>> +     "       jra 3b\n"                               \
+>>>>        "       .previous\n"                            \
+>>>>        "\n"                                            \
+>>>>        "       .section __ex_table,\"a\"\n"            \
+>>>> @@ -53,11 +54,12 @@ do {                                                              \
+>>>>        asm volatile ("\n"                                      \
+>>>>                "1:     "inst".l %2,(%1)+\n"                    \
+>>>>                "2:     "inst".l %R2,(%1)\n"                    \
+>>>> -             "3:\n"                                          \
+>>>> +             "3:     nop\n"                                  \
+>>>> +             "4:\n"                                          \
+>>>>                "       .section .fixup,\"ax\"\n"               \
+>>>>                "       .even\n"                                \
+>>>>                "10:    movel %3,%0\n"                          \
+>>>> -             "       jra 3b\n"                               \
+>>>> +             "       jra 4b\n"                               \
+>>>>                "       .previous\n"                            \
+>>>>                "\n"                                            \
+>>>>                "       .section __ex_table,\"a\"\n"            \
+>>>> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+>>>>
+>>>> in case it helps.
+>>>>
+>>>> Anecdotally, I've seen similar uaccess faults causing kernel oops on 030
+>>>> as well, so this may not merely be an artificial unaligned access issue.
+>> Shouldn't this include
+>> https://lore.kernel.org/20240429030945.22451-3-schmitzmic@gmail.com
+>> ?
+> 
+> Along with https://lore.kernel.org/20240429030945.22451-2-schmitzmic@gmail.com, perhaps.
+> 
+> Can't recall the details, but Finn's solution was to add a nop in order to make the fault PC reliable. That's not a great deal of overhead in the case of put_user(). My changes to copy_to_user try to avoid flushing the pipeline inside of a loop, and only use the nop after exiting the loop. The cost of that is larger exception tables. Not sure which is worse.
+> 
+> What's more, I can't be certain that my 'fault is taken two instructions past faulting instruction' observation is 100% reliable. AFAIK this has only been tested on 030 and 040. Coldfire(MMU) and 060 tests are still missing.
 
-Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
----
- drivers/pwm/Kconfig   |  11 +
- drivers/pwm/Makefile  |   1 +
- drivers/pwm/pwm-mcf.c | 646 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 658 insertions(+)
+ColdFire seems to have more, or maybe just different problems for "stress-ng --sysbadaddr -1".
+Running a kernel with and without this patch resulted in:
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 729776086879..ddb98bec33d3 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -486,6 +486,17 @@ config PWM_MC33XS2410
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-mc33xs2410.
- 
-+config PWM_MCF
-+	tristate "NXP ColdFire mcPWM support"
-+	depends on M5441x || COMPILE_TEST
-+	select REGMAP_MMIO
-+	help
-+	   NXP ColdFire mcPWM (motor control PWM) support. This module is
-+	   available in the mcf5441x CPU family,
-+
-+	   To compile this driver as a module, choose M here: the module
-+	   will be called pwm-mcf.
-+
- config PWM_MEDIATEK
- 	tristate "MediaTek PWM support"
- 	depends on ARCH_MEDIATEK || RALINK || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index 5630a521a7cf..471c29e25255 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -42,6 +42,7 @@ obj-$(CONFIG_PWM_LPSS_PCI)	+= pwm-lpss-pci.o
- obj-$(CONFIG_PWM_LPSS_PLATFORM)	+= pwm-lpss-platform.o
- obj-$(CONFIG_PWM_MAX7360)	+= pwm-max7360.o
- obj-$(CONFIG_PWM_MC33XS2410)	+= pwm-mc33xs2410.o
-+obj-$(CONFIG_PWM_MCF)		+= pwm-mcf.o
- obj-$(CONFIG_PWM_MEDIATEK)	+= pwm-mediatek.o
- obj-$(CONFIG_PWM_MESON)		+= pwm-meson.o
- obj-$(CONFIG_PWM_MICROCHIP_CORE)	+= pwm-microchip-core.o
-diff --git a/drivers/pwm/pwm-mcf.c b/drivers/pwm/pwm-mcf.c
-new file mode 100644
-index 000000000000..b1dec215ef64
---- /dev/null
-+++ b/drivers/pwm/pwm-mcf.c
-@@ -0,0 +1,646 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// SPDX-FileCopyrightText: 2026 BayLibre, SAS.
-+/*
-+ * Simple driver for mcPWM (Motor Control Pulse Width Modulation)
-+ * controller, available on ColdFire SoCs mcf54415/6/7/8.
-+ *
-+ * Reference Manual:
-+ * https://www.nxp.com/docs/en/reference-manual/MCF54418RM.pdf
-+ *
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/err.h>
-+#include <linux/log2.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pwm.h>
-+#include <linux/regmap.h>
-+
-+#define MCF_PWM_SUBMODS			0x04
-+#define MCF_PWM_SUB_OFFS(n)		((n) * MCFPWM_SUB_SIZE)
-+
-+#define MCF_PWM_SM_CNT			0x00
-+#define MCF_PWM_SM_INIT			0x02
-+#define MCF_PWM_SM_CR2			0x04
-+#define MCF_PWM_SM_CR2_IND		BIT(13)
-+#define MCF_PWM_SM_CR1			0x06
-+#define MCF_PWM_SM_CR1_FULL		BIT(10)
-+#define MCF_PWM_SM_CR1_PRSC		GENMASK(6, 4)
-+#define MCF_PWM_SM_VAL0			0x08
-+#define MCF_PWM_SM_VAL1			0x0A
-+#define MCF_PWM_SM_VAL2			0x0C
-+#define MCF_PWM_SM_VAL3			0x0E
-+#define MCF_PWM_SM_VAL4			0x10
-+#define MCF_PWM_SM_VAL5			0x12
-+#define MCF_PWM_SM_OCR			0x18
-+#define MCF_PWM_SM_OCR_POL_A		BIT(10)
-+#define MCF_PWM_SM_OCR_POL_B		BIT(9)
-+#define MCF_PWM_SM_OCR_POL_X		BIT(8)
-+#define MCF_PWM_SM_SR			0x1a
-+#define MCF_PWM_SM_DISMAP		0x22
-+
-+#define MCF_PWM_OUTEN			0x140
-+#define MCF_PWM_OUTEN_PWMA_EN		GENMASK(11, 8)
-+#define MCF_PWM_MCR			0x148
-+#define MCF_PWM_MCR_LDOK		GENMASK(3, 0)
-+#define MCF_PWM_MCR_CLDOK		GENMASK(7, 4)
-+#define MCF_PWM_MCR_RUN			GENMASK(11, 8)
-+#define MCF_PWM_FSR			0x14e
-+
-+struct pwm_mcf {
-+	struct regmap *map;
-+	struct clk *clk;
-+	unsigned long rate;
-+	u64 period_ns_min;
-+	u64 period_ns_max;
-+};
-+
-+struct pwm_mcf_waveform {
-+	u8 enable;
-+	u8 prescaler;
-+	s16 init;
-+	s16 val0;
-+	s16 val1;
-+	s16 val2;
-+	s16 val3;
-+	s16 val4;
-+	s16 val5;
-+};
-+
-+static const struct regmap_config pwm_mcf_regmap_config = {
-+	.reg_bits = 16,
-+	.val_bits = 16,
-+	.reg_stride = 2,
-+	.max_register = MCFPWM_SIZE, /* R.M. Table 34-4, PWM Memory Map */
-+	.val_format_endian = REGMAP_ENDIAN_BIG,
-+	.reg_format_endian = REGMAP_ENDIAN_BIG,
-+};
-+
-+static inline struct pwm_mcf *pwm_mcf_from_chip(struct pwm_chip *chip)
-+{
-+	return pwmchip_get_drvdata(chip);
-+}
-+
-+static int pwm_mcf_regmap_read(struct regmap *map, int submod,
-+			       unsigned int reg, unsigned int *val)
-+{
-+	/* Avoid any global configuration register overwrite. */
-+	if (submod >= MCF_PWM_SUBMODS)
-+		return -EINVAL;
-+
-+	return regmap_read(map, MCF_PWM_SUB_OFFS(submod) + reg, val);
-+}
-+
-+static int pwm_mcf_regmap_write(struct regmap *map, int submod,
-+				unsigned int reg, unsigned int val)
-+{
-+	if (submod >= MCF_PWM_SUBMODS)
-+		return -EINVAL;
-+
-+	return regmap_write(map, MCF_PWM_SUB_OFFS(submod) + reg, val);
-+}
-+
-+static int pwm_mcf_regmap_set_bits(struct regmap *map, int submod,
-+				   unsigned int reg, unsigned int bits)
-+{
-+	if (submod >= MCF_PWM_SUBMODS)
-+		return -EINVAL;
-+
-+	return regmap_set_bits(map, MCF_PWM_SUB_OFFS(submod) + reg, bits);
-+}
-+
-+#ifdef DEBUG
-+static void pwm_mcf_dump_regs(struct pwm_chip *chip, struct pwm_device *pwm)
-+{
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	struct device *dev = pwmchip_parent(chip);
-+	unsigned int val, ch;
-+
-+	ch = pwm->hwpwm;
-+
-+	dev_dbg(dev, "***** mcPWM register set       *****\n");
-+	regmap_read(priv->map, MCF_PWM_MCR, &val);
-+	dev_dbg(dev, "***** MCF_PWM_MCR:        %04x *****\n", val);
-+	regmap_read(priv->map, MCF_PWM_FSR, &val);
-+	dev_dbg(dev, "***** MCF_PWM_FSR:        %04x *****\n", val);
-+	regmap_read(priv->map, MCF_PWM_OUTEN, &val);
-+	dev_dbg(dev, "***** MCF_PWM_OUTEN:      %04x *****\n", val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CR1, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_CR1(%d):  %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CR2, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_CR2(%d):  %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CNT, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_CNT(%d):  %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_SR, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_SR(%d):   %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_OCR, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_OCR(%d):  %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_INIT, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_INIT(%d): %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL0, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_VAL0(%d): %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL1, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_VAL1(%d): %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL2, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_VAL2(%d): %04x *****\n", ch, val);
-+	pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL3, &val);
-+	dev_dbg(dev, "***** MCF_PWM_SM_VAL3(%d): %04x *****\n", ch, val);
-+}
-+#endif
-+
-+/*
-+ * From R.M. 34.3.21.
-+ * Considering a submodule n, setting the n-th LDOK bit, PWM_SMnCR1[PRSC],
-+ * PWM_SMnINIT, and PWM_SMnVAL are loaded into a set of buffers.
-+ * The pulse width take effect at the next PWM reload if LDMOD is cleared, or
-+ * immediately if LDMOD is set.
-+ * As per R.M., any LDOK bit must be set only by reading it, checking if it is
-+ * zero, and then writing a logic one to it.
-+ */
-+static int pwm_mcf_set_mcr_ldok(struct pwm_chip *chip, struct pwm_device *pwm)
-+{
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	unsigned int val, bit;
-+	int ch, ret;
-+
-+	ch = pwm->hwpwm;
-+
-+	bit = FIELD_PREP(MCF_PWM_MCR_LDOK, BIT(ch));
-+	ret = regmap_read_poll_timeout(priv->map, MCF_PWM_MCR, val,
-+				       !(val & bit), 10, 1000);
-+	if (ret)
-+		return ret;
-+
-+	return regmap_set_bits(priv->map, MCF_PWM_MCR,
-+			       FIELD_PREP(MCF_PWM_MCR_LDOK, BIT(ch)));
-+}
-+
-+/*
-+ * Any LDOK PWM_MCF bit can be cleared manually setting respective CLDOK bit.
-+ */
-+static int pwm_mcf_clear_mcr_ldok(struct pwm_chip *chip, struct pwm_device *pwm)
-+{
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	int val;
-+
-+	val = FIELD_PREP(MCF_PWM_MCR_CLDOK, BIT(pwm->hwpwm));
-+
-+	return regmap_set_bits(priv->map, MCF_PWM_MCR, val);
-+}
-+
-+static int pwm_mcf_calc_prescaler(u64 period_ns, unsigned long *rate, u8 *presc)
-+{
-+	u64 ticks = mul_u64_u32_div(period_ns, *rate, NSEC_PER_SEC);
-+	u32 pmin = max(1U, DIV_ROUND_UP_ULL(ticks, 65535ULL));
-+	u32 ps = roundup_pow_of_two(pmin);
-+
-+	*rate /= ps;
-+	/* Register asks a 3 bit bitmask to reach 128 max. */
-+	*presc = ilog2(ps);
-+
-+	return 0;
-+}
-+
-+static int pwm_mcf_enable(struct pwm_chip *chip, struct pwm_device *pwm)
-+{
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	unsigned int ch;
-+	int ret;
-+
-+	dev_dbg(pwmchip_parent(chip), "%s() enabling ch %d\n",
-+		__func__, pwm->hwpwm);
-+
-+	ch = pwm->hwpwm;
-+
-+	/*
-+	 * RUN specific submodule.
-+	 * RM 34.5: initialize all registers and set the PWM_MCR[LDOK]
-+	 * bit before setting the PWM_MCR[RUN] bit. We are here always after
-+	 * apply, so LDOK bits has been always cleared before.
-+	 */
-+	ret = pwm_mcf_set_mcr_ldok(chip, pwm);
-+	if (ret)
-+		return ret;
-+
-+	/* Remove high impedance now. */
-+	ret = regmap_set_bits(priv->map, MCF_PWM_OUTEN,
-+			      FIELD_PREP(MCF_PWM_OUTEN_PWMA_EN, BIT(ch)));
-+	if (ret)
-+		return ret;
-+
-+	return regmap_set_bits(priv->map, MCF_PWM_MCR,
-+			       FIELD_PREP(MCF_PWM_MCR_RUN, BIT(ch)));
-+}
-+
-+static int pwm_mcf_disable(struct pwm_chip *chip, struct pwm_device *pwm)
-+{
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	int ch, val, ret;
-+
-+	ch = pwm->hwpwm;
-+
-+	/* STOP specific submodule. */
-+	ret = regmap_clear_bits(priv->map, MCF_PWM_MCR,
-+				FIELD_PREP(MCF_PWM_MCR_RUN, BIT(ch)));
-+	if (ret)
-+		return ret;
-+
-+	/* Set high impedance. */
-+	val = FIELD_PREP(MCF_PWM_OUTEN_PWMA_EN, BIT(ch));
-+	ret = regmap_clear_bits(priv->map, MCF_PWM_OUTEN, val);
-+	if (ret)
-+		return ret;
-+
-+	clk_disable_unprepare(priv->clk);
-+
-+	return ret;
-+}
-+
-+static int pwm_mcf_round_waveform_tohw(struct pwm_chip *chip,
-+				       struct pwm_device *pwm,
-+				       const struct pwm_waveform *wf,
-+				       void *_wfhw)
-+{
-+	struct device *dev = pwmchip_parent(chip);
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	struct pwm_mcf_waveform *wfhw = _wfhw;
-+	u16 half_period, duty;
-+	unsigned long rate;
-+	u64 period_ns;
-+	u8 prescaler;
-+	int ret, val;
-+
-+	/*
-+	 * The MCF mcPWM (motor control) module allows to set up and down edges
-+	 * separately, for each submodule (channel) and for each output line
-+	 * (A and B). Each channel has his own counter.
-+	 *
-+	 * INIT and VAL0 defines the whole counter range (max steps 2^16) for
-+	 *   both A and B channels,
-+	 * VAL0 must be the "half" of the counter range,
-+	 * VAL2/3, often referred in the R.M. as PWM23, are respectively
-+	 *   turn-on and turn-off edges for channel A,
-+	 * VAL4/5, often referred in the R.M. as PWM45 are the same for
-+	 *   channel B and not used/set.
-+	 *
-+	 * Timer:      time ->
-+	 *
-+	 *  VAL1 0x0100            _/|            /.            /.
-+	 *    VAL3               _/| |          /  .          /  .
-+	 *    VAL5             _/| | |        /    .        /    .
-+	 *  VAL0 0x0000 -----_+- |-|-|------+------.------+------. half range
-+	 *    VAL4         _/ |  | | |    /        .    /        .    /
-+	 *    VAL2       _/ | |  | | |  /          .  /          .  /
-+	 *  INIT 0xff00 / | | |  | | |/            ./            ./
-+	 *              | |________|    .________.    .________,    .__
-+	 *  A out       ._| .____. |_.__| .____. |_.__| .____. |_.__|
-+	 *  B out       .___|   |____.____|   |____.____|    |___.____|
-+	 *
-+	 * Fron R.M. 34.4.1: center aligning the signals is not restricted
-+	 * to symmetry around the zero count value, as any other number
-+	 * also works. However, centering on zero provides the greatest range
-+	 * in signed mode and simplifies the calculations.
-+	 *
-+	 * Signed values are used to have the prescaler working, using unsigned
-+	 * values no PWM signal get generated (hw bug ?) ?
-+	 */
-+
-+	period_ns = wf->period_length_ns;
-+
-+	if (period_ns == 0) {
-+		*wfhw = (typeof(*wfhw)){
-+			.enable = 0,
-+		};
-+		return 0;
-+	}
-+
-+	/* Check min and max nanoseconds limits now. */
-+
-+	if (period_ns < priv->period_ns_min + 1) {
-+		period_ns = priv->period_ns_min + 1;
-+		return 1;
-+	}
-+
-+	if (period_ns > priv->period_ns_max) {
-+		dev_dbg(dev, "%s() period_ns %llu\n", __func__, period_ns);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Setting prescaler here, same function returns correct divided rate
-+	 * to calculate period and duty_cycle counts later on.
-+	 */
-+	rate = priv->rate;
-+	ret = pwm_mcf_calc_prescaler(period_ns, &rate, &prescaler);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Minimal resolution in ns would be a number.reminder, so using a
-+	 * mul_u64_u32_div operation, as period_ns * rate / NSEC_PER_SEC.
-+	 */
-+	val = mul_u64_u32_div(period_ns, rate, NSEC_PER_SEC);
-+	dev_dbg(dev, "%s() period val (count) %u\n", __func__, val);
-+
-+	half_period = val >> 1;
-+
-+	duty = mul_u64_u32_div(wf->duty_length_ns, rate, NSEC_PER_SEC);
-+	dev_dbg(dev, "%s() duty val (count) %u\n", __func__, duty);
-+
-+	*wfhw = (typeof(*wfhw)){
-+		.enable = 1,
-+		.prescaler = prescaler,
-+		.init = -half_period,
-+		.val0 = 0,
-+		.val1 = half_period - 1,
-+		.val2 = -half_period,
-+		.val3 = -half_period + duty,
-+	};
-+
-+	return 0;
-+}
-+
-+static int pwm_mcf_round_waveform_fromhw(struct pwm_chip *chip,
-+					 struct pwm_device *pwm,
-+					 const void *_wfhw,
-+					 struct pwm_waveform *wf)
-+{
-+	struct device *dev = pwmchip_parent(chip);
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	const struct pwm_mcf_waveform *wfhw = _wfhw;
-+	unsigned long rate;
-+
-+	if (wfhw->enable) {
-+		rate = priv->rate >> wfhw->prescaler;
-+
-+		*wf = (typeof(*wf)){
-+			.period_length_ns =
-+				DIV_ROUND_UP_ULL((u64)(-wfhw->init << 1)
-+				* NSEC_PER_SEC, rate),
-+			.duty_length_ns =
-+				DIV_ROUND_UP_ULL((u64)(wfhw->val3 - wfhw->init)
-+				* NSEC_PER_SEC, rate),
-+		};
-+	} else {
-+		*wf = (typeof(*wf)){
-+			.period_length_ns = 0,
-+			.duty_length_ns = 0,
-+		};
-+	}
-+
-+	dev_dbg(dev, "pwm#%u: INIT: %04x, VAL0: %04x, VAL1: %04x, VAL2: %04x\n",
-+		pwm->hwpwm, wfhw->init, wfhw->val0, wfhw->val1, wfhw->val2);
-+	dev_dbg(dev, "VAL3 %04x @%lu -> %lld/%lld [+%lld]\n", wfhw->val3, rate,
-+		wf->duty_length_ns, wf->period_length_ns, wf->duty_offset_ns);
-+
-+	return 0;
-+}
-+
-+static int pwm_mcf_read_waveform(struct pwm_chip *chip, struct pwm_device *pwm,
-+				 void *_wfhw)
-+{
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	struct pwm_mcf_waveform *wfhw = _wfhw;
-+	unsigned int val, ch;
-+	int ret;
-+
-+	ch = pwm->hwpwm;
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(priv->map, MCF_PWM_MCR, &val);
-+	if (ret)
-+		goto read_rw_exit;
-+
-+	wfhw->enable = FIELD_GET(MCF_PWM_MCR_RUN, val) & BIT(ch);
-+
-+	if (wfhw->enable) {
-+		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_INIT, &val);
-+		if (ret)
-+			goto read_rw_exit;
-+		wfhw->init = (s16)val;
-+		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL0, &val);
-+		if (ret)
-+			goto read_rw_exit;
-+		wfhw->val0 = (s16)val;
-+		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL1, &val);
-+		if (ret)
-+			goto read_rw_exit;
-+		wfhw->val1 = (s16)val;
-+		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL2, &val);
-+		if (ret)
-+			goto read_rw_exit;
-+		wfhw->val2 = (s16)val;
-+		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_VAL3, &val);
-+		if (ret)
-+			goto read_rw_exit;
-+		wfhw->val3 = (s16)val;
-+		ret = pwm_mcf_regmap_read(priv->map, ch, MCF_PWM_SM_CR1, &val);
-+		if (ret)
-+			goto read_rw_exit;
-+		wfhw->prescaler = FIELD_GET(MCF_PWM_SM_CR1_PRSC, val);
-+	}
-+
-+read_rw_exit:
-+	clk_disable_unprepare(priv->clk);
-+
-+	return ret;
-+}
-+
-+static int pwm_mcf_write_waveform(struct pwm_chip *chip, struct pwm_device *pwm,
-+				  const void *_wfhw)
-+{
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	const struct pwm_mcf_waveform *wfhw = _wfhw;
-+	unsigned int ch, val;
-+	int ret;
-+
-+	ch = pwm->hwpwm;
-+
-+	if (!wfhw->enable) {
-+		if (pwm->state.enabled)
-+			pwm_mcf_disable(chip, pwm);
-+
-+		return 0;
-+	}
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret)
-+		return ret;
-+
-+	/* Be sure MCF LDOK is cleared before finally load any value. */
-+	ret = pwm_mcf_clear_mcr_ldok(chip, pwm);
-+	if (ret)
-+		goto out;
-+
-+	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_INIT, wfhw->init);
-+	if (ret)
-+		goto out;
-+	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL0, wfhw->val0);
-+	if (ret)
-+		goto out;
-+	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL1, wfhw->val1);
-+	if (ret)
-+		goto out;
-+	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL2, wfhw->val2);
-+	if (ret)
-+		goto out;
-+	ret = pwm_mcf_regmap_write(priv->map, ch, MCF_PWM_SM_VAL3, wfhw->val3);
-+	if (ret)
-+		goto out;
-+
-+	/* Force independent mode (using sub-ch A only). */
-+	ret = pwm_mcf_regmap_set_bits(priv->map, ch, MCF_PWM_SM_CR2,
-+				      MCF_PWM_SM_CR2_IND);
-+	if (ret)
-+		goto out;
-+
-+	/* Set reload fixed at full cycle as more accurate mode. */
-+	ret = pwm_mcf_regmap_set_bits(priv->map, ch, MCF_PWM_SM_CR1,
-+				      MCF_PWM_SM_CR1_FULL);
-+	if (ret)
-+		goto out;
-+
-+	val = FIELD_PREP(MCF_PWM_SM_CR1_PRSC, wfhw->prescaler);
-+	ret = pwm_mcf_regmap_set_bits(priv->map, ch, MCF_PWM_SM_CR1, val);
-+	if (ret)
-+		goto out;
-+
-+	ret = pwm_mcf_enable(chip, pwm);
-+
-+#ifdef DEBUG
-+	pwm_mcf_dump_regs(chip, pwm);
-+#endif
-+	return ret;
-+
-+out:
-+	clk_disable_unprepare(priv->clk);
-+
-+	return ret;
-+}
-+
-+static int pwm_mcf_init(struct pwm_chip *chip)
-+{
-+	struct device *dev = pwmchip_parent(chip);
-+	struct pwm_mcf *priv = pwm_mcf_from_chip(chip);
-+	int i, ret;
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * To fast-up operations, calculating here all the values that cannot
-+	 * change after hw power on.
-+	 */
-+	ret = clk_rate_exclusive_get(priv->clk);
-+	if (ret)
-+		goto exit_init;
-+
-+	priv->rate = clk_get_rate(priv->clk);
-+	if (priv->rate == 0) {
-+		ret = -EINVAL;
-+		goto exit_init;
-+	}
-+
-+	/*
-+	 * Calculating fixed minimum/maximum nanosecs period possible,
-+	 * considering the possible maximum prescaler value as 7 (fclk/128).
-+	 */
-+	priv->period_ns_min = div_u64(NSEC_PER_SEC, priv->rate) + 1;
-+	priv->period_ns_max = mul_u64_u32_div(65535ULL, NSEC_PER_SEC,
-+					      (priv->rate >> 7));
-+
-+	dev_dbg(dev, "%s() period limits: min %llu, max %llu\n",
-+		__func__, priv->period_ns_min, priv->period_ns_max);
-+
-+	/*
-+	 * Set independent mode for all submodules:
-+	 * default is "complementary", and on apply only PWM "A" is used,
-+	 * so in complementary mode, for safety reason (motor control with
-+	 * a wrong complementary drive) the PWM is not started at all on RUN.
-+	 */
-+	for (i = 0, ret = 0; i < MCF_PWM_SUBMODS && ret == 0; i++) {
-+		ret = pwm_mcf_regmap_set_bits(priv->map, i, MCF_PWM_SM_CR2,
-+					      MCF_PWM_SM_CR2_IND);
-+	}
-+
-+exit_init:
-+	clk_disable_unprepare(priv->clk);
-+
-+	return ret;
-+}
-+
-+static const struct pwm_ops pwm_mcf_ops = {
-+	.sizeof_wfhw = sizeof(struct pwm_mcf_waveform),
-+	.round_waveform_tohw = pwm_mcf_round_waveform_tohw,
-+	.round_waveform_fromhw = pwm_mcf_round_waveform_fromhw,
-+	.read_waveform = pwm_mcf_read_waveform,
-+	.write_waveform = pwm_mcf_write_waveform,
-+};
-+
-+static int pwm_mcf_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct pwm_chip *chip;
-+	struct pwm_mcf *priv;
-+	void __iomem *regs;
-+	int ret;
-+
-+	chip = devm_pwmchip_alloc(dev, MCF_PWM_SUBMODS, sizeof(*priv));
-+	if (IS_ERR(chip))
-+		return dev_err_probe(dev, PTR_ERR(chip),
-+				     "Failed to allocate priv memory.\n");
-+
-+	priv = pwm_mcf_from_chip(chip);
-+
-+	regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(regs))
-+		return dev_err_probe(dev, PTR_ERR(regs),
-+				     "Failed to get io regs\n");
-+
-+	priv->map = devm_regmap_init_mmio(dev, regs, &pwm_mcf_regmap_config);
-+	if (IS_ERR(priv->map))
-+		return dev_err_probe(dev, PTR_ERR(priv->map),
-+				     "Failed mmio regmap init\n");
-+
-+	priv->clk = devm_clk_get(dev, "mcfpwm");
-+	if (IS_ERR(priv->clk))
-+		return dev_err_probe(dev, PTR_ERR(priv->clk),
-+				     "Failed getting clock\n");
-+
-+	chip->ops = &pwm_mcf_ops;
-+
-+	ret = pwm_mcf_init(chip);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to initialize PWM\n");
-+
-+	ret = devm_pwmchip_add(dev, chip);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret, "Failed to register pwmchip\n");
-+
-+	return 0;
-+}
-+
-+static const struct platform_device_id pwm_mcf_ids[] = {
-+	{ .name = "mcfpwm" },
-+	{ }
-+};
-+
-+static struct platform_driver pwm_mcf_driver = {
-+	.driver = {
-+		.name = "pwm-mcf",
-+	},
-+	.probe = pwm_mcf_probe,
-+	.id_table = pwm_mcf_ids,
-+};
-+module_platform_driver(pwm_mcf_driver);
-+
-+MODULE_DESCRIPTION("mcf54415 Motor Control Pulse Width Modulation driver");
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Angelo Dureghello <adureghello@baylibre.com>");
+# stress-ng --sysbadaddr -1process '/usr/bin/stress-ng' started with executable stack
+stress-ng: info:  [40] defaulting to a 86400 second (1 day, 0.00 secs) run per stressor
+stress-ng: info:  [40] dispatching hogs: 1 sysbadaddr
+*** ILLEGAL INSTRUCTION ***   FORMAT=4
+Current process id is 250
+BAD KERNEL TRAP: 00000000
+Modules linked in:
+PC: [<00000000>] 0x0
+SR: 2004  SP: 013da6cc  a2: bfccd950
+d0: 00000000    d1: 00000002    d2: bfccd814    d3: 00000001
+d4: 80174c1e    d5: 800bd9ac    a0: 800bd9ac    a1: 800bdb54
+Process stress-ng-sysba (pid: 250, task=f7e050bd)
+Frame format=4 eff addr=44090004 pc=80115870
+Stack from 013ea000:
+Call Trace:
+Code: 0000 0000 0000 0000 0000 0000 0000 0000 <0000> 0000 0000 0000 0000 0000 0000 0000 0002 a6c4 0002 a6c4 0002 a6c4 0002 a6c4
+Disabling lock debugging due to kernel taint
+note: stress-ng-sysba[250] exited with irqs disabled
+*** ILLEGAL INSTRUCTION ***   FORMAT=4
+Current process id is 42
+BAD KERNEL TRAP: 00000000
+Modules linked in:
+PC: [<00000000>] 0x0
+SR: 2004  SP: affae50f  a2: 012d1f80
+d0: 00000000    d1: 0000000b    d2: 01057db0    d3: 00035b9a
+d4: 00000000    d5: bfccd814    a0: bfccd814    a1: 0050c21c
+Process stress-ng-sysba (pid: 42, task=1b5bfafe)
+Frame format=4 eff addr=480a2004 pc=00035ab2
+Stack from 013d3f28:
+        00000000 000000fa 00000000 00000004 01057db0 00000000 0000000b 00000000
+        00000000 012d1f80 000336b4 00000100 00000122 fffffff6 bfccd76c 00035c1c
+        000000fa bfccd814 00000000 00000000 bfccd76c 00000000 0000000a 000000fa
+        00000000 8011685e 80119990 00935414 0002ce18 013d3fcc 00000000 00000000
+        00000000 00000000 8011685e 013d3fcc 00000005 bfccd7a0 80010686 0002a6bc
+        0002df3c 000000fa bfccd814 00000000 00000000 bfccd814 00000000 800bdb54
+Call Trace: [<000336b4>] child_wait_callback+0x0/0x86
+ [<00035c1c>] sys_wait4+0x82/0x92
+ [<0002ce18>] buserr_c+0x130/0x1dc
+ [<0002a6bc>] buserr+0x28/0x30
+ [<0002df3c>] system_call+0x58/0xac
 
--- 
-2.55.0
+
+I have not debugged any further yet.
+
+Regards
+Greg
+
 
