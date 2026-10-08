@@ -1,358 +1,221 @@
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from MM0P280CU009.outbound.protection.outlook.com (mail-swedensouthazon11021115.outbound.protection.outlook.com [52.101.76.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6F137475D
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  7 Oct 2026 23:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791417305; cv=none; b=cWMMrUW6iZvRetn+OiOwMxU44JVzmxvc+XqqFlLI6gSIuWUCDjdJqOjjhGFJf3R6zjRhoisuSNX4qytTbjAOm36rV6lkk3me7sQvhkBuZpTDyz/AH3P7QH45XhMmg2fQ+EO28PhtXZ1/TTg4BOCY0s6s/og1tItPso8+XKM7xOY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791417305; c=relaxed/simple;
-	bh=fYh2HzSfewa57QSvPBObHBQlQclLGZLV/AYsr43Bqc0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LltZRRFAymfs+ikXMtG4lKWLsDADts6dyxUvPi0z5weGCzrFHF5mrDZXVnjMB/MwNSV9pNqysEpUfWzSH9w0ujVY2e7h618cCLQisVyzEavearfACH+QXf/a2NbMwL1mmDHv2fa2bgfacWtRyaV66HYjn76ngHEqQRwhlVYqeZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bSJIeULG; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF7F47F3DC
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  8 Oct 2026 09:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.76.115
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791451234; cv=fail; b=iKjcfhg6oAk05cQx4FChrc2CFuCttBAmuFZskRUiLsnO87WQRezdOvMxbKnSatXczqIXF9PHNvrH0J4QPyhWTJxzttrepeXDuq/TcL2S+125sIBdMveOsiEW+259ptfTF9ItDGyvBRfKhCnzm3HOxGkoPg6YWuyFoxJkLWAZWZo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791451234; c=relaxed/simple;
+	bh=wtvnzL/Kn0HI0k7QQxqspt8rc8xVg1usSxpWUAewq9U=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Tu+sVqz8WH5P3FdkywXKoLFCBcJcbL6HOi1zUWrXS+gFZPBYFbES+MWJXtccsSlc6XyMlLO+9RyAq0g54y95PnkJaSTZeetS1Zj6UEcGfhRqUnJnhY9lh3AgVObYhvf8apfHbR3GyKNbz0Se6m7Qvfj765jylDEI2rzqn2N3bhw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=INuFnRN8; arc=fail smtp.client-ip=52.101.76.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bSJIeULG"
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2e5378b281aso14047415ad.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 07 Oct 2026 16:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791417303; x=1792022103; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=vT9Ad0JJGa3iPAOa3YJF1Tie9QhVyUem5JF3+ZZiopE=;
-        b=bSJIeULGwzozJxk/YQWu2DDZZeuX+hiyfiPnVtrFOHz6D2A/2oNn67zWjxIORaxHKj
-         Z+hRK1NR+PSggwo1/QXtSwjNiGqxBgnt/k+R7e+5AuSWsrECaDF+UBan7rCJNKqhmf2O
-         evU9osK0sxTzMbae7hez80UwqdVwWlNcXoAJDwFYzz9lVgc3o96vIsiSvxXtTKPAEXU2
-         s9aRU+rSg+nH/ub2qe8JiC72MNBjCPGgh1huBS1NeL8FjJdYv1cPqnRuK3zzoAtFaZo7
-         VyLBsqoGtwLD0haF9kAYpq9SUVLN0hyzxb5oHf0Bs1HhOsvV0UzYG4Cxd3Ur4q/1gfKi
-         1O4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791417303; x=1792022103;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=vT9Ad0JJGa3iPAOa3YJF1Tie9QhVyUem5JF3+ZZiopE=;
-        b=uv1k3zossZr4CIff2SCcnrHGHl9rOPYG2QgpQ8tzAJ0dOGMkcUBhZ9exC4f+29qYNZ
-         7KANvOXaTxKYj8DF+3sRejIcYBbq+wxoXW6kzwxCaQEnzCvp8BNWEGZkSljvKKMi/H8Q
-         iheZz9tbEnYRNLUPkk01VdXfHuv0G840OlZCaH92vnuh/QCfNaZHWoZ67noS5h0UxmDy
-         ioM6KOWw3TzwIaEHmyCdbB/xRvvplbsLvnUM6ndHsFEVpYWMeOr53qkO8WW8afu72DAV
-         04NioUTIPMSyAF4lkYS+sYkg5wIJnjT/VmbMZKhJ8/EynjSYm3pqE5zQlgpr0B6qOMLM
-         geWA==
-X-Gm-Message-State: AFq9FYKb49pYJM7EEE0utXN3uuMhmXy4wY9xQigxS3fpx9EL7KoLIKVu
-	VvyNWUAf5qe0I4EMlA2jkk8BnpBwiRuisONrPmHdOTAN6AgRbzAtAcY4
-X-Gm-Gg: AYBFou0obtJhSt005AoZ3Y+m1nxx+rT7UcIrvWi188SZIrhdQB/h+1wm8p+ax7QLiFN
-	7peVOgUYs1D0cqyAEB9ndUpqv5yVza3dhmKmg9ORug6vKgsdobyNcjokJYfrYe+L0oHhMnfrL82
-	zNS/CJkdGFCc0eAyn16xN8TkyrrXU9m9qyj5i16vOqjuiihqlYIfx5oBggQmz451YCz8vJY/6un
-	GN8fUbHLKa8wqmp3fkHVhepMUBNo9FhI21dGGe9gHINy6e2wfDi/PTuwKI1CZSyuY+uqEKUJHHT
-	2Cc8n1zkqQOa+9Kl1Aw8hwMkZXZMiUGaCbUIwTMNMwLMqdokHEqOUfiz+8dT+F6jeeilQKAaHwE
-	NGHI4//sv6X9dDrxKgNlyFJJj6tQIC1tTZxEA5eF3xaAVO41jq5occC9mZC3lYqtDiCTaVWikYB
-	64ZEDIzINdPxRNwJV9LvZedph2SqSC7+1qSTHWOpri8JpS1cM3/8LLAzQBcQg2c9ac16ZaebPUY
-	PlkdyaxSxJ6dNHuRX9UWuSkfDBpkagwhPUnKB7KUgPStOgZOPX6GdvfLj2wxTZJGrM5NompXzTQ
-	YFMKkRMTG8I=
-X-Received: by 2002:a17:90b:17d2:b0:3a8:86b7:ad95 with SMTP id 98e67ed59e1d1-3a8a1c12e61mr3414044a91.60.1791417302426;
-        Wed, 07 Oct 2026 16:55:02 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:c075:2553:e5b6:8232? ([2001:df0:0:200c:c075:2553:e5b6:8232])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3a9f1d10867sm1755812a91.13.2026.10.07.16.54.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2026 16:55:01 -0700 (PDT)
-Message-ID: <d52fd72d-fe72-4fd3-9ae8-5ed999d18b5f@gmail.com>
-Date: Thu, 8 Oct 2026 12:54:56 +1300
+	dkim=pass (2048-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="INuFnRN8"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=wWYCaXyqJi4ZWPF6qGx6PPahhWGHET64lXKc47FBjG7p2ybmlaSw3rSqwcUE/w6495DBBi00Msx1Pad4CqMHlQlVM/qJIb43Q5vas6TnhUz2FdJfY3o6B2lwCryb05C+irQEX9CK9zOP4PCPwtgggpydvj9tiGz5gFS6IjMBwPI6bAh3/u5LsJOt+jF5jWza6nAnQNwx7cGLV5HlOz3lAZgm2cs+gOYRAbkzrFUX7971nLmSWo/Vtm1aZx2dKuksQVEeWsAvwcOHAAlC2BAH2vckuGtUVDeqtRen6KsZsXENvEjTjnymAkIWFVRdV6NxSVMk43cdlaX24bz4xvnycw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nChlZmlrvLWslmoho1/5aTc9r9JcLlsuI9ltEi1anog=;
+ b=EWlQpJR1KYsOvtPjPBUbxCi4oXSmjhItlg/0F5aiUdQvXqIqDoCkmDk8i9oy4P1UZrVAO50NbeQ2qOyuzNSviNYashd2A8Iio0MztmgBkxQtH8DrkGsak+6QUS5bTPwAObwhg6jYu7nAYFdphTRQNywuypUTYJT/jkCyrJ9wD715p9Nijg4YPW7QZCwJmjdD5lPzVTSrr5yeqR3JkVu02DcEbyuv9s+t7ECmIaAbzjrAq85WOSi50rlHBNq4tuWFkqH6xfbV3WD7KshbsfI9ufAaE4aHcWpvGYL5/aaP+AGRDHan8ZnF+AtHymELnX+JmRaqAwL9nnBZoN4FVLBWTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=gaisler.com; dmarc=pass action=none header.from=gaisler.com;
+ dkim=pass header.d=gaisler.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nChlZmlrvLWslmoho1/5aTc9r9JcLlsuI9ltEi1anog=;
+ b=INuFnRN8HZTZOmhztmeE+FWSg1C4ii9V9BgUPQhgDJ8RNd+LGyBWi29rZlGXHvH4Z0GZukAbrrEUd0nzmbqjHKg79DgHWjVgSQ0gc4YaqpMmpuSQB1UaoPfWU4gZjqGOATUuLN7KeBByoJkt4/4D6lM0ztbm/o5DPbwPmtuEgBaTMP0iptchQ/0h5NNjuKKvSwcf3Zc7zJKLoWCgKKhqaM0rYpC5qZi9c5buiMvfMK5GC5lkxReIkyvtUoaD2PFCY5fggNJ/0O0fl7QtbwSDi8zqAFCsedpUclVBHil2D/RLwqNrbjWzjN+WTGlLd8zLfiUjSYM5paTFCQs0O7ZJJA==
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=gaisler.com;
+Received: from MM0P280MB495062.SWEP280.PROD.OUTLOOK.COM (2603:10a6:190:2f::5)
+ by GVZP280MB1086.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:f5::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.496.17; Thu, 8 Oct
+ 2026 09:20:17 +0000
+Received: from MM0P280MB495062.SWEP280.PROD.OUTLOOK.COM
+ ([fe80::1f13:f10:e16b:7939]) by MM0P280MB495062.SWEP280.PROD.OUTLOOK.COM
+ ([fe80::1f13:f10:e16b:7939%4]) with mapi id 15.21.0472.016; Thu, 8 Oct 2026
+ 09:20:17 +0000
+Message-ID: <c24fc419-7bee-4fe4-be12-9aa378d49af1@gaisler.com>
+Date: Thu, 8 Oct 2026 11:20:14 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 8/8] mm: Drop pxd_ERROR()
+To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc: samuel.holland@sifive.com, David Hildenbrand <david@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Lorenzo Stoakes <ljs@kernel.org>, Yoshinori Sato
+ <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20260831054331.625505-1-anshuman.khandual@arm.com>
+ <20260831054331.625505-9-anshuman.khandual@arm.com>
+Content-Language: en-US
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <20260831054331.625505-9-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0084.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:78::11) To MM0P280MB495062.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:2f::5)
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] m68k: Handle put_user faults more carefully
-To: Greg Ungerer <gerg@polyxeno.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <88e752e0bca92c7b65533cc1b334052dd272f8ef.1790842086.git.fthain@linux-m68k.org>
- <02c53c37-d2ee-4c03-a8f9-0a757c3af59e@gmail.com>
- <CAMuHMdVbfUH1ZoFcS64t=gyE_cskMWv6gGvL8pjGirSGvAKu2w@mail.gmail.com>
- <dfcbbc59-4204-478b-b8da-867621056c62@gmail.com>
- <5bb9f586-6939-433e-9e06-a9bbc08a69a0@polyxeno.com>
-Content-Language: en-US
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <5bb9f586-6939-433e-9e06-a9bbc08a69a0@polyxeno.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MM0P280MB495062:EE_|GVZP280MB1086:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83646bf6-eeda-498e-e234-08df251d5e2c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|23010399003|376014|7416014|56012099006|4143699003|11063799006|10067099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	NC/qpKPoxiyUAIaFboaEX4yQJbeZ+vmHWvsqeQ5kGT8l7X9fcYqp9eBx5WDlxiVvR0L+48Kj8haTuGmN+ee23fz3oSbjQL0jDYSXa+8gvblI86UZZh4H3rc1iI63OnAtUl/Bc29s8THJfx5bFeLN0emAE2uZAHoMFHy90APywhP9Z8AjykGKVGL0t0c2nvMe3PsGovHxRyjauii+CaAg7FIwI2CS/HOCQfII4YJSPtE4I0SRp+V6w4RmvmGuzeCsqZSrWw82tVXGVw0nRXYEEjprr2bBi/k2erOTWX+ty2uFPb9NPtUYLqYJ9PHu+KDHk4Q/vhMUK3yGm+xZ+4lHwTIkrPlcoR9I3RrI4QZlUmJ2jnb0OByBCKTN6WeW3SPL7RUqYcLSHKhK7REebKrFE0KT0iexUictJu2Fnotxo5BB3aWPdM5djXsume4Uu/+LrZgrVePGx8jVXrq7s0fx3tDDa8Its7qN4Q+p0W/zrq+NcYe8ULVC7XRuOjK0vRn8IJYPzelV1nlbTqr5dOdn1l7Ngd1FRLzsM1A/gAKUICvJl7+yqtc729F6ZYuOPgHw3w2EZKjndGEXmpox7kfKl6X1HCrim3tkhks2tAZ3SktjZtPITkfZDdVBJ/FfT8XA3Aw4kbnTbKOULc4nRgbN9ElLoKLj3Wvavjhkq2aZS/c=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MM0P280MB495062.SWEP280.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(23010399003)(376014)(7416014)(56012099006)(4143699003)(11063799006)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Qnc4WTMwaVBFYzJqcExMa05CL2Z6N2lPTHJIWHJ6RkNtSjQ4YTA2YWhOWHNP?=
+ =?utf-8?B?c3h4MGNyVWpGRXAxYkV5a0VycHRMZmJ4cENISm5EeHF6NFR4U0grNHpzVFNw?=
+ =?utf-8?B?SitEcWRXSExhV2gvMW5hZUQweld3N2JSdVEyZGRDckVZMXZ5SlNzSklhcmk5?=
+ =?utf-8?B?VEt1RHBCbXFKb0lDcVBwRXdFOHRDUTNqemh4TFExRnJhM0ZzTTR2N0JVYlZ1?=
+ =?utf-8?B?VlA1YXo4RHIrbFRpa2QxeFM0VWJwVzQ1WGlaQmdBTFhnK1VLaHllLzdqSFNL?=
+ =?utf-8?B?WE9BWUlhaHJKZkNPd0kvZ2U5TEZTUWZHOHVtMTduYW1wdUlaTTIxeFFmU3Qw?=
+ =?utf-8?B?QWxmQ1NNSHgraGRsb1pkbmVORHF2eDF0bUFWTjBiNXFzZDczRDZ5R2xqdFRR?=
+ =?utf-8?B?Kzhmc3ArU25pcDQyUEpkekh5RmxrVnV0TFVCajVUN2czMGc4UGFqZEx2SEpl?=
+ =?utf-8?B?NVVVcjBRaFoxb24wVmZrTVBOR2FoYnRaUFpZSmxXcnVvV2w5TzEzaVgzODNh?=
+ =?utf-8?B?eWdPV0J4ekp4bkVpdGUxY2RLYTRSWGZqSUlwVHNRdlFyMVEwNTZLcVQ3dlh4?=
+ =?utf-8?B?UGdtOGNwb2g0d2MwQ0Y3ajRUVWRMc1dIbnRsVTFpSTJtclZzNFFPc255cnhQ?=
+ =?utf-8?B?TU5abWFjbjBrS25UU01WMzhjdU9VZTZuVUpaQ2xBSHBSOWlGejFWK3RLaldG?=
+ =?utf-8?B?RkJERVNnbHJnWFZTUkxTVjBlVTJ1d1JNdmkwUWhROHZtMUM2dlJJeHQyRmdl?=
+ =?utf-8?B?UW5MU0cySjFHWUpkZ1RQSTA3SE82Rlczb1hqakhiVi80U3cxT2swK0t5OVcw?=
+ =?utf-8?B?UjkyekRsR0JuZTk3QWZuR0RwYjV1SUNUbnNwaFBOQjA1TEdKWFRRRTNNNyt0?=
+ =?utf-8?B?Y2YrTmZralIvNllYNG1aKzRONTJrZWYvTFFBbjg1S0lEcmZ3amo4UVMwWTZ6?=
+ =?utf-8?B?Sm1VZXc4aStLMWx4dE9PWElQZlg4eXhaRGMwcHlVWFlJNE53NXh2ejl3NVZH?=
+ =?utf-8?B?Y0dyaVc0bm9xVXpDV00ySWtnT1AzSElIQTJieHlKTys2a1ZpRDdUVElIKzBw?=
+ =?utf-8?B?Yk9sRWlTQTlKeUZpQUYydnIvazY3ZjVBYXkzZXdZWjAxRlYrYXAxKy9PU2gr?=
+ =?utf-8?B?UFo1U0hFSGRzUUZwYmFmalNmVTBrNHVmTmVSVVEwUGFxL0VlWHVCL3dIMFhN?=
+ =?utf-8?B?ajNyNDJwblBVbjRDR1dvVHpuNEx6VUk5MldTY0ptMEgrNUZVUlRCd3kzMlB6?=
+ =?utf-8?B?bnNBb1lya3pVd2g1YzJwVFpHNzUrRlJEVHdyMGg0dDBQck9zL0w0SGRjcC9S?=
+ =?utf-8?B?NHM3L0RyU3hIaWl6QnFzbEcwZ3NwWG1uc0FsOGg4citQTTFRTWdKdEdORi9R?=
+ =?utf-8?B?WEwySCtxUDBxYkRmMzhmNHVSVWR5SjgzeEt1WFN3U3lVKzdZY2k2UzBURmda?=
+ =?utf-8?B?YXUvTFo3c0EvTVNnR0dieTh2VzRrWGJCY0prTWc0Z04vWXpJbFFVcjZLc3hF?=
+ =?utf-8?B?WDRBbUFkbzBTMzMzcnIxTGlJTW9QOW1zVU5HSkc4NFNkLzczV3hYTUtzcjRY?=
+ =?utf-8?B?WitCZ1g3SzNjbXFONGNDWEcxWlUyR0piM2p6dThwQlREaXFzWDhoYlc5Unlk?=
+ =?utf-8?B?dWpjRk00c25DQW9ITEVTU0ZITDRJSm50MWZoeGNFRjlVZzlqZXBxVmIwbnFL?=
+ =?utf-8?B?bnRRakpsRC82V3R4ZzBRbGl0aEtBM1A0UlduY2xCUUp5Q05VVXNpNFgxM0tS?=
+ =?utf-8?B?U0loRGpFckpUUElXTkRSV01VV3hXN3F0QXBOMjRxWUJYY0V6QTdEZThMZDEv?=
+ =?utf-8?B?SU04Y0VqU21ydmNCS3VMOXNQK2psemZXRHk4UDZPOFpvcmV6eFlndi9ocm9v?=
+ =?utf-8?B?eXRVampFMmZvNVBQSCsxVGxkbXVCcENac0RGOXhnMldaVmhaelhlcXB0dnB3?=
+ =?utf-8?B?RFdack1RQVdGVU94RWxQQXBsdlNrd0pTRkVneVFVRXZybnM0ZUVLMHYyRDVC?=
+ =?utf-8?B?UkVKb0h2Qk13VVNiOXNkUWs1RHpKd2UvU2lRVlgvRnU5VlJ3ell6czZPN1Bk?=
+ =?utf-8?B?d2VHdDZVUTdaYWIrYkdmYXFmNktSQjhyNWVlRHNOZ2c3RTJyL3puSm40V2lQ?=
+ =?utf-8?B?RnJwQjhzRnp0bUZVeWx0bUxVN0E3NlJadU9oOGFDOGNRbFVjdzRxNjl4ek8v?=
+ =?utf-8?B?UzFka04xY01xUEV4TmRoc29xUEcydDM1Z05kNWhmMjl3OVhHTnJDUVJ5WGth?=
+ =?utf-8?B?cFFId1A1RHJEbitNS012U2x6NTcwM0gvbk9rekpFYVZZbG4zYS84elM5b2lY?=
+ =?utf-8?B?d3N0d0dNS3h1RWRYR0NLUmFaeVVVWlByVURvc3JuTFh1SHp2SkxtSVpGZUE5?=
+ =?utf-8?Q?yjjhfEohdeTOoAqE=3D?=
+X-OriginatorOrg: gaisler.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83646bf6-eeda-498e-e234-08df251d5e2c
+X-MS-Exchange-CrossTenant-AuthSource: MM0P280MB495062.SWEP280.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2026 09:20:17.5038
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 91fa4a59-2167-458a-8318-e45d80469d7e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5BZfB4EAaSFJ84qYftmRVMohK/eymk8QLHXJzzFm4elUHya77EOOlIY25xck2qu/+rvHfHMgpADg5257wP54q4lxf3y+8uFBxp0svqv6SU8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVZP280MB1086
 
-Hi Greg,
+On 2026-08-31 07:43, Anshuman Khandual wrote:
+> There are no more users left for any pxd_ERROR() either in generic MM or in
+> the platform MM. Hence all these platform macros along with their generic
+> fallback could be dropped across the tree.
+> 
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-csky@vger.kernel.org
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: loongarch@lists.linux.dev
+> Cc: linux-m68k@lists.linux-m68k.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-openrisc@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: sparclinux@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+> Acked-by: David Hildenbrand (Arm) <david@kernel.org>
+> Acked-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+...>  /*
+>   * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
+>   * are !pte_none() && !pte_present().
+> diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
+> index f89b1250661d..5a5f54a090f5 100644
+> --- a/arch/sparc/include/asm/pgtable_32.h
+> +++ b/arch/sparc/include/asm/pgtable_32.h
+> @@ -40,9 +40,6 @@ void load_mmu(void);
+>  unsigned long calc_highpages(void);
+>  unsigned long __init bootmem_init(unsigned long *pages_avail);
+>  
+> -#define pte_ERROR(e)   __builtin_trap()
+> -#define pmd_ERROR(e)   __builtin_trap()
+> -#define pgd_ERROR(e)   __builtin_trap()
+>  
+>  #define PTRS_PER_PTE    	64
+>  #define PTRS_PER_PMD    	64
+> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
+> index 0837ebbc5dce..44d1333065a6 100644
+> --- a/arch/sparc/include/asm/pgtable_64.h
+> +++ b/arch/sparc/include/asm/pgtable_64.h
+> @@ -96,16 +96,6 @@ bool kern_addr_valid(unsigned long addr);
+>  #define PTRS_PER_PUD	(1UL << PUD_BITS)
+>  #define PTRS_PER_PGD	(1UL << PGDIR_BITS)
+>  
+> -#define pmd_ERROR(e)							\
+> -	pr_err("%s:%d: bad pmd %p(%016lx) seen at (%pS)\n",		\
+> -	       __FILE__, __LINE__, &(e), pmd_val(e), __builtin_return_address(0))
+> -#define pud_ERROR(e)							\
+> -	pr_err("%s:%d: bad pud %p(%016lx) seen at (%pS)\n",		\
+> -	       __FILE__, __LINE__, &(e), pud_val(e), __builtin_return_address(0))
+> -#define pgd_ERROR(e)							\
+> -	pr_err("%s:%d: bad pgd %p(%016lx) seen at (%pS)\n",		\
+> -	       __FILE__, __LINE__, &(e), pgd_val(e), __builtin_return_address(0))
+> -
+>  #endif /* !(__ASSEMBLER__) */
 
-thanks for running these tests!
+Perhaps a bit of a pity to lose the printing of the address of the pxd
+that a number of architectures did before this series, but i have no
+strong opinion.
 
-On 6/10/26 01:42, Greg Ungerer wrote:
-> Hi Michael,
->
-> On 3/10/26 09:55, Michael Schmitz wrote:
->> Hi Geert,
->>
->> On 03/10/2026 5:28 AM, Geert Uytterhoeven wrote:
->>
->>> Hi Michael, Finn,
->>>
->>> On Thu, 1 Oct 2026 at 20:57, Michael Schmitz <schmitzmic@gmail.com> wrote:
->>>> On 1/10/26 22:08, Finn Thain wrote:
->>>>> Running 'stress-ng --sysbadaddr -1' on my MC68040 system immediately
->>>>> produces an oops:
->>>>>
->>>>>        Unable to handle kernel access at virtual address f1c422fb
->>>>>        Oops: 00000000
->>>>>        Modules linked in:
->>>>>        PC: [<00005a1a>] do_040writeback1+0xae/0x160
->>>>>        SR: 2010  SP: 96087dc2  a2: 01500000
->>>>>        d0: 00000000    d1: 014e8000    d2: 00000081    d3: 00000000
->>>>>        d4: 00000481    d5: c043dfff    a0: 014e8000    a1: 00632fd5
->>>>>        Process stress-ng (pid: 221, task=1b729d30)
->>>>>        Frame format=7 eff addr=014e9eb8 ssw=0c81 faddr=c043dfff
->>>>>        wb 1 stat/addr/data: 0001 00000481 c043dfff
->>>>>        wb 2 stat/addr/data: 0081 c043dfff 2f746d70
->>>>>        wb 3 stat/addr/data: 0005 014e9ed4 2f746d70
->>>>>        push data: c043dfff 800daa70 00000000 014e9f1c
->>>>>        Stack from 014e9ed4:
->>>>>          2f740000 8017c000 014e9f10 00006830 00000081 c043dfff 2f746d70 2f746d70
->>>>>          0081a000 00000400 c043dfff 800daa70 c043dfff 80016a20 00000003 014e9f88
->>>>>          000026c8 014e9f1c 00000001 2f746d70 0081a000 00000400 c043dfff 0081afff
->>>>>          c043dfff 01500000 00000001 ffffffff 00000000 20000046 41d67008 014e9f58
->>>>>          04810005 00810045 c043dfff 014e9f84 2f746d70 c043dfff 2f746d70 c043dfff
->>>>>          80016a20 8017c000 00000000 0081affb 00000005 014e9fc4 00128bc6 c043dfff
->>>>>        Call Trace: [<00006830>] buserr_c+0x510/0x698
->>>>>          [<000026c8>] buserr+0x20/0x28
->>>>>          [<00128bc6>] sys_getcwd+0xc8/0x15a
->>>>>          [<000027a2>] syscall+0x8/0xc
->>>>>          [<0008800d>] sanity_check_segment_list+0x17/0x11e
->>>>>
->>>>>        Code: 000c 0e90 1800 220f 0281 ffff e000 2041 <2228> 0008 0281 00ff
->>>>>              ff00 67a4 6026 4280 122e 0013 206e 000c 0e10 1800 220f 0281
->>>>>
->>>>> 0000596c <do_040writeback1>:
->>>>>        596c:       4e56 fffc       linkw %fp,#-4
->>>>>        5970:       2f02            movel %d2,%sp@-
->>>>>        5972:       202e 0008       movel %fp@(8),%d0
->>>>>        5976:       4282            clrl %d2
->>>>>        5978:       3400            movew %d0,%d2
->>>>>        597a:       220f            movel %sp,%d1
->>>>>        597c:       0281 ffff e000  andil #-8192,%d1
->>>>>        5982:       2041            moveal %d1,%a0
->>>>>        5984:       2228 0008       movel %a0@(8),%d1
->>>>>        5988:       0281 00ff ff00  andil #16776960,%d1
->>>>>        598e:       6600 0104       bnew 5a94 <do_040writeback1+0x128>
->>>>>        5992:       4e7b 2000       movec %d2,%sfc
->>>>>        5996:       4e7b 2001       movec %d2,%dfc
->>>>>        599a:       0240 0060       andiw #96,%d0
->>>>>        599e:       0c40 0020       cmpiw #32,%d0
->>>>>        59a2:       6700 0084       beqw 5a28 <do_040writeback1+0xbc>
->>>>>        59a6:       0c40 0040       cmpiw #64,%d0
->>>>>        59aa:       6730            beqs 59dc <do_040writeback1+0x70>
->>>>>        59ac:       4a40            tstw %d0
->>>>>        59ae:       6752            beqs 5a02 <do_040writeback1+0x96>
->>>>>        59b0:       4280            clrl %d0
->>>>>        59b2:       220f            movel %sp,%d1
->>>>>        59b4:       0281 ffff e000  andil #-8192,%d1
->>>>>        59ba:       2041            moveal %d1,%a0
->>>>>        59bc:       2228 0008       movel %a0@(8),%d1
->>>>>        59c0:       0281 00ff ff00  andil #16776960,%d1
->>>>>        59c6:       6600 0086       bnew 5a4e <do_040writeback1+0xe2>
->>>>>        59ca:       7201            moveq #1,%d1
->>>>>        59cc:       4e7b 1000       movec %d1,%sfc
->>>>>        59d0:       4e7b 1001       movec %d1,%dfc
->>>>>        59d4:       242e fff8       movel %fp@(-8),%d2
->>>>>        59d8:       4e5e            unlk %fp
->>>>>        59da:       4e75            rts
->>>>>        59dc:       4280            clrl %d0
->>>>>        59de:       322e 0012       movew %fp@(18),%d1
->>>>>        59e2:       206e 000c       moveal %fp@(12),%a0
->>>>>        59e6:       0e50 1800       movesw %d1,%a0@
->>>>>        59ea:       220f            movel %sp,%d1
->>>>>        59ec:       0281 ffff e000  andil #-8192,%d1
->>>>>        59f2:       2041            moveal %d1,%a0
->>>>>        59f4:       2228 0008       movel %a0@(8),%d1
->>>>>        59f8:       0281 00ff ff00  andil #16776960,%d1
->>>>>        59fe:       67ca            beqs 59ca <do_040writeback1+0x5e>
->>>>>        5a00:       604c            bras 5a4e <do_040writeback1+0xe2>
->>>>>        5a02:       4280            clrl %d0
->>>>>        5a04:       222e 0010       movel %fp@(16),%d1
->>>>>        5a08:       206e 000c       moveal %fp@(12),%a0
->>>>>        5a0c:       0e90 1800       movesl %d1,%a0@
->>>>>        5a10:       220f            movel %sp,%d1
->>>>>        5a12:       0281 ffff e000  andil #-8192,%d1
->>>>>        5a18:       2041            moveal %d1,%a0
->>>>>        5a1a:       2228 0008       movel %a0@(8),%d1
->>>>>        5a1e:       0281 00ff ff00  andil #16776960,%d1
->>>>>        5a24:       67a4            beqs 59ca <do_040writeback1+0x5e>
->>>>>        5a26:       6026            bras 5a4e <do_040writeback1+0xe2>
->>>>>        ...
->>>>>
->>>>> The cause is a deliberately misaligned access in the 'bad_end_addr' test
->>>>> case in the 'sysbadaddr' stressor. The location being accessed here,
->>>>> 0xc043dfff, was contrived to span the boundary between a r/w anonymous page
->>>>> and an unmapped page. The address was then passed to the getcwd syscall
->>>>> which faulted in copy_to_user().
->>>>>
->>>>> The fault for the mapped page appears to be handled okay -- up until
->>>>> do_040writeback1() called put_user() which produced a second fault due to
->>>>> the unmapped page.
->>>>>
->>>>> Michael Schmitz helpfully deciphered the oops and explained the exception
->>>>> processing leading up to it.
->>>>>
->>>>>        "regs->pc does point to the PC in the format 7 frame which is the PC
->>>>>        the fault was detected at, but not (in case of a writeback fault)
->>>>>        the PC of the faulting instruction [that is, MOVES.L].
->>>>>
->>>>>        "The writeback would still cross the page boundary, and fault if the
->>>>>        unmapped page still isn't present. We would not see the PC of the
->>>>>        movesl in that case, and fail to find the PC in the exception
->>>>>        table."
->>>>>
->>>>> One solution is to add a NOP instruction after the MOVES.L to flush the
->>>>> pipeline and take the fault. That way, the PC value in the exception frame
->>>>> becomes dependable so the exception table works.
->>>>>
->>>>> Theoretically, there seems to be another bug in the existing code. If
->>>>> the instruction following the MOVES faulted, then after the fixup,
->>>>> execution would resume at the instruction which caused the fault. This
->>>>> appears to be a loop. After this patch, that cannot happen.
->>>>>
->>>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->>>>> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
->>>>> ---
->>>>>     arch/m68k/include/asm/uaccess.h | 10 ++++++----
->>>>>     1 file changed, 6 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
->>>>> index 31d133faa45e..728a6dfb7414 100644
->>>>> --- a/arch/m68k/include/asm/uaccess.h
->>>>> +++ b/arch/m68k/include/asm/uaccess.h
->>>>> @@ -31,11 +31,12 @@
->>>>>     #define __put_user_asm(inst, res, x, ptr, bwl, reg, err) \
->>>>>     asm volatile ("\n"                                  \
->>>>>         "1:     "inst"."#bwl"   %2,%1\n"                \
->>>>> -     "2:\n"                                          \
->>>>> +     "2:     nop\n"                                  \
->>>>> +     "3:\n"                                          \
->>>>>         "       .section .fixup,\"ax\"\n"               \
->>>>>         "       .even\n"                                \
->>>>>         "10:    moveq.l %3,%0\n"                        \
->>>>> -     "       jra 2b\n"                               \
->>>>> +     "       jra 3b\n"                               \
->>>>>         "       .previous\n"                            \
->>>>>         "\n"                                            \
->>>>>         "       .section __ex_table,\"a\"\n"            \
->>>>> @@ -53,11 +54,12 @@ do {                                                              \
->>>>>         asm volatile ("\n"                                      \
->>>>>                 "1:     "inst".l %2,(%1)+\n"                    \
->>>>>                 "2:     "inst".l %R2,(%1)\n"                    \
->>>>> -             "3:\n"                                          \
->>>>> +             "3:     nop\n"                                  \
->>>>> +             "4:\n"                                          \
->>>>>                 "       .section .fixup,\"ax\"\n"               \
->>>>>                 "       .even\n"                                \
->>>>>                 "10:    movel %3,%0\n"                          \
->>>>> -             "       jra 3b\n"                               \
->>>>> +             "       jra 4b\n"                               \
->>>>>                 "       .previous\n"                            \
->>>>>                 "\n"                                            \
->>>>>                 "       .section __ex_table,\"a\"\n"            \
->>>>> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
->>>>>
->>>>> in case it helps.
->>>>>
->>>>> Anecdotally, I've seen similar uaccess faults causing kernel oops on 030
->>>>> as well, so this may not merely be an artificial unaligned access issue.
->>> Shouldn't this include
->>> https://lore.kernel.org/20240429030945.22451-3-schmitzmic@gmail.com
->>> ?
->> Along with https://lore.kernel.org/20240429030945.22451-2-schmitzmic@gmail.com, perhaps.
->>
->> Can't recall the details, but Finn's solution was to add a nop in order to make the fault PC reliable. That's not a great deal of overhead in the case of put_user(). My changes to copy_to_user try to avoid flushing the pipeline inside of a loop, and only use the nop after exiting the loop. The cost of that is larger exception tables. Not sure which is worse.
->>
->> What's more, I can't be certain that my 'fault is taken two instructions past faulting instruction' observation is 100% reliable. AFAIK this has only been tested on 030 and 040. Coldfire(MMU) and 060 tests are still missing.
-> ColdFire seems to have more, or maybe just different problems for "stress-ng --sysbadaddr -1".
-> Running a kernel with and without this patch resulted in:
->
-> # stress-ng --sysbadaddr -1process '/usr/bin/stress-ng' started with executable stack
-> stress-ng: info:  [40] defaulting to a 86400 second (1 day, 0.00 secs) run per stressor
-> stress-ng: info:  [40] dispatching hogs: 1 sysbadaddr
-> *** ILLEGAL INSTRUCTION ***   FORMAT=4
-> Current process id is 250
-> BAD KERNEL TRAP: 00000000
-> Modules linked in:
-> PC: [<00000000>] 0x0
-> SR: 2004  SP: 013da6cc  a2: bfccd950
-> d0: 00000000    d1: 00000002    d2: bfccd814    d3: 00000001
-> d4: 80174c1e    d5: 800bd9ac    a0: 800bd9ac    a1: 800bdb54
-> Process stress-ng-sysba (pid: 250, task=f7e050bd)
-> Frame format=4 eff addr=44090004 pc=80115870
-> Stack from 013ea000:
-> Call Trace:
-> Code: 0000 0000 0000 0000 0000 0000 0000 0000 <0000> 0000 0000 0000 0000 0000 0000 0000 0002 a6c4 0002 a6c4 0002 a6c4 0002 a6c4
-> Disabling lock debugging due to kernel taint
-> note: stress-ng-sysba[250] exited with irqs disabled
-> *** ILLEGAL INSTRUCTION ***   FORMAT=4
-> Current process id is 42
-> BAD KERNEL TRAP: 00000000
-> Modules linked in:
-> PC: [<00000000>] 0x0
-> SR: 2004  SP: affae50f  a2: 012d1f80
-> d0: 00000000    d1: 0000000b    d2: 01057db0    d3: 00035b9a
-> d4: 00000000    d5: bfccd814    a0: bfccd814    a1: 0050c21c
-> Process stress-ng-sysba (pid: 42, task=1b5bfafe)
-> Frame format=4 eff addr=480a2004 pc=00035ab2
-> Stack from 013d3f28:
->          00000000 000000fa 00000000 00000004 01057db0 00000000 0000000b 00000000
->          00000000 012d1f80 000336b4 00000100 00000122 fffffff6 bfccd76c 00035c1c
->          000000fa bfccd814 00000000 00000000 bfccd76c 00000000 0000000a 000000fa
->          00000000 8011685e 80119990 00935414 0002ce18 013d3fcc 00000000 00000000
->          00000000 00000000 8011685e 013d3fcc 00000005 bfccd7a0 80010686 0002a6bc
->          0002df3c 000000fa bfccd814 00000000 00000000 bfccd814 00000000 800bdb54
-> Call Trace: [<000336b4>] child_wait_callback+0x0/0x86
->   [<00035c1c>] sys_wait4+0x82/0x92
->   [<0002ce18>] buserr_c+0x130/0x1dc
->   [<0002a6bc>] buserr+0x28/0x30
->   [<0002df3c>] system_call+0x58/0xac
->
->
-> I have not debugged any further yet.
-
-This rather looks like stack corruption - does that ColdFire system pass 
-signal tests OK?
-
-That said - the register dump is misleading - from what I've read, 
-ColdFire only has a single exception frame format, 2 longwords in size. 
-The first longword of that frame contains frame format code, fault 
-status, vector no. and status register. This is what's shown in the 'eff 
-addr' longword here. The following longword is the actual faulting 
-instruction PC as saved in the exception frame by the processor - this 
-does not match what is given as PC at the start of the register dump 
-(saved by the kernel on exception processing entry).
-
-I don't know what kind of ColdFire processor you used, so can't work out 
-what happened on exception entry and in particular, where the PC in the 
-kernel stack frame was taken from. No matter what, I think we ought to 
-clean up the frame format 4 section in show_registers() to account for 
-the different frame format on ColdFire, then perhaps also use the 
-correct PC to dump the infringing code section. Makes no sense to try 
-and debug this without correct debug info ...
-
-I can prepare a patch to show what I mean, but can neither compile or 
-test that...
+Acked-by: Andreas Larsson <andreas@gaisler.com> # sparc
 
 Cheers,
+Andreas
 
-     Michael
-
-
->
-> Regards
-> Greg
->
->
