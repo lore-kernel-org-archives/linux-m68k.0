@@ -1,80 +1,115 @@
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DFD332907
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Oct 2026 08:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAA33D75A0;
+	Sat, 10 Oct 2026 08:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791620154; cv=none; b=Lo4uimUHwAZnhl9WYuTX+MczU1tAGdMU0LSzjKY0uzK6x9maDtv1Tev7Dmzi8XuEv/ITsRbDNjD73rUc4g5NMgVfeykX+wZTqckfMdGDDDgaG/yYgTo5yWHDMuA9ag3iLdr6+f3lJn2SD6KGKatguAiFhbOxqqX9cbJo5jmeZPA=
+	t=1791622298; cv=none; b=H5XQy/b7vIA4sfRpF/Uhm014bGBecq5Vcb17prI1whpUm9GYUJGWDIstfl4doNAvuL/F5nzWpha7FGbeEubpY7q9xh+2zCYE9/8mnOqY0GWqeIZ7dCXMR9m4uZLk6eYWM33qqTD66rNXgHa77qaaYDaNY+I2gc2i178yvpYdI54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791620154; c=relaxed/simple;
-	bh=acDxKuhOLGGK2oW0DYlbt1lxqD6yQrEiPWUyi1jPvy0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Zv5D+YJ6+rdB6IZgnfInIo247/P0Xa78a0iPf+/ArwVN9KVN25tVYpZ4jP6jGT+C0XQAcuFzIaTLLg0rcqYlkst1FsLrV6uL/Xc7dVVW/Zm/Jza1EubIA+BW2GG1iSHeDyUvligV36FhWJvM34cEBPV5YCLRKsdXDQ3XdDRZTXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org; spf=pass smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=pxTD+Ef7; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yoseli.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yoseli.org
+	s=arc-20240116; t=1791622298; c=relaxed/simple;
+	bh=RuOovqrOh1KCioDiSzvzTR23m07513lBeXANRFcJqLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eIulK/5gWVmMb9wzjG7j1U53S9AUhgLk7NDICt6kdRZOXCrK9s/67O6xgpQ+RxX3mWNDtfAIV5LZbXEpJj94YR7UWLu65pvaSPBr/rDDR87jnuSLEcJZP9xZ/hbGzXgEUuCbXoCU+IN8jQoaGrSU2nEKwCWJSdj1uO6sOYgDe18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=COXd/rYh; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="pxTD+Ef7"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1DAF31F4F6;
-	Sat, 10 Oct 2026 08:15:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
-	t=1791620144;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=acDxKuhOLGGK2oW0DYlbt1lxqD6yQrEiPWUyi1jPvy0=;
-	b=pxTD+Ef7LnIgux8lbFifhuueGT6s5ZGqEbs6PTnqG6KVeZEgb8gZdGLqNVqp8f82FM/sD7
-	SdaPfraXf/HHd+OLq1H1U2Q/5SmqmyAqwLx6hFFYB7SOwfTFBOnUOvnqCaJ/Me5kIZ5lfw
-	+9qqy06GztKKzXEnIU/AHAJMgiN4irwTrEoVsgWB5Pv1iDJfQ4Ru7El5Cmw1O1ILqSJxeJ
-	nJAc19qo0kPfviey4PJHYBppOG92hpJr4fSrcJvZalJ/k7ILd9WK3tCUAq2aDWidbA3Abw
-	XyHMAylUywUve7YTqwjyCbF5UjYgXCAdDxjcig+nF1hdlj77Nh7QHewQx8y8zA==
-From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	Greg Ungerer <gerg@linux-m68k.org>
-Cc: Olivia Mackall <olivia@selenic.com>,
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="COXd/rYh"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=GRQCjk8o/a/C0+wV15inpx1btX0H9yvKy9U4k4uppuo=; 
+	b=COXd/rYh6c/YIeSmGHxKuzPrhoV2lB4EI1g+3cavw5LEJgQ1BzD4kOybLc4/lzQu3/5477pYrgA
+	AhrlmfN/9ALE2CrEvAlevl8YMcU46aRk/h0oWUADoPrAvJ1Pe8HOH/VZTdd19Q16Vx+aS5sKui5yy
+	ygS/NQGpLe4vSCZ+hZqC+ZXFAA2dBE5nRSlRsib4i5OSLoLcmf5ihPKeGOhiLPIq2aC978V7eEht/
+	Dw+ccFzuLz3Ph2daSx7iloaS5RzQOQikYKHB/o5bFMl0EkIK8n6Y5aQ84buPl32/CMb5MoCDDLGL9
+	Y7imYxMT9vHgC2Oi/7Vzlhr2gKxjnYBbXOHA==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
+	id 1xFSnL-00000002TuW-2Zcm;
+	Sat, 10 Oct 2026 16:51:08 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 10 Oct 2026 19:51:07 +1100
+Date: Sat, 10 Oct 2026 19:51:07 +1100
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Greg Ungerer <gerg@polyxeno.com>
+Cc: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
 	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Martin Kaiser <martin@kaiser.cx>,
-	Frank Li <Frank.Li@nxp.com>,
-	linux-crypto@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
+	Olivia Mackall <olivia@selenic.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	Frank Li <Frank.Li@nxp.com>
 Subject: Re: [PATCH v4 2/2] m68k: coldfire: Add RNG support for MCF54418
-Date: Sat, 10 Oct 2026 10:15:40 +0200
-Message-Id: <20261010081540.1572638-1-jeanmichel.hautbois@yoseli.org>
-In-Reply-To: <9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org> <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org> <bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org> <ddf0ab32-5b66-453e-b7aa-1722aeaf2aa0@yoseli.org> <9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com>
+Message-ID: <asn8e5puc3I01Lva@gondor.apana.org.au>
+References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
+ <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
+ <bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org>
+ <ddf0ab32-5b66-453e-b7aa-1722aeaf2aa0@yoseli.org>
+ <9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeanmichel.hautbois@yoseli.org
-X-GND-Score: -100
-X-GND-Cause: dmFkZTFFgjXmLX45G3dprB7mBNjC39R3ZFdOmBlaHPfi/DKTpY93XscaCHp5tMBkCqA9LArRLUDoM01EVChTeeFfzAOttynoyn4me75u/AMeur57qlYoUt28xbQr2VCzXrUKal88bFbOX/hmdfoSkia+g6mFtqi4z6GrYMEXCOiDsV3FUVX8TYm7BBKI/RXSmTai2gy+ulBqwsEFBEddLFN4/92EvJILYI+Zo4Eyak/G5G4UazEN1k348y7oO3yYpRtX24mnqQSPJqenYmzqhSuK6YbTKJP0uTTlUkB2cDn9iFz/54twkKrzfLJ0FxYsvYGvnEunmDA/jK01KhIV1AWtZhBZI2V/e07WWs0y8f1WYwTAIXk1hDV6N+tWvITXJisqU2nGU02SemrmJIISIfL/Q9FDLSUbejgzG55Eq9flnptsFLvIuwTw8tWjZQFRnwOA0U4YbBPI/rWwDnGep2IFlESqwbUbxWtfEGjHpyhTUGlPjUD15YBeHwGKMd0jMVcAH0WY+awSWtAHaWILtKaOmNM58L2/SPAbPeai+41h5yR8j91BdARmLl6HC7gu4Ohx8UPgqVzajKmhN1ZqnuYYQIkDRaIofR/OtxMculnKPsx4r2bWYWh8o49LqT3ya7KV4NQq/WZ/wKI8jHZHMiWoyHEHTm0DRYbay1kKk5poGWHjHg
-X-GND-State: clean
+In-Reply-To: <9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com>
 
-Herbert, Greg,
+On Wed, Aug 19, 2026 at 07:36:36AM +1000, Greg Ungerer wrote:
+> Hi JM,
+> 
+> On 19/8/26 01:09, Jean-Michel Hautbois wrote:
+> > Hi Greg,
+> > 
+> > Sorry for the very long silence on this one, it fell off my radar...
+> > 
+> > Le 03/12/2025 à 13:15, Greg Ungerer a écrit :
+> > > Hi Jean-Michel,
+> > > 
+> > > On 26/11/25 17:08, Jean-Michel Hautbois via B4 Relay wrote:
+> > > > From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> > > > 
+> > > > Add support for the hardware Random Number Generator (RNGB) found on
+> > > > MCF54418 ColdFire processors with clock enabled at platform
+> > > > initialization.
+> > > > 
+> > > > The RNGB block is compatible with the imx-rngc driver.
+> > > > 
+> > > > Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> > > > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+> > > > ---
+> > > >   arch/m68k/coldfire/device.c       | 28 ++++++++++++++++++++++++++++
+> > > >   arch/m68k/coldfire/m5441x.c       |  2 +-
+> > > >   arch/m68k/include/asm/m5441xsim.h |  9 +++++++++
+> > > >   drivers/char/hw_random/Kconfig    |  3 ++-
+> > > >   drivers/char/hw_random/imx-rngc.c |  7 +++++++
+> > > >   5 files changed, 47 insertions(+), 2 deletions(-)
+> > > 
+> > > I am happy with the ColdFire arch parts, so from me:
+> > > 
+> > >      Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+> > > 
+> > > I don't mind taking this commit via the m68knommu git tree if the hw_rng
+> > > maintainers are ok with that. Otherwise if you break out the arch/m68k
+> > > parts I can apply those on their own.
+> > 
+> > I think Herbert acked ?
+> > Do you need another ack ?
+> 
+> I would like to see an acknowledgement that taking this patch via the
+> m68knommu git tree (to Linus) is ok with the RNG maintainers.
 
-Gentle ping, and the delay is mostly mine: this sat on my own list for
-months. The series has had all the acks it needs since December 2025,
-but Greg would like your word before taking the arch half[1].
-
-The two patches are independent at build time, so the simplest path is
-the one Greg suggested himself[2]: 1/2 through crypto, 2/2 through
-m68knommu. 2/2 is mostly arch code, but it also adds COLDFIRE to the
-HW_RANDOM_IMX_RNGC dependency and a platform id_table to imx-rngc.c[3],
-so it needs your ack for Greg to take it.
-
-Both still apply with git am -3 on current mainline and on
-m68knommu/for-next. Happy to send a rebased v5 instead, no rush.
-
-[1] https://lore.kernel.org/all/9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com
-[2] https://lore.kernel.org/all/bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org
-[3] https://lore.kernel.org/all/20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org
+I have no objections to this.
 
 Thanks,
-JM
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
