@@ -1,154 +1,116 @@
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADC6337699
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Oct 2026 17:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3626336194A
+	for <linux-m68k@vger.kernel.org>; Sat, 10 Oct 2026 22:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791653176; cv=none; b=s+qSm+Zbs3yqhhBlIS699VsmDtrv19VCfyD7uu48pIzk5O5v6rDXThU+ltOMC5K58vQu1wNlv8Cu5eE7RdbWtQ/jm8IsgFMRXv9y5EQcalLsOAKpq6DK3RWqvWX/mRECVmHdB8SBNq3XOTD+dAu/WJyrepgZanlUjVzYApMBz7E=
+	t=1791671379; cv=none; b=n46glMB33rWe0QOBBOAyu/eJCI+wQ5IAi5FsUoB58H3PVNVOnhk16CHblTRGYePOfPAT5MWQfRfRi9QClid891ny+5WOip/NSrpD8A21OuOIt+nX0B1WQMURSCUq4saEYHESzpHKfsFRwcs7/NyEEYv/TxtndEWLSilGnoWCwmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791653176; c=relaxed/simple;
-	bh=pO2nhY0p/Pl6NJdTHpih7FB0gov9OGpJdNM7rwPn9XU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PunulKotqrknnFpS/bJJK0p6BabPKyGMdZjN2PxfTzIwE5mXx16U6RBEo4q5i9BIvqYa4w7mLePGt+8BfmPKyS1dmeG7nX/dhmhyP4hYnxGhWrsTj24hpRWRRSdFZadtKqq+pLkyjGv4hMzmHPhdVFOICSg0EVHqL6CsHAl1SyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OaMC3kVq; arc=none smtp.client-ip=209.85.215.170
+	s=arc-20240116; t=1791671379; c=relaxed/simple;
+	bh=5V7XCqfsH2S9fctBxEfcMVvBjpBBk344EMDxIP7LQbA=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=qa8O/l2CxCaIKyP3t0yHcd1l7MQ/kj+kWRCRCYJSmcej3cOsZ2FcwpLGicU+GiaG+TPHcrzk1SzTes/Va2bTWz17N707UcVOOnv43eHzEGEKawlcie5Npys6KsFpu6idFZGgoEhyU6w/gvIgbeteXj7jYzjUEifVIXLnajRiwGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DnhSZ0pa; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OaMC3kVq"
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-ccce6d9abfeso426521a12.1
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Oct 2026 10:26:15 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DnhSZ0pa"
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-381b831d535so885992a91.0
+        for <linux-m68k@vger.kernel.org>; Sat, 10 Oct 2026 15:29:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791653175; x=1792257975; darn=lists.linux-m68k.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=Aab5fv7PsWlNKwhoVHnjQ1wSbbAhmt/vHJ7yVdXXP80=;
-        b=OaMC3kVq1naZz926DGYPiA2llPuZR9dC5Uw2382mn81une5OrG5JNCql48TrO+8eYP
-         eIO0m7vMoUOu1QsNdG1/Pfr5IoT1UnoEhQjh4Jjd8zsoVbavsTq/n98f7pVKymq6UA0a
-         c1FkisjBSQlC5JBdL5Hsf1UadGhErH9zg8y9fS1cs8PGOE05XScON2vMc79T2xOTRntn
-         xtAXKFo2Mq5yRvEhKXxYxjn/EImbHsVb3k3mkGuw17QF9OJ7VotaEyXb5DWmIA4vQo26
-         Wq/U4WYZsF1GpoPE+na7wLC7P3B9q3N1/EERIG0YLjtP+MkmySICC4cB4gDTAlT3aCQk
-         zMwg==
+        d=gmail.com; s=20251104; t=1791671377; x=1792276177; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=fWTxYT9An3E5jy/JhCPCAh2Vq05Lc6wzI+xajNSgcXM=;
+        b=DnhSZ0paZewgIM6qlhYkXg4e5IxsMZ/ZL28TtN45Hbl++4K4UWYFEjL5WMvkPd/hM/
+         cjqy9sKLQWibAZ55bl1IxCYhFHsm6ph1u4TbUtzMdQyS4gLbvq9pGUHWnu8YmvmvO4dp
+         mkp+yWZnVofNQ7h7WkSDTXAf3VSm50VsRbIBR4vEAEx1njtV3M/zrY/IU6NM8W3qQwDG
+         MTNdm0rn75iRL6p0x0D+MLBDX+pKlbNNkubwqIMM0YnwJLRpvoMFZWYBSwO0hmvD5FBC
+         JEMUVUkh/oWwGROduKjRpfqDq+O68dnl2yTT9qQDEno3ID7dQstXvBAbDBi68dcl2Dsh
+         6gEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791653175; x=1792257975;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Aab5fv7PsWlNKwhoVHnjQ1wSbbAhmt/vHJ7yVdXXP80=;
-        b=K/IlKoykBJqG3y1A77zxKFTdY2lXcUv49Mom+t8IoUILELgiUTEGu5RxHxACzVYXWh
-         /TFDTQBCMyktaQVa1nu0YLCY26Jg5cqyT4Cj6Vx8EQpDqH+/C7EJAlt+gN++yliQYLiX
-         2Byrgn4uoia2l3zHGk0otbZvfGG1GbWv9ORpWmEqvCNrEylafD0hWipRPEpiMQgM/wmq
-         jae44m7nXdeFcmijGZlQjTKNaQcDTln1kM9tPcgtClzOGmLMRDCxLTCDL/VK6j5blvCf
-         Q8ZTAl/nfEJKJp5zEpMasRufbDDQXBtTbDHNLjxAoEfLi2VrW/88AX0ROGbONi9n/jhm
-         DBBA==
-X-Forwarded-Encrypted: i=1; AKwUvBxH+b61cBPuih4F2dzgJM29qXwTJQOnodeNtVHT9cZZEjtxhebLyiWkpXd5fdgbcPCcCoBxx9JgUsnG@lists.linux-m68k.org
-X-Gm-Message-State: AFq9FYIjeE4BNEsbdDXqMLOW35rbKQIA4QKqFXoovHqBlaSrY+qqxhwD
-	eoYKGpTjWMxWHiwzAmmA+QC9oaFhPTPw3aBF/sBJ5SoPRo30Orc0eXOk
-X-Gm-Gg: AYBFou20e7t1yYEl7T+n2nMUHjQd4j0L7UYZMYk3evLSJLvlX3565wQ35tOOs5vozGW
-	oEgmZimXoJHNfcJ9Sd6oXKVKtLrf66kjoaXNu2i580woli9oGRIuigw+qNrk1Ss5d0V4bcQOCzk
-	Un1rW+VGq3ej5v0SRiihHjD6kgFN6UDWQ6MJp45NuBcKEMb1galsABZB0YQo4ok7g8ledL9D5+8
-	6dDdwqVHoK4r4PEkopSVDliVEQAVYM85CUjOzOgCxJAVDFxYhcic3ji+IeP1FU8FvUwMqeSVUAW
-	wJ/h0oU0KPmFedoHX/a+wffjLV8uE0Po77r7IgxryJiJg/lDCjWtCsKx7hK+0lhR3AWlw8TZaz0
-	rOuPy5ErwlkeEvn0ZTdqaVhaV+x74He8HJNoud9g7uwDTAoyFj4iNVBmZU+Rf8vPPGYJKyeJ/uQ
-	MvvOSg5sUeNT99FMjH6qTe5GNyKQ5N2Am2dwhv2BFplfUcmfNi28fYlyE1tFj4ITDwcwUHeoc2K
-	qd9CXkdOsN7x0IbqPw40LKGcNPWrxgPfBPI6i9U3wT8
-X-Received: by 2002:a17:90b:134d:b0:3ab:2236:6b3d with SMTP id 98e67ed59e1d1-3ab3a94f0a2mr4730803a91.27.1791653174796;
-        Sat, 10 Oct 2026 10:26:14 -0700 (PDT)
-Received: from google.com (61-230-52-229.dynamic-ip.hinet.net. [61.230.52.229])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ab38b9639bsm8513378a91.4.2026.10.10.10.26.09
+        d=1e100.net; s=20260707; t=1791671377; x=1792276177;
+        h=message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=fWTxYT9An3E5jy/JhCPCAh2Vq05Lc6wzI+xajNSgcXM=;
+        b=muU8kLxb8AOH6fb2wLiKuT/qHE4yrVzRRAsL9fE1GgEgxO4glTMLD7DnaW29aYGKpG
+         MT4Qg+A3LfVHS1qbeqyhXKv+0yzYzPDSeHoh1ugfAAUc5gDrFV7RaJilqfs5rgVzXn9Z
+         W0fjJ35RZumdwKjPndemfOnBymxTgo5JTDvJbwplGmfjjlSQF0E3wtchNEE8JUFsQn0y
+         fzrsEEzg4SkytsTaW/RkbFd5IVcVhqKG0WjKFyMTf6z6MSkGWBzSeXUltelU+LM8IjEb
+         tBedqGV25oL0bXUwrx7R2Ob3b6/zm+gn/Yv9Es9VVII90VJCo09gAn0ZbU59MQCi4FTf
+         2UUA==
+X-Gm-Message-State: AFq9FYJlsXdfKWOpdyvWgGxOL6GIcOEbQowCrzJ6cmsV/FXxcKbK2iw/
+	PUv9OYWZZ2lRSLBGZ4yuqvsAN68h8gGFTEhhwdhgCxazJJLtk7Ei7Stg
+X-Gm-Gg: AYBFou2JJlwR7QC8PloxBSolg6MxnKy2tmCJfaD9WvnJgIOxpzEmSLto1d1BX6ucLPP
+	RBmkiAJOu6WjD9VsDeS6idjJopGc5aF7oLx1Ow4iKNDKTldEVMsRIdZx7qYGutWf11lU+an6c7n
+	nwX+7PLtzM6iyxH/v42yXoGQ+jZIaK8Ph7qkBZdQmNswmIk8dfg7H5uunSDRbpUSBa9dw2eTFuG
+	biPGZK05zbI/8bz7wBDcaD1a4SB1s3U8RZtIyJdvQeTSFwUtcSN8IAjiPvLIYVVEuHpDrkdsRsf
+	vHsIUgyueveAX7WgBOhNMB/sBXFeaWF5t6aGKloE2xOYkge6ypwOt4AdQTQMdQlRVIHWcsBfjVH
+	PeEgTPR6KOflGX67VCrCOQGIrp+kHuEum53PZWcD80wv2OTKfKCBapOCBc6qYf5Yjg0BlblG4DB
+	xHa4CV4U23VpNdLDPOV6i9QNlS60Uuecq+QBBFbEou5D69SL8giVjdw6JOj+VLUqJrsLyrkB/AM
+	uyAHlgcqRPamsruOe2kZy+m+TFwafq6/5SOIdKyRfLRRiAMm0PEymBPBWo=
+X-Received: by 2002:a17:90b:390b:b0:3a7:f64f:6467 with SMTP id 98e67ed59e1d1-3ab3ae327b5mr5623157a91.57.1791671377419;
+        Sat, 10 Oct 2026 15:29:37 -0700 (PDT)
+Received: from xplor.waratah.dyndns.org (122-59-250-182-adsl.sparkbb.co.nz. [122.59.250.182])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ab371c32cesm9340478a91.16.2026.10.10.15.29.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2026 10:26:14 -0700 (PDT)
-Date: Sun, 11 Oct 2026 01:26:07 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: corbet@lwn.net, skhan@linuxfoundation.org, geert@linux-m68k.org,
-	daniel@iogearbox.net, eddyz87@gmail.com, memxor@gmail.com,
-	andrii@kernel.org, gerg@linux-m68k.org, rdunlap@infradead.org,
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-	jolsa@kernel.org, emil@etsalapatis.com, ihor.solodrai@linux.dev,
-	jserv@ccns.ncku.edu.tw, marscheng@google.com, eleanor15x@gmail.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, bpf@vger.kernel.org,
-	Daniel Palmer <daniel@thingy.jp>
-Subject: Re: [PATCH v7] m68k, bpf: Add initial BPF JIT compiler support
-Message-ID: <asp1LyCLB8J5Dh_q@google.com>
-References: <20261005185251.2422114-1-visitorckw@gmail.com>
- <DM199Y25XQ6Q.X5YFLA8I7RSJ@gmail.com>
+        Sat, 10 Oct 2026 15:29:37 -0700 (PDT)
+Received: by xplor.waratah.dyndns.org (Postfix, from userid 1000)
+	id 8D00B3603BF; Sun, 11 Oct 2026 11:29:32 +1300 (NZDT)
+From: Michael Schmitz <schmitzmic@gmail.com>
+To: gerg@linux-m68k.org
+Cc: linux-m68k@vger.kernel.org,
+	geert@linux-m68k.org,
+	Michael Schmitz <schmitzmic@gmail.com>
+Subject: [PATCH RFC] m68k/kernel: fix register dump for ColdFire format 4 exception frame
+Date: Sun, 11 Oct 2026 11:29:30 +1300
+Message-Id: <20261010222930.30616-1-schmitzmic@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM199Y25XQ6Q.X5YFLA8I7RSJ@gmail.com>
 
-On Sat, Oct 10, 2026 at 03:16:04PM +0000, Alexei Starovoitov wrote:
-> On Mon, Oct 05, 2026 at 06:52 PM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
-> > Tested with the test_bpf.ko:
-> > test_bpf: Summary: 1061 PASSED, 0 FAILED, [1049/1049 JIT'ed]
-> > test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
-> 
-> test_bpf.ko doesn't go through the verifier.
-> It has no bpf-to-bpf calls and no callbacks.
-> 
-> > Changes in v7:
-> > - Size subprog stack frames from stack_depth instead of MAX_BPF_STACK.
-> > - Preserve callee's r2 across BPF_PSEUDO_CALL for aggregate returns.
-> > - Clean up state on extra_pass failure in bpf_int_jit_compile().
-> 
-> So these are fixes for bot findings in the code that was never run.
-> It doesn't work. See below.
-> 
-> [...]
-> 
-> > +	emit_16(ctx, 0x4ee8);					/* jmp d16(%a0) */
-> > +	emit_16(ctx, CPU_IS_COLDFIRE ? 48 : 44);
-> 
-> When the target prog has subprogs its prologue is the is_func flavor.
-> It's 110 bytes, and 44 is in the middle of
-> move.l %d0, BPF_R2_LO(%fp). The cpu executes 0xfff0.
-> 
-> > +static void build_prologue(struct jit_ctx *ctx)
-> > +{
-> > +	int bpf_stack = ctx->prog->is_func ?
-> > +			round_up(ctx->prog->aux->stack_depth, 4) : MAX_BPF_STACK;
-> 
-> stack_depth can be more than MAX_BPF_STACK.
-> may_goto adds 8 bytes on top of what the prog uses.
-> See stack_depth_extra in bpf_do_misc_fixups().
-> When the prog uses 512 bytes the counter is at r10 - 520.
-> That's where movem.l saved %d4 and %d5, so the C caller of the prog
-> gets them back corrupted.
-> The target of a tail call reuses the frame, so every frame needs
-> that extra space.
-> 
-> > +	if (ctx->prog->is_func) {
-> > +		const s8 arg_regs[] = { BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_REG_5 };
-> > +
-> > +		for (i = 0; i < 5; i++) {
-> > +			int offset = 8 + i * 8;
-> 
-> jit_subprogs() sets is_func for func[0] too, which is the main prog.
-> It's called from C as bpf_func(ctx, insnsi), so 8(%fp) is ctx and
-> 12(%fp) is insnsi. This loop makes R1 = (u64)ctx << 32 | insnsi.
-> Every prog that has a subprog or a callback reads its ctx
-> out of prog->insnsi.
-> 
-> arm32 and x86-32 JITs don't support bpf-to-bpf calls.
-> Drop them from this patch.
-> Add them in a follow up when you can run test_progs.
+On ColdFire, no extra processor state information is saved after an
+exception frame. Take fault status and vector number from pt_regs.fmtvec
+instead of from the longword following the exception frame (which would
+be pt_regs.fmtvec from a prior exception on the stack).
+Likewise, report the PC from pt_regs (redundant).
 
-Thanks for the review and the detailed explaination.
+Untested ...
 
-My initial patch didn't include subprog support, but I endedd up trying
-to deal with it after the bots complained about it.
+Signed-off-by: Michael Schmitz <schmitzmic@gmail.com>
+---
+ arch/m68k/kernel/traps.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-I'll reject BPF_PSEUDO_CALL, and reserve the extra 8 bytes on the
-stack.
+diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
+index 60759ba3cbd4..ec5cf9703e15 100644
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -868,6 +868,21 @@ void show_registers(struct pt_regs *regs)
+ 		addr += sizeof(fp->un.fmt3);
+ 		break;
+ 	case 0x4:
++#if defined(CONFIG_COLDFIRE) && defined(CONFIG_MMU)
++		/* ColdFire format 4 frame has all information in pt_regs */
++		if (CPU_IS_COLDFIRE) {
++			unsigned int fs = (regs->vector & 0x3) |
++					 ((regs->vector & 0xc00) >> 8);
++			int vector = (regs->vector >> 2) & 0xff;
++
++			pr_cont("fault status=%0x vector=%u pc=%08lx\n",
++				fs, vector, regs->pc);
++			/* Frame format 4 extra size on ColdFire is 0
++			 * so don't advance addr
++			 */
++			break;
++		}
++#endif /* CONFIG_COLDFIRE && CONFIG_MMU */
+ 		if (CPU_IS_060)
+ 			pr_cont("fault addr=%08lx fslw=%08lx\n",
+ 				fp->un.fmt4.effaddr, fp->un.fmt4.pc);
+-- 
+2.17.1
 
-Regards,
-Kuan-Wei
