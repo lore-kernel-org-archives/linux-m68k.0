@@ -1,125 +1,146 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B717363C73
-	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Oct 2026 08:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4C6377AB6
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Oct 2026 15:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791622566; cv=none; b=jDDoBtb7a4FXhTbCu9+UjYmrK4iBYhd+6S+++Zlz7tcpJskjL5FFJTt7GPApV/n1ci3t2LtV3eFlBlI4fr9059qj8wVZVMfMv11oq4oOW0+BYul211PaFzaERoz6DcpiPl7fi9dObJFboLJSZ/z1IQALB9ZqnNlJAmhF5fr3ydo=
+	t=1791645368; cv=none; b=UGWBQhAQOorb1KUKukRtCBB3vYpnu4dIAovRr04k+83yd3qGCrIvfhEar8GcmZHE0xMi8CzxMB95Z9I5or0naHgxq8uWkHTH7TAOsT66mtynDsk5GN9sJT8+3JfsnKLC16jW8juDrZfAcLoOHyn7IEoC4ytEcJu6GDytCdKq1v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791622566; c=relaxed/simple;
-	bh=S1eX0RBN5WE4yYzba4O/NKEmsuWm+oBdkGM258TU794=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=FTw4tl3iVNpR8tHlyiMr3BO9cRTh9M96ivF8tegucFHbHjutFUI/APEuYOls5aRtlq4AtYkNBE8HP+/CYPIRaV0gb44q0E67/DrO8hmSJsrM986JFw6y+oP5SQsPf9Jw4njuYv9VXvi5PyP0QfCUy1wOLbw+BNEVWvsOyFzJoo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lmgNtCMd; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	s=arc-20240116; t=1791645368; c=relaxed/simple;
+	bh=pBu865joFVe85JVTOBwNVQFZC3vq13cNHGr43GQYHcQ=;
+	h=Content-Type:Date:Message-Id:Cc:Subject:From:To:In-Reply-To:
+	 References:MIME-Version; b=bLIQsOZKZ9rrA8qeM9v+DMOATv/hOh8co/a5QzKg6NzbtlM+Yzq6U+vAbVVSsDxG1K/gBqxTIWTMODqY/IDi+1Bkv1t6D7uJ75WoWI8ZRo8dWV3JRaYpN0Jk8yYlILffRrCECmGr0+tN2IU//gvNF0RDi936o4+fk7Cb7kU/eA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ujpt6o0S; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lmgNtCMd"
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 44DAF60052;
-	Sat, 10 Oct 2026 08:56:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FDDF1F000FF;
-	Sat, 10 Oct 2026 08:56:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791622563;
-	bh=PXGECzpbsrEqal5CMwGLH6DcA0sQT7TM47DRVm6PlDI=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=lmgNtCMdUXmVBhtWGQgR9b98gZvv3xhL/Yr88RmtdNy8VD+p5IqHlshCrJo7hVIiE
-	 eITZTE0i4rWL5a9JbAzxpI2yMxSCt6BEkWrK8DnQ55zMl3jQsvcZTQCOjIuioHd/Xg
-	 TRd8YZeGqWZ0YhhwLVx+7a0B84L00q15mggRh/uqPDBBN/T/YBOqT9AyRNdTZr54xy
-	 Q5r2jmVKrkFxAj53LVCOwj5yTVzRSMF1CdfQKidPtmtTnJ6OfB44UFZELs0ux8lCgY
-	 +WUdVTQNvnL85A6zpqcHgX1Mqgvv3zLkFy69oVZRve2jHBWyYvRgZAe9x9kLLiN85j
-	 LXvSlEyjPgBHQ==
-Content-Type: multipart/mixed; boundary="===============1628657098954736497=="
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ujpt6o0S"
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3a7fecf8440so228524a91.1
+        for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Oct 2026 08:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791645366; x=1792250166; darn=lists.linux-m68k.org;
+        h=mime-version:content-transfer-encoding:references:in-reply-to:to
+         :from:subject:cc:message-id:date:content-type:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=CAhU/f94yA5MJ19+HwlVBcw68pCp5HAO2C8k5hVfaXY=;
+        b=Ujpt6o0SQvYSO+PqDAcYfFAk1mi6dpfpDs0wnAovH8R7Vs+SsMl6haX8fb3arWbuBO
+         /V1JqZiKagddNcl7JjaMbwVLV2UtKjg+4a7W4YpU1le+hiJcuSC/i0koIMVk/W2prTvL
+         V5iJEnf6nozReD5LNLLR4wGkjaVpKvjxVFvP6ByykTRba8P5OhqW0htlG9KJimhaSv13
+         1Caz2lSNoI07vk9Q4GYF9WZ+sthMcGfQtussEmjQAyw4Ks4pJXbGeNW9lEqV5pNiv0wI
+         kg8hfFEBnCNNxh3tkgWG6LUbPgmq97qih5HT1lOaMSu1Y1OJ1p3/3KqpHMt1gXavzj3G
+         oX5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791645366; x=1792250166;
+        h=mime-version:content-transfer-encoding:references:in-reply-to:to
+         :from:subject:cc:message-id:date:content-type:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=CAhU/f94yA5MJ19+HwlVBcw68pCp5HAO2C8k5hVfaXY=;
+        b=gso1nSiI7JfJlwES6Er2AbnDWyd2inJU1KDXKGowdb22hzxy4GCUBryEZnNjOWwEhZ
+         B5vQzNeR+FrG49ZAhCb6v60LNvvL3MTCImkWHQzkszoy7bqjcbbtdzGGD0QnXmQdKhax
+         mQhcm8RlPxJUJwNMFrGQZV/TECFYYKb4kZoj7uUxmH4oUBhb8Ua+J/qH+kRC185Ii9mS
+         Wah2gZIPPGyRHSI81rwFL+y48oj6iOa4ItTAxuDw9suECHYBP2KOPhA8pHbNMQ3yOE9+
+         DVz7kh+VIK/zKfXaLqH6544WfXPBe3V3SG/6gzSopm98ixnatbHMf0QpBk8+261mF3li
+         j/DA==
+X-Forwarded-Encrypted: i=1; AKwUvBxm0xvMVNeI4/n5WaRdfrRUnKiVZ2pgZvEbRh8TSkG4hh/sK57wnE9PfHlPYpF3TOSN9TIiij4OMed/@lists.linux-m68k.org
+X-Gm-Message-State: AFq9FYIiBxKR1nYEYNGnim/BUI6y3d+xbjCcAnqBRnCJv/x4Cq8qP3Fj
+	IE4W4G0rlXlRn/R/M0AIsEyt+SEHqQNHO3v5h2RuzPQvBQM5XR4J8Xuj
+X-Gm-Gg: AYBFou2wjfnLbDq7g9ZdFy4Z0k72GllKFJGdjkXwCec25QZWr4HtzjckeNPKZE7/Pb9
+	ZjsPS+MhL3xzwg/5dQwGdQ2TMYoARdifTSYCQ53YUvWx0J1WOFTHL0TZsPY+x360RJPIdgoJeDg
+	ydG5QqvvjgLLfQEXe3vQsnrqg/NwbIUGifj54DKS84mlOiP9MkBul8aqI6sTu2Hn/Wap5GKWKNx
+	jZhNKLQuapDDkAfwoJD3gxTHir5hj7rgPjQUd3gKqCgAuk49/GUoDTfhaujhheIFlLY80b7qhgo
+	enL5ev0E7+/jzjr+gs1jwvy6iYlmurh1yOr4JiDzCs+BdYQS0e8MljWcX+UsxIkT6ZFgbRku4J+
+	DIaKJ5hXT9HsnAVE5MKdOqbTmQMn8QSqUTnBilXi7VgfB8ALoScBwCghKDscmUsQb/sQrz4h0Tc
+	oM5mr6hXmuEUAIR7sTEc9oRuNuzyajiUXEVbosq3l+ZQZLjqgByKiAbR12t9EBEmfXqmOVdqESa
+	OATNVvkK5V9ylhSWSsT1M9X4oPSvbl8Sgk7un8u24bhL17ID8dzi/eTpQAvfu2WYYkQVVi4Bn94
+	NBUK
+X-Received: by 2002:a17:90a:d44b:b0:3a8:e1e:3390 with SMTP id 98e67ed59e1d1-3ab3afd49c9mr4437717a91.56.1791645366135;
+        Sat, 10 Oct 2026 08:16:06 -0700 (PDT)
+Received: from localhost ([153.61.198.243])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ab36f4737esm8539860a91.7.2026.10.10.08.16.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Oct 2026 08:16:05 -0700 (PDT)
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 10 Oct 2026 15:16:04 +0000
+Message-Id: <DM199Y25XQ6Q.X5YFLA8I7RSJ@gmail.com>
+Cc: <rdunlap@infradead.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+ <yonghong.song@linux.dev>, <jolsa@kernel.org>, <emil@etsalapatis.com>,
+ <ihor.solodrai@linux.dev>, <jserv@ccns.ncku.edu.tw>,
+ <marscheng@google.com>, <eleanor15x@gmail.com>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-m68k@lists.linux-m68k.org>, <bpf@vger.kernel.org>, "Daniel Palmer"
+ <daniel@thingy.jp>
+Subject: Re: [PATCH v7] m68k, bpf: Add initial BPF JIT compiler support
+From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+To: "Kuan-Wei Chiu" <visitorckw@gmail.com>, <corbet@lwn.net>,
+ <skhan@linuxfoundation.org>, <geert@linux-m68k.org>,
+ <daniel@iogearbox.net>, <eddyz87@gmail.com>, <memxor@gmail.com>,
+ <andrii@kernel.org>, <gerg@linux-m68k.org>
+In-Reply-To: <20261005185251.2422114-1-visitorckw@gmail.com>
+References: <20261005185251.2422114-1-visitorckw@gmail.com>
+X-Mailer: mkdraft (claude review draft; edit before sending)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <b31863a31621c860cc2d857b65d8478058ccd088f3b3178ea19582dbbb1331fc@mail.kernel.org>
-In-Reply-To: <20261010075448.3150878-1-visitorckw@gmail.com>
-References: <20261010075448.3150878-1-visitorckw@gmail.com>
-Subject: Re: [PATCH v8] m68k, bpf: Add initial BPF JIT compiler support
-From: bot+bpf-ci@kernel.org
-To: visitorckw@gmail.com,corbet@lwn.net,skhan@linuxfoundation.org,geert@linux-m68k.org,ast@kernel.org,daniel@iogearbox.net,eddyz87@gmail.com,memxor@gmail.com,andrii@kernel.org,gerg@linux-m68k.org
-Cc: rdunlap@infradead.org,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,ihor.solodrai@linux.dev,jserv@ccns.ncku.edu.tw,marscheng@google.com,eleanor15x@gmail.com,linux-doc@vger.kernel.org,linux-kernel@vger.kernel.org,linux-m68k@lists.linux-m68k.org,bpf@vger.kernel.org,visitorckw@gmail.com,daniel@thingy.jp,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
-Date: Sat, 10 Oct 2026 08:56:00 +0000 (UTC)
 
---===============1628657098954736497==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+On Mon, Oct 05, 2026 at 06:52 PM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> Tested with the test_bpf.ko:
+> test_bpf: Summary: 1061 PASSED, 0 FAILED, [1049/1049 JIT'ed]
+> test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
 
-> m68k, bpf: Add initial BPF JIT compiler support
+test_bpf.ko doesn't go through the verifier.
+It has no bpf-to-bpf calls and no callbacks.
 
-TL;DR: m68k JIT returns true from bpf_jit_needs_zext() but still zero-extends
-after every ALU32 op and load, so verifier-inserted zexts only add code.
-Results stay correct; should it honour verifier_zext or drop the override?
+> Changes in v7:
+> - Size subprog stack frames from stack_depth instead of MAX_BPF_STACK.
+> - Preserve callee's r2 across BPF_PSEUDO_CALL for aggregate returns.
+> - Clean up state on extra_pass failure in bpf_int_jit_compile().
 
-> diff --git a/arch/m68k/net/bpf_jit_comp.c b/arch/m68k/net/bpf_jit_comp.c
-> new file mode 100644
-> index 000000000000..debbf5fbe95b
-> --- /dev/null
-> +++ b/arch/m68k/net/bpf_jit_comp.c
-> @@ -0,0 +1,1810 @@
+So these are fixes for bot findings in the code that was never run.
+It doesn't work. See below.
 
-[ ... ]
+[...]
 
-> +static void emit_alu32_x(const struct bpf_insn *insn, struct jit_ctx *ctx)
+> +	emit_16(ctx, 0x4ee8);					/* jmp d16(%a0) */
+> +	emit_16(ctx, CPU_IS_COLDFIRE ? 48 : 44);
+
+When the target prog has subprogs its prologue is the is_func flavor.
+It's 110 bytes, and 44 is in the middle of
+move.l %d0, BPF_R2_LO(%fp). The cpu executes 0xfff0.
+
+> +static void build_prologue(struct jit_ctx *ctx)
 > +{
+> +	int bpf_stack = ctx->prog->is_func ?
+> +			round_up(ctx->prog->aux->stack_depth, 4) : MAX_BPF_STACK;
 
-[ ... ]
+stack_depth can be more than MAX_BPF_STACK.
+may_goto adds 8 bytes on top of what the prog uses.
+See stack_depth_extra in bpf_do_misc_fixups().
+When the prog uses 512 bytes the counter is at r10 - 520.
+That's where movem.l saved %d4 and %d5, so the C caller of the prog
+gets them back corrupted.
+The target of a tail call reuses the frame, so every frame needs
+that extra space.
 
-> +	}
+> +	if (ctx->prog->is_func) {
+> +		const s8 arg_regs[] = { BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_REG_5 };
 > +
-> +	bpf_put_reg32(dst[1], d_reg, ctx);
-> +	emit_16(ctx, 0x7000 | (tmp1[0] << 9));			/* moveq #0, tmp1 */
-> +	bpf_put_reg32(dst[0], tmp1[0], ctx);
-> +}
+> +		for (i = 0; i < 5; i++) {
+> +			int offset = 8 + i * 8;
 
-emit_alu32_k() ends with the same three lines.  Is it necessary to clear the
-upper 32 bits after every ALU32 operation here?
+jit_subprogs() sets is_func for func[0] too, which is the main prog.
+It's called from C as bpf_func(ctx, insnsi), so 8(%fp) is ctx and
+12(%fp) is insnsi. This loop makes R1 = (u64)ctx << 32 | insnsi.
+Every prog that has a subprog or a callback reads its ctx
+out of prog->insnsi.
 
-The file also has:
+arm32 and x86-32 JITs don't support bpf-to-bpf calls.
+Drop them from this patch.
+Add them in a follow up when you can run test_progs.
 
-> +bool bpf_jit_needs_zext(void)
-> +{
-> +	return true;
-> +}
-
-Because bpf_jit_needs_zext() returns true, bpf_opt_subreg_zext_lo32_rnd_hi32()
-adds a BPF_ZEXT_REG(dst) after every 32-bit def whose upper half is read
-later, and it sets prog->aux->verifier_zext.  Nothing in this JIT reads
-verifier_zext, so each inserted zext goes through emit_alu32_x() as a plain
-mov32 and clears the high word a second time.
-
-For a stack-backed register (R1-R9, AX) the inserted zext costs six extra
-instructions, about 20 bytes and four memory accesses:
-
-  move.l d16(%fp),%d2
-  move.l d16(%fp),%d4
-  move.l %d4,%d2
-  move.l %d2,d16(%fp)
-  moveq #0,%d3
-  move.l %d3,d16(%fp)
-
-The other 32-bit JITs that return true from bpf_jit_needs_zext() skip the
-high word clear when verifier_zext is set, for example arm32
-(emit_a32_alu_r64 and the special mov32 for zext case), x86-32, riscv32
-(bpf_put_reg32) and powerpc32.  emit_ldx() also always zero-extends here.
-
-Results are still correct, but the opt-in only adds code.  Should
-emit_alu32_x(), emit_alu32_k() and emit_ldx() honour
-ctx->prog->aux->verifier_zext, with the imm == 1 zext mov clearing only the
-high word?  Alternatively, since the JIT already zero-extends everywhere,
-could the bpf_jit_needs_zext() override be dropped?
-
-
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/38037161364
---===============1628657098954736497==--
+pw-bot: cr
