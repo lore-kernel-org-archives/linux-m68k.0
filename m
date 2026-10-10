@@ -1,115 +1,125 @@
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAA33D75A0;
-	Sat, 10 Oct 2026 08:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B717363C73
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 10 Oct 2026 08:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791622298; cv=none; b=H5XQy/b7vIA4sfRpF/Uhm014bGBecq5Vcb17prI1whpUm9GYUJGWDIstfl4doNAvuL/F5nzWpha7FGbeEubpY7q9xh+2zCYE9/8mnOqY0GWqeIZ7dCXMR9m4uZLk6eYWM33qqTD66rNXgHa77qaaYDaNY+I2gc2i178yvpYdI54=
+	t=1791622566; cv=none; b=jDDoBtb7a4FXhTbCu9+UjYmrK4iBYhd+6S+++Zlz7tcpJskjL5FFJTt7GPApV/n1ci3t2LtV3eFlBlI4fr9059qj8wVZVMfMv11oq4oOW0+BYul211PaFzaERoz6DcpiPl7fi9dObJFboLJSZ/z1IQALB9ZqnNlJAmhF5fr3ydo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791622298; c=relaxed/simple;
-	bh=RuOovqrOh1KCioDiSzvzTR23m07513lBeXANRFcJqLc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eIulK/5gWVmMb9wzjG7j1U53S9AUhgLk7NDICt6kdRZOXCrK9s/67O6xgpQ+RxX3mWNDtfAIV5LZbXEpJj94YR7UWLu65pvaSPBr/rDDR87jnuSLEcJZP9xZ/hbGzXgEUuCbXoCU+IN8jQoaGrSU2nEKwCWJSdj1uO6sOYgDe18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=COXd/rYh; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+	s=arc-20240116; t=1791622566; c=relaxed/simple;
+	bh=S1eX0RBN5WE4yYzba4O/NKEmsuWm+oBdkGM258TU794=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=FTw4tl3iVNpR8tHlyiMr3BO9cRTh9M96ivF8tegucFHbHjutFUI/APEuYOls5aRtlq4AtYkNBE8HP+/CYPIRaV0gb44q0E67/DrO8hmSJsrM986JFw6y+oP5SQsPf9Jw4njuYv9VXvi5PyP0QfCUy1wOLbw+BNEVWvsOyFzJoo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lmgNtCMd; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="COXd/rYh"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=GRQCjk8o/a/C0+wV15inpx1btX0H9yvKy9U4k4uppuo=; 
-	b=COXd/rYh6c/YIeSmGHxKuzPrhoV2lB4EI1g+3cavw5LEJgQ1BzD4kOybLc4/lzQu3/5477pYrgA
-	AhrlmfN/9ALE2CrEvAlevl8YMcU46aRk/h0oWUADoPrAvJ1Pe8HOH/VZTdd19Q16Vx+aS5sKui5yy
-	ygS/NQGpLe4vSCZ+hZqC+ZXFAA2dBE5nRSlRsib4i5OSLoLcmf5ihPKeGOhiLPIq2aC978V7eEht/
-	Dw+ccFzuLz3Ph2daSx7iloaS5RzQOQikYKHB/o5bFMl0EkIK8n6Y5aQ84buPl32/CMb5MoCDDLGL9
-	Y7imYxMT9vHgC2Oi/7Vzlhr2gKxjnYBbXOHA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
-	id 1xFSnL-00000002TuW-2Zcm;
-	Sat, 10 Oct 2026 16:51:08 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 10 Oct 2026 19:51:07 +1100
-Date: Sat, 10 Oct 2026 19:51:07 +1100
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Greg Ungerer <gerg@polyxeno.com>
-Cc: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v4 2/2] m68k: coldfire: Add RNG support for MCF54418
-Message-ID: <asn8e5puc3I01Lva@gondor.apana.org.au>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
- <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
- <bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org>
- <ddf0ab32-5b66-453e-b7aa-1722aeaf2aa0@yoseli.org>
- <9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lmgNtCMd"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id 44DAF60052;
+	Sat, 10 Oct 2026 08:56:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FDDF1F000FF;
+	Sat, 10 Oct 2026 08:56:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791622563;
+	bh=PXGECzpbsrEqal5CMwGLH6DcA0sQT7TM47DRVm6PlDI=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date;
+	b=lmgNtCMdUXmVBhtWGQgR9b98gZvv3xhL/Yr88RmtdNy8VD+p5IqHlshCrJo7hVIiE
+	 eITZTE0i4rWL5a9JbAzxpI2yMxSCt6BEkWrK8DnQ55zMl3jQsvcZTQCOjIuioHd/Xg
+	 TRd8YZeGqWZ0YhhwLVx+7a0B84L00q15mggRh/uqPDBBN/T/YBOqT9AyRNdTZr54xy
+	 Q5r2jmVKrkFxAj53LVCOwj5yTVzRSMF1CdfQKidPtmtTnJ6OfB44UFZELs0ux8lCgY
+	 +WUdVTQNvnL85A6zpqcHgX1Mqgvv3zLkFy69oVZRve2jHBWyYvRgZAe9x9kLLiN85j
+	 LXvSlEyjPgBHQ==
+Content-Type: multipart/mixed; boundary="===============1628657098954736497=="
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com>
+Message-Id: <b31863a31621c860cc2d857b65d8478058ccd088f3b3178ea19582dbbb1331fc@mail.kernel.org>
+In-Reply-To: <20261010075448.3150878-1-visitorckw@gmail.com>
+References: <20261010075448.3150878-1-visitorckw@gmail.com>
+Subject: Re: [PATCH v8] m68k, bpf: Add initial BPF JIT compiler support
+From: bot+bpf-ci@kernel.org
+To: visitorckw@gmail.com,corbet@lwn.net,skhan@linuxfoundation.org,geert@linux-m68k.org,ast@kernel.org,daniel@iogearbox.net,eddyz87@gmail.com,memxor@gmail.com,andrii@kernel.org,gerg@linux-m68k.org
+Cc: rdunlap@infradead.org,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,ihor.solodrai@linux.dev,jserv@ccns.ncku.edu.tw,marscheng@google.com,eleanor15x@gmail.com,linux-doc@vger.kernel.org,linux-kernel@vger.kernel.org,linux-m68k@lists.linux-m68k.org,bpf@vger.kernel.org,visitorckw@gmail.com,daniel@thingy.jp,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
+Date: Sat, 10 Oct 2026 08:56:00 +0000 (UTC)
 
-On Wed, Aug 19, 2026 at 07:36:36AM +1000, Greg Ungerer wrote:
-> Hi JM,
-> 
-> On 19/8/26 01:09, Jean-Michel Hautbois wrote:
-> > Hi Greg,
-> > 
-> > Sorry for the very long silence on this one, it fell off my radar...
-> > 
-> > Le 03/12/2025 à 13:15, Greg Ungerer a écrit :
-> > > Hi Jean-Michel,
-> > > 
-> > > On 26/11/25 17:08, Jean-Michel Hautbois via B4 Relay wrote:
-> > > > From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> > > > 
-> > > > Add support for the hardware Random Number Generator (RNGB) found on
-> > > > MCF54418 ColdFire processors with clock enabled at platform
-> > > > initialization.
-> > > > 
-> > > > The RNGB block is compatible with the imx-rngc driver.
-> > > > 
-> > > > Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> > > > Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> > > > ---
-> > > >   arch/m68k/coldfire/device.c       | 28 ++++++++++++++++++++++++++++
-> > > >   arch/m68k/coldfire/m5441x.c       |  2 +-
-> > > >   arch/m68k/include/asm/m5441xsim.h |  9 +++++++++
-> > > >   drivers/char/hw_random/Kconfig    |  3 ++-
-> > > >   drivers/char/hw_random/imx-rngc.c |  7 +++++++
-> > > >   5 files changed, 47 insertions(+), 2 deletions(-)
-> > > 
-> > > I am happy with the ColdFire arch parts, so from me:
-> > > 
-> > >      Acked-by: Greg Ungerer <gerg@linux-m68k.org>
-> > > 
-> > > I don't mind taking this commit via the m68knommu git tree if the hw_rng
-> > > maintainers are ok with that. Otherwise if you break out the arch/m68k
-> > > parts I can apply those on their own.
-> > 
-> > I think Herbert acked ?
-> > Do you need another ack ?
-> 
-> I would like to see an acknowledgement that taking this patch via the
-> m68knommu git tree (to Linus) is ok with the RNG maintainers.
+--===============1628657098954736497==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-I have no objections to this.
+> m68k, bpf: Add initial BPF JIT compiler support
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+TL;DR: m68k JIT returns true from bpf_jit_needs_zext() but still zero-extends
+after every ALU32 op and load, so verifier-inserted zexts only add code.
+Results stay correct; should it honour verifier_zext or drop the override?
+
+> diff --git a/arch/m68k/net/bpf_jit_comp.c b/arch/m68k/net/bpf_jit_comp.c
+> new file mode 100644
+> index 000000000000..debbf5fbe95b
+> --- /dev/null
+> +++ b/arch/m68k/net/bpf_jit_comp.c
+> @@ -0,0 +1,1810 @@
+
+[ ... ]
+
+> +static void emit_alu32_x(const struct bpf_insn *insn, struct jit_ctx *ctx)
+> +{
+
+[ ... ]
+
+> +	}
+> +
+> +	bpf_put_reg32(dst[1], d_reg, ctx);
+> +	emit_16(ctx, 0x7000 | (tmp1[0] << 9));			/* moveq #0, tmp1 */
+> +	bpf_put_reg32(dst[0], tmp1[0], ctx);
+> +}
+
+emit_alu32_k() ends with the same three lines.  Is it necessary to clear the
+upper 32 bits after every ALU32 operation here?
+
+The file also has:
+
+> +bool bpf_jit_needs_zext(void)
+> +{
+> +	return true;
+> +}
+
+Because bpf_jit_needs_zext() returns true, bpf_opt_subreg_zext_lo32_rnd_hi32()
+adds a BPF_ZEXT_REG(dst) after every 32-bit def whose upper half is read
+later, and it sets prog->aux->verifier_zext.  Nothing in this JIT reads
+verifier_zext, so each inserted zext goes through emit_alu32_x() as a plain
+mov32 and clears the high word a second time.
+
+For a stack-backed register (R1-R9, AX) the inserted zext costs six extra
+instructions, about 20 bytes and four memory accesses:
+
+  move.l d16(%fp),%d2
+  move.l d16(%fp),%d4
+  move.l %d4,%d2
+  move.l %d2,d16(%fp)
+  moveq #0,%d3
+  move.l %d3,d16(%fp)
+
+The other 32-bit JITs that return true from bpf_jit_needs_zext() skip the
+high word clear when verifier_zext is set, for example arm32
+(emit_a32_alu_r64 and the special mov32 for zext case), x86-32, riscv32
+(bpf_put_reg32) and powerpc32.  emit_ldx() also always zero-extends here.
+
+Results are still correct, but the opt-in only adds code.  Should
+emit_alu32_x(), emit_alu32_k() and emit_ldx() honour
+ctx->prog->aux->verifier_zext, with the imm == 1 zext mov clearing only the
+high word?  Alternatively, since the JIT already zero-extends everywhere,
+could the bpf_jit_needs_zext() override be dropped?
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/38037161364
+--===============1628657098954736497==--
