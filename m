@@ -1,108 +1,127 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70422DFA4A
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Oct 2026 15:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F85390C85
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Oct 2026 23:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791732513; cv=none; b=oz6+mBCy+a9wa4vk6cXchCpgzHQMm2Kxi2utImEHkbV2XZ3MfwXxiPBbVF24avd7+0PYpvVtECzqsX+SvaSkUVvLCEkXIEOn/UWSflUoq55MdDGPGqjvG1vhYYtuuDbQTZqB7kRhlG11Mmut8VNayhs6JjVREwcUVBgl+7C6Ikk=
+	t=1791761522; cv=none; b=d2AxaKMvCXeVzwzWzreMSp1HskHKGczZHrwr3btkpJ9fUUA07QVU/tMa/650M+et3Wikw/I33ZqC50Oh7k00pDN6v/nNKUscDRaVFynzNj1bEknBA1urjTzshQ+v+c9aEWvrx+0z8iNUxof1T3zid1aD4nisNtzEPGxXfE5EjoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791732513; c=relaxed/simple;
-	bh=iWTlLbNdTPnAfkICGWI8CgVbZIJs2fVsJZif8YoATxc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GriClSqTU/YFQjv2bMpyoVOPAusm4Ty8koo60mZrnbBNXp6ir9JmTtLS+o0lUoSi4QqBpAY1kdyY/Lf8oa1PfrHWcCJ97XDgq6+moE9HqMM24kSGoShw0Qraa6wO4u30KGAhVLwX48/H7fXI1kRROuNuH025m4rYEuorSuFZGd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	s=arc-20240116; t=1791761522; c=relaxed/simple;
+	bh=Ju+bip0M/AWTfK9kzxOgDc3k9hpS3uz2OON5w/To1QU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GGKRW/lvirkCYZRnTc3FHZwY7kaJxdj9Bb4ncgLS4Sb7pa9esTK9rY1GSfmsSiqMLihD9uuJpPjcYcnThucnuPxLFskOLsYZQeF+LyWsYBu8zk85eGNvDoA/HYpLjkkekxHntq8Mi2228MTQVop0OSaUl2eZlSEl7yYuPtzdnOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g0v5h54N; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g0v5h54N"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 7EF78600E2;
-	Sun, 11 Oct 2026 15:28:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 258B71F0089B;
-	Sun, 11 Oct 2026 15:28:26 +0000 (UTC)
-Message-ID: <8be9c875-68a9-4bb5-b581-501a0a6819f4@linux-m68k.org>
-Date: Mon, 12 Oct 2026 01:28:24 +1000
+	by sea.source.kernel.org (Postfix) with ESMTP id C161B41877;
+	Sun, 11 Oct 2026 23:32:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D21291F0089B;
+	Sun, 11 Oct 2026 23:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791761520;
+	bh=ib+MNRIsarxsKzHOzeDk05/jA+kx8VUx4E79y5R626I=;
+	h=From:To:Cc:Subject:Date;
+	b=g0v5h54NBhZ9RdJQzcgvfWkw0dEItCH5V245VWRgSn6KkTmmRjM7LX5vyEml43Dq0
+	 GUrHM9mOA0QNVujxMXrwdcgQ6w0mTajNe3fjF9ibfFyqdlg4ooUlHv2OfVORJGLCt9
+	 sRiPFceRdVj2CBwj/7Po9UTluh8WzDPnTF065+yBhDy0FpjLLkXq/4vAc+rs8wTQRC
+	 q71szkLAbYBVWwiRRTaYhGBzjkCBXVkPCIpDNvmfeIW+5ImisCEIE0TpBSUBT7UEHW
+	 6xY/1BfI59rUdoRoVbrz+cCDHf98G92XbrEc/kMbrsSc/5wqSkL9sS2JCWNX525o87
+	 64dbbr9Ng7jUQ==
+From: Greg Ungerer <gerg@kernel.org>
+To: linux-m68k@lists.linux-m68k.org
+Cc: Greg Ungerer <gerg@linux-m68k.org>
+Subject: [PATCH] m68k: coldfire: only setup smc91xx on NETtel platforms that need it
+Date: Mon, 12 Oct 2026 09:31:35 +1000
+Message-ID: <20261011233135.1300744-1-gerg@kernel.org>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] m68k: coldfire: Add RNG support for MCF54418
-To: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Olivia Mackall <olivia@selenic.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- Frank Li <Frank.Li@nxp.com>, Herbert Xu <herbert@gondor.apana.org.au>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
- <20251126-b4-m5441x-add-rng-support-v4-2-5309548c9555@yoseli.org>
- <bd25e903-30fc-4905-986c-96d1b42e9f02@linux-m68k.org>
- <ddf0ab32-5b66-453e-b7aa-1722aeaf2aa0@yoseli.org>
- <9ba1ebd8-61cc-4e1a-b68d-906b20dd4999@polyxeno.com>
- <asn8e5puc3I01Lva@gondor.apana.org.au>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <asn8e5puc3I01Lva@gondor.apana.org.au>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi JM,
+From: Greg Ungerer <gerg@linux-m68k.org>
 
-On 10/10/26 18:51, Herbert Xu wrote:
-> On Wed, Aug 19, 2026 at 07:36:36AM +1000, Greg Ungerer wrote:
->> Hi JM,
->>
->> On 19/8/26 01:09, Jean-Michel Hautbois wrote:
->>> Hi Greg,
->>>
->>> Sorry for the very long silence on this one, it fell off my radar...
->>>
->>> Le 03/12/2025 à 13:15, Greg Ungerer a écrit :
->>>> Hi Jean-Michel,
->>>>
->>>> On 26/11/25 17:08, Jean-Michel Hautbois via B4 Relay wrote:
->>>>> From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>>>>
->>>>> Add support for the hardware Random Number Generator (RNGB) found on
->>>>> MCF54418 ColdFire processors with clock enabled at platform
->>>>> initialization.
->>>>>
->>>>> The RNGB block is compatible with the imx-rngc driver.
->>>>>
->>>>> Reviewed-by: Frank Li <Frank.Li@nxp.com>
->>>>> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
->>>>> ---
->>>>>   arch/m68k/coldfire/device.c       | 28 ++++++++++++++++++++++++++++
->>>>>   arch/m68k/coldfire/m5441x.c       |  2 +-
->>>>>   arch/m68k/include/asm/m5441xsim.h |  9 +++++++++
->>>>>   drivers/char/hw_random/Kconfig    |  3 ++-
->>>>>   drivers/char/hw_random/imx-rngc.c |  7 +++++++
->>>>>   5 files changed, 47 insertions(+), 2 deletions(-)
->>>>
->>>> I am happy with the ColdFire arch parts, so from me:
->>>>
->>>>      Acked-by: Greg Ungerer <gerg@linux-m68k.org>
->>>>
->>>> I don't mind taking this commit via the m68knommu git tree if the hw_rng
->>>> maintainers are ok with that. Otherwise if you break out the arch/m68k
->>>> parts I can apply those on their own.
->>>
->>> I think Herbert acked ?
->>> Do you need another ack ?
->>
->> I would like to see an acknowledgement that taking this patch via the
->> m68knommu git tree (to Linus) is ok with the RNG maintainers.
-> 
-> I have no objections to this.
+Fix the following compile error found in a rand config:
 
-Thanks Herbert.
+    ../arch/m68k/coldfire/nettel.c: In function 'nettel_smc91x_init':
+    ../arch/m68k/coldfire/nettel.c:126:9: error: implicit declaration of function 'mcf_setppdata' [-Wimplicit-function-declaration]
+      126 |         mcf_setppdata(0, 0x0080);
 
-JM: I have applied this to the for-next branch of the m68knommu git tree.
-I didn't quite go on cleanly, so please double check it for me.
+The following config options are key to generating the error:
 
-Regards
-Greg
+    CONFIG_COLDFIRE=y
+    CONFIG_M5206e=y
+    CONFIG_NETtel=y
+
+The problem stems from the fact that CONFIG_NETtel applies to a family
+of hardware platforms that covers a number of different CPUs and SoCs.
+This specific file, arch/m68k/coldfire/nettel.c, applies only to the
+ColdFire based platforms. The problematic section of code in this file
+is to supply the platform setup code for those hardware platforms that
+have dual SMC91xx ethernet devices. The ColdFire M5206e based NETtel
+platform does not have SMC91xx devices at all.
+
+Modify nettel.c so that the SMC91xx platform setup is conditionally
+compiled in for only those platform types where it is used.
+
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+---
+ arch/m68k/coldfire/nettel.c    |  2 ++
+ arch/m68k/include/asm/nettel.h | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/arch/m68k/coldfire/nettel.c b/arch/m68k/coldfire/nettel.c
+index e304571e03ea..b2bc5c012769 100644
+--- a/arch/m68k/coldfire/nettel.c
++++ b/arch/m68k/coldfire/nettel.c
+@@ -18,6 +18,7 @@
+ #include <asm/mcfsim.h>
+ #include <asm/nettel.h>
+ 
++#ifdef NETTEL_SMC91XX
+ /***************************************************************************/
+ 
+ /*
+@@ -152,3 +153,4 @@ static int __init init_nettel(void)
+ arch_initcall(init_nettel);
+ 
+ /***************************************************************************/
++#endif /* NETTEL_SMC91XX */
+diff --git a/arch/m68k/include/asm/nettel.h b/arch/m68k/include/asm/nettel.h
+index 30bc915c3d97..e5516666a98c 100644
+--- a/arch/m68k/include/asm/nettel.h
++++ b/arch/m68k/include/asm/nettel.h
+@@ -40,6 +40,11 @@
+ 
+ #ifndef __ASSEMBLER__
+ 
++/*
++ * 	This family of platforms has dual SMSC91xx network chips.
++ */
++#define NETTEL_SMC91XX
++
+ extern volatile unsigned short ppdata;
+ 
+ /*
+@@ -81,6 +86,12 @@ static __inline__ void mcf_setppdata(unsigned int mask, unsigned int bits)
+ #define	MCFPP_DTR1	0x0000		/* Port 1 no DTR support */
+ 
+ #ifndef __ASSEMBLER__
++
++/*
++ * 	This family of platforms has dual SMSC91xx network chips.
++ */
++#define NETTEL_SMC91XX
++
+ /*
+  *	These functions defined to give quasi generic access to the
+  *	PPIO bits used for DTR/DCD.
+-- 
+2.43.0
+
