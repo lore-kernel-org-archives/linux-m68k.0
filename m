@@ -1,130 +1,293 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9B840960D
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Oct 2026 08:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB702D8364
+	for <linux-m68k@lists.linux-m68k.org>; Sun, 11 Oct 2026 14:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791708016; cv=none; b=RYNegf6wO0atVJE9ufoiicZgRl1ghd09HH6q4bL9/3QWc4Hnb9voYam/Xxu268DgULU0S1OqKxYP+63Q/KDfAae8WEH1GpylJ+XvnC0GtwD914PxngS/bpfhcmkY+ptFchK/o1s/7cQ2TGl4f72HlAch52e6nowQNXAWC2Bm1ZM=
+	t=1791728497; cv=none; b=kCzVBNy/kAtaIs7u7hdX/hPuQwrwf0seNP7KNIZhTzBFX9+8QGPLZqR3NxYHuK70DOwGfl5AHP+Tb1SOxBZ1OJMaTfSgtoHnnUjS0fvam7mPTh2PEhwv+y3qoH0ShK7qer4BA3p3Vp7TXEi2tiNcsBhPEqghTylrqE86+EhHU4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791708016; c=relaxed/simple;
-	bh=TbktEhj1a1+7ugqE0PLzbE7QRnJvyRaedk6Ba1R3byU=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=RtLINgBL2yt5AfU/ODrakI304Eu6g/rHr/r+ex/iAaedj+d+OONA6wLauMrCkvKZUx9mda66BLX7aIgUagX1Dm7Jf0MwB1+x45D4VuumUSgDV2uy3QK4YjPAnnC//MUrKXFyZXbC2dbG5zHA1f92znyv552TduIre/sC0VTErig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S3vvTbLk; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	s=arc-20240116; t=1791728497; c=relaxed/simple;
+	bh=MX+68fY1q3FzIvNTiHVuysE1j+5OyXY7RkutF/ro3Zg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RpX/0Djk+fa7jv2GZzQ4Yl6HK3XiSagfK+v0KGvnDpYguKEmJczz4EUxKtE9IR3kwEvBn/I3hpEm8XF7jMmekO3iWl/SE3MCwJUEqHVjWNKDAUbKzurE3nllzsqn+szcHiLUaeu6XHWrqXyIuEa7XbvhpRGLHl1Cc2fZK5AQkZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S3vvTbLk"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 43BE8600AA;
-	Sun, 11 Oct 2026 08:40:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 585021F0089C;
-	Sun, 11 Oct 2026 08:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791708013;
-	bh=hp9xX2dUrZlCXONwEL+JCIXeQEQv5+IPQxFX1fAUAtU=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=S3vvTbLk8vDK/+zaU6Tcbk3NTdv6/y9sz6lzuZywie9orctLkEC8RJqWcFseS3hYy
-	 X8GEnMj62twLs5faSpFFlObTtlg70L9tnSh4RCthWeq64cXP34Z51VOXZk4ckw7+Je
-	 DmgMGjwcbutPLm4ZltlD2fMPAJamA6nhbz8ugzMx4QBKQfC8ZZarQ3xe4Oakpjbk+/
-	 PbH2woZ92BjGp+lwC1aJ0WyBY3gUO8a0daHQOw2uao9VpDduJ/fIF0N/8l85PxLxC5
-	 Yc644TnqDcz+9qtRiUd5sm8agF48aXszEO33NS6ZRY8i0Z0qzfps2am+a1GhzpoGpH
-	 Mj944qFof0Z6Q==
-Content-Type: multipart/mixed; boundary="===============0635665488301257032=="
+	by sea.source.kernel.org (Postfix) with ESMTP id AA0FD40A01;
+	Sun, 11 Oct 2026 14:21:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B70E21F0089B;
+	Sun, 11 Oct 2026 14:21:28 +0000 (UTC)
+Message-ID: <396dd2cb-6487-40fe-91fe-51975a7a1949@linux-m68k.org>
+Date: Mon, 12 Oct 2026 00:21:17 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e81d8aa1c5fef5135717607342f2564d58907fb0e8e7bd9c32eea76b2eb2b2d9@mail.kernel.org>
-In-Reply-To: <20261011072930.3879724-1-visitorckw@gmail.com>
-References: <20261011072930.3879724-1-visitorckw@gmail.com>
-Subject: Re: [PATCH v9] m68k, bpf: Add initial BPF JIT compiler support
-From: bot+bpf-ci@kernel.org
-To: visitorckw@gmail.com,corbet@lwn.net,skhan@linuxfoundation.org,geert@linux-m68k.org,ast@kernel.org,daniel@iogearbox.net,eddyz87@gmail.com,memxor@gmail.com,andrii@kernel.org,gerg@linux-m68k.org
-Cc: rdunlap@infradead.org,martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,ihor.solodrai@linux.dev,jserv@ccns.ncku.edu.tw,marscheng@google.com,eleanor15x@gmail.com,linux-doc@vger.kernel.org,linux-kernel@vger.kernel.org,linux-m68k@lists.linux-m68k.org,bpf@vger.kernel.org,visitorckw@gmail.com,daniel@thingy.jp,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,mason@kernel.org,ihor.solodrai@linux.dev
-Date: Sun, 11 Oct 2026 08:40:10 +0000 (UTC)
-
---===============0635665488301257032==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7] m68k, bpf: Add initial BPF JIT compiler support
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: bot+bpf-ci@kernel.org, corbet@lwn.net, skhan@linuxfoundation.org,
+ geert@linux-m68k.org, ast@kernel.org, daniel@iogearbox.net,
+ eddyz87@gmail.com, memxor@gmail.com, andrii@kernel.org,
+ rdunlap@infradead.org, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, jolsa@kernel.org, emil@etsalapatis.com,
+ ihor.solodrai@linux.dev, jserv@ccns.ncku.edu.tw, marscheng@google.com,
+ eleanor15x@gmail.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ bpf@vger.kernel.org, daniel@thingy.jp, martin.lau@kernel.org,
+ mason@kernel.org
+References: <20261005185251.2422114-1-visitorckw@gmail.com>
+ <506b804c97aaa3a66660bb0eebd85c6041e241532c1227f1012166785d240fae@mail.kernel.org>
+ <342ca584-c4ef-4d73-9017-9d21bbf9ce10@linux-m68k.org>
+ <askXM-fN-olasi7l@google.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <askXM-fN-olasi7l@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-> m68k, bpf: Add initial BPF JIT compiler support
+Hi  Kuan-Wei,
 
-TL;DR: Nit only: in the m68k JIT's emit_math_call(), the BPF_CLASS checks on
-the signed div/mod selection look redundant given is_64, and could be folded
-into the switch cases. Not a bug.
+On 10/10/26 02:32, Kuan-Wei Chiu wrote:
+> On Tue, Oct 06, 2026 at 11:53:22PM +1000, Greg Ungerer wrote:
+>> Why thank you LLM review :-)
+>>
+>> On 6/10/26 05:48, bot+bpf-ci@kernel.org wrote:
+>>>> m68k, bpf: Add initial BPF JIT compiler support
+>>>
+>>> TL;DR: Nit only, not a bug: the ColdFire byte-swap instruction sequences are
+>>> open-coded repeatedly in emit_to_le16/32/64() in the m68k JIT; suggests small
+>>> shared helpers, as arm's bpf_jit_32.c does.
+>>>
+>>>> diff --git a/arch/m68k/net/bpf_jit_comp.c b/arch/m68k/net/bpf_jit_comp.c
+>>>> new file mode 100644
+>>>> index 000000000000..6c40d358acd4
+>>>> --- /dev/null
+>>>> +++ b/arch/m68k/net/bpf_jit_comp.c
+>>>> @@ -0,0 +1,1840 @@
+>>> [ ... ]
+>>>> +static inline void emit_to_le16(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>>>> +{
+>>>> +	if (CPU_IS_COLDFIRE) {
+>>>> +		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>>>> +		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>>>> +		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>>>> +		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>>>> +		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
+>>> [ ... ]
+>>>> +static inline void emit_to_le32(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>>>> +{
+>>>> +	if (CPU_IS_COLDFIRE) {
+>>>> +		emit_16(ctx, 0x2f00 | d_lo);				/* move.l d_lo, -(%sp) */
+>>>> +		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>>>> +		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>>>> +		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>>>> +		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>>>> +		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>>>> +		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
+>>>> +		emit_16(ctx, 0x2017 | (d_lo << 9));			/* move.l (%sp), d_lo */
+>>>> +		emit_16(ctx, 0x2e80 | d_hi);				/* move.l d_hi, (%sp) */
+>>>> +		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>>>> +		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>>>> +		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>>>> +		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>>>> +		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
+>>>> +		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>>>> +		emit_16(ctx, 0x809f | (d_lo << 9));			/* or.l (%sp)+, d_lo */
+>>> [ ... ]
+>>>> +static inline void emit_to_le64(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>>>> +{
+>>>> +	if (CPU_IS_COLDFIRE) {
+>>>> +		emit_16(ctx, 0x2f00 | d_lo);				/* move.l d_lo, -(%sp) */
+>>>> +		emit_16(ctx, 0x2f00 | d_hi);				/* move.l d_hi, -(%sp) */
+>>>> +
+>>>> +		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>>>> +		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>>>> +		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>>>> +		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>>>> +		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>>>> +		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
+>>>> +		emit_16(ctx, 0x202f | (d_lo << 9));			/* move.l 4(%sp), d_lo */
+>>>> +		emit_16(ctx, 0x0004);
+>>>> +		emit_16(ctx, 0x2f40 | d_hi);				/* move.l d_hi, 4(%sp) */
+>>>> +		emit_16(ctx, 0x0004);
+>>>> +		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>>>> +		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>>>> +		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>>> [ ... ]
+>>>
+>>> This isn't a bug, but the ColdFire byte-swap sequence (mvz.w / mvz.b /
+>>> lsr.l #8 / lsl.l #8 / or.l) is open-coded once in emit_to_le16(), twice in
+>>> emit_to_le32() and four times in emit_to_le64(), differing only in which
+>>> register receives the result. 
+>>
+>> I did consider using helpers for these during coding, but ultimately decided
+>> against it. The open coded versions allow for a handful of extra instruction
+>> optimizations - due to that flexibility of producing the 16bit swap sequence
+>> result in different registers. For example I could combine a stack pop with
+>> the or'ing of the result, and more efficiently store an intermediate result
+>> into the temporary stack storage.
+>>
+>> The patch below gives an example of an implementation using helpers. I am not tied
+>> to the open coded version: Kuan-Wei if you prefer the code with helpers feel free
+>> to use this instead.
+> 
+> I don't have a strong opinion either way, since it sounds like you
+> already made a deliberate judgment call when writing it. Maybe I can
+> switch to the helper version for now to make this already large patch a
+> bit smaller. If anyone cares or if it ever shows up in benchmarks in
+> the future, we can always go back to the open-coded version to optimize
+> it.
+> 
+>>
+>> FWIW, the to_le32 coded sequence is 1 instruction longer (17 instructions to 18).
+>> The to_le64 coded sequence is 5 instructions longer (34 instructions to 39).
+>> Total byte count differs less, due to use of offsets in the open coded versions.
+>>
+>> Regards
+>> Greg
+>>
+>>
+>>
+>> --- arch/m68k/net/bpf_jit_comp.c.org	2026-10-06 23:08:25.924094287 +1000
+>> +++ arch/m68k/net/bpf_jit_comp.c	2026-10-06 22:51:13.099505355 +1000
+>> @@ -640,14 +640,19 @@
+>>  	bpf_put_reg32(dst[0], d_hi, ctx);
+>>  }
+>>  
+>> +static inline void emit_cf_swap16(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>> +{
+>> +	emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);			/* mvz.w d_lo, d_lo */
+>> +	emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);			/* mvz.b d_lo, d_hi */
+>> +	emit_16(ctx, 0xe088 | d_lo);					/* lsr.l #8, d_lo */
+>> +	emit_16(ctx, 0xe188 | d_hi);					/* lsl.l #8, d_hi */
+>> +	emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);			/* or.l d_hi, d_lo */
+>> +}
+>> +
+>>  static inline void emit_to_le16(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>>  {
+>>  	if (CPU_IS_COLDFIRE) {
+>> -		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>> -		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>> -		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>> -		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>> -		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
+>> +		emit_cf_swap16(ctx, d_lo, d_hi);
+>>  	} else {
+>>  		emit_16(ctx, 0x0280 | d_lo);				/* andi.l #0xffff, d_lo */
+>>  		emit_32(ctx, 0xffff);
+>> @@ -657,25 +662,23 @@
+>>  	emit_16(ctx, 0x7000 | (d_hi << 9));				/* moveq #0, d_hi */
+>>  }
+>>  
+>> +static inline void emit_cf_swap32(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>> +{
+>> +	emit_16(ctx, 0x2f00 | d_lo);					/* move.l d_lo, -(%sp) */
+>> +	emit_16(ctx, 0x4840 | d_lo);					/* swap d_lo */
+>> +	emit_cf_swap16(ctx, d_lo, d_hi);
+>> +	emit_16(ctx, 0x2000 | (d_lo << 9) | d_hi);			/* move.l d_lo, d_hi */
+> 
+> Should be emit_16(ctx, 0x2000 | (d_hi << 9) | d_lo) ?
 
-> diff --git a/arch/m68k/net/bpf_jit_comp.c b/arch/m68k/net/bpf_jit_comp.c
-> new file mode 100644
-> index 000000000000..e585cbcd7564
-> --- /dev/null
-> +++ b/arch/m68k/net/bpf_jit_comp.c
+Sorry, yes, you are right.
+Sloppy testing on my part, I forgot to enable bpf_jit_enable before
+loading and running the test_bpf module.
 
-[ ... ]
+I can see you fixed it in v9, so all good now.
 
-> +static void emit_math_call(const struct bpf_insn *insn, struct jit_ctx *ctx, bool is_64)
-> +{
-
-[ ... ]
-
-> +	if (is_64) {
-> +		switch (op) {
-> +		case BPF_MUL:
-> +			func = (void *)jit_mul64;
-> +			break;
-> +		case BPF_DIV:
-> +			func = (void *)jit_div64;
-> +			break;
-> +		case BPF_MOD:
-> +			func = (void *)jit_mod64;
-> +			break;
-> +		}
-> +		if (BPF_CLASS(insn->code) == BPF_ALU64 && op == BPF_DIV && insn->off == 1)
-> +			func = (void *)jit_sdiv64;
-> +		if (BPF_CLASS(insn->code) == BPF_ALU64 && op == BPF_MOD && insn->off == 1)
-> +			func = (void *)jit_smod64;
-> +	} else {
-> +		switch (op) {
-> +		case BPF_MUL:
-> +			func = (void *)jit_mul32;
-> +			break;
-> +		case BPF_DIV:
-> +			func = (void *)jit_div32;
-> +			break;
-> +		case BPF_MOD:
-> +			func = (void *)jit_mod32;
-> +			break;
-> +		}
-> +		if (BPF_CLASS(insn->code) == BPF_ALU && op == BPF_DIV && insn->off == 1)
-> +			func = (void *)jit_sdiv32;
-> +		if (BPF_CLASS(insn->code) == BPF_ALU && op == BPF_MOD && insn->off == 1)
-> +			func = (void *)jit_smod32;
-> +	}
-
-This isn't a bug, but since is_64 already encodes the instruction class, are
-the BPF_CLASS(insn->code) == BPF_ALU64 and BPF_CLASS(insn->code) == BPF_ALU
-tests in these four conditions always true?
-
-Could the signed/unsigned choice be made inside the BPF_DIV and BPF_MOD cases
-of the switch instead, for example:
-
-	case BPF_DIV:
-		func = insn->off ? (void *)jit_sdiv64 : (void *)jit_div64;
-		break;
-
-That would drop the redundant class checks and the second assignment that
-overrides the one made in the switch.
-
-[ ... ]
+Regards
+Greg
 
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/38122863281
---===============0635665488301257032==--
+> Regards,
+> Kuan-Wei
+> 
+>> +	emit_16(ctx, 0x2017 | (d_lo << 9));				/* move.l (%sp), d_lo */
+>> +	emit_16(ctx, 0x2e80 | d_hi);					/* move.l d_hi, (%sp) */
+>> +	emit_cf_swap16(ctx, d_lo, d_hi);
+>> +	emit_16(ctx, 0x4840 | d_lo);					/* swap d_lo */
+>> +	emit_16(ctx, 0x809f | (d_lo << 9));				/* or.l (%sp)+, d_lo */
+>> +}
+>> +
+>>  static inline void emit_to_le32(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>>  {
+>>  	if (CPU_IS_COLDFIRE) {
+>> -		emit_16(ctx, 0x2f00 | d_lo);				/* move.l d_lo, -(%sp) */
+>> -		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>> -		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>> -		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>> -		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>> -		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>> -		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
+>> -		emit_16(ctx, 0x2017 | (d_lo << 9));			/* move.l (%sp), d_lo */
+>> -		emit_16(ctx, 0x2e80 | d_hi);				/* move.l d_hi, (%sp) */
+>> -		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>> -		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>> -		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>> -		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>> -		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
+>> -		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>> -		emit_16(ctx, 0x809f | (d_lo << 9));			/* or.l (%sp)+, d_lo */
+>> +		emit_cf_swap32(ctx, d_lo, d_hi);
+>>  	} else {
+>>  		emit_16(ctx, 0xe058 | d_lo);				/* ror.w #8, d_lo */
+>>  		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>> @@ -688,45 +691,12 @@
+>>  static inline void emit_to_le64(struct jit_ctx *ctx, s8 d_lo, s8 d_hi)
+>>  {
+>>  	if (CPU_IS_COLDFIRE) {
+>> -		emit_16(ctx, 0x2f00 | d_lo);				/* move.l d_lo, -(%sp) */
+>>  		emit_16(ctx, 0x2f00 | d_hi);				/* move.l d_hi, -(%sp) */
+>> -
+>> -		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>> -		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>> -		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>> -		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>> -		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>> -		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
+>> -		emit_16(ctx, 0x202f | (d_lo << 9));			/* move.l 4(%sp), d_lo */
+>> -		emit_16(ctx, 0x0004);
+>> -		emit_16(ctx, 0x2f40 | d_hi);				/* move.l d_hi, 4(%sp) */
+>> -		emit_16(ctx, 0x0004);
+>> -		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>> -		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>> -		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>> -		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>> -		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
+>> -		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>> -		emit_16(ctx, 0x81af | (d_lo << 9));			/* or.l d_lo, 4(%sp) */
+>> -		emit_16(ctx, 0x0004);
+>> -
+>> -		emit_16(ctx, 0x2017 | (d_lo << 9));			/* move.l (%sp), d_lo */
+>> -		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>> -		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>> -		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>> -		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>> -		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>> -		emit_16(ctx, 0x8080 | (d_hi << 9) | d_lo);		/* or.l d_lo, d_hi */
+>> +		emit_cf_swap32(ctx, d_lo, d_hi);
+>> +		emit_16(ctx, 0x2000 | (d_lo << 9) | d_hi);		/* move.l d_lo, d_hi */
+>>  		emit_16(ctx, 0x2017 | (d_lo << 9));			/* move.l (%sp), d_lo */
+>>  		emit_16(ctx, 0x2e80 | d_hi);				/* move.l d_hi, (%sp) */
+>> -		emit_16(ctx, 0x71c0 | (d_lo << 9) | d_lo);		/* mvz.w d_lo, d_lo */
+>> -		emit_16(ctx, 0x7180 | (d_hi << 9) | d_lo);		/* mvz.b d_lo, d_hi */
+>> -		emit_16(ctx, 0xe088 | d_lo);				/* lsr.l #8, d_lo */
+>> -		emit_16(ctx, 0xe188 | d_hi);				/* lsl.l #8, d_hi */
+>> -		emit_16(ctx, 0x8080 | (d_lo << 9) | d_hi);		/* or.l d_hi, d_lo */
+>> -		emit_16(ctx, 0x4840 | d_lo);				/* swap d_lo */
+>> -		emit_16(ctx, 0x809f | (d_lo << 9));			/* or.l (%sp)+, d_lo */
+>> -
+>> +		emit_cf_swap32(ctx, d_lo, d_hi);
+>>  		emit_16(ctx, 0x201f | (d_hi << 9));			/* move.l (%sp)+, d_hi */
+>>  	} else {
+>>  		emit_16(ctx, 0xe058 | d_lo);				/* ror.w #8, d_lo */
+>>
+>>
+>>
+>>
+
