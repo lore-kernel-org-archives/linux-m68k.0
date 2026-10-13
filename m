@@ -1,374 +1,127 @@
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A5E4A6CE5
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2026 17:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F8E38F649
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 13 Oct 2026 07:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791826946; cv=none; b=sewDc2zOR3jqRn1grOjQQiQ/vQivD+WzRg8BiiN6AerjEk7r2VguBwHxKq8wbzm/mbATnlXe/B1aveN4Wy28gQi2e1otl6C4YJ6fVIOM6A4NQOap8T94kj0eJgL9PC4IR9FKF3xW/Dc6A9eXH+WTbcxMi+6d+puRmLqfVzZkr3Q=
+	t=1791876840; cv=none; b=uCzcrh5E9fCb9zrp9XZg/ZXl5obrb2t/MRyLxi2gfKAWRa+PuoNB1NrzZGFGbrdw8p+YV8Zxq+mLF/YWCqBvvWQ1BssIggq60i4ODX3lGbjRXaOt6OPxSCmIcNxwgYj+yU0ElP/5FMDExeF2l+73/pN6f8Cozu4MwYC45qQTcds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791826946; c=relaxed/simple;
-	bh=I/nSWVVT3rY6OybZtz2wXLTd0UBOKCyz7/WaZQWe1x0=;
-	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=UCf8G1aTyOOY4wyx7O42zIN5JAzLZz0emhYAk/UW4lQuR3H5nNG5NwQnwkJ8az2PHyDcWfDQ6O5roi80DAfKQ9hpHVCZYHZSkc9qk0dhdzL9c/7yPi6wXUkcD4vrSlH7rwYzubu15Ga/V0xZvf491DyD7ZL2xlj+fjJtf4/JwQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ahKU/PAr; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1791876840; c=relaxed/simple;
+	bh=/84qz+HKNn9Q7/u9gRzQi86Jhc6wuLE1/XSUpECA8uE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=P4HxmPbewWEyCFWdlo2hWRho4CGFGrreodhQkfx3R+lSJLCE/qo8zliO/fg/t24Msj15EMx2vby5uwjKFCne8lBNWw37HnXV0lQeFudX9EVWlC3ZoHroIDNpoS9rnePVfF7FFwoF1Jn6Hhz1j5Jz/DgwFe2rhO2/btyqu8SdZt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y2RpLKzD; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ahKU/PAr"
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-3a706146559so1214573a91.2
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 12 Oct 2026 10:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1791826944; x=1792431744; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version
-         :user-agent:date:message-id:from:cc:references:to:subject:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=p7CuoqXFrw4wDFYgwD8z+qFoYEhlCKQln6ACbFv3yiE=;
-        b=ahKU/PArtldCqK67HUAGsTYd+rwkVviR+3JruQVn+NmyiHQjL2o35gHqcBk0/g4lne
-         +bFx0bZimHeOcDVh8u7e6CKSBzu0mvbwqDBq4s3C2FgggXPCSMDU/z6bgXl8Fmuy02m3
-         yMG4OVxiyjiVEO2EgPOYiDiRG/YlXZagh6MRfvsA8Qh+YeXTom4GO8GCuY3qPtxfSSaX
-         qwXYXZjj2EdrSHQ3pvHkxdYbFNeGo+5D9yx9Z+PExu84H68FwqOHHnsMonsTIpSiZ4I7
-         vlzdXfQ2xkkIfEx3wUzxb9VOxDJYadnEAfE/I0bqEgWga7RRvm0wczeW2zuyW3YHeIYr
-         M6sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1791826944; x=1792431744;
-        h=content-transfer-encoding:content-type:in-reply-to:mime-version
-         :user-agent:date:message-id:from:cc:references:to:subject:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=p7CuoqXFrw4wDFYgwD8z+qFoYEhlCKQln6ACbFv3yiE=;
-        b=csITnEs0vaYYPsNeoshQNSqTOhnL9Kq6JEOgzyowmaUj7iWvZXoBMw9/NH3VbpDOqQ
-         pNhTvUywSP6bgEdtkjPs/EGHTTFKXfncUUrHorX+NKwOlWLePykw43lHgYKhTjK62CCv
-         VX3WzRZfrJk7fGb44taO4UgktkaBKNVOCQjJ0y7rl7r026KISAqedJ9+I6A3NVdZROdT
-         KFtqPNJiEBuwTKqWMP8UedOtSNXmJqrgfAWj1Da2k83a0MdozmKGC+o6VsBewFMj5frK
-         kCc023eBDqTt1joExESGufrMZUkRFuHpAZsvbfGyE05+7OBBnis1qlXpxWixuhI4IjS9
-         cfCg==
-X-Gm-Message-State: AFq9FYJTY4926UmEOc4RUcdA1zvrlj1Th/PuTcvUUjr0QgmQb2qSTyhZ
-	1/me0pYi03qYyvH2IORqN1Z2Pi3XO7w9MtsDMYkClp8wAI2So9qQTTRy
-X-Gm-Gg: AYBFou2MaKIMRMEhAElbVEPi6NtwYRiIU/Wom7FRYslyIUqq889JH2+/z5ArZbJqrQC
-	aQKvBQ94gJRu5sy50+LHic9p+3XgF6xS+OIhSa6La+NTI1JbxKjmKByy5RmdU3N2fC23SyG5y6E
-	XKO7akk0hPE3QpR4j0ewB59v3UO93hHpwUZtZZrLHU1aoNLK3AjpcnS85oqKETIy8aQffUd4JtI
-	uBok8L0TLLaCnQ2xg2+Lkz/mpTcEmT7inDFDKDTBuu21QzyXjfqV3CFVX+G8rpdOwOAV1QOt+9v
-	81vxXBSMvJMKbrtKAXEbBmKthMtQ6c0/Dw/gOB4ql3lBSttikFSJFpzVrn7IYOIGwLo9aYlUPV5
-	EFI2Z9cjKRG6SBS0e5+zpTSuc677lfETjShcPYFK1QeDxAzG11nDTRMSfHGcdok+ZxEmWN/32gj
-	TSdwH9SxlgNbBSHfam2BZ4w+yRoJ5i6Rbz7V7OmNEG1awprTNnGAaoR/RHFEEn/TkU02nIp4mVs
-	GnUaqF6e5ZFtlDmzg4CU1Aw7sGOkA==
-X-Received: by 2002:a17:90b:3a48:b0:39d:f6a6:60d8 with SMTP id 98e67ed59e1d1-3ab3a33db57mr8527594a91.3.1791826943512;
-        Mon, 12 Oct 2026 10:42:23 -0700 (PDT)
-Received: from [10.1.1.24] (122-59-250-182-adsl.sparkbb.co.nz. [122.59.250.182])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3abdd5adaadsm6509106a91.0.2026.10.12.10.42.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Oct 2026 10:42:22 -0700 (PDT)
-Subject: Re: [PATCH RESEND] m68k: Handle put_user faults more carefully
-To: Greg Ungerer <gerg@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@linux-m68k.org>
-References: <88e752e0bca92c7b65533cc1b334052dd272f8ef.1790842086.git.fthain@linux-m68k.org>
- <02c53c37-d2ee-4c03-a8f9-0a757c3af59e@gmail.com>
- <CAMuHMdVbfUH1ZoFcS64t=gyE_cskMWv6gGvL8pjGirSGvAKu2w@mail.gmail.com>
- <dfcbbc59-4204-478b-b8da-867621056c62@gmail.com>
- <5bb9f586-6939-433e-9e06-a9bbc08a69a0@polyxeno.com>
- <d52fd72d-fe72-4fd3-9ae8-5ed999d18b5f@gmail.com>
- <f76142b2-6472-456e-b810-187e8f40eb01@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <6cfc7c55-114c-e0dd-0920-796060331c7c@gmail.com>
-Date: Tue, 13 Oct 2026 06:42:13 +1300
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y2RpLKzD"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1791876839; x=1823412839;
+  h=date:from:to:cc:subject:message-id;
+  bh=/84qz+HKNn9Q7/u9gRzQi86Jhc6wuLE1/XSUpECA8uE=;
+  b=Y2RpLKzDkFPpnGKGdTqmcQrPV5BivCGIu22ozcS0jRjF1A6HhtfVEQf5
+   oYb2Z9tVnWkMyAG4gB38kmJ75ewLU4zJNq3zTV3NpyqxM+5OjGvyvK3zq
+   lzgwkHtw8NS4/zqxgdFsYsBXo0aiY5pRtuLduSLshoRE8e0DeAaf+m8rU
+   9ugqeLTxqeFuPWLK7SijCFkpOKhxvl+kotoN/9Y23vLWc73UbrCLKOsuy
+   tAoCsA/TW3eFJbj0G5Lz5AcuFAK7k+5737C+CH+fpyM8McgXff2Ybd2xv
+   7n8cIw+rmeSAbc4b8x91uSdT5wkmw/8wL0O0Ml21aRQ68Vxv7dyhjyMuD
+   Q==;
+X-CSE-ConnectionGUID: Eq3SoDsGT+2fI7v55e1/nQ==
+X-CSE-MsgGUID: rhOp2bNoQpmPFF+22Aquig==
+X-IronPort-AV: E=McAfee;i="6800,10657,11933"; a="466113"
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="466113"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2026 00:33:57 -0700
+X-CSE-ConnectionGUID: r4+k52LlRwSos56w3GLerA==
+X-CSE-MsgGUID: 8hJ1hNW1SjKDhOsEZKDzug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,155,1787036400"; 
+   d="scan'208";a="1193900"
+Received: from igk-lkp-server01.igk.intel.com (HELO d0de6c2a75a7) ([10.211.93.152])
+  by fmviesa005.fm.intel.com with ESMTP; 13 Oct 2026 00:33:56 -0700
+Received: from kbuild by d0de6c2a75a7 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xGX1F-00000000AQZ-3kGv;
+	Tue, 13 Oct 2026 07:33:53 +0000
+Date: Tue, 13 Oct 2026 09:33:17 +0200
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@uclinux.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:armnommu 3/3]
+ arch/arm/mm/alignment.c:776:25: sparse: sparse: incorrect type in argument 1
+ (different address spaces)
+Message-ID: <202610130906.aIeRR116-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <f76142b2-6472-456e-b810-187e8f40eb01@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Greg,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
+head:   dd5d1340f9d2226762be6e009f9dcc3d8639d1a2
+commit: dd5d1340f9d2226762be6e009f9dcc3d8639d1a2 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
+config: arm-randconfig-r2308-20261013 (https://download.01.org/0day-ci/archive/20261013/202610130906.aIeRR116-lkp@intel.com/config)
+compiler: clang version 24.0.0git (https://github.com/llvm/llvm-project ce2a4984a3f43327a2b7c40baa74907bc10eb899)
+sparse: v0.6.5-rc1
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261013/202610130906.aIeRR116-lkp@intel.com/reproduce)
 
-Am 13.10.2026 um 02:23 schrieb Greg Ungerer:
-> Hi Michael,
->
-> On 8/10/26 09:54, Michael Schmitz wrote:
->> Hi Greg,
->>
->> thanks for running these tests!
->>
->> On 6/10/26 01:42, Greg Ungerer wrote:
->>> Hi Michael,
->>>
->>> On 3/10/26 09:55, Michael Schmitz wrote:
->>>> Hi Geert,
->>>>
->>>> On 03/10/2026 5:28 AM, Geert Uytterhoeven wrote:
->>>>
->>>>> Hi Michael, Finn,
->>>>>
->>>>> On Thu, 1 Oct 2026 at 20:57, Michael Schmitz <schmitzmic@gmail.com> wrote:
->>>>>> On 1/10/26 22:08, Finn Thain wrote:
->>>>>>> Running 'stress-ng --sysbadaddr -1' on my MC68040 system immediately
->>>>>>> produces an oops:
->>>>>>>
->>>>>>>        Unable to handle kernel access at virtual address f1c422fb
->>>>>>>        Oops: 00000000
->>>>>>>        Modules linked in:
->>>>>>>        PC: [<00005a1a>] do_040writeback1+0xae/0x160
->>>>>>>        SR: 2010  SP: 96087dc2  a2: 01500000
->>>>>>>        d0: 00000000    d1: 014e8000    d2: 00000081    d3: 00000000
->>>>>>>        d4: 00000481    d5: c043dfff    a0: 014e8000    a1: 00632fd5
->>>>>>>        Process stress-ng (pid: 221, task=1b729d30)
->>>>>>>        Frame format=7 eff addr=014e9eb8 ssw=0c81 faddr=c043dfff
->>>>>>>        wb 1 stat/addr/data: 0001 00000481 c043dfff
->>>>>>>        wb 2 stat/addr/data: 0081 c043dfff 2f746d70
->>>>>>>        wb 3 stat/addr/data: 0005 014e9ed4 2f746d70
->>>>>>>        push data: c043dfff 800daa70 00000000 014e9f1c
->>>>>>>        Stack from 014e9ed4:
->>>>>>>          2f740000 8017c000 014e9f10 00006830 00000081 c043dfff 2f746d70 2f746d70
->>>>>>>          0081a000 00000400 c043dfff 800daa70 c043dfff 80016a20 00000003 014e9f88
->>>>>>>          000026c8 014e9f1c 00000001 2f746d70 0081a000 00000400 c043dfff 0081afff
->>>>>>>          c043dfff 01500000 00000001 ffffffff 00000000 20000046 41d67008 014e9f58
->>>>>>>          04810005 00810045 c043dfff 014e9f84 2f746d70 c043dfff 2f746d70 c043dfff
->>>>>>>          80016a20 8017c000 00000000 0081affb 00000005 014e9fc4 00128bc6 c043dfff
->>>>>>>        Call Trace: [<00006830>] buserr_c+0x510/0x698
->>>>>>>          [<000026c8>] buserr+0x20/0x28
->>>>>>>          [<00128bc6>] sys_getcwd+0xc8/0x15a
->>>>>>>          [<000027a2>] syscall+0x8/0xc
->>>>>>>          [<0008800d>] sanity_check_segment_list+0x17/0x11e
->>>>>>>
->>>>>>>        Code: 000c 0e90 1800 220f 0281 ffff e000 2041 <2228> 0008 0281 00ff
->>>>>>>              ff00 67a4 6026 4280 122e 0013 206e 000c 0e10 1800 220f 0281
->>>>>>>
->>>>>>> 0000596c <do_040writeback1>:
->>>>>>>        596c:       4e56 fffc       linkw %fp,#-4
->>>>>>>        5970:       2f02            movel %d2,%sp@-
->>>>>>>        5972:       202e 0008       movel %fp@(8),%d0
->>>>>>>        5976:       4282            clrl %d2
->>>>>>>        5978:       3400            movew %d0,%d2
->>>>>>>        597a:       220f            movel %sp,%d1
->>>>>>>        597c:       0281 ffff e000  andil #-8192,%d1
->>>>>>>        5982:       2041            moveal %d1,%a0
->>>>>>>        5984:       2228 0008       movel %a0@(8),%d1
->>>>>>>        5988:       0281 00ff ff00  andil #16776960,%d1
->>>>>>>        598e:       6600 0104       bnew 5a94 <do_040writeback1+0x128>
->>>>>>>        5992:       4e7b 2000       movec %d2,%sfc
->>>>>>>        5996:       4e7b 2001       movec %d2,%dfc
->>>>>>>        599a:       0240 0060       andiw #96,%d0
->>>>>>>        599e:       0c40 0020       cmpiw #32,%d0
->>>>>>>        59a2:       6700 0084       beqw 5a28 <do_040writeback1+0xbc>
->>>>>>>        59a6:       0c40 0040       cmpiw #64,%d0
->>>>>>>        59aa:       6730            beqs 59dc <do_040writeback1+0x70>
->>>>>>>        59ac:       4a40            tstw %d0
->>>>>>>        59ae:       6752            beqs 5a02 <do_040writeback1+0x96>
->>>>>>>        59b0:       4280            clrl %d0
->>>>>>>        59b2:       220f            movel %sp,%d1
->>>>>>>        59b4:       0281 ffff e000  andil #-8192,%d1
->>>>>>>        59ba:       2041            moveal %d1,%a0
->>>>>>>        59bc:       2228 0008       movel %a0@(8),%d1
->>>>>>>        59c0:       0281 00ff ff00  andil #16776960,%d1
->>>>>>>        59c6:       6600 0086       bnew 5a4e <do_040writeback1+0xe2>
->>>>>>>        59ca:       7201            moveq #1,%d1
->>>>>>>        59cc:       4e7b 1000       movec %d1,%sfc
->>>>>>>        59d0:       4e7b 1001       movec %d1,%dfc
->>>>>>>        59d4:       242e fff8       movel %fp@(-8),%d2
->>>>>>>        59d8:       4e5e            unlk %fp
->>>>>>>        59da:       4e75            rts
->>>>>>>        59dc:       4280            clrl %d0
->>>>>>>        59de:       322e 0012       movew %fp@(18),%d1
->>>>>>>        59e2:       206e 000c       moveal %fp@(12),%a0
->>>>>>>        59e6:       0e50 1800       movesw %d1,%a0@
->>>>>>>        59ea:       220f            movel %sp,%d1
->>>>>>>        59ec:       0281 ffff e000  andil #-8192,%d1
->>>>>>>        59f2:       2041            moveal %d1,%a0
->>>>>>>        59f4:       2228 0008       movel %a0@(8),%d1
->>>>>>>        59f8:       0281 00ff ff00  andil #16776960,%d1
->>>>>>>        59fe:       67ca            beqs 59ca <do_040writeback1+0x5e>
->>>>>>>        5a00:       604c            bras 5a4e <do_040writeback1+0xe2>
->>>>>>>        5a02:       4280            clrl %d0
->>>>>>>        5a04:       222e 0010       movel %fp@(16),%d1
->>>>>>>        5a08:       206e 000c       moveal %fp@(12),%a0
->>>>>>>        5a0c:       0e90 1800       movesl %d1,%a0@
->>>>>>>        5a10:       220f            movel %sp,%d1
->>>>>>>        5a12:       0281 ffff e000  andil #-8192,%d1
->>>>>>>        5a18:       2041            moveal %d1,%a0
->>>>>>>        5a1a:       2228 0008       movel %a0@(8),%d1
->>>>>>>        5a1e:       0281 00ff ff00  andil #16776960,%d1
->>>>>>>        5a24:       67a4            beqs 59ca <do_040writeback1+0x5e>
->>>>>>>        5a26:       6026            bras 5a4e <do_040writeback1+0xe2>
->>>>>>>        ...
->>>>>>>
->>>>>>> The cause is a deliberately misaligned access in the 'bad_end_addr' test
->>>>>>> case in the 'sysbadaddr' stressor. The location being accessed here,
->>>>>>> 0xc043dfff, was contrived to span the boundary between a r/w anonymous page
->>>>>>> and an unmapped page. The address was then passed to the getcwd syscall
->>>>>>> which faulted in copy_to_user().
->>>>>>>
->>>>>>> The fault for the mapped page appears to be handled okay -- up until
->>>>>>> do_040writeback1() called put_user() which produced a second fault due to
->>>>>>> the unmapped page.
->>>>>>>
->>>>>>> Michael Schmitz helpfully deciphered the oops and explained the exception
->>>>>>> processing leading up to it.
->>>>>>>
->>>>>>>        "regs->pc does point to the PC in the format 7 frame which is the PC
->>>>>>>        the fault was detected at, but not (in case of a writeback fault)
->>>>>>>        the PC of the faulting instruction [that is, MOVES.L].
->>>>>>>
->>>>>>>        "The writeback would still cross the page boundary, and fault if the
->>>>>>>        unmapped page still isn't present. We would not see the PC of the
->>>>>>>        movesl in that case, and fail to find the PC in the exception
->>>>>>>        table."
->>>>>>>
->>>>>>> One solution is to add a NOP instruction after the MOVES.L to flush the
->>>>>>> pipeline and take the fault. That way, the PC value in the exception frame
->>>>>>> becomes dependable so the exception table works.
->>>>>>>
->>>>>>> Theoretically, there seems to be another bug in the existing code. If
->>>>>>> the instruction following the MOVES faulted, then after the fixup,
->>>>>>> execution would resume at the instruction which caused the fault. This
->>>>>>> appears to be a loop. After this patch, that cannot happen.
->>>>>>>
->>>>>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->>>>>>> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
->>>>>>> ---
->>>>>>>     arch/m68k/include/asm/uaccess.h | 10 ++++++----
->>>>>>>     1 file changed, 6 insertions(+), 4 deletions(-)
->>>>>>>
->>>>>>> diff --git a/arch/m68k/include/asm/uaccess.h b/arch/m68k/include/asm/uaccess.h
->>>>>>> index 31d133faa45e..728a6dfb7414 100644
->>>>>>> --- a/arch/m68k/include/asm/uaccess.h
->>>>>>> +++ b/arch/m68k/include/asm/uaccess.h
->>>>>>> @@ -31,11 +31,12 @@
->>>>>>>     #define __put_user_asm(inst, res, x, ptr, bwl, reg, err) \
->>>>>>>     asm volatile ("\n"                                  \
->>>>>>>         "1:     "inst"."#bwl"   %2,%1\n"                \
->>>>>>> -     "2:\n"                                          \
->>>>>>> +     "2:     nop\n"                                  \
->>>>>>> +     "3:\n"                                          \
->>>>>>>         "       .section .fixup,\"ax\"\n"               \
->>>>>>>         "       .even\n"                                \
->>>>>>>         "10:    moveq.l %3,%0\n"                        \
->>>>>>> -     "       jra 2b\n"                               \
->>>>>>> +     "       jra 3b\n"                               \
->>>>>>>         "       .previous\n"                            \
->>>>>>>         "\n"                                            \
->>>>>>>         "       .section __ex_table,\"a\"\n"            \
->>>>>>> @@ -53,11 +54,12 @@ do {                                                              \
->>>>>>>         asm volatile ("\n"                                      \
->>>>>>>                 "1:     "inst".l %2,(%1)+\n"                    \
->>>>>>>                 "2:     "inst".l %R2,(%1)\n"                    \
->>>>>>> -             "3:\n"                                          \
->>>>>>> +             "3:     nop\n"                                  \
->>>>>>> +             "4:\n"                                          \
->>>>>>>                 "       .section .fixup,\"ax\"\n"               \
->>>>>>>                 "       .even\n"                                \
->>>>>>>                 "10:    movel %3,%0\n"                          \
->>>>>>> -             "       jra 3b\n"                               \
->>>>>>> +             "       jra 4b\n"                               \
->>>>>>>                 "       .previous\n"                            \
->>>>>>>                 "\n"                                            \
->>>>>>>                 "       .section __ex_table,\"a\"\n"            \
->>>>>>> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
->>>>>>>
->>>>>>> in case it helps.
->>>>>>>
->>>>>>> Anecdotally, I've seen similar uaccess faults causing kernel oops on 030
->>>>>>> as well, so this may not merely be an artificial unaligned access issue.
->>>>> Shouldn't this include
->>>>> https://lore.kernel.org/20240429030945.22451-3-schmitzmic@gmail.com
->>>>> ?
->>>> Along with https://lore.kernel.org/20240429030945.22451-2-schmitzmic@gmail.com, perhaps.
->>>>
->>>> Can't recall the details, but Finn's solution was to add a nop in order to make the fault PC reliable. That's not a great deal of overhead in the case of put_user(). My changes to copy_to_user try to avoid flushing the pipeline inside of a loop, and only use the nop after exiting the loop. The cost of that is larger exception tables. Not sure which is worse.
->>>>
->>>> What's more, I can't be certain that my 'fault is taken two instructions past faulting instruction' observation is 100% reliable. AFAIK this has only been tested on 030 and 040. Coldfire(MMU) and 060 tests are still missing.
->>> ColdFire seems to have more, or maybe just different problems for "stress-ng --sysbadaddr -1".
->>> Running a kernel with and without this patch resulted in:
->>>
->>> # stress-ng --sysbadaddr -1process '/usr/bin/stress-ng' started with executable stack
->>> stress-ng: info:  [40] defaulting to a 86400 second (1 day, 0.00 secs) run per stressor
->>> stress-ng: info:  [40] dispatching hogs: 1 sysbadaddr
->>> *** ILLEGAL INSTRUCTION ***   FORMAT=4
->>> Current process id is 250
->>> BAD KERNEL TRAP: 00000000
->>> Modules linked in:
->>> PC: [<00000000>] 0x0
->>> SR: 2004  SP: 013da6cc  a2: bfccd950
->>> d0: 00000000    d1: 00000002    d2: bfccd814    d3: 00000001
->>> d4: 80174c1e    d5: 800bd9ac    a0: 800bd9ac    a1: 800bdb54
->>> Process stress-ng-sysba (pid: 250, task=f7e050bd)
->>> Frame format=4 eff addr=44090004 pc=80115870
->>> Stack from 013ea000:
->>> Call Trace:
->>> Code: 0000 0000 0000 0000 0000 0000 0000 0000 <0000> 0000 0000 0000 0000 0000 0000 0000 0002 a6c4 0002 a6c4 0002 a6c4 0002 a6c4
->>> Disabling lock debugging due to kernel taint
->>> note: stress-ng-sysba[250] exited with irqs disabled
->>> *** ILLEGAL INSTRUCTION ***   FORMAT=4
->>> Current process id is 42
->>> BAD KERNEL TRAP: 00000000
->>> Modules linked in:
->>> PC: [<00000000>] 0x0
->>> SR: 2004  SP: affae50f  a2: 012d1f80
->>> d0: 00000000    d1: 0000000b    d2: 01057db0    d3: 00035b9a
->>> d4: 00000000    d5: bfccd814    a0: bfccd814    a1: 0050c21c
->>> Process stress-ng-sysba (pid: 42, task=1b5bfafe)
->>> Frame format=4 eff addr=480a2004 pc=00035ab2
->>> Stack from 013d3f28:
->>>          00000000 000000fa 00000000 00000004 01057db0 00000000 0000000b 00000000
->>>          00000000 012d1f80 000336b4 00000100 00000122 fffffff6 bfccd76c 00035c1c
->>>          000000fa bfccd814 00000000 00000000 bfccd76c 00000000 0000000a 000000fa
->>>          00000000 8011685e 80119990 00935414 0002ce18 013d3fcc 00000000 00000000
->>>          00000000 00000000 8011685e 013d3fcc 00000005 bfccd7a0 80010686 0002a6bc
->>>          0002df3c 000000fa bfccd814 00000000 00000000 bfccd814 00000000 800bdb54
->>> Call Trace: [<000336b4>] child_wait_callback+0x0/0x86
->>>   [<00035c1c>] sys_wait4+0x82/0x92
->>>   [<0002ce18>] buserr_c+0x130/0x1dc
->>>   [<0002a6bc>] buserr+0x28/0x30
->>>   [<0002df3c>] system_call+0x58/0xac
->>>
->>>
->>> I have not debugged any further yet.
->>
->> This rather looks like stack corruption - does that ColdFire system pass signal tests OK?
->
-> Update on this. It runs "stress-ng --signal 8" with no problems.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202610130906.aIeRR116-lkp@intel.com/
 
-Thanks - we'll have to look elsewhere then.
+sparse warnings: (new ones prefixed by >>)
+>> arch/arm/mm/alignment.c:776:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int [usertype] *ip @@
+   arch/arm/mm/alignment.c:776:25: sparse:     expected void const volatile [noderef] __user *ptr
+   arch/arm/mm/alignment.c:776:25: sparse:     got unsigned int [usertype] *ip
+>> arch/arm/mm/alignment.c:791:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short [usertype] *ip @@
+   arch/arm/mm/alignment.c:791:25: sparse:     expected void const volatile [noderef] __user *ptr
+   arch/arm/mm/alignment.c:791:25: sparse:     got unsigned short [usertype] *ip
 
-> Or did you have some other specific test you wanted checked?
+vim +776 arch/arm/mm/alignment.c
 
-Finn is more of a stress-ng expert than I am, maybe he can remember some 
-other tests that helped narrow down the 040 writeback bug back then.
+c2860d43f5dfab George G. Davis   2009-06-04  769  
+1bb9fb0a147f9d Russell King      2019-09-06  770  static int alignment_get_arm(struct pt_regs *regs, u32 *ip, u32 *inst)
+67e15fa5b487ad Russell King      2019-08-31  771  {
+67e15fa5b487ad Russell King      2019-08-31  772  	u32 instr = 0;
+67e15fa5b487ad Russell King      2019-08-31  773  	int fault;
+67e15fa5b487ad Russell King      2019-08-31  774  
+67e15fa5b487ad Russell King      2019-08-31  775  	if (user_mode(regs))
+67e15fa5b487ad Russell King      2019-08-31 @776  		fault = get_user(instr, ip);
+67e15fa5b487ad Russell King      2019-08-31  777  	else
+25f12ae45fc193 Christoph Hellwig 2020-06-17  778  		fault = get_kernel_nofault(instr, ip);
+67e15fa5b487ad Russell King      2019-08-31  779  
+67e15fa5b487ad Russell King      2019-08-31  780  	*inst = __mem_to_opcode_arm(instr);
+67e15fa5b487ad Russell King      2019-08-31  781  
+67e15fa5b487ad Russell King      2019-08-31  782  	return fault;
+67e15fa5b487ad Russell King      2019-08-31  783  }
+67e15fa5b487ad Russell King      2019-08-31  784  
+67e15fa5b487ad Russell King      2019-08-31  785  static int alignment_get_thumb(struct pt_regs *regs, u16 *ip, u16 *inst)
+67e15fa5b487ad Russell King      2019-08-31  786  {
+67e15fa5b487ad Russell King      2019-08-31  787  	u16 instr = 0;
+67e15fa5b487ad Russell King      2019-08-31  788  	int fault;
+67e15fa5b487ad Russell King      2019-08-31  789  
+67e15fa5b487ad Russell King      2019-08-31  790  	if (user_mode(regs))
+67e15fa5b487ad Russell King      2019-08-31 @791  		fault = get_user(instr, ip);
+67e15fa5b487ad Russell King      2019-08-31  792  	else
+25f12ae45fc193 Christoph Hellwig 2020-06-17  793  		fault = get_kernel_nofault(instr, ip);
+67e15fa5b487ad Russell King      2019-08-31  794  
+67e15fa5b487ad Russell King      2019-08-31  795  	*inst = __mem_to_opcode_thumb16(instr);
+67e15fa5b487ad Russell King      2019-08-31  796  
+67e15fa5b487ad Russell King      2019-08-31  797  	return fault;
+67e15fa5b487ad Russell King      2019-08-31  798  }
+67e15fa5b487ad Russell King      2019-08-31  799  
 
-We should redo the sysbadaddr test after applying my patch to 
-arch/m68k/asm/traps.c to get the actual fault status, then perhaps apply 
-my uaccess exception fixes (posted to the ML 2024/04/29) to see if those 
-help.
+:::::: The code at line 776 was first introduced by commit
+:::::: 67e15fa5b487adb9b78a92789eeff2d6ec8f5cee ARM: mm: fix alignment handler faults under memory pressure
 
-Cheers,
+:::::: TO: Russell King <rmk+kernel@armlinux.org.uk>
+:::::: CC: Russell King <rmk+kernel@armlinux.org.uk>
 
-	Michael
-
->
-> Regards
-> Greg
->
->
->
->> That said - the register dump is misleading - from what I've read, ColdFire only has a single exception frame format, 2 longwords in size. The first longword of that frame contains frame format code, fault status, vector no. and status register. This is what's shown in the 'eff addr' longword here. The following longword is the actual faulting instruction PC as saved in the exception frame by the processor - this does not match what is given as PC at the start of the register dump (saved by the kernel on exception processing entry).
->>
->> I don't know what kind of ColdFire processor you used, so can't work out what happened on exception entry and in particular, where the PC in the kernel stack frame was taken from. No matter what, I think we ought to clean up the frame format 4 section in show_registers() to account for the different frame format on ColdFire, then perhaps also use the correct PC to dump the infringing code section. Makes no sense to try and debug this without correct debug info ...
->>
->> I can prepare a patch to show what I mean, but can neither compile or test that...
->>
->> Cheers,
->>
->>     Michael
->>
->>
->>>
->>> Regards
->>> Greg
->>>
->>>
->
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
