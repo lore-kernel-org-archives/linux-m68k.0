@@ -1,77 +1,77 @@
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD9050AC27;
-	Thu, 15 Oct 2026 09:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A6C51599A
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 09:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792057286; cv=none; b=AezCtWMuZqDpdza1q+VXv20lfH2BzjVwYOQZS0rhrEX0YkTY/1ZGzM5JPBAGeE3H/+qBbp3VsutOBbfKKZAaPNtaxE6sdinRu1dy5R9j6AP7f8NRWBHtUgkIfVhYi6zJ2WYy901R1sRnkPh8uBfLGIFLG3ORUQh2wbUT154nyQ0=
+	t=1792058348; cv=none; b=k355T8XlkNb4hCcsSdW4ZW8exIH05BGx1FqXUrI2PxGevaoX6U9pv6CfufNMHPN2TWThlDMsFofvpznINWllHDH7lVFd3Krl8C+exuy1HMeUqF57MGf1wCAyfdqSc70LV3Gp+Gg85x68+v3BWa1Glz0vwXEtbRbcvYArk5RBPZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792057286; c=relaxed/simple;
-	bh=auBgT54f76xLHPsbAf5D64XC3Y7tMTvc8isupb3BnWQ=;
+	s=arc-20240116; t=1792058348; c=relaxed/simple;
+	bh=Y4pBy2x0j6Suc5T0MdHA3GtQWW2AivDvn7u3767tiXM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LYL876Cts1HBJm+Hh83xBa75QwjQt6t7fUkd6tM990j2KOC3WKNmIljjVddJMRxHwRKrDFFmaGd7fWjXXJF6YRPSiCVWCMwa24No3KmZKC27toYybjt9r/0THdhisl4L4pQndc1/xKbrtI/+bMzyakj6Y7B81hxDFCL4Gmwyyds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=AayoWzIl; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+	 Content-Type:Content-Disposition:In-Reply-To; b=tkAMS1QKVccl6BY8Wg0DU6K0LC66F13L3PmfocXg1kXYg1T2wl3hTUNMJjckb6A6dckJmx8AFQJtCdYxSsVImtZpXdwnS8JV8W1MWo+aHApQf6BCA9ljvDUu3UzrYmF7MasoxK517zQRvoy6HSQe8nu6IAt1n2RO9xoZld7Bs/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MAABnL+Y; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="AayoWzIl"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=n/dObaMkUWm5pUqDYuOvXJ2uzV/iakL+4bYfynFPMTA=; 
-	b=AayoWzIl507yCoEfvjqfTQoiWeTVGYboAIKqziCOjo9+D1pJH3shHm2jQuig9q+R8AdT/5yHe2f
-	qNVO626Q6NxguYxuu70Ckd0KoTflmJ5AMRYgBTA/3/zdOhMjD72rWq5b6pVmnBLeXfMKFCRkCNpZU
-	qPNKcNcJBXHRb5Zhlyh1+ECXrFUGZtsOCl0uFZR9VBHdUrYZG445G0CZ9WK0A9ApyiL4EvdYFCcQC
-	ohSUk86lI9xyB9lW+d+zPZq9mYDdFAoTfwr8CHpiyqh6Kr2itvVJzRQJo2ClqhSRdV/uSa1WIY+dE
-	n450QdfRBPr4zy6msj5Pkig6LKYvBK6kJ60g==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
-	id 1xHHx4-000000047Y7-2R5o;
-	Thu, 15 Oct 2026 17:40:43 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 15 Oct 2026 20:40:42 +1100
-Date: Thu, 15 Oct 2026 20:40:42 +1100
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: jeanmichel.hautbois@yoseli.org
-Cc: Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v4 1/2] hwrng: imx-rngc: Use optional clock
-Message-ID: <atCfmsPr85oAnsJT@gondor.apana.org.au>
-References: <20251126-b4-m5441x-add-rng-support-v4-0-5309548c9555@yoseli.org>
- <20251126-b4-m5441x-add-rng-support-v4-1-5309548c9555@yoseli.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MAABnL+Y"
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id D70B360120;
+	Thu, 15 Oct 2026 09:59:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E490B1F000C4;
+	Thu, 15 Oct 2026 09:59:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792058345;
+	bh=2w8nKiVNXKMTex69kXfqDRomq+Zwxb/enPBvj8nlfgw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=MAABnL+YNUJ/43f1DfMwxhSMnzYFkcsn8s4nRUndb+5Yk8wa7q5CdTgrL80IMoG43
+	 wxa8IFmRn55OVqzhKceP7k9S3jKEGxJtpe0lct/zJQ210l4onti89YBNDmiU7+xoVm
+	 mTogZglMzEk6EmnG6/RDMTKgOBRbQUbf3zKAfMpdxqMsX6grS14oxtNM8dkrdM2236
+	 ACJ9VjWVTQNLyOj5FzHohAJcGEDL4JFMup2Vyvd2uRUoXuMFdphov5sguRVta5+gF2
+	 G8exkrvxQp09n8vSVgMVwnGZA307T/ko868/xfG+T9Z8pBAQBBkQTmZhelUbmyFkre
+	 S8UscuthDTANQ==
+Date: Thu, 15 Oct 2026 11:58:58 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
+	linux-serial@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 4/5] dt-bindings: serial: create binding for mcf-uart
+Message-ID: <20261015-valiant-puffin-of-zoology-6ee470@quoll>
+References: <20261013120831.1046590-1-gerg@linux-m68k.org>
+ <20261013120831.1046590-5-gerg@linux-m68k.org>
+ <20261014-expensive-shrewd-nautilus-abcab6@quoll>
+ <d256f39c-6ed5-409a-a7ed-224165d00521@linux-m68k.org>
+ <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20251126-b4-m5441x-add-rng-support-v4-1-5309548c9555@yoseli.org>
+In-Reply-To: <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
 
-On Wed, Nov 26, 2025 at 08:08:09AM +0100, Jean-Michel Hautbois via B4 Relay wrote:
-> From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+On Thu, Oct 15, 2026 at 11:19:31AM +0200, Geert Uytterhoeven wrote:
+> I guess you want:
 > 
-> Change devm_clk_get() to devm_clk_get_optional() to support platforms
-> where the RNG clock is always enabled and not exposed via the clock
-> framework (such as ColdFire MCF54418).
+>     items:
+>       - enum:
+>           - fsl,mcf5206
+>           - fsl,mcf5208
+>           - fsl,mcf5307
+>             [...]
+>       - const: fsl,mcf-uart
 > 
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
-> ---
->  drivers/char/hw_random/imx-rngc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> As no new (possibly incompatible) Coldfire parts will appear, a generic
+> fallback looks reasonable to me.
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Yes, although still preference is to use one device as a fallback.
+
+> 
+> An "mcf" vs. "motorola" vendor prefix might still be a discussion point ;-)
+
+Best regards,
+Krzysztof
+
