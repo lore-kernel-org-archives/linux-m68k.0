@@ -1,77 +1,92 @@
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A6C51599A
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 09:59:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B98EB525A67
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 12:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792058348; cv=none; b=k355T8XlkNb4hCcsSdW4ZW8exIH05BGx1FqXUrI2PxGevaoX6U9pv6CfufNMHPN2TWThlDMsFofvpznINWllHDH7lVFd3Krl8C+exuy1HMeUqF57MGf1wCAyfdqSc70LV3Gp+Gg85x68+v3BWa1Glz0vwXEtbRbcvYArk5RBPZk=
+	t=1792068292; cv=none; b=OWFbOAXvGuWWUpr/dcrHosyHJ9HAHK474kD6qK0v0OcW52GHt9wdprG7Jmgw3cxas5Oz9i6FLPnjCylUGG8jaUsChwOk/fmXv7pcuWsDwdOt9rhVUjoefaQWhnAaZhWlmxulCGK2Y18QwhJoX+mKv1nvIYyu4Ne0K02z7uVI04c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792058348; c=relaxed/simple;
-	bh=Y4pBy2x0j6Suc5T0MdHA3GtQWW2AivDvn7u3767tiXM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tkAMS1QKVccl6BY8Wg0DU6K0LC66F13L3PmfocXg1kXYg1T2wl3hTUNMJjckb6A6dckJmx8AFQJtCdYxSsVImtZpXdwnS8JV8W1MWo+aHApQf6BCA9ljvDUu3UzrYmF7MasoxK517zQRvoy6HSQe8nu6IAt1n2RO9xoZld7Bs/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MAABnL+Y; arc=none smtp.client-ip=172.105.4.254
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	s=arc-20240116; t=1792068292; c=relaxed/simple;
+	bh=7KBLTTLQ7itI1AaQ11FEEwhAACt/sfe4Yun3y+XczE0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FhEJ+3BR6RBQ4Gs0mHLBkUMGr+Ve/0oGg8yE2oq9PiD1hbZ7FAUzpxwCWPRYaT9Ie1W6JTbL91tFjkgFqECWxfZqfEz+jnAAsZD0f+OUbcqnatGB/YKnjW/sRUP+aLx/e649wr8sKvjRKo03yHI2m3LWCvKjGGPZ8q69yiqjWuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MAABnL+Y"
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id D70B360120;
-	Thu, 15 Oct 2026 09:59:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E490B1F000C4;
-	Thu, 15 Oct 2026 09:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792058345;
-	bh=2w8nKiVNXKMTex69kXfqDRomq+Zwxb/enPBvj8nlfgw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=MAABnL+YNUJ/43f1DfMwxhSMnzYFkcsn8s4nRUndb+5Yk8wa7q5CdTgrL80IMoG43
-	 wxa8IFmRn55OVqzhKceP7k9S3jKEGxJtpe0lct/zJQ210l4onti89YBNDmiU7+xoVm
-	 mTogZglMzEk6EmnG6/RDMTKgOBRbQUbf3zKAfMpdxqMsX6grS14oxtNM8dkrdM2236
-	 ACJ9VjWVTQNLyOj5FzHohAJcGEDL4JFMup2Vyvd2uRUoXuMFdphov5sguRVta5+gF2
-	 G8exkrvxQp09n8vSVgMVwnGZA307T/ko868/xfG+T9Z8pBAQBBkQTmZhelUbmyFkre
-	 S8UscuthDTANQ==
-Date: Thu, 15 Oct 2026 11:58:58 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 4/5] dt-bindings: serial: create binding for mcf-uart
-Message-ID: <20261015-valiant-puffin-of-zoology-6ee470@quoll>
-References: <20261013120831.1046590-1-gerg@linux-m68k.org>
- <20261013120831.1046590-5-gerg@linux-m68k.org>
- <20261014-expensive-shrewd-nautilus-abcab6@quoll>
- <d256f39c-6ed5-409a-a7ed-224165d00521@linux-m68k.org>
- <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
+	by tor.source.kernel.org (Postfix) with ESMTP id B7C0660120
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 12:44:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CE701F000C4;
+	Thu, 15 Oct 2026 12:44:48 +0000 (UTC)
+Message-ID: <4e9b365b-7c5a-44f4-bfaf-d24e9162fd94@linux-m68k.org>
+Date: Thu, 15 Oct 2026 22:44:43 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/5] dt-bindings: serial: create binding for mcf-uart
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20261013120831.1046590-1-gerg@linux-m68k.org>
+ <20261013120831.1046590-5-gerg@linux-m68k.org>
+ <20261014-expensive-shrewd-nautilus-abcab6@quoll>
+ <d256f39c-6ed5-409a-a7ed-224165d00521@linux-m68k.org>
+ <20261015-adamant-realistic-bettong-a24c4f@quoll>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20261015-adamant-realistic-bettong-a24c4f@quoll>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Oct 15, 2026 at 11:19:31AM +0200, Geert Uytterhoeven wrote:
-> I guess you want:
+
+On 15/10/26 18:56, Krzysztof Kozlowski wrote:
+> On Wed, Oct 14, 2026 at 10:48:41PM +1000, Greg Ungerer wrote:
+>>
+>> On 14/10/26 21:24, Krzysztof Kozlowski wrote:
+>>> On Tue, Oct 13, 2026 at 10:07:02PM +1000, Greg Ungerer wrote:
+>>>> Create documentation for a new binding to support the Freescale ColdFire
+>>>> UART hardware block. This is found on pretty much all variants of the
+>>>> M68K derived Freescale ColdFire family of System-on-Chip devices.
+>>>>
+>>>> It is not compatible with any other known UARTs.
+>>>
+>>> You never tested this, so limited review.
+>>
+>> It is tested. It is working and running on multiple ColdFire platforms.
 > 
->     items:
->       - enum:
->           - fsl,mcf5206
->           - fsl,mcf5208
->           - fsl,mcf5307
->             [...]
->       - const: fsl,mcf-uart
+> You cannot run a binding. It's impossible, otherwise show me how do you
+> execute that code.
+
+Of course you cannot run a binding. I took your statement to mean that
+this series as a whole was not tested. Which is wrong.
+
+
+> But as proven already on the lists, no it WAS NOT tested. You have clear
+> a warning.
 > 
-> As no new (possibly incompatible) Coldfire parts will appear, a generic
-> fallback looks reasonable to me.
+> Otherwise you claim that tests shown errors and then you decided to
+> still send it with errors, so then th enext question: why do you send
+> code which your tests tell it is wrong?
 
-Yes, although still preference is to use one device as a fallback.
+Sorry, I have no idea what you are talking about.
 
-> 
-> An "mcf" vs. "motorola" vendor prefix might still be a discussion point ;-)
+This series of 5 patches was tested before sending, on multiple targets
+that use this code (obviously all m68k/ColdFire platforms).
 
-Best regards,
-Krzysztof
+Just in case I missed something I re-ran testing with a fresh 7.3-rc7
+code base. All 5 patches applied cleanly, with a clean compile. My testing
+showed no new problems in normal operation. Granted sashkio did find a 
+couple of error case checking issues that you just do not normally encounter
+in practice (but I will of course fix those for v2).
+
+So, no, I didn't just send it knowing that it was failing any tests.
+
+Regards
+Greg
+
 
