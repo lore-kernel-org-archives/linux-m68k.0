@@ -1,26 +1,26 @@
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F62524B00
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 13:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.105.4.254
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B84351C041
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 14:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792070072; cv=none; b=An9iqzsCW/pk3bXrcRHB1ti16M+Sc345fUxhalQMeEYMvxEtYxi1ctshwGH36r5bpXBhwyHuAo9wkjQD/S9et5W3G31HMr9lPSxXelcodz2ZtMfBomdxp4kg6F1FgaT7wp0cigoTux0j9xJCCoJ0u8svf0ONhpA25o1SW04cilU=
+	t=1792072880; cv=none; b=ofQ/lkHrVa2adOaNwdPgnywermS133ANbnsSSHxsVXvL0ooxFapb6Oe6w2blnx9AEj36K1uQz0V8X11FTXbayaDapuJGSfRfyBSsdIRsp8I4V6ZEMw5K+InwLo1J8ESJSIk1rLSUftAeXdCXdvzUSMm+l14Cu2iGgVXWJQDH8qM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792070072; c=relaxed/simple;
-	bh=Z7Ajd7UkvjpJE4SCW6+tEEpuAM+GxWaOjJPvp5T2YvI=;
+	s=arc-20240116; t=1792072880; c=relaxed/simple;
+	bh=zDxFmt3scrfMr8b7HQ54TJ3/C2LowqndhuRANO1c0SI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=usldY3KfesnraDQG+nm4JXI8yhzURwSvxgkQNuy4QSCNCIxMAp29dvFseuFmlRb2k3eU3UqVvdE2zE2DS5AMwQA3MM+KtrVX71JmZBYfH1nkQEgO7KeCFZnYP7pxewm6coP7dPpCI+lIjAtt9NS2vPMx1twNd5aCyXM8YwZ54N4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.105.4.254
+	 In-Reply-To:Content-Type; b=MPiE+pqXmaL4xPmCKgo7zq97iRkyNu0XqY66rNo6/ihykGHPF25iCGQEahZmRjcr/MMUXDXTy+jh/+tHL+aThBJXCiNC20OScgLXfARYqdfKjGf7RkT9Pd0xXyr+9xbYJgK/bQxfootVrZlkHLl9JLO9JpLSCh+PM6dBunncGN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2DFBE6022C;
-	Thu, 15 Oct 2026 13:14:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B391F000C4;
-	Thu, 15 Oct 2026 13:14:28 +0000 (UTC)
-Message-ID: <73a8df68-17da-4275-bb9d-8a6272b754e6@linux-m68k.org>
-Date: Thu, 15 Oct 2026 23:14:26 +1000
+	by sea.source.kernel.org (Postfix) with ESMTP id D730341406;
+	Thu, 15 Oct 2026 14:01:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 890851F000C4;
+	Thu, 15 Oct 2026 14:01:16 +0000 (UTC)
+Message-ID: <7c56a26a-d438-4f8e-9147-b34bcf0e6b0b@linux-m68k.org>
+Date: Fri, 16 Oct 2026 00:01:13 +1000
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -36,78 +36,48 @@ References: <20261013120831.1046590-1-gerg@linux-m68k.org>
  <20261013120831.1046590-5-gerg@linux-m68k.org>
  <20261014-expensive-shrewd-nautilus-abcab6@quoll>
  <d256f39c-6ed5-409a-a7ed-224165d00521@linux-m68k.org>
- <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
+ <20261015-adamant-realistic-bettong-a24c4f@quoll>
+ <4e9b365b-7c5a-44f4-bfaf-d24e9162fd94@linux-m68k.org>
+ <CAMuHMdW84xXV=msd7Sc3BY+50e-gxFxc5dKL7anhrU893NFVaw@mail.gmail.com>
 Content-Language: en-US
 From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
+In-Reply-To: <CAMuHMdW84xXV=msd7Sc3BY+50e-gxFxc5dKL7anhrU893NFVaw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 Hi Geert,
 
-On 15/10/26 19:19, Geert Uytterhoeven wrote:
-> On Wed, 14 Oct 2026 at 14:56, Greg Ungerer <gerg@linux-m68k.org> wrote:
->> On 14/10/26 21:24, Krzysztof Kozlowski wrote:
->>> On Tue, Oct 13, 2026 at 10:07:02PM +1000, Greg Ungerer wrote:
->>>> Create documentation for a new binding to support the Freescale ColdFire
->>>> UART hardware block. This is found on pretty much all variants of the
->>>> M68K derived Freescale ColdFire family of System-on-Chip devices.
->>>>
->>>> It is not compatible with any other known UARTs.
+On 15/10/26 23:06, Geert Uytterhoeven wrote:
+> Hi Greg,
+> 
+> On Thu, 15 Oct 2026 at 14:53, Greg Ungerer <gerg@linux-m68k.org> wrote:
+>> On 15/10/26 18:56, Krzysztof Kozlowski wrote:
+>>> But as proven already on the lists, no it WAS NOT tested. You have clear
+>>> a warning.
 >>>
->>> You never tested this, so limited review.
+>>> Otherwise you claim that tests shown errors and then you decided to
+>>> still send it with errors, so then th enext question: why do you send
+>>> code which your tests tell it is wrong?
 >>
->> It is tested. It is working and running on multiple ColdFire platforms.
+>> Sorry, I have no idea what you are talking about.
 >>
->>>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-> 
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/serial/fsl,mcf-uart.yaml
-> 
->>>> +properties:
->>>> +  compatible:
->>>> +    const: fsl,mcf-uart
->>>
->>> What is the SoC name? MCF? Compatibles must be specific (see writing
->>> bindings doc).
+>> This series of 5 patches was tested before sending, on multiple targets
+>> that use this code (obviously all m68k/ColdFire platforms).
 >>
->> Yes. MCF = "Motorola ColdFire". It is the SoC prefix used for naming of all
->> ColdFire parts (which is dozens of variants):
->>
->>    MCF5206
->>    MCF5208
->>    MCF5307
->>    MCF54415
->>    etc
->>
->> Even when Motorola became Freescale they stuck with MCF on all ColdFire parts.
+>> Just in case I missed something I re-ran testing with a fresh 7.3-rc7
+>> code base. All 5 patches applied cleanly, with a clean compile. My testing
+>> showed no new problems in normal operation. Granted sashkio did find a
+>> couple of error case checking issues that you just do not normally encounter
+>> in practice (but I will of course fix those for v2).
 > 
-> I guess you want:
-> 
->     items:
->       - enum:
->           - fsl,mcf5206
->           - fsl,mcf5208
->           - fsl,mcf5307
->             [...]
->       - const: fsl,mcf-uart
-> 
-> As no new (possibly incompatible) Coldfire parts will appear, a generic
-> fallback looks reasonable to me.
+> make dt_binding_check dtbs_check
 
-It will be a long list of variants - thanks Freescale. Quite a few of the SoC
-parts have sub-parts with different single digits, for example:
+I wasn't aware of that. Thanks for pointing it out!  Makes more sense now.
 
-    mcf54410, mcf54415, mcf54416, mcf54417, mcf54118
-
-At a quick count I can see about 42 variants. 
-I don't mind adding the full list if that is preferred.
-
-
-> An "mcf" vs. "motorola" vendor prefix might still be a discussion point ;-)
-
-At least they didn't rename the chip part numbers when they renamed the company ;-)
+I can see that running it throws up the same 2 errors that sashiko found,
+so easily fixed for v2.
 
 Regards
 Greg
+
 
