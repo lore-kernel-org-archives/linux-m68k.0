@@ -1,83 +1,86 @@
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B84351C041
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 14:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.234.252.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593EC4A43F3
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 15 Oct 2026 22:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792072880; cv=none; b=ofQ/lkHrVa2adOaNwdPgnywermS133ANbnsSSHxsVXvL0ooxFapb6Oe6w2blnx9AEj36K1uQz0V8X11FTXbayaDapuJGSfRfyBSsdIRsp8I4V6ZEMw5K+InwLo1J8ESJSIk1rLSUftAeXdCXdvzUSMm+l14Cu2iGgVXWJQDH8qM=
+	t=1792103960; cv=none; b=koHmFoT8ILL09z60vNKcLM/B1qtGNIfkZ7HhNFN5Xbr4PVnaDWh/BwuvcQbxqGHqY4kr61SzRoCZNyOueX4nh3lBiUK3HYeeA/vFAE4D2LwdhumU0V4bXG9MFYIZS4R96oj3z+Ihx+r+xV6/k+XVAKoLcDxcywPPDkIyZbrmBRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792072880; c=relaxed/simple;
-	bh=zDxFmt3scrfMr8b7HQ54TJ3/C2LowqndhuRANO1c0SI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MPiE+pqXmaL4xPmCKgo7zq97iRkyNu0XqY66rNo6/ihykGHPF25iCGQEahZmRjcr/MMUXDXTy+jh/+tHL+aThBJXCiNC20OScgLXfARYqdfKjGf7RkT9Pd0xXyr+9xbYJgK/bQxfootVrZlkHLl9JLO9JpLSCh+PM6dBunncGN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=kernel.org; arc=none smtp.client-ip=172.234.252.31
+	s=arc-20240116; t=1792103960; c=relaxed/simple;
+	bh=1zNb440uYDnmlPCW9U13QGfWctFPuHMsxgLI6Gvd55s=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Pq09snTr50Y1v0R96CPubA4ZPhMmZM3pDziD/piNBA4Wv8Wa4Yd60PTBgdPAjeEy53/U2mHGDfRZr+bMk03Opm92dc2h6nOZlBIQKa5saeEQB7DQW71uGK0ifrF8kEfFFO7dyZ0FzpeZwDBaYYb6Mr1owKPGjIOg6jm8I5Xay9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jczU2LGf; arc=none smtp.client-ip=202.12.124.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id D730341406;
-	Thu, 15 Oct 2026 14:01:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 890851F000C4;
-	Thu, 15 Oct 2026 14:01:16 +0000 (UTC)
-Message-ID: <7c56a26a-d438-4f8e-9147-b34bcf0e6b0b@linux-m68k.org>
-Date: Fri, 16 Oct 2026 00:01:13 +1000
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jczU2LGf"
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.stl.internal (Postfix) with ESMTP id 219D21D00163;
+	Thu, 15 Oct 2026 18:39:17 -0400 (EDT)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Thu, 15 Oct 2026 18:39:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1792103956; x=1792190356; bh=MsfOp++XQVnQkLbK18NW8Z38dECPaCnvO7c
+	7zOmRFhY=; b=jczU2LGfvD+IdqR+PHiOZvcox0pEaB9mNCATpyjHYNqxU6Vb0j/
+	4+dWVLC2XFkFSfhZ/msB8kwFfxd9CXhPufJGtRJCJ9aar0Cd0yM2W20SkltldWAf
+	UHaxm9QUTg1QK4CW1GzIqZumfeH8FY9JhQ5GqutXKq+We/XuAEe5vANAe15htpiS
+	3M1bui+gzl8rBOrNsg/3Co3kimRCf0FDk0z7J0NxHhi2SeeqQuy7aKwuUSNzcC2+
+	mBKAw6xHubM1+8iLgpHeozmrgMHGDNP2XCwQC9p/RQ/0bqDRZR5xrCUqJI+BbsJa
+	w3oa13ErDKlzCFjPIHMHBpOe3XeDCeZQdFg==
+X-ME-Sender: <xms:FFbRas1DI_UdlcJbKHepmVN0XVgeFViwA7fKZ5FM4Y4gxgSykeqhKw>
+    <xme:FFbRaiArGuX4x9WdsB10Ii2PrHcogov-uhUJZMQociPn5_QFxoxrR85TD6rAVQ9EX
+    L3Nv-6LyPEtLNu2j8Fap6PKHU_tjNZIiciTDppqctvnsaU3sV6akCE>
+X-ME-Received: <xmr:FFbRaj6Ta55mHKNVo_9D_W0qhTuGByVI4yPQXhd6sNSTnMUJAUk8qUS7q3l4mpqp-fgQK87GbLgK5AtY-A3D7A6vOdGatJdbRjw>
+X-ME-Proxy-Cause: dmFkZTFlmHkCW3pF+j72AbU606l03hO4kL46oa1JkZipyDZBixMVJFW9+wwe4Agpip7l1A
+    btZ8CPYWQYbbpAgoHOU8pylFd5tbDCm+TNjZC67YQEjXP5H6KHAYLpTLhbUkEu6AQQOu3x
+    HdxdixDlnluhf3dCJ7V+jxgbsNpuW8/rLjKMUyIKy1KTTKvNem7xsn1ESmoaygULyYbpVo
+    NbOFamtCsItJLDPpGYqE89MjEex7OqVWRYJQmcywG1lwmiprUjCfcBbwmdzm02EO1i9Lnl
+    jznCDw4BlbvobR/2+oY9tFdKds1iqO8BEnRukKdIrGH8nIJ69Vr1SBGMcIt7HjXWk2T7Hg
+    28Jnk1zf64PKIhIuGsyxIwfpRkbfFonSvAwtO/atsRMiN5RXYMt1+IyXEHndKbZorddOCu
+    dKvME7bUY32mz5dRpAwjW7FZxgK9n1L+p+Y2kz4DOHux6rHA1Cb7ICC+tUpe84NgBDJBTI
+    xnIaR4vWv5EX3avFCkTP6XsGxakkL3Dl8e7J3/saRm6/PF279lZtu9FTfbUtAeRITCNCdU
+    YeWvxUZLlhQEr2rqr3JodFHOaxu4P1W2xroYOY+4d416RghmpdDIpyEtf6XvjfocB6PQJ0
+    Zxii1ZDWHoyhRJcfzFNa+e0IPNpwh7p2swbc9un6AN+14Avdx3QnAFq825Bg
+X-ME-Proxy: <xmx:FFbRarJpDZr-VStogePh6qF859VcLVIUqWx4Et7rP9EKUY4yKpNvcg>
+    <xmx:FFbRasvIB1yfIeY_EX46x0W_ZrJxx_hdWPs7hZYYcnJIoQ0PQ6ZdDg>
+    <xmx:FFbRaqJOiuGu94ilEhVwphZ-Pq-ED_P2XKpyaeQFI73s6DAC3n-aAA>
+    <xmx:FFbRal_blYuMelA5oTw0gOMMQkNAyvQoe2v9whnCLDTMm0aLyzfKmQ>
+    <xmx:FFbRagXF3v9cHW-35rTaH8lPPcOkYu8zSRqdHjdhJDBMl13ngI5WAey6>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 15 Oct 2026 18:39:13 -0400 (EDT)
+Date: Fri, 16 Oct 2026 09:39:15 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+cc: Greg Ungerer <gerg@linux-m68k.org>, Krzysztof Kozlowski <krzk@kernel.org>, 
+    linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, 
+    devicetree@vger.kernel.org
+Subject: Re: [PATCH 4/5] dt-bindings: serial: create binding for mcf-uart
+In-Reply-To: <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
+Message-ID: <c0fd5f48-4490-2901-593c-8d9d029dfe1a@linux-m68k.org>
+References: <20261013120831.1046590-1-gerg@linux-m68k.org> <20261013120831.1046590-5-gerg@linux-m68k.org> <20261014-expensive-shrewd-nautilus-abcab6@quoll> <d256f39c-6ed5-409a-a7ed-224165d00521@linux-m68k.org>
+ <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] dt-bindings: serial: create binding for mcf-uart
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, linux-m68k@lists.linux-m68k.org,
- linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-References: <20261013120831.1046590-1-gerg@linux-m68k.org>
- <20261013120831.1046590-5-gerg@linux-m68k.org>
- <20261014-expensive-shrewd-nautilus-abcab6@quoll>
- <d256f39c-6ed5-409a-a7ed-224165d00521@linux-m68k.org>
- <20261015-adamant-realistic-bettong-a24c4f@quoll>
- <4e9b365b-7c5a-44f4-bfaf-d24e9162fd94@linux-m68k.org>
- <CAMuHMdW84xXV=msd7Sc3BY+50e-gxFxc5dKL7anhrU893NFVaw@mail.gmail.com>
-Content-Language: en-US
-From: Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <CAMuHMdW84xXV=msd7Sc3BY+50e-gxFxc5dKL7anhrU893NFVaw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 
-Hi Geert,
 
-On 15/10/26 23:06, Geert Uytterhoeven wrote:
-> Hi Greg,
+On Thu, 15 Oct 2026, Geert Uytterhoeven wrote:
+
 > 
-> On Thu, 15 Oct 2026 at 14:53, Greg Ungerer <gerg@linux-m68k.org> wrote:
->> On 15/10/26 18:56, Krzysztof Kozlowski wrote:
->>> But as proven already on the lists, no it WAS NOT tested. You have clear
->>> a warning.
->>>
->>> Otherwise you claim that tests shown errors and then you decided to
->>> still send it with errors, so then th enext question: why do you send
->>> code which your tests tell it is wrong?
->>
->> Sorry, I have no idea what you are talking about.
->>
->> This series of 5 patches was tested before sending, on multiple targets
->> that use this code (obviously all m68k/ColdFire platforms).
->>
->> Just in case I missed something I re-ran testing with a fresh 7.3-rc7
->> code base. All 5 patches applied cleanly, with a clean compile. My testing
->> showed no new problems in normal operation. Granted sashkio did find a
->> couple of error case checking issues that you just do not normally encounter
->> in practice (but I will of course fix those for v2).
+> An "mcf" vs. "motorola" vendor prefix might still be a discussion point ;-)
 > 
-> make dt_binding_check dtbs_check
 
-I wasn't aware of that. Thanks for pointing it out!  Makes more sense now.
-
-I can see that running it throws up the same 2 errors that sashiko found,
-so easily fixed for v2.
-
-Regards
-Greg
-
-
+Motorola Solutions is still trading under that name. Sure, that entity is 
+unrelated to the Coldfire silicon presently marketed NXP, but I would not 
+presume that Motorola Solutions has no interest in this namespace.
