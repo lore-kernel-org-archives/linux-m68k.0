@@ -1,76 +1,72 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.180
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792567934;
-	b=HwZZ579WN31O+R6l0vB3RheMasQEeyGknDfRVPaAuZiyygohb4qSkkD2DrRmc2d8HmLg
-	 JxqGlRBARAZMRzCNY3BqxtNyKNuRbvXtKdcXKaaHVpWjdZVUUeLlbf0cdAdVrHc5hDF0R
-	 e7wxrA+op7fLCJ7G6Xk4WBNzaGyB765jL3ScLjm/A6zhTW9lOTFE5FmGOHgKMPFdJZ5Ol
-	 ORKAGvihJbvArdBnn41oeZE6MACD/6PxKvMPHrKG7/PCXmIvDCcXPZk/Q8lOsGVs9fh6A
-	 lXKnMsnetwamX9C7IFjzFtmqKxuKeLxwcsQAhb8+vhbxvrf4fTvUJA9R1aDj0KQPzvA==
+	t=1792571799;
+	b=tEieyiiwslFJgJrtv4ukcj7XHUwdt0ScMFD4BFNH/J3SGaLo/w7ZpkRQHpdF3Whc6ykC
+	 AOW23P/FkD+wLmELXtgCaTKJp+XjJTZNKXsBGmGULjziZUSybXLtpSpTqoY/YI/9ypP+C
+	 rVHtyZTBrLWniwcTXK1ZycqCqR+Ecd9XlIsQ9V9qzDl3sr+m1S2B+yA2VNC0jJ3RFfSpl
+	 JMowhTNZjtppSCdy7yUaLhhygwzZyz9uY5ZCv7wfzGMmM4Ixfcg6t8vOcEfX0HPWpI5VN
+	 xKIt6w9I38zko/upsDjPz/pSWZ9gZSPKXpGuHBvh5xhoFsTZWvVZ/EjhaROH9OhqCkg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792567934;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=6QAiK2mo/o5kQv4IXUx/z21UDEdea17cHOw3H4USIDI=;
-	b=GdoraQmBDmAm1i5uqMAlfnZkwnYgsohYAxVEoYo7Uu1+5rW7WoI9s2ev5p3+lCXs3rUS
-	 DzTIh6hP8Lp4yQ1fjkJWRxDRCq8RHPHHR0fBL0Z85OyK0LnVTB7cYrzLCYypJoepdVwEW
-	 kxSUZim6L79vXW6AMKpG0D0WLTae3YBH5KHJ94HOO5AmYkTqZXGn7gZ+Dit67zJyW6Zs9
-	 uxy/8Oq1uj4i0gIN41YpJcEoxUFvLs3LAF2CRZ1fY4gTFVThuUnUobclkpN9XNslV5JJK
-	 TspMh/rFFd326p+LxRMCwrtxiRqAwR4+tqy/dvalXsV+e5n03Mu9B61NnPtBRDuc1kA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792571799;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:Subject:
+	 From:To:Cc:Date:In-Reply-To:References:Content-Type:
+	 Content-Transfer-Encoding:User-Agent:MIME-Version;
+	bh=9K9KRsEaxoM/l89/G7N6lVBzd9yD1GfxwhXMyc+Mzdk=;
+	b=soLdNLV3en6o+BLnqBhvoNFagyRsEw6Qm5NYEw3XjNIFvs2QaEgrZHKVuO2gPiMF+ukZ
+	 c/mHmYyJvtjgAqq/g7ixDbclJ0XSfYnb0etd8HIyJkmYn6dzszbXUun0CUKCtzCgBysIp
+	 EB5/bf4C5ieuWBTNyJUWv0M0H+10a64DRLrU0JSLfCtsPposcmcaBP1jjWBrVAUpUih9b
+	 RBheTTYI5ynGKnWreVKadwpwcUOCEDNgT3IHIeETJBK6Ao6AQC6tDyp9Wvet2exBv6dRc
+	 G5zeZrss0D6zJ5FpYjVpeEHFLd3qTAJEFdNdSr3DFYPJYvzL1Ougr5+i8Tu79oH+eug==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=linux-m68k.org;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.221.180
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=kernel.org;
+	spf=pass smtp.mailfrom=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hyTAEOUl;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E792606A31B
-	for <linux-m68k@vger.kernel.org>; Wed, 21 Oct 2026 07:32:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0E792606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-5eac6c5f927so114884e0c.0
-        for <linux-m68k@vger.kernel.org>; Wed, 21 Oct 2026 00:32:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792567933; x=1793172733;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=6QAiK2mo/o5kQv4IXUx/z21UDEdea17cHOw3H4USIDI=;
-        b=Xk59b7xEuRHLTNZcBj9B5AB+RZsPSFrXuECPWc6WxlyVhTIVqC+apFdDi/XvMxMHZn
-         8zjgqNYfqTqnSU5yMcVovoxFJxvOFJA29Sykj1tGZOP1nxBQUF1hVrihaCB3bwPPYU5J
-         NUw7BH563fGI8bKcONwnoX4uKcI7/LdGRlSarwIWhzIMBLEyZy3xSpz2VKz3DFRH40oJ
-         ktP3ZJjLc8pSRTt5iZTRXlWA39dJoWJwc2BR+zG9WruhLEFBY0j1N5F+Syp9mOwR34PH
-         Hct0NdIAMVGudM2AfMTsbZYnstpw7CUvVaqoypzzNFsNfV++AhoIx9zlmbSY6MltQaqN
-         pCeg==
-X-Forwarded-Encrypted: i=1; AKwUvBxMZR7PUyDpDCHpLKZ4dfsLodAclkFkkUilNYVLSo/zqJCEnVsqKUGD9UxRW/MBgMG9p+V+ZShmskjW@vger.kernel.org
-X-Gm-Message-State: AFq9FYIOrjPqMSg6MrXQ0rgb++zQZV59cJV9tkgi5ip44oC6+Y+4xT87
-	DBwJByU6fyCg/e6yJRWHB2QGfr+RhEA0WYVCi0qZ2qPc1E7YXn2Lb34vZzpLMzngOnw=
-X-Gm-Gg: AYBFou16mOGXiZ+Pmv3jj+R5se/4Ij9Yi/H7oikpiyCtezb0pJRrl9sgvgxVsJH1g0O
-	u4lSYysM+lLjpw/PJBqyhbFHywWPd4iposiuRZBe2zhvL9vc9AwTMLUXKHxDCT7vVbtYZDz5NrN
-	FoaDShQ9DKJhWBnfSckI15QeDQbL2u5HZdC35HUN+4nO4mDCf8M6Fpx7051Ao6AUd95KDTB0j7V
-	OiYyNRlB+hZU8+sBtfzE66aBHa94FiJcv7MCKVW8rKElna04/8T2DuFUjOQtzR/fMfX7r9w51RF
-	5/p0pOLcfDWRuc97VyvKk1z3Pe3OVFdu0fwTyTUJp7o77BFNDgWrSF2/CURG3aqZWvhd3TygIxW
-	w0B1GoGSPTcRYsQd/qdcBrxF5VzCL/oJ1WwazCizQt7rwEcS9mkmGXCJMMUo0tinLfLwoOI6Wes
-	wb2rlPoIldVcMjnJ2el9v9sQaqXylW4TzYGe4Mr8CoO4IyNAN3ySkpRhuCXWxq2YHZVhmbz+qut
-	uexm8c6CYWZUAre6NRzr4EZPzCXqlFhyQv2+jpGykmsODnJnj9LbFMEyJnXxvKdvCM5VTXEjNbr
-	JNaseZNgEDQ0fGg7hQ==
-X-Received: by 2002:a05:6122:3114:b0:5c9:a60d:3275 with SMTP id 71dfb90a1353d-5eaebd739fdmr400085e0c.9.1792567932932;
-        Wed, 21 Oct 2026 00:32:12 -0700 (PDT)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5eae98237b0sm2250859e0c.15.2026.10.21.00.32.12
-        for <linux-m68k@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2026 00:32:12 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-9906c85122cso100123241.0
-        for <linux-m68k@vger.kernel.org>; Wed, 21 Oct 2026 00:32:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBwFeLhbHsiS8V5bNPLcm0ynRSaIRR3PRvOkJBlkIN8TUjKUkXo5hqn07ND3fOg0l3ILihh/myOFDmcR@vger.kernel.org
-X-Received: by 2002:a05:6102:2c8d:b0:7cc:2152:4f95 with SMTP id
- ada2fe7eead31-7cc9246d45amr430597137.3.1792567932012; Wed, 21 Oct 2026
- 00:32:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3047A606A31F
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 21 Oct 2026 08:36:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3047A606A31F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hyTAEOUl
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id EE5E860098;
+	Wed, 21 Oct 2026 08:36:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D01C1F000C9;
+	Wed, 21 Oct 2026 08:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792571797;
+	bh=9K9KRsEaxoM/l89/G7N6lVBzd9yD1GfxwhXMyc+Mzdk=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=hyTAEOUlLJ/6crVLQzgFPw5YC+r+R5PbTBPw29STrIIYl2Cjfj+WPZsT/QLY5NUnu
+	 urFfRgJEQfsgwZnOQV8u9PGNchT8igPnjOfz/w1Qy3Jgyn9HJlpVMrYXSeOONeklbH
+	 Xj0kS2H2acSMiVJxLoxAqpEjUET8LaUL8UWCyPLd+GEsBSskNh8w/7I+TvaQwmPyri
+	 APQ0zQgHqoFxXSLTeJX48AWyUagcUZaiu8Zsaip8tMiG89VE/eNmTLqXAnng4UZWx7
+	 b/FDAEwBv0KglNmnfNdQkXU/MrQUO9sZQALThtBUm45H9CCpcRKzX+ZiFHLvlOEdFB
+	 GIxBg8zxlrUCw==
+Message-ID: <e7888169bdc76ea40fcfe782c2bc9b70e037dfc6.camel@kernel.org>
+Subject: Re: rds_wq UAF
+From: Allison Henderson <achender@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Joel Granados <joel.granados@kernel.org>, kernel test robot
+	 <yi1.lai@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	netdev@vger.kernel.org, wireguard@lists.zx2c4.com, rds-devel@oss.oracle.com
+Date: Wed, 21 Oct 2026 01:36:36 -0700
+In-Reply-To: <atdoGiW_sHlWgOwt@redhat.com>
+References: <202610190310.9737b2e3-lkp@intel.com>
+	 <atYB0bm9eEXp8A2g@redhat.com> <atYW0K3t57puHeLW@hobbes>
+	 <atYuE1xnVYe0BDG4@redhat.com> <atY42k00k0Waj6o4@redhat.com>
+	 <42964fa071bd8dcafd418c89be6d66856def4dc5.camel@kernel.org>
+	 <atdoGiW_sHlWgOwt@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3-0ubuntu1.1 
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -80,71 +76,91 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261021000338.2160223-1-miro.kropacek@gmail.com>
- <20261021022336.2232886-1-miro.kropacek@gmail.com> <c77944ee-f170-ce57-9065-d7d49fcfed6e@gmail.com>
-In-Reply-To: <c77944ee-f170-ce57-9065-d7d49fcfed6e@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 21 Oct 2026 09:32:00 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXWHXjbCNojoukGq4OWvLSibk-goJo4quLdbOj01neOew@mail.gmail.com>
-X-Gm-Features: AclHuK-O5R44UqsZeHR5r5kV3Sh9TQiIGd4qHB-xb-ZK5hAF_St4Y5l-i_lJpFI
-Message-ID: <CAMuHMdXWHXjbCNojoukGq4OWvLSibk-goJo4quLdbOj01neOew@mail.gmail.com>
-Subject: Re: [PATCH v5] m68k: Fix atari mouse movement
-To: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Miro Kropacek <miro.kropacek@gmail.com>, dmitry.torokhov@gmail.com, 
-	linux-m68k@vger.kernel.org, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 21 Oct 2026 at 04:51, Michael Schmitz <schmitzmic@gmail.com> wrote:
-> Am 21.10.2026 um 15:23 schrieb Miro Kropacek:
-> > Kernels are built with -funsigned-char since version 6.2, resulting in
-> > the signed 8-bit position deltas reported by the IKBD being
-> > misinterpreted as unsigned.
-> >
-> > The hook is handed a raw IKBD packet, so take it as a byte stream and
-> > apply the sign to the two displacement values alone.
-> >
-> > Fixes: 3bc753c06dd02a35 ("kbuild: treat char as always unsigned")
-> > Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
-> > Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
-> > Cc: linux-input <linux-input@vger.kernel.org>
-> > ---
-> >
-> > Changes in v5:
-> >
-> > - take the packet as u8 * and cast only the two displacement values,
-> >   as suggested; this drops the call-site cast v4 needed, and with it
-> >   the -Wpointer-sign warning
-> > - add the types include atarikb.h now relies on
-> >
-> > The same cast of the two displacement values was tested on an Atari
-> > Falcon030 with CT60 in v1 of this patch; v5 differs from it only in the
-> > type of the hook argument.
-> >
-> > Michael's Reviewed-by from v3 is dropped, as the approach has changed
-> > twice since.
->
-> Dmitry's reasoning makes sense to me, so we're back on v1 with no change
-> in functionality.
+On Tue, 2026-10-20 at 15:09 +0200, Oleg Nesterov wrote:
+> (change subject)
+>=20
+> On 10/19, Allison Henderson wrote:
+> >=20
+> > On Mon, 2026-10-19 at 17:35 +0200, Oleg Nesterov wrote:
+> > > >=20
+> > > > But. rds_init() can also fail even if CONFIG_SYSCTL=3Dy, after
+> > > > rds_sysctl_init(), so to me this looks like a bug in net/rds/.
+> > > >=20
+> >=20
+> > Yes that's a separate bug, so I'll send a separate fix for that.
+>=20
+> Let me try to summarize.
+>=20
+> If rds_init() fails after rds_threads_init() for any reason,
+> rds_threads_exit() will destroy/free rds_wq.
+>=20
+> If rds_rdma_init() is called after that, and rds_ib_init() fails
+> after rds_ib_mr_init(), rds_ib_unregister_client() will try to
+> flush the already freed rds_wq.
+>=20
+> But we have
+>=20
+> 	module_init(rds_init);		// net/rds/af_rds.c
+> 	module_init(rds_rdma_init);	// net/rds/rdma_transport.c
+>=20
+> and IIUC the order of these initcalls is not defined. So if
+> rds_rdma_init() -> rds_ib_init() is called before rds_init(), it
+> can do flush_workqueue(rds_wq) when rds_wq =3D=3D NULL on failure.
+It is sort of defined.  When built as modules the order is enforced by
+symbol dependencies. rds_rdma and rds_tcp need symbols exported by rds
+(rds_wq itself is one of them), so they can't be loaded unless rds_init()
+succeeded.  So the rds_wq =3D=3D NULL case can't happen.
 
-If it's just a byte stream, one might not bother doing s/char/u8/, as both
-are the same type anyway... and then we're really back at v1.
+What can happen is what was reported: built in, rds_init() fails,
+do_initcalls() keeps going, and rds_rdma_init()/rds_tcp_init() run against
+a core that has already been torn down.
 
-> Looks good to me, feel free to add my Reviewed-by if it helps get this
-> merged.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-for the arch/m68k files:
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>=20
+> With or without CONFIG_SYSCTL. Right?
+>=20
+> But it seems that rds_ib_init() doesn't need to flush rds_wq on failure,
+> so how about the patch below? Of course, I have no idea if net/rds has
+> more similar issues with rds_wq.
+>=20
+> Oleg.
+> ---
+>=20
+> diff --git a/net/rds/ib.c b/net/rds/ib.c
+> index 786f39169bc1..cde2d1bfabbd 100644
+> --- a/net/rds/ib.c
+> +++ b/net/rds/ib.c
+> @@ -619,7 +619,7 @@ int rds_ib_init(void)
+>  out_sysctl:
+>  	rds_ib_sysctl_exit();
+>  out_ibreg:
+> -	rds_ib_unregister_client();
+> +	ib_unregister_client(&rds_ib_client);
 
-Gr{oetje,eeting}s,
+This works for when there are no IB devices, as in the report, but the flus=
+h
+is what ensures rds_ib_dev_free() has finished before rds_rdma.ko's text go=
+es away. =C2=A0
 
-                        Geert
+If there is a device,  ib_register_client() has already called rds_ib_add_o=
+ne().
+Then ib_unregister_client() calls rds_ib_remove_one(), which drops the last
+reference.  And then rds_ib_dev_put() does queue_work(rds_wq, ...) on the
+freed workqueue anyway. =20
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+So I think the fix belongs at the transport init: if the core didn't
+come up, rds_rdma_init() and rds_tcp_init() should return early,
+before they register anything.  I can send that along with the
+sysctl change tomorrow.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks for working on this!
+Allison
+
+
+
+>  out_mr_exit:
+>  	rds_ib_mr_exit();
+>  out:
+>=20
+
