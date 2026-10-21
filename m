@@ -1,93 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.54
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792546919;
-	b=KejQ12x8lBngNkvBAMUeN01E1CfZjI3NyBuxClUpDakCYi/aYkqT0flICFV2Ff33FDRp
-	 ojgBKhbh6OZaNFd5lXctaVLTctNuAcgxX4Ai1x7yHRvk1+kXPKSImbbpjfUiVlFVimL6v
-	 NHYyonk1fhVy9Msrs2DKUM0iay+q1QEnA3rVzTP54KtpjibxY/6+LfuSDMkqoCiloYxnp
-	 aGDDP+VitfbWhEYtummci91xta2ESbJhLRXxmVA+1KcDV6avlLuVr17OJ+zzK4gKMCnOR
-	 TbQhvM6O/u5drw376fZd+wkZ15NfDIrW+zchyeAQPQPJkfM5ihQUQkbJ3f/KKsVTtGA==
+	t=1792549442;
+	b=e90JCGnzcvOSrZHj5oF1Hx9teYwv7TG2E0I74pX+AiXFW/EE1cEzBZbzw/Y3POZd0lGH
+	 FiBhoq4PgJuUnTzGlofYmcBAbFh2Mlk1DcYDaaUGEEi8O7it4Pdi51w1ICjINhAa6hHKx
+	 7odiDWycCo/Gz2oAJHNv/MMtTjdGBmk6tlqJnD8HZ0Tg/Q+FOcp6PjW3dymgnEgeNxEtl
+	 +KZqclIdUxO/TRcModOtL+3ZM8aDYr02w9LXsSgWK6oZvGDJjL4aWUeRshNvh6WJSvz2B
+	 5n4TTAGnUquDGOschkggFoQPbTsFGJtlg7MKMVQIPoi+s5Fu1pOS6E4kRKvwQsSOHgg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792546919;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792549442;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To;
-	bh=bEk7FecfY4nY2BV2BtdF4RroL7r8NrfcNW+Labz3ttc=;
-	b=L8b+e60DakK8o0nXkdbog/4xrwTn0WMNGzdnWbP9DoDDHooETVegecWZi8ALO0GdYjig
-	 RhuUIfP9AHsT94N9X+2dZg0w4htrUyhIXXpBQ4gjgDf9bBuBqWkWBBRdOBVvaGPJ9I2aF
-	 4yLAMK8+LmVvhlbOmuU1MzgDpznqcNklSlEeughAWjR1pOYpxwtidi7mRjlrfFVpXtvZs
-	 VDxK/3M5gkRn7X5cshyfSyeCIG7Bokn/hWUWPbrKizDyjuMqYJgLsxrUhN+M21GXeDupe
-	 IRJ9StkQz/louWsPtV/bvFtdohppk+s4J2FBGHDzHwaS9Jy945xDgQ+DX17mOk5On2g==
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=bnvCdU51kfAyTXcgIjB3Wk7G+GMeZALX828YqwIPm9c=;
+	b=vA5E9hi0Fw1BH/PgkE6tzp1sw7QxNF7VwA3mmC2iZP+bcgLSuMPujNWBa91RNR7M0LGg
+	 j4CiozJUwGZAjMPNA/zjl4TlBNGNQw+c4cg/JHHF1ftZ32Ma37bH4Y3qDgCbaYU81ZN+g
+	 DCK7rV2OiACQKXnRjQH9zv0ZEH7cZtYEb+ebzrU87EHGC8lqO8kL3xLO091CNxgfIZBTJ
+	 MGKWPjFCawh2tSLvg4ngKjmngLngeexGJE+QXcTygDK1dI3+bJ12G78YDkC7SDFk3D9an
+	 teLGwy7ae3+XPlIacDOFX5+8vydhbZNH84c6P1xLy2uDWZkTKqdwvzdObDuhpd7XOkg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=MVBfjRxU;
-	arc=none smtp.remote-ip=74.125.82.54
-Received: from mail-dl1-f54.google.com (mail-dl1-f54.google.com [74.125.82.54])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=p6PRR2lQ;
+	arc=none smtp.remote-ip=74.125.82.51
+Received: from mail-dl1-f51.google.com (mail-dl1-f51.google.com [74.125.82.51])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50044606A31A
-	for <linux-m68k@vger.kernel.org>; Wed, 21 Oct 2026 01:41:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 50044606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA8A606A329
+	for <linux-m68k@vger.kernel.org>; Wed, 21 Oct 2026 02:24:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4EA8A606A329
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=MVBfjRxU
-Received: by mail-dl1-f54.google.com with SMTP id a92af1059eb24-17bc533fda3so270462c88.1
-        for <linux-m68k@vger.kernel.org>; Tue, 20 Oct 2026 18:41:59 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=p6PRR2lQ
+Received: by mail-dl1-f51.google.com with SMTP id a92af1059eb24-15354aa70e8so735169c88.1
+        for <linux-m68k@vger.kernel.org>; Tue, 20 Oct 2026 19:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792546918; x=1793151718; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=bEk7FecfY4nY2BV2BtdF4RroL7r8NrfcNW+Labz3ttc=;
-        b=MVBfjRxUKnJTPV2PbUgCrwO6K+tafK6pr315kXrirjfWGz0HxESZGdJkFkFw2d+aCY
-         gZusa9//Cq3sm0YTnSxUybcFeRik8gNb6Mz8tb4uFW0Q0h0ueYFa3ATAyFOIrBR0xzpR
-         y11eC3o47YA1l5CSdaU7cdaXQputkQ/2F07/fchjp4McxwtJOYs6fQDazoDN5yXaMRzf
-         b20n7g54e/oF8h+TaVJqsGRE1ENHbu3fGCNlrEVnVnD4nD9LdeEZq5O4Iz+vbt39Kcj+
-         6d1C2t9Y2kE3kJWUi1OlYHZbEoqSLpt4XtzMdLPnyuhuQAScR6WvBY2FivJ3tquuqQgF
-         +I5g==
+        d=gmail.com; s=20251104; t=1792549441; x=1793154241; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=bnvCdU51kfAyTXcgIjB3Wk7G+GMeZALX828YqwIPm9c=;
+        b=p6PRR2lQKy1Q0NLU7/1AjcF+knFkI0/JwZc+mHmX3rJME2rpFT//uKeWXdJgNms5Vf
+         tWP6r8owfjJV37m2A87pydh0tWsMesDLalVYQJpdNA5aueSsjhJvq+Cc39Q4/4PoUgZW
+         o9ZKSbKdLkya+iSM8hnlu0rXJevJXqCDAMkKlxlZyAC8Gws3CwmYIFrqpZpacthmb9DS
+         N6U33yPvK08BnUOv/auKzL/c4bLFFgiFTgFrHMJVHt7GPcK4vQXgAqz5+wQajzOGsn8j
+         KOhglHF5VVcmHoAlXNye2oQm1B8fYYokIVtnSH1hNVvSb6DUijJgiHWaLnwdg8IXEISN
+         VWRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792546918; x=1793151718;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=bEk7FecfY4nY2BV2BtdF4RroL7r8NrfcNW+Labz3ttc=;
-        b=dME7zZSgUxg0WXVTIZMuzF9PQ477Vmnh3MlKpbDnhuDJTVgvjb9fdIolykUtOcs2lV
-         JIKWmFeGUk/TyfFa9JemosjP7vZCyPeaUtqa5bxISEqFmlrIxqsidi7o1q5cmzKQvGC7
-         k9itUSPTaDdzPNA9rvjrnRZ7ZG2Mc9F0KumRtC77vuicCPgyPf35s0GxJHTKDfqiV121
-         Bi1UpAQAkoo/I3PuMOm9jk+LAmzdtdQqh729w2TJgm8M7J3u4eqE70zl8GsWSSZZKuv6
-         0UgDbFLOjp0HnJO0KR4QwCFWoqrQ7bmYjtJ8vWmMAlcIcp+IV4E/3bL3EMnTmfsFGJus
-         RVMA==
-X-Forwarded-Encrypted: i=1; AKwUvBwt/ZhCixiwxJrAan2+hSpMe3jZvEOT1GbYqGm/EcEXndLFtD7LfKF7xKXcK7Z+nkAEAiiaCmH0SO9z@vger.kernel.org
-X-Gm-Message-State: AFq9FYKdU6KDIxw2mVDrsDIHuICpvzZC6fbrDZF7rnlRSvID9p/xvJyw
-	2USyTlFFizNaMBs7KXElrCwhg42VW6Hvwa4EmwMp0KzMo055jgKj/a5nMQCOOA==
-X-Gm-Gg: AYBFou3rTYUcBT6lI4eDWrllBKPQhFtumfXiZNBCrhUczVXmAMZFxlxOqYjHoZV6gh7
-	QFMIL7BhK33WazKF3Oz1OVcqjxauPZsP9uwEiTsUVFoQEzcoBUrfbaKTWpo/FRv2N5xdR5jwEx8
-	ObOT2Wxc84ckp2Gx/CnMyOL1j2U70czRhGHnyR/RSFPyyorJGppg7Ie1w9M6vjxNchxYKHrYVmg
-	ossNEKFDbY/oqka59slIrr5JNpRfg31YPn59mGNVUALQjyrLD/q1bYFJQVDdK5NlvaYN0W/XBoi
-	Gkh0U3TDIiGa+oG34tjwCVLDuLAWR08BWq2eu6BnRWxU9gzgSkBhwJ4ZqI2rFqQab/WGp+iAN5f
-	s1v0ghEZuC6++iNUed+HxsDUZ3WqKU4ZVQ5zChBeypkIUO+r4e6xA9xx6z3vWzxHV4KSJf30hr9
-	2eH7Ub4j+2CsUWABT3lXVEzYSGgz8hbkF4qKM9Fw5zVI+CXf4YuJyHEY0dwvvr2mOlN/9T1tetA
-	e8Cu75F/2/XW3DX+lUr1rf5dRDwStMGqajDXsbs6pAJQXAv+H3VXwT6LZZygpJalqdP6KR/EVSz
-	QZq3NxDfQukastTIHHi5yg==
-X-Received: by 2002:a05:7022:eb55:10b0:187:cf46:4c51 with SMTP id a92af1059eb24-190a728a309mr818013c88.31.1792546918290;
-        Tue, 20 Oct 2026 18:41:58 -0700 (PDT)
-Received: from google.com ([2a00:79e0:2ebe:8:92d1:8038:c4e7:1f0c])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1903bd6b7ccsm2072834c88.13.2026.10.20.18.41.57
+        d=1e100.net; s=20260707; t=1792549441; x=1793154241;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=bnvCdU51kfAyTXcgIjB3Wk7G+GMeZALX828YqwIPm9c=;
+        b=kLzrcBjYzXN8JhstAw1tmM2xoZjYBW78dx3uF7ekLZnQH7o/KtuXtQi5eFhkz8KH9s
+         VRt+mMzM6yBXMpfrQ576/dk3ldetegiPX5pra3kE9DnXFk5VwN/iqP6Ic0Ju/PvSqm8b
+         s0C68vHow4S7Qto3uj7SP4n1TI7dpu9KqwTP+L3cKoMlq3XX37MmygSYooF0FnUzroY6
+         7bDDKY6fDTnhnUxMsLginEK14xRr1DyqUOrtjdjYoQ0JX9vDI6eTHj+KWxaGAiAfBSUq
+         Um+Tc3Vskt7mzD+6FjaZR0hs/De4z1YW7JRcd/J68Q3mvT7OKzaf7jyjqI6buOU61nEt
+         gUvQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzh0RDkQ2qaz8lkgftbBM/NBi85RbexQJ2r5oCND7EO+JBZ5sg0c5ok6x2nqcOzI/EBiMx+l08fOVkE@vger.kernel.org
+X-Gm-Message-State: AFq9FYLG15bnU0jTfwN9ckwzWh4ipUUrh4jlzAaJRdlfT9ndU5Y0sVan
+	IbBFKeGdk6kYYNDV6j9ohqWTFIO0GQgAmU/WhOouXJJ/duwoIUV3fYIn
+X-Gm-Gg: AYBFou1Vi5x67Z/IMjFu4Iv4A+nMsSFffzapvVz5J6fltRWl/OVLs8IFHag+lPhJuRI
+	Uk6wy3lGZcHYXSWFkcdF3Fr82Zv9liBi+ObaU0VQqbyeRTj1tgd/udnXsKpfabhyh5YSGrcLIvV
+	voB90LCeFfiWOkj1lE0ou2lhPe1P6qlJUcDhX9gV7E19GND4kz/NwUcsiTqPHY9VafSAvnrVvkQ
+	NtklmA4R0nVNbRbQka2jDXL8Krfg+XeDUBX3EMOPQs5dsxnwP2m1AYs3vsckoj6deXZwAcP9sBl
+	YB2IwsXAPZapQyoRysK9FMN+bgwdUrrtd2Ir08pAf4Wpffbj9AtG7YVYIZO2YNtJ2RWzogjRQTc
+	IEgk5kJfmNkJ/6lUWh6ggsQZ9jfoihgyCEMZHBgKipB0SBWIxNLnGeHHnLItklZvuWZIP3vFlLs
+	K5bNDKxhFxKuQXSIPjHYOl5ooWF2XsBBr+ysMUSBdBgUsuK9tgQ1oOS14w663nZRH6cFEMp8O8t
+	hntlqrpaHub/QvcePz4dvI0fFzxsw/Jy2wOmR+oWAuEyZEQ7vOd35yycfGH29kvt1r2kgkdcGgN
+	IJzYTSkTcnM6ibs+Rge08GjZLFZez0e67PHIzwRAS8msGE200GhPO8cOuZ1lqSbm6WpLVuyJH13
+	OGGIghMbLWDSFIlb+9I/Huv/36yabSl5/GoX9J0Zzh5xEQPXrc0oq4j4D4nZYnFdscteVHOKSCv
+	4KXlzFTqaBZHtaEb7kaOznij5fbQ==
+X-Received: by 2002:a05:701a:c90a:b0:152:92c6:8b58 with SMTP id a92af1059eb24-190a6adaa1emr739535c88.35.1792549441364;
+        Tue, 20 Oct 2026 19:24:01 -0700 (PDT)
+Received: from lenovo.localdomain (42-155-215-210.ipv4.nexon.net.au. [210.215.155.42])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1903d3ae06fsm2409008c88.19.2026.10.20.19.23.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2026 18:41:57 -0700 (PDT)
-Date: Tue, 20 Oct 2026 18:41:54 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Miro Kropacek <miro.kropacek@gmail.com>
-Cc: geert@linux-m68k.org, schmitzmic@gmail.com, linux-m68k@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] m68k: Fix atari mouse movement
-Message-ID: <atgXH5V-q8fYe0u4@google.com>
-References: <20260819222838.21256-2-schmitzmic@gmail.com>
- <20261021000338.2160223-1-miro.kropacek@gmail.com>
+        Tue, 20 Oct 2026 19:24:00 -0700 (PDT)
+From: Miro Kropacek <miro.kropacek@gmail.com>
+To: geert@linux-m68k.org,
+	dmitry.torokhov@gmail.com
+Cc: schmitzmic@gmail.com,
+	linux-m68k@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Miro Kropacek <miro.kropacek@gmail.com>
+Subject: [PATCH v5] m68k: Fix atari mouse movement
+Date: Wed, 21 Oct 2026 12:23:36 +1000
+Message-ID: <20261021022336.2232886-1-miro.kropacek@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261021000338.2160223-1-miro.kropacek@gmail.com>
+References: <20261021000338.2160223-1-miro.kropacek@gmail.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -97,26 +103,100 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261021000338.2160223-1-miro.kropacek@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Miro,
+Kernels are built with -funsigned-char since version 6.2, resulting in
+the signed 8-bit position deltas reported by the IKBD being
+misinterpreted as unsigned.
 
-On Wed, Oct 21, 2026 at 10:03:37AM +1000, Miro Kropacek wrote:
-> Kernels are built with -funsigned-char since version 6.2, resulting in
-> the signed 8-bit position deltas reported by the IKBD being
-> misinterpreted as unsigned.
-> 
-> Carry the sign in the type of the mouse interrupt hook. The scancode
-> buffer is shared with the keyboard and joystick paths, where unsigned is
-> correct, so it stays unsigned and is cast at the single call site that
-> passes it to the mouse driver.
+The hook is handed a raw IKBD packet, so take it as a byte stream and
+apply the sign to the two displacement values alone.
 
-The hook receives the byte stream, so I would rather have it accept u8*
-and then do signed cast for displacement values (and only them).
+Fixes: 3bc753c06dd02a35 ("kbuild: treat char as always unsigned")
+Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
+Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
+Cc: linux-input <linux-input@vger.kernel.org>
+---
 
-Thanks.
+Changes in v5:
 
+- take the packet as u8 * and cast only the two displacement values,
+  as suggested; this drops the call-site cast v4 needed, and with it
+  the -Wpointer-sign warning
+- add the types include atarikb.h now relies on
+
+The same cast of the two displacement values was tested on an Atari
+Falcon030 with CT60 in v1 of this patch; v5 differs from it only in the
+type of the hook argument.
+
+Michael's Reviewed-by from v3 is dropped, as the approach has changed
+twice since.
+
+ arch/m68k/atari/atakeyb.c        | 2 +-
+ arch/m68k/include/asm/atarikb.h  | 4 +++-
+ drivers/input/mouse/atarimouse.c | 6 +++---
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/arch/m68k/atari/atakeyb.c b/arch/m68k/atari/atakeyb.c
+index 49a9a459bdf4..b715e2b8351c 100644
+--- a/arch/m68k/atari/atakeyb.c
++++ b/arch/m68k/atari/atakeyb.c
+@@ -39,7 +39,7 @@ void (*atari_MIDI_interrupt_hook) (void);
+ /* Hook for keyboard inputdev  driver */
+ void (*atari_input_keyboard_interrupt_hook) (unsigned char, char);
+ /* Hook for mouse inputdev  driver */
+-void (*atari_input_mouse_interrupt_hook) (char *);
++void (*atari_input_mouse_interrupt_hook)(u8 *buf);
+ EXPORT_SYMBOL(atari_input_keyboard_interrupt_hook);
+ EXPORT_SYMBOL(atari_input_mouse_interrupt_hook);
+ 
+diff --git a/arch/m68k/include/asm/atarikb.h b/arch/m68k/include/asm/atarikb.h
+index 68f3622bf591..bdf67bff1472 100644
+--- a/arch/m68k/include/asm/atarikb.h
++++ b/arch/m68k/include/asm/atarikb.h
+@@ -15,6 +15,8 @@
+ #ifndef _LINUX_ATARIKB_H
+ #define _LINUX_ATARIKB_H
+ 
++#include <linux/types.h>
++
+ void ikbd_write(const char *, int);
+ void ikbd_mouse_button_action(int mode);
+ void ikbd_mouse_rel_pos(void);
+@@ -37,7 +39,7 @@ extern void (*atari_MIDI_interrupt_hook) (void);
+ /* Hook for keyboard inputdev  driver */
+ extern void (*atari_input_keyboard_interrupt_hook) (unsigned char, char);
+ /* Hook for mouse inputdev  driver */
+-extern void (*atari_input_mouse_interrupt_hook) (char *);
++extern void (*atari_input_mouse_interrupt_hook)(u8 *buf);
+ 
+ int atari_keyb_init(void);
+ 
+diff --git a/drivers/input/mouse/atarimouse.c b/drivers/input/mouse/atarimouse.c
+index b1219cc4d9a2..c5b794262e85 100644
+--- a/drivers/input/mouse/atarimouse.c
++++ b/drivers/input/mouse/atarimouse.c
+@@ -60,7 +60,7 @@ extern int atari_mouse_buttons;
+ 
+ static struct input_dev *atamouse_dev;
+ 
+-static void atamouse_interrupt(char *buf)
++static void atamouse_interrupt(u8 *buf)
+ {
+ 	int buttons, dx, dy;
+ 
+@@ -71,8 +71,8 @@ static void atamouse_interrupt(char *buf)
+ #endif
+ 
+ 	/* only relative events get here */
+-	dx = buf[1];
+-	dy = buf[2];
++	dx = (s8)buf[1];
++	dy = (s8)buf[2];
+ 
+ 	input_report_rel(atamouse_dev, REL_X, dx);
+ 	input_report_rel(atamouse_dev, REL_Y, dy);
 -- 
-Dmitry
+2.43.0
+
