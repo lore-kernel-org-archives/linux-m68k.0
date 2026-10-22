@@ -1,53 +1,53 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792696565;
-	b=jED6VccZCDo5+bAEKDCS0MCQ/MMLnl/koFVWl8usZTbVRJwfUkitiAbaFuG+WnQPUivo
-	 YqvB6FTzNIuPpmbSAFjRJWbSFCTyesy41lW4Ao6w6u8hfOi90Je2g5rKGWVVjbwOsvWK/
-	 YKKhoCaSCeOUUtNzGI9kEJLTab3Wa+7jITfjjWDgDS6gppN3kNu8ju6kHkY7vuKqi8x7J
-	 P9EyY15VYKALkcactbe7btdxNkn/1eXK5CnnvmgXeW7ctNcCudbui4BKx1sRkLs5eM1+O
-	 ftHjRsgArTrvkQEPvuauUeiCr+7c9pFUSaPoPcQaprKr84d5cLMM7iw3wgeEO8FsFWg==
+	t=1792704853;
+	b=MfOZ7YeJLca+TyJk4Rdr31BOLwyWIbAF1iI5KMnuasNb3wGrLU7iVGxzdSUPr0hF9RZ0
+	 rlfCtzVjagGT8lTkHgYmsavEnkjrraPYpWKxqvBi9D+0W2CuUIUbj5igaE/RCUPWprVP7
+	 scpnM8i1vDmaIL4Mtvk1CLQRefpnjtikgLRJG6NwUJuFigCe+Pg2y0YjJP5+S/xYY01Ts
+	 lzLN/Aou5imrVZyBXjY7XULArY7juIzoYalxEfZXUy1htkrMlcfArDP3rxtZuAsqkeuuT
+	 M80gt+M4IGtaxOi5RHchX0rjKfd6bL+SFG+Q5eCqLfMoi+49ovmC6T8Oy5dcpi/ngfA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792696565;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792704853;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 In-Reply-To:References:Date:Message-ID:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=zfF/h5yN+JN0JXoERjM1UOmD6YL51qlegqbjQ5IjJaw=;
-	b=D/VxUFjMiAmubyrp24DYSy2pzqGyVUXw4dFFJg+42ypF6mk5wqWHQIFdZuWrGdgfU9bd
-	 MO/hyLnWNFGrNj7RwUlfAZiNOHR6Rq2nRyObSPbe85Bz5OSyQRZTA/dwc0rZGuhv/OF8t
-	 jxt/NHOMKuDv5v9DQlYBYs+TCNFPjbnkN39AyB3mejNaI/xO59ZNHnGdtKJGIp9FBXjI6
-	 SNdntanapfoMtRWasHuT8X+OgH/HDP2+gVqTXpwp/saAFFGT4s0ocfP6oBCk/yUfNLkzS
-	 SprFbdbrTiPmrHYXwptMMHO+nwi0MW7+b/F9NXIrBUSms0qrtT3K9++IMsoXn8QPQ6g==
+	bh=cn/ldllbPOccKT21c7wYmV4T2wO/b1MXRFJD8m7a2a8=;
+	b=4rv86Ib1Kr2H4w6D4kHWlhlrUwFQMNf8Dy4OYvA1JEEEsg9MymQkGn0pP47djiQmrP4g
+	 vgCk7C1Epx/EGXMphAmnPxxV+A0k9aCtraZRPE+WONqbH1eJVtWAjtVtCQNe8bI4kPVq5
+	 OKOoJ3FUaPSpwffY4RI79nNEwWN9muFsOdjYgIM6t7vtFZbsNCGqYyBcg+OaOVT9Rvboo
+	 BSwroRLMBa0lDslcnl7pzrxLLn3uGbBX+CWeSeBR4s1Rh9zLKs9t03yB2LDuA587zq9+5
+	 MHWVmj8TTpz5TbiNshkbYyc+5MqnW8PFUaDORY9LuF1v1hrFrG68K4qwIVKM/zyCqRg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N5BvSZtD;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XVuBmyz9;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F0160A2600
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Oct 2026 19:16:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D2F0160A2600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE33606A31E
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 22 Oct 2026 21:34:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2DE33606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N5BvSZtD
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XVuBmyz9
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 68628601F8;
-	Thu, 22 Oct 2026 19:16:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CE1F1F01825;
-	Thu, 22 Oct 2026 19:16:02 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 64430417B6;
+	Thu, 22 Oct 2026 21:34:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 470391F01825;
+	Thu, 22 Oct 2026 21:34:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792696563;
-	bh=zfF/h5yN+JN0JXoERjM1UOmD6YL51qlegqbjQ5IjJaw=;
+	s=k20260515; t=1792704852;
+	bh=cn/ldllbPOccKT21c7wYmV4T2wO/b1MXRFJD8m7a2a8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=N5BvSZtDsOnevI6N7z+hpnuDFwgb+Za20bBfcyPl1zdZ/RUM/vhVGgooCl8EukmyB
-	 v951DfxEQIGKmPlqDa47vEV9oOJpjd3jTdFHzFJ8cGbv5Ec+77S428dvBazQLk752d
-	 8oijRTx04uvdE5t0WJ3hFRzAydPhPUU1uC5jEb9/jBb3UCG/5+2vXEPMQ0qv3aaJy/
-	 fDrmEd5ydsQk2Juig/QI4K6qM7Xm060UN2bTZPYYJFIjTdDkBvnz/aEeUGpDN6dDMG
-	 QYnQUY/lk7t3H2ZOK5q9Ex67PolYwOb50JpOTpWf5Zn6NIH8OuYBLaiHmJRlGX+jMg
-	 L4eC2BtuFHQ4g==
+	b=XVuBmyz9FPf6yo7k98oYXwvQ2CrUnSJeao5n2AE3SOVv2l8FnxqKfufmW9zVdl1ZU
+	 7/jjD7DxhQpzVSSzHcskY8OGVIszVl5rWYnpntfdjYicc8x0Z6/FYO+Wzbi2T5kazo
+	 L8wyFIJNbwU+07rXhxkK8jIdHdZ6tDaDdk9OEGeX5P0F2vbBvHawTeck8SVK7xJ13l
+	 bLCTcobXnjYr+eT5lvnBYy6PAblfW6x3KhaSIJ+hc3UMxyUpT6D2mZRMwE0YVSvFIV
+	 kiuB3v9mM2Wpy9nJrXroSIigc+RYm5nfye7Fnp+zdBjGDGKIQfa7LtzprWk3IcxwgI
+	 p4Zzqpbf/Yjeg==
 From: Thomas Gleixner <tglx@kernel.org>
 To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
@@ -81,12 +81,12 @@ Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
  <hpa@zytor.com>
 Subject: Re: [patch 16/18] x86/entry: Get rid of the sys_ni_syscall()
  indirection
-In-Reply-To: <20261022142425.3Wx-RrU5@linutronix.de>
+In-Reply-To: <87fqxx1r80.ffs@fw13>
 References: <20260707181957.433213175@kernel.org>
  <20260707190254.493733289@kernel.org>
- <20261022142425.3Wx-RrU5@linutronix.de>
-Date: Thu, 22 Oct 2026 21:15:59 +0200
-Message-ID: <87fqxx1r80.ffs@fw13>
+ <20261022142425.3Wx-RrU5@linutronix.de> <87fqxx1r80.ffs@fw13>
+Date: Thu, 22 Oct 2026 23:34:08 +0200
+Message-ID: <87cxt11ktr.ffs@fw13>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -99,65 +99,166 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 22 2026 at 16:24, Sebastian Andrzej Siewior wrote:
-> On 2026-07-07 21:07:01 [+0200], Thomas Gleixner wrote:
->> Invoking sys_ni_syscall() from a code path, which already knows that the
->> syscall number is invalid just to assign -ENOSYS to regs->ax is a pointl=
-ess
->> exercise. It's even redundant as the low level entry code already has set
->> regs->ax to -ENOSYS on entry.
->>=20
->> Remove the extra conditionals and the function calls.
+On Thu, Oct 22 2026 at 21:15, Thomas Gleixner wrote:
+> On Thu, Oct 22 2026 at 16:24, Sebastian Andrzej Siewior wrote:
+>> On 2026-07-07 21:07:01 [+0200], Thomas Gleixner wrote:
+>> |[RUN]           Checking out of range system calls
+>> |[FAIL]                  x32 syscall 1:-64 returned -9999, but it should=
+ have returned -ENOSYS
+>> |[FAIL]              x32 syscalls 1:-64..-2 had 63 failure
+>> |[OK]                x32 syscall 1:-1 returned MODIFIED_BY_PTRACE as exp=
+ected
+>> |[FAIL]                  x64 syscall 1:1073741760 returned -9999, but it=
+ should have returned -ENOSYS
+>> =E2=80=A6
+>>
+>> and so on=E2=80=A6 The test has
+>>
+>> | #define MODIFIED_BY_PTRACE      -9999
+>>
+>> and the ptracer modifies the return code. However not always. Not sure
+>> if this was indeed a pointless exercise or not.
 >
-> Since this patch, tools/testing/selftests/x86/syscall_numbering_64
-> throws in this:
-> |[RUN]   Running tests under ptrace: modifying the default return
-> |[RUN]       Checking system calls with msb =3D 0 (0x0)
-> |[RUN]           Checking some common syscalls as 64 bit
-> |[OK]                x64 syscall 0:0 returned 0 as expected
-> |[OK]                x64 syscall 0:1 returned 0 as expected
-> |[RUN]           Checking some 64-bit only syscalls as 64 bit
-> |[OK]                x64 syscall 0:19 returned 0 as expected
-> |[OK]                x64 syscall 0:20 returned 0 as expected
-> |[RUN]           Checking out of range system calls
-> |[FAIL]                  x32 syscall 0:-64 returned -9999, but it should =
-have returned -ENOSYS
-> =E2=80=A6
-> |[FAIL]                  x32 syscall 0:-2 returned -9999, but it should h=
-ave returned -ENOSYS
-> |[FAIL]              x32 syscalls 0:-64..-2 had 63 failure
-> |[OK]                x32 syscall 0:-1 returned MODIFIED_BY_PTRACE as expe=
-cted
-> |[FAIL]                  x64 syscall 0:1073741760 returned -9999, but it =
-should have returned -ENOSYS
-> =E2=80=A6
-> |[FAIL]                  x64 syscall 0:1073741823 returned -9999, but it =
-should have returned -ENOSYS
-> |[FAIL]              x64 syscalls 0:1073741760..1073741823 had 64 failure
-> |[FAIL]                  x64 syscall 0:-64 returned -9999, but it should =
-have returned -ENOSYS
-> =E2=80=A6
-> |[FAIL]                  x64 syscall 0:547 returned -9999, but it should =
-have returned -ENOSYS
-> |[FAIL]              x64 syscalls 0:512..547 had 36 failure
-> |[RUN]           Checking some common syscalls as x32
-> |[OK]                x32 syscall 0:0 returned 0 as expected
-> =E2=80=A6
-> |[RUN]           Checking out of range system calls
-> |[FAIL]                  x32 syscall 1:-64 returned -9999, but it should =
-have returned -ENOSYS
-> |[FAIL]              x32 syscalls 1:-64..-2 had 63 failure
-> |[OK]                x32 syscall 1:-1 returned MODIFIED_BY_PTRACE as expe=
-cted
-> |[FAIL]                  x64 syscall 1:1073741760 returned -9999, but it =
-should have returned -ENOSYS
-> =E2=80=A6
->
-> and so on=E2=80=A6 The test has
->
-> | #define MODIFIED_BY_PTRACE      -9999
->
-> and the ptracer modifies the return code. However not always. Not sure
-> if this was indeed a pointless exercise or not.
+> Hrmm. That's weird. Let me have a look.
 
-Hrmm. That's weird. Let me have a look.
+So I clearly failed to decode the overloading of the -1L return value
+correctly and then failed to run the stupid test.
+
+TBH, this whole thing was a horrid and inconsistent mess.
+
+The logic in the original code was:
+
+    When the entry work code returned an invalid syscall number then the
+    return value in regs->ax was set to -ENOSYS, except when the
+    returned syscall number was -1. Syscall number "-1" indicated that
+    the syscall has to be aborted.
+
+     regs->ax =3D -ENOSYS;
+     syscall =3D enter_work(regs, syscall);
+     if (syscall_in_range(syscall))
+        regs->ax =3D do_syscall(syscall);
+     else if (syscall !=3D -1)
+        regs->ax =3D -ENOSYS;
+
+So if the ptrace check in enter_work() overwrote regs->ax and the
+syscall number (either as supplied by user space or rewritten) was out
+of range and not -1 then the x86 entry code overwrote regs->ax to
+-ENOSYS again. IOW, there is no distinction between a check induced
+abort and a syscall with syscall number -1.
+
+The rework changed the return value to boolean, which is true when the
+syscall should be invoked and false when one of the checks requests to
+abort the syscall. In that case the return code does not touch the
+return value in regs->ax.
+
+If the eventually modified syscall number is out of range then the code
+relies on the fact that regs->ax was preset with -ENOSYS, i.e.:
+
+     regs->ax =3D -ENOSYS;
+     // True indicates to proceed
+     if (enter_work(regs, &syscall)) {
+         if (syscall_in_range(syscall))
+            regs->ax =3D do_syscall(syscall);
+     }
+
+That seems to be equivalent, but it is not when ptrace() modifies
+the return value in regs->ax and also rewrites the syscall number to an
+invalid value or leaves the user supplied invalid value intact and does
+_NOT_ abort the syscall.
+
+So the reworked code does not overwrite the tracer modified return value
+with -ENOSYS in that case and returns whatever the tracer decided to put
+into it.
+
+TBH, that makes a lot more sense than the original behavior. If the
+tracer decides to fiddle with the default return value then that's what
+the tracer intended.
+
+That makes the behavior consistent vs. other abort scenarios:
+
+    ptrace()
+      regs->ax =3D MAGIC;
+      return true;            // Allow syscall
+
+    seccomp()
+      return false;          // Abort syscall
+
+So when the tracer modified the return value and seccomp aborts the
+syscall then the tracer induced value is preserved. That was the case in
+the original code as well because seccomp() indicated the abort by
+returning -1 as the modified syscall number. Similar effects when ftrace
+(BPF, kprobe) decided to overwrite the syscall number).
+
+Bringing the original behaviour back is trivial enough, but I'm not
+convinced that it makes any sense and is worth it. At least this
+confines the x32 specific insanity of treating -1 special to x32...
+
+Thanks,
+
+        tglx
+---
+--- a/arch/x86/entry/syscall_32.c
++++ b/arch/x86/entry/syscall_32.c
+@@ -77,6 +77,8 @@ static __always_inline void do_syscall_3
+ 	if (likely(nr < IA32_NR_syscalls)) {
+ 		nr =3D array_index_nospec(nr, IA32_NR_syscalls);
+ 		regs->ax =3D ia32_sys_call(regs, (unsigned int)nr);
++	} else {
++		regs->ax =3D -ENOSYS;
+ 	}
+ }
+=20
+--- a/arch/x86/entry/syscall_64.c
++++ b/arch/x86/entry/syscall_64.c
+@@ -64,15 +64,24 @@ static __always_inline bool do_syscall_x
+ 	return false;
+ }
+=20
+-static __always_inline void do_syscall_x32(struct pt_regs *regs, unsigned =
+long nr)
++static __always_inline bool do_syscall_x32(struct pt_regs *regs, unsigned =
+long nr)
+ {
++	if (!IS_ENABLED(CONFIG_X86_X32_ABI))
++		return false;
++
++	/* Preserve the historic insanity of treating -1 special on x32 */
++	if (nr =3D=3D ULONG_MAX)
++		return true;
++
+ 	/* Adjust the starting offset of the table */
+ 	nr -=3D __X32_SYSCALL_BIT;
+=20
+-	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(nr < X32_NR_syscalls)) {
++	if (likely(nr < X32_NR_syscalls)) {
+ 		nr =3D array_index_nospec(nr, X32_NR_syscalls);
+ 		regs->ax =3D x32_sys_call(regs, (unsigned int)nr);
++		return true;
+ 	}
++	return false;
+ }
+=20
+ /* Returns true to return using SYSRET, or false to use IRET */
+@@ -81,8 +90,10 @@ static __always_inline void do_syscall_x
+ 	if (likely(syscall_enter_from_user_mode_randomize_stack(regs, &nr))) {
+ 		instrumentation_begin();
+=20
+-		if (!do_syscall_x64(regs, nr))
+-			do_syscall_x32(regs, nr);
++		if (unlikely(!do_syscall_x64(regs, nr))) {
++			if (!do_syscall_x32(regs, nr))
++				regs->ax =3D -ENOSYS;
++		}
+=20
+ 		instrumentation_end();
+ 	}
+
+
+
+
+
+
+
+
+
+
