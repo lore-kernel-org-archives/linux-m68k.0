@@ -1,96 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.45
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792896790;
-	b=s3Zp7vUiHv0Ps6O2+PDYZVBmxEaG1LLiyMCoYEIgOyMKJnplsyehd3U2bOcPTi/l47hL
-	 GKoSfn35ZGx8QS2M1bEROw5OilacNRidEJHx97Phwsb43jwjkZICHVOYP2AH3iNYuDXr1
-	 ZqmoD629bWEUFWGofIv8l6zLKPFR16WCN7GZBbvKltOXSGk9Gte6lfe0zDSexnpUJAMHF
-	 9CpAdW3oEtSk0jtYTUis1Sb+aFdEMDwXiUEecwBydW6mISCb1TyX9P1FHBB83MVwwjfzL
-	 KCcVuQPLyYSxmoNDkVen80/qNOkXWaLwvVl01JaKbWF3XSR4xZRE9yz2QXgsnXUZndg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792896790;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type;
-	bh=jHGtF+NZaI+hhPHPeZP23JdzKtyfeu2RME20H6dVyog=;
-	b=L5a00Zq1kd1uiaN1SBJFIrucQPa4W1w2Up1vHpsdnTiYLDtjfwQTFHJf27Xf226l8l3y
-	 YnMaCCfnC3jFxiH87rmMJlltPnMBLNv63rX7cWVo8vqlgCjLRnpNzA748giXktQu799b5
-	 HAg3rLNIXPmw2HcJYRC+mbElGOqBiB8XPcfgQQ565X8WQgIzM1iPyNqGXUQW7IIVzYlAU
-	 lXLtcS3qDFLfqiH1TQKxGKu2zzTDyvzbei2fDYQy2q3Yr7zY2F9WWRwRwKmlMlfNJH5xA
-	 JALoiDEFXbt2Ynehka9ijBs41FayuERP0SejA5EyE379vqGaf1xvd38TwkWO5TsfnQA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=0x0f.com;
-	spf=pass smtp.mailfrom=0x0f.com;
-	dkim=pass header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=RqJ40njA;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.45
-Received: from mail-dl1-f45.google.com (mail-dl1-f45.google.com [74.125.82.45])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.9
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792981500;
+	b=R4r01dz76r/sbFV9YCNX+jdvXupNcW+ftYhSf0WBfQCc2TDAwcWoCPq4EHEDxovYUDYY
+	 zXLrPS2+SYTEolJAhDY+wArd7LUfKyhVLn6ayfzB1y0yAwHJf7mB76dvF0ji8LTVJThap
+	 PQ4MVX/LvZ+2eIOUxIwh3NxxeQavcPco8XqnozT2PMEnwd4f0DQps2Av/NkZrjcx7Aqwm
+	 pZKrZuAvYMBxnkqBqoIgRTbLHOYWZfsOJj9oABq5vtytPiRZ1Ih6l4OY8EE1zgWTPzq39
+	 5iHWrUKBInOCUmB4LkqxA3vNFq26dv/0xrCAOytDqf+3GSkP+l/HRsCjmVIWyujBKJg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792981500;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Date:From:To:Cc:
+	 Subject:Message-ID:MIME-Version:Content-Type:Content-Disposition;
+	bh=YxJ4VVeK9bnbWTaneSho9D6B/EMJ1w2pVfFv/idBt/A=;
+	b=mMbE4D+n17N06Wb1UKCSEZ5ZXbGrxEAs44gJiXYY5VxXbtuDPUJSuIY2LhR7Q5BUvxb+
+	 GNzTBIjH4xY+uY4bjDyXZTvraL9iPdiX3yo8isEDiYNcSt1SvepUF8JwZrAIPQHuqvO8Z
+	 cCn22Bjeba4Po+aPTlJDUCDLy+twGedzHZbjriU7ZnP3fLDUXkumKWspZHuV196waNyFu
+	 2Nev15s+52xml6VOecB+JuksiY9yCZe4uKLpTqIINM18braVgKWfUa6D0A3RCRiY4cdgJ
+	 P7gUE5ELJ+soG4r+8MNXa/ahVo6wcqdsoxvaDoATdH8NRhuYFIJ+loHb3C/1Mf4zGjA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=intel.com;
+	spf=pass smtp.mailfrom=intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b="V2ukv/nl";
+	arc=none smtp.remote-ip=192.198.163.9
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9541E606A31D
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 25 Oct 2026 02:53:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9541E606A31D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE00B606A31D
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Oct 2026 02:24:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DE00B606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=RqJ40njA
-Received: by mail-dl1-f45.google.com with SMTP id a92af1059eb24-15ea896ddc8so3393596c88.0
-        for <linux-m68k@lists.linux-m68k.org>; Sat, 24 Oct 2026 19:53:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1792896789; cv=none;
-        d=google.com; s=arc-20260327;
-        b=WAP9KtwgcpTygwYTdv6Dx9pOkgjNK5orMzdkTp6nCpPj7CmoT00oKvLuhKm67ncn2H
-         r0/jl/HpcHy7L4n+ztn+oSK6l635PTKiPABsjPbMW5bXm5oBuJV3gU5FFitLfytIftQ5
-         eW84DABzLkj1XMn/SevIJupgzRxN3GhK1FJUj5RoF280h5wi4c/0EX2VVhoKyRjCaHb8
-         0Z1D4KzP3sB1vIb1MXreJd8HZo4EBUvwe+s0KQQUtDeotucHmU6wD3u627acUX0NAqdj
-         shm3RVgWWbxcjtTEjGpcs2FF0QNuJdQmEfSqVhLt9nI4DJm8hir2xlI4oAY9TUk88zQt
-         Pe2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=jHGtF+NZaI+hhPHPeZP23JdzKtyfeu2RME20H6dVyog=;
-        fh=F38UJNNTnuy76dUBtfNmyly7ONb2ELJtjg9OnMAS9kA=;
-        b=OUM7k7u+RRFpVR8hJ5zHzgf1sct6YaXo9if2CTSPqiLJQ5axe5OyWkqeh00gWfsr1H
-         Uyfb4212nTOmygvqeChsSyGE8SeHlywNbXD+m3CebvGaIT14phZidKwZ5/iMvaeesN9Q
-         cCuoCanvTubxlzWb6vNap+MgWs6s2G+bOjdw65Y678D+sG7AKC0TXSgifVRnIAXxCjqV
-         3uWZpUpJpx1j/m/lyY7z3k1F8TDZ0izFQNkBDHIIP8l3GOXr1cVYfTXiJrbX58JeHD4A
-         tsLnRz3bkI95nE6s4CBi+5pXjPiMKElU5Rip6NA47wIyMGNE2PnWUuXnxEk3QdvMQ0nG
-         j/qg==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1792896789; x=1793501589; darn=lists.linux-m68k.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=jHGtF+NZaI+hhPHPeZP23JdzKtyfeu2RME20H6dVyog=;
-        b=RqJ40njA9pTckTuF0lYuc5jikRwOO3YwN//RGl3KuJOyofhostQyOs4TFSCQDXuimN
-         mrhExp59kXaQHpfE1y7ZjUfzwY/tkhMYYt4svlVRCkqoTBXHmLYoTRNfvNsM1KCddwP5
-         wZWi8DrZHbt4tzVZg4tDPhtTtysbrpZyS49Ac=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792896789; x=1793501589;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=jHGtF+NZaI+hhPHPeZP23JdzKtyfeu2RME20H6dVyog=;
-        b=rHvZIqbxYaC07FJlwsIn/hdzbc/jqkmx0yCEU+b1CFlFB1olUL5JPShcmjf5BpJcbq
-         M+pYlwZ+YqssrQYv41NAD7j0qln2+JlxX5qwb4Av7Fz1Jq/lgg0RECtlvpN7ONZonfZA
-         6AkM4z+9fRI7V8DS/7XFhO4oujWnVkYqqkWu1ISTEN+VXsC0POWOrNkQbZjbOGrCF4S4
-         Z2khT56JsrLt6QNdhjanzR97Jl2YovkPAVzBQPmEbBpixN/TiJSxIkJ+0lfP/n+koAdZ
-         XB1wOeRkqZgy+GPG70xyOiqAj8oH7C/1eG2G+4BNowOQ1m6dD2tcFVnU75ZgJIYmEMtQ
-         yuTw==
-X-Forwarded-Encrypted: i=1; AKwUvBz60IzQn/nGRVSZ601TnRX26DEPC6ZvlV2ogxTMhwZBR5MtZS0D+V1Qs86aElEEphFEA0kvjPsSM8HF@lists.linux-m68k.org
-X-Gm-Message-State: AFq9FYKgqPm/kQ8pT8rOozzNTeRSYYVxkgguzNJ1pUFS5XX5JSbA414w
-	81BNBX2hJljSKeIIFJWv0XseS7w6X8kRxzODxylLxWKHlgd47sI7CSONEgZVGfjmMS6SBlYW6jv
-	mUrU/Kl2czbAi3lBl56l2lX396eDg9Ebf8cZ2eCJveA==
-X-Gm-Gg: AYBFou0INVGkkHupDTOFJiYxlkf2rSZcAL8sQLJRwDTfkHXFC1/IqLk7bz1OY+1cD74
-	1TnkJwVAmya7CNrFyD0GhmAi2eeZDgBLSTScL8Y6xi52449TqB+YWomGz3pygs7/xMJ8rnI9t4O
-	RwuEUKyKW0W8YNzDGGf+AwgvWbsXu1Nv60XMkrgTzOtato9a3kIXwvKgKkjYly1zgAWEO9f53uL
-	qa6wH67hG+LGxIBbTenQ/7VIAbl9emVJDCCdDmQ+benjzjVYbBkfotLOCm16vKJjqIk8eIIf9vV
-	I5/4iavnbRrrrj0OgzpSuQ4VC0O2XajTYeT+wm/CHm5ZgpCVk/siCJD/ID9Gw8Y64xcl9M0MBO/
-	ZpWDdrjB/kOMBDdMqhaKQM3+TbnoblRRWAiwl
-X-Received: by 2002:a05:7022:b04c:b0:163:3bcd:e5e6 with SMTP id
- a92af1059eb24-19934a96f4fmr5011598c88.24.1792896788514; Sat, 24 Oct 2026
- 19:53:08 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=V2ukv/nl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1792981498; x=1824517498;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=p5EF9DrvTI9TWr4SfD0pPKgmrR5yJPb+Hj8Ptw3CoUk=;
+  b=V2ukv/nlmNg+fx02O6aVXXjM3rXQDlhbb5yRhwSGdDUrG6MowN8BpxKG
+   +mD9f4UFhyHWYpaaIjfs7HEC6/oXhr7zKrSXgCQ+QrmtbQFz1hM9f2Fhf
+   OE0HWv0ouFzyF4j+OW7XM1HX1bgkyHDRsKt8o71/fClZaqGxQc9bYoHPC
+   g5/BjqSw/lvsP+tDfCWJl4ppFl09FSeWWDZ9VADKwgLmQAuxcwROSEYwF
+   xfZLjJdQ3AoDboKMPTwA9e8vbr+zWeLW6yJLq8FaqjXXWnSDsr64Uym/W
+   8HaFlxpNNr1zokBbIMOdMqPwilzqRra9ae6A0LtxIn8Uqtdlme3XJl3pc
+   Q==;
+X-CSE-ConnectionGUID: rJu+HJrgQL2DVhu/1mF4pA==
+X-CSE-MsgGUID: CPrXTOx9RByUpW8Ky0Ga4A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11946"; a="1530205"
+X-IronPort-AV: E=Sophos;i="6.27,178,1787036400"; 
+   d="scan'208";a="1530205"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2026 19:24:57 -0700
+X-CSE-ConnectionGUID: YLFJw+i3QFKha+6X0nM5mA==
+X-CSE-MsgGUID: qhSJhwe5REiQ6PJiIR00FA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,178,1787036400"; 
+   d="scan'208";a="4122800"
+Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.182.64])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2026 19:24:54 -0700
+Date: Mon, 26 Oct 2026 10:24:50 +0800
+From: kernel test robot <yi1.lai@intel.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>, Jeff Layton <jlayton@kernel.org>,
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+	yi1.lai@intel.com
+Subject: [linus:master] [arch]  b36d4b6aa8:
+ WARNING:at_fs/nsfs.c:#is_current_namespace
+Message-ID: <202610260917.6248e316-lkp@intel.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -100,28 +82,142 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261025024514.802862-1-daniel@0x0f.com> <179289664421.3327.13269797237144711675@kernel.org>
-In-Reply-To: <179289664421.3327.13269797237144711675@kernel.org>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Sun, 25 Oct 2026 11:52:57 +0900
-X-Gm-Features: AclHuK-izwE4tuQ9_k56qieEjJy4dAKE5drC7e2460UfCl4uONeoDil9BFT3OsI
-Message-ID: <CAFr9PXk93VVxotS-C90Rhi+uuk0BJngTAoMVQqWkfh5dRCbdcw@mail.gmail.com>
-Subject: Re: [PATCH] net: i825xx: 82596: use MMIO accessors for the MVME16x
- PORT/CA registers
-To: netdev-bot+sinfo@kernel.org
-Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@kernel.org, 
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
-	Denis Ahrens <denis@h3q.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello bot,
 
-On Sun, 25 Oct 2026 at 11:50, <netdev-bot+sinfo@kernel.org> wrote:
->  - What hardware the change was tested on. For driver fixes please
->    mention the device (and if relevant firmware version) used for
->    testing, or say that the change was not tested on real hardware.
 
-A version of this was tested on MVME177 by Dennis. Dennis will
-hopefully test this version on his board and reply with a Tested-by
-tag.
+Hello,
+
+kernel test robot noticed "WARNING:at_fs/nsfs.c:#is_current_namespace" on:
+
+commit: b36d4b6aa88ef039647228b98c59a875e92f8c8e ("arch: hookup listns() system call") https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+
+[test failed on linux-next/master 20a33c6b6cbe7e4805dfb6cd68816937443aa148]
+
+Our bisection first flagged commit b36d4b6aa88e ("arch: hookup listns() system call") as the first bad commit, since that is the commit that registers the listns() syscall number, making the warning reachable from userspace/trinity.
+
+We also tested the parent commit, 76b6f5dfb3fd ("nstree: add listns()"), and found that it already reproduces a WARNING of its own (see "Regarding the PARENT" below, via setns() this time). This suggests the nstree/listns() code was already not fully robust before b36d4b6aa88e, and that commit's role may simply be exposing/making reachable an issue that predates it, rather than introducing a new one.
+
+in testcase: trinity
+version: trinity-x86_64-d4c26f234-1_20261018
+with following parameters:
+
+	runtime: 300s
+	group: group-04
+	nr_groups: 5
+
+
+config: x86_64-randconfig-015-20251114
+compiler: gcc-14
+test machine: qemu-system-x86_64 -enable-kvm -cpu Icelake-Server-noTSX,enforce -smp 4 -m 16G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yi1.lai@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202610260917.6248e316-lkp@intel.com
+
+
+[   44.455278][  T526] ------------[ cut here ]------------
+[   44.456351][  T526] WARNING: CPU: 0 PID: 526 at fs/nsfs.c:508 is_current_namespace+0x12f/0x440
+[   44.458109][  T526] Modules linked in:
+[   44.459285][  T526] CPU: 0 UID: 65534 PID: 526 Comm: trinity-c2 Tainted: G                T   6.18.0-rc2-00023-gb36d4b6aa88e #1 VOLUNTARY  e2643480911518fe6c6e798d49763b0f8bc0c2cc
+[   44.464118][  T526] Tainted: [T]=RANDSTRUCT
+[   44.465362][  T526] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   44.468577][  T526] RIP: 0010:is_current_namespace+0x12f/0x440
+[   44.470566][  T526] Code: 48 c1 e8 03 80 3c 10 00 0f 85 5f 02 00 00 48 8b 3d 7e 55 6c 08 48 83 eb 70 e8 9d 04 78 ff 48 39 c3 5b 41 5c 0f 94 c0 5d c3 90 <0f> 0b 90 31 c0 5b 41 5c 5d c3 e8 c2 b7 2a 06 48 c7 c0 18 10 a3 8a
+[   44.476790][  T526] RSP: 0018:ffa000000184fce0 EFLAGS: 00010206
+[   44.478622][  T526] RAX: 0000000040000000 RBX: ffffffff8e0d4bc0 RCX: 0000000000000015
+[   44.481098][  T526] RDX: 1ffffffff1c1a978 RSI: ffffffff8ab98ec0 RDI: ffffffff8e0d4bc0
+[   44.483561][  T526] RBP: ffa000000184fcf0 R08: 0000000000000001 R09: fff3fc0000309fa6
+[   44.485976][  T526] R10: 0000000000000003 R11: 0000000000000200 R12: ffffffff8e0d4c78
+[   44.488478][  T526] R13: 1ff4000000309fa2 R14: ffffffff8e0d4bdc R15: ffffffff8e0d4bc0
+[   44.490935][  T526] FS:  00007f9b05b17900(0000) GS:0000000000000000(0000) knlGS:0000000000000000
+[   44.493641][  T526] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   44.495638][  T526] CR2: 00007f9b05742e10 CR3: 0000000134aca003 CR4: 0000000000771eb0
+[   44.498129][  T526] PKRU: 55555554
+[   44.499291][  T526] Call Trace:
+[   44.500271][  T526]  <TASK>
+[   44.501134][  T526]  legitimize_ns+0x25f/0x4c0
+[   44.502577][  T526]  ? lookup_ns_owner_at+0x400/0x400
+[   44.504165][  T526]  do_listns+0x185/0x5c0
+[   44.505452][  T526]  __do_sys_listns+0x13b/0x300
+[   44.506941][  T526]  ? do_listns_userns+0x580/0x580
+[   44.508435][  T526]  ? up_read+0x22/0x40
+[   44.509723][  T526]  __x64_sys_listns+0x97/0x100
+[   44.510619][  T526]  ? trace_hardirqs_on+0x21/0xc0
+[   44.511530][  T526]  x64_sys_call+0x21/0xa40
+[   44.512340][  T526]  do_syscall_64+0xb3/0x800
+[   44.513186][  T526]  entry_SYSCALL_64_after_hwframe+0x50/0x58
+[   44.514303][  T526] RIP: 0033:0x7f9b05c28779
+[   44.515114][  T526] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4f 86 0d 00 f7 d8 64 89 01 48
+[   44.518758][  T526] RSP: 002b:00007ffe8c345bb8 EFLAGS: 00000246 ORIG_RAX: 00000000000001d6
+[   44.520321][  T526] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f9b05c28779
+[   44.521798][  T526] RDX: 0000000000000008 RSI: 00007f9b05740e10 RDI: 00007f9b05742e10
+[   44.523292][  T526] RBP: 00007f9b05912000 R08: 0000000000000000 R09: 0000000000000000
+[   44.524772][  T526] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9b05912000
+[   44.526247][  T526] R13: 00007f9b05b0f560 R14: 00007f9b05917050 R15: 00007f9b05b176c8
+[   44.527731][  T526]  </TASK>
+[   44.528282][  T526] irq event stamp: 54199
+[   44.529054][  T526] hardirqs last  enabled at (54211): [<ffffffff81bdc218>] __up_console_sem+0x58/0x80
+[   44.530820][  T526] hardirqs last disabled at (54224): [<ffffffff81bdc1fd>] __up_console_sem+0x3d/0x80
+[   44.532559][  T526] softirqs last  enabled at (54144): [<ffffffff81a83670>] handle_softirqs+0x470/0x900
+[   44.534358][  T526] softirqs last disabled at (54133): [<ffffffff81a846fe>] irq_exit_rcu+0xfe/0x140
+[   44.536055][  T526] ---[ end trace 0000000000000000 ]---
+
+Regarding the PARENT (76b6f5dfb3fd), which our bisection marked as the last known-good commit, we observed the following separate WARNING,
+indicating the nstree/listns() area already had an unrelated issue before b36d4b6aa88e landed:
+[   94.367090][  T535] ------------[ cut here ]------------
+[   94.370167][  T535] WARNING: CPU: 0 PID: 535 at include/linux/ns_common.h:311 nsproxy_ns_active_put+0x8cd/0x940
+[   94.375575][  T535] Modules linked in:
+[   94.377666][  T535] CPU: 0 UID: 65534 PID: 535 Comm: trinity-c3 Tainted: G                T   6.18.0-rc2-00022-g76b6f5dfb3fd #1 VOLUNTARY  cb1b9fe02910ecdede8a35f9462ebcf918b6f4e2
+[   94.384602][  T535] Tainted: [T]=RANDSTRUCT
+[   94.386182][  T535] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+[   94.389939][  T535] RIP: 0010:nsproxy_ns_active_put+0x8cd/0x940
+[   94.392205][  T535] Code: e9 fc fd ff ff 90 0f 0b 90 e9 97 fe ff ff 90 0f 0b 90 e9 d6 f9 ff ff 90 0f 0b 90 e9 ad fa ff ff 90 0f 0b 90 e9 fa fa ff ff 90 <0f> 0b 90 e9 28 fe ff ff 90 0f 0b 90 e9 b2 f9 ff ff 90 0f 0b 90 e9
+[   94.399343][  T535] RSP: 0018:ffa000000188fda8 EFLAGS: 00010297
+[   94.401546][  T535] RAX: 0000000000000000 RBX: ff110001008d93a8 RCX: ffffffff8236dccb
+[   94.404421][  T535] RDX: 1ffffffff1657494 RSI: 0000000000000004 RDI: ffffffff8b2ba4a0
+[   94.407439][  T535] RBP: ffa000000188fdc0 R08: 0000000000000001 R09: fffffbfff16574a8
+[   94.410390][  T535] R10: ffffffff8b2ba543 R11: ffffffff810000ae R12: ffffffff8b2ba400
+[   94.413332][  T535] R13: ff1100013598c540 R14: ff11000122132440 R15: ff1100013598c540
+[   94.416277][  T535] FS:  00007fa7c6e86900(0000) GS:0000000000000000(0000) knlGS:0000000000000000
+[   94.419588][  T535] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   94.422023][  T535] CR2: 00007fa7c6b5f020 CR3: 00000001337f8005 CR4: 0000000000771eb0
+[   94.425020][  T535] PKRU: 55555564
+[   94.426319][  T535] Call Trace:
+[   94.427494][  T535]  <TASK>
+[   94.428612][  T535]  free_nsproxy+0x16/0x380
+[   94.430265][  T535]  put_nsset+0xa9/0x1c0
+[   94.431822][  T535]  __do_sys_setns+0x2d0/0x700
+[   94.433519][  T535]  ? switch_task_namespaces+0x100/0x100
+[   94.435616][  T535]  __x64_sys_setns+0x53/0x80
+[   94.437263][  T535]  ? trace_hardirqs_on+0x21/0xc0
+[   94.439158][  T535]  x64_sys_call+0x227/0xa40
+[   94.440781][  T535]  do_syscall_64+0xb3/0x700
+[   94.442581][  T535]  entry_SYSCALL_64_after_hwframe+0x50/0x58
+[   94.445676][  T535] RIP: 0033:0x7fa7c6f97779
+[   94.447948][  T535] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 4f 86 0d 00 f7 d8 64 89 01 48
+[   94.459415][  T535] RSP: 002b:00007ffc93f4e248 EFLAGS: 00000246 ORIG_RAX: 0000000000000134
+[   94.464265][  T535] RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fa7c6f97779
+[   94.469222][  T535] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000001ac
+[   94.473612][  T535] RBP: 00007fa7c6c71000 R08: 0000000000000000 R09: 0000000000000000
+[   94.476937][  T535] R10: 0000000000000000 R11: 0000000000000246 R12: 00007fa7c6c71000
+[   94.479999][  T535] R13: 00007fa7c6e78440 R14: 00007fa7c6c76050 R15: 00007fa7c6e866c8
+[   94.483046][  T535]  </TASK>
+[   94.484138][  T535] irq event stamp: 47371
+[   94.485745][  T535] hardirqs last  enabled at (47395): [<ffffffff81bdc798>] __up_console_sem+0x58/0x80
+[   94.489275][  T535] hardirqs last disabled at (47408): [<ffffffff81bdc77d>] __up_console_sem+0x3d/0x80
+[   94.492766][  T535] softirqs last  enabled at (47392): [<ffffffff81a83570>] handle_softirqs+0x470/0x900
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20261026/202610260917.6248e316-lkp@intel.com
+
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
