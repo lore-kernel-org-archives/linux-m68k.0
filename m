@@ -1,33 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.16
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793020976;
-	b=x/9SDvfpLKat/b9sUab2YZx/COulBS23pm6p4kjDeQuvMPp8qaKAIc3ZIlOJJInRI2sw
-	 muSZXkTk4rz9Hnk2ROi7fdJXcjWc8k2SSvpJCRJq3cp82nM1BSXyQgcCoGWdopluGyEWT
-	 6G01FWG7sfVU0vNMK9+XXRUSstCmbYsXlhlWTTJDn5ICYOmESFNuO5L1qBGZRtItgkwVv
-	 PRkpIRLia3k9+KZcVNPJxhdAAU57U18Y0WCOQ1jVHD1Yt9LLZN3m+VMXrTB0pNNN9hswt
-	 MXPbDE9YEMV/kBLZRKDyUVHxm8QVC7nMNc8WHJsVJQfgIzmn3OWvBTMWYr8CDNIk58w==
+	t=1793056906;
+	b=Y9Ca2bPzoGTFDRnvRE+rYv0h5Kc6IFFVn9tI4aO/x9ZRBOZnALZaTIbhxkqEwNM6pb9K
+	 TEcLUgueu9QueUq6JnZdzuO2ZnpfWiJorNOkCaP5/F/tU4At9gzfU3b/JSezf7xopp5Yg
+	 0Lw0PycnajWKJEt8GH1uK/oj+bBy5hKFvYq2+fCB/ytuMOm4iOrw8BGDKCggGzeuyp0u1
+	 wlaleRh/5dzqSfyOSKIiXupx4IojpQMhhwCK3tHWFDKooTg7UEzKAnhVv7ayV0khGZl0j
+	 ACYidgLuICX+p6fdkLu9wCT+xC3GxvmdqVngjI3lCXAlEcMx6VtszbinkrF7Ydra9rQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793020976;
-	h=Received:Message-ID:Date:MIME-Version:User-Agent:From:Subject:To:Cc:
-	 Content-Language:Content-Type:Content-Transfer-Encoding;
-	bh=A+qMSmiSScrn8K+iUdXsWxmMuEkGMH678UZfJDGojOk=;
-	b=pK2NBXZTs0iBrwzMkd7jqVad7bKiAEifAcoLq0JNmdQ+xuIvdxTmVwCloUIq3smc2cGM
-	 KQJN/PHCVmFKFlKRCCHx8a7gXuzWKVJsJVSU/fFNCBfzobRcRl0vRLGlWeh9l7tkWSr6H
-	 7vfXO6KBB0dK8iRBoV7nnuEC++YltfPJEXd4PNXKeLgh//5W9SU/fTbxT8XelpSAZfIaI
-	 cMvclNADsj3f+bACUlejCqtgMCP4h+EbeAEkl+hW4d1YDIEFX2w2XD9LCALiESz/T8BN7
-	 9dR+1DYl27Hzwjy84cHL2aJJ02pCdFTO+H3B7gS6E8KWhMmTPrzYv36EmYpSniwvEtA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793056906;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:User-Agent;
+	bh=lUXtFRQhqiPepqkTKyLBRNYdBodXoTDi9P3S5dFT9PI=;
+	b=JssEo78bXM70EGVT3OZiAAwIUnAkoSAP3GzvAGEe8F0yVQoIhYUKUPb1Vwo8V9jXV7Sr
+	 NNMAbT76MwVWKgzfF4LKLLzf8cLLMCXXs9nbCrNEj1uFQZjxzD9liu6IhzhpPUsagTShu
+	 VW2CwTXUo6O7tv1kSXchVRKLUob2OoypyENFq5ZoQbijYW7f4xGrktkyJ6LUNJKrYAOxB
+	 YPeGmLXhmysi+p0tf1EWioRBvLTY2mPe5RxZkfSyxOn9csHi5IK2WKn4pQrY99BJPLA5A
+	 2Vpq4ItunXwzI/ax8GXM9TaAIOsw+cyH7PgrEOAtRDir+qa4k+5wxxx0yezafB0uhiA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=intel.com;
+	spf=pass smtp.mailfrom=intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=BcoAmBU1;
+	arc=none smtp.remote-ip=192.198.163.16
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CF0606A31A;
-	Mon, 26 Oct 2026 13:22:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDDBE1F01825;
-	Mon, 26 Oct 2026 13:22:54 +0000 (UTC)
-Message-ID: <0a0661a9-2fc5-45d6-9b89-8f77019789a3@linux-m68k.org>
-Date: Mon, 26 Oct 2026 23:22:52 +1000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711A3606A324
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 26 Oct 2026 23:21:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 711A3606A324
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=BcoAmBU1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1793056904; x=1824592904;
+  h=date:from:to:cc:subject:message-id;
+  bh=xA0f7Jm3ixTeFfZFbKUz/Tscnuzkq+YL3Cl4VyaWsHw=;
+  b=BcoAmBU1umt7fRoSFV9oocluDSq87XYo61CxtNJujwQ4AdKpNvU14HSE
+   gvS1Hx0TRE21M50et2jn8G7cz98uHq8bHkeBP020XNrjYEumikTa4VPnO
+   /fk85XFv+uKFrqLABxii9sJXd7046GOhR90q/9PXrfULbWRULGK1WjsyG
+   4CJ4yY9Y1WjKzbWFcLvEUTd8SkzWCz+xIKcqP1+ykDMRCZvjYCUdHhwl8
+   8d2Q9v4VPSItuVSAWj8FZUzAi+oPP68Di2bzbu2/5MLWbGzYdegeT6KFJ
+   aRPhjBWqsM+yHh0w0asUY2OqfEaQRUuqMKU48uRjxxdp1OviDmd+lHo/G
+   A==;
+X-CSE-ConnectionGUID: Idw0S2nGSe2ijCnAcbkX1w==
+X-CSE-MsgGUID: VU040EYBQ3GS5mVFaEQiFw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11947"; a="1754511"
+X-IronPort-AV: E=Sophos;i="6.27,180,1787036400"; 
+   d="scan'208";a="1754511"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2026 16:21:42 -0700
+X-CSE-ConnectionGUID: ZZklRfkARNCj5AEBZz/tpQ==
+X-CSE-MsgGUID: w3zXR+c+QMG8XQEa7amkYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,180,1787036400"; 
+   d="scan'208";a="4375404"
+Received: from igk-lkp-server01.igk.intel.com (HELO 58ca8a381a5c) ([10.211.93.152])
+  by orviesa002.jf.intel.com with ESMTP; 26 Oct 2026 16:21:41 -0700
+Received: from kbuild by 58ca8a381a5c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xLU0Y-000000004H5-1s8B;
+	Mon, 26 Oct 2026 23:21:38 +0000
+Date: Tue, 27 Oct 2026 00:21:23 +0100
+From: kernel test robot <lkp@intel.com>
+To: Michael Schmitz <schmitzmic@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [geert-m68k:m68k-v7.3 7/9]
+ drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space
+ '__iomem' of expression
+Message-ID: <202610270050.HTmXvbun-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -36,92 +81,141 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu changes for v7.4
-To: torvalds@linux-foundation.org
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Linux/m68k <linux-m68k@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Hi Linus,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git m68k-v7.3
+head:   6f00fb3766acd32f628e484f407e8830cfe4e190
+commit: e77b2e8535f06ce131f87d40b500ba4b9316c92f [7/9] m68k: atari: usb: Add ISP1160 USB host controller support
+config: m68k-randconfig-r2302-20261026 (https://download.01.org/0day-ci/archive/20261027/202610270050.HTmXvbun-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 8.5.0
+sparse: v0.6.5-rc1-1-gc4640450
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261027/202610270050.HTmXvbun-lkp@intel.com/reproduce)
 
-Please pull the m68knommu git tree changes for v7.4.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202610270050.HTmXvbun-lkp@intel.com/
 
-A mix of platform driver setup, fixes, cleanup and config update.
+sparse warnings: (new ones prefixed by >>)
+   drivers/usb/host/isp116x-hcd.c:135:55: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   drivers/usb/host/isp116x-hcd.c:135:55: sparse:     expected unsigned short [usertype] val
+   drivers/usb/host/isp116x-hcd.c:135:55: sparse:     got restricted __le16 [usertype]
+   drivers/usb/host/isp116x-hcd.c:181:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c:181:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c:181:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c:181:34: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x-hcd.c: note: in included file:
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:436:21: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:436:21: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:438:23: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:438:23: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:426:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:426:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:428:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:428:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:402:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast to restricted __le16
+   drivers/usb/host/isp116x.h:419:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:396:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/usb/host/isp116x.h:390:9: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/usb/host/isp116x.h:410:15: sparse: sparse: cast removes address space '__iomem' of expression
 
-Platform code added for the ColdFire 54418 RNG hardware block. Also
-PWM address definitions for the 54418. A fix for seccomp filter
-processing during system call entry and a fix for compiling the
-Cleopatra board target. A config update for the stmark board,
-and lastly a couple of typo fixes.
+vim +/__iomem +410 drivers/usb/host/isp116x.h
 
-Regards
-Greg
+   405	
+   406	static inline u16 isp116x_read_data16(struct isp116x *isp116x)
+   407	{
+   408		u16 val;
+   409	
+ > 410		val = isp_readw(isp116x->data_reg);
+   411		isp116x_delay(isp116x, 150);
+   412		return val;
+   413	}
+   414	
+   415	static inline u16 isp116x_raw_read_data16(struct isp116x *isp116x)
+   416	{
+   417		u16 val;
+   418	
+ > 419		val = isp_raw_readw(isp116x->data_reg);
+   420		isp116x_delay(isp116x, 150);
+   421		return val;
+   422	}
+   423	
 
-
-
-
-The following changes since commit 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907:
-
-  Linux 7.3-rc7 (2026-10-11 20:04:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.4
-
-for you to fetch changes up to cffad6e71539bc00d5a76c0c1057dc067d42715c:
-
-  m68k: coldfire: Add RNG support for MCF54418 (2026-10-12 13:47:41 +1000)
-
-----------------------------------------------------------------
-m68knommu: updates and fixes for v7.4
-
-. plaform RNG driver for ColdFire 54418
-. PWM address defines for ColdFire 54418
-. fix secomp filtering
-. fix compile breakage for Cleopatra board
-. update stmark defconfig
-. remove unused header
-. fix typos
-
-----------------------------------------------------------------
-Angelo Dureghello (2):
-      m68k: defconfig: update stmark2 defconfig
-      m68k: mcf5441x: add PWM defines
-
-Christopher Lusk (1):
-      m68k: Fix seccomp filtering on ColdFire and 68000
-
-Ethan Nelson-Moore (1):
-      m68k: remove unused <asm/quicc_simple.h> header
-
-Greg Ungerer (1):
-      m68knommu: fix compile breakage for 5407 cleopatra board
-
-Hemanth Selam (2):
-      m68k: coldfire: fix typos in reset.c comment
-      m68k: fix typo "eanble" in comment
-
-Jean-Michel Hautbois (1):
-      m68k: coldfire: Add RNG support for MCF54418
-
- arch/m68k/68000/entry.S              |  3 +-
- arch/m68k/coldfire/device.c          | 28 +++++++++++++++++++
- arch/m68k/coldfire/entry.S           |  3 +-
- arch/m68k/coldfire/m5407.c           |  5 ++++
- arch/m68k/coldfire/m5441x.c          |  2 +-
- arch/m68k/coldfire/reset.c           |  2 +-
- arch/m68k/configs/stmark2_defconfig  |  2 ++
- arch/m68k/include/asm/m53xxacr.h     |  2 +-
- arch/m68k/include/asm/m5441xsim.h    | 16 +++++++++++
- arch/m68k/include/asm/quicc_simple.h | 53 ------------------------------------
- drivers/char/hw_random/Kconfig       |  3 +-
- drivers/char/hw_random/imx-rngc.c    |  7 +++++
- 12 files changed, 67 insertions(+), 59 deletions(-)
- delete mode 100644 arch/m68k/include/asm/quicc_simple.h
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
