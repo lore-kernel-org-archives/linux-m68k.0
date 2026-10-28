@@ -1,68 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793135232;
-	b=WzQImJSSe9NthXDexntJ1dTUg91Od6B5cXk9gBvGV90PGAWD1BB5Lo8xwka3mm/lWrYt
-	 5NnxKokOEpU00y+ZGhyOAJBcRQaQoHKrAs6zI3QY+4dPllyAzbH7Sw3aXwhPPt3WCn8jp
-	 7gLm1WmaNMt5pxN1C6WwwbD9tmEQ3uAHHVKyEtJ7qTlU2FsILr7kqfIwd8KnftwodCL2e
-	 F+EKgzAEC2JlkJKteSsmoQDaVZtXcv22K16gb6yAIAlu2jjlYc9zw5RgqJqnetnHDKZwU
-	 9YDED8g5PIBriGl2WGf+dScR608WEcvXF63msgcCTddRy6BSv4spE2Qys4S4mZasmTw==
+	t=1793149876;
+	b=ndPhlEH4XT8fveYuNvZ2XeejpsiIgZCeP012N8cFB10PesKjEEz5PKhBTRdJcXiql3Qu
+	 KjJK8LuIF1A2rPo2rrYNB/LowR0qLI0R3oqjo0YRHMYGVmbj7UeTqa8XdFrM7q3LACY2+
+	 dzf+QDNm/IMTCaH7y5Gsr5uYMx3cKTu7cQF8aBTQ6OcdRaUVgLN+lVakdXLPuH00jZkNd
+	 HiVCtO2qt1qfLIczdTroa0T0WxOjV4mH6FDqBiS+J56kG+hX80YZD2B3yiJaGjYzcBdIl
+	 FNyqhl/uC4MFhcmtdj+XNGDkQorIwXz0R75dlb+aUC9SRyhQUrZE+rtsM16AdRXo1JQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793135232;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=dhiQkFXajssFfdQm0/XVZOyaTKHqLvZL8I8B+3smf8I=;
-	b=NL/pmuAehLLvOOxwJ1PdOR8JYG1C7Yo9HY1AGWG/j+ZSrtBrVyjxshD0eXJc0OT0XOA6
-	 wKiWlhKYPDt3EwUySgCFV1Y98k1k473l+Tzpm3S57vlnut8H9WoFeNyI2m302nkPez3Au
-	 hsupOXLTrwzgusbTubjRYMoCBCaVTIA/Bs8bWO0cEZNrE36eAxVzYrQ62Bl0Lc5GQVuAp
-	 /fxs2pJdSf72TBIEZn5bYzsT/AE/fNXzEzVwUKz9gno9bjwbjubzui5Zw3NYP52UOrIez
-	 fk2OSDxCGs9xvEJ0hdpLXPa/+y3KrrJsVokl3hG8tYyQdbVjw16k8TUy0+5XPUwJsPw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793149876;
+	h=Received:DKIM-Signature:Received:Subject:From:In-Reply-To:References:
+	 X-PR-Tracked-List-Id:X-PR-Tracked-Message-Id:X-PR-Tracked-Remote:
+	 X-PR-Tracked-Commit-Id:X-PR-Merge-Tree:X-PR-Merge-Refname:
+	 X-PR-Merge-Commit-Id:Message-Id:Date:To:Cc;
+	bh=5IKzo7/A3y32NJ/pEQ2qTEmMPBx7g7kojNzOmBVbPU4=;
+	b=M2E7too60Dx03NhzxCtLmnNGBYogWPblE6Api2e0kvGfoRBqs1L6VT86DNv7l/VCuWr1
+	 cVAYdoJDNv72Ezhi3oWwVsmRNmNKGXQm2vBa2Mv08LbgGqQj70+zOw1s79N2vWyWB9cLW
+	 z0+mHiQntYD964M5Sdyptlb35461aLWJUGtjAEt+6f7tPwgLcyubl5oDnbHlw3f/XPOBk
+	 3CXMfAZpNN+mdOm7tpKggCSPsNkPtPZCq/asVewGbXhFeot2P4erv+9UbgGl8F9YXaYFn
+	 BzGs+bSgrqskCmnj3KJHaJ24gPh2XK1qs60EA/9cfO4PPtatz5uW9EvyIweDf0Gf37A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=kernel.org;
-	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ggcFAE+1;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0921606A320
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 27 Oct 2026 21:07:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A0921606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ggcFAE+1
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ACqfTs1J;
+	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 285B843D21;
-	Tue, 27 Oct 2026 21:07:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C84D71F01828;
-	Tue, 27 Oct 2026 21:07:05 +0000 (UTC)
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70522606A324;
+	Wed, 28 Oct 2026 01:11:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ACqfTs1J
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E6291F031E0;
+	Wed, 28 Oct 2026 01:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793135226;
-	bh=dhiQkFXajssFfdQm0/XVZOyaTKHqLvZL8I8B+3smf8I=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=ggcFAE+1D+RSsplxMrMS76Sbh4+yrOX72umRosL+KKVrS/wlX5TU/oJg3TTlBuH+Y
-	 VGeQcDauUe4Yw7kK1twxV5Cna3gpWDuRHffkmswPkqD+fJwJ/KQftNRjyafciIJvzB
-	 0ynSl4kEgnA6tAWrpYMwwqVRzn6TcqiPILynqSS+IFdQHPu37QmqzNXgLkS2zoL5Li
-	 CxFZaJMfz38KwoKsAP7OAyLMOJBVZaSyYTFG4ZFxh7omeyoRfKVJM0SMxI2nZ2Iv+V
-	 DZpZEp3YUJcE5XDiUfxZbR1huCJauGytyeSeaTMbCqD1v571LDKgZ+vsu8IkCiS8ND
-	 CDg93Y0e2cqCQ==
-Date: Tue, 27 Oct 2026 16:07:02 -0500
-From: Rob Herring <robh@kernel.org>
+	s=k20260515; t=1793149876;
+	bh=5IKzo7/A3y32NJ/pEQ2qTEmMPBx7g7kojNzOmBVbPU4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc;
+	b=ACqfTs1JxeKG0X0Dt430UvQsdookJbPduRQpt1lKudFHcH4ELjFC+5FQ3OuLWuqNO
+	 nLSz7OiS7f732yXyr9VKfaH7RfBiy7trz7pNyqRVtR7qkveSXWllMn55bEWf7wKA7o
+	 U1wWVPOXWj860JMb87G7uVkvu1kc6Xb46R3mylEA/oe8uiKaGp4ZA1LiZhzjtQdcvd
+	 YaE/0QcwiBI3kNlYqMy2er2taAHnyTMD2QpxM3OwuBVIZr6leaLEDqs7HTzwPTAkCl
+	 VXmopFHxz2AJvzNy9M4cUE945WBbnOPvev3GkbaId30TgAfN8uf9CiuqahWTJvM7tO
+	 3BA6wTIOoU4pg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 444593AA9413;
+	Wed, 28 Oct 2026 01:11:16 +0000 (UTC)
+Subject: Re: [git pull] m68knommu changes for v7.4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <0a0661a9-2fc5-45d6-9b89-8f77019789a3@linux-m68k.org>
+References: <0a0661a9-2fc5-45d6-9b89-8f77019789a3@linux-m68k.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <0a0661a9-2fc5-45d6-9b89-8f77019789a3@linux-m68k.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.4
+X-PR-Tracked-Commit-Id: cffad6e71539bc00d5a76c0c1057dc067d42715c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 857c32a3b82c4f4abb7addee394c4dbfc79ac6db
+Message-Id: <179314987480.422389.9946903569789396991.pr-tracker-bot@kernel.org>
+Date: Wed, 28 Oct 2026 01:11:14 +0000
 To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH 4/5] dt-bindings: serial: create binding for mcf-uart
-Message-ID: <20261027210702.GA948124-robh@kernel.org>
-References: <20261013120831.1046590-1-gerg@linux-m68k.org>
- <20261013120831.1046590-5-gerg@linux-m68k.org>
- <20261014-expensive-shrewd-nautilus-abcab6@quoll>
- <d256f39c-6ed5-409a-a7ed-224165d00521@linux-m68k.org>
- <CAMuHMdUcGt7RBc0d1A-8O1Dt71RL=epPgmnetj_4NGCPvCj9LA@mail.gmail.com>
- <73a8df68-17da-4275-bb9d-8a6272b754e6@linux-m68k.org>
+Cc: torvalds@linux-foundation.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -71,80 +67,16 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73a8df68-17da-4275-bb9d-8a6272b754e6@linux-m68k.org>
 
-On Thu, Oct 15, 2026 at 11:14:26PM +1000, Greg Ungerer wrote:
-> Hi Geert,
-> 
-> On 15/10/26 19:19, Geert Uytterhoeven wrote:
-> > On Wed, 14 Oct 2026 at 14:56, Greg Ungerer <gerg@linux-m68k.org> wrote:
-> >> On 14/10/26 21:24, Krzysztof Kozlowski wrote:
-> >>> On Tue, Oct 13, 2026 at 10:07:02PM +1000, Greg Ungerer wrote:
-> >>>> Create documentation for a new binding to support the Freescale ColdFire
-> >>>> UART hardware block. This is found on pretty much all variants of the
-> >>>> M68K derived Freescale ColdFire family of System-on-Chip devices.
-> >>>>
-> >>>> It is not compatible with any other known UARTs.
-> >>>
-> >>> You never tested this, so limited review.
-> >>
-> >> It is tested. It is working and running on multiple ColdFire platforms.
-> >>
-> >>>> Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-> > 
-> >>>> --- /dev/null
-> >>>> +++ b/Documentation/devicetree/bindings/serial/fsl,mcf-uart.yaml
-> > 
-> >>>> +properties:
-> >>>> +  compatible:
-> >>>> +    const: fsl,mcf-uart
-> >>>
-> >>> What is the SoC name? MCF? Compatibles must be specific (see writing
-> >>> bindings doc).
-> >>
-> >> Yes. MCF = "Motorola ColdFire". It is the SoC prefix used for naming of all
-> >> ColdFire parts (which is dozens of variants):
-> >>
-> >>    MCF5206
-> >>    MCF5208
-> >>    MCF5307
-> >>    MCF54415
-> >>    etc
-> >>
-> >> Even when Motorola became Freescale they stuck with MCF on all ColdFire parts.
-> > 
-> > I guess you want:
-> > 
-> >     items:
-> >       - enum:
-> >           - fsl,mcf5206
-> >           - fsl,mcf5208
-> >           - fsl,mcf5307
-> >             [...]
-> >       - const: fsl,mcf-uart
-> > 
-> > As no new (possibly incompatible) Coldfire parts will appear, a generic
-> > fallback looks reasonable to me.
-> 
-> It will be a long list of variants - thanks Freescale. Quite a few of the SoC
-> parts have sub-parts with different single digits, for example:
-> 
->     mcf54410, mcf54415, mcf54416, mcf54417, mcf54118
+The pull request you sent on Mon, 26 Oct 2026 23:22:52 +1000:
 
-I imagine all of those are just package or marketing differences. 
-Freescale did not have the money to tapeout 5 different parts. Just 
-using one compatible for all of them is fine. 
+> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v7.4
 
-> At a quick count I can see about 42 variants. 
-> I don't mind adding the full list if that is preferred.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/857c32a3b82c4f4abb7addee394c4dbfc79ac6db
 
-Just add what you care about or know people use. I imagine that's a much 
-smaller subset.
+Thank you!
 
-Probably not many users today of the 5272 I worked on which was designed 
-for ISDN modems.
-
-Rob
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
