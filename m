@@ -1,76 +1,112 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.49
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793353520;
-	b=q0zkkB8AWkv4RUxeBSitUWnD/I9twtpWOCij4tniDuzspHQBuqE9xuQ5KxgXV1KH/o66
-	 IDrNiuxKGPQlWn0ppdTiS7O5KB3m4th1lVfKg/hTQNn2/IJIQoMM7mEj6x74jAdC5vk0e
-	 XNAWtvrkccnWfQXhOB1ltTiNaydV2A9YPBX9gxOvgfUQJ89XjJBpjnara81pA6ed70j8z
-	 h/hsoRZ3I7h1ubvKzD4I/epInhxxg9KUZ7cu4tAKPj9Q/Zqt4Q+pKZfnylM6QZ4LgLNGA
-	 aG2cWkdqcF7lsJSwUa1A7bYyiQl50ONo0NoQLmypP8Z+1/srDpiVi8hLwLINo+JjapQ==
+	t=1793368087;
+	b=KwBszMk/VJaeX601cTeSPrfmlRtW88fPKaNWYcx/CnXEOGJL7ZJscyeNPK/eUFIfefko
+	 C9NsyKoYAuhhD+YW3VXvLPXNjtgvYKvxyhdljs6a6RR1aF8s2AeZsv5hD/DHriqffnU2p
+	 8+vkRn8QDaXW3b5F1QAtUJjk6B5KIA/RNaAw4rAtYgOJgXjmKojdeubIm8RVJN7e2QVIw
+	 fytoY/nV/FbSL4yi5OMojgBcX+VkHdzQtsOkyw8e8WKnpUQzwzpUWKLy/jihfea5BihFn
+	 jHgp1WpDi5zBfPfR0l1a3cpPhwPzV9Evei/8nD9qBiLBd/r7191jhwlYDoZ+XSYoiuw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793353520;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=q8Bp4lvQqYUsZT0k0dArzQOZC6e3m0dIfgAJwvcDsr4=;
-	b=JTIH3u97b7/6ryhG9sn/geNC9H/yNAKgA4hRCerEPoXFpw548Epx8MhCzgZVz68D1kKb
-	 f7+2SQYa6r/QxHRy4inZspnHkwAC2LIw0ePJDpO3p1V/NosBDLvFh+6pnD7L82bvZrsY3
-	 GaqddS+fP+y9XJxskxM8W0NshGN7tQ6iNubIUhOtjhTSJyp150s2L4TCNFuk70IFFFjyI
-	 4W4gEYEofh45+60hXtjrKdPLMpyoU38M4VV8oaJ/wgltlLcPiUTv8Rlyy7hIDAy0uaZ9G
-	 klVTTH/sp0i7eOGlbsTNhBLrurLg/+58O7AXgpRj9jj/squGsxHb7YcehKqqd/cRmUA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793368087;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To;
+	bh=rmX4JEwV7qAmy43PkgvX967p02rESGhBBxr09gc4cBg=;
+	b=VT2aEl7fTel+p5Bn7pNCHgmd9oFX8R+KKX/cPJQa2sGMZ/0O2y/zbHyDK8AXxaumd+R3
+	 D0bjPrk3EGTPnKUDElXvSzotOeG+/Ukd2s9vj/y2eCIFFYCukk6E3fg5WWmQAhCBlclzV
+	 u4GdSmbZlBNfrTuTmYBntgxkDaxklhMNgZi7ihoCrwlP+cvAF4vr6S2AUUVWrErnkNKb8
+	 EGo2JDRB3Qi7tpC52RqmtGKBmvjN8S1RDe830qYwMqD1T0jEYOAkpLWynsIL72x4JPHFo
+	 Vcr22Xu5fUdtfMws1Btboa/SOYuQ7n3Cx4jSx3XKq1D0HMLxz2pnokTIfgPmM+t8kaw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=linux-m68k.org;
+	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.161.48
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=kUgRhZ6G;
+	arc=none smtp.remote-ip=209.85.128.49
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079B2606A32A
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2026 09:45:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 079B2606A32A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E74606A321
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2026 13:48:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 07E74606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-705cb6cedd5so1144587eaf.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2026 02:45:19 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=kUgRhZ6G
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4a35a60499eso6734355e9.0
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2026 06:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793368085; x=1793972885; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=rmX4JEwV7qAmy43PkgvX967p02rESGhBBxr09gc4cBg=;
+        b=kUgRhZ6Gk4DxgjPmIFksSUezOnRXG6LshOdNRKCivhHXbVbz6Tff1uSvO0PdTTOZmm
+         mzTSAyP1p6v7fmnQ+g7tSyZAGlpxHEzrTFqY+M0DiXjhlGDAHQ7+bc4t+r2N6nxk/pWo
+         +l9R3KqxY2sk9Bx2Rc6+fPLvVTo8EfzL1c3XYBEhNyvjHWXwxFtogwpxue+ditFTOqXm
+         t5+py8xSpIkfnFuBfsCdPnZbgXurSw6K8mNb9OsaQ1EN9mhmDxnVnCI0sJs1phl7+dc5
+         0R+NMB9d2MrDjnMPw39AidBaEYo/rKlXUOD3UK/i1FxxNWt3waWCSvQ/2WBI+GDT02Jx
+         uUYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793353519; x=1793958319;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=q8Bp4lvQqYUsZT0k0dArzQOZC6e3m0dIfgAJwvcDsr4=;
-        b=fFeY5LCE8vebyPRF78b1KadHI5W8NUMYUvYD007jBynbJW0+zu+Vw6HHOynWYaH5uO
-         AQ/wD/VLLn48kHDx9J+8f+HYNWbUQ6xHM6HlOB0wAZX2ZmtzgbZT0LUHQ28lokOD3eZI
-         dkkGjcy7c03FdjZoQUomYo58gXLoA6nrD6c5+x/LjAn16NXM4BWn62wVUVNm6yexsexm
-         B0lFa8Q9au7lnGvXBWzZy4qIVXtMuBTbz2uvdV1ubO3SyGasJ9Kfi7AVCyWx2lAtPrxV
-         ZJEBZshPX/yej5v44lRFgDIT05FJRu3nPIgBYbGAcxRSNASatcLLpZsYHI4qlhfPEEet
-         aotg==
-X-Forwarded-Encrypted: i=1; AKwUvByL0dBZ7gq9FmfY36SMpaAmxIx8V8MCGbh8Ilm/E5Syk5y0QVaiWSMQk0kXY+r6+0tjkmvq0Z39tp/n@lists.linux-m68k.org
-X-Gm-Message-State: AFq9FYKorG7zz+KOIB7BEB2dpV4TtFUVvgABsHdIsnan/VD1Wq+BtdL6
-	mb+7Kn0RmCHQdPhmBE9Dqb0glsAqCoVSYp6XMp0NNUTsSK/SusEwh5f80z+VTYB/
-X-Gm-Gg: AYBFou0EqtmM0Ztxx1BDZIByamzz/z//tp0ea2u/FrLaUJkgFNXyED38ydWFgteXz0o
-	0OrDcVyYF+fdMooHrdiL8Q/+4MUHXQQpsP87e7oPtPRNged9mgdgA0wJuvDDqiNk0twsV2xvY59
-	khWYp+tKwV9Jevkmg8UCzd6zKqpHtduq98Ih8wYhib2Row2M0lk7tNESNpX7a1AZ7RnXVwE/mNz
-	+ke88u3cEslDYYaDggO63vz0uweqMp773eD39GvSRzz1CTpuQj09nY5LNXWSUNZUJHlfwRinSTw
-	n18sTOI7Sbtiu+CqORFpbS0qqgu+JqUvULawH5o3G0s3OZxifWsIiPXdqN42XPISdqvOSDTyAay
-	mIv4ZGzNxJuc4iMcxEm6p46sZT8BOONz2wQ2VJW1PuDq/VsNNOSdRYDV4FoKIREhQHGo2RrBS1E
-	g5ScsvIcSFV74oZwpxAIu3t71q+HZiVA1gSETlhRllCsJLc5zgFROmulrztupGEtlTGC0X1IIBy
-	VV3jEOl7Nq08niIbAYjj5EvVTu3uCyMn/eXBXIMPPBPiLjZl+efjYrxIW3xGK9Rbql3mQi9At+6
-	ltTAd6VuLwz0Rd8+jXYXqYb+bM7brxu3HQziWosc08G+D8eO5uMl6f3S6fH/3IEzgTA=
-X-Received: by 2002:a05:6820:151b:b0:713:df7e:1016 with SMTP id 006d021491bc7-714ddecbeadmr2910653eaf.11.1793353518699;
-        Fri, 30 Oct 2026 02:45:18 -0700 (PDT)
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com. [209.85.160.52])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4a90ae4e9absm1442290fac.4.2026.10.30.02.45.17
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Oct 2026 02:45:18 -0700 (PDT)
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-4a89b4a59a1so1418489fac.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 30 Oct 2026 02:45:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBxFv9zlJYKVCcyLVSblQxLKjYM6QDR/KWOJrD2dnc0eg0oHRm3ZOHTP0R04i+GreEUQ1L0APF85Pm3h@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:605a:b0:7ca:8f2d:5c29 with SMTP id
- ada2fe7eead31-7d0542ccab3mr1591386137.27.1793353163338; Fri, 30 Oct 2026
- 02:39:23 -0700 (PDT)
+        d=1e100.net; s=20260707; t=1793368085; x=1793972885;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=rmX4JEwV7qAmy43PkgvX967p02rESGhBBxr09gc4cBg=;
+        b=A0qHi1trKVwaA8Fmqo8x2K5MoeJb1Uki3/HWCiD/yn+9kfpe07mPqYaBVlyTCiX7Y0
+         dc3r30Oq9bGYoxC7hLGg55UCr3kViQdDZBmIybV1b0CZIURVVhm7GKqNm5kFbeWPDAl4
+         7uv3iLn5vT5DjTikh9ELC6NQ8/ZSlALziFw94ndgFTadDPsMBo17/7mG7BxK17DuEBfi
+         BZ4ehT5HNSRXWLW2W5jRW3Is7nO6wthbwr+hjLCFypjc0U5bGMqQj2t9Dp6Zcj0RY2Ay
+         vJVHXjK4o3UpnEMKhuMc7X7qYyjVKDmXfbGF8YHEzhsuX5RifR49aAvFuohc4jR9Hd8l
+         yG7Q==
+X-Forwarded-Encrypted: i=1; AKwUvBxPfQjLTQCPJl2iwIkXtvbPg2JMC5k7OmIEvcqhwhAhjnofFxOivZvbUesFUSevz0gVMf+t2fn3+Xw6@lists.linux-m68k.org
+X-Gm-Message-State: AFq9FYJBjx8qEDb1NAIoCf8jQJ0GMhy5nDoTA56PoaA4OoToPV5VT6pL
+	3gX/t80od4TEJT4qoXbXMVcMQSjjQUtQv9XpLzoo7ydsdJkvICVk2pfy
+X-Gm-Gg: AYBFou3Ik96DpWXMrOoeiArN21Olr9JPNlgti0acNZi3aF4Gz7mhG+54cwx3nOi4m7f
+	keyeCrJq7/j5X0qcNrU0SC6/Uk9WKoy6AWVuwRR9nt5ipO4LqNyd7Sj0a+v1VBIIbPhKYBrHbrl
+	/cTHGKHgsJLs9HDEotNXY7Fx3kW0tpN2dhJBkI/8FrQmHQwkqHyuLITKyYrvndKkWajxOOw+jc8
+	2AKFXr8T3dIGZYF8eJ90pZ7gjKMepg40nGskOtIZGBo3ijt3SNiTB8RMWMznki+ImZOS58K5iKC
+	0BJbH4PmD7f6I8Odr0h4/J+DRgCzyHBBg5lIQbTN2LXXYOiBatwAadOtxM9Jp/mvoOjQkYoT66q
+	17hFgrdQ5yEqBp5oRciaCtDKP03I6gYTL242e1O5pk/eqfzNRlp47mKnwQaxMZsX1tlNmZWyB9e
+	/n3kh2x5cPM1DF61fYmyf0I/VsJP9tJxTCl4sFSyrH/3LZmZW+NgoK7EL8suZHxjI/MXaWkqxU7
+	p39KVcFl4QcbgUbwAAMQJxdMzEbX/ah188Yq9rOFK8DYwvKG0pO9CplhsW2b5h2PjBBXSrJmvNb
+	lQJHDU0iRWKKQY78jmrUZ6I1GD9e6xCN3r8AF+ml2kxLG1C2EHhP2+aaH5O0U/v8Zojqk3mLF8/
+	w6fST8SG3wVyH9g==
+X-Received: by 2002:a05:600c:34d1:b0:4a2:526b:d3fd with SMTP id 5b1f17b1804b1-4ac1793fb5emr50752935e9.15.1793368085145;
+        Fri, 30 Oct 2026 06:48:05 -0700 (PDT)
+Received: from C422HJQPQG-Fractile ([130.43.154.100])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4ab69b54742sm172048905e9.15.2026.10.30.06.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2026 06:48:04 -0700 (PDT)
+Date: Fri, 30 Oct 2026 13:48:02 +0000
+From: "Vishal Moola (Fractile)" <vishal.moola@gmail.com>
+To: Muchun Song <songmuchun@bytedance.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Oscar Salvador <osalvador@suse.de>,
+	Alistair Popple <apopple@nvidia.com>, Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S . Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Muchun Song <muchun.song@linux.dev>
+Subject: Re: [PATCH 0/2] mm: Remove pagetable_dtor_free()
+Message-ID: <auSgElFWW4n3sJLb@C422HJQPQG-Fractile>
+References: <20261030083800.599152-1-songmuchun@bytedance.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -80,53 +116,28 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261030083800.599152-1-songmuchun@bytedance.com> <20261030083800.599152-2-songmuchun@bytedance.com>
-In-Reply-To: <20261030083800.599152-2-songmuchun@bytedance.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 30 Oct 2026 10:39:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVjr+-4GA=jBNpL3nig6QfQ0Fm8ob+c-OkLADPUJSaNqw@mail.gmail.com>
-X-Gm-Features: AclHuK-5feC2ixWlfC3xXKJ1XowEcUrdLUZ-UGAaez_2WzCy_48TVc-7hVrg-7U
-Message-ID: <CAMuHMdVjr+-4GA=jBNpL3nig6QfQ0Fm8ob+c-OkLADPUJSaNqw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: remove pagetable_dtor_free()
-To: Muchun Song <songmuchun@bytedance.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
-	Oscar Salvador <osalvador@suse.de>, Alistair Popple <apopple@nvidia.com>, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Madhavan Srinivasan <maddy@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	"David S . Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Muchun Song <muchun.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261030083800.599152-1-songmuchun@bytedance.com>
 
-On Fri, 30 Oct 2026 at 09:38, Muchun Song <songmuchun@bytedance.com> wrote:
-> pagetable_free() now runs pagetable_dtor() for pages that have gone
-> through a page-table constructor, so pagetable_dtor_free() no longer
-> provides distinct behavior.
->
-> Use pagetable_free() directly at the remaining call sites and remove
-> the redundant helper. This keeps the decision to run the destructor in
-> the common free path.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  arch/m68k/include/asm/mcf_pgalloc.h |  4 ++--
->  arch/m68k/mm/motorola.c             |  2 +-
+On Fri, Oct 30, 2026 at 04:37:58PM +0800, Muchun Song wrote:
+> This is a follow-up cleanup to the page-table teardown fixes [1].
+> 
+> pagetable_free() now invokes pagetable_dtor() for constructed page tables.
+> This makes pagetable_dtor_free() redundant and leaves explicit destructor
+> calls immediately before pagetable_free() duplicating lifecycle handling.
+> 
+> Remove pagetable_dtor_free() and convert its callers to pagetable_free(),
+> then remove the remaining redundant pagetable_dtor() calls. This keeps the
+> destructor decision in the common free path. No functional change is
+> intended.
+> 
+> [1] https://lore.kernel.org/r/20261023063428.3658761-1-songmuchun@bytedance.com
+> 
+> Muchun Song (2):
+>   mm: remove pagetable_dtor_free()
+>   mm: remove redundant pagetable_dtor() calls
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+For the series:
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Acked-by: Vishal Moola (Fractile) <vishal.moola@gmail.com>
