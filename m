@@ -1,47 +1,117 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793623641;
-	b=O5snBcCdshjYXZXB3qA2AIZMVzDHOWwJeUYXtBhCon/JSaRrKcgUtAi9czFm+7T19sUr
-	 MID3QLoZ7sGY7Ak0zp9Drn6+vVjijd5dMx6z/UCJzWEv7YsoYGvoSEeKxvDoSF3pPrdv6
-	 6c/ZbRcUMe2a1tL9SurIO3ns5a1tc2K7AGJRjSRzRj8teBw6xOtQjR9Hh3wnDaqx/M4K8
-	 1wP2OCVx0P/zil7IQemqBo5F3GH2GNiMCY0yFxAsNeJw7R5bQeWibi/4q/nlYUP1N+eZn
-	 JFWi5aBP0BMOFr8VSD1nu4wcHfXilbvCzoswAdvUZeOVC3ZWGSgxHNmRJB8sgM8qLew==
+	t=1793629261;
+	b=klyZEbr5o3yl/1kvnUdmMrSQS4BqMcoljVslD3FHbiemW/Or97/4Qan0UQnhPq6HrsEN
+	 Tobg9rvlBnMHBq1CRNx3XBr3sr0jrG2Wph1JG2Ejujb5hDTo4IvXFs6Nkxp3rl2ovpnmD
+	 bbbq+MIX5abvy2JbK+wnQx5qZothDgkE1Rw/2w3LiauS8kJcooy5fnoFz3DM+JYI3/mzr
+	 zWovjDffL7y3kUDWzXVr6X4FA+orVmJGVahfw08mB7XgHYveGIE7EmpL6B+KsZEAAbOMZ
+	 jTZbID3jJQXKa9XxqoQ1EBP7zqjOi1IHxDToAu/03SsxYCAItc9SKPpO1LAzOMJXD9A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793623641;
-	h=DMARC-Filter:Received:Received:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=TO91KoG1vI9ce1NgrS1H3y4AjLuUyVF7kQXnRdtAC4g=;
-	b=gtOdG8qAGWhoVBnumUwVxEcfqSL+wSEIT4Bieme/25eWzWQ3WxaJMSvCGCTdjhHfvF+T
-	 lUOoqw2aimgGADJYk1pCf8cDb+16aNbHYvjgq1BPddZNQm3PUQJ/iY9GPRyAa7f8jNUMP
-	 UttZ7ehr47BraeliK6+MZYOtEAeS0UanTGnKjp+MlQSnfYYFV9UQ0AP6yhTUj4o/C1Iw3
-	 D2voC2BYUsZ+vjgePPY/KNJexUTaDDbG0lT5cwohwvFwuCSmSYO+Kbw16r0m/j/RlWZv2
-	 UtkPtY5XLTtFs+zGC0Jg03DEb3INlW8HVOtIhApfCru4J5UIwZIukgvBi+GmdYk6zWg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793629261;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
+	 X-Developer-Signature:X-Developer-Key:Content-Transfer-Encoding;
+	bh=AMQhAUoLjC1OsRhPIF0X/aZZvhoGLtnfpHmE2nV4Wn8=;
+	b=t3tDj4QdAArfrTA5GB7pce8w3TquRNAUXAnDdIGE5hhZpTM+ZjXD2FUxFQwNnU174H1G
+	 XB7pjSIsJ+rQv5z2UlqlFcCgg3GX6mBr5LHw1SFR/0O+E8h/1EqQcVOPi+e10wcJXRuWV
+	 sIUiAT8rkeVi+ltIHI9XReNfOZi06be33A9sO8OgoZ20WAvnilfH50X85GsVE+UeEIA2D
+	 ZWowFi3vRB68Rmm/WVtr+9zgrKklARycvKfF+lRcOIiIrrMwxzOkC5qIUJGlYZaUdlpQe
+	 t4clC+QvSs+W0H0SoZXU/vKvSaF3pepm0ZyR5+peUHZlcgUYG3qZQZDX9pwMyCtOwCA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=linux-m68k.org;
+	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=i0H9lG0B;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569ED606A324
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 12:47:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 569ED606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DFAD606A326
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 14:21:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7DFAD606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=i0H9lG0B
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id D7AF340213;
-	Mon,  2 Nov 2026 12:47:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0548F1F00A16;
-	Mon,  2 Nov 2026 12:47:18 +0000 (UTC)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v7.4-rc1
-Date: Mon,  2 Nov 2026 13:47:15 +0100
-Message-ID: <d2cbb6f63f246237dd2d7818790a4374cea0d00b.1793623549.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.43.0
+	by sea.source.kernel.org (Postfix) with ESMTP id 34216406CA;
+	Mon,  2 Nov 2026 14:21:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EED4A1F00A24;
+	Mon,  2 Nov 2026 14:20:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793629260;
+	bh=AMQhAUoLjC1OsRhPIF0X/aZZvhoGLtnfpHmE2nV4Wn8=;
+	h=From:To:Cc:Subject:Date;
+	b=i0H9lG0Be05TEfu/3sSSx1mNu2tXsbt81HU4VhWr1YaNjWqP1nbmV2PU6N9fCZNuw
+	 nivi01r4yhBVK5q6ZZ/2sNWNfeS1/SVvtod3GB/cMk9XHlaJxrROzU9uNyaCbwueWN
+	 AE/rw/aIukHRd/bUpfVF3u6Oo+d1/1nWu8xicACG8hfScuBzUWJR1oSKGUI3TT1yza
+	 I6qw7gNhliBS+HPnhAgAxa3M/VUpvB8uzbr6ovyo5O6M56NbveIxMw0j6pJhZqxruk
+	 pALxbTScur8TNXplk3A0Y4Q0gW4y8sE5l288k+10HrKs8+OO7WmnOZctFatwni3om7
+	 HzOPbsKYJ2AYQ==
+From: Christian Brauner <brauner@kernel.org>
+To: linux-fsdevel@vger.kernel.org
+Cc: Christian Brauner <brauner@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Jann Horn <jannh@google.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Chris Mason <mason@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	NeilBrown <neil@brown.name>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Christoph Hellwig <hch@lst.de>,
+	Greg Kroah-Hartman <gregkh@suse.de>,
+	Joel Granados <joel.granados@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Jan Kara <jack@suse.com>,
+	linux-kernel@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	netdev@vger.kernel.org,
+	ntfs3@lists.linux.dev,
+	platform-driver-x86@vger.kernel.org,
+	coreteam@netfilter.org,
+	kexec@lists.infradead.org,
+	linux-pci@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	ibm-acpi-devel@lists.sourceforge.net,
+	jfs-discussion@lists.sourceforge.net,
+	linux-alpha@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-cifs@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-sh@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	samba-technical@lists.samba.org,
+	sparclinux@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-doc@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-atm-general@lists.sourceforge.net,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Takashi Iwai <tiwai@suse.de>,
+	linux-input@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-debuggers@vger.kernel.org
+Subject: [PATCH RFC 0/7] proc: move procfs to what kernfs does
+Date: Mon,  2 Nov 2026 15:19:15 +0100
+Message-ID: <20261102-defizit-jobaussicht-kurios-7016c6e67442@brauner>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -51,186 +121,129 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6321; i=brauner@kernel.org; h=from:subject:message-id; bh=DeFgfcqlv/TY20j7H/EH1gPUF0B7m3TaniK1kcChAz8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9mGNqL7pz+vPzk4KWfT6wfNmBh/f/+az2dnquniC7r OfbdVtpkY5SFgYxLgZZMUUWh3aTcLnlPBWbjTI1YOawMoEMYeDiFICJLNFkZJi9z+Wc51MV9sWG KyZ0i3EcLl3135Rh1V/p2TenWEnnPCln+F99gMWOyX62xk4Du399RQ9XTQsXMmEy4ArfuSn16RK 3R1wA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-  - Drop CONFIG_XOR_BENCHMARK=y and CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
-    (auto-enabled since commit cba342dde142494a ("raid/kunit: enable
-    RAID6 PQ and XOR benchmarks if KUNIT_ALL_TESTS=m")).
+Ok, as mentioned off-list I have an RFC version of getting rid of page
+fault induced stalls in procfs when removing entry which plagues
+networking devices among others.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-To be queued in the m68k tree for v7.4.
----
- arch/m68k/configs/amiga_defconfig    | 2 --
- arch/m68k/configs/apollo_defconfig   | 2 --
- arch/m68k/configs/atari_defconfig    | 2 --
- arch/m68k/configs/bvme6000_defconfig | 2 --
- arch/m68k/configs/hp300_defconfig    | 2 --
- arch/m68k/configs/mac_defconfig      | 2 --
- arch/m68k/configs/multi_defconfig    | 2 --
- arch/m68k/configs/mvme147_defconfig  | 2 --
- arch/m68k/configs/mvme16x_defconfig  | 2 --
- arch/m68k/configs/q40_defconfig      | 2 --
- arch/m68k/configs/sun3_defconfig     | 2 --
- arch/m68k/configs/sun3x_defconfig    | 2 --
- 12 files changed, 24 deletions(-)
+There was a hackish very narrow AI solution to a part of this bug class
+that was floated off-list. It used a second buffering mechanism on top
+of seqfiles which was really nasty. Plus, it didn't fix the whole bug
+class, it only eliminated a small portion. If we want to get rid of the
+whole page fault issue we need a bigger hammer. So I tried to work
+through that over the last couple of weeks. The series in a shape where
+it's not totally insane to have someone else look at it. So here it is.
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index e2d474e8cb8fab19..02d851bac96305d4 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -552,8 +552,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 77669e31bb5af0c7..799f1bacd902c344 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -506,8 +506,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index 55ebd7c67937abd5..1f8d8237bb87a017 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -541,8 +541,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index 44c1a2228d5f2ef4..f894161a8b1822dc 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -498,8 +498,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 7ab25377bfe80d57..8990c1bd668e1122 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -508,8 +508,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 13f642884a948978..d9396edd11f10adc 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -527,8 +527,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 1bbd2aa653c08814..16a06da9f7735260 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -617,8 +617,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index 3bfc36faf8d5bae3..7e92fc0602b2b021 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -498,8 +498,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 41ceed87c78a9e57..54dec1976199bba0 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -499,8 +499,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index af4b5c6e4655fe0c..d02cb75492cf9abc 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -517,8 +517,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 1140951fefe7dba4..b568bcf29c47af92 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -496,8 +496,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index bc9358e71ee08413..0146fe25846b9bf6 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -496,8 +496,6 @@ CONFIG_CRYPTO_USER_API_AEAD=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_CRC_ENABLE_ALL_FOR_KUNIT=m
- CONFIG_CRC_BENCHMARK=y
--CONFIG_XOR_BENCHMARK=y
--CONFIG_RAID6_PQ_KUNIT_BENCHMARK=y
- CONFIG_XZ_DEC_TEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
+I understand it's big but I thought it's probably nicer to look at the
+end result than just making a promise of what it might end up looking
+like.
+
+It's not super polished yet and I haven't gotten into sorting out all
+the warts as there were some really gnarly bugs in there like the whole
+readdir mess that repeated entries or terminated early. I think we could
+go a lot further there if we wanted to but I think that blows this out
+of proportion and at some point it becomes difficult to grasp the scope.
+So I'd rather delay that until I have a sense of how acceptable this all
+is.
+
+remove_proc_entry() waits until every call into the entry has returned,
+and most of those calls copy to or from userspace with the entry pinned.
+
+A reader or writer can make a page fault in that copy take as long as
+it wants, with userfaultfd or by punching holes into a memfd over and
+over. And the callers of remove_proc_entry() like to hold locks while
+they wait. addrconf holds RTNL when it removes /proc/net/dev_snmp6/<dev>
+and xt_hashlimit holds a mutex that all network namespaces share.
+
+Every network device with IPv6 gets a /proc/net/dev_snmp6/<dev> that
+everyone can read, and addrconf_ifdown() removes it with RTNL held. So
+any local user can keep RTNL for as long as their read stays stalled.
+Until then no device can be registered, removed or renamed and no
+network namespace can be created or torn down.
+
+Without privileges a FUSE mount in a user namespace whose daemon never
+answers is enough to stall the copy. Killing the reader ends it, but
+until then whoever removes the file sits in D state.
+
+xt_hashlimit removes the proc file of a table with hashlimit_mutex
+held. Every rule insert in every network namespace takes that mutex and
+so does network namespace cleanup. cleanup_net() runs on a single
+workqueue with pernet_ops_rwsem held, so a stalled reader also stops
+every later network namespace teardown and every module load that
+registers pernet operations. xt_recent does the same with recent_mutex.
+
+And it's not specific to networking. remove_proc_entry(), proc_remove()
+and remove_proc_subtree() have over 200 callers and plenty of them hold
+locks. A stalled reader of /proc/fs/ext4/<dev>/options holds up the
+unmount of that filesystem with s_umount held, and every sync(2) with
+it. The same goes for PCI hot-removal, for freeing IRQ descriptors,
+which CPU bring-up waits on, and for unplugging a USB sound card.
+syzbot has hit removal under locks before (cf. [1]), and the xt_recent
+deadlock fixed in (1) below is another one.
+
+Stalling the kernel in a copy to or from userspace is a well-known
+exploitation primitive. It's why unprivileged userfaultfd can't do it
+by default anymore since v5.11 (d0d4730ac2e4), and FUSE has been used
+the same way.
+
+kernfs doesn't have that problem. The code of a kernfs file only ever
+runs with the node pinned and never touches userspace memory, kernfs
+copies in and out itself. This moves procfs over to the same scheme.
+
+sysfs has only held its active reference around ->show() and ->store()
+since v2.6.23, the same release that made remove_proc_entry() wait for
+the entry's callers. A copy to userspace couldn't be stalled for long
+back then. userfaultfd only came in v4.3 and FUSE in user namespaces in
+v4.18. configfs moved its copies out of its active reference in v5.3
+and DRM copies ioctl arguments in and out around the driver's handler
+the same way. debugfs still holds its reference across the copies,
+ran into a deadlock with wifi drivers because of it and grew an API to
+cancel operations instead (cf. [2]).
+
+That touches just about every ->proc_read(), ->proc_write() and
+->proc_ioctl() in the tree, so I've split it up into seven series. They
+go out as replies to this mail:
+
+(1) proc: fix a few old bugs in /proc handlers (38 patches)
+
+    Bugs in the handlers and in procfs itself that are a lot older than
+    the conversion and that reviewing it turned up. Most of them are for
+    stable. They come first so they can go there on their own and the
+    conversion doesn't have to bother with that crap.
+
+(2) proc: let procfs own the data path (16 patches)
+
+    The procfs side. procfs owns the seq_file of an entry, copies in
+    writes, copies out reads and copies ioctl arguments in and out, and
+    only calls into an entry with it pinned. proc_create_seq() and
+    friends and the plain seq_file users are switched over here too.
+
+(3) proc: convert the arch and platform entries (22 patches)
+(4) proc: convert the driver entries (23 patches)
+(5) proc: convert the fs, kernel and mm entries (27 patches)
+(6) proc: convert the net entries and the kfifo samples (11 patches)
+
+(7) proc: drop the __user methods (5 patches)
+
+    Drops the old methods for every entry that can be removed and gives
+    the new ones the names kernfs uses, ->proc_read(), ->proc_write()
+    and ->proc_ioctl(). This needs all four conversion series.
+
+The series should all indicate cleanly what dependencies they have so b4
+should be able to pull it for review. But I could be wrong.
+
+With all of it on a KASAN and lockdep kernel the removal selftests of
+every part pass, the proc, pktgen and allocinfo selftests behave like
+without it and the bugs from (1) that reproduce in a VM are gone. Every
+patch builds on its own on x86_64 and i386, and with W=1 on the
+architectures it touches.
+
+[1]: https://lore.kernel.org/r/000000000000f24f4705b6988f3e@google.com
+[2]: https://lore.kernel.org/r/20231109212251.213873-7-johannes@sipsolutions.net
+
 -- 
-2.43.0
-
+Christian Brauner <brauner@kernel.org>
