@@ -1,90 +1,81 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793642354;
-	b=4SPUKVQ6Yoo2i/6mB9k8LSIc8Z/tFfhMRidWf6YaxyID3Qn1tyRO0nkycmcusK/e8oXV
-	 XVQIKKU3daq2KsS6UYQq9ALEGpj2PumPPTVGziKl+OYPEa3RxXiAfFKVQecQwsFugnMou
-	 7USs1f53kpWS+bJhi4gPC7y3N4WIiMpHmPSdbOJopwYtuI8p0hj0hA9FFxsKm2IcsOFFe
-	 tgkJVGtCXfNsvhjbV1nyX6QojfpATjmPVuMWx0E7uZ5L/qayrSRGJjI0nSujMa+E9J/gw
-	 gW6od9BbtdUysnbTViCfg9phxmBtZM6Wqn4Pap5vznuPbAqaPeycIVak0FxtTwR+4CA==
+	t=1793653908;
+	b=JexXTIHpMJUV0zo7nen/lWtUHGaTKRq0+jJLxiLnlUCxj8rxtAHyXZHMTyhNWK5wOy1a
+	 qzJSEBlxsqmIyJeRTyxTQ+VMYWWimW8MGnEpwiwyiPU3t0oGcqBGHOTOZ5lWQllbAPYls
+	 STVfr1+R6XM6hFeDMyVwTw9kw3yfuMxJwY4DTx10WrdzzGsil83vpNncc+tJfD/Mylrwa
+	 oMiTU/mWdUMrZBZ1aqLy5jxQGlq6OBxMqt0+OjDf95ceGnsi8oMCV0CkGNP7hYi9cVf2U
+	 RbdKLjkVRyzh9O9IM0kQTNN4p+MCK9LNX592G+vM9nqyZzzCO/qJTx42URLIv/0WsCQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793642354;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Received:X-Forwarded-Encrypted:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type;
-	bh=/vXXDZI2TLqXD/tqTZGHj/cF0YcMq0fXP1TpWYkM2ME=;
-	b=Ra5Ucc0bDSNMAH1xDp/Lx3G6H+wRCNmKz7W7E/InzHjcJWfwZIJJCWwKD8HzaFCPE7nX
-	 zE1ZDjtNcdYCIYg9dyO/YgUUb10vB8cxVbY3kS+KskL5NirUZhtumO6lX5J+nQi1h+bOU
-	 c5q/qc5/xDZTa+iR2/08uHxvMecalrO1l82iz5S7PnKKZF988KyIIC4JW+z3CACM3cp/y
-	 aeFjiJb9cG4BZv8yAFUuHN9uF7ee6KTzCz0vvFl6vY5k80fnjBt6lfnSPhWDjHYHbvDgR
-	 1rqa+OWSJswauBYcL6eIj0MalfmGcZ5XNuqXdugZ9dok6CDQip4rgA+7joXj0Pknt3A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793653908;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Received:Received:
+	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
+	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
+	 References:Subject:Content-Type:Content-Transfer-Encoding;
+	bh=xxWoHxsw4VPFqHPAqACZbusTmTkHUnFSnkXXJwnJ4WA=;
+	b=HJa1eX/sTaPFaVqkIljt3FJtLxUecXbWo0dtecZW0Ba7LnEGdZjpAB1jk44Wx8pEp6FX
+	 CbTb1APdLqvDYtYebd69VEy9dJ6r4eAM/IL6fJnjJyz0B2saiBQ78cuEU6qjuD+HiS5KH
+	 NUGObtN59aX6tJAjYu0nGR+qnhRLTy0BojjMqWGeXumFR8NlD2ePH88RUft7V37yexSaA
+	 czOb/flEXm8g52YQ3nFoAf48q4bf1LzMGo8K2qvzB3pj+VNIsMcj2BCuMtdxcKd8+cT+6
+	 EWhYB24cSaCJ3Ui1C+A7+lZ//nSyLRzb1WwJN3MGcJJdtR4kjkMnJTMpGY0fvfpSOSA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=linux-foundation.org;
-	spf=pass smtp.mailfrom=linuxfoundation.org;
-	dkim=pass header.d=linux-foundation.org header.i=@linux-foundation.org header.a=rsa-sha256 header.s=google header.b=JaFqUzIg;
-	arc=none smtp.remote-ip=209.85.218.54
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=kernel.org;
+	spf=pass smtp.mailfrom=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dytOCAJ8;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE66606A5A1
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 17:59:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7BE66606A5A1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA118606D811
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 21:11:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AA118606D811
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux-foundation.org header.i=@linux-foundation.org header.a=rsa-sha256 header.s=google header.b=JaFqUzIg
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-c169ae1cb26so692093766b.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Nov 2026 09:59:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1793642352; x=1794247152; darn=lists.linux-m68k.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=/vXXDZI2TLqXD/tqTZGHj/cF0YcMq0fXP1TpWYkM2ME=;
-        b=JaFqUzIgXO9W+0c0NjyUsG7D6Bhvbs2jTen5qbXskXCJ22TZNUH76BibD/Sn2QjWVx
-         fB5pIoH9a0nXZkzkFEUtAbCBngeqlmKxBnSnLL2OqnRQO+6Q4OU4nBTK8nc0yvqINakU
-         5NVd6lBjFkZB+w2UI1JVJWkle+ag751iNE3lM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793642352; x=1794247152;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=/vXXDZI2TLqXD/tqTZGHj/cF0YcMq0fXP1TpWYkM2ME=;
-        b=IaEXaeCeytg9AEwDTA0VUPcCL2ArlVFTVf42+2U5YiTQSqjfnHO0Xsp0h3qVmoXLrS
-         fupQJKbRvWKZ88lZZK2fRheN5gN2FUHIVEHz/h2HpokQqb51noB49tI4oYviENTZygph
-         xr9usAr6yUgXFbWxhM00fsgzPFGpEk5Z6tP/w2EhBa++vRv9GnbLqEObwK72vyFAxABC
-         MVSX6bmZ3ASXBmXrz8RNAH7WyBN4qI+90zEOkLU3FxW2QaDCk5FeExe3HRTErPAwWTuX
-         x+f8tj0ZDN/ffkurbeumry1CSAKus8+IQFLuo3ceJZnJV5kENLtmL2qengT98P3Dibdo
-         Msnw==
-X-Forwarded-Encrypted: i=1; AKwUvBworIPn7fwUVdHZe3nDxRbxg3L09F6D/g4Z6sRlKLGURNovouF3IctqrdrXL6HebEjpAxJPSZ5b36xp@lists.linux-m68k.org
-X-Gm-Message-State: AFq9FYJcV2bwCoXE1iuVVQ51oZ7f0G2ckIRUR1ulrULN3X4Prp/X8g46
-	gkv3gcMaTwrMkGoxO168+XVIhfRoMVdNwlWFWiituFg0eloyR0HNHbCUq6PQe+QUhtipB/KwS76
-	nHFs9zBI=
-X-Gm-Gg: AYBFou2KdZy/gmB6YDAMTWjHZGKCjpiPibsPVZbb4Dwaut87ldYJGr9vUuBSDohIe99
-	FEJjUr7nk8M3a/fOjZbHbdMXjdqCAMsIGI0Qk8O/nC0o7Gb2Jz38h5mP07c6fa3vOaI3qBZ9ye/
-	4cFzniowVNlMoY+/g5MLzTvo9OAdLJkZvhgjc75XuvYMNeDj3v6pZn6RDm/yudaNr8h8GLM6yv6
-	n9jXlvWeUVWP6n1Ai/SSRTHgnn/6lvB2LPU+7Vk+KAO9jk7+9SCG11U1dgtROM+mpvdXxstz1VP
-	TGq5rYjRXR1qooM0NGOhI5jphbNbi+7FjqR+lP8fHVo7FJ0SOez/EP+m4vP7IEE4H9pHkVEeBXl
-	E4xUmMb00D5Px5TiFcvDf0FWuT6PXeshoxDtg5EcczvndPMK7fUkEzu3aYR4EtL4k/DgGSleCeO
-	SgRLpMa0VKyi51kBbfm/4mQ/exsPjW3epUmlYBMC2cREC4QRQ1dsBDNwUwsNpXPr4tbwJU7qiiW
-	o+20Xk0bVlXZQJ85nk1A9sNULdZkqjdqnlMA+LF/OVeWswx6dozq4l2HAlpQ9z/Wp8DF/t7GgHI
-	WXFOG9GlI6rI4+0VLMdABASxy+AVkAo6FLDkrXo2r42zPR4SMe6r3gbMVLIsivptYEt3boe9DMy
-	8Yg==
-X-Received: by 2002:a17:907:9615:b0:c21:5cd6:3e49 with SMTP id a640c23a62f3a-c4ca7a697a3mr920817566b.9.1793642351772;
-        Mon, 02 Nov 2026 09:59:11 -0800 (PST)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c4cebd3a2desm12793266b.10.2026.11.02.09.59.08
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2026 09:59:11 -0800 (PST)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-c169ae1cb26so692085566b.1
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 02 Nov 2026 09:59:08 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvByNGePxXI/YG3ci3Ich7TIDKkYceSaiC1XuGZ+QTYhSooOrMpF+coO+6PGqt4dfVaLOsK+aCkfy2IU0@lists.linux-m68k.org
-X-Received: by 2002:a17:907:d94:b0:c2d:c80e:8366 with SMTP id
- a640c23a62f3a-c4ca7426f6emr874452266b.0.1793642348398; Mon, 02 Nov 2026
- 09:59:08 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dytOCAJ8
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by tor.source.kernel.org (Postfix) with ESMTP id C06DB601EF;
+	Mon,  2 Nov 2026 21:11:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71B791F00A1C;
+	Mon,  2 Nov 2026 21:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793653906;
+	bh=xxWoHxsw4VPFqHPAqACZbusTmTkHUnFSnkXXJwnJ4WA=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject;
+	b=dytOCAJ80VHiZ1OuHgOm2U1eYLbIsfTF1vQWmQotjAlcYPh3GK76v2x+nXUxkSisM
+	 rRSMnxpBhgTKN8qPsqtbMHMR1UcE5DT4mgUuhKJo4qXktvA3N/yVCLaVhqZ4M63hYH
+	 QbrscRO/3j+WrNfWqflniFd2/f4mJsHcE8FZW7CXPExB2Ibn6fo+J7vdNxA+QmucPj
+	 asTGnwJy3cojByhQ2o4smk8bCPPjZkdrGQJDXaJrz2GO4vpMh3YJ9pqlDgFCK3Aw3b
+	 4wFppyIBa3dGdCapF7WeNSk1Sr3UoL9HoLlYvJGsRNCyDrMBD3ag/9W+/du91VH57q
+	 5GRjihOJRtTyA==
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id A6FA8F4006B;
+	Mon,  2 Nov 2026 16:11:44 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-10.internal (MEProxy); Mon, 02 Nov 2026 16:11:44 -0500
+X-ME-Sender: <xms:kPzoaoxuxxTdjPhQc-3C1zahFZ9aLPvFlowSXGC4R9C8GitGRfcHEQ>
+    <xme:kPzoanGt2jIbLsy47fOpg3WSZ6PY5cBPEClcODOsbon89QNyNk_IgDaAKQadQr2gv
+    uVji238fOMsmLse7Ab600gs9JzJ4DZGzIXqA8TonRFGYfmnT8t3fbcj>
+X-ME-Proxy-Cause: dmFkZTE7nCOuYmDhbapfq9wnjcJo8I33hiQgEa8gG2mpUd6SiuGVjxefYxNF6ts7apvhL2
+    O5TBTvvYo35j+hcPabsgTVdffpGt9MvK5vyw0ZMRJyC2vP2RybIncEIE31yiniEOHW+BGf
+    KJmARPQ+h8rxdMmbqHuWCrc+Rw3W1Pf0ttMp3mPjsGk8H3PuZMLxakWBNCayAXhn4arSzS
+    SZT0vmmbKnAjrINdR7jALY8t/GQLDesfw1v5pO7HM0aidEkcoMk/IX3mKuG96bBGSC44od
+    6j/8Jj2EeiKpBxuZiOuoARjnD/H7MmHLm4946WLbdldIeKehhGb+AjzJw7psiDGcN84+AT
+    fxd1ztnRd84WKFx7SmijybVrXSJKl1AR6Etu7r8JTz1E2IGG2rbVvLkvpR2IBVnXEcQUHC
+    r3GDkPNpHJrO1FrRX5A6DIGX8s2wqnE6WbRRhP/2UYux7WzU3qFcGt1leEKU+a12CXazx+
+    obllJ0NCoPjY5PVFTCgHM6NA+K8OAWAC3Y3QpVQ0GtrFfYBqHxRpcYNa889BVVJkMXM0Xx
+    NfAqx7SCTsESPLk/r6Zjs10FtyBDV2ONG987Ot6HPmAwX9PryQz/c+/GTZobKPftcCgNbF
+    dMjgQuUNaOpeJy2SLb+WxTNiYQx6H//DcXk9Eak51jjRY6pefZcEU0xUdZXw
+X-ME-Proxy: <xmx:kPzoakX1575s1xPK_eRnHKHwfrJs0dh41R1DNgFe6QjSA1GNvloQig>
+    <xmx:kPzoaucrAaHqLBPd5fXUJKW90uwtgM36P2rOCnTrC3gEediQhDxGvg>
+    <xmx:kPzoaq1brQHn036GXHRWgb2TJPEUtB4n80avLnuqxkDWgbKvmiH79A>
+    <xmx:kPzoakc8_jk9jC4iv-WEqTZu5jnNeZJxZR4JSbSaITEBNtWbgxkbuQ>
+    <xmx:kPzoau7BSrFGgoTyo_PA1CYGAey1sR943z5_XGLHZHfJ_ObFFdVmJ7Se>
+Feedback-ID: ifa6e4810:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 7098678273B; Mon,  2 Nov 2026 16:11:44 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -94,60 +85,62 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org> <20261102-work-procfs-bugfixes-v1-1-59422ed3e465@kernel.org>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-1-59422ed3e465@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 2 Nov 2026 09:58:51 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiSA7-mqmAjTQDaU7UjUyWt0TxYwXHafL8ZAPudy+B_uQ@mail.gmail.com>
-X-Gm-Features: AclHuK_qZTBVsLQIdymgRHScSFenC6XsGggUDmcuOugjrSTbuVkeASUmC_hYPZo
-Message-ID: <CAHk-=wiSA7-mqmAjTQDaU7UjUyWt0TxYwXHafL8ZAPudy+B_uQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 01/38] PCI/proc: don't truncate the position of config
- space accesses
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, Jann Horn <jannh@google.com>, 
-	Josef Bacik <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>, 
-	Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Eric Dumazet <edumazet@kernel.org>, 
-	Thomas Gleixner <tglx@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, Greg Kroah-Hartman <gregkh@suse.de>, 
-	Joel Granados <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, ntfs3@lists.linux.dev, 
-	platform-driver-x86@vger.kernel.org, coreteam@netfilter.org, 
-	kexec@lists.infradead.org, linux-pci@vger.kernel.org, 
-	linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net, 
-	jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, 
-	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, 
-	samba-technical@lists.samba.org, sparclinux@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
-	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
-	linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-ThreadId: AFgPYeWZplpR
+Date: Mon, 02 Nov 2026 16:11:23 -0500
+From: "Chuck Lever" <cel@kernel.org>
+To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
+ "Jann Horn" <jannh@google.com>, "Josef Bacik" <josef@toxicpanda.com>,
+ "Chris Mason" <mason@kernel.org>, "Jeff Layton" <jlayton@kernel.org>,
+ NeilBrown <neil@brown.name>, "Eric Dumazet" <edumazet@kernel.org>,
+ "Thomas Gleixner" <tglx@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Jonathan Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>,
+ "Greg Kroah-Hartman" <gregkh@suse.de>,
+ "Joel Granados" <joel.granados@kernel.org>, "Kees Cook" <kees@kernel.org>,
+ "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>,
+ linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ linux-um@lists.infradead.org, linux-wireless@vger.kernel.org,
+ "Linuxppc Dev" <linuxppc-dev@lists.ozlabs.org>, netdev@vger.kernel.org,
+ ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org,
+ coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
+ jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org,
+ linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
+ samba-technical@lists.samba.org, sparclinux@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
+ "Takashi Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org
+Message-Id: <7ee779f9-db3d-4829-bdd8-1d09e3f74c43@app.fastmail.com>
+In-Reply-To: <20261102-work-procfs-net-v1-6-982104a4f592@kernel.org>
+References: <20261102-work-procfs-net-v1-0-982104a4f592@kernel.org>
+ <20261102-work-procfs-net-v1-6-982104a4f592@kernel.org>
+Subject: Re: [PATCH RFC 06/11] SUNRPC: let procfs own the seq_file of the cache content
+ file
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2 Nov 2026 at 06:22, Christian Brauner <brauner@kernel.org> wrote:
+
+
+On Mon, Nov 2, 2026, at 10:07 AM, Christian Brauner wrote:
+> Declare the seq_operations and let procfs open and free the seq_file of
+> /proc/net/rpc/<cache>/content. ->proc_open() and ->proc_release() only
+> take and drop the module reference and set up ->private now. The
+> rpc_pipefs file is unchanged. Reading the procfs file then no longer
+> holds up its removal when the network namespace goes away.
 >
-> proc_bus_pci_write() truncates the file position to an int. A pwrite()
-> at an offset like 0xfffff000 turns it negative [..]
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-I think this would actually be better with rw_verify_area() just
-checking a per-file maxbytes.
+Acked-by: Chuck Lever <cel@kernel.org>
 
-We already have that logic for lseek and friends - using that fairly
-hacky combination of s_maxbytes and !unsigned_offsets().
 
-We should combine s_maxbytes and unsigned_offsets() at file open time
-into f_maxbytes and check that not just at lseek but in
-rw_verify_area.
-
-And then things like proc_bus_pci could set it's size limit in one single place.
-
-Hmm?
-
-                   Linus
+-- 
+Chuck Lever (Come to NFS bake-a-thon! https://nfsv4bat.org)
