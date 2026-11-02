@@ -1,58 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793632595;
-	b=gNkLfYK6M9BLyETTmklEfeooSCU/vmT790c1fGVw8X9kAJLcRDacDhfclXfWLeS+8ZcM
-	 PO7uEHhoY9ZH8mmvwzeuY1X4wIT5qTCVZWQJIZ+bNpxfB7Rlkj0FD2C7019GyN9Ona3Hj
-	 ofVd6xaUOXMqXuEKoa6NRRU9iUIpESiOfUIFHynZrFYg5Gv3mLkw0tph7EW/2hWMP2+Wu
-	 VkeGbbOSa804NMYtgmjfHbL++evIc1Ar7vFA9RtQGLO8/T0L7HMT9eHVwiPEZ5hqMXdU7
-	 1x0unmiov18zMHOjP3IceyECkWpVN1EEHdpsn24JdHAfHzeY/dR5XeYPNujbxpuITpQ==
+	t=1793632614;
+	b=BTfgWmJamfgrJhmpLroOxMlWC30+lZzUNjLlp3UvixSaX+c0CnN/hJipMAF0NuReCvDh
+	 clsmapRzIg55JuLpe4KFpuqXVY5A1Fl3bjijV3jUpOFBsfx8zcrTvtaWT2F8MRtdGnOZG
+	 Ei6xXBwU7MpCtn2Vs1QjXhYWl1mGcfHTmoG32y/1QhVuY5rv8SZbUgPXNJ3QcP7CsBA26
+	 OXA3xIpwv2985901ERhCMi2+WSET7w7yDwAcqj7LF9pQ3ZBbk4syz2EOtjCKKFYpoxVPL
+	 CW8yMOap6C33Vrhnc4JNHlinCp5lTsgPcQ5oyaaGAVVGuyhEcBxe3Hg0Hkpbk0g6vKQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793632595;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793632614;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=zft31zEOyoxpoaQra2tyBUnsx6CBcNbPccBHjIcKUVg=;
-	b=JaoutAGEt/LtdoKpOeETvDft3sA2D3O70g0bnAjYALriYUzJ4vej1dbjAqtLpNI8AY+W
-	 EJe5K3TYb+KQnMErLhOR/UmK6L//f0vH/eNAGOzG17pispYzYy1o4rmc1IiYzQwPiNjx4
-	 97YsMxFQ+Eo6UZBhpV0IYe2iSZJVtV8wfOeWFKiLWAYmg+fZZKXjjG6Q9TPDBrxP0cWgw
-	 4nWBn6Pgy4tYIHHxbDJAX/qyA+EGy+5Mm8FbDor7rxLyKXQ3LUJFP/kZqx8CKPq8neA+Q
-	 543MSMlRFqr14Vg2RMsopn4KMDjuqHQrd7oBAuCjkzR0yWVLvsdWnIe95hdms6+uqMA==
+	bh=IWME5YXmp+uBTllQI4bmngqtIL2M/ij2LxSZ5nW/iXQ=;
+	b=nAvNIJb6Smjzk3h79+P1IkHATrVk9oX/lCs2qw5emAXYTqY7kH5r/jtefIzvKdy3M6mX
+	 nrFpkiJ542he17Xo/aKqMbQvQdNZ5MGwjNgbAQDXRKdcaN7xeTW4nE8fEYXO43BCzg3ha
+	 yq2pq8wSsAJpso1xYHfWpfzdoZwX6EXNMLRZdpfXyRsqcyUbIlmqXiAcYCXBvyDAoJ2jJ
+	 x6UWf3JnXRFCcVRE1QR2YdWERzj7IjJzkUn+pKDXlZSH3HlHCBDsaRI6IjMiacniwsFVM
+	 nsPmnJ9gKOUzGB6XRCJNRlPHIZqKu74q4VPOX3evnS0DS+MSjelGMpdtn4cRPK7mBNQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lwKeAIr5;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=he+g2nWN;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8933560BA93B
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:16:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8933560BA93B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6EF60BE166
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:16:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8F6EF60BE166
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lwKeAIr5
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=he+g2nWN
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id CAECA60218;
-	Mon,  2 Nov 2026 15:16:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 700B71F00A17;
-	Mon,  2 Nov 2026 15:16:18 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id CEE186021E;
+	Mon,  2 Nov 2026 15:16:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45A681F00A1B;
+	Mon,  2 Nov 2026 15:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793632593;
-	bh=zft31zEOyoxpoaQra2tyBUnsx6CBcNbPccBHjIcKUVg=;
+	s=k20260515; t=1793632612;
+	bh=IWME5YXmp+uBTllQI4bmngqtIL2M/ij2LxSZ5nW/iXQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=lwKeAIr5gfFdOVWI9d9xeAawLRX/+XVqTfNIZzgNtLrSPX6u/1CsXECEJL5tNDzMA
-	 81vHXmP4nFBhwRmc/4DERMlJX3QJMwM96cPu9uFbIdibRRS+aHrZI2E5D8a9x1Uv1l
-	 y72FYfS6k5k1GClENyne0V+By+vwxAzdEjY9MbyHJUJx3+nI4+K7kwwgkmi1p0ISO4
-	 9ghnaezbHX5aMMMApF32QawdIaGRPpRDQgJtdD1vqFI5zB7VZbE3n4IduXje7eWoWa
-	 uAZM2qTjPRKpyLwg4MYMHyPaKwvk2dOe0ToVz3+E2luGZiMaQunD5RVbSRamL0hSZ+
-	 ETwAKz10Wwghg==
+	b=he+g2nWN2axpHrzARSjuGxsrot205DCjbsjks2Uy9TZYl0RHdg/P9KBOh5oGD9JND
+	 DVayfm5Hfkeg2m/r223WtfRPwcGKlWcjL6gYiHh273PXIhoEhxNZiDNavPF6Cbag50
+	 rPSzGmz5EtQ1p1vq/YpFygUITCoUKTT249ouaHForUJOn3MhYmmCCKyIX0biE13ady
+	 0Xf3M/tsk29ygP+6Atj+xx/0LarrE/V/7VcEpc9Mo2h1gkeCSTTvoKfOUhKqdH7Eyh
+	 0y2lDzckjbfLpnh9+FD/2sWiSUe/HNZYfhNhwqWfP/i5T/FrHXFUuf714grP6oMM1K
+	 gpSJo+mPThsHQ==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 02 Nov 2026 16:07:25 +0100
-Subject: [PATCH RFC 18/23] wifi: ipw2x00: let procfs copy in writes to the
- debug level
+Date: Mon, 02 Nov 2026 16:07:26 +0100
+Subject: [PATCH RFC 19/23] tty: sysrq: let procfs copy in writes to
+ /proc/sysrq-trigger
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -64,7 +64,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261102-work-procfs-drivers-v1-18-a994bd4d3b1a@kernel.org>
+Message-Id: <20261102-work-procfs-drivers-v1-19-a994bd4d3b1a@kernel.org>
 References: <20261102-work-procfs-drivers-v1-0-a994bd4d3b1a@kernel.org>
 In-Reply-To: <20261102-work-procfs-drivers-v1-0-a994bd4d3b1a@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -100,54 +100,58 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
  Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1605; i=brauner@kernel.org;
- h=from:subject:message-id; bh=SZl2laNUZYNGFN2sYGUP5fs3tBGCqMuq/D28k7CZWwo=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG64euvV9Mi0G6e/pc2cvZ5tAkOWU9ijuqL1VrnM1
- 97MmMJxqaOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiBnMY/pddjIrb5bFlB/vq
- T/1p1gs8F8lNfdO6cLPPKu/tLFWSX2UZ/mk7OAg3F8ZXtHXzM/o7ck37wd4VdH5/R8b9gzV2lT9
- NGAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1516; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=izKwZpZInQuHEIn3CG+CtVNE9UBdLWUqDQ+VPsYIx8o=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG6YzB/Ns2fpXStd8VP3V2XLLXvKV1i9aZtRzvQP/
+ 3g8wg9e7ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIx3iG/04To6e1njQ6Mb9X
+ dZKjsZxt3pH1lyYLZmw6XzB9b7lNLCvDfwcOT28tyyr+0J58PqZfrU9bfa+80lv3Xmue0ZOQ3RL
+ BDAA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
 Implement ->proc_write_buf() so procfs copies in what is written before
-it pins the entry, and parse the level from that copy. Writes larger
-than PAGE_SIZE - 1 bytes fail with -EINVAL now, and a buffer that can't
-be read fails with -EFAULT instead of looking like it was written.
+it pins the entry, and handle the keys from that copy. Writes larger
+than PAGE_SIZE - 1 bytes fail with -EINVAL now. They used to trigger the
+first key, or all of them in bulk mode. procfs allocates the copy, which
+is as small as the write, opening the file allocated as much already.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/net/wireless/intel/ipw2x00/libipw_module.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/tty/sysrq.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/ipw2x00/libipw_module.c b/drivers/net/wireless/intel/ipw2x00/libipw_module.c
-index 15d9a5efb581..08cc0d7f57c1 100644
---- a/drivers/net/wireless/intel/ipw2x00/libipw_module.c
-+++ b/drivers/net/wireless/intel/ipw2x00/libipw_module.c
-@@ -216,14 +216,13 @@ static int debug_level_proc_show(struct seq_file *m, void *v)
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index f4571d05b496..99363e1b59ed 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -1200,17 +1200,14 @@ EXPORT_SYMBOL(unregister_sysrq_key);
+  * However, if the first character is an underscore,
+  * all characters are processed.
+  */
+-static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
++static ssize_t write_sysrq_trigger(struct file *file, char *buf,
+ 				   size_t count, loff_t *ppos)
+ {
+ 	bool bulk = false;
+ 	size_t i;
+ 
+ 	for (i = 0; i < count; i++) {
+-		char c;
+-
+-		if (get_user(c, buf + i))
+-			return -EFAULT;
++		char c = buf[i];
+ 
+ 		if (c == '_')
+ 			bulk = true;
+@@ -1225,7 +1222,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
  }
  
- static ssize_t debug_level_proc_write(struct file *file,
--		const char __user *buffer, size_t count, loff_t *pos)
-+		char *buffer, size_t count, loff_t *pos)
- {
- 	char buf[] = "0x00000000\n";
- 	size_t len = min(sizeof(buf) - 1, count);
- 	unsigned long val;
- 
--	if (copy_from_user(buf, buffer, len))
--		return count;
-+	memcpy(buf, buffer, len);
- 	buf[len] = 0;
- 	if (sscanf(buf, "%li", &val) != 1)
- 		printk(KERN_INFO DRV_NAME
-@@ -236,7 +235,7 @@ static ssize_t debug_level_proc_write(struct file *file,
- 
- static const struct proc_ops debug_level_proc_ops = {
- 	.proc_show	= debug_level_proc_show,
--	.proc_write	= debug_level_proc_write,
-+	.proc_write_buf	= debug_level_proc_write,
+ static const struct proc_ops sysrq_trigger_proc_ops = {
+-	.proc_write	= write_sysrq_trigger,
++	.proc_write_buf	= write_sysrq_trigger,
+ 	.proc_lseek	= noop_llseek,
  };
- #endif				/* CONFIG_LIBIPW_DEBUG */
  
 
 -- 
