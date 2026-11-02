@@ -1,56 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793632037;
-	b=JS3o1fl1usGUM9ciqtKeFVUZ2nysAviXoZ6RcPmZKGhZIisSNn7jGTg8Mn3nuyzBqz9R
-	 BgvUXG7pK8ONtpF1/LPosBvaD76OTQy4cmODZMJwJwAWoMFmnA2N/nWyc7yzO0AuHZ7P2
-	 i7uPXU4s2cBn6IOxtMFOjNcrqwz0Hgc9Q4StQZqgOeb4gbT2jJakF/qa8KB2L8m/bvYWO
-	 Ap2onocOlBubY7fEet3UBE8kIUyYZvyXn3h7TLPEvVbJrvOc9rVVR8+CtnLf90j11EwjV
-	 cv0QbETakqqJZ6ZohmAFtyvo+KFH36XhI5XApFCxzvzf+wBhsAGu7g4bGqQ/EO7aG4g==
+	t=1793632053;
+	b=sG81OFjIbbrTNdE86QEmsqH4utEarDupKYhcpUi+/KOfjhRAngva1NfHr9lPSTaTMU5I
+	 l8DM8yKhsKNojhX1daKPzjoG7sJW6Z19e7MwAOP5jiydCtSM/HPpkLIvgyrQNplJjvPdo
+	 RHVwlGF60kB804l0Tef17Y4WovIRu5DLDq89nSf645MWlWGjVyxZ1NK7p1UCRN8bZBnAN
+	 70N85tRByFFKpCcR4T2luojkxNOkqfYwR2VFttVZa/0W+dNjeB9q4SV2uUdUD3RM4fzfP
+	 pC1J21EpyrXZ3mBwBTzi08bTkKgaY0h1+GkXKSsj2sHgZVNVqvdTDe5u2fR5iFQlRMA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793632037;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793632053;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer;
-	bh=mGdLlGj/NJAJr68kXbSPslaJvhomImSQvB5hgldkHFg=;
-	b=XYhItRpr8/5j3wGEsRdCili7Nt5GxF+pymTDM/bohQzu7ynyeF+HoNu7kIJ8Hi52Uo9F
-	 FU9p971tbDU0HUI2GBuAeCuwHx/IKCjaZSAtgRhWcYwSVfaRSdGxVbWoBu/K693jrk9w3
-	 Wca4ne/xAXl+pyT/SW74L6zA4BA+iFrJiMo+HtSpF/kKs2u6mPuTUw31pqahyDczNWt/U
-	 ySGg6ueVzlQP33uYeLd+cltYgT0qNgIVjct3m1k3afzW6dTMaqT7iLDEwm64i+HqaWo0D
-	 n1CfjAdD2uZ7CtGyeeAkMyyElwuqY2Ar53aAFWBNKhXfwIy1eBCC2qfRGPVO1VhEgXA==
+	bh=Jqve5dom8G0YagWg0DUi21Qt2CUJnz11dMCfHhOCDkM=;
+	b=P4U97G9/zTAF7bjvVJu5JxLAmlELtvQLDBmdTcCH4tJbPTAmtSaNGbUuv3+bL2ZCYkJq
+	 iHsSIkD0PNyiCluLRf/TMv7LXMMPV7xXWCLuhCFdEb2aGFCUEhHM1B09xkz/Jsx3NLElE
+	 lf1ES1lfLs3Wb7TIb9RftONkVUZS6fExq1ije0/XBEvjHkDf2f206um6Ua5m4887Noygm
+	 jANtBe75UE0f296YtTeMZ7qJcvW1HWL+WXtZhYWE+/O77zQW2EehK0sXkiwleN8l3Zu3+
+	 44y0ZXzF9X3s3yM02C1VfNfZuKVOzDGA3Tho/0Ewr303oFNzjOp27xjHJpbDJRrLktQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IzlZDjTa;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=htIvLzE5;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8CB609FD86
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:07:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2D8CB609FD86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711406072C4D
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:07:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 711406072C4D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IzlZDjTa
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=htIvLzE5
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6FF48605C9;
-	Mon,  2 Nov 2026 15:07:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B26C51F00A16;
-	Mon,  2 Nov 2026 15:07:01 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 44AD541132;
+	Mon,  2 Nov 2026 15:07:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC3F1F00A16;
+	Mon,  2 Nov 2026 15:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793632036;
-	bh=mGdLlGj/NJAJr68kXbSPslaJvhomImSQvB5hgldkHFg=;
+	s=k20260515; t=1793632053;
+	bh=Jqve5dom8G0YagWg0DUi21Qt2CUJnz11dMCfHhOCDkM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=IzlZDjTao7VjuIjRRsnw52RX/0AjF/WBmgT4NSpXmtjt4TJbN8zegt24j5DOlUa3Z
-	 44pMabJRvDCRlnweMnKPhfJPYcWc+E6OtpWq1y0Ac43VD4FbMRQP9qey5otxK1q5PL
-	 oT9zsk1HsUa3Ue3zXl6S6BVtFghJKXFiWTJwHmxl0PE/8ztq9iyqz6BcdrpCZDdpYi
-	 3XtzkYqJlHCU6ToIaLkgAjRlsjmuFBtw97UNIAceQYdi00vVfKPn4AuQDU9qRHk19M
-	 URA4zqhN0uKI8rAUpyUb++ZQsVmLXvF7KAChG6Fit1JA/MDvvneOl/7dLgJJZyJ32o
-	 yDuj9+i1oCVEA==
+	b=htIvLzE5mRDE3y0tqv1kyv8W5k1g/Ii7ANwuWhratSAOFS7tbxL3BToIPDpZE85DE
+	 FNEsXXzLmfR4qQugMxmA9eyhIHm6Q6dJAmTZKLeIUK1bHgaHB6rg72WkRZftlCgoe6
+	 E2QfeUCqIA0Nboam57Dh1SlJUtOEamqW0FpuXdYHq09VCiD2DRiKvdUgmVI6MwZESI
+	 HWhsjmhK16tI0mtjDz6fsLrdm37sQrZUo7icVQ6YX0Qr2rzi5YjsmWINl56IQd0nMx
+	 zqjv85Bp1EemyFNq5w6kuaSNgOUZ321NOGqFqL1mOki6ZfyR8nruUh1khBiylH7rMN
+	 bCkpWmWU3eNXw==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 02 Nov 2026 16:01:43 +0100
-Subject: [PATCH RFC 16/22] xtensa: simdisk: let procfs copy out reads
+Date: Mon, 02 Nov 2026 16:01:44 +0100
+Subject: [PATCH RFC 17/22] ACPI: proc: let procfs copy in writes to
+ /proc/acpi/wakeup
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -62,7 +63,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261102-work-procfs-arch-v1-16-c9492ab08480@kernel.org>
+Message-Id: <20261102-work-procfs-arch-v1-17-c9492ab08480@kernel.org>
 References: <20261102-work-procfs-arch-v1-0-c9492ab08480@kernel.org>
 In-Reply-To: <20261102-work-procfs-arch-v1-0-c9492ab08480@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -99,45 +100,47 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
 
-Implement ->proc_read_buf() so procfs copies what is read to userspace
-after it unpinned the entry.
+Implement ->proc_write_buf() so procfs copies in what is written before
+it pins the entry, and take the device name from that copy. Writes
+larger than PAGE_SIZE - 1 bytes fail with -EINVAL now.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- arch/xtensa/platforms/iss/simdisk.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/acpi/proc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/xtensa/platforms/iss/simdisk.c b/arch/xtensa/platforms/iss/simdisk.c
-index b2f9e7f3ade3..b597d8642e8a 100644
---- a/arch/xtensa/platforms/iss/simdisk.c
-+++ b/arch/xtensa/platforms/iss/simdisk.c
-@@ -234,7 +234,7 @@ static int simdisk_detach(struct simdisk *dev)
- 	return err;
- }
+diff --git a/drivers/acpi/proc.c b/drivers/acpi/proc.c
+index b8a0bd4580e0..feb8283fd855 100644
+--- a/drivers/acpi/proc.c
++++ b/drivers/acpi/proc.c
+@@ -86,7 +86,7 @@ static void physical_device_enable_wakeup(struct acpi_device *adev)
  
--static ssize_t proc_read_simdisk(struct file *file, char __user *buf,
-+static ssize_t proc_read_simdisk(struct file *file, char *buf,
- 			size_t size, loff_t *ppos)
+ static ssize_t
+ acpi_system_write_wakeup_device(struct file *file,
+-				const char __user * buffer,
++				char *buffer,
+ 				size_t count, loff_t * ppos)
  {
- 	struct simdisk *dev = pde_data(file_inode(file));
-@@ -250,7 +250,7 @@ static ssize_t proc_read_simdisk(struct file *file, char __user *buf,
- 	len = scnprintf(temp, PAGE_SIZE + 2, "%s\n", dev->filename ?: "");
- 	spin_unlock(&dev->lock);
+ 	struct acpi_device *dev, *tmp;
+@@ -96,8 +96,7 @@ acpi_system_write_wakeup_device(struct file *file,
+ 	if (count > 4)
+ 		count = 4;
  
--	len = simple_read_from_buffer(buf, size, ppos, temp, len);
-+	len = memory_read_from_buffer(buf, size, ppos, temp, len);
- 	kfree(temp);
- 	return len;
- }
-@@ -280,7 +280,7 @@ static ssize_t proc_write_simdisk(struct file *file, char *buf,
- }
+-	if (copy_from_user(strbuf, buffer, count))
+-		return -EFAULT;
++	memcpy(strbuf, buffer, count);
+ 	strbuf[count] = '\0';
+ 	sscanf(strbuf, "%s", str);
  
- static const struct proc_ops simdisk_proc_ops = {
--	.proc_read	= proc_read_simdisk,
-+	.proc_read_buf	= proc_read_simdisk,
- 	.proc_write_buf	= proc_write_simdisk,
- 	.proc_write_size = PAGE_SIZE,
- 	.proc_lseek	= default_llseek,
+@@ -123,7 +122,7 @@ acpi_system_write_wakeup_device(struct file *file,
+ 
+ static const struct proc_ops acpi_system_wakeup_device_proc_ops = {
+ 	.proc_show	= acpi_system_wakeup_device_seq_show,
+-	.proc_write	= acpi_system_write_wakeup_device,
++	.proc_write_buf	= acpi_system_write_wakeup_device,
+ };
+ 
+ void __init acpi_sleep_proc_init(void)
 
 -- 
 2.53.0
