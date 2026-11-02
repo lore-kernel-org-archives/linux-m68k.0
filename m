@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793633075;
-	b=Vf06pt6EhVMWyEP2SXDYJpGu/LR0qA4J4Yk2RlIbOcnK6Eqf6KDbcEg7QB60G+s1rGQH
-	 Z95o2qnmmTv+BVDppWN6Fwk35inN2HApFDUqV2isI4QHlF2kJHKYj/ObDKbwhrfyJiPjA
-	 xIHt6mZneEdokzWcQaJpuqI2QoxxroXagBOjrCkXts9IombQep9ejVTy9LrORX4iADeNl
-	 3dq/JyCmPZnBXdNsBiYVKoAGCz/mq+bTsKk9R/lEgJCn1uHp7cQfQwGn7LGKpef3crDQE
-	 z2x6OyuRBlKpYfcDAORVLzIQig9sO26Lkqeem9O6kL1fnLLqCPuM/kkpu+ZD5uoXL2Q==
+	t=1793633094;
+	b=Atob0Q2hsRl0p8lpcppHo+4W5uT7ZeSD3/zfU2sFiYUmwYggeIYpTvX6zB09mf1pKxhG
+	 xjn1pAq+IYC2dFH6ZiERDxUFtIBDYjNlpRwmeS56ZF1zoJZy8m5LrbbIc7jswp0suNw/Y
+	 kHvz79Vj/Z/rG0XnU2dzZnM42djQUi0TCgCJSCRpOeeK34s25yUewllTtmEX/8QqXlRBD
+	 4wyJWTuQDKMiKZJ1YALA3eSjvPNqWNexIicPwwb4vF0Io2nzaBS6yOclr9iTBof/fbaii
+	 ld+E7JC1he+eNGWYKjY9yM55gddM8ojGT50WZre/dC9bs+fb4h32XN94MPkVxZ0f4pA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793633075;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793633094;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=oLmDMwPd5/E7rKj+sTJUI9YQ2nm5m+orCk4a0Hb3xdc=;
-	b=F3iBInegJseKNjG2Ip2Pfy+Lir3E4YEDIQB4MO8uUNUtN1aj86yGitvLP4oepEIGpWOL
-	 Z4QxleFNxH7vidvdOdB4t3SPDbe8dT+dgEvn1DHhCHtaXgz6OVjRMsvF7fHqM5qmyrwPJ
-	 PlpM6a08dUqIERc531uEHFWRkiVYZKdr+699PY5hEAGnFb96HjLDqJehItFirpxERZ/nc
-	 z5XghlEPXuKviH3c2QAinjDyZYF0y21C0EBtF1MuScxKmgmQoVDs6U1q40ZhgWZfOuqUq
-	 N8tFVI3FAqDipWRJ1Tp2A51b/1pP4q0Zi/sBdxcyoN6tOi5ncwIpMSLzmacAmF2XEIg==
+	bh=6w6X6v78H1W1MVXKcJJM4gA/sIdjDlKonl9LFE5zQjY=;
+	b=rpT4y9PzoJCElsgEj7BPSZVkxy4uofsTa/uwLmlmv0PJUfFRkL1OO2VQkWDThEMtWWFS
+	 qZ22v3x+ONrGCfngmDSdlkYO1BUJLjBSW2sTy+Hws0H4YgN0tBEnyjESirhm3mplNAG72
+	 5p9Ia/nd3zsXbnJS6yNmO3qpXfY3FpN/uewDx7Xxa+kW4wB+djECU8PD0u8esxFdvhMi8
+	 CtrxkAcFJNUaQdRFzKVyQb1mjIr1zdhwP45rARDG7VmmzYEg7oow557D5gQbUScrWfral
+	 /CXO0KR5gm1Jxu0rIJpvzA58u/R8cnTJ4VK4AO3LWPCfelzuswp8DqGMYQlRSA+RQbg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OegWozdU;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=C84U6Gw3;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570346082C56
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:24:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 570346082C56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300EE6099180
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:24:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 300EE6099180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OegWozdU
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=C84U6Gw3
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 91F2860054;
-	Mon,  2 Nov 2026 15:24:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 012281F00A16;
-	Mon,  2 Nov 2026 15:24:15 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 757DC60A4E;
+	Mon,  2 Nov 2026 15:24:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61831F00A21;
+	Mon,  2 Nov 2026 15:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793633074;
-	bh=oLmDMwPd5/E7rKj+sTJUI9YQ2nm5m+orCk4a0Hb3xdc=;
+	s=k20260515; t=1793633093;
+	bh=6w6X6v78H1W1MVXKcJJM4gA/sIdjDlKonl9LFE5zQjY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=OegWozdUNrHGegNfTW2sm1HszSzrGzjh4ebMkWsD9u5gapIhy/O07QlRH3LV8M60J
-	 //9uoOmD2XV9WnY62s/9qC5sYKTMOlS7YYqmfCV9USWy3TF92pR30R3sIC3bOI2cDl
-	 eEYn+NqyCZgWe3RZrUPYTjFNI78jnhghKTiQ17RDj3pUBjadrdwq1A/MV0eG6aKps7
-	 XvYJ1cpQlb/G4uhuL9+gJpBzSStLEg/xW7EREUkdqnqORUj3TCI9W+nv9Qji9Ee+7B
-	 DnyLhoImoHxzQ28fH5V+87G43o48UQI/63qjJ9PF6kXAg+QKgEiJv0WhYMM43w1hXk
-	 YkGa+9+0aqacQ==
+	b=C84U6Gw3/7NEIEUX8wm5aL+w+p7nAtzL3Ye+Ut/KhKaxTRXTfZospYsPa7VSOz5cs
+	 uYRf12TBs7aUroCeRblzf+4dkXCp+IFPpb3DPQ8WNMEWUjjQuGaO0igdG/1FcnT2sk
+	 +Nnt45slpztD2ntlOu/8ls0Zsfr4+xCPx06oa8Issc3Es4DkDNDArFw8ZSKvEW1hh6
+	 u0Ea0BzvEinh2dT3lDdRxHUYCzC8d+8dq43Yq1AogBxlWH3/qsEKacpMbyqrSCk3Vj
+	 X3K/Zj3rcCm7HgLR/AXQpaSck7PV9j54FNLH1pxrv6FHNrJt7646S7muiBZu8zKYLm
+	 G/IY4zAlhr6qA==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 02 Nov 2026 16:07:24 +0100
-Subject: [PATCH RFC 14/27] profiling: let procfs copy in writes to
- /proc/profile
+Date: Mon, 02 Nov 2026 16:07:25 +0100
+Subject: [PATCH RFC 15/27] profiling: mark /proc/profile permanent
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -64,7 +63,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261102-work-procfs-fs-v1-14-d09a996317b3@kernel.org>
+Message-Id: <20261102-work-procfs-fs-v1-15-d09a996317b3@kernel.org>
 References: <20261102-work-procfs-fs-v1-0-d09a996317b3@kernel.org>
 In-Reply-To: <20261102-work-procfs-fs-v1-0-d09a996317b3@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -100,57 +99,39 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
  Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1504; i=brauner@kernel.org;
- h=from:subject:message-id; bh=ZtnZ7+j/OHZGj1nwL6jF9VPBdIcnJPmE5lAHJaT+bVk=;
- b=kA0DAAoWkcYbwGV43KIByyZiAGropzKjAwsxvRFdHBmiuO5usrlNmAf7XGR/a5n/gvJ3Bj8se
- oh1BAAWCgAdFiEEQIc0Vx6nDHizMmkokcYbwGV43KIFAmropzIACgkQkcYbwGV43KLjJQEA0hf3
- srBDq6EKvc+VG3c3zONfGz6/IVil9hzyZy3OB28A/RQHopfLUnFRNQfqy4yzV+dF++aZlDkaR57
- e/BjxgpoM
+X-Developer-Signature: v=1; a=openpgp-sha256; l=950; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=qIZMo2xD6WijzH8eCxcoPQWkqyhBdrmfr/XH6W+8iSI=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG7ExefxM/s4z6HMuLP3ZGefX+6xsmVr7IUfm4u2V
+ Ki6Fvx831HKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjARt2CG/0EfvR80+J/5o3qz
+ ZXre4ifTW10KtD3PvVi8oa/zDvf2QnNGhsUVyZFdtvc9vu1c+ij2Ws/3EP9Zmx8qpokHcu3cW7w
+ 2ghUA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Implement ->proc_write_buf() so procfs copies in what is written before
-it pins the entry, and take the multiplier from that copy. Writes
-larger than PAGE_SIZE - 1 bytes fail with -EINVAL now.
+/proc/profile is created when profiling is turned on and never removed.
+Say so with PROC_ENTRY_PERMANENT, procfs then calls into it without
+pinning it. It keeps reading straight into userspace through
+->proc_read() since readprofile reads the whole file in one go and a
+copy of all of it through a procfs buffer doesn't buy anything for an
+entry that can't go away.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- kernel/profile.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ kernel/profile.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/kernel/profile.c b/kernel/profile.c
-index e7defa90a34c..6e4b34f35e3b 100644
+index 6e4b34f35e3b..6f2441dd4a00 100644
 --- a/kernel/profile.c
 +++ b/kernel/profile.c
-@@ -189,16 +189,14 @@ int __weak setup_profiling_timer(unsigned mult)
-  * Writing a 'profiling multiplier' value into it also re-sets the profiling
-  * interrupt frequency, on architectures that support this.
-  */
--static ssize_t write_profile(struct file *file, const char __user *buf,
--			     size_t count, loff_t *ppos)
-+static ssize_t write_profile(struct file *file, char *buf, size_t count,
-+			     loff_t *ppos)
- {
- #ifdef CONFIG_SMP
- 	if (count == sizeof(int)) {
- 		unsigned int multiplier;
- 
--		if (copy_from_user(&multiplier, buf, sizeof(int)))
--			return -EFAULT;
--
-+		memcpy(&multiplier, buf, sizeof(int));
- 		if (setup_profiling_timer(multiplier))
- 			return -EINVAL;
- 	}
-@@ -209,7 +207,7 @@ static ssize_t write_profile(struct file *file, const char __user *buf,
+@@ -206,6 +206,7 @@ static ssize_t write_profile(struct file *file, char *buf, size_t count,
+ }
  
  static const struct proc_ops profile_proc_ops = {
++	.proc_flags	= PROC_ENTRY_PERMANENT,
  	.proc_read	= read_profile,
--	.proc_write	= write_profile,
-+	.proc_write_buf	= write_profile,
+ 	.proc_write_buf	= write_profile,
  	.proc_lseek	= default_llseek,
- };
- 
 
 -- 
 2.53.0
