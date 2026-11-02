@@ -1,58 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793629783;
-	b=Qf1W2MnsUKGLeLFK/EXZ2JNLvM+3rfXV1IvRtDYO+KhLmNMzX0rW6C7I/cm7iShS3YZ2
-	 WpyIW4bLNBaz+YPJ005Il+8cad316ftXzQ2Rssi8SJ/5hH9AStQ/+UTM3oTEBLgS+YgXA
-	 IpbOBB5Hf1YNKC1kEfiaRuj9w1CbgaQ6mBomqr4weUlZ443Rqdeo+I8ur22OuD4qzApeO
-	 yrTADVYDzPnmcvUSAVo+cNApVPhHHNh3CzYJopLXL+GSS3aNeqeBztpYtCKS/+b+ya4ol
-	 htqd7a15nVfD1O09aUSMI0la6BIxgGHGaq+nQq+0rMu216pLZ2/pPr7MJcn80fx/3TQ==
+	t=1793629799;
+	b=h6edOgf1CNtDdMEVpRx81M35pl5NELKxtDl7U84gXvWQGuUhLFlOI6KTgphivQ4J6RDS
+	 TUbZfsqlRqdtrwVNBpW7WZXkpQYeVr6kOnCgVgO4bxNqWusXleuKisu/uHUvp4osFK7OI
+	 38ak8eYZvx+zonH0QiT+hwaX/Cua+XABARNy8g/3jHWJrZi3IVqaCSX4LTyqC1eR6BpdR
+	 23BiyfN06Xy61HCvu6jKpfoE6Xha56/luhZPQ4DWhwnnKs/nR28aHr/YjnoJD6mer7jz8
+	 CtjnYs8hxjMCcmZrPZjPmNc4pIl11BO6Cp0TYWwu5cmsni6dtpV0pDGN/yAokik867g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793629783;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793629799;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=ic+85LCmRwOCXD9XrptIkWWgbAusIpJ/j/j/KpoPCSM=;
-	b=ftsOI3x4BYcgFMZzTNGa/F2ULCrbLfNXTlGAfvOi/2vlb7l77FGCehfPoxxYbUcpVhe5
-	 mNbHJ6rUJti1TVaFrLWq5lJp4Is/fVzsCKAqJS6D9zrWzxXo0K2Pstt2box1Hlt3o2vEP
-	 qrefy/cQodssm47TMmu7EhAYy9a1fcKr4wPCuJtQNzvd7jwPENqmlfybkmMGG9bopDcwJ
-	 quUovgcY2WV18vwlxuPt3+n7l8huvRic6YBhMyhMa0YFAZ0ls50KCSzL9H1l7wo7mvvVV
-	 L/jlf0FXLTB/OF8Hqa2WVNMBeSHtiRmYdcWyuP0a81l1GAOQF9tKuG2CJk7lH6oToLQ==
+	bh=SA3lGiy6S79OdVacoNeeNA0LWGoA0p1Ppo9PoyQO2Ks=;
+	b=p5hPdyJnE7goqI505P4jW8KJYTeFSUFQoSAeY4uEnjPo4UpCDf2sEZRRN4STSjFBWtgS
+	 TWakPrrEM6cLM2569OFEAZP4/dnAW9v+ldp68vc34kbB8FZ9fur1bXsDTs0VQjgr7cwh/
+	 i/jDDg6mIzcrYOHe4A+6YxxgKaawQnXq29CtadyIhyytc2y4NAouaL8BmpSOYX8XPRzYw
+	 wiA75q8INcFaV7TenAVtlKlmwbTiN1ipY6mnv92w096G5XB5BPEM0eX0WFZcfYjuBNW87
+	 8QINWHMb/IyUxXjTnQZOxly8Qar7vnRccwpmdxEHMZV0obPrEg1QZv6IbKskf39iACA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cpiq3IqJ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RW+vtAzi;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D62FF6070D87
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 14:29:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D62FF6070D87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6E56070DB4
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 14:29:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org ED6E56070DB4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cpiq3IqJ
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RW+vtAzi
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 1E91B60EF2;
+	by tor.source.kernel.org (Postfix) with ESMTP id 4C06F60618;
+	Mon,  2 Nov 2026 14:29:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E3171F00A17;
 	Mon,  2 Nov 2026 14:29:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A15B1F00A16;
-	Mon,  2 Nov 2026 14:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793629781;
-	bh=ic+85LCmRwOCXD9XrptIkWWgbAusIpJ/j/j/KpoPCSM=;
+	s=k20260515; t=1793629798;
+	bh=SA3lGiy6S79OdVacoNeeNA0LWGoA0p1Ppo9PoyQO2Ks=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=cpiq3IqJzE0jLDTsXK0hhQpT+1tSBJ0m7UHl7jwVgF1Fv4mj9x0h0BFZHMrAfCVa5
-	 iewk6s7JCm0+gwRTm/kjqgkW4YiueXz1TIntYMKngDzC+ACNgbHQBWvInviI1KRtgv
-	 oJz0vOiQG4c8Pbk4iFmvmDh2ZQ6QwxvGwZS6AAmLbVz1ZAlyFcC8D8rCv7m/yTSEu4
-	 1vD4TCJ+dg9PvxhYYplMdQDJY8+AFuovGaLfiL4La8TbkUrkcL9SeYhMCfsPHBpZLk
-	 c+TBML64gtkfFA/ZyGQfZtD060MB4GYjnWd84w2qELeu1iAHFSJ2lpD4cFIe3OBakQ
-	 pRII2n9i/Aq1w==
+	b=RW+vtAzixHFdftAw+FFf7X1DqyjNjrm5rXJzLqMgENvUyh6lxSop0zLX2+vQS8q3U
+	 qRZVYZNACtSOXvDQAbomlArmJKHhYUFIBB2YrfNds0mv1wfARpxrZIlRmEwlYwFopc
+	 5VdZGPqAWRIGCJ/WjNt4zJr1epJ29nqoWmRFqTaIbIhCMRcObitFsIcVlAgJcZod0r
+	 ACWF7EpwiUSzD42RWAztKJAwpw5HeZTLOr4cdHEhkz65HDjFGe1NQmquxEr2sddSYL
+	 RwpzOOV7W3I2TVeiKdqC8qxeUtM4wH2oSQalOWqHC31war9q1hlS5ta/ceFelklXjl
+	 B3xNbX+COlrjQ==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 02 Nov 2026 15:21:48 +0100
-Subject: [PATCH RFC 33/38] proc: sysctl: copy to and from userspace without
- holding the table
+Date: Mon, 02 Nov 2026 15:21:49 +0100
+Subject: [PATCH RFC 34/38] proc: sysctl: look at the table under
+ sysctl_lock when creating an inode
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -64,7 +64,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261102-work-procfs-bugfixes-v1-33-59422ed3e465@kernel.org>
+Message-Id: <20261102-work-procfs-bugfixes-v1-34-59422ed3e465@kernel.org>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
 In-Reply-To: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -98,126 +98,91 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
  linux-debuggers@vger.kernel.org, 
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
- Chuck Lever <cel@kernel.org>, stable@vger.kernel.org
+ Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3702; i=brauner@kernel.org;
- h=from:subject:message-id; bh=OKHYY6G5p6tdI3fThR8iqjZq4Cu2ed8jbKwsRQr4+FI=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9mJOjqsfwdP26aUFGgi5C6r2yG2bHan4r+X3s7GyXV
- WxXvQoDOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYy4TIjw7uI6fuc5flCf+Zm
- 5zW+q5zWPcdB1K3g9IT5Dob+Sj9nMTD8M73HuT7LtvqMxe4/c10XFfduOPPAQlnpxaaCg3+5lgu
- KcwAA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2783; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=C8EYtx2R+lYWtFHGeY0iXNf5hNAMg0s7P8pl3m1iKgk=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9mJOj8UzGeLUCc9+ZM2pvbvxebnnhmpE+g+SSXWobN
+ Dosy223dJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzk5QVGhrYU5dR7fIy37FMe
+ 6+iy+10qiYvReZc66/8Z5ztf76fa+DEynFt/fqvi+l16ifbTVh5Z/+J12e1rnoUitwqfWIbW8FV
+ OYgQA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-proc_sys_call_handler() grabs the table, copies in what is written,
-calls the handler and copies what it produced out to userspace before
-it lets go of the table again. Unregistering a table waits until nobody
-uses it anymore. So a reader or writer whose copy faults for as long as
-it wants, with userfaultfd or a stalled FUSE mapping, keeps
-unregister_sysctl_table() waiting, and its callers like to hold locks
-while they do that. addrconf unregisters the ipv6 sysctls of a device
-with RTNL held, so a stalled read of /proc/sys/net/ipv6/conf/<dev>/mtu
-holds up every RTNL user until the reader gives up.
+proc_sys_make_inode() checks under sysctl_lock that @head isn't being
+unregistered, lets go of the lock, and then reads the mode of @table
+and calls ->set_ownership() with @head. That's fine as long as the
+caller holds @head in use, which keeps unregistering from getting past
+that check. The next patch has a caller that only pins the memory of
+@head. For that one the table, and whatever the owner of the header
+keeps behind it, is only there for as long as nobody unregisters the
+header, which happens under sysctl_lock. So read the mode and set the
+ownership before letting go of the lock. The ->set_ownership()
+callbacks only look up ids in a user namespace.
 
-Copy in before grabbing the table and copy out after letting go of it,
-like procfs and kernfs do for their files. The buffer is ours, nothing
-needs the table for the copies.
+No functional changes.
 
-That moves the allocation and the copy in before the permission check.
-A write that can't be copied in, or a request that is too large, now
-fails with -EFAULT or -ENOMEM where it used to fail with -EPERM.
-
-Fixes: 330d57fb98a9 ("[PATCH] Fix sysctl unregistration oops (CVE-2005-2709)")
-Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/proc/proc_sysctl.c | 50 ++++++++++++++++++++++++++++----------------------
- 1 file changed, 28 insertions(+), 22 deletions(-)
+ fs/proc/proc_sysctl.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 38b61887b59c..2150cf842919 100644
+index 2150cf842919..a1242247f492 100644
 --- a/fs/proc/proc_sysctl.c
 +++ b/fs/proc/proc_sysctl.c
-@@ -602,14 +602,36 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
- 		int write)
- {
- 	struct inode *inode = file_inode(iocb->ki_filp);
--	struct ctl_table_header *head = grab_header(inode);
- 	const struct ctl_table *table = PROC_I(inode)->sysctl_entry;
-+	struct ctl_table_header *head;
- 	size_t count = iov_iter_count(iter);
- 	char *kbuf;
- 	ssize_t error;
+@@ -500,6 +500,7 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
+ 	struct ctl_table_root *root = head->root;
+ 	struct inode *inode;
+ 	struct proc_inode *ei;
++	umode_t mode;
  
--	if (IS_ERR(head))
--		return PTR_ERR(head);
-+	/* don't even try if the size is too large */
-+	if (count >= KMALLOC_MAX_SIZE)
-+		return -ENOMEM;
-+	kbuf = kvzalloc(count + 1, GFP_KERNEL);
-+	if (!kbuf)
-+		return -ENOMEM;
-+
+ 	inode = new_inode(sb);
+ 	if (!inode)
+@@ -509,12 +510,22 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
+ 
+ 	ei = PROC_I(inode);
+ 
++	inode->i_uid = GLOBAL_ROOT_UID;
++	inode->i_gid = GLOBAL_ROOT_GID;
+ 	spin_lock(&sysctl_lock);
+ 	if (unlikely(head->unregistering)) {
+ 		spin_unlock(&sysctl_lock);
+ 		iput(inode);
+ 		return ERR_PTR(-ENOENT);
+ 	}
 +	/*
-+	 * Copy in before grabbing the table and copy out after letting go of
-+	 * it. Unregistering the table waits for us and a copy that faults can
-+	 * take as long as userspace wants.
++	 * The table, and whatever the owner of the header keeps behind it,
++	 * is only there for as long as nobody unregisters the header, which
++	 * happens under sysctl_lock. So look at them before letting go of it.
 +	 */
-+	if (write) {
-+		error = -EFAULT;
-+		if (!copy_from_iter_full(kbuf, count, iter))
-+			goto out_free_buf;
-+		kbuf[count] = '\0';
-+	}
-+
-+	head = grab_header(inode);
-+	if (IS_ERR(head)) {
-+		error = PTR_ERR(head);
-+		goto out_free_buf;
-+	}
++	mode = table->mode;
++	if (root->set_ownership)
++		root->set_ownership(head, &inode->i_uid, &inode->i_gid);
+ 	ei->sysctl = head;
+ 	ei->sysctl_entry = table;
+ 	hlist_add_head_rcu(&ei->sibling_inodes, &head->inodes);
+@@ -522,8 +533,8 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
+ 	spin_unlock(&sysctl_lock);
  
- 	/*
- 	 * At this point we know that the sysctl was not unregistered
-@@ -624,28 +646,15 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
- 	if (!table->proc_handler)
- 		goto out;
+ 	simple_inode_init_ts(inode);
+-	inode->i_mode = table->mode;
+-	if (!S_ISDIR(table->mode)) {
++	inode->i_mode = mode;
++	if (!S_ISDIR(mode)) {
+ 		inode->i_mode |= S_IFREG;
+ 		inode->i_op = &proc_sys_inode_operations;
+ 		inode->i_fop = &proc_sys_file_operations;
+@@ -535,11 +546,6 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
+ 			make_empty_dir_inode(inode);
+ 	}
  
--	/* don't even try if the size is too large */
--	error = -ENOMEM;
--	if (count >= KMALLOC_MAX_SIZE)
--		goto out;
--	kbuf = kvzalloc(count + 1, GFP_KERNEL);
--	if (!kbuf)
--		goto out;
+-	inode->i_uid = GLOBAL_ROOT_UID;
+-	inode->i_gid = GLOBAL_ROOT_GID;
+-	if (root->set_ownership)
+-		root->set_ownership(head, &inode->i_uid, &inode->i_gid);
 -
--	if (write) {
--		error = -EFAULT;
--		if (!copy_from_iter_full(kbuf, count, iter))
--			goto out_free_buf;
--		kbuf[count] = '\0';
--	}
--
- 	error = BPF_CGROUP_RUN_PROG_SYSCTL(head, table, write, &kbuf, &count,
- 					   &iocb->ki_pos);
- 	if (error)
--		goto out_free_buf;
-+		goto out;
- 
- 	/* careful: calling conventions are nasty here */
- 	error = table->proc_handler(table, write, kbuf, &count, &iocb->ki_pos);
-+out:
-+	sysctl_head_finish(head);
- 	if (error)
- 		goto out_free_buf;
- 
-@@ -658,9 +667,6 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
- 	error = count;
- out_free_buf:
- 	kvfree(kbuf);
--out:
--	sysctl_head_finish(head);
--
- 	return error;
+ 	return inode;
  }
  
 
