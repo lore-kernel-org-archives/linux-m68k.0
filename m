@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793632241;
-	b=pBl9bgy66dnnveij+fFoOKXTbMM/Xz/9QzSp21XKpTkTekXKowci8b5XwwOqhfzIpCvl
-	 nyLmbuw8prXD8NGKEJxn9JTtbg9DOCsLX8PxKyyOsOWargun222Hv2URnNIJ2MUquVAiN
-	 M/mhz5QaGICFIhpeZhEjmqLuKY1o0fHrkXOg9O2aHTGfT9C6/+Uhzd1qXFY/ZhwH4Ze2p
-	 ePjJtdlQ4QKYlN3fymr5xBANG0HjZ0zwJAGSZ112jzdU6Cek0kHXJw/GcJJHTgnV4w7I8
-	 53nROjNDcN3ZiQ8n/t3OpxV6yplE9TeYChVL/JIqPCA98IwHb0jAzt5Dzp+m8pNwjVQ==
+	t=1793632258;
+	b=UqJlT9+5V2yTmVcGrgSwVACX+smZQqlwa2DDWoYwjijMVYbrCOOBt9BkM21IggtCgdL6
+	 qNBlx10SIXUjrl8CavYjOI5AP1BX8k1OAfkvrDr+IrFeT9OwLcOXUultpLulmjRFex2Ky
+	 l/OJs3Bm1L+F+eRxIsm5KlcyAMz9MmVpxdl9nUyYRfCJpYBgpGiCamivHyyE9B9Lpi7sM
+	 u3MM7yz8RUamhY9ErHlxiUmVpJ+FNZs5hN6VWBNv2+v3XqcbslWjrdGmwoG7Tgk6Oi2Nd
+	 azNmf5b4Qntd2dOvgvBhNddf2vqylYgIgYrjeEH4zIexmgIJU9hkWm+rSVDcMTPLLpg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793632241;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793632258;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=uhE82sMafPzxvfPBNz7KCycPN06o3nm9WBF7ozqhvvQ=;
-	b=3hjUrPHWl5VCvByzEPz3zDu1euya7TmWUagp8Rcz5zotj3JxrC3M+8uMgfbSNvtuCzdL
-	 VWxw7PReIfDhVlzHYWwnfCZ8wAOM66qcrOP4IQPj+y2Agh2XI0axlrFLz5hbCUX9htgMI
-	 1xPiDEf9ifpPuggHUib7FkFVqFZ6rL1Is3guWLXrIw90CiYKCebzybUQ7URdCAbzVucBF
-	 8TmRFMwEqUNFXZwvzG4Rrcr7o7IiG1ybBellponrUHmV9phdzleSh/nWLIGsOPf/LTsaZ
-	 Q9lSQ3v7Ytbcf5Mb1CcVHs1S74ONVAKHtPduSjvFiSFf/XauJOY+vjFHiA9m2YIsBNQ==
+	bh=gEfU3T2fMjgdZUubap6/Nt8I8xKTHWl/++QTJaSUEcE=;
+	b=u1s89H3RgMkyD7t0FE8ww47Y2gBb7i02XOy3zIh52kS4N5eUP3kC5Er9KqyyGhhExWIu
+	 fBeZbxsIIUQ4YaFOz3mTEo6svUOFl0qJFghH/msbA93Zf8U2GFWvJYCa/lDDmudywH3CK
+	 djM8k08rKVugWI3zcjpDeZu9l/faahBIk1fosATyEGbEOWf25zsgwyUu/bhdZYNoKtPiT
+	 XCRup1LZFA+HhU89dgnyloljXfzROw1yToGwoQZWkTSQvBKsXtV54M/TgKbQjU5MG7pT+
+	 kbBry4bJWfdi3EArux3aoS/b0/qOZf/q+1zl7Q1MU8l04euCMCI+aZAfr9Iiu3iqL8g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="ge/hcfes";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JEtEk3Xg;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6F1607367F
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:10:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1E6F1607367F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CD4608E08A
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:10:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E0CD4608E08A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ge/hcfes
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JEtEk3Xg
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 6028C60624;
-	Mon,  2 Nov 2026 15:10:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DBAA1F00A16;
-	Mon,  2 Nov 2026 15:10:25 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 600A660924;
+	Mon,  2 Nov 2026 15:10:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAFB91F00A18;
+	Mon,  2 Nov 2026 15:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793632240;
-	bh=uhE82sMafPzxvfPBNz7KCycPN06o3nm9WBF7ozqhvvQ=;
+	s=k20260515; t=1793632257;
+	bh=gEfU3T2fMjgdZUubap6/Nt8I8xKTHWl/++QTJaSUEcE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=ge/hcfesra4b7uwUf9ZqYWB9njrsdW7ikBhB2+TOOaHniD4pDo5CkBQJygC306u5b
-	 wB/PtUdGYF68K8Wo2p8YgjLfxD3D2QhC4+E4fHRnOPwNucxkzf5DU27WF/NlWY0Iqy
-	 GAJgUzmaayVQyj5BRZUykLpT+rpgSNU232/4wjRYpPZguWsLgLHVBrYn151kBTwpRV
-	 nXPzhip9LUf2q59LdnLw/8JsXlkcQJRIUj4EgrnieDoD7zSduQEyreNMEArDccn4Qs
-	 hw/iWwFl3I5EqeuSbLMiGYZHNpZsLMqiQMwr9TKPFUnb5SsH7J+RiUYOedx6+niPBc
-	 3NqMUySut53JA==
+	b=JEtEk3XgkB7h/KCKSpjSx/GQWpU/P/7tvtCdnnzCxrDpIn594psdLHFTrmfuke6dM
+	 slBqHYXHnT54x/QPrsmxH3yeqxfZQPD2y0pgY1+PEiyIIJsHQEmrStcSZUBzYnriXr
+	 z1cAZ9kaI1mij4Fc3B7DH9EC4k1fIQp6BDZOK3UL5awrKforvD4qmdeHd8pveKvbcx
+	 iZMvCpnYB/tvXMP/UoxQpEd6uLwjQn9oT2yIsRi+8s3j66mGWx98OAk1gVJO1c+yd/
+	 xAonphmuY1qwZTlY+D0zGjvzNIJDEogTrjTuIG2qL99CLq6eIn2OG7zpSiKwd/V4oF
+	 8+lGx05vpGPgQ==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 02 Nov 2026 16:07:08 +0100
-Subject: [PATCH RFC 01/23] nubus: let procfs own the seq_file of the
- resource files
+Date: Mon, 02 Nov 2026 16:07:09 +0100
+Subject: [PATCH RFC 02/23] zorro: let procfs copy out reads
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -64,7 +63,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261102-work-procfs-drivers-v1-1-a994bd4d3b1a@kernel.org>
+Message-Id: <20261102-work-procfs-drivers-v1-2-a994bd4d3b1a@kernel.org>
 References: <20261102-work-procfs-drivers-v1-0-a994bd4d3b1a@kernel.org>
 In-Reply-To: <20261102-work-procfs-drivers-v1-0-a994bd4d3b1a@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -100,54 +99,55 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
  Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1301; i=brauner@kernel.org;
- h=from:subject:message-id; bh=x7z4QEHcj9RNvDtDgoKANKctl9Sfloc7qmQpa+Y73Ns=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WK7fFm4VGPxTRVG9kNHvu4d2mV3i6b4vmrNOVrR6u
- yuKTYntKGVhEONikBVTZHFoNwmXW85TsdkoUwNmDisTyBAGLk4BmAhfLMM/qxq9uhSer5rKl2Ql
- TFnt4xj4b6+efHfdMuZlO/bd3bPxKSPDGfl1C7eGHtq3U9NZa+MW4UvzrpQ9y/tVL3jEJn1i6Nl
- SLgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1540; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=0V4WXwhQL5pRZKlAhpvNvMMTbS/E9DKCsIQEEH9Ob/I=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG7AIbrx5h2jApOfJWsWGW9hzDP7Z1n71GbDkhKjd
+ 1G75+1S7ShlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjI/UaG36wcDIusu3nPOnFM
+ /P+8oNKCR/ZZrpFyDV/sHU9NRa7UTIb/YfZNrhe7BR60inb8XH12tpIKe1zQvdmbziyrv3LhEYc
+ VLwA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Get the inode from the file instead of ->private, declare the show
-function and let procfs open and free the seq_file.
+Implement ->proc_read_buf() so procfs copies what is read from
+/proc/bus/zorro/<slot> to userspace after it unpinned the entry.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/nubus/proc.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/zorro/proc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nubus/proc.c b/drivers/nubus/proc.c
-index 3ea3d1738eae..cb21ad1d9964 100644
---- a/drivers/nubus/proc.c
-+++ b/drivers/nubus/proc.c
-@@ -107,7 +107,7 @@ nubus_proc_alloc_pde_data(unsigned char *ptr, unsigned int size)
- 
- static int nubus_proc_rsrc_show(struct seq_file *m, void *v)
- {
--	struct inode *inode = m->private;
-+	struct inode *inode = file_inode(m->file);
- 	struct nubus_proc_pde_data *pded;
- 
- 	pded = pde_data(inode);
-@@ -138,16 +138,8 @@ static int nubus_proc_rsrc_show(struct seq_file *m, void *v)
- 	return 0;
+diff --git a/drivers/zorro/proc.c b/drivers/zorro/proc.c
+index f916bf60b312..4e4ba04752ea 100644
+--- a/drivers/zorro/proc.c
++++ b/drivers/zorro/proc.c
+@@ -28,7 +28,7 @@ proc_bus_zorro_lseek(struct file *file, loff_t off, int whence)
  }
  
--static int nubus_rsrc_proc_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, nubus_proc_rsrc_show, inode);
--}
--
- static const struct proc_ops nubus_rsrc_proc_ops = {
--	.proc_open	= nubus_rsrc_proc_open,
--	.proc_read	= seq_read,
--	.proc_lseek	= seq_lseek,
--	.proc_release	= single_release,
-+	.proc_show	= nubus_proc_rsrc_show,
+ static ssize_t
+-proc_bus_zorro_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
++proc_bus_zorro_read(struct file *file, char *buf, size_t nbytes, loff_t *ppos)
+ {
+ 	struct zorro_dev *z = pde_data(file_inode(file));
+ 	struct ConfigDev cd;
+@@ -49,8 +49,7 @@ proc_bus_zorro_read(struct file *file, char __user *buf, size_t nbytes, loff_t *
+ 	cd.cd_BoardAddr = cpu_to_be32(zorro_resource_start(z));
+ 	cd.cd_BoardSize = cpu_to_be32(zorro_resource_len(z));
+ 
+-	if (copy_to_user(buf, (void *)&cd + pos, nbytes))
+-		return -EFAULT;
++	memcpy(buf, (void *)&cd + pos, nbytes);
+ 	*ppos += nbytes;
+ 
+ 	return nbytes;
+@@ -58,7 +57,7 @@ proc_bus_zorro_read(struct file *file, char __user *buf, size_t nbytes, loff_t *
+ 
+ static const struct proc_ops bus_zorro_proc_ops = {
+ 	.proc_lseek	= proc_bus_zorro_lseek,
+-	.proc_read	= proc_bus_zorro_read,
++	.proc_read_buf	= proc_bus_zorro_read,
  };
  
- void nubus_proc_add_rsrc_mem(struct proc_dir_entry *procdir,
+ static void * zorro_seq_start(struct seq_file *m, loff_t *pos)
 
 -- 
 2.53.0
