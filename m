@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793633659;
-	b=UrXRuYoayGeVLoAkXMFIEMLf4ND13sv6TDYAEY0zYrG4LkFgZP8e2suPmE73RCrq65YU
-	 dbYfbYcFzi9froiixwL4r120Z7EuaLkkx19qIs/kSGcoLrfedTeRytJlpaTzWeHLbL0ye
-	 OuR3sO7i8YktIjUDQkT4BkN61Ogz2mloibQO4qqtpBe0/2zsZhnKdkvmM7TuRQsa7QADV
-	 Y1jZPql578hG0E8h0YVtIgE+4UeBJXxUhD5ZsGocdyyAOm3bR02MSYP72Vl12MCZ1aeMm
-	 6D50CVy334fMVmXjzZ3SZ+ns0NkV85ujthRi8PqwK1baEwJH78tRTyi09J2aAqWSu4w==
+	t=1793633680;
+	b=X0mnQApKIUKB4bo6U0ADqYBaSmo4NZkF8/s/aJ1UDIb6tMNEyTmlF5BLSW5WlX5g/RqV
+	 kPoXbQGed4cGplp46G9jp0mAN4Mmg8ZnPJ6aqodYnIahr9QrPS0Gct6FSL80h/tePQcVO
+	 MyDzHWVzCVExWX6UA/2I1I2qA2b2PBv7LjNC/kiIli10U8HlHN1mOLp1Z7WZ+vvTJYX4Z
+	 AfyWmRWm8vlpjrvBFah2Mv6mM6GPFtGCP8/nDpzxR7YWfnmOeUJxmursM+SmNL747ENeA
+	 4jKvahNZflevTsflunkOPDsk21SbPCA8W1x6aIq49KDsassS7L9pbMHo6T6qXx66fLQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793633659;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793633680;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
 	 X-Developer-Key;
-	bh=qehvQbejNsYpKxVFyBI5cuXL4HJf/COjdUqE20q/KJk=;
-	b=PFhTqBvWpYhl/ZTF0W7vF37zREgwAX2BEhhV2gBWwQTpZLChwHt0S86j1Pd5ApGLru6G
-	 f7f+J7klEw7bAiiCw1CJ7aX7uPGPRYvVYpkJzlYSZqeC5O9zChocYOHmawcsaIRrYisaN
-	 tpD5lkAYokbFfr8LjMWGeHoUXg4R0ufrXzrw5zBScRCmctKhhRYsAgtytp+TCoWPtELTy
-	 f7Hd0CvKs0bYD9I3AOAKZ3Ca6q+sRn+yGUdS+HyDnP9ifjiyjHHCo++/k/wTXwbQPerlo
-	 1Tu9oqip5S9VAr+koPFE0XXmJG/IePjDXUQlNUDsXYHXpg2nDrJMJ7k6AmF1WDkaJRw==
+	bh=pmnFGMOE2v1+F0PJGOHw4Gdli7q7gPuktrXwX9LNfoQ=;
+	b=vYxbdvXKP1I6pS5q2Fg/DtYs9XYrS+xTXKdHYPJBHngQmkWafV/LWJVqgJSZAHWuH3K4
+	 unq+J00n7VTp1n9M6z6srwmlU9haFPDUJicNOQAyMsUd2FTwudkRn9tByfipBHAZf95no
+	 Y61YQ2gKsltp22dxnFfAqEd1VkrdQJsLi3JdSL2Ase3lp+rLHGvEVkLTMrkrGYi9G7HY5
+	 qSCF3NG2ocZsfuNfLu4SVmHh/ujDohdZ1vb5ziTN55AAA4X9KDpbaColTBlw9BorYHB6l
+	 tPC+CLLAIwpgG1l1fsAW5R+kH2Lvwu8Gpw30BzkLwY0WM7+ylGudp3BJhCZzvxZHpnA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I3018NSM;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d9QGwQro;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D4860DC655
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:34:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 25D4860DC655
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30B660A0C80
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  2 Nov 2026 15:34:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A30B660A0C80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I3018NSM
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d9QGwQro
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 85AB76060E;
-	Mon,  2 Nov 2026 15:34:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 145791F00A18;
-	Mon,  2 Nov 2026 15:33:58 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id DB41B609D2;
+	Mon,  2 Nov 2026 15:34:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCFFB1F00A17;
+	Mon,  2 Nov 2026 15:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793633658;
-	bh=qehvQbejNsYpKxVFyBI5cuXL4HJf/COjdUqE20q/KJk=;
+	s=k20260515; t=1793633678;
+	bh=pmnFGMOE2v1+F0PJGOHw4Gdli7q7gPuktrXwX9LNfoQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=I3018NSMJ3JeeEZNHYpZOzTSTVjGE8V8mC3rxWyFrnFm/O6e0BQPqvYOSnqdWvMzS
-	 FhRSnHG1Pz7M0jO3MB5OdMthxumcYZHGwgiesNL3clkwgcHDbIz9ja6O+6lu5gGJLA
-	 PzRRVogMLoBdbC/vCygybRlSjZMHZHAZaGNWRN3uCoSd+5c4+7VtRVNL7l73qL+q+I
-	 R83v2alIXJL0sOz6U1nmnu9cdG/yNEzCQaZx+lsQYDDUzsXFMYUp8cWRAgyEt0tsOr
-	 4L2nbLK8eTjSuQksbl4N5zsJeumCILIO4kqk140gii9/aZ6MFm+VMeLb271ZSnrk1N
-	 d4I4WeWG/J0hg==
+	b=d9QGwQrotLscF4xo8DU9S109UjfAgcN4a46hjwVSf3SjqQgEaO4Rv1AEyP5dT4O5y
+	 xhGnDHnb/jFSk8D7qKuO+39L5VOpMdQp+GEPoALOWTv2sAj3bbh7bn9Ca6T4Zctpcj
+	 fNImnpjl37D5rGo6ytZAGYcvcU7Hs6e2nTEg5V2aQ/mC4G0yjxmcpG1Hu5e0aBYP77
+	 YqqQjJjSh1N4cnNNEz/pCqHHyFFMtbDFf9uvFYMyEZgjLi1JBmongPZBS4PXj3B4fR
+	 cGUqecnhkpX6QHjYWkx5oNKUT3XrFn+eoX8EGZYKiM0ZGpeR++e3aBl28Ylp4YaymR
+	 Z4/Or8kbU/uIg==
 From: Christian Brauner <brauner@kernel.org>
-Date: Mon, 02 Nov 2026 16:07:23 +0100
-Subject: [PATCH RFC 09/11] SUNRPC: drop the ioctl of the procfs channel
- files
+Date: Mon, 02 Nov 2026 16:07:24 +0100
+Subject: [PATCH RFC 10/11] samples/kfifo: let procfs copy in writes
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -64,7 +63,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261102-work-procfs-net-v1-9-982104a4f592@kernel.org>
+Message-Id: <20261102-work-procfs-net-v1-10-982104a4f592@kernel.org>
 References: <20261102-work-procfs-net-v1-0-982104a4f592@kernel.org>
 In-Reply-To: <20261102-work-procfs-net-v1-0-982104a4f592@kernel.org>
 To: linux-fsdevel@vger.kernel.org
@@ -100,56 +99,142 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  "Christian Brauner (Amutable)" <brauner@kernel.org>, 
  Chuck Lever <cel@kernel.org>
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1522; i=brauner@kernel.org;
- h=from:subject:message-id; bh=Ud9Y4QQyL+X4JWta5uPxcGegk5a98S++PodDMQ4oF1M=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG7S/nf10r1xa3IYtmm0TBAouXddfcmhZUb+it52U
- 20nX9pxoKOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAi4WcYGXpLayZN/hhya+/z
- ysCf6/y1yhbKurD+W7OU58ipKVLTDMUYGc6eCmt4GKApJHKg5Ubmioa6i3H1f+olLqZ4VW318Nh
- xigUA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3950; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=wqPh89nrehb8eXTwTved41pSSj+cx0NGgazKeJSdQJg=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9WG5SKeDGcNhJw++9Z7LY3JTfuwQ+VK2efenXodN77
+ 51lStK62FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRuBCG/z6xtYb3b823yGzs
+ EFIryW+ZU83Lc9Vb497sqedPcyic+MvwP/CknED65Xe3rd5zTJCoDZgg+Puey5sJtRciovqzWZV
+ mcQMA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-do_vfs_ioctl() answers FIONREAD for regular files with i_size - f_pos
-before it gets to the file's ->unlocked_ioctl(). The channel files are
-regular files, so cache_ioctl_procfs() has never seen FIONREAD and only
-ever failed other commands with -EINVAL. Drop it. Other commands fail
-with -ENOTTY now.
-
-The rpc_pipefs channel files are regular files as well.
+Implement ->proc_write_buf() so procfs copies in what is written before
+it pins the entry, and put that copy into the fifo with kfifo_in()
+instead of kfifo_from_user(). Writes larger than PAGE_SIZE - 1 bytes
+fail with -EINVAL now. kfifo_from_user() cut a record to 255 bytes,
+what the one byte that holds its length can say, so the record sample
+keeps doing that with PROC_ENTRY_SHORT_WRITES.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- net/sunrpc/cache.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ samples/kfifo/bytestream-example.c |  9 +++------
+ samples/kfifo/inttype-example.c    | 10 ++++------
+ samples/kfifo/record-example.c     | 12 ++++++------
+ 3 files changed, 13 insertions(+), 18 deletions(-)
 
-diff --git a/net/sunrpc/cache.c b/net/sunrpc/cache.c
-index 81a3f0068f36..d242b6f33cbc 100644
---- a/net/sunrpc/cache.c
-+++ b/net/sunrpc/cache.c
-@@ -1596,15 +1596,6 @@ static __poll_t cache_poll_procfs(struct file *filp, poll_table *wait)
- 	return cache_poll(filp, wait, cd);
+diff --git a/samples/kfifo/bytestream-example.c b/samples/kfifo/bytestream-example.c
+index 4ae29a12cc8a..8c58fb46a2bf 100644
+--- a/samples/kfifo/bytestream-example.c
++++ b/samples/kfifo/bytestream-example.c
+@@ -110,20 +110,17 @@ static int __init testfunc(void)
+ 	return 0;
  }
  
--static long cache_ioctl_procfs(struct file *filp,
--			       unsigned int cmd, unsigned long arg)
--{
--	struct inode *inode = file_inode(filp);
--	struct cache_detail *cd = pde_data(inode);
--
--	return cache_ioctl(inode, filp, cmd, arg, cd);
--}
--
- static int cache_open_procfs(struct inode *inode, struct file *filp)
+-static ssize_t fifo_write(struct file *file, const char __user *buf,
++static ssize_t fifo_write(struct file *file, char *buf,
+ 						size_t count, loff_t *ppos)
  {
- 	struct cache_detail *cd = pde_data(inode);
-@@ -1624,7 +1615,6 @@ static const struct proc_ops cache_channel_proc_ops = {
- 	.proc_write_buf	= cache_write_procfs,
- 	.proc_write_size = CACHE_DOWNCALL_MAX,
- 	.proc_poll	= cache_poll_procfs,
--	.proc_ioctl	= cache_ioctl_procfs, /* for FIONREAD */
- 	.proc_open	= cache_open_procfs,
- 	.proc_release	= cache_release_procfs,
+-	int ret;
+ 	unsigned int copied;
+ 
+ 	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+-	ret = kfifo_from_user(&test, buf, count, &copied);
++	copied = kfifo_in(&test, buf, count);
+ 
+ 	mutex_unlock(&write_access);
+-	if (ret)
+-		return ret;
+ 
+ 	return copied;
+ }
+@@ -148,7 +145,7 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 
+ static const struct proc_ops fifo_proc_ops = {
+ 	.proc_read	= fifo_read,
+-	.proc_write	= fifo_write,
++	.proc_write_buf	= fifo_write,
+ 	.proc_lseek	= noop_llseek,
  };
+ 
+diff --git a/samples/kfifo/inttype-example.c b/samples/kfifo/inttype-example.c
+index e4f93317c5d0..c5d16b815e73 100644
+--- a/samples/kfifo/inttype-example.c
++++ b/samples/kfifo/inttype-example.c
+@@ -103,20 +103,18 @@ static int __init testfunc(void)
+ 	return 0;
+ }
+ 
+-static ssize_t fifo_write(struct file *file, const char __user *buf,
++static ssize_t fifo_write(struct file *file, char *buf,
+ 						size_t count, loff_t *ppos)
+ {
+-	int ret;
+ 	unsigned int copied;
+ 
+ 	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+-	ret = kfifo_from_user(&test, buf, count, &copied);
++	copied = kfifo_in(&test, (const int *)buf, count / sizeof(int)) *
++		 sizeof(int);
+ 
+ 	mutex_unlock(&write_access);
+-	if (ret)
+-		return ret;
+ 
+ 	return copied;
+ }
+@@ -141,7 +139,7 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 
+ static const struct proc_ops fifo_proc_ops = {
+ 	.proc_read	= fifo_read,
+-	.proc_write	= fifo_write,
++	.proc_write_buf	= fifo_write,
+ 	.proc_lseek	= noop_llseek,
+ };
+ 
+diff --git a/samples/kfifo/record-example.c b/samples/kfifo/record-example.c
+index e4d1a2d7983c..dcc749247c64 100644
+--- a/samples/kfifo/record-example.c
++++ b/samples/kfifo/record-example.c
+@@ -117,20 +117,17 @@ static int __init testfunc(void)
+ 	return 0;
+ }
+ 
+-static ssize_t fifo_write(struct file *file, const char __user *buf,
++static ssize_t fifo_write(struct file *file, char *buf,
+ 						size_t count, loff_t *ppos)
+ {
+-	int ret;
+ 	unsigned int copied;
+ 
+ 	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+-	ret = kfifo_from_user(&test, buf, count, &copied);
++	copied = kfifo_in(&test, buf, count);
+ 
+ 	mutex_unlock(&write_access);
+-	if (ret)
+-		return ret;
+ 
+ 	return copied;
+ }
+@@ -155,8 +152,11 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 
+ static const struct proc_ops fifo_proc_ops = {
+ 	.proc_read	= fifo_read,
+-	.proc_write	= fifo_write,
++	.proc_write_buf	= fifo_write,
+ 	.proc_lseek	= noop_llseek,
++	/* kfifo_from_user() cut a record to what its length byte holds */
++	.proc_flags	= PROC_ENTRY_SHORT_WRITES,
++	.proc_write_size = U8_MAX,
+ };
+ 
+ static int __init example_init(void)
 
 -- 
 2.53.0
