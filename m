@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793717319;
-	b=Z3Ts0yJuHRW3Zy1GlN3Repn7uGrMrlbkw3rgJSzJU3OO7gSdclsqmWl0wFjpJEFGKrSO
-	 KMMRTxLQL9/BGjlaH0DQBOb2E24p3GUGhHJyzFDk7CXoj8a2QIhbaoRqEVe/7sbOXgYbp
-	 O6yBzSJjeAUR9JQuq4VevpCJOm945vZS+zGAsjleEmFKgr841GzH2SO05WGNDgzkhTA0v
-	 OtB9s4zpOKvkRNBBfV7WhjjnoOckQZHVBrExz40Ss2Ga2QRcj4FBPWyyHDOMpzVh3dEvN
-	 xEfDG65kvW0S4AB/TBlzRgoo5iEpvwIUDrcvchcp1olfigiOHQqjU7p9ALEtwf8pOGQ==
+	t=1793717321;
+	b=mt0TZ9L0n2H62t27+Qz+0O3JmG4pJJTc8QkusiOQchCq6u+hkGXwyyaSqku9E8WbiM0f
+	 yJ7tYVSONwGOMlSvUnaRdRW78DKgInShzV7LZn4YdaBji2EMxaihtmIvZ3jOvc/6GbigS
+	 JBcdk5wkUyoToVrbJlntnpTJeMVq9Uu1jvI3YEjMxVVWPXQRpPFYh7COURQyYnCQys9yh
+	 Fojgr0PeoSxuO4m6HVCBXVyiB2TY3YghseuJ6bj7QzHROiFw3rScGnNGRkm4HkDj2bbbR
+	 /0L1UXXTKpzqn2PLbnGGBaKDgE3pq61MHoBLeq2/h0uDSGcgz/Gl7nKAjoo8o7BY00g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793717319;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793717321;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=w2/IP9Nbbwaq1rM5X5TI+Z6uMBVhleLl4dqv4RtKuWA=;
-	b=ndkOfVPCaCA/FFyPSHWSMmvh/YfOLuW9MItq+erG6HG+5C3+dDALG0XEiAr4Ug2IiIyT
-	 j5pKZaxgIMsxtA2SdGOwZOgq74XKlYjhbpb/mW8fHmvPAKYyIgYEt6R7YBrejiuhSuaHd
-	 IK2Fzm3FCv//4+yZZMYi2xDKMglUBea7AYOgYdQfLrhnHp7EZt+nlGvGQjyZPV8VvroOK
-	 Zm6Xhs6iPh0rshLD/KB2i+p0lnq9p8l+5XwEdEL5Wzp3lWVq9n+t8qjeGQvtYym6des/2
-	 y3eX+VmKdcCLMQoGpIsCc6B4RgzJZgnIiBM05e0Oe3sZ0Xc4jsK+Y4HS7yzv6QOljAw==
+	bh=J+QUSKIVrA74rzAH7akStvTDUKp4zBmOX5t72t47ioY=;
+	b=s+AmFSMN/0QflJ6nq0J5iEP2tTqEpxFJRwUTCnxqlRdiK3c3P5PL1saZD3FIFntIK9HI
+	 ztRlkqspawl5y6C+RJt1i2kDSxMuI98QWe/J0dTHJkM490hvUnN0ugrcH8MxT3FS2Lu8z
+	 9WTS7xaaBG7XQUF+KEXiDOP2IxlvhI8DOc5ZfIeQDd4Yge7sC3Qmvi2fjebT9I4tcTKaF
+	 QK3jNpTsMCgl880wiXh/WJKI9dejUo2rKmwNdeeBvPSDqHGG4nCne3Z8EUJr4Elp0lvsa
+	 Bc7Zr4u7A3DgJ6l9FkAXFnEnugukdMZFEKHvvvSY4qNLbhzD1Q+gUV031s1/rlDpZEQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="Y7X/3tby";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y8388qAE;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE322606C85B
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BE322606C85B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0994D606C875
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0994D606C875
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y7X/3tby
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Y8388qAE
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6D12040220;
+	by sea.source.kernel.org (Postfix) with ESMTP id CACDD43EAF;
+	Tue,  3 Nov 2026 14:48:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D50781F00A15;
 	Tue,  3 Nov 2026 14:48:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62BCD1F000C1;
-	Tue,  3 Nov 2026 14:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793717318;
-	bh=w2/IP9Nbbwaq1rM5X5TI+Z6uMBVhleLl4dqv4RtKuWA=;
+	s=k20260515; t=1793717320;
+	bh=J+QUSKIVrA74rzAH7akStvTDUKp4zBmOX5t72t47ioY=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Y7X/3tby5ok9JWnFEB65JWWmANthXkUjcXdb9uSdjW0JhmR9HZjv1YT00Y4DsNv+W
-	 Biuw8DvsjPcl772z7tONEXXEXtYepxE4vSjBigB6zSeMFdoUu1aYEPpOnorED4q8/6
-	 jPTA+4fCMfDW09aVM/QBTydO81RE7CgVc1Pp6JLW4SpOJYkbo9BUyN8EiUCyyjZQlp
-	 kv0bhokpcFD78wxy4BaRRF0TZr/IYs/oBfNzPTLQzgQNoJpQ9WrZvetS4oHr4FTbxa
-	 gW0WNwcqv3NgJchB8vagqoYRJIHigOkbqStPD4Hh4/ge7N18B2zIy8QT5B5D4G6wz1
-	 nY9eJEyDXdkew==
-Message-ID: <sashiko-outbox-195506@kernel.org>
+	b=Y8388qAEXoSoSnJ99ly3ntDqriooIcB6cnw6MNJ/yOOiH88LDGJTlMspoU5Ad11YT
+	 z/mugIdWyVXdjyoUsWzGoJ0ywU/6brdvaRbfO/nyQj3gSY3dM7VjmNfptad7dz9akX
+	 FyK7DM21XYX2hL3y2Nq3ILwqXoYqpAuC8nbTAsYSrp0wtMI4/hQUQ8qelVhhTr4jiu
+	 6XbsAJWj3Y6hOoR2Jdq4vWUlAg+Ce5I73KxXZdKxAeDXcW4bhWnfBuB/edbw4bSx8w
+	 YxwXRR/8oOQWDl5xekw8uxGrq1ZsGNUbUeP2tIxr/xvQ2GhYLNIp2bMzDzxqa4EA3i
+	 8JZm2cjxnWDJA==
+Message-ID: <sashiko-outbox-195507@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 34/38] proc: sysctl: look at the table under
- sysctl_lock when creating an inode
+Subject: Re: [PATCH RFC 35/38] proc: sysctl: don't hold the tables while
+ readdir copies to userspace
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -60,16 +60,18 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Gleixner" <tglx@kernel.org>, "Al Viro" <viro@zeniv.linux.org.uk>, "Jonathan
  Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>, "Greg
  Kroah-Hartman" <gregkh@suse.de>, "Joel Granados" <joel.granados@kernel.org>, "Kees
- Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
- Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
+ Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
+ Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, "Chuck
+ Lever" <cel@kernel.org>, tytso@mit.edu, dmitry.torokhov@gmail.com, "Petr
+ Pavlu" <petr.pavlu@suse.com>, "Anna Schumaker" <anna@kernel.org>, yukuai@fygo.io, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-34-59422ed3e465@kernel.org>
+In-Reply-To: <20261102-work-procfs-bugfixes-v1-35-59422ed3e465@kernel.org>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-34-59422ed3e465@kernel.org>
+ <20261102-work-procfs-bugfixes-v1-35-59422ed3e465@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 14:48:36 +0000
+Date: Tue, 03 Nov 2026 14:48:38 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,24 +81,177 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> proc_sys_make_inode() checks under sysctl_lock that @head isn't being
-> unregistered, lets go of the lock, and then reads the mode of @table
-> and calls ->set_ownership() with @head. That's fine as long as the
-> caller holds @head in use, which keeps unregistering from getting past
-> that check. The next patch has a caller that only pins the memory of
-> @head. For that one the table, and whatever the owner of the header
-> keeps behind it, is only there for as long as nobody unregisters the
-> header, which happens under sysctl_lock. So read the mode and set the
-> ownership before letting go of the lock. The ->set_ownership()
-> callbacks only look up ids in a user namespace.
->=20
-> No functional changes.
->=20
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
+- [Medium] proc: sysctl: premature EOF and lost errors in proc_sys_readdir()
+- [Low] proc: sysctl: unused mode field in struct sysctl_dirent
+--
 
-Sashiko has reviewed this patch and found no issues.
+commit 35a95ac245f1b380541472c3423535528d1bbf7d
+Author: Christian Brauner <brauner@kernel.org>
+
+proc: sysctl: don't hold the tables while readdir copies to userspace
+
+This commit changes proc_sys_readdir() to avoid taking sysctl tables into u=
+se
+during directory iteration, pinning only the header memory of the current
+entry while dropping sysctl_lock before instantiating dentries and copying
+entries to userspace.
+
+> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> index a1242247f4929..0b7a1e487ed6c 100644
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+
+[ ... ]
+
+> @@ -367,86 +369,97 @@ static const struct ctl_table *lookup_entry(struct =
+ctl_table_header **phead,
+>  	return entry;
+>  }
+> =20
+> -static struct ctl_node *first_usable_entry(struct rb_node *node)
+> -{
+> -	struct ctl_node *ctl_node;
+> +/*
+> + * What readdir takes along for an entry between the trips through
+> + * sysctl_lock: the header pinned, which keeps its memory and nothing el=
+se,
+> + * the entry, its name and mode. For a link the header and entry are the
+> + * ones it stands for in the caller's set.
+> + */
+> +struct sysctl_dirent {
+> +	struct ctl_table_header *head;
+> +	const struct ctl_table *table;
+> +	struct ctl_node *node;		/* the entry's node in the directory, NULL for =
+a link */
+> +	ino_t ino;
+> +	unsigned int type;
+> +	umode_t mode;
+> +	bool skip;
+> +	int len;
+> +	char name[NAME_MAX + 1];
+> +};
+
+[ ... ]
+
+> @@ -454,15 +467,56 @@ static int entry_after(struct ctl_dir *dir, const c=
+har *name, int namelen,
+>  			node =3D node->rb_right;
+>  		}
+>  	}
+> -	ctl_node =3D first_usable_entry(after);
+> -	spin_unlock(&sysctl_lock);
+> -	if (ctl_node) {
+> -		head =3D ctl_node->header;
+> -		entry =3D &head->ctl_table[ctl_node - head->node];
+> +	ctl_node =3D first_live_entry(after);
+> +	if (!ctl_node)
+> +		goto out;
+> +	head =3D ctl_node->header;
+> +	entry =3D &head->ctl_table[ctl_node - head->node];
+> +
+> +	d->len =3D strlen(entry->procname);
+> +	if (d->len > NAME_MAX) {
+> +		ret =3D -ENAMETOOLONG;
+> +		goto out;
+>  	}
+> -	*phead =3D head;
+> -	*pentry =3D entry;
+> -	return 0;
+> +	memcpy(d->name, entry->procname, d->len);
+> +	d->mode =3D entry->mode;
+
+[Severity: Low]
+This isn't a bug, but is d->mode in struct sysctl_dirent needed?
+
+sysctl_dir_next() stores entry->mode into d->mode here, but neither
+proc_sys_fill_dirent() nor proc_sys_readdir() ever reads d->mode, as
+proc_sys_make_inode() reads table->mode under sysctl_lock and
+proc_sys_fill_dirent() derives d->type from inode->i_mode.
+
+[ ... ]
+
+> @@ -875,21 +891,30 @@ static int proc_sys_readdir(struct file *file, stru=
+ct dir_context *ctx)
+>  	 * seeking to an arbitrary position always did.
+>  	 */
+>  	if (cursor && cursor->pos =3D=3D ctx->pos) {
+> -		entry_after(ctl_dir, cursor->name, cursor->len, &h, &entry);
+> -		pos =3D ctx->pos;
+> +		err =3D sysctl_dir_next(ctl_dir, &d, cursor->name, cursor->len);
+>  	} else {
+> -		first_entry(ctl_dir, &h, &entry);
+> -		pos =3D 2;
+> -	}
+> +		loff_t pos =3D 2;
+> =20
+> -	for (; h; next_entry(&h, &entry)) {
+> -		if (!scan(h, entry, &pos, file, ctx)) {
+> -			sysctl_head_finish(h);
+> -			break;
+> +		err =3D sysctl_dir_next(ctl_dir, &d, NULL, 0);
+> +		while (err > 0 && pos++ < ctx->pos)
+> +			err =3D sysctl_dir_next(ctl_dir, &d, d.name, d.len);
+> +	}
+> +	if (err < 0)
+> +		return err;
+> +
+> +	while (err > 0) {
+> +		if (!d.skip) {
+> +			err =3D proc_sys_fill_dirent(file, &d);
+> +			if (err)
+> +				break;
+> +			if (!dir_emit(ctx, d.name, d.len, d.ino, d.type))
+> +				break;
+>  		}
+> +		ctx->pos++;
+> +		sysctl_cursor_set(file, d.name, d.len, ctx->pos);
+> +		err =3D sysctl_dir_next(ctl_dir, &d, d.name, d.len);
+>  	}
+> -out:
+> -	sysctl_head_finish(head);
+> +	sysctl_dir_done(&d);
+>  	return 0;
+>  }
+
+[Severity: Medium]
+Can a concurrent unregister_sysctl_table() or error during the loop in
+proc_sys_readdir() cause premature EOF or drop error codes?
+
+Because sysctl_dir_next() only pins d->head->count via sysctl_pin() and does
+not increment d->head->used, a concurrent unregister_sysctl_table() does not
+wait in start_unregistering() and can set d->head->unregistering as soon as
+sysctl_dir_next() releases sysctl_lock.
+
+When proc_sys_readdir() then calls proc_sys_fill_dirent() ->
+proc_sys_make_inode(), proc_sys_make_inode() checks head->unregistering und=
+er
+sysctl_lock:
+
+    spin_lock(&sysctl_lock);
+    if (unlikely(head->unregistering)) {
+        spin_unlock(&sysctl_lock);
+        iput(inode);
+        return ERR_PTR(-ENOENT);
+    }
+
+proc_sys_fill_dirent() propagates this -ENOENT back to proc_sys_readdir(),
+which breaks out of the while (err > 0) loop and returns 0. If no entries
+have been emitted yet in the current getdents64() call (for example on a
+subsequent getdents64() call where ctx->pos >=3D 2), returning 0 causes
+getdents64() to report EOF to userspace and omit all remaining live entries
+in the directory.
+
+Similarly, if proc_sys_fill_dirent() fails with -ENOMEM, or if the in-loop
+sysctl_dir_next() call returns a negative error such as -ENOENT (when
+ctl_dir itself is unregistered after a skipped link) or -ENAMETOOLONG,
+proc_sys_readdir() still returns 0 instead of err.
+
+Should proc_sys_readdir() skip entries when proc_sys_fill_dirent() returns
+-ENOENT and continue to the next entry, and return a negative err at the end
+if failed before emitting?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D34
-
+s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D35
