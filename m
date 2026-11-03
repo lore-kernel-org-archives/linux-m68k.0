@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793719138;
-	b=0oS4Djv0onP4mQPSVgNwdiZ7yPUqTFvTuqhX9rmwwqW1Lk1gMQWMviMWHfFniHu0vGSr
-	 3AtAbxciDgf8CSY5Sgx09n2bSlwBfx1XZGOTrt8mXfsmXNXnZOCy2VaT/xt1eVRNQkxij
-	 /r+Dzs0RVX7WkSMmkcQHPTsMjnOVs2saIxBGMYtVwMk3zHO31jA14C3wzbcPEnutRMc73
-	 0iBEHTqIEXTE2t3qaIc/mHpy4I4UeW5MnbtHJDbfhRN7dSKkIPD1IHh3J/m3QAC1Y0NaV
-	 4s1hTLO3BtDNu3TuBw3z8cyLjWS5gF4Hd2gPG8c228sJURyvqH/NdlRUHLEzgWWtQDw==
+	t=1793719145;
+	b=I/QXJix2NuLni5CbOprbLn3Xym1pEB8qLVyi4mj3jenJv9y4Ur/JnjjiLGE0CwGOv7eG
+	 Ij1xAwNvqlHyoi/qLag8FfTpdowsWToE6Cqw+3V15hrIkqJqh/dWjRXZQ9JT4EJFYUp/L
+	 mv+LHLjEz/sBeg8++thMUlQWMSxVyuORmwiE9syRZfQRKW6qPpAzF3KVDEKGLQmRoYWiX
+	 6tWDeV6/c7HXpanCpbPeBZABeYfY9A9WaUWPih8OSieVhyKqgeYZjrxNy2cd91uqKLR9h
+	 MeFdE+TXMd5wngrNTUfqTSJFELjoELS5vqUG1qoWeUpZbK8CMXEflqF8FOWxwvYg85Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793719138;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793719145;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=pXYmXnE4YnSZAwVsghhJ8qwzD8WHMLT3acK3fEE1c5w=;
-	b=EldsFpHs8PwFAVB8DKk+rgis8OQCDTl8X3qAG/OiaSNGXmkE9ZGkKKLS12iCkQ90OYuo
-	 3y9v0xYlfG6eDu8tXVWJpde+TKw6nlaa9lg61Bspt4BCwWoUnaqTzKew35Ibp0dE5Cp4r
-	 sD1CT5rkjfAJHkrRgbXS6K/XVyaoYF3UYv9qpmhaphbOWSp1m4l0S/TYN6QZNFAaARUM3
-	 XqxSVCQXIAP6aL+FAUIXC4AWeLfGkq4NXKrI2tHO6xL962QVakopYnGED5y4IEKnppQ8q
-	 2DGttqRLCNx9KKFAvyXNo9XclxaFoYORfAsoXu+4fR0y4VeOkbmaQMzT5J8vAVZsqkQ==
+	bh=SjcUx5oTPLgTGLgzmcu2JufpKTLPRg1ew/w/ZvgHMGQ=;
+	b=Xa5OR3N7FJ+iB8oGWtCfLCIU1gRDPAk1haLG7nK93TzHrz3KJf7u7oluYZ7hByqNW1ip
+	 ezIwf4UyIuneKnrMLqgQPGFSsOFeSkkqSz1geAuU8QJYMcfygRwaDf8bOAJhfjX57NqZ4
+	 URbTa/Um68bj5VNJGNmXfWa2bBVci4A/ji5xZMTy0wf/9e9pwdbeDLd1vsoHTC7OniDEv
+	 G+OotG5FGlQ93QFgRKh2H36ylMYkdsvBDFIq1ZUfgMeY370dV8ecfSdxPHgNrKQqOvXVo
+	 2Ogk2fAeTLb+0kG4rA0IzP3AI1La6PEGJXU5GB9DOSWy59rOX7n5i3WMAnzQ5vOZ6lA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lt7kWY0w;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H14nd5Zm;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5ECD6083605
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:18:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D5ECD6083605
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A00F160A262E
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:19:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A00F160A262E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lt7kWY0w
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H14nd5Zm
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8BD644392A;
-	Tue,  3 Nov 2026 15:18:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 224A01F00A2C;
-	Tue,  3 Nov 2026 15:18:55 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id CFA5E609FD;
+	Tue,  3 Nov 2026 15:19:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D181F000C1;
+	Tue,  3 Nov 2026 15:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793719137;
-	bh=pXYmXnE4YnSZAwVsghhJ8qwzD8WHMLT3acK3fEE1c5w=;
+	s=k20260515; t=1793719143;
+	bh=SjcUx5oTPLgTGLgzmcu2JufpKTLPRg1ew/w/ZvgHMGQ=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=lt7kWY0w9ieExJiXhsRbswLZTk4I62Ut15H6kMqjEztfFu4VGWWEAsyq1h1RunGi7
-	 quYJ9gon1XZinTxL/vkjGOaRSh41+Spy89HkKrIkDLVlyQ2DPkr57UTA8uNv7ZJQPX
-	 Gkb+9Ork4a09lK3yz7JxXHSWqFcBarBUl6xpojcbcZ6LCj9+K0W6f0I8igzSlL1ee7
-	 HOzooULSEPo6yfs5dQxOzgo+Ck2+yelQJNljZ0d/RFz7CfzGvoYCRRMJGyc+UGPBSP
-	 xmtleTQuYNol2touf60/WN8WAXQ5Y7pfGj4AOYhP5EA7RtetswDsaHw6Wd78ymD48r
-	 5m+hEjoe7SkUg==
-Message-ID: <sashiko-outbox-195594@kernel.org>
+	b=H14nd5Zm0HOMmUow49/EVrlsioyc0r4b4F2o2FArNkwr7aVd2fSN+Yi+iAXccw4M5
+	 Hrez6lVhFAVFW//WwcipwXCOlWcXfetVqSC+Hja7cB2WYSUxxSs8b7ilDnEXXV+YgG
+	 Kzk5MCNjv/Z4vw0jG51MNllEeI7ATjJgL/15EIN1BVpT6LY+VCwu8YYlMt8wKRHZbJ
+	 okPPnQ07EmoHQPM37MzbUMh4PUpDYEr4ijJPybDBs9yFmhlOJHAw684kdnTGf75k1n
+	 dtWfihYM65eHFj7xYgCF6qY7OBa56KZmFdPeZl/oOc+JWcX05Z8c65nphAxmh0Tsxa
+	 rDXtJMpHvTgqA==
+Message-ID: <sashiko-outbox-195597@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 14/23] scsi: esas2r: let procfs copy the ioctl
- argument of the ATTONode file
+Subject: Re: [PATCH RFC 17/23] usb: gadget: function: rndis: let procfs copy
+ in writes
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -60,18 +60,16 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Gleixner" <tglx@kernel.org>, "Al Viro" <viro@zeniv.linux.org.uk>, "Jonathan
  Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>, "Greg
  Kroah-Hartman" <gregkh@suse.de>, "Joel Granados" <joel.granados@kernel.org>, "Kees
- Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
- Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, "Chuck
- Lever" <cel@kernel.org>, tytso@mit.edu, dmitry.torokhov@gmail.com, "Petr
- Pavlu" <petr.pavlu@suse.com>, "Anna Schumaker" <anna@kernel.org>, yukuai@fygo.io, "Heiko
+ Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
+ Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-drivers-v1-14-a994bd4d3b1a@kernel.org>
+In-Reply-To: <20261102-work-procfs-drivers-v1-17-a994bd4d3b1a@kernel.org>
 References: <20261102-work-procfs-drivers-v1-0-a994bd4d3b1a@kernel.org>
- <20261102-work-procfs-drivers-v1-14-a994bd4d3b1a@kernel.org>
+ <20261102-work-procfs-drivers-v1-17-a994bd4d3b1a@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 15:18:54 +0000
+Date: Tue, 03 Nov 2026 15:19:01 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -81,68 +79,16 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Low] scsi: esas2r: split declaration and initialization of __free() vari=
-able in esas2r_ioctl_handler()
---
+> Implement ->proc_write_buf() so procfs copies in what is written to
+> /proc/driver/rndis-<n> before it pins the entry, and handle the
+> commands from that copy. Writes larger than PAGE_SIZE - 1 bytes fail
+> with -EINVAL now.
+>=20
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-commit 0fd79b7040b09fc840e0499afbc88e68b34a3e18
-Author: Christian Brauner <brauner@kernel.org>
-
-scsi: esas2r: let procfs copy the ioctl argument of the ATTONode file
-
-This commit factors the core logic of esas2r_ioctl_handler() into
-esas2r_ioctl_buf() operating on a kernel copy of struct atto_express_ioctl,
-and converts the procfs ATTONode file to use .proc_ioctl_buf and
-.proc_ioctl_args so procfs handles copying the ioctl buffer in and out.
-
-> diff --git a/drivers/scsi/esas2r/esas2r_ioctl.c b/drivers/scsi/esas2r/esa=
-s2r_ioctl.c
-> index f99318f61c934..eb39ba8263b31 100644
-> --- a/drivers/scsi/esas2r/esas2r_ioctl.c
-> +++ b/drivers/scsi/esas2r/esas2r_ioctl.c
-
-[ ... ]
-
-> @@ -1515,19 +1501,43 @@ int esas2r_ioctl_handler(void *hostdata, unsigned=
- int cmd, void __user *arg)
-> =20
->  	}
-> =20
-> +	return 0;
-> +}
-> +
-> +int esas2r_ioctl_handler(void *hostdata, unsigned int cmd, void __user *=
-arg)
-> +{
-> +	struct atto_express_ioctl *ioctl __free(kfree) =3D NULL;
-> +	int err;
-> +
-> +	esas2r_log(ESAS2R_LOG_DEBG, "ioctl (%p, %x, %p)", hostdata, cmd, arg);
-> +
-> +	if ((arg =3D=3D NULL)
-> +	    || (cmd < EXPRESS_IOCTL_MIN)
-> +	    || (cmd > EXPRESS_IOCTL_MAX))
-> +		return -ENOTSUPP;
-> +
-> +	ioctl =3D memdup_user(arg, sizeof(struct atto_express_ioctl));
-
-[Severity: Low]
-This isn't a bug, but in esas2r_ioctl_handler() in
-drivers/scsi/esas2r/esas2r_ioctl.c, ioctl is declared with __free(kfree) =3D
-NULL at the top of the function before the argument validation check and
-assigned later via memdup_user().
-
-Per the Cleanup API conventions, could the __free(kfree) variable definition
-and initialization be combined into a single statement at the point of
-allocation:
-
-	struct atto_express_ioctl *ioctl __free(kfree) =3D
-		memdup_user(arg, sizeof(struct atto_express_ioctl));
-
-after the early return check?
+Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-drivers-v1-0-a994bd4d3b1a@kernel.org?part=3D14
+s-drivers-v1-0-a994bd4d3b1a@kernel.org?part=3D17
+
