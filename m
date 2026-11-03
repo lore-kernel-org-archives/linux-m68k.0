@@ -1,57 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793717329;
-	b=FxouXd9hDeI9NLnz0qZF3lEwFpnQhKH7mpkbeV0lCF8oz4MaGnnY2qmRxEKD83XQkGPq
-	 /QNBcrIfAgmnB42dBDHTBk3lEbponb7MRZCl2+pek0dRoXKXHwwzU/5fT+FX8FKMlmyPl
-	 FG8kCVJS1UqhRA1kg7Xd/LsEw5Dpt3tbSb0Q8764/ho8QNJ1a9sc2a+Ua/94D85GYMtO8
-	 ZZebWQ1vc0/5TTAeqi8jPyBhCnOaAsn2tgVxqYXACPrR9K6oDHv+bWHxTLi8P5o5EHfh9
-	 yglX766h4EWxVccxNuTmyy5xptQctjcIRQ/ZncI0WHv1UTEV5y9XRUk8ZCME2io2rsw==
+	t=1793718063;
+	b=eqA4H12miVUExCugfvnxjFNma8iXAksgA5WrqeC7cEVRbDWt8SLLKYx7bC5NKoPc8mvI
+	 NXfLvwadKBOgaMDtkEFtwv54YAyBDCMPBFt223eetpJ1GpTKoNYVOSGzCbidHoVLUb2nj
+	 QM7rcZgtZ1LrVXtUSKWWFfhPBMbD3qFacEhfk4XSPwh5ylL+YHA6Ju070iEbQ2xq0PLZE
+	 scUVRNdxJVPY70pqr1rejgAhkqopkdiv3E9oIooqhTPegrwcT3Tez8AztfjHxOOLqgko7
+	 jrILPF8Jfx07p5tq8laG/AHeBSmjXTy93M6kE+fRRr8P7yZUZ1c/tKbelDc63gTEsEQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793717329;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793718063;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=0V+CicgMBoN1QbZ4PU2bDKMr8pvOiaSaM7EPJ1DfD7w=;
-	b=O+zseDOIRIBCo6//cfeXkTuUSYXxZRlu8pGBQzhPVt5jpsg6utYWD477gnG76QN1iQiA
-	 eANClkoo10n9hGBtBZ4vQQNXOPpUS0iXSbc9zzk3dWhhnutAA0LYgYmsqjFPxdZHp6GJ8
-	 WoebG2JEFZz6X0NvdqPpb2ArMqJ5gFFupXg1JlwGiblqBynXRPiL6gXWFrcEh7hWuNkIe
-	 sshwWI8lzZNRDCiwYdK10OZsAxHXwobftWeo1jaAD18h+wZd724CpfRGlzrUwTlj6W78d
-	 x8rQPWbEcK1Y+xxtZ24niB1ij7K3cR+ATiRfUBojp11QCanRllNPRVgTL/CpMts9wqA==
+	bh=l0X2QAFJot0IX2Q2/PWev3um4yqz8IITz7l9GjGkrL4=;
+	b=4YgnVG8E1LBA2q4tIK6P8orQ9RMKJvItWaAWGDdgO76/2qiuHfmnjx9ordb+Taul7Y3A
+	 k9MFECv7PJmeEDlUa3jfIYcbgGJtHljIwsaHwIeVWbY6M2sdh+gjK+ryFzxd+yofSzt0p
+	 Pg84iS3OQBLX2e5kTE2fict7pPG+JfsZ0s6WHXYs/3Z5XKWxAzDxaKvMucXEDcNHK4AHT
+	 HBn3yplNDxuGEZdxQRYXGCqdsHHyh9efWv/pVAljS5c93ekQPKC+HrppOAZs8ZCtNfszB
+	 HFNJHEiCjzPCgVLH/qSsi6/NOQx/FV0pdffJx7IInevrPpn5m3X2qe2CYQzl+av4vUg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PVuIrc17;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YkpfZkS7;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C25606BA19
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 98C25606BA19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0F2606D2DF
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:01:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AA0F2606D2DF
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PVuIrc17
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YkpfZkS7
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 04F2A60622;
-	Tue,  3 Nov 2026 14:48:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA0571F00919;
-	Tue,  3 Nov 2026 14:48:45 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A1488609F3;
+	Tue,  3 Nov 2026 15:01:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A043C1F00A1F;
+	Tue,  3 Nov 2026 15:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793717327;
-	bh=0V+CicgMBoN1QbZ4PU2bDKMr8pvOiaSaM7EPJ1DfD7w=;
+	s=k20260515; t=1793718061;
+	bh=l0X2QAFJot0IX2Q2/PWev3um4yqz8IITz7l9GjGkrL4=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=PVuIrc17XR1DR65SazgbGfICE7wjxOzqZgkY9U1rqo2UnB6kZRbNYqycjDbOYBHPI
-	 mtr+oI337If1hGZt23auaywjb3aFf3e8V7x2KLacnHZWCqxTNAHGtZLRjV/QTQa/U0
-	 2ZVG3QOmYYo3Vbue///pzGjX2fvcEVYSv1E5A4Nokf1yW93VnBHjLJNY9R0S7cKzna
-	 lEsPjbqB4XU52YaxjHh1FMLVvCbZQad8DMHktuK95ryZyb144WX0kMVeswfQ7MIXWT
-	 q6wVkMNqoNp3Q2h44ir/sz5Pqydvc1rrrcEksxS0NSkW2lL6OZFvuNnmSZDzSaqv1o
-	 ng7I2nNH/acPg==
-Message-ID: <sashiko-outbox-195510@kernel.org>
+	b=YkpfZkS7dZWvU26v0lWwGLaCaRutuB6NiB2HUX/uekFcZ6yPhi43CmkI0piScwXiG
+	 XdmBl4Dct7JDxY3Oc7vA0poDAVacBGmgTZaVJ7ciP4PhbjXPYKY3rpzkHBOsWEuvfj
+	 PJZNqUEfVII+aZ6SZHk3HybJGmkzh2Ta9HFLe/fuaYrlEEFMWJnDyneLI4ytXuGeYK
+	 ilddlytumyI3zcVD0Jtpr/3wYGR4B7vu09t2E2PQFcbxIfr/kjBi78lHIMRodLZAan
+	 +mf+PcsUlbGluhMP5X6y+JNOjw2mxyTW3Ila/ruuoWUTlbTJtmYRKX+yfPYzVC48+Q
+	 X/ep1///7lR2g==
+Message-ID: <sashiko-outbox-195528@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 38/38] selftests/proc: check that a faulting
- readlink() doesn't hold up removal
+Subject: Re: [PATCH RFC 01/16] proc: drop the compat file operations
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -60,18 +59,16 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Gleixner" <tglx@kernel.org>, "Al Viro" <viro@zeniv.linux.org.uk>, "Jonathan
  Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>, "Greg
  Kroah-Hartman" <gregkh@suse.de>, "Joel Granados" <joel.granados@kernel.org>, "Kees
- Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
- Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, "Chuck
- Lever" <cel@kernel.org>, tytso@mit.edu, dmitry.torokhov@gmail.com, "Petr
- Pavlu" <petr.pavlu@suse.com>, "Anna Schumaker" <anna@kernel.org>, yukuai@fygo.io, "Heiko
+ Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
+ Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-38-59422ed3e465@kernel.org>
-References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-38-59422ed3e465@kernel.org>
+In-Reply-To: <20261102-work-procfs-core-v1-1-75df35e4f8b8@kernel.org>
+References: <20261102-work-procfs-core-v1-0-75df35e4f8b8@kernel.org>
+ <20261102-work-procfs-core-v1-1-75df35e4f8b8@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 14:48:45 +0000
+Date: Tue, 03 Nov 2026 15:00:59 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -81,59 +78,27 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Medium] selftests/proc: Makefile adds nonexistent proc-remove-slow-reade=
-r target
---
+> procfs has both sets of file operations twice, with and without
+> ->compat_ioctl(), and picks the one with it for entries that have
+> ->proc_compat_ioctl(). That's from commit 778f3dd5a13c ("Fix procfs
+> compat_ioctl regression") when a file without ->compat_ioctl() went
+> through the translation tables in fs/compat_ioctl.c and one with it
+> didn't. Those tables are gone since commit 77b9040195de ("compat_ioctl:
+> simplify the implementation"). compat_sys_ioctl() answers -ENOTTY for a
+> file without ->compat_ioctl() now, which is what
+> proc_reg_compat_ioctl() answers for an entry without
+> ->proc_compat_ioctl().
+>=20
+> So always set ->compat_ioctl() and drop the second set of file
+> operations and the flag that picked it.
+>=20
+> No functional changes.
+>=20
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-commit ac0073c08526e8690efa58576485d79bbd906522
-Author: Christian Brauner <brauner@kernel.org>
-
-selftests/proc: check that a faulting readlink() doesn't hold up removal
-
-This commit adds a selftest verifying that a readlink() call faulting via
-userfaultfd on /proc/asound/<id> does not block removal of the /proc symlink
-when renaming a dummy sound card.
-
-> diff --git a/tools/testing/selftests/proc/.gitignore b/tools/testing/self=
-tests/proc/.gitignore
-> index 7b81334927820..e2566cc0ae079 100644
-> --- a/tools/testing/selftests/proc/.gitignore
-> +++ b/tools/testing/selftests/proc/.gitignore
-> @@ -22,6 +22,8 @@
->  /proc-uptime-002
->  /proc-pidns
->  /proc-remove-slow-sysctl
-> +/proc-remove-slow-reader
-> +/proc-remove-slow-readlink
->  /read
->  /self
->  /setns-dcache
-> diff --git a/tools/testing/selftests/proc/Makefile b/tools/testing/selfte=
-sts/proc/Makefile
-> index bce6beca72744..6a9bdc999f545 100644
-> --- a/tools/testing/selftests/proc/Makefile
-> +++ b/tools/testing/selftests/proc/Makefile
-> @@ -33,5 +33,7 @@ TEST_GEN_PROGS +=3D proc-fsconfig-hidepid
->  TEST_GEN_PROGS +=3D proc-sysctl-readdir-churn
->  TEST_GEN_PROGS +=3D proc-pidns
->  TEST_GEN_PROGS +=3D proc-remove-slow-sysctl
-> +TEST_GEN_PROGS +=3D proc-remove-slow-reader
-
-[Severity: Medium]
-Was proc-remove-slow-reader added to TEST_GEN_PROGS in
-tools/testing/selftests/proc/Makefile (and to
-tools/testing/selftests/proc/.gitignore) by mistake?
-
-This patch adds tools/testing/selftests/proc/proc-remove-slow-readlink.c, b=
-ut
-tools/testing/selftests/proc/proc-remove-slow-reader.c does not exist in the
-tree. Because the default all target in tools/testing/selftests/lib.mk depe=
-nds
-on $(TEST_GEN_PROGS), building the proc selftests fails with no rule to make
-target proc-remove-slow-reader.
+Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D38
+s-core-v1-0-75df35e4f8b8@kernel.org?part=3D1
+
