@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793718072;
-	b=kpvYYogPP31qmfLayaVwUnxeg/iA4BwMU1kHRJ05tXtNB7K8pr7kuMfsL2RU7R4ImNQ+
-	 WaoxVITSr38ifbMUgEHP+pvU+v1QcPGFMIloeGVvdQrMIwmW5biwvEtu9MH8MyM4jPSc5
-	 PNCRX/kJbZKhVAwUJAbAlbFw4TQgtNgu2+wCfXSMcuumToFtKWRNZpS8N4qk3bpFgNbot
-	 z2uV2a6XUOk6RfR71eileWk69eDst72wGbPk6msjhyC+IP1JDBFIUAwnxGD7Hna4Ji99I
-	 09uzYELK/DHaB109KgCuYFMfO/bqfzZrubg23/JL2OxrV8xwLTCaMWw61iQKB7CFDew==
+	t=1793718074;
+	b=zYFVgvI3e0nKudabvN99p7x/8mQG73eIfj42z7+viJgU6IvYS2jfsRtG1bgthq3GozBg
+	 ioX7K92am5G/piYVXimD7yO8tvfAfQF+3TdaLw3fj24QmzwoYn1+kyVOTj/nV1oXlGpqE
+	 CqsnI4M0tIM+KwQmJlWUw37FYUrW2dl98iv0OhmWScsxpwhxa49OdRKLzT8OC2GWIIxlo
+	 OpVGyRVlx+ugc1MxHUn9x9MnqN6ZJ9sdijhsgiXnVTgMngSZpzXeaz1gX3+jZ2He7XLhC
+	 ZxoFLJaHRyIh2oerSJWfgOMuaofpjW9mnIu9JJnusxmEc7wuH/BBB59pf6AunWKIY2w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793718072;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793718074;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=paGK4Vm3mtE5b0c2DhkRMvpNzDa4nvSsw4DnEf+BgQc=;
-	b=28nsKSnMwhniHfFnWyHMHsgVfBO0uW8fNj6s7HiGjvNc1yiP/JgEqmOftYe7/wLZ5Oft
-	 I7tUIFGlbN0lHFBdBj7ILCX8C6TULToi1yWdi6ZD4/xl+/UNDbMh4lA5CNKvqaaquIieh
-	 4nOGFA7Xpvy97hr48s8e2SDOk4POQe2nTsJvizb0n5wrgy3+YjiKODqV0Jlc2j69DvNQ0
-	 ienJDl6lLeDFuT2H7t8VwGQV3yOg088fBUq3MuHBppYqkJNkacrDW4Ln2BzPEZmO3+Qfh
-	 h/R9xKThth/hbUm9soB9aksKLhIgJ6YiQL5TlPEYyiEHfNfy/1AwnIx/C7DPlzzxYCg==
+	bh=kvVp6/NtD4O06uidDq3MP9X+fjlnBdRcW45/WP+WAys=;
+	b=PLxjsgt27GnL5izJMiQ/buZtTKph6tqHaTT3q2O2Tf515Yf/uwN8qkiEJnG6HJnLvnvo
+	 6YfAkg7WPiPsxB2hIbGgseqpMt0t9WqQPpNsVWiuKiZjVhNmyXLzmOb7sNMl+/bNQI5jB
+	 rPJJh7a/BAFFreAudDQLE0pPkABKBo+jVu0Jz6ikRNVrNNVSQ2u1mS7+H6LsSxyOEWMLK
+	 pM1q0nkuo608WGJQxww3QAtlQYhsDdyaJzB1BSfbcCqfDlyCcACt3rkkocVO3ns8qxh3v
+	 dD3gdlxSAhY1WVap/Bqm6POMUwAMLsP5tN3wiJq+dfeZ0D2dyBDMmgiBlG5X1i0qHpQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="Kz/9BmYM";
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AXfOxjF1;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E19606EEB5
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:01:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E6E19606EEB5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1D4606A7AB
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:01:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DD1D4606A7AB
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Kz/9BmYM
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AXfOxjF1
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 4F47D609D1;
+	by sea.source.kernel.org (Postfix) with ESMTP id A270741383;
+	Tue,  3 Nov 2026 15:01:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 815491F00A16;
 	Tue,  3 Nov 2026 15:01:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C80F1F00919;
-	Tue,  3 Nov 2026 15:01:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793718071;
-	bh=paGK4Vm3mtE5b0c2DhkRMvpNzDa4nvSsw4DnEf+BgQc=;
+	s=k20260515; t=1793718073;
+	bh=kvVp6/NtD4O06uidDq3MP9X+fjlnBdRcW45/WP+WAys=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Kz/9BmYM8ipZ0nqa4i1SDv6lAnRGk0DIAMwuEMDu9VajUTqnuibPJ60MM7nVnRyWU
-	 0YGeeeZk1WD+5JhFzeeiubPttCRps/6djOG+ittG2lCUSz7LOAZYeKer7ogjO+h2Kf
-	 NysxxWG34bBgucluHmCoqrvXiFc86zWo0lyI1OFo9kGGQlfblamt4HbUkUxT4PE6CV
-	 LOEA6bDUBX8DU55FH/kj+Kw7Csqqg0NGPAkqtEvSpQ2QlNenqLvrP7m5r9qMAJz+Bp
-	 sLUC6fAIW91wbjix1EMEC1iN30+fEqcayJA2ywzzSpskhM1z/zvbwlYUrxSQ32aLe+
-	 VKbU2vNEoY5eQ==
-Message-ID: <sashiko-outbox-195532@kernel.org>
+	b=AXfOxjF1cFFOFEeIWx2xBBnAGj77mnIVsvzVgjKhzgr0aqmFy/7m8mW9lEar+8Gjk
+	 v8RY/QaM2uCeWfqdy34Mf/rBHgTDRvW5o7+chp43A26AiLXBmD/XfUpAxR/m6HPuvT
+	 zJCtoefjleVPx/b6O0g6IeF1TPgVhPsueLpekkb/UkQuFbzbZeP3FdjzqUM056msL7
+	 PbV9VDBEK5qU8KSuh9oEBnMpWE49gjG3At0fGXJWRjk6w00B3xBXGEvETcL9ykXr5t
+	 A9zIdU4PQivKxdRrE/HP047xrSqTkkvO9699obHnimL7KMB7BxtBBEkHCbOPtxypsN
+	 iBvlOP9dg5drg==
+Message-ID: <sashiko-outbox-195533@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 05/16] proc: let procfs own the seq_file of
- proc_create_seq() and friends
+Subject: Re: [PATCH RFC 06/16] proc: let procfs own the seq_file of
+ DEFINE_PROC_SHOW_ATTRIBUTE() files
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-core-v1-5-75df35e4f8b8@kernel.org>
+In-Reply-To: <20261102-work-procfs-core-v1-6-75df35e4f8b8@kernel.org>
 References: <20261102-work-procfs-core-v1-0-75df35e4f8b8@kernel.org>
- <20261102-work-procfs-core-v1-5-75df35e4f8b8@kernel.org>
+ <20261102-work-procfs-core-v1-6-75df35e4f8b8@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 15:01:09 +0000
+Date: Tue, 03 Nov 2026 15:01:11 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,23 +79,13 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> proc_create_seq_private(), proc_create_single_data() and their network
-> namespace variants keep the seq_operations or the show function in the
-> entry already. Let procfs own the seq_file for all of them. For the
-> network namespace variants ->proc_open() and ->proc_release() keep
-> taking and dropping the reference to the network namespace.
+> Declare the show function and let procfs open the seq_file.
 >=20
-> That's most of /proc/net, among them the files of xt_hashlimit and
-> /proc/net/dev_snmp6/<dev>. A reader that faults on its buffer no longer
-> holds up their removal.
->=20
-> Reported-by: Chris Mason <mason@kernel.org>
-> Fixes: 786d7e1612f0 ("Fix rmmod/read/write races in /proc entries")
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-core-v1-0-75df35e4f8b8@kernel.org?part=3D5
+s-core-v1-0-75df35e4f8b8@kernel.org?part=3D6
 
