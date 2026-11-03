@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793717285;
-	b=Bk3/puI/xVB+S4jf0BacHLF483vfku5gSyY1w3sXCTedQk8ZoMbcbGuhWDPWfwU559mv
-	 QuzbCWRPxOoXwu+aKWf2CKdu8Qx7CRxyHcauT0odk96QxjTB5/W5ecEHbeCy6yOUX0q+x
-	 /mUHSGXUSAVi8FMdn53lJHmCvSbCAQIKzI9bSjXgrnUGJtceM7MbYb3n/jW9Fo0fsMZ+1
-	 4ZGv1gb2Idh5Du25gKhC1tiU+1/GDuyH2+8+vV3zvKLUtSDoNT4HMfT2hZWSr/1MvSApf
-	 ahFt3ozYp82oQonRkdwizt60aVp1Sq7LTX0FGnKZaW6tiF+ce6PFhLCFtasJR4v5UKA==
+	t=1793717287;
+	b=Pqffn4qLPCISoKctATMNAdDt8tFyWPZUmdFFvbpiw0ua9ZBmMKjbGT2qDq532yhzkABj
+	 VFCjy08rDczrsTDgZPp7m4+C+MAUH80F7GVuTqomQWZys22gT87sZdcK6ooGYcX33Nyox
+	 r24+5mObu0uwvtHWi5r7P3ZtCZIBpuzfDaKPSOxTu9Dvn/gGmBT0C2TYG3LZcC2hur4eo
+	 qsn0/Aa0BzlcK7daYtDg41JDVLyrF0PWCPAnuZdRQPDQpltkaIX9fYKd4Pm/guQrhVfSZ
+	 BVXMMwcPU110Cj5H8/5SyzV/IBW/Fxrl5KjMKWrnnzxcYfwqrD21BVeQzVcN+oHGLwQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793717285;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793717287;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=4gvOaN3wvXGJv+/IY1E7diuO1bBr8yQTbePx2Vj3hKc=;
-	b=AWU8qiE5iK6Xqwvu8rmixLkvcJw42n6696NvGV50rDobvK0rpFb+f60p/0HLU1Hn5/hR
-	 L9FJ5pWhKmIsAFba6blweY6Ydc1UgcO3nGJurMLsnVbtsBRrdGWGncSdc3MPM7oXPqLJH
-	 FJyCQcIjzS+R+MzuReUW8skU5L31S8AJ3fnWjKYcN7oONA4p8pqXS7HEhPZ5rKlQF9+gL
-	 S6BdJUM+fTRdCbEeZfwoi2WtTMHWFpZBAVdpOZypSiZHK7bbHHtQBZk0ZGybdcmHU/tLL
-	 ix4YLhPvxO9CEn9rk5kyXlERFDh0JxYmxZfxCjdgvSBvDiw81MleKzyn5dHX+8UEwvg==
+	bh=Ooj3Pi0SRErCEL8duAq8trKUrdQD3CC9mA+kTthUPow=;
+	b=wNzYsjA7kE6YpemZhZcU8O8bi6cup93qJxTuAIZ6CRaRL22s+hJrD5HfOIkimtV1o2Oz
+	 scv9LQc0iwDVNm2YEgiLpYSkPkHzH7JaYxmPIxPYLlW0qtB5g3xCxclUunRgSLX8Wjmd/
+	 pZXqhzGfQSwYWuSlDjTcfKO+8w5o36zYD+rtULIglnTVaa5g9J0IIkjAsZ7YX//agP9W1
+	 chNMS8C4rBl9jgIE+LNYn+hfDAVEK/woaZszNkLBoHI6NSfKLXqRb+ac9N4AjOBSSNPoD
+	 FpM/hs06bJ2FtKxRzDjNYjyYsyuBkmK0u7huCrW4A//vQ3PKlt5c8dC7e5iUsVncwQw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YmTKMbVB;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NtpigpjF;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C8760A2639
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B9C8760A2639
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E726606EE88
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9E726606EE88
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YmTKMbVB
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NtpigpjF
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 01E3960628;
+	by tor.source.kernel.org (Postfix) with ESMTP id F1122608F7;
+	Tue,  3 Nov 2026 14:48:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B0B41F00919;
 	Tue,  3 Nov 2026 14:48:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 522C41F0093A;
-	Tue,  3 Nov 2026 14:48:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793717283;
-	bh=4gvOaN3wvXGJv+/IY1E7diuO1bBr8yQTbePx2Vj3hKc=;
+	s=k20260515; t=1793717285;
+	bh=Ooj3Pi0SRErCEL8duAq8trKUrdQD3CC9mA+kTthUPow=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=YmTKMbVB6uRZLjXwEmTGCZh1HbdFcP+8zoHGrBVs3FcW7jqNS/aLVG4BlExyxSsDi
-	 38dJvpm2rvf1W7GZ/BeJ3ROdtFFaZsXbBtoCEGTFCOYaKI0Lf6z06i3opj5SfVmYH4
-	 ipI9MxfbEk4PvoPknKAXGNPzP1ISdgwyfESt8i+pcLKN52RF6XDNuCpDPwR9Uc9/+1
-	 HQqdQmf6H6L8RFmo6HwRaJux2HSFx1o2jASbcWG8qnKo8kDaCAB0CSVzN8mB9vSXlJ
-	 T8PYlXW1wwmvUUuV+8j3OkHlmGF3wk7bmeAtlTk04ChojfBfTSX1bouOrIZWxXnqoh
-	 yIYT9uP9AsuWQ==
-Message-ID: <sashiko-outbox-195490@kernel.org>
+	b=NtpigpjF9sxyzNlDIMr/kIauC0vBupDN5MuLmfVxwkf400sU8+++mUwlL1pvEUk4U
+	 YdcMZMXDZjtqhHUcqJyV4raQjqK1SeIDUy2RBvl89itIx4icaaYqEgmEXXRaLQYMmb
+	 jOP6Sdj3Y7zqWtxapxGQS1jXb4qxnOuvLYeJlGosFoofGNNwZrCIWMafCDB7JbNkBZ
+	 Qz5Sf+jjdXOMa08tCYoT0JUtuZBq02Ez0HXq8fnSCQlQPns2Bix1SoLU4K5sqpsc2i
+	 MQ5+a/FFu5rN5Hx0DeoKCx1MVxYil+GjRzwCVieeWb+tUiU4ff5gb8eX+apVlRxCYH
+	 86U+GeLfMsa6A==
+Message-ID: <sashiko-outbox-195491@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 18/38] proc: don't WARN about a name that is already
- registered
+Subject: Re: [PATCH RFC 19/38] proc: resume readdir after the last name it
+ returned
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-18-59422ed3e465@kernel.org>
+In-Reply-To: <20261102-work-procfs-bugfixes-v1-19-59422ed3e465@kernel.org>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-18-59422ed3e465@kernel.org>
+ <20261102-work-procfs-bugfixes-v1-19-59422ed3e465@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 14:48:01 +0000
+Date: Tue, 03 Nov 2026 14:48:03 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,26 +79,32 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> proc_register() WARNs when the directory already has an entry of the
-> same name and fails the registration. Callers that pick their names
-> themselves should never get there but some take names from userspace.
-> pktgen creates a file for each device a writer of "add_device" adds,
-> named after the device. A device can have any name, including "pgctrl"
-> or "kpktgend_0", the names of pktgen's own files:
+> proc_readdir_de() counts the entries of a directory and resumes a
+> listing at the number getdents64() stopped at. The entries are sorted
+> by name, so one that is added or removed in between shifts everything
+> behind it by one. Listing /proc/net/dev_snmp6 with a buffer that holds
+> ".", ".." and "lo" and adding a device whose name sorts before "lo"
+> makes the next call return "lo" a second time. Removing one that sorted
+> before the position makes the next call skip an entry instead.
 >=20
->   ip link set lo name pgctrl
->   ip link set pgctrl up
->   echo "add_device pgctrl" > /proc/net/pktgen/kpktgend_0
+> Since commit 895b4c0c79b0 ("fs/proc: fix uaf in proc_readdir_de()") an
+> entry that is removed while it is being emitted also ends the listing
+> right there. pde_subdir_next() finds nothing after an erased entry, so
+> proc_readdir_de() reports the end of the directory and the next call
+> resumes by number, skipping another entry. For /proc itself
+> proc_root_readdir() takes that as the end of the static entries and
+> moves on to the pids, so the rest of the static entries is missing.
+> And if the position is behind the last entry when a call starts
+> proc_readdir_de() returns 0, so /proc then lists no pids at all.
 >=20
->   proc_dir_entry 'pktgen/pgctrl' already registered
->   WARNING: fs/proc/generic.c:404 at proc_register+0x555/0x8b0, CPU#0: bas=
-h/241
->   Call Trace:
->    proc_create_data+0x9f/0xf0
-> [ ... ]
+> So remember the name of the last entry a call emitted in the file and
+> resume at the first entry after it, like kernfs resumes after the node
+> it stopped at. An entry that was removed while it was emitted is
+> continued after by its name as well. If the position was moved by a
+> seek in between the listing counts from the start like before.
 >=20
-> Reported-by: Chris Mason <mason@kernel.org>
-> Fixes: 6c2f91e077f1 ("proc: use WARN() rather than printk+backtrace")
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Fixes: 895b4c0c79b0 ("fs/proc: fix uaf in proc_readdir_de()")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -106,5 +112,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D18
+s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D19
 
