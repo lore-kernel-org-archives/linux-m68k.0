@@ -1,56 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793718097;
-	b=EFmKm4o076Xjf+RvWRl45tK8La08uy//dtRqHMIl7yFGpME52y6sNYEavJkH0LvpVCcl
-	 wyNlkMhwGTHzX6eJcCIE2+BpEwrSPqml5WjWE0pnG2gHBV6CFRTQ9chAa8QHC0bzzIcok
-	 QxFGDP2BBvDIWtW7fqh6AX8GDk+mpgYCfqZAL1r+hyjMHbzxnAjlGjK66WtUwstuAXH1t
-	 i6EvO1QYX4C6A3Km7h3EgflUECOHF1W9/IM8FxnHwFqTmuEc67Fd4+Jb5YH+/poUs1+vH
-	 PbjOZYpg29VAhT/C11AfWivkqFfOEoxoYYrB91aLQLNd3Rd3CCx7QoEUPJmyedHMF9A==
+	t=1793718100;
+	b=NK9E6lQZIrkhAE9FTfu2yoskXu+oPLr9yncs9hp5sZeQh7s4oHJpHsw55PBoYdzQEDpY
+	 CHXSAFTL4kMzzDhmAuP0tG41YFqvtyo+amYoIzzupiqUVkmzSWtcijLcYPQatnHuNKrzf
+	 /AugKlaj48q+7FphTXVvzdrvfeVraPVXlSbAgs/zKL/HJavfPKU2BXE9qTD8T7K6FiwLb
+	 cPMhRvP7JfexPqNXo6/0hLbZ4F64zonIgMbviGWSRfUIGrAUCzh1QPKn9Eu6heQwY1XcV
+	 U6g48mTzG2rZT/iKiUQG1Rzch5WdxfI0bprb23/YZN/2Wwi3ZtB0fVb/KSVcr7pObig==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793718097;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793718100;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=1VZl7qidssi1ktD3Tb5xCqeZKKhCHxpcCGjwzNwohWM=;
-	b=QUaptfZLQPxVK0+JgO6QnHeeM4a96vXyq+3T3HSitLerrz9Dwp9DMSwofPJAXCxPxO3M
-	 rqLt/X42JaRrDXfKY4ADaeeIbCRv2BPAed9Gk5IWEafPaq/bUkhKqj8NGREQc4TSXFWNA
-	 arp130IidkAUBH0/QziYLX4g4hMSELfzrn9hyt9D2cZEkLPCPF3OQZtPb3pXUJ9Ixg+vq
-	 ZF0KRWMwX75++AsuzWkvNI2dSNyZOS+AoHSdLQSjvcxomy96bN441dOODOU5Ovkyyg/Cn
-	 rEZAnCQRydfeNRsi7vsWgGWLjc81jO9KXgmzD1y9jDMom9DOsTMS00qkh34HJnfJD1g==
+	bh=H4Y/D8MHsuJxIcgQs16JMa9LVQhoWAXgdYCn9GW8dZE=;
+	b=gmqT45EG67MM4DVAl3l4UyS3Mdr6Bn+ZXOnvrX7kfP+/3hGahyghNWzw/Or+r+/gmchV
+	 mSmB9q+r1FRgkEWpsncm5oCKwm9kiUInrL16pRAwU3hPmn1uZa7WAIj35kJYeVZYqPUWZ
+	 EG/S850BhDu0nyWTZCWFaZi0jWMbfFqLQjVL9vAmE+klgszKJNE79bXx7cVoajDT9h4Xp
+	 IfbJxoySJGAxElY31upiEFRrpTrsuyORo7sI20/EAuNLZoWQ+8IJ/GjxQJCpfExAasZH+
+	 OYF2236+4Xi1nzE8qTHr7GKOSyn3j+1EnLxtEidifBfXWiCJvAYFv+EbA2OogcC1rXg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lB9ymstx;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iPOrW1sZ;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C3760A6F56
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:01:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 48C3760A6F56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84BD7606EEAE
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:01:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 84BD7606EEAE
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lB9ymstx
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iPOrW1sZ
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 09A2943C62;
+	by tor.source.kernel.org (Postfix) with ESMTP id CDF8460A01;
+	Tue,  3 Nov 2026 15:01:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 664741F0093A;
 	Tue,  3 Nov 2026 15:01:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A97D1F00A15;
-	Tue,  3 Nov 2026 15:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793718095;
-	bh=1VZl7qidssi1ktD3Tb5xCqeZKKhCHxpcCGjwzNwohWM=;
+	s=k20260515; t=1793718098;
+	bh=H4Y/D8MHsuJxIcgQs16JMa9LVQhoWAXgdYCn9GW8dZE=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=lB9ymstxD2jW9FJnjd7yfwgHQCygouVuaUNrPu/PoynIqBUhwdCZzT2zz6hDyMWfw
-	 YcZohJmiuou7CXmFeQkBbobxsY7W3rz8baS8GVRJO0kQ8rp7jqpzXBDOF20ZwRkSnG
-	 nErT+ShqWAVZWSSCrWbcFrcMc6bjV6OhjCsDbsHj6dNwDTLta4HQXunuCYdd8pGy5N
-	 QM0q3S+koNafy+7N3iP/fwwlIqk3Bi1Wb1hFNC1OOvd3tT4xgM2trp03tV1cyoUKB+
-	 JSxbtARnxikJyDqg4WFDJfKyHT4r+mahZr7saUIEqSOy07BNqSd/NKBk4ATzIkxAz4
-	 zi3pQsJaFbcxw==
-Message-ID: <sashiko-outbox-195541@kernel.org>
+	b=iPOrW1sZYpx/JoZZqS9qV1GcjvdBuAyBkHMbgeIvuF9N8xnYtd/uAH/lu/jAlLzKf
+	 Nq5vM4zhxl93ARwt5IDAUvoCbIWrHeNs/6trXeNMyLqwoaSZliHN1Lmdtd6F1TrRM+
+	 E8t3nn11OR2O0yTsAAjfZ0JhJXAcI/KIsNGJZleh6tn4/huZCrKzH0zz2IUXdKnzkK
+	 6W9TGbxhz+i9CE9TQ8pBES4DkH/dBUxXGqSsH1jdznxKqWRCNHZxYwypnamo4/Cqy5
+	 fIsF/ocsyOzXijxNmThFmUaDNsK0S2Y+yjWibAtCyfn78+Zol7hiv1kIJFamvcET5T
+	 yE9Ruio9sbg7Q==
+Message-ID: <sashiko-outbox-195542@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 14/16] fs/proc/vmcore: let procfs copy out reads
+Subject: Re: [PATCH RFC 15/16] proc: let procfs copy ioctl arguments in and
+ out
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -59,16 +60,18 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Gleixner" <tglx@kernel.org>, "Al Viro" <viro@zeniv.linux.org.uk>, "Jonathan
  Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>, "Greg
  Kroah-Hartman" <gregkh@suse.de>, "Joel Granados" <joel.granados@kernel.org>, "Kees
- Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
- Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
+ Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
+ Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, "Chuck
+ Lever" <cel@kernel.org>, tytso@mit.edu, dmitry.torokhov@gmail.com, "Petr
+ Pavlu" <petr.pavlu@suse.com>, "Anna Schumaker" <anna@kernel.org>, yukuai@fygo.io, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-core-v1-14-75df35e4f8b8@kernel.org>
+In-Reply-To: <20261102-work-procfs-core-v1-15-75df35e4f8b8@kernel.org>
 References: <20261102-work-procfs-core-v1-0-75df35e4f8b8@kernel.org>
- <20261102-work-procfs-core-v1-14-75df35e4f8b8@kernel.org>
+ <20261102-work-procfs-core-v1-15-75df35e4f8b8@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 15:01:33 +0000
+Date: Tue, 03 Nov 2026 15:01:36 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -78,29 +81,115 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> Implement ->proc_read_buf() so procfs copies what is read to userspace
-> after it unpinned the entry. __read_vmcore() fills procfs' buffer
-> through a kvec iov_iter. So a read goes through that buffer now instead
-> of straight from the old memory into the reader's, which is what
-> splice() did already. mmap() isn't affected. On ppc64 a machine check
-> while reading the old memory used to be recovered through the exception
-> table of copy_to_user(), by accident. copy_oldmem_page() copies with
-> _copy_mc_to_iter() now, so a read through procfs' buffer recovers from
-> it as well.
->=20
-> The buffer is 128k, which keeps the entry pinned for one such piece at
-> a time, and /proc/vmcore asks for PROC_ENTRY_FULL_READS so that a
-> larger read is filled in pieces. kexec-tools treats a short read of it
-> as fatal. A read that faults on its buffer in a later piece returns the
-> pieces before it now instead of failing with -EFAULT. fadump removes
-> /proc/vmcore when its memory is released and that no longer waits for a
-> reader that faults on its buffer.
->=20
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
+- [Medium] proc: unguarded zero-length user copies in pde_ioctl_buf()
+- [Low] proc: split declaration and initialization of __free() variable in =
+pde_ioctl_buf()
+--
 
-Sashiko has reviewed this patch and found no issues.
+commit 468d1faef733a0559be5a05e125e1ce20ec69e4e
+Author: Christian Brauner <brauner@kernel.org>
+
+proc: let procfs copy ioctl arguments in and out
+
+This commit introduces ->proc_ioctl_buf() and ->proc_ioctl_args to allow
+procfs to copy ioctl arguments from and to userspace outside of pinning the
+proc_dir_entry, preventing page faults during user copies from blocking
+remove_proc_entry().
+
+> diff --git a/fs/proc/inode.c b/fs/proc/inode.c
+> index 3f29a1663d266..7e4ca5751abb5 100644
+> --- a/fs/proc/inode.c
+> +++ b/fs/proc/inode.c
+[ ... ]
+> @@ -571,11 +572,66 @@ static long pde_ioctl(struct proc_dir_entry *pde, s=
+truct file *file, unsigned in
+[ ... ]
+> +static long pde_ioctl_buf(struct proc_dir_entry *pde, struct file *file,
+> +			  unsigned int cmd, void __user *uarg, unsigned long arg)
+> +{
+> +	void *buf __free(kvfree) =3D NULL;
+> +	struct proc_ioctl_arg a;
+> +	size_t size;
+> +	long rv;
+> +
+> +	if (!pde_ioctl_arg(pde, cmd, &a))
+> +		return -ENOTTY;
+> +	size =3D max(a.in, a.out);
+> +	if (size) {
+> +		buf =3D kvzalloc(size, GFP_KERNEL);
+
+[Severity: Low]
+This isn't a bug, but in pde_ioctl_buf() in fs/proc/inode.c, buf is declared
+with __free(kvfree) =3D NULL at the top of the function and assigned later =
+when
+size is non-zero. Per the cleanup.h guidelines, could buf be defined and
+initialized in a single statement once size is known (for example,
+void *buf __free(kvfree) =3D size ? kvzalloc(size, GFP_KERNEL) : NULL;)?
+
+> +		if (!buf)
+> +			return -ENOMEM;
+> +		if (copy_from_user(buf, uarg, a.in))
+> +			return -EFAULT;
+> +	}
+> +
+> +	if (!pde_pin(pde))
+> +		return -ENOTTY;
+> +	rv =3D pde->proc_ops->proc_ioctl_buf(file, cmd, buf ?: (void *)arg);
+> +	pde_unpin(pde);
+> +	if (rv >=3D 0 && copy_to_user(uarg, buf, a.out))
+> +		return -EFAULT;
+
+[Severity: Medium]
+Should copy_from_user() and copy_to_user() in pde_ioctl_buf() in
+fs/proc/inode.c be guarded by checking a.in and a.out respectively?
+
+Because a.in and a.out are runtime values loaded from
+proc_ops->proc_ioctl_args, check_copy_size() and _inline_copy_from_user() /
+_inline_copy_to_user() do not short-circuit when the length is 0 and still
+invoke raw_copy_from_user() / raw_copy_to_user().
+
+When a command has a.out =3D=3D 0 (such as an _IOW or _IO command) and user=
+space
+passes arg =3D=3D 0, calling copy_to_user(NULL, buf, 0) fails with -EFAULT =
+on
+C-SKY after ->proc_ioctl_buf() has already succeeded, because C-SKY checks =
+the
+destination pointer for NULL before checking whether the length is 0:
+
+arch/csky/lib/usercopy.c:raw_copy_to_user() {
+	...
+	"0:     cmpnei  %1, 0           \n"
+	"       bf      8f              \n"
+	...
+}
+
+On UML, calling copy_from_user() with a.in =3D=3D 0 or copy_to_user() with
+a.out =3D=3D 0 still enters buffer_op() -> do_op_one_page() -> maybe_map() =
+->
+handle_page_fault() on uarg before checking if remain =3D=3D 0:
+
+arch/um/kernel/skas/uaccess.c:buffer_op() {
+	...
+	size =3D min(PAGE_ALIGN(addr) - addr, (unsigned long) len);
+	remain =3D len;
+
+	n =3D do_op_one_page(addr, size, is_write, op, arg);
+	if (n !=3D 0)
+		return (n < 0 ? remain : 0);
+	...
+}
+
+Additionally, when both a.in =3D=3D 0 and a.out =3D=3D 0, size is 0 and buf=
+ remains
+NULL, so copy_to_user(uarg, NULL, 0) passes a NULL source pointer into
+raw_copy_to_user() (and memcpy() on CONFIG_UACCESS_MEMCPY or UML builds).
+
+Would it make sense to check if (a.in && copy_from_user(buf, uarg, a.in)) a=
+nd
+if (rv >=3D 0 && a.out && copy_to_user(uarg, buf, a.out))?
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-core-v1-0-75df35e4f8b8@kernel.org?part=3D14
-
+s-core-v1-0-75df35e4f8b8@kernel.org?part=3D15
