@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793717288;
-	b=bhOgq7cmjSuDuohsyVsO7dfQnpyIaTZkKtkD47ym8L/BmjcEUJVuwFNA4EQ7gzAvOepn
-	 6aYPw6vO32V1kDGG/+2HeBbJrduwDFLjMMJHyTlPmrzCi6VFiK49/xnVZ3B93B/p6/gCu
-	 BP9kX5JmcFqcI6hN5Rp1ApM6kDXVub8dNCO3+J8OSw7sGTvyBnjMf82aKF/ASXnFHAcKg
-	 pyrHP9d8GQHsnOc5aMqCzXpPydgXBUQz+Ap5eOP6IefX2h7HB9vOwuJW4XbOwzN2vOJPJ
-	 B9bE3yg+yv4FQfJU8iJ9jP177cRJOxZmX4fHk4xVhxAB4WOANmwHoSEcJ6Z+3/gMzHw==
+	t=1793717290;
+	b=haRtgv1+uMQdcAcTjuZCgReOQJfiQzBGKaZ+BlEa6sq4lmLN9MTlWEENc7w7BqVmZdPQ
+	 +OWQzfpAvH63SxH3cjWWuoaC6Q3JYdTDnjGQssaCyJhpfOwMlRr9hZi1MJH7akD5HBORV
+	 AY39NP8ra5ZBI6qtHYTkcrQXsuQBZSSasq1CsErXQ+k8QlYcdMuKX0dWHwQcdEJbLJuDW
+	 2f6FZuA0SY6JEworrZHtLS/eU8PyTeQwdDwbVqQISWc+N5SV6EsUBHZ346WDKrr3rkbHs
+	 45cor11qwTp7KuBaV/cBUs2jUImGC4OnfqrsIuazRMWDeWRWRnWyjAoObvD91DjE4eA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793717288;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793717290;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=Icn35Mi91pQ+tLfg0mCdB4U+ZmjGBtIaKsilMrrc5tY=;
-	b=Dhh8/dnahi+S7LwDQiekAjJFN9HC1q6MlFC+Sz20gXb7VcVubcQPCL5yBG96/51rflYW
-	 VEioDZP0607a8uwyg/Tb7R8dHfkGrM541In/rQSuJP8IQo9OpikaLWHN96CeCcUO6ml6e
-	 KLn6FlcQL33vUOn1lpiaXM8FEafGoZX/LuBOKnjd/CsPvS2qxsUANDCNudA7lYSYufrNQ
-	 jibEPNmMfawYktfjPXuhBfJdCjYP7mMKBmaVw5R7ssji8beSd0UINHfnsoCtnK9TUIqLK
-	 /MrUXTByHlyEJFsrWOJLv429vO6Hol6Ve7u2xXeSCM5Sea6uctSxHhwuC6aklD+YDoA==
+	bh=8mbFNT8lVL2nvpVsUKgASJ1yFuw1L2kPoKsCbuWRO+8=;
+	b=Znjl4nOauShQmATzAXLf3dWEAP4T4Z1d0t55aSyTnwBaf6vSOYfSRWVZH1EpM+LnQZtD
+	 BMItnlAb+VeTGDIi26l9DMsBlEWzKfEMsmHMLKWqsp6uIJXdetuWXr+M25VVAGgh0qETt
+	 8+DOC0NEHb6MJV0rKPFutQjcjQPBwrLwHurAcpyL5ZqJNSSyGzhIXltMqm0agb1XwBaEI
+	 RrpchaEAThgMVevNzLyQUY1ci87jmpgS+MmqtLI6m1vJ7aGfV0hXjimaemImnj/+Bdx0l
+	 uTtLbyRtU9BfznfiUBY9tq1kGXpPteRfoxX8UUsKX6P2MCqlK2byXGaDgf5dT7DsmTg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dh1dKt+S;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=epjMvs1d;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B83760A383B
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0B83760A383B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7547A60A5BE7
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7547A60A5BE7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dh1dKt+S
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=epjMvs1d
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id B511B4381D;
-	Tue,  3 Nov 2026 14:48:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 441281F00A1E;
-	Tue,  3 Nov 2026 14:48:06 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id E99C4609E0;
+	Tue,  3 Nov 2026 14:48:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A6791F000C1;
+	Tue,  3 Nov 2026 14:48:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793717287;
-	bh=Icn35Mi91pQ+tLfg0mCdB4U+ZmjGBtIaKsilMrrc5tY=;
+	s=k20260515; t=1793717289;
+	bh=8mbFNT8lVL2nvpVsUKgASJ1yFuw1L2kPoKsCbuWRO+8=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=dh1dKt+STUs/pEoLctpFFtQkyKCAxxWJoxXDNG9HNkYmLm1AdEmDmmdWV64Js6Az7
-	 D7xeBzM6wvr24BHDVnxZNsmdK8y72d/Sc8fRWz9vjYY2X1n981YMEB3CvPmhvXhzoT
-	 CdEliGimDf4eL7SpBrWs7GBDY9OjYAOjox1SovFaGTGUyI/vN6Vhs36589r0zEyUdi
-	 mVeMd6wVewqD9lCD3HCijfRClz6bHq3RpQ/3lZQUAdmOC5lUq0F8u4W8MwAYT72JS1
-	 NFUnHmQbjcLibYcuMjtBUE9DfbW903ryc3o/4VSRPIMZquWia85CdIpJWlxt1Ne+x1
-	 8PIhBdEx8sqOA==
-Message-ID: <sashiko-outbox-195492@kernel.org>
+	b=epjMvs1dEdIwrI2DpgBsZGQorVKIJHhwUyrikWAHBc6Kk4cu+6mzN1OvGvUEUPhEM
+	 B6AUhqEbvZnjd+L44ByeppapXiuprgTdI5dgYBGzcuPQ4mliSoBdYo9ya2AhybeQeS
+	 hLysf5uAjAy1Ce1fGawoITmQs42q0WmndS/BpCcBJHCfp5/P5rgpN0KUvtsPXZ/tyI
+	 1RZJZQTcjxHQ3TMgT1oAPoFy9LwZ7R59bQU8SwJTbZ2VhKizlrum4kIdEP7KLjnN/f
+	 n8AAaCBb12w0yRYObxfiHCa2z0CKocMdytuZrknD7LG7ju9D/FRUqPhOPy2fc6VOrS
+	 AnhnaOeX0gTFQ==
+Message-ID: <sashiko-outbox-195493@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 20/38] selftests/proc: check a /proc listing while
- entries come and go
+Subject: Re: [PATCH RFC 21/38] proc: let proc_remove() remove the entry it
+ was given
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-20-59422ed3e465@kernel.org>
+In-Reply-To: <20261102-work-procfs-bugfixes-v1-21-59422ed3e465@kernel.org>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-20-59422ed3e465@kernel.org>
+ <20261102-work-procfs-bugfixes-v1-21-59422ed3e465@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 14:48:05 +0000
+Date: Tue, 03 Nov 2026 14:48:07 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,27 +79,32 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> List /proc/net/dev_snmp6 of a new network namespace while a tun device
-> comes and goes:
+> proc_remove() looks the entry up by its name in its parent and removes
+> whatever it finds there:
 >=20
-> - with a buffer that holds the dots and "lo", add a device whose name
->   sorts first, finish the listing: "lo" is listed once
+>   remove_proc_subtree(de->name, de->parent);
 >=20
-> - with that device added and a buffer that holds the dots and it,
->   remove it, finish the listing: "lo" is still listed
+> If the entry was removed already, say along with its parent, that is
+> either nothing or a different entry that got the same name in the
+> meantime, and de->parent may well be gone. Two removals of the same
+> entry are a bug in the caller, but going by the name turns it into
+> removing an entry that belongs to somebody else.
 >=20
-> - with that device added, stall getdents64() on a userfaultfd page
->   while it writes the device's entry, remove the device, finish the
->   listing: "lo" is still listed
+> Since commit 895b4c0c79b0 ("fs/proc: fix uaf in proc_readdir_de()")
+> an entry that was unlinked has an empty rb node. So check for that
+> under proc_subdir_lock and otherwise remove the entry itself, with the
+> loop of remove_proc_subtree() moved into a helper both of them use.
+> Nothing can help a caller that passes an entry that has been freed
+> already.
 >=20
-> All three fail without the fix, the first lists "lo" twice, the other
-> two not at all.
->=20
+> Reported-by: Chris Mason <mason@kernel.org>
+> Fixes: a8ca16ea7b0a ("proc: Supply a function to remove a proc entry by P=
+DE")
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D20
+s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D21
 
