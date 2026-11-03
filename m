@@ -1,56 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793717295;
-	b=SzsUwty5HifLJA+zoy8gXZy5EoNNC1O/VnurgHXdABW/Cwi4JwSF+fEw8hd3cvFYA/LS
-	 Z0P+JtGsYhLDPr5hpW/zODvt6HBECCAeuVAIB6LRzTHy8D0w/4Tlkry/yQA02Hmd9BPBh
-	 ZWDKDRreNEeOm55P4+7tVhcrnquAljFwMGZQMCf8jfTu7TJ2iDs1FkGhUyLrAlBNFZOC6
-	 uMJw24tcwn2dGUE7QGZLAE5d5mtAwETJshiPQEok4sjPRPUO/NouOZeOX4vTSMVGIgbJF
-	 Ejh5FN7UTxapkDr4GdLLg0Dobz34KvrtDA7YiUnroUXDfWH5WF/3AKv8HCxUWEauoSw==
+	t=1793717297;
+	b=KuJ4qj2Q9P3fM3LJZM8NXpFxVJmutpIVUBC93BABwVcu1NHAotq7TvGFoXOSkYs/odbR
+	 MhoGJPXPqeElM6sGWrOQ33Pk78pIkgO2J48WmafjsPHKbL7CoElcXOcOLaeVuJohN3DT7
+	 zPzYk6Q6YVnvC3CPzjkVmMo1+exhrzY4Af+cMHaPYViPKTZevGOlsVGqOgCaguD5LxSbL
+	 H3BbRTElfuvHhsjpyYCHRKqcbGIbjpg+cy/OwRVqq8O+CJmgQ+/j4u+b3zocWMAQllLTX
+	 hmaW2Z51tiw2Im/yEE/DaB9cSLdtFWOu7sFd9TWGuIi+wu23IZ+mNs1+FCuglMA8RMQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793717295;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793717297;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=UPzqk7+6Hl7aBBk0FqNi8TIlMxqX8AAV9w+mELiQtKI=;
-	b=kVCV4HfRv8lGAxrR4qsPim8IQzR/V6fNsCgI39Lat+KZp4p/XJELJNj/0D5Ik9DNGRp/
-	 fkYqRLmMt63k6oHJSfhyRCfMu90NQgKmIDq9URhHbgoUJB8sBbSY9rDVU3vywtalA+FZO
-	 WJDs3MKdS7AlN4YEIJ4eWnzF+Zye1lG7y14EKrBURpK2Mze6PEmd33Cb6fmu0luW6xhIS
-	 KVG9xFdP55B5K14bSp+lYgFHS9Xw2wdaOfJyXGmNdANeIpTYexarworV7psMTWSxSLxCw
-	 WOPlP5vWKqZGq5v4RJFo+6CJEwrIIWn4QLx/K8RB1ga/5a3h7avqZTHEYPRCFCFh4RQ==
+	bh=a8MklUW6PYR4NuTZFeyOULTC26VMv8Yp0HFaBobp5k0=;
+	b=Tj8y+1U/Fbqq+eLd3ZCi1RAnYWe0hIoW6K/jzuNX0zh7grQfJBx/fV+tjzgiPiGMF5MX
+	 Is0LYmE0t7PhnTaucSAbk62GmQ/pJkSQDoKoSwo8bIcVB0mzaG4uRdSVfP0E0FvKEMFUA
+	 HPcRjBpaGJyiKfxnEa2/fs3H1T0t5tbK/Ov2mepOwdtCUs8wQ7pU/FLyUU1wmG4AGzNlw
+	 iV3Vwez71o9b9S85m+eT6vkpADyUTWN8XvAP3gGalQzuuxcT2G4TRvSevmudu3Lm2a1EU
+	 DHD4DzCpayU2ChTvmnHkjcyzAwsM8ywNPhDQC3Ze/V3j1vUIm/Keq8oCbBDSxJpz7+Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KyP0Q9eL;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CTW1oFOr;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F95B606EE98
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0F95B606EE98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AADE6071C0F
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:48:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7AADE6071C0F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KyP0Q9eL
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CTW1oFOr
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id C5C3941874;
-	Tue,  3 Nov 2026 14:48:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E8171F00A15;
-	Tue,  3 Nov 2026 14:48:12 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id D2095605CB;
+	Tue,  3 Nov 2026 14:48:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A9DB1F00A1A;
+	Tue,  3 Nov 2026 14:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793717294;
-	bh=UPzqk7+6Hl7aBBk0FqNi8TIlMxqX8AAV9w+mELiQtKI=;
+	s=k20260515; t=1793717296;
+	bh=a8MklUW6PYR4NuTZFeyOULTC26VMv8Yp0HFaBobp5k0=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=KyP0Q9eL1hFy4s0NX1iEANFqNWyeYeRsq7ov2+9cVKjWEzToC131fOzh5r7yFlHar
-	 pIVojox+9qRsPY8VX6mwReyYX3yM4SFOa3iFCUR8BcHSlpdr+HkALlcvSK2dwXQvk+
-	 HMq+2JewLsNDNoadtorpcqyv8VmsXaU+6ywYj9q8fu0Af5xcC0FEy2hjbC8xdQfcsf
-	 dvZi4J3QGSXjFPKV0tBhEW3a5ygQMYHiaBbiGSmEoo2Asd7E0ogclqFTlRO95k9T0A
-	 bUc528cBptya5ifedq5lG00IS5w0DzqO8jOfnUVY117pj0lbTuRQLJGRAkw4BQaw/M
-	 y5RlNwpIYj6xg==
-Message-ID: <sashiko-outbox-195495@kernel.org>
+	b=CTW1oFOrdzEOUPkrvvNahWHPbA0e0ufZdo6mO+cLvubWXkN1/MNhM4qfQsKcdl+Fo
+	 1UwmK1ZZSf+5SRMSnemcp5A+D5jWw7205V0qOh4ixmwKW9lcVMSnynlE0ubQ/VVFJi
+	 vxRny/8V9iZJ9ExkJe1Zb64JqIdngs34CEmUjkTlNHUYcB/2rTERNlv8IvRSCVxWkj
+	 9ebpHdvYgFfFf7wQNgBo1bSmsBp+lLeElE2oJht2XJ26gE3MAd6LgY8lm3TBjwNy4G
+	 RseVsiRDCBb06aK2dHOLefpoLHMiBjl5dg1pKc3epjazs3c6zyNP5qcXlhjNXaq4bA
+	 92C480cHTH15w==
+Message-ID: <sashiko-outbox-195496@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 23/38] proc: don't let NOMMU map procfs files
+Subject: Re: [PATCH RFC 24/38] proc/vmcore: don't let vmcore_cleanup() run
+ twice at once
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -63,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-23-59422ed3e465@kernel.org>
+In-Reply-To: <20261102-work-procfs-bugfixes-v1-24-59422ed3e465@kernel.org>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-23-59422ed3e465@kernel.org>
+ <20261102-work-procfs-bugfixes-v1-24-59422ed3e465@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 14:48:11 +0000
+Date: Tue, 03 Nov 2026 14:48:14 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -78,26 +79,26 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> Every procfs file has a ->mmap since commit 786d7e1612f0 ("Fix
-> rmmod/read/write races in /proc entries"), whether the entry has a
-> ->proc_mmap or not. On NOMMU validate_mmap_request() takes that to mean
-> the file can be mapped. procfs has no ->mmap_capabilities so a regular
-> file gets NOMMU_MAP_COPY, and a private mapping never calls ->mmap at
-> all. Instead do_mmap() takes nommu_region_sem for writing and
-> do_mmap_private() reads the file into the copy with kernel_read().
+> vmcore_cleanup() has a single caller, fadump's release_mem_store() on
+> powerpc. That checks fw_dump.dump_active without a lock and calls
+> vmcore_cleanup() without one, and kernfs only serializes the writers of
+> one open file. So two tasks that write to
+> /sys/kernel/fadump/release_mem through different files run
+> vmcore_cleanup() at the same time.
 >=20
-> Reading /proc/maps takes nommu_region_sem as well:
+> The first one removes /proc/vmcore and waits for its readers in
+> proc_remove(). The second one finds the entry already unlinked, returns
+> from proc_remove() right away and frees vmcore_list, the ELF headers
+> and the device dumps while those readers still walk them. Or both of
+> them free the same lists at once.
 >=20
->   mmap(NULL, 4096, PROT_READ, MAP_PRIVATE, open("/proc/maps", O_RDONLY), =
-0)
->=20
->   do_mmap()                          // down_write(&nommu_region_sem)
->   -> do_mmap_private()
->      -> kernel_read()
-> [ ... ]
+> Serialize vmcore_cleanup() with a mutex of its own. It can't be
+> vmcore_mutex, removing /proc/vmcore calls release_vmcore() which takes
+> it. The second caller then finds nothing left to free.
 >=20
 > Reported-by: Chris Mason <mason@kernel.org>
-> Fixes: 786d7e1612f0 ("Fix rmmod/read/write races in /proc entries")
+> Fixes: b500afff11f6 ("fadump: Invalidate registration and release reserve=
+d memory for general use.")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -105,5 +106,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D23
+s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D24
 
