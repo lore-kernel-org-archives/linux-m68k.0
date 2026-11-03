@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793717252;
-	b=O1P8Y7NrDpoHzcLeZXKGTz8iK/onrXct6kiPC/ou8Ra7EVQfGdHN4DfnxnmkomMHUVSI
-	 qOAp6KqWEeE7AX/k8QtPHKXJiCwLXvT0Do4/t7TqBIejUEo7iMQMPSswLPZP3XY0Uahhv
-	 nrxdNS4jv+B7Ysa2iWKEblBXZyRaHQv8iE0n48ZYhVsst9tKcNc/AIEWPmaKXyO6/VAex
-	 aXNXgZjO76jtxKH29FRYlmBKDHs5mjiHxGb1aAAjltOUoXHI8FF/WfDGHn6Gbi8SF8ldW
-	 j0pVSFB2tOIPJWaljlmW0i8eAXRTKqsEcnIpXhKgSTP074uPp50Sf8yXhBahYlqM9tQ==
+	t=1793717254;
+	b=zt6QMXYbcBMUcLAu4X6QO7XsIDZHwxq3gzBDGTn06Km8ZvXOF+x0m57ZOds58PcVnYNG
+	 Z/KVJaTP9D9pSNHoODTIkT3Vq30ox8AQfl8P9C4lU/W/I0K6ibLdueLKadStVa+loXHSG
+	 /NTmRaccuw2MTgnawU8nCOzd8oEwyUT6npDTkywCeyZwwqMp5VpK8l+U4ywmg3X8isNqi
+	 p9tYEy91AvyXrArNx1MqggJSMwae8YJJIXB57sK3PHc/f9fO9LyNSq+Pemj/pWe7pdxgj
+	 80xW/XxBSZsPcnRK/NxnbBOknSuG3nYf4E9UJao28s54bTRN0+7Q0HxPz5nADRwO5xQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793717252;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793717254;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=0X7QfirFXJ6TGEt0F0HTrCg+kq8+2Z7EgGajwy7tHN0=;
-	b=TgTrbVcZDar28++uH3C4vaAvIqrb4uq2vJtgckGuZzP6t736wY/nkSSBoaL0liao7JYG
-	 rLSySqh3bAsXpTu3Csw3bxE0iA2v70Nuke/AZBgB3a228eTEi92up5nSuZD/mT8R/APCL
-	 b95SyObdJMdbNDdnSxf/RuyrCl2XkBXUsoOXY1xs2VZAyvSyvrkyEtQoXKaOoivmCOjJy
-	 rrj9Ynksn86FvzevzlRYi2qy6YyaylvMrENm18GEC802k8jwR8jSXWQE1K0YlmQEV8Xvf
-	 6WrWTWrs/9EBiiQ1XGIFnUOxb690SBHdb6YX3C63qlIG0Z/5s3wzXXObJXnx6PKxLxA==
+	bh=4+bnBfQZju8fpAB/8X14BeZjZQCkdXf0D+qDeon2Ak4=;
+	b=KzrlCXkSKmcFP8uIs5IvA6zp+dDHkmYUQzTpw6Ohz+6HPi0GOyTeF8LPIvAPx3Rm3t/Z
+	 cwLHZaOyjUTS9kEGo664YPEl0tBKc/YoqvSUdzO2nJs4+p2EVxR7WqyvqKu07R33bDhYR
+	 EGuuZxTWk2XXnAKGnnHQ3gvDkDvpxuDjOpl21luVQSG2nlBGD06PF7d9k2Q/5UNYz0XnF
+	 7bvjyOxQYFyRA47F2gIDdW+lxqztEwKH+91FBe+PM0CGNs4Y/DdbBPOXCkXECpATx834+
+	 wCgPijXbG7k55W/g3vOBPHl9xUh2OTTJgRDITYlpTVXUY2MxKePxPhdnmZ7APvZEMSQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eJTPNleo;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RMc4cr4T;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41B1606A33C
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:47:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E41B1606A33C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4500606D804
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:47:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D4500606D804
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eJTPNleo
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RMc4cr4T
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id A1C8C41869;
+	by sea.source.kernel.org (Postfix) with ESMTP id 8A2A343C3D;
+	Tue,  3 Nov 2026 14:47:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01E0F1F000C1;
 	Tue,  3 Nov 2026 14:47:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20DCB1F00919;
-	Tue,  3 Nov 2026 14:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793717251;
-	bh=0X7QfirFXJ6TGEt0F0HTrCg+kq8+2Z7EgGajwy7tHN0=;
+	s=k20260515; t=1793717253;
+	bh=4+bnBfQZju8fpAB/8X14BeZjZQCkdXf0D+qDeon2Ak4=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=eJTPNleoTplgC2QGyAMCEdjZXP18HitdAHpzSVn25D2DW6ccMaFWAr2LwluZydLLw
-	 ohVn1cisxm5jNlK5vxJuJIhskLbddiSBnOvJJDXiE3Cu75jtXlQ+8SfeBkpGpWHjBn
-	 i28pGRmIIQunBQfMvgJEeYVPdFUqghQBhDG5qp0f+NtoUe1/ghWBC/xCF0L4SXMPSn
-	 SBEK86gW2rh0XRAw4rFfYn2bpevpOMJTo8Vf+khdDv+g4gS9a5A6fT8mlg3qaBlIVe
-	 /HqY/AYZ/tsDjOSd+E4CKNLsEU1t/Ch/2G5hhpWYurg9grTBe6GvXEvrm0lnVyKiZR
-	 b5T/Q9eMN5Dkg==
-Message-ID: <sashiko-outbox-195474@kernel.org>
+	b=RMc4cr4TMiothzZr1gQV3jJQjTeueKFUXv5zwuxzcbh5/HdxeLC2IglsSlv1VEwFv
+	 Ur/LQ/eR3wSsqQbS8ZUk0SCD2Jx4kztRhXfrHkH4Xo77UmXiqjwaE6vDGM+mgmJYHJ
+	 tuYlF3IhQZw5QVy6DfHtL2C9tEk+v13TCjTgx+HnNYr8+fPG6IYPcoxzaksDgA2jAp
+	 31qr2fSSwX5A2grnozzQ2Af9r57Tn+8pY9j8ePIL8X9VbUZE1bN2J7wgKWw8Wgp+BQ
+	 6U7CHQuUZsauwLE/6W1MtHqTP42XyAHvVqnScnEzcPB+Ebjn8acd6ZXDg8/h4mKSSS
+	 gUZdMs5bhS6lA==
+Message-ID: <sashiko-outbox-195475@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 02/38] PNP: isapnp: don't read past the end of the
- buffer on a large pread()
+Subject: Re: [PATCH RFC 03/38] netfilter: xt_recent: don't remove the proc
+ entries under a spinlock
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-2-59422ed3e465@kernel.org>
+In-Reply-To: <20261102-work-procfs-bugfixes-v1-3-59422ed3e465@kernel.org>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-2-59422ed3e465@kernel.org>
+ <20261102-work-procfs-bugfixes-v1-3-59422ed3e465@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 14:47:29 +0000
+Date: Tue, 03 Nov 2026 14:47:31 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,16 +79,28 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> isapnp_proc_bus_read() truncates the position to an int. A pread() at
-> an offset like 0xfffffc00 turns it negative, the check against the size
-> of the configuration space passes, and the loop then puts everything
-> from that position up to byte 256 into the reader's buffer, no matter
-> how few bytes were asked for.
+> recent_proc_net_exit() removes the proc entries of all tables with
+> recent_lock held. remove_proc_entry() waits until nobody calls into the
+> entry anymore, and reading one of them takes recent_lock in
+> recent_seq_start() while procfs has the entry pinned. So when a reader
+> gets there while the network namespace goes away, the exit path sleeps
+> with a spinlock held and bh disabled, waiting for a reader that spins
+> on that very lock:
 >=20
-> Keep the position as a loff_t and clamp the count against what is left
-> of the configuration space.
+>   BUG: sleeping function called from invalid context at kernel/sched/comp=
+letion.c:116
+>   in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 12, name: kworke=
+r/u16:0
+>   locks held by kworker/u16:0/12: 4, last CPU#2:
+>    #2: (pernet_ops_rwsem){++++}-{4:4}, at: cleanup_net+0xbf/0x860
+>    #3: (recent_lock){+...}-{3:3}, at: recent_net_exit+0x3d/0x170 [xt_rece=
+nt]
+>   Workqueue: netns cleanup_net
+>   Call Trace:
+> [ ... ]
+> with a proc entry pinned takes it. So take recent_mutex instead.
 >=20
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Fixes: 665e205c16c1 ("netfilter: xt_recent: fix namespace destroy path")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -96,5 +108,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D2
+s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D3
 
