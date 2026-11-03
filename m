@@ -1,56 +1,56 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793718064;
-	b=OHCxKydKSoAHFUviyryMl8VvFdyRFrHM0r1hRMS960HpvFRn2UgYIN+qLCtresZSIxcm
-	 FQ5n7RJEUUZ/5WKWE9VSsvtfohtNSWsam6i/qIfu2E++uLaevATBU/pQHWXV6Qq8EyO5l
-	 qTVHjwGyyGj12MARCqmrIEqYsQzNRiXjiQz4ThI5iVCC49YLeIttvzRTjVrarCxa8NUdN
-	 D/xkZbGyG9tK13rSuoaUJxiZOVUkbhCT58AAzBx7TjnJQtpzsPfF+3A21kzdL4L+wkTKV
-	 cOXqBhkkTaO8leh2JCGk4UrEcRnWQ22YgMjTMjfg+0v73e2TnGU9szjEJ/htK2jxYLg==
+	t=1793718067;
+	b=FF1Atlr5zgxbWRCm+RbaDFAhiCYYJgpMq+I8mqSUWvAHeZZ4VfmgzbaLS8RzRJTL5y58
+	 92+OqueaYgsZIVOaLkZaEszNxDMeAvbYNvfWtnajEYkxMTEgIr1O9/iZYCHfDYxtTgKdt
+	 tEko4AcJxioJX30uyux4KV6F6r8N2vQYS9Fd/xzNBTMSO0gyW4Wr1aLR9++bMMQxF8TP+
+	 4EufEnxlNQOrUwmDFCpiU7TJ+i6MxSaB63beM8cCMbImYQIacHlyEbhRwhdcvEFqU2GG4
+	 qe3bBOKkM+dNTCr0qc7naLEapFyyupmBQ0hL0JpTFhBqvKTxSE5TJFLjXPySW/Gd+1A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793718064;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793718067;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=O9ttEEMk5aMI0xnyyX9rHNq+bDAQQVwO4bXVwqZk5oM=;
-	b=q/OeXTtQrRzUvLcmvPfwWjVk9LxAa1GCqlEuv5VOEjtB0qeo7gFvKrzmrj0zV5MYPTOH
-	 Lw/liL1mUdDqsMzUMXgEfhVmChuYE+rrgJwLR8CL5l1lf6e8Jlirf7MBdyzUqxYK1y5lM
-	 9vZoV2n8BZUTJ8spV+06bFab9anVcitb2MMMK3rbRTCncgt96Dohq3WBSgOzOtLD1xRjM
-	 pBt8YHZtVSOBseNiixAfaaDupvlbq0FB81ZnsUMVUXMUF6LJUEQNbI/zDcV5IjOyum686
-	 F/b0dajijgN5MngiaOFuq6cTrfnT3hZGJgAltCZI5efiiptCNsDZJ1drKtbWr4XooHw==
+	bh=ID7LC75za88M69BElGmlUwzZxk8blr2d/qu4Qw48pXo=;
+	b=X49PYhFCaDP413EVVv51CE1tfMF/yU9eanrJXskguhbdMBhPkfurbQJ8Ti9VWGpK8NsU
+	 uPjHNX2Vpj+VdS0wS37/YMSj9P3/zBhQ++clG6G44TWC5iCa4fJnu6Y1GpWBwNNYYf1Yi
+	 cH4CauI2V9IgMsJqzDJg0LMk9iXYOBkt6Bw1WeeiUu4SpDmBhfYEdU06X34Gdc7sMoMXY
+	 pCLnO3BtBRuwI2Mg+i6qaYpYtYiv3YL16yXgLDZC0gFjUxN0PbfYE30miaqBDKYZZAZqk
+	 6G78fK3tWnHt+SFRvIeOfF3OnK6tpmTuhLJHRT5hOXOJ1MPrpO4XtdIppd0XBtwy4Pw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZtKCljk1;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jajaKVz5;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60ADF606A795
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:01:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 60ADF606A795
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B379606A796
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 15:01:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3B379606A796
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZtKCljk1
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jajaKVz5
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id E939244000;
-	Tue,  3 Nov 2026 15:01:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 057A91F00919;
-	Tue,  3 Nov 2026 15:01:01 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 9BB34609FC;
+	Tue,  3 Nov 2026 15:01:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE5311F00A1E;
+	Tue,  3 Nov 2026 15:01:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793718063;
-	bh=O9ttEEMk5aMI0xnyyX9rHNq+bDAQQVwO4bXVwqZk5oM=;
+	s=k20260515; t=1793718066;
+	bh=ID7LC75za88M69BElGmlUwzZxk8blr2d/qu4Qw48pXo=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=ZtKCljk1LUvJX7KWDQjGj4wiHw+nMT87rtLCGJRTBYFOnVKhOBYNUS58KOesO+NiT
-	 ER2HFmDawKCWeqirKD1bgeaaWLAsw7kaZahNvdMxcZ2A6tubEEU2b+KyISPnVnH3De
-	 VlS8UWmQqfvhIjxe0gW/En7sarJ3yWhvP+J+F29JCEifzwOto5rP9bGZe97qhSS6Yi
-	 xYFyCbF6HeTNA5fWxqAfDBvJNHBsNOuOBdzH4kWFRyOW2Q6tGuyciAiivU2E0CTx+4
-	 6M2yffCJdgdXWLkNu3Ruz21vUDqhU/xAJMYjVWhf2ZqkxGJXsbg8JOCIzeTSiOCTh3
-	 /uO8boCh8z46A==
-Message-ID: <sashiko-outbox-195529@kernel.org>
+	b=jajaKVz5uF5jV8KNkaRZ9jm2p4d6qjnBibcW+RdQG415ddsGl+0d3bo5j0mleaLxm
+	 RwN0oymilT3njGexXy56725ypD8aMhBv35E9z3nBKq7iYYj1uGr0z2x1vioz+IJ0zr
+	 CIMhu6ko7LsevcSiGh6ht2M3uptrpuTNi8xCLl9RYAGb2JQIB1dYpM4tY3O3Yj0v1Q
+	 i6wOkRWSaCouWbczxv6hLshYtafnWa40AAByma6d3JjyufxRbPRcUODDXJFJzDRzTt
+	 QFQvvpET6EoFeMBD9/m6afIrzXxj97ddDjVi2YA1OzWzbIgGVogylw7h1FKknnweMl
+	 qgPPLhzd74S9A==
+Message-ID: <sashiko-outbox-195530@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 02/16] proc: add pde_pin() and pde_unpin()
+Subject: Re: [PATCH RFC 03/16] proc: make room for more entry flags
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -63,12 +63,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-core-v1-2-75df35e4f8b8@kernel.org>
+In-Reply-To: <20261102-work-procfs-core-v1-3-75df35e4f8b8@kernel.org>
 References: <20261102-work-procfs-core-v1-0-75df35e4f8b8@kernel.org>
- <20261102-work-procfs-core-v1-2-75df35e4f8b8@kernel.org>
+ <20261102-work-procfs-core-v1-3-75df35e4f8b8@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 15:01:01 +0000
+Date: Tue, 03 Nov 2026 15:01:04 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -78,11 +78,9 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> Every call into an entry that can go away is wrapped in use_pde() and
-> unuse_pde(), and a permanent entry is called straight away. The read,
-> write, poll, ioctl, mmap and lseek methods all spell that out as the
-> same if-else. The next patches add a few more callers. So put it into
-> pde_pin() and pde_unpin() and use them everywhere.
+> ->flags of struct proc_dir_entry is a u8 and the next patches need more
+> flags than it has room for, so make it a u16. Bit 6 stays free,
+> vfs-7.5.mount takes it for PROC_ENTRY_CANT_MOUNT.
 >=20
 > No functional changes.
 >=20
@@ -92,5 +90,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-core-v1-0-75df35e4f8b8@kernel.org?part=3D2
+s-core-v1-0-75df35e4f8b8@kernel.org?part=3D3
 
