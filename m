@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793717256;
-	b=0j8Y+L8PYSXy5g/N1igFkP36SjTGD+zxc+3pBaeJLn3s78EZNa2y4OQmxK8f5T/gVrGF
-	 FXBKD+MA2sGBGihjcE7wnj5Ih9l9axVnaYPZ2BgZxKKtoYFiE+vIWYzK4vpLGJVw5TQBD
-	 6SjN+kZSKhV8AuHZMxQLZyt1AWecIuKTMLQ0VDuqkckbBgODI50onR536mumbZq6al3fp
-	 JFCJ3FtqYgYOa2Bs/aw/CdWL/ZrIkW/wdC4HNVyzIXjGwa7lNJKmwH9aF83XHRluRcAlA
-	 /rIYWhOVilpM3NAw8wO1Qh8GzrcGfH4cAZLMALqrIB2Q9r39pJcROEiEkV+BpLKOijA==
+	t=1793717259;
+	b=A6EZ/I4vRJbvF3CU9DbXh2zPQly/KKQIulqEYirPwLwOuYW1Ckxe71MmUf/Tyy+muOvr
+	 8TNGpEsXL/gXNmjSUGuBsDkIJoVPmCZgyFF2fU+EKZnqN1NDEX3g4gGlVGjUVRlOl4nsu
+	 kNTwhEd8xS0POkunVLdsyD8A33FPx3upAszX1j2+VRX+2iBeWHgCqQN1JVxqzbLEt0BMm
+	 wN34SzYAbYLK9LfLPVHA8I1PMWttGVz0cPYu/3CDFLJnd/RXJvUIiQ4W11djKE6nvdYNp
+	 FOsGttDnHIe+flz6Rc9MFdxt1BVz0Nkf3ous8zl5I5iz/TTZO1jWR7O8bUzDdYwG7sg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793717256;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793717259;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=q0d4FPmWtZwKMh/sPGL0i6hRLuYL8e+WwbXcE1bGJN4=;
-	b=Q5EvB4mOZ1fA1SaEYBgTQnNxjen47fe8+VhID5gt+58Wk8xzwg3bxV5qbmMXCkQnq3VH
-	 W75EakWuhbkkMbsFcznTeXZcBCVYI3auvd3r/FLsW7fkLCIiiJCJKRo2A2fZwnrD6yCfa
-	 K0GPaVflfnVTkFQQRnTyj7Y4nf+XmvqLZwHKaLFtnRhJMZJtsZlTKazt5S5/MHrjqk6KT
-	 Xetl8IzlZ133yMaTZTorA2kgj9S1nPpxyCW67b4Zg9Q2mDKHslKfNnvu1RHa/ltvLCSQH
-	 n5/edS3YLUWOrKFKBaX6tjF2s17O9reh+PP0RQDekl/VlobERgxy2lwkJQX7mIsD6ZA==
+	bh=N05eG3DcsrZpQfqjL5D91LwnvEOvTP0/ov6vkT4Pvcs=;
+	b=1JJ+12USnlAo8CV0tYpwg7TJMknbwqYlILAuscvo7EB6FgBT9FTU3cNoS8jiBMwkxMT/
+	 PZLf0PsYJFKpAYhDrrV9YZXsnPzyVlsW++af2apMlB5Qgu6lajToPcjOXcA8utbOObW2j
+	 6rUKQqMeWHi8GJwb04F0caqOHZh0iWQP8lih6+XZyCzLk+qXVw+bIahaJ03eXxWFiQV3I
+	 9trFx9CsGs1aSWUyLOL2iag74y7yuJ3LF4az4Ndj43KKjTpRvZblqgTlrsKCn/HyVtrSF
+	 oqJhBQeNiwHpJ14wpAJmkC2Ocmx0aQZ0JVA3ZxCD8ju5UHw+MD1OXWnwJUrGjCmrBtw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ecNUXxnh;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hasVYka7;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D6D606D802
-	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:47:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A5D6D606D802
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D93F606D828
+	for <linux-m68k@lists.linux-m68k.org>; Tue,  3 Nov 2026 14:47:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0D93F606D828
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ecNUXxnh
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hasVYka7
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 8C2E0417D7;
+	by sea.source.kernel.org (Postfix) with ESMTP id AFC7E4095E;
+	Tue,  3 Nov 2026 14:47:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80461F00A1A;
 	Tue,  3 Nov 2026 14:47:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E75901F00A16;
-	Tue,  3 Nov 2026 14:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793717255;
-	bh=q0d4FPmWtZwKMh/sPGL0i6hRLuYL8e+WwbXcE1bGJN4=;
+	s=k20260515; t=1793717257;
+	bh=N05eG3DcsrZpQfqjL5D91LwnvEOvTP0/ov6vkT4Pvcs=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=ecNUXxnh2OcVVvSa0U3huTG0L9O+PzIB1xuXCxIUp/GZPPPzipCpRc1/qlsk4J6CA
-	 x7U8X9eMczAWPO2ZaCpsl6YNtO0NoBu0+DXnA39JSuS9XY9AjGBFyXlc/Ccq4RTQY0
-	 UAugm1HYHytJJ48gGhh5Ikw7HuDNMAn11k6igesT8J9xgHn79oAIaLwhkpwX1VrdQQ
-	 +5bvleOIuzZz7sQeEwq2Hki4vo4gTrOnLMNutAIHZebuy2qBXQktzKVc8aWpJCw5wT
-	 EMd2yrUC+CDD8BIHuYrdGWQwA/PwlqJVUVRxCdpabP9PdTkesHJyvmQoHa6OBE4VbX
-	 e+c9Js8H66prA==
-Message-ID: <sashiko-outbox-195476@kernel.org>
+	b=hasVYka7WfTQX4gVG72LHVrtfNEhVp4P8ZtdcWyH+LgHzqiGmI0IYbQHO1iwq9m07
+	 y/1lwfnTHWCCY+cbAgh9hskIZQ97rVMlqM95iGbxPIOe3f8RS9bNGt+mxw9ntpVqb/
+	 scjaMJLEVTqoyjO6TjfG7nqX7032JBfqmizKNDbPX8HDDI6FUj87MgRMBXyr8hd/G6
+	 o/Ht1P5w/7ACphg2RTZAjkTSNTX/ebWs2gke1l0yWrd0iIR+fNLltdhYI899csOJwZ
+	 1y9qK6xl8eu6MrQZdcUR4uzY+8RNuZ/DmBvaIF0iaqRFYBY29TqHfRB0P45MNfIHFj
+	 usD+mtvrE3OkA==
+Message-ID: <sashiko-outbox-195477@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 04/38] s390/dasd: don't look in front of the buffer
- on an empty write
+Subject: Re: [PATCH RFC 05/38] platform/x86: toshiba_acpi: reject malformed
+ brightness and fan writes
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261102-work-procfs-bugfixes-v1-4-59422ed3e465@kernel.org>
+In-Reply-To: <20261102-work-procfs-bugfixes-v1-5-59422ed3e465@kernel.org>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-4-59422ed3e465@kernel.org>
+ <20261102-work-procfs-bugfixes-v1-5-59422ed3e465@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 14:47:33 +0000
+Date: Tue, 03 Nov 2026 14:47:35 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,11 +79,18 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> dasd_get_user_string() strips a trailing newline by looking at the last
-> byte that was written. For an empty write that's the byte in front of
-> the buffer it just allocated. Only look if something was written.
+> When lcd_proc_write() and fan_proc_write() were refactored their checks
+> were inverted but the && stayed. They only fail if sscanf() didn't
+> parse anything and the value is out of range at the same time, and for
+> the brightness value < 0 && value > levels can't be true at all. So an
+> out of range brightness or fan setting is passed on to the hardware,
+> and so is the uninitialized value if nothing could be parsed.
 >=20
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Restore the checks as they were before the refactoring.
+>=20
+> Fixes: e1a949c1b988 ("toshiba_acpi: Refactor *{get, set} functions return=
+ value")
+> Fixes: 3e07e5baa2af ("toshiba_acpi: Add set_fan_status function")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -91,5 +98,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102-work-procf=
-s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D4
+s-bugfixes-v1-0-59422ed3e465@kernel.org?part=3D5
 
