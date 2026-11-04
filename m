@@ -1,64 +1,119 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793813667;
-	b=heKRNx9Gi0nFcGDtBCFHka1HM4uyLx2b3y0n0ME7aCZpt542TqggNJcOG7fnP0LrvEnd
-	 NmXBdKqmJ9C9/cI1jYyXrbE1UQOE7bCp311PgpfviCU57x3QTGntK3kebKRxUPBf/86X/
-	 vBs9zA5tMDnE5qV9c5wvHwiaxtyWThtO3nU231va1lPqOYildgj0rBKZSKXW/3W1Ovow+
-	 s77P9v7CTUuWxfxVfIYw60u2cNbyZvru43by71LV0Yvmr94VtBc/BaTEHf130rkMMzby3
-	 hQb3KkawSjjPb/mL1ji2iUB4E7cNHiaDVfhhIQoWEJenad5U3GdDDc1jA5QTllK9Ltg==
+	t=1793814381;
+	b=sHWLGJuO4jNg6J8bJGDBxwPcppEsEYjYCW9um1+3cq5aSl/Wcwji6Gj8+HCFFjXt6Yo/
+	 bLdFbJNfr/rcQn93RcEdSFNczybe7wk/1Zlt7eNKVKE/KsSU20pO+gaW6BkZkokPB39C+
+	 ZA2ZxvuHF4aG2H9RSmVNoJIK2kB/rJPwSIP5xbuui1M1gwwisoSQiAm7HpTBs7TuanxCJ
+	 3/eiRIhkqcvqzqoifFP4cGla2PDesMTmgFMc8duCpZWLiaxXemfYNb75tvThE0xA2XMZ8
+	 FUuctJAgdOijrh3u40SjMcWT/DOby6Tmq0vak9jpBfg/AQKG06/mJeSAFjD3Gy48ulQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793813667;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:Received:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:X-Gmail-Original-Message-ID:
-	 X-Gm-Features:Message-ID:Subject:To:Cc:Content-Type:
+	a=rsa-sha256; c=relaxed/relaxed; t=1793814381;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
+	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=AMOD33XmGyHm36xJWMnYgDFAfU9OylqTMFKngAIWEtA=;
-	b=fGouMLPJMKKErDRWbZ8tfION0TTWxXHw8zFuJDZVdUvt0Bu9mEDmjh6MpGId5CbGK4Kh
-	 O0NXJFEj5Xl/kso6FLtDLAGwi7gLRCDSEpdVmcUBIDYCspyAYud1E5iVmF/0zupMmScwW
-	 qAJDvVjOaVGQybhQQPwEU3mGzWHN9r+xf10qpHPP1Ju1pHuyNUFGRIWhq02VrdEWhXczt
-	 5SXY9Tq61GLDvvxS8a1kVW+USlU/RUlH0FxdThLz/WDrVIoLnX0Dr93AXxAAnqYmdd+OW
-	 +XgU/Wf8sVNK+y7+t8dnKdcIbPNGjgat67zsnhE9rMuQqLpdxxXK39OOua/atuJ7eKw==
+	bh=mdnthwMs9LvqnLJy6kPpeiwqrlhi6ADC7izliWiN2IE=;
+	b=FlGDgc98p3C27V3pVuT5Py2k3EY7HJUjy9ceTMqYokpGBg6E0FAU/TyfWka8+2wplPZ1
+	 AN56b83AyyorwBZFkXG/rOVg6n7bkuGCBU4bVOs7oif6FC5a1gR6gpw/0N9+vC/hDYO/g
+	 pv9YmsmVGI/gdIoDgkoiDuqloUR1htc23ek3YXBhGvm4FQ2b3D+pguHtbCNAxd+iWa/q6
+	 86hFn7SBdh9eYoZNlinw23qJppQvmX3g5oA1L/a/jD/YmnSnwCXDbsoV/hPvGtHlfeZtt
+	 Jqbkhe3cQE9cvTBs+QuT96HqWOz553hKYMjXhs4zNA6WQOCKU4xXq7xdCYAkm7JFGiA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TuIdEGHN;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="IUyU/T8J";
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06249606B00B
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:34:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 06249606B00B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AD2606A31B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:46:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E8AD2606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TuIdEGHN
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IUyU/T8J
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id B643C43DA7
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:34:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 986321F0157A
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:34:26 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 9A04443C8C;
+	Wed,  4 Nov 2026 17:46:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A0831F00919;
+	Wed,  4 Nov 2026 17:46:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793813666;
-	bh=AMOD33XmGyHm36xJWMnYgDFAfU9OylqTMFKngAIWEtA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=TuIdEGHN+tlSpGP2tguvWW7kLlUQWLPYjJKJSOdpszP2pLOR7WrjdSkZZ/grMbqbK
-	 +lTr56mLL+WOdircBkePq+AP1VJ8IkK1jD+a+/cNVkOM5lTrA3ra2sVKICfCT0wVFa
-	 G7aUxkwbEYQTgmz4D8gML0l5sd+AeXfF/B+yunRHPHSfp3DhyhKMZ2MO8cmr1H2mgR
-	 d2oAbezChMlOpKySp6bD7YhtrL6rY8cs9aS9v0EePA62cXO8uXedgf6WJ2JQI3RfVB
-	 sVx/vx3dq4DLpiMPLoF4zMVjw7jCtMETWhYAirt1guo5pK4CX4JT893wQit46xG65K
-	 Y99CMV8/O64SQ==
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-5eaefe5b523so635316e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 04 Nov 2026 09:34:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBylF6m+v3tapCcQY3Ygwr5T6P3p9eY2TUEJckv5BDBTXnEhIl8Ge6m5ZiE8fJqriuIDWQcHsRZZx0rc@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z+h73MIATplypV5vK+rAJ3+hDN9MtHrN2j0ppWBxuX08XMSXpA6
-	28QLAGlCw/+G/pPvXH89JXmlIjjqzQY+oKtofxnt4m28VifEa7G3YzVoTAMmnS/0PjoW+G2wqDK
-	a0I4srTWuGJoR2R00k0+matkSJeUT8fE=
-X-Received: by 2002:a05:6122:180a:b0:5ec:5f1b:f725 with SMTP id
- 71dfb90a1353d-5ec689c4d7fmr8231097e0c.23.1793813664918; Wed, 04 Nov 2026
- 09:34:24 -0800 (PST)
+	s=k20260515; t=1793814380;
+	bh=mdnthwMs9LvqnLJy6kPpeiwqrlhi6ADC7izliWiN2IE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=IUyU/T8JanEUeWb8OLvnBOF7mcsDaYX0yn50MMyhywpzR+Xd73lI68b+Z0EjhqK7z
+	 bkEkttde6fJvRPVGGA2MZkA0GbASE8FC1nT+84ODvZFzTbBCjYw8IWtatNsrtMoyrH
+	 KXUF53QFRfDUagwA56DH/VxXp+wT5/pJfjV3gzlKef2KUiN1HSYpnfrnWdn1nbnNKf
+	 O/7xCRN+TNpny8Le4H87j8uBb2tQPjPggOwQvaiPHTFrUkQgsfx/jAR3vQ6vrxrWe7
+	 JaBxG35YdcKRtCdLtOxgMygQkmiRV8AYLKhLlP/iKh/wi1njtDUmOUna6ss0EP8ecg
+	 vvOH1vOWWni9g==
+From: Christian Brauner <brauner@kernel.org>
+To: linux-fsdevel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Jann Horn <jannh@google.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Chris Mason <mason@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	NeilBrown <neil@brown.name>,
+	Eric Dumazet <edumazet@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Christoph Hellwig <hch@lst.de>,
+	Greg Kroah-Hartman <gregkh@suse.de>,
+	Joel Granados <joel.granados@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Jan Kara <jack@suse.com>,
+	linux-kernel@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	netdev@vger.kernel.org,
+	ntfs3@lists.linux.dev,
+	platform-driver-x86@vger.kernel.org,
+	coreteam@netfilter.org,
+	kexec@lists.infradead.org,
+	linux-pci@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	ibm-acpi-devel@lists.sourceforge.net,
+	jfs-discussion@lists.sourceforge.net,
+	linux-alpha@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-cifs@vger.kernel.org,
+	linux-fbdev@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-sh@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	samba-technical@lists.samba.org,
+	sparclinux@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-doc@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-atm-general@lists.sourceforge.net,
+	Takashi Iwai <tiwai@suse.de>,
+	linux-input@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-modules@vger.kernel.org,
+	linux-debuggers@vger.kernel.org,
+	"Christian Brauner (Amutable)" <brauner@kernel.org>,
+	Chuck Lever <cel@kernel.org>
+Subject: [PATCH v2 12/51] powerpc/rtas: consume the whole write to /proc/powerpc/rtas/progress
+Date: Wed,  4 Nov 2026 18:45:55 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-12-bbf7d5546809@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
+References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -68,162 +123,45 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org> <20261104-work-procfs-bugfixes-v2-4-bbf7d5546809@kernel.org>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-4-bbf7d5546809@kernel.org>
-From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
-Date: Wed, 4 Nov 2026 18:34:10 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0gnefKDcBnLzxxXPLJkYRHN9pbYH9WVFAoUGuCSOPcW1A@mail.gmail.com>
-X-Gm-Features: AclHuK8WGpfSf3TpV-YfKcvDlenGAnmL4yQTyeV9z6QpHJtyVq4G8L84EjJ5Q2g
-Message-ID: <CAJZ5v0gnefKDcBnLzxxXPLJkYRHN9pbYH9WVFAoUGuCSOPcW1A@mail.gmail.com>
-Subject: Re: [PATCH v2 04/51] PNP: isapnp: don't go on when isapnp_cfg_begin() fails
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, 
-	Josef Bacik <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>, 
-	Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Eric Dumazet <edumazet@kernel.org>, 
-	Thomas Gleixner <tglx@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, Greg Kroah-Hartman <gregkh@suse.de>, 
-	Joel Granados <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, ntfs3@lists.linux.dev, 
-	platform-driver-x86@vger.kernel.org, coreteam@netfilter.org, 
-	kexec@lists.infradead.org, linux-pci@vger.kernel.org, 
-	linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net, 
-	jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, 
-	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, 
-	samba-technical@lists.samba.org, sparclinux@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
-	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
-	linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.17-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1217; i=brauner@kernel.org; h=from:subject:message-id; bh=uNEn+pHXbIRRMkqtNF6NnFXDW3eMy9Pk3SJ7wJuNwck=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9zjsreObfmrOX1obn3tw0N6WpU3RvwOStvn2i0U5yp rEGLx+odpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEwk8Agjw1Z5rj/rEq/Xb9Zi nJlScTdg1ruoGZHGhW11TVmdwqnc0xgZOpo+NM6qs41edOyOUPc3kzd2G/9GyxwJqc6SeXR2q9J OfgA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 4, 2026 at 6:30=E2=80=AFPM Christian Brauner <brauner@kernel.or=
-g> wrote:
->
-> isapnp_cfg_begin() refuses a logical device number above 10 and a bad
-> card number with -EINVAL before it takes isapnp_cfg_mutex. The callers
-> that read and write the device's configuration, the proc file included,
-> don't look at that: they go on talking to whatever device the card
-> currently has selected and then unlock a mutex they never took in
-> isapnp_cfg_end(). isapnp_create_device() hands out logical device
-> numbers without a bound, so a card with twelve or more logical devices
-> gets there. Return the error instead.
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+ppc_rtas_progress_write() shows the first 255 bytes of a write and
+returns that many, so a writer that loops until everything is written
+shows the rest as a second message. Return the whole count, the rest is
+ignored.
 
-Acked-by: Rafael J. Wysocki (Intel) <rafael@kernel.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+---
+ arch/powerpc/kernel/rtas-proc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> ---
->  drivers/pnp/isapnp/core.c | 16 ++++++++++++----
->  drivers/pnp/isapnp/proc.c |  5 ++++-
->  sound/isa/es18xx.c        |  6 +++++-
->  3 files changed, 21 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/pnp/isapnp/core.c b/drivers/pnp/isapnp/core.c
-> index 219f96f2aaaf..3591a2791c1a 100644
-> --- a/drivers/pnp/isapnp/core.c
-> +++ b/drivers/pnp/isapnp/core.c
-> @@ -853,7 +853,9 @@ static int isapnp_get_resources(struct pnp_dev *dev)
->
->         pnp_dbg(&dev->dev, "get resources\n");
->         pnp_init_resources(dev);
-> -       isapnp_cfg_begin(dev->card->number, dev->number);
-> +       ret =3D isapnp_cfg_begin(dev->card->number, dev->number);
-> +       if (ret)
-> +               return ret;
->         dev->active =3D isapnp_read_byte(ISAPNP_CFG_ACTIVATE);
->         if (!dev->active)
->                 goto __end;
-> @@ -887,10 +889,12 @@ __end:
->  static int isapnp_set_resources(struct pnp_dev *dev)
->  {
->         struct resource *res;
-> -       int tmp;
-> +       int tmp, ret;
->
->         pnp_dbg(&dev->dev, "set resources\n");
-> -       isapnp_cfg_begin(dev->card->number, dev->number);
-> +       ret =3D isapnp_cfg_begin(dev->card->number, dev->number);
-> +       if (ret)
-> +               return ret;
->         dev->active =3D 1;
->         for (tmp =3D 0; tmp < ISAPNP_MAX_PORT; tmp++) {
->                 res =3D pnp_get_resource(dev, IORESOURCE_IO, tmp);
-> @@ -936,9 +940,13 @@ static int isapnp_set_resources(struct pnp_dev *dev)
->
->  static int isapnp_disable_resources(struct pnp_dev *dev)
->  {
-> +       int ret;
-> +
->         if (!dev->active)
->                 return -EINVAL;
-> -       isapnp_cfg_begin(dev->card->number, dev->number);
-> +       ret =3D isapnp_cfg_begin(dev->card->number, dev->number);
-> +       if (ret)
-> +               return ret;
->         isapnp_deactivate(dev->number);
->         dev->active =3D 0;
->         isapnp_cfg_end();
-> diff --git a/drivers/pnp/isapnp/proc.c b/drivers/pnp/isapnp/proc.c
-> index c1f6e6bd0eb2..b3abab24050b 100644
-> --- a/drivers/pnp/isapnp/proc.c
-> +++ b/drivers/pnp/isapnp/proc.c
-> @@ -25,6 +25,7 @@ static ssize_t isapnp_proc_bus_read(struct file *file, =
-char __user * buf,
->         struct pnp_dev *dev =3D pde_data(file_inode(file));
->         int pos =3D *ppos;
->         int cnt, size =3D 256;
-> +       int ret;
->
->         if (pos >=3D size)
->                 return 0;
-> @@ -37,7 +38,9 @@ static ssize_t isapnp_proc_bus_read(struct file *file, =
-char __user * buf,
->         if (!access_ok(buf, cnt))
->                 return -EINVAL;
->
-> -       isapnp_cfg_begin(dev->card->number, dev->number);
-> +       ret =3D isapnp_cfg_begin(dev->card->number, dev->number);
-> +       if (ret)
-> +               return ret;
->         for (; pos < 256 && cnt > 0; pos++, buf++, cnt--) {
->                 unsigned char val;
->                 val =3D isapnp_read_byte(pos);
-> diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
-> index 3cadbf7cf238..de1eda5a0656 100644
-> --- a/sound/isa/es18xx.c
-> +++ b/sound/isa/es18xx.c
-> @@ -1950,7 +1950,11 @@ static int snd_audiodrive_pnp_init_main(int dev, s=
-truct pnp_dev *pdev)
->         /* ok. hack using Vendor-Defined Card-Level registers */
->         /* skip csn and logdev initialization - already done in isapnp_co=
-nfigure */
->         if (pnp_device_is_isapnp(pdev)) {
-> -               isapnp_cfg_begin(isapnp_card_number(pdev), isapnp_csn_num=
-ber(pdev));
-> +               int ret =3D isapnp_cfg_begin(isapnp_card_number(pdev),
-> +                                          isapnp_csn_number(pdev));
-> +
-> +               if (ret)
-> +                       return ret;
->                 isapnp_write_byte(0x27, pnp_irq(pdev, 0));      /* Hardwa=
-re Volume IRQ Number */
->                 if (mpu_port[dev] !=3D SNDRV_AUTO_PORT)
->                         isapnp_write_byte(0x28, pnp_irq(pdev, 0)); /* MPU=
--401 IRQ Number */
->
-> --
-> 2.53.0
->
->
+diff --git a/arch/powerpc/kernel/rtas-proc.c b/arch/powerpc/kernel/rtas-proc.c
+index f38df72e64b8..89b165986851 100644
+--- a/arch/powerpc/kernel/rtas-proc.c
++++ b/arch/powerpc/kernel/rtas-proc.c
+@@ -311,6 +311,7 @@ static int ppc_rtas_poweron_show(struct seq_file *m, void *v)
+ static ssize_t ppc_rtas_progress_write(struct file *file,
+ 		const char __user *buf, size_t count, loff_t *ppos)
+ {
++	size_t len = count;
+ 	unsigned long hex;
+ 
+ 	if (count >= MAX_LINELENGTH)
+@@ -324,7 +325,7 @@ static ssize_t ppc_rtas_progress_write(struct file *file,
+ 	hex = simple_strtoul(progress_led, NULL, 10);
+ 
+ 	rtas_progress ((char *)progress_led, hex);
+-	return count;
++	return len;
+ 
+ 	/* clear the line */
+ 	/* rtas_progress("                   ", 0xffff);*/
+
+-- 
+2.53.0
+
