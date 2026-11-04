@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793821837;
-	b=RR6k0E5MXUAtB8TTGvxmw9idzh9K3xkq1UslTXxuBpDQiR+PXpc1oBfC/1qjRQFqqwBG
-	 9Wb4rBZ9naYtsv0hEuhU4yrwyp825BY2BEGzjk0jvb+g4DO8IbphkUY0kZWqbO2zKQsIT
-	 RDzJq8V/xFNtcYlxT8mp4HbjzFIEAlMDT+V2jSmQuvHyL+wKmNKW5AstCf6KNmWeFx6qI
-	 l3gz5gVjL0nQcCd6Mxc13b3Cxuov8tGmBCEsrQ4PJRIH0YhIyq8ZXyT5vftkTUH6hb6iA
-	 bsRVNqhVOm29YsT/MAsGhZj8e0BW09Zzs/FN3aWMSoGRkhkCc3vKNxVUULtQQq2Y57g==
+	t=1793821851;
+	b=JAg12s8E5YGR1KNX725f/yjoKh6Fq2V0D5vE2Q+ujym9fK8rHoLyrX7RioKEL7+SFuBZ
+	 oQ1UHb+TQB9a8/dgl7ddrq6DKQ24U97KCs2CHUzDVid6u7I/mECO5FHV+ZGUBICX+l97M
+	 g9rNS9tERi0eGjYuzyM6RCNA70XQmqcv/FkW1tKL1ejz088Kgn+UQuzA8JVpWdlUhQIQ+
+	 w3fCCQcmfWauTZD2pOygV6H6FM76UEsK0hxmfzcKwN+uQi0AoWHIQUWs7Zx0K0RoNxNa5
+	 aQA6f2w++3jOav1un5EyRKZ0lZtk/Xq//0np44uMuz0cMa1QMxTG8WXw9E/YClx22YQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793821837;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793821851;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=mLB2lug1OKcpaTlobTkzaZ+4AMl2gIULemZI4iRmrDM=;
-	b=U2YxSotkgdUHB5O60nbMsRob0xinPACSth2GCtnK/yYQfZnJRibXFBVNlDXoBY9dh4sO
-	 Ff3uMfqCNlfGdBTDBSRLeuxYCygT8CsDS3ZLh0LZtIjFZEnpenOiR1P6Ge9jg+MmkKLRh
-	 7Ts4Tgb954sOuAThFS2/bvXr59i3Td2aDrbIZwsHdSgBSV8UGflIiBSrn8OUoTmdcwsbA
-	 KFiJF8E6wpCvsGQCcoAsFClxd45bu9ZmOHwXjtqiXmDg2AOpg0MrBQVuMBmGwJW0nm0AY
-	 enKO0s+1CMw9CN98kp62PkwiyS1w3Q5CcZtPfu916d8LXzdv3SyiLl4Au18no9fJTHA==
+	bh=PUZ4tW9HsyUaK/ejkkNMI5ANy0GmRkIlRIJ6yNjac0o=;
+	b=1yJpZaHTZJEM4C4xrcbSxQzyakN5njtSzNInDViwjjo9cJdYtIMk+1Ja9ZbwJwN0L882
+	 FlTNE4lIT0oHx1woSt5OvJvXJs6zsiJoUEAC5i+CgXGY/ya2sJbamXLi4hl0exfmLYLBR
+	 hx4iiNo02y24kHt6jtWgxz+K95xcugXyTl5ywotNF/JD9ResDu2O7AFGQ9jCQzL4QtHxG
+	 ILP4+Hc8Cqx84nK2I9Iv7QQaIfkxzsYHyZE5rpC3QN+1aQybQ76rAE8LE7B2EsSBqWnIh
+	 R5tMWamc9a+S6WRyzQvbClLD2abxtqHT1q0WutXWAPpi1zGufuV69H3b+EgxzHw09vg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="WrIOm0L/";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iqFhZDQ3;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346A7606AC36
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:50:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 346A7606AC36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43421606AC29
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:50:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 43421606AC29
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WrIOm0L/
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iqFhZDQ3
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id EC01340A9A;
-	Wed,  4 Nov 2026 19:50:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A587C1F000C1;
-	Wed,  4 Nov 2026 19:50:23 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0987F40E0C;
+	Wed,  4 Nov 2026 19:50:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFEC31F00919;
+	Wed,  4 Nov 2026 19:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793821835;
-	bh=mLB2lug1OKcpaTlobTkzaZ+4AMl2gIULemZI4iRmrDM=;
+	s=k20260515; t=1793821850;
+	bh=PUZ4tW9HsyUaK/ejkkNMI5ANy0GmRkIlRIJ6yNjac0o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=WrIOm0L/grPWsfSZ6ocvkczbqe5CDNutaK+lDTDGBJkYNfb+vQmtT5HzyIbXGVqHH
-	 hWnfF+S7ghDcf3jndcQSye5gCwb9X8DYtZdri/cLH978S1GzMeTX/+4g/zFpOiqiNK
-	 nGuFtvQNq7yvniXZ/lBAZLMxXQj5TNH6p305lsSnFn9BJUumbxC//DQvRndQEXtUIa
-	 VsDikB9RkzCyzs7pmF52v+oL+Q+io92cATYHoyvEmPEV6i1rQ6jpin6iZ1aKk7/AxO
-	 XxSIj8Dyg+41tnOPmTEYgnhNZHK5o6ae9seSm1c3a/IOfHTAzonXKhXGQctCWgRh8w
-	 JPeajEykQHbCQ==
+	b=iqFhZDQ35GfK/vsXy+ylTu3Eh9YrS9nTSq27+28SnBC9XKvW7PfMWDO9W5Ft0iDiC
+	 2su6MPY9k2TxuW2AnVg2vkBoLPH5Ce+Yj7iPgWE1OMfQXuAjt+wKv9ns1AIE6Zh8f2
+	 36rTQxsqFfC8trxeiSZnRnFYf6vYHW9H/wwq7q3bPyDytQtzWderj9LRXTMixQp4Qn
+	 iDLkoWDCDGU0TpyQelcs1HXFXKLJrD35LCYzeMiq0HAZIegNRaAkkGVKs79qb+wzhh
+	 UnoLohKjRfX7+w2z/A62dlh5PLszggZKXcxYK/t9f4zySuslTWVXxeONmWQtVIKX7q
+	 3JuDh2CyL543w==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 03/30] lockd: let procfs copy in writes to nlm_end_grace
-Date: Wed,  4 Nov 2026 20:50:21 +0100
-Message-ID: <20261104-work-procfs-fs-v2-3-319e0f9a8aae@kernel.org>
+Subject: [PATCH RESEND v2 04/30] lockd: let procfs copy out reads of nlm_end_grace
+Date: Wed,  4 Nov 2026 20:50:36 +0100
+Message-ID: <20261104-work-procfs-fs-v2-4-319e0f9a8aae@kernel.org>
 In-Reply-To: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,64 +125,47 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1796; i=brauner@kernel.org; h=from:subject:message-id; bh=QwlEC6TnrlqFxD7H1NEPhBXC4WfFu5kv5jak1b43Ypw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97tG7Wbqw7qWfktj9CUmzLuQuTBZfWKLcsbIl+K3pw z0MHG/ZO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbiI8DwP2PPpKWpiYbxYn23 5wT0zN8bdozx+0+hGoFdAkmmD+0WvmZkOLRmopvW3kn6Pu/cks9Okva45eWqIVawWoo1YVdnzJR JbAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1305; i=brauner@kernel.org; h=from:subject:message-id; bh=yC83pog7S4Eh2+psAQ8qDYZ/OTNKlefl3tGbza44dqI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97tFPEq3Pk861Kea+tknP5Pec7S2X9JWOzJkzvcjg8 eGGlXfdOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZS/43hr/CRtGIJZ4n01d4b H1v+y1f677Dj1MpcFgcZT/+6tVNuRDEynBQ9vcEl403OpO9xU4NMHs3nFGp3Oh6vtE0lecu7jQH v+AE=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Implement ->proc_write_buf() so procfs copies in what is written before
-it pins the entry. simple_transaction_get() was only used to get a copy
-of what was written, so look at procfs' copy instead and drop the
-transaction. A second write to the same file doesn't fail with -EBUSY
-anymore. Writes larger than PAGE_SIZE - 1 bytes fail with -EINVAL from
-procfs instead of -EFBIG from simple_transaction_get(), which refused a
-few bytes less.
+Implement ->proc_read_buf() so procfs copies what is read to userspace
+after it unpinned the entry.
 
 Acked-by: Chuck Lever <cel@kernel.org>
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/lockd/procfs.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ fs/lockd/procfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/lockd/procfs.c b/fs/lockd/procfs.c
-index 74f7ab77535a..852cca8c3588 100644
+index 852cca8c3588..64195c564cd3 100644
 --- a/fs/lockd/procfs.c
 +++ b/fs/lockd/procfs.c
-@@ -18,21 +18,15 @@
-  * We only allow strings that start with 'Y', 'y', or '1'.
-  */
+@@ -40,7 +40,7 @@ nlm_end_grace_write(struct file *file, char *buf, size_t size, loff_t *pos)
+ }
+ 
  static ssize_t
--nlm_end_grace_write(struct file *file, const char __user *buf, size_t size,
--		    loff_t *pos)
-+nlm_end_grace_write(struct file *file, char *buf, size_t size, loff_t *pos)
+-nlm_end_grace_read(struct file *file, char __user *buf, size_t size,
++nlm_end_grace_read(struct file *file, char *buf, size_t size,
+ 		   loff_t *pos)
  {
--	char *data;
  	struct lockd_net *ln = net_generic(current->nsproxy->net_ns,
- 					   lockd_net_id);
+@@ -51,12 +51,12 @@ nlm_end_grace_read(struct file *file, char __user *buf, size_t size,
+ 	resp[1] = '\n';
+ 	resp[2] = '\0';
  
- 	if (size < 1)
- 		return -EINVAL;
- 
--	data = simple_transaction_get(file, buf, size);
--	if (IS_ERR(data))
--		return PTR_ERR(data);
--
--	switch(data[0]) {
-+	switch(buf[0]) {
- 	case 'Y':
- 	case 'y':
- 	case '1':
-@@ -61,10 +55,9 @@ nlm_end_grace_read(struct file *file, char __user *buf, size_t size,
+-	return simple_read_from_buffer(buf, size, pos, resp, sizeof(resp) - 1);
++	return memory_read_from_buffer(buf, size, pos, resp, sizeof(resp) - 1);
  }
  
  static const struct proc_ops lockd_end_grace_proc_ops = {
--	.proc_write	= nlm_end_grace_write,
-+	.proc_write_buf	= nlm_end_grace_write,
- 	.proc_read	= nlm_end_grace_read,
+ 	.proc_write_buf	= nlm_end_grace_write,
+-	.proc_read	= nlm_end_grace_read,
++	.proc_read_buf	= nlm_end_grace_read,
  	.proc_lseek	= default_llseek,
--	.proc_release	= simple_transaction_release,
  };
  
- int __init
 
 -- 
 2.53.0
