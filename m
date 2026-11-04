@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793821807;
-	b=iulcfiUgQ6NE2C97qGyNcTSJaJDoUr5iRIDqQtVcFccB2u67nstmbDjrSvYSkz1ji03R
-	 Je/susycuVw34ZF9xwBfYaiphCzdQ9kodoGBwX4CKlDelqXQdnUYkwvZZv+s97PRkkUoN
-	 VvtNHIW1lKsYHvmCfY7Tpx2u6FBzx6CW1gZCuhJTw0wQSdLuaN3WDvf9AcfdKUYGFlBAl
-	 EcHT0U65kqfd7TlL8A+iJWJ2+4BYfdr5hrPf/mN9jOXUuALJClVxfUtI+Q6gj0Lf63rhN
-	 apX/ayK3MtwCpwiixv0FB1TmEdUlIehxpGC/kG+wAEkFGBNqsfLeyL8Za0vd9aEotAg==
+	t=1793821822;
+	b=cqCjl2fPIOt4o8jyIOrh3a77ldwVlTODdMoRWVBKA/sVJNJEH7MF+GvZ/di9siOheLRr
+	 O/sdHcDl2XEp6/+LFyXC/dfRP8/JuYEA5qwyXWIVLbt8ik5GBgHFOICqvK5wAxkP8X92w
+	 JSScJ3fjqgQBZq9FGO3VoURAXhIDsAXezv6PyxQqjcg54PWknzLvgEVe84qhMWT5Th2N3
+	 7X99ZrXOYxGfl3J4XGGOKhOQaJauC6j9jq9chMFszLeEe/ACkvFPjL+ymYYQWJ9OKRU6B
+	 DxTi1aQ42RnGHNhOBqZ3paopif8frUQpwWwy+UwdFTCCNngkC6f7GbHE0ZQjsyDWGmg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793821807;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793821822;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=o8L0vvGY5Km24xgHgPbylEP8c5DuS625RCEauDmBOHw=;
-	b=gK+qYkZAVswuYG1IOf6j/WmE1+qeGxNCEaU2FPp/HMMxRlVo7Oi73yJ32iorISj4yH1O
-	 dFtTI/6rxA6eYivkCKpfjyu1qj/MRh1AUCkL+FDLxqii2JsVI75jMQufBW9TnkDJuIcb8
-	 rB0BfB+x6NSZAFQLu2QsQMoNSuxDDbOgi/GFtQyt0JSKyntUhPJzxyh8RfWmEdStQPQTe
-	 TSdmHRBgPSNjs5jzhtad8S38WOPhOFREcAkVorLrTgEwzydkSkw5XQSeRvus+kce9CBNg
-	 +qBh95D53Ldp6zKeBUAG9C0DpaPfBc7BbcGL/5AAmdNS3/r8IN5nEFMLnbZE75TzloA==
+	bh=gDybWaXH0yVqSHGh6cSao1kY+huQ+XTPXQ1Vld4D+UM=;
+	b=fwesQtFNqU27vrlonv2jbeM/jl95GJ29Q7d8loWXQm0sdRI/DipLeH8+KJ5O/KwEltiN
+	 YzDhoXzVrXJh35dayaWZMgYJuNxTCDng9g9mCi+5bBfNg39fAuptIzy5VZYZfrsoQVbQ7
+	 lbMsYTbOmTrAW9ayRIdJRkKaMHLBom+bHkpU7w/QozpC/Ol3pNE/E929s1sV+iVz9HA1E
+	 24KCrZL5xDHH3+kTOO3WNcin60X68jhaMfgdTspMJ2PciGvh+3c8RZf/3AlNuZgWD17bG
+	 G/IfxTdyRZEUKgFuv6SDG9fL4cU1tT4UHQe/pgR5gla3WAE7vbOP3CHqFvyE/8fjaYQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dYsPe7EK;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ViWv5liE;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34FA6076360
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:50:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D34FA6076360
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599B3609176F
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:50:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 599B3609176F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dYsPe7EK
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ViWv5liE
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 66EFF43A0C;
-	Wed,  4 Nov 2026 19:50:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 004D31F000C1;
-	Wed,  4 Nov 2026 19:49:53 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 2B36B60F38;
+	Wed,  4 Nov 2026 19:50:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF5EE1F000C1;
+	Wed,  4 Nov 2026 19:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793821806;
-	bh=o8L0vvGY5Km24xgHgPbylEP8c5DuS625RCEauDmBOHw=;
+	s=k20260515; t=1793821820;
+	bh=gDybWaXH0yVqSHGh6cSao1kY+huQ+XTPXQ1Vld4D+UM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=dYsPe7EK9xlznqxSarRjMWb/keF20UxFAAIxFblrc1DyDdCICYC0tZhLXHGBEjv2m
-	 wlolIDJ7YESPSIUpyajqx3Pi5Z9zhYfRI4siggX085u5ZCM59zXJsjvpX8buE3Tg23
-	 SlNWXDQdYn3g1vBGkIMitmFjx3pOOiiqYXRBb4AvwUHkH0/o2nSoE/7xM2+bGZtgQ5
-	 OviczvtzIq+aURT2ywz7ETtS4VmDmtvxHciSqzRG/NUK0pmlve0K75uh+30R9f7Khm
-	 DjfChaLv0h87xnlfhv41ydwZ032RXJPkYnLbVO+AjaHCHz+rJCzl03k7b2tSTGaF4A
-	 finR4PnDyeWlA==
+	b=ViWv5liEfHdMHPO8R1wapbcJqOA3zpGPpbB02hMT5/E0508nWx30DxqIPL6KtEmgU
+	 u+pmFn3FsOd19p4MgLsNq//oFD4EhVxfbRb3hFQDajUha4PG308MHKfbBxuQRI2T+1
+	 gpfAFci1AHyTvujOOroEbIobGBHWkRbja9thyu+sIlV6GnLkbKj+7KO+0ZAH32xVH8
+	 iBv7uhmdL2bAAOXVUHaVgSNDhqWBsAdgXyxjuxMQt4FvbC+ZMkyYx1jsvDEISH0f4o
+	 af3/XVxyIwOpd+kA2KJQBzwNtAgTJZ+nIEKqRvJiOre/ZrMnKSk9pNUZKOAQUsYWh4
+	 hiwj+uPWiEFJg==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 01/30] jbd2: let procfs own the seq_file of the info file
-Date: Wed,  4 Nov 2026 20:49:51 +0100
-Message-ID: <20261104-work-procfs-fs-v2-1-319e0f9a8aae@kernel.org>
+Subject: [PATCH RESEND v2 02/30] jfs: let procfs copy in writes to the loglevel file
+Date: Wed,  4 Nov 2026 20:50:06 +0100
+Message-ID: <20261104-work-procfs-fs-v2-2-319e0f9a8aae@kernel.org>
 In-Reply-To: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,85 +125,49 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2318; i=brauner@kernel.org; h=from:subject:message-id; bh=4wXeP/X63evRQ0XlRmaO+RfgvVw7qBYaC3PXgCgMk/I=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97tFWfOxU95GH3XdJTEYBl8knnmuK/UXrVrUrzorQz FINDXTtKGVhEONikBVTZHFoNwmXW85TsdkoUwNmDisTyBAGLk4BmEieL8P/uohlXprsW1qaIpK+ b1x9yGKVsvXjy55Vj5KKjk2tPrHQnZFh1Trl08dUnn26v0t1fseh4COavFYvfAQPnCsMWqPzN0G SEQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1370; i=brauner@kernel.org; h=from:subject:message-id; bh=izEZyN2ciF2azWBwOiarD7rxdH5SrLb74RUgxhmuQ3M=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97tGJzso6nn/w61mbive7Xqy3zX3zdMnSHJ2eBVw3m Q2DcmIjOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZyciEjw/nFJ7zrmRr3TTvN 7yT61kBSiuve9sV8G24zvhXijXX584zhr/RSZtXdspF7F/LOFVzmc/vt+qo5X9YsanqxkXF3yLP QUzwA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Declare the seq_operations and the size of the session state and let
-procfs open and free the seq_file of /proc/fs/jbd2/<dev>/info.
-->proc_open() only takes the snapshot of the statistics now and
-->proc_release() frees it. Reading the file then no longer holds up its
-removal when the journal goes away.
+Implement ->proc_write_buf() so procfs copies in what is written before
+it pins the entry, and take the level from that copy. Writes larger than
+PAGE_SIZE - 1 bytes fail with -EINVAL now and so do empty writes, which
+looked at a byte that wasn't written before.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/jbd2/journal.c | 33 +++++++++------------------------
- 1 file changed, 9 insertions(+), 24 deletions(-)
+ fs/jfs/jfs_debug.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 3a4f3f613ead..1e4f4e95a00e 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1173,51 +1173,36 @@ static const struct seq_operations jbd2_seq_info_ops = {
- 	.show   = jbd2_seq_info_show,
- };
- 
-+/* procfs opened the seq_file and allocated @s */
- static int jbd2_seq_info_open(struct inode *inode, struct file *file)
- {
- 	journal_t *journal = pde_data(inode);
--	struct jbd2_stats_proc_session *s;
--	int rc, size;
-+	struct jbd2_stats_proc_session *s = ((struct seq_file *)file->private_data)->private;
-+	int size = sizeof(struct transaction_stats_s);
- 
--	s = kmalloc_obj(*s);
--	if (s == NULL)
--		return -ENOMEM;
--	size = sizeof(struct transaction_stats_s);
- 	s->stats = kmalloc(size, GFP_KERNEL);
--	if (s->stats == NULL) {
--		kfree(s);
-+	if (s->stats == NULL)
- 		return -ENOMEM;
--	}
- 	spin_lock(&journal->j_history_lock);
- 	memcpy(s->stats, &journal->j_stats, size);
- 	s->journal = journal;
- 	spin_unlock(&journal->j_history_lock);
--
--	rc = seq_open(file, &jbd2_seq_info_ops);
--	if (rc == 0) {
--		struct seq_file *m = file->private_data;
--		m->private = s;
--	} else {
--		kfree(s->stats);
--		kfree(s);
--	}
--	return rc;
--
-+	return 0;
+diff --git a/fs/jfs/jfs_debug.c b/fs/jfs/jfs_debug.c
+index 5eb35b0d420f..e1c0211a6a32 100644
+--- a/fs/jfs/jfs_debug.c
++++ b/fs/jfs/jfs_debug.c
+@@ -23,13 +23,10 @@ static int jfs_loglevel_proc_show(struct seq_file *m, void *v)
+ 	return 0;
  }
  
- static int jbd2_seq_info_release(struct inode *inode, struct file *file)
+-static ssize_t jfs_loglevel_proc_write(struct file *file,
+-		const char __user *buffer, size_t count, loff_t *ppos)
++static ssize_t jfs_loglevel_proc_write(struct file *file, char *buffer,
++		size_t count, loff_t *ppos)
  {
- 	struct seq_file *seq = file->private_data;
- 	struct jbd2_stats_proc_session *s = seq->private;
-+
- 	kfree(s->stats);
--	kfree(s);
--	return seq_release(inode, file);
-+	return 0;
- }
+-	char c;
+-
+-	if (get_user(c, buffer))
+-		return -EFAULT;
++	char c = buffer[0];
  
- static const struct proc_ops jbd2_info_proc_ops = {
-+	.proc_seq_ops	= &jbd2_seq_info_ops,
-+	.proc_state_size = sizeof(struct jbd2_stats_proc_session),
- 	.proc_open	= jbd2_seq_info_open,
--	.proc_read	= seq_read,
--	.proc_lseek	= seq_lseek,
- 	.proc_release	= jbd2_seq_info_release,
+ 	/* yes, I know this is an ASCIIism.  --hch */
+ 	if (c < '0' || c > '9')
+@@ -40,7 +37,7 @@ static ssize_t jfs_loglevel_proc_write(struct file *file,
+ 
+ static const struct proc_ops jfs_loglevel_proc_ops = {
+ 	.proc_show	= jfs_loglevel_proc_show,
+-	.proc_write	= jfs_loglevel_proc_write,
++	.proc_write_buf	= jfs_loglevel_proc_write,
  };
+ #endif
  
 
 -- 
