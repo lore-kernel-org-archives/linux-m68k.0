@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793821085;
-	b=d/mpLbwL3NUXPH/fBst1e/kWl924UWTYUSdMP3zz+aKGSsMkGUmDBYXBmMqL/FFqyg67
-	 cjk0JobMTzYF6pMJuBsAo0RY1oOygHQ/HlWpiodX8C8xw1LdAwTYsZILglehLRwz8D8Mz
-	 Lp9QMiRY0LKEnZY3A0kGE6D9COXIUzVueXrxgZ4xY0QQlEzgCze+T9f/rETj1dFTJn3fQ
-	 BVGlZfM+2LpaxKLJe4Ew2Aj37eYD1GS/ubLmH2OLkbg2YXZi6ahnuPTLSkH5x/3NwcNe7
-	 VO3HKy6OzHDR+8p+ad0gMTcxN0FaUyU3Ua0Itncq/iWYqu+vhbATBOIqU0GrO2iIHew==
+	t=1793821101;
+	b=hyzymxWgMKudMeXX0XySIDkruN154MsNq0rtzg+3m7SNqo65hIk8ZcCCsLZJObdIi2GF
+	 brA3ltVzAVZ2RRHm0+iKQfxs0hpWebrGhFwC1BV8tIJuz0tvnW+NDnZfMgsQFWt94U9K6
+	 5ASmZ+RKHJojim0Qh/HJL2KhYgs7codtUQjbdxpEzb6w1N1ErjSjmAXu6B4FAWMGPUVa5
+	 FN9og8B1nZUpG0LWhikcgYieKyAP7ENjzHrAdwXsENf5cyWlpsSYOOWv70ayi9llBUtcK
+	 y1FFjCl67O7nKOr9AYB1YU13T0NQihCdAnMCgzpTJiAjyFe9yIiyNo5eYu3qK694GRA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793821085;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793821101;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=K/nPdp0KTrkO/JWfX0DeaffmMq6r1stKUZ+oHzzOxP0=;
-	b=HmyEW4IWYXU8wFwPJ+O4xZGFAmCdbr0s3AOfmKm3kGd+a2AixV0zYldXw1QV61jGpVj6
-	 Lt3IBIqxISFYOckSn1jn8E5LjTi7gZ4WbOq6o8ozJ3OXOobCQQKjfjA7M2AaCTnSwr670
-	 4/NbUJRO50A7ZlVEULBuEd7hwTBFLuLBopHd0Oi40YNdxWlOvB9DawkFgPeeqyxWrjt27
-	 m5Jn8pjN0nlSdLc3let3/jP2QA9JKJ834AfiTamPtwHOaFRzHRxi5acXy218w4uMFzhKR
-	 5iqorFAKweLGC1C9aHMZB4/uXJxwkRScuZCt3qgjTGMNlSu0s7u9UZKIeTNI5p9GF/A==
+	bh=moTp49XZfW2IxIkO6/t4/a2jJtvDF10yNUa6q6hnE3E=;
+	b=TkPk96ZYmTQcTGgew7GVzK0ipuHW89CK19zXSFueNqKQ4p5yBo8o3ZXxEWQIfLK1Jt42
+	 04njUF/0muY+364a/SQxGm5TDmXWyQzRDM3LslCUmWO19a+KMtJcYHdw/AsHlUBmn+Jdk
+	 MXZojkmbhUQtu3VoG99b8pNT72PUz2w62mTsT8qKo04llBiD3GJlvMP9dn0VS/HWIW9dl
+	 WNffEKTNkh5iJrKSFASpSa//g1UwcPTVflcKXuMgnabHi6XqT1eliTn1sINUWDru/2E/q
+	 IR5wVaUDi0Xuuo13b3ilik/JFSL72MHLW5osrO2HXHC1TYKwZfX0BfAd/jQzNvgEkVw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oLDqIOTw;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dEYUfVLB;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044B3607F96B
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:38:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 044B3607F96B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2F56080797
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:38:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9C2F56080797
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oLDqIOTw
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dEYUfVLB
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id C691C42E5D;
-	Wed,  4 Nov 2026 19:38:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D9BF1F00A1B;
-	Wed,  4 Nov 2026 19:37:52 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id EB3DC60D9D;
+	Wed,  4 Nov 2026 19:38:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 655801F00919;
+	Wed,  4 Nov 2026 19:38:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793821084;
-	bh=K/nPdp0KTrkO/JWfX0DeaffmMq6r1stKUZ+oHzzOxP0=;
+	s=k20260515; t=1793821099;
+	bh=moTp49XZfW2IxIkO6/t4/a2jJtvDF10yNUa6q6hnE3E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=oLDqIOTwTl44qDXUKo0I6FzsXq0+ba0WjB4YCiCZU9JLqh15F/mdEZNy1ACYE+I0B
-	 qPq4Ssz+iK/J+eJu6nff/NkdfEp6rYdZwfCVKcczyKz5fHXjpvVlG/Qm/dEw9ZL0xG
-	 8PXHN37KmNVPmN5T23ck2GcUncr5vJ52nd5OFcXFUE5Goto+9up/68B7m4SIC6mV83
-	 dUnBRd6UMVtOXc059f+OnYX0WXgqO/Uzy4tsZ8wr2OaUSvl2vGEki/eN5mj7meJO8a
-	 M72qqDynVfbDFqAmqr+C62uIaJhArxnrmC/9rNVTKL6uBLhc9SJ6BYF+yeJf+SxLKs
-	 ki60VRKb9D3jg==
+	b=dEYUfVLBA2EwlpohdyDXzTpTkRMJNpEZw07PenB3nQEME5dlyhNXhUUoG8mOjVcfv
+	 oPDIsebnx4tZSNv75ByRLEUZV0ZfOVLMGkLYWrqFTsxkA4voQYbiWI7Chp/G19hq8j
+	 DKzQFd+kG9Z/ZczXaQksi6FimDULy8ynh1v+zV87qzzRKlJkR46N6iuYi3HyauJb0/
+	 ixnpXSjhwjAMxt3EXBGirkIdHW2TupS7i0FdK5IMsq4hJkLRXlD9MCqRth25zPpRvr
+	 XFXCckKRVb1cNliO2C/VaesIJ4kkrjLqwN3PZvlgzr9t7ORqmcl1O6UD3IPPtWLnEr
+	 6EHLI6lqSf6WA==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 09/23] powerpc/procfs: let procfs copy out reads of /proc/powerpc/systemcfg
-Date: Wed,  4 Nov 2026 20:37:50 +0100
-Message-ID: <20261104-work-procfs-arch-v2-9-2aeb952c9597@kernel.org>
+Subject: [PATCH RESEND v2 10/23] sh: alignment: let procfs copy in writes
+Date: Wed,  4 Nov 2026 20:38:05 +0100
+Message-ID: <20261104-work-procfs-arch-v2-10-2aeb952c9597@kernel.org>
 In-Reply-To: <20261104-work-procfs-arch-v2-0-2aeb952c9597@kernel.org>
 References: <20261104-work-procfs-arch-v2-0-2aeb952c9597@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,44 +125,49 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1293; i=brauner@kernel.org; h=from:subject:message-id; bh=BKyq5EW+jipwXgvVj6hm7sFkYOn+uIZEAZe7arc6MQo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97vjOI7W5OU2Ecf0JRpsD2T2N0rxx3fUCk8WEDn860 LbzeX1YRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwERWv2T4Z/np554211z5HPtN Ea8e5coKrXxtW8d48eZXNxb/m5d+8jD8T260OtJsUDiLw3pdFscpPeXZpb3vZ9Y1ll1xmP9kwnc DJgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1293; i=brauner@kernel.org; h=from:subject:message-id; bh=pcWTmpkZi08Bh4Hys88761LsQ4siFbSCZrSZZozxPfE=; b=kA0DAAoWkcYbwGV43KIByyZiAGrriPihaE1Ps2uzOVufjFEo6SEyunTx1SnW2Cza+IFLmTCnS Ih1BAAWCgAdFiEEQIc0Vx6nDHizMmkokcYbwGV43KIFAmrriPgACgkQkcYbwGV43KIBxwEA3vYT I915GRHPWFgUXtRSl6XArUTI58ux3r8jCqihWjgA/RPKZfjZEripcr0Hh6B3Oon/z2/aODYAora Qp9As5NML
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Implement ->proc_read_buf() so procfs copies what is read to userspace
-after it unpinned the entry.
+Implement ->proc_write_buf() so procfs copies in what is written to the
+alignment files before it pins the entry, and take the mode from that
+copy. Writes larger than PAGE_SIZE - 1 bytes fail with -EINVAL now.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- arch/powerpc/kernel/proc_powerpc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/sh/mm/alignment.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/kernel/proc_powerpc.c b/arch/powerpc/kernel/proc_powerpc.c
-index d083b4517065..46bc914d74b9 100644
---- a/arch/powerpc/kernel/proc_powerpc.c
-+++ b/arch/powerpc/kernel/proc_powerpc.c
-@@ -24,10 +24,10 @@ static loff_t page_map_seek(struct file *file, loff_t off, int whence)
- 	return fixed_size_llseek(file, off, whence, PAGE_SIZE);
+diff --git a/arch/sh/mm/alignment.c b/arch/sh/mm/alignment.c
+index 2198c6f2ea63..d832249a8e18 100644
+--- a/arch/sh/mm/alignment.c
++++ b/arch/sh/mm/alignment.c
+@@ -133,14 +133,13 @@ static int alignment_proc_show(struct seq_file *m, void *v)
  }
  
--static ssize_t page_map_read( struct file *file, char __user *buf, size_t nbytes,
-+static ssize_t page_map_read( struct file *file, char *buf, size_t nbytes,
- 			      loff_t *ppos)
+ static ssize_t alignment_proc_write(struct file *file,
+-		const char __user *buffer, size_t count, loff_t *pos)
++		char *buffer, size_t count, loff_t *pos)
  {
--	return simple_read_from_buffer(buf, nbytes, ppos,
-+	return memory_read_from_buffer(buf, nbytes, ppos,
- 			pde_data(file_inode(file)), PAGE_SIZE);
- }
+ 	int *data = pde_data(file_inode(file));
+ 	char mode;
  
-@@ -43,7 +43,7 @@ static int page_map_mmap( struct file *file, struct vm_area_struct *vma )
+ 	if (count > 0) {
+-		if (get_user(mode, buffer))
+-			return -EFAULT;
++		mode = buffer[0];
+ 		if (mode >= '0' && mode <= '5')
+ 			*data = mode - '0';
+ 	}
+@@ -149,7 +148,7 @@ static ssize_t alignment_proc_write(struct file *file,
  
- static const struct proc_ops page_map_proc_ops = {
- 	.proc_lseek	= page_map_seek,
--	.proc_read	= page_map_read,
-+	.proc_read_buf	= page_map_read,
- 	.proc_mmap	= page_map_mmap,
+ static const struct proc_ops alignment_proc_ops = {
+ 	.proc_show	= alignment_proc_show,
+-	.proc_write	= alignment_proc_write,
++	.proc_write_buf	= alignment_proc_write,
  };
  
+ /*
 
 -- 
 2.53.0
