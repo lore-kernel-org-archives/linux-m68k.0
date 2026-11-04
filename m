@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793826833;
-	b=WdDhNXU90b2Hftg8xatfllc6RMWpsWkUyYorPWGo5m3+Yw6ZNriUnFfgvnc2LwBEPHsJ
-	 SkKyFPVgNSYn9p7k2UXT8Jlg7rlYc/Dg+YH11TfjIiLJsSY6yO+jGnHun4zc8GxnH/3ge
-	 riFtRh6zaa2nqozmai/zh6r1D2D+fqyrnPcmI81j8eJeRezU7aRTr/5kQxFaVwA3S5GWv
-	 ZOOpoflVxbggcHSGgHZ5wKStoGxLL8atpE+JrLIzRiVvgDAPJ7Hhq+AOVA3PKOcmBfTNJ
-	 9RWGlmbwyiMwYcHZJ4SEfyJS6L2Po4l5BAR3b5AvSP4BMm7mUGYSebWj4SFP/9xs3Xg==
+	t=1793826847;
+	b=mrS5kHWUoauce40Z6ZvqB3/mau5JnfixjpDdI4ZJdGtcXb3wszAFfZ00gyCECuWnXc+f
+	 jw+qOKCWeBt2uphsnNNQLxnQDRtN3BGQWQoZXGD777pJvXudIyMS7fHDap11JOv9hE/E9
+	 HX2CklyfT/nbDrgqT89zAYOvtbjd52uUcLhsxA1JB83VH2Pz5tCRYYou7x7k9Jhs77e/0
+	 0/rkfQKX3v7G9dNHTmeeYMs8DUNrTiik/ZC2LnR4FbdjC4TauNkJW5PxXv8N7u7iplYAD
+	 jlTH8sv7F7nn8C5WhGX7xc0lxbb84auAlqK3XkMiNrzus5vHavnqbEIECtUqQhDROEg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793826833;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793826847;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=1MxYRYKjXg/+oT1B67MpjVjXxOUB68rY8isEKfXqK2M=;
-	b=EWeigtMWcDzQdd8JhzzBBFy8kzs2BaBsrh/4k+CMunvLYFskx2BJ/V/goHTv8ujI8H5X
-	 BqF8VADX8w1+8mcge4ZyvNlhfoR8mAoKqNW46IXFLybqioPLJOvuxvUJ9j+klo8YqjM5/
-	 xU7h87tAwgCiCxrWqCddaRgREWsIXXU+V9E7CG62fDIBjDOwVysJI/+uNgnk0RwuPjTJ1
-	 1dUEdj6u18944IDL+iQHjWWqFf6PGgmdlPr+dFUTPNPaSdG+MNGWCP5aZiEykvDgo+xLe
-	 QgFQjYk+HlGaPzC9/q8TwEIXgTY04OoYpUZrj7m5mH1kAHZtzefVP+HxunVpZAvFxmg==
+	bh=pmnFGMOE2v1+F0PJGOHw4Gdli7q7gPuktrXwX9LNfoQ=;
+	b=4A2tTMRL/Q4+rJg51goNDpH6pEbB50Oipzx1JOl9pK251pnYVntQ5RcjcyfKVTTARMy5
+	 tWSC8Hc4zBKYhnaU424hodmyrVoMDsAq14ufNoB3nmNfqd3N7vRwjlxXdR4jxfwINtFt8
+	 C5KCuRNwkoRB+9UgNzxNqiwvsogH35qTSISjtqPav5T6Kag0Edb1jMnM+TD3K6o0HTtfH
+	 PGmbc1wT7kSCaUETLBGGcLx/Nwcij3H4Mnp9O5nux4bWPlo4PR2t3AvivYlombE03Szej
+	 IB4Dajv7EyzSgnyRS7JNEdUzh8G49YuEU1GwYaSYkHlvytNN9YWdRybNR44xV57wuew==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ETQGuZ5m;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HDqRrYE5;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6F16072F6F
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 21:13:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5F6F16072F6F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFE360B1435
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 21:14:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9BFE360B1435
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ETQGuZ5m
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HDqRrYE5
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id AE18062CCD;
-	Wed,  4 Nov 2026 21:13:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9FDB1F000C1;
-	Wed,  4 Nov 2026 21:13:39 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 12C6D43A2A;
+	Wed,  4 Nov 2026 21:14:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED3161F00A16;
+	Wed,  4 Nov 2026 21:13:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793826831;
-	bh=1MxYRYKjXg/+oT1B67MpjVjXxOUB68rY8isEKfXqK2M=;
+	s=k20260515; t=1793826845;
+	bh=pmnFGMOE2v1+F0PJGOHw4Gdli7q7gPuktrXwX9LNfoQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ETQGuZ5mWrJaw5vMCNoxKDTP6j6Ov//pzU7UV0re+JQ/fOVwqabIgrja5LMlvIx3R
-	 mBlsuHBCVE8oDvKETlbRqL1mhIdq3tD2pozrg28w+TtoHjgYEwWMJ4CIpaO1h6KvxQ
-	 V3ufmOQrumr5xp/6TYUAYOVWxzXCl9UAFw/i9yKn1dgBRAbUrpnmTDlh+YdGCs76Yl
-	 EsaKk9QvFagOgFekDjd3Lf3WCADE6zYjwBULe2sa8XrpB7drKPKJkJrEFpU3FefsUh
-	 RzD53Gz+X/bLDWxUAm40hLd+bK3dqFI/hYSlTDpB/hxhYfKzRFrbamvLaNX4sWezYW
-	 AXz5pXYWXwUog==
+	b=HDqRrYE5SVW+uz41qBUdlkd/AOD1buzc7yItKvdItI4h8/KuGepVfYio6GPLtiP+J
+	 fJ+d4qHm1iNZ/NDis/KF73HhMgppcwATjDAXFRShJfdyGVij/MvKpTe6tFtKF741Vv
+	 9yp+EZP4p3+D40HqIzZkbNueee34dY/20SfSqgn7hMRMXKqxj+niSBoAZb0ACNJwD5
+	 svjcjblOGDnpwrFFpcVVC8ty8x1qq0lEfDdas7ia8TH66801cLAyTfvtLHFeDvwr5b
+	 wnb5hluHHKL8qJsYPeHy3t4IGfFFNO/QeKXi/O6wCL4MG4JyRwvT2v3Tf1yj0HE3IE
+	 HkKfxGaP/VkNg==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 10/13] SUNRPC: let procfs own the wait queue of the procfs channel files
-Date: Wed,  4 Nov 2026 22:13:37 +0100
-Message-ID: <20261104-work-procfs-net-v2-10-221e2437fed1@kernel.org>
+Subject: [PATCH RESEND v2 11/13] samples/kfifo: let procfs copy in writes
+Date: Wed,  4 Nov 2026 22:13:51 +0100
+Message-ID: <20261104-work-procfs-net-v2-11-221e2437fed1@kernel.org>
 In-Reply-To: <20261104-work-procfs-net-v2-0-221e2437fed1@kernel.org>
 References: <20261104-work-procfs-net-v2-0-221e2437fed1@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,112 +125,137 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3889; i=brauner@kernel.org; h=from:subject:message-id; bh=QPerLLDMXFlA+1II+fYpDsDcCxwkLoYz0L35dMx6y10=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97tPPWss1reVowb5lm3abTz0rMjlm2gkBvWsyExf/X HRC4GaxZEcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBEVukwMuzjjI+PiJCdw3+7 2mPbsYasgi9fNtZwRVfcuHZVTzg6v42R4eTzNOM3P9YXtbtlPnjWlcQ/W1jsYVuwd/jiwx3zgv1 CmAE=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3950; i=brauner@kernel.org; h=from:subject:message-id; bh=wqPh89nrehb8eXTwTved41pSSj+cx0NGgazKeJSdQJg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97jOYLqMh//ThRIEnvPOqE4X+CB0XWpFzR35zdGxZZ Orh2Zc1O0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZSsJ7hv7tH6Z8s80W8RROO rN/N/UIp0stetDs498C/PTpXF150cGL4Z+evlr2YbcZl0dpm/huN/+I/eGm9CCnf3nXvVeRZRhs PTgA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-cache_poll() sleeps the poller on queue_wait, which went back to being
-a static queue so that a poll() on a procfs channel file can't be left
-on the queue of a cache_detail that its network namespace freed. procfs
-owns the queue poll() uses now and it outlives the file, so the procfs
-channel files leave the poll_wait() to procfs and an upcall wakes their
-pollers through proc_poll_notify(). The channel entry is remembered in
-the cache_detail for that and forgotten before the entries are removed.
-The rpc_pipefs files keep sleeping on queue_wait, procfs has nothing to
-do with them.
+Implement ->proc_write_buf() so procfs copies in what is written before
+it pins the entry, and put that copy into the fifo with kfifo_in()
+instead of kfifo_from_user(). Writes larger than PAGE_SIZE - 1 bytes
+fail with -EINVAL now. kfifo_from_user() cut a record to 255 bytes,
+what the one byte that holds its length can say, so the record sample
+keeps doing that with PROC_ENTRY_SHORT_WRITES.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- include/linux/sunrpc/cache.h |  2 ++
- net/sunrpc/cache.c           | 20 +++++++++++---------
- 2 files changed, 13 insertions(+), 9 deletions(-)
+ samples/kfifo/bytestream-example.c |  9 +++------
+ samples/kfifo/inttype-example.c    | 10 ++++------
+ samples/kfifo/record-example.c     | 12 ++++++------
+ 3 files changed, 13 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/sunrpc/cache.h b/include/linux/sunrpc/cache.h
-index bf4fc543e1e5..9d508205ebb2 100644
---- a/include/linux/sunrpc/cache.h
-+++ b/include/linux/sunrpc/cache.h
-@@ -129,6 +129,8 @@ struct cache_detail {
- 		struct proc_dir_entry	*procfs;
- 		struct dentry		*pipefs;
- 	};
-+	/* the channel file in @procfs, for proc_poll_notify() */
-+	struct proc_dir_entry	*procfs_channel;
- 	struct net		*net;
+diff --git a/samples/kfifo/bytestream-example.c b/samples/kfifo/bytestream-example.c
+index 4ae29a12cc8a..8c58fb46a2bf 100644
+--- a/samples/kfifo/bytestream-example.c
++++ b/samples/kfifo/bytestream-example.c
+@@ -110,20 +110,17 @@ static int __init testfunc(void)
+ 	return 0;
+ }
+ 
+-static ssize_t fifo_write(struct file *file, const char __user *buf,
++static ssize_t fifo_write(struct file *file, char *buf,
+ 						size_t count, loff_t *ppos)
+ {
+-	int ret;
+ 	unsigned int copied;
+ 
+ 	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+-	ret = kfifo_from_user(&test, buf, count, &copied);
++	copied = kfifo_in(&test, buf, count);
+ 
+ 	mutex_unlock(&write_access);
+-	if (ret)
+-		return ret;
+ 
+ 	return copied;
+ }
+@@ -148,7 +145,7 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 
+ static const struct proc_ops fifo_proc_ops = {
+ 	.proc_read	= fifo_read,
+-	.proc_write	= fifo_write,
++	.proc_write_buf	= fifo_write,
+ 	.proc_lseek	= noop_llseek,
  };
  
-diff --git a/net/sunrpc/cache.c b/net/sunrpc/cache.c
-index d242b6f33cbc..f220a3036b6e 100644
---- a/net/sunrpc/cache.c
-+++ b/net/sunrpc/cache.c
-@@ -970,20 +970,18 @@ out:
+diff --git a/samples/kfifo/inttype-example.c b/samples/kfifo/inttype-example.c
+index e4f93317c5d0..c5d16b815e73 100644
+--- a/samples/kfifo/inttype-example.c
++++ b/samples/kfifo/inttype-example.c
+@@ -103,20 +103,18 @@ static int __init testfunc(void)
+ 	return 0;
  }
  
- /*
-- * Not in struct cache_detail: poll and epoll waiters stay queued until
-- * their file is closed, but a channel file in procfs can stay open after
-- * the cache_detail of its dying network namespace has been freed.
-+ * For the rpc_pipefs channel files. Not in struct cache_detail: poll and
-+ * epoll waiters stay queued until their file is closed, which can be after
-+ * the cache_detail is gone. The procfs channel files are polled on the wait
-+ * queue procfs owns for them instead, see proc_poll_notify().
-  */
- static DECLARE_WAIT_QUEUE_HEAD(queue_wait);
- 
--static __poll_t cache_poll(struct file *filp, poll_table *wait,
--			       struct cache_detail *cd)
-+static __poll_t cache_poll(struct file *filp, struct cache_detail *cd)
+-static ssize_t fifo_write(struct file *file, const char __user *buf,
++static ssize_t fifo_write(struct file *file, char *buf,
+ 						size_t count, loff_t *ppos)
  {
- 	__poll_t mask;
- 	struct cache_reader *rp = filp->private_data;
+-	int ret;
+ 	unsigned int copied;
  
--	poll_wait(filp, &queue_wait, wait);
--
- 	/* alway allow write */
- 	mask = EPOLLOUT | EPOLLWRNORM;
+ 	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
  
-@@ -1248,6 +1246,7 @@ static int cache_do_upcall(struct cache_detail *detail, struct cache_head *h)
- 	if (ret != -EAGAIN && detail->cache_notify)
- 		detail->cache_notify(detail, h);
- 	wake_up(&queue_wait);
-+	proc_poll_notify(detail->procfs_channel);
- 	if (ret == -EAGAIN) {
- 		kfree(buf);
- 		kfree(crq);
-@@ -1593,7 +1592,7 @@ static __poll_t cache_poll_procfs(struct file *filp, poll_table *wait)
- {
- 	struct cache_detail *cd = pde_data(file_inode(filp));
+-	ret = kfifo_from_user(&test, buf, count, &copied);
++	copied = kfifo_in(&test, (const int *)buf, count / sizeof(int)) *
++		 sizeof(int);
  
--	return cache_poll(filp, wait, cd);
-+	return cache_poll(filp, cd);
+ 	mutex_unlock(&write_access);
+-	if (ret)
+-		return ret;
+ 
+ 	return copied;
+ }
+@@ -141,7 +139,7 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 
+ static const struct proc_ops fifo_proc_ops = {
+ 	.proc_read	= fifo_read,
+-	.proc_write	= fifo_write,
++	.proc_write_buf	= fifo_write,
+ 	.proc_lseek	= noop_llseek,
+ };
+ 
+diff --git a/samples/kfifo/record-example.c b/samples/kfifo/record-example.c
+index e4d1a2d7983c..dcc749247c64 100644
+--- a/samples/kfifo/record-example.c
++++ b/samples/kfifo/record-example.c
+@@ -117,20 +117,17 @@ static int __init testfunc(void)
+ 	return 0;
  }
  
- static int cache_open_procfs(struct inode *inode, struct file *filp)
-@@ -1690,6 +1689,7 @@ static const struct proc_ops cache_flush_proc_ops = {
- static void remove_cache_proc_entries(struct cache_detail *cd)
+-static ssize_t fifo_write(struct file *file, const char __user *buf,
++static ssize_t fifo_write(struct file *file, char *buf,
+ 						size_t count, loff_t *ppos)
  {
- 	if (cd->procfs) {
-+		cd->procfs_channel = NULL;
- 		proc_remove(cd->procfs);
- 		cd->procfs = NULL;
- 	}
-@@ -1718,6 +1718,7 @@ static int create_cache_proc_entries(struct cache_detail *cd, struct net *net)
- 				     &cache_channel_proc_ops, cd);
- 		if (p == NULL)
- 			goto out_nomem;
-+		cd->procfs_channel = p;
- 	}
- 	if (cd->cache_show) {
- 		p = proc_create_data("content", S_IFREG | 0400, cd->procfs,
-@@ -1806,7 +1807,8 @@ static __poll_t cache_poll_pipefs(struct file *filp, poll_table *wait)
- {
- 	struct cache_detail *cd = RPC_I(file_inode(filp))->private;
+-	int ret;
+ 	unsigned int copied;
  
--	return cache_poll(filp, wait, cd);
-+	poll_wait(filp, &queue_wait, wait);
-+	return cache_poll(filp, cd);
+ 	if (mutex_lock_interruptible(&write_access))
+ 		return -ERESTARTSYS;
+ 
+-	ret = kfifo_from_user(&test, buf, count, &copied);
++	copied = kfifo_in(&test, buf, count);
+ 
+ 	mutex_unlock(&write_access);
+-	if (ret)
+-		return ret;
+ 
+ 	return copied;
  }
+@@ -155,8 +152,11 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
  
- static long cache_ioctl_pipefs(struct file *filp,
+ static const struct proc_ops fifo_proc_ops = {
+ 	.proc_read	= fifo_read,
+-	.proc_write	= fifo_write,
++	.proc_write_buf	= fifo_write,
+ 	.proc_lseek	= noop_llseek,
++	/* kfifo_from_user() cut a record to what its length byte holds */
++	.proc_flags	= PROC_ENTRY_SHORT_WRITES,
++	.proc_write_size = U8_MAX,
+ };
+ 
+ static int __init example_init(void)
 
 -- 
 2.53.0
