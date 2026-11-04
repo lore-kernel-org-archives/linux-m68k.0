@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793819907;
-	b=K7hiImHw9zyNRQnwVXfP/Kbpw6I56W/cy5wGC4bE57y9/z9LLglw7lzZeFaSCOnhZuTk
-	 FpDH+Mo7SYawSxhbEXl4n1n/sukE1lGj5RHOg1sPf4+7hgnyR1InNwlQJh4/B1473xqqI
-	 jJf6cTrNuQ7y6ESbIOJXU4KSEaW3K88YaPLAqyzRC2dXdUYdN9RVlFOCxCa6tVVimrhwB
-	 Xs7RTMmeM/eMJyWO+xknMSmwQnyHgzpdRXOFCoTIHNLsJw+W+NmDZD4a08wuiWYQ8m2cT
-	 tSYZynpdQ536M41qM7YE6IUn309DPzCr58zoeEWLF04KWXkQqLOIhgDWk3Mn42NYvtw==
+	t=1793819922;
+	b=Auumxfx/os5C8DyI0ERWKpvQFHmP9o3tSE8/1vj6ieOCqv9Xn0x+fS/ug0bcv8ph0ccG
+	 U8BZjqvR0f9n4B4QXSbAgcv0mUfi0GFAX1C6kO2T79/8wzvG8+fR0y1nkoUbNWn/I/woJ
+	 j9cfAroRq/IqWc0MZC4S6hDnjQ4or625ru6RiF6Rdt8e0W+mCJO4LjK8kuqQgKIpKX4VN
+	 E615madTWH8fP+0ak/W2uvXA/LCm6RysW10lsr+rs5eieLaeRWwmi91D/Xz7YhoDEHrT9
+	 ENVfJsp55KY5TUEllfFFHngAR8CILPTwx9B4yJI4AcBPALfX7jqzkZSIng0xDmVZ3HA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793819907;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793819922;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=axjAzDMxe/T5Kt/VR9558Sdu9PB/HLdF+q053OKTtnM=;
-	b=jZmD7iJjkG5KXPZLn6rRlsKmOnmAtJh/ibJxA0eYZ+1C8Lsr73mwuL+r2IRnO22Xjitp
-	 g2mN5eIrLZnVRF5yBcFS5Zox246zl5phVDSOBXRi0EzkNootUz99ZrBy3po7ng0a4MtcG
-	 cJlVyyFaP29JdsX6mpslMuvdMkiEFlQ9H7X1Jn/JMoK4Wdf1OwYE7SdqkvzYV1ORMrQGQ
-	 CMWpX2p1C5hHviv0vYb5Hsa0g8Ak3gqdFqPVOMoY5FMkWbr4vvq+oldW/uhsqYZRMBLV1
-	 rqFFlr+expBpac9mkmRAL0zfhNsEh85NpvRuLxP2TAV21iOxUQ+0DihPrnIF3+QqZNQ==
+	bh=Di83VHF6QbwHOpQhBimI2/C2To6SvYozNijzJKB62VA=;
+	b=pgXeaEPivBr9zjmCB5mf5bzxPW4I9HXB7llTppuKFN9dlZIiBRqAiDTJTOoqakQHjxAu
+	 LkfznNHGb7cCCy0nPwr0/wEYzLmtItPkszRx5UPi3EZJLdSf4cno9IoWv6NoSkQDjlUCV
+	 ISCF/vXIgY3fA7M+q221vbRh5xkaJZhq52KGWKzttfy/cqlzZjX7Ax2ptv05o6DFpkD/I
+	 8t6dr8xQNSx+qi87qjpfBMc3oIFrMw9ptTMQ2WHdGsfkgB4zLZTJ3EpcdkppsZ2yB7dhr
+	 vZNyfxK89P+eSBMSn8FVLWjzzwE09wuWsyu9r4t0+Y9i0/pwwjf2gHs2+Ax1YmDgGPA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CtF7Ltpa;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JIdLOXp6;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68648606A84F
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:18:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 68648606A84F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6010606B2FD
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:18:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D6010606B2FD
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CtF7Ltpa
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JIdLOXp6
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id A84D260A7C;
-	Wed,  4 Nov 2026 19:18:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6DB61F00919;
-	Wed,  4 Nov 2026 19:18:14 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 437B460D7A;
+	Wed,  4 Nov 2026 19:18:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEFA51F00A16;
+	Wed,  4 Nov 2026 19:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793819906;
-	bh=axjAzDMxe/T5Kt/VR9558Sdu9PB/HLdF+q053OKTtnM=;
+	s=k20260515; t=1793819921;
+	bh=Di83VHF6QbwHOpQhBimI2/C2To6SvYozNijzJKB62VA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=CtF7LtpaCnKrvS5VracHtmez/lTDVmZLEAJMPsf5RyRtHK8331ZbVhu/+wfqQSNNp
-	 k5kqnIbPjR6sVpgI8dl+aRQlbCOs2pnczhaDMKEZx/ZWxJhKcA7brLV8fiEaMbiuh9
-	 MFwalEMmSkSmMudfVxnNahrVfbIp17CK1joRPuayEeMp2faKCSbZvgOaORRjZAcf99
-	 D+S/7ltnAyBBNuf+VXhjPvzz/9hi+4KRi6bMiJuG/7hKYOJ5c3GtlY1t4+Db/rkvuL
-	 jH/DdCnBKpMBBqg0/ET26Tl25sQsMCrXwsOIkyA5elhHUZdHUYVdfAatvui3m3bHkd
-	 QSod2kP355CYg==
+	b=JIdLOXp6sxEmZBJpMlxDZmERDwf9C8sLM/z2dbJBoBY9UBXkGBGAj7Yxhgr3YbwIo
+	 WLzNZhjCHsHdhaQxnTFFO0VEGKxMv1vINJffnyQzpOIw9IevG2oqGRabpoxY4U5ohN
+	 dsW1/Ep2BQuneanTV1J2VPfld0/EzmI9Txpbh/m9xuzYl3I8AGELsVFoKVbyxoHr4k
+	 3c7remBwAQpRVBw2eStXkccOoVSUONc3WQN6TCMP9ZphCN52UWu0ZYRKWjmfYAQkhn
+	 K0VZsnobCWkJjfjb7T3ZWzf5xxANP/HeKYAhnhy6yvKDBY5FqItsSBFDLO5ybI5gH0
+	 NwA1fy8O+LCSQ==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 09/51] profiling: report it when /proc/profile can't be created
-Date: Wed,  4 Nov 2026 20:18:12 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-9-021c84d852e0@kernel.org>
+Subject: [PATCH RESEND v2 10/51] zorro: size the proc files like what they serve
+Date: Wed,  4 Nov 2026 20:18:26 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,45 +125,33 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1225; i=brauner@kernel.org; h=from:subject:message-id; bh=tYIXM5EjsYRFpz3d9CdZ23LhMvzI2JA5U8qSrxldqzY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9brwqovU2YO3sJayOU6SjJt6WZHyobvyDXUfg5ueIY sXw4vmmHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABPh/8rIcHlz85mzfw/yeois tZ+X+nK/Y0nbTtuVF6duv2wgyFZ5PYmR4ROf8bk1y/9m+Rgw5Xqu+ydQsSxzObvU5rn/LzCHben y4gIA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=796; i=brauner@kernel.org; h=from:subject:message-id; bh=l/jVDuzMOjj8ie0SJoZ9zbu/qnGtbORxwaULd7yJNic=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bryu4qPpOT1kc4isZaDhv1/bXwk9vbD2UmCm1l1v/ 29zJLs2dpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEyk6jwjw6sm06P+wcoHVfTf +okVXHjMEBzWYri1p826+M+MhiW+0owMC9vz1pp/V1r0kenzR652vZM5y5jOqWdbe18R57A5vkq ZEwA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-create_proc_profile() returns 0 whether proc_create() worked or not, so
-a write to /sys/kernel/profiling that turned profiling on but didn't
-get the file reports success and there is no file to read the profile
-from. Return -ENOMEM like the other failures of that write do.
+The files under /proc/bus/zorro hand out a struct ConfigDev and seek
+within that, but their size says sizeof(struct zorro_dev). Say
+sizeof(struct ConfigDev).
 
-Fixes: 22b8ce94708f ("profiling: dynamically enable readprofile at runtime")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- kernel/profile.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/zorro/proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/profile.c b/kernel/profile.c
-index e7defa90a34c..820d5ec909d4 100644
---- a/kernel/profile.c
-+++ b/kernel/profile.c
-@@ -216,15 +216,15 @@ static const struct proc_ops profile_proc_ops = {
- int __ref create_proc_profile(void)
- {
- 	struct proc_dir_entry *entry;
--	int err = 0;
- 
- 	if (!prof_on)
- 		return 0;
- 	entry = proc_create("profile", S_IWUSR | S_IRUGO,
- 			    NULL, &profile_proc_ops);
--	if (entry)
--		proc_set_size(entry, (1 + prof_len) * sizeof(atomic_t));
--	return err;
-+	if (!entry)
-+		return -ENOMEM;
-+	proc_set_size(entry, (1 + prof_len) * sizeof(atomic_t));
-+	return 0;
+diff --git a/drivers/zorro/proc.c b/drivers/zorro/proc.c
+index f916bf60b312..4c6f8f1c4d71 100644
+--- a/drivers/zorro/proc.c
++++ b/drivers/zorro/proc.c
+@@ -108,7 +108,7 @@ static int __init zorro_proc_attach_device(unsigned int slot)
+ 				 &zorro_autocon[slot]);
+ 	if (!entry)
+ 		return -ENOMEM;
+-	proc_set_size(entry, sizeof(struct zorro_dev));
++	proc_set_size(entry, sizeof(struct ConfigDev));
+ 	return 0;
  }
- subsys_initcall(create_proc_profile);
- #endif /* CONFIG_PROC_FS */
+ 
 
 -- 
 2.53.0
