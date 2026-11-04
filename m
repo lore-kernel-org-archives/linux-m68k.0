@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793822163;
-	b=5neb1ckTVhI9YrFbNzBEFvyVdfhXjEyq6o3ThttvyKQLOBsXbtzAO2IRbtWKC3CDIsLa
-	 O1g9x5okexzFr8YHTDvqipqHpahmIblU3+wuUk9xXoWfLTID8ypKNhTj4ojEXupZ8Cpse
-	 bi22dvKlw2+KjpyDBVLAXopsAGr72weh9/vCKqSLwkpAc5jNOTWi/PJ9EJMBmGuurRG7X
-	 lgGiw0TEPIfDncQIb1XGDogG4E6P9RuJAOCR88dPIIH94uHqFIyH6DRof3p+ZXyWPyhXG
-	 mlfvJt2wT7yPIR6QuuAkE6AJjsvWqPH4mPqnZl+x4OIEJPm5ambSoAEeF7eZ8u0enSA==
+	t=1793822178;
+	b=zpi1TRSfWS8QQO48FYDZZ7BEpEkzP8wVKvUBxhOCC1nbTzH07RHUSyBilVQLKfhd7Dbe
+	 alNTSkJQGIo2iYyISPUlZmZAfoOeqDduyMnLEptpaW+JM9D1TNV/Mw3pkOcBP11EjNCq4
+	 4mxZSBUYa1WeuZM6x51zWSRA/r1IJcaOcu1vhvu5vRwNF1lxb9XoCDHd19cpOHLETO0x8
+	 BKi47/GkNCrGDA6KjTmQ4I4G7i2mtCzGjKsmB6Kkdr2qxgLHlPuW+R4MDVmSQyAC30EQE
+	 S2CCnZ5zUXqMcaYRfDdO8MFFZMAPsh88j1B+X5a+moItBm/BRkE8b/Q1k80NqtHowZg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793822163;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793822178;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=bCEpJCXGgk21zgMyVrJnsb9d3IAiyaFEBDru2XgYb4M=;
-	b=GN76wwsVRAsBu3qt50ysdhWOgwPRD8lZarJWZ8K1WX9NaN7HxZg6xU98P6ZJewARJ3/A
-	 C4GmApN+s8OZRT7wnXwovOMarBp81vaxTMwCBfJbxVYbcWgaBHlvX7UNVn+wWSbhtwZ5B
-	 ZMp7tMdpeq5TvlAh9LglmsLDwfAfFTgES+IP4OrlcnYjucgkccYgl0QwnKafuDeUDw93y
-	 h7TQsYZPDch644kKWXDJv/zg3fQ9MGDRXyn4dA7fJ7gtO2/B0QIphYbRcH/QTY08b9LFn
-	 gi0jPhVkgLkUmQTzFKAbGkD6jboJTRvTwoYj+dDzp9scsGrqTxAUUkhMQtFJJ4Wjcrw==
+	bh=dVjHuUMxxd8FqQa8K43Wpa6+M00cK9gADu+rBdGhG5Q=;
+	b=05kf86ZTyZzS8cO5V6hbgTANBjOArrSzTCXiL8dKldMWH6eZ57Liu9RWfOzBQaEyKoY7
+	 sLnEDzoa2HiH+J3T/gA+tIxti3Of7bsU0u0sAlOPS62dEDxpG6BzYwoWGa9WAkfQv131k
+	 QILcHMW8rdx5VRAdKgd2RkUONK5VcE+TG3+kCiLpkNaus1yqSwbWErvkpTB1MCStwo6wI
+	 CGEnmQ0U0ul+Fp9Ww/VXRj9iBDAuQk91Vnz3uS45nsO49cycMhOw6657JR239LvNjoOa6
+	 7ilxkkJUzMj7QozLzrRyX7Yfd4LhGfmjIyn58lu7J7oPtDTJst/iN38BKrgfYwOs9kw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=n6uNIEN8;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WciFxQke;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA486078701
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:56:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2AA486078701
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4DD6078162
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:56:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2D4DD6078162
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=n6uNIEN8
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WciFxQke
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 1015F40196;
-	Wed,  4 Nov 2026 19:56:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB9F61F00919;
-	Wed,  4 Nov 2026 19:55:50 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id EB06643975;
+	Wed,  4 Nov 2026 19:56:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 842BD1F000C1;
+	Wed,  4 Nov 2026 19:56:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793822162;
-	bh=bCEpJCXGgk21zgMyVrJnsb9d3IAiyaFEBDru2XgYb4M=;
+	s=k20260515; t=1793822177;
+	bh=dVjHuUMxxd8FqQa8K43Wpa6+M00cK9gADu+rBdGhG5Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=n6uNIEN8UtFFIaiDpvbvTTBdWrfLopeDookEM+XOfGJBmQaBLBud7PW4ZywRa4UqY
-	 sj9lKf00u87t0rYyILLdTAzUShhG08ZdGf/Lzb6uT5y+NXjXXOrpjMTCCufRj/+vUf
-	 qn2Hm5dCkKTQ/5xyNTYylulY92AYSZ+tzxPbaFXkvFnu/q327E+8W9jss69XVk/qWl
-	 RFW6EwVAfNKvgEJ3eedNnGhh4txPJEwh75Q839TLwgEzuVUSv49ucfVtBinxI3hk3b
-	 fb0M7feqk7mkAAGLRXxYscDizmCBmFG4sFYYV3OBo/qiimcnQoXdcT6kySNh1lRNIF
-	 bhwX+vUqpJ/hg==
+	b=WciFxQke7WU+TqGOiLHJFFvz51sxAv/rXDuJ65d7uc/uzhqt05C4NlVN6GEsTUCUu
+	 31fkRA/xip2bhOq8TqDrQhDe5z0BPJYsvkSt1ZtjXi0UWf4TITY4A9UV1Jj74iUycG
+	 lDsCZ5Dv6DN9dQs5WHRrbLlWLWWmKs07ZIwnLQxTmPhOa7InPJfbe0D8IVp3OjClGc
+	 ZmGH+yeDVq+4v+cg8g4xIPmzrh+E3sC00xuiXzIgXt8btDsGhRR0CoJ8fDZPxoEm+E
+	 OBg77f3DkM4ZaSWy1R28T5gZm41vTK6+WYOPbNiJOEt0Tph54u6+2Ht87F0UbPAKoU
+	 ENh1KteE9DOew==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 25/30] alloc_tag: let procfs own the seq_file of /proc/allocinfo
-Date: Wed,  4 Nov 2026 20:55:48 +0100
-Message-ID: <20261104-work-procfs-fs-v2-25-319e0f9a8aae@kernel.org>
+Subject: [PATCH RESEND v2 26/30] alloc_tag: let procfs copy the ioctl arguments of /proc/allocinfo
+Date: Wed,  4 Nov 2026 20:56:03 +0100
+Message-ID: <20261104-work-procfs-fs-v2-26-319e0f9a8aae@kernel.org>
 In-Reply-To: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,80 +125,147 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2428; i=brauner@kernel.org; h=from:subject:message-id; bh=w2e219TOPzYhqaNEYdOja/Iy2kqKR7KfDC/oRUWRjFA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97vFcddfCmyOAVbf9SsDD2QKqjkaTBOc97Z200n3GL K1V/52WdJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExEm5mR4fL8sPeSEVKLCxs1 t6daZRx/N59v9c2uBvbciVVGFpzdXxj+itqIaCekhc3YHW/sfpNlJ0++MIP1I9HZqYuF7+sHn5n NCgA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5002; i=brauner@kernel.org; h=from:subject:message-id; bh=qvFStIPYOo+XQCz7NGrfedfPC5AiqcBr63oE+4d+7KE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97vE65vl9w02l+nm/3k8td487Mlf95K8LO9Yw6x35z bF1Qqund0cpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBE6roZ/sfzLc1cc19g8UpG p9ScMA2ZG2mxxusMN/5mfHVJ4JFJ0UmGvxIPbppe0fTgXiEh//pB3cedQhve/fx4peeqfYB+jj/ rQzYA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Declare the seq_operations and the size of the private state and let
-procfs open and free the seq_file. ->proc_open() and ->proc_release()
-only set up and destroy the ioctl lock now.
+Implement ->proc_ioctl_buf() so procfs copies the arguments in before
+it pins the entry and back out after unpinning it. The commands encode
+their arguments. procfs converts the pointers of 32-bit tasks, so
+allocinfo_compat_ioctl() goes away.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- mm/alloc_tag.c | 28 +++++++++++-----------------
- 1 file changed, 11 insertions(+), 17 deletions(-)
+ mm/alloc_tag.c | 47 +++++++++++++++++------------------------------
+ 1 file changed, 17 insertions(+), 30 deletions(-)
 
 diff --git a/mm/alloc_tag.c b/mm/alloc_tag.c
-index 7d7ad6704953..697e44468ebc 100644
+index 697e44468ebc..b17457c8fb02 100644
 --- a/mm/alloc_tag.c
 +++ b/mm/alloc_tag.c
-@@ -152,27 +152,21 @@ static const struct seq_operations allocinfo_seq_op = {
- };
- 
- /*
-- * Initializes seq_file operations and allocates private state when opening
-- * the /proc/allocinfo procfs entry.
-+ * Initializes the private state when opening the /proc/allocinfo procfs
-+ * entry. procfs opened the seq_file and allocated the state.
+@@ -6,7 +6,6 @@
+ #include <linux/kallsyms.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+-#include <linux/compat.h>
+ #include <linux/page_ext.h>
+ #include <linux/pgalloc_tag.h>
+ #include <linux/proc_fs.h>
+@@ -236,16 +235,14 @@ static void allocinfo_to_params(struct codetag *ct,
+  * Retrieves the unique content ID representing the current allocation tag module
+  * layout, allowing userspace to detect if modules were loaded / unloaded.
   */
- static int allocinfo_open(struct inode *inode, struct file *file)
+-static int allocinfo_ioctl_get_content_id(struct seq_file *m, void __user *arg)
++static int allocinfo_ioctl_get_content_id(struct seq_file *m, void *arg)
  {
--	int ret;
+ 	struct allocinfo_content_id params;
+ 
+ 	codetag_lock_module_list(alloc_tag_cttype);
+ 	params.id = codetag_get_content_id(alloc_tag_cttype);
+ 	codetag_unlock_module_list(alloc_tag_cttype);
+-	if (copy_to_user(arg, &params, sizeof(params)))
+-		return -EFAULT;
 -
--	ret = seq_open_private(file, &allocinfo_seq_op,
--			       sizeof(struct allocinfo_private));
--	if (!ret) {
--		struct seq_file *m = file->private_data;
--		struct allocinfo_private *priv = m->private;
-+	struct seq_file *m = file->private_data;
-+	struct allocinfo_private *priv = m->private;
- 
--		mutex_init(&priv->ioctl_lock);
--	}
--	return ret;
-+	mutex_init(&priv->ioctl_lock);
-+	return 0;
++	memcpy(arg, &params, sizeof(params));
+ 	return 0;
  }
  
- /*
-- * Cleans up the seq_file state and frees up the private state allocated in
-- * allocinfo_open() when closing the /proc/allocinfo file descriptor.
-+ * Undoes allocinfo_open() when closing the /proc/allocinfo file descriptor.
-+ * procfs frees the seq_file and the private state.
+@@ -310,7 +307,7 @@ static bool matches_filter(struct codetag *ct, struct allocinfo_filter *filter,
+  * Seeks the ioctl iterator to the specified 0-indexed tag position, reads its
+  * profiling data and returns it to userspace.
   */
- static int allocinfo_release(struct inode *inode, struct file *file)
+-static int allocinfo_ioctl_get_at(struct seq_file *m, void __user *arg)
++static int allocinfo_ioctl_get_at(struct seq_file *m, void *arg)
  {
-@@ -180,7 +174,7 @@ static int allocinfo_release(struct inode *inode, struct file *file)
- 	struct allocinfo_private *priv = m->private;
+ 	struct allocinfo_private *priv;
+ 	struct codetag *ct;
+@@ -319,8 +316,7 @@ static int allocinfo_ioctl_get_at(struct seq_file *m, void __user *arg)
+ 	struct alloc_tag_counters counters;
+ 	bool fetched_counters;
  
- 	mutex_destroy(&priv->ioctl_lock);
--	return seq_release_private(inode, file);
-+	return 0;
+-	if (copy_from_user(&params, arg, sizeof(params)))
+-		return -EFAULT;
++	memcpy(&params, arg, sizeof(params));
+ 
+ 	if (params.filter.mask & ~ALLOCINFO_FILTER_MASKS)
+ 		return -EINVAL;
+@@ -375,9 +371,7 @@ static int allocinfo_ioctl_get_at(struct seq_file *m, void __user *arg)
+ 	if (!ct)
+ 		return -ENOENT;
+ 
+-	if (copy_to_user(arg, &params, sizeof(params)))
+-		return -EFAULT;
+-
++	memcpy(arg, &params, sizeof(params));
+ 	return 0;
  }
  
- /*
-@@ -475,9 +469,9 @@ static long allocinfo_compat_ioctl(struct file *file, unsigned int cmd,
- #endif
+@@ -385,7 +379,7 @@ static int allocinfo_ioctl_get_at(struct seq_file *m, void __user *arg)
+  * Advances the ioctl iterator to the next allocation tag in the sequence and
+  * returns its profiling data to userspace.
+  */
+-static int allocinfo_ioctl_get_next(struct seq_file *m, void __user *arg)
++static int allocinfo_ioctl_get_next(struct seq_file *m, void *arg)
+ {
+ 	struct allocinfo_private *priv;
+ 	struct codetag *ct;
+@@ -425,10 +419,8 @@ static int allocinfo_ioctl_get_next(struct seq_file *m, void __user *arg)
+ 	codetag_unlock_module_list(alloc_tag_cttype);
+ 	mutex_unlock(&priv->ioctl_lock);
+ 
+-	if (ret == 0) {
+-		if (copy_to_user(arg, &params, sizeof(params)))
+-			return -EFAULT;
+-	}
++	if (ret == 0)
++		memcpy(arg, &params, sizeof(params));
+ 	return ret;
+ }
+ 
+@@ -436,10 +428,8 @@ static int allocinfo_ioctl_get_next(struct seq_file *m, void __user *arg)
+  * Entry point ioctl function for /proc/allocinfo routing requests to fetch the
+  * layout content ID, seek to a specific tag, or read sequential tags.
+  */
+-static long allocinfo_ioctl(struct file *file, unsigned int cmd,
+-			    unsigned long __arg)
++static long allocinfo_ioctl(struct file *file, unsigned int cmd, void *arg)
+ {
+-	void __user *arg = (void __user *)__arg;
+ 	int ret;
+ 
+ 	switch (cmd) {
+@@ -460,23 +450,20 @@ static long allocinfo_ioctl(struct file *file, unsigned int cmd,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_COMPAT
+-static long allocinfo_compat_ioctl(struct file *file, unsigned int cmd,
+-				   unsigned long arg)
+-{
+-	return allocinfo_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
+-}
+-#endif
++static const struct proc_ioctl_arg allocinfo_ioctl_args[] = {
++	PROC_IOCTL_IOC(ALLOCINFO_IOC_CONTENT_ID),
++	PROC_IOCTL_IOC(ALLOCINFO_IOC_GET_AT),
++	PROC_IOCTL_IOC(ALLOCINFO_IOC_GET_NEXT),
++};
  
  static const struct proc_ops allocinfo_proc_ops = {
-+	.proc_seq_ops		= &allocinfo_seq_op,
-+	.proc_state_size	= sizeof(struct allocinfo_private),
+ 	.proc_seq_ops		= &allocinfo_seq_op,
+ 	.proc_state_size	= sizeof(struct allocinfo_private),
  	.proc_open		= allocinfo_open,
--	.proc_read_iter		= seq_read_iter,
--	.proc_lseek		= seq_lseek,
  	.proc_release		= allocinfo_release,
- 	.proc_ioctl		= allocinfo_ioctl,
- #ifdef CONFIG_COMPAT
+-	.proc_ioctl		= allocinfo_ioctl,
+-#ifdef CONFIG_COMPAT
+-	.proc_compat_ioctl	= allocinfo_compat_ioctl,
+-#endif
++	.proc_ioctl_buf		= allocinfo_ioctl,
++	.proc_ioctl_args	= allocinfo_ioctl_args,
++	.proc_nr_ioctl_args	= ARRAY_SIZE(allocinfo_ioctl_args),
+ };
+ 
+ size_t alloc_tag_top_users(struct codetag_bytes *tags, size_t count, bool can_sleep)
 
 -- 
 2.53.0
