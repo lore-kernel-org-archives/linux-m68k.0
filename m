@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793814727;
-	b=WAr7Z+Iy+La1MNZdRkZKyRwpJ2oBqXVEd16PAu9dYlCFQHey78yEZcgeHRz9Z23PGWik
-	 uP8o6iBC0l0X+pMXw7yL6fdCBMj4A+aCbQddxaJqT2d4KC3gAwCQ1UymQbQjuPIMDyU78
-	 BNehWFXRM0gkJAkRZP8jLLkiRjwVvs6hIELFTFeb5uGN6mNEcj47JzLttrd70yFuMvHpL
-	 v3Oc8vTDyhj/sdeo5Hqja3vjB5V/bdPQAaOyIU+oW3M7+75fy6QnB2IUnlnI6cDzpbQ41
-	 dr9WCnciZhJrycHvNWQauxcnuMLh4BYI88BGatNHupxQ7gbrH+sqIc+TJqr4quzkqrA==
+	t=1793814750;
+	b=5aS+kwvMSAgDoCnOJRnBmrmETTAdJ88g7BV5p2i6tT9ayKNu9BN1JG+ilDm7J4soIjjJ
+	 a5l1+MxzgLXqwtkp8gdjQapnVCer0sP0aTgMTow6amCffvd3/tJt8TZAKxpCU9558vl4J
+	 /3bAEmhSF0zvdTW+SueFgi4HS9aVkBkvX4SOObG6jjuChVb9oiJk6slfSia8EE8WQRETo
+	 GbE6u2P2XTvco2xhlemogj6gQHe7lS5htrmeH0LSFLd9vOBh2g7l+uxLeGian6Vzme2mx
+	 9IaZYTp4i9YnvdHq8r7F73+EYcSD9aKKLBtxE4uZL9MGPnAH0TdW/7Yy84tvNP+VUCQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793814727;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793814750;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=S8IXtzTL1USde6aV/lVKsFPWulIUW0ciUvC5Tm4lMm4=;
-	b=JJuLmiLVB8hFSPVSit2FTwQHMHGkr2C7wRdbfbaSdmtfAmRcS6jvORXOtENSXUcYJr1Y
-	 5SdMFa8DNgiQHLx/fkQ4b8lYDb8rPZt09HbkhPqyPwNuRb2AU7yr0MbUnLxAcx/81OPbU
-	 e8TfgHe25UCU/EgweOeA2C5Ih3N1DchQTtqUMRIU9VbKzSIj0Rz5YoFycMe2ZWf3YVfIZ
-	 CrdfqSLJljRwPPEuWzxCnSVrDjOX5CZeIIKmMyCWIkImB/tRidquf3j5gvleUdUOtSCDt
-	 mcMgW6Zzkbro/KkZWouyDthXVKXN99K8eOBh8XpsEmBnaxD5VpIx32w04qHdY/XF48A==
+	bh=yb3WLcVokXU6BuV8DQIS3cnoxrtkXR+HXTNSt4lhnr4=;
+	b=roorwgozZvLH24yN5rqkijiw2kNx/y5yHZoj5wQ189+46Qut4moCdrVp37TA/X5v0N+P
+	 oDzUxfWm0G/nyOiF/9PkG0ms9LSMBgthMCHXaPlcW/fIqHnyIqC0kq9QnMV6uYJtL9pwH
+	 k1ZBFf875s0hPmxsccvE0cdDcSuZ9OZzBRMVpGSJfYS93oQIxtD3G68VVR069zeKMCeKr
+	 xh5SZoe0yyQ4ei7J0Vss/pAu8wj2+spiupZzLCJOUfVNXWlVUygLWO0pCvziICljCgixF
+	 Q1vpBuJ2aSXcMyE6teLCCxgRhMkdh6hAUbkQ+dcO61tIVlMjE2MkRLK0vOidfFl0Wyg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Mf50A7c4;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mYzQuqq1;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9886070B04
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:52:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7A9886070B04
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBB0606D815
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:52:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CEBB0606D815
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Mf50A7c4
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mYzQuqq1
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 326754075E;
+	by sea.source.kernel.org (Postfix) with ESMTP id 7BAB8434A7;
+	Wed,  4 Nov 2026 17:52:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5214C1F00919;
 	Wed,  4 Nov 2026 17:52:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A12B1F00A15;
-	Wed,  4 Nov 2026 17:51:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793814727;
-	bh=S8IXtzTL1USde6aV/lVKsFPWulIUW0ciUvC5Tm4lMm4=;
+	s=k20260515; t=1793814749;
+	bh=yb3WLcVokXU6BuV8DQIS3cnoxrtkXR+HXTNSt4lhnr4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Mf50A7c4fpaWARlrfltAJNXBhTSZuGrfKtFtGImZQJqXW3N9v7Y1OQFxFmkFkK5Ct
-	 bapsswn/j1rtyZQs4yPKDUvsPIf5PDmdksaztU62PPad3Jkbs8dRzSiZVJ+Ai4/9A7
-	 TOu/Cu4dvVAHo5CKEYiXGvTJnnQShxT00W42Aojf1ls84KBw0r2BVE/YpDekWmtN8L
-	 TKNaSWXmrlOTNpBzznkpl/BqVQ3rVQSmt0pyyR+1Vz/bjCdzyITaMgfaSUm99mamzI
-	 je3hQ99LqYBMj8gFmNEHVbqfHXEiVCfrmKNAjKbdNUHX9zYW2a8uoSL2qV2eT6wKro
-	 prddoqpdnGVCA==
+	b=mYzQuqq14/wTRRzzUwsG17Ab+8tgoUHpySPnl84Mr25NNzcLhEp7Tq87twOltFKtA
+	 dLD4dH0S9ylQ5twpfaifjPBB9F9nLw9N+znijKLYLcOnWkObGODYTAZeChhNq2O2Ca
+	 IQI8NCRh7J2BZ5sI7mVRJjsoRWd+WGQFkSSMno0hv8VCeplcjuV9ER78Y79IneS3ww
+	 A/5asZFiMwgLRWg3CnX7bPRgzhBlLJJ299YG81hHCGwYVIYI6Vtka99WENBzIlbtj9
+	 RDwPxtwzVpVgN2qYy6WEMTlYIhf+ZUrM+RRJ4JaWwLGuxFHxYcI/kP7k045W27PJnL
+	 9gvSnUTnaD3zQ==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -110,9 +110,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH v2 26/51] scsi: core: NUL-terminate what is written to the host proc files
-Date: Wed,  4 Nov 2026 18:47:12 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-26-bbf7d5546809@kernel.org>
+Subject: [PATCH v2 27/51] um: NUL-terminate what is written to /proc/exitcode
+Date: Wed,  4 Nov 2026 18:47:13 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-27-bbf7d5546809@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -126,35 +126,38 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1011; i=brauner@kernel.org; h=from:subject:message-id; bh=jBwXVCCRpDjmnAajxR/zAvEvmAtZKAE0jCj6+Cnx3v0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9zrv3a4XNr8e6d1tDr0b7KBzIWafbojAr+fDFhXfE9 vg02md3dpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzk4g5Ghh8f/uzl4px+y8Ir 7Jr5ATWGvLtVV5S3nzBgvC4T9mgf8xtGhl0p83Un1Eie5LavWZ4U5lee5LyI7VCWQtVx3w8B4jw qjAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1042; i=brauner@kernel.org; h=from:subject:message-id; bh=wRElBRQ5ywf1BhvCA77KtICLks8yyr6GFoKnZLCCyMo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9znsQFfC+I/C0Ra1Qv94XtoNfmEzj9zwr/ak74frKN 6dmt7y52lHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRvl6Gf8ru0zvmyVXlJJn5 RX64VRT8c5vVqQOhHe+XJk+QCA1678rI0PD9gNXt6xMOWujrbTe9wyTBv3D/B9HmPSse+sbVn4l X4wAA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-proc_scsi_host_write() copies what is written into a page and hands it
-to ->write_info() without terminating it. ppa and imm parse it with
-strncmp() and simple_strtoul(), which read on past what was written into
-whatever the page held before. Terminate the copy. A write is at most
-PROC_BLOCK_SIZE bytes, so the page always has room for that.
+exitcode_proc_write() copies up to sizeof(buf) bytes of the write into
+buf and hands it to simple_strtol() without terminating it. So
+"echo -n 5" parses whatever the stack held after the '5', and a write of
+seven bytes or more reads past the end of buf. Terminate the copy.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/scsi/scsi_proc.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/um/kernel/exitcode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_proc.c b/drivers/scsi/scsi_proc.c
-index fdc355d783da..dbd03360b5a4 100644
---- a/drivers/scsi/scsi_proc.c
-+++ b/drivers/scsi/scsi_proc.c
-@@ -80,6 +80,7 @@ static ssize_t proc_scsi_host_write(struct file *file, const char __user *buf,
- 		ret = -EFAULT;
- 		if (copy_from_user(page, buf, count))
- 			goto out;
-+		page[count] = '\0';
- 		ret = shost->hostt->write_info(shost, page, count);
- 	}
- out:
+diff --git a/arch/um/kernel/exitcode.c b/arch/um/kernel/exitcode.c
+index 43edc2aa57e4..0230354f4812 100644
+--- a/arch/um/kernel/exitcode.c
++++ b/arch/um/kernel/exitcode.c
+@@ -43,9 +43,10 @@ static ssize_t exitcode_proc_write(struct file *file,
+ 	size_t size;
+ 	int tmp;
+ 
+-	size = min(count, sizeof(buf));
++	size = min(count, sizeof(buf) - 1);
+ 	if (copy_from_user(buf, buffer, size))
+ 		return -EFAULT;
++	buf[size] = '\0';
+ 
+ 	tmp = simple_strtol(buf, &end, 0);
+ 	if ((*end != '\0') && !isspace(*end))
 
 -- 
 2.53.0
