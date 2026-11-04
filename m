@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793784020;
-	b=Etaq7IIq8IgmjYJrEDvEZlEyXSjCYFW/Nikl4DR+PrrVmVBn1jX6Os8maFKcM72haOq0
-	 06TRlNARK/p2slzNwcxTi1rfS66GVFS9EtMi1ehZgLnaqEiVQ9KjkogSqJChjDiIGXJZh
-	 LIk47IPEV2K9XTawTt0IoJ/K48NH9mEpjCOVuQiyf4PNSQa+e0BXTxOfwhDa1ZrE1Ae5s
-	 sLxnG3rd5Ux9/AIGjujzML/G0e0QNOoqeIgBZK6vaTWjsMyAED4MKIJds/A2qjfOl+674
-	 XQaST/wz4vBdiGg/ybwRyFifGnWb2TfbZLptM+L7rJWZt//lpsx85pLAnF5eKpAmjVQ==
+	t=1793784049;
+	b=0PNeotfv9kIvQYV2k4Jj5qk5DX+Or3p3s1JUCAmlSiYENGq+84u8w+q/7LpWBUXNgnEd
+	 1ow9v9fe3RTJWftfx098J5QHLUREqHv0NTMYfMZf0oOqAQT9xHuEErPRrdGNmRUltfaIc
+	 zBu4HT4oiSFpd1uRh9vPk1fCIMUt/qqMa/9x3wTfwTsqeZiYzSRKlm2s1LcyaY7k7yyrB
+	 /GmWelUK9fRd78b1KKQ9SEnISGuD0At17+MUggaQEHGEn4Wftlh7Lu0hl8TIVTq9IPIyO
+	 B4IwJaZtxRV/sIJhK1xJcA5iYdfXgCx0ds6u0NdZ4s67Bywfp4Y9FrgB8RB+YmUoXwg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793784020;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793784049;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
 	 Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=BqLsI51xXE9XvqQwrewS8kVZYOVybuvhFSYA9nKiQ5w=;
-	b=VX8UB0WlpJBBCW82fMzJx2yUL5L8q8JQE4O/TUqiLLW0YiNpk24Et8bI42QE8WxTcpcB
-	 HIeXLJaN/wZKl03wmLdWygO6OpEG+sCJCOj672mKsLIb6vLt93Yfj0zxyScF+tHadRnLG
-	 Rs0pMZIOtmds+SBrt2Nnw+SE6XM95gwD259vvrv0tlAMRwijhbPi4M/cvDxo+e64jergf
-	 Id1DiBxhVr1LNyG9Lmmk+VX3c4rzKCdVRwikiBPh1EV4Erpe2WLxbFtS/rBFs0hutVKLr
-	 +/dgAkdFsOzzOb4SI8TMY0laHZGHKRNyZoJ0iXZvz7xJhUwrTT82fTfZPAckclR6jAQ==
+	bh=O/cNspokMh0UNXOA6wOkvv54jlnPVAhKOKNo3zScL80=;
+	b=GmvLNLWNMWJE2WJQPEs3QzeOv9joCYYEgDDVoflBDjbopxDxY8GpD3KTJmVN7VL6YBQw
+	 RQNN/8xKSwQsM6mgOtR04MEfBVBeJawDXeIPDMNIb9xYqnzvEyvVstxZEwIsd9otBUWTZ
+	 ULk3B0LPCw0ti9+d12XPOWtDSkUcpDiT4MIbS0KHNMvol+O0EAqD+j8FQ7wWr+wPYvXDJ
+	 6WRUKbh3ZFswio+2SRJ3wbFucUgUf/uIBK+zsYHZkTPMgwhKwMoxZdSxdJHz6LHW1fzt2
+	 JH1ZQ0Tnb6gmnvmd7nQdx92TtED3vR5vyCcztuIXN+/cA+3PzT3YDuGyFJo7SxzhaVw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RI03ExhV;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BcEaKSaA;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F47606A32E
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 09:20:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 54F47606A32E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005BA606A31B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 09:20:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 005BA606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RI03ExhV
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BcEaKSaA
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id BEECD4022E;
-	Wed,  4 Nov 2026 09:20:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B14201F000C1;
-	Wed,  4 Nov 2026 09:20:09 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id B40B54344C;
+	Wed,  4 Nov 2026 09:20:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 884BF1F000C1;
+	Wed,  4 Nov 2026 09:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793784019;
-	bh=BqLsI51xXE9XvqQwrewS8kVZYOVybuvhFSYA9nKiQ5w=;
+	s=k20260515; t=1793784048;
+	bh=O/cNspokMh0UNXOA6wOkvv54jlnPVAhKOKNo3zScL80=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=RI03ExhVHW+vXW50GI/z1t5fOv/JldWAfo3PTbpnjtH9ZHo58Lc2AcPxXJ5PtbXAX
-	 8g4KSTO5fOZQCtpyjjL/bJvrwiezCM9YEtZIA/HFUZUjXdYaQqcpF0TeHFBMUlhQKU
-	 cwV4vnKJXipMsVWc69bizj8nAauOCKTGcIiZij9G7eWxZ3rmj4e0CBFYHzcKtXnQSl
-	 AJB/iwP2dB6oj6qGqoWsBFGeMkJxlpj4mX3YlYJ3ZSSJ9f+IEjQkqzGNq+iWXf8V9P
-	 ITxx8RHhN/lsRkk2i0dJRQVWI5FBwtmizQ/MBQbxSu+48ni+gfhGCNjOwQDZHYMP7B
-	 rmF7LwmTvp1Aw==
-Date: Wed, 4 Nov 2026 10:20:07 +0100
+	b=BcEaKSaAGlv24CwtAidx4vgcs6qvpVaJft+GsrdUwgsUzcXrxh3uKvNOUoNaojM0u
+	 zeaAufJdghxwNsRVYbDAL/xLeKpNsJ3Qayq8R/yEjD/hXG6tybWAoeeY/Tcg+J2REY
+	 2VHx7FHMLCTTzYzu20RNN6+W/eGKH3XQSxBPLu21a3FQK4L4xV10mVduwGQuGwRq6Y
+	 1A0ZHeMOGLNd3RiETXNw1XPlv0+sn3aHbmYt6VyuIs0KUjdL9KaF/E0tjXUuJZvvKv
+	 OzKIqB04C/jh70SwJGTPrT4CcqF9fgN0yPVMCzRgZsEpdaIpp/2cLp+CNRnZLAYstK
+	 OnLeMUpNmqPkw==
+Date: Wed, 4 Nov 2026 10:20:35 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: sashiko-reviews@lists.linux.dev
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
@@ -69,12 +69,12 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Anna Schumaker <anna@kernel.org>, yukuai@fygo.io, Heiko Carstens <hca@linux.ibm.com>, 
 	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
 	Christian Borntraeger <borntraeger@linux.ibm.com>
-Subject: Re: [PATCH RFC 35/38] proc: sysctl: don't hold the tables while
- readdir copies to userspace
-Message-ID: <20261104-getreide-fallpauschalen-uralt-d366f2bf03b0@brauner>
+Subject: Re: [PATCH RFC 36/38] selftests/proc: check that faulting sysctl
+ accesses don't hold up removal
+Message-ID: <20261104-aktionen-endlich-ruhmreich-92f35a0ee397@brauner>
 References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-35-59422ed3e465@kernel.org>
- <sashiko-outbox-195507@kernel.org>
+ <20261102-work-procfs-bugfixes-v1-36-59422ed3e465@kernel.org>
+ <sashiko-outbox-195508@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -86,20 +86,9 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <sashiko-outbox-195507@kernel.org>
+In-Reply-To: <sashiko-outbox-195508@kernel.org>
 
-On Tue, Nov 03, 2026 at 02:48:38PM +0000, sashiko-bot@kernel.org wrote:
-> - [Medium] proc: sysctl: premature EOF and lost errors in proc_sys_readdir()
+On Tue, Nov 03, 2026 at 02:48:40PM +0000, sashiko-bot@kernel.org wrote:
+> - [Medium] selftests/proc: getdents test faults in dir_emit_dots() before entry lookup
 
-This is pre-existing. proc_sys_make_inode() refuses a table that is
-being unregistered since ace0c791e6c3 ("proc/sysctl: Don't grab i_lock
-under sysctl_lock."). The old proc_sys_readdir() stops at an entry the
-same way.
-
-We can fix this by skpping the entry.
-
-> - [Low] proc: sysctl: unused mode field in struct sysctl_dirent
-
-Dropped.
-
--- 
+Fixed.
