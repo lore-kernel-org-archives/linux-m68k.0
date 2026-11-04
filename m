@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793820996;
-	b=b3rDaugN+a9WwRyboIfM72wR2XANX7UlYHMx3DhVMeOKt1iJ98LKqv5xfa6e4bFuai8n
-	 +yoTcDXd5NFHwiRehMiSWTVhTXondjtfjDpSy9AcLOZfCjMgGAN/LuDDOobdCKTMHMx08
-	 5H4ZQm3gmWfY+POzJhAsNALP/GfPzEDCnXiguObXc+BuUOA/9q0O+GoWWvepqWrrWHkjM
-	 j1/6sC6lfXYdAQ2T5XpbkNjz85RKRwv66p1ALqt56i61zY3E7iuhII/Wi2Ugfylh4hbDH
-	 I4WzH1ytuDr49309H5+vdWMVYqZmm7gSnEIj6CRYc6CHJDCpLuRtt6RXNK5EecqJm8Q==
+	t=1793821011;
+	b=5G5Ha8G45c7QtIeufoIzjoWg9gzcfKAzL6DYjAf1f1YQYNkmILLe9bsYrKXPvWUEuy4B
+	 XWAsy3EPdrXQ5IdN4WRsnZEOi8uUPruvkg8elS1blKm5b2TLnhlP0gFp0XuoRQ7aFp/4e
+	 gAP2NMGjeU/M6gj9qB0q2z6tgMQGqkv+tPbpqdz+yYDsgFtJJt59f6MoIPNGtHUAq9Spx
+	 H10StqW1rLEh3zeyOMQeridigbvblkmvTBdkjpM9alXlrg0K+A6m5lsB6AvlwUmgbaop3
+	 dlAJUEp3coOOFJgQLWXciGtfjRtcTRnM6lrAwY2jgCeUqWV2wycyOATvgFmpjeNpAmA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793820996;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793821011;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=pQQ1Vs9Ggdq4tGJpsZZ2KAKh5WKICEOKhSgV+25xKrE=;
-	b=GVaRP8+x5VQuBgBH9xhaOzwhV5f26TY+j/7DBO0tgzr0pXwak4v6DQgtTqmL40fsmBo4
-	 S0CCyMo9zQPbT1Lfb9hOeu/CzAeX4pHQs7bRYS237VefNoULaxyhiE3az0Si6Yg9DzqmH
-	 diPuCn+uuhbfyRQzZDpJgw6E4eTsV4iUhdYgDOb54S8Yw8dB3bB6kH1LJHfLW/kfJ29n2
-	 ruNx8EDPKXccBUCSNKlQRscrwauDgP19U9J0IEaWgRZuJJZkcjushHGX6uSwYMtcKiVVf
-	 xlm2ZUtIUqDsKDEECKZp9U/wGzGC+LOcvtyG5xa6IEGEW8nLR+FkjgGPMmQ5vsdf7og==
+	bh=wEPnWAoxjJOkMqmLZaf/U9t0SZ8y5Jr9Z0MZeAu0+Kc=;
+	b=ddrweMJICjS8L6NbbK9J3PZiNrYTInJTwGJswi+qd7ksQExnjXQaPTe9kpj3tqeRUTPy
+	 C2cXmhpuMGb+CVZ2X3Y6BKf5JvF/fxNYe+bGKe+rF+DvkJfP1sCRRuEY8VKXM+st+2LXO
+	 M6fzDwAVBVObynLQLQ70vCaeAvl1OI02cV3EMd4jRRzUeCRMZcn7nwDJ9kGwN0sXMcN66
+	 nuzvNB4KTBFdzPBie8JcAaf2jrgR8lr1PJvRaWK+P3MkTybAUJIFTJN6wCIBbKOl0SVOF
+	 VZ/WDPq9Bd6IbqveeMqVq8UZiR7u3O4/G/hJRclx4RPm4l2AiP7Mr+yE8Aaq7c8Uc6g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LE2xhvlf;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WXAwkLYs;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076DC607CC96
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:36:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 076DC607CC96
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC1C6070E4F
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:36:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5FC1C6070E4F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LE2xhvlf
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WXAwkLYs
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id C0A3A43C5E;
-	Wed,  4 Nov 2026 19:36:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC6AC1F00A17;
-	Wed,  4 Nov 2026 19:36:23 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id CEDA060DA5;
+	Wed,  4 Nov 2026 19:36:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B64E1F000C1;
+	Wed,  4 Nov 2026 19:36:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793820995;
-	bh=pQQ1Vs9Ggdq4tGJpsZZ2KAKh5WKICEOKhSgV+25xKrE=;
+	s=k20260515; t=1793821010;
+	bh=wEPnWAoxjJOkMqmLZaf/U9t0SZ8y5Jr9Z0MZeAu0+Kc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=LE2xhvlfg0ggjtQBi7k/yBWe0FPcdQ+k5fjG+wAjpCj+7mLg+pQWGjB8uBtCBJNXU
-	 1hm3hiNz0BzNx64SJ+0v+umYt/gvnmwmjNeM7eZmZjkMKK3r7ZsY2rCE/cB6Vuoyyh
-	 hIm4cNe2e5X+iWpnmRoQvIMbMtlTbV9ryhFiKp2B2qAh/B+heLylm9TXu09jUtvetc
-	 89Djht6RVz/zMTf2pNKVsSpvsCd9UrC3EC7He4FCRXcjO86xQhz9K0fnAZaQmRvf1V
-	 LQvwsJ7brRbuX4lwrdJ3+wt3Lk3D3kEIgaBKvZYk9sv9eiUC/NwIjt9LAfL6Wez6nR
-	 7HlhFAAkWGJPA==
+	b=WXAwkLYs5CMjRrIik+svwhbWUt5bDEP/6QOWaHqgQGnGt34I1o6T853RqAuV7Hurk
+	 nJguWnT7WS2BCr/MHOaCcfo/y2YF8uonfqwKBD1vvV5BxItKSThPtia6lCKm8tXqBj
+	 HyK614i5nL+pOdjZyJiH0sAw1f5liFCfXPhf+aJITyPVYu1xz3l6R95T55JjSVbsGG
+	 gsd77y2zC/YQYCVOozDP6pBG6pwL8RsS6zHpDLqsqfvlDhE+Y1bJWPNUxKRk6rTJsi
+	 AUUQYXCgIz2oR7YPa2yFabJiCl27Vqc82eAQrsoGb+Ydr/D+wm+kQ1Kp63UoGu/D5M
+	 SSv/nmv1lJgcw==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 03/23] ARM: atags: let procfs copy out reads of /proc/atags
-Date: Wed,  4 Nov 2026 20:36:21 +0100
-Message-ID: <20261104-work-procfs-arch-v2-3-2aeb952c9597@kernel.org>
+Subject: [PATCH RESEND v2 04/23] m68k/bootinfo: let procfs copy out reads of /proc/bootinfo
+Date: Wed,  4 Nov 2026 20:36:36 +0100
+Message-ID: <20261104-work-procfs-arch-v2-4-2aeb952c9597@kernel.org>
 In-Reply-To: <20261104-work-procfs-arch-v2-0-2aeb952c9597@kernel.org>
 References: <20261104-work-procfs-arch-v2-0-2aeb952c9597@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,7 +125,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1063; i=brauner@kernel.org; h=from:subject:message-id; bh=T/gtJK8LVC1DZFUM73wYroC67tSKwFUXW93lvLyJ5ro=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97vgw51B0y7b3epsi2Y5kbPn1fPGCaewfFUu+1k53Z JidtfhtX0cpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBEOMsY/odG5F5OSDr8hjPk wnRp9d45CfqTm+89/PDpwqGEq92fBBoYGf4+yNE6FyxcodQt3qaa4nQ2ZtEpUeWA3P6OmgtKL/Z zswMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1117; i=brauner@kernel.org; h=from:subject:message-id; bh=Lp2WfN6gRzyIoXXnYjqLNGRBgINOkMledynPew9Qa8Y=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97vi4tPTP9WOBc0V6N/fIbxTfPI/lUfoLfZZ8TRene TrRPhfPdpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzkUBPDPzO9krgvvw5fYBV+ 9H1XqQXvdO7wtZP+r/5w1yl9W/zGBWyMDK/aPsbxCnmcPB2wcdUkBYmzJVbHot9pzTMK2f0zZ9c se04A
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
@@ -134,29 +134,29 @@ after it unpinned the entry.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- arch/arm/kernel/atags_proc.c | 6 +++---
+ arch/m68k/kernel/bootinfo_proc.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/kernel/atags_proc.c b/arch/arm/kernel/atags_proc.c
-index 8411fbfbcb8b..ff28bf24dd30 100644
---- a/arch/arm/kernel/atags_proc.c
-+++ b/arch/arm/kernel/atags_proc.c
-@@ -10,15 +10,15 @@ struct buffer {
- 	char data[] __counted_by(size);
- };
+diff --git a/arch/m68k/kernel/bootinfo_proc.c b/arch/m68k/kernel/bootinfo_proc.c
+index 857fa2aaa748..4936cf44e86a 100644
+--- a/arch/m68k/kernel/bootinfo_proc.c
++++ b/arch/m68k/kernel/bootinfo_proc.c
+@@ -19,15 +19,15 @@ static char bootinfo_tmp[1536] __initdata;
+ static void *bootinfo_copy;
+ static size_t bootinfo_size;
  
--static ssize_t atags_read(struct file *file, char __user *buf,
-+static ssize_t atags_read(struct file *file, char *buf,
+-static ssize_t bootinfo_read(struct file *file, char __user *buf,
++static ssize_t bootinfo_read(struct file *file, char *buf,
  			  size_t count, loff_t *ppos)
  {
- 	struct buffer *b = pde_data(file_inode(file));
--	return simple_read_from_buffer(buf, count, ppos, b->data, b->size);
-+	return memory_read_from_buffer(buf, count, ppos, b->data, b->size);
+-	return simple_read_from_buffer(buf, count, ppos, bootinfo_copy,
++	return memory_read_from_buffer(buf, count, ppos, bootinfo_copy,
+ 				       bootinfo_size);
  }
  
- static const struct proc_ops atags_proc_ops = {
--	.proc_read	= atags_read,
-+	.proc_read_buf	= atags_read,
+ static const struct proc_ops bootinfo_proc_ops = {
+-	.proc_read	= bootinfo_read,
++	.proc_read_buf	= bootinfo_read,
  	.proc_lseek	= default_llseek,
  };
  
