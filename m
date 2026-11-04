@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793821495;
-	b=v8WrUcVe5d6GYLgOmfkXByqIbiPfi/tucMQlSD5McMhwv2VLP34QNhHoiQ2WeZAxPqPz
-	 IS3TQHqSp1rbXBSwdT6as1s0gIyD3rq2ItAZEg+y5bPynx+kXNKyG72NkDNLtok6dQo9I
-	 AaJUXIK8XbyQFqt3S1fPhabwXFfvrz45JBdGPX2MXUV9oDmh3y53xNNgsHyRriF23DaXr
-	 knBbiKJM6OW17Gw0VaYANKNiI3AV8IkePIGG7Fe9Z/qe7uiipKh758ECRlg0BnGF7kQnO
-	 wCBwRqHQKyYptVOzwk/9fS6O3e1JbQpvfbl4rh9ezVTswHvZm4GgPc57vaw2Q1hCGlQ==
+	t=1793821510;
+	b=iDgND45/k5OdsFE49HmkM/6ioz2iIjlWvCM5xK1KtP+xAbISpTXXE9/RdNc6uK8EiTyd
+	 aNDaQB8SowVEjZRJzMWWEwXBTTsQOEvdOBuTiEjJYhgVmifokRbkxIAyASLIKJmQYLY0Z
+	 w5Z8EOHrUOOk67UQLH+8zFLTJtWmWdP9B+FQAoiLfraj3cA//A9wga9ROAP3X24nB2krM
+	 M/2n9Db1y+oYdI9dEGTLS5JVa3KQCd5pO+NAm8tG7hmIlDDULhVKoZ6iGTU/X4Xaut5Q9
+	 hcN2/FhKDOgWqLSb/dlcONbwdmEuBECmqVw+TvbIlTywgiVMDMTG+vnOc7MEiCATRXQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793821495;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793821510;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=BWMrcMxphM3j3KhJxvOCR+KbGizC6kQdxxuLzJskxVk=;
-	b=b/E19RPhOheMYOv1Sehd3+Y/TznVmF8M9yakKVlknsf3VFedd/ablpaNmLoJS5evwRnV
-	 PuuxexowUncLzDeXzJB3CH8L+Ehy+aCGyob5B8vKXEQH0HNKGAWNtR3Q8QHcdaBYrBytS
-	 EAmLbKxIO+p9dQsUXoNcGoxDrIY8OWUInmfGphalcZ9Ol7rcCqJOvNOhlRRN9KsyHTK3N
-	 Rg/T0vBxXHgUCLmxuR9GAxXFdx5v2f7VoXXfbIwLyBFxC1kua9CLdfnxyebWHYOoSoPNE
-	 LKpJXukcnZ+dTtZlkS8TcezsjW+hlWGahnrbq1ZbRlckGwnS2m3AWyIwnzAGLVqjyZA==
+	bh=Rp3cBypvlPCLWQcsEgZutivLH7EPpJBFO75qhCW/oJM=;
+	b=RVKD+iPa3WON//sXs3jhccn/bJedMZ72oF4JrKARVnI58bY0xlwGS11nUpwj69haAYQq
+	 jb/lnNDPKaQ3w13r6iAFLZNeiIDqLBsf/WCbKNqIaULhozo4S3/TrMzFQZ8uHMUeQ7Gss
+	 vdJ98A0kF07frS9ZvcZAKRO62gfWmo+5uhvD2U/mvVelXPOlTMDmcQBGhMz/7hIXhbEh4
+	 Hy7xrptp3t1IhjVaE3FpRDI7CTVw+iGvt09DP10TmbFhtBMaV0vMuL8Sj9lBEla62NgAc
+	 4oI4Rxt7dNLBnUNyUMgAddR6RU5T6iWJRy2EiZzP63qsnNv5IMz3FezrdxMBT1jZoAQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fNbNglso;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HQZZk22I;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD39606D80D
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:44:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DCD39606D80D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CAE360C4197
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:45:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1CAE360C4197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fNbNglso
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HQZZk22I
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id A555E43884;
-	Wed,  4 Nov 2026 19:44:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7662A1F00919;
-	Wed,  4 Nov 2026 19:44:42 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7818060A9F;
+	Wed,  4 Nov 2026 19:45:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25F041F000C1;
+	Wed,  4 Nov 2026 19:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793821494;
-	bh=BWMrcMxphM3j3KhJxvOCR+KbGizC6kQdxxuLzJskxVk=;
+	s=k20260515; t=1793821509;
+	bh=Rp3cBypvlPCLWQcsEgZutivLH7EPpJBFO75qhCW/oJM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=fNbNglsoaWY3MivB4Krb9ygur7tWm8mUs0cHqsxMJlnZL4hmvUj4NpZPpgqhoir+9
-	 r6P5HeFpIBHXJbSEB1+ztv1etbY3xwg/WTpoGehsLz8jmkAj1RB2DsjnvTrPDDAQR1
-	 sJxSC21gvDIE7uTnl/T371mLEerBpkg/OZ92Zb/0+EEpN1sW+zMoMBLVEVPXdcExqD
-	 GqdrJq5fzzTLTFc7aowd/VBqLgscxEBi2alM3GjBK6H0BCw6YwXohUUphzup2egq9W
-	 Pmz19wJ6NZuK6lPrdMcy2P/XXD4nxOm/SXvk5581ENxcjbB9FyVMTHMEjr9pYUVAlp
-	 GcZdUK6ukGA+w==
+	b=HQZZk22IBDSdlRg9+GChLXhspu7iunkZLLfTPZExTpVWSZ10XMRGmnTYlf4TG3XAH
+	 1cwjSXYkmlC+l/hnbMTY6YP/Kzl3udvQ65e0OecgcsLuWkW0rAc2mS+7lsMTsFJwex
+	 5Mm7xmU/jLtpvu5WcV/D7gF7UYlkqWEYw175OcfKq5UOR7IVWPNSq4SA6IFaxtf5na
+	 9paORCG9sxlWn9HEykiPNg6mhlzTVo5kiuDStPCb0diMzwScMmB/UEKOmuTvYKKKer
+	 rmzoLKe6KegT6EasDc6fEzLXRRh89qOwFDegOrU9dPoQb3yaDpwnk6UqQg5okye4vV
+	 YLTrXAZzXjLgw==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 10/26] scsi: let procfs own the seq_file of the host files
-Date: Wed,  4 Nov 2026 20:44:40 +0100
-Message-ID: <20261104-work-procfs-drivers-v2-10-245e54e87116@kernel.org>
+Subject: [PATCH RESEND v2 11/26] scsi: core: let procfs copy in writes
+Date: Wed,  4 Nov 2026 20:44:54 +0100
+Message-ID: <20261104-work-procfs-drivers-v2-11-245e54e87116@kernel.org>
 In-Reply-To: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org>
 References: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,49 +125,185 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1394; i=brauner@kernel.org; h=from:subject:message-id; bh=l1PqfsIz+cqTipGWNtI2ZFkSTs3hYfw6G0B1mtmwjUo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97qqfsY95+37HSwsWhLI3/eIN/LJB4/DUJtffcYbse 4MOv6/v6ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZiInzojw0dt25WLcirjIi9n xDf8Nz3LU+uhej0insNI9taHalfRDQz/0+/+X7Hnzkupq83x31NuGk1YKW9296S/iazikQuTstu 7+AA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5090; i=brauner@kernel.org; h=from:subject:message-id; bh=vGFrM/mDJbel5Ek/YnwRAY7y8jtd20EKftAALqu9TzI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97mpQbTp/83Hlrc1+rz/OurT8HMOG96arD+w4Gdd2K pr9ek/Lho5SFgYxLgZZMUUWh3aTcLnlPBWbjTI1YOawMoEMYeDiFICJBMUz/E+Jqow63i4ukh/z NaPAjPXzm42+O7RrV1sb6zj3n/W84cXwV7CJ58e5Hsv5XGU5lw4fTp7zeKbnjYq6WmGe/zMumlX 84gQA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Declare the show function and let procfs open and free the seq_file of
-/proc/scsi/<driver>/<host>. ->proc_open() only preallocates the buffer
-now. Reading the file then no longer holds up its removal when the host
-goes away.
+Implement ->proc_write_buf() for /proc/scsi/scsi, /proc/scsi/device_info
+and the host files so procfs copies in what is written before it pins
+the entry, and parse what was written from that copy. /proc/scsi/scsi
+and device_info take up to PAGE_SIZE bytes like before. The host files
+pass the copy to ->write_info(), writes to them that are larger than
+PAGE_SIZE - 1 bytes fail with -EINVAL from procfs instead of -EOVERFLOW.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/scsi/scsi_proc.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/scsi/scsi_devinfo.c | 29 +++++-----------------------
+ drivers/scsi/scsi_proc.c    | 47 +++++++++++----------------------------------
+ 2 files changed, 16 insertions(+), 60 deletions(-)
 
+diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
+index 0b8f5ff40543..d9093851b23e 100644
+--- a/drivers/scsi/scsi_devinfo.c
++++ b/drivers/scsi/scsi_devinfo.c
+@@ -678,39 +678,20 @@ static const struct seq_operations scsi_devinfo_seq_ops = {
+  * To use, echo "vendor:model:flag" > /proc/scsi/device_info
+  */
+ static ssize_t proc_scsi_devinfo_write(struct file *file,
+-				       const char __user *buf,
++				       char *buffer,
+ 				       size_t length, loff_t *ppos)
+ {
+-	char *buffer;
+-	ssize_t err = length;
+-
+-	if (!buf || length>PAGE_SIZE)
++	if (length == PAGE_SIZE && buffer[PAGE_SIZE-1])
+ 		return -EINVAL;
+-	buffer = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-	if (!buffer)
+-		return -ENOMEM;
+-	if (copy_from_user(buffer, buf, length)) {
+-		err =-EFAULT;
+-		goto out;
+-	}
+-
+-	if (length < PAGE_SIZE)
+-		buffer[length] = '\0';
+-	else if (buffer[PAGE_SIZE-1]) {
+-		err = -EINVAL;
+-		goto out;
+-	}
+ 
+ 	scsi_dev_info_list_add_str(buffer);
+-
+-out:
+-	kfree(buffer);
+-	return err;
++	return length;
+ }
+ 
+ static const struct proc_ops scsi_devinfo_proc_ops = {
+ 	.proc_seq_ops	= &scsi_devinfo_seq_ops,
+-	.proc_write	= proc_scsi_devinfo_write,
++	.proc_write_buf	= proc_scsi_devinfo_write,
++	.proc_write_size = PAGE_SIZE,
+ };
+ #endif /* CONFIG_SCSI_PROC_FS */
+ 
 diff --git a/drivers/scsi/scsi_proc.c b/drivers/scsi/scsi_proc.c
-index 3e49c4c8704f..59229bf9938e 100644
+index 59229bf9938e..5962e671cc83 100644
 --- a/drivers/scsi/scsi_proc.c
 +++ b/drivers/scsi/scsi_proc.c
-@@ -94,10 +94,10 @@ static int proc_scsi_show(struct seq_file *m, void *v)
- 	return shost->hostt->show_info(m, shost);
- }
- 
-+/* procfs opens the seq_file */
- static int proc_scsi_host_open(struct inode *inode, struct file *file)
- {
--	return single_open_size(file, proc_scsi_show, pde_data(inode),
--				4 * PAGE_SIZE);
-+	return seq_preallocate(file->private_data, 4 * PAGE_SIZE);
- }
- 
- static struct scsi_proc_entry *
-@@ -140,10 +140,8 @@ scsi_template_proc_dir(const struct scsi_host_template *sht)
- EXPORT_SYMBOL_GPL(scsi_template_proc_dir);
- 
- static const struct proc_ops proc_scsi_ops = {
-+	.proc_show	= proc_scsi_show,
- 	.proc_open	= proc_scsi_host_open,
--	.proc_release	= single_release,
--	.proc_read	= seq_read,
--	.proc_lseek	= seq_lseek,
- 	.proc_write	= proc_scsi_host_write
+@@ -62,30 +62,18 @@ struct scsi_proc_entry {
+ 	unsigned int		present;
  };
  
+-static ssize_t proc_scsi_host_write(struct file *file, const char __user *buf,
++static ssize_t proc_scsi_host_write(struct file *file, char *buf,
+                            size_t count, loff_t *ppos)
+ {
+ 	struct Scsi_Host *shost = pde_data(file_inode(file));
+-	ssize_t ret = -ENOMEM;
+-	char *page;
+-    
++
+ 	if (count > PROC_BLOCK_SIZE)
+ 		return -EOVERFLOW;
+ 
+ 	if (!shost->hostt->write_info)
+ 		return -EINVAL;
+ 
+-	page = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-	if (page) {
+-		ret = -EFAULT;
+-		if (copy_from_user(page, buf, count))
+-			goto out;
+-		page[count] = '\0';
+-		ret = shost->hostt->write_info(shost, page, count);
+-	}
+-out:
+-	kfree(page);
+-	return ret;
++	return shost->hostt->write_info(shost, buf, count);
+ }
+ 
+ static int proc_scsi_show(struct seq_file *m, void *v)
+@@ -142,7 +130,7 @@ EXPORT_SYMBOL_GPL(scsi_template_proc_dir);
+ static const struct proc_ops proc_scsi_ops = {
+ 	.proc_show	= proc_scsi_show,
+ 	.proc_open	= proc_scsi_host_open,
+-	.proc_write	= proc_scsi_host_write
++	.proc_write_buf	= proc_scsi_host_write
+ };
+ 
+ /**
+@@ -386,8 +374,8 @@ static int scsi_remove_single_device(uint host, uint channel, uint id, uint lun)
+ /**
+  * proc_scsi_write - handle writes to /proc/scsi/scsi
+  * @file: not used
+- * @buf: buffer to write
+- * @length: length of buf, at most PAGE_SIZE
++ * @buffer: buffer to write
++ * @length: length of buffer, at most PAGE_SIZE
+  * @ppos: not used
+  *
+  * Description: this provides a legacy mechanism to add or remove devices by
+@@ -402,32 +390,20 @@ static int scsi_remove_single_device(uint host, uint channel, uint id, uint lun)
+  */
+ 
+ 
+-static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
++static ssize_t proc_scsi_write(struct file *file, char *buffer,
+ 			       size_t length, loff_t *ppos)
+ {
+ 	int host, channel, id, lun;
+-	char *buffer, *end, *p;
++	char *end, *p;
+ 	int err;
+ 
+-	if (!buf || length > PAGE_SIZE)
+-		return -EINVAL;
+-
+-	buffer = kmalloc(PAGE_SIZE, GFP_KERNEL);
+-	if (!buffer)
+-		return -ENOMEM;
+-
+-	err = -EFAULT;
+-	if (copy_from_user(buffer, buf, length))
+-		goto out;
+-
+ 	err = -EINVAL;
+ 	if (length < PAGE_SIZE) {
+ 		end = buffer + length;
+-		*end = '\0';
+ 	} else {
+ 		end = buffer + PAGE_SIZE - 1;
+ 		if (*end)
+-			goto out;
++			return err;
+ 	}
+ 
+ 	/*
+@@ -466,8 +442,6 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 	if (!err)
+ 		err = length;
+ 
+- out:
+-	kfree(buffer);
+ 	return err;
+ }
+ 
+@@ -521,7 +495,8 @@ static const struct seq_operations scsi_seq_ops = {
+ 
+ static const struct proc_ops scsi_scsi_proc_ops = {
+ 	.proc_seq_ops	= &scsi_seq_ops,
+-	.proc_write	= proc_scsi_write,
++	.proc_write_buf	= proc_scsi_write,
++	.proc_write_size = PAGE_SIZE,
+ };
+ 
+ /**
 
 -- 
 2.53.0
