@@ -1,54 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793784088;
-	b=UzXlipGaXTEi7lKNvUlF9rMXCC/ROc6A15uSrI1BPp/wE3p461IA9O1o4K3ZPONqAiYP
-	 7dYJh5AMt3yzRq4II0ARsDfSxpWK3sctF8oiKy2/8cT6XB86nH6oiPVneTrwFzKvEoZtw
-	 jPYmAjLlmTpREVh2xqjlw1HT+JwdxZoeD3+kN1JF76EjxOiyS0JO2XLNxh0RbfDlIdQtz
-	 csTE/mSfOpIFvymgWNJxHtruB3RKFib1FrqFKtQvrIAAa7tRb08Ae2G5/DfdWfNtLHQfk
-	 GVIvpkHwz0rhKxEcOqnzeHOWjWEvF4Aeq+M9gbI1Xrj2TFznKl5SC2WosQRGl3ZW27Q==
+	t=1793784260;
+	b=OcnQoOD6f/SFyRA0vy16MThsKxzO/0glQKZEcENw7a9i1OSbgyfoLVaXdcsbYVxzqnd8
+	 QHaHq52YYq9vP0vRK0A++K201UwF+2ExSaulUnRaf+UX9VTYVm0CKTeRJ2/x2FuIQjTEP
+	 qInW44+F+M2CFr6mXpgiE9an8mKSX7A/VUEgpVMTxqhH8/CzVSgTXbDhNZT8LWWIpwwkW
+	 zSdfzcGv9LZEWAQuKKnBs93u27Y2WF1vVWoMGSp0KuduBdpdenmLoTDHQOgQYhHBiWWaX
+	 SkBxzDIFUAqOnVWHYagPkJMG3dCkClG71GP0i8Dj/wu04/6O7KpI/9LNU2XzBgs+PcQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793784088;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793784260;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
 	 Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=TLWmGN3SfRKJzJtFGqy9xXljoZdTMIGgQAZ0U5pRqZ0=;
-	b=hrhcYFUD2hTuBUtlJDBLOayUkNxSxQg8LH0qxvMu25KU68q1ecf2hE5uzFb+MQKGpaYZ
-	 S2MSw/suO7ig1hAyc2MY0eYVGjtym11AhWLvuA1jF4usonfNjmdNnuQtiXxmAJR27WmTa
-	 5zI8QNfFlaCEVPRS0bvTVJeTYvuwoSfkcKsIxOpzTEB2MYKKtFEcG/YkELk1+1U0uZzsH
-	 xPw890MmHOmkvs03DCapmKS1jqGgt2Rj3jk8jpfzsQv0JIQGEIhjbrlAXn2VoMzSFnE7M
-	 oDSMS4NetF/juUilKQXlUF0CLJ1LMU2Rr/A3wVUKoR2eI7np8PzTVtK7X3uoAU9KvNA==
+	bh=gRXRlKwKxN+fSCr/T6i8djt87uv7sYA7hvMrxndI77U=;
+	b=Pfi/j9AUm5Hehu9gZGzvEYur2Vt6EiEWYuL9XjHOJ0Aoi7/2G0r2q4ZPcEvER2t33KAK
+	 151KP2UY+AGcXaVsOwiM33sC/oDYxDNrmA9hcJvLF5aaduSKRz4tK3EsX6u+o2T8TALJP
+	 MfJTnqgnl07y/5HvYJmIBVvUwCcm/qNSgGNIgvFoxhETvpR6pnBoyl3ZrySc2zWAOMleH
+	 sWxjRkJJqt72OLYOEVClLzLw0EnoO0RHD7DW5yN+fP97lien2IV0DW2RKpwL5isR+3klO
+	 zZcLbSLHSVvwptSD1Y6PoFOW5QxkF0A4hgEUcceXDkooDAqWaMtivyDrN16pKzL0LOg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RlGTCzi8;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E997606A33C
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 09:21:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5E997606A33C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05029606A329
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 09:24:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 05029606A329
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=RlGTCzi8
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 43B4360142;
-	Wed,  4 Nov 2026 09:21:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC751F00A1B;
-	Wed,  4 Nov 2026 09:21:15 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id AAC8241A8A;
+	Wed,  4 Nov 2026 09:24:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A00EB1F000C1;
+	Wed,  4 Nov 2026 09:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793784087;
-	bh=TLWmGN3SfRKJzJtFGqy9xXljoZdTMIGgQAZ0U5pRqZ0=;
+	s=k20260515; t=1793784259;
+	bh=gRXRlKwKxN+fSCr/T6i8djt87uv7sYA7hvMrxndI77U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=RlGTCzi8pu88TVAb0kwn4joxUiR7mlBDOdPpezl4XmsvQd8kAh4iDFU4pQONkMHIu
-	 eliic42rAIpabkq9bUb6HqnW9ZOmOC+nO6hIz58hrOaEoVJAOD6f1NccFejHSUbQEg
-	 UcTtVvMVrKX8rkKsqChfbeyKOblU3iUz404/VcCwAESFTSpzfmuSYLv6tIXqWgvwx4
-	 JsaFcHO4jSLDa+WNzQE5ZJzqGGlwKjwInimlKuIR6uaQtqBJZavxLJ41GnGzP1qeFj
-	 IB/K6cI148TQ1ND1SEtNwA24wzZ0dXL4wMxQ/4D3P3yQeU5Lj8YAihYUT5N5BdD20o
-	 LKB+GT+o55caw==
-Date: Wed, 4 Nov 2026 10:21:13 +0100
+	b=DtCghqTk4F1EE9ZiaGiOl/CLyemjVYDJ+E2iTwlEuHko0AF2WQqNB2tyP1et6JQZd
+	 /s/kPoz0A0zF+b5fFAIFD3ImxnjD/VWhr5VSKRweQqln4RDl4AQZ0FVMn/i/yt7O88
+	 Ps9wlo2Fnfedf7faqa4SwwEANP4Q/4diwjkTX3mMumkt7VPx2Dq0vxvGBgDryWLmiO
+	 5lerAYpepz4/m8aYVA7ag928SM+ijqD5yy+IBJRJI2YPtpIITX1SvmPZzKqLhu/h1W
+	 WugE4uZByige6JL65yaTwMSDm+rRPo4EHgbghVb7x5+GS84YvD8WL3izKpfkYLWK0G
+	 hw+mR5o35+RDA==
+Date: Wed, 4 Nov 2026 10:24:07 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: sashiko-reviews@lists.linux.dev
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
@@ -69,12 +66,12 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Anna Schumaker <anna@kernel.org>, yukuai@fygo.io, Heiko Carstens <hca@linux.ibm.com>, 
 	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
 	Christian Borntraeger <borntraeger@linux.ibm.com>
-Subject: Re: [PATCH RFC 38/38] selftests/proc: check that a faulting
- readlink() doesn't hold up removal
-Message-ID: <20261104-erwecken-pulsieren-anarchie-9a5a7582621e@brauner>
-References: <20261102-work-procfs-bugfixes-v1-0-59422ed3e465@kernel.org>
- <20261102-work-procfs-bugfixes-v1-38-59422ed3e465@kernel.org>
- <sashiko-outbox-195510@kernel.org>
+Subject: Re: [PATCH RFC 04/16] proc: let procfs own the seq_file of seq_file
+ entries
+Message-ID: <20261104-hiebe-ausmachen-express-e9c87b962865@brauner>
+References: <20261102-work-procfs-core-v1-0-75df35e4f8b8@kernel.org>
+ <20261102-work-procfs-core-v1-4-75df35e4f8b8@kernel.org>
+ <sashiko-outbox-195531@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -86,9 +83,10 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <sashiko-outbox-195510@kernel.org>
+In-Reply-To: <sashiko-outbox-195531@kernel.org>
 
-On Tue, Nov 03, 2026 at 02:48:45PM +0000, sashiko-bot@kernel.org wrote:
-> - [Medium] selftests/proc: Makefile adds nonexistent proc-remove-slow-reader target
+On Tue, Nov 03, 2026 at 03:01:06PM +0000, sashiko-bot@kernel.org wrote:
+> - [High] proc: unpinned dereference of pde->seq_ops->next in pde_seq_next()
 
-Fixed.
+Nothing in the tree returns ERR_PTR(-EIO) from ->next but moving the
+check up would remove that possibility so yes.
