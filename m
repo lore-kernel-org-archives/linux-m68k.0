@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793819805;
-	b=TQppbAkgLez4hYyq5JfvapbjLnMAV35Pccbk5HGvbGC1ryaWmUwNcauhpufFQtBi/H+O
-	 eQrh02JoQ295dFKjxAWctI7dFe4kzg1NCq/7WWv6Y9GmqwDcTQAybkvzXQciCNRL6HBqE
-	 xD84RVqSkqnMd10XtiuZXTTrEgO23zcMxuQJAplE8bNOPoGBw5b0/5/cqf2siGieec8xu
-	 gCApKE+DRnxovi4xQ1AnCg+TBs1ORK4wSZ9qxkjbs1C2SB22EvyY201q/3GKTlq6N+L0c
-	 HBc7gXvTRB/5CGR/R2JMaYo+Gq8ujo8ItVRerJqFY7Lt5HdOu0NTmgdeJffNiHGGP1g==
+	t=1793819820;
+	b=RDF4JAE4PEJ4d9YxpREPEC4ezbY9mBunYv83kkpT+87rV085f0CWdTkGfsJB06Su9BMX
+	 6kDf+bUe5JpIkKZjZ+xc6/ldsbDS7TLYVtesEIJy+5go+Qrnr6qsOBYarNhb3VR/+ANCl
+	 CMPaK1R1/QrYiSgi1cIG9nMjIdRzIkdcvCQ8iWvxYbS2Hhi6ep+fSZZmiUcnJtSwDFH6n
+	 CfBLzmcfRSnjZNo1PwEaj+9aJWPaTm3N0biiKANJ29cNUnj8pGFwVgpMZLBDdV/C0Ewa8
+	 nFDdnyMdAaQtShoojBF/cUNOSr3j5AULd+U9y/1IAXzmhz5XbidVy9KRERgMOclhRJA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793819805;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793819820;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=iSk3nsArFOOtW91DExIIvIg+E3fTnIkI1uYFn4dT7G8=;
-	b=BsTvJJJYDuxZzxvZ+1K/U8Wr+OaW/VYU32fSITKmQ49cMwZAK0CkdJLXyOAObyN5HMkC
-	 tMqa0QV/lwHFC2GnYQ9h01peP4wYKtc2M5ECBxqGVou37/kP2y8XjttHD+az5VtZQIfKZ
-	 hKM45wUFM9dACpe5rixCYeXtl2buBx5yGqrAD3/y4461cJymA/cMv/sty8P+TLl+8ktFQ
-	 SlPjgy6eSgamyDsDqPPSbJkNbFw+Axos1iENajYObi5GkG4BlDNlk3NxYilebO2/Jl8Kv
-	 3I28Ld5euYqGRkYNANnDzeujiuoosHDoN2TDPH64zZYCeKHSnv/QEerNuPqvIFsRdBw==
+	bh=Cbujoj2vf5W42joV5o7W0AvKkij9cCOpaGGghku9+G8=;
+	b=LwSL7BXOTYXgZ+96SRdX1b0OkRUbr2o6UlzcxrhmE6YnQpoG19vTq3n85vLrIegOU2AS
+	 glUmG2ojqZL3rhAMbBzIA7VTdSZ3T6thUDRvIjHIJopbL3xJANDoKVrdcPc5kzmd/eaY9
+	 yKx/LXQELYXEbzqDMRl3bKjGsO7HSKLgoGp0wKPWafv9Kkoug0YV42qFVPuBt+Y4MB8cR
+	 InBAFjhvNjLAJUV0ITA3g2sX4sxIXJr5RvrNRAiPUjkizTr69hikVJNQaEcpZ4fhv6bZa
+	 Ktgf7aOHJ+C9/V9+yAFzw6WCbXfwCGGnOxR3zb3Le4Xb/1mQecIYH7x8MlYrjIxT1zg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=adc5P9d8;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=omO9IGCx;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B76606A328
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:16:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 07B76606A328
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A35D606D808
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:17:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5A35D606D808
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=adc5P9d8
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=omO9IGCx
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 94D7841890;
-	Wed,  4 Nov 2026 19:16:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 406881F000C1;
-	Wed,  4 Nov 2026 19:16:32 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 95EAF60A51;
+	Wed,  4 Nov 2026 19:16:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F441F00A02;
+	Wed,  4 Nov 2026 19:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793819804;
-	bh=iSk3nsArFOOtW91DExIIvIg+E3fTnIkI1uYFn4dT7G8=;
+	s=k20260515; t=1793819819;
+	bh=Cbujoj2vf5W42joV5o7W0AvKkij9cCOpaGGghku9+G8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=adc5P9d8MahDP5MWnF8/BQZpdhwQF+Ch+DamqvSkAjn9rCUlBnkqECo/i8i5m6rCU
-	 r+0D3t4BrnoadvsSIYVAap135Zl9/uPV+3cWE1MIZO02KbRYUYm6qut6Iw4ZTKqOu/
-	 6k7TrsWTmBmMQUM3tHfS92Olrwro6VG7uRQk7JNC9KNK3inBXn1gscAHaKpctq+lkz
-	 NHgRnuuGNNngzWx7kkuO/bS69mOTmSTRK/+7SYlvkts5zOYpp6/1gj+SaDwhe5nUBd
-	 NQB1zsZF5ExMRUSJm8geywWpAxhsrbuzBIhJsIT/iETtc8kHozEESlyxMXTZO60F+g
-	 m408MmhemLThg==
+	b=omO9IGCxRyG7KD0kOxfDpDxNQyYIzODWVtRjkLnN3/zFnPKj34X5crXOKucSFkfWr
+	 K2vwmPWEfSCfTc7KrJwcOMFunLOjtXDVztdyYUmknteKFz3PelPVAL1UgBnI+tAbd4
+	 XF5ErKRbX8bdCtSjgX0zvSFTT6L0PDEOQbHUmwQkI114XRdB8cIfxqGscpwpemafw3
+	 K7MJZBUNHbtj7OSLbkije9HCjsdQTGe+6yASXSAIELhzrF5YD6mcuYVUBb8Sm2r2MZ
+	 MV/cCX6mrHLPa/XrLIYAdVEN9IQTdCweH82A0WOCV2qCcCupff8Ero6Vt+lk3uRxZE
+	 xip5YgJ7X0fVA==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -110,9 +110,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH RESEND v2 02/51] scsi: esas2r: don't copy kernel pointers out in EXPRESS_IOCTL_GET_MOD_INFO
-Date: Wed,  4 Nov 2026 20:16:30 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-2-021c84d852e0@kernel.org>
+Subject: [PATCH RESEND v2 03/51] ALSA: cs46xx: hand the region to the region proc files
+Date: Wed,  4 Nov 2026 20:16:45 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-3-021c84d852e0@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -126,41 +126,36 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1380; i=brauner@kernel.org; h=from:subject:message-id; bh=dmwAod4+27NCncmw2oz8APM07k66EUOhHcJdusbTjjg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bjzbuC42lkN5rrFaxyvfJQdiNbQZ7W/e2Jquu5RPe /ZM3ftRHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABNpfM3wzy5cJTFdotRbNPeq 5U63fQ+S03+85HippbBf44binOdz1BgZPlpuOyXM5rh4Ucv0N+t5PzZYf39meEdz+QFRtsctyxa 1cQAA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1215; i=brauner@kernel.org; h=from:subject:message-id; bh=Z6ZRkJrhuCU4H5MdQ4cObdjJffW/paOotMbfYVXoKlo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bjy38dymo9fKTmUGbmnq3vJ19u55ybMf3qtLXF/lV 3V+wtzWzx2lLAxiXAyyYoosDu0m4XLLeSo2G2VqwMxhZQIZwsDFKQAT+VXCyPDsb6PwnbR1njvC l2SKvFp3T79ebMkTpTsZWRmxsjzl6xoZ/qmcK6g8/p/jzJXZ7Ak/uerEBKe8Z+6ItmpmfjKzNzX 8DSMA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-EXPRESS_IOCTL_GET_MOD_INFO fills in the addresses of the adapter, its
-pci_dev and its Scsi_Host and copies the whole struct back to userspace.
-Nothing in userspace can do anything with those addresses, and the
-ioctl is reachable through /proc/scsi/esas2r/ATTONode, which is created
-with mode 0444. Only pass the host number.
+snd_cs46xx_proc_init() stores the chip in the private data of the five
+region entries, but snd_cs46xx_io_read() reads that back as the region,
+so a read of /proc/asound/cardN/CS46xx_BA0 and friends copies from
+whatever sits at the region's offset in struct snd_cs46xx instead of
+the mapped registers. Store the region.
 
-Fixes: 26780d9e12ed ("[SCSI] esas2r: ATTO Technology ExpressSAS 6G SAS/SATA RAID Adapter Driver")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/scsi/esas2r/esas2r_ioctl.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/pci/cs46xx/cs46xx_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/esas2r/esas2r_ioctl.c b/drivers/scsi/esas2r/esas2r_ioctl.c
-index 3f7c1d131ec3..c93d9265e100 100644
---- a/drivers/scsi/esas2r/esas2r_ioctl.c
-+++ b/drivers/scsi/esas2r/esas2r_ioctl.c
-@@ -1468,9 +1468,10 @@ int esas2r_ioctl_handler(void *hostdata, unsigned int cmd, void __user *arg)
- 
- 	case EXPRESS_IOCTL_GET_MOD_INFO:
- 
--		ioctl->data.modinfo.adapter = a;
--		ioctl->data.modinfo.pci_dev = a->pcid;
--		ioctl->data.modinfo.scsi_host = a->host;
-+		/* these are kernel pointers, userspace has no use for them */
-+		ioctl->data.modinfo.adapter = NULL;
-+		ioctl->data.modinfo.pci_dev = NULL;
-+		ioctl->data.modinfo.scsi_host = NULL;
- 		ioctl->data.modinfo.host_no = a->host->host_no;
- 
- 		break;
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 797a5f09cade..efc7df444cb5 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -2764,7 +2764,7 @@ static int snd_cs46xx_proc_init(struct snd_card *card, struct snd_cs46xx *chip)
+ 		struct snd_cs46xx_region *region = &chip->region.idx[idx];
+ 		if (! snd_card_proc_new(card, region->name, &entry)) {
+ 			entry->content = SNDRV_INFO_CONTENT_DATA;
+-			entry->private_data = chip;
++			entry->private_data = region;
+ 			entry->c.ops = &snd_cs46xx_proc_io_ops;
+ 			entry->size = region->size;
+ 			entry->mode = S_IFREG | 0400;
 
 -- 
 2.53.0
