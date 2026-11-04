@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793822076;
-	b=rqaDo+37a1hMus7sZv0qnOm2OlXSrJC2/pulh5fpB5PeWK4T/OKno4njtpaPa//CzwP1
-	 vKuYyZ10NwHvKdRu5/eGRbY0T7Ta67LSWsGuRiPgYWqvagYg2T081ZYwqgi5Re1bTHrxm
-	 eZWiGgH0EUmJITDlqkTx8icsn8YYGU6sr7OqBebUwwOOYLdfZBnsjMxvngMPNpHMf/dkW
-	 ElVydWQc4UDf4bOvfdL4DeMnkvlZBkAJVKY4RSzfhAUl4m0njjflxjO7QUcD0NYvRiNis
-	 Wk9ryArDRMs5GGbLBITR7zmeLdnnyIlQKfiGf5qYN3FRjKZhZdx8eDWcQIIIRp1lKXQ==
+	t=1793822090;
+	b=ffmkHg7LWRw1oagPH9CHrQlLMW1FWNqZNRZjiyW9UJRFwsgftWYgVWxsEEE5EcF9+4AO
+	 bHBudGwb5xfWxtptx7ksBtWyUS1GF7MGCf1wrklDtU4IUltxo9CxZjcuCF1DlQ6UT4n0e
+	 AHJKeksTSoIignhbppE4EPWoRvAtW9LNPZmp9+3E/Va/Vk5pX7UXLK3IPPjyEOX9LxBEA
+	 nDy8pq5m4BzxYaUthgqBzXV4qNCE2LJLGL0cv5QG234aLbFwKYDiYDJtteY5BATdVuUpq
+	 /6CH6NC8JlULz45kBWyf1XhEOMvEcqQu7QIwLwBLlynaIE5XZ/URAONiRd2jlKLAY6g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793822076;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793822090;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=MznRqphvtEZQp5npCZI4V0Q6Ll7VzqUvC+SM21Py/Cg=;
-	b=Dcu+D57Cscx31CkUe1iZ0vwyfLzrAYCJ2XQDEU9zRXlIGIlQXRciRf1EDdzgINCUh+Vu
-	 aGhOYmxUkRU7T7BahuE1VKwFHO/dEeA6V5CFpLC6NJqyb2eSC5sFN03TXo1uEL0SA5u/S
-	 QcKcLzrlY1CwcboObCSP8WHRhx9YQ1Bu/Lz19IWGL+iya9A4f7fE3l2Fgpi/kiNkmAdvG
-	 iWWknwYldnEPZcj5iBB3cWTTfv3Wug7UyThNSmG2SgwbJGMCS/3QsAuJPb3f0NlIxbQuv
-	 Q+mX4MoBVNs+KTXh6QJ85rqCB35hjFDgBJyVJEVbXAhuG6L8ThE9QfAUERm9oCKX5sQ==
+	bh=LwOyQmkvG4TrYSsjhoNvmU1CfgZA+V6RV4LLe+r+cHk=;
+	b=C1F2D7XP28x4523IWQBUqSFqOLdqCe0HEvvhoBynNw2cNIiRcUBWRYZKIXeGhBEmWznw
+	 1OeMBmGF620o99bWo8F38BOizii8fQTzz6yMVe3WoygV3xALfs7aHnjmn23XNiktSDbLZ
+	 tKxSXwNJSL9YE5xtsqsuV1HcuK7o6mStpAwCBulWRXxKmPnGbtyB4lEZ6YgF48CuejbQ2
+	 lez+QkIEDCHwxXb7JQfnnMWycohvZPbDWlcuruBBJBQBP6nU67j4ixJNBS+B8oZ6yBdfu
+	 PKeiEKmZfp6w9QnJ3euvSk6XmWGhHk+JG77Wpx2p/is3vGC/oN+MRWlNP3y0cEOzB7g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HAw6s8BB;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mJyOhlQt;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EC660E0F92
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:54:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A1EC660E0F92
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64326098F62
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:54:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C64326098F62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HAw6s8BB
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mJyOhlQt
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 02D6B60DD5;
-	Wed,  4 Nov 2026 19:54:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA34F1F00919;
-	Wed,  4 Nov 2026 19:54:22 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 8517C447A9;
+	Wed,  4 Nov 2026 19:54:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2B01F0093A;
+	Wed,  4 Nov 2026 19:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793822074;
-	bh=MznRqphvtEZQp5npCZI4V0Q6Ll7VzqUvC+SM21Py/Cg=;
+	s=k20260515; t=1793822089;
+	bh=LwOyQmkvG4TrYSsjhoNvmU1CfgZA+V6RV4LLe+r+cHk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=HAw6s8BBQpMyHhrBN/asRF3MyBAYmvDQG77oX4IdbQ/Fvo+Dc9HrA+ohRms91kTq1
-	 tGhNQ04Nlq/t5AfIo9I0c2aXY/M5rtDTWUuPNd15k0EftQU6IZz/1TwoK5ymzaduHR
-	 KvYeTEdLCNXdmy5ayLOGUZDs71r+gh7UBQKBI6RxE/xvbUti6reVcmIlIBukQg/oVZ
-	 3GplheA6ivbtF04reRE084gkHonlgWY7/SEBNKSZb4CeUx9EDq8ilSbzdKz6xramV4
-	 xWoLAYuCOzLrRq2otfJd3P7rRpoURXvc8stKQzocl2lC26pljUbnGmCOVptz3/wPze
-	 zCe5glH7FfhIg==
+	b=mJyOhlQt7v/yUeJe2KxDzjfIgCPFjEFsKvYVx2A3N/ozpWFiPJU0KUhNdF3Wnx++v
+	 sI9BCBWIdMMiP0QcpAXFpZsOn0jW7NrHt4r2cB6NkOMsL6mxo8rFKgvE84hLglCx66
+	 OqQujMha7035TQ4ZwwiVUfu7SbYHZU96GqKi/rxAVkSUfLy231e9TMVVFOEYebJCby
+	 NOwJ0wLy1EviZyidaxTUbqL58HBSyhB/XKNBxXObC0roAJt5FLGPIUnCJuWzz6FbgG
+	 K3Yv0a5upmIEZWtQAvIYMc9ZxBopPWyj6ON1cpCflNYuRijpKAoniKAIZEUIsRrLGe
+	 wTSzOu7fuS0uw==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 19/30] sched/psi: mark the pressure files permanent
-Date: Wed,  4 Nov 2026 20:54:20 +0100
-Message-ID: <20261104-work-procfs-fs-v2-19-319e0f9a8aae@kernel.org>
+Subject: [PATCH RESEND v2 20/30] sched/psi: let procfs own the wait queue of the pressure files
+Date: Wed,  4 Nov 2026 20:54:35 +0100
+Message-ID: <20261104-work-procfs-fs-v2-20-319e0f9a8aae@kernel.org>
 In-Reply-To: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,63 +125,177 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2074; i=brauner@kernel.org; h=from:subject:message-id; bh=Q4lGavm4ZGBXo39Ieuspgksaf3Gh3Wa2s1ilX3Hj4ok=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97nE6m3h911tVzfl3TOQ+HGv+VCMdmrs1riUii6Fn/ h6jaTe6O0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbyOoXhv3tM6SuHq3u6jjOp iTG8jZr+w3t5XtOCK765Bxxfv0uo9GVkmHSW9bDFvZMHG36nuv3fEtB3J4a7ZO+RCd52Z7kzO6s y+AA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6098; i=brauner@kernel.org; h=from:subject:message-id; bh=CeHhvuLOJ2DxGx1mSjted70KaKApRIjx6GoOIAUH5Kc=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97nEOnuN4eKv7y+UynWu9t7p/P/D2dPOuOt7MtW4RY cbN7Z4KHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABPZtpnhnzqLca7vmStVc8on LzvQtZvr1cV7Wl6vAr9Pan8zzeRX1XOG/zVVv26edFdZ+WTuhnfLRZpsnu+SuzP1+Nxz33L9reT Tf/MDAA==
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-/proc/pressure/* are created when psi initializes and never removed.
-Say so with PROC_ENTRY_PERMANENT, procfs then calls into them without
-pinning them, like it does for /proc/profile.
-
-That also takes care of a rule the files bent. psi_write() takes the
-seq_file's lock to serialize the triggers. A reader holds that lock
-while it copies to userspace, and now that procfs owns the seq_file it
-does that with the entry unpinned. So nothing that runs with the entry
-pinned may wait for that lock, and psi_write() ran pinned. Nothing ever
-waited for it since the files are never removed, but with the files
-permanent nothing runs pinned at all.
+A trigger on one of the /proc/pressure files has a wait queue of its
+own for its poller, the cgroup pressure files use the queue of their
+kernfs node through kernfs_generic_poll() and kernfs_notify(). procfs
+owns the queue of its pressure files now, so use it the same way: the
+poll_wait() is procfs', and a trigger that fires wakes the pollers of
+its file with proc_poll_notify(). Like for the cgroup files every
+poller of the file is woken when any trigger on it fires, and each
+reports the state of its own trigger. psi_trigger_poll() doesn't need
+the file anymore.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- kernel/sched/psi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/psi.h       |  3 +--
+ include/linux/psi_types.h |  8 +++++---
+ kernel/cgroup/cgroup.c    |  2 +-
+ kernel/sched/psi.c        | 30 +++++++++++++++++-------------
+ 4 files changed, 24 insertions(+), 19 deletions(-)
 
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index 7966e3ac03b9..c6f536631411 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -30,8 +30,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
+ int psi_trigger_create_rtpoll_worker(struct psi_group *group);
+ void psi_trigger_destroy(struct psi_trigger *t);
+ 
+-__poll_t psi_trigger_poll(void **trigger_ptr, struct file *file,
+-			poll_table *wait);
++__poll_t psi_trigger_poll(void **trigger_ptr, poll_table *wait);
+ 
+ #ifdef CONFIG_CGROUPS
+ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+diff --git a/include/linux/psi_types.h b/include/linux/psi_types.h
+index dd10c22299ab..ce772575c5da 100644
+--- a/include/linux/psi_types.h
++++ b/include/linux/psi_types.h
+@@ -8,6 +8,8 @@
+ #include <linux/kref.h>
+ #include <linux/wait.h>
+ 
++struct proc_dir_entry;
++
+ #ifdef CONFIG_PSI
+ 
+ /* Tracked task states */
+@@ -132,12 +134,12 @@ struct psi_trigger {
+ 	/* Backpointer needed during trigger destruction */
+ 	struct psi_group *group;
+ 
+-	/* Wait queue for polling */
+-	wait_queue_head_t event_wait;
+-
+ 	/* Kernfs file for cgroup triggers */
+ 	struct kernfs_open_file *of;
+ 
++	/* /proc/pressure file for system triggers, see proc_poll_notify() */
++	struct proc_dir_entry *pde;
++
+ 	/* Pending event flag */
+ 	int event;
+ 
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a284225f8dc9..c5da33495ae3 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4232,7 +4232,7 @@ static __poll_t cgroup_pressure_poll(struct kernfs_open_file *of,
+ {
+ 	struct cgroup_file_ctx *ctx = of->priv;
+ 
+-	return psi_trigger_poll(&ctx->psi.trigger, of->file, pt);
++	return psi_trigger_poll(&ctx->psi.trigger, pt);
+ }
+ 
+ static void cgroup_pressure_release(struct kernfs_open_file *of)
 diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 9b99099017e1..cdb7a832333a 100644
+index cdb7a832333a..97b5e2488106 100644
 --- a/kernel/sched/psi.c
 +++ b/kernel/sched/psi.c
-@@ -1622,6 +1622,7 @@ static int psi_fop_release(struct inode *inode, struct file *file)
+@@ -514,7 +514,7 @@ static void update_triggers(struct psi_group *group, u64 now,
+ 			if (t->of)
+ 				kernfs_notify(t->of->kn);
+ 			else
+-				wake_up_interruptible(&t->event_wait);
++				proc_poll_notify(t->pde);
+ 		}
+ 		t->last_event_time = now;
+ 		/* Reset threshold breach flag once event got generated */
+@@ -1327,6 +1327,9 @@ int psi_trigger_create_rtpoll_worker(struct psi_group *group)
+ 	return 0;
  }
  
- static const struct proc_ops psi_io_proc_ops = {
-+	.proc_flags	= PROC_ENTRY_PERMANENT,
- 	.proc_show	= psi_io_show,
- 	.proc_write_buf	= psi_io_write,
- 	.proc_poll	= psi_fop_poll,
-@@ -1629,6 +1630,7 @@ static const struct proc_ops psi_io_proc_ops = {
- };
++/* the /proc/pressure files, see psi_proc_init() */
++static struct proc_dir_entry *psi_proc_entry[NR_PSI_RESOURCES];
++
+ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
+ 				       enum psi_res res, struct file *file,
+ 				       struct kernfs_open_file *of,
+@@ -1392,8 +1395,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
+ 	t->event = 0;
+ 	t->last_event_time = 0;
+ 	t->of = of;
+-	if (!of)
+-		init_waitqueue_head(&t->event_wait);
++	t->pde = of ? NULL : psi_proc_entry[res];
+ 	t->pending_event = false;
+ 	t->aggregator = privileged ? PSI_POLL : PSI_AVGS;
  
- static const struct proc_ops psi_memory_proc_ops = {
-+	.proc_flags	= PROC_ENTRY_PERMANENT,
- 	.proc_show	= psi_memory_show,
- 	.proc_write_buf	= psi_memory_write,
- 	.proc_poll	= psi_fop_poll,
-@@ -1636,6 +1638,7 @@ static const struct proc_ops psi_memory_proc_ops = {
- };
+@@ -1441,7 +1443,7 @@ void psi_trigger_destroy(struct psi_trigger *t)
+ 	if (t->of)
+ 		kernfs_notify(t->of->kn);
+ 	else
+-		wake_up_interruptible(&t->event_wait);
++		proc_poll_notify(t->pde);
  
- static const struct proc_ops psi_cpu_proc_ops = {
-+	.proc_flags	= PROC_ENTRY_PERMANENT,
- 	.proc_show	= psi_cpu_show,
- 	.proc_write_buf	= psi_cpu_write,
- 	.proc_poll	= psi_fop_poll,
-@@ -1655,6 +1658,7 @@ static ssize_t psi_irq_write(struct file *file, char *buf, size_t nbytes,
+ 	if (t->aggregator == PSI_AVGS) {
+ 		mutex_lock(&group->avgs_lock);
+@@ -1495,8 +1497,7 @@ void psi_trigger_destroy(struct psi_trigger *t)
+ 	kfree(t);
  }
  
- static const struct proc_ops psi_irq_proc_ops = {
-+	.proc_flags	= PROC_ENTRY_PERMANENT,
- 	.proc_show	= psi_irq_show,
- 	.proc_write_buf	= psi_irq_write,
- 	.proc_poll	= psi_fop_poll,
+-__poll_t psi_trigger_poll(void **trigger_ptr,
+-				struct file *file, poll_table *wait)
++__poll_t psi_trigger_poll(void **trigger_ptr, poll_table *wait)
+ {
+ 	__poll_t ret = DEFAULT_POLLMASK;
+ 	struct psi_trigger *t;
+@@ -1508,10 +1509,9 @@ __poll_t psi_trigger_poll(void **trigger_ptr,
+ 	if (!t)
+ 		return DEFAULT_POLLMASK | EPOLLERR | EPOLLPRI;
+ 
++	/* a /proc/pressure file is polled on the queue procfs owns for it */
+ 	if (t->of)
+ 		kernfs_generic_poll(t->of, wait);
+-	else
+-		poll_wait(file, &t->event_wait, wait);
+ 
+ 	if (cmpxchg(&t->event, 1, 0) == 1)
+ 		ret |= EPOLLPRI;
+@@ -1610,7 +1610,7 @@ static __poll_t psi_fop_poll(struct file *file, poll_table *wait)
+ {
+ 	struct seq_file *seq = file->private_data;
+ 
+-	return psi_trigger_poll(&seq->private, file, wait);
++	return psi_trigger_poll(&seq->private, wait);
+ }
+ 
+ static int psi_fop_release(struct inode *inode, struct file *file)
+@@ -1670,11 +1670,15 @@ static int __init psi_proc_init(void)
+ {
+ 	if (psi_enable) {
+ 		proc_mkdir("pressure", NULL);
+-		proc_create("pressure/io", 0666, NULL, &psi_io_proc_ops);
+-		proc_create("pressure/memory", 0666, NULL, &psi_memory_proc_ops);
+-		proc_create("pressure/cpu", 0666, NULL, &psi_cpu_proc_ops);
++		psi_proc_entry[PSI_IO] = proc_create("pressure/io", 0666, NULL,
++						     &psi_io_proc_ops);
++		psi_proc_entry[PSI_MEM] = proc_create("pressure/memory", 0666,
++						      NULL, &psi_memory_proc_ops);
++		psi_proc_entry[PSI_CPU] = proc_create("pressure/cpu", 0666, NULL,
++						      &psi_cpu_proc_ops);
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+-		proc_create("pressure/irq", 0666, NULL, &psi_irq_proc_ops);
++		psi_proc_entry[PSI_IRQ] = proc_create("pressure/irq", 0666, NULL,
++						      &psi_irq_proc_ops);
+ #endif
+ 	}
+ 	return 0;
 
 -- 
 2.53.0
