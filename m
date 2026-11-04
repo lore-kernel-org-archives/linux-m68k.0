@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793820332;
-	b=1X9l+loOfTbVJgbNce9ZT3RUyTJWzUo+OFK2YyIOeszEJxlyv87E1E2AMwRdP/zN5PXH
-	 W7QIwxkS7rzz6OhtrkG8qREsX0eCQDCANcacq6WyO2IXkh8twg2qUdZ318um2T8OAk08u
-	 oOT4QA7JUnvE0tD2ftXxIfozKC8pEtg3Zk55EBPe7H0NTzeLBjmO31hlEQHI2n+xAtQUj
-	 9LEfih5iZ3Hji7BJe2tNa3ddrPMqCB7sieI1lbOc3IRDYNHXHxVTX0PaxZjg6RrrsfLFO
-	 CV7nWhJezyhdzBQySRzgKPHuZs0rYlY0fqDoEe4TMi5ROF6CdlzpIY9pxHYg8+TIgjg==
+	t=1793820348;
+	b=oOJq1+4ISo0T0di2fgFXhOPQ225Wxt6MGv71uK0eGZCEJ1ZW3+gGKMykrIVoeHNceyHL
+	 x6bwN2gBWde4DOisP6PFHkPp0zo5stUpen9yXsNnT128vLCXksGanC+ft3mKctrIiVkhY
+	 dAQEtJj+Qwp3u+RM0OA59x1/5FhNFtERsmXzpOt61bvnB28aRD/27dqrI4q5e+qsH8CSG
+	 ViXV9PCsqh4Y+hmsv2piQBiYBOZKkV7aeY+LfsAWkvGf0Sgw0SCsLlFTiPx0uv0gVnD2H
+	 aSCx+jMSOVoG1zRSsBvnQW22mcRB8DlEIgVHQxa11mX0Dkw5IXiXxWTcqCYM4N5fiyA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793820332;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793820348;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=v5t8qKNo68SCWoforDimF8hL2ZYL+p0Okj8bWoZ1JT0=;
-	b=X+OL6IuMJF+E3zKxuQS1LvuvDECqfz84KV14GoBMySE5i7EieMdqFLXc+cVCjn6qys8m
-	 xUuTWKFmEa+RioifjfKVMOqESW5xi8IBtdrGhrf6bHsdEVGodh6Hn4aKQAaOq8wUzSQo3
-	 GDkuufKriPvV2AfFJccImVYkhC6OhyKAUdaKzzl+GginkY7NaSGlsPWqPrWWOkXbCIyoF
-	 l7aHETbMNWDgDcu+SeptK44W0kKMSrQMDzRH9cWPajgWJobzPX4AF92GR+QeNNa0KcFEA
-	 52XhpFmYvtXjxj05wjGuF+pOh6p7SrvlALvVrNkDrneWSF/Oap3z/4Tw88GpMbU8Fxg==
+	bh=qeQgphPdxdiWtw36JzKqWooMSgzPZU+EeD4NlyLVhDM=;
+	b=rO6i25ZT/QLcpkWXrZeiJ8ZtOdgnIKp+DQ0vYZBcZ7lln9Rng/G5NQza+xiM5ErXf6Of
+	 lNFqxI7hdY2gdSOH5Qpa2kMcqT5cQmkrzd8ka+mO6+3GZgB8BqYm8QBzfiK+Ce92OrnSx
+	 OVp7HqdNu3wb/3EH4MApRnaJz9ePUoCMQzVNLw/Z6B04oKBmE11WdY47tRAw8E1mi0Fqg
+	 HXxCZ9GlzoJRWbybINoxl/ivbx8GuP+g/MMDXgSbqeYwvUzSoiprccVsTYINt5jj116Da
+	 YIhkBiRzL/ja4kJAsd8XrT4YhawXN24iFmRl7xcKmvOYZRGbBRnaiSHg5hYTK4sLotw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d2Yp3suk;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hdJNDh6O;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CBE606A339
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:25:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 11CBE606A339
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC176071A2B
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:25:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9FC176071A2B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d2Yp3suk
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hdJNDh6O
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id D324E43AB6;
-	Wed,  4 Nov 2026 19:25:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A98241F0093A;
-	Wed,  4 Nov 2026 19:25:19 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 01C3560DA3;
+	Wed,  4 Nov 2026 19:25:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 752A91F00A18;
+	Wed,  4 Nov 2026 19:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793820331;
-	bh=v5t8qKNo68SCWoforDimF8hL2ZYL+p0Okj8bWoZ1JT0=;
+	s=k20260515; t=1793820346;
+	bh=qeQgphPdxdiWtw36JzKqWooMSgzPZU+EeD4NlyLVhDM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=d2Yp3suk+xIFUQRM7BO7x7E3aft20rXKQTfKi2EJdB6puqKguKbDO/RzfDRA7X3lV
-	 gSljFhFAbMDcd/asHliyJikYnWdkdW8FRwy3bQh6M+ewh9drJ7d35YOJvdhtwFBPH9
-	 JRwJWLRJM4Vxp/NSD7VcC/GqW0BZH+vd44UCHmE480t5IclYXqoZgoP1rxpP7ASvzi
-	 MV6zaQzy3dS5SCMydWsqMWRJAW6dgE80WRCZ4oN2w3QDfNKA1V+orpBh9N1WCS1BnB
-	 qAK1SagQtlE4k26S60ABDjOQvWS+i75OCJwN1Sg08aifhf820lnDivFXg1KjOzyPpn
-	 JuTk2cFWA7+Bg==
+	b=hdJNDh6OaAui4lay7OJSmMgInc6T7e+u7rQGOiRGT5ecgJvEKZTk+bvy31gj25xp5
+	 EMlVcNskaOB166UEuHcs9M+Arv+SuzxXQANcu/UbyUjMc0+sWDzpbdt76bmGDk4jwv
+	 dzXVAXuyKiSVZ4ea/xwRNPPO1mVA9tLUIKS+h63z+xkJopkB5HFxrzEYzXBr5K3/DV
+	 4tqBQSe+LfkRA0E4BHcJdz2FUN/7x+h1XEREGcZZ7zmxMVbUH/gH7DuyHZmLjtDcQc
+	 J1yVCFHrELmM7UJtS3ngB8pEivcyFDbp7nlx9CIfgNwUk9+JqlDkEZunCVDa84Tte0
+	 905iHrsfzrTdg==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -110,9 +110,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH RESEND v2 38/51] powerpc/crash_dump: check ioremap_cache() in copy_oldmem_page()
-Date: Wed,  4 Nov 2026 20:25:17 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-38-021c84d852e0@kernel.org>
+Subject: [PATCH RESEND v2 39/51] powerpc/crash_dump: recover from a machine check in copy_oldmem_page()
+Date: Wed,  4 Nov 2026 20:25:32 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-39-021c84d852e0@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -126,40 +126,60 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1312; i=brauner@kernel.org; h=from:subject:message-id; bh=2dbZnDPFapx3dAW5qeN54CL6hHWBvjsrs28L3h6tsIk=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bvxl/P2Dzo5anu13Tqzf1xxtev7aJSeWp+ezo6b2t N9VrY5U7ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZiIaS/D/3hfsRnFFt+mr1Gq mfCx747C6gAR6081CmdVZ93UW9i0TJWRYddzz5Q7xvsdygJ9F50qmvOkfr37pFAJ8balvcaJT6z +8gEA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2421; i=brauner@kernel.org; h=from:subject:message-id; bh=VIVKq8y+KdCJwnDd/z4L2OCrr1yqDfObdGoCOSjiCdM=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bvzdev5O1pqOqInnVq7QehNleaUr+ZQXg2RwxdMDB mu8jeRsO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACby8zTDH46/Ovo1n1rt927Z GbOo3ko0bH+/ELda9QrWhpqiI0sd7zD8Fbm2sNi91NhmUkJA6g2DG31172P/sXlZMGhOKDWf+aC ZDQA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-copy_oldmem_page() maps a page of the old kernel that isn't in the
-linear mapping with ioremap_cache() and copies from it without checking
-whether the mapping worked. If it didn't, the copy reads from an offset
-into the NULL page. That oopses unless the copy happens to be a user
-copy, whose exception table entries turn the fault into a short copy.
+A capture kernel reads the memory of the crashed kernel, and that memory
+may well have uncorrectable errors. On powerpc a machine check in the
+kernel is only recovered from if the instruction that took it has an
+exception table entry (cf. mce_common_process_ue()). copy_oldmem_page()
+copies with copy_to_iter(). For a read() of /proc/vmcore that is a user
+copy, all of whose loads have exception table entries, so the machine
+check turns into a short copy and read_from_oldmem() returns -EFAULT.
 
-Return -ENOMEM like the other architectures do. read_from_oldmem()
-turns that into -EFAULT like any other short copy.
+But since commit 4a22fd20379c ("vmcore: convert __read_vmcore to use an
+iov_iter") /proc/vmcore can be spliced too, and splice(), sendfile()
+and copy_file_range() copy into kernel pages with memcpy(), which has
+no exception table entries. A machine check there panics the capture
+kernel. The same goes for the reads of the ELF headers and notes that
+vmcore does itself, and those have been memcpy() for as long as
+copy_oldmem_page() has had its kernel buffer branch, since commit
+54c32021eb6f ("[PATCH] powerpc: Add arch-dependent copy_oldmem_page").
+
+Copy with _copy_mc_to_iter() instead. PPC64 selects ARCH_HAS_COPY_MC
+and there it uses copy_mc_generic() for kernel and user destinations
+alike, which has the exception table entries. Everywhere else it is
+_copy_to_iter().
 
 Reported-by: Chris Mason <mason@kernel.org>
 Fixes: 54c32021eb6f ("[PATCH] powerpc: Add arch-dependent copy_oldmem_page")
+Fixes: 4a22fd20379c ("vmcore: convert __read_vmcore to use an iov_iter")
 Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- arch/powerpc/kernel/crash_dump.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/kernel/crash_dump.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/powerpc/kernel/crash_dump.c b/arch/powerpc/kernel/crash_dump.c
-index 103b6605dd68..1543917bd3e1 100644
+index 1543917bd3e1..ca7e019ae3e9 100644
 --- a/arch/powerpc/kernel/crash_dump.c
 +++ b/arch/powerpc/kernel/crash_dump.c
-@@ -86,6 +86,8 @@ ssize_t copy_oldmem_page(struct iov_iter *iter, unsigned long pfn,
- 		csize = copy_to_iter(vaddr + offset, csize, iter);
+@@ -83,12 +83,12 @@ ssize_t copy_oldmem_page(struct iov_iter *iter, unsigned long pfn,
+ 
+ 	if (memblock_is_region_memory(paddr, csize)) {
+ 		vaddr = __va(paddr);
+-		csize = copy_to_iter(vaddr + offset, csize, iter);
++		csize = _copy_mc_to_iter(vaddr + offset, csize, iter);
  	} else {
  		vaddr = ioremap_cache(paddr, PAGE_SIZE);
-+		if (!vaddr)
-+			return -ENOMEM;
- 		csize = copy_to_iter(vaddr + offset, csize, iter);
+ 		if (!vaddr)
+ 			return -ENOMEM;
+-		csize = copy_to_iter(vaddr + offset, csize, iter);
++		csize = _copy_mc_to_iter(vaddr + offset, csize, iter);
  		iounmap(vaddr);
  	}
+ 
 
 -- 
 2.53.0
