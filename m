@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793814750;
-	b=5aS+kwvMSAgDoCnOJRnBmrmETTAdJ88g7BV5p2i6tT9ayKNu9BN1JG+ilDm7J4soIjjJ
-	 a5l1+MxzgLXqwtkp8gdjQapnVCer0sP0aTgMTow6amCffvd3/tJt8TZAKxpCU9558vl4J
-	 /3bAEmhSF0zvdTW+SueFgi4HS9aVkBkvX4SOObG6jjuChVb9oiJk6slfSia8EE8WQRETo
-	 GbE6u2P2XTvco2xhlemogj6gQHe7lS5htrmeH0LSFLd9vOBh2g7l+uxLeGian6Vzme2mx
-	 9IaZYTp4i9YnvdHq8r7F73+EYcSD9aKKLBtxE4uZL9MGPnAH0TdW/7Yy84tvNP+VUCQ==
+	t=1793814774;
+	b=K4f4k3XZs+xbENxT9tVIUdWzKcQ2MaUqsEEzGpggzmaZtTQ8GnXqKPEMfFPMd3nb1OdM
+	 0e0vv8RtlsEWUfKlikpHGqZoc3CtU0uj4B2vM6tdowJF6CnjW+ijLIRtoGlAT1fdcolqk
+	 Rnp0tNDqRnuwknqtNxOtxReKsY99N/hss84zJS9xuEi5mFXkcbfdMQK0OEd3+1SgAjSYA
+	 JhdMD3fn+W9izl6Wulibfq0xLvrRg9uA9ttJlkNarw9lr0/olZfV5A3lrXRVsX6C+rgfj
+	 a80zexn9RlLpANj+Up4tvnWcqTfsujyy7Mr6pl34nmEsPJAz9rk4/WsBlx2F0S+kTOA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793814750;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793814774;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=yb3WLcVokXU6BuV8DQIS3cnoxrtkXR+HXTNSt4lhnr4=;
-	b=roorwgozZvLH24yN5rqkijiw2kNx/y5yHZoj5wQ189+46Qut4moCdrVp37TA/X5v0N+P
-	 oDzUxfWm0G/nyOiF/9PkG0ms9LSMBgthMCHXaPlcW/fIqHnyIqC0kq9QnMV6uYJtL9pwH
-	 k1ZBFf875s0hPmxsccvE0cdDcSuZ9OZzBRMVpGSJfYS93oQIxtD3G68VVR069zeKMCeKr
-	 xh5SZoe0yyQ4ei7J0Vss/pAu8wj2+spiupZzLCJOUfVNXWlVUygLWO0pCvziICljCgixF
-	 Q1vpBuJ2aSXcMyE6teLCCxgRhMkdh6hAUbkQ+dcO61tIVlMjE2MkRLK0vOidfFl0Wyg==
+	bh=LkQzylMBPw/rjuFeKsFyNpbMkN4WRhLixyhJUzJNoRI=;
+	b=3+PwmpERNFU0IBO8QF07srthgVNJ/LMIyFtnuYc2B2b2V5/E4n607JghUW/MLe99I6wr
+	 sxlDbEqZ2VNE0Xy8N9vFhQfFnlKN10T4p9zlhUWu1JNs5PVNRbY8vxLSX7oZA4MSjIcTy
+	 Qk6HvTIcZfGO3Rb6QmScZZdRoRiSgwlkQke+NVUDI31A1NfXqgJlFsf/vcN4yYMhWMyrI
+	 3x/opgeQvK/fUOdM3mgtnq4/EYyPa5UNvAzzoGXqlt4QJvs5KwokTSviLGP7fILQrgM3c
+	 dlz7PBb+UYP+j5ARmlNz+olEMfGiGPcabzM+n6R7EOm6+QWyo12PkFGLeKuk+nf/FvA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mYzQuqq1;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JXuPQ0ie;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBB0606D815
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:52:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CEBB0606D815
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D056082BFF
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:52:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D4D056082BFF
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mYzQuqq1
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JXuPQ0ie
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7BAB8434A7;
+	by tor.source.kernel.org (Postfix) with ESMTP id 2F25C6022E;
+	Wed,  4 Nov 2026 17:52:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 428D51F0093A;
 	Wed,  4 Nov 2026 17:52:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5214C1F00919;
-	Wed,  4 Nov 2026 17:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793814749;
-	bh=yb3WLcVokXU6BuV8DQIS3cnoxrtkXR+HXTNSt4lhnr4=;
+	s=k20260515; t=1793814772;
+	bh=LkQzylMBPw/rjuFeKsFyNpbMkN4WRhLixyhJUzJNoRI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=mYzQuqq14/wTRRzzUwsG17Ab+8tgoUHpySPnl84Mr25NNzcLhEp7Tq87twOltFKtA
-	 dLD4dH0S9ylQ5twpfaifjPBB9F9nLw9N+znijKLYLcOnWkObGODYTAZeChhNq2O2Ca
-	 IQI8NCRh7J2BZ5sI7mVRJjsoRWd+WGQFkSSMno0hv8VCeplcjuV9ER78Y79IneS3ww
-	 A/5asZFiMwgLRWg3CnX7bPRgzhBlLJJ299YG81hHCGwYVIYI6Vtka99WENBzIlbtj9
-	 RDwPxtwzVpVgN2qYy6WEMTlYIhf+ZUrM+RRJ4JaWwLGuxFHxYcI/kP7k045W27PJnL
-	 9gvSnUTnaD3zQ==
+	b=JXuPQ0ieI1SmEXC52KDOcGy2C42dUQXH2gWt2mtcU1/uOST36dyA2aX/TbZituA2X
+	 Uhu3k1qct8vUKtDQH86VU1fhcBrjtbnzssmyZOcNcGl5JFmkchB4Gpruy1pXNgGar2
+	 VxVKlSU3xlY2ad6FO1CicLCPJyfh4ydr4gwsesh5g7agPQ4ipkIS7Cs9Wpj/e9EmLS
+	 Jm7RvFMHC/cB0vL14NXKg9Z/LHaENtZFhX3CEfJQZj2LcqrxZuIhRnv467SSOX8+tP
+	 0daQmY4DIeH2JUseA+pOpqhVDaW3Hc6WCgGMkzhZymUpdndKfNcU8aZ5068txhavYL
+	 LTnnyBYHI3CAQ==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -110,9 +110,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH v2 27/51] um: NUL-terminate what is written to /proc/exitcode
-Date: Wed,  4 Nov 2026 18:47:13 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-27-bbf7d5546809@kernel.org>
+Subject: [PATCH v2 28/51] ntfs3: don't warn when a huge label is written
+Date: Wed,  4 Nov 2026 18:47:14 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-28-bbf7d5546809@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -126,38 +126,46 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1042; i=brauner@kernel.org; h=from:subject:message-id; bh=wRElBRQ5ywf1BhvCA77KtICLks8yyr6GFoKnZLCCyMo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9znsQFfC+I/C0Ra1Qv94XtoNfmEzj9zwr/ak74frKN 6dmt7y52lHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRvl6Gf8ru0zvmyVXlJJn5 RX64VRT8c5vVqQOhHe+XJk+QCA1678rI0PD9gNXt6xMOWujrbTe9wyTBv3D/B9HmPSse+sbVn4l X4wAA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1211; i=brauner@kernel.org; h=from:subject:message-id; bh=CQmQXvWqu+qpRxwX3Ai9kAzqqtrenD8xJsc3ckb17sQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9znv41bfhRbr0hB7+QH1DQe2NteXb2LY+9z1XbHd4a cOjhdu2dJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExkohAjw4rCmq+PWwJsL999 t/rf/719dR9cv2g/ad2gpsY5lzHE/RYjw7O2xVsFYh6FLFHbxmXmqiNfEK+8fvH1tXZe9j8O88X sYQIA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-exitcode_proc_write() copies up to sizeof(buf) bytes of the write into
-buf and hands it to simple_strtol() without terminating it. So
-"echo -n 5" parses whatever the stack held after the '5', and a write of
-seven bytes or more reads past the end of buf. Terminate the copy.
+ntfs3_label_write() allocates as many bytes as are written with plain
+kmalloc(). A write that is larger than what kmalloc() can hand out then
+trips the page allocator's warning, which panics a panic_on_warn kernel.
+Use memdup_user(), which fails such an allocation quietly with -ENOMEM
+like before.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: 7832e123490a ("fs/ntfs3: Add support /proc/fs/ntfs3/<dev>/volinfo and /proc/fs/ntfs3/<dev>/label")
 Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- arch/um/kernel/exitcode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/ntfs3/super.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/arch/um/kernel/exitcode.c b/arch/um/kernel/exitcode.c
-index 43edc2aa57e4..0230354f4812 100644
---- a/arch/um/kernel/exitcode.c
-+++ b/arch/um/kernel/exitcode.c
-@@ -43,9 +43,10 @@ static ssize_t exitcode_proc_write(struct file *file,
- 	size_t size;
- 	int tmp;
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 29aabdc8a801..37e27b73b7a5 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -576,15 +576,10 @@ static ssize_t ntfs3_label_write(struct file *file, const char __user *buffer,
+ 	if (sb_rdonly(sb))
+ 		return -EROFS;
  
--	size = min(count, sizeof(buf));
-+	size = min(count, sizeof(buf) - 1);
- 	if (copy_from_user(buf, buffer, size))
- 		return -EFAULT;
-+	buf[size] = '\0';
+-	label = kmalloc(count, GFP_NOFS);
++	label = memdup_user(buffer, count);
++	if (IS_ERR(label))
++		return PTR_ERR(label);
  
- 	tmp = simple_strtol(buf, &end, 0);
- 	if ((*end != '\0') && !isspace(*end))
+-	if (!label)
+-		return -ENOMEM;
+-
+-	if (copy_from_user(label, buffer, ret)) {
+-		ret = -EFAULT;
+-		goto out;
+-	}
+ 	while (ret > 0 && label[ret - 1] == '\n')
+ 		ret -= 1;
+ 
 
 -- 
 2.53.0
