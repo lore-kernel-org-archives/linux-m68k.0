@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793817596;
-	b=b+Vb2ozoW9n2EhMhpHw2sdc/UYWnotwkmDEyAyTq/Q6FhFE1FZLfgw9ATYGP0JLtop7U
-	 sB0KddcFEIpkLoGNJxi2Cnf2cR7PONTZkdZd5FbqH6oL/8LD5tiEiDsJOUM7pCCMy+/qk
-	 Sm4JZ7vIg83PCKaoYTo7njQfKGVTPS18vZNnhd5YsEUZKxD63Lc+ld5MiPuV1soOPPOgA
-	 bE0hXgwtznJTdg/8DuNSr+Mb7EcR0DJhhTHvdT7nLJmxJnWbBkQWDrscPBmr5xFwp6VnF
-	 V9Dm1MC2Dt8wIQz/Ej+Uq7c+W8CKcvkT8DodkYjpx7knxw9Qj7WBxvjkLndtKMlCyig==
+	t=1793817648;
+	b=ngqZVK25SoVB69RzRf6CRcRMhC7NNO4nGR0y3Go+PYgdmSQ9rZsqa+yjG0jTJoJ6+38g
+	 JPd+L7TSyrGPT793e35LBUXkqzodBEThv8+InZvXSCXAeit4ot5gi0p32bHnusoiWesME
+	 OoBFib+gOsJqMFNIaQvBFhdcgw1dqarDKo6JHMSgWA1W4KwCdSZigNvY+yBZwlhq+1TBN
+	 wnenTyZwbVhes//hS108Jl35qz81+dzhiRI4sfBNCD7rao1qIcUlqdVE8biXoShY/mAyf
+	 dq8uB28vwSJhrgOvUmt2ZEGtogVUHmYlTYx3xqdRx5qk3p1yrSq7kGHXh6uRcsHC+jw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793817596;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793817648;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
 	 Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=cfX+RSDf63q8RdYOSefxL9B17eZvLgT/fF9r72R8ItM=;
-	b=HFjvOsSNdrdcaH/YZXkU7Z8VdzQ0ao/nSvqlwQJKLEWBXo6vodCS+TiDpCPXZA1vN5ZU
-	 wIyzU3EIECjpeSScENUZfuJE/dcV+o+J1hKGNWONjU83Gi2BgeAxqRghd3JRgixpcrhIz
-	 6cDVZxkbURF+vVrRVNVe84zoW4T75qS7o6lg6K2cuMN+oxSOTZmPkl6VFNpc5tS1CrK1v
-	 21Mjm9y49VfWJ97rJ8vzUBiwL2ZyxwRuAi02zgbsmTL9x1cZnb3PgZh3/nTchp57FmzJb
-	 4bA2Th5m2xUJh+hCP4DwyS738s6Kz7IfpcKdLrgYK4j75Om1z+vonXNtj9Xslkhf/YA==
+	bh=QZrg0qNWaXbTo0/xGfjrSEZ0b4f34qk5jOb+FqN16uE=;
+	b=lw6SNJHkA4j/fZZcvwtEw5xUMQ4f96orrWDGl3d/l86tMMYdhUvyMgYw6VOWqKU4ZWsE
+	 FpgkUctT2rNYLmkqL83N4b/UGt+UfbldFzXLHkwiaZmOLoov9YlrAvbYarLWl40MDsltc
+	 DttYgiJ3eHxAZ1sVvSiekL6RDP7Xhf93EiZmUTLjBPzP1muQzuuAfOOGbHmR8fQlq2JuL
+	 pnL/b5zPBJ9ERrLaD5tHABdoJFyhULXirxYEykqeGh+TM38rMzEW6UjdksPp8MSdsNOEO
+	 7VFp5nYrUVzm1MPwNt06E27g9IL37K1Z5eK2WA35u4BmBCWBZokhPp0vMEa6BSHHo3w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GDU8EuhU;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kJoHVIVR;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45006606D82D
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 18:39:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 45006606D82D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A966082BC9
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 18:40:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 34A966082BC9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GDU8EuhU
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kJoHVIVR
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 9485D60A87;
-	Wed,  4 Nov 2026 18:39:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D94A1F000C1;
-	Wed,  4 Nov 2026 18:39:43 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 8E54560AA6;
+	Wed,  4 Nov 2026 18:40:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3B5D1F0093A;
+	Wed,  4 Nov 2026 18:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793817595;
-	bh=cfX+RSDf63q8RdYOSefxL9B17eZvLgT/fF9r72R8ItM=;
+	s=k20260515; t=1793817647;
+	bh=QZrg0qNWaXbTo0/xGfjrSEZ0b4f34qk5jOb+FqN16uE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=GDU8EuhUF/10B5PY7Ge41gK5xPnjrcLHs7feXWHlvH4fq+/JLsc6ePLzmMcenBTV8
-	 F8DU2mNIqG7yMOIN0gPqiAwJM3jV9nVVVUEYkA/ePBSooGTee00ROqhKBnF1Bqim3H
-	 1MIVC6ndCg4IYSs9ehay5xqAR6tGspnn8txoZnqUV3a/rwlemC2StvUcjU4rBzRdDh
-	 smT5Fi28DptI2/GHQw2s7uG8id08IW1enmMV0ZcuUo2Xf6u9ciNae6b4/FwizkvKf5
-	 0O5jZIOLbbQIYlYObNdALqLNo9VEtQX1aZ+lQxJHqEn6uUf5MjI2wjNp8uWWy07SZL
-	 e+KRVPYe7/Ndw==
-Date: Wed, 4 Nov 2026 19:39:40 +0100
+	b=kJoHVIVRMDhMBnXEsnAe5u7zpLjzd7+MCZ16TzVPzknEMkH+SygeGbLr1cB1EuFHJ
+	 xRsFziB7AYKd6Mhhpn+XaIqvh4Cx6oR0IF5YD5hTWVK9qdGzZGqDtB09vA04e4GNIh
+	 gmvf+qmzc//ytZnlzvHO/6/uft/CaHdB0hsuAjqYwVhLfB3Ks7yJAR1O6zCQCoILM7
+	 7FSNmR//3JsJPL/FoNc85lYWK2E4ao7D0Q2RNB19ZXpttBP2DbzKEnPZ+uDd2qb6Jz
+	 UP+h4VZmlPCoaJVRtTyuBLxhzxSpg0j7ZPL1vwlCOQ73t7T4+hY/7Q5mBk/u31yY6C
+	 vajKYZo3usCaQ==
+Date: Wed, 4 Nov 2026 19:40:33 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
@@ -73,9 +73,10 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	Chuck Lever <chuck.lever@oracle.com>, Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, 
 	linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
 	linux-debuggers@vger.kernel.org
-Subject: Re: [PATCH v2 0/7] proc: move procfs to what kernfs does
-Message-ID: <20261104-angriff-abgewandelt-ohnehin-e5ba30d31576@brauner>
-References: <20261104-trompete-gejagt-raddampfer-9fb5640a6102@brauner>
+Subject: Re: [PATCH v2 00/51] proc: fix a few old bugs in /proc handlers
+ (Part 1/7)
+Message-ID: <20261104-zermalmen-pechschwarz-hafen-b8a1cb79bac4@brauner>
+References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -87,11 +88,12 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20261104-trompete-gejagt-raddampfer-9fb5640a6102@brauner>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 
 Please ignore this. Network dropped halfway through and the umbrella
-went out under a broken message-id.
+went out under a broken message-id and so this doesn't reference the
+actual complete series.
 
-I'll resend it all correctly.
+I'll resend.
 
 -- 
