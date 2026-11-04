@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793819922;
-	b=Auumxfx/os5C8DyI0ERWKpvQFHmP9o3tSE8/1vj6ieOCqv9Xn0x+fS/ug0bcv8ph0ccG
-	 U8BZjqvR0f9n4B4QXSbAgcv0mUfi0GFAX1C6kO2T79/8wzvG8+fR0y1nkoUbNWn/I/woJ
-	 j9cfAroRq/IqWc0MZC4S6hDnjQ4or625ru6RiF6Rdt8e0W+mCJO4LjK8kuqQgKIpKX4VN
-	 E615madTWH8fP+0ak/W2uvXA/LCm6RysW10lsr+rs5eieLaeRWwmi91D/Xz7YhoDEHrT9
-	 ENVfJsp55KY5TUEllfFFHngAR8CILPTwx9B4yJI4AcBPALfX7jqzkZSIng0xDmVZ3HA==
+	t=1793819936;
+	b=CbXB9FajXwQp7kaoqDYs9QrJSW2mJbKQ0tut00W8l7eLENQ3ovja5TpTZlIWlKfouWIw
+	 Ss5cq2sLzrmolnQZmpkqcq4s10bh9I8v1NYtQWfv7njxbITIu6BWhme3VEaFN7fdH04VV
+	 n14yfKEYGQlxRdn6yLzSIqZ0J/9mHG7lJcQ7FFxVLUuMNkOffOD00/FxhMpysHAtejxbk
+	 VJlEPkluiI5h1f1sdTsgjCkAzdnoBa/zPyMLOwNnz/Hue2QKpBB9GdVpe+hzoZXPnMkUC
+	 a8n0MW5i2sTjH5/GkqL4uJY0hVLwHYgJYFXsFEJs3VMMm5WX1RaxMiQ2YPSu8jl6Sjg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793819922;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793819936;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=Di83VHF6QbwHOpQhBimI2/C2To6SvYozNijzJKB62VA=;
-	b=pgXeaEPivBr9zjmCB5mf5bzxPW4I9HXB7llTppuKFN9dlZIiBRqAiDTJTOoqakQHjxAu
-	 LkfznNHGb7cCCy0nPwr0/wEYzLmtItPkszRx5UPi3EZJLdSf4cno9IoWv6NoSkQDjlUCV
-	 ISCF/vXIgY3fA7M+q221vbRh5xkaJZhq52KGWKzttfy/cqlzZjX7Ax2ptv05o6DFpkD/I
-	 8t6dr8xQNSx+qi87qjpfBMc3oIFrMw9ptTMQ2WHdGsfkgB4zLZTJ3EpcdkppsZ2yB7dhr
-	 vZNyfxK89P+eSBMSn8FVLWjzzwE09wuWsyu9r4t0+Y9i0/pwwjf2gHs2+Ax1YmDgGPA==
+	bh=88D9snc5Fvfzc1+bIGylCXCzBagXIGxBtzK0BL7vNTc=;
+	b=ncaNkxRB5c40olFt8sCUomF5gVH6cd7Y1+VO6CxPnRgVw0YQO8K15z1J01j3uWQIbUz6
+	 /j5A7dfKyMwWHGIkWKFy1ABHgJNby87gbKye13q1qGUNhvUJhb2f0EkMIQlwL1vgDx5sw
+	 ohgHs0+iQoKHl9Agi76sY0qE1k+LaDqaBiIvBEWDX9MSQXyWPt0RtKdDgrxhf1oTgPwF6
+	 oOnGUac8r3M1oASeHz0PmcFcPBgBDAWS9fPdJDt9OZG0A8nRgu3PmZ93nfILd8IU63IbN
+	 6KuCYAqMXSro/59lxFoWRl2tzvWS2P6VatM8G9Ou+KR+HNe2wv0CEmsQYJv/IpaWl1A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JIdLOXp6;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GmEE1dbl;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6010606B2FD
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:18:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D6010606B2FD
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F5B606A335
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:18:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 81F5B606A335
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JIdLOXp6
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GmEE1dbl
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 437B460D7A;
-	Wed,  4 Nov 2026 19:18:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEFA51F00A16;
-	Wed,  4 Nov 2026 19:18:28 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 540EC43AE6;
+	Wed,  4 Nov 2026 19:18:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BB631F000C1;
+	Wed,  4 Nov 2026 19:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793819921;
-	bh=Di83VHF6QbwHOpQhBimI2/C2To6SvYozNijzJKB62VA=;
+	s=k20260515; t=1793819935;
+	bh=88D9snc5Fvfzc1+bIGylCXCzBagXIGxBtzK0BL7vNTc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=JIdLOXp6sxEmZBJpMlxDZmERDwf9C8sLM/z2dbJBoBY9UBXkGBGAj7Yxhgr3YbwIo
-	 WLzNZhjCHsHdhaQxnTFFO0VEGKxMv1vINJffnyQzpOIw9IevG2oqGRabpoxY4U5ohN
-	 dsW1/Ep2BQuneanTV1J2VPfld0/EzmI9Txpbh/m9xuzYl3I8AGELsVFoKVbyxoHr4k
-	 3c7remBwAQpRVBw2eStXkccOoVSUONc3WQN6TCMP9ZphCN52UWu0ZYRKWjmfYAQkhn
-	 K0VZsnobCWkJjfjb7T3ZWzf5xxANP/HeKYAhnhy6yvKDBY5FqItsSBFDLO5ybI5gH0
-	 NwA1fy8O+LCSQ==
+	b=GmEE1dblrL6P3slUDpoeGQBfKRlZceqbttyL3CdBYJ2HAmZ9lajl7o6aomohjTG+O
+	 JTa2xT0UeQwIgbWO0as8ILC2qonsH/MA+HbfcPcLDu6enbEF3xp9x5MarktZI1cLNN
+	 p49gpXsJRwhljLb1NoANyo0ZebStjoK1MQAOZ8SsuOmEWt9/Va7qy18DmNx/CKuVDD
+	 F61rqLrBCLbspjHBFEQrO4v5WSYQC3TxQQVgqakQ7sCvVAsMm5tshbmCStW23Fb73C
+	 HKw2C65QpNc+TsBCBKm/WrFquDZj8ghfTEOupR23/RjXQvAJZnpFNNP1XldO5G4qvo
+	 qTnFbXsGFvmcw==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 10/51] zorro: size the proc files like what they serve
-Date: Wed,  4 Nov 2026 20:18:26 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
+Subject: [PATCH RESEND v2 11/51] sparc: led: consume the whole write
+Date: Wed,  4 Nov 2026 20:18:41 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-11-021c84d852e0@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,33 +125,42 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=796; i=brauner@kernel.org; h=from:subject:message-id; bh=l/jVDuzMOjj8ie0SJoZ9zbu/qnGtbORxwaULd7yJNic=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bryu4qPpOT1kc4isZaDhv1/bXwk9vbD2UmCm1l1v/ 29zJLs2dpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEyk6jwjw6sm06P+wcoHVfTf +okVXHjMEBzWYri1p826+M+MhiW+0owMC9vz1pp/V1r0kenzR652vZM5y5jOqWdbe18R57A5vkq ZEwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1161; i=brauner@kernel.org; h=from:subject:message-id; bh=5p0zMz40BbKdivFQo1NNbyIz4tkvEi3yC5tXL4aXaeU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9bryxTr/f46JN2aT7fqoMIobterOLr517VZK2/eVbF pMTq1cadJSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExk6Q5GhpeRX3yP6jdm/nBn TDpmVrDk42u3AsOCWcVRi54YHnqrX8zIcGmRdthP9Rql7VIfc5K5Jlq/vCTExLioUWxJ93Lnjfk ujAA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-The files under /proc/bus/zorro hand out a struct ConfigDev and seek
-within that, but their size says sizeof(struct zorro_dev). Say
-sizeof(struct ConfigDev).
+led_proc_write() looks at the first eight bytes of a write and returns
+that many, so a writer that loops until everything is written, stdio
+does, sends the rest as a second command. That one is unknown and
+switches the LED off. Return the whole count, the rest is ignored.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: ee1858d3122d ("[SPARC]: Add sun4m LED driver.")
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/zorro/proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/kernel/led.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/zorro/proc.c b/drivers/zorro/proc.c
-index f916bf60b312..4c6f8f1c4d71 100644
---- a/drivers/zorro/proc.c
-+++ b/drivers/zorro/proc.c
-@@ -108,7 +108,7 @@ static int __init zorro_proc_attach_device(unsigned int slot)
- 				 &zorro_autocon[slot]);
- 	if (!entry)
- 		return -ENOMEM;
--	proc_set_size(entry, sizeof(struct zorro_dev));
-+	proc_set_size(entry, sizeof(struct ConfigDev));
- 	return 0;
+diff --git a/arch/sparc/kernel/led.c b/arch/sparc/kernel/led.c
+index 9b53ac1fe533..a1478de9fe5d 100644
+--- a/arch/sparc/kernel/led.c
++++ b/arch/sparc/kernel/led.c
+@@ -68,6 +68,7 @@ static int led_proc_open(struct inode *inode, struct file *file)
+ static ssize_t led_proc_write(struct file *file, const char __user *buffer,
+ 			      size_t count, loff_t *ppos)
+ {
++	size_t len = count;
+ 	char *buf = NULL;
+ 
+ 	if (count > LED_MAX_LENGTH)
+@@ -102,7 +103,7 @@ static ssize_t led_proc_write(struct file *file, const char __user *buffer,
+ 
+ 	kfree(buf);
+ 
+-	return count;
++	return len;
  }
  
+ static const struct proc_ops led_proc_ops = {
 
 -- 
 2.53.0
