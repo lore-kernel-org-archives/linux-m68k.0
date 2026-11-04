@@ -1,54 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793821659;
-	b=yTRzTML5wEL5I8vDDXbZzk+FxdXqI/cCqOPlSDgGjFANdD5BMNeAvWuqQuvn+e2y40rr
-	 24h3FfBs/a407Dr0fkizol5dt6tzvVWStkGi7pUGDgLJQI9l1RxyKzyGKpjjtjU41wkE6
-	 Nj3Eo0XnH7uvoi9dKXwDthFQh6KOKptZ+kLp+NPixq46CFbOlRMLpGm9e9cUdvuux1eDA
-	 UY+/xEgvSYcETYF5FBiZplRpDanMVOEjX3hh5qd4lqrcxUeyxqKKka9WWvOgEXALJWq7f
-	 TdSZ/Ah1DQuIoMGw8ZTk934tveIuIRyagrFcnniI50o2djuMMSuaENbMBUrL49D7Lxw==
+	t=1793821674;
+	b=oJT8ihwRpm8HZxZHYMJ0IhFaqviikLxeNVGTGpGMnRcYWH9u9E9LyCLaz3whFewRHsec
+	 hGT1InrfEnXirMmwdDM8s9TPk9J5/QgjrErW/nLzvBY2XP1v4ssJM57UEBd+awRuzzcaq
+	 OknQFhxsbOz2JDNIA/E8XKIdj/mcJ+9s0ApbKpiWfEaIHaXd4ME81XKeWP77uIy1AQImm
+	 2hnsTrXVYQT0/bGUJy/LF/K65sW5feAs8+dAFsWrwduSbL7V61tKYxYLsrDqAaHcp1sVD
+	 bMI5uHeyrD/C2dB7EbPUUlLDDsoNG4UJuUagP8/J64zCzRIO1c+3IrMI0POgRr/N+xg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793821659;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793821674;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=Vfgsd3PUinlq5Gnmk93ZNsjvWtIfYjQstKDgqXFFHmI=;
-	b=fWC0AV7ax8pE/f80+2IGblWttYUo0fn12NF8+kI466AGcWTcRV9VqntFCJ5EYj1Wj3cF
-	 rBArFD15iJwyIt+XHGZPcrpcx1qRtKeDHEgPEge/mTn7YPHUcQ+F8F7LH4GR7rA5xoKUd
-	 GADJmZmV9qsaeVatZD8sJOT5/ceRO2WC4027oNt9BmnyWcq5t2GijMWEL7+KJid1dIUjz
-	 C9F1lp4i1BL0xowZAc39S7EICguDpxt305k/vxj92wjpI9JcBP+HqSBNl3MUXpJWQXLMA
-	 PwQ7CFpQqto36SHe5CKuRBN9o1BWUp02rdo/++4tVKyKoY25wzHnZ2zOAzEGQw11WMw==
+	bh=o7mJ23mAcDTgScqej0oFhuq1h/6FvdBmFy6u6skOQc0=;
+	b=LoCVI/SJgmtls9mE86/ptOBwyHUMNtYsa4tnn0zS5OOz4ZfD693WtRXTuRvJtgJ/TPIb
+	 GIaGJX+Zs9wkfRhb5r26h8qWYRQkp6mdLOzFZ4DpvXEwOBGYQZ+yORRRWh4HkysBIXf+t
+	 OQ334zUCn4erNTpyQO/jjjAZx6eVc7Ng+FaYE5n/Ap5HqB5uL6MpGtz3+Llc36z2mTOrL
+	 /Uf453Wzm4ga1frO3jqQkrKE2u/F0SY3A2+Xr5ZLuVge/YzqPR/IPFYnIEiVtzRKf+W+K
+	 pZ0dybP8k6pxbx/SQJBTaZRjV83EWaSL5ibCEAKLADxCP/K5v915HccvFG7wowy7Y6g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gtj+GH2h;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dA0DNurZ;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C022A6074FBA
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:47:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C022A6074FBA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07EA4608F3D5
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:47:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 07EA4608F3D5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gtj+GH2h
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dA0DNurZ
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 66EDC417AD;
-	Wed,  4 Nov 2026 19:47:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D2E1F0093A;
-	Wed,  4 Nov 2026 19:47:25 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 5CE2A60F15;
+	Wed,  4 Nov 2026 19:47:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02A231F0093A;
+	Wed,  4 Nov 2026 19:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793821658;
-	bh=Vfgsd3PUinlq5Gnmk93ZNsjvWtIfYjQstKDgqXFFHmI=;
+	s=k20260515; t=1793821673;
+	bh=o7mJ23mAcDTgScqej0oFhuq1h/6FvdBmFy6u6skOQc0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gtj+GH2hqTPplDjhVzhRAWhU8OkVhPJPP0JLMRwTbfdc+nl4HFqaLUtkQ0sGqY9p1
-	 cio3rKWjRbaW0hfoe+iR5yUiUxGlvl6F9N71fZhbqKX3d7khRaPNZmLb3yNj8B0VZt
-	 vYfLltTat3exR0SQB7Uf68Jxi/SRcYyBvdcK5hbQj2/GV68lWs4IX74yTfnWqymq82
-	 M8yspGv/K4UmZRSLladjige3wPn9EOhryHH1PaBstskLXXtn/pAaCO1Kia1pLxX1NY
-	 C6gBdMcfP0MHCUtCGkHA2XBsPT4EAkNI1eiSvXtWEQIDsoCAj2OLDYM0olGMiVe6SX
-	 LvO7OJ7dWJD9w==
+	b=dA0DNurZqV4J9DbS0OyTvs1fyzf+tr+GnxjFgcPQAXyozxe/btBqIfQ8qv52kR1XH
+	 FUZ5gMbXt9OK2wJH/Q21p3te0KBNKoQmKmOkjKcIkbKYcHgCrR5Dr4Z5UBlA95Ho1N
+	 RZBF+D4QSJaIxJn6Y8WHPyeYdRN6+YuqVVO7YdSYR1PI9vvy2kuuar+gQyTcmGnjvo
+	 skcmgOf51D6shHyYWUMhtACHkrQpha6C3N03hx/u1Dd1WRqrNEqgG2OeXjq39V1Dp4
+	 i31YqmqhIyZZvJu67ZPvlEjwYe9Ikqs3ZGyd/wpMChb1hwGc5NYBbHFIVrVfRBvnFu
+	 8IfvxRbYh5cdw==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 21/26] Input: let procfs own the wait queue of /proc/bus/input/devices
-Date: Wed,  4 Nov 2026 20:47:23 +0100
-Message-ID: <20261104-work-procfs-drivers-v2-21-245e54e87116@kernel.org>
+Subject: [PATCH RESEND v2 22/26] ALSA: info: let procfs own the seq_file of text entries
+Date: Wed,  4 Nov 2026 20:47:38 +0100
+Message-ID: <20261104-work-procfs-drivers-v2-22-245e54e87116@kernel.org>
 In-Reply-To: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org>
 References: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,76 +125,77 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2424; i=brauner@kernel.org; h=from:subject:message-id; bh=cAurGI8IRWHsk8N+x2SlkH9/s4vXIqR5KE32d74H9dY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97uoVPNHOMiVW7/vlsMd9s7daas+73xSQc6TwtsuLx am89pNudZSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEwk6xbDPwufULMS+bvROaer RY/ePlP4dAePp5GonG38y6XNHTtmb2H4n3LmTr9vRD1nY+L127WsJ/1+dr1MjVS/KzLXyCg/wcW ECQA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2241; i=brauner@kernel.org; h=from:subject:message-id; bh=S+buwBt9DQjjWOReG2bmbtOto+rEgyDiARec22GsvW8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97ur7cKp5nuC/vvMVLfsjea7umM/MkrbBKuzcXst5/ n7/szoFO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACbSPJPhf+m0E+VJ3WHGl58Z 7Hv7Z/9Z1+vuQv7Tv4jdCrXmPr1L1I2RoUv/kNHdZDXZmqY/2/X6um5/m3PpyarXv97kK7nJn/o 2gQ0A
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-input_proc_devices_poll() sleeps the poller on a queue of its own.
-procfs owns the queue poll() uses now, so leave the poll_wait() to it
-and wake its pollers instead.
+Declare the show function and let procfs open and free the seq_file.
+->proc_open() only sets up the private data and preallocates the buffer
+now and ->proc_release() no longer releases the seq_file. Reading an
+entry then no longer holds up its removal when the card goes away.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/input/input.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ sound/core/info.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/input/input.c b/drivers/input/input.c
-index d27eecbf4a03..a984810eb80d 100644
---- a/drivers/input/input.c
-+++ b/drivers/input/input.c
-@@ -1082,13 +1082,13 @@ static int input_attach_handler(struct input_dev *dev, struct input_handler *han
- #ifdef CONFIG_PROC_FS
- 
- static struct proc_dir_entry *proc_bus_input_dir;
--static DECLARE_WAIT_QUEUE_HEAD(input_devices_poll_wait);
-+static struct proc_dir_entry *proc_bus_input_devices;
- static int input_devices_state;
- 
- static inline void input_wakeup_procfs_readers(void)
- {
- 	input_devices_state++;
--	wake_up(&input_devices_poll_wait);
-+	proc_poll_notify(proc_bus_input_devices);
+diff --git a/sound/core/info.c b/sound/core/info.c
+index f608d335b6c9..42a4f8fb3198 100644
+--- a/sound/core/info.c
++++ b/sound/core/info.c
+@@ -346,9 +346,11 @@ static int snd_info_seq_show(struct seq_file *seq, void *p)
+ 	return 0;
  }
  
- struct input_seq_state {
-@@ -1102,7 +1102,6 @@ static __poll_t input_proc_devices_poll(struct file *file, poll_table *wait)
- 	struct seq_file *seq = file->private_data;
- 	struct input_seq_state *state = seq->private;
++/* procfs opens the seq_file */
+ static int snd_info_text_entry_open(struct inode *inode, struct file *file)
+ {
+ 	struct snd_info_entry *entry = pde_data(inode);
++	struct seq_file *m = file->private_data;
+ 	struct snd_info_private_data *data;
+ 	int err;
  
--	poll_wait(file, &input_devices_poll_wait, wait);
- 	if (state->input_devices_state != input_devices_state) {
- 		state->input_devices_state = input_devices_state;
- 		return EPOLLIN | EPOLLRDNORM;
-@@ -1284,9 +1283,9 @@ static int __init input_proc_init(void)
- 	if (!proc_bus_input_dir)
- 		return -ENOMEM;
- 
--	entry = proc_create("devices", 0, proc_bus_input_dir,
--			    &input_devices_proc_ops);
--	if (!entry)
-+	proc_bus_input_devices = proc_create("devices", 0, proc_bus_input_dir,
-+					     &input_devices_proc_ops);
-+	if (!proc_bus_input_devices)
- 		goto fail1;
- 
- 	entry = proc_create("handlers", 0, proc_bus_input_dir,
-@@ -1297,6 +1296,7 @@ static int __init input_proc_init(void)
+@@ -362,13 +364,12 @@ static int snd_info_text_entry_open(struct inode *inode, struct file *file)
+ 		err = -ENOMEM;
+ 		goto error;
+ 	}
+-	if (entry->size)
+-		err = single_open_size(file, snd_info_seq_show, data,
+-				       entry->size);
+-	else
+-		err = single_open(file, snd_info_seq_show, data);
+-	if (err < 0)
+-		goto error;
++	if (entry->size) {
++		err = seq_preallocate(m, entry->size);
++		if (err < 0)
++			goto error;
++	}
++	m->private = data;
  	return 0;
  
-  fail2:	remove_proc_entry("devices", proc_bus_input_dir);
-+	proc_bus_input_devices = NULL;
-  fail1: remove_proc_entry("bus/input", NULL);
- 	return -ENOMEM;
- }
-@@ -1304,6 +1304,7 @@ static int __init input_proc_init(void)
- static void input_proc_exit(void)
+  error:
+@@ -387,7 +388,6 @@ static int snd_info_text_entry_release(struct inode *inode, struct file *file)
+ 	if (data->wbuffer && entry->c.text.write)
+ 		entry->c.text.write(entry, data->wbuffer);
+ 
+-	single_release(inode, file);
+ 	kfree(data->rbuffer);
+ 	if (data->wbuffer) {
+ 		kvfree(data->wbuffer->buffer);
+@@ -401,11 +401,10 @@ static int snd_info_text_entry_release(struct inode *inode, struct file *file)
+ 
+ static const struct proc_ops snd_info_text_entry_ops =
  {
- 	remove_proc_entry("devices", proc_bus_input_dir);
-+	proc_bus_input_devices = NULL;
- 	remove_proc_entry("handlers", proc_bus_input_dir);
- 	remove_proc_entry("bus/input", NULL);
- }
++	.proc_show	= snd_info_seq_show,
+ 	.proc_open	= snd_info_text_entry_open,
+ 	.proc_release	= snd_info_text_entry_release,
+ 	.proc_write	= snd_info_text_entry_write,
+-	.proc_lseek	= seq_lseek,
+-	.proc_read	= seq_read,
+ };
+ 
+ static struct snd_info_entry *create_subdir(struct module *mod,
 
 -- 
 2.53.0
