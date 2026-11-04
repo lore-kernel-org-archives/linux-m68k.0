@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793821435;
-	b=QhA03xC68WYDnQ/N8Go+q9yYW29GlTxbGP/+CFtmaVZJEMqEo5hOBvVrHSOLCRmIRnOT
-	 szs2+ZdjieKvTSDrfE+18c+Z2UMgfTwVczR1GSmKdoBVxwDOIRunOlHW3+7gasqK/dMBR
-	 5NCVgmNxE2NrNpFDqd3rnkb+9fJdYKA2Yj+lWz0+Fgy0LJOIPhrFhIiiu1bxsFZnBJdLi
-	 8PAXK6Z3t6KMv9FnREFiKpyy8/6ELUE49BP8CVuvEZjdrK5S53w/7Q5kdTGC5FjMptn/O
-	 lT4oQXsHxskN/SyYN/oeZ5AKCvQ+RZOM2aKgDfrNJoU97mzaeT8WL9FCxEo3Q5BowXA==
+	t=1793821451;
+	b=hBNYjXdMtvqh2wzmd44+20pv/hTcwcu3eLCYdAw+hlmn3aJ3CYHQYxKg2XdGTQkTkaIG
+	 QedoLK9ju1Oto0Zz1EyfWm+7gGy5w8aZEqdUfAN/O30pqPwdM70YK5pyBBGtk/nNUZ2wu
+	 uMOQJSs1gsc+rNWi07zetL5pyIp3h0TP1QKnxpUyS/7MZgXh+VB/Iy7x7MbS5vHjelupP
+	 Wq1ma4nIsJ7WgEosGzlmpioqMND2oNTBVJ8vzi/LUr8BI7+dmnRA+a8GaHQgsXC/ZM8HG
+	 14RXhkzuncUInAzxPQV76cjuVXh424i0/x0D+i/rluHE909klOu9R5rMdpRLNhdmk0A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793821435;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793821451;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=MXDP9fyzpcc9X8/ROQgrmtpQySITyZcOubu0QYlfW0Q=;
-	b=L8FKexH2STk/lYSbDuE7WXD+ZSQ2HDNoPcVIppUuQVsli2/WCu6LxSm+h77EX66K0Ip+
-	 Wg5ymx4hRziuuVO60xCNuyjS8AjXym8J+hnA7/4F5SceL1EgHGb6uxe3Wk++SfJYIaT+S
-	 VdUlbtVG+jtKWkDv8T+BsIBF2o0MjMy7+Y5Xke3HCAnaPo30i4354m0r4FKwqmwQs5yZz
-	 Gt0+35x2k759g+W25QhpeVRvV5NgJjdXpO/lboNLeOUjnwyNifLxMkBvZNl+3yzUQj+vt
-	 PPpg5ZNKHEbQ00CHuK/83AErMRjsbwhCU7/iy1m9IxSv8R7DA1tHGPHTokYsWf+dEfA==
+	bh=Z72TnyR4FqZWuZXLi7RAB/58/idtKzOn4i9EyTHtGiw=;
+	b=WbjXjYMzLm74kZ0+F43XMWEqPVBKUxWrWRw8dLibR1AZu0kfmrl4J2ZmlQHUc/IchKk7
+	 80l8MUWHEXgu3T6ZPP1DP5H7RHgZ1QYeePjedTsSx1iUxvh78tRXMfsR+xnAmjGxjBalI
+	 SqD8efInoW/4VgKpeo+jUXnud6h7NlOec7n8ghpe21i09/idmoT/0kun8Fd4tAJIpHAqG
+	 cUzLoS83ccPcibcraehBzWRxbIbAHWmLbwXAo4SePy2CH0bF0pCd4XuoinU01rp2zMQi2
+	 Es6gfgQPLwz9qqaEV9a9uLoYulkl8PcpIN+pyMaY1oO2g4WPFNrA2msY/iaZJ0XuzJA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HvxkwJrE;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aicfXnWV;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB526070332
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:43:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7EB526070332
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E48E606A33C
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:44:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3E48E606A33C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HvxkwJrE
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=aicfXnWV
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3CB81422AB;
-	Wed,  4 Nov 2026 19:43:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC5111F000C1;
-	Wed,  4 Nov 2026 19:43:42 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 1024940584;
+	Wed,  4 Nov 2026 19:44:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF0511F00919;
+	Wed,  4 Nov 2026 19:43:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793821435;
-	bh=MXDP9fyzpcc9X8/ROQgrmtpQySITyZcOubu0QYlfW0Q=;
+	s=k20260515; t=1793821449;
+	bh=Z72TnyR4FqZWuZXLi7RAB/58/idtKzOn4i9EyTHtGiw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=HvxkwJrE6yZiYOxFcQMcjejW88ZaW29hTOWaJR9YO5Tvs3/8Ku/knORgdhrkWEZnm
-	 FqlvED7tkZyaWujkmmUucC82ygg0xRZPT8t1WYaFWGOQCbuZ5npn6/psp1WJsopeBc
-	 /Ip4YEzyI9/mkYahhPxRdv4RqwBmNw3bGEqLSFKH7xSvANy2+6tMJK3oeMT/j06KPr
-	 aV1SaTvwJyNaQmYfmPPmd7MRi8vEfKFW5IekI7JTcT9yV8aBpWOQ57VRcmy0cEhZAb
-	 MM7IMfpEqYVYfJYvfiLY5AP2A/DDKBQ+DAROllTXi16lENKuE4ydpoDCGxpGPMHxZe
-	 bfR3jntxCFu+g==
+	b=aicfXnWVc+2sorHSEArN9gD6s+r89vzM3QCItz87jq7xenbwZcKkxAyhEzMN4zilO
+	 XEmAW5nDi6Qpy1HAR+3dogNdprQDzauusCx/5cNW0SrbZVyC5GFUF34a5Ax3Ufz9Ir
+	 pPUXceddaTjvbGaHwgGMseQ+qlmEYJQbjS+TTvruu0qlgjbpKch86CrjWevskZ10dt
+	 CPwtCbH1BlXfDfr1nCeM9GXk83OUHSgxmRLaA86TuRr7s0NevUTTC4SfMspApoUqNj
+	 2Bq8k9a+tUVTivUfQqiyVO9j0Bzx/5RNz+dYk3t96b4Fnb5fexWFIEeXgiYZ4/X6vz
+	 2jCoIj12+zkWQ==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +109,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 06/26] md: let procfs own the seq_file of /proc/mdstat
-Date: Wed,  4 Nov 2026 20:43:40 +0100
-Message-ID: <20261104-work-procfs-drivers-v2-6-245e54e87116@kernel.org>
+Subject: [PATCH RESEND v2 07/26] md: let procfs own the wait queue of /proc/mdstat
+Date: Wed,  4 Nov 2026 20:43:55 +0100
+Message-ID: <20261104-work-procfs-drivers-v2-7-245e54e87116@kernel.org>
 In-Reply-To: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org>
 References: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,55 +125,110 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1303; i=brauner@kernel.org; h=from:subject:message-id; bh=rdu1kmejfqc5NG4cwcsJAI4WSVobA0+Qk8YSn4PPNtc=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97qq6MLvj4dWlPlW/Lu/K/95xU/V2xNJbCyWiD8o4T U+5uk0tsKOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAim4wZGb7tvCDdyFbA2D3h xbQ1r407Cl4f1/C3fFQsYPDizr8HIumMDFP6U2beWjP1wmONNb84O1vnWbE1dPszPL6aGeZe9b+ wjBUA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3404; i=brauner@kernel.org; h=from:subject:message-id; bh=Nn5OVy8ZnyI1nSFUur3mK5MV0AP1ijE3ArueCKeFRT8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97qpelclm2eRivDzv95ei9M8+3HNPnr9QzG/qmrjCP rmm56dyRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwEQCXzP8L+Ry03raKlfQfVPu 0IPvj5U0WoW+KZ9MOfz5Lev7yvuRzAx/BR75d/79PlNgAlP5pc8HHJqssrPnl5s3P0u6bivP2cv FBgA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Declare the seq_operations and let procfs open and free the seq_file.
-->proc_open() only records the event count for ->proc_poll() now.
+mdstat_poll() sleeps the poller on md_event_waiters and md_exit() has
+to wake it in a loop until nobody is left on the queue, because the
+queue goes away with the module. procfs owns the queue poll() uses
+now, it outlives the module, and a poll of the removed entry reports
+EPOLLERR | EPOLLPRI, so md_new_event() wakes the pollers through
+proc_poll_notify() and the loop and md_unloading go.
+
+md_exit() removes /proc/mdstat last now. A sysfs store on an inactive
+array doesn't hold the module, so it can still reach md_new_event()
+while md_exit() runs, until destroy_workqueue() has waited for the last
+array to go, and a wake-up through a removed entry is a use after free.
+The static queue didn't mind that, the entry does.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- drivers/md/md.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ drivers/md/md.c | 29 ++++++++---------------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 03e35386a802..64abf1743e41 100644
+index 64abf1743e41..7560dcf0f5c8 100644
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -9167,18 +9167,13 @@ static const struct seq_operations md_seq_ops = {
- 	.show   = md_seq_show,
- };
- 
-+/* procfs opens the seq_file */
- static int md_seq_open(struct inode *inode, struct file *file)
+@@ -351,12 +351,12 @@ static bool check_new_feature = true;
+  *  start array, stop array, error, add device, remove device,
+  *  start build, activate spare
+  */
+-static DECLARE_WAIT_QUEUE_HEAD(md_event_waiters);
++static struct proc_dir_entry *mdstat_entry;
+ static atomic_t md_event_count;
+ void md_new_event(void)
  {
--	struct seq_file *seq;
--	int error;
+ 	atomic_inc(&md_event_count);
+-	wake_up(&md_event_waiters);
++	proc_poll_notify(mdstat_entry);
+ }
+ EXPORT_SYMBOL_GPL(md_new_event);
+ 
+@@ -9176,16 +9176,11 @@ static int md_seq_open(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
+-static int md_unloading;
+ static __poll_t mdstat_poll(struct file *filp, poll_table *wait)
+ {
+ 	struct seq_file *seq = filp->private_data;
+ 	__poll_t mask;
+ 
+-	if (md_unloading)
+-		return EPOLLIN|EPOLLRDNORM|EPOLLERR|EPOLLPRI;
+-	poll_wait(filp, &md_event_waiters, wait);
 -
--	error = seq_open(file, &md_seq_ops);
--	if (error)
--		return error;
-+	struct seq_file *seq = file->private_data;
+ 	/* always allow read */
+ 	mask = EPOLLIN | EPOLLRDNORM;
  
--	seq = file->private_data;
- 	seq->poll_event = atomic_read(&md_event_count);
--	return error;
-+	return 0;
+@@ -10765,7 +10760,7 @@ static void md_geninit(void)
+ {
+ 	pr_debug("md: sizeof(mdp_super_t) = %d\n", (int)sizeof(mdp_super_t));
+ 
+-	proc_create("mdstat", S_IRUGO, NULL, &mdstat_proc_ops);
++	mdstat_entry = proc_create("mdstat", S_IRUGO, NULL, &mdstat_proc_ops);
  }
  
- static int md_unloading;
-@@ -9200,10 +9195,8 @@ static __poll_t mdstat_poll(struct file *filp, poll_table *wait)
- }
+ static int __init md_init(void)
+@@ -11074,25 +11069,12 @@ void md_autostart_arrays(int part)
+ static __exit void md_exit(void)
+ {
+ 	struct mddev *mddev;
+-	int delay = 1;
  
- static const struct proc_ops mdstat_proc_ops = {
-+	.proc_seq_ops	= &md_seq_ops,
- 	.proc_open	= md_seq_open,
--	.proc_read	= seq_read,
--	.proc_lseek	= seq_lseek,
--	.proc_release	= seq_release,
- 	.proc_poll	= mdstat_poll,
- };
+ 	unregister_blkdev(MD_MAJOR,"md");
+ 	unregister_blkdev(mdp_major, "mdp");
+ 	unregister_reboot_notifier(&md_notifier);
+ 	unregister_sysctl_table(raid_table_header);
+ 
+-	/* We cannot unload the modules while some process is
+-	 * waiting for us in select() or poll() - wake them up
+-	 */
+-	md_unloading = 1;
+-	while (waitqueue_active(&md_event_waiters)) {
+-		/* not safe to leave yet */
+-		wake_up(&md_event_waiters);
+-		msleep(delay);
+-		delay += delay;
+-	}
+-	remove_proc_entry("mdstat", NULL);
+-
+ 	spin_lock(&all_mddevs_lock);
+ 	list_for_each_entry(mddev, &all_mddevs, all_mddevs) {
+ 		if (!mddev_get(mddev))
+@@ -11112,6 +11094,11 @@ static __exit void md_exit(void)
+ 	spin_unlock(&all_mddevs_lock);
+ 
+ 	destroy_workqueue(md_misc_wq);
++	/*
++	 * Only now can nothing reach md_new_event() anymore, which wakes the
++	 * pollers of /proc/mdstat through its entry.
++	 */
++	remove_proc_entry("mdstat", NULL);
+ 	md_bitmap_exit();
+ }
  
 
 -- 
