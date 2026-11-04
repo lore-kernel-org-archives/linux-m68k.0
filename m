@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793814938;
-	b=y5EuyUVy04M29Q4YviZZTEaMKlwCd45pbKu3VMb+MVvVWr2CURBmw5ahypgz4v7MyO+K
-	 RgtqSUiHYDe/meehN/PEgDAy90HWtWXU5IjP6cX8yyDBaEes2+2xniwrvQtjhHLoW5WrM
-	 hhKr7OaIOiOMKJkhbIeYPwYFfb+MMtYJm/6OeuVQcM1fBu+nxA/pgnPIBul+E6JjHYjyq
-	 IOErPrYBK+MC4GhyUArHimHrvFXg+sLV66oLI4MKmhV8JR6hX/QJsBTB0SP8XZAl2FUd6
-	 5VynYiy2hUkNjW7wsiLcwToCXE3vdyyQRL907CIG7asZ+sYbHHb9pMn9OCnUJjmRQPg==
+	t=1793814962;
+	b=tkQnd6pPb7vVCkPfdHMMTkDCWx79lNYhdn8+pxrjyzFTRt5QkCM8Z6LEO8Brd6Ne96J9
+	 q0Sk7FRLpH2BHC7705ikWLXS8NX+gyH5heTAB73I6GuyAWpRFDNKrJ1wAclSOauJVCAIQ
+	 P+NQX30bQ/+tqzd7tLi2WtOs8uhqgFJWCzyGvrqjQN+p7zFxpRbO3KoMMDSk8mapx6VmM
+	 eD5e40UXCU+jQ4ptaik/hCb1KCmGGES1/jCuCIgHshf76y+cYh7FIoyo7xUPy++CkwR01
+	 5JuTMeitY7xQItdnF+uSTfH8DhrNH40uPRL8D15kWWv4kGvxG4D9dBIHqRzH0E1fTSA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793814938;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793814962;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=89c02+ELWuX5+S2o66zdN47fZ8jrr3os6Vl1YJUNtuU=;
-	b=zu6af8IUnyQz/o9HYe8cBe8Mcf74YnOJoRfdmgKPAQ4+piuILMA2gldZaytq/Qa4XL5/
-	 j95c3XIHPaGTaNTvIgHeI0IS7NsPXwCH5n3SVI/xCPF0IjZMxDzOZ4HB9obuhMgMnYG+d
-	 Kcv3JxzQ9JQLu4Hu8d32xXDMEYYHiDZ/B4sPRACsk4QICMgX1RO0iOrRbsrlC/H+g8aAH
-	 uKNuUZtHkEvuqYuHniRUe6CJQFa/M7dSlv6XySokAr97A879CbtNv13O3bPf3+eEqDjc3
-	 Ie94piAP+GDibQzTUruK9HTs+NbL5/TATUsXViq3p3xaRWmOdl/kThCuVKyCoFvEWew==
+	bh=x8nH5QJkKiZNUTowDxB/hMOFyVkHqFnuwosL7qreMAM=;
+	b=ubK1LMvvz8v5gHxHw4cIg3K4ynaKqIIR2tNBtp0dNGe9ScQdDz5KT68S0yUSSuKtvANx
+	 gSrSNQuSGQOm200sWQxbsYHTh+CE24ZyRibT5b/y3GcE2uHf/HgkmKPsMI42Mtdit2G6l
+	 iZhJLRffXE5u+N7dc8F2nZq9QCmEogz116ffsO3VAiIPw+tAxeCYxkS5+zrSXtcVPCHtA
+	 NdIuJJ3t38WZuvYP/UcrR1YKu6GtMCdTdZeBHFnkLdgmhsbmwTdsqg9RtY6GoCLvAbBDI
+	 ljooHO3XutfEfP37OcvPuR92HiomIzcR7a48tV4et2EqAqE2JvXjUZ/nd8OIzOo61Gw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lv3gFXSS;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hoGLsylU;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3197B60A263A
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:55:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3197B60A263A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1B060A3837
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 17:56:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CD1B060A3837
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=lv3gFXSS
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hoGLsylU
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 31A0960AB0;
+	by tor.source.kernel.org (Postfix) with ESMTP id 2A53660A06;
+	Wed,  4 Nov 2026 17:56:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FAC61F000C1;
 	Wed,  4 Nov 2026 17:55:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD4DE1F00A16;
-	Wed,  4 Nov 2026 17:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793814936;
-	bh=89c02+ELWuX5+S2o66zdN47fZ8jrr3os6Vl1YJUNtuU=;
+	s=k20260515; t=1793814960;
+	bh=x8nH5QJkKiZNUTowDxB/hMOFyVkHqFnuwosL7qreMAM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=lv3gFXSSZQ1eyeFxl4sMw4NV+sDGb399yJy5J5a617cu3SzjnnFfUG43Lfl/7N2wR
-	 K+IhSwvXPWPYjM+q4YQ+IDJcS26tQY7yPe6vUEMgkrymmspdu0EotaGD42o6rpaRl9
-	 0A3kHepPv/ApdT3/KV9Zp4gd4PPOjbWG6usoLl5/UMWpBcxegT2cBWuUjFbtBLH7mv
-	 6ymbGGCGv3TrMbwp1kdSSvCMr+6QGHtpTwZWaklXV25iOtzvIgzYNxKq9awhT/uEik
-	 dFy+Ax1siZAlHQyp0vw3cAsPNd4lTDPGDdUR7g3JwRgFyHgFv3m15tZ2mAVMcDLMbJ
-	 1KqqoJMCmMAiQ==
+	b=hoGLsylUTixNPsM6JjA8vEQ97GS0PU64B/S8mW42LCSUIEW0+Oup1fKeKwWKQdTUs
+	 7hA+IwbT8SOA6SNIASsjDmnoUBtHx7XyqRnT7bzWmyNx3XbQeq35t1VBobNh34XJek
+	 TdXWkSK6MqCihvsWYtZOw1/JX14O29VjTCo9F+UA4nJfcs4I9UbzXBW1IEI742yd39
+	 aSY2cFacXu9jS6PUQxhQcjsZmHKA5h2Hba77Wfcqi3vnGnQV+UzZn74wBpWJjO9vss
+	 WWfchnn/2CaHA/1giIf/i0HUORN8nxETI0UgTQa+bm9oE2krXPKY7Xy+xru556UT4i
+	 GtoMTdnZo42Nw==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -108,10 +108,11 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-modules@vger.kernel.org,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
-	Chuck Lever <cel@kernel.org>
-Subject: [PATCH v2 35/51] proc: warn about entries left in /proc/net of a dying namespace
-Date: Wed,  4 Nov 2026 18:47:21 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-35-bbf7d5546809@kernel.org>
+	Chuck Lever <cel@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH v2 36/51] proc: don't let NOMMU map procfs files
+Date: Wed,  4 Nov 2026 18:47:22 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-36-bbf7d5546809@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-bbf7d5546809@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,45 +126,110 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1410; i=brauner@kernel.org; h=from:subject:message-id; bh=WtI/bNxyA4ZViPTNrsQhWLRSUjQUZ6M8VP3x2XTkww0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9znslLxak6zXzI89Tlobt8x2XHObOOr/+XjXLr/wSD pcMiUNGHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABOZcIHhv9PR9Kbfsr9EuEwS 1OuN4o2O2Xfx2elLdO/WqT/FzfBsLsMfvrrlGXyfnU+ePfxJ5/kd5mMSt0XZXSfwl/mEMKZnOc9 mAwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3847; i=brauner@kernel.org; h=from:subject:message-id; bh=JTUUxaAv8g+OiylD/jB4kSfUdacg86Bjtrwx1fOwQ90=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9znst+bi3gVMj0u9q8/OL7/9NXaGRp93F4cL6Kpxd9 LWzfr9TRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwEQ89Rn+WS/RVtYXufbh4oFN 2w/v2mu6PuPztYBDb9L+TapKvCWZJs3IsLjj1Za9+0LefPka4qY2Q+HryzrJUraItnPnOr5YHLr PxwcA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-proc_net_ns_exit() runs after all the other pernet exits and frees
-net->proc_net right after removing "stat" from it. An entry that some
-pernet exit forgot to remove is left with a freed ->parent, and so
-PDE_NET() hands seq_open_net() and single_open_net() a freed struct net
-when the entry is opened through a file descriptor that someone kept.
+Every procfs file has a ->mmap since commit 786d7e1612f0 ("Fix
+rmmod/read/write races in /proc entries"), whether the entry has a
+->proc_mmap or not. On NOMMU validate_mmap_request() takes that to mean
+the file can be mapped. procfs has no ->mmap_capabilities so a regular
+file gets NOMMU_MAP_COPY, and a private mapping never calls ->mmap at
+all. Instead do_mmap() takes nommu_region_sem for writing and
+do_mmap_private() reads the file into the copy with kernel_read().
 
-There is no such entry in the tree that we know of, but nothing would
-tell us about one either. So warn about it like remove_proc_entry()
-does for a directory that isn't empty.
+Reading /proc/maps takes nommu_region_sem as well:
+
+  mmap(NULL, 4096, PROT_READ, MAP_PRIVATE, open("/proc/maps", O_RDONLY), 0)
+
+  do_mmap()                          // down_write(&nommu_region_sem)
+  -> do_mmap_private()
+     -> kernel_read()
+        -> seq_read_iter()
+           -> nommu_region_list_start()   // down_read()
+
+The task hangs for good, holding nommu_region_sem and its own mmap_lock,
+and every mmap(), munmap() and exit after that hangs behind it.
+/proc/maps is 0444 so any user can do that.
+
+Give the procfs files a ->mmap_capabilities on NOMMU that allows
+nothing. That covers every entry and not just /proc/maps, procfs can't
+know which entry's read takes nommu_region_sem. Mapping a procfs file
+then fails with -ENODEV, like mapping a file without ->mmap did before
+786d7e1612f0. NOMMU never called ->proc_mmap() for a regular file
+anyway, procfs never offered NOMMU_MAP_DIRECT.
 
 Reported-by: Chris Mason <mason@kernel.org>
-Fixes: e9720acd728a ("[NET]: Make /proc/net a symlink on /proc/self/net (v3)")
+Fixes: 786d7e1612f0 ("Fix rmmod/read/write races in /proc entries")
+Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/proc/proc_net.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/proc/inode.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/fs/proc/proc_net.c b/fs/proc/proc_net.c
-index dbcf87a257e1..df5484813d5d 100644
---- a/fs/proc/proc_net.c
-+++ b/fs/proc/proc_net.c
-@@ -410,7 +410,13 @@ out:
- 
- static __net_exit void proc_net_ns_exit(struct net *net)
- {
-+	struct proc_dir_entry *left;
-+
- 	remove_proc_entry("stat", net->proc_net);
-+	/* Whatever is left still points at net->proc_net and so at net. */
-+	left = rb_entry_safe(rb_first(&net->proc_net->subdir),
-+			     struct proc_dir_entry, subdir_node);
-+	WARN(left, "/proc/net: leaking at least '%s'\n", left->name);
- 	pde_free(net->proc_net);
+diff --git a/fs/proc/inode.c b/fs/proc/inode.c
+index b7634f975d98..9933f03ab9fb 100644
+--- a/fs/proc/inode.c
++++ b/fs/proc/inode.c
+@@ -466,6 +466,18 @@ proc_reg_get_unmapped_area(struct file *file, unsigned long orig_addr,
+ 	return rv;
  }
  
++#ifndef CONFIG_MMU
++/*
++ * NOMMU never calls ->proc_mmap() for a regular file. It reads the file into
++ * a private copy instead, with nommu_region_sem held for writing, which
++ * reading /proc/maps takes as well. Don't map procfs files at all.
++ */
++static unsigned int proc_reg_mmap_capabilities(struct file *file)
++{
++	return 0;
++}
++#endif
++
+ static int proc_reg_open(struct inode *inode, struct file *file)
+ {
+ 	struct proc_dir_entry *pde = PDE(inode);
+@@ -559,6 +571,9 @@ static const struct file_operations proc_reg_file_ops = {
+ 	.unlocked_ioctl	= proc_reg_unlocked_ioctl,
+ 	.mmap		= proc_reg_mmap,
+ 	.get_unmapped_area = proc_reg_get_unmapped_area,
++#ifndef CONFIG_MMU
++	.mmap_capabilities = proc_reg_mmap_capabilities,
++#endif
+ 	.open		= proc_reg_open,
+ 	.release	= proc_reg_release,
+ };
+@@ -572,6 +587,9 @@ static const struct file_operations proc_iter_file_ops = {
+ 	.unlocked_ioctl	= proc_reg_unlocked_ioctl,
+ 	.mmap		= proc_reg_mmap,
+ 	.get_unmapped_area = proc_reg_get_unmapped_area,
++#ifndef CONFIG_MMU
++	.mmap_capabilities = proc_reg_mmap_capabilities,
++#endif
+ 	.open		= proc_reg_open,
+ 	.release	= proc_reg_release,
+ };
+@@ -586,6 +604,9 @@ static const struct file_operations proc_reg_file_ops_compat = {
+ 	.compat_ioctl	= proc_reg_compat_ioctl,
+ 	.mmap		= proc_reg_mmap,
+ 	.get_unmapped_area = proc_reg_get_unmapped_area,
++#ifndef CONFIG_MMU
++	.mmap_capabilities = proc_reg_mmap_capabilities,
++#endif
+ 	.open		= proc_reg_open,
+ 	.release	= proc_reg_release,
+ };
+@@ -600,6 +621,9 @@ static const struct file_operations proc_iter_file_ops_compat = {
+ 	.compat_ioctl	= proc_reg_compat_ioctl,
+ 	.mmap		= proc_reg_mmap,
+ 	.get_unmapped_area = proc_reg_get_unmapped_area,
++#ifndef CONFIG_MMU
++	.mmap_capabilities = proc_reg_mmap_capabilities,
++#endif
+ 	.open		= proc_reg_open,
+ 	.release	= proc_reg_release,
+ };
 
 -- 
 2.53.0
