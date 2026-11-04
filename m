@@ -1,54 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793819877;
-	b=gsKVRPg0+WGHiiwVrniRI3rUV9Dd+1SmUzryfM6BO75UvJRjnrmRJtNMgLFTlsys7L8Y
-	 5rT9CRDv/wPZGhXS9RMP1Y0pmLn0fbeDwcZlEt1MlZVUUGtENtUkY3M7Afd6APTisk33i
-	 xtLVGE+ij9o0ZIngBy3dCR0RehXMfGg4nWOaQq3QyGoVf/R35Ys1wWwf+xnjHNH/+M4aA
-	 D9zsNn2Zd0az+37E5Gt/045m0XhRNf3cgf6zCtkCGOmUgVqFh7BGMHluOU4K/9c7MCSXr
-	 9GbpUhiBuTSQawnLOu6VUyiIa8u7XOzuWE0F6/M7oj8F/oWmJiZFr9wCT77hSPfRq/w==
+	t=1793819892;
+	b=Lj863+tumvq7U/irK1JB5cqNzP+uMsqCoYZzCeEqJ/wqrw5mflgWxMMaJMhPFKIL8Wvq
+	 tsHcLFdHSWSmSF/7M4FcPu0xOVMkWPnMNy7fgTl4lIcT6W+Rpmg48YnwDVMGzXf7f+WKa
+	 3xAss01LgK7F12TIFFVkLwSYpQmzfPSkWlv9EMuZai944z4bRkMEPuzRdRRNsyi9ZhfY5
+	 +NYXroyzRbSoJnLDWoY/TuFvSnMjbx1amh3uIy4FBy4a5F7ipTlyMISJ0Cfw+JN0+jneE
+	 C30G1cKsZwCpYHM0Sxh2QYTMUyu0ufbZVca+Jep4sgbunDZ5BPVIe6ThBKh1Z05OQtA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793819877;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793819892;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=Bp2DPgSMAVNPpocNHMMHSMxcgQhQwNKqaFQNAmEUdgU=;
-	b=b32uqBU6mle6QyNdnPObSlDTZThWp+MgjJTzTCrFHXUh3a4dUYK3gcgb9zzx2IijrFLe
-	 KXxa+z9J4V5DioWLzkTSeYLdziuYKxEN5Jztl5l8+jwK9fFMdbYdnA7HC32VFzzNYK+am
-	 0F7+41NSiZwcxAIYZtq8drDFF6M3GluXuv+ngNt1DRpnN9J7o2Gmh41Un82xoEpmyy24d
-	 D40Rqs+s1Sn7RkiUG+59Otzm9oD5Hg8wfpu3Ht4Y6Z0Tp5IFr/LJatzPC0LBQc+mSpA66
-	 cRryHqBFM0AbJPQjBjnlML9GoFiy3jzxSk3dVTw3A3QreyNvpuzX/lavrUD2rNEDVTw==
+	bh=gnzz2fT926tAung/y7Xzshf60AQanFXIqjFC5KSqJW4=;
+	b=qbC4d2kI17cIB6gsr7dVcClgOTRQlZlCJRZtn5Oslz+rIKUbmiC91N8coTq2ot3e4FnB
+	 0XH+L5C949RYvjCFUBB8cS22xZZ/P1qqmSDDo8W5ShUpEbzfF+y9bbkCaeB4HAhtYtbNT
+	 Alq/elVu/0TrPsS7AGj7daP9pznhdPTHnbYnJkMzWSxw5X/m5lGt3c2vl9qmZpyrTIpfX
+	 FoemP6Dyp5pl9MAhPyjGQSeWPabxZJvopC4FK0vTe3+EmLMPf62uU9bpy6a8lPtEDUnFD
+	 MRU3ZO1QhHdWEHFc2KBtmCf9vnBDgxiL3Y0pJjMko2ZZjYfBxiRonZMIxMv8zOp9RuQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="onbfdV/H";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DJwoJhhA;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA7D606A31B
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:17:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5DA7D606A31B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E10606EEA0
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:18:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 79E10606EEA0
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=onbfdV/H
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DJwoJhhA
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 27F1C412AF;
-	Wed,  4 Nov 2026 19:17:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 496051F000C1;
-	Wed,  4 Nov 2026 19:17:45 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0FA1B43827;
+	Wed,  4 Nov 2026 19:18:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5A991F000C1;
+	Wed,  4 Nov 2026 19:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793819877;
-	bh=Bp2DPgSMAVNPpocNHMMHSMxcgQhQwNKqaFQNAmEUdgU=;
+	s=k20260515; t=1793819891;
+	bh=gnzz2fT926tAung/y7Xzshf60AQanFXIqjFC5KSqJW4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=onbfdV/HTacMnVbqXJ+FWmQQPtyp9R0J4UgJy9QwpRXMNAUpXq4U5MgLOpJJmdqil
-	 A0IpzV3lIP35dJV6mQZjczsBbIm16npn5PD8YgolOlJ1tMWq4drLkt1BRme9A6hdpk
-	 hU7if+GjyblRW+XhOHwJUvOM5bncZ4wy7T8dJkSSmoqVJFYODR5oteYh/K8C4sjSv7
-	 T90fJXFV4MCDOisGIN4JIrvvLoPWPs3/TneCCv2v3EeHxNcbD6g2Laj9xr6GhUYSzJ
-	 UbZZpN0HIrsvDaR+/nImX8hLuzR+la3jElQ0/AQag/TzZMVgu2cf2gdOENudtrxOC7
-	 u98wrpF2+gfGQ==
+	b=DJwoJhhATgLL5xfXdN6OGI5pF+zFeQ4+WjDNEmYUvZTHMkMM3eFBxWoobM0WXpN6L
+	 UN1K0xLPqC6xno0sP505XFwThWfbay58UK+kSTD2vpnLdKzWFKNzP1giv5JOftlPAN
+	 Lav0lUTUsfF4QNMQKGO/ATVDWFOPORj+D8twGViNFcODYJUEtFOTbyZUtap9bjA0h2
+	 /y/zNq9k0GXM/Wcge/kDBQjMR/uKEl2vV60dRTJ8k+gOCXzwPxktA7vZC0dRvivZpp
+	 96DepXBnx1as6j7eZVnuCHwHxCErTDabWI65gJh4HFpjHVsXeCp7TMdzgalcYj5T8Y
+	 Hbm2eKKFQu5Bw==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -108,10 +108,11 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-modules@vger.kernel.org,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
-	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 07/51] lockd: don't hand out the terminator of nlm_end_grace
-Date: Wed,  4 Nov 2026 20:17:43 +0100
-Message-ID: <20261104-work-procfs-bugfixes-v2-7-021c84d852e0@kernel.org>
+	Chuck Lever <cel@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH RESEND v2 08/51] powerpc/pseries/lparcfg: don't drop the last byte of a write
+Date: Wed,  4 Nov 2026 20:17:57 +0100
+Message-ID: <20261104-work-procfs-bugfixes-v2-8-021c84d852e0@kernel.org>
 In-Reply-To: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,33 +126,43 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=879; i=brauner@kernel.org; h=from:subject:message-id; bh=tKzHzMLxBoW/zY681xcBM67Jqe2y1s4JEAk9OycZ8F8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9brz82W5pn1bu8jVTxGdEXE56r5qmzRPmKXZbfpl5N e9UmTVSHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABN5aMHwv1BmWTKrQaW1pau+ y7lc/V6hFSvly7z1GnL9Bfe/by3pYGSYdlT+a0yoMVdMgqbeooRHhxKrFq9gfqp47glfRsvFU/e YAQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1293; i=brauner@kernel.org; h=from:subject:message-id; bh=N2rHHHUzfsZsGLUBvdMxa3o2qGAAPzh8wsvUFn8S2uA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS9brzSemUj37ZpfEJdHNavdhRd85506nnq/+C3P7Y+8 TFiT9g3uaOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiUnIM/0u5vFweH/p6+fPx 1Xd527Vmp+13uFo968XVnftb9sQmFZYxMkz6tCVlybzJutuORSfufHxkyiSRYzOO7z4d/HTf5nt 15WbMAA==
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-nlm_end_grace_read() answers with "Y\n" or "N\n" from a three byte
-buffer and hands out all three bytes, the terminating NUL included.
-Leave the NUL out.
+lparcfg_write() terminates its copy of the write by overwriting the
+last byte, so a write without a trailing newline loses its last
+character: "partition_entitled_capacity=5" is parsed as an empty value
+and fails with -EINVAL. Terminate behind the copy instead, and refuse a
+write that fills the whole buffer, which can't be terminated.
 
-Fixes: d68e3c4aa416 ("lockd: add a /proc/fs/lockd/nlm_end_grace file")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- fs/lockd/procfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/lparcfg.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/lockd/procfs.c b/fs/lockd/procfs.c
-index a01f08c8c2f3..74f7ab77535a 100644
---- a/fs/lockd/procfs.c
-+++ b/fs/lockd/procfs.c
-@@ -57,7 +57,7 @@ nlm_end_grace_read(struct file *file, char __user *buf, size_t size,
- 	resp[1] = '\n';
- 	resp[2] = '\0';
+diff --git a/arch/powerpc/platforms/pseries/lparcfg.c b/arch/powerpc/platforms/pseries/lparcfg.c
+index 3280b7968cab..9882f98c0efb 100644
+--- a/arch/powerpc/platforms/pseries/lparcfg.c
++++ b/arch/powerpc/platforms/pseries/lparcfg.c
+@@ -699,13 +699,12 @@ static ssize_t lparcfg_write(struct file *file, const char __user * buf,
+ 	if (!firmware_has_feature(FW_FEATURE_SPLPAR))
+ 		return -EINVAL;
  
--	return simple_read_from_buffer(buf, size, pos, resp, sizeof(resp));
-+	return simple_read_from_buffer(buf, size, pos, resp, sizeof(resp) - 1);
- }
+-	if (count == 0 || count > sizeof(kbuf))
++	if (count == 0 || count >= sizeof(kbuf))
+ 		return -EINVAL;
  
- static const struct proc_ops lockd_end_grace_proc_ops = {
+ 	if (copy_from_user(kbuf, buf, count))
+ 		return -EFAULT;
+-
+-	kbuf[count - 1] = '\0';
++	kbuf[count] = '\0';
+ 	tmp = strchr(kbuf, '=');
+ 	if (!tmp)
+ 		return -EINVAL;
 
 -- 
 2.53.0
