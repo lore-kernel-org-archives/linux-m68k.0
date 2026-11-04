@@ -1,54 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793822134;
-	b=WOkIzkBY8gMO7Prt2+xC+vYcfZFRzjLKjbvFnLaaI5LJNASO4jM9lz3vlFMwrwvNjGrU
-	 Ceg1QXevu+EvoXC3ieGMoqT5qaY/QKu4ACjFk+XFPNZCJtMoucwHCORe07Jx684tRDQ3i
-	 RoJMU3R18+V8i5iuZ0WR0Y+aVuiG7loru1GByovhRMuQmQCBxDoBj5HITiQGyph/1vD4Q
-	 GJZqLTPD8lbuyWL9moIjpFz+iPBrJ0jFr931QBMpKWvwKDGhDZu0eX3OpmdL4hxuY7jgy
-	 NvlIJ2qA5Q03MNF2wK7EJ5pRrsdtblxrgMW5g8phzkvbDwNS0JwFaZNrjYlQxsst9jA==
+	t=1793822149;
+	b=eSTNMGmxxXtIdgKx4bcwWKC5C+Lg0wOYgwwNEI72cWDSGnI/Zc+KOAVLnBWXOEMDlIwO
+	 mZHfK5ehRd7+FqYR8YtZHOe7JjatcMjoMAZ0cMwEqU6bNkEjACQCnKWb3ODKGZ1msVa1W
+	 8Lav5qz2cfpyDXQffGVgYW1EYlxxturb8h5BrqOvR30ebk21U+61xm9Zh8mSvPQc6Dfz9
+	 +CigZeAx6MwAL0KET8DSX6HN+GTvRfiAZd348m4a9D9f3lA3zf0YWlluwcmzsmeOEi+I6
+	 eih6/rgvgRKTtKoUw3ocLsqNl2GyzoZNxQpva+yPiyMZmk7SSVNXi6MVZb18zxTypdA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793822134;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793822149;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
 	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 Content-Transfer-Encoding;
-	bh=C2fJYdTojRFSaODFdjPHql9M0bzE3FJwr1E018LBBO4=;
-	b=gog0C4fm8h1YZmrh2M27H+Wp3mdpEqZSalJNLCwnufc6UPmAQlLHjRtEMwpPZzkVI332
-	 uk9ziw5OnnYz9WKTQtwkqdMeQ/x6iwO4+fL0C4XqOypgkr+LnjaYDm9XyvJC1SFXKdSJV
-	 jbFed1lKbNnqBYqDV/1QRoxnCKOG7qw9btHaLtXszJhfb1KJcMvTnErnU8BzR66GLNXnX
-	 wCKOWKsl4HpFzD1hVQQsWAegk/h/Whkg/mZRm5Ybw9qxAaKik8tWcIZfZvXrAA1Ge2FJD
-	 8F131eyAknrEkLNE+NXmt/uqkxGC+Ofy3XKsevvP+1aB8mUn1Cj72FkFXYUW20LWIKw==
+	bh=fVQTaeb1oaPXPKdbaoAayfOvKvQGNQ+1mlgyJVhAprY=;
+	b=tWKl0R4+saMaNSbY/tCruiXeHprk5/FfTSbwA74/0wV8CF9cw7tnLxdnPAcpr4yS6pBq
+	 EJqVnmp+BS4T9xjpPkKdTipQZxMslImZkVCsYCU23pkx1bCRUNh0tCZKVCXu7T/71cdh6
+	 MD7WDAg42fbywvxPUL38VVdFzTaDNiFB2bpKFKfxVpF7UcsyaI2JLCPgDpAqLCZgOBq+B
+	 tPYQB//HQ+FLVRy2NeIE4cXCY9OeDxluVQmJC9IkQqEwixQyERNoXwuXD2LVMPxqYLQ0A
+	 m0VO3oyQAlANcQJnpnBYjSprdtIJgGSqPFQJW6xfqtqZglJQ0rmS7xb+8qQDRShqVJQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WxVxzqco;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE54609B645
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:55:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4FE54609B645
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8700E6078734
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 19:55:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8700E6078734
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WxVxzqco
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id A456060F37;
-	Wed,  4 Nov 2026 19:55:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 721521F000C1;
-	Wed,  4 Nov 2026 19:55:21 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 3E94D411B8;
+	Wed,  4 Nov 2026 19:55:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D2F21F000C1;
+	Wed,  4 Nov 2026 19:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793822133;
-	bh=C2fJYdTojRFSaODFdjPHql9M0bzE3FJwr1E018LBBO4=;
+	s=k20260515; t=1793822148;
+	bh=fVQTaeb1oaPXPKdbaoAayfOvKvQGNQ+1mlgyJVhAprY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=WxVxzqcomPDLAWsqX85EWcLe7WZlzoKJpHDpOQhf+KZ1aYuixFo4RGC5WENxIeYDR
-	 pLwBWxDYw0foUZ3wHytSbwfCa7iq8dLIZnc5m2y8FT0LfPDL7Q2pae5sK1fKW87eH/
-	 TLoxZJitlHu5XhrmddtW5nHOKeuonavA/4uOaPJGmBoWC6YghAhb5YkhkwxhSp7tHZ
-	 SnDT1yEyHPjdo3S7ahmm98p5SQhtKbsglzOsqjH27sqF26J+nVkJrN5qpLWC+cZqHa
-	 3bxRMiT/Z2318AVzkaEXIjv3kDFVAW7sr0AInZ9NSC6cPhwH5gTxJMnKg8DEI8HGOJ
-	 jel/AuRNeS6+A==
+	b=Q32w5rFDw7m4TPU///ekwITsZbRvjQsHLd+6HFlNz2/NJu79jBf1XLpN0vUw391T2
+	 uw96M48YWvTVTZOd/quiW9tkip+To4fCWmrYtjAqEca7mU3cvv7TLSkJ2I5flbMddx
+	 tnPejpzcW7k6dl9zEzi4pAyQEWKRu7sTsR/gjlQf9B6G5OOj4qWhqpT4XCaI3CnMh/
+	 hxKIIlGSI2qxyvUVW6X5ewWtQ1YzM/tMkeLctqfK5X9ilrcEsCf6wf/+VMmbGZTiDJ
+	 imQFLXZ9BYFgkxP3LT/ycmK7E4KCrG3osBwTZ7XN2hZPdxLRGjjZgnJNCE/fKk2Vgg
+	 56mAj3Jb003tQ==
 From: Christian Brauner <brauner@kernel.org>
 To: linux-fsdevel@vger.kernel.org
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
@@ -109,9 +106,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-debuggers@vger.kernel.org,
 	"Christian Brauner (Amutable)" <brauner@kernel.org>,
 	Chuck Lever <cel@kernel.org>
-Subject: [PATCH RESEND v2 23/30] dyndbg: let procfs copy in writes to /proc/dynamic_debug/control
-Date: Wed,  4 Nov 2026 20:55:19 +0100
-Message-ID: <20261104-work-procfs-fs-v2-23-319e0f9a8aae@kernel.org>
+Subject: [PATCH RESEND v2 24/30] ipc: let procfs own the seq_file of the sysvipc files
+Date: Wed,  4 Nov 2026 20:55:33 +0100
+Message-ID: <20261104-work-procfs-fs-v2-24-319e0f9a8aae@kernel.org>
 In-Reply-To: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
@@ -125,84 +122,58 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2288; i=brauner@kernel.org; h=from:subject:message-id; bh=Awi3L5zR/nArf9JZW1OMhl80jxJR2cXziAHCcuF5CR4=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97nHPjBBTr3NykX/wLUHBgNnn4SS7+fVKVwr6yxuXL 0uRqJrSUcrCIMbFICumyOLQbhIut5ynYrNRpgbMHFYmkCEMXJwCMJEb0xn+Fy+YXCV0Oe/Eaz8H 4b8ha/yUgz2teDZt31XB+vfCvnbjCEaGI7bdptPVH0oejHTQsv2wPFNAJufAZvvExUsuC73W+Mv LCwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1686; i=brauner@kernel.org; h=from:subject:message-id; bh=X6b7xxVI9/mXpsMyNcc27ZCzqI3OxIvLBKPC0zeU++I=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWS97vFwli/OP28gcU6x0u9Lr20hZ/OW/Ux3Hlh8PSj+1 evPFOuKjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIn4qjIyLNJbG8P2lu3B9+35 Hbo2fLdXVFnr727TUf79truJg3VZOyPDvTu51vy7Xnq5Jd/Q1ROI0K0O+HE2ZInIk8iog5PXrYn lAQA=
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Move the parsing into ddebug_proc_write_buf() and implement
-->proc_write_buf() with it so procfs copies in what is written before
-it pins the entry. The debugfs file keeps copying in itself. Writes
-larger than USER_BUF_PAGE - 1 bytes to the procfs file now fail with
--EINVAL from procfs instead of -E2BIG, and without the "expected <4096
-bytes into control" warning.
+Declare the seq_operations and the size of the iterator and let procfs
+open and free the seq_file of /proc/sysvipc/*. ->proc_open() only fills
+in the iterator now and ->proc_release() drops the references it holds.
 
 Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 ---
- lib/dynamic_debug.c | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+ ipc/util.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 64a211290872..1d6012c9eb41 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -1002,11 +1002,28 @@ __setup("dyndbg=", dyndbg_setup);
-  * command text from userspace, parses and executes it.
-  */
- #define USER_BUF_PAGE 4096
-+
-+static ssize_t ddebug_proc_write_buf(struct file *file, char *buf, size_t len,
-+				     loff_t *offp)
-+{
-+	int ret;
-+
-+	if (len == 0)
-+		return 0;
-+	v2pr_info("read %zu bytes from userspace\n", len);
-+
-+	ret = ddebug_exec_queries(buf, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	*offp += len;
-+	return len;
-+}
-+
- static ssize_t ddebug_proc_write(struct file *file, const char __user *ubuf,
- 				  size_t len, loff_t *offp)
- {
--	char *tmpbuf;
--	int ret;
-+	char *tmpbuf __free(kfree) = NULL;
- 
- 	if (len == 0)
- 		return 0;
-@@ -1017,15 +1034,7 @@ static ssize_t ddebug_proc_write(struct file *file, const char __user *ubuf,
- 	tmpbuf = memdup_user_nul(ubuf, len);
- 	if (IS_ERR(tmpbuf))
- 		return PTR_ERR(tmpbuf);
--	v2pr_info("read %zu bytes from userspace\n", len);
--
--	ret = ddebug_exec_queries(tmpbuf, NULL);
--	kfree(tmpbuf);
--	if (ret < 0)
--		return ret;
--
--	*offp += len;
--	return len;
-+	return ddebug_proc_write_buf(file, tmpbuf, len, offp);
- }
- 
- /*
-@@ -1196,7 +1205,8 @@ static const struct file_operations ddebug_proc_fops = {
- static const struct proc_ops proc_fops = {
- 	.proc_seq_ops = &ddebug_proc_seqops,
- 	.proc_state_size = sizeof(struct ddebug_iter),
--	.proc_write = ddebug_proc_write
-+	.proc_write_buf = ddebug_proc_write_buf,
-+	.proc_write_size = USER_BUF_PAGE - 1,
+diff --git a/ipc/util.c b/ipc/util.c
+index 1737d776bc08..8ec3bc328657 100644
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -894,13 +894,11 @@ static const struct seq_operations sysvipc_proc_seqops = {
+ 	.show  = sysvipc_proc_show,
  };
  
- static void ddebug_attach_module_classes(struct ddebug_table *dt,
++/* procfs opened the seq_file and allocated @iter */
+ static int sysvipc_proc_open(struct inode *inode, struct file *file)
+ {
+-	struct ipc_proc_iter *iter;
+-
+-	iter = __seq_open_private(file, &sysvipc_proc_seqops, sizeof(*iter));
+-	if (!iter)
+-		return -ENOMEM;
++	struct seq_file *m = file->private_data;
++	struct ipc_proc_iter *iter = m->private;
+ 
+ 	iter->iface = pde_data(inode);
+ 	iter->ns    = get_ipc_ns(current->nsproxy->ipc_ns);
+@@ -915,14 +913,14 @@ static int sysvipc_proc_release(struct inode *inode, struct file *file)
+ 	struct ipc_proc_iter *iter = seq->private;
+ 	put_ipc_ns(iter->ns);
+ 	put_pid_ns(iter->pid_ns);
+-	return seq_release_private(inode, file);
++	return 0;
+ }
+ 
+ static const struct proc_ops sysvipc_proc_ops = {
+ 	.proc_flags	= PROC_ENTRY_PERMANENT,
++	.proc_seq_ops	= &sysvipc_proc_seqops,
++	.proc_state_size = sizeof(struct ipc_proc_iter),
+ 	.proc_open	= sysvipc_proc_open,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+ 	.proc_release	= sysvipc_proc_release,
+ };
+ #endif /* CONFIG_PROC_FS */
 
 -- 
 2.53.0
