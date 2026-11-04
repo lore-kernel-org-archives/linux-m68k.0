@@ -1,58 +1,81 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793816533;
-	b=arpCQMoQzxNbK/WSwNbaop3OmqXUm6u4KOAmf0OSRFvVbFVKQIdwtKXumbp6MMB7kYJ9
-	 rZQgMHoTYOq6pTjfJWGFNn9VSkrThGQZ68Vr2B/92IWV+I7h3H0plTLUN88y7cCxU8shf
-	 7Dxy3oNBgLlHGw2HUchz9cDjQdMOio6fTLomtwQvoNRTyn5o4907KtAjt7+BKDfUugeqi
-	 QUjhKhIBiyxQnYepzRFcoTQ2M/eafe8p1oIIMhPcRW8ByA78leE0XRSg1up1xbu/usdWh
-	 IeJWotgxY57o+jxIZNJFIu1vcsX0BtBe7LWmRQpTMRZMeszkFI4QicI1vuxoMFGh6TA==
+	t=1793817596;
+	b=b+Vb2ozoW9n2EhMhpHw2sdc/UYWnotwkmDEyAyTq/Q6FhFE1FZLfgw9ATYGP0JLtop7U
+	 sB0KddcFEIpkLoGNJxi2Cnf2cR7PONTZkdZd5FbqH6oL/8LD5tiEiDsJOUM7pCCMy+/qk
+	 Sm4JZ7vIg83PCKaoYTo7njQfKGVTPS18vZNnhd5YsEUZKxD63Lc+ld5MiPuV1soOPPOgA
+	 bE0hXgwtznJTdg/8DuNSr+Mb7EcR0DJhhTHvdT7nLJmxJnWbBkQWDrscPBmr5xFwp6VnF
+	 V9Dm1MC2Dt8wIQz/Ej+Uq7c+W8CKcvkT8DodkYjpx7knxw9Qj7WBxvjkLndtKMlCyig==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793816533;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Date:Subject:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
-	 References:In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:
-	 X-Developer-Key;
-	bh=Ae44f96zItRoMnEuDxqCncdEeGbSJAWzgR3XJgNUP70=;
-	b=yIxpaTqWjlKuxjx+zsKdaPZFg0TFSeHoFA/ixjKaQ2fyMBz4qMtSqEn+UTI0IJXnm3ta
-	 XPKTZrPLTP/G6GXoWR18uTi9P7aUwxhJMjoYtRlaCO9JLaf1exqjfMESH1G7Nc9K17EW2
-	 xxpF9FGPSqFkWOw8QmIFMMRLBS2nMkQp52+4a35FvkGT32+7Idof/rredzmTeOf5POWqw
-	 MFaYZlOdzROA7VqQ3L+kU8Z/alohs5oj0nK/ifv1vmyg6r2A248DyU3x36L7Qv0e0Pm0a
-	 uEbtf+vg20ZNpv8VnIEaDW2oqGrmH7ex8GmLyY6s2D+E0MR9P2tMPLOgxAcqDolSVkQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793817596;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=cfX+RSDf63q8RdYOSefxL9B17eZvLgT/fF9r72R8ItM=;
+	b=HFjvOsSNdrdcaH/YZXkU7Z8VdzQ0ao/nSvqlwQJKLEWBXo6vodCS+TiDpCPXZA1vN5ZU
+	 wIyzU3EIECjpeSScENUZfuJE/dcV+o+J1hKGNWONjU83Gi2BgeAxqRghd3JRgixpcrhIz
+	 6cDVZxkbURF+vVrRVNVe84zoW4T75qS7o6lg6K2cuMN+oxSOTZmPkl6VFNpc5tS1CrK1v
+	 21Mjm9y49VfWJ97rJ8vzUBiwL2ZyxwRuAi02zgbsmTL9x1cZnb3PgZh3/nTchp57FmzJb
+	 4bA2Th5m2xUJh+hCP4DwyS738s6Kz7IfpcKdLrgYK4j75Om1z+vonXNtj9Xslkhf/YA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hs59Teb0;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GDU8EuhU;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBF0606D2E4
-	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 18:22:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DCBF0606D2E4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45006606D82D
+	for <linux-m68k@lists.linux-m68k.org>; Wed,  4 Nov 2026 18:39:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 45006606D82D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hs59Teb0
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GDU8EuhU
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 9CAF9402C4;
-	Wed,  4 Nov 2026 18:22:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D60F31F00919;
-	Wed,  4 Nov 2026 18:22:04 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 9485D60A87;
+	Wed,  4 Nov 2026 18:39:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D94A1F000C1;
+	Wed,  4 Nov 2026 18:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793816532;
-	bh=Ae44f96zItRoMnEuDxqCncdEeGbSJAWzgR3XJgNUP70=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=hs59Teb0yhtPbZ/h74PFv9MW9QEiSmAVJZFS1FTYTU7wnnWhQ+xAbwgVbAYow8NOK
-	 kNm7m5LEEPXZwIL3/mFGDobzskJxK93M/N0b/q2Ca8BpaZt//spk3eeIvY9G++OZcw
-	 4rpVhepNM/4W5zzyt6cV96z1fU2SOzl5M4QgB3PJpff+AVM3eg5Xw1WjNf33AkG6Wv
-	 nv0dT4p3APoOknaWM0NYIgd5mwZPN4gfBuBv83NtoAIOe+pzo09qaH2QvYZh6he+yY
-	 CUfaQFr7NBy1yH99osmwcdRkn/gfT+i+2lUCsssJUpEWPGgVLdD010bnqXQANuhAI5
-	 agXgV8P4XmsUQ==
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-Date: Wed, 04 Nov 2026 18:20:29 +0000
-Subject: [PATCH v5 11/11] kbuild: build rust crates in parallel with the
- rest of the build
+	s=k20260515; t=1793817595;
+	bh=cfX+RSDf63q8RdYOSefxL9B17eZvLgT/fF9r72R8ItM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=GDU8EuhUF/10B5PY7Ge41gK5xPnjrcLHs7feXWHlvH4fq+/JLsc6ePLzmMcenBTV8
+	 F8DU2mNIqG7yMOIN0gPqiAwJM3jV9nVVVUEYkA/ePBSooGTee00ROqhKBnF1Bqim3H
+	 1MIVC6ndCg4IYSs9ehay5xqAR6tGspnn8txoZnqUV3a/rwlemC2StvUcjU4rBzRdDh
+	 smT5Fi28DptI2/GHQw2s7uG8id08IW1enmMV0ZcuUo2Xf6u9ciNae6b4/FwizkvKf5
+	 0O5jZIOLbbQIYlYObNdALqLNo9VEtQX1aZ+lQxJHqEn6uUf5MjI2wjNp8uWWy07SZL
+	 e+KRVPYe7/Ndw==
+Date: Wed, 4 Nov 2026 19:39:40 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: linux-fsdevel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Jann Horn <jannh@google.com>, Josef Bacik <josef@toxicpanda.com>, 
+	Chris Mason <mason@kernel.org>, Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
+	Eric Dumazet <edumazet@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, 
+	Greg Kroah-Hartman <gregkh@suse.de>, Joel Granados <joel.granados@kernel.org>, 
+	Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>, 
+	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	netdev@vger.kernel.org, ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org, 
+	coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, 
+	linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	ibm-acpi-devel@lists.sourceforge.net, jfs-discussion@lists.sourceforge.net, 
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org, 
+	linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, 
+	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, 
+	sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
+	Chuck Lever <chuck.lever@oracle.com>, Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, 
+	linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
+	linux-debuggers@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] proc: move procfs to what kernfs does
+Message-ID: <20261104-angriff-abgewandelt-ohnehin-e5ba30d31576@brauner>
+References: <20261104-trompete-gejagt-raddampfer-9fb5640a6102@brauner>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -62,175 +85,13 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261104-build-speedup-v5-11-0f6018be8dae@kernel.org>
-References: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
-In-Reply-To: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>, 
- Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
- Nick Desaulniers <ndesaulniers@google.com>, 
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>, 
- Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, 
- Aaron Tomlin <atomlin@atomlin.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
- Peter Zijlstra <peterz@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, 
- Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>, 
- =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
- Benno Lossin <lossin@kernel.org>, Andreas Hindborg <a.hindborg@kernel.org>, 
- Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, 
- Danilo Krummrich <dakr@kernel.org>, 
- Daniel Almeida <daniel.almeida@collabora.com>, 
- Tamir Duberstein <tamird@kernel.org>, 
- Alexandre Courbot <acourbot@nvidia.com>, 
- =?utf-8?q?Onur_=C3=96zkan?= <work@onurozkan.dev>
-Cc: ljs@kernel.org, linux-kbuild@vger.kernel.org, 
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
- linux-m68k@lists.linux-m68k.org, linux-modules@vger.kernel.org, 
- rust-for-linux@vger.kernel.org
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4608; i=ljs@kernel.org;
- h=from:subject:message-id; bh=FgSgFDAAcTPCFUAL+8odpu2fPm2OKUlCsBm/ENgnc8s=;
- b=owGbwMvMwCV2fu7ZrsZH9SKMp9WSGLJel+dt0LuyaXfbNOY9pR3zHT59b3wuq7N+5vIGXd416
- /y27p2zsqOUhUGMi0FWTJHl+Rfx/UEiYfM6L/i7wcxhZQIZwsDFKQAT0bnPyPDKR156gdy8xyn+
- XOs3/2qaNFnmS1Okr+/+sssq67LnHuxj+Kfd4V8/8eaSHOESDtVr3Llfb9WalTZuZey8J2rfyPJ
- Thg0A
-X-Developer-Key: i=ljs@kernel.org; a=openpgp;
- fpr=E7F417BF5214569E89D04F46CF9DCD8A81E27F14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261104-trompete-gejagt-raddampfer-9fb5640a6102@brauner>
 
-When CONFIG_RUST is specified make prepare builds all of the rust
-components before descending into the tree.
+Please ignore this. Network dropped halfway through and the umbrella
+went out under a broken message-id.
 
-This means nothing can be done until all of these are compiled, resulting
-in a stall at the start of every clean CONFIG_RUST build.
-
-This also implicitly slows down every rust-capable LLVM allmodconfig build
-as this enables the CONFIG_RUST option.
-
-Fix this by allowing rust crates to be built alongside the C code.
-
-Remove the rust build from the make prepare step, then establish a
-dependency between rust code located elsewhere in the tree upon rust
-components contained in rust/.
-
-Do this by establishing a top-level list of directories containing rust
-code, KBUILD_RUST_DIRS, upon which the dependency is expressed.
-
-Finally, ensure that no rust code is located elsewhere and fail the build
-if any is found to ensure that nothing is missed in future.
-
-Care is taken to ensure the rust/ dependency is also established for any
-module being built to account for external rust modules which rely upon it,
-and that only one rust/ build will be performed at any one time.
-
-External rust modules builds are unaffected - make modules_prepare ...
-(where ... are other goals) will build rust/ first.
-
-The rustdoc and rusttest goals invoke rust/ directly rather than via
-Kbuild, so build rust/ first there too.
-
-Every Rust and C object was confirmed to be byte-for-byte identical after
-this change.
-
-Whole build, 128-thread Threadripper 9980X, best of N runs:
-
-                                         before   after     delta
-                                         -------------------------------
-  x86 defconfig+RUST, clean                36.5s    32.6s     -3.9s (-11%)
-  x86 allmodconfig, clean                 297.0s   278.3s    -18.7s (-6%)
-
-Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
----
- Kbuild                 |  5 +++++
- Makefile               | 17 ++++++++++++++++-
- scripts/Makefile.build |  5 ++++-
- 3 files changed, 25 insertions(+), 2 deletions(-)
-
-diff --git a/Kbuild b/Kbuild
-index a6a0192dea08..9670556059dd 100644
---- a/Kbuild
-+++ b/Kbuild
-@@ -115,3 +115,8 @@ obj-$(CONFIG_NET)	+= net/
- obj-y			+= virt/
- obj-y			+= $(ARCH_DRIVERS)
- obj-$(CONFIG_DRM_HEADER_TEST)	+= include/
-+
-+# Rust code elsewhere in the tree depends upon rust/.
-+ifdef CONFIG_RUST
-+$(KBUILD_RUST_DIRS): | rust
-+endif
-diff --git a/Makefile b/Makefile
-index 7c254b8657a3..de4cc052af03 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1416,11 +1416,14 @@ prepare0: archprepare
- 	$(Q)$(MAKE) $(build)=. prepare
- 	$(Q)$(MAKE) $(build)=scripts/mod
- 
-+ifdef CONFIG_RUST
-+export KBUILD_RUST_DIRS := drivers lib mm samples
-+endif
-+
- # All the preparing..
- prepare: prepare0
- ifdef CONFIG_RUST
- 	+$(Q)$(CONFIG_SHELL) $(srctree)/scripts/rust_is_available.sh
--	$(Q)$(MAKE) $(build)=rust
- endif
- 
- PHONY += remove-stale-files
-@@ -1767,6 +1770,14 @@ modules: modules_prepare
- # Target to prepare building external modules
- modules_prepare: prepare
- 	$(Q)$(MAKE) $(build)=scripts scripts/module.lds
-+ifdef CONFIG_RUST
-+# Avoid two instances of rust/ being built at any one time.
-+ifneq ($(filter modules_prepare,$(MAKECMDGOALS)),)
-+ifeq ($(filter all vmlinux modules %Image% dtbs rustdoc rusttest,$(MAKECMDGOALS)),)
-+	$(Q)$(MAKE) $(build)=rust
-+endif
-+endif
-+endif
- 
- endif # CONFIG_MODULES
- 
-@@ -2035,13 +2046,17 @@ rustavailable:
- # Documentation target
- #
- # Using the singular to avoid running afoul of `no-dot-config-targets`.
-+#
-+# rust/ is built alongside the rest of the tree, so must be built first here.
- PHONY += rustdoc
- rustdoc: prepare
-+	$(Q)$(MAKE) $(build)=rust
- 	$(Q)$(MAKE) $(build)=rust $@
- 
- # Testing target
- PHONY += rusttest
- rusttest: prepare
-+	$(Q)$(MAKE) $(build)=rust
- 	$(Q)$(MAKE) $(build)=rust $@
- 
- # Formatting targets
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 7b652f169a8f..ec4e220d6831 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -381,8 +381,11 @@ quiet_cmd_rustc_o_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
- 		$(cmd_ld_single)) \
- 	$(cmd_objtool)
- 
-+rust-dir-ok = $(or $(KBUILD_EXTMOD),$(filter rust $(KBUILD_RUST_DIRS),$(firstword $(subst /, ,$@))))
-+
-+# Ensure that any rust code located elsewhere from rust/ is listed in KBUILD_RUST_DIRS.
- define rule_rustc_o_rs
--	$(call cmd_and_fixdep,rustc_o_rs)
-+	$(if $(rust-dir-ok),,$(error $@: Rust code in a directory not listed in KBUILD_RUST_DIRS, see the top Makefile))$(call cmd_and_fixdep,rustc_o_rs)
- 	$(call cmd,gen_objtooldep)
- endef
- 
+I'll resend it all correctly.
 
 -- 
-2.56.0
-
