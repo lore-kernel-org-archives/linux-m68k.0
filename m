@@ -1,57 +1,56 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793902945;
-	b=dg4eBW59z+VldR5QT5TppvZMlfjMvk61jQTJIx9IJ21y/mXaF6yhk9JZaZX83XR9QZ1z
-	 Iq4ip80bZXXYGx+8lC0oXUPp/FCD3pAdpqhddlFbx/RJFvj2C7ozB+qatKzr3UkEDkuFq
-	 9nGDXRZWofiGgxX8kbn8q4LqLD1mSZ6Onya1ZxXGhln5ajPtV5kp1XCvx7VtAZ4w4hPOO
-	 k3MaTvi6ijjf27/JX21EXVPcq9xpWZspU0lRHem3tvwoOvP6cCgKF1KnjJGlHBV6xFYwR
-	 nOoaXDUKtDMMTENyjIqXATe+wxlFQ2sZzUcO6SPxS3MvYTG2BQzQydh7806iUApZ76w==
+	t=1793902946;
+	b=hSdlL5bJmxNEsfI1Su1twzd5vvGc+AL6u7fzSBooHEx61cYv2RE22t2VJHrUCJkXA7Ga
+	 r306JrTGdtcVogGvl94GPgh5cQaATMzzGsGFKb0V7sfC43Y2dBFfom+eakB85oHnyJ7bR
+	 NqiA0g/zoN0kknwmYDBIGpTsrFpJnFgpPmr8NeLtn8ku73n+F6QfpzAE7Gbj98SHXBukt
+	 nfF/MXo9dzL+78XXKkY4I+YbHsgPCumQ3VRcyDZdzPjrw1vAlGfsSn1KezgEe+1K+JFgI
+	 jGpJz0K4B3HsyOpkXkof1gl/iyyyHLFmJ575zNGO8wXp+HkCdQTt7wi/KtBChRkaYGQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793902945;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793902946;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=A0VI0BTJB4UVZNUMZsyN7d1nXZKDspAXHLx+O5KEapU=;
-	b=ZmSd+CZjJtxPvPcObVJDG4U0BnlDiv1tnQpZ8vmX69toJl3aeVDUpeSoeJdkNjFQOInJ
-	 zcYxlR0sbO/kzrJ20KtEktS49Loo18lrE30ZFAch/Cdg6zd4w2xI2/zEPlLyh5aZgoeam
-	 TgYOiHe6W6GICrNFZ9RHuEyohqUV82LAapt3JqgWh3uX5Y0lypBfavjCOD4IGezSs7j7g
-	 LZbGRpH+fLjIQRsOMfTKHHsJ+btWVnqevWB4m7oih6KEXbGxoMJdlj/+qeZ0gEFujhG5Y
-	 UHErLSBKE8axqQkoDaeyUxpu6lhgW2ODS+3AM3w0lMxfsFQ+yS5IQ2xRQuADQ1ZS8WA==
+	bh=OWrwl37cFLJjEpx7NnVtWwuGNit4+A7xxvc5vOIZJ/4=;
+	b=ET1w96BD010kW6PF2Gt2idFSWWe5kQsAC+jZ2mOhNm8qkNZQF7AOpDywUDZc+UlzzWD5
+	 QCpPrNrI0BgqYJU1W2dnjBjcj4NELHpFX8ZeXJoPCVIRlStY+l6BE/Cs1SWA3IV4Jct/J
+	 iqs8Y0ayulZTQeg4rUTD4c1GLan6UYZ7P9lRdmsN1HIR2zXie1P5N7FTFvh0UGsTj8rfy
+	 mclPLfaTKWQ5ZR1HHvLrYmU80MlX5Zor+j2cIQm3lJIEODTOdFqqOev1Tkzw3AMlBVP5d
+	 221eoXv6Vm8UWP61ZkPG53PtI+jLakfEyk1o10V3bobP5SR92sFo1QvntzvioM8xg+A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YNKEtQKP;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cUuOzXMz;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7801D606A33A
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 18:22:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7801D606A33A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21DC2606A33A
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 18:22:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 21DC2606A33A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YNKEtQKP
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cUuOzXMz
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id C3A1360154;
+	by sea.source.kernel.org (Postfix) with ESMTP id 80B5340B9D;
+	Thu,  5 Nov 2026 18:22:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01DC41F0093A;
 	Thu,  5 Nov 2026 18:22:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F801F00919;
-	Thu,  5 Nov 2026 18:22:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793902943;
-	bh=A0VI0BTJB4UVZNUMZsyN7d1nXZKDspAXHLx+O5KEapU=;
+	s=k20260515; t=1793902945;
+	bh=OWrwl37cFLJjEpx7NnVtWwuGNit4+A7xxvc5vOIZJ/4=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=YNKEtQKP2rLGq9IeP4YOJzVu58JkjcYYnL+Q62io9g9WIz3joXkbYQXni1hgFY+H5
-	 llxWbFeE4j2lITTvMs1Yo0Xmm1vfvNwp+Js0H6vi+GRye2LeWNx0vdcsQ9pjxhjf7W
-	 f9RCYGZ+2BLwxcmNNJKYehGUBF1jwFjNJetKfiMkNGFcN0/nBzTY8tb8jhGXVCuurg
-	 kKqZVYf/815rXSrVYPjatxqgO4ndZHK7VhcGXRtYHi6N/xzPInQoL4GONDM+jzxbTG
-	 wY9V9fdhvFoH43sH6wts0zGBv5jxi+0d1kvP9ZrG7wHCUMgt940QUJcH9E5/WILTzw
-	 8sTsSqmfXDmjQ==
-Message-ID: <sashiko-outbox-199749@kernel.org>
+	b=cUuOzXMzuHRXA284XH0ntuGqd139PcG77eQ6VN66a2WqcloXRcseupIarLDuLUUX6
+	 A83QR0tuYS9dKEUdSLircRMiryflYEWib4fc70oiY8hrynd9ulJ9oHP208NTsbH8dn
+	 ZhsX+ir8P/EKHqmNk9b79LGBPe9qVrFNrrslOjOAH1wEXg9wAyf5B0YgehlPzFpZYj
+	 wZDaro3mzXUTh7fj8zeNfSmNhlDhkfFly017z+iFizqNPoK/Zi6zbxv5M7/zxyHWnS
+	 oMLFqZvMYwtG0rozhLK/o54q0IiqP19kBatpZYy80LXvg1trfPVN89vxX7bW3nVf1e
+	 81ufpHZtmCIMA==
+Message-ID: <sashiko-outbox-199750@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v5 07/11] objtool: cache relocations, do less work,
- eliminate relocation hash
+Subject: Re: [PATCH v5 08/11] objtool: size the instruction hash to the text
 Reply-To: sashiko-reviews@lists.linux.dev
 To: =?utf-8?b?TG9yZW56byBTdG9ha2VzIChBUk0p?= <ljs@kernel.org>, "Linus
  Torvalds" <torvalds@linux-foundation.org>, "Nathan Chancellor" <nathan@kernel.org>, "Nicolas
@@ -69,12 +68,12 @@ To: =?utf-8?b?TG9yZW56byBTdG9ha2VzIChBUk0p?= <ljs@kernel.org>, "Linus
  Duberstein" <tamird@kernel.org>, "Alexandre Courbot" <acourbot@nvidia.com>,
  =?utf-8?b?T251ciDDlnprYW4=?= <work@onurozkan.dev>
 Cc: linux-kbuild@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-modules@vger.kernel.org
-In-Reply-To: <20261104-build-speedup-v5-7-0f6018be8dae@kernel.org>
+In-Reply-To: <20261104-build-speedup-v5-8-0f6018be8dae@kernel.org>
 References: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
- <20261104-build-speedup-v5-7-0f6018be8dae@kernel.org>
+ <20261104-build-speedup-v5-8-0f6018be8dae@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 18:22:21 +0000
+Date: Thu, 05 Nov 2026 18:22:23 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -84,244 +83,91 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [Medium] objtool: trailing cache windows left at 0 in reloc_cache_resize()
-- [Medium] objtool: repeated cache rebuild and free in elf_create_reloc()
-- [Low] objtool: compare_reloc_order() returns 1 instead of 0 for identical=
- elements
+- [Medium] objtool: unguarded NULL file->insn_hash dereference in find_insn=
+()
 --
 
-commit 93b28e01d1c19629db4e088766e42dd4cdfbed56
+commit 213d34d383fb04e85ef5c721bf77b5b42b0870d5
 Author: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 
-objtool: cache relocations, do less work, eliminate relocation hash
+objtool: size the instruction hash to the text
 
-This commit replaces the global relocation hash table in objtool with a
-per-section relocation cache indexed by 64-byte windows. Out-of-order
-relocation sections are sorted lazily into an index array on lookup.
+This commit replaces the fixed-size instruction hash table in
+struct objtool_file with a dynamically allocated hash table sized
+according to the total text section size in decode_instructions().
 
-> diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-> index 98a110e3e8f57..bd463b5df38cd 100644
-> --- a/tools/objtool/elf.c
-> +++ b/tools/objtool/elf.c
-> @@ -316,35 +316,220 @@ struct symbol *find_global_symbol_by_name(const st=
-ruct elf *elf, const char *nam
-
-[ ... ]
-
-> +/* qsort() passes no context, so the relocations being sorted live here.=
- */
-> +static struct reloc *sort_relocs;
-> +
-> +static int compare_reloc_order(const void *a, const void *b)
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index 931c5c412f15d..97250aa361009 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -38,12 +38,22 @@ struct disas_context *objtool_disas_ctx;
+> =20
+>  size_t sym_name_max_len;
+> =20
+> +static struct hlist_head *insn_hash_head(struct objtool_file *file,
+> +					 struct section *sec, unsigned long offset)
 > +{
-> +	const unsigned int *idx_a =3D a;
-> +	const unsigned int *idx_b =3D b;
-> +	const unsigned long offset_a =3D reloc_offset(&sort_relocs[*idx_a]);
-> +	const unsigned long offset_b =3D reloc_offset(&sort_relocs[*idx_b]);
+> +	/* Determine instruction hash based on section index and offset. */
+> +	const u32 sec_hash =3D sec_offset_hash(sec, offset);
+> +	const u32 hash =3D hash_min(sec_hash, file->insn_hash_bits);
 > +
-> +	if (offset_a < offset_b)
-> +		return -1;
-> +	if (offset_a > offset_b)
-> +		return 1;
-> +
-> +	/* Equal offsets stay in file order. */
-> +	if (*idx_a < *idx_b)
-> +		return -1;
-> +	return 1;
-> +}
-
-[Severity: Low]
-As reported by Sashiko on v4 [1], when qsort() compares an element against
-itself (a =3D=3D b, so *idx_a =3D=3D *idx_b), compare_reloc_order() returns=
- 1
-instead of 0.
-
-Does this violate the C standard qsort() comparator contract if the libc
-qsort() implementation compares the pivot element with itself during
-partitioning? Returning (*idx_a > *idx_b) - (*idx_a < *idx_b) or checking
-for *idx_a > *idx_b before returning 0 would ensure a strict total order.
-
-[ ... ]
-
-> +/* Grow the index to cover the base section, new windows start past the =
-end. */
-> +static int reloc_cache_resize(struct section *rsec)
-> +{
-> +	const unsigned int nr_windows =3D reloc_cache_index(sec_size(rsec->base=
-)) + 1;
-> +	unsigned int *cache;
-> +
-> +	if (nr_windows <=3D rsec->nr_cache_windows)
-> +		return 0;
-> +
-> +	cache =3D realloc(rsec->reloc_cache, nr_windows * sizeof(*cache));
-> +	if (!cache) {
-> +		ERROR_GLIBC("realloc");
-> +		return -1;
-> +	}
-> +
-> +	while (rsec->nr_cache_windows < nr_windows)
-> +		cache[rsec->nr_cache_windows++] =3D rsec->nr_indexed;
-> +	rsec->reloc_cache =3D cache;
-> +
-> +	return 0;
+> +	return &file->insn_hash[hash];
 > +}
 > +
-> +/*
-> + * Index the next relocation. It must follow the previous one in positio=
-n and
-> + * offset, otherwise the index is dropped and the next lookup rebuilds i=
-t.
-> + */
-> +static int reloc_cache_add(struct section *rsec, unsigned int pos)
-> +{
-> +	struct reloc *reloc =3D reloc_at(rsec, pos);
-> +	const unsigned long offset =3D reloc_offset(reloc);
-> +	const unsigned long window =3D reloc_cache_index(offset);
-> +	unsigned long first_window =3D 0;
-> +
-> +	if (pos !=3D rsec->nr_indexed)
-> +		goto unsorted;
-> +
-> +	if (pos) {
-> +		struct reloc *prev =3D reloc_at(rsec, pos - 1);
-> +		const unsigned long prev_offset =3D reloc_offset(prev);
-> +
-> +		if (offset < prev_offset)
-> +			goto unsorted;
-> +		first_window =3D reloc_cache_index(prev_offset) + 1;
-> +	}
-> +
-> +	if (reloc_cache_resize(rsec))
-> +		return -1;
-> +	if (window >=3D rsec->nr_cache_windows)
-> +		goto unsorted;
-> +
-> +	while (first_window <=3D window)
-> +		rsec->reloc_cache[first_window++] =3D pos;
-> +	rsec->nr_indexed =3D pos + 1;
-> +
-> +	return 0;
-> +
-> +unsorted:
-> +	reloc_cache_free(rsec);
-> +	return 0;
-> +}
-
-[ ... ]
-
-> +/* If there are multiple matches, return the first one in the range. */
->  struct reloc *find_reloc_by_dest_range(const struct elf *elf, struct sec=
-tion *sec,
->  				       unsigned long offset, unsigned int len)
+>  struct instruction *find_insn(struct objtool_file *file,
+>  			      struct section *sec, unsigned long offset)
 >  {
-> -	struct reloc *reloc, *r =3D NULL;
-> -	struct section *rsec;
-> -	unsigned long o;
-> +	struct section *rsec =3D sec->rsec;
-> +	unsigned long cache_idx;
-> +	unsigned int pos;
+>  	struct instruction *insn;
 > =20
-> -	rsec =3D sec->rsec;
->  	if (!rsec)
->  		return NULL;
-> =20
-> -	for_offset_range(o, offset, offset + len) {
-> -		elf_hash_for_each_possible(elf, reloc, reloc, hash,
-> -					   sec_offset_hash(rsec, o)) {
-> -			if (reloc->sec !=3D rsec)
-> -				continue;
-> +	if (!rsec->sorted && init_reloc_cache(rsec))
-> +		exit(1);
-> =20
-> -			if (reloc_offset(reloc) >=3D offset &&
-> -			    reloc_offset(reloc) < offset + len) {
-> -				if (!r || reloc_offset(reloc) < reloc_offset(r))
-> -					r =3D reloc;
-> -			}
-> -		}
-> -		if (r && (reloc_offset(r) & OFFSET_STRIDE_MASK) =3D=3D o)
-> -			return r;
-> +	cache_idx =3D reloc_cache_index(offset);
-> +	if (cache_idx >=3D rsec->nr_cache_windows)
-> +		return NULL;
-> +
-> +	/* The index gives a lower bound, scan on from there. */
-> +	for (pos =3D rsec->reloc_cache[cache_idx]; pos < rsec->nr_indexed; pos+=
-+) {
-> +		struct reloc *reloc =3D reloc_at(rsec, pos);
-> +
-> +		if (reloc_offset(reloc) >=3D offset)
-> +			return reloc_in_range(reloc, offset, len) ? reloc : NULL;
+> -	hash_for_each_possible(file->insn_hash, insn, hash, sec_offset_hash(sec=
+, offset)) {
+> +	hlist_for_each_entry(insn, insn_hash_head(file, sec, offset), hash) {
+>  		if (insn->sec =3D=3D sec && insn->offset =3D=3D offset)
+>  			return insn;
 >  	}
-> =20
-> -	return r;
-> +	return NULL;
->  }
 
 [Severity: Medium]
-As reported by Sashiko on v4 [2], during init_reloc_cache(), the first
-call to reloc_cache_add(rsec, 0) invokes reloc_cache_resize(rsec) while
-rsec->nr_indexed is 0. Because sec_size(rsec->base) is already the full
-size of the base section, reloc_cache_resize() allocates all nr_windows
-entries for the entire section at once and initializes every entry in
-cache[0 .. nr_windows - 1] to 0.
+As reported by Sashiko on v4 [1], can find_insn() dereference a NULL
+file->insn_hash pointer if decode_file() fails before reaching
+decode_instructions()?
 
-Subsequent calls to reloc_cache_add(rsec, pos) see nr_windows <=3D
-rsec->nr_cache_windows in reloc_cache_resize() and only update
-rsec->reloc_cache[first_window .. window] up to the window of the last
-relocation. Even when a section grows incrementally, reloc_cache_resize()
-runs before rsec->nr_indexed =3D pos + 1 in reloc_cache_add().
+With this change, file->insn_hash is NULL and file->insn_hash_bits is 0
+until decode_instructions() calls alloc_insn_hash(). However, in
+decode_file(), init_pv_ops() runs before decode_instructions():
 
-Won't any 64-byte window located after the last relocation in a section
-remain set to 0 in rsec->reloc_cache[], causing find_reloc_by_dest_range()
-to linearly scan all rsec->nr_indexed relocations from pos =3D 0 on every
-lookup in the trailing part of the section?
+tools/objtool/check.c:decode_file() {
+	if (init_pv_ops(file))
+		return -1;
 
-[ ... ]
+	/*
+	 * Must be before add_{jump_call}_destination.
+	 */
+	if (classify_symbols(file))
+		return -1;
 
-> @@ -1071,8 +1251,10 @@ struct reloc *elf_init_reloc(struct elf *elf, stru=
-ct section *rsec,
->  	set_reloc_type(elf, reloc, type);
->  	set_reloc_addend(elf, reloc, addend);
-> =20
-> -	if (!is_dwarf_section(rsec->base))
-> -		elf_hash_add(reloc, &reloc->hash, reloc_hash(reloc));
-> +	if (rsec->reloc_order)
-> +		reloc_cache_free(rsec);
-> +	else if (rsec->sorted && reloc_cache_add(rsec, reloc_idx))
-> +		return NULL;
+	if (decode_instructions(file))
+		return -1;
+}
 
-[Severity: Medium]
-When elf_create_reloc() creates a new relocation, it first calls
-find_reloc_by_dest(), and then calls elf_init_reloc():
+If init_pv_ops() -> add_pv_ops() returns -1 (for instance, when
+find_symbol_by_offset() returns NULL for a pv_ops table relocation),
+check() and cmd_klp_checksum() jump to out: and unconditionally call
+free_insns(file) (as well as disas_funcs() when opts.disas is set).
 
-elf_create_reloc()
-  find_reloc_by_dest()
-    find_reloc_by_dest_range()
-      if (!rsec->sorted && init_reloc_cache(rsec))
-  elf_init_reloc()
-    if (rsec->reloc_order)
-      reloc_cache_free(rsec);
+free_insns() then walks all sections via for_each_insn() ->
+sec_for_each_insn() -> find_insn(), calling insn_hash_head() with
+file->insn_hash =3D=3D NULL and file->insn_hash_bits =3D=3D 0, which perfor=
+ms a
+32-bit shift by 32 in hash_32() and dereferences NULL in find_insn().
 
-In tools/objtool/klp-diff.c, clone_reloc() can recursively call
-clone_symbol() on a target symbol in the same output section before
-calling elf_create_reloc() for the caller's relocation, emitting a
-relocation at a lower offset after one at a higher offset.
+Should find_insn() (or free_insns()) check if (!file->insn_hash) before
+looking up instructions?
 
-Once a single out-of-order relocation is added to rsec, won't every
-subsequent elf_create_reloc() call on that section rebuild rsec->reloc_order
-via qsort() and populate rsec->reloc_cache in find_reloc_by_dest(), only for
-elf_init_reloc() to immediately free both via reloc_cache_free(rsec) because
-rsec->reloc_order is non-NULL?
-
-[1] https://lore.kernel.org/r/20260923-build-speedup-v4-17-73128809a4a4@ker=
-nel.org
-[2] https://lore.kernel.org/r/20260923-build-speedup-v4-17-73128809a4a4@ker=
+[1] https://lore.kernel.org/r/20260923-build-speedup-v4-18-73128809a4a4@ker=
 nel.org
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-build-spee=
-dup-v5-0-0f6018be8dae@kernel.org?part=3D7
+dup-v5-0-0f6018be8dae@kernel.org?part=3D8
