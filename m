@@ -1,76 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.219.42
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793872921;
-	b=gYvAYWgjyp7p8PmFDR1aYDsZoiKFtQ+O47SonnaY5/8LWr2WYBYDczqh6XqAwHzWIbXB
-	 SCcNr46bIC0xQqCvkSyv9+m4U+f/NbPH1k/Jd0CL/lSfbuaqyQXytX2813brETXMkLdzq
-	 hO4gbWS5b435GBTO+PmblAvIN37k6jCdjba6tSuA/yLtSQRRBwkx7Opwavs3Xvs5osxsS
-	 5PP5+7JiflcBNkZhwVgm52XhROrizMNCvlv1YlZZ66H1/8tWZrvcGuFb4vHS3BlU5HoKF
-	 NbSew1A3xwLuWG5Do1gCQMiaz/nA6X4l88AdC3R+zfg8IAXKg3wicAUF9oy71xSnvnA==
+	t=1793872925;
+	b=DPS0ZAVRtgm9vvyWah/M6CowdStd72SKSXq0E5BskXXJbhrfd0rPiqCz2HP9RgrhlQ+/
+	 IE0TeN2p4YEMkB9oWcPcILHhnZwvSWURxAUGwyPKgQc5jY3VI+qBextigcWMatHiu7Yhe
+	 hrUTUDST0RrSBkLgu+v9ZQkX41o0sXfGhgdhcvrKn5IArEoiZGwDYDvD3XO2KwJjdthcD
+	 gVg494ceZej0IqjMa2RHeYi9+ePpK0CZ6DFT6CHq82PN/QLcf1yXU45rZglSvayz7ODOv
+	 J7VsMn1XqcuQt58qReDskVi7N9eYwIvE1zwN3KhJIADdyKvGPM06j5rvtsAScQZLD9A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793872921;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793872925;
 	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
 	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type;
-	bh=+mKdlgKO27T7zaM0EZirUNSUHhSIV/TKUV4SSUSBbFc=;
-	b=CNBjRPfp84cjwSS81FPy6qYHN/voaWUu/DGDt0/Zkc7lAFdoJqjEZ1ar/0opCHNSMjkC
-	 6B7voNJqjlmuBs2G245fn+yRK7fMk4nktevxMU3vGA4hKZzcoZGdXXK142cod52A0a1bI
-	 OyPacvJXkzCuWcQxK30Fju1A0b8tPQiLKYb2H6pDMwS8fb4osvc4zFjdBxih0N3qI8Uj7
-	 Yjqi+RYB9Q0frswGuZAQofkF7SFTZIa9QQOEfoSCZb3ITPJhTQypqo/s0liPwwTLOnyrh
-	 6ibhCsNgbWfz6dlk2zzITlCNIVaEYV0rRybX7b5wF8VP018QHH6TDa3wA+oYizu8img==
+	bh=LrgDMUrSYXpYgkAhfsYKg0ebb/uLgOfOMhqzX4yL0j4=;
+	b=tPMKPdazHRkx5ljXr2/MNT2dV3a8XsMJaPYl91qFW7GRmeXVEQcS65Fu5eihCVIypCYW
+	 v0ztu1uuuin4Ud1VzIkTCLVRcdllbbYjmdG9rf5sGKpkqWM753DHcZemwjrjfefSygB/p
+	 HdXfoochehn1e8ZTDZgxbRD/BFdsl6oXWanmayxUBAq5OVxUfX8j3eOtv4xNqVAB8BXzW
+	 r0mDJSpix2y+9Ogfj3CZMvcEbsnqbPo5XupclCZYUTsEij3whScCR474V6BD8DfZPqRpC
+	 n/KaQCJfvsti2xlcAeUNXDnrZIU5r/sBQEcrPrlGhTA1AFPmdSmfIvHrmIlx6M4VN4A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=linux-m68k.org;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.210.51
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	arc=none smtp.remote-ip=209.85.219.42
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D720C606A326
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 10:02:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D720C606A326
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEAD4606A31B
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 10:02:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BEAD4606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-85c1135c286so1048608a34.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 02:02:00 -0800 (PST)
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-91c5e31bea9so23086626d6.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 02:02:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793872920; x=1794477720;
+        d=1e100.net; s=20260707; t=1793872924; x=1794477724;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=+mKdlgKO27T7zaM0EZirUNSUHhSIV/TKUV4SSUSBbFc=;
-        b=ETLI/+eqe0sIAj1VYh9m9sqHYcfOP2bVgy1oGjTRCophILVGy/D5zM9RjdNNohSIC6
-         Ug62KWaYzwnM8YoKRWcruhRiQJUi6qrShh4i5S/nVHFia9LX5X5VB4xR+nUISXKFyBQS
-         X7FTYWypF11E3q41lQlJyzwsijY9dZzkk6+Nh5X0oMZ5LsETKd9kEOvnZetGZDV0wPau
-         jfjYpgrjumShnGVIcxsYP/sTo9DjAZq0XXGPf1RHGTrrf66p6XccxyKhS73zUZ69k28t
-         i6+DQwsHwi3H9kXZWuqQHE8AJzWOk5vVFu3uvm69kria0/uvwntsd0cmhqTgtpJfLBqe
-         Dnsw==
-X-Forwarded-Encrypted: i=1; AKwUvBzaY7kvQUl9JFN/9/W1uzpYnviiP+mRnsYF7dDWAvX/xZVxIW0Wc9/ejF9SmcBzY4GY7TjKOoks/rEB@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z8KdblNxSaOIO0bRCPnlAQiGtecPKZv+MdZhN/NHklZcWGOHEQS
-	lXfkzCti+JqEV2g/N/7SNzxdWzvodOD2ko37Zzy/mWoNdJex8aYpUsWQNz+wpYa01DI=
-X-Gm-Gg: AYBFou3E8KsnwGMF8DjG+tuq8LdB6hJy+oqeQ2GdYx6sqT9DkMUs1KZUcEGwyiljOHx
-	eOMlTaJ//6i4hsKWPvGU9+2zGMNU4w6DVmvCV32mm21o3mWBsXt2TKUOdwsoD4HZnZL/BR1V3Fx
-	dwSdY1aYKckxFjRTI69R2vztzmRyrv1hRSeGmJb/mvehf8IePvuXGIOMEd0Qb6uWvaXk1nTR9Sg
-	ev9l0Lb89RHemfe6LMhIXZBPr90Huk5bUkXoHs3hWr0tLslxAzLsbBRDdz1ht4cdXp2Rs8SP+wJ
-	X9OmjjbALgfDJElDzNm53uIo+bgh+q9Lo2zZL62lm/7pUW3rdkqyfjEpaAmxF2vwyucH23XuxQ6
-	KGXpqT51HSjIZ8im8nnT3Q8sBHc88vW1TkqXeFnKbfVDFYtE9yFZUbYuAzYGslHy+99lkiapikH
-	cXJhIxj3D9ZnV6WCgj0WgzMR0zkW5LhHqhJskjj1WVn9K+fbmPtsFZiro3MMw404vi+dclEj1c/
-	Iq+5zeAE/TlVoHMI08FnrM5neVWdVtjHO3jtdxfuU6H1EJm/Ipl+RWuXAZz4cT66LTn61l+KZAy
-	XAD9g9qXU1UeQ8oxZAFtYs5qzqt1FRg91rMgQX5yWBUFBwf0Ogf/o3BxX3KDzXIrvQ==
-X-Received: by 2002:a05:6830:4487:b0:7f4:d16e:45f9 with SMTP id 46e09a7af769-85d364bb459mr16188987a34.7.1793872919616;
-        Thu, 05 Nov 2026 02:01:59 -0800 (PST)
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com. [209.85.161.49])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-85ef3d768c8sm4280747a34.8.2026.11.05.02.01.58
+        bh=LrgDMUrSYXpYgkAhfsYKg0ebb/uLgOfOMhqzX4yL0j4=;
+        b=f+6wqgEdT3TA7SSUIdNAJAWlpQk2ADu1SMzHaCmaZZlmKtVM9QhpAraqapsdmO6/t8
+         IaCfuSfbfcxC8oYrmY/mdv5ltOPbm0hfxViA8K7fU5++ii7v8L5HbU0A5jv6GI0SfX83
+         V5IquLZQ6dPZClzht0Bc6fkIFbq9CGE9A42P/6m1CM1IgGfK28ubwSdGNB0WPz1lhZnc
+         +NxBU9AqEhXxmE6OPVYuXQo0VJ4667xMpY4WX0i/08TVGUCOgBoHBIgGomrCuB+LpHjk
+         xFe355u/nlapxvUpwtsrxlLoEfQ0odID0mWIU5tdxO0j0V7aMkjvLPUkYDIe0264ebN8
+         5BFw==
+X-Forwarded-Encrypted: i=1; AKwUvBxtjd4rWPbXp/ykcMYk+a3Lo53BycUhUqu0F8PQJsfCyEnSpqWcfxN7W45N3BMr/af5Yui3wd3QINLF@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z/Gb82PNIwFPAkokaNZcJ0oZGbO9ApzHj55ZlAik7kZh+eR6oLA
+	Y75mB7nbtWdfCHG5Kss3kFqx3UgGbfn3ZBzMG2WnG0OMF1HtIZ4FBhJIGomSN4Q5ooY=
+X-Gm-Gg: AYBFou1jT2kutmIRlo+lurO1Kq4TgtpDkR+QsQ/Ndx5uKCoUvRwa5cGGL7FsBqscEkn
+	RKuB4o5NaavEOgnXspoQa7S3bIYTfThRXY6loWgpzEUaAiHdGh6cghh8D1YDuPCjUsIeK7GtKy2
+	JHc6IcAtynS/kZ0fnvJLaHdjYo2H51sr2QAH5g/Fw5ZxBtk6FtBVGzNPSG8lDU+ITdjIEptixN7
+	HTfjLAC95nmqvSfA24e5us+jpw8SXSgYrsOfbhbcYVcN6uIj8kKTk0/uj4rVBvp5LCXMSJCIq6P
+	Tpf7KXUKkdWaQhhSPYU42A8DjtPl4MY2nzWHlIRJAjxcpeXKu2gVpKjG3wxtypmKpzOPgg4S1mG
+	3s8ShIoQM5Ec5dD8UbI6kkdxCWutAdNy+4oqyhtUgoYPBr6ygEsB2/tnRFQj792M54xR6G+LIs+
+	q2RDCqasLGFj9nBcm5JIsskOugbBkTTbXVAKqdp3MLdYwAcAf0W/kciKPhZtTyCkpktdBWeflny
+	NySQAj38G4VH0vVAwz48INRDqBtM1KwsXtVXUlJIHBWx5tO5JnhnfwaTH2QtF/jxcl9M+QeIG9w
+	Ck72MESGI1ioBhWYgjQEXtRmG0zL2p/hLJaoWBRMFy+IVMH03x2QRildHzTtgxJIuTczVw==
+X-Received: by 2002:a05:6214:2028:b0:917:aa2e:d007 with SMTP id 6a1803df08f44-91ca4b32e96mr308942206d6.12.1793872923791;
+        Thu, 05 Nov 2026 02:02:03 -0800 (PST)
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com. [209.85.222.175])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91e939fc1d9sm22034936d6.18.2026.11.05.02.02.02
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2026 02:01:58 -0800 (PST)
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-6b19e291cc6so1477039eaf.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 02:01:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvByN5oRU2gRW+jREuShmnciYXt8Z9pqBaMskUAnFlEbKHtl0LwkPFKii25k2j7EO2divEd3yX/TQgjWD@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:950:b0:7b3:8f0a:f76c with SMTP id
- ada2fe7eead31-7d072bb3726mr8218716137.13.1793872596997; Thu, 05 Nov 2026
- 01:56:36 -0800 (PST)
+        Thu, 05 Nov 2026 02:02:03 -0800 (PST)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-93e7ad9f78dso201312785a.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 02:02:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBzjvfo2oVgfsVauXNNu0QqiD8b8Gd2zn+B2KeM7cyGEm5Py3smQPOnL+ChqECye10k5EmYAQ0puQubl@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:5108:b0:7cc:56a:58e5 with SMTP id
+ ada2fe7eead31-7d072d84a58mr8269567137.37.1793872526219; Thu, 05 Nov 2026
+ 01:55:26 -0800 (PST)
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -80,14 +80,14 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261104-work-procfs-cleanup-v2-0-1e6687e226b1@kernel.org> <20261104-work-procfs-cleanup-v2-5-1e6687e226b1@kernel.org>
-In-Reply-To: <20261104-work-procfs-cleanup-v2-5-1e6687e226b1@kernel.org>
+References: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org> <20261104-work-procfs-drivers-v2-2-245e54e87116@kernel.org>
+In-Reply-To: <20261104-work-procfs-drivers-v2-2-245e54e87116@kernel.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 5 Nov 2026 10:56:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWkL=-oCgLA3HB0_Js_TdJ+P9FDBPF-u2z7uHrL+m7g-g@mail.gmail.com>
-X-Gm-Features: AclHuK_YSG69l_UQ8CXymziWm2hhXR-Ce9gvdG6ZGXmuBEE26IV_RBgt33sxH_I
-Message-ID: <CAMuHMdWkL=-oCgLA3HB0_Js_TdJ+P9FDBPF-u2z7uHrL+m7g-g@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 5/6] proc: drop the _buf suffix from the new methods
+Date: Thu, 5 Nov 2026 10:55:15 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVHxQvKnJyKHrOZhaOg9Rn2hMeRU1JnMFFEEi31FPZaGg@mail.gmail.com>
+X-Gm-Features: AclHuK_UsJ1nGicdWEWcMLQAICTi1A7pGF3yhNkxXkXRPqohle17eXAHHNBsR6k
+Message-ID: <CAMuHMdVHxQvKnJyKHrOZhaOg9Rn2hMeRU1JnMFFEEi31FPZaGg@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 02/26] zorro: let procfs copy out reads
 To: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org, 
 	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, 
@@ -117,24 +117,14 @@ Cc: linux-fsdevel@vger.kernel.org,
 	linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 4 Nov 2026 at 22:16, Christian Brauner <brauner@kernel.org> wrote:
-> The _buf suffix told them apart from ->proc_write(), ->proc_read() and
-> ->proc_ioctl(), which copied to and from userspace themselves. Those
-> are gone now. So drop the suffix. ->proc_write(), ->proc_read() and
-> ->proc_ioctl() are the methods that work on procfs' buffers from now
-> on, which is what kernfs calls its read and write as well.
->
-> Done with sed. The flags and helpers in fs/proc that go with them are
-> renamed to match.
->
-> No functional changes.
+On Wed, 4 Nov 2026 at 20:43, Christian Brauner <brauner@kernel.org> wrote:
+> Implement ->proc_read_buf() so procfs copies what is read from
+> /proc/bus/zorro/<slot> to userspace after it unpinned the entry.
 >
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
->  arch/m68k/kernel/bootinfo_proc.c                   |  2 +-
->  drivers/zorro/proc.c                               |  2 +-
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k/zorro
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
