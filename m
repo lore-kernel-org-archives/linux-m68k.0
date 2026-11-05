@@ -1,73 +1,103 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.227.17.24
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.49
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793885340;
-	b=t+0nZj0fS7ZqyssDzUNuYVkFUO8WIKMQ9JJYDQQbJ43xurprRltfMYIlr7tHd1NzXQ0m
-	 ZkQbEXZO9+wN3dklnA7hoLrE69ecat4SU/r+nuDskDWNdMTGgBJoC5YJX45/9KflPobh0
-	 zXLYQ3G3YbMOdqmcFJ74z8WBd1Yd7ZD4qvbf3V19veFC9+2QvHwZ9qKa7znIpSNi2b0EY
-	 wMRC5jpTWPXV5JrBwtrKrOsKduZc+6XVgLNWiHQNxoC4spr38TQIxKEMzzUuv6gqDo5Kv
-	 yEQl8wQUMREUeUiJcIDB8w3lGb3DlDsgm8lcM5HrayoYULafdnUF0IyL9dp8D7Cu9HA==
+	t=1793895450;
+	b=Z+/kixKxFs2VioMowc/AWtLC2MrkYATPnHWR0stZgWGhpOVjKp69l+LcDu/ZG3UsBgZs
+	 Cme3GMJFf31zdo5/2fuqfNNQT403RZptWxGPuvW6ah7l7LQ9LH98zYYuxCZ9IQUOufy9+
+	 euEftLkU/r+aX2M0xTXQNxhg/1MC9fNIoRnEEqoy8CLk7XjMG5AHCnXfvndRrQ5a8s1Rb
+	 jGQRGMNzpjJFrvJ0R+X7atuBmamxQvC8qzOTdWRqKB7zaU5xhJMUg9NFo6jg3tN0mW1sL
+	 NH7gYP4UWlRSTEcoK8P+XDZdDd5emTNXYNt7IJdajuEXoaZx8F6/54APtWNAD/rV+bA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793885340;
-	h=DMARC-Filter:DKIM-Signature:X-UI-Sender-Class:Received:Received:
-	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-Spam-Status:
-	 X-Spam-Checker-Version:X-Virus-Scanned:X-Virus-Status:X-Provags-ID:
-	 X-Spam-Flag:UI-OutboundReport;
-	bh=S7gTFWi0vVr5NLYp53sjQKqE4pWLhfHhEbWgZHbtI/c=;
-	b=WG6pTzUzSKltRcdAn+V+wzr+eyTthAbTEUGQsaBJoZFPW9v2x0Zp4b8tUYvbdTs3l4kZ
-	 iNx6GUtto8W5EA4MN7+4q+rpWu9ySInlzGOZuhSZ3qv7ngdxxYbb1loJ20czgkZQhIGrA
-	 EwYEysMdpSIjmqZnhlSOGGmEvLhMJKUtyPGkh3JD9sbswu+C59gOTQHEOPiDLafJVRgsh
-	 zsYmpGfKD3inUSWsz1R0kIXSCnEhP84VKCDiQ/54H5PCRsm4YqvyamSfU3t2FbCSZWhok
-	 F8rtoNkDbkR9M+GMuDUVT2rO7d7yJ4dnwJ7ZZsJ5M1TKtYOpRwuc0f5u8CidjabwOiw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793895450;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=pPA5ylsXv8X+ypVgKa/sC5fX3KTDXoivEwkyMY95mxU=;
+	b=tiWVoFgLf1e6sS20ZxnaNvl907wzvYRU67BwFZrMeZ77FnXLndna1tbPPyS+ss5Z2X7s
+	 fSr4ZBV4Q7PNuXlD5z749gjSp07V5/QgJRKl5WYacOKyitq5G2lFR1nktZZhx8CoukzBR
+	 UcW5AgWs6yDIu9m3iwxLwYKG1GDWTBdAcT+0XpJuepoCSgoFlArWUWq/Qvt8DrJwKqsQT
+	 MLV0zjaj/yfhH0By+2Ouwoy/QTX86USoI0aPQcTKjlr5xUI+fYRzVxJu5XDivUokWbUCg
+	 17moz7PeGklK4uMh/insOZAADHf36/7ZWeGwKtKKfdELIoLJGjsgY6s5rylHMSSRryA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=morknet.de;
-	spf=pass smtp.mailfrom=morknet.de;
-	dkim=pass header.d=morknet.de header.i=linux-dev@morknet.de header.a=rsa-sha256 header.s=s1-ionos header.b=h6JcHTJ3;
-	arc=none smtp.remote-ip=212.227.17.24
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=p22FBjGw;
+	arc=none smtp.remote-ip=209.85.216.49
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D5A606A31B;
-	Thu,  5 Nov 2026 13:28:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9D5A606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=morknet.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=morknet.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBFC606A328
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 16:17:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9DBFC606A328
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=morknet.de header.i=linux-dev@morknet.de header.a=rsa-sha256 header.s=s1-ionos header.b=h6JcHTJ3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=morknet.de;
-	s=s1-ionos; t=1793885331; x=1794490131; i=linux-dev@morknet.de;
-	bh=S7gTFWi0vVr5NLYp53sjQKqE4pWLhfHhEbWgZHbtI/c=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=h6JcHTJ3kcxANUEvlIYJMKBIAg5re/wb95CadZrdfmr/6pKT6bcLy44kCIlepBdO
-	 v75XFtEDA+q+ilguzdX8RsGScazFAjeM6Lx5NdQ9RvGNnl8KDqBlbg1Ra+ICdkVxP
-	 XJwfIi7zwBNFYaELQCa2g3ZeMXQuTpql1SjBcF40Q0tBwNq3VnqKyxFfeCdlF/JqN
-	 3LJq+IoXLN+h7w6lA81yV+Tes5b/ge7VqMKKz86VF9QOJErFRt4QE2c79OS8JITIR
-	 tVsAzpVp4zhQohuYhHm1Hhy9TP1H5nfCmo3RFkRk7bBPlbzEPrBjvH4u5+ogVgsdt
-	 huovL5xb2HfugmB2HQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from client.hidden.invalid by mrelayeu.kundenserver.de (mreue108
- [212.227.15.183]) with ESMTPSA (Nemesis) id 1MvbJw-1wXXcb267C-00xRJC; Thu, 05
- Nov 2026 14:28:51 +0100
-Received: from sagittarius.morknet.de (sagittarius.morknet.de [192.168.19.11])
-	by mail.morknet.de (8.18.1/8.18.1) with ESMTPS id 6A5DSooP2302739
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Thu, 5 Nov 2026 14:28:50 +0100
-Received: from sagittarius.morknet.de (localhost [127.0.0.1])
-	by sagittarius.morknet.de (8.18.1/8.18.1) with ESMTP id 6A5DSnwR1226355;
-	Thu, 5 Nov 2026 14:28:50 +0100
-From: "Steffen A. Mork" <linux-dev@morknet.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thorsten Blum <blum@kernel.org>,
-        "Steffen A. Mork" <linux-dev@morknet.de>
-Subject: [PATCH] m68k: amiga: lower min_low_pfn to make RAM DMA-able
-Date: Thu,  5 Nov 2026 14:27:52 +0100
-Message-ID: <20261105132752.1226267-1-linux-dev@morknet.de>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=p22FBjGw
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-3ae2b7e1e17so1391078a91.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 08:17:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793895449; x=1794500249; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=pPA5ylsXv8X+ypVgKa/sC5fX3KTDXoivEwkyMY95mxU=;
+        b=p22FBjGwJIA8cXI+a/2hrtj825Y+5KIHRhkeNFBHCXG0kOojPpAtyTVK0tEiwlLM5R
+         yVes7oJNSMTjohJS4tqSEUrjK8gBdcNYD7MS67HtxHuQsX9M0VynzNfWLEPrNVW5Ej6+
+         hGFzDX+mi2UEUXDdi4q1gwhOjdf6GMU4M9AgESZcd/jU8xOGnHk8AlidyVomRngszy9B
+         letCC+fewKMjeuXn0GMP/YrpdHPlYKpffg24OODIn9WBnEQuDsKPlbl/yPDPd1dWEd9o
+         +WPLyYZfM9Rh4XzmzBVJVWyJSseVgV979oANztET8v+a0kRUwyUCI0ZszfdsXc+cBq0D
+         CvNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793895449; x=1794500249;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=pPA5ylsXv8X+ypVgKa/sC5fX3KTDXoivEwkyMY95mxU=;
+        b=0C3r356fs0pcycgCR64R47RHTYqDCdq3Ba55x/e+y52l1Ky13uPsths2noFPpIVpBv
+         3RRqM/FiYZrYfFCjPU7Yn71wjr/DM9GH6Hdxu9fBoO0km/yiY2unz7wTm2RvaWg9ZZRD
+         3iKvg2i0pLcs1SYJrBN2au+DHlWHCjTXNdRi5dLTz+klCSYbP0u+DBWL7cTZYvVWXB/o
+         d/httJ5shlwIGOz2+FoWrvGrteF+Ug5/OoSVXW+rWKxhonmb+IfRFR5SymPQn587tMjw
+         FJ9vld1LIQd6QYlNToZQGy0nk/uA9jKL7vAu5+6St7UiN+Ehgl6LpPkM7HAdHRVAFign
+         /j+A==
+X-Forwarded-Encrypted: i=1; AKwUvBwfDvC8LnRN7D1gxSbt3ML0HHoGvpAXg3z7GvOeSDKIuf2YdjNxBwvTzIVA4f/FicBASIuQyOJS9HCr@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z9GuzQrrUQlxKoCwLZ3asMcaYmj/NxeL3wpy4XGY3Ohh2JtX1PF
+	Ha5IFTnu6vzfLO6bAl1rg0cqlgk6eqjKffuh2rhMk1vRot+9UZDY/FN6
+X-Gm-Gg: AYBFou1kP+wn5Xq5MPAPVc2L8c02EfMnwxGZYSXIurrOAr3O1lheAs45cT2kFjGx7rK
+	q5Ypw1XM8GsoSQHw8Cgey61fgyFoIl4TR6mj0tvMOJqPwxxamYrEnt1xLtNMO+F7UJqFwDh4f3Z
+	PdsNYKT22MCXg7CoEULOmUr3F6DP6r/11vLH2UzfOOSJQrZzD8QCcXsdvf2O27ewGqi4+5whsPc
+	KhgxuwuOct7KwqEEjAlRwJl+Taa8dT2LzvwkxpBPDzQwFVW5yYosAybnwlSn2Hyag2iRI6ONQat
+	paHtkGe/tRv+swRCcR2jeObt8E2nESwG1DSF1r6vMESDgC6kFxGOfwwfpF/25O/KPLCGoBJ5/cj
+	FnwTZ50nH47fnPYGsLS/rKNzDJAxL3bRHBbrlfxWtgyNwo5tFSagcGftwV3Sma2CwJdZmrEpLBF
+	Rph8ABPRYDyJV1qnoR7nxqCnpddITXiDz20WG2kWK7m4r+jLff+XuXVnNLWV5ovb1tMbFZXvhoq
+	NRFFXRCRWDDSV7VBfX8MDlCR3dNY4VXgpyFxpgZVfKaPbIBGOJMS1auBuV7jGCKh19gETOInytu
+	wW7Ialc7noPqZLg6VulrjvO4QWHSHVYGdKK7vkHTQahI4Q1GpcvzzfeUiqwluHS3c7uw3ZQSTHB
+	F7LU7xyLbi6Kil3ysbo3ACVg=
+X-Received: by 2002:a17:90a:e70c:b0:3ab:2737:3393 with SMTP id 98e67ed59e1d1-3ae89835d94mr17591365a91.40.1793895448800;
+        Thu, 05 Nov 2026 08:17:28 -0800 (PST)
+Received: from visitorckw-work01.c.googlers.com.com (55.11.81.34.bc.googleusercontent.com. [34.81.11.55])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b0b3287a60sm4981556a91.13.2026.11.05.08.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2026 08:17:28 -0800 (PST)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: daniel.lezcano@kernel.org,
+	tglx@kernel.org
+Cc: pjw@kernel.org,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	alex@ghiti.fr,
+	geert@linux-m68k.org,
+	laurent@vivier.eu,
+	marscheng@google.com,
+	eleanor15x@gmail.com,
+	jserv@ccns.ncku.edu.tw,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH 0/8] clocksource/drivers/timer-goldfish: Fix bugs and add DT support
+Date: Thu,  5 Nov 2026 16:16:54 +0000
+Message-ID: <20261105161702.3515900-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.56.0.398.g882cbad275-goog
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -77,135 +107,40 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 1.5.4 at scorpius
-X-Virus-Status: Clean
-X-Provags-ID: V03:K1:J14B5c7YwR2N9gMsetXHm4+Wu1qhcawR18LP4f0jPAWhGlfdXPB
- n56wUoDVEHb6QxFy8KCE+wSyYO65Sxnc0dDo03FXFAA5upn61McKhxHlKTouCawkN/pC61v
- QTAGW505GJo0auskfqaYfvaIIEy3ZDmPQqy48DUNH9uAvwH2z5cTpFe8oZgOrkJPLa4NBbv
- pfpLRZcn8/ciBv21mKivw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LL5QYpsPr1E=;ewhKAqIqk41VuZWR2+ezZ0IPfGE
- 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
+Content-Transfer-Encoding: 8bit
 
-With reference to the patch by Denis Ahrens for the MVME16x platform, this
-patch works in the same way for the Amiga. Currently, all DMA-capable SCSI
-controllers have ceased to function due to the same underlying issue. Whil=
-e
-the wd33c93=3Dnodma parameter can be used as a workaround for the wd33c93
-driver on the Amiga 3000, other drivers =E2=80=94- such as the zorro_esp d=
-river
-(tested on a Blizzard 2060) -=E2=80=94 fail completely once memory has bee=
-n
-released by free_initmem().
+The goldfish timer driver was previously only used and tested on
+single core m68k virt, but the same device is also present on other
+qemu virt machines such as riscv and or1k, where running on SMP exposes
+several issues.
 
-Applying this patch restores proper functionality to both the Amiga 3000
-SCSI controller (without requiring the wd33c93=3Dnodma parameter) and the
-Blizzard 2060.
+Fix the concurrency, oneshot, and registration bugs in the driver, add
+device tree probing support so it can be used across these platforms,
+and add a MAINTAINERS entry.
 
-Link: https://lore.kernel.org/r/C718B642-57B9-48F3-8C0C-87DCB31A8495@h3q.c=
-om
-Tested-by: Steffen A. Mork <linux-dev@morknet.de> # native Amiga 2000 with=
- Blizzard 2060
-Tested-by: Steffen A. Mork <linux-dev@morknet.de> # FS-UAE virtual Amiga 3=
-000
-Signed-off-by: Steffen A. Mork <linux-dev@morknet.de>
-=2D--
- arch/m68k/amiga/config.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+Tested on qemu m68k virt and on qemu riscv64 virt with 4 SMP cores. On
+riscv64, testing was done by passing clocksource=goldfish_timer on the
+kernel command line and locally bumping the clock_event_device rating
+above the architected timer to verify both clocksource and oneshot
+clockevent operation.
 
-diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
-index 6e89e7f7e98b..c48aa3dbd837 100644
-=2D-- a/arch/m68k/amiga/config.c
-+++ b/arch/m68k/amiga/config.c
-@@ -24,6 +24,7 @@
- #include <linux/interrupt.h>
- #include <linux/zorro.h>
- #include <linux/module.h>
-+#include <linux/memblock.h>
- #include <linux/keyboard.h>
-=20
- #include <asm/bootinfo.h>
-@@ -854,3 +855,38 @@ static void amiga_get_hardware_list(struct seq_file *=
-m)
- #ifdef CONFIG_VT
- EXPORT_SYMBOL_GPL(key_maps);
- #endif
-+
-+/*
-+ * Make all system RAM available for DMA.
-+ *
-+ * paging_init() sets min_low_pfn to the first free page
-+ * after the kernel image. free_initmem() later releases
-+ * the init sections, but min_low_pfn remains unchanged.
-+ *
-+ * This prevents dma_capable() from mapping those pages.
-+ */
-+static int __init amiga_init_dma_pfn_limit(void)
-+{
-+	unsigned long pfn =3D ULONG_MAX;
-+	int i;
-+
-+	for (i =3D 0; i < m68k_num_memory; i++) {
-+		unsigned long mem_pfn;
-+
-+		mem_pfn =3D m68k_memory[i].addr >> PAGE_SHIFT;
-+
-+		if (mem_pfn < pfn)
-+			pfn =3D mem_pfn;
-+	}
-+
-+	if (pfn >=3D min_low_pfn)
-+		return 0;
-+
-+	pr_info("Amiga: lowering min_low_pfn 0x%lx -> 0x%lx\n",
-+		min_low_pfn, pfn);
-+
-+	min_low_pfn =3D pfn;
-+
-+	return 0;
-+}
-+arch_initcall(amiga_init_dma_pfn_limit);
-=2D-=20
-2.43.0
+Kuan-Wei Chiu (8):
+  clocksource/drivers/timer-goldfish: Fix latch corruption with spinlock
+  clocksource/drivers/timer-goldfish: Fix oneshot mode spurious
+    interrupt
+  clocksource/drivers/timer-goldfish: Fix resource leaks in init
+  clocksource/drivers/timer-goldfish: Set CLOCK_SOURCE_IS_CONTINUOUS
+    flag
+  clocksource/drivers/timer-goldfish: Drop redundant max_idle_ns setting
+  clocksource/drivers/timer-goldfish: Set clock_event_device cpumask
+  clocksource/drivers/timer-goldfish: Add device tree probing support
+  MAINTAINERS: Add entry for goldfish timer driver
+
+ MAINTAINERS                          |   6 ++
+ drivers/clocksource/Kconfig          |   5 +-
+ drivers/clocksource/timer-goldfish.c | 113 +++++++++++++++++++++------
+ 3 files changed, 99 insertions(+), 25 deletions(-)
+
+-- 
+2.56.0.398.g882cbad275-goog
 
