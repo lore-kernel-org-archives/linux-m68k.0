@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793906980;
-	b=wcEgslKZMiowfxqfK89MDzmSSpd0yJQiuAY3deC3tndvier49tIudFxQFZyrB9iXffqW
-	 mP6Zfijz1Ia4xbr3KgnZyjG0nJ4qmWcTewneKknfg0tNyHP53cypB4uiceqXzKQOZcLAO
-	 UDgXoLFdBkS7r2GkG0NG8Sw23z3oix/NPLbC43iY8f5zw8DV+w1F6n3SNDa+46kLi4zqe
-	 5M5twUE6z+Yq4qO1fe9lUT3PdMnjhle0OB49AN19mJzpXz5baWpxtLcpz0UKjD43S6bBF
-	 oO1qM7wNPHKAdqWpLuIu4YeF3dEVaA5mNCkrfO56yIUTGDj/Kcz4/AloF/cOylkBEiw==
+	t=1793906983;
+	b=PRohE3/IWW0CvrRmTtQqxSv5LAGpzhMOfw72nzhcnbC3sSKK8psP3GlXQzKvPKlP9IPG
+	 ps2eEPFql7ule6F0zWWGyUtXwJuV1wjMyUd/ZczTGQ8yoATi4nKh7T4B/5PkGQNFd1Lpg
+	 gTB8gUmVr4qTm3qYFJosLDsvH0ede2vnS6Op8pHH/xmFsYjcivU2yuZoyYGgRwnxnUqVu
+	 hfoSeQdVMK1zNL2IylTglVUnnWkj2x7WEZsu5acZEh8xg8sWJr02A36gbWs6pNZThKQ2J
+	 TP4Vdmay0l4j8OdOXsweDiITyeRbi87Zgebu6/jc2inpg+hFSPXfMpGLznuJBrDulvw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793906980;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906983;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=b6fUC6kkwZa6jGlElTDwWL2u3gjCO7plwWOIGlwpTiE=;
-	b=KUsk+XmCUeEPTvkMY+xwcUDW1Je9a3yw+541BAIyYrdxDdMGx4OiTG6uK2m/lq5UuOzg
-	 BRBYlkMOUVMUIDDKc3SHI5hjRft/9jz6ngwZBXmsLp+pD09I//bTcirKopPF2mbGgWTYl
-	 9dVjoPqqcLeDwWBz7+XCpUAZqAIfEJbiJSNxdMle35M7Ryc1vVlMCXLP+VWMXt07WWiHF
-	 iSxbsTGPdwTxPYbozgwOmkm7cRR8DWclH520t5S7/w5HEYfi9NSGXoOSN+K+0ElEBxdKL
-	 lvxSp9+5Al5XA2U5yKibpWPU5ujcC/ckjU9n/pzOKNoZAC2k0ceguXar8TS0GK6SwUg==
+	bh=P6jpmRzymPT4r1qFhmwUt7rLPG9nXrVikl3aWyHy3zY=;
+	b=Os/8BiO2PREwthpMV5oVceO8U+khg8qiUAokGELQUlbOmIfRdME3s5NU4Unui6ZX8emG
+	 xCXvj8tzoJKYN1DuMLuFSx9Twgf1swi3Qpcm82rhvwL30RI1oOC/9XEH++VROSlv6cQ1H
+	 IF1TVmPIdg7xwIOuAgC8mL2WfugmPiblDwFR7D18RuKq2ik4dC3wHqHa/Vs9uvEFeych+
+	 b3wWKoELojfHWIQmdzImlBmp42MMpPtup7gEvk2rc6H7K54xqTASZ81xSUaPi/Iuz4wdd
+	 AW1TaYJN7AXz4MS/3tcF92Nxt1n2zs5RDY5dlUHNEp9TWmXK3qnHfszS64TduhCOfvw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MqLSjmTq;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BI6MttIY;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48248608362F
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 48248608362F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CAA6082BF3
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 95CAA6082BF3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MqLSjmTq
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BI6MttIY
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id F170240269;
-	Thu,  5 Nov 2026 19:29:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 759BC1F00A15;
-	Thu,  5 Nov 2026 19:29:38 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id D3566601CC;
+	Thu,  5 Nov 2026 19:29:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506931F00919;
+	Thu,  5 Nov 2026 19:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906979;
-	bh=b6fUC6kkwZa6jGlElTDwWL2u3gjCO7plwWOIGlwpTiE=;
+	s=k20260515; t=1793906981;
+	bh=P6jpmRzymPT4r1qFhmwUt7rLPG9nXrVikl3aWyHy3zY=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=MqLSjmTqIqsb3uOWNf5itle2+YYZN7QrWSpoAg2AznNJeMGlmfOcDv+I+qQC/PV4q
-	 oM/ttZIktk3u2UEYRLi7imIYWeewjGd3g46pq6DVdFDvsmQYVdGsBKqCqZVdWS7N0i
-	 tpm6VNMiWBiuscCgtZGDWjujl0tFlJwCL6trdEqlTYYAMvmUvXMpnGyxWVrHMwosBq
-	 djqV34NaddaXWJ7uOvgZCHtGYdGCHAEcWmVpgX6aM+BtPqPLPWgB3dldmaWXncEaVj
-	 WhGPLyMA3oP8jfMvyP0VXsBlKe1NFyI8lrBj+VpezDdETg3MRYQS3J8VE12drFITzt
-	 Ytd9Y83ZFgpZw==
-Message-ID: <sashiko-outbox-199888@kernel.org>
+	b=BI6MttIYsBkE0g/vJZ+tIbuQi6n//HrvnT15RjmT0kcJcNcEhPSua8MjhEkmvdLBy
+	 YJ4Cl9rhWrU2J4FNfrV5LG8LjKzdoOPXpIy3l02i150qUa6eO1W62hdcJOzlm/8UaO
+	 8YRGUFIFXaZzA8K6X+GpP9ZjU4yKSbKfjjhUBmROBGXgTGgeHdxAb0ylhCvZ99pGHi
+	 UTdy2yICxI8TI6rIlwVdpTX04WIt3mGVdeNnVRbumQIyZHqUl/9zhk34Qq091tX8nL
+	 V7uPEQ77IY3Dtg208+RDdYXIh08xvxvfPijNAYM2aPAEKdPQWQJs9yilg/Hiqm9By0
+	 dV7TqpBHd20kg==
+Message-ID: <sashiko-outbox-199889@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 25/51] wifi: libipw: don't return 0 from
- writes to debug_level
+Subject: Re: [PATCH RESEND v2 26/51] scsi: core: NUL-terminate what is
+ written to the host proc files
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-25-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-26-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-25-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-26-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:29:38 +0000
+Date: Thu, 05 Nov 2026 19:29:39 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,18 +79,19 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> debug_level_proc_write() returns the length of the string it parsed. A
-> write that starts with a NUL byte thus returns 0 and writers that use
-> stdio retry it forever. Return the number of bytes that were written
-> instead, which also stops writes longer than the 11 bytes it looks at
-> from coming up short.
+> proc_scsi_host_write() copies what is written into a page and hands it
+> to ->write_info() without terminating it. ppa and imm parse it with
+> strncmp() and simple_strtoul(), which read on past what was written into
+> whatever the page held before. Terminate the copy. A write is at most
+> PROC_BLOCK_SIZE bytes, so the page always has room for that.
 >=20
-> Fixes: b453872c35cf ("[NET] ieee80211 subsystem")
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D25
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D26
 
