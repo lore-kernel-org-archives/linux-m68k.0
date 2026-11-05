@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793906990;
-	b=kVC5kpzYMKmDF5P1ynkBjkf9v82ZIjdUqvX8E4jOMl8uKos3wNRL6x2huP+EL04dXgr3
-	 RK+RQ/e6xA6FqZXIaJFAi+DppzBWzjWwFezqLG+Hs7Uxn66hERV5iefUktOiQA1Od5wvx
-	 UKkQZ92DQAB0AR9PUlenn4Oxx7NrW1p2GxOVRzhNQuZoDUj5RtCRz9pu7Ta17VPhvp13D
-	 orTzz0XSj+0gJRzUk2/WvjMe/B/+qp5D0XQHUfGS82E67TjSg6DZu2FaQrOZElWw67KNl
-	 8tqFXcZaNIrJ0eYO9V7oPjoBllXIW20snwVNoRlVZ2zYbUKh0/S09i/q1HKT4kkMcbw==
+	t=1793906992;
+	b=DFS6XDk60eeE8i34V8GizaUdDPb3QJbJg8pfzlm2miz4UHm4+8/iVjV0VwO1+svhoeoq
+	 Joi9RgPu2dEmaSCoWw63PwIVhDbVMdEPnjtQ3/bR04XvYRMQx3tg9lwp88tO5j8P2gxdG
+	 4I+NNPaLaXUy1yzBZPMe2PwcSKUzJA6dhIQ54iVhIi2gvFwaTeMsjj0tC0xWYflDHRn+z
+	 /U2+xHR1Ko39KJDSziNKUTgadJuaNwIDysqqN/2VJew6M+7cciolDiaZ7WlylIRSUZ9Ay
+	 KtkYwS0tgr8Ji8KTjhoHyg44BtNX5dwMmf0S0P30RIh3RRx10RnY1dU22Icf3UghWew==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793906990;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906992;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=tYEaWeBl2oisDih1UdNugCXIpIq2tgZMb3sKXKsBY6I=;
-	b=yZBQWEfe2z0NhO1rOjdV9ei7iRXNFl7yUGm130PF9ocFrx0rKclJ0mSut5xSl7UmqKeF
-	 eclKryhbMs2K0y4AyKPcqXp1GU+pd3mSxeij4+Iw8L7AzWPD4lnADfOzuKTJw7RAywo1m
-	 75E6atLFk0YUjzFUdhr05wD4Z0jECI4ePGbzRbh8WEgs+ouigw3nT3EsHh6/zxfSM79GV
-	 R6gM7BC22GsqOa/OS7DveTKMfdPRmUB3YWzyyvBQLPa+3fVpzST0RQTaT/8lG/YXhHCPO
-	 NZXmgqzVjVmM0QAM04WboEpWWuVafjlZ/GOe4YB+IILFnL5m0vM9F895oKJD8iA+p9A==
+	bh=Ru/qyz255iW10fX/xYGvqKwjOThmYmiF9XoSZGKM7R0=;
+	b=gF1bsRoV8uv1Ze0yQw1c7+qnR9AHHJZK0jLZ33FdyCiI6+epwcfeMwywk+x+JD2ZCGgL
+	 17GPR7ufw1GJKnE9RrCc19yZNtDzPUrFEHUjHRpQYnk9Dil1I4jQ5qXOfG7pmrlIg+iXq
+	 leT85mZJnf+TLHsu7qb/QsaoD2XucPQbBRH1bi35fn/k1h3X7CtIcZoyAXjwzMoKD5LrG
+	 xwFpf43r5LCfj9Hri5a3RoyNI30vcgpubrLj0EszQpuyVBSqwV8XeGa6ebkn2cs5KwmJR
+	 uBCjnBEecGfSm35bTGJo85fD/JQTyhu4pGj84e1LwBjbmytsdaXOhKhF0RNUNR5QDeQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d0zepe9O;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MJtgcSMf;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5462606D81D
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A5462606D81D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406D86082BCE
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 406D86082BCE
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d0zepe9O
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MJtgcSMf
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 740B6412E8;
+	by tor.source.kernel.org (Postfix) with ESMTP id 994A6601D8;
+	Thu,  5 Nov 2026 19:29:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C5C1F00A17;
 	Thu,  5 Nov 2026 19:29:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E97BE1F00A16;
-	Thu,  5 Nov 2026 19:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906989;
-	bh=tYEaWeBl2oisDih1UdNugCXIpIq2tgZMb3sKXKsBY6I=;
+	s=k20260515; t=1793906991;
+	bh=Ru/qyz255iW10fX/xYGvqKwjOThmYmiF9XoSZGKM7R0=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=d0zepe9O8R5+t9zEwwSQfwqQ+uRDyVfLUlBPynET0r21RHNR5UG7AhOhsR02sce5r
-	 TSZF+KdRu2ZE7ol7BqyFp6fDMtQgn3JGM2/h4/JQrs7WA9QImQw9XkglJVJmyXTLGd
-	 Gt4w0NpzUVsmxvQy9UDNKi2oQqw/7l1DgZXzhL2SeaBSwVDpx5uLbxvtsM/PwUZN7P
-	 KRGewt0VicxmCd0ZOyKwOEaPZ3eOdzSHhx5l5ZhRR105fv+OKnjzDGYzuxGv7Q46xx
-	 6br2wVLNCoQuk6L/kzU76RqGHKbHIXKOeDdGgYf/5PNxNiAICsz89j9aaMbo2GUMpM
-	 Lyp37dqK14gbQ==
-Message-ID: <sashiko-outbox-199893@kernel.org>
+	b=MJtgcSMfLpnK3zQ8ve5AytNoGwVGMCdIK3G/+WxnM1JzzDcQ8DAnN5v4DQpZqVkNE
+	 JIFRqjboUyRPr1h1Dl1DKUbwP7QphpfK/YvUU9TIXGy/tTS0d+xdV2MLivsLV8Dgu4
+	 UzSkOJsM/jDsL0ZM5k9XUlcPM1VkW2J4kRWeL7ktokcrjcRTTBioEI2YpgLZh5eP7W
+	 u6bhsGA2WwPT6st0KQcgRf2kcMXrl5bjJKLXx/8iPS2CkkO8y5/gPDeqZL10iGDxGi
+	 ryctgUStVMh1y8vZQVQju8TMtjpBqM9jPCUp5nhZiIt7GtigUzscvBis/aL4RTjcOy
+	 LOwDNub5ShbCw==
+Message-ID: <sashiko-outbox-199894@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 30/51] net: pktgen: reject device names with a
- '/'
+Subject: Re: [PATCH RESEND v2 31/51] proc: don't WARN about a name that is
+ already registered
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-30-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-31-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-30-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-31-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:29:47 +0000
+Date: Thu, 05 Nov 2026 19:29:49 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,30 +79,26 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> "add_device" takes a name like eth0@1. Only the part in front of the
-> '@' has to name a network device. The rest is free text and all of it
-> becomes the name of a file in /proc/net/pktgen, where procfs takes a
-> '/' as a directory separator. So "add_device lo@a/b" makes procfs look
-> for a directory "lo@a" that doesn't exist and warn about it. Any user
-> can do that in a network namespace of its own:
+> proc_register() WARNs when the directory already has an entry of the
+> same name and fails the registration. Callers that pick their names
+> themselves should never get there but some take names from userspace.
+> pktgen creates a file for each device a writer of "add_device" adds,
+> named after the device. A device can have any name, including "pgctrl"
+> or "kpktgend_0", the names of pktgen's own files:
 >=20
->   name 'lo@a/b'
->   WARNING: fs/proc/generic.c:174 at __xlate_proc_name+0xb1/0xf0, CPU#3: b=
-ash/241
+>   ip link set lo name pgctrl
+>   ip link set pgctrl up
+>   echo "add_device pgctrl" > /proc/net/pktgen/kpktgend_0
+>=20
+>   proc_dir_entry 'pktgen/pgctrl' already registered
+>   WARNING: fs/proc/generic.c:404 at proc_register+0x555/0x8b0, CPU#0: bas=
+h/241
 >   Call Trace:
->    __proc_create+0xd0/0x9b0
->    proc_create_reg+0x45/0xf0
->    proc_create_data+0x77/0xf0
->    pktgen_thread_write+0xd8d/0x1750
->=20
-> With panic_on_warn that takes the machine down. And if "lo@a" exists
-> because somebody added a device of that name, procfs used to register
-> the new entry below that regular file, and removing "lo@a" freed both.
->=20
-> Reject names with a '/'.
+>    proc_create_data+0x9f/0xf0
+> [ ... ]
 >=20
 > Reported-by: Chris Mason <mason@kernel.org>
-> Fixes: e6fce5b916cd ("pktgen: multiqueue etc.")
+> Fixes: 6c2f91e077f1 ("proc: use WARN() rather than printk+backtrace")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -110,5 +106,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D30
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D31
 
