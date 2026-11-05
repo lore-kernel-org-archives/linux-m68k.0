@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793907336;
-	b=yio1o7ExeGIhj/FMhGOhaYpSZuGVy6yxHdKYTMJADIzvyBhnyQUbboXZmqC5rewx5DVu
-	 DabvXamYzk3eSFfZO/s+DKFlMQimRx3GpF9+KiAc1QCIiIvc8M6CbT1q0Vhthpv5OuHj9
-	 ZoNF42zt/70nfP1k2CsjYvo2jp8DyvAqjhBL3Zn24LWJnMLb6d/xUibzulPwnFKUsncZM
-	 KQvX9AqVRPHBODfcTYTz1q6Yg91Gzd7SY8e9eHHL+fHKXpLzydyzwml9SmzyQpF/EHsWo
-	 mLH3tMCKRcpgDF/d7fIab+dpyFrwpJvCKuEve2LEgf+PZ8CyflhnDwlbZst0QLQa7gg==
+	t=1793907338;
+	b=qCP78Ch1SW1RxAw89urmubsPlJ/cPSbbACzPXwghr0X/eij++OUUjhytmzZpQQG7zgzu
+	 5QUavkV4T/YtYZ7465aC9ZlJ6YNP+SYgkhobFqLdYqNTbA92tJvWjfGrYFhW+vLOhPUIa
+	 4YG4Aoul302GMJGZFips4rd45jOn8RbyHyBn4pMo3+uD38p/zKNY6DbEYC98PD/GkekbL
+	 Hcdupnst/IBNbdUoTNWeXWb+Rg8mHdEKFSMxoyJEQ5+8HNMr0H+dhU4A7hy1MX0lPWpkd
+	 Of1roYRnbhRKpaRNgwsB6tb8qn+aHP45moDLlJN3x3NA18UbkAZoBpg3XwKeSUrr+bQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793907336;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793907338;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=0VkIWc5YSc/16gdJRgE/wqoAJl9T13wcKhPi3jcBrXM=;
-	b=EhMwbtkwtlD9s0UvEP+mYsFZG96YzrKaJf4xe2FH14lI+dcktbLpPth6N22oZU3Ml8Rv
-	 yegxf3I1Dxnt7ACrVKZZKujqi6ZEmX3D3n9AJ4gQKCFJXaJBeUldQ3W3folXG2nGoewaW
-	 BdwUy20c8/pxv22EMJyd9VtPtPdRtN1I+69+UX7uTaCUfAUib9XY4Z44QNJF847djn+OJ
-	 uiwmp2vy4H20Tm3CmvNnQ9OqO1At3fSRVTc2IqvilJaMWcT+MvKSpjPc4xZdAw9Gqhrvr
-	 LrUcijrGwf//ZlyDtS1/oxFNvDqkbLvEllFhwVmN3NNS3Vj+d2oCpmRNCjIXkJ1JquQ==
+	bh=1DrTL1ac6XN1wKtHpceRQArmb2bB9IIZ8TJ6poNHDCM=;
+	b=PQGnmAu07T61P+oVW9SR+MbIxQ3+GsAFvFNyPoLVwZFl3/2Ibur3PUzHdEqeJN1TgD6U
+	 QSRewXwEnzNoYWOmfmZ8nIcwPq8Vq/WpGk/K1TC18eL7yKlZZ13TnciLRm1Nb0Pn8fsWu
+	 uEi+VqrifnPjRsHvZw+PkWbpmDTEgRclASEdrwYP79a7ZJplFQSBK/6basjTzQdW0iBEg
+	 FPVRjZWUX7WYk0y1tLfNk8jUVxD1sLdocd6CeohPMTU4EAVf0xjXqWWts4bxMr28RGM8y
+	 rZ5xwVKwSAs5Pbp0cNbO0qmU2ALDqSQpYHkM3H/8BM9p+WMPuulhUjcamnxrHtALr0g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VjEspZgf;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HfWNy4Y5;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD2E6078574
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:35:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0AD2E6078574
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CBD6606F94A
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:35:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6CBD6606F94A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VjEspZgf
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HfWNy4Y5
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id B71B740F0D;
-	Thu,  5 Nov 2026 19:35:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D7D11F0089F;
-	Thu,  5 Nov 2026 19:35:34 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id A7D62601FE;
+	Thu,  5 Nov 2026 19:35:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1946E1F0089E;
+	Thu,  5 Nov 2026 19:35:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793907335;
-	bh=0VkIWc5YSc/16gdJRgE/wqoAJl9T13wcKhPi3jcBrXM=;
+	s=k20260515; t=1793907337;
+	bh=1DrTL1ac6XN1wKtHpceRQArmb2bB9IIZ8TJ6poNHDCM=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=VjEspZgfU4eKMMqB9SFUwQFEgUfUeQ3jH47yjDKy5gKa7goiyoJQ4KT8Y2OW2Q6Fo
-	 mckOShFnLCJdeNQacVL6/e5c2btxxwP60dtFMmJAny23WinyxuDv5WFOKuzca8YlCQ
-	 xzyBWeGx8IJaQkaPgAQE+RKnp+6kHhwEfZpVXM5C6TT+Ta5WsubtJx54pnUCmFrgla
-	 eg2pdZdFCcg25/PzMiAbXTRg0r2sq+jiwdQS4sjA/pzkJdwe8zIBApF1P5gdFPsNNH
-	 UyLN7ZOuCVpFseTkBlTREiuiM4hczJrJzVN3nzniGFHhGRG1pHdgc1vuaUpxQb9mEw
-	 Er2tcFs0RlX4A==
-Message-ID: <sashiko-outbox-199940@kernel.org>
+	b=HfWNy4Y5RPfNBoKBQHLyyjYyTxbbnjJDdOqRHr0CwmBLc51x1jcm75ZAAgEad1VZu
+	 tS6QZvZfn8sUpNi6mOF5f5DFfUZLIhS4vvvi+iGswUv6KjXZx0o+EpcIZvbbxZe+4c
+	 w+eyoQ8QFIDLRMjiWYtJN8zfopCPPudrCbntig5HUXMXa/Rmrt2bn8OYImFZC4VNa2
+	 R+83Zs+Eu4feiqusBCRRhe6e1B6nEi14J/AHyHRRYVVXAOiMjE6L8AhoiK91X8uzKE
+	 CLf8tyLGMi9vrUilCTGfT/2QMby2aoyrPQEHnvKWwCxXAzjQDLba28dyRTo132ATHY
+	 jJoKKmYLJAz8A==
+Message-ID: <sashiko-outbox-199941@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 10/23] treewide: let procfs own the seq_file
- of simple proc entries
+Subject: Re: [PATCH RESEND v2 11/23] selftests/proc: check that a faulting
+ reader doesn't hold up removal
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-core-v2-10-76ace653a773@kernel.org>
+In-Reply-To: <20261104-work-procfs-core-v2-11-76ace653a773@kernel.org>
 References: <20261104-work-procfs-core-v2-0-76ace653a773@kernel.org>
- <20261104-work-procfs-core-v2-10-76ace653a773@kernel.org>
+ <20261104-work-procfs-core-v2-11-76ace653a773@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:35:33 +0000
+Date: Thu, 05 Nov 2026 19:35:35 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,26 +79,18 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> Most proc entries that bring their own struct proc_ops only call
-> single_open(), seq_open() or seq_open_private() in ->proc_open() and
-> free the seq_file with the matching helper. Declare the show function
-> or the seq_operations instead and let procfs open and free the
-> seq_file. Reading these files then no longer holds up their removal.
+> Read /proc/net/dev_snmp6/<dev> of a tun device into a buffer whose first
+> page is backed by userfaultfd and remove the device while the reader
+> sleeps in its copy to userspace:
 >=20
-> Done with the following semantic patch. The new initializers were
-> aligned like their neighbours afterwards:
+> - removing the entry doesn't wait for the reader
 >=20
->   // SPDX-License-Identifier: GPL-2.0-only
->   /// Let procfs open the seq_file of proc entries whose ->proc_open() on=
-ly
->   /// calls single_open(), seq_open() or seq_open_private().
->   //
->   // Confidence: High
->   // Options: --no-includes --include-headers
-> [ ... ]
->   identifier open_fn =3D {single.open_fn, seq.open_fn, priv.open_fn};
->   @@
->   - static int open_fn(...) { ... }
+> - the reader still gets what was printed before the removal
+>=20
+> - and the next read fails with -EIO
+>=20
+> The entry is removed under RTNL, so a regression stalls the test for
+> five seconds before it fails.
 >=20
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -106,5 +98,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-core-v2-0-76ace653a773@kernel.org?part=3D10
+s-core-v2-0-76ace653a773@kernel.org?part=3D11
 
