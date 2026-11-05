@@ -1,57 +1,56 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793906949;
-	b=jszvjFE6nBsEr/PZlpwhD0UBJoHx7D41diS38cuo5ynl6Z9V+JpKrAQAvSUKzMd0x+mJ
-	 zDKB3/oIKn4VS2nfY7VMtAk7UxUIte8z8Ge4dYDISUyrVc3ygI2X20aN78LHLSHdjKhbj
-	 5ESV/wXQ4Bo6f17OufR+E59UqWD8JjbE/7+UoSJM11n2rvqukeNrEkkmdoxmC4McUu8Mn
-	 6qlyVBvcsy5MIt5GT6VnUmNwOhtJFaO24IkUpZ3lT5E0CvGsOWmiwybWajbXCEI/+Femt
-	 1OoxPwAFShw7lOjmu/ZD83V6NFjjZbdc0MZjlapPBFHec7YCDpENmddf+7PZEy0AZxg==
+	t=1793906952;
+	b=lxKPhY3DMAy9fpGKUyuEBhmGzku53k3NoHvcrr2A+leQoDHwE2lf6otkTfmU+QpdgyUG
+	 wQ97xRoZHwUuzRtaaZmdfk8+9mMHpCa1i3RYJX3iipNpWwUR0KM6/WA8bBohevhmASWk7
+	 I9XExB1z1v/j2lfiCMy1QLRHuiKKnuMWYEU7g8CExxP2DslCwUJB3Z3lEQchMK5v9kN0j
+	 gihYXd8IosX78AxkSzS4NiA3/MIreSv4LeKqr9+eKaXplR59e2VDhlz1I/APpEcMrWH83
+	 BcMWdiOpubgNSCwCHITMWNWPPqamHOqqWIDE76bpCzrYL0PZN4OlgSC/2WRYbLSvUTw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793906949;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906952;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=WG3GFTWAkJDkt5Isqmjqi8WehM/x+yRDWX3FB+RPiNc=;
-	b=iniRvj+xIPYmBnfqHYtjrgsU52PtPZCoZPBpcypj7/R/QveQLcDzfcDPxMl9+elYEJ59
-	 SIUv+Z3nM0B2+81mI95tnR1gUl4ZObAKAqE9R+5oneyd4H+dVn/Qsd+T5nLNcz5m2H1U4
-	 qtVwbM8HO2mn4hq9fIH/LCiT74N7o1xG24HPNxAHsXHOREFuea7nABCw11KtSwS+sSiB4
-	 VwZHbU9a/PSEiBNrPgU9n1ujyA+EYVoVYj19IVR8SdQDIGbwKILwDedF9aKG+NEajQ1ea
-	 X/bDZmCN6W0ZaVF1qnb/IacqT0HeI/4hw+KM0hCDHFZfz9GWrM5dHfFiZM8FSYt+xDA==
+	bh=s2I1/DcyfONVmWbtskFJJxiXW4AP+/HerBsQu/u2rpU=;
+	b=F0gy1JFD9PllV+UtaybK0f4nWavXqWpb7MHfI3wcwpP4dbiOt7Q1kw9Bte9HD8l5/g6r
+	 ERemyi/wEK96NBPZYRQ2320rh6WZoTF8ohXrm4BsK8JTZvByrAxn5xTJ/BQ/TkgMzDpG4
+	 Ds6aJvQi9UpzShvoXCsV4zTBhCcMt6gLFDvmV/Hkb7n4XXL156ZLuRu8MXv9ZJyHDJjcy
+	 QtHyghHYZXeiRljSJu/PS8kQpD3kNA894VEkSD/ZCpjkvuaSI/z773HjNk2T1tp8Vo6aE
+	 6rex8a7CMDwAvwcypKbDEFQTETgfyJFvaFJRNTWEr9XCSdcKpAGnxt9kIOVIWkJpkcQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ScsLd3rU;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hob1t0Fy;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872E7606A32C
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 872E7606A32C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394FB606D82D
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 394FB606D82D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ScsLd3rU
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hob1t0Fy
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 50313406AA;
+	by tor.source.kernel.org (Postfix) with ESMTP id 7AE0660181;
+	Thu,  5 Nov 2026 19:29:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB2771F000C1;
 	Thu,  5 Nov 2026 19:29:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C25A51F00A02;
-	Thu,  5 Nov 2026 19:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906949;
-	bh=WG3GFTWAkJDkt5Isqmjqi8WehM/x+yRDWX3FB+RPiNc=;
+	s=k20260515; t=1793906951;
+	bh=s2I1/DcyfONVmWbtskFJJxiXW4AP+/HerBsQu/u2rpU=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=ScsLd3rUpDEsoGG4uwZPfedtyuaPFIkZIqnroJ2uSW01MPdhv2idSC+1XlNMnTbQy
-	 u88LGM0YQBO1Mrlqg6jerItStf6+LzwF8Lsr7R4v4U4kuY2c8syp+rc9bdcq385jw0
-	 SxzzODvsIb0aRcx1R2Kvuf/rtT0cKt6nSknSCqumzX96T91e5DtA6YJURkuUNYJI9n
-	 3i8gyASNFFAdDsgsqwIHciGpNG/SqEafO+JQYVTTHIZzuSs4Uh6bsYTE+P/pxKW5OW
-	 OoiVYGwGUHk1o1xftCnj3aU84SDpJJjNmbrsAYtky19RWlV85+fbPUVDVRZD98sJ2Z
-	 VkSIOvrj7G9Xg==
-Message-ID: <sashiko-outbox-199873@kernel.org>
+	b=hob1t0FySRzo9Ad4NeX/wxJ636XvG0pYfHERcgRJc+Sg4Icctgz0x9vaAElTM9XlC
+	 DeKuv9MiuNdLOq07xSluaDzV5JfNZv10Cdb4YpMe3kNCTfqfHICUGtyJeiRHHklAiG
+	 o++YqHIytjB4pY2nCoSP0oV0ptT5uhCu20e3Yv4WPkXDuLDrzC8G5BMKr5LZKXdO/g
+	 3o/pp7jpt539+SMQvv32EonKmKe+Ve9RvbbFiZGIicJZ9ffcoawscdTJSTVjbDcbdg
+	 3IMhMWg4He6bnLDFELiozvAEzPh6t3NkjMUHVvLrqfosjL7JmUxVl7OEAfd/jNb3w5
+	 bT+XCtkRbrOvQ==
+Message-ID: <sashiko-outbox-199874@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 10/51] zorro: size the proc files like what
- they serve
+Subject: Re: [PATCH RESEND v2 11/51] sparc: led: consume the whole write
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +63,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-11-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-11-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:29:06 +0000
+Date: Thu, 05 Nov 2026 19:29:09 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,16 +78,17 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> The files under /proc/bus/zorro hand out a struct ConfigDev and seek
-> within that, but their size says sizeof(struct zorro_dev). Say
-> sizeof(struct ConfigDev).
+> led_proc_write() looks at the first eight bytes of a write and returns
+> that many, so a writer that loops until everything is written, stdio
+> does, sends the rest as a second command. That one is unknown and
+> switches the LED off. Return the whole count, the rest is ignored.
 >=20
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Fixes: ee1858d3122d ("[SPARC]: Add sun4m LED driver.")
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D10
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D11
 
