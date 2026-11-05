@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793908692;
-	b=MWjEJgsVSxU9OFgkwz7vqvBxUt7Ds9iaCPRotBHdi22xuiwSgp+roL5BpngH9/JScUk7
-	 98TKStYnQ010D8PrECvw/48eGo7jnwmvgn1HFCwutJZD12UOzF0MGxeAbhtTpbA51Qt80
-	 trF5eH6452qdBmO/1xMDYmRri1dwHAcR8hgVOlqbWb/RGNLgfnCXl1y/zh4a5eYkKdg1s
-	 QKp7GeVUjpFHP9JmfpI4of/hrm9oGydYBSWQs6D05QWhBJLLdldQ38FMEpRVeLzTwenSf
-	 ZZYIr+V6Z8C2zff8yC43+Cvm4BhPwTws9AFUZ+JYWiDuSv3y0izq0n9WzVmBm3WHTpg==
+	t=1793908698;
+	b=CvQxblc45Xe8VMVIfRmIXAxjED0yiut55wE7R36bUAp/U8Doad2BAHGTP+ysEs7C0POa
+	 84wbkIP3KTpV3TlY0nHA1rpLBft9agAb9tVn8XPhXUKU9HGGZ/r6/sAMlBpNsNycxkRaB
+	 G0LjgkEHS6DHia4oYIHFCdmP5VFzs6mNLQfPW3SQY3c631k3pprqfV4UFIcovvKSlOj2L
+	 5fQOZHduvvx7ZNkPHZ942TW1f+a78N9xm1cTLi4du3oyOEhoxaWzR1ld4YdF+RadpUFj7
+	 x1AFvGkO4ORdc/OT565dAp6KKdH2xVftJSY7N6lH/kBpFLD5ZrNGhcDAREgCa3bCQ0A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793908692;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793908698;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=VJM1TPMHTJ5mBUuyXhBiQ3F6ibJxzxb1q4lJPp3RzWY=;
-	b=WPWsn4zMuugsQDGebK9vnDOp0IoxiwFw2pZv0vatHBFmR201PO1vvWKNImrgIKmNWEdh
-	 8sfzbSQgLzoPNbATv8S0Nv5kGKbmpx4UcUzKiAMTBNJr8VjfpCQwu+ocXQBRG97bw9Pvu
-	 7VAeVhv/ozmp8LAAVvI3dhSLi/S5Sc7lcwoSrlBuaM+e3gQXdh5em9QcYG0IqLGQ6rtdC
-	 GxlWun4K4IZ3sBG6VsGwu5rZi0TrZymyhgR2k5N4zdEYRA9bB39oW44QIVbM6roOzLRVR
-	 rNTyHpWThTg5zqo1Ed7CBvszhk4zaUZ6wXgwPYv7FGfyfYtC24fjN8M+vExr/QQ0Kwg==
+	bh=Di4Zv2+bgkX+HhZmCpdKbhvfGlZoAaFGwpTTtNZDf1w=;
+	b=Wv0AALQTm4dO/vqZ70ujTaTJ2ZJgFpMcQNEJYR9tERRFDqxY0ZVhJb1TavmpipKix8ph
+	 Ij7xvp30hPkIy50kBho0OksfAmlZa1VCqi9aiOprp0VPXlAj/ZNuSsOrk6k9bBAKtrkzQ
+	 7gTvPhjHbh1nv2z6NzehPhs/h3oFRND6XEjsoYXv8FnWmwCBdbKk3oc2MGI6hckTAqvLI
+	 u+tioYdXSVyBJctgYPjQEJiyebfXRyCGBBhda8vIdbzMKHN3eNJu7pifNOV8SHzv5GP6c
+	 2Zd8cy1SZYNqvJV3UKpI8XsmLkekh2HsmN2XhNUABctkyeh5GvYOCiYv6DbgO2xT17A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=R49qB2P0;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PS7EuTM4;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1983606A6D9
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:58:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E1983606A6D9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6094606A6E5
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:58:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E6094606A6E5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=R49qB2P0
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PS7EuTM4
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 5F13F602C3;
-	Thu,  5 Nov 2026 19:58:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B19A41F008A4;
-	Thu,  5 Nov 2026 19:58:09 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 9F0D142B67;
+	Thu,  5 Nov 2026 19:58:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E4B01F008A2;
+	Thu,  5 Nov 2026 19:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793908691;
-	bh=VJM1TPMHTJ5mBUuyXhBiQ3F6ibJxzxb1q4lJPp3RzWY=;
+	s=k20260515; t=1793908697;
+	bh=Di4Zv2+bgkX+HhZmCpdKbhvfGlZoAaFGwpTTtNZDf1w=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=R49qB2P0qXLUlPstwwn/cwYKqB7OFfz4cOrfsP1tHpUFMXL/az8OchsolUY+GEzN8
-	 qPorB5vIYuDFFbNWXZE4dER721Q9iHKmNr9gTXfDYm5AJvXye0eCPOLB5v3lQH3wnt
-	 lPQrL8L7KfQOJJHq7nla/3TPNFRoqsbYIXYWjsoCrXCJKCIXzvkbiOVXSwuJWI0CoY
-	 O1TU2YPeucS7sioJZWTFApiz83C+NIGiwdWch89cqPQW8+W+41Rn/7BQvAoF14Rwa5
-	 cS6JRLtxWDf46VmERQg3QZMBNyOybQruZCkAsYR0VLJVVC6hEyS2CEDKwXXOsQKShk
-	 bBlenIqZvFSoQ==
-Message-ID: <sashiko-outbox-200054@kernel.org>
+	b=PS7EuTM4dqldTrwdAR0onQbkCjogqgjpUy8oBN5Oi/jsHPd1HPHlgSGbxScX7TULM
+	 hRB6vR+pRSsaVGMqkA0T2yAO/9EP8dfTHiI3smO+XSdOQTs0WaU0CSspRWwNIygWmH
+	 xxyaJ/jl5nVv4oGCeueAnyoM+i/SNOz1yePgzX6SBUyU7ID4QMKKDqnCau9Fzxv22l
+	 9yUUQnAUlAQfxJYnkuFIsPSnTWbDHjOSLzPYjAQnKTCY8vnyzOnX2r4MnJUC80Xsxq
+	 9G6Oxyszcx5C+PQB+DFxzoyTPD+CIGBL43AvNqSOHfSpIHjw0LBt6ISDjfycxH6Ryo
+	 K9q3hUiMFf+cA==
+Message-ID: <sashiko-outbox-200057@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 20/30] sched/psi: let procfs own the wait
- queue of the pressure files
+Subject: Re: [PATCH RESEND v2 23/30] dyndbg: let procfs copy in writes to
+ /proc/dynamic_debug/control
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -60,16 +60,18 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Gleixner" <tglx@kernel.org>, "Al Viro" <viro@zeniv.linux.org.uk>, "Jonathan
  Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>, "Greg
  Kroah-Hartman" <gregkh@suse.de>, "Joel Granados" <joel.granados@kernel.org>, "Kees
- Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
- Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
+ Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
+ Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, "Chuck
+ Lever" <cel@kernel.org>, tytso@mit.edu, dmitry.torokhov@gmail.com, "Petr
+ Pavlu" <petr.pavlu@suse.com>, "Anna Schumaker" <anna@kernel.org>, yukuai@fygo.io, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-fs-v2-20-319e0f9a8aae@kernel.org>
+In-Reply-To: <20261104-work-procfs-fs-v2-23-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
- <20261104-work-procfs-fs-v2-20-319e0f9a8aae@kernel.org>
+ <20261104-work-procfs-fs-v2-23-319e0f9a8aae@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:58:09 +0000
+Date: Thu, 05 Nov 2026 19:58:14 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,21 +81,70 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> A trigger on one of the /proc/pressure files has a wait queue of its
-> own for its poller, the cgroup pressure files use the queue of their
-> kernfs node through kernfs_generic_poll() and kernfs_notify(). procfs
-> owns the queue of its pressure files now, so use it the same way: the
-> poll_wait() is procfs', and a trigger that fires wakes the pollers of
-> its file with proc_poll_notify(). Like for the cgroup files every
-> poller of the file is woken when any trigger on it fires, and each
-> reports the state of its own trigger. psi_trigger_poll() doesn't need
-> the file anymore.
->=20
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [Low] dyndbg: split declaration and assignment of __free() in ddebug_proc=
+_write()
+--
 
-Sashiko has reviewed this patch and found no issues.
+commit 1bfaabab91de2989a4d10ae03eef349ab77809d6
+Author: Christian Brauner <brauner@kernel.org>
+
+dyndbg: let procfs copy in writes to /proc/dynamic_debug/control
+
+This commit factors the query execution logic out of ddebug_proc_write() in=
+to
+ddebug_proc_write_buf() and switches proc_fops to use .proc_write_buf and
+.proc_write_size so procfs copies in the user buffer before pinning the ent=
+ry.
+
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index 64a2112908725..1d6012c9eb41f 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -1002,11 +1002,28 @@ __setup("dyndbg=3D", dyndbg_setup);
+
+[ ... ]
+
+>  static ssize_t ddebug_proc_write(struct file *file, const char __user *u=
+buf,
+>  				  size_t len, loff_t *offp)
+>  {
+> -	char *tmpbuf;
+> -	int ret;
+> +	char *tmpbuf __free(kfree) =3D NULL;
+> =20
+>  	if (len =3D=3D 0)
+>  		return 0;
+> @@ -1017,15 +1034,7 @@ static ssize_t ddebug_proc_write(struct file *file=
+, const char __user *ubuf,
+>  	tmpbuf =3D memdup_user_nul(ubuf, len);
+>  	if (IS_ERR(tmpbuf))
+>  		return PTR_ERR(tmpbuf);
+> -	v2pr_info("read %zu bytes from userspace\n", len);
+> -
+> -	ret =3D ddebug_exec_queries(tmpbuf, NULL);
+> -	kfree(tmpbuf);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	*offp +=3D len;
+> -	return len;
+> +	return ddebug_proc_write_buf(file, tmpbuf, len, offp);
+>  }
+
+[Severity: Low]
+In ddebug_proc_write(), tmpbuf is declared with __free(kfree) =3D NULL at t=
+he
+top of the function before the early length checks and then assigned later =
+via
+memdup_user_nul().
+
+Per the cleanup.h guidelines, could tmpbuf be defined and initialized in a
+single statement at the allocation site instead:
+
+	char *tmpbuf __free(kfree) =3D memdup_user_nul(ubuf, len);
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-fs-v2-0-319e0f9a8aae@kernel.org?part=3D20
-
+s-fs-v2-0-319e0f9a8aae@kernel.org?part=3D23
