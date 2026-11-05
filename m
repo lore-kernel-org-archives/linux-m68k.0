@@ -1,57 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793907036;
-	b=aPcF7mWrjBg7NXoJSo2I31pMPP1yccrufP0UFbHB550/dv5KqGz0hF4/o0diWkwu1hHk
-	 u6uiWGEO7vk0aTW0JVBeVOH4xgWS76WjhY1UfkN4clNEpc8Fb9SMLzUGJ42Uq55Ljddv3
-	 KR55O8CZefTKrWwC/TEu/QuS2emSAxGhE/jjCY8vCe8byHVJBgH0cOvENOvh/c0V4T3PP
-	 t/o/JH2eAHgf1eBAtcqcWwkr73GBPhY5zd5qGZOQsg1KIZdkBSiTcTvtGGFoob4Qn7Xid
-	 M0MXhBgP+NDlzDVlg7ebwuDY9Kr4CLuxWc3XBTy6zCWgBio+gWSvmtPZkR71jAru8Ug==
+	t=1793907317;
+	b=hcrQouYsqu/iMRc4BWK+g81+6nc6EPwX9yivmIFiqoTusRcH3B+xtE/ajM/NScm+iozb
+	 qTG7afHHcYgxMbVbeFIDhn0G7FsQOQc/tHab7+qcN6PGcJBT6xvoPUD9XVgtgrWg/lMu3
+	 H+vw4/To3w9csmMrRKLdgN6PPMddWhov1TWLiP1LDsRV8/QenQ/lFHhIL3VK94zNVDc7U
+	 7Mddo+i9S+H3amjL0tBVxZVz3AQtBxK6naP/09G4tPAYfuRRD6mh0J6/1TGGPS4yv0gib
+	 DdCNZdssH2I5ZN0WM0aUhejIuY76mQr/gqNoj5+u9hGdxPxkuIF8ggxhVX3NQSHodAw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793907036;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793907317;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=hhNNwe04L4FKYQylx+fx8GowXeOCuwfY4bU4uoMs+Zk=;
-	b=wC9ZeNwR8fJvfK23P0lyMYgI65q+e1ZHJuCiLJCVLDMzLu91wGDQeCKs/L4rNPplbSP4
-	 GzbXKxcnPJj9mJ9Jand1Zi2QxRxNm/5jpIkcLOBmHxfeNwKG8EQn+hA7FvYarTIii/CjL
-	 xvCWUFo/vl7nEjNeA6JLVna0CnRxkgWtkGVALpxpYd8Yz9+nDFXfAgCC9K/LjJzuvjUB/
-	 sJ7ezQM2uR2JsU0zSkk2y3hj9QI3fpt7TYQPh69lQ8eEd9zBepXq87E0pYjPQIDS+Jt5G
-	 nQ7GRKsPCakwVq5Gojr9Uarru64p35Hl7/R3JDm5JZKmtBcBt6N2xsF1Lm/z+r9JwxA==
+	bh=6hoRvIBjdvZcFdce6OvLL9wYKZneWoJGVeTND16Hg0g=;
+	b=C1m6a4UDpxC8y76Nh7TeO5u/L/ZritGkgrkaZHwPVSNcfgCyNpBr4irraaEPBS18f4c+
+	 ysZnUPrDrkINCsHSZP/M+a8tAl71pYR9Wtvyqq2eiy0fivUK4pi6L5bHMvQXeyTm3KOKf
+	 8oRPYtxo74wG6D8EABDlVleDmRXpwecn7+PUSTElvwZoTReoukkISDPNVKxJqlNHaWLl/
+	 KIiBQxt5PFCMkG8A8x5jbKAHG2at42kMNLuTpQCtbvRr0SEseogsGdinB21CXNB7EeO80
+	 gKNupPrqfJkh41AlaDEg5fIB5lcBidAHz5MqpoMUjuVxx7bn/qtGTFnZS0Ia0NvitCA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="H5d/fGZi";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="H/IGA7VD";
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36AFE606C8B0
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:30:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 36AFE606C8B0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2997607728A
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:35:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A2997607728A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H5d/fGZi
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=H/IGA7VD
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 79E07601F5;
-	Thu,  5 Nov 2026 19:30:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA2F1F000C1;
-	Thu,  5 Nov 2026 19:30:33 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id E04F760148;
+	Thu,  5 Nov 2026 19:35:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FE91F0089F;
+	Thu,  5 Nov 2026 19:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793907035;
-	bh=hhNNwe04L4FKYQylx+fx8GowXeOCuwfY4bU4uoMs+Zk=;
+	s=k20260515; t=1793907315;
+	bh=6hoRvIBjdvZcFdce6OvLL9wYKZneWoJGVeTND16Hg0g=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=H5d/fGZie/GoRN7MHtK+vOB/Ap1IgYNrnS7OIFVYrIl3BAh2twEoWoV2v1D1ANr82
-	 Z88cSeALKxyTaNGZMcx6eAjOqVsj7JMMVVHDzaMXh9vzmIx4JwInJVfr9Glo3L+Jbr
-	 EcyVSXsNPriCocoRBtla7Tbb+aIbDHKYiN5X3R3O6c36//3BOWw3M4U+PaEq112AWQ
-	 9c6EaQ95R7dZEkoNxWPFXpR5y//vT+nN/V5TXpwOF2BZ/cJsAVeFgDgQAnT/m8f7XF
-	 3V3fQRCNlNmMpcBNkB0tSssvWsyXhfdHIwU6LUOeywmgh0K3F4lJUnYbrVCAdczb3x
-	 LI5cY1vDJVFeA==
-Message-ID: <sashiko-outbox-199914@kernel.org>
+	b=H/IGA7VDolTlFuDSzsR9PpNCLOc+MOL9Jlb497kin2aM9CsKSdGuinZsObzzhjKLu
+	 vZB5+O9pGI8nVCo/32oLJsm4VfhHALYRw69cQLc/OwWudG08CrlbhwGxTj7hUqCvjm
+	 zVfPAInrWuotxqB48n1/G7DlipPyNWJuwaJ2BWS/mluZe9QG+3hr62O+EHJHS7JbdH
+	 R5EBZoDlSrf8ybUt+J6V3XvBz3x5hj9FNHwo4MzJlMjxhvX4Q3MmE7R6Wst9YwTNGO
+	 WDDxetp3K1AY572xeDhT4SHRoltfwdfx2B4GtWjR4CUKwVTi5TNf8KO6vilhKxp27B
+	 EnYkpbISY24IQ==
+Message-ID: <sashiko-outbox-199931@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 51/51] selftests/proc: check that a faulting
- readlink() doesn't hold up removal
+Subject: Re: [PATCH RESEND v2 01/23] proc: drop the compat file operations
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +63,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-51-021c84d852e0@kernel.org>
-References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-51-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-core-v2-1-76ace653a773@kernel.org>
+References: <20261104-work-procfs-core-v2-0-76ace653a773@kernel.org>
+ <20261104-work-procfs-core-v2-1-76ace653a773@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:30:32 +0000
+Date: Thu, 05 Nov 2026 19:35:12 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,17 +78,21 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> Add the symlink case:
+> procfs has both sets of file operations twice, with and without
+> ->compat_ioctl(), and picks the one with it for entries that have
+> ->proc_compat_ioctl(). That's from commit 778f3dd5a13c ("Fix procfs
+> compat_ioctl regression") when a file without ->compat_ioctl() went
+> through the translation tables in fs/compat_ioctl.c and one with it
+> didn't. Those tables are gone since commit 77b9040195de ("compat_ioctl:
+> simplify the implementation"). compat_sys_ioctl() answers -ENOTTY for a
+> file without ->compat_ioctl() now, which is what
+> proc_reg_compat_ioctl() answers for an entry without
+> ->proc_compat_ioctl().
 >=20
-> - readlink() /proc/asound/<id> of a dummy card into a buffer backed by
->   userfaultfd
+> So always set ->compat_ioctl() and drop the second set of file
+> operations and the flag that picked it.
 >=20
-> - change the card's id through sysfs while the reader faults, which
->   removes the symlink with snd_card_mutex and info_mutex held
->=20
-> - expect that to finish without waiting for the reader
->=20
-> Skipped without snd-dummy.
+> No functional changes.
 >=20
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -97,5 +100,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D51
+s-core-v2-0-76ace653a773@kernel.org?part=3D1
 
