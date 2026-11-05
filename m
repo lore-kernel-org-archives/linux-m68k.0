@@ -1,76 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.219.43
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793871286;
-	b=EIMjJlJzvOAjvEBLrQ2rkthAWITW/3Zg0rdjAG/XZzZntNaBW1cVfzBKeFEzfsIfBJM0
-	 5HdYWUM4FBUGHUQzhhU+KFvKWWDFxVQINqZHvDqaQtgVoiSUMKsS+EALR0t4NKAjjzcpe
-	 Yf0Oj/Soi5OSbhcGiAzH3nGN7lShoslKQO5la8eMmDnuhMBliaQWshkIfAbXX+AZXkDCc
-	 0tlja5Jl1fCa62XxilBi0EhmhqeyFzDtmBa6TVRzYigsS6GQuEJguHcrAbfH0l9ZNaukH
-	 qlDKClSccxkEwAzGJ7a30w0KkZZZidzKW17xgqSs+ysMGRJxbga9gi6mIUeDThS2sXw==
+	t=1793872215;
+	b=HU6cXMYWwrz0SN2xDKhvqUdlIjs83wKs5b9MtXHuQbqxvsNPRwrdlMaHGsPfnJI9HkW4
+	 Ory4Uhq8CxNr6GCpJcKLxBG1SP26iUrJRuNoLpB6fdMGt684N4tyM30W21LlomET7EzIF
+	 yIk3GtTbcdd+biUrxN2A9bZbPx8Zp9qPCTfFb21FfPF+1SUpIeGZ/CgedxV1DxIbFUrzH
+	 M6YBHGH3srhz08v6X6ee0v1kFMknG+FopXNrI7QSKR83ExhhvXVlYLkzKHd486k7TFqgB
+	 dSuC06dF7H5wZmIWaVgiUDY0sE2vjnr53DQYsE1L89iS2ZMZDFbUY/3Kf2kp5V63naw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793871286;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793872215;
 	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
 	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
 	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
 	 Subject:To:Cc:Content-Type;
-	bh=DpLYJIWgXoS5zQrloj/RgE/cGCpS34NjW3pzuN6S6xY=;
-	b=Fqm6ecidlb7fx0g8N/+7+/A5Oq81vcBm9K4r5HGtwp0uCHNiL45ZZvo0Nj8UTRn1Wpv4
-	 cXbctmWTjgZY79OYvoiy+zHL2LAu9vqLCs7Ap/LnXLEYbgiSKz6+gITLMnfQDaHZxE8yb
-	 D6z4iLXVLadjy5EWzVU5PHAR28sJ0Ke4KOYizrA/ht+CPqwcqk+0P/u8AOcKkJ2fAWhoD
-	 y7m7jOAVaZuxZcjNQafnk57lHbWFtdzDbAwRnBc3kxwA4G+kjcLXQTd5XS5uvA1D8w1zP
-	 GbIZmKYrLU1z/kX3KCLLYUusVAbSUomaT/xbo1DGo1zoBIOXID40qpN3yBsVfsvKEsw==
+	bh=SqrTjgENN7Dfs+HehxbKPgACeb32UvvfMAFijNHd6N4=;
+	b=Mq7n2FEX8nuLK6+9qa9DR3aH3kjIhvVQvyP/b4sYUbs+YXbMvTuoFIX5PNgH7XaI+85K
+	 FT9U0aIZBgDs/ZtGnGHF1VlCCEPAWyt+j5yLpSN52H0a7IzBQB3vJoYEyrs15M4y+tg4h
+	 snaqIxdV1hyWjF5tAn8fmIdMykBxzjqqRZveaQX/9K2eXhXsoZhhYkznXnL3k4C6Plsf5
+	 sW4KH8884ynXFbGvD0Wu3PQFRZlbcm1S2+urbywzaeGLcQsvLQhe8pCcFBnazelqxnz8x
+	 +AENKQRh5YsXmpqzu0uRQEhPC5wg+2ZLocw8TIxev+HC+V8c8cwNpUOV5/BiyP4TGgg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=linux-m68k.org;
 	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.221.172
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	arc=none smtp.remote-ip=209.85.219.43
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 139D2606A336
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 09:34:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 139D2606A336
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEED1606A33B
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 09:50:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CEED1606A33B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-5eaa5e03c47so461169e0c.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 01:34:45 -0800 (PST)
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-91c1f548f87so26412546d6.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 01:50:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793871285; x=1794476085;
+        d=1e100.net; s=20260707; t=1793872214; x=1794477014;
         h=content-type:cc:to:subject:message-id:date:from:in-reply-to
          :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to:content-type;
-        bh=DpLYJIWgXoS5zQrloj/RgE/cGCpS34NjW3pzuN6S6xY=;
-        b=2Ltt4nQo065fUeSr/m49XZrbQUB3mrJPocY9hkX3+fREBsNTe5UUgPbio4MRgN38R4
-         4rklHMSFrS3VRFTQwvJkIY1HqV8FcWOBwsq+KVyEFBFcw8uJYLIsWsPUXMl3hV9PbW7R
-         Z8vojDZcC1alQ90Nd0BSq7Z9rfyltYFClkMVc7tgaun4CBMBrk7qDv0ampwHVT74/k2P
-         sRUtymP8Sht0EKt5XqoXmjdlpWLQtef05tSo5uEjia60HHWRfrxca4Ialwvm2HV/hBS3
-         KI5B//dfj3/Bx95g/uEsA3whRLEQphhTyXAXvewFLzh9gH9I3H4HyuiZqKjtHGBqeocN
-         +NxQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxPhoU5a9k20tKH+Wx18jK02k2eSU/jSq9OX5qKT/ti1hemc2tfnPV/im2K8NVTcHucCJWHupqjcXTc@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z+TzZ41Vvg0ZmDEXxccMmZt8bjXpiKiv3SBydR65abDj3e5qc7E
-	I18fV/d5DF1StnofGh7RdNssw9vvJBpwUHRumVUUEP9WroEbeh38ft5DFO4qHsW7U9I=
-X-Gm-Gg: AYBFou2qgbnnRTJO7zes4mHDzvGG1MVRVwTqg2FMfmheFhZ79khuuY0QMA3qeF/BLH2
-	VeMWvtW76lZOhKByfLc8U6WgV0UrF98TrI0+y33d5zwvLBSBQ2bDvAsMMux9GKeRTCQWHfcK1jw
-	l12GJJRb6U/f6fnm/0XloyfFJNuP8SZaP9Cdo2x3K0YftbimXOkqpfwjy+kr8oDgLHN7Mwfnods
-	SLMAHXyqmgeqcGEkFRxf0D7GgM8YcIO0yPvVp1Bw7zOKKE5PznUwhQLXYWw5tibRMoNJmHr7ruA
-	+KWfaouRFkKkayG/Tp2NWx33iDGc6lYc3u++IIXiQAKrStKHc/IpMqEah1YD2ex3W42y6O9lQU9
-	5B24cp94zzkYsvLbogJN75udU9D1cb1Ct4mOBGyYXJbSwvJ4Ccj5oDJaAO2L6l5nJ2HIRJOVDGw
-	yf/K09mJprIKa9m53i3XrDqTO2hQIWzJE5COqp6lzo3JIN77TryRBt1f7U7PcVmC/O1kAgrrwL6
-	VXns0gOhvhv4ZD8s64MrcVw1ixLJtOFJjm/QYheK/g3DRyY1fZFcGMEH1WTAGsrlgBVSUWQoYtW
-	U6wS5XHNu3JZBCOFkUnK7AmwPAP3+v57P0kCgy4R4QuYDUuo5Un6mnKHSL2oC/DVZQ==
-X-Received: by 2002:a05:6102:5109:b0:7ce:a840:e736 with SMTP id ada2fe7eead31-7d286957f0fmr1078630137.13.1793871284873;
-        Thu, 05 Nov 2026 01:34:44 -0800 (PST)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-7d26faf6ea9sm3729420137.1.2026.11.05.01.34.43
+        bh=SqrTjgENN7Dfs+HehxbKPgACeb32UvvfMAFijNHd6N4=;
+        b=XrD+WAbJad+Y9wF1op03NLl2uFZSx6m8As8q9WnAODYxpIqMTLhB9IiMiI9sOafi3+
+         ZNkKivup9XIRKdlSmEyJ9JycoTwqO89LzxqhaWdqZN8jmYHJWCaKQgu7ay9BpWrXHI62
+         6wxk3v2KmanBspLLw6kKefge33eRYFonZ991bNjYcMq12Po+NwVaUarbRPoAd/VlsO4i
+         cRK01i8xw9s9B2lpaorrzPAqwAD8dPovqQcGp9q2M3J31DmxRiQno6XdKrnirDqyiz7t
+         GZ+FrMizcMtzUmbvTgHqdPB3DXoy9CzfU7RFKYGEKCxcCFiaugiQcJr8yZDVM5U/Gp9C
+         U2xw==
+X-Forwarded-Encrypted: i=1; AKwUvBz4MYcZ2UCrAhZu3Pz8yIMpIjWiEXAEH/NEsGWitlBVK6e8Y92d5kTPBF7nNYOi0m4LS2RONa/bR4aW@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z+TP1Vgk1pKaHDB2opXV+TJtspvciSZVwHjlBosOze2Aiix5hND
+	bK9YLvSqVOeHYjk4Wv+ubruoP/iaWtopls4XFREQ2JKCfrY0b4T2v5I0Y6qrkdtFkj4=
+X-Gm-Gg: AYBFou1nEY/cWJGjmL5cftJtY7Yey2bf/NJ1gkqJ185jnlC4DMsFionXgR2EB8eyqyY
+	yNi7975DrzaeMPC4WFtWn5arXUR30VshtYfTVdzJ8xgVeRfW6CgrXNxfSsc9yMeQuGmst4DJDiG
+	vKOOQLgEPPV2VwUXoHlJ+hNirxcE5TQhscVrNQlG3JJICjSwuRzQ5Q3wKPu/KJT9TdlZRxgPm4H
+	4RV9Y3tiV2GpX+LuvPcancRtR2b1pCsDXBL3IQW/IOhCKUgpG+IYsyJe7XwxejVrw30KAoFFlAs
+	RAh4P/RJSy6uxLvy1OxafMrBGmIsgnhNEl+t8di95XspOaNvPgoLY8L7qtrB1zvqf7Pwht3D+T7
+	Z9O4K7fNtSNnQNDL63uJlTdhlbGs02BivKyN8KloOutvK4WWeITIw2u1IPaBkCVf617AneXIfz/
+	HqKeAYZ4INijS4rsWfapzLSnz3W8bToCynp1pST7LSoNjE67jNvDVXHd/TKvhNmE9C6ITtNCLDc
+	wb/xdmZLOaP7cYPitYKfYlwIttSzSA571o2fQoqwWP4HfSmp5EJr/gPFsuEnhHALRXhDDRMbGg1
+	lUq9Jdk+MSwkWfxxorJHXaOQV9Saaf5xCmn6MpgG+Xt6UmmvbwXr0DTkX8ghi8f53j4Aqw==
+X-Received: by 2002:a05:6214:4703:b0:91e:760c:b8c5 with SMTP id 6a1803df08f44-91e760d7beamr93337336d6.44.1793872213516;
+        Thu, 05 Nov 2026 01:50:13 -0800 (PST)
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com. [209.85.160.176])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-91e7d91148dsm43616256d6.0.2026.11.05.01.50.13
         for <linux-m68k@lists.linux-m68k.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2026 01:34:43 -0800 (PST)
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-7cc7938c5e9so159054137.0
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 01:34:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AKwUvBxjpdD8losYy3xU9ztRsSzPgveDFZ03JV3BVkL2x+2b6uCNp7ygnfUZ4+buACsiM82O0ykHWWC66v66@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:3709:b0:7ca:5626:11e with SMTP id
- ada2fe7eead31-7d286b7fa17mr1126485137.36.1793871283167; Thu, 05 Nov 2026
- 01:34:43 -0800 (PST)
+        Thu, 05 Nov 2026 01:50:13 -0800 (PST)
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-533778ab0bdso18427081cf.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 05 Nov 2026 01:50:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AKwUvBwCTYvgtY0zR02vvkcRvDba+C/cKoUjLbNCkEfgHViVnW7MuJbX7+9wFmdgmjz5xysb1KVv41CYVCXO@lists.linux-m68k.org
+X-Received: by 2002:a05:6102:3ec5:b0:7cc:2bb7:131d with SMTP id
+ ada2fe7eead31-7d072baa484mr7324212137.9.1793871885062; Thu, 05 Nov 2026
+ 01:44:45 -0800 (PST)
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -80,55 +80,53 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261105044046.52180-1-dennylin0707@gmail.com>
-In-Reply-To: <20261105044046.52180-1-dennylin0707@gmail.com>
+References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org> <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-10-021c84d852e0@kernel.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 5 Nov 2026 10:34:32 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWzY9YRnGz1Y_60RYP7TH67q8fxi1VNWwkhhc0EUeSCFw@mail.gmail.com>
-X-Gm-Features: AclHuK8PYnqOIDpZItZg042mTleQ6jUe2E1wddINt5GGmEiia8n8vhGDZzRowiM
-Message-ID: <CAMuHMdWzY9YRnGz1Y_60RYP7TH67q8fxi1VNWwkhhc0EUeSCFw@mail.gmail.com>
-Subject: Re: [PATCH] omfs: remove the filesystem
-To: Hungyu Lin <dennylin0707@gmail.com>
-Cc: me@bobcopeland.com, willy@infradead.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, jack@suse.cz, akpm@linux-foundation.org, 
-	corbet@lwn.net, skhan@linuxfoundation.org, tsbogend@alpha.franken.de, 
-	maddy@linux.ibm.com, linux-karma-devel@lists.sourceforge.net, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org
+Date: Thu, 5 Nov 2026 10:44:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUy1RYKG0g8OWss3AD-jyYx3DXL0K7ABYkFUdxTxZ9VdQ@mail.gmail.com>
+X-Gm-Features: AclHuK9D-nB8icBns0zdoQH8fV1cfUPJ6LOey8o_VlUZpDIGqKC4cFf8-j5-HdE
+Message-ID: <CAMuHMdUy1RYKG0g8OWss3AD-jyYx3DXL0K7ABYkFUdxTxZ9VdQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 10/51] zorro: size the proc files like what they serve
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, 
+	Josef Bacik <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>, 
+	Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Eric Dumazet <edumazet@kernel.org>, 
+	Thomas Gleixner <tglx@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, Greg Kroah-Hartman <gregkh@suse.de>, 
+	Joel Granados <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, ntfs3@lists.linux.dev, 
+	platform-driver-x86@vger.kernel.org, coreteam@netfilter.org, 
+	kexec@lists.infradead.org, linux-pci@vger.kernel.org, 
+	linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net, 
+	jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org, 
+	linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, 
+	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, 
+	samba-technical@lists.samba.org, sparclinux@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
+	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
+	linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 5 Nov 2026 at 05:41, Hungyu Lin <dennylin0707@gmail.com> wrote:
-> OMFS supports the on-disk format used by the long-discontinued Rio Karma
-> music player and ReplayTV DVR. While reviewing a fix for incorrect block
-> mapping on writes starting beyond EOF, Matthew suggested removing the
-> filesystem instead of continuing to maintain it.
+On Wed, 4 Nov 2026 at 20:18, Christian Brauner <brauner@kernel.org> wrote:
+> The files under /proc/bus/zorro hand out a struct ConfigDev and seek
+> within that, but their size says sizeof(struct zorro_dev). Say
+> sizeof(struct ConfigDev).
 >
-> Existing OMFS media can still be accessed using an older kernel with OMFS
-> support.
->
-> Remove the driver, its documentation and build configuration, the
-> defconfig entries, and its name from the statmount selftest's filesystem
-> list.
->
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Hungyu Lin <dennylin0707@gmail.com>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
->  arch/m68k/configs/amiga_defconfig             |   1 -
->  arch/m68k/configs/apollo_defconfig            |   1 -
->  arch/m68k/configs/atari_defconfig             |   1 -
->  arch/m68k/configs/bvme6000_defconfig          |   1 -
->  arch/m68k/configs/hp300_defconfig             |   1 -
->  arch/m68k/configs/mac_defconfig               |   1 -
->  arch/m68k/configs/multi_defconfig             |   1 -
->  arch/m68k/configs/mvme147_defconfig           |   1 -
->  arch/m68k/configs/mvme16x_defconfig           |   1 -
->  arch/m68k/configs/q40_defconfig               |   1 -
->  arch/m68k/configs/sun3_defconfig              |   1 -
->  arch/m68k/configs/sun3x_defconfig             |   1 -
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Gr{oetje,eeting}s,
 
