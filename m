@@ -1,79 +1,77 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793902946;
-	b=hSdlL5bJmxNEsfI1Su1twzd5vvGc+AL6u7fzSBooHEx61cYv2RE22t2VJHrUCJkXA7Ga
-	 r306JrTGdtcVogGvl94GPgh5cQaATMzzGsGFKb0V7sfC43Y2dBFfom+eakB85oHnyJ7bR
-	 NqiA0g/zoN0kknwmYDBIGpTsrFpJnFgpPmr8NeLtn8ku73n+F6QfpzAE7Gbj98SHXBukt
-	 nfF/MXo9dzL+78XXKkY4I+YbHsgPCumQ3VRcyDZdzPjrw1vAlGfsSn1KezgEe+1K+JFgI
-	 jGpJz0K4B3HsyOpkXkof1gl/iyyyHLFmJ575zNGO8wXp+HkCdQTt7wi/KtBChRkaYGQ==
+	t=1793906931;
+	b=xYp1oDUmVukmZEZiSo8+64y+TF0Ia4w5w6zh7xNEHr4lUi6h6mGdolL62IgwpWRvU3Hz
+	 OHxh2AEIU0Qp81jNYaQHF9Z0rLIVSc36vkXwgDvRAvkWY+80Qxxb8Ha0nL32GFDmovilv
+	 ccJgWBwpvSEkb+qbdUAeHRt18ily6H7I7+cVRB5ih6WdZETTFo9NI3jP+B3vEkC32ZUS/
+	 1SLTv89WZSHi7YpoAowGSAHQNOjUKtr5JGCcC18c/Vnmve6KWqmat1LqErBiLKd7N12G9
+	 peXEYgqNOWqnFxviWj/SFOa9RlTRek+H5MdwQLJPZlgtcbm/ParASN790o7E5TjS2CA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793902946;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906931;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=OWrwl37cFLJjEpx7NnVtWwuGNit4+A7xxvc5vOIZJ/4=;
-	b=ET1w96BD010kW6PF2Gt2idFSWWe5kQsAC+jZ2mOhNm8qkNZQF7AOpDywUDZc+UlzzWD5
-	 QCpPrNrI0BgqYJU1W2dnjBjcj4NELHpFX8ZeXJoPCVIRlStY+l6BE/Cs1SWA3IV4Jct/J
-	 iqs8Y0ayulZTQeg4rUTD4c1GLan6UYZ7P9lRdmsN1HIR2zXie1P5N7FTFvh0UGsTj8rfy
-	 mclPLfaTKWQ5ZR1HHvLrYmU80MlX5Zor+j2cIQm3lJIEODTOdFqqOev1Tkzw3AMlBVP5d
-	 221eoXv6Vm8UWP61ZkPG53PtI+jLakfEyk1o10V3bobP5SR92sFo1QvntzvioM8xg+A==
+	bh=t5ltLRfeO7A4ze3tr9EcZS3s3I93T55/6iRGXRatBcI=;
+	b=Z9HIzc45lBComrQwh/J3vUfavWHHM6VxHsm6cARNXHrJD2kFkMXAzZO+kd6MjjTAL/q1
+	 Wi+5MHZgi3npnLAVtVnSGF8RJZzZK4UtcrzbMtgh0FZEdz6KMe+/thH70fXhaGEbpxwPK
+	 pffLF0BCzfWidElCyISJB0xZECEAtBGLTgEm6EjlTfKZPIo5hcilIRwi+EZ5/CFlgIuYy
+	 B5/fgKSx4H83lJMLRQToqp04eXxs75ux0gpaR6fDKVD5IB7SdIvDoqpgogWehZrtdetcv
+	 JivUNSJrVuOZ9Y0egdeWiOMCH8ruHa3uGD9JI6sM2PWoK6OSJivHUYD29bt+5XgMAtg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cUuOzXMz;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N8czzOm3;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21DC2606A33A
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 18:22:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 21DC2606A33A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D97F606A338
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:28:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7D97F606A338
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cUuOzXMz
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N8czzOm3
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 80B5340B9D;
-	Thu,  5 Nov 2026 18:22:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01DC41F0093A;
-	Thu,  5 Nov 2026 18:22:23 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 0C4684168D;
+	Thu,  5 Nov 2026 19:28:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17F791F00919;
+	Thu,  5 Nov 2026 19:28:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793902945;
-	bh=OWrwl37cFLJjEpx7NnVtWwuGNit4+A7xxvc5vOIZJ/4=;
+	s=k20260515; t=1793906929;
+	bh=t5ltLRfeO7A4ze3tr9EcZS3s3I93T55/6iRGXRatBcI=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=cUuOzXMzuHRXA284XH0ntuGqd139PcG77eQ6VN66a2WqcloXRcseupIarLDuLUUX6
-	 A83QR0tuYS9dKEUdSLircRMiryflYEWib4fc70oiY8hrynd9ulJ9oHP208NTsbH8dn
-	 ZhsX+ir8P/EKHqmNk9b79LGBPe9qVrFNrrslOjOAH1wEXg9wAyf5B0YgehlPzFpZYj
-	 wZDaro3mzXUTh7fj8zeNfSmNhlDhkfFly017z+iFizqNPoK/Zi6zbxv5M7/zxyHWnS
-	 oMLFqZvMYwtG0rozhLK/o54q0IiqP19kBatpZYy80LXvg1trfPVN89vxX7bW3nVf1e
-	 81ufpHZtmCIMA==
-Message-ID: <sashiko-outbox-199750@kernel.org>
+	b=N8czzOm3uss/Nev41wWI2HCgtA/JJ30J5ZI/5HvqHyryejYB/vPH/hBylXVkVGrv6
+	 OielTQZZJsAgzXMX0XY5+ywbGo0mmqbyFRwY2koxZomesAs/TJ9/gk+vP/71ryRjrz
+	 T4vkNotZqPxmBNAvJ14HURgj7iVi6JGCZi7FoFu5UsPJYhvBEXafmV8KZulQt0TLUa
+	 bnhBhsrybsI04J6qaEoTmohzhtxxwuJRWFtL3gmSrI+vhB1bjBR5l4UtjzfZC6c0lO
+	 DCD02LTUhjPPRIlhUjpD4vyOQAhRmKBCDZpyL6ta2I03KLDunRpmQHSavStcgYROjy
+	 RlifknHgKJUtA==
+Message-ID: <sashiko-outbox-199864@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v5 08/11] objtool: size the instruction hash to the text
+Subject: Re: [PATCH RESEND v2 01/51] alloc_tag: don't remove /proc/allocinfo
+ under the codetag module lock
 Reply-To: sashiko-reviews@lists.linux.dev
-To: =?utf-8?b?TG9yZW56byBTdG9ha2VzIChBUk0p?= <ljs@kernel.org>, "Linus
- Torvalds" <torvalds@linux-foundation.org>, "Nathan Chancellor" <nathan@kernel.org>, "Nicolas
- Schier" <nsc@kernel.org>, "Nick Desaulniers" <ndesaulniers@google.com>, "Bill
- Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>, "Geert
- Uytterhoeven" <geert@linux-m68k.org>, "Luis Chamberlain" <mcgrof@kernel.org>, "Petr
- Pavlu" <petr.pavlu@suse.com>, "Daniel Gomez" <da.gomez@kernel.org>, "Sami
- Tolvanen" <samitolvanen@google.com>, "Aaron Tomlin" <atomlin@atomlin.com>, "Josh
- Poimboeuf" <jpoimboe@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>, "Miguel
- Ojeda" <ojeda@kernel.org>, "Boqun Feng" <boqun@kernel.org>, "Gary Guo" <gary@garyguo.net>,
- =?utf-8?b?QmrDtnJuIFJveSBCYXJvbg==?= <bjorn3_gh@protonmail.com>, "Benno
- Lossin" <lossin@kernel.org>, "Andreas Hindborg" <a.hindborg@kernel.org>, "Alice
- Ryhl" <aliceryhl@google.com>, "Trevor Gross" <tmgross@umich.edu>, "Danilo
- Krummrich" <dakr@kernel.org>, "Daniel Almeida" <daniel.almeida@collabora.com>, "Tamir
- Duberstein" <tamird@kernel.org>, "Alexandre Courbot" <acourbot@nvidia.com>,
- =?utf-8?b?T251ciDDlnprYW4=?= <work@onurozkan.dev>
-Cc: linux-kbuild@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-modules@vger.kernel.org
-In-Reply-To: <20261104-build-speedup-v5-8-0f6018be8dae@kernel.org>
-References: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
- <20261104-build-speedup-v5-8-0f6018be8dae@kernel.org>
+To: "Christian Brauner" <brauner@kernel.org>
+Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
+ Bacik" <josef@toxicpanda.com>, "Chris Mason" <mason@kernel.org>, "Jeff
+ Layton" <jlayton@kernel.org>, NeilBrown <neil@brown.name>, "Eric Dumazet" <edumazet@kernel.org>, "Thomas
+ Gleixner" <tglx@kernel.org>, "Al Viro" <viro@zeniv.linux.org.uk>, "Jonathan
+ Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>, "Greg
+ Kroah-Hartman" <gregkh@suse.de>, "Joel Granados" <joel.granados@kernel.org>, "Kees
+ Cook" <kees@kernel.org>, "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-serial@vger.kernel.org, "Takashi
+ Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, "Chuck
+ Lever" <cel@kernel.org>, tytso@mit.edu, dmitry.torokhov@gmail.com, "Petr
+ Pavlu" <petr.pavlu@suse.com>, "Anna Schumaker" <anna@kernel.org>, yukuai@fygo.io, "Heiko
+ Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
+ Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-1-021c84d852e0@kernel.org>
+References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-1-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 18:22:23 +0000
+Date: Thu, 05 Nov 2026 19:28:47 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -85,89 +83,65 @@ Precedence: list
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [Medium] objtool: unguarded NULL file->insn_hash dereference in find_insn=
-()
+- [Low] alloc_tag: unused function shutdown_mem_profiling_async() when !CON=
+FIG_MODULES
 --
 
-commit 213d34d383fb04e85ef5c721bf77b5b42b0870d5
-Author: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+commit ec0095b3ecdd2d01651f48bc80cc81d976e06106
+Author: Christian Brauner <brauner@kernel.org>
 
-objtool: size the instruction hash to the text
+alloc_tag: don't remove /proc/allocinfo under the codetag module lock
 
-This commit replaces the fixed-size instruction hash table in
-struct objtool_file with a dynamically allocated hash table sized
-according to the total text section size in decode_instructions().
+This commit defers removing /proc/allocinfo to a work item when
+reserve_module_tags() fails, avoiding a deadlock between remove_proc_entry()
+waiting on active procfs readers and allocinfo_start() waiting on the codet=
+ag
+module lock.
 
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index 931c5c412f15d..97250aa361009 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -38,12 +38,22 @@ struct disas_context *objtool_disas_ctx;
+> diff --git a/mm/alloc_tag.c b/mm/alloc_tag.c
+> index 82e2c3448dcf2..7d7ad67049537 100644
+> --- a/mm/alloc_tag.c
+> +++ b/mm/alloc_tag.c
+
+[ ... ]
+
+> @@ -604,6 +605,26 @@ static void shutdown_mem_profiling(bool remove_file)
+>  	mem_profiling_support =3D false;
+>  }
 > =20
->  size_t sym_name_max_len;
-> =20
-> +static struct hlist_head *insn_hash_head(struct objtool_file *file,
-> +					 struct section *sec, unsigned long offset)
+> +static void remove_allocinfo_file(struct work_struct *work)
 > +{
-> +	/* Determine instruction hash based on section index and offset. */
-> +	const u32 sec_hash =3D sec_offset_hash(sec, offset);
-> +	const u32 hash =3D hash_min(sec_hash, file->insn_hash_bits);
-> +
-> +	return &file->insn_hash[hash];
+> +	remove_proc_entry(ALLOCINFO_FILE_NAME, NULL);
 > +}
+> +static DECLARE_WORK(remove_allocinfo_work, remove_allocinfo_file);
 > +
->  struct instruction *find_insn(struct objtool_file *file,
->  			      struct section *sec, unsigned long offset)
->  {
->  	struct instruction *insn;
-> =20
-> -	hash_for_each_possible(file->insn_hash, insn, hash, sec_offset_hash(sec=
-, offset)) {
-> +	hlist_for_each_entry(insn, insn_hash_head(file, sec, offset), hash) {
->  		if (insn->sec =3D=3D sec && insn->offset =3D=3D offset)
->  			return insn;
->  	}
+> +/*
+> + * A module's tags are reserved with the codetag module lock held for
+> + * writing, and a reader of /proc/allocinfo takes that lock with the ent=
+ry
+> + * pinned. Removing the entry there would wait for that reader for good,=
+ so
+> + * let a work item do it.
+> + */
+> +static void shutdown_mem_profiling_async(void)
+> +{
+> +	if (!mem_profiling_support)
+> +		return;
+> +	shutdown_mem_profiling(false);
+> +	schedule_work(&remove_allocinfo_work);
+> +}
 
-[Severity: Medium]
-As reported by Sashiko on v4 [1], can find_insn() dereference a NULL
-file->insn_hash pointer if decode_file() fails before reaching
-decode_instructions()?
+[Severity: Low]
+All callers of shutdown_mem_profiling_async() are in reserve_module_tags(),
+which is inside the #ifdef CONFIG_MODULES block further down in
+mm/alloc_tag.c.
 
-With this change, file->insn_hash is NULL and file->insn_hash_bits is 0
-until decode_instructions() calls alloc_insn_hash(). However, in
-decode_file(), init_pv_ops() runs before decode_instructions():
-
-tools/objtool/check.c:decode_file() {
-	if (init_pv_ops(file))
-		return -1;
-
-	/*
-	 * Must be before add_{jump_call}_destination.
-	 */
-	if (classify_symbols(file))
-		return -1;
-
-	if (decode_instructions(file))
-		return -1;
-}
-
-If init_pv_ops() -> add_pv_ops() returns -1 (for instance, when
-find_symbol_by_offset() returns NULL for a pv_ops table relocation),
-check() and cmd_klp_checksum() jump to out: and unconditionally call
-free_insns(file) (as well as disas_funcs() when opts.disas is set).
-
-free_insns() then walks all sections via for_each_insn() ->
-sec_for_each_insn() -> find_insn(), calling insn_hash_head() with
-file->insn_hash =3D=3D NULL and file->insn_hash_bits =3D=3D 0, which perfor=
-ms a
-32-bit shift by 32 in hash_32() and dereferences NULL in find_insn().
-
-Should find_insn() (or free_insns()) check if (!file->insn_hash) before
-looking up instructions?
-
-[1] https://lore.kernel.org/r/20260923-build-speedup-v4-18-73128809a4a4@ker=
-nel.org
+When building with CONFIG_MEM_ALLOC_PROFILING=3Dy and CONFIG_MODULES=3Dn, w=
+ill
+defining remove_allocinfo_file(), remove_allocinfo_work, and
+shutdown_mem_profiling_async() outside #ifdef CONFIG_MODULES trigger an
+unused-function compiler warning?
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-build-spee=
-dup-v5-0-0f6018be8dae@kernel.org?part=3D8
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D1
