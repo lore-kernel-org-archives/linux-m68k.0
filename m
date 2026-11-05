@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793907030;
-	b=f6ejvQ+IsziOkcsO6tR2ntmKNIWutjI/uvEQZPUtA4dgCf4edqmlk6xuFWh0LAlKPnFo
-	 eQMC53TQzuH/yR8i6In+jyOiUDKyKsHT1WYbjcEMUN7f6dkcy6baHc6uV5ij4dE7GwfWW
-	 7LMDStE60lBJ2NXNB13hL4TgrjeLCdYUIMQYvOpIRmQp7L9X+aGOu+rPmD4RyZg7jyEfE
-	 GDg3QHDQVxgMpAeqktDzl/EhPS7uQhj8aS1oyzPZNT4rUvR8EFzg+F+pt3fkqxRIAh+a9
-	 VzyVken8tALNGbRGNLY8fNoP+GUZfRvOKNMRqhm+7BawxKNBIkZdeiGeL7pFoYG1hKQ==
+	t=1793907031;
+	b=Ev+/fSYf1sBhULCA02z/RMJUrOQ0hw2h9gnVbKFd13VDwXoCQBDf5J8XmGXWGDzr0/uT
+	 CEeQtpCGex0ywsSOZ4XnpQH6m/MPJ6ZZK+9Mwwcmo40RcGNyVWa9w+fguDs7hVY1WfFtn
+	 8TQAgQWA2irHk3rl9L2Db4FVfuCWUEJTdAXts8q8S2DJi9BHfmPq6m63fnDeQr+OFExF0
+	 s3u8MSmesGh/rF2U/KzfXqgcX4LVk1l+sWWv/8Pv5k2KdBcmTTqZGGnBIzu4DkMyNJ5Wx
+	 FVOQ7gaZr15/ZWX74U9M2rQkYyyIJshaGDepuJjojnmxQaTer9nlcghyURVSYX5SZAw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793907030;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793907031;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=TUEa7eIRLkYlG50VJyzFVsWpbL0zjSyXV5JMm1JJ87k=;
-	b=RfGIhhM9mVMUmObVhi0TmVk+VLw3MgvUI0SOJQsOp9baO+AOYr6dg2YUrI08waX7kqa4
-	 5HUvTYwpHMptBTxZ5mSNpsxsQc6/ZNsmv1alKZFt6SGZ8xclidg+LZpI3QJHmW2MoPDKL
-	 pn0/apLxYMY01P73v8CaIBcbomJC1bP4PMvE6igyUOZ4CpuEmjeP7BGfLytj9NfaDVOXZ
-	 mOnKrbHaincfZDlUJLCXQ0cF9asXBaIHxvViLOyx8hvON83M3Rvti9HNnfoa4/2FeFdeC
-	 /ux7coQk571D275UPQh9qNk/cY24U8gdmzqybYYPuEv6RTd9ZJRC0km2XULu/T5EUVg==
+	bh=5aGzsp5KdgMuXiH4cPLLqfuaFSwdYC0fVhuh3RxhPKI=;
+	b=f/wFq6ZJv95fnQo1esSQrMeATLJaJLzhsYwXQoE69qkm0Gx25YeesLhnKCmWe92JhFJD
+	 MOt3cwptMc1aP+WaYT3RO50Dj5/eTBZn9bOfsPZsYzr7nzfKNOv6bkIvTdz8RKHuz52od
+	 5kzmoWEJsqhw94V/5Vwpk1/H55D2hHJQGkICq893EHFSFwH01f0MCytP0L36Wvd3ZptVj
+	 Csfs6QMCiP+valIHrQpH0ek4pR8tiNnW09ucLUuVqwP1JLVdfaS8SrDkluw1brH7PrxMA
+	 UyiFlq/wvomIPVUDBHuvt+fwwI59JwEJBCv/0UOXghEL10SkZOLFhFnvsILuN65+viQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="EzE5K//c";
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="K2B1lxv/";
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CA8608360C
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:30:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D2CA8608360C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2CA606C894
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:30:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2E2CA606C894
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EzE5K//c
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K2B1lxv/
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 2ECEF601C2;
+	by sea.source.kernel.org (Postfix) with ESMTP id E26DD40E48;
+	Thu,  5 Nov 2026 19:30:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F19C1F00A16;
 	Thu,  5 Nov 2026 19:30:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54F291F00A02;
-	Thu,  5 Nov 2026 19:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793907028;
-	bh=TUEa7eIRLkYlG50VJyzFVsWpbL0zjSyXV5JMm1JJ87k=;
+	s=k20260515; t=1793907030;
+	bh=5aGzsp5KdgMuXiH4cPLLqfuaFSwdYC0fVhuh3RxhPKI=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=EzE5K//cJCfees6tq1n/aL2ZXIFBE5phY+UQOmHq0vN8UPvYS/t9kkzR12V91SBSS
-	 mhS7JX+wWb8SSFsgjQLGWb/WG0xY7lURsW1aoepv/YNSVEiw0q1fXhrM33YsC2iYcX
-	 Y+waIrwUG/i8Vo4xsrxYyrlh/w1ZXi6PT5QOp69R3v0bZCzhRKgl7jMf/20Nx+KlzW
-	 0im/yzY5zXpuAl+QtNTMGdrxcjVY3ep9xLEZXfFos47R/RaVosKingXECZ1lFQe2/a
-	 3/8aSX9eI5PmGSLMxslCDj4GFhqROFpYezwD6KMYwTFTCdln5UIo/LVBxVD2dGdOQo
-	 DMN8N2/pVc/WQ==
-Message-ID: <sashiko-outbox-199911@kernel.org>
+	b=K2B1lxv/jKFYgwMG1NDGekYrwHfux9B7Lr7YpeIbjYFC35OEbhjW8Gpq8v4zquLqB
+	 Z4pB43t0ZFCbMfNEQFK14pwDCS+MJMSzNhKmk4jye3m4E8h1z5FlvpH2Ti6nWmlmXv
+	 PD4sVjRltWsq+GUhSR8G+N2nMA8hfy3KQopKQglQ52iAbw6oo1rkFrb2wRdkx4DFbD
+	 yAw1hWQRYtDcwJ1O5ly6RFK6tEeSZ1CDKnU+TKvYYEVsr5f+ntmDyz/BK/XOWfo5X+
+	 SdsaxDQDu2u1NgohRkw33LgDeTvk29zCkDLG7cFajkOaw7uVHNhan/wbprVyf7LjAW
+	 sAMrc6/lSDo7A==
+Message-ID: <sashiko-outbox-199912@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 48/51] proc: sysctl: don't hold the tables
- while readdir copies to userspace
+Subject: Re: [PATCH RESEND v2 49/51] selftests/proc: check that faulting
+ sysctl accesses don't hold up removal
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-48-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-49-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-48-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-49-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:30:26 +0000
+Date: Thu, 05 Nov 2026 19:30:29 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,32 +79,29 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> proc_sys_readdir() holds the directory's table for the whole readdir
-> and the table of each entry while dir_emit() copies its name to
-> userspace. Unregistering a table waits until nobody uses it anymore. So
-> a getdents64() whose buffer faults for as long as it wants keeps
-> unregister_sysctl_table() waiting, just like a stalled read() does.
-> Listing /proc/sys/net/ipv6/conf/<dev>/ that way holds up the removal of
-> the device under RTNL.
+> Read, write and list /proc/sys/net/ipv6/conf/<dev>/ of a tun device
+> with a buffer whose first page is backed by userfaultfd and remove the
+> device while the task sleeps in its copy from or to userspace:
 >=20
-> So don't take any table into use for a listing. A header counts what
-> refers to its memory, the inodes made for it, and unregistering doesn't
-> wait for those. readdir takes one of those references on the entry it is
-> at instead, which keeps the header around and nothing else. Under
-> sysctl_lock, where unregistering erases an entry, it finds the entry,
-> copies its name, follows a link to the entry it stands for and pins
-> that. Then it looks the dentry up, creates the inode if there is none,
-> [ ... ]
-> directory was done.
+> - unregistering the table doesn't wait for a faulting read(), write()
+>   or getdents64()
 >=20
-> Fixes: 77b14db502cb ("[PATCH] sysctl: reimplement the sysctl proc support=
-")
-> Cc: stable@vger.kernel.org
+> - the read still gets the value that was produced before the removal
+>   and the next read fails with -ENOENT
+>=20
+> - the write is copied in after the removal and fails with -ENOENT
+>=20
+> - getdents64() still lists what it looked up before the removal and
+>   fails with -ENOENT afterwards
+>=20
+> The tables are unregistered under RTNL, so a regression stalls each
+> test for five seconds before it fails.
+>=20
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D48
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D49
 
