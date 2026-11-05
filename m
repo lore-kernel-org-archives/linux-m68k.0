@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793906945;
-	b=gIjh4TJ8sUw6qApCunyRk2f4XHUJxzrDFAy2mDN7Ohh/RUH7GN9h29fYzwS+RPbe9PrU
-	 ZKaR3cG+Tfdqu7LhtOm5SYuPw8fzDkhjsirri2fepDWZVT4b6Urzluc/ARuwvVCDou5qW
-	 L6ooDEfX3hlBJhgicjaU0rJzbCxOqk2/dtFU7lD63ftGPcrodGJbCGFwB3fZ6pzg2Uo7+
-	 uaFFJNpDwFGMBm7iLEokh+0gobMv5PWRrEoEFHQjoRxdLYrN5R8q7A81LsWoaGccmM2fw
-	 nNHH2WImdMWL+p8QT9CRbTy6aWTeJXnq6twrPMKnQs/xpDWvX4P1tfWulAzPi7psymg==
+	t=1793906947;
+	b=jO/2Dit7PwfByEjyVcwP55ob4Zf92N7mZTLBT0qq33nS6eDrdxavYe5Z4LQEh8OFLDb+
+	 WkPQCfjsHAykLnxuinbmCerheFZEpHe6FUA986gOVLwQ4l9mh0z5MX6mvlvks3e/Li232
+	 iLI2pHagRJHDHM8XG3tFPkCW0AZ009CTq19oKuxeiu7qq9AKhwW8RmdDRlGXbyvAnPkfk
+	 RBLFvUQPeWpP5UsuvgLtI8eqv7vgGggGCUaC7aMp0YW/0C7T947R8ZBh+il4VQ8JyOmRY
+	 TSXFcUE+4xEttDXBWo1oau1VOHJuIS0IKuVZrsVoxlrM6h23eqdISLqPQNwRcqO1mpQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793906945;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906947;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=r1ycZKD70M2O9nWABnZxAo0Y7x59PNQr/eG96uelaDQ=;
-	b=UpO/cJAoPmnl37Mnpok3w4H0bJnTEM7Ie5hKzInvXYM5WpMn/sigLJFc+6AbV4wdRl9S
-	 X/wXW0ccB8IIXFj+qA1GNJEujkCRDVMbc8qFF4EIeXYeEkiQlwecsQXq9Rbh07IUc2TL6
-	 tLLGhnwjPwcdZ3ZaEdRrMbE19i0flLwbUzIaKIoWNHSkRApcaUHwyksvTOVQrhLu2b9SQ
-	 fr3uDvjCC3H3uAa9R59Xy+bZNgFCmVdbm4sNtpArGqZWHCKWAcw3k6gzZh+8wl+OG2mxb
-	 U7Uv35YCUjdOQrwbc2xRUf4UKLav8ZkU/i2oFLQA903KTm1kxNtqkzr2ynfhkA+XtGQ==
+	bh=EJ5x6oSnf+RrWzbB6XOjg/oJy0lPZOuvIIJGGMYahYs=;
+	b=djyqSWLr7gHZIwjtibKlfLtxzJLMe8400T1ruEDeYJA5nvUuM/wJYCB1lBsbaZ+tLfc5
+	 bbTMNEzWGqRT6fi7S4wdZQlVSI+RtmzM7u4NkAWL49o/58PlFOW7Qc+gzb/NowvlkonJJ
+	 +IsILGojpjoJ/U3aoMEtkvcXCqzuejgoB6IJjClZVQk6gw+U22ds4wH13OnBVqzizmjl/
+	 9fAeo5aW8Ocx8vOJL7+KiZ5DEwgzJPx91mcHbP7dn88Z3BAkkGK0wVrNCEUBqjFEl93hW
+	 +1cLR7ERrMp58oYoj+jMCjiP4/1q91OguoHH4V5VSd1qLwTS6ASQ1TMrl9wIpBrgU8A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=necGus7b;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hhwYqi2Q;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82C0606D803
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A82C0606D803
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4216606EEAC
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B4216606EEAC
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=necGus7b
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hhwYqi2Q
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 7F98940222;
+	by sea.source.kernel.org (Postfix) with ESMTP id 7DF4B42E60;
+	Thu,  5 Nov 2026 19:29:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA3DA1F00A02;
 	Thu,  5 Nov 2026 19:29:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA70D1F00919;
-	Thu,  5 Nov 2026 19:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906944;
-	bh=r1ycZKD70M2O9nWABnZxAo0Y7x59PNQr/eG96uelaDQ=;
+	s=k20260515; t=1793906946;
+	bh=EJ5x6oSnf+RrWzbB6XOjg/oJy0lPZOuvIIJGGMYahYs=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=necGus7bPU63UQk4B7+jV3XV3fUR+Vt0nlBwWy50VqFwECBf1aibdVwEQjnZEn+Ny
-	 Nk1eietSenvm5xqR/gzPNGNzZbvkkvnODaOzH7V35V/oaIZYKDA69EZlf4qtIWl0+y
-	 CLJx1JYEb1VEmZX7/x/KIzKFm4AvmAQYSTJwVI3oNBp4hYilo3LyLI/24/DmSHB0xR
-	 KeFmM+pyBdtCJHSurwLaWys6yP1tn08WuWeskCI8YOyZaldAhv0TS5sXvEaDm8Qah0
-	 JT7nN2+bgKA94sYD+FKbGDigc0ESaJpkTtOL2xP5JtOlGB9U35VVcN7RlPkTRv1UsF
-	 KJpyB6HzUFV7w==
-Message-ID: <sashiko-outbox-199871@kernel.org>
+	b=hhwYqi2QU+5PCxcWnPTB3hxrvFDBanBpjqltnKnowdGwOrQnCfcILl/BCmwovaNzo
+	 wp68GIO/nSzr/nY+0O2mYBFsgas/t8X9pDclsi8l3rtLr8f9yNbcTsGRq+iy4MJ65n
+	 iPM2oWsFb0Z85B1qPfkhGzqkfncZWH+JeXHP4yd2t4cuJpVO4Y7yY85ohQIrqcGzeA
+	 C7/bMiWsDMhTh5YJuMjMHWRP5Zy9sUTojv9oJFEyBgQPOPeojiiAhYUcSybcJI2n7t
+	 19ML9X1uaSQk/DmhtxZof8n0vxdU5xWdxA5OrGQzUPOsV+PQEYss0Ieh46MVONkx2a
+	 deUWye+6T8JuA==
+Message-ID: <sashiko-outbox-199872@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 08/51] powerpc/pseries/lparcfg: don't drop the
- last byte of a write
+Subject: Re: [PATCH RESEND v2 09/51] profiling: report it when /proc/profile
+ can't be created
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-8-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-9-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-8-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-9-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:29:02 +0000
+Date: Thu, 05 Nov 2026 19:29:04 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,19 +79,18 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> lparcfg_write() terminates its copy of the write by overwriting the
-> last byte, so a write without a trailing newline loses its last
-> character: "partition_entitled_capacity=3D5" is parsed as an empty value
-> and fails with -EINVAL. Terminate behind the copy instead, and refuse a
-> write that fills the whole buffer, which can't be terminated.
+> create_proc_profile() returns 0 whether proc_create() worked or not, so
+> a write to /sys/kernel/profiling that turned profiling on but didn't
+> get the file reports success and there is no file to read the profile
+> from. Return -ENOMEM like the other failures of that write do.
 >=20
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: stable@vger.kernel.org
+> Fixes: 22b8ce94708f ("profiling: dynamically enable readprofile at runtim=
+e")
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D8
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D9
 
