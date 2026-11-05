@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793906943;
-	b=NHb4OyMc1yNEFxkQ5A7QbzDfdKht5Rx1ahvJZkG7S5LEJkZUDANnx2jHTAbHUYPP/4+v
-	 ewlpEJGgLokFocfEI3Gyht0yR8bAa021nz2Rl8d2rziHNi4f8JAr3wgAwHFs6xfjk2sYl
-	 h9DOOoKe32HpFzzahJstQ4As/7Otk9uZFMXZ+Dz0IW+iDJKRn3n4xBO7LeAJABvOOxsw0
-	 1H0ipbUdhF8S9XQM8qW4p5XHNiVvqWUncwQgD7j7h79azOZUK5WoPmhqtAYKqE3ECfetN
-	 jM1XFGz7+WAMzUBVePv9CuAuVUaB7Zjp4ai2Rviu4broX5B8F2cCEJB/Gn0kGJCwG5A==
+	t=1793906945;
+	b=gIjh4TJ8sUw6qApCunyRk2f4XHUJxzrDFAy2mDN7Ohh/RUH7GN9h29fYzwS+RPbe9PrU
+	 ZKaR3cG+Tfdqu7LhtOm5SYuPw8fzDkhjsirri2fepDWZVT4b6Urzluc/ARuwvVCDou5qW
+	 L6ooDEfX3hlBJhgicjaU0rJzbCxOqk2/dtFU7lD63ftGPcrodGJbCGFwB3fZ6pzg2Uo7+
+	 uaFFJNpDwFGMBm7iLEokh+0gobMv5PWRrEoEFHQjoRxdLYrN5R8q7A81LsWoaGccmM2fw
+	 nNHH2WImdMWL+p8QT9CRbTy6aWTeJXnq6twrPMKnQs/xpDWvX4P1tfWulAzPi7psymg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793906943;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906945;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=RPopwINq+xMgMWtXglTyha+UOv+CcUS7lcSD7KMhNFg=;
-	b=p0Vl5XU+zZ4Joc1pQi+vZ1sNXl9+PgsQ+AIF5iu4SUe4KBRJ+5o951RRQ38mL8kIOCb9
-	 cjr99R84BI8mp5KuEms3EqIbBeRrpIKvKNXprARNzUUwYIOQEb0zj8f8+4N2xiDCTNa+l
-	 Mq//sGspG1jUB5wFFfgERliJaHOtzJN8dl6zwVokqX6oehCbQqbm3fr1nJt8XlZPBoeMg
-	 tVmA9WpJQ18ONEgd56CrZ7cYwAq2rEBDhJXY9uugNZKAzrXlPJ4pNBIIY67xGp/VQclPj
-	 20WQNZ96Ykt01TuN1R0U0nL5smlljsBAVJdQOiBVkXJedMhaiAhrcswrl/2GOy1BFiQ==
+	bh=r1ycZKD70M2O9nWABnZxAo0Y7x59PNQr/eG96uelaDQ=;
+	b=UpO/cJAoPmnl37Mnpok3w4H0bJnTEM7Ie5hKzInvXYM5WpMn/sigLJFc+6AbV4wdRl9S
+	 X/wXW0ccB8IIXFj+qA1GNJEujkCRDVMbc8qFF4EIeXYeEkiQlwecsQXq9Rbh07IUc2TL6
+	 tLLGhnwjPwcdZ3ZaEdRrMbE19i0flLwbUzIaKIoWNHSkRApcaUHwyksvTOVQrhLu2b9SQ
+	 fr3uDvjCC3H3uAa9R59Xy+bZNgFCmVdbm4sNtpArGqZWHCKWAcw3k6gzZh+8wl+OG2mxb
+	 U7Uv35YCUjdOQrwbc2xRUf4UKLav8ZkU/i2oFLQA903KTm1kxNtqkzr2ynfhkA+XtGQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MRlIi4Su;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=necGus7b;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6862A606D831
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6862A606D831
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82C0606D803
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A82C0606D803
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MRlIi4Su
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=necGus7b
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id AC66860180;
+	by sea.source.kernel.org (Postfix) with ESMTP id 7F98940222;
+	Thu,  5 Nov 2026 19:29:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA70D1F00919;
 	Thu,  5 Nov 2026 19:29:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB1C1F00A18;
-	Thu,  5 Nov 2026 19:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906942;
-	bh=RPopwINq+xMgMWtXglTyha+UOv+CcUS7lcSD7KMhNFg=;
+	s=k20260515; t=1793906944;
+	bh=r1ycZKD70M2O9nWABnZxAo0Y7x59PNQr/eG96uelaDQ=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=MRlIi4SuEm+9lYf675R0mxP3GdNLM2xUEtY8ZG2WMxPIoEfeSqyBFYM2gtCBsBs3m
-	 WLw30oAHvmuPRU77FU8jeUvz4+Ind8Zmzv1Ekyjvc/tn8qGqLccX6vUQqQSX7hq1/k
-	 Y8Bgfu+NLVYMkBEN9Y8HxMzqgT+miO99k+v6W3uJKkYJtPSLid+kFxUhwkrKegwdQq
-	 aec8VpuFnlT1J+sjdVpGBEgq/WGixqqQvkO/tslmViTsizxwSIjmrkO988XX0OlAJW
-	 1qP4k5WxxEbBvXF8Yd4+nLhk3lLXIWrGZE5yrlrRH0hPB/6I0M1oCh0q2rmSXP6Ekk
-	 kU0ykjAB0e/9w==
-Message-ID: <sashiko-outbox-199870@kernel.org>
+	b=necGus7bPU63UQk4B7+jV3XV3fUR+Vt0nlBwWy50VqFwECBf1aibdVwEQjnZEn+Ny
+	 Nk1eietSenvm5xqR/gzPNGNzZbvkkvnODaOzH7V35V/oaIZYKDA69EZlf4qtIWl0+y
+	 CLJx1JYEb1VEmZX7/x/KIzKFm4AvmAQYSTJwVI3oNBp4hYilo3LyLI/24/DmSHB0xR
+	 KeFmM+pyBdtCJHSurwLaWys6yP1tn08WuWeskCI8YOyZaldAhv0TS5sXvEaDm8Qah0
+	 JT7nN2+bgKA94sYD+FKbGDigc0ESaJpkTtOL2xP5JtOlGB9U35VVcN7RlPkTRv1UsF
+	 KJpyB6HzUFV7w==
+Message-ID: <sashiko-outbox-199871@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 07/51] lockd: don't hand out the terminator of
- nlm_end_grace
+Subject: Re: [PATCH RESEND v2 08/51] powerpc/pseries/lparcfg: don't drop the
+ last byte of a write
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-7-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-8-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-7-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-8-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:29:00 +0000
+Date: Thu, 05 Nov 2026 19:29:02 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,16 +79,19 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> nlm_end_grace_read() answers with "Y\n" or "N\n" from a three byte
-> buffer and hands out all three bytes, the terminating NUL included.
-> Leave the NUL out.
+> lparcfg_write() terminates its copy of the write by overwriting the
+> last byte, so a write without a trailing newline loses its last
+> character: "partition_entitled_capacity=3D5" is parsed as an empty value
+> and fails with -EINVAL. Terminate behind the copy instead, and refuse a
+> write that fills the whole buffer, which can't be terminated.
 >=20
-> Fixes: d68e3c4aa416 ("lockd: add a /proc/fs/lockd/nlm_end_grace file")
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Cc: stable@vger.kernel.org
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D7
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D8
 
