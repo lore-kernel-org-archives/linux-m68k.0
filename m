@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793906934;
-	b=d21Gg39+Nlxz4Sl/xvVTpTlmtl6KGVAdXJZIzLg/cyLhB+KQXCCUANxoApxtEEdFYlxk
-	 sI2nVJue9LgMOby6N2TTX21Kg4velyhHnsuo7QTT5k5ysVRIKDDzgxoMclqDy3Rd0eK2Z
-	 l+cifdBczRcRMx1WJqtx8n9GaRSCaA9iNFGPsdlRshPeeF9WspS7BVfDtHKTpSbyVJm7W
-	 qYUdT/PnurYSxYuy0ygY/SUZ0rdm9km7RaqwmXOfnNRJSOwkFpOABWRzmI0AcJaH2IanV
-	 h3UWZZma/n/vZoMOt0uYu7aNWw67dqhhXXYi/De1aEHHolD8CIAijcD4OWLZAuol+qA==
+	t=1793906937;
+	b=sskReRF+bGSEjiELPxOKHA+r/e52ZC2bAez/2IcqOB/vKw2D+H3XLcxtyILZksukkpSI
+	 lkrsuF6tp5Re3GoPGWvRAzx4lSgK1TonZgxH+Qen6AwLp/xI77YQJ8/7mHdlKWtpdR8Ps
+	 is/rEf0va/4q3AFTjP8E8CcxZh00lzI7+CNskaBQgqbcE6N88WOvbkP3mxWDiZu1ewA9z
+	 YRaFBzwy4PmnF+D5aeJqtZHXUw6jdHuArpBba4vQxrD+5FJCCSl1nppJ2/neBGzsu94vJ
+	 Z6zbH0rsQYq+JXDqq7+sXTkY0OvjQcRpgmgkNvqG5nS36Vk5GpcaYpg6JL6MerpgP0g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793906934;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906937;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=Dl7+6TE3klHc2brN+bZbN2jvo5bJeOK9y0vggKbBQEw=;
-	b=oiJ9zSe2GWbQBjx5QhPTfcY7wxyN6HpUK6XsshQIyB7aIHxHCYHEc5pevl/Lf19rDsAn
-	 e/jjAW3yYe+sJ851EE4ZLnJX5zV/lJBkM5xWaML8IqbFCa8tAJVnLk/+YAFlpNbPQzVjm
-	 A6os8TvekrdyCianGHEV4w63T5OQLF99N85hI6W7TP48edlGjw1Nj8FOXOq6y/8C2eKjI
-	 wG3JnJyGl8IkqRpzvu5ksecuiXTTtA9QlCALwTw/9/YB0SjK96LFlT8f7TLMYwaesomuG
-	 ZrzANsSN9wAgUfSuETzRK/F9/r3KXE1esoAKXYHYmZhKwKbP8hT9+z+tmLkd1oigsJA==
+	bh=DrjTmat1J2FdEKELfc0tb5qP5SKO3u8dr9sn5WHr8X8=;
+	b=2bmb+xht5+oU94MAfvDS0DZfPKm3fsx21/D+/K0eisQ0AoUr9z4FfObD8TKrwP1uGthU
+	 voyqAG+aFhUqerL9Ybe4sR/gnQk9Ha9ult4pUkj2gC9RpkKY/G+G58WfjuTBdNSOfjjxJ
+	 9xIUUTBkFaJTP/SEDKHRg+dg+TS9KOcYIUQQ7trH8cwmKuSqDxKYAtuV5VsLw9JEPqwmv
+	 Ax6OSnKgqlhzNraLM/QoT67SwhWL8soZQ6GoytJuSTx6l9+h9LZH5VDKD5sjiRzDQL+rZ
+	 tg/XrhZnLifo6NWFkNtKoWfu61nhmgGrZ1sqHQ7PGwIO2sPX6iTaZF9c2Nd6liWtd4g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jS5u1c3K;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JWpGZ4Rl;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6258C606D82C
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:28:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6258C606D82C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB9B606D832
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:28:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CDB9B606D832
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jS5u1c3K
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JWpGZ4Rl
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 25F9A41643;
+	by tor.source.kernel.org (Postfix) with ESMTP id 312C5601C3;
+	Thu,  5 Nov 2026 19:28:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FBED1F00A28;
 	Thu,  5 Nov 2026 19:28:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73A841F00919;
-	Thu,  5 Nov 2026 19:28:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906934;
-	bh=Dl7+6TE3klHc2brN+bZbN2jvo5bJeOK9y0vggKbBQEw=;
+	s=k20260515; t=1793906935;
+	bh=DrjTmat1J2FdEKELfc0tb5qP5SKO3u8dr9sn5WHr8X8=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=jS5u1c3K7ImMy0Crh/Iyk2SB/21MWY/WEpvgJVP8JqocmivL2vqyijNAqT7WiHjiW
-	 6Ua6xCh3Ij5H7KLcgaQqR8ixyHADZco61udOB+jlfTExiv59U4z+85rPVir6KFx0I1
-	 ObSC7TmsTyRLViUk/SGlKk2mUSVLDinXNea60PUpTBUb3+Z2hC3lUIZS8S2tOJbqUr
-	 AKLtI1OGNz8Uwoag5jqRzukuHqTD25SiOWs27vYk4NAWf9jGI4TCW+iBo9EUmmHNnG
-	 9mVPo4N3xUODMaacXqbONIqxB5Wjo2lV603RHlVY2XtZFGaIEcNZr1t9RV/1OvaXBn
-	 v83WwqOK20reg==
-Message-ID: <sashiko-outbox-199866@kernel.org>
+	b=JWpGZ4RlWoj2+o7rDOgbYtLD5GBP94pE2VNBU3WyFn6daNIqMb569ZSjbdA0EeSOr
+	 tAzkET2HaIHRbLQu45I3uimLTu8RZeZWJbIffcQ2/w3JGBj4a++BqBYReMLzdb5Sog
+	 qVScSeuBZeP4+0XkYuqIPKV1z9HgOT23/QBUP6cy8q34hHyhoqKFStqPtFfmyeBPB9
+	 XZe3Tm76jQQVReuVAANs6Njr2e6pTi5vPjaUYZ9qEi/4DpJTujoziNZjE6lkL79ePk
+	 nQQYT+CwPf4q1428aPXyvT5gzbZSHUrL2Gr9aiSU4j1DnnvA0JPFAyBjqU1sPq9vkw
+	 JeDEpGzOxTYeQ==
+Message-ID: <sashiko-outbox-199867@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 03/51] ALSA: cs46xx: hand the region to the
- region proc files
+Subject: Re: [PATCH RESEND v2 04/51] PNP: isapnp: don't go on when
+ isapnp_cfg_begin() fails
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-3-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-4-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-3-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-4-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:28:52 +0000
+Date: Thu, 05 Nov 2026 19:28:54 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,11 +79,14 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> snd_cs46xx_proc_init() stores the chip in the private data of the five
-> region entries, but snd_cs46xx_io_read() reads that back as the region,
-> so a read of /proc/asound/cardN/CS46xx_BA0 and friends copies from
-> whatever sits at the region's offset in struct snd_cs46xx instead of
-> the mapped registers. Store the region.
+> isapnp_cfg_begin() refuses a logical device number above 10 and a bad
+> card number with -EINVAL before it takes isapnp_cfg_mutex. The callers
+> that read and write the device's configuration, the proc file included,
+> don't look at that: they go on talking to whatever device the card
+> currently has selected and then unlock a mutex they never took in
+> isapnp_cfg_end(). isapnp_create_device() hands out logical device
+> numbers without a bound, so a card with twelve or more logical devices
+> gets there. Return the error instead.
 >=20
 > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 > Cc: stable@vger.kernel.org
@@ -93,5 +96,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D3
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D4
 
