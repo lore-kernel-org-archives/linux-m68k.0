@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793908652;
-	b=hiXrPxmuzQtP6RmhnP7K99T3l56C4ppbFAeEbUx91wFhHuOYSMkk9sfwDoTqTBj4odJL
-	 qrE3w3JFmiifk1tCLeaO77peun0EKhFC8FRWThSNCHEM0F/qftiZXxQQk2p/nMVastNae
-	 8dgdKO+nFLsA6TOcZOYufzfpcGg31KK1lHUpMwXaY8Pg/rSTZcssEP9GhagYECSZ+jEie
-	 bbeQw/WDU/Ql/CryKpp7UL5ESH5picZtmqWfdDoG+Ao2TDXeSWJ/YrrQLLhlQv2R4FF8Y
-	 pc5qEDxnGSRnoVAoLvRTirwa56BeY87moYHjJZ8hpMimZ/iNhqZHv97rtzV/VPSVp9Q==
+	t=1793908654;
+	b=OrNglvHl0HTKTSRz+0eU1+Q5fy6BZ+WIZra04diyxLgHL1reFEUYiUx9G7O/Rmvngjjs
+	 XQzwmGcemq7ea6fzlQNz2cchZVT4ddc7HCwZRKbkN8Lx0jUWU4KMriLIv8huTw21SR0T2
+	 uAZYC0bMj5WUrGhpfrJzntSfBkWDL8mDvzIe5En9A8aFDq5bLUkZT5EkTDbJxhDzVyW07
+	 zndlitjhi1sKIDjTuLSXe23RCjQ3wYGuoAmeO/mRLo8VwHmqonvWUGr3apPze3aZXBPt8
+	 7vA1IJ0BZ/UvHkU08TR3vXpTZm4nv/dMV0lD/kkM8ymZ36YIpmEfLr6XXyZt3dfk4PQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793908652;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793908654;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=SxyrM1+J7zWNaAN4jPGBV/DEjP5xQaaeFrdy3WUKUys=;
-	b=045U3SZQNPpvQpwqevFQM/r3rEIr4+chgs/yHEYaL8pLYWE+hkSWDAN9SeROPAPTyGS0
-	 TY+lHRacnz4GqM9P7oMid/nCtcee47gSkhOHDsiBsyiNM8wJbAbJ0EsXWphDof58Ly0HX
-	 1rVazcL0zva/r3Mt/+R7W8so3B4ceE+Gp2x+c3102Yb9o3hUv63gv5EB0WM7QIVAO2BsA
-	 YbBeibTHA4u5ML0o3v9ygbrDP9za74R+RihC2VfGxvLRquQ8WASHrjIXSiuHjdl+BsXoZ
-	 RXKamgSsGPPV5MTgd5jF71qwtyhW95vzdP/a/OtFQaZZk2Gv3aYfqAFyt5B9RO+PDZA==
+	bh=xFHbGVRg6yrT3KlueEhkmvkVUBCbD/lh7sbmFSVtLTQ=;
+	b=GwDkbMO2ARGUIJjY2egKw0AWobQkSMvSicGFFQmpRiB4biBwrPHez8LxoWwsQhrM5CBx
+	 zj6Pk6VbLvIOvsBV0ZQcM6hyVsyAjlAfLAeIsT6A3gEdUlapLrnb6MiawkeHwrrPRnMF4
+	 ihTraVKALKr12omcvXVIVUioy2FLzajFmgSYnICTY7dyfcw+2U+OVHFYEdqzWtG15DU5B
+	 lM+/CPyLOoz+UYthmwKh6rJoUIb+60zwdDSNuBxbQpnHIWX2jdupeEMWR/6mkCXB9i3/E
+	 lWYAAjvwJIV4paRuZNhZqFmrnfiSVCviV0XhLOMk4N6D7w25L57WsreOR16x7gTfGHA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TMPP9FqN;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MH+i2+6U;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8924606A337
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:57:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C8924606A337
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D7B606A6D3
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:57:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C5D7B606A6D3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TMPP9FqN
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MH+i2+6U
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3E6E5430DB;
+	by sea.source.kernel.org (Postfix) with ESMTP id AB53D42A7D;
+	Thu,  5 Nov 2026 19:57:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 066011F008BE;
 	Thu,  5 Nov 2026 19:57:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 918E51F008A4;
-	Thu,  5 Nov 2026 19:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793908651;
-	bh=SxyrM1+J7zWNaAN4jPGBV/DEjP5xQaaeFrdy3WUKUys=;
+	s=k20260515; t=1793908653;
+	bh=xFHbGVRg6yrT3KlueEhkmvkVUBCbD/lh7sbmFSVtLTQ=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=TMPP9FqNNmqBY13gma3CLWIVL0EF17Y7rpEjR5oEtGu8j0/5nAccodRqSOAY0XBIK
-	 sWJFde8ze/z0E32EKWqSoDwi/VCmGat6qgxYytX30wWPuJ5SIiDpHhjRJsD74+9x5o
-	 JbjYd13OPdEf42ZbXWoC2XJfP9LTH73IGdLeCWa/7hWVMAHtgvK8/autJqBhcRPIsc
-	 HwHm90YRFACVFy6xgtlWMbABooCDLz+b12aaY+VaZIQmAyZQN3Oia9FdjSnnqXxPC8
-	 kKxtPdbYwzMOzpXGVD4u93aDu71XJTcefextyGS5ABeE+dKLGe0TSBdc8Xgtms7//W
-	 OBkBLaioaeE9w==
-Message-ID: <sashiko-outbox-200036@kernel.org>
+	b=MH+i2+6U9jE27VRxSnmwAC1I+KZsyQYelc+SI0/arXlN1acPqvYicclIueaGmnw0S
+	 7Vufmku32aU/0LTS0ZsEhPWcfV/nyEAphelMqVOOOUXzL7KizWCwGblpTFLBfRVOQ+
+	 aRw3Xd1lLfS6Zlieesl7Sd7dG27m8Iqdo392aGzfQpYi9FKD9imCBtAkWRVDGlQ5yL
+	 tyCoPN0YxGIGINh+RaRkYpaUWkADRL5JES4DnfjVlT3zfh7STaEF5tXVV/1aeg93IZ
+	 vbsnaVOjzd37+164Zegh13k1Ov7WlOlHKfVz6T+tPlvgwuvjMPOhmpOl2Tm3RCKXke
+	 hwokiwRFkoaZQ==
+Message-ID: <sashiko-outbox-200037@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 02/30] jfs: let procfs copy in writes to the
- loglevel file
+Subject: Re: [PATCH RESEND v2 03/30] lockd: let procfs copy in writes to
+ nlm_end_grace
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-fs-v2-2-319e0f9a8aae@kernel.org>
+In-Reply-To: <20261104-work-procfs-fs-v2-3-319e0f9a8aae@kernel.org>
 References: <20261104-work-procfs-fs-v2-0-319e0f9a8aae@kernel.org>
- <20261104-work-procfs-fs-v2-2-319e0f9a8aae@kernel.org>
+ <20261104-work-procfs-fs-v2-3-319e0f9a8aae@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:57:29 +0000
+Date: Thu, 05 Nov 2026 19:57:31 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -80,15 +80,19 @@ List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
 > Implement ->proc_write_buf() so procfs copies in what is written before
-> it pins the entry, and take the level from that copy. Writes larger than
-> PAGE_SIZE - 1 bytes fail with -EINVAL now and so do empty writes, which
-> looked at a byte that wasn't written before.
+> it pins the entry. simple_transaction_get() was only used to get a copy
+> of what was written, so look at procfs' copy instead and drop the
+> transaction. A second write to the same file doesn't fail with -EBUSY
+> anymore. Writes larger than PAGE_SIZE - 1 bytes fail with -EINVAL from
+> procfs instead of -EFBIG from simple_transaction_get(), which refused a
+> few bytes less.
 >=20
+> Acked-by: Chuck Lever <cel@kernel.org>
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
 Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-fs-v2-0-319e0f9a8aae@kernel.org?part=3D2
+s-fs-v2-0-319e0f9a8aae@kernel.org?part=3D3
 
