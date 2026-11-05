@@ -1,57 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793908153;
-	b=zpnPHfhVaFT5VPp2PXWa5Xuj/bmQKDznSbMM87k04JXiB7YEqEKtd+FeUQUdNIoUYsfM
-	 6rgohudzXx3rACPsEBTOweuI39FuieNLqGOfBr3QMEv9B9dDHmCwboRxsi6P6qFH6QeB4
-	 5BES+i8nnPxckFjMi5TgFfCrylL9FTomkcFUvXTP+H8oA8zGn8qEUdWldf0J6+Ig/327t
-	 OiMr+5/teCSgAop7HG8910orj+3U64jzz7TVkcQovCCcYlxDE6I/yfVHO6+PxR5grYpHb
-	 yjxWeM5Jrf5Qe2P43f1sBzGA/5sOJ6hDMwzhqOv6u7uWyIFHJCjwH2bTZLcsLcRS/MQ==
+	t=1793908155;
+	b=jvIGDneVkpswgPc4j/TWcHE/whk7EgEYyXZa6oMBPvNXsA7a4PyxTXPNSMxU1jLpVmtN
+	 2yNj74Cu25CJTfFQCij6bd/uSpCJEs0Z1xmWD/yIBbRxvsOSJgeMYnTObWgsw0/8YjHII
+	 QpnmU4vZPHEwzVqIxZS42zsj8yzGsD7HaQko4c63C9iHJF9W9pV8cXXPjjeluOHgk4lCW
+	 G+2wAdFQtMcDjlUa9APPSsu2Y8aHPag8/5e0PnEFcVfnmuOsq/xfku1AIdRtCHyy3s30u
+	 IKoRC5RIgDpC2FbnaQKhhYbGzNOqAd2GDFjVrY9bwf5mpf4zki+o0qm0sD9TpvY7sNQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793908153;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793908155;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=13OVfMTrikaZUTOk6+ejChRIRHwQsK2sfHV0GLAx2hw=;
-	b=SpoO47CdY76x1MQN6R880NjSmlPWKLdtLg7BpLh5S9iRdPIoLH8Zcvf/Fk3D73SOwZHO
-	 h0Sh/JFvGk3RwLyRPoproQf77EJ6qC0BoN/2ZmEFDHrsp76CYhEKTqTPmc5tIYFkdXRqW
-	 6OlYQ8o8ewFWDHx54kqT1N6gp9afyejKhQ60y4Taab+KBZTL+VqcgrtDIhQQ8KF9H2Mfi
-	 du5Yl9g+l8fZiBkLvvURVP/dCT6Tf6sO6xA5+pT6HuBsilAOYv9p8sLLUNgzUtqNqR5R3
-	 HA0irDNm5zYi1JFCprAaumJ6+poud5jjY+co9FUb34IpoZbciH84pwbtlj9uoir1TkQ==
+	bh=6cps/enMaPjoFeCDjt0OIcQqkD6lwpn3AaQg+KoH5MA=;
+	b=SB1Ig+snLeDK5VIIGLLHF6RjeGPj6KEEpRU3rjup6dfQTz2irHfyTJwX5Qin02T5qlYY
+	 1ZaaD4XnVDzCmzZYCAUSo98XY3HfJLSUbeQo0shbrtwwHHEr6GJmF1nmgl07XUb9CjNiN
+	 OmidMd3VlDbQHgArL4G8PmrO0AWdlrZg1DJRkssBHCAap+HJ334Dqu3II5xBCIdCHOAHx
+	 VcID9M5TJbu/L6IF83nKZZ9AOkV6nh5F+rkd8N33tq1IMiKu8bUGQHUjCTSHSzB4M9XQN
+	 RJKlCzIaM2JYVsiAaSkJ+AXGa2s+6xookqzz5rznnjEGkk8lXcEvhjgkgDe/rEYFekw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BSi2J4pz;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PXQczwRB;
+	arc=none smtp.remote-ip=172.105.4.254
+Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A889C606E41F
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:49:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A889C606E41F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D91F606EEB6
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:49:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4D91F606EEB6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BSi2J4pz
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PXQczwRB
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 6563A437DF;
+	by tor.source.kernel.org (Postfix) with ESMTP id 857FF60210;
+	Thu,  5 Nov 2026 19:49:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBBB71F008A2;
 	Thu,  5 Nov 2026 19:49:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C177C1F008A1;
-	Thu,  5 Nov 2026 19:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793908152;
-	bh=13OVfMTrikaZUTOk6+ejChRIRHwQsK2sfHV0GLAx2hw=;
+	s=k20260515; t=1793908154;
+	bh=6cps/enMaPjoFeCDjt0OIcQqkD6lwpn3AaQg+KoH5MA=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=BSi2J4pzlBHAxuUAmYn9Unewqg1B6u8/oGNlJMu5HkD934fId18GQmiA6lQyKNwke
-	 lBN5Ww0MnstCp2jFb/4vUdwGs4j4bBIqSdJxXQ9kBUV7X73Gp9kCtxZq7YWAiZNJJE
-	 RLxtodWp6/+YZGahtAlv7ukZN5aZyEOCfXVWBUwaCIhBw0oDDN8hWCicNrL8GXktJS
-	 vN6UcCM7eiG+2pWqK6ysHkui7JLuuOdSXsxjafjv2HX7CSO7+M5DZGKZCAJ6QpEB+R
-	 j7XCjr5KXgY7bDsNnRKFEvIsliJ67HY+j8VEOQ95F7n+t7hL1xzYGGMnglfe0MfyZu
-	 Wd8Ez7mWqOSZA==
-Message-ID: <sashiko-outbox-199989@kernel.org>
+	b=PXQczwRBEXysSM7qtBjfJavsgQrZKTVx0yuwFzRJcumKzWmphnnHKjGfvN+N4Q8c7
+	 0gnr8aWsZJTn6RiwGOM99KsCPRfdKnD2gmZGBa6cZyhsHOmKdk/p3t7dtqB+KkkxUK
+	 Tqn73tuLhq8E4PhE8YiMnhhG/iRUbAbieCFh3X1HCoAC+PQOchL+wT/c0O+sZenray
+	 0ieAhXUCsy5aAlLaGHYJVAZtCXM0DzFCzGPvlwOyZ0NDlB0Hk+CiPhmTvHt/WW6C/N
+	 IJE4tr6U8LvpD2431eh4mGeuBUOnBIYyHAT+kFIsPzYQdWl956WMKsirJGDnRlKrLO
+	 vYsd7v/OnW/Xw==
+Message-ID: <sashiko-outbox-199990@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 03/26] PCI/proc: let procfs copy in config
- space writes
+Subject: Re: [PATCH RESEND v2 04/26] PCI/proc: let procfs copy out config
+ space reads
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-drivers-v2-3-245e54e87116@kernel.org>
+In-Reply-To: <20261104-work-procfs-drivers-v2-4-245e54e87116@kernel.org>
 References: <20261104-work-procfs-drivers-v2-0-245e54e87116@kernel.org>
- <20261104-work-procfs-drivers-v2-3-245e54e87116@kernel.org>
+ <20261104-work-procfs-drivers-v2-4-245e54e87116@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:49:10 +0000
+Date: Thu, 05 Nov 2026 19:49:12 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,16 +79,13 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> Implement ->proc_write_buf() so procfs copies in what is written before
-> it pins the entry, and write the config space from that copy with
-> get_unaligned_le16() and get_unaligned_le32() instead of get_user().
->=20
-> The copy holds at most PCI_CFG_SPACE_EXP_SIZE bytes. Larger writes come
-> up short with PROC_ENTRY_SHORT_WRITES, like they did before because
-> they were cut at the end of the config space.
->=20
-> A buffer that can't be read used to write zeroes to the config space and
-> report success. It fails with -EFAULT now and nothing is written.
+> Implement ->proc_read_buf() so procfs copies what is read to userspace
+> after it unpinned the entry, and read the config space into procfs'
+> buffer with put_unaligned_le16() and put_unaligned_le32() instead of
+> put_user(). A read into a buffer that can't be written used to report
+> success. It fails with -EFAULT now. A page holds all of the config
+> space, so a single read of it still works, libpci treats a short read as
+> an error.
 >=20
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
@@ -96,5 +93,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-drivers-v2-0-245e54e87116@kernel.org?part=3D3
+s-drivers-v2-0-245e54e87116@kernel.org?part=3D4
 
