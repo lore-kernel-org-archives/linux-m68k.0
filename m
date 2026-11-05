@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793906976;
-	b=1BcGiRmWHDs+c5xjVJRSmYreFxOrzkDV7SLZrsu6djaQAGdjfApeOp7JeSCUqLNOXriD
-	 ofeAOgKF5CxUWmdB0b754o50n8rIRnINSwHoZtZS9HxFMbEsZZrtsPZzVFsveOwyyB+0m
-	 okEj49+9bPTjbor5JA6ht7kcoF6lI5fbGoHfzK9eDGzGqTQMRAReOGlpFRauq3dPep+EY
-	 Ve+LncTkFyHZMCXPPm+bmEDL9lfOz7y2QXQLCNKqoaoY9hSmTtOzQuyoo4sA6pE+hCBRM
-	 a2rUTOnJs4fjAH41ujKCWY/lboB/gOeRmU1zN/aZlqsyYg0VDF2sv5UPNKwdz0LdPKg==
+	t=1793906978;
+	b=BIJlejN1XJ9WpVweLSxcUpOEnkuMvtILKCmCyh+Vxb1bNdJQMKzYFy0Wa2OhcIyFlsJx
+	 ii4uXqptW6N9YusU6P9WGlnYEUIDzVpjqukI4iBCE7gB6n816ciodMQeYhUsWVe9D6Aja
+	 Ath+6E2NWjtOT5bX6axuK1ewlFJjUxR+iS6kckv3gwv5eRELq/ylQiFFYSD+oJ52+3CHp
+	 v0cZMB6kuXqhqnVd9ywG9RTqiXHOHYANB06YsoupeQ2HRDW7SX+42Quu9egOdQvoPtemN
+	 iy2zHHmxzzJo6DCN/Tmf5bGR1b0kUtKBI+A1/M5zsuqN6NSqsVHBZ/HkGUvn42gwU5g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793906976;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793906978;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:From:
 	 Subject:Reply-To:To:Cc:In-Reply-To:References:Content-Type:
 	 Content-Transfer-Encoding:Date;
-	bh=PTE5j5M1lfXRKhGqS4rQ0FGlegosh6AezvyKz9Oa8vc=;
-	b=WEw5Kf7KgV6A1WBmb/sr33FbsKuiBi/F1vZo/Vd1y7Zh2BaY5FO3Tz7rBDkI/h56wMAL
-	 l7dpSkjEusRe6KqULVkpKQj4I/dKhf/7ZyMhLrWbBH1HtvKvoWV/rxGpxm2ys0mp3AOKQ
-	 3EiQHL9Y5OL9M1JmMD9ZY66HyxIRlL8LfnjeS+ba03PgciITYMetpHTfZIVNzTTT0MI/9
-	 3HuUY8C5VHxkbte4X2ZeqBAOegc/1+ieROgc6m5M7bgUeyDiyNjmAwrx3tQODTwNI7E6s
-	 sJRnm/IOLkbkRIEgL4/4BSLf5tO1NiPgb+ezr5TxuN0q/65UCKmWmXrVgJlexZxmOJg==
+	bh=UR/bGeijImnk8Wnsd/tmizN5U2rV5dto4UZIl+xyMfM=;
+	b=hv1TKAUhpd2xw2R18rqxZZYu9mzmmvUcprcauMYyLhFbqjzt4k6bs6XPTT966/zJoPQV
+	 UFgSfrRQLrbwWt27cHukYtWIHOWW9cLA4wpcku/ro3yfvUvgbLTvADE4Lhd479ikK0hoO
+	 H3JgaZ9MAG7Ejx1UCoPnQHcI1ed84tqxZZL4Q/Zcc+dtn8OTxf76ZL+PPLhEJpJ6jAW/J
+	 swbXQIJqSJ+/1bo/ilUxFXo0CmpyhqKzGT+GrARIWOd6Cim2qL/hrJxRpHNzRf/+tJbKG
+	 0GMR6D4NaUOYwZnHmMutt8yrKYQiCh3aVafaHAE1eP51XcxT3Oi+Ywrch7DM1taSUZw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=h4W85jhD;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VxAzMv7U;
 	arc=none smtp.remote-ip=172.234.252.31
 Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 563EE608361B
-	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 563EE608361B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BD3606D820
+	for <linux-m68k@lists.linux-m68k.org>; Thu,  5 Nov 2026 19:29:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 56BD3606D820
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=h4W85jhD
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VxAzMv7U
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3CF7941F4F;
+	by sea.source.kernel.org (Postfix) with ESMTP id 1EFE342E2B;
+	Thu,  5 Nov 2026 19:29:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2EA51F00919;
 	Thu,  5 Nov 2026 19:29:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC88B1F00919;
-	Thu,  5 Nov 2026 19:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793906976;
-	bh=PTE5j5M1lfXRKhGqS4rQ0FGlegosh6AezvyKz9Oa8vc=;
+	s=k20260515; t=1793906978;
+	bh=UR/bGeijImnk8Wnsd/tmizN5U2rV5dto4UZIl+xyMfM=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=h4W85jhDarFXBHG0k6JfyOGr8igxfgjaZBbbaCRVTQ0udlKQRWyMl8x3vyWH1Yc0F
-	 dOtLFgk+EUlfavQaPuDi+2NHDf1/BnZunAx0joRjfA786aL3mqNWdnnJweKA1yHUA1
-	 iGSfM1C3r+4wCQJidi28oADHFsujWie1y+IVFLXQTuLX56ywi7d9UyNiLTEecy/eLZ
-	 jxw9spucN1hAz+xXZvmAdLSzDnD4wAfRWUb7WZpsdAxmdjWIEV2sHgXEXcerAu5glG
-	 lvU3C8k5MtoleqtbURHAux8hlkGA1XhQZFvBuFWItTH3nIjDF/nWCIloHR7f5PjeLR
-	 QU48cCjz6Zhyg==
-Message-ID: <sashiko-outbox-199886@kernel.org>
+	b=VxAzMv7UFsyYnoBiL2vhlW1+tAK1RI3G9hd3638uMnnOa+X1Hd/XqYwSl1li8fliq
+	 01QhsAxeUKmrnct1phcjHiDBlkTHs7H5HFNvKkpojOe2Up47iBr/sA68sM31T/h6S0
+	 s1ItQIwz3EUke9VL6TKuHa6OR4G5BsKdMNyDzHw3sJFWrdLfbdMVss8m2/pslWW3kO
+	 Z2bpNVkFCKMDl6PKap8s1Bfs8w8BOM0UrxtXZUW8aAbl0jCRWy07zKeWwaBY/bqScI
+	 FXVCXKSbBT0TU1OECjLhNsgTdw455Z7U5ly3rnd8TVtw/5tgWX0i1IZgIKT9c/raGT
+	 3wuaupfHri8xg==
+Message-ID: <sashiko-outbox-199887@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v2 23/51] scsi: BusLogic: don't return 0 from
- writes to the proc file
+Subject: Re: [PATCH RESEND v2 24/51] scsi: ips: don't return 0 from writes
+ to the proc file
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Christian Brauner" <brauner@kernel.org>
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.com>, "Josef
@@ -64,12 +64,12 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>, "Jann Horn" <jannh@google.
  Iwai" <tiwai@suse.de>, linux-ext4@vger.kernel.org, "Chuck Lever" <cel@kernel.org>, tytso@mit.edu, "Heiko
  Carstens" <hca@linux.ibm.com>, "Vasily Gorbik" <gor@linux.ibm.com>, "Alexander
  Gordeev" <agordeev@linux.ibm.com>, "Christian Borntraeger" <borntraeger@linux.ibm.com>
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-23-021c84d852e0@kernel.org>
+In-Reply-To: <20261104-work-procfs-bugfixes-v2-24-021c84d852e0@kernel.org>
 References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-23-021c84d852e0@kernel.org>
+ <20261104-work-procfs-bugfixes-v2-24-021c84d852e0@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 05 Nov 2026 19:29:34 +0000
+Date: Thu, 05 Nov 2026 19:29:36 +0000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -79,9 +79,10 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 
-> A write to /proc/scsi/BusLogic/<n> resets the statistics and returns 0.
-> Writers that use stdio, echo for example, take that as no progress and
-> retry forever. Return the number of bytes that were written.
+> ips_write_info() ignores what is written to /proc/scsi/ips/<n> and
+> returns 0. Writers that use stdio, echo for example, take that as no
+> progress and retry forever. Return the number of bytes that were
+> written.
 >=20
 > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
@@ -90,5 +91,5 @@ Sashiko has reviewed this patch and found no issues.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261104-work-procf=
-s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D23
+s-bugfixes-v2-0-021c84d852e0@kernel.org?part=3D24
 
