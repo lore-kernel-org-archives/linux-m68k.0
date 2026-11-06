@@ -1,115 +1,126 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.147
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.12
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793966932;
-	b=t8kohww5LTiRBNQZN9PUoCZIY/Qtn09C2GvIw+mkQ7dOpgZOW896TE+bwP7gbF1MIu8c
-	 nIcgNjeddooJg/tNqC42+ZE45QzAWbl4/MRtahVNl1xICWsYTn+MSrUjd2lX3HKMkMt7N
-	 X8J2my4U39/w6OqcbsDnpZgXYdi1qNgvH67VE5B8poOmLfP17QToPu+IS2jOvAhTOnyJS
-	 BKuVY5THl9QBGqsjhVxfNsmeOnN6tAlK/0uVZkVwvOU5JuqCOED+jlVpQaxUiFqDCkTDV
-	 4z+09ofoAXB+q/Gto7FBmcbXNB9VzrnLCvZsYPBfGq1NVv+tdbNN5uAQAK3EsZWwhJQ==
+	t=1793972723;
+	b=2i6TcnBysxa5kLxmicLLoO9YD1tB3rtQdiuJS9TwtPFp0UBzNJdavTl7NDdxWzpxAoDB
+	 07zBeM81Hd1Cl8Z9LlmzkGRgJxcEoqpa01KXR6gsbLrZaJy1gixEY3WxMWwU6mI0xh8Hn
+	 5CtmQRtbclMIEefDiWhzyrJIZbXtL+P29Up8vAsHfLJdwL5H0wSKrHseHnTfm2Gl/Ile3
+	 rKWDI64SapxVDtzD/HjO+HD2lESRofnBgRf6l2D1nwfiupcJOi1vx557fBvKR/zLhR57E
+	 tz929hSjBytrm0kMvhWfrZkcGm4aNym5EPVBrbH4CaJhJBHKr814OwTpURW/14RC1+Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793966932;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:DKIM-Signature:
-	 X-DKIM2-Info:DKIM2-Signature:X-DKIM2-Info:Message-Instance:
-	 X-ME-Sender:X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=W54/xbpGmZGa8KjiOUi1NHwwL0wDet2bTgr3FtF8FU8=;
-	b=YMjHIsLZFLOt+qNaSyW+dC4OMBK+Sf3Mz4IP98nGnxXCCUrLlF3OA0WIaMP6d5s/2vCq
-	 UapRB1toanaC7fRm/SYSLMgjC2gVj8Jqu9ja3KMxVWbxDrPH98z17HB46Cn/Vauo6j8Qp
-	 7TPt3flhQk27trO4goGb0xP4iTllgvWfLB0vI1hOF07DkjGaFDjDouCB/O6wtLbIXt9Bt
-	 7vN2uHLV6wLyM5zRiYTfC0aZvl1IPo+t6vxFcbPa6+RZYfTfARPJm+dRtC9Q9TA8zL56+
-	 7z3hai7NU68BO+g1wqcbEdf3nFKTU93qOkbErkT8hswesHHeutISFzeoUDqA4t7IT7Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793972723;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=rx7gGWe+qVjnuJYaCuf3PNKK+ddgMsbwCNHflbLARwg=;
+	b=OqvZULjrfbA21a15FFrXb6L/IGnpx944iQK60cTvDqIVt+AAWjW+ucMC5hbFu/qo2Ns1
+	 o4rj3WmlBnmLruUsklnhf6306MMcngxHEfN8g9/UQkA2Nw225dMmLGqhjrRfWIROWQhSr
+	 v088S7VP9nnwYpqNTj84VXIeJAdIPRQq+iUJ0XL9QttchZ/Fv85jqt7tJ7lwqm4EA2T46
+	 Vf/VEAjR/vWHjihcP8GRR1Hd6plYPjyXnqKHMWq5CYKA4i9DokgH4n5ooCfgTDoL4c1qn
+	 JnZ6Hk8mv9Z6XTSnb5cOP6xk1EvLpvhpHG/49ngaLoB4V8qdxlPbFrCt1IZT4L1i87A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=polyxeno.com;
-	spf=pass smtp.mailfrom=polyxeno.com;
-	dkim=pass header.d=polyxeno.com header.i=@polyxeno.com header.a=rsa-sha256 header.s=fm3 header.b=Gw3R3hvo;
-	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b="ka86i1/v";
-	arc=none smtp.remote-ip=202.12.124.147
-Received: from fout-b4-smtp.messagingengine.com (fout-b4-smtp.messagingengine.com [202.12.124.147])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=linux.intel.com;
+	spf=pass smtp.mailfrom=linux.intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Et9fL52Y;
+	arc=none smtp.remote-ip=198.175.65.12
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38B2606EE84
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Nov 2026 12:08:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A38B2606EE84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=polyxeno.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=polyxeno.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22028606D81A
+	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Nov 2026 13:45:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 22028606D81A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=polyxeno.com header.i=@polyxeno.com header.a=rsa-sha256 header.s=fm3 header.b=Gw3R3hvo;
-	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=ka86i1/v
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.stl.internal (Postfix) with ESMTP id 058631D0014F
-	for <linux-m68k@lists.linux-m68k.org>; Fri,  6 Nov 2026 07:08:50 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Fri, 06 Nov 2026 07:08:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polyxeno.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1793966928;
-	 x=1794053328; bh=W54/xbpGmZGa8KjiOUi1NHwwL0wDet2bTgr3FtF8FU8=; b=
-	Gw3R3hvoDNctLuLtzfjmKNpSlMWoMQADqk5r4tZ+Ao9d0t+NfoGsS0JACpwRtl/M
-	dDLG9YMzuMuy1vZ9CRP2yk7yb4qGpPTuv5sx1jSuXhSRuz87x0runTKnCHGUSr5m
-	qUOwHW9d42v4yf8E3Bs7vFoh4Wci5uw4Yj2+udXr3aCydUJBBwXmd983Fqo7jmuF
-	uWKtbDV+U0ovUQTfPSWmRAADKn1dXJSm/snnuASAAiOIgaQuvXJ1w+Qm7HNqnwm6
-	h7x3VErBLyJV73zuFL5uGcMo55vFRIHqaAsESS23ugFhbpl9YPES9AkBwlrxUp4k
-	dUd/y7ZU+O97dgt5bd61pg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1793966928; x=
-	1794053328; bh=W54/xbpGmZGa8KjiOUi1NHwwL0wDet2bTgr3FtF8FU8=; b=k
-	a86i1/vCxXzYkZGHAPAWrG+6K/zC49Q8NvdnU6aeVr0VdGaZ6KQJjOUkAJ/zXX/z
-	h2kqS5cYKzKu9dqkWWTWIcDIDuiMVwc1el3a4KljCYpY60s7F6Rkti4f/f/KRhTI
-	bOMxu+tMfXnRrcsPc3CTM7Cev4AH9XB0fQrv1eJJh7hGXQfe8YGccIowtA/LuspO
-	r3EWZ9Uk/KgDPRoJUTWfA3l+dxK/2cIoER+WN9ScTPdxH5zPlNA5jmdMu6c+idDJ
-	Io3//iRR22ODbPn26NM1QP5BCBIl9xEIe5zZ1CV5pIWDWf1oRUTcwGxw7ppmzQmh
-	cFLSV/j8/3Zk2cHAZZDAg==
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=sign d=polyxeno.com a=rsa-sha256;
-DKIM2-Signature: i=1; m=1; t=1793966928; d=polyxeno.com;
-	mf=PGdlcmdAcG9seXhlbm8uY29tPg==;
-	rt=PGxpbnV4LW02OGtAbGlzdHMubGludXgtbTY4ay5vcmc+;
-	s=fm3:rsa-sha256:VVy217xiT2LLswlnX5kxdfPueMAR8/Sv8ZtI1TzwTWyVwuZ
-	+BjtR+QJYMz5eSTQECjmR0ACm397BdwfGIk/x0YQcELcH0OpYLx9RYgHoyHC0vUb
-	vktrKVKV/3DWPInz910z58fUmQFcZsjr/JfzA2P0WdQoow1dHRLCyMfuUbAQtnoV
-	X3x/y55pW07od3v/5vay9eZBy7rnX2fIeNK9a7pAEGFUqVN/wUjlePbOb0DHxq+T
-	eWOk/8Ct+uOcTlbiodOGmByyclLglEt+87hHUhWSlyQYs9YSZGcsnAkv68nqNfm7
-	gLM3l1Nbeh5gErqwn66TlLo4l/Mj/7pNnVW6IRQ==;
-X-DKIM2-Info: draft=ietf-dkim-dkim2-spec-09;
-	repo=github.com/dkim2wg/interop; date=2026-11-03; sw=lmtpprox;
-	action=mi-m=1; hc=14;
-	hn=cc,content-language,content-transfer-encoding,content-type,
-	date,feedback-id,from,in-reply-to,message-id,mime-version,
-	references,subject,to,user-agent;
-Message-Instance: m=1; h=sha256:dqwlH5JiDOQVwm/0IH6ceSO+Axogg74CqwsRlelotDo=:0ychIidybPUlrdythwfHQK4JLYQJUfYjrKVosDQ6wSA=;
-X-ME-Sender: <xms:T8PtaloJzIkEMdv3yJvXLjvtBr8pNLSL5G9O3w31O_gbX0E22OvUFA>
-    <xme:T8PtavOm0P1Olpy_8BLuGLpIyn0ZNBvfMAqNJut4_NfdzB31BdC-7WjJ-boGKT1n2
-    TMMwRk5RaGSxEANhth6NjGLR2R3if_7j7cXH7L5WYAzFaaN9XbBndhw>
-X-ME-Received: <xmr:T8Ptah1yhEQjmOuQK7S9k7msJXgLQLg2UyHMga0Z2r1IBgoqqc7nFYUEaAMrta7zssy3QA>
-X-ME-Proxy-Cause: dmFkZTFKgXbpKYmlPU9EkHfb52mvEGbcM3NmrqZDY3l74hBhbOb3a1PMZPdApMLRP4RuVf
-    muLoFz8RdaqBUIjCA0h78xmpQBjLgZcmucDAI/I0MBr48zab5K+5wbaMxjuv53h76Nzhnp
-    HyrMtPJg2Z7nFbf1IMb6l0NsYq9dDKgA84Obb4qN2KPrDwXKxsb3dbH97+/mcE/SN8wgp0
-    UbZboCxUsj1Vy1ScAHJX720ZOtKl2S0/8XMlp+gSnGBzHWIyCsMUig3OgqpB9Cux+qFY23
-    NyKrZEZF5cxgBWBjgkI7qJcVdsLxldE/es4CBx/azUQebaxVocolUqrJonM4NX5exqZWZS
-    Z9W4cnQ2AtUXEoYQ3DNHsayibHp9X/87lB6c14torZecRqRpvqIAox3Q9ITlno8Zs1sZFH
-    BkMBSz0FLvuGGFwR3Hte6CcL8xfeNma6jnZfxzFkzBaerbC3dlNvmHLGqp6ZnWVpMf5eIq
-    HNC8/YQ7qKnf8CcFO67F13xfWddc7LXvNNojQUbN0avgnXdLTvM/TIXPlCpldcKOVCJIzT
-    joKc87HHU7+AYbQHrNNYpNTvdID9d0qVtAmgnExP4KG2U3m+h0zHQQ79Ln3+/jp3quW2Yj
-    3xIjI5u0HPt9LoMrrEbUCjr/oD7bRjEO3ajiaCWQ/ON0Lp7FmmeyxZc2zdjw
-X-ME-Proxy: <xmx:T8PtatoDWjdw6hYH-ql792Ark4utskpVmDjxlNc_JoR-0c-m17Na1g>
-    <xmx:T8PtarcHEx4Uyks1HVAZPyUDIni8sdX4MU-2vLWu0RPnw9Tff4kWiQ>
-    <xmx:T8PtavvwQpU3eNB_gTni-hcLssEbUNwJupHKYnobY8ORupu8qkUeSA>
-    <xmx:T8PtarU4YvmqwDVoXxxZjMWFGQQc5VhkHo-SnJDWsMrkJeWrSVlVMw>
-    <xmx:UMPtasUSd-Nz9RBUclqJ1OaT1EYV2_2nC_m84szWf2V5OONLLByENJ1z>
-Feedback-ID: i09fe4b60:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 6 Nov 2026 07:08:42 -0500 (EST)
-Message-ID: <e6ed4165-03fd-4204-b25a-bafc37c3930c@polyxeno.com>
-Date: Fri, 6 Nov 2026 22:08:40 +1000
+	dkim=pass (2048-bit key, unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Et9fL52Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1793972723; x=1825508723;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=T4yGvXzWmKxa4531S1rrSDgyYW3DGI1nzB/fVYkEmEs=;
+  b=Et9fL52Y0qNFm43atOHmpqnkysvJjlR1imntmkfbmHuUZKnzRm0NfqC6
+   O87vhL6kYC0iCyFQ47FypBFP25XAzr7t0OEcpaVhvpNFMu2anmHdGaJ2c
+   PlymsfapV006otXYS/cV4wgzu6pTTDH48mPnxAuf2hIBMIO6omGvWxyBG
+   KsHRy0fydf3aLhEXncLShyXGlgN/vHqMFeyKeO59E2Ds7IVPUyUerwEry
+   JFm7B6009qIP6y73O3mfGrVax0kaimSYqPnHZRAbe7FSmEYBUmsyw/rOC
+   PUdlla89QOoGfJAsbqbZRm/UQK6GWnl8lm3XzNLTlhPPy1Kip6YHjHQB8
+   Q==;
+X-CSE-ConnectionGUID: qT1GAMZMTomOXYavECwPKQ==
+X-CSE-MsgGUID: OAaH6uOrS9K6nf2yqUblng==
+X-IronPort-AV: E=McAfee;i="6800,10657,11957"; a="2662042"
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
+   d="scan'208";a="2662042"
+Received: from fmviesa012.fm.intel.com ([10.60.135.152])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2026 05:45:22 -0800
+X-CSE-ConnectionGUID: BsGBMQ4JR6GY88O+RbhffA==
+X-CSE-MsgGUID: SaRM3n8vRAqJ564RAPZjFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,197,1787036400"; 
+   d="scan'208";a="9028391"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.104])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2026 05:45:07 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Maciej Grochowski <Maciej.Grochowski@sony.com>,
+	Geramy Loveless <gloveless@jqluv.com>,
+	Eric Auger <eauger@redhat.com>,
+	Alexey Fomenko <alexey.fomenko@intel.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Mesih Kilinc <Mesih.Kilinc@sony.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+	Helge Deller <deller@gmx.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Thomas Gleixner <tglx@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	David Airlie <airlied@redhat.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tursulin@ursulin.net>,
+	Simona Vetter <simona@ffwll.ch>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sh@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org
+Cc: Sashiko <sashiko-bot@kernel.org>
+Subject: [PATCH v5 08/14] PCI: Honor alignment overrides
+Date: Fri,  6 Nov 2026 15:43:29 +0200
+Message-ID: <20261106134341.39493-9-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261106134341.39493-1-ilpo.jarvinen@linux.intel.com>
+References: <20261106134341.39493-1-ilpo.jarvinen@linux.intel.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -119,323 +130,476 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] mm/memory: use pmdp_get_lockless() for the pmd read in
- do_fault_around()
-To: Hui Zhu <hui.zhu@linux.dev>, "David Hildenbrand (Arm)"
- <david@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <liam@infradead.org>,
- Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Geert Uytterhoeven <geert@linux-m68k.org>, Sam Creasey <sammy@sammy.net>
-Cc: Hui Zhu <zhuhui@kylinos.cn>, stable+noautosel@kernel.org,
- linux-m68k@lists.linux-m68k.org
-References: <20261104091050.117076-1-hui.zhu@linux.dev>
- <dec26f4a-138a-4cd7-b000-4bda7c61af82@kernel.org>
- <88a6bf17-2189-44a8-8255-50b7ee1d80f2@linux.dev>
-Content-Language: en-US
-From: Greg Ungerer <gerg@polyxeno.com>
-In-Reply-To: <88a6bf17-2189-44a8-8255-50b7ee1d80f2@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+pci=resource_alignment argument can override the default alignment for
+the resource. The remainder code introduced in the commit 9036bd0efcb6
+("PCI: Align head space better") can move remainder space (non-aligning
+part of the size) before the aligning left edge which results in
+violating the requested alignment.
 
-Hi Hui,
+Introduce struct pci_resreq_data to hold device and user-given alignment
+to be able to honor it in pci_align_resource(). When user-given alignment
+is found, any remainder movement is skipped.
 
-On 6/11/26 13:03, Hui Zhu wrote:
-> 2026/11/5 20:00, David Hildenbrand (Arm) :
->> On 11/4/26 10:10, Hui Zhu wrote:
->>> From: Hui Zhu <zhuhui@kylinos.cn>
->>>
->>> KCSAN reports a data-race in do_read_fault / pmd_install; the same code
->>> is in mainline:
->>>
->>>    write (marked) to 0xffff8d52a75fb810 of 8 bytes by task 27487 on cpu 5:
->>>     native_set_pmd arch/x86/include/asm/pgtable_64.h:83 [inline]
->>>     pmd_populate arch/x86/include/asm/pgalloc.h:84 [inline]
->>>     pmd_install+0xe0/0x120 mm/memory.c:444
->>>     finish_fault+0x5bc/0xb00 mm/memory.c:5204
->>>     do_cow_fault mm/memory.c:5432 [inline]
->>>     do_fault+0x5d0/0x6e0 mm/memory.c:5526
->>>     handle_mm_fault+0x211/0x4c0 mm/memory.c:6218
->>>     __mm_populate+0x144/0x270 mm/gup.c:2207
->>>     __do_sys_mlockall+0x2cd/0x380 mm/mlock.c:764
->>>
->>>    read to 0xffff8d52a75fb810 of 8 bytes by task 27527 on cpu 9:
->>>     do_fault_around mm/memory.c:5341 [inline]
->>>     do_read_fault+0x162/0x670 mm/memory.c:5381
->>>     do_fault+0x31a/0x6e0 mm/memory.c:5524
->>>     handle_mm_fault+0x211/0x4c0 mm/memory.c:6218
->>>     faultin_page_range+0x227/0x530 mm/gup.c:2156
->>>     __x64_sys_madvise+0x67/0x80 mm/madvise.c:1479
->>>
->>>    value changed: 0x0000000000000000 -> 0x000000001386c067
->>>
->>> Both paths only hold mmap_lock for read, so do_fault_around() tests
->>> vmf->pmd while pmd_install() populates it under the pmd lock.  The race is
->>> benign: a stale pmd_none() only wastes the prealloc_pte, which do_fault()
->>> frees again, and a pmd seen as populated only makes ->map_pages() find no
->>> PTE and do_read_fault() fall back to __do_fault().
->>>
->>> The load still has to be lockless-safe.  The store side already is: on
->>> i386-PAE, pmd_install() publishes both halves of the pmd with a single
->>> cmpxchg8b.  The load side is not.  pmdp_get() is a plain READ_ONCE() over
->>> a pmd_t that is wider than a word there, so it becomes two 32-bit loads
->>> and can return the low half of one pmd together with the high half of
->>> another.  Use pmdp_get_lockless(), the accessor for pmd reads that do not
->>> hold the pmd lock: it re-reads until both halves come from the same pmd.
->>> It is also what __pte_offset_map() already uses on this very pmd a few
->>> instructions later.
->>>
->>> Only X86_32+X86_PAE and SH+X2TLB compile the retry loop, these being the
->>> GUP_GET_PXX_LOW_HIGH selectors that have more than two page table levels.
->>> mips32 with 64-bit physical addresses selects GUP_GET_PXX_LOW_HIGH too,
->>> but is 2-level and so falls back to pmdp_get().  On every other
->>> configuration, x86-64 included, pmdp_get_lockless() is pmdp_get(): the
->>> pmd is loaded in one go, the READ_ONCE() silences the report the same
->>> way, and there is no functional change.
->>>
->>> Fixes: 7267ec008b5c ("mm: postpone page table allocation until we have page to map")
->>> Cc: stable+noautosel@kernel.org # KCSAN annotation only, no functional change
->>> Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
->>> Acked-by: Lorenzo Stoakes <ljs@kernel.org>
->>> ---
->>> Changelog:
->>> v4:
->>> Commit message only, the diff is identical to v3.  Spell out the affected
->>> arches and add the lore links for v1-v3 (Lorenzo Stoakes).  Reword the
->>> cmpxchg8b sentence: the store is already atomic, it is the load that tears.
->>> Add the Fixes: tag (David Hildenbrand).
->>> v3:
->>> https://lore.kernel.org/all/20261103014749.96764-1-hui.zhu@linux.dev/
->>> Shorten the comment to one line (David Hildenbrand).
->>> v2:
->>> https://lore.kernel.org/all/20261102093120.92654-1-hui.zhu@linux.dev/
->>> Use pmdp_get_lockless() instead of pmdp_get() (David Hildenbrand).
->>> v1:
->>> https://lore.kernel.org/all/20261102031308.66177-1-hui.zhu@linux.dev/
->>>
->>>   mm/memory.c | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index 0fb676dd2bd63..f25c2ce0ef153 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -6017,7 +6017,8 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
->>>       to_pte = min3(from_pte + nr_pages, (pgoff_t)PTRS_PER_PTE,
->>>                 pte_off + vma_pages(vmf->vma) - vma_off) - 1;
->>>   -    if (pmd_none(*vmf->pmd)) {
->>> +    /* pmd_install() rechecks pmd_none() under the pmd lock. */
->>> +    if (pmd_none(pmdp_get_lockless(vmf->pmd))) {
->>>           vmf->prealloc_pte = pte_alloc_one(vmf->vma->vm_mm);
->>>           if (!vmf->prealloc_pte)
->>>               return VM_FAULT_OOM;
->> Fun, this breaks some odd m68k configs because they do some legacy weird stuff with pmd_none().
->>
->> I'll throw in the following cleanup. CCing m68k maintainers: I would drag
->> this along with this fix here unless you disagree.
->>
->>  From e3c739933a04743e3923f6f39a603e93f2700304 Mon Sep 17 00:00:00 2001
->> From: "David Hildenbrand (Arm)" <david@kernel.org>
->> Date: Thu, 5 Nov 2026 12:49:38 +0100
->> Subject: [PATCH] m68k/mm: simplify
->>   pmd_none()/pmd_val()/pmd_present()/pmd_bad()
->>
->> pmd_t on m68k used to contain 16 words. Commit ef22d8abd876 ("m68k:
->> mm: Restructure Motorola MMU page-table layout") reduced Motorola PMDs
->> to one word; Sun3 and ColdFire use word-sized folded PMDs.
->>
->> Use direct member access in pmd_val() and replace the Sun3 and ColdFire
->> pointer-taking predicate wrappers with inline functions taking values.
->>
->> This allows us to write something like:
->>
->>    if (pmd_none(pmdp_get(pmdp)))
->>
->> While at it remove unused pmd_present2() and commented-out pmd_bad()
->> on sun3.
->>
->> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
->> ---
->>   arch/m68k/include/asm/mcf_pgtable.h  | 20 +++++++++++++++-----
->>   arch/m68k/include/asm/page.h         |  2 +-
->>   arch/m68k/include/asm/sun3_pgtable.h | 23 +++++++++++++++--------
->>   3 files changed, 31 insertions(+), 14 deletions(-)
->>
->> diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
->> index f45a882238dbb..4efa8e3e1e98a 100644
->> --- a/arch/m68k/include/asm/mcf_pgtable.h
->> +++ b/arch/m68k/include/asm/mcf_pgtable.h
->> @@ -130,11 +130,21 @@ static inline void pte_clear(struct mm_struct *mm, unsigned long addr,
->>     #define pte_page(pte)    virt_to_page(__pte_page(pte))
->>   -static inline int pmd_none2(pmd_t *pmd) { return !pmd_val(*pmd); }
->> -#define pmd_none(pmd) pmd_none2(&(pmd))
->> -static inline int pmd_bad2(pmd_t *pmd) { return 0; }
->> -#define pmd_bad(pmd) pmd_bad2(&(pmd))
->> -#define pmd_present(pmd) (!pmd_none2(&(pmd)))
->> +static inline int pmd_none(pmd_t pmd)
->> +{
->> +    return !pmd_val(pmd);
->> +}
->> +
->> +static inline int pmd_bad(pmd_t pmd)
->> +{
->> +    return 0;
->> +}
->> +
->> +static inline int pmd_present(pmd_t pmd)
->> +{
->> +    return !pmd_none(pmd);
->> +}
->> +
->>   static inline void pmd_clear(pmd_t *pmdp) { pmd_val(*pmdp) = 0; }
->>     diff --git a/arch/m68k/include/asm/page.h b/arch/m68k/include/asm/page.h
->> index d30f8b2f15927..09a2c020ec992 100644
->> --- a/arch/m68k/include/asm/page.h
->> +++ b/arch/m68k/include/asm/page.h
->> @@ -17,7 +17,7 @@
->>    */
->>   #if !defined(CONFIG_MMU) || CONFIG_PGTABLE_LEVELS == 3
->>   typedef struct { unsigned long pmd; } pmd_t;
->> -#define pmd_val(x)    ((&x)->pmd)
->> +#define pmd_val(x)    ((x).pmd)
->>   #define __pmd(x)    ((pmd_t) { (x) } )
->>   #endif
->>   diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
->> index 704442a391fd7..5867d24032655 100644
->> --- a/arch/m68k/include/asm/sun3_pgtable.h
->> +++ b/arch/m68k/include/asm/sun3_pgtable.h
->> @@ -109,14 +109,21 @@ static inline void pte_clear (struct mm_struct *mm, unsigned long addr, pte_t *p
->>   #define pmd_page(pmd)        virt_to_page((void *)pmd_page_vaddr(pmd))
->>     -static inline int pmd_none2 (pmd_t *pmd) { return !pmd_val (*pmd); }
->> -#define pmd_none(pmd) pmd_none2(&(pmd))
->> -//static inline int pmd_bad (pmd_t pmd) { return (pmd_val (pmd) & SUN3_PMD_MASK) != SUN3_PMD_MAGIC; }
->> -static inline int pmd_bad2 (pmd_t *pmd) { return 0; }
->> -#define pmd_bad(pmd) pmd_bad2(&(pmd))
->> -static inline int pmd_present2 (pmd_t *pmd) { return pmd_val (*pmd) & SUN3_PMD_VALID; }
->> -/* #define pmd_present(pmd) pmd_present2(&(pmd)) */
->> -#define pmd_present(pmd) (!pmd_none2(&(pmd)))
->> +static inline int pmd_none(pmd_t pmd)
->> +{
->> +    return !pmd_val(pmd);
->> +}
->> +
->> +static inline int pmd_bad(pmd_t pmd)
->> +{
->> +    return 0;
->> +}
->> +
->> +static inline int pmd_present(pmd_t pmd)
->> +{
->> +    return !pmd_none(pmd);
->> +}
->> +
->>   static inline void pmd_clear (pmd_t *pmdp) { pmd_val (*pmdp) = 0; }
->>     /*
-> 
-> Hi David,
-> 
-> Thanks for picking this up, and for the m68k cleanup!
-> 
-> Tested-by: Hui Zhu <zhuhui@kylinos.cn>
-> 
-> Tested with gcc-m68k-linux-gnu 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04), on
-> three configs that between them cover all three m68k families:
-> 
->   amiga_defconfig                    Motorola MMU, PGTABLE_LEVELS=3
->   sun3_defconfig                     SUN3,  PGTABLE_LEVELS=2
->   m5208evb_defconfig + CONFIG_MMU=y  ColdFire,  PGTABLE_LEVELS=2
-> 
-> Without your patch none of the three can build mm/memory.o, and each fails
-> at a different site:
-> 
->   arch/m68k/include/asm/page.h:20:27: error: lvalue required as unary '&' operand
->   arch/m68k/include/asm/sun3_pgtable.h:113:33: error: lvalue required as unary '&' operand
->   arch/m68k/include/asm/mcf_pgtable.h:134:33: error: lvalue required as unary '&' operand
-> 
-> With it, all three build a full vmlinux with zero warnings.
-> 
-> Two things that might save you some time:
-> 
-> - m68k looks like the only arch with this pattern. Grepping arch/ and
->   include/ for '(&x)->pmd' and '(&(pmd))' finds nothing outside arch/m68k/,
->   and pmd_none2()/pmd_bad2()/pmd_present2() only exist in mcf_pgtable.h and
->   sun3_pgtable.h. So your three hunks look complete to me.
-> 
-> - No m52xx/m54xx defconfig enables CONFIG_MMU, so the ColdFire path through
->   mcf_pgtable.h has no defconfig coverage at all; you have to flip it on by
->   hand (scripts/config -e MMU && make olddefconfig) to reach it. That is
->   probably how this went unnoticed for so long - my patch has been breaking
->   m68k since v1, because pmdp_get() returns by value just like
->   pmdp_get_lockless() does.
+PowerNV will not be able to use the current remainder logic after this
+change because on it pcibios_default_alignment() always results in
+setting min_align but this code is in a transient state and the problem
+will be fixed by an upcoming change that rewrites the resource
+placement algorithm with a more generic approach.
 
-The m5475evb_defconfig is supposed to have MMU enabled:
+Fixes: 9036bd0efcb6 ("PCI: Align head space better")
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Link: https://lore.kernel.org/linux-pci/20260923133202.07DF61F000FF@smtp.kernel.org/
+Acked-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
 
-     $ ARCH=m68k CROSS_COMPILE=m68k-linux-uclibc- make m5475evb_defconfig 
-       HOSTCC  scripts/basic/fixdep
-       [snip]
-       HOSTLD  scripts/kconfig/conf
-     #
-     # configuration written to .config
-     #
-     $
-     $ grep CONFIG_MMU .config
-     CONFIG_MMU=y
-     CONFIG_MMU_COLDFIRE=y
-     CONFIG_MMU_GATHER_NO_RANGE=y
-     CONFIG_MMU_GATHER_MERGE_VMAS=y
-     CONFIG_MMU_LAZY_TLB_REFCOUNT=y
+Jani Nikula <jani.nikula@intel.com> did ack this with a condition that
+there is a proper review done by somebody else so I've not yet included
+his tag.
 
-But something ends up disabling it when you compile.
-I'll fix this.
+ arch/alpha/kernel/pci.c          |  3 ++-
+ arch/arm/kernel/bios32.c         |  5 +++--
+ arch/m68k/kernel/pcibios.c       |  4 ++--
+ arch/mips/pci/pci-generic.c      |  5 +++--
+ arch/mips/pci/pci-legacy.c       |  5 +++--
+ arch/parisc/kernel/pci.c         |  5 +++--
+ arch/powerpc/kernel/pci-common.c |  5 +++--
+ arch/sh/drivers/pci/pci.c        |  5 +++--
+ arch/x86/pci/i386.c              |  5 +++--
+ arch/xtensa/kernel/pci.c         |  5 +++--
+ drivers/char/agp/intel-gtt.c     |  5 ++++-
+ drivers/gpu/drm/i915/i915_gmch.c |  5 +++--
+ drivers/pci/pci.c                |  4 ++--
+ drivers/pci/pci.h                |  2 ++
+ drivers/pci/setup-res.c          | 33 ++++++++++++++++++++++++++------
+ include/linux/pci.h              | 15 +++++++++++++--
+ 16 files changed, 79 insertions(+), 32 deletions(-)
 
-
-> I also checked whether your patch changes code generation, by building the
-> same tree with and without it and comparing every object with objdump -d
-> (plain cmp is useless here, timestamps and link layout shift everything).
-> Counting only objects whose disassembly actually differs:
-> 
->   amiga      3733 objects, 0 changed
->   sun3       3553 objects, 3 changed: mm/memory.o, mm/pgtable-generic.o,
->                                       mm/vmalloc.o
->   m5208evb    716 objects, 1 changed: mm/pgtable-generic.o
-> 
-> amiga is the interesting one. It is the only config where pmd_val() itself
-> changed, and it comes out bit-for-bit identical, which also says the build
-> is reproducible enough for this comparison to mean anything. sun3 and
-> ColdFire differ because pmd_none() stops taking the address of its
-> argument, and the direction is an improvement. In mm/vmalloc.o on sun3 one
-> function loses a forced spill:
-> 
->   -  subql #4,%sp
->   -  movel %d0,%sp@(12)     /* spill the pmd value */
->   -  lea %sp@(12),%a1       /* &(pmd) */
->   -  moveal %a1@,%a0        /* read it back */
-> 
-> and turns into a 13 instruction function with no stack slot at all.
-> Instruction counts are otherwise flat (sun3 mm/memory.o 7373 -> 7373,
-> mm/vmalloc.o 5514 -> 5515), so it is not a size regression.
-> 
-> Dragging the cleanup along with the fix sounds right to me. It is a hard
-> prerequisite, and sent on its own it would just look like a cleanup with no
-> urgency. I assume it goes in ahead of 6ab55cfd in core-7.5.misc, so that
-> linux-next never sees a broken m68k in between.
-> 
-> One red herring in case anyone else pokes at this: m5208evb with its stock
-> defconfig (CONFIG_MMU not set) fails to build mm/memory.o for reasons that
-> have nothing to do with any of this - implicit declarations of
-> pte_is_uffd_wp_marker() and pmd_pgtable(), plus a parse error in
-> include/linux/mm.h. Pre-existing, and it goes away once MMU is on.
-
-You should not be able to set MMU=y if configured for the M5208.
-It doesn't have an MMU. You want the 5475, 5485 or 54418 to test
-valid MMU=y configurations.
-
-Regards
-Greg
-
-
-
+diff --git a/arch/alpha/kernel/pci.c b/arch/alpha/kernel/pci.c
+index 11df411b1d18..c5d725a9781f 100644
+--- a/arch/alpha/kernel/pci.c
++++ b/arch/alpha/kernel/pci.c
+@@ -128,7 +128,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	struct pci_controller *hose = dev->sysdata;
+ 	unsigned long alignto;
+ 	resource_size_t start = res->start;
+diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+index ac0e890510da..3e61826f07fb 100644
+--- a/arch/arm/kernel/bios32.c
++++ b/arch/arm/kernel/bios32.c
+@@ -564,7 +564,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 	struct pci_host_bridge *host_bridge;
+ 
+@@ -578,7 +579,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				start, size, align);
+ 
+ 	if (res->flags & IORESOURCE_MEM)
+-		return pci_align_resource(dev, res, empty_res, size, align);
++		return pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 	return start;
+ }
+diff --git a/arch/m68k/kernel/pcibios.c b/arch/m68k/kernel/pcibios.c
+index 7a9e60df79c5..3024408412bc 100644
+--- a/arch/m68k/kernel/pcibios.c
++++ b/arch/m68k/kernel/pcibios.c
+@@ -31,14 +31,14 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
+ 	resource_size_t start = res->start;
+ 
+ 	if ((res->flags & IORESOURCE_IO) && (start & 0x300))
+ 		start = (start + 0x3ff) & ~0x3ff;
+ 
+ 	if (res->flags & IORESOURCE_MEM)
+-		return pci_align_resource(dev, res, empty_res, size, align);
++		return pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 	return start;
+ }
+diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
+index c2e23d0c1d77..7f3ecb91b85b 100644
+--- a/arch/mips/pci/pci-generic.c
++++ b/arch/mips/pci/pci-generic.c
+@@ -25,7 +25,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       const struct resource *empty_res,
+ 				       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 	struct pci_host_bridge *host_bridge;
+ 
+@@ -39,7 +40,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				start, size, align);
+ 
+ 	if (res->flags & IORESOURCE_MEM)
+-		return pci_align_resource(dev, res, empty_res, size, align);
++		return pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 	return start;
+ }
+diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
+index dae6dafdd6e0..82d4b01db64e 100644
+--- a/arch/mips/pci/pci-legacy.c
++++ b/arch/mips/pci/pci-legacy.c
+@@ -55,7 +55,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	struct pci_controller *hose = dev->sysdata;
+ 	resource_size_t start = res->start;
+ 
+@@ -70,7 +71,7 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 		/* Make sure we start at our min on all hoses */
+ 		if (start < PCIBIOS_MIN_MEM + hose->mem_resource->start)
+diff --git a/arch/parisc/kernel/pci.c b/arch/parisc/kernel/pci.c
+index 96950fe9c2b7..36a3a439f609 100644
+--- a/arch/parisc/kernel/pci.c
++++ b/arch/parisc/kernel/pci.c
+@@ -193,7 +193,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t alignment)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t align, start = res->start;
+ 
+ 	pci_dbg(dev, "%pR: pcibios_align_resource(%lx, 0x%llx, 0x%llx)\n",
+@@ -205,7 +206,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 	if (align > alignment)
+ 		start = ALIGN(start, align);
+ 	else
+-		start = pci_align_resource(dev, res, empty_res, size, alignment);
++		start = pci_align_resource(rr, res, empty_res, size, alignment);
+ 
+ 	return start;
+ }
+diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
+index 4fc52c21fe5d..23594759cfe2 100644
+--- a/arch/powerpc/kernel/pci-common.c
++++ b/arch/powerpc/kernel/pci-common.c
+@@ -1131,7 +1131,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 
+ 	if (res->flags & IORESOURCE_IO) {
+@@ -1140,7 +1141,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 	}
+ 
+ 	return start;
+diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
+index 878a27a1acfb..279f2770ff4b 100644
+--- a/arch/sh/drivers/pci/pci.c
++++ b/arch/sh/drivers/pci/pci.c
+@@ -172,7 +172,8 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       resource_size_t size,
+ 				       resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	struct pci_channel *hose = dev->sysdata;
+ 	resource_size_t start = res->start;
+ 
+@@ -186,7 +187,7 @@ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 	}
+ 
+ 	return start;
+diff --git a/arch/x86/pci/i386.c b/arch/x86/pci/i386.c
+index e2de26b82940..4178ae4380c2 100644
+--- a/arch/x86/pci/i386.c
++++ b/arch/x86/pci/i386.c
+@@ -156,7 +156,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 
+ 	if (res->flags & IORESOURCE_IO) {
+@@ -165,7 +166,7 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 
+ 		/* The low 1MB range is reserved for ISA cards */
+ 		if (start < BIOS_END)
+diff --git a/arch/xtensa/kernel/pci.c b/arch/xtensa/kernel/pci.c
+index 305031551136..4e8ad4a3c9fe 100644
+--- a/arch/xtensa/kernel/pci.c
++++ b/arch/xtensa/kernel/pci.c
+@@ -42,7 +42,8 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		       const struct resource *empty_res,
+ 		       resource_size_t size, resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t start = res->start;
+ 
+ 	if (res->flags & IORESOURCE_IO) {
+@@ -55,7 +56,7 @@ pcibios_align_resource(void *data, const struct resource *res,
+ 		if (start & 0x300)
+ 			start = (start + 0x3ff) & ~0x3ff;
+ 	} else if (res->flags & IORESOURCE_MEM) {
+-		start = pci_align_resource(dev, res, empty_res, size, align);
++		start = pci_align_resource(rr, res, empty_res, size, align);
+ 	}
+ 
+ 	return start;
+diff --git a/drivers/char/agp/intel-gtt.c b/drivers/char/agp/intel-gtt.c
+index bcc26785175d..06990fad8e48 100644
+--- a/drivers/char/agp/intel-gtt.c
++++ b/drivers/char/agp/intel-gtt.c
+@@ -1038,10 +1038,13 @@ static struct agp_memory *intel_fake_agp_alloc_by_type(size_t pg_count,
+ 
+ static int intel_alloc_chipset_flush_resource(void)
+ {
++	struct pci_resreq_data rr;
+ 	int ret;
++
++	pci_init_resreq_data(&rr, intel_private.bridge_dev);
+ 	ret = pci_bus_alloc_resource(intel_private.bridge_dev->bus, &intel_private.ifp_resource, PAGE_SIZE,
+ 				     PAGE_SIZE, PCIBIOS_MIN_MEM, 0,
+-				     pcibios_align_resource, intel_private.bridge_dev);
++				     pcibios_align_resource, &rr);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/gpu/drm/i915/i915_gmch.c b/drivers/gpu/drm/i915/i915_gmch.c
+index b0ef6ef577a3..f11ed5509095 100644
+--- a/drivers/gpu/drm/i915/i915_gmch.c
++++ b/drivers/gpu/drm/i915/i915_gmch.c
+@@ -38,6 +38,7 @@ static int mchbar_reg(struct drm_i915_private *i915)
+ static int
+ intel_alloc_mchbar_resource(struct drm_i915_private *i915)
+ {
++	struct pci_resreq_data rr;
+ 	u32 temp_lo, temp_hi = 0;
+ 	u64 mchbar_addr;
+ 	int ret;
+@@ -55,12 +56,12 @@ intel_alloc_mchbar_resource(struct drm_i915_private *i915)
+ 	/* Get some space for it */
+ 	i915->gmch.mch_res.name = "i915 MCHBAR";
+ 	i915->gmch.mch_res.flags = IORESOURCE_MEM;
++	pci_init_resreq_data(&rr, i915->gmch.pdev);
+ 	ret = pci_bus_alloc_resource(i915->gmch.pdev->bus,
+ 				     &i915->gmch.mch_res,
+ 				     MCHBAR_SIZE, MCHBAR_SIZE,
+ 				     PCIBIOS_MIN_MEM,
+-				     0, pcibios_align_resource,
+-				     i915->gmch.pdev);
++				     0, pcibios_align_resource, &rr);
+ 	if (ret) {
+ 		drm_dbg(&i915->drm, "failed bus alloc: %d\n", ret);
+ 		i915->gmch.mch_res.start = 0;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 7c6f2aba8144..8c40f86d75ee 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -6507,8 +6507,8 @@ static DEFINE_SPINLOCK(resource_alignment_lock);
+  * RETURNS: Resource alignment if it is specified.
+  *          Zero if it is not specified.
+  */
+-static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+-							bool *resize)
++resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
++						 bool *resize)
+ {
+ 	int align_order, count;
+ 	resource_size_t align = pcibios_default_alignment();
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 77efa4c5c960..e6e2afcceb33 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -515,6 +515,8 @@ void devm_pci_alloc_host_bridge_release(void *data);
+ struct device *pci_get_host_bridge_device(struct pci_dev *dev);
+ void pci_put_host_bridge_device(struct device *dev);
+ 
++resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
++						 bool *resize);
+ void pci_resize_resource_set_size(struct pci_dev *dev, int resno, int size);
+ int pci_do_resource_release_and_resize(struct pci_dev *dev, int resno, int size,
+ 				       int exclude_bars);
+diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
+index 376f09630a4a..9c55b9f9462c 100644
+--- a/drivers/pci/setup-res.c
++++ b/drivers/pci/setup-res.c
+@@ -248,6 +248,20 @@ static int pci_revert_fw_address(struct resource *res, struct pci_dev *dev,
+ 	return 0;
+ }
+ 
++/*
++ * TODO: Improve PCI resource assignment interface so that callers outside PCI
++ * core do not need to know about this detail.
++ */
++void pci_init_resreq_data(struct pci_resreq_data *rr, struct pci_dev *dev)
++{
++	bool dummy;
++
++	memset(rr, 0, sizeof(*rr));
++	rr->dev = dev;
++	rr->min_align = pci_specified_resource_alignment(dev, &dummy);
++}
++EXPORT_SYMBOL_GPL(pci_init_resreq_data);
++
+ resource_size_t pci_resource_alignment(const struct pci_dev *dev,
+ 				       const struct resource *res)
+ {
+@@ -265,17 +279,21 @@ resource_size_t pci_resource_alignment(const struct pci_dev *dev,
+  * before res->start if there's enough free space there. This enables
+  * tighter packing for resources.
+  */
+-resource_size_t pci_align_resource(struct pci_dev *dev,
++resource_size_t pci_align_resource(struct pci_resreq_data *rr,
+ 				   const struct resource *res,
+ 				   const struct resource *empty_res,
+ 				   resource_size_t size,
+ 				   resource_size_t align)
+ {
++	struct pci_dev *dev = rr->dev;
+ 	resource_size_t remainder, start_addr;
+ 
+ 	if (!(res->flags & IORESOURCE_MEM))
+ 		return res->start;
+ 
++	if (rr->min_align)
++		return res->start;
++
+ 	if (IS_ALIGNED(size, align))
+ 		return res->start;
+ 
+@@ -306,18 +324,21 @@ resource_size_t __weak pcibios_align_resource(void *data,
+ 					      resource_size_t size,
+ 					      resource_size_t align)
+ {
+-	struct pci_dev *dev = data;
++	struct pci_resreq_data *rr = data;
+ 
+-	return pci_align_resource(dev, res, empty_res, size, align);
++	return pci_align_resource(rr, res, empty_res, size, align);
+ }
+ 
+ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 		int resno, resource_size_t size, resource_size_t align)
+ {
+ 	struct resource *res = pci_resource_n(dev, resno);
++	struct pci_resreq_data rr;
+ 	resource_size_t min;
+ 	int ret;
+ 
++	pci_init_resreq_data(&rr, dev);
++
+ 	min = (res->flags & IORESOURCE_IO) ? PCIBIOS_MIN_IO : PCIBIOS_MIN_MEM;
+ 
+ 	/*
+@@ -329,7 +350,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 	 */
+ 	ret = pci_bus_alloc_resource(bus, res, size, align, min,
+ 				     IORESOURCE_PREFETCH | IORESOURCE_MEM_64,
+-				     pcibios_align_resource, dev);
++				     pcibios_align_resource, &rr);
+ 	if (ret == 0)
+ 		return 0;
+ 
+@@ -341,7 +362,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 	     (IORESOURCE_PREFETCH | IORESOURCE_MEM_64)) {
+ 		ret = pci_bus_alloc_resource(bus, res, size, align, min,
+ 					     IORESOURCE_PREFETCH,
+-					     pcibios_align_resource, dev);
++					     pcibios_align_resource, &rr);
+ 		if (ret == 0)
+ 			return 0;
+ 	}
+@@ -354,7 +375,7 @@ static int __pci_assign_resource(struct pci_bus *bus, struct pci_dev *dev,
+ 	 */
+ 	if (res->flags & (IORESOURCE_PREFETCH | IORESOURCE_MEM_64))
+ 		ret = pci_bus_alloc_resource(bus, res, size, align, min, 0,
+-					     pcibios_align_resource, dev);
++					     pcibios_align_resource, &rr);
+ 
+ 	return ret;
+ }
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index aa3765a20a96..c945f5753e7c 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1221,12 +1221,23 @@ int __must_check pcibios_enable_device(struct pci_dev *, int mask);
+ /* Architecture-specific versions may override this (weak) */
+ char *pcibios_setup(char *str);
+ 
+-/* Used only when drivers/pci/setup.c is used */
++/**
++ * struct pci_resreq_data - Data passed to pcibios_align_resource()
++ * @dev: PCI device
++ * @min_align: Minimum alignment bound (from pci=resource_alignment or arch)
++ */
++struct pci_resreq_data {
++	struct pci_dev *dev;
++	resource_size_t min_align;
++};
++
++void pci_init_resreq_data(struct pci_resreq_data *rr, struct pci_dev *dev);
++
+ resource_size_t pcibios_align_resource(void *data, const struct resource *res,
+ 				       const struct resource *empty_res,
+ 				       resource_size_t size,
+ 				       resource_size_t align);
+-resource_size_t pci_align_resource(struct pci_dev *dev,
++resource_size_t pci_align_resource(struct pci_resreq_data *rr,
+ 				   const struct resource *res,
+ 				   const struct resource *empty_res,
+ 				   resource_size_t size,
+-- 
+2.47.3
 
