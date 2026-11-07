@@ -1,91 +1,81 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794067832;
-	b=Katb5EZSKpZ1rbRFEpWhlMLtR8LDzx3itMrFcTn5cEUdyoUxm5pTWV4wSJ813TX7sPMb
-	 5X7BjAUTi1hGdoaXWI3KD7ar9zBJTY3BXXFe9Pyjk4wJCYDSZTYgxfXgldW2jsfjt/7yc
-	 FBI4fz531zZgcJX1AHUfKdJuGFuXvWrzHEWaEoRMNkpLi5WpIAPj3ulnlxzu0g7XSWWwx
-	 Qw5buqdYlLk80tH/YOqE4TQMc87+miH9yICs9r79tossvcecPo0w0ezyfAZOC11EdiPgT
-	 9o7e5/ZdHKOQX/8zXi7+iXEfVmQxm3KfTcz+ttxzD+TGhK4KEvSQbmxdxbC4XqshiFA==
+	t=1794069815;
+	b=KSjNTzfBMrgZaY6KjBmyTnz5DjPWV4+ERGqTBLxT2AtedKRw1WFO4AHP/2uSAVqQ8JKO
+	 lDff2gThGVvk/S73254hDHo2GMPx51hr3ej0yloVRf7d4Lu2qHhWIOZZiHUTfnQlIk0uf
+	 F/UB3J51gfq6WK+Zx5ItbuR1VS+c0rCQILpwpOxaZMgX/YXjfaROqExb2+1jnPhUkatRt
+	 bcUw6E1PRwDZLlOlI1CcqSrVMr2CfdiyBar6aykFo6wFqqV7LntmqcHU4V/dHlNcNfnzA
+	 0z4LJY2y7BcP3zzqt21B0Lxoyal47x12nbyUdT9JHElRq65waMmeADomfetLrDLwYhQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794067832;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:CC:
-	 Subject:User-Agent:In-Reply-To:References:Message-ID:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=yrl1fDgvB8SejpyA+O0u1vRjlm41/COeTHtKBCR1yZ8=;
-	b=10wNg9ZDQI9+Ilgpm4YCkteJgnSlXioFJ9QiMFSVZuEJhDxMp436r6ZgHXvf+C048zkK
-	 tliKmqgi1OUWgoLkk572saMqeqL9N6YfMTsTKxSqvPk/Zsqh+SnNcfmeV9FK0ZOai/a2W
-	 D9O23x7EhskeLrZMsIdCn44ZN9wl+L0Jum5I4UVwMmsUXMnl+J3isdEe3mmxpo85UIk8i
-	 ddP13f6nRLVxkeGUqRELwGOUWs32AbWr+/VP1h4bhH+EZkI0PuPWMyQEYBh/DcfQ/BqbQ
-	 4tUzSgIRcHdrJqI+/BEDp0Phx8d0pt+ozRDRKEdhnm6+9Q6oeo4LP1gxwL9bogcea4w==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794069815;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Received:Received:
+	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
+	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
+	 References:Subject:Content-Type:Content-Transfer-Encoding;
+	bh=vJlfnNqej/LkG6MaOOq3+jKdNMX9ZNsvcUBYJfUwMpw=;
+	b=Fpae0cpOlH1VBNJlAnJl9nseFu4hfLf1bZZcX4r2fZmUEyyNapcMC/N5cZzGgglCZEMz
+	 R/RELnDfZDD7A81tlhGKra7Sy/ZIIXg05nQUtx/iZQBysHdcVsInA4BLuaq+DQkOn3WY4
+	 7M/YriZHuTZNpnY1eOK+7kor7FlQ0aRfRxhfQsPIdJBDzXEqe0WYWcRuCDezwTOc7gju9
+	 e1TxvBjRzovrsEs+GnE0EY8fsQrqAE0AHZDEVN4qgcG2ytdkSht4j5tzjPZudKe1Mxql4
+	 4nuflXbv/4eu8ICyxFUYsbaS2kLDwq7dr2ksDXTeNl8Rv6IbAzetoza4UZNfylTGKrQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DudqRbSQ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ec9OinBL;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91CB606D3EB
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  7 Nov 2026 16:10:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D91CB606D3EB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926C0606D81E
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  7 Nov 2026 16:43:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 926C0606D81E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DudqRbSQ
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ec9OinBL
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 8275861877;
-	Sat,  7 Nov 2026 16:10:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1758C1F0089F;
-	Sat,  7 Nov 2026 16:10:30 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 7A06D609FF;
+	Sat,  7 Nov 2026 16:43:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D87E21F008A3;
+	Sat,  7 Nov 2026 16:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794067830;
-	bh=yrl1fDgvB8SejpyA+O0u1vRjlm41/COeTHtKBCR1yZ8=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References;
-	b=DudqRbSQXCpr6NhdcgkB28/OJ09fv/xb+ZGVAY2ZZcm0NtXYxKjH24XfLPv1YVH+1
-	 N2Smc+eQQaJmUtmHSjIuIOHPbXtdHkwnaUWqwn18l1Zgme7MhVjd/tmwPXx2sHiZmJ
-	 bVG7HcpDVP0TwBfdMqAH6zxIyHwUkaCeHOVhR2aYppt91bZLwCTiFYtodZA1aRzQhT
-	 JFzXQc4CJvaSMHUeBSzyyst4sJaPobtuTL08pUib1PO2/6JKi1TR0Oc7vVJSOMiTRg
-	 di9pOtOgBcjQKNqN/zgV0r2ojSo7IUXfYme+kVAZvSpJolvZJtmmOXjKLjiXPaiu1m
-	 qPutBKIcKy2tg==
-Date: Sat, 07 Nov 2026 08:10:28 -0800
-From: Kees Cook <kees@kernel.org>
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
-CC: Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>,
- Josef Bacik <josef@toxicpanda.com>, Chris Mason <mason@kernel.org>,
- Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>,
- Eric Dumazet <edumazet@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Al Viro <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>,
- Christoph Hellwig <hch@lst.de>, Greg Kroah-Hartman <gregkh@suse.de>,
- Joel Granados <joel.granados@kernel.org>, Jan Kara <jack@suse.cz>,
- Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-um@lists.infradead.org,
- linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- netdev@vger.kernel.org, ntfs3@lists.linux.dev,
- platform-driver-x86@vger.kernel.org, coreteam@netfilter.org,
- kexec@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
- jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org,
- linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
- samba-technical@lists.samba.org, sparclinux@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
- Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org,
- "Christian Brauner (Amutable)" <brauner@kernel.org>,
- Chuck Lever <cel@kernel.org>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RESEND_v2_07/23=5D_proc=3A_let_pr?=
- =?US-ASCII?Q?ocfs_own_the_seq=5Ffile_of_seq=5Ffile_entries?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20261104-work-procfs-core-v2-7-76ace653a773@kernel.org>
-References: <20261104-work-procfs-core-v2-0-76ace653a773@kernel.org> <20261104-work-procfs-core-v2-7-76ace653a773@kernel.org>
-Message-ID: <8A21EE2A-F392-40B7-9152-CBC440FDDA70@kernel.org>
+	s=k20260515; t=1794069813;
+	bh=vJlfnNqej/LkG6MaOOq3+jKdNMX9ZNsvcUBYJfUwMpw=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject;
+	b=Ec9OinBLTdERos6h50EC0xUMTn77I2eH+sW83Lh5kwSY9BvV2OOVa/KNof0GP2Q58
+	 RS4VV3vBrJ/LJog1T9lg0D2JE4OoyqUja1mYU0rh9TBbXyPIEhQRpsuojcmq8ZMIA4
+	 CCDIxEY1vZFYI7ppfT5M0lTExZ07bRV7cMY147urYKAEBYKJp+dYFF+px+uccoSGQJ
+	 uVAe3HJmFJqNBLzSUpkpxl6XM/ygvvEBAxQusxKpDQigosD1nBGLgkLmP/DR4y72y1
+	 LgnZYxUr+IR4Egl8rgUGA8KwMUI2eGvYxK8dwEAUy7fQvT097QujPauhtAAp8a8K3u
+	 wRcc9px1LLfNQ==
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfauth.phl.internal (Postfix) with ESMTP id 1E9E1F40067;
+	Sat,  7 Nov 2026 11:43:31 -0500 (EST)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-10.internal (MEProxy); Sat, 07 Nov 2026 11:43:31 -0500
+X-ME-Sender: <xms:MlXvakDJz2aoRG_Q0Tr3dYW0eo4APQUabQqIttoZFPRFZ-x9snzIqw>
+    <xme:MlXvahUE11fMZOXF9JjGlaXmovQ63rXPe9CVrxbGMz01XC2UXZ8Ub-s6v11mUcT7K
+    6EUgoab8dJTWAHO_c14xHkS1kUKnJq9SFX4dojoicG37nrqW8Y-SchLZQ>
+X-ME-Proxy-Cause: dmFkZTF47JQfJLdRdMge2GMs+GugpouQhIspgU7BDymJQjozGtWeayorP8T8qJjOJtez5n
+    Mu6YVQMuTAuQf8dNPbyiJidY6z5iDchqOk/rPreMnFBsaZEyFLA1xNLvX2+sRgAAEV6CpA
+    18n7d+taVvJebv5vU6jJPdclNeeGqwUnruqBfjOVpjA4xXpT5GCaWy76JSn+teNqAA0ny2
+    vVmyqvtCRPIMNOkOlHDxwf2R+IqqtIN68NFJGnHnqmIyGIjD3zNX0zKaDGqEk7Ze2onYqy
+    9RdgDPRA3PikGN1W/7nDb8NiYp8Q9/+7zqfHAJcBEVt9DgwuHrHPFfmetOJuJSFKJUDZpN
+    mbRzObrxaiH+VuPVfFTvBWVxOAq7xc3fchnSigBQCyM4PA4HDuL1vAF5IoeXrMQk2aUW21
+    59Pn6Ph8ElZIblHku0CFRDKCKdVU/6BJGsrAIobO6f/CRmXPwJZ+FZIWnzEq4zHbFnFSj5
+    2GavxWreHaI/dkosMa1/Hz50DzNovuOurQwGdhu5YM7nZSIaOcaigZUM86iQpTNPvFE5q8
+    X0RucoetdeEG7ZlTg0zjUFsHpRlOfhY/tCKI3ix9kioMo32DZjUgaL6ky8l30WUfX53owO
+    FaUB1P+IyjUQnKRpIIcJTsmMD1HsAXSFOSlEcd18MZD9Rox3fmXGxCSSzMdg
+X-ME-Proxy: <xmx:M1Xvarm_GuLHtdhc-beslZ2ZxZoqr1pVXnXixSSL7TSDZnhBDdRW2w>
+    <xmx:M1XvakuXdXodbZzwSGhXpuZDbgbK4xmWfFZIJTq2PW_KgUkMPLhQ2w>
+    <xmx:M1XvakHt6uhcrYM_XDobstbNvikecMWxKGRyUkZcuWV3Fx0M6IIITQ>
+    <xmx:M1XvakswcIzGwK3QU4AniovTIpZY-XUd3Ibq2iA0mAnVEdW_mDFClQ>
+    <xmx:M1XvaqI_u5j39OfSlUWtLpJlRc3Dik8eKjcfeQJUyBgtS0utAvmxR5za>
+Feedback-ID: ifa6e4810:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id DFD31782738; Sat,  7 Nov 2026 11:43:30 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -95,33 +85,66 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-ThreadId: AE4uiykVHNXw
+Date: Sat, 07 Nov 2026 11:43:10 -0500
+From: "Chuck Lever" <cel@kernel.org>
+To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
+ "Jann Horn" <jannh@google.com>, "Josef Bacik" <josef@toxicpanda.com>,
+ "Chris Mason" <mason@kernel.org>, "Jeff Layton" <jlayton@kernel.org>,
+ NeilBrown <neil@brown.name>, "Eric Dumazet" <edumazet@kernel.org>,
+ "Thomas Gleixner" <tglx@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Jonathan Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>,
+ "Greg Kroah-Hartman" <gregkh@suse.de>,
+ "Joel Granados" <joel.granados@kernel.org>, "Kees Cook" <kees@kernel.org>,
+ "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>,
+ linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ linux-um@lists.infradead.org, linux-wireless@vger.kernel.org,
+ "Linuxppc Dev" <linuxppc-dev@lists.ozlabs.org>, netdev@vger.kernel.org,
+ ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org,
+ coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
+ jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org,
+ linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
+ samba-technical@lists.samba.org, sparclinux@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
+ "Takashi Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org,
+ linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org
+Message-Id: <39d3364c-d4d1-4919-86c0-695f75946c95@app.fastmail.com>
+In-Reply-To: <20261104-work-procfs-net-v2-7-221e2437fed1@kernel.org>
+References: <20261104-work-procfs-net-v2-0-221e2437fed1@kernel.org>
+ <20261104-work-procfs-net-v2-7-221e2437fed1@kernel.org>
+Subject: Re: [PATCH RESEND v2 07/13] SUNRPC: let procfs copy in writes
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
 
 
-On November 4, 2026 11:30:58 AM PST, Christian Brauner <brauner@kernel=2Eo=
-rg> wrote:
-> [=2E=2E=2E]
->+static int pde_init_seq_direct(struct proc_dir_entry *pde)
->+{
->+	struct seq_operations *ops;
->+
->+	if (!pde_is_seq_file(pde))
->+		return 0;
->+	ops =3D kmalloc(sizeof(*ops), GFP_KERNEL);
+On Wed, Nov 4, 2026, at 2:59 PM, Christian Brauner wrote:
+> Implement ->proc_write_buf() for the procfs channel, flush and
+> use-gss-proxy files so procfs copies in what is written before it pins
+> the entry. The channel file parses the downcall from that copy and the
+> flush files share the parsing with rpc_pipefs in do_write_flush(). The
+> rpc_pipefs files keep copying in themselves.
+>
+> CACHE_DOWNCALL_MAX and CACHE_FLUSH_MAX name the limits both sides
+> enforce, procfs through ->proc_write_size. The procfs files are removed
+> when the network namespace goes away and that no longer waits for a
+> writer that faults on its buffer.
+>
+> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
 
-Please use the new style typed allocation calls for objects:
+Acked-by: Chuck Lever <cel@kernel.org>
 
-ops =3D kmalloc_obj(*ops);
 
-(This happened to jump out at me, but please check the other patches for t=
-his pattern=2E)
-
-> 		dp->open =3D kzalloc(sizeof(*dp->open), GFP_KERNEL);
-
-Same, etc=2E
-
---=20
-Kees Cook
+-- 
+Chuck Lever (Come to NFS bake-a-thon! https://nfsv4bat.org)
