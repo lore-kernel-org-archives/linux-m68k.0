@@ -1,80 +1,80 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794069871;
-	b=MYmx8GQ5fORweLkcke41ApEH0tCo2C3kcvaprspUCgw3pv3Hr6xjlGbTBwRjpyHoqcws
-	 kLnQwLrI0FqFt5TgWGkmHrtrMTkdKcAkNHd+wwObZo4GlnLhwF9NmvWyXF4VTlcvws/Po
-	 vI5cpeOtuZILPU/APYWxOJjU1eAqRfZj1cnW+kDp97tyWJa6mu8vuj9YC4kC3QDvyGqHp
-	 //uELxE4HtFcAf6AbTQn4Oq1h1tsiXGik7wAvmxkLq1d3+ywctm8P9pm0n+L8nfjl7jlw
-	 7WfNn0i87yZDmkw9Mjs/tZe+HFLFJJL6EdPs4bn+9C2Ezr24s+dqyLPZXpcDzgprk+w==
+	t=1794069983;
+	b=kvrcUs/rpDXBIj73RGKZzSRmkMFBphvDOdbO3I4yxhTM5p9QnYxW7cEU876+1R7WdIEl
+	 W/d7aBdf48xd1M5flfuEIiefkHIqbAzLkEfJneC24Zardjy2lnXaLzfgj4Mwf779oJD9C
+	 PowSLCaqlARYvcJQpve80LrNslV+TQmLuNAiFdrIhQ361dwnK/HLKIiS9ZEILPwBJ0BDk
+	 mowVdrSgL/TxcYpoiraz2TmlZDh/niptWeGeOUxsjwDIF7+cRzc5+hFRmNLuOzUQxWYQu
+	 3C410gbUNUDSjlYKfnaQFeatSNg0rs+yO+FP42QzxNP2PZ5RHk33YZ9kj11B0o2Y9tQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794069871;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794069983;
 	h=DMARC-Filter:Received:Received:DKIM-Signature:Received:Received:
 	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
 	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
 	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=G0TBUyhmKh6st027cPZY/A7ojV3HiUgM2XJr1Qt7yqs=;
-	b=Ik0tzEHw0kS3/jzibov39rJh840Qjvv5r4gibG15KZWFImhZlDppZOtHNlmRKj0LVMJX
-	 ON26RHbmmP67esJkMwGSxydxbG48JbQZrllJKw0cSK/fPkUj+oMZNaDKHs2qs23eY/nm9
-	 DFbWLCt0vj/YkyHEI2LWA48Fx2sFTCh33QEtKGgQFM9gADiv2G6C7loiT13CX1a+/FLjk
-	 GlJyiBOtWeWe3tNjMuz0dputOhjLFx2e2DzgNYYdOEP4nMTMEP0loLVUWflnODXjsk9xI
-	 i8nYhEPwvoRJe1cb0ShMKjIiid+laLKtUJWsnZgNXyYrDOQXEub8uSrD1z+jpOi1R+A==
+	bh=iQPFcguwJfJnGIUghj3vW2cnp0ZTKsyoI6OiYKG+trA=;
+	b=LDEAvJu77+h8Wm+XBf6xC6RZElUYqFSw0gz1oek7kuACJ+pO1G9FyJwyKZ86hafrhOKX
+	 BMY4rXvH4cqjuwLczu3DkHhfkeJQoJuvv+HPCuE4apR2fxSx5p9/PSNYQEQOunu5XbmIq
+	 RYUuDU58P76e6OWfat8NVKlraf7sYPmRthgKdTutyNYIQ/zu4dGkGWgCvZOiJ7rAaHJzx
+	 UA9V0H1uXMZjcX5GCt60ZEOHUffFYqc0+2ZvrgxMq5P+VY00EqIUvwS7qgW6D4ll3Hj6P
+	 wH4PnDisZR2W51/uxp6tMCKAGHqGkGGyZHnY+ddQZnWJgg/nGB5jwDK7Syt5Hiu/BHw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="Q3lPZ/DM";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d8yIPgkH;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 006B8606D80C
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  7 Nov 2026 16:44:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 006B8606D80C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D918D606A337
+	for <linux-m68k@lists.linux-m68k.org>; Sat,  7 Nov 2026 16:46:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D918D606A337
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Q3lPZ/DM
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d8yIPgkH
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 54EF960A55;
-	Sat,  7 Nov 2026 16:44:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C631F008A5;
-	Sat,  7 Nov 2026 16:44:28 +0000 (UTC)
+	by tor.source.kernel.org (Postfix) with ESMTP id 78A9C60D42;
+	Sat,  7 Nov 2026 16:46:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4077E1F008A4;
+	Sat,  7 Nov 2026 16:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794069870;
-	bh=G0TBUyhmKh6st027cPZY/A7ojV3HiUgM2XJr1Qt7yqs=;
+	s=k20260515; t=1794069981;
+	bh=iQPFcguwJfJnGIUghj3vW2cnp0ZTKsyoI6OiYKG+trA=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=Q3lPZ/DM6uQ6KxKqeMit86Uw4h24/Oj4MoAMD+U42UyqHSJq4m8RqVF8SFBtqbgkl
-	 uLKz7uSZCEmnbuYs91ZPRuPISbz6KSUXhqlGhYcdFXvRs+fV4tNtz+fMJYc6LC8oMR
-	 oFDFo+Teg8oUBRgmiYpBQfMzAA1XArB/oe6USeIIpMwY/xLRQ+GXugleq6FMCjsnvR
-	 oL0GzjIOrGJ7szvoPIr8z2eQLBvFfcxaFY5OSG8DuQTl7sLA5iAPsPb9X1GVQmFWRl
-	 v9+b0K+DLHBtV/h4SwZCCLNGLR2bk/lGk8/rlnYsXPGkRtp7eujxFA2FlH7COmPBxC
-	 cINjf9/GH3c6w==
+	b=d8yIPgkH6TUg6Xjvbp1GuMQux6u0MKmdQeb4+5MYqtqzGdrQplV1hB5nlNkFOfe/o
+	 mdxyrTpo1AD8LJsdAfk7umrK2hjD5YezaKqdvRiYIxS+Tg2D99O2Pgab5PkMJ4yb/C
+	 GlBx58XhbCsnzSHi10Moxtb96yir5u5wjc/UwdATnAKDoR1yJEtZSdsMDDJDQ8JwUA
+	 iyV8cBKr3nKRA33dw/sG4GB5ZwB3xl9BSDy4MTE5rJJxANBHJ3jeYeuHYDVxrfonN1
+	 4kkeVnQ5duc0cwReYUWCg8CsEFjHDE4/lXrtneIvM6UcQvi4e3En8m5uB+d9ztvg2X
+	 Oj0H+4HupSpIw==
 Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 3FA84F40067;
-	Sat,  7 Nov 2026 11:44:28 -0500 (EST)
+	by mailfauth.phl.internal (Postfix) with ESMTP id 8E1DEF40067;
+	Sat,  7 Nov 2026 11:46:19 -0500 (EST)
 Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Sat, 07 Nov 2026 11:44:28 -0500
-X-ME-Sender: <xms:bFXvandvnO8fT9Ny0BCMkPPq4EFCNpni2vpykfELem4aQ_ooyMfLPQ>
-    <xme:bFXvaoAzA2Ev766iXQhLHmbFgZ3OtIBo7SEoGueehftkt2V279uG4gPc-dHGVACl4
-    3eUuL64evjIj3at6Odni9S14c19BTcr-N9PUxIQTqRuyqO5bQpFvwjH>
-X-ME-Proxy-Cause: dmFkZTFFrV0pX7VIZHKjzx4tcEIBivmHNdZcL0Pkl1lJMTa+tHru5crcMzNJ3Ws5mFJzd2
-    XoT9/tbpTRQi5ChHG+aO2WivfTQ8W/O4HZ8iiDaUhj+m1NpPL+KAn6GP/9UxfYRXNa7cOc
-    joX0s1lnfj++o3vhXCB/o3bz0dxm7d2O02yAjwOawfYiOaHUVz/507CGSU2dlZJBdpa+Lz
-    mT8nq07x/0R9yoox5e3apvL89qLOUo53VSUiLJOZQeHJ+y5wU8qmJSABIKtsK2dgt8sOGA
-    T0DJ96+tszK/FKEJttYLQ0VT04nQzocHzMxQ4SOw7VSUIeN3vxtysUHCL040YGaqf23dGj
-    ivvheSUM0dUu5CxVO2D3v9xKFwvw7gFiwnI6UZYJP+uiexSaebviQXnQh8wljTipWYfAFU
-    IDtD+lRbDheFBrn7MsE10utxcQB7tzgbJi/CxporQ/0eC9ISB6TmNPCUWQW6EWtOUS1W/V
-    EfIMfzoVkcdnKDH3f2go0raKAX0SZ+/rZLtKb8QoFwHn2sRk1lRwwIBewPwH60y5mUz1IA
-    WNrlo2pYNCHcEWWJdaW35YV6jWZAX+iToSdrBmlEz3no1vvx1gGr28JIlz5xbU3YSZffVC
-    XOYDs0bBCET+39NKG1Rl3ZxSLfa2WPKKz5qq4UxbERsnsGjG5/I8hnQr8ljA
-X-ME-Proxy: <xmx:bFXvaiBZo0cONei-bs8Nn0XJuMfXZQKqSffOVJ8zNsNVaUiIUh4gog>
-    <xmx:bFXvaj54dGXonsoLgi1ZS_BqxfhmI6DHm1oV66RilkelMocJVZZgbg>
-    <xmx:bFXvahk0NuZcDB1AhZh9ACjM7Ufrv3Lvp0-YaZL6LBc10s6td6_Deg>
-    <xmx:bFXvaqY5dGBTySVeOdGC2PKrnCR7w_fFScEZ0z0S-oALV8B19pi_ZA>
-    <xmx:bFXvagqosWNpEErQ6k8RVnvtVK1EAxpNL3pHPEOnn-RYopUKyguaOx3_>
+  by phl-compute-10.internal (MEProxy); Sat, 07 Nov 2026 11:46:19 -0500
+X-ME-Sender: <xms:21Xvams7wVEmHspjWmbwhLpib2xNIptoVYE-80X8WqZqZcb1XPT-CA>
+    <xme:21XvamRC29Zg9ykNiW0vwrANU0AC0j8D3WACLizfxgWZ2OLmopVNcj-qyZCZTBqLn
+    FnUPDv24PUXWdCZGoMgnY4GISxXuJoqj_FJTWVyN8AgQyPiOZVj9Iah>
+X-ME-Proxy-Cause: dmFkZTEtlYS0+TY9rHJo1vCDNDBgG/0TlQu1ZgAaexztyT5e7mSb39t8Qfa0vTeatlfpwP
+    5ATotugI+S69Aq5UXpsB8wdUtjDvDqFpA717Gwij4u69sZUh6KSv9WWk6Jq//TgMNLfNVi
+    Uz7LSIH08qzFkhYYh9/35LIN1zJWwwarlCDU1iQg4wt21opJj09VkTQ37+xtOv284TX8B8
+    yl81LC5xmVZyo6A9GjLU5A0F5I2dYlaICl6rU5kYsMelZGpwWY/AOYhI+JMNgaonKgFQaK
+    ku+gQcY5aJl2LKRp0R1zioHZwwCKpV/Rgf4D5rEiKrG8xxXM/BULju0eld0dqqIZyyKUfJ
+    GW19ru42mbqsCpPSyXWqDBJxl5bN5OUlD62byk006CGbw520QKU/yBNHckj8/a7Aw/pswE
+    cEiGWvUnIlIDfqqhyBtbUxKdieVFtOg/Nh7ULYvIP/0NmKpXY6WcXU9anidEQ88SbIQjDc
+    p8Yn7T3r8Bo4iwmbKTgS1vVIcIOOKv75MyWqZv/+HCroxzEXbbFU7dyYNipmhzrf5va650
+    CqAuf2hfcDqsbABPPTHxkCEDCl/Z7jZw9/P1SXCFxyI0OJaeowmrBr44zHzsSCW7ueEBOE
+    v4mcadw/NREalORTbhxI6N8vjS1sruRGJ2ATEo0TnxHIE3AAjUR+ONXu5PSg
+X-ME-Proxy: <xmx:21XvanTCUxiRZL_4tn_RpzN8CzyhB8rLiSKq-UOIyotAbmuEjI7sGA>
+    <xmx:21XvaurCk3dCumlVKotKWDf68V8MDwwzlx-dEeK7pWGM9HqcR4oZkQ>
+    <xmx:21XvavRZiOL5frHmdBkAVeJ6cjpU89f7VYn1Ikw-RN984COqc-2ICA>
+    <xmx:21XvaoJKJLPj7VOMrYps6zuTHuKL8ZgDDK4Gr4RreYxXio5VOww0yA>
+    <xmx:21Xvag3Tq78e8w_19g2SFkvau64M8X7d5PUoh2FKftcFG01vhemSEsb1>
 Feedback-ID: ifa6e4810:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 12146782738; Sat,  7 Nov 2026 11:44:28 -0500 (EST)
+	id 5E62D782738; Sat,  7 Nov 2026 11:46:19 -0500 (EST)
 X-Mailer: MessagingEngine.com Webmail Interface
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -85,8 +85,8 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: A37rHgw9iumg
-Date: Sat, 07 Nov 2026 11:44:07 -0500
+X-ThreadId: AjxZksNfZZQV
+Date: Sat, 07 Nov 2026 11:45:59 -0500
 From: "Chuck Lever" <cel@kernel.org>
 To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
 Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
@@ -119,34 +119,30 @@ Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
  "Takashi Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org,
  linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
  linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org
-Message-Id: <a04dde49-8373-4687-a905-10c3a3b89492@app.fastmail.com>
-In-Reply-To: <20261104-work-procfs-net-v2-8-221e2437fed1@kernel.org>
+Message-Id: <a1e2d05f-08c6-41ac-a8f9-6985ee00dc97@app.fastmail.com>
+In-Reply-To: <20261104-work-procfs-net-v2-10-221e2437fed1@kernel.org>
 References: <20261104-work-procfs-net-v2-0-221e2437fed1@kernel.org>
- <20261104-work-procfs-net-v2-8-221e2437fed1@kernel.org>
-Subject: Re: [PATCH RESEND v2 08/13] SUNRPC: let procfs copy out reads
+ <20261104-work-procfs-net-v2-10-221e2437fed1@kernel.org>
+Subject: Re: [PATCH RESEND v2 10/13] SUNRPC: let procfs own the wait queue of the
+ procfs channel files
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
 
 
-On Wed, Nov 4, 2026, at 2:59 PM, Christian Brauner wrote:
-> Implement ->proc_read_buf() for the procfs channel, flush,
-> use-gss-proxy and gss_krb5_enctypes files so procfs copies what is read
-> to userspace after it unpinned the entry.
->
-> cache_read() takes an iov_iter now. The rpc_pipefs channel file passes
-> one for the user buffer and behaves like before. The procfs one passes
-> one for procfs' buffer, and a read still hands out at most one request.
-> A reader of the procfs channel file whose copy out fails, a readv()
-> with a bad later segment included, loses what was handed out, since the
-> request moves on before procfs copies it out. If that was only part of
-> a request the next read returns the rest of it. Both flush files share
-> flush_time_text().
->
-> The procfs files are removed when the network namespace goes away and
-> that no longer waits for a reader that faults on its buffer.
+On Wed, Nov 4, 2026, at 4:13 PM, Christian Brauner wrote:
+> cache_poll() sleeps the poller on queue_wait, which went back to being
+> a static queue so that a poll() on a procfs channel file can't be left
+> on the queue of a cache_detail that its network namespace freed. procfs
+> owns the queue poll() uses now and it outlives the file, so the procfs
+> channel files leave the poll_wait() to procfs and an upcall wakes their
+> pollers through proc_poll_notify(). The channel entry is remembered in
+> the cache_detail for that and forgotten before the entries are removed.
+> The rpc_pipefs files keep sleeping on queue_wait, procfs has nothing to
+> do with them.
 >
 > Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+> ---
 
 Acked-by: Chuck Lever <cel@kernel.org>
 
