@@ -1,81 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794069983;
-	b=kvrcUs/rpDXBIj73RGKZzSRmkMFBphvDOdbO3I4yxhTM5p9QnYxW7cEU876+1R7WdIEl
-	 W/d7aBdf48xd1M5flfuEIiefkHIqbAzLkEfJneC24Zardjy2lnXaLzfgj4Mwf779oJD9C
-	 PowSLCaqlARYvcJQpve80LrNslV+TQmLuNAiFdrIhQ361dwnK/HLKIiS9ZEILPwBJ0BDk
-	 mowVdrSgL/TxcYpoiraz2TmlZDh/niptWeGeOUxsjwDIF7+cRzc5+hFRmNLuOzUQxWYQu
-	 3C410gbUNUDSjlYKfnaQFeatSNg0rs+yO+FP42QzxNP2PZ5RHk33YZ9kj11B0o2Y9tQ==
+	t=1794145578;
+	b=QJR+RAKFpJqyqSzVKLVYcy9y79lB0i+m7n9nw55qgHJw1mtpRAB8nL4EDknAtPSS0Poo
+	 Cf1Uy53hNO693Mhu1neGMRzW36xDwryMCuNBGPWbcvNo3sZEB8CNt7CX7/nbA8Jjy0MWn
+	 pv7AR99xe+su3UpFovH2yMpX1vHwjpGsG8YgCRQ9MDuQHm4A6n3WSL0WsTmhztEuy8cUv
+	 lsyH1t9EBmKE+U8QsSp7Jx/aEBRdQhSN9+prWUfWJCWIsbSF+Ve8A3MnX7zsz2k0bk9MJ
+	 jUU9enPQPqOpzWxf7c/W8w07tjhEhme4qV8Ipf3Ncnr0O5z2d9mSt0hD7oGZx6DkEMw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794069983;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:Received:Received:
-	 X-ME-Sender:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:X-Mailer:
-	 MIME-Version:X-ThreadId:Date:From:To:Cc:Message-Id:In-Reply-To:
-	 References:Subject:Content-Type:Content-Transfer-Encoding;
-	bh=iQPFcguwJfJnGIUghj3vW2cnp0ZTKsyoI6OiYKG+trA=;
-	b=LDEAvJu77+h8Wm+XBf6xC6RZElUYqFSw0gz1oek7kuACJ+pO1G9FyJwyKZ86hafrhOKX
-	 BMY4rXvH4cqjuwLczu3DkHhfkeJQoJuvv+HPCuE4apR2fxSx5p9/PSNYQEQOunu5XbmIq
-	 RYUuDU58P76e6OWfat8NVKlraf7sYPmRthgKdTutyNYIQ/zu4dGkGWgCvZOiJ7rAaHJzx
-	 UA9V0H1uXMZjcX5GCt60ZEOHUffFYqc0+2ZvrgxMq5P+VY00EqIUvwS7qgW6D4ll3Hj6P
-	 wH4PnDisZR2W51/uxp6tMCKAGHqGkGGyZHnY+ddQZnWJgg/nGB5jwDK7Syt5Hiu/BHw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794145578;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:X-Developer-Signature:
+	 X-Developer-Key:Content-Transfer-Encoding;
+	bh=kISgTnHIfHTm0e8ym4nUx3sMj5w1C3/m/dreB4Iw6v8=;
+	b=Rq8C0eJ7nMK2tyU8hIDvwMMC+lM+yHOpsKBgSdE+Rg8Fn0IcSkj9FhqwAO5hNiub6mLU
+	 NnvO7sHw65ZPqmrIA4SueqIHjyw+PsI5tu9WdSnQ8NwoLgI39oHBbNd9vRNysLs3LaWwu
+	 suoIF8wxlnTOj1+ePkWA9ocni+Zet8c6ZFxzjUOFJYXzuI2JpMEa4Y1MypooE9xPssZYw
+	 WyrLd8roIO1z6Idj0gpWLpDHhPDe+IPfs6oCGRxVnCPFMHV4XhrWC9mfZU6INMNy8GpsH
+	 3TIY0ErnVS0xgKMnNHeCwusuuezT30EvQi6pSCX11uouyN/ORhZMSGmi0zU9nmQrp0Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=kernel.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d8yIPgkH;
-	arc=none smtp.remote-ip=172.105.4.254
-Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=g69A2wiH;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D918D606A337
-	for <linux-m68k@lists.linux-m68k.org>; Sat,  7 Nov 2026 16:46:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D918D606A337
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9AC606A320
+	for <linux-m68k@lists.linux-m68k.org>; Sun,  8 Nov 2026 13:46:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DC9AC606A320
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=d8yIPgkH
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=g69A2wiH
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id 78A9C60D42;
-	Sat,  7 Nov 2026 16:46:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4077E1F008A4;
-	Sat,  7 Nov 2026 16:46:20 +0000 (UTC)
+	by sea.source.kernel.org (Postfix) with ESMTP id 6D9A840236;
+	Sun,  8 Nov 2026 13:46:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37FFF1F0089F;
+	Sun,  8 Nov 2026 13:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794069981;
-	bh=iQPFcguwJfJnGIUghj3vW2cnp0ZTKsyoI6OiYKG+trA=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject;
-	b=d8yIPgkH6TUg6Xjvbp1GuMQux6u0MKmdQeb4+5MYqtqzGdrQplV1hB5nlNkFOfe/o
-	 mdxyrTpo1AD8LJsdAfk7umrK2hjD5YezaKqdvRiYIxS+Tg2D99O2Pgab5PkMJ4yb/C
-	 GlBx58XhbCsnzSHi10Moxtb96yir5u5wjc/UwdATnAKDoR1yJEtZSdsMDDJDQ8JwUA
-	 iyV8cBKr3nKRA33dw/sG4GB5ZwB3xl9BSDy4MTE5rJJxANBHJ3jeYeuHYDVxrfonN1
-	 4kkeVnQ5duc0cwReYUWCg8CsEFjHDE4/lXrtneIvM6UcQvi4e3En8m5uB+d9ztvg2X
-	 Oj0H+4HupSpIw==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 8E1DEF40067;
-	Sat,  7 Nov 2026 11:46:19 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Sat, 07 Nov 2026 11:46:19 -0500
-X-ME-Sender: <xms:21Xvams7wVEmHspjWmbwhLpib2xNIptoVYE-80X8WqZqZcb1XPT-CA>
-    <xme:21XvamRC29Zg9ykNiW0vwrANU0AC0j8D3WACLizfxgWZ2OLmopVNcj-qyZCZTBqLn
-    FnUPDv24PUXWdCZGoMgnY4GISxXuJoqj_FJTWVyN8AgQyPiOZVj9Iah>
-X-ME-Proxy-Cause: dmFkZTEtlYS0+TY9rHJo1vCDNDBgG/0TlQu1ZgAaexztyT5e7mSb39t8Qfa0vTeatlfpwP
-    5ATotugI+S69Aq5UXpsB8wdUtjDvDqFpA717Gwij4u69sZUh6KSv9WWk6Jq//TgMNLfNVi
-    Uz7LSIH08qzFkhYYh9/35LIN1zJWwwarlCDU1iQg4wt21opJj09VkTQ37+xtOv284TX8B8
-    yl81LC5xmVZyo6A9GjLU5A0F5I2dYlaICl6rU5kYsMelZGpwWY/AOYhI+JMNgaonKgFQaK
-    ku+gQcY5aJl2LKRp0R1zioHZwwCKpV/Rgf4D5rEiKrG8xxXM/BULju0eld0dqqIZyyKUfJ
-    GW19ru42mbqsCpPSyXWqDBJxl5bN5OUlD62byk006CGbw520QKU/yBNHckj8/a7Aw/pswE
-    cEiGWvUnIlIDfqqhyBtbUxKdieVFtOg/Nh7ULYvIP/0NmKpXY6WcXU9anidEQ88SbIQjDc
-    p8Yn7T3r8Bo4iwmbKTgS1vVIcIOOKv75MyWqZv/+HCroxzEXbbFU7dyYNipmhzrf5va650
-    CqAuf2hfcDqsbABPPTHxkCEDCl/Z7jZw9/P1SXCFxyI0OJaeowmrBr44zHzsSCW7ueEBOE
-    v4mcadw/NREalORTbhxI6N8vjS1sruRGJ2ATEo0TnxHIE3AAjUR+ONXu5PSg
-X-ME-Proxy: <xmx:21XvanTCUxiRZL_4tn_RpzN8CzyhB8rLiSKq-UOIyotAbmuEjI7sGA>
-    <xmx:21XvaurCk3dCumlVKotKWDf68V8MDwwzlx-dEeK7pWGM9HqcR4oZkQ>
-    <xmx:21XvavRZiOL5frHmdBkAVeJ6cjpU89f7VYn1Ikw-RN984COqc-2ICA>
-    <xmx:21XvaoJKJLPj7VOMrYps6zuTHuKL8ZgDDK4Gr4RreYxXio5VOww0yA>
-    <xmx:21Xvag3Tq78e8w_19g2SFkvau64M8X7d5PUoh2FKftcFG01vhemSEsb1>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 5E62D782738; Sat,  7 Nov 2026 11:46:19 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=k20260515; t=1794145577;
+	bh=kISgTnHIfHTm0e8ym4nUx3sMj5w1C3/m/dreB4Iw6v8=;
+	h=From:To:Cc:Subject:Date;
+	b=g69A2wiH3xaIcxnOAqJqeo+UtllGuNeCcNaNQwNeNfpG7b7pw6hmL6zNnjVh12kIo
+	 ao+nn5vylhg33G5M+o6n/2CEl6BQVJGe0q7NQn8Zl1nywoYhQHlt/3DdDlgB+6/YF6
+	 urfvAuV5zXYsA42sBBhzul17wJEKJVSDV9QFjvhvR6gveiMeBW9aZGgIVEATS5T8oj
+	 dfXjXGmNtcSrXMrxCLogYKa0WM/+5pfUfTgoYODpA3cq3ABOW35DyJLD5rW2Q6WsAv
+	 n3rg+LglcVJw7QBQ7xAcSnYyXeKnQT3SykIP4r+469/JAuo6SLyh/RjdNJSR2B+mdg
+	 frlRYR24t4Hfg==
+From: Thorsten Blum <blum@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thorsten Blum <blum@kernel.org>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] m68k: amiga: Mark sine_data as __initconst
+Date: Sun,  8 Nov 2026 14:45:00 +0100
+Message-ID: <20261108134501.404852-3-blum@kernel.org>
+X-Mailer: git-send-email 2.56.0
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -85,67 +66,27 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-ThreadId: AjxZksNfZZQV
-Date: Sat, 07 Nov 2026 11:45:59 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc: "Linus Torvalds" <torvalds@linux-foundation.org>,
- "Jann Horn" <jannh@google.com>, "Josef Bacik" <josef@toxicpanda.com>,
- "Chris Mason" <mason@kernel.org>, "Jeff Layton" <jlayton@kernel.org>,
- NeilBrown <neil@brown.name>, "Eric Dumazet" <edumazet@kernel.org>,
- "Thomas Gleixner" <tglx@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Jonathan Corbet" <corbet@lwn.net>, "Christoph Hellwig" <hch@lst.de>,
- "Greg Kroah-Hartman" <gregkh@suse.de>,
- "Joel Granados" <joel.granados@kernel.org>, "Kees Cook" <kees@kernel.org>,
- "Jan Kara" <jack@suse.cz>, "Jan Kara" <jack@suse.com>,
- linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-s390@vger.kernel.org,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- linux-um@lists.infradead.org, linux-wireless@vger.kernel.org,
- "Linuxppc Dev" <linuxppc-dev@lists.ozlabs.org>, netdev@vger.kernel.org,
- ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org,
- coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, ibm-acpi-devel@lists.sourceforge.net,
- jfs-discussion@lists.sourceforge.net, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org,
- linux-sh@vger.kernel.org, linux-usb@vger.kernel.org,
- samba-technical@lists.samba.org, sparclinux@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
- "Takashi Iwai" <tiwai@suse.de>, linux-input@vger.kernel.org,
- linux-raid@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org
-Message-Id: <a1e2d05f-08c6-41ac-a8f9-6985ee00dc97@app.fastmail.com>
-In-Reply-To: <20261104-work-procfs-net-v2-10-221e2437fed1@kernel.org>
-References: <20261104-work-procfs-net-v2-0-221e2437fed1@kernel.org>
- <20261104-work-procfs-net-v2-10-221e2437fed1@kernel.org>
-Subject: Re: [PATCH RESEND v2 10/13] SUNRPC: let procfs own the wait queue of the
- procfs channel files
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=679; i=blum@kernel.org; h=from:subject; bh=n+7czhDIYW9szePk+kbNWzEOMsoBqv0mHCZBTb3GoVs=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFkfau5OOPD/zb/+jR+ib7/133toetM3lndvM6utTjx7r txQyl92pKOUhUGMi0FWTJHlwawfM3xLayo3mUTshJnDygQyhIGLUwAmUvKJkeG/iazctLlhChJO 0wO+8GYmdy1cu3wha2+I8s48t9Att1cz/HfnZ8pyCzPq9J+81kfhV/DCClOBaR1HXp5aM69xknn yKyYA
+X-Developer-Key: i=blum@kernel.org; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
 
+sine_data is only read by the __init function amiga_init_sound().
 
+Signed-off-by: Thorsten Blum <blum@kernel.org>
+---
+ arch/m68k/amiga/amisound.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed, Nov 4, 2026, at 4:13 PM, Christian Brauner wrote:
-> cache_poll() sleeps the poller on queue_wait, which went back to being
-> a static queue so that a poll() on a procfs channel file can't be left
-> on the queue of a cache_detail that its network namespace freed. procfs
-> owns the queue poll() uses now and it outlives the file, so the procfs
-> channel files leave the poll_wait() to procfs and an upcall wakes their
-> pollers through proc_poll_notify(). The channel entry is remembered in
-> the cache_detail for that and forgotten before the entries are removed.
-> The rpc_pipefs files keep sleeping on queue_wait, procfs has nothing to
-> do with them.
->
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
-> ---
-
-Acked-by: Chuck Lever <cel@kernel.org>
-
-
--- 
-Chuck Lever (Come to NFS bake-a-thon! https://nfsv4bat.org)
+diff --git a/arch/m68k/amiga/amisound.c b/arch/m68k/amiga/amisound.c
+index 5fd93dfab809..5ae1f017b39b 100644
+--- a/arch/m68k/amiga/amisound.c
++++ b/arch/m68k/amiga/amisound.c
+@@ -19,7 +19,7 @@
+ #include "amiga.h"
+ 
+ static unsigned short *snd_data;
+-static const signed char sine_data[] = {
++static const signed char sine_data[] __initconst = {
+ 	0,  39,  75,  103,  121,  127,  121,  103,  75,  39,
+ 	0, -39, -75, -103, -121, -127, -121, -103, -75, -39
+ };
