@@ -1,56 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.46
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794233080;
-	b=fYAlIhKz3FkaZwDvaIFDNjG0IJlzhEmj9ZgrnzR5sUcI8RGRRGa7aCDNVck+F3k0U02t
-	 SNj/g2gA+mYlfrFQElJMqiIUlVwoLzI/mjDn4awiGq9n2plpWUNjGDisJ+pzGfBX/mCRi
-	 uIYagWivD5em3eRne8BmoX/qb1EdqpR+cAkwivtrpAaYvEXXT6oIfoeqpknxtkjKA8EuB
-	 +VXo4VwFTOPhYl7iHShN1ilsQqdH2hG1pKR6wHzrNm5nYBee7HKt433wLKHvab6a2Wj5V
-	 AcKiko04P+HPNkFOSaNlBvcRUE5G5ZOyrfoCbYasPcjExnfhnltxXBNIenu3/5J+r+A==
+	t=1794242593;
+	b=qI0H+j4fLlbRSSAzWfNFKjdMK0ahhdCX78hRYnHA1leQn5ramVLCdWLjkkakfzt6q8jM
+	 A3MZpyvDHSf0pKIkwHyAH0mLUoAhAtj0oww3awqqJWiYm/gGAmMaMLbaSy1DCpTNsYzge
+	 sOsMLrjK1Z9FkOLLODx9Yv3YwmQPSi91t8b/KsYsFkCsB1dLLKSCCh3ZoSN1qZigbDLhY
+	 pKzh/fOMtTh1ygxY2ipSU7BIl7hBPk7nbKicQmo4J0+XrzNX1QfbxHG+oUL1RyfPQPWNq
+	 qLYZCAUo6d7m+lUM/7a3W3EjoBQBOX+89S8uSAgE6IhNI1VdI03QBssPQwWbvIvJG/Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794233080;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:Message-ID:Date:
-	 MIME-Version:User-Agent:Subject:To:Cc:References:From:
-	 Content-Language:Autocrypt:In-Reply-To:Content-Type:
+	a=rsa-sha256; c=relaxed/relaxed; t=1794242593;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=jVich8nvMx7lDX/pvruqVV2kTjm69QuzoBabY2+rHJM=;
-	b=AUIvm1sNUeUMEg1V1ZC+U1sqqzodmb0Y6ioybAbLRqzlQuwfKigaAQMXvBudzpz6vtPK
-	 X2Yg3hce0aNcgHMOZb8ogoYZezkofhSEltzDCphnSY82dsYkIPHCDerywLL7dBsfGAXz0
-	 d9eSPQPZnMZYPAPOsU7DSM6XgSO7bB117fXYMhR+SCof6wJvCRQo7ar6dt91Z8MrRm+oN
-	 jwIW7d2pMNmXkH6apS8EA1O7YuGZjiWr4CSnhNLnXhQEtaB8cT3x2P3CjsaoHCoe0rrRq
-	 98MxSgMly6m85G9uARyQV3Tpebau7IULWz2bj0ZuZusxk/v/JuKQAOfPw8qi0KtwALA==
+	bh=HLYen38mKGP677B1oAzbJm7ZesXCZSDjKVwDLOHWtRg=;
+	b=T7Tq9RtbqpZ2vQmSFIr0tOwXiu4hKt4wR5Yl8fLfI2S4b9NTPKbzxlLJVsfNE0oublQQ
+	 GFBqsPXAbfbgViydCdQ72g1t8GZNxNaJyGfP85RKAfdLX3lfAgawmdZsquP0DCPM2+c88
+	 peAWCn60DNm99HGrWU8EZoVAvsJDoPMAKj9VOHR6rrqj8RAQQRPb0nAYkCmAotcStwgfm
+	 +VDNmif5tdal0WvX+aO+xC3h9yHsF14pnab8WEyS+BX/avEpZxkqlCU92buK7RRK3oByd
+	 z+wWiJq412TcNFIp9PianCZbIcKIUt5bjwX+tLkPuIuyGdRUUyNOSkzwvpQkzQKJEeA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=kernel.org;
-	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dZ5s8tEn;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=suse.com;
+	spf=pass smtp.mailfrom=suse.com;
+	dkim=pass header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=GhTmoosv;
+	arc=none smtp.remote-ip=209.85.221.46
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94AA606A31C
-	for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Nov 2026 14:04:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C94AA606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B314D606A332
+	for <linux-m68k@lists.linux-m68k.org>; Mon,  9 Nov 2026 16:43:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B314D606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=dZ5s8tEn
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 881AE40C27;
-	Mon,  9 Nov 2026 14:04:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21E7B1F0089F;
-	Mon,  9 Nov 2026 14:04:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794233079;
-	bh=jVich8nvMx7lDX/pvruqVV2kTjm69QuzoBabY2+rHJM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=dZ5s8tEnCgkuCLHe+AvywXX9fW5er432fE+hmxcoFDxYSHquXibvyFXJr0HhTu9mF
-	 4QwK5+xM7VcwmJHm57PdFgBD2B6we8ooMUXjiECMKfp3miAjqB2dGJQ85D0lrF2W73
-	 BVdCrPfmMAhxOj8HZ6D0aZDvDiVX4Vvc7O/VQYV5M51wgVphwJPlc0j3N97zSSXeWh
-	 J70K2BmPVXxWZ8W6uCFLEnmTBW8/1QQ86Y1sm08JygPoGON0OUdoifusd7BpxxwrF4
-	 zfR3Upx2a3JvDlQ7m7+DvOseZuSCgYltHiqYyFIT/aQ2/TLqF1/omtYplSjvqnaC3E
-	 pL9rVav96wRxg==
-Message-ID: <763bd31e-789a-4cf5-9e84-d57a375d2d93@kernel.org>
-Date: Mon, 9 Nov 2026 15:04:33 +0100
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=GhTmoosv
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-4910b863b84so707597f8f.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 09 Nov 2026 08:43:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1794242591; x=1794847391; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=HLYen38mKGP677B1oAzbJm7ZesXCZSDjKVwDLOHWtRg=;
+        b=GhTmoosvjtuD+UCXG75upTaLlOPXrF1iBIYwEBnDZpDo2RO3yBZIg+TzLRpvgvkWmf
+         rxrURtdbAXO5KVKGTWvqpAoAdHkHSOWzBCzhlTDDi0ej4HBteW0wWu3Fm9G4xYNPy786
+         bLokaJ1n0zk7S3yZeA34ZkGP8r7iUACd03kg3qhSe5XIlKBP7mtFddodMdoNSgZl1VL6
+         aNMqgBSCwyjhRr2A2A3r3Hq7S7vCP8xz/Mg57hkQx4X42Ws4oJjsWtZ5m2iKQkLa8Tk7
+         7y1lv7MHUAAIY3CiMEpzqlPbgetWSM4HF1K0kcQkzhU3gM7SEK/6HvrLhmAEknoZvYO/
+         r5pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794242591; x=1794847391;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=HLYen38mKGP677B1oAzbJm7ZesXCZSDjKVwDLOHWtRg=;
+        b=GOmCSm2RGiJ2P0e7RtG9kbJxsyTZJWGcRZ+sEBVe2ZWmB5mrwZVeUtD5EQEH67lmZ8
+         gBsTHLigpfDjXAY1AWGIWMEUakArgVnrurpnyaj59VwPsiKN8U/5+Rt46Im90qKdVDC9
+         GsCypwG/bBUDYgWnjlEmLjhtNORG8BJPKynAwcAnnbBa+iigJHaMdPTCug7lu8seqNkB
+         wqhD0C9cZaCjf8U2c/TXWYFDj9ev7E3PZfD+249q50jiKnhSRm9alvTHWfuIy/ZJqRGq
+         7iDhw2uz9ZltkPf6cy5kivjQ/eETu6wij8mHE1LwZokRs5DduhP2VucA0DtbAiv+cOx9
+         Ek3A==
+X-Forwarded-Encrypted: i=1; AL+hErGiLGv95Iu0vVyjhezcdpBYrng5OODfgc0ncnAmrI3hnVKGfhXI8foYyfbVUi1th2nCW0WrhcubZez+@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z+x8ePp+JqsdGyRfkhOv7SV5uPlwtwcbEd1FiWf7D9uyIsSBlHc
+	H94S+8RqcFr9UCCU5UvWAY9+FbGq0oZ5An563+is1QmgjaUGDZP3W5dkSspBqRb+rPM=
+X-Gm-Gg: AYBFou3z0SFSFJw2enhpIfXXg0k4cC0y7+DFD6mz6RZXYYWmS1WBSOf2QyXvn16bcE5
+	YDY59jnCKrtYxkJEtM7FC78ZTCwWp5CK6nRHwHsepBRRbF3WZQF+qHcjSsR9M2hvRqFBLJxZMFc
+	1PIfYylQOriQdy2VM0wEh2vwKf2hVWyYO7UXqkNcJs/5jym+Zr6MZ5AssTmBNVOW7mKheSpF9H3
+	AmE1SxyVYuafmsPIySSuhTCWFB2rvaEiPShGFUzbCfxiqGgueZfpapWU324RijgaPCr24fE0xnJ
+	lLEZ+90hThehsVg0H3zgWifXsJ1t0J0lUymXh2n9WGoHoTSKxVotLqzyQdAjnXZ67vIh2uU6Bgz
+	ZFzvPBjFD3OGYW6D5RbmMQVti3z3XJi4cpeAhr+T9bSYLIVzxRJ5LpEo29f4jKykIqlHu1Wi4yF
+	3W6SVPWl3uOMjm5/AfrckUGZdyTQRqWf4VAUrBq9vu9E4/IJXCek1GitUlu2IUzuBcltsVUQtIU
+	ESFIbIbqha4AxrtcrunqIn/kr0oGYKBBBRT8hZ0440H+n946LZ1bKNFi46TQCno6wIrWy6XRkl6
+	96jEGYrVqMdYzjeG1mC3yTSlk6ZiExi2ogs/9zB4mglg2W4MOaGHPZOJ2jTIUl8u
+X-Received: by 2002:a05:600c:3508:b0:4a2:526b:d40f with SMTP id 5b1f17b1804b1-4ba015b8c6amr1961265e9.0.1794242591012;
+        Mon, 09 Nov 2026 08:43:11 -0800 (PST)
+Received: from ?IPV6:2a07:de40:8100:0:89a9:fd0e:583d:4a53? ([2001:af0:8000:1409:193:86:92:181])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4ba01d8ae9fsm806785e9.3.2026.11.09.08.43.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Nov 2026 08:43:10 -0800 (PST)
+Message-ID: <1dddcf29-36a9-4ffd-999f-54b730c9ea27@suse.com>
+Date: Mon, 9 Nov 2026 17:43:09 +0100
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -61,183 +93,72 @@ List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] mm/memory: use pmdp_get_lockless() for the pmd read in
- do_fault_around()
-To: Greg Ungerer <gerg@linux-m68k.org>, Hui Zhu <hui.zhu@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, Lorenzo Stoakes <ljs@kernel.org>,
- "Liam R. Howlett" <liam@infradead.org>, Vlastimil Babka <vbabka@kernel.org>,
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
- Sam Creasey <sammy@sammy.net>
-Cc: Hui Zhu <zhuhui@kylinos.cn>, stable+noautosel@kernel.org,
- linux-m68k@lists.linux-m68k.org
-References: <20261104091050.117076-1-hui.zhu@linux.dev>
- <dec26f4a-138a-4cd7-b000-4bda7c61af82@kernel.org>
- <88a6bf17-2189-44a8-8255-50b7ee1d80f2@linux.dev>
- <e6ed4165-03fd-4204-b25a-bafc37c3930c@polyxeno.com>
- <f03d8a2f-7803-4503-9485-54a9ddcaf332@linux.dev>
- <6f01317a-1536-4747-ba11-23e27461a694@linux-m68k.org>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
+Subject: Re: [PATCH v5 03/11] modpost: cache section relocation mismatch state
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Luis Chamberlain <mcgrof@kernel.org>, Daniel Gomez <da.gomez@kernel.org>,
+ Sami Tolvanen <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>,
+ Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?=
+ <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>,
+ Andreas Hindborg <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>,
+ Trevor Gross <tmgross@umich.edu>, Danilo Krummrich <dakr@kernel.org>,
+ Daniel Almeida <daniel.almeida@collabora.com>,
+ Tamir Duberstein <tamird@kernel.org>, Alexandre Courbot
+ <acourbot@nvidia.com>, =?UTF-8?Q?Onur_=C3=96zkan?= <work@onurozkan.dev>,
+ linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-modules@vger.kernel.org, rust-for-linux@vger.kernel.org
+References: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
+ <20261104-build-speedup-v5-3-0f6018be8dae@kernel.org>
 Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <6f01317a-1536-4747-ba11-23e27461a694@linux-m68k.org>
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20261104-build-speedup-v5-3-0f6018be8dae@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 11/9/26 15:02, Greg Ungerer wrote:
-> Hi Hui,
+On 11/4/26 7:20 PM, Lorenzo Stoakes (ARM) wrote:
+> For every relocation modpost invokes check_section_mismatch() to determine
+> whether there is any kind of mismatch between the source and destination,
+> and if so which classification applies.
 > 
-> On 9/11/26 15:50, Hui Zhu wrote:
->> 2026/11/6 20:08, Greg Ungerer:
->>
->> Hi Greg,
->>
->>> Hi Hui,
->>>
->>> The m5475evb_defconfig is supposed to have MMU enabled:
->>>
->>>       $ ARCH=m68k CROSS_COMPILE=m68k-linux-uclibc- make m5475evb_defconfig
->>>         HOSTCC  scripts/basic/fixdep
->>>         [snip]
->>>         HOSTLD  scripts/kconfig/conf
->>>       #
->>>       # configuration written to .config
->>>       #
->>>       $
->>>       $ grep CONFIG_MMU .config
->>>       CONFIG_MMU=y
->>>       CONFIG_MMU_COLDFIRE=y
->>>       CONFIG_MMU_GATHER_NO_RANGE=y
->>>       CONFIG_MMU_GATHER_MERGE_VMAS=y
->>>       CONFIG_MMU_LAZY_TLB_REFCOUNT=y
->>>
->>> But something ends up disabling it when you compile.
->>> I'll fix this.
->>>
->>>
->>> You should not be able to set MMU=y if configured for the M5208.
->>> It doesn't have an MMU. You want the 5475, 5485 or 54418 to test
->>> valid MMU=y configurations.
->>>
->>> Regards
->>> Greg
->>>
->>>
->>>
->>
->> You are right on both counts, and that mail of mine had three things
->> wrong.
->>
->> 1. "No m52xx/m54xx defconfig enables CONFIG_MMU" - wrong.  I grepped the
->> defconfig fragments for CONFIG_MMU=y, but MMU is 'default y', so an
->> enabled MMU never appears in the fragment.  m5475evb and m54418evb
->> both give CONFIG_MMU=y, as you show.
->>
->> 2. My "m5208evb + CONFIG_MMU=y" test config was not a valid config.
->> M520x is 'depends on !MMU', so forcing MMU on leaves the SoC choice
->> unsatisfiable and olddefconfig silently drops it:
->>
->> before:  # CONFIG_MMU is not set / CONFIG_M520x=y
->> after:   CONFIG_MMU=y / CONFIG_MMU_COLDFIRE=y / CONFIG_M520x gone
->>
->> Please disregard the m5208evb row in my codegen numbers.
->>
->> 3. The "red herring" I flagged was my own doing, not a pre-existing
->> problem.  mm/Makefile has 'mmu-$(CONFIG_MMU) := ... memory.o', so a
->> NOMMU config never builds mm/memory.o at all; I asked for a target
->> that config does not have.  Sorry for the noise on that one.
->>
->> Retested with the configs you named (7.4-rc1 plus the do_fault_around
->> change plus David's cleanup, gcc-m68k-linux-gnu 13.3.0):
->>
->> m5475evb_defconfig   without David's patch: mm/memory.o fails at
->> mcf_pgtable.h:134 with it: full -j24 build ok, vmlinux 4215344
->> bytes, 0 warnings
->>
->> m54418evb_defconfig  without David's patch: same mcf_pgtable.h:134
->> failure
->>
->> So the Tested-by I sent covers amiga, sun3 and m5475evb.  It is
->> build-tested only - I have no m68k hardware here to boot.
+> Each time it does this it invokes section_mismatch() which iterates
+> through the sectioncheck[] array every time it's called.
 > 
-> Thanks for retesting. Looks good.
+> When walked a relocation section the source is fixed and there aren't many
+> targets, so the same names are looked up over and over again.
 > 
+> Therefore cache not only mismatch categorisation but also whether a
+> mismatch even exists for a given section and look up the sections in the
+> cache.
 > 
->> On MMU being disabled when you compile: I cannot reproduce that. Here
->> m5475evb_defconfig gives CONFIG_MMU=y, olddefconfig reports no change,
->> two consecutive defconfig runs produce an identical .config, and a full
->> build finishes with CONFIG_MMU=y and CONFIG_M547x=y still set and
->> .config untouched.  Two differences from your setup that might matter:
->> I am on a glibc toolchain rather than uclibc, and building out of tree
->> with O= rather than in tree.
+> Special indices (undefined, absolute, common) take the uncached path as
+> before.
 > 
-> I can't reproduce either now. I must have done something silly when
-> quickly double checking that config. Multiple configures and builds
-> and I think it is all doing the right things at configuration and build.
+> This results in very significant speed ups for allmodconfig incremental
+> builds.
 > 
+> modpost is on the serial tail of every build that links vmlinux.
 > 
->> One observation, which may well be unrelated.  m5475evb_defconfig never
->> sets CONFIG_M547x - it only ends up with it because the "ColdFire SoC
->> type" choice defaults to M520x, which is unavailable under MMU=y, so
->> kconfig falls back to the first usable member. m54418evb_defconfig sets
->> CONFIG_M5441x=y explicitly.  If that fallback is what breaks on your
->> side, making m5475evb explicit would sidestep it.
+> Whole build, 128-thread Threadripper 9980X, best of N runs:
 > 
-> FWIW, running "make savedefconfig" on a fully built m5475evb configuration
-> results in an identical defconfig to arch/m68k/configs/m5475evb_defconfig.
+>                                          before   after     delta
+>                                          -------------------------------
+>   x86 defconfig, touch mm/vma.c, gcc        8.5s     8.3s    -0.14s (-2%)
+>   x86 defconfig, touch mm/vma.c, clang      7.7s     7.6s    -0.13s (-2%)
+>   x86 allmodconfig, touch mm/vma.c, gcc    33.9s    29.4s     -4.5s (-13%)
+>   x86 allmodconfig, touch mm/vma.c, clang  31.9s    27.9s     -4.0s (-13%)
 > 
-> Anyway, I applied both changes and tested on real hardware. All seems to
-> work fine. So for ColdFire:
-> 
->     Tested-by: Greg Ungerer <gerg@linux-m68k.org>
+> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+Looks reasonable to me.
 
-Thanks!
+Reviewed-by: Petr Pavlu <petr.pavlu@suse.com>
 
 -- 
-Cheers,
-
-David
+Thanks,
+Petr
