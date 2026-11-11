@@ -1,113 +1,94 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.95.89
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794413112;
-	b=ODz8fhPFjUQ96B+zKHbwIK5x18QyKyaaI06/8GjKSmc+gFlomC8rMdAwdDz7tLFiQf6o
-	 SVP3varY0a9f1Y45owsP3tQOCoXO6EvVsPLiOMe0B8xJ1RqZ2OCuEl2yA0HZqBGksTGsZ
-	 Zh992bLeqF1TyX4yrGgjO6hFSFl8AqFz5OpIAOfEHuPscBw86d01wmaiTw+/9xdzYbbmx
-	 lBG3rS0kWcnqQ3NeDrEfKNMu+KbRk3kSVVv4+GmhlrEhDrnu8JvHlpnran0ElV1iMrPaz
-	 ciJ1tTC8yZiNLj5T9ouN5jMV/pvggwuGiSKCEcQN+yxu0QkwJgPTTgDkeD2W9pnJrTA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794413112;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:
-	 Content-Transfer-Encoding:Content-Type:Date:Message-Id:Cc:Subject:
-	 From:To:X-Mailer:References:In-Reply-To:X-ClientProxiedBy:
-	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=K/jnftyZWVhm3wMkfTur+MENePlCTNYie6my4R998rk=;
-	b=a68p2tGJheCAxsi7vLkYd10QfL8EKe/I3PcPrWuaLHjpqNx2DKAlDRD+gmb83J6YSTWf
-	 6dTEEqvr5XavEdxXopxrWsruEDDhff7cp5AgVa2LqzvnWwFtC7i9SfLPS0ESIqsXE3Lfc
-	 01IVJPfeCd6SW7smnms37eOrw+ynT2mCvQwRYxouPHqHI9uslhP92ZDmGTVmf2NI//jlf
-	 S1ocdHA/0WK1y4yC2DonZKYUKOoPZeGWosViLS7pUrYPZ8qhJQMk6Jkgya26aFfAGTFUs
-	 CeQpcMFrZBLQSMG0C2FUOE5z/RhQgvlwab70XQxTFQJO+SADzsCRsE81tN/JtdbjSzw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=garyguo.net;
-	spf=pass smtp.mailfrom=garyguo.net;
-	dkim=pass header.d=garyguo.net header.i=@garyguo.net header.a=rsa-sha256 header.s=selector1 header.b=wDFvfUeJ;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.95.89
-Received: from LO2P265CU024.outbound.protection.outlook.com (mail-uksouthazon11021089.outbound.protection.outlook.com [52.101.95.89])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.43
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794415059;
+	b=iwC6weee+Z+V6Hlu9quP0unRpJ/QS5fREQgUl7FvRF7qztLb5y41GkSmsKWhipBUJR5j
+	 TWjy4Sh35I4CSb20XCKd7drRHjBmY+8e47Zxsd8DuGSBXwVEXC1pAvYQrkgOmdAuPDgqP
+	 gd7YRpOhJIuknWQvgy5HIB9o7tGX/P8Nmevl3bzg6aRnY/AzXoo281aPePEt6SYWMf5N0
+	 uk1jln3tsAs7nPNclG8VJqrNaM5Sy9vjRdFYv8KYXHrNoPsjKiUbx4hgQCpMlFV5swRG2
+	 /ROaw7u+tDKcklZJMZCWGOUZFkwePOc110f/D8IdtL8takMGZAMVVMhVli2TkNq29Ng==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794415059;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=JV2UV74dkWO5TgZQL2wBeL3Mgq/3k9N3hqWRtljHlY4=;
+	b=Uz5U5kE37bEwTKDJlgmhBr2udK4MrqhNtAtnXngqWF70yJTiRPEowI3fHWMXFeclMdPn
+	 W6etDo0cZoiIvyvbVOTaSiqheR/0ZrQkt4sfM6w0ORhG80YUVo2uwpuzd+jvrVqApLYh+
+	 NaTxPBPmEDDkx16k/vtfduxFgRp0Y2J2PtZrV9isHKADTJHqeSOoyOUOldBsbk/n+eQZg
+	 YLBV+E5Tp6u/44b7z0AjAUqTAutdrVlqQH+J17Ks6EBGTF2jqtEppjOgfT7Fi++7bUo0V
+	 Jkb19tomfogHpKBszbuOaK/CStrsm0PfIuhysnOPR1hiohBWpPwntGzw47bkpHD4Xkg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=wYH1WQKg;
+	arc=none smtp.remote-ip=209.85.128.43
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407AD606A32A
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Nov 2026 16:05:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 407AD606A32A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AB0606A31C
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Nov 2026 16:37:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 86AB0606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=garyguo.net header.i=@garyguo.net header.a=rsa-sha256 header.s=selector1 header.b=wDFvfUeJ
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eZASefBF4I8dBm5yXEn7yI9oPI4uYLozxwYxX7adg4VYRQBmKNHUtzy7gCkY2w1ZZgpaSHc+q64qUrNA55O0NKWKaKr0q4UYhY4JgHkNkB+u4e0lHV91aHbuqnOwJa3K8T3rvxfgCBA1A0/sbEx5Pkyy+GqMZA7Bhc5uHnMRlwrFU/ALvxJElbbuzsLZjE5Hss8nvKYbeHB9Xro3h0UuPQ50ABGpfR84ORdooP4rMHyPSptzbw5HNAB1IXfHjt1x7VkLJGcVRlvuFKIDkdNzva40XWomAUcb5CIlm7oKxYFhlODGirkWjO17lsKYgTq9X2LywHDzRYDHrfTJ4mfyrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K/jnftyZWVhm3wMkfTur+MENePlCTNYie6my4R998rk=;
- b=jtYU+TVwyGjHpiqTe2h5ovtD38gcCpWdsyd2RvdnJZDQN7MvgMVTiYfk8zlNikpTd3MGSdGPT2WQgTwAVB4xu130saduFxnAQ0J46l2kba/uZb8vvmLUUpLIplbKpaEONB77qm4HrXWLxxGKcnnnqRyX86Bh6NXE2mBZz2GPTvRfdxdoq0FCfgBG+AtROu/VobdHgFBMp94UgzPGBxN/RKrhvvpHx+ziYfEzY/5fdZ9XxccKr7a5S9tDAHmdQWfo7XiQbhyoiyWw4f3o255AzuGMyJCiXHMTLp9yMalhaLRYfORnHq58JU/9GfZq8aXjHB6TYxD5iKUov4CH9z17ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K/jnftyZWVhm3wMkfTur+MENePlCTNYie6my4R998rk=;
- b=wDFvfUeJmqaU+8mtMQ0W4Lo01AIHdnKmsG11kppn/sevsl74N3jm9e2JRQE5Yp+bJdcSjgoftqetokk9M74/OkBdC8x7aa4QDXaXaZHVgXAE3eTzkplqew3WkUIOs0bkhwzcQiO7mQ5Nd0icL+bmLns6PAlQ8zJe8XM6bQhXF8s=
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1cb::9)
- by LO0P265MB6727.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:30d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.9; Wed, 11 Nov
- 2026 16:04:55 +0000
-Received: from CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
- ([fe80::55f6:f98b:7fad:c6e3]) by CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
- ([fe80::55f6:f98b:7fad:c6e3%2]) with mapi id 15.21.0615.008; Wed, 11 Nov 2026
- 16:04:55 +0000
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 11 Nov 2026 16:04:54 +0000
-Message-Id: <DMSICREJD2LU.TAXIO38WREMW@garyguo.net>
-Cc: <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <llvm@lists.linux.dev>, <linux-m68k@lists.linux-m68k.org>,
- <linux-modules@vger.kernel.org>, <rust-for-linux@vger.kernel.org>, "Nicolas
- Schier" <n.schier@fritz.com>
-Subject: Re: [PATCH v5 10/11] rust: make exports.o depend on the headers
- generated for it
-From: "Gary Guo" <gary@garyguo.net>
-To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, "Linus Torvalds"
- <torvalds@linux-foundation.org>, "Nathan Chancellor" <nathan@kernel.org>,
- "Nicolas Schier" <nsc@kernel.org>, "Nick Desaulniers"
- <ndesaulniers@google.com>, "Bill Wendling" <morbo@google.com>, "Justin
- Stitt" <justinstitt@google.com>, "Geert Uytterhoeven"
- <geert@linux-m68k.org>, "Luis Chamberlain" <mcgrof@kernel.org>, "Petr
- Pavlu" <petr.pavlu@suse.com>, "Daniel Gomez" <da.gomez@kernel.org>, "Sami
- Tolvanen" <samitolvanen@google.com>, "Aaron Tomlin" <atomlin@atomlin.com>,
- "Josh Poimboeuf" <jpoimboe@kernel.org>, "Peter Zijlstra"
- <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>, "Boqun Feng"
- <boqun@kernel.org>, "Gary Guo" <gary@garyguo.net>,
- =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, "Benno Lossin"
- <lossin@kernel.org>, "Andreas Hindborg" <a.hindborg@kernel.org>, "Alice
- Ryhl" <aliceryhl@google.com>, "Trevor Gross" <tmgross@umich.edu>, "Danilo
- Krummrich" <dakr@kernel.org>, "Daniel Almeida"
- <daniel.almeida@collabora.com>, "Tamir Duberstein" <tamird@kernel.org>,
- "Alexandre Courbot" <acourbot@nvidia.com>, =?utf-8?q?Onur_=C3=96zkan?=
- <work@onurozkan.dev>
-X-Mailer: aerc 0.22.0
-References: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
- <20261104-build-speedup-v5-10-0f6018be8dae@kernel.org>
-In-Reply-To: <20261104-build-speedup-v5-10-0f6018be8dae@kernel.org>
-X-ClientProxiedBy: LO4P265CA0224.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:315::8) To CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:400:1cb::9)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=wYH1WQKg
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4a20bdaf39cso35729755e9.1
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Nov 2026 08:37:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794415057; x=1795019857; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=JV2UV74dkWO5TgZQL2wBeL3Mgq/3k9N3hqWRtljHlY4=;
+        b=wYH1WQKgyOyZnc/Va9gnR/BRK/cmqQIWqhBXQXizVMmdTnfkyLrcZyMU5DYmNmJJsv
+         PN+qIQF1j8I/8+VMNOG3EhDkal3yhWP2i11CxEWJt4H9Iq2FVdBwzc2tm9XTJCxUHQgJ
+         nvNpj0lLfgD0D8AEBRKsDCHZRbiLuZG9EOqoptb9Xb/Y0pU+YsSqY2gz1hhskCnI171y
+         k2j7oqsCSTwadQDhEzUAlLxqubUDmG9jfi8R+U9IzORNqUfgKyy1sCp08YuqtWnzCZNJ
+         iReXT+ZGb3ZaC3D/ri2xZZQ+q3GefRuqzEhB722GbBfhsXAi2l3TgheXiijKfyXicj+t
+         2lWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794415057; x=1795019857;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=JV2UV74dkWO5TgZQL2wBeL3Mgq/3k9N3hqWRtljHlY4=;
+        b=sIWoUllF+5Id9gvZl9uUEkAODCN5z9CsMKGNwXXMGatmrQyssk78heIiLoPqVLxe7k
+         ktGoT0w6STXwNVolxh/qUXORnpAKbUeuQyAYe9rL7CDvMlPVnphBhvCi8LdSDlYAdhAn
+         r3spSJmUEfdhqczDjzf/PfwTCPutfpsAQRUaZyhpwYn7ALOfv08wwSl2mWDTi1F1jJML
+         mli8JCGqs0CyieFvShRoqXeeVislUSOZjN9HE0zJgdKMUTcIcnHw7Q2MN8HALQjn+zB1
+         NYsiPjtnB89NgZadhBwP8CsL7PYSAYCYQ7tdtIgqQLrUmuepmetVoIWGEyIO3ZfMqKjM
+         WZyA==
+X-Gm-Message-State: APuU4Z+2nYBIks3WiHNgXph+a4KjPzBGxU6Rkny1T3/uLej5wNSebc6r
+	0bXkN0mnosl2QcSryPPCx8SgDah98YVIBRSEaaP4IPr3O7y2Zddz0yDX
+X-Gm-Gg: AYBFou3NjoXHZqVRu+j5KGVQb1smkjF06YouuWOJ30Q6h3S6XDAepnDKditfdZwZZ18
+	ypgTsNLwFuWMjmODkqStzlEYbQXfng/qn6Erd6iVRakDZbJewobPO/F3lVzdSlDBwJY7S7Ztm9p
+	UKk7uJki7Yppx0hWBUvEru2MLZoYpqWEMR+dU3hWc2nxSkONM2ILpeYZAYIgcPpGh0j2wh+A+Ls
+	JjJvXygTe4+HdvEsTLqrqOiY5EmskCh9faUjQMrrP0v8nTV4R3zu2Lulh+TeovpM+Y+v1YnESb8
+	t8XWS/lGabcz2iVkx9Gh7MhMlUU67QhSjo5k6nWSV6Aa02jygLjSS9VdxKZzFUFyNBvcYMU6v7D
+	U81MLvjeNtnt6GnpK6L614L/qmUC2Y7PnH51AUpd/zIOc9513uTAAjPpEaaMdiJ+riSMYsmvvX0
+	Ua9Z40nqiwBwlyjwA394562vvVSa1RFTDUuqFlFG/ZmGHfeAccD79SfBjRZwFaunGXBghU1uyI+
+	p4vvmtdvvFa9G4jL8EcvKH2HY7BFd2vnS6Wlc3zE6FglwhUXKRocJuPfGE60CUZVWPNBZiK61OI
+	guCGZErmqlC5bM6SWP2cqKcIRHsMig6n3pSSXKQNXebngJ/+S6KecoPQSo835H832Wcg3SHJkQE
+	dXg4rk0ZTKaVjLdrnBslCqbcFDvIHip+1ggo=
+X-Received: by 2002:a05:600c:3b01:b0:4a1:6992:f861 with SMTP id 5b1f17b1804b1-4ba09344911mr53668455e9.1.1794415056383;
+        Wed, 11 Nov 2026 08:37:36 -0800 (PST)
+Received: from gmail.com ([2a01:e11:1403:8620:6e81:13fe:ca06:8db8])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49835c377fdsm9925377f8f.21.2026.11.11.08.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2026 08:37:35 -0800 (PST)
+From: Paolo Pisati <p.pisati@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>
+Cc: linux-m68k@lists.linux-m68k.org,
+	linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lee Jones <lee@kernel.org>,
+	mfd@lists.linux.dev
+Subject: [PATCH v1 0/7] zorro: add a CS-Lab Warp 1260 MFD
+Date: Wed, 11 Nov 2026 17:37:27 +0100
+Message-ID: <20261111163735.227286-1-p.pisati@gmail.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -117,87 +98,96 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CWLP265MB6051:EE_|LO0P265MB6727:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3a2d7f73-795f-4e3f-edb0-08df400d86f1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|1800799024|23010399003|10070799003|366016|921020|4143699003|261021121427099003|261021135927099003|10067099003|261102123227099003|261102130727099003|56012099006|261026121527099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	XNvEWAqN1RrwnYhGsroprpHeLrW5X7AfwMwtGlB9P45j2aPQbMGSsMrFOijaqh4p/6mhMt7sGFXMtslweIP9It/EaeKa7Nopo/Tu7P5Hp9oBmig/23Z6p5M7OVkLMX7bfsyDnHt0AIuZRtJGY4PfySRKfyUbvEqSEQGY3CcJhyYkG4QPxh7lV1qi1DAU5TozR9QPq7TNdmGIWFMm9ba/6QRBpMngEgkEx4+s+forX5lgGCYVEWLmzTWKkk2WNTu3nrX56b4NuzBQC4kNBoNQvNb856yLWI5SOmy5y7GdgVGygToCERnVVepRSeOmPqzzBktjKr4PV6AwHGGMt6sSAXwUvE0NgrtidlcewkAtLswwf8wKmEaQJpJn9oMIp8EK8CNe7ocKIpkxn3ZycbGFmftZjl57Dl51noPHmUbXQaylzw+cJT0mrkHvrCVykM3jMj252JgTiejCgsCC/xaNeYtANzIDv41KwHNq6Iuc+qQhn7VxBTHgonenzd75kUcll2qT+3Xm+AKUSXrNaEOvHnLJbjKE293iFLxED4XUM+jhXnzCWoWEi1BJiDq3EZxsFTU0YajioB92TG5nPGWLFrh0f/T8FsfoBphmGXVc54gKKO/oba4T7JlKwNAgkME2t/lpo2azthrJMeMxA3QqNI64jiyHgYRgfxQEeNgwbFlLsur64D5jtToEIrcTEjgOGYVtQNJVKa+qDP3S3TwSxQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(23010399003)(10070799003)(366016)(921020)(4143699003)(261021121427099003)(261021135927099003)(10067099003)(261102123227099003)(261102130727099003)(56012099006)(261026121527099003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?V2ZuNzJNa3liMDdSR0VUNUpMK1J4Mkxrd3YweEFCdGFDMjNKSjFySWdqTW9m?=
- =?utf-8?B?eW0zL3dKV2Y0WGFYNVA1SllVaXNiOTNQWkJyZmEzb0ZvbmJVLyt2Z0UzbDBv?=
- =?utf-8?B?cldhQXRKUWVVRTRsSWE5c0gzanFGUzdiVTdSWHZoOVh5TDZMMVBlUEo1MmtD?=
- =?utf-8?B?WUZFeHRCcjNjOVdRc000VWJ5cmxRT3k1QUdudlF1ZnVSOFdXdlY4anU3WC9w?=
- =?utf-8?B?RVcwNFgySUJwbDYwcjlST0FEWWNhbEdOdFIwRHhNcFA5RjFEUFBmeHZEb0Nz?=
- =?utf-8?B?dkxKT2ZYQUJUQ0J2MFNUbTZpUnF1b3hrRlBzaFRMMHRRMW5uSGJBVU1pRS9K?=
- =?utf-8?B?MTJvelp3VFl0OVM2SmROclFjbk9ja1pMbFpJN0R1OUJYdFpLZnEzeTk3SVkz?=
- =?utf-8?B?VVQxM2toOUtGTnZDMDlCak56T0VzZy9ubEdhc2x0UzFoSkFaMU9rYzdPMUVt?=
- =?utf-8?B?ZDBHM1VpWE8rOHZrWFF6WktPSGIzZm1iZ1lwUmx3eFJmLzF4YmpMcFNsUnYv?=
- =?utf-8?B?NHM3ekN0T0l6djN4SlVkN2YvV0YwL0JGaytHQ2xqOTRkQVpnejFZcFFCa2hV?=
- =?utf-8?B?Q0syamh3U2RxbitGSHpOTy9xRkgwK0F2RGk4Sy81R1hHWmZVenFQbU1XZ2N2?=
- =?utf-8?B?MG9qZHNkemJXMWM2RDJoanJzQkZtblRrTno1d28rU1RHUDBrMFNLc0FJME54?=
- =?utf-8?B?R2ppMGtIRnZvU3ZPd2dZNnlNVk1ETzgyVlNzR1RmUGxZUHNpY0VOK3dheVcw?=
- =?utf-8?B?cXMzMnJNZHN0bWNiZnJXNWpHdUNHY3JqclhyMUwvRzgrWXRYZmdkZHJCc3Zm?=
- =?utf-8?B?NHlLZVhiVTQ2aTU3QTlGTXJHNTFUNDNVTnJhVHdOWVFIcVFhV2tjSnZibW9Y?=
- =?utf-8?B?bzlIOUlKemZmTUd1b2F4YjFxa2haV21SZkc0QWFDS1ZGWXFWNlNjVjFYWWVR?=
- =?utf-8?B?blJjRDRINFJTeFFNSVNkM0VuS2M0bytEMEhNTmpsUnZqMCtreWR1Rzdsc28z?=
- =?utf-8?B?NWt0VWZnRDE0bi9xdjJaRlMzZzlSbXhaS2ZkWVduSzBIS2tMbFhjdmgybDZV?=
- =?utf-8?B?WEowSEkrNEd4bC9GQ0t5YTFxVjFYQjFkbVRaSHUwNEFvNmRhYzVLcFBHZ2Fx?=
- =?utf-8?B?TGc0aGJzb0NBb0paWDdpRHNMTEVaR1NMblVXZDlNM05jR3MrSjZBTzZNeFc4?=
- =?utf-8?B?bnpvU1lWVUZ0NFNETjRhVE9GeDVJNEdnb2c3VTFEaldkTHdCbHhlZklaNWdS?=
- =?utf-8?B?KzlCa2pDb0xBK2gxaENOK1FUbmRkVFNXa1dpMVdJRHl2cFZiMDREZTZNWlFZ?=
- =?utf-8?B?QS9rVkplTGNKdTk5MVpYNjd1b3JIL20vcmdSeGVMYUR3SUxDb053MXAxK2NO?=
- =?utf-8?B?TklTcGV3SkFEYjR1anVBa28vaFBlYVNnNWpORVBoaEFEVURXUjB2T1hBWkdL?=
- =?utf-8?B?U01rVnllQzRrb1VRVmlIenFzRDZ0MjB4c29nMzRJZzRiSzRmbkpKVmtlQTRM?=
- =?utf-8?B?SWxrakNLMU1WN1hJK0EyUktYdTUyVkhOWmpGOGJWcVZzSm1FOXhTY1QxdmJh?=
- =?utf-8?B?bDcrQnJ0UzF3bWJIeVBkd3JvNXdaOXR2UXdEYStCVzc4Nk9MUm9tbnpDZGRV?=
- =?utf-8?B?T3ZENVowWXIyK1hlcEpVZE1jVENLR3FkYlVVQzlvWklJcHRVODVFTGJWYWFG?=
- =?utf-8?B?SS84Uy9ER1dBckZ2cHRTL1VWSnZ2T2VUWUpQUHRqRUtXRGQxcXNpNkJaQUgw?=
- =?utf-8?B?b3Z4YXVhakNWSGFQWDVtTm5uc0Y0Z1NpMkNINzl6VncwVzVqTlZsVUMrYm9y?=
- =?utf-8?B?SkFkU09vWjRRekhjM1Y0QzRXdnp0WWtJdkpGYXJteTVyTXJ1cHpKVXpKMDZE?=
- =?utf-8?B?TXBaeDZOOTQ1L2lJOG5objNibFd1Y1NzcktoNzVYaWVpMjc4N0s0bUFnT2Uv?=
- =?utf-8?B?Tm1kSEpDRnZMMmoxZUxIMEdMaVRtemVPRjZtaXpkS0RFK3JETkxpUUtsTmtt?=
- =?utf-8?B?WmREV1hxN2h2MXRQanNNZ3Q1Y1NVZmo3Ny9JSmJkVjZTMmpSTjVQZlZmUHpU?=
- =?utf-8?B?UHlQbEVCTkhFcVJ0WjBScTlqbHcrTEVTb0dzZTI4NSt0ekt6YkFBeWI2K0xx?=
- =?utf-8?B?SUFsZmplRkpiQysvSk15bDRQci9lNk0vWURRK3piSjF2RTVJWVQ0R2NpOC8z?=
- =?utf-8?B?cnMyMXd3Q2VsWEdjaU5BZERpTm5oZ1RFVmxSVnF0QnZ0K0NyK0h6ZzB6MDJM?=
- =?utf-8?B?THZaVFM4enh3K0M3NFBQZFU4RkVCZHRNTmxnOUlKN3FvYTJTdWJUbkRYMHRI?=
- =?utf-8?B?QU54Zm1BWmtWcXA4bElVenF3RVUwdnBpS0VucUMramFtakpoOGRoQT09?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a2d7f73-795f-4e3f-edb0-08df400d86f1
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2026 16:04:55.4518
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3rhi2L14BQA7GdHUR2YcljAUOho0bacEx13TxrVZzA/YuwKyJyfoqvryn73yTgPVe1KMk9fSVLzQDLg5fjzROA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO0P265MB6727
+Content-Transfer-Encoding: 8bit
 
-On Wed Nov 4, 2026 at 6:20 PM GMT, Lorenzo Stoakes (ARM) wrote:
-> rust/exports.c includes the exports_*_generated.h listing the symbols of
-> the core, bindings, kernel and helpers objects, but this is not expressed
-> in its Makefile.
->=20
-> This worked previously because the headers are always-y targets, and make
-> prepare built all of the rust crates first, which is an implicit
-> dependency.
->=20
-> Fix this as it is a dependency of the subsequent commit.
->=20
-> Reviewed-by: Nicolas Schier <n.schier@fritz.com>
-> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+The CS-Lab Warp 1260 is an A1200 trapdoor multifunction accelerator: it
+contains a 68060, an FPGA, an ARM co-processor and several sub-devices
+hanging off them. The 68k drives the IDE interface and the RTG display
+controller directly, through the FPGA; the ARM owns most of the rest -
+USB, SD card, WiFi, audio, the Kickstart slots, the CPU clock, fan
+control and the board telemetry - and the 68k reaches it through a
+dual-port RAM mailbox.
 
-Reviewed-by: Gary Guo <gary@garyguo.net>
+pata_cswarp, merged in 7.4-rc1, binds the board's Zorro device for the
+IDE window alone. This series puts an mfd parent on the device
+instead, hands the IDE window to pata_cswarp as a cell, and uses the
+mailbox for a first set of board functions, exposed as sysfs
+attributes on the Zorro device:
 
-> ---
->  rust/Makefile | 5 +++++
->  1 file changed, 5 insertions(+)
+  1-3  the mfd parent, pata_cswarp as its first cell, defconfig
+  4    the dual-port RAM command channel and the board identity
+  5-7  voltages and temperatures, fan duty cycle, Kickstart slot
+       selection
+
+The layout - an mfd parent in drivers/zorro/ handing cells to the
+function drivers - is modelled on Geert's Zorro MFD experiments [1],
+which were the inspiration for this series.
+
+The RFC [2] got no replies, so its questions still stand:
+
+- Geert, does this fit where you wanted to take the Zorro MFD work?
+  Should the parent stay in drivers/zorro/, as in your experiments,
+  or move to drivers/mfd/? Lee, I have Cc'd you for this one.
+- Would you rather see the voltages, temperatures and fan in hwmon
+  than as plain sysfs attributes?
+- Writing kickslot makes the ARM reset the machine on the spot. Is a
+  sysfs attribute acceptable for that?
+
+Changes since the RFC:
+- Rebased on v7.4-rc2, which has pata_cswarp and its defconfig patch.
+- Dropped the WiFi configuration patch. The board commits the SSID and
+  the passphrase together when the passphrase arrives, so writing the
+  passphrase alone clears the SSID: two independent attributes cannot
+  express that.
+- Documented the attributes in
+  Documentation/ABI/testing/sysfs-driver-warp-mfd and added a
+  MAINTAINERS entry.
+- Created the attributes through .driver.dev_groups.
+- pata_cswarp: mapped the cell with devm_ioremap_resource().
+- The store callback takes a size_t count, the driver includes what it
+  uses, and the probe banner prints the board window with %pR.
+
+Tested on a Warp 1260 (firmware 20.27) on top of v7.4-rc2. Every patch
+builds warp-mfd and pata_cswarp with W=1 for m68k.
+
+I wrote the original version of this driver myself, by hand. An LLM
+coding assistant came in later: it was used to review that code
+against CS-Lab's AmigaOS sources, to write several of the fixes folded
+into these patches and the ABI documentation, to split the work into
+this series and to draft the commit messages. I reviewed every change
+and tested the result on my Warp 1260.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=zorro-mfd
+[2] https://lore.kernel.org/r/20261021172910.134838-1-p.pisati@gmail.com
+
+Paolo Pisati (7):
+  zorro: warp mfd: add the CS-Lab Warp multifunction parent
+  ata: pata_cswarp: bind to the Warp mfd cell instead of the Zorro
+    device
+  m68k: defconfig: enable WARP_MFD
+  zorro: warp mfd: add the dual-port RAM command channel and expose the
+    board identity
+  zorro: warp mfd: expose the voltage and temperature sensors
+  zorro: warp mfd: expose the fan duty cycle
+  zorro: warp mfd: expose the Kickstart slot selection
+
+ .../ABI/testing/sysfs-driver-warp-mfd         |  53 ++
+ MAINTAINERS                                   |   8 +
+ arch/m68k/configs/amiga_defconfig             |   1 +
+ arch/m68k/configs/multi_defconfig             |   1 +
+ drivers/ata/Kconfig                           |   2 +-
+ drivers/ata/pata_cswarp.c                     |  48 +-
+ drivers/zorro/Kconfig                         |  30 ++
+ drivers/zorro/Makefile                        |   2 +
+ drivers/zorro/warp-mfd.c                      | 473 ++++++++++++++++++
+ drivers/zorro/warp-mfd.h                      | 148 ++++++
+ 10 files changed, 734 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-warp-mfd
+ create mode 100644 drivers/zorro/warp-mfd.c
+ create mode 100644 drivers/zorro/warp-mfd.h
+
+
+base-commit: 7475ea8b58616b33c04afb976cf0fbaad9dd63fb
+-- 
+2.43.0
 
