@@ -1,84 +1,113 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=82.195.75.108
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794398342;
-	b=0tyZQwbuiy42oxCDaVhOZzFjT7aC/WSLR2SlOoaWuvS62YqCniej84tplEepbvPSlRKd
-	 1xsqOjVh/35KuwmC09naKQbkkulbMst9tNuXnSZqlhH8e2ZLjd0FtGfVJBO0VVujzvbYl
-	 x3DQlnuZLnxxehKy9CtxCnyy7vQUPAldID4mJ6meVgsr+rXYxHQC4c66bLZ30JEi01Wbu
-	 5/LlzZn2MF5v2N5KKTkqXAstrlKSeiBeLuWOK03ZdK5c3Z3U1GDW5dy9ijMKXkwUoVG/i
-	 Xfozy+6rWG6NkG5PO2yVwfbP1MDtQ3a9r2WuqMUg15T+DS9Tmmw2FIgDbvKHuQALPmA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794398342;
-	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-Debian-User;
-	bh=6+DIIko/jddTALojzUdCwqYFD7qAVSieeB13vaTbTZ4=;
-	b=3ZRUCpDbmpEIqJg6asZuWCc8fZxzo6lXaaSCZ0QAxP95vLI7LAQKcX9iohx0TsIgU1va
-	 QTCQH6UO/prTdzSOxtGty+PEHCFS9gxfcgdDwUDTIDO+KF2UrMC+hIfrKbno6sAIIHCHX
-	 Pnt/VW+p7jrXC6xEZ+yX7nTykz7R5OhdVuFCPQBEvrcsnB5UL4etyyEpvKyffZ/B5JHfC
-	 rPeAdPgYjX4Ox0IBDUvQ0dmGh9A/d4tlouZAkjgs3eoZcLbblxEvT4fsiU26tlsbBU3yd
-	 4YMi9mRgAwMd7CawaTdNiNWpC2QZimU59ww6viAdoJL39aN3SflSSlyy2qCaOHa2AcQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=debian.org;
-	spf=pass smtp.mailfrom=debian.org;
-	dkim=pass header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=R5XxGFbM;
-	arc=none smtp.remote-ip=82.195.75.108
-Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.95.89
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794413112;
+	b=ODz8fhPFjUQ96B+zKHbwIK5x18QyKyaaI06/8GjKSmc+gFlomC8rMdAwdDz7tLFiQf6o
+	 SVP3varY0a9f1Y45owsP3tQOCoXO6EvVsPLiOMe0B8xJ1RqZ2OCuEl2yA0HZqBGksTGsZ
+	 Zh992bLeqF1TyX4yrGgjO6hFSFl8AqFz5OpIAOfEHuPscBw86d01wmaiTw+/9xdzYbbmx
+	 lBG3rS0kWcnqQ3NeDrEfKNMu+KbRk3kSVVv4+GmhlrEhDrnu8JvHlpnran0ElV1iMrPaz
+	 ciJ1tTC8yZiNLj5T9ouN5jMV/pvggwuGiSKCEcQN+yxu0QkwJgPTTgDkeD2W9pnJrTA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794413112;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:
+	 Content-Transfer-Encoding:Content-Type:Date:Message-Id:Cc:Subject:
+	 From:To:X-Mailer:References:In-Reply-To:X-ClientProxiedBy:
+	 MIME-Version:X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
+	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
+	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
+	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+	 X-MS-Exchange-CrossTenant-UserPrincipalName:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=K/jnftyZWVhm3wMkfTur+MENePlCTNYie6my4R998rk=;
+	b=a68p2tGJheCAxsi7vLkYd10QfL8EKe/I3PcPrWuaLHjpqNx2DKAlDRD+gmb83J6YSTWf
+	 6dTEEqvr5XavEdxXopxrWsruEDDhff7cp5AgVa2LqzvnWwFtC7i9SfLPS0ESIqsXE3Lfc
+	 01IVJPfeCd6SW7smnms37eOrw+ynT2mCvQwRYxouPHqHI9uslhP92ZDmGTVmf2NI//jlf
+	 S1ocdHA/0WK1y4yC2DonZKYUKOoPZeGWosViLS7pUrYPZ8qhJQMk6Jkgya26aFfAGTFUs
+	 CeQpcMFrZBLQSMG0C2FUOE5z/RhQgvlwab70XQxTFQJO+SADzsCRsE81tN/JtdbjSzw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=garyguo.net;
+	spf=pass smtp.mailfrom=garyguo.net;
+	dkim=pass header.d=garyguo.net header.i=@garyguo.net header.a=rsa-sha256 header.s=selector1 header.b=wDFvfUeJ;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.95.89
+Received: from LO2P265CU024.outbound.protection.outlook.com (mail-uksouthazon11021089.outbound.protection.outlook.com [52.101.95.89])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 579BC606A324;
-	Wed, 11 Nov 2026 11:59:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 579BC606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=debian.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407AD606A32A
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 11 Nov 2026 16:05:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 407AD606A32A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=garyguo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=garyguo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=R5XxGFbM
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=6+DIIko/jddTALojzUdCwqYFD7qAVSieeB13vaTbTZ4=; b=R5XxGFbM6TZRqhT0SXxuzcMt1x
-	LUNRh7V8lAnKwChToktKXZ/BvtFiWDBfAUJ9dLKtb2UHW2064KOlAZ6KUeSJJgWg/hPASfykHm9lb
-	dvvgSD9ejQiiI+LIrAd6gbPGs/9xZWqr0yWBdHoCClUgJD2Bg1YMupaoC/QOZRmfVPSCT6MpDMhbS
-	246KM0GzqcBbc4E2580QxhluNnyoa2vW19Sk2kqFlCkeQ6ViS/yest6rZWy5lPKlR+T/Ay7hDfWGq
-	IJLMSEFD0EmRJ6D4dVOiq+0BkJb7lfNarlib+MyMxjNYvepLWzR3xSOakoCQkMgy3TimUB70/p52t
-	iE2dAMXA==;
-Received: from authenticated-user
-	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <leitao@debian.org>)
-	id 1xR6yh-00DAF9-2o;
-	Wed, 11 Nov 2026 11:59:00 +0000
-Date: Wed, 11 Nov 2026 03:58:49 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Jann Horn <jannh@google.com>, Josef Bacik <josef@toxicpanda.com>, 
-	Chris Mason <mason@kernel.org>, Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
-	Eric Dumazet <edumazet@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, 
-	Greg Kroah-Hartman <gregkh@suse.de>, Joel Granados <joel.granados@kernel.org>, 
-	Kees Cook <kees@kernel.org>, Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>, 
-	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	netdev@vger.kernel.org, ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org, 
-	coreteam@netfilter.org, kexec@lists.infradead.org, linux-pci@vger.kernel.org, 
-	linux-sound@vger.kernel.org, netfilter-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	ibm-acpi-devel@lists.sourceforge.net, jfs-discussion@lists.sourceforge.net, 
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cifs@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, linux-hwmon@vger.kernel.org, linux-mm@kvack.org, 
-	linux-sh@vger.kernel.org, linux-usb@vger.kernel.org, samba-technical@lists.samba.org, 
-	sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-doc@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-atm-general@lists.sourceforge.net, 
-	Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, linux-debuggers@vger.kernel.org, 
-	Chuck Lever <cel@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 39/51] powerpc/crash_dump: recover from a
- machine check in copy_oldmem_page()
-Message-ID: <avRXzzCSzT9Qj2FC@gmail.com>
-References: <20261104-work-procfs-bugfixes-v2-0-021c84d852e0@kernel.org>
- <20261104-work-procfs-bugfixes-v2-39-021c84d852e0@kernel.org>
+	dkim=pass (1024-bit key, unprotected) header.d=garyguo.net header.i=@garyguo.net header.a=rsa-sha256 header.s=selector1 header.b=wDFvfUeJ
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=eZASefBF4I8dBm5yXEn7yI9oPI4uYLozxwYxX7adg4VYRQBmKNHUtzy7gCkY2w1ZZgpaSHc+q64qUrNA55O0NKWKaKr0q4UYhY4JgHkNkB+u4e0lHV91aHbuqnOwJa3K8T3rvxfgCBA1A0/sbEx5Pkyy+GqMZA7Bhc5uHnMRlwrFU/ALvxJElbbuzsLZjE5Hss8nvKYbeHB9Xro3h0UuPQ50ABGpfR84ORdooP4rMHyPSptzbw5HNAB1IXfHjt1x7VkLJGcVRlvuFKIDkdNzva40XWomAUcb5CIlm7oKxYFhlODGirkWjO17lsKYgTq9X2LywHDzRYDHrfTJ4mfyrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K/jnftyZWVhm3wMkfTur+MENePlCTNYie6my4R998rk=;
+ b=jtYU+TVwyGjHpiqTe2h5ovtD38gcCpWdsyd2RvdnJZDQN7MvgMVTiYfk8zlNikpTd3MGSdGPT2WQgTwAVB4xu130saduFxnAQ0J46l2kba/uZb8vvmLUUpLIplbKpaEONB77qm4HrXWLxxGKcnnnqRyX86Bh6NXE2mBZz2GPTvRfdxdoq0FCfgBG+AtROu/VobdHgFBMp94UgzPGBxN/RKrhvvpHx+ziYfEzY/5fdZ9XxccKr7a5S9tDAHmdQWfo7XiQbhyoiyWw4f3o255AzuGMyJCiXHMTLp9yMalhaLRYfORnHq58JU/9GfZq8aXjHB6TYxD5iKUov4CH9z17ew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K/jnftyZWVhm3wMkfTur+MENePlCTNYie6my4R998rk=;
+ b=wDFvfUeJmqaU+8mtMQ0W4Lo01AIHdnKmsG11kppn/sevsl74N3jm9e2JRQE5Yp+bJdcSjgoftqetokk9M74/OkBdC8x7aa4QDXaXaZHVgXAE3eTzkplqew3WkUIOs0bkhwzcQiO7mQ5Nd0icL+bmLns6PAlQ8zJe8XM6bQhXF8s=
+Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1cb::9)
+ by LO0P265MB6727.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:30d::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.9; Wed, 11 Nov
+ 2026 16:04:55 +0000
+Received: from CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::55f6:f98b:7fad:c6e3]) by CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::55f6:f98b:7fad:c6e3%2]) with mapi id 15.21.0615.008; Wed, 11 Nov 2026
+ 16:04:55 +0000
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 11 Nov 2026 16:04:54 +0000
+Message-Id: <DMSICREJD2LU.TAXIO38WREMW@garyguo.net>
+Cc: <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <llvm@lists.linux.dev>, <linux-m68k@lists.linux-m68k.org>,
+ <linux-modules@vger.kernel.org>, <rust-for-linux@vger.kernel.org>, "Nicolas
+ Schier" <n.schier@fritz.com>
+Subject: Re: [PATCH v5 10/11] rust: make exports.o depend on the headers
+ generated for it
+From: "Gary Guo" <gary@garyguo.net>
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>, "Linus Torvalds"
+ <torvalds@linux-foundation.org>, "Nathan Chancellor" <nathan@kernel.org>,
+ "Nicolas Schier" <nsc@kernel.org>, "Nick Desaulniers"
+ <ndesaulniers@google.com>, "Bill Wendling" <morbo@google.com>, "Justin
+ Stitt" <justinstitt@google.com>, "Geert Uytterhoeven"
+ <geert@linux-m68k.org>, "Luis Chamberlain" <mcgrof@kernel.org>, "Petr
+ Pavlu" <petr.pavlu@suse.com>, "Daniel Gomez" <da.gomez@kernel.org>, "Sami
+ Tolvanen" <samitolvanen@google.com>, "Aaron Tomlin" <atomlin@atomlin.com>,
+ "Josh Poimboeuf" <jpoimboe@kernel.org>, "Peter Zijlstra"
+ <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>, "Boqun Feng"
+ <boqun@kernel.org>, "Gary Guo" <gary@garyguo.net>,
+ =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, "Benno Lossin"
+ <lossin@kernel.org>, "Andreas Hindborg" <a.hindborg@kernel.org>, "Alice
+ Ryhl" <aliceryhl@google.com>, "Trevor Gross" <tmgross@umich.edu>, "Danilo
+ Krummrich" <dakr@kernel.org>, "Daniel Almeida"
+ <daniel.almeida@collabora.com>, "Tamir Duberstein" <tamird@kernel.org>,
+ "Alexandre Courbot" <acourbot@nvidia.com>, =?utf-8?q?Onur_=C3=96zkan?=
+ <work@onurozkan.dev>
+X-Mailer: aerc 0.22.0
+References: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
+ <20261104-build-speedup-v5-10-0f6018be8dae@kernel.org>
+In-Reply-To: <20261104-build-speedup-v5-10-0f6018be8dae@kernel.org>
+X-ClientProxiedBy: LO4P265CA0224.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:315::8) To CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:1cb::9)
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -88,52 +117,87 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261104-work-procfs-bugfixes-v2-39-021c84d852e0@kernel.org>
-X-Debian-User: leitao
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP265MB6051:EE_|LO0P265MB6727:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a2d7f73-795f-4e3f-edb0-08df400d86f1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|1800799024|23010399003|10070799003|366016|921020|4143699003|261021121427099003|261021135927099003|10067099003|261102123227099003|261102130727099003|56012099006|261026121527099003|22082099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	XNvEWAqN1RrwnYhGsroprpHeLrW5X7AfwMwtGlB9P45j2aPQbMGSsMrFOijaqh4p/6mhMt7sGFXMtslweIP9It/EaeKa7Nopo/Tu7P5Hp9oBmig/23Z6p5M7OVkLMX7bfsyDnHt0AIuZRtJGY4PfySRKfyUbvEqSEQGY3CcJhyYkG4QPxh7lV1qi1DAU5TozR9QPq7TNdmGIWFMm9ba/6QRBpMngEgkEx4+s+forX5lgGCYVEWLmzTWKkk2WNTu3nrX56b4NuzBQC4kNBoNQvNb856yLWI5SOmy5y7GdgVGygToCERnVVepRSeOmPqzzBktjKr4PV6AwHGGMt6sSAXwUvE0NgrtidlcewkAtLswwf8wKmEaQJpJn9oMIp8EK8CNe7ocKIpkxn3ZycbGFmftZjl57Dl51noPHmUbXQaylzw+cJT0mrkHvrCVykM3jMj252JgTiejCgsCC/xaNeYtANzIDv41KwHNq6Iuc+qQhn7VxBTHgonenzd75kUcll2qT+3Xm+AKUSXrNaEOvHnLJbjKE293iFLxED4XUM+jhXnzCWoWEi1BJiDq3EZxsFTU0YajioB92TG5nPGWLFrh0f/T8FsfoBphmGXVc54gKKO/oba4T7JlKwNAgkME2t/lpo2azthrJMeMxA3QqNI64jiyHgYRgfxQEeNgwbFlLsur64D5jtToEIrcTEjgOGYVtQNJVKa+qDP3S3TwSxQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(23010399003)(10070799003)(366016)(921020)(4143699003)(261021121427099003)(261021135927099003)(10067099003)(261102123227099003)(261102130727099003)(56012099006)(261026121527099003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?V2ZuNzJNa3liMDdSR0VUNUpMK1J4Mkxrd3YweEFCdGFDMjNKSjFySWdqTW9m?=
+ =?utf-8?B?eW0zL3dKV2Y0WGFYNVA1SllVaXNiOTNQWkJyZmEzb0ZvbmJVLyt2Z0UzbDBv?=
+ =?utf-8?B?cldhQXRKUWVVRTRsSWE5c0gzanFGUzdiVTdSWHZoOVh5TDZMMVBlUEo1MmtD?=
+ =?utf-8?B?WUZFeHRCcjNjOVdRc000VWJ5cmxRT3k1QUdudlF1ZnVSOFdXdlY4anU3WC9w?=
+ =?utf-8?B?RVcwNFgySUJwbDYwcjlST0FEWWNhbEdOdFIwRHhNcFA5RjFEUFBmeHZEb0Nz?=
+ =?utf-8?B?dkxKT2ZYQUJUQ0J2MFNUbTZpUnF1b3hrRlBzaFRMMHRRMW5uSGJBVU1pRS9K?=
+ =?utf-8?B?MTJvelp3VFl0OVM2SmROclFjbk9ja1pMbFpJN0R1OUJYdFpLZnEzeTk3SVkz?=
+ =?utf-8?B?VVQxM2toOUtGTnZDMDlCak56T0VzZy9ubEdhc2x0UzFoSkFaMU9rYzdPMUVt?=
+ =?utf-8?B?ZDBHM1VpWE8rOHZrWFF6WktPSGIzZm1iZ1lwUmx3eFJmLzF4YmpMcFNsUnYv?=
+ =?utf-8?B?NHM3ekN0T0l6djN4SlVkN2YvV0YwL0JGaytHQ2xqOTRkQVpnejFZcFFCa2hV?=
+ =?utf-8?B?Q0syamh3U2RxbitGSHpOTy9xRkgwK0F2RGk4Sy81R1hHWmZVenFQbU1XZ2N2?=
+ =?utf-8?B?MG9qZHNkemJXMWM2RDJoanJzQkZtblRrTno1d28rU1RHUDBrMFNLc0FJME54?=
+ =?utf-8?B?R2ppMGtIRnZvU3ZPd2dZNnlNVk1ETzgyVlNzR1RmUGxZUHNpY0VOK3dheVcw?=
+ =?utf-8?B?cXMzMnJNZHN0bWNiZnJXNWpHdUNHY3JqclhyMUwvRzgrWXRYZmdkZHJCc3Zm?=
+ =?utf-8?B?NHlLZVhiVTQ2aTU3QTlGTXJHNTFUNDNVTnJhVHdOWVFIcVFhV2tjSnZibW9Y?=
+ =?utf-8?B?bzlIOUlKemZmTUd1b2F4YjFxa2haV21SZkc0QWFDS1ZGWXFWNlNjVjFYWWVR?=
+ =?utf-8?B?blJjRDRINFJTeFFNSVNkM0VuS2M0bytEMEhNTmpsUnZqMCtreWR1Rzdsc28z?=
+ =?utf-8?B?NWt0VWZnRDE0bi9xdjJaRlMzZzlSbXhaS2ZkWVduSzBIS2tMbFhjdmgybDZV?=
+ =?utf-8?B?WEowSEkrNEd4bC9GQ0t5YTFxVjFYQjFkbVRaSHUwNEFvNmRhYzVLcFBHZ2Fx?=
+ =?utf-8?B?TGc0aGJzb0NBb0paWDdpRHNMTEVaR1NMblVXZDlNM05jR3MrSjZBTzZNeFc4?=
+ =?utf-8?B?bnpvU1lWVUZ0NFNETjRhVE9GeDVJNEdnb2c3VTFEaldkTHdCbHhlZklaNWdS?=
+ =?utf-8?B?KzlCa2pDb0xBK2gxaENOK1FUbmRkVFNXa1dpMVdJRHl2cFZiMDREZTZNWlFZ?=
+ =?utf-8?B?QS9rVkplTGNKdTk5MVpYNjd1b3JIL20vcmdSeGVMYUR3SUxDb053MXAxK2NO?=
+ =?utf-8?B?TklTcGV3SkFEYjR1anVBa28vaFBlYVNnNWpORVBoaEFEVURXUjB2T1hBWkdL?=
+ =?utf-8?B?U01rVnllQzRrb1VRVmlIenFzRDZ0MjB4c29nMzRJZzRiSzRmbkpKVmtlQTRM?=
+ =?utf-8?B?SWxrakNLMU1WN1hJK0EyUktYdTUyVkhOWmpGOGJWcVZzSm1FOXhTY1QxdmJh?=
+ =?utf-8?B?bDcrQnJ0UzF3bWJIeVBkd3JvNXdaOXR2UXdEYStCVzc4Nk9MUm9tbnpDZGRV?=
+ =?utf-8?B?T3ZENVowWXIyK1hlcEpVZE1jVENLR3FkYlVVQzlvWklJcHRVODVFTGJWYWFG?=
+ =?utf-8?B?SS84Uy9ER1dBckZ2cHRTL1VWSnZ2T2VUWUpQUHRqRUtXRGQxcXNpNkJaQUgw?=
+ =?utf-8?B?b3Z4YXVhakNWSGFQWDVtTm5uc0Y0Z1NpMkNINzl6VncwVzVqTlZsVUMrYm9y?=
+ =?utf-8?B?SkFkU09vWjRRekhjM1Y0QzRXdnp0WWtJdkpGYXJteTVyTXJ1cHpKVXpKMDZE?=
+ =?utf-8?B?TXBaeDZOOTQ1L2lJOG5objNibFd1Y1NzcktoNzVYaWVpMjc4N0s0bUFnT2Uv?=
+ =?utf-8?B?Tm1kSEpDRnZMMmoxZUxIMEdMaVRtemVPRjZtaXpkS0RFK3JETkxpUUtsTmtt?=
+ =?utf-8?B?WmREV1hxN2h2MXRQanNNZ3Q1Y1NVZmo3Ny9JSmJkVjZTMmpSTjVQZlZmUHpU?=
+ =?utf-8?B?UHlQbEVCTkhFcVJ0WjBScTlqbHcrTEVTb0dzZTI4NSt0ekt6YkFBeWI2K0xx?=
+ =?utf-8?B?SUFsZmplRkpiQysvSk15bDRQci9lNk0vWURRK3piSjF2RTVJWVQ0R2NpOC8z?=
+ =?utf-8?B?cnMyMXd3Q2VsWEdjaU5BZERpTm5oZ1RFVmxSVnF0QnZ0K0NyK0h6ZzB6MDJM?=
+ =?utf-8?B?THZaVFM4enh3K0M3NFBQZFU4RkVCZHRNTmxnOUlKN3FvYTJTdWJUbkRYMHRI?=
+ =?utf-8?B?QU54Zm1BWmtWcXA4bElVenF3RVUwdnBpS0VucUMramFtakpoOGRoQT09?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a2d7f73-795f-4e3f-edb0-08df400d86f1
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB6051.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2026 16:04:55.4518
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3rhi2L14BQA7GdHUR2YcljAUOho0bacEx13TxrVZzA/YuwKyJyfoqvryn73yTgPVe1KMk9fSVLzQDLg5fjzROA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO0P265MB6727
 
-On Wed, Nov 04, 2026 at 08:25:32PM +0100, Christian Brauner wrote:
-> A capture kernel reads the memory of the crashed kernel, and that memory
-> may well have uncorrectable errors. On powerpc a machine check in the
-> kernel is only recovered from if the instruction that took it has an
-> exception table entry (cf. mce_common_process_ue()). copy_oldmem_page()
-> copies with copy_to_iter(). For a read() of /proc/vmcore that is a user
-> copy, all of whose loads have exception table entries, so the machine
-> check turns into a short copy and read_from_oldmem() returns -EFAULT.
-> 
-> But since commit 4a22fd20379c ("vmcore: convert __read_vmcore to use an
-> iov_iter") /proc/vmcore can be spliced too, and splice(), sendfile()
-> and copy_file_range() copy into kernel pages with memcpy(), which has
-> no exception table entries. A machine check there panics the capture
-> kernel. The same goes for the reads of the ELF headers and notes that
-> vmcore does itself, and those have been memcpy() for as long as
-> copy_oldmem_page() has had its kernel buffer branch, since commit
-> 54c32021eb6f ("[PATCH] powerpc: Add arch-dependent copy_oldmem_page").
-> 
-> Copy with _copy_mc_to_iter() instead. PPC64 selects ARCH_HAS_COPY_MC
-> and there it uses copy_mc_generic() for kernel and user destinations
-> alike, which has the exception table entries. Everywhere else it is
-> _copy_to_iter().
-> 
-> Reported-by: Chris Mason <mason@kernel.org>
-> Fixes: 54c32021eb6f ("[PATCH] powerpc: Add arch-dependent copy_oldmem_page")
-> Fixes: 4a22fd20379c ("vmcore: convert __read_vmcore to use an iov_iter")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Christian Brauner (Amutable) <brauner@kernel.org>
+On Wed Nov 4, 2026 at 6:20 PM GMT, Lorenzo Stoakes (ARM) wrote:
+> rust/exports.c includes the exports_*_generated.h listing the symbols of
+> the core, bindings, kernel and helpers objects, but this is not expressed
+> in its Makefile.
+>=20
+> This worked previously because the headers are always-y targets, and make
+> prepare built all of the rust crates first, which is an implicit
+> dependency.
+>=20
+> Fix this as it is a dependency of the subsequent commit.
+>=20
+> Reviewed-by: Nicolas Schier <n.schier@fritz.com>
+> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
 
-Reviewed-by: Breno Leitao <leitao@debian.org>
+Reviewed-by: Gary Guo <gary@garyguo.net>
 
-The change is the right direction, and x86_64 has the same gap.
+> ---
+>  rust/Makefile | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-arch/x86/kernel/crash_dump_64.c:__copy_oldmem_page() copies with
-copy_to_iter(), the same as the powerpc code this patch changes. x86_64
-selects ARCH_HAS_COPY_MC, and _copy_mc_to_iter() is already available,
-with the _copy_to_iter() fallback in include/linux/uio.h for arches
-without it. The plain and encrypted paths share __copy_oldmem_page(), so
-one conversion there covers both.
-
-PS: I found this because I am looking at x856 production fleet  kdump
-success rate , where first kernel died of an MCE very often produce no
-usable vmcore at all, and makedumpfile never finishes due to this type
-of problem.
