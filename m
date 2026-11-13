@@ -1,90 +1,89 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794580658;
-	b=rVJ4kzs5wpOAkHrh1zWKMq1dU0V4sClT33E/jN9hu+rmbHcHXXbMwcjsA/KF3f7lHqQx
-	 dFUp8br5sIB5QHBrECnv+u1z7S+MfYdf1pCnK0DREXg+BC5sUYTtr4RqwXxlV16WE1Wlf
-	 DNG6H7xJWkVgu9/vZsfl3Jh+Qv4hcHy5AI2TSELXYgBGid/g05hzW9qtgxqIhd0oK0R/U
-	 MIGalRdZ/JE8GrpZ18tILNbsGibVNZuZSLDH57JRUMckkPRgWy76/okPB5Hk2qYMJH2bE
-	 2trJeTnOxbhaqrEtKIKOW641BI3d//tpCI+K/Gshy3YIoA9bPy+u99NN3j1MOKgGoKw==
+	t=1794580718;
+	b=oAWjz+YdJKnNxSi5pfzX/TRONm2Y1eRiH2w+xh/qLT1igTpCzxT6GK1xqHLhKv9c+BT0
+	 6iY6toK0cMbqO3S3lBOA2ph2f9DYQiT78i1Me7PNJK6KbgYY/v78nOcleMZjRGmpWxhT2
+	 IK1Xq3ElC7zoK9QNxRfKIbypDgYB8gaXqMx7gGOfzWScM6kd1nnMaAYoKI1MYIzOGZeM6
+	 8WhYSNJPusHeVTpuTJGkb7rOZ1HNBmpipz00n0jor0/T9xHpY1T6YLZ1YVqRvkwO0DICA
+	 5iMz1IZPz9CkCxP6wDS/X8NrjFa3yptezKOMqqaxkJJll7d3shBZ+ngYI35W5NamA1A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794580658;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794580718;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=C5Ue2mVGxATydDR5iWTMkIC6d9KHtdsgRln9EnTdDBs=;
-	b=yn4+R7cJuF0PDuGJ8VR04jpcz1QQZ82tAZPfkQN19JpQO8R0rIycBbQV+3giNHIgxvNe
-	 XEuc78YJYXSp3alpcSzprh3/zMeF3BBICjy8jagsGBJRD2iFQzqOpnQFWNPvRp7Z2tV2M
-	 Ee01T2nGAlTT7K4k1sYOkUIcgBqK2oaw6rNEqyDBCWfMjdeTGHTYPCQpYuAF6GVn+K20H
-	 DzbXl1lpc+bDEJ9XwSURD4TFES9hA73JZXn8ib5FBGgZfY0U6LcK9C/rvfpvKV4uLW1P4
-	 u/lSNg6OU+x5q5CCpdwMPmq067wmTlU+z+MeuBwOI4Kg453fogjJwGAbQTqK+PIRgNw==
+	bh=tD1P6BYH+TZyZF390atjXANoQij02Bx3ASCtdtlPU2c=;
+	b=OZqiI4o9KcrHEpBBpiBX3wizKyyRqkr9ADOt8f1g6/m1DOQqe/6feHtGKxnIRzacLbO6
+	 xD4YMNI/CwkZFqlnvluGkKL5+LioYklbLqv6kUDvKDMz4XxmGy2FVCTlf3nBHWhKa8s69
+	 Hq3X2kYBCDYgIuBAJmljul1u/YGVA2o94gNxxt237xodGzuSs5nHqIdHlDEO8rMfSpfK2
+	 60jmF7rf8oz7hMMeDQ7xUMdjhgkS7z9vbdNPwZ6Vt0kAzyR9Mb512QqcIT6pluzVEJ0qf
+	 FVSpwfY0xJiebFYIuer/25fmwSvz734i0j/SLjvgdWWMVMU/vyCtDtrtl1xJGEkdz2Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="WR0Yk/P1";
-	arc=none smtp.remote-ip=209.85.128.49
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=DrayMkm0;
+	arc=none smtp.remote-ip=209.85.221.51
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5AE606A334
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2026 14:37:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7D5AE606A334
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE79606A32D
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2026 14:38:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6FE79606A32D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=WR0Yk/P1
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4a2167bd087so7319865e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2026 06:37:38 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=DrayMkm0
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-48e09aa5264so469944f8f.2
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2026 06:38:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794580657; x=1795185457; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20260707; t=1794580717; x=1795185517; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=C5Ue2mVGxATydDR5iWTMkIC6d9KHtdsgRln9EnTdDBs=;
-        b=WR0Yk/P1E3Yfnnzbmt7lQJTEsyuh/Xxa68VCf30i4OLJNGJA6NHmkHB/ELiqypaM4B
-         tnhpRGrNwDtvLaVg/l4/8Qw9WBuw1m4bXkcRsgA4gPEWnIeYTI6L/8you4EXZaFsv8ur
-         w8VLIynMIVGf5ndc7eNX5S4odGHF8mW7Z8kvk97o/DGJndazGs7IOHXyBzepzhitfqKh
-         z10YD2xhcO91qwR275tDw2Rhg2h/+LbPRTF3syx64Xss9HktmGztSn/00/RfZMYuO14N
-         VtbCvAj96PMzCT8nUFhvQ6piqypsdkcAEOVZlVJuR0qnV9EDvs+W4IgeoOyu2i0ozhmQ
-         3iSw==
+        bh=tD1P6BYH+TZyZF390atjXANoQij02Bx3ASCtdtlPU2c=;
+        b=DrayMkm0hkour3+cGj0VBE6bUBFGtmFLAf9KyNUdFZcLqRQLCYFYNjbPggUTNHr+nP
+         4v/ZPvUyChvvsiiqtX5G/jyKvOVeiflkY75nBevCkGpUvAz98oRgt7dQ6E/kApxdJiYe
+         xRzlzYkV9cK+x08IbN6eKk6KMZp1DsEIR0VwFBVDX7y1SlcqjPTK5JCaGZPIno2A6XOC
+         YH/1rFEAMcuYnjIJgZhi3KOhR/8Z36ESFtaXxuLSnlahjMr2LcAQIYdCeIUtaGpiRtzC
+         bwb/mdOOPYJ+uXqhMdyXGZexKMigw7iYahNHFGNiZd6CKsUhYqRen541k7sITmrHJGh3
+         mX9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794580657; x=1795185457;
+        d=1e100.net; s=20260707; t=1794580717; x=1795185517;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=C5Ue2mVGxATydDR5iWTMkIC6d9KHtdsgRln9EnTdDBs=;
-        b=ej+GMnw2ErWcO8rxWiET8rO0bTVfM5E4WXg/xdu6iFHZ/v+jbctFBQoPqWyCSH0m45
-         HgzYs1t+wBVkskFyNAvlKhUWfEl7DNdVAVyWUctKmnAKWuBDSlVXuMxMb9igTZXqx9H1
-         0n5JxzDeZkZHNg9Vs1/Pzet4elvFq8v9wPrJ2D2PtL4TA94KftLo+EoCeGqBJ+gXyPJu
-         nDigcZ6dazJUDfPVTk87EzLcHEGA9laO57/JJnQ0OuJyXQMYuFzRlPIHoYy74SfxEKYT
-         RgGUil4okv7JvO4oNS3BgRB9b08kZLQwS4dQrWE2sQifj5p9pSjqQTRrWzDoC+VkUxj8
-         hD2w==
-X-Gm-Message-State: APuU4Z+wglT8guoT/aVYqh1/rkN95RpLkqEqNQYFdWzX5cb/EjYepirj
-	o3LIMdcfuO6phlvy3F5tCijZkSg0pu5y8L6KtohBIIZrIuK8ubxwpxeu
-X-Gm-Gg: AYBFou0S0RNCdgbaSsPkVZZJ3+nq7ITU144Yz5M3eZcn/VHqA7I9XOgTKVU4OyFn6h0
-	TGMpRUZWSVyoCKqlVLJdERWWHjYA+vSTv/tRV5Ic8atOUGSNajbYA8be8Xe9JiD3lBssaB34vDD
-	y//lu7ISYv4YVgH9AMgOOkf0b1wTpXDoff2oFGv03NM4Gw7+kwRFN6h/lSzOU9lw+nCiwq2Auay
-	Y9UlPQ3V0uL18p/1W1S6z0IV8RXiqOeyS22IZiF2V1o0saTrNcrLc97fapJWSrTGpxpr/qYVox/
-	i7o/GsqaEFcEn1gC5gaV/jE8qLiSkM9MKiwLTroU4V9ZBCQOg8PUdR+TtxUxZkAyQH9XC86BiVb
-	xBdWjwVYG9K2SdJIa8oDX22JZz/nhRo0fFu1iqzAkjaTBYsP5pY9tLuGmt1yMOymX0BMVizb07M
-	K8BgS1FXl8gPi8dDg79oByCZFDMA+bBLkzd0iZ9Mv229B35d8aXbPeY/5PCYZNhseFgWFj22cUf
-	NmzuwhQyyTSZiEr2p9qeaMnMFfhWbLPqj2kp/T4pFWFyKkdSq0SjHgSTyvO9lO7mxg+nM2d5LvW
-	I3drModV4t3ETuqauJycx4dyQb9ygSrDFByO9AmfwxzlKVJSZkjhKkKkN2Id+pfFvTARCyNSZwk
-	epyd/7LPi
-X-Received: by 2002:a05:600c:19d4:b0:4a3:18ca:806 with SMTP id 5b1f17b1804b1-4bb55a5af8cmr59550145e9.20.1794580656582;
-        Fri, 13 Nov 2026 06:37:36 -0800 (PST)
+        bh=tD1P6BYH+TZyZF390atjXANoQij02Bx3ASCtdtlPU2c=;
+        b=Wejg5MDGeTxR2/x9625TVwt9spHG9jyjEgsg/Mgh6VZ8k5hfein7Fbn3ncUj1X23gc
+         0sucZcDd6P+NHr5Gatm9+rqE9Nudq1ZzxBO0nDoj75/00YnzXjeG5epoAY6aXdSyIlmc
+         U5ZhLXosDxFBlzqijjp54zUKHwu7cTXx/v0lxkJvU1kvfejQc+RlRyuEFQRORi2t7HPY
+         X3WYSM3aXxQ2BJIVQQGasEz+B+mEnW7pulHc2vvxvUBDsPl7p8jvTEkge6HuktE5erRF
+         pobq8aHSN2jxKOm+TJ9Zm9K4VtccujkRxs1KOIE2CMSQQzHl6tz6W1Idf5dXUdbrvDQ2
+         8yPA==
+X-Gm-Message-State: APuU4Z/VQKun1WAPurlkPklhhfYVGCNuCU1OTM66q9JtH+6sm3I1WtIU
+	KhSTmiMQzVhMKQUS5iFk4vOUszgAGhT0cqOWDqEDowVfyJc/S+taunpI
+X-Gm-Gg: AYBFou0DxDqnQG4XvblHh5KftoTATChCVXhMfYbJVoMmSZsUVqnZ8hH//BuRHPYsZxs
+	xjwqsI5PPzU2Lb8/OkeesY68U5GoBiHBzd5PHEVMrm8ORrRZPzr3qErzp6Id7raflGlGbsSY2lE
+	eFFNobtQ0bnTWjtGLX2TMdxrqiVMUQTEKP/MxqM3PQ3XBLxbppSOZL02r9T1azNjA9XmpI8QMy1
+	W4XFYm+5GIO+pMQZ//9oFc0g9x9MhLwwO0JnbKBKS027mwujxrgcovjTNue/t3cd33UcGzV+E/p
+	Cn98T3QNf9LKV4uxdxVZ3YM0HeSy3wK9A5Rm3HdfREfFLT8gEVV/VyFJEsjB176u1nOm0kZOAvm
+	e3QTEdFdXHY1ggPY7KtveFkGVoRNNdXraW+jp6L1e43JrMqeIkfxcx1M+r0VEXyP3T+0sJFF0uW
+	6GQThq7RCxyhH26dUc3aR42JoxaXMCKXDwRAvtNqqXJbdWk7olFgHCZTnvyT5cMt9ZNyVeosZQj
+	CzeYtoA3+jFT8IQ7uFqaSukSC2nRGO2wAUkU3mwidnMUFmKpLpCVoWyieHUDKvDLn2SfOas2p6R
+	7jCrMJM3EoQlvE7ivsuomBJ9Iis6tUdvuy2sc+YeGTm90sBLxkJ6PFJB0DH6ys5UQh0RFtR8sKT
+	ZqsvoJ3k=
+X-Received: by 2002:a05:6000:4555:b0:492:820d:1e with SMTP id ffacd0b85a97d-49c73259d2cmr3894871f8f.11.1794580716427;
+        Fri, 13 Nov 2026 06:38:36 -0800 (PST)
 Received: from beelink0 (host86-181-68-246.range86-181.btcentralplus.com. [86.181.68.246])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb55a68c65sm68940435e9.2.2026.11.13.06.37.35
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c609c6451sm6246854f8f.45.2026.11.13.06.38.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2026 06:37:35 -0800 (PST)
+        Fri, 13 Nov 2026 06:38:36 -0800 (PST)
 From: Graeme Harker <graeme.harker@gmail.com>
 To: geert@linux-m68k.org
 Cc: linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org,
-	tsbogend@alpha.franken.de,
 	Graeme Harker <graeme.harker@gmail.com>
-Subject: [PATCH] m68k: irq: Fix irq numbering in m68k_setup_user_interrupt()
-Date: Fri, 13 Nov 2026 14:37:31 +0000
-Message-ID: <20261113143731.167962-1-graeme.harker@gmail.com>
+Subject: [PATCH] m68k: delay: Fix rounding of short udelay() and ndelay()
+Date: Fri, 13 Nov 2026 14:38:32 +0000
+Message-ID: <20261113143832.168233-1-graeme.harker@gmail.com>
 X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
@@ -97,58 +96,124 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-m68k_setup_user_interrupt() is meant to set up the user vector
-interrupts IRQ_USER to IRQ_USER + cnt - 1, as its BUG_ON() check
-assumes.  Since the change to irq_set_chip_and_handler(), however, it
-sets up interrupts 0 to cnt - 1 instead, having lost the IRQ_USER
-offset on the way.
+__xdelay() takes the high word of xloops * loops_per_jiffy and only then
+multiplies by HZ, so the loop count is truncated to a multiple of HZ.
+On a 16 MHz 68030 (loops_per_jiffy 17792, HZ 100) every udelay() below
+57 us becomes __delay(0): measured on such a machine, udelay(10),
+udelay(20) and udelay(50) all take the same 8 us, the call overhead,
+and udelay(100) takes 67 us.
 
-The VME boards pass a count of 192, so the user vector interrupts they
-use are still covered.  Sun-3 passes 128 but requests IRQ_USER + 127,
-interrupt 135, which has been left without a chip, so its vec255
-handler has failed to register ever since.  All of them have also had
-user_irq_chip put on the autovector interrupts 1 to 7.  A machine with
-only a few user vectors, such as one with a single vectored interrupt
-source and cnt = 1, is left with its interrupt on handle_bad_irq().
+Multiply by loops per second instead and keep the high word, which
+truncates by less than one loop; __delay() runs one more loop than it
+is given, so the delay is never short.  As on x86, a factor of 4 is
+moved from loops per second to xloops, so that the product
+loops_per_jiffy * HZ only overflows above 2**34 loops per second
+(34000 BogoMIPS).
 
-Restore the offset.  Only tested on a machine that calls this with
-cnt = 1; the VME, Sun-3, Atari and Apollo callers have not been
-tested.
+ndelay() works out loops per microsecond from loops_per_jiffy rounded
+down to a multiple of 2048, which on this CPU is 1 instead of 1.78.
+With a 64-bit multiply available, use __xdelay() as udelay() does,
+with 5 (2**32 / 10**9 rounded up) as on x86.  The CPU_HAS_NO_MULDIV64
+variants are unchanged.
 
-Fixes: 378f7ca6aa22 ("m68k/irq: Vector ints need a valid interrupt handler")
+Measured on the 68030 (1 s of each, timed by jiffies, interrupts on),
+time per call before -> after:
+
+  udelay(10)     8.0 us ->   18.2 us
+  udelay(20)     8.0 us ->   29.0 us
+  udelay(50)     8.5 us ->   61.5 us
+  udelay(100)   67   us ->  114   us
+  udelay(1000) 1020  us -> 1070   us
+  ndelay(400)    1.8 us ->    7.9 us
+
+About 8 us of each is the call and the 64-bit multiply on this CPU.
+ndelay() now pays for that multiply too, so very short ndelay()s cost
+more; they are no longer short when loops_per_jiffy is small.
+
 Signed-off-by: Graeme Harker <graeme.harker@gmail.com>
 Assisted-by: Claude:claude-opus-5.5
+Assisted-by: Claude:claude-fable-5.2
 ---
-The machine with cnt = 1 is a homebrew 68030 board whose support is
-not upstream: one vectored interrupt source (a 68681 DUART, vector 64),
-which stayed on handle_bad_irq() until this change.
+The 68030 is a homebrew board whose support is not upstream.  The
+timings above were taken on v7.3-rc1 with the multiply written as
+xloops * (loops_per_jiffy * HZ).  The form sent here, with the factor
+of 4 moved to xloops, gives the same loop count whenever neither
+product overflows (compared on the host for loops_per_jiffy from 16896
+to 170000000 and every delay the table uses); it has been booted under
+QEMU (virt, 770 BogoMIPS) but the table has not been re-measured with
+it.
 
-The Sun-3 statement is from reading the code, not from running it:
-sun3_init_IRQ() passes 128, so interrupts 0-127 got the chip, and then
-requests IRQ_USER + 127 = 135.
+Without the factor of 4 the product would overflow above 8590
+BogoMIPS, which a fast QEMU host is within reach of; the old code had
+no such limit in practice.
 
 Build-tested on m68k master (v7.4-rc2) with multi_defconfig,
-sun3_defconfig and virt_defconfig.
+sun3_defconfig, virt_defconfig and m5208evb_defconfig (the
+CPU_HAS_NO_MULDIV64 side).
 
- arch/m68k/kernel/ints.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/m68k/include/asm/delay.h | 26 ++++++++++++++++++++++++--
+ 1 file changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/kernel/ints.c b/arch/m68k/kernel/ints.c
-index cf2b13488476..eb41aace61d4 100644
---- a/arch/m68k/kernel/ints.c
-+++ b/arch/m68k/kernel/ints.c
-@@ -97,7 +97,8 @@ void __init m68k_setup_user_interrupt(unsigned int vec, unsigned int cnt)
- 	BUG_ON(IRQ_USER + cnt > NR_IRQS);
- 	m68k_first_user_vec = vec;
- 	for (i = 0; i < cnt; i++)
--		irq_set_chip_and_handler(i, &user_irq_chip, handle_simple_irq);
-+		irq_set_chip_and_handler(IRQ_USER + i, &user_irq_chip,
-+					 handle_simple_irq);
- 	*user_irqvec_fixup = vec - IRQ_USER;
- 	flush_icache();
+diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
+index 751712f8beea..2d6b18a23f4e 100644
+--- a/arch/m68k/include/asm/delay.h
++++ b/arch/m68k/include/asm/delay.h
+@@ -57,14 +57,24 @@ extern void __bad_udelay(void);
+ 
+ #else
+ 
++/*
++ * xloops is the delay in units of 2**-32 s.  Multiply by loops per second
++ * and keep the high word, so the result is truncated by less than one loop;
++ * __delay() runs one more loop than asked, so the delay is never short.
++ * Scaling by loops_per_jiffy first and by HZ afterwards would truncate in
++ * steps of HZ loops, turning any delay below HZ loops into __delay(0).
++ *
++ * As on x86, a factor of 4 is moved from loops per second to xloops, so
++ * that loops_per_jiffy * HZ may be up to 2**34.
++ */
+ static inline void __xdelay(unsigned long xloops)
+ {
+ 	unsigned long tmp;
+ 
+ 	__asm__ ("mulul %2,%0:%1"
+ 		: "=d" (xloops), "=d" (tmp)
+-		: "d" (xloops), "1" (loops_per_jiffy));
+-	__delay(xloops * HZ);
++		: "d" (xloops * 4), "1" (loops_per_jiffy * (HZ / 4)));
++	__delay(xloops);
  }
+ 
+ /*
+@@ -113,6 +123,7 @@ static inline void __udelay(unsigned long usecs)
+  */
+ #define	HZSCALE		(268435456 / (1000000 / HZ))
+ 
++#ifdef CONFIG_CPU_HAS_NO_MULDIV64
+ static inline void ndelay(unsigned long nsec)
+ {
+ 	__delay(DIV_ROUND_UP(nsec *
+@@ -120,6 +131,17 @@ static inline void ndelay(unsigned long nsec)
+ 			       (loops_per_jiffy >> 11)) >> 6),
+ 			     1000));
+ }
++#else
++/*
++ * The shifts above round loops_per_jiffy down to a multiple of 2048, which
++ * on a slow CPU loses most of it.  With a 64-bit multiply, use __xdelay():
++ * 5 is 2**32 / 10**9 rounded up, as on x86.
++ */
++static inline void ndelay(unsigned long nsec)
++{
++	__xdelay(nsec * 5);
++}
++#endif
+ #define ndelay(n) ndelay(n)
+ 
+ #endif /* defined(_M68K_DELAY_H) */
 
 base-commit: 8c9ddebb300c719362a52a2d465f44e7d055778d
+prerequisite-patch-id: d8f836f1e047af08e6fff01d411b44e442086214
 -- 
 2.53.0
 
