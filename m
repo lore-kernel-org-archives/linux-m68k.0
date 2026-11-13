@@ -1,101 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.175
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531384;
-	b=z2ng5wkEm/Ux1r9CpT0ZUgHiA3CB9LKfd2x8Ctw6ccT/HEYub01O2pm8nKeGYuIBVAoT
-	 RmNsz2JOlwo4dxQHqqtYH5ePHDYO9RJqoohCKHuy9SiCmtkVrb5oKyiEqc6TCcVXDqFjY
-	 DrAPoiEVmyUO/rkp6vvRaqqcd8Yy2luDnb2S6zxaDQmnazjBuBjJ8VJDLgwgKuGasuBsm
-	 cQ1CCgUWzIq26H6vt3myxT+8SVkerM3olcx3X7hGIba5ZgeEF4bVyxdx8TI64vq64qJMF
-	 8Hfz6mWFnsGDidJbBjmrRmfoC659BvC488Nh6WLpax6oJbc7X/c2oCJBaet5AMoEJUw==
+	t=1794535538;
+	b=dXXyu3luiIpNOFISck8cHHPDmKNk1OxHi0l0zURM6s/mYn3WHlCFiDiyOgkoL+tW6RGF
+	 uZkbBBUfRZgqYjmysbLM+bLQZX+8asreRC1E6y7oHBylJuK1MFcskMmN8nMzWtL2qNkSy
+	 bMGsnRFmNY3t433au/GE2N8CZvfK6bLhzDF0T9GWxLan7AfzWtD6QWh+kx28OjXNFZ66e
+	 PS44zI9apmLT1bnIjmZmCarhvdjfgExouo7nWqag9QZqHSk48b8zTmwd9BG/8iEEdTO2A
+	 xUUKbsoLKl/t0fcRbyH9W0vKjVSH5xST9MezPbVK7cP5CcyW7FH30B7rdKtGZ56dKhA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531384;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794535538;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=CtRGBfCvPjk6NMUwk6EELxmj4aN2F/fvH5mMHwm0bys=;
-	b=GscEi2IQKuCG7j/JdGRTGgC5Kf66utcTWlbtvP91+jYG4Fn0lzdATHCXnZq1cDs132XI
-	 LZQkQ2qBqYOXHw8J3erBdfgdF3VKZF/9lezIo1ughn6hUNI5yd7j8rYgj1noBZZFKg4T8
-	 aKX7TFh1TfleTh+0MvbXvlYxK/qtN3QtlKcj41qCo8PfOajD0+BVewPNYg+BpMYnzdFEx
-	 M4P3GiGHfN2pSfnAE4n5JN+sUsCSgUzLopt4D6z+4VIZzu2ktV10QT7TPcKSLInDq/Z1K
-	 Xq/lCurvCialXUEmzM7z4rcvT/XCNZVxg89Wo4CPbmGyj+FdVOMwg3dBxU7Fznrru7g==
+	 Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Content-Disposition;
+	bh=S4imppLOyvDXcuLb3YL+/0kdZASSKJjGPDiIRvfutk8=;
+	b=TM9yAW0QNUTLd7TCHZ4OEjdqDOZmxo5kuUXeAcNOP+Jf8cvolahFxY8XR+KcAQQkk7W0
+	 PZO14GMkQf05yijtPzxmIOLhqA9r09p961J4QcQ5DRiT6JSri9oDOoIhKBBG9l09TGLFf
+	 Vyi5fpX7VIGhsB788Scx7026LNZsZWX0TJ9PZ1mavLvOzA6+oVdeWRbgANWFEn0n0q0fb
+	 px61NS38go8SCyB8Pk+w2+QSXgMj4wOVyN31J6VSPO9jFMtxf5rVOmVDX7np9n1L2acTC
+	 /2273NZxA8b3nXIDWRfxcACWqRVrgH+HHQCwM/SXIagV5sSJy/QV0XX3eXTuXdi0umA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="YNwWTIA/";
-	arc=none smtp.remote-ip=209.85.216.48
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UWnm0WPf;
+	arc=none smtp.remote-ip=74.125.82.175
+Received: from mail-dy1-f175.google.com (mail-dy1-f175.google.com [74.125.82.175])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BEB0606A321
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2026 00:56:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4BEB0606A321
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC4A606A327
+	for <linux-m68k@vger.kernel.org>; Fri, 13 Nov 2026 02:05:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2EC4A606A327
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=YNwWTIA/
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3b0d0b80fb9so365623a91.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 12 Nov 2026 16:56:24 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=UWnm0WPf
+Received: by mail-dy1-f175.google.com with SMTP id 5a478bee46e88-33bf40b0c8bso1086729eec.0
+        for <linux-m68k@vger.kernel.org>; Thu, 12 Nov 2026 18:05:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794531383; x=1795136183; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=CtRGBfCvPjk6NMUwk6EELxmj4aN2F/fvH5mMHwm0bys=;
-        b=YNwWTIA/HZ2bjFtsG/6pfMBRSSX8BUBeixSGp5jcQbBKJGx+6D1vSqf9XUb53Bc205
-         drMoENc+V3WF7WyeEf7SGNsFYBgGYrhS7M0n9AcA4qlKyINAreiLbqHnP39fxEE2kfqY
-         oQ9kirHtw520rGeMi+lFrp7OB+qIKxtNcj7cG2JQ3U21Lrcwi6KmVnJ1NdU1Dgk6gvgx
-         NyBOMQS6ovRccd01KZuMx1kAnKT59PBm0VHf5ClqSg4u5Vag1qqUvH1SbMM+UI2SYJTf
-         4VM+rB2hdR6dbUDqd3BPgSRDrDnqGWy6TTFGkWT60LVqzkleDKXntPir5SoPHLP6nOBe
-         trQg==
+        d=gmail.com; s=20260707; t=1794535537; x=1795140337; darn=vger.kernel.org;
+        h=content-disposition:content-transfer-encoding:content-type
+         :mime-version:references:in-reply-to:subject:cc:to:from:message-id
+         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=S4imppLOyvDXcuLb3YL+/0kdZASSKJjGPDiIRvfutk8=;
+        b=UWnm0WPfGRw9mYF/UemNGbctgOrYjn3N6rMqRS6w7GWRBITbt48RUqkF3EyLr15NR9
+         KrjA20Ej3+31Aw+CtesnYsGy3+zt317COTexb00voSesuKJXUf00ErPdB08gaPIRgAc7
+         LR9r3mg4xLKXXdZzACaJgOXeB0A5MKY2vCb2HQwahmS+Xk3FCnGWkNwV+Yon8PEFovXK
+         QjjK1SYXeDpsYYAcCkuHTXpfdmBY/rjNzl/vigvsEijkv+/dPrsxQfbg87w7Do6RKTUL
+         5VH8JdtEy8/f/K1N+fDuxHWN6Ymhqm4gcgHzVFh4KcyQ1NL0lPJQUmLBGTnD+HQ90LkV
+         2S2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794531383; x=1795136183;
-        h=content-transfer-encoding:content-type:mime-version:message-id:date
-         :subject:cc:to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=CtRGBfCvPjk6NMUwk6EELxmj4aN2F/fvH5mMHwm0bys=;
-        b=pcIqCxfy0EsD90NPLzUF8JEWKy/mIvNDjdkdBLb5scdu9xhQmAyjDZjidui2CKciFv
-         ndOIjHGZd14DzAbIyFr+VA5QxHaHcWhGyUJr98zd2uyrw1MwGwyMdZJhfu2I62ESUhaJ
-         kJNMNOnMuym8wSAREBJ46E7wEH3XNHqBTVfdUcgZvie/yMMYm7A/bcseJSGmJhUXdz94
-         v+xDNUIEYWcjtbgd7HBjeHWezEClf3GpgAaCSAJpqeuPYvmNHNnhl1Zn0oaLgFGskF+H
-         ev/R+FPUFCRXQhJ8p90KZkIwgHsDM6xvTQ3jn3WdvL3/6zWJ7lmqKbkPanZTEM6zgYDA
-         UCSA==
-X-Forwarded-Encrypted: i=1; AL+hErGrqkZ/0GxOZNkwA4y0Ttdhl9Jc4d7CT1SjRQQhmVTI86MNSVFkA1s2yOlyNq5CxcNrD8Ye92EOOrLF@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z/VRxGU5/P20CKypO1sibgMn0LpRROGqDb5u6PM6Tz/gJQ1CPMk
-	HQPTjvKrI5ARif4HAeBmYbfcwIIPsmdn6/q2XdePAqrsMrO1xlQ07wMn
-X-Gm-Gg: AYBFou1Itrs/8/G+YfYXDqgY+fbBhIASaqItgemdRs4apZ0wOnkF4dI2LarhJ81Zy/P
-	NErdjceX0+9nJ4pBQPCFizPs+fkCbrkqQG3w2pOHJuMh3C5uiBoVG9xkiLYjXT8X42mQGCkjuR6
-	7DYrzTbGAROIVzppQAq+f9RayOupoOticxLgoeWkm3rhZ5cHd/1PVapBA3Q1BwWmk61vWQRN/ZV
-	1HlOlBFC5K7A0ktqLeNsLp2RHVQufxf1XuTIH1TDE/kNTb44gLxubQUWYusOoEDKiKxdvj8nG4W
-	n6iKG3niuZh50pg3vN+a3gNEIUpdI78WfoeixYDETKvqKH4PoTQKEc1J7zFLQzKtXW2wGT7TPA2
-	8lS1zkGleKIwVhZsfRqe7ymm24D4tGyBtWMj8qqrg6PNvqT3SPjJ6/UBh6hfVJAEngxydjh6bIW
-	L2chDjsP0HqUm+tBTS35ABwR/RWb/IFFQWWODMonqOlt/fnufTwKvplh5jEL8iXP52+wtgXpVuk
-	JmYIwQt6UzfCWW9osMUQ+w80DQ5M+xjScWxM83J8YDuecIKKcI4KSbvGdimCvcmGiqxP8cXnIXF
-	aXgzBT+u6qpuEccx+TZ6onvICNW+tF8yEBzY1JgjEqd1aIemVbEDYYz8hMlMuZkKJW0kG6T7Hy3
-	qbJ0nU5EqPPmyFIHzarju2/FiI1xm0AQNdDHYbBfSMAJvP77k1wZueVWXcsrKjhqVplJDjZWdVy
-	lGoNl8oWR3pKAaAMAgSnEMN6rI2GCivd4jo6UMiEAX0anRxV5HuW+M/LxLOM042cx0a/mVtVfOq
-	/gkvOjxNoAssBDdo9fAFCY6
-X-Received: by 2002:a17:90a:d883:b0:3a4:b74a:795c with SMTP id 98e67ed59e1d1-3b1b09f3b50mr619305a91.16.1794531383375;
-        Thu, 12 Nov 2026 16:56:23 -0800 (PST)
-Received: from lenovo.localdomain (42-155-215-210.ipv4.nexon.net.au. [210.215.155.42])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ee0f75c86asm2351735ad.23.2026.11.12.16.56.19
+        d=1e100.net; s=20260707; t=1794535537; x=1795140337;
+        h=content-disposition:content-transfer-encoding:content-type
+         :mime-version:references:in-reply-to:subject:cc:to:from:message-id
+         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=S4imppLOyvDXcuLb3YL+/0kdZASSKJjGPDiIRvfutk8=;
+        b=1EzcFxxtJP8v2iHEoP8fQ6uJRX9TeGVnL28Z0iP90WUsH9BClDOQw8eCz0KC+smEck
+         h73kqqd3TDuWPQ0sJPq7bonl5kpjr4+NSBmIYInUhlzEzlJtTjCO9BHMlFGPnptYW1w/
+         8yyIiCz1xUz76t5nA/TkqvWfH4vm5dRQrrqZzgcQltPDVr8UXZjdQAIG9jYuTr0dm+Bs
+         vDWLx+qmBBPpzqBJYPKVLGBIkK9wE8PhU4Mp3M/BpuenKt3JJ2w3eWvviwQ8K6UMhOO6
+         EcbhZ8IxgTKt313Qw5Vyez+AEupQQqTYe5WOIyjv1+Kxl13cepyA8VS5Gti0/ACbvlBS
+         2pDw==
+X-Forwarded-Encrypted: i=1; AL+hErGH6ealzNBaosuVpxFZ9M8b7XJfupapvH6RoHx0a1B4c8WX4ZoT0kTAe0ATU5EY7kNG12NRHgZy0Mfv@vger.kernel.org
+X-Gm-Message-State: APuU4Z9BDASd7VvmF7GIV7tgMFEr+UG/uWmJIecPkHr8WpYRw9A3XS8p
+	6bG5kaZ+3flLJwbDmj8BOG8HX76Genj43Bvy3BsfwUKmIADsfkwJXZhO
+X-Gm-Gg: AYBFou3vLd1Z3EecaxFHvrQTB3Szh1VpEun6EVLqgMn2h6c1R0os5iEEPPnYnp3HyAJ
+	ghbyrWmVGCqvj7IfiPrcz/z84FYdun21aKSiAx1WdCDGY9jE5vXhdHRQiRpQwBsaDyf5BGTHfQP
+	UG6swkfLi1Ugn7LE245i1JDCWiXyp/kq38ftuUUE4guKOx2JBlEvutyDqAtIEo+GoVMSRmCanqf
+	3OFG5+sg22rruWYaLrm45babqvgX1G76dKfQ/07UfbO5mIWY1esmAF3OUkNvp8eFcitPez+/kQN
+	N6V6aOynVYTWejMFzV4NmM3uqg+1A722XKshhA8EOvKB+YJYw4NZ80UepIfoS097PQ6JYu9SW8t
+	Vtj2ndctCFb+d+pV2rXf+7rx2L3vjXyiLBA1j679mAgbFi/6rX6igGbqQVM/yVT7u7koK53x6ms
+	WBLOswUinMDJmGgP0UpkJ73FTjYg81P40DjuisyGgEH6OkUznEPcXBe14KxSn/ZgTsAOvbFJzRt
+	SuTfcYG4kBDR6pq7LFH18f4azqie7B/PwO49fvGX/9UKYj4I50qXr9k2kLy8K1VKqhm8H41izNN
+	QdZuBBNDCSsAHZy418oQhf4nFmjGepyOhzOKKvBaVmxjuWPn2JGOf8izSfxd94AplnzF8g==
+X-Received: by 2002:a05:693c:88c3:10b0:36e:4aaf:6c7b with SMTP id 5a478bee46e88-3796740c786mr885305eec.39.1794535537128;
+        Thu, 12 Nov 2026 18:05:37 -0800 (PST)
+Received: from localhost ([2a00:79e0:2ebe:8:48f1:7a0b:9bfb:4205])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-37955f01d68sm2342174eec.17.2026.11.12.18.05.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2026 16:56:22 -0800 (PST)
-From: Miro Kropacek <miro.kropacek@gmail.com>
-To: deller@gmx.de
+        Thu, 12 Nov 2026 18:05:36 -0800 (PST)
+Date: Thu, 12 Nov 2026 18:05:35 -0800
+Message-ID: <5a9a39b3d7b0e7fe0b1924fe0f97d14b@gmail.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Miro Kropacek <miro.kropacek@gmail.com>
 Cc: geert@linux-m68k.org,
 	schmitzmic@gmail.com,
-	lilinmao@kylinos.cn,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Miro Kropacek <miro.kropacek@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] fbdev: atafb: Restrict SuperVidel handling to the Falcon
-Date: Fri, 13 Nov 2026 10:56:16 +1000
-Message-ID: <20261113005616.402721-1-miro.kropacek@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	linux-m68k@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] m68k: Fix atari mouse movement
+In-Reply-To: <20261021022336.2232886-1-miro.kropacek@gmail.com>
+References: <20261021000338.2160223-1-miro.kropacek@gmail.com> <20261021022336.2232886-1-miro.kropacek@gmail.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -105,84 +101,25 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-A framebuffer at 0xa0000000 or above is taken as being in SuperVidel
-RAM. A TT with a VME graphics card such as the Nova has its framebuffer
-there too, so in 8bpp it gets the Falcon palette registers instead of
-the card's VGA DAC, and in 8, 16 and 32bpp the SuperBlitter, which it
-does not have.
+On Wed, Oct 21, 2026 at 12:23:36PM +1000, Miro Kropacek wrote:
+> Kernels are built with -funsigned-char since version 6.2, resulting in
+> the signed 8-bit position deltas reported by the IKBD being
+> misinterpreted as unsigned.
+>
+> The hook is handed a raw IKBD packet, so take it as a byte stream and
+> apply the sign to the two displacement values alone.
+>
+> Fixes: 3bc753c06dd02a35 ("kbuild: treat char as always unsigned")
+> Link: https://lists.debian.org/debian-68k/2026/08/msg00000.html
+> Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
+> Cc: linux-input <linux-input@vger.kernel.org>
 
-The SuperVidel exists only for the Falcon, so check for the Falcon video
-hardware as well.
+Applied, thank you.
 
-Fixes: 51df976c3268 ("fbdev: atafb: Add support for further video bit depths on atafb:external")
-Fixes: d463633d63e6 ("fbdev: atafb: Add support for SuperVidel's SuperBlitter")
-Cc: stable@vger.kernel.org
-Reported-by: Christian Zietz <czietz@gmx.net>
-Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
----
- drivers/video/fbdev/atafb.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/video/fbdev/atafb.c b/drivers/video/fbdev/atafb.c
-index c32576cb1720..5d9265caa9ab 100644
---- a/drivers/video/fbdev/atafb.c
-+++ b/drivers/video/fbdev/atafb.c
-@@ -2065,6 +2065,15 @@ static void st_ovsc_switch(void)
- 
- #ifdef ATAFB_EXT
- 
-+/*
-+ * Only a Falcon can have a SuperVidel; a TT with a VME graphics card can
-+ * have its framebuffer in the same address range.
-+ */
-+static bool ext_is_supervidel(void)
-+{
-+	return ATARIHW_PRESENT(VIDEL_SHIFTER) && external_addr >= 0xa0000000;
-+}
-+
- static int ext_encode_fix(struct fb_fix_screeninfo *fix, struct atafb_par *par)
- {
- 	strcpy(fix->id, "Unknown Extern");
-@@ -2083,8 +2092,7 @@ static int ext_encode_fix(struct fb_fix_screeninfo *fix, struct atafb_par *par)
- 		 * SuperVidel 8bpp chunky (fb in SV RAM) uses the Falcon palette
- 		 */
- 		int visual = (external_vgaiobase ||
--			      (external_depth == 8 &&
--			       external_addr >= 0xa0000000)) ?
-+			      (external_depth == 8 && ext_is_supervidel())) ?
- 					 FB_VISUAL_PSEUDOCOLOR :
- 					 FB_VISUAL_STATIC_PSEUDOCOLOR;
- 		switch (external_pmode) {
-@@ -2181,7 +2189,7 @@ static int ext_encode_var(struct fb_var_screeninfo *var, struct atafb_par *par)
- 		var->transp.offset = 24;
- 		var->transp.length = 8;
- 	} else if (external_pmode == FB_TYPE_PACKED_PIXELS &&
--		   external_depth == 8 && external_addr >= 0xa0000000) {
-+		   external_depth == 8 && ext_is_supervidel()) {
- 		/* SuperVidel 8bpp chunky: palette has 8 bits per channel.
- 		 * Without this, fb_get_color_depth() sees length 0 and
- 		 * fbcon falls back to its 2-color palette — the console
-@@ -2245,7 +2253,7 @@ static int ext_setcolreg(unsigned int regno, unsigned int red,
- 		return 0;
- 	}
- 	if (external_pmode == FB_TYPE_PACKED_PIXELS && external_depth == 8 &&
--	    external_addr >= 0xa0000000) {
-+	    ext_is_supervidel()) {
- 		/* SuperVidel native 8bpp chunky scans out via the Falcon
- 		 * palette registers, honoring all 8 bits per channel
- 		 */
-@@ -3336,7 +3344,7 @@ static int __init atafb_probe(struct platform_device *pdev)
- 		memset (screen_base, 0, external_len);
- 
- 		/* framebuffer in SV RAM: enable the SuperBlitter */
--		if (external_addr >= 0xa0000000 &&
-+		if (ext_is_supervidel() &&
- 		    ((external_pmode == FB_TYPE_PACKED_PIXELS &&
- 		      external_depth == 8) ||
- 		     (external_pmode == -1 &&
 -- 
-2.43.0
-
+Dmitry
