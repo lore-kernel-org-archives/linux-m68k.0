@@ -1,90 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.51
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794580718;
-	b=oAWjz+YdJKnNxSi5pfzX/TRONm2Y1eRiH2w+xh/qLT1igTpCzxT6GK1xqHLhKv9c+BT0
-	 6iY6toK0cMbqO3S3lBOA2ph2f9DYQiT78i1Me7PNJK6KbgYY/v78nOcleMZjRGmpWxhT2
-	 IK1Xq3ElC7zoK9QNxRfKIbypDgYB8gaXqMx7gGOfzWScM6kd1nnMaAYoKI1MYIzOGZeM6
-	 8WhYSNJPusHeVTpuTJGkb7rOZ1HNBmpipz00n0jor0/T9xHpY1T6YLZ1YVqRvkwO0DICA
-	 5iMz1IZPz9CkCxP6wDS/X8NrjFa3yptezKOMqqaxkJJll7d3shBZ+ngYI35W5NamA1A==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794580718;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
-	bh=tD1P6BYH+TZyZF390atjXANoQij02Bx3ASCtdtlPU2c=;
-	b=OZqiI4o9KcrHEpBBpiBX3wizKyyRqkr9ADOt8f1g6/m1DOQqe/6feHtGKxnIRzacLbO6
-	 xD4YMNI/CwkZFqlnvluGkKL5+LioYklbLqv6kUDvKDMz4XxmGy2FVCTlf3nBHWhKa8s69
-	 Hq3X2kYBCDYgIuBAJmljul1u/YGVA2o94gNxxt237xodGzuSs5nHqIdHlDEO8rMfSpfK2
-	 60jmF7rf8oz7hMMeDQ7xUMdjhgkS7z9vbdNPwZ6Vt0kAzyR9Mb512QqcIT6pluzVEJ0qf
-	 FVSpwfY0xJiebFYIuer/25fmwSvz734i0j/SLjvgdWWMVMU/vyCtDtrtl1xJGEkdz2Q==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=DrayMkm0;
-	arc=none smtp.remote-ip=209.85.221.51
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=172.234.252.31
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794647766;
+	b=HPNjQCBaUQ18HcuyOHWPYzpvHcOCz/+UJcZuD+ErfvLaYXP8VqnG1xXFvjfgJy2RIBBW
+	 wLDs7aAr3/yTC8wmwT15y51ALdB3xH8F3Y5U3Sb1g2DxNDQoKyasu0ICaZWoMNR9Ryblh
+	 CSiBFBcUGm3+bFvqUwhPjwzxWVJcobhccBrTdXJLlYkSXowSNXI/RiYGOsZwfpFixkaM8
+	 vuvbMUGIZUMEHCnaqpRD7d8Y1WyVcWb6DUv5/+LLkTFe/93RaTyJvEroneYzATfx1bs0/
+	 4A9FkJyNzafTcXc+JGR5K4JA3xBtSKsZvwP2/isg+e8QqOHgOjilahsZ4U2Gr3h6R+w==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794647766;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Received:From:Date:
+	 Subject:MIME-Version:Content-Type:Message-Id:X-B4-Tracking:To:Cc:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=aTbbdR/qOGATnnoTFgzD+rURB4vEOXobvcmYmJirh24=;
+	b=af94sV3yHcSVYIVsU+rNr/l5HW/o5Fn8+Du5kbiLPbj6jqrMdM2DAwTqiGe7h6agTb0p
+	 sk432eOWYlkbleRYDtgX0rfdFPAG+ihA69MtnZgNqO/9o4LSm+7ErAc+JGRjsF53yZoOT
+	 A6N8eauuPfpgOtMjycgfAdI+rpUsIL1htha7h/bN+3uneHyvo9Bs+/Rx5ZtcXhJtyu5bs
+	 cBnrYa7LBj721r0/kNYrZmcVhnt5OPJtPbzk125mlMkYs3Sz5auHw3odoOimODs8KrXnO
+	 Gp3dfIwQxxa9YeLC8rZydvQP0OxvTpl56CcXXKJI8aW2yPwk4loBODrA0FWtlWE/VEA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=kernel.org;
+	spf=pass smtp.mailfrom=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JKyyNaFO;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE79606A32D
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2026 14:38:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6FE79606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B696606A332
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 14 Nov 2026 09:16:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9B696606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=DrayMkm0
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-48e09aa5264so469944f8f.2
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 13 Nov 2026 06:38:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794580717; x=1795185517; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=tD1P6BYH+TZyZF390atjXANoQij02Bx3ASCtdtlPU2c=;
-        b=DrayMkm0hkour3+cGj0VBE6bUBFGtmFLAf9KyNUdFZcLqRQLCYFYNjbPggUTNHr+nP
-         4v/ZPvUyChvvsiiqtX5G/jyKvOVeiflkY75nBevCkGpUvAz98oRgt7dQ6E/kApxdJiYe
-         xRzlzYkV9cK+x08IbN6eKk6KMZp1DsEIR0VwFBVDX7y1SlcqjPTK5JCaGZPIno2A6XOC
-         YH/1rFEAMcuYnjIJgZhi3KOhR/8Z36ESFtaXxuLSnlahjMr2LcAQIYdCeIUtaGpiRtzC
-         bwb/mdOOPYJ+uXqhMdyXGZexKMigw7iYahNHFGNiZd6CKsUhYqRen541k7sITmrHJGh3
-         mX9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794580717; x=1795185517;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=tD1P6BYH+TZyZF390atjXANoQij02Bx3ASCtdtlPU2c=;
-        b=Wejg5MDGeTxR2/x9625TVwt9spHG9jyjEgsg/Mgh6VZ8k5hfein7Fbn3ncUj1X23gc
-         0sucZcDd6P+NHr5Gatm9+rqE9Nudq1ZzxBO0nDoj75/00YnzXjeG5epoAY6aXdSyIlmc
-         U5ZhLXosDxFBlzqijjp54zUKHwu7cTXx/v0lxkJvU1kvfejQc+RlRyuEFQRORi2t7HPY
-         X3WYSM3aXxQ2BJIVQQGasEz+B+mEnW7pulHc2vvxvUBDsPl7p8jvTEkge6HuktE5erRF
-         pobq8aHSN2jxKOm+TJ9Zm9K4VtccujkRxs1KOIE2CMSQQzHl6tz6W1Idf5dXUdbrvDQ2
-         8yPA==
-X-Gm-Message-State: APuU4Z/VQKun1WAPurlkPklhhfYVGCNuCU1OTM66q9JtH+6sm3I1WtIU
-	KhSTmiMQzVhMKQUS5iFk4vOUszgAGhT0cqOWDqEDowVfyJc/S+taunpI
-X-Gm-Gg: AYBFou0DxDqnQG4XvblHh5KftoTATChCVXhMfYbJVoMmSZsUVqnZ8hH//BuRHPYsZxs
-	xjwqsI5PPzU2Lb8/OkeesY68U5GoBiHBzd5PHEVMrm8ORrRZPzr3qErzp6Id7raflGlGbsSY2lE
-	eFFNobtQ0bnTWjtGLX2TMdxrqiVMUQTEKP/MxqM3PQ3XBLxbppSOZL02r9T1azNjA9XmpI8QMy1
-	W4XFYm+5GIO+pMQZ//9oFc0g9x9MhLwwO0JnbKBKS027mwujxrgcovjTNue/t3cd33UcGzV+E/p
-	Cn98T3QNf9LKV4uxdxVZ3YM0HeSy3wK9A5Rm3HdfREfFLT8gEVV/VyFJEsjB176u1nOm0kZOAvm
-	e3QTEdFdXHY1ggPY7KtveFkGVoRNNdXraW+jp6L1e43JrMqeIkfxcx1M+r0VEXyP3T+0sJFF0uW
-	6GQThq7RCxyhH26dUc3aR42JoxaXMCKXDwRAvtNqqXJbdWk7olFgHCZTnvyT5cMt9ZNyVeosZQj
-	CzeYtoA3+jFT8IQ7uFqaSukSC2nRGO2wAUkU3mwidnMUFmKpLpCVoWyieHUDKvDLn2SfOas2p6R
-	7jCrMJM3EoQlvE7ivsuomBJ9Iis6tUdvuy2sc+YeGTm90sBLxkJ6PFJB0DH6ys5UQh0RFtR8sKT
-	ZqsvoJ3k=
-X-Received: by 2002:a05:6000:4555:b0:492:820d:1e with SMTP id ffacd0b85a97d-49c73259d2cmr3894871f8f.11.1794580716427;
-        Fri, 13 Nov 2026 06:38:36 -0800 (PST)
-Received: from beelink0 (host86-181-68-246.range86-181.btcentralplus.com. [86.181.68.246])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-49c609c6451sm6246854f8f.45.2026.11.13.06.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2026 06:38:36 -0800 (PST)
-From: Graeme Harker <graeme.harker@gmail.com>
-To: geert@linux-m68k.org
-Cc: linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Graeme Harker <graeme.harker@gmail.com>
-Subject: [PATCH] m68k: delay: Fix rounding of short udelay() and ndelay()
-Date: Fri, 13 Nov 2026 14:38:32 +0000
-Message-ID: <20261113143832.168233-1-graeme.harker@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JKyyNaFO
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 07860422BA;
+	Sat, 14 Nov 2026 09:16:05 +0000 (UTC)
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794647764;
+	b=dBLdDI+yUPUGXc/CJnrCjRxR66hxZ5WY2ZQSkCsuiJ36BCAa0ZqYTwcqtlfKJCf/W4dV
+	 vsCoKDOpl/Cgxw2ed9D73LgIa6YbGBQZivP/iosCqrjeu1paLN4gF10PnS9TxyR//kerN
+	 EPAqIsKMpTgNb1JIFpURZEMHqo6180AmoMHM+rUqJPkqzeEwQ7FDrkInvcEpFSBq40I7j
+	 Py7pmzDDqliaEXqu3Nd26+CiN42Lg6pUrHLJZkXbM3Dmy8qOcgViWw/M+FvoTSOFbmJpf
+	 WKc17l58N8ut5krHxuH06n5eZ4CkE986MudqXOD8UhzT2G6XRy+wUiSZWeSkL4LytSg==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794647764;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:X-B4-Tracking:To:Cc:X-Mailer:X-Developer-Signature:
+	 X-Developer-Key:X-Endpoint-Received:X-Original-From:Reply-To:
+	 Content-Transfer-Encoding;
+	bh=aTbbdR/qOGATnnoTFgzD+rURB4vEOXobvcmYmJirh24=;
+	b=tKfHS/c+u5a78ISKXu1JfmibKwdzr9SNuVZ/C4vGdVjEEBIegOWfKwk6B4Hdv1uMN0zh
+	 6gbfgUzxr02EYiX7MsVId90ptRn47qa7fZ+589EgxX+6DtpanNMVXAzKfIMVFFjS8iaEF
+	 HeEo2ikCzFmo0jhIYhwHPCJxWhpVcvGFUuEd3C3XcP1QiVUCAuZH+zpNE3igdG2omr58Q
+	 xSKaYIDj7OXJqYpuIYnXope/P2ekWSdsvb9xeq2hYGfdSO+/YahXHZsC6+b0ZGfxU1g/a
+	 95ATw/U97w9AG8q//ZbtiauxqRVa2t7kUti5D1FsHR+Jw3r8Yn6j1aJ97OIvBYJkdgA==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id 5AABC1F000C4;
+	Sat, 14 Nov 2026 09:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794647764;
+	bh=aTbbdR/qOGATnnoTFgzD+rURB4vEOXobvcmYmJirh24=;
+	h=From:Date:Subject:To:Cc:Reply-To;
+	b=JKyyNaFOKXbflHODQH29tH9/KDb3FHKRx3R8VMhymozPNDCO4ct+o8HGBTkRs/acY
+	 zmEzAkzAc+Y1pe6v3duHCvljzcjZBmifdRFFiC2rZ4TfJ69Q/MQf6r2fjPmLbDDmom
+	 IC9/dm/W1SueHBG4p6paAq2N9UcN3/Fwy1mASlgVHQe68nNcGQq7iagBOWXB2rmq6p
+	 xSnBnvGPT68JtGK+ukiKriAh4emlEyS00FXRMWJH4sZDoMTn5YHqjixoQmsPbbHYFD
+	 J/AoFTvJKfmfLA5JuNNIPhRnxNn576z/aY2SHiq5hk4LNbzhVS5+I4AhiGpNyyxPug
+	 rHQ5cH8MikT8A==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id AE0E549D11;
+	Sat, 14 Nov 2026 09:16:03 +0000 (UTC)
+From: Christian Zietz via B4 Relay <devnull+czietz.gmx.net@kernel.org>
+Date: Sat, 14 Nov 2026 10:15:49 +0100
+Subject: [PATCH] m68k: Preserve fixups during dead code elimination
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -94,126 +90,118 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261113-fix_deadcode_elimination_for_tt_ram-v1-1-a6aa8e7cb90c@gmx.net>
+X-B4-Tracking: v=1; b=H4sIAMQm+GoC/x2OUQqDMBBEryL73UCTlqC9SilhTTZ1ocayCSKId
+ +/az8fMPGaHSsJU4dHtILRy5aUo2EsHccLyJsNJGdzVeWvtzWTeQiJMcUkU6MMzF2w6CnmR0Fo
+ QnI33bhhcb+999qCmESuZUbDE6XRp0xTa2hl9hdT4P/B8HccPTt9ER5AAAAA=
+To: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Sam Creasey <sammy@sammy.net>
+Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+ Christian Zietz <czietz@gmx.net>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794647763; l=2837;
+ i=czietz@gmx.net; s=20261113; h=from:subject:message-id;
+ bh=UYLvKZBzNE+sBSp2JLnrfwCUbYDF4Z0Kocgxl/zojiw=;
+ b=ewPMJ0lBlMkdQr2T23XANUpkboMvkGGSlqb+ofZhhS4Czu52r8eQtmR+d7nREuZEPYcsRtdDM
+ RvvSgipjo6PC3z3h2JdA4cvtNhH3CkJCRJPazWTGFJuNquUnXTfD1Ug
+X-Developer-Key: i=czietz@gmx.net; a=ed25519;
+ pk=4CdkqAQq9wBZuj+KXG9PqH5ivA+edxVtP0VMbuoWu1c=
+X-Endpoint-Received: by B4 Relay for czietz@gmx.net/20261113 with
+ auth_id=1516
+X-Original-From: Christian Zietz <czietz@gmx.net>
+Reply-To: czietz@gmx.net
+Content-Transfer-Encoding: 7bit
 
-__xdelay() takes the high word of xloops * loops_per_jiffy and only then
-multiplies by HZ, so the loop count is truncated to a multiple of HZ.
-On a 16 MHz 68030 (loops_per_jiffy 17792, HZ 100) every udelay() below
-57 us becomes __delay(0): measured on such a machine, udelay(10),
-udelay(20) and udelay(50) all take the same 8 us, the call overhead,
-and udelay(100) takes 67 us.
+From: Christian Zietz <czietz@gmx.net>
 
-Multiply by loops per second instead and keep the high word, which
-truncates by less than one loop; __delay() runs one more loop than it
-is given, so the delay is never short.  As on x86, a factor of 4 is
-moved from loops per second to xloops, so that the product
-loops_per_jiffy * HZ only overflows above 2**34 loops per second
-(34000 BogoMIPS).
+A kernel built with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y panics when
+loaded into TT-RAM (starting at address 0x01000000) on Atari. This is
+due to the .m68k_fixup section being removed by the linker's dead code
+elimination. Thus, the kernel is not fixed up for the TT-RAM address.
 
-ndelay() works out loops per microsecond from loops_per_jiffy rounded
-down to a multiple of 2048, which on this CPU is 1 instead of 1.78.
-With a 64-bit multiply available, use __xdelay() as udelay() does,
-with 5 (2**32 / 10**9 rounded up) as on x86.  The CPU_HAS_NO_MULDIV64
-variants are unchanged.
+KEEP() ensures the fixups are always kept in the kernel binary.
 
-Measured on the 68030 (1 s of each, timed by jiffies, interrupts on),
-time per call before -> after:
+Tested on an Atari TT and under Hatari emulation.
 
-  udelay(10)     8.0 us ->   18.2 us
-  udelay(20)     8.0 us ->   29.0 us
-  udelay(50)     8.5 us ->   61.5 us
-  udelay(100)   67   us ->  114   us
-  udelay(1000) 1020  us -> 1070   us
-  ndelay(400)    1.8 us ->    7.9 us
-
-About 8 us of each is the call and the 64-bit multiply on this CPU.
-ndelay() now pays for that multiply too, so very short ndelay()s cost
-more; they are no longer short when loops_per_jiffy is small.
-
-Signed-off-by: Graeme Harker <graeme.harker@gmail.com>
-Assisted-by: Claude:claude-opus-5.5
-Assisted-by: Claude:claude-fable-5.2
+Fixes: 4fbdd56edf1f ("m68k: Enable dead code elimination")
+Signed-off-by: Christian Zietz <czietz@gmx.net>
 ---
-The 68030 is a homebrew board whose support is not upstream.  The
-timings above were taken on v7.3-rc1 with the multiply written as
-xloops * (loops_per_jiffy * HZ).  The form sent here, with the factor
-of 4 moved to xloops, gives the same loop count whenever neither
-product overflows (compared on the host for loops_per_jiffy from 16896
-to 170000000 and every delay the table uses); it has been booted under
-QEMU (virt, 770 BogoMIPS) but the table has not been re-measured with
-it.
+For reference, here is the objdump output of a kernel built with
+CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y that shows .m68k_fixup is
+missing:
 
-Without the factor of 4 the product would overflow above 8590
-BogoMIPS, which a fast QEMU host is within reach of; the old code had
-no such limit in practice.
+m68k-linux-gnu-objdump -s -j .m68k_fixup vmlinux
 
-Build-tested on m68k master (v7.4-rc2) with multi_defconfig,
-sun3_defconfig, virt_defconfig and m5208evb_defconfig (the
-CPU_HAS_NO_MULDIV64 side).
+vmlinux:     file format elf32-m68k
 
- arch/m68k/include/asm/delay.h | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+m68k-linux-gnu-objdump: section '.m68k_fixup' mentioned in a -j option,
+but not found in any input file
 
-diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
-index 751712f8beea..2d6b18a23f4e 100644
---- a/arch/m68k/include/asm/delay.h
-+++ b/arch/m68k/include/asm/delay.h
-@@ -57,14 +57,24 @@ extern void __bad_udelay(void);
- 
- #else
- 
-+/*
-+ * xloops is the delay in units of 2**-32 s.  Multiply by loops per second
-+ * and keep the high word, so the result is truncated by less than one loop;
-+ * __delay() runs one more loop than asked, so the delay is never short.
-+ * Scaling by loops_per_jiffy first and by HZ afterwards would truncate in
-+ * steps of HZ loops, turning any delay below HZ loops into __delay(0).
-+ *
-+ * As on x86, a factor of 4 is moved from loops per second to xloops, so
-+ * that loops_per_jiffy * HZ may be up to 2**34.
-+ */
- static inline void __xdelay(unsigned long xloops)
- {
- 	unsigned long tmp;
- 
- 	__asm__ ("mulul %2,%0:%1"
- 		: "=d" (xloops), "=d" (tmp)
--		: "d" (xloops), "1" (loops_per_jiffy));
--	__delay(xloops * HZ);
-+		: "d" (xloops * 4), "1" (loops_per_jiffy * (HZ / 4)));
-+	__delay(xloops);
- }
- 
- /*
-@@ -113,6 +123,7 @@ static inline void __udelay(unsigned long usecs)
-  */
- #define	HZSCALE		(268435456 / (1000000 / HZ))
- 
-+#ifdef CONFIG_CPU_HAS_NO_MULDIV64
- static inline void ndelay(unsigned long nsec)
- {
- 	__delay(DIV_ROUND_UP(nsec *
-@@ -120,6 +131,17 @@ static inline void ndelay(unsigned long nsec)
- 			       (loops_per_jiffy >> 11)) >> 6),
- 			     1000));
- }
-+#else
-+/*
-+ * The shifts above round loops_per_jiffy down to a multiple of 2048, which
-+ * on a slow CPU loses most of it.  With a 64-bit multiply, use __xdelay():
-+ * 5 is 2**32 / 10**9 rounded up, as on x86.
-+ */
-+static inline void ndelay(unsigned long nsec)
-+{
-+	__xdelay(nsec * 5);
-+}
-+#endif
- #define ndelay(n) ndelay(n)
- 
- #endif /* defined(_M68K_DELAY_H) */
+... versus after applying the patch:
 
+m68k-linux-gnu-objdump -s -j .m68k_fixup vmlinux
+
+vmlinux:     file format elf32-m68k
+
+Contents of section .m68k_fixup:
+ 3c5a8c 00000000 003a8478 00000000 003aa6f8  .....:.x.....:..
+ 3c5a9c 00000000 003aaafe 00000000 0000b5ae  .....:..........
+ 3c5aac 00000000 003aaed4 00000000 003aaefa  .....:.......:..
+ 3c5abc 00000000 0000c5f6 00000000 0000c61c  ................
+ [...]
+---
+ arch/m68k/kernel/vmlinux-nommu.lds | 2 +-
+ arch/m68k/kernel/vmlinux-std.lds   | 2 +-
+ arch/m68k/kernel/vmlinux-sun3.lds  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/m68k/kernel/vmlinux-nommu.lds b/arch/m68k/kernel/vmlinux-nommu.lds
+index 45d7f4b01..485bbc24a 100644
+--- a/arch/m68k/kernel/vmlinux-nommu.lds
++++ b/arch/m68k/kernel/vmlinux-nommu.lds
+@@ -72,7 +72,7 @@ SECTIONS {
+ 	PERCPU_SECTION(16)
+ 	.m68k_fixup : {
+ 		__start_fixup = .;
+-		*(.m68k_fixup)
++		KEEP(*(.m68k_fixup))
+ 		__stop_fixup = .;
+ 	}
+ 	.init.data : {
+diff --git a/arch/m68k/kernel/vmlinux-std.lds b/arch/m68k/kernel/vmlinux-std.lds
+index 7326586af..8783df430 100644
+--- a/arch/m68k/kernel/vmlinux-std.lds
++++ b/arch/m68k/kernel/vmlinux-std.lds
+@@ -45,7 +45,7 @@ SECTIONS
+   INIT_DATA_SECTION(16)
+   .m68k_fixup : {
+ 	__start_fixup = .;
+-	*(.m68k_fixup)
++	KEEP(*(.m68k_fixup))
+ 	__stop_fixup = .;
+   }
+   .init_end : {
+diff --git a/arch/m68k/kernel/vmlinux-sun3.lds b/arch/m68k/kernel/vmlinux-sun3.lds
+index 1b19fef20..8be83d13d 100644
+--- a/arch/m68k/kernel/vmlinux-sun3.lds
++++ b/arch/m68k/kernel/vmlinux-sun3.lds
+@@ -40,7 +40,7 @@ __init_begin = .;
+ 	INIT_DATA_SECTION(16)
+ 	.m68k_fixup : {
+ 		__start_fixup = .;
+-		*(.m68k_fixup)
++		KEEP(*(.m68k_fixup))
+ 		__stop_fixup = .;
+ 	}
+ 	. = ALIGN(PAGE_SIZE);
+
+---
 base-commit: 8c9ddebb300c719362a52a2d465f44e7d055778d
-prerequisite-patch-id: d8f836f1e047af08e6fff01d411b44e442086214
+change-id: 20261113-fix_deadcode_elimination_for_tt_ram-6629928148f6
+
+Best regards,
 -- 
-2.53.0
+Christian Zietz <czietz@gmx.net>
+
 
