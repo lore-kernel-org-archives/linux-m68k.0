@@ -1,96 +1,77 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.43
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794785248;
-	b=OGkw8gjrIRHnL2nSuM9WuttRq8otyF6f5EUanwOkDh3r5OtXe8eQMX9Gi8DieG+oKyO/
-	 K7eWDSSfXoHXx57jYsSr/CXbjTdO9hFtuKLyd++TdAH5rBu/wwx6ZqhhZpFSst2Jgb567
-	 bEMIKK1+XEEPPojHuEoD+zb8sW1803A+3/Sa5qJguZcHqDRN12UkMpPR6zOV9QAilN/my
-	 gQQN7n3bSRBfMDgq3sJv89OU4Yit5Zmtqgk27WbPaPOO92TT7yVm7UnL43NVkOmrcaQjx
-	 julRpdSFB1YNH1nd/HhZero/W0nsMAcIDMWcZ6AvuL0n6M3IQRSRy88yZn3Si+bNSCA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794785248;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
-	 Message-ID:Subject:To:Cc:Content-Type;
-	bh=47wTZZwmQ+jM+cYf57bWTBaV5mZlYHW+BTY5K/fBpAM=;
-	b=0OI7dZRrGEUCf7EZcY1OP/3mNdLJHAcrveIMoiX3q2cm8h1Hgg6Kvi5KsSY+vlBLYStd
-	 cj4LUW0fwJ0ER2qBmg+8kL5JM5LxzABa6s4KpKCfR2cLQGgifoKhGqbQKWbsXvDd9oNY+
-	 SVYVg4qbGc9cPFop4h25KUyXZ87xG29KqornxfoSDDf0oj+MYfgEjx7nwQIEUDrDBgBjw
-	 xMIqWRmqv9RTwC5s9Dflhd63qjmGuRZs5DVfcVod0H0Yw5YdN+kS+pjAof5a2cbbii9uE
-	 uwmUlCmYrmUuP2K0jlNxpwLwc+h2ndomDljRTsvoZjXxOc3nWiw4NXkzvdIq1br0Ekw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=0x0f.com;
-	spf=pass smtp.mailfrom=0x0f.com;
-	dkim=pass header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=mJjaz6PZ;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=74.125.82.43
-Received: from mail-dl1-f43.google.com (mail-dl1-f43.google.com [74.125.82.43])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3B7606A880
-	for <linux-m68k@lists.linux-m68k.org>; Sun, 15 Nov 2026 23:27:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3A3B7606A880
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=mJjaz6PZ
-Received: by mail-dl1-f43.google.com with SMTP id a92af1059eb24-1a3c08d6928so3807122c88.0
-        for <linux-m68k@lists.linux-m68k.org>; Sun, 15 Nov 2026 15:27:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1794785246; cv=none;
-        d=google.com; s=arc-20260327;
-        b=otSMFfWWsbBSRtJNkAxQ701MFnh6003kq8s73lmTGbX2cteLrhdqBz2dgjk65hN0DI
-         Qx7XP9RzQHsGD+2/4T882esH73Nxe3E7Y4PirbmZchAk/y+yI9lOnq28o3ZPW1IFQqRz
-         JA1OFde+Jz4kruCk9rEOHgJGU/BXg42BbGh4hTV2/odlZo3mf/dKY/p8J033pG9t1BXC
-         zqLxERdq503ju8tr7vkcoM1/xdCB6qV16l6mDWmLgTeCNyeX5nfAvr9lHYZZNdunfzcY
-         gUR48X6GCJOh+dn11zkpdEozpS+1cqNF6Yw/isM9FjvLWqlYS5ckr8EMo/Bxhwko4+H8
-         a6gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=47wTZZwmQ+jM+cYf57bWTBaV5mZlYHW+BTY5K/fBpAM=;
-        fh=CTZZ8PL1+R5Y7hsnj2JEaxKmAuZKhj5y5EKEGG/NcIc=;
-        b=VUBjBNP/YsiN2fgonx/pOFBsRon5RqDGCRSO/bOeLkKXZ2tovIEkWRzYnbPXAD/NJl
-         0Gs0Sl0xARZqRse7Dvl+jb/9eQ50Xyo450iXe/qF2ubFORYY1A2K7IugeZvakQ+KxyLh
-         8yuYBAoS0tsAEtwmtoStvQD2PsU2RxZlV5N0tFzQXk9okk6nZ8NoO3GdTMrDjkP7wtn7
-         Q3d3wTbjHVjmsvmKkxe0B+nOEipTVa6cgklxyDh8IUoqMwctrqBaNDW/MB+GaJRkVJh8
-         mrvae6C72qRdYoPCLfsMgoWMv503RZbJVule8RspR8zD3oqMrKEJaYmG9ytyLutL2sBT
-         Jp+g==;
-        darn=lists.linux-m68k.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1794785246; x=1795390046; darn=lists.linux-m68k.org;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=47wTZZwmQ+jM+cYf57bWTBaV5mZlYHW+BTY5K/fBpAM=;
-        b=mJjaz6PZdBgwc0ylTo7AcqS/mZ1Hs3tZPcnBBxfzXgT4rmZdac85HsTiqoovPzRnOp
-         RTgOUnc7zI1EcHW2LIzcfFWzR16qhbxtIcZQCnNBHusKyAhCTpfR3fAulGPNCI5oAbNs
-         txy1zX/axJPBSbBCmAE+/YV8P1iH1+bZybuJc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794785246; x=1795390046;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=47wTZZwmQ+jM+cYf57bWTBaV5mZlYHW+BTY5K/fBpAM=;
-        b=V92fB0XgCL+LM8D12NSbLgGd6KID0vNQfAcpvQKHApco8/Bd9Po264JXkOU2nQknKt
-         JmTXQBgFogOfhy8lKea/Qn1spF4dbdXLLvSf1WZasTI/Ip1s1X/hlAUUOhrq+aiB88a9
-         g9Vggk/Mq6riNqorBibqpyztRxfVvN5FUzyQzr3yOq/5ZZ212iNGb2Hl2JrfdCh/UOBi
-         wX4jlWSMbTBK+kgbmTwtt7DqaKbzz/GRVtADrTQfhe2uq3jsvXGUZQII+Ltvi3ovs3ze
-         zLWzTJs41f0QSlw20pMSDdiwXGw71aDixFOXO83d5eDYd0HnYSCsj7VxPZhBZiJaVGLf
-         8EUg==
-X-Forwarded-Encrypted: i=1; AL+hErFe4IYqz8yZ0oxwyqNIpJKBoNwin1JXHn0a3IYYRFW+MR2RStuSC9fB6H9N7Qnrl2KAYXU8O0+0mpFZ@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z8jjoF9fLFuI5ZrnwSwDwRNy2ehlZF/nRWqYd1AhAlnLPAJNozr
-	tt3ZzJiCCcSNbrMxZIHlze7uMylU5AWpmcY7sVyDKXGhzbFRLjZGSM3Z4txR1hHDFxctCfKvK5E
-	vZL0mFZNtHxY+p5lp90pCD9Goe5Uq9cCEWXvsxkSwow==
-X-Gm-Gg: AYBFou0wT+YhWQjpPnNfuWkgfOFtxUsn95JNlgoSrzrduQ3OzE5B/Z4Y+iwlbEC66N1
-	DcQ+F3PMtbPWKMorZNtWWCUujhT+g8Vm5koIkgUXNAAw9viwJK/9LGfI6Vfd5Wmzg0h8UK8es87
-	xzsh+M5BC1k15GlrLjsDJpQE4Ib6R8v+wMMInfiyBT0fDOwmmREXcIByQPzIlMzX7WOrFYEzHzK
-	IpBhzmY39s49UMFDkDsDPulEEUlbCFqoFbPhqYI+HcQ8TpkFEF8BReeF1fruq729Z0HXwu7Jryj
-	rQp+xlF197+beGKmDV1JrvHWfXV79db0vi97MIPFunrBABRkC79PS0zT4hvTRibDw6zdR5UeoAd
-	69T6NvQWpQ7Ul5qjriQi/ttDkg1nStXSSZD4lr+EsDgj4gfZU6HI5CKuHcHGgoYFku7vOeJM=
-X-Received: by 2002:a05:701b:4354:b0:195:76af:b810 with SMTP id
- a92af1059eb24-1b5030bb5a3mr7686006c88.25.1794785245934; Sun, 15 Nov 2026
- 15:27:25 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=78.133.224.34
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794812947;
+	b=UWGAWLkBX357WiL5m4uUm2jL2KAqGWZGEr1HIzaTEA98GEc0kkZ0aPh1ns1efeWktSQi
+	 sxEZc8qKArlq2Q1tEGM5oIXdVVouiZdg7O08FM6pF3cCsMz/oT15mxMFWQ59KeWK0H1PD
+	 yI9gBGM+f/XI+DmlM+N7jRKj6evnAX0/iV8uU1RpPWkBzPa0NVpFvbiVCCf4MaL21z+QA
+	 t1Dcpy2D20lwRB9D6tU3l4RBxWGO+nuxVScjdkM3ATzGx+i7q4J83uGJ7dJni4XANZ+/S
+	 PtjAEzkKNpJyV+fTlGrzRz+YN0kXQp0RdGFwWty/yPXtZymaFpk+DbzT8FCPDuKm7kQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794812947;
+	h=DMARC-Filter:Received:Received:Date:From:To:cc:Subject:In-Reply-To:
+	 Message-ID:References:User-Agent:MIME-Version:Content-Type;
+	bh=1mHmG9IJHtIMld4ZeRanDjKIMZUQxx8f0ptnWkrCv+U=;
+	b=SpEHCUyRczJsGtgR0Plh1oR7U0d6vh+JRhqyzUYeiUYVSbW8/TYUD2mYeTMwTAIsPIdj
+	 tekCP1JzkZZncB+K7vfnKjqn6b0oQn0+86ia49iIro0rK+ceR2zOA8bWDFuYKK8Ie00dB
+	 wTIc4L+2j5ZweLLy6TkgTfx4fUygDqdI6nC/JLHNVrJwkVJyeolDnXNQskvDitgiQSnSV
+	 fOfOg4nYHIGoMdmMn943BQZexICGE/1DzhQra1vCaoQuPuz4jkZZU7B3L0OaA+HH4hrOZ
+	 TlXQCzxirXtMbKsGAT8y1q9xJP6xyNj8ziU84d2BrZ+mQ0Vtg8uAfApLKVBU78Vd32g==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=none header.from=orcam.me.uk;
+	spf=none smtp.mailfrom=orcam.me.uk;
+	arc=none smtp.remote-ip=78.133.224.34
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36488606A31C
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Nov 2026 07:09:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 36488606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 39D8A92009C; Mon, 16 Nov 2026 08:09:04 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 376CC92009B;
+	Mon, 16 Nov 2026 07:09:04 +0000 (GMT)
+Date: Mon, 16 Nov 2026 07:09:04 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+cc: David Laight <david.laight.linux@gmail.com>, 
+    Christian Brauner <brauner@kernel.org>, 
+    Geert Uytterhoeven <geert@linux-m68k.org>, linux-fsdevel@vger.kernel.org, 
+    Jann Horn <jannh@google.com>, Josef Bacik <josef@toxicpanda.com>, 
+    Chris Mason <mason@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
+    NeilBrown <neil@brown.name>, Eric Dumazet <edumazet@kernel.org>, 
+    Thomas Gleixner <tglx@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+    Jonathan Corbet <corbet@lwn.net>, Christoph Hellwig <hch@lst.de>, 
+    Greg Kroah-Hartman <gregkh@suse.de>, 
+    Joel Granados <joel.granados@kernel.org>, Kees Cook <kees@kernel.org>, 
+    Jan Kara <jack@suse.cz>, Jan Kara <jack@suse.com>, 
+    linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+    linux-acpi@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+    linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
+    linux-um@lists.infradead.org, linux-wireless@vger.kernel.org, 
+    linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org, 
+    ntfs3@lists.linux.dev, platform-driver-x86@vger.kernel.org, 
+    coreteam@netfilter.org, kexec@lists.infradead.org, 
+    linux-pci@vger.kernel.org, linux-sound@vger.kernel.org, 
+    netfilter-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+    ibm-acpi-devel@lists.sourceforge.net, jfs-discussion@lists.sourceforge.net, 
+    linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+    linux-cifs@vger.kernel.org, linux-fbdev@vger.kernel.org, 
+    linux-hwmon@vger.kernel.org, linux-mm@kvack.org, linux-sh@vger.kernel.org, 
+    linux-usb@vger.kernel.org, samba-technical@lists.samba.org, 
+    sparclinux@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+    linux-doc@vger.kernel.org, linux-serial@vger.kernel.org, 
+    linux-atm-general@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, 
+    linux-input@vger.kernel.org, linux-raid@vger.kernel.org, 
+    linux-ext4@vger.kernel.org, linux-modules@vger.kernel.org, 
+    linux-debuggers@vger.kernel.org, Chuck Lever <cel@kernel.org>
+Subject: Re: [PATCH RESEND v2 14/23] proc: let procfs copy in writes before
+ pinning the entry
+In-Reply-To: <CAHk-=whsA3tKcUCBJDj_vmJ11rVGT9rivgnKjGRgMO21CPmCxg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2611160657470.17804@angie.orcam.me.uk>
+References: <20261104-work-procfs-core-v2-14-76ace653a773@kernel.org> <CAMuHMdVfakapgBK6TBhO1iWX8qzvLDk8jzRS=t2MVa5G=MCUeg@mail.gmail.com> <20261107-akteur-gemieden-eckdaten-21304d085e35@brauner> <20261108185953.28054fb3@pumpkin>
+ <alpine.DEB.2.21.2611090504170.17804@angie.orcam.me.uk> <20261109214558.0d9d5228@pumpkin> <CAHk-=whsA3tKcUCBJDj_vmJ11rVGT9rivgnKjGRgMO21CPmCxg@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -100,27 +81,21 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261113-fix_deadcode_elimination_for_tt_ram-v1-1-a6aa8e7cb90c@gmx.net>
-In-Reply-To: <20261113-fix_deadcode_elimination_for_tt_ram-v1-1-a6aa8e7cb90c@gmx.net>
-From: Daniel Palmer <daniel@0x0f.com>
-Date: Mon, 16 Nov 2026 08:27:14 +0900
-X-Gm-Features: AclHuK96fOtxc3NSBV_5Qd-n94tUSXWtAwifyRRI98RC4kg0CcyPEhqjiRVPeTY
-Message-ID: <CAFr9PXnjcZBac7jmdySkZNd0p4a5MCNnAFGOqOgDM1_wW+b9fQ@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Preserve fixups during dead code elimination
-To: czietz@gmx.net
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Christian,
+On Mon, 9 Nov 2026, Linus Torvalds wrote:
 
-On Sat, 14 Nov 2026 at 18:16, Christian Zietz via B4 Relay
-<devnull+czietz.gmx.net@kernel.org> wrote:
-> Fixes: 4fbdd56edf1f ("m68k: Enable dead code elimination")
+> > Just that the cast would have to be:
+> >         u8 *foo = (u8 *)bar;
+> > where 'bar' is 'char *', and I don't think you need a cast there when
+> > char is unsigned.
+> 
+> .. and just to clarify: 'char' is always unsigned in the kernel on all
+> architectures since commit 3bc753c06dd0 ("kbuild: treat char as always
+> unsigned") back four years ago...
 
-That's mine. I wonder if this explains why one of my m68k machines
-would not boot with dead code elimination enabled. I forget which it
-was now :)
-Your change looks correct to me.
+ Thanks, yes, that's the piece of the context I was missing.  I've since
+actually come across this commit while investigating which Linux ports 
+have plain `char' signed in the psABI (MIPS for sure).
 
-Acked-by: Daniel Palmer <daniel@thingy.jp>
+  Maciej
