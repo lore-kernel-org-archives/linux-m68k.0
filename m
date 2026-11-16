@@ -1,98 +1,101 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.13
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794842675;
-	b=BsybnO5rt5jQdrzKAiMIih8zuV917OEkMMUOgpPq4SPGKnwQQa/2ED2kH1+1+QU/vAEF
-	 bQOY7no7Vy9k1gbW2Yd8QZUEO1FLca3OlmA0uEUYtas1TWNA/RSU2VVt8vTWnmmGIjDvN
-	 n1TNeUCoFY1kKc1i3SUpnUtWKFN9M2YT4Z3Sp+fPk5gibmKNCFtqyTH2xukspiMAp/W6+
-	 QUWBSdXYnrEDBbVr8LZrKezOtoBHUh+2+EAcaVK+Eqo9ZJphHediPVSXiv1x/9ELoUFeZ
-	 tPfiyaMWywzEwHtkicNMaj9GPUNUUGvqTh6MUIxApcI2EH5jYPisEy0Chb0h/LfiOeg==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794842675;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=zPcsfexdVFJoJqpUGHtJyBFcgi9bW4vNsT7/VKyzF7c=;
-	b=JIxTEHgp0XbCIxmRxp7Bo0G/dr8HONLXkd1BGT3csxYyu0mIEanz66TV8ucSPJ+nP5LK
-	 sWHVQpkM2XyU0fMwG8NagKJ0pMsoxMI3xfgKm746Jg6Xo8FfU1k+blo1i65RxT1y1IjF1
-	 Gu7RHdsO9406vivsvgU+fD+G1zOrfm8UwSw5M7mDFs02cw4ZHBSudkl1yBvw8fbesTb22
-	 cNznbVcND0Kkcrof1RBys9zMKtTV3xMyDBMopy+CPJlauPF2SCZydphiyNU6RtEjAsxFf
-	 cigRWE21OsSi5KXhoJBrgxwrCithbfwzI8hhUJIT5n5EjjfzFJiJEJ2Vdl4TAontv7g==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.intel.com;
-	spf=pass smtp.mailfrom=linux.intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=JDmj5wL0;
-	arc=none smtp.remote-ip=198.175.65.13
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.44
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794852645;
+	b=zbFEiMT/4lyMivQoTr9bcEOFXdCzGjdYi1eyybRzRlng9Pdx/4VSMeBBFCGQNWApqxV1
+	 YyRZ64xxx6ZEMed/P+yMFcouCFEjS/uF3qK5A6BH2G3wJXHYtD91vcrpvugqoh46fv88v
+	 tQ57j7tmijt8PQDs+XDNFz+4iT65VnPBEyM07dYNTjQYMInA9eouBGkG5ddefhWlS3w8Q
+	 0GTPX+6x0/bwxQIZN81X+fkab39T7NR0w3bmEtLVF732HpqyB5cfF2kqD6eYTlmaNWu9i
+	 oxRZjnhKqg3u0qw5WtBoQry+e8i3MbDkXmnEMNg4nQVWcU18H+M53558sD6lCuGr7Cw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794852645;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=;
+	b=xecSu4h4ch3721KKdI5He1L371ajV4w0pBWwEDqW8g4cyCqg6oGqNmzj+iEvTtvoaG1I
+	 O7j+qmLB2W9N31pvZ1zLJ2yI6+WKjrjTNcFUC8mgoheqQVZCKUOw63Uoh7Ciw79vU/Bnp
+	 JJqS0w0z48ZgZXtXH20Pfu5HV10+VVXF4/+533NzddudmNDL6vOIFqUmP9/RZGwolUkwf
+	 FL12/pcqMQJuYChw0Ymg+Ow8hBYQ2dwf67/6/L21gZ2jWrD/eLjgCS/ys9rtsTMNvStq0
+	 OFClmiSp/r6dekwK4+VVylw4Tw1Z7GOcoA4rFYKG0+rX5wMiRASW0qEBjcVskoe7HaQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=N3npYvpw;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.44
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC64606A31C
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Nov 2026 15:24:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3BC64606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA30606A32F
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Nov 2026 18:10:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9AA30606A32F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=JDmj5wL0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1794842674; x=1826378674;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=LH4mH1ubyxz0IHoQt7RT1+002Vt3ik8/Qr8lqRhqPoo=;
-  b=JDmj5wL0T5x/MIEJZH+6q7+S9e3/u3ssGbBZhqi+En5p0JKKGindKz2Q
-   fooCr44WWGk4dk04U6ITDweTzhsEPjyzUVgK11WRvT61aM6Ek/o2ISdN7
-   Hdr4K2lCwfnPn3chA/ZzKfj2WfrN1NrdcNauyBlHI1C/mZ1gCPJmr91IH
-   q3CSH43qwea7JDtbBj6T3OScGffdYJ9mWTo2y8Kj8PxOWoqmLTfB3BMR5
-   iCvgnXDil1OKitWg3EfcFueCogo29e/MfWAab64hR7ouHBQ06QZwjkB1J
-   ksygVb2YbrCxhNXxO2l9IHo1GmMJs8AClVvpUMiNnEQfM3joCIiCydB3s
-   w==;
-X-CSE-ConnectionGUID: lx7ncpWiTiGknTEp/X6sfA==
-X-CSE-MsgGUID: AAAyI+h+RqWqZiKOfNXXnw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11968"; a="3457214"
-X-IronPort-AV: E=Sophos;i="6.27,216,1787036400"; 
-   d="scan'208";a="3457214"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2026 07:24:33 -0800
-X-CSE-ConnectionGUID: u0Vf5AQiTyWGUmFyxOEzSg==
-X-CSE-MsgGUID: wAJ2/SvNRjKLGoPhf13KZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,216,1787036400"; 
-   d="scan'208";a="9419868"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.151])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2026 07:24:25 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: linux-pci@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-acpi@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 01/13] PCI: Add pci_bus_size_and_assign_resources()
-Date: Mon, 16 Nov 2026 17:23:46 +0200
-Message-ID: <20261116152403.2672-2-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261116152403.2672-1-ilpo.jarvinen@linux.intel.com>
-References: <20261116152403.2672-1-ilpo.jarvinen@linux.intel.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=N3npYvpw
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-6b8082af2ffso1893117a12.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 16 Nov 2026 10:10:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1794852643; cv=none;
+        d=google.com; s=arc-20260327;
+        b=FBDACNwZf0TllMydMqVC3uwqksTeJBMAOGXPw/jR/ogWwlWGOxqq/J/+Nujv3H3O84
+         Yq3ydc+Sz2lNm1zmtCHFP8BSGLsMC0cCjMal5iZikNgXl1JobOajioFcvkTQPtFR+91K
+         v2S1SsN3eBlIfyYYGF8o/vNTzsUUf/SQg7iWptcKPQC+UHnHX14WCwPyAe22aq9bZv/h
+         VV67TVB7lN5pXG4ZZhg5py9BLsK4SbuBsSzs9a4XyRWUzV7pnLPi4rMkHDwphI+pcuxA
+         aVTur/oakTo3zzxP1h0/brU1ADnWaDcmDhAVu7XpESS3dWLNb5gCPd82JOAq4ZBZckif
+         y6eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=;
+        fh=C+BkcBkrJ2bWdGfYE1xMG228KvpdH4gqpj1xNJ8VWEo=;
+        b=IyqXeCjbyerhHZRDv/kchxe9kQmhZ97RKAyf61lpMV/G40/v+H9PKMIZjTULD7/Vqn
+         ok/TTAklDfjT2sOdfMCM6ljkN0I9kEv5buC4RD69GtBbZPva7Jl20Fx9Zcyym6/Dpu7A
+         dg9P4TW0v6JRG64KS7WFTmzBEUOWquEltE33aUOJjGQeSj2is0CQD5aoqJHH1/IQ//v1
+         PQ2dMq+hNz8eHpUZ6HL6HyGh7twrvpF39bwnHHDbu59ZVdW/GeaBKFunPs7k0awuq0P7
+         b3JHbFJpl+PsvIBvkVoL0LcQ9rJasEh4SwRzhFSsGtwM3uW1wwzvvRuln7MNy7E64rBJ
+         tRpw==;
+        darn=lists.linux-m68k.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794852643; x=1795457443; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=;
+        b=N3npYvpwE9nx/EgE/88PNszpZWsSv0AXBHxdFzAHfXc1IbhJBYcsSUqWH7hvllyxC2
+         /orCHB/ix0Jk/1q8W9KYzQYatgUftvI904DqU8L+4BjEKF9WG0Ya5VbSXN961z48UEAn
+         zGQkuxmBP1WVBlAQH8L2sAE/Id4Ve/TXe52ddohTcy3JwS/dkhUxnwHawIXRACtCa5Jy
+         aVmpv9vNWpZ6JMthmRiV4f7lA0+EeBe7EmuKlxieCZvtXskQWPwI3VayLunObSCN+4Oy
+         0bjmwoNiFGhVE1dteFKOoZVTOoTfVfHUM/l3AEMT7Y4UUIPAg8I+7ispH8srasPYZc3v
+         84qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794852643; x=1795457443;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=t10LdZZQL9q+bSGABLhe386ponBIV6xlTkNunDiJC5Y=;
+        b=aIu8oSenYkNAvWh6j7LSml1FWoHbuWi2Zs+Y9kfPoEJ1rVpHpunBzyBjkdrHtZew0T
+         lXbBgHq+e1bWvuEktrXx+RPYPB1768+HeRs6C6sCcaZaME742ViIatgxREb5PnsYfPjk
+         ASt6kz70T4Ifz4iFqrdYmHAZ9oDbsk5cydcv8NYnGu+9VScmXlcfmQIXcUo8sjpFo3Uz
+         ixyO/tMg8fJ7A84wRwQKaUt3LTkfruBQOiINx9Zv1pQkU/dzT2LmgCp889yCr4FDoL8o
+         ApgmgcH6c+0jhsKV5VJ3IbULIr9HqpmhLLKUwHBfTi06F5yQC4PJ81k4Ei2/TMLXVe0b
+         Z2fQ==
+X-Forwarded-Encrypted: i=1; AL+hErEMETZjJFfIZNhihxvh4DhQ8BktmmuNZ4qE8W7PkJHds0l8ar20EaFNqFG7xj2242xNTh6eNiyIHQ3Y@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z8k6Pd3LxYgpnq9elR+uhVsywGJ4ZZWDoUPCWoY4oCpF0+Rv4JC
+	TortQvYSjPwqAjK9qnF4zJ53KQ3W9o6TPlSMpQ0RppUxSOL40Zw4aPsz3w9+aijYNiTIBAu2YNy
+	HR8SmkgtpCTwY7jS4bESE37GVFzBE1iQ=
+X-Gm-Gg: AYBFou2TZQzrUAv8FqkK9eNqc5dbkrbn93PHPWHHECcO+dvCUKEkvxOOkoSmWKkBVXH
+	lyBTCi68q4mMSuiU2kIoFvC+XPPTOIVHfOaIW/vCzT2VP3ufgOj/P5jMuFuRj774GejJMATkBrD
+	UrdgnEGPQ1fCsaeW9pQ7mtSg5R62MTLjy0Oq1n0+OnOrihZ93ZZ3m7gsKNYo59EMKFGE3DYz2W6
+	OU4tfcyLaO3vz+Im0/aLxr2rcpMaFRvYob2qr6yAciwIc/l0CeZn7HrIr8wsHm841uxbuC4M8BN
+	5Y2MEnmdyCfEx3eokXjnGWPuFSTvUe9DeIDpaP+Vz2PUKvYbYPOPah8pt+q4wIhsvi67SGiK4TT
+	0KgCA+M9I8L9aGqHIoM+Z7SGBA509bO4HH+IJA1d+WicOWRiNfGLi8JGNfWHeON7BbeZiggjDxg
+	56bP+ucQjWYS1QGu79RC2gcFyWBvVVAlRsKhEv4GsKNBla
+X-Received: by 2002:aa7:c4cc:0:b0:6b4:1037:2bb1 with SMTP id
+ 4fb4d7f45d1cf-6b7c0bc27a9mr6612692a12.22.1794852642773; Mon, 16 Nov 2026
+ 10:10:42 -0800 (PST)
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -102,178 +105,196 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20261114184720.373178-1-renzo@cs.unibo.it> <20261114184720.373178-2-renzo@cs.unibo.it>
+In-Reply-To: <20261114184720.373178-2-renzo@cs.unibo.it>
+From: Magnus Lindholm <linmag7@gmail.com>
+Date: Mon, 16 Nov 2026 19:10:30 +0100
+X-Gm-Features: AclHuK-3zf0u-_tVqqSwOuwnlXe0JuQIB0eE-s6YSpQo7rK-ZYPGihb4jDlFOAE
+Message-ID: <CA+=Fv5QPMYffznpkrEhZ3pMWtpHwNUUa3OaHxLexu8S47a7tRQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] asm/ptrace.h: add instruction_pointer_set
+To: Renzo Davoli <renzo@cs.unibo.it>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Oleg Nesterov <oleg@redhat.com>, Shuah Khan <shuah@kernel.org>, Alexey Gladkov <legion@kernel.org>, 
+	Eugene Syromyatnikov <evgsyr@gmail.com>, Davide Berardi <berardi.dav@gmail.com>, 
+	"Dmitry V . Levin" <ldv@strace.io>, =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, strace-devel@lists.strace.io, 
+	linux-api@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Richard Henderson <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, 
+	Brian Cain <bcain@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Simon Schuster <schuster.simon@siemens-energy.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Chris Zankel <chris@zankel.net>, 
+	Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Bridge window sizing and resource assignment must not run concurrently
-with another sizing and assignment pass or with device removal.
-Preventing that requires holding locks across both phases. Many callers
-outside of PCI core call pci_bus_size_bridges() immediately followed by
-pci_bus_assign_resources() and cannot hold the PCI core internal locks
-across the two calls.
+Hi Renzo,
 
-Add pci_bus_size_and_assign_resources() into PCI core which combines
-these two operations and convert the callers that call them back to
-back.
+On Sat, Nov 14, 2026 at 7:47=E2=80=AFPM Renzo Davoli <renzo@cs.unibo.it> wr=
+ote:
+>
+> Add an instruction_pointer_set function for architectures that do
+> not currently provide one.
+>
+> Signed-off-by: Renzo Davoli <renzo@cs.unibo.it>
+> ---
+>  arch/alpha/include/asm/ptrace.h      | 6 ++++++
+>  arch/hexagon/include/asm/ptrace.h    | 6 ++++++
+>  arch/m68k/include/asm/ptrace.h       | 6 ++++++
+>  arch/microblaze/include/asm/ptrace.h | 6 ++++++
+>  arch/nios2/include/asm/ptrace.h      | 6 ++++++
+>  arch/um/include/asm/ptrace-generic.h | 6 ++++++
+>  arch/xtensa/include/asm/ptrace.h     | 6 ++++++
+>  7 files changed, 42 insertions(+)
+>
+> diff --git a/arch/alpha/include/asm/ptrace.h b/arch/alpha/include/asm/ptr=
+ace.h
+> index 45d1229344b6..1a6f073e892e 100644
+> --- a/arch/alpha/include/asm/ptrace.h
+> +++ b/arch/alpha/include/asm/ptrace.h
+> @@ -33,6 +33,12 @@ static __always_inline bool regs_irqs_disabled(struct =
+pt_regs *regs)
+>         return arch_irqs_disabled_flags(regs->ps);
+>  }
+>
+> +static inline void instruction_pointer_set(struct pt_regs *regs,
+> +                                          unsigned long val)
+> +{
+> +       instruction_pointer(regs) =3D val;
+> +}
+> +
+>  /* Syscall emulation defines */
+>  #define PTRACE_SYSEMU                  0x1d
+>  #define PTRACE_SYSEMU_SINGLESTEP       0x1e
+> diff --git a/arch/hexagon/include/asm/ptrace.h b/arch/hexagon/include/asm=
+/ptrace.h
+> index ed35da1ee685..0a121f6e3bfc 100644
+> --- a/arch/hexagon/include/asm/ptrace.h
+> +++ b/arch/hexagon/include/asm/ptrace.h
+> @@ -18,6 +18,12 @@ extern const char *regs_query_register_name(unsigned i=
+nt offset);
+>         ((struct pt_regs *) \
+>          ((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
+>
+> +static inline void instruction_pointer_set(struct pt_regs *regs,
+> +                                          unsigned long val)
+> +{
+> +       instruction_pointer(regs) =3D val;
+> +}
+> +
+>  #if CONFIG_HEXAGON_ARCH_VERSION >=3D 4
+>  #define arch_has_single_step() (1)
+>  #endif
+> diff --git a/arch/m68k/include/asm/ptrace.h b/arch/m68k/include/asm/ptrac=
+e.h
+> index bc86ce012025..6e8a8f0daee8 100644
+> --- a/arch/m68k/include/asm/ptrace.h
+> +++ b/arch/m68k/include/asm/ptrace.h
+> @@ -18,6 +18,12 @@
+>         (struct pt_regs *)((char *)current_thread_info() + THREAD_SIZE) -=
+ 1
+>  #define current_user_stack_pointer() rdusp()
+>
+> +static inline void instruction_pointer_set(struct pt_regs *regs,
+> +                                          unsigned long val)
+> +{
+> +       instruction_pointer(regs) =3D val;
+> +}
+> +
+>  #define arch_has_single_step() (1)
+>
+>  #ifdef CONFIG_MMU
+> diff --git a/arch/microblaze/include/asm/ptrace.h b/arch/microblaze/inclu=
+de/asm/ptrace.h
+> index 17982292a64f..69e10658d7a9 100644
+> --- a/arch/microblaze/include/asm/ptrace.h
+> +++ b/arch/microblaze/include/asm/ptrace.h
+> @@ -20,5 +20,11 @@ static inline long regs_return_value(struct pt_regs *r=
+egs)
+>         return regs->r3;
+>  }
+>
+> +static inline void instruction_pointer_set(struct pt_regs *regs,
+> +                                          unsigned long val)
+> +{
+> +       instruction_pointer(regs) =3D val;
+> +}
+> +
+>  #endif /* __ASSEMBLER__ */
+>  #endif /* _ASM_MICROBLAZE_PTRACE_H */
+> diff --git a/arch/nios2/include/asm/ptrace.h b/arch/nios2/include/asm/ptr=
+ace.h
+> index 96cbcd40c7ce..d120d8ecb187 100644
+> --- a/arch/nios2/include/asm/ptrace.h
+> +++ b/arch/nios2/include/asm/ptrace.h
+> @@ -70,6 +70,12 @@ struct switch_stack {
+>  #define user_stack_pointer(regs)       ((regs)->sp)
+>  extern void show_regs(struct pt_regs *);
+>
+> +static inline void instruction_pointer_set(struct pt_regs *regs,
+> +                                          unsigned long val)
+> +{
+> +       instruction_pointer(regs) =3D val;
+> +}
+> +
+>  #define current_pt_regs() \
+>         ((struct pt_regs *)((unsigned long)current_thread_info() + THREAD=
+_SIZE)\
+>                 - 1)
+> diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/p=
+trace-generic.h
+> index 62e9916078ec..632d4ce3334d 100644
+> --- a/arch/um/include/asm/ptrace-generic.h
+> +++ b/arch/um/include/asm/ptrace-generic.h
+> @@ -29,6 +29,12 @@ struct pt_regs {
+>
+>  #define PTRACE_OLDSETOPTIONS 21
+>
+> +static inline void instruction_pointer_set(struct pt_regs *regs,
+> +                                          unsigned long val)
+> +{
+> +       instruction_pointer(regs) =3D val;
+> +}
+> +
+>  #ifdef CONFIG_BINFMT_ELF_FDPIC
+>  #define PTRACE_GETFDPIC                31
+>  #define PTRACE_GETFDPIC_EXEC   0
+> diff --git a/arch/xtensa/include/asm/ptrace.h b/arch/xtensa/include/asm/p=
+trace.h
+> index d0568ff6d349..97b14418955e 100644
+> --- a/arch/xtensa/include/asm/ptrace.h
+> +++ b/arch/xtensa/include/asm/ptrace.h
+> @@ -103,6 +103,12 @@ static inline unsigned long regs_return_value(struct=
+ pt_regs *regs)
+>         return regs->areg[2];
+>  }
+>
+> +static inline void instruction_pointer_set(struct pt_regs *regs,
+> +                                          unsigned long val)
+> +{
+> +       instruction_pointer(regs) =3D val;
+> +}
+> +
+>  int do_syscall_trace_enter(struct pt_regs *regs);
+>  void do_syscall_trace_leave(struct pt_regs *regs);
+>
+> --
+> 2.47.3
+>
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- arch/arm/kernel/bios32.c           | 5 ++---
- arch/m68k/coldfire/pci.c           | 3 +--
- arch/mips/pci/pci-legacy.c         | 5 ++---
- arch/sh/drivers/pci/pci.c          | 3 +--
- drivers/parisc/lba_pci.c           | 7 ++-----
- drivers/pci/hotplug/acpiphp_glue.c | 3 +--
- drivers/pci/setup-bus.c            | 7 +++++++
- drivers/pcmcia/cardbus.c           | 3 +--
- include/linux/pci.h                | 1 +
- 9 files changed, 18 insertions(+), 19 deletions(-)
+The Alpha change looks good and applies cleanly on my for-next,
+including the generic-entry fixes.
 
-diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
-index ac0e890510da..555bfb091d30 100644
---- a/arch/arm/kernel/bios32.c
-+++ b/arch/arm/kernel/bios32.c
-@@ -510,15 +510,14 @@ void pci_common_init_dev(struct device *parent, struct hw_pci *hw)
- 		/*
- 		 * We insert PCI resources into the iomem_resource and
- 		 * ioport_resource trees in either pci_bus_claim_resources()
--		 * or pci_bus_assign_resources().
-+		 * or pci_bus_size_and_assign_resources().
- 		 */
- 		if (pci_has_flag(PCI_PROBE_ONLY)) {
- 			pci_bus_claim_resources(bus);
- 		} else {
- 			struct pci_bus *child;
- 
--			pci_bus_size_bridges(bus);
--			pci_bus_assign_resources(bus);
-+			pci_bus_size_and_assign_resources(bus);
- 
- 			list_for_each_entry(child, &bus->children, node)
- 				pcie_bus_configure_settings(child);
-diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
-index 5afb207ccc51..dd21c77c43a6 100644
---- a/arch/m68k/coldfire/pci.c
-+++ b/arch/m68k/coldfire/pci.c
-@@ -250,8 +250,7 @@ static int __init mcf_pci_init(void)
- 	rootbus->resource[0] = &mcf_pci_io;
- 	rootbus->resource[1] = &mcf_pci_mem;
- 
--	pci_bus_size_bridges(rootbus);
--	pci_bus_assign_resources(rootbus);
-+	pci_bus_size_and_assign_resources(rootbus);
- 	pci_bus_add_devices(rootbus);
- 	return 0;
- }
-diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
-index dae6dafdd6e0..ec0e42d9a895 100644
---- a/arch/mips/pci/pci-legacy.c
-+++ b/arch/mips/pci/pci-legacy.c
-@@ -129,15 +129,14 @@ static void pcibios_scanbus(struct pci_controller *hose)
- 	/*
- 	 * We insert PCI resources into the iomem_resource and
- 	 * ioport_resource trees in either pci_bus_claim_resources()
--	 * or pci_bus_assign_resources().
-+	 * or pci_bus_size_and_assign_resources().
- 	 */
- 	if (pci_has_flag(PCI_PROBE_ONLY)) {
- 		pci_bus_claim_resources(bus);
- 	} else {
- 		struct pci_bus *child;
- 
--		pci_bus_size_bridges(bus);
--		pci_bus_assign_resources(bus);
-+		pci_bus_size_and_assign_resources(bus);
- 		list_for_each_entry(child, &bus->children, node)
- 			pcie_bus_configure_settings(child);
- 	}
-diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
-index 878a27a1acfb..c91ca8f4cb1c 100644
---- a/arch/sh/drivers/pci/pci.c
-+++ b/arch/sh/drivers/pci/pci.c
-@@ -81,8 +81,7 @@ static void pcibios_scanbus(struct pci_channel *hose)
- 		need_domain_info = 1;
- 	}
- 
--	pci_bus_size_bridges(hose->bus);
--	pci_bus_assign_resources(hose->bus);
-+	pci_bus_size_and_assign_resources(hose->bus);
- 	pci_bus_add_devices(hose->bus);
- }
- 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 5197a3c93c70..39ab93ba458b 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1639,11 +1639,8 @@ lba_driver_probe(struct parisc_device *dev)
- 	if (is_pdc_pat()) {
- 		/* assign resources to un-initialized devices */
- 
--		DBG_PAT("LBA pci_bus_size_bridges()\n");
--		pci_bus_size_bridges(lba_bus);
--
--		DBG_PAT("LBA pci_bus_assign_resources()\n");
--		pci_bus_assign_resources(lba_bus);
-+		DBG_PAT("LBA pci_bus_size_and_assign_resources()\n");
-+		pci_bus_size_and_assign_resources(lba_bus);
- 
- #ifdef DEBUG_LBA_PAT
- 		DBG_PAT("\nLBA PIOP resource tree\n");
-diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-index 78e3effbb32d..632344f34cae 100644
---- a/drivers/pci/hotplug/acpiphp_glue.c
-+++ b/drivers/pci/hotplug/acpiphp_glue.c
-@@ -465,8 +465,7 @@ static void acpiphp_native_scan_bridge(struct pci_dev *bridge)
- 		max = pci_scan_bridge(bus, dev, max, 1);
- 		if (dev->subordinate) {
- 			pcibios_resource_survey_bus(dev->subordinate);
--			pci_bus_size_bridges(dev->subordinate);
--			pci_bus_assign_resources(dev->subordinate);
-+			pci_bus_size_and_assign_resources(dev->subordinate);
- 		}
- 	}
- }
-diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
-index ed16ef7c26fa..29ec9ba59d92 100644
---- a/drivers/pci/setup-bus.c
-+++ b/drivers/pci/setup-bus.c
-@@ -2492,3 +2492,10 @@ void pci_assign_unassigned_bus_resources(struct pci_bus *bus)
- 	__pci_bus_assign_resources(bus, &add_list, NULL);
- }
- EXPORT_SYMBOL_GPL(pci_assign_unassigned_bus_resources);
-+
-+void pci_bus_size_and_assign_resources(struct pci_bus *bus)
-+{
-+	pci_bus_size_bridges(bus);
-+	__pci_bus_assign_resources(bus, NULL, NULL);
-+}
-+EXPORT_SYMBOL_GPL(pci_bus_size_and_assign_resources);
-diff --git a/drivers/pcmcia/cardbus.c b/drivers/pcmcia/cardbus.c
-index 5e5cf2c3e2c8..19df3f9228a7 100644
---- a/drivers/pcmcia/cardbus.c
-+++ b/drivers/pcmcia/cardbus.c
-@@ -81,8 +81,7 @@ int __ref cb_alloc(struct pcmcia_socket *s)
- 	/*
- 	 * Size all resources below the CardBus controller.
- 	 */
--	pci_bus_size_bridges(bus);
--	pci_bus_assign_resources(bus);
-+	pci_bus_size_and_assign_resources(bus);
- 	cardbus_config_irq_and_cls(bus, s->pci_irq);
- 
- 	/* socket specific tune function */
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index aa3765a20a96..d89aeb7c9ff7 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1569,6 +1569,7 @@ resource_size_t pcibios_retrieve_fw_addr(struct pci_dev *dev, int idx);
- void pci_bus_assign_resources(const struct pci_bus *bus);
- void pci_bus_claim_resources(struct pci_bus *bus);
- void pci_bus_size_bridges(struct pci_bus *bus);
-+void pci_bus_size_and_assign_resources(struct pci_bus *bus);
- int pci_claim_resource(struct pci_dev *, int);
- int pci_claim_bridge_resource(struct pci_dev *bridge, int i);
- void pci_assign_unassigned_resources(void);
--- 
-2.47.3
+Tested both series together on my AlphaServer ES40. The ptrace
+selftests passed on all three CPUs, including syscall skipping
+and instruction-pointer modification.
 
+For the Alpha part:
+
+Acked-by: Magnus Lindholm <linmag7@gmail.com>
+Tested-by: Magnus Lindholm <linmag7@gmail.com>
+
+Thanks,
+Magnus
