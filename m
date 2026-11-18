@@ -1,77 +1,95 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.54
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795027096;
-	b=JbkN87bS8U+WkJPtU4DI+KyAAIiHyUr/d2yek5MzBwtyAkdAERIo1vzEY2w7S+ZtOZyM
-	 xJkvGW1DI5RkCfuewtTjCZRolBDM0FV2TEC6c4a9n0ppnVD6xNPxa1n41tQD5stnrlM50
-	 8ZqOSDbw076MaSsl7aK9KPIlWCWXSUKTmBw+ujBOige5jxgCcTpUysKIDLKNJqme/OoBk
-	 V7ZAfmrhTOy9Vpv9XBwyldGQpumudtP214et/N5KjIxnBFvm/kW94pTC+dQxhFyQwhaEU
-	 27vb7ZrSVN8KLh+XnhEZUHbHoEGbtDN0oDsmQ83XpHPm5A/qFRoTZIbeHs9+vn/o6UA==
+	t=1795035612;
+	b=m6c59r1x6KFIxkjGQX7MIzuteRvzpevfcAQGjL28QCzrB+LGR9toorcdEXtreB/B+K0A
+	 u6of/mrpZnLfkibLFnLfpMAerIILKT6tftoGhnVVhkes52G8+QRmC9npHKReB0kMcNK/L
+	 2ij6E0S87LTIekD7KWumCEagE17IxnqgJEQCVOY5m/remSl/7REeXLKcvnoTe1zcYh4Zg
+	 ZIwhj73hcNsv08cndOEPKYWJAo8+3iWoqvIMWThdDeR+4uVJeC6dfdPSi+CxPcGpnFo14
+	 C6vojzv2FAEiu5HfqiKxHEYN5tIi1SbaypIRG/Gsvjh1abfEDbwBnKN5NrfAyFihQfA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795027096;
-	h=DMARC-Filter:DKIM2-Signature:Message-Instance:DKIM-Signature:
-	 X-UI-Sender-Class:Received:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:To:Cc:References:Content-Language:From:Autocrypt:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-Provags-ID:X-Spam-Flag:
-	 UI-OutboundReport;
-	bh=yLJTxUNKFMg2WoF9M7+sj5CM6AojWeVvApuL5kbm5R4=;
-	b=F1leyTkaRkUD308w+EW0GZUMf0b4rudf7QBPIBVSvzVPSli1DtLwfQJrkTDzrUBEOQ1/
-	 2v5HhW7QrTiw0CmnDAVSWMAU8GQvLXLSLLjE4hNZ8n3s2O54eonyrul5Dftz5/Kbhb7Rx
-	 ndI5B54fmHIsck5OokFD0+bhfmmgMsbaM0GXgWgSK/a9C4vMUP0+HdOZWHrXteDGiewy6
-	 kiNKeKmbKj6BCRENbmPoPj2vYFisrANj236IGLs9kUafHkae+beQNnGDYVN1pV4V/A1Wu
-	 QHmobQCbhodUiTRCUmTqFoNP1eXMH7wizeql5GoasOzmienkHq+otugW466I3H5psNQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795035612;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=bXN0J+AK1P53RMwKn3F1Co6ZRwoaPYRSkShLnpvY7YU=;
+	b=Ts341+EbLIOUz4vmTMQyBEGO+rRXURAstKhe1Wjk+b9u/44NrybbhVktadKeOb5BnNOX
+	 kCA9W2fDG15Wvxfk8vemZ82ynaLZVzJIWaC/E04mdO9Ejweo8RS4ACF0b+PN5sqHi1Cbs
+	 2S7U/+J6Qts0fnuaafhIN8tmW/OrA0SdH5lWCGnyaXtra1vw3hCW5re/AXXyAQLEcIGtj
+	 EaWa+XG9nHnwvPEOZ3ZlU9q3tKdA/+hvVubOf997WkAk57ARpHc/TbU5vdLgnwTuCpyVd
+	 +QoGNbWX4wDbI9ZMH3vqpRacxPsusZedk0JEq5vYLF9AfiBsfrJ9Ys4Jhw3GfiDwjPw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmx.de;
-	spf=pass smtp.mailfrom=gmx.de;
-	dkim=pass header.d=gmx.de header.i=deller@gmx.de header.a=rsa-sha256 header.s=s31663417 header.b=PEtIbn4T;
-	arc=none smtp.remote-ip=212.227.15.19
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=XMbuTt5U;
+	arc=none smtp.remote-ip=209.85.221.54
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F1F6606A320
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Nov 2026 18:38:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2F1F6606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D23606A33B
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Nov 2026 21:00:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 55D23606A33B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.a=rsa-sha256 header.s=s31663417 header.b=PEtIbn4T
-DKIM2-Signature:  i=1; m=1; t=1795027093;
- mf=PGRlbGxlckBnbXguZGU+;
- rt=PGxpbnV4LW02OGtAbGlzdHMubGludXgtbTY4ay5vcmc+;
- d=gmx.de;
- s=s31663417:rsa-sha256:eu0xCKw6qQG1HSMu734767b/suQE
-   7cl1DbGFbWD09w6+AHvqthqq4/ZFzSXEXLzR8rpOpn81fkaJ+qhq/0aOykQueDONzSPPSPQ9Wkx
-   SvZHjA2CX7dr98VUdoCbhvcP/fvsteNnJvw5sSFu4gYtQtli0gyE+qFNGRgHPCBd49Awc5GyFLJ
-   IMp2H3PQTX1mUoOiDolhJTKFUphUzmWRws37Hqkkf1DEexIyZC1mubNJy0qYGzcv8cVBl/+hzvT
-   ycItJVGTee3PbBIaswWyOIm8/sqekLGLkzV5fp9gHVvczvBoBVE6URAHFXVLd3R84bRIQCL/IOs
-   ax77G/Hh7rl0KA==;
-Message-Instance:  m=1;
- h=sha256:
-   vZqjGBqbe6s+2YnhwJkxbZnR6Uuc3eEmbAT79JdKnR0=:
-   VTzi9DKM0oaZbfWWhKEfVe5kAE61ohwNnh65ZuxF1E4=,
-  sha512:
-   t4lu1CHMCIrzgjRvQ2cdn7sL2tNuVrjbU3Z+15MVkG6e8sVEpBcdNwYvLSSJOzFkan5FsQtU1662vv3ok7GDWw==:
-   qm5G6pQ9ohrZYTo/ztelG7YPar9d/t5XY/xFU/l5c8hnA8VAxK7qha5FtRyHqQWK9xhIM1rXqmAiGfNPq+mJFg==;
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1795027086; x=1795631886; i=deller@gmx.de;
-	bh=yLJTxUNKFMg2WoF9M7+sj5CM6AojWeVvApuL5kbm5R4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=PEtIbn4TAl4TlxBbiNj8lUKVamNF8NHFnkvtWUbcYT1KrHwayxng/iDj0omhFOMo
-	 r7pyZVnHxtiQuc3GiOoIWhycvB2nDABNXqqqEcqFsjA667QijcRRQQ4X9sf7UfYke
-	 wShXoUCIyZ/erf41pdx/sY622/f79mauZJYgPuCqdjpnVAD5ho3IbfW6rJ/wR7rsN
-	 tMTi0pFJFuX3aklzdPJYXUf9MkFvxhPDByx3MShrnjhBS12b2YrphJQe+dlWmeLjP
-	 Kk6oksJF/LcAY4KBgD0zX7lKnTPiTeh0ou2+UYjjrln705h+Pj0T7LeLrrKv4tmlC
-	 fLwGuKD1ki6QsOnWYQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from client.hidden.invalid by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M5fIW-1xNh4R3QaI-000MHo; Wed, 18
- Nov 2026 19:38:05 +0100
-Message-ID: <248e818d-8af8-4068-92db-c06c10ce6e58@gmx.de>
-Date: Wed, 18 Nov 2026 19:38:00 +0100
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=XMbuTt5U
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-491f34b4e0fso718620f8f.2
+        for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Nov 2026 13:00:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795035611; x=1795640411; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=bXN0J+AK1P53RMwKn3F1Co6ZRwoaPYRSkShLnpvY7YU=;
+        b=XMbuTt5UTFjVrTJ57pLUoa9lAEfg+qE8fABf23CHQ0v5ucMGfEVPs7U5M/O+J8QUEA
+         Byi3Oh5GF24JYY7ZtBQJc62srxO8gM75Z3S6iCXUPkC2qKLqmKo+nrwa+djVHZz3seWb
+         GPWkTkTn5tVUW2g24ZoOOI0DFlXLF+yBo65YsjMRR6y6EEMGnIVheFNHSNk/k8EvG8qB
+         FaM+iz8AFLbkG58NVe/+4VkXJXjwVoRyWLKzCPw3o5BCE6Qn4Zci5UFpCL9OO9tmgvXp
+         jKO34Uy9QZSEuLBTkbsGfRWrfM39N+iakgSBFKoIf+DQxD3cArqePdKrEQRyydOdLlFJ
+         PlYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795035611; x=1795640411;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=bXN0J+AK1P53RMwKn3F1Co6ZRwoaPYRSkShLnpvY7YU=;
+        b=RxPj553xrWlyB13ECsf7BguzUK9DQ6tLzcPJDo84Ws/B+DKS689kU28y+i5i2y1b+V
+         8+Dh/AtrEIvzBrAXmJsjMVmRzci3KKHQX+zlkvUBOpszLcXGaTrinxJ3M9WeDkKdhhAT
+         gVOqpMrntccG20Vfdu98Dl7PT2ZMwBYiXaUEctnfxAAcO4fxwEO99b4m+Z+4vYtDs3Vz
+         cDW2wlRABj7gNSLexTSoBONt55YYl2pEqU3xbc4T9EAIZURCGHhVBj2hLE1eo0PdSW3H
+         K1PJRrIYBEyGcoj4HRsd+SBrTsXPZCZgCifWEOUTGCG1f2py3dU2i8fE6cAJ1g7gIoq3
+         CbMA==
+X-Forwarded-Encrypted: i=1; AL+hErFzYPnpHhqmXf59gnWRPV8dQhIcmPR1CGtFotvMiX19JIguWXBJ/tDoOyJlVMJ7uzwHfGQNuvaxcbRh@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z/bAktXWIrXu3K+1GfWrqnBclTm9mVR+13fs2d7f9Nky9UdfjGU
+	fAWFywiGdgu/UKbLl3PCyIbsTaD4AnCyZAbic2swy/Xn63zgrtN8qTfi
+X-Gm-Gg: AZFdTZd/MkIRSibaWb64e2sYmPg4ooRkyZjFS5CQ322GRZBBbf9ibGHhdC5W9QuRHYo
+	2E3kFo1eIP8Aj4XvyVkFVeWaJQEGta/l38BLpXBI3WvqT4AkzF1TNPKKh8x4JauCcwNSShf4Bas
+	MLtVmwgygmCb68MTRTYG/wHO7UKMInqACgFsDfCYy+1fbUcOpNb/L6irOSshswCqe+5nkUMnZQe
+	jFEkLGIg63h2tAXetBAvABGNCi1Unlq96TnrPEqh0XYKMVsZI8FLDhw5dspkots4Q8HrvczhrQx
+	dfRc15SLj6whYbCw3Zm1Ra+K4MBYqjbx+FdxOuRwM620BfhVMEh4sT9RMWtxwT622cwV6axoPxE
+	xUx2JpOdPWHLcEXHbuq2qyEVqs5Q4qDjIkDwqHpgN1540O+UsqbnbkOv5qEF3NSrY47I3MFEIQO
+	f/R1L3xsUBd2CLQ3ABAembrnbhpnHdCb9ozMAhMQLmDy3xnDcxBCoeUjjPrAin4qajTJt9XB2rW
+	Epgf3T99IxZHUk/GpDKl43XQRRsptVd0cq1DxZHa1UI5Zu5NMtrKTUmTBiEJXxGkanEDAt5fmL3
+	c3YG9oxGdEKRrAQ/3dt6Le2B5Pe6AnanZ5ADXJTfXM7PkTVL73QNB+e01xo8JZnU+gXpIuSVDSW
+	HXxeBSXc=
+X-Received: by 2002:a5d:64cf:0:b0:4a6:4862:28f5 with SMTP id ffacd0b85a97d-4a6486229b8mr8177844f8f.3.1795035610516;
+        Wed, 18 Nov 2026 13:00:10 -0800 (PST)
+Received: from beelink0 (host86-181-68-246.range86-181.btcentralplus.com. [86.181.68.246])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4a654997681sm5332421f8f.15.2026.11.18.13.00.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2026 13:00:09 -0800 (PST)
+From: Graeme Harker <graeme.harker@gmail.com>
+To: fthain@linux-m68k.org
+Cc: geert@linux-m68k.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: delay: Fix rounding of short udelay() and ndelay()
+Date: Wed, 18 Nov 2026 21:00:08 +0000
+Message-ID: <20261118210008.927764-1-graeme.harker@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <ae768ed3-a517-3223-5c86-a1599ff6c8e5@linux-m68k.org>
+References: <ae768ed3-a517-3223-5c86-a1599ff6c8e5@linux-m68k.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -81,195 +99,43 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fbdev: atafb: Restrict SuperVidel handling to the Falcon
-To: Miro Kropacek <miro.kropacek@gmail.com>
-Cc: geert@linux-m68k.org, schmitzmic@gmail.com, lilinmao@kylinos.cn,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-References: <20261113005616.402721-1-miro.kropacek@gmail.com>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20261113005616.402721-1-miro.kropacek@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:drJh1brGcaue/N0yn5FD7RJ9Q5Fv2nn7vUEhC9KYL/YPA2cKE7t
- 4+wHYTIZ25U/tZDn8hNhaRFFT7nSLc52slf+KOeJYzoJIGqsUPz7c75h/yweeLS2afjY3j3
- 4jZ6iRjAVDwgpf5pHT+C1VvAcgqU4Dx28EC3R17NVb6fgU4dansrexnvCEpV+vtCSbyxHYt
- 9ua2eAx0BXRdB6KjuF3TQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5yJhME/bSZo=;Bn6f9BqG5nkTqh5+VdH+ThHleEz
- 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
- QKC69VU5oFRs4rhT8QS7hf3+c6dAPgE=
+Content-Transfer-Encoding: 8bit
 
-On 11/13/26 01:56, Miro Kropacek wrote:
-> A framebuffer at 0xa0000000 or above is taken as being in SuperVidel
-> RAM. A TT with a VME graphics card such as the Nova has its framebuffer
-> there too, so in 8bpp it gets the Falcon palette registers instead of
-> the card's VGA DAC, and in 8, 16 and 32bpp the SuperBlitter, which it
-> does not have.
->=20
-> The SuperVidel exists only for the Falcon, so check for the Falcon video
-> hardware as well.
->=20
-> Fixes: 51df976c3268 ("fbdev: atafb: Add support for further video bit de=
-pths on atafb:external")
-> Fixes: d463633d63e6 ("fbdev: atafb: Add support for SuperVidel's SuperBl=
-itter")
-> Cc: stable@vger.kernel.org
-> Reported-by: Christian Zietz <czietz@gmx.net>
-> Signed-off-by: Miro Kropacek <miro.kropacek@gmail.com>
-> ---
->   drivers/video/fbdev/atafb.c | 18 +++++++++++++-----
->   1 file changed, 13 insertions(+), 5 deletions(-)
-applied.
+Hi Finn,
 
-Thanks!
-Helge
+Thanks for testing it on real hardware, and with a better method than
+mine.
+
+> Which clocksource driver are you using for jiffies?
+
+The jiffies clocksource itself; the board has no sub-tick clocksource
+yet. The tick is a periodic clock_event_device on the DUART's
+counter/timer (GENERIC_CLOCKEVENTS, not LEGACY_TIMER_TICK), and my
+figures were 1 s of each call timed by jiffies with interrupts on, so
+they include the tick's own cost. Yours are the better numbers.
+
+> ndelay(400) 536E-09 -> 239E-09 seconds
+
+I think the patched ndelay() count has wrapped your 16-bit timer. The
+patched ndelay(400) asks __delay() for at least 466 ns of calibrated
+loops whatever loops_per_jiffy is (8000 * loops_per_jiffy * 25 / 2^32
+loops, plus the one __delay() adds), and it now does a mulu.l on every
+call, which the old code did not (its arithmetic is plain C, so GCC can
+hoist it out of your unrolled loop). If a call takes about 1.08 us,
+100000 calls take 107.6 ms, more than the 83.7 ms that T2 can count at
+783360 Hz, and what is left after one wrap is 23.9 ms, or 239 ns a
+call.
+
+Could you try ndelay(400) with 40000 invocations instead of 100000? If
+I'm right it should come out at about 1.08 us. That would mean it is
+longer than before, not shorter. As the commit message says, ndelay()
+now pays for the 64-bit multiply, so very short ndelay()s cost more.
+If that cost matters on the 040, I could keep the old ndelay() and
+only fix udelay().
+
+Your udelay(1000) at 978 us is still 2 % short with interrupts off. I
+believe that is calibrate_delay() running with the tick enabled, so the
+tick's time is counted as loop time. That is separate from this patch,
+and I have left it alone.
+
+Graeme
