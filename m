@@ -1,77 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.154
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794971304;
-	b=DnTn4gSH6kX0QkEgEkx/wXk4af0/LA1O07K46oduygj683WwaN4w+xQCY1m/iHXttm11
-	 F1cAAyuUrTtyKjEx8k9SkBTVSES2Igrtgo8GVVJxCj2+QOMQdo92HYQe4qJiVqZMHsDhT
-	 HDs34Ac6pcHE62VmYKgCgnDnAkcHekuqRZQc4IvaZG33GRfqEqRvWT/shM5HTeOZVdNgT
-	 xEbDkrip4L+Ep/6+rmFCmB3WOZnTeWWK0ARIJb+O7bRl0FP1rB/VRWyFgN0PD8P5K6YJU
-	 mQxeqftgSvs3hMwBZYgVb3BrdCwT5fOWgUwHc8VKDKjhmKNCuyou0Xu1KGyfIt5rjhA==
+	t=1794995552;
+	b=3HrAQZsk2l4zH1EcSs3wwf4Ett8Iv3eV99IbtDCtOyscRPyr48EjwtEq1cnBMAAUn7CU
+	 JBuzUk7t4KdpTRwd0csbBZYvRecP98E0+EJnVL0R73F8Sj8Yl4ZphjXqQ0t0yxsgCEBCH
+	 6wQG/plWZ84U+1mNrE0fK23/4aXgscWEPQxZMIFE0i99GhDubmS9Y37N8wt5B+C7MCvXO
+	 aCVpzquDPazbPQwBu2bkyUBrsQBYsBnRSuLSylAK4yUmJmzl4JMUC/8tLaC2RvkuXr9Lq
+	 7BiW9WgbyMmJqaiOhNeLFzdKPiafOD4CvMJdPJVOAZ+TSWUTHTQ46+XFTBUYeLopqxw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794971304;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:User-Agent;
-	bh=AU3qt+EL/+CSZxwUvF61zs7wOL+rwjAYzL7U5imcl84=;
-	b=NExDphtoMgTCwcd2Nmwofzn/+gwq2TTJ8ULBaageCa+iq9edHc3HcI4NEGmRHdOsFLxR
-	 rRC7MxI9tp9w3G4BzekpGvuQ7ysBHKVTPDwTwUIMG7Sy27RRDD14VoRTOqBLqKFxIgugG
-	 y4fFb80MzWocJRWdvszLlfaJLgs7JyScqF61YGCfBEodm9SbsHfTvvVSrJYvuXlsYPELB
-	 0TiU9HhG3Ma7pXYvWyPexe6BhF3Acx7GovlV2J4Sd7yngFXLvwXXEXpk3xROFbJ92ejF2
-	 kejKbcKmI+/S//V5eUkvFbZ93/4sQ3wlRkFdtD2yOlC2sSACKCz/I6RAKB8YRVM/tug==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794995552;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:X-ME-Sender:
+	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:Date:
+	 From:To:cc:Subject:In-Reply-To:Message-ID:References:MIME-Version:
+	 Content-Type;
+	bh=08GNxqqcutlPCHrAJDR+Yvcn0JpVtFjAgWOb3wtjwsY=;
+	b=IQaQclAPtTT+t9YWbB2bC6sxD9VH/UjD8P+ar/01dJZgJ3Xvb1Cz9uS+o2cbJ1a1CXvs
+	 jdHQGsZaS3UB0MjAIAXIPDqetRGCemOZni9hBmWMM9gWXfTjBGAt+y/X5UWZseQTd+1An
+	 61sd0AcO6WWBI6vnSvh4lsDdYy4ZfXcRkkxIPERFHenk188IIKQm7rvD+E17DogyU59I1
+	 ZpQ78oB3dpJu16vfwbMd9m8kJLpwXUqsdOS5NbYOuwek3CpNcdqxiBIT4nzR0H8LL1ENU
+	 PHvImJWsKQ+mpZXqj2jkqbtuVZtMkxm40dkrdKUcXcc2O3p/mI7RihzgdLN2nx1HSGQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Fz0pzUr5;
-	arc=none smtp.remote-ip=198.175.65.21
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=fail header.from=linux-m68k.org;
+	spf=none smtp.mailfrom=linux-m68k.org;
+	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=CZeDPVBK;
+	arc=none smtp.remote-ip=202.12.124.154
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D737606A325
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Nov 2026 03:08:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9D737606A325
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FA8606A31C
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Nov 2026 09:52:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C7FA8606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Fz0pzUr5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1794971303; x=1826507303;
-  h=date:from:to:cc:subject:message-id;
-  bh=5NcY/NjGbmg6ZzLYwiwEzfhjWn5EUpb+vT9IxncB3wo=;
-  b=Fz0pzUr5LipPP65VLkJzRj/0sANQSwPwuFfQYZ2GR2cr/Dhqxe1D6iI9
-   8TWDAPGbf8tST8yegDwX+u8QrurDDoqP/6fv93eehX0huX/S4voRYXtuq
-   ffoyL/+ux3M+VBr1LO+0+x6DCH2NWfBOTvttfMxwWgp6I84Z1cXKsCDXa
-   SOd+/nviY63H++K51GkmQbjuxD8V03yEFsfFqV4z6If4K15jUd/V/tam/
-   QGi2zlxCIUyOltMMB0CmFxVv/STmzSoKS7oo5QKcNlDwIKBdjQsaw3QnX
-   7BJMVmd4oPqhp+mVFS1uK4AWWLOyrN9pfLqew3EI843ogfucuqKMRxdmA
-   Q==;
-X-CSE-ConnectionGUID: C1spkBITRXCRyWtTCpjcSg==
-X-CSE-MsgGUID: 21GEm3m7Ty6sNW7t3Afsgw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11969"; a="3844317"
-X-IronPort-AV: E=Sophos;i="6.27,219,1787036400"; 
-   d="scan'208";a="3844317"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2026 19:08:23 -0800
-X-CSE-ConnectionGUID: VJzecCxMQmmT3mC0LV7xoQ==
-X-CSE-MsgGUID: 3E3tDQnOTtO0164YMINAKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,219,1787036400"; 
-   d="scan'208";a="9995972"
-Received: from igk-lkp-server01.igk.intel.com (HELO 1073a420ae3a) ([10.211.93.152])
-  by orviesa006.jf.intel.com with ESMTP; 17 Nov 2026 19:08:21 -0800
-Received: from kbuild by 1073a420ae3a with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xTW1w-000000003JU-38xQ;
-	Wed, 18 Nov 2026 03:08:16 +0000
-Date: Wed, 18 Nov 2026 04:07:29 +0100
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:cf-serial 1/4] drivers/tty/serial/mcf.c:586
- mcf_probe() warn: unsigned 'port->irq' is never less than zero.
-Message-ID: <20261118040014.eslSkj4U-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=CZeDPVBK
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id F1A267A0033;
+	Wed, 18 Nov 2026 04:52:30 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Wed, 18 Nov 2026 04:52:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1794995550; x=1795081950; bh=08GNxqqcutlPCHrAJDR+Yvcn0JpVtFjAgWO
+	b3wtjwsY=; b=CZeDPVBKmFsYWo5rOcms9u/XhMwfGlcpOsqtkxV13VQsVqq4Ji4
+	9h7MbqERyDCtpkOe/0UgjQShFtvhyEy9gIM7+P8vxPqi68d9SjF0+FX1pmliet8g
+	/BlbNwaW0AVS6g61epOJ/6VhmyZYg0L0FZrBpDbCKpGdHFOOrssP1xf6bWuwbMd1
+	6QYPLqEv1oWTJehamUD7DdT9nEMP4CwT2n74YcBCQouIGyO05BDxYoRoWn6wZ0Zp
+	8+343rPUi+pAKow8iNMVQZWYNdRYeQxAsWoi2dbbxl/lWC1PmUGCeYSz17vmIlKG
+	fzTceHrgDHNzcyYJXXKKsZHZFo/YUMJbRmw==
+X-ME-Sender: <xms:XnX9auYEqCNMnmh0RdtfEZXFB9L111362E3bKSTAlr19L_BJxJ82hw>
+    <xme:XnX9avPHGPTKei-j1BqVhRe11J2n0umOalj_3pNhCJTxc19C20EkPz8IGU30fdR5E
+    xOUo4AzGWTa5BytbSDcSRsorcJ6HMXGtuDGkDxFr-xcnzbh519Lmx-7>
+X-ME-Received: <xmr:XnX9ajaqdu1wJ2sZU7SXzN9Xh1SgEgwN2tKSfUmZqzX9RBXqD67jvN5SYNzK>
+X-ME-Proxy-Cause: dmFkZTGR4I22bLJwTwt2FWJhq+VEuyYwDblgcFrUmwnBJBinx2IsuzNOeMg5ScpVIFQLkD
+    dCX/Htnj6gduANGrr29dLqPLoA/sqWleUgQbcBnI46vXFeeHWPbpWG/uh4lXKUPdxrw7UE
+    TonLtq6N26xm0S5drgwXeI0l7IfrVmc96dzfQHOtgijMbj+2wH5JSTKHBcnN0m1YkXn50B
+    32YY3dNmrkbpeJ1eh0IxIiXEY3+vYfo6A1eiLaxcPDm7Ui8Ago9wkjNnhnpV8o8PC88I1S
+    R/enjdUceHxvOO9AkRW91IEkvwc8NPwchpDsGkPX/bN8AITx+sGeaIkoFyeyDpAGMXIiJ3
+    Nvt6fUpmvPPc/Zj0YhfNvLkTiXgu7sGbfOvqFE6L1vNUxneQd+CFI/0CoqNSGbBALW8QnV
+    M05xJ6XaHmH2eTqz9tLKboBP0BhR5aFolGmLGrdB4oyepjtHmE/0zAoJdDd7eoa7Vv0doE
+    ZrObc8QwxRX8IFmsSbuji576pcbJBdDRMblnfFXq81Pek7FvOucrQHjj9cSSWXQNIkj7/v
+    2PAOw2+k/Fn0VfOjQw3xH6S61CSm7rU8DoaRorWL5dfAomF+M0Z0xwTqZg7tshpHQ6yebS
+    oyIgv5GNK/kWbNLhwMYOAmN9q7eGNIxaMLBoAc+Z7a+KHCs9rVlPz+DXqixg
+X-ME-Proxy: <xmx:XnX9at1K0cR6oQfDNVBz_sCyXyWQqOq_meofSWU2_ecjaoGiDOgvbw>
+    <xmx:XnX9apeBBghT4A7WyX_76md47K60Qshvre3mbve0oIBWGNnmtZJU9Q>
+    <xmx:XnX9auG9k8fR6DTS7wdX4RtSIv-iIluOlHevT_WQzOWj2aAGWd56cA>
+    <xmx:XnX9aq2R_oJJhqXf-xC2dEO4H9wKM8fBD2qMcCcFeqkhSgOAJdJE_A>
+    <xmx:XnX9arq-pAxmiND6S4avF2n4EFu4rD4F_M00XKJMd8yy1q3Y3k2SfV7G>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 18 Nov 2026 04:52:28 -0500 (EST)
+Date: Wed, 18 Nov 2026 20:52:16 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Graeme Harker <graeme.harker@gmail.com>
+cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: delay: Fix rounding of short udelay() and
+ ndelay()
+In-Reply-To: <20261113143832.168233-1-graeme.harker@gmail.com>
+Message-ID: <ae768ed3-a517-3223-5c86-a1599ff6c8e5@linux-m68k.org>
+References: <20261113143832.168233-1-graeme.harker@gmail.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -80,59 +91,137 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cf-serial
-head:   13e7fc3bb9e0e6b9de008260d6925af530c79882
-commit: 93cb854f633956fd1e5df8744a9e27695b2e8cd8 [1/4] serial: mcf: convert to use proper platform resources
-config: m68k-randconfig-2200-20261118 (https://download.01.org/0day-ci/archive/20261118/20261118040014.eslSkj4U-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.5.0
-smatch: v0.5.0-9187-g5189e3fb
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/20261118040014.eslSkj4U-lkp@intel.com/
+On Fri, 13 Nov 2026, Graeme Harker wrote:
 
-smatch warnings:
-drivers/tty/serial/mcf.c:586 mcf_probe() warn: unsigned 'port->irq' is never less than zero.
+> __xdelay() takes the high word of xloops * loops_per_jiffy and only then
+> multiplies by HZ, so the loop count is truncated to a multiple of HZ.
+> On a 16 MHz 68030 (loops_per_jiffy 17792, HZ 100) every udelay() below
+> 57 us becomes __delay(0): measured on such a machine, udelay(10),
+> udelay(20) and udelay(50) all take the same 8 us, the call overhead,
+> and udelay(100) takes 67 us.
+> 
+> Multiply by loops per second instead and keep the high word, which
+> truncates by less than one loop; __delay() runs one more loop than it
+> is given, so the delay is never short.  As on x86, a factor of 4 is
+> moved from loops per second to xloops, so that the product
+> loops_per_jiffy * HZ only overflows above 2**34 loops per second
+> (34000 BogoMIPS).
+> 
+> ndelay() works out loops per microsecond from loops_per_jiffy rounded
+> down to a multiple of 2048, which on this CPU is 1 instead of 1.78.
+> With a 64-bit multiply available, use __xdelay() as udelay() does,
+> with 5 (2**32 / 10**9 rounded up) as on x86.  The CPU_HAS_NO_MULDIV64
+> variants are unchanged.
+> 
+> Measured on the 68030 (1 s of each, timed by jiffies, interrupts on),
+> time per call before -> after:
+> 
+>   udelay(10)     8.0 us ->   18.2 us
+>   udelay(20)     8.0 us ->   29.0 us
+>   udelay(50)     8.5 us ->   61.5 us
+>   udelay(100)   67   us ->  114   us
+>   udelay(1000) 1020  us -> 1070   us
+>   ndelay(400)    1.8 us ->    7.9 us
+> 
+> About 8 us of each is the call and the 64-bit multiply on this CPU.
+> ndelay() now pays for that multiply too, so very short ndelay()s cost
+> more; they are no longer short when loops_per_jiffy is small.
 
-vim +586 drivers/tty/serial/mcf.c
+It's hard to measure anything accurately with interrupts enabled,
+without CPU isolation, NO_HZ, HIGH_RES_TIMERS, GENERIC_CLOCKEVENTS etc.
 
-   570	
-   571	static int mcf_probe(struct platform_device *pdev)
-   572	{
-   573		struct uart_port *port;
-   574		struct resource *res;
-   575	
-   576		if (pdev->id >= MCF_MAXPORTS)
-   577			return -ENODEV;
-   578		port = &mcf_ports[pdev->id].port;
-   579	
-   580		port->membase = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-   581		if (IS_ERR(port->membase))
-   582			return PTR_ERR(port->membase);
-   583		port->mapbase = res->start;
-   584	
-   585		port->irq = platform_get_irq(pdev, 0);
- > 586		if (port->irq < 0)
-   587			return port->irq;
-   588	
-   589		port->line = pdev->id;
-   590		port->type = PORT_MCF;
-   591		port->dev = &pdev->dev;
-   592		port->iotype = SERIAL_IO_MEM;
-   593		port->uartclk = MCF_BUSCLK;
-   594		port->ops = &mcf_uart_ops;
-   595		port->flags = UPF_BOOT_AUTOCONF;
-   596		port->rs485_config = mcf_config_rs485;
-   597		port->rs485_supported = mcf_rs485_supported;
-   598		port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_MCF_CONSOLE);
-   599	
-   600		uart_add_one_port(&mcf_driver, port);
-   601		return 0;
-   602	}
-   603	
+(BTW, I notice that m68k and RISCPC are the last remaining users of
+LEGACY_TIMER_TICK...)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Which clocksource driver are you using for jiffies?
+
+I did some measurements with your patch on a Motorola 68040 (Mac LC 630).
+This build does not set CONFIG_CPU_HAS_NO_MULDIV64.
+
+My method was a bit different than yours (code is given below): nominal
+40ms of each call, measured with a VIA timer, with interrupts disabled.
+(The jiffies clocksource on this platform uses the same VIA clock.)
+
+Here's what I measured:
+
+udelay(10)   9.94E-06 -> 10.3E-06 seconds
+udelay(20)   19.0E-06 -> 20.1E-06 seconds
+udelay(50)   46.2E-06 -> 49.4E-06 seconds
+udelay(100)  91.6E-06 -> 98.3E-06 seconds
+udelay(1000)  972E-06 ->  978E-06 seconds
+ndelay(400)   536E-09 ->  239E-09 seconds
+
+You were right about the delays being short, and you've certainly improved
+upon that for udelay(). But ndelay() appears to have regressed in my test.
+
+There is a lot of overhead in my ndelay() measurement so I'm surprised to
+see it measure low. I would have expected the opposite. Maybe my method
+is just not accurate enough.
+
+Thanks for working on this.
+
+---
+
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index b745cf20a71f..bc1da6ee014a 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -65,6 +65,54 @@ static void __init mac_sched_init(void)
+ 	via_init_clock();
+ }
+ 
++#define GET_VIA2_TIMER2() \
++({ \
++	u8 low, high; \
++	do { \
++		high = via1[vT2CH]; \
++		low = via1[vT2CL]; \
++	} while (via1[vT2CH] != high); \
++	1 + low + (high << 8); \
++})
++
++#define DELAY_LOOP(n, cmd) ({ \
++	u32 i, I = n / 40; \
++	u16 t1, t2; \
++	int d; \
++	t1 = GET_VIA2_TIMER2(); \
++	for (i = 0; i < I; ++i) { \
++		cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; \
++		cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; \
++		cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; \
++		cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; cmd; \
++	} \
++	t2 = GET_VIA2_TIMER2(); \
++	d = t1 - t2; \
++	printk("%10d invocations, %20s, %10d timer2 cycles\n", I * 40 , #cmd, d); \
++	})
++
++static int __init measure_delays(void)
++{
++	unsigned long flags;
++
++	via1[vACR] &= ~0x20; // free running T2 with no port B output
++
++	// Given eclk is 783360 Hz, the 16 bit counter can measure up to 80 ms.
++
++	local_irq_save(flags);
++	DELAY_LOOP(4000,   udelay(10));
++	DELAY_LOOP(2000,   udelay(20));
++	DELAY_LOOP(800,    udelay(50));
++	DELAY_LOOP(400,    udelay(100));
++	DELAY_LOOP(40,     udelay(1000));
++	DELAY_LOOP(100000, ndelay(400));
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++subsys_initcall(measure_delays);
++
+ /*
+  * Parse a Macintosh-specific record in the bootinfo
+  */
