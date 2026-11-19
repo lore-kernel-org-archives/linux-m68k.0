@@ -1,95 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.13
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795035612;
-	b=m6c59r1x6KFIxkjGQX7MIzuteRvzpevfcAQGjL28QCzrB+LGR9toorcdEXtreB/B+K0A
-	 u6of/mrpZnLfkibLFnLfpMAerIILKT6tftoGhnVVhkes52G8+QRmC9npHKReB0kMcNK/L
-	 2ij6E0S87LTIekD7KWumCEagE17IxnqgJEQCVOY5m/remSl/7REeXLKcvnoTe1zcYh4Zg
-	 ZIwhj73hcNsv08cndOEPKYWJAo8+3iWoqvIMWThdDeR+4uVJeC6dfdPSi+CxPcGpnFo14
-	 C6vojzv2FAEiu5HfqiKxHEYN5tIi1SbaypIRG/Gsvjh1abfEDbwBnKN5NrfAyFihQfA==
+	t=1795068586;
+	b=dRLbkWSqz8nFJhkJBwH6PufP1pw4PolFBF2585JgBVVc92tl/QfT/ZH0UzZZXehFGzgU
+	 JvJHs0eh1nkRxf8Q14VEJsTmW3cVBZzbwUPxICDxZPmmtUOh2mzacV2WCVa3fmOVQmtAq
+	 +AhxXEbAdKJ8RN7MZ3EFmxuQIiXBz0c0PTBKhsNPbAML2hBpMZtZxYZsdOJTM3s+2Df6m
+	 OcODs5cqZIk0BLJ597nfSkVWxLPS8eJIz7se3og2CmxgX5bwjEnsnN6SueGojhPHNL9vC
+	 /YckifF6tRuz2xoppniYy4QkG8bQsl174qpWJY/pL/9dyCiLh1rGK9VdPwThgPHuWGw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795035612;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=bXN0J+AK1P53RMwKn3F1Co6ZRwoaPYRSkShLnpvY7YU=;
-	b=Ts341+EbLIOUz4vmTMQyBEGO+rRXURAstKhe1Wjk+b9u/44NrybbhVktadKeOb5BnNOX
-	 kCA9W2fDG15Wvxfk8vemZ82ynaLZVzJIWaC/E04mdO9Ejweo8RS4ACF0b+PN5sqHi1Cbs
-	 2S7U/+J6Qts0fnuaafhIN8tmW/OrA0SdH5lWCGnyaXtra1vw3hCW5re/AXXyAQLEcIGtj
-	 EaWa+XG9nHnwvPEOZ3ZlU9q3tKdA/+hvVubOf997WkAk57ARpHc/TbU5vdLgnwTuCpyVd
-	 +QoGNbWX4wDbI9ZMH3vqpRacxPsusZedk0JEq5vYLF9AfiBsfrJ9Ys4Jhw3GfiDwjPw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795068586;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
+	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:User-Agent;
+	bh=s5D1lJQdk2Q750ENp58ZP1J44NtcwTLwzt/iRP7BF88=;
+	b=NhirKiBc6vfmvlLR2ybeY9vYIfxFPw0bbk+Sb4T6aG/+b+8RZiwH1vUMTMY/3ypDDN9A
+	 TY4o8cZsoh3g6bp3uKCI//ZBPaUDiTBXPWKm3oK1PKvOWaSzfI2wkr+x0Py2hrZd7M8yk
+	 QYj6h9PHorj9H90hP9yPT26Sl8EY+RMm1hJvV7whJh+naHuNZSXpet+72fH4ftNdz2ox3
+	 ZSojlXxJK5R2sg3GBPn5pi21rNnKDU0ij2PoEej+b+Lv2tddxWFwupUgzxyWWtRBIm0ua
+	 niIzqjvrMQeKbWOEKpMZzwLY9zR4EpfSt1TNRVv4HVR4ky+daeSX6gU0jWLSPD894Qg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=XMbuTt5U;
-	arc=none smtp.remote-ip=209.85.221.54
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=intel.com;
+	spf=pass smtp.mailfrom=intel.com;
+	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=gGbuQoB4;
+	arc=none smtp.remote-ip=192.198.163.13
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D23606A33B
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Nov 2026 21:00:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 55D23606A33B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428DF606A326
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 06:09:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 428DF606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=XMbuTt5U
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-491f34b4e0fso718620f8f.2
-        for <linux-m68k@lists.linux-m68k.org>; Wed, 18 Nov 2026 13:00:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795035611; x=1795640411; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=bXN0J+AK1P53RMwKn3F1Co6ZRwoaPYRSkShLnpvY7YU=;
-        b=XMbuTt5UTFjVrTJ57pLUoa9lAEfg+qE8fABf23CHQ0v5ucMGfEVPs7U5M/O+J8QUEA
-         Byi3Oh5GF24JYY7ZtBQJc62srxO8gM75Z3S6iCXUPkC2qKLqmKo+nrwa+djVHZz3seWb
-         GPWkTkTn5tVUW2g24ZoOOI0DFlXLF+yBo65YsjMRR6y6EEMGnIVheFNHSNk/k8EvG8qB
-         FaM+iz8AFLbkG58NVe/+4VkXJXjwVoRyWLKzCPw3o5BCE6Qn4Zci5UFpCL9OO9tmgvXp
-         jKO34Uy9QZSEuLBTkbsGfRWrfM39N+iakgSBFKoIf+DQxD3cArqePdKrEQRyydOdLlFJ
-         PlYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795035611; x=1795640411;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=bXN0J+AK1P53RMwKn3F1Co6ZRwoaPYRSkShLnpvY7YU=;
-        b=RxPj553xrWlyB13ECsf7BguzUK9DQ6tLzcPJDo84Ws/B+DKS689kU28y+i5i2y1b+V
-         8+Dh/AtrEIvzBrAXmJsjMVmRzci3KKHQX+zlkvUBOpszLcXGaTrinxJ3M9WeDkKdhhAT
-         gVOqpMrntccG20Vfdu98Dl7PT2ZMwBYiXaUEctnfxAAcO4fxwEO99b4m+Z+4vYtDs3Vz
-         cDW2wlRABj7gNSLexTSoBONt55YYl2pEqU3xbc4T9EAIZURCGHhVBj2hLE1eo0PdSW3H
-         K1PJRrIYBEyGcoj4HRsd+SBrTsXPZCZgCifWEOUTGCG1f2py3dU2i8fE6cAJ1g7gIoq3
-         CbMA==
-X-Forwarded-Encrypted: i=1; AL+hErFzYPnpHhqmXf59gnWRPV8dQhIcmPR1CGtFotvMiX19JIguWXBJ/tDoOyJlVMJ7uzwHfGQNuvaxcbRh@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z/bAktXWIrXu3K+1GfWrqnBclTm9mVR+13fs2d7f9Nky9UdfjGU
-	fAWFywiGdgu/UKbLl3PCyIbsTaD4AnCyZAbic2swy/Xn63zgrtN8qTfi
-X-Gm-Gg: AZFdTZd/MkIRSibaWb64e2sYmPg4ooRkyZjFS5CQ322GRZBBbf9ibGHhdC5W9QuRHYo
-	2E3kFo1eIP8Aj4XvyVkFVeWaJQEGta/l38BLpXBI3WvqT4AkzF1TNPKKh8x4JauCcwNSShf4Bas
-	MLtVmwgygmCb68MTRTYG/wHO7UKMInqACgFsDfCYy+1fbUcOpNb/L6irOSshswCqe+5nkUMnZQe
-	jFEkLGIg63h2tAXetBAvABGNCi1Unlq96TnrPEqh0XYKMVsZI8FLDhw5dspkots4Q8HrvczhrQx
-	dfRc15SLj6whYbCw3Zm1Ra+K4MBYqjbx+FdxOuRwM620BfhVMEh4sT9RMWtxwT622cwV6axoPxE
-	xUx2JpOdPWHLcEXHbuq2qyEVqs5Q4qDjIkDwqHpgN1540O+UsqbnbkOv5qEF3NSrY47I3MFEIQO
-	f/R1L3xsUBd2CLQ3ABAembrnbhpnHdCb9ozMAhMQLmDy3xnDcxBCoeUjjPrAin4qajTJt9XB2rW
-	Epgf3T99IxZHUk/GpDKl43XQRRsptVd0cq1DxZHa1UI5Zu5NMtrKTUmTBiEJXxGkanEDAt5fmL3
-	c3YG9oxGdEKRrAQ/3dt6Le2B5Pe6AnanZ5ADXJTfXM7PkTVL73QNB+e01xo8JZnU+gXpIuSVDSW
-	HXxeBSXc=
-X-Received: by 2002:a5d:64cf:0:b0:4a6:4862:28f5 with SMTP id ffacd0b85a97d-4a6486229b8mr8177844f8f.3.1795035610516;
-        Wed, 18 Nov 2026 13:00:10 -0800 (PST)
-Received: from beelink0 (host86-181-68-246.range86-181.btcentralplus.com. [86.181.68.246])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4a654997681sm5332421f8f.15.2026.11.18.13.00.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2026 13:00:09 -0800 (PST)
-From: Graeme Harker <graeme.harker@gmail.com>
-To: fthain@linux-m68k.org
-Cc: geert@linux-m68k.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: delay: Fix rounding of short udelay() and ndelay()
-Date: Wed, 18 Nov 2026 21:00:08 +0000
-Message-ID: <20261118210008.927764-1-graeme.harker@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <ae768ed3-a517-3223-5c86-a1599ff6c8e5@linux-m68k.org>
-References: <ae768ed3-a517-3223-5c86-a1599ff6c8e5@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=gGbuQoB4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1795068586; x=1826604586;
+  h=date:from:to:cc:subject:message-id;
+  bh=As7C/2WHu7Yv83kx3RjGPKKEWSdWZiyWDpI7VrO88Ak=;
+  b=gGbuQoB4MBT4W0qsxzALKk165N22B+weWdBqyvzepdhJ0FeZynGAqaFY
+   haEL/lKqJLIIyGyOINtRhNgQcGL0Q6uyd8OmRYFCJWE7O9xNTynVq7gBJ
+   +Nfy8f/HuK/iPoiQ/o2+e55m7AVEL6+wRsuwe58Sdbbe6OLYl5im04Ixn
+   QQ12mQPpPHW1wpM97ik4B9ZaoquDWg/TqucpsiX82T0l+gNjC4Cbbop+y
+   +nElYF6RxfeLNaeMfo3q9A7H8v8LLgYKYnIo4+DfVHOAatyh7s5MaqrL4
+   lY7c7fwS8B7lp4v50W39cv8uOmm+brQpt/gR5yZ+ajA7rUX2P8a6DwxwB
+   A==;
+X-CSE-ConnectionGUID: qEm6+CkzS1Gciert9pjszQ==
+X-CSE-MsgGUID: MSeYEpYlS7+EyGyTbj2QRQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11970"; a="3898080"
+X-IronPort-AV: E=Sophos;i="6.27,220,1787036400"; 
+   d="scan'208";a="3898080"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2026 22:09:45 -0800
+X-CSE-ConnectionGUID: WzqGxOkoTHSCj6Vpzhr7QQ==
+X-CSE-MsgGUID: 39JhtGA+QjG99SXV54kc5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.27,220,1787036400"; 
+   d="scan'208";a="10246192"
+Received: from igk-lkp-server01.igk.intel.com (HELO 1073a420ae3a) ([10.211.93.152])
+  by orviesa003.jf.intel.com with ESMTP; 18 Nov 2026 22:09:43 -0800
+Received: from kbuild by 1073a420ae3a with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1xTvL2-000000003gT-2xuD;
+	Thu, 19 Nov 2026 06:09:40 +0000
+Date: Thu, 19 Nov 2026 07:08:52 +0100
+From: kernel test robot <lkp@intel.com>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ uclinux-dev@uclinux.org
+Subject: [gerg-m68knommu:cpu-model 3/10]
+ arch/m68k/coldfire/m523x.c:93:13: error: implicit declaration of function
+ 'MCFCIR'; did you mean 'MCF_CIR'?
+Message-ID: <20261119070741.Az2SiBZu-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -98,44 +81,44 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Hi Finn,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cpu-model
+head:   bdf44b7b88a06b5bfcef4a4a64b9baa63b9a6646
+commit: 08bb06f5e742469237cc22d7571e443ff5272187 [3/10] m68knommu: probe CPU identity for ColdFire 523x types
+config: m68k-randconfig-2000-20261119 (https://download.01.org/0day-ci/archive/20261119/20261119070741.Az2SiBZu-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 15.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261119/20261119070741.Az2SiBZu-lkp@intel.com/reproduce)
 
-Thanks for testing it on real hardware, and with a better method than
-mine.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/20261119070741.Az2SiBZu-lkp@intel.com/
 
-> Which clocksource driver are you using for jiffies?
+All errors (new ones prefixed by >>):
 
-The jiffies clocksource itself; the board has no sub-tick clocksource
-yet. The tick is a periodic clock_event_device on the DUART's
-counter/timer (GENERIC_CLOCKEVENTS, not LEGACY_TIMER_TICK), and my
-figures were 1 s of each call timed by jiffies with interrupts on, so
-they include the tick's own cost. Yours are the better numbers.
+   arch/m68k/coldfire/m523x.c: In function 'm523x_probe_cpu':
+>> arch/m68k/coldfire/m523x.c:93:13: error: implicit declaration of function 'MCFCIR'; did you mean 'MCF_CIR'? [-Wimplicit-function-declaration]
+      93 |         if (MCFCIR(v) == MCFCIR_5235)
+         |             ^~~~~~
+         |             MCF_CIR
 
-> ndelay(400) 536E-09 -> 239E-09 seconds
 
-I think the patched ndelay() count has wrapped your 16-bit timer. The
-patched ndelay(400) asks __delay() for at least 466 ns of calibrated
-loops whatever loops_per_jiffy is (8000 * loops_per_jiffy * 25 / 2^32
-loops, plus the one __delay() adds), and it now does a mulu.l on every
-call, which the old code did not (its arithmetic is plain C, so GCC can
-hoist it out of your unrolled loop). If a call takes about 1.08 us,
-100000 calls take 107.6 ms, more than the 83.7 ms that T2 can count at
-783360 Hz, and what is left after one wrap is 23.9 ms, or 239 ns a
-call.
+vim +93 arch/m68k/coldfire/m523x.c
 
-Could you try ndelay(400) with 40000 invocations instead of 100000? If
-I'm right it should come out at about 1.08 us. That would mean it is
-longer than before, not shorter. As the commit message says, ndelay()
-now pays for the 64-bit multiply, so very short ndelay()s cost more.
-If that cost matters on the 040, I could keep the old ndelay() and
-only fix udelay().
+    87	
+    88	static void __init m523x_probe_cpu(void)
+    89	{
+    90		u16 v;
+    91	
+    92		v = mcf_read16(MCF_CIR);
+  > 93		if (MCFCIR(v) == MCFCIR_5235)
+    94			m68k_cpumodel = "5235";
+    95		else
+    96			m68k_cpumodel = "523x";
+    97		m68k_cpurevision = MCFCIR_PRN(v);
+    98	}
+    99	
 
-Your udelay(1000) at 978 us is still 2 % short with interrupts off. I
-believe that is calibrate_delay() running with the tick enabled, so the
-tick's time is counted as loop time. That is separate from this patch,
-and I have left it alone.
-
-Graeme
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
