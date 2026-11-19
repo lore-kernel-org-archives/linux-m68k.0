@@ -1,89 +1,89 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.173
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795091985;
-	b=2jpFUzKNGevyGM0pz8QlTvHsxi9fq7v1ZU98LcFSrRwANijbP0+nvOfjZO1DD7S7OBQJ
-	 u9Nbmr/xwM+h+Rbt/ol1Rz7HHhiQqrI2YXSRTIGcWg3pU/BeJb6EYWx2LjSBpsWsqCANy
-	 cDKpESBXPIVaZAFMPlooxF6ogp+zdhVQ0an4cwzQO6sAyXVhUR3SS8I/enb3f2hLNS2i3
-	 fiF8ZED7rOVyKlofTjT11pDHeqimYSFgGFXOV6QbD1kg896lhldR4Lm68YhsPULisMEUl
-	 MJyhzwqbppVme6tWxcJTyoVFLhM/xOuZ/+DQlyUPn4Y7n6XZigCF/dL+l8rtdMjCseg==
+	t=1795091986;
+	b=Hl4+KfnyShDTBbtN5n54Yc+3Xd2QVHV17yROsKpRrEzKc6QKcmenJmbByHbvz2KStVk0
+	 sck9bePW17JtZiLKKVyhJrTfSumbsz8VMVFGFef9WynlV4iR/uqnztUiD3stYSeC8oS0y
+	 xED6ereR9mmxKTmY2KzRGpASZmZ6+yd4NKkf/cX/yiin2aqRY22c0TEp68kL3arvSyu0g
+	 3SFh9TOOHFD4ZnB7l/7KgB/tiGHEB5OCkGSj2Eq2gv2+y7lHle8rnHKNJxdQzHsqG0Nsh
+	 4ejdPQW0zHp3RAbxU/99QTHTryklJQnlCrORZKR/JwKWe5fPYQdK0zOtK50hKC26F3A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795091985;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795091986;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=POb977I28H1EmGdZnC0Fze71NPJTvy/cbOUR/blKh9w=;
-	b=CpB0xWWlsCH1hTs1JLOj2DGUXdnt9s7uFPToegtPPUI9zAc/5IIeIkpnTl1u+GTgcsvr
-	 ZWpmalIo4/FC+EtFlHrECj4y7u2ljXAnml/T/KgqKhrz8mcTkNZ8rbCqUZdRiNmdIcDv0
-	 7krcCOoB6B6dYuk4TDjU2ZfowKOstqeKUHVI6SVZJ2zcrZq06LYkDGM71zSVFF8fNY70w
-	 x8vZjOfR7Is2pKiuhdvd4yv6OicrJiid+DVgsV50VWwsevuBJEkLGFPgofagH22JQNbxB
-	 TV21LdVX8vU9YizYIwp58wcu2nggXCROHzFvXQ+SFP3DIUFCOePx9ilSb25aQ5Rn/tw==
+	bh=ZOzDteHpiC1ToAU60pHoyywRyeM7vqQ7i9clemCjSH4=;
+	b=s/ex1n7aKrLz2NU3jeCINiv9o2fskmudIuXJpuFlbDQhZ/h2nqtnZkRF20yDJPy3oiL6
+	 DdDWBQFzskQf7b7GpZ/E5a5h/xDX5Wop0kHShwha5y9YyobBQ9dzadggbTynmwyFMfb9E
+	 6G5eahOPOgO5uYicKyS2OgbGty3RymB5kWTYcQKqTLFktm2qeLNXgXFiaF68bhavQa3Me
+	 YACTGXw+2/egrTNn3E1OKo2srE5eBDAGYCJyV+R1P91PJWJmaaxRyy6sMdXQ10IQjF4tn
+	 5vCatXhNq9EjOXNO6V2q5s+HD24iUOG6am4aCa/JJL7Jpdcxu+Q3/jTPOD7DftzJVZQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=0x0f.com;
 	spf=pass smtp.mailfrom=0x0f.com;
-	dkim=pass header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=FELxT3e8;
-	arc=none smtp.remote-ip=209.85.215.179
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	dkim=pass header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=fj63Cze7;
+	arc=none smtp.remote-ip=209.85.214.173
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF6A60A2634
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 12:39:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8AF6A60A2634
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061BE60A263C
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 12:39:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 061BE60A263C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=FELxT3e8
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-cd69954c755so1733771a12.3
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 04:39:44 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=fj63Cze7
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2e987a2ba0cso15980415ad.3
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 04:39:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1795091984; x=1795696784; darn=lists.linux-m68k.org;
+        d=0x0f.com; s=google; t=1795091985; x=1795696785; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=POb977I28H1EmGdZnC0Fze71NPJTvy/cbOUR/blKh9w=;
-        b=FELxT3e8TKznAN00YDqYQhbW3mMJH3iT7bQ4HZ9rSyR7idZk+dogeKaqNj97hrNjwa
-         Kr1tZGIEpGxfGUC9uIPswOZ4w00o+EmMZYj0o8R4dGOqzFFKkc1ZiOqSOjDXbiH14g0F
-         Qy0bblPk/AgYdDHwuVzRHp7/Hh505W8TkBLFg=
+        bh=ZOzDteHpiC1ToAU60pHoyywRyeM7vqQ7i9clemCjSH4=;
+        b=fj63Cze7zb0HpCDDbvrP6RnnTwag19s0xtWMRsrgrefSinY8zjTxu3au5Zm5bjxXzY
+         o075aLx9PSUi2LOgYsKQaNsIhhvrK+c6f92skfJubomj/eGm71g2EZgyJbBJZ2a4L7dZ
+         SKjJJHm4Q/2N0claWPbuwgOU7Jot3tfJ27bxY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795091984; x=1795696784;
+        d=1e100.net; s=20260707; t=1795091985; x=1795696785;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=POb977I28H1EmGdZnC0Fze71NPJTvy/cbOUR/blKh9w=;
-        b=zbLsFiR+V02whfIKuNU28DvPqarVNjuyxcL/s+gvJIi2W5L6HtU0R68mcJkUOdTSle
-         ww9RLbNsHhPzUbGXjXsuxqRpqBM90ilywoH1yxyFiP3yCYgd0HoIaJ7uk+pzl82EO8P+
-         b8LWyf1WWMpHIkXDpx6HP91EypuixNPeinCun8NFXhTeGjgl9TjJ+km6/vHGhIw5/Zde
-         rF+ZhXo0Di+7ghLd4aPsuqdbah0Z/2KB9KoybBu5nRqr/JVa67cJK8eo2BpNsz/LzHKm
-         NE1IluFpn4B/BzzGnygK80atzYB5QT9/pdfmZrK3c1NwhzQKBXOoP22AmNU/cVMI9qsl
-         NXkg==
-X-Forwarded-Encrypted: i=1; AL+hErEwACbMGCfj5Ktkb4pJQ4SikUTrf08qUJxN/EADTRf9OdL/9BPPFl5ecuF5S++97JFJtI+2PT6JaT2x@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z8zHUqMrK4LUhwzQ//jQikWVLlcXid2VrdN5IETx8Xh/+nkCAbZ
-	JWHXXAV+ViXSiSbrt3DvPlRiP1+F6qSEclOcoDC5Xib4paapRa7S64hGfuN4PvI8GxI=
-X-Gm-Gg: AZFdTZd67mYiy7cJ5m+RlN5FU1rJudhp2WK5OiTn0GN1zAoaByyha2qI/yY9V1bT5py
-	5jigSeHqgmf/uGbjCmQSQ1qp3evNjRlzZhh9hVlYZsWCphtYteQbRWhMjsEGym48NZVsDtRkgEL
-	sRhPFffAAAE/2lL+YGMxL7qjtCPi8gkSg01qU/Pc+4wcXQLUNi7iXralLY7dCBPmU0BNFZDPbQx
-	OKMg/dvvWVQmuceJYgDAwvPcOB7QhNKXi8iaBz0KDl9NRthpbKj3RzjHWMVsHFQkwcdEPrVD+oD
-	ei+wbUW+mFzWfV8tAE16wv71vx+7VDDAMoDPhjfdRneqhe6VnovB/gB4IfVikpG5/85CxtCXwsP
-	eXudIzIzdYrm+9Ob6yLvfc9N/WdXIxTjpwPcDS2eX3zOiQrD/xdN/qX3kicEuUqMVr79ERSmHGi
-	L5HbrCUddXgI5jHuGMc4oh1+vg0FwsF/KkOfVgqk9ehFDUMn3hFRbIqp49OcY46GB9JJpPj3tgA
-	tGp+7yHRw+5aW+A+AGjlTb9e5Iy6utSOYoMY3wEvplToKiDMxLcC3n1+xNOM3esKK7cEhjGITQF
-	QraDT2mYVcwPaPOLypbqqKuFRZfwZuPZKPHMbsx9xsIpru3fVOqLnwgi4RNqe1S5NTfZdg==
-X-Received: by 2002:a17:90b:3812:b0:3ac:b2e6:317d with SMTP id 98e67ed59e1d1-3b3d07669f1mr6494733a91.35.1795091983707;
-        Thu, 19 Nov 2026 04:39:43 -0800 (PST)
+        bh=ZOzDteHpiC1ToAU60pHoyywRyeM7vqQ7i9clemCjSH4=;
+        b=pRncMNiJU+U+/dA9h6DY/uzlXV+WljxywHaclDQBZfsujqD2/3Na7YXxS5nAZFRw1r
+         NbXuMbvQA8VDRyQXvJfBAYR3HnNifAYJFtjLWW7WA0UVC36RmjTjrCp2HAYw0MY51Lni
+         XKA/0Or0Mj3YKYoBWBPH2AkZBgBX7D2wgmTRMK+BZPyKSjLzlVfJrNlBfvq52jhg4l4y
+         2hQPUNCFchrXDzg3oU8YtyBXv1M8aU3OVO5XUmodqwtjGsv559c9T4JwDWiVHIKzVc8w
+         awbtH++XoUKg4sACuJ5trHTzK10JEwgioafyezJE5QxCLKPlRMfGLLwiQSNHVHGhj+Q8
+         Ztdw==
+X-Forwarded-Encrypted: i=1; AL+hErHvr5lKmzx093tgY/BSZ9ll6143JR2MBy8TPO7HutvsIXuaBOvCXzLKbu5PuS77JkocE+Fb8Dzgskhk@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z8Sd27y6fiUkEoKQ+nSADd51/6m0om3hvAc9UHd7a033YqnZ3vz
+	Wuje2UGy+cCklSG8Z/FF5ZIViuM8ljFMztg4yTRp3/RATNedAUP9slV15ZfAt3/G1jo=
+X-Gm-Gg: AZFdTZdHwZvhdq273218JubYRj1JktUsdtJTF6Or59Lc1ya6HCO4F8AViWMLSmcshBz
+	xmdXj4dPBTSi0NmfsEPvCbmSlIst82yP7ym37DFw0+ZZmJjUxn0TM4hpj012WNbMAMkyK6QgEPM
+	U3de14hR0QcngIqowS6maBQ9+VuSjpWIEKGk5+4pXdduoiPqOmKjMgTJ7H7UjM35Elw9eBNTFYk
+	qM9SILhasRhygoEO0y7ZJ6ZetvaGHrfuHvm2RetvxglQ/IBeQH63Dm3rdupBcJ+whFANdCrawfP
+	TWT2AmtSsc8jzrdMz5gUSQE4X5zm8oG8llBZKg3DEF6EeKiSBMMFhAiDGd86DDfOCwYk0Y62Ib7
+	RFI8/3Mudq67ZehRvB3ZXlf8/OrzKhdEmBPoM/fOKNx0nOltB8uBgYp6aMOx4/yYG3SAqInT2VU
+	fCBIYdd8hL+dk4FdWMuQkvU4VGPg5kUd3y1G4j/REah0lq7ZtUbzE871MoxqNpnP8Rc6Qr/emIj
+	7SVjSCVv4OEic4/QHMoaaHo8vDg8SuBQewpyCQtHS4dytisWPDCfC1klWaeliiVmzBvSNqEpicR
+	f2DDa3DwQ1NchwLa5Ggff+us5Zx/hLnXRwAlaIOLuo/1LRfsU6ezaST1Nfb1HYsnrmWFmaI=
+X-Received: by 2002:a17:90b:1dcb:b0:3ac:9d26:5532 with SMTP id 98e67ed59e1d1-3b3d064115fmr6130281a91.3.1795091985385;
+        Thu, 19 Nov 2026 04:39:45 -0800 (PST)
 Received: from shiro (p1799054-ipxg00e01sizuokaden.shizuoka.ocn.ne.jp. [153.207.155.54])
-        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-3b405d11753sm2696299a91.5.2026.11.19.04.39.42
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-3b405d11753sm2696299a91.5.2026.11.19.04.39.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2026 04:39:43 -0800 (PST)
+        Thu, 19 Nov 2026 04:39:44 -0800 (PST)
 From: Daniel Palmer <daniel@0x0f.com>
 To: geert@linux-m68k.org,
 	gerg@linux-m68k.org,
 	linux-m68k@lists.linux-m68k.org
 Cc: linux-kernel@vger.kernel.org,
 	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH 1/4] m68k: Add and use wrapper for FPU inline asm
-Date: Thu, 19 Nov 2026 21:35:55 +0900
-Message-ID: <20261119123558.2108296-2-daniel@0x0f.com>
+Subject: [PATCH 2/4] m68k: Add and use defines for 68060 PCR register
+Date: Thu, 19 Nov 2026 21:35:56 +0900
+Message-ID: <20261119123558.2108296-3-daniel@0x0f.com>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20261119123558.2108296-1-daniel@0x0f.com>
 References: <20261119123558.2108296-1-daniel@0x0f.com>
@@ -98,267 +98,93 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The assembler will refuse to assemble instructions that aren't
-supported on the current "chip". This includes the FPU instructions.
-
-For inline asm blocks that need to use chip specific instructions
-we manually set chip to the one needed to get the assembler to take
-the instructions and since chip propagates to all of the following
-inline asm blocks in the same source file we set it to generic "68k"
-after the instructions.
-
-The problem with this is that in a kernel built for only the 68040 or
-68060 "68k" doesn't allow for the FPU instructions. Currently if the
-above pattern happens earlier in the same file (maybe via an include)
-chip will be set to 68k and FPU instructions will fail to assemble.
-
-FPU instructions are a bit of pain because we also need to consider
-coldfire. Coldfire doesn't want the same chip as classic m68k.
-
-Add FPU_ASM() to wrap FPU instruction inline asm and do the right
-chip dance for classic m68k and coldfire, and use it in signal.c
-where the fsave/frestore were duplicated for coldfire.
+Add some defines for the various bits in the 68060s
+PCR register and then remove the magic numbers in the
+places that use them.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- arch/m68k/include/asm/fpu.h |  6 ++++
- arch/m68k/kernel/process.c  | 19 ++++++-----
- arch/m68k/kernel/setup_mm.c |  2 +-
- arch/m68k/kernel/signal.c   | 63 +++++++++----------------------------
- 4 files changed, 32 insertions(+), 58 deletions(-)
+ arch/m68k/include/asm/m68060.h | 15 +++++++++++++++
+ arch/m68k/kernel/head.S        |  3 ++-
+ arch/m68k/kernel/setup_mm.c    |  6 ++++--
+ 3 files changed, 21 insertions(+), 3 deletions(-)
+ create mode 100644 arch/m68k/include/asm/m68060.h
 
-diff --git a/arch/m68k/include/asm/fpu.h b/arch/m68k/include/asm/fpu.h
-index ab12be88d75f..5ff246444e67 100644
---- a/arch/m68k/include/asm/fpu.h
-+++ b/arch/m68k/include/asm/fpu.h
-@@ -21,4 +21,10 @@
- #define FPSTATESIZE (0)
- #endif
- 
-+#ifdef CONFIG_COLDFIRE
-+#define FPU_ASM(insns)	insns
-+#else
-+#define FPU_ASM(insns)	".chip 68k/68881\n\t" insns "\n\t.chip 68k"
-+#endif
+diff --git a/arch/m68k/include/asm/m68060.h b/arch/m68k/include/asm/m68060.h
+new file mode 100644
+index 000000000000..a69ccde11693
+--- /dev/null
++++ b/arch/m68k/include/asm/m68060.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_M68K_M68060_H
++#define _ASM_M68K_M68060_H
 +
- #endif /* __M68K_FPU_H */
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index f5a07a70e938..ef76d2aea12c 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -34,6 +34,7 @@
- #include <linux/uaccess.h>
- #include <linux/elfcore.h>
- 
-+#include <asm/fpu.h>
- #include <asm/traps.h>
- #include <asm/machdep.h>
- #include <asm/setup.h>
-@@ -97,7 +98,7 @@ void flush_thread(void)
- #ifdef CONFIG_FPU
- 	if (!FPU_IS_EMU) {
- 		unsigned long zero = 0;
--		asm volatile("frestore %0": :"m" (zero));
-+		asm volatile (FPU_ASM("frestore %0") : : "m" (zero));
- 	}
++/* From MC68060 User's Manual (section 3.2.2.5) */
++#define M68060_PCR_ID		0xffff0000
++#define M68060_PCR_ID_68060	0x0430
++#define M68060_PCR_ID_68LC060	0x0431		/* LC or EC */
++#define M68060_PCR_REVISION	0x0000ff00
++#define M68060_PCR_EDEBUG	0x00000080	/* internal state on idle bus cycles */
++#define M68060_PCR_I14		0x00000020	/* Reserved: errata I14 workaround */
++#define M68060_PCR_DFP		0x00000002	/* disable the FPU */
++#define M68060_PCR_ESS		0x00000001	/* enable superscalar dispatch */
++
++#endif /* _ASM_M68K_M68060_H */
+diff --git a/arch/m68k/kernel/head.S b/arch/m68k/kernel/head.S
+index 502eeae49eaf..7d90069e9af1 100644
+--- a/arch/m68k/kernel/head.S
++++ b/arch/m68k/kernel/head.S
+@@ -264,6 +264,7 @@
+ #include <asm/entry.h>
+ #include <asm/page.h>
+ #include <asm/asm-offsets.h>
++#include <asm/m68060.h>
+ #ifdef CONFIG_MAC
+ #  include <asm/machw.h>
  #endif
- }
-@@ -182,7 +183,8 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
- #ifdef CONFIG_FPU
- 	if (!FPU_IS_EMU) {
- 		/* Copy the current fpu state */
--		asm volatile ("fsave %0" : : "m" (p->thread.fpstate[0]) : "memory");
-+		asm volatile (FPU_ASM("fsave %0")
-+			      : : "m" (p->thread.fpstate[0]) : "memory");
+@@ -1484,7 +1485,7 @@ L(cache68060):
+ 	/* MMU stuff works in copyback mode now, so enable the cache */
+ 	movec	%d0,%cacr
+ 	/* enable superscalar dispatch in PCR */
+-	moveq	#1,%d0
++	moveq	#M68060_PCR_ESS,%d0
+ 	.chip	68060
+ 	movec	%d0,%pcr
  
- 		if (!CPU_IS_060 ? p->thread.fpstate[0] : p->thread.fpstate[2]) {
- 			if (CPU_IS_COLDFIRE) {
-@@ -197,8 +199,8 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
- 						"m" (p->thread.fpcntl[2])
- 					      : "memory");
- 			} else {
--				asm volatile ("fmovemx %/fp0-%/fp7,%0\n\t"
--					      "fmoveml %/fpiar/%/fpcr/%/fpsr,%1"
-+				asm volatile (FPU_ASM("fmovemx %/fp0-%/fp7,%0\n\t"
-+						      "fmoveml %/fpiar/%/fpcr/%/fpsr,%1")
- 					      :
- 					      : "m" (p->thread.fp[0]),
- 						"m" (p->thread.fpcntl[0])
-@@ -207,7 +209,8 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
- 		}
- 
- 		/* Restore the state in case the fpu was busy */
--		asm volatile ("frestore %0" : : "m" (p->thread.fpstate[0]));
-+		asm volatile (FPU_ASM("frestore %0")
-+			      : : "m" (p->thread.fpstate[0]));
- 	}
- #endif /* CONFIG_FPU */
- 
-@@ -235,7 +238,7 @@ int elf_core_copy_task_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
- 		char fpustate[216];
- 
- 		/* First dump the fpu context to avoid protocol violation.  */
--		asm volatile ("fsave %0" :: "m" (fpustate[0]) : "memory");
-+		asm volatile (FPU_ASM("fsave %0") : : "m" (fpustate[0]) : "memory");
- 		if (!CPU_IS_060 ? !fpustate[0] : !fpustate[2])
- 			return 0;
- 
-@@ -251,11 +254,11 @@ int elf_core_copy_task_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
- 					"m" (fpu->fpregs[0])
- 				      : "memory");
- 		} else {
--			asm volatile ("fmovem %/fpiar/%/fpcr/%/fpsr,%0"
-+			asm volatile (FPU_ASM("fmovem %/fpiar/%/fpcr/%/fpsr,%0")
- 				      :
- 				      : "m" (fpu->fpcntl[0])
- 				      : "memory");
--			asm volatile ("fmovemx %/fp0-%/fp7,%0"
-+			asm volatile (FPU_ASM("fmovemx %/fp0-%/fp7,%0")
- 				      :
- 				      : "m" (fpu->fpregs[0])
- 				      : "memory");
 diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
-index c7e8de0d34bb..51b5881078cd 100644
+index 51b5881078cd..7abff6266837 100644
 --- a/arch/m68k/kernel/setup_mm.c
 +++ b/arch/m68k/kernel/setup_mm.c
-@@ -223,7 +223,7 @@ void __init setup_arch(char **cmdline_p)
- 	/* clear the fpu if we have one */
- 	if (m68k_fputype & (FPU_68881|FPU_68882|FPU_68040|FPU_68060|FPU_COLDFIRE)) {
- 		volatile int zero = 0;
--		asm volatile ("frestore %0" : : "m" (zero));
-+		asm volatile (FPU_ASM("frestore %0") : : "m" (zero));
- 	}
- #endif
+@@ -9,6 +9,7 @@
+  * This file handles the architecture-dependent parts of system setup
+  */
  
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index e628b859ef21..fa36d519de69 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -45,6 +45,7 @@
- #include <linux/extable.h>
- #include <linux/resume_user_mode.h>
++#include <linux/bitfield.h>
+ #include <linux/kernel.h>
+ #include <linux/cpu.h>
+ #include <linux/mm.h>
+@@ -35,6 +36,7 @@
+ #include <asm/fpu.h>
+ #include <asm/irq.h>
+ #include <asm/io.h>
++#include <asm/m68060.h>
+ #include <asm/machdep.h>
+ #ifdef CONFIG_AMIGA
+ #include <asm/amigahw.h>
+@@ -232,10 +234,10 @@ void __init setup_arch(char **cmdline_p)
  
-+#include <asm/fpu.h>
- #include <asm/setup.h>
- #include <linux/uaccess.h>
- #include <asm/traps.h>
-@@ -306,24 +307,15 @@ static inline int restore_fpu_state(struct sigcontext *sc)
- 				    "m" (sc->sc_fpcntl[1]),
- 				    "m" (sc->sc_fpcntl[2]));
- 	    } else {
--		__asm__ volatile (".chip 68k/68881\n\t"
--				  "fmovemx %0,%%fp0-%%fp1\n\t"
--				  "fmoveml %1,%%fpcr/%%fpsr/%%fpiar\n\t"
--				  ".chip 68k"
-+		__asm__ volatile (FPU_ASM("fmovemx %0,%%fp0-%%fp1\n\t"
-+					  "fmoveml %1,%%fpcr/%%fpsr/%%fpiar")
- 				  : /* no outputs */
- 				  : "m" (*sc->sc_fpregs),
- 				    "m" (*sc->sc_fpcntl));
- 	    }
+ 		asm (".chip 68060; movec %%pcr,%0; .chip 68k"
+ 		     : "=d" (pcr));
+-		if (((pcr >> 8) & 0xff) <= 5) {
++		if (FIELD_GET(M68060_PCR_REVISION, pcr) <= 5) {
+ 			pr_warn("Enabling workaround for errata I14\n");
+ 			asm (".chip 68060; movec %0,%%pcr; .chip 68k"
+-			     : : "d" (pcr | 0x20));
++			     : : "d" (pcr | M68060_PCR_I14));
+ 		}
  	}
  
--	if (CPU_IS_COLDFIRE) {
--		__asm__ volatile ("frestore %0" : : "m" (*sc->sc_fpstate));
--	} else {
--		__asm__ volatile (".chip 68k/68881\n\t"
--				  "frestore %0\n\t"
--				  ".chip 68k"
--				  : : "m" (*sc->sc_fpstate));
--	}
-+	__asm__ volatile (FPU_ASM("frestore %0") : : "m" (*sc->sc_fpstate));
- 	err = 0;
- 
- out:
-@@ -397,10 +389,8 @@ static inline int rt_restore_fpu_state(struct ucontext __user *uc)
- 					    "m" (fpregs.f_fpcntl[1]),
- 					    "m" (fpregs.f_fpcntl[2]));
- 		} else {
--			__asm__ volatile (".chip 68k/68881\n\t"
--					  "fmovemx %0,%%fp0-%%fp7\n\t"
--					  "fmoveml %1,%%fpcr/%%fpsr/%%fpiar\n\t"
--					  ".chip 68k"
-+			__asm__ volatile (FPU_ASM("fmovemx %0,%%fp0-%%fp7\n\t"
-+						  "fmoveml %1,%%fpcr/%%fpsr/%%fpiar")
- 					  : /* no outputs */
- 					  : "m" (*fpregs.f_fpregs),
- 					    "m" (*fpregs.f_fpcntl));
-@@ -411,14 +401,7 @@ static inline int rt_restore_fpu_state(struct ucontext __user *uc)
- 			     context_size))
- 		goto out;
- 
--	if (CPU_IS_COLDFIRE) {
--		__asm__ volatile ("frestore %0" : : "m" (*fpstate));
--	} else {
--		__asm__ volatile (".chip 68k/68881\n\t"
--				  "frestore %0\n\t"
--				  ".chip 68k"
--				  : : "m" (*fpstate));
--	}
-+	__asm__ volatile (FPU_ASM("frestore %0") : : "m" (*fpstate));
- 	err = 0;
- 
- out:
-@@ -437,15 +420,8 @@ static inline void save_fpu_state(struct sigcontext *sc, struct pt_regs *regs)
- 		return;
- 	}
- 
--	if (CPU_IS_COLDFIRE) {
--		__asm__ volatile ("fsave %0"
--				  : : "m" (*sc->sc_fpstate) : "memory");
--	} else {
--		__asm__ volatile (".chip 68k/68881\n\t"
--				  "fsave %0\n\t"
--				  ".chip 68k"
--				  : : "m" (*sc->sc_fpstate) : "memory");
--	}
-+	__asm__ volatile (FPU_ASM("fsave %0")
-+			  : : "m" (*sc->sc_fpstate) : "memory");
- 
- 	if (CPU_IS_060 ? sc->sc_fpstate[2] : sc->sc_fpstate[0]) {
- 		fpu_version = sc->sc_fpstate[0];
-@@ -469,10 +445,8 @@ static inline void save_fpu_state(struct sigcontext *sc, struct pt_regs *regs)
- 					  : /* no inputs */
- 					  : "memory");
- 		} else {
--			__asm__ volatile (".chip 68k/68881\n\t"
--					  "fmovemx %%fp0-%%fp1,%0\n\t"
--					  "fmoveml %%fpcr/%%fpsr/%%fpiar,%1\n\t"
--					  ".chip 68k"
-+			__asm__ volatile (FPU_ASM("fmovemx %%fp0-%%fp1,%0\n\t"
-+						  "fmoveml %%fpcr/%%fpsr/%%fpiar,%1")
- 					  : "=m" (*sc->sc_fpregs),
- 					    "=m" (*sc->sc_fpcntl)
- 					  : /* no inputs */
-@@ -497,14 +471,7 @@ static inline int rt_save_fpu_state(struct ucontext __user *uc, struct pt_regs *
- 		return err;
- 	}
- 
--	if (CPU_IS_COLDFIRE) {
--		__asm__ volatile ("fsave %0" : : "m" (*fpstate) : "memory");
--	} else {
--		__asm__ volatile (".chip 68k/68881\n\t"
--				  "fsave %0\n\t"
--				  ".chip 68k"
--				  : : "m" (*fpstate) : "memory");
--	}
-+	__asm__ volatile (FPU_ASM("fsave %0") : : "m" (*fpstate) : "memory");
- 
- 	err |= __put_user(*(long *)fpstate, (long __user *)&uc->uc_fpstate);
- 	if (CPU_IS_060 ? fpstate[2] : fpstate[0]) {
-@@ -531,10 +498,8 @@ static inline int rt_save_fpu_state(struct ucontext __user *uc, struct pt_regs *
- 					  : /* no inputs */
- 					  : "memory");
- 		} else {
--			__asm__ volatile (".chip 68k/68881\n\t"
--					  "fmovemx %%fp0-%%fp7,%0\n\t"
--					  "fmoveml %%fpcr/%%fpsr/%%fpiar,%1\n\t"
--					  ".chip 68k"
-+			__asm__ volatile (FPU_ASM("fmovemx %%fp0-%%fp7,%0\n\t"
-+						  "fmoveml %%fpcr/%%fpsr/%%fpiar,%1")
- 					  : "=m" (*fpregs.f_fpregs),
- 					    "=m" (*fpregs.f_fpcntl)
- 					  : /* no inputs */
 -- 
 2.55.0
 
