@@ -1,93 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.171
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795086078;
-	b=VSavu/sGUKktzSs/vIY/fJreDe8sqHbeOcFQEQJtlfh/jkCdx5cHkz12HOqi2zLgvGeR
-	 UBF225WBN8GU/Nyt4nP/ibd0suLU7q7KlgNmRTHyv8drualnI/e7/YnXk9QiPCPduLUgW
-	 F2O6+DRcGi+zNusWHFRAtRAIFaykB9eFsWDrbWrD6hshecjvwoM2eoP0LYRNKkc/Nwp03
-	 5EjmOP451OmzqqoT0SKcEz6sqsHK+iW8y+g2pys/Uh73ShytWcqbLI5Iy6fNtpsQOq/oS
-	 5xg6gFK37b3jWwNaPsh7iQXuMfwF/DrrzmzsdcljV1PLHnHOcHJQ9mOKsVIUNbTi5Bw==
+	t=1795091983;
+	b=P4pxlpqAKfDXV3s4iROBzuQedgKBWBSwcRGXr6ztqNOOmx34qjq6lkMEOu4Fh2JU4cr0
+	 nmeGM8bKJQjC7pAVjbdRpiRbDdbQToosqQXG4q2Ob/yVnC/1v0SFXQKqoaDHqmaB4V7RA
+	 Egbuvq03Op5xknGMOdbZFxV7rEf/sYppnmNS8E6RgxXye5hWZmpw5CdX94MRJ94LpxlLR
+	 ATzJ97EV4leBmHicVe7mtV5VKGzJEl4Sd12/VzSjJkHzlnQIOdY5jOJOLnygUsdmQth20
+	 2SBMiJWZJmXq+Zef0iSta5UgMX5Z7iiLbeHcJwlGe7o6pfipNyDzFr/AywCPKUhDScQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795086078;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:From:To:Cc:Subject:
-	 In-Reply-To:References:Date:Message-ID:User-Agent:MIME-Version:
-	 Content-Type;
-	bh=NlUvq2HpnerQLH3flTbOZH1bj0OHRcxRHwUIA48QJc0=;
-	b=IRaV7qA4XNj8KYWZB+LJaZTNhWTCO1nSazbjBkLXV8CoWqdokHoO0ug9S/MOqycnWrLk
-	 lGcLRaIgn9M3Y1c/d5Y8HN3V7X++6+kkViYOzRQThv8e6oW/bYjr59GjcyMrfwVMJ/Uow
-	 yxQxg41d1tWf7iFq9nS7R2H25pSipfj51YEUS+3xbIkUwX+lKe7B8WE8ef+m3xEXb+gmD
-	 qdOD5UFhL+5cIkWPMmN+7MTsIwg7Og72LTiRQIMEV+h82q5+WuKKSoECPZQBE5YkCNDCz
-	 OWU8bbJj1uI1hIGc4GIg0g9aXPIMCZSpX9PiGQV4TPWONluOmXEcBVrFJCm36cw6xxA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795091983;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=87LKr20k/L5NegPnS/Fj9m/aPduFPJkLQyVN/rqlEz4=;
+	b=IOobnTU66y5SNr3jrQtnJca6DFjWR//qWcKn+5GBhD1WdzmBQR1844Pbatbd1ENVSPdg
+	 w9DNiAnd1Kaw9UTOWi/1W12AJVLZPWgFTkNKZe9i8o2i7geZhTfTbGNt7LTrjHQvAjcJ/
+	 BNDx21oo0RFP3i+rtHrBoSXvIh+FFilJ5I34I6AT55nTERIkv2v2s2eqlGlZIUwrG2eDo
+	 wuoiKlg4LZjHQIPXrMibA6SIxuF+c7BYTS36WIWtouqmwAKrUV4Nr7CqMwyVfpGelyXkf
+	 o/wKzqxdPsGayemGxnb6B0LZgVndNW63DoD9axSkYwKnGsryko9Ttuis/hvq5guPCKA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=kernel.org;
-	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K0w4y3pq;
-	arc=none smtp.remote-ip=172.234.252.31
-Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=none header.from=0x0f.com;
+	spf=pass smtp.mailfrom=0x0f.com;
+	dkim=pass header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=mAAb5NFx;
+	arc=none smtp.remote-ip=209.85.214.171
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA59E606A330
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 11:01:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DA59E606A330
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33CC60A2622
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 12:39:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E33CC60A2622
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K0w4y3pq
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by sea.source.kernel.org (Postfix) with ESMTP id 3D35C437DC;
-	Thu, 19 Nov 2026 11:01:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128761F000C6;
-	Thu, 19 Nov 2026 11:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795086077;
-	bh=NlUvq2HpnerQLH3flTbOZH1bj0OHRcxRHwUIA48QJc0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=K0w4y3pqXsaP3ubeldycHwHdzHusNNZ8UWp+6vQiAMiUx60nPEzsEI6UORCWk2eQM
-	 Wr9MQq++PwU5z61f5LSDEP/iq4naKOipL4OMYf3DinFcFig10sjtTbY97erbnHEo4N
-	 YUsiICY5uHAbdPH6LrzIgPYWrXrSB9l/2O0n7IlxkCsCvQCLsq4VEjI6XjjyL4rxmv
-	 iQPAM4DO3b1e/YXAvLTi7iTezPwfGOpMZZWOUYfE8tL1pN806bFh5j5ih6yGAgPP1a
-	 FfTA7G26gf/3dkJHKJphG6zjuFB4DY41xyN0dDytK5Ezt06txmdtB1kzNPaWLRDwgR
-	 3LJf+KdeFvAjA==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-Cc: Albert Ou <aou@eecs.berkeley.edu>,  Alexander Gordeev
- <agordeev@linux.ibm.com>,  Andrew Morton <akpm@linux-foundation.org>,
-  Baoquan He <baoquan.he@linux.dev>,  Borislav Petkov <bp@alien8.de>,
-  Catalin Marinas <catalin.marinas@arm.com>,  Dave Hansen
- <dave.hansen@linux.intel.com>,  Geert Uytterhoeven <geert@linux-m68k.org>,
-  Heiko Carstens <hca@linux.ibm.com>,  Helge Deller <deller@gmx.de>,
-  Huacai Chen <chenhuacai@kernel.org>,  Ingo Molnar <mingo@redhat.com>,
-  "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,  John
- Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,  Madhavan Srinivasan
- <maddy@linux.ibm.com>,  Palmer Dabbelt <palmer@dabbelt.com>,  Pasha
- Tatashin <pasha.tatashin@soleen.com>,  Paul Walmsley <pjw@kernel.org>,
-  Pratyush Yadav <pratyush@kernel.org>,  Rich Felker <dalias@libc.org>,
-  Russell King <linux@armlinux.org.uk>,  Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>,  Thomas Gleixner <tglx@kernel.org>,  Vasily
- Gorbik <gor@linux.ibm.com>,  Will Deacon <will@kernel.org>,  Yoshinori
- Sato <ysato@users.sourceforge.jp>,  x86@kernel.org,  Alexandre Ghiti
- <alex@ghiti.fr>,  Christian Borntraeger <borntraeger@linux.ibm.com>,
-  "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,  Cong Wang
- <cwang@multikernel.io>,  Mark Rutland <mark.rutland@arm.com>,  Michael
- Ellerman <mpe@ellerman.id.au>,  Nicholas Piggin <npiggin@gmail.com>,  "H.
- Peter Anvin" <hpa@zytor.com>,  "Ritesh Harjani (IBM)"
- <ritesh.list@gmail.com>,  Shrikanth Hegde <sshegde@linux.ibm.com>,  Sven
- Schnelle <svens@linux.ibm.com>,  WANG Xuerui <kernel@xen0n.name>,
-  kexec@lists.infradead.org,  linux-arm-kernel@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  linux-m68k@lists.linux-m68k.org,
-  linux-mips@vger.kernel.org,  linux-parisc@vger.kernel.org,
-  linux-riscv@lists.infradead.org,  linux-s390@vger.kernel.org,
-  linux-sh@vger.kernel.org,  linuxppc-dev@lists.ozlabs.org,
-  loongarch@lists.linux.dev
-Subject: Re: [PATCH 2/2] arch, kexec: declare kexec and crash capabilities
- in Kconfig.kexec
-In-Reply-To: <20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org> (Mike
-	Rapoport's message of "Thu, 19 Nov 2026 08:16:58 +0200")
-References: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
-	<20261119-arch-kconfig-v1-2-37c276fe4d26@kernel.org>
-Date: Thu, 19 Nov 2026 11:01:06 +0000
-Message-ID: <2vxza4n53x1p.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	dkim=pass (1024-bit key) header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=mAAb5NFx
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2e9e53d011eso17566435ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 04:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google; t=1795091982; x=1795696782; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=87LKr20k/L5NegPnS/Fj9m/aPduFPJkLQyVN/rqlEz4=;
+        b=mAAb5NFxdQcXpQR1x9VvZRP+Es3WzSnLghaIxXGeSX1Ut8UcKxZVSmO9Beu3omD9B0
+         QwWOvktD6if9PDdxd8hz86egwaJXD9iZBsQlRfAddtq+AChZ4+QYUtC2rel+lkqmM+QE
+         0melvvFfFZuDsyGRJtW0h0ITssRIeEdXCjJHs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795091982; x=1795696782;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=87LKr20k/L5NegPnS/Fj9m/aPduFPJkLQyVN/rqlEz4=;
+        b=CkpkCccpAqnWbnW7lDckqo/OmQ3Worxreu6nPQkHVmBOBCXMIAXeh+3SlLyDc+HLH+
+         ynWXRzxgh2NaQl9tjO8Gs7+UwYzv7pRKWvyVQ1eneAGWYs0YagLLG0N605PEVX44xzU3
+         5iVu3BDNFVmwqxWBt0UsaZliGH1xWTmukPquYVADcbfkSVFCg74AMgAE4I8ub9of+qy1
+         +xUjlHT7rkqr91Gz/sesNWLr8uWIhklSuLnrOIubWA18p/kqP0nDY0lDOwg8PkutuCkD
+         NB8EvKkFRaLiL9eFr8DIDjRp4SL8iSmynIGfWkE/MDEaCFF1LP74jg9EiHutxewTWSO9
+         /JCQ==
+X-Forwarded-Encrypted: i=1; AL+hErF7y9CBy+RC4nTKTbow/XybAOjFF/tnC04IkZSsO2pazmmoEpEjSBX+xtezAQKs/AwirrUm+hTa/h5a@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z/TsrlY3sTHrUzExR3KlpLWVcbmOLrp0sxrqyAUCj0asOmWKUAr
+	W7+nKkOuDK9CY5MiUqY1eIELt7pPiGJOP06uP19g6ZFKDHmJv3mDTsKanilswH4+TP8=
+X-Gm-Gg: AZFdTZcpH+TjTTrSwn/dlEaz5IwewBTufy2gGy8Qs+X/ZSphFMd1nZ9fHYXRJlKcnjr
+	RQ1yOqTB9RaeN/8YHwP4gPeieX6Gq+WgAGmRv04MTyIAgA1NaK9HkslbUc96pAmBp6Bdb/xjGXH
+	mLd1dNxoOqxOqz6sEQehrzvqrwQnzQPdUeUtRboFMOVpqGnliJ4izJF8eNpN0MCeTiORJtpO4Ii
+	6II0dc6uqOh4z+zcvJUmmPrXQAmUxvOlwN25AmjodJ6aslgoMCZm8c4odwmgxCrHEudYz1lpTEO
+	/CzrfhcdHCUptIBEd1C2+3O68DBCPJEAp6n4F1WQLie6Jq0zZgtjCUFjubuRYvc92GmbPAl/Efj
+	6FKTz+3qs6ZZ72b6sEbT5UzNp0EMEVfDeZ0o6CdDlt043MUTV0J3QXU8UgUyJZ1cOJEADWuZFRq
+	3+VVay44Gbn0jnyXqp344DOy1JAgepKoTz8kD3Yw3Hamn2YdPab/MC2oLT/weASrrojhikPlmhp
+	LOrguyRD7ZryT8eU3nWk3mVmHAmiVkqebJDYIYpD3IfGmGQZ89NM26nkYwINsbHGbdYm+agawgL
+	+ZFMN+j2DS2hA8v74LmWYSF6QQ0Ib0RojQ36riHP8p81HA+qD233dH0XLPfVl23A58sA1aqa0Nf
+	WyeHYMZLBtZssI4s=
+X-Received: by 2002:a17:90b:39ab:b0:3b4:625:3d2f with SMTP id 98e67ed59e1d1-3b4062542fcmr1359687a91.55.1795091982067;
+        Thu, 19 Nov 2026 04:39:42 -0800 (PST)
+Received: from shiro (p1799054-ipxg00e01sizuokaden.shizuoka.ocn.ne.jp. [153.207.155.54])
+        by smtp.googlemail.com with ESMTPSA id 98e67ed59e1d1-3b405d11753sm2696299a91.5.2026.11.19.04.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2026 04:39:41 -0800 (PST)
+From: Daniel Palmer <daniel@0x0f.com>
+To: geert@linux-m68k.org,
+	gerg@linux-m68k.org,
+	linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH 0/4] m68k: Add 060 PCR info to /proc/cpuinfo
+Date: Thu, 19 Nov 2026 21:35:54 +0900
+Message-ID: <20261119123558.2108296-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.55.0
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -97,28 +94,35 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 19 2026, Mike Rapoport (Microsoft) wrote:
+Apparently the rev6 060 can overclock to ~100MHz
+but mine seems to only manage ~60MHz (I wonder if some part
+of it that other OSes don't use doesn't actually like
+overclocking...).
 
-> The options that let an architecture opt in to kexec and crash dump
-> features, like ARCH_SUPPORTS_KEXEC or ARCH_SUPPORTS_CRASH_DUMP, are
-> defined in each architecture's Kconfig as def_bool, and most of them are
-> copied over several architectures.
->
-> Declare these options once in kernel/Kconfig.kexec next to the options
-> that depend on them, similarly to how mm/Kconfig does it, and make the
-> architectures select them instead.
->
-> Selection conditions are preserved, so there is no functional change.
->
-> Acked-by: Baoquan He <baoquan.he@linux.dev>
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+I started to wonder if I actually had a rev6 and noticed
+you can't see this info from /proc/cpuinfo right now.
 
-Acked-by: Pratyush Yadav <pratyush@kernel.org>
+So I added it. The only messy part I think is the FPU
+asm changes to stop m68060.h from breaking the build.
 
-[...]
+Daniel Palmer (4):
+  m68k: Add and use wrapper for FPU inline asm
+  m68k: Add and use defines for 68060 PCR register
+  m68k: Add helpers to read and write the 68060's PCR
+  m68k: show the 68060's PCR in /proc/cpuinfo
+
+ arch/m68k/atari/config.c       |  7 ++--
+ arch/m68k/include/asm/fpu.h    |  6 ++++
+ arch/m68k/include/asm/m68060.h | 34 ++++++++++++++++++
+ arch/m68k/kernel/head.S        |  3 +-
+ arch/m68k/kernel/process.c     | 19 +++++-----
+ arch/m68k/kernel/setup_mm.c    | 23 +++++++++----
+ arch/m68k/kernel/signal.c      | 63 ++++++++--------------------------
+ 7 files changed, 85 insertions(+), 70 deletions(-)
+ create mode 100644 arch/m68k/include/asm/m68060.h
 
 -- 
-Regards,
-Pratyush Yadav
+2.55.0
+
