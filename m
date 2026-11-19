@@ -1,78 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795068586;
-	b=dRLbkWSqz8nFJhkJBwH6PufP1pw4PolFBF2585JgBVVc92tl/QfT/ZH0UzZZXehFGzgU
-	 JvJHs0eh1nkRxf8Q14VEJsTmW3cVBZzbwUPxICDxZPmmtUOh2mzacV2WCVa3fmOVQmtAq
-	 +AhxXEbAdKJ8RN7MZ3EFmxuQIiXBz0c0PTBKhsNPbAML2hBpMZtZxYZsdOJTM3s+2Df6m
-	 OcODs5cqZIk0BLJ597nfSkVWxLPS8eJIz7se3og2CmxgX5bwjEnsnN6SueGojhPHNL9vC
-	 /YckifF6tRuz2xoppniYy4QkG8bQsl174qpWJY/pL/9dyCiLh1rGK9VdPwThgPHuWGw==
+	t=1795069032;
+	b=DYi+qXpDDXtTkKum+Vi+j9UKPSSXlu6zfzXPIhTWa2SMEO+4xLNh25n5NXHxSbBzqIld
+	 9uXqbdvJtRmjkhSjoq5I90zLaZ3ejPIyXdTjq6tfpk87arnyDXs1lzieuvIlDRK5NWCpO
+	 WsZT69miOuodKfqliXBgdH/ieLz1n4DAOsgvjoaxB8PtRtPGPVMbthszACo47Sd6evjn4
+	 ZmPFpSo29Am0n7P766ZXByPtPzpbZ130CASmSdy6wBocRPMBhBK8kgc8UYQTzW+nJcR6O
+	 5JB2VN9rXmQfgowA4+2blyWtUeu7CGG1yX8fiWMDGa6hABt6p0hO/jAds+yzHNI4ZiQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795068586;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:User-Agent;
-	bh=s5D1lJQdk2Q750ENp58ZP1J44NtcwTLwzt/iRP7BF88=;
-	b=NhirKiBc6vfmvlLR2ybeY9vYIfxFPw0bbk+Sb4T6aG/+b+8RZiwH1vUMTMY/3ypDDN9A
-	 TY4o8cZsoh3g6bp3uKCI//ZBPaUDiTBXPWKm3oK1PKvOWaSzfI2wkr+x0Py2hrZd7M8yk
-	 QYj6h9PHorj9H90hP9yPT26Sl8EY+RMm1hJvV7whJh+naHuNZSXpet+72fH4ftNdz2ox3
-	 ZSojlXxJK5R2sg3GBPn5pi21rNnKDU0ij2PoEej+b+Lv2tddxWFwupUgzxyWWtRBIm0ua
-	 niIzqjvrMQeKbWOEKpMZzwLY9zR4EpfSt1TNRVv4HVR4ky+daeSX6gU0jWLSPD894Qg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795069032;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:From:Subject:Date:
+	 Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer;
+	bh=jAZ3SnNAJjB6kTaL5eHDhSogy8KQgK6+JZEcWaMgZsQ=;
+	b=vMrh+L3KgDMXgvlCku+CrK5d0as/66CdZfCyCDqiZ1z4/UPLQ1hIQfyXsjVlDmlzFeR7
+	 3UKJYRBiqTy76TdN7Yvp0g7M+UsaI7LjcwUiO1ebfx0kFF0WqdtEhOTaauOqS4H0YKvNt
+	 Jo0TZy+qqNdd1RIZJqQ2vbhtyXD0wKPpqDDXMdoOAPwsNFdXgUYdC+e7PGDJM3RG6+EJY
+	 8n0j9A4YF7+4DPOfWYAunsMQ6by1xf2YeQjKUePum9e69abIHhnl5YbTZkf/8LxA3iuhV
+	 vrjAKhnQ48aLjRYhlBI2qY0h32nTt0j/uerIviX2R4SdOF59LUIBhWfQj0c2lDW4bhA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=gGbuQoB4;
-	arc=none smtp.remote-ip=192.198.163.13
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=kernel.org;
+	spf=pass smtp.mailfrom=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="QPur/Mce";
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428DF606A326
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 06:09:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 428DF606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEACC606A331
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 06:17:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DEACC606A331
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=gGbuQoB4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795068586; x=1826604586;
-  h=date:from:to:cc:subject:message-id;
-  bh=As7C/2WHu7Yv83kx3RjGPKKEWSdWZiyWDpI7VrO88Ak=;
-  b=gGbuQoB4MBT4W0qsxzALKk165N22B+weWdBqyvzepdhJ0FeZynGAqaFY
-   haEL/lKqJLIIyGyOINtRhNgQcGL0Q6uyd8OmRYFCJWE7O9xNTynVq7gBJ
-   +Nfy8f/HuK/iPoiQ/o2+e55m7AVEL6+wRsuwe58Sdbbe6OLYl5im04Ixn
-   QQ12mQPpPHW1wpM97ik4B9ZaoquDWg/TqucpsiX82T0l+gNjC4Cbbop+y
-   +nElYF6RxfeLNaeMfo3q9A7H8v8LLgYKYnIo4+DfVHOAatyh7s5MaqrL4
-   lY7c7fwS8B7lp4v50W39cv8uOmm+brQpt/gR5yZ+ajA7rUX2P8a6DwxwB
-   A==;
-X-CSE-ConnectionGUID: qEm6+CkzS1Gciert9pjszQ==
-X-CSE-MsgGUID: MSeYEpYlS7+EyGyTbj2QRQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11970"; a="3898080"
-X-IronPort-AV: E=Sophos;i="6.27,220,1787036400"; 
-   d="scan'208";a="3898080"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2026 22:09:45 -0800
-X-CSE-ConnectionGUID: WzqGxOkoTHSCj6Vpzhr7QQ==
-X-CSE-MsgGUID: 39JhtGA+QjG99SXV54kc5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,220,1787036400"; 
-   d="scan'208";a="10246192"
-Received: from igk-lkp-server01.igk.intel.com (HELO 1073a420ae3a) ([10.211.93.152])
-  by orviesa003.jf.intel.com with ESMTP; 18 Nov 2026 22:09:43 -0800
-Received: from kbuild by 1073a420ae3a with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xTvL2-000000003gT-2xuD;
-	Thu, 19 Nov 2026 06:09:40 +0000
-Date: Thu, 19 Nov 2026 07:08:52 +0100
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:cpu-model 3/10]
- arch/m68k/coldfire/m523x.c:93:13: error: implicit declaration of function
- 'MCFCIR'; did you mean 'MCF_CIR'?
-Message-ID: <20261119070741.Az2SiBZu-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QPur/Mce
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 3342B43CA0;
+	Thu, 19 Nov 2026 06:17:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4CBD1F000C4;
+	Thu, 19 Nov 2026 06:17:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795069031;
+	bh=jAZ3SnNAJjB6kTaL5eHDhSogy8KQgK6+JZEcWaMgZsQ=;
+	h=From:Subject:Date:To:Cc;
+	b=QPur/Mced9X4RWzkGAt/MsAw+bqXt6yVON5lBH/7OyoiOaTbtzFItUhDCUIBWDdre
+	 ZGouoE1rykai0wUQlOVqCf0GlA7TrbLaI2Mqs8gYX/JQ9Oo2Wv4yYD/dlpAaTFIAXX
+	 7IftOiVoRagY/2JtvK8msJVyzyhR0zNeTTJ24nH7TIsTApifHRXe0eKDJ6rYh/TTub
+	 jmzTR3ax1PmxnZG5lGOM7weBavns02NIAauS40hYqQBCpuwRdocLfEJkR7ay2DzFMT
+	 sD7YpoQ9CvRkXi7y5T0RyOjL3xyq6FU+Kn1gekCcdzIt/umGs5YWm5g7jWFh3p4MWR
+	 YpdheBZ8DOQsw==
+From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+Subject: [PATCH 0/2] arch, kexec: declare kexec and crash capabilities in
+ Kconfig.kexec
+Date: Thu, 19 Nov 2026 08:16:56 +0200
+Message-Id: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -81,44 +61,76 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWMSw7CMAwFr1J5TURTlfK5CmKRGDcxiKSyC6pU9
+ e4ksJynN7OCkjApXJoVhD6snFMBu2sAo0uBDN8LQ9d2g7X2bJxgNE/MaeRg/BF7b1s84WGAokx
+ CIy+/3PX2Z337B+FcG/XhnZLx4hLGOmXhwGn/cjqTwLZ9AUFdywKQAAAA
+X-Change-ID: 20261119-arch-kconfig-b7c4b10c8c56
+To: Albert Ou <aou@eecs.berkeley.edu>, 
+ Alexander Gordeev <agordeev@linux.ibm.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Baoquan He <baoquan.he@linux.dev>, Borislav Petkov <bp@alien8.de>, 
+ Catalin Marinas <catalin.marinas@arm.com>, 
+ Dave Hansen <dave.hansen@linux.intel.com>, 
+ Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
+ Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Madhavan Srinivasan <maddy@linux.ibm.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, 
+ Pasha Tatashin <pasha.tatashin@soleen.com>, Paul Walmsley <pjw@kernel.org>, 
+ Pratyush Yadav <pratyush@kernel.org>, Rich Felker <dalias@libc.org>, 
+ Russell King <linux@armlinux.org.uk>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Thomas Gleixner <tglx@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, 
+ Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+ x86@kernel.org
+Cc: Alexandre Ghiti <alex@ghiti.fr>, 
+ Christian Borntraeger <borntraeger@linux.ibm.com>, 
+ "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
+ Cong Wang <cwang@multikernel.io>, Mark Rutland <mark.rutland@arm.com>, 
+ Michael Ellerman <mpe@ellerman.id.au>, Mike Rapoport <rppt@kernel.org>, 
+ Nicholas Piggin <npiggin@gmail.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, 
+ Shrikanth Hegde <sshegde@linux.ibm.com>, 
+ Sven Schnelle <svens@linux.ibm.com>, WANG Xuerui <kernel@xen0n.name>, 
+ kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+ linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ loongarch@lists.linux.dev
+X-Mailer: b4 0.16.1-dev
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git cpu-model
-head:   bdf44b7b88a06b5bfcef4a4a64b9baa63b9a6646
-commit: 08bb06f5e742469237cc22d7571e443ff5272187 [3/10] m68knommu: probe CPU identity for ColdFire 523x types
-config: m68k-randconfig-2000-20261119 (https://download.01.org/0day-ci/archive/20261119/20261119070741.Az2SiBZu-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261119/20261119070741.Az2SiBZu-lkp@intel.com/reproduce)
+The intention is to take it via kexec tree.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/20261119070741.Az2SiBZu-lkp@intel.com/
+---
+Mike Rapoport (Microsoft) (2):
+      MAINTAINERS: add kernel/Kconfig.kexec to KEXEC
+      arch, kexec: declare kexec and crash capabilities in Kconfig.kexec
 
-All errors (new ones prefixed by >>):
+ MAINTAINERS            |  1 +
+ arch/arm/Kconfig       | 12 +++---------
+ arch/arm64/Kconfig     | 36 +++++++++---------------------------
+ arch/loongarch/Kconfig | 20 +++++---------------
+ arch/m68k/Kconfig      |  4 +---
+ arch/mips/Kconfig      | 12 +++---------
+ arch/parisc/Kconfig    |  8 ++------
+ arch/powerpc/Kconfig   | 30 +++++++-----------------------
+ arch/riscv/Kconfig     | 28 +++++++---------------------
+ arch/s390/Kconfig      | 28 ++++++----------------------
+ arch/sh/Kconfig        | 16 ++++------------
+ arch/x86/Kconfig       | 48 ++++++++++++------------------------------------
+ kernel/Kconfig.kexec   | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 13 files changed, 102 insertions(+), 183 deletions(-)
+---
+base-commit: 666539eecdf4db623f5e3c3e55cf9f2dfad24aa4
+change-id: 20261119-arch-kconfig-b7c4b10c8c56
 
-   arch/m68k/coldfire/m523x.c: In function 'm523x_probe_cpu':
->> arch/m68k/coldfire/m523x.c:93:13: error: implicit declaration of function 'MCFCIR'; did you mean 'MCF_CIR'? [-Wimplicit-function-declaration]
-      93 |         if (MCFCIR(v) == MCFCIR_5235)
-         |             ^~~~~~
-         |             MCF_CIR
+--
+Sincerely yours,
+Mike.
 
-
-vim +93 arch/m68k/coldfire/m523x.c
-
-    87	
-    88	static void __init m523x_probe_cpu(void)
-    89	{
-    90		u16 v;
-    91	
-    92		v = mcf_read16(MCF_CIR);
-  > 93		if (MCFCIR(v) == MCFCIR_5235)
-    94			m68k_cpumodel = "5235";
-    95		else
-    96			m68k_cpumodel = "523x";
-    97		m68k_cpurevision = MCFCIR_PRN(v);
-    98	}
-    99	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
