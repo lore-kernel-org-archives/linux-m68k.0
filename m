@@ -1,78 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.12.124.152
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795096415;
-	b=rnpIjWzO0q5M6pN2cI66qFy5ps34f7D4xisXhWFlDNt2+CG6ODd0QgJU68Zh6dB+gLsT
-	 Gh747HbjOYcBrD7Vxsr6bXPk8EbTIlyX3LrEBAeEH0BrrjupleVHhQPZboqRg1TJhPKm3
-	 AxNkPu0ezgIAEHW3wfPqHtS4KiV4D2BA3N+shnNCzNCmO/2eX+Q0/7v2X8EodmzAjXs7C
-	 O/CyUMzEtBeMNyrn6XnBl8fCdDu+UGxbGRjLbuRl/4kktk+7Vpph3QYdyH6TEmGU78AXH
-	 wqPoK6eDlodb/sYMfkilsu70UQO2e2p1Al4mfvpX9S1LIncGvQgVkjCBI3K70OCPFnw==
+	t=1795149297;
+	b=LGrd3jh8qW3aWiPSu+/cDHnpKrJ5xJ6H4FpbCEX9eylr2CwG9v5HKsOh6ob035Xnh6xK
+	 3HtBs+GW1wxuMUHEYt3wvs2fDsMvNX0hQWMIRu8NXhTZDftEmNcB4wryHOrgyvhgDO9ch
+	 MPemZQOVlxF/0oi4hMyhRWbqDlr7nkp8Y2i5DvdYC1L7MfX8hItb5ugRTSMh1MjA7lWJk
+	 oipqEB53pCj++wWQ+9W0guvxUDbCSF0WPNyMO/FbFFox9uyoiDt0+/sZxmh8G8dMbKrcz
+	 rFlS0xdCmzzaEQ7SP6d83/KgdVEohDKcI6K6d7noljvcQqALiL42zONVmEbma7PFneg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795096415;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:User-Agent;
-	bh=9oe/JBtKKj7SocfDrjrIX3ii6dLDKm+aV9t1tB4LABw=;
-	b=4SFIJznaMoigsw7iISdQHk4PbHiNts5ODyPtwWgQlK/6poaQj8Pv9Gg3uuKhLFaDOWbo
-	 ed0Xv7H6eNp+29/PKmKs9LmPoX4EBEDNN+69PEkZF2kMcGe5jXu61GA9nJPJgPn1eSHlm
-	 2PR1TpI9TS2brERnxubLQBbEzBcopZ1msY95qLAw2F0rLBB47EjEoHDTtLnTDn/sDI/oC
-	 4yxt03qjCA9rqmmAYZHRkTZjgthX3zmmKKUUuCSWTiPjHa7Sz7jhD4ZG0VwXarUfnOyAb
-	 FU2iiYagutKH2HMMYCrsfF1+BxV1Ne4+zSPgjg4GUncqm0WDWlvI16T5CfFj2MpbfXg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795149297;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:X-ME-Sender:
+	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:Date:
+	 From:To:cc:Subject:In-Reply-To:Message-ID:References:MIME-Version:
+	 Content-Type;
+	bh=o5cbZa/CKFNHwxxN/1udfnU91JGStNmWV5mTiYbwbH8=;
+	b=xCNpD2iepwMfljbmQl3OGfaPRCfN214xo4nk/yfXqfdEDH1sqIFlBkCkPg1BeYrHn7R2
+	 l4RULZAfS9UAvXKPQF1La+TiFPPnSsOIDx5eqx8pNVREI+uCS2ruYrp8BM3n+1/3wyXlY
+	 yA/H47ySjcvOgKzE6FnfLgkmnxTtzPNKgD5iqX15NhtCHf9Wool95exGqumUAAtDu7Vv7
+	 6rlim5zNLBHqdIRKk5W9DsCnJRA7Z76iOzBnK2dwaKDXBQDPCX9tfdPX3It7ssYsgm9yr
+	 asBPxff9AbGaTYopkztvmkWWAHp/BfGvzKY2wwrVEYJ4mHu4BCi0s6bH8Wc8jGGl37A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=kBMiDHA4;
-	arc=none smtp.remote-ip=192.198.163.11
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=fail header.from=linux-m68k.org;
+	spf=none smtp.mailfrom=linux-m68k.org;
+	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=i3TqCscb;
+	arc=none smtp.remote-ip=202.12.124.152
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE8F606A339
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 19 Nov 2026 13:53:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6CE8F606A339
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA12606A320
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 04:34:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CDA12606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=kBMiDHA4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795096415; x=1826632415;
-  h=date:from:to:cc:subject:message-id;
-  bh=h3dGqMeyPrKcbFvfOqKcCTAfgbF85JQVdnEpVNYqeUk=;
-  b=kBMiDHA4CQ7xltUKUmZf8Nr47faJEuoBMehI2b+x2pFVsa5Zq8Ob1Xiv
-   hvhg71zJOhMIJSbPy8HhIr97+WHrUsCNhaabDkrUy5zR7H2/Onk1hfB2F
-   Ez01A+tXwjva9X63Ti3XRSszxlAiASQpFYr5bJ/Pl3GcRlzvn3o72ebCM
-   PUsLgEDT/cFSa5I+JhlnNk0vkXbdEFkcHWZ4Bmq1Hz1TXGvLZuTMXFRbt
-   6o6Uxo6Kdp48ecXBfReFvCNa0RL3KbSRgmCOkTtMb0yfEvNtZOvA0BlSe
-   ywWIWZiCS6G1INGAhNk4P99MLvS54o0N1bgJoHRvNxTywz4oBcNCVdMnm
-   g==;
-X-CSE-ConnectionGUID: P4hBQuKrRoi5ab2EqGP6hQ==
-X-CSE-MsgGUID: 5gKRygNQQPqjjav+k28Wng==
-X-IronPort-AV: E=McAfee;i="6800,10657,11971"; a="3865429"
-X-IronPort-AV: E=Sophos;i="6.27,221,1787036400"; 
-   d="scan'208";a="3865429"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2026 05:53:34 -0800
-X-CSE-ConnectionGUID: T1ZzZVADT+uMaFFWiAfeXg==
-X-CSE-MsgGUID: pvWpWLPITsCWOaq3CF+/+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,221,1787036400"; 
-   d="scan'208";a="10330173"
-Received: from igk-lkp-server01.igk.intel.com (HELO 1073a420ae3a) ([10.211.93.152])
-  by orviesa005.jf.intel.com with ESMTP; 19 Nov 2026 05:53:31 -0800
-Received: from kbuild by 1073a420ae3a with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1xU2Zr-000000003mx-0m6b;
-	Thu, 19 Nov 2026 13:53:27 +0000
-Date: Thu, 19 Nov 2026 14:53:14 +0100
-From: kernel test robot <lkp@intel.com>
-To: Greg Ungerer <gerg@uclinux.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- uclinux-dev@uclinux.org
-Subject: [gerg-m68knommu:armnommu 3/3]
- arch/arm/mm/alignment.c:799:25: sparse: sparse: incorrect type in argument 1
- (different address spaces)
-Message-ID: <20261119144827.LKUSrqya-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=i3TqCscb
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id EBBCC7A02D0;
+	Thu, 19 Nov 2026 23:34:55 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Thu, 19 Nov 2026 23:34:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1795149295; x=1795235695; bh=o5cbZa/CKFNHwxxN/1udfnU91JGStNmWV5m
+	TiYbwbH8=; b=i3TqCscbjVXP5n2Orc2v3h/SulVyzFaTPKNh2qCBegB+hVK/FX3
+	vlMZKDVYrJIX33o6poUsclWSO4kUWNqHl2fclnAYUD2zuKVLgjIhMF3fA63/YbpD
+	Yfd2KB0KjLXEReeMSkTkc29oYmn0ljhxFGIDdzhe6CV6PVdyZDxX8+yiVM2prvr7
+	8eRplxbz8fg9QFKrMhYU00fwqyh5xXGr8s+wcFeUMmfVY99y2AGIySyDuP5y0Zzm
+	8YEzerog3h8i9+B8/EFk8Lq+/HziNQdnWWnlGQy3TpK612pdlT3VUCgFTtuxwkzC
+	OeWCJDT5BLPo2Jk/oGgdKOITyJUssM4k1Sg==
+X-ME-Sender: <xms:783_ajm_yMABFRz-D4atqAzJIzy50cKiOHYRcoiLbCLzNQqUUEJxWw>
+    <xme:783_akqv8gBxgwCVvGxdH3uFg5zsHPufHOdYe3lq6DeInjWQtlcv69XneENwyJkJt
+    _orP90zlqFX0Au6CQj0GFfwnO8uW-tg7D0aONXRmew2-XWAinpspFI6>
+X-ME-Received: <xmr:783_akFUSuJ5YPs-mpTRvOoh907PEGgu230uI9Ohkes9ct8fgknQg12i6Z4-XFdw52MoArSilfbEqFXLMryjCjTdUWzChHzjT6Q>
+X-ME-Proxy-Cause: dmFkZTGybfOZ/ba/ZfyqCqdfL0Ctmmyy3a2Bizjne4AAbm+ofzWPmXJVFODUxt2CI7oJkp
+    0eFtIFnu0BNygqwr5YYld+oGgrdbHWYHCy2N+0O7OmABzwDvX8MoQXZRZQqjU4U/KrublA
+    n+0YotKw0QcrHu1XOK7/N1xQw85TRIjnmt1WDhPq7Gt/TSp+f/G7JPQXdA58Y/bKCAgwAP
+    CTfxeVB1stDX30yEh1LrZwUR6qLVwpd4376spwf4MXuAuSjNhoTpQ7POymUGyGUNZExkLJ
+    qyUGUmdAPVVWlKrzXiVBtEQIdFRVaxI5UBlpvl/LnYt6/vQ83VoYXU6cFkaTOmebkTperk
+    D6CcjvgnpsdUzUYxXb7wuYccNeWqMWPAVYtAgfwR6qnE9LpuEfAdorObZU+5+Ns4sqSuLc
+    t7tAZSmlhM9752bSon5E5/Tacz3eHePwMyu/eXCS7/i7I/WcBMOSqGDbtAs/6hViZQKUYh
+    VnxI+8aRRb0HEERp0upN03HZg/z1VuEJySSV0LVE7F7ACXI5dfgaUZZGsjQCXwIwM4+XFZ
+    Oe7hGN2dLEo0Aa9og2txQSf2MjXrk7Ytkw3lMjru5/k9lNU7GarPEkh9N4OeDy5/DxI2Xd
+    L2A+Dp2JoWk3aD6YVY5KjO/adrGdPOvODSviotaIgOunfDw9bWYAvNyW0HaQ
+X-ME-Proxy: <xmx:783_aoyT2nl2Y7lOePg7f7b3rXB-NTTupTUnELcPhWWD-wMIdNseWQ>
+    <xmx:783_ahqumzc-4QYyDwQs-6ImuVlRHZgOa3Ws1aGVNBWP-3mwdzaUvg>
+    <xmx:783_aqhj2bI30KSedJ_q5ywST5vWD1qoRczqDsZrXMyLiy9Cd9hxpA>
+    <xmx:783_amjxCqhAFvShyoS0UtnfyErH-zfb8t6f0S5T5zoTsWuD9ZjQ3w>
+    <xmx:783_akHDITlynDGaNaSAS6H6eMJgkoaZZVeif2mFvhWz3QBqfFk3zXQJ>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Nov 2026 23:34:52 -0500 (EST)
+Date: Fri, 20 Nov 2026 15:34:46 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Graeme Harker <graeme.harker@gmail.com>
+cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: delay: Fix rounding of short udelay() and
+ ndelay()
+In-Reply-To: <20261118210008.927764-1-graeme.harker@gmail.com>
+Message-ID: <5783b448-b34a-58a5-0bc0-98b1a806f182@linux-m68k.org>
+References: <ae768ed3-a517-3223-5c86-a1599ff6c8e5@linux-m68k.org> <20261118210008.927764-1-graeme.harker@gmail.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -81,68 +91,170 @@ List-Subscribe: <mailto:linux-m68k+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git armnommu
-head:   956b02be1acd82a724269d0fc12ed4fe0f940172
-commit: 956b02be1acd82a724269d0fc12ed4fe0f940172 [3/3] ARM: versatile: support configuring versatile machine for no-MMU
-config: arm-randconfig-r2307-20261119 (https://download.01.org/0day-ci/archive/20261119/20261119144827.LKUSrqya-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 10.5.0
-sparse: v0.6.5-rc1-21-g84ec0658
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20261119/20261119144827.LKUSrqya-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/20261119144827.LKUSrqya-lkp@intel.com/
+On Wed, 18 Nov 2026, Graeme Harker wrote:
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arm/mm/alignment.c:799:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int [usertype] *ip @@
-   arch/arm/mm/alignment.c:799:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:799:25: sparse:     got unsigned int [usertype] *ip
->> arch/arm/mm/alignment.c:814:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short [usertype] *ip @@
-   arch/arm/mm/alignment.c:814:25: sparse:     expected void const volatile [noderef] __user *ptr
-   arch/arm/mm/alignment.c:814:25: sparse:     got unsigned short [usertype] *ip
+> 
+> > Which clocksource driver are you using for jiffies?
+> 
+> The jiffies clocksource itself; the board has no sub-tick clocksource 
+> yet. The tick is a periodic clock_event_device on the DUART's 
+> counter/timer (GENERIC_CLOCKEVENTS, not LEGACY_TIMER_TICK), and my 
+> figures were 1 s of each call timed by jiffies with interrupts on, so 
+> they include the tick's own cost. Yours are the better numbers.
+> 
 
-vim +799 arch/arm/mm/alignment.c
+Maybe. But this clock oscillator is running at some frequency which I 
+haven't actually measured. Also, I'm measuring wallclock time, which may 
+be inappropriate if the udelay() interval is derived from loops_per_jiffy.
 
-c2860d43f5dfab George G. Davis   2009-06-04  792  
-1bb9fb0a147f9d Russell King      2019-09-06  793  static int alignment_get_arm(struct pt_regs *regs, u32 *ip, u32 *inst)
-67e15fa5b487ad Russell King      2019-08-31  794  {
-67e15fa5b487ad Russell King      2019-08-31  795  	u32 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  796  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  797  
-67e15fa5b487ad Russell King      2019-08-31  798  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @799  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  800  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  801  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  802  
-67e15fa5b487ad Russell King      2019-08-31  803  	*inst = __mem_to_opcode_arm(instr);
-67e15fa5b487ad Russell King      2019-08-31  804  
-67e15fa5b487ad Russell King      2019-08-31  805  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  806  }
-67e15fa5b487ad Russell King      2019-08-31  807  
-67e15fa5b487ad Russell King      2019-08-31  808  static int alignment_get_thumb(struct pt_regs *regs, u16 *ip, u16 *inst)
-67e15fa5b487ad Russell King      2019-08-31  809  {
-67e15fa5b487ad Russell King      2019-08-31  810  	u16 instr = 0;
-67e15fa5b487ad Russell King      2019-08-31  811  	int fault;
-67e15fa5b487ad Russell King      2019-08-31  812  
-67e15fa5b487ad Russell King      2019-08-31  813  	if (user_mode(regs))
-67e15fa5b487ad Russell King      2019-08-31 @814  		fault = get_user(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  815  	else
-25f12ae45fc193 Christoph Hellwig 2020-06-17  816  		fault = get_kernel_nofault(instr, ip);
-67e15fa5b487ad Russell King      2019-08-31  817  
-67e15fa5b487ad Russell King      2019-08-31  818  	*inst = __mem_to_opcode_thumb16(instr);
-67e15fa5b487ad Russell King      2019-08-31  819  
-67e15fa5b487ad Russell King      2019-08-31  820  	return fault;
-67e15fa5b487ad Russell King      2019-08-31  821  }
-67e15fa5b487ad Russell King      2019-08-31  822  
+> > ndelay(400) 536E-09 -> 239E-09 seconds
+> 
+> I think the patched ndelay() count has wrapped your 16-bit timer. The 
+> patched ndelay(400) asks __delay() for at least 466 ns of calibrated 
+> loops whatever loops_per_jiffy is (8000 * loops_per_jiffy * 25 / 2^32 
+> loops, plus the one __delay() adds), and it now does a mulu.l on every 
+> call, which the old code did not (its arithmetic is plain C, so GCC can 
+> hoist it out of your unrolled loop). If a call takes about 1.08 us, 
+> 100000 calls take 107.6 ms, more than the 83.7 ms that T2 can count at 
+> 783360 Hz, and what is left after one wrap is 23.9 ms, or 239 ns a call.
+> 
+> Could you try ndelay(400) with 40000 invocations instead of 100000?
 
-:::::: The code at line 799 was first introduced by commit
-:::::: 67e15fa5b487adb9b78a92789eeff2d6ec8f5cee ARM: mm: fix alignment handler faults under memory pressure
+Here's what I measured with interrupts disabled:
 
-:::::: TO: Russell King <rmk+kernel@armlinux.org.uk>
-:::::: CC: Russell King <rmk+kernel@armlinux.org.uk>
+test_udelay(10)	     11.0E-06 -> 11.7E-06
+test_udelay(20)	     19.7E-06 -> 21.5E-06
+test_udelay(50)	     47.0E-06 -> 50.8E-06
+test_udelay(100)     92.3E-06 -> 99.7E-06
+test_udelay(1000)     973E-06 ->  979E-06
+test_ndelay(40)	      191E-09 -> 17.0E-09
+test_ndelay(400)      673E-09 -> 1.49E-06
+test_ndelay(4000)    6.03E-06 -> 5.58E-06
+test_ndelay(40000)   38.7E-06 -> 46.5E-06
+test_ndelay(400000)   366E-06 ->  456E-06
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ndelay(400) and ndelay(40) seem to be anomalous. I don't know why.
+
+> If I'm right it should come out at about 1.08 us. That would mean it is 
+> longer than before, not shorter. As the commit message says, ndelay() 
+> now pays for the 64-bit multiply, so very short ndelay()s cost more. If 
+> that cost matters on the 040, I could keep the old ndelay() and only fix 
+> udelay().
+> 
+> Your udelay(1000) at 978 us is still 2 % short with interrupts off. I 
+> believe that is calibrate_delay() running with the tick enabled, so the 
+> tick's time is counted as loop time. That is separate from this patch, 
+> and I have left it alone.
+> 
+
+Here's the same thing, but interrupts were enabled this time:
+
+test_udelay(10)      11.4E-06 -> 12.2E-06
+test_udelay(20)      20.5E-06 -> 22.3E-06
+test_udelay(50)      48.8E-06 -> 52.7E-06
+test_udelay(100)     96.1E-06 ->  103E-06
+test_udelay(1000)    1.01E-03 -> 1.02E-03
+test_ndelay(40)      77.5E-09 -> 57.1E-09
+test_ndelay(400)      776E-09 -> 1.55E-06
+test_ndelay(4000)    6.23E-06 -> 5.77E-06
+test_ndelay(40000)   40.7E-06 -> 48.5E-06
+test_ndelay(400000)   384E-06 ->  476E-06
+
+In general, delays are about 4% longer when interrupts are enabled. I 
+think that's just the overhead associated with a bunch of VIA chip 
+accesses every 10 ms. Other platforms should fare better.
+
+---
+
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index b745cf20a71f..66e80aa230ff 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -65,6 +65,83 @@ static void __init mac_sched_init(void)
+ 	via_init_clock();
+ }
+ 
++#define GET_VIA1_TIMER2() \
++({ \
++	unsigned long flags; \
++	local_irq_save(flags); \
++	u8 high = via1[vT2CH]; \
++	u8 low = via1[vT2CL]; \
++	torn = via1[vT2CH] != high; \
++	local_irq_restore(flags); \
++	1 + low + (high << 8); \
++})
++
++#define DELAY_LOOP(n, arg) \
++do { \
++	int d, i, I = n / 40; \
++	u16 t1, t2; \
++	bool torn; \
++	do { t1 = GET_VIA1_TIMER2(); } while (torn); \
++	for (i = 0; i < I; ++i) { \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++	} \
++	t2 = GET_VIA1_TIMER2(); \
++	d = t1 - t2; \
++	if (d < 0) d += 0x10000; \
++	if (torn) pr_info("torn\n"); \
++	else pr_info("%10d, %20s, %10d\n", I * 40 , #arg, d); \
++} while (0)
++
++static inline void test_udelay(unsigned long t)
++{
++	volatile unsigned long vt = t;
++
++	udelay(vt);
++}
++
++static inline void test_ndelay(unsigned long t)
++{
++	volatile unsigned long vt = t;
++
++	ndelay(vt);
++}
++
++static void measure_delays(void)
++{
++	// Given ECLK is 783360 Hz, the 16 bit counter can measure up to 80 ms.
++	// Loops of 40ms of udelay() calls:
++	DELAY_LOOP(4000, test_udelay(10));
++	DELAY_LOOP(2000, test_udelay(20));
++	DELAY_LOOP( 800, test_udelay(50));
++	DELAY_LOOP( 400, test_udelay(100));
++	DELAY_LOOP(  40, test_udelay(1000));
++	// Loops of 16ms of ndelay() calls:
++	DELAY_LOOP(400000, test_ndelay(40));
++	DELAY_LOOP( 40000, test_ndelay(400));
++	DELAY_LOOP(  4000, test_ndelay(4000));
++	DELAY_LOOP(   400, test_ndelay(40000));
++	DELAY_LOOP(    40, test_ndelay(400000));
++}
++
++static int __init measure_delays_init(void)
++{
++	unsigned long flags;
++
++	via1[vACR] &= ~0x20; // free running T2 with no port B output
++
++	local_irq_save(flags);
++	measure_delays();
++	local_irq_restore(flags);
++	measure_delays();
++
++	return 0;
++}
++
++subsys_initcall(measure_delays_init);
++
+ /*
+  * Parse a Macintosh-specific record in the bootinfo
+  */
