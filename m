@@ -1,99 +1,95 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.49
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795182464;
-	b=E56E/RxRlTCJr1Kto/fvmHIKrCDkIF4SoHpCKxrfyNyWxveiPmsZ1tC258JMUnTy4/bR
-	 KXH6VSYNl+vXUezVjOR2VNfhT6m+JFSVbbPMd596xZS6InRoStiPx5C8/g+P2Wss0XQeD
-	 foTVU0gTnoTnsGLWv/UnTCs7usvcfnH2yDBLg8NzCnGbhHhq/36XyOFRPr+thpNzw0aAy
-	 tKTmO+RqJ03y4EzeKytVwmG/eascgA+n6MrqyktoS3kSBRKXNIPeIIyhXmJzFx9VyG/+i
-	 9FTiswjFG7boX3SolOQHiQ4b6ooczlUPueMIOjSF86z3OTP+k2+iY2fpRJlrErUGz5w==
+	t=1795193007;
+	b=eGJrrPCUbxbukV+/AjL1JR+draWKLdhIZU9FmzChHA6xs2twHYkCSa/bCIaVHmnXL6Hh
+	 yw0fjEYby+sbRaGBTMs+EJttUqcrzwil5JaelOU+RRguxp67/rfqeE5zrK4erF5XrsOm0
+	 17Q1GCPmSLaIHkNisuag5GY/jbulI4k0Yw1x8venoo8Lq+7vXpnyCy4nATfkBnjsXAAYF
+	 MmUV5spJs41/1UjvkQfQFE4WDss/I0Xr8yXl0n3kr/RgwNUA63lE6kxroz4hEg9l/hNhM
+	 d2HNf0y1suRS0cKEgJnANc9l3bu+trB58IGrSAnTaJpkP0Cd90qI3mNw6zTOmt6beuw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795182464;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=jTT7ZQT/IeZuZXnF5eJK7WIKxpNbB7mlhkfRnq9M/Fg=;
-	b=wp0dkkPh4oBLWuTy8XOgvXKws3hx1sOCvR6ETOHnhklJS/PsHfYXGesCznol3kcEsrus
-	 mCs6Kl34aS/nYIm7qLkwcyTNB2UOX9NFo9wPgsig3TWLWc4gRPRpDtKaqWzcjpsXq3fiv
-	 L+nk1fEGqSYBTjOyQzdshwwZ2MUP01pX8Ys5eM0sR59pEpmRN6hPuGBHMm8C/nRhyFp3O
-	 PwvEa8fDXzGR4AkLFibeNT8gQ8sUCRCr/3dXCcz33U25YxHiBb0Ip+FBqk1PE7R+r9Qwm
-	 EwhQjxOpGnqrFmGj1oH8iDFfec9Uaw1ycYKcad1dQ0/+EiHeiAuce/y/dAkQJ3pYMVQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795193007;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=EBkiqUUdh/y0Dl1qxnhAaecylqgVBg7HXrokp1VAnJY=;
+	b=q+F+kocAWeImLJysePxAF0cYeYm4BRfMoyF6tkl5L2sCsVIWgmXAJYtKWBibEjYLqAjP
+	 tujXjP7t6bZIfcporE6CRZRzIoiQIEcInztfyoHASQA1rG0Smr+SHHsrOvWqfllS3Bl6p
+	 WuFV2eB+ndL+rhC4z2zJEclmeCA47dJC0FQSVOkcDs/EaKY+qLEUt/S/bSeq1mKk7jpgV
+	 a1OmQBd1ASw2uI79NUFNgtUWHNAn59Aiigd+q110mYNHufYj+MTAD2o+aRPhtkHQ+moki
+	 uJVdGgwsmXIxqhQZBBrMMKGowf5aVkYIl5HpdP6y3gS552BNDq2etx6LcP3JQvZo6ag==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.intel.com;
-	spf=pass smtp.mailfrom=linux.intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b="g1yy/fMk";
-	arc=none smtp.remote-ip=198.175.65.16
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=cLvJq3i6;
+	arc=none smtp.remote-ip=209.85.128.49
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD64606A320
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 13:47:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5DD64606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B434606A32C
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 16:43:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7B434606A32C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=g1yy/fMk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795182464; x=1826718464;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kP2SPO5/6lORcTqOAcqARY5ZCI7i60ffA/JZ/vM2yOo=;
-  b=g1yy/fMkGjw6tsYFqyISuTRST0qlbM3hC10QGwUlzkaQt25PG39LBLbf
-   6pYN3lrQdDX6qZWqfJDACjAKSmpZOa1AVNAchUEs0CEa7yQNmiaJP6oXB
-   tSofHdmdls3+9IA6vjiPR5exfSMAPHu9Dizvc+IPXvUOjF1k/OIM75Ym1
-   XSrPnpJGP4837/oBa/oeXaTjkS9OsQ8AX3+jnN3/LaEVcH7oc5LTZrNeQ
-   mTK2p1qemHbTwL7jrC3iwDuRiHFTCk+6qgayJrwBB0daJ3Cc07kGWW+F/
-   EEpxxQrqyM6JAZqvlUF3j3lO4dwT2WIqiu1krqaariQTzGJLJu8QE+Ag5
-   Q==;
-X-CSE-ConnectionGUID: NhCTHevUSQCr3q4WUrqlgw==
-X-CSE-MsgGUID: UAfuL0OLTwakg53ENQ6JvQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11972"; a="4052863"
-X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="4052863"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 05:47:43 -0800
-X-CSE-ConnectionGUID: DGbbw3DBQwm7faPJizsrJA==
-X-CSE-MsgGUID: jGL/RBZuTbOQudBjx7Vs5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,223,1787036400"; 
-   d="scan'208";a="11277400"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.244.16])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2026 05:47:34 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: linux-pci@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Greg Ungerer <gerg@linux-m68k.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Len Brown <lenb@kernel.org>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=cLvJq3i6
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4a140e7405dso10315685e9.3
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 08:43:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795193004; x=1795797804; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=EBkiqUUdh/y0Dl1qxnhAaecylqgVBg7HXrokp1VAnJY=;
+        b=cLvJq3i6CRZdkAK2lOnv9nn/HIlXo/NeynktScEfZtLyZIWhIGu3j1+Bx3zAUf0FJC
+         8SqJgE9bmcMwDJUHKxB2v0LK+V2GMeiCb/8Fsb4vwFz9h5/TjlwyobNm0gMC5QzgcExc
+         mfctDFcPTZpUXUUMXHYxgKio6x24jAolzhh/qvczvBbb88CW79di9hIzAp1Hupaf0Vl3
+         RiZ3jSI1jqsxLgYaMLBfAGGS+c54HSHfj9zjcGFszKjgjSWp4kE/jqMVq12cwssYhWB3
+         Zj4BQK9pzlfYkQO79wN7fq1GNWsUqbbmmRTTAinUNrAlDeMVQ1HmeH5Xx/ZU/dxoheDo
+         Ftmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795193004; x=1795797804;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=EBkiqUUdh/y0Dl1qxnhAaecylqgVBg7HXrokp1VAnJY=;
+        b=PFvqJdwFmsCytSSZ4mfT6WzvBA01mwQOrQtbjvvlZYVLMwtZynFv0zZntQFVlUwoTy
+         o4No6bXhxVKzuTMtHuYsG5l8WXv0QrPKyfxkfTVMdqzRc3DNGUseItjmIA+grgn+xLwZ
+         FbGWzwR58wGBv2gcILFWU1jH5nxpBHCgc+Q9EmJi5Uyb62vAHaZMgfbbkc5uvVqEJ6Nm
+         2+HkYtjE3VffiocBUnUP3RDKoE6y97mURqSkbZX2BfY2APkW0hKOzVoI8W7YbFRg6C5e
+         6/+mbE47rDT3mILaQIBtNzCrumHgM9oDl440nnz3SqllM1De9bdHBhlGyTFL2mKl+2Mo
+         QnOA==
+X-Forwarded-Encrypted: i=1; AL+hErFAnScAH3EunqTHnlpvwAmsF7AoWaeDBtE7IccAL6I8wN+PjsJSTVCW1lP5FEmB44YpFd6XkZzW4nTX@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z97wRdEJNjIvo2alIqMDqYsVA+Q/tILebZvF/4n1asHMLWaCl8G
+	0GDmindm4tifQsNWQsHkEhFWFSZqCUsQXB/xlzrRD/rm2P6bWtOfkU2z
+X-Gm-Gg: AYBFou2+fzY6gS5uVKxdP2meA0w7b4YdS2jNecbtU5U+PZ9rO8odc7b1fRZNL0GPLc5
+	VnRy9MgqfMFhz1Jz6Vs+8d8tVA/8ya5n6D6mv9/VRx2q658yHoJAcWLpk5uaDrbBZNzcq+bqod2
+	wc7iQz6qDgZBgXNLu0TGbBkUMTNp9TRRDLKZyIMoeQbqFEmKjMAjmf7+cg4yQETfEX/H2ZoN5tI
+	clsEOFnqBEa2aOifnxmXHWcgGYDk/vxBzCIKTsWh2xzcVE93KOAjQXUBEp2mGE4VZ7uduGpva3g
+	IylQomwtyH2tAcW2RT3EgCbDrk2pPrAcllNvkA7jkoMnRSXyEQYW4XrnJJzskI6UGptibbl2ope
+	mxzAd1g/DYN+QHKNfBnui9ysf40Kl9hBUp/wiCiMrdfusAHTBtZSZ1gTmPtNtdQ7A5LzCpBsW+a
+	5FJPLuYHWdox/rBX75zM1qSZWhM7hojgxA5p+KTwWUpvAhulEU4uQ3z2xk49Ethhn242xtbqli7
+	qTTgN40S4kw7H2qnToGjHUTxhEyZ1OJF5KCVBRjtcBnpjTI54rJ8FR5i+xKxu3AE3d+RtQek3P0
+	HnsXo37OnDJiYdBWRk0Hp621L9uW+bRIsRoIL/BxVWK8ue4iyd96rX+o8TcJwQ0ASoeJOFctZ0y
+	Ef89q3dc=
+X-Received: by 2002:a05:600c:530e:b0:4b2:2ec5:8a2b with SMTP id 5b1f17b1804b1-4bb887fe8f1mr85315575e9.10.1795193003759;
+        Fri, 20 Nov 2026 08:43:23 -0800 (PST)
+Received: from beelink0 (host86-181-68-246.range86-181.btcentralplus.com. [86.181.68.246])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb884a15absm86679555e9.9.2026.11.20.08.43.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2026 08:43:23 -0800 (PST)
+From: Graeme Harker <graeme.harker@gmail.com>
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: geert@linux-m68k.org,
 	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-acpi@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 01/16] PCI: Add pci_bus_size_and_assign_resources()
-Date: Fri, 20 Nov 2026 15:46:56 +0200
-Message-ID: <20261120134716.3027-2-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20261120134716.3027-1-ilpo.jarvinen@linux.intel.com>
-References: <20261120134716.3027-1-ilpo.jarvinen@linux.intel.com>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: delay: Fix rounding of short udelay() and ndelay()
+Date: Fri, 20 Nov 2026 16:43:22 +0000
+Message-ID: <20261120164322.1034075-1-graeme.harker@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <5783b448-b34a-58a5-0bc0-98b1a806f182@linux-m68k.org>
+References: <5783b448-b34a-58a5-0bc0-98b1a806f182@linux-m68k.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -103,180 +99,48 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Bridge window sizing and resource assignment must not run concurrently
-with another sizing and assignment pass or with device removal.
-Preventing that requires holding locks across both phases. Many callers
-outside of PCI core call pci_bus_size_bridges() immediately followed by
-pci_bus_assign_resources() and cannot hold the PCI core internal locks
-across the two calls.
+Hi Finn,
 
-Add pci_bus_size_and_assign_resources() into PCI core which combines
-these two operations and convert the callers that call them back to
-back.
+Thanks for running it again, and with both interrupt settings.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Acked-by: Rafael J. Wysocki (Intel) <rafael@kernel.org>
-Cc: stable@vger.kernel.org
----
- arch/arm/kernel/bios32.c           | 5 ++---
- arch/m68k/coldfire/pci.c           | 3 +--
- arch/mips/pci/pci-legacy.c         | 5 ++---
- arch/sh/drivers/pci/pci.c          | 3 +--
- drivers/parisc/lba_pci.c           | 7 ++-----
- drivers/pci/hotplug/acpiphp_glue.c | 3 +--
- drivers/pci/setup-bus.c            | 7 +++++++
- drivers/pcmcia/cardbus.c           | 3 +--
- include/linux/pci.h                | 1 +
- 9 files changed, 18 insertions(+), 19 deletions(-)
+> test_ndelay(40)	 191E-09 -> 17.0E-09
 
-diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
-index ac0e890510da..555bfb091d30 100644
---- a/arch/arm/kernel/bios32.c
-+++ b/arch/arm/kernel/bios32.c
-@@ -510,15 +510,14 @@ void pci_common_init_dev(struct device *parent, struct hw_pci *hw)
- 		/*
- 		 * We insert PCI resources into the iomem_resource and
- 		 * ioport_resource trees in either pci_bus_claim_resources()
--		 * or pci_bus_assign_resources().
-+		 * or pci_bus_size_and_assign_resources().
- 		 */
- 		if (pci_has_flag(PCI_PROBE_ONLY)) {
- 			pci_bus_claim_resources(bus);
- 		} else {
- 			struct pci_bus *child;
- 
--			pci_bus_size_bridges(bus);
--			pci_bus_assign_resources(bus);
-+			pci_bus_size_and_assign_resources(bus);
- 
- 			list_for_each_entry(child, &bus->children, node)
- 				pcie_bus_configure_settings(child);
-diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
-index 5afb207ccc51..dd21c77c43a6 100644
---- a/arch/m68k/coldfire/pci.c
-+++ b/arch/m68k/coldfire/pci.c
-@@ -250,8 +250,7 @@ static int __init mcf_pci_init(void)
- 	rootbus->resource[0] = &mcf_pci_io;
- 	rootbus->resource[1] = &mcf_pci_mem;
- 
--	pci_bus_size_bridges(rootbus);
--	pci_bus_assign_resources(rootbus);
-+	pci_bus_size_and_assign_resources(rootbus);
- 	pci_bus_add_devices(rootbus);
- 	return 0;
- }
-diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
-index dae6dafdd6e0..ec0e42d9a895 100644
---- a/arch/mips/pci/pci-legacy.c
-+++ b/arch/mips/pci/pci-legacy.c
-@@ -129,15 +129,14 @@ static void pcibios_scanbus(struct pci_controller *hose)
- 	/*
- 	 * We insert PCI resources into the iomem_resource and
- 	 * ioport_resource trees in either pci_bus_claim_resources()
--	 * or pci_bus_assign_resources().
-+	 * or pci_bus_size_and_assign_resources().
- 	 */
- 	if (pci_has_flag(PCI_PROBE_ONLY)) {
- 		pci_bus_claim_resources(bus);
- 	} else {
- 		struct pci_bus *child;
- 
--		pci_bus_size_bridges(bus);
--		pci_bus_assign_resources(bus);
-+		pci_bus_size_and_assign_resources(bus);
- 		list_for_each_entry(child, &bus->children, node)
- 			pcie_bus_configure_settings(child);
- 	}
-diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
-index 878a27a1acfb..c91ca8f4cb1c 100644
---- a/arch/sh/drivers/pci/pci.c
-+++ b/arch/sh/drivers/pci/pci.c
-@@ -81,8 +81,7 @@ static void pcibios_scanbus(struct pci_channel *hose)
- 		need_domain_info = 1;
- 	}
- 
--	pci_bus_size_bridges(hose->bus);
--	pci_bus_assign_resources(hose->bus);
-+	pci_bus_size_and_assign_resources(hose->bus);
- 	pci_bus_add_devices(hose->bus);
- }
- 
-diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
-index 5197a3c93c70..39ab93ba458b 100644
---- a/drivers/parisc/lba_pci.c
-+++ b/drivers/parisc/lba_pci.c
-@@ -1639,11 +1639,8 @@ lba_driver_probe(struct parisc_device *dev)
- 	if (is_pdc_pat()) {
- 		/* assign resources to un-initialized devices */
- 
--		DBG_PAT("LBA pci_bus_size_bridges()\n");
--		pci_bus_size_bridges(lba_bus);
--
--		DBG_PAT("LBA pci_bus_assign_resources()\n");
--		pci_bus_assign_resources(lba_bus);
-+		DBG_PAT("LBA pci_bus_size_and_assign_resources()\n");
-+		pci_bus_size_and_assign_resources(lba_bus);
- 
- #ifdef DEBUG_LBA_PAT
- 		DBG_PAT("\nLBA PIOP resource tree\n");
-diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-index 78e3effbb32d..632344f34cae 100644
---- a/drivers/pci/hotplug/acpiphp_glue.c
-+++ b/drivers/pci/hotplug/acpiphp_glue.c
-@@ -465,8 +465,7 @@ static void acpiphp_native_scan_bridge(struct pci_dev *bridge)
- 		max = pci_scan_bridge(bus, dev, max, 1);
- 		if (dev->subordinate) {
- 			pcibios_resource_survey_bus(dev->subordinate);
--			pci_bus_size_bridges(dev->subordinate);
--			pci_bus_assign_resources(dev->subordinate);
-+			pci_bus_size_and_assign_resources(dev->subordinate);
- 		}
- 	}
- }
-diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
-index ed16ef7c26fa..29ec9ba59d92 100644
---- a/drivers/pci/setup-bus.c
-+++ b/drivers/pci/setup-bus.c
-@@ -2492,3 +2492,10 @@ void pci_assign_unassigned_bus_resources(struct pci_bus *bus)
- 	__pci_bus_assign_resources(bus, &add_list, NULL);
- }
- EXPORT_SYMBOL_GPL(pci_assign_unassigned_bus_resources);
-+
-+void pci_bus_size_and_assign_resources(struct pci_bus *bus)
-+{
-+	pci_bus_size_bridges(bus);
-+	__pci_bus_assign_resources(bus, NULL, NULL);
-+}
-+EXPORT_SYMBOL_GPL(pci_bus_size_and_assign_resources);
-diff --git a/drivers/pcmcia/cardbus.c b/drivers/pcmcia/cardbus.c
-index 5e5cf2c3e2c8..19df3f9228a7 100644
---- a/drivers/pcmcia/cardbus.c
-+++ b/drivers/pcmcia/cardbus.c
-@@ -81,8 +81,7 @@ int __ref cb_alloc(struct pcmcia_socket *s)
- 	/*
- 	 * Size all resources below the CardBus controller.
- 	 */
--	pci_bus_size_bridges(bus);
--	pci_bus_assign_resources(bus);
-+	pci_bus_size_and_assign_resources(bus);
- 	cardbus_config_irq_and_cls(bus, s->pci_irq);
- 
- 	/* socket specific tune function */
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index aa3765a20a96..d89aeb7c9ff7 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1569,6 +1569,7 @@ resource_size_t pcibios_retrieve_fw_addr(struct pci_dev *dev, int idx);
- void pci_bus_assign_resources(const struct pci_bus *bus);
- void pci_bus_claim_resources(struct pci_bus *bus);
- void pci_bus_size_bridges(struct pci_bus *bus);
-+void pci_bus_size_and_assign_resources(struct pci_bus *bus);
- int pci_claim_resource(struct pci_dev *, int);
- int pci_claim_bridge_resource(struct pci_dev *bridge, int i);
- void pci_assign_unassigned_resources(void);
--- 
-2.47.3
+I think this one has wrapped the timer as well. 400000 calls only fit
+in T2's 83.7 ms if each takes less than 209 ns, and 17 ns is less than
+one clock on the LC040. With one wrap it would be 226 ns, which is
+longer than before, as ndelay(400) now is. 40000 calls should show it.
 
+> test_ndelay(40000) 38.7E-06 -> 46.5E-06
+> test_ndelay(400000) 366E-06 -> 456E-06
+
+These show a real problem with the patch: long ndelay()s now run about
+15% long. The 5 I took from x86 is 2^32 / 10^9 rounded up, but
+2^32 / 10^9 is 4.295, so every ndelay() asks for 16.4% more loops than
+it should. Combined with your udelay(1000) of 979 us (2% short), that
+predicts 453 us for ndelay(400000), and you measured 456 us. The old
+code was short instead, from rounding loops_per_jiffy down to a
+multiple of 2048.
+
+I can't explain the old ndelay(4000) of 6.03 us without knowing
+loops_per_jiffy. What does your machine calibrate to?
+
+I can see three ways to go, and I'd like to know which you and Geert
+would prefer:
+
+1. Keep 5, as x86 does. Delays are never short, but up to 16% long.
+
+2. Use a closer constant, e.g. __xdelay(nsec * 4 + ((nsec * 1209) >> 12)),
+   which is 4.29517, within 0.005% of 2^32 / 10^9 and still never
+   short. It costs another multiply and a shift on every call, and the
+   second term overflows for delays above 3.5 ms, which ndelay() should
+   not be asked for anyway.
+
+3. Leave ndelay() as it is and fix only udelay().
+
+Option 2 seems the most accurate, but ndelay() is mostly used for short
+delays, and for those the call overhead you measured matters more than
+the constant.
+
+Graeme
