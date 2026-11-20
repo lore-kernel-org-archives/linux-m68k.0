@@ -1,86 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.217.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795178204;
-	b=OIQwU2Do/MYWntG/ICqQDtXcOrzTUqSQLR7E8TXY1Wue9Tg3VQ632+fu25KFTKcRdprL
-	 qB6PyfRbTlEnvup68KEFDN0P2IJGcu+cqms58RX+W66wY2Yc6snkKUvmU37cLu4+6MIFP
-	 ANfGaTgsjaeYcopnNk+rb6dOZjpe67ozhxkZRCOeU+dkFyn5s1RTT4FPZ9thvb8P+s+TK
-	 oixjc6vf14IfsG8ogBs1zOtOmi/KAQhuYWu3Ez5zKbja26HlMc2uUdHaFxaoFqoPfKMCA
-	 0vwibmTIuS6lLZMQ12C3PKAf2k+cQyaIeRT2Lf6tW+Ta3Vjd6ltF4C1LPVQ3nTF/8gQ==
+	t=1795178835;
+	b=sXSatSM2WG7ogm61XhJxz1JvG0xRULVTKykpOUMJMZqlWoyrRZPB4bVM3VgAbtX08uMY
+	 qMwmSa+BukTbire67Ay2ZPKhz0/3Hgj5YMPEiuZMxVTHd6pxYiG6cSBvjsblD0nzGe2FL
+	 cRfSbp/bKxQQDsggW3J1dl9HQPTbMOhcXy1S7MBCMDXHz3F70X+z7yxpHANoDjFw22W7E
+	 DUCxnwx8AEw0hypZFG9483Vo1SXf2CESdo/EeFd66KcpEjT/MkZ3uaAcKc7Yunk6uzyFb
+	 HYAf7CMKZbZ9Y+AGww4trwCkJoPMBYTLqoSpSJZ5R4DLijvL9URd7HMH0IwTPgrX+nw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795178204;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:Subject:From:To:
-	 Cc:In-Reply-To:References:Date:Message-Id:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key;
-	bh=WeOrsjpJfRBrNwFvy+AQY39SEDxtlUWfYfyLARDn2qU=;
-	b=k5Iqwb0fg2ebJtx1EyHNQoNziGtGhlAC18fzUBqt37UbkVLVxzaZ17cOfYQwVUW1g8Qr
-	 4GUOFp6VSH4kpfc3RmdsljyzV30dbR4WqXLMa/Oc3iyd9g9UpWkMivqLa/R0EwjxIzzsZ
-	 Z/ktlPVS1zN5LPVBaeR23r59uxdJehTdyDbF7LhZj3A7s4CSRy2kpjD2oiIgW6vBON7d2
-	 KRsK7qwQMQn/ge9K8M+qbNL1P/nXWf9hdEAaxMU+adzx7blvVTItQxDPdMNLz2FLRYsnI
-	 86I36qQ6nbJXQCWdlHrZK9iK40LSrxmNcaFusyQhqsmCbjHcQe+BiDVaTRfaNoGhwIA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795178835;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Received:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:X-Gmail-Original-Message-ID:
+	 X-Gm-Features:Message-ID:Subject:To:Cc:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=cFPvlgUy0TvBWcDjM5/jmutsQzuYr3kEfyGp2bpsx6Y=;
+	b=H4ueCyQYyr8EhppunE9rkIcPO6cw6oiH9vH/fAmGrmuDFKeJ/rahYNHgNaX12GzsHwoT
+	 iUY4frU438yMdkQBWc0e7EqkEUUNyZQtJPj6zBiGHfqXoIC4SIQYH3t/uqN3oZMvLG2vD
+	 Gbtr88cNqU2qAGFWVfwRC3S/fGL8lh2qwbT8CXksun74qN6timcF3KsZmrZFQgjhambdV
+	 FZNYrwZId1Gbj0c1+ZfKXEqQ/IE8bgWNruJRu0Yt8oG5cwhIwb86IDAIzHNZBOCkY8PeP
+	 BrCxO+zuArJVyGoGklD/TSJWLvUfcUFDvb6HuyePN56bZcKaoeWBK9Mr7TfvbNXBpQw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=soleen.com;
-	spf=pass smtp.mailfrom=soleen.com;
-	dkim=pass header.d=soleen.com header.i=@soleen.com header.a=rsa-sha256 header.s=google header.b=Kb1l7hkf;
-	arc=none smtp.remote-ip=209.85.217.51
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=kernel.org;
+	spf=pass smtp.mailfrom=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ko6Lt8So;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B37F606A330
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 12:36:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9B37F606A330
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF6960A383F
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 12:47:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DDF6960A383F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.a=rsa-sha256 header.s=google header.b=Kb1l7hkf
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-7d2e1abf3eeso616058137.1
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 04:36:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1795178202; x=1795783002; darn=lists.linux-m68k.org;
-        h=message-id:date:references:in-reply-to:cc:to:from:subject
-         :content-transfer-encoding:content-type:mime-version:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=WeOrsjpJfRBrNwFvy+AQY39SEDxtlUWfYfyLARDn2qU=;
-        b=Kb1l7hkfiwBK1xDu5CGB3QDnV3NVPHvZuvlKrwJySGNwTze1wBZjlJ/gnJ8PAQ5ZyF
-         kmWPhdEWJU1mRi5W33X+T/Jir2S8F/fhFWUw5szzzHWwCEcvrqLsex2YcRVkkqDKV3qD
-         RR7qpnMQXtx9nCh2Z+mZ1wkIyOmL0uwiplsJCrcHFKCA1pSX/UaX44h5tkrr2VKg9VX3
-         bXjgq2NWOVy66rRa8cyYn8pslJmenw4Pz6uQI6Aq/Ryb0dTz08tS90fOyiPhXHQ7wUyP
-         +zVjhR5INH1TLBy7gPvYHHnoSH2jrDyV6ey1didN/SrZWyZ7cHanAWffJqoWl0Kp0ds4
-         tm/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795178202; x=1795783002;
-        h=message-id:date:references:in-reply-to:cc:to:from:subject
-         :content-transfer-encoding:content-type:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=WeOrsjpJfRBrNwFvy+AQY39SEDxtlUWfYfyLARDn2qU=;
-        b=E+ya2iFNVsxjZ2fbHn9F1shAjtQVeHqfIslt9hh3XtPC1yuHVTe3bhiv7I90cFSOhM
-         4nOM8FDtw7ZlGy4ctFfzOODYsaNGp3UebQoauFVCHRPeeF+B+mjP31+12a0h/jUJzy++
-         lUMyyXiu3et6cz9RpClYSmalEOc7l0L/tDi83MLuxq841fsz1uaxxNOantqVmmPXfeJz
-         cPrTxFsNQZ5wx0yCG808x/A95Dkh6L2vrkk1AXGP8ZBHRE6fwlNtcnICQcns43N50OND
-         6tNuddmZmfi36YO75IoVyGw3OaZfqy/YWGoHKFv7X7i8K/7hwGTQkH6cO2UalS9zi+tv
-         KZCQ==
-X-Forwarded-Encrypted: i=1; AL+hErEvk0tDpdlJFix32zrhUEbm683krYVmDbPhnON5xbIA9xYIEYzXFuaQlUh/oBAAIecqirIBK/PZqTbf@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z/VVN+KhG8cEckiIajdKaX3NkBSA4cjpKUlpD6bZi8Ex7eywee9
-	YEoGO5Z8wbMZpaAFMneH7QbvFLKXtjlPWFArxG+B5basDGIm8QjV2Z6qQUITSHUnoP8=
-X-Gm-Gg: AZFdTZdS96lBCj4pDO32l+SHzWGo+S2qN4si4omHPwWc8eM/6+jKBZIvbkT8tDHeBqf
-	UBcj48NR56hlVSf8bipoTv9jtYnCgFk9AuzvjXGBgKGiDqYi60yOmIsBWGnIDloarpoPcuRmVzI
-	9KjQ+7KpuFN4hGcBfOvDFdzSp3lTlZ8YsTZ+g2o3wFZm6mgf1V8OBIVsj8wFVjjC5xOy7S3DuMV
-	kgNTPKY6I9KslWmMSAsLLZzXPfv6cL9wMjAXAcOWbFEwaK1p+nRT2j9Gv4blKsHs2hAik4RLRdt
-	PIXtyIaE39kQvf0rK2kiv/C9thqCRI/Y3+NTdQjZ2GvcoHDvhH4PhFjTODQoO3dZwyCFEkJWoS/
-	/KkztL1l2pLrwrmqj9WyPx6w404NDJKnuCQ9RC9HisZLN9k8Gb041n7CFioQHg/BYuWFwAMawV6
-	SYvydWbfOms0FXKK3qNCVqXEOalln8RbRJvdKvg80ZkA5BHqsJGr4mhw4/DcMOPCfQJcJonUaC9
-	rsLRZKOr5a3UyNIdknMbo1vFbGgiJTjtGzS3TG+pK9gF/1vSO/SBhr2RoEuKeNidv0xQcb3As+z
-	k6ExJsO/9atr3h1OjwrMwxL8f2FzKRi9/d4HHNNZi2QASwNeUNrvkJGVc0IMMbrb0GOCj82xlM2
-	XLrVvn805nbL+lsPHXwRw44ZChNYpGi+KrwzllLpMKcgn284=
-X-Received: by 2002:a05:6102:6441:b0:7cc:905a:331a with SMTP id ada2fe7eead31-7d739660c9fmr746735137.14.1795178202521;
-        Fri, 20 Nov 2026 04:36:42 -0800 (PST)
-Received: from soleen.c.googlers.com (57.233.150.34.bc.googleusercontent.com. [34.150.233.57])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-7d6e80cb440sm2765262137.7.2026.11.20.04.36.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2026 04:36:42 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ko6Lt8So
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 6CE5D45D60
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 12:47:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B94A1F02EEE
+	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 12:47:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795178834;
+	bh=cFPvlgUy0TvBWcDjM5/jmutsQzuYr3kEfyGp2bpsx6Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=Ko6Lt8So1k4Kpkskymig/ldqmyFw5l3nc8bEgsgAwDisD8pK7KcdCYf7/EXHNgfv4
+	 fJVwZqOsbobHKaDFoXCZuJfAnfU1gMwPnG6kEMJ5dwz1ZuLVENW3NtIi5/hDuIn4Q4
+	 zYBnQLtlNcxDmvgiq74w6u4omDx2udPHobszbEVHGOLRvQ8db3dx1Z+gPvKR4A2LwW
+	 VAb6p34LZZKKmNzrqfMW3UWqKMrWz6T1uL4Iqs/Yaq1XRyGTQU/YCCjnur+6I/XBgk
+	 hUN7HtiMswmZo0lY9e8T40uEnSB1BeSDpSkXpedWXlDniB0DJox5YVBOwtBhmD+wn9
+	 5Cq8E4/Y+QCdw==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-3adff684a52so6834391fa.1
+        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 04:47:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AL+hErFb+hYo9SazoXBP9yt9AeT7uJJcMin6gNqHtm15A1mp4BkoJYzzdeEaSNSH38pW619eJoUBdpD+yh6+@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z+UwRcb4RSzIzSQNGD+tsK44+LkAGZ7+lSupBPNOdpWMbQglF84
+	Njlp8sfFZx9RUvRJpLozafvIUxXumKH3uiNl0v5+ynK1wjg/qFqIJvSvY5AH3rtnf7L9d6GOVHF
+	v/laPysWHrgEupy/+pbNVWT2LciNDMhs=
+X-Received: by 2002:a2e:a9a7:0:b0:3ae:25c8:dce3 with SMTP id
+ 38308e7fff4ca-3ae7afa4af0mr11615641fa.0.1795178832340; Fri, 20 Nov 2026
+ 04:47:12 -0800 (PST)
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -90,76 +68,216 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 0/2] arch, kexec: declare kexec and crash capabilities
- in Kconfig.kexec
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-Cc: Albert Ou <aou@eecs.berkeley.edu>, 
- Alexander Gordeev <agordeev@linux.ibm.com>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Baoquan He <baoquan.he@linux.dev>, Borislav Petkov <bp@alien8.de>, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- Dave Hansen <dave.hansen@linux.intel.com>, 
- Geert Uytterhoeven <geert@linux-m68k.org>, 
- Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
- Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Madhavan Srinivasan <maddy@linux.ibm.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, 
- Pasha Tatashin <pasha.tatashin@soleen.com>, Paul Walmsley <pjw@kernel.org>, 
- Pratyush Yadav <pratyush@kernel.org>, Rich Felker <dalias@libc.org>, 
- Russell King <linux@armlinux.org.uk>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Thomas Gleixner <tglx@kernel.org>, Vasily Gorbik <gor@linux.ibm.com>, 
- Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
- x86@kernel.org, Alexandre Ghiti <alex@ghiti.fr>, 
- Christian Borntraeger <borntraeger@linux.ibm.com>, 
- "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, 
- Cong Wang <cwang@multikernel.io>, Mark Rutland <mark.rutland@arm.com>, 
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
- "H. Peter Anvin" <hpa@zytor.com>, 
- "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, 
- Shrikanth Hegde <sshegde@linux.ibm.com>, 
- Sven Schnelle <svens@linux.ibm.com>, WANG Xuerui <kernel@xen0n.name>, 
- kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
- linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
- loongarch@lists.linux.dev
-In-Reply-To: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
-References: <20261119-arch-kconfig-v1-0-37c276fe4d26@kernel.org>
-Date: Fri, 20 Nov 2026 07:36:31 -0500
-Message-Id: <179517819160.302903.17107992182494080507.b4-review@b4>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=279;
- i=pasha.tatashin@soleen.com; h=from:subject:message-id;
- bh=6sWQl9lmqjTJk3yxh91YK+fuuFKvUf1mQEwavRJAVng=;
- b=owEBbAKT/ZANAwAKAbt3KEzbc3reAcsmYgBrAD7YSNYHVf2cFGXSq25iXRKWCRXN4f0ixFmnf
- ++ItKpA2qWJAjIEAAEKAB0WIQRBMaqT7LRvGvB/NmK7dyhM23N63gUCawA+2AAKCRC7dyhM23N6
- 3tiPD/d31VAJSvGrL/uVfmPyx9aQ56Xv29nKPQ6VnqwxP+xMB94zunEWD8SU+Mc33Jsi99L7q8T
- EfGGkXbTCSoGd7NQv3bSnhUhMQVXfpkd18XOnWbNd0iZdBWi4KwA6+/bOhxsYpO/vNSV52HyHUl
- YH2tsnNB0E6EUN5P7dsJ2PqcWD6QjGrbW/xN/5ItrxWqVXu7AFWAGG87321F8utMVUAjMd5pbNX
- gMmicb9aVIU7JY8k0q7PhcEcRAKBjeq1d52NlSDCQyaltHTGY5+29RgVN9juLHJk/Aqy3s15ERG
- gm7x8LUDOEKOpRB5wWYYeKgpWsUscytR/AC4OBQTujXKhQIWBnWrzxr6tjgdacQJt/i9O9RHd1G
- 2mft4ocO42XqcRceZtQr6UzRDuVwoDTDwn7Tgr1GRPVmpKWKbzpatvf9WPoIEE1p4+zITr10dGz
- r/38wDLPSJghOgD31RGTysREDXP/fCAYar6DdmmMDK63vuMssMRCUOe16Xd0DOIZIG4FAZ7iix4
- P8e8ny0z7tfxqx4vm+6CsIaWgFvVAxYu7Aw1xAruadzsWe+u5UqQLLBY6z+0k76JoRaBMkkcS25
- JEuj8uFaMFXD2ei4JRlUNt57apqgQNCbvhYb6KUTHwP7pocn/UNfKH5JCi9KQCFr7OzuMoLGVJq
- hED2RJ/U2jV7C
-X-Developer-Key: i=pasha.tatashin@soleen.com; a=openpgp;
- fpr=CAAAB722DD22A081F0D49F35633A6A993D43B569
+References: <20261116152403.2672-1-ilpo.jarvinen@linux.intel.com> <20261116152403.2672-2-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <20261116152403.2672-2-ilpo.jarvinen@linux.intel.com>
+From: "Rafael J. Wysocki (Intel)" <rafael@kernel.org>
+Date: Fri, 20 Nov 2026 13:46:57 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0gaGkw=WF5SNh3HqAQj1BBuKrQX4c=gQmr7u5u1ZazZ3Q@mail.gmail.com>
+X-Gm-Features: Aa3M54oz3LF47L5PDAhm_echVts1Tg_ShC1H7XciRhRSEPVLCqbGWtF1x-1ZQPo
+Message-ID: <CAJZ5v0gaGkw=WF5SNh3HqAQj1BBuKrQX4c=gQmr7u5u1ZazZ3Q@mail.gmail.com>
+Subject: Re: [PATCH 01/13] PCI: Add pci_bus_size_and_assign_resources()
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Rob Herring <robh@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Russell King <linux@armlinux.org.uk>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Dominik Brodowski <linux@dominikbrodowski.net>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 19 Nov 2026 08:16:56 +0200, Mike Rapoport (Microsoft) <rppt@kernel.org> wrote:
-> arch, kexec: declare kexec and crash capabilities in Kconfig.kexec
-> 
-> The intention is to take it via kexec tree.
+On Mon, Nov 16, 2026 at 4:24=E2=80=AFPM Ilpo J=C3=A4rvinen
+<ilpo.jarvinen@linux.intel.com> wrote:
+>
+> Bridge window sizing and resource assignment must not run concurrently
+> with another sizing and assignment pass or with device removal.
+> Preventing that requires holding locks across both phases. Many callers
+> outside of PCI core call pci_bus_size_bridges() immediately followed by
+> pci_bus_assign_resources() and cannot hold the PCI core internal locks
+> across the two calls.
+>
+> Add pci_bus_size_and_assign_resources() into PCI core which combines
+> these two operations and convert the callers that call them back to
+> back.
+>
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 
-Acked-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+LGTM
 
--- 
-Pasha
+Acked-by: Rafael J. Wysocki (Intel) <rafael@kernel.org>
 
+> ---
+>  arch/arm/kernel/bios32.c           | 5 ++---
+>  arch/m68k/coldfire/pci.c           | 3 +--
+>  arch/mips/pci/pci-legacy.c         | 5 ++---
+>  arch/sh/drivers/pci/pci.c          | 3 +--
+>  drivers/parisc/lba_pci.c           | 7 ++-----
+>  drivers/pci/hotplug/acpiphp_glue.c | 3 +--
+>  drivers/pci/setup-bus.c            | 7 +++++++
+>  drivers/pcmcia/cardbus.c           | 3 +--
+>  include/linux/pci.h                | 1 +
+>  9 files changed, 18 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+> index ac0e890510da..555bfb091d30 100644
+> --- a/arch/arm/kernel/bios32.c
+> +++ b/arch/arm/kernel/bios32.c
+> @@ -510,15 +510,14 @@ void pci_common_init_dev(struct device *parent, str=
+uct hw_pci *hw)
+>                 /*
+>                  * We insert PCI resources into the iomem_resource and
+>                  * ioport_resource trees in either pci_bus_claim_resource=
+s()
+> -                * or pci_bus_assign_resources().
+> +                * or pci_bus_size_and_assign_resources().
+>                  */
+>                 if (pci_has_flag(PCI_PROBE_ONLY)) {
+>                         pci_bus_claim_resources(bus);
+>                 } else {
+>                         struct pci_bus *child;
+>
+> -                       pci_bus_size_bridges(bus);
+> -                       pci_bus_assign_resources(bus);
+> +                       pci_bus_size_and_assign_resources(bus);
+>
+>                         list_for_each_entry(child, &bus->children, node)
+>                                 pcie_bus_configure_settings(child);
+> diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
+> index 5afb207ccc51..dd21c77c43a6 100644
+> --- a/arch/m68k/coldfire/pci.c
+> +++ b/arch/m68k/coldfire/pci.c
+> @@ -250,8 +250,7 @@ static int __init mcf_pci_init(void)
+>         rootbus->resource[0] =3D &mcf_pci_io;
+>         rootbus->resource[1] =3D &mcf_pci_mem;
+>
+> -       pci_bus_size_bridges(rootbus);
+> -       pci_bus_assign_resources(rootbus);
+> +       pci_bus_size_and_assign_resources(rootbus);
+>         pci_bus_add_devices(rootbus);
+>         return 0;
+>  }
+> diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
+> index dae6dafdd6e0..ec0e42d9a895 100644
+> --- a/arch/mips/pci/pci-legacy.c
+> +++ b/arch/mips/pci/pci-legacy.c
+> @@ -129,15 +129,14 @@ static void pcibios_scanbus(struct pci_controller *=
+hose)
+>         /*
+>          * We insert PCI resources into the iomem_resource and
+>          * ioport_resource trees in either pci_bus_claim_resources()
+> -        * or pci_bus_assign_resources().
+> +        * or pci_bus_size_and_assign_resources().
+>          */
+>         if (pci_has_flag(PCI_PROBE_ONLY)) {
+>                 pci_bus_claim_resources(bus);
+>         } else {
+>                 struct pci_bus *child;
+>
+> -               pci_bus_size_bridges(bus);
+> -               pci_bus_assign_resources(bus);
+> +               pci_bus_size_and_assign_resources(bus);
+>                 list_for_each_entry(child, &bus->children, node)
+>                         pcie_bus_configure_settings(child);
+>         }
+> diff --git a/arch/sh/drivers/pci/pci.c b/arch/sh/drivers/pci/pci.c
+> index 878a27a1acfb..c91ca8f4cb1c 100644
+> --- a/arch/sh/drivers/pci/pci.c
+> +++ b/arch/sh/drivers/pci/pci.c
+> @@ -81,8 +81,7 @@ static void pcibios_scanbus(struct pci_channel *hose)
+>                 need_domain_info =3D 1;
+>         }
+>
+> -       pci_bus_size_bridges(hose->bus);
+> -       pci_bus_assign_resources(hose->bus);
+> +       pci_bus_size_and_assign_resources(hose->bus);
+>         pci_bus_add_devices(hose->bus);
+>  }
+>
+> diff --git a/drivers/parisc/lba_pci.c b/drivers/parisc/lba_pci.c
+> index 5197a3c93c70..39ab93ba458b 100644
+> --- a/drivers/parisc/lba_pci.c
+> +++ b/drivers/parisc/lba_pci.c
+> @@ -1639,11 +1639,8 @@ lba_driver_probe(struct parisc_device *dev)
+>         if (is_pdc_pat()) {
+>                 /* assign resources to un-initialized devices */
+>
+> -               DBG_PAT("LBA pci_bus_size_bridges()\n");
+> -               pci_bus_size_bridges(lba_bus);
+> -
+> -               DBG_PAT("LBA pci_bus_assign_resources()\n");
+> -               pci_bus_assign_resources(lba_bus);
+> +               DBG_PAT("LBA pci_bus_size_and_assign_resources()\n");
+> +               pci_bus_size_and_assign_resources(lba_bus);
+>
+>  #ifdef DEBUG_LBA_PAT
+>                 DBG_PAT("\nLBA PIOP resource tree\n");
+> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acp=
+iphp_glue.c
+> index 78e3effbb32d..632344f34cae 100644
+> --- a/drivers/pci/hotplug/acpiphp_glue.c
+> +++ b/drivers/pci/hotplug/acpiphp_glue.c
+> @@ -465,8 +465,7 @@ static void acpiphp_native_scan_bridge(struct pci_dev=
+ *bridge)
+>                 max =3D pci_scan_bridge(bus, dev, max, 1);
+>                 if (dev->subordinate) {
+>                         pcibios_resource_survey_bus(dev->subordinate);
+> -                       pci_bus_size_bridges(dev->subordinate);
+> -                       pci_bus_assign_resources(dev->subordinate);
+> +                       pci_bus_size_and_assign_resources(dev->subordinat=
+e);
+>                 }
+>         }
+>  }
+> diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
+> index ed16ef7c26fa..29ec9ba59d92 100644
+> --- a/drivers/pci/setup-bus.c
+> +++ b/drivers/pci/setup-bus.c
+> @@ -2492,3 +2492,10 @@ void pci_assign_unassigned_bus_resources(struct pc=
+i_bus *bus)
+>         __pci_bus_assign_resources(bus, &add_list, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(pci_assign_unassigned_bus_resources);
+> +
+> +void pci_bus_size_and_assign_resources(struct pci_bus *bus)
+> +{
+> +       pci_bus_size_bridges(bus);
+> +       __pci_bus_assign_resources(bus, NULL, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(pci_bus_size_and_assign_resources);
+> diff --git a/drivers/pcmcia/cardbus.c b/drivers/pcmcia/cardbus.c
+> index 5e5cf2c3e2c8..19df3f9228a7 100644
+> --- a/drivers/pcmcia/cardbus.c
+> +++ b/drivers/pcmcia/cardbus.c
+> @@ -81,8 +81,7 @@ int __ref cb_alloc(struct pcmcia_socket *s)
+>         /*
+>          * Size all resources below the CardBus controller.
+>          */
+> -       pci_bus_size_bridges(bus);
+> -       pci_bus_assign_resources(bus);
+> +       pci_bus_size_and_assign_resources(bus);
+>         cardbus_config_irq_and_cls(bus, s->pci_irq);
+>
+>         /* socket specific tune function */
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index aa3765a20a96..d89aeb7c9ff7 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1569,6 +1569,7 @@ resource_size_t pcibios_retrieve_fw_addr(struct pci=
+_dev *dev, int idx);
+>  void pci_bus_assign_resources(const struct pci_bus *bus);
+>  void pci_bus_claim_resources(struct pci_bus *bus);
+>  void pci_bus_size_bridges(struct pci_bus *bus);
+> +void pci_bus_size_and_assign_resources(struct pci_bus *bus);
+>  int pci_claim_resource(struct pci_dev *, int);
+>  int pci_claim_bridge_resource(struct pci_dev *bridge, int i);
+>  void pci_assign_unassigned_resources(void);
+> --
+> 2.47.3
+>
