@@ -1,95 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=103.168.172.153
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795193007;
-	b=eGJrrPCUbxbukV+/AjL1JR+draWKLdhIZU9FmzChHA6xs2twHYkCSa/bCIaVHmnXL6Hh
-	 yw0fjEYby+sbRaGBTMs+EJttUqcrzwil5JaelOU+RRguxp67/rfqeE5zrK4erF5XrsOm0
-	 17Q1GCPmSLaIHkNisuag5GY/jbulI4k0Yw1x8venoo8Lq+7vXpnyCy4nATfkBnjsXAAYF
-	 MmUV5spJs41/1UjvkQfQFE4WDss/I0Xr8yXl0n3kr/RgwNUA63lE6kxroz4hEg9l/hNhM
-	 d2HNf0y1suRS0cKEgJnANc9l3bu+trB58IGrSAnTaJpkP0Cd90qI3mNw6zTOmt6beuw==
+	t=1795255014;
+	b=4LdeTs8cmu1dd+eqnMIL3ih+cLpMqngoVRyF0CErIqBRM9bOyizHyHYXIIkpEgFRQfUQ
+	 PBRNRy9ebLtUegXOKSdy5F1FKCpvDNmfyJFbyhC8Q8AsoL7hb7OwSVmDw5mfvy8/AfBEe
+	 vdMvq9UGiRZIqrwpDLq7nge/1Miog7A1nNYIQXn+1vSnIqjN0jdX+tbsmNwKIjhULsooM
+	 UChmWB+sq/vtq1urgQpi4NK2p5ykuDh6P20LYJfCxatzQySeMK+nLBG1uFr22NspqJqZe
+	 G3mhyeo7P2VgoS/Oo6MuqJ95lYDqT/9lUktct1soIRCIn7e22Sc/g8S/4J3MmAdr97g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795193007;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=EBkiqUUdh/y0Dl1qxnhAaecylqgVBg7HXrokp1VAnJY=;
-	b=q+F+kocAWeImLJysePxAF0cYeYm4BRfMoyF6tkl5L2sCsVIWgmXAJYtKWBibEjYLqAjP
-	 tujXjP7t6bZIfcporE6CRZRzIoiQIEcInztfyoHASQA1rG0Smr+SHHsrOvWqfllS3Bl6p
-	 WuFV2eB+ndL+rhC4z2zJEclmeCA47dJC0FQSVOkcDs/EaKY+qLEUt/S/bSeq1mKk7jpgV
-	 a1OmQBd1ASw2uI79NUFNgtUWHNAn59Aiigd+q110mYNHufYj+MTAD2o+aRPhtkHQ+moki
-	 uJVdGgwsmXIxqhQZBBrMMKGowf5aVkYIl5HpdP6y3gS552BNDq2etx6LcP3JQvZo6ag==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795255014;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:X-ME-Sender:
+	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:Date:
+	 From:To:cc:Subject:In-Reply-To:Message-ID:References:MIME-Version:
+	 Content-Type;
+	bh=u9tsFDPxYmUVPDyHv2cJaPACOxPRNY4LUQNXciLBaiM=;
+	b=CWaWgzIgCsnaBK/4QoUXwZqxE8SJ4Ztt+S2NoEfGKS9tc6KBsuOONy/S7bARj8xudBkq
+	 rl6rDKMclwifKXziPCOJlt1l9Ix0ejAQJowxBBSs0zWiAy5scyFnsFvdq+Vtf6UowPrjf
+	 M7bl2S6jC5DBEeSTr1O1n1Pyd6JMSxdYY0FCvLD33KBHM3+4kchfyjF0Fg7XM4sjEinOj
+	 tMKxtZdG1M93jSJGVCSHiInKFt9cHIUKEteNRN/Q/pu1AwhNcI94nbqM87RE6Mo6r9ZqI
+	 6MqtVB5iCfM2AdiiJepjPo5hQ6FQznOLQINvWz7CZDze6FumNIkeQUaXAPGvDIjmRrw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=cLvJq3i6;
-	arc=none smtp.remote-ip=209.85.128.49
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=fail header.from=linux-m68k.org;
+	spf=none smtp.mailfrom=linux-m68k.org;
+	dkim=pass header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=Du9v7uSL;
+	arc=none smtp.remote-ip=103.168.172.153
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B434606A32C
-	for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 16:43:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7B434606A32C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41A3606A320
+	for <linux-m68k@lists.linux-m68k.org>; Sat, 21 Nov 2026 09:56:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A41A3606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=cLvJq3i6
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4a140e7405dso10315685e9.3
-        for <linux-m68k@lists.linux-m68k.org>; Fri, 20 Nov 2026 08:43:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795193004; x=1795797804; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=EBkiqUUdh/y0Dl1qxnhAaecylqgVBg7HXrokp1VAnJY=;
-        b=cLvJq3i6CRZdkAK2lOnv9nn/HIlXo/NeynktScEfZtLyZIWhIGu3j1+Bx3zAUf0FJC
-         8SqJgE9bmcMwDJUHKxB2v0LK+V2GMeiCb/8Fsb4vwFz9h5/TjlwyobNm0gMC5QzgcExc
-         mfctDFcPTZpUXUUMXHYxgKio6x24jAolzhh/qvczvBbb88CW79di9hIzAp1Hupaf0Vl3
-         RiZ3jSI1jqsxLgYaMLBfAGGS+c54HSHfj9zjcGFszKjgjSWp4kE/jqMVq12cwssYhWB3
-         Zj4BQK9pzlfYkQO79wN7fq1GNWsUqbbmmRTTAinUNrAlDeMVQ1HmeH5Xx/ZU/dxoheDo
-         Ftmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795193004; x=1795797804;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=EBkiqUUdh/y0Dl1qxnhAaecylqgVBg7HXrokp1VAnJY=;
-        b=PFvqJdwFmsCytSSZ4mfT6WzvBA01mwQOrQtbjvvlZYVLMwtZynFv0zZntQFVlUwoTy
-         o4No6bXhxVKzuTMtHuYsG5l8WXv0QrPKyfxkfTVMdqzRc3DNGUseItjmIA+grgn+xLwZ
-         FbGWzwR58wGBv2gcILFWU1jH5nxpBHCgc+Q9EmJi5Uyb62vAHaZMgfbbkc5uvVqEJ6Nm
-         2+HkYtjE3VffiocBUnUP3RDKoE6y97mURqSkbZX2BfY2APkW0hKOzVoI8W7YbFRg6C5e
-         6/+mbE47rDT3mILaQIBtNzCrumHgM9oDl440nnz3SqllM1De9bdHBhlGyTFL2mKl+2Mo
-         QnOA==
-X-Forwarded-Encrypted: i=1; AL+hErFAnScAH3EunqTHnlpvwAmsF7AoWaeDBtE7IccAL6I8wN+PjsJSTVCW1lP5FEmB44YpFd6XkZzW4nTX@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z97wRdEJNjIvo2alIqMDqYsVA+Q/tILebZvF/4n1asHMLWaCl8G
-	0GDmindm4tifQsNWQsHkEhFWFSZqCUsQXB/xlzrRD/rm2P6bWtOfkU2z
-X-Gm-Gg: AYBFou2+fzY6gS5uVKxdP2meA0w7b4YdS2jNecbtU5U+PZ9rO8odc7b1fRZNL0GPLc5
-	VnRy9MgqfMFhz1Jz6Vs+8d8tVA/8ya5n6D6mv9/VRx2q658yHoJAcWLpk5uaDrbBZNzcq+bqod2
-	wc7iQz6qDgZBgXNLu0TGbBkUMTNp9TRRDLKZyIMoeQbqFEmKjMAjmf7+cg4yQETfEX/H2ZoN5tI
-	clsEOFnqBEa2aOifnxmXHWcgGYDk/vxBzCIKTsWh2xzcVE93KOAjQXUBEp2mGE4VZ7uduGpva3g
-	IylQomwtyH2tAcW2RT3EgCbDrk2pPrAcllNvkA7jkoMnRSXyEQYW4XrnJJzskI6UGptibbl2ope
-	mxzAd1g/DYN+QHKNfBnui9ysf40Kl9hBUp/wiCiMrdfusAHTBtZSZ1gTmPtNtdQ7A5LzCpBsW+a
-	5FJPLuYHWdox/rBX75zM1qSZWhM7hojgxA5p+KTwWUpvAhulEU4uQ3z2xk49Ethhn242xtbqli7
-	qTTgN40S4kw7H2qnToGjHUTxhEyZ1OJF5KCVBRjtcBnpjTI54rJ8FR5i+xKxu3AE3d+RtQek3P0
-	HnsXo37OnDJiYdBWRk0Hp621L9uW+bRIsRoIL/BxVWK8ue4iyd96rX+o8TcJwQ0ASoeJOFctZ0y
-	Ef89q3dc=
-X-Received: by 2002:a05:600c:530e:b0:4b2:2ec5:8a2b with SMTP id 5b1f17b1804b1-4bb887fe8f1mr85315575e9.10.1795193003759;
-        Fri, 20 Nov 2026 08:43:23 -0800 (PST)
-Received: from beelink0 (host86-181-68-246.range86-181.btcentralplus.com. [86.181.68.246])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb884a15absm86679555e9.9.2026.11.20.08.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2026 08:43:23 -0800 (PST)
-From: Graeme Harker <graeme.harker@gmail.com>
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: geert@linux-m68k.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: delay: Fix rounding of short udelay() and ndelay()
-Date: Fri, 20 Nov 2026 16:43:22 +0000
-Message-ID: <20261120164322.1034075-1-graeme.harker@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <5783b448-b34a-58a5-0bc0-98b1a806f182@linux-m68k.org>
-References: <5783b448-b34a-58a5-0bc0-98b1a806f182@linux-m68k.org>
+	dkim=pass (2048-bit key, unprotected) header.d=messagingengine.com header.i=@messagingengine.com header.a=rsa-sha256 header.s=fm3 header.b=Du9v7uSL
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 92A0714003BA;
+	Sat, 21 Nov 2026 04:56:52 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-10.internal (MEProxy); Sat, 21 Nov 2026 04:56:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1795255012; x=1795341412; bh=u9tsFDPxYmUVPDyHv2cJaPACOxPRNY4LUQN
+	XciLBaiM=; b=Du9v7uSLjVRDtjReFbzqveaidXjfL2Ud5a13Ykfr9WtupLLdfM7
+	HmlOaE3dcplgZ0Cqpub4d734GKaqfyjC+QYVZOLzOwjqiETLLVtosRbaJ+j+ysb9
+	HbiA4/2fRrR2iazO3/sGfAwYx29kWMW0ZjSKJ6Am/weAa8CpGCGHHkSv+ZlU6UiE
+	gk/psyoCl0BbBB+bFO7cHp5UDTTfszpDW6uVSMPpb1/JVe/b2FwteggNhXbP8icC
+	o3SLvwkhy26/9DQDJl8eLzshovFIn8sNtanltT+k7ou2iPOrNOcifuUfBRMc+gL/
+	0UmSRluXnxTb9mrX6knO23XEqHhxPElv2qw==
+X-ME-Sender: <xms:5GoBayRvCICMIsZid4PaFzXZm-mVngBxgRJUDKBryfk2Y12-aQIjdw>
+    <xme:5GoBa1m4wZ0xULH3f2kU7I_BNYwFFk5_ZR1T9wmmiMS7LoUVmHAfexbEIc5hN1zWp
+    mM3KnHLcJP-HUOr9yaf3gW2tB9bJeCnFRGNmYaqzakWV6dviZLE98zd>
+X-ME-Received: <xmr:5GoBa6SpaAQfkopQBjI51sfsjWyn0PG0dcg5xArPkxvpMfmyKLEudpQItXp-_p690H02BsTbzZ_wpGFE1rFvN2v3t47_y5T_Qd8>
+X-ME-Proxy-Cause: dmFkZTEtuqN4aEX2fWu0pFKG1gRgAbhoGxyUReBIRrdnFNp+JbGDGFdf/qtyE2MJLSuDpa
+    q6XS8AdEoRoC1m2DLzQ4ZOtlR0e4El4sbHrd7Vjd9wk7yNYLrGMDK4cez2CxyD2TKFV9F2
+    mVi9UpO+u6TnXNiQIXZDJHUzMXHikivct9ltn5z2S/EQwyTsOYymc7TxXzS6iuWa41aged
+    rCN743BK8rq7fmUZbm9EnR5MMgQBQOwMriOrL9yfo6VyRuHmTTU6LMzuJJa4SX/Kr4zONe
+    v8Rb0Na2bvJ6R6ijXYzhsGRzFq1IBh+TxwVjlvDJq+N0w48qUtWatv+D4uqLBrejzj3GXy
+    eRc3r95SlQ+zSAJHByZGuuM4SnnCbf9mkZGeZBC83O+Goy1pY3/Bnm10JhOp0lCZ3NfQOL
+    WQxn1uzECo4Zb60oxtXKBcvKcsuHDRUqcA7+RWPpHl7Zx3ZFAegiAxO55+Dxxt74li4d3B
+    9kIdGVtPton7OtVNuooPlp5V2UeH/BUTjQYTKhjlQcFmsl6k+oqACGLyiGpBYkeM0YOXU6
+    YG/wd+Gh/cu3JZjQT+ojDIydhtvYPy+4GOM+GBIKnP4aWk1bOGztaCwTId1mRdUZpCxq6D
+    pWXhf/huicEP67iKELxQZYSgqJTN0eS0cvWhksQm+GH9iZdEjzT9AjpJcsHQ
+X-ME-Proxy: <xmx:5GoBa7Pgv9IGrMFNFEHq_6p8osKGV5XKmIM6y8RMX7DUINALtvpahg>
+    <xmx:5GoBa7WRggairNDxFfpcFooNvOGiOYd70j-OZ45Megc847DJi0WjaQ>
+    <xmx:5GoBa6eOiXjgExTe-f357N77chMQ3B1f0plY_xpc-rXO0sVZmb6ZtA>
+    <xmx:5GoBa_tZwt_EPCZwlpZIGdT3ebAdOGKVVms6ooGbUhWjur6SknFguw>
+    <xmx:5GoBawADN0TXqa57I6_bnPqgPwQ7pJQG-QrxbzQ0hheIeFMVGyZujD09>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 21 Nov 2026 04:56:50 -0500 (EST)
+Date: Sat, 21 Nov 2026 20:56:42 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Graeme Harker <graeme.harker@gmail.com>
+cc: geert@linux-m68k.org, linux-m68k@lists.linux-m68k.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: delay: Fix rounding of short udelay() and
+ ndelay()
+In-Reply-To: <20261120164322.1034075-1-graeme.harker@gmail.com>
+Message-ID: <31cf41a9-a2c2-6ae6-b12e-50e54875d0d1@linux-m68k.org>
+References: <5783b448-b34a-58a5-0bc0-98b1a806f182@linux-m68k.org> <20261120164322.1034075-1-graeme.harker@gmail.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -99,48 +92,180 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 
-Hi Finn,
 
-Thanks for running it again, and with both interrupt settings.
+On Fri, 20 Nov 2026, Graeme Harker wrote:
 
-> test_ndelay(40)	 191E-09 -> 17.0E-09
+> > test_ndelay(40)	 191E-09 -> 17.0E-09
+> 
+> I think this one has wrapped the timer as well. 400000 calls only fit in 
+> T2's 83.7 ms if each takes less than 209 ns, and 17 ns is less than one 
+> clock on the LC040. With one wrap it would be 226 ns, which is longer 
+> than before, as ndelay(400) now is. 40000 calls should show it.
+> 
 
-I think this one has wrapped the timer as well. 400000 calls only fit
-in T2's 83.7 ms if each takes less than 209 ns, and 17 ns is less than
-one clock on the LC040. With one wrap it would be 226 ns, which is
-longer than before, as ndelay(400) now is. 40000 calls should show it.
+Well, the problem with 40 ns x 40000 calls (or 1.6 ms) is that such a 
+short interval will usually encounter no tick interrupt, and the 
+measurement would be erratic (if interrupts were enabled).
 
-> test_ndelay(40000) 38.7E-06 -> 46.5E-06
-> test_ndelay(400000) 366E-06 -> 456E-06
+The measurements below were made with interrupts disabled so add 4% if you 
+want to account for the tick interrupt.
 
-These show a real problem with the patch: long ndelay()s now run about
-15% long. The 5 I took from x86 is 2^32 / 10^9 rounded up, but
-2^32 / 10^9 is 4.295, so every ndelay() asks for 16.4% more loops than
-it should. Combined with your udelay(1000) of 979 us (2% short), that
-predicts 453 us for ndelay(400000), and you measured 456 us. The old
-code was short instead, from rounding loops_per_jiffy down to a
-multiple of 2048.
+test_udelay(10)	    10.8E-06  ->  11.8E-06
+test_udelay(20)	    19.7E-06  ->  21.5E-06
+test_udelay(40)	    37.8E-06  ->  41.1E-06
+test_udelay(100)    92.3E-06  ->  99.7E-06
+test_udelay(200)     192E-06  ->   198E-06
+test_udelay(400)     392E-06  ->   393E-06
+test_udelay(1000)    973E-06  ->   980E-06
 
-I can't explain the old ndelay(4000) of 6.03 us without knowing
-loops_per_jiffy. What does your machine calibrate to?
+test_ndelay(20)	     401E-09  ->   612E-09
+test_ndelay(40)	     401E-09  ->  1.06E-06
+test_ndelay(100)    2.49E-06  ->  1.17E-06
+test_ndelay(200)    2.55E-06  ->  1.22E-06
+test_ndelay(400)    2.75E-06  ->  1.50E-06
+test_ndelay(1000)   3.30E-06  ->  2.14E-06
+test_ndelay(2000)   4.24E-06  ->  3.33E-06
+test_ndelay(4000)   6.07E-06  ->  5.63E-06
+test_ndelay(10000)  11.6E-06  ->  12.5E-06
+test_ndelay(20000)  20.8E-06  ->  23.9E-06
+test_ndelay(40000)  39.2E-06  ->  46.9E-06
 
-I can see three ways to go, and I'd like to know which you and Geert
-would prefer:
+> > test_ndelay(40000) 38.7E-06 -> 46.5E-06
+> > test_ndelay(400000) 366E-06 -> 456E-06
+> 
+> These show a real problem with the patch: long ndelay()s now run about 
+> 15% long.
+> 
+> The 5 I took from x86 is 2^32 / 10^9 rounded up, but 2^32 / 10^9 is 
+> 4.295, so every ndelay() asks for 16.4% more loops than it should. 
+> Combined with your udelay(1000) of 979 us (2% short), that predicts 453 
+> us for ndelay(400000), and you measured 456 us. The old code was short 
+> instead, from rounding loops_per_jiffy down to a multiple of 2048.
+> 
+> I can't explain the old ndelay(4000) of 6.03 us without knowing 
+> loops_per_jiffy. What does your machine calibrate to?
+> 
 
-1. Keep 5, as x86 does. Delays are never short, but up to 16% long.
+It logs "Calibrating delay loop... 21.55 BogoMIPS lpj=107776)".
 
-2. Use a closer constant, e.g. __xdelay(nsec * 4 + ((nsec * 1209) >> 12)),
-   which is 4.29517, within 0.005% of 2^32 / 10^9 and still never
-   short. It costs another multiply and a shift on every call, and the
-   second term overflows for delays above 3.5 ms, which ndelay() should
-   not be asked for anyway.
+> I can see three ways to go, and I'd like to know which you and Geert 
+> would prefer:
+> 
+> 1. Keep 5, as x86 does. Delays are never short, but up to 16% long.
+> 
+> 2. Use a closer constant, e.g. __xdelay(nsec * 4 + ((nsec * 1209) >> 
+>    12)), which is 4.29517, within 0.005% of 2^32 / 10^9 and still never 
+>    short. It costs another multiply and a shift on every call, and the 
+>    second term overflows for delays above 3.5 ms, which ndelay() should 
+>    not be asked for anyway.
+> 
+> 3. Leave ndelay() as it is and fix only udelay().
+> 
+> Option 2 seems the most accurate, but ndelay() is mostly used for short 
+> delays, and for those the call overhead you measured matters more than 
+> the constant.
+> 
 
-3. Leave ndelay() as it is and fix only udelay().
+I note that the API documentation warns callers that "ndelay(), udelay() 
+and mdelay() may return early for several reasons". So I think I'll defer 
+to the arch maintainers on this one.
 
-Option 2 seems the most accurate, but ndelay() is mostly used for short
-delays, and for those the call overhead you measured matters more than
-the constant.
+---
 
-Graeme
+diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
+index b745cf20a71f..9e3547698619 100644
+--- a/arch/m68k/mac/config.c
++++ b/arch/m68k/mac/config.c
+@@ -65,6 +65,90 @@ static void __init mac_sched_init(void)
+ 	via_init_clock();
+ }
+ 
++#define GET_VIA1_TIMER2() \
++({ \
++	unsigned long flags; \
++	local_irq_save(flags); \
++	u8 high = via1[vT2CH]; \
++	u8 low = via1[vT2CL]; \
++	torn = via1[vT2CH] != high; \
++	local_irq_restore(flags); \
++	1 + low + (high << 8); \
++})
++
++#define DELAY_LOOP(n, arg) \
++do { \
++	int d, i, I = n / 40; \
++	u16 t1, t2; \
++	bool torn; \
++	do { t1 = GET_VIA1_TIMER2(); } while (torn); \
++	for (i = 0; i < I; ++i) { \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++		arg; arg; arg; arg; arg; arg; arg; arg; arg; arg; \
++	} \
++	t2 = GET_VIA1_TIMER2(); \
++	d = t1 - t2; \
++	if (d < 0) d += 0x10000; \
++	if (torn) pr_info("torn\n"); \
++	else pr_info("%10d, %20s, %10d\n", I * 40 , #arg, d); \
++} while (0)
++
++static inline void test_udelay(unsigned long t)
++{
++	volatile unsigned long vt = t;
++
++	udelay(vt);
++}
++
++static inline void test_ndelay(unsigned long t)
++{
++	volatile unsigned long vt = t;
++
++	ndelay(vt);
++}
++
++static void measure_delays(void)
++{
++	// Given ECLK is 783360 Hz, the 16 bit counter can measure up to 80 ms.
++	// Loops of 40ms of udelay() calls:
++	DELAY_LOOP(4000, test_udelay(10));
++	DELAY_LOOP(2000, test_udelay(20));
++	DELAY_LOOP(1000, test_udelay(40));
++	DELAY_LOOP( 400, test_udelay(100));
++	DELAY_LOOP( 200, test_udelay(200));
++	DELAY_LOOP( 100, test_udelay(400));
++	DELAY_LOOP(  40, test_udelay(1000));
++	// Loops of 1.6ms of ndelay() calls:
++	DELAY_LOOP(80000, test_ndelay(20));
++	DELAY_LOOP(40000, test_ndelay(40));
++	DELAY_LOOP(16000, test_ndelay(100));
++	DELAY_LOOP( 8000, test_ndelay(200));
++	DELAY_LOOP( 4000, test_ndelay(400));
++	DELAY_LOOP( 1600, test_ndelay(1000));
++	DELAY_LOOP(  800, test_ndelay(2000));
++	DELAY_LOOP(  400, test_ndelay(4000));
++	DELAY_LOOP(  160, test_ndelay(10000));
++	DELAY_LOOP(   80, test_ndelay(20000));
++	DELAY_LOOP(   40, test_ndelay(40000));
++}
++
++static int __init measure_delays_init(void)
++{
++	unsigned long flags;
++
++	via1[vACR] &= ~0x20; // free running T2 with no port B output
++
++	local_irq_save(flags);
++	measure_delays();
++	local_irq_restore(flags);
++
++	return 0;
++}
++
++subsys_initcall(measure_delays_init);
++
+ /*
+  * Parse a Macintosh-specific record in the bootinfo
+  */
