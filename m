@@ -1,76 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.2
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795422078;
-	b=jRJDwfeFort/PsmyNPRgw75FYjPF1xe2usefrJ9V6iWNVPM96PmFXj9Ooi8B5vcanx4H
-	 NLRftmgvxteJOKi3a+CRU+5KGN3w1MBa6FOKG8uwOKfs8jVXFmg1rxIevnrbZH5AE5M0o
-	 dfPCpyXDRqhAhuoXPPPENaW7DzvHsLnVxaLsvuCX5NiNKaz7ygq8Am5sWXomVqUwpOxpp
-	 kSfTNBP481bphCUSB3RQQ8/K1QKMiNfF2Xpzbasu7HW/WcvXVaV50PCZL51jjBZKZNwDg
-	 55GIeN+enCLSezgee0AMxppuWeWnGbISDbx97tDeybii2kdYTs33PDp/Tn2dpqUYKxQ==
+	t=1795429435;
+	b=mAI5HVXMOIQPNYqYeSbH/5kYIYzoFLUMLTxojU3kTrQbuDNWND6zRVqJoaG+/GUKIIW1
+	 sMa7WNdB80F5WlNOPBC5mJ3Hai0GSuhrJRSj3cVmhQsqBCEYFqyt83aXv9lJyxvR9q9Zs
+	 JOBZTvx1ZgWt7c0FP70DkKAbwuvdkMZDch14VeQt8P5Aqhq3qmFh7Bf1U183tIsAWiMGU
+	 4dK4a67hp3b+c2bR+oSkyQATbg+nBizdKvr2TjubrzNgeMuIa4HzFxM+BO2Jkdpw26QSp
+	 qhcxrO3SeUc8TQwtgSBRVrpwEe8lul10Bpsjlpjw5WAWT+NvSLpIE1D0BxMYP4geM7Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795422078;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=urV9PEPwEvrHK4qayGYwaVV8yhJ/QEoLReqAK4fiRYQ=;
-	b=oG9/o7ZKlxAo26HDMwLjQWgWnbtGm+GdBwytH25Jd92Z2E8FcYeLljrV2MhCTKPaWNUt
-	 QGadgEU8gKNBq2Wou3YGI+P4/cVIS6pHu8xdw3Grp/Xs3QbRP2kmCl2w1m3Wc0qghDVL1
-	 XRMvok5FuIeqD64QYF/m71H1laIPSYts9v3O0xAcSTAgsO5x0ThiAY9dBGpvjbUch7dSE
-	 M4qwDH7FUnXB24jcEb15mpgu5FCvbLsEg8ACU5pr5dfXk5hPhrIvs0NzyIdjGWOCxyxG3
-	 sMHBBJZOGS/mQ4UXUj0id2vTTeoa7ovGWKTouBopYuZVRczmzhnJ0fx3zXTJWAB0/wA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795429435;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
+	bh=xgdl5iT4rjRql/T0yly1xc7NN6NRkZoCr5drGDPOf9I=;
+	b=1NkRIx1aBTQiuU0Ur/m/N7v5tWLZ7h7CKQKOPy6Ck9xectGK8pqAiyn90Ug9WVvYk/HO
+	 KcaLdJx2noRLqWTwyeh1qwpPsdbsvQNE0BhlQcdtJa1FsZT6nUlFLhM3R3dfDKTQbXhB2
+	 LklZVotnhNxhNsuUgtitfK/8/rMDjj+sygRcctAoEhmdA4VNzsLNhdBUXqNdOq5ZkrQ1k
+	 FYNVXfeX8Z1md+BqsPfGlL+pOQyxviEmkRnhohcSO2KfSLDXAuvoUUsIVvu9HX5CFheWl
+	 8yM5QXdL4x4J1adeDiSWpwNTCb2f5n2t5JBpfhfHRgBCLOI9HTiGe/ZYmASY2X+kWDA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=fail header.from=linux-m68k.org;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.222.47
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=163.com;
+	spf=pass smtp.mailfrom=163.com;
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=No13YbAe;
+	arc=none smtp.remote-ip=117.135.210.2
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EA3606A32C
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2026 08:21:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 40EA3606A32C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-98fea7e52b7so1879497241.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2026 00:21:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795422077; x=1796026877;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=urV9PEPwEvrHK4qayGYwaVV8yhJ/QEoLReqAK4fiRYQ=;
-        b=1BoRyF23gPFCgtNt1x2V8ugqCAvKPm3b34RK4kjdbHezFrPwx4qgM5XkPQyt3lj7GZ
-         F34cbcnEoNbinpMkgAxkZyJq3D/g/ADrMyUckdobDi+mmQhEsOyhqAFzUMNeq7UV/a8s
-         hxTLgVCjkcnrw8O6K7IS2KmSd52mB8bqpiaH/IMRdmJgZlX5NVdn2JFZ3Sw0QhYhUAtW
-         JEyuior038/PuaEq8/ymcvOVrHACIp7ulHWNNaacD+OgyCC6w1IFaqXVEXHBv/pfqPpk
-         Nw965TnBdsGvXuE9PoVyr6I1taIB4kNDxHoA0I5kWQ36j7k6Z+xBhN4J561vKu29ZKql
-         c5/Q==
-X-Forwarded-Encrypted: i=1; AL+hErGJv7jm49k3sW43VCmRNcqbuwdK9vT52tbI5lnLb28pZO4yLGvD4WtNRzFgDvczP95C7Rrm3+xXpKlu@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z9dChqKnlJu6Lkt+9o2L7YBiu2qK30X/7E6/MHFwXMLUIShZehH
-	vYdJ+PuJ3Ig8IHTJ1R7sfB3ZiyV0Svoml3Cfo6hRjIokrpM5xPbJ+BWn6RLdxaqe
-X-Gm-Gg: AZFdTZe6cr5Ux22T7qwTNEczYWFMgg1cmZkGdCf/1USAHeGYr109v+o0J/WB9gFi4W3
-	dqtiwGSJKEQBaoOhvbLV4tqs6fFYbbZX2PcGCLl8wz1EHGqqycTAFcMM53fDWhtDwid2PgcuvTH
-	1q4A+rP4na6Ds7Qjh/7hh/MTE8PxkevCsKrJbPC4c4HVh1ks4XSQpe5HTpY5Fcazmcv30yd5bbF
-	n/TuC+9ZfPofBXozNFSoiiYkCRpcZAwIlEK6F4apChR+h+bAhLJl0OLKXXDZh3OV1GuVlMFrrXb
-	QKykVNXKtF7Jr6RDfz0NzOClxAOg6GE8cIFZmakCd2StRJ8eLR1PqKPlds9owZQFq9C+LVbAPJU
-	sc8z+2jXhDX90AR+zs9BlHkBYyhWT4xvV4sgdlE0F6i0Bf4qR+f2zbfIKFaXk67pn5l9cWCBnEg
-	LdCpRhlU0H3ywiWFBoc+rjh845CU3ZYZ0O/Sor8+91/fO/p6HncsOhDmc+7CGNxTsrlnEnJqyuP
-	HBgUqovL3gHCrN5Lz+3w3M4+W7CPG2ePVUlrmwPfW8zFj4iouk35Og7xHgfmW8OR0rS0zKV6vrB
-	EK0RwZ1l/AVbFYNsFe8ARelW+hUlr+dvP/05BmOqI0SDR81/XvX1mSDEA32sO5UnIIQ=
-X-Received: by 2002:a05:6102:160a:b0:7cc:2946:7f80 with SMTP id ada2fe7eead31-7d73960c5a1mr4922139137.35.1795422077080;
-        Mon, 23 Nov 2026 00:21:17 -0800 (PST)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-7d6e7f3d7bcsm11002122137.4.2026.11.23.00.21.15
-        for <linux-m68k@lists.linux-m68k.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2026 00:21:16 -0800 (PST)
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-7d2b25786d9so1657122137.0
-        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2026 00:21:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErG4UauoAQFvMnn0F2RffBEGEVjQKiSB4wIl5CFwIp//EVfR7nIfaw+Hylylj3+Rkm6IeNUS+nlgdO5E@lists.linux-m68k.org
-X-Received: by 2002:a05:6102:84cc:20b0:7d8:869e:8e54 with SMTP id
- ada2fe7eead31-7d8869e8ec4mr1539357137.7.1795422075752; Mon, 23 Nov 2026
- 00:21:15 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F85B606A31F
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2026 10:23:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8F85B606A31F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=No13YbAe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=xg
+	dl5iT4rjRql/T0yly1xc7NN6NRkZoCr5drGDPOf9I=; b=No13YbAePkykBIeV4j
+	oNIJ5IQ4IAcsZHsYRCSBs3YI6c5s7UOQFuC4288LGEBzQCdVQw29lsYZCUE3pH6v
+	gay6TCiP9znrdIArwYwUYOqspXvwElRIU1lhCAlFh+NtH1WY7EpsP0Go34ExNc2I
+	G3Pin2zGSNoRT/NFwl5LU8Uok=
+Received: from user-VMware-Virtual-Platform.localdomain (unknown [])
+	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3n7cYFARrJ4RhJQ--.49247S2;
+	Mon, 23 Nov 2026 18:23:21 +0800 (CST)
+From: Ziheng Wei <zihengw03@163.com>
+To: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+	"Martin K . Petersen" <mkp@kernel.org>
+Cc: linux-scsi@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org,
+	Sashiko <sashiko-bot@kernel.org>,
+	stable@vger.kernel.org
+Subject: [PATCH] scsi: bvme6000: fix request_irq failure cleanup
+Date: Mon, 23 Nov 2026 18:23:20 +0800
+Message-ID: <20261123102320.8590-1-zihengw03@163.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -80,51 +63,44 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261122160447.519889-1-zihengw03@163.com>
-In-Reply-To: <20261122160447.519889-1-zihengw03@163.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 23 Nov 2026 09:21:04 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWxC7LNy3MTNYE62AoWBB6sHm9jKAsYKRjrZ+LfHjArtQ@mail.gmail.com>
-X-Gm-Features: Aa3M54oDJAacN4ZgRznlESFwii2fz_UdwV-FQBJ6wD20kL1ynEn2pjnzqtgO3U0
-Message-ID: <CAMuHMdWxC7LNy3MTNYE62AoWBB6sHm9jKAsYKRjrZ+LfHjArtQ@mail.gmail.com>
-Subject: Re: [PATCH] scsi: 53c700: fix invalid frees in m68k driver remove paths
-To: Ziheng Wei <zihengw03@163.com>
-Cc: "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	"Martin K . Petersen" <mkp@kernel.org>, linux-scsi@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, Kars de Jong <jongk@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3n7cYFARrJ4RhJQ--.49247S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XFW5ArWxKryrAw1fKFy3urg_yoWkXrbE9a
+	n0gw1xXrWkGrn3tr18JrnxZrs0yF45Xr95Zw4YqFZ3Cr13Zwnak3Wkurs5A3yUXw4kJa45
+	Aw1DZan5uw17WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn6wZ3UUUUU==
+X-CM-SenderInfo: p2lkv0ljzqjqqrwthudrp/xtbC7hnmN2sEFBn9vQAA3E
 
-CC Kars
+NCR_700_detect() registers the SCSI host and allocates the script DMA
+memory. If request_irq() fails, bvme6000_probe() only drops the host
+reference, leaving the host registered and the DMA memory allocated.
 
-On Sun, 22 Nov 2026 at 17:05, Ziheng Wei <zihengw03@163.com> wrote:
-> NCR_700_detect() stores the allocated host parameters in
-> host->hostdata[0]. The m68k remove paths instead use shost_priv(host),
-> which returns the address of the pointer slot and causes an interior free.
->
-> Free the pointer stored in host->hostdata[0], as the other 53c700 drivers
-> do.
->
-> Found by LLM-assisted static analysis. Cross-compiled for m68k; no
-> runtime test on the affected hardware.
->
-> Fixes: a16efc1cbf0a ("[SCSI] 53c700: Amiga 4000T NCR53c710 SCSI")
-> Fixes: 8276b58af4dd ("[SCSI] 53c700: m68k BVME6000 NCR53C710 SCSI")
-> Fixes: 506c7bbcd9bc ("[SCSI] 53c700: m68k MVME16x NCR53C710 SCSI")
-> Fixes: 45804fbb00ee ("[SCSI] 53c700: Amiga Zorro NCR53c710 SCSI")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ziheng Wei <zihengw03@163.com>
+Unregister the host and release the NCR_700 resources before dropping the
+reference.
 
-LGTM, so
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Link: https://lore.kernel.org/linux-scsi/sashiko-outbox-228089@kernel.org/
+Fixes: 8276b58af4dd ("[SCSI] 53c700: m68k BVME6000 NCR53C710 SCSI")
+Cc: stable@vger.kernel.org
+Signed-off-by: Ziheng Wei <zihengw03@163.com>
+---
+ drivers/scsi/bvme6000_scsi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Gr{oetje,eeting}s,
+diff --git a/drivers/scsi/bvme6000_scsi.c b/drivers/scsi/bvme6000_scsi.c
+--- a/drivers/scsi/bvme6000_scsi.c
++++ b/drivers/scsi/bvme6000_scsi.c
+@@ -86,6 +86,8 @@ bvme6000_probe(struct platform_device *dev)
+ 	return 0;
+ 
+  out_put_host:
++	scsi_remove_host(host);
++	NCR_700_release(host);
+ 	scsi_host_put(host);
+  out_free:
+ 	kfree(hostdata);
 
-                        Geert
-
+base-commit: 97d73c8251226cf27cc6656b4c542869bb8c69fa
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.43.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
