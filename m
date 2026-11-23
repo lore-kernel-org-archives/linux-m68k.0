@@ -1,59 +1,95 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.2
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.178
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795429435;
-	b=mAI5HVXMOIQPNYqYeSbH/5kYIYzoFLUMLTxojU3kTrQbuDNWND6zRVqJoaG+/GUKIIW1
-	 sMa7WNdB80F5WlNOPBC5mJ3Hai0GSuhrJRSj3cVmhQsqBCEYFqyt83aXv9lJyxvR9q9Zs
-	 JOBZTvx1ZgWt7c0FP70DkKAbwuvdkMZDch14VeQt8P5Aqhq3qmFh7Bf1U183tIsAWiMGU
-	 4dK4a67hp3b+c2bR+oSkyQATbg+nBizdKvr2TjubrzNgeMuIa4HzFxM+BO2Jkdpw26QSp
-	 qhcxrO3SeUc8TQwtgSBRVrpwEe8lul10Bpsjlpjw5WAWT+NvSLpIE1D0BxMYP4geM7Q==
+	t=1795439506;
+	b=14ri4H4Q048Cpiwjxa16kejuTxHbql2OsyRu4E5ea3EcJTsNCAMxXUTNUZnFLwG/trpB
+	 r9ePoAgnBr2i1W8Ayk+PZlru7O2RcXw2oQmld/FOjJ+luXdgacGBvCHRwFwkmVyju73+u
+	 9vIC0aMo5MA8w/RjQc/LLZ143cZ2CqAbkCue2+4VsfAJV3dYXMts3tfh3DraTuRiw4+WG
+	 jv00x8RgzXr3nF7n2nios8Mhzf0Q6JoRwlPhtjCNSCeLJ8Fnoiq1qIVc+95LQi2gWTEDU
+	 LfMNGih20T5Q6VmxoqdaBYsa8rUvMF8bsZBSET05OuqfSJINNlo8y7Rc/Ot998nxPMw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795429435;
-	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
-	bh=xgdl5iT4rjRql/T0yly1xc7NN6NRkZoCr5drGDPOf9I=;
-	b=1NkRIx1aBTQiuU0Ur/m/N7v5tWLZ7h7CKQKOPy6Ck9xectGK8pqAiyn90Ug9WVvYk/HO
-	 KcaLdJx2noRLqWTwyeh1qwpPsdbsvQNE0BhlQcdtJa1FsZT6nUlFLhM3R3dfDKTQbXhB2
-	 LklZVotnhNxhNsuUgtitfK/8/rMDjj+sygRcctAoEhmdA4VNzsLNhdBUXqNdOq5ZkrQ1k
-	 FYNVXfeX8Z1md+BqsPfGlL+pOQyxviEmkRnhohcSO2KfSLDXAuvoUUsIVvu9HX5CFheWl
-	 8yM5QXdL4x4J1adeDiSWpwNTCb2f5n2t5JBpfhfHRgBCLOI9HTiGe/ZYmASY2X+kWDA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795439506;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=EdMsunFDcUtQDGISK9BC5BpmhF0KnQn+rijOh7gG9a8=;
+	b=T4RDvryVS3hAhOZbivR7SeMXDrD4CLIl/fXT+v+4RpEI6mAP2IMpBgPYYFlYEGtp3rpM
+	 KLvfqDEoUvfLH3K5gLyQlfu6gHaJ6u+pA3FcpDitsTaptTbyolOXJl7bjnSPryZGIgsWX
+	 vGYjAGJOiD8Zy+BYMicLqwmuNhu/cFtpdzdiuiTKzgnQJ1LkFFtNfxp/xrYOuGvmFJ/Fh
+	 eGUn167txp12T+mn0S57RdEbJnZpVn2cuLGRrnY497ngeJM3bAAdRkuFMJjrNJHS2+ZcS
+	 c/jOxEQCZS6pXvn1M05fR5S4UgwBoB0HDA+QRYdBgCQ9lrBjosU15r+DsIaaSkxOZaw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=163.com;
-	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=No13YbAe;
-	arc=none smtp.remote-ip=117.135.210.2
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=R4AQDEoQ;
+	arc=none smtp.remote-ip=209.85.214.178
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F85B606A31F
-	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2026 10:23:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8F85B606A31F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9BF2606A32A
+	for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2026 13:11:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B9BF2606A32A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=No13YbAe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=xg
-	dl5iT4rjRql/T0yly1xc7NN6NRkZoCr5drGDPOf9I=; b=No13YbAePkykBIeV4j
-	oNIJ5IQ4IAcsZHsYRCSBs3YI6c5s7UOQFuC4288LGEBzQCdVQw29lsYZCUE3pH6v
-	gay6TCiP9znrdIArwYwUYOqspXvwElRIU1lhCAlFh+NtH1WY7EpsP0Go34ExNc2I
-	G3Pin2zGSNoRT/NFwl5LU8Uok=
-Received: from user-VMware-Virtual-Platform.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3n7cYFARrJ4RhJQ--.49247S2;
-	Mon, 23 Nov 2026 18:23:21 +0800 (CST)
-From: Ziheng Wei <zihengw03@163.com>
-To: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-	"Martin K . Petersen" <mkp@kernel.org>
-Cc: linux-scsi@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org,
-	Sashiko <sashiko-bot@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH] scsi: bvme6000: fix request_irq failure cleanup
-Date: Mon, 23 Nov 2026 18:23:20 +0800
-Message-ID: <20261123102320.8590-1-zihengw03@163.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=R4AQDEoQ
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2f05bc71e01so12254665ad.0
+        for <linux-m68k@lists.linux-m68k.org>; Mon, 23 Nov 2026 05:11:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795439505; x=1796044305; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=EdMsunFDcUtQDGISK9BC5BpmhF0KnQn+rijOh7gG9a8=;
+        b=R4AQDEoQrxaaE/J8C+C8+sAcibq8RuxbOWvGAAbOI1tc5QAeESbd92BAtdP1hXMVMU
+         gfUCVy40Hd32tqokv6A7tue2xfvs1l3Rj0zttbiIiasBYooWY4Btj5hn8SDeuYtMnCmU
+         u+yW71NU4sLnRqbU4f0lpRJYnUaHNKfi/KXHHX13OtDLTjZrtXf94OiXr2TOyOwHlx9e
+         tbzsMCMWOwRQ9To750QvoPZIXVKzYeRR5SNCMnwOTb7aPgldPNcbSINqYLFYl/w/iE/+
+         FdXeZakBzQDx4x/6EF3P6sErkiINuYH7tF1bIk6fzbZPEjAYoal+sIyCKZLYuYLJ/cBk
+         TYgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795439505; x=1796044305;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=EdMsunFDcUtQDGISK9BC5BpmhF0KnQn+rijOh7gG9a8=;
+        b=kcp0f7HFylDLXr0WtzpmXC5lGy2cmI23vr3MvQGTVal3s9rYBYjOI67rwz1YXsgATZ
+         G37XQ7Ry41UYA4DqlHdCR2qwwYCq5bDLE9wGKGTvsQQn9toC19V32wGAkwI/Zdspdl90
+         XWjMIkco72xJdNwd023ofuEMd1gIajRYRPSpiDvbh77V5jz3Eb0fLSFdhw50heCW4Fgr
+         zKIBf+we0KVxBSDPJ6ofGorMkb5R9hUl0oRAJTZXKGkae29vZSKUUbgey+S3kNl33Inm
+         qXvbcGdWNOuQ82g3JR93uaRUKDcP4qqw+sUitNKZAUNpmYLJfG/SeNGQarYk7kqgr3GE
+         bQ1A==
+X-Gm-Message-State: APuU4Z87GAHlPE+xl3EiUhSdcVJU5rZzoEV3VrNX8sOrbENX/Tcu2D6B
+	qfye1eYe36vZ5tO34v28iuYm0JCWV1NQ52/X5ErQBufcBT+rB1tioror
+X-Gm-Gg: AZFdTZdovLqa/Avox1mLdcjG46h+d8a+Pf5hlkoYh9Af9DlCiYb+mvGGW8Flb9wC31o
+	V7Sx24L7WCl1bPSUfG3gU7M4Q4zs1LgttEvBzgSY3iQ3NbGk3L6oouDoV2ohL0DA8gvK/iZZh1Y
+	Y+Cu/e9ElFmEZx4qC6e1rsyZocDpytlElZjn4ILYOBo21Vbw3UOuCuy0Ir0K+lY2FnOj++kcnYE
+	MEnkOui/ItZojIEXnvVOWD7Zo9OGrXeiUwSjcM5TNvNJXp7CV2HN0VmL9/C3PtOC9nSIteaffy9
+	aYYiWRcH8mWkRLx7/w8p9+igg5ybCisPgttukmM0EO4VJlZ6sVTmf+A0kZYD7EgE7WJfvbfaATA
+	VtCDU5BUyUZmoUK2ACdN/uRx8xaHCHDKGoMzxLYfmPtW8Ekmnke+MZonWsfvRCyNZZrCGQXScV8
+	fJ5yqZBVgXzbnWp7s+mlM37hLFV2kzhsicLgXkaa03sXezCrXr5D8nVQ8NwhDnBiBOsM6bbeXbR
+	j7Bx2RD6gtJyZalU+tey2IjdZcjxT24NOFd8D/KE3s7aPak1vRWTiK3/qitXeZjJup6kI+j+SZs
+	PuIE4aUeXaOGiJYNxAbc3aMQaGjlfvebRg==
+X-Received: by 2002:a17:90b:2d8a:b0:3ab:413:49b6 with SMTP id 98e67ed59e1d1-3b41c952eefmr10186812a91.41.1795439504874;
+        Mon, 23 Nov 2026 05:11:44 -0800 (PST)
+Received: from arm-a100.. ([140.112.28.118])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b409330ae8sm20903469a91.7.2026.11.23.05.11.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2026 05:11:44 -0800 (PST)
+From: Tzu-Ching Yang <shingekinocore@gmail.com>
+To: Greg Ungerer <gerg@linux-m68k.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org,
+	Angelo Dureghello <adureghello@baylibre.com>,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: coldfire: Use the builtin fls() and __fls() on ISA_A+ and ISA_C
+Date: Mon, 23 Nov 2026 21:11:01 +0800
+Message-Id: <20261123131101.639643-1-shingekinocore@gmail.com>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -64,43 +100,99 @@ List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3n7cYFARrJ4RhJQ--.49247S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFW5ArWxKryrAw1fKFy3urg_yoWkXrbE9a
-	n0gw1xXrWkGrn3tr18JrnxZrs0yF45Xr95Zw4YqFZ3Cr13Zwnak3Wkurs5A3yUXw4kJa45
-	Aw1DZan5uw17WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUn6wZ3UUUUU==
-X-CM-SenderInfo: p2lkv0ljzqjqqrwthudrp/xtbC7hnmN2sEFBn9vQAA3E
 
-NCR_700_detect() registers the SCSI host and allocates the script DMA
-memory. If request_irq() fails, bvme6000_probe() only drops the host
-reference, leaving the host registered and the DMA memory allocated.
+Let fls() and __fls() use the ff1 instruction on ColdFire ISA_A+ and
+ISA_C cores instead of the generic binary search in C, as __ffs() and
+ffs() already do. GCC emits ff1 for __builtin_clz() on exactly the cores
+for which it defines __mcfisaaplus__ or __mcfisac__, the macros that
+already select the ff1 versions of __ffs() and ffs(), so no new
+condition is needed. Commit a6260ef84103 ("m68knommu: add ffs and __ffs
+plattform which support ISA A+ or ISA C") added the ff1 versions of
+__ffs() and ffs() in 2008 and kept the generic fls(); the generic
+__fls() followed in 2009.
 
-Unregister the host and release the NCR_700 resources before dropping the
-reference.
+Use the asm-generic builtin versions of fls() and __fls() when
+__mcfisaaplus__ or __mcfisac__ is defined, and keep the generic C
+versions for ISA_A, ISA_B and 68000. The bitrev/ff1 asm of __ffs() and
+ffs() stays, as this asm is shorter than the code GCC generates for
+the builtin versions of __ffs() and ffs().
 
-Reported-by: Sashiko <sashiko-bot@kernel.org>
-Link: https://lore.kernel.org/linux-scsi/sashiko-outbox-228089@kernel.org/
-Fixes: 8276b58af4dd ("[SCSI] 53c700: m68k BVME6000 NCR53C710 SCSI")
-Cc: stable@vger.kernel.org
-Signed-off-by: Ziheng Wei <zihengw03@163.com>
+With GCC 12 to 16, fls() shrinks from 28 instructions to 8 or 9 and
+__fls() from 24 to 6. With GCC 8 to 16, the functions of each ISA_A+ or
+ISA_C defconfig kernel shrink in total by at least 8676 and at most
+13266 bytes (scripts/bloat-o-meter -t), depending on the defconfig and
+the compiler. In lib/find_bit.c, only _find_last_bit() changes, from 55
+to 35 instructions for m5208evb with GCC 16.
+
+fls(0) still returns 0, and __fls() still returns unsigned int.
+__fls(0), which is undefined, now returns ~0 instead of 0. For other
+CPUs, the preprocessed source changes only in its line numbers.
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/all/dbb44e92-0bc5-449d-9e43-1f93362aa6c3@app.fastmail.com/
+Signed-off-by: Tzu-Ching Yang <shingekinocore@gmail.com>
 ---
- drivers/scsi/bvme6000_scsi.c | 2 ++
- 1 file changed, 2 insertions(+)
+I have no ColdFire hardware. On QEMU mcf5208evb (ISA_A+), the ffs and
+bitops KUnit tests pass before and after with GCC 8.3 to 16.2. In
+find_bit_benchmark on that machine, with the bitmaps drawn from a fixed
+seed so that the kernels before and after use the same bitmaps, and the
+executed instructions counted by a TCG plugin, find_last_bit goes from
+52.3 to 38.3 instructions per iteration on the random bitmap with GCC
+16, and bitmap_find_next_zero_area_off, which calls find_last_bit(),
+from 3302 to 2864; the tests of the other helpers do not change. The
+ISA_C kernels were only built, as QEMU has no ISA_C machine.
 
-diff --git a/drivers/scsi/bvme6000_scsi.c b/drivers/scsi/bvme6000_scsi.c
---- a/drivers/scsi/bvme6000_scsi.c
-+++ b/drivers/scsi/bvme6000_scsi.c
-@@ -86,6 +86,8 @@ bvme6000_probe(struct platform_device *dev)
- 	return 0;
+Under QEMU user mode, with the kernel's flags for -mcpu=5208, 532x and
+54455 and each GCC at -O2 and -Os, old and new fls(), __fls() and
+fls64() agree on all 2^32 inputs (fls64() in either 32-bit half)
+except the undefined __fls(0).
+
+The seven ISA_A+ and ISA_C defconfigs (m5208evb, m5235evb, m5275evb,
+m5282evb, m5329evb, m54418evb and stmark2) were built with GCC 8.3 to
+16.2 before and after, with the same .config before and after. A W=1
+build of these seven and of twenty other ColdFire and m68k defconfigs,
+each with at least GCC 8.3, 12.5 and 16.2, has no new warning.
+
+The new out-of-line fls() for m5208evb with GCC 16.2:
+
+	movel %sp@(4),%d0
+	tstl %d0
+	beqs 1f
+	movel %d0,%d1
+	ff1 %d1
+	moveq #32,%d0
+	subl %d1,%d0
+1:	rts
+
+Against v7.4-rc1; also applies to the m68knommu and m68k for-next
+branches and to next-20261113.
+
+ arch/m68k/include/asm/bitops.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+index e9639e48c6c3c..81923a9fa4494 100644
+--- a/arch/m68k/include/asm/bitops.h
++++ b/arch/m68k/include/asm/bitops.h
+@@ -506,13 +506,14 @@ static inline __attribute_const__ int ffs(int x)
+ 	return __ffs(x) + 1;
+ }
  
-  out_put_host:
-+	scsi_remove_host(host);
-+	NCR_700_release(host);
- 	scsi_host_put(host);
-  out_free:
- 	kfree(hostdata);
++#include <asm-generic/bitops/builtin-fls.h>
++#include <asm-generic/bitops/builtin-__fls.h>
+ #else
+ #include <asm-generic/bitops/ffs.h>
+ #include <asm-generic/bitops/__ffs.h>
+-#endif
+-
+ #include <asm-generic/bitops/fls.h>
+ #include <asm-generic/bitops/__fls.h>
++#endif
+ 
+ #else
+ 
 
-base-commit: 97d73c8251226cf27cc6656b4c542869bb8c69fa
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
 -- 
-2.43.0
+2.34.1
 
