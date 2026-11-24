@@ -1,97 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.72.102
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795517705;
-	b=nEDrkETEbJS+ZXigc58DYqqafSFcz2wfEjyGd8Vi2sm2zi+KvC3IpFcYpdSjZy76ZG7r
-	 7gfK+VFPwcV9ZiVQ1elvWzkcCEsTQi0lS1XXTNlBVK6aUMGK5R6kOzuedGnrR1U+w0IrL
-	 GkSdccUvxKp3lc/MaqGgwIaldKespcnqXSygh081eOA3Niksr8MjxK2XElgw9k6WhdeJF
-	 +4OsMCMSJhngW4qdSzwfN11qi4PAO7jplNBn4J9CSNP6aUFFQI4qaavF6wGk43nopFGwQ
-	 N9a32r8LTRo9ZsxDgiSrjAedcALcKuyjcjkr5CxK+2TRGUheiJD6iFIjpGzDIzp1r/A==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795517705;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:
-	 X-MS-Exchange-Authentication-Results:Received-SPF:Received:Received:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-Id:
-	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=INt5KuJe5Ta76AN2NV01s5cGe8cgwCgb07Tt435XZmU=;
-	b=ZTOXn2Ciclg/Ggh77MgboJBL8A588JQ8G1IvoVVfPRepoFvgy3t1sdFC88TlNXZP8UTH
-	 s1sUUhbPfyHTGlcSWM68FRG2SWUrYhxYq2ZsDS/ZsoMGxALTLM7lLfuN9ZG3Pp/ZwBbut
-	 S6VF5ez0g8yBAdOCWPf/5sukvy/XBgB/dopR4bwipjNxMne5NehUHvdhZvdN4iCB6dIAC
-	 8Zckwky5ELB67Ac2WmG4Xz4SDT2p+1rPBacAaQPoPzBylzKXOKSUoEbKkOdE+5OLR3lYa
-	 2Ehr8UOjirsGfaZbtX8y0bTifxSJ6A6yxaJxDe7cz4cLuZyG/sVk9Lha4D+k2gtmK6g==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=macq.eu;
-	spf=pass smtp.mailfrom=macqel.be;
-	dkim=pass header.d=macq.eu header.i=@macq.eu header.a=rsa-sha256 header.s=selector1 header.b=u48705VK;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.72.102
-Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11023102.outbound.protection.outlook.com [52.101.72.102])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.234.252.31
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795522348;
+	b=4eBT7zuNmIao2Ui4V/XC6UeWiKNEOiPbUrsdejGtDpSJmU2oESOfkmjy/+g9VbqpurhX
+	 EuTNZ5/ALQs4XMhihT/o5Oa9s4qYb437ISxTI8qF1ITgwlndaQp6PapD8kvbh1AaOL5Sk
+	 tsu79CPLq2FmQxpzyz8vaSvXLmOKAw/s+gXagmrGXjoJIMKSACdRSwYmWKiISM9PBhR9Q
+	 zoD7s66DIOQYeDpOP/5tS9jo/PlH1JGtKZytK6uN1Crgps85Gp5S3yKBDCyRYu5/3IRJB
+	 2u73DXSUsW7GownpDTryUylpSmX6Tkedm4a7ZHc3COjjf5h/IH5TCO+PfoGbwf98s/w==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795522348;
+	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:Content-Transfer-Encoding:In-Reply-To;
+	bh=lcouaT860fSncNDjT71En57t3vzKX312cQDjtO45TD0=;
+	b=lZAGReLMHhhSA1uqV/xhH+pYzgSQ6MWLvHjRbhM3NtqHfiMpgYfH40V9IOt7+dSt03W7
+	 GyGTqPaJqb0PZHNl6Mj+rj+uZswH5/IDQfPhnZ76Clhbd810X0eXzs9cVYswbMtm4VsA0
+	 n7pkA8IiWhtswe1ZNlLbxFchS/vY0sxPUvaVjG6QqPRo3EIC+BxI8v4zG8BhHoI5dXZU2
+	 wn9Aoum3ME920uLbWWnQK+8z+cqjk+uHIoQ4rEeH5e/oFyiyRmk9QLr+rOCYEmanuMkga
+	 WI8BbzZ2walKbYdySFXUHTYXSuqqGfhe0stuUxb+EbDR6nKeMaIKVFHiHodKqf1xG6Q==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=kernel.org;
+	spf=pass smtp.mailfrom=kernel.org;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=X4o7sCKe;
+	arc=none smtp.remote-ip=172.234.252.31
+Received: from sea.source.kernel.org (sea.source.kernel.org [172.234.252.31])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E53606A327
-	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Nov 2026 10:55:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A9E53606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=macq.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=macqel.be
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70FE606A321
+	for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Nov 2026 12:12:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A70FE606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=macq.eu header.i=@macq.eu header.a=rsa-sha256 header.s=selector1 header.b=u48705VK
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=InkIkP6BOUoF4JjJ7oaB245tox0HYHBQCFSHvnxrdV7HGu07sRyagz/jpa8w1CE93RwGUFqdlc30r5pd2A6ofWABUCZTQA5nWMysxX6Qv0ffsnjMZ+u1x3T2NaS7WrWGEJNXJFDMf6UIcifML1DwZTBNpWvqd30Xv5MUMRqUCk0wOpf+eKcE8CrX36o2JijMDIDAIZTet/0RsahV/XXMf1elw78jW052k14eP2Igbta2v2knl87BxxiK07m9TypF3eBPy4y2sje9I3h7mbW8y6raFXZGPW16CJq0MNZRYGKOqlisT0klxryFJnB0vnKDxmG2b9ViGAqXN1UD/iqzMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=INt5KuJe5Ta76AN2NV01s5cGe8cgwCgb07Tt435XZmU=;
- b=xhddG6vU7HzcVDkswmDsFBaZ1Qjs5k+D2aIuhk7yQWzq/A+kmT8kYWM/7xh4WytfD0fT459fy0Xnj8Dk5bGDsWl12tpGE/sPWJuGgoayNS8rlc6krE+emlLNecvOW2pAyAlpzcqmmvcRE6CzcnbtUJFpYXWQvOQ+32wM+e9e/T+CJ/aatlkTFt26EpYzFB+SBsyF/SKSke0Zb6vElYmi3TD4TF5uhLXLhcZY3eUE1msMiKdbeeKEh6lhymIAaDaLFsrsusKSwmpGlXUXwXAOcyrM2e2ebVP4VimdDBph4mdAObm5c2rc4aJ/PsP22usFRNrWn7uQIqEMb0NrF8+X6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 91.183.173.212) smtp.rcpttodomain=0x0f.com smtp.mailfrom=macqel.be;
- dmarc=fail (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=macq.eu; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=macq.eu; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=INt5KuJe5Ta76AN2NV01s5cGe8cgwCgb07Tt435XZmU=;
- b=u48705VKYRiRGCUjcS4wb1H4QR8FsumdI6dd5+ZvWp1goMDWRPYtZLek5yJ304TZ4aSLkv0YDZrbxNH0YzUUXfCwRV4DEBb8FWEVMc+zAvgPV6+sncW8ceapmchOFsqHwJjnPrXM0lizLodNnaOCpX1sUyhxi1omRHDz0dwbxM58VpAYXTRzATrlRCGLjnZVcX+N8kNOIML35mTMeUNTpZXzMlLNxDgLjzDpWtLaaASlzozIxHt+h59cGECFm+mf0oQmowgD7CbN9A2FQsBq+CsUpuwLV2tGrWzf2IriGqae03vWTrwwuz9uPIuorMjU93FLdnpSlHg7I/SoWUv19Q==
-Received: from VIVP296CA0110.AUTP296.PROD.OUTLOOK.COM (2603:10a6:800:355::13)
- by DU2PR05MB8886.eurprd05.prod.outlook.com (2603:10a6:10:2d9::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.14; Tue, 24 Nov
- 2026 10:55:01 +0000
-Received: from MI3PEPF00008493.eurprd03.prod.outlook.com
- (2603:10a6:800:355:cafe::32) by VIVP296CA0110.outlook.office365.com
- (2603:10a6:800:355::13) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.639.14 via Frontend Transport; Tue,
- 24 Nov 2026 10:55:00 +0000
-X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=softfail (sender
- IP is 91.183.173.212) smtp.mailfrom=macqel.be; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=macq.eu;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- macqel.be discourages use of 91.183.173.212 as permitted sender)
-Received: from frolo.macqel.be (91.183.173.212) by
- MI3PEPF00008493.mail.protection.outlook.com (10.167.240.154) with Microsoft
- SMTP Server id 15.21.639.5 via Frontend Transport; Tue, 24 Nov 2026 10:55:00
- +0000
-Received: by frolo.macqel.be (Postfix, from userid 1000)
-	id 4EAF8DF00C8; Tue, 24 Nov 2026 11:54:59 +0100 (CET)
-Date: Tue, 24 Nov 2026 11:55:00 +0100
-From: Philippe De Muyter <philippe.demuyter@macq.eu>
-To: Daniel Palmer <daniel@0x0f.com>
-Cc: dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: amimouse - Fix the buttons
-Message-ID: <20261124105500.GA20772@frolo.corp.macq.eu>
-References: <20261124100604.2380938-1-daniel@0x0f.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=X4o7sCKe
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	by sea.source.kernel.org (Postfix) with ESMTP id 449A4403EB;
+	Tue, 24 Nov 2026 12:12:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BE21F000D0;
+	Tue, 24 Nov 2026 12:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795522347;
+	bh=lcouaT860fSncNDjT71En57t3vzKX312cQDjtO45TD0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=X4o7sCKeK8LJxMw9wq4pyT/qbtY/rvIkq49NWdMrKPtqSSk+B8uewS91k/r6mfuUA
+	 0jmsTzpv3TT+oJOel0vr8OGArYWNa2/iuOm26VQnoWbL1Ydvr5OzsPnoBGwcAg4bb7
+	 YotYWM/GYLdOOBkQCjAJSfvt3n1fzWyDpdMjEjkQgTTRjtv9twYVG84qrW9ZSCjyMx
+	 ZXjgKXzpJbufnGEEJczPccFFA5oAe5wsAG9iIb7vqwO1yfYD49IH7HAf9R3Chdpk4z
+	 S3Jhz+3rHPkbODTjU61HjL0V5WN/D2Q4M5tW1vuJTs1XzW/UHXI8o+HCVvZI1SKQqu
+	 ZAJtHTRDEr17Q==
+Date: Tue, 24 Nov 2026 12:12:16 +0000
+From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: sashiko-reviews@lists.linux.dev, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nsc@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Petr Pavlu <petr.pavlu@suse.com>, Daniel Gomez <da.gomez@kernel.org>, 
+	Sami Tolvanen <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>, 
+	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>, 
+	Andreas Hindborg <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
+	Trevor Gross <tmgross@umich.edu>, Danilo Krummrich <dakr@kernel.org>, 
+	Daniel Almeida <daniel.almeida@collabora.com>, Tamir Duberstein <tamird@kernel.org>, 
+	Alexandre Courbot <acourbot@nvidia.com>, Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>, 
+	linux-kbuild@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-modules@vger.kernel.org
+Subject: Re: [PATCH v5 02/11] kbuild: implement and use depcheck to check
+ dependency timestamps
+Message-ID: <awV_BWhKtRWZtgbv@gremlin>
+References: <20261104-build-speedup-v5-0-0f6018be8dae@kernel.org>
+ <20261104-build-speedup-v5-2-0f6018be8dae@kernel.org>
+ <sashiko-outbox-199744@kernel.org>
+ <CANiq72m57kFE5LTjT6V0Vajbwv_oPFEVwkBWgp5B2Xhh1E9uFg@mail.gmail.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -101,48 +82,46 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20261124100604.2380938-1-daniel@0x0f.com>
-User-Agent: Mutt/1.5.16 (2007-06-09)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MI3PEPF00008493:EE_|DU2PR05MB8886:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7cd46ef-966f-4802-981e-08df4a196313
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|36860700016|23010399003|82310400026|1800799024|10067099003|56012099006|11063799006|18002099003|22082099003|14776008|75936004;
-X-Microsoft-Antispam-Message-Info:
-	QT88JIJQrp0mXCJ6/d5uh54lq9T0R8YvN/GMxeLUE/n+GKLJc2lUYWR9MdUZC2mEjHJtc7bvYlr+U86XozyAl8LtVvYtfqcKl+1tUlDtAdVgCorLjYi50FMeXTOZMW2m/S00q/Tg4a3Y64H7KGqOLngIzaZkGPPTi3FaIZ2xV2oTkCZloXVsQadV1mvCHLBJa+vj2+TXWfkH48UPKzRD1AKX3FQilkDajuJj6jCQEszzPaRqNEC7nefB+hImxA4MVcFxxpRcsOUvneAl3r/ajZDQY6IXZyFZEjEGyokoAq7bB3oUQYid9a4+FQOO5DHOVsFANwts0dO0hM86pwWJ+aVQNT/rJ4l3vTvteL9NL7qv+2I3KbWjIfpHq8EJpR8ekYuJAiR7DDI7ZqKLkpSgFjE6OhTX5rU7kC5tfDgaYC0VhM7T1rFklXuD7Hdy0FuVAZ8FLYlBvOfLkDwKlo952ysuXjHielJTnDwSn0DTf5gVTdVFQSrXoq3HgEjq5Cr6chH16uUbjrZaXarWhvMq538BkHxg7sJI6NaZm/mFTL2GO84X1T3g3INccP/DSpuiuEcKd/9OxcFE1uUsY0/VCFMHtVPwiw8l2jOQhJUmN8X1DG7R6JuJHuk9PvS9IpIxoiTV1xrrWaRn9k8K+FK+XC9O2tcKzkKwbxYjmJBeO5f4KzBodtkGEUmcDshFfCvZx1NP8eU+k13N602yOk/Fbek23A5dO+ecim99Enyzhb1QAp6qAiTWt3swM+LAz2rIY7Dlk51E6ZlTeLEMUh8LZw==
-X-Forefront-Antispam-Report:
-	CIP:91.183.173.212;CTRY:BE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:frolo.macqel.be;PTR:212.173-183-91.adsl-static.isp.belgacom.be;CAT:NONE;SFS:(13230040)(376014)(36860700016)(23010399003)(82310400026)(1800799024)(10067099003)(56012099006)(11063799006)(18002099003)(22082099003)(14776008)(75936004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	HaKDdGTqjD6K3rY7SAVs6b9HTyIjJiztW/4VdjuSL97xDSVEn7LngRpor+yVvxQIBwsUSaOKYJAfGMkJuC3Ci0T7L3128ZlFSv+Ys95mYhSkmHgOMmqP5ul5HkaxHTiuwidtb6JOvM2vYeFxx3Z/siUM3VPnEeQgkBG0TKv4ynIBTuzDf//Xxc0YtR6LNiPHuOZL+qfRg419qLOHknrHJaKokZcvkqYGpZRus3h77S8PgyvAa7yoShZGf7q5M02ZoB9+tb//OKZiyUcqyeRsJ8Yb2N3ymK+QWbEBfjRND54e+p/D44TDQWDAfVFG/kiUX/ZQswwXN+920VgSJPj0fLklmcf2EAn07deAati92Ptrs3qN7oJN4wit+e1jlvdoRn6ei7DeTSZx/MgHdYwOD2NvyEk8bDw/WLUHMFtFXcKPlWSk9i3EsVzjPldq8Mvv
-X-OriginatorOrg: macq.eu
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2026 10:55:00.5888
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7cd46ef-966f-4802-981e-08df4a196313
-X-MS-Exchange-CrossTenant-Id: 5541087b-384c-4066-992a-42aa5fe171eb
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5541087b-384c-4066-992a-42aa5fe171eb;Ip=[91.183.173.212];Helo=[frolo.macqel.be]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MI3PEPF00008493.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR05MB8886
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72m57kFE5LTjT6V0Vajbwv_oPFEVwkBWgp5B2Xhh1E9uFg@mail.gmail.com>
 
-Hello Daniel,
+On Mon, Nov 23, 2026 at 02:28:57PM +0100, Miguel Ojeda wrote:
+> On Thu, Nov 5, 2026 at 7:22 PM <sashiko-bot@kernel.org> wrote:
+> >
+> > - [Medium] kbuild: missing fixdep prerequisite for depcheck in scripts/basic/Makefile
+> > - [Medium] kbuild: concurrent Makefile.build runs race on .depcheck.mk.tmp and .depcheck.mk
+>
+> I have been using some of the patches of this series for something
+> else, and I have been hitting these two issues that Sashiko mentions.
+>
+> For the first one, e.g. `olddefconfig` in a clean tree can give:
+>
+>       HOSTCC  scripts/basic/depcheck
+>     /bin/sh: line 1: ./scripts/basic/fixdep: No such file or directory
+>
+> The suggested prerequisite fixes it for me.
+>
+> For the second one, e.g. `make -j4 rustdoc rusttest` runs two Make
+> instances on `rust/` in parallel. Most of the time one of them prints:
+>
+>     rust/.depcheck.mk: No such file or directory
+>
+> and sometimes the build fails:
+>
+>     rust/.depcheck.mk:1: warning: NUL character seen; rest of line ignored
+>     [...]
+>     rust/.depcheck.mk:22: *** missing separator.  Stop.
+>
+> I hope that helps!
 
-On Tue, Nov 24, 2026 at 07:06:04PM +0900, Daniel Palmer wrote:
-> On the Amiga the left button is connected to CIAAPRA bit 6 (/FIR0)
-> and the middle and right ones are POTINP (called potgor in the code)
-> bits 8 (DATLX) and 10 (DATLY), all of these are active low according
-> to the "Amiga Hardware Reference Manual (3rd edition)":
+It's very useful thanks! I will respin with a fix for that (+ the other stuff
+requested here) shortly.
 
-Try to put the word 'mouse' in the prevous sentence.  I had to read
-the description twice to understand what you're talking about.
+>
+> Cheers,
+> Miguel
 
-Best
-
-Philippe (not a amiga user)
+--
+Cheers, Lorenzo
