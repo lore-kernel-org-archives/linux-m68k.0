@@ -1,77 +1,42 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=172.105.4.254
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795609703;
-	b=WiXkdoTfaVkShUIiYKwgnqKvPX8cPP6ezzNHSQrugcQr/cQe04gd1yAjKt3avGDYP+uX
-	 PvWlYCux0EsmOz79oq9BLnT+zQZKOwDLPmsBxOZSYXITyc9+s8fMjN9qKQ38sfOl4Rv4q
-	 C/Vnc73eJ/do//JcEb6ezctok43gEfTjPdYM0j/NGUdXzzNdoKO5DAhjx8U4cp8jtuF/y
-	 E27RTih2h/11/AsQLBlHc3daRIca5dttlmPaVJUwzHKFWEbFkLI7+5mvo4UyKgVI3gm54
-	 PjevIku8lGM6e6kEaMPoXPRMda6wN+KjJ2TKqnb9nt0JcAB4yE+eKQbPEchvt4nH34A==
+	t=1795610470;
+	b=w4fGPtx0NxrRpU2i15cO3blXxZkfP6JNqtDvG/4v6h5AePD2k0xGrnFYLcuTd92pg6ej
+	 lhb49dpguwdOHHddlil5GSaDkIJhuig9TSgqHiwaE0kFVwEL0kSyLc/NcT6jeUKngdyuP
+	 8RC+Jt0KyuLn3c4tAS26kaGEmebVrRJXRXamMLJJjjDgQfYvEGD0jPIRu6m04eLLTmTwc
+	 W2PuQtPsbgvvfBBIzV3Q7Q1xkmWPH65Qtb8tq33geyeLeKz2rgc1GxO8rZm9f/1BpnNBA
+	 BGJdos4xGUl07ru27+CTQsgNNdi5+6H6HwAeZ7Saeb714XQY1bZpPrJb29JM2MEpCWQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795609703;
-	h=DMARC-Filter:Received:Received:DKIM-Signature:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=hpvurHXKOGNZ9gnVI9/HzwEjSAtsSaCAYF1pwCYTtaQ=;
-	b=mPspNX/WNCRkV0HSJEDYIBh+IVZuG4A56R8qYZ2tVPFvyS72fIPDJxBUqo2B0v3We3Gg
-	 f3/HH2LselXEcnmrL3op686OhRiKI7+lnBQqYd2P2DteuNxhP2By2hTzrRI1/OOHqMLaR
-	 nFVTjfT6Au9sIlv//iOG3boO7cWG6b+qDGHxT+IiiVugKZtmfcUTNrU2ScjETp+sp7qW1
-	 fIznkC2hNIGiUA5Gja906mXpoWtdmuFSJixvhX1ZCJDUESpe07NaLNP4YJ5ghHgujZnWM
-	 xE4yNQGRBEe05eh6dL8UJ6ufukjOMQG0dfM2uxgS5xns8R7EpQTnosIhyQbwaGasSXw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795610470;
+	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=KfUOxpLQJkovw7z2Qf0Qn6lhPyS9idJ1/zdVB8+NA18=;
+	b=gTJdad+4TX+lqJjUxC+ydbhRWVkzvNGZWVW7o80Ysy0MCKktL7o5yGGAx7FK7eFZFkt/
+	 flHMrhZ10SsyDTcra2W2Mh76iFNY4mmZac+rTYaeL/ZMTWHo0dFAST3KGqOLoJ9r6APsn
+	 mi3ytCuApuPC6NxRr7hSjupIoLz6aWD+pXf5sTfBVOHe9tNZl3Q6egovRrCwk91nHaqUg
+	 UzWIbcoCzaHQJLFplwfZ4hqVQ6CO9FAXvlltdldfL0CWqABfAN4ecIwLXhbofKVmeO38v
+	 7/LzkybPe8mIcWnpaE+l+7b7ZY2Mp0nNw0ElyXKHG+tef/OxwLHATvHkOEfqFu6Z0aA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=kernel.org;
+	dmarc=fail header.from=linux-m68k.org;
 	spf=pass smtp.mailfrom=kernel.org;
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GI8ATaNy;
 	arc=none smtp.remote-ip=172.105.4.254
 Received: from tor.source.kernel.org (tor.source.kernel.org [172.105.4.254])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF417606A332
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Nov 2026 12:28:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AF417606A332
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B5C606A337
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Nov 2026 12:41:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A5B5C606A337
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GI8ATaNy
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	by tor.source.kernel.org (Postfix) with ESMTP id BDA9F601BF;
-	Wed, 25 Nov 2026 12:28:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9C2F1F000D1;
-	Wed, 25 Nov 2026 12:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795609701;
-	bh=hpvurHXKOGNZ9gnVI9/HzwEjSAtsSaCAYF1pwCYTtaQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=GI8ATaNyTMyEXxgfjz+oenZ1X6CmViRKww60LktsKeuQ38vALYgH+CM3Hbv/jYM35
-	 6SKWl6rpruUqfXlO0AG1stUNmKN7XrAjBIYeBI7FSve7iYj6dKkMutVcq1AJ+X2xR2
-	 19kiUTCSOs+OaCbJWc5BS7yA8mHNWfv6EtVTsS3fBWIhaG6wRSLGO9mkAekgzlNi+2
-	 hA+94fmfPzfiS6+tCDRvjGixzW51m9J71z0Srxx3OhG8sP50OmQoHRVeSkjB50vTlA
-	 3dbrKrkC173/KfGhf+zpcI2ujyaPDFOcosjmorvdgBOq0+5ZCcnSiODTggIeuPP4vi
-	 sCC2aqMMVMLVg==
-Date: Wed, 25 Nov 2026 12:28:11 +0000
-From: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
-To: Nicolas Schier <n.schier@fritz.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Petr Pavlu <petr.pavlu@suse.com>, Daniel Gomez <da.gomez@kernel.org>, 
-	Sami Tolvanen <samitolvanen@google.com>, Aaron Tomlin <atomlin@atomlin.com>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>, Gary Guo <gary@garyguo.net>, 
-	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin <lossin@kernel.org>, 
-	Andreas Hindborg <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
-	Trevor Gross <tmgross@umich.edu>, Danilo Krummrich <dakr@kernel.org>, 
-	Daniel Almeida <daniel.almeida@collabora.com>, Tamir Duberstein <tamird@kernel.org>, 
-	Alexandre Courbot <acourbot@nvidia.com>, Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>, 
-	Kees Cook <kees@kernel.org>, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-modules@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH v6 5/7] kbuild: batch module finalisation
-Message-ID: <awbUJuLahIbbL7vi@gremlin>
-References: <20261124-build-speedup-v6-0-141a4f861c67@kernel.org>
- <20261124-build-speedup-v6-5-141a4f861c67@kernel.org>
- <20261125-bald-mushroom-of-development-7b2288@l-nschier-z2>
+	by tor.source.kernel.org (Postfix) with ESMTP id BDFF1629C1;
+	Wed, 25 Nov 2026 12:41:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4FA1F000C0;
+	Wed, 25 Nov 2026 12:41:05 +0000 (UTC)
+Message-ID: <9ffb268e-d7db-4908-b9be-35b1807dfd2c@linux-m68k.org>
+Date: Wed, 25 Nov 2026 22:41:02 +1000
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -81,126 +46,131 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261125-bald-mushroom-of-development-7b2288@l-nschier-z2>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] m68k: coldfire: Use the builtin fls() and __fls() on
+ ISA_A+ and ISA_C
+To: Tzu-Ching Yang <shingekinocore@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org,
+ Angelo Dureghello <adureghello@baylibre.com>,
+ Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>,
+ Yury Norov <yury.norov@gmail.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20261123131101.639643-1-shingekinocore@gmail.com>
+Content-Language: en-US
+From: Greg Ungerer <gerg@linux-m68k.org>
+In-Reply-To: <20261123131101.639643-1-shingekinocore@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 25, 2026 at 10:56:32AM +0100, Nicolas Schier wrote:
-> On Tue, Nov 24, 2026 at 12:20:15PM +0000, Lorenzo Stoakes (ARM) wrote:
-> > With the .mod.S change in place, module finalisation on allmodconfig builds
-> > consists of a large number of very short-lived jobs.
-> >
-> > For allmodconfig x86-64 this can be on the order of ~22,000 jobs of a few
-> > milliseconds in duration each.
-> >
-> > Each job entails processing ~22k .cmd files, so the combination of heavy
-> > overhead and small individual job results in a lot of unnecessary and
-> > repeated work even with all cores being utilised.
-> >
-> > The solution is to batch by a number of jobs. Determining which value makes
-> > sense was done empirically.
-> >
-> > On a 128-thread threadripper box doing an allmodconfig build, best of
-> > 2, *.ko, *.mod.o deleted each time:
-> >
-> >     modules per chunk    instances    wall
-> >     -----------------    ---------    ------
-> >                     1        11171    10.22s
-> >                     2         5586     6.72s
-> >                     4         2793     4.97s
-> >                     8         1397     4.26s
-> >                    16          699     4.05s
-> >                    32          350     4.05s
-> >                    64          175     4.07s
-> >                   128           88     4.05s
-> >                   256           44     4.03s
-> >                   512           22     4.18s
-> >
-> > Wall time flattens for 16-256 module batches.
-> >
-> > A slower/lower core machine will do better with fewer modules-per-batch, a
-> > faster/higher core machine will do better with more modules-per-batch.
-> >
-> > Therefore, take the midpoint which works in the most margin in either
-> > direction - 128 modules per batch.
-> >
-> > This naturally scales with module count too as the optimum gains are
-> > obtained with higher module count, so fewer batches in this case costs less
-> > overhead.
-> >
-> > Each instance holds only its own modules' variables and the top-level one
-> > reads no per-module .cmd files at all, the same rules serve both levels,
-> > and an instance is told its chunk with modfinal-first=<index>.
-> >
-> > Only the top-level instance builds .module-common.o, to the chunks it is a
-> > plain prerequisite, so no two instances ever write it.
-> >
-> > "make modules" with every *.mod.o and *.ko deleted goes from 28.9s to 15.9s
-> > with clang 22. No-op "make modules" goes from 5.6s to 4.8s, as checking the
-> > 22,000 targets is spread over the chunks too.
-> >
-> > Whole build, 128-thread Threadripper 9980X, best of N runs:
-> >
-> >                                          before   after     delta
-> >                                          -------------------------------
-> >   x86 allmodconfig, no-op make, gcc         2.3s     1.4s    -0.85s (-38%)
-> >   x86 allmodconfig, no-op make, clang       2.8s     1.8s    -0.94s (-34%)
-> >   x86 allmodconfig, clean, gcc            306.6s   294.1s     -12.6s (-4%)
-> >   x86 allmodconfig, clean, clang          290.2s   283.9s     -6.4s (-2%)
-> >
-> > Reviewed-by: Kees Cook <kees@kernel.org>
-> > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> > Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
-> > ---
-> >  scripts/Makefile.modfinal | 30 +++++++++++++++++++++++++++++-
-> >  1 file changed, 29 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> > index 75e9effdf02c..4d5e6e1a0ff9 100644
-> > --- a/scripts/Makefile.modfinal
-> > +++ b/scripts/Makefile.modfinal
-> > @@ -13,9 +13,30 @@ include $(srctree)/scripts/Makefile.lib
-> >  # find all modules listed in modules.order
-> >  modules := $(call read-file, modules.order)
-> >
-> > +modfinal-chunk-size := 128
-> > +
-> > +ifdef modfinal-first
-> > +
-> > +# this instance handles the chunk of modules.order starting at $(modfinal-first)
-> > +modules := $(wordlist $(modfinal-first), $(words $(modules)), $(modules))
-> > +modules := $(wordlist 1, $(modfinal-chunk-size), $(modules))
-> > +
-> >  __modfinal: $(modules:%.o=%.ko)
-> >  	@:
-> >
-> > +else
-> > +
-> > +modfinal-chunks := $(addprefix chunk-, $(shell seq 1 $(modfinal-chunk-size) $(words $(modules))))
-> > +
-> > +PHONY += $(modfinal-chunks)
-> > +$(modfinal-chunks): .module-common.o
-> > +	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal modfinal-first=$(@:chunk-%=%)
->
-> Thanks!
->
-> Reviewed-by: Nicolas Schier <n.schier@fritz.com>
+Hi Tzu-Ching,
 
-Thanks!
 
->
->
-> (bike-shedding) For readability, I'd favourised the use of pattern
-> matching stem:
->
-> $(modfinal-chunks): chunk-%: .module-common.o
-> 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal modfinal-first=$*
+On 23/11/26 23:11, Tzu-Ching Yang wrote:
+> Let fls() and __fls() use the ff1 instruction on ColdFire ISA_A+ and
+> ISA_C cores instead of the generic binary search in C, as __ffs() and
+> ffs() already do. GCC emits ff1 for __builtin_clz() on exactly the cores
+> for which it defines __mcfisaaplus__ or __mcfisac__, the macros that
+> already select the ff1 versions of __ffs() and ffs(), so no new
+> condition is needed. Commit a6260ef84103 ("m68knommu: add ffs and __ffs
+> plattform which support ISA A+ or ISA C") added the ff1 versions of
+> __ffs() and ffs() in 2008 and kept the generic fls(); the generic
+> __fls() followed in 2009.
+> 
+> Use the asm-generic builtin versions of fls() and __fls() when
+> __mcfisaaplus__ or __mcfisac__ is defined, and keep the generic C
+> versions for ISA_A, ISA_B and 68000. The bitrev/ff1 asm of __ffs() and
+> ffs() stays, as this asm is shorter than the code GCC generates for
+> the builtin versions of __ffs() and ffs().
+> 
+> With GCC 12 to 16, fls() shrinks from 28 instructions to 8 or 9 and
+> __fls() from 24 to 6. With GCC 8 to 16, the functions of each ISA_A+ or
+> ISA_C defconfig kernel shrink in total by at least 8676 and at most
+> 13266 bytes (scripts/bloat-o-meter -t), depending on the defconfig and
+> the compiler. In lib/find_bit.c, only _find_last_bit() changes, from 55
+> to 35 instructions for m5208evb with GCC 16.
+> 
+> fls(0) still returns 0, and __fls() still returns unsigned int.
+> __fls(0), which is undefined, now returns ~0 instead of 0. For other
+> CPUs, the preprocessed source changes only in its line numbers.
+> 
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Link: https://lore.kernel.org/all/dbb44e92-0bc5-449d-9e43-1f93362aa6c3@app.fastmail.com/
+> Signed-off-by: Tzu-Ching Yang <shingekinocore@gmail.com>
 
-Ack, will fix that up on next respin if needed :)
+Looks good to me. I tested it on a ColdFire 5271, which is ISA_A+, and it
+checked out good. I don't have my 54418 board handy at the moment (its ISA_C)
+but when I get a chance I will double check that too.
 
->
-> --
-> Nicolas
+Applied to the for-next branch of the m68knommu git tree.
 
---
-Cheers, Lorenzo
+Thanks
+Greg
+
+
+
+
+> ---
+> I have no ColdFire hardware. On QEMU mcf5208evb (ISA_A+), the ffs and
+> bitops KUnit tests pass before and after with GCC 8.3 to 16.2. In
+> find_bit_benchmark on that machine, with the bitmaps drawn from a fixed
+> seed so that the kernels before and after use the same bitmaps, and the
+> executed instructions counted by a TCG plugin, find_last_bit goes from
+> 52.3 to 38.3 instructions per iteration on the random bitmap with GCC
+> 16, and bitmap_find_next_zero_area_off, which calls find_last_bit(),
+> from 3302 to 2864; the tests of the other helpers do not change. The
+> ISA_C kernels were only built, as QEMU has no ISA_C machine.
+> 
+> Under QEMU user mode, with the kernel's flags for -mcpu=5208, 532x and
+> 54455 and each GCC at -O2 and -Os, old and new fls(), __fls() and
+> fls64() agree on all 2^32 inputs (fls64() in either 32-bit half)
+> except the undefined __fls(0).
+> 
+> The seven ISA_A+ and ISA_C defconfigs (m5208evb, m5235evb, m5275evb,
+> m5282evb, m5329evb, m54418evb and stmark2) were built with GCC 8.3 to
+> 16.2 before and after, with the same .config before and after. A W=1
+> build of these seven and of twenty other ColdFire and m68k defconfigs,
+> each with at least GCC 8.3, 12.5 and 16.2, has no new warning.
+> 
+> The new out-of-line fls() for m5208evb with GCC 16.2:
+> 
+> 	movel %sp@(4),%d0
+> 	tstl %d0
+> 	beqs 1f
+> 	movel %d0,%d1
+> 	ff1 %d1
+> 	moveq #32,%d0
+> 	subl %d1,%d0
+> 1:	rts
+> 
+> Against v7.4-rc1; also applies to the m68knommu and m68k for-next
+> branches and to next-20261113.
+> 
+>  arch/m68k/include/asm/bitops.h | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/m68k/include/asm/bitops.h b/arch/m68k/include/asm/bitops.h
+> index e9639e48c6c3c..81923a9fa4494 100644
+> --- a/arch/m68k/include/asm/bitops.h
+> +++ b/arch/m68k/include/asm/bitops.h
+> @@ -506,13 +506,14 @@ static inline __attribute_const__ int ffs(int x)
+>  	return __ffs(x) + 1;
+>  }
+>  
+> +#include <asm-generic/bitops/builtin-fls.h>
+> +#include <asm-generic/bitops/builtin-__fls.h>
+>  #else
+>  #include <asm-generic/bitops/ffs.h>
+>  #include <asm-generic/bitops/__ffs.h>
+> -#endif
+> -
+>  #include <asm-generic/bitops/fls.h>
+>  #include <asm-generic/bitops/__fls.h>
+> +#endif
+>  
+>  #else
+>  
+> 
+> base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
+
