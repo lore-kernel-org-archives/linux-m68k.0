@@ -1,90 +1,92 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.42.244.120
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795571350;
-	b=GQbOHeWonYwJQxHK2RrIVMqoDX8EGYYhuDzure7CcBV0rU0Z+grvoZKkCcYysDnAQyPx
-	 FhXqHHoThx805Us7upAaLy/+0qsis8dt7ldN87uFuOxYMeH03P8cPaWObv6ankiLsDHw+
-	 2IZo99vRiZEDEwOUKPaMfxKQ0+T4Kcx7/nBSfvtCbVo9A4yl7lFdBUP6DIyxG94pvM428
-	 bmoj1HkDKIx7rs9pvtCE8uRmf/2f82hqatpGI/Vzo7NlheDbvSSrIPDM+jQFPBec4aNCV
-	 eDsbwR7Zwjp5PWzEOAzoRwuq9dT2xwxWrlBnWK89JQezajIJ6x97ZtJg+NMMs51V/oQ==
+	t=1795600604;
+	b=fCtKfIooriLFrfGWnXSTR7geellSboHbrQnIyvkI2YE78Q21ntvvRPwPXFQHSHxTQOmb
+	 VLwWbTyDApgryCne1PTPOFaf4isZ29gW7gpKUwetYjmQJxOskGe9JMysgbkqgUNuri/sK
+	 BCKTpSfniKLIIE05uxBiETOrooEPgpok5m/Y4776E0LF5H/kLDVNLMOmnmmsCAXSocxRp
+	 9CcXo4C59HsH/3AoFAzFIFmAQOpx6D5mZlY2GZvx2NR4lppaISBc+Hfi7koGXkAlDea/W
+	 VtV89kgec+3wfY3/0v/fdi3h1F86P4pGHvR8c1zs0iwy6jMc0sNIhSX7qfN/r7wTl1A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795571350;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=ObqOZxAlfLiw3L36aCRuRKfWllcmuJhnADCFOCSYZA8=;
-	b=THjvqYamSNdMdN0GFngDs1lrtRzkvuKPIoRtJiFURA0dASimzROnfF0qou7NLSFKOQv0
-	 WukP5eBiUBidKEUngv8ptA/V495oIg9FO2LDPvscQ0kFk4Sy1UiY1A5aSj0dFdU1A+RMo
-	 Kp7FurM/uLCPm7NwV0yFyv17OBK8j3c4qqI15YHW7MHPrUWUEBdNQsZOgUr7h3ZsVzVmS
-	 u2qMtzWPjmZWUVuXT604whXOQyKFcx2oi8LqouNccZlk1JrJ3zEZV8JJQf7SselNy6ITl
-	 GDB5Z9eaKkFOVkaY89gpnhMj7VqhDGJ1v62kuUZS7Bwb4m0tCWWV3iRYdpdoe3QUxlw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795600604;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:Organization:x-ms-reactions:
+	 X-purgate-ID:X-purgate-type:X-purgate-size:X-Notice:X-purgate:
+	 X-purgate:X-pfmilter;
+	bh=o9V35QWmnxkcGDaXqhjxiPIy0R24gUWruywCyvkZf9g=;
+	b=zRdC0T5N4Z0PEwoIkmlTxV3z8hfonysjERuy9JVerzKvBHJXSYHt+6mRBnVl7aevAo2Z
+	 d2uR33iwfuJFFTd5pFtvjHTc6yMFDndlxEcop55YdD3lHNhWs33pIrQET928pKomwrQqo
+	 xACCHfLK4dLzw6qlhLFWkqB+EDPtJKQ88iYx1yAWFWn3JJNZ4xbK90cLrbmnujJj3+hJQ
+	 bzHmwk6zRtaUAjq//prHoOL7zwX5VWAFPHNAE7cWEIDLAfEc5ig5H9s3cn2TEnI4lYZRn
+	 rCHAGegjlUaTJ7prFAE0/wRBj91t3vSQClAtGzXdyGDTzkqHgjwxPa6vXTuCQIsrCgw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=0x0f.com;
-	spf=pass smtp.mailfrom=0x0f.com;
-	dkim=pass header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=RjPI4vun;
-	arc=none smtp.remote-ip=209.85.210.175
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=fritz.com;
+	spf=pass smtp.mailfrom=fritz.com;
+	dkim=pass header.d=fritz.com header.i=@fritz.com header.a=rsa-sha256 header.s=mail header.b=OvOVK9ai;
+	arc=none smtp.remote-ip=212.42.244.120
+Received: from mail.avm.de (mail.avm.de [212.42.244.120])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577EF606A326
-	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Nov 2026 01:49:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 577EF606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=0x0f.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=0x0f.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D9E606A327
+	for <linux-m68k@lists.linux-m68k.org>; Wed, 25 Nov 2026 09:56:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 10D9E606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fritz.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fritz.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=0x0f.com header.i=@0x0f.com header.a=rsa-sha256 header.s=google header.b=RjPI4vun
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-8a070755c8cso2500441b3a.0
-        for <linux-m68k@lists.linux-m68k.org>; Tue, 24 Nov 2026 17:49:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google; t=1795571348; x=1796176148; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=ObqOZxAlfLiw3L36aCRuRKfWllcmuJhnADCFOCSYZA8=;
-        b=RjPI4vunrk0KbFNA2iArXqwzdnrlfjPu37vryS499cgC42lL/7rs+sQ+HHxFRxxVy+
-         gTEF/C3Kv92V8T05fZSAQxS0fnIGd3M6qUz/1HSyKiocxd4a0fnU0x6imvaoz7BBCobS
-         VOg6qfiPCSzRZ9ndj3YMVew2ej6hLOWPthHZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795571348; x=1796176148;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=ObqOZxAlfLiw3L36aCRuRKfWllcmuJhnADCFOCSYZA8=;
-        b=hbI2SccBuFaDeWIiAo6X8AG9hQmBAz4Gb+NfvHyZ7Q9Py9KDcLMq+YE4TOsJXJgznI
-         Ya3RNCmRQs8YcEMjhK6hUEefcxzFMf+dS2UeaqMr6iWuep+YpdNgc9g6ggskVKasgkF4
-         p9qJtK6o/e+ti24KZ7cvQFkuheY2U3U+gUaPFpUokqOZb54+uPPFHtqHsPz1D6cuVRQL
-         00mGntksnzz2tm98zUrJz3GCoRGjqeKQLGVJKbC9KZXg4Wrxedvx9Cwcl/KJq2uZcaJD
-         P6R3s4D4pyysna+ip+I64IBv2lnXX8yWWvPfWWG8tMktkO/xo3IlWFZudHEqYpX6zGBm
-         1hYQ==
-X-Forwarded-Encrypted: i=1; AL+hErE9HRWLuBSnTrWkXfgoh7YNrdqnSkh8Xskc3bYRWO6/gpRYM6VrQduUi5kIo3MFfNjMCjndST+89mj6@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z9CipS6K49fxmB/VlS4rX0i3+0TXD47Dk3XytvYEh12ZIsS2g/i
-	lZKt/2v6qyOxa1IIkzUj2hc3roncocgzy1F1J4X/MzTXotNJDSZABz5JF0lNw9tTUrw=
-X-Gm-Gg: AZFdTZcDjNfEC0t1kGOUIXO0z3ntUy72oQDwjUOv5qpf3qDcLR1Cmf95lK/m4JOJExm
-	S8FLoeiwv48U+BUA7fkSvde9HHGtx0WAmPwxuqVTHWImjxY5fTB11X1zDBpRKmg9hYuE7aGzgHN
-	uYiA2TEtDNRWE8I3KYymf0SyUEBZbyCF6acVXPiu9w8kfq+iMd3KAxkzhL4hdK4h0dvKJI/COVQ
-	7rXGRhbvufIoTps+/Q8vWCH2jCLYuRwKp2k72atldgtebR1tjtJnTtF2ofSIrvS1VCFDRIKHXg9
-	imrBmFRoE295PkyH4PGGn5TeWQ3O0fRcBb1jAGlC+mPMs2NeL5//sGC0LxlpMnk+YTCvRjC7maf
-	nZkT1hnli29GlJj883EUdEJ5jPZG9MEN/oYp+OET5hLj1XxVbOeC+cCK3TCtqfvgX97wDh9dLah
-	pP4SsaVfNhVOz+QhZCDH6QNDyXmEDLI053Hf/ASAPJsFdUVAACXdy2XJxjT2eD3lpxpvDLBsSUm
-	nvHYXkcqvyH9UK5ggpJPeqQAbes0W20653r+2MFts4VU3GTq0cW9FVfTSx2OQFH7Q/w+219qwLg
-	z8veGRboKV62LXsch3aDwd5lpDBLQUchcKtHEK2CF+Coo8kaFwemRY6WOY6rHpLfi9z+ID8=
-X-Received: by 2002:a05:6a00:2d06:b0:8a8:5b84:4c04 with SMTP id d2e1a72fcca58-8c87c95bd39mr14220491b3a.38.1795571348479;
-        Tue, 24 Nov 2026 17:49:08 -0800 (PST)
-Received: from shiro (p1721212-ipxg00e01sizuokaden.shizuoka.ocn.ne.jp. [153.166.141.212])
-        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-8c87343f571sm7739226b3a.34.2026.11.24.17.49.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2026 17:49:07 -0800 (PST)
-From: Daniel Palmer <daniel@0x0f.com>
-To: geert@linux-m68k.org,
-	gerg@linux-m68k.org,
-	linux-m68k@lists.linux-m68k.org
-Cc: linux-kernel@vger.kernel.org,
-	arnd@arndb.de,
-	Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2] m68k: Define the m68k-specific syscalls with SYSCALL_DEFINE
-Date: Wed, 25 Nov 2026 10:47:37 +0900
-Message-ID: <20261125014737.2421722-1-daniel@0x0f.com>
-X-Mailer: git-send-email 2.55.0
+	dkim=pass (2048-bit key) header.d=fritz.com header.i=@fritz.com header.a=rsa-sha256 header.s=mail header.b=OvOVK9ai
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fritz.com; s=mail;
+	t=1795600592; bh=pZNseUamYF/NcBCWp2XFZ917wokQkwCmyXEupzEFfo0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OvOVK9aiHm8AT8ElIOf0mHmcxUZqwvb9/Usx9TkHvu+FLOLBysBfDif3qHokFDPEe
+	 nlzMytPtB80W+7JR1u9lNTK7rMmuJQhpwqyTN6A7oifJLbZbukMFQuMWk/alMlt7Vz
+	 709n2l4yfmtdMnlpyL7Sz1aW77eKlBu86HvbUzwnDQs5u30YYG/+tvXeEs95Gk8Mk2
+	 Vm9cM/0CQj/vpLQiMGoal3nPkHzq25SNIMrakcmlahLSPSgMUAH7pa87hTS7S6j619
+	 S5FDwDQnzFvw0BuXbAIJFVQnuzcNaxH+3WwOWAwuMk038+czYJ0r/x5Bpu8bwCAXQe
+	 cYRcdz8PZrcSg==
+Received: from [212.42.244.78] (helo=mail.avm.de)
+	by mail.avm.de with ESMTP (eXpurgate 4.57.1)
+	(envelope-from <n.schier@fritz.com>)
+	id 6b06b0d0-045b-7f0000032729-7f000001912c-1
+	for <multiple-recipients>; Wed, 25 Nov 2026 10:56:32 +0100
+Received: from mail-auth.fritz.com (unknown [212.42.244.78])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Wed, 25 Nov 2026 10:56:32 +0100 (CET)
+Date: Wed, 25 Nov 2026 10:56:32 +0100
+From: Nicolas Schier <n.schier@fritz.com>
+To: "Lorenzo Stoakes (ARM)" <ljs@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Petr Pavlu <petr.pavlu@suse.com>,
+	Daniel Gomez <da.gomez@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Miguel Ojeda <ojeda@kernel.org>, Boqun Feng <boqun@kernel.org>,
+	Gary Guo <gary@garyguo.net>,
+	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <lossin@kernel.org>,
+	Andreas Hindborg <a.hindborg@kernel.org>,
+	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>,
+	Danilo Krummrich <dakr@kernel.org>,
+	Daniel Almeida <daniel.almeida@collabora.com>,
+	Tamir Duberstein <tamird@kernel.org>,
+	Alexandre Courbot <acourbot@nvidia.com>,
+	Onur =?utf-8?B?w5Z6a2Fu?= <work@onurozkan.dev>,
+	Kees Cook <kees@kernel.org>, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-modules@vger.kernel.org,
+	rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH v6 5/7] kbuild: batch module finalisation
+Message-ID: <20261125-bald-mushroom-of-development-7b2288@l-nschier-z2>
+References: <20261124-build-speedup-v6-0-141a4f861c67@kernel.org>
+ <20261124-build-speedup-v6-5-141a4f861c67@kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -94,197 +96,125 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261124-build-speedup-v6-5-141a4f861c67@kernel.org>
+Organization: FRITZ! Technology GmbH
+x-ms-reactions: disallow
+X-purgate-ID: 149429::1795600592-22FEB977-6F71B524/0/0
+X-purgate-type: clean
+X-purgate-size: 4480
+X-Notice: Whitelisted
+X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
+X-purgate: clean
+X-pfmilter: host: postfix-mx-01  mail-id: D1F4DA0233  external: no
 
-On m68k a syscall handler's stack arguments are the user's registers
-saved in pt_regs, and RESTORE_ALL reloads them on the way out. The C
-ABI lets a function reuse its incoming argument slots, so anything the
-handler writes there ends up in user space. SYSCALL_DEFINEn() stops
-the compiler doing that with asmlinkage_protect(), but sys_mmap2() and
-the other m68k-specific syscalls are plain asmlinkage functions.
+On Tue, Nov 24, 2026 at 12:20:15PM +0000, Lorenzo Stoakes (ARM) wrote:
+> With the .mod.S change in place, module finalisation on allmodconfig builds
+> consists of a large number of very short-lived jobs.
+> 
+> For allmodconfig x86-64 this can be on the order of ~22,000 jobs of a few
+> milliseconds in duration each.
+> 
+> Each job entails processing ~22k .cmd files, so the combination of heavy
+> overhead and small individual job results in a lot of unnecessary and
+> repeated work even with all cores being utilised.
+> 
+> The solution is to batch by a number of jobs. Determining which value makes
+> sense was done empirically.
+> 
+> On a 128-thread threadripper box doing an allmodconfig build, best of
+> 2, *.ko, *.mod.o deleted each time:
+> 
+>     modules per chunk    instances    wall
+>     -----------------    ---------    ------
+>                     1        11171    10.22s
+>                     2         5586     6.72s
+>                     4         2793     4.97s
+>                     8         1397     4.26s
+>                    16          699     4.05s
+>                    32          350     4.05s
+>                    64          175     4.07s
+>                   128           88     4.05s
+>                   256           44     4.03s
+>                   512           22     4.18s
+> 
+> Wall time flattens for 16-256 module batches.
+> 
+> A slower/lower core machine will do better with fewer modules-per-batch, a
+> faster/higher core machine will do better with more modules-per-batch.
+> 
+> Therefore, take the midpoint which works in the most margin in either
+> direction - 128 modules per batch.
+> 
+> This naturally scales with module count too as the optimum gains are
+> obtained with higher module count, so fewer batches in this case costs less
+> overhead.
+> 
+> Each instance holds only its own modules' variables and the top-level one
+> reads no per-module .cmd files at all, the same rules serve both levels,
+> and an instance is told its chunk with modfinal-first=<index>.
+> 
+> Only the top-level instance builds .module-common.o, to the chunks it is a
+> plain prerequisite, so no two instances ever write it.
+> 
+> "make modules" with every *.mod.o and *.ko deleted goes from 28.9s to 15.9s
+> with clang 22. No-op "make modules" goes from 5.6s to 4.8s, as checking the
+> 22,000 targets is spread over the chunks too.
+> 
+> Whole build, 128-thread Threadripper 9980X, best of N runs:
+> 
+>                                          before   after     delta
+>                                          -------------------------------
+>   x86 allmodconfig, no-op make, gcc         2.3s     1.4s    -0.85s (-38%)
+>   x86 allmodconfig, no-op make, clang       2.8s     1.8s    -0.94s (-34%)
+>   x86 allmodconfig, clean, gcc            306.6s   294.1s     -12.6s (-4%)
+>   x86 allmodconfig, clean, clang          290.2s   283.9s     -6.4s (-2%)
+> 
+> Reviewed-by: Kees Cook <kees@kernel.org>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Lorenzo Stoakes (ARM) <ljs@kernel.org>
+> ---
+>  scripts/Makefile.modfinal | 30 +++++++++++++++++++++++++++++-
+>  1 file changed, 29 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index 75e9effdf02c..4d5e6e1a0ff9 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -13,9 +13,30 @@ include $(srctree)/scripts/Makefile.lib
+>  # find all modules listed in modules.order
+>  modules := $(call read-file, modules.order)
+>  
+> +modfinal-chunk-size := 128
+> +
+> +ifdef modfinal-first
+> +
+> +# this instance handles the chunk of modules.order starting at $(modfinal-first)
+> +modules := $(wordlist $(modfinal-first), $(words $(modules)), $(modules))
+> +modules := $(wordlist 1, $(modfinal-chunk-size), $(modules))
+> +
+>  __modfinal: $(modules:%.o=%.ko)
+>  	@:
+>  
+> +else
+> +
+> +modfinal-chunks := $(addprefix chunk-, $(shell seq 1 $(modfinal-chunk-size) $(words $(modules))))
+> +
+> +PHONY += $(modfinal-chunks)
+> +$(modfinal-chunks): .module-common.o
+> +	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal modfinal-first=$(@:chunk-%=%)
 
-With GCC 16 and a kernel built with -O2, sys_mmap2() becomes a tail
-call to ksys_mmap_pgoff(), which builds its call to vm_mmap_pgoff() by
-shifting its arguments up one slot in place. User space gets d2-d5
-back holding addr/len/prot/flags.
+Thanks!
 
-This issue was noticed in nolibc programs that are using mmap() and
-I initially thought nolibc's m68k support was to blame.
+Reviewed-by: Nicolas Schier <n.schier@fritz.com>
 
-Define sys_mmap2(), sys_cacheflush(), sys_atomic_cmpxchg_32() and
-sys_set_thread_area() with SYSCALL_DEFINEn() so their arguments are
-protected, and make their prototypes in asm/syscalls.h return long to
-match. sys_atomic_cmpxchg_32() gets an additional small logic change
-to fix how it gets pt_regs as the hack it currently uses is no longer
-valid since its code is wrapped in an outer function by
-__SYSCALL_DEFINEx().
 
-For consistency sys_getpagesize(), sys_get_thread_area() and
-sys_atomic_barrier() get SYSCALL_DEFINE0() even though they don't
-technically need it. The generated code doesn't change.
+(bike-shedding) For readability, I'd favourised the use of pattern 
+matching stem:
 
-Fixes: a90f590a1bee ("mm: add ksys_mmap_pgoff() helper; remove in-kernel calls to sys_mmap_pgoff()")
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
+$(modfinal-chunks): chunk-%: .module-common.o
+	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal modfinal-first=$*
 
-v2:
-- Added a fix to sys_atomic_cmpxchg_32() highlighted by sashiko.
-- Converted the argumentless ones too as suggested by Arnd, I considered making
-  this a second commit but that felt like adding two extra emails for something
-  that looks fine squashed into this patch. I assumed Arnd's reviewed-by would
-  carry over so kept it. Shout at me if thats not ok :).
-- Follow up work: It looks like the same lump of code for sys_getpagesize() is
-  in multiple arches, I might send some patches to deduplicate that later.
-
-v1:
-I think this is right, I've tested it on real 030, 040 and 060 machines.
-
-I found this issue making DRM/KMS programs with nolibc. Since I wrote the m68k
-support for nolibc I suspected I had missed some ABI thing and messed it up and
-I put a local workaround in there. Then the issue started showing up a normal libc.
-
-I fixed the sys_mmap2() place by stepping through the kernel in QEMU and working
-out who was messing up the registers. My fix worked but I wasn't sure why
-there was an issue to start with so I asked my clanker and it disassembled the
-kernel and explained the tail-call thing in the commit message.
-
- arch/m68k/include/asm/syscalls.h | 16 +++++++-------
- arch/m68k/kernel/sys_m68k.c      | 38 ++++++++++++++------------------
- 2 files changed, 24 insertions(+), 30 deletions(-)
-
-diff --git a/arch/m68k/include/asm/syscalls.h b/arch/m68k/include/asm/syscalls.h
-index fb3639acd07b..38a0f985fc76 100644
---- a/arch/m68k/include/asm/syscalls.h
-+++ b/arch/m68k/include/asm/syscalls.h
-@@ -5,14 +5,14 @@
- #include <linux/compiler_types.h>
- #include <linux/linkage.h>
- 
--asmlinkage int sys_cacheflush(unsigned long addr, int scope, int cache,
--			      unsigned long len);
--asmlinkage int sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3,
--				     int d4, int d5, unsigned long __user *mem);
--asmlinkage int sys_getpagesize(void);
--asmlinkage unsigned long sys_get_thread_area(void);
--asmlinkage int sys_set_thread_area(unsigned long tp);
--asmlinkage int sys_atomic_barrier(void);
-+asmlinkage long sys_cacheflush(unsigned long addr, int scope, int cache,
-+			       unsigned long len);
-+asmlinkage long sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3,
-+				      int d4, int d5, unsigned long __user *mem);
-+asmlinkage long sys_getpagesize(void);
-+asmlinkage long sys_get_thread_area(void);
-+asmlinkage long sys_set_thread_area(unsigned long tp);
-+asmlinkage long sys_atomic_barrier(void);
- 
- #include <asm-generic/syscalls.h>
- 
-diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
-index 1af5e6082467..4cc5aaf74886 100644
---- a/arch/m68k/kernel/sys_m68k.c
-+++ b/arch/m68k/kernel/sys_m68k.c
-@@ -37,9 +37,9 @@
- 
- #include "../mm/fault.h"
- 
--asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
--	unsigned long prot, unsigned long flags,
--	unsigned long fd, unsigned long pgoff)
-+SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
-+		unsigned long, prot, unsigned long, flags,
-+		unsigned long, fd, unsigned long, pgoff)
- {
- 	/*
- 	 * This is wrong for sun3 - there PAGE_SIZE is 8Kb,
-@@ -374,8 +374,8 @@ cache_flush_060 (unsigned long addr, int scope, int cache, unsigned long len)
- }
- 
- /* sys_cacheflush -- flush (part of) the processor cache.  */
--asmlinkage int
--sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
-+SYSCALL_DEFINE4(cacheflush, unsigned long, addr, int, scope, int, cache,
-+		unsigned long, len)
- {
- 	int ret = -EINVAL;
- 
-@@ -459,9 +459,8 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
- 
- /* This syscall gets its arguments in A0 (mem), D2 (oldval) and
-    D1 (newval).  */
--asmlinkage int
--sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
--		      unsigned long __user * mem)
-+SYSCALL_DEFINE6(atomic_cmpxchg_32, unsigned long, newval, int, oldval,
-+		int, d3, int, d4, int, d5, unsigned long __user *, mem)
- {
- 	/* This was borrowed from ARM's implementation.  */
- 	for (;;) {
-@@ -515,12 +514,8 @@ sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
- 		   Make the kernel do the necessary page stuff, then re-iterate.
- 		   Simulate a write access fault to do that.  */
- 		{
--			/* The first argument of the function corresponds to
--			   D1, which is the first field of struct pt_regs.  */
--			struct pt_regs *fp = (struct pt_regs *)&newval;
--
- 			/* '3' is an RMW flag.  */
--			if (do_page_fault(fp, (unsigned long)mem, 3))
-+			if (do_page_fault(current_pt_regs(), (unsigned long)mem, 3))
- 				/* If the do_page_fault() failed, we don't
- 				   have anything meaningful to return.
- 				   There should be a SIGSEGV pending for
-@@ -533,8 +528,8 @@ sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
- #else
- 
- /* sys_cacheflush -- flush (part of) the processor cache.  */
--asmlinkage int
--sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
-+SYSCALL_DEFINE4(cacheflush, unsigned long, addr, int, scope, int, cache,
-+		unsigned long, len)
- {
- 	flush_cache_all();
- 	return 0;
-@@ -542,9 +537,8 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
- 
- /* This syscall gets its arguments in A0 (mem), D2 (oldval) and
-    D1 (newval).  */
--asmlinkage int
--sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
--		      unsigned long __user * mem)
-+SYSCALL_DEFINE6(atomic_cmpxchg_32, unsigned long, newval, int, oldval,
-+		int, d3, int, d4, int, d5, unsigned long __user *, mem)
- {
- 	struct mm_struct *mm = current->mm;
- 	unsigned long mem_value;
-@@ -561,23 +555,23 @@ sys_atomic_cmpxchg_32(unsigned long newval, int oldval, int d3, int d4, int d5,
- 
- #endif /* CONFIG_MMU */
- 
--asmlinkage int sys_getpagesize(void)
-+SYSCALL_DEFINE0(getpagesize)
- {
- 	return PAGE_SIZE;
- }
- 
--asmlinkage unsigned long sys_get_thread_area(void)
-+SYSCALL_DEFINE0(get_thread_area)
- {
- 	return current_thread_info()->tp_value;
- }
- 
--asmlinkage int sys_set_thread_area(unsigned long tp)
-+SYSCALL_DEFINE1(set_thread_area, unsigned long, tp)
- {
- 	current_thread_info()->tp_value = tp;
- 	return 0;
- }
- 
--asmlinkage int sys_atomic_barrier(void)
-+SYSCALL_DEFINE0(atomic_barrier)
- {
- 	/* no code needed for uniprocs */
- 	return 0;
 -- 
-2.55.0
-
+Nicolas
