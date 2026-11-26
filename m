@@ -1,100 +1,101 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.44
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795719119;
-	b=ZDA8VjlsOiIN9+bOBHc4kaDdv+JtYRVrKS8K6yf/EbVLKA5yc7yqs/6c8Vt0/DCFYjK0
-	 eQb+Th8nC23qeARmUj5WIE32F6F0EfqbqVXlLB8H+ILUsFwiUc2MmVLmX3oLJp7WVADf4
-	 3gdhgsTBNppTANIE7Vu6j47sU6W4e4ZXtdXPeFQ2R0K4zmUF9sJaI87GTP0iU7bSZzui4
-	 aInJ08UJMIUaJRgVHwMQjGDdeE5Xj1wMfplYwOqMnOfcTV3ZIhVLUdha58DHztXPWcvvw
-	 kx+o5rrvlvmgIWg2AgmB7RzYPD+xk4NuFtXKNAHH9p6Fnq3/BcGxHpH0SiDjeR+FZ4g==
+	t=1795721976;
+	b=Oa2zY9PRCqjmbcHbQ5s5Kf7HT2v7ZRMF0ch+QV+OeEgWAoLVl3QQ1poecijoLvpqJ8NF
+	 kPzZULb0tfzuW0d6sDCeJDBujT/psrMrz914lP0+U8crz6HwDFR6g0o6zTemTRpt5Mvim
+	 P1G/VjBnJkveEgDTB02OyJsMJI6Mx6qJtMWSR3nYnqyplwpUXyJEhWZlxtvOX+4onAMLl
+	 u/t1InmASJIP/yEtDRm36hLYKVyrCM6EjX2urrUNPnFjucLMMMqETkV/Xb4vRtXJB+NoE
+	 AOC5d0Sg66ilPr/r2TGsr2kRcp4OQkcbF84K6Px8n6jv8Y3qPv4bZTYnrEv81YTppdg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795719119;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795721976;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=XMYQyEtwx5GngECoxaqxQHLv5tzhAgtmgz3LLMihPqo=;
-	b=o0EKq2qA1AY7Zpz3Abhp7ElAU4+n0SYIpzympam/2IjblRpNTSTqv8DP1eqen3015Ifc
-	 7dtJZp0YQx5+TRwiS069aOOiOPne8oGaHgAQM35rIjbdRiOCDdyu4p9l8HmGgNhbEjRrB
-	 gx/rlIxT/VIIdShy8DWpo74XXrZQTRUoNKFoO5HxhCZNwNy6xg0s8mq5YJGuiUlJUYP8o
-	 P4YLaSWepkXN/ZlUphN25ivkB3bJBIiVBXGefzELC/76uXFKa11xWpT9HXVQ8wAj5kSQs
-	 UMCkeCe0ze+/sbPs9GezoJbgiwJzVyNwyFZizZDHKnyhIKG3o+Je/rkF+owCXzqnb0w==
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To;
+	bh=1JyQHuNi3zirNTL3+DOhmQ/6X/ugkLPIWASz+EFn6GQ=;
+	b=yc/9g0VhBcrgmmwYO5mPcx3UU/t0ASn+GkYk1KQyaZL7VmH7FwboyOOUwzsOvXF1nAzD
+	 6bUfDxufLC4S6tzW6vAzVSsrez0pRCT4mUMl/QzqtS+ExCgU3GqijhTmhAfoH3KKc3r4y
+	 JeTXECsxjSZHidF472pXkSyxZviTbImmkWpSJnY/HNiCT3029Ycwt2UbMwOztuHTp+slZ
+	 RkbL74BoUXRD+pz1gknoTcnncx3SNZms9ozSTPjubh0j15gdFnm6cPk+eqN8SOQe/BiB2
+	 mVSeQsINk/avnFuFpLkVn1vjvtD0uHPI7idJT73g4R3TVrlgbxQh2DBn5mBqe3JWdPw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tsiyDAU8;
-	arc=none smtp.remote-ip=209.85.214.174
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="wehxO/2y";
+	arc=none smtp.remote-ip=209.85.216.44
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB72606A31E
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 18:51:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0FB72606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA17606A323
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 19:39:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6BA17606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tsiyDAU8
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2f0464dd6b6so45119575ad.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 10:51:58 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=wehxO/2y
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3b520f1604fso272233a91.2
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 11:39:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795719118; x=1796323918; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=XMYQyEtwx5GngECoxaqxQHLv5tzhAgtmgz3LLMihPqo=;
-        b=tsiyDAU8kjtOxlKPDcmY0gaC4Mn/YIasbPP+g47JZlP1Vc1FfcXjXlaWtSwEu/BVdk
-         pi766b2wgVc3a2Zpqn7vTkOiuFqAd3Q9/ntRRZwIAj2jLLnJZrr3QQLtXTKvwCdC7KbO
-         138DYmS7WAmQyY76jnVAPxiQteAP7EaaAJisCnOCKZvrgl6PzZLRG0CHjRRIt5aYS63E
-         uhargFaCeBXjfnjs90n28JSuxp+Vq/G4AVI9fV1CzHpBY+6l0rh+x6ntLiLtVms0o8nR
-         tJGDH8zmlWqrdf++Bu+AJ8RmUbODF+j1YuSTllL1nJ6L2dce0yKtbCvmzqQArDkeJqkt
-         fWIg==
+        d=gmail.com; s=20260707; t=1795721976; x=1796326776; darn=lists.linux-m68k.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=1JyQHuNi3zirNTL3+DOhmQ/6X/ugkLPIWASz+EFn6GQ=;
+        b=wehxO/2yvhrX2eNjXjtIvqtf2yn7VtOmwgnRcEfi4TyAREpfN7rC/2PEjjtuOKeu9t
+         udLL2+ht39drNfuN8oVezhL7W+0i5IIWjbwTwgFJ0KZ7W/1jnNjbP1+PwsvOyFtCjgm5
+         7/Pkar+WKLa0mkx67fnT1K6KNc7PpZmL6xS71m06zfDKUwRDD5or5P6/Hti5G8dh4T8A
+         fMX9HsAuo9sLBhMps3jVlyCxSyKVWKAPqvM7KqEPJXax7scS/25bOWGG38C7LI6eJ8Ft
+         vKEjV3bqmYWqO1oPqtV3AzqozYOp4v7z4oXRRAgSvP08siI0/StFTm6CT2aAxKMG28D1
+         PvZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795719118; x=1796323918;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=XMYQyEtwx5GngECoxaqxQHLv5tzhAgtmgz3LLMihPqo=;
-        b=nNieErbAYe0AuFjhRvNNCOUdCGTO1uhl0z+KwHVDPlEOaJt+x4I4pvcFpibv6YVb1c
-         NUVn3/smVW1nOHV2H/BsCVm0nwL0ayt6ve1Azg3jpFtcl0ry/zUCrvB8n/q4CYrjQyEe
-         3RlGDYP+bxaMfWMGwhyT61nmGwkg2gzDHzp9c6YBIx3c5YWERErNZrSRWcWuKTBwcpCk
-         74aFwi8+T9ZxcuMKNm+TTkwW14mYJd1FqPDPZKyPsv5T6F8eKkKktxmez7xx9UwKUn3J
-         HBR88XN5axzLaqToCWuQldaGPNPNBvI3MP1VCabDL6DbPfaqB95/3TuEW0sEIDQRRVjZ
-         C6WQ==
-X-Forwarded-Encrypted: i=1; AL+hErH+9xcXH5mtbZjOoxGkXzG/MW3MaHb7XFXjTQq2//w6iatMXHFc/RmrRVRLIYfpWCUYcJccVenktAmZ@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z/ASWR6bO9yAO+ijjDTD9V5P8oLRkRzNcvOKP76PYwuVzmXYoHB
-	ALw7u2chrDrAUPhiJmuZKcOG0RiYWX6nck3fAitYC2F1E7fQQ5WVHWHZ
-X-Gm-Gg: AZFdTZe4jQlPQzm/k5viYdYum+NJUDB3CoCNPnu4mlFmkF7I7fW6kX2N6yhy35TX6Ic
-	OR6OFPCnucZEQ4QjYMibT++HSqaEtAL9NRwukv/OPr1nwBo75wesXxAWRX+yE7/SI//HJuA2PXq
-	EpthtHlqHmiJFe8ylFf4p3n54gJXBS5pbcCf4cpF4abzSJvKQ3SqBR350S5T+AsvTkwlO3AyXuN
-	d1A16J7//VMmuOfSyoAqJfmmYB0lPiQL5wkJ6uk+1Pniv75d5jt94dbYmR1HyWTieAxYj5GJIhF
-	0dSR5n7qxE+Q9cYcIJp68jUADsUfcgl5DM4I+hY2SX1SyM/+dWkDbK94AHQlzfK+mW97tJfr69C
-	G+j0Gar//U13ut9rFv+ChawqhBMHAGcRA7Ym2eM8nFfDZB+oZY4lu9cGq2Q1ChxJM4h42m7c75w
-	KClwRMj9z6NDCN2IOHTSN0lPUSs/5gzetEhKuowWOnbwUQPidn2ytMiUaBeq5zIU55YE/X51uhU
-	P3DfMr5Xt/oracUKXUsfrUshU2Oc37CAYAWvitAix6dtM0P+52Pas0tX8CB2wvYypsjmez6VizQ
-	2TqBspn8wwkz0jq74Wcqdh8tSRZxXaAP1wduELzn3SNZ0aDtnxvrVYRk81i2FfQOxOzi8QuUW92
-	XTva7LiewMf0N08fia9bcoik=
-X-Received: by 2002:a17:902:fc85:b0:2f0:3956:99a with SMTP id d9443c01a7336-2f03ef861cemr207485285ad.7.1795719118446;
-        Thu, 26 Nov 2026 10:51:58 -0800 (PST)
-Received: from visitorckw-work01.c.googlers.com.com (55.11.81.34.bc.googleusercontent.com. [34.81.11.55])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f03f1276c5sm112041665ad.67.2026.11.26.10.51.54
+        d=1e100.net; s=20260707; t=1795721976; x=1796326776;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=1JyQHuNi3zirNTL3+DOhmQ/6X/ugkLPIWASz+EFn6GQ=;
+        b=1wAPY82DyXrITPq6gdWT2jyDnxOADFtc4IxFFnuWaHLaaNwTfClqKcHgRP/BgdlXbS
+         J9bFTqFcIM5khA2/RV57gfGRmevIqP0h5yEDQAM9Y5A846WA631pPTSjchbwgMImYBz0
+         ozGK9X8INFeaGI4WXUFzMcnWWHCiiiH25vFVCQqjkkzfrop+ZZnS9mdlbC9u1w07kcD4
+         06DeQ4ZnoM1zt3SPKxk815jb2sjbprB8pN4oa3aFM1usPYlHUO8mbelegBpEkPFJrNqH
+         4dHhsJsSC+Rrd4uCFrliDRAtkAm2+LJcVz0M+YG3+XYjKP+UKL3ISgsqTk1mR7nxpg2F
+         t51w==
+X-Forwarded-Encrypted: i=1; AL+hErG48JbVibtN6ma4A/y+BvUXG9eGjtN4suijs9RrJQABIgSeXvXClRrNm4knil2BFTOmEdtxeusQDmJO@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z+PBjYr/+nHxeGaex12Vko/1r9c2mEjvGNdKd6UVLEr1iQ1c+mb
+	lJr5Ajlm0I5MtePYTsy3j1W7UAxDT2G68vhhPkpQnNC2M/1lpYbnfcfE
+X-Gm-Gg: AZFdTZehnOrqtAtWhuHBQVVN7syxIl4xakLUwAzoBTI9i9baGxMX+09OqNwT1X4d7km
+	qZnGo9LaimOp/58Ie6JdOc9ALiK0zPziHDSsYEU7gz3rM9pkCZfm6Yg7UOPBw18WB1A0y9sXSsX
+	3CPCcjjX0khkQb8fAcTKPTn24ushp4Jnl5GH1pZ0Q5BatPwJ6+Ggnjisv1EPw4thD3xSDjxKxft
+	Pe7OeTr28sTxzIaDM9iaXNlNU2I6znARFVVBki4kzkK0S3WzmE5K+Cu4ex5lnGjPKFflILga5uB
+	Zo/oz78Pgvj/kgnNNrtHQICJNBpqZi6M7c9xNstAhhGJLQMIYKXMAJiBDAF5LcV53Rs8WUC7foZ
+	TsXcf28dYzjlsizqrCu9Lx1jGYy2q9yOTUPPdkPLW2OAQ0gdrlzwuMGBrqRe6crJ4sHilTbdy24
+	skc6WC1tWWazPF5zeuB4AT2l2OtRNuZMvnBy9ZrYC6jSKhICyefW4UWcRkKFaZKRtALVs4GsTFe
+	kzKmO/cgK7hEaYrt1sCGbmUHikLdmO2QD1kCv9Qq8PRWVgEuCtx1aNnfgAToysxCGINKdWx0vn8
+	KIHaXG4aMEFEBajigltAMpDzSB+Ksw==
+X-Received: by 2002:a17:90b:2701:b0:3b4:1bf1:9873 with SMTP id 98e67ed59e1d1-3b41c8dd1b8mr20338360a91.19.1795721975723;
+        Thu, 26 Nov 2026 11:39:35 -0800 (PST)
+Received: from google.com ([118.150.148.19])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b53479b149sm37761a91.6.2026.11.26.11.39.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 10:51:57 -0800 (PST)
+        Thu, 26 Nov 2026 11:39:34 -0800 (PST)
+Date: Fri, 27 Nov 2026 03:39:27 +0800
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: geert@linux-m68k.org,
-	tglx@kernel.org
-Cc: radu@rendec.net,
-	marscheng@google.com,
-	eleanor15x@gmail.com,
-	jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v2 7/7] MAINTAINERS: Update maintainer for goldfish PIC driver
-Date: Thu, 26 Nov 2026 18:51:20 +0000
-Message-ID: <20261126185120.3815699-8-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.56.1.839.g22a8290db9-goog
-In-Reply-To: <20261126185120.3815699-1-visitorckw@gmail.com>
-References: <20261126185120.3815699-1-visitorckw@gmail.com>
+To: bot+bpf-ci@kernel.org
+Cc: corbet@lwn.net, geert@linux-m68k.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, eddyz87@gmail.com,
+	memxor@gmail.com, gerg@linux-m68k.org, skhan@linuxfoundation.org,
+	rdunlap@infradead.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, jolsa@kernel.org, emil@etsalapatis.com,
+	ihor.solodrai@linux.dev, marscheng@google.com, eleanor15x@gmail.com,
+	jserv@ccns.ncku.edu.tw, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	bpf@vger.kernel.org, daniel@thingy.jp, martin.lau@kernel.org,
+	mason@kernel.org
+Subject: Re: [PATCH v12] m68k, bpf: Add initial BPF JIT compiler support
+Message-ID: <awiK1SMNCNxNipjQ@google.com>
+References: <20261126170538.3471057-1-visitorckw@gmail.com>
+ <0eb06d3a00f2e4d56c2f25db16eb8b02160387281fe455b0e0e5d7466492657e@mail.kernel.org>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -104,31 +105,19 @@ List-Unsubscribe: <mailto:linux-m68k+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-m68k+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0eb06d3a00f2e4d56c2f25db16eb8b02160387281fe455b0e0e5d7466492657e@mail.kernel.org>
 
-Miodrag Dinic's email address bounces. Take over maintainership of the
-goldfish PIC driver and change the status from Supported to Maintained.
+On Thu, Nov 26, 2026 at 05:45:05PM +0000, bot+bpf-ci@kernel.org wrote:
+> > m68k, bpf: Add initial BPF JIT compiler support
+> 
+> TL;DR: Nits only, no bug found: the m68k JIT hardcodes the tail-call limit
+> (0x7021) and the 44/48-byte prologue jump offset; suggests named constants and
+> a check so later edits don't quietly break tail calls.
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'll hold off on respinning just for these nits and fold them in if a
+v13 is needed.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f6c37e1dbee7..b69c1a334587 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2000,8 +2000,8 @@ F:	Documentation/netlink/specs/binder.yaml
- F:	drivers/android/
- 
- ANDROID GOLDFISH PIC DRIVER
--M:	Miodrag Dinic <miodrag.dinic@mips.com>
--S:	Supported
-+M:	Kuan-Wei Chiu <visitorckw@gmail.com>
-+S:	Maintained
- F:	Documentation/devicetree/bindings/interrupt-controller/google,goldfish-pic.yaml
- F:	drivers/irqchip/irq-goldfish-pic.c
- F:	include/linux/irqchip/irq-goldfish-pic.h
--- 
-2.56.1.839.g22a8290db9-goog
-
+Regards,
+Kuan-Wei
