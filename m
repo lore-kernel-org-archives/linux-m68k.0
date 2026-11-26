@@ -1,84 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.173
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795719097;
-	b=ActEK+XakNFBEHhddCejDK+6ZyQqeEqeRXhXcAG7uJXtUS9vIWUQmKsdgihwbOq7VnLW
-	 ItrTsD+FJqpjZvCV6DpPloJ5xezgeoaVbH9lL4BYRXtjpLhQwXsY9m8kA44EAu6r5KV5R
-	 aqzJngEfgNjHYnfrT2u+RV8C7xcVhH1zTlcNi2XVRBTwPyfm/FgBR4zp3XbXVIlTQO+bv
-	 Cnr0eSpYZTlsxx9+EONS3sfL4J0wtSjqL+Av8h2QlRCkpEjdqrAdPOfvaQOf6zUZlI0Ti
-	 WZYzbuhZSeuLS6qTIL7AsKrKByLC07+jMF+WBfLX9Oj/QoaD1XGsy0Ub/cQrUMeB6Sw==
+	t=1795719100;
+	b=Pcoc4QmEAR7DlscLRXlNCLyQj5MZuNBUGKlZTsaZN/iYQOT47O0Sufj1vI91BwGdRLwX
+	 KyM0JQf0Q86rmauSM4XCvkN/XDBt/vyu3vGZX/OPu6XzcoB/wpP31Fpj2LOCk3DAT6JcP
+	 aAyo9+IJ0faN7rSBcMTbryXc8UPbYjFpwnrk0N7Vm3uW7kB9eX4ICYyVlim8RnFylwSiH
+	 jHwU+C0tYR8MMr94OXgP/fgMQ+wNQM4YkGqI35zL7O8MJlMIBSDmZ22e7APNWQjKH+vtD
+	 /78UMxIufyjO95qfOVkC/ws1tOanH2fiHcOCUnZEoMfDl5vVrWVaPNBFpISHTe6Jzkg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795719097;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795719100;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=Jl8AqubnS4n1475UbhVTokDsZdN8S7Jb0HrKLZ730Vw=;
-	b=tyjPsVKINq2D0O8XpceuSCMdAaPNF6QvrXsZm1dnx5Ple0gp9leIfAjxzVxQxk3S2N8A
-	 pbMBbdmd9OL/U7GFWoFpQGSrod3Tuz74JZq3pM+sfZ7wuwcfFF4n4bKOOauTtpL5EO4rZ
-	 JyqC9J5MoSVO04dRUCmJz9+F8D8pfk3FkfJ/F3XPQAA9I/ybmrwNzxFVYGD5BsoVz0oyI
-	 J0oXr8OMqCgIDn8DiuI0j3auxzr9b+kVH6Y+Puvd3gbheRB7MmnNg/uL4oZMtsruSWA5k
-	 qUWcYMOI8IRWRfBgqhtB17Etfs4Osc6EcI2UJp5/BDVxCjICcO+4vCrHGTLOMHh3lqg==
+	bh=mrLEC/tUIlpyHMdC0wLVawPYUHVLQLEsP0xd9iCsuyc=;
+	b=llniPL7/yKOyXWW/nkYQb4dajrGU90hsRrC7oKjQZ7dtP7XMmFooDLUiPs3glPRJq+BN
+	 NQfyXVC0PVBhgGq+RhSJ0BiGfWLqZE524eyAZf/xnUc90VYS5mBmN9TI40nZB9jsVGb7r
+	 bFPmE4/IQ2TLCzGifTk4ZNitw1mlLJWTjXCKwJJ7SRhDdMbrL1vuzQSASEpoAntFWfiXh
+	 sm4lSkQ7nUIbbddt8Xgcis909paCSV+UpfWtUzrGYi4UYpUS95fAlFSBBL9RzxstdbcZV
+	 KytCfhnKr2Jo8zwIO1fgr23rqU1TNIE5nfw10HS+RMsXsOg3vpL0ATXGumCTYEb4txw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=gtikjKgg;
-	arc=none smtp.remote-ip=209.85.214.172
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=u9JhueEw;
+	arc=none smtp.remote-ip=209.85.214.173
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AB2606A31E
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 18:51:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E2AB2606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D574606A32C
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 18:51:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7D574606A32C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=gtikjKgg
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2f03920c477so61394135ad.2
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 10:51:36 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=u9JhueEw
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2f041f88577so40190735ad.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 10:51:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795719096; x=1796323896; darn=lists.linux-m68k.org;
+        d=gmail.com; s=20260707; t=1795719100; x=1796323900; darn=lists.linux-m68k.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=Jl8AqubnS4n1475UbhVTokDsZdN8S7Jb0HrKLZ730Vw=;
-        b=gtikjKggQaodP80/0Vun3CIVpLnBSW5pTA6MGOBe250pusHIid367CORuvt1famvaa
-         mcqfhVXkfealgfz3GC/vBHP0C8FP+EM2NoLgANuIlZbPxeEHsX/LFIE46BfeBSGWY/Od
-         p19URllqSVpDof0nIHfyGTh7XWyXmhrEJMBxDP0feyrZCVGE5zLgcdYIbVAv//hHJWdt
-         6Nx+ESOhvDiiXXJ1qpfJChpOshdpDJjQx1nHRD/mUkd7uerX4pANfq3i+UVYGf9CmR2j
-         6HA9C8wRPnKMTSGZmQu3IEpRc//6uwyy/WlYLiVtoM/1QuFPi/VxAU+d5phGCTpqNnaf
-         cSoA==
+        bh=mrLEC/tUIlpyHMdC0wLVawPYUHVLQLEsP0xd9iCsuyc=;
+        b=u9JhueEwMYHXpZtY5shWVY1vKrtGKLcAUPFh2zqegm4kvj+VEpvgme90+hxXlxApJu
+         ECmrEHMZrCPSyKnnvhKgPLKwGoMtgYf/pVGT5Sg3lEplnsgT7HJKwykO8CzaDNjg2yEP
+         lVaFMEcGzPRgKjVPCD8I52r/Swv8Zatx1ZN1v01N8KLV0bF/NxM6IyINZNFq17UYzCa8
+         wdWhSUZDP7DMwyF+cFk5W/SeIAMlKEqbpKupjZi/hLg6PVS6t9IiogsOsEH90khSrcyQ
+         zJhY915X1T84qGrK+z8fH/D1KuWFngPwpFGqIwcOOinfbOnve5TuRLnjFqnGzsghQInN
+         69Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795719096; x=1796323896;
+        d=1e100.net; s=20260707; t=1795719100; x=1796323900;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=Jl8AqubnS4n1475UbhVTokDsZdN8S7Jb0HrKLZ730Vw=;
-        b=mjbB2HoSJu6CBZBlILOf8E8simoUAx2yA/YBDIvq+nPFPZ/ARMOkIk2Ihug8lWRl6Z
-         2reGJZa+4BufZ3yk0s6YFHo9ZBCo0LXy8nPw3rUJeIAlRwki3+Zw6CDwCHp/XugyXE2R
-         a6ulvixIwvUOiY8Zqr1Mt+bPWqXj0NQaGJmCSNWReSHWQegJxez2qsp+JbvcaEjU1Yw9
-         VZ/KinX52cujszPtnVJMj7B1n+/ctH/0tVPICzGk45IUYj6Is8UPn+HRgYo07kJ2VVYt
-         2keyufVECKJC73zCmTbJaACGgZWam+nD5zPujSaMrnIBGALt/XAXbfbIlEywp9OG+hme
-         qmHg==
-X-Forwarded-Encrypted: i=1; AL+hErFE801i9dGRsIgCj/n2j3i06DYTUx7LbKeElBK9M/2f/SIXJODMU4mBhSJY4epYja73D86UCPaH4yhO@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z/8CU/um1clwywCAt1UWugSV4lBT8Pg944dc3XVZWPwpH94Vl73
-	49cKHhdsqM1zQlEcoAj8/OCTIOqTlPhw+whVJvaOZ/lFuoss9kLlibvh
-X-Gm-Gg: AZFdTZcg4onalPIdRnbXYUxoZcZeZ+cWZiUtmlblXu6HfoW8OVjCyatDjTxk6jI+nAt
-	7kYIGfRmgFm3QCaE/RQDxS+sBTRP7/m0k1BEg0NHnxBSa7aCzANM0qdMKOcTItoLqPRaJ0xmK93
-	GcZQ2bMT9qqHfqUH2YF9wAGPDWheiEjdqQ8Ep3+x86Q23PJDpP5w/VO4JZiqWxvcaNs//DBqakn
-	mW3sP5KGsf3zDI+iRohtIDQfZKA2DXQN7LBkgdHYb5xf5+mDecdDyL+mj+lijGrCn/iiwmOmv4a
-	rYGERyvpcW15T2uyY+F0gptXxbnRkVEQDje2qTycDZrcFkNAPw+YNaXbhBCBxbrrgYHroOBqDje
-	xxBtoUZWTLGgWVGC+rPUWof4aLx0bxH8KmrmIClY0MgynCV4C1zcGRSulT+4iDeyhLvAhWkCZqI
-	sx7YgejmNr8pY9MVU0l51IknHRrAEhRydDUCftFWBB6AewNnsXWDnMb1rmzgwGxponBKXwV9eUd
-	M08gP5aA0HIPotFBaYCiDkvnxf/vIn08VmwtCr7p/mvgYtnPtjU7+Mi/dNRqtNprO7iWgBIap3S
-	+2d1Y3Liwe772LoncnGoTckpZcWEmTt+AnsCFM67b0N/5nZs3tcOkNnvM1UT11twhfcwS9gBPs4
-	NoAnsjaTlhiL0Cc5sx6f+CRs=
-X-Received: by 2002:a17:903:b0e:b0:2ed:205e:eabc with SMTP id d9443c01a7336-2f03f142f86mr228464035ad.32.1795719096152;
-        Thu, 26 Nov 2026 10:51:36 -0800 (PST)
+        bh=mrLEC/tUIlpyHMdC0wLVawPYUHVLQLEsP0xd9iCsuyc=;
+        b=DeZciyvrJQb5GA2FmpHaOSy9LSae74Fx8eOttfUHuBYY5L5LvtOzG95mdHXCezKB/7
+         uXTPG1oRQB261x6k1vcFn1nGPUuu09xOSjgCNpYEGOzTRAi7Wotc1oWuNqCcXnuRDilB
+         X8Hx5rIwGpHvfvBLWqYwkkja000wFIG6RAqfEmdrFodcH70ZQWv6z4kPUJz74wu2x5lE
+         qFpW7r5Y/yRDeMYZ+VQCH4zn1qehAfh/jLCstaEWjfRg1jtjG/uKvCBIA42YzbclnmgY
+         bByLUkmceSxeUFsqKkz6D7YIDhbHA8UXGhYo0DEtYOUpbvdBwL0P4NqBd2tSwBaBieii
+         8HFw==
+X-Forwarded-Encrypted: i=1; AL+hErHNbQHozWKkb+vBVOPHQQLcE0l7XeYhsXbZWZghaTczNDePAKRaWEzSlD/0I588ElCqDk9nyksiYshS@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z/N+0lUKjKLQ3UU6QqBXjLVJL/GMR7rzXtIM1iXgOO3sgImPqyV
+	IF4k3sKVZvwuyrulLOlqzgsf7rdb1wGDNWbSYADxbJG+NceUAkUdt6aj
+X-Gm-Gg: AZFdTZdwR20oSd4gxcvi96WNoHlLfSezFNLE54m/etWNzkuIhib/QPyEyCTaLidrYKo
+	ZezcTu9qPDvjCwG24XpHcIQLpAdKgLgZj9g3yj666AU7I6484aMeZrI9TRQcEmXTv78+bqr7jaJ
+	s5LNrYPrh+y+Q1ZxI9Hwl1o5tZtlT83bosVABVQvyte5m9ugzD+MzVgBeDHaM75Eh8fuF9AlGoX
+	PB7XROrEB9CarBx/TA3g+zmTCDdXL+sPr5YdMF9iRcju8C2IwCYBPzKEMwiAQv7aF6e9BERpRuC
+	yKf6JGliRh5St4EqdMBwX7hrIRR8pvmsDyzSBiKW2GigwDeed1Qq7ABQrghGPAm3Hp/kRqQs0Ms
+	1ALdqITe8oZgB3UqZi53mUz5P2B5eWUfXLAdC3YQZetovXRqo8TphMEvFrhn+8MLrQbpy9slU+z
+	oIb8rzy9P+Ox36Y5YrcX8aA4tqQT00Eg8yX3O0Z5nXWUANaZFQxnGqIADTqJdpnXCkf6hClMaBu
+	1uUDCQZhwSRDXcmvzBfyO+EO6Wx3kfh4vv/ZAAFv8qzo4fTkdZsMazTJ/0qXj4peA/vHxMqG4xA
+	Ef1U/fDzlWR2iikDYbSWloW57+jugL2wkxrKx/7Nmy+BwbEy9hZBZEz9nxOcREsvHGJZkKeLo68
+	u/sDYGj6nZdPmwQNX5VnpTbo=
+X-Received: by 2002:a17:903:32ce:b0:2e9:7ff5:5459 with SMTP id d9443c01a7336-2f03f17d17amr238824525ad.15.1795719099914;
+        Thu, 26 Nov 2026 10:51:39 -0800 (PST)
 Received: from visitorckw-work01.c.googlers.com.com (55.11.81.34.bc.googleusercontent.com. [34.81.11.55])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f03f1276c5sm112041665ad.67.2026.11.26.10.51.32
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f03f1276c5sm112041665ad.67.2026.11.26.10.51.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 10:51:35 -0800 (PST)
+        Thu, 26 Nov 2026 10:51:39 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: geert@linux-m68k.org,
 	tglx@kernel.org
@@ -89,9 +89,9 @@ Cc: radu@rendec.net,
 	linux-kernel@vger.kernel.org,
 	linux-m68k@lists.linux-m68k.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v2 1/7] irqchip/goldfish-pic: Use gf_ioread32/gf_iowrite32 for MMIO access
-Date: Thu, 26 Nov 2026 18:51:14 +0000
-Message-ID: <20261126185120.3815699-2-visitorckw@gmail.com>
+Subject: [PATCH v2 2/7] irqchip/goldfish-pic: Use for_each_set_bit() to iterate pending IRQ
+Date: Thu, 26 Nov 2026 18:51:15 +0000
+Message-ID: <20261126185120.3815699-3-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.56.1.839.g22a8290db9-goog
 In-Reply-To: <20261126185120.3815699-1-visitorckw@gmail.com>
 References: <20261126185120.3815699-1-visitorckw@gmail.com>
@@ -106,76 +106,46 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The goldfish PIC driver uses readl() and writel() directly for register
-accesses. On big endian architectures, goldfish devices require big
-endian MMIO accessors [1].
+Use for_each_set_bit() instead of open-coding the loop with __fls()
+in goldfish_pic_cascade() to simplify the code.
 
-Switch to gf_ioread32() and gf_iowrite32() to make MMIO accesses endian
-safe.
-
-Link: https://gitlab.com/qemu-project/qemu/-/blob/stable-11.1/hw/intc/goldfish_pic.c#L130 [1]
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
- drivers/irqchip/irq-goldfish-pic.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-goldfish-pic.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/irqchip/irq-goldfish-pic.c b/drivers/irqchip/irq-goldfish-pic.c
-index d458cf898f8e..c3c33f066140 100644
+index c3c33f066140..12113ca90872 100644
 --- a/drivers/irqchip/irq-goldfish-pic.c
 +++ b/drivers/irqchip/irq-goldfish-pic.c
 @@ -7,6 +7,7 @@
  
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
-+#include <linux/goldfish.h>
++#include <linux/bitops.h>
+ #include <linux/goldfish.h>
  #include <linux/interrupt.h>
  #include <linux/irq.h>
- #include <linux/irqchip.h>
-@@ -38,7 +39,7 @@ static void goldfish_pic_cascade(struct irq_desc *desc)
+@@ -35,16 +36,14 @@ static void goldfish_pic_cascade(struct irq_desc *desc)
+ {
+ 	struct goldfish_pic_data *gfpic = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *host_chip = irq_desc_get_chip(desc);
+-	u32 pending, hwirq;
++	unsigned long pending;
++	u32 hwirq;
  
  	chained_irq_enter(host_chip, desc);
  
--	pending = readl(gfpic->base + GFPIC_REG_IRQ_PENDING);
-+	pending = gf_ioread32(gfpic->base + GFPIC_REG_IRQ_PENDING);
- 	while (pending) {
- 		hwirq = __fls(pending);
+ 	pending = gf_ioread32(gfpic->base + GFPIC_REG_IRQ_PENDING);
+-	while (pending) {
+-		hwirq = __fls(pending);
++	for_each_set_bit(hwirq, &pending, GFPIC_NR_IRQS)
  		generic_handle_domain_irq(gfpic->irq_domain, hwirq);
-@@ -52,6 +53,16 @@ static const struct irq_domain_ops goldfish_irq_domain_ops = {
- 	.xlate = irq_domain_xlate_onecell,
- };
+-		pending &= ~(1 << hwirq);
+-	}
  
-+static u32 gfpic_read(void __iomem *addr)
-+{
-+	return gf_ioread32(addr);
-+}
-+
-+static void gfpic_write(u32 val, void __iomem *addr)
-+{
-+	gf_iowrite32(val, addr);
-+}
-+
- static int __init goldfish_pic_of_init(struct device_node *of_node,
- 				       struct device_node *parent)
- {
-@@ -82,7 +93,7 @@ static int __init goldfish_pic_of_init(struct device_node *of_node,
- 	}
- 
- 	/* Mask interrupts. */
--	writel(1, gfpic->base + GFPIC_REG_IRQ_DISABLE_ALL);
-+	gf_iowrite32(1, gfpic->base + GFPIC_REG_IRQ_DISABLE_ALL);
- 
- 	gc = irq_alloc_generic_chip("GFPIC", 1, GFPIC_IRQ_BASE, gfpic->base,
- 				    handle_level_irq);
-@@ -92,6 +103,9 @@ static int __init goldfish_pic_of_init(struct device_node *of_node,
- 		goto out_iounmap;
- 	}
- 
-+	gc->reg_readl = gfpic_read;
-+	gc->reg_writel = gfpic_write;
-+
- 	ct = gc->chip_types;
- 	ct->regs.enable = GFPIC_REG_IRQ_ENABLE;
- 	ct->regs.disable = GFPIC_REG_IRQ_DISABLE;
+ 	chained_irq_exit(host_chip, desc);
+ }
 -- 
 2.56.1.839.g22a8290db9-goog
 
