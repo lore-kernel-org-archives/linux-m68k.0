@@ -1,83 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.44
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795716681;
-	b=VUPttY4vO7e/1Il3VZ6X1VumjRcfegEtEDio9T6gUcL9euy23TYcqOPe8hF8vQQVd/l2
-	 AxgPDkIJLe8bCp/eNdOHWKCApaAHyMxLylgMcs1DYAScg+K2SERmfcX76Ttv46Jsb2lD0
-	 nAK6sSLlY7mbQTZ77ZyJpTQkfPWQNfUmTAlV0GQc70jXpKA2XpAO5dqSgnggLTsXlO6HM
-	 zXhoPKCbQKiP+cb3CiUxhLn3aBJV8gW/ynE2/H/BIU8YA88MebJTKklyMoOHDeInmU209
-	 UlnrxN74vg3Bf/7OqSXx7Qo/yautASNGb+HBRTgk+dXz4ipWi2Ra5MBJGOPKL/Wi7dQ==
+	t=1795716690;
+	b=Zbp72rdkGZbFipo6XwMAWYPmgIocuNSRqrvN5kQIpm/S4faT4RnyuaFoJBJhlr1+NHPO
+	 Gvi9a/Il68tIe3b4TgIL67nZYEAgTUROKCcSqRUoE+dsdMS9hhnUPIKDL1QmK7W8xRzo4
+	 ZzvhxBXf7dGMZRbdL9AecY4GisnsZh1BgsbRB5MqYGA5H1htsPEW668FlFDN362j6zBta
+	 RNgUfEy+VSJvYrOXTBLTujilM7LrGmQKjGcnwgYOM5/yiozUbrlO7hnLAWXksqhElqASF
+	 avxq7g+nHytMhACVhEzbM2d/9ZUmQqLVzyGpI7RZMFH88QofkFzO8aK9Db6wY4HHMLQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795716681;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795716690;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=xFsTNbg6lSpPb9VHhNPoPU7xGJLiib7jmQ/aLuF0bIU=;
-	b=HiezOZr2qLH9OcDiCSSwB5bzgYlPQZITFRbsNZQzZ4O1NaPqOqMsaLJ28ZZvzf7H+ONe
-	 J0isEX6Gyg/2oVP9GcdrenwbAQImScd50gcqpm5hbxYtinJb/BqD05cdPB30istEwePEc
-	 l/1F0vzZNaVDNCaZ4SGL9+g5dk3o2Fv7Bf714CpBP4J5zPFRapo/zBbwaUPwbOUMO1TSn
-	 SCxNWHaRI5b13vRWnE7SR/z0qIx9L3Gh0M3Qta6QBl0A1uIP6A+KhAIqoOz9xklnRDAIk
-	 NhWTDQyUAHeQBkPZzGJkbIaJZ6uYITUdbnxev3zos//c0YP99Bs1Opi6bbs00TEzEcw==
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=6F8UENk1fuxOmw1JD+w3Chipk8eAZUCmgorWcN045W0=;
+	b=CG/ZoVbJYxU17ipvhZYxObsZAIu4aGzHAz0i00GpPz0NWixaoXbAADjt//G5ZgV+eOQK
+	 RQYwo4Uuf2zvlSKoDAMHlu6sLZ1Wj3IeOUuACf218oqGzOw8DzPncZj/4FimStBZ+G9oz
+	 204VBKBBSY5P4vSjRWeTGNxplbokwIVMZkoG2fW1GdFNULvzA6tL1+limzzjrYpsISdg8
+	 QtiFRaE6QBhHFlHMySvZLMCunE4noBygRP1zJL2X3qPIQ0n1DQzCTyLihlxcUrbZh2pvs
+	 rZzAj2CWEuXtsGJlU0CXIFz9VstqVcaT0jJe5EybS4aHWULVbOnfzTqMRBwchIqWn9g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=gfa+cjGk;
-	arc=none smtp.remote-ip=74.125.82.44
-Received: from mail-dl1-f44.google.com (mail-dl1-f44.google.com [74.125.82.44])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=HgWIbYoW;
+	arc=none smtp.remote-ip=74.125.82.52
+Received: from mail-dl1-f52.google.com (mail-dl1-f52.google.com [74.125.82.52])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E982606A31C
-	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 18:11:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2E982606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA04D606A321
+	for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 18:11:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BA04D606A321
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=gfa+cjGk
-Received: by mail-dl1-f44.google.com with SMTP id a92af1059eb24-1b546061d58so16747857c88.1
-        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 10:11:21 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=HgWIbYoW
+Received: by mail-dl1-f52.google.com with SMTP id a92af1059eb24-1b546061d58so16748187c88.1
+        for <linux-m68k@lists.linux-m68k.org>; Thu, 26 Nov 2026 10:11:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795716680; x=1796321480; darn=lists.linux-m68k.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=xFsTNbg6lSpPb9VHhNPoPU7xGJLiib7jmQ/aLuF0bIU=;
-        b=gfa+cjGkyQlhKhADQcoE+O3KMI6VSF0fu4xL+duO8ggaJsWG5Xwps7yRhOuCngMKAd
-         guklqjJHTcanhK8nzaMGKIfgmbwvu2IZ3KubhVWjGlauccIaRIbE0m2TRcfzmZWsR252
-         rLy5EJ4HmO7Kt8uQZdXlcwSLdD4u3Kq7jOih+NAJsfjpUwe0D6zUVhkADVgloRK9rTUM
-         P3UBqm82OImjmknSa9YL0e+eyyxJfbFeYi0YZO8s9jOPq/wvw7ywnWwCeSHCE6jDJ18D
-         QXkAgNeNV2Jizv5DxnnojARawyKaaIIxGkIYhEYzRSnTwwzzAIsqXkUZpgCQZUIUyR6b
-         ExwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795716680; x=1796321480;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20260707; t=1795716689; x=1796321489; darn=lists.linux-m68k.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=xFsTNbg6lSpPb9VHhNPoPU7xGJLiib7jmQ/aLuF0bIU=;
-        b=Dk2UTMzSR4gMcw/2q1WtIcNXrGGP5YPkqmt2K+88x1HopCy23XooSETeLvd6sDmmcG
-         r6v+eeX0pevxauZKV+JvF0wvs3WCc9Aa6rCfySkh/2IV1Lhfp7XwUbTsLj0SpWgSM1O/
-         U5KsOO++Dlf9mb7p3Sxl8F9/j/ZoXbpSQfIRLxg04b6jP+NW2BZbfBqG8JhTRR3AegrW
-         q+H1j/+vQV41sDyT3xr1ipid7XkiNVb0w5ykIeAEyfV+uaH7Gz/3ZYe5PuemRkCHdX2S
-         +n6dYNUnw/XJttzfAl3szaQsop/KCem8Sy7fZlMciukIlvnxTXA3wYgBityMjw2ltzFD
-         YxrA==
-X-Forwarded-Encrypted: i=1; AL+hErHy/G2GyU9SUgSb8amnyZZ25MtK27LZNXrwHrk9mUOsIvYqRKF9KV9KDz/sbEfNV/KE5KOHRhSfqGXt@lists.linux-m68k.org
-X-Gm-Message-State: APuU4Z/qEqNcn7MgomT0ICx4OlfvdV+CS3vDtDdXnDoBTl0Vnm+D+J0y
-	/WuIykZ5wHLVTSlWrWH1ZsrrC1jz6pgp2rnuhVldCAsJTPlo/2vcsPb1
-X-Gm-Gg: AZFdTZdFR7mCxEbZFrBVCGMhNhumZ1gVXR+5OP7aS+5V4eCgAKDRobs4iN21uXDiMLq
-	nIrKYTADIWTvzjcy9swRpBHtwZcQtL5Jp/KsRk80/xq3ISWydYr/Mfku2UbtXgxh72nu432MGbV
-	JkugIZJjoXfIvISFY2h/nnKKz/5yK+YYO8uH6vyiPhghrmWXuplXiDZsYYuxDmKq+tc8IGUHvYf
-	qwfC/dWRk0kpNUtZmWZpaGEfEPoPrdV6cat2aQGCGFOD81AxZdsk2MUzhJIbyBrUzG2PLtg3XSw
-	w24NoLAoXTt+fDiUbFYJEh3YJClLA2e/bqcdcD8s66On3nGznzsAHHLWy1jrqLds94Mhh2/G8sw
-	IK1OIpaAz5ykKVTXZnqqrkOQX/2nyR8niiqFPJIb/z9Iu1CyV+bN8sX7PW71OitLOWNIH1dFKc7
-	xHUslzMxNXhXInLI2V6OkM5Afh9hBe1liv33nNGrwPVVJXg/eqrfPMQJwg9LSWw1QOM7c2ow2sC
-	4XevPiNh3GDTa11qjf1ZhrIgvRaIYGTAIGIIjOYYu5PhipkOT3xTvTKkFEByzkNXael/Q4QWiFE
-	Jc9aeprNuoJ1JGEklgHm6rZTHCp3pYb/DGOAR5Lagg2drb6/MS7AhEDNNinfSmDBsk1TVhQiqtd
-	Hm998ZA9D1RrHAljzoYci6EE=
-X-Received: by 2002:a05:7022:3b8e:b0:1b5:32d7:7d73 with SMTP id a92af1059eb24-1b5568f3283mr26472626c88.30.1795716680250;
-        Thu, 26 Nov 2026 10:11:20 -0800 (PST)
+        bh=6F8UENk1fuxOmw1JD+w3Chipk8eAZUCmgorWcN045W0=;
+        b=HgWIbYoWNuXU2hFJ1VM5nO1WkUi8c5K6VywIdNclcBlz3mnUu+g5GSNdypV9g6Cmac
+         NjPblXSfln7wYYNJPN3Cq+qAiYjsa+sRE8wwjMjxhLaJJlfk82JpDvir+CnL93pDlN0b
+         A8zD3fCP2JiCpNIPqDDkAo/rctMe2R/4MQBw/YNbE9cM+RicM3hYbzZz5kZ/RbOxrYpy
+         4QFNAngTnigRwrUNO6n7YcwkRGotg6knj8eWA5dh6mXAEsTMixy6ax82YLE8Y6AZDcoI
+         Mk05VISML84zk2OsbAAondX4n+UfXQ73dze/SU8zvbaB9EoIQxBPiKlQGmR1qTG+ow7C
+         Wf/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795716689; x=1796321489;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=6F8UENk1fuxOmw1JD+w3Chipk8eAZUCmgorWcN045W0=;
+        b=te9UxErAcM7cZaAw9GJjvN7A/YLCUG4OP1Zo03UdJe2ZP5MJB4dMEZYkImWVYA+HR/
+         MQjavwkAaGrwXtCT7ax6ZU/9+v2pW1vXFJssytlSYt62d8UO2HwOLzyfNybvkfdGwyS4
+         vVRoUu8zTISxTTwVft5vysnpDtrvPEpd45Qx2EvUOWrFoeX8dcswOcvI1vmuVmHoXST7
+         I6ZA1f64udIvBoHAi0PljKWpbid8/iqQe+CqwEL42Li+9BCq+qdV9+fWejA3jGVyWj4C
+         sMxpVMOpCr4cjaQYWK6aLJ8VC2tCn7FUHFek9W8Qa8EiYCayvWe3TKIPy4AcGRX7/PgR
+         Ocow==
+X-Forwarded-Encrypted: i=1; AL+hErGMG/UvEevNtcgpzLjwieUK02fza3xzXgM1EyO9kw/VZnxVJUr2UqyUDof08AZzTLaFn1BE9uS/QoeX@lists.linux-m68k.org
+X-Gm-Message-State: APuU4Z9C+urCE4P6w+G1TmM7pASrYjNM3n40Rf0ydjJJ1/QU93BWXQe1
+	xfEnDHLwPORXxn/P4f+H0qLuGTCMQ1yHFFMT17eIlFEQghMwNy3o6LbW
+X-Gm-Gg: AZFdTZe+rtOZIF6IrCdjr35n1wq1yxl0MWqGOKh6ZzqusprgVd8BgBKnoGJoltnOYsP
+	gMHYCa55jkdSRZMli9jkVWLfRzujyoXzS6gOq76vWbxeuTOHxvlEv1frQARmILLWp8ysiZGcQmX
+	hY/2VYrm1isnOas/g+uOSkNeLn4Sif8lfiym5ylNY9CECixvpIcaXpVUBajIFQ6XA+lIicsLTtU
+	wHatuecY8dk4dQr/0fzDJV9xephDLomAn0VO7qr7+DoFIQcXIczmFejxZngFm4J5raZeYe+YYF8
+	Ekx3VTtJtF+rrH1eZxV/y8gw8hMrrqHSJISWUKxuhHKUPirvRG0k1Ml88j2Yu3W3n0m0TT+W4a6
+	Ie/va+LyBGGULD2HgHC0ZTreOFK4sxmJDJB7gOQC9FFvggAEmIzIHXdyS/r5cJh3AYZ9dWAreR3
+	Eiir8h0t+VsccwNfKMgq4S6FOgX5n8vRTDSyYseO8RaFFfmwNUCXRVc0Z5kE8EEtPI3IzUxws/W
+	vsjPHrafKe5QpCmWSIKwkaDl/J19JOi/8Tn3OD1K8X6iIn17aQaONgSGb7x9IlZ+ZgEEoX6GHF/
+	p8+g9gdqBiD9lYe1XHpuQiUC01kAypOJQ/r6Y4nzKH+g0UnC0x+1blaVo26RKi/0Y74cirAt5Ho
+	BEM8ybxBi+V4zIyFgwDD6OVE=
+X-Received: by 2002:a05:701a:cc84:10b0:1b5:709f:d510 with SMTP id a92af1059eb24-1b5709fd63fmr14492602c88.22.1795716688687;
+        Thu, 26 Nov 2026 10:11:28 -0800 (PST)
 Received: from visitorckw-work01.c.googlers.com.com (55.11.81.34.bc.googleusercontent.com. [34.81.11.55])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b55681301asm51183875c88.8.2026.11.26.10.11.16
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1b55681301asm51183875c88.8.2026.11.26.10.11.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2026 10:11:19 -0800 (PST)
+        Thu, 26 Nov 2026 10:11:28 -0800 (PST)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: daniel.lezcano@kernel.org,
 	tglx@kernel.org
@@ -93,10 +94,12 @@ Cc: pjw@kernel.org,
 	linux-riscv@lists.infradead.org,
 	linux-m68k@lists.linux-m68k.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v2 0/9] clocksource/drivers/timer-goldfish: Fix bugs and add DT support
-Date: Thu, 26 Nov 2026 18:10:52 +0000
-Message-ID: <20261126181101.3715754-1-visitorckw@gmail.com>
+Subject: [PATCH v2 2/9] clocksource/drivers/timer-goldfish: Fix oneshot mode spurious interrupt
+Date: Thu, 26 Nov 2026 18:10:54 +0000
+Message-ID: <20261126181101.3715754-3-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.56.1.839.g22a8290db9-goog
+In-Reply-To: <20261126181101.3715754-1-visitorckw@gmail.com>
+References: <20261126181101.3715754-1-visitorckw@gmail.com>
 X-Mailing-List: linux-m68k@vger.kernel.org
 List-Id: <linux-m68k.vger.kernel.org>
 List-Post: <mailto:linux-m68k@vger.kernel.org>
@@ -108,49 +111,42 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The goldfish timer driver was previously only used and tested on
-single core m68k virt, but the same device is also present on other
-qemu virt machines such as riscv and or1k, where running on SMP exposes
-several issues.
+goldfish_timer_set_oneshot() writes 0 to TIMER_ALARM_HIGH and
+TIMER_ALARM_LOW. Writing TIMER_ALARM_LOW arms the alarm for timestamp 0,
+which immediately triggers a spurious interrupt when TIMER_IRQ_ENABLED
+is set. Meanwhile, goldfish_timer_shutdown() disables interrupts without
+disarming the alarm.
 
-Fix the concurrency, oneshot, and registration bugs in the driver, add
-device tree probing support so it can be used across these platforms,
-and add a MAINTAINERS entry.
+Use TIMER_CLEAR_ALARM to disarm the alarm in both functions.
 
-Tested on qemu m68k virt and on qemu riscv64 virt with 4 SMP cores. On
-riscv64, testing was done by passing clocksource=goldfish_timer on the
-kernel command line and locally bumping the clock_event_device rating
-above the architected timer to verify both clocksource and oneshot
-clockevent operation.
+Fixes: c92e7ef16400 ("clocksource/drivers: Add a goldfish-timer clocksource")
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
-Changes in v2:
-- Initialize timerdrv->ced.irq alongside cpumask so SMP tick
-registration operates on the timer IRQ instead of IRQ 0.
-- Set timerdrv->ced.rating to 100 as a base-level rating.
-- Change the Kconfig dependency from !RTC_DRV_GOLDFISH to
-RTC_DRV_GOLDFISH=n to also exclude the module case.
-- Rebase onto latest master.
+ drivers/clocksource/timer-goldfish.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Link to v1: https://lore.kernel.org/r/20261105161702.3515900-1-visitorckw@gmail.com
-
-Kuan-Wei Chiu (9):
-  clocksource/drivers/timer-goldfish: Fix latch corruption with spinlock
-  clocksource/drivers/timer-goldfish: Fix oneshot mode spurious
-    interrupt
-  clocksource/drivers/timer-goldfish: Fix resource leaks in init
-  clocksource/drivers/timer-goldfish: Set CLOCK_SOURCE_IS_CONTINUOUS
-    flag
-  clocksource/drivers/timer-goldfish: Drop redundant max_idle_ns setting
-  clocksource/drivers/timer-goldfish: Set clockevent cpumask and irq
-  clocksource/drivers/timer-goldfish: Set clock_event_device rating
-  clocksource/drivers/timer-goldfish: Add device tree probing support
-  MAINTAINERS: Add entry for goldfish timer driver
-
- MAINTAINERS                          |   6 ++
- drivers/clocksource/Kconfig          |   5 +-
- drivers/clocksource/timer-goldfish.c | 115 +++++++++++++++++++++------
- 3 files changed, 101 insertions(+), 25 deletions(-)
-
+diff --git a/drivers/clocksource/timer-goldfish.c b/drivers/clocksource/timer-goldfish.c
+index cc02b012ff76..b1dc8b388470 100644
+--- a/drivers/clocksource/timer-goldfish.c
++++ b/drivers/clocksource/timer-goldfish.c
+@@ -55,8 +55,7 @@ static int goldfish_timer_set_oneshot(struct clock_event_device *evt)
+ 	struct goldfish_timer *timerdrv = ced_to_gf(evt);
+ 	void __iomem *base = timerdrv->base;
+ 
+-	gf_iowrite32(0, base + TIMER_ALARM_HIGH);
+-	gf_iowrite32(0, base + TIMER_ALARM_LOW);
++	gf_iowrite32(1, base + TIMER_CLEAR_ALARM);
+ 	gf_iowrite32(1, base + TIMER_IRQ_ENABLED);
+ 
+ 	return 0;
+@@ -68,6 +67,7 @@ static int goldfish_timer_shutdown(struct clock_event_device *evt)
+ 	void __iomem *base = timerdrv->base;
+ 
+ 	gf_iowrite32(0, base + TIMER_IRQ_ENABLED);
++	gf_iowrite32(1, base + TIMER_CLEAR_ALARM);
+ 
+ 	return 0;
+ }
 -- 
 2.56.1.839.g22a8290db9-goog
 
